@@ -1,0 +1,17 @@
+FROM node:8.4.0
+
+ENV NPM_CONFIG_LOGLEVEL warn
+SHELL ["/bin/bash", "-c"]
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+COPY . .
+
+RUN npm dedupe
+RUN npm install
+RUN npm run build
+RUN npm install --only=production
+
+CMD npm run serve
+
+EXPOSE 5000

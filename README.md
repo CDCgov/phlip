@@ -1,1 +1,1 @@
-# esquire-frontend
+# Esquire Frontend
