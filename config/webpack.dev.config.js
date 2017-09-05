@@ -30,6 +30,12 @@ module.exports = function makeConfig(env) {
     module: {
       rules: [
         {
+          test: /\.js$/,
+          enforce: 'pre',
+          loader: 'eslint-loader',
+          include: paths.appSrc
+        },
+        {
           oneOf: [
             {
               test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
@@ -40,9 +46,9 @@ module.exports = function makeConfig(env) {
               },
             },
             {
-              test: /\.(js|jsx)$/,
+              test: /\.jsx?$/,
               include: paths.appSrc,
-              loader: 'babel-loader',
+              loader: 'react-hot-loader!babel-loader',
               exclude: /node_modules/
             },
             {
@@ -50,13 +56,13 @@ module.exports = function makeConfig(env) {
               use: [
                 'style-loader',
                 {
-                  loader: require.resolve('css-loader'),
+                  loader: 'css-loader',
                   options: {
                     importLoaders: 1,
                   },
                 },
                 {
-                  loader: require.resolve('postcss-loader'),
+                  loader: 'postcss-loader',
                   options: {
                     ident: 'postcss',
                     plugins: () => [
@@ -76,7 +82,7 @@ module.exports = function makeConfig(env) {
             },
             {
               exclude: [/\.js$/, /\.html$/, /\.json$/],
-              loader: require.resolve('file-loader'),
+              loader: 'file-loader',
               options: {
                 name: 'dist/media/[name].[hash:8].[ext]',
               },
