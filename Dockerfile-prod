@@ -8,10 +8,10 @@ WORKDIR /usr/src/app
 COPY . .
 
 RUN npm dedupe
-RUN npm install
+RUN npm install --no-optional
 RUN npm run build
-RUN npm install --only=production
+RUN npm prune
 
-CMD npm run serve
+CMD npm run serve:local
 
 EXPOSE 5000

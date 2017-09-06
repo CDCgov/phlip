@@ -4,6 +4,6 @@ import App from './App';
 
 describe('A suite', function() {
   test('should render without throwing an error', function() {
-    expect(shallow(<App />).contains(<div></div>)).toBe(true);
+    expect(shallow(<App />).contains(<div>Yo yo yo</div>)).toBe(true);
   });
 });
