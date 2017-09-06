@@ -4,14 +4,16 @@
   "license": "Apache-2.0",
   "description": "Esquire Frontend",
   "scripts": {
+    "build:image:dev": "docker-compose build dev",
+    "build:image:prod": "docker-compose build prod",
     "start": "docker-compose up --build -d dev",
     "serve": "docker-compose up --build -d prod",
     "test": "docker-compose run dev npm run test:local",
-    "test:watch": "docker-compose run dev npm run test:local:watch",
+    "test:watch": "docker-compose run dev npm run test:watch:local",
     "start:local": "node scripts/start.js",
     "serve:local": "http-server ./dist -p 5000",
     "test:local": "jest --coverage",
-    "test:local:watch": "jest --verbose --watch",
+    "test:watch:local": "jest --verbose --watch",
     "prebuild": "npm run clean",
     "build": "node scripts/build.js",
     "clean": "rm -rf ./dist/"
