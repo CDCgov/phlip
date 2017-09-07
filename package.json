@@ -29,7 +29,8 @@
   "repository": "git",
   "author": "Kristin Muterspaw",
   "contributors": [
-    "Michael Ta"
+    "Michael Ta",
+    "Kristin Muterspaw"
   ],
   "dependencies": {
     "axios": "^0.16.2",
