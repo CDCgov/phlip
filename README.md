@@ -6,14 +6,13 @@ These instructions will get you a copy of the project up and running on your loc
 development and testing purposes. 
 
 ### Prerequisites
-You need these things installed on your machine if you want to successfully have a development environment setup. Each
-item is linked to a page about installing it.
+Below are a list of items that are required and optional for the development environment. Each item is linked to a page about installing it. Really, you only need Docker, the Node/Yarn/NPM are if you want to run the commands from the package.json file. You're welcome to just look at the package.json file and run the Docker commands instead. All of the code running is done in a Docker container, so the Node and NPM are taken care of there.
  
-*  [Node.js](https://nodejs.org/en/download/current/ "Installing Node")- v8.4.0 
-  (or, via[package manager](https://nodejs.org/en/download/package-manager/ "Installing Node via Package Manager"))
-* &nbsp;NPM - v5.4.0 (installs when Node.js is installed)
 * [Docker](https://docs.docker.com/engine/installation/ "Installing Docker")- latest stable version
-* [Yarn](https://yarnpkg.com/lang/en/docs/install/ "Installing Yarn")- v0.25.4, if you choose to use it instead of npm
+* [Node.js](https://nodejs.org/en/download/current/ "Installing Node")- v8.4.0 
+  (or, via [package manager](https://nodejs.org/en/download/package-manager/ "Installing Node via Package Manager"))
+* NPM - v5.4.1 (installs when Node.js is installed)
+* [Yarn](https://yarnpkg.com/lang/en/docs/install/ "Installing Yarn")- v0.27.5, if you choose to use it instead of npm
 
 ### Getting the code
 ```
@@ -25,12 +24,12 @@ $ cd esquire-frontend
 We are doing everything, from testing to building to running the code, in Docker containers. We are using docker-compose
 for easy management of services. Inside the project there's a docker-compose.yml file. The compose file has two services, 
 one for development environment and one for production environment. It references the two Dockerfiles that exist in the 
-project as well -- Dockerfile (for dev) and Dockerfile-prod for production. Learn more about docker-compose [here].
+project as well -- Dockerfile (for dev) and Dockerfile-prod for production. Learn more about docker-compose [here](https://docs.docker.com/compose/ "Docker compose").
 
 The project is setup so that when npm (or yarn) commands from the package.json are run, they are automatically executed 
 with regard to containers. If you want to learn the exact docker-compose command that is used, look at the package.json.
 
-NOTE: For all commands below, if you use npm instead of yarn, substitute the word __'yarn'__ with __'npm run'__
+NOTE: For all commands below, if you use npm instead of yarn, substitute the word __'yarn'__ with __'npm run'__.
 
 ### Building the Docker images
 Before we can run the containers with the app, the docker images of the application need to be built. For your convenience,
@@ -49,7 +48,7 @@ Now, that we've built the image, we can start the development container using th
 docker-compose to rebuild the image and then start the container. 
 
 Inside the container, a webpack-dev-server is running on port 3000. That port is exposed to port 3000 on localhost on 
-your local machine. So, if you open a browser and go to<http://localhost:3000>, you will see the application running. 
+your local machine. So, if you open a browser and go to <http://localhost:3000>, you will see the application running. 
 
 There is also a volume of the code mounted inside the container. Since, a webpack-dev-server is running and a volume is
 mounted, then any changes you make to the code on your local machine, the webpack-dev-server will pick up those changes
@@ -59,7 +58,7 @@ $ yarn start
 ```
 
 ## Running tests
-For testing we use[Jest]and[Enzyme.]Jest as the test runner, assertion library, and mock library. Enzyme for making it 
+For testing we use [Jest] and [Enzyme]. Jest as the test runner, assertion library, and mock library. Enzyme for making it 
 easier to write React tests. 
 
 
@@ -87,4 +86,4 @@ $ yarn test:watch
 
 
 [Jest]: https://facebook.github.io/jest/ "Jest"
-[Enzyme.]: http://airbnb.io/enzyme/ "Enzyme"
+[Enzyme]: http://airbnb.io/enzyme/ "Enzyme"
