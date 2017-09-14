@@ -45,7 +45,19 @@ module.exports = function makeConfig(env) {
             {
               test: /\.(js|jsx)$/,
               include: paths.appSrc,
-              loader: 'babel-loader',
+              use: [
+                {
+                  loader: 'babel-loader',
+                  options: {
+                    presets: ['es2015', 'react', 'stage-0'],
+                    plugins: [
+                      require('babel-plugin-transform-runtime'),
+                      require('babel-plugin-transform-object-assign'),
+                      require('babel-plugin-transform-object-rest-spread')
+                    ]
+                  }
+                }
+              ],
               exclude: /node_modules/
             },
             {

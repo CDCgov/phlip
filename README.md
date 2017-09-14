@@ -12,7 +12,7 @@ Below are a list of items that are required and optional for the development env
 * [Node.js](https://nodejs.org/en/download/current/ "Installing Node")- v8.4.0 
   (or, via [package manager](https://nodejs.org/en/download/package-manager/ "Installing Node via Package Manager"))
 * NPM - v5.4.1 (installs when Node.js is installed)
-* [Yarn](https://yarnpkg.com/lang/en/docs/install/ "Installing Yarn")- v0.27.5, if you choose to use it instead of npm
+* [Yarn](https://yarnpkg.com/lang/en/docs/install/ "Installing Yarn")- v1.0.1, if you choose to use it instead of npm
 
 ### Getting the code
 ```

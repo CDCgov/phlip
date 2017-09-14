@@ -22,8 +22,8 @@ module.exports = function makeConfig(env) {
     resolve: {
       extensions: ['.js', '.jsx'],
       modules: [
-        paths.appNodeModules,
-        paths.appSrc
+        'src',
+        'node_modules'
       ]
     },
 
@@ -47,8 +47,20 @@ module.exports = function makeConfig(env) {
             },
             {
               test: /\.jsx?$/,
-              include: paths.appSrc,
-              loader: 'react-hot-loader!babel-loader',
+              include: /src/,
+              use: [
+                'react-hot-loader',
+                {
+                  loader: 'babel-loader',
+                  options: {
+                    presets: ['es2015', 'react', 'stage-0'],
+                    plugins: [
+                      require('babel-plugin-transform-runtime'),
+                      require('babel-plugin-transform-object-assign'),
+                      require('babel-plugin-transform-object-rest-spread')]
+                  }
+                }
+              ],
               exclude: /node_modules/
             },
             {
