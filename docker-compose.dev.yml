@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: esquire-dev
     ports:
       - 3000:3000
     volumes:

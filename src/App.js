@@ -1,12 +1,13 @@
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
+import Scenes from 'scenes';
 
 const App = () => {
   return (
     <Provider>
       <BrowserRouter>
-        <div> la la la la la </div>
+        <Scenes />
       </BrowserRouter>
     </Provider>
   )
