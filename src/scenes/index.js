@@ -4,8 +4,8 @@ import Home from './Home'
 
 const Scenes = () => {
   return (
-    <Route path="/" component={Home} />
-  );
-};
+    <Route path="/" component={Home}/>
+  )
+}
 
-export default Scenes;
+export default Scenes

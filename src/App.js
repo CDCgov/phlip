@@ -13,8 +13,8 @@ const App = () => {
       </BrowserRouter>
     </Provider>
   )
-};
+}
 
-App.propTypes = {};
+App.propTypes = {}
 
 export default App

@@ -1,12 +1,12 @@
-'use strict';
+'use strict'
 
-const autoprefixer = require('autoprefixer');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const CompressionPlugin = require('compression-webpack-plugin');
-const paths = require('./paths');
+const autoprefixer = require('autoprefixer')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CompressionPlugin = require('compression-webpack-plugin')
+const paths = require('./paths')
 
 module.exports = function makeConfig(env) {
   return {
@@ -158,5 +158,5 @@ module.exports = function makeConfig(env) {
 
       new webpack.DefinePlugin(env)
     ]
-  };
-};
+  }
+}

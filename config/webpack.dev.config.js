@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 
-const autoprefixer = require('autoprefixer');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const paths = require('./paths');
+const autoprefixer = require('autoprefixer')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const paths = require('./paths')
 
 module.exports = function makeConfig(env) {
   return {
@@ -120,17 +120,6 @@ module.exports = function makeConfig(env) {
       new webpack.HotModuleReplacementPlugin(),
 
       new webpack.DefinePlugin(env)
-    ],
-
-    devServer: {
-      compress: true,
-      contentBase: paths.appPublic,
-      watchContentBase: true,
-      hot: true,
-      host: '0.0.0.0',
-      publicPath: paths.publicPath,
-      overlay: false,
-      historyApiFallback: true
-    }
+    ]
   }
-};
+}

@@ -1,6 +1,8 @@
 {
   "parser": "babel-eslint",
-  "plugins": ["react"],
+  "plugins": [
+    "react"
+  ],
   "rules": {
     "quotes": [
       2,
