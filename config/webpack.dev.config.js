@@ -22,7 +22,7 @@ module.exports = function makeConfig(env) {
     resolve: {
       extensions: ['.js', '.jsx'],
       modules: [
-        'src',
+        paths.appSrc,
         'node_modules'
       ]
     },
