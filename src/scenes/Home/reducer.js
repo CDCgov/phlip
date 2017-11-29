@@ -10,8 +10,6 @@ let moreProjData = {
 
 const INITIAL_STATE = {
   projects: [],
-  suggestions: [],
-  searchValue: '',
   rowsPerPage: 10,
   page: 0,
   visibleProjects: [],
@@ -54,49 +52,6 @@ function homeReducer(state = INITIAL_STATE, action) {
         ...state,
         projects,
         visibleProjects: sliceProjects(projects, state.page, state.rowsPerPage)
-      }
-
-    case types.UPDATE_SEARCH_VALUE:
-      return {
-        ...state,
-        searchValue: action.searchValue
-      }
-
-    case types.UPDATE_SUGGESTIONS:
-      const searchValue = action.search.value.trim().toLowerCase()
-      const matches = []
-      return {
-        ...state,
-        suggestions: searchValue.length === 0
-          ? []
-          : state.projects.filter((project, i) => {
-              let matchProj = {matchedKeys: []}
-              if (project.name.toLowerCase().includes(searchValue)) {
-                matchProj.index = i
-                matchProj.matchedKeys.push('name')
-              }
-              if (new Date(project.dateLastEdited).toLocaleDateString() === searchValue) {
-                matchProj.index = i
-                matchProj.matchedKeys.push('dateLastEdited')
-              }
-              if (project.lastEditedBy.toLowerCase().includes(searchValue)) {
-                matchProj.index = i
-                matchProj.matchedKeys.push('lastEditedBy')
-              }
-              return matchProj.matchedKeys.length > 0
-          //  return project.name.toLowerCase().slice(0, searchValue.length) === searchValue
-          //    || new Date(project.dateLastEdited).toLocaleDateString().slice(0, searchValue.length) === searchValue
-          //    || project.lastEditedBy.toLowerCase().includes(searchValue)
-          //})
-          }).map((project, i) => {
-
-          })
-      }
-
-    case types.CLEAR_SUGGESTIONS:
-      return {
-        ...state,
-        suggestions: []
       }
 
     case types.TOGGLE_BOOKMARK:

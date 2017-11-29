@@ -23,8 +23,6 @@ export class Home extends Component {
     rowsPerPage: PropTypes.number,
     sortBy: PropTypes.string,
     direction: PropTypes.string,
-    suggestions: PropTypes.array,
-    searchValue: PropTypes.string,
     error: PropTypes.bool,
     errorContent: PropTypes.string
   }
@@ -48,13 +46,7 @@ export class Home extends Component {
       <Container column flex>
         <PageHeader role={this.props.user.role} />
         <Divider />
-        <SearchBar
-          searchValue={this.props.searchValue}
-          suggestions={this.props.suggestions}
-          handleSearchValueChange={event => this.props.actions.updateSearchValue(event.target.value)}
-          handleClearSuggestions={this.props.actions.clearSuggestions}
-          handleSuggestionRequest={value => this.props.actions.updateSuggestions(value)}
-        />
+        <SearchBar />
         {this.props.error
           ? this.renderErrorMessage()
           : <ProjectList
@@ -86,8 +78,6 @@ const mapStateToProps = (state) => ({
   rowsPerPage: state.scenes.home.main.rowsPerPage,
   sortBy: state.scenes.home.main.sortBy,
   direction: state.scenes.home.main.direction,
-  suggestions: state.scenes.home.main.suggestions,
-  searchValue: state.scenes.home.main.searchValue || '',
   error: state.scenes.home.main.error,
   errorContent: state.scenes.home.main.errorContent
 })
