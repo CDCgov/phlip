@@ -1,22 +1,10 @@
 'use strict'
 
-const dotenv = require('dotenv')
 const chalk = require('chalk')
 const webpack = require('webpack')
 const Spinner = require('cli-spinner').Spinner
 const paths = require('../config/paths')
-
-process.env.NODE_ENV = 'production'
-
-dotenv.config()
-let env = Object.keys(process.env)
-  .filter(key => key.startsWith('APP_') || key === 'NODE_ENV')
-  .reduce((e, key) => {
-    e[key] = JSON.stringify(process.env[key])
-    return e
-  }, {})
-
-const webpackConfig = require('../config/webpack.prod.config')(env)
+const webpackConfig = require('../config/webpack.prod.config')()
 
 console.log(chalk.cyan(
   `\nThis command will build the webpack bundle/s. \

@@ -8,7 +8,9 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
 const paths = require('./paths')
 
-module.exports = function makeConfig(env) {
+module.exports = function makeConfig() {
+  const env = require('./env')('production')
+
   return {
     devtool: 'source-map',
     entry: {
@@ -124,9 +126,7 @@ module.exports = function makeConfig(env) {
       }),
 
       new webpack.DefinePlugin({
-        'process.env': {
-          NODE_ENV: JSON.stringify('production')
-        }
+        env
       }),
 
       new webpack.optimize.UglifyJsPlugin({
@@ -154,9 +154,7 @@ module.exports = function makeConfig(env) {
 
       new CopyWebpackPlugin([{
         from: paths.appPublic
-      }]),
-
-      new webpack.DefinePlugin(env)
+      }])
     ]
   }
 }

@@ -15,5 +15,6 @@ module.exports = {
   appSrc: resolveApp('src'),
   yarnLockFile: resolveApp('yarn.lock'),
   appNodeModules: resolveApp('node_modules'),
+  appDotEnv: resolveApp('.env'),
   publicPath: '/'
 }

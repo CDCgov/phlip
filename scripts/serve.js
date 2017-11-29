@@ -1,6 +1,4 @@
 const express = require('express')
-process.env.NODE_ENV = 'production'
-
 const app = express()
 
 app.use(express.static('./dist/'))

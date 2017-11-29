@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Home -- ProjectList component it should render correctly 1`] = `
+<Container
+  column={false}
+  flex={true}
+  spacing={0}
+>
+  <Column
+    component={<Card />}
+    displayFlex={true}
+    flex={true}
+    style={
+      Object {
+        "overflowX": "auto",
+      }
+    }
+  >
+    <Table
+      style={
+        Object {
+          "borderCollapse": "separate",
+        }
+      }
+    >
+      <withStyles(TableHead)>
+        <ProjectTableHead
+          direction="asc"
+          onRequestSort={[Function]}
+          role="Coordinator"
+          sortBy="name"
+        />
+      </withStyles(TableHead)>
+      <withStyles(TableBody)>
+        <ProjectTableBody
+          onToggleBookmark={[Function]}
+          projects={
+            Array [
+              Object {
+                "bookmarked": true,
+                "dateLastEdited": 2017-10-11T00:00:00.000Z,
+                "id": 1,
+                "lastEditedBy": "Kristin",
+                "name": "Project 1",
+              },
+              Object {
+                "bookmarked": false,
+                "dateLastEdited": 2017-10-11T00:00:00.000Z,
+                "id": 2,
+                "lastEditedBy": "Michael",
+                "name": "Project 2",
+              },
+            ]
+          }
+          user={
+            Object {
+              "email": "kmusterspaw@cdc.gov",
+              "firstName": "Kristin",
+              "id": 2,
+              "lastName": "Muterspaw",
+              "password": "test",
+              "role": "Coordinator",
+            }
+          }
+        />
+      </withStyles(TableBody)>
+    </Table>
+    <div
+      style={
+        Object {
+          "display": "flex",
+          "flex": 1,
+          "paddingBottom": "50px",
+        }
+      }
+    />
+    <Table>
+      <withStyles(TableFooter)>
+        <withStyles(TableRow)>
+          <withStyles(TablePagination)
+            count={2}
+            onChangePage={[Function]}
+            page={0}
+            rowsPerPage={10}
+          />
+        </withStyles(TableRow)>
+      </withStyles(TableFooter)>
+    </Table>
+  </Column>
+</Container>
+`;

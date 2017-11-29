@@ -49,11 +49,14 @@ module.exports = function makeConfig(env) {
               test: /\.jsx?$/,
               include: /src/,
               use: [
-                'react-hot-loader',
                 {
                   loader: 'babel-loader',
                   options: {
-                    presets: ['env', 'react', 'stage-0'],
+                    presets: [
+                      ['env', { modules: false }],
+                      'react',
+                      'stage-0'
+                    ],
                     plugins: [
                       require('babel-plugin-transform-runtime'),
                       require('babel-plugin-transform-object-assign'),
@@ -117,6 +120,7 @@ module.exports = function makeConfig(env) {
         jquery: 'jquery',
       }),
 
+      new webpack.NamedModulesPlugin(),
       new webpack.HotModuleReplacementPlugin(),
 
       new webpack.DefinePlugin(env)

@@ -1,4 +1,9 @@
-// will be used to combine reducers from the dirs in the folder, for now just a simple reducer
-export default function dataReducer(state = [], action) {
-  return state
-}
+import { persistCombineReducers } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
+import user from './user/reducer'
+
+const dataReducer = persistCombineReducers({ key: 'data', storage }, {
+  user
+})
+
+export default dataReducer

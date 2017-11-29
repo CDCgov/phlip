@@ -1,10 +1,11 @@
-import { combineReducers } from 'redux'
 import data from 'data/reducer'
 import scenes from 'scenes/reducer'
+import { reducer as formReducer } from 'redux-form'
 
-const rootReducer = combineReducers({
+const rootReducer = {
   data,
-  scenes
-})
+  scenes,
+  form: formReducer
+}
 
 export default rootReducer

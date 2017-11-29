@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Home scene it should render correctly 1`] = `
+<Container
+  column={true}
+  flex={true}
+  spacing={0}
+>
+  <PageHeader
+    role="Coordinator"
+  />
+  <withStyles(Divider) />
+  <SearchBar />
+  <ProjectList
+    count={6}
+    direction="asc"
+    handlePageChange={[Function]}
+    handleRequestSort={[Function]}
+    handleRowsChange={[Function]}
+    handleToggleBookmark={[Function]}
+    page={0}
+    projects={
+      Array [
+        Object {
+          "bookmarked": true,
+          "dateLastEdited": 2017-10-11T00:00:00.000Z,
+          "id": 1,
+          "lastEditedBy": "Kristin Muterspaw",
+          "name": "Project 1",
+        },
+        Object {
+          "bookmarked": false,
+          "dateLastEdited": 2017-10-11T00:00:00.000Z,
+          "id": 2,
+          "lastEditedBy": "Michael Ta",
+          "name": "Project 2",
+        },
+        Object {
+          "bookmarked": true,
+          "dateLastEdited": 2017-10-11T00:00:00.000Z,
+          "id": 3,
+          "lastEditedBy": "Sanjith David",
+          "name": "Project 3",
+        },
+        Object {
+          "bookmarked": true,
+          "dateLastEdited": 2017-10-11T00:00:00.000Z,
+          "id": 4,
+          "lastEditedBy": "Greg Ledbetter",
+          "name": "Project 4",
+        },
+        Object {
+          "bookmarked": false,
+          "dateLastEdited": 2017-10-11T00:00:00.000Z,
+          "id": 5,
+          "lastEditedBy": "Jason James",
+          "name": "Project 5",
+        },
+        Object {
+          "bookmarked": false,
+          "dateLastEdited": 2017-10-11T00:00:00.000Z,
+          "id": 6,
+          "lastEditedBy": "Hez Adedoyin",
+          "name": "Project 6",
+        },
+      ]
+    }
+    rowsPerPage={10}
+    sortBy="name"
+    user={
+      Object {
+        "email": "kmuterspaw@cdc.gov",
+        "firstName": "Kristin",
+        "id": 2,
+        "lastName": "Muterspaw",
+        "password": "test",
+        "role": "Coordinator",
+      }
+    }
+  />
+  <Route
+    component={[Function]}
+    path="/new/project"
+  />
+</Container>
+`;
