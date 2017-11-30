@@ -28,12 +28,22 @@ const mockUpProject = (project) => {
 
 const sliceProjects = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
-const sortProjects = (projects, sortBy, direction) => {
+const sortProjectByType = (projects, sortBy, direction, sortBookmarks) => {
   return (
     direction === 'asc'
       ? projects.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1))
       : projects.sort((a, b) => (b[sortBy] < a[sortBy] ? -1 : 1))
   )
+}
+
+const sortProjects = (projects, sortBy, direction, sortBookmarks) => {
+  if (sortBookmarks) {
+    const bookmarked = sortProjectByType(projects.filter(project => project.bookmarked), sortBy, direction)
+    const nonBookmarked = sortProjectByType(projects.filter(project => !project.bookmarked), sortBy, direction)
+    return [...bookmarked, ...nonBookmarked]
+  } else {
+    return sortProjectByType(projects, sortBy, direction)
+  }
 }
 
 const updateProjectById = (updatedProject, projectArr) => {
@@ -56,10 +66,12 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
     case types.TOGGLE_BOOKMARK:
+      let updatedProjs = updateProjectById(action.project, [...state.projects])
+      let updatedSorted = sortProjects(updatedProjs, state.sortBy, state.direction, state.sortBookmarks)
       return {
         ...state,
-        projects: updateProjectById(action.project, [...state.projects]),
-        visibleProjects: updateProjectById(action.project, [...state.visibleProjects])
+        projects: updatedSorted,
+        visibleProjects: sliceProjects(updatedSorted, state.page, state.rowsPerPage)
       }
 
     case types.UPDATE_PROJECT_SUCCESS:
@@ -96,7 +108,7 @@ function homeReducer(state = INITIAL_STATE, action) {
 
     case types.SORT_PROJECTS:
       const dir = state.direction === 'asc' ? 'desc' : 'asc'
-      const sorted = sortProjects(state.projects, action.sortBy, dir)
+      let sorted = sortProjects(state.projects, action.sortBy, dir, state.sortBookmarks)
       return {
         ...state,
         sortBy: action.sortBy,
@@ -106,9 +118,12 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
     case types.SORT_BOOKMARKS:
+      let sort = sortProjects(state.projects, state.sortBy, state.direction, !state.sortBookmarks)
       return {
         ...state,
-        sortBookmarks: !state.sortBookmarks
+        projects: sort,
+        sortBookmarks: !state.sortBookmarks,
+        visibleProjects: sliceProjects(sort, state.page, state.rowsPerPage)
       }
 
     case types.UPDATE_PROJECT_FAIL:
