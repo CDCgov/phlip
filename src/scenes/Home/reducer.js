@@ -13,8 +13,8 @@ const INITIAL_STATE = {
   rowsPerPage: 10,
   page: 0,
   visibleProjects: [],
-  sortBy: 'name',
-  direction: 'asc',
+  sortBy: 'dateLastEdited',
+  direction: 'desc',
   sortBookmarks: false,
   errorContent: '',
   error: false
@@ -28,7 +28,7 @@ const mockUpProject = (project) => {
 
 const sliceProjects = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
-const sortProjectByType = (projects, sortBy, direction, sortBookmarks) => {
+const sortProjectByType = (projects, sortBy, direction) => {
   return (
     direction === 'asc'
       ? projects.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1))
@@ -82,12 +82,15 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
     case types.ADD_PROJECT_SUCCESS:
-      const updatedProjects = [
+      let updatedProjects = [
         mockUpProject(action.payload), // only here until the data model is complete
-        ...state.projects
+        ...sortProjectByType([...state.projects], 'dateLastEdited', 'desc')
       ]
       return {
         ...state,
+        sortBy: 'dateLastEdited',
+        direction: 'desc',
+        sortBookmarks: false,
         projects: updatedProjects,
         visibleProjects: sliceProjects(updatedProjects, state.page, state.rowsPerPage)
       }
