@@ -4,8 +4,8 @@
   "license": "Apache-2.0",
   "description": "Esquire Frontend",
   "scripts": {
-    "build:image:dev": "docker-compose -f docker-compose.dev.yml build dev",
-    "build:image:prod": "docker-compose build prod",
+    "build:image:dev": "docker build -t esquire-frontend:dev .",
+    "build:image:prod": "docker build -t esquire-frontend:prod -f Dockerfile-prod .",
     "start": "docker-compose -f docker-compose.dev.yml up --build dev",
     "serve": "docker-compose up --build -d prod",
     "test": "docker-compose -f docker-compose.dev.yml run dev npm run test:local",

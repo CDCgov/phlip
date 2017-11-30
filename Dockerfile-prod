@@ -14,4 +14,4 @@ RUN npm prune
 
 CMD npm run serve:local
 
-EXPOSE 5000
+EXPOSE 3000
