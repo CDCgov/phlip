@@ -25,12 +25,20 @@
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}"
     ],
-    "testResultsProcessor": "jest-junit",
     "coverageReporters": [
       "cobertura",
       "html",
       "lcov"
-    ]
+    ],
+    "modulePaths": [
+      "<rootDir>/src/"
+    ],
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "globals": {
+      "APP_API_URL": "/api"
+    }
   },
   "jest-junit": {
     "suiteName": "jest tests",
