@@ -14,3 +14,5 @@ export const sortProjects = (sortBy) => ({ type: types.SORT_PROJECTS, sortBy })
 export const updatePage = (page) => ({ type: types.UPDATE_PAGE, page })
 export const updateRows = (rowsPerPage) => ({ type: types.UPDATE_ROWS, rowsPerPage })
 
+export const sortBookmarks = () => ({ type: types.SORT_BOOKMARKS })
+

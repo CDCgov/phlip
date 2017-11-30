@@ -8,18 +8,20 @@ import ProjectTableBody from './components/ProjectTableBody'
 import ProjectTableHead from './components/ProjectTableHead'
 
 export const ProjectList = props => {
-  const { projects, user, page, rowsPerPage, count, sortBy, direction } = props
-  const { handleToggleBookmark, handlePageChange, handleRowsChange, handleRequestSort, handleExport } = props
+  const { projects, user, page, rowsPerPage, count, sortBy, direction, sortBookmarks } = props
+  const { handleToggleBookmark, handlePageChange, handleRowsChange, handleRequestSort, handleExport, handleSortBookmarks } = props
   return (
     <Container flex>
-      <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card />}>
+      <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card/>}>
         <Table style={{ borderCollapse: 'separate' }}>
           <TableHead>
             <ProjectTableHead
               role={user.role}
               sortBy={sortBy}
               direction={direction}
+              sortBookmarks={sortBookmarks}
               onRequestSort={handleRequestSort}
+              onSortBookmarks={handleSortBookmarks}
             />
           </TableHead>
           <TableBody>
@@ -31,7 +33,7 @@ export const ProjectList = props => {
             />
           </TableBody>
         </Table>
-        <div style={{ display: 'flex', flex: 1, paddingBottom: '50px' }} />
+        <div style={{ display: 'flex', flex: 1, paddingBottom: '50px' }}/>
         <Table>
           <TableFooter>
             <TableRow>

@@ -15,6 +15,7 @@ const INITIAL_STATE = {
   visibleProjects: [],
   sortBy: 'name',
   direction: 'asc',
+  sortBookmarks: false,
   errorContent: '',
   error: false
 }
@@ -102,6 +103,12 @@ function homeReducer(state = INITIAL_STATE, action) {
         direction: dir,
         projects: sorted,
         visibleProjects: sliceProjects(sorted, state.page, state.rowsPerPage)
+      }
+
+    case types.SORT_BOOKMARKS:
+      return {
+        ...state,
+        sortBookmarks: !state.sortBookmarks
       }
 
     case types.UPDATE_PROJECT_FAIL:

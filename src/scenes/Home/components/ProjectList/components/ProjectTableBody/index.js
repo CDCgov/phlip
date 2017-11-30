@@ -12,7 +12,7 @@ export const ProjectTableBody = ({ projects, user, onToggleBookmark, onExport })
   return (
     projects.map(project => (
       <TableRow key={project.id}>
-        <TableCell key={`${project.id}-bookmarked`} style={{ width: 48, paddingRight: 0, paddingLeft: 12 }}>
+        <TableCell key={`${project.id}-bookmarked`} style={{ width: 48 }}>
           <IconButton color={project.bookmarked ? '#fdc43b' : greyIcon} onClick={() => onToggleBookmark(project)}>
             {project.bookmarked ? 'bookmark' : 'bookmark_border'}
           </IconButton>
