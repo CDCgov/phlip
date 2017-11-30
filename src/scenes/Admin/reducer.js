@@ -2,10 +2,18 @@ import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import addEditUserReducer from './scenes/AddEditUser/reducer'
 import { mockUsers } from '../../data/mockUsers'
+import sortList from '../../utils/sortList'
 
 const INITIAL_STATE = {
-  users: []
+  users: [],
+  rowsPerPage: 10,
+  page: 0,
+  sortBy: 'name',
+  direction: 'asc'
 }
+
+const randomId = Math.random(2) //TODO: Temporary for mocks
+
 
 function adminReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
@@ -26,7 +34,7 @@ function adminReducer(state = INITIAL_STATE, action) {
           ...state.users,
           {
             ...action.payload,
-            id: Math.random(2) //TODO: Temporary for mocks
+            id: randomId //TODO: Temporary for mocks
           }
         ]
       }
@@ -39,6 +47,16 @@ function adminReducer(state = INITIAL_STATE, action) {
             ? action.payload
             : user
         )
+      }
+
+    case types.SORT_USERS:
+      const direction = state.direction === 'asc' ? 'desc' : 'asc'
+      const sorted = sortList(state.users, action.sortBy, direction)
+      return {
+        ...state,
+        sortBy: action.sortBy,
+        direction: direction,
+        users: sorted
       }
     default:
       return state

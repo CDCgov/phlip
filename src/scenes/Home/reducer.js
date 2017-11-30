@@ -2,6 +2,7 @@ import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import newProjectReducer from './scenes/NewProject/reducer'
 import { mockUsers } from 'data/mockUsers'
+import sortList from '../../utils/sortList'
 
 let moreProjData = {
   bookmarked: false,
@@ -57,8 +58,8 @@ const updateProjectById = (updatedProject, projectArr) => {
 function homeReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case types.GET_PROJECTS_SUCCESS:
-      const projects = sortProjects(action.payload.map(mockUpProject), state.sortBy, state.direction)
-      //const projects = sortProjects(action.payload, state.sortBy, state.direction)
+      const projects = sortList(action.payload.map(mockUpProject), state.sortBy, state.direction)
+      //const projects = sortList(action.payload, state.sortBy, state.direction)
       return {
         ...state,
         projects,

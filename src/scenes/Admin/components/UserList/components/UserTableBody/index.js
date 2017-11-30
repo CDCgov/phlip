@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { TableCell } from 'material-ui/Table'
 import TableRow from 'components/TableRow'
+import TableCell from 'components/TableCell'
 import TextLink from 'components/TextLink'
 import Typography from 'material-ui/Typography'
 
@@ -11,31 +11,28 @@ const styles = {
   fontWeight: 'lighter'
 }
 
-const Cell = ({ id, children, header }) => {
-  return <TableCell key={`${id}-${header}`} style={styles} padding="none">{children}</TableCell>
-}
-
 
 const UserTableBody = ({ users }) => {
   return (
     users.map(user => (
       <TableRow key={user.id}>
-        <Cell id={user.id} header="name">
+        <TableCell key={`${user.id}-name`} header="name">
           <span style={{ color: '#9a9c9c' }}>{user.firstName} {user.lastName}</span>
-        </Cell>
-        <Cell id={user.id} header="email">
+        </TableCell>
+        <TableCell key={`${user.id}-email`} header="email">
           <span style={{ color: '#9a9c9c' }}>{user.email}</span>
-        </Cell>
-        <Cell id={user.id} header="role">
+        </TableCell>
+        <TableCell key={`${user.id}-role`} header="role">
           <span style={{ color: '#9a9c9c', fontStyle: 'italic' }}>{user.role}</span>
-        </Cell>
-        <Cell id={user.id} header="edit">
+        </TableCell>
+        <TableCell key={`${user.id}-edit`} header="edit">
           <TextLink to={'/admin/edit/user/' + user.id}>Edit</TextLink>
-        </Cell>
+        </TableCell>
       </TableRow>
     ))
   )
 }
+
 
 UserTableBody.propTypes = {
   users: PropTypes.arrayOf(PropTypes.object)
