@@ -100,4 +100,8 @@ describe('Home actions creators', () => {
 
     expect(actions.updateRows(rowsPerPage)).toEqual(expectedAction)
   })
+
+  test('should create an action to toggle sort by bookmarked', () => {
+    expect(actions.sortBookmarked()).toEqual({ type: types.SORT_BOOKMARKED })
+  })
 })

@@ -12,7 +12,7 @@ exports[`Home scene it should render correctly 1`] = `
   <withStyles(Divider) />
   <SearchBar />
   <ProjectList
-    count={6}
+    count={5}
     direction="desc"
     handlePageChange={[Function]}
     handleRequestSort={[Function]}

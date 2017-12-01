@@ -15,4 +15,3 @@ export const updatePage = (page) => ({ type: types.UPDATE_PAGE, page })
 export const updateRows = (rowsPerPage) => ({ type: types.UPDATE_ROWS, rowsPerPage })
 
 export const sortBookmarked = () => ({ type: types.SORT_BOOKMARKED })
-

@@ -25,7 +25,8 @@ const mockUpProject = (project) => {
     ...project,
     dateLastEdited: new Date(start.getTime() + Math.random() * (new Date().getTime() - start.getTime())),
     bookmarked: false,
-    lastEditedBy: `${user.firstName} ${user.lastName}` }
+    lastEditedBy: `${user.firstName} ${user.lastName}`
+  }
 }
 
 const sliceProjects = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -65,6 +66,8 @@ function homeReducer(state = INITIAL_STATE, action) {
     case types.GET_PROJECTS_SUCCESS:
       return {
         ...state,
+        error: false,
+        errorContent: '',
         ...getProjectsAndVisibleProjects(
           action.payload.map(mockUpProject), state.sortBy, state.direction, state.page, state.rowsPerPage, state.sortBookmarked
           // action.payload, state.sortBy, state.direction, state.page, state.rowsPerPage, state.sortBookmarked
@@ -89,7 +92,9 @@ function homeReducer(state = INITIAL_STATE, action) {
     case types.ADD_PROJECT_SUCCESS:
       const mockedUpProject = mockUpProject(action.payload)
       const updated = getProjectsAndVisibleProjects(state.projects, 'dateLastEdited', 'desc', 0, state.rowsPerPage, false)
-      updated.visibleProjects.pop()
+      if ((updated.visibleProjects.length + 1) > state.rowsPerPage) {
+        updated.visibleProjects.pop()
+      }
       return {
         ...state,
         sortBy: 'dateLastEdited',
