@@ -6,3 +6,7 @@ export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS'
 export const UPDATE_USER_FAIL = 'UPDATE_USER_FAIL'
 
 export const ADD_USER_SUCCESS = 'ADD_USER_SUCCESS'
+
+export const SORT_USERS = 'SORT_USERS'
+export const UPDATE_PAGE = 'UPDATE_PAGE'
+export const UPDATE_ROWS = 'UPDATE_ROWS'

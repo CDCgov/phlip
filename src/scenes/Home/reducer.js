@@ -2,6 +2,7 @@ import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import newProjectReducer from './scenes/NewProject/reducer'
 import { mockUsers } from 'data/mockUsers'
+import sortList from '../../utils/sortList'
 
 const start = new Date(2017, 0, 1)
 
@@ -29,17 +30,9 @@ const mockUpProject = (project) => {
 
 const sliceProjects = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
-const sortProjectsByType = (projects, sortBy, direction) => {
-  return (
-    direction === 'asc'
-      ? projects.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : a[sortBy] > b[sortBy] ? 1 : 0))
-      : projects.sort((a, b) => (b[sortBy] < a[sortBy] ? -1 : b[sortBy] > a[sortBy] ? 1 : 0))
-  )
-}
-
 const sortProjectsByBookmarked = (projects, sortBy, direction) => {
-  const bookmarked = sortProjectsByType(projects.filter(project => project.bookmarked), sortBy, direction)
-  const nonBookmarked = sortProjectsByType(projects.filter(project => !project.bookmarked), sortBy, direction)
+  const bookmarked = sortList(projects.filter(project => project.bookmarked), sortBy, direction)
+  const nonBookmarked = sortList(projects.filter(project => !project.bookmarked), sortBy, direction)
   return [...bookmarked, ...nonBookmarked]
 }
 
@@ -54,7 +47,7 @@ const updateProjectById = (updatedProject, projectArr) => {
 const anyBookmarks = (projects) => projects.filter(project => project.bookmarked).length > 0
 
 const getProjectsAndVisibleProjects = (projects, sortBy, direction, page, rowsPerPage, sortBookmarked) => {
-  const sortedProjects = sortProjectsByType(projects, sortBy, direction)
+  const sortedProjects = sortList(projects, sortBy, direction)
   const baseResult = { projects: sortedProjects, visibleProjects: sliceProjects(sortedProjects, page, rowsPerPage) }
   if (sortBookmarked) {
     if (anyBookmarks(projects)) {

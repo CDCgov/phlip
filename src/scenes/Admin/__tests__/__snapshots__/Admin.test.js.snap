@@ -1,14 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Admin Scene it should render correctly 1`] = `
-<withStyles(GridWrapper)
-  container={true}
-  direction="column"
+<Container
+  column={true}
+  flex={true}
   spacing={0}
 >
   <PageHeader />
   <withStyles(Divider) />
   <UserList
+    handleRequestSort={[Function]}
     users={
       Array [
         Array [
@@ -72,5 +73,5 @@ exports[`Admin Scene it should render correctly 1`] = `
     component={[Function]}
     path="/admin/edit/user/:id"
   />
-</withStyles(GridWrapper)>
+</Container>
 `;

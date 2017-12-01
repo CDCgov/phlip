@@ -3,17 +3,18 @@ import reducer from '../reducer'
 
 const initial = {
   main: {
-    users: []
+    users: [],
+    rowsPerPage: 10,
+    page: 0,
+    sortBy: 'name',
+    direction: 'asc'
   },
   addEditUser: {}
 }
 
 describe('Admin reducer', () => {
   test('should return the initial state', () => {
-    expect(reducer(undefined, {})).toEqual({
-      main: { users: [] },
-      addEditUser: {}
-    })
+    expect(reducer(undefined, {})).toEqual(initial)
   })
 
   xtest('should handle GET_USERS_SUCCESS', () => {
