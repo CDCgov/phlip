@@ -6,16 +6,7 @@ import theme from 'services/theme'
 import { Home } from '../'
 import { PageHeader } from '../components/PageHeader'
 import { ProjectList } from '../components/ProjectList'
-
-let date = new Date('10/11/2017')
-const projects = [
-  { id: 1, bookmarked: true, name: 'Project 1', dateLastEdited: date, lastEditedBy: 'Kristin Muterspaw' },
-  { id: 2, bookmarked: false, name: 'Project 2', dateLastEdited: date, lastEditedBy: 'Michael Ta' },
-  { id: 3, bookmarked: true, name: 'Project 3', dateLastEdited: date, lastEditedBy: 'Sanjith David' },
-  { id: 4, bookmarked: true, name: 'Project 4', dateLastEdited: date, lastEditedBy: 'Greg Ledbetter' },
-  { id: 5, bookmarked: false, name: 'Project 5', dateLastEdited: date, lastEditedBy: 'Jason James' },
-  { id: 6, bookmarked: false, name: 'Project 6', dateLastEdited: date, lastEditedBy: 'Hez Adedoyin' }
-]
+import { mockProjects } from 'data/mockProjects'
 
 const props = {
   actions: {
@@ -23,7 +14,8 @@ const props = {
     sortProjects: jest.fn(),
     updatePage: jest.fn(),
     updateRows: jest.fn(),
-    toggleBookmark: jest.fn()
+    toggleBookmark: jest.fn(),
+    sortBookmarked: jest.fn()
   },
   user: {
     id: 2,
@@ -35,10 +27,11 @@ const props = {
   },
   error: false,
   errorContent: '',
-  projects,
-  visibleProjects: projects,
-  sortBy: 'name',
-  direction: 'asc',
+  projects: mockProjects,
+  visibleProjects: [],
+  sortBookmarked: false,
+  sortBy: 'dateLastEdited',
+  direction: 'desc',
   page: 0,
   rowsPerPage: 10
 }

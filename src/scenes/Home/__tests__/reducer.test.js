@@ -7,8 +7,9 @@ const initial = {
     rowsPerPage: 10,
     page: 0,
     visibleProjects: [],
-    sortBy: 'name',
-    direction: 'asc',
+    sortBy: 'dateLastEdited',
+    direction: 'desc',
+    sortBookmarked: false,
     error: false,
     errorContent: ''
   },
@@ -158,7 +159,7 @@ describe('Home reducer', () => {
     test('it should sort projects by name descending', () => {
       expect(
         reducer(
-          { ...initial, main: { ...initial.main, projects: projects.reverse(), visibleProjects: projects.reverse() } },
+          { ...initial, main: { ...initial.main, direction: 'asc', projects: projects.reverse(), visibleProjects: projects.reverse() } },
           { type: types.SORT_PROJECTS, sortBy: 'name' }
         )
       ).toEqual({
