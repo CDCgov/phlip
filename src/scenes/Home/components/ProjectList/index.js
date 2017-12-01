@@ -60,11 +60,13 @@ ProjectList.propTypes = {
   count: PropTypes.number,
   sortBy: PropTypes.string,
   direction: PropTypes.oneOf(['asc', 'desc']),
+  sortBookmarked: PropTypes.bool,
   handleToggleBookmark: PropTypes.func,
   handleChangePage: PropTypes.func,
   handleRowsChange: PropTypes.func,
   handleRequestSort: PropTypes.func,
-  handleExport: PropTypes.func
+  handleExport: PropTypes.func,
+  handleSortBookmarked: PropTypes.func
 }
 
 export default ProjectList

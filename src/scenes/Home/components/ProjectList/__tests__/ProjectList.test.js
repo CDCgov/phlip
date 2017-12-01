@@ -20,7 +20,6 @@ const props = {
     password: 'test',
     role: 'Coordinator'
   },
-  handleRequestSort: jest.fn(),
   sortBy: 'name',
   direction: 'asc',
   page: 0,
@@ -28,7 +27,10 @@ const props = {
   count: 2,
   handleToggleBookmark: jest.fn(),
   handlePageChange: jest.fn(),
-  handleRowChange: jest.fn()
+  handleRowsChange: jest.fn(),
+  handleRequestSort: jest.fn(),
+  handleExport: jest.fn(),
+  handleSortBookmarked: jest.fn()
 }
 
 const setup = otherProps => {
@@ -79,5 +81,12 @@ describe('Home -- ProjectList component', () => {
     let wrapper = setup({ user: { role: 'Coordinator' } })
     wrapper = wrapper.find('TableBody').find('tr').at(0).find('td')
     expect(wrapper.length).toEqual(10)
+  })
+
+  test('should call handleSortBookmarked when bookmarked icon in header is clicked', () => {
+    let wrapper = setup()
+    wrapper.find('TableRow').at(0).find('TableCell').at(0).find('IconButton').at(0).simulate('click')
+    wrapper.update()
+    expect(props.handleSortBookmarked.mock.calls.length).toBe(1)
   })
 })

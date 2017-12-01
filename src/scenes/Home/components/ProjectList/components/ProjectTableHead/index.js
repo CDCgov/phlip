@@ -23,7 +23,7 @@ const hiddenCols = [
   'validate'
 ]
 
-const ProjectTableHead = ({ role, onRequestSort, sortBy, direction, sortBookmarked, onSortBookmarked }) => {
+const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSort, onSortBookmarked }) => {
   const visible = (role === 'Coder' ? columns.filter(c => !hiddenCols.includes(c.key)) : columns)
   return (
     <TableRow key="headers">
@@ -48,9 +48,11 @@ const ProjectTableHead = ({ role, onRequestSort, sortBy, direction, sortBookmark
 
 ProjectTableHead.propTypes = {
   role: PropTypes.string,
-  onRequestSort: PropTypes.func,
   sortBy: PropTypes.string,
-  direction: PropTypes.string
+  direction: PropTypes.string,
+  sortBookmarked: PropTypes.bool,
+  onRequestSort: PropTypes.func,
+  onSortBookmarked: PropTypes.func
 }
 
 export default ProjectTableHead
