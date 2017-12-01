@@ -23,13 +23,13 @@ const hiddenCols = [
   'validate'
 ]
 
-const ProjectTableHead = ({ role, onRequestSort, sortBy, direction, sortBookmarks, onSortBookmarks }) => {
+const ProjectTableHead = ({ role, onRequestSort, sortBy, direction, sortBookmarked, onSortBookmarked }) => {
   const visible = (role === 'Coder' ? columns.filter(c => !hiddenCols.includes(c.key)) : columns)
   return (
     <TableRow key="headers">
       <TableCell key="bookmarked" style={{ width: 48 }}>
-        <IconButton color="rbg(0,0,0,0.54)" onClick={onSortBookmarks}>
-          { sortBookmarks ? 'bookmark' : 'bookmark_border' }
+        <IconButton color="rbg(0,0,0,0.54)" onClick={onSortBookmarked}>
+          { sortBookmarked ? 'bookmark' : 'bookmark_border' }
         </IconButton>
       </TableCell>
 

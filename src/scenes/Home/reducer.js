@@ -3,10 +3,7 @@ import { combineReducers } from 'redux'
 import newProjectReducer from './scenes/NewProject/reducer'
 import { mockUsers } from 'data/mockUsers'
 
-let moreProjData = {
-  bookmarked: false,
-  dateLastEdited: new Date()
-}
+const start = new Date(2017, 0, 1)
 
 const INITIAL_STATE = {
   projects: [],
@@ -15,7 +12,7 @@ const INITIAL_STATE = {
   visibleProjects: [],
   sortBy: 'dateLastEdited',
   direction: 'desc',
-  sortBookmarks: false,
+  sortBookmarked: false,
   errorContent: '',
   error: false
 }
@@ -23,27 +20,27 @@ const INITIAL_STATE = {
 // TODO: Just until the data model is complete
 const mockUpProject = (project) => {
   const user = mockUsers[Math.floor(Math.random() * mockUsers.length)]
-  return { ...project, ...moreProjData, lastEditedBy: `${user.firstName} ${user.lastName}` }
+  return {
+    ...project,
+    dateLastEdited: new Date(start.getTime() + Math.random() * (new Date().getTime() - start.getTime())),
+    bookmarked: false,
+    lastEditedBy: `${user.firstName} ${user.lastName}` }
 }
 
 const sliceProjects = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
-const sortProjectByType = (projects, sortBy, direction) => {
+const sortProjectsByType = (projects, sortBy, direction) => {
   return (
     direction === 'asc'
-      ? projects.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1))
-      : projects.sort((a, b) => (b[sortBy] < a[sortBy] ? -1 : 1))
+      ? projects.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : a[sortBy] > b[sortBy] ? 1 : 0))
+      : projects.sort((a, b) => (b[sortBy] < a[sortBy] ? -1 : b[sortBy] > a[sortBy] ? 1 : 0))
   )
 }
 
-const sortProjects = (projects, sortBy, direction, sortBookmarks) => {
-  if (sortBookmarks) {
-    const bookmarked = sortProjectByType(projects.filter(project => project.bookmarked), sortBy, direction)
-    const nonBookmarked = sortProjectByType(projects.filter(project => !project.bookmarked), sortBy, direction)
-    return [...bookmarked, ...nonBookmarked]
-  } else {
-    return sortProjectByType(projects, sortBy, direction)
-  }
+const sortProjectsByBookmarked = (projects, sortBy, direction) => {
+  const bookmarked = sortProjectsByType(projects.filter(project => project.bookmarked), sortBy, direction)
+  const nonBookmarked = sortProjectsByType(projects.filter(project => !project.bookmarked), sortBy, direction)
+  return [...bookmarked, ...nonBookmarked]
 }
 
 const updateProjectById = (updatedProject, projectArr) => {
@@ -54,24 +51,39 @@ const updateProjectById = (updatedProject, projectArr) => {
   )
 }
 
+const anyBookmarks = (projects) => projects.filter(project => project.bookmarked).length > 0
+
+const getProjectsAndVisibleProjects = (projects, sortBy, direction, page, rowsPerPage, sortBookmarked) => {
+  const sortedProjects = sortProjectsByType(projects, sortBy, direction)
+  const baseResult = { projects: sortedProjects, visibleProjects: sliceProjects(sortedProjects, page, rowsPerPage) }
+  if (sortBookmarked) {
+    if (anyBookmarks(projects)) {
+      const sortedByBookmarked = sortProjectsByBookmarked(projects, sortBy, direction)
+      return { projects: sortedByBookmarked, visibleProjects: sliceProjects(sortedByBookmarked, page, rowsPerPage) }
+    } else {
+      return baseResult
+    }
+  }
+  return baseResult
+}
+
 function homeReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case types.GET_PROJECTS_SUCCESS:
-      const projects = sortProjects(action.payload.map(mockUpProject), state.sortBy, state.direction)
-      //const projects = sortProjects(action.payload, state.sortBy, state.direction)
       return {
         ...state,
-        projects,
-        visibleProjects: sliceProjects(projects, state.page, state.rowsPerPage)
+        ...getProjectsAndVisibleProjects(
+          action.payload.map(mockUpProject), state.sortBy, state.direction, state.page, state.rowsPerPage, state.sortBookmarked
+          // action.payload, state.sortBy, state.direction, state.page, state.rowsPerPage, state.sortBookmarked
+        )
       }
 
     case types.TOGGLE_BOOKMARK:
-      let updatedProjs = updateProjectById(action.project, [...state.projects])
-      let updatedSorted = sortProjects(updatedProjs, state.sortBy, state.direction, state.sortBookmarks)
       return {
         ...state,
-        projects: updatedSorted,
-        visibleProjects: sliceProjects(updatedSorted, state.page, state.rowsPerPage)
+        ...getProjectsAndVisibleProjects(
+          updateProjectById(action.project, [...state.projects]), state.sortBy, state.direction, state.page, state.rowsPerPage, state.sortBookmarked
+        )
       }
 
     case types.UPDATE_PROJECT_SUCCESS:
@@ -82,17 +94,17 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
     case types.ADD_PROJECT_SUCCESS:
-      let updatedProjects = [
-        mockUpProject(action.payload), // only here until the data model is complete
-        ...sortProjectByType([...state.projects], 'dateLastEdited', 'desc')
-      ]
+      const mockedUpProject = mockUpProject(action.payload)
+      const updated = getProjectsAndVisibleProjects(state.projects, 'dateLastEdited', 'desc', 0, state.rowsPerPage, false)
+      updated.visibleProjects.pop()
       return {
         ...state,
         sortBy: 'dateLastEdited',
         direction: 'desc',
-        sortBookmarks: false,
-        projects: updatedProjects,
-        visibleProjects: sliceProjects(updatedProjects, state.page, state.rowsPerPage)
+        sortBookmarked: false,
+        page: 0,
+        projects: [mockedUpProject, ...updated.projects],
+        visibleProjects: [mockedUpProject, ...updated.visibleProjects]
       }
 
     case types.UPDATE_ROWS:
@@ -111,22 +123,22 @@ function homeReducer(state = INITIAL_STATE, action) {
 
     case types.SORT_PROJECTS:
       const dir = state.direction === 'asc' ? 'desc' : 'asc'
-      let sorted = sortProjects(state.projects, action.sortBy, dir, state.sortBookmarks)
       return {
         ...state,
         sortBy: action.sortBy,
         direction: dir,
-        projects: sorted,
-        visibleProjects: sliceProjects(sorted, state.page, state.rowsPerPage)
+        ...getProjectsAndVisibleProjects(
+          state.projects, action.sortBy, dir, state.page, state.rowsPerPage, state.sortBookmarked
+        )
       }
 
-    case types.SORT_BOOKMARKS:
-      let sort = sortProjects(state.projects, state.sortBy, state.direction, !state.sortBookmarks)
+    case types.SORT_BOOKMARKED:
       return {
         ...state,
-        projects: sort,
-        sortBookmarks: !state.sortBookmarks,
-        visibleProjects: sliceProjects(sort, state.page, state.rowsPerPage)
+        sortBookmarked: !state.sortBookmarked,
+        ...getProjectsAndVisibleProjects(
+          state.projects, state.sortBy, state.direction, state.page, state.rowsPerPage, !state.sortBookmarked
+        )
       }
 
     case types.UPDATE_PROJECT_FAIL:

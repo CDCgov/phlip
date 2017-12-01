@@ -57,12 +57,12 @@ export class Home extends Component {
             rowsPerPage={this.props.rowsPerPage}
             sortBy={this.props.sortBy}
             direction={this.props.direction}
-            sortBookmarks={this.props.sortBookmarks}
+            sortBookmarked={this.props.sortBookmarked}
             handleRequestSort={property => event => this.props.actions.sortProjects(property)}
             handlePageChange={(event, page) => this.props.actions.updatePage(page)}
             handleRowsChange={event => this.props.actions.updateRows(event.target.value)}
             handleToggleBookmark={this.props.actions.toggleBookmark}
-            handleSortBookmarks={this.props.actions.sortBookmarks}
+            handleSortBookmarked={this.props.actions.sortBookmarked}
           />
         }
         <Route
@@ -81,7 +81,7 @@ const mapStateToProps = (state) => ({
   rowsPerPage: state.scenes.home.main.rowsPerPage,
   sortBy: state.scenes.home.main.sortBy,
   direction: state.scenes.home.main.direction,
-  sortBookmarks: state.scenes.home.main.sortBookmarks,
+  sortBookmarked: state.scenes.home.main.sortBookmarked,
   error: state.scenes.home.main.error,
   errorContent: state.scenes.home.main.errorContent
 })
