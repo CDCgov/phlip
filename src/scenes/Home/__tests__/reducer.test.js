@@ -25,6 +25,14 @@ const defaultSortedProjects = [
   { id: 1, bookmarked: true, name: 'Project 1', dateLastEdited: new Date(2017, 0, 31), lastEditedBy: 'Kristin Muterspaw' }
 ]
 
+const sortedByUser = [
+  { id: 3, bookmarked: true, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
+  { id: 2, bookmarked: false, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' },
+  { id: 2, bookmarked: false, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' },
+  { id: 5, bookmarked: false, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James' },
+  { id: 4, bookmarked: true, name: 'Project 4', dateLastEdited: new Date(2017, 5, 30), lastEditedBy: 'Greg Ledbetter' }
+]
+
 const sortedByDateAndBookmarked = [
   { id: 4, bookmarked: true, name: 'Project 4', dateLastEdited: new Date(2017, 5, 30), lastEditedBy: 'Greg Ledbetter' },
   { id: 3, bookmarked: true, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
@@ -219,7 +227,7 @@ describe('Home reducer', () => {
       )
     })
 
-    test('it should set the sortBy, direction, and sortBookmarked properties back to defaults and sort projects by defaults', () => {
+    test('should set the sortBy, direction, and sortBookmarked properties back to defaults and sort projects by defaults', () => {
       const payload = { name: 'New Project', type: 'Assessment' }
       expect(
         reducer(
@@ -325,11 +333,18 @@ describe('Home reducer', () => {
   })
 
   describe('SORT_PROJECTS', () => {
-    const projects = [{ id: 12345, name: 'ccc' }, { id: 67890, name: 'bbb' }, { id: 109876, name: 'aaa' }]
-    test('it should sort projects by name ascending', () => {
+    test('should sort projects by name ascending', () => {
       expect(
         reducer(
-          { ...initial, main: { ...initial.main, projects, direction: 'desc', visibleProjects: projects } },
+          {
+            ...initial,
+            main: {
+              ...initial.main,
+              projects,
+              visibleProjects: projects,
+              direction: 'desc',
+            }
+          },
           { type: types.SORT_PROJECTS, sortBy: 'name' }
         )
       ).toEqual({
@@ -344,7 +359,7 @@ describe('Home reducer', () => {
       })
     })
 
-    test('it should sort projects by name descending', () => {
+    test('should sort projects by name descending', () => {
       expect(
         reducer(
           {
@@ -369,10 +384,118 @@ describe('Home reducer', () => {
         }
       })
     })
+
+    test('should sort projects by dateLastEdited ascending', () => {
+      expect(
+        reducer(
+          {
+            ...initial,
+            main: {
+              ...initial.main,
+              direction: 'desc',
+              sortBy: 'dateLastEdited',
+              projects: defaultSortedProjects,
+              visibleProjects: defaultSortedProjects
+            }
+          },
+          { type: types.SORT_PROJECTS, sortBy: 'dateLastEdited' }
+        )
+      ).toEqual({
+        ...initial,
+        main: {
+          ...initial.main,
+          projects: defaultSortedProjects.reverse(),
+          visibleProjects: defaultSortedProjects.reverse(),
+          direction: 'asc',
+          sortBy: 'dateLastEdited'
+        }
+      })
+    })
+
+    test('should sort projects by dateLastEdited descending', () => {
+      expect(
+        reducer(
+          {
+            ...initial,
+            main: {
+              ...initial.main,
+              direction: 'asc',
+              sortBy: 'dateLastEdited',
+              projects: defaultSortedProjects.reverse(),
+              visibleProjects: defaultSortedProjects.reverse()
+            }
+          },
+          { type: types.SORT_PROJECTS, sortBy: 'dateLastEdited' }
+        )
+      ).toEqual({
+        ...initial,
+        main: {
+          ...initial.main,
+          projects: defaultSortedProjects,
+          visibleProjects: defaultSortedProjects,
+          direction: 'desc',
+          sortBy: 'dateLastEdited'
+        }
+      })
+    })
+
+    test('should sort projects by lastEditedBy ascending', () => {
+      expect(
+        reducer(
+          {
+            ...initial,
+            main: {
+              ...initial.main,
+              direction: 'desc',
+              sortBy: 'lastEditedBy',
+              projects: sortedByUser,
+              visibleProjects: sortedByUser
+            }
+          },
+          { type: types.SORT_PROJECTS, sortBy: 'lastEditedBy' }
+        )
+      ).toEqual({
+        ...initial,
+        main: {
+          ...initial.main,
+          projects: sortedByUser.reverse(),
+          visibleProjects: sortedByUser.reverse(),
+          direction: 'asc',
+          sortBy: 'lastEditedBy'
+        }
+      })
+    })
+
+    test('should sort projects by lastEditedBy descending', () => {
+      expect(
+        reducer(
+          {
+            ...initial,
+            main: {
+              ...initial.main,
+              direction: 'asc',
+              sortBy: 'lastEditedBy',
+              projects: sortedByUser.reverse(),
+              visibleProjects: sortedByUser.reverse()
+            }
+          },
+          { type: types.SORT_PROJECTS, sortBy: 'lastEditedBy' }
+        )
+      ).toEqual({
+        ...initial,
+        main: {
+          ...initial.main,
+          projects: sortedByUser,
+          visibleProjects: sortedByUser,
+          direction: 'desc',
+          sortBy: 'lastEditedBy'
+        }
+      })
+    })
   })
 
   describe('SORT_BOOKMARKED', () => {
-    test('it should move bookmarked projects to the top and sort those depending on the sort label selected', () => {
+    test('should move bookmarked projects to the top and sort those depending on the sort label selected', () => {
       expect(
         reducer(
           { ...initial, main: { ...initial.main, projects } },
@@ -389,7 +512,7 @@ describe('Home reducer', () => {
       })
     })
 
-    test('it should not change the order of the projects if no projects are bookmarked', () => {
+    test('should not change the order of the projects if no projects are bookmarked', () => {
       expect(
         reducer(
           { ...initial, main: { ...initial.main, projects: noBookmarks } },
@@ -406,7 +529,7 @@ describe('Home reducer', () => {
       })
     })
 
-    test('it should move bookmarked projects back to their original order by sort label if sorting by bookmarked is disabled', () => {
+    test('should move bookmarked projects back to their original order by sort label if sorting by bookmarked is disabled', () => {
       expect(
         reducer(
           { ...initial, main: { ...initial.main, projects: sortedByDateAndBookmarked, sortBookmarked: true } },
