@@ -34,12 +34,15 @@ export class Admin extends Component {
         <PageHeader />
         <Divider />
         <UserList
-          users={this.props.users}
+          users={this.props.visibleUsers}
           page={this.props.page}
+          count={this.props.users.length}
           rowsPerPage={this.props.rowsPerPage}
           sortBy={this.props.sortBy}
           direction={this.props.direction}
-          handleRequestSort={property => event => this.props.actions.sortUsers(property)} />
+          handleRequestSort={property => event => this.props.actions.sortUsers(property)}
+          handlePagechange={(event, page) => this.props.actions.updateUserPage(page)}
+          handleRowsChange={event => this.props.actions.updateUserRows(event.target.value)} />
         <Route
           path="/admin/new/user"
           component={AddEditUser} />
@@ -53,6 +56,7 @@ export class Admin extends Component {
 
 const mapStateToProps = (state) => ({
   users: state.scenes.admin.main.users,
+  visibleUsers: state.scenes.admin.main.visibleUsers,
   page: state.scenes.admin.main.page,
   rowsPerPage: state.scenes.admin.main.rowsPerPage,
   sortBy: state.scenes.admin.main.sortBy,
