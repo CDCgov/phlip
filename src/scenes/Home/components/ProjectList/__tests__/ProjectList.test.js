@@ -44,28 +44,14 @@ const setup = otherProps => {
 }
 
 describe('Home -- ProjectList component', () => {
-  test('it should render correctly', () => {
+  test('should render correctly', () => {
     expect(shallow(<ProjectList {...props} />)).toMatchSnapshot()
   })
 
-  test('the bookmark icon should be `bookmark` if the project is bookmarked', () => {
-    let wrapper = setup().find('TableBody').find('tr').at(0).find('td').at(0)
-    expect(wrapper.text()).toEqual('bookmark')
-  })
-
-  test('the icon bookmark should be `bookmark_border` if the project is not bookmarked', () => {
-    let wrapper = setup().find('TableBody').find('tr').at(1).find('td').at(0)
-    expect(wrapper.text()).toEqual('bookmark_border')
-  })
-
-  test('the bookmark icon should be grey if the project is not bookmarked', () => {
-    let wrapper = setup().find('TableBody').find('tr').at(1).find('td').at(0).find('Icon').at(0)
-    expect(wrapper.prop('color')).toEqual('#d4d4d4')
-  })
-
-  test('the bookmark icon should be orange if the project is bookmarked', () => {
-    let wrapper = setup().find('TableBody').find('tr').at(0).find('td').at(0).find('Icon').at(0)
-    expect(wrapper.prop('color')).toEqual('#fdc43b')
+  test('should render ProjectTableBody and ProjectTableHead components', () => {
+    let wrapper = shallow(<ProjectList {...props} />)
+    expect(wrapper.find('ProjectTableHead')).toHaveLength(1)
+    expect(wrapper.find('ProjectTableBody')).toHaveLength(1)
   })
 
   test('coding scheme, validate column should not be visible if role is Coder', () => {
@@ -83,10 +69,25 @@ describe('Home -- ProjectList component', () => {
     expect(wrapper.length).toEqual(10)
   })
 
-  test('should call handleSortBookmarked when bookmarked icon in header is clicked', () => {
-    let wrapper = setup()
-    wrapper.find('TableRow').at(0).find('TableCell').at(0).find('IconButton').at(0).simulate('click')
-    wrapper.update()
-    expect(props.handleSortBookmarked.mock.calls.length).toBe(1)
+  describe('bookmark icon', () => {
+    test('the bookmark icon should be `bookmark` if the project is bookmarked', () => {
+      let wrapper = setup().find('TableBody').find('tr').at(0).find('td').at(0)
+      expect(wrapper.text()).toEqual('bookmark')
+    })
+
+    test('the icon bookmark should be `bookmark_border` if the project is not bookmarked', () => {
+      let wrapper = setup().find('TableBody').find('tr').at(1).find('td').at(0)
+      expect(wrapper.text()).toEqual('bookmark_border')
+    })
+
+    test('the bookmark icon should be grey if the project is not bookmarked', () => {
+      let wrapper = setup().find('TableBody').find('tr').at(1).find('td').at(0).find('Icon').at(0)
+      expect(wrapper.prop('color')).toEqual('#d4d4d4')
+    })
+
+    test('the bookmark icon should be orange if the project is bookmarked', () => {
+      let wrapper = setup().find('TableBody').find('tr').at(0).find('td').at(0).find('Icon').at(0)
+      expect(wrapper.prop('color')).toEqual('#fdc43b')
+    })
   })
 })

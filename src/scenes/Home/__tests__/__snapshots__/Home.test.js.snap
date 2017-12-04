@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Home scene it should render correctly 1`] = `
+exports[`Home scene should render correctly 1`] = `
 <Container
   column={true}
   flex={true}

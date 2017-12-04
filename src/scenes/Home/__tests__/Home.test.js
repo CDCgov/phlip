@@ -47,18 +47,17 @@ const setup = otherProps => {
 }
 
 describe('Home scene', () => {
-  test('it should render correctly', () => {
+  test('should render correctly', () => {
     expect(shallow(<Home {...props} />)).toMatchSnapshot()
   })
 
-  test('it should render ProjectList and PageHeader components', () => {
+  test('should render ProjectList and PageHeader components', () => {
     let wrapper = shallow(<Home {...props} />)
-
     expect(wrapper.find(ProjectList)).toHaveLength(1)
     expect(wrapper.find(PageHeader)).toHaveLength(1)
   })
 
-  test('it should open the New Project modal when Create New Project is clicked', () => {
+  test('should open the New Project modal when Create New Project is clicked', () => {
     let wrapper = setup()
     wrapper.find(PageHeader).find('Button').at(0).simulate('click')
     wrapper.update()

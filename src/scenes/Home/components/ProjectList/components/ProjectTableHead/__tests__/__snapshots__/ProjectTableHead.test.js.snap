@@ -1,0 +1,115 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render correctly 1`] = `
+<TableRow
+  key="headers"
+>
+  <TableCell
+    key="bookmarked"
+    style={
+      Object {
+        "width": 48,
+      }
+    }
+  >
+    <IconButton
+      color="rbg(0,0,0,0.54)"
+      iconSize={24}
+      onClick={[Function]}
+    >
+      bookmark_border
+    </IconButton>
+  </TableCell>
+  <TableCell
+    key="name"
+    style={
+      Object {
+        "maxWidth": "unset",
+        "textAlign": "left",
+      }
+    }
+  >
+    <withStyles(TableSortLabel)
+      active={false}
+      direction="desc"
+    >
+      Name
+    </withStyles(TableSortLabel)>
+  </TableCell>
+  <TableCell
+    key="dateLastEdited"
+    style={
+      Object {
+        "maxWidth": 150,
+        "textAlign": "unset",
+        "width": 150,
+      }
+    }
+  >
+    <withStyles(TableSortLabel)
+      active={true}
+      direction="desc"
+    >
+      Date Last Edited
+    </withStyles(TableSortLabel)>
+  </TableCell>
+  <TableCell
+    key="lastEditedBy"
+    style={
+      Object {
+        "maxWidth": 150,
+        "textAlign": "unset",
+        "width": 150,
+      }
+    }
+  >
+    <withStyles(TableSortLabel)
+      active={false}
+      direction="desc"
+    >
+      Last Edited By
+    </withStyles(TableSortLabel)>
+  </TableCell>
+  <TableCell
+    key="protocol"
+  >
+    Protocol
+  </TableCell>
+  <TableCell
+    key="jurisdictions"
+  >
+    Jurisdictions
+  </TableCell>
+  <TableCell
+    key="codingScheme"
+  >
+    Coding Scheme
+  </TableCell>
+  <TableCell
+    key="code"
+    style={
+      Object {
+        "maxWidth": 40,
+      }
+    }
+  />
+  <TableCell
+    key="validate"
+    style={
+      Object {
+        "maxWidth": 40,
+      }
+    }
+  />
+  <TableCell
+    key="export"
+    style={
+      Object {
+        "maxWidth": 10,
+      }
+    }
+  >
+    Export
+  </TableCell>
+</TableRow>
+`;
