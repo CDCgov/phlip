@@ -45,11 +45,11 @@ const renderSuggestionsContainer = (options) => {
   )
 }
 
-const highlightLetters = (property, query) => {
+const highlightLetters = (property, query, index) => {
   const matches = match(property, query)
   const parts = parse(property, matches)
   return (
-    <Typography>
+    <Typography key={index}>
       {parts.map((part, index) => {
         return part.highlight
           ? (
@@ -67,13 +67,12 @@ const highlightLetters = (property, query) => {
 }
 
 const renderSuggestion = (suggestion, {query, isHighlighted}) => {
-  console.log(suggestion)
   return (
     <MenuItem selected={isHighlighted} component="div" dense>
-      {['name', 'dateLastEdited', 'lastEditedBy'].map(label => {
+      {['name', 'dateLastEdited', 'lastEditedBy'].map((label, index) => {
         return suggestion.matchedKeys.includes(label)
-          ? highlightLetters(suggestion[label], query)
-          : <Typography>{suggestion[label]}</Typography>
+          ? highlightLetters(suggestion[label], query, index)
+          : <Typography key={index}>{suggestion[label]}</Typography>
       })}
     </MenuItem>
   )

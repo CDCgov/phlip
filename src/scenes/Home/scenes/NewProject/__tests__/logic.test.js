@@ -5,7 +5,7 @@ import logic from '../logic'
 import * as types from '../../../actionTypes'
 import apiCalls, { api } from 'services/api'
 
-describe('Home -- NewProject logic', () => {
+describe('Home scene - NewProject logic', () => {
   let store
   let mock
   beforeEach(() => {

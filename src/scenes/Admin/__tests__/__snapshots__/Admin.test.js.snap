@@ -1,68 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Admin Scene it should render correctly 1`] = `
-<withStyles(GridWrapper)
-  container={true}
-  direction="column"
+<Container
+  column={true}
+  flex={true}
   spacing={0}
 >
   <PageHeader />
   <withStyles(Divider) />
   <UserList
-    users={
-      Array [
-        Array [
-          Object {
-            "email": "mta@cdc.gov",
-            "firstName": "Michael",
-            "id": 1,
-            "lastName": "Ta",
-            "password": "test",
-            "role": "Admin",
-          },
-          Object {
-            "email": "kmm@cdc.gov",
-            "firstName": "Kristin",
-            "id": 2,
-            "lastName": "Muterspaw",
-            "password": "test",
-            "role": "Coordinator",
-          },
-          Object {
-            "email": "jjames@cdc.gov",
-            "firstName": "Jason",
-            "id": 3,
-            "lastName": "James",
-            "password": "test",
-            "role": "Coordinator",
-          },
-          Object {
-            "email": "tsavel@cdc.gov",
-            "firstName": "Tom",
-            "id": 4,
-            "lastName": "Savel",
-            "password": "test",
-            "role": "Coder",
-          },
-          Object {
-            "email": "mpeck@cdc.gov",
-            "firstName": "Mary",
-            "id": 5,
-            "lastName": "Peck",
-            "password": "test",
-            "role": "Coder",
-          },
-          Object {
-            "email": "test@cdc.gov",
-            "firstName": "Test",
-            "id": 6,
-            "lastName": "User",
-            "password": "test",
-            "role": "Coordinator",
-          },
-        ],
-      ]
-    }
+    count={1}
+    handlePagechange={[Function]}
+    handleRequestSort={[Function]}
+    handleRowsChange={[Function]}
   />
   <Route
     component={[Function]}
@@ -72,5 +22,5 @@ exports[`Admin Scene it should render correctly 1`] = `
     component={[Function]}
     path="/admin/edit/user/:id"
   />
-</withStyles(GridWrapper)>
+</Container>
 `;

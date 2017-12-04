@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Home scene it should render correctly 1`] = `
+exports[`Home scene should render correctly 1`] = `
 <Container
   column={true}
   flex={true}
@@ -10,63 +10,26 @@ exports[`Home scene it should render correctly 1`] = `
     role="Coordinator"
   />
   <withStyles(Divider) />
-  <SearchBar />
+  <withStyles(SearchBar)
+    handleClearSuggestions={[Function]}
+    handleSearchValueChange={[Function]}
+    handleSuggestionRequest={[Function]}
+    searchValue=""
+    suggestions={Array []}
+  />
   <ProjectList
-    count={6}
-    direction="asc"
+    count={5}
+    direction="desc"
     handlePageChange={[Function]}
     handleRequestSort={[Function]}
     handleRowsChange={[Function]}
+    handleSortBookmarked={[Function]}
     handleToggleBookmark={[Function]}
     page={0}
-    projects={
-      Array [
-        Object {
-          "bookmarked": true,
-          "dateLastEdited": 2017-10-11T00:00:00.000Z,
-          "id": 1,
-          "lastEditedBy": "Kristin Muterspaw",
-          "name": "Project 1",
-        },
-        Object {
-          "bookmarked": false,
-          "dateLastEdited": 2017-10-11T00:00:00.000Z,
-          "id": 2,
-          "lastEditedBy": "Michael Ta",
-          "name": "Project 2",
-        },
-        Object {
-          "bookmarked": true,
-          "dateLastEdited": 2017-10-11T00:00:00.000Z,
-          "id": 3,
-          "lastEditedBy": "Sanjith David",
-          "name": "Project 3",
-        },
-        Object {
-          "bookmarked": true,
-          "dateLastEdited": 2017-10-11T00:00:00.000Z,
-          "id": 4,
-          "lastEditedBy": "Greg Ledbetter",
-          "name": "Project 4",
-        },
-        Object {
-          "bookmarked": false,
-          "dateLastEdited": 2017-10-11T00:00:00.000Z,
-          "id": 5,
-          "lastEditedBy": "Jason James",
-          "name": "Project 5",
-        },
-        Object {
-          "bookmarked": false,
-          "dateLastEdited": 2017-10-11T00:00:00.000Z,
-          "id": 6,
-          "lastEditedBy": "Hez Adedoyin",
-          "name": "Project 6",
-        },
-      ]
-    }
+    projects={Array []}
     rowsPerPage={10}
-    sortBy="name"
+    sortBookmarked={false}
+    sortBy="dateLastEdited"
     user={
       Object {
         "email": "kmuterspaw@cdc.gov",

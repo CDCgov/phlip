@@ -8,11 +8,11 @@ import TableCell from 'components/TableCell'
 
 const greyIcon = '#d4d4d4'
 
-export const ProjectTableBody = ({ projects, user, onToggleBookmark, onExport }) => {
+const ProjectTableBody = ({ projects, user, onToggleBookmark, onExport }) => {
   return (
     projects.map(project => (
       <TableRow key={project.id}>
-        <TableCell key={`${project.id}-bookmarked`} style={{ width: 48, paddingRight: 0, paddingLeft: 12 }}>
+        <TableCell key={`${project.id}-bookmarked`} style={{ width: 48 }}>
           <IconButton color={project.bookmarked ? '#fdc43b' : greyIcon} onClick={() => onToggleBookmark(project)}>
             {project.bookmarked ? 'bookmark' : 'bookmark_border'}
           </IconButton>
@@ -53,7 +53,7 @@ export const ProjectTableBody = ({ projects, user, onToggleBookmark, onExport })
         </TableCell>
         }
         <TableCell key={`${project.id}-export`} style={{ maxWidth: 10 }}>
-          <IconButton color={greyIcon} onClick={() => onExport}>file_download</IconButton>
+          <IconButton color={greyIcon} onClick={() => onExport()}>file_download</IconButton>
         </TableCell>
       </TableRow>
     ))

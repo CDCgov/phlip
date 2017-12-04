@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Home -- PageHeader component it should render correctly 1`] = `
+exports[`Home scene - PageHeader component should render correctly 1`] = `
 <Container
   alignItems="center"
   column={false}

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Home -- ProjectList component it should render correctly 1`] = `
+exports[`Home scene - ProjectList component should render correctly 1`] = `
 <Container
   column={false}
   flex={true}
@@ -27,12 +27,14 @@ exports[`Home -- ProjectList component it should render correctly 1`] = `
         <ProjectTableHead
           direction="asc"
           onRequestSort={[Function]}
+          onSortBookmarked={[Function]}
           role="Coordinator"
           sortBy="name"
         />
       </withStyles(TableHead)>
       <withStyles(TableBody)>
         <ProjectTableBody
+          onExport={[Function]}
           onToggleBookmark={[Function]}
           projects={
             Array [
@@ -80,6 +82,7 @@ exports[`Home -- ProjectList component it should render correctly 1`] = `
           <withStyles(TablePagination)
             count={2}
             onChangePage={[Function]}
+            onChangeRowsPerPage={[Function]}
             page={0}
             rowsPerPage={10}
           />

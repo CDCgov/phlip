@@ -18,7 +18,7 @@ const TableCell = ({ style, light, children, ...otherProps }) => {
 
 TableCell.propTypes = {
   style: PropTypes.object,
-  light: PropTypes.bool, 
+  light: PropTypes.bool,
   children: PropTypes.node
 }
 

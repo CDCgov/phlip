@@ -10,8 +10,8 @@ const props = {
   projects: []
 }
 
-describe('Home -- New Project scene', () => {
-  test('it should render correctly', () => {
+describe('Home scene - New Project scene', () => {
+  test('should render correctly', () => {
     expect(shallow(<NewProject {...props} />)).toMatchSnapshot()
   })
 })

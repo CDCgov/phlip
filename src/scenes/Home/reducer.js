@@ -2,10 +2,9 @@ import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import newProjectReducer from './scenes/NewProject/reducer'
 import { mockUsers } from 'data/mockUsers'
+import { sortList, updateById } from 'utils'
 
-let moreProjData = {
-  bookmarked: false, dateLastEdited: new Date()
-}
+const start = new Date(2017, 0, 1)
 
 const INITIAL_STATE = {
   projects: [],
@@ -14,8 +13,9 @@ const INITIAL_STATE = {
   rowsPerPage: 10,
   page: 0,
   visibleProjects: [],
-  sortBy: 'name',
-  direction: 'asc',
+  sortBy: 'dateLastEdited',
+  direction: 'desc',
+  sortBookmarked: false,
   errorContent: '',
   error: false
 }
@@ -23,39 +23,62 @@ const INITIAL_STATE = {
 // TODO: Just until the data model is complete
 const mockUpProject = (project) => {
   const user = mockUsers[Math.floor(Math.random() * mockUsers.length)]
-  return {...project, ...moreProjData, lastEditedBy: `${user.firstName} ${user.lastName}`}
+  return {
+    ...project,
+    dateLastEdited: new Date(start.getTime() + Math.random() * (new Date().getTime() - start.getTime())),
+    bookmarked: false,
+    lastEditedBy: `${user.firstName} ${user.lastName}`
+  }
 }
 
 const sliceProjects = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
-const sortProjects = (projects, sortBy, direction) => {
-  return (
-    direction === 'asc' ? projects.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1)) : projects.sort((a, b) => (b[sortBy] < a[sortBy] ? -1 : 1))
-  )
+const sortProjectsByBookmarked = (projects, sortBy, direction) => {
+  const bookmarked = sortList(projects.filter(project => project.bookmarked), sortBy, direction)
+  const nonBookmarked = sortList(projects.filter(project => !project.bookmarked), sortBy, direction)
+  return [...bookmarked, ...nonBookmarked]
 }
 
-const updateProjectById = (updatedProject, projectArr) => {
-  return projectArr.map(project => (project.id === updatedProject.id) ? updatedProject : project)
+const anyBookmarks = (projects) => projects.filter(project => project.bookmarked).length > 0
+
+const getProjectsAndVisibleProjects = (projects, sortBy, direction, page, rowsPerPage, sortBookmarked) => {
+  const sortedProjects = sortList(projects, sortBy, direction)
+  const baseResult = { projects: sortedProjects, visibleProjects: sliceProjects(sortedProjects, page, rowsPerPage) }
+  if (sortBookmarked) {
+    if (anyBookmarks(projects)) {
+      const sortedByBookmarked = sortProjectsByBookmarked(projects, sortBy, direction)
+      return { projects: sortedByBookmarked, visibleProjects: sliceProjects(sortedByBookmarked, page, rowsPerPage) }
+    } else {
+      return baseResult
+    }
+  }
+  return baseResult
 }
 
-function homeReducer (state = INITIAL_STATE, action) {
+function homeReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case types.GET_PROJECTS_SUCCESS:
-      const projects = sortProjects(action.payload.map(mockUpProject), state.sortBy, state.direction)
-      //const projects = sortProjects(action.payload, state.sortBy, state.direction)
       return {
-        ...state, projects, visibleProjects: sliceProjects(projects, state.page, state.rowsPerPage)
+        ...state,
+        error: false,
+        errorContent: '',
+        ...getProjectsAndVisibleProjects(
+          action.payload.map(mockUpProject), state.sortBy, state.direction, state.page, state.rowsPerPage, state.sortBookmarked
+          // action.payload, state.sortBy, state.direction, state.page, state.rowsPerPage, state.sortBookmarked
+        )
       }
 
     case types.UPDATE_SEARCH_VALUE:
       return {
-        ...state, searchValue: action.searchValue
+        ...state,
+        searchValue: action.searchValue
       }
 
     case types.UPDATE_SUGGESTIONS:
       const searchValue = action.search.value.trim().toLowerCase()
       return {
-        ...state, suggestions: searchValue.length === 0 ? [] : state.projects.map(project => {
+        ...state,
+        suggestions: searchValue.length === 0 ? [] : state.projects.map(project => {
           let newProject = {
             ...project, dateLastEdited: new Date(project.dateLastEdited).toLocaleDateString(), matchedKeys: []
           }
@@ -68,37 +91,44 @@ function homeReducer (state = INITIAL_STATE, action) {
           })
           return newProject
         }).filter(project => project.matchedKeys.length > 0)
-        //  return project.name.toLowerCase().slice(0, searchValue.length) === searchValue
-        //    || new Date(project.dateLastEdited).toLocaleDateString().slice(0, searchValue.length) ===
-        // searchValue || project.lastEditedBy.toLowerCase().includes(searchValue) })
       }
 
     case types.CLEAR_SUGGESTIONS:
       return {
-        ...state, suggestions: []
+        ...state,
+        suggestions: []
       }
 
     case types.TOGGLE_BOOKMARK:
       return {
         ...state,
-        projects: updateProjectById(action.project, [...state.projects]),
-        visibleProjects: updateProjectById(action.project, [...state.visibleProjects])
+        ...getProjectsAndVisibleProjects(
+          updateById(action.project, [...state.projects]), state.sortBy, state.direction, state.page, state.rowsPerPage, state.sortBookmarked
+        )
       }
 
     case types.UPDATE_PROJECT_SUCCESS:
       return {
         ...state,
-        projects: updateProjectById(action.payload, [...state.projects]),
-        visibleProjects: updateProjectById(action.payload, [...state.visibleProjects])
+        projects: updateById(action.payload, [...state.projects]),
+        visibleProjects: updateById(action.payload, [...state.visibleProjects])
       }
 
     case types.ADD_PROJECT_SUCCESS:
-      const updatedProjects = [mockUpProject(action.payload), // only here until the data model is complete
-        ...state.projects]
+      const mockedUpProject = mockUpProject(action.payload)
+      //const mockedUpProject = action.payload
+      const updated = getProjectsAndVisibleProjects(state.projects, 'dateLastEdited', 'desc', 0, state.rowsPerPage, false)
+      if ((updated.visibleProjects.length + 1) > state.rowsPerPage) {
+        updated.visibleProjects.pop()
+      }
       return {
         ...state,
-        projects: updatedProjects,
-        visibleProjects: sliceProjects(updatedProjects, state.page, state.rowsPerPage)
+        sortBy: 'dateLastEdited',
+        direction: 'desc',
+        sortBookmarked: false,
+        page: 0,
+        projects: [mockedUpProject, ...updated.projects],
+        visibleProjects: [mockedUpProject, ...updated.visibleProjects]
       }
 
     case types.UPDATE_ROWS:
@@ -115,13 +145,22 @@ function homeReducer (state = INITIAL_STATE, action) {
 
     case types.SORT_PROJECTS:
       const dir = state.direction === 'asc' ? 'desc' : 'asc'
-      const sorted = sortProjects(state.projects, action.sortBy, dir)
       return {
         ...state,
         sortBy: action.sortBy,
         direction: dir,
-        projects: sorted,
-        visibleProjects: sliceProjects(sorted, state.page, state.rowsPerPage)
+        ...getProjectsAndVisibleProjects(
+          state.projects, action.sortBy, dir, state.page, state.rowsPerPage, state.sortBookmarked
+        )
+      }
+
+    case types.SORT_BOOKMARKED:
+      return {
+        ...state,
+        sortBookmarked: !state.sortBookmarked,
+        ...getProjectsAndVisibleProjects(
+          state.projects, state.sortBy, state.direction, state.page, state.rowsPerPage, !state.sortBookmarked
+        )
       }
 
     case types.UPDATE_PROJECT_FAIL:

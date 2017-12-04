@@ -8,18 +8,20 @@ import ProjectTableBody from './components/ProjectTableBody'
 import ProjectTableHead from './components/ProjectTableHead'
 
 export const ProjectList = props => {
-  const { projects, user, page, rowsPerPage, count, sortBy, direction } = props
-  const { handleToggleBookmark, handlePageChange, handleRowsChange, handleRequestSort, handleExport } = props
+  const { projects, user, page, rowsPerPage, count, sortBy, direction, sortBookmarked } = props
+  const { handleToggleBookmark, handlePageChange, handleRowsChange, handleRequestSort, handleExport, handleSortBookmarked } = props
   return (
     <Container flex>
-      <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card />}>
+      <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card/>}>
         <Table style={{ borderCollapse: 'separate' }}>
           <TableHead>
             <ProjectTableHead
               role={user.role}
               sortBy={sortBy}
               direction={direction}
+              sortBookmarked={sortBookmarked}
               onRequestSort={handleRequestSort}
+              onSortBookmarked={handleSortBookmarked}
             />
           </TableHead>
           <TableBody>
@@ -31,7 +33,7 @@ export const ProjectList = props => {
             />
           </TableBody>
         </Table>
-        <div style={{ display: 'flex', flex: 1, paddingBottom: '50px' }} />
+        <div style={{ display: 'flex', flex: 1, paddingBottom: '50px' }}/>
         <Table>
           <TableFooter>
             <TableRow>
@@ -39,8 +41,8 @@ export const ProjectList = props => {
                 count={count}
                 rowsPerPage={rowsPerPage}
                 page={page}
-                onChangePage={handlePageChange}
-                onChangeRowsPerPage={handleRowsChange}
+                onChangePage={(event, page) => handlePageChange(page)}
+                onChangeRowsPerPage={(event) => handleRowsChange(event.target.value)}
               />
             </TableRow>
           </TableFooter>
@@ -58,11 +60,13 @@ ProjectList.propTypes = {
   count: PropTypes.number,
   sortBy: PropTypes.string,
   direction: PropTypes.oneOf(['asc', 'desc']),
+  sortBookmarked: PropTypes.bool,
   handleToggleBookmark: PropTypes.func,
   handleChangePage: PropTypes.func,
   handleRowsChange: PropTypes.func,
   handleRequestSort: PropTypes.func,
-  handleExport: PropTypes.func
+  handleExport: PropTypes.func,
+  handleSortBookmarked: PropTypes.func
 }
 
 export default ProjectList

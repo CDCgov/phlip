@@ -4,7 +4,9 @@ const chalk = require('chalk')
 const webpack = require('webpack')
 const Spinner = require('cli-spinner').Spinner
 const paths = require('../config/paths')
-const webpackConfig = require('../config/webpack.prod.config')()
+
+const env = require('../config/env')('production')
+const webpackConfig = require('../config/webpack.prod.config')(env)
 
 console.log(chalk.cyan(
   `\nThis command will build the webpack bundle/s. \

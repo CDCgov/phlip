@@ -17,3 +17,5 @@ export const updateRows = (rowsPerPage) => ({ type: types.UPDATE_ROWS, rowsPerPa
 export const updateSearchValue = (searchValue) => ({ type: types.UPDATE_SEARCH_VALUE, searchValue })
 export const updateSuggestions = (search) => ({ type: types.UPDATE_SUGGESTIONS, search })
 export const clearSuggestions = () => ({ type: types.CLEAR_SUGGESTIONS })
+
+export const sortBookmarked = () => ({ type: types.SORT_BOOKMARKED })
