@@ -13,17 +13,19 @@ const setup = props => {
 }
 
 describe('Home -- PageHeader component', () => {
-  test('it should render correctly', () => {
+  test('should render correctly', () => {
     expect(shallow(<PageHeader />)).toMatchSnapshot()
   })
 
-  test('+ Create New Project button be visible if role is Coordinator', () => {
-    let wrapper = setup({ role: 'Coordinator' })
-    expect(wrapper.find(Button)).toHaveLength(1)
-  })
+  describe('+ Create New Project button', () => {
+    test('should be visible is role is Coordinator', () => {
+      let wrapper = setup({ role: 'Coordinator' })
+      expect(wrapper.find(Button)).toHaveLength(1)
+    })
 
-  test('+ Create New Project button should not be visible if role is Coder', () => {
-    let wrapper = setup({ role: 'Coder' })
-    expect(wrapper.find(Button)).toHaveLength(0)
+    test('should be hidden if role is Coder', () => {
+      let wrapper = setup({ role: 'Coder' })
+      expect(wrapper.find(Button)).toHaveLength(0)
+    })
   })
 })

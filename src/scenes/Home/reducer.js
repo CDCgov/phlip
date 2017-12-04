@@ -2,7 +2,7 @@ import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import newProjectReducer from './scenes/NewProject/reducer'
 import { mockUsers } from 'data/mockUsers'
-import { sortList, updateById } from '../../utils'
+import { sortList, updateById } from 'utils'
 
 const start = new Date(2017, 0, 1)
 
@@ -36,14 +36,6 @@ const sortProjectsByBookmarked = (projects, sortBy, direction) => {
   const nonBookmarked = sortList(projects.filter(project => !project.bookmarked), sortBy, direction)
   return [...bookmarked, ...nonBookmarked]
 }
-
-// const updateById = (updatedProject, projectArr) => {
-//   return projectArr.map(project =>
-//     (project.id === updatedProject.id)
-//       ? updatedProject
-//       : project
-//   )
-// }
 
 const anyBookmarks = (projects) => projects.filter(project => project.bookmarked).length > 0
 
@@ -91,6 +83,7 @@ function homeReducer(state = INITIAL_STATE, action) {
 
     case types.ADD_PROJECT_SUCCESS:
       const mockedUpProject = mockUpProject(action.payload)
+      //const mockedUpProject = action.payload
       const updated = getProjectsAndVisibleProjects(state.projects, 'dateLastEdited', 'desc', 0, state.rowsPerPage, false)
       if ((updated.visibleProjects.length + 1) > state.rowsPerPage) {
         updated.visibleProjects.pop()

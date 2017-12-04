@@ -24,3 +24,8 @@ const props = {
 test('should render correctly', () => {
   expect(shallow(<ProjectTableBody {...props} />)).toMatchSnapshot()
 })
+
+xtest('should call onToggleBookmark', () => {
+  let wrapper = shallow(<ProjectTableBody {...props} />)
+  console.log(wrapper.dive().debug())
+})

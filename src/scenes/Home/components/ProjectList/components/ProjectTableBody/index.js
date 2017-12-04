@@ -53,7 +53,7 @@ const ProjectTableBody = ({ projects, user, onToggleBookmark, onExport }) => {
         </TableCell>
         }
         <TableCell key={`${project.id}-export`} style={{ maxWidth: 10 }}>
-          <IconButton color={greyIcon} onClick={() => onExport}>file_download</IconButton>
+          <IconButton color={greyIcon} onClick={() => onExport()}>file_download</IconButton>
         </TableCell>
       </TableRow>
     ))

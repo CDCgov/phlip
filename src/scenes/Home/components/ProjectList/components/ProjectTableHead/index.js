@@ -32,7 +32,7 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
           { sortBookmarked ? 'bookmark' : 'bookmark_border' }
         </IconButton>
       </TableCell>
-
+      
       {visible.map(c => (
         <TableCell key={c.key} style={c.style}>
           {c.hasSort ? (
