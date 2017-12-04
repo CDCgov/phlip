@@ -58,9 +58,9 @@ export class Home extends Component {
             sortBy={this.props.sortBy}
             direction={this.props.direction}
             sortBookmarked={this.props.sortBookmarked}
-            handleRequestSort={property => event => this.props.actions.sortProjects(property)}
-            handlePageChange={(event, page) => this.props.actions.updatePage(page)}
-            handleRowsChange={event => this.props.actions.updateRows(event.target.value)}
+            handleRequestSort={this.props.actions.sortProjects}
+            handlePageChange={this.props.actions.updatePage}
+            handleRowsChange={this.props.actions.updateRows}
             handleToggleBookmark={this.props.actions.toggleBookmark}
             handleSortBookmarked={this.props.actions.sortBookmarked}
           />
