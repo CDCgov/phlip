@@ -34,16 +34,16 @@ const props = {
 }
 
 const setup = otherProps => {
-  return mount(
+  return mount((
     <MemoryRouter>
       <MuiThemeProvider theme={theme}>
         <ProjectList {...props} {...otherProps} />
       </MuiThemeProvider>
     </MemoryRouter>
-  )
+  ))
 }
 
-describe('Home -- ProjectList component', () => {
+describe('Home scene - ProjectList component', () => {
   test('should render correctly', () => {
     expect(shallow(<ProjectList {...props} />)).toMatchSnapshot()
   })

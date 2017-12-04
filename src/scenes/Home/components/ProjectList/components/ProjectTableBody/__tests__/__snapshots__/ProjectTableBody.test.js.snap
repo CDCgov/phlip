@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should render correctly 1`] = `
+exports[`Home scene - ProjectList - ProjectTableBody component should render correctly 1`] = `
 Array [
   <TableRow
     key="1"

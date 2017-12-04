@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Home -- New Project scene should render correctly 1`] = `
+exports[`Home scene - New Project scene should render correctly 1`] = `
 <ModalForm
   actions={
     Array [

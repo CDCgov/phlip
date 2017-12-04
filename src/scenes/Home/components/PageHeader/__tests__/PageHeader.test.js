@@ -12,7 +12,7 @@ const setup = props => {
   )
 }
 
-describe('Home -- PageHeader component', () => {
+describe('Home scene - PageHeader component', () => {
   test('should render correctly', () => {
     expect(shallow(<PageHeader />)).toMatchSnapshot()
   })
