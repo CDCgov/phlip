@@ -2,29 +2,38 @@ import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import addEditUserReducer from './scenes/AddEditUser/reducer'
 import { mockUsers } from '../../data/mockUsers'
-import sortList from '../../utils/sortList'
+import { sortList, updateById } from '../../utils'
 
 const INITIAL_STATE = {
   users: [],
   rowsPerPage: 10,
   page: 0,
-  sortBy: 'name',
-  direction: 'asc'
+  sortBy: 'lastName',
+  direction: 'asc',
+  visibleUsers: []
 }
 
 const randomId = Math.random(2) //TODO: Temporary for mocks
 
+const sliceUsers = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+
+const getAvailableUsers = (users, sortBy, direction, page, rowsPerPage) => {
+  const sortedUsers = sortList(users, sortBy, direction)
+  const result = { users: sortedUsers, visibleUsers: sliceUsers(sortedUsers, page, rowsPerPage) }
+  return result
+}
+
 
 function adminReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case types.GET_USERS_REQUEST:
-      return state
 
     case types.GET_USERS_SUCCESS:
       return {
         ...state,
-        // users: action.payload
-        users: mockUsers
+        ...getAvailableUsers(
+          mockUsers, state.sortBy, state.direction, state.page, state.rowsPerPage
+          // action.payload, state.sortBy, state.direction, state.page, state.rowsPerPage
+        )
       }
 
     case types.ADD_USER_SUCCESS:
@@ -42,22 +51,35 @@ function adminReducer(state = INITIAL_STATE, action) {
     case types.UPDATE_USER_SUCCESS:
       return {
         ...state,
-        users: state.users.map(user =>
-          (user.id === action.payload.id)
-            ? action.payload
-            : user
-        )
+        users: updateById(action.payload, [...state.users]),
+        visibleUsers: updateById(action.payload, [...state.visibleUsers])
       }
 
     case types.SORT_USERS:
       const direction = state.direction === 'asc' ? 'desc' : 'asc'
-      const sorted = sortList(state.users, action.sortBy, direction)
       return {
         ...state,
         sortBy: action.sortBy,
         direction: direction,
-        users: sorted
+        ...getAvailableUsers(
+          state.users, action.sortBy, direction, state.page, state.rowsPerPage
+        )
       }
+
+    case types.UPDATE_USER_ROWS:
+      return {
+        ...state,
+        rowsPerPage: action.rowsPerPage,
+        visibleUsers: sliceUsers(state.users, state.page, action.rowsPerPage)
+      }
+
+    case types.UPDATE_USER_PAGE:
+      return {
+        ...state,
+        page: action.page,
+        visibleUsers: sliceUsers(state.users, action.page, state.rowsPerPage)
+      }
+    case types.GET_USERS_REQUEST:
     default:
       return state
   }

@@ -8,8 +8,8 @@ import UserTableBody from './components/UserTableBody'
 import UserTableHead from './components/UserTableHead'
 
 export const UserList = props => {
-  const { users, page, rowsPerPage, sortBy, direction } = props
-  const { handleRequestSort } = props
+  const { users, page, rowsPerPage, sortBy, direction, count } = props
+  const { handleRequestSort, handlePageChange, handleRowsChange } = props
   return (
     <Container flex>
       <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card />}>
@@ -25,6 +25,19 @@ export const UserList = props => {
             <UserTableBody users={users} />
           </TableBody>
         </Table>
+        {/* <div style={{ display: 'flex', flex: 1, paddingBottom: '50px' }} />
+        <Table>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                count={count}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handlePageChange}
+                onChangeRowsPerPage={handleRowsChange} />
+            </TableRow>
+          </TableFooter>
+        </Table> */}
       </Column>
     </Container>
   )

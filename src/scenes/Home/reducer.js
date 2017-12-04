@@ -2,7 +2,7 @@ import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import newProjectReducer from './scenes/NewProject/reducer'
 import { mockUsers } from 'data/mockUsers'
-import sortList from '../../utils/sortList'
+import { sortList, updateById } from '../../utils'
 
 const start = new Date(2017, 0, 1)
 
@@ -37,13 +37,13 @@ const sortProjectsByBookmarked = (projects, sortBy, direction) => {
   return [...bookmarked, ...nonBookmarked]
 }
 
-const updateProjectById = (updatedProject, projectArr) => {
-  return projectArr.map(project =>
-    (project.id === updatedProject.id)
-      ? updatedProject
-      : project
-  )
-}
+// const updateById = (updatedProject, projectArr) => {
+//   return projectArr.map(project =>
+//     (project.id === updatedProject.id)
+//       ? updatedProject
+//       : project
+//   )
+// }
 
 const anyBookmarks = (projects) => projects.filter(project => project.bookmarked).length > 0
 
@@ -78,15 +78,15 @@ function homeReducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         ...getProjectsAndVisibleProjects(
-          updateProjectById(action.project, [...state.projects]), state.sortBy, state.direction, state.page, state.rowsPerPage, state.sortBookmarked
+          updateById(action.project, [...state.projects]), state.sortBy, state.direction, state.page, state.rowsPerPage, state.sortBookmarked
         )
       }
 
     case types.UPDATE_PROJECT_SUCCESS:
       return {
         ...state,
-        projects: updateProjectById(action.payload, [...state.projects]),
-        visibleProjects: updateProjectById(action.payload, [...state.visibleProjects])
+        projects: updateById(action.payload, [...state.projects]),
+        visibleProjects: updateById(action.payload, [...state.visibleProjects])
       }
 
     case types.ADD_PROJECT_SUCCESS:
