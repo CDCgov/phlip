@@ -52,7 +52,7 @@ const classes = theme => ({
   },
   sectionContainer: {
     margin: '0 10px',
-    borderBottom: `1px dashed ${theme.palette.primary['600']}`,
+    borderBottom: `1px dashed ${theme.palette.primary[ '600' ]}`,
   }
 })
 
@@ -66,33 +66,35 @@ const renderSuggestionsContainer = (options) => {
   )
 }
 
-const highlightLetters = (property, query, label) => {
+const highlightLetters = (property, query) => {
   const matches = match(property, query)
   const parts = parse(property, matches)
-  return (
-    <Typography type="caption" style={{ fontSize: '.75rem' }}>
-      <span>{label}:   </span>
-      {parts.map((part, index) => {
-        return part.highlight
-          ? (
-            <span key={index} style={{ fontWeight: 300 }}>
-              {part.text}
-            </span>
-          ) : (
-            <span key={index} style={{ fontWeight: 700 }}>
-              {part.text}
-            </span>
-          )
-      })}
-    </Typography>
-  )
+  return parts.map((part, index) => (
+    <span key={index} style={{ fontWeight: part.highlight ? 300 : 700 }}>{part.text}</span>
+  ))
 }
 
 const renderSuggestion = (suggestion, { query, isHighlighted }) => {
+  const matched = [ ...suggestion.matchedKeys ]
+  const highlightedStyles = {
+    cursor: 'pointer',
+    backgroundColor: 'rgba(0, 0, 0, 0.12)',
+    padding: '5px 10px 5px 10px'
+  }
+
   return (
-    <MenuItem selected={isHighlighted} component="div" dense>
-      {highlightLetters(suggestion.value, query, suggestionLabels[suggestion.key])}
-    </MenuItem>
+    <div style={isHighlighted ? {...highlightedStyles} : {padding: '5px 10px 5px 10px'}}>
+      {Object.keys(suggestion).map((key, index) => (
+        ['matchedKeys','name'].includes(key)
+          ? ''
+          : <Typography component="div" key={`${index}-${key}`} type="caption" style={{ fontSize: '.75rem', paddingBottom: '4px' }}>
+              <span>{suggestionLabels[ key ]}:   </span>
+              {matched.includes(key)
+                ? highlightLetters(suggestion[key], query)
+                : <span>{suggestion[key]}</span>}
+            </Typography>
+      ))}
+    </div>
   )
 }
 
@@ -131,7 +133,6 @@ const SearchBar = ({ classes, suggestions, searchValue, handleClearSuggestions, 
               onChange: handleSearchValueChange,
               disableUnderline: true,
               id: 'search-bar',
-              type: 'search'
             }}
             suggestions={suggestions}
             onSuggestionsFetchRequested={handleSuggestionRequest}

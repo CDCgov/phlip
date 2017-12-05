@@ -43,11 +43,17 @@ const anyBookmarks = (projects) => projects.filter(project => project.bookmarked
 
 const searchForMatches = (project, searchValue) => {
   let matches = []
+  let p = { matchedKeys: [] }
   Object.keys(project).forEach(key => {
     if (['name', 'dateLastEdited', 'lastEditedBy'].includes(key)) {
-      project[key].toLowerCase().includes(searchValue) && matches.push({ key, value: project[key] })
+      p[key] = project[key]
+      project[key].toLowerCase().includes(searchValue) && p.matchedKeys.push(key)
     }
   })
+
+  if (p.matchedKeys.length > 0) {
+    matches.push(p)
+  }
   return matches
 }
 
