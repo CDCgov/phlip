@@ -26,11 +26,11 @@ export default {
   },
 
   getProjects() {
-    return api.get('/project').then(res => res.data)
+    return api.get('/projects').then(res => res.data)
   },
 
   addProject(project) {
-    return api.post('/project', project).then(res => res.data)
+    return api.post('/projects', project).then(res => res.data)
   },
 
   updateProject(project) {
