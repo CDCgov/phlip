@@ -41,6 +41,16 @@ const sortProjectsByBookmarked = (projects, sortBy, direction) => {
 
 const anyBookmarks = (projects) => projects.filter(project => project.bookmarked).length > 0
 
+const searchForMatches = (project, searchValue) => {
+  let matches = []
+  Object.keys(project).forEach(key => {
+    if (['name', 'dateLastEdited', 'lastEditedBy'].includes(key)) {
+      project[key].toLowerCase().includes(searchValue) && matches.push({ key, value: project[key] })
+    }
+  })
+  return matches
+}
+
 const getProjectsAndVisibleProjects = (projects, sortBy, direction, page, rowsPerPage, sortBookmarked) => {
   const sortedProjects = sortList(projects, sortBy, direction)
   const baseResult = { projects: sortedProjects, visibleProjects: sliceProjects(sortedProjects, page, rowsPerPage) }
@@ -78,19 +88,16 @@ function homeReducer(state = INITIAL_STATE, action) {
       const searchValue = action.search.value.trim().toLowerCase()
       return {
         ...state,
-        suggestions: searchValue.length === 0 ? [] : state.projects.map(project => {
-          let newProject = {
-            ...project, dateLastEdited: new Date(project.dateLastEdited).toLocaleDateString(), matchedKeys: []
-          }
-          Object.keys(newProject).forEach(key => {
-            if (['name', 'dateLastEdited', 'lastEditedBy'].includes(key)) {
-              if (newProject[key].toLowerCase().includes(searchValue)) {
-                newProject.matchedKeys.push(key)
-              }
-            }
-          })
-          return newProject
-        }).filter(project => project.matchedKeys.length > 0)
+        suggestions: searchValue.length === 0
+          ? []
+          : state.projects.map(project => ({
+              title: project.name,
+              matches: searchForMatches({
+                ...project,
+                dateLastEdited: new Date(project.dateLastEdited).toLocaleDateString()
+              }, searchValue)
+            })
+          ).filter(project => project.matches.length > 0)
       }
 
     case types.CLEAR_SUGGESTIONS:
