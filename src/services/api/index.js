@@ -15,22 +15,22 @@ export const api = axios.create({
 
 export default {
   login(user) {
-    return api.post('/login', user).then(res => {
+    //return api.post('/login', user).then(res => {
       login(mockToken)
       // login(user.token)
       console.log(mockUsers[mockUsers.map(x => x.email).indexOf(user.email)])
       return mockUsers[mockUsers.map(x => x.email).indexOf(user.email)]
       // return res.data
-    })
+   // })
 
   },
 
   getProjects() {
-    return api.get('/projects').then(res => res.data)
+    return api.get('/project').then(res => res.data)
   },
 
   addProject(project) {
-    return api.post('/projects', project).then(res => res.data)
+    return api.post('/project', project).then(res => res.data)
   },
 
   updateProject(project) {
