@@ -9,7 +9,7 @@ import CardError from 'components/CardError'
 import Container from 'components/Layout'
 import PageHeader from './components/PageHeader'
 import ProjectList from './components/ProjectList'
-import SearchBar from './components/SearchBar'
+import SearchBar from 'components/SearchBar'
 import NewProject from './scenes/NewProject'
 import * as actions from './actions'
 
@@ -50,10 +50,7 @@ export class Home extends Component {
         <Divider />
         <SearchBar
           searchValue={this.props.searchValue}
-          suggestions={this.props.suggestions}
           handleSearchValueChange={event => this.props.actions.updateSearchValue(event.target.value)}
-          handleClearSuggestions={this.props.actions.clearSuggestions}
-          handleSuggestionRequest={value => this.props.actions.updateSuggestions(value)}
         />
         {this.props.error
           ? this.renderErrorMessage()
