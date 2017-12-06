@@ -33,19 +33,21 @@ export class NewProject extends Component {
       {
         type: 'Assessment',
         ...values,
-        name: values.name.trim()[0].toUpperCase() + values.name.trim().slice(1)
+        name: this.capitalizeFirstLetter(values.name)
       }
     )
     this.props.history.goBack()
   }
 
+  capitalizeFirstLetter = text => text.trim()[0].toUpperCase() + text.trim().slice(1)
+
   // The function passed to asyncValidate for reduxForm has to return a promise, so that's why
   // there's the sleep function in there.
   validateProjectName = values => {
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
-    const names = this.props.projects.map(project => project.name)
+    const names = this.props.projects.map(project => project.name.toLowerCase())
     return sleep(1).then(() => {
-      if (names.includes(values.name)) {
+      if (names.includes(values.name.toLowerCase())) {
         throw { name: 'There is already a project with this name.' }
       }
     })
