@@ -20,7 +20,7 @@ describe('Admin Logic', () => {
     })
   })
 
-  test('should get user list and dispatch GET_USERS_SUCCESS when done', (done) => {
+  xtest('should get user list and dispatch GET_USERS_SUCCESS when done', (done) => {
     mock.onGet('/users').reply(200, [
       { id: 1, firstName: 'Test' },
       { id: 2, firstName: 'Michael' }

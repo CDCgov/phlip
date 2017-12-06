@@ -62,18 +62,20 @@ const updateAllArrays = (state, updated) => {
 
 const getProjectArrays = (state) => {
   const { projects, sortBy, direction, matches, page, rowsPerPage, sortBookmarked, searchValue } = state
-  const currentList = matches.length > 0 ? matches : projects
+  let currentList = [...projects]
 
   if (searchValue.length > 0) {
     if (matches.length === 0) {
       return { projects, visibleProjects: [], projectCount: 0, matches: [] }
+    } else {
+      currentList = [...matches]
     }
   }
 
   const sortedProjects = sortList(currentList, sortBy, direction)
   const baseResult = {
     projects: sortList(projects, sortBy, direction),
-    matches: sortList(matches, sortBy, direction),
+    matches: searchValue.length === 0 ? [] : sortList(matches, sortBy, direction),
     visibleProjects: sliceProjects(sortedProjects, page, rowsPerPage),
     projectCount: sortedProjects.length
   }
@@ -83,7 +85,7 @@ const getProjectArrays = (state) => {
       const sortedByBookmarked = sortProjectsByBookmarked(currentList, sortBy, direction)
       return {
         projects: sortProjectsByBookmarked(projects, sortBy, direction),
-        matches: sortProjectsByBookmarked(matches, sortBy, direction),
+        matches: searchValue.length === 0 ? [] : sortProjectsByBookmarked(matches, sortBy, direction),
         visibleProjects: sliceProjects(sortedByBookmarked, page, rowsPerPage),
         projectCount: sortedByBookmarked.length
       }
@@ -112,7 +114,7 @@ function homeReducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         searchValue: action.searchValue,
-        ...getProjectArrays({ ...state, searchValue, matches, searchValue })
+        ...getProjectArrays({ ...state, matches, searchValue })
       }
 
     case types.TOGGLE_BOOKMARK:
