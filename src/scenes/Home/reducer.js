@@ -25,7 +25,7 @@ const mockUpProject = (project) => {
     ...project,
     dateLastEdited: new Date(start.getTime() + Math.random() * (new Date().getTime() - start.getTime())),
     bookmarked: false,
-    lastEditedBy: `${user.firstName} ${user.lastName}`
+    lastEditedBy: `${user.firstName} ${user.lastName}`,
   }
 }
 
@@ -82,7 +82,7 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
     case types.ADD_PROJECT_SUCCESS:
-      const mockedUpProject = mockUpProject(action.payload)
+      const mockedUpProject = { ...mockUpProject(action.payload), dateLastEdited: new Date() }
       //const mockedUpProject = action.payload
       const updated = getProjectsAndVisibleProjects(state.projects, 'dateLastEdited', 'desc', 0, state.rowsPerPage, false)
       if ((updated.visibleProjects.length + 1) > state.rowsPerPage) {
@@ -135,8 +135,8 @@ function homeReducer(state = INITIAL_STATE, action) {
     case types.UPDATE_PROJECT_FAIL:
       return {
         ...state,
-        errorContent: 'We failed to update that project. Please try again later.',
-        error: true
+        //errorContent: 'We failed to update that project. Please try again later.',
+        //error: true
       }
 
     case types.GET_PROJECTS_FAIL:

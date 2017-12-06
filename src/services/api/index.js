@@ -34,7 +34,7 @@ export default {
   },
 
   updateProject(project) {
-    return api.put(`/project/${project.id}`).then(res => res.data)
+    return api.put(`/projects/${project.id}`, project).then(res => res.data)
   },
 
   getUsers() {
