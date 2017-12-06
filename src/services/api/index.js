@@ -17,11 +17,11 @@ export const api = axios.create({
 export default {
   login(user) {
     //return api.post('/login', user).then(res => {
-      login(mockToken) //TODO: temporary
-      // login(user.token)
-      return mockUsers[mockUsers.map(x => x.email).indexOf(user.email)] //TODO: temporary
-      // return res.data
-   // })
+    login(mockToken) //TODO: temporary
+    // login(user.token)
+    return mockUsers[mockUsers.map(x => x.email).indexOf(user.email)] //TODO: temporary
+    // return res.data
+    // })
   },
 
   getProjects() {

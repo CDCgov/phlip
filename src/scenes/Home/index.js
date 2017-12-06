@@ -23,7 +23,6 @@ export class Home extends Component {
     rowsPerPage: PropTypes.number,
     sortBy: PropTypes.string,
     direction: PropTypes.string,
-    suggestions: PropTypes.array,
     searchValue: PropTypes.string,
     error: PropTypes.bool,
     errorContent: PropTypes.string
@@ -57,7 +56,7 @@ export class Home extends Component {
           : <ProjectList
             user={this.props.user}
             projects={this.props.visibleProjects}
-            count={this.props.projects.length}
+            count={this.props.projectCount}
             page={this.props.page}
             rowsPerPage={this.props.rowsPerPage}
             sortBy={this.props.sortBy}
@@ -86,11 +85,11 @@ const mapStateToProps = (state) => ({
   rowsPerPage: state.scenes.home.main.rowsPerPage,
   sortBy: state.scenes.home.main.sortBy,
   direction: state.scenes.home.main.direction,
-  suggestions: state.scenes.home.main.suggestions || [],
   searchValue: state.scenes.home.main.searchValue || '',
   sortBookmarked: state.scenes.home.main.sortBookmarked,
   error: state.scenes.home.main.error,
-  errorContent: state.scenes.home.main.errorContent
+  errorContent: state.scenes.home.main.errorContent,
+  projectCount: state.scenes.home.main.projectCount || 0
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

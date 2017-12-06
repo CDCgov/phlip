@@ -17,8 +17,6 @@ const props = {
     toggleBookmark: jest.fn(),
     sortBookmarked: jest.fn(),
     updateSearchValue: jest.fn(),
-    updateSuggestions: jest.fn(),
-    clearSuggestions: jest.fn()
   },
   user: {
     id: 2,
@@ -37,7 +35,6 @@ const props = {
   direction: 'desc',
   page: 0,
   rowsPerPage: 10,
-  suggestions: [],
   searchValue: ''
 }
 

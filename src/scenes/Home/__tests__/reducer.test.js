@@ -52,6 +52,8 @@ const initial = {
     projects: [],
     rowsPerPage: 10,
     page: 0,
+    projectCount: 0,
+    matches: [],
     visibleProjects: [],
     sortBy: 'dateLastEdited',
     direction: 'desc',
@@ -59,7 +61,6 @@ const initial = {
     error: false,
     errorContent: '',
     searchValue: '',
-    suggestions: []
   },
   newProject: {}
 }
@@ -114,7 +115,8 @@ describe('Home reducer', () => {
             ...initial.main,
             projects: expectedResults,
             visibleProjects: expectedResults,
-            sortBookmarked: true
+            sortBookmarked: true,
+            projectCount: 5
           }
         }
       )
@@ -142,7 +144,7 @@ describe('Home reducer', () => {
             }
           }, {
             type: types.TOGGLE_BOOKMARK,
-            project: updatedProject
+            project: updatedProject,
           })
       ).toEqual(
         {
@@ -151,7 +153,8 @@ describe('Home reducer', () => {
             ...initial.main,
             projects: expectedResults,
             visibleProjects: expectedResults,
-            sortBookmarked: true
+            sortBookmarked: true,
+            projectCount: 5
           }
         }
       )
@@ -186,7 +189,8 @@ describe('Home reducer', () => {
           main: {
             ...initial.main,
             projects: expectedResults,
-            visibleProjects: expectedResults
+            visibleProjects: expectedResults,
+            projectCount: 5
           }
         }
       )
@@ -309,7 +313,8 @@ describe('Home reducer', () => {
         ...initial.main,
         projects,
         visibleProjects: [{ id: 12345, name: 'aaa' }],
-        rowsPerPage: 1
+        rowsPerPage: 1,
+        projectCount: 2
       }
     })
   })
@@ -329,7 +334,8 @@ describe('Home reducer', () => {
         projects,
         visibleProjects: [{ id: 67890, name: 'bbb' }],
         rowsPerPage: 1,
-        page: 1
+        page: 1,
+        projectCount: 2
       }
     })
   })
@@ -356,7 +362,8 @@ describe('Home reducer', () => {
           projects: projects.reverse(),
           visibleProjects: projects.reverse(),
           direction: 'asc',
-          sortBy: 'name'
+          sortBy: 'name',
+          projectCount: 5
         }
       })
     })
@@ -382,7 +389,8 @@ describe('Home reducer', () => {
           projects,
           visibleProjects: projects,
           direction: 'desc',
-          sortBy: 'name'
+          sortBy: 'name',
+          projectCount: 5
         }
       })
     })
@@ -409,7 +417,8 @@ describe('Home reducer', () => {
           projects: defaultSortedProjects.reverse(),
           visibleProjects: defaultSortedProjects.reverse(),
           direction: 'asc',
-          sortBy: 'dateLastEdited'
+          sortBy: 'dateLastEdited',
+          projectCount: 5
         }
       })
     })
@@ -436,7 +445,8 @@ describe('Home reducer', () => {
           projects: defaultSortedProjects,
           visibleProjects: defaultSortedProjects,
           direction: 'desc',
-          sortBy: 'dateLastEdited'
+          sortBy: 'dateLastEdited',
+          projectCount: 5
         }
       })
     })
@@ -463,7 +473,8 @@ describe('Home reducer', () => {
           projects: sortedByUser.reverse(),
           visibleProjects: sortedByUser.reverse(),
           direction: 'asc',
-          sortBy: 'lastEditedBy'
+          sortBy: 'lastEditedBy',
+          projectCount: 5
         }
       })
     })
@@ -490,7 +501,8 @@ describe('Home reducer', () => {
           projects: sortedByUser,
           visibleProjects: sortedByUser,
           direction: 'desc',
-          sortBy: 'lastEditedBy'
+          sortBy: 'lastEditedBy',
+          projectCount: 5
         }
       })
     })
@@ -509,7 +521,8 @@ describe('Home reducer', () => {
           ...initial.main,
           projects: sortedByDateAndBookmarked,
           visibleProjects: sortedByDateAndBookmarked,
-          sortBookmarked: true
+          sortBookmarked: true,
+          projectCount: 5
         }
       })
     })
@@ -526,7 +539,8 @@ describe('Home reducer', () => {
           ...initial.main,
           projects: noBookmarks,
           visibleProjects: noBookmarks,
-          sortBookmarked: true
+          sortBookmarked: true,
+          projectCount: 3
         }
       })
     })
@@ -543,7 +557,8 @@ describe('Home reducer', () => {
           ...initial.main,
           projects,
           visibleProjects: projects,
-          sortBookmarked: false
+          sortBookmarked: false,
+          projectCount: 5
         }
       })
     })

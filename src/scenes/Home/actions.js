@@ -14,8 +14,8 @@ export const sortProjects = (sortBy) => ({ type: types.SORT_PROJECTS, sortBy })
 export const updatePage = (page) => ({ type: types.UPDATE_PAGE, page })
 export const updateRows = (rowsPerPage) => ({ type: types.UPDATE_ROWS, rowsPerPage })
 
+export const updateProjectsList = () => ({ type: 'UPDATE_PROJECTS_LIST' })
+
 export const updateSearchValue = (searchValue) => ({ type: types.UPDATE_SEARCH_VALUE, searchValue })
-export const updateSuggestions = (search) => ({ type: types.UPDATE_SUGGESTIONS, search })
-export const clearSuggestions = () => ({ type: types.CLEAR_SUGGESTIONS })
 
 export const sortBookmarked = () => ({ type: types.SORT_BOOKMARKED })
