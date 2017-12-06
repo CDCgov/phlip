@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { login } from '../authToken'
 import { mockUsers } from '../../data/mockUsers'
+import { updateById } from 'utils'
 
 const isLoggedIn = () => true
 const getToken = () => '1234546'
@@ -16,13 +17,11 @@ export const api = axios.create({
 export default {
   login(user) {
     //return api.post('/login', user).then(res => {
-      login(mockToken)
+      login(mockToken) //TODO: temporary
       // login(user.token)
-      console.log(mockUsers[mockUsers.map(x => x.email).indexOf(user.email)])
-      return mockUsers[mockUsers.map(x => x.email).indexOf(user.email)]
+      return mockUsers[mockUsers.map(x => x.email).indexOf(user.email)] //TODO: temporary
       // return res.data
    // })
-
   },
 
   getProjects() {
@@ -38,17 +37,18 @@ export default {
   },
 
   getUsers() {
-    return api.get('/users').then(res => res.data)
+    //return api.get('/users').then(res => res.data)
+    return mockUsers //TODO: temporary
   },
 
   addUser(user) {
-    // return api.post('/users', user).then(res => res.data)
-    return api.post('/users', user).then(res => user)  //TODO: temporary
+    //return api.post('/users', user).then(res => user)
+    return user //TODO: temporary
   },
 
   updateUser(user) {
-    // return api.put(`/user/${user.id}`).then(res => res.data)
-    return api.put(`/user/${user.id}`).then(res => user)  //TODO: temporary
+    return api.put(`/user/${user.id}`).then(res => user)
+    //return updateById(user, mockUsers) //TODO: temporary
   }
 }
 
