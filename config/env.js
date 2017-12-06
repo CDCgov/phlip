@@ -11,7 +11,7 @@ module.exports = function getEnvVariables(nodeEnv) {
     }, {})
 
   env = { ...env, 'process.env.NODE_ENV': JSON.stringify(`${nodeEnv}`) }
-  if (!env.APP_API_URL) { env.APP_API_URL = JSON.stringify('http://0.0.0.0:5000/api') }
+  if (!env.APP_API_URL) { env.APP_API_URL = JSON.stringify('http://0.0.0.0:80/api') }
 
   return env
 }

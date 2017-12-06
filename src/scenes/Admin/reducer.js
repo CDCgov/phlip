@@ -23,7 +23,6 @@ const getAvailableUsers = (users, sortBy, direction, page, rowsPerPage) => {
   return result
 }
 
-
 function adminReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
 
@@ -37,14 +36,16 @@ function adminReducer(state = INITIAL_STATE, action) {
       }
 
     case types.ADD_USER_SUCCESS:
+      const mockupUser = { ...action.payload, id: randomId }
       return {
         ...state,
         users: [
-          ...state.users,
-          {
-            ...action.payload,
-            id: randomId //TODO: Temporary for mocks
-          }
+          mockupUser,
+          ...state.users
+        ],
+        visibleUsers: [
+          mockupUser,
+          ...state.visibleUsers
         ]
       }
 

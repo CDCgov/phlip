@@ -1,7 +1,6 @@
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 
-
 export const addUserLogic = createLogic({
   type: types.ADD_USER_REQUEST,
   latest: true,

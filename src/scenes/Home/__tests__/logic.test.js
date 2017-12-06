@@ -47,10 +47,10 @@ describe('Home logic', () => {
     })
   })
 
-  test('should put an updated project and dispatch UPDATE_PROJECT_SUCCESS when successful', (done) => {
+  test('should put an updated project when TOGGLE_BOOKMARK action is dispatched and dispatch UPDATE_PROJECT_SUCCESS when successful', (done) => {
     const project = { id: 12345, name: 'Project 1', bookmarked: false }
     const expectedProject = { ...project, bookmarked: true }
-    mock.onPut('/project/12345').reply(200, expectedProject)
+    mock.onPut('/projects/12345').reply(200, expectedProject)
     store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
     store.whenComplete(() => {
       expect(store.actions).toEqual([
@@ -64,10 +64,9 @@ describe('Home logic', () => {
   test('should put an updated project and dispatch UPDATE_PROJECT_SUCCESS when successful', (done) => {
     let project = {
       id: 12345,
-      name: 'Updated Project',
-      isCompleted: false
+      name: 'Updated Project'
     }
-    mock.onPut('/project/12345').reply(200, project)
+    mock.onPut('/projects/12345').reply(200, project)
     store.dispatch({ type: types.UPDATE_PROJECT_REQUEST, project })
     store.whenComplete(() => {
       expect(store.actions).toEqual([
