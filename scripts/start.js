@@ -27,9 +27,9 @@ const compiler = webpack(webpackConfig)
 const devServer = new WebpackDevServer(compiler, config)
 
 // Launch WebpackDevServer
-devServer.listen(3000, '0.0.0.0', err => {
+devServer.listen(5200, '0.0.0.0', err => {
   if (err) {
     return console.log(err)
   }
-  console.log(chalk.cyan('Starting the development server on 0.0.0.0:3000...'))
+  console.log(chalk.cyan('Starting the development server on 0.0.0.0:5200...'))
 })
