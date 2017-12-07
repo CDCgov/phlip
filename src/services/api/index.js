@@ -8,7 +8,7 @@ const getToken = () => '1234546'
 const mockToken = 'j4r98cm9rshsohxe8hskdfijd'
 
 export const api = axios.create({
-  baseURL: APP_API_URL,
+  baseURL: '/api',
   headers: {
     ...(isLoggedIn() ? { Authorization: `Bearer ${getToken()}` } : {})
   }

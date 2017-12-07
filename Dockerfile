@@ -10,5 +10,3 @@ COPY . .
 RUN npm install --no-optional
 
 CMD npm run start:local
-
-EXPOSE 3000
