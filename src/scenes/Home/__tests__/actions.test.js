@@ -104,4 +104,8 @@ describe('Home actions creators', () => {
   test('should create an action to toggle sort by bookmarked', () => {
     expect(actions.sortBookmarked()).toEqual({ type: types.SORT_BOOKMARKED })
   })
+
+  test('should create an action to update search value', () => {
+    expect(actions.updateSearchValue('la')).toEqual({ type: types.UPDATE_SEARCH_VALUE, searchValue: 'la' })
+  })
 })

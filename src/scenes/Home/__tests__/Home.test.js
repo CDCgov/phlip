@@ -15,7 +15,8 @@ const props = {
     updatePage: jest.fn(),
     updateRows: jest.fn(),
     toggleBookmark: jest.fn(),
-    sortBookmarked: jest.fn()
+    sortBookmarked: jest.fn(),
+    updateSearchValue: jest.fn(),
   },
   user: {
     id: 2,
@@ -33,7 +34,8 @@ const props = {
   sortBy: 'dateLastEdited',
   direction: 'desc',
   page: 0,
-  rowsPerPage: 10
+  rowsPerPage: 10,
+  searchValue: ''
 }
 
 const setup = otherProps => {
