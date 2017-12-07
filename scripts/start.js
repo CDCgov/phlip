@@ -14,11 +14,17 @@ const config = {
   host: '0.0.0.0',
   publicPath: paths.publicPath,
   overlay: false,
-  historyApiFallback: true
+  historyApiFallback: true,
+  proxy: {
+    '/api': JSON.parse(env.APP_API_URL)
+  }
 }
 
 // Webpack configuration
 const webpackConfig = require('../config/webpack.dev.config')(env)
+
+const APP_HOST = JSON.parse(env.APP_HOST) || '0.0.0.0'
+const APP_PORT = JSON.parse(env.APP_PORT) || 5200
 
 WebpackDevServer.addDevServerEntrypoints(webpackConfig, config)
 const compiler = webpack(webpackConfig)
@@ -27,9 +33,9 @@ const compiler = webpack(webpackConfig)
 const devServer = new WebpackDevServer(compiler, config)
 
 // Launch WebpackDevServer
-devServer.listen(5200, '0.0.0.0', err => {
+devServer.listen(APP_PORT, APP_HOST, err => {
   if (err) {
     return console.log(err)
   }
-  console.log(chalk.cyan('Starting the development server on 0.0.0.0:5200...'))
+  console.log(chalk.cyan(`Starting the development server on ${APP_HOST}:${APP_PORT}...`))
 })
