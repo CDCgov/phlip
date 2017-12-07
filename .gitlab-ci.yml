@@ -17,9 +17,9 @@ stages:
 esquire_frontend_build:
   stage: build
   tags:
-    - 'eval $SUB_BUILD'
     - iiu
   script:
+    - 'eval $SUB_BUILD'
     - yarn build:image:dev
 
 esquire_frontend_test_image:
