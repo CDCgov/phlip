@@ -5,11 +5,9 @@ import { withTheme } from 'material-ui/styles'
 import Logo from 'components/Logo'
 import Greeting from './components/Greeting'
 import Avatar from 'components/Avatar'
-import Admin from '../../scenes/Admin'
 import { Link } from 'react-router-dom'
 
-
-const Header = ({ theme, user }) => {
+const Header = ({ theme, user, logout }) => {
   const bgColor = theme.palette.primary['600']
 
   const styles = {
@@ -22,6 +20,7 @@ const Header = ({ theme, user }) => {
     <Grid container spacing={0} alignItems="center" style={styles}>
       <Grid item xs>
         <Link style={{ textDecoration: 'none' }} to="/"><Logo fontSize="30px" /></Link>
+        <Link to="login" onClick={logout}>Logout</Link>
       </Grid>
       <Grid item>
         <Grid container spacing={8} alignItems="center">
@@ -39,7 +38,8 @@ const Header = ({ theme, user }) => {
 
 Header.propTypes = {
   theme: PropTypes.object.isRequired,
-  user: PropTypes.object
+  user: PropTypes.object,
+  logout: PropTypes.func
 }
 
 export default withTheme()(Header)

@@ -2,15 +2,14 @@ import axios from 'axios'
 import { login } from '../authToken'
 import { mockUsers } from '../../data/mockUsers'
 import { updateById } from 'utils'
+import { isLoggedInTokenExists, getToken, logout } from 'services/authToken'
 
-const isLoggedIn = () => true
-const getToken = () => '1234546'
 const mockToken = 'j4r98cm9rshsohxe8hskdfijd'
 
 export const api = axios.create({
   baseURL: '/api',
   headers: {
-    ...(isLoggedIn() ? { Authorization: `Bearer ${getToken()}` } : {})
+    ...(isLoggedInTokenExists() ? { Authorization: `Bearer ${getToken()}` } : {})
   }
 })
 
