@@ -24,6 +24,7 @@ esquire_frontend_build:
 esquire_frontend_test_image:
   stage: test
   script:
+    - 'eval $SUB_BUILD'
     - yarn test
   tags:
     - iiu
