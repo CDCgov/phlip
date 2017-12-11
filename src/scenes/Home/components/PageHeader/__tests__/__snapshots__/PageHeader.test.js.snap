@@ -70,6 +70,20 @@ exports[`Home scene - PageHeader component should render correctly 1`] = `
     }
     displayFlex={false}
     flex={false}
-  />
+  >
+    <withTheme(TextLink)
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+      to="/new/project"
+    >
+      <withTheme(Button)
+        color="accent"
+        value=" + Create new project"
+      />
+    </withTheme(TextLink)>
+  </Column>
 </Container>
 `;

@@ -16,6 +16,8 @@ const Header = ({ theme, user, logout }) => {
     padding: '0 30px'
   }
 
+  const initials = user.firstName === 'Admin' ? 'A' : user.firstName[0] + user.lastName[0]
+
   return (
     <Grid container spacing={0} alignItems="center" style={styles}>
       <Grid item xs>
@@ -28,7 +30,7 @@ const Header = ({ theme, user, logout }) => {
             <Greeting firstName={user.firstName} lastName={user.lastName} role={user.role} />
           </Grid>
           <Grid item>
-            <Link style={{ textDecoration: 'none' }} to="/admin"><Avatar big initials={user.firstName ? `${user.firstName[0]}${user.lastName[0]}` : ''} /></Link>
+            <Link style={{ textDecoration: 'none' }} to="/admin"><Avatar big initials={initials} /></Link>
           </Grid>
         </Grid>
       </Grid>

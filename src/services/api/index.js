@@ -1,26 +1,19 @@
 import axios from 'axios'
-import { login } from '../authToken'
+import { login, getToken } from '../authToken'
 import { mockUsers } from '../../data/mockUsers'
 import { updateById } from 'utils'
-import { isLoggedInTokenExists, getToken, logout } from 'services/authToken'
-
-const mockToken = 'j4r98cm9rshsohxe8hskdfijd'
 
 export const api = axios.create({
-  baseURL: '/api',
-  headers: {
-    ...(isLoggedInTokenExists() ? { Authorization: `Bearer ${getToken()}` } : {})
-  }
+  baseURL: '/api'
 })
 
 export default {
   login(user) {
-    //return api.post('/login', user).then(res => {
-    login(mockToken) //TODO: temporary
-    // login(user.token)
-    return mockUsers[mockUsers.map(x => x.email).indexOf(user.email)] //TODO: temporary
-    // return res.data
-    // })
+    return api.post('/security/authenticate', user).then(res => {
+      login(res.data.token.value)
+      api.defaults.headers.common['Authorization'] = `Bearer ${getToken()}`
+      return res.data
+    })
   },
 
   getProjects() {
@@ -41,8 +34,10 @@ export default {
   },
 
   addUser(user) {
-    //return api.post('/users', user).then(res => user)
-    return user //TODO: temporary
+    return api.post('/security/addUser', user).then(res => {
+      return user //TODO: temporary
+      //return res.data
+    })
   },
 
   updateUser(user) {

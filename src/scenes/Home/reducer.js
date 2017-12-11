@@ -64,7 +64,7 @@ const getProjectArrays = (state) => {
   const { projects, sortBy, direction, matches, page, rowsPerPage, sortBookmarked, searchValue } = state
   let currentList = [...projects]
 
-  if (searchValue.length > 0) {
+  if (searchValue !== undefined && searchValue.length > 0) {
     if (matches.length === 0) {
       return { projects, visibleProjects: [], projectCount: 0, matches: [] }
     } else {
@@ -103,8 +103,8 @@ function homeReducer(state = INITIAL_STATE, action) {
         ...state,
         error: false,
         errorContent: '',
-        ...getProjectArrays({ ...state, projects: action.payload.map(mockUpProject) })
-        // ..getProjectArrays({ ...state, projects: action.payload })
+        ...getProjectArrays({ ...state, matches: [], searchValue: '', projects: action.payload.map(mockUpProject) })
+        // ..getProjectArrays({ ...state, matches: [], searchValue: '', projects: action.payload })
       }
 
     case types.UPDATE_SEARCH_VALUE:
