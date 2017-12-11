@@ -31,7 +31,7 @@ const ProjectTableBody = ({ projects, user, onToggleBookmark, onExport }) => {
         >
           {project.lastEditedBy}
         </TableCell>
-        {user.role === 'Coordinator' &&
+        {user.role !== 'Coder' &&
         <TableCell key={`${project.id}-jurisdictions`} light>
           <TextLink to="/">Add/Edit</TextLink>
         </TableCell>
@@ -39,7 +39,7 @@ const ProjectTableBody = ({ projects, user, onToggleBookmark, onExport }) => {
         <TableCell key={`${project.id}-protocol`} light>
           <TextLink to="/">Add/Edit</TextLink>
         </TableCell>
-        {user.role === 'Coordinator' &&
+        {user.role !== 'Coder' &&
         <TableCell key={`${project.id}-codingScheme`} light>
           <TextLink to="/">Edit</TextLink>
         </TableCell>
@@ -47,7 +47,7 @@ const ProjectTableBody = ({ projects, user, onToggleBookmark, onExport }) => {
         <TableCell key={`${project.id}-code`} style={{ maxWidth: 40 }}>
           <Button raised={false} value="Code" listButton />
         </TableCell>
-        {user.role === 'Coordinator' &&
+        {user.role !== 'Coder' &&
         <TableCell key={`${project.id}-validation`} style={{ maxWidth: 40 }}>
           <Button raised={false} value="Validate" listButton />
         </TableCell>

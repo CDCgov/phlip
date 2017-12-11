@@ -20,7 +20,7 @@ export const PageHeader = ({ role }) => {
         </Container>
       </Column>
       <Column>
-        {role === 'Coordinator' &&
+        {role !== 'Coder' &&
         <TextLink to="/new/project" style={{ color: 'white' }}>
           <Button value=" + Create new project" color="accent" />
         </TextLink>
