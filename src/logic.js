@@ -13,7 +13,6 @@ const logoutLogic = createLogic({
   },
   process({ api }, dispatch, done) {
     logout()
-    persistor.purge()
     return done()
   }
 })
