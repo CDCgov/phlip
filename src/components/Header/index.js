@@ -4,10 +4,10 @@ import Grid from 'material-ui/Grid'
 import { withTheme } from 'material-ui/styles'
 import Logo from 'components/Logo'
 import Greeting from './components/Greeting'
-import Avatar from 'components/Avatar'
+import AvatarMenu from './components/AvatarMenu'
 import { Link } from 'react-router-dom'
 
-const Header = ({ theme, user, logout }) => {
+const Header = ({ theme, user, open, menuAnchor, onLogoutUser, onToggleMenu, onCloseMenu }) => {
   const bgColor = theme.palette.primary['600']
 
   const styles = {
@@ -22,16 +22,21 @@ const Header = ({ theme, user, logout }) => {
     <Grid container spacing={0} alignItems="center" style={styles}>
       <Grid item xs>
         <Link style={{ textDecoration: 'none' }} to="/"><Logo fontSize="30px" /></Link>
-        <Link to="login" onClick={logout}>Logout</Link>
+        <Link to="login" onClick={onLogoutUser}>Logout</Link>
       </Grid>
       <Grid item>
         <Grid container spacing={8} alignItems="center">
           <Grid item>
             <Greeting firstName={user.firstName} lastName={user.lastName} role={user.role} />
           </Grid>
-          <Grid item>
-            <Link style={{ textDecoration: 'none' }} to="/admin"><Avatar big initials={initials} /></Link>
-          </Grid>
+          <AvatarMenu
+            initials={initials}
+            open={open}
+            menuAnchor={menuAnchor}
+            onToggleMenu={event => onToggleMenu(event.currentTarget) }
+            onCloseMenu={onCloseMenu}
+            onLogoutUser={onLogoutUser}
+          />
         </Grid>
       </Grid>
     </Grid>
@@ -41,7 +46,8 @@ const Header = ({ theme, user, logout }) => {
 Header.propTypes = {
   theme: PropTypes.object.isRequired,
   user: PropTypes.object,
-  logout: PropTypes.func
+  onLogoutUser: PropTypes.func,
+  onToggleMenu: PropTypes.func
 }
 
 export default withTheme()(Header)

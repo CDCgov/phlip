@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Grid from 'material-ui/Grid'
 import Header from 'components/Header'
-import * as actions from 'scenes/Login/actions'
+import * as actions from 'data/user/actions'
 
 const mainStyles = {
   backgroundColor: '#f5f5f5',
@@ -12,10 +12,17 @@ const mainStyles = {
   flex: '1'
 }
 
-const AuthenticatedLayout = ({ user, children, actions }) => {
+const AuthenticatedLayout = ({ user, open, children, actions, menuAnchor }) => {
   return (
     <Grid container spacing={0} direction="column" style={{ flex: '1' }}>
-      <Header user={user} logout={actions.logoutUser} />
+      <Header
+        user={user}
+        onLogoutUser={actions.logoutUser}
+        open={open}
+        menuAnchor={menuAnchor}
+        onToggleMenu={actions.toggleMenu}
+        onCloseMenu={actions.closeMenu}
+      />
       <Grid container spacing={0} style={mainStyles}>
         {children}
       </Grid>
@@ -30,7 +37,9 @@ AuthenticatedLayout.propTypes = {
 
 const mapStateToProps = (state, props) => ({
   children: props.children,
-  user: state.data.user.currentUser || {firstName: '', lastName: '', role: ''}
+  user: state.data.user.currentUser || {firstName: '', lastName: '', role: ''},
+  open: state.data.user.menuOpen || false,
+  menuAnchor: state.data.user.menuAnchor || null
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

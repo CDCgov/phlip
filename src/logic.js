@@ -2,9 +2,8 @@ import { createLogic } from 'redux-logic'
 import projectLogic from 'scenes/Home/logic'
 import userLogic from 'scenes/Admin/logic'
 import loginLogic from 'scenes/Login/logic'
-import * as types from 'scenes/Login/actionTypes'
+import * as types from 'data/user/actionTypes'
 import { logout } from 'services/authToken'
-import { persistor } from 'services/store'
 
 const logoutLogic = createLogic({
   type: types.LOGOUT_USER,

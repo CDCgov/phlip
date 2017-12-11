@@ -1,0 +1,4 @@
+export const LOGOUT_USER = 'LOGOUT_USER'
+export const TOGGLE_MENU = 'TOGGLE_MENU'
+export const CLOSE_MENU = 'CLOSE_MENU'
+export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS'
