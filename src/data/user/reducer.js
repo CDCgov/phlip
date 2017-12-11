@@ -19,7 +19,6 @@ function userReducer(state = INITIAL_STATE, action) {
         menuOpen: !state.menuOpen,
         menuAnchor: action.anchor
       }
-
     case types.CLOSE_MENU:
       return {
         ...state,

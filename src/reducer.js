@@ -1,22 +1,13 @@
 import data from 'data/reducer'
 import scenes from 'scenes/reducer'
 import { reducer as formReducer } from 'redux-form'
-import { persistCombineReducers } from 'redux-persist'
-import storage from 'redux-persist/es/storage'
+import { combineReducers } from 'redux'
 
-const reducers = {
+const appReducer = combineReducers({
   data,
   scenes,
   form: formReducer
-}
-
-const persistConfig = {
-  key: 'root',
-  storage,
-  blacklist: ['form']
-}
-
-const appReducer = persistCombineReducers(persistConfig, reducers)
+})
 
 const rootReducer = (state, action) => {
   if (action.type === 'LOGOUT_USER') {
