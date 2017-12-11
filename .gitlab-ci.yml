@@ -25,7 +25,7 @@ esquire_frontend_build:
 esquire_frontend_test_image:
   stage: test
   script:
-    - docker-compose -f docker-compose.dev.yml run dev npm run test:local
+    - docker-compose -f docker-compose.dev.yml run --user=988 dev npm run test:local
   tags:
     - iiu
     
