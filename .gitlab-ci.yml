@@ -33,6 +33,7 @@ esquire_frontend_test_image:
 esquire_frontend_push_image::
   stage: push
   script:
+    - yarn build:image:prod
     - curl -fsSL https://git.phiresearchlab.org/snippets/8/raw | bash
 #  only:
 #    - master
