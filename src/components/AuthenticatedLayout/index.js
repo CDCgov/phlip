@@ -12,7 +12,7 @@ const mainStyles = {
   flex: '1'
 }
 
-export const AuthenticatedLayout = ({ user, open, children, actions, menuAnchor }) => {
+export const AuthenticatedLayout = ({ user, open, actions, menuAnchor, children }) => {
   return (
     <Grid container spacing={0} direction="column" style={{ flex: '1' }}>
       <Header
@@ -27,17 +27,19 @@ export const AuthenticatedLayout = ({ user, open, children, actions, menuAnchor 
         {children}
       </Grid>
     </Grid>
-    )
+  )
 }
 
 AuthenticatedLayout.propTypes = {
   user: PropTypes.object,
+  open: PropTypes.bool,
+  actions: PropTypes.object,
+  menuAnchor: PropTypes.element,
   children: PropTypes.node
 }
 
 const mapStateToProps = (state, props) => ({
-  children: props.children,
-  user: state.data.user.currentUser || {firstName: '', lastName: '', role: ''},
+  user: state.data.user.currentUser || { firstName: '', lastName: '', role: '' },
   open: state.data.user.menuOpen || false,
   menuAnchor: state.data.user.menuAnchor || null
 })

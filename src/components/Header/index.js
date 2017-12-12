@@ -46,8 +46,16 @@ export const Header = ({ theme, user, open, menuAnchor, handleLogoutUser, handle
 Header.propTypes = {
   theme: PropTypes.object.isRequired,
   user: PropTypes.object,
-  onLogoutUser: PropTypes.func,
-  onToggleMenu: PropTypes.func
+  open: PropTypes.bool,
+  menuAnchor: PropTypes.element,
+  handleLogoutUser: PropTypes.func,
+  handleCloseMenu: PropTypes.func,
+  handleOpenMenu: PropTypes.func
+}
+
+Header.defaultProps = {
+  open: false,
+  user: {}
 }
 
 export default withTheme()(Header)
