@@ -32,4 +32,22 @@ describe('Header -- AvatarMenu', () => {
     wrapper.update()
     expect(wrapper.find('AvatarMenu').prop('onToggleMenu')).toHaveBeenCalled()
   })
+
+  test('should hide `admin` option from menu if role is not admin', () => {
+    const wrapper = setup({ role: 'Coordinator', open: true })
+    expect(wrapper.find('MenuList').find('MenuItem').length).toEqual(1)
+    expect(wrapper.find('MenuList').find('MenuItem').text()).toEqual('Logout')
+  })
+
+  test('should open the menu when open is true', () => {
+    const wrapper = setup({ open: true })
+    expect(wrapper.find('MenuList').exists()).toBeTruthy()
+  })
+
+  test('should call logout when the logout menu item is clicked', () => {
+    const wrapper = setup({ open: true })
+    wrapper.find('MenuList').find('MenuItem').at(0).simulate('click')
+    wrapper.update()
+    expect(wrapper.find('AvatarMenu').prop('onLogoutUser')).toHaveBeenCalled()
+  })
 })
