@@ -34,7 +34,7 @@ AuthenticatedLayout.propTypes = {
   user: PropTypes.object,
   open: PropTypes.bool,
   actions: PropTypes.object,
-  menuAnchor: PropTypes.element,
+  menuAnchor: PropTypes.any,
   children: PropTypes.node
 }
 

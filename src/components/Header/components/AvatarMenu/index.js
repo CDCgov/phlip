@@ -35,7 +35,7 @@ export const AvatarMenu = ({ role, initials, menuAnchor, open, onCloseMenu, onLo
 AvatarMenu.propTypes = {
   role: PropTypes.string,
   initials: PropTypes.string,
-  menuAnchor: PropTypes.element,
+  menuAnchor: PropTypes.any,
   open: PropTypes.bool,
   onCloseMenu: PropTypes.func,
   onLogoutUser: PropTypes.func,
