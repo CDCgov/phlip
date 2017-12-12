@@ -7,7 +7,7 @@ import Greeting from './components/Greeting'
 import AvatarMenu from './components/AvatarMenu'
 import { Link } from 'react-router-dom'
 
-const Header = ({ theme, user, open, menuAnchor, onLogoutUser, onToggleMenu, onCloseMenu }) => {
+export const Header = ({ theme, user, open, menuAnchor, onLogoutUser, onToggleMenu, onCloseMenu }) => {
   const bgColor = theme.palette.primary['600']
 
   const styles = {

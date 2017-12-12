@@ -12,7 +12,7 @@ const mainStyles = {
   flex: '1'
 }
 
-const AuthenticatedLayout = ({ user, open, children, actions, menuAnchor }) => {
+export const AuthenticatedLayout = ({ user, open, children, actions, menuAnchor }) => {
   return (
     <Grid container spacing={0} direction="column" style={{ flex: '1' }}>
       <Header

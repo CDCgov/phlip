@@ -5,7 +5,7 @@ import Avatar from 'components/Avatar'
 import Menu, { MenuItem } from 'material-ui/Menu'
 import TextLink from 'components/TextLink'
 
-const AvatarMenu = ({ role, initials, onToggleMenu, onCloseMenu, onLogoutUser, menuAnchor, open }) => {
+export const AvatarMenu = ({ role, initials, onToggleMenu, onCloseMenu, onLogoutUser, menuAnchor, open }) => {
   return (
     <Grid item>
       <Avatar big onClick={onToggleMenu} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />
