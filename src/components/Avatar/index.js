@@ -2,12 +2,13 @@ import React from 'react'
 import { default as MuiAvatar } from 'material-ui/Avatar'
 import PropTypes from 'prop-types'
 
-const Avatar = ({ big, initials, ...otherProps }) => {
+const Avatar = ({ big, initials, style, ...otherProps }) => {
   const styles = {
     color: 'white',
     backgroundColor: 'teal',
     width: big ? '45px' : '30px',
-    height: big ? '45px' : '30px'
+    height: big ? '45px' : '30px',
+    ...style
   }
   
   return <MuiAvatar style={styles} {...otherProps}>{initials ? initials : ''}</MuiAvatar>

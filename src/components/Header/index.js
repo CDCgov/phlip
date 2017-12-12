@@ -22,7 +22,6 @@ const Header = ({ theme, user, open, menuAnchor, onLogoutUser, onToggleMenu, onC
     <Grid container spacing={0} alignItems="center" style={styles}>
       <Grid item xs>
         <Link style={{ textDecoration: 'none' }} to="/"><Logo fontSize="30px" /></Link>
-        <Link to="login" onClick={onLogoutUser}>Logout</Link>
       </Grid>
       <Grid item>
         <Grid container spacing={8} alignItems="center">
@@ -31,6 +30,7 @@ const Header = ({ theme, user, open, menuAnchor, onLogoutUser, onToggleMenu, onC
           </Grid>
           <AvatarMenu
             initials={initials}
+            role={user.role}
             open={open}
             menuAnchor={menuAnchor}
             onToggleMenu={event => onToggleMenu(event.currentTarget) }
