@@ -13,11 +13,13 @@ const AvatarMenu = ({ role, initials, onToggleMenu, onCloseMenu, onLogoutUser, m
         id="avatar-menu"
         onRequestClose={onCloseMenu}
         anchorEl={menuAnchor}
-        getContentAnchorEl={null}
         marginThreshold={30}
+        MenuListProps={{
+          disablePadding: true
+        }}
         open={open}
       >
-        <MenuItem onClick={onLogoutUser} selected={false} key="logout-menu">
+        <MenuItem onClick={onLogoutUser} selected={(index) => false} key="logout-menu">
           <TextLink to="login">Logout</TextLink>
         </MenuItem>
         {role === 'Admin' &&

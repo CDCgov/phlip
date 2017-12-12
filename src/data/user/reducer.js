@@ -1,7 +1,7 @@
 import * as types from './actionTypes'
 
 const INITIAL_STATE = {
-  currentUser: undefined,
+  currentUser: {},
   menuOpen: false,
   menuAnchor: null
 }
@@ -25,10 +25,8 @@ function userReducer(state = INITIAL_STATE, action) {
         menuOpen: false,
         menuAnchor: null
       }
-
-    case types.FLUSH_STATE:
+    case 'FLUSH_STATE':
       return INITIAL_STATE
-
     default:
       return state
   }

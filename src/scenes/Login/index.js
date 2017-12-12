@@ -16,8 +16,8 @@ export class Login extends Component {
   }
 
   componentDidUpdate() {
-    if (this.props.user&&this.props.session) {
-      setTimeout(this.props.history.push('/'), 3000)
+    if (this.props.session) {
+      this.props.history.push('/')
     }
   }
 
@@ -67,8 +67,8 @@ export class Login extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.data.user.currentUser||undefined,
-  session: state.scenes.login.session||{}
+  user: state.data.user.currentUser || undefined,
+  session: state.scenes.login.session || false
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
