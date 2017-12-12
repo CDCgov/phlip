@@ -13,14 +13,21 @@ const INITIAL_STATE = {
   visibleUsers: []
 }
 
-const randomId = Math.random(2) //TODO: Temporary for mocks
 
 const sliceUsers = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
 const getAvailableUsers = (users, sortBy, direction, page, rowsPerPage) => {
   const sortedUsers = sortList(users, sortBy, direction)
-  const result = { users: sortedUsers, visibleUsers: sliceUsers(sortedUsers, page, rowsPerPage) }
-  return result
+  // const result = { users: sortedUsers, visibleUsers: sliceUsers(sortedUsers, page, rowsPerPage) }  //TODO: Need to change after figure out state pagination issue
+  return { users: sortedUsers, visibleUsers: sortedUsers }
+}
+
+//TODO: Temporary
+const mockUpUser = (users) => {
+  return {
+    ...users,
+    id: Math.random()
+  }
 }
 
 function adminReducer(state = INITIAL_STATE, action) {
@@ -36,17 +43,18 @@ function adminReducer(state = INITIAL_STATE, action) {
       }
 
     case types.ADD_USER_SUCCESS:
-      const mockupUser = { ...action.payload, id: randomId }
+      const mockedUpUser = mockUpUser(action.payload)
+      const updated = getAvailableUsers(state.users, 'lastName', 'asc', 0, state.rowsPerPage)
+      if ((updated.visibleUsers.length + 1) > state.rowsPerPage) {
+        updated.visibleUsers.pop()
+      }
       return {
         ...state,
-        users: [
-          mockupUser,
-          ...state.users
-        ],
-        visibleUsers: [
-          mockupUser,
-          ...state.visibleUsers
-        ]
+        users: [mockedUpUser, ...updated.users],
+        sortBy: 'lastName',
+        direction: 'desc',
+        page: 0,
+        visibleUsers: [mockedUpUser, ...updated.visibleUsers]
       }
 
     case types.UPDATE_USER_SUCCESS:

@@ -128,7 +128,7 @@ export class AddEditUser extends Component {
               component={Dropdown}
               label="Role"
               options={roles}
-              defaultValue="Coordinator"
+              defaultValue=""
               id="role"
               style={{ display: 'flex' }}
             />

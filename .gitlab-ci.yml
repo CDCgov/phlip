@@ -12,14 +12,13 @@ variables:
 stages:
   - build
   - test
-  #- push
+  - push
 
 esquire_frontend_build:
   stage: build
   tags:
     - iiu
   script:
-    - 'echo $SUB_BUILD'
     - yarn build:image:dev
 
 esquire_frontend_test_image:
@@ -31,11 +30,12 @@ esquire_frontend_test_image:
     
 
 
-#esquire_frontend_push_image::
-#  stage: push
-#  script:
-#    - curl -fsSL https://git.phiresearchlab.org/snippets/2/raw | bash
+esquire_frontend_push_image::
+  stage: push
+  script:
+    - yarn build:image:prod
+    - curl -fsSL https://git.phiresearchlab.org/snippets/8/raw | bash
 #  only:
 #    - master
-#  tags:
-#    - iiu
+  tags:
+    - iiu
