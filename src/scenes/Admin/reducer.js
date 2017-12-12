@@ -22,6 +22,7 @@ const getAvailableUsers = (users, sortBy, direction, page, rowsPerPage) => {
   return { users: sortedUsers, visibleUsers: sortedUsers }
 }
 
+<<<<<<< HEAD
 //TODO: Temporary
 const mockUpUser = (users) => {
   return {
@@ -30,6 +31,8 @@ const mockUpUser = (users) => {
   }
 }
 
+=======
+>>>>>>> 55aff7838242a49c098fd6a3f216b521d6585300
 function adminReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
 
@@ -43,6 +46,7 @@ function adminReducer(state = INITIAL_STATE, action) {
       }
 
     case types.ADD_USER_SUCCESS:
+<<<<<<< HEAD
       const mockedUpUser = mockUpUser(action.payload)
       const updated = getAvailableUsers(state.users, 'lastName', 'asc', 0, state.rowsPerPage)
       if ((updated.visibleUsers.length + 1) > state.rowsPerPage) {
@@ -55,6 +59,19 @@ function adminReducer(state = INITIAL_STATE, action) {
         direction: 'desc',
         page: 0,
         visibleUsers: [mockedUpUser, ...updated.visibleUsers]
+=======
+      const mockupUser = { ...action.payload, id: randomId }
+      return {
+        ...state,
+        users: [
+          mockupUser,
+          ...state.users
+        ],
+        visibleUsers: [
+          mockupUser,
+          ...state.visibleUsers
+        ]
+>>>>>>> 55aff7838242a49c098fd6a3f216b521d6585300
       }
 
     case types.UPDATE_USER_SUCCESS:

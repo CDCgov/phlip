@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Home -- PageHeader component it should render correctly 1`] = `
+exports[`Home scene - PageHeader component should render correctly 1`] = `
 <Container
   alignItems="center"
   column={false}
@@ -70,6 +70,20 @@ exports[`Home -- PageHeader component it should render correctly 1`] = `
     }
     displayFlex={false}
     flex={false}
-  />
+  >
+    <withTheme(TextLink)
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+      to="/new/project"
+    >
+      <withTheme(Button)
+        color="accent"
+        value=" + Create new project"
+      />
+    </withTheme(TextLink)>
+  </Column>
 </Container>
 `;

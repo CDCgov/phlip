@@ -8,7 +8,7 @@ import TableCell from 'components/TableCell'
 
 const greyIcon = '#d4d4d4'
 
-export const ProjectTableBody = ({ projects, user, onToggleBookmark, onExport }) => {
+const ProjectTableBody = ({ projects, user, onToggleBookmark, onExport }) => {
   return (
     projects.map(project => (
       <TableRow key={project.id}>
@@ -31,7 +31,7 @@ export const ProjectTableBody = ({ projects, user, onToggleBookmark, onExport })
         >
           {project.lastEditedBy}
         </TableCell>
-        {user.role === 'Coordinator' &&
+        {user.role !== 'Coder' &&
         <TableCell key={`${project.id}-jurisdictions`} light>
           <TextLink to="/">Add/Edit</TextLink>
         </TableCell>
@@ -39,7 +39,7 @@ export const ProjectTableBody = ({ projects, user, onToggleBookmark, onExport })
         <TableCell key={`${project.id}-protocol`} light>
           <TextLink to="/">Add/Edit</TextLink>
         </TableCell>
-        {user.role === 'Coordinator' &&
+        {user.role !== 'Coder' &&
         <TableCell key={`${project.id}-codingScheme`} light>
           <TextLink to="/">Edit</TextLink>
         </TableCell>
@@ -47,13 +47,13 @@ export const ProjectTableBody = ({ projects, user, onToggleBookmark, onExport })
         <TableCell key={`${project.id}-code`} style={{ maxWidth: 40 }}>
           <Button raised={false} value="Code" listButton />
         </TableCell>
-        {user.role === 'Coordinator' &&
+        {user.role !== 'Coder' &&
         <TableCell key={`${project.id}-validation`} style={{ maxWidth: 40 }}>
           <Button raised={false} value="Validate" listButton />
         </TableCell>
         }
         <TableCell key={`${project.id}-export`} style={{ maxWidth: 10 }}>
-          <IconButton color={greyIcon} onClick={() => onExport}>file_download</IconButton>
+          <IconButton color={greyIcon} onClick={() => onExport()}>file_download</IconButton>
         </TableCell>
       </TableRow>
     ))

@@ -2,12 +2,14 @@ import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import newProjectReducer from './scenes/NewProject/reducer'
 import { mockUsers } from 'data/mockUsers'
-import { sortList, updateById } from '../../utils'
+import { sortList, updateById } from 'utils'
 
 const start = new Date(2017, 0, 1)
 
 const INITIAL_STATE = {
   projects: [],
+  matches: [],
+  searchValue: '',
   rowsPerPage: 10,
   page: 0,
   visibleProjects: [],
@@ -15,7 +17,8 @@ const INITIAL_STATE = {
   direction: 'desc',
   sortBookmarked: false,
   errorContent: '',
-  error: false
+  error: false,
+  projectCount: 0
 }
 
 // TODO: Just until the data model is complete
@@ -25,35 +28,67 @@ const mockUpProject = (project) => {
     ...project,
     dateLastEdited: new Date(start.getTime() + Math.random() * (new Date().getTime() - start.getTime())),
     bookmarked: false,
-    lastEditedBy: `${user.firstName} ${user.lastName}`
+    lastEditedBy: `${user.firstName} ${user.lastName}`,
   }
 }
 
 const sliceProjects = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
 const sortProjectsByBookmarked = (projects, sortBy, direction) => {
+  if (projects.length === 0) {
+    return []
+  }
   const bookmarked = sortList(projects.filter(project => project.bookmarked), sortBy, direction)
   const nonBookmarked = sortList(projects.filter(project => !project.bookmarked), sortBy, direction)
   return [...bookmarked, ...nonBookmarked]
 }
 
-// const updateById = (updatedProject, projectArr) => {
-//   return projectArr.map(project =>
-//     (project.id === updatedProject.id)
-//       ? updatedProject
-//       : project
-//   )
-// }
-
 const anyBookmarks = (projects) => projects.filter(project => project.bookmarked).length > 0
 
-const getProjectsAndVisibleProjects = (projects, sortBy, direction, page, rowsPerPage, sortBookmarked) => {
-  const sortedProjects = sortList(projects, sortBy, direction)
-  const baseResult = { projects: sortedProjects, visibleProjects: sliceProjects(sortedProjects, page, rowsPerPage) }
+const isMatch = (value, search) => value.toLowerCase().includes(search)
+
+const searchForMatches = (projects, searchValue) => {
+  return projects.filter(project => {
+    return isMatch(project.name, searchValue)
+      || isMatch(project.lastEditedBy, searchValue)
+      || isMatch(new Date(project.dateLastEdited).toLocaleDateString(), searchValue)
+  })
+}
+
+const updateAllArrays = (state, updated) => {
+  const { matches, projects } = state
+  return { matches: matches.length > 0 ? updateById(updated, matches) : [], projects: updateById(updated, projects) }
+}
+
+const getProjectArrays = (state) => {
+  const { projects, sortBy, direction, matches, page, rowsPerPage, sortBookmarked, searchValue } = state
+  let currentList = [...projects]
+
+  if (searchValue !== undefined && searchValue.length > 0) {
+    if (matches.length === 0) {
+      return { projects, visibleProjects: [], projectCount: 0, matches: [] }
+    } else {
+      currentList = [...matches]
+    }
+  }
+
+  const sortedProjects = sortList(currentList, sortBy, direction)
+  const baseResult = {
+    projects: sortList(projects, sortBy, direction),
+    matches: searchValue.length === 0 ? [] : sortList(matches, sortBy, direction),
+    visibleProjects: sliceProjects(sortedProjects, page, rowsPerPage),
+    projectCount: sortedProjects.length
+  }
+
   if (sortBookmarked) {
-    if (anyBookmarks(projects)) {
-      const sortedByBookmarked = sortProjectsByBookmarked(projects, sortBy, direction)
-      return { projects: sortedByBookmarked, visibleProjects: sliceProjects(sortedByBookmarked, page, rowsPerPage) }
+    if (anyBookmarks(currentList)) {
+      const sortedByBookmarked = sortProjectsByBookmarked(currentList, sortBy, direction)
+      return {
+        projects: sortProjectsByBookmarked(projects, sortBy, direction),
+        matches: searchValue.length === 0 ? [] : sortProjectsByBookmarked(matches, sortBy, direction),
+        visibleProjects: sliceProjects(sortedByBookmarked, page, rowsPerPage),
+        projectCount: sortedByBookmarked.length
+      }
     } else {
       return baseResult
     }
@@ -68,18 +103,24 @@ function homeReducer(state = INITIAL_STATE, action) {
         ...state,
         error: false,
         errorContent: '',
-        ...getProjectsAndVisibleProjects(
-          action.payload.map(mockUpProject), state.sortBy, state.direction, state.page, state.rowsPerPage, state.sortBookmarked
-          // action.payload, state.sortBy, state.direction, state.page, state.rowsPerPage, state.sortBookmarked
-        )
+        ...getProjectArrays({ ...state, matches: [], searchValue: '', projects: action.payload.map(mockUpProject) })
+        // ..getProjectArrays({ ...state, matches: [], searchValue: '', projects: action.payload })
+      }
+
+    case types.UPDATE_SEARCH_VALUE:
+      const searchValue = action.searchValue.trim().toLowerCase()
+      const matches = searchForMatches([...state.projects], searchValue)
+
+      return {
+        ...state,
+        searchValue: action.searchValue,
+        ...getProjectArrays({ ...state, matches, searchValue })
       }
 
     case types.TOGGLE_BOOKMARK:
       return {
         ...state,
-        ...getProjectsAndVisibleProjects(
-          updateById(action.project, [...state.projects]), state.sortBy, state.direction, state.page, state.rowsPerPage, state.sortBookmarked
-        )
+        ...getProjectArrays({ ...state, ...updateAllArrays(state, action.project) })
       }
 
     case types.UPDATE_PROJECT_SUCCESS:
@@ -90,33 +131,38 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
     case types.ADD_PROJECT_SUCCESS:
-      const mockedUpProject = mockUpProject(action.payload)
-      const updated = getProjectsAndVisibleProjects(state.projects, 'dateLastEdited', 'desc', 0, state.rowsPerPage, false)
+      const mockedUpProject = { ...mockUpProject(action.payload), dateLastEdited: new Date() }
+      // const mockedUpProject = action.payload
+      const updated = getProjectArrays({
+        ...INITIAL_STATE,
+        projects: state.projects,
+        visibleProjects: state.visibleProjects
+      })
+
       if ((updated.visibleProjects.length + 1) > state.rowsPerPage) {
         updated.visibleProjects.pop()
       }
+
       return {
         ...state,
-        sortBy: 'dateLastEdited',
-        direction: 'desc',
-        sortBookmarked: false,
-        page: 0,
+        ...INITIAL_STATE,
         projects: [mockedUpProject, ...updated.projects],
-        visibleProjects: [mockedUpProject, ...updated.visibleProjects]
+        visibleProjects: [mockedUpProject, ...updated.visibleProjects],
+        projectCount: updated.projectCount
       }
 
     case types.UPDATE_ROWS:
       return {
         ...state,
         rowsPerPage: action.rowsPerPage,
-        visibleProjects: sliceProjects(state.projects, state.page, action.rowsPerPage)
+        ...getProjectArrays({ ...state, rowsPerPage: action.rowsPerPage })
       }
 
     case types.UPDATE_PAGE:
       return {
         ...state,
         page: action.page,
-        visibleProjects: sliceProjects(state.projects, action.page, state.rowsPerPage)
+        ...getProjectArrays({ ...state, page: action.page })
       }
 
     case types.SORT_PROJECTS:
@@ -125,32 +171,26 @@ function homeReducer(state = INITIAL_STATE, action) {
         ...state,
         sortBy: action.sortBy,
         direction: dir,
-        ...getProjectsAndVisibleProjects(
-          state.projects, action.sortBy, dir, state.page, state.rowsPerPage, state.sortBookmarked
-        )
+        ...getProjectArrays({ ...state, direction: dir, sortBy: action.sortBy })
       }
 
     case types.SORT_BOOKMARKED:
       return {
         ...state,
         sortBookmarked: !state.sortBookmarked,
-        ...getProjectsAndVisibleProjects(
-          state.projects, state.sortBy, state.direction, state.page, state.rowsPerPage, !state.sortBookmarked
-        )
+        ...getProjectArrays({ ...state, sortBookmarked: !state.sortBookmarked })
       }
 
     case types.UPDATE_PROJECT_FAIL:
       return {
         ...state,
-        errorContent: 'We failed to update that project. Please try again later.',
-        error: true
+        //errorContent: 'We failed to update that project. Please try again later.',
+        //error: true
       }
 
     case types.GET_PROJECTS_FAIL:
       return {
-        ...state,
-        errorContent: 'We failed to get the list of projects. Please try again later.',
-        error: true
+        ...state, errorContent: 'We failed to get the list of projects. Please try again later.', error: true
       }
 
     case types.GET_PROJECTS_REQUEST:

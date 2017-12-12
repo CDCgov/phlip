@@ -41,8 +41,8 @@ export const ProjectList = props => {
                 count={count}
                 rowsPerPage={rowsPerPage}
                 page={page}
-                onChangePage={handlePageChange}
-                onChangeRowsPerPage={handleRowsChange}
+                onChangePage={(event, page) => handlePageChange(page)}
+                onChangeRowsPerPage={(event) => handleRowsChange(event.target.value)}
               />
             </TableRow>
           </TableFooter>

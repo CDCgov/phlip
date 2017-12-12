@@ -28,7 +28,7 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
   return (
     <TableRow key="headers">
       <TableCell key="bookmarked" style={{ width: 48 }}>
-        <IconButton color="rbg(0,0,0,0.54)" onClick={onSortBookmarked}>
+        <IconButton color="rbg(0,0,0,0.54)" onClick={() => onSortBookmarked()}>
           { sortBookmarked ? 'bookmark' : 'bookmark_border' }
         </IconButton>
       </TableCell>
@@ -36,7 +36,7 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
       {visible.map(c => (
         <TableCell key={c.key} style={c.style}>
           {c.hasSort ? (
-            <TableSortLabel active={sortBy === c.key} direction={direction} onClick={onRequestSort(c.key)}>
+            <TableSortLabel active={sortBy === c.key} direction={direction} onClick={() => onRequestSort(c.key)}>
               {c.label}
             </TableSortLabel>
           ) : c.label}

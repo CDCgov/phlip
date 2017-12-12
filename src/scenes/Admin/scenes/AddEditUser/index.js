@@ -22,9 +22,9 @@ export class AddEditUser extends Component {
 
   handleSubmit = (values) => {
     if (this.props.match.params.id) {
-      this.props.actions.updateUserRequest(values)
+      this.props.actions.updateUserRequest({ role: 'Coordinator', ...values })
     } else {
-      this.props.actions.addUserRequest(values)
+      this.props.actions.addUserRequest({ role: 'Coordinator', ...values })
     }
     this.props.history.goBack()
   }

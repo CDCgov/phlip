@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Home scene - ProjectList - ProjectTableBody component should render correctly 1`] = `
+Array [
+  <TableRow
+    key="1"
+  />,
+  <TableRow
+    key="2"
+  />,
+]
+`;

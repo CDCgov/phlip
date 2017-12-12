@@ -1,17 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Route, Redirect } from 'react-router-dom'
-import { isLoggedInTokenExists } from '../../services/authToken'
-
-// const isLoggedIn = () => true
-const isLoggedIn = () => isLoggedInTokenExists() //TODO: turn on later
+import { isLoggedInTokenExists } from 'services/authToken'
 
 export default function AuthenticatedRoute({ component: Component, ...rest }) {
   return (
     <Route
       {...rest}
       render={props =>
-        isLoggedIn() ? (
+        isLoggedInTokenExists() ? (
           <Component {...props} />
         ) : (
             <Redirect

@@ -1,28 +1,19 @@
 import axios from 'axios'
-import { login } from '../authToken'
+import { login, isLoggedInTokenExists, getToken } from '../authToken'
 import { mockUsers } from '../../data/mockUsers'
-
-const isLoggedIn = () => true
-const getToken = () => '1234546'
-const mockToken = 'j4r98cm9rshsohxe8hskdfijd'
+import { updateById } from 'utils'
 
 export const api = axios.create({
-  baseURL: APP_API_URL,
-  headers: {
-    ...(isLoggedIn() ? { Authorization: `Bearer ${getToken()}` } : {})
-  }
+  baseURL: '/api'
 })
 
 export default {
   login(user) {
-    return api.post('/login', user).then(res => {
-      login(mockToken)
-      // login(user.token)
-      console.log(mockUsers[mockUsers.map(x => x.email).indexOf(user.email)])
-      return mockUsers[mockUsers.map(x => x.email).indexOf(user.email)]
-      // return res.data
+    return api.post('/security/authenticate', user).then(res => {
+      login(res.data.token.value)
+      api.defaults.headers.common['Authorization'] = `Bearer ${getToken()}`
+      return res.data
     })
-
   },
 
   getProjects() {
@@ -34,21 +25,24 @@ export default {
   },
 
   updateProject(project) {
-    return api.put(`/project/${project.id}`).then(res => res.data)
+    return api.put(`/projects/${project.id}`, project).then(res => res.data)
   },
 
   getUsers() {
-    return api.get('/users').then(res => res.data)
+    //return api.get('/users').then(res => res.data)
+    return mockUsers //TODO: temporary
   },
 
   addUser(user) {
-    // return api.post('/users', user).then(res => res.data)
-    return api.post('/users', user).then(res => user)  //TODO: temporary
+    return api.post('/security/addUser', user).then(res => {
+      return user //TODO: temporary
+      //return res.data
+    })
   },
 
   updateUser(user) {
-    // return api.put(`/user/${user.id}`).then(res => res.data)
-    return api.put(`/user/${user.id}`).then(res => user)  //TODO: temporary
+    return api.put(`/user/${user.id}`).then(res => user)
+    //return updateById(user, mockUsers) //TODO: temporary
   }
 }
 

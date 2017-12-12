@@ -9,7 +9,7 @@ import CardError from 'components/CardError'
 import Container from 'components/Layout'
 import PageHeader from './components/PageHeader'
 import ProjectList from './components/ProjectList'
-import SearchBar from './components/SearchBar'
+import SearchBar from 'components/SearchBar'
 import NewProject from './scenes/NewProject'
 import * as actions from './actions'
 
@@ -23,6 +23,7 @@ export class Home extends Component {
     rowsPerPage: PropTypes.number,
     sortBy: PropTypes.string,
     direction: PropTypes.string,
+    searchValue: PropTypes.string,
     error: PropTypes.bool,
     errorContent: PropTypes.string
   }
@@ -46,21 +47,24 @@ export class Home extends Component {
       <Container column flex>
         <PageHeader role={this.props.user.role} />
         <Divider />
-        <SearchBar />
+        <SearchBar
+          searchValue={this.props.searchValue}
+          handleSearchValueChange={event => this.props.actions.updateSearchValue(event.target.value)}
+        />
         {this.props.error
           ? this.renderErrorMessage()
           : <ProjectList
             user={this.props.user}
             projects={this.props.visibleProjects}
-            count={this.props.projects.length}
+            count={this.props.projectCount}
             page={this.props.page}
             rowsPerPage={this.props.rowsPerPage}
             sortBy={this.props.sortBy}
             direction={this.props.direction}
             sortBookmarked={this.props.sortBookmarked}
-            handleRequestSort={property => event => this.props.actions.sortProjects(property)}
-            handlePageChange={(event, page) => this.props.actions.updatePage(page)}
-            handleRowsChange={event => this.props.actions.updateRows(event.target.value)}
+            handleRequestSort={this.props.actions.sortProjects}
+            handlePageChange={this.props.actions.updatePage}
+            handleRowsChange={this.props.actions.updateRows}
             handleToggleBookmark={this.props.actions.toggleBookmark}
             handleSortBookmarked={this.props.actions.sortBookmarked}
           />
@@ -81,9 +85,11 @@ const mapStateToProps = (state) => ({
   rowsPerPage: state.scenes.home.main.rowsPerPage,
   sortBy: state.scenes.home.main.sortBy,
   direction: state.scenes.home.main.direction,
+  searchValue: state.scenes.home.main.searchValue || '',
   sortBookmarked: state.scenes.home.main.sortBookmarked,
   error: state.scenes.home.main.error,
-  errorContent: state.scenes.home.main.errorContent
+  errorContent: state.scenes.home.main.errorContent,
+  projectCount: state.scenes.home.main.projectCount || 0
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

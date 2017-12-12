@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Home -- ProjectList component it should render correctly 1`] = `
+exports[`Home scene - ProjectList component should render correctly 1`] = `
 <Container
   column={false}
   flex={true}
