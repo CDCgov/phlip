@@ -14,13 +14,14 @@ const AvatarMenu = ({ role, initials, onToggleMenu, onCloseMenu, onLogoutUser, m
         onRequestClose={onCloseMenu}
         anchorEl={menuAnchor}
         getContentAnchorEl={null}
+        marginThreshold={30}
         open={open}
       >
-        <MenuItem onClick={onLogoutUser} key="logout-menu">
+        <MenuItem onClick={onLogoutUser} selected={false} key="logout-menu">
           <TextLink to="login">Logout</TextLink>
         </MenuItem>
         {role === 'Admin' &&
-          <MenuItem key="admin-menu">
+          <MenuItem onClick={onToggleMenu} key="admin-menu">
             <TextLink to="admin">Admin</TextLink>
           </MenuItem>
         }
