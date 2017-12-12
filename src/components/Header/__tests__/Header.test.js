@@ -9,9 +9,9 @@ const props = {
   user: { firstName: 'Test', lastName: 'User', role: 'Coordinator' },
   open: false,
   menuAnchor: null,
-  onLogoutUser: jest.fn(),
-  onToggleMenu: jest.fn(),
-  onCloseMenu: jest.fn()
+  handleLogoutUser: jest.fn(),
+  handleOpenMenu: jest.fn(),
+  handleCloseMenu: jest.fn()
 }
 
 const setup = otherProps => {

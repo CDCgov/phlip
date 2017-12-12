@@ -9,7 +9,7 @@ const props = {
   open: false,
   menuAnchor: null,
   onLogoutUser: jest.fn(),
-  onToggleMenu: jest.fn(),
+  onOpenMenu: jest.fn(),
   onCloseMenu: jest.fn()
 }
 
@@ -30,7 +30,7 @@ describe('Header -- AvatarMenu', () => {
     const wrapper = setup()
     wrapper.find('Avatar').at(0).simulate('click')
     wrapper.update()
-    expect(wrapper.find('AvatarMenu').prop('onToggleMenu')).toHaveBeenCalled()
+    expect(wrapper.find('AvatarMenu').prop('onOpenMenu')).toHaveBeenCalled()
   })
 
   test('should hide `admin` option from menu if role is not admin', () => {

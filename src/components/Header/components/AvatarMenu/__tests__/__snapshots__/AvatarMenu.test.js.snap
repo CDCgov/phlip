@@ -29,7 +29,6 @@ exports[`Header -- AvatarMenu should render correctly 1`] = `
     <withStyles(MenuItem)
       key="logout-menu"
       onClick={[Function]}
-      selected={[Function]}
     >
       <withTheme(TextLink)
         to="login"

@@ -5,7 +5,7 @@ import { AuthenticatedLayout } from '../index'
 const props = {
   actions: {
     logoutUser: jest.fn(),
-    toggleMenu: jest.fn(),
+    openMenu: jest.fn(),
     closeMenu: jest.fn()
   },
   open: false,

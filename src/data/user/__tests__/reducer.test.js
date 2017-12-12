@@ -12,30 +12,17 @@ describe('User reducer', () => {
     expect(reducer(undefined, {})).toEqual(initial)
   })
 
-  describe('TOGGLE_MENU', () => {
-    test('should switch menuOpen to true if it was false and menuAnchor to anchor action key', () => {
+  describe('OPEN_MENU', () => {
+    test('should switch menuOpen to true and menuAnchor to anchor action key', () => {
       expect(
         reducer(
           { ...initial },
-          { type: types.TOGGLE_MENU, anchor: '<div></div>' }
+          { type: types.OPEN_MENU, anchor: '<div></div>' }
         )
       ).toEqual({
         currentUser: {},
         menuAnchor: '<div></div>',
         menuOpen: true
-      })
-    })
-
-    test('should switch menuOpen to false if it was true and menuAnchor to anchor action key', () => {
-      expect(
-        reducer(
-          { ...initial, menuOpen: true, menuAnchor: '<div></div>' },
-          { type: types.TOGGLE_MENU, anchor: null }
-        )
-      ).toEqual({
-        currentUser: {},
-        menuAnchor: null,
-        menuOpen: false
       })
     })
   })

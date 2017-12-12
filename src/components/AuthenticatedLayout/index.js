@@ -17,11 +17,11 @@ export const AuthenticatedLayout = ({ user, open, children, actions, menuAnchor 
     <Grid container spacing={0} direction="column" style={{ flex: '1' }}>
       <Header
         user={user}
-        onLogoutUser={actions.logoutUser}
         open={open}
         menuAnchor={menuAnchor}
-        onToggleMenu={actions.toggleMenu}
-        onCloseMenu={actions.closeMenu}
+        handleLogoutUser={actions.logoutUser}
+        handleOpenMenu={event => actions.openMenu(event.currentTarget)}
+        handleCloseMenu={actions.closeMenu}
       />
       <Grid container spacing={0} style={mainStyles}>
         {children}

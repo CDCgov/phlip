@@ -12,10 +12,10 @@ exports[`AuthenticatedLayout it should render correctly 1`] = `
   }
 >
   <withTheme(Header)
+    handleCloseMenu={[Function]}
+    handleLogoutUser={[Function]}
+    handleOpenMenu={[Function]}
     menuAnchor={null}
-    onCloseMenu={[Function]}
-    onLogoutUser={[Function]}
-    onToggleMenu={[Function]}
     open={false}
   />
   <withStyles(GridWrapper)

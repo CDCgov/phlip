@@ -53,7 +53,7 @@ exports[`Header should render correctly 1`] = `
         menuAnchor={null}
         onCloseMenu={[Function]}
         onLogoutUser={[Function]}
-        onToggleMenu={[Function]}
+        onOpenMenu={[Function]}
         open={false}
         role="Coordinator"
       />

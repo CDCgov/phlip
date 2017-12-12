@@ -5,10 +5,10 @@ import Avatar from 'components/Avatar'
 import Menu, { MenuItem } from 'material-ui/Menu'
 import TextLink from 'components/TextLink'
 
-export const AvatarMenu = ({ role, initials, onToggleMenu, onCloseMenu, onLogoutUser, menuAnchor, open }) => {
+export const AvatarMenu = ({ role, initials, menuAnchor, open, onCloseMenu, onLogoutUser, onOpenMenu }) => {
   return (
     <Grid item>
-      <Avatar big onClick={onToggleMenu} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />
+      <Avatar big onClick={onOpenMenu} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />
       <Menu
         id="avatar-menu"
         onRequestClose={onCloseMenu}
@@ -19,11 +19,11 @@ export const AvatarMenu = ({ role, initials, onToggleMenu, onCloseMenu, onLogout
         }}
         open={open}
       >
-        <MenuItem onClick={onLogoutUser} selected={(index) => false} key="logout-menu">
+        <MenuItem onClick={onLogoutUser} key="logout-menu">
           <TextLink to="login">Logout</TextLink>
         </MenuItem>
         {role === 'Admin' &&
-          <MenuItem onClick={onToggleMenu} key="admin-menu">
+          <MenuItem onClick={onCloseMenu} key="admin-menu">
             <TextLink to="admin">Admin</TextLink>
           </MenuItem>
         }

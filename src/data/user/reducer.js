@@ -13,20 +13,24 @@ function userReducer(state = INITIAL_STATE, action) {
         ...state,
         currentUser: action.payload
       }
-    case types.TOGGLE_MENU:
+
+    case types.OPEN_MENU:
       return {
         ...state,
-        menuOpen: !state.menuOpen,
+        menuOpen: true,
         menuAnchor: action.anchor
       }
+
     case types.CLOSE_MENU:
       return {
         ...state,
         menuOpen: false,
         menuAnchor: null
       }
+
     case 'FLUSH_STATE':
       return INITIAL_STATE
+
     default:
       return state
   }
