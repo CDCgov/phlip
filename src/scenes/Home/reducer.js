@@ -193,6 +193,9 @@ function homeReducer(state = INITIAL_STATE, action) {
         ...state, errorContent: 'We failed to get the list of projects. Please try again later.', error: true
       }
 
+    case 'FLUSH_STATE':
+      return INITIAL_STATE
+
     case types.GET_PROJECTS_REQUEST:
     case types.UPDATE_PROJECT_REQUEST:
     default:

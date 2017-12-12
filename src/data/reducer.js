@@ -4,7 +4,7 @@ import storage from 'redux-persist/lib/storage'
 import user from './user/reducer'
 
 const dataPersistConfig = {
-  key: 'data',
+  key: 'user',
   storage,
   blacklist: ['menuAnchor']
 }

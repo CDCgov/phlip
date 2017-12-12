@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { login, getToken } from '../authToken'
+import { login, getToken, logout } from '../authToken'
 import { mockUsers } from '../../data/mockUsers'
 import { updateById } from 'utils'
 
@@ -13,6 +13,12 @@ export default {
       login(res.data.token.value)
       api.defaults.headers.common['Authorization'] = `Bearer ${getToken()}`
       return res.data
+    })
+  },
+
+  logoutUser() {
+    return new Promise(resolve => {
+      resolve(logout())
     })
   },
 

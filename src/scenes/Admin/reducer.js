@@ -80,6 +80,10 @@ function adminReducer(state = INITIAL_STATE, action) {
         page: action.page,
         visibleUsers: sliceUsers(state.users, action.page, state.rowsPerPage)
       }
+
+    case 'FLUSH_STATE':
+      return INITIAL_STATE
+
     case types.GET_USERS_REQUEST:
     default:
       return state

@@ -2,20 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Grid from 'material-ui/Grid'
 import Avatar from 'components/Avatar'
-import Menu from 'components/Menu'
+import Menu, { MenuItem } from 'material-ui/Menu'
+import TextLink from 'components/TextLink'
 
 const AvatarMenu = ({ initials, onToggleMenu, onCloseMenu, onLogoutUser, menuAnchor, open }) => {
-  const items = [
-    { label: 'Logout', onClick: onLogoutUser, key: 'logout-menu' }
-  ]
-
   return (
     <Grid item>
       <Avatar big onClick={onToggleMenu} initials={initials ? initials : ''} />
       <Menu
         id="avatar-menu"
         onRequestClose={onCloseMenu}
-        items={items}
         anchorEl={menuAnchor}
         anchorOrigin={{
           vertical: 'bottom',
@@ -23,7 +19,11 @@ const AvatarMenu = ({ initials, onToggleMenu, onCloseMenu, onLogoutUser, menuAnc
         }}
         getContentAnchorEl={null}
         open={open}
-      />
+      >
+        <MenuItem onClick={onLogoutUser} key="logout-menu">
+          <TextLink to="login">Logout</TextLink>
+        </MenuItem>
+      </Menu>
     </Grid>
   )
 }

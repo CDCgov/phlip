@@ -26,6 +26,9 @@ function userReducer(state = INITIAL_STATE, action) {
         menuAnchor: null
       }
 
+    case types.FLUSH_STATE:
+      return INITIAL_STATE
+
     default:
       return state
   }
