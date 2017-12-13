@@ -43,6 +43,18 @@ export const UserList = props => {
   )
 }
 
+UserList.propTypes = {
+  users: PropTypes.arrayOf(PropTypes.object),
+  page: PropTypes.number,
+  rowsPerPage: PropTypes.number,
+  sortBy: PropTypes.string,
+  direction: PropTypes.oneOf(['asc', 'desc']),
+  count: PropTypes.number,
+  handleRequestSort: PropTypes.func,
+  handlePageChange: PropTypes.func,
+  handleRowsChange: PropTypes.func
+}
+
 export default UserList
 
 
