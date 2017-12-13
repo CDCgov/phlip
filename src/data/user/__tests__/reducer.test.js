@@ -67,4 +67,19 @@ describe('User reducer', () => {
       ).toEqual(initial)
     })
   })
+
+  describe('TOGGLE_BOOKMARK', () => {
+    test('should set bookmarks to bookmarkList in action', () => {
+      expect(
+        reducer(
+          { currentUser: { firstName: 'user', bookmarks: [5,6] }, menuOpen: false, menuAnchor: null },
+          { type: types.TOGGLE_BOOKMARK, bookmarkList: [5,6,7] }
+        )
+      ).toEqual({
+        currentUser: { firstName: 'user', bookmarks: [5,6,7] },
+        menuOpen: false,
+        menuAnchor: null
+      })
+    })
+  })
 })
