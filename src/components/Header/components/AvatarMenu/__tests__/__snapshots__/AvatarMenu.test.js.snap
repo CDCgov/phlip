@@ -30,11 +30,16 @@ exports[`Header -- AvatarMenu should render correctly 1`] = `
       key="logout-menu"
       onClick={[Function]}
     >
-      <withTheme(TextLink)
-        to="login"
+      <withStyles(Typography)
+        color="primary"
+        style={
+          Object {
+            "fontSize": "1rem",
+          }
+        }
       >
         Logout
-      </withTheme(TextLink)>
+      </withStyles(Typography)>
     </withStyles(MenuItem)>
     <withStyles(MenuItem)
       key="admin-menu"
