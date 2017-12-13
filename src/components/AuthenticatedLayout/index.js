@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux'
 import Grid from 'material-ui/Grid'
 import Header from 'components/Header'
 import * as actions from 'data/user/actions'
+import { withRouter } from 'react-router-dom'
 
 const mainStyles = {
   backgroundColor: '#f5f5f5',
@@ -12,14 +13,15 @@ const mainStyles = {
   flex: '1'
 }
 
-export const AuthenticatedLayout = ({ user, open, actions, menuAnchor, children }) => {
+
+export const AuthenticatedLayout = ({ user, open, actions, menuAnchor, children, history }) => {
   return (
     <Grid container spacing={0} direction="column" style={{ flex: '1' }}>
       <Header
         user={user}
         open={open}
         menuAnchor={menuAnchor}
-        handleLogoutUser={actions.logoutUser}
+        handleLogoutUser={() => { history.push('/'); actions.logoutUser() }}
         handleOpenMenu={event => actions.openMenu(event.currentTarget)}
         handleCloseMenu={actions.closeMenu}
       />
@@ -46,4 +48,4 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(AuthenticatedLayout)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AuthenticatedLayout))
