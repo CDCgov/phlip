@@ -15,17 +15,17 @@ const styles = {
 const UserTableBody = ({ users }) => {
   return (
     users.map(user => (
-      <TableRow key={user.id}>
-        <TableCell key={`${user.id}-name`} header="name">
+      <TableRow key={user.userId}>
+        <TableCell key={`${user.userId}-name`} header="name">
           <span style={{ color: '#9a9c9c' }}>{user.firstName} {user.lastName}</span>
         </TableCell>
-        <TableCell key={`${user.id}-email`} header="email">
+        <TableCell key={`${user.userId}-email`} header="email">
           <span style={{ color: '#9a9c9c' }}>{user.email}</span>
         </TableCell>
-        <TableCell key={`${user.id}-role`} header="role">
+        <TableCell key={`${user.userId}-role`} header="role">
           <span style={{ color: '#9a9c9c', fontStyle: 'italic' }}>{user.role}</span>
         </TableCell>
-        <TableCell key={`${user.id}-edit`} header="edit">
+        <TableCell key={`${user.userId}-edit`} header="edit">
           <TextLink to={'/admin/edit/user/' + user.id}>Edit</TextLink>
         </TableCell>
       </TableRow>

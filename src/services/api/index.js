@@ -35,14 +35,14 @@ export default {
   },
 
   getUsers() {
-    //return api.get('/users').then(res => res.data)
-    return mockUsers //TODO: temporary
+    return api.get('/security/users').then(res => res.data.users)
   },
 
   addUser(user) {
     return api.post('/security/addUser', user).then(res => {
+      console.log(res.data)
       return user //TODO: temporary
-      //return res.data
+      // return res.data
     })
   },
 
