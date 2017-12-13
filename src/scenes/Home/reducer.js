@@ -194,7 +194,7 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
     case 'FLUSH_STATE':
-      return INITIAL_STATE
+      return { ...INITIAL_STATE, rowsPerPage: state.rowsPerPage }
 
     case types.GET_PROJECTS_REQUEST:
     case types.UPDATE_PROJECT_REQUEST:
