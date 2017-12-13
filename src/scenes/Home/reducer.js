@@ -131,7 +131,7 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
     case types.ADD_PROJECT_SUCCESS:
-      const mockedUpProject = { ...mockUpProject(action.payload), dateLastEdited: new Date() }
+      const mockedUpProject = { ...mockUpProject(action.payload), dateLastEdited: new Date(), lastEditedBy: action.payload.lastEditedBy }
       // const mockedUpProject = action.payload
       const updated = getProjectArrays({
         ...INITIAL_STATE,
