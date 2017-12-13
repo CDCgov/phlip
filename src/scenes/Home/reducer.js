@@ -9,6 +9,7 @@ const start = new Date(2017, 0, 1)
 const INITIAL_STATE = {
   projects: [],
   matches: [],
+  bookmarkList: [],
   searchValue: '',
   rowsPerPage: 10,
   page: 0,
@@ -27,23 +28,22 @@ const mockUpProject = (project) => {
   return {
     ...project,
     dateLastEdited: new Date(start.getTime() + Math.random() * (new Date().getTime() - start.getTime())),
-    bookmarked: false,
     lastEditedBy: `${user.firstName} ${user.lastName}`,
   }
 }
 
 const sliceProjects = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
-const sortProjectsByBookmarked = (projects, sortBy, direction) => {
+const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => {
   if (projects.length === 0) {
     return []
   }
-  const bookmarked = sortList(projects.filter(project => project.bookmarked), sortBy, direction)
-  const nonBookmarked = sortList(projects.filter(project => !project.bookmarked), sortBy, direction)
+  const bookmarked = sortList(projects.filter(project => bookmarkList.includes(project.id)), sortBy, direction)
+  const nonBookmarked = sortList(projects.filter(project => !bookmarkList.includes(project.id)), sortBy, direction)
   return [...bookmarked, ...nonBookmarked]
 }
 
-const anyBookmarks = (projects) => projects.filter(project => project.bookmarked).length > 0
+const anyBookmarks = (projects, bookmarkList) => projects.filter(project => bookmarkList.includes(project.id)).length > 0
 
 const isMatch = (value, search) => value.toLowerCase().includes(search)
 
@@ -61,7 +61,7 @@ const updateAllArrays = (state, updated) => {
 }
 
 const getProjectArrays = (state) => {
-  const { projects, sortBy, direction, matches, page, rowsPerPage, sortBookmarked, searchValue } = state
+  const { projects, bookmarkList, sortBy, direction, matches, page, rowsPerPage, sortBookmarked, searchValue } = state
   let currentList = [...projects]
 
   if (searchValue !== undefined && searchValue.length > 0) {
@@ -81,11 +81,11 @@ const getProjectArrays = (state) => {
   }
 
   if (sortBookmarked) {
-    if (anyBookmarks(currentList)) {
-      const sortedByBookmarked = sortProjectsByBookmarked(currentList, sortBy, direction)
+    if (anyBookmarks(currentList, bookmarkList)) {
+      const sortedByBookmarked = sortProjectsByBookmarked(currentList, bookmarkList, sortBy, direction)
       return {
-        projects: sortProjectsByBookmarked(projects, sortBy, direction),
-        matches: searchValue.length === 0 ? [] : sortProjectsByBookmarked(matches, sortBy, direction),
+        projects: sortProjectsByBookmarked(projects, bookmarkList, sortBy, direction),
+        matches: searchValue.length === 0 ? [] : sortProjectsByBookmarked(matches, bookmarkList, sortBy, direction),
         visibleProjects: sliceProjects(sortedByBookmarked, page, rowsPerPage),
         projectCount: sortedByBookmarked.length
       }
@@ -103,7 +103,8 @@ function homeReducer(state = INITIAL_STATE, action) {
         ...state,
         error: false,
         errorContent: '',
-        ...getProjectArrays({ ...state, matches: [], searchValue: '', projects: action.payload.map(mockUpProject) })
+        bookmarkList: action.payload.bookmarkList,
+        ...getProjectArrays({ ...state, matches: [], searchValue: '', bookmarkList: action.payload.bookmarkList, projects: action.payload.projects.map(mockUpProject) })
         // ..getProjectArrays({ ...state, matches: [], searchValue: '', projects: action.payload })
       }
 
@@ -120,7 +121,8 @@ function homeReducer(state = INITIAL_STATE, action) {
     case types.TOGGLE_BOOKMARK:
       return {
         ...state,
-        ...getProjectArrays({ ...state, ...updateAllArrays(state, action.project) })
+        bookmarkList: action.bookmarkList,
+        ...getProjectArrays({ ...state, ...updateAllArrays(state, action.project), bookmarkList: action.bookmarkList })
       }
 
     case types.UPDATE_PROJECT_SUCCESS:
@@ -189,6 +191,7 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
     case types.GET_PROJECTS_FAIL:
+      console.log(action)
       return {
         ...state, errorContent: 'We failed to get the list of projects. Please try again later.', error: true
       }

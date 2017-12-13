@@ -6,9 +6,10 @@ let date = new Date('10/11/2017')
 
 const props = {
   projects: [
-    { id: 1, bookmarked: true, name: 'Project 1', dateLastEdited: date, lastEditedBy: 'Kristin' },
-    { id: 2, bookmarked: false, name: 'Project 2', dateLastEdited: date, lastEditedBy: 'Michael' }
+    { id: 1, name: 'Project 1', dateLastEdited: date, lastEditedBy: 'Kristin' },
+    { id: 2, name: 'Project 2', dateLastEdited: date, lastEditedBy: 'Michael' }
   ],
+  bookmarkList: [],
   user: {
     id: 2,
     firstName: 'Kristin',

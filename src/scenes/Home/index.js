@@ -25,7 +25,8 @@ export class Home extends Component {
     direction: PropTypes.string,
     searchValue: PropTypes.string,
     error: PropTypes.bool,
-    errorContent: PropTypes.string
+    errorContent: PropTypes.string,
+    bookmarkList: PropTypes.array
   }
 
   constructor(props, context) {
@@ -62,6 +63,7 @@ export class Home extends Component {
             sortBy={this.props.sortBy}
             direction={this.props.direction}
             sortBookmarked={this.props.sortBookmarked}
+            bookmarkList={this.props.bookmarkList}
             handleRequestSort={this.props.actions.sortProjects}
             handlePageChange={this.props.actions.updatePage}
             handleRowsChange={this.props.actions.updateRows}
@@ -89,7 +91,8 @@ const mapStateToProps = (state) => ({
   sortBookmarked: state.scenes.home.main.sortBookmarked,
   error: state.scenes.home.main.error,
   errorContent: state.scenes.home.main.errorContent,
-  projectCount: state.scenes.home.main.projectCount || 0
+  projectCount: state.scenes.home.main.projectCount || 0,
+  bookmarkList: state.scenes.home.main.bookmarkList
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

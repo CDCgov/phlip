@@ -10,25 +10,29 @@ export const getProjectLogic = createLogic({
     successType: types.GET_PROJECTS_SUCCESS,
     failType: types.GET_PROJECTS_FAIL
   },
-  async process({ api }) {
-    return await api.getProjects()
+  async process({ api, getState }) {
+    const projects = await api.getProjects()
+    return { projects, bookmarkList: [...getState().data.user.currentUser.bookmarks] }
   }
 })
 
 export const toggleBookmarkLogic = createLogic({
   type: types.TOGGLE_BOOKMARK,
-  transform({ action }, next) {
-    const currentProject = action.project
-    const project = {
-      ...currentProject, 
-      bookmarked: !currentProject.bookmarked
+  transform({ action, getState }, next) {
+    let bookmarkList = [...getState().data.user.currentUser.bookmarks]
+
+    if (bookmarkList.includes(action.project.id)) {
+      bookmarkList.splice(bookmarkList.indexOf(action.project.id), 1)
+    } else {
+      bookmarkList.push(action.project.id)
     }
-    next({ ...action, project })
+
+    next({ ...action, bookmarkList })
   }
 })
 
 export const updateProjectLogic = createLogic({
-  type: [types.UPDATE_PROJECT_REQUEST, types.TOGGLE_BOOKMARK],
+  type: [types.UPDATE_PROJECT_REQUEST],
   latest: true,
   processOptions: {
     dispatchReturn: true,

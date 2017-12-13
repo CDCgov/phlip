@@ -34,19 +34,22 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
       </withStyles(TableHead)>
       <withStyles(TableBody)>
         <ProjectTableBody
+          bookmarkList={
+            Array [
+              1,
+            ]
+          }
           onExport={[Function]}
           onToggleBookmark={[Function]}
           projects={
             Array [
               Object {
-                "bookmarked": true,
                 "dateLastEdited": 2017-10-11T00:00:00.000Z,
                 "id": 1,
                 "lastEditedBy": "Kristin",
                 "name": "Project 1",
               },
               Object {
-                "bookmarked": false,
                 "dateLastEdited": 2017-10-11T00:00:00.000Z,
                 "id": 2,
                 "lastEditedBy": "Michael",
