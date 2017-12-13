@@ -1,23 +1,14 @@
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { createLogicMiddleware } from 'redux-logic'
-import { persistStore, persistCombineReducers } from 'redux-persist'
-import storage from 'redux-persist/es/storage'
+import { persistStore } from 'redux-persist'
 import rootLogic from 'logic'
-import rootReducer from 'reducer'
-import { reducer as formReducer } from 'redux-form'
+import appReducer from 'reducer'
 import api from '../api'
 
-const persistConfig = {
-  key: 'root',
-  storage,
-  blacklist: ['form']
-}
-
-const reducer = persistCombineReducers(persistConfig, rootReducer)
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 const store = createStore(
-  reducer,
+  appReducer,
   composeEnhancers(
     applyMiddleware(createLogicMiddleware(rootLogic, { api }))
   )

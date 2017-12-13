@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Header should render correctly 1`] = `
+<withStyles(GridWrapper)
+  alignItems="center"
+  container={true}
+  spacing={0}
+  style={
+    Object {
+      "backgroundColor": "#4aac72",
+      "height": "100px",
+      "padding": "0 30px",
+    }
+  }
+>
+  <withStyles(GridWrapper)
+    item={true}
+    xs={true}
+  >
+    <Link
+      replace={false}
+      style={
+        Object {
+          "textDecoration": "none",
+        }
+      }
+      to="/"
+    >
+      <Logo
+        fontSize="30px"
+      />
+    </Link>
+  </withStyles(GridWrapper)>
+  <withStyles(GridWrapper)
+    item={true}
+  >
+    <withStyles(GridWrapper)
+      alignItems="center"
+      container={true}
+      spacing={8}
+    >
+      <withStyles(GridWrapper)
+        item={true}
+      >
+        <Greeting
+          firstName="Test"
+          lastName="User"
+          role="Coordinator"
+        />
+      </withStyles(GridWrapper)>
+      <AvatarMenu
+        initials="TU"
+        menuAnchor={null}
+        onCloseMenu={[Function]}
+        onLogoutUser={[Function]}
+        onOpenMenu={[Function]}
+        open={false}
+        role="Coordinator"
+      />
+    </withStyles(GridWrapper)>
+  </withStyles(GridWrapper)>
+</withStyles(GridWrapper)>
+`;

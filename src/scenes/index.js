@@ -7,6 +7,8 @@ import Admin from './Admin'
 import AuthenticatedRoute from 'components/AuthenticatedRoute'
 import AuthenticatedLayout from 'components/AuthenticatedLayout'
 import { persistor } from 'services/store'
+import axios from 'axios'
+import { isLoggedInTokenExists, getToken } from '../services/authToken'
 
 const AuthenticatedScenes = () => (
   <AuthenticatedLayout>
@@ -18,6 +20,9 @@ const AuthenticatedScenes = () => (
 )
 
 const Scenes = () => {
+  if (isLoggedInTokenExists()) {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${getToken()}`
+  }
   return (
     <Switch>
       <Route path="/login" component={Login} />

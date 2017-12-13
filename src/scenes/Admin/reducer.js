@@ -22,11 +22,11 @@ const getAvailableUsers = (users, sortBy, direction, page, rowsPerPage) => {
   return { users: sortedUsers, visibleUsers: sortedUsers }
 }
 
-//TODO: Temporary
+//TODO: Temporary, API needs to be updated to return new ID
 const mockUpUser = (users) => {
   return {
     ...users,
-    id: Math.random()
+    userId: Math.random()
   }
 }
 
@@ -37,8 +37,7 @@ function adminReducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         ...getAvailableUsers(
-          mockUsers, state.sortBy, state.direction, state.page, state.rowsPerPage
-          // action.payload, state.sortBy, state.direction, state.page, state.rowsPerPage
+          action.payload, state.sortBy, state.direction, state.page, state.rowsPerPage
         )
       }
 
@@ -88,6 +87,10 @@ function adminReducer(state = INITIAL_STATE, action) {
         page: action.page,
         visibleUsers: sliceUsers(state.users, action.page, state.rowsPerPage)
       }
+
+    case 'FLUSH_STATE':
+      return INITIAL_STATE
+
     case types.GET_USERS_REQUEST:
     default:
       return state
