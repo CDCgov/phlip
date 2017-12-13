@@ -140,7 +140,7 @@ export class AddEditUser extends Component {
 }
 
 function getUserById(users, id) {
-  const user = users.filter(user => user.id == id);
+  const user = users.filter(user => user.userId == id);
   if (user.length) return user[0];
   return null;
 }

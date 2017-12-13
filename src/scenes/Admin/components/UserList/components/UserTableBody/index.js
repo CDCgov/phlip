@@ -26,7 +26,7 @@ const UserTableBody = ({ users }) => {
           <span style={{ color: '#9a9c9c', fontStyle: 'italic' }}>{user.role}</span>
         </TableCell>
         <TableCell key={`${user.userId}-edit`} header="edit">
-          <TextLink to={'/admin/edit/user/' + user.id}>Edit</TextLink>
+          <TextLink to={'/admin/edit/user/' + user.userId}>Edit</TextLink>
         </TableCell>
       </TableRow>
     ))
