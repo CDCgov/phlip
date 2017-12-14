@@ -8,6 +8,7 @@ import { withRouter } from 'react-router-dom'
 import { Field, reduxForm } from 'redux-form'
 import ModalForm from 'components/ModalForm'
 import FormTextInput from 'components/FormTextInput'
+import isEmail from 'sane-email-validation'
 
 export class AddEditUser extends Component {
   constructor(props, context) {
@@ -35,6 +36,9 @@ export class AddEditUser extends Component {
     return sleep(1).then(() => {
       if (emails.includes(values.email)) {
         throw { email: 'This email is already associated with a user account.' }
+      }
+      if (!isEmail(values.email)) {
+        throw { email: 'Invalid email address' }
       }
     })
   }
@@ -140,7 +144,7 @@ export class AddEditUser extends Component {
 }
 
 function getUserById(users, id) {
-  const user = users.filter(user => user.id == id);
+  const user = users.filter(user => user.userId == id);
   if (user.length) return user[0];
   return null;
 }

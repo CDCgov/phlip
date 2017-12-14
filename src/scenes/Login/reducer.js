@@ -6,7 +6,7 @@ const INITIAL_STATE = {
   session: !!localStorage.esquire_token
 }
 
-function loginReducer(state = INITIAL_STATE, action) {
+const loginReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.LOGIN_USER_SUCCESS:
       return {
@@ -17,6 +17,8 @@ function loginReducer(state = INITIAL_STATE, action) {
       return state
     case types.LOGIN_USER_REQUEST:
       return state
+    case 'FLUSH_STATE':
+      return INITIAL_STATE
 
     default: return state
   }

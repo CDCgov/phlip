@@ -2,9 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Grid from 'material-ui/Grid'
-import TextInput from 'components/TextInput'
-import MainButton from 'components/Button'
-import Logo from 'components/Logo'
 import LoginForm from './components/LoginForm'
 import { Field, SubmissionError } from 'redux-form'
 import FormTextInput from 'components/FormTextInput'
@@ -19,8 +16,8 @@ export class Login extends Component {
   }
 
   componentDidUpdate() {
-    if (this.props.user&&this.props.session) {
-      setTimeout(this.props.history.push('/'), 3000)
+    if (this.props.session) {
+      this.props.history.push('/')
     }
   }
 
@@ -70,8 +67,8 @@ export class Login extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.data.user.currentUser||undefined,
-  session: state.scenes.login.session||{}
+  user: state.data.user.currentUser || undefined,
+  session: state.scenes.login.session || false
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

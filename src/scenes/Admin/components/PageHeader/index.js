@@ -4,26 +4,27 @@ import Typography from 'material-ui/Typography'
 import Button from 'components/Button'
 import CircleIcon from 'components/CircleIcon'
 import TextLink from 'components/TextLink'
+import Container, { Column } from 'components/Layout'
 
-const PageHeader = () => {
+export const PageHeader = () => {
   return (
-    <Grid container spacing={0} alignItems="center" style={{ height: '100px' }}>
-      <Grid item xs>
-        <Grid container spacing={8} alignItems="center">
-          <Grid item>
+    <Container alignItems="center" style={{ height: '100px' }}>
+      <Column flex>
+        <Container spacing={8} alignItems="center">
+          <Column>
             <CircleIcon circleColor="error" iconColor="white" circleSize="35px" iconSize="24px">face</CircleIcon>
-          </Grid>
-          <Grid item>
+          </Column>
+          <Column>
             <Typography type="headline">User Management</Typography>
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid item>
+          </Column>
+        </Container>
+      </Column>
+      <Column >
         <TextLink to="/admin/new/user" style={{ color: 'white' }}>
           <Button value=" + Add new user" color="accent" />
         </TextLink>
-      </Grid>
-    </Grid>
+      </Column>
+    </Container>
   )
 }
 

@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Admin scene - PageHeader component should render correctly 1`] = `
+<Container
+  alignItems="center"
+  column={false}
+  flex={false}
+  spacing={0}
+  style={
+    Object {
+      "height": "100px",
+    }
+  }
+>
+  <Column
+    component={
+      <withStyles(GridWrapper)
+        item={true}
+      />
+    }
+    displayFlex={false}
+    flex={true}
+  >
+    <Container
+      alignItems="center"
+      column={false}
+      flex={false}
+      spacing={8}
+    >
+      <Column
+        component={
+          <withStyles(GridWrapper)
+            item={true}
+          />
+        }
+        displayFlex={false}
+        flex={false}
+      >
+        <withTheme(CircleIcon)
+          circleColor="error"
+          circleSize="35px"
+          iconColor="white"
+          iconSize="24px"
+        >
+          face
+        </withTheme(CircleIcon)>
+      </Column>
+      <Column
+        component={
+          <withStyles(GridWrapper)
+            item={true}
+          />
+        }
+        displayFlex={false}
+        flex={false}
+      >
+        <withStyles(Typography)
+          type="headline"
+        >
+          User Management
+        </withStyles(Typography)>
+      </Column>
+    </Container>
+  </Column>
+  <Column
+    component={
+      <withStyles(GridWrapper)
+        item={true}
+      />
+    }
+    displayFlex={false}
+    flex={false}
+  >
+    <withTheme(TextLink)
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+      to="/admin/new/user"
+    >
+      <withTheme(Button)
+        color="accent"
+        value=" + Add new user"
+      />
+    </withTheme(TextLink)>
+  </Column>
+</Container>
+`;

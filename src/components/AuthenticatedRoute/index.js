@@ -11,12 +11,13 @@ export default function AuthenticatedRoute({ component: Component, ...rest }) {
         isLoggedInTokenExists() ? (
           <Component {...props} />
         ) : (
-            <Redirect
-              to={{
-                pathname: '/login',
-              }}
-            />
-          )}
+          <Redirect
+            to={{
+              pathname: '/login',
+            }}
+          />
+        )
+      }
     />
   )
 }

@@ -4,12 +4,10 @@ import Grid from 'material-ui/Grid'
 import { withTheme } from 'material-ui/styles'
 import Logo from 'components/Logo'
 import Greeting from './components/Greeting'
-import Avatar from 'components/Avatar'
-import Admin from '../../scenes/Admin'
+import AvatarMenu from './components/AvatarMenu'
 import { Link } from 'react-router-dom'
 
-
-const Header = ({ theme, user }) => {
+export const Header = ({ theme, user, open, menuAnchor, handleLogoutUser, handleCloseMenu, handleOpenMenu }) => {
   const bgColor = theme.palette.primary['600']
 
   const styles = {
@@ -30,9 +28,15 @@ const Header = ({ theme, user }) => {
           <Grid item>
             <Greeting firstName={user.firstName} lastName={user.lastName} role={user.role} />
           </Grid>
-          <Grid item>
-            <Link style={{ textDecoration: 'none' }} to="/admin"><Avatar big initials={initials} /></Link>
-          </Grid>
+          <AvatarMenu
+            initials={initials}
+            role={user.role}
+            open={open}
+            menuAnchor={menuAnchor}
+            onOpenMenu={handleOpenMenu}
+            onCloseMenu={handleCloseMenu}
+            onLogoutUser={handleLogoutUser}
+          />
         </Grid>
       </Grid>
     </Grid>
@@ -41,7 +45,17 @@ const Header = ({ theme, user }) => {
 
 Header.propTypes = {
   theme: PropTypes.object.isRequired,
-  user: PropTypes.object
+  user: PropTypes.object,
+  open: PropTypes.bool,
+  menuAnchor: PropTypes.any,
+  handleLogoutUser: PropTypes.func,
+  handleCloseMenu: PropTypes.func,
+  handleOpenMenu: PropTypes.func
+}
+
+Header.defaultProps = {
+  open: false,
+  user: {}
 }
 
 export default withTheme()(Header)
