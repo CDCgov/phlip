@@ -16,7 +16,7 @@ export default {
 
   logoutUser() {
     //return api.post('/security/logout', user).then(res => {
-      return logout()
+    return logout()
     //})
   },
 
@@ -37,11 +37,7 @@ export default {
   },
 
   addUser(user) {
-    return api.post('/security/addUser', user).then(res => {
-      console.log(res.data)
-      return user //TODO: temporary
-      // return res.data
-    })
+    return api.post('/security/addUser', user).then(res => res.data.newUser)
   },
 
   updateUser(user) {

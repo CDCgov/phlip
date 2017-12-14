@@ -1,7 +1,6 @@
 import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import addEditUserReducer from './scenes/AddEditUser/reducer'
-import { mockUsers } from '../../data/mockUsers'
 import { sortList, updateById } from '../../utils'
 
 const INITIAL_STATE = {
@@ -22,14 +21,6 @@ const getAvailableUsers = (users, sortBy, direction, page, rowsPerPage) => {
   return { users: sortedUsers, visibleUsers: sortedUsers }
 }
 
-//TODO: Temporary, API needs to be updated to return new ID
-const mockUpUser = (users) => {
-  return {
-    ...users,
-    userId: Math.random()
-  }
-}
-
 function adminReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
 
@@ -42,18 +33,17 @@ function adminReducer(state = INITIAL_STATE, action) {
       }
 
     case types.ADD_USER_SUCCESS:
-      const mockedUpUser = mockUpUser(action.payload)
       const updated = getAvailableUsers(state.users, 'lastName', 'asc', 0, state.rowsPerPage)
       if ((updated.visibleUsers.length + 1) > state.rowsPerPage) {
         updated.visibleUsers.pop()
       }
       return {
         ...state,
-        users: [mockedUpUser, ...updated.users],
+        users: [action.payload, ...updated.users],
         sortBy: 'lastName',
         direction: 'desc',
         page: 0,
-        visibleUsers: [mockedUpUser, ...updated.visibleUsers]
+        visibleUsers: [action.payload, ...updated.visibleUsers]
       }
 
     case types.UPDATE_USER_SUCCESS:
