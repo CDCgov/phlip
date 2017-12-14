@@ -8,7 +8,7 @@ import ProjectTableBody from './components/ProjectTableBody'
 import ProjectTableHead from './components/ProjectTableHead'
 
 export const ProjectList = props => {
-  const { projects, user, page, rowsPerPage, count, sortBy, direction, sortBookmarked } = props
+  const { projects, user, page, rowsPerPage, count, sortBy, direction, sortBookmarked, bookmarkList } = props
   const { handleToggleBookmark, handlePageChange, handleRowsChange, handleRequestSort, handleExport, handleSortBookmarked } = props
   return (
     <Container flex>
@@ -28,6 +28,7 @@ export const ProjectList = props => {
             <ProjectTableBody
               user={user}
               projects={projects}
+              bookmarkList={bookmarkList}
               onToggleBookmark={handleToggleBookmark}
               onExport={handleExport}
             />
@@ -61,6 +62,7 @@ ProjectList.propTypes = {
   sortBy: PropTypes.string,
   direction: PropTypes.oneOf(['asc', 'desc']),
   sortBookmarked: PropTypes.bool,
+  bookmarkList: PropTypes.array,
   handleToggleBookmark: PropTypes.func,
   handleChangePage: PropTypes.func,
   handleRowsChange: PropTypes.func,

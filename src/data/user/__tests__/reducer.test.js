@@ -2,7 +2,7 @@ import reducer from '../reducer'
 import * as types from '../actionTypes'
 
 const initial = {
-  currentUser: {},
+  currentUser: { bookmarks: [] },
   menuOpen: false,
   menuAnchor: null
 }
@@ -20,7 +20,7 @@ describe('User reducer', () => {
           { type: types.OPEN_MENU, anchor: '<div></div>' }
         )
       ).toEqual({
-        currentUser: {},
+        currentUser: { bookmarks: [] },
         menuAnchor: '<div></div>',
         menuOpen: true
       })
@@ -35,7 +35,7 @@ describe('User reducer', () => {
           { type: types.CLOSE_MENU }
         )
       ).toEqual({
-        currentUser: {},
+        currentUser: { bookmarks: [] },
         menuAnchor: null,
         menuOpen: false
       })
@@ -50,7 +50,7 @@ describe('User reducer', () => {
           { type: types.LOGIN_USER_SUCCESS, payload: { firstName: 'user' }}
         )
       ).toEqual({
-        currentUser: { firstName: 'user' },
+        currentUser: { firstName: 'user', bookmarks: [] },
         menuOpen: false,
         menuAnchor: null
       })
@@ -61,10 +61,25 @@ describe('User reducer', () => {
     test('should set state back to initial state', () => {
       expect(
         reducer(
-          { currentUser: { firstName: 'user' }, menuOpen: true, menuAnchor: '<div></div>' },
+          { currentUser: { firstName: 'user', bookmarks: [] }, menuOpen: true, menuAnchor: '<div></div>' },
           { type: types.FLUSH_STATE }
         )
       ).toEqual(initial)
+    })
+  })
+
+  describe('TOGGLE_BOOKMARK', () => {
+    test('should set bookmarks to bookmarkList in action', () => {
+      expect(
+        reducer(
+          { currentUser: { firstName: 'user', bookmarks: [5,6] }, menuOpen: false, menuAnchor: null },
+          { type: types.TOGGLE_BOOKMARK, bookmarkList: [5,6,7] }
+        )
+      ).toEqual({
+        currentUser: { firstName: 'user', bookmarks: [5,6,7] },
+        menuOpen: false,
+        menuAnchor: null
+      })
     })
   })
 })

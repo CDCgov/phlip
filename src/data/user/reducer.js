@@ -1,7 +1,7 @@
 import * as types from './actionTypes'
 
 const INITIAL_STATE = {
-  currentUser: {},
+  currentUser: { bookmarks: [] },
   menuOpen: false,
   menuAnchor: null
 }
@@ -11,7 +11,7 @@ function userReducer(state = INITIAL_STATE, action) {
     case types.LOGIN_USER_SUCCESS:
       return {
         ...state,
-        currentUser: action.payload
+        currentUser: { ...action.payload, bookmarks: [] }
       }
 
     case types.OPEN_MENU:
@@ -26,6 +26,15 @@ function userReducer(state = INITIAL_STATE, action) {
         ...state,
         menuOpen: false,
         menuAnchor: null
+      }
+
+    case types.TOGGLE_BOOKMARK:
+      return {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          bookmarks: action.bookmarkList
+        }
       }
 
     case 'FLUSH_STATE':

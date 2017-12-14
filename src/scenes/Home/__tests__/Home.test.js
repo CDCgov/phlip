@@ -30,6 +30,7 @@ const props = {
   errorContent: '',
   projects: mockProjects,
   visibleProjects: [],
+  bookmarkList: [],
   sortBookmarked: false,
   sortBy: 'dateLastEdited',
   direction: 'desc',
