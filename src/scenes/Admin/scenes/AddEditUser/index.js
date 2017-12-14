@@ -39,7 +39,7 @@ export class AddEditUser extends Component {
       if (emails.includes(values.email)) {
         throw { email: 'This email is already associated with a user account.' }
       }
-      if (!isEmail(values.email)) {
+      if (values.email && !isEmail(values.email)) {
         throw { email: 'Invalid email address' }
       }
     })
@@ -81,7 +81,7 @@ export class AddEditUser extends Component {
         asyncBlurFields={['email']}
         width="600px"
         height="400px">
-        <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
+        <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
           <Row>
             <Container spacing={24}>
               <Row flex>
