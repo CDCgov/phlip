@@ -9,6 +9,8 @@ import { Field, reduxForm } from 'redux-form'
 import ModalForm from 'components/ModalForm'
 import FormTextInput from 'components/FormTextInput'
 import isEmail from 'sane-email-validation'
+import Container, { Row, Column } from 'components/Layout'
+
 
 export class AddEditUser extends Component {
   constructor(props, context) {
@@ -79,10 +81,10 @@ export class AddEditUser extends Component {
         asyncBlurFields={['email']}
         width="600px"
         height="400px">
-        <Grid container direction="column" style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
-          <Grid item>
-            <Grid container direction="row" spacing={24}>
-              <Grid item xs={6}>
+        <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
+          <Row>
+            <Container spacing={24}>
+              <Row flex>
                 <Field
                   name="firstName"
                   component={FormTextInput}
@@ -91,8 +93,8 @@ export class AddEditUser extends Component {
                   validate={this.required}
                   fullWidth={true}
                 />
-              </Grid>
-              <Grid item xs={6} >
+              </Row>
+              <Row flex >
                 <Field
                   name="lastName"
                   component={FormTextInput}
@@ -101,12 +103,12 @@ export class AddEditUser extends Component {
                   validate={this.required}
                   fullWidth={true}
                 />
-              </Grid>
-            </Grid>
+              </Row>
+            </Container>
 
-          </Grid>
+          </Row>
 
-          <Grid item>
+          <Row>
             <Field
               name="email"
               component={FormTextInput}
@@ -115,8 +117,8 @@ export class AddEditUser extends Component {
               validate={this.required}
               fullWidth={true}
             />
-          </Grid>
-          <Grid item>
+          </Row>
+          <Row style={{ paddingBottom: '25px' }}>
             <Field
               name="password"
               component={FormTextInput}
@@ -125,8 +127,8 @@ export class AddEditUser extends Component {
               validate={this.required}
               fullWidth={true}
             />
-          </Grid>
-          <Grid item>
+          </Row>
+          <Row>
             <Field
               name="role"
               component={Dropdown}
@@ -136,8 +138,8 @@ export class AddEditUser extends Component {
               id="role"
               style={{ display: 'flex' }}
             />
-          </Grid>
-        </Grid>
+          </Row>
+        </Container>
       </ModalForm>
     )
   }
