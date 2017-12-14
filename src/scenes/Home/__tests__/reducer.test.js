@@ -530,17 +530,25 @@ describe('Home reducer', () => {
 
   describe('SORT_BOOKMARKED', () => {
     test('should move bookmarked projects to the top and sort those depending on the sort label selected', () => {
+      const expectedResult = [
+        { id: 4, name: 'Project 4', dateLastEdited: new Date(2017, 5, 30), lastEditedBy: 'Greg Ledbetter' },
+        { id: 3, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
+        { id: 1, name: 'Project 1', dateLastEdited: new Date(2017, 0, 31), lastEditedBy: 'Kristin Muterspaw' },
+        { id: 5, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James' },
+        { id: 2, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' }
+      ]
+
       expect(
         reducer(
-          { ...initial, main: { ...initial.main, projects, bookmarkList: [1,3,4] } },
+          { ...initial, main: { ...initial.main, projects, bookmarkList: [1,3,4], sortBookmarked: false } },
           { type: types.SORT_BOOKMARKED }
         )
       ).toEqual({
         ...initial,
         main: {
           ...initial.main,
-          projects: sortedByDateAndBookmarked,
-          visibleProjects: sortedByDateAndBookmarked,
+          projects: expectedResult,
+          visibleProjects: expectedResult,
           sortBookmarked: true,
           projectCount: 5,
           bookmarkList: [1,3,4]
