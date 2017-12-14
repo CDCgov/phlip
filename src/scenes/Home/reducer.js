@@ -28,7 +28,7 @@ const mockUpProject = (project) => {
   return {
     ...project,
     dateLastEdited: new Date(start.getTime() + Math.random() * (new Date().getTime() - start.getTime())),
-    lastEditedBy: `${user.firstName} ${user.lastName}`,
+    lastEditedBy: `${user.firstName} ${user.lastName}`
   }
 }
 
@@ -56,14 +56,15 @@ const searchForMatches = (projects, searchValue) => {
 }
 
 const getProjectArrays = (state) => {
-  const { projects, bookmarkList, sortBy, direction, matches, page, rowsPerPage, sortBookmarked, searchValue } = state
-  if (projects.length === 0) return { projects, matches, visibleProjects, projectCount }
+  const { projects, bookmarkList, sortBy, direction, matches, page, rowsPerPage, sortBookmarked, searchValue, visibleProjects, projectCount } = state
+  if (projects.length === 0) return state
 
   let currentList = [...projects]
+  let results = { ...state }
 
   if (searchValue !== undefined && searchValue.length > 0) {
     if (matches.length === 0) {
-      return { projects, visibleProjects: [], projectCount: 0, matches: [] }
+      return { ...results, projects, visibleProjects: [], projectCount: 0, matches: [] }
     } else {
       currentList = [...matches]
     }
@@ -71,6 +72,7 @@ const getProjectArrays = (state) => {
 
   const sortedProjects = sortList(currentList, sortBy, direction)
   const baseResult = {
+    ...results,
     projects: sortList(projects, sortBy, direction),
     matches: searchValue.length === 0 ? [] : sortList(matches, sortBy, direction),
     visibleProjects: sliceProjects(sortedProjects, page, rowsPerPage),
@@ -81,6 +83,7 @@ const getProjectArrays = (state) => {
     if (anyBookmarks(currentList, bookmarkList)) {
       const sortedByBookmarked = sortProjectsByBookmarked(currentList, bookmarkList, sortBy, direction)
       return {
+        ...results,
         projects: sortProjectsByBookmarked(projects, bookmarkList, sortBy, direction),
         matches: searchValue.length === 0 ? [] : sortProjectsByBookmarked(matches, bookmarkList, sortBy, direction),
         visibleProjects: sliceProjects(sortedByBookmarked, page, rowsPerPage),
@@ -93,6 +96,8 @@ const getProjectArrays = (state) => {
   return baseResult
 }
 
+const updateItemInObject = item => newValue => ({ ...obj, [item]: newValue })
+
 const updateState = (state, updateItems) => ({ ...state, ...updateItems })
 
 const homeReducer = (state, action) => {
@@ -100,8 +105,7 @@ const homeReducer = (state, action) => {
     case types.GET_PROJECTS_SUCCESS:
       return updateState(
         state,
-        { error: false, errorContent: '',
-          searchValue: '',
+        { error: false, errorContent: '', searchValue: '',
           bookmarkList: action.payload.bookmarkList,
           projects: action.payload.projects.map(mockUpProject) }
       )
@@ -114,17 +118,18 @@ const homeReducer = (state, action) => {
       )
 
     case types.TOGGLE_BOOKMARK:
+      console.log(updateState(state, { bookmarkList: action.bookmarkList }))
       return updateState(
         state,
         { bookmarkList: action.bookmarkList }
       )
 
     case types.UPDATE_PROJECT_SUCCESS:
-      return {
-        ...state,
-        projects: updateById(action.payload, [...state.projects]),
-        visibleProjects: updateById(action.payload, [...state.visibleProjects])
-      }
+      return updateState(
+        state,
+        { projects: updateById(action.payload, [...state.projects]),
+          visibleProjects: updateById(action.payload, [...state.visibleProjects]) }
+      )
 
     case types.ADD_PROJECT_SUCCESS:
       const mockedUpProject = {
@@ -132,54 +137,37 @@ const homeReducer = (state, action) => {
         dateLastEdited: new Date(),
         lastEditedBy: action.payload.lastEditedBy
       }
-      // const mockedUpProject = action.payload
-      const updated = getProjectArrays({
-        ...INITIAL_STATE,
-        projects: state.projects,
-        visibleProjects: state.visibleProjects
-      })
 
-      if ((updated.visibleProjects.length + 1) > state.rowsPerPage) {
-        updated.visibleProjects.pop()
-      }
-
-      return {
-        ...state,
+      return updateState(
         ...INITIAL_STATE,
-        projects: [mockedUpProject, ...updated.projects],
-        visibleProjects: [mockedUpProject, ...updated.visibleProjects],
-        projectCount: updated.projectCount
-      }
+        { projects: [mockedUpProject, ...state.projects ] }
+      )
 
     case types.UPDATE_ROWS:
-      return {
-        ...state,
-        rowsPerPage: action.rowsPerPage,
-        ...getProjectArrays({ ...state, rowsPerPage: action.rowsPerPage })
-      }
+      console.log(updateItemInObject(state, 'rowsPerPage', action.rowsPerPage ))
+
+      return updateState(
+        state,
+        { rowsPerPage: action.rowsPerPage }
+      )
 
     case types.UPDATE_PAGE:
-      return {
-        ...state,
-        page: action.page,
-        ...getProjectArrays({ ...state, page: action.page })
-      }
+      return updateState(
+        state,
+        { page: action.page }
+      )
 
     case types.SORT_PROJECTS:
-      const dir = state.direction === 'asc' ? 'desc' : 'asc'
-      return {
-        ...state,
-        sortBy: action.sortBy,
-        direction: dir,
-        ...getProjectArrays({ ...state, direction: dir, sortBy: action.sortBy })
-      }
+      return updateState(
+        state,
+        { sortBy: action.sortBy, direction: state.direction === 'asc' ? 'desc' : 'asc' }
+      )
 
     case types.SORT_BOOKMARKED:
-      return {
-        ...state,
-        sortBookmarked: !state.sortBookmarked,
-        ...getProjectArrays({ ...state, sortBookmarked: !state.sortBookmarked })
-      }
+      return updateState(
+        state,
+        { sortBookmarked: !state.sortBookmarked }
+      )
 
     case types.UPDATE_PROJECT_FAIL:
       return {
