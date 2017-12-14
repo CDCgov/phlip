@@ -55,11 +55,6 @@ const searchForMatches = (projects, searchValue) => {
   })
 }
 
-const updateAllArrays = (state, updated) => {
-  const { matches, projects } = state
-  return { matches: matches.length > 0 ? updateById(updated, matches) : [], projects: updateById(updated, projects) }
-}
-
 const getProjectArrays = (state) => {
   const { projects, bookmarkList, sortBy, direction, matches, page, rowsPerPage, sortBookmarked, searchValue } = state
   let currentList = [...projects]
@@ -122,7 +117,7 @@ function homeReducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         bookmarkList: action.bookmarkList,
-        ...getProjectArrays({ ...state, ...updateAllArrays(state, action.project), bookmarkList: action.bookmarkList })
+        ...getProjectArrays({ ...state, bookmarkList: action.bookmarkList })
       }
 
     case types.UPDATE_PROJECT_SUCCESS:
