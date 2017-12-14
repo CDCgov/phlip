@@ -28,7 +28,7 @@ const mockUpProject = (project) => {
     ...project,
     dateLastEdited: new Date(start.getTime() + Math.random() * (new Date().getTime() - start.getTime())),
     bookmarked: false,
-    lastEditedBy: `${user.firstName} ${user.lastName}`,
+    lastEditedBy: `${user.firstName} ${user.lastName}`
   }
 }
 
@@ -61,7 +61,9 @@ const updateAllArrays = (state, updated) => {
 }
 
 const getProjectArrays = (state) => {
-  const { projects, sortBy, direction, matches, page, rowsPerPage, sortBookmarked, searchValue } = state
+  const { projects, sortBy, direction, matches, page, rowsPerPage, sortBookmarked, visibleProjects, projectCount, searchValue } = state
+  if (projects.length === 0) return { projects, matches, visibleProjects, projectCount }
+
   let currentList = [...projects]
 
   if (searchValue !== undefined && searchValue.length > 0) {
@@ -96,32 +98,30 @@ const getProjectArrays = (state) => {
   return baseResult
 }
 
-function homeReducer(state = INITIAL_STATE, action) {
+const updateState = (state, updateItems) => ({ ...state, ...updateItems })
+
+const homeReducer = (state, action) => {
   switch (action.type) {
     case types.GET_PROJECTS_SUCCESS:
-      return {
-        ...state,
-        error: false,
-        errorContent: '',
-        ...getProjectArrays({ ...state, matches: [], searchValue: '', projects: action.payload.map(mockUpProject) })
-        // ..getProjectArrays({ ...state, matches: [], searchValue: '', projects: action.payload })
-      }
+      return updateState(
+        state,
+        { error: false, errorContent: '',
+          searchValue: '',
+          projects: action.payload.map(mockUpProject) }
+      )
 
     case types.UPDATE_SEARCH_VALUE:
-      const searchValue = action.searchValue.trim().toLowerCase()
-      const matches = searchForMatches([...state.projects], searchValue)
-
-      return {
-        ...state,
-        searchValue: action.searchValue,
-        ...getProjectArrays({ ...state, matches, searchValue })
-      }
+      return updateState(
+        state,
+        { searchValue: action.searchValue,
+          matches: searchForMatches([...state.projects], action.searchValue.trim().toLowerCase()) }
+      )
 
     case types.TOGGLE_BOOKMARK:
-      return {
-        ...state,
-        ...getProjectArrays({ ...state, ...updateAllArrays(state, action.project) })
-      }
+      return updateState(
+        state,
+        updateAllArrays(state, action.project)
+      )
 
     case types.UPDATE_PROJECT_SUCCESS:
       return {
@@ -131,7 +131,11 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
     case types.ADD_PROJECT_SUCCESS:
-      const mockedUpProject = { ...mockUpProject(action.payload), dateLastEdited: new Date(), lastEditedBy: action.payload.lastEditedBy }
+      const mockedUpProject = {
+        ...mockUpProject(action.payload),
+        dateLastEdited: new Date(),
+        lastEditedBy: action.payload.lastEditedBy
+      }
       // const mockedUpProject = action.payload
       const updated = getProjectArrays({
         ...INITIAL_STATE,
@@ -183,7 +187,7 @@ function homeReducer(state = INITIAL_STATE, action) {
 
     case types.UPDATE_PROJECT_FAIL:
       return {
-        ...state,
+        ...state
         //errorContent: 'We failed to update that project. Please try again later.',
         //error: true
       }
@@ -203,8 +207,14 @@ function homeReducer(state = INITIAL_STATE, action) {
   }
 }
 
+const reducerHome = (state = INITIAL_STATE, action) => {
+  return Object.values(types).includes(action.type)
+    ? { ...state, ...getProjectArrays({ ...homeReducer(state, action) }) }
+    : state
+}
+
 const homeRootReducer = combineReducers({
-  main: homeReducer,
+  main: reducerHome,
   newProject: newProjectReducer
 })
 
