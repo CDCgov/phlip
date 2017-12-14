@@ -756,4 +756,22 @@ describe('Home reducer', () => {
       })
     })
   })
+
+  describe('FLUSH_STATE', () => {
+    test('should set state to initial state, expect for rowsPerPage', () => {
+      expect(
+        reducer(
+          { ...initial,
+            main: { ...initial.main, projects: defaultSortedProjects, visibleProjects: defaultSortedProjects, rowsPerPage: 5 }},
+          { type: 'FLUSH_STATE' }
+        )
+      ).toEqual({
+        ...initial,
+        main: {
+          ...initial.main,
+          rowsPerPage: 5
+        }
+      })
+    })
+  })
 })
