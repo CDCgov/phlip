@@ -14,7 +14,7 @@ export const addUserLogic = createLogic({
 })
 
 export const updateUserLogic = createLogic({
-  type: types.UPDATE_USER_REQUEST,
+  type: [types.UPDATE_USER_REQUEST], //'TOGGLE_BOOKMARK'],
   latest: true,
   processOptions: {
     dispatchReturn: true,

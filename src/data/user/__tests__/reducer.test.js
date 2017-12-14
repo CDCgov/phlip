@@ -69,11 +69,11 @@ describe('User reducer', () => {
   })
 
   describe('TOGGLE_BOOKMARK', () => {
-    test('should set bookmarks to bookmarkList in action', () => {
+    test('should set currentUser to user object in action', () => {
       expect(
         reducer(
           { currentUser: { firstName: 'user', bookmarks: [5,6] }, menuOpen: false, menuAnchor: null },
-          { type: types.TOGGLE_BOOKMARK, bookmarkList: [5,6,7] }
+          { type: types.TOGGLE_BOOKMARK, user: { firstName: 'user', bookmarks: [5,6,7] } }
         )
       ).toEqual({
         currentUser: { firstName: 'user', bookmarks: [5,6,7] },
