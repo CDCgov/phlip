@@ -135,6 +135,7 @@ function homeReducer(state = INITIAL_STATE, action) {
       // const mockedUpProject = action.payload
       const updated = getProjectArrays({
         ...INITIAL_STATE,
+        rowsPerPage: state.rowsPerPage,
         projects: state.projects,
         visibleProjects: state.visibleProjects
       })
@@ -144,18 +145,18 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
       return {
-        ...state,
         ...INITIAL_STATE,
+        rowsPerPage: state.rowsPerPage === state.projectCount ? state.projectCount + 1 : state.rowsPerPage,
         projects: [mockedUpProject, ...updated.projects],
         visibleProjects: [mockedUpProject, ...updated.visibleProjects],
-        projectCount: updated.projectCount
+        projectCount: updated.projectCount + 1
       }
 
     case types.UPDATE_ROWS:
       return {
         ...state,
-        rowsPerPage: action.rowsPerPage,
-        ...getProjectArrays({ ...state, rowsPerPage: action.rowsPerPage })
+        rowsPerPage: parseInt(action.rowsPerPage),
+        ...getProjectArrays({ ...state, rowsPerPage: parseInt(action.rowsPerPage) })
       }
 
     case types.UPDATE_PAGE:

@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { TableBody, TableHead, TableFooter, TablePagination, TableRow } from 'material-ui/Table'
+import { TableBody, TableHead, TableFooter, TableRow } from 'material-ui/Table'
 import Container, { Column } from 'components/Layout'
 import Card from 'components/Card'
 import Table from 'components/Table'
 import ProjectTableBody from './components/ProjectTableBody'
 import ProjectTableHead from './components/ProjectTableHead'
+import TablePagination from 'components/TablePagination'
 
 export const ProjectList = props => {
   const { projects, user, page, rowsPerPage, count, sortBy, direction, sortBookmarked } = props
