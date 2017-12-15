@@ -7,10 +7,10 @@ const INITIAL_STATE = {
   projects: [],
   matches: [],
   bookmarkList: [],
+  visibleProjects: [],
   searchValue: '',
   rowsPerPage: 10,
   page: 0,
-  visibleProjects: [],
   sortBy: 'dateLastEdited',
   direction: 'desc',
   sortBookmarked: false,
@@ -20,15 +20,13 @@ const INITIAL_STATE = {
 }
 
 const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => {
-  if (projects.length === 0) {
-    return []
-  }
   const bookmarked = sortList(projects.filter(project => bookmarkList.includes(project.id)), sortBy, direction)
   const nonBookmarked = sortList(projects.filter(project => !bookmarkList.includes(project.id)), sortBy, direction)
   return [...bookmarked, ...nonBookmarked]
 }
 
-const anyBookmarks = (projects, bookmarkList) => projects.filter(project => bookmarkList.includes(project.id)).length > 0
+const anyBookmarks = (projects, bookmarkList) => projects.filter(project => bookmarkList.includes(project.id)).length >
+  0
 
 const isMatch = (value, search) => value.toLowerCase().includes(search)
 
@@ -41,7 +39,12 @@ const searchForMatches = (projects, searchValue) => {
 }
 
 const getProjectArrays = (state) => {
-  const { projects, bookmarkList, sortBy, direction, matches, page, rowsPerPage, sortBookmarked, searchValue, visibleProjects, projectCount } = state
+  const {
+    projects, bookmarkList, sortBy, direction, matches, page, rowsPerPage,
+    sortBookmarked, searchValue, visibleProjects, projectCount
+  } = state
+  //sortProjectsBookmarked(projects,bookmarkList,sortBy,direction)
+
   if (projects.length === 0) return state
 
   let currentList = [...projects]
@@ -81,15 +84,24 @@ const getProjectArrays = (state) => {
   return baseResult
 }
 
-const homeReducer = (state, action) => {
+const mainReducer = (state, action) => {
   const updateHomeState = updater.updateItemsInState(state, action)
 
   switch (action.type) {
-    case types.GET_PROJECTS_SUCCESS:return updateHomeState(['error', 'errorContent', 'bookmarkList', 'projects', 'searchValue'])
-    case types.TOGGLE_BOOKMARK:return updateHomeState(['bookmarkList'])
-    case types.SORT_BOOKMARKED:return updateHomeState(['sortBookmarked'])
-    case types.UPDATE_ROWS:return updateHomeState(['rowsPerPage'])
-    case types.UPDATE_PAGE:return updateHomeState(['page'])
+    case types.GET_PROJECTS_SUCCESS:
+      return updateHomeState(['error', 'errorContent', 'bookmarkList', 'projects', 'searchValue'])
+
+    case types.TOGGLE_BOOKMARK:
+      return updateHomeState(['bookmarkList'])
+
+    case types.SORT_BOOKMARKED:
+      return updateHomeState(['sortBookmarked'])
+
+    case types.UPDATE_ROWS:
+      return updateHomeState(['rowsPerPage'])
+
+    case types.UPDATE_PAGE:
+      return updateHomeState(['page'])
 
     case types.UPDATE_SEARCH_VALUE:
       return {
@@ -133,14 +145,14 @@ const homeReducer = (state, action) => {
   }
 }
 
-const reducerHome = (state = INITIAL_STATE, action) => {
+const homeReducer = (state = INITIAL_STATE, action) => {
   return Object.values(types).includes(action.type)
-    ? { ...state, ...getProjectArrays({ ...homeReducer(state, action) }) }
+    ? { ...state, ...getProjectArrays({ ...mainReducer(state, action) }) }
     : state
 }
 
 const homeRootReducer = combineReducers({
-  main: reducerHome,
+  main: homeReducer,
   newProject: newProjectReducer
 })
 
