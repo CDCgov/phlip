@@ -1,7 +1,7 @@
 import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import newProjectReducer from './scenes/NewProject/reducer'
-import { sortList, updater } from 'utils'
+import { sortList, updater, tableUtils } from 'utils'
 
 const INITIAL_STATE = {
   projects: [],
@@ -19,8 +19,6 @@ const INITIAL_STATE = {
   projectCount: 0
 }
 
-const sliceProjects = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-
 const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => {
   if (projects.length === 0) {
     return []
@@ -30,8 +28,7 @@ const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => 
   return [...bookmarked, ...nonBookmarked]
 }
 
-const anyBookmarks = (projects, bookmarkList) => projects.filter(project => bookmarkList.includes(project.id)).length >
-  0
+const anyBookmarks = (projects, bookmarkList) => projects.filter(project => bookmarkList.includes(project.id)).length > 0
 
 const isMatch = (value, search) => value.toLowerCase().includes(search)
 
@@ -63,7 +60,7 @@ const getProjectArrays = (state) => {
     ...results,
     projects: sortList(projects, sortBy, direction),
     matches: searchValue.length === 0 ? [] : sortList(matches, sortBy, direction),
-    visibleProjects: sliceProjects(sortedProjects, page, rowsPerPage),
+    visibleProjects: tableUtils.sliceTable(sortedProjects, page, rowsPerPage),
     projectCount: sortedProjects.length
   }
 
@@ -74,7 +71,7 @@ const getProjectArrays = (state) => {
         ...results,
         projects: sortProjectsByBookmarked(projects, bookmarkList, sortBy, direction),
         matches: searchValue.length === 0 ? [] : sortProjectsByBookmarked(matches, bookmarkList, sortBy, direction),
-        visibleProjects: sliceProjects(sortedByBookmarked, page, rowsPerPage),
+        visibleProjects: tableUtils.sliceTable(sortedByBookmarked, page, rowsPerPage),
         projectCount: sortedByBookmarked.length
       }
     } else {
