@@ -337,7 +337,7 @@ describe('Home reducer', () => {
 
   test('should handle GET_PROJECTS_FAIL', () => {
     expect(
-      reducer({}, { type: types.GET_PROJECTS_FAIL, errorValue: 'error' })
+      reducer({}, { type: types.GET_PROJECTS_FAIL, payload: 'error' })
     ).toEqual({
       ...initial,
       main: {

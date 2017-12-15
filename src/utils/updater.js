@@ -1,5 +1,5 @@
 // Will take an item and update the corresponding item in an array by matching a property
-const updateById = (updatedItem, objectArray, prop) => {
+const updateByProperty = (updatedItem, objectArray, prop) => {
   return objectArray.map(item =>
     (item[prop] === updatedItem[prop])
       ? updatedItem
@@ -18,4 +18,4 @@ const updateItemsInState = (state, action) => items => ({
   }, {})
 })
 
-export default { updateItemsInState, updateById }
+export default { updateItemsInState, updateByProperty }

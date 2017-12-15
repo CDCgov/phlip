@@ -1,10 +1,7 @@
 import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import newProjectReducer from './scenes/NewProject/reducer'
-import { mockUsers } from 'data/mockUsers'
 import { sortList, updater } from 'utils'
-
-const start = new Date(2017, 0, 1)
 
 const INITIAL_STATE = {
   projects: [],
@@ -20,16 +17,6 @@ const INITIAL_STATE = {
   errorContent: '',
   error: false,
   projectCount: 0
-}
-
-// TODO: Just until the data model is complete
-export const mockUpProject = (project) => {
-  const user = mockUsers[Math.floor(Math.random() * mockUsers.length)]
-  return {
-    ...project,
-    dateLastEdited: new Date(start.getTime() + Math.random() * (new Date().getTime() - start.getTime())),
-    lastEditedBy: `${user.firstName} ${user.lastName}`
-  }
 }
 
 const sliceProjects = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -116,8 +103,8 @@ const homeReducer = (state, action) => {
     case types.UPDATE_PROJECT_SUCCESS:
       return {
         ...state,
-        projects: updater.updateById(action.payload, [...state.projects], 'id'),
-        visibleProjects: updater.updateById(action.payload, [...state.visibleProjects], 'id')
+        projects: updater.updateByProperty(action.payload, [...state.projects], 'id'),
+        visibleProjects: updater.updateByProperty(action.payload, [...state.visibleProjects], 'id')
       }
 
     case types.ADD_PROJECT_SUCCESS:
@@ -134,7 +121,6 @@ const homeReducer = (state, action) => {
       }
 
     case types.GET_PROJECTS_FAIL:
-      console.log(action)
       return {
         ...state, errorContent: 'We failed to get the list of projects. Please try again later.', error: true
       }
