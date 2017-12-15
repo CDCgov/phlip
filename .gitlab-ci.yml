@@ -5,8 +5,7 @@ before_script:
   - node -v
 
 variables:
-  MAIN_VERSION: "0"
-  SUB_VERSION: "1"
+  VERSION: $CI_COMMIT_TAG
   SUB_BUILD: $CI_PIPELINE_ID
 
 stages:
