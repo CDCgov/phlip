@@ -110,7 +110,7 @@ const homeReducer = (state, action) => {
     case types.UPDATE_SEARCH_VALUE:
       return {
         ...updateHomeState(['searchValue']),
-        matches: searchForMatches([...state.projects], action.searchValue.trim().toLowerCase())
+        matches: searchForMatches([...state.projects], action.payload.searchValue.trim().toLowerCase())
       }
 
     case types.UPDATE_PROJECT_SUCCESS:
@@ -123,6 +123,7 @@ const homeReducer = (state, action) => {
     case types.ADD_PROJECT_SUCCESS:
       return {
         ...INITIAL_STATE,
+        bookmarkList: state.bookmarkList,
         projects: [action.payload, ...state.projects]
       }
 

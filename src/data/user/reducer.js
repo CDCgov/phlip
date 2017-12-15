@@ -31,10 +31,7 @@ function userReducer(state = INITIAL_STATE, action) {
     case types.TOGGLE_BOOKMARK:
       return {
         ...state,
-        currentUser: {
-          ...state.currentUser,
-          bookmarks: action.payload.user
-        }
+        currentUser: action.payload.user
       }
 
     case 'FLUSH_STATE':
