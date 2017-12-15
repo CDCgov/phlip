@@ -25,7 +25,8 @@ export const getProjectLogic = createLogic({
 export const toggleBookmarkLogic = createLogic({
   type: types.TOGGLE_BOOKMARK,
   transform({ action, getState }, next) {
-    let bookmarkList = [...getState().data.user.currentUser.bookmarks]
+    const currentUser = getState().data.user.currentUser
+    let bookmarkList = [...currentUser.bookmarks]
 
     if (bookmarkList.includes(action.project.id)) {
       bookmarkList.splice(bookmarkList.indexOf(action.project.id), 1)
@@ -33,7 +34,7 @@ export const toggleBookmarkLogic = createLogic({
       bookmarkList.push(action.project.id)
     }
 
-    next({ ...action, payload: { bookmarkList } })
+    next({ ...action, payload: { bookmarkList, user: { ...currentUser, bookmarks: bookmarkList } }})
   }
 })
 

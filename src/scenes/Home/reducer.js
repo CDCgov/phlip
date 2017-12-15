@@ -101,11 +101,11 @@ const homeReducer = (state, action) => {
   const updateHomeState = updater.updateItemsInState(state, action)
 
   switch (action.type) {
-    case types.GET_PROJECTS_SUCCESS: return updateHomeState(['error', 'errorContent', 'bookmarkList', 'projects', 'searchValue'])
-    case types.TOGGLE_BOOKMARK: return updateHomeState(['bookmarkList'])
-    case types.SORT_BOOKMARKED: return updateHomeState(['sortBookmarked'])
-    case types.UPDATE_ROWS: return updateHomeState(['rowsPerPage'])
-    case types.UPDATE_PAGE: return updateHomeState(['page'])
+    case types.GET_PROJECTS_SUCCESS:return updateHomeState(['error', 'errorContent', 'bookmarkList', 'projects', 'searchValue'])
+    case types.TOGGLE_BOOKMARK:return updateHomeState(['bookmarkList'])
+    case types.SORT_BOOKMARKED:return updateHomeState(['sortBookmarked'])
+    case types.UPDATE_ROWS:return updateHomeState(['rowsPerPage'])
+    case types.UPDATE_PAGE:return updateHomeState(['page'])
 
     case types.UPDATE_SEARCH_VALUE:
       return {

@@ -9,10 +9,14 @@ exports[`Admin Scene it should render correctly 1`] = `
   <PageHeader />
   <withStyles(Divider) />
   <UserList
-    count={1}
+    count={6}
+    direction="asc"
     handlePagechange={[Function]}
     handleRequestSort={[Function]}
     handleRowsChange={[Function]}
+    page={0}
+    rowsPerPage={10}
+    sortBy="name"
   />
   <Route
     component={[Function]}

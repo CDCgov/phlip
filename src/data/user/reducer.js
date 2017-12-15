@@ -33,7 +33,7 @@ function userReducer(state = INITIAL_STATE, action) {
         ...state,
         currentUser: {
           ...state.currentUser,
-          bookmarks: action.payload.bookmarkList
+          bookmarks: action.payload.user
         }
       }
 
