@@ -9,8 +9,10 @@ export const addProjectLogic = createLogic({
     successType: types.ADD_PROJECT_SUCCESS,
     failType: types.ADD_PROJECT_FAIL
   },
-  async process({ action, api }) {
-   return await api.addProject(action.project)
+  async process({ action, getState, api }) {
+    const currentUser = getState().data.user.currentUser
+    let project = await api.addProject(action.project)
+    return { ...project, lastEditedBy: `${currentUser.firstName} ${currentUser.lastName}` }
   }
 })
 

@@ -7,12 +7,11 @@ import * as types from 'data/user/actionTypes'
 const logoutLogic = createLogic({
   type: types.LOGOUT_USER,
   processOptions: {
-    dispatchReturn: false
+    dispatchReturn: true,
+    successType: 'FLUSH_STATE'
   },
-  async process({ api }, dispatch, done) {
-    return await api.logoutUser().then(() => {
-      dispatch({ type: 'FLUSH_STATE' })
-    }).then(() => done())
+  async process({ api }) {
+    return await api.logoutUser()
   }
 })
 

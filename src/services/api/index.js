@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { login, getToken, logout } from '../authToken'
-import { mockUsers } from '../../data/mockUsers'
 import { updateById } from 'utils'
 
 export const api = axios.create({
@@ -11,15 +10,14 @@ export default {
   login(user) {
     return api.post('/security/authenticate', user).then(res => {
       login(res.data.token.value)
-      api.defaults.headers.common['Authorization'] = `Bearer ${getToken()}`
       return res.data
     })
   },
 
   logoutUser() {
-    return new Promise(resolve => {
-      resolve(logout())
-    })
+    //return api.post('/security/logout', user).then(res => {
+    return logout()
+    //})
   },
 
   getProjects() {
@@ -39,11 +37,7 @@ export default {
   },
 
   addUser(user) {
-    return api.post('/security/addUser', user).then(res => {
-      console.log(res.data)
-      return user //TODO: temporary
-      // return res.data
-    })
+    return api.post('/security/addUser', user).then(res => res.data.newUser)
   },
 
   updateUser(user) {

@@ -128,10 +128,11 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
     case types.ADD_PROJECT_SUCCESS:
-      const mockedUpProject = { ...mockUpProject(action.payload), dateLastEdited: new Date() }
+      const mockedUpProject = { ...mockUpProject(action.payload), dateLastEdited: new Date(), lastEditedBy: action.payload.lastEditedBy }
       // const mockedUpProject = action.payload
       const updated = getProjectArrays({
         ...INITIAL_STATE,
+        rowsPerPage: state.rowsPerPage,
         projects: state.projects,
         visibleProjects: state.visibleProjects
       })
@@ -141,18 +142,18 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
       return {
-        ...state,
         ...INITIAL_STATE,
+        rowsPerPage: state.rowsPerPage === state.projectCount ? state.projectCount + 1 : state.rowsPerPage,
         projects: [mockedUpProject, ...updated.projects],
         visibleProjects: [mockedUpProject, ...updated.visibleProjects],
-        projectCount: updated.projectCount
+        projectCount: updated.projectCount + 1
       }
 
     case types.UPDATE_ROWS:
       return {
         ...state,
-        rowsPerPage: action.rowsPerPage,
-        ...getProjectArrays({ ...state, rowsPerPage: action.rowsPerPage })
+        rowsPerPage: parseInt(action.rowsPerPage),
+        ...getProjectArrays({ ...state, rowsPerPage: parseInt(action.rowsPerPage) })
       }
 
     case types.UPDATE_PAGE:
@@ -192,7 +193,7 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
     case 'FLUSH_STATE':
-      return INITIAL_STATE
+      return { ...INITIAL_STATE, rowsPerPage: state.rowsPerPage }
 
     case types.GET_PROJECTS_REQUEST:
     case types.UPDATE_PROJECT_REQUEST:
