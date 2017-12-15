@@ -6,7 +6,6 @@ import * as types from '../actionTypes'
 import apiCalls, { api } from 'services/api'
 
 describe('Home logic', () => {
-  let store
   let mock
 
   const mockReducer = (state, action) => state
@@ -37,16 +36,21 @@ describe('Home logic', () => {
     store.dispatch({ type: types.GET_PROJECTS_REQUEST })
 
     store.whenComplete(() => {
-      expect(store.actions).toEqual([
+     /* expect(store.actions).toEqual([
         { type: types.GET_PROJECTS_REQUEST },
         {
           type: types.GET_PROJECTS_SUCCESS,
           payload: {
             projects: [{ name: 'Project 1', id: 1 }, { name: 'Project 2', id: 2 }],
-            bookmarkList: [1]
+            bookmarkList: [1],
+            error: false,
+            errorContent: '',
+            searchValue: ''
           }
         }
-      ])
+      ])*/
+      expect(store.actions[1]).toHaveProperty('payload.projects')
+      expect(store.actions[1]).toHaveProperty('payload.bookmarkList')
       done()
     })
   })
@@ -57,7 +61,7 @@ describe('Home logic', () => {
 
     store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
     store.whenComplete(() => {
-      expect(store.actions[0].bookmarkList).toEqual([1])
+      expect(store.actions[0].payload.bookmarkList).toEqual([1])
       done()
     })
   })
@@ -68,7 +72,7 @@ describe('Home logic', () => {
 
     store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
     store.whenComplete(() => {
-      expect(store.actions[0].bookmarkList).toEqual([1,5])
+      expect(store.actions[0].payload.bookmarkList).toEqual([1,5])
       done()
     })
   })
@@ -79,7 +83,7 @@ describe('Home logic', () => {
 
     store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
     store.whenComplete(() => {
-      expect(store.actions[0].bookmarkList).toEqual([])
+      expect(store.actions[0].payload.bookmarkList).toEqual([])
       done()
     })
   })

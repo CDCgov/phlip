@@ -2,7 +2,7 @@ import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import addEditUserReducer from './scenes/AddEditUser/reducer'
 import { mockUsers } from '../../data/mockUsers'
-import { sortList, updateById } from '../../utils'
+import { sortList, updater } from '../../utils'
 
 const INITIAL_STATE = {
   users: [],
@@ -59,8 +59,8 @@ function adminReducer(state = INITIAL_STATE, action) {
     case types.UPDATE_USER_SUCCESS:
       return {
         ...state,
-        users: updateById(action.payload, [...state.users]),
-        visibleUsers: updateById(action.payload, [...state.visibleUsers])
+        users: updater.updateById(action.payload, [...state.users], 'userId'),
+        visibleUsers: updater.updateById(action.payload, [...state.visibleUsers], 'userId')
       }
 
     case types.SORT_USERS:

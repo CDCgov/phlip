@@ -31,10 +31,12 @@ describe('Home scene - NewProject logic', () => {
     mock.onPost('/projects').reply(200, project)
     store.dispatch({ type: types.ADD_PROJECT_REQUEST, project })
     store.whenComplete(() => {
-      expect(store.actions).toEqual([
+      /*expect(store.actions).toBeCloseTo([
         { type: types.ADD_PROJECT_REQUEST, project },
-        { type: types.ADD_PROJECT_SUCCESS, payload: { ...project, lastEditedBy: 'Test User' } }
-      ])
+        { type: types.ADD_PROJECT_SUCCESS, payload: { ...project, lastEditedBy: 'Test User', dateLastEdited: new Date() } }
+      ])*/
+      expect(store.actions[1]).toHaveProperty('payload.id')
+      expect(store.actions[1]).toHaveProperty('payload.name')
       done()
     })
   })

@@ -73,7 +73,7 @@ describe('User reducer', () => {
       expect(
         reducer(
           { currentUser: { firstName: 'user', bookmarks: [5,6] }, menuOpen: false, menuAnchor: null },
-          { type: types.TOGGLE_BOOKMARK, bookmarkList: [5,6,7] }
+          { type: types.TOGGLE_BOOKMARK, payload: { bookmarkList: [5,6,7] }}
         )
       ).toEqual({
         currentUser: { firstName: 'user', bookmarks: [5,6,7] },

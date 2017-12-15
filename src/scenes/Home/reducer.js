@@ -2,7 +2,7 @@ import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import newProjectReducer from './scenes/NewProject/reducer'
 import { mockUsers } from 'data/mockUsers'
-import { sortList, updateById } from 'utils'
+import { sortList, updater } from 'utils'
 
 const start = new Date(2017, 0, 1)
 
@@ -23,7 +23,7 @@ const INITIAL_STATE = {
 }
 
 // TODO: Just until the data model is complete
-const mockUpProject = (project) => {
+export const mockUpProject = (project) => {
   const user = mockUsers[Math.floor(Math.random() * mockUsers.length)]
   return {
     ...project,
@@ -43,7 +43,8 @@ const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => 
   return [...bookmarked, ...nonBookmarked]
 }
 
-const anyBookmarks = (projects, bookmarkList) => projects.filter(project => bookmarkList.includes(project.id)).length > 0
+const anyBookmarks = (projects, bookmarkList) => projects.filter(project => bookmarkList.includes(project.id)).length >
+  0
 
 const isMatch = (value, search) => value.toLowerCase().includes(search)
 
@@ -96,94 +97,51 @@ const getProjectArrays = (state) => {
   return baseResult
 }
 
-const updateItemInObject = item => newValue => ({ ...obj, [item]: newValue })
-
-const updateState = (state, updateItems) => ({ ...state, ...updateItems })
-
 const homeReducer = (state, action) => {
+  const updateHomeState = updater.updateItemsInState(state, action)
+
   switch (action.type) {
-    case types.GET_PROJECTS_SUCCESS:
-      return updateState(
-        state,
-        { error: false, errorContent: '', searchValue: '',
-          bookmarkList: action.payload.bookmarkList,
-          projects: action.payload.projects.map(mockUpProject) }
-      )
+    case types.GET_PROJECTS_SUCCESS: return updateHomeState(['error', 'errorContent', 'bookmarkList', 'projects', 'searchValue'])
+    case types.TOGGLE_BOOKMARK: return updateHomeState(['bookmarkList'])
+    case types.SORT_BOOKMARKED: return updateHomeState(['sortBookmarked'])
+    case types.UPDATE_ROWS: return updateHomeState(['rowsPerPage'])
+    case types.UPDATE_PAGE: return updateHomeState(['page'])
 
     case types.UPDATE_SEARCH_VALUE:
-      return updateState(
-        state,
-        { searchValue: action.searchValue,
-          matches: searchForMatches([...state.projects], action.searchValue.trim().toLowerCase()) }
-      )
-
-    case types.TOGGLE_BOOKMARK:
-      console.log(updateState(state, { bookmarkList: action.bookmarkList }))
-      return updateState(
-        state,
-        { bookmarkList: action.bookmarkList }
-      )
-
-    case types.UPDATE_PROJECT_SUCCESS:
-      return updateState(
-        state,
-        { projects: updateById(action.payload, [...state.projects]),
-          visibleProjects: updateById(action.payload, [...state.visibleProjects]) }
-      )
-
-    case types.ADD_PROJECT_SUCCESS:
-      const mockedUpProject = {
-        ...mockUpProject(action.payload),
-        dateLastEdited: new Date(),
-        lastEditedBy: action.payload.lastEditedBy
+      return {
+        ...updateHomeState(['searchValue']),
+        matches: searchForMatches([...state.projects], action.searchValue.trim().toLowerCase())
       }
 
-      return updateState(
+    case types.UPDATE_PROJECT_SUCCESS:
+      return {
+        ...state,
+        projects: updater.updateById(action.payload, [...state.projects], 'id'),
+        visibleProjects: updater.updateById(action.payload, [...state.visibleProjects], 'id')
+      }
+
+    case types.ADD_PROJECT_SUCCESS:
+      return {
         ...INITIAL_STATE,
-        { projects: [mockedUpProject, ...state.projects ] }
-      )
-
-    case types.UPDATE_ROWS:
-      console.log(updateItemInObject(state, 'rowsPerPage', action.rowsPerPage ))
-
-      return updateState(
-        state,
-        { rowsPerPage: action.rowsPerPage }
-      )
-
-    case types.UPDATE_PAGE:
-      return updateState(
-        state,
-        { page: action.page }
-      )
+        projects: [action.payload, ...state.projects]
+      }
 
     case types.SORT_PROJECTS:
-      return updateState(
-        state,
-        { sortBy: action.sortBy, direction: state.direction === 'asc' ? 'desc' : 'asc' }
-      )
-
-    case types.SORT_BOOKMARKED:
-      return updateState(
-        state,
-        { sortBookmarked: !state.sortBookmarked }
-      )
-
-    case types.UPDATE_PROJECT_FAIL:
       return {
-        ...state
-        //errorContent: 'We failed to update that project. Please try again later.',
-        //error: true
+        ...updateHomeState(['sortBy']),
+        direction: state.direction === 'asc' ? 'desc' : 'asc'
       }
 
     case types.GET_PROJECTS_FAIL:
+      console.log(action)
       return {
         ...state, errorContent: 'We failed to get the list of projects. Please try again later.', error: true
       }
 
-    case 'FLUSH_STATE':
+    case types.FLUSH_STATE:
       return { ...INITIAL_STATE, rowsPerPage: state.rowsPerPage }
 
+    case types.UPDATE_PROJECT_FAIL:
     case types.GET_PROJECTS_REQUEST:
     case types.UPDATE_PROJECT_REQUEST:
     default:

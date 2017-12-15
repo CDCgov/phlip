@@ -76,7 +76,7 @@ describe('Home reducer', () => {
       expect(
         reducer(
           { ...initial },
-          { type: types.GET_PROJECTS_SUCCESS, payload: projects }
+          { type: types.GET_PROJECTS_SUCCESS, payload: { projects }}
         )
       ).toEqual({
         ...initial, main: { ...initial.main, projects: defaultSortedProjects, visibleProjects: defaultSortedProjects }

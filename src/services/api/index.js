@@ -45,7 +45,8 @@ export default {
   },
 
   updateUser(user) {
-    return api.put(`/user/${user.id}`).then(res => user)
+    //return api.put(`/security/users/${user.userId}`).then(res => user)
+    return user
   }
 }
 

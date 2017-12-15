@@ -68,7 +68,7 @@ export class Home extends Component {
             handlePageChange={this.props.actions.updatePage}
             handleRowsChange={this.props.actions.updateRows}
             handleToggleBookmark={this.props.actions.toggleBookmark}
-            handleSortBookmarked={this.props.actions.sortBookmarked}
+            handleSortBookmarked={() => this.props.actions.sortBookmarked(!this.props.sortBookmarked)}
           />
         }
         <Route
