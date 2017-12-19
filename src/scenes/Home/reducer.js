@@ -58,7 +58,7 @@ const getPArrays = state => {
   if (projects.length === 0) return state
 
   if (searchValue !== undefined && searchValue.length > 0) {
-    matches = searchUtils.searchForMatches(Object.values(state.projects), searchValue, [
+    matches = searchUtils.searchForMatches(Object.values(state.projects.byId), searchValue, [
       'name', 'dateLastEdited', 'lastEditedBy'
     ])
 
