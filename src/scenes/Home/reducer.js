@@ -111,7 +111,13 @@ const mainReducer = (state, action) => {
     case types.UPDATE_PROJECT_SUCCESS:
       return {
         ...state,
-        projects: updater.updateByProperty(action.payload, [...state.projects], 'id'),
+        projects: {
+          ...state.projects,
+          byId: {
+            ...state.projects.byId,
+            [action.payload.id]: action.payload
+          },
+        }
       }
 
     case types.ADD_PROJECT_SUCCESS:
