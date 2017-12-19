@@ -8,7 +8,7 @@ import TableCell from 'components/TableCell'
 
 const greyIcon = '#d4d4d4'
 
-const ProjectTableBody = ({ bookmarkList, projects, user, onToggleBookmark, onExport }) => {
+const ProjectTableBody = ({ bookmarkList, projects, allProjects, user, onToggleBookmark, onExport }) => {
   return (
     projects.map(project => (
       <TableRow key={project.id}>

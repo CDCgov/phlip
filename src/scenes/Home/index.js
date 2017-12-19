@@ -57,6 +57,7 @@ export class Home extends Component {
           : <ProjectList
             user={this.props.user}
             projects={this.props.visibleProjects}
+            allProjects={this.props.projects}
             count={this.props.projectCount}
             page={this.props.page}
             rowsPerPage={this.props.rowsPerPage}
