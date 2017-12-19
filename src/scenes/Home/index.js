@@ -17,8 +17,7 @@ export class Home extends Component {
   static propTypes = {
     user: PropTypes.object,
     actions: PropTypes.object,
-    projects: PropTypes.arrayOf(PropTypes.object),
-    visibleProjects: PropTypes.arrayOf(PropTypes.object),
+    visibleProjects: PropTypes.arrayOf(PropTypes.number),
     page: PropTypes.number,
     rowsPerPage: PropTypes.number,
     sortBy: PropTypes.string,
@@ -26,7 +25,6 @@ export class Home extends Component {
     searchValue: PropTypes.string,
     error: PropTypes.bool,
     errorContent: PropTypes.string,
-    bookmarkList: PropTypes.array
   }
 
   constructor(props, context) {
@@ -56,19 +54,16 @@ export class Home extends Component {
           ? this.renderErrorMessage()
           : <ProjectList
             user={this.props.user}
-            projects={this.props.visibleProjects}
-            allProjects={this.props.projects}
-            count={this.props.projectCount}
+            projectIds={this.props.visibleProjects}
+            projectCount={this.props.projectCount}
             page={this.props.page}
             rowsPerPage={this.props.rowsPerPage}
             sortBy={this.props.sortBy}
             direction={this.props.direction}
             sortBookmarked={this.props.sortBookmarked}
-            bookmarkList={this.props.bookmarkList}
             handleRequestSort={this.props.actions.sortProjects}
             handlePageChange={this.props.actions.updatePage}
             handleRowsChange={this.props.actions.updateRows}
-            handleToggleBookmark={this.props.actions.toggleBookmark}
             handleSortBookmarked={() => this.props.actions.sortBookmarked(!this.props.sortBookmarked)}
           />
         }
@@ -82,7 +77,6 @@ export class Home extends Component {
 
 const mapStateToProps = (state) => ({
   user: state.data.user.currentUser,
-  projects: state.scenes.home.main.projects,
   visibleProjects: state.scenes.home.main.visibleProjects,
   page: state.scenes.home.main.page,
   rowsPerPage: state.scenes.home.main.rowsPerPage,
@@ -93,7 +87,6 @@ const mapStateToProps = (state) => ({
   error: state.scenes.home.main.error,
   errorContent: state.scenes.home.main.errorContent,
   projectCount: state.scenes.home.main.projectCount || 0,
-  bookmarkList: state.scenes.home.main.bookmarkList
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

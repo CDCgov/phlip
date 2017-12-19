@@ -1,20 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import TableRow from 'components/TableRow'
-import Button from 'components/Button'
-import TextLink from 'components/TextLink'
-import IconButton from 'components/IconButton'
-import TableCell from 'components/TableCell'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import TableRow from 'components/TableRow/index'
+import Button from 'components/Button/index'
+import TextLink from 'components/TextLink/index'
+import IconButton from 'components/IconButton/index'
+import TableCell from 'components/TableCell/index'
+import * as actions from 'scenes/Home/actions'
 
 const greyIcon = '#d4d4d4'
 
-const ProjectTableBody = ({ bookmarkList, projects, allProjects, user, onToggleBookmark, onExport }) => {
+export const ProjectRow = ({ project, role, bookmarked, actions }) => {
   return (
-    projects.map(project => (
       <TableRow key={project.id}>
         <TableCell key={`${project.id}-bookmarked`} style={{ width: 48 }}>
-          <IconButton color={bookmarkList.includes(project.id) ? '#fdc43b' : greyIcon} onClick={() => onToggleBookmark(project)}>
-            {bookmarkList.includes(project.id) ? 'bookmark' : 'bookmark_border'}
+          <IconButton color={bookmarked ? '#fdc43b' : greyIcon} onClick={() => actions.toggleBookmark(project)}>
+            {bookmarked ? 'bookmark' : 'bookmark_border'}
           </IconButton>
         </TableCell>
         <TableCell key={`${project.id}-name`} style={{ textAlign: 'left', maxWidth: 'unset' }}>
@@ -31,15 +33,15 @@ const ProjectTableBody = ({ bookmarkList, projects, allProjects, user, onToggleB
         >
           {project.lastEditedBy}
         </TableCell>
-        {user.role !== 'Coder' &&
-        <TableCell key={`${project.id}-jurisdictions`} light>
-          <TextLink to="/">Add/Edit</TextLink>
-        </TableCell>
+        {role !== 'Coder' &&
+          <TableCell key={`${project.id}-jurisdictions`} light>
+            <TextLink to="/">Add/Edit</TextLink>
+          </TableCell>
         }
         <TableCell key={`${project.id}-protocol`} light>
           <TextLink to="/">Add/Edit</TextLink>
         </TableCell>
-        {user.role !== 'Coder' &&
+        {role !== 'Coder' &&
         <TableCell key={`${project.id}-codingScheme`} light>
           <TextLink to="/">Edit</TextLink>
         </TableCell>
@@ -47,24 +49,27 @@ const ProjectTableBody = ({ bookmarkList, projects, allProjects, user, onToggleB
         <TableCell key={`${project.id}-code`} style={{ maxWidth: 40 }}>
           <Button raised={false} value="Code" listButton />
         </TableCell>
-        {user.role !== 'Coder' &&
+        {role !== 'Coder' &&
         <TableCell key={`${project.id}-validation`} style={{ maxWidth: 40 }}>
           <Button raised={false} value="Validate" listButton />
         </TableCell>
         }
         <TableCell key={`${project.id}-export`} style={{ maxWidth: 10 }}>
-          <IconButton color={greyIcon} onClick={() => onExport()}>file_download</IconButton>
+          <IconButton color={greyIcon} onClick={() => actions.onExport}>file_download</IconButton>
         </TableCell>
       </TableRow>
-    ))
   )
 }
 
-ProjectTableBody.propTypes = {
-  projects: PropTypes.arrayOf(PropTypes.object),
-  user: PropTypes.object,
-  onToggleBookmark: PropTypes.func,
-  onExport: PropTypes.func
+ProjectRow.propTypes = {
 }
 
-export default ProjectTableBody
+const mapStateToProps = (state, ownProps) => ({
+  project: state.scenes.home.main.projects.byId[ownProps.id],
+  role: state.data.user.currentUser.role,
+  bookmarked: state.scenes.home.main.bookmarkList.includes(ownProps.id)
+})
+
+const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectRow)

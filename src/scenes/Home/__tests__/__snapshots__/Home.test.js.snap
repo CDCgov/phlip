@@ -16,54 +16,13 @@ exports[`Home scene should render correctly 1`] = `
     searchValue=""
   />
   <ProjectList
-    allProjects={
-      Array [
-        Object {
-          "bookmarked": false,
-          "dateLastEdited": 2017-10-31T00:00:00.000Z,
-          "id": 5,
-          "lastEditedBy": "Jason James",
-          "name": "Project 5",
-        },
-        Object {
-          "bookmarked": true,
-          "dateLastEdited": 2017-06-30T00:00:00.000Z,
-          "id": 4,
-          "lastEditedBy": "Greg Ledbetter",
-          "name": "Project 4",
-        },
-        Object {
-          "bookmarked": false,
-          "dateLastEdited": 2017-03-31T00:00:00.000Z,
-          "id": 2,
-          "lastEditedBy": "Michael Ta",
-          "name": "Project 2",
-        },
-        Object {
-          "bookmarked": true,
-          "dateLastEdited": 2017-02-28T00:00:00.000Z,
-          "id": 3,
-          "lastEditedBy": "Sanjith David",
-          "name": "Project 3",
-        },
-        Object {
-          "bookmarked": true,
-          "dateLastEdited": 2017-01-31T00:00:00.000Z,
-          "id": 1,
-          "lastEditedBy": "Kristin Muterspaw",
-          "name": "Project 1",
-        },
-      ]
-    }
-    bookmarkList={Array []}
     direction="desc"
     handlePageChange={[Function]}
     handleRequestSort={[Function]}
     handleRowsChange={[Function]}
     handleSortBookmarked={[Function]}
-    handleToggleBookmark={[Function]}
     page={0}
-    projects={Array []}
+    projectIds={Array []}
     rowsPerPage={10}
     sortBookmarked={false}
     sortBy="dateLastEdited"

@@ -4,13 +4,13 @@ import newProjectReducer from './scenes/NewProject/reducer'
 import { sortList, updater, tableUtils, searchUtils } from 'utils'
 
 const INITIAL_STATE = {
-  projects: [],
+  projects: {
+    byId: {},
+    allIds: []
+  },
   matches: [],
   bookmarkList: [],
   visibleProjects: [],
-  normalizedVisible: [],
-  normalizedMatches: [],
-  normalizedProjects: {},
   allIds: [],
   searchValue: '',
   rowsPerPage: 10,
@@ -36,38 +36,24 @@ const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => 
   return [...bookmarked, ...nonBookmarked]
 }
 
-const anyBookmarks = (projects, bookmarkList) => projects.filter(project => bookmarkList.includes(project.id)).length >
-  0
-
-const isMatch = (value, search) => value.toLowerCase().includes(search)
-
-const searchForMatches = (projects, searchValue) => {
-  return projects.filter(project => {
-    return isMatch(project.name, searchValue)
-      || isMatch(project.lastEditedBy, searchValue)
-      || isMatch(new Date(project.dateLastEdited).toLocaleDateString(), searchValue)
-  })
-}
-
 const mapProjects = arr => {
   return arr.map(p => p.id)
 }
 
-const getArrays = (arr, arrName, state) => {
+const sortArray = (arr, state) => {
   const { bookmarkList, sortBy, direction, sortBookmarked } = state
 
   return sortBookmarked
-    ? anyBookmarks(arr, bookmarkList)
+    ? arr.some(x => bookmarkList.includes(x.id))
       ? sortProjectsByBookmarked(arr, bookmarkList, sortBy, direction)
       : sortList(arr, sortBy, direction)
     : sortList(arr, sortBy, direction)
-
 }
 
 const getPArrays = state => {
   const { projects, searchValue, page, rowsPerPage } = state
   let matches = []
-  const updatedProjects = getArrays(Object.values(state.projects), 'projects', state)
+  const updatedProjects = sortArray(Object.values(state.projects.byId), state)
 
   if (projects.length === 0) return state
 
@@ -79,20 +65,27 @@ const getPArrays = state => {
     if (matches.length === 0) {
       return { ...state, matches: [], visibleProjects: [], allIds: [], projectCount: 0 }
     } else {
-      let updatedMatches = getArrays(matches, 'matches', state)
+      let updatedMatches = sortArray(matches, state)
       return {
         ...state,
         matches: [...mapProjects(updatedMatches)],
-        allIds: mapProjects(updatedProjects),
-        visibleProjects: mapProjects(tableUtils.sliceTable(updatedMatches, page, rowsPerPage))
+        projects: {
+          ...state.projects,
+          allIds: mapProjects(updatedProjects)
+        },
+        visibleProjects: mapProjects(tableUtils.sliceTable(updatedMatches, page, rowsPerPage)),
+        projectCount: updatedMatches.length
       }
     }
   } else {
     return {
       ...state,
-      projects: normalizeArrayToObject(updatedProjects, 'id'),
-      allIds: mapProjects(updatedProjects),
-      visibleProjects: mapProjects(tableUtils.sliceTable(Object.values(updatedProjects), page, rowsPerPage))
+      projects: {
+        byId: normalizeArrayToObject(updatedProjects, 'id'),
+        allIds: mapProjects(updatedProjects)
+      },
+      visibleProjects: mapProjects(tableUtils.sliceTable(Object.values(updatedProjects), page, rowsPerPage)),
+      projectCount: updatedProjects.length
     }
   }
 }
@@ -104,7 +97,10 @@ const mainReducer = (state, action) => {
     case types.GET_PROJECTS_SUCCESS:
       return {
         ...updateHomeState(['error', 'errorContent', 'bookmarkList', 'searchValue']),
-        projects: normalizeArrayToObject(action.payload.projects, 'id')
+        projects: {
+          byId: normalizeArrayToObject(action.payload.projects, 'id'),
+          allIds: mapProjects(action.payload.projects)
+        }
       }
 
     case types.TOGGLE_BOOKMARK:
@@ -120,18 +116,7 @@ const mainReducer = (state, action) => {
       return updateHomeState(['page'])
 
     case types.UPDATE_SEARCH_VALUE:
-      console.log(searchUtils.searchForMatches(state.projects, action.payload.searchValue, [
-        'name', 'dateLastEdited', 'lastEditedBy'
-      ]))
-      return {
-        ...updateHomeState(['searchValue']),
-        matches: searchForMatches([...state.projects], action.payload.searchValue.trim().toLowerCase()),
-        normalizedMatches: searchUtils.searchForMatches(
-          Object.values(state.normalizedProjects), action.payload.searchValue, [
-            'name', 'dateLastEdited', 'lastEditedBy'
-          ]
-        )
-      }
+      return updateHomeState(['searchValue'])
 
     case types.UPDATE_PROJECT_SUCCESS:
       return {

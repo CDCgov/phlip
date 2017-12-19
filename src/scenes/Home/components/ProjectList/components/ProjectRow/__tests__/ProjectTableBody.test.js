@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import ProjectTableBody from '../index'
+import ProjectTableBody from '../../ProjectTableBody/index'
 
 let date = new Date('10/11/2017')
 
