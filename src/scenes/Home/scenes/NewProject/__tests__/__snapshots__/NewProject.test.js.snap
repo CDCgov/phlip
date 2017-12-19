@@ -65,7 +65,7 @@ exports[`Home scene - New Project scene should render correctly 1`] = `
     >
       <Field
         component={[Function]}
-        defaultValue="Assessment"
+        defaultValue={1}
         id="type"
         label="Type"
         name="type"
@@ -73,15 +73,15 @@ exports[`Home scene - New Project scene should render correctly 1`] = `
           Array [
             Object {
               "label": "Assessment",
-              "value": "Assessment",
+              "value": 1,
             },
             Object {
               "label": "Policy Surveillance",
-              "value": "Policy Surveillance",
+              "value": 2,
             },
             Object {
               "label": "Environmental Scan",
-              "value": "Environment Scan",
+              "value": 3,
             },
           ]
         }

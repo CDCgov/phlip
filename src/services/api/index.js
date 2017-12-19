@@ -15,9 +15,7 @@ export default {
   },
 
   logoutUser() {
-    //return api.post('/security/logout', user).then(res => {
-    return logout()
-    //})
+    return new Promise(resolve => resolve(logout()))
   },
 
   getProjects() {
