@@ -41,6 +41,14 @@ export default {
   updateUser(user) {
     return api.put(`/user/${user.userId}`).then(res => user)
     //return updateById(user, mockUsers) //TODO: temporary
+  },
+
+  addUserBookmark(userId, projectId) {
+    return api.post(`/bookmarks/${userId}/${projectId}`).then(res => res.data)
+  },
+
+  removeUserBookmark(userId, projectId) {
+    return api.delete(`/bookmarks/${userId}/${projectId}`).then(res => res.data)
   }
 }
 

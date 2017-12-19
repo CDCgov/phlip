@@ -28,10 +28,10 @@ function userReducer(state = INITIAL_STATE, action) {
         menuAnchor: null
       }
 
-    case types.TOGGLE_BOOKMARK:
+    case types.TOGGLE_BOOKMARK_SUCCESS:
       return {
         ...state,
-        currentUser: action.user
+        currentUser: action.payload.user
       }
 
     case 'FLUSH_STATE':

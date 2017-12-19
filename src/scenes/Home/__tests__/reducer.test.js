@@ -84,12 +84,12 @@ describe('Home reducer', () => {
     })
   })
 
-  describe('TOGGLE_BOOKMARK', () => {
-    test('should set bookmarkList to action.bookmarkList', () => {
+  describe('TOGGLE_BOOKMARK_SUCCESS', () => {
+    test('should set bookmarkList to action.payload.bookmarkList', () => {
       expect(
         reducer(
           { ...initial },
-          { type: types.TOGGLE_BOOKMARK, project: {}, bookmarkList: [1,2,3] }
+          { type: types.TOGGLE_BOOKMARK_SUCCESS, payload: { project: {}, bookmarkList: [1,2,3] }}
         )
       ).toEqual({
         ...initial,
@@ -118,9 +118,11 @@ describe('Home reducer', () => {
               sortBookmarked: true,
             }
           }, {
-            type: types.TOGGLE_BOOKMARK,
-            project: updatedProject,
-            bookmarkList: [4, 3, 1, 2]
+            type: types.TOGGLE_BOOKMARK_SUCCESS,
+            payload: {
+              project: updatedProject,
+              bookmarkList: [4, 3, 1, 2]
+            },
           })
       ).toEqual(
         {
@@ -158,9 +160,11 @@ describe('Home reducer', () => {
               sortBookmarked: true
             }
           }, {
-            type: types.TOGGLE_BOOKMARK,
-            project: updatedProject,
-            bookmarkList: [3,1]
+            type: types.TOGGLE_BOOKMARK_SUCCESS,
+            payload: {
+              project: updatedProject,
+              bookmarkList: [3,1]
+            }
           })
       ).toEqual(
         {
@@ -197,9 +201,11 @@ describe('Home reducer', () => {
               visibleProjects: defaultSortedProjects
             }
           }, {
-            type: types.TOGGLE_BOOKMARK,
-            project: updatedProject,
-            bookmarkList: [3,1]
+            type: types.TOGGLE_BOOKMARK_SUCCESS,
+            payload: {
+              project: updatedProject,
+              bookmarkList: [3,1]
+            }
           })
       ).toEqual(
         {

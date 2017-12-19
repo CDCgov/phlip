@@ -13,7 +13,7 @@
     "start:local": "node scripts/start.js",
     "serve:local": "node scripts/serve.js",
     "test:local": "jest --coverage --verbose",
-    "test:watch:local": "jest --verbose --coverage --watchAll -u",
+    "test:watch:local": "jest --coverage --watchAll -u",
     "prebuild": "npm run clean",
     "build": "node scripts/build.js",
     "clean": "rm -rf ./dist/"

@@ -113,11 +113,11 @@ function homeReducer(state = INITIAL_STATE, action) {
         ...getProjectArrays({ ...state, matches, searchValue })
       }
 
-    case types.TOGGLE_BOOKMARK:
+    case types.TOGGLE_BOOKMARK_SUCCESS:
       return {
         ...state,
-        bookmarkList: action.bookmarkList,
-        ...getProjectArrays({ ...state, bookmarkList: action.bookmarkList })
+        bookmarkList: action.payload.bookmarkList,
+        ...getProjectArrays({ ...state, bookmarkList: action.payload.bookmarkList })
       }
 
     case types.UPDATE_PROJECT_SUCCESS:
@@ -187,7 +187,6 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
     case types.GET_PROJECTS_FAIL:
-      console.log(action)
       return {
         ...state, errorContent: 'We failed to get the list of projects. Please try again later.', error: true
       }

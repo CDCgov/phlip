@@ -17,7 +17,7 @@ describe('Home logic', () => {
 
   const setupStore = initialBookmarks => {
     return createMockStore({
-      initialState: { data: { user: { currentUser: { bookmarks: initialBookmarks }}}},
+      initialState: { data: { user: { currentUser: { userId: 5, bookmarks: initialBookmarks }}}},
       reducer: mockReducer,
       logic: logic,
       injectedDeps: {
@@ -55,9 +55,14 @@ describe('Home logic', () => {
     const project = { id: 1, name: 'Project 1' }
     const store = setupStore([])
 
+    mock.onPost('/bookmarks/5/2').reply(200, [
+      { name: 'Project 1', id: 1 },
+      { name: 'Project 2', id: 2 }
+    ])
+
     store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
     store.whenComplete(() => {
-      expect(store.actions[0].bookmarkList).toEqual([1])
+      expect(store.actions[1].payload.bookmarkList).toEqual([1])
       done()
     })
   })
@@ -66,20 +71,30 @@ describe('Home logic', () => {
     const project = { id: 2, name: 'Project 2' }
     const store = setupStore([2, 1, 5])
 
+    mock.onDelete('/bookmarks/5/2').reply(200, [
+      { name: 'Project 1', id: 1 },
+      { name: 'Project 2', id: 2 }
+    ])
+
     store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
     store.whenComplete(() => {
-      expect(store.actions[0].bookmarkList).toEqual([1,5])
+      expect(store.actions[1].payload.bookmarkList).toEqual([1,5])
       done()
     })
   })
 
   test('should return bookmarkList as empty if length is 1 and project id is being un-bookmarked', (done) => {
+    mock.onDelete('/bookmarks/5/2').reply(200, [
+      { name: 'Project 1', id: 1 },
+      { name: 'Project 2', id: 2 }
+    ])
+
     const project = { id: 2, name: 'Project 2' }
     const store = setupStore([2])
 
     store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
     store.whenComplete(() => {
-      expect(store.actions[0].bookmarkList).toEqual([])
+      expect(store.actions[1].payload.bookmarkList).toEqual([])
       done()
     })
   })

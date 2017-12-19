@@ -9,6 +9,7 @@ export const updateProjectSuccess = (payload) => ({ type: types.UPDATE_PROJECT_S
 export const updateProjectFail = (payload) => ({ type: types.UPDATE_PROJECT_FAIL, errorValue: payload, error: true })
 
 export const toggleBookmark = (project) => ({ type: types.TOGGLE_BOOKMARK, project })
+export const toggleBookmarkSuccess = (payload) => ({ type: types.TOGGLE_BOOKMARK_SUCCESS, payload })
 
 export const sortProjects = (sortBy) => ({ type: types.SORT_PROJECTS, sortBy })
 export const updatePage = (page) => ({ type: types.UPDATE_PAGE, page })
