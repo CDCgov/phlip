@@ -1,7 +1,7 @@
 import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import newProjectReducer from './scenes/NewProject/reducer'
-import { sortList, updater, tableUtils, searchUtils } from 'utils'
+import { sortList, updater, tableUtils, searchUtils, normalize } from 'utils'
 
 const INITIAL_STATE = {
   projects: {
@@ -11,7 +11,6 @@ const INITIAL_STATE = {
   matches: [],
   bookmarkList: [],
   visibleProjects: [],
-  allIds: [],
   searchValue: '',
   rowsPerPage: 10,
   page: 0,
@@ -23,21 +22,10 @@ const INITIAL_STATE = {
   projectCount: 0
 }
 
-const normalizeArrayToObject = (arr, key) => ({
-  ...arr.reduce((obj, item) => ({
-    ...obj,
-    [item[key]]: item
-  }), {})
-})
-
 const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => {
   const bookmarked = sortList(projects.filter(project => bookmarkList.includes(project.id)), sortBy, direction)
   const nonBookmarked = sortList(projects.filter(project => !bookmarkList.includes(project.id)), sortBy, direction)
   return [...bookmarked, ...nonBookmarked]
-}
-
-const mapProjects = arr => {
-  return arr.map(p => p.id)
 }
 
 const sortArray = (arr, state) => {
@@ -50,10 +38,22 @@ const sortArray = (arr, state) => {
     : sortList(arr, sortBy, direction)
 }
 
-const getPArrays = state => {
+const setProjectValues = updatedProjects => (updatedArr, page, rowsPerPage) => {
+  return {
+    projects: {
+      byId: normalize.arrayToObject(updatedProjects),
+      allIds: normalize.mapArray(updatedProjects)
+    },
+    visibleProjects: normalize.mapArray(tableUtils.sliceTable(updatedArr, page, rowsPerPage)),
+    projectCount: updatedArr.length
+  }
+}
+
+const getProjectArrays = state => {
   const { projects, searchValue, page, rowsPerPage } = state
   let matches = []
   const updatedProjects = sortArray(Object.values(state.projects.byId), state)
+  const setArrays = setProjectValues(updatedProjects)
 
   if (projects.length === 0) return state
 
@@ -65,27 +65,17 @@ const getPArrays = state => {
     if (matches.length === 0) {
       return { ...state, matches: [], visibleProjects: [], allIds: [], projectCount: 0 }
     } else {
-      let updatedMatches = sortArray(matches, state)
+      const updatedMatches = sortArray(matches, state)
       return {
         ...state,
-        matches: [...mapProjects(updatedMatches)],
-        projects: {
-          ...state.projects,
-          allIds: mapProjects(updatedProjects)
-        },
-        visibleProjects: mapProjects(tableUtils.sliceTable(updatedMatches, page, rowsPerPage)),
-        projectCount: updatedMatches.length
+        ...setArrays(updatedMatches, page, rowsPerPage),
+        matches: [...normalize.mapArray(updatedMatches)],
       }
     }
   } else {
     return {
       ...state,
-      projects: {
-        byId: normalizeArrayToObject(updatedProjects, 'id'),
-        allIds: mapProjects(updatedProjects)
-      },
-      visibleProjects: mapProjects(tableUtils.sliceTable(Object.values(updatedProjects), page, rowsPerPage)),
-      projectCount: updatedProjects.length
+      ...setArrays(updatedProjects, page, rowsPerPage)
     }
   }
 }
@@ -98,8 +88,8 @@ const mainReducer = (state, action) => {
       return {
         ...updateHomeState(['error', 'errorContent', 'bookmarkList', 'searchValue']),
         projects: {
-          byId: normalizeArrayToObject(action.payload.projects, 'id'),
-          allIds: mapProjects(action.payload.projects)
+          byId: normalize.arrayToObject(action.payload.projects),
+          allIds: normalize.mapArray(action.payload.projects)
         }
       }
 
@@ -122,14 +112,16 @@ const mainReducer = (state, action) => {
       return {
         ...state,
         projects: updater.updateByProperty(action.payload, [...state.projects], 'id'),
-        visibleProjects: updater.updateByProperty(action.payload, [...state.visibleProjects], 'id')
       }
 
     case types.ADD_PROJECT_SUCCESS:
       return {
         ...INITIAL_STATE,
         bookmarkList: state.bookmarkList,
-        projects: [action.payload, ...state.projects]
+        projects: {
+          byId: { [action.payload.id]: action.payload, ...state.projects.byId},
+          allIds: [action.payload.id, ...state.projects.allIds]
+        }
       }
 
     case types.SORT_PROJECTS:
@@ -156,7 +148,7 @@ const mainReducer = (state, action) => {
 
 const homeReducer = (state = INITIAL_STATE, action) => {
   return Object.values(types).includes(action.type)
-    ? { ...state, ...getPArrays({ ...mainReducer(state, action) }) }
+    ? { ...state, ...getProjectArrays({ ...mainReducer(state, action) }) }
     : state
 }
 
