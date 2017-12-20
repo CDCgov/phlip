@@ -8,7 +8,7 @@ export const api = axios.create({
 
 export default {
   login(user) {
-    return api.post('/security/authenticate', user).then(res => {
+    return api.post('/users/authenticate', user).then(res => {
       login(res.data.token.value)
       return res.data
     })
@@ -31,15 +31,15 @@ export default {
   },
 
   getUsers() {
-    return api.get('/security/users').then(res => res.data.users)
+    return api.get('/users').then(res => res.data.users)
   },
 
   addUser(user) {
-    return api.post('/security/addUser', user).then(res => res.data.newUser)
+    return api.post('/users', user).then(res => res.data.newUser)
   },
 
   updateUser(user) {
-    return api.put(`/user/${user.id}`).then(res => user)
+    return api.put(`/users/${user.id}`, user).then(res => res.data)
   }
 }
 
