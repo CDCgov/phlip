@@ -11,7 +11,7 @@ import Form from 'components/Form'
 
 const ModalForm = ({ handleSubmit, form, onClose, open, actions, title, width, height, children, asyncValidate, asyncBlurFields, initialValues }) => {
   return (
-    <Dialog open={open} onRequestClose={onClose}>
+    <Dialog open={open} onClose={onClose}>
       <Form onSubmit={handleSubmit} form={form} asyncValidate={asyncValidate} asyncBlurFields={asyncBlurFields} initialValues={initialValues} style={{ width, height }}>
         <DialogTitle>{title}</DialogTitle>
         <Divider />
