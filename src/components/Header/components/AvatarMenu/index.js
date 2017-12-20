@@ -12,7 +12,7 @@ export const AvatarMenu = ({ role, initials, menuAnchor, open, onCloseMenu, onLo
       <Avatar big onClick={onOpenMenu} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />
       <Menu
         id="avatar-menu"
-        onRequestClose={onCloseMenu}
+        onClose={onCloseMenu}
         anchorEl={menuAnchor}
         marginThreshold={30}
         MenuListProps={{
