@@ -44,7 +44,7 @@ export const toggleBookmarkLogic = createLogic({
 
     console.log(out)
 
-    return { bookmarkList, user: { ...currentUser, bookmarks: bookmarkList }, out }
+    return { bookmarkList, user: { ...currentUser, bookmarks: bookmarkList } }
   }
 })
 

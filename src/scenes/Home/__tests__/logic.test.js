@@ -17,7 +17,7 @@ describe('Home logic', () => {
 
   const setupStore = initialBookmarks => {
     return createMockStore({
-      initialState: { data: { user: { currentUser: { userId: 5, bookmarks: initialBookmarks }}}},
+      initialState: { data: { user: { currentUser: { id: 5, bookmarks: initialBookmarks }}}},
       reducer: mockReducer,
       logic: logic,
       injectedDeps: {
@@ -55,7 +55,7 @@ describe('Home logic', () => {
     const project = { id: 1, name: 'Project 1' }
     const store = setupStore([])
 
-    mock.onPost('/bookmarks/5/2').reply(200, [
+    mock.onPost('/users/5/projectbookmarks/1').reply(200, [
       { name: 'Project 1', id: 1 },
       { name: 'Project 2', id: 2 }
     ])
@@ -71,7 +71,7 @@ describe('Home logic', () => {
     const project = { id: 2, name: 'Project 2' }
     const store = setupStore([2, 1, 5])
 
-    mock.onDelete('/bookmarks/5/2').reply(200, [
+    mock.onDelete('/users/5/projectbookmarks/2').reply(200, [
       { name: 'Project 1', id: 1 },
       { name: 'Project 2', id: 2 }
     ])
@@ -84,7 +84,7 @@ describe('Home logic', () => {
   })
 
   test('should return bookmarkList as empty if length is 1 and project id is being un-bookmarked', (done) => {
-    mock.onDelete('/bookmarks/5/2').reply(200, [
+    mock.onDelete('/users/5/projectbookmarks/2').reply(200, [
       { name: 'Project 1', id: 1 },
       { name: 'Project 2', id: 2 }
     ])
