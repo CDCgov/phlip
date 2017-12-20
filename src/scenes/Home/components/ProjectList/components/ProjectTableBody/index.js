@@ -17,7 +17,7 @@ const ProjectTableBody = ({ bookmarkList, projects, user, onToggleBookmark, onEx
             {bookmarkList.includes(project.id) ? 'bookmark' : 'bookmark_border'}
           </IconButton>
         </TableCell>
-        <TableCell key={`${project.id}-name`} style={{ textAlign: 'left', width: 500 }}>
+        <TableCell key={`${project.id}-name`} style={{ textAlign: 'left', width: 350 }}>
           <TextLink to="/">{project.name}</TextLink>
         </TableCell>
         <TableCell key={`${project.id}-dateLastEdited`}

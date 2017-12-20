@@ -146,6 +146,7 @@ function homeReducer(state = INITIAL_STATE, action) {
         rowsPerPage: state.rowsPerPage === state.projectCount ? state.projectCount + 1 : state.rowsPerPage,
         projects: [mockedUpProject, ...updated.projects],
         visibleProjects: [mockedUpProject, ...updated.visibleProjects],
+        bookmarkList: state.bookmarkList,
         projectCount: updated.projectCount + 1
       }
 

@@ -35,11 +35,16 @@ export const toggleBookmarkLogic = createLogic({
       bookmarkList.push(action.project.id)
     }
 
-    const out = await add
-      ? api.addUserBookmark(currentUser.id, action.project.id)
-      : api.removeUserBookmark(currentUser.id, action.project.id)
+    let out
+    if (add) {
+      out = await api.addUserBookmark(currentUser.id, action.project.id)
+    } else {
+      out = await api.removeUserBookmark(currentUser.id, action.project.id)
+    }
 
-    return { bookmarkList, user: { ...currentUser, bookmarks: bookmarkList } }
+    console.log(out)
+
+    return { bookmarkList, user: { ...currentUser, bookmarks: bookmarkList }, out }
   }
 })
 
