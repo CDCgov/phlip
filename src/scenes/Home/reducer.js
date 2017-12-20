@@ -99,8 +99,8 @@ function homeReducer(state = INITIAL_STATE, action) {
         error: false,
         errorContent: '',
         bookmarkList: action.payload.bookmarkList,
-        ...getProjectArrays({ ...state, matches: [], searchValue: '', bookmarkList: action.payload.bookmarkList, projects: action.payload.projects.map(mockUpProject) })
-        // ..getProjectArrays({ ...state, matches: [], searchValue: '', projects: action.payload })
+        //...getProjectArrays({ ...state, matches: [], searchValue: '', bookmarkList: action.payload.bookmarkList, projects: action.payload.projects.map(mockUpProject) })
+        ...getProjectArrays({ ...state, matches: [], searchValue: '', bookmarkList: action.payload.bookmarkList, projects: action.payload.projects })
       }
 
     case types.UPDATE_SEARCH_VALUE:
@@ -128,8 +128,8 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
     case types.ADD_PROJECT_SUCCESS:
-      const mockedUpProject = { ...mockUpProject(action.payload), dateLastEdited: new Date(), lastEditedBy: action.payload.lastEditedBy }
-      // const mockedUpProject = action.payload
+      //const mockedUpProject = { ...mockUpProject(action.payload), dateLastEdited: new Date(), lastEditedBy: action.payload.lastEditedBy }
+      const mockedUpProject = action.payload
       const updated = getProjectArrays({
         ...INITIAL_STATE,
         rowsPerPage: state.rowsPerPage,

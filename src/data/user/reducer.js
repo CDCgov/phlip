@@ -1,7 +1,7 @@
 import * as types from './actionTypes'
 
 const INITIAL_STATE = {
-  currentUser: { bookmarks: [] },
+  currentUser: {},
   menuOpen: false,
   menuAnchor: null
 }
@@ -11,7 +11,7 @@ function userReducer(state = INITIAL_STATE, action) {
     case types.LOGIN_USER_SUCCESS:
       return {
         ...state,
-        currentUser: { ...action.payload, bookmarks: [] }
+        currentUser: action.payload
       }
 
     case types.OPEN_MENU:
