@@ -2,45 +2,27 @@ import * as types from '../actionTypes'
 import reducer from '../reducer'
 
 const projects = [
-  {
-    id: 1,
-    bookmarked: true,
-    name: 'Project 1',
-    dateLastEdited: new Date(2017, 0, 31),
-    lastEditedBy: 'Kristin Muterspaw'
-  },
-  { id: 2, bookmarked: false, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' },
-  { id: 3, bookmarked: true, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
-  { id: 4, bookmarked: true, name: 'Project 4', dateLastEdited: new Date(2017, 5, 30), lastEditedBy: 'Greg Ledbetter' },
-  { id: 5, bookmarked: false, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James' }
+  { id: 1, name: 'Project 1', dateLastEdited: new Date(2017, 0, 31), lastEditedBy: 'Kristin Muterspaw' },
+  { id: 2, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' },
+  { id: 3, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
+  { id: 4, name: 'Project 4', dateLastEdited: new Date(2017, 5, 30), lastEditedBy: 'Greg Ledbetter' },
+  { id: 5, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James' }
 ]
 
 const sortedByUserAndBookmarked = [
   { id: 3, bookmarked: true, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
-  {
-    id: 1,
-    bookmarked: true,
-    name: 'Project 1',
-    dateLastEdited: new Date(2017, 0, 31),
-    lastEditedBy: 'Kristin Muterspaw'
-  },
+  { id: 1, bookmarked: true, name: 'Project 1', dateLastEdited: new Date(2017, 0, 31), lastEditedBy: 'Kristin Muterspaw' },
   { id: 4, bookmarked: true, name: 'Project 4', dateLastEdited: new Date(2017, 5, 30), lastEditedBy: 'Greg Ledbetter' },
   { id: 2, bookmarked: false, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' },
   { id: 5, bookmarked: false, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James' }
 ]
 
 const defaultSortedProjects = [
-  { id: 5, bookmarked: false, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James' },
-  { id: 4, bookmarked: true, name: 'Project 4', dateLastEdited: new Date(2017, 5, 30), lastEditedBy: 'Greg Ledbetter' },
-  { id: 2, bookmarked: false, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' },
-  { id: 3, bookmarked: true, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
-  {
-    id: 1,
-    bookmarked: true,
-    name: 'Project 1',
-    dateLastEdited: new Date(2017, 0, 31),
-    lastEditedBy: 'Kristin Muterspaw'
-  }
+  { id: 5, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James' },
+  { id: 4, name: 'Project 4', dateLastEdited: new Date(2017, 5, 30), lastEditedBy: 'Greg Ledbetter' },
+  { id: 2, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' },
+  { id: 3, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
+  { id: 1, name: 'Project 1', dateLastEdited: new Date(2017, 0, 31), lastEditedBy: 'Kristin Muterspaw' }
 ]
 
 const sortedByUser = [
@@ -52,29 +34,17 @@ const sortedByUser = [
 ]
 
 const sortedByDateAndBookmarked = [
-  { id: 4, bookmarked: true, name: 'Project 4', dateLastEdited: new Date(2017, 5, 30), lastEditedBy: 'Greg Ledbetter' },
-  { id: 3, bookmarked: true, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
-  {
-    id: 1,
-    bookmarked: true,
-    name: 'Project 1',
-    dateLastEdited: new Date(2017, 0, 31),
-    lastEditedBy: 'Kristin Muterspaw'
-  },
-  { id: 5, bookmarked: false, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James' },
-  { id: 2, bookmarked: false, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' }
+  { id: 4, name: 'Project 4', dateLastEdited: new Date(2017, 5, 30), lastEditedBy: 'Greg Ledbetter' },
+  { id: 3, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
+  { id: 1, name: 'Project 1', dateLastEdited: new Date(2017, 0, 31), lastEditedBy: 'Kristin Muterspaw' },
+  { id: 5, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James' },
+  { id: 2, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' }
 ]
 
 const noBookmarks = [
-  {
-    id: 1,
-    bookmarked: false,
-    name: 'Project 1',
-    dateLastEdited: new Date(2017, 0, 31),
-    lastEditedBy: 'Kristin Muterspaw'
-  },
-  { id: 2, bookmarked: false, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' },
-  { id: 3, bookmarked: false, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' }
+  { id: 1, name: 'Project 1', dateLastEdited: new Date(2017, 0, 31), lastEditedBy: 'Kristin Muterspaw' },
+  { id: 2, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' },
+  { id: 3, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' }
 ]
 
 const initial = {
@@ -85,6 +55,7 @@ const initial = {
     projectCount: 0,
     matches: [],
     visibleProjects: [],
+    bookmarkList: [],
     sortBy: 'dateLastEdited',
     direction: 'desc',
     sortBookmarked: false,
@@ -113,45 +84,27 @@ describe('Home reducer', () => {
     })
   })
 
-  describe('TOGGLE_BOOKMARK', () => {
-    test('should move the bookmarked project to the top of the list if sort by bookmarks is enabled', () => {
-      const updatedProject = {
-        id: 2,
-        bookmarked: true,
-        name: 'Project 2',
-        dateLastEdited: new Date(2017, 2, 31),
-        lastEditedBy: 'Michael Ta'
-      }
+  describe('TOGGLE_BOOKMARK_SUCCESS', () => {
+    test('should set bookmarkList to action.payload.bookmarkList', () => {
+      expect(
+        reducer(
+          { ...initial },
+          { type: types.TOGGLE_BOOKMARK_SUCCESS, payload: { project: {}, bookmarkList: [1,2,3] }}
+        )
+      ).toEqual({
+        ...initial,
+        main: { ...initial.main, bookmarkList: [1,2,3] }
+      })
+    })
+
+    test('should move the bookmarked project to the top half of the list if sort by bookmarks is enabled', () => {
+      const updatedProject = { id: 2, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' }
       const expectedResults = [
-        {
-          id: 4,
-          bookmarked: true,
-          name: 'Project 4',
-          dateLastEdited: new Date(2017, 5, 30),
-          lastEditedBy: 'Greg Ledbetter'
-        },
+        { id: 4, name: 'Project 4', dateLastEdited: new Date(2017, 5, 30), lastEditedBy: 'Greg Ledbetter' },
         updatedProject,
-        {
-          id: 3,
-          bookmarked: true,
-          name: 'Project 3',
-          dateLastEdited: new Date(2017, 1, 28),
-          lastEditedBy: 'Sanjith David'
-        },
-        {
-          id: 1,
-          bookmarked: true,
-          name: 'Project 1',
-          dateLastEdited: new Date(2017, 0, 31),
-          lastEditedBy: 'Kristin Muterspaw'
-        },
-        {
-          id: 5,
-          bookmarked: false,
-          name: 'Project 5',
-          dateLastEdited: new Date(2017, 9, 31),
-          lastEditedBy: 'Jason James'
-        }
+        { id: 3, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
+        { id: 1, name: 'Project 1', dateLastEdited: new Date(2017, 0, 31), lastEditedBy: 'Kristin Muterspaw' },
+        { id: 5, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James' }
       ]
 
       expect(
@@ -162,11 +115,14 @@ describe('Home reducer', () => {
               ...initial.main,
               projects: sortedByDateAndBookmarked,
               visibleProjects: sortedByDateAndBookmarked,
-              sortBookmarked: true
+              sortBookmarked: true,
             }
           }, {
-            type: types.TOGGLE_BOOKMARK,
-            project: updatedProject
+            type: types.TOGGLE_BOOKMARK_SUCCESS,
+            payload: {
+              project: updatedProject,
+              bookmarkList: [4, 3, 1, 2]
+            },
           })
       ).toEqual(
         {
@@ -176,50 +132,21 @@ describe('Home reducer', () => {
             projects: expectedResults,
             visibleProjects: expectedResults,
             sortBookmarked: true,
-            projectCount: 5
+            projectCount: 5,
+            bookmarkList: [4, 3, 1, 2]
           }
         }
       )
     })
 
     test('should move the un-bookmarked project from the top of the list if sort by bookmarks is enabled', () => {
-      const updatedProject = {
-        id: 4,
-        bookmarked: false,
-        name: 'Project 4',
-        dateLastEdited: new Date(2017, 5, 30),
-        lastEditedBy: 'Greg Ledbetter'
-      }
+      const updatedProject = { id: 4, name: 'Project 4', dateLastEdited: new Date(2017, 5, 30), lastEditedBy: 'Greg Ledbetter' }
       const expectedResults = [
-        {
-          id: 3,
-          bookmarked: true,
-          name: 'Project 3',
-          dateLastEdited: new Date(2017, 1, 28),
-          lastEditedBy: 'Sanjith David'
-        },
-        {
-          id: 1,
-          bookmarked: true,
-          name: 'Project 1',
-          dateLastEdited: new Date(2017, 0, 31),
-          lastEditedBy: 'Kristin Muterspaw'
-        },
-        {
-          id: 5,
-          bookmarked: false,
-          name: 'Project 5',
-          dateLastEdited: new Date(2017, 9, 31),
-          lastEditedBy: 'Jason James'
-        },
+        { id: 3, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
+        { id: 1, name: 'Project 1', dateLastEdited: new Date(2017, 0, 31), lastEditedBy: 'Kristin Muterspaw' },
+        { id: 5, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James' },
         updatedProject,
-        {
-          id: 2,
-          bookmarked: false,
-          name: 'Project 2',
-          dateLastEdited: new Date(2017, 2, 31),
-          lastEditedBy: 'Michael Ta'
-        }
+        { id: 2, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' }
       ]
 
       expect(
@@ -233,8 +160,11 @@ describe('Home reducer', () => {
               sortBookmarked: true
             }
           }, {
-            type: types.TOGGLE_BOOKMARK,
-            project: updatedProject
+            type: types.TOGGLE_BOOKMARK_SUCCESS,
+            payload: {
+              project: updatedProject,
+              bookmarkList: [3,1]
+            }
           })
       ).toEqual(
         {
@@ -244,50 +174,21 @@ describe('Home reducer', () => {
             projects: expectedResults,
             visibleProjects: expectedResults,
             sortBookmarked: true,
-            projectCount: 5
+            projectCount: 5,
+            bookmarkList: [3,1]
           }
         }
       )
     })
 
     test('should not move the project in the list if sort by bookmarked is not enabled', () => {
-      const updatedProject = {
-        id: 4,
-        bookmarked: false,
-        name: 'Project 4',
-        dateLastEdited: new Date(2017, 5, 30),
-        lastEditedBy: 'Greg Ledbetter'
-      }
+      const updatedProject = { id: 4, name: 'Project 4', dateLastEdited: new Date(2017, 5, 30), lastEditedBy: 'Greg Ledbetter' }
       const expectedResults = [
-        {
-          id: 5,
-          bookmarked: false,
-          name: 'Project 5',
-          dateLastEdited: new Date(2017, 9, 31),
-          lastEditedBy: 'Jason James'
-        },
+        { id: 5, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James' },
         updatedProject,
-        {
-          id: 2,
-          bookmarked: false,
-          name: 'Project 2',
-          dateLastEdited: new Date(2017, 2, 31),
-          lastEditedBy: 'Michael Ta'
-        },
-        {
-          id: 3,
-          bookmarked: true,
-          name: 'Project 3',
-          dateLastEdited: new Date(2017, 1, 28),
-          lastEditedBy: 'Sanjith David'
-        },
-        {
-          id: 1,
-          bookmarked: true,
-          name: 'Project 1',
-          dateLastEdited: new Date(2017, 0, 31),
-          lastEditedBy: 'Kristin Muterspaw'
-        }
+        { id: 2, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' },
+        { id: 3, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
+        { id: 1, name: 'Project 1', dateLastEdited: new Date(2017, 0, 31), lastEditedBy: 'Kristin Muterspaw' }
       ]
 
       expect(
@@ -300,8 +201,11 @@ describe('Home reducer', () => {
               visibleProjects: defaultSortedProjects
             }
           }, {
-            type: types.TOGGLE_BOOKMARK,
-            project: updatedProject
+            type: types.TOGGLE_BOOKMARK_SUCCESS,
+            payload: {
+              project: updatedProject,
+              bookmarkList: [3,1]
+            }
           })
       ).toEqual(
         {
@@ -310,7 +214,8 @@ describe('Home reducer', () => {
             ...initial.main,
             projects: expectedResults,
             visibleProjects: expectedResults,
-            projectCount: 5
+            projectCount: 5,
+            bookmarkList: [3,1]
           }
         }
       )
@@ -631,19 +536,28 @@ describe('Home reducer', () => {
 
   describe('SORT_BOOKMARKED', () => {
     test('should move bookmarked projects to the top and sort those depending on the sort label selected', () => {
+      const expectedResult = [
+        { id: 4, name: 'Project 4', dateLastEdited: new Date(2017, 5, 30), lastEditedBy: 'Greg Ledbetter' },
+        { id: 3, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
+        { id: 1, name: 'Project 1', dateLastEdited: new Date(2017, 0, 31), lastEditedBy: 'Kristin Muterspaw' },
+        { id: 5, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James' },
+        { id: 2, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' }
+      ]
+
       expect(
         reducer(
-          { ...initial, main: { ...initial.main, projects } },
+          { ...initial, main: { ...initial.main, projects, bookmarkList: [1,3,4], sortBookmarked: false } },
           { type: types.SORT_BOOKMARKED }
         )
       ).toEqual({
         ...initial,
         main: {
           ...initial.main,
-          projects: sortedByDateAndBookmarked,
-          visibleProjects: sortedByDateAndBookmarked,
+          projects: expectedResult,
+          visibleProjects: expectedResult,
           sortBookmarked: true,
-          projectCount: 5
+          projectCount: 5,
+          bookmarkList: [1,3,4]
         }
       })
     })
@@ -665,13 +579,13 @@ describe('Home reducer', () => {
     test('should move bookmarked projects back to their original order by sort label if sorting by bookmarked is disabled', () => {
       expect(
         reducer(
-          { ...initial, main: { ...initial.main, projects: sortedByDateAndBookmarked, sortBookmarked: true } },
+          { ...initial, main: { ...initial.main, projects: sortedByDateAndBookmarked, bookmarkList: [4,3,1], sortBookmarked: true } },
           { type: types.SORT_BOOKMARKED }
         )
       ).toEqual({
         ...initial,
         main: {
-          ...initial.main, projects, visibleProjects: projects, sortBookmarked: false, projectCount: 5
+          ...initial.main, projects, visibleProjects: projects, sortBookmarked: false, projectCount: 5, bookmarkList: [4,3,1]
         }
       })
     })
@@ -679,13 +593,7 @@ describe('Home reducer', () => {
 
   describe('UPDATE_SEARCH_VALUE', () => {
     test('should update visible projects if there are matches for the search value', () => {
-      const matchedProject = {
-        id: 4,
-        bookmarked: true,
-        name: 'Project 4',
-        dateLastEdited: new Date(2017, 5, 30),
-        lastEditedBy: 'Greg Ledbetter'
-      }
+      const matchedProject = { id: 4, name: 'Project 4', dateLastEdited: new Date(2017, 5, 30), lastEditedBy: 'Greg Ledbetter' }
 
       expect(
         reducer(

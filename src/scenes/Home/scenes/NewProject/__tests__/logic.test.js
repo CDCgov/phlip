@@ -21,11 +21,12 @@ describe('Home scene - NewProject logic', () => {
     mock = new MockAdapter(api)
   })
 
-  test('should post a new project, add lastEditedBy from currentUser and dispatch ADD_PROJECT_SUCCESS when successful', (done) => {
+  test('should post a new project and dispatch ADD_PROJECT_SUCCESS when successful', (done) => {
     let project = {
       id: 12345,
       name: 'New Project',
-      isCompleted: false
+      isCompleted: false,
+      lastEditedBy: 'Test User'
     }
 
     mock.onPost('/projects').reply(200, project)
@@ -33,7 +34,7 @@ describe('Home scene - NewProject logic', () => {
     store.whenComplete(() => {
       expect(store.actions).toEqual([
         { type: types.ADD_PROJECT_REQUEST, project },
-        { type: types.ADD_PROJECT_SUCCESS, payload: { ...project, lastEditedBy: 'Test User' } }
+        { type: types.ADD_PROJECT_SUCCESS, payload: { ...project } }
       ])
       done()
     })

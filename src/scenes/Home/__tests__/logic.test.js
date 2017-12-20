@@ -8,65 +8,102 @@ import apiCalls, { api } from 'services/api'
 describe('Home logic', () => {
   let store
   let mock
+
+  const mockReducer = (state, action) => state
+
   beforeEach(() => {
     mock = new MockAdapter(api)
-    store = createMockStore({
-      reducer: reducer,
+  })
+
+  const setupStore = initialBookmarks => {
+    return createMockStore({
+      initialState: { data: { user: { currentUser: { id: 5, bookmarks: initialBookmarks }}}},
+      reducer: mockReducer,
       logic: logic,
       injectedDeps: {
         api: { ...apiCalls }
       }
     })
-  })
+  }
 
-  test('should get project list and dispatch GET_PROJECTS_SUCCESS when done', (done) => {
+  test('should get project list and set bookmarkList and dispatch GET_PROJECTS_SUCCESS when done', (done) => {
     mock.onGet('/projects').reply(200, [
-      { name: 'Project 1', id: 12345 },
-      { name: 'Project 2', id: 54321 }
+      { name: 'Project 1', id: 1 },
+      { name: 'Project 2', id: 2 }
     ])
+
+    const store = setupStore([1])
+
     store.dispatch({ type: types.GET_PROJECTS_REQUEST })
+
     store.whenComplete(() => {
       expect(store.actions).toEqual([
         { type: types.GET_PROJECTS_REQUEST },
         {
           type: types.GET_PROJECTS_SUCCESS,
-          payload: [{ name: 'Project 1', id: 12345 }, { name: 'Project 2', id: 54321 }]
+          payload: {
+            projects: [{ name: 'Project 1', id: 1 }, { name: 'Project 2', id: 2 }],
+            bookmarkList: [1]
+          }
         }
       ])
       done()
     })
   })
 
-  test('should transform the bookmarked property of action.project when TOGGLE_BOOKMARK is dispatched', (done) => {
-    const project = { id: 12345, name: 'Project 1', bookmarked: false }
-    const expectedProject = { ...project, bookmarked: true }
+  test('should add the project id to bookmarkList if the id doesn\'t exist when TOGGLE_BOOKMARK is dispatched', (done) => {
+    const project = { id: 1, name: 'Project 1' }
+    const store = setupStore([])
+
+    mock.onPost('/users/5/projectbookmarks/1').reply(200, [
+      { name: 'Project 1', id: 1 },
+      { name: 'Project 2', id: 2 }
+    ])
+
     store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
     store.whenComplete(() => {
-      expect(store.actions[0].project).toEqual(expectedProject)
+      expect(store.actions[1].payload.bookmarkList).toEqual([1])
       done()
     })
   })
 
-  test('should put an updated project when TOGGLE_BOOKMARK action is dispatched and dispatch UPDATE_PROJECT_SUCCESS when successful', (done) => {
-    const project = { id: 12345, name: 'Project 1', bookmarked: false }
-    const expectedProject = { ...project, bookmarked: true }
-    mock.onPut('/projects/12345').reply(200, expectedProject)
+  test('should remove the project id from the bookmarkList if the id exists when TOGGLE_BOOKMARK is dispatched', (done) => {
+    const project = { id: 2, name: 'Project 2' }
+    const store = setupStore([2, 1, 5])
+
+    mock.onDelete('/users/5/projectbookmarks/2').reply(200, [
+      { name: 'Project 1', id: 1 },
+      { name: 'Project 2', id: 2 }
+    ])
+
     store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
     store.whenComplete(() => {
-      expect(store.actions).toEqual([
-        { type: types.TOGGLE_BOOKMARK, project: expectedProject },
-        { type: types.UPDATE_PROJECT_SUCCESS, payload: expectedProject }
-      ])
+      expect(store.actions[1].payload.bookmarkList).toEqual([1,5])
+      done()
+    })
+  })
+
+  test('should return bookmarkList as empty if length is 1 and project id is being un-bookmarked', (done) => {
+    mock.onDelete('/users/5/projectbookmarks/2').reply(200, [
+      { name: 'Project 1', id: 1 },
+      { name: 'Project 2', id: 2 }
+    ])
+
+    const project = { id: 2, name: 'Project 2' }
+    const store = setupStore([2])
+
+    store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
+    store.whenComplete(() => {
+      expect(store.actions[1].payload.bookmarkList).toEqual([])
       done()
     })
   })
 
   test('should put an updated project and dispatch UPDATE_PROJECT_SUCCESS when successful', (done) => {
-    let project = {
-      id: 12345,
-      name: 'Updated Project'
-    }
-    mock.onPut('/projects/12345').reply(200, project)
+    const project = { id: 1, name: 'Updated Project' }
+    const store = setupStore([])
+
+    mock.onPut('/projects/1').reply(200, project)
     store.dispatch({ type: types.UPDATE_PROJECT_REQUEST, project })
     store.whenComplete(() => {
       expect(store.actions).toEqual([

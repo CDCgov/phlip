@@ -47,7 +47,7 @@ describe('User reducer', () => {
       expect(
         reducer(
           { ...initial },
-          { type: types.LOGIN_USER_SUCCESS, payload: { firstName: 'user' }}
+          { type: types.LOGIN_USER_SUCCESS, payload: { firstName: 'user' } }
         )
       ).toEqual({
         currentUser: { firstName: 'user' },
@@ -65,6 +65,21 @@ describe('User reducer', () => {
           { type: types.FLUSH_STATE }
         )
       ).toEqual(initial)
+    })
+  })
+
+  describe('TOGGLE_BOOKMARK_SUCCESS', () => {
+    test('should set currentUser to user object in action', () => {
+      expect(
+        reducer(
+          { currentUser: { firstName: 'user', bookmarks: [5,6] }, menuOpen: false, menuAnchor: null },
+          { type: types.TOGGLE_BOOKMARK_SUCCESS, payload: { user: { firstName: 'user', bookmarks: [5,6,7] } }}
+        )
+      ).toEqual({
+        currentUser: { firstName: 'user', bookmarks: [5,6,7] },
+        menuOpen: false,
+        menuAnchor: null
+      })
     })
   })
 })

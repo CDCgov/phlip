@@ -9,6 +9,7 @@ const start = new Date(2017, 0, 1)
 const INITIAL_STATE = {
   projects: [],
   matches: [],
+  bookmarkList: [],
   searchValue: '',
   rowsPerPage: 10,
   page: 0,
@@ -27,23 +28,22 @@ const mockUpProject = (project) => {
   return {
     ...project,
     dateLastEdited: new Date(start.getTime() + Math.random() * (new Date().getTime() - start.getTime())),
-    bookmarked: false,
     lastEditedBy: `${user.firstName} ${user.lastName}`,
   }
 }
 
 const sliceProjects = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
-const sortProjectsByBookmarked = (projects, sortBy, direction) => {
+const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => {
   if (projects.length === 0) {
     return []
   }
-  const bookmarked = sortList(projects.filter(project => project.bookmarked), sortBy, direction)
-  const nonBookmarked = sortList(projects.filter(project => !project.bookmarked), sortBy, direction)
+  const bookmarked = sortList(projects.filter(project => bookmarkList.includes(project.id)), sortBy, direction)
+  const nonBookmarked = sortList(projects.filter(project => !bookmarkList.includes(project.id)), sortBy, direction)
   return [...bookmarked, ...nonBookmarked]
 }
 
-const anyBookmarks = (projects) => projects.filter(project => project.bookmarked).length > 0
+const anyBookmarks = (projects, bookmarkList) => projects.filter(project => bookmarkList.includes(project.id)).length > 0
 
 const isMatch = (value, search) => value.toLowerCase().includes(search)
 
@@ -55,13 +55,8 @@ const searchForMatches = (projects, searchValue) => {
   })
 }
 
-const updateAllArrays = (state, updated) => {
-  const { matches, projects } = state
-  return { matches: matches.length > 0 ? updateById(updated, matches) : [], projects: updateById(updated, projects) }
-}
-
 const getProjectArrays = (state) => {
-  const { projects, sortBy, direction, matches, page, rowsPerPage, sortBookmarked, searchValue } = state
+  const { projects, bookmarkList, sortBy, direction, matches, page, rowsPerPage, sortBookmarked, searchValue } = state
   let currentList = [...projects]
 
   if (searchValue !== undefined && searchValue.length > 0) {
@@ -81,11 +76,11 @@ const getProjectArrays = (state) => {
   }
 
   if (sortBookmarked) {
-    if (anyBookmarks(currentList)) {
-      const sortedByBookmarked = sortProjectsByBookmarked(currentList, sortBy, direction)
+    if (anyBookmarks(currentList, bookmarkList)) {
+      const sortedByBookmarked = sortProjectsByBookmarked(currentList, bookmarkList, sortBy, direction)
       return {
-        projects: sortProjectsByBookmarked(projects, sortBy, direction),
-        matches: searchValue.length === 0 ? [] : sortProjectsByBookmarked(matches, sortBy, direction),
+        projects: sortProjectsByBookmarked(projects, bookmarkList, sortBy, direction),
+        matches: searchValue.length === 0 ? [] : sortProjectsByBookmarked(matches, bookmarkList, sortBy, direction),
         visibleProjects: sliceProjects(sortedByBookmarked, page, rowsPerPage),
         projectCount: sortedByBookmarked.length
       }
@@ -103,8 +98,9 @@ function homeReducer(state = INITIAL_STATE, action) {
         ...state,
         error: false,
         errorContent: '',
-        ...getProjectArrays({ ...state, matches: [], searchValue: '', projects: action.payload.map(mockUpProject) })
-        // ..getProjectArrays({ ...state, matches: [], searchValue: '', projects: action.payload })
+        bookmarkList: action.payload.bookmarkList,
+        //...getProjectArrays({ ...state, matches: [], searchValue: '', bookmarkList: action.payload.bookmarkList, projects: action.payload.projects.map(mockUpProject) })
+        ...getProjectArrays({ ...state, matches: [], searchValue: '', bookmarkList: action.payload.bookmarkList, projects: action.payload.projects })
       }
 
     case types.UPDATE_SEARCH_VALUE:
@@ -117,10 +113,11 @@ function homeReducer(state = INITIAL_STATE, action) {
         ...getProjectArrays({ ...state, matches, searchValue })
       }
 
-    case types.TOGGLE_BOOKMARK:
+    case types.TOGGLE_BOOKMARK_SUCCESS:
       return {
         ...state,
-        ...getProjectArrays({ ...state, ...updateAllArrays(state, action.project) })
+        bookmarkList: action.payload.bookmarkList,
+        ...getProjectArrays({ ...state, bookmarkList: action.payload.bookmarkList })
       }
 
     case types.UPDATE_PROJECT_SUCCESS:
@@ -131,8 +128,8 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
     case types.ADD_PROJECT_SUCCESS:
-      const mockedUpProject = { ...mockUpProject(action.payload), dateLastEdited: new Date(), lastEditedBy: action.payload.lastEditedBy }
-      // const mockedUpProject = action.payload
+      //const mockedUpProject = { ...mockUpProject(action.payload), dateLastEdited: new Date(), lastEditedBy: action.payload.lastEditedBy }
+      const mockedUpProject = action.payload
       const updated = getProjectArrays({
         ...INITIAL_STATE,
         rowsPerPage: state.rowsPerPage,
@@ -149,6 +146,7 @@ function homeReducer(state = INITIAL_STATE, action) {
         rowsPerPage: state.rowsPerPage === state.projectCount ? state.projectCount + 1 : state.rowsPerPage,
         projects: [mockedUpProject, ...updated.projects],
         visibleProjects: [mockedUpProject, ...updated.visibleProjects],
+        bookmarkList: state.bookmarkList,
         projectCount: updated.projectCount + 1
       }
 

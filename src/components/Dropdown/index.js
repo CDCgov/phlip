@@ -28,7 +28,7 @@ Dropdown.propTypes = {
   label: PropTypes.string,
   id: PropTypes.any,
   onChange: PropTypes.func,
-  defaultValue: PropTypes.string,
+  defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   meta: PropTypes.object,
   options: PropTypes.arrayOf(PropTypes.object)
 }

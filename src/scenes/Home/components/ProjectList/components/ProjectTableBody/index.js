@@ -8,16 +8,16 @@ import TableCell from 'components/TableCell'
 
 const greyIcon = '#d4d4d4'
 
-const ProjectTableBody = ({ projects, user, onToggleBookmark, onExport }) => {
+const ProjectTableBody = ({ bookmarkList, projects, user, onToggleBookmark, onExport }) => {
   return (
     projects.map(project => (
       <TableRow key={project.id}>
         <TableCell key={`${project.id}-bookmarked`} style={{ width: 48 }}>
-          <IconButton color={project.bookmarked ? '#fdc43b' : greyIcon} onClick={() => onToggleBookmark(project)}>
-            {project.bookmarked ? 'bookmark' : 'bookmark_border'}
+          <IconButton color={bookmarkList.includes(project.id) ? '#fdc43b' : greyIcon} onClick={() => onToggleBookmark(project)}>
+            {bookmarkList.includes(project.id) ? 'bookmark' : 'bookmark_border'}
           </IconButton>
         </TableCell>
-        <TableCell key={`${project.id}-name`} style={{ textAlign: 'left', maxWidth: 'unset' }}>
+        <TableCell key={`${project.id}-name`} style={{ textAlign: 'left', width: 350 }}>
           <TextLink to="/">{project.name}</TextLink>
         </TableCell>
         <TableCell key={`${project.id}-dateLastEdited`}

@@ -8,6 +8,7 @@ export const api = axios.create({
 
 export default {
   login(user) {
+    console.log(user)
     return api.post('/users/authenticate', user).then(res => {
       login(res.data.token.value)
       return res.data
@@ -40,6 +41,14 @@ export default {
 
   updateUser(user) {
     return api.put(`/users/${user.id}`, user).then(res => res.data)
+  },
+
+  addUserBookmark(userId, projectId) {
+    return api.post(`/users/${userId}/projectbookmarks/${projectId}`).then(res => res.data)
+  },
+
+  removeUserBookmark(userId, projectId) {
+    return api.delete(`/users/${userId}/projectbookmarks/${projectId}`).then(res => res.data)
   }
 }
 
