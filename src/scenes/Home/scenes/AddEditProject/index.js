@@ -8,7 +8,7 @@ import { withRouter } from 'react-router'
 import EditView from './components/EditView'
 import DetailsView from './components/DetailsView'
 
-export class NewProject extends Component {
+export class AddEditProject extends Component {
   static propTypes = {
     actions: PropTypes.object,
     projects: PropTypes.arrayOf(PropTypes.object),
@@ -20,7 +20,7 @@ export class NewProject extends Component {
   constructor(props, context) {
     super(props, context)
     this.onCancel = this.onCancel.bind(this)
-    this.projectDefined = this.props.match.url === '/new/project' ? null : this.props.location.state.projectDefined
+    this.projectDefined = this.props.match.url === '/add/project' ? null : this.props.location.state.projectDefined
     this.state = {
       edit: !this.projectDefined
     }
@@ -31,13 +31,10 @@ export class NewProject extends Component {
   }
 
   handleSubmit = values => {
-    this.props.actions.addProjectRequest(
-      {
-        type: 1,
-        ...values,
-        name: this.capitalizeFirstLetter(values.name)
-      }
-    )
+    this.projectDefined
+      ? this.props.actions.updateProjectRequest({ ...values, name: this.capitalizeFirstLetter(values.name) })
+      : this.props.actions.addProjectRequest({ type: 1, ...values, name: this.capitalizeFirstLetter(values.name) })
+
     this.props.history.goBack()
   }
 
@@ -114,4 +111,4 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NewProject))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEditProject))

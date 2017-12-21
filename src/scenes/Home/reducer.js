@@ -1,10 +1,7 @@
 import * as types from './actionTypes'
 import { combineReducers } from 'redux'
-import newProjectReducer from './scenes/NewProject/reducer'
-import { mockUsers } from 'data/mockUsers'
+import addEditProjectReducer from './scenes/AddEditProject/reducer'
 import { sortList, updateById } from 'utils'
-
-const start = new Date(2017, 0, 1)
 
 const INITIAL_STATE = {
   projects: [],
@@ -112,8 +109,8 @@ function homeReducer(state = INITIAL_STATE, action) {
     case types.UPDATE_PROJECT_SUCCESS:
       return {
         ...state,
-        projects: updateById(action.payload, [...state.projects]),
-        visibleProjects: updateById(action.payload, [...state.visibleProjects])
+        projects: [...updateById(action.payload, state.projects)],
+        visibleProjects: [...updateById(action.payload, state.visibleProjects)]
       }
 
     case types.ADD_PROJECT_SUCCESS:
@@ -192,7 +189,7 @@ function homeReducer(state = INITIAL_STATE, action) {
 
 const homeRootReducer = combineReducers({
   main: homeReducer,
-  newProject: newProjectReducer
+  addEditProject: addEditProjectReducer
 })
 
 export default homeRootReducer

@@ -8,7 +8,6 @@ export const api = axios.create({
 
 export default {
   login(user) {
-    console.log(user)
     return api.post('/users/authenticate', user).then(res => {
       login(res.data.token.value)
       return res.data

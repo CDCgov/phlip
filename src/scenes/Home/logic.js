@@ -1,6 +1,6 @@
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
-import newProjectLogic from './scenes/NewProject/logic'
+import addEditProjectLogic from './scenes/AddEditProject/logic'
 
 export const getProjectLogic = createLogic({
   type: types.GET_PROJECTS_REQUEST,
@@ -42,9 +42,19 @@ export const toggleBookmarkLogic = createLogic({
       out = await api.removeUserBookmark(currentUser.id, action.project.id)
     }
 
-    console.log(out)
-
     return { bookmarkList, user: { ...currentUser, bookmarks: bookmarkList } }
+  }
+})
+
+export const updateLastEditedBy = createLogic({
+  type: types.UPDATE_PROJECT_REQUEST,
+  transform({ getState, action }, next) {
+    const currentUser = getState().data.user.currentUser
+
+    next({
+      ...action,
+      project: { ...action.project, lastEditedBy: `${currentUser.firstName} ${currentUser.lastName}` }
+    })
   }
 })
 
@@ -57,13 +67,15 @@ export const updateProjectLogic = createLogic({
     failType: types.UPDATE_PROJECT_FAIL
   },
   async process({ action, api }) {
-    return await api.updateProject(action.project)
+    const out = await api.updateProject(action.project)
+    return { ...action.project }
   }
 })
 
 export default [
   getProjectLogic,
+  updateLastEditedBy,
   updateProjectLogic,
   toggleBookmarkLogic,
-  ...newProjectLogic
+  ...addEditProjectLogic
 ]
