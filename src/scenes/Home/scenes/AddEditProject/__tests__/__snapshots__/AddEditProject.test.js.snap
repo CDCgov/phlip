@@ -1,21 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Home scene - New Project scene should render correctly 1`] = `
-<ModalForm
-  actions={
-    Array [
-      Object {
-        "onClick": [Function],
-        "type": "button",
-        "value": "Cancel",
-      },
-      Object {
-        "disabled": false,
-        "type": "submit",
-        "value": "Create",
-      },
-    ]
-  }
+exports[`Home scene - AddEditProject scene should render correctly 1`] = `
+<FormModal
   asyncBlurFields={
     Array [
       "name",
@@ -25,47 +11,45 @@ exports[`Home scene - New Project scene should render correctly 1`] = `
   form="newProject"
   handleSubmit={[Function]}
   height="400px"
+  initialValues={Object {}}
+  onClose={[Function]}
   open={true}
-  title="Create New Project"
   width="600px"
 >
-  <Container
-    column={true}
-    flex={false}
-    spacing={0}
-    style={
-      Object {
-        "minHeight": 230,
-        "minWidth": 550,
-        "padding": "30px 15px",
-      }
-    }
-  >
-    <Row
-      displayFlex={false}
+  <ModalTitle
+    edit={true}
+    editButton={false}
+    onCloseForm={[Function]}
+    onEditForm={[Function]}
+    title="Create New Project"
+  />
+  <withStyles(Divider) />
+  <ModalContent>
+    <Container
+      column={true}
       flex={false}
+      spacing={0}
       style={
         Object {
-          "paddingBottom": "20px",
+          "minHeight": 230,
+          "minWidth": 550,
+          "padding": "30px 15px",
         }
       }
     >
-      <Field
+      <DetailRow
         component={[Function]}
+        disabled={false}
         fullWidth={true}
         label="Project Name"
         name="name"
         placeholder="Enter Project Name"
         validate={[Function]}
       />
-    </Row>
-    <Row
-      displayFlex={false}
-      flex={false}
-    >
-      <Field
+      <DetailRow
         component={[Function]}
         defaultValue={1}
+        disabled={false}
         id="type"
         label="Type"
         name="type"
@@ -91,7 +75,24 @@ exports[`Home scene - New Project scene should render correctly 1`] = `
           }
         }
       />
-    </Row>
-  </Container>
-</ModalForm>
+    </Container>
+  </ModalContent>
+  <ModalActions
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Cancel",
+        },
+        Object {
+          "disabled": false,
+          "type": "submit",
+          "value": "Create",
+        },
+      ]
+    }
+    edit={true}
+  />
+</FormModal>
 `;

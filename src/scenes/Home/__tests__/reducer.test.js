@@ -63,7 +63,7 @@ const initial = {
     errorContent: '',
     searchValue: ''
   },
-  newProject: {}
+  addEditProject: {}
 }
 
 describe('Home reducer', () => {

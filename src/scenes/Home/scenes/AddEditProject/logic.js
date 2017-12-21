@@ -15,6 +15,34 @@ export const addProjectLogic = createLogic({
   }
 })
 
+export const updateLastEditedBy = createLogic({
+  type: types.UPDATE_PROJECT_REQUEST,
+  transform({ getState, action }, next) {
+    const currentUser = getState().data.user.currentUser
+
+    next({
+      ...action,
+      project: { ...action.project, lastEditedBy: `${currentUser.firstName} ${currentUser.lastName}` }
+    })
+  }
+})
+
+export const updateProjectLogic = createLogic({
+  type: types.UPDATE_PROJECT_REQUEST,
+  latest: true,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.UPDATE_PROJECT_SUCCESS,
+    failType: types.UPDATE_PROJECT_FAIL
+  },
+  async process({ action, api }) {
+    const out = await api.updateProject(action.project)
+    return { ...action.project }
+  }
+})
+
 export default [
-  addProjectLogic
+  addProjectLogic,
+  updateLastEditedBy,
+  updateProjectLogic
 ]
