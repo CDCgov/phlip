@@ -51,19 +51,17 @@ const setProjectValues = updatedProjects => (updatedArr, page, rowsPerPage) => {
 
 const getProjectArrays = state => {
   const { projects, searchValue, page, rowsPerPage } = state
-  let matches = []
+  let matches = searchUtils.searchForMatches(Object.values(state.projects.byId), searchValue, [
+    'name', 'dateLastEdited', 'lastEditedBy'
+  ])
   const updatedProjects = sortArray(Object.values(state.projects.byId), state)
   const setArrays = setProjectValues(updatedProjects)
 
   if (projects.length === 0) return state
 
   if (searchValue !== undefined && searchValue.length > 0) {
-    matches = searchUtils.searchForMatches(Object.values(state.projects.byId), searchValue, [
-      'name', 'dateLastEdited', 'lastEditedBy'
-    ])
-
     if (matches.length === 0) {
-      return { ...state, matches: [], visibleProjects: [], allIds: [], projectCount: 0 }
+      return { ...state, matches: [], visibleProjects: [], projectCount: 0 }
     } else {
       const updatedMatches = sortArray(matches, state)
       return {
@@ -75,7 +73,8 @@ const getProjectArrays = state => {
   } else {
     return {
       ...state,
-      ...setArrays(updatedProjects, page, rowsPerPage)
+      ...setArrays(updatedProjects, page, rowsPerPage),
+      matches: []
     }
   }
 }

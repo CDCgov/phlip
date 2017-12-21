@@ -4,7 +4,7 @@ import { TableBody, TableHead, TableFooter, TableRow } from 'material-ui/Table'
 import Container, { Column } from 'components/Layout'
 import Card from 'components/Card'
 import Table from 'components/Table'
-import ProjectTableRow from './components/ProjectRow'
+import ProjectRow from './components/ProjectRow'
 import ProjectTableHead from './components/ProjectTableHead'
 import TablePagination from 'components/TablePagination'
 
@@ -27,7 +27,7 @@ export const ProjectList = props => {
           </TableHead>
           <TableBody>
             {projectIds.map(id => (
-              <ProjectTableRow key={id} id={id} />
+              <ProjectRow key={id} id={id} />
             ))}
           </TableBody>
         </Table>

@@ -1,17 +1,6 @@
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 import newProjectLogic from './scenes/NewProject/logic'
-import { mockUsers } from 'data/mockUsers'
-
-const start = new Date(2017, 0, 1)
-export const mockUpProject = (project) => {
-  const user = mockUsers[Math.floor(Math.random() * mockUsers.length)]
-  return {
-    ...project,
-    dateLastEdited: new Date(start.getTime() + Math.random() * (new Date().getTime() - start.getTime())),
-    lastEditedBy: `${user.firstName} ${user.lastName}`
-  }
-}
 
 export const getProjectLogic = createLogic({
   type: types.GET_PROJECTS_REQUEST,
@@ -24,8 +13,7 @@ export const getProjectLogic = createLogic({
   async process({ api, getState }) {
     const projects = await api.getProjects()
     return {
-      projects: projects.map(mockUpProject),
-      //projects,
+      projects,
       bookmarkList: [...getState().data.user.currentUser.bookmarks],
       error: false, errorContent: '', searchValue: ''
     }

@@ -1,0 +1,142 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Home scene - ProjectList - ProjectRow component should render correctly 1`] = `
+<TableRow
+  key="1"
+>
+  <TableCell
+    key="1-bookmarked"
+    style={
+      Object {
+        "width": 48,
+      }
+    }
+  >
+    <IconButton
+      color="#d4d4d4"
+      iconSize={24}
+      onClick={[Function]}
+    >
+      bookmark_border
+    </IconButton>
+  </TableCell>
+  <TableCell
+    key="1-name"
+    style={
+      Object {
+        "textAlign": "left",
+        "width": 350,
+      }
+    }
+  >
+    <withTheme(TextLink)
+      to="/"
+    >
+      Project 1
+    </withTheme(TextLink)>
+  </TableCell>
+  <TableCell
+    key="1-dateLastEdited"
+    light={true}
+    style={
+      Object {
+        "color": "#9a9c9c",
+        "maxWidth": 150,
+        "textAlign": "unset",
+        "width": 150,
+      }
+    }
+  >
+    2017-10-11
+  </TableCell>
+  <TableCell
+    key="1-lastEditedBy"
+    light={true}
+    style={
+      Object {
+        "color": "#9a9c9c",
+        "fontStyle": "italic",
+        "maxWidth": 150,
+        "textAlign": "unset",
+        "width": 150,
+      }
+    }
+  >
+    Kristin
+  </TableCell>
+  <TableCell
+    key="1-jurisdictions"
+    light={true}
+  >
+    <withTheme(TextLink)
+      to="/"
+    >
+      Add/Edit
+    </withTheme(TextLink)>
+  </TableCell>
+  <TableCell
+    key="1-protocol"
+    light={true}
+  >
+    <withTheme(TextLink)
+      to="/"
+    >
+      Add/Edit
+    </withTheme(TextLink)>
+  </TableCell>
+  <TableCell
+    key="1-codingScheme"
+    light={true}
+  >
+    <withTheme(TextLink)
+      to="/"
+    >
+      Edit
+    </withTheme(TextLink)>
+  </TableCell>
+  <TableCell
+    key="1-code"
+    style={
+      Object {
+        "maxWidth": 40,
+      }
+    }
+  >
+    <withTheme(Button)
+      listButton={true}
+      raised={false}
+      value="Code"
+    />
+  </TableCell>
+  <TableCell
+    key="1-validation"
+    style={
+      Object {
+        "maxWidth": 40,
+      }
+    }
+  >
+    <withTheme(Button)
+      listButton={true}
+      raised={false}
+      value="Validate"
+    />
+  </TableCell>
+  <TableCell
+    key="1-export"
+    style={
+      Object {
+        "maxWidth": 10,
+      }
+    }
+  >
+    <IconButton
+      color="#d4d4d4"
+      iconSize={24}
+      onClick={[Function]}
+    >
+      file_download
+    </IconButton>
+  </TableCell>
+</TableRow>
+`;

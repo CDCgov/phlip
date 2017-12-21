@@ -33,40 +33,13 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
         />
       </withStyles(TableHead)>
       <withStyles(TableBody)>
-        <ProjectTableBody
-          bookmarkList={
-            Array [
-              1,
-            ]
-          }
-          onExport={[Function]}
-          onToggleBookmark={[Function]}
-          projects={
-            Array [
-              Object {
-                "dateLastEdited": 2017-10-11T00:00:00.000Z,
-                "id": 1,
-                "lastEditedBy": "Kristin",
-                "name": "Project 1",
-              },
-              Object {
-                "dateLastEdited": 2017-10-11T00:00:00.000Z,
-                "id": 2,
-                "lastEditedBy": "Michael",
-                "name": "Project 2",
-              },
-            ]
-          }
-          user={
-            Object {
-              "email": "kmusterspaw@cdc.gov",
-              "firstName": "Kristin",
-              "id": 2,
-              "lastName": "Muterspaw",
-              "password": "test",
-              "role": "Coordinator",
-            }
-          }
+        <Connect(ProjectRow)
+          id={1}
+          key="1"
+        />
+        <Connect(ProjectRow)
+          id={2}
+          key="2"
         />
       </withStyles(TableBody)>
     </Table>
@@ -83,7 +56,6 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
       <withStyles(TableFooter)>
         <withStyles(TableRow)>
           <withStyles(TablePagination)
-            count={2}
             onChangePage={[Function]}
             onChangeRowsPerPage={[Function]}
             page={0}
