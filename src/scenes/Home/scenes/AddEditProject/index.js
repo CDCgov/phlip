@@ -9,7 +9,6 @@ import Divider from 'material-ui/Divider'
 import FormModal from 'components/FormModal'
 import TextInput from 'components/TextInput'
 import Dropdown from 'components/Dropdown'
-import { Field } from 'redux-form'
 import Container, { Row } from 'components/Layout'
 import DetailRow from './components/DetailRow'
 

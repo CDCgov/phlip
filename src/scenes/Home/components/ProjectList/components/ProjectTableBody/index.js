@@ -32,12 +32,12 @@ const ProjectTableBody = ({ bookmarkList, projects, user, onToggleBookmark, onEx
           {project.lastEditedBy}
         </TableCell>
         {user.role !== 'Coder' &&
-        <TableCell key={`${project.id}-jurisdictions`} light>
+        <TableCell key={`${project.id}-protocol`} light>
           <TextLink to="/">Add/Edit</TextLink>
         </TableCell>
         }
-        <TableCell key={`${project.id}-protocol`} light>
-          <TextLink to="/">Add/Edit</TextLink>
+        <TableCell key={`${project.id}-jurisdictions`} light>
+          <TextLink to={`/project/${project.id}/jurisdictions`}>Add/Edit</TextLink>
         </TableCell>
         {user.role !== 'Coder' &&
         <TableCell key={`${project.id}-codingScheme`} light>

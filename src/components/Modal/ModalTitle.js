@@ -4,7 +4,7 @@ import { DialogTitle } from 'material-ui/Dialog'
 import Container, { Column } from 'components/Layout'
 import IconButton from 'components/IconButton'
 
-const ModalTitle = ({ edit, editButton, onEditForm, onCloseForm, title }) => {
+const ModalTitle = ({ edit, editButton, onEditForm, onCloseForm, buttons, title }) => {
   return (
     <DialogTitle>
       <Container alignItems="center">
@@ -12,7 +12,8 @@ const ModalTitle = ({ edit, editButton, onEditForm, onCloseForm, title }) => {
         <Column>
           <Container alignItems="center">
             {!edit && editButton && <IconButton onClick={onEditForm} color="secondary">mode_edit</IconButton>}
-            {!edit && <IconButton onClick={onCloseForm} color="error" iconSize={25} style={{fontWeight: 'bold'}}>close</IconButton>}
+            {!edit && editButton && <IconButton onClick={onCloseForm} color="error" iconSize={25} style={{fontWeight: 'bold'}}>close</IconButton>}
+            {!editButton && buttons}
           </Container>
         </Column>
       </Container>

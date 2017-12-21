@@ -2,9 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { DialogContent } from 'material-ui/Dialog'
 
-const ModalContent = ({ children }) => {
+const ModalContent = ({ children, ...otherProps }) => {
   return (
-    <DialogContent>
+    <DialogContent {...otherProps}>
       { children }
     </DialogContent>
   )
