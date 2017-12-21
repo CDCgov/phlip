@@ -27,7 +27,11 @@ export class AddEditProject extends Component {
   }
 
   onCancel() {
-    this.props.history.goBack()
+    this.state.edit
+      ? this.projectDefined
+        ? this.setState({ edit: !this.state.edit })
+        : this.props.history.goBack()
+      : this.props.history.goBack()
   }
 
   handleSubmit = values => {
