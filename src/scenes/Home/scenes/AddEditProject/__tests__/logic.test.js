@@ -6,20 +6,23 @@ import apiCalls, { api } from 'services/api'
 
 const mockReducer = (state, action) => state
 
-describe('Home scene - NewProject logic', () => {
-  let store
+describe('Home scene - AddEditProject logic', () => {
   let mock
+
   beforeEach(() => {
-    store = createMockStore({
-      initialState: { data: { user: { currentUser: { firstName: 'Test', lastName: 'User' }}}},
+    mock = new MockAdapter(api)
+  })
+
+  const setupStore = initialBookmarks => {
+    return createMockStore({
+      initialState: { data: { user: { currentUser: { id: 5, bookmarks: initialBookmarks, firstName: 'Test', lastName: 'User' }}}},
       reducer: mockReducer,
       logic: logic,
       injectedDeps: {
-        api: {...apiCalls}
+        api: { ...apiCalls }
       }
     })
-    mock = new MockAdapter(api)
-  })
+  }
 
   test('should post a new project and dispatch ADD_PROJECT_SUCCESS when successful', (done) => {
     let project = {
@@ -30,11 +33,27 @@ describe('Home scene - NewProject logic', () => {
     }
 
     mock.onPost('/projects').reply(200, project)
+    const store = setupStore()
     store.dispatch({ type: types.ADD_PROJECT_REQUEST, project })
     store.whenComplete(() => {
       expect(store.actions).toEqual([
         { type: types.ADD_PROJECT_REQUEST, project },
         { type: types.ADD_PROJECT_SUCCESS, payload: { ...project } }
+      ])
+      done()
+    })
+  })
+
+  test('should put an updated project and dispatch UPDATE_PROJECT_SUCCESS when successful', (done) => {
+    const project = { id: 1, name: 'Updated Project', lastEditedBy: 'Test User' }
+    const store = setupStore([])
+
+    mock.onPut('/projects/1').reply(200, project)
+    store.dispatch({ type: types.UPDATE_PROJECT_REQUEST, project })
+    store.whenComplete(() => {
+      expect(store.actions).toEqual([
+        { type: types.UPDATE_PROJECT_REQUEST, project },
+        { type: types.UPDATE_PROJECT_SUCCESS, payload: project }
       ])
       done()
     })

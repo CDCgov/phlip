@@ -30,37 +30,6 @@ describe('Home actions creators', () => {
     expect(actions.getProjectsFail(payload)).toEqual(expectedAction)
   })
 
-  test('should create an action update projects', () => {
-    const project = { name: 'Project 1' }
-    const expectedAction = {
-      type: types.UPDATE_PROJECT_REQUEST,
-      project
-    }
-
-    expect(actions.updateProjectRequest(project)).toEqual(expectedAction)
-  })
-
-  test('should create an action to indicate updating project was successfully', () => {
-    const payload = { name: 'Project 1' }
-    const expectedAction = {
-      type: types.UPDATE_PROJECT_SUCCESS,
-      payload
-    }
-
-    expect(actions.updateProjectSuccess(payload)).toEqual(expectedAction)
-  })
-
-  test('should create an action to indicate updating a project failed', () => {
-    const payload = 'errorValue'
-    const expectedAction = {
-      type: types.UPDATE_PROJECT_FAIL,
-      errorValue: payload,
-      error: true
-    }
-
-    expect(actions.updateProjectFail(payload)).toEqual(expectedAction)
-  })
-
   test('should create an action to toggle bookmark', () => {
     const project = { id: 12345, name: 'project 1' }
     const expectedAction = {

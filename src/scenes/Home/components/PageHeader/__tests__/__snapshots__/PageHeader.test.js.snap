@@ -77,7 +77,14 @@ exports[`Home scene - PageHeader component should render correctly 1`] = `
           "color": "white",
         }
       }
-      to="/new/project"
+      to={
+        Object {
+          "pathname": "/project/add",
+          "state": Object {
+            "userDefined": null,
+          },
+        }
+      }
     >
       <withTheme(Button)
         color="accent"

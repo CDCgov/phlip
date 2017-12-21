@@ -1,10 +1,7 @@
 import * as types from './actionTypes'
 import { combineReducers } from 'redux'
-import newProjectReducer from './scenes/NewProject/reducer'
-import { mockUsers } from 'data/mockUsers'
+import addEditProjectReducer from './scenes/AddEditProject/reducer'
 import { sortList, updateById } from 'utils'
-
-const start = new Date(2017, 0, 1)
 
 const INITIAL_STATE = {
   projects: [],
@@ -20,16 +17,6 @@ const INITIAL_STATE = {
   errorContent: '',
   error: false,
   projectCount: 0
-}
-
-// TODO: Just until the data model is complete
-const mockUpProject = (project) => {
-  const user = mockUsers[Math.floor(Math.random() * mockUsers.length)]
-  return {
-    ...project,
-    dateLastEdited: new Date(start.getTime() + Math.random() * (new Date().getTime() - start.getTime())),
-    lastEditedBy: `${user.firstName} ${user.lastName}`,
-  }
 }
 
 const sliceProjects = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -99,7 +86,6 @@ function homeReducer(state = INITIAL_STATE, action) {
         error: false,
         errorContent: '',
         bookmarkList: action.payload.bookmarkList,
-        //...getProjectArrays({ ...state, matches: [], searchValue: '', bookmarkList: action.payload.bookmarkList, projects: action.payload.projects.map(mockUpProject) })
         ...getProjectArrays({ ...state, matches: [], searchValue: '', bookmarkList: action.payload.bookmarkList, projects: action.payload.projects })
       }
 
@@ -123,13 +109,12 @@ function homeReducer(state = INITIAL_STATE, action) {
     case types.UPDATE_PROJECT_SUCCESS:
       return {
         ...state,
-        projects: updateById(action.payload, [...state.projects]),
-        visibleProjects: updateById(action.payload, [...state.visibleProjects])
+        projects: [...updateById(action.payload, state.projects)],
+        visibleProjects: [...updateById(action.payload, state.visibleProjects)]
       }
 
     case types.ADD_PROJECT_SUCCESS:
-      //const mockedUpProject = { ...mockUpProject(action.payload), dateLastEdited: new Date(), lastEditedBy: action.payload.lastEditedBy }
-      const mockedUpProject = action.payload
+      const project = action.payload
       const updated = getProjectArrays({
         ...INITIAL_STATE,
         rowsPerPage: state.rowsPerPage,
@@ -144,8 +129,8 @@ function homeReducer(state = INITIAL_STATE, action) {
       return {
         ...INITIAL_STATE,
         rowsPerPage: state.rowsPerPage === state.projectCount ? state.projectCount + 1 : state.rowsPerPage,
-        projects: [mockedUpProject, ...updated.projects],
-        visibleProjects: [mockedUpProject, ...updated.visibleProjects],
+        projects: [project, ...updated.projects],
+        visibleProjects: [project, ...updated.visibleProjects],
         bookmarkList: state.bookmarkList,
         projectCount: updated.projectCount + 1
       }
@@ -204,7 +189,7 @@ function homeReducer(state = INITIAL_STATE, action) {
 
 const homeRootReducer = combineReducers({
   main: homeReducer,
-  newProject: newProjectReducer
+  addEditProject: addEditProjectReducer
 })
 
 export default homeRootReducer

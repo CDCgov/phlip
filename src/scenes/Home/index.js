@@ -10,7 +10,7 @@ import Container from 'components/Layout'
 import PageHeader from './components/PageHeader'
 import ProjectList from './components/ProjectList'
 import SearchBar from 'components/SearchBar'
-import NewProject from './scenes/NewProject'
+import AddEditProject from './scenes/AddEditProject'
 import * as actions from './actions'
 
 export class Home extends Component {
@@ -72,8 +72,11 @@ export class Home extends Component {
           />
         }
         <Route
-          path="/new/project"
-          component={NewProject} />
+          path="/project/add"
+          component={AddEditProject} />
+        <Route
+          path="/project/edit/:id"
+          component={AddEditProject} />
       </Container>
     )
   }
