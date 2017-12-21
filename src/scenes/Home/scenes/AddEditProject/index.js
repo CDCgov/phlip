@@ -11,6 +11,7 @@ import TextInput from 'components/TextInput'
 import Dropdown from 'components/Dropdown'
 import { Field } from 'redux-form'
 import Container, { Row } from 'components/Layout'
+import DetailRow from './components/DetailRow'
 
 export class AddEditProject extends Component {
   static propTypes = {
@@ -23,25 +24,22 @@ export class AddEditProject extends Component {
 
   constructor (props, context) {
     super(props, context)
-    this.onCancel = this.onCancel.bind(this)
     this.projectDefined = this.props.match.url === '/add/project' ? null : this.props.location.state.projectDefined
     this.state = {
       edit: !this.projectDefined
     }
   }
 
-  onCancel () {
-    this.state.edit
-      ? this.projectDefined
-        ? this.setState({edit: !this.state.edit})
-        : this.props.history.goBack()
-        : this.props.history.goBack()
-  }
+  onCancel = () => this.state.edit
+    ? this.projectDefined
+      ? this.setState({ edit: !this.state.edit })
+      : this.props.history.goBack()
+    : this.props.history.goBack()
 
   handleSubmit = values => {
     this.projectDefined
-      ? this.props.actions.updateProjectRequest({...values, name: this.capitalizeFirstLetter(values.name)})
-      : this.props.actions.addProjectRequest({type: 1, ...values, name: this.capitalizeFirstLetter(values.name)})
+      ? this.props.actions.updateProjectRequest({ ...values, name: this.capitalizeFirstLetter(values.name) })
+      : this.props.actions.addProjectRequest({ type: 1, ...values, name: this.capitalizeFirstLetter(values.name) })
 
     this.props.history.goBack()
   }
@@ -54,7 +52,7 @@ export class AddEditProject extends Component {
     return sleep(1).then(() => {
       if (names.includes(values.name.toLowerCase()) &&
         !(this.projectDefined && this.projectDefined.name === values.name)) {
-        throw {name: 'There is already a project with this name.'}
+        throw { name: 'There is already a project with this name.' }
       }
     })
   }
@@ -77,7 +75,7 @@ export class AddEditProject extends Component {
 
   render () {
     const actions = [
-      {value: 'Cancel', onClick: this.onCancel, type: 'button'},
+      { value: 'Cancel', onClick: this.onCancel, type: 'button' },
       {
         value: this.projectDefined
           ? 'Save'
@@ -100,38 +98,47 @@ export class AddEditProject extends Component {
         asyncValidate={this.validateProjectName}
         asyncBlurFields={['name']} onClose={this.onCancel}
         initialValues={this.props.location.state.projectDefined || {}}
-        width="600px" height="400px"
-      >
+        width="600px" height="400px">
+
         <ModalTitle title={this.getModalTitle()} edit={this.state.edit} editButton={!!this.projectDefined}
                     onEditForm={this.onEditForm} onCloseForm={this.onCancel} />
         <Divider />
         <ModalContent>
-          <Container column style={{minWidth: 550, minHeight: 230, padding: '30px 15px'}}>
-            <Row style={{paddingBottom: '10px'}}>
-              <Field
-                name="name"
-                component={TextInput}
-                label="Project Name"
-                placeholder="Enter Project Name"
-                validate={this.required}
-                fullWidth={true}
-                disabled={!this.state.edit}
-                disableUnderline={!this.state.edit}
-              />
-            </Row>
-            <Row>
-             <Field
-               name="type"
-               component={Dropdown}
-               label="Type"
-               defaultValue={1}
-               options={options}
-               id="type"
-               style={{display: 'flex'}}
-               disabled={!this.state.edit}
-               disableUnderline={!this.state.edit}
-             />
-            </Row>
+          <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
+            <DetailRow
+              name="name"
+              component={TextInput}
+              label="Project Name"
+              validate={this.required}
+              placeholder="Enter Project Name"
+              fullWidth
+              disabled={!this.state.edit}
+            />
+            <DetailRow
+              name="type"
+              component={Dropdown}
+              label="Type"
+              defaultValue={1}
+              options={options}
+              id="type"
+              style={{ display: 'flex' }}
+              disabled={!this.state.edit}
+            />
+            {this.projectDefined &&
+            <DetailRow
+              component={TextInput}
+              disabled={true}
+              label="Created By"
+              name="createdBy"
+            />}
+            {this.projectDefined &&
+            <DetailRow
+              component={TextInput}
+              disabled={true}
+              label="Created Date"
+              name="createdDate"
+            />
+            }
           </Container>
         </ModalContent>
         <ModalActions edit={this.state.edit} actions={actions} />
@@ -145,6 +152,6 @@ const mapStateToProps = (state) => ({
   form: state.form.newProject || {}
 })
 
-const mapDispatchToProps = (dispatch) => ({actions: bindActionCreators(actions, dispatch)})
+const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEditProject))

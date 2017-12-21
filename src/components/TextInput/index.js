@@ -23,7 +23,7 @@ const TextInput = ({ name, label, type, input, disabled, classes, meta: { asyncV
           disabled: classes.disabled
         }}
       />
-      <FormHelperText>{touched && error}</FormHelperText>
+      {error && <FormHelperText>{error}</FormHelperText>}
     </FormControl>
   )
 }
