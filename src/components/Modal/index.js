@@ -8,7 +8,7 @@ import Dialog, {
 import Button from 'components/Button'
 
 const Modal = ({ open, onClose, title, actions, children }) => (
-  <Dialog open={open} onRequestClose={onClose}>
+  <Dialog open={open} onClose={onClose}>
     <DialogTitle>{title}</DialogTitle>
     <DialogContent>
       {children}
@@ -32,3 +32,6 @@ Modal.propTypes = {
 }
 
 export default Modal
+export { default as ModalTitle } from './ModalTitle'
+export { default as ModalActions } from './ModalActions'
+export { default as ModalContent } from './ModalContent'

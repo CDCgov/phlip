@@ -22,8 +22,11 @@ const ModalForm = ({ handleSubmit, form, onClose, open, actions, title, width, h
               {title}
             </Column>
             <Column>
-              {!edit && editButton && <IconButton onClick={editForm} color="secondary">mode_edit</IconButton>}
-              {!edit && <IconButton onClick={onClose} color="error" iconSize={25} style={{ fontWeight: 'bold' }}>close</IconButton>}
+              <Container alignItems="center">
+                {!edit && editButton && <IconButton onClick={editForm} color="secondary">mode_edit</IconButton>}
+                {!edit && <IconButton onClick={onClose} color="error" iconSize={25}
+                                      style={{ fontWeight: 'bold' }}>close</IconButton>}
+              </Container>
             </Column>
           </Container>
         </DialogTitle>

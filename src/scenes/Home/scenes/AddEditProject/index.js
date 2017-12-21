@@ -3,10 +3,14 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from './actions'
-import ModalForm from 'components/ModalForm'
 import { withRouter } from 'react-router'
-import EditView from './components/EditView'
-import DetailsView from './components/DetailsView'
+import { ModalTitle, ModalActions, ModalContent } from 'components/Modal'
+import Divider from 'material-ui/Divider'
+import FormModal from 'components/FormModal'
+import TextInput from 'components/TextInput'
+import Dropdown from 'components/Dropdown'
+import { Field } from 'redux-form'
+import Container, { Row } from 'components/Layout'
 
 export class AddEditProject extends Component {
   static propTypes = {
@@ -17,7 +21,7 @@ export class AddEditProject extends Component {
     location: PropTypes.object
   }
 
-  constructor(props, context) {
+  constructor (props, context) {
     super(props, context)
     this.onCancel = this.onCancel.bind(this)
     this.projectDefined = this.props.match.url === '/add/project' ? null : this.props.location.state.projectDefined
@@ -26,32 +30,31 @@ export class AddEditProject extends Component {
     }
   }
 
-  onCancel() {
+  onCancel () {
     this.state.edit
       ? this.projectDefined
-        ? this.setState({ edit: !this.state.edit })
+        ? this.setState({edit: !this.state.edit})
         : this.props.history.goBack()
-      : this.props.history.goBack()
+        : this.props.history.goBack()
   }
 
   handleSubmit = values => {
     this.projectDefined
-      ? this.props.actions.updateProjectRequest({ ...values, name: this.capitalizeFirstLetter(values.name) })
-      : this.props.actions.addProjectRequest({ type: 1, ...values, name: this.capitalizeFirstLetter(values.name) })
+      ? this.props.actions.updateProjectRequest({...values, name: this.capitalizeFirstLetter(values.name)})
+      : this.props.actions.addProjectRequest({type: 1, ...values, name: this.capitalizeFirstLetter(values.name)})
 
     this.props.history.goBack()
   }
 
   capitalizeFirstLetter = text => text.trim()[0].toUpperCase() + text.trim().slice(1)
 
-  // The function passed to asyncValidate for reduxForm has to return a promise, so that's why
-  // there's the sleep function in there.
   validateProjectName = values => {
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
     const names = this.props.projects.map(project => project.name.toLowerCase())
     return sleep(1).then(() => {
-      if (names.includes(values.name.toLowerCase()) && !(this.projectDefined && this.projectDefined.name === values.name)) {
-        throw { name: 'There is already a project with this name.' }
+      if (names.includes(values.name.toLowerCase()) &&
+        !(this.projectDefined && this.projectDefined.name === values.name)) {
+        throw {name: 'There is already a project with this name.'}
       }
     })
   }
@@ -72,9 +75,9 @@ export class AddEditProject extends Component {
       : 'Project Details'
     : 'Create New Project'
 
-  render() {
+  render () {
     const actions = [
-      { value: 'Cancel', onClick: this.onCancel, type: 'button' },
+      {value: 'Cancel', onClick: this.onCancel, type: 'button'},
       {
         value: this.projectDefined
           ? 'Save'
@@ -84,26 +87,55 @@ export class AddEditProject extends Component {
       }
     ]
 
+    const options = [
+      { value: 1, label: 'Assessment' },
+      { value: 2, label: 'Policy Surveillance' },
+      { value: 3, label: 'Environmental Scan' }
+    ]
+
     return (
-      <ModalForm
-        open={true}
-        title={this.getModalTitle()}
-        actions={actions}
+      <FormModal
         form="newProject"
         handleSubmit={this.handleSubmit}
         asyncValidate={this.validateProjectName}
-        asyncBlurFields={['name']}
-        onClose={this.onCancel}
-        editButton={!!this.projectDefined}
-        editForm={this.onEditForm}
-        edit={this.state.edit}
+        asyncBlurFields={['name']} onClose={this.onCancel}
         initialValues={this.props.location.state.projectDefined || {}}
-        width="600px"
-        height="400px">
-        {this.state.edit
-          ? <EditView validate={this.required} />
-          : <DetailsView project={this.projectDefined} />}
-      </ModalForm>
+        width="600px" height="400px"
+      >
+        <ModalTitle title={this.getModalTitle()} edit={this.state.edit} editButton={!!this.projectDefined}
+                    onEditForm={this.onEditForm} onCloseForm={this.onCancel} />
+        <Divider />
+        <ModalContent>
+          <Container column style={{minWidth: 550, minHeight: 230, padding: '30px 15px'}}>
+            <Row style={{paddingBottom: '10px'}}>
+              <Field
+                name="name"
+                component={TextInput}
+                label="Project Name"
+                placeholder="Enter Project Name"
+                validate={this.required}
+                fullWidth={true}
+                disabled={!this.state.edit}
+                disableUnderline={!this.state.edit}
+              />
+            </Row>
+            <Row>
+             <Field
+               name="type"
+               component={Dropdown}
+               label="Type"
+               defaultValue={1}
+               options={options}
+               id="type"
+               style={{display: 'flex'}}
+               disabled={!this.state.edit}
+               disableUnderline={!this.state.edit}
+             />
+            </Row>
+          </Container>
+        </ModalContent>
+        <ModalActions edit={this.state.edit} actions={actions} />
+      </FormModal>
     )
   }
 }
@@ -113,6 +145,6 @@ const mapStateToProps = (state) => ({
   form: state.form.newProject || {}
 })
 
-const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
+const mapDispatchToProps = (dispatch) => ({actions: bindActionCreators(actions, dispatch)})
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEditProject))
