@@ -23,7 +23,7 @@ exports[`Header -- AvatarMenu should render correctly 1`] = `
     anchorEl={null}
     id="avatar-menu"
     marginThreshold={30}
-    onRequestClose={[Function]}
+    onClose={[Function]}
     open={false}
   >
     <withStyles(MenuItem)

@@ -93,7 +93,7 @@ const mainReducer = (state, action) => {
         }
       }
 
-    case types.TOGGLE_BOOKMARK:
+    case types.TOGGLE_BOOKMARK_SUCCESS:
       return updateHomeState(['bookmarkList'])
 
     case types.SORT_BOOKMARKED:

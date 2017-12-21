@@ -19,7 +19,7 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
             {bookmarked ? 'bookmark' : 'bookmark_border'}
           </IconButton>
         </TableCell>
-        <TableCell key={`${project.id}-name`} style={{ textAlign: 'left', maxWidth: 'unset' }}>
+        <TableCell key={`${project.id}-name`} style={{ textAlign: 'left', width: 350 }}>
           <TextLink to="/">{project.name}</TextLink>
         </TableCell>
         <TableCell key={`${project.id}-dateLastEdited`}

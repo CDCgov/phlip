@@ -36,7 +36,7 @@ export class AddEditUser extends Component {
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
     const emails = this.props.users.map(user => user.email)
     return sleep(1).then(() => {
-      if (emails.includes(values.email)) {
+      if (emails.includes(values.email) && !this.props.match.params.id) {
         throw { email: 'This email is already associated with a user account.' }
       }
       if (values.email && !isEmail(values.email)) {
@@ -46,15 +46,22 @@ export class AddEditUser extends Component {
   }
 
   componentWillMount() {
-    const userId = this.props.match.params.id
+    const id = this.props.match.params.id
 
-    if (userId && this.props.users.length > 0) {
-      this.selectedUser = getUserById(this.props.users, userId)
+    if (id && this.props.users.length > 0) {
+      this.selectedUser = getUserById(this.props.users, id)
     }
 
   }
 
-  required = value => value ? undefined : 'Required'
+  // required = value => value ? undefined : 'Required'
+  required = value => {
+    if (!value && !this.props.match.params.id) {
+      return 'Required'
+    } else {
+      return undefined
+    }
+  }
 
   render() {
     const actions = [
@@ -146,7 +153,7 @@ export class AddEditUser extends Component {
 }
 
 function getUserById(users, id) {
-  const user = users.filter(user => user.userId == id);
+  const user = users.filter(user => user.id == id);
   if (user.length) return user[0];
   return null;
 }

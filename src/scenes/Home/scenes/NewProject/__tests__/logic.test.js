@@ -21,22 +21,21 @@ describe('Home scene - NewProject logic', () => {
     mock = new MockAdapter(api)
   })
 
-  test('should post a new project, add lastEditedBy from currentUser and dispatch ADD_PROJECT_SUCCESS when successful', (done) => {
+  test('should post a new project and dispatch ADD_PROJECT_SUCCESS when successful', (done) => {
     let project = {
       id: 12345,
       name: 'New Project',
-      isCompleted: false
+      isCompleted: false,
+      lastEditedBy: 'Test User'
     }
 
     mock.onPost('/projects').reply(200, project)
     store.dispatch({ type: types.ADD_PROJECT_REQUEST, project })
     store.whenComplete(() => {
-      /*expect(store.actions).toBeCloseTo([
+      expect(store.actions).toEqual([
         { type: types.ADD_PROJECT_REQUEST, project },
-        { type: types.ADD_PROJECT_SUCCESS, payload: { ...project, lastEditedBy: 'Test User', dateLastEdited: new Date() } }
-      ])*/
-      expect(store.actions[1]).toHaveProperty('payload.id')
-      expect(store.actions[1]).toHaveProperty('payload.name')
+        { type: types.ADD_PROJECT_SUCCESS, payload: { ...project } }
+      ])
       done()
     })
   })

@@ -30,7 +30,7 @@ export class NewProject extends Component {
   handleSubmit = values => {
     this.props.actions.addProjectRequest(
       {
-        type: 'Assessment',
+        type: 1,
         ...values,
         name: this.capitalizeFirstLetter(values.name)
       }
@@ -46,8 +46,10 @@ export class NewProject extends Component {
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
     const names = this.props.projects.map(project => project.name.toLowerCase())
     return sleep(1).then(() => {
-      if (names.includes(values.name.toLowerCase())) {
-        throw { name: 'There is already a project with this name.' }
+      if (values.name) {
+        if (names.includes(values.name.toLowerCase())) {
+          throw { name: 'There is already a project with this name.' }
+        }
       }
     })
   }
@@ -63,9 +65,9 @@ export class NewProject extends Component {
     ]
 
     const options = [
-      { value: 'Assessment', label: 'Assessment' },
-      { value: 'Policy Surveillance', label: 'Policy Surveillance' },
-      { value: 'Environment Scan', label: 'Environmental Scan' }
+      { value: 1, label: 'Assessment' },
+      { value: 2, label: 'Policy Surveillance' },
+      { value: 3, label: 'Environmental Scan' }
     ]
 
     return (
@@ -95,7 +97,7 @@ export class NewProject extends Component {
               name="type"
               component={Dropdown}
               label="Type"
-              defaultValue="Assessment"
+              defaultValue={1}
               options={options}
               id="type"
               style={{ display: 'flex' }}

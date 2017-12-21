@@ -34,17 +34,31 @@ export const getProjectLogic = createLogic({
 
 export const toggleBookmarkLogic = createLogic({
   type: types.TOGGLE_BOOKMARK,
-  transform({ action, getState }, next) {
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.TOGGLE_BOOKMARK_SUCCESS
+  },
+  async process({ api, getState, action }) {
     const currentUser = getState().data.user.currentUser
+    let add = true
     let bookmarkList = [...currentUser.bookmarks]
+
 
     if (bookmarkList.includes(action.project.id)) {
       bookmarkList.splice(bookmarkList.indexOf(action.project.id), 1)
+      add = false
     } else {
       bookmarkList.push(action.project.id)
     }
 
-    next({ ...action, payload: { bookmarkList, user: { ...currentUser, bookmarks: bookmarkList } }})
+    let out
+    if (add) {
+      out = await api.addUserBookmark(currentUser.id, action.project.id)
+    } else {
+      out = await api.removeUserBookmark(currentUser.id, action.project.id)
+    }
+
+    return { bookmarkList, user: { ...currentUser, bookmarks: bookmarkList } }
   }
 })
 

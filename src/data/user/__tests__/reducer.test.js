@@ -2,7 +2,7 @@ import reducer from '../reducer'
 import * as types from '../actionTypes'
 
 const initial = {
-  currentUser: { bookmarks: [] },
+  currentUser: {},
   menuOpen: false,
   menuAnchor: null
 }
@@ -20,7 +20,7 @@ describe('User reducer', () => {
           { type: types.OPEN_MENU, anchor: '<div></div>' }
         )
       ).toEqual({
-        currentUser: { bookmarks: [] },
+        currentUser: {},
         menuAnchor: '<div></div>',
         menuOpen: true
       })
@@ -35,7 +35,7 @@ describe('User reducer', () => {
           { type: types.CLOSE_MENU }
         )
       ).toEqual({
-        currentUser: { bookmarks: [] },
+        currentUser: {},
         menuAnchor: null,
         menuOpen: false
       })
@@ -47,10 +47,10 @@ describe('User reducer', () => {
       expect(
         reducer(
           { ...initial },
-          { type: types.LOGIN_USER_SUCCESS, payload: { firstName: 'user' }}
+          { type: types.LOGIN_USER_SUCCESS, payload: { firstName: 'user' } }
         )
       ).toEqual({
-        currentUser: { firstName: 'user', bookmarks: [] },
+        currentUser: { firstName: 'user' },
         menuOpen: false,
         menuAnchor: null
       })
@@ -61,19 +61,19 @@ describe('User reducer', () => {
     test('should set state back to initial state', () => {
       expect(
         reducer(
-          { currentUser: { firstName: 'user', bookmarks: [] }, menuOpen: true, menuAnchor: '<div></div>' },
+          { currentUser: { firstName: 'user' }, menuOpen: true, menuAnchor: '<div></div>' },
           { type: types.FLUSH_STATE }
         )
       ).toEqual(initial)
     })
   })
 
-  describe('TOGGLE_BOOKMARK', () => {
+  describe('TOGGLE_BOOKMARK_SUCCESS', () => {
     test('should set currentUser to user object in action', () => {
       expect(
         reducer(
           { currentUser: { firstName: 'user', bookmarks: [5,6] }, menuOpen: false, menuAnchor: null },
-          { type: types.TOGGLE_BOOKMARK, payload: { user: { firstName: 'user', bookmarks: [5,6,7] } }}
+          { type: types.TOGGLE_BOOKMARK_SUCCESS, payload: { user: { firstName: 'user', bookmarks: [5,6,7] } }}
         )
       ).toEqual({
         currentUser: { firstName: 'user', bookmarks: [5,6,7] },
