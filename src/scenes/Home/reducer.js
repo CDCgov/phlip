@@ -22,16 +22,6 @@ const INITIAL_STATE = {
   projectCount: 0
 }
 
-// TODO: Just until the data model is complete
-const mockUpProject = (project) => {
-  const user = mockUsers[Math.floor(Math.random() * mockUsers.length)]
-  return {
-    ...project,
-    dateLastEdited: new Date(start.getTime() + Math.random() * (new Date().getTime() - start.getTime())),
-    lastEditedBy: `${user.firstName} ${user.lastName}`,
-  }
-}
-
 const sliceProjects = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
 const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => {
@@ -99,7 +89,6 @@ function homeReducer(state = INITIAL_STATE, action) {
         error: false,
         errorContent: '',
         bookmarkList: action.payload.bookmarkList,
-        //...getProjectArrays({ ...state, matches: [], searchValue: '', bookmarkList: action.payload.bookmarkList, projects: action.payload.projects.map(mockUpProject) })
         ...getProjectArrays({ ...state, matches: [], searchValue: '', bookmarkList: action.payload.bookmarkList, projects: action.payload.projects })
       }
 
@@ -128,8 +117,7 @@ function homeReducer(state = INITIAL_STATE, action) {
       }
 
     case types.ADD_PROJECT_SUCCESS:
-      //const mockedUpProject = { ...mockUpProject(action.payload), dateLastEdited: new Date(), lastEditedBy: action.payload.lastEditedBy }
-      const mockedUpProject = action.payload
+      const project = action.payload
       const updated = getProjectArrays({
         ...INITIAL_STATE,
         rowsPerPage: state.rowsPerPage,
@@ -144,8 +132,8 @@ function homeReducer(state = INITIAL_STATE, action) {
       return {
         ...INITIAL_STATE,
         rowsPerPage: state.rowsPerPage === state.projectCount ? state.projectCount + 1 : state.rowsPerPage,
-        projects: [mockedUpProject, ...updated.projects],
-        visibleProjects: [mockedUpProject, ...updated.visibleProjects],
+        projects: [project, ...updated.projects],
+        visibleProjects: [project, ...updated.visibleProjects],
         bookmarkList: state.bookmarkList,
         projectCount: updated.projectCount + 1
       }

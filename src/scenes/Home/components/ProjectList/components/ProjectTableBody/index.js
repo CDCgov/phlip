@@ -18,7 +18,7 @@ const ProjectTableBody = ({ bookmarkList, projects, user, onToggleBookmark, onEx
           </IconButton>
         </TableCell>
         <TableCell key={`${project.id}-name`} style={{ textAlign: 'left', width: 350 }}>
-          <TextLink to="/">{project.name}</TextLink>
+          <TextLink to={{ pathname: `/project/edit/${project.id}`, state: { projectDefined: { ...project }} }}>{project.name}</TextLink>
         </TableCell>
         <TableCell key={`${project.id}-dateLastEdited`}
                    style={{ color: '#9a9c9c', width: 150, maxWidth: 150, textAlign: 'unset' }} light>

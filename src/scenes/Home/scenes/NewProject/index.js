@@ -3,24 +3,27 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from './actions'
-import Dropdown from 'components/Dropdown'
-import { withRouter } from 'react-router'
-import { Field } from 'redux-form'
-import Container, { Row, Column } from 'components/Layout'
 import ModalForm from 'components/ModalForm'
-import FormTextInput from 'components/TextInput'
+import { withRouter } from 'react-router'
+import EditView from './components/EditView'
+import DetailsView from './components/DetailsView'
 
 export class NewProject extends Component {
   static propTypes = {
     actions: PropTypes.object,
     projects: PropTypes.arrayOf(PropTypes.object),
     form: PropTypes.object,
-    history: PropTypes.object
+    history: PropTypes.object,
+    location: PropTypes.object
   }
 
   constructor(props, context) {
     super(props, context)
     this.onCancel = this.onCancel.bind(this)
+    this.projectDefined = this.props.match.url === '/new/project' ? null : this.props.location.state.projectDefined
+    this.state = {
+      edit: !this.projectDefined
+    }
   }
 
   onCancel() {
@@ -46,10 +49,8 @@ export class NewProject extends Component {
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
     const names = this.props.projects.map(project => project.name.toLowerCase())
     return sleep(1).then(() => {
-      if (values.name) {
-        if (names.includes(values.name.toLowerCase())) {
-          throw { name: 'There is already a project with this name.' }
-        }
+      if (names.includes(values.name.toLowerCase()) && !(this.projectDefined && this.projectDefined.name === values.name)) {
+        throw { name: 'There is already a project with this name.' }
       }
     })
   }
@@ -58,52 +59,49 @@ export class NewProject extends Component {
     value ? undefined : 'Required'
   )
 
+  onEditForm = () => {
+    this.setState({
+      edit: !this.state.edit
+    })
+  }
+
+  getModalTitle = () => this.projectDefined
+    ? this.state.edit
+      ? 'Edit Project'
+      : 'Project Details'
+    : 'Create New Project'
+
   render() {
     const actions = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button' },
-      { value: 'Create', type: 'submit', disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors) }
-    ]
-
-    const options = [
-      { value: 1, label: 'Assessment' },
-      { value: 2, label: 'Policy Surveillance' },
-      { value: 3, label: 'Environmental Scan' }
+      {
+        value: this.projectDefined
+          ? 'Save'
+          : 'Create',
+        type: 'submit',
+        disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors)
+      }
     ]
 
     return (
       <ModalForm
         open={true}
-        title="Create New Project"
+        title={this.getModalTitle()}
         actions={actions}
         form="newProject"
         handleSubmit={this.handleSubmit}
         asyncValidate={this.validateProjectName}
         asyncBlurFields={['name']}
+        onClose={this.onCancel}
+        editButton={!!this.projectDefined}
+        editForm={this.onEditForm}
+        edit={this.state.edit}
+        initialValues={this.props.location.state.projectDefined || {}}
         width="600px"
         height="400px">
-        <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
-          <Row style={{ paddingBottom: '20px' }}>
-            <Field
-              name="name"
-              component={FormTextInput}
-              label="Project Name"
-              placeholder="Enter Project Name"
-              validate={this.required}
-              fullWidth={true}
-            />
-          </Row>
-          <Row>
-            <Field
-              name="type"
-              component={Dropdown}
-              label="Type"
-              defaultValue={1}
-              options={options}
-              id="type"
-              style={{ display: 'flex' }}
-            />
-          </Row>
-        </Container>
+        {this.state.edit
+          ? <EditView validate={this.required} />
+          : <DetailsView project={this.projectDefined} />}
       </ModalForm>
     )
   }
