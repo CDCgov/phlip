@@ -13,7 +13,7 @@ export const getProjectLogic = createLogic({
   async process({ api, getState }) {
     const projects = await api.getProjects()
     return {
-      projects,
+      projects: projects.map(project => ({ ...project, jurisdictions: [] })),
       bookmarkList: [...getState().data.user.currentUser.bookmarks],
       error: false, errorContent: '', searchValue: ''
     }
