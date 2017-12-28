@@ -1,0 +1,65 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+import Divider from 'material-ui/Divider'
+import FormModal from 'components/FormModal'
+import { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
+import Container, { Row } from 'components/Layout'
+import { Field } from 'redux-form'
+import TextInput from 'components/TextInput'
+import * as actions from '../../../../actions'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { validateRequired } from 'utils/helpers'
+
+export const JurisdictionForm = ({ open, edit, jurisdiction, onHandleSubmit, onCloseForm, form }) => {
+  const formActions = [
+    { value: 'Cancel', onClick: onCloseForm, type: 'button' },
+    {
+      value: edit
+        ? 'Save'
+        : 'Add',
+      type: 'submit',
+      disabled: !!(form.syncErrors)
+    }
+  ]
+
+  return (
+    <FormModal
+      form="jurisdictionForm"
+      handleSubmit={onHandleSubmit}
+      initialValues={edit ? jurisdiction : {}}
+      asyncBlurFields={['name']}
+      width="600px" height="400px"
+      open={open}
+    >
+      <ModalTitle title={edit ? 'Edit Jurisdiction' : 'Add Jurisdiction'} closeButton={true}
+                  onCloseForm={onCloseForm} />
+      <Divider />
+      <ModalContent>
+        <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
+          <Row style={{ paddingBottom: 20 }}>
+            <Field component={TextInput} label="Name" name="name" validate={validateRequired} placeholder="Enter jurisdiction name" />
+          </Row>
+          <Row>
+            
+          </Row>
+        </Container>
+      </ModalContent>
+      <ModalActions edit={true} actions={formActions}></ModalActions>
+    </FormModal>
+  )
+}
+
+JurisdictionForm.propTypes = {
+  open: PropTypes.bool,
+  edit: PropTypes.bool,
+  jurisdiction: PropTypes.object
+}
+
+const mapStateToProps = (state) => ({
+  form: state.form.jurisdictionForm || {}
+})
+
+const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
+
+export default connect(mapStateToProps, mapDispatchToProps)(JurisdictionForm)

@@ -4,7 +4,7 @@ import Table from 'components/Table'
 import { TableBody, TableHead, TableRow, TableCell } from 'material-ui/Table'
 import JurisdictionRow from './components/JurisdictionRow'
 
-export const JurisdictionList = ({ jurisdictions }) => (
+export const JurisdictionList = ({ jurisdictions, onOpenForm }) => (
   <Table>
     <TableHead>
       <TableRow key="jurisdiction-header">
@@ -17,7 +17,7 @@ export const JurisdictionList = ({ jurisdictions }) => (
     </TableHead>
     <TableBody>
       {jurisdictions.map((jurisdiction, i) => (
-        <JurisdictionRow jurisdiction={jurisdiction} index={i} key={`jurisdiction-${i}`} />
+        <JurisdictionRow jurisdiction={jurisdiction} index={i} key={`jurisdiction-${i}`} onOpenForm={onOpenForm} />
       ))}
       </TableBody>
   </Table>

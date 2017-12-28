@@ -1,0 +1,1 @@
+export const validateRequired = value => value ? undefined : 'Required'

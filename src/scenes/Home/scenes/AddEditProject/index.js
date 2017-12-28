@@ -100,7 +100,7 @@ export class AddEditProject extends Component {
         width="600px" height="400px">
 
         <ModalTitle title={this.getModalTitle()} edit={this.state.edit} editButton={!!this.projectDefined}
-                    onEditForm={this.onEditForm} onCloseForm={this.onCancel} />
+                    closeButton={!!this.projectDefined} onEditForm={this.onEditForm} onCloseForm={this.onCancel} />
         <Divider />
         <ModalContent>
           <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>

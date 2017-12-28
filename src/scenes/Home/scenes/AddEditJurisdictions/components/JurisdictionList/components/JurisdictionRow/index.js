@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { TableRow, TableCell } from 'material-ui/Table'
 import IconButton from 'components/IconButton'
 
-export const JurisdictionRow = ({ jurisdiction, index }) => (
+export const JurisdictionRow = ({ jurisdiction, index, onOpenForm }) => (
   <TableRow key={`jurisdiction-${index}`}>
     <TableCell key={`${index}-segment-name`}>
       {jurisdiction.name}
@@ -15,7 +15,7 @@ export const JurisdictionRow = ({ jurisdiction, index }) => (
       {new Date(jurisdiction.endDate).toLocaleDateString()}
       </TableCell>
     <TableCell>
-      <IconButton color="accent">mode_edit</IconButton>
+      <IconButton color="accent" onClick={() => onOpenForm(true, jurisdiction)}>mode_edit</IconButton>
     </TableCell>
     <TableCell>
       <IconButton color="error">delete</IconButton>

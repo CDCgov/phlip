@@ -10,21 +10,45 @@ import Container, { Column } from 'components/Layout'
 import Card from 'components/Card'
 import JurisdictionList from './components/JurisdictionList'
 import * as actions from '../../actions'
+import JurisdictionForm from './components/JurisdictionForm'
 
 export class AddEditJurisdictions extends Component {
   constructor (props, context) {
     super(props, context)
+    this.state = {
+      formOpen: false,
+      edit: false,
+      formJurisdiction: {}
+    }
   }
 
   onCloseModal = () => {
     this.props.history.goBack()
   }
 
-  getButton = () => <Button value="+ Add Jurisdiction" color="accent" />
+  onOpenForm = (edit, jurisdiction = {}) => {
+    this.setState({
+      formOpen: true,
+      edit: edit,
+      formJurisdiction: jurisdiction
+    })
+  }
+
+  getButton = () => <Button onClick={() => this.onOpenForm(false)} value="+ Add Jurisdiction" color="accent" />
+
+  onSubmitForm = values => {}
+
+  onCloseForm = () => {
+    this.setState({
+      formJurisdiction: {},
+      formOpen: false,
+      edit: false
+    })
+  }
 
   render () {
     return (
-      <Modal onClose={this.onCloseModal} open={true} maxWidth="md">
+      <Modal onClose={this.onCloseModal} open={true} maxWidth="md" hideOverflow>
         <ModalTitle title="Jurisdictions" buttons={this.getButton()} />
         <ModalContent style={{ minWidth: 550, minHeight: 500, display: 'flex', flexDirection: 'column' }}>
           <Container>
@@ -32,10 +56,12 @@ export class AddEditJurisdictions extends Component {
           </Container>
           <Container flex style={{ marginTop: 20 }}>
             <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card />}>
-              <JurisdictionList jurisdictions={this.props.project.jurisdictions} />
+              <JurisdictionList jurisdictions={this.props.project.jurisdictions} onOpenForm={this.onOpenForm} />
             </Column>
           </Container>
         </ModalContent>
+        <JurisdictionForm open={this.state.formOpen} edit={this.state.edit} jurisdiction={this.state.formJurisdiction}
+                          onHandleSubmit={this.onSubmitForm} onCloseForm={this.onCloseForm} />
       </Modal>
     )
   }
