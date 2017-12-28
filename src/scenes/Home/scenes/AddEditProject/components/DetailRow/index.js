@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Field } from 'redux-form'
 import { Row } from 'components/Layout'
 
-const DetailRow = ({ component, type, name, disabled, label, ...otherProps }) => {
+export const DetailRow = ({ component, type, name, disabled, label, ...otherProps }) => {
   return (
     <Row style={{ paddingBottom: 20 }}>
       <Field
@@ -16,6 +16,14 @@ const DetailRow = ({ component, type, name, disabled, label, ...otherProps }) =>
         {...otherProps} />
     </Row>
   )
+}
+
+DetailRow.propTypes = {
+  component: PropTypes.any,
+  type: PropTypes.string,
+  name: PropTypes.string,
+  disabled: PropTypes.bool,
+  label: PropTypes.string
 }
 
 export default DetailRow

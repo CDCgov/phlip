@@ -23,7 +23,7 @@ export class AddEditProject extends Component {
 
   constructor (props, context) {
     super(props, context)
-    this.projectDefined = this.props.match.url === '/add/project' ? null : this.props.location.state.projectDefined
+    this.projectDefined = this.props.match.url === '/project/add' ? null : this.props.location.state.projectDefined
     this.state = {
       edit: !this.projectDefined
     }
@@ -92,7 +92,7 @@ export class AddEditProject extends Component {
 
     return (
       <FormModal
-        form="newProject"
+        form="projectForm"
         handleSubmit={this.handleSubmit}
         asyncValidate={this.validateProjectName}
         asyncBlurFields={['name']} onClose={this.onCancel}
@@ -148,7 +148,7 @@ export class AddEditProject extends Component {
 
 const mapStateToProps = (state) => ({
   projects: Object.values(state.scenes.home.main.projects.byId) || [],
-  form: state.form.newProject || {}
+  form: state.form.projectForm || {}
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

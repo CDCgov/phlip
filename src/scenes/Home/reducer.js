@@ -145,7 +145,6 @@ const mainReducer = (state, action) => {
 
     case types.UPDATE_PROJECT_FAIL:
     case types.GET_PROJECTS_REQUEST:
-    case types.UPDATE_PROJECT_REQUEST:
     default:
       return state
   }

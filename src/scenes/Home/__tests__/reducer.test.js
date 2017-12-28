@@ -300,16 +300,6 @@ describe('Home reducer', () => {
     )
   })
 
-  test('should handle UPDATE_PROJECT_REQUEST', () => {
-    const reducer = getReducer(getState(), { type: types.UPDATE_PROJECT_REQUEST })
-    expect(reducer).toEqual(
-      getState({
-        projectCount: 5,
-        visibleProjects: [5, 4, 2, 3, 1]
-      })
-    )
-  })
-
   test('should handle UPDATE_ROWS', () => {
     const reducer = getReducer(getState({
       projects: {

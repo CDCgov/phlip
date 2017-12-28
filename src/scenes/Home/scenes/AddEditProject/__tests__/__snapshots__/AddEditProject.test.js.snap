@@ -8,7 +8,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
     ]
   }
   asyncValidate={[Function]}
-  form="newProject"
+  form="projectForm"
   handleSubmit={[Function]}
   height="400px"
   initialValues={Object {}}

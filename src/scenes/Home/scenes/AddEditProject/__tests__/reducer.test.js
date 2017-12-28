@@ -13,4 +13,12 @@ describe('Home scene - AddEditProject reducer', () => {
       project
     })).toEqual({})
   })
+
+  test('should handle UPDATE_PROJECT_REQUEST', () => {
+    const project = { id: 1, name: 'New Project' }
+    expect(reducer({}, {
+      type: types.ADD_PROJECT_REQUEST,
+      project
+    })).toEqual({})
+  })
 })
