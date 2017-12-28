@@ -1,6 +1,7 @@
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 import addEditProjectLogic from './scenes/AddEditProject/logic'
+import mockJurisdictions from 'data/mockJurisdictions'
 
 export const getProjectLogic = createLogic({
   type: types.GET_PROJECTS_REQUEST,
@@ -13,7 +14,7 @@ export const getProjectLogic = createLogic({
   async process({ api, getState }) {
     const projects = await api.getProjects()
     return {
-      projects: projects.map(project => ({ ...project, jurisdictions: [] })),
+      projects: projects.map(project => ({ ...project, jurisdictions: mockJurisdictions })),
       bookmarkList: [...getState().data.user.currentUser.bookmarks],
       error: false, errorContent: '', searchValue: ''
     }

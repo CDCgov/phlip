@@ -6,13 +6,15 @@ import { withRouter } from 'react-router'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import SearchBar from 'components/SearchBar'
 import Button from 'components/Button'
-import Container from 'components/Layout'
+import Container, { Column } from 'components/Layout'
+import Card from 'components/Card'
 import Table from 'components/Table'
 import { TableBody, TableHead, TableRow, TableCell } from 'material-ui/Table'
 import * as actions from 'scenes/Home/scenes/AddEditProject/actions'
+import IconButton from 'components/IconButton'
 
 export class AddEditJurisdictions extends Component {
-  constructor(props, context) {
+  constructor (props, context) {
     super(props, context)
   }
 
@@ -22,17 +24,38 @@ export class AddEditJurisdictions extends Component {
 
   getButton = () => <Button value="+ Add Jurisdiction" color="accent" />
 
-  getJurisdictionRow = () => {
-
+  getJurisdictionRow = (jurisdiction, i) => {
+    return (
+      <TableRow key={`jurisdiction-${i}`}>
+        <TableCell key={`${i}-segment-name`}>
+          {jurisdiction.name}
+        </TableCell>
+        <TableCell key={`${i}-segment-start`}>
+          {new Date(jurisdiction.startDate).toLocaleDateString()}
+        </TableCell>
+         <TableCell key={`${i}-segment-end`}>
+          {new Date(jurisdiction.endDate).toLocaleDateString()}
+        </TableCell>
+        <TableCell>
+          <IconButton color="accent">mode_edit</IconButton>
+        </TableCell>
+        <TableCell>
+          <IconButton color="error">delete</IconButton>
+        </TableCell>
+      </TableRow>
+    )
   }
 
-  render() {
+  render () {
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="md">
         <ModalTitle title="Jurisdictions" buttons={this.getButton()} />
         <ModalContent style={{ minWidth: 550, minHeight: 230 }}>
-          <SearchBar />
           <Container>
+            <SearchBar />
+          </Container>
+          <Container flex style={{ marginTop: 20 }}>
+            <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card />}>
             <Table>
               <TableHead>
                 <TableRow key="jurisdiction-header">
@@ -43,7 +66,11 @@ export class AddEditJurisdictions extends Component {
                   <TableCell key="segment-delete">Delete</TableCell>
                 </TableRow>
               </TableHead>
+              <TableBody>
+                {this.props.project.jurisdictions.map(this.getJurisdictionRow)}
+              </TableBody>
             </Table>
+            </Column>
           </Container>
         </ModalContent>
       </Modal>
