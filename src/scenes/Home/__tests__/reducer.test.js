@@ -82,164 +82,98 @@ describe('Home reducer', () => {
     })
   })
 
-  xdescribe('TOGGLE_BOOKMARK_SUCCESS', () => {
+  describe('TOGGLE_BOOKMARK_SUCCESS', () => {
     test('should set bookmarkList to action.payload.bookmarkList', () => {
-      expect(
-        reducer(
-          { ...initial },
-          { type: types.TOGGLE_BOOKMARK_SUCCESS, payload: { project: {}, bookmarkList: [1, 2, 3] } }
-        )
-      ).toEqual({
-        ...initial,
-        main: { ...initial.main, bookmarkList: [1, 2, 3] }
+      const reducer = getReducer(getState({}), {
+        type: types.TOGGLE_BOOKMARK_SUCCESS,
+        payload: { bookmarkList: [1, 2, 3] }
       })
+
+      expect(reducer).toEqual(
+        getState({
+          projects: {
+            byId: { ...projects },
+            allIds: [5, 4, 2, 3, 1]
+          },
+          projectCount: 5,
+          bookmarkList: [1, 2, 3],
+          visibleProjects: [5, 4, 2, 3, 1]
+        })
+      )
     })
 
     test('should move the bookmarked project to the top half of the list if sort by bookmarks is enabled', () => {
-      const updatedProject = {
-        id: 2,
-        name: 'Project 2',
-        dateLastEdited: new Date(2017, 2, 31),
-        lastEditedBy: 'Michael Ta'
-      }
-      const expectedResults = [
-        { id: 4, name: 'Project 4', dateLastEdited: new Date(2017, 5, 30), lastEditedBy: 'Greg Ledbetter' },
-        updatedProject,
-        { id: 3, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
-        { id: 1, name: 'Project 1', dateLastEdited: new Date(2017, 0, 31), lastEditedBy: 'Kristin Muterspaw' },
-        { id: 5, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James' }
-      ]
+      const reducer = getReducer(getState({
+        projects: {
+          byId: { ...projects },
+          allIds: [4, 3, 5, 2, 1]
+        },
+        sortBookmarked: true,
+        bookmarkList: [4, 3],
+        visibleProjects: [4, 3, 5, 2, 1]
+      }), { type: types.TOGGLE_BOOKMARK_SUCCESS, payload: { bookmarkList: [4, 3, 2] } })
 
-      expect(
-        reducer(
-          {
-            ...initial,
-            main: {
-              ...initial.main,
-              projects: sortedByDateAndBookmarked,
-              visibleProjects: sortedByDateAndBookmarked,
-              sortBookmarked: true
-            }
-          }, {
-            type: types.TOGGLE_BOOKMARK_SUCCESS,
-            payload: {
-              project: updatedProject,
-              bookmarkList: [4, 3, 1, 2]
-            }
-          })
-      ).toEqual(
-        {
-          ...initial,
-          main: {
-            ...initial.main,
-            projects: expectedResults,
-            visibleProjects: expectedResults,
-            sortBookmarked: true,
-            projectCount: 5,
-            bookmarkList: [4, 3, 1, 2]
-          }
-        }
+      expect(reducer).toEqual(
+        getState({
+          projects: {
+            byId: { ...projects },
+            allIds: [4, 2, 3, 5, 1]
+          },
+          visibleProjects: [4, 2, 3, 5, 1],
+          sortBookmarked: true,
+          bookmarkList: [4, 3, 2],
+          projectCount: 5
+        })
       )
     })
 
     test('should move the un-bookmarked project from the top of the list if sort by bookmarks is enabled', () => {
-      const updatedProject = {
-        id: 4,
-        name: 'Project 4',
-        dateLastEdited: new Date(2017, 5, 30),
-        lastEditedBy: 'Greg Ledbetter'
-      }
-      const expectedResults = [
-        { id: 3, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
-        { id: 1, name: 'Project 1', dateLastEdited: new Date(2017, 0, 31), lastEditedBy: 'Kristin Muterspaw' },
-        { id: 5, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James' },
-        updatedProject,
-        { id: 2, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' }
-      ]
+      const reducer = getReducer(getState({
+        projects: {
+          byId: { ...projects },
+          allIds: [4, 2, 3, 5, 1]
+        },
+        sortBookmarked: true,
+        bookmarkList: [4, 2, 3],
+        visibleProjects: [4, 2, 3, 5, 1]
+      }), { type: types.TOGGLE_BOOKMARK_SUCCESS, payload: { bookmarkList: [4, 3] } })
 
-      expect(
-        reducer(
-          {
-            ...initial,
-            main: {
-              ...initial.main,
-              projects: sortedByDateAndBookmarked,
-              visibleProjects: sortedByDateAndBookmarked,
-              sortBookmarked: true
-            }
-          }, {
-            type: types.TOGGLE_BOOKMARK_SUCCESS,
-            payload: {
-              project: updatedProject,
-              bookmarkList: [3, 1]
-            }
-          })
-      ).toEqual(
-        {
-          ...initial,
-          main: {
-            ...initial.main,
-            projects: expectedResults,
-            visibleProjects: expectedResults,
-            sortBookmarked: true,
-            projectCount: 5,
-            bookmarkList: [3, 1]
-          }
-        }
+      expect(reducer).toEqual(
+        getState({
+          projects: {
+            byId: { ...projects },
+            allIds: [4, 3, 5, 2, 1]
+          },
+          visibleProjects: [4, 3, 5, 2, 1],
+          sortBookmarked: true,
+          bookmarkList: [4, 3],
+          projectCount: 5
+        })
       )
     })
 
     test('should not move the project in the list if sort by bookmarked is not enabled', () => {
-      const updatedProject = {
-        id: 4,
-        name: 'Project 4',
-        dateLastEdited: new Date(2017, 5, 30),
-        lastEditedBy: 'Greg Ledbetter'
-      }
-      const expectedResults = [
-        { id: 5, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James' },
-        updatedProject,
-        { id: 2, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta' },
-        { id: 3, name: 'Project 3', dateLastEdited: new Date(2017, 1, 28), lastEditedBy: 'Sanjith David' },
-        { id: 1, name: 'Project 1', dateLastEdited: new Date(2017, 0, 31), lastEditedBy: 'Kristin Muterspaw' }
-      ]
-
       const reducer = getReducer(getState({
         projects: {
           byId: { ...projects },
-          allIds: defaultSorted
+          allIds: [5, 4, 2, 3, 1]
         },
-        visibleProjects: defaultSorted
-      }), { type })
+        bookmarkList: [4, 3],
+        visibleProjects: [5, 4, 2, 3, 1]
+      }), { type: types.TOGGLE_BOOKMARK_SUCCESS, payload: { bookmarkList: [4, 3, 2] } })
 
-      expect(
-        reducer(
-          {
-            ...initial,
-            main: {
-              ...initial.main,
-              projects: defaultSortedProjects,
-              visibleProjects: defaultSortedProjects
-            }
-          }, {
-            type: types.TOGGLE_BOOKMARK_SUCCESS,
-            payload: {
-              project: updatedProject,
-              bookmarkList: [3, 1]
-            }
-          })
-      ).toEqual(
-        {
-          ...initial,
-          main: {
-            ...initial.main,
-            projects: expectedResults,
-            visibleProjects: expectedResults,
-            projectCount: 5,
-            bookmarkList: [3, 1]
-          }
-        }
+      expect(reducer).toEqual(
+        getState({
+          projects: {
+            byId: { ...projects },
+            allIds: [5, 4, 2, 3, 1]
+          },
+          visibleProjects: [5, 4, 2, 3, 1],
+          bookmarkList: [4, 3, 2],
+          projectCount: 5
+        })
       )
+
     })
   })
 
@@ -358,16 +292,6 @@ describe('Home reducer', () => {
 
   test('should handle GET_PROJECTS_REQUEST', () => {
     const reducer = getReducer(getState(), { type: types.GET_PROJECTS_REQUEST })
-    expect(reducer).toEqual(
-      getState({
-        projectCount: 5,
-        visibleProjects: [5, 4, 2, 3, 1]
-      })
-    )
-  })
-
-  test('should handle UPDATE_PROJECT_REQUEST', () => {
-    const reducer = getReducer(getState(), { type: types.UPDATE_PROJECT_REQUEST })
     expect(reducer).toEqual(
       getState({
         projectCount: 5,

@@ -13,8 +13,8 @@ const props = {
   bookmarked: false,
   role: 'Coordinator',
   actions: {
-    toggleBookmark: jest.fn(),
-    onExport: jest.fn()
+    toggleBookmark: () => {},
+    onExport: () => {}
   }
 }
 
@@ -59,18 +59,20 @@ describe('Home scene - ProjectList - ProjectRow component', () => {
     })
   })
 
-  xtest('should call onToggleBookmark', () => {
+  test('should call actions.toggleBookmark', () => {
+    const spy = jest.spyOn(props.actions, 'toggleBookmark')
     let wrapper = setup()
     wrapper.find('tr').find('td').at(0).find('IconButton').at(0).simulate('click')
     wrapper.update()
-    expect(wrapper.find('ProjectRow').prop('actions.toggleBookmark')).toHaveBeenCalled()
+    expect(spy).toHaveBeenCalled()
   })
 
   xtest('should call onExport', () => {
+    const spy = jest.spyOn(props.actions, 'onExport')
     let wrapper = setup()
     wrapper.find('tr').find('td').at(9).find('IconButton').at(0).simulate('click')
     wrapper.update()
-    expect(wrapper.find('ProjectRow').prop('actions.onExport')).toHaveBeenCalled()
+    expect(spy).toHaveBeenCalled()
   })
 
   test('should hide coding scheme, validate columns if role is Coder', () => {

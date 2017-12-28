@@ -18,7 +18,6 @@ describe('Home actions creators', () => {
         error: true
       }
     }
-
     expect(actions.getProjectsFail(payload)).toEqual(expectedAction)
   })
 
@@ -41,7 +40,6 @@ describe('Home actions creators', () => {
         error: true
       }
     }
-
     expect(actions.updateProjectFail(payload)).toEqual(expectedAction)
   })
 
