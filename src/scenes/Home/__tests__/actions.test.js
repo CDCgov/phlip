@@ -9,26 +9,40 @@ describe('Home actions creators', () => {
     expect(actions.getProjectsRequest()).toEqual(expectedAction)
   })
 
-  test('should create an action to indicate getting projects was successful', () => {
-    const payload = [{ name: 'Project 1' }]
-    const expectedAction = {
-      type: types.GET_PROJECTS_SUCCESS,
-      payload
-    }
-
-    expect(actions.getProjectsSuccess(payload)).toEqual(expectedAction)
-  })
-
   test('should create an action to indicate getting projects failed', () => {
     const payload = 'errorValue'
     const expectedAction = {
       type: types.GET_PROJECTS_FAIL,
-      errorValue: payload,
-      error: true
+      payload: {
+        errorContent: payload,
+        error: true
+      }
     }
-
     expect(actions.getProjectsFail(payload)).toEqual(expectedAction)
   })
+
+  test('should create an action update projects', () => {
+    const project = { name: 'Project 1' }
+    const expectedAction = {
+      type: types.UPDATE_PROJECT_REQUEST,
+      project
+    }
+
+    expect(actions.updateProjectRequest(project)).toEqual(expectedAction)
+  })
+
+  test('should create an action to indicate updating a project failed', () => {
+    const payload = 'errorValue'
+    const expectedAction = {
+      type: types.UPDATE_PROJECT_FAIL,
+      payload: {
+        errorContent: payload,
+        error: true
+      }
+    }
+    expect(actions.updateProjectFail(payload)).toEqual(expectedAction)
+  })
+
 
   test('should create an action to toggle bookmark', () => {
     const project = { id: 12345, name: 'project 1' }
@@ -44,7 +58,7 @@ describe('Home actions creators', () => {
     const sortBy = 'name'
     const expectedAction = {
       type: types.SORT_PROJECTS,
-      sortBy
+      payload: { sortBy }
     }
 
     expect(actions.sortProjects(sortBy)).toEqual(expectedAction)
@@ -54,7 +68,7 @@ describe('Home actions creators', () => {
     const page = 1
     const expectedAction = {
       type: types.UPDATE_PAGE,
-      page
+      payload: { page }
     }
 
     expect(actions.updatePage(page)).toEqual(expectedAction)
@@ -64,17 +78,17 @@ describe('Home actions creators', () => {
     const rowsPerPage = 5
     const expectedAction = {
       type: types.UPDATE_ROWS,
-      rowsPerPage
+      payload: { rowsPerPage }
     }
 
     expect(actions.updateRows(rowsPerPage)).toEqual(expectedAction)
   })
 
   test('should create an action to toggle sort by bookmarked', () => {
-    expect(actions.sortBookmarked()).toEqual({ type: types.SORT_BOOKMARKED })
+    expect(actions.sortBookmarked(false)).toEqual({ type: types.SORT_BOOKMARKED, payload: { sortBookmarked: false } })
   })
 
   test('should create an action to update search value', () => {
-    expect(actions.updateSearchValue('la')).toEqual({ type: types.UPDATE_SEARCH_VALUE, searchValue: 'la' })
+    expect(actions.updateSearchValue('la')).toEqual({ type: types.UPDATE_SEARCH_VALUE, payload: { searchValue: 'la' } })
   })
 })

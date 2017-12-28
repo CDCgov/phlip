@@ -51,10 +51,12 @@ describe('Home scene - AddEditProject logic', () => {
     mock.onPut('/projects/1').reply(200, project)
     store.dispatch({ type: types.UPDATE_PROJECT_REQUEST, project })
     store.whenComplete(() => {
-      expect(store.actions).toEqual([
+      /*expect(store.actions).toEqual([
         { type: types.UPDATE_PROJECT_REQUEST, project },
         { type: types.UPDATE_PROJECT_SUCCESS, payload: project }
-      ])
+      ])*/
+      expect(store.actions[1].payload.lastEditedBy).toEqual('Test User')
+      expect(store.actions[1].payload.name).toEqual('Updated Project')
       done()
     })
   })

@@ -2,7 +2,7 @@ import * as types from '../../actionTypes'
 
 const INITIAL_STATE = {}
 
-function newProjectReducer(state = INITIAL_STATE, action) {
+function addEditProjectReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case types.ADD_PROJECT_REQUEST:
     default:
@@ -10,4 +10,4 @@ function newProjectReducer(state = INITIAL_STATE, action) {
   }
 }
 
-export default newProjectReducer
+export default addEditProjectReducer

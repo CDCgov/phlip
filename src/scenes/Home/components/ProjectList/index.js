@@ -4,13 +4,13 @@ import { TableBody, TableHead, TableFooter, TableRow } from 'material-ui/Table'
 import Container, { Column } from 'components/Layout'
 import Card from 'components/Card'
 import Table from 'components/Table'
-import ProjectTableBody from './components/ProjectTableBody'
+import ProjectRow from './components/ProjectRow'
 import ProjectTableHead from './components/ProjectTableHead'
 import TablePagination from 'components/TablePagination'
 
 export const ProjectList = props => {
-  const { projects, user, page, rowsPerPage, count, sortBy, direction, sortBookmarked, bookmarkList } = props
-  const { handleToggleBookmark, handlePageChange, handleRowsChange, handleRequestSort, handleExport, handleSortBookmarked } = props
+  const { projectIds, user, page, rowsPerPage, projectCount, sortBy, direction, sortBookmarked } = props
+  const { handlePageChange, handleRowsChange, handleRequestSort, handleSortBookmarked } = props
   return (
     <Container flex>
       <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card/>}>
@@ -26,13 +26,9 @@ export const ProjectList = props => {
             />
           </TableHead>
           <TableBody>
-            <ProjectTableBody
-              user={user}
-              projects={projects}
-              bookmarkList={bookmarkList}
-              onToggleBookmark={handleToggleBookmark}
-              onExport={handleExport}
-            />
+            {projectIds.map(id => (
+              <ProjectRow key={id} id={id} />
+            ))}
           </TableBody>
         </Table>
         <div style={{ display: 'flex', flex: 1, paddingBottom: '50px' }}/>
@@ -40,7 +36,7 @@ export const ProjectList = props => {
           <TableFooter>
             <TableRow>
               <TablePagination
-                count={count}
+                count={projectCount}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={(event, page) => handlePageChange(page)}
@@ -54,22 +50,5 @@ export const ProjectList = props => {
   )
 }
 
-ProjectList.propTypes = {
-  projects: PropTypes.arrayOf(PropTypes.object),
-  user: PropTypes.object,
-  page: PropTypes.number,
-  rowsPerPage: PropTypes.number,
-  count: PropTypes.number,
-  sortBy: PropTypes.string,
-  direction: PropTypes.oneOf(['asc', 'desc']),
-  sortBookmarked: PropTypes.bool,
-  bookmarkList: PropTypes.array,
-  handleToggleBookmark: PropTypes.func,
-  handleChangePage: PropTypes.func,
-  handleRowsChange: PropTypes.func,
-  handleRequestSort: PropTypes.func,
-  handleExport: PropTypes.func,
-  handleSortBookmarked: PropTypes.func
-}
 
 export default ProjectList

@@ -16,15 +16,13 @@ exports[`Home scene should render correctly 1`] = `
     searchValue=""
   />
   <ProjectList
-    bookmarkList={Array []}
     direction="desc"
     handlePageChange={[Function]}
     handleRequestSort={[Function]}
     handleRowsChange={[Function]}
     handleSortBookmarked={[Function]}
-    handleToggleBookmark={[Function]}
     page={0}
-    projects={Array []}
+    projectIds={Array []}
     rowsPerPage={10}
     sortBookmarked={false}
     sortBy="dateLastEdited"

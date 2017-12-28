@@ -37,7 +37,7 @@ export const updateProjectLogic = createLogic({
   },
   async process({ action, api }) {
     const out = await api.updateProject(action.project)
-    return { ...action.project }
+    return { ...action.project, dateLastEdited: new Date().toISOString() }
   }
 })
 

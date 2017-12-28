@@ -148,7 +148,7 @@ export class AddEditProject extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  projects: state.scenes.home.main.projects || [],
+  projects: Object.values(state.scenes.home.main.projects.byId) || [],
   form: state.form.newProject || {}
 })
 
