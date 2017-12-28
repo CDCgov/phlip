@@ -244,30 +244,52 @@ describe('Home reducer', () => {
   })
 
   test('should handle UPDATE_PROJECT_SUCCESS', () => {
-    const projects = [{ id: 12345, name: 'lalala' }, { id: 67890, name: 'dodododod' }]
-    const updatedProject = { id: 67890, name: 'updated name' }
-    const expectedResult = [{ id: 12345, name: 'lalala' }, { id: 67890, name: 'updated name' }]
-
-    const reducer = getReducer(
-      getState({
+    const reducer = getReducer(getState({
         projects: {
           byId: { ...projects },
-          allIds: defaultSorted
+          allIds: [5, 4, 2, 3, 1]
         }
-      })
+      }), { type: types.UPDATE_PROJECT_SUCCESS, payload: { id: 3, name: 'Updated Project', lastEditedBy: 'Last User', dateLastEdited: new Date(2017, 11, 28) } }
     )
 
-    expect(
-      reducer({ ...initial, main: { ...initial.main, projects } }, {
-        type: types.UPDATE_PROJECT_SUCCESS,
-        payload: updatedProject
+    expect(reducer).toEqual(
+      getState({
+        projects: {
+          byId: {
+            ...projects,
+            3: { id: 3, name: 'Updated Project', lastEditedBy: 'Last User', dateLastEdited: new Date(2017, 11, 28) }
+          },
+          allIds: [3,5,4,2,1]
+        },
+        projectCount: 5,
+        visibleProjects: [3,5,4,2,1]
       })
-    ).toEqual(
-      { ...initial, main: { ...initial.main, projects: expectedResult } }
     )
   })
 
   xdescribe('ADD_PROJECT_SUCCESS', () => {
+
+    const reducer = getReducer(getState({
+        projects: {
+          byId: { ...projects },
+          allIds: [5, 4, 2, 3, 1]
+        }
+      }), { type: types.UPDATE_PROJECT_SUCCESS, payload: { id: 6, name: 'New Project', dateLastEdited: '12/24/2017' } }
+    )
+
+    expect(reducer).toEqual(
+      getState({
+        projects: {
+          byId: {
+            6: { id: 6, name: 'New Project', dateLastEdited: '12/24/2017' },
+            ...projects
+          },
+          allIds: [6,5,4,2,3,1]
+        },
+        projectCount: 5,
+        visibleProjects: [6,5,4,2,3,1]
+      })
+    )
     const payload = { name: 'New Project', type: 'Assessment' }
     test('should add the new project to the top of the project list and visible project list', () => {
       expect(
@@ -357,223 +379,188 @@ describe('Home reducer', () => {
   })
 
   test('should handle UPDATE_ROWS', () => {
-    const projects = [{ id: 12345, name: 'aaa' }, { id: 67890, name: 'bbb' }]
-    const visibleProjects = [...projects]
-    expect(
-      reducer(
-        { ...initial, main: { ...initial.main, projects, visibleProjects, rowsPerPage: 2 } },
-        { type: types.UPDATE_ROWS, rowsPerPage: 1 }
-      )
-    ).toEqual({
-      ...initial,
-      main: {
-        ...initial.main,
-        projects,
-        visibleProjects: [{ id: 12345, name: 'aaa' }],
-        rowsPerPage: 1,
-        projectCount: 2
-      }
-    })
+    const reducer = getReducer(getState({
+      projects: {
+        byId: { ...projects },
+        allIds: [5, 4, 2, 3, 1]
+      },
+      visibleProjects: [5, 4, 2, 3, 1],
+      projectCount: 5,
+      rowsPerPage: 5,
+      page: 0
+    }), { type: types.UPDATE_ROWS, payload: { rowsPerPage: 3 } })
+
+    expect(reducer).toEqual(
+      getState({
+        projects: {
+          byId: { ...projects },
+          allIds: [5, 4, 2, 3, 1]
+        },
+        visibleProjects: [5, 4, 2],
+        page: 0,
+        rowsPerPage: 3,
+        projectCount: 5
+      })
+    )
   })
 
   test('should handle UPDATE_PAGE', () => {
-    const projects = [{ id: 12345, name: 'aaa' }, { id: 67890, name: 'bbb' }]
-    const visibleProjects = [projects[0]]
-    expect(
-      reducer(
-        { ...initial, main: { ...initial.main, projects, visibleProjects, rowsPerPage: 1, page: 0 } },
-        { type: types.UPDATE_PAGE, page: 1 }
-      )
-    ).toEqual({
-      ...initial,
-      main: {
-        ...initial.main,
-        projects,
-        visibleProjects: [{ id: 67890, name: 'bbb' }],
-        rowsPerPage: 1,
+    const reducer = getReducer(getState({
+        visibleProjects: [5, 4],
+        projects: {
+          byId: { ...projects }, allIds: [5, 4, 2, 3, 1]
+        },
+        projectCount: 5,
+        rowsPerPage: 2,
+        page: 0
+      }),
+      { type: types.UPDATE_PAGE, payload: { page: 1 } }
+    )
+
+    expect(reducer).toEqual(
+      getState({
+        projects: {
+          byId: { ...projects },
+          allIds: [5, 4, 2, 3, 1]
+        },
+        projectCount: 5,
+        rowsPerPage: 2,
         page: 1,
-        projectCount: 2
-      }
-    })
+        visibleProjects: [2, 3]
+      })
+    )
   })
 
   describe('SORT_PROJECTS', () => {
     test('should sort projects by name ascending', () => {
-      expect(
-        reducer(
-          {
-            ...initial,
-            main: {
-              ...initial.main,
-              projects,
-              visibleProjects: projects,
-              direction: 'desc'
-            }
+      const reducer = getReducer(getState({ visibleProjects: defaultSorted }), {
+        type: types.SORT_PROJECTS,
+        payload: { sortBy: 'name' }
+      })
+      expect(reducer).toEqual(
+        getState({
+          projects: {
+            byId: { ...projects },
+            allIds: [1, 2, 3, 4, 5]
           },
-          { type: types.SORT_PROJECTS, sortBy: 'name' }
-        )
-      ).toEqual({
-        ...initial,
-        main: {
-          ...initial.main,
-          projects: projects.reverse(),
-          visibleProjects: projects.reverse(),
+          visibleProjects: [1, 2, 3, 4, 5],
           direction: 'asc',
           sortBy: 'name',
           projectCount: 5
-        }
-      })
+        })
+      )
     })
 
     test('should sort projects by name descending', () => {
-      expect(
-        reducer(
-          {
-            ...initial,
-            main: {
-              ...initial.main,
-              direction: 'asc',
-              projects: projects.reverse(),
-              visibleProjects: projects.reverse()
-            }
+      const reducer = getReducer(getState({
+        visibleProjects: defaultSorted,
+        direction: 'asc'
+      }), { type: types.SORT_PROJECTS, payload: { sortBy: 'name' } })
+      expect(reducer).toEqual(
+        getState({
+          projects: {
+            byId: { ...projects },
+            allIds: [5, 4, 3, 2, 1]
           },
-          { type: types.SORT_PROJECTS, sortBy: 'name' }
-        )
-      ).toEqual({
-        ...initial,
-        main: {
-          ...initial.main,
-          projects,
-          visibleProjects: projects,
+          visibleProjects: [5, 4, 3, 2, 1],
           direction: 'desc',
           sortBy: 'name',
           projectCount: 5
-        }
-      })
+        })
+      )
     })
 
     test('should sort projects by dateLastEdited ascending', () => {
-      expect(
-        reducer(
-          {
-            ...initial,
-            main: {
-              ...initial.main,
-              direction: 'desc',
-              sortBy: 'dateLastEdited',
-              projects: defaultSortedProjects,
-              visibleProjects: defaultSortedProjects
-            }
+      const reducer = getReducer(getState({ visibleProjects: defaultSorted }), {
+        type: types.SORT_PROJECTS,
+        payload: { sortBy: 'dateLastEdited' }
+      })
+      expect(reducer).toEqual(
+        getState({
+          direction: 'asc',
+          sortBy: 'dateLastEdited',
+          projects: {
+            byId: { ...projects },
+            allIds: [1, 3, 2, 4, 5]
           },
-          { type: types.SORT_PROJECTS, sortBy: 'dateLastEdited' }
-        )
-      ).toEqual({
-        ...initial,
-        main: {
-          ...initial.main,
-          projects: defaultSortedProjects.reverse(),
-          visibleProjects: defaultSortedProjects.reverse(),
+          visibleProjects: [1, 3, 2, 4, 5],
           direction: 'asc',
           sortBy: 'dateLastEdited',
           projectCount: 5
-        }
-      })
+        })
+      )
     })
 
     test('should sort projects by dateLastEdited descending', () => {
-      expect(
-        reducer(
-          {
-            ...initial,
-            main: {
-              ...initial.main,
-              direction: 'asc',
-              sortBy: 'dateLastEdited',
-              projects: defaultSortedProjects.reverse(),
-              visibleProjects: defaultSortedProjects.reverse()
-            }
+      const reducer = getReducer(getState({
+        visibleProjects: defaultSorted,
+        direction: 'asc'
+      }), { type: types.SORT_PROJECTS, payload: { sortBy: 'dateLastEdited' } })
+      expect(reducer).toEqual(
+        getState({
+          projects: {
+            byId: { ...projects },
+            allIds: [5, 4, 2, 3, 1]
           },
-          { type: types.SORT_PROJECTS, sortBy: 'dateLastEdited' }
-        )
-      ).toEqual({
-        ...initial,
-        main: {
-          ...initial.main,
-          projects: defaultSortedProjects,
-          visibleProjects: defaultSortedProjects,
+          visibleProjects: [5, 4, 2, 3, 1],
           direction: 'desc',
           sortBy: 'dateLastEdited',
           projectCount: 5
-        }
-      })
+        })
+      )
     })
 
     test('should sort projects by lastEditedBy ascending', () => {
-      expect(
-        reducer(
-          {
-            ...initial,
-            main: {
-              ...initial.main,
-              direction: 'desc',
-              sortBy: 'lastEditedBy',
-              projects: sortedByUser,
-              visibleProjects: sortedByUser
-            }
-          },
-          { type: types.SORT_PROJECTS, sortBy: 'lastEditedBy' }
-        )
-      ).toEqual({
-        ...initial,
-        main: {
-          ...initial.main,
-          projects: sortedByUser.reverse(),
-          visibleProjects: sortedByUser.reverse(),
-          direction: 'asc',
-          sortBy: 'lastEditedBy',
-          projectCount: 5
-        }
+      const reducer = getReducer(getState({ visibleProjects: defaultSorted }), {
+        type: types.SORT_PROJECTS,
+        payload: { sortBy: 'lastEditedBy' }
       })
+      expect(reducer).toEqual(
+        getState({
+          projects: {
+            byId: { ...projects },
+            allIds: [4, 5, 1, 2, 3]
+          },
+          visibleProjects: [4, 5, 1, 2, 3],
+          sortBy: 'lastEditedBy',
+          direction: 'asc',
+          projectCount: 5
+        })
+      )
     })
 
     test('should sort projects by lastEditedBy descending', () => {
-      expect(
-        reducer(
-          {
-            ...initial,
-            main: {
-              ...initial.main,
-              direction: 'asc',
-              sortBy: 'lastEditedBy',
-              projects: sortedByUser.reverse(),
-              visibleProjects: sortedByUser.reverse()
-            }
+      const reducer = getReducer(getState({
+        visibleProjects: defaultSorted,
+        direction: 'asc'
+      }), { type: types.SORT_PROJECTS, payload: { sortBy: 'lastEditedBy' } })
+      expect(reducer).toEqual(
+        getState({
+          projects: {
+            byId: { ...projects },
+            allIds: [3, 2, 1, 5, 4]
           },
-          { type: types.SORT_PROJECTS, sortBy: 'lastEditedBy' }
-        )
-      ).toEqual({
-        ...initial,
-        main: {
-          ...initial.main,
-          projects: sortedByUser,
-          visibleProjects: sortedByUser,
-          direction: 'desc',
+          visibleProjects: [3, 2, 1, 5, 4],
           sortBy: 'lastEditedBy',
+          direction: 'desc',
           projectCount: 5
-        }
-      })
+        })
+      )
     })
   })
 
   describe('SORT_BOOKMARKED', () => {
     test('should move bookmarked projects to the top and sort those depending on the sort label selected', () => {
-      const reducer = getReducer(getState({ bookmarkList: [1,3,4]}), { type: types.SORT_BOOKMARKED, payload: { sortBookmarked: true }})
+      const reducer = getReducer(getState({ bookmarkList: [1, 3, 4] }), {
+        type: types.SORT_BOOKMARKED,
+        payload: { sortBookmarked: true }
+      })
       expect(reducer).toEqual(
         getState({
           visibleProjects: [...sortedByDateAndBookmarked],
           projectCount: 5,
           sortBookmarked: true,
-          bookmarkList: [1,3,4],
+          bookmarkList: [1, 3, 4],
           projects: { allIds: [...sortedByDateAndBookmarked], byId: { ...projects } }
         })
       )
@@ -586,11 +573,11 @@ describe('Home reducer', () => {
 
     test('should move bookmarked projects back to their original order by sort label if sorting by bookmarked is disabled', () => {
       const reducer = getReducer(getState({
-        sortBookmarked: true, bookmarkList: [4,3,1],
-        projects: { byId: { ...projects }, allIds: [ ...sortedByDateAndBookmarked ] },
+        sortBookmarked: true, bookmarkList: [4, 3, 1],
+        projects: { byId: { ...projects }, allIds: [...sortedByDateAndBookmarked] },
         projectCount: 5,
         visibleProjects: sortedByDateAndBookmarked
-      }), { type: types.SORT_BOOKMARKED, payload: { sortBookmarked: false }})
+      }), { type: types.SORT_BOOKMARKED, payload: { sortBookmarked: false } })
 
       expect(reducer).toEqual(getState({
         projects: {
@@ -608,40 +595,40 @@ describe('Home reducer', () => {
   describe('UPDATE_SEARCH_VALUE', () => {
     test('should update visible projects if there are matches for the search value', () => {
       const reducer = getReducer(getState(), { type: types.UPDATE_SEARCH_VALUE, payload: { searchValue: 'Led' } })
-      expect(reducer).toEqual({
-        ...getState({
+      expect(reducer).toEqual(
+        getState({
           matches: [4],
           visibleProjects: [4],
           projectCount: 1,
           searchValue: 'Led'
         })
-      })
+      )
     })
 
     test('should update visible projects to be 0 if there are no matches', () => {
       const reducer = getReducer(getState(), { type: types.UPDATE_SEARCH_VALUE, payload: { searchValue: 'xxx' } })
 
-      expect(reducer).toEqual({
-        ...getState({
+      expect(reducer).toEqual(
+        getState({
           matches: [],
           visibleProjects: [],
           projectCount: 0,
           searchValue: 'xxx'
         })
-      })
+      )
     })
 
     test('should set the projects back to previous state if searchValue is cleared', () => {
       const reducer = getReducer(getState({ searchValue: 'Led', visibleProjects: [4], matches: [4] }),
         { type: types.UPDATE_SEARCH_VALUE, payload: { searchValue: '' } })
 
-      expect(reducer).toEqual({
-        ...getState({
+      expect(reducer).toEqual(
+        getState({
           visibleProjects: defaultSorted,
           searchValue: '',
           projectCount: 5
         })
-      })
+      )
     })
   })
 
