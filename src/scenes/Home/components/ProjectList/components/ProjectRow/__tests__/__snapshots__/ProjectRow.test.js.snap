@@ -30,7 +30,19 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     }
   >
     <withTheme(TextLink)
-      to="/"
+      to={
+        Object {
+          "pathname": "/project/edit/1",
+          "state": Object {
+            "projectDefined": Object {
+              "dateLastEdited": 2017-10-11T00:00:00.000Z,
+              "id": 1,
+              "lastEditedBy": "Kristin",
+              "name": "Project 1",
+            },
+          },
+        }
+      }
     >
       Project 1
     </withTheme(TextLink)>
@@ -65,7 +77,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     Kristin
   </TableCell>
   <TableCell
-    key="1-jurisdictions"
+    key="1-protocol"
     light={true}
   >
     <withTheme(TextLink)
@@ -75,11 +87,12 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     </withTheme(TextLink)>
   </TableCell>
   <TableCell
-    key="1-protocol"
+    key="1-jurisdictions"
     light={true}
   >
     <withTheme(TextLink)
-      to="/"
+      id={1}
+      to="/project/1/jurisdictions"
     >
       Add/Edit
     </withTheme(TextLink)>

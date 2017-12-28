@@ -1,6 +1,6 @@
 import * as types from './actionTypes'
 import { combineReducers } from 'redux'
-import newProjectReducer from './scenes/NewProject/reducer'
+import addEditProjectReducer from './scenes/AddEditProject/reducer'
 import { sortList, updater, tableUtils, searchUtils, normalize } from 'utils'
 
 const INITIAL_STATE = {
@@ -111,11 +111,11 @@ const mainReducer = (state, action) => {
       return {
         ...state,
         projects: {
-          ...state.projects,
           byId: {
             ...state.projects.byId,
             [action.payload.id]: action.payload
           },
+          allIds: state.projects.allIds
         }
       }
 
@@ -159,7 +159,7 @@ const homeReducer = (state = INITIAL_STATE, action) => {
 
 const homeRootReducer = combineReducers({
   main: homeReducer,
-  newProject: newProjectReducer
+  addEditProject: addEditProjectReducer
 })
 
 export default homeRootReducer

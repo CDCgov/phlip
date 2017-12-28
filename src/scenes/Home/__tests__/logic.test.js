@@ -102,19 +102,4 @@ describe('Home logic', () => {
       done()
     })
   })
-
-  test('should put an updated project and dispatch UPDATE_PROJECT_SUCCESS when successful', (done) => {
-    const project = { id: 1, name: 'Updated Project' }
-    const store = setupStore([])
-
-    mock.onPut('/projects/1').reply(200, project)
-    store.dispatch({ type: types.UPDATE_PROJECT_REQUEST, project })
-    store.whenComplete(() => {
-      expect(store.actions).toEqual([
-        { type: types.UPDATE_PROJECT_REQUEST, project },
-        { type: types.UPDATE_PROJECT_SUCCESS, payload: project }
-      ])
-      done()
-    })
-  })
 })

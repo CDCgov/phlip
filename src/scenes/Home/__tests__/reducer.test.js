@@ -41,7 +41,7 @@ const initial = {
     errorContent: '',
     searchValue: ''
   },
-  newProject: {}
+  addEditProject: {}
 }
 
 const getState = other => ({ ...initial, main: { ...initial.main, ...other } })

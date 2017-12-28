@@ -1,6 +1,6 @@
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
-import newProjectLogic from './scenes/NewProject/logic'
+import addEditProjectLogic from './scenes/AddEditProject/logic'
 
 export const getProjectLogic = createLogic({
   type: types.GET_PROJECTS_REQUEST,
@@ -50,22 +50,8 @@ export const toggleBookmarkLogic = createLogic({
   }
 })
 
-export const updateProjectLogic = createLogic({
-  type: types.UPDATE_PROJECT_REQUEST,
-  latest: true,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.UPDATE_PROJECT_SUCCESS,
-    failType: types.UPDATE_PROJECT_FAIL
-  },
-  async process({ action, api }) {
-    return await api.updateProject(action.project)
-  }
-})
-
 export default [
   getProjectLogic,
-  updateProjectLogic,
   toggleBookmarkLogic,
-  ...newProjectLogic
+  ...addEditProjectLogic
 ]

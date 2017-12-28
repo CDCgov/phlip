@@ -1,0 +1,21 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Field } from 'redux-form'
+import { Row } from 'components/Layout'
+
+const DetailRow = ({ component, type, name, disabled, label, ...otherProps }) => {
+  return (
+    <Row style={{ paddingBottom: 20 }}>
+      <Field
+        component={component}
+        type={type}
+        name={name}
+        label={label}
+        disabled={disabled}
+        disableUnderline={disabled}
+        {...otherProps} />
+    </Row>
+  )
+}
+
+export default DetailRow

@@ -20,7 +20,7 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
           </IconButton>
         </TableCell>
         <TableCell key={`${project.id}-name`} style={{ textAlign: 'left', width: 350 }}>
-          <TextLink to="/">{project.name}</TextLink>
+          <TextLink to={{ pathname: `/project/edit/${project.id}`, state: { projectDefined: { ...project }} }}>{project.name}</TextLink>
         </TableCell>
         <TableCell key={`${project.id}-dateLastEdited`}
                    style={{ color: '#9a9c9c', width: 150, maxWidth: 150, textAlign: 'unset' }} light>
@@ -34,12 +34,12 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
           {project.lastEditedBy}
         </TableCell>
         {role !== 'Coder' &&
-          <TableCell key={`${project.id}-jurisdictions`} light>
+          <TableCell key={`${project.id}-protocol`} light>
             <TextLink to="/">Add/Edit</TextLink>
           </TableCell>
         }
-        <TableCell key={`${project.id}-protocol`} light>
-          <TextLink to="/">Add/Edit</TextLink>
+        <TableCell key={`${project.id}-jurisdictions`} light>
+          <TextLink to={`/project/${project.id}/jurisdictions`} id={project.id}>Add/Edit</TextLink>
         </TableCell>
         {role !== 'Coder' &&
         <TableCell key={`${project.id}-codingScheme`} light>

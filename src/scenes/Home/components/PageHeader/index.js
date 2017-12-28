@@ -21,7 +21,7 @@ export const PageHeader = ({ role }) => {
       </Column>
       <Column>
         {role !== 'Coder' &&
-        <TextLink to="/new/project" style={{ color: 'white' }}>
+        <TextLink to={{ pathname: '/project/add', state: { userDefined: null }}} style={{ color: 'white' }}>
           <Button value=" + Create new project" color="accent" />
         </TextLink>
         }
