@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
+<Modal
+  maxWidth="md"
+  onClose={[Function]}
+  open={true}
+>
+  <ModalTitle
+    buttons={
+      <withTheme(Button)
+        color="accent"
+        value="+ Add Jurisdiction"
+      />
+    }
+    title="Jurisdictions"
+  />
+  <ModalContent
+    style={
+      Object {
+        "display": "flex",
+        "flexDirection": "column",
+        "minHeight": 500,
+        "minWidth": 550,
+      }
+    }
+  >
+    <Container
+      column={false}
+      flex={false}
+      spacing={0}
+    >
+      <SearchBar
+        height={57}
+      />
+    </Container>
+    <Container
+      column={false}
+      flex={true}
+      spacing={0}
+      style={
+        Object {
+          "marginTop": 20,
+        }
+      }
+    >
+      <Column
+        component={<Card />}
+        displayFlex={true}
+        flex={true}
+        style={
+          Object {
+            "overflowX": "auto",
+          }
+        }
+      >
+        <JurisdictionList />
+      </Column>
+    </Container>
+  </ModalContent>
+</Modal>
+`;
