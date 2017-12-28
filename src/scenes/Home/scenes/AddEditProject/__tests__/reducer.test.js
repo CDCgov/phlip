@@ -1,7 +1,7 @@
 import * as types from '../../../actionTypes'
 import reducer from '../reducer'
 
-describe('Home scene - NewProject reducer', () => {
+describe('Home scene - AddEditProject reducer', () => {
   test('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual({})
   })

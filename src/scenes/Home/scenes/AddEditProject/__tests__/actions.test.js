@@ -1,7 +1,7 @@
 import * as actions from '../actions'
 import * as types from '../../../actionTypes'
 
-describe('Home scene - Add Edit Project actions creators', () => {
+describe('Home scene - AddEditProject actions creators', () => {
   test('should create an action to add a project', () => {
     const project = { name: 'New Project' }
     const expectedAction = {
