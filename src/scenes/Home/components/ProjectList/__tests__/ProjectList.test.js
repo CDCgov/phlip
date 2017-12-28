@@ -31,16 +31,6 @@ const props = {
   handleSortBookmarked: jest.fn()
 }
 
-const setup = otherProps => {
-  return mount((
-    <MemoryRouter>
-      <MuiThemeProvider theme={theme}>
-        <ProjectList {...props} {...otherProps} />
-      </MuiThemeProvider>
-    </MemoryRouter>
-  ))
-}
-
 describe('Home scene - ProjectList component', () => {
   test('should render correctly', () => {
     expect(shallow(<ProjectList {...props} />)).toMatchSnapshot()
