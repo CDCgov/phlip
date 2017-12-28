@@ -249,7 +249,10 @@ describe('Home reducer', () => {
           byId: { ...projects },
           allIds: [5, 4, 2, 3, 1]
         }
-      }), { type: types.UPDATE_PROJECT_SUCCESS, payload: { id: 3, name: 'Updated Project', lastEditedBy: 'Last User', dateLastEdited: new Date(2017, 11, 28) } }
+      }), {
+        type: types.UPDATE_PROJECT_SUCCESS,
+        payload: { id: 3, name: 'Updated Project', lastEditedBy: 'Last User', dateLastEdited: new Date(2017, 11, 28) }
+      }
     )
 
     expect(reducer).toEqual(
@@ -259,123 +262,118 @@ describe('Home reducer', () => {
             ...projects,
             3: { id: 3, name: 'Updated Project', lastEditedBy: 'Last User', dateLastEdited: new Date(2017, 11, 28) }
           },
-          allIds: [3,5,4,2,1]
+          allIds: [3, 5, 4, 2, 1]
         },
         projectCount: 5,
-        visibleProjects: [3,5,4,2,1]
+        visibleProjects: [3, 5, 4, 2, 1]
       })
     )
   })
 
-  xdescribe('ADD_PROJECT_SUCCESS', () => {
-
-    const reducer = getReducer(getState({
-        projects: {
-          byId: { ...projects },
-          allIds: [5, 4, 2, 3, 1]
-        }
-      }), { type: types.UPDATE_PROJECT_SUCCESS, payload: { id: 6, name: 'New Project', dateLastEdited: '12/24/2017' } }
-    )
-
-    expect(reducer).toEqual(
-      getState({
-        projects: {
-          byId: {
-            6: { id: 6, name: 'New Project', dateLastEdited: '12/24/2017' },
-            ...projects
-          },
-          allIds: [6,5,4,2,3,1]
-        },
-        projectCount: 5,
-        visibleProjects: [6,5,4,2,3,1]
-      })
-    )
-    const payload = { name: 'New Project', type: 'Assessment' }
+  describe('ADD_PROJECT_SUCCESS', () => {
     test('should add the new project to the top of the project list and visible project list', () => {
-      expect(
-        reducer(
-          {
-            ...initial,
-            main: { ...initial.main, projects: defaultSortedProjects, visibleProjects: defaultSortedProjects }
-          },
-          { type: types.ADD_PROJECT_SUCCESS, payload }
-        )
-      ).toEqual(
-        {
-          ...initial,
-          main: {
-            ...initial.main,
-            projects: [payload, ...defaultSortedProjects],
-            visibleProjects: [payload, ...defaultSortedProjects]
+      const reducer = getReducer(getState({
+          projects: {
+            byId: { ...projects },
+            allIds: [5, 4, 2, 3, 1]
           }
+        }), {
+          type: types.ADD_PROJECT_SUCCESS,
+          payload: { id: 6, name: 'New Project', dateLastEdited: new Date(2017, 11, 28), type: 1 }
         }
+      )
+
+      expect(reducer).toEqual(
+        getState({
+          projects: {
+            byId: {
+              6: { id: 6, name: 'New Project', dateLastEdited: new Date(2017, 11, 28), type: 1 },
+              ...projects
+            },
+            allIds: [6, 5, 4, 2, 3, 1]
+          },
+          projectCount: 6,
+          visibleProjects: [6, 5, 4, 2, 3, 1]
+        })
       )
     })
 
     test('should set the sortBy, direction, and sortBookmarked properties back to defaults and sort projects by defaults', () => {
-      const payload = { name: 'New Project', type: 'Assessment' }
-      expect(
-        reducer(
-          {
-            ...initial,
-            main: {
-              ...initial.main,
-              projects: sortedByUserAndBookmarked,
-              visibleProjects: sortedByUserAndBookmarked,
-              sortBy: 'name',
-              direction: 'desc',
-              sortBookmarked: true
-            }
-          }, { type: types.ADD_PROJECT_SUCCESS, payload }
-        )
-      ).toEqual(
-        {
-          ...initial,
-          main: {
-            ...initial.main,
-            projects: [payload, ...defaultSortedProjects],
-            visibleProjects: [payload, ...defaultSortedProjects],
-            sortBy: 'dateLastEdited',
-            direction: 'desc',
-            sortBookmarked: false
-          }
-        }
+      const reducer = getReducer(getState({
+        projects: {
+          byId: { ...projects },
+          allIds: [1, 3, 4, 2, 5]
+        },
+        visibleProjects: [1, 3, 4, 2, 5],
+        direction: 'asc',
+        bookmarkList: [4, 3, 1],
+        projectCount: 5,
+        sortBookmarked: true,
+        sortBy: 'dateLastEdited'
+      }), {
+        type: types.ADD_PROJECT_SUCCESS,
+        payload: { id: 6, name: 'New Project', dateLastEdited: new Date(2017, 11, 28), type: 1 }
+      })
+
+      expect(reducer).toEqual(
+        getState({
+          projects: {
+            byId: {
+              6: { id: 6, name: 'New Project', dateLastEdited: new Date(2017, 11, 28), type: 1 },
+              ...projects
+            },
+            allIds: [6, 5, 4, 2, 3, 1]
+          },
+          projectCount: 6,
+          visibleProjects: [6, 5, 4, 2, 3, 1],
+          sortBookmarked: false,
+          direction: 'desc',
+          bookmarkList: [4, 3, 1]
+        })
       )
     })
   })
 
-  xtest('should handle UPDATE_PROJECT_FAIL', () => {
-    expect(
-      reducer({}, { type: types.UPDATE_PROJECT_FAIL, errorValue: 'error' })
-    ).toEqual({
-      ...initial,
-      main: { ...initial.main, errorContent: 'We failed to update that project. Please try again later.', error: true }
-    })
+  test('should handle UPDATE_PROJECT_FAIL', () => {
+    const reducer = getReducer(getState({}), { type: types.UPDATE_PROJECT_FAIL })
+    expect(reducer).toEqual(
+      getState({
+        projectCount: 5,
+        visibleProjects: [5, 4, 2, 3, 1]
+      })
+    )
   })
 
-  xtest('should handle GET_PROJECTS_FAIL', () => {
-    expect(
-      reducer({}, { type: types.GET_PROJECTS_FAIL, errorValue: 'error' })
-    ).toEqual({
-      ...initial,
-      main: {
-        ...initial.main,
+  test('should handle GET_PROJECTS_FAIL', () => {
+    const reducer = getReducer(getState({}), { type: types.GET_PROJECTS_FAIL })
+    expect(reducer).toEqual(
+      getState({
         errorContent: 'We failed to get the list of projects. Please try again later.',
-        error: true
-      }
-    })
+        error: true,
+        projectCount: 5,
+        visibleProjects: [5, 4, 2, 3, 1]
+      })
+    )
   })
 
-  xtest('should handle GET_PROJECTS_REQUEST', () => {
-    expect(
-      reducer({}, { type: types.GET_PROJECTS_REQUEST })
-    ).toEqual(initial)
+  test('should handle GET_PROJECTS_REQUEST', () => {
+    const reducer = getReducer(getState(), { type: types.GET_PROJECTS_REQUEST })
+    expect(reducer).toEqual(
+      getState({
+        projectCount: 5,
+        visibleProjects: [5, 4, 2, 3, 1]
+      })
+    )
   })
 
-  xtest('should handle UPDATE_PROJECT_REQUEST', () => {
-    expect(
-      reducer({}, { type: types.UPDATE_PROJECT_REQUEST })
-    ).toEqual(initial)
+  test('should handle UPDATE_PROJECT_REQUEST', () => {
+    const reducer = getReducer(getState(), { type: types.UPDATE_PROJECT_REQUEST })
+    expect(reducer).toEqual(
+      getState({
+        projectCount: 5,
+        visibleProjects: [5, 4, 2, 3, 1]
+      })
+    )
   })
 
   test('should handle UPDATE_ROWS', () => {
