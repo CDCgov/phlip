@@ -72,6 +72,8 @@ export class AddEditProject extends Component {
       : 'Project Details'
     : 'Create New Project'
 
+  formatDate = (value, name) => new Date(value).toLocaleDateString()
+
   render () {
     const actions = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button' },
@@ -136,6 +138,7 @@ export class AddEditProject extends Component {
               disabled={true}
               label="Created Date"
               name="dateCreated"
+              format={this.formatDate}
             />
             }
           </Container>
