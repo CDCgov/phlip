@@ -26,8 +26,6 @@ const updateProjectJurisdiction = createLogic({
       jurisdictions: updater.updateByProperty(action.jurisdiction, action.projects.jurisdictions, 'id')
     }
 
-    console.log(project)
-
     next({
       ...action,
       project

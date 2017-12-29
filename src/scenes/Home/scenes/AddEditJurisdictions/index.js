@@ -45,7 +45,7 @@ export class AddEditJurisdictions extends Component {
     }
 
     if (this.state.edit) {
-      this.props.actions.updateJurisdiction({ id: this.state.formJurisdiction.id, ...jurisdiction}, this.props.project)
+      this.props.actions.updateProject({ id: this.state.formJurisdiction.id, ...jurisdiction}, this.props.project)
     } else {
       this.props.actions.addJurisdiction(jurisdiction, this.props.project)
     }
