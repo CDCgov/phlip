@@ -35,4 +35,15 @@ const updateJurisdictionLogic = createLogic({
   }
 })
 
-export default [getJurisdictionsLogic, addJurisdictionLogic, updateJurisdictionLogic]
+const searchJurisdictionList = createLogic({
+  type: types.SEARCH_JURISDICTION_LIST,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.SET_JURISDICTION_SUGGESTIONS
+  },
+  async process({ action, api }) {
+    return await api.searchJurisdictionList(action.searchString)
+  }
+})
+
+export default [getJurisdictionsLogic, addJurisdictionLogic, updateJurisdictionLogic, searchJurisdictionList]

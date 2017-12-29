@@ -4,7 +4,9 @@ import { normalize, searchUtils } from 'utils'
 const INITIAL_STATE = {
   jurisdictions: { byId: {}, allIds: [] },
   visibleJurisdictions: [],
-  searchValue: ''
+  searchValue: '',
+  suggestions: [],
+  suggestionValue: ''
 }
 
 const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
@@ -52,9 +54,29 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
           ]))
       }
 
+    case types.UPDATE_SUGGESTION_VALUE:
+      return {
+        ...state,
+        suggestionValue: action.suggestionValue
+      }
+
+    case types.SET_JURISDICTION_SUGGESTIONS:
+      return {
+        ...state,
+        suggestions: action.payload
+      }
+
+    case types.ON_CLEAR_SUGGESTIONS:
+      return {
+        ...state,
+        suggestions: [],
+        suggestionValue: ''
+      }
+
     case types.CLEAR_JURISDICTIONS:
       return INITIAL_STATE
 
+    case types.SEARCH_JURISDICTION_LIST:
     case types.GET_PROJECT_JURISDICTIONS_REQUEST:
     case types.UPDATE_PROJECT_JURISDICTION_REQUEST:
     case types.ADD_PROJECT_JURISDICTION_REQUEST:

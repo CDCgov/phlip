@@ -52,11 +52,12 @@ export default {
   },
 
   searchJurisdictionList(searchString) {
-    return api.get(`/jurisdiction`, {
+    /*return api.get('/jurisdiction', {
       params: {
         name: searchString
       }
-    }).then(res => res.data)
+    }).then(res => res.data)*/
+    return getMatchingJurisdictions(searchString)
   },
 
   getProjectJurisdictions(projectId) {
@@ -73,5 +74,21 @@ export default {
     return jurisdiction
     //return api.put(`/projects/${projectId}/jurisdiction/${jurisdiction.id}`, jurisdiction).then(res => res.data)
   }
+}
+
+const getMatchingJurisdictions = value => {
+  const escapedValue = escapeRegexCharacters(value.trim());
+
+  if (escapedValue === '') {
+    return [];
+  }
+
+  const regex = new RegExp('^' + escapedValue, 'i');
+
+  return mockJurisdictions.filter(jurisdiction => regex.test(jurisdiction.name));
+}
+
+const escapeRegexCharacters = str => {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 

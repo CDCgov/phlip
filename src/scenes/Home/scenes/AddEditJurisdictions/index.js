@@ -23,7 +23,7 @@ export class AddEditJurisdictions extends Component {
     }
   }
 
-  componentWillMount() {
+  componentWillMount () {
     this.props.actions.getProjectJurisdictions(this.props.project.id)
   }
 
@@ -64,6 +64,10 @@ export class AddEditJurisdictions extends Component {
     })
   }
 
+  onJurisdictionsFetchRequest = ({ value }) => {
+    this.props.actions.searchJurisdictionList(value)
+  }
+
   onCloseForm = () => {
     this.setState({
       formJurisdiction: {},
@@ -75,7 +79,7 @@ export class AddEditJurisdictions extends Component {
   render () {
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="md" hideOverflow>
-        <ModalTitle title="Jurisdictions" buttons={this.getButton()} closeButton onCloseForm={this.onCloseModal}/>
+        <ModalTitle title="Jurisdictions" buttons={this.getButton()} closeButton onCloseForm={this.onCloseModal} />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
           <Container>
             <SearchBar
@@ -89,8 +93,14 @@ export class AddEditJurisdictions extends Component {
             </Column>
           </Container>
         </ModalContent>
-        <JurisdictionForm open={this.state.formOpen} edit={this.state.edit} jurisdiction={this.state.formJurisdiction}
-                          onHandleSubmit={this.onSubmitForm} onCloseForm={this.onCloseForm} />
+        <JurisdictionForm
+          open={this.state.formOpen} edit={this.state.edit} jurisdiction={this.state.formJurisdiction}
+          onHandleSubmit={this.onSubmitForm} onCloseForm={this.onCloseForm}
+          onSearchList={this.onJurisdictionsFetchRequest} suggestions={this.props.suggestions}
+          suggestionValue={this.props.suggestionValue}
+          onClearSuggestions={this.props.actions.onClearSuggestions}
+          onSuggestionValueChanged={event => this.props.actions.onSuggestionValueChanged(event.target.value)}
+        />
       </Modal>
     )
   }
@@ -101,7 +111,9 @@ AddEditJurisdictions.propTypes = {}
 const mapStateToProps = (state, ownProps) => ({
   project: state.scenes.home.main.projects.byId[ownProps.match.params.id],
   visibleJurisdictions: state.scenes.home.addEditJurisdictions.visibleJurisdictions || [],
-  searchValue: state.scenes.home.addEditJurisdictions.searchValue || ''
+  searchValue: state.scenes.home.addEditJurisdictions.searchValue || '',
+  suggestions: state.scenes.home.addEditJurisdictions.suggestions || [],
+  suggestionValue: state.scenes.home.addEditJurisdictions.suggestionValue || ''
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
