@@ -2,35 +2,26 @@ import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 import { updater } from 'utils'
 
-const addProjectJurisdiction = createLogic({
-  type: types.ADD_PROJECT_JURISDICTION,
-  transform({ getState, action }, next) {
-    const project = {
-      ...action.project,
-      jurisdictions: [ action.jurisdiction, ...action.project.jurisdictions ]
-    }
-
-    console.log(project)
-    next({
-      ...action,
-      project
-    })
+const addJurisdictionLogic = createLogic({
+  type: types.ADD_PROJECT_JURISDICTION_REQUEST,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.ADD_PROJECT_JURISDICTION_SUCCESS
+  },
+  async process({ action, api }) {
+    return await api.addJurisdictionToProject(action.projectId, action.jurisdiction)
   }
 })
 
-const updateProjectJurisdiction = createLogic({
-  type: types.UPDATE_PROJECT_JURISDICTION,
-  transform({ action }, next) {
-    const project = {
-      ...action.project,
-      jurisdictions: updater.updateByProperty(action.jurisdiction, action.projects.jurisdictions, 'id')
-    }
-
-    next({
-      ...action,
-      project
-    })
+const updateJurisdictionLogic = createLogic({
+  type: types.UPDATE_PROJECT_JURISDICTION_REQUEST,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.UPDATE_PROJECT_JURISDICTION_SUCCESS
+  },
+  async process({ action, api }) {
+    return await api.updateJurisdictionInProject(action.projectId, action.jurisdiction)
   }
 })
 
-export default [updateProjectJurisdiction, addProjectJurisdiction]
+export default [addJurisdictionLogic, updateJurisdictionLogic]

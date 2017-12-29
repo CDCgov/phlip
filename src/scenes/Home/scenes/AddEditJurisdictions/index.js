@@ -23,11 +23,12 @@ export class AddEditJurisdictions extends Component {
     }
   }
 
-  componentDidMount() {
-
+  componentWillMount() {
+    this.props.actions.getProjectJurisdictions(this.props.project.id)
   }
 
   onCloseModal = () => {
+    this.props.actions.clearJurisdictions()
     this.props.history.goBack()
   }
 
@@ -49,10 +50,12 @@ export class AddEditJurisdictions extends Component {
     }
 
     if (this.state.edit) {
-      this.props.actions.updateProject({ id: this.state.formJurisdiction.id, ...jurisdiction}, this.props.project)
+      this.props.actions.updateJurisdiction(jurisdiction, this.props.project.id)
     } else {
-      this.props.actions.addJurisdiction(jurisdiction, this.props.project)
+      this.props.actions.addJurisdiction(jurisdiction, this.props.project.id)
     }
+
+    this.props.actions.updateEditedFields(this.props.project.id)
 
     this.setState({
       formOpen: false,
@@ -72,14 +75,14 @@ export class AddEditJurisdictions extends Component {
   render () {
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="md" hideOverflow>
-        <ModalTitle title="Jurisdictions" buttons={this.getButton()} />
+        <ModalTitle title="Jurisdictions" buttons={this.getButton()} closeButton onCloseForm={this.onCloseModal}/>
         <ModalContent style={{ minHeight: 500, display: 'flex', flexDirection: 'column' }}>
           <Container>
             <SearchBar />
           </Container>
           <Container flex style={{ marginTop: 20 }}>
             <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card />}>
-              <JurisdictionList jurisdictions={this.props.project.jurisdictions} onOpenForm={this.onOpenForm} />
+              <JurisdictionList jurisdictions={this.props.jurisdictions} onOpenForm={this.onOpenForm} />
             </Column>
           </Container>
         </ModalContent>
@@ -90,12 +93,13 @@ export class AddEditJurisdictions extends Component {
   }
 }
 
+AddEditJurisdictions.propTypes = {}
+
 const mapStateToProps = (state, ownProps) => ({
-  project: state.scenes.home.main.projects.byId[ownProps.match.params.id]
+  project: state.scenes.home.main.projects.byId[ownProps.match.params.id],
+  jurisdictions: Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId) || []
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
-
-AddEditJurisdictions.propTypes = {}
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEditJurisdictions))

@@ -48,6 +48,20 @@ export default {
 
   removeUserBookmark(userId, projectId) {
     return api.delete(`/users/${userId}/projectbookmarks/${projectId}`).then(res => res.data)
+  },
+
+  getJurisdictionsForProject(projectId) {
+    return api.get(`/projects/${projectId}/jurisdiction`).then(res => res.data)
+  },
+
+  addJurisdictionToProject(projectId, jurisdiction) {
+    //return api.post(`/projects/${projectId}/jurisdiction`, jurisdiction).then(res => res.data)
+    return { ...jurisdiction, id: Math.random() }
+  },
+
+  updateJurisdictionInProject(projectId, jurisdiction) {
+    return jurisdiction
+    //return api.put(`/projects/${projectId}/jurisdiction/${jurisdiction.id}`, jurisdiction).then(res => res.data)
   }
 }
 

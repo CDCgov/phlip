@@ -144,6 +144,23 @@ const mainReducer = (state, action) => {
     case types.FLUSH_STATE:
       return { ...INITIAL_STATE, rowsPerPage: state.rowsPerPage }
 
+    case types.UPDATE_EDITED_FIELDS:
+      const project = state.projects.byId[action.id]
+      return {
+        ...state,
+        projects: {
+          byId: {
+            ...state.projects.byId,
+            [project.id]: {
+              ...project,
+              lastEditedBy: action.user,
+              dateLastEdited: new Date()
+            }
+          },
+          allIds: state.projects.allIds
+        }
+      }
+
     case types.UPDATE_PROJECT_FAIL:
     case types.GET_PROJECTS_REQUEST:
     default:
