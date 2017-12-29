@@ -2,16 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Divider from 'material-ui/Divider'
 import FormModal from 'components/FormModal'
-import { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
+import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import Container, { Row } from 'components/Layout'
 import { Field } from 'redux-form'
 import TextInput from 'components/TextInput'
-import * as actions from '../../../../actions'
+import * as actions from '../../actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { validateRequired } from 'utils/helpers'
+import DatePicker from 'components/DatePicker'
+import Icon from 'components/Icon'
 
-export const JurisdictionForm = ({ open, edit, jurisdiction, onHandleSubmit, onCloseForm, form }) => {
+export const JurisdictionForm = ({ open, edit, jurisdiction, onHandleSubmit, onCloseForm, form, actions }) => {
   const formActions = [
     { value: 'Cancel', onClick: onCloseForm, type: 'button' },
     {
@@ -19,34 +21,31 @@ export const JurisdictionForm = ({ open, edit, jurisdiction, onHandleSubmit, onC
         ? 'Save'
         : 'Add',
       type: 'submit',
-      disabled: !!(form.syncErrors)
+      disabled: !!(form.errors)
     }
   ]
 
   return (
-    <FormModal
-      form="jurisdictionForm"
-      handleSubmit={onHandleSubmit}
-      initialValues={edit ? jurisdiction : {}}
-      asyncBlurFields={['name']}
-      width="600px" height="400px"
-      open={open}
-    >
-      <ModalTitle title={edit ? 'Edit Jurisdiction' : 'Add Jurisdiction'} closeButton={true}
-                  onCloseForm={onCloseForm} />
-      <Divider />
-      <ModalContent>
-        <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
-          <Row style={{ paddingBottom: 20 }}>
-            <Field component={TextInput} label="Name" name="name" validate={validateRequired} placeholder="Enter jurisdiction name" />
-          </Row>
-          <Row>
-            
-          </Row>
-        </Container>
-      </ModalContent>
-      <ModalActions edit={true} actions={formActions}></ModalActions>
-    </FormModal>
+    <Modal open={open}>
+      <form onSubmit={onHandleSubmit}>
+        <ModalTitle title={edit ? 'Edit Jurisdiction' : 'Add Jurisdiction'} closeButton={true}
+                    onCloseForm={onCloseForm} />
+        <Divider />
+        <ModalContent>
+          <Container column style={{ width: 500, minHeight: 230, padding: '30px 15px' }}>
+            <Row style={{ paddingBottom: 20 }}>
+              <TextInput label="Name" placeholder="Enter jurisdiction name" name="name"
+                         onChange={(event) => actions.onChangeForm('name', event.target.value)} />
+            </Row>
+            <Row>
+              <DatePicker value={form.startDate} name="startDate" label="Start Date"
+                          format="MM/DD/YYYY" onChange={(event) => actions.onChangeForm('startDate', event) } />
+            </Row>
+          </Container>
+        </ModalContent>
+        <ModalActions edit={true} actions={formActions}></ModalActions>
+      </form>
+    </Modal>
   )
 }
 
@@ -57,7 +56,7 @@ JurisdictionForm.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-  form: state.form.jurisdictionForm || {}
+  form: state.scenes.home.addEditJurisdictions || {}
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

@@ -36,4 +36,8 @@ TextInput.propTypes = {
   meta: PropTypes.object
 }
 
+TextInput.defaultProps = {
+  meta: {}
+}
+
 export default withStyles(styles)(TextInput)

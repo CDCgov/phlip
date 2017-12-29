@@ -50,7 +50,7 @@ export class AddEditJurisdictions extends Component {
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="md" hideOverflow>
         <ModalTitle title="Jurisdictions" buttons={this.getButton()} />
-        <ModalContent style={{ minWidth: 550, minHeight: 500, display: 'flex', flexDirection: 'column' }}>
+        <ModalContent style={{ width: 550, minHeight: 500, display: 'flex', flexDirection: 'column' }}>
           <Container>
             <SearchBar />
           </Container>

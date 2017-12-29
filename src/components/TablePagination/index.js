@@ -8,8 +8,8 @@ import Select from 'material-ui/Select'
 import { TableCell } from 'material-ui/Table'
 import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
-import KeyboardArrowLeft from 'material-ui/svg-icons/KeyboardArrowLeft'
-import KeyboardArrowRight from 'material-ui/svg-icons/KeyboardArrowRight'
+import KeyboardArrowLeft from 'material-ui/internal/svg-icons/KeyboardArrowLeft'
+import KeyboardArrowRight from 'material-ui/internal/svg-icons/KeyboardArrowRight'
 
 export const styles = theme => ({
   root: {

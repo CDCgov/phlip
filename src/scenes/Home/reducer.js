@@ -1,6 +1,7 @@
 import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import addEditProjectReducer from './scenes/AddEditProject/reducer'
+import addEditJurisdictions from './scenes/AddEditJurisdictions/reducer'
 import { sortList, updater, tableUtils, searchUtils, normalize } from 'utils'
 
 const INITIAL_STATE = {
@@ -158,7 +159,8 @@ const homeReducer = (state = INITIAL_STATE, action) => {
 
 const homeRootReducer = combineReducers({
   main: homeReducer,
-  addEditProject: addEditProjectReducer
+  addEditProject: addEditProjectReducer,
+  addEditJurisdictions: addEditJurisdictions
 })
 
 export default homeRootReducer
