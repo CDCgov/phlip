@@ -2,16 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { TableRow, TableCell } from 'material-ui/Table'
 import IconButton from 'components/IconButton'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
-export const JurisdictionRow = ({ jurisdiction, index, onOpenForm }) => (
-  <TableRow key={`jurisdiction-${index}`}>
-    <TableCell key={`${index}-segment-name`}>
+export const JurisdictionRow = ({ jurisdiction, id, onOpenForm }) => (
+  <TableRow key={`jurisdiction-${id}`}>
+    <TableCell key={`${id}-segment-name`}>
       {jurisdiction.name}
       </TableCell>
-    <TableCell key={`${index}-segment-start`}>
+    <TableCell key={`${id}-segment-start`}>
       {new Date(jurisdiction.startDate).toLocaleDateString()}
       </TableCell>
-    <TableCell key={`${index}-segment-end`}>
+    <TableCell key={`${id}-segment-end`}>
       {new Date(jurisdiction.endDate).toLocaleDateString()}
       </TableCell>
     <TableCell>
@@ -27,4 +29,8 @@ JurisdictionRow.propTypes = {
 
 }
 
-export default JurisdictionRow
+const mapStateToProps = (state, ownProps) => ({
+  jurisdiction: state.scenes.home.addEditJurisdictions.jurisdictions.byId[ownProps.id]
+})
+
+export default connect(mapStateToProps)(JurisdictionRow)

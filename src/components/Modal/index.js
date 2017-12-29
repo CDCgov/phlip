@@ -23,7 +23,9 @@ const classes = theme => ({
   hideOverflow: {
     ...paper,
     margin: theme.spacing.unit * 4,
-    overflowY: 'hidden'
+    overflowY: 'hidden',
+    width: '100%',
+    height: '100%'
   }
 })
 

@@ -16,8 +16,8 @@ export const JurisdictionList = ({ jurisdictions, onOpenForm }) => (
       </TableRow>
     </TableHead>
     <TableBody>
-      {jurisdictions.map((jurisdiction, i) => (
-        <JurisdictionRow jurisdiction={jurisdiction} index={i} key={`jurisdiction-${i}`} onOpenForm={onOpenForm} />
+      {jurisdictions.map(id => (
+        <JurisdictionRow id={id} key={`jurisdictions-${id}`} onOpenForm={onOpenForm} />
       ))}
       </TableBody>
   </Table>

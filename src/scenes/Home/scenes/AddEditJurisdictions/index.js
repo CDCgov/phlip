@@ -76,13 +76,16 @@ export class AddEditJurisdictions extends Component {
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="md" hideOverflow>
         <ModalTitle title="Jurisdictions" buttons={this.getButton()} closeButton onCloseForm={this.onCloseModal}/>
-        <ModalContent style={{ minHeight: 500, display: 'flex', flexDirection: 'column' }}>
+        <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
           <Container>
-            <SearchBar />
+            <SearchBar
+              searchValue={this.props.searchValue}
+              handleSearchValueChange={event => this.props.actions.updateSearchValue(event.target.value)}
+            />
           </Container>
           <Container flex style={{ marginTop: 20 }}>
             <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card />}>
-              <JurisdictionList jurisdictions={this.props.jurisdictions} onOpenForm={this.onOpenForm} />
+              <JurisdictionList jurisdictions={this.props.visibleJurisdictions} onOpenForm={this.onOpenForm} />
             </Column>
           </Container>
         </ModalContent>
@@ -97,7 +100,8 @@ AddEditJurisdictions.propTypes = {}
 
 const mapStateToProps = (state, ownProps) => ({
   project: state.scenes.home.main.projects.byId[ownProps.match.params.id],
-  jurisdictions: Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId) || []
+  visibleJurisdictions: state.scenes.home.addEditJurisdictions.visibleJurisdictions || [],
+  searchValue: state.scenes.home.addEditJurisdictions.searchValue || ''
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
