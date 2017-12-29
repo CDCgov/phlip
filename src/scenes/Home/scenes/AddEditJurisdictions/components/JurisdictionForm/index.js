@@ -11,6 +11,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { validateRequired, validateDate, validateDateRanges } from 'utils/formHelpers'
 import DatePicker from 'components/DatePicker'
+import Autosuggest from 'react-autosuggest'
 
 export const JurisdictionForm = ({ open, edit, jurisdiction, onHandleSubmit, onCloseForm, form, actions }) => {
   const formActions = [
