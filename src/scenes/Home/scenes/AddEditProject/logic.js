@@ -28,7 +28,7 @@ export const updateLastEditedBy = createLogic({
 })
 
 export const updateProjectLogic = createLogic({
-  type: types.UPDATE_PROJECT_REQUEST,
+  type: [types.UPDATE_PROJECT_REQUEST, 'ADD_PROJECT_JURISDICTION', 'UPDATE_PROJECT_JURISDICTION'],
   latest: true,
   processOptions: {
     dispatchReturn: true,

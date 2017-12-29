@@ -9,8 +9,9 @@ import Button from 'components/Button'
 import Container, { Column } from 'components/Layout'
 import Card from 'components/Card'
 import JurisdictionList from './components/JurisdictionList'
-import * as actions from '../../actions'
+import * as actions from './actions'
 import JurisdictionForm from './components/JurisdictionForm'
+import moment from 'moment'
 
 export class AddEditJurisdictions extends Component {
   constructor (props, context) {
@@ -36,7 +37,25 @@ export class AddEditJurisdictions extends Component {
 
   getButton = () => <Button onClick={() => this.onOpenForm(false)} value="+ Add Jurisdiction" color="accent" />
 
-  onSubmitForm = values => {}
+  onSubmitForm = values => {
+    const jurisdiction = {
+      ...values,
+      startDate: moment(values.startDate).toISOString(),
+      endDate: moment(values.endDate).toISOString()
+    }
+
+    if (this.state.edit) {
+      this.props.actions.updateJurisdiction({ id: this.state.formJurisdiction.id, ...jurisdiction}, this.props.project)
+    } else {
+      this.props.actions.addJurisdiction(jurisdiction, this.props.project)
+    }
+
+    this.setState({
+      formOpen: false,
+      edit: false,
+      formJurisdiction: {}
+    })
+  }
 
   onCloseForm = () => {
     this.setState({
@@ -50,7 +69,7 @@ export class AddEditJurisdictions extends Component {
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="md" hideOverflow>
         <ModalTitle title="Jurisdictions" buttons={this.getButton()} />
-        <ModalContent style={{ width: 550, minHeight: 500, display: 'flex', flexDirection: 'column' }}>
+        <ModalContent style={{ minHeight: 500, display: 'flex', flexDirection: 'column' }}>
           <Container>
             <SearchBar />
           </Container>
