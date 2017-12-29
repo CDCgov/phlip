@@ -135,7 +135,7 @@ export class AddEditProject extends Component {
               component={TextInput}
               disabled={true}
               label="Created Date"
-              name="createdDate"
+              name="dateCreated"
             />
             }
           </Container>

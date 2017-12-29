@@ -11,7 +11,9 @@ export const addProjectLogic = createLogic({
   },
   async process({ action, getState, api }) {
     const currentUser = getState().data.user.currentUser
-    return await api.addProject({ ...action.project, lastEditedBy: `${currentUser.firstName} ${currentUser.lastName}` })
+    const user = `${currentUser.firstName} ${currentUser.lastName}`
+
+    return await api.addProject({ ...action.project, lastEditedBy: user, createdBy: user })
   }
 })
 
@@ -36,8 +38,7 @@ export const updateProjectLogic = createLogic({
     failType: types.UPDATE_PROJECT_FAIL
   },
   async process({ action, api }) {
-    const out = await api.updateProject(action.project)
-    return { ...action.project, dateLastEdited: new Date().toISOString() }
+    return await api.updateProject(action.project)
   }
 })
 
