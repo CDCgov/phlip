@@ -46,15 +46,15 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
           <TextLink to="/">Edit</TextLink>
         </TableCell>
         }
-        <TableCell key={`${project.id}-code`} style={{ maxWidth: 40 }}>
+        <TableCell key={`${project.id}-code`}>
           <Button raised={false} value="Code" listButton />
         </TableCell>
         {role !== 'Coder' &&
-        <TableCell key={`${project.id}-validation`} style={{ maxWidth: 40 }}>
+        <TableCell key={`${project.id}-validation`}>
           <Button raised={false} value="Validate" listButton />
         </TableCell>
         }
-        <TableCell key={`${project.id}-export`} style={{ maxWidth: 10 }}>
+        <TableCell key={`${project.id}-export`}>
           <IconButton color={greyIcon} onClick={() => actions.onExport}>file_download</IconButton>
         </TableCell>
       </TableRow>

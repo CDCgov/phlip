@@ -12,9 +12,9 @@ const columns = [
   { key: 'protocol', label: 'Protocol', hasSort: false },
   { key: 'jurisdictions', label: 'Jurisdictions', hasSort: false },
   { key: 'codingScheme', label: 'Coding Scheme', hasSort: false },
-  { key: 'code', label: '', style: { maxWidth: 40 }, hasSort: false },
-  { key: 'validate', label: '', style: { maxWidth: 40 }, hasSort: false },
-  { key: 'export', label: 'Export', style: { maxWidth: 10 }, hasSort: false }
+  { key: 'code', label: '', hasSort: false },
+  { key: 'validate', label: '', hasSort: false },
+  { key: 'export', label: 'Export', hasSort: false }
 ]
 
 const hiddenCols = [
