@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { login, getToken, logout } from '../authToken'
 import { updateById } from 'utils'
+import mockJurisdictions from 'data/mockJurisdictions'
 
 export const api = axios.create({
   baseURL: '/api'
@@ -50,8 +51,9 @@ export default {
     return api.delete(`/users/${userId}/projectbookmarks/${projectId}`).then(res => res.data)
   },
 
-  getJurisdictionsForProject(projectId) {
-    return api.get(`/projects/${projectId}/jurisdiction`).then(res => res.data)
+  getProjectJurisdictions(projectId) {
+    //return api.get(`/projects/${projectId}/jurisdiction`).then(res => res.data)
+    return mockJurisdictions
   },
 
   addJurisdictionToProject(projectId, jurisdiction) {

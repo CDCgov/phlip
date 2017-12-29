@@ -2,6 +2,17 @@ import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 import { updater } from 'utils'
 
+const getJurisdictionsLogic = createLogic({
+  type: types.GET_PROJECT_JURISDICTIONS_REQUEST,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.GET_PROJECT_JURISDICTIONS_SUCCESS
+  },
+  async process({ action, api }) {
+    return await api.getProjectJurisdictions(action.projectId)
+  }
+})
+
 const addJurisdictionLogic = createLogic({
   type: types.ADD_PROJECT_JURISDICTION_REQUEST,
   processOptions: {
@@ -24,4 +35,4 @@ const updateJurisdictionLogic = createLogic({
   }
 })
 
-export default [addJurisdictionLogic, updateJurisdictionLogic]
+export default [getJurisdictionsLogic, addJurisdictionLogic, updateJurisdictionLogic]

@@ -1,4 +1,5 @@
 import * as types from './actionTypes'
+import { normalize } from 'utils'
 
 const INITIAL_STATE = {
   jurisdictions: { byId: {}, allIds: [] },
@@ -7,6 +8,15 @@ const INITIAL_STATE = {
 
 const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
   switch(action.type) {
+    case types.GET_PROJECT_JURISDICTIONS_SUCCESS:
+      return {
+        ...state,
+        jurisdictions: {
+          byId: normalize.arrayToObject(action.payload),
+          allIds: normalize.mapArray(action.payload)
+        }
+      }
+
     case types.UPDATE_PROJECT_JURISDICTION_SUCCESS:
       return {
         ...state,
@@ -32,6 +42,7 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
     case types.CLEAR_JURISDICTIONS:
       return INITIAL_STATE
 
+    case types.GET_PROJECT_JURISDICTIONS_REQUEST:
     case types.UPDATE_PROJECT_JURISDICTION_REQUEST:
     case types.ADD_PROJECT_JURISDICTION_REQUEST:
     default:
