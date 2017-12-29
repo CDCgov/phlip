@@ -1,19 +1,29 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { InputLabel } from 'material-ui/Input'
+import { InputLabel, InputAdornment } from 'material-ui/Input'
 import { FormControl, FormHelperText } from 'material-ui/Form'
 import { DatePicker as MuiDatePicker } from 'material-ui-pickers'
+import Icon from 'components/Icon'
 
-export const DatePicker = ({ onChange, value, label, name, touched, error, warning, disabled, ...otherProps }) => {
+export const DatePicker = ({ input, label, name, meta: { touched, error, warning }, dateFormat, disabled, ...otherProps }) => {
   return (
     <FormControl error={Boolean(touched && (error || warning))} fullWidth disabled={disabled}>
-      <InputLabel htmlFor={name} shrink>{label}</InputLabel>
       <MuiDatePicker
-        onChange={onChange}
-        value={value}
+        {...input}
+        label={label}
         style={{ marginTop: 16 }}
+        format={dateFormat}
+        name={name}
+        error={Boolean(touched && error)}
+        InputLabelProps={{
+          shrink: true
+        }}
+        InputProps={{
+          style: { 'alignItems': 'center'},
+          startAdornment: <InputAdornment style={{ marginTop: 0 }} position="start" disableTypography><Icon color="#757575">event</Icon></InputAdornment>
+        }}
         {...otherProps} />
-      {touched && error && <FormHelperText>{error}</FormHelperText>}
+      <FormHelperText>{touched && error}</FormHelperText>
     </FormControl>
   )
 }

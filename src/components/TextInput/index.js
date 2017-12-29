@@ -12,7 +12,7 @@ const styles = {
 
 const TextInput = ({ name, label, type, input, disabled, classes, meta: { asyncValidating, touched, error, warning }, ...custom}) => {
   return (
-    <FormControl error={Boolean(touched && (error || warning))} fullWidth disabled={disabled}>
+    <FormControl error={Boolean(touched && error || warning)} fullWidth disabled={disabled}>
       <InputLabel htmlFor={name} shrink>{label}</InputLabel>
       <Input
         id={name}
@@ -23,7 +23,7 @@ const TextInput = ({ name, label, type, input, disabled, classes, meta: { asyncV
           disabled: classes.disabled
         }}
       />
-      {touched && error && <FormHelperText>{error}</FormHelperText>}
+      <FormHelperText>{touched && error}</FormHelperText>
     </FormControl>
   )
 }
