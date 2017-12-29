@@ -41,7 +41,7 @@ export const JurisdictionForm = ({ open, edit, jurisdiction, onHandleSubmit, onC
         <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
           <Row style={{ paddingBottom: 20 }}>
             <Field component={TextInput} label="Name" name="name" validate={validateRequired}
-                   placeholder="Enter jurisdiction name" />
+                   placeholder="Enter jurisdiction name" disabled={edit}/>
           </Row>
           <Container style={{ marginTop: 30 }}>
             <Column flex>
