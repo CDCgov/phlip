@@ -51,6 +51,14 @@ export default {
     return api.delete(`/users/${userId}/projectbookmarks/${projectId}`).then(res => res.data)
   },
 
+  searchJurisdictionList(searchString) {
+    return api.get(`/jurisdiction`, {
+      params: {
+        name: searchString
+      }
+    }).then(res => res.data)
+  },
+
   getProjectJurisdictions(projectId) {
     //return api.get(`/projects/${projectId}/jurisdiction`).then(res => res.data)
     return mockJurisdictions
