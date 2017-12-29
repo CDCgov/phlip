@@ -23,6 +23,10 @@ export class AddEditJurisdictions extends Component {
     }
   }
 
+  componentDidMount() {
+
+  }
+
   onCloseModal = () => {
     this.props.history.goBack()
   }
