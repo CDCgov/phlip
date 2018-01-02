@@ -34,7 +34,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
         Object {
           "minHeight": 230,
           "minWidth": 550,
-          "padding": "30px 15px",
+          "padding": "30px 15px 0 15px",
         }
       }
     >

@@ -6,7 +6,7 @@ import Button from 'components/Button'
 const ModalActions = ({ edit, actions }) => {
   return (
     <DialogActions>
-      {edit && actions.map(action => (
+      {actions.map(action => (
         <Button
           key={action.value}
           raised={false} value={action.value}

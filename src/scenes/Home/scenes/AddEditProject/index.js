@@ -75,16 +75,19 @@ export class AddEditProject extends Component {
   formatDate = (value, name) => new Date(value).toLocaleDateString()
 
   render () {
-    const actions = [
-      { value: 'Cancel', onClick: this.onCancel, type: 'button' },
-      {
-        value: this.projectDefined
-          ? 'Save'
-          : 'Create',
-        type: 'submit',
-        disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors)
-      }
-    ]
+    const editAction = [{ value: 'Edit', onClick: this.onEditForm, type: 'button' }]
+
+    const actions = this.projectDefined && !this.state.edit
+      ? editAction
+      : [{ value: 'Cancel', onClick: this.onCancel, type: 'button' },
+        {
+          value: this.projectDefined
+            ? 'Save'
+            : 'Create',
+          type: 'submit',
+          disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors)
+        }
+      ]
 
     const options = [
       { value: 1, label: 'Assessment' },
@@ -100,12 +103,11 @@ export class AddEditProject extends Component {
         asyncBlurFields={['name']} onClose={this.onCancel}
         initialValues={this.props.location.state.projectDefined || {}}
         width="600px" height="400px">
-
-        <ModalTitle title={this.getModalTitle()} edit={this.state.edit} editButton={!this.state.edit}
+        <ModalTitle title={this.getModalTitle()} edit={this.state.edit}
                     closeButton={!!this.projectDefined} onEditForm={this.onEditForm} onCloseForm={this.onCancel} />
         <Divider />
         <ModalContent>
-          <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
+          <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px 0 15px' }}>
             <DetailRow
               name="name"
               component={TextInput}
@@ -139,6 +141,7 @@ export class AddEditProject extends Component {
               label="Created Date"
               name="dateCreated"
               format={this.formatDate}
+              style={{ paddingBottom: 0 }}
             />
             }
           </Container>
