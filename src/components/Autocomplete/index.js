@@ -3,9 +3,6 @@ import PropTypes from 'prop-types'
 import Autosuggest from 'react-autosuggest'
 import Paper from 'material-ui/Paper'
 import { withStyles } from 'material-ui/styles'
-import { MenuItem } from 'material-ui/Menu'
-import match from 'autosuggest-highlight/match'
-import parse from 'autosuggest-highlight/parse'
 import TextInput from 'components/TextInput'
 
 const classes = theme => ({
@@ -58,7 +55,9 @@ export const Autocomplete = props => {
     renderSuggestion,
     getSuggestionValue,
     classes,
-    inputProps
+    inputProps,
+    input,
+    meta
   } = props
 
   return (
@@ -78,6 +77,8 @@ export const Autocomplete = props => {
       inputProps={{
         value: suggestionValue,
         onChange: handleSuggestionValueChange,
+        meta,
+        ...input,
         ...inputProps
       }}
       onSuggestionSelected={handleSuggestionSelected}

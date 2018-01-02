@@ -81,7 +81,12 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.CLEAR_JURISDICTIONS:
-      return INITIAL_STATE
+      return {
+        ...state,
+        suggestionValue: '',
+        suggestions: [],
+        jurisdiction: ''
+      }
 
     case types.SEARCH_JURISDICTION_LIST:
     case types.GET_PROJECT_JURISDICTIONS_REQUEST:

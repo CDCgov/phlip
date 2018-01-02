@@ -10,7 +10,7 @@ const config = {
 }
 
 const scenesReducer = combineReducers({
-  home: persistReducer({ ...config, key: 'home' }, home),
+  home: persistReducer({ ...config, key: 'home', blacklist: ['addEditJurisdictions'] }, home),
   admin: persistReducer({ ...config, key: 'admin' }, admin),
   login
 })

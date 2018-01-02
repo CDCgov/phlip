@@ -32,6 +32,8 @@ export class AddEditJurisdictions extends Component {
     this.props.history.goBack()
   }
 
+  getButton = () => <Button onClick={() => this.onOpenForm(false)} value="+ Add Jurisdiction" color="accent" />
+
   onOpenForm = (edit, jurisdiction = {}) => {
     this.setState({
       formOpen: true,
@@ -39,8 +41,6 @@ export class AddEditJurisdictions extends Component {
       formJurisdiction: jurisdiction
     })
   }
-
-  getButton = () => <Button onClick={() => this.onOpenForm(false)} value="+ Add Jurisdiction" color="accent" />
 
   onSubmitForm = values => {
     const jurisdiction = {
@@ -75,6 +75,7 @@ export class AddEditJurisdictions extends Component {
       formOpen: false,
       edit: false
     })
+    this.props.actions.clearJurisdictions()
   }
 
   render () {

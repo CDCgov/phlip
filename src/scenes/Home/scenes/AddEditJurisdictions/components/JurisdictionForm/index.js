@@ -82,12 +82,15 @@ export const JurisdictionForm = props => {
       <ModalContent>
         <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
           <Row style={{ paddingBottom: 20 }}>
-            <Autocomplete
+            <Field
+              name="name"
+              component={Autocomplete}
+              validate={validateRequired}
               suggestions={suggestions}
               handleGetSuggestions={onSearchList}
               handleClearSuggestions={onClearSuggestions}
               inputProps={{
-                value: suggestionValue,
+                value: edit ? jurisdiction.name : suggestionValue,
                 onChange: onSuggestionValueChanged,
                 id: 'jurisdiction-name',
                 disabled: edit,
