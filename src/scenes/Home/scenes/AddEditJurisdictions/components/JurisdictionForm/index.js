@@ -89,7 +89,7 @@ const classes = theme => ({
   }
 })
 
-export const JurisdictionForm = ({ open, onClearSuggestions, classes, edit, jurisdiction, suggestions, onSearchList, onSuggestionValueChanged, suggestionValue, onHandleSubmit, onCloseForm, form, actions }) => {
+export const JurisdictionForm = ({ open, onClearSuggestions, onJurisdictionSelected, classes, edit, jurisdiction, suggestions, onSearchList, onSuggestionValueChanged, suggestionValue, onHandleSubmit, onCloseForm, form, actions }) => {
   const formActions = [
     { value: 'Cancel', onClick: onCloseForm, type: 'button' },
     {
@@ -133,8 +133,10 @@ export const JurisdictionForm = ({ open, onClearSuggestions, classes, edit, juri
               inputProps={{
                 value: suggestionValue,
                 onChange: onSuggestionValueChanged,
-                id: 'jurisdiction-name'
+                id: 'jurisdiction-name',
+                disabled: edit
               }}
+              onSuggestionSelected={onJurisdictionSelected}
               renderSuggestion={renderSuggestion}
               getSuggestionValue={getSuggestionValue}
             />

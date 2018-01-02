@@ -46,7 +46,8 @@ export class AddEditJurisdictions extends Component {
     const jurisdiction = {
       ...values,
       startDate: moment(values.startDate).toISOString(),
-      endDate: moment(values.endDate).toISOString()
+      endDate: moment(values.endDate).toISOString(),
+      name: this.props.jurisdiction
     }
 
     if (this.state.edit) {
@@ -100,6 +101,7 @@ export class AddEditJurisdictions extends Component {
           suggestionValue={this.props.suggestionValue}
           onClearSuggestions={this.props.actions.onClearSuggestions}
           onSuggestionValueChanged={event => this.props.actions.onSuggestionValueChanged(event.target.value)}
+          onJurisdictionSelected={(event, { suggestionValue }) => this.props.actions.onJurisdictionSelected(suggestionValue)}
         />
       </Modal>
     )
@@ -113,7 +115,8 @@ const mapStateToProps = (state, ownProps) => ({
   visibleJurisdictions: state.scenes.home.addEditJurisdictions.visibleJurisdictions || [],
   searchValue: state.scenes.home.addEditJurisdictions.searchValue || '',
   suggestions: state.scenes.home.addEditJurisdictions.suggestions || [],
-  suggestionValue: state.scenes.home.addEditJurisdictions.suggestionValue || ''
+  suggestionValue: state.scenes.home.addEditJurisdictions.suggestionValue || '',
+  jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || ''
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

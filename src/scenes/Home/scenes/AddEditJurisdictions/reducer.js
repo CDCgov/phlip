@@ -6,7 +6,8 @@ const INITIAL_STATE = {
   visibleJurisdictions: [],
   searchValue: '',
   suggestions: [],
-  suggestionValue: ''
+  suggestionValue: '',
+  jurisdiction: ''
 }
 
 const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
@@ -69,8 +70,14 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
     case types.ON_CLEAR_SUGGESTIONS:
       return {
         ...state,
-        suggestions: [],
-        suggestionValue: ''
+        suggestions: []
+      }
+
+    case types.ON_JURISDICTION_SELECTED:
+      return {
+        ...state,
+        jurisdiction: action.jurisdiction,
+        suggestionValue: action.jurisdiction
       }
 
     case types.CLEAR_JURISDICTIONS:
