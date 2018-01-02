@@ -1,18 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
-<Modal
+<WithStyles
+  hideOverflow={true}
   maxWidth="md"
   onClose={[Function]}
   open={true}
 >
   <ModalTitle
     buttons={
-      <withTheme(Button)
+      <WithTheme
         color="accent"
+        onClick={[Function]}
         value="+ Add Jurisdiction"
       />
     }
+    closeButton={true}
+    edit={false}
+    editButton={false}
+    onCloseForm={[Function]}
     title="Jurisdictions"
   />
   <ModalContent
@@ -20,8 +26,6 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       Object {
         "display": "flex",
         "flexDirection": "column",
-        "minHeight": 500,
-        "minWidth": 550,
       }
     }
   >
@@ -31,6 +35,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       spacing={0}
     >
       <SearchBar
+        handleSearchValueChange={[Function]}
         height={57}
       />
     </Container>
@@ -54,9 +59,21 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
           }
         }
       >
-        <JurisdictionList />
+        <JurisdictionList
+          onOpenForm={[Function]}
+        />
       </Column>
     </Container>
   </ModalContent>
-</Modal>
+  <Connect(JurisdictionForm)
+    edit={false}
+    jurisdiction={Object {}}
+    onCloseForm={[Function]}
+    onHandleSubmit={[Function]}
+    onJurisdictionSelected={[Function]}
+    onSearchList={[Function]}
+    onSuggestionValueChanged={[Function]}
+    open={false}
+  />
+</WithStyles>
 `;

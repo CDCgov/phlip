@@ -3,7 +3,9 @@ import { shallow } from 'enzyme'
 import { AddEditJurisdictions } from '../index'
 
 const props = {
-  actions: {},
+  actions: {
+    getProjectJurisdictions: jest.fn()
+  },
   project: {}
 }
 
