@@ -26,7 +26,9 @@ export const JurisdictionRow = ({ jurisdiction, id, onOpenForm }) => (
 )
 
 JurisdictionRow.propTypes = {
-
+  jurisdiction: PropTypes.object,
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  onOpenForm: PropTypes.func
 }
 
 const mapStateToProps = (state, ownProps) => ({

@@ -48,16 +48,16 @@ export const Autocomplete = props => {
   const {
     suggestions,
     suggestionValue,
+    classes,
+    inputProps,
+    input,
+    meta,
     handleGetSuggestions,
     handleClearSuggestions,
     handleSuggestionValueChange,
     handleSuggestionSelected,
     renderSuggestion,
-    getSuggestionValue,
-    classes,
-    inputProps,
-    input,
-    meta
+    getSuggestionValue
   } = props
 
   return (
@@ -88,7 +88,20 @@ export const Autocomplete = props => {
   )
 }
 
-Autocomplete.propTypes = {}
+Autocomplete.propTypes = {
+  suggestions: PropTypes.array,
+  suggestionValue: PropTypes.string,
+  classes: PropTypes.object,
+  inputProps: PropTypes.object,
+  input: PropTypes.object,
+  meta: PropTypes.object,
+  handleGetSuggestions: PropTypes.func,
+  handleClearSuggestions: PropTypes.func,
+  handleSuggestionValueChange: PropTypes.func,
+  handleSuggestionSelected: PropTypes.func,
+  renderSuggestion: PropTypes.func,
+  getSuggestionValue: PropTypes.func,
+}
 
 Autocomplete.defaultProps = {
 }

@@ -24,7 +24,8 @@ export const JurisdictionList = ({ jurisdictions, onOpenForm }) => (
 )
 
 JurisdictionList.propTypes = {
-
+  jurisdictions: PropTypes.array,
+  onOpenForm: PropTypes.func
 }
 
 export default JurisdictionList

@@ -55,7 +55,7 @@ export const JurisdictionForm = props => {
     onHandleSubmit,
     onCloseForm
   } = props
-  
+
   const formActions = [
     { value: 'Cancel', onClick: onCloseForm, type: 'button' },
     {
@@ -122,7 +122,16 @@ export const JurisdictionForm = props => {
 JurisdictionForm.propTypes = {
   open: PropTypes.bool,
   edit: PropTypes.bool,
-  jurisdiction: PropTypes.object
+  jurisdiction: PropTypes.object,
+  suggestions: PropTypes.array,
+  suggestionValue: PropTypes.string,
+  form: PropTypes.object,
+  onClearSuggestions: PropTypes.func,
+  onJurisdictionSelected: PropTypes.func,
+  onSearchList: PropTypes.func,
+  onSuggestionValueChanged: PropTypes.func,
+  onHandleSubmit: PropTypes.func,
+  onCloseForm: PropTypes.func
 }
 
 const mapStateToProps = (state) => ({

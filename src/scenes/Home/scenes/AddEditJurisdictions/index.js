@@ -111,7 +111,14 @@ export class AddEditJurisdictions extends Component {
   }
 }
 
-AddEditJurisdictions.propTypes = {}
+AddEditJurisdictions.propTypes = {
+  project: PropTypes.object,
+  visibleJurisdictions: PropTypes.array,
+  searchValue: PropTypes.string,
+  suggestions: PropTypes.array,
+  suggestionValue: PropTypes.string,
+  jurisdiction: PropTypes.string
+}
 
 const mapStateToProps = (state, ownProps) => ({
   project: state.scenes.home.main.projects.byId[ownProps.match.params.id],
