@@ -12,3 +12,27 @@ export default [
   { id: 11, name: 'Vermont', startDate: new Date(2012, 0, 1), endDate: new Date(2013, 0, 1) },
   { id: 12, name: 'Rhode Island', startDate: new Date(2012, 0, 1), endDate: new Date(2013, 0, 1) },
 ]
+
+export const allJurisdictions = [
+  'Georgia',
+  'Ohio',
+  'Alabama',
+  'Oregon',
+  'Massachusetts',
+  'Alaska',
+  'Hawaii',
+  'Colorado',
+  'Washington',
+  'New York',
+  'New Jersey',
+  'Rhode Island',
+  'California',
+  'North Dakota',
+  'Atlanta',
+  'Boston',
+  'Birmingham',
+  'Utah',
+  'Arizona',
+  'New Hampshire',
+  'Maine'
+]

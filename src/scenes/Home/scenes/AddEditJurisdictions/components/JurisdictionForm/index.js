@@ -15,11 +15,11 @@ import { validateRequired, validateDate, validateDateRanges } from 'utils/formHe
 import DatePicker from 'components/DatePicker'
 import Autocomplete from 'components/Autocomplete'
 
-const getSuggestionValue = suggestion => suggestion.name
+const getSuggestionValue = suggestion => suggestion
 
 const renderSuggestion = (suggestion, { query, isHighlighted }) => {
-  const matches = match(suggestion.name, query)
-  const parts = parse(suggestion.name, matches)
+  const matches = match(suggestion, query)
+  const parts = parse(suggestion, matches)
 
   return (
     <MenuItem selected={isHighlighted} component="div">

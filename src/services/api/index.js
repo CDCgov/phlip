@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { login, getToken, logout } from '../authToken'
-import { updateById } from 'utils'
-import mockJurisdictions from 'data/mockJurisdictions'
+import mockJurisdictions, { allJurisdictions } from 'data/mockJurisdictions'
 
 export const api = axios.create({
   baseURL: '/api'
@@ -85,7 +84,7 @@ const getMatchingJurisdictions = value => {
 
   const regex = new RegExp('^' + escapedValue, 'i');
 
-  return mockJurisdictions.filter(jurisdiction => regex.test(jurisdiction.name));
+  return allJurisdictions.filter(jurisdiction => regex.test(jurisdiction));
 }
 
 const escapeRegexCharacters = str => {
