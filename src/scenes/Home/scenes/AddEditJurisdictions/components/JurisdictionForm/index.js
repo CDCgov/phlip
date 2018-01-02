@@ -48,6 +48,7 @@ export const JurisdictionForm = props => {
     suggestions,
     suggestionValue,
     form,
+    asyncValidate,
     onClearSuggestions,
     onJurisdictionSelected,
     onSearchList,
@@ -63,7 +64,7 @@ export const JurisdictionForm = props => {
         ? 'Save'
         : 'Add',
       type: 'submit',
-      disabled: !!(form.syncErrors)
+      disabled: Boolean(form.syncErrors || (form.asyncErrors ? form.asyncErrors.name : false))
     }
   ]
 
@@ -72,6 +73,7 @@ export const JurisdictionForm = props => {
       form="jurisdictionForm"
       handleSubmit={onHandleSubmit}
       initialValues={edit ? jurisdiction : {}}
+      asyncValidate={asyncValidate}
       asyncBlurFields={['name']}
       width="600px" height="400px"
       validate={validateDateRanges}
@@ -95,7 +97,7 @@ export const JurisdictionForm = props => {
                 id: 'jurisdiction-name',
                 disabled: edit,
                 label: 'Name',
-                placeholder: 'Enter jurisdiction name'
+                placeholder: 'Enter jurisdiction name',
               }}
               handleSuggestionSelected={onJurisdictionSelected}
               renderSuggestion={renderSuggestion}

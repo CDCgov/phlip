@@ -66,6 +66,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
     </Container>
   </ModalContent>
   <Connect(JurisdictionForm)
+    asyncValidate={[Function]}
     edit={false}
     jurisdiction={Object {}}
     onCloseForm={[Function]}

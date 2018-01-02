@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { default as formActions }  from 'redux-form/lib/actions'
 import { withRouter } from 'react-router'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import SearchBar from 'components/SearchBar'
@@ -12,6 +13,7 @@ import JurisdictionList from './components/JurisdictionList'
 import * as actions from './actions'
 import JurisdictionForm from './components/JurisdictionForm'
 import moment from 'moment'
+import api from 'services/api'
 
 export class AddEditJurisdictions extends Component {
   constructor (props, context) {
@@ -47,7 +49,7 @@ export class AddEditJurisdictions extends Component {
       ...values,
       startDate: moment(values.startDate).toISOString(),
       endDate: moment(values.endDate).toISOString(),
-      name: this.props.jurisdiction
+      name: this.props.jurisdiction ? this.props.jurisdiction : values.name
     }
 
     if (this.state.edit) {
@@ -67,6 +69,17 @@ export class AddEditJurisdictions extends Component {
     this.props.actions.clearJurisdictions()
   }
 
+  validateJurisdiction = values => {
+    const prom = new Promise(resolve => resolve(api.searchJurisdictionList(values.name)))
+    return prom.then(out => {
+      if (!this.props.jurisdiction) {
+        if (out.length === 0) {
+          throw { name: 'You must choose a pre-defined jurisdiction name.' }
+        }
+      }
+    })
+  }
+
   onJurisdictionsFetchRequest = ({ value }) => {
     this.props.actions.searchJurisdictionList(value)
   }
@@ -78,6 +91,11 @@ export class AddEditJurisdictions extends Component {
       edit: false
     })
     this.props.actions.clearJurisdictions()
+  }
+
+  onJurisdictionSelected = (event, { suggestionValue }) => {
+    this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
+    this.props.actions.onJurisdictionSelected(suggestionValue)
   }
 
   render () {
@@ -104,7 +122,8 @@ export class AddEditJurisdictions extends Component {
           suggestionValue={this.props.suggestionValue}
           onClearSuggestions={this.props.actions.onClearSuggestions}
           onSuggestionValueChanged={event => this.props.actions.onSuggestionValueChanged(event.target.value)}
-          onJurisdictionSelected={(event, { suggestionValue }) => this.props.actions.onJurisdictionSelected(suggestionValue)}
+          onJurisdictionSelected={this.onJurisdictionSelected}
+          asyncValidate={this.validateJurisdiction}
         />
       </Modal>
     )
@@ -129,6 +148,9 @@ const mapStateToProps = (state, ownProps) => ({
   jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || ''
 })
 
-const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(actions, dispatch),
+  formActions: bindActionCreators(formActions, dispatch)
+})
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEditJurisdictions))
