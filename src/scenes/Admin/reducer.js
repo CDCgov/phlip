@@ -50,8 +50,8 @@ function adminReducer(state = INITIAL_STATE, action) {
     case types.UPDATE_USER_SUCCESS:
       return {
         ...state,
-        users: updater.updateByProperty(action.payload, [...state.users], 'userId'),
-        visibleUsers: updater.updateByProperty(action.payload, [...state.visibleUsers], 'userId')
+        users: updater.updateByProperty(action.payload, [...state.users], 'id'),
+        visibleUsers: updater.updateByProperty(action.payload, [...state.visibleUsers], 'id')
       }
 
     case types.SORT_USERS:
