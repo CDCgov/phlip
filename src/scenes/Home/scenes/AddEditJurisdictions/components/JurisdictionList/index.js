@@ -12,7 +12,6 @@ export const JurisdictionList = ({ jurisdictions, onOpenForm }) => (
         <TableCell key="segment-start">Segment Start Date</TableCell>
         <TableCell key="segment-end">Segment End Date</TableCell>
         <TableCell key="segment-edit">Edit</TableCell>
-        <TableCell key="segment-delete">Delete</TableCell>
       </TableRow>
     </TableHead>
     <TableBody>

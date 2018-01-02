@@ -19,9 +19,6 @@ export const JurisdictionRow = ({ jurisdiction, id, onOpenForm }) => (
     <TableCell>
       <IconButton color="accent" onClick={() => onOpenForm(true, jurisdiction)}>mode_edit</IconButton>
     </TableCell>
-    <TableCell>
-      <IconButton color="error">delete</IconButton>
-    </TableCell>
   </TableRow>
 )
 
