@@ -7,7 +7,7 @@ import Icon from 'components/Icon'
 
 export const DatePicker = ({ input, label, name, meta: { touched, error, warning }, dateFormat, disabled, ...otherProps }) => {
   return (
-    <FormControl error={Boolean(touched && (error || warning))} fullWidth disabled={disabled}>
+    <FormControl error={Boolean(touched && (error || warning))} disabled={disabled}>
       <MuiDatePicker
         {...input}
         label={label}
