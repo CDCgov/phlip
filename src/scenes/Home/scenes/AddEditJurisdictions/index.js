@@ -63,6 +63,8 @@ export class AddEditJurisdictions extends Component {
       edit: false,
       formJurisdiction: {}
     })
+
+    this.props.actions.clearJurisdictions()
   }
 
   onJurisdictionsFetchRequest = ({ value }) => {

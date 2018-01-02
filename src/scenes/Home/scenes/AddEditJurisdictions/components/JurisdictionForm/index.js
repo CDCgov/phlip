@@ -55,7 +55,7 @@ export const JurisdictionForm = props => {
     onHandleSubmit,
     onCloseForm
   } = props
-
+  
   const formActions = [
     { value: 'Cancel', onClick: onCloseForm, type: 'button' },
     {
