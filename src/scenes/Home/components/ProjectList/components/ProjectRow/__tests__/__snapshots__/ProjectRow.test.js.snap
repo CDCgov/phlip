@@ -35,7 +35,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
           "pathname": "/project/edit/1",
           "state": Object {
             "projectDefined": Object {
-              "dateLastEdited": 2017-10-11T00:00:00.000Z,
+              "dateLastEdited": 2017-10-11T04:00:00.000Z,
               "id": 1,
               "lastEditedBy": "Kristin",
               "name": "Project 1",
