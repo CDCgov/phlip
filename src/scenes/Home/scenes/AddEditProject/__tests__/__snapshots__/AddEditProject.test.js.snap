@@ -17,6 +17,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
   width="600px"
 >
   <ModalTitle
+    closeButton={false}
     edit={true}
     editButton={false}
     onCloseForm={[Function]}

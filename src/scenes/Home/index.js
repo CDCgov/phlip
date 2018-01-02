@@ -12,6 +12,7 @@ import ProjectList from './components/ProjectList'
 import SearchBar from 'components/SearchBar'
 import AddEditProject from './scenes/AddEditProject'
 import * as actions from './actions'
+import AddEditJurisdictions from './scenes/AddEditJurisdictions'
 
 export class Home extends Component {
   static propTypes = {
@@ -49,6 +50,7 @@ export class Home extends Component {
         <SearchBar
           searchValue={this.props.searchValue}
           handleSearchValueChange={event => this.props.actions.updateSearchValue(event.target.value)}
+          containerStyles={{ padding: '27px 0' }}
         />
         {this.props.error
           ? this.renderErrorMessage()
@@ -73,6 +75,10 @@ export class Home extends Component {
         <Route
           path="/project/edit/:id"
           component={AddEditProject} />
+        <Route
+          path="/project/:id/jurisdictions"
+          component={AddEditJurisdictions} />
+
       </Container>
     )
   }

@@ -1,6 +1,7 @@
 import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import addEditProjectReducer from './scenes/AddEditProject/reducer'
+import addEditJurisdictions from './scenes/AddEditJurisdictions/reducer'
 import { sortList, updater, tableUtils, searchUtils, normalize } from 'utils'
 
 const INITIAL_STATE = {
@@ -143,6 +144,23 @@ const mainReducer = (state, action) => {
     case types.FLUSH_STATE:
       return { ...INITIAL_STATE, rowsPerPage: state.rowsPerPage }
 
+    case types.UPDATE_EDITED_FIELDS:
+      const project = state.projects.byId[action.id]
+      return {
+        ...state,
+        projects: {
+          byId: {
+            ...state.projects.byId,
+            [project.id]: {
+              ...project,
+              lastEditedBy: action.user,
+              dateLastEdited: new Date()
+            }
+          },
+          allIds: state.projects.allIds
+        }
+      }
+
     case types.UPDATE_PROJECT_FAIL:
     case types.GET_PROJECTS_REQUEST:
     default:
@@ -158,7 +176,8 @@ const homeReducer = (state = INITIAL_STATE, action) => {
 
 const homeRootReducer = combineReducers({
   main: homeReducer,
-  addEditProject: addEditProjectReducer
+  addEditProject: addEditProjectReducer,
+  addEditJurisdictions: addEditJurisdictions
 })
 
 export default homeRootReducer

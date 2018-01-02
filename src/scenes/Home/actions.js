@@ -22,3 +22,5 @@ export const updateRows = rowsPerPage => ({ type: types.UPDATE_ROWS, payload: { 
 
 /* Filtering */
 export const updateSearchValue = searchValue => ({ type: types.UPDATE_SEARCH_VALUE, payload: { searchValue } })
+
+export const updateEditedFields = id => ({ type: types.UPDATE_EDITED_FIELDS, id })

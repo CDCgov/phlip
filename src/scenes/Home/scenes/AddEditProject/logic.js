@@ -12,7 +12,6 @@ export const addProjectLogic = createLogic({
   async process({ action, getState, api }) {
     const currentUser = getState().data.user.currentUser
     const user = `${currentUser.firstName} ${currentUser.lastName}`
-
     return await api.addProject({ ...action.project, lastEditedBy: user, createdBy: user })
   }
 })

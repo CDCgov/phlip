@@ -41,7 +41,15 @@ const initial = {
     errorContent: '',
     searchValue: ''
   },
-  addEditProject: {}
+  addEditProject: {},
+  addEditJurisdictions: {
+    jurisdictions: { byId: {}, allIds: [] },
+    visibleJurisdictions: [],
+    searchValue: '',
+    suggestions: [],
+    suggestionValue: '',
+    jurisdiction: ''
+  }
 }
 
 const getState = other => ({ ...initial, main: { ...initial.main, ...other } })

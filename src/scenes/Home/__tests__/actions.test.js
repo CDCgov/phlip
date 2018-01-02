@@ -43,7 +43,6 @@ describe('Home actions creators', () => {
     expect(actions.updateProjectFail(payload)).toEqual(expectedAction)
   })
 
-
   test('should create an action to toggle bookmark', () => {
     const project = { id: 12345, name: 'project 1' }
     const expectedAction = {

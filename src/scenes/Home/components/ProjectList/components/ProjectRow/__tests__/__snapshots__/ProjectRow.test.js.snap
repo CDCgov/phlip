@@ -77,7 +77,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     Kristin
   </TableCell>
   <TableCell
-    key="1-jurisdictions"
+    key="1-protocol"
     light={true}
   >
     <WithTheme
@@ -87,11 +87,12 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     </WithTheme>
   </TableCell>
   <TableCell
-    key="1-protocol"
+    key="1-jurisdictions"
     light={true}
   >
     <WithTheme
-      to="/"
+      id={1}
+      to="/project/1/jurisdictions"
     >
       Add/Edit
     </WithTheme>
@@ -108,11 +109,6 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-code"
-    style={
-      Object {
-        "maxWidth": 40,
-      }
-    }
   >
     <WithTheme
       listButton={true}
@@ -122,11 +118,6 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-validation"
-    style={
-      Object {
-        "maxWidth": 40,
-      }
-    }
   >
     <WithTheme
       listButton={true}
@@ -136,11 +127,6 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-export"
-    style={
-      Object {
-        "maxWidth": 10,
-      }
-    }
   >
     <IconButton
       color="#d4d4d4"

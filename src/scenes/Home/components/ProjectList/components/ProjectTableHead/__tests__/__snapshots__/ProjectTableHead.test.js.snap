@@ -90,27 +90,12 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   </TableCell>
   <TableCell
     key="code"
-    style={
-      Object {
-        "maxWidth": 40,
-      }
-    }
   />
   <TableCell
     key="validate"
-    style={
-      Object {
-        "maxWidth": 40,
-      }
-    }
   />
   <TableCell
     key="export"
-    style={
-      Object {
-        "maxWidth": 10,
-      }
-    }
   >
     Export
   </TableCell>

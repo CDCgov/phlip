@@ -3,13 +3,14 @@ import PropTypes from 'prop-types'
 import Dialog from 'material-ui/Dialog'
 import Form from 'components/Form'
 
-const FormModal = ({ handleSubmit, form, onClose, open, width, height, children, asyncValidate, asyncBlurFields, initialValues }) => {
+const FormModal = ({ handleSubmit, form, onClose, open, width, height, children, asyncValidate, asyncBlurFields, initialValues, validate }) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <Form onSubmit={handleSubmit}
             form={form}
             asyncValidate={asyncValidate}
             asyncBlurFields={asyncBlurFields}
+            validate={validate}
             initialValues={initialValues}
             style={{ width, height }}
       >

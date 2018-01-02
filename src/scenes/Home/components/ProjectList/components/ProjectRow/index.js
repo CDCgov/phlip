@@ -34,27 +34,27 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
           {project.lastEditedBy}
         </TableCell>
         {role !== 'Coder' &&
-          <TableCell key={`${project.id}-jurisdictions`} light>
+          <TableCell key={`${project.id}-protocol`} light>
             <TextLink to="/">Add/Edit</TextLink>
           </TableCell>
         }
-        <TableCell key={`${project.id}-protocol`} light>
-          <TextLink to="/">Add/Edit</TextLink>
+        <TableCell key={`${project.id}-jurisdictions`} light>
+          <TextLink to={`/project/${project.id}/jurisdictions`} id={project.id}>Add/Edit</TextLink>
         </TableCell>
         {role !== 'Coder' &&
         <TableCell key={`${project.id}-codingScheme`} light>
           <TextLink to="/">Edit</TextLink>
         </TableCell>
         }
-        <TableCell key={`${project.id}-code`} style={{ maxWidth: 40 }}>
+        <TableCell key={`${project.id}-code`}>
           <Button raised={false} value="Code" listButton />
         </TableCell>
         {role !== 'Coder' &&
-        <TableCell key={`${project.id}-validation`} style={{ maxWidth: 40 }}>
+        <TableCell key={`${project.id}-validation`}>
           <Button raised={false} value="Validate" listButton />
         </TableCell>
         }
-        <TableCell key={`${project.id}-export`} style={{ maxWidth: 10 }}>
+        <TableCell key={`${project.id}-export`}>
           <IconButton color={greyIcon} onClick={() => actions.onExport}>file_download</IconButton>
         </TableCell>
       </TableRow>

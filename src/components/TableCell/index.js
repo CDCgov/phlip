@@ -4,7 +4,6 @@ import { TableCell as MuiTableCell } from 'material-ui/Table'
 
 const baseStyle = {
   fontWeight: 'normal',
-  maxWidth: 30,
   textAlign: 'center'
 }
 

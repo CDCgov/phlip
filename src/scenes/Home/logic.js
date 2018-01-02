@@ -1,6 +1,8 @@
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 import addEditProjectLogic from './scenes/AddEditProject/logic'
+import addEditJurisdictions from './scenes/AddEditJurisdictions/logic'
+import mockJurisdictions from 'data/mockJurisdictions'
 
 export const getProjectLogic = createLogic({
   type: types.GET_PROJECTS_REQUEST,
@@ -13,7 +15,7 @@ export const getProjectLogic = createLogic({
   async process({ api, getState }) {
     const projects = await api.getProjects()
     return {
-      projects,
+      projects: projects,
       bookmarkList: [...getState().data.user.currentUser.bookmarks],
       error: false, errorContent: '', searchValue: ''
     }
@@ -50,8 +52,23 @@ export const toggleBookmarkLogic = createLogic({
   }
 })
 
+export const updateFieldsLogic = createLogic({
+  type: types.UPDATE_EDITED_FIELDS,
+  transform({ action, getState }, next) {
+    const currentUser = getState().data.user.currentUser
+    const user = `${currentUser.firstName} ${currentUser.lastName}`
+    next({
+      ...action,
+      user,
+      id: action.id
+    })
+  }
+})
+
 export default [
   getProjectLogic,
   toggleBookmarkLogic,
-  ...addEditProjectLogic
+  updateFieldsLogic,
+  ...addEditProjectLogic,
+  ...addEditJurisdictions
 ]

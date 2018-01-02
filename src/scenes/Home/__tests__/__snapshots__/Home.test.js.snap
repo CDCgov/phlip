@@ -11,6 +11,11 @@ exports[`Home scene should render correctly 1`] = `
   />
   <WithStyles />
   <SearchBar
+    containerStyles={
+      Object {
+        "padding": "27px 0",
+      }
+    }
     handleSearchValueChange={[Function]}
     height={57}
     searchValue=""
@@ -44,6 +49,10 @@ exports[`Home scene should render correctly 1`] = `
   <Route
     component={[Function]}
     path="/project/edit/:id"
+  />
+  <Route
+    component={[Function]}
+    path="/project/:id/jurisdictions"
   />
 </Container>
 `;

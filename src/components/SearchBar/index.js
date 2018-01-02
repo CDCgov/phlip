@@ -4,7 +4,7 @@ import Container, { Column, Row } from 'components/Layout'
 import Icon from 'components/Icon'
 import TextField from 'material-ui/TextField'
 
-const SearchBar = ({ searchValue, handleSearchValueChange, height }) => {
+const SearchBar = ({ searchValue, handleSearchValueChange, containerStyles, height }) => {
   const styles = {
     backgroundColor: '#e5e5e5',
     padding: '0 15px',
@@ -12,7 +12,7 @@ const SearchBar = ({ searchValue, handleSearchValueChange, height }) => {
   }
 
   return (
-    <Container style={{ padding: '27px 0' }}>
+    <Container style={containerStyles}>
       <Container alignItems="center" style={styles}>
         <Column flex xs>
           <TextField

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { login, getToken, logout } from '../authToken'
-import { updateById } from 'utils'
+import mockJurisdictions, { allJurisdictions } from 'data/mockJurisdictions'
 
 export const api = axios.create({
   baseURL: '/api'
@@ -48,6 +48,46 @@ export default {
 
   removeUserBookmark(userId, projectId) {
     return api.delete(`/users/${userId}/projectbookmarks/${projectId}`).then(res => res.data)
+  },
+
+  searchJurisdictionList(searchString) {
+    /*return api.get('/jurisdiction', {
+      params: {
+        name: searchString
+      }
+    }).then(res => res.data)*/
+    return getMatchingJurisdictions(searchString)
+  },
+
+  getProjectJurisdictions(projectId) {
+    //return api.get(`/projects/${projectId}/jurisdiction`).then(res => res.data)
+    return mockJurisdictions
+  },
+
+  addJurisdictionToProject(projectId, jurisdiction) {
+    //return api.post(`/projects/${projectId}/jurisdiction`, jurisdiction).then(res => res.data)
+    return { ...jurisdiction, id: Math.random() }
+  },
+
+  updateJurisdictionInProject(projectId, jurisdiction) {
+    return jurisdiction
+    //return api.put(`/projects/${projectId}/jurisdiction/${jurisdiction.id}`, jurisdiction).then(res => res.data)
   }
+}
+
+const getMatchingJurisdictions = value => {
+  const escapedValue = escapeRegexCharacters(value.trim());
+
+  if (escapedValue === '') {
+    return [];
+  }
+
+  const regex = new RegExp('^' + escapedValue, 'i');
+
+  return allJurisdictions.filter(jurisdiction => regex.test(jurisdiction));
+}
+
+const escapeRegexCharacters = str => {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 

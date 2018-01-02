@@ -10,9 +10,9 @@ const styles = {
   }
 }
 
-const TextInput = ({ name, label, type, input, disabled, classes, meta: { asyncValidating, touched, error, warning }, ...custom}) => {
+const TextInput = ({ name, label, type, input, disabled, classes, meta: { asyncValidating, active, touched, error, warning }, ...custom}) => {
   return (
-    <FormControl error={Boolean(touched && (error || warning))} fullWidth disabled={disabled}>
+    <FormControl error={Boolean(touched && error && !active || warning)} fullWidth disabled={disabled}>
       <InputLabel htmlFor={name} shrink>{label}</InputLabel>
       <Input
         id={name}
@@ -23,7 +23,7 @@ const TextInput = ({ name, label, type, input, disabled, classes, meta: { asyncV
           disabled: classes.disabled
         }}
       />
-      {touched && error && <FormHelperText>{error}</FormHelperText>}
+      {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
     </FormControl>
   )
 }
@@ -34,6 +34,10 @@ TextInput.propTypes = {
   type: PropTypes.string,
   input: PropTypes.any,
   meta: PropTypes.object
+}
+
+TextInput.defaultProps = {
+  meta: {}
 }
 
 export default withStyles(styles)(TextInput)
