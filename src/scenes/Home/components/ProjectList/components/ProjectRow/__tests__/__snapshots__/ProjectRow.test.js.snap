@@ -29,13 +29,13 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <withTheme(TextLink)
+    <WithTheme
       to={
         Object {
           "pathname": "/project/edit/1",
           "state": Object {
             "projectDefined": Object {
-              "dateLastEdited": 2017-10-11T04:00:00.000Z,
+              "dateLastEdited": 2017-10-11T00:00:00.000Z,
               "id": 1,
               "lastEditedBy": "Kristin",
               "name": "Project 1",
@@ -45,7 +45,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     >
       Project 1
-    </withTheme(TextLink)>
+    </WithTheme>
   </TableCell>
   <TableCell
     key="1-dateLastEdited"
@@ -80,31 +80,31 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     key="1-jurisdictions"
     light={true}
   >
-    <withTheme(TextLink)
+    <WithTheme
       to="/"
     >
       Add/Edit
-    </withTheme(TextLink)>
+    </WithTheme>
   </TableCell>
   <TableCell
     key="1-protocol"
     light={true}
   >
-    <withTheme(TextLink)
+    <WithTheme
       to="/"
     >
       Add/Edit
-    </withTheme(TextLink)>
+    </WithTheme>
   </TableCell>
   <TableCell
     key="1-codingScheme"
     light={true}
   >
-    <withTheme(TextLink)
+    <WithTheme
       to="/"
     >
       Edit
-    </withTheme(TextLink)>
+    </WithTheme>
   </TableCell>
   <TableCell
     key="1-code"
@@ -114,7 +114,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <withTheme(Button)
+    <WithTheme
       listButton={true}
       raised={false}
       value="Code"
@@ -128,7 +128,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <withTheme(Button)
+    <WithTheme
       listButton={true}
       raised={false}
       value="Validate"
