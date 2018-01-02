@@ -44,6 +44,8 @@ const renderSuggestionsContainer = (options) => {
   )
 }
 
+const shouldRenderSuggestions = value => value.trim().length >= 2
+
 export const Autocomplete = props => {
   const {
     suggestions,
@@ -81,6 +83,7 @@ export const Autocomplete = props => {
         ...input,
         ...inputProps
       }}
+      shouldRenderSuggestions={shouldRenderSuggestions}
       onSuggestionSelected={handleSuggestionSelected}
       renderSuggestion={renderSuggestion}
       getSuggestionValue={getSuggestionValue}
