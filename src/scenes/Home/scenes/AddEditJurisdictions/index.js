@@ -70,14 +70,26 @@ export class AddEditJurisdictions extends Component {
     this.props.actions.clearJurisdictions()
   }
 
+  throwErrors = (values, out) => {
+    if (out.length === 0) {
+      throw { name: 'You must choose a pre-defined jurisdiction name.' }
+    } else if (this.props.jurisdictions.includes(values.name)) {
+      throw { name: 'This jurisdiction is already included in this project.' }
+    } else if (out.length > 1) {
+      throw { name: 'There are multiple jurisdictions that match this string. Please choose one from the list.'}
+    }
+  }
+
   validateJurisdiction = values => {
     const prom = new Promise(resolve => resolve(api.searchJurisdictionList(values.name)))
     return prom.then(out => {
-      if (!this.props.jurisdiction) {
-        if (out.length === 0) {
-          throw { name: 'You must choose a pre-defined jurisdiction name.' }
-        } else if (this.props.jurisdictions.includes(values.name)) {
-          throw { name: 'This jurisdiction is already included in this project.' }
+      if (!this.state.edit) {
+        if (!this.props.jurisdiction) {
+          this.throwErrors(values, out)
+        } else if (this.props.jurisdiction && this.props.jurisdiction !== values.name) {
+          this.throwErrors(values, out)
+        } else {
+          this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
         }
       }
     })

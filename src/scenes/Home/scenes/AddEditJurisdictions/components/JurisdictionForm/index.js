@@ -73,7 +73,7 @@ export const JurisdictionForm = props => {
       form="jurisdictionForm"
       handleSubmit={onHandleSubmit}
       initialValues={edit ? jurisdiction : {}}
-      asyncValidate={asyncValidate}
+      asyncValidate={edit ? null : asyncValidate}
       asyncBlurFields={['name']}
       width="600px" height="400px"
       validate={validateDateRanges}
