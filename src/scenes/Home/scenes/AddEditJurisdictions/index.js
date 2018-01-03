@@ -14,6 +14,7 @@ import * as actions from './actions'
 import JurisdictionForm from './components/JurisdictionForm'
 import moment from 'moment'
 import api from 'services/api'
+import { normalize } from 'utils'
 
 export class AddEditJurisdictions extends Component {
   constructor (props, context) {
@@ -75,6 +76,8 @@ export class AddEditJurisdictions extends Component {
       if (!this.props.jurisdiction) {
         if (out.length === 0) {
           throw { name: 'You must choose a pre-defined jurisdiction name.' }
+        } else if (this.props.jurisdictions.includes(values.name)) {
+          throw { name: 'This jurisdiction is already included in this project.' }
         }
       }
     })
@@ -145,7 +148,8 @@ const mapStateToProps = (state, ownProps) => ({
   searchValue: state.scenes.home.addEditJurisdictions.searchValue || '',
   suggestions: state.scenes.home.addEditJurisdictions.suggestions || [],
   suggestionValue: state.scenes.home.addEditJurisdictions.suggestionValue || '',
-  jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || ''
+  jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || '',
+  jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') || []
 })
 
 const mapDispatchToProps = (dispatch) => ({
