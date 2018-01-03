@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from './actions'
+import { default as formActions }  from 'redux-form/lib/actions'
 import { withRouter } from 'react-router'
 import { ModalTitle, ModalActions, ModalContent } from 'components/Modal'
 import Divider from 'material-ui/Divider'
@@ -29,11 +30,14 @@ export class AddEditProject extends Component {
     }
   }
 
-  onCancel = () => this.state.edit
-    ? this.projectDefined
+  onCancel = () => {
+    this.props.formActions.reset('projectForm')
+    return this.state.edit
+      ? this.projectDefined
       ? this.setState({ edit: !this.state.edit })
       : this.props.history.goBack()
-    : this.props.history.goBack()
+      : this.props.history.goBack()
+  }
 
   handleSubmit = values => {
     this.projectDefined
@@ -157,6 +161,9 @@ const mapStateToProps = (state) => ({
   form: state.form.projectForm || {}
 })
 
-const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(actions, dispatch),
+  formActions: bindActionCreators(formActions, dispatch)
+})
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEditProject))
