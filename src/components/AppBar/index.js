@@ -3,7 +3,7 @@ import { default as MuiAppBar } from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
 
 export const AppBar = ({ children, ...otherProps }) => (
-  <MuiAppBar position="static" color="default">
+  <MuiAppBar position="static" color="inherit">
     <Toolbar {...otherProps} >
       {children}
     </Toolbar>

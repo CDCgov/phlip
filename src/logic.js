@@ -1,8 +1,6 @@
 import { createLogic } from 'redux-logic'
-import projectLogic from 'scenes/Home/logic'
-import userLogic from 'scenes/Admin/logic'
-import loginLogic from 'scenes/Login/logic'
 import * as types from 'data/user/actionTypes'
+import scenesLogic from 'scenes/logic'
 
 const logoutLogic = createLogic({
   type: types.LOGOUT_USER,
@@ -17,8 +15,6 @@ const logoutLogic = createLogic({
 })
 
 export default [
-  ...projectLogic,
-  ...userLogic,
-  ...loginLogic,
+  ...scenesLogic,
   logoutLogic
 ]

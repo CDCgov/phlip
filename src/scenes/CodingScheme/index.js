@@ -11,6 +11,10 @@ export class CodingScheme extends Component {
     super(props, context)
   }
 
+  componentWillMount() {
+    this.props.actions.getSchemeRequest(this.props.projectId)
+  }
+
   render () {
     return (
       <Container column flex>
