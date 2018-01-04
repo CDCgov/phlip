@@ -7,7 +7,7 @@ exports[`Admin Scene it should render correctly 1`] = `
   spacing={0}
 >
   <PageHeader />
-  <WithStyles />
+  <withStyles(Divider) />
   <UserList
     count={6}
     direction="asc"

@@ -14,7 +14,7 @@ const mainStyles = {
 }
 
 
-export const AuthenticatedLayout = ({ user, open, actions, menuAnchor, children, history }) => {
+export const HeaderedLayout = ({ user, open, actions, menuAnchor, children, history }) => {
   return (
     <Grid container spacing={0} direction="column" style={{ flex: '1' }}>
       <Header
@@ -32,7 +32,7 @@ export const AuthenticatedLayout = ({ user, open, actions, menuAnchor, children,
   )
 }
 
-AuthenticatedLayout.propTypes = {
+HeaderedLayout.propTypes = {
   user: PropTypes.object,
   open: PropTypes.bool,
   actions: PropTypes.object,
@@ -48,4 +48,4 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AuthenticatedLayout))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(HeaderedLayout))

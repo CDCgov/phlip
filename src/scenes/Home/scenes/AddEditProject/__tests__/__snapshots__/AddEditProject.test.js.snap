@@ -24,7 +24,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
     onEditForm={[Function]}
     title="Create New Project"
   />
-  <WithStyles />
+  <withStyles(Divider) />
   <ModalContent>
     <Container
       column={true}

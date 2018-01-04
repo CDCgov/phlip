@@ -14,7 +14,7 @@ exports[`Admin scene - PageHeader component should render correctly 1`] = `
 >
   <Column
     component={
-      <WithStyles
+      <withStyles(GridWrapper)
         item={true}
       />
     }
@@ -29,49 +29,49 @@ exports[`Admin scene - PageHeader component should render correctly 1`] = `
     >
       <Column
         component={
-          <WithStyles
+          <withStyles(GridWrapper)
             item={true}
           />
         }
         displayFlex={false}
         flex={false}
       >
-        <WithTheme
+        <withTheme(CircleIcon)
           circleColor="error"
           circleSize="35px"
           iconColor="white"
           iconSize="24px"
         >
           face
-        </WithTheme>
+        </withTheme(CircleIcon)>
       </Column>
       <Column
         component={
-          <WithStyles
+          <withStyles(GridWrapper)
             item={true}
           />
         }
         displayFlex={false}
         flex={false}
       >
-        <WithStyles
+        <withStyles(Typography)
           type="headline"
         >
           User Management
-        </WithStyles>
+        </withStyles(Typography)>
       </Column>
     </Container>
   </Column>
   <Column
     component={
-      <WithStyles
+      <withStyles(GridWrapper)
         item={true}
       />
     }
     displayFlex={false}
     flex={false}
   >
-    <WithTheme
+    <withTheme(TextLink)
       style={
         Object {
           "color": "white",
@@ -79,11 +79,11 @@ exports[`Admin scene - PageHeader component should render correctly 1`] = `
       }
       to="/admin/new/user"
     >
-      <WithTheme
+      <withTheme(Button)
         color="accent"
         value=" + Add new user"
       />
-    </WithTheme>
+    </withTheme(TextLink)>
   </Column>
 </Container>
 `;
