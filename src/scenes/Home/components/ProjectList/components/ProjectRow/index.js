@@ -43,7 +43,7 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
       </TableCell>
       {role !== 'Coder' &&
         <TableCell key={`${project.id}-codingScheme`} light>
-          <TextLink to={'/codingscheme'}>Edit</TextLink>
+          <TextLink to={`/project/${project.id}/coding-scheme`}>Edit</TextLink>
         </TableCell>
       }
       <TableCell key={`${project.id}-code`}>
