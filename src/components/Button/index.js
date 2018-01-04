@@ -3,11 +3,11 @@ import PropTypes from 'prop-types'
 import { default as MuiButton } from 'material-ui/Button'
 import { withTheme } from 'material-ui/styles'
 
-const Button = ({ value, color, onClick, raised, theme, listButton, ...otherProps }) => {
+const Button = ({ value, color, onClick, closeButton, raised, theme, listButton, ...otherProps }) => {
   const style = {
     color: raised || listButton ? 'white' : color || '',
     fontWeight: 'lighter',
-    backgroundColor: raised ? '' : listButton ? theme.buttons.listButtons : ''
+    backgroundColor: raised ? closeButton ? theme.buttons.closeButton : '' : listButton ? theme.buttons.listButtons : ''
   }
   return (
     <MuiButton raised={raised} color={color} onClick={onClick} style={style} {...otherProps}>{value}</MuiButton>
@@ -28,7 +28,7 @@ Button.defaultProps = {
   raised: true,
   color: 'primary',
   listButton: false,
-  disabled: false,
+  disabled: false
 }
 
 export default withTheme()(Button)
