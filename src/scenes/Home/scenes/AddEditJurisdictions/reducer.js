@@ -7,7 +7,7 @@ const INITIAL_STATE = {
   searchValue: '',
   suggestions: [],
   suggestionValue: '',
-  jurisdiction: ''
+  jurisdiction: {}
 }
 
 const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
@@ -65,7 +65,7 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         suggestions: action.payload.filter(jurisdiction => {
-          return !normalize.mapArray(Object.values(state.jurisdictions.byId), 'name').includes(jurisdiction)
+          return !normalize.mapArray(Object.values(state.jurisdictions.byId), 'name').includes(jurisdiction.name)
         })
       }
 
@@ -79,7 +79,7 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         jurisdiction: action.jurisdiction,
-        suggestionValue: action.jurisdiction
+        suggestionValue: action.jurisdiction.name
       }
 
     case types.CLEAR_JURISDICTIONS:
@@ -87,7 +87,7 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         ...state,
         suggestionValue: '',
         suggestions: [],
-        jurisdiction: ''
+        jurisdiction: {}
       }
 
     case types.SEARCH_JURISDICTION_LIST:

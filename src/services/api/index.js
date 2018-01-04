@@ -65,8 +65,9 @@ export default {
   },
 
   addJurisdictionToProject(projectId, jurisdiction) {
-    //return api.post(`/projects/${projectId}/jurisdiction`, jurisdiction).then(res => res.data)
-    return { ...jurisdiction, id: Math.random() }
+    console.log(jurisdiction)
+    //return api.post(`/projects/${projectId}/jurisdiction/${jurisdiction.id}`, jurisdiction).then(res => res.data)
+    return jurisdiction
   },
 
   updateJurisdictionInProject(projectId, jurisdiction) {
@@ -84,7 +85,7 @@ const getMatchingJurisdictions = value => {
 
   const regex = new RegExp('^' + escapedValue, 'i');
 
-  return allJurisdictions.filter(jurisdiction => regex.test(jurisdiction));
+  return allJurisdictions.filter(jurisdiction => regex.test(jurisdiction.name));
 }
 
 const escapeRegexCharacters = str => {
