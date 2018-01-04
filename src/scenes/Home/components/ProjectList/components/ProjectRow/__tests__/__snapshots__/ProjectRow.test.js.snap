@@ -102,7 +102,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     light={true}
   >
     <WithTheme
-      to="/"
+      to="/codingscheme"
     >
       Edit
     </WithTheme>

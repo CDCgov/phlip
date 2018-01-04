@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AuthenticatedLayout it should render correctly 1`] = `
+exports[`HeaderedLayout it should render correctly 1`] = `
 <WithStyles
   container={true}
   direction="column"

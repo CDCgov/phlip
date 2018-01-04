@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow, mount } from 'enzyme'
-import { AuthenticatedLayout } from '../index'
+import { HeaderedLayout } from '../index'
 
 const props = {
   actions: {
@@ -12,8 +12,8 @@ const props = {
   menuAnchor: null
 }
 
-describe('AuthenticatedLayout', () => {
+describe('HeaderedLayout', () => {
   test('it should render correctly', () => {
-    expect(shallow(<AuthenticatedLayout {...props} />)).toMatchSnapshot()
+    expect(shallow(<HeaderedLayout {...props} />)).toMatchSnapshot()
   })
 })
