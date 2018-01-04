@@ -29,13 +29,13 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
       }
     }
   >
-    <withStyles(TableSortLabel)
+    <WithStyles
       active={false}
       direction="desc"
       onClick={[Function]}
     >
       Name
-    </withStyles(TableSortLabel)>
+    </WithStyles>
   </TableCell>
   <TableCell
     key="dateLastEdited"
@@ -47,13 +47,13 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
       }
     }
   >
-    <withStyles(TableSortLabel)
+    <WithStyles
       active={true}
       direction="desc"
       onClick={[Function]}
     >
       Date Last Edited
-    </withStyles(TableSortLabel)>
+    </WithStyles>
   </TableCell>
   <TableCell
     key="lastEditedBy"
@@ -65,13 +65,13 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
       }
     }
   >
-    <withStyles(TableSortLabel)
+    <WithStyles
       active={false}
       direction="desc"
       onClick={[Function]}
     >
       Last Edited By
-    </withStyles(TableSortLabel)>
+    </WithStyles>
   </TableCell>
   <TableCell
     key="protocol"

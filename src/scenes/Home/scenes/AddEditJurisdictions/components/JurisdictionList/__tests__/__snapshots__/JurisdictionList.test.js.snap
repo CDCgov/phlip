@@ -2,32 +2,32 @@
 
 exports[`Home scene - AddEditJurisdictions - JurisdictionList should render correctly 1`] = `
 <Table>
-  <withStyles(TableHead)>
-    <withStyles(TableRow)
+  <WithStyles>
+    <WithStyles
       key="jurisdiction-header"
     >
-      <withStyles(TableCell)
+      <WithStyles
         key="segment-name"
       >
         Segments
-      </withStyles(TableCell)>
-      <withStyles(TableCell)
+      </WithStyles>
+      <WithStyles
         key="segment-start"
       >
         Segment Start Date
-      </withStyles(TableCell)>
-      <withStyles(TableCell)
+      </WithStyles>
+      <WithStyles
         key="segment-end"
       >
         Segment End Date
-      </withStyles(TableCell)>
-      <withStyles(TableCell)
+      </WithStyles>
+      <WithStyles
         key="segment-edit"
       >
         Edit
-      </withStyles(TableCell)>
-    </withStyles(TableRow)>
-  </withStyles(TableHead)>
-  <withStyles(TableBody) />
+      </WithStyles>
+    </WithStyles>
+  </WithStyles>
+  <WithStyles />
 </Table>
 `;
