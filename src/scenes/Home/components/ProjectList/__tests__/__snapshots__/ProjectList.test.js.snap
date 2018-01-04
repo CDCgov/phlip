@@ -2,7 +2,7 @@
 
 exports[`Home scene - ProjectList component should render correctly 1`] = `
 <Container
-  column={false}
+  column={true}
   flex={true}
   spacing={0}
 >
@@ -16,6 +16,28 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
       }
     }
   >
+    <Container
+      column={false}
+      flex={false}
+      spacing={0}
+      style={
+        Object {
+          "justifyContent": "flex-end",
+          "padding": 20,
+        }
+      }
+    >
+      <SearchBar
+        containerStyles={
+          Object {
+            "justifyContent": "flex-end",
+            "padding": 20,
+          }
+        }
+        height={57}
+        placeholder="Search projects"
+      />
+    </Container>
     <Table
       style={
         Object {

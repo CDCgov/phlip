@@ -8,18 +8,18 @@ import Container, { Column } from 'components/Layout'
 
 export const PageHeader = () => {
   return (
-    <Container alignItems="center" style={{ height: '100px' }}>
+    <Container alignItems="center" style={{ height: '75px' }}>
       <Column flex>
         <Container spacing={8} alignItems="center">
           <Column>
-            <CircleIcon circleColor="error" iconColor="white" circleSize="35px" iconSize="24px">face</CircleIcon>
+            <CircleIcon circleColor="error" iconColor="white" circleSize="30px" iconSize="19px">face</CircleIcon>
           </Column>
           <Column>
-            <Typography type="headline">User Management</Typography>
+            <Typography type="title">User Management</Typography>
           </Column>
         </Container>
       </Column>
-      <Column >
+      <Column>
         <TextLink to="/admin/new/user" style={{ color: 'white' }}>
           <Button value=" + Add new user" color="accent" />
         </TextLink>

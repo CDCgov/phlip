@@ -8,20 +8,20 @@ import Container, { Column } from 'components/Layout'
 
 export const PageHeader = ({ role }) => {
   return (
-    <Container alignItems="center" style={{ height: '100px' }}>
+    <Container alignItems="center" style={{ height: '75px' }}>
       <Column flex>
         <Container alignItems="center" spacing={8}>
           <Column>
-            <CircleIcon circleColor="error" iconColor="white" circleSize="35px" iconSize="24px">home</CircleIcon>
+            <CircleIcon circleColor="error" iconColor="white" circleSize="30px" iconSize="19px">home</CircleIcon>
           </Column>
           <Column>
-            <Typography type="headline">Project List</Typography>
+            <Typography type="title">Project List</Typography>
           </Column>
         </Container>
       </Column>
       <Column>
         {role !== 'Coder' &&
-        <TextLink to={{ pathname: '/project/add', state: { userDefined: null }}} style={{ color: 'white' }}>
+        <TextLink to={{ pathname: '/project/add', state: { userDefined: null } }} style={{ color: 'white' }}>
           <Button value=" + Create new project" color="accent" />
         </TextLink>
         }

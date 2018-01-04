@@ -8,7 +8,7 @@ exports[`Home scene - PageHeader component should render correctly 1`] = `
   spacing={0}
   style={
     Object {
-      "height": "100px",
+      "height": "75px",
     }
   }
 >
@@ -38,9 +38,9 @@ exports[`Home scene - PageHeader component should render correctly 1`] = `
       >
         <WithTheme
           circleColor="error"
-          circleSize="35px"
+          circleSize="30px"
           iconColor="white"
-          iconSize="24px"
+          iconSize="19px"
         >
           home
         </WithTheme>
@@ -55,7 +55,7 @@ exports[`Home scene - PageHeader component should render correctly 1`] = `
         flex={false}
       >
         <WithStyles
-          type="headline"
+          type="title"
         >
           Project List
         </WithStyles>

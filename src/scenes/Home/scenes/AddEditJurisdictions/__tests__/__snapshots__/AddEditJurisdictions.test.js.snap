@@ -8,6 +8,13 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
   open={true}
 >
   <ModalTitle
+    SearchBarProps={
+      Object {
+        "handleSearchValueChange": [Function],
+        "placeholder": "Search jurisdictions",
+        "searchValue": undefined,
+      }
+    }
     buttons={
       <WithTheme
         color="accent"
@@ -19,6 +26,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
     edit={false}
     editButton={false}
     onCloseForm={[Function]}
+    search={true}
     title="Jurisdictions"
   />
   <ModalContent
@@ -29,16 +37,6 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       }
     }
   >
-    <Container
-      column={false}
-      flex={false}
-      spacing={0}
-    >
-      <SearchBar
-        handleSearchValueChange={[Function]}
-        height={57}
-      />
-    </Container>
     <Container
       column={false}
       flex={true}

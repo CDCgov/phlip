@@ -9,7 +9,7 @@ import TextLink from 'components/TextLink'
 export const AvatarMenu = ({ role, initials, menuAnchor, open, onCloseMenu, onLogoutUser, onOpenMenu }) => {
   return (
     <Grid item>
-      <Avatar big onClick={onOpenMenu} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />
+      <Avatar onClick={onOpenMenu} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />
       <Menu
         id="avatar-menu"
         onClose={onCloseMenu}

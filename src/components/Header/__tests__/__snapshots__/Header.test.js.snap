@@ -8,7 +8,7 @@ exports[`Header should render correctly 1`] = `
   style={
     Object {
       "backgroundColor": "#4aac72",
-      "height": "100px",
+      "height": "55px",
       "padding": "0 30px",
     }
   }

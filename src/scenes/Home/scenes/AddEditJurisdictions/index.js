@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { default as formActions }  from 'redux-form/lib/actions'
+import { default as formActions } from 'redux-form/lib/actions'
 import { withRouter } from 'react-router'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import SearchBar from 'components/SearchBar'
@@ -76,7 +76,7 @@ export class AddEditJurisdictions extends Component {
     } else if (this.props.jurisdictions.includes(values.name)) {
       throw { name: 'This jurisdiction is already included in this project.' }
     } else if (out.length > 1) {
-      throw { name: 'There are multiple jurisdictions that match this string. Please choose one from the list.'}
+      throw { name: 'There are multiple jurisdictions that match this string. Please choose one from the list.' }
     }
   }
 
@@ -116,14 +116,20 @@ export class AddEditJurisdictions extends Component {
   render () {
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="md" hideOverflow>
-        <ModalTitle title="Jurisdictions" buttons={this.getButton()} editButton={false} closeButton={false} onCloseForm={this.onCloseModal} />
+        <ModalTitle
+          title="Jurisdictions"
+          buttons={this.getButton()}
+          editButton={false}
+          closeButton={false}
+          onCloseForm={this.onCloseModal}
+          search
+          SearchBarProps={{
+            searchValue: this.props.searchValue,
+            handleSearchValueChange: (event) => this.props.actions.updateSearchValue(event.target.value),
+            placeholder: 'Search jurisdictions'
+          }}
+        />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
-          <Container>
-            <SearchBar
-              searchValue={this.props.searchValue}
-              handleSearchValueChange={event => this.props.actions.updateSearchValue(event.target.value)}
-            />
-          </Container>
           <Container flex style={{ marginTop: 20 }}>
             <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card />}>
               <JurisdictionList jurisdictions={this.props.visibleJurisdictions} onOpenForm={this.onOpenForm} />
@@ -161,7 +167,8 @@ const mapStateToProps = (state, ownProps) => ({
   suggestions: state.scenes.home.addEditJurisdictions.suggestions || [],
   suggestionValue: state.scenes.home.addEditJurisdictions.suggestionValue || '',
   jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || '',
-  jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') || []
+  jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') ||
+  []
 })
 
 const mapDispatchToProps = (dispatch) => ({

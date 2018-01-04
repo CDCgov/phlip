@@ -5,7 +5,7 @@ exports[`Header -- AvatarMenu should render correctly 1`] = `
   item={true}
 >
   <Avatar
-    big={true}
+    big={false}
     initials="TU"
     onClick={[Function]}
     style={

@@ -14,7 +14,7 @@ const columns = [
   { key: 'codingScheme', label: 'Coding Scheme', hasSort: false },
   { key: 'code', label: '', hasSort: false },
   { key: 'validate', label: '', hasSort: false },
-  { key: 'export', label: 'Export', hasSort: false }
+  { key: 'export', label: '', hasSort: false }
 ]
 
 const hiddenCols = [
@@ -34,7 +34,7 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
       </TableCell>
 
       {visible.map(c => (
-        <TableCell key={c.key} style={c.style}>
+        <TableCell key={c.key} style={{ ...c.style, color: 'black' }}>
           {c.hasSort ? (
             <TableSortLabel active={sortBy === c.key} direction={direction} onClick={() => onRequestSort(c.key)}>
               {c.label}

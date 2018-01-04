@@ -9,7 +9,6 @@ import CardError from 'components/CardError'
 import Container from 'components/Layout'
 import PageHeader from './components/PageHeader'
 import ProjectList from './components/ProjectList'
-import SearchBar from 'components/SearchBar'
 import AddEditProject from './scenes/AddEditProject'
 import * as actions from './actions'
 import AddEditJurisdictions from './scenes/AddEditJurisdictions'
@@ -47,11 +46,6 @@ export class Home extends Component {
       <Container column flex>
         <PageHeader role={this.props.user.role} />
         <Divider />
-        <SearchBar
-          searchValue={this.props.searchValue}
-          handleSearchValueChange={event => this.props.actions.updateSearchValue(event.target.value)}
-          containerStyles={{ padding: '27px 0' }}
-        />
         {this.props.error
           ? this.renderErrorMessage()
           : <ProjectList
@@ -63,6 +57,8 @@ export class Home extends Component {
             sortBy={this.props.sortBy}
             direction={this.props.direction}
             sortBookmarked={this.props.sortBookmarked}
+            searchValue={this.props.searchValue}
+            handleSearchValueChange={event => this.props.actions.updateSearchValue(event.target.value)}
             handleRequestSort={this.props.actions.sortProjects}
             handlePageChange={this.props.actions.updatePage}
             handleRowsChange={this.props.actions.updateRows}

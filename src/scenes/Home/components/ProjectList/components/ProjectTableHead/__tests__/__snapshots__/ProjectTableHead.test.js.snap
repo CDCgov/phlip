@@ -24,6 +24,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     key="name"
     style={
       Object {
+        "color": "black",
         "maxWidth": "unset",
         "textAlign": "left",
       }
@@ -41,6 +42,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     key="dateLastEdited"
     style={
       Object {
+        "color": "black",
         "maxWidth": 150,
         "textAlign": "unset",
         "width": 150,
@@ -59,6 +61,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     key="lastEditedBy"
     style={
       Object {
+        "color": "black",
         "maxWidth": 150,
         "textAlign": "unset",
         "width": 150,
@@ -75,29 +78,57 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   </TableCell>
   <TableCell
     key="protocol"
+    style={
+      Object {
+        "color": "black",
+      }
+    }
   >
     Protocol
   </TableCell>
   <TableCell
     key="jurisdictions"
+    style={
+      Object {
+        "color": "black",
+      }
+    }
   >
     Jurisdictions
   </TableCell>
   <TableCell
     key="codingScheme"
+    style={
+      Object {
+        "color": "black",
+      }
+    }
   >
     Coding Scheme
   </TableCell>
   <TableCell
     key="code"
+    style={
+      Object {
+        "color": "black",
+      }
+    }
   />
   <TableCell
     key="validate"
+    style={
+      Object {
+        "color": "black",
+      }
+    }
   />
   <TableCell
     key="export"
-  >
-    Export
-  </TableCell>
+    style={
+      Object {
+        "color": "black",
+      }
+    }
+  />
 </TableRow>
 `;

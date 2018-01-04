@@ -11,7 +11,7 @@ export const Header = ({ theme, user, open, menuAnchor, handleLogoutUser, handle
   const bgColor = theme.palette.primary['600']
 
   const styles = {
-    height: '100px',
+    height: '55px',
     backgroundColor: bgColor,
     padding: '0 30px'
   }

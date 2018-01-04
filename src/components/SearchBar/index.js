@@ -3,37 +3,32 @@ import PropTypes from 'prop-types'
 import Container, { Column, Row } from 'components/Layout'
 import Icon from 'components/Icon'
 import TextField from 'material-ui/TextField'
+import { InputAdornment } from 'material-ui/Input'
 
-const SearchBar = ({ searchValue, handleSearchValueChange, containerStyles, height }) => {
+const SearchBar = ({ searchValue, handleSearchValueChange, containerStyles, placeholder, height }) => {
   const styles = {
     backgroundColor: '#e5e5e5',
-    padding: '0 15px',
-    height
+    padding: '2px 10px'
   }
 
   return (
-    <Container style={containerStyles}>
-      <Container alignItems="center" style={styles}>
-        <Column flex xs>
-          <TextField
-            value={searchValue}
-            onChange={handleSearchValueChange}
-            InputProps={{ disableUnderline: true }}
-            id="search-bar"
-            fullWidth
-          />
-        </Column>
-        <Column>
-          <Icon color="primary">search</Icon>
-        </Column>
-      </Container>
-    </Container>
+      <TextField
+        value={searchValue}
+        onChange={handleSearchValueChange}
+        placeholder={placeholder}
+        InputProps={{
+          //disableUnderline: true,
+          style: { 'alignItems': 'center'},
+          endAdornment: <InputAdornment style={{ marginTop: 0, height: 24 }} position="end" disableTypography><Icon color="#c6d4da">search</Icon></InputAdornment>
+        }}
+        id="search-bar"
+      />
   )
 }
 
 SearchBar.propTypes = {
   searchValue: PropTypes.string,
-  handleSearchChange: PropTypes.func,
+  handleSearchValueChange: PropTypes.func,
   height: PropTypes.number
 }
 

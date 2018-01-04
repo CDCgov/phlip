@@ -7,13 +7,22 @@ import Table from 'components/Table'
 import ProjectRow from './components/ProjectRow'
 import ProjectTableHead from './components/ProjectTableHead'
 import TablePagination from 'components/TablePagination'
+import SearchBar from 'components/SearchBar'
 
 export const ProjectList = props => {
-  const { projectIds, user, page, rowsPerPage, projectCount, sortBy, direction, sortBookmarked } = props
-  const { handlePageChange, handleRowsChange, handleRequestSort, handleSortBookmarked } = props
+  const { projectIds, user, page, rowsPerPage, projectCount, sortBy, direction, sortBookmarked, searchValue } = props
+  const { handlePageChange, handleRowsChange, handleRequestSort, handleSortBookmarked, handleSearchValueChange } = props
   return (
-    <Container flex>
-      <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card/>}>
+    <Container column flex>
+      <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card />}>
+        <Container style={{ padding: 20, justifyContent: 'flex-end' }}>
+          <SearchBar
+            searchValue={searchValue}
+            handleSearchValueChange={handleSearchValueChange}
+            placeholder="Search projects"
+            containerStyles={{ padding: 20, justifyContent: 'flex-end' }}
+          />
+        </Container>
         <Table style={{ borderCollapse: 'separate' }}>
           <TableHead>
             <ProjectTableHead
@@ -31,7 +40,7 @@ export const ProjectList = props => {
             ))}
           </TableBody>
         </Table>
-        <div style={{ display: 'flex', flex: 1, paddingBottom: '50px' }}/>
+        <div style={{ display: 'flex', flex: 1, paddingBottom: '50px' }} />
         <Table>
           <TableFooter>
             <TableRow>
@@ -49,6 +58,5 @@ export const ProjectList = props => {
     </Container>
   )
 }
-
 
 export default ProjectList
