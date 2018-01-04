@@ -3,13 +3,12 @@ import PropTypes from 'prop-types'
 import { TableCell as MuiTableCell } from 'material-ui/Table'
 
 const baseStyle = {
-  fontWeight: 'normal',
   textAlign: 'center'
 }
 
 const TableCell = ({ style, light, children, ...otherProps }) => {
   return (
-    <MuiTableCell padding="checkbox" style={{...baseStyle, ...style, fontWeight: light ? 'lighter' : 'normal' }} {...otherProps}>
+    <MuiTableCell padding="checkbox" style={{...baseStyle, ...style }} {...otherProps}>
       {children}
     </MuiTableCell>
   )

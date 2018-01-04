@@ -24,7 +24,6 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     key="name"
     style={
       Object {
-        "color": "black",
         "maxWidth": "unset",
         "textAlign": "left",
       }
@@ -34,6 +33,11 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
       active={false}
       direction="desc"
       onClick={[Function]}
+      style={
+        Object {
+          "color": "inherit",
+        }
+      }
     >
       Name
     </WithStyles>
@@ -42,7 +46,6 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     key="dateLastEdited"
     style={
       Object {
-        "color": "black",
         "maxWidth": 150,
         "textAlign": "unset",
         "width": 150,
@@ -53,6 +56,11 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
       active={true}
       direction="desc"
       onClick={[Function]}
+      style={
+        Object {
+          "color": "inherit",
+        }
+      }
     >
       Date Last Edited
     </WithStyles>
@@ -61,7 +69,6 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     key="lastEditedBy"
     style={
       Object {
-        "color": "black",
         "maxWidth": 150,
         "textAlign": "unset",
         "width": 150,
@@ -72,63 +79,44 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
       active={false}
       direction="desc"
       onClick={[Function]}
+      style={
+        Object {
+          "color": "inherit",
+        }
+      }
     >
       Last Edited By
     </WithStyles>
   </TableCell>
   <TableCell
     key="protocol"
-    style={
-      Object {
-        "color": "black",
-      }
-    }
+    style={Object {}}
   >
     Protocol
   </TableCell>
   <TableCell
     key="jurisdictions"
-    style={
-      Object {
-        "color": "black",
-      }
-    }
+    style={Object {}}
   >
     Jurisdictions
   </TableCell>
   <TableCell
     key="codingScheme"
-    style={
-      Object {
-        "color": "black",
-      }
-    }
+    style={Object {}}
   >
     Coding Scheme
   </TableCell>
   <TableCell
     key="code"
-    style={
-      Object {
-        "color": "black",
-      }
-    }
+    style={Object {}}
   />
   <TableCell
     key="validate"
-    style={
-      Object {
-        "color": "black",
-      }
-    }
+    style={Object {}}
   />
   <TableCell
     key="export"
-    style={
-      Object {
-        "color": "black",
-      }
-    }
+    style={Object {}}
   />
 </TableRow>
 `;

@@ -15,9 +15,9 @@ const UserTableHead = ({ onRequestSort, sortBy, direction }) => {
   return (
     <TableRow key="headers">
       {columns.map(c => (
-        <TableCell key={c.key} style={{ ...c.style, color: 'black' }}>
+        <TableCell key={c.key} style={{ ...c.style }}>
           {c.hasSort ? (
-            <TableSortLabel active={sortBy === c.key} direction={direction} onClick={onRequestSort(c.key)}>
+            <TableSortLabel active={sortBy === c.key} style={{ color: 'inherit' }}  direction={direction} onClick={onRequestSort(c.key)}>
               {c.label}
             </TableSortLabel>
           ) : c.label}

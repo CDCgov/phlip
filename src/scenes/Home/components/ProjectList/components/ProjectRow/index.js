@@ -19,16 +19,16 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
           {bookmarked ? 'bookmark' : 'bookmark_border'}
         </IconButton>
       </TableCell>
-      <TableCell key={`${project.id}-name`} style={{ textAlign: 'left', width: 350 }}>
+      <TableCell key={`${project.id}-name`} style={{ textAlign: 'left', width: 350, fontWeight: 'normal' }}>
         <TextLink to={{ pathname: `/project/edit/${project.id}`, state: { projectDefined: { ...project } } }}>{project.name}</TextLink>
       </TableCell>
       <TableCell key={`${project.id}-dateLastEdited`}
-        style={{ color: '#9a9c9c', width: 150, maxWidth: 150, textAlign: 'unset' }} light>
+        style={{ width: 150, maxWidth: 150, textAlign: 'unset' }}>
         {new Date(project.dateLastEdited).toLocaleDateString()}
       </TableCell>
       <TableCell
         key={`${project.id}-lastEditedBy`}
-        style={{ color: '#9a9c9c', fontStyle: 'italic', width: 150, maxWidth: 150, textAlign: 'unset' }}
+        style={{ fontStyle: 'italic', width: 150, maxWidth: 150, textAlign: 'unset' }}
         light
       >
         {project.lastEditedBy}
