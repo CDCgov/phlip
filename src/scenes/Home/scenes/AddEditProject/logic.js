@@ -9,22 +9,8 @@ export const addProjectLogic = createLogic({
     successType: types.ADD_PROJECT_SUCCESS,
     failType: types.ADD_PROJECT_FAIL
   },
-  async process({ action, getState, api }) {
-    const currentUser = getState().data.user.currentUser
-    const user = `${currentUser.firstName} ${currentUser.lastName}`
-    return await api.addProject({ ...action.project, lastEditedBy: user, createdBy: user })
-  }
-})
-
-export const updateLastEditedBy = createLogic({
-  type: types.UPDATE_PROJECT_REQUEST,
-  transform({ getState, action }, next) {
-    const currentUser = getState().data.user.currentUser
-
-    next({
-      ...action,
-      project: { ...action.project, lastEditedBy: `${currentUser.firstName} ${currentUser.lastName}` }
-    })
+  async process({ action, api }) {
+    return await api.addProject(action.project)
   }
 })
 
@@ -38,6 +24,16 @@ export const updateProjectLogic = createLogic({
   },
   async process({ action, api }) {
     return await api.updateProject(action.project)
+  }
+})
+
+export const updateLastEditedBy = createLogic({
+  type: [types.UPDATE_PROJECT_REQUEST, types.ADD_PROJECT_REQUEST],
+  transform({ getState, action }, next) {
+    next({
+      ...action,
+      project: { ...action.project, userId: getState().data.user.currentUser.id }
+    })
   }
 })
 
