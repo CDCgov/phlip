@@ -51,28 +51,28 @@ export default {
   },
 
   searchJurisdictionList(searchString) {
-    /*return api.get('/jurisdiction', {
+    return api.get('/jurisdictions', {
       params: {
         name: searchString
       }
-    }).then(res => res.data)*/
+    }).then(res => res.data)
     return getMatchingJurisdictions(searchString)
   },
 
   getProjectJurisdictions(projectId) {
-    //return api.get(`/projects/${projectId}/jurisdiction`).then(res => res.data)
-    return mockJurisdictions
+    return api.get(`/projects/${projectId}/jurisdictions`).then(res => res.data)
+    //return mockJurisdictions
   },
 
   addJurisdictionToProject(projectId, jurisdiction) {
     console.log(jurisdiction)
-    //return api.post(`/projects/${projectId}/jurisdiction/${jurisdiction.id}`, jurisdiction).then(res => res.data)
-    return jurisdiction
+    return api.post(`/projects/${projectId}/jurisdictions/${jurisdiction.id}`, jurisdiction).then(res => res.data)
+    //return jurisdiction
   },
 
   updateJurisdictionInProject(projectId, jurisdiction) {
-    return jurisdiction
-    //return api.put(`/projects/${projectId}/jurisdiction/${jurisdiction.id}`, jurisdiction).then(res => res.data)
+    //return jurisdiction
+    return api.put(`/projects/${projectId}/jurisdictions/${jurisdiction.id}`, jurisdiction).then(res => res.data)
   }
 }
 
