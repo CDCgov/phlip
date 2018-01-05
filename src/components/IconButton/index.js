@@ -5,7 +5,8 @@ import Icon from 'components/Icon'
 
 const IconButton = ({ color, onClick, iconSize, children, style, ...otherProps }) => {
   return (
-    <MuiIconButton onClick={onClick} disableRipple style={{ width: iconSize, height: iconSize, ...style }}>
+    <MuiIconButton onClick={onClick} disableRipple
+                   style={{ width: iconSize, height: iconSize, ...style }} {...otherProps}>
       <Icon color={color} size={iconSize}>
         {children}
       </Icon>

@@ -24,15 +24,15 @@
   top: 0;
 }
 
-%blackLineBase {
+%greyLineBase {
   position: absolute;
   content: '';
-  background-color: black;
+  background-color: rgb(170, 189, 198);
 }
 
 .lineHalfHorizontalRight {
   &::before {
-    @extend %blackLineBase;
+    @extend %greyLineBase;
     height: 2px;
     top: 50%;
     right: 0;
@@ -42,7 +42,7 @@
 
 .lineFullVertical {
   &::after {
-    @extend %blackLineBase;
+    @extend %greyLineBase;
     width: 2px;
     left: 50%;
     top: 0;

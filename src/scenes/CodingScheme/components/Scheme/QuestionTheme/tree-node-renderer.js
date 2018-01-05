@@ -25,7 +25,6 @@ class QuestionTreeNodeRenderer extends Component {
 
     const scaffold = []
     const scaffoldBlockCount = lowerSiblingCounts.length
-
     lowerSiblingCounts.forEach((lowerSiblingCount, i) => {
       let lineClass = ''
       if (lowerSiblingCount > 0) {

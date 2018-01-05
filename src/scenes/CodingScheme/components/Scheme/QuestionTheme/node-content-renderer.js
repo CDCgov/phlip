@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import IconButton from 'material-ui/IconButton'
 import styles from './node-content-renderer.scss'
 import Icon from 'components/Icon'
+import IconButton from 'components/IconButton'
 import Card, { CardContent, CardActions } from 'material-ui/Card'
 import Collapse from 'material-ui/transitions/Collapse'
 import Typography from 'material-ui/Typography'
@@ -62,7 +62,7 @@ class QuestionNodeContentRenderer extends Component {
 
     const handle = connectDragSource(
       <div className={styles.handle}>
-        <Icon size="24">reorder</Icon>
+        <Icon size="24" color="black">reorder</Icon>
       </div>,
       { dropEffect: 'copy' }
     )
@@ -78,15 +78,11 @@ class QuestionNodeContentRenderer extends Component {
             <IconButton
               type="button"
               aria-label={node.expanded ? 'Collapse' : 'Expand'}
-              className={
-                node.expanded ? styles.collapseButton : styles.expandButton
-              }
-              onClick={() =>
-                toggleChildrenVisibility({
-                  node,
-                  path,
-                  treeIndex
-                })}
+              className={styles.expandCollapseButton}
+              color="#aabdc6"
+              style={{ backgroundColor: '#f5f5f5' }}
+              iconSize={28}
+              onClick={() => toggleChildrenVisibility({ node, path, treeIndex })}
             >
               {node.expanded ? 'remove_circle' : 'add_circle' }
             </IconButton>
