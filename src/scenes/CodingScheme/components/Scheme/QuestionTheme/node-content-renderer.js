@@ -55,7 +55,7 @@ class QuestionNodeContentRenderer extends Component {
       ...otherProps
     } = this.props
 
-    const nodeTitle = title || node.title
+    const questionBody = node.questionBody
     const isDraggedDescendant = draggedNode && isDescendant(draggedNode, node)
     const isLandingPadActive = !didDrop && isDragging
     const scaffoldBlockCount = lowerSiblingCounts.length
@@ -124,14 +124,8 @@ class QuestionNodeContentRenderer extends Component {
                   {handle}
                   <CardContent className={styles.rowLabel}
                                style={{ padding: 0, display: 'flex', alignItems: 'center' }}>
-                    <Typography type="subheading" component="h4" style={{ overflow: 'hidden' }}>
-                      {typeof nodeTitle === 'function'
-                        ? nodeTitle({
-                          node,
-                          path,
-                          treeIndex
-                        })
-                        : nodeTitle}
+                    <Typography noWrap type="subheading" component="h4">
+                      {questionBody}
                     </Typography>
                   </CardContent>
                   <CardActions disableActionSpacing style={{ padding: 0 }}>

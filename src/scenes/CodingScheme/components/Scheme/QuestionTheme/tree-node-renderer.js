@@ -121,9 +121,7 @@ QuestionTreeNodeRenderer.propTypes = {
   // used in dndManager
   getPrevRow: PropTypes.func.isRequired,
   node: PropTypes.shape({}).isRequired,
-  path: PropTypes.arrayOf(
-    PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-  ).isRequired
+  path: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])).isRequired
 }
 
 export default QuestionTreeNodeRenderer
