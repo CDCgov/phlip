@@ -60,7 +60,7 @@ export const updateFieldsLogic = createLogic({
     next({
       ...action,
       user,
-      id: action.id
+      projectId: action.projectId
     })
   }
 })
