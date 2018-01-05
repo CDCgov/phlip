@@ -1,0 +1,160 @@
+$row-padding: 10px;
+$scaffold-block: 50px;
+
+.rowWrapper {
+  box-sizing: border-box;
+  height: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &:active {
+    opacity: 1;
+  }
+}
+
+.nodeContent {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.handle {
+  cursor: move;
+  padding-right: 10px;
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+}
+
+.nodeCard {
+  white-space: nowrap;
+  overflow: hidden;
+  align-items: center;
+  flex: 1;
+  display: flex;
+  position: relative;
+  width: 650px;
+}
+
+.row {
+  height: 100%;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  & > * {
+    box-sizing: border-box;
+  }
+}
+
+.rowLandingPad {
+  border: none;
+  box-shadow: none;
+  outline: none;
+
+  * {
+    opacity: 0 !important;
+  }
+
+  &::before {
+    background-color: lightblue !important;
+    border: 2px dotted black;
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+  }
+}
+
+.rowCancelPad {
+  @extend .rowLandingPad;
+
+  &::before {
+    background-color: #e6a8ad !important;
+  }
+}
+
+.questionBody::after {
+  @extend .rowLabel;
+
+ }
+
+.rowSearchMatch {
+  box-shadow: inset 0 -7px 7px -3px #0080ff;
+}
+
+.rowSearchFocus {
+  box-shadow: inset 0 -7px 7px -3px #fc6421;
+}
+
+%rowItem {
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.rowContents {
+  @extend %rowItem;
+  position: relative;
+  flex: 1 1 auto;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.rowLabel {
+  @extend %rowItem;
+  padding-right: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.collapseButton,
+.expandButton {
+  border: none;
+  background: transparent;
+  padding: 0;
+  z-index: 2;
+  left: -1 * ($scaffold-block / 2);
+  position: absolute !important;
+  transform: translate3d(-50%, -50%, 0);
+  top: 50%;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+
+    &::after {
+      filter: drop-shadow(0 0 1px #83bef9) drop-shadow(0 0 1px #83bef9) drop-shadow(0 0 1px #83bef9);
+    }
+  }
+}
+
+.expandButton::after {
+  transform: translate3d(-50%, -20%, 0) rotateZ(-90deg);
+}
+
+.lineChildren {
+  height: 100%;
+  display: inline-block;
+  position: absolute;
+
+  &::after {
+    content: '';
+    position: absolute;
+    background-color: black;
+    width: 2px;
+    left: 50%;
+    bottom: 0;
+    height: $row-padding;
+  }
+}

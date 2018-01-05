@@ -2,9 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from './actions'
+import Container from 'components/Layout'
 import Header from './components/Header'
 import Footer from './components/Footer'
-import Container from 'components/Layout'
+import Scheme from './components/Scheme'
 
 export class CodingScheme extends Component {
   constructor (props, context) {
@@ -20,6 +21,7 @@ export class CodingScheme extends Component {
       <Container column flex>
         <Header projectName={this.props.projectName} />
         <Container flex style={{ backgroundColor: '#f5f5f5' }}>
+          <Scheme questions={this.props.questions} handleQuestionTreeChange={this.props.actions.updateQuestionTree} />
         </Container>
         <Footer />
       </Container>
@@ -30,7 +32,7 @@ export class CodingScheme extends Component {
 const mapStateToProps = (state, ownProps) => ({
   projectName: state.scenes.home.main.projects.byId[ownProps.match.params.id].name,
   projectId: ownProps.match.params.id,
-  questions: state.scenes.codingScheme.questions
+  questions: state.scenes.codingScheme.questions || []
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

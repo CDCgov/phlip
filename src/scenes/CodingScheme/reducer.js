@@ -12,6 +12,12 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         questions: action.payload
       }
 
+    case types.HANDLE_QUESTION_TREE_CHANGE:
+      return {
+        ...state,
+        questions: action.questions
+      }
+
     default:
       return state
   }

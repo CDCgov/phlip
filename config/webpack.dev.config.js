@@ -73,7 +73,9 @@ module.exports = function makeConfig(env) {
                 {
                   loader: 'css-loader',
                   options: {
-                    importLoaders: 1,
+                    modules: true,
+                    '-autoprefixer': true,
+                    importLoaders: true,
                   },
                 },
                 {
@@ -93,7 +95,30 @@ module.exports = function makeConfig(env) {
             },
             {
               test: /\.scss$/,
-              loader: 'sass-loader'
+              use: [{
+                loader: "style-loader"
+              }, {
+                loader: "css-loader",
+                options: {
+                  modules: true,
+                  '-autoprefixer': true,
+                  importLoaders: true,
+                },
+              }, {
+                loader: 'postcss-loader',
+                options: {
+                  ident: 'postcss',
+                  plugins: () => [
+                    autoprefixer({
+                      browsers: [
+                        'last 2 versions'
+                      ],
+                    }),
+                  ],
+                },
+              }, {
+                loader: "sass-loader"
+              }]
             },
             {
               exclude: [/\.js$/, /\.html$/, /\.json$/],

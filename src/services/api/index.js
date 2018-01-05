@@ -1,6 +1,7 @@
 import axios from 'axios'
-import { login, getToken, logout } from '../authToken'
+import { login, logout } from '../authToken'
 import mockJurisdictions, { allJurisdictions } from 'data/mockJurisdictions'
+import { scheme } from 'data/mockCodingScheme'
 
 export const api = axios.create({
   baseURL: '/api'
@@ -75,7 +76,7 @@ export default {
   },
 
   getScheme (projectId) {
-    return [{ questionBody: 'question text'}]
+    return scheme
   }
 }
 
