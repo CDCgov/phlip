@@ -1,6 +1,5 @@
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
-import { updater } from 'utils'
 
 const getJurisdictionsLogic = createLogic({
   type: types.GET_PROJECT_JURISDICTIONS_REQUEST,

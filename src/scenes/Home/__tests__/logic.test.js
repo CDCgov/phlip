@@ -1,6 +1,5 @@
 import { createMockStore } from 'redux-logic-test'
 import MockAdapter from 'axios-mock-adapter'
-import reducer from '../reducer'
 import logic from '../logic'
 import * as types from '../actionTypes'
 import apiCalls, { api } from 'services/api'

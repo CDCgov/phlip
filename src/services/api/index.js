@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { login, getToken, logout } from '../authToken'
-import mockJurisdictions, { allJurisdictions } from 'data/mockJurisdictions'
 
 export const api = axios.create({
   baseURL: '/api'
@@ -56,39 +55,17 @@ export default {
         name: searchString
       }
     }).then(res => res.data)
-    return getMatchingJurisdictions(searchString)
   },
 
   getProjectJurisdictions(projectId) {
     return api.get(`/projects/${projectId}/jurisdictions`).then(res => res.data)
-    //return mockJurisdictions
   },
 
   addJurisdictionToProject(projectId, jurisdiction) {
-    console.log(jurisdiction)
     return api.post(`/projects/${projectId}/jurisdictions/${jurisdiction.id}`, jurisdiction).then(res => res.data)
-    //return jurisdiction
   },
 
   updateJurisdictionInProject(projectId, jurisdiction) {
-    //return jurisdiction
     return api.put(`/projects/${projectId}/jurisdictions/${jurisdiction.id}`, jurisdiction).then(res => res.data)
   }
 }
-
-const getMatchingJurisdictions = value => {
-  const escapedValue = escapeRegexCharacters(value.trim());
-
-  if (escapedValue === '') {
-    return [];
-  }
-
-  const regex = new RegExp('^' + escapedValue, 'i');
-
-  return allJurisdictions.filter(jurisdiction => regex.test(jurisdiction.name));
-}
-
-const escapeRegexCharacters = str => {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
