@@ -4,7 +4,7 @@ import treeNodeRenderer from './tree-node-renderer'
 export default {
   nodeContentRenderer,
   treeNodeRenderer,
-  scaffoldBlockPxWidth: 50,
+  scaffoldBlockPxWidth: 100,
   slideRegionSize: 50,
   rowHeight: 75,
   reactVirtualizedListProps: {

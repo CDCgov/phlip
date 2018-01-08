@@ -4,7 +4,6 @@ import styles from './node-content-renderer.scss'
 import Icon from 'components/Icon'
 import IconButton from 'components/IconButton'
 import Card, { CardContent, CardActions } from 'material-ui/Card'
-import Collapse from 'material-ui/transitions/Collapse'
 import Typography from 'material-ui/Typography'
 
 const isDescendant = (older, younger) => {
@@ -68,9 +67,7 @@ class QuestionNodeContentRenderer extends Component {
     )
 
     return (
-      <div className={styles.nodeContent}
-           style={{ left: scaffoldBlockCount * scaffoldBlockPxWidth }}
-      >
+      <div className={styles.nodeContent} style={{ left: scaffoldBlockCount * scaffoldBlockPxWidth }}>
         {toggleChildrenVisibility &&
         node.children &&
         node.children.length > 0 && (
@@ -112,14 +109,9 @@ class QuestionNodeContentRenderer extends Component {
                   padding: '5px 10px'
                 }}
               >
-                <div
-                  className={styles.rowContents +
-                  (!canDrag ? ` ${styles.rowContentsDragDisabled}` : '')
-                  }
-                >
+                <div className={styles.rowContents + (!canDrag ? ` ${styles.rowContentsDragDisabled}` : '')}>
                   {handle}
-                  <CardContent className={styles.rowLabel}
-                               style={{ padding: 0, display: 'flex', alignItems: 'center' }}>
+                  <CardContent className={styles.rowLabel} style={{padding: 0, display: 'flex', alignItems: 'center'}}>
                     <Typography noWrap type="subheading" component="h4">
                       {questionBody}
                     </Typography>
