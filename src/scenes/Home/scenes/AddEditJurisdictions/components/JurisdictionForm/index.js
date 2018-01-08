@@ -18,8 +18,8 @@ import Autocomplete from 'components/Autocomplete'
 const getSuggestionValue = suggestion => suggestion
 
 const renderSuggestion = (suggestion, { query, isHighlighted }) => {
-  const matches = match(suggestion, query)
-  const parts = parse(suggestion, matches)
+  const matches = match(suggestion.name, query)
+  const parts = parse(suggestion.name, matches)
 
   return (
     <MenuItem selected={isHighlighted} component="div">

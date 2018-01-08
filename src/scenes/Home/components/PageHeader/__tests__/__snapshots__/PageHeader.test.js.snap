@@ -14,7 +14,7 @@ exports[`Home scene - PageHeader component should render correctly 1`] = `
 >
   <Column
     component={
-      <WithStyles
+      <WithStyles(GridWrapper)
         item={true}
       />
     }
@@ -29,49 +29,49 @@ exports[`Home scene - PageHeader component should render correctly 1`] = `
     >
       <Column
         component={
-          <WithStyles
+          <WithStyles(GridWrapper)
             item={true}
           />
         }
         displayFlex={false}
         flex={false}
       >
-        <WithTheme
+        <WithTheme(CircleIcon)
           circleColor="error"
           circleSize="30px"
           iconColor="white"
           iconSize="19px"
         >
           home
-        </WithTheme>
+        </WithTheme(CircleIcon)>
       </Column>
       <Column
         component={
-          <WithStyles
+          <WithStyles(GridWrapper)
             item={true}
           />
         }
         displayFlex={false}
         flex={false}
       >
-        <WithStyles
+        <WithStyles(Typography)
           type="title"
         >
           Project List
-        </WithStyles>
+        </WithStyles(Typography)>
       </Column>
     </Container>
   </Column>
   <Column
     component={
-      <WithStyles
+      <WithStyles(GridWrapper)
         item={true}
       />
     }
     displayFlex={false}
     flex={false}
   >
-    <WithTheme
+    <WithTheme(TextLink)
       style={
         Object {
           "color": "white",
@@ -86,11 +86,11 @@ exports[`Home scene - PageHeader component should render correctly 1`] = `
         }
       }
     >
-      <WithTheme
+      <WithTheme(Button)
         color="accent"
         value=" + Create new project"
       />
-    </WithTheme>
+    </WithTheme(TextLink)>
   </Column>
 </Container>
 `;

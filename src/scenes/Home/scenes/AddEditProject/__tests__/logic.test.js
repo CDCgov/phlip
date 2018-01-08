@@ -37,7 +37,7 @@ describe('Home scene - AddEditProject logic', () => {
     store.dispatch({ type: types.ADD_PROJECT_REQUEST, project })
     store.whenComplete(() => {
       expect(store.actions).toEqual([
-        { type: types.ADD_PROJECT_REQUEST, project },
+        { type: types.ADD_PROJECT_REQUEST, project: { ...project, userId: 5} },
         { type: types.ADD_PROJECT_SUCCESS, payload: { ...project } }
       ])
       done()
@@ -49,12 +49,8 @@ describe('Home scene - AddEditProject logic', () => {
     const store = setupStore([])
 
     mock.onPut('/projects/1').reply(200, project)
-    store.dispatch({ type: types.UPDATE_PROJECT_REQUEST, project })
+    store.dispatch({ type: types.UPDATE_PROJECT_REQUEST, project: { ...project, userId: 5} })
     store.whenComplete(() => {
-      /*expect(store.actions).toEqual([
-        { type: types.UPDATE_PROJECT_REQUEST, project },
-        { type: types.UPDATE_PROJECT_SUCCESS, payload: project }
-      ])*/
       expect(store.actions[1].type).toEqual('UPDATE_PROJECT_SUCCESS')
       expect(store.actions[1].payload.lastEditedBy).toEqual('Test User')
       expect(store.actions[1].payload.name).toEqual('Updated Project')
