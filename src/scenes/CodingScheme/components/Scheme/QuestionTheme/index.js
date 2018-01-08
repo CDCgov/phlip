@@ -1,9 +1,9 @@
-import nodeContentRenderer from './node-content-renderer'
-import treeNodeRenderer from './tree-node-renderer'
+import QuestionNode from './QuestionNode'
+import TreeNode from './TreeNode'
 
 export default {
-  nodeContentRenderer,
-  treeNodeRenderer,
+  nodeContentRenderer: QuestionNode,
+  treeNodeRenderer: TreeNode,
   scaffoldBlockPxWidth: 100,
   slideRegionSize: 50,
   rowHeight: 75,
