@@ -26,8 +26,8 @@ describe('Home logic', () => {
 
   test('should get project list and set bookmarkList and dispatch GET_PROJECTS_SUCCESS when done', (done) => {
     mock.onGet('/projects').reply(200, [
-      { name: 'Project 1', id: 1 },
-      { name: 'Project 2', id: 2 }
+      { name: 'Project 1', id: 1, lastEditedBy: 'Test User   ', dateLastEdited: new Date(2017, 1, 2) },
+      { name: 'Project 2', id: 2, lastEditedBy: ' Test User    ' }
     ])
 
     const store = setupStore([1])
@@ -35,21 +35,22 @@ describe('Home logic', () => {
     store.dispatch({ type: types.GET_PROJECTS_REQUEST })
 
     store.whenComplete(() => {
-     /* expect(store.actions).toEqual([
+    expect(store.actions).toEqual([
         { type: types.GET_PROJECTS_REQUEST },
         {
           type: types.GET_PROJECTS_SUCCESS,
           payload: {
-            projects: [{ name: 'Project 1', id: 1 }, { name: 'Project 2', id: 2 }],
+            projects: [
+            { name: 'Project 1', id: 1, lastEditedBy: 'Test User', dateLastEdited: new Date(2017, 1, 2) },
+            { name: 'Project 2', id: 2, lastEditedBy: 'Test User' }
+            ],
             bookmarkList: [1],
             error: false,
             errorContent: '',
             searchValue: ''
           }
         }
-      ])*/
-      expect(store.actions[1]).toHaveProperty('payload.projects')
-      expect(store.actions[1]).toHaveProperty('payload.bookmarkList')
+      ])
       done()
     })
   })

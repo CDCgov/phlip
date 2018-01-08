@@ -15,7 +15,7 @@ export const getProjectLogic = createLogic({
   async process({ api, getState }) {
     const projects = await api.getProjects()
     return {
-      projects: projects,
+      projects: projects.map(project => ({ ...project, lastEditedBy: project.lastEditedBy.trim() })),
       bookmarkList: [...getState().data.user.currentUser.bookmarks],
       error: false, errorContent: '', searchValue: ''
     }
