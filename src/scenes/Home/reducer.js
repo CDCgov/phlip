@@ -145,7 +145,7 @@ const mainReducer = (state, action) => {
       return { ...INITIAL_STATE, rowsPerPage: state.rowsPerPage }
 
     case types.UPDATE_EDITED_FIELDS:
-      const project = state.projects.byId[action.id]
+      const project = state.projects.byId[action.projectId]
       return {
         ...state,
         projects: {
@@ -154,7 +154,7 @@ const mainReducer = (state, action) => {
             [project.id]: {
               ...project,
               lastEditedBy: action.user,
-              dateLastEdited: new Date()
+              dateLastEdited: new Date().toISOString()
             }
           },
           allIds: state.projects.allIds

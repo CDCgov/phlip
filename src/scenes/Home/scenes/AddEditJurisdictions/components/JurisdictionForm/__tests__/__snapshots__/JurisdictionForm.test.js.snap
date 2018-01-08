@@ -22,7 +22,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
     onCloseForm={[Function]}
     title="Add Jurisdiction"
   />
-  <WithStyles />
+  <WithStyles(Divider) />
   <ModalContent>
     <Container
       column={true}
@@ -84,7 +84,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       >
         <Column
           component={
-            <WithStyles
+            <WithStyles(GridWrapper)
               item={true}
             />
           }
@@ -102,7 +102,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
         </Column>
         <Column
           component={
-            <WithStyles
+            <WithStyles(GridWrapper)
               item={true}
             />
           }
