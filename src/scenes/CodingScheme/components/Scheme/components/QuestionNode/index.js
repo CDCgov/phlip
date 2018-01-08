@@ -79,7 +79,7 @@ const QuestionNode = props => {
             onMouseEnter={onHover}
             onMouseLeave={onHover}
           >
-            <Typography noWrap type="subheading" component="h4">{questionBody}</Typography>
+            <Typography noWrap type="subheading" component="h4" style={{ opacity: node.hovering ? '.3' : ''}}>{questionBody}</Typography>
           </CardContent>
           <CardActions disableActionSpacing style={{ padding: 0 }}>
             <div style={{ flex: '1 1 auto' }}></div>
