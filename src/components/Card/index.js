@@ -6,9 +6,9 @@ const baseStyle = {
   flex: '1'
 }
 
-const Card = ({ children, style }) => {
+const Card = ({ children, style, ...otherProps }) => {
   return (
-    <Paper style={{ ...baseStyle, ...style }}>
+    <Paper style={{ ...baseStyle, ...style }} {...otherProps}>
       {children}
     </Paper>
   )

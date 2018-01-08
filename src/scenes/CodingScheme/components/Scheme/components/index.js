@@ -1,7 +1,7 @@
 import QuestionNode from './QuestionNode'
 import TreeNode from './TreeNode'
 
-export default {
+export const QuestionTheme = {
   nodeContentRenderer: QuestionNode,
   treeNodeRenderer: TreeNode,
   scaffoldBlockPxWidth: 100,

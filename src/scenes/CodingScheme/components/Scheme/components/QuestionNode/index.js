@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import styles from './question-node.scss'
 import Icon from 'components/Icon'
 import IconButton from 'components/IconButton'
-import Card, { CardContent, CardActions } from 'material-ui/Card'
+import Card from 'components/Card'
+import { CardContent, CardActions } from 'material-ui/Card'
 import Typography from 'material-ui/Typography'
 
 const isDescendant = (older, younger) => {
@@ -48,6 +49,11 @@ const QuestionNode = props => {
     ...otherProps
   } = props
 
+  const questionBody = node.questionBody
+  const isDraggedDescendant = draggedNode && isDescendant(draggedNode, node)
+  const isLandingPadActive = !didDrop && isDragging
+  const scaffoldBlockCount = lowerSiblingCounts.length
+
   const handle = connectDragSource(
     <div className={styles.handle}>
       <Icon size="24" color="black">reorder</Icon>
@@ -55,10 +61,34 @@ const QuestionNode = props => {
     { dropEffect: 'copy' }
   )
 
-  const questionBody = node.questionBody
-  const isDraggedDescendant = draggedNode && isDescendant(draggedNode, node)
-  const isLandingPadActive = !didDrop && isDragging
-  const scaffoldBlockCount = lowerSiblingCounts.length
+  const dragPreview = connectDragPreview(
+    <div>
+      <Card
+        className={styles.nodeCard}
+        style={{
+          backgroundColor: isLandingPadActive ? (canDrop ? 'lightblue' : '#e6a8ad') : 'white',
+          border: isLandingPadActive ? (canDrop ? '3px dotted navy' : '3px dotted black') : 'none',
+          opacity: isDraggedDescendant ? 0.5 : 1,
+          padding: '5px 10px'
+        }}>
+        <div className={styles.rowContents + (!canDrag ? ` ${styles.rowContentsDragDisabled}` : '')}>
+          {handle}
+          <CardContent
+            className={styles.rowLabel}
+            style={{ padding: 0, display: 'flex', alignItems: 'center' }}
+            onMouseEnter={onHover}
+            onMouseLeave={onHover}
+          >
+            <Typography noWrap type="subheading" component="h4">{questionBody}</Typography>
+          </CardContent>
+          <CardActions disableActionSpacing style={{ padding: 0 }}>
+            <div style={{ flex: '1 1 auto' }}></div>
+            {buttons[0]}
+          </CardActions>
+        </div>
+      </Card>
+    </div>
+  )
 
   return (
     <div className={styles.nodeContent} style={{ left: scaffoldBlockCount * scaffoldBlockPxWidth }}>
@@ -80,37 +110,9 @@ const QuestionNode = props => {
         )}
       </div>}
       <div className={styles.rowWrapper + (!canDrag ? ` ${styles.rowWrapperDisabled}` : '')}>
-        {connectDragPreview(
-          <div>
-            <Card
-              className={styles.nodeCard}
-              style={{
-                backgroundColor: isLandingPadActive ? (canDrop ? 'lightblue' : '#e6a8ad') : 'white',
-                border: isLandingPadActive ? (canDrop ? '3px dotted navy' : '3px dotted black') : 'none',
-                opacity: isDraggedDescendant ? 0.5 : 1,
-                padding: '5px 10px'
-              }}
-            >
-              <div className={styles.rowContents + (!canDrag ? ` ${styles.rowContentsDragDisabled}` : '')}>
-                {handle}
-                <CardContent
-                  className={styles.rowLabel}
-                  style={{ padding: 0, display: 'flex', alignItems: 'center' }}
-                  onMouseEnter={onHover}
-                  onMouseLeave={onHover}
-                >
-                  <Typography noWrap type="subheading" component="h4">{questionBody}</Typography>
-                </CardContent>
-                  <CardActions disableActionSpacing style={{ padding: 0 }}>
-                    <div style={{ flex: '1 1 auto' }} />
-                    {buttons[0]}
-                  </CardActions>
-                </div>
-              </Card>
-            </div>
-        )}
-        </div>
+        {dragPreview}
       </div>
+    </div>
   )
 }
 

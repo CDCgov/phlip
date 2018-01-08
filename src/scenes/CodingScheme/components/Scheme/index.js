@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import SortableTree from 'react-sortable-tree'
-import QuestionTheme from './QuestionTheme'
+import { QuestionTheme } from './components'
 
 const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuestion }) => {
   return (
