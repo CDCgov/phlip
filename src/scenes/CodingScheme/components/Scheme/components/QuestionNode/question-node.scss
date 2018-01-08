@@ -138,10 +138,10 @@ $scaffold-block: 100px;
   &::after {
     content: '';
     position: absolute;
-    background-color: black;
-    width: 1px;
+    background-color: rgb(198, 197, 196);
+    width: 2px;
     left: 50%;
-    bottom: 0;
+    bottom: 50%;
     height: $row-padding;
   }
 }

@@ -82,7 +82,7 @@ const QuestionNode = props => {
           {handle}
           <CardContent
             className={styles.rowLabel}
-            style={{ padding: 0, display: 'flex', alignItems: 'center' }}
+            style={{ padding: 5, display: 'flex', alignItems: 'center' }}
             onMouseEnter={onHover}
             onMouseLeave={onHover}
           >
@@ -90,11 +90,10 @@ const QuestionNode = props => {
                         style={{ opacity: node.hovering ? '.3' : '' }}>{questionBody}</Typography>
             {node.hovering &&
             <div style={{ zIndex: 5 }}>
-                <Button color="accent" style={actionStyles}
-                        value={<Icon color="white">subdirectory_arrow_right</Icon>} />
-                <Button color="accent" style={actionStyles} value={<Icon color="white">mode_edit</Icon>} />
-                <Button color="accent" style={actionStyles} value={<Icon color="white">delete</Icon>} />
-              </div>
+              <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} />
+              <Button color="accent" style={actionStyles} value={<Icon color="white">mode_edit</Icon>} />
+              <Button color="accent" style={actionStyles} value={<Icon color="white">delete</Icon>} />
+            </div>
             }
           </CardContent>
           <CardActions disableActionSpacing style={{ padding: 0 }}>
