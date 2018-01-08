@@ -25,6 +25,7 @@ const QuestionNode = props => {
     isDragging,
     canDrop,
     canDrag,
+    onHover,
     node,
     title,
     draggedNode,
@@ -62,8 +63,8 @@ const QuestionNode = props => {
   return (
     <div className={styles.nodeContent} style={{ left: scaffoldBlockCount * scaffoldBlockPxWidth }}>
       {toggleChildrenVisibility && node.children && node.children.length > 0 &&
-      <div>
-        <IconButton
+        <div>
+          <IconButton
           type="button"
           aria-label={node.expanded ? 'Collapse' : 'Expand'}
           className={styles.expandCollapseButton}
@@ -73,22 +74,21 @@ const QuestionNode = props => {
           onClick={() => toggleChildrenVisibility({ node, path, treeIndex })}
         >
           {node.expanded ? 'remove_circle' : 'add_circle'}
-        </IconButton>
-        {node.expanded && !isDragging && (
-          <div style={{ width: scaffoldBlockPxWidth }} className={styles.lineChildren} />
-        )}
-          </div>
+        </IconButton>{node.expanded && !isDragging && (<div style={{ width: scaffoldBlockPxWidth }} className={styles.lineChildren} />)}
+
+        </div>
       }
       <div className={styles.rowWrapper + (!canDrag ? ` ${styles.rowWrapperDisabled}` : '')}>
         {connectDragPreview(
           <div>
             <Card
-              className={styles.nodeCard} style={{
-              backgroundColor: isLandingPadActive ? (canDrop ? 'lightblue' : '#e6a8ad') : 'white',
-              border: isLandingPadActive ? (canDrop ? '3px dotted navy' : '3px dotted black') : 'none',
-              opacity: isDraggedDescendant ? 0.5 : 1,
-              padding: '5px 10px'
-            }}
+              className={styles.nodeCard}
+              style={{
+                backgroundColor: isLandingPadActive ? (canDrop ? 'lightblue' : '#e6a8ad') : 'white',
+                border: isLandingPadActive ? (canDrop ? '3px dotted navy' : '3px dotted black') : 'none',
+                opacity: isDraggedDescendant ? 0.5 : 1,
+                padding: '5px 10px'
+              }}
             >
               <div className={styles.rowContents + (!canDrag ? ` ${styles.rowContentsDragDisabled}` : '')}>
                 {handle}

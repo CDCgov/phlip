@@ -21,7 +21,11 @@ export class CodingScheme extends Component {
       <Container column flex>
         <Header projectName={this.props.projectName} />
         <Container flex style={{ backgroundColor: '#f5f5f5', paddingTop: 25 }}>
-          <Scheme questions={this.props.questions} handleQuestionTreeChange={this.props.actions.updateQuestionTree} />
+          <Scheme
+            questions={this.props.questions}
+            handleQuestionTreeChange={this.props.actions.updateQuestionTree}
+            handleHoverOnQuestion={this.props.actions.toggleHover}
+          />
         </Container>
         <Footer />
       </Container>
