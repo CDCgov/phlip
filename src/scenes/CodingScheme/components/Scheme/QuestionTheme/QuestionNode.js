@@ -63,8 +63,8 @@ const QuestionNode = props => {
   return (
     <div className={styles.nodeContent} style={{ left: scaffoldBlockCount * scaffoldBlockPxWidth }}>
       {toggleChildrenVisibility && node.children && node.children.length > 0 &&
-        <div>
-          <IconButton
+      <div>
+        <IconButton
           type="button"
           aria-label={node.expanded ? 'Collapse' : 'Expand'}
           className={styles.expandCollapseButton}
@@ -74,10 +74,11 @@ const QuestionNode = props => {
           onClick={() => toggleChildrenVisibility({ node, path, treeIndex })}
         >
           {node.expanded ? 'remove_circle' : 'add_circle'}
-        </IconButton>{node.expanded && !isDragging && (<div style={{ width: scaffoldBlockPxWidth }} className={styles.lineChildren} />)}
-
-        </div>
-      }
+        </IconButton>
+        {node.expanded && !isDragging && (
+          <div style={{ width: scaffoldBlockPxWidth }} className={styles.lineChildren} />
+        )}
+      </div>}
       <div className={styles.rowWrapper + (!canDrag ? ` ${styles.rowWrapperDisabled}` : '')}>
         {connectDragPreview(
           <div>
@@ -92,7 +93,12 @@ const QuestionNode = props => {
             >
               <div className={styles.rowContents + (!canDrag ? ` ${styles.rowContentsDragDisabled}` : '')}>
                 {handle}
-                <CardContent className={styles.rowLabel} style={{ padding: 0, display: 'flex', alignItems: 'center' }}>
+                <CardContent
+                  className={styles.rowLabel}
+                  style={{ padding: 0, display: 'flex', alignItems: 'center' }}
+                  onMouseEnter={onHover}
+                  onMouseLeave={onHover}
+                >
                   <Typography noWrap type="subheading" component="h4">{questionBody}</Typography>
                 </CardContent>
                   <CardActions disableActionSpacing style={{ padding: 0 }}>

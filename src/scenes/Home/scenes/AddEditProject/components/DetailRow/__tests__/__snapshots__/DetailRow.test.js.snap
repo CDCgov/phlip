@@ -2,6 +2,11 @@
 
 exports[`AddEditProject -- DetailRow component should render correctly 1`] = `
 <Row
+  component={
+    <WithStyles
+      item={true}
+    />
+  }
   displayFlex={false}
   flex={false}
   style={

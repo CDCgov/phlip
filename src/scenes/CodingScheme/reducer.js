@@ -5,6 +5,8 @@ const INITIAL_STATE = {
   questions: []
 }
 
+const getNodeKey = ({ treeIndex }) => treeIndex
+
 const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   switch(action.type) {
     case types.GET_SCHEME_SUCCESS:
@@ -28,6 +30,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         questions: changeNodeAtPath({
           treeData: state.questions,
           path: action.path,
+          getNodeKey,
           newNode: { ...action.node, hovering: !action.node.hovering },
         })
       }

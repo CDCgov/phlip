@@ -19,6 +19,7 @@ const TreeNode = props => {
     getPrevRow,
     node,
     path,
+    treeId,
     ...otherProps
   } = props
 

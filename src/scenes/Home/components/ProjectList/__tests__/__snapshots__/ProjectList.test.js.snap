@@ -28,13 +28,6 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
       }
     >
       <SearchBar
-        containerStyles={
-          Object {
-            "justifyContent": "flex-end",
-            "padding": 20,
-          }
-        }
-        height={57}
         placeholder="Search projects"
       />
     </Container>
