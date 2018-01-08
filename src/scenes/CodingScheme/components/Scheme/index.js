@@ -20,7 +20,8 @@ const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuestion }) 
       onChange={handleQuestionTreeChange}
       style={{ flex: '1 0 50%', padding: '0 0 0 15px' }}
       generateNodeProps={({ node, path }) => ({
-        onHover: () => handleHoverOnQuestion(node, path)
+        onHover: () => handleHoverOnQuestion(node, path),
+        nodeActions: []
       })}
       isVirtualized={true}
     />

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styles from './question-node.scss'
 import Icon from 'components/Icon'
 import IconButton from 'components/IconButton'
+import Button from 'components/Button'
 import Card from 'components/Card'
 import { CardContent, CardActions } from 'material-ui/Card'
 import Typography from 'material-ui/Typography'
@@ -28,16 +29,12 @@ const QuestionNode = props => {
     canDrag,
     onHover,
     node,
-    title,
     draggedNode,
     path,
     treeIndex,
     isSearchMatch,
     isSearchFocus,
-    icons,
-    buttons,
-    className,
-    style,
+    nodeActions,
     didDrop,
     lowerSiblingCounts,
     listIndex,
@@ -61,6 +58,15 @@ const QuestionNode = props => {
     { dropEffect: 'copy' }
   )
 
+  const actionStyles = {
+    height: 40,
+    width: 40,
+    padding: 0,
+    marginRight: 10,
+    minHeight: 'unset',
+    minWidth: 'unset'
+  }
+
   const dragPreview = connectDragPreview(
     <div>
       <Card
@@ -69,7 +75,8 @@ const QuestionNode = props => {
           backgroundColor: isLandingPadActive ? (canDrop ? 'lightblue' : '#e6a8ad') : 'white',
           border: isLandingPadActive ? (canDrop ? '3px dotted navy' : '3px dotted black') : 'none',
           opacity: isDraggedDescendant ? 0.5 : 1,
-          padding: '5px 10px'
+          padding: '5px 10px',
+          width: 830
         }}>
         <div className={styles.rowContents + (!canDrag ? ` ${styles.rowContentsDragDisabled}` : '')}>
           {handle}
@@ -79,11 +86,19 @@ const QuestionNode = props => {
             onMouseEnter={onHover}
             onMouseLeave={onHover}
           >
-            <Typography noWrap type="subheading" component="h4" style={{ opacity: node.hovering ? '.3' : ''}}>{questionBody}</Typography>
+            <Typography noWrap type="subheading" component="h4"
+                        style={{ opacity: node.hovering ? '.3' : '' }}>{questionBody}</Typography>
+            {node.hovering &&
+            <div style={{ zIndex: 5 }}>
+                <Button color="accent" style={actionStyles}
+                        value={<Icon color="white">subdirectory_arrow_right</Icon>} />
+                <Button color="accent" style={actionStyles} value={<Icon color="white">mode_edit</Icon>} />
+                <Button color="accent" style={actionStyles} value={<Icon color="white">delete</Icon>} />
+              </div>
+            }
           </CardContent>
           <CardActions disableActionSpacing style={{ padding: 0 }}>
             <div style={{ flex: '1 1 auto' }}></div>
-            {buttons[0]}
           </CardActions>
         </div>
       </Card>
