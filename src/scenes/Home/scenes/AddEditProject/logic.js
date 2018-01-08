@@ -3,7 +3,6 @@ import * as types from '../../actionTypes'
 
 export const addProjectLogic = createLogic({
   type: types.ADD_PROJECT_REQUEST,
-  latest: true,
   processOptions: {
     dispatchReturn: true,
     successType: types.ADD_PROJECT_SUCCESS,
@@ -16,7 +15,6 @@ export const addProjectLogic = createLogic({
 
 export const updateProjectLogic = createLogic({
   type: types.UPDATE_PROJECT_REQUEST,
-  latest: true,
   processOptions: {
     dispatchReturn: true,
     successType: types.UPDATE_PROJECT_SUCCESS,
@@ -27,8 +25,8 @@ export const updateProjectLogic = createLogic({
   }
 })
 
-export const updateLastEditedBy = createLogic({
-  type: [types.UPDATE_PROJECT_REQUEST, types.ADD_PROJECT_REQUEST],
+export const updateUserId = createLogic({
+  type: [types.ADD_PROJECT_REQUEST, types.UPDATE_PROJECT_REQUEST],
   transform({ getState, action }, next) {
     next({
       ...action,
@@ -38,7 +36,7 @@ export const updateLastEditedBy = createLogic({
 })
 
 export default [
+  updateUserId,
   addProjectLogic,
-  updateLastEditedBy,
   updateProjectLogic
 ]

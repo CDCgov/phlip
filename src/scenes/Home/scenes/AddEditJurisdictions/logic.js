@@ -19,7 +19,7 @@ export const addJurisdictionLogic = createLogic({
     successType: types.ADD_PROJECT_JURISDICTION_SUCCESS
   },
   async process ({ action, api }) {
-    return await api.addJurisdictionToProject(action.projectId, { ...action.jurisdiction, userId: action.user })
+    return await api.addJurisdictionToProject(action.projectId, action.jurisdiction)
   }
 })
 
@@ -30,7 +30,7 @@ export const updateJurisdictionLogic = createLogic({
     successType: types.UPDATE_PROJECT_JURISDICTION_SUCCESS
   },
   async process ({ action, api }) {
-    return await api.updateJurisdictionInProject(action.projectId, { ...action.jurisdiction, userId: action.user })
+    return await api.updateJurisdictionInProject(action.projectId, action.jurisdiction)
   }
 })
 
@@ -53,11 +53,15 @@ export const updateFieldsLogic = createLogic({
     const userId = getState().data.user.currentUser.id
     next({
       ...action,
-      userId
+      jurisdiction: { ...action.jurisdiction, userId }
     })
   }
 })
 
 export default [
-  getJurisdictionsLogic, addJurisdictionLogic, updateJurisdictionLogic, searchJurisdictionList, updateFieldsLogic
+  updateFieldsLogic,
+  getJurisdictionsLogic,
+  addJurisdictionLogic,
+  updateJurisdictionLogic,
+  searchJurisdictionList
 ]

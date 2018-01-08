@@ -30,7 +30,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <WithTheme
+    <WithTheme(TextLink)
       to={
         Object {
           "pathname": "/project/edit/1",
@@ -46,7 +46,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     >
       Project 1
-    </WithTheme>
+    </WithTheme(TextLink)>
   </TableCell>
   <TableCell
     key="1-dateLastEdited"
@@ -78,37 +78,37 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     key="1-protocol"
     light={true}
   >
-    <WithTheme
+    <WithTheme(TextLink)
       to="/"
     >
       Add/Edit
-    </WithTheme>
+    </WithTheme(TextLink)>
   </TableCell>
   <TableCell
     key="1-jurisdictions"
     light={true}
   >
-    <WithTheme
+    <WithTheme(TextLink)
       id={1}
       to="/project/1/jurisdictions"
     >
       Add/Edit
-    </WithTheme>
+    </WithTheme(TextLink)>
   </TableCell>
   <TableCell
     key="1-codingScheme"
     light={true}
   >
-    <WithTheme
+    <WithTheme(TextLink)
       to="/codingscheme"
     >
       Edit
-    </WithTheme>
+    </WithTheme(TextLink)>
   </TableCell>
   <TableCell
     key="1-code"
   >
-    <WithTheme
+    <WithTheme(Button)
       listButton={true}
       raised={false}
       value="Code"
@@ -117,7 +117,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   <TableCell
     key="1-validation"
   >
-    <WithTheme
+    <WithTheme(Button)
       listButton={true}
       raised={false}
       value="Validate"
