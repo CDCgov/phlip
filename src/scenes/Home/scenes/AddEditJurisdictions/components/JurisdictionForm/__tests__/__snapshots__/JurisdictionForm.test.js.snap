@@ -37,6 +37,11 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       }
     >
       <Row
+        component={
+          <WithStyles
+            item={true}
+          />
+        }
         displayFlex={false}
         flex={false}
         style={
