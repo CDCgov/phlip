@@ -154,7 +154,7 @@ const mainReducer = (state, action) => {
             [project.id]: {
               ...project,
               lastEditedBy: action.user,
-              dateLastEdited: new Date()
+              dateLastEdited: new Date().toISOString()
             }
           },
           allIds: state.projects.allIds
