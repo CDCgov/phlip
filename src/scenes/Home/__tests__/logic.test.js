@@ -59,9 +59,9 @@ describe('Home logic', () => {
     const project = { id: 1, name: 'Project 1' }
     const store = setupStore([])
 
-    mock.onPost('/users/5/projectbookmarks/1').reply(200, [
-      { name: 'Project 1', id: 1 },
-      { name: 'Project 2', id: 2 }
+    mock.onPost('/users/5/bookmarkedprojects/1').reply(200, [
+      { projectId: 1, userId: 5 },
+      { projectId: 2, userId: 5 }
     ])
 
     store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
@@ -75,9 +75,9 @@ describe('Home logic', () => {
     const project = { id: 2, name: 'Project 2' }
     const store = setupStore([2, 1, 5])
 
-    mock.onDelete('/users/5/projectbookmarks/2').reply(200, [
-      { name: 'Project 1', id: 1 },
-      { name: 'Project 2', id: 2 }
+    mock.onDelete('/users/5/bookmarkedprojects/2').reply(200, [
+      { projectId: 1, userId: 5 },
+      { projectId: 5, userId: 5 }
     ])
 
     store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
@@ -88,12 +88,8 @@ describe('Home logic', () => {
   })
 
   test('should return bookmarkList as empty if length is 1 and project id is being un-bookmarked', (done) => {
-    mock.onDelete('/users/5/projectbookmarks/2').reply(200, [
-      { name: 'Project 1', id: 1 },
-      { name: 'Project 2', id: 2 }
-    ])
-
     const project = { id: 2, name: 'Project 2' }
+    mock.onDelete('/users/5/bookmarkedprojects/2').reply(200, [])
     const store = setupStore([2])
 
     store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
