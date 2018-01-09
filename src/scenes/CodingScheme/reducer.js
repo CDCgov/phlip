@@ -21,7 +21,10 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
     case types.HANDLE_QUESTION_TREE_CHANGE:
       return {
         ...state,
-        questions: action.questions
+        questions: action.questions.map(question => ({
+          ...question,
+          hovering: false
+        }))
       }
 
     case types.TOGGLE_HOVER:

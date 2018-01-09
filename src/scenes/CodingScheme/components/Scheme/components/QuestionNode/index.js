@@ -34,7 +34,6 @@ const QuestionNode = props => {
     treeIndex,
     isSearchMatch,
     isSearchFocus,
-    nodeActions,
     didDrop,
     lowerSiblingCounts,
     listIndex,
@@ -88,7 +87,7 @@ const QuestionNode = props => {
           >
             <Typography noWrap type="subheading" component="h4"
                         style={{ opacity: node.hovering ? '.3' : '' }}>{questionBody}</Typography>
-            {node.hovering &&
+            {node.hovering && !isDragging &&
             <div style={{ zIndex: 5 }}>
               <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} />
               <Button color="accent" style={actionStyles} value={<Icon color="white">mode_edit</Icon>} />
