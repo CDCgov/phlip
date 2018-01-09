@@ -38,7 +38,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
         }
       }
     >
-      <WithStyles(TableHead)>
+      <WithStyles>
         <ProjectTableHead
           direction="asc"
           onRequestSort={[Function]}
@@ -46,8 +46,8 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
           role="Coordinator"
           sortBy="name"
         />
-      </WithStyles(TableHead)>
-      <WithStyles(TableBody)>
+      </WithStyles>
+      <WithStyles>
         <Connect(ProjectRow)
           id={1}
           key="1"
@@ -56,7 +56,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
           id={2}
           key="2"
         />
-      </WithStyles(TableBody)>
+      </WithStyles>
     </Table>
     <div
       style={
@@ -68,16 +68,16 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
       }
     />
     <Table>
-      <WithStyles(TableFooter)>
-        <WithStyles(TableRow)>
-          <WithStyles(TablePagination)
+      <WithStyles>
+        <WithStyles>
+          <WithStyles
             onChangePage={[Function]}
             onChangeRowsPerPage={[Function]}
             page={0}
             rowsPerPage={10}
           />
-        </WithStyles(TableRow)>
-      </WithStyles(TableFooter)>
+        </WithStyles>
+      </WithStyles>
     </Table>
   </Column>
 </Container>

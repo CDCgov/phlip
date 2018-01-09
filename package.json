@@ -33,6 +33,9 @@
     "modulePaths": [
       "<rootDir>/src/"
     ],
+    "moduleNameMapper": {
+      "^.+\\.(css|scss)$": "<rootDir>/config/tests/styleMock.js"
+    },
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],

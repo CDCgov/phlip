@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Header -- AvatarMenu should render correctly 1`] = `
-<WithStyles(GridWrapper)
+<WithStyles
   item={true}
 >
   <Avatar
@@ -14,7 +14,7 @@ exports[`Header -- AvatarMenu should render correctly 1`] = `
       }
     }
   />
-  <WithStyles(Menu)
+  <WithStyles
     MenuListProps={
       Object {
         "disablePadding": true,
@@ -26,11 +26,11 @@ exports[`Header -- AvatarMenu should render correctly 1`] = `
     onClose={[Function]}
     open={false}
   >
-    <WithStyles(MenuItem)
+    <WithStyles
       key="logout-menu"
       onClick={[Function]}
     >
-      <WithStyles(Typography)
+      <WithStyles
         color="primary"
         style={
           Object {
@@ -39,18 +39,18 @@ exports[`Header -- AvatarMenu should render correctly 1`] = `
         }
       >
         Logout
-      </WithStyles(Typography)>
-    </WithStyles(MenuItem)>
-    <WithStyles(MenuItem)
+      </WithStyles>
+    </WithStyles>
+    <WithStyles
       key="admin-menu"
       onClick={[Function]}
     >
-      <WithTheme(TextLink)
+      <WithTheme
         to="admin"
       >
         Admin
-      </WithTheme(TextLink)>
-    </WithStyles(MenuItem)>
-  </WithStyles(Menu)>
-</WithStyles(GridWrapper)>
+      </WithTheme>
+    </WithStyles>
+  </WithStyles>
+</WithStyles>
 `;
