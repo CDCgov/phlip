@@ -79,6 +79,7 @@ export class AddEditJurisdictions extends Component {
       throw { name: 'There are multiple jurisdictions that match this string. Please choose one from the list.' }
     } else {
       this.props.actions.onJurisdictionSelected(out[0])
+      this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
     }
   }
 

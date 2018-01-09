@@ -42,12 +42,16 @@ export default {
     return api.put(`/users/${user.id}`, user).then(res => res.data)
   },
 
-  addUserBookmark (userId, projectId) {
-    return api.post(`/users/${userId}/projectbookmarks/${projectId}`).then(res => res.data)
+  getUserBookmarks(id) {
+    return api.get(`/users/${id}/bookmarkedprojects`).then(res => res.data)
   },
 
-  removeUserBookmark (userId, projectId) {
-    return api.delete(`/users/${userId}/projectbookmarks/${projectId}`).then(res => res.data)
+  addUserBookmark(userId, projectId) {
+    return api.post(`/users/${userId}/bookmarkedprojects/${projectId}`).then(res => res.data)
+  },
+
+  removeUserBookmark(userId, projectId) {
+    return api.delete(`/users/${userId}/bookmarkedprojects/${projectId}`).then(res => res.data)
   },
 
   searchJurisdictionList(searchString) {

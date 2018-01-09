@@ -33,7 +33,6 @@ export const toggleBookmarkLogic = createLogic({
     let add = true
     let bookmarkList = [...currentUser.bookmarks]
 
-
     if (bookmarkList.includes(action.project.id)) {
       bookmarkList.splice(bookmarkList.indexOf(action.project.id), 1)
       add = false
