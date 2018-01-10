@@ -2,7 +2,7 @@ import React, { Children, cloneElement } from 'react'
 import PropTypes from 'prop-types'
 import styles from './tree-node.scss'
 
-const TreeNode = props => {
+export const TreeNode = props => {
   const {
     children,
     listIndex,

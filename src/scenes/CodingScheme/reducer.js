@@ -8,7 +8,7 @@ const INITIAL_STATE = {
 const getNodeKey = ({ treeIndex }) => treeIndex
 
 const codingSchemeReducer = (state = INITIAL_STATE, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case types.GET_SCHEME_SUCCESS:
       return {
         ...state,
@@ -21,21 +21,22 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
     case types.HANDLE_QUESTION_TREE_CHANGE:
       return {
         ...state,
-        questions: action.questions.map(question => ({
-          ...question,
-          hovering: false
-        }))
+        questions: action.questions
       }
 
     case types.TOGGLE_HOVER:
-      return {
-        ...state,
-        questions: changeNodeAtPath({
-          treeData: state.questions,
-          path: action.path,
-          getNodeKey,
-          newNode: { ...action.node, hovering: !action.node.hovering },
-        })
+      try {
+        return {
+          ...state,
+          questions: changeNodeAtPath({
+            treeData: state.questions,
+            path: action.path,
+            getNodeKey,
+            newNode: { ...action.node, hovering: action.hover }
+          })
+        }
+      } catch (e) {
+        return state
       }
 
     default:

@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CodingScheme scene -- Scheme component should render correctly 1`] = `
+<DragDropContext(ReactSortableTree)
+  generateNodeProps={[Function]}
+  isVirtualized={true}
+  onChange={[Function]}
+  style={
+    Object {
+      "flex": "1 0 50%",
+      "padding": "0 0 0 15px",
+    }
+  }
+  theme={
+    Object {
+      "nodeContentRenderer": [Function],
+      "reactVirtualizedListProps": Object {
+        "overscanRowCount": 10,
+      },
+      "rowHeight": 75,
+      "scaffoldBlockPxWidth": 100,
+      "slideRegionSize": 50,
+      "treeNodeRenderer": [Function],
+    }
+  }
+  treeData={Object {}}
+/>
+`;

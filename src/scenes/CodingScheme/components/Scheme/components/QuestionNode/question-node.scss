@@ -111,11 +111,15 @@ $scaffold-block: 100px;
   padding-right: 20px;
   white-space: nowrap;
   overflow: hidden;
+}
 
-  &:hover {
-    border: 2px dashed #1caae5;
-    border-radius: 5px;
-  }
+.rowLabelHovering {
+  @extend %rowItem;
+  padding-right: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  border: 2px dashed #1caae5;
+  border-radius: 5px;
 }
 
 .expandCollapseButton {

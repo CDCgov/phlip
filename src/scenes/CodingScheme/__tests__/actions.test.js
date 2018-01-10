@@ -14,9 +14,10 @@ describe('Coding Scheme actions creators', () => {
     const expectedAction = {
       type: types.TOGGLE_HOVER,
       node: { id: 4 },
-      path: [1,2,3]
+      path: [1,2,3],
+      hover: true
     }
-    expect(actions.toggleHover({ id: 4 }, [1,2,3])).toEqual(expectedAction)
+    expect(actions.toggleHover({ id: 4 }, [1,2,3], true)).toEqual(expectedAction)
   })
 
   test('should create an action to handle question tree change', () => {

@@ -18,7 +18,7 @@ const isDescendant = (older, younger) => {
   )
 }
 
-const QuestionNode = props => {
+export const QuestionNode = props => {
   const {
     scaffoldBlockPxWidth,
     toggleChildrenVisibility,
@@ -27,15 +27,16 @@ const QuestionNode = props => {
     isDragging,
     canDrop,
     canDrag,
-    onHover,
+    turnOnHover,
+    turnOffHover,
     node,
     draggedNode,
     path,
     treeIndex,
-    isSearchMatch,
-    isSearchFocus,
     didDrop,
     lowerSiblingCounts,
+    isSearchMatch,
+    isSearchFocus,
     listIndex,
     swapFrom,
     swapLength,
@@ -80,14 +81,18 @@ const QuestionNode = props => {
         <div className={styles.rowContents + (!canDrag ? ` ${styles.rowContentsDragDisabled}` : '')}>
           {handle}
           <CardContent
-            className={styles.rowLabel}
+            className={node.hovering ? styles.rowLabelHovering : styles.rowLabel}
             style={{ padding: 5, display: 'flex', alignItems: 'center' }}
-            onMouseEnter={onHover}
-            onMouseLeave={onHover}
+            onMouseEnter={turnOnHover}
+            onMouseLeave={turnOffHover}
           >
-            <Typography noWrap type="subheading" component="h4"
-                        style={{ opacity: node.hovering ? '.3' : '' }}>{questionBody}</Typography>
-            {node.hovering && !isDragging &&
+            <Typography
+              noWrap
+              type="subheading"
+              component="h4"
+              style={{ opacity: node.hovering ? '.3' : '' }}>{questionBody}</Typography>
+
+            {node.hovering &&
             <div style={{ zIndex: 5 }}>
               <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} />
               <Button color="accent" style={actionStyles} value={<Icon color="white">mode_edit</Icon>} />
