@@ -82,7 +82,7 @@ export const QuestionNode = props => {
           {handle}
           <CardContent
             className={node.hovering ? styles.rowLabelHovering : styles.rowLabel}
-            style={{ padding: 5, display: 'flex', alignItems: 'center' }}
+            style={{ padding: 5, display: 'flex', flex: 1, alignItems: 'center' }}
             onMouseEnter={turnOnHover}
             onMouseLeave={turnOffHover}
           >
@@ -90,7 +90,7 @@ export const QuestionNode = props => {
               noWrap
               type="subheading"
               component="h4"
-              style={{ opacity: node.hovering ? '.3' : '' }}>{questionBody}</Typography>
+              style={{ opacity: node.hovering ? '.3' : '', flex: 1 }}>{questionBody}</Typography>
 
             {node.hovering &&
             <div style={{ zIndex: 5 }}>
