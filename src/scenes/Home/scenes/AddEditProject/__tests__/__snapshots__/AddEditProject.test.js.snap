@@ -94,6 +94,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
       ]
     }
     edit={true}
+    raised={false}
   />
 </FormModal>
 `;
