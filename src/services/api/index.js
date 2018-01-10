@@ -7,38 +7,38 @@ export const api = axios.create({
 })
 
 export default {
-  login (user) {
+  login(user) {
     return api.post('/users/authenticate', user).then(res => {
       login(res.data.token.value)
       return res.data
     })
   },
 
-  logoutUser () {
+  logoutUser() {
     return new Promise(resolve => resolve(logout()))
   },
 
-  getProjects () {
+  getProjects() {
     return api.get('/projects').then(res => res.data)
   },
 
-  addProject (project) {
+  addProject(project) {
     return api.post('/projects', project).then(res => res.data)
   },
 
-  updateProject (project) {
+  updateProject(project) {
     return api.put(`/projects/${project.id}`, project).then(res => res.data)
   },
 
-  getUsers () {
+  getUsers() {
     return api.get('/users').then(res => res.data.users)
   },
 
-  addUser (user) {
+  addUser(user) {
     return api.post('/users', user).then(res => res.data.newUser)
   },
 
-  updateUser (user) {
+  updateUser(user) {
     return api.put(`/users/${user.id}`, user).then(res => res.data)
   },
 
@@ -74,7 +74,12 @@ export default {
     return api.put(`/projects/${projectId}/jurisdictions/${jurisdiction.id}`, jurisdiction).then(res => res.data)
   },
 
-  getScheme (projectId) {
+  getScheme(projectId) {
     return scheme
+  },
+
+  addQuestion(question, projectId) {
+    return question
+    // return api.post(`/projects/${projectId}/coding-scheme`, question).then(res => question)
   }
 }

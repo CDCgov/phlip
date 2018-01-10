@@ -1,4 +1,5 @@
 import { createLogic } from 'redux-logic'
+import addEditQuestionLogic from './scenes/AddEditQuestion/logic'
 import * as types from './actionTypes'
 
 const getSchemeLogic = createLogic({
@@ -13,5 +14,6 @@ const getSchemeLogic = createLogic({
 })
 
 export default [
-  getSchemeLogic
+  getSchemeLogic,
+  ...addEditQuestionLogic
 ]

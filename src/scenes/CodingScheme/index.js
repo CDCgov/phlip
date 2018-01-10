@@ -6,9 +6,11 @@ import Container from 'components/Layout'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Scheme from './components/Scheme'
+import { Route } from 'react-router-dom'
+import AddEditQuestion from './scenes/AddEditQuestion'
 
 export class CodingScheme extends Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
   }
 
@@ -16,10 +18,10 @@ export class CodingScheme extends Component {
     this.props.actions.getSchemeRequest(this.props.projectId)
   }
 
-  render () {
+  render() {
     return (
       <Container column flex>
-        <Header projectName={this.props.projectName} />
+        <Header projectName={this.props.projectName} projectId={this.props.projectId} />
         <Container flex style={{ backgroundColor: '#f5f5f5', paddingTop: 25 }}>
           <Scheme
             questions={this.props.questions}
@@ -28,6 +30,9 @@ export class CodingScheme extends Component {
           />
         </Container>
         <Footer />
+        <Route
+          path="/project/:id/coding-scheme/add"
+          component={AddEditQuestion} />
       </Container>
     )
   }

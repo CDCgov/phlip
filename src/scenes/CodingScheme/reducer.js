@@ -1,5 +1,5 @@
 import * as types from './actionTypes'
-import { changeNodeAtPath } from 'react-sortable-tree'
+import { changeNodeAtPath, addNodeUnderParent } from 'react-sortable-tree'
 
 const INITIAL_STATE = {
   questions: []
@@ -37,6 +37,13 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         }
       } catch (e) {
         return state
+      }
+
+    case types.ADD_QUESTION_SUCCESS:
+      console.log(action.payload)
+      return {
+        ...state,
+        questions: [...state.questions, action.payload]
       }
 
     default:

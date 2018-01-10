@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from './actions'
-import { default as formActions }  from 'redux-form/lib/actions'
+import { default as formActions } from 'redux-form/lib/actions'
 import { withRouter } from 'react-router'
 import { ModalTitle, ModalActions, ModalContent } from 'components/Modal'
 import Divider from 'material-ui/Divider'
@@ -22,7 +22,7 @@ export class AddEditProject extends Component {
     location: PropTypes.object
   }
 
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.projectDefined = this.props.match.url === '/project/add' ? null : this.props.location.state.projectDefined
     this.state = {
@@ -34,8 +34,8 @@ export class AddEditProject extends Component {
     this.props.formActions.reset('projectForm')
     return this.state.edit
       ? this.projectDefined
-      ? this.setState({ edit: !this.state.edit })
-      : this.props.history.goBack()
+        ? this.setState({ edit: !this.state.edit })
+        : this.props.history.goBack()
       : this.props.history.goBack()
   }
 
@@ -78,19 +78,19 @@ export class AddEditProject extends Component {
 
   formatDate = (value, name) => new Date(value).toLocaleDateString()
 
-  render () {
+  render() {
     const editAction = [{ value: 'Edit', onClick: this.onEditForm, type: 'button' }]
 
     const actions = this.projectDefined && !this.state.edit
       ? editAction
       : [{ value: 'Cancel', onClick: this.onCancel, type: 'button' },
-        {
-          value: this.projectDefined
-            ? 'Save'
-            : 'Create',
-          type: 'submit',
-          disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors)
-        }
+      {
+        value: this.projectDefined
+          ? 'Save'
+          : 'Create',
+        type: 'submit',
+        disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors)
+      }
       ]
 
     const options = [
@@ -108,7 +108,7 @@ export class AddEditProject extends Component {
         initialValues={this.props.location.state.projectDefined || {}}
         width="600px" height="400px">
         <ModalTitle title={this.getModalTitle()} edit={this.state.edit}
-                    closeButton={!!this.projectDefined} onEditForm={this.onEditForm} onCloseForm={this.onCancel} />
+          closeButton={!!this.projectDefined} onEditForm={this.onEditForm} onCloseForm={this.onCancel} />
         <Divider />
         <ModalContent>
           <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px 0 15px' }}>
@@ -132,21 +132,21 @@ export class AddEditProject extends Component {
               disabled={!this.state.edit}
             />
             {this.projectDefined &&
-            <DetailRow
-              component={TextInput}
-              disabled={true}
-              label="Created By"
-              name="createdBy"
-            />}
+              <DetailRow
+                component={TextInput}
+                disabled={true}
+                label="Created By"
+                name="createdBy"
+              />}
             {this.projectDefined &&
-            <DetailRow
-              component={TextInput}
-              disabled={true}
-              label="Created Date"
-              name="dateCreated"
-              format={this.formatDate}
-              style={{ paddingBottom: 0 }}
-            />
+              <DetailRow
+                component={TextInput}
+                disabled={true}
+                label="Created Date"
+                name="dateCreated"
+                format={this.formatDate}
+                style={{ paddingBottom: 0 }}
+              />
             }
           </Container>
         </ModalContent>
