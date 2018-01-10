@@ -41,6 +41,7 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
               Object {
                 "alignItems": "center",
                 "display": "flex",
+                "flex": 1,
                 "padding": 5,
               }
             }
@@ -50,6 +51,7 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
               noWrap={true}
               style={
                 Object {
+                  "flex": 1,
                   "opacity": "",
                 }
               }
