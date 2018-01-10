@@ -15,7 +15,7 @@ describe('Home logic', () => {
 
   const setupStore = initialBookmarks => {
     return createMockStore({
-      initialState: { data: { user: { currentUser: { id: 5, bookmarks: initialBookmarks }}}},
+      initialState: { data: { user: { currentUser: { id: 5, bookmarks: initialBookmarks } } } },
       reducer: mockReducer,
       logic: logic,
       injectedDeps: {
@@ -35,14 +35,14 @@ describe('Home logic', () => {
     store.dispatch({ type: types.GET_PROJECTS_REQUEST })
 
     store.whenComplete(() => {
-    expect(store.actions).toEqual([
+      expect(store.actions).toEqual([
         { type: types.GET_PROJECTS_REQUEST },
         {
           type: types.GET_PROJECTS_SUCCESS,
           payload: {
             projects: [
-            { name: 'Project 1', id: 1, lastEditedBy: 'Test User', dateLastEdited: new Date(2017, 1, 2) },
-            { name: 'Project 2', id: 2, lastEditedBy: 'Test User' }
+              { name: 'Project 1', id: 1, lastEditedBy: 'Test User', dateLastEdited: new Date(2017, 1, 2) },
+              { name: 'Project 2', id: 2, lastEditedBy: 'Test User' }
             ],
             bookmarkList: [1],
             error: false,
@@ -82,7 +82,7 @@ describe('Home logic', () => {
 
     store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
     store.whenComplete(() => {
-      expect(store.actions[1].payload.bookmarkList).toEqual([1,5])
+      expect(store.actions[1].payload.bookmarkList).toEqual([1, 5])
       done()
     })
   })
