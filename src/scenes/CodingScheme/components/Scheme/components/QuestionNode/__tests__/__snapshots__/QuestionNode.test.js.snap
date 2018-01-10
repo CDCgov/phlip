@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
+<div
+  style={
+    Object {
+      "left": 50,
+    }
+  }
+>
+  <div
+    className="undefined undefined"
+  >
+    <div>
+      <Card
+        style={
+          Object {
+            "backgroundColor": "white",
+            "border": "none",
+            "opacity": 1,
+            "padding": "5px 10px",
+            "width": 830,
+          }
+        }
+      >
+        <div
+          className="undefined undefined"
+        >
+          <div>
+            <WithTheme
+              color="black"
+              size="24"
+            >
+              reorder
+            </WithTheme>
+          </div>
+          <WithStyles
+            onMouseEnter={[Function]}
+            onMouseLeave={[Function]}
+            style={
+              Object {
+                "alignItems": "center",
+                "display": "flex",
+                "padding": 5,
+              }
+            }
+          >
+            <WithStyles
+              component="h4"
+              noWrap={true}
+              style={
+                Object {
+                  "opacity": "",
+                }
+              }
+              type="subheading"
+            >
+              la la la
+            </WithStyles>
+          </WithStyles>
+          <WithStyles
+            disableActionSpacing={true}
+            style={
+              Object {
+                "padding": 0,
+              }
+            }
+          >
+            <div
+              style={
+                Object {
+                  "flex": "1 1 auto",
+                }
+              }
+            />
+          </WithStyles>
+        </div>
+      </Card>
+    </div>
+  </div>
+</div>
+`;

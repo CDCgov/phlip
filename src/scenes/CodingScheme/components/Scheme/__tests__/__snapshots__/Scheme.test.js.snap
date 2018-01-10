@@ -23,6 +23,6 @@ exports[`CodingScheme scene -- Scheme component should render correctly 1`] = `
       "treeNodeRenderer": [Function],
     }
   }
-  treeData={Object {}}
+  treeData={Array []}
 />
 `;

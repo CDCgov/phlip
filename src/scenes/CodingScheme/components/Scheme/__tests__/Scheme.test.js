@@ -1,9 +1,9 @@
 import React from 'react'
-import { shallow, mount } from 'enzyme'
+import { shallow } from 'enzyme'
 import { Scheme } from '../index'
 
 const props = {
-  questions: {},
+  questions: [],
   handleQuestionTreeChange: () => {},
   handleHoverOnQuestion: () => {}
 }
