@@ -25,5 +25,9 @@ exports[`CodingScheme scene should render correctly 1`] = `
     />
   </Container>
   <Footer />
+  <Route
+    component={[Function]}
+    path="/project/:id/coding-scheme/add"
+  />
 </Container>
 `;
