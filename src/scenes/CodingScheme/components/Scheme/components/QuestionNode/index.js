@@ -43,6 +43,8 @@ export const QuestionNode = props => {
     swapDepth,
     isOver,
     parentNode,
+    enableHover,
+    disableHover,
     ...otherProps
   } = props
 
@@ -68,7 +70,7 @@ export const QuestionNode = props => {
   }
 
   const dragPreview = connectDragPreview(
-    <div>
+    <div onDragStart={disableHover} onDragEnd={enableHover}>
       <Card
         className={styles.nodeCard}
         style={{
@@ -81,10 +83,10 @@ export const QuestionNode = props => {
         <div className={styles.rowContents + (!canDrag ? ` ${styles.rowContentsDragDisabled}` : '')}>
           {handle}
           <CardContent
-            className={node.hovering ? styles.rowLabelHovering : styles.rowLabel}
+            className={styles.rowLabel}
             style={{ padding: 5, display: 'flex', flex: 1, alignItems: 'center' }}
-            onMouseEnter={turnOnHover}
-            onMouseLeave={turnOffHover}
+            onMouseEnter={!isDragging ? turnOnHover : null}
+            onMouseLeave={!isDragging ? turnOffHover : null}
           >
             <Typography
               noWrap

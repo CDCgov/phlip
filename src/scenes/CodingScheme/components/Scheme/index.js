@@ -3,7 +3,7 @@ import SortableTree from 'react-sortable-tree'
 import TreeNode from './components/TreeNode'
 import QuestionNode from './components/QuestionNode'
 
-export const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuestion }) => {
+export const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuestion, enableHover, disableHover }) => {
   return (
     <SortableTree
       theme={{
@@ -22,7 +22,9 @@ export const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuest
       generateNodeProps={({ node, path }) => {
         return {
           turnOffHover: () => handleHoverOnQuestion(node, path, false),
-          turnOnHover: () => handleHoverOnQuestion(node, path, true)
+          turnOnHover: () => handleHoverOnQuestion(node, path, true),
+          enableHover: () => enableHover(),
+          disableHover: () => disableHover()
         }
       }}
       isVirtualized={true}

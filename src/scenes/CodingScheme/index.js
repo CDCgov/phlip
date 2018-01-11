@@ -27,6 +27,8 @@ export class CodingScheme extends Component {
             questions={this.props.questions}
             handleQuestionTreeChange={this.props.actions.updateQuestionTree}
             handleHoverOnQuestion={this.props.actions.toggleHover}
+            disableHover={this.props.actions.disableHover}
+            enableHover={this.props.actions.enableHover}
           />
         </Container>
         <Footer />
