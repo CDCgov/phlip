@@ -31,9 +31,12 @@ exports[`CodingScheme scene --- Header component should render correctly 1`] = `
     }
   />
   <WithTheme
-    color="accent"
-    onClick={[Function]}
-    value="+ Add New Question"
-  />
+    to="/project/undefined/coding-scheme/add"
+  >
+    <WithTheme
+      color="accent"
+      value="+ Add New Question"
+    />
+  </WithTheme>
 </AppBar>
 `;

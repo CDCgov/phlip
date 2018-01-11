@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter'
 import logic from '../logic'
 import * as types from '../actionTypes'
 import apiCalls, { api } from 'services/api'
-import { scheme } from 'data/mockCodingScheme'
+import { scheme, outline } from 'data/mockCodingScheme'
 
 describe('CodingScheme logic', () => {
   let mock
@@ -36,9 +36,10 @@ describe('CodingScheme logic', () => {
         { type: types.GET_SCHEME_REQUEST },
         {
           type: types.GET_SCHEME_SUCCESS,
-          payload: [
-            ...scheme
-          ]
+          payload: {
+            codingSchemeQuestions: scheme,
+            outline
+          }
         }
       ])
       done()
