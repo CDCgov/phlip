@@ -1,21 +1,55 @@
 import * as types from './actionTypes'
-import { changeNodeAtPath, addNodeUnderParent } from 'react-sortable-tree'
+import { changeNodeAtPath, getFlatDataFromTree, getTreeFromFlatData, walk, map } from 'react-sortable-tree'
+import { sortList } from 'utils'
 
 const INITIAL_STATE = {
-  questions: []
+  questions: [],
+  outline: {}
 }
 
-const getNodeKey = ({ treeIndex }) => treeIndex
+const getQuestionsFromOutline = (outline, questions) => {
+  return questions.reduce((arr, q) => {
+    return [
+      ...arr,
+      {
+        ...q,
+        ...outline[q.id],
+        hovering: false
+      }
+    ]
+  }, [])
+}
+
+const sortQuestions = questions => {
+  const sortedChildren = map({
+    treeData: questions,
+    getNodeKey,
+    callback: ({ node }) => {
+      if (node.children) {
+        node.children = sortList(node.children, 'positionInParent', 'asc')
+      }
+      return node
+    },
+    ignoreCollapsed: false
+  })
+  return sortList(sortedChildren, 'positionInParent', 'asc')
+}
+
+const getNodeKey = ({ node, treeIndex }) => {
+  return treeIndex
+}
 
 const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_SCHEME_SUCCESS:
       return {
         ...state,
-        questions: action.payload.map(question => ({
-          ...question,
-          hovering: false
-        }))
+        questions: sortQuestions(
+          getTreeFromFlatData({
+            flatData: getQuestionsFromOutline(action.payload.outline, action.payload.codingSchemeQuestions)
+          })
+        ),
+        outline: action.payload.outline
       }
 
     case types.HANDLE_QUESTION_TREE_CHANGE:

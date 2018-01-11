@@ -6,7 +6,7 @@ export const scheme = [
     hint: '',
     comment: false,
     answers: [],
-    children: []
+    id: 1
   },
   {
     type: 'cb',
@@ -14,7 +14,7 @@ export const scheme = [
     hint: '',
     comment: false,
     answers: [],
-    children: []
+    id: 2
   },
   {
     type: 'text',
@@ -22,7 +22,7 @@ export const scheme = [
     hint: '',
     comment: false,
     answers: [],
-    children: []
+    id: 3
   },
   {
     type: 'mc',
@@ -30,7 +30,7 @@ export const scheme = [
     hint: '',
     comment: false,
     answers: [],
-    children: []
+    id: 4
   },
   {
     type: 'binary',
@@ -38,7 +38,7 @@ export const scheme = [
     hint: '',
     comment: false,
     answers: [],
-    children: []
+    id: 5
   },
   {
     type: 'cat',
@@ -46,15 +46,15 @@ export const scheme = [
     hint: '',
     comment: false,
     answers: [],
-    children: []
+    id: 6
   },
   {
     type: 'cb',
-    questionBody: 'Is rabies vaccination required to obtain a license or registration for the animal?\n',
+    questionBody: 'Is rabies vaccination required to obtain a license or registration for the animal?',
     hint: '',
     comment: false,
     answers: [],
-    children: []
+    id: 7
   },
   {
     type: 'text',
@@ -62,7 +62,15 @@ export const scheme = [
     hint: '',
     comment: false,
     answers: [],
-    children: []
+    id: 8
+  },
+  {
+    type: 'binary',
+    questionBody: 'What are the vaccinations or certificate exemptions for animals in the state?',
+    hint: '',
+    comment: false,
+    answers: [],
+    id: 9
   },
   {
     type: 'binary',
@@ -70,7 +78,7 @@ export const scheme = [
     hint: '',
     comment: false,
     answers: [],
-    children: []
+    id: 10
   },
   {
     type: 'cat',
@@ -78,7 +86,7 @@ export const scheme = [
     hint: '',
     comment: false,
     answers: [],
-    children: []
+    id: 11
   },
   {
     type: 'mc',
@@ -86,6 +94,22 @@ export const scheme = [
     hint: '',
     comment: false,
     answers: [],
-    children: []
+    id: 12
   }
 ]
+
+export const outline = {
+  1: { parentId: 0, positionInParent: 0 },
+  2: { parentId: 1, positionInParent: 1 },
+  3: { parentId: 1, positionInParent: 0 },
+  4: { parentId: 1, positionInParent: 2 },
+  5: { parentId: 1, positionInParent: 4 },
+  6: { parentId: 1, positionInParent: 3 },
+  7: { parentId: 1, positionInParent: 5 },
+  8: { parentId: 1, positionInParent: 6 },
+  9: { parentId: 8, positionInParent: 0 },
+  10: { parentId: 0, positionInParent: 1 },
+  11: { parentId: 0, positionInParent: 2 },
+  12: { parentId: 10, positionInParent: 0 }
+
+}
