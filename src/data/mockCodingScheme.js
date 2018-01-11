@@ -111,5 +111,4 @@ export const outline = {
   10: { parentId: 0, positionInParent: 1 },
   11: { parentId: 0, positionInParent: 2 },
   12: { parentId: 10, positionInParent: 0 }
-
 }

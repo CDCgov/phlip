@@ -7,6 +7,46 @@ const INITIAL_STATE = {
   outline: {}
 }
 
+const getOutlineFromQuestions = (outline, questions) => {
+  let newOutline = {}
+  const flat = getFlatDataFromTree({
+    treeData: questions,
+    getNodeKey,
+    ignoreCollapsed: false
+  })
+  console.log(flat)
+  flat.forEach(question => {
+    newOutline[question.id] = {
+      parentId: question.parentNode ? question.parentNode.id : 0,
+      positionInParent: question.parentNode ? 0 : 0
+    }
+  })
+}
+
+const questionsToOutline = questions => {
+  const outline = {}
+
+  // Get the root questions information
+  questions.forEach((parentQuestion, i) => {
+    outline[parentQuestion.id] = { parentId: 0, positionInParent: i }
+  })
+
+  walk({
+    treeData: questions,
+    getNodeKey,
+    callback: ({ node }) => {
+      if (node.children) {
+        node.children.forEach((child, i) => {
+          outline[child.id] = { parentId: node.id, positionInParent: i }
+        })
+      }
+    },
+    ignoreCollapsed: false
+  })
+
+  return outline
+}
+
 const getQuestionsFromOutline = (outline, questions) => {
   return questions.reduce((arr, q) => {
     return [
@@ -53,6 +93,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.HANDLE_QUESTION_TREE_CHANGE:
+      console.log(questionsToOutline(action.questions))
       return {
         ...state,
         questions: action.questions
