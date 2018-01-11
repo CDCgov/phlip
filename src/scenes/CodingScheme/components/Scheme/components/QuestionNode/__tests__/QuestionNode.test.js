@@ -12,13 +12,15 @@ const props = {
   path: [0],
   scaffoldBlockPxWidth: 50,
   treeIndex: 0,
+  isDragging: false,
+  isOver: false,
+  didDrop: false,
   connectDragPreview: (preview) => preview,
   connectDragSource: (handle) => handle,
-  didDrop: false,
   turnOnHover: () => {},
   turnOffHover: () => {},
-  isDragging: false,
-  isOver: false
+  enableHover: () => {},
+  disableHover: () => {},
 }
 
 const setup = otherProps => mount(<QuestionNode {...props} {...otherProps} />)
@@ -53,6 +55,24 @@ describe('CodingScheme -- Scheme -- QuestionNode', () => {
     test('should not display actions if hovering = false', () => {
       const wrapper = setup()
       expect(wrapper.find('CardContent').find('button')).toHaveLength(0)
+    })
+  })
+
+  describe('Hovering disable', () => {
+    test('should call disableHover when dragging starts', () => {
+      const spy = jest.spyOn(props, 'disableHover')
+      const wrapper = setup()
+      wrapper.find('div').at(3).simulate('dragstart')
+      wrapper.update()
+      expect(spy).toHaveBeenCalled()
+    })
+
+    test('should call enableHover when dragging stops', () => {
+      const spy = jest.spyOn(props, 'enableHover')
+      const wrapper = setup()
+      wrapper.find('div').at(3).simulate('dragend')
+      wrapper.update()
+      expect(spy).toHaveBeenCalled()
     })
   })
 })

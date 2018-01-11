@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import SortableTree from 'react-sortable-tree'
 import TreeNode from './components/TreeNode'
 import QuestionNode from './components/QuestionNode'
@@ -30,6 +31,14 @@ export const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuest
       isVirtualized={true}
     />
   )
+}
+
+Scheme.propTypes = {
+  questions: PropTypes.array,
+  handleQuestionTreeChange: PropTypes.func,
+  handleHoverOnQuestion: PropTypes.func,
+  enableHover: PropTypes.func,
+  disableHover: PropTypes.func
 }
 
 export default Scheme

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from './actions'
@@ -38,6 +39,13 @@ export class CodingScheme extends Component {
       </Container>
     )
   }
+}
+
+CodingScheme.propTypes = {
+  projectName: PropTypes.string,
+  projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  questions: PropTypes.array,
+  actions: PropTypes.object
 }
 
 const mapStateToProps = (state, ownProps) => ({

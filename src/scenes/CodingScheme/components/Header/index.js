@@ -6,7 +6,7 @@ import AppBar from 'components/AppBar'
 import SearchBar from 'components/SearchBar'
 import TextLink from 'components/TextLink'
 
-export const Header = ({ projectName, handleAddQuestion, projectId }) => (
+export const Header = ({ projectName, projectId }) => (
   <AppBar>
     <Typography type="title" color="inherit" style={{ flex: 1 }}>
       Coding Scheme | <span style={{ color: '#0faee6' }}>{projectName}</span>
@@ -17,9 +17,10 @@ export const Header = ({ projectName, handleAddQuestion, projectId }) => (
     </TextLink>
   </AppBar>
 )
+
 Header.propTypes = {
   projectName: PropTypes.string,
-  handleAddQuestion: PropTypes.func
+  projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 }
 
 export default Header

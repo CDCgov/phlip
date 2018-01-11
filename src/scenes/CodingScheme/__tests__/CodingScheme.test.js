@@ -6,7 +6,9 @@ const props = {
   actions: {
     getSchemeRequest: () => {},
     toggleHover: () => {},
-    updateQuestionTree: () => {}
+    updateQuestionTree: () => {},
+    enableHover: () => {},
+    disableHover: () => {}
   },
   questions: {}
 }
