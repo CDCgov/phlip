@@ -22,7 +22,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
     onCloseForm={[Function]}
     title="Add Jurisdiction"
   />
-  <WithStyles(Divider) />
+  <WithStyles />
   <ModalContent>
     <Container
       column={true}
@@ -79,7 +79,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       >
         <Column
           component={
-            <WithStyles(GridWrapper)
+            <WithStyles
               item={true}
             />
           }
@@ -87,6 +87,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
           flex={true}
         >
           <Field
+            autoOk={true}
             component={[Function]}
             dateFormat="MM/DD/YYYY"
             invalidLabel="mm/dd/yyyy"
@@ -97,7 +98,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
         </Column>
         <Column
           component={
-            <WithStyles(GridWrapper)
+            <WithStyles
               item={true}
             />
           }
@@ -105,6 +106,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
           flex={false}
         >
           <Field
+            autoOk={true}
             component={[Function]}
             dateFormat="MM/DD/YYYY"
             invalidLabel="mm/dd/yyyy"

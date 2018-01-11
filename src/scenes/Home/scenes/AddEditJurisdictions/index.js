@@ -129,7 +129,7 @@ export class AddEditJurisdictions extends Component {
           SearchBarProps={{
             searchValue: this.props.searchValue,
             handleSearchValueChange: (event) => this.props.actions.updateSearchValue(event.target.value),
-            placeholder: 'Search jurisdictions'
+            placeholder: 'Search'
           }}
         />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
-<WithStyles(Modal)
+<WithStyles
   hideOverflow={true}
   maxWidth="md"
   onClose={[Function]}
@@ -11,12 +11,12 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
     SearchBarProps={
       Object {
         "handleSearchValueChange": [Function],
-        "placeholder": "Search jurisdictions",
+        "placeholder": "Search",
         "searchValue": undefined,
       }
     }
     buttons={
-      <WithTheme(Button)
+      <WithTheme
         color="accent"
         onClick={[Function]}
         value="+ Add Jurisdiction"
@@ -74,5 +74,5 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
     onSuggestionValueChanged={[Function]}
     open={false}
   />
-</WithStyles(Modal)>
+</WithStyles>
 `;

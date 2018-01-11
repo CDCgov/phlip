@@ -25,7 +25,7 @@ export const AvatarMenu = ({ role, initials, menuAnchor, open, onCloseMenu, onLo
         </MenuItem>
         {role === 'Admin' &&
           <MenuItem onClick={onCloseMenu} key="admin-menu">
-            <TextLink to="admin">Admin</TextLink>
+            <TextLink to="admin">User Management</TextLink>
           </MenuItem>
         }
       </Menu>

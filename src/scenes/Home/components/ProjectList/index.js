@@ -19,7 +19,7 @@ export const ProjectList = props => {
           <SearchBar
             searchValue={searchValue}
             handleSearchValueChange={handleSearchValueChange}
-            placeholder="Search projects"
+            placeholder="Search"
             containerStyles={{ padding: 20, justifyContent: 'flex-end' }}
           />
         </Container>
