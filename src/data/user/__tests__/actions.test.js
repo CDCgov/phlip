@@ -2,12 +2,11 @@ import * as actions from '../actions'
 import * as types from '../actionTypes'
 
 describe('User action creators', () => {
-  test('should create an action to open menu', () => {
+  test('should create an action to toggle menu', () => {
     const expectedAction = {
-      type: types.OPEN_MENU,
-      anchor: null
+      type: types.TOGGLE_MENU
     }
-    expect(actions.openMenu(null)).toEqual(expectedAction)
+    expect(actions.toggleMenu()).toEqual(expectedAction)
   })
 
   test('should create an action to close menu', () => {

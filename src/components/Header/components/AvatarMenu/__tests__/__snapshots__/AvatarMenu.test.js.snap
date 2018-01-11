@@ -1,56 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Header -- AvatarMenu should render correctly 1`] = `
-<WithStyles
+<WithStyles(GridWrapper)
   item={true}
+  style={
+    Object {
+      "zIndex": 2,
+    }
+  }
 >
-  <Avatar
-    big={false}
-    initials="TU"
-    onClick={[Function]}
-    style={
-      Object {
-        "cursor": "pointer",
-      }
-    }
-  />
-  <WithStyles
-    MenuListProps={
-      Object {
-        "disablePadding": true,
-      }
-    }
-    anchorEl={null}
-    id="avatar-menu"
-    marginThreshold={30}
-    onClose={[Function]}
-    open={false}
+  <Manager
+    tag="div"
   >
-    <WithStyles
-      key="logout-menu"
-      onClick={[Function]}
-    >
-      <WithStyles
-        color="primary"
+    <Target>
+      <Avatar
+        big={false}
+        initials="TU"
+        onClick={[Function]}
         style={
           Object {
-            "fontSize": "1rem",
+            "cursor": "pointer",
           }
         }
-      >
-        Logout
-      </WithStyles>
-    </WithStyles>
-    <WithStyles
-      key="admin-menu"
-      onClick={[Function]}
-    >
-      <WithTheme
-        to="admin"
-      >
-        User Management
-      </WithTheme>
-    </WithStyles>
-  </WithStyles>
-</WithStyles>
+      />
+    </Target>
+  </Manager>
+</WithStyles(GridWrapper)>
 `;

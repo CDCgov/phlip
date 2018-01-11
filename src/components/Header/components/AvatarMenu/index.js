@@ -1,34 +1,46 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Grid from 'material-ui/Grid'
-import Menu, { MenuItem } from 'material-ui/Menu'
-import Typography from 'material-ui/Typography'
+import { ListItemIcon, ListItemText } from 'material-ui/List'
+import Icon from 'components/Icon'
 import Avatar from 'components/Avatar'
-import TextLink from 'components/TextLink'
+import { MenuItem, MenuList } from 'material-ui/Menu'
+import Grow from 'material-ui/transitions/Grow'
+import Paper from 'material-ui/Paper'
+import { Manager, Target, Popper } from 'react-popper'
+import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
 
-export const AvatarMenu = ({ role, initials, menuAnchor, open, onCloseMenu, onLogoutUser, onOpenMenu }) => {
+export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, onOpenAdminPage, onToggleMenu }) => {
   return (
-    <Grid item>
-      <Avatar onClick={onOpenMenu} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />
-      <Menu
-        id="avatar-menu"
-        onClose={onCloseMenu}
-        anchorEl={menuAnchor}
-        marginThreshold={30}
-        MenuListProps={{
-          disablePadding: true
-        }}
-        open={open}
-      >
-        <MenuItem onClick={onLogoutUser} key="logout-menu">
-          <Typography color="primary" style={{ fontSize: '1rem' }}>Logout</Typography>
-        </MenuItem>
-        {role === 'Admin' &&
-          <MenuItem onClick={onCloseMenu} key="admin-menu">
-            <TextLink to="admin">User Management</TextLink>
-          </MenuItem>
-        }
-      </Menu>
+    <Grid item style={{ zIndex: 2 }}>
+      <Manager>
+        <Target>
+          <Avatar onClick={onToggleMenu} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />
+        </Target>
+        {open && <Popper placement="bottom-start" eventsEnabled={open}>
+          <ClickAwayListener onClickAway={onCloseMenu}>
+            <Grow in={open} id="avatar-menu" style={{ transformOrigin: '0 0 0' }}>
+              <Paper style={{ marginRight: 20, marginTop: 5 }}>
+                <MenuList role="menu">
+                  {role === 'Admin' &&
+                  <MenuItem onClick={onOpenAdminPage} selected={false} key="admin-menu">
+                    <ListItemIcon>
+                      <Icon color="accent">person</Icon>
+                    </ListItemIcon>
+                    <ListItemText style={{ color: '#5f6060' }} disableTypography={true} primary="User Management" />
+                  </MenuItem>}
+                  <MenuItem onClick={onLogoutUser} key="logout-menu">
+                    <ListItemIcon>
+                      <Icon color="accent">exit_to_app</Icon>
+                    </ListItemIcon>
+                    <ListItemText style={{ color: '#5f6060' }} disableTypography={true} primary="Logout" />
+                  </MenuItem>
+                </MenuList>
+              </Paper>
+            </Grow>
+          </ClickAwayListener>
+        </Popper>}
+      </Manager>
     </Grid>
   )
 }

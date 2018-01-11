@@ -3,8 +3,7 @@ import * as types from '../actionTypes'
 
 const initial = {
   currentUser: {},
-  menuOpen: false,
-  menuAnchor: null
+  menuOpen: false
 }
 
 describe('User reducer', () => {
@@ -12,32 +11,16 @@ describe('User reducer', () => {
     expect(reducer(undefined, {})).toEqual(initial)
   })
 
-  describe('OPEN_MENU', () => {
+  describe('TOGGLE_MENU', () => {
     test('should switch menuOpen to true and menuAnchor to anchor action key', () => {
       expect(
         reducer(
           { ...initial },
-          { type: types.OPEN_MENU, anchor: '<div></div>' }
+          { type: types.TOGGLE_MENU }
         )
       ).toEqual({
         currentUser: {},
-        menuAnchor: '<div></div>',
         menuOpen: true
-      })
-    })
-  })
-
-  describe('CLOSE_MENU', () => {
-    test('should set menuOpen to false and menuAnchor to null', () => {
-      expect(
-        reducer(
-          { ...initial, menuOpen: true, menuAnchor: '<div></div>' },
-          { type: types.CLOSE_MENU }
-        )
-      ).toEqual({
-        currentUser: {},
-        menuAnchor: null,
-        menuOpen: false
       })
     })
   })
@@ -52,7 +35,6 @@ describe('User reducer', () => {
       ).toEqual({
         currentUser: { firstName: 'user' },
         menuOpen: false,
-        menuAnchor: null
       })
     })
   })
@@ -72,13 +54,12 @@ describe('User reducer', () => {
     test('should set currentUser to user object in action', () => {
       expect(
         reducer(
-          { currentUser: { firstName: 'user', bookmarks: [5,6] }, menuOpen: false, menuAnchor: null },
+          { currentUser: { firstName: 'user', bookmarks: [5,6] }, menuOpen: false },
           { type: types.TOGGLE_BOOKMARK_SUCCESS, payload: { user: { firstName: 'user', bookmarks: [5,6,7] } }}
         )
       ).toEqual({
         currentUser: { firstName: 'user', bookmarks: [5,6,7] },
-        menuOpen: false,
-        menuAnchor: null
+        menuOpen: false
       })
     })
   })

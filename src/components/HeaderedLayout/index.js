@@ -14,16 +14,16 @@ const mainStyles = {
 }
 
 
-export const HeaderedLayout = ({ user, open, actions, menuAnchor, children, history }) => {
+export const HeaderedLayout = ({ user, open, actions, children, history }) => {
   return (
     <Grid container spacing={0} direction="column" style={{ flex: '1' }}>
       <Header
         user={user}
         open={open}
-        menuAnchor={menuAnchor}
         handleLogoutUser={() => { history.push('/'); actions.logoutUser() }}
-        handleOpenMenu={event => actions.openMenu(event.currentTarget)}
-        handleCloseMenu={actions.closeMenu}
+        handleToggleMenu={() => actions.toggleMenu()}
+        handleOpenAdminPage={() => { history.push('/admin'); actions.toggleMenu() }}
+        handleCloseMenu={() => actions.toggleMenu()}
       />
       <Grid container spacing={0} style={mainStyles}>
         {children}
