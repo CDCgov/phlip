@@ -75,7 +75,7 @@ export default {
   },
 
   reorderScheme(outline, projectId) {
-    return api.put(`/projects/${projectId}/codingscheme`, { outline: outline }).then(res => res.data)
+    return api.put(`/projects/${projectId}/codingscheme`, outline).then(res => res.data)
   },
 
   addQuestion(question, projectId) {

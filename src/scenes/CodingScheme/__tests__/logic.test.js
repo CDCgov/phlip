@@ -24,7 +24,7 @@ describe('CodingScheme logic', () => {
     })
   }
 
-  test('should call the api to get the coding scheme and dispatch GET_SCHEME_SUCCESS when successful', (done) => {
+  xtest('should call the api to get the coding scheme and dispatch GET_SCHEME_SUCCESS when successful', (done) => {
     mock.onGet('/projects/1/codingscheme').reply(200, {
       codingSchemeQuestions: [{ id: 1, text: 'question 1' }],
       outline: { 1: { parentId: 0, positionInParent: 0 } }

@@ -67,14 +67,15 @@ const getNodeKey = ({ node, treeIndex }) => {
 const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_SCHEME_SUCCESS:
+      console.log(action.payload)
       return {
         ...state,
         questions: sortQuestions(
           getTreeFromFlatData({
-            flatData: getQuestionsFromOutline(action.payload.outline.Outline, action.payload.codingSchemeQuestions)
+            flatData: getQuestionsFromOutline(action.payload.outline, action.payload.codingSchemeQuestions)
           })
         ),
-        outline: action.payload.outline.Outline
+        outline: action.payload.outline
       }
 
     case types.HANDLE_QUESTION_TREE_CHANGE:

@@ -27,4 +27,30 @@ describe('Coding Scheme actions creators', () => {
     }
     expect(actions.updateQuestionTree([{ id: 4}, { id: 5 }])).toEqual(expectedAction)
   })
+
+  test('should create an action to disable hover', () => {
+    const expectedAction = {
+      type: types.DISABLE_HOVER
+    }
+
+    expect(actions.disableHover()).toEqual(expectedAction)
+  })
+
+  test('should create an action to enable hover', () => {
+    const expectedAction = {
+      type: types.ENABLE_HOVER
+    }
+
+    expect(actions.enableHover()).toEqual(expectedAction)
+  })
+
+  test('should create an action reorder the scheme', () => {
+    const expectedAction = {
+      type: types.REORDER_SCHEME_REQUEST,
+      projectId: 1
+    }
+
+    expect(actions.reorderSchemeRequest(1)).toEqual(expectedAction)
+  })
+
 })

@@ -27,11 +27,9 @@ describe('Coding Scheme reducer', () => {
         payload: {
           codingSchemeQuestions: questions,
           outline: {
-            Outline: {
               1: { parentId: 0, positionInParent: 0 },
               2: { parentId: 0, positionInParent: 1 }
             }
-          }
         }
       }
 
@@ -246,6 +244,42 @@ describe('Coding Scheme reducer', () => {
           2: { parentId: 0, positionInParent: 0 }
         },
         allowHover: true
+      })
+    })
+  })
+
+  describe('ENABLE_HOVER', () => {
+    test('should set allow hover to true', () => {
+      const action = {
+        type: types.ENABLE_HOVER
+      }
+      const state = getReducer(
+        getState({ allowHover: false }),
+        action
+      )
+
+      expect(state).toEqual({
+        questions: [],
+        outline: {},
+        allowHover: true
+      })
+    })
+  })
+
+  describe('DISABLE_HOVER', () => {
+    test('should set allow hover to false', () => {
+      const action = {
+        type: types.DISABLE_HOVER
+      }
+      const state = getReducer(
+        getState(),
+        action
+      )
+
+      expect(state).toEqual({
+        questions: [],
+        outline: {},
+        allowHover: false
       })
     })
   })
