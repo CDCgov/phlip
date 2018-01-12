@@ -28,7 +28,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
       }
     >
       <SearchBar
-        placeholder="Search projects"
+        placeholder="Search"
       />
     </Container>
     <Table

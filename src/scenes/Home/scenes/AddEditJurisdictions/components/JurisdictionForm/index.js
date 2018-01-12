@@ -107,11 +107,11 @@ export const JurisdictionForm = props => {
           <Container style={{ marginTop: 30 }}>
             <Column flex>
               <Field component={DatePicker} name="startDate" invalidLabel="mm/dd/yyyy" label="Start Date"
-                     dateFormat="MM/DD/YYYY" validate={validateDate} />
+                     dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
             </Column>
             <Column>
               <Field component={DatePicker} name="endDate" invalidLabel="mm/dd/yyyy" label="End Date"
-                     dateFormat="MM/DD/YYYY" validate={validateDate} />
+                     dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
             </Column>
           </Container>
         </Container>

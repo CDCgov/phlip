@@ -11,7 +11,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
     SearchBarProps={
       Object {
         "handleSearchValueChange": [Function],
-        "placeholder": "Search jurisdictions",
+        "placeholder": "Search",
         "searchValue": undefined,
       }
     }

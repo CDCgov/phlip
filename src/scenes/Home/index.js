@@ -19,7 +19,7 @@ export class Home extends Component {
     actions: PropTypes.object,
     visibleProjects: PropTypes.arrayOf(PropTypes.number),
     page: PropTypes.number,
-    rowsPerPage: PropTypes.number,
+    rowsPerPage: PropTypes.string,
     sortBy: PropTypes.string,
     direction: PropTypes.string,
     searchValue: PropTypes.string,

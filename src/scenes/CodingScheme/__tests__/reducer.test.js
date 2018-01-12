@@ -18,8 +18,8 @@ describe('Coding Scheme reducer', () => {
   describe('GET_SCHEME_SUCCESS', () => {
     test('should set state.questions to action.payload and set hovering to false on all questions', () => {
       const questions = [
-        { questionBody: 'fa la la la', type: 1, id: 1 },
-        { questionBody: 'la la la', type: 2, id: 2 }
+        { text: 'fa la la la', type: 1, id: 1 },
+        { text: 'la la la', type: 2, id: 2 }
       ]
 
       const action = {
@@ -27,8 +27,10 @@ describe('Coding Scheme reducer', () => {
         payload: {
           codingSchemeQuestions: questions,
           outline: {
-            1: { parentId: 0, positionInParent: 0 },
-            2: { parentId: 0, positionInParent: 1 }
+            Outline: {
+              1: { parentId: 0, positionInParent: 0 },
+              2: { parentId: 0, positionInParent: 1 }
+            }
           }
         }
       }
@@ -40,8 +42,8 @@ describe('Coding Scheme reducer', () => {
 
       expect(state).toEqual({
         questions: [
-          { questionBody: 'fa la la la', type: 1, hovering: false, id: 1, parentId: 0, positionInParent: 0 },
-          { questionBody: 'la la la', type: 2, hovering: false, id: 2, parentId: 0, positionInParent: 1 }
+          { text: 'fa la la la', type: 1, hovering: false, id: 1, parentId: 0, positionInParent: 0 },
+          { text: 'la la la', type: 2, hovering: false, id: 2, parentId: 0, positionInParent: 1 }
         ],
         outline: {
           1: { parentId: 0, positionInParent: 0 },

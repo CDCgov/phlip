@@ -19,7 +19,7 @@ export const ProjectList = props => {
           <SearchBar
             searchValue={searchValue}
             handleSearchValueChange={handleSearchValueChange}
-            placeholder="Search projects"
+            placeholder="Search"
           />
         </Container>
         <Table style={{ borderCollapse: 'separate' }}>

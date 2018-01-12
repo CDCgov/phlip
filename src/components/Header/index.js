@@ -7,7 +7,7 @@ import Greeting from './components/Greeting'
 import AvatarMenu from './components/AvatarMenu'
 import { Link } from 'react-router-dom'
 
-export const Header = ({ theme, user, open, menuAnchor, handleLogoutUser, handleCloseMenu, handleOpenMenu }) => {
+export const Header = ({ theme, user, open, handleLogoutUser, handleCloseMenu, handleOpenAdminPage, handleToggleMenu }) => {
   const bgColor = theme.palette.primary['600']
 
   const styles = {
@@ -32,9 +32,9 @@ export const Header = ({ theme, user, open, menuAnchor, handleLogoutUser, handle
             initials={initials}
             role={user.role}
             open={open}
-            menuAnchor={menuAnchor}
-            onOpenMenu={handleOpenMenu}
+            onToggleMenu={handleToggleMenu}
             onCloseMenu={handleCloseMenu}
+            onOpenAdminPage={handleOpenAdminPage}
             onLogoutUser={handleLogoutUser}
           />
         </Grid>
@@ -47,7 +47,6 @@ Header.propTypes = {
   theme: PropTypes.object.isRequired,
   user: PropTypes.object,
   open: PropTypes.bool,
-  menuAnchor: PropTypes.any,
   handleLogoutUser: PropTypes.func,
   handleCloseMenu: PropTypes.func,
   handleOpenMenu: PropTypes.func

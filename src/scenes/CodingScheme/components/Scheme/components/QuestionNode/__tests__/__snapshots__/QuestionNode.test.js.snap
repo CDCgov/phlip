@@ -59,9 +59,7 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
                 }
               }
               type="subheading"
-            >
-              la la la
-            </WithStyles>
+            />
           </WithStyles>
           <WithStyles
             disableActionSpacing={true}

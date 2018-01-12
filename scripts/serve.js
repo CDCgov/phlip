@@ -2,6 +2,11 @@ const express = require('express')
 const chalk = require('chalk')
 const proxy = require('http-proxy-middleware')
 const app = express()
+const dotenv = require('dotenv')
+const paths = require('../config/paths')
+
+
+dotenv.config({ path: paths.appDotEnv })
 
 const APP_HOST = process.env.APP_HOST || '0.0.0.0'
 const APP_PORT = process.env.APP_PORT || 5200

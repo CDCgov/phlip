@@ -14,8 +14,7 @@ exports[`HeaderedLayout it should render correctly 1`] = `
   <WithTheme
     handleCloseMenu={[Function]}
     handleLogoutUser={[Function]}
-    handleOpenMenu={[Function]}
-    menuAnchor={null}
+    handleOpenAdminPage={[Function]}
     open={false}
   />
   <WithStyles

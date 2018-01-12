@@ -50,10 +50,9 @@ exports[`Header should render correctly 1`] = `
       </WithStyles>
       <AvatarMenu
         initials="TU"
-        menuAnchor={null}
         onCloseMenu={[Function]}
         onLogoutUser={[Function]}
-        onOpenMenu={[Function]}
+        onToggleMenu={[Function]}
         open={false}
         role="Coordinator"
       />

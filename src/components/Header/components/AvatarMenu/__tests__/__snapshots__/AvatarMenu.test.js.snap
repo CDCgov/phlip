@@ -1,56 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Header -- AvatarMenu should render correctly 1`] = `
-<WithStyles
-  item={true}
+<ClickAwayListener
+  onClickAway={[Function]}
 >
-  <Avatar
-    big={false}
-    initials="TU"
-    onClick={[Function]}
+  <WithStyles
+    item={true}
     style={
       Object {
-        "cursor": "pointer",
+        "zIndex": 2,
       }
     }
-  />
-  <WithStyles
-    MenuListProps={
-      Object {
-        "disablePadding": true,
-      }
-    }
-    anchorEl={null}
-    id="avatar-menu"
-    marginThreshold={30}
-    onClose={[Function]}
-    open={false}
   >
-    <WithStyles
-      key="logout-menu"
-      onClick={[Function]}
+    <Manager
+      tag="div"
     >
-      <WithStyles
-        color="primary"
-        style={
-          Object {
-            "fontSize": "1rem",
+      <Target>
+        <Avatar
+          big={false}
+          initials="TU"
+          onClick={[Function]}
+          style={
+            Object {
+              "cursor": "pointer",
+            }
           }
-        }
-      >
-        Logout
-      </WithStyles>
-    </WithStyles>
-    <WithStyles
-      key="admin-menu"
-      onClick={[Function]}
-    >
-      <WithTheme
-        to="admin"
-      >
-        Admin
-      </WithTheme>
-    </WithStyles>
+        />
+      </Target>
+    </Manager>
   </WithStyles>
-</WithStyles>
+</ClickAwayListener>
 `;
