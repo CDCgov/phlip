@@ -116,10 +116,10 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ADD_QUESTION_SUCCESS:
-      console.log(action.payload)
       return {
         ...state,
-        questions: [...state.questions, action.payload]
+        questions: [...state.questions, action.payload],
+        outline: questionsToOutline([ ...state.questions, action.payload ])
       }
 
     default:

@@ -48,7 +48,7 @@ export const QuestionNode = props => {
     ...otherProps
   } = props
 
-  const questionBody = node.questionBody
+  const questionBody = node.text
   const isDraggedDescendant = draggedNode && isDescendant(draggedNode, node)
   const isLandingPadActive = !didDrop && isDragging
   const scaffoldBlockCount = lowerSiblingCounts.length

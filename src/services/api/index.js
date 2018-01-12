@@ -75,12 +75,12 @@ export default {
   },
 
   addQuestion(question, projectId) {
-    return question
-    // return api.post(`/projects/${projectId}/coding-scheme`, question).then(res => question)
+    //return question
+    return api.post(`/projects/${projectId}/codingscheme`, question).then(res => res.data)
   },
 
   getScheme (projectId) {
-    //return api.get(`/projects/${projectId}/codingscheme`).then(res => res.data)
-    return { codingSchemeQuestions: scheme, outline }
+    return api.get(`/projects/${projectId}/codingscheme`).then(res => res.data)
+    //return { codingSchemeQuestions: scheme, outline }
   }
 }

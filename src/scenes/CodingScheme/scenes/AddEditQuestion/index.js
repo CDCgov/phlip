@@ -24,10 +24,9 @@ export class AddEditQuestion extends Component {
   }
 
   handleSubmit = values => {
-    this.props.actions.addQuestionRequest(values, 10002)
+    this.props.actions.addQuestionRequest(values, this.props.projectId)
     this.props.history.goBack()
   }
-
 
   render() {
 
@@ -65,7 +64,7 @@ export class AddEditQuestion extends Component {
               <Container>
                 <Column flex style={{ padding: '0 10px 10px 0' }}>
                   <Field
-                    name="questionBody"
+                    name="text"
                     component={TextInput}
                     label='Question'
                     multiline={true}
@@ -107,8 +106,9 @@ export class AddEditQuestion extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  form: state.form.questionForm || {}
+const mapStateToProps = (state, ownProps) => ({
+  form: state.form.questionForm || {},
+  projectId: ownProps.match.params.id
 })
 
 const mapDispatchToProps = (dispatch) => ({
