@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Header should render correctly 1`] = `
-<WithStyles
+<WithStyles(GridWrapper)
   alignItems="center"
   container={true}
   spacing={0}
@@ -13,7 +13,7 @@ exports[`Header should render correctly 1`] = `
     }
   }
 >
-  <WithStyles
+  <WithStyles(GridWrapper)
     item={true}
     xs={true}
   >
@@ -30,16 +30,16 @@ exports[`Header should render correctly 1`] = `
         fontSize="30px"
       />
     </Link>
-  </WithStyles>
-  <WithStyles
+  </WithStyles(GridWrapper)>
+  <WithStyles(GridWrapper)
     item={true}
   >
-    <WithStyles
+    <WithStyles(GridWrapper)
       alignItems="center"
       container={true}
       spacing={8}
     >
-      <WithStyles
+      <WithStyles(GridWrapper)
         item={true}
       >
         <Greeting
@@ -47,17 +47,16 @@ exports[`Header should render correctly 1`] = `
           lastName="User"
           role="Coordinator"
         />
-      </WithStyles>
+      </WithStyles(GridWrapper)>
       <AvatarMenu
         initials="TU"
-        menuAnchor={null}
         onCloseMenu={[Function]}
         onLogoutUser={[Function]}
-        onOpenMenu={[Function]}
+        onToggleMenu={[Function]}
         open={false}
         role="Coordinator"
       />
-    </WithStyles>
-  </WithStyles>
-</WithStyles>
+    </WithStyles(GridWrapper)>
+  </WithStyles(GridWrapper)>
+</WithStyles(GridWrapper)>
 `;

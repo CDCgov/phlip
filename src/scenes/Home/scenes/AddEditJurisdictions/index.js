@@ -50,7 +50,7 @@ export class AddEditJurisdictions extends Component {
       ...values,
       startDate: moment(values.startDate).toISOString(),
       endDate: moment(values.endDate).toISOString(),
-      name: this.props.jurisdiction ? this.props.jurisdiction : values.name
+      ...this.props.jurisdiction
     }
 
     if (this.state.edit) {
@@ -77,6 +77,9 @@ export class AddEditJurisdictions extends Component {
       throw { name: 'This jurisdiction is already included in this project.' }
     } else if (out.length > 1) {
       throw { name: 'There are multiple jurisdictions that match this string. Please choose one from the list.' }
+    } else {
+      this.props.actions.onJurisdictionSelected(out[0])
+      this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
     }
   }
 
@@ -86,7 +89,7 @@ export class AddEditJurisdictions extends Component {
       if (!this.state.edit) {
         if (!this.props.jurisdiction) {
           this.throwErrors(values, out)
-        } else if (this.props.jurisdiction && this.props.jurisdiction !== values.name) {
+        } else if (this.props.jurisdiction && this.props.jurisdiction.name !== values.name) {
           this.throwErrors(values, out)
         } else {
           this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
@@ -126,7 +129,7 @@ export class AddEditJurisdictions extends Component {
           SearchBarProps={{
             searchValue: this.props.searchValue,
             handleSearchValueChange: (event) => this.props.actions.updateSearchValue(event.target.value),
-            placeholder: 'Search jurisdictions'
+            placeholder: 'Search'
           }}
         />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
@@ -157,7 +160,7 @@ AddEditJurisdictions.propTypes = {
   searchValue: PropTypes.string,
   suggestions: PropTypes.array,
   suggestionValue: PropTypes.string,
-  jurisdiction: PropTypes.string
+  jurisdiction: PropTypes.object
 }
 
 const mapStateToProps = (state, ownProps) => ({
@@ -166,7 +169,7 @@ const mapStateToProps = (state, ownProps) => ({
   searchValue: state.scenes.home.addEditJurisdictions.searchValue || '',
   suggestions: state.scenes.home.addEditJurisdictions.suggestions || [],
   suggestionValue: state.scenes.home.addEditJurisdictions.suggestionValue || '',
-  jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || '',
+  jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || {},
   jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') ||
   []
 })

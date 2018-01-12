@@ -10,7 +10,7 @@ const props = {
   open: false,
   menuAnchor: null,
   handleLogoutUser: jest.fn(),
-  handleOpenMenu: jest.fn(),
+  handleToggleMenu: jest.fn(),
   handleCloseMenu: jest.fn()
 }
 

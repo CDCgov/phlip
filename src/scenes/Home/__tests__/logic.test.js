@@ -1,6 +1,5 @@
 import { createMockStore } from 'redux-logic-test'
 import MockAdapter from 'axios-mock-adapter'
-import reducer from '../reducer'
 import logic from '../logic'
 import * as types from '../actionTypes'
 import apiCalls, { api } from 'services/api'
@@ -27,8 +26,8 @@ describe('Home logic', () => {
 
   test('should get project list and set bookmarkList and dispatch GET_PROJECTS_SUCCESS when done', (done) => {
     mock.onGet('/projects').reply(200, [
-      { name: 'Project 1', id: 1 },
-      { name: 'Project 2', id: 2 }
+      { name: 'Project 1', id: 1, lastEditedBy: 'Test User   ', dateLastEdited: new Date(2017, 1, 2) },
+      { name: 'Project 2', id: 2, lastEditedBy: ' Test User    ' }
     ])
 
     const store = setupStore([1])
@@ -36,21 +35,22 @@ describe('Home logic', () => {
     store.dispatch({ type: types.GET_PROJECTS_REQUEST })
 
     store.whenComplete(() => {
-     /* expect(store.actions).toEqual([
+    expect(store.actions).toEqual([
         { type: types.GET_PROJECTS_REQUEST },
         {
           type: types.GET_PROJECTS_SUCCESS,
           payload: {
-            projects: [{ name: 'Project 1', id: 1 }, { name: 'Project 2', id: 2 }],
+            projects: [
+            { name: 'Project 1', id: 1, lastEditedBy: 'Test User', dateLastEdited: new Date(2017, 1, 2) },
+            { name: 'Project 2', id: 2, lastEditedBy: 'Test User' }
+            ],
             bookmarkList: [1],
             error: false,
             errorContent: '',
             searchValue: ''
           }
         }
-      ])*/
-      expect(store.actions[1]).toHaveProperty('payload.projects')
-      expect(store.actions[1]).toHaveProperty('payload.bookmarkList')
+      ])
       done()
     })
   })
@@ -59,9 +59,9 @@ describe('Home logic', () => {
     const project = { id: 1, name: 'Project 1' }
     const store = setupStore([])
 
-    mock.onPost('/users/5/projectbookmarks/1').reply(200, [
-      { name: 'Project 1', id: 1 },
-      { name: 'Project 2', id: 2 }
+    mock.onPost('/users/5/bookmarkedprojects/1').reply(200, [
+      { projectId: 1, userId: 5 },
+      { projectId: 2, userId: 5 }
     ])
 
     store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
@@ -75,9 +75,9 @@ describe('Home logic', () => {
     const project = { id: 2, name: 'Project 2' }
     const store = setupStore([2, 1, 5])
 
-    mock.onDelete('/users/5/projectbookmarks/2').reply(200, [
-      { name: 'Project 1', id: 1 },
-      { name: 'Project 2', id: 2 }
+    mock.onDelete('/users/5/bookmarkedprojects/2').reply(200, [
+      { projectId: 1, userId: 5 },
+      { projectId: 5, userId: 5 }
     ])
 
     store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
@@ -88,12 +88,8 @@ describe('Home logic', () => {
   })
 
   test('should return bookmarkList as empty if length is 1 and project id is being un-bookmarked', (done) => {
-    mock.onDelete('/users/5/projectbookmarks/2').reply(200, [
-      { name: 'Project 1', id: 1 },
-      { name: 'Project 2', id: 2 }
-    ])
-
     const project = { id: 2, name: 'Project 2' }
+    mock.onDelete('/users/5/bookmarkedprojects/2').reply(200, [])
     const store = setupStore([2])
 
     store.dispatch({ type: types.TOGGLE_BOOKMARK, project })

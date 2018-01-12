@@ -15,7 +15,7 @@ export const getProjectLogic = createLogic({
   async process({ api, getState }) {
     const projects = await api.getProjects()
     return {
-      projects: projects,
+      projects: projects.map(project => ({ ...project, lastEditedBy: project.lastEditedBy.trim() })),
       bookmarkList: [...getState().data.user.currentUser.bookmarks],
       error: false, errorContent: '', searchValue: ''
     }
@@ -32,7 +32,6 @@ export const toggleBookmarkLogic = createLogic({
     const currentUser = getState().data.user.currentUser
     let add = true
     let bookmarkList = [...currentUser.bookmarks]
-
 
     if (bookmarkList.includes(action.project.id)) {
       bookmarkList.splice(bookmarkList.indexOf(action.project.id), 1)
@@ -60,7 +59,7 @@ export const updateFieldsLogic = createLogic({
     next({
       ...action,
       user,
-      id: action.id
+      projectId: action.projectId
     })
   }
 })

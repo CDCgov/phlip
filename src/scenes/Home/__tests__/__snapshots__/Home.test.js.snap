@@ -9,7 +9,7 @@ exports[`Home scene should render correctly 1`] = `
   <PageHeader
     role="Coordinator"
   />
-  <WithStyles />
+  <WithStyles(Divider) />
   <ProjectList
     direction="desc"
     handlePageChange={[Function]}

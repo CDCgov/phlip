@@ -2,8 +2,7 @@ import * as types from './actionTypes'
 
 const INITIAL_STATE = {
   currentUser: {},
-  menuOpen: false,
-  menuAnchor: null
+  menuOpen: false
 }
 
 function userReducer(state = INITIAL_STATE, action) {
@@ -14,18 +13,16 @@ function userReducer(state = INITIAL_STATE, action) {
         currentUser: action.payload
       }
 
-    case types.OPEN_MENU:
+    case types.TOGGLE_MENU:
       return {
         ...state,
-        menuOpen: true,
-        menuAnchor: action.anchor
+        menuOpen: !state.menuOpen
       }
 
     case types.CLOSE_MENU:
       return {
         ...state,
-        menuOpen: false,
-        menuAnchor: null
+        menuOpen: false
       }
 
     case types.TOGGLE_BOOKMARK_SUCCESS:
@@ -34,7 +31,7 @@ function userReducer(state = INITIAL_STATE, action) {
         currentUser: action.payload.user
       }
 
-    case 'FLUSH_STATE':
+    case types.FLUSH_STATE:
       return INITIAL_STATE
 
     default:

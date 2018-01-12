@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { login, getToken, logout } from '../authToken'
-import mockJurisdictions, { allJurisdictions } from 'data/mockJurisdictions'
 
 export const api = axios.create({
   baseURL: '/api'
@@ -42,52 +41,35 @@ export default {
     return api.put(`/users/${user.id}`, user).then(res => res.data)
   },
 
+  getUserBookmarks(id) {
+    return api.get(`/users/${id}/bookmarkedprojects`).then(res => res.data)
+  },
+
   addUserBookmark(userId, projectId) {
-    return api.post(`/users/${userId}/projectbookmarks/${projectId}`).then(res => res.data)
+    return api.post(`/users/${userId}/bookmarkedprojects/${projectId}`).then(res => res.data)
   },
 
   removeUserBookmark(userId, projectId) {
-    return api.delete(`/users/${userId}/projectbookmarks/${projectId}`).then(res => res.data)
+    return api.delete(`/users/${userId}/bookmarkedprojects/${projectId}`).then(res => res.data)
   },
 
   searchJurisdictionList(searchString) {
-    /*return api.get('/jurisdiction', {
+    return api.get('/jurisdictions', {
       params: {
         name: searchString
       }
-    }).then(res => res.data)*/
-    return getMatchingJurisdictions(searchString)
+    }).then(res => res.data)
   },
 
   getProjectJurisdictions(projectId) {
-    //return api.get(`/projects/${projectId}/jurisdiction`).then(res => res.data)
-    return mockJurisdictions
+    return api.get(`/projects/${projectId}/jurisdictions`).then(res => res.data)
   },
 
   addJurisdictionToProject(projectId, jurisdiction) {
-    //return api.post(`/projects/${projectId}/jurisdiction`, jurisdiction).then(res => res.data)
-    return { ...jurisdiction, id: Math.random() }
+    return api.post(`/projects/${projectId}/jurisdictions/${jurisdiction.id}`, jurisdiction).then(res => res.data)
   },
 
   updateJurisdictionInProject(projectId, jurisdiction) {
-    return jurisdiction
-    //return api.put(`/projects/${projectId}/jurisdiction/${jurisdiction.id}`, jurisdiction).then(res => res.data)
+    return api.put(`/projects/${projectId}/jurisdictions/${jurisdiction.id}`, jurisdiction).then(res => res.data)
   }
 }
-
-const getMatchingJurisdictions = value => {
-  const escapedValue = escapeRegexCharacters(value.trim());
-
-  if (escapedValue === '') {
-    return [];
-  }
-
-  const regex = new RegExp('^' + escapedValue, 'i');
-
-  return allJurisdictions.filter(jurisdiction => regex.test(jurisdiction));
-}
-
-const escapeRegexCharacters = str => {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-

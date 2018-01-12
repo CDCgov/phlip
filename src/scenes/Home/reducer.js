@@ -13,7 +13,7 @@ const INITIAL_STATE = {
   bookmarkList: [],
   visibleProjects: [],
   searchValue: '',
-  rowsPerPage: 10,
+  rowsPerPage: '10',
   page: 0,
   sortBy: 'dateLastEdited',
   direction: 'desc',
@@ -40,12 +40,13 @@ const sortArray = (arr, state) => {
 }
 
 const setProjectValues = updatedProjects => (updatedArr, page, rowsPerPage) => {
+  const rows = rowsPerPage === 'All' ? updatedArr.length : parseInt(rowsPerPage)
   return {
     projects: {
       byId: normalize.arrayToObject(updatedProjects),
       allIds: normalize.mapArray(updatedProjects)
     },
-    visibleProjects: normalize.mapArray(tableUtils.sliceTable(updatedArr, page, rowsPerPage)),
+    visibleProjects: normalize.mapArray(tableUtils.sliceTable(updatedArr, page, rows)),
     projectCount: updatedArr.length
   }
 }
@@ -145,7 +146,7 @@ const mainReducer = (state, action) => {
       return { ...INITIAL_STATE, rowsPerPage: state.rowsPerPage }
 
     case types.UPDATE_EDITED_FIELDS:
-      const project = state.projects.byId[action.id]
+      const project = state.projects.byId[action.projectId]
       return {
         ...state,
         projects: {
@@ -154,7 +155,7 @@ const mainReducer = (state, action) => {
             [project.id]: {
               ...project,
               lastEditedBy: action.user,
-              dateLastEdited: new Date()
+              dateLastEdited: new Date().toISOString()
             }
           },
           allIds: state.projects.allIds

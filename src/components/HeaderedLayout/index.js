@@ -13,16 +13,15 @@ const mainStyles = {
   flex: '1'
 }
 
-
-export const HeaderedLayout = ({ user, open, actions, menuAnchor, children, history }) => {
+export const HeaderedLayout = ({ user, open, actions, children, history }) => {
   return (
     <Grid container spacing={0} direction="column" style={{ flex: '1' }}>
       <Header
         user={user}
         open={open}
-        menuAnchor={menuAnchor}
         handleLogoutUser={() => { history.push('/'); actions.logoutUser() }}
-        handleOpenMenu={event => actions.openMenu(event.currentTarget)}
+        handleToggleMenu={actions.toggleMenu}
+        handleOpenAdminPage={() => { history.push('/admin'); actions.closeMenu() }}
         handleCloseMenu={actions.closeMenu}
       />
       <Grid container spacing={0} style={mainStyles}>
@@ -36,14 +35,12 @@ HeaderedLayout.propTypes = {
   user: PropTypes.object,
   open: PropTypes.bool,
   actions: PropTypes.object,
-  menuAnchor: PropTypes.any,
   children: PropTypes.node
 }
 
 const mapStateToProps = (state, props) => ({
   user: state.data.user.currentUser || { firstName: '', lastName: '', role: '' },
-  open: state.data.user.menuOpen || false,
-  menuAnchor: state.data.user.menuAnchor || null
+  open: state.data.user.menuOpen || false
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

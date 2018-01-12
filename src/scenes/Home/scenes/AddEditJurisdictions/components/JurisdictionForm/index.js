@@ -18,8 +18,8 @@ import Autocomplete from 'components/Autocomplete'
 const getSuggestionValue = suggestion => suggestion
 
 const renderSuggestion = (suggestion, { query, isHighlighted }) => {
-  const matches = match(suggestion, query)
-  const parts = parse(suggestion, matches)
+  const matches = match(suggestion.name, query)
+  const parts = parse(suggestion.name, matches)
 
   return (
     <MenuItem selected={isHighlighted} component="div">
@@ -107,11 +107,11 @@ export const JurisdictionForm = props => {
           <Container style={{ marginTop: 30 }}>
             <Column flex>
               <Field component={DatePicker} name="startDate" invalidLabel="mm/dd/yyyy" label="Start Date"
-                     dateFormat="MM/DD/YYYY" validate={validateDate} />
+                     dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
             </Column>
             <Column>
               <Field component={DatePicker} name="endDate" invalidLabel="mm/dd/yyyy" label="End Date"
-                     dateFormat="MM/DD/YYYY" validate={validateDate} />
+                     dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
             </Column>
           </Container>
         </Container>

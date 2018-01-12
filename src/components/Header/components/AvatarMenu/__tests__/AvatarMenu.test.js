@@ -7,9 +7,8 @@ const props = {
   role: 'Admin',
   initials: 'TU',
   open: false,
-  menuAnchor: null,
   onLogoutUser: jest.fn(),
-  onOpenMenu: jest.fn(),
+  onToggleMenu: jest.fn(),
   onCloseMenu: jest.fn()
 }
 
@@ -30,13 +29,13 @@ describe('Header -- AvatarMenu', () => {
     const wrapper = setup()
     wrapper.find('Avatar').at(0).simulate('click')
     wrapper.update()
-    expect(wrapper.find('AvatarMenu').prop('onOpenMenu')).toHaveBeenCalled()
+    expect(wrapper.find('AvatarMenu').prop('onToggleMenu')).toHaveBeenCalled()
   })
 
   test('should hide `admin` option from menu if role is not admin', () => {
     const wrapper = setup({ role: 'Coordinator', open: true })
     expect(wrapper.find('MenuList').find('MenuItem').length).toEqual(1)
-    expect(wrapper.find('MenuList').find('MenuItem').text()).toEqual('Logout')
+    expect(wrapper.find('MenuList').find('MenuItem').text()).toEqual('exit_to_appLogout')
   })
 
   test('should open the menu when open is true', () => {
@@ -46,7 +45,7 @@ describe('Header -- AvatarMenu', () => {
 
   test('should call logout when the logout menu item is clicked', () => {
     const wrapper = setup({ open: true })
-    wrapper.find('MenuList').find('MenuItem').at(0).simulate('click')
+    wrapper.find('MenuList').find('MenuItem').at(1).simulate('click')
     wrapper.update()
     expect(wrapper.find('AvatarMenu').prop('onLogoutUser')).toHaveBeenCalled()
   })

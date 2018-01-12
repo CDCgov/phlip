@@ -18,8 +18,6 @@ const projectsPayload = [
 ]
 
 const defaultSorted = [5, 4, 2, 3, 1]
-const userAndBookmarked = [3, 1, 4, 2, 5]
-const sortedByUser = [3, 2, 1, 5, 4]
 const sortedByDateAndBookmarked = [4, 3, 1, 5, 2]
 
 const initial = {
@@ -28,7 +26,7 @@ const initial = {
       byId: { ...projects },
       allIds: defaultSorted
     },
-    rowsPerPage: 10,
+    rowsPerPage: "10",
     page: 0,
     projectCount: 0,
     matches: [],
@@ -48,7 +46,7 @@ const initial = {
     searchValue: '',
     suggestions: [],
     suggestionValue: '',
-    jurisdiction: ''
+    jurisdiction: {}
   }
 }
 
