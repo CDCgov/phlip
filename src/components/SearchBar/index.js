@@ -17,10 +17,10 @@ const SearchBar = ({ searchValue, handleSearchValueChange, containerStyles, plac
         onChange={handleSearchValueChange}
         placeholder={placeholder}
         InputProps={{
-          //disableUnderline: true,
           style: { 'alignItems': 'center'},
           endAdornment: <InputAdornment style={{ marginTop: 0, height: 24 }} position="end" disableTypography><Icon color="#c6d4da">search</Icon></InputAdornment>
         }}
+        type="search"
         id="search-bar"
       />
   )
