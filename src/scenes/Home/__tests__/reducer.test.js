@@ -26,7 +26,7 @@ const initial = {
       byId: { ...projects },
       allIds: defaultSorted
     },
-    rowsPerPage: 10,
+    rowsPerPage: "10",
     page: 0,
     projectCount: 0,
     matches: [],

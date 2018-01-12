@@ -1,29 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Header -- AvatarMenu should render correctly 1`] = `
-<WithStyles(GridWrapper)
-  item={true}
-  style={
-    Object {
-      "zIndex": 2,
-    }
-  }
+<ClickAwayListener
+  onClickAway={[Function]}
 >
-  <Manager
-    tag="div"
+  <WithStyles(GridWrapper)
+    item={true}
+    style={
+      Object {
+        "zIndex": 2,
+      }
+    }
   >
-    <Target>
-      <Avatar
-        big={false}
-        initials="TU"
-        onClick={[Function]}
-        style={
-          Object {
-            "cursor": "pointer",
+    <Manager
+      tag="div"
+    >
+      <Target>
+        <Avatar
+          big={false}
+          initials="TU"
+          onClick={[Function]}
+          style={
+            Object {
+              "cursor": "pointer",
+            }
           }
-        }
-      />
-    </Target>
-  </Manager>
-</WithStyles(GridWrapper)>
+        />
+      </Target>
+    </Manager>
+  </WithStyles(GridWrapper)>
+</ClickAwayListener>
 `;

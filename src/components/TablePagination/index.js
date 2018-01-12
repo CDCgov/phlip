@@ -67,6 +67,8 @@ class TablePagination extends React.Component {
     this.props.onChangePage(event, this.props.page + 1)
   }
 
+  renderSelectedNumber = selected => selected
+
   render() {
     const {
       classes,
@@ -93,6 +95,11 @@ class TablePagination extends React.Component {
     const themeDirection = theme && theme.direction
     const numberOptions = Object.keys(rowsPerPageOptions).length
 
+    let selected = parseInt(rowsPerPage)
+    if (rowsPerPage === 'All') {
+      selected = count
+    }
+
     return (
       <Component className={classes.root} colSpan={colSpan} {...other}>
         <Toolbar className={classes.toolbar}>
@@ -114,22 +121,23 @@ class TablePagination extends React.Component {
                 />
               }
               value={rowsPerPage}
+              renderValue={this.renderSelectedNumber}
               onChange={onChangeRowsPerPage}
             >
               {Object.keys(rowsPerPageOptions).map(rowsPerPageOption => (
-                <MenuItem key={rowsPerPageOption} value={parseInt(rowsPerPageOption)}>
+                <MenuItem key={rowsPerPageOption} value={rowsPerPageOption}>
                   {rowsPerPageOptions[rowsPerPageOption].label}
                 </MenuItem>
               ))}
-              <MenuItem key="All" value={count}>
+              <MenuItem key="All" value="All">
                 All
               </MenuItem>
             </Select>
           )}
           <Typography type="caption" className={classes.caption}>
             {labelDisplayedRows({
-              from: count === 0 ? 0 : page * rowsPerPage + 1,
-              to: Math.min(count, (page + 1) * rowsPerPage),
+              from: count === 0 ? 0 : page * selected + 1,
+              to: Math.min(count, (page + 1) * selected),
               count,
               page
             })}
@@ -140,7 +148,7 @@ class TablePagination extends React.Component {
             </IconButton>
             <IconButton
               onClick={this.handleNextButtonClick}
-              disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+              disabled={page >= Math.ceil(count / selected) - 1 || count === 0}
             >
               {themeDirection === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
             </IconButton>
@@ -161,7 +169,6 @@ TablePagination.propTypes = {
   onChangePage: PropTypes.func.isRequired,
   onChangeRowsPerPage: PropTypes.func.isRequired,
   page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
   rowsPerPageOptions: PropTypes.object,
   theme: PropTypes.object.isRequired
 }

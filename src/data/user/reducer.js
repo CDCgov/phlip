@@ -21,7 +21,8 @@ function userReducer(state = INITIAL_STATE, action) {
 
     case types.CLOSE_MENU:
       return {
-        ...state
+        ...state,
+        menuOpen: false
       }
 
     case types.TOGGLE_BOOKMARK_SUCCESS:
@@ -30,7 +31,7 @@ function userReducer(state = INITIAL_STATE, action) {
         currentUser: action.payload.user
       }
 
-    case 'FLUSH_STATE':
+    case types.FLUSH_STATE:
       return INITIAL_STATE
 
     default:

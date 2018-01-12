@@ -47,7 +47,6 @@ Header.propTypes = {
   theme: PropTypes.object.isRequired,
   user: PropTypes.object,
   open: PropTypes.bool,
-  menuAnchor: PropTypes.any,
   handleLogoutUser: PropTypes.func,
   handleCloseMenu: PropTypes.func,
   handleOpenMenu: PropTypes.func

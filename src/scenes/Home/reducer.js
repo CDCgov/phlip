@@ -13,7 +13,7 @@ const INITIAL_STATE = {
   bookmarkList: [],
   visibleProjects: [],
   searchValue: '',
-  rowsPerPage: 10,
+  rowsPerPage: '10',
   page: 0,
   sortBy: 'dateLastEdited',
   direction: 'desc',
@@ -40,12 +40,13 @@ const sortArray = (arr, state) => {
 }
 
 const setProjectValues = updatedProjects => (updatedArr, page, rowsPerPage) => {
+  const rows = rowsPerPage === 'All' ? updatedArr.length : parseInt(rowsPerPage)
   return {
     projects: {
       byId: normalize.arrayToObject(updatedProjects),
       allIds: normalize.mapArray(updatedProjects)
     },
-    visibleProjects: normalize.mapArray(tableUtils.sliceTable(updatedArr, page, rowsPerPage)),
+    visibleProjects: normalize.mapArray(tableUtils.sliceTable(updatedArr, page, rows)),
     projectCount: updatedArr.length
   }
 }

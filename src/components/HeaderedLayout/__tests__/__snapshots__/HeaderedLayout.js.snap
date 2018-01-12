@@ -15,7 +15,6 @@ exports[`HeaderedLayout it should render correctly 1`] = `
     handleCloseMenu={[Function]}
     handleLogoutUser={[Function]}
     handleOpenAdminPage={[Function]}
-    handleToggleMenu={[Function]}
     open={false}
   />
   <WithStyles(GridWrapper)

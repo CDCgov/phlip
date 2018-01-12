@@ -12,13 +12,14 @@ import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
 
 export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, onOpenAdminPage, onToggleMenu }) => {
   return (
-    <Grid item style={{ zIndex: 2 }}>
-      <Manager>
-        <Target>
-          <Avatar onClick={onToggleMenu} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />
-        </Target>
-        {open && <Popper placement="bottom-start" eventsEnabled={open}>
-          <ClickAwayListener onClickAway={onCloseMenu}>
+    <ClickAwayListener onClickAway={onCloseMenu}>
+      <Grid item style={{ zIndex: 2 }}>
+        <Manager>
+          <Target>
+            <Avatar onClick={onToggleMenu} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />
+          </Target>
+          {open &&
+          <Popper placement="bottom-start">
             <Grow in={open} id="avatar-menu" style={{ transformOrigin: '0 0 0' }}>
               <Paper style={{ marginRight: 20, marginTop: 5 }}>
                 <MenuList role="menu">
@@ -38,17 +39,16 @@ export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, on
                 </MenuList>
               </Paper>
             </Grow>
-          </ClickAwayListener>
-        </Popper>}
-      </Manager>
-    </Grid>
+          </Popper>}
+        </Manager>
+      </Grid>
+    </ClickAwayListener>
   )
 }
 
 AvatarMenu.propTypes = {
   role: PropTypes.string,
   initials: PropTypes.string,
-  menuAnchor: PropTypes.any,
   open: PropTypes.bool,
   onCloseMenu: PropTypes.func,
   onLogoutUser: PropTypes.func,
