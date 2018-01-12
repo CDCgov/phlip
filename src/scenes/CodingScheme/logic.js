@@ -13,7 +13,18 @@ const getSchemeLogic = createLogic({
   }
 })
 
+const reorderSchemeLogic = createLogic({
+  type: types.REORDER_SCHEME_REQUEST,
+  latest: true,
+  async process({ api, action, getState }, dispatch, done) {
+    const outline = getState().scenes.codingScheme.outline
+    await api.reorderScheme(outline, action.projectId)
+    done()
+  }
+})
+
 export default [
   getSchemeLogic,
+  reorderSchemeLogic,
   ...addEditQuestionLogic
 ]

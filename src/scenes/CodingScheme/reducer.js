@@ -71,10 +71,10 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         questions: sortQuestions(
           getTreeFromFlatData({
-            flatData: getQuestionsFromOutline(action.payload.outline, action.payload.codingSchemeQuestions)
+            flatData: getQuestionsFromOutline(action.payload.outline.Outline, action.payload.codingSchemeQuestions)
           })
         ),
-        outline: action.payload.outline
+        outline: action.payload.outline.Outline
       }
 
     case types.HANDLE_QUESTION_TREE_CHANGE:

@@ -19,6 +19,11 @@ export class CodingScheme extends Component {
     this.props.actions.getSchemeRequest(this.props.projectId)
   }
 
+  handleQuestionTreeChange = questions => {
+    this.props.actions.updateQuestionTree(questions)
+    this.props.actions.reorderSchemeRequest(this.props.projectId)
+  }
+
   render() {
     return (
       <Container column flex>
@@ -26,7 +31,7 @@ export class CodingScheme extends Component {
         <Container flex style={{ backgroundColor: '#f5f5f5', paddingTop: 25 }}>
           <Scheme
             questions={this.props.questions}
-            handleQuestionTreeChange={this.props.actions.updateQuestionTree}
+            handleQuestionTreeChange={this.handleQuestionTreeChange}
             handleHoverOnQuestion={this.props.actions.toggleHover}
             disableHover={this.props.actions.disableHover}
             enableHover={this.props.actions.enableHover}

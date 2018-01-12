@@ -5,3 +5,4 @@ export const updateQuestionTree = questions => ({ type: types.HANDLE_QUESTION_TR
 export const toggleHover = (node, path, hover) => ({ type: types.TOGGLE_HOVER, node, path, hover })
 export const disableHover = () => ({ type: types.DISABLE_HOVER })
 export const enableHover = () => ({ type: types.ENABLE_HOVER })
+export const reorderSchemeRequest = projectId => ({ type: types.REORDER_SCHEME_REQUEST, projectId })

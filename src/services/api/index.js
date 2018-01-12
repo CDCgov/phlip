@@ -74,13 +74,15 @@ export default {
     return api.put(`/projects/${projectId}/jurisdictions/${jurisdiction.id}`, jurisdiction).then(res => res.data)
   },
 
+  reorderScheme(outline, projectId) {
+    return api.put(`/projects/${projectId}/codingscheme`, { outline: outline }).then(res => res.data)
+  },
+
   addQuestion(question, projectId) {
-    //return question
     return api.post(`/projects/${projectId}/codingscheme`, question).then(res => res.data)
   },
 
   getScheme (projectId) {
     return api.get(`/projects/${projectId}/codingscheme`).then(res => res.data)
-    //return { codingSchemeQuestions: scheme, outline }
   }
 }
