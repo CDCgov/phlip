@@ -6,20 +6,21 @@ import AppBar from 'components/AppBar'
 import SearchBar from 'components/SearchBar'
 import TextLink from 'components/TextLink'
 
-export const Header = ({ projectName, projectId }) => (
+export const Header = ({ projectName, showButton, projectId }) => (
   <AppBar>
     <Typography type="title" color="inherit" style={{ flex: 1 }}>
       Coding Scheme | <span style={{ color: '#0faee6' }}>{projectName}</span>
     </Typography>
     <SearchBar style={{ paddingRight: 10 }} placeholder="Search keywords" />
-    <TextLink to={`/project/${projectId}/coding-scheme/add`}>
+    {showButton && <TextLink to={`/project/${projectId}/coding-scheme/add`}>
       <Button value="+ Add New Question" color="accent" />
-    </TextLink>
+    </TextLink>}
   </AppBar>
 )
 
 Header.propTypes = {
   projectName: PropTypes.string,
+  showButton: PropTypes.bool,
   projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 }
 
