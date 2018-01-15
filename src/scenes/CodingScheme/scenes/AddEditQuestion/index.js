@@ -14,7 +14,6 @@ import { Field, FieldArray } from 'redux-form'
 import AnswerList from './components/AnswerList'
 import CheckboxLabel from 'components/CheckboxLabel'
 import styles from './add-edit-question.scss'
-import AnswerSwitch from './components/AnswerSwitch'
 
 export class AddEditQuestion extends Component {
   constructor(props, context) {
@@ -28,11 +27,6 @@ export class AddEditQuestion extends Component {
       }
     }
     this.onCancel = this.onCancel.bind(this)
-    // this.defaultForm = {
-    //   type: 4,
-    //   answers: [{ id: 1, text: '' }],
-    //   includeComment: false
-    // }
   }
 
   onCancel() {
@@ -46,18 +40,6 @@ export class AddEditQuestion extends Component {
   }
 
   handleTypeChange() {
-    // console.log(this.props)
-    // switch (this.props.form.values.type) {
-    //   case 1:
-    //     this.defaultForm = {
-    //       type: 1,
-    //       answers: [{ id: 1, text: '' }, { id: 2, text: '' }],
-    //       includeComment: false
-    //     }
-    //     break;
-    //   default:
-
-    // }
   }
 
   render() {
