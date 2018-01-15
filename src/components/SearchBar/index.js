@@ -14,8 +14,8 @@ const SearchBar = ({ searchValue, handleSearchValueChange, placeholder, ...other
         style: { 'alignItems': 'center' },
         endAdornment: <InputAdornment style={{ marginTop: 0, height: 24 }} position="end" disableTypography><Icon color="#c6d4da">search</Icon></InputAdornment>
       }}
+      type="search"
       id="search-bar"
-      {...otherProps}
     />
   )
 }

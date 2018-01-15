@@ -2,11 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import TableRow from 'components/TableRow/index'
-import Button from 'components/Button/index'
-import TextLink from 'components/TextLink/index'
-import IconButton from 'components/IconButton/index'
-import TableCell from 'components/TableCell/index'
+import TableRow from 'components/TableRow'
+import Button from 'components/Button'
+import TextLink from 'components/TextLink'
+import IconButton from 'components/IconButton'
+import TableCell from 'components/TableCell'
 import * as actions from 'scenes/Home/actions'
 
 const greyIcon = '#d4d4d4'
@@ -29,20 +29,19 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
       <TableCell
         key={`${project.id}-lastEditedBy`}
         style={{ fontStyle: 'italic', width: 150, maxWidth: 150, textAlign: 'unset' }}
-        light
       >
         {project.lastEditedBy}
       </TableCell>
       {role !== 'Coder' &&
-        <TableCell key={`${project.id}-protocol`} light>
+        <TableCell key={`${project.id}-protocol`} style={{ textAlign: 'center' }}>
           <TextLink to="/">Add/Edit</TextLink>
         </TableCell>
       }
-      <TableCell key={`${project.id}-jurisdictions`} light>
+      <TableCell key={`${project.id}-jurisdictions`} style={{ textAlign: 'center' }}>
         <TextLink to={`/project/${project.id}/jurisdictions`} id={project.id}>Add/Edit</TextLink>
       </TableCell>
       {role !== 'Coder' &&
-        <TableCell key={`${project.id}-codingScheme`} light>
+        <TableCell key={`${project.id}-codingScheme`} >
           <TextLink to={`/project/${project.id}/coding-scheme`}>Edit</TextLink>
         </TableCell>
       }
