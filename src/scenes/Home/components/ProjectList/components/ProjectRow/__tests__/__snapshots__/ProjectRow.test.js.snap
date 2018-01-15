@@ -6,6 +6,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
 >
   <TableCell
     key="1-bookmarked"
+    padding="checkbox"
     style={
       Object {
         "width": 48,
@@ -22,6 +23,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-name"
+    padding="checkbox"
     style={
       Object {
         "fontWeight": "normal",
@@ -50,6 +52,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-dateLastEdited"
+    padding="checkbox"
     style={
       Object {
         "maxWidth": 150,
@@ -62,7 +65,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-lastEditedBy"
-    light={true}
+    padding="checkbox"
     style={
       Object {
         "fontStyle": "italic",
@@ -76,7 +79,12 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-protocol"
-    light={true}
+    padding="checkbox"
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
   >
     <WithTheme
       to="/"
@@ -86,7 +94,12 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-jurisdictions"
-    light={true}
+    padding="checkbox"
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
   >
     <WithTheme
       id={1}
@@ -97,7 +110,12 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-codingScheme"
-    light={true}
+    padding="checkbox"
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
   >
     <WithTheme
       to="/project/1/coding-scheme"
@@ -107,6 +125,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-code"
+    padding="checkbox"
   >
     <WithTheme
       listButton={true}
@@ -116,6 +135,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-validation"
+    padding="checkbox"
   >
     <WithTheme
       listButton={true}
@@ -125,6 +145,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-export"
+    padding="checkbox"
   >
     <IconButton
       color="#d4d4d4"

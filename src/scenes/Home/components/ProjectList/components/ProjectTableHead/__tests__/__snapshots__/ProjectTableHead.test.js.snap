@@ -6,6 +6,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
 >
   <TableCell
     key="bookmarked"
+    padding="checkbox"
     style={
       Object {
         "width": 48,
@@ -22,6 +23,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   </TableCell>
   <TableCell
     key="name"
+    padding="checkbox"
     style={
       Object {
         "maxWidth": "unset",
@@ -44,6 +46,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   </TableCell>
   <TableCell
     key="dateLastEdited"
+    padding="checkbox"
     style={
       Object {
         "maxWidth": 150,
@@ -67,6 +70,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   </TableCell>
   <TableCell
     key="lastEditedBy"
+    padding="checkbox"
     style={
       Object {
         "maxWidth": 150,
@@ -90,32 +94,38 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   </TableCell>
   <TableCell
     key="protocol"
+    padding="checkbox"
     style={Object {}}
   >
     Protocol
   </TableCell>
   <TableCell
     key="jurisdictions"
+    padding="checkbox"
     style={Object {}}
   >
     Jurisdictions
   </TableCell>
   <TableCell
     key="codingScheme"
+    padding="checkbox"
     style={Object {}}
   >
     Coding Scheme
   </TableCell>
   <TableCell
     key="code"
+    padding="checkbox"
     style={Object {}}
   />
   <TableCell
     key="validate"
+    padding="checkbox"
     style={Object {}}
   />
   <TableCell
     key="export"
+    padding="checkbox"
     style={Object {}}
   />
 </TableRow>
