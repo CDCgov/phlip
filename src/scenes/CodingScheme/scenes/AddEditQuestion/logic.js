@@ -3,7 +3,7 @@ import * as types from '../../actionTypes'
 
 const updateOutlineLogic = createLogic({
   type: types.ADD_QUESTION_REQUEST,
-  transform ({ getState, action }, next) {
+  transform({ getState, action }, next) {
     next({
       ...action,
       question: {
@@ -22,7 +22,7 @@ const addQuestionLogic = createLogic({
     dispatchReturn: true,
     successType: types.ADD_QUESTION_SUCCESS
   },
-  async process ({ api, action }) {
+  async process({ api, action }) {
     action.question.hovering = false
     const question = await api.addQuestion(action.question, action.id)
     return {

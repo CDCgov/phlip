@@ -3,23 +3,40 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Container, { Row, Column } from 'components/Layout'
+import { default as formActions } from 'redux-form/lib/actions'
 import FormModal from 'components/FormModal'
 import TextInput from 'components/TextInput'
 import DropDown from 'components/Dropdown'
 import { withRouter } from 'react-router'
 import * as actions from './actions'
 import Modal, { ModalTitle, ModalActions, ModalContent } from 'components/Modal'
-import { Field } from 'redux-form'
+import { Field, FieldArray } from 'redux-form'
 import AnswerList from './components/AnswerList'
 import CheckboxLabel from 'components/CheckboxLabel'
+import styles from './add-edit-question.scss'
+import AnswerSwitch from './components/AnswerSwitch'
 
 export class AddEditQuestion extends Component {
   constructor(props, context) {
     super(props, context)
+    this.state = {
+      edit: false,
+      defaultForm: {
+        type: 4,
+        possibleAnswers: [{ text: '' }],
+        includeComment: false
+      }
+    }
     this.onCancel = this.onCancel.bind(this)
+    // this.defaultForm = {
+    //   type: 4,
+    //   answers: [{ id: 1, text: '' }],
+    //   includeComment: false
+    // }
   }
 
   onCancel() {
+    this.props.formActions.reset('questionForm')
     this.props.history.goBack()
   }
 
@@ -28,22 +45,32 @@ export class AddEditQuestion extends Component {
     this.props.history.goBack()
   }
 
+  handleTypeChange() {
+    // console.log(this.props)
+    // switch (this.props.form.values.type) {
+    //   case 1:
+    //     this.defaultForm = {
+    //       type: 1,
+    //       answers: [{ id: 1, text: '' }, { id: 2, text: '' }],
+    //       includeComment: false
+    //     }
+    //     break;
+    //   default:
+
+    // }
+  }
+
   render() {
 
-    const mockAnswers = [
-      { id: 1, text: 'One' },
-      { id: 2, text: 'Two' },
-      { id: 3, text: 'Three' },
-    ]
 
-    const types = [
-      { value: 'binary', label: 'Binary' },
-      { value: 'cat', label: 'Category' },
-      { value: 'cb', label: 'Checkboxes' },
-      { value: 'mc', label: 'Multiple choice' },
-      { value: 'text', label: 'Text field' }
+    const options = [
+      { value: 1, label: 'Binary' },
+      // { value: '2, label: 'Category' },
+      { value: 3, label: 'Checkboxes' },
+      { value: 4, label: 'Multiple choice' },
+      { value: 5, label: 'Text field' }
     ]
-    const formActions = [
+    const actions = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button' },
       {
         value: false
@@ -54,12 +81,15 @@ export class AddEditQuestion extends Component {
       }
     ]
     return (
-      <FormModal form="questionForm"
+      <FormModal
+        form="questionForm"
         handleSubmit={this.handleSubmit}
-        maxWidth='md'>
+        initialValues={this.state.edit ? question : this.state.defaultForm}
+        maxWidth='md'
+        enableReinitialize >
         <Container column style={{ minWidth: 890, padding: '20px' }}>
-          <Container column style={{ minWidth: 600, minHeight: 230, borderStyle: 'dashed', borderColor: '#99D0E9', backgroundColor: '#E2F2F1' }}>
-            <ModalTitle title='New Question' />
+          <Container column className={styles.dashed}>
+            <ModalTitle title={this.state.edit ? 'Edit Question' : 'Add Question'} />
             <ModalContent>
               <Container>
                 <Column flex style={{ padding: '0 10px 10px 0' }}>
@@ -76,8 +106,8 @@ export class AddEditQuestion extends Component {
                     name="type"
                     component={DropDown}
                     label="Type"
-                    options={types}
-                    defaultValue=""
+                    options={options}
+                    disabled={this.state.edit ? true : false}
                   />
                 </Column>
               </Container>
@@ -91,15 +121,17 @@ export class AddEditQuestion extends Component {
                   />
                 </Row>
               </Container>
-
-              <AnswerList answers={mockAnswers} />
-
+              <FieldArray name="possibleAnswers" answerType={this.props.form.values ? this.props.form.values.type : 1} component={AnswerList} />
               <Container>
-                <CheckboxLabel label='Include comment box' />
+                <Field
+                  name='includeComment'
+                  label='Include comment box'
+                  component={CheckboxLabel}
+                />
               </Container>
             </ModalContent>
           </Container>
-          <ModalActions edit={true} actions={formActions} raised={true}></ModalActions>
+          <ModalActions edit={true} actions={actions} raised={true}></ModalActions>
         </Container>
       </FormModal>
     )
@@ -112,7 +144,8 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(actions, dispatch)
+  actions: bindActionCreators(actions, dispatch),
+  formActions: bindActionCreators(formActions, dispatch)
 })
 
 

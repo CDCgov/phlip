@@ -1,13 +1,30 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
-import RadioInput from '../RadioInput'
+import SelectInput from '../SelectInput'
+import { Field } from 'redux-form'
+import Button from 'components/Button'
 
+export const AnswerList = ({ fields, answerType }) => {
+  return (
+    <div>
+      {<div>
+        {fields.map((answer, index) => (
+          <div key={index}>
+            <Field
+              name={`${answer}.text`}
+              type="text"
+              answerType={answerType}
+              placeholder='Add answer'
+              component={SelectInput}
+              label={index === 0 ? 'Answers' : ''} />
+          </div>
+        ))}
+      </div>
+      }
+      <Button value='Add more' type="button" color='accent' raised={false} onClick={() => fields.push({})} />
 
-export const AnswerList = ({ type, answers }) => (
-  <div>{answers.map(answer => (
-    <RadioInput answer={answer} key={answer.id} />
-  ))} </div>
-)
+    </div>
+  )
+}
 
 export default AnswerList
