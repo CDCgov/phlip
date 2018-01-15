@@ -18,16 +18,18 @@ import styles from './add-edit-question.scss'
 export class AddEditQuestion extends Component {
   constructor(props, context) {
     super(props, context)
+    this.questionDefined = this.props.match.url === `/project/${this.props.projectid}/coding-scheme/add` ? null : this.props.location.state.questionDefined
     this.state = {
-      edit: false,
+      edit: this.questionDefined,
       defaultForm: {
-        type: 4,
         possibleAnswers: [{ text: '' }],
         includeComment: false
       }
     }
     this.onCancel = this.onCancel.bind(this)
+    // console.log(this.state)
   }
+
 
   onCancel() {
     this.props.formActions.reset('questionForm')
@@ -35,7 +37,10 @@ export class AddEditQuestion extends Component {
   }
 
   handleSubmit = values => {
-    this.props.actions.addQuestionRequest(values, this.props.projectId)
+    this.questionDefined
+      ? this.props.actions.updateQuestionRequest(values, this.props.projectId, this.props.location.state.questionDefined.id)
+      : this.props.actions.addQuestionRequest(values, this.props.projectId)
+
     this.props.history.goBack()
   }
 
@@ -55,23 +60,23 @@ export class AddEditQuestion extends Component {
     const actions = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button' },
       {
-        value: false
+        value: this.questionDefined
           ? 'Save'
           : 'Add',
         type: 'submit',
-        // disabled: Boolean(form.syncErrors || (form.asyncErrors ? form.asyncErrors.name : false))
+        disabled: Boolean(this.props.form.syncErrors || (this.props.form.asyncErrors ? this.props.form.asyncErrors.name : false))
       }
     ]
     return (
       <FormModal
         form="questionForm"
         handleSubmit={this.handleSubmit}
-        initialValues={this.state.edit ? question : this.state.defaultForm}
+        initialValues={this.props.location.state.questionDefined || this.state.defaultForm}
         maxWidth='md'
         enableReinitialize >
         <Container column style={{ minWidth: 890, padding: '20px' }}>
           <Container column className={styles.dashed}>
-            <ModalTitle title={this.state.edit ? 'Edit Question' : 'Add Question'} />
+            <ModalTitle title={this.state.edit ? 'Edit Question' : 'Add New Question'} />
             <ModalContent>
               <Container>
                 <Column flex style={{ padding: '0 10px 10px 0' }}>
@@ -85,10 +90,11 @@ export class AddEditQuestion extends Component {
                 </Column>
                 <Column >
                   <Field
-                    name="type"
+                    name="questionType"
                     component={DropDown}
                     label="Type"
                     options={options}
+                    defaultValue={4}
                     disabled={this.state.edit ? true : false}
                   />
                 </Column>
@@ -113,7 +119,7 @@ export class AddEditQuestion extends Component {
               </Container>
             </ModalContent>
           </Container>
-          <ModalActions edit={true} actions={actions} raised={true}></ModalActions>
+          <ModalActions edit={this.state.edit} actions={actions} raised={true}></ModalActions>
         </Container>
       </FormModal>
     )

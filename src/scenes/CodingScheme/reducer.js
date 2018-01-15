@@ -1,6 +1,6 @@
 import * as types from './actionTypes'
 import { changeNodeAtPath, getFlatDataFromTree, getTreeFromFlatData, walk, map } from 'react-sortable-tree'
-import { sortList } from 'utils'
+import { sortList, updater } from 'utils'
 
 const INITIAL_STATE = {
   questions: [],
@@ -120,7 +120,13 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         questions: [...state.questions, action.payload],
-        outline: questionsToOutline([ ...state.questions, action.payload ])
+        outline: questionsToOutline([...state.questions, action.payload])
+      }
+
+    case types.UPDATE_QUESTION_SUCCESS:
+      return {
+        ...state,
+        questions: updater.updateByProperty(action.payload, [...state.questions], 'id')
       }
 
     default:

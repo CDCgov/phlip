@@ -12,7 +12,7 @@ export const Header = ({ projectName, showButton, projectId }) => (
       Coding Scheme | <span style={{ color: '#0faee6' }}>{projectName}</span>
     </Typography>
     <SearchBar style={{ paddingRight: 10 }} placeholder="Search keywords" />
-    {showButton && <TextLink to={`/project/${projectId}/coding-scheme/add`}>
+    {showButton && <TextLink to={{ pathname: `/project/${projectId}/coding-scheme/add`, state: { questionDefined: null } }}>
       <Button value="+ Add New Question" color="accent" />
     </TextLink>}
   </AppBar>

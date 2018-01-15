@@ -7,6 +7,7 @@ import Button from 'components/Button'
 import Card from 'components/Card'
 import { CardContent, CardActions } from 'material-ui/Card'
 import Typography from 'material-ui/Typography'
+import TextLink from 'components/TextLink/index'
 
 const isDescendant = (older, younger) => {
   return (
@@ -45,6 +46,7 @@ export const QuestionNode = props => {
     parentNode,
     enableHover,
     disableHover,
+    projectId,
     ...otherProps
   } = props
 
@@ -95,11 +97,12 @@ export const QuestionNode = props => {
               style={{ opacity: node.hovering ? '.3' : '', flex: 1 }}>{questionBody}</Typography>
 
             {node.hovering &&
-            <div style={{ zIndex: 5 }}>
-              <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} />
-              <Button color="accent" style={actionStyles} value={<Icon color="white">mode_edit</Icon>} />
-              <Button color="accent" style={actionStyles} value={<Icon color="white">delete</Icon>} />
-            </div>
+              <div style={{ zIndex: 5 }}>
+                <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} />
+                <TextLink to={{ pathname: `/project/4/coding-scheme/edit/${node.id}`, state: { questionDefined: { ...node } } }}>
+                  <Button color="accent" style={actionStyles} value={<Icon color="white">mode_edit</Icon>} /></TextLink>
+                <Button color="accent" style={actionStyles} value={<Icon color="white">delete</Icon>} />
+              </div>
             }
           </CardContent>
           <CardActions disableActionSpacing style={{ padding: 0 }}>
@@ -113,22 +116,22 @@ export const QuestionNode = props => {
   return (
     <div className={styles.nodeContent} style={{ left: scaffoldBlockCount * scaffoldBlockPxWidth }}>
       {toggleChildrenVisibility && node.children && node.children.length > 0 &&
-      <div>
-        <IconButton
-          type="button"
-          aria-label={node.expanded ? 'Collapse' : 'Expand'}
-          className={styles.expandCollapseButton}
-          color="#aabdc6"
-          style={{ backgroundColor: '#f5f5f5' }}
-          iconSize={28}
-          onClick={() => toggleChildrenVisibility({ node, path, treeIndex })}
-        >
-          {node.expanded ? 'remove_circle' : 'add_circle'}
-        </IconButton>
-        {node.expanded && !isDragging && (
-          <div style={{ width: scaffoldBlockPxWidth }} className={styles.lineChildren} />
-        )}
-      </div>}
+        <div>
+          <IconButton
+            type="button"
+            aria-label={node.expanded ? 'Collapse' : 'Expand'}
+            className={styles.expandCollapseButton}
+            color="#aabdc6"
+            style={{ backgroundColor: '#f5f5f5' }}
+            iconSize={28}
+            onClick={() => toggleChildrenVisibility({ node, path, treeIndex })}
+          >
+            {node.expanded ? 'remove_circle' : 'add_circle'}
+          </IconButton>
+          {node.expanded && !isDragging && (
+            <div style={{ width: scaffoldBlockPxWidth }} className={styles.lineChildren} />
+          )}
+        </div>}
       <div className={styles.rowWrapper + (!canDrag ? ` ${styles.rowWrapperDisabled}` : '')}>
         {dragPreview}
       </div>

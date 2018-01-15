@@ -82,7 +82,11 @@ export default {
     return api.post(`/projects/${projectId}/codingscheme`, question).then(res => res.data)
   },
 
-  getScheme (projectId) {
+  updateQuestion(question, projectId, questionId) {
+    return api.put(`/projects/${projectId}/codingscheme/${questionId}`, question).then(res => res.data)
+  },
+
+  getScheme(projectId) {
     return api.get(`/projects/${projectId}/codingscheme`).then(res => res.data)
   }
 }

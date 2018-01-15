@@ -31,7 +31,7 @@ export class CodingScheme extends Component {
     return (
       <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
         <Typography type="display1" style={{ marginBottom: '20px' }}>The coding scheme is empty. To get started, add a question.</Typography>
-        <TextLink to={`/project/${this.props.projectId}/coding-scheme/add`}>
+        <TextLink to={{ pathname: `/project/${this.props.projectId}/coding-scheme/add`, state: { questionDefined: null } }}>
           <Button value="+ Add New Question" color="accent" />
         </TextLink>
       </Container>
@@ -42,7 +42,7 @@ export class CodingScheme extends Component {
     return (
       <Container column flex>
         <Header projectName={this.props.projectName} showButton={this.props.questions.length > 0}
-                projectId={this.props.projectId} />
+          projectId={this.props.projectId} />
         <Container flex style={{ backgroundColor: '#f5f5f5', paddingTop: 25 }}>
           {this.props.questions.length > 0
             ? <Scheme
@@ -58,6 +58,9 @@ export class CodingScheme extends Component {
         <Footer />
         <Route
           path="/project/:id/coding-scheme/add"
+          component={AddEditQuestion} />
+        <Route
+          path="/project/:id/coding-scheme/edit/:id"
           component={AddEditQuestion} />
       </Container>
     )

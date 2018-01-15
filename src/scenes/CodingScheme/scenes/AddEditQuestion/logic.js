@@ -16,6 +16,22 @@ const updateOutlineLogic = createLogic({
   }
 })
 
+const updateQuestionLogic = createLogic({
+  type: types.UPDATE_QUESTION_REQUEST,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.UPDATE_QUESTION_SUCCESS
+  },
+  async process({ api, action }) {
+    action.question.hovering = false
+    const updatedQuestion = await api.updateQuestion(action.question, action.projectId, action.questionId)
+    return {
+      ...updatedQuestion,
+      hovering: false
+    }
+  }
+})
+
 const addQuestionLogic = createLogic({
   type: types.ADD_QUESTION_REQUEST,
   processOptions: {
@@ -24,7 +40,7 @@ const addQuestionLogic = createLogic({
   },
   async process({ api, action }) {
     action.question.hovering = false
-    const question = await api.addQuestion(action.question, action.id)
+    const question = await api.addQuestion(action.question, action.projectId)
     return {
       ...question,
       parentId: action.question.parentId,
@@ -36,5 +52,6 @@ const addQuestionLogic = createLogic({
 
 export default [
   updateOutlineLogic,
+  updateQuestionLogic,
   addQuestionLogic
 ]

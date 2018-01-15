@@ -4,7 +4,7 @@ import SortableTree from 'react-sortable-tree'
 import TreeNode from './components/TreeNode'
 import QuestionNode from './components/QuestionNode'
 
-export const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuestion, enableHover, disableHover }) => {
+export const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuestion, enableHover, disableHover, projectId }) => {
   return (
     <SortableTree
       theme={{
@@ -29,6 +29,7 @@ export const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuest
         }
       }}
       isVirtualized={true}
+      projectId={projectId}
     />
   )
 }
