@@ -67,7 +67,6 @@ const getNodeKey = ({ node, treeIndex }) => {
 const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_SCHEME_SUCCESS:
-      console.log(action.payload)
       return {
         ...state,
         questions: sortQuestions(

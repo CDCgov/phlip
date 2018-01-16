@@ -4,8 +4,11 @@ import Radio from 'material-ui/Radio'
 import Container, { Row, Column } from 'components/Layout'
 import TextInput from 'components/TextInput'
 import Checkbox from 'material-ui/Checkbox'
+import { InputAdornment } from 'material-ui/Input'
+import Icon from 'components/Icon'
 
 const SelectInput = ({ name, label, answerType, type, input, meta: { asyncValidating, active, touched, error, warning }, ...custom }) => {
+  // console.log(answerType)
   return (
     <Container>
       <Column >
@@ -48,7 +51,6 @@ SelectInput.propTypes = {
 }
 
 SelectInput.defaultProps = {
-  // radio: false,
   meta: {}
 }
 
