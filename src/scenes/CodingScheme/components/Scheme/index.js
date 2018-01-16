@@ -20,6 +20,7 @@ export const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuest
       treeData={questions}
       onChange={handleQuestionTreeChange}
       style={{ flex: '1 0 50%', padding: '0 0 0 15px' }}
+      maxDepth={1}
       generateNodeProps={({ node, path }) => {
         return {
           turnOffHover: () => handleHoverOnQuestion(node, path, false),
