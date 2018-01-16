@@ -4,6 +4,7 @@ exports[`CodingScheme scene -- Scheme component should render correctly 1`] = `
 <DragDropContext(ReactSortableTree)
   generateNodeProps={[Function]}
   isVirtualized={true}
+  maxDepth={1}
   onChange={[Function]}
   style={
     Object {
