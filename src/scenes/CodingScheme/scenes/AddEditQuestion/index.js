@@ -20,18 +20,26 @@ export class AddEditQuestion extends Component {
     super(props, context)
     this.questionDefined = this.props.match.url === `/project/${this.props.projectid}/coding-scheme/add` ? null : this.props.location.state.questionDefined
     this.state = {
-      edit: this.questionDefined,
-      defaultForm: {
-        possibleAnswers: [{ text: '' }],
-        includeComment: false
-      }
+      edit: this.questionDefined
     }
+
+    this.defaultForm = {
+      questionType: 4,
+      possibleAnswers: [{ text: '' }, { text: '' }],
+      includeComment: false
+    }
+
+    // this.binaryForm = {
+    //   questionType: 1,
+    //   possibleAnswers: [{ text: 'Yes' }, { text: 'No' }],
+    //   includeComment: false
+    // }
+
     this.onCancel = this.onCancel.bind(this)
-    // console.log(this.state)
   }
 
 
-  onCancel() {
+  onCancel = () => {
     this.props.formActions.reset('questionForm')
     this.props.history.goBack()
   }
@@ -44,11 +52,12 @@ export class AddEditQuestion extends Component {
     this.props.history.goBack()
   }
 
-  handleTypeChange() {
+  handleTypeChange = () => {
+
+    this.props.formActions.reset('questionForm')
   }
 
   render() {
-
 
     const options = [
       { value: 1, label: 'Binary' },
@@ -71,15 +80,16 @@ export class AddEditQuestion extends Component {
       <FormModal
         form="questionForm"
         handleSubmit={this.handleSubmit}
-        initialValues={this.props.location.state.questionDefined || this.state.defaultForm}
+        initialValues={this.questionDefined || this.defaultForm}
         maxWidth='md'
-        enableReinitialize >
+        enableReinitialize
+        onClose={this.onCancel}>
         <Container column style={{ minWidth: 890, padding: '20px' }}>
           <Container column className={styles.dashed}>
             <ModalTitle title={this.state.edit ? 'Edit Question' : 'Add New Question'} />
             <ModalContent>
               <Container>
-                <Column flex style={{ padding: '0 10px 10px 0' }}>
+                <Column flex style={{ padding: '0 10px 20px 0' }}>
                   <Field
                     name="text"
                     component={TextInput}
@@ -95,12 +105,13 @@ export class AddEditQuestion extends Component {
                     label="Type"
                     options={options}
                     defaultValue={4}
+                    onChange={this.handleTypeChange}
                     disabled={this.state.edit ? true : false}
                   />
                 </Column>
               </Container>
               <Container>
-                <Row flex>
+                <Row flex style={{ padding: '0 10px 20px 0' }}>
                   <Field
                     name="hint"
                     component={TextInput}
@@ -109,13 +120,15 @@ export class AddEditQuestion extends Component {
                   />
                 </Row>
               </Container>
-              <FieldArray name="possibleAnswers" answerType={this.props.form.values ? this.props.form.values.type : 1} component={AnswerList} />
+              <FieldArray name="possibleAnswers" answerType={this.props.form.values ? this.props.form.values.questionType : 4} component={AnswerList} />
               <Container>
-                <Field
-                  name='includeComment'
-                  label='Include comment box'
-                  component={CheckboxLabel}
-                />
+                <Row flex style={{ paddingLeft: '47px' }}>
+                  <Field
+                    name='includeComment'
+                    label='Include comment box'
+                    component={CheckboxLabel}
+                  />
+                </Row>
               </Container>
             </ModalContent>
           </Container>
