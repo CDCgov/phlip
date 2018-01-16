@@ -95,21 +95,33 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   <TableCell
     key="protocol"
     padding="checkbox"
-    style={Object {}}
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
   >
     Protocol
   </TableCell>
   <TableCell
     key="jurisdictions"
     padding="checkbox"
-    style={Object {}}
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
   >
     Jurisdictions
   </TableCell>
   <TableCell
     key="codingScheme"
     padding="checkbox"
-    style={Object {}}
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
   >
     Coding Scheme
   </TableCell>

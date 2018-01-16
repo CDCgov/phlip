@@ -1,5 +1,6 @@
 import React from 'react'
 import { shallow, mount } from 'enzyme'
+import { MemoryRouter } from 'react-router-dom'
 import { QuestionNode } from '../index'
 
 const props = {
@@ -20,10 +21,14 @@ const props = {
   turnOnHover: () => {},
   turnOffHover: () => {},
   enableHover: () => {},
-  disableHover: () => {},
+  disableHover: () => {}
 }
 
-const setup = otherProps => mount(<QuestionNode {...props} {...otherProps} />)
+const setup = otherProps => mount((
+  <MemoryRouter>
+    <QuestionNode {...props} {...otherProps} />
+  </MemoryRouter>
+))
 
 describe('CodingScheme -- Scheme -- QuestionNode', () => {
   test('should render correctly', () => {

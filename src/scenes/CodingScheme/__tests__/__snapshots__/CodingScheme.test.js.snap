@@ -42,7 +42,14 @@ exports[`CodingScheme scene should render correctly 1`] = `
         The coding scheme is empty. To get started, add a question.
       </WithStyles>
       <WithTheme
-        to="/project/undefined/coding-scheme/add"
+        to={
+          Object {
+            "pathname": "/project/undefined/coding-scheme/add",
+            "state": Object {
+              "questionDefined": null,
+            },
+          }
+        }
       >
         <WithTheme
           color="accent"
@@ -55,6 +62,10 @@ exports[`CodingScheme scene should render correctly 1`] = `
   <Route
     component={[Function]}
     path="/project/:id/coding-scheme/add"
+  />
+  <Route
+    component={[Function]}
+    path="/project/:id/coding-scheme/edit/:id"
   />
 </Container>
 `;
