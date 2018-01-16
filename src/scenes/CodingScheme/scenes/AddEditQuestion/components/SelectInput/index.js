@@ -11,7 +11,7 @@ const SelectInput = ({ name, label, answerType, type, input, meta: { asyncValida
   // console.log(answerType)
   return (
     <Container>
-      <Column >
+      <Column style={{ marginTop: 8 }}>
         {(() => {
           switch (answerType) {
             case 1:
@@ -28,7 +28,7 @@ const SelectInput = ({ name, label, answerType, type, input, meta: { asyncValida
           }
         })()}
       </Column>
-      <Column flex >
+      <Column flex>
         <TextInput
           name={name}
           label={label}

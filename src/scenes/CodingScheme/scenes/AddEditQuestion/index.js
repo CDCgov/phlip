@@ -70,7 +70,6 @@ export class AddEditQuestion extends Component {
   }
 
   render() {
-
     const options = [
       { value: 1, label: 'Binary' },
       // { value: '2, label: 'Category' },
@@ -97,7 +96,7 @@ export class AddEditQuestion extends Component {
         maxWidth="md"
         enableReinitialize
         onClose={this.onCancel}>
-        <Container column style={{ minWidth: 890, padding: '20px' }}>
+        <Container column style={{ minWidth: 890, padding: '20px 20px 0 20px' }}>
           <Container column className={styles.dashed}>
             <ModalTitle title={this.state.edit ? 'Edit Question' : 'Add New Question'} />
             <ModalContent>
@@ -147,7 +146,7 @@ export class AddEditQuestion extends Component {
               </Container>
             </ModalContent>
           </Container>
-          <ModalActions edit={this.state.edit} actions={actions} raised={true}></ModalActions>
+          <ModalActions edit={this.state.edit} actions={actions} raised={true} style={{ paddingTop: 15, paddingBottom: 15, margin: 0 }}></ModalActions>
         </Container>
       </FormModal>
     )
