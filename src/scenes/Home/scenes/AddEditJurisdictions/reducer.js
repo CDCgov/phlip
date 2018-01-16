@@ -87,7 +87,8 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         ...state,
         suggestionValue: '',
         suggestions: [],
-        jurisdiction: {}
+        jurisdiction: {},
+        searchValue: ''
       }
 
     case types.SEARCH_JURISDICTION_LIST:
