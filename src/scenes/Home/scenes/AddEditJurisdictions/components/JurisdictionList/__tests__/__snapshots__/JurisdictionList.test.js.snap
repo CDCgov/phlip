@@ -2,7 +2,9 @@
 
 exports[`Home scene - AddEditJurisdictions - JurisdictionList should render correctly 1`] = `
 <Table>
-  <WithStyles(TableHead)>
+  <TableHead
+    component="thead"
+  >
     <WithStyles(TableRow)
       key="jurisdiction-header"
     >
@@ -27,7 +29,9 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionList should render corr
         Edit
       </WithStyles(TableCell)>
     </WithStyles(TableRow)>
-  </WithStyles(TableHead)>
-  <WithStyles(TableBody) />
+  </TableHead>
+  <TableBody
+    component="tbody"
+  />
 </Table>
 `;

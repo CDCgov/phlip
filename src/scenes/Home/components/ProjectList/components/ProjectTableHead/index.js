@@ -9,9 +9,9 @@ const columns = [
   { key: 'name', label: 'Name', style: { textAlign: 'left', maxWidth: 'unset' }, hasSort: true },
   { key: 'dateLastEdited', label: 'Date Last Edited', style: { width: 150, maxWidth: 150, textAlign: 'unset' }, hasSort: true },
   { key: 'lastEditedBy', label: 'Last Edited By', style: { width: 150, maxWidth: 150, textAlign: 'unset' }, hasSort: true },
-  { key: 'protocol', label: 'Protocol', hasSort: false },
-  { key: 'jurisdictions', label: 'Jurisdictions', hasSort: false },
-  { key: 'codingScheme', label: 'Coding Scheme', hasSort: false },
+  { key: 'protocol', label: 'Protocol', hasSort: false, style: { textAlign: 'center' }},
+  { key: 'jurisdictions', label: 'Jurisdictions', hasSort: false, style: { textAlign: 'center' }},
+  { key: 'codingScheme', label: 'Coding Scheme', hasSort: false, style: { textAlign: 'center' }},
   { key: 'code', label: '', hasSort: false },
   { key: 'validate', label: '', hasSort: false },
   { key: 'export', label: '', hasSort: false }
@@ -25,6 +25,7 @@ const hiddenCols = [
 
 const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSort, onSortBookmarked }) => {
   const visible = (role === 'Coder' ? columns.filter(c => !hiddenCols.includes(c.key)) : columns)
+
   return (
     <TableRow key="headers">
       <TableCell key="bookmarked" style={{ width: 48 }}>

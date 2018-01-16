@@ -47,6 +47,13 @@ export const styles = theme => ({
     flexShrink: 0,
     color: theme.palette.text.secondary,
     marginLeft: theme.spacing.unit * 2.5
+  },
+  icon: {
+    top: 10,
+    position: 'absolute',
+    right: 0,
+    color: theme.palette.text.secondary,
+    'pointer-events': 'none',
   }
 })
 
@@ -111,7 +118,7 @@ class TablePagination extends React.Component {
           )}
           {numberOptions > 2 && (
             <Select
-              classes={{ root: classes.selectRoot, select: classes.select }}
+              classes={{ root: classes.selectRoot, select: classes.select, icon: classes.icon }}
               input={
                 <Input
                   classes={{
