@@ -5,7 +5,7 @@ before_script:
   - node -v
 
 variables:
-  VERSION: 0.5.0
+  VERSION: 0.6.0
   SUB_BUILD: $CI_PIPELINE_ID
   BRANCH: $CI_COMMIT_REF_NAME
 
@@ -37,5 +37,8 @@ esquire_frontend_push_image::
     - curl -fsSL https://git.phiresearchlab.org/snippets/10/raw | bash
 #  only:
 #    - master
+  environment:
+    name: Docker Frontend DTR
+    url: https://dtr.phiresearchlab.org/repositories/iiu/esquire-frontend/tags
   tags:
     - iiu
