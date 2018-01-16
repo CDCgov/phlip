@@ -49,7 +49,6 @@ export const styles = theme => ({
     marginLeft: theme.spacing.unit * 2.5
   },
   icon: {
-    top: 10,
     position: 'absolute',
     right: 0,
     color: theme.palette.text.secondary,
