@@ -22,22 +22,19 @@ export class AddEditQuestion extends Component {
     this.state = {
       edit: this.questionDefined
     }
-
     this.defaultForm = {
       questionType: 4,
-      possibleAnswers: [{ text: '' }, { text: '' }],
+      possibleAnswers: [{ text: '' }, { text: '' }, { text: '' }],
+      includeComment: false
+    }
+    this.binaryForm = {
+      questionType: 1,
+      possibleAnswers: [{ text: 'Yes' }, { text: 'No' }],
       includeComment: false
     }
 
-    // this.binaryForm = {
-    //   questionType: 1,
-    //   possibleAnswers: [{ text: 'Yes' }, { text: 'No' }],
-    //   includeComment: false
-    // }
-
     this.onCancel = this.onCancel.bind(this)
   }
-
 
   onCancel = () => {
     this.props.formActions.reset('questionForm')
@@ -52,9 +49,10 @@ export class AddEditQuestion extends Component {
     this.props.history.goBack()
   }
 
-  handleTypeChange = () => {
-
-    this.props.formActions.reset('questionForm')
+  handleTypeChange = (event, value) => {
+    value === 1
+      ? this.props.formActions.initialize('questionForm', this.binaryForm)
+      : this.props.formActions.initialize('questionForm', this.defaultForm)
   }
 
   render() {
