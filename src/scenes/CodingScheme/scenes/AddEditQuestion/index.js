@@ -47,11 +47,13 @@ export class AddEditQuestion extends Component {
   handleSubmit = values => {
     let updatedValues = { ...values }
     for (let field of ['text', 'hint']) {
-      updatedValues[field] = trimWhitespace(values[field])
+      if (updatedValues[field]) updatedValues[field] = trimWhitespace(values[field])
+      else updatedValues[field] = values[field]
     }
 
     values.possibleAnswers.forEach((answer, i) => {
-      updatedValues.possibleAnswers[i] = { ...answer, text: answer.text.trim() }
+      if (updatedValues.possibleAnswers[i]) updatedValues.possibleAnswers[i] = { ...answer, text: answer.text.trim() }
+      else updateValues.possibleAnswers[i] = answer
     })
 
     this.questionDefined
