@@ -10,7 +10,7 @@ import ModalForm from 'components/ModalForm'
 import FormTextInput from 'components/FormTextInput'
 import isEmail from 'sane-email-validation'
 import Container, { Row, Column } from 'components/Layout'
-
+import { trimWhitespace } from 'utils/formHelpers'
 
 export class AddEditUser extends Component {
   constructor(props, context) {
@@ -24,10 +24,15 @@ export class AddEditUser extends Component {
   }
 
   handleSubmit = (values) => {
+    let updatedValues = { ...values }
+    for (let field of ['firstName', 'lastName']) {
+      updatedValues[field] = trimWhitespace(values[field])
+    }
+
     if (this.props.match.params.id) {
-      this.props.actions.updateUserRequest({ role: 'Coordinator', ...values })
+      this.props.actions.updateUserRequest({ role: 'Coordinator', ...updatedValues })
     } else {
-      this.props.actions.addUserRequest({ role: 'Coordinator', ...values })
+      this.props.actions.addUserRequest({ role: 'Coordinator', ...updatedValues })
     }
     this.props.history.goBack()
   }
@@ -51,7 +56,6 @@ export class AddEditUser extends Component {
     if (id && this.props.users.length > 0) {
       this.selectedUser = getUserById(this.props.users, id)
     }
-
   }
 
   // required = value => value ? undefined : 'Required'
@@ -157,7 +161,6 @@ function getUserById(users, id) {
   if (user.length) return user[0];
   return null;
 }
-
 
 const mapStateToProps = (state) => {
   return {

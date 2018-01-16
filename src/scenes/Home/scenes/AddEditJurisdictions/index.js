@@ -84,13 +84,14 @@ export class AddEditJurisdictions extends Component {
   }
 
   validateJurisdiction = values => {
-    const prom = new Promise(resolve => resolve(api.searchJurisdictionList(values.name)))
+    const updatedValues = { ...values, name: values.name.trim() }
+    const prom = new Promise(resolve => resolve(api.searchJurisdictionList(updatedValues.name)))
     return prom.then(out => {
       if (!this.state.edit) {
         if (!this.props.jurisdiction) {
-          this.throwErrors(values, out)
-        } else if (this.props.jurisdiction && this.props.jurisdiction.name !== values.name) {
-          this.throwErrors(values, out)
+          this.throwErrors(updatedValues, out)
+        } else if (this.props.jurisdiction && this.props.jurisdiction.name !== updatedValues.name) {
+          this.throwErrors(updatedValues, out)
         } else {
           this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
         }

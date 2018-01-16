@@ -15,3 +15,5 @@ export const validateDateRanges = values => {
   }
   return errors
 }
+
+export const trimWhitespace = str => str.trim()

@@ -14,11 +14,14 @@ import { Field, FieldArray } from 'redux-form'
 import AnswerList from './components/AnswerList'
 import CheckboxLabel from 'components/CheckboxLabel'
 import styles from './add-edit-question.scss'
+import { trimWhitespace } from 'utils/formHelpers'
 
 export class AddEditQuestion extends Component {
   constructor(props, context) {
     super(props, context)
-    this.questionDefined = this.props.match.url === `/project/${this.props.projectid}/coding-scheme/add` ? null : this.props.location.state.questionDefined
+    this.questionDefined = this.props.match.url === `/project/${this.props.projectid}/coding-scheme/add`
+      ? null
+      : this.props.location.state.questionDefined
     this.state = {
       edit: this.questionDefined
     }
@@ -42,9 +45,18 @@ export class AddEditQuestion extends Component {
   }
 
   handleSubmit = values => {
+    let updatedValues = { ...values }
+    for (let field of ['text', 'hint']) {
+      updatedValues[field] = trimWhitespace(values[field])
+    }
+
+    values.possibleAnswers.forEach((answer, i) => {
+      updatedValues.possibleAnswers[i] = { ...answer, text: answer.text.trim() }
+    })
+
     this.questionDefined
-      ? this.props.actions.updateQuestionRequest(values, this.props.projectId, this.props.location.state.questionDefined.id)
-      : this.props.actions.addQuestionRequest(values, this.props.projectId)
+      ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.props.location.state.questionDefined.id)
+      : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId)
 
     this.props.history.goBack()
   }
@@ -71,7 +83,8 @@ export class AddEditQuestion extends Component {
           ? 'Save'
           : 'Add',
         type: 'submit',
-        disabled: Boolean(this.props.form.syncErrors || (this.props.form.asyncErrors ? this.props.form.asyncErrors.name : false))
+        disabled: Boolean(this.props.form.syncErrors ||
+          (this.props.form.asyncErrors ? this.props.form.asyncErrors.name : false))
       }
     ]
     return (
@@ -79,7 +92,7 @@ export class AddEditQuestion extends Component {
         form="questionForm"
         handleSubmit={this.handleSubmit}
         initialValues={this.questionDefined || this.defaultForm}
-        maxWidth='md'
+        maxWidth="md"
         enableReinitialize
         onClose={this.onCancel}>
         <Container column style={{ minWidth: 890, padding: '20px' }}>
@@ -91,12 +104,12 @@ export class AddEditQuestion extends Component {
                   <Field
                     name="text"
                     component={TextInput}
-                    label='Question'
+                    label="Question"
                     multiline={true}
                     placeholder="Enter question"
                   />
                 </Column>
-                <Column >
+                <Column>
                   <Field
                     name="questionType"
                     component={DropDown}
@@ -118,12 +131,14 @@ export class AddEditQuestion extends Component {
                   />
                 </Row>
               </Container>
-              <FieldArray name="possibleAnswers" answerType={this.props.form.values ? this.props.form.values.questionType : 4} component={AnswerList} />
+              <FieldArray name="possibleAnswers"
+                          answerType={this.props.form.values ? this.props.form.values.questionType : 4}
+                          component={AnswerList} />
               <Container>
                 <Row flex style={{ paddingLeft: '47px' }}>
                   <Field
-                    name='includeComment'
-                    label='Include comment box'
+                    name="includeComment"
+                    label="Include comment box"
                     component={CheckboxLabel}
                   />
                 </Row>
@@ -146,6 +161,5 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(actions, dispatch),
   formActions: bindActionCreators(formActions, dispatch)
 })
-
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEditQuestion))
