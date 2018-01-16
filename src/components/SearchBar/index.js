@@ -16,6 +16,7 @@ const SearchBar = ({ searchValue, handleSearchValueChange, placeholder, ...other
       }}
       type="search"
       id="search-bar"
+      {...otherProps}
     />
   )
 }

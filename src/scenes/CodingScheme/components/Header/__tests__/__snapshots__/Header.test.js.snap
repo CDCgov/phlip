@@ -23,7 +23,7 @@ exports[`CodingScheme scene --- Header component should render correctly 1`] = `
     </span>
   </WithStyles>
   <SearchBar
-    placeholder="Search keywords"
+    placeholder="Search"
     style={
       Object {
         "paddingRight": 10,
