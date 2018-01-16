@@ -25,11 +25,11 @@ export const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuest
           turnOffHover: () => handleHoverOnQuestion(node, path, false),
           turnOnHover: () => handleHoverOnQuestion(node, path, true),
           enableHover: () => enableHover(),
-          disableHover: () => disableHover()
+          disableHover: () => disableHover(),
+          projectId: projectId
         }
       }}
       isVirtualized={true}
-      projectId={projectId}
     />
   )
 }

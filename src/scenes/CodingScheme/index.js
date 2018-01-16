@@ -51,6 +51,7 @@ export class CodingScheme extends Component {
               handleHoverOnQuestion={this.props.actions.toggleHover}
               disableHover={this.props.actions.disableHover}
               enableHover={this.props.actions.enableHover}
+              projectId={this.props.projectId}
             />
             : this.renderGetStarted()
           }
