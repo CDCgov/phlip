@@ -1,8 +1,4 @@
-before_script:
-  - docker info
-  - yarn -version
-  - npm -version
-  - node -v
+#before_script:
 
 variables:
   VERSION: 0.6.0
@@ -19,6 +15,10 @@ esquire_frontend_build:
   tags:
     - iiu
   script:
+    - docker info
+    - yarn -version
+    - npm -version
+    - node -v
     - yarn build:image:dev
 
 esquire_frontend_test_image:
