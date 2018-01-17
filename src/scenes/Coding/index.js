@@ -8,6 +8,7 @@ import IconButton from 'components/IconButton'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import QuestionCard from './components/QuestionCard'
+import * as actions from './actions'
 
 export class Coding extends Component {
   constructor(props, context) {
@@ -15,18 +16,18 @@ export class Coding extends Component {
   }
 
   componentWillMount() {
-
+    this.props.actions.getCodingOutlineRequest(this.props.projectId, '1')
   }
 
   render() {
     return (
       <Container column flex>
         <Header projectName={this.props.projectName} projectId={this.props.projectId} />
-        <Container flex column style={{ backgroundColor: '#f5f5f5', padding: '20px 20px 0 20px' }}>
+        <Container flex column style={{ backgroundColor: '#f5f5f5', padding: '20px 20px 10px 20px' }}>
           <Row flex displayFlex>
-            <QuestionCard />
+            <QuestionCard question={this.props.question} />
           </Row>
-          <Row displayFlex style={{ height: 50, alignItems: 'center', paddingLeft: 10, paddingRight: 10, justifyContent: 'space-between' }}>
+          <Row displayFlex style={{ height: 50, alignItems: 'center', paddingTop: 10, justifyContent: 'space-between' }}>
             <Row displayFlex>
               <IconButton color="black">arrow_back</IconButton>
               <Typography type="body2"><span style={{ color: '#0faee6', fontSize: 16, paddingLeft: 5 }}>Previous question</span></Typography>
@@ -49,7 +50,11 @@ Coding.propTypes = {
 
 const mapStateToProps = (state, ownProps) => ({
   projectName: state.scenes.home.main.projects.byId[ownProps.match.params.id].name,
-  projectId: ownProps.match.params.id
+  projectId: ownProps.match.params.id,
+  question: state.scenes.coding.question || {},
+  outline: state.scenes.coding.outline || {}
 })
 
-export default connect(mapStateToProps)(Coding)
+const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
+
+export default connect(mapStateToProps, mapDispatchToProps)(Coding)

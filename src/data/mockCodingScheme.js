@@ -1,99 +1,98 @@
 export const scheme = [
-
   {
-    type: 'mc',
-    questionBody: 'Does the state have rabies vaccination laws for domestic dogs, cats, or ferrets?',
+    type: 1,
+    text: 'Does the state have rabies vaccination laws for domestic dogs, cats, or ferrets?',
     hint: '',
     comment: false,
-    answers: [],
+    possibleAnswers: [{ id: 1001, text: 'Yes' }, { id: 1002, text: 'No' }],
     id: 1
   },
   {
-    type: 'cb',
-    questionBody: 'What animals do the state\'s rabies vaccination laws apply to? (select all that apply)',
+    type: 3,
+    text: 'What animals do the state\'s rabies vaccination laws apply to? (select all that apply)',
     hint: '',
     comment: false,
-    answers: [],
+    possibleAnswers: [{ id: 1003, text: 'Cats' }, { id: 1004, text: 'Dogs' }, { id: 1005, text: 'Ferrets' }],
     id: 2
   },
   {
-    type: 'text',
-    questionBody: 'By what age must initial vaccination occur?',
+    type: 5,
+    text: 'By what age must initial vaccination occur?',
     hint: '',
     comment: false,
-    answers: [],
+    possibleAnswers: [],
     id: 3
   },
   {
-    type: 'mc',
-    questionBody: 'By what age must subsequent vaccinations occur, or for how long does immunity last?',
+    type: 5,
+    text: 'By what age must subsequent vaccinations occur, or for how long does immunity last?',
     hint: '',
     comment: false,
-    answers: [],
+    possibleAnswers: [],
     id: 4
   },
   {
-    type: 'binary',
-    questionBody: 'Is a certificate issued after rabies vaccination?',
+    type: 4,
+    text: 'Is a certificate issued after rabies vaccination?',
     hint: '',
     comment: false,
-    answers: [],
+    possibleAnswers: [{ id: 1007, text: 'Yes'}, { id: 1008, text: 'No'}, { id: 1009, text: 'Unclear' }],
     id: 5
   },
   {
-    type: 'cat',
-    questionBody: 'Are tags issued after rabies vaccination?',
+    type: 1,
+    text: 'Are tags issued after rabies vaccination?',
     hint: '',
     comment: false,
-    answers: [],
+    possibleAnswers: [{ id: 1010, text: 'Yes' }, { id: 1011, text: 'No' }],
     id: 6
   },
   {
-    type: 'cb',
-    questionBody: 'Is rabies vaccination required to obtain a license or registration for the animal?',
+    type: 4,
+    text: 'Is rabies vaccination required to obtain a license or registration for the animal?',
     hint: '',
     comment: false,
-    answers: [],
+    possibleAnswers: [{ id: 1012, text: 'Yes'}, { id: 1013, text: 'No'}, { id: 1014, text: 'Unclear' }],
     id: 7
   },
   {
-    type: 'text',
-    questionBody: 'Are there exemptions for vaccination or certificate requirements for animals in the state?',
+    type: 5,
+    text: 'Are there exemptions for vaccination or certificate requirements for animals in the state?',
     hint: '',
     comment: false,
-    answers: [],
+    possibleAnswers: [],
     id: 8
   },
   {
-    type: 'binary',
-    questionBody: 'What are the vaccinations or certificate exemptions for animals in the state?',
+    type: 3,
+    text: 'What are the vaccinations or certificate exemptions for animals in the state?',
     hint: '',
     comment: false,
-    answers: [],
+    possibleAnswers: [{ id: 34546, text: 'Rabies' }, { id: 4354, text: 'Other' }, { id: 24155, text: 'Feline Herpes' }],
     id: 9
   },
   {
-    type: 'binary',
-    questionBody: 'Does the state have laws regarding rabies vaccinations for animals entering the state?',
+    type: 1,
+    text: 'Does the state have laws regarding rabies vaccinations for animals entering the state?',
     hint: '',
     comment: false,
-    answers: [],
+    possibleAnswers: [{ id: 63, text: 'Yes'}, { id: 456, text: 'No'}],
     id: 10
   },
   {
-    type: 'cat',
-    questionBody: 'Does the state’s law reference any version of the National Association of State Public Health Veterinarians (NASPHV), Compendium of Animal Rabies Prevention and Control (Compendium)?',
+    type: 1,
+    text: 'Does the state’s law reference any version of the National Association of State Public Health Veterinarians (NASPHV), Compendium of Animal Rabies Prevention and Control (Compendium)?',
     hint: '',
     comment: false,
-    answers: [],
+    possibleAnswers: [{ id: 15563, text: 'Yes'}, { id: 1234, text: 'No'}],
     id: 11
   },
   {
-    type: 'mc',
-    questionBody: 'To what animals do the state\'s rabies vaccination laws for entry apply?',
+    type: 3,
+    text: 'To what animals do the state\'s rabies vaccination laws for entry apply?',
     hint: '',
     comment: false,
-    answers: [],
+    possibleAnswers: [{ id: 2003, text: 'Cats' }, { id: 2004, text: 'Dogs' }, { id: 2005, text: 'Ferrets' }],
     id: 12
   }
 ]

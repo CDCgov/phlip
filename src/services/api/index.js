@@ -88,5 +88,9 @@ export default {
 
   getScheme(projectId) {
     return api.get(`/projects/${projectId}/codingscheme`).then(res => res.data)
+  },
+
+  getQuestion(projectId, jurisdictionId, userId, questionId) {
+    return api.get(`/projects/${projectId}/codingscheme/${questionId}`).then(res => res.data)
   }
 }

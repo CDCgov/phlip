@@ -5,6 +5,7 @@ import home from './Home/reducer'
 import admin from './Admin/reducer'
 import login from './Login/reducer'
 import codingScheme from './CodingScheme/reducer'
+import coding from './Coding/reducer'
 
 const config = {
   storage
@@ -14,7 +15,8 @@ const scenesReducer = combineReducers({
   home: persistReducer({ ...config, key: 'home', blacklist: ['addEditJurisdictions'] }, home),
   admin: persistReducer({ ...config, key: 'admin' }, admin),
   codingScheme,
-  login
+  login,
+  coding
 })
 
 export default scenesReducer

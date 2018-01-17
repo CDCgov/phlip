@@ -15,7 +15,7 @@ export const QuestionCard = ({ question }) => {
       </Row>
       <Divider />
       <Row flex>
-
+        {question.text}
       </Row>
     </Card>
   )
