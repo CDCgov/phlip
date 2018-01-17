@@ -13,6 +13,9 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
         "handleSearchValueChange": [Function],
         "placeholder": "Search",
         "searchValue": undefined,
+        "style": Object {
+          "paddingRight": 10,
+        },
       }
     }
     buttons={
