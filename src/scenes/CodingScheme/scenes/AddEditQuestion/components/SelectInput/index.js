@@ -4,11 +4,11 @@ import Radio from 'material-ui/Radio'
 import Container, { Row, Column } from 'components/Layout'
 import TextInput from 'components/TextInput'
 import Checkbox from 'material-ui/Checkbox'
-import { InputAdornment } from 'material-ui/Input'
-import Icon from 'components/Icon'
+import Input, { InputLabel } from 'material-ui/Input'
+import { FormControl, FormHelperText } from 'material-ui/Form'
 
-const SelectInput = ({ name, label, answerType, type, input, meta: { asyncValidating, active, touched, error, warning }, ...custom }) => {
-  // console.log(answerType)
+const SelectInput = ({ name, label, answerType, type, input, classes, meta: { asyncValidating, active, touched, error, warning }, ...custom }) => {
+  //Refactor this 12/17/2018
   return (
     <Container>
       <Column style={{ marginTop: 8 }}>
@@ -29,12 +29,16 @@ const SelectInput = ({ name, label, answerType, type, input, meta: { asyncValida
         })()}
       </Column>
       <Column flex>
-        <TextInput
-          name={name}
-          label={label}
-          type={type}
-          input={input}
-          {...custom} />
+        <FormControl error={Boolean(touched && error && !active || warning)} fullWidth>
+          <InputLabel htmlFor={name} shrink>{label}</InputLabel>
+          <Input
+            id={name}
+            {...input}
+            type={type}
+            {...custom}
+          />
+          {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
+        </FormControl>
       </Column>
     </Container>
   )
