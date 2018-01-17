@@ -10,10 +10,12 @@ import { persistor } from 'services/store'
 import axios from 'axios'
 import { isLoggedInTokenExists, getToken } from '../services/authToken'
 import CodingScheme from './CodingScheme'
+import Coding from './Coding'
 
 const AuthenticatedScenes = () => (
   <Switch>
     <Route path="/project/:id/coding-scheme" component={CodingScheme} />
+    <Route path="/project/:id/code" component={Coding} />
     <HeaderedLayout>
       <Switch>
         <Route path="/admin" component={Admin} />

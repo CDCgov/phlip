@@ -46,7 +46,9 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
         </TableCell>
       }
       <TableCell key={`${project.id}-code`}>
-        <Button raised={false} value="Code" listButton />
+        <TextLink to={{ pathname: `/project/${project.id}/code` }}>
+          <Button raised={false} value="Code" listButton />
+        </TextLink>
       </TableCell>
       {role !== 'Coder' &&
         <TableCell key={`${project.id}-validation`}>
