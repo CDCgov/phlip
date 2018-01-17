@@ -84,7 +84,6 @@ export class AddEditQuestion extends Component {
       errors.text = 'Required'
     }
     const answersArrayErrors = []
-    console.log(!(values.questionType === questionTypes.TEXT_FIELD))
     if (!(values.questionType === questionTypes.TEXT_FIELD)) {
       values.possibleAnswers.forEach((answer, index) => {
         const answerErrors = {}
