@@ -7,7 +7,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
   spacing={0}
 >
   <Header
-    showButton={true}
+    showButton={false}
   />
   <Container
     column={false}
