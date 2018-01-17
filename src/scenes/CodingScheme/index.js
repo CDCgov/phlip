@@ -46,7 +46,7 @@ export class CodingScheme extends Component {
   render() {
     return (
       <Container column flex>
-        <Header projectName={this.props.projectName} showButton={!this.props.empty}
+        <Header projectName={this.props.projectName} showButton={this.props.questions.length > 0}
                 projectId={this.props.projectId} />
         <Container flex style={{ backgroundColor: '#f5f5f5', paddingTop: 25 }}>
           {this.props.empty
