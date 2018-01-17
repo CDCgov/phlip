@@ -66,8 +66,8 @@ export class AddEditQuestion extends Component {
 
   handleTypeChange = (event, value) => {
     value === 1
-      ? this.props.formActions.initialize('questionForm', this.binaryForm)
-      : this.props.formActions.initialize('questionForm', this.defaultForm)
+      ? this.props.formActions.initialize('questionForm', this.binaryForm, true)
+      : this.props.formActions.initialize('questionForm', this.defaultForm, true)
   }
 
 
@@ -115,8 +115,6 @@ export class AddEditQuestion extends Component {
         handleSubmit={this.handleSubmit}
         initialValues={this.questionDefined || this.defaultForm}
         maxWidth='md'
-        // enableReinitialize={true}
-        // keepDirtyOnReinitialize={true}
         validate={this.validate}
         onClose={this.onCancel}>
 
