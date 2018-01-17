@@ -4,12 +4,14 @@ import SortableTree from 'react-sortable-tree'
 import TreeNode from './components/TreeNode'
 import QuestionNode from './components/QuestionNode'
 
-const canDrag = (nextParent, outline, questions) => {
+const canDrop = (nextParent, outline, questions) => {
+  if (nextParent === null) return true
+
   const grandParentId = outline[nextParent.id].parentId
   let canDrop = true
   questions.map(question => {
     if (question.id === grandParentId) {
-      canDrop = question.type !== 2
+      canDrop = question.questionType !== 2
     }
   })
   return canDrop
@@ -40,8 +42,7 @@ export const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuest
           projectId: projectId
         }
       }}
-      canDrag={({ node }) => true}
-      //canDrop={({ nextParent }) => canDrag(nextParent, outline, questions)}
+      canDrop={({ nextParent }) => canDrop(nextParent, outline, questions)}
       isVirtualized={true}
     />
   )

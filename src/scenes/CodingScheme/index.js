@@ -58,6 +58,7 @@ export class CodingScheme extends Component {
                 disableHover={this.props.actions.disableHover}
                 enableHover={this.props.actions.enableHover}
                 projectId={this.props.projectId}
+                outline={this.props.outline}
             />}
         </Container>
         <Footer clearState={this.props.actions.clearState} />
