@@ -28,13 +28,6 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
       }
     >
       <SearchBar
-        containerStyles={
-          Object {
-            "justifyContent": "flex-end",
-            "padding": 20,
-          }
-        }
-        height={57}
         placeholder="Search"
       />
     </Container>
@@ -45,9 +38,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
         }
       }
     >
-      <TableHead
-        component="thead"
-      >
+      <WithStyles>
         <ProjectTableHead
           direction="asc"
           onRequestSort={[Function]}
@@ -55,10 +46,8 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
           role="Coordinator"
           sortBy="name"
         />
-      </TableHead>
-      <TableBody
-        component="tbody"
-      >
+      </WithStyles>
+      <WithStyles>
         <Connect(ProjectRow)
           id={1}
           key="1"
@@ -67,7 +56,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
           id={2}
           key="2"
         />
-      </TableBody>
+      </WithStyles>
     </Table>
     <div
       style={
@@ -79,18 +68,16 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
       }
     />
     <Table>
-      <TableFooter
-        component="tfoot"
-      >
-        <WithStyles(TableRow)>
-          <WithStyles(TablePagination)
+      <WithStyles>
+        <WithStyles>
+          <WithStyles
             onChangePage={[Function]}
             onChangeRowsPerPage={[Function]}
             page={0}
             rowsPerPage={10}
           />
-        </WithStyles(TableRow)>
-      </TableFooter>
+        </WithStyles>
+      </WithStyles>
     </Table>
   </Column>
 </Container>

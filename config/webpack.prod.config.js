@@ -62,36 +62,57 @@ module.exports = function makeConfig(env) {
             },
             {
               test: /\.css$/,
-              loader:
-                ExtractTextPlugin.extract({
-                  fallback: 'style-loader',
-                  use: [
-                    {
-                      loader: 'css-loader',
-                      options: {
-                        importLoaders: 1,
-                        minimize: true,
-                        sourceMap: true,
-                      }
-                    }, {
-                      loader: require.resolve('postcss-loader'),
-                      options: {
-                        ident: 'postcss',
-                        plugins: () => [
-                          autoprefixer({
-                            browsers: [
-                              'last 2 versions'
-                            ]
-                          }),
+              use: [
+                'style-loader',
+                {
+                  loader: 'css-loader',
+                  options: {
+                    modules: true,
+                    '-autoprefixer': true,
+                    importLoaders: true,
+                  },
+                },
+                {
+                  loader: 'postcss-loader',
+                  options: {
+                    ident: 'postcss',
+                    plugins: () => [
+                      autoprefixer({
+                        browsers: [
+                          'last 2 versions'
                         ],
-                      },
-                    },
-                  ],
-                }),
+                      }),
+                    ],
+                  },
+                },
+              ],
             },
             {
               test: /\.scss$/,
-              loader: 'sass-loader'
+              use: [{
+                loader: "style-loader"
+              }, {
+                loader: "css-loader",
+                options: {
+                  modules: true,
+                  '-autoprefixer': true,
+                  importLoaders: true,
+                },
+              }, {
+                loader: 'postcss-loader',
+                options: {
+                  ident: 'postcss',
+                  plugins: () => [
+                    autoprefixer({
+                      browsers: [
+                        'last 2 versions'
+                      ],
+                    }),
+                  ],
+                },
+              }, {
+                loader: "sass-loader"
+              }]
             },
             {
               exclude: [/\.js$/, /\.html$/, /\.json$/],

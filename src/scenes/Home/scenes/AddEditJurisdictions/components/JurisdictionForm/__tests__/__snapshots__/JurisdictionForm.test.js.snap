@@ -22,7 +22,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
     onCloseForm={[Function]}
     title="Add Jurisdiction"
   />
-  <WithStyles(Divider) />
+  <WithStyles />
   <ModalContent>
     <Container
       column={true}
@@ -37,6 +37,11 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       }
     >
       <Row
+        component={
+          <WithStyles
+            item={true}
+          />
+        }
         displayFlex={false}
         flex={false}
         style={
@@ -79,7 +84,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       >
         <Column
           component={
-            <WithStyles(GridWrapper)
+            <WithStyles
               item={true}
             />
           }
@@ -98,7 +103,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
         </Column>
         <Column
           component={
-            <WithStyles(GridWrapper)
+            <WithStyles
               item={true}
             />
           }
@@ -134,6 +139,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       ]
     }
     edit={true}
+    raised={false}
   />
 </FormModal>
 `;

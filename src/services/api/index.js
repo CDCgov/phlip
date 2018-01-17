@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { login, getToken, logout } from '../authToken'
+import { login, logout } from '../authToken'
+import { scheme, outline } from 'data/mockCodingScheme'
 
 export const api = axios.create({
   baseURL: '/api'
@@ -71,5 +72,21 @@ export default {
 
   updateJurisdictionInProject(projectId, jurisdiction) {
     return api.put(`/projects/${projectId}/jurisdictions/${jurisdiction.id}`, jurisdiction).then(res => res.data)
+  },
+
+  reorderScheme(outline, projectId) {
+    return api.put(`/projects/${projectId}/codingscheme`, outline).then(res => res.data)
+  },
+
+  addQuestion(question, projectId) {
+    return api.post(`/projects/${projectId}/codingscheme`, question).then(res => res.data)
+  },
+
+  updateQuestion(question, projectId, questionId) {
+    return api.put(`/projects/${projectId}/codingscheme/${questionId}`, question).then(res => res.data)
+  },
+
+  getScheme(projectId) {
+    return api.get(`/projects/${projectId}/codingscheme`).then(res => res.data)
   }
 }

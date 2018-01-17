@@ -13,7 +13,7 @@ import CodingScheme from './CodingScheme'
 
 const AuthenticatedScenes = () => (
   <Switch>
-    <Route path="/codingscheme" component={CodingScheme} />
+    <Route path="/project/:id/coding-scheme" component={CodingScheme} />
     <HeaderedLayout>
       <Switch>
         <Route path="/admin" component={Admin} />

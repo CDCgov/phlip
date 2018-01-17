@@ -20,7 +20,6 @@ export const ProjectList = props => {
             searchValue={searchValue}
             handleSearchValueChange={handleSearchValueChange}
             placeholder="Search"
-            containerStyles={{ padding: 20, justifyContent: 'flex-end' }}
           />
         </Container>
         <Table style={{ borderCollapse: 'separate' }}>

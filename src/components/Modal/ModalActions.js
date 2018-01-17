@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import { DialogActions } from 'material-ui/Dialog'
 import Button from 'components/Button'
 
-const ModalActions = ({ edit, actions }) => {
+const ModalActions = ({ edit, actions, raised, ...otherProps }) => {
   return (
-    <DialogActions>
+    <DialogActions {...otherProps} >
       {actions.map(action => (
         <Button
           key={action.value}
-          raised={false} value={action.value}
+          raised={raised} value={action.value}
           type={action.type}
           color="accent"
           disabled={action.disabled || false}
@@ -17,6 +17,10 @@ const ModalActions = ({ edit, actions }) => {
       ))}
     </DialogActions>
   )
+}
+
+ModalActions.defaultProps = {
+  raised: false
 }
 
 export default ModalActions

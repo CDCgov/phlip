@@ -10,7 +10,7 @@ const styles = {
   }
 }
 
-const TextInput = ({ name, label, type, input, disabled, classes, meta: { asyncValidating, active, touched, error, warning }, ...custom}) => {
+const TextInput = ({ name, label, type, input, disabled, multiline, classes, meta: { asyncValidating, active, touched, error, warning }, ...custom }) => {
   return (
     <FormControl error={Boolean(touched && error && !active || warning)} fullWidth disabled={disabled}>
       <InputLabel htmlFor={name} shrink>{label}</InputLabel>
@@ -22,6 +22,7 @@ const TextInput = ({ name, label, type, input, disabled, classes, meta: { asyncV
         classes={{
           disabled: classes.disabled
         }}
+        multiline={multiline}
       />
       {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
     </FormControl>
@@ -33,7 +34,8 @@ TextInput.propTypes = {
   label: PropTypes.string,
   type: PropTypes.string,
   input: PropTypes.any,
-  meta: PropTypes.object
+  meta: PropTypes.object,
+  multiline: PropTypes.bool
 }
 
 TextInput.defaultProps = {

@@ -32,7 +32,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <WithTheme(TextLink)
+    <WithTheme
       to={
         Object {
           "pathname": "/project/edit/1",
@@ -48,7 +48,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     >
       Project 1
-    </WithTheme(TextLink)>
+    </WithTheme>
   </TableCell>
   <TableCell
     key="1-dateLastEdited"
@@ -86,11 +86,11 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <WithTheme(TextLink)
+    <WithTheme
       to="/"
     >
       Add/Edit
-    </WithTheme(TextLink)>
+    </WithTheme>
   </TableCell>
   <TableCell
     key="1-jurisdictions"
@@ -101,12 +101,12 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <WithTheme(TextLink)
+    <WithTheme
       id={1}
       to="/project/1/jurisdictions"
     >
       Add/Edit
-    </WithTheme(TextLink)>
+    </WithTheme>
   </TableCell>
   <TableCell
     key="1-codingScheme"
@@ -117,17 +117,17 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <WithTheme(TextLink)
-      to="/codingscheme"
+    <WithTheme
+      to="/project/1/coding-scheme"
     >
       Edit
-    </WithTheme(TextLink)>
+    </WithTheme>
   </TableCell>
   <TableCell
     key="1-code"
     padding="checkbox"
   >
-    <WithTheme(Button)
+    <WithTheme
       listButton={true}
       raised={false}
       value="Code"
@@ -137,7 +137,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     key="1-validation"
     padding="checkbox"
   >
-    <WithTheme(Button)
+    <WithTheme
       listButton={true}
       raised={false}
       value="Validate"

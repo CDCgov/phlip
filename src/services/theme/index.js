@@ -26,7 +26,8 @@ const theme = createMuiTheme({
     }
   },
   buttons: {
-    listButtons: '#768f99'
+    listButtons: '#768f99',
+    closeButton: '#ff3d70'
   },
   scenes: {
     background: '#f5f5f5'

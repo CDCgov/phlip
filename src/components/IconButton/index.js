@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import { default as MuiIconButton } from 'material-ui/IconButton'
 import Icon from 'components/Icon'
 
-const IconButton = ({ color, onClick, iconSize, children }) => {
+const IconButton = ({ color, onClick, iconSize, children, style, ...otherProps }) => {
   return (
-    <MuiIconButton onClick={onClick} disableRipple style={{ width: iconSize, height: iconSize }}>
+    <MuiIconButton onClick={onClick} disableRipple
+                   style={{ width: iconSize, height: iconSize, ...style }} {...otherProps}>
       <Icon color={color} size={iconSize}>
         {children}
       </Icon>

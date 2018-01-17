@@ -2,7 +2,6 @@ import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 import addEditProjectLogic from './scenes/AddEditProject/logic'
 import addEditJurisdictions from './scenes/AddEditJurisdictions/logic'
-import mockJurisdictions from 'data/mockJurisdictions'
 
 export const getProjectLogic = createLogic({
   type: types.GET_PROJECTS_REQUEST,

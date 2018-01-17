@@ -4,7 +4,7 @@ exports[`Header -- AvatarMenu should render correctly 1`] = `
 <ClickAwayListener
   onClickAway={[Function]}
 >
-  <WithStyles(GridWrapper)
+  <WithStyles
     item={true}
     style={
       Object {
@@ -28,6 +28,6 @@ exports[`Header -- AvatarMenu should render correctly 1`] = `
         />
       </Target>
     </Manager>
-  </WithStyles(GridWrapper)>
+  </WithStyles>
 </ClickAwayListener>
 `;
