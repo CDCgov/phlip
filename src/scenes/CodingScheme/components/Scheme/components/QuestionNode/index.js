@@ -99,7 +99,7 @@ export const QuestionNode = props => {
             {node.hovering &&
               <div style={{ zIndex: 5 }}>
                 <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} />
-                <TextLink to={{ pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`, state: { questionDefined: { ...node } } }}>
+                <TextLink to={{ pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`, state: { questionDefined: { ...node }, path } }}>
                   <Button color="accent" style={actionStyles} value={<Icon color="white">mode_edit</Icon>} /></TextLink>
                 <Button color="accent" style={actionStyles} value={<Icon color="white">delete</Icon>} />
               </div>

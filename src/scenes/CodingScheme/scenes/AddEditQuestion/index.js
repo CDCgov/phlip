@@ -58,7 +58,7 @@ export class AddEditQuestion extends Component {
     })
 
     this.questionDefined
-      ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.props.location.state.questionDefined.id)
+      ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.props.location.state.questionDefined.id, this.props.location.state.path)
       : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId)
 
     this.props.history.goBack()
@@ -69,8 +69,6 @@ export class AddEditQuestion extends Component {
       ? this.props.formActions.initialize('questionForm', this.binaryForm, true)
       : this.props.formActions.initialize('questionForm', this.defaultForm, true)
   }
-
-
 
   validate = values => {
     const errors = {}
@@ -94,7 +92,7 @@ export class AddEditQuestion extends Component {
   render() {
     const options = [
       { value: 1, label: 'Binary' },
-      // { value: '2, label: 'Category' },  //TODO: Enable when we implement category questions
+      { value: 2, label: 'Category' },  //TODO: Enable when we implement category questions
       { value: 3, label: 'Checkboxes' },
       { value: 4, label: 'Multiple choice' },
       { value: 5, label: 'Text field' }
@@ -117,7 +115,6 @@ export class AddEditQuestion extends Component {
         maxWidth='md'
         validate={this.validate}
         onClose={this.onCancel}>
-
         <Container column style={{ minWidth: 890, padding: '20px 20px 0 20px' }}>
           <Container column className={styles.dashed}>
             <ModalTitle title={this.state.edit ? 'Edit Question' : 'Add New Question'} />

@@ -130,11 +130,19 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         empty: false
       }
 
-    case types.UPDATE_QUESTION_SUCCESS:
+    case types.UPDATE_QUESTION_REQUEST:
       return {
         ...state,
-        questions: updater.updateByProperty(action.payload, [...state.questions], 'id')
+        questions: changeNodeAtPath({
+          treeData: state.questions,
+          path: action.path,
+          getNodeKey,
+          newNode: { ...action.question, hovering: false }
+        })
       }
+
+    case types.UPDATE_QUESTION_SUCCESS:
+      return state
 
     case types.CLEAR_STATE:
       return INITIAL_STATE
