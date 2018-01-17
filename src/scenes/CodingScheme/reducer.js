@@ -74,7 +74,14 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
             flatData: getQuestionsFromOutline(action.payload.outline, action.payload.codingSchemeQuestions)
           })
         ),
-        outline: action.payload.outline
+        outline: action.payload.outline,
+        empty: action.payload.codingSchemeQuestions <= 0
+      }
+
+    case types.SET_EMPTY_STATE:
+      return {
+        ...state,
+        empty: state.questions.length <= 0
       }
 
     case types.HANDLE_QUESTION_TREE_CHANGE:
@@ -119,7 +126,8 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         questions: [...state.questions, action.payload],
-        outline: questionsToOutline([...state.questions, action.payload])
+        outline: questionsToOutline([...state.questions, action.payload]),
+        empty: false
       }
 
     case types.UPDATE_QUESTION_SUCCESS:
@@ -127,6 +135,9 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         questions: updater.updateByProperty(action.payload, [...state.questions], 'id')
       }
+
+    case types.CLEAR_STATE:
+      return INITIAL_STATE
 
     default:
       return state

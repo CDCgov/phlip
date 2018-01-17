@@ -7,7 +7,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
   spacing={0}
 >
   <Header
-    showButton={false}
+    showButton={true}
   />
   <Container
     column={false}
@@ -20,43 +20,13 @@ exports[`CodingScheme scene should render correctly 1`] = `
       }
     }
   >
-    <Container
-      alignItems="center"
-      column={true}
-      flex={true}
-      spacing={0}
-      style={
-        Object {
-          "justifyContent": "center",
-        }
-      }
-    >
-      <WithStyles
-        style={
-          Object {
-            "marginBottom": "20px",
-          }
-        }
-        type="display1"
-      >
-        The coding scheme is empty. To get started, add a question.
-      </WithStyles>
-      <WithTheme
-        to={
-          Object {
-            "pathname": "/project/undefined/coding-scheme/add",
-            "state": Object {
-              "questionDefined": null,
-            },
-          }
-        }
-      >
-        <WithTheme
-          color="accent"
-          value="+ Add New Question"
-        />
-      </WithTheme>
-    </Container>
+    <Scheme
+      disableHover={[Function]}
+      enableHover={[Function]}
+      handleHoverOnQuestion={[Function]}
+      handleQuestionTreeChange={[Function]}
+      questions={Object {}}
+    />
   </Container>
   <Footer />
   <Route

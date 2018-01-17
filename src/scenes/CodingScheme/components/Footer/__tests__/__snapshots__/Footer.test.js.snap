@@ -26,6 +26,7 @@ exports[`CodingScheme -- Footer component should render correctly 1`] = `
   >
     <WithTheme
       closeButton={true}
+      onClick={[Function]}
       value="Close"
     >
       Close

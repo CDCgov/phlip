@@ -47,7 +47,8 @@ describe('Coding Scheme reducer', () => {
           1: { parentId: 0, positionInParent: 0 },
           2: { parentId: 0, positionInParent: 1 }
         },
-        allowHover: true
+        allowHover: true,
+        empty: false
       })
     })
   })
