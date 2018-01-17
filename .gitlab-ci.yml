@@ -10,7 +10,7 @@ stages:
   - test
   - push
 
-esquire_frontend_build:
+build_esquire_frontend:
   stage: build
   tags:
     - iiu
@@ -21,14 +21,14 @@ esquire_frontend_build:
     - node -v
     - yarn build:image:dev
 
-esquire_frontend_test_image:
+test_esquire_frontend_image:
   stage: test
   tags:
     - iiu
   script:
     - docker-compose -f docker-compose.dev.yml run --user=988 dev npm run test:local
     
-esquire_frontend_push_image::
+push_esquire_frontend_image:
   stage: push
   script:
     - yarn build:image:prod
@@ -39,18 +39,20 @@ esquire_frontend_push_image::
   tags:
     - iiu
 
-esquire_frontend_deploy_test:
+deploy_test_esquire_frontend:
   stage: push
   script:
     - npm install
     - npm run build
-#    - curl -fsSL https://git.phiresearchlab.org/snippets/10/raw | bash
+    - echo "APP_API_URL=$TEST_APP_API_URL">.env
+    - pm2 stop serve
+    - pm2 start scripts/serve.js
   environment:
     name: Azure Test
     url: https://phliptest.phiresearchlab.org
   when: manual
-#  only: 
-#    - test
+  only: 
+    - test
   tags:
     - azure-esquire
 
@@ -63,7 +65,7 @@ esquire_frontend_deploy_stage:
     name: Azure Stage
     url: https://phlipstage.phiresearchlab.org
   when: manual
-#  only: 
-#    - stage
+  only: 
+    - stage
   tags:
     - azure-esquire
