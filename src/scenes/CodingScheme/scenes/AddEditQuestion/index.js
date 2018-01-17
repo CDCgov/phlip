@@ -16,6 +16,7 @@ import CheckboxLabel from 'components/CheckboxLabel'
 import styles from './add-edit-question.scss'
 import { trimWhitespace } from 'utils/formHelpers'
 
+
 export class AddEditQuestion extends Component {
   constructor(props, context) {
     super(props, context)
@@ -27,7 +28,7 @@ export class AddEditQuestion extends Component {
     }
     this.defaultForm = {
       questionType: 4,
-      possibleAnswers: [{ text: '' }, { text: '' }, { text: '' }],
+      possibleAnswers: [{}, {}, {}],
       includeComment: false
     }
     this.binaryForm = {
@@ -69,10 +70,31 @@ export class AddEditQuestion extends Component {
       : this.props.formActions.initialize('questionForm', this.defaultForm)
   }
 
+
+
+  validate = values => {
+    const errors = {}
+    if (!values.text) {
+      errors.text = 'Required'
+    }
+    const answersArrayErrors = []
+    values.possibleAnswers.forEach((answer, index) => {
+      const answerErrors = {}
+      if (!answer || !answer.text) {
+        answerErrors.text = 'Required'
+        answersArrayErrors[index] = answerErrors
+      }
+    })
+    if (answersArrayErrors.length) {
+      errors.possibleAnswers = answersArrayErrors
+    }
+    return errors
+  }
+
   render() {
     const options = [
       { value: 1, label: 'Binary' },
-      // { value: '2, label: 'Category' },
+      // { value: '2, label: 'Category' },  //TODO: Enable when we implement category questions
       { value: 3, label: 'Checkboxes' },
       { value: 4, label: 'Multiple choice' },
       { value: 5, label: 'Text field' }
@@ -84,8 +106,7 @@ export class AddEditQuestion extends Component {
           ? 'Save'
           : 'Add',
         type: 'submit',
-        disabled: Boolean(this.props.form.syncErrors ||
-          (this.props.form.asyncErrors ? this.props.form.asyncErrors.name : false))
+        disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors)
       }
     ]
     return (
@@ -93,9 +114,12 @@ export class AddEditQuestion extends Component {
         form="questionForm"
         handleSubmit={this.handleSubmit}
         initialValues={this.questionDefined || this.defaultForm}
-        maxWidth="md"
-        enableReinitialize
+        maxWidth='md'
+        // enableReinitialize={true}
+        // keepDirtyOnReinitialize={true}
+        validate={this.validate}
         onClose={this.onCancel}>
+
         <Container column style={{ minWidth: 890, padding: '20px 20px 0 20px' }}>
           <Container column className={styles.dashed}>
             <ModalTitle title={this.state.edit ? 'Edit Question' : 'Add New Question'} />
@@ -105,7 +129,7 @@ export class AddEditQuestion extends Component {
                   <Field
                     name="text"
                     component={TextInput}
-                    label="Question"
+                    label='Question'
                     multiline={true}
                     placeholder="Enter question"
                   />
@@ -133,8 +157,9 @@ export class AddEditQuestion extends Component {
                 </Row>
               </Container>
               <FieldArray name="possibleAnswers"
-                          answerType={this.props.form.values ? this.props.form.values.questionType : 4}
-                          component={AnswerList} />
+                answerType={this.props.form.values ? this.props.form.values.questionType : 4}
+                component={AnswerList}
+              />
               <Container>
                 <Row flex style={{ paddingLeft: '47px' }}>
                   <Field

@@ -2,13 +2,23 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { FormControlLabel } from 'material-ui/Form'
 import Checkbox from 'material-ui/Checkbox'
+import { withStyles } from 'material-ui/styles'
 
-const CheckboxLabel = ({ input, label, onChange }) => {
+const styles = {
+  checked: {
+    color: '#3E91B8'
+  },
+};
+
+const CheckboxLabel = ({ input, label, onChange, classes }) => {
   return (
     <FormControlLabel
       control={
         <Checkbox
           checked={input.value ? true : false}
+          classes={{
+            checked: classes.checked,
+          }}
           onChange={input.onChange}
         />
       }
@@ -17,4 +27,4 @@ const CheckboxLabel = ({ input, label, onChange }) => {
   )
 }
 
-export default CheckboxLabel
+export default withStyles(styles)(CheckboxLabel)
