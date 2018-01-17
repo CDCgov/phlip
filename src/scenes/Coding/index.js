@@ -3,10 +3,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Typography from 'material-ui/Typography'
-import Header from './components/Header'
-import Footer from './components/Footer'
 import Container, { Row, Column } from 'components/Layout'
 import IconButton from 'components/IconButton'
+import Header from './components/Header'
+import Footer from './components/Footer'
+import QuestionCard from './components/QuestionCard'
 
 export class Coding extends Component {
   constructor(props, context) {
@@ -21,8 +22,9 @@ export class Coding extends Component {
     return (
       <Container column flex>
         <Header projectName={this.props.projectName} projectId={this.props.projectId} />
-        <Container flex column style={{ backgroundColor: '#f5f5f5' }}>
+        <Container flex column style={{ backgroundColor: '#f5f5f5', padding: '20px 20px 0 20px' }}>
           <Row flex displayFlex>
+            <QuestionCard />
           </Row>
           <Row displayFlex style={{ height: 50, alignItems: 'center', paddingLeft: 10, paddingRight: 10, justifyContent: 'space-between' }}>
             <Row displayFlex>
