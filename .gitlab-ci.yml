@@ -56,7 +56,7 @@ deploy_test_esquire_frontend:
   tags:
     - azure-esquire
 
-esquire_frontend_deploy_stage:
+deploy_stage_esquire_frontend:
   stage: push
   script:
     - npm install
