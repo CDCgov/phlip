@@ -47,7 +47,7 @@ export class CodingScheme extends Component {
     return (
       <Container column flex>
         <Header projectName={this.props.projectName} showButton={this.props.questions.length > 0}
-                projectId={this.props.projectId} />
+          projectId={this.props.projectId} />
         <Container flex style={{ backgroundColor: '#f5f5f5', paddingTop: 25 }}>
           {this.props.empty
             ? this.renderGetStarted()
@@ -63,10 +63,10 @@ export class CodingScheme extends Component {
         </Container>
         <Footer clearState={this.props.actions.clearState} />
         <Route
-          path="/project/:id/coding-scheme/add"
+          path="/project/:projectId/coding-scheme/add"
           component={AddEditQuestion} />
         <Route
-          path="/project/:id/coding-scheme/edit/:id"
+          path="/project/:projectId/coding-scheme/edit/:id"
           component={AddEditQuestion} />
       </Container>
     )

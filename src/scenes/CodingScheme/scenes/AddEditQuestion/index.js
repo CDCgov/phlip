@@ -21,12 +21,14 @@ import * as questionTypes from './constants'
 export class AddEditQuestion extends Component {
   constructor(props, context) {
     super(props, context)
-    this.questionDefined = this.props.match.url === `/project/${this.props.projectid}/coding-scheme/add`
+    this.questionDefined = this.props.match.url === `/project/${this.props.projectId}/coding-scheme/add`
       ? null
       : this.props.location.state.questionDefined
+
     this.state = {
       edit: this.questionDefined
     }
+
     this.defaultForm = {
       questionType: questionTypes.MULTIPLE_CHOICE,
       possibleAnswers: [{}, {}, {}],
@@ -37,7 +39,6 @@ export class AddEditQuestion extends Component {
       possibleAnswers: [{ text: 'Yes' }, { text: 'No' }],
       includeComment: false
     }
-
     this.textFieldForm = {
       questionType: questionTypes.TEXT_FIELD,
       includeComment: false
@@ -66,7 +67,7 @@ export class AddEditQuestion extends Component {
     }
 
     this.questionDefined
-      ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.props.location.state.questionDefined.id, this.props.location.state.path)
+      ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.questionDefined.id, this.props.location.state.path)
       : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId)
 
     this.props.history.goBack()
@@ -186,7 +187,7 @@ export class AddEditQuestion extends Component {
 
 const mapStateToProps = (state, ownProps) => ({
   form: state.form.questionForm || {},
-  projectId: ownProps.match.params.id
+  projectId: ownProps.match.params.projectId
 })
 
 const mapDispatchToProps = (dispatch) => ({
