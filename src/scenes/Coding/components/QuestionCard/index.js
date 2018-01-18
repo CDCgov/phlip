@@ -7,7 +7,7 @@ import Container, { Row, Column } from 'components/Layout'
 import IconButton from 'components/IconButton'
 import QuestionContent from './components/QuestionContent'
 
-export const QuestionCard = ({ question, onChange }) => {
+export const QuestionCard = ({ question, userAnswer, onChange }) => {
   return (
     <Row displayFlex style={{ flex: '1 0 50%' }}>
       <Column component={<Card />} displayFlex flex>
@@ -27,7 +27,7 @@ export const QuestionCard = ({ question, onChange }) => {
             </Column>
           </Row>
           <Row flex displayFlex style={{ padding: '0 80px 40px 65px' }}>
-            <QuestionContent onChange={onChange} question={question} />
+            <QuestionContent onChange={onChange} userAnswer={userAnswer} question={question} />
           </Row>
         </Container>
       </Column>
@@ -37,6 +37,7 @@ export const QuestionCard = ({ question, onChange }) => {
 
 QuestionCard.propTypes = {
   question: PropTypes.object,
+  userAnswer: PropTypes.any,
   onChange: PropTypes.func
 }
 

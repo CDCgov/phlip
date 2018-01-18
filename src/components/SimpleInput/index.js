@@ -2,20 +2,20 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import TextField from 'material-ui/TextField'
 
-const SimpleInput = ({ value, onChange }) => {
+const SimpleInput = ({ value, onChange, ...otherProps }) => {
   return (
     <TextField
-      value={value.text}
-      onChange={onChange(value.id)}
+      value={value}
+      onChange={onChange()}
       multiline
       type="text"
       name="answer-choice"
+      {...otherProps}
     />
   )
 }
 
 SimpleInput.propTypes = {
-  value: PropTypes.object,
   onChange: PropTypes.func
 }
 

@@ -12,7 +12,6 @@ import * as actions from './actions'
 export class Coding extends Component {
   constructor(props, context) {
     super(props, context)
-
   }
 
   componentWillMount() {
@@ -24,15 +23,20 @@ export class Coding extends Component {
     this.props.actions.getQuestionRequest(this.props.projectId, this.props.jurisdictionId, index, question)
   }
 
-  onAnswer = () => {}
+  onAnswer = (id, type) => (event, value) => {
+    this.props.actions.answerQuestionRequest(
+      this.props.projectId, this.props.jurisdictionId, this.props.questionId, event.target.value, event.target.value
+    )
+  }
 
   render() {
     return (
       <Container column flex>
         <Header projectName={this.props.projectName} projectId={this.props.projectId} />
         <Container flex column style={{ backgroundColor: '#f5f5f5', padding: '20px 20px 10px 20px' }}>
-          <QuestionCard question={this.props.question} onChange={() => this.onAnswer()} />
-          <FooterNavigate currentIndex={this.props.currentIndex} getQuestion={this.getQuestion} totalLength={this.props.questionOrder.length} />
+          <QuestionCard question={this.props.question} onChange={this.onAnswer} userAnswer={this.props.userAnswer} />
+          <FooterNavigate currentIndex={this.props.currentIndex} getQuestion={this.getQuestion}
+                          totalLength={this.props.questionOrder.length} />
         </Container>
         <Footer />
       </Container>
@@ -57,6 +61,7 @@ const mapStateToProps = (state, ownProps) => ({
   outline: state.scenes.coding.outline || {},
   currentIndex: state.scenes.coding.currentIndex || 0,
   questionOrder: state.scenes.coding.questionOrder || [],
+  userAnswer: state.scenes.coding.userAnswer || undefined,
   jurisdictionId: '1'
 })
 
