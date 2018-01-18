@@ -4,7 +4,20 @@ import SortableTree from 'react-sortable-tree'
 import TreeNode from './components/TreeNode'
 import QuestionNode from './components/QuestionNode'
 
-export const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuestion, enableHover, disableHover, projectId }) => {
+const canDrop = (nextParent, outline, questions) => {
+  if (nextParent === null) return true
+
+  const grandParentId = outline[nextParent.id].parentId
+  let canDrop = true
+  questions.map(question => {
+    if (question.id === grandParentId) {
+      canDrop = question.questionType !== 2
+    }
+  })
+  return canDrop
+}
+
+export const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuestion, enableHover, disableHover, projectId, outline }) => {
   return (
     <SortableTree
       theme={{
@@ -20,7 +33,6 @@ export const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuest
       treeData={questions}
       onChange={handleQuestionTreeChange}
       style={{ flex: '1 0 50%', padding: '0 0 0 15px' }}
-      maxDepth={1}
       generateNodeProps={({ node, path }) => {
         return {
           turnOffHover: () => handleHoverOnQuestion(node, path, false),
@@ -30,6 +42,7 @@ export const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuest
           projectId: projectId
         }
       }}
+      canDrop={({ nextParent }) => canDrop(nextParent, outline, questions)}
       isVirtualized={true}
     />
   )
@@ -40,7 +53,8 @@ Scheme.propTypes = {
   handleQuestionTreeChange: PropTypes.func,
   handleHoverOnQuestion: PropTypes.func,
   enableHover: PropTypes.func,
-  disableHover: PropTypes.func
+  disableHover: PropTypes.func,
+  outline: PropTypes.object
 }
 
 export default Scheme

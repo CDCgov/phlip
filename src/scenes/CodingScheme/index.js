@@ -50,15 +50,16 @@ export class CodingScheme extends Component {
                 projectId={this.props.projectId} />
         <Container flex style={{ backgroundColor: '#f5f5f5', paddingTop: 25 }}>
           {this.props.empty
-              ? this.renderGetStarted()
-              : <Scheme
-                  questions={this.props.questions}
-                  handleQuestionTreeChange={this.handleQuestionTreeChange}
-                  handleHoverOnQuestion={this.props.actions.toggleHover}
-                  disableHover={this.props.actions.disableHover}
-                  enableHover={this.props.actions.enableHover}
-                  projectId={this.props.projectId}
-                />}
+            ? this.renderGetStarted()
+            : <Scheme
+                questions={this.props.questions}
+                handleQuestionTreeChange={this.handleQuestionTreeChange}
+                handleHoverOnQuestion={this.props.actions.toggleHover}
+                disableHover={this.props.actions.disableHover}
+                enableHover={this.props.actions.enableHover}
+                projectId={this.props.projectId}
+                outline={this.props.outline}
+            />}
         </Container>
         <Footer clearState={this.props.actions.clearState} />
         <Route
@@ -83,7 +84,8 @@ const mapStateToProps = (state, ownProps) => ({
   projectName: state.scenes.home.main.projects.byId[ownProps.match.params.id].name,
   projectId: ownProps.match.params.id,
   questions: state.scenes.codingScheme.questions || [],
-  empty: state.scenes.codingScheme.empty || false
+  empty: state.scenes.codingScheme.empty || false,
+  outline: state.scenes.codingScheme.outline || {}
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
