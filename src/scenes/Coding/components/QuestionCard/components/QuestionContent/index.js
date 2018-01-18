@@ -8,7 +8,7 @@ const QuestionContent = ({ question, onChange }) => {
     [1, 3, 4].includes(question.questionType)
       ? <SelectionControls type={question.questionType} choices={question.possibleAnswers} onChange={onChange} />
       : question.questionType === 5
-        ? <SimpleInput onChange={onChange} value={question.possibleAnswers[0]} />
+        ? <SimpleInput onChange={onChange} value={{}} />
         : <div></div>
   )
 }
