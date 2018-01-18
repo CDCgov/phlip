@@ -25,7 +25,7 @@ const FooterNavigate = ({ currentIndex, getQuestion, totalLength }) => {
         <IconButton color="black">arrow_back</IconButton>
         <Typography type="body2"><span style={{ ...styles, paddingLeft: 5 }}>Previous question</span></Typography>
       </Row>}
-      {currentIndex !== totalLength && <Row displayFlex flex={currentIndex === 0} style={{ cursor: 'pointer' }} onClick={() => getQuestion(currentIndex + 1)}>
+      {currentIndex !== (totalLength - 1) && <Row displayFlex flex={currentIndex === 0} style={{ cursor: 'pointer' }} onClick={() => getQuestion(currentIndex + 1)}>
         <Typography type="body2">
           <span style={{ ...styles, paddingRight: 5 }}>Next question</span>
         </Typography>
