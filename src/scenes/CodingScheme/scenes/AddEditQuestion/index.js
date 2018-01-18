@@ -15,6 +15,7 @@ import AnswerList from './components/AnswerList'
 import CheckboxLabel from 'components/CheckboxLabel'
 import styles from './add-edit-question.scss'
 import { trimWhitespace } from 'utils/formHelpers'
+import * as questionTypes from './constants'
 
 
 export class AddEditQuestion extends Component {
@@ -27,13 +28,18 @@ export class AddEditQuestion extends Component {
       edit: this.questionDefined
     }
     this.defaultForm = {
-      questionType: 4,
+      questionType: questionTypes.MULTIPLE_CHOICE,
       possibleAnswers: [{}, {}, {}],
       includeComment: false
     }
     this.binaryForm = {
-      questionType: 1,
+      questionType: questionTypes.BINARY,
       possibleAnswers: [{ text: 'Yes' }, { text: 'No' }],
+      includeComment: false
+    }
+
+    this.textFieldForm = {
+      questionType: questionTypes.TEXT_FIELD,
       includeComment: false
     }
 
@@ -52,10 +58,12 @@ export class AddEditQuestion extends Component {
       else updatedValues[field] = values[field]
     }
 
-    values.possibleAnswers.forEach((answer, i) => {
-      if (updatedValues.possibleAnswers[i].text) updatedValues.possibleAnswers[i] = { ...answer, text: answer.text.trim() }
-      else updatedValues.possibleAnswers[i] = answer
-    })
+    if (values.possibleAnswers) {
+      values.possibleAnswers.forEach((answer, i) => {
+        if (updatedValues.possibleAnswers[i].text) updatedValues.possibleAnswers[i] = { ...answer, text: answer.text.trim() }
+        else updatedValues.possibleAnswers[i] = answer
+      })
+    }
 
     this.questionDefined
       ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.props.location.state.questionDefined.id, this.props.location.state.path)
@@ -65,9 +73,9 @@ export class AddEditQuestion extends Component {
   }
 
   handleTypeChange = (event, value) => {
-    value === 1
-      ? this.props.formActions.initialize('questionForm', this.binaryForm, true)
-      : this.props.formActions.initialize('questionForm', this.defaultForm, true)
+    value === questionTypes.BINARY ? this.props.formActions.initialize('questionForm', this.binaryForm, true)
+      : value === questionTypes.TEXT_FIELD ? this.props.formActions.initialize('questionForm', this.textFieldForm, true)
+        : this.props.formActions.initialize('questionForm', this.defaultForm, true)
   }
 
   validate = values => {
@@ -76,26 +84,29 @@ export class AddEditQuestion extends Component {
       errors.text = 'Required'
     }
     const answersArrayErrors = []
-    values.possibleAnswers.forEach((answer, index) => {
-      const answerErrors = {}
-      if (!answer || !answer.text) {
-        answerErrors.text = 'Required'
-        answersArrayErrors[index] = answerErrors
+    if (!(values.questionType === questionTypes.TEXT_FIELD)) {
+      values.possibleAnswers.forEach((answer, index) => {
+        const answerErrors = {}
+        if (!answer || !answer.text) {
+          answerErrors.text = 'Required'
+          answersArrayErrors[index] = answerErrors
+        }
+      })
+      if (answersArrayErrors.length) {
+        errors.possibleAnswers = answersArrayErrors
       }
-    })
-    if (answersArrayErrors.length) {
-      errors.possibleAnswers = answersArrayErrors
     }
+
     return errors
   }
 
   render() {
     const options = [
-      { value: 1, label: 'Binary' },
-      { value: 2, label: 'Category' },  //TODO: Enable when we implement category questions
-      { value: 3, label: 'Checkboxes' },
-      { value: 4, label: 'Multiple choice' },
-      { value: 5, label: 'Text field' }
+      { value: questionTypes.BINARY, label: 'Binary' },
+      //{ value: questionTypes.CATEGORY, label: 'Category' },
+      { value: questionTypes.CHECKBOXES, label: 'Checkboxes' },
+      { value: questionTypes.MULTIPLE_CHOICE, label: 'Multiple choice' },
+      { value: questionTypes.TEXT_FIELD, label: 'Text field' }
     ]
     const actions = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button' },
@@ -135,7 +146,7 @@ export class AddEditQuestion extends Component {
                     component={DropDown}
                     label="Type"
                     options={options}
-                    defaultValue={4}
+                    defaultValue={questionTypes.MULTIPLE_CHOICE}
                     onChange={this.handleTypeChange}
                     disabled={this.state.edit ? true : false}
                   />
