@@ -62,7 +62,7 @@ export class CodingScheme extends Component {
         </Container>
         <Footer clearState={this.props.actions.clearState} />
         <Route
-          path="/project/:id/coding-scheme/add"
+          path="/project/:projectId/coding-scheme/add"
           component={AddEditQuestion} />
         <Route
           path="/project/:projectId/coding-scheme/edit/:id"
