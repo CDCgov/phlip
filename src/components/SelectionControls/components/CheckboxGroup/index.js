@@ -8,11 +8,12 @@ export const CheckboxGroup = ({ choices, onChange }) => {
     <FormGroup>
       {choices.map(choice => (
         <FormControlLabel
+          key={choice.id}
           control={
             <Checkbox
               checked={choices.checked}
               onChange={onChange(choice.id)}
-              value={choice.id}
+              value={`${choice.id}`}
             />
           }
           label={choice.text}

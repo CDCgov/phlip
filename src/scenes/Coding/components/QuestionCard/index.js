@@ -9,27 +9,29 @@ import QuestionContent from './components/QuestionContent'
 
 export const QuestionCard = ({ question, onChange }) => {
   return (
-    <Column component={<Card />} displayFlex flex>
-      <Row displayFlex style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
-        <IconButton color="#d7e0e4">
-          flag
-        </IconButton>
-      </Row>
-      <Divider />
-      <Container column flex>
-        <Row displayFlex style={{ padding: 20 }}>
-          <Column>
-            <Typography type="subheading">{question.number})</Typography>
-          </Column>
-          <Column flex style={{ paddingLeft: 10 }}>
-            <Typography type="subheading">{question.text}</Typography>
-          </Column>
+    <Row displayFlex style={{ flex: '1 0 50%' }}>
+      <Column component={<Card />} displayFlex flex>
+        <Row displayFlex style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
+          <IconButton color="#d7e0e4">
+            flag
+          </IconButton>
         </Row>
-        <Row flex displayFlex style={{ padding: '0 65px 0 65px' }}>
-          <QuestionContent onChange={onChange} question={question} />
-        </Row>
-      </Container>
-    </Column>
+        <Divider />
+        <Container column flex>
+          <Row displayFlex style={{ padding: 20 }}>
+            <Column>
+              <Typography type="subheading">{question.number})</Typography>
+            </Column>
+            <Column flex style={{ paddingLeft: 10 }}>
+              <Typography type="subheading">{question.text}</Typography>
+            </Column>
+          </Row>
+          <Row flex displayFlex style={{ padding: '0 80px 40px 65px' }}>
+            <QuestionContent onChange={onChange} question={question} />
+          </Row>
+        </Container>
+      </Column>
+    </Row>
   )
 }
 

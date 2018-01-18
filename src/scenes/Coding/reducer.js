@@ -5,7 +5,7 @@ const INITIAL_STATE = {
   outline: {},
   jurisdiction: {},
   questionOrder: [],
-
+  currentIndex: 0
 }
 
 const codingReducer = (state = INITIAL_STATE, action) => {
@@ -26,6 +26,11 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
     case types.GET_CODING_OUTLINE_REQUEST:
     case types.GET_QUESTION_REQUEST:
+      return {
+        ...state,
+        currentIndex: action.newIndex
+      }
+
     default:
       return state
   }

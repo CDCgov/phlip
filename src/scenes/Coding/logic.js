@@ -44,16 +44,20 @@ export const getOutlineLogic = createLogic({
 })
 
 export const getQuestionLogic = createLogic({
-  type: types.GET_CODING_OUTLINE_REQUEST,
+  type: types.GET_QUESTION_REQUEST,
   processOptions: {
     dispatchReturn: true,
-    successType: types.GET_QUESTION_SUCCESS
+    successType: types.GET_QUESTION_SUCCESS,
+    failType: types.GET_QUESTION_FAIL
   },
-  async process({ action, api }) {
-
+  async process({ action, api, getState }) {
+    const userId = getState().data.user.currentUser.id
+    const question = await api.getQuestion(action.projectId, action.jurisdictionId, userId, action.question.id)
+    return { ...question, number: action.question.questionNumber }
   }
 })
 
 export default [
-  getOutlineLogic
+  getOutlineLogic,
+  getQuestionLogic
 ]
