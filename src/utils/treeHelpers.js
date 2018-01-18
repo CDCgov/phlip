@@ -20,6 +20,30 @@ export const sortQuestions = questions => {
   return sortList(sortedChildren, 'positionInParent', 'asc')
 }
 
+export const getQuestionNumbers = questions => {
+  const qs = []
+  let count = 0, numbering = {}, questionNumber = ''
+
+  walk({
+    treeData: questions,
+    getNodeKey,
+    callback: ({ node, parentNode }) => {
+      if (parentNode === null) {
+        questionNumber = `${count + 1}`
+        numbering[node.id] = { questionNumber }
+        count += 1
+      } else {
+        questionNumber = `${numbering[parentNode.id].questionNumber}.${node.positionInParent + 1}`
+        numbering[node.id] = { questionNumber }
+      }
+      qs.push({ id: node.id, questionNumber })
+    },
+    ignoreCollapsed: false
+  })
+
+  return qs
+}
+
 export const getQuestionOrder = questions => {
   return getFlatDataFromTree({
     treeData: questions,

@@ -17,7 +17,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.GET_CODING_OUTLINE_SUCCESS:
-      console.log(action)
       return {
         ...state,
         outline: action.payload.outline,

@@ -1,16 +1,16 @@
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
-import { sortQuestions, getQuestionOrder } from 'utils/treeHelpers'
+import { sortQuestions, getQuestionOrder, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
 
-export const getQuestionLogic = createLogic({
+export const getOutlineLogic = createLogic({
   type: types.GET_CODING_OUTLINE_REQUEST,
   processOptions: {
     dispatchReturn: true,
     successType: types.GET_CODING_OUTLINE_SUCCESS,
     failType: types.GET_CODING_OUTLINE_FAIL
   },
-  async process ({ action, getState, api }) {
+  async process({ action, getState, api }) {
     let scheme = {}, question = {}, error = ''
     const userId = getState().data.user.currentUser.id
 
@@ -27,23 +27,33 @@ export const getQuestionLogic = createLogic({
       ]
     }, [])
 
-    const sorted = sortQuestions(getTreeFromFlatData({ flatData: merged }))
-    const questionOrder = getQuestionOrder(sorted)
+    const questionNumbers = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merged })))
 
     try {
-      question = await api.getQuestion(action.projectId, action.jurisdictionId, userId, questionOrder[0])
+      question = await api.getQuestion(action.projectId, action.jurisdictionId, userId, questionNumbers[0].id)
     } catch (e) {
       error = 'could not get first question'
     }
 
     return {
       outline: scheme.outline,
-      question,
-      questionOrder
+      question: { ...question, number: questionNumbers[0].questionNumber },
+      questionOrder: questionNumbers
     }
   }
 })
 
+export const getQuestionLogic = createLogic({
+  type: types.GET_CODING_OUTLINE_REQUEST,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.GET_QUESTION_SUCCESS
+  },
+  async process({ action, api }) {
+
+  }
+})
+
 export default [
-  getQuestionLogic
+  getOutlineLogic
 ]
