@@ -17,7 +17,7 @@ const reorderSchemeLogic = createLogic({
   type: types.REORDER_SCHEME_REQUEST,
   latest: true,
   async process({ api, action, getState }, dispatch, done) {
-    const outline = getState().scenes.codingScheme.outline
+    const outline = { userid: getState().data.user.currentUser.id, outline: getState().scenes.codingScheme.outline }
     await api.reorderScheme(outline, action.projectId)
     done()
   }
