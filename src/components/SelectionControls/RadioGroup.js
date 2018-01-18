@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Radio, { RadioGroup as MuiRadioGroup } from 'material-ui/Radio'
-import { FormControlLabel } from 'material-ui/Form'
+import { FormControlLabel, FormControl } from 'material-ui/Form'
 import { withStyles } from 'material-ui/styles'
 
 const styles = {
@@ -12,7 +12,8 @@ const styles = {
 
 export const RadioGroup = ({ choices, userAnswer, onChange, onChangePincite, classes }) => {
   return (
-    <MuiRadioGroup onChange={onChange()} value={userAnswer}>
+    <FormControl component="fieldset">
+    <MuiRadioGroup onChange={onChange} value={userAnswer}>
       {choices.map(choice => (
         <FormControlLabel
           key={choice.id}
@@ -22,6 +23,7 @@ export const RadioGroup = ({ choices, userAnswer, onChange, onChangePincite, cla
         />
       ))}
     </MuiRadioGroup>
+    </FormControl>
   )
 }
 

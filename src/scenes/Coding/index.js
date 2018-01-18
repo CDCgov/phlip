@@ -23,7 +23,13 @@ export class Coding extends Component {
     this.props.actions.getQuestionRequest(this.props.projectId, this.props.jurisdictionId, index, question)
   }
 
-  onAnswer = (id, type) => (event, value) => {
+  onAnswer = (event, value) => {
+    this.props.actions.answerQuestionRequest(
+      this.props.projectId, this.props.jurisdictionId, this.props.questionId, event.target.value, value
+    )
+  }
+
+  onChangeTextAnswer = (event) => {
     this.props.actions.answerQuestionRequest(
       this.props.projectId, this.props.jurisdictionId, this.props.questionId, event.target.value, event.target.value
     )
@@ -34,13 +40,14 @@ export class Coding extends Component {
       <Container column flex>
         <Header projectName={this.props.projectName} projectId={this.props.projectId} />
         <Container flex column style={{ backgroundColor: '#f5f5f5', padding: '20px 20px 10px 20px' }}>
-          <QuestionCard question={this.props.question} onChange={this.onAnswer} userAnswer={this.props.userAnswer} />
+          <QuestionCard question={this.props.question} onChange={this.onAnswer}
+                        onChangeTextAnswer={this.onChangeTextAnswer} userAnswer={this.props.userAnswer} />
           <FooterNavigate currentIndex={this.props.currentIndex} getQuestion={this.getQuestion}
                           totalLength={this.props.questionOrder.length} />
         </Container>
-        <Footer />
-      </Container>
-    )
+    <Footer />
+  </Container>
+  )
   }
 }
 

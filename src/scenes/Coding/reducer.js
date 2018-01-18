@@ -48,22 +48,16 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ANSWER_QUESTION_REQUEST:
-      let userAnswer = state.userAnswer
-      if ([1,4].includes(state.question.questionType)) {
-        userAnswer = action.answerValue
-
+      let updatedAnswer = state.userAnswer
+      if ([1,4,5].includes(state.question.questionType)) {
+        updatedAnswer = action.answerValue
       } else if (state.question.questionType === 3) {
-        userAnswer[action.answerId]
-          ? userAnswer = !userAnswer[action.answerId]
-          : userAnswer = true
-
-      } else if (state.question.questionType === 5) {
-        userAnswer = action.answerValue
+        updatedAnswer[action.answerId] = action.answerValue
       }
 
       return {
         ...state,
-        userAnswer
+        userAnswer: updatedAnswer
       }
 
     case types.GET_CODING_OUTLINE_REQUEST:

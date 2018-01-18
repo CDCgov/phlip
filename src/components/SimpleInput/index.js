@@ -6,7 +6,7 @@ const SimpleInput = ({ value, onChange, ...otherProps }) => {
   return (
     <TextField
       value={value}
-      onChange={onChange()}
+      onChange={onChange}
       multiline
       type="text"
       name="answer-choice"
