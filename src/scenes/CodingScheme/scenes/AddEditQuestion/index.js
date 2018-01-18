@@ -58,10 +58,12 @@ export class AddEditQuestion extends Component {
       else updatedValues[field] = values[field]
     }
 
-    values.possibleAnswers.forEach((answer, i) => {
-      if (updatedValues.possibleAnswers[i].text) updatedValues.possibleAnswers[i] = { ...answer, text: answer.text.trim() }
-      else updatedValues.possibleAnswers[i] = answer
-    })
+    if (values.possibleAnswers) {
+      values.possibleAnswers.forEach((answer, i) => {
+        if (updatedValues.possibleAnswers[i].text) updatedValues.possibleAnswers[i] = { ...answer, text: answer.text.trim() }
+        else updatedValues.possibleAnswers[i] = answer
+      })
+    }
 
     this.questionDefined
       ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.props.location.state.questionDefined.id)
