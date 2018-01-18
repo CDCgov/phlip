@@ -44,7 +44,7 @@ deploy_test_esquire_frontend:
   script:
     - npm install
     - npm run build
-    - echo "APP_API_URL=$TEST_APP_API_URL">.env
+    - echo "APP_API_URL=http://esquirebe:5001">.env
     - pm2 stop serve
     - pm2 start scripts/serve.js
   environment:
