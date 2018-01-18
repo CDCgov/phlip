@@ -5,8 +5,9 @@ import Typography from 'material-ui/Typography'
 import Card from 'components/Card/index'
 import Container, { Row, Column } from 'components/Layout'
 import IconButton from 'components/IconButton'
+import QuestionContent from './components/QuestionContent'
 
-export const QuestionCard = ({ question }) => {
+export const QuestionCard = ({ question, onChange }) => {
   return (
     <Column component={<Card />} displayFlex flex>
       <Row displayFlex style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
@@ -16,10 +17,16 @@ export const QuestionCard = ({ question }) => {
       </Row>
       <Divider />
       <Container column flex>
-        <Row flex displayFlex style={{ padding: 20 }}>
-          <Typography type="subheading">{question.number})<span style={{ paddingLeft: 5 }}>{question.text}</span></Typography>
+        <Row displayFlex style={{ padding: 20 }}>
+          <Column>
+            <Typography type="subheading">{question.number})</Typography>
+          </Column>
+          <Column flex style={{ paddingLeft: 10 }}>
+            <Typography type="subheading">{question.text}</Typography>
+          </Column>
         </Row>
-        <Row flex>
+        <Row flex displayFlex style={{ padding: '0 65px 0 65px' }}>
+          <QuestionContent onChange={onChange} question={question} />
         </Row>
       </Container>
     </Column>
@@ -27,7 +34,8 @@ export const QuestionCard = ({ question }) => {
 }
 
 QuestionCard.propTypes = {
-  question: PropTypes.object
+  question: PropTypes.object,
+  onChange: PropTypes.func
 }
 
 export default QuestionCard
