@@ -16,6 +16,8 @@ const updateOutlineLogic = createLogic({
   }
 })
 
+
+
 const updateQuestionLogic = createLogic({
   type: types.UPDATE_QUESTION_REQUEST,
   processOptions: {
@@ -50,7 +52,18 @@ const addQuestionLogic = createLogic({
   }
 })
 
+const updateUserId = createLogic({
+  type: [types.ADD_QUESTION_REQUEST, types.UPDATE_QUESTION_REQUEST],
+  transform({ getState, action }, next) {
+    next({
+      ...action,
+      question: { ...action.question, userId: getState().data.user.currentUser.id }
+    })
+  }
+})
+
 export default [
+  updateUserId,
   updateOutlineLogic,
   updateQuestionLogic,
   addQuestionLogic

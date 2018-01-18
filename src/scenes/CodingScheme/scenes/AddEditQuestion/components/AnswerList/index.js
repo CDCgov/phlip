@@ -4,11 +4,12 @@ import SelectInput from '../SelectInput'
 import { Field } from 'redux-form'
 import Button from 'components/Button'
 import styles from '../../add-edit-question.scss'
+import * as questionTypes from '../../constants'
 
 export const AnswerList = ({ fields, answerType }) => {
   return (
     <Fragment>
-      {answerType === 5 ? <div></div>
+      {answerType === questionTypes.TEXT_FIELD ? <div></div>
         : <Fragment>
           {fields.map((answer, index) => (
             <Fragment key={index}>
@@ -22,7 +23,7 @@ export const AnswerList = ({ fields, answerType }) => {
             </Fragment>
           ))}
 
-          {answerType === 1
+          {answerType === questionTypes.BINARY
             ? <div></div>
             : <Button
               value="Add more"
