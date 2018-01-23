@@ -7,20 +7,20 @@ const INITIAL_STATE = {
   jurisdiction: {},
   questionOrder: [],
   currentIndex: 0,
-  userAnswer: null
+  userAnswer: {}
 }
 
-const initializeAnswers = type => {
+const initializeAnswers = (type, questions) => {
   let userAnswer = {}
   switch (type) {
     case 1:
     case 4:
-      userAnswer = ''
+      userAnswer = normalize.arrayToObject(questions)
       break
     case 2:
       break
     case 3:
-      userAnswer = {}
+      userAnswer = normalize.arrayToObject(questions)
       break
     case 5:
       userAnswer = ''
@@ -35,7 +35,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         question: action.payload,
-        userAnswer: initializeAnswers(action.payload.questionType)
+        userAnswer: initializeAnswers(action.payload.questionType, action.payload.possibleAnswers)
       }
 
     case types.GET_CODING_OUTLINE_SUCCESS:
@@ -44,15 +44,23 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         outline: action.payload.outline,
         question: action.payload.question,
         questionOrder: action.payload.questionOrder,
-        userAnswer: initializeAnswers(action.payload.question.questionType)
+        userAnswer: initializeAnswers(action.payload.question.questionType, action.payload.question.possibleAnswers)
       }
 
     case types.ANSWER_QUESTION_REQUEST:
-      let updatedAnswer = state.userAnswer
+      let updatedAnswer = null
       if ([1,4,5].includes(state.question.questionType)) {
-        updatedAnswer = action.answerValue
+        updatedAnswer = { ...state.userAnswer }
+        Object.keys(updatedAnswer).forEach(id => {
+          if (action.answerId == id) {
+            updatedAnswer[id] = { ...updatedAnswer[id], checked: true }
+          } else {
+            updatedAnswer[id] = { ...updatedAnswer[id], checked: false }
+          }
+        })
       } else if (state.question.questionType === 3) {
-        updatedAnswer[action.answerId] = action.answerValue
+        updatedAnswer = { ...state.userAnswer }
+        updatedAnswer[action.answerId] = { ...updatedAnswer[action.answerId], checked: action.answerValue }
       }
 
       return {

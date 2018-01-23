@@ -23,9 +23,9 @@ export class Coding extends Component {
     this.props.actions.getQuestionRequest(this.props.projectId, this.props.jurisdictionId, index, question)
   }
 
-  onAnswer = (event, value) => {
+  onAnswer = id => (event, value) => {
     this.props.actions.answerQuestionRequest(
-      this.props.projectId, this.props.jurisdictionId, this.props.questionId, event.target.value, value
+      this.props.projectId, this.props.jurisdictionId, this.props.questionId, id, value
     )
   }
 

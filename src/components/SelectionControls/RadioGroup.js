@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Radio, { RadioGroup as MuiRadioGroup } from 'material-ui/Radio'
-import { FormControlLabel, FormControl } from 'material-ui/Form'
+import { FormControlLabel, FormControl, FormGroup } from 'material-ui/Form'
 import { withStyles } from 'material-ui/styles'
+import SimpleInput from 'components/SimpleInput'
 
 const styles = {
   checked: {
@@ -13,23 +14,27 @@ const styles = {
 export const RadioGroup = ({ choices, userAnswer, onChange, onChangePincite, classes }) => {
   return (
     <FormControl component="fieldset">
-    <MuiRadioGroup onChange={onChange} value={userAnswer}>
+    <FormGroup>
       {choices.map(choice => (
-        <FormControlLabel
-          key={choice.id}
-          value={`${choice.id}`}
-          control={<Radio classes={{ checked: classes.checked }} />}
-          label={choice.text}
-        />
+        <div key={choice.id} style={{ display: 'flex', alignItems: 'center'  }}>
+          <FormControlLabel
+            onChange={onChange(choice.id)}
+            checked={userAnswer[choice.id].checked === true}
+            control={
+              <Radio classes={{ checked: classes.checked }} />
+            }
+            label={choice.text}
+          />
+          {userAnswer[choice.id].checked === true &&
+          <SimpleInput key={`${choice.id}-pincite`} placeholder="Enter pincite" value={choice.pincite} onChange={onChangePincite} />}
+        </div>
       ))}
-    </MuiRadioGroup>
+    </FormGroup>
     </FormControl>
   )
 }
 
 RadioGroup.propTypes = {
-  choices: PropTypes.array,
-  onChange: PropTypes.func
 }
 
 export default withStyles(styles)(RadioGroup)
