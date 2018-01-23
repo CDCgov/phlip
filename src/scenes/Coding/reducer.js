@@ -23,7 +23,7 @@ const initializeAnswers = (type, questions) => {
       userAnswer = normalize.arrayToObject(questions)
       break
     case 5:
-      userAnswer = ''
+      userAnswer = {}
       break
   }
   return userAnswer
@@ -49,7 +49,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
     case types.ANSWER_QUESTION_REQUEST:
       let updatedAnswer = null
-      if ([1,4,5].includes(state.question.questionType)) {
+      if ([1,4].includes(state.question.questionType)) {
         updatedAnswer = { ...state.userAnswer }
         Object.keys(updatedAnswer).forEach(id => {
           if (action.answerId == id) {
@@ -61,6 +61,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       } else if (state.question.questionType === 3) {
         updatedAnswer = { ...state.userAnswer }
         updatedAnswer[action.answerId] = { ...updatedAnswer[action.answerId], checked: action.answerValue }
+      } else if (state.question.questionType === 5) {
+        updatedAnswer = { ...state.userAnswer, fieldValue: action.answerValue }
       }
 
       return {
