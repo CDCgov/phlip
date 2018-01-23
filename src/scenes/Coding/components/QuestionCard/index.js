@@ -6,6 +6,7 @@ import Card from 'components/Card/index'
 import Container, { Row, Column } from 'components/Layout'
 import IconButton from 'components/IconButton'
 import QuestionContent from './components/QuestionContent'
+import Icon from 'components/Icon'
 
 export const QuestionCard = ({ question, userAnswer, onChange, onChangeTextAnswer }) => {
   return (
@@ -18,7 +19,7 @@ export const QuestionCard = ({ question, userAnswer, onChange, onChangeTextAnswe
         </Row>
         <Divider />
         <Container column flex>
-          <Row displayFlex style={{ padding: 20 }}>
+          <Row displayFlex style={{ padding: '20px 20px 10px 20px' }}>
             <Column>
               <Typography type="subheading">{question.number})</Typography>
             </Column>
@@ -26,9 +27,15 @@ export const QuestionCard = ({ question, userAnswer, onChange, onChangeTextAnswe
               <Typography type="subheading">{question.text}</Typography>
             </Column>
           </Row>
-          <Row flex displayFlex style={{ padding: '0 80px 40px 65px' }}>
-            <QuestionContent onChange={onChange} onChangeTextAnswer={onChangeTextAnswer} userAnswer={userAnswer} question={question} />
+          <Row displayFlex style={{ padding: '0 80px 40px 65px' }}>
+            <QuestionContent onChange={onChange} onChangeTextAnswer={onChangeTextAnswer} userAnswer={userAnswer}
+                             question={question} />
           </Row>
+          {question.hint &&
+          <Row flex displayFlex style={{ padding: '0 35px 0 35px' }}>
+            <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
+            <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
+          </Row>}
         </Container>
       </Column>
     </Row>
