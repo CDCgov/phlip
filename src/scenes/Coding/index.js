@@ -33,7 +33,7 @@ export class Coding extends Component {
     switch(field) {
       case 'fieldValue':
         this.props.actions.answerQuestionRequest(
-          this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.question.possibleAnswers[0].id, event.target.value
+          this.props.projectId, this.props.jurisdictionId, this.props.question.id, null, event.target.value
         )
         break
       case 'comment':

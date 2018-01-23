@@ -34,7 +34,7 @@ export const QuestionCard = ({ question, userAnswer, onChange, onChangeTextAnswe
                              question={question} />
               {question.includeComment &&
               <Row style={{ paddingTop: 30 }}>
-                <SimpleInput onChange={onChangeTextAnswer(null, 'comment')} placeholder="Enter comment" style={{ width: 600 }} />
+                <SimpleInput onChange={onChangeTextAnswer(null, 'comment')} name="comment" placeholder="Enter comment" style={{ width: 600 }} />
               </Row>}
             </Column>
           </Row>

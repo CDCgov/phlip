@@ -24,7 +24,7 @@ const initializeAnswers = (type, answers) => {
       userAnswer = normalize.arrayToObject(answers)
       break
     case 5:
-      userAnswer = ''
+      userAnswer = {}
       break
   }
   return userAnswer
@@ -95,7 +95,9 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.GET_QUESTION_REQUEST:
       return {
         ...state,
-        currentIndex: action.newIndex
+        currentIndex: action.newIndex,
+        comment: '',
+        question: {}
       }
 
     default:
