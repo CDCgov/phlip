@@ -18,8 +18,21 @@ export class Coding extends Component {
     this.props.actions.getCodingOutlineRequest(this.props.projectId, '1')
   }
 
+  isCategoryChild = qNumber => {
+    const root = qNumber.substring(0,qNumber.lastIndexOf('.'))
+    return this.props.categoryQuestionNumber === root
+  }
+
   getQuestion = index => {
-    const question = this.props.questionOrder[index]
+    let question = this.props.questionOrder[index]
+    if (this.props.categoryQuestionNumber) {
+      if (!this.isCategoryChild(question.number)) {
+        this.props.actions.clearCategories()
+        question = { ...question, isCategoryChild: false }
+      } else {
+        question = { ...question, isCategoryChild: true }
+      }
+    }
     this.props.actions.getQuestionRequest(this.props.projectId, this.props.jurisdictionId, index, question)
   }
 
@@ -55,7 +68,8 @@ export class Coding extends Component {
         <Header projectName={this.props.projectName} projectId={this.props.projectId} />
         <Container flex column style={{ backgroundColor: '#f5f5f5', padding: '20px 20px 10px 20px' }}>
           <QuestionCard question={this.props.question} onChange={this.onAnswer}
-                        onChangeTextAnswer={this.onChangeTextAnswer} userAnswer={this.props.userAnswer}
+                        onChangeTextAnswer={this.onChangeTextAnswer} userAnswer={this.props.userAnswer} categories={this.props.categories}
+                        selectedCategory={this.props.selectedCategory} onChangeCategory={this.props.actions.onChangeCategory}
           />
           <FooterNavigate currentIndex={this.props.currentIndex} getQuestion={this.getQuestion}
                           totalLength={this.props.questionOrder.length} />
@@ -73,7 +87,9 @@ Coding.propTypes = {
   outline: PropTypes.object,
   currentIndex: PropTypes.number,
   questionOrder: PropTypes.array,
-  actions: PropTypes.object
+  actions: PropTypes.object,
+  categories: PropTypes.array,
+  categoryQuestionNumber: PropTypes.string
 }
 
 const mapStateToProps = (state, ownProps) => ({
@@ -84,7 +100,10 @@ const mapStateToProps = (state, ownProps) => ({
   currentIndex: state.scenes.coding.currentIndex || 0,
   questionOrder: state.scenes.coding.questionOrder || [],
   userAnswer: state.scenes.coding.userAnswer || undefined,
-  jurisdictionId: '1'
+  jurisdictionId: '1',
+  categories: state.scenes.coding.categories || [],
+  categoryQuestionNumber: state.scenes.coding.categoryQuestionNumber,
+  selectedCategory: state.scenes.coding.selectedCategory || 0
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

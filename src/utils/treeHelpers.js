@@ -22,21 +22,21 @@ export const sortQuestions = questions => {
 
 export const getQuestionNumbers = questions => {
   const qs = []
-  let count = 0, numbering = {}, questionNumber = ''
+  let count = 0, numbering = {}, number = ''
 
   walk({
     treeData: questions,
     getNodeKey,
     callback: ({ node, parentNode }) => {
       if (parentNode === null) {
-        questionNumber = `${count + 1}`
-        numbering[node.id] = { questionNumber }
+        number = `${count + 1}`
+        numbering[node.id] = { number }
         count += 1
       } else {
-        questionNumber = `${numbering[parentNode.id].questionNumber}.${node.positionInParent + 1}`
-        numbering[node.id] = { questionNumber }
+        number = `${numbering[parentNode.id].number}.${node.positionInParent + 1}`
+        numbering[node.id] = { number }
       }
-      qs.push({ id: node.id, questionNumber })
+      qs.push({ id: node.id, number })
     },
     ignoreCollapsed: false
   })

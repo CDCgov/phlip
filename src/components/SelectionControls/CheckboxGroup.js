@@ -11,7 +11,7 @@ const styles = {
   }
 }
 
-export const CheckboxGroup = ({ choices, userAnswer, onChange, onChangePincite, classes }) => {
+export const CheckboxGroup = ({ choices, userAnswer, onChange, onChangePincite, pincites, classes }) => {
   return (
     <FormControl component="fieldset">
       <FormGroup>
@@ -25,7 +25,7 @@ export const CheckboxGroup = ({ choices, userAnswer, onChange, onChangePincite, 
               }
               label={choice.text}
             />
-            {userAnswer[choice.id].checked === true &&
+            {userAnswer[choice.id].checked === true && pincites &&
             <SimpleInput key={`${choice.id}-pincite`} style={{ width: 300 }} placeholder="Enter pincite" value={choice.pincite}
                          onChange={onChangePincite(choice.id, 'pincite')} />}
           </div>
@@ -33,6 +33,10 @@ export const CheckboxGroup = ({ choices, userAnswer, onChange, onChangePincite, 
         </FormGroup>
     </FormControl>
   )
+}
+
+CheckboxGroup.defaultProps = {
+  pincites: true
 }
 
 CheckboxGroup.propTypes = {

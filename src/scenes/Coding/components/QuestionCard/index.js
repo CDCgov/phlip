@@ -8,15 +8,15 @@ import IconButton from 'components/IconButton'
 import QuestionContent from './components/QuestionContent'
 import Icon from 'components/Icon'
 import SimpleInput from 'components/SimpleInput'
+import Tabs from 'components/Tabs'
 
-export const QuestionCard = ({ question, userAnswer, onChange, onChangeTextAnswer }) => {
-  const questionAnswerPadding = {
-    paddingTop: 0,
-    paddingRight: 65,
-    paddingBottom: 40,
-    paddingLeft: (question.number && (question.number.split('.').length * 3) + 65) || 65
-  }
+const TabContainer = props => {
+  return (<Tabs tabs={props.tabs} selectedTab={props.selected} onChangeTab={props.onChangeCategory}>
+    {props.children}
+  </Tabs>)
+}
 
+export const QuestionCard = ({ question, userAnswer, categories, selectedCategory, onChangeCategory, onChange, onChangeTextAnswer }) => {
   return (
     <Row displayFlex style={{ flex: '1 0 50%' }}>
       <Column component={<Card />} displayFlex flex>
@@ -26,32 +26,11 @@ export const QuestionCard = ({ question, userAnswer, onChange, onChangeTextAnswe
           </IconButton>
         </Row>
         <Divider />
-        <Container column flex>
-          <Row displayFlex style={{ padding: '20px 20px 10px 20px' }}>
-            <Column>
-              <Typography type="subheading">{question.number})</Typography>
-            </Column>
-            <Column flex style={{ paddingLeft: 10 }}>
-              <Typography type="subheading">{question.text}</Typography>
-            </Column>
-          </Row>
-          <Row displayFlex style={{ ...questionAnswerPadding }}>
-            <Column flex>
-              <QuestionContent onChange={onChange} onChangeTextAnswer={onChangeTextAnswer} userAnswer={userAnswer}
-                             question={question} />
-              {question.includeComment &&
-              <Row style={{ paddingTop: 30 }}>
-                <SimpleInput onChange={onChangeTextAnswer(null, 'comment')} name="comment" placeholder="Enter comment" style={{ width: 600 }} />
-              </Row>}
-            </Column>
-          </Row>
-
-          {question.hint &&
-          <Row flex displayFlex style={{ padding: '0 35px 0 35px' }}>
-            <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
-            <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
-          </Row>}
-        </Container>
+        {question.isCategoryChild
+          ? <TabContainer tabs={categories} selected={selectedCategory} onChangeCategory={onChangeCategory}><QuestionContent onChange={onChange} onChangeTextAnswer={onChangeTextAnswer}
+                                           userAnswer={userAnswer} question={question} /> </TabContainer>
+          : <QuestionContent onChange={onChange} onChangeTextAnswer={onChangeTextAnswer} question={question} userAnswer={userAnswer} />
+        }
       </Column>
     </Row>
   )

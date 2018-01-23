@@ -8,20 +8,22 @@ const INITIAL_STATE = {
   questionOrder: [],
   currentIndex: 0,
   userAnswer: {},
-  comment: ''
+  comment: '',
+  categories: [],
+  categoryQuestionNumber: undefined,
+  selectedCategory: undefined
 }
 
-const initializeAnswers = (type, answers) => {
+const initializeAnswers = question => {
   let userAnswer = {}
-  switch (type) {
+  switch (question.questionType) {
     case 1:
+    case 3:
     case 4:
-      userAnswer = normalize.arrayToObject(answers)
+      userAnswer = normalize.arrayToObject(question.possibleAnswers)
       break
     case 2:
-      break
-    case 3:
-      userAnswer = normalize.arrayToObject(answers)
+      userAnswer = normalize.arrayToObject(question.possibleCategories)
       break
     case 5:
       userAnswer = {}
@@ -36,7 +38,9 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         question: action.payload,
-        userAnswer: initializeAnswers(action.payload.questionType, action.payload.possibleAnswers)
+        userAnswer: initializeAnswers(action.payload),
+        categoryQuestionNumber: action.payload.questionType === 2 ? action.payload.number : state.categoryQuestionNumber,
+        selectedCategory: state.selectedCategory ? state.selectedCategory : 0
       }
 
     case types.GET_CODING_OUTLINE_SUCCESS:
@@ -45,11 +49,12 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         outline: action.payload.outline,
         question: action.payload.question,
         questionOrder: action.payload.questionOrder,
-        userAnswer: initializeAnswers(action.payload.question.questionType, action.payload.question.possibleAnswers)
+        userAnswer: initializeAnswers(action.payload.question),
+        categoryQuestionNumber: action.payload.question.questionType === 2 ? action.payload.question.number : state.categoryQuestionNumber
       }
 
     case types.ANSWER_QUESTION_REQUEST:
-      let updatedAnswer = null
+      let updatedAnswer = null, allCategories = []
       if ([1, 4].includes(state.question.questionType)) {
         updatedAnswer = { ...state.userAnswer }
         Object.keys(updatedAnswer).forEach(id => {
@@ -64,11 +69,16 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         updatedAnswer[action.answerId] = { ...updatedAnswer[action.answerId], checked: action.answerValue }
       } else if (state.question.questionType === 5) {
         updatedAnswer = { ...state.userAnswer, fieldValue: action.answerValue }
+      } else if (state.question.questionType === 2) {
+        updatedAnswer = { ...state.userAnswer }
+        updatedAnswer[action.answerId] = { ...updatedAnswer[action.answerId], checked: action.answerValue }
+        allCategories = Object.values(updatedAnswer).filter(answer => answer.checked === true)
       }
 
       return {
         ...state,
-        userAnswer: updatedAnswer
+        userAnswer: updatedAnswer,
+        categories: allCategories
       }
 
     case types.ON_CHANGE_COMMENT:
@@ -89,6 +99,20 @@ const codingReducer = (state = INITIAL_STATE, action) => {
               pincite: action.pincite
             }
           }
+      }
+
+    case types.ON_CHANGE_CATEGORY:
+      console.log(action)
+      return {
+        ...state,
+        selectedCategory: action.selection
+      }
+
+    case types.CLEAR_CATEGORIES:
+      return {
+        ...state,
+        categories: [],
+        categoryQuestionNumber: undefined
       }
 
     case types.GET_CODING_OUTLINE_REQUEST:
