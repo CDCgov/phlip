@@ -7,6 +7,7 @@ import Container, { Row, Column } from 'components/Layout'
 import IconButton from 'components/IconButton'
 import QuestionContent from './components/QuestionContent'
 import Icon from 'components/Icon'
+import SimpleInput from 'components/SimpleInput'
 
 export const QuestionCard = ({ question, userAnswer, onChange, onChangeTextAnswer }) => {
   return (
@@ -28,9 +29,16 @@ export const QuestionCard = ({ question, userAnswer, onChange, onChangeTextAnswe
             </Column>
           </Row>
           <Row displayFlex style={{ padding: '0 80px 40px 65px' }}>
-            <QuestionContent onChange={onChange} onChangeTextAnswer={onChangeTextAnswer} userAnswer={userAnswer}
+            <Column>
+              <QuestionContent onChange={onChange} onChangeTextAnswer={onChangeTextAnswer} userAnswer={userAnswer}
                              question={question} />
+              {question.includeComment &&
+              <Row style={{ paddingTop: 30 }}>
+                <SimpleInput onChange={onChangeTextAnswer(null, 'comment')} placeholder="Enter comment" style={{ width: 600 }} />
+              </Row>}
+            </Column>
           </Row>
+
           {question.hint &&
           <Row flex displayFlex style={{ padding: '0 35px 0 35px' }}>
             <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>

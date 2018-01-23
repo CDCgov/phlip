@@ -4,13 +4,13 @@ import SimpleInput from 'components/SimpleInput'
 import RadioGroup from 'components/SelectionControls/RadioGroup'
 import CheckboxGroup from 'components/SelectionControls/CheckboxGroup'
 
-const QuestionContent = ({ question, userAnswer, onChange, onChangeTextAnswer, onChangePincite }) => {
+const QuestionContent = ({ question, userAnswer, onChange, onChangeTextAnswer }) => {
   return (
     <Fragment>
-      {question.questionType === 1 && <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswer={userAnswer} />}
+      {question.questionType === 1 && <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswer={userAnswer} onChangePincite={onChangeTextAnswer} />}
       {question.questionType === 2 && <div></div>}
-      {question.questionType === 3 && <CheckboxGroup choices={question.possibleAnswers} onChange={onChange} userAnswer={userAnswer} />}
-      {question.questionType === 4 && <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswer={userAnswer} />}
+      {question.questionType === 3 && <CheckboxGroup choices={question.possibleAnswers} onChange={onChange} userAnswer={userAnswer} onChangePincite={onChangeTextAnswer}  />}
+      {question.questionType === 4 && <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswer={userAnswer} onChangePincite={onChangeTextAnswer}  />}
       {question.questionType === 5 && <SimpleInput onChange={onChangeTextAnswer} value={userAnswer.fieldValue} /> }
     </Fragment>
   )

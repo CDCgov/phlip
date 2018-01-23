@@ -25,14 +25,28 @@ export class Coding extends Component {
 
   onAnswer = id => (event, value) => {
     this.props.actions.answerQuestionRequest(
-      this.props.projectId, this.props.jurisdictionId, this.props.questionId, id, value
+      this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, value
     )
   }
 
-  onChangeTextAnswer = (event) => {
-    this.props.actions.answerQuestionRequest(
-      this.props.projectId, this.props.jurisdictionId, this.props.questionId, event.target.value, event.target.value
-    )
+  onChangeTextAnswer = (id, field) => event => {
+    switch(field) {
+      case 'fieldValue':
+        this.props.actions.answerQuestionRequest(
+          this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.question.possibleAnswers[0].id, event.target.value
+        )
+        break
+      case 'comment':
+        this.props.actions.onChangeComment(
+          this.props.projectId, this.props.jurisdictionId, this.props.question.id, event.target.value
+        )
+        break
+      case 'pincite':
+        this.props.actions.onChangePincite(
+          this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
+        )
+    }
+
   }
 
   render() {
@@ -41,7 +55,8 @@ export class Coding extends Component {
         <Header projectName={this.props.projectName} projectId={this.props.projectId} />
         <Container flex column style={{ backgroundColor: '#f5f5f5', padding: '20px 20px 10px 20px' }}>
           <QuestionCard question={this.props.question} onChange={this.onAnswer}
-                        onChangeTextAnswer={this.onChangeTextAnswer} userAnswer={this.props.userAnswer} />
+                        onChangeTextAnswer={this.onChangeTextAnswer} userAnswer={this.props.userAnswer}
+          />
           <FooterNavigate currentIndex={this.props.currentIndex} getQuestion={this.getQuestion}
                           totalLength={this.props.questionOrder.length} />
         </Container>

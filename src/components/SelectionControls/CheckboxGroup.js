@@ -27,7 +27,7 @@ export const CheckboxGroup = ({ choices, userAnswer, onChange, onChangePincite, 
             />
             {userAnswer[choice.id].checked === true &&
             <SimpleInput key={`${choice.id}-pincite`} placeholder="Enter pincite" value={choice.pincite}
-                         onChange={onChangePincite} />}
+                         onChange={onChangePincite(choice.id, 'pincite')} />}
           </div>
         ))}
         </FormGroup>

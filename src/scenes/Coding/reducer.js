@@ -7,23 +7,24 @@ const INITIAL_STATE = {
   jurisdiction: {},
   questionOrder: [],
   currentIndex: 0,
-  userAnswer: {}
+  userAnswer: {},
+  comment: ''
 }
 
-const initializeAnswers = (type, questions) => {
+const initializeAnswers = (type, answers) => {
   let userAnswer = {}
   switch (type) {
     case 1:
     case 4:
-      userAnswer = normalize.arrayToObject(questions)
+      userAnswer = normalize.arrayToObject(answers)
       break
     case 2:
       break
     case 3:
-      userAnswer = normalize.arrayToObject(questions)
+      userAnswer = normalize.arrayToObject(answers)
       break
     case 5:
-      userAnswer = {}
+      userAnswer = ''
       break
   }
   return userAnswer
@@ -49,7 +50,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
     case types.ANSWER_QUESTION_REQUEST:
       let updatedAnswer = null
-      if ([1,4].includes(state.question.questionType)) {
+      if ([1, 4].includes(state.question.questionType)) {
         updatedAnswer = { ...state.userAnswer }
         Object.keys(updatedAnswer).forEach(id => {
           if (action.answerId == id) {
@@ -68,6 +69,26 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         userAnswer: updatedAnswer
+      }
+
+    case types.ON_CHANGE_COMMENT:
+      return {
+        ...state,
+        comment: action.comment
+      }
+
+    case types.ON_CHANGE_PINCITE:
+      return {
+        ...state,
+        userAnswer: state.question.questionType === 5
+          ? { ...state.userAnswer, pincite: action.pincite }
+          : {
+            ...state.userAnswer,
+            [action.answerId]: {
+              ...state.userAnswer[action.answerId],
+              pincite: action.pincite
+            }
+          }
       }
 
     case types.GET_CODING_OUTLINE_REQUEST:
