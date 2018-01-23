@@ -26,7 +26,7 @@ export const RadioGroup = ({ choices, userAnswer, onChange, onChangePincite, cla
             label={choice.text}
           />
           {userAnswer[choice.id].checked === true &&
-          <SimpleInput key={`${choice.id}-pincite`} placeholder="Enter pincite" value={choice.pincite} onChange={onChangePincite(choice.id, 'pincite')} />}
+          <SimpleInput key={`${choice.id}-pincite`} style={{ width: 300 }} placeholder="Enter pincite" value={choice.pincite} onChange={onChangePincite(choice.id, 'pincite')} />}
         </div>
       ))}
     </FormGroup>

@@ -11,7 +11,7 @@ const QuestionContent = ({ question, userAnswer, onChange, onChangeTextAnswer })
       {question.questionType === 2 && <div></div>}
       {question.questionType === 3 && <CheckboxGroup choices={question.possibleAnswers} onChange={onChange} userAnswer={userAnswer} onChangePincite={onChangeTextAnswer}  />}
       {question.questionType === 4 && <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswer={userAnswer} onChangePincite={onChangeTextAnswer}  />}
-      {question.questionType === 5 && <InputBox name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer" value={userAnswer.fieldValue} /> }
+      {question.questionType === 5 && <InputBox rows="5" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer" value={userAnswer.fieldValue} /> }
     </Fragment>
   )
 }

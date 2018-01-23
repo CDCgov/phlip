@@ -10,6 +10,13 @@ import Icon from 'components/Icon'
 import SimpleInput from 'components/SimpleInput'
 
 export const QuestionCard = ({ question, userAnswer, onChange, onChangeTextAnswer }) => {
+  const questionAnswerPadding = {
+    paddingTop: 0,
+    paddingRight: 65,
+    paddingBottom: 40,
+    paddingLeft: (question.number && (question.number.split('.').length * 3) + 65) || 65
+  }
+
   return (
     <Row displayFlex style={{ flex: '1 0 50%' }}>
       <Column component={<Card />} displayFlex flex>
@@ -28,8 +35,8 @@ export const QuestionCard = ({ question, userAnswer, onChange, onChangeTextAnswe
               <Typography type="subheading">{question.text}</Typography>
             </Column>
           </Row>
-          <Row displayFlex style={{ padding: '0 80px 40px 65px' }}>
-            <Column>
+          <Row displayFlex style={{ ...questionAnswerPadding }}>
+            <Column flex>
               <QuestionContent onChange={onChange} onChangeTextAnswer={onChangeTextAnswer} userAnswer={userAnswer}
                              question={question} />
               {question.includeComment &&
