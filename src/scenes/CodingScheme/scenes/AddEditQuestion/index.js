@@ -25,6 +25,8 @@ export class AddEditQuestion extends Component {
       ? null
       : this.props.location.state.questionDefined
 
+    this.parentDefined = this.props.location.state.parentDefined ? this.props.location.state.parentDefined : null
+
     this.state = {
       edit: this.questionDefined
     }
@@ -66,9 +68,9 @@ export class AddEditQuestion extends Component {
       })
     }
 
-    this.questionDefined
-      ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.questionDefined.id, this.props.location.state.path)
-      : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId)
+    this.questionDefined ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.questionDefined.id, this.props.location.state.path)
+      : this.parentDefined ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.props.location.state.path)
+        : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)
 
     this.props.history.goBack()
   }
@@ -104,7 +106,7 @@ export class AddEditQuestion extends Component {
   render() {
     const options = [
       { value: questionTypes.BINARY, label: 'Binary' },
-      { value: questionTypes.CATEGORY, label: 'Category' },  //TODO: Enable when we implement category questions
+      { value: questionTypes.CATEGORY, label: 'Category' },
       { value: questionTypes.CHECKBOXES, label: 'Checkboxes' },
       { value: questionTypes.MULTIPLE_CHOICE, label: 'Multiple choice' },
       { value: questionTypes.TEXT_FIELD, label: 'Text field' }

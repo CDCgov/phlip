@@ -30,6 +30,9 @@ export class CodingScheme extends Component {
 
   handleQuestionTreeChange = questions => {
     this.props.actions.updateQuestionTree(questions)
+  }
+
+  handleQuestionNodeMove = () => {
     this.props.actions.reorderSchemeRequest(this.props.projectId)
   }
 
@@ -52,14 +55,15 @@ export class CodingScheme extends Component {
           {this.props.empty
             ? this.renderGetStarted()
             : <Scheme
-                questions={this.props.questions}
-                handleQuestionTreeChange={this.handleQuestionTreeChange}
-                handleHoverOnQuestion={this.props.actions.toggleHover}
-                disableHover={this.props.actions.disableHover}
-                enableHover={this.props.actions.enableHover}
-                projectId={this.props.projectId}
-                outline={this.props.outline}
-                flatQuestions={this.props.flatQuestions}
+              questions={this.props.questions}
+              handleQuestionTreeChange={this.handleQuestionTreeChange}
+              handleQuestionNodeMove={this.handleQuestionNodeMove}
+              handleHoverOnQuestion={this.props.actions.toggleHover}
+              disableHover={this.props.actions.disableHover}
+              enableHover={this.props.actions.enableHover}
+              projectId={this.props.projectId}
+              outline={this.props.outline}
+              flatQuestions={this.props.flatQuestions}
             />}
         </Container>
         <Footer clearState={this.props.actions.clearState} />

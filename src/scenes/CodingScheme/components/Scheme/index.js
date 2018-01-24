@@ -17,7 +17,7 @@ const canDrop = (nextParent, outline, questions) => {
   return canDrop
 }
 
-export const Scheme = ({ questions, flatQuestions, handleQuestionTreeChange, handleHoverOnQuestion, enableHover, disableHover, projectId, outline }) => {
+export const Scheme = ({ questions, flatQuestions, handleQuestionTreeChange, handleQuestionNodeMove, handleHoverOnQuestion, enableHover, disableHover, projectId, outline }) => {
   return (
     <SortableTree
       theme={{
@@ -32,6 +32,7 @@ export const Scheme = ({ questions, flatQuestions, handleQuestionTreeChange, han
       }}
       treeData={questions}
       onChange={handleQuestionTreeChange}
+      onMoveNode={handleQuestionNodeMove}
       style={{ flex: '1 0 50%', padding: '0 0 0 15px' }}
       generateNodeProps={({ node, path }) => {
         return {
@@ -52,6 +53,7 @@ Scheme.propTypes = {
   questions: PropTypes.array,
   handleQuestionTreeChange: PropTypes.func,
   handleHoverOnQuestion: PropTypes.func,
+  handleQuestionNodeMoveRequest: PropTypes.func,
   enableHover: PropTypes.func,
   disableHover: PropTypes.func,
   outline: PropTypes.object

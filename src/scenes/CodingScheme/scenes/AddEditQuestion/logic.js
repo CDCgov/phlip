@@ -1,22 +1,31 @@
 import { createLogic } from 'redux-logic'
 import * as types from '../../actionTypes'
 
+
+const updateUserIdLogic = createLogic({
+  type: [types.ADD_QUESTION_REQUEST, types.UPDATE_QUESTION_REQUEST, types.ADD_CHILD_QUESTION_REQUEST],
+  transform({ getState, action }, next) {
+    next({
+      ...action,
+      question: { ...action.question, userId: getState().data.user.currentUser.id }
+    })
+  }
+})
+
 const updateOutlineLogic = createLogic({
-  type: types.ADD_QUESTION_REQUEST,
+  type: [types.ADD_QUESTION_REQUEST, types.ADD_CHILD_QUESTION_REQUEST],
   transform({ getState, action }, next) {
     next({
       ...action,
       question: {
         ...action.question,
         outline: getState().scenes.codingScheme.outline,
-        parentId: 0,
+        parentId: action.parentId,
         positionInParent: getState().scenes.codingScheme.questions.length
       }
     })
   }
 })
-
-
 
 const updateQuestionLogic = createLogic({
   type: types.UPDATE_QUESTION_REQUEST,
@@ -29,6 +38,24 @@ const updateQuestionLogic = createLogic({
     const updatedQuestion = await api.updateQuestion(action.question, action.projectId, action.questionId)
     return {
       ...updatedQuestion,
+      hovering: false
+    }
+  }
+})
+
+const addChildQuestionLogic = createLogic({
+  type: types.ADD_CHILD_QUESTION_REQUEST,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.ADD_CHILD_QUESTION_SUCCESS
+  },
+  async process({ api, action }) {
+    const question = await api.addQuestion(action.question, action.projectId)
+    return {
+      ...question,
+      parentId: action.question.parentId,
+      positionInParent: action.question.positionInParent,
+      path: action.path,
       hovering: false
     }
   }
@@ -52,19 +79,10 @@ const addQuestionLogic = createLogic({
   }
 })
 
-const updateUserId = createLogic({
-  type: [types.ADD_QUESTION_REQUEST, types.UPDATE_QUESTION_REQUEST],
-  transform({ getState, action }, next) {
-    next({
-      ...action,
-      question: { ...action.question, userId: getState().data.user.currentUser.id }
-    })
-  }
-})
-
 export default [
-  updateUserId,
+  updateUserIdLogic,
   updateOutlineLogic,
   updateQuestionLogic,
-  addQuestionLogic
+  addQuestionLogic,
+  addChildQuestionLogic
 ]
