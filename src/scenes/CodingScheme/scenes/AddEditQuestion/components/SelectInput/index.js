@@ -6,22 +6,23 @@ import TextInput from 'components/TextInput'
 import Checkbox from 'material-ui/Checkbox'
 import Input, { InputLabel } from 'material-ui/Input'
 import { FormControl, FormHelperText } from 'material-ui/Form'
+import IconButton from 'components/IconButton'
+import * as questionTypes from '../../constants'
 
-const SelectInput = ({ name, label, answerType, type, input, classes, meta: { asyncValidating, active, touched, error, warning }, ...custom }) => {
+const SelectInput = ({ name, label, answerType, type, input, classes, meta: { asyncValidating, active, touched, error, warning }, handleDelete, isEdit, ...custom }) => {
   //Refactor this 12/17/2018
   return (
-    <Container>
+    <Container alignItems={'center'}>
       <Column style={{ marginTop: 8 }}>
         {(() => {
           switch (answerType) {
-            case 1:
-            case 4:
+            case questionTypes.BINARY:
+            case questionTypes.MULTIPLE_CHOICE:
               return <Radio disabled />
-              break;
-            case 2:
-            case 3:
+
+            case questionTypes.CATEGORY:
+            case questionTypes.CHECKBOXES:
               return <Checkbox disabled />
-              break;
 
             default:
               break;
@@ -40,6 +41,12 @@ const SelectInput = ({ name, label, answerType, type, input, classes, meta: { as
           {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
         </FormControl>
       </Column>
+      <Column>
+        {(answerType === questionTypes.BINARY || isEdit) ? <div></div> :
+          <IconButton color="action" onClick={handleDelete}
+            iconSize={20}>delete</IconButton>
+        }
+      </Column>
     </Container>
   )
 }
@@ -51,6 +58,7 @@ SelectInput.propTypes = {
   type: PropTypes.string,
   input: PropTypes.any,
   meta: PropTypes.object,
+  handleDelete: PropTypes.func,
   multiline: PropTypes.bool
 }
 

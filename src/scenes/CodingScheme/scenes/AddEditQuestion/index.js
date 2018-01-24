@@ -167,6 +167,7 @@ export class AddEditQuestion extends Component {
               </Container>
               <FieldArray name="possibleAnswers"
                 answerType={this.props.form.values ? this.props.form.values.questionType : 4}
+                isEdit={this.state.edit ? true : false}
                 component={AnswerList}
               />
               <Container>
