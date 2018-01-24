@@ -1,6 +1,7 @@
 import * as types from './actionTypes'
-import { changeNodeAtPath, getFlatDataFromTree, getTreeFromFlatData, walk, map } from 'react-sortable-tree'
+import { changeNodeAtPath, getFlatDataFromTree, getTreeFromFlatData, walk, map, addNodeUnderParent } from 'react-sortable-tree'
 import { sortList, updater } from 'utils'
+
 
 const INITIAL_STATE = {
   questions: [],
@@ -124,6 +125,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         allowHover: true
       }
 
+
     case types.ADD_QUESTION_SUCCESS:
       return {
         ...state,
@@ -131,6 +133,20 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         outline: questionsToOutline([...state.questions, action.payload]),
         empty: false,
         flatQuestions: [...state.flatQuestions, action.payload]
+      }
+
+    case types.ADD_CHILD_QUESTION_REQUEST:
+      const newTree = addNodeUnderParent({
+        treeData: state.questions,
+        parentKey: action.path[action.path.length - 1],
+        expandParent: true,
+        getNodeKey,
+        newNode: { ...action.question, hovering: false }
+      })
+
+      return {
+        ...state,
+        questions: newTree.treeData
       }
 
     case types.UPDATE_QUESTION_REQUEST:
@@ -144,6 +160,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         })
       }
 
+    case types.ADD_CHILD_QUESTION_SUCCESS:
     case types.UPDATE_QUESTION_SUCCESS:
       return state
 

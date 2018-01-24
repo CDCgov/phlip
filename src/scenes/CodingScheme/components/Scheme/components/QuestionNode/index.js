@@ -49,7 +49,7 @@ export const QuestionNode = props => {
     projectId,
     ...otherProps
   } = props
-  
+
   const questionBody = node.text
   const isDraggedDescendant = draggedNode && isDescendant(draggedNode, node)
   const isLandingPadActive = !didDrop && isDragging
@@ -100,10 +100,12 @@ export const QuestionNode = props => {
               <div style={{ zIndex: 5 }}>
                 {parentNode
                   ? parentNode.questionType !== 2 && <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} />
-                  : <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} />
+                  : <TextLink to={{ pathname: `/project/${projectId}/coding-scheme/add`, state: { parentDefined: { ...node }, path } }}>
+                    <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} /> </TextLink>
                 }
                 <TextLink to={{ pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`, state: { questionDefined: { ...node }, path } }}>
-                  <Button color="accent" style={actionStyles} value={<Icon color="white">mode_edit</Icon>} /></TextLink>
+                  <Button color="accent" style={actionStyles} value={<Icon color="white">mode_edit</Icon>} />
+                </TextLink>
                 <Button color="accent" style={actionStyles} value={<Icon color="white">delete</Icon>} />
               </div>
             }
