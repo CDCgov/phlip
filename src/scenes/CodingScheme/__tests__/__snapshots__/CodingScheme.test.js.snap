@@ -31,7 +31,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
   <Footer />
   <Route
     component={[Function]}
-    path="/project/:id/coding-scheme/add"
+    path="/project/:projectId/coding-scheme/add"
   />
   <Route
     component={[Function]}

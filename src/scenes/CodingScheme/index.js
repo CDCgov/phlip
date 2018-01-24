@@ -59,6 +59,7 @@ export class CodingScheme extends Component {
                 enableHover={this.props.actions.enableHover}
                 projectId={this.props.projectId}
                 outline={this.props.outline}
+                flatQuestions={this.props.flatQuestions}
             />}
         </Container>
         <Footer clearState={this.props.actions.clearState} />
@@ -77,7 +78,8 @@ CodingScheme.propTypes = {
   projectName: PropTypes.string,
   projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   questions: PropTypes.array,
-  actions: PropTypes.object
+  actions: PropTypes.object,
+  flatQuestions: PropTypes.array
 }
 
 const mapStateToProps = (state, ownProps) => ({
@@ -85,7 +87,8 @@ const mapStateToProps = (state, ownProps) => ({
   projectId: ownProps.match.params.id,
   questions: state.scenes.codingScheme.questions || [],
   empty: state.scenes.codingScheme.empty || false,
-  outline: state.scenes.codingScheme.outline || {}
+  outline: state.scenes.codingScheme.outline || {},
+  flatQuestions: state.scenes.codingScheme.flatQuestions || []
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

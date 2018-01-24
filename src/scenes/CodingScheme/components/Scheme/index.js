@@ -17,7 +17,7 @@ const canDrop = (nextParent, outline, questions) => {
   return canDrop
 }
 
-export const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuestion, enableHover, disableHover, projectId, outline }) => {
+export const Scheme = ({ questions, flatQuestions, handleQuestionTreeChange, handleHoverOnQuestion, enableHover, disableHover, projectId, outline }) => {
   return (
     <SortableTree
       theme={{
@@ -42,7 +42,7 @@ export const Scheme = ({ questions, handleQuestionTreeChange, handleHoverOnQuest
           projectId: projectId
         }
       }}
-      canDrop={({ nextParent }) => canDrop(nextParent, outline, questions)}
+      canDrop={({ nextParent }) => canDrop(nextParent, outline, flatQuestions)}
       isVirtualized={true}
     />
   )
