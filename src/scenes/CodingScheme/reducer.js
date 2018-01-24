@@ -5,7 +5,8 @@ import { sortList, updater } from 'utils'
 const INITIAL_STATE = {
   questions: [],
   outline: {},
-  allowHover: true
+  allowHover: true,
+  flatQuestions: []
 }
 
 const questionsToOutline = questions => {
@@ -74,6 +75,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
             flatData: getQuestionsFromOutline(action.payload.outline, action.payload.codingSchemeQuestions)
           })
         ),
+        flatQuestions: action.payload.codingSchemeQuestions,
         outline: action.payload.outline,
         empty: action.payload.codingSchemeQuestions <= 0
       }
@@ -127,7 +129,8 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         questions: [...state.questions, action.payload],
         outline: questionsToOutline([...state.questions, action.payload]),
-        empty: false
+        empty: false,
+        flatQuestions: [...state.flatQuestions, action.payload]
       }
 
     case types.UPDATE_QUESTION_REQUEST:

@@ -104,7 +104,7 @@ export class AddEditQuestion extends Component {
   render() {
     const options = [
       { value: questionTypes.BINARY, label: 'Binary' },
-      //{ value: questionTypes.CATEGORY, label: 'Category' },  //TODO: Enable when we implement category questions
+      { value: questionTypes.CATEGORY, label: 'Category' },  //TODO: Enable when we implement category questions
       { value: questionTypes.CHECKBOXES, label: 'Checkboxes' },
       { value: questionTypes.MULTIPLE_CHOICE, label: 'Multiple choice' },
       { value: questionTypes.TEXT_FIELD, label: 'Text field' }
