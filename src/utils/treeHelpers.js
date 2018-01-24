@@ -21,7 +21,7 @@ export const sortQuestions = questions => {
 }
 
 export const getQuestionNumbers = questions => {
-  const qs = []
+  const qs = [], order = []
   let count = 0, numbering = {}, number = ''
 
   walk({
@@ -36,12 +36,13 @@ export const getQuestionNumbers = questions => {
         number = `${numbering[parentNode.id].number}.${node.positionInParent + 1}`
         numbering[node.id] = { number }
       }
-      qs.push({ id: node.id, number })
+      qs.push({ ...node, number })
+      order.push(node.id)
     },
     ignoreCollapsed: false
   })
 
-  return qs
+  return { questionsWithNumbers: qs, order }
 }
 
 export const getQuestionOrder = questions => {

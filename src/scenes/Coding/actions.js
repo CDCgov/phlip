@@ -1,12 +1,7 @@
 import * as types from './actionTypes'
 
-export const getQuestionRequest = (projectId, jurisdictionId, newIndex, question) => ({
-  type: types.GET_QUESTION_REQUEST,
-  projectId,
-  jurisdictionId,
-  newIndex,
-  question
-})
+export const getNextQuestion = (id, newIndex) => ({ type: types.GET_NEXT_QUESTION, id, newIndex })
+export const getPrevQuestion = (id, newIndex) => ({ type: types.GET_PREV_QUESTION, id, newIndex })
 
 export const getCodingOutlineRequest = (projectId, jurisdictionId) => ({
   type: types.GET_CODING_OUTLINE_REQUEST,

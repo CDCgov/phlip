@@ -8,7 +8,7 @@ import SimpleInput from 'components/SimpleInput'
 import Typography from 'material-ui/Typography'
 import Container, { Row, Column } from 'components/Layout'
 
-const QuestionContent = ({ question, userAnswer, onChange, onChangeTextAnswer }) => {
+const QuestionContent = ({ question, userAnswer, onChange, comment, onChangeTextAnswer }) => {
   const questionAnswerPadding = {
     paddingTop: 0,
     paddingRight: 65,
@@ -50,7 +50,7 @@ const QuestionContent = ({ question, userAnswer, onChange, onChangeTextAnswer })
 
           {question.includeComment &&
           <Row style={{ paddingTop: 30 }}><SimpleInput onChange={onChangeTextAnswer(null, 'comment')} name="comment"
-                                                       placeholder="Enter comment" style={{ width: 600 }} /></Row>}
+                                                       placeholder="Enter comment" style={{ width: 600 }} value={comment}/></Row>}
 
           </Column>
       </Row>
