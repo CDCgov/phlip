@@ -63,7 +63,7 @@ export const getQuestionLogic = createLogic({
         id: 10000,
         questionType: 2,
         text: 'Which of the following categories apply?',
-        possibleCategories: [{ id: 1, text: 'Cat 1' }, { id: 2, text: 'Cat 2' }, { id: 3, text: 'Cat 3' }],
+        categories: [{ id: 1, text: 'Cat 1' }, { id: 2, text: 'Cat 2' }, { id: 3, text: 'Cat 3' }],
         ...action.question
       }
     } else if (action.question.id === 10001) {

@@ -23,7 +23,7 @@ const initializeAnswers = question => {
       userAnswer = normalize.arrayToObject(question.possibleAnswers)
       break
     case 2:
-      userAnswer = normalize.arrayToObject(question.possibleCategories)
+      userAnswer = normalize.arrayToObject(question.categories)
       break
     case 5:
       userAnswer = {}
@@ -54,7 +54,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ANSWER_QUESTION_REQUEST:
-      let updatedAnswer = null, allCategories = []
+      let updatedAnswer = null, allCategories = [ ...state.categories ]
       if ([1, 4].includes(state.question.questionType)) {
         updatedAnswer = { ...state.userAnswer }
         Object.keys(updatedAnswer).forEach(id => {
@@ -102,7 +102,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ON_CHANGE_CATEGORY:
-      console.log(action)
       return {
         ...state,
         selectedCategory: action.selection

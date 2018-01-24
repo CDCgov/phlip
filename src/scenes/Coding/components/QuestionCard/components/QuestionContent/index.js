@@ -33,7 +33,7 @@ const QuestionContent = ({ question, userAnswer, onChange, onChangeTextAnswer })
                       onChangePincite={onChangeTextAnswer} />}
 
           {question.questionType === 2 &&
-          <CheckboxGroup choices={question.possibleCategories} onChange={onChange} userAnswer={userAnswer}
+          <CheckboxGroup choices={question.categories} onChange={onChange} userAnswer={userAnswer}
                          pincites={false} />}
 
           {question.questionType === 3 &&
