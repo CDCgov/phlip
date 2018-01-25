@@ -8,6 +8,7 @@ import Card from 'components/Card'
 import { CardContent, CardActions } from 'material-ui/Card'
 import Typography from 'material-ui/Typography'
 import TextLink from 'components/TextLink/index'
+import * as questionTypes from '../../../../scenes/AddEditQuestion/constants'
 
 const isDescendant = (older, younger) => {
   return (
@@ -99,7 +100,8 @@ export const QuestionNode = props => {
             {node.hovering &&
               <div style={{ zIndex: 5 }}>
                 {parentNode
-                  ? parentNode.questionType !== 2 && <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} />
+                  ? parentNode.questionType !== questionTypes.CATEGORY && <TextLink to={{ pathname: `/project/${projectId}/coding-scheme/add`, state: { parentDefined: { ...node }, path } }}>
+                    <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} /> </TextLink>
                   : <TextLink to={{ pathname: `/project/${projectId}/coding-scheme/add`, state: { parentDefined: { ...node }, path } }}>
                     <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} /> </TextLink>
                 }
