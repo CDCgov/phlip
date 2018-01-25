@@ -6,7 +6,7 @@ import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-t
 const mockAnswers = [
   { questionId: 20010, comment: '', answers: [{ value: 'kristin', pincite: '' }]},
   { questionId: 20011, comment: 'this is a comment', answers: [] },
-  { questionId: 20013, comment: '', answers: [{ answerId: 20027, pincite: '' }]},
+  { questionId: 20013, comment: '', answers: [{ answerId: 20027, pincite: 'because' }]},
   { questionId: 20014, answers: [{ answerId: 20028, pincite: ''}, { answerId: 20029, pincite: '' }]}
 ]
 
@@ -18,7 +18,7 @@ export const getOutlineLogic = createLogic({
     failType: types.GET_CODING_OUTLINE_FAIL
   },
   async process({ action, getState, api }) {
-    let scheme = {}, question = {}, error = ''
+    let scheme = {}
     const userId = getState().data.user.currentUser.id
 
     try {

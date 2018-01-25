@@ -16,7 +16,7 @@ const INITIAL_STATE = {
 
 const normalizeAnswers = (question, allQuestions) => {
   if (allQuestions[question.questionId].questionType === 2) {
-    return { categories: normalize.arrayToObject(question.categories) }
+    return { answers: normalize.arrayToObject(question.answers) }
   } else if (question.categoryId) {
     return {
       categories: {
@@ -60,28 +60,9 @@ const initializeUserAnswers = (answers, allQuestions) => {
   }, {})
 }
 
-const initializeAnswers = question => {
-  let userAnswer = {}
-  switch (question.questionType) {
-    case 1:
-    case 3:
-    case 4:
-      userAnswer = normalize.arrayToObject(question.possibleAnswers)
-      break
-    case 2:
-      userAnswer = normalize.arrayToObject(question.categories)
-      break
-    case 5:
-      userAnswer = { fieldValue: '' }
-      break
-  }
-  return userAnswer
-}
-
 const handleCheckCategories = (state, action) => {
-  let newQuestion = state.scheme.byId[action.id]
-
-  let base = {
+  const newQuestion = state.scheme.byId[action.id]
+  const base = {
     question: newQuestion,
     currentIndex: action.newIndex,
     comment: '',
@@ -110,7 +91,7 @@ const handleCheckCategories = (state, action) => {
   if (parentQuestion.questionType === 2) {
     return {
       ...base,
-      categories: [...parentQuestion.categories],
+      categories: [...parentQuestion.categories.filter(category => state.userAnswers[parentQuestion.id].answers.hasOwnProperty(category.id)) ],
       selectedCategory: state.selectedCategory
     }
   } else {
@@ -137,7 +118,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         outline: action.payload.outline,
-        userAnswer: initializeAnswers(action.payload.question),
         scheme: {
           byId: normalizedQuestions,
           order: action.payload.questionOrder
@@ -149,36 +129,38 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.ANSWER_QUESTION_REQUEST:
       let updatedUserAnswers = {}
 
-      if ([1, 4].includes(state.question.questionType)) {
-        updatedUserAnswers = {
-          ...state.userAnswers,
-          [action.questionId]: {
-            ...state.userAnswers[action.questionId],
-            answers: { [action.answerId]: { answerId: action.answerId, pincite: '' } }
+      switch(state.question.questionType) {
+        case questionTypes.BINARY:
+        case questionTypes.MULTIPLE_CHOICE:
+          updatedUserAnswers = {
+            ...state.userAnswers,
+            [action.questionId]: {
+              ...state.userAnswers[action.questionId],
+              answers: { [action.answerId]: { answerId: action.answerId, pincite: '' } }
+            }
           }
-        }
+          break
 
-      } else if (state.question.questionType === questionTypes.CHECKBOXES) {
-        let currentAnswers = state.userAnswers[action.questionId].answers
-        if (Object.keys(currentAnswers).includes(action.answerId)) delete currentAnswers[action.answerId]
-        else currentAnswers = { ...currentAnswers, [action.answerId]: { answerId: action.answerId, pincite: '' } }
-
-        updatedUserAnswers = {
-          ...state.userAnswers,
-          [action.questionId]: {
-            ...state.userAnswers[action.questionId],
-            answers: { ...currentAnswers }
+        case questionTypes.TEXT_FIELD:
+          updatedUserAnswers = {
+            ...state.userAnswers,
+            [action.questionId]: { ...updatedUserAnswers[action.questionId], answers: { value: action.answerValue } }
           }
-        }
+          break
 
-      } else if (state.question.questionType === 5) {
-        updatedUserAnswers = {
-          ...state.userAnswers,
-          [action.questionId]: { ...updatedUserAnswers[action.questionId], answers: { value: action.answerValue } }
-        }
-      } else if (state.question.questionType === 2) {
-        let updatedAnswer = { ...state.userAnswer }
-        updatedAnswer[action.answerId] = { ...updatedAnswer[action.answerId], checked: action.answerValue }
+        case questionTypes.CATEGORY:
+        case questionTypes.CHECKBOXES:
+          let currentAnswers = state.userAnswers[action.questionId].answers
+          if (currentAnswers.hasOwnProperty(action.answerId)) delete currentAnswers[action.answerId]
+          else currentAnswers = { ...currentAnswers, [action.answerId]: { answerId: action.answerId, pincite: '' } }
+
+          updatedUserAnswers = {
+            ...state.userAnswers,
+            [action.questionId]: {
+              ...state.userAnswers[action.questionId],
+              answers: { ...currentAnswers }
+            }
+          }
       }
 
       return {

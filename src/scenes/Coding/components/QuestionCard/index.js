@@ -29,9 +29,12 @@ export const QuestionCard = ({ question, userAnswer, userAnswers, categories, se
         </Row>
         <Divider />
         {categories !== undefined
-          ? <TabContainer tabs={categories} selected={selectedCategory} onChangeCategory={onChangeCategory}><QuestionContent onChange={onChange} onChangeTextAnswer={onChangeTextAnswer}
-                                           userAnswer={userAnswer} comment={comment} question={question} /> </TabContainer>
-          : <QuestionContent onChange={onChange} userAnswers={userAnswers} onChangeTextAnswer={onChangeTextAnswer} question={question} userAnswer={userAnswer} />
+          ? <TabContainer tabs={categories} selected={selectedCategory} onChangeCategory={onChangeCategory}>
+            <QuestionContent onChange={onChange} onChangeTextAnswer={onChangeTextAnswer}
+                             userAnswers={userAnswers} question={question} />
+          </TabContainer>
+          : <QuestionContent onChange={onChange} userAnswers={userAnswers} onChangeTextAnswer={onChangeTextAnswer}
+                             question={question} userAnswer={userAnswer} />
         }
       </Column>
     </Row>
