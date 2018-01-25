@@ -66,7 +66,6 @@ export const getOutlineLogic = createLogic({
       104635463: { id: 104635463, parentId: 0, positionInParent: mock.length + 2 }
     }
 
-
     const merge = mock.reduce((arr, q) => {
       return [...arr, { ...q, ...mockOutline[q.id] }]
     }, [])
@@ -83,6 +82,21 @@ export const getOutlineLogic = createLogic({
   }
 })
 
+export const answerQuestionLogic = createLogic({
+  type: types.ANSWER_QUESTION_REQUEST,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.ANSWER_QUESTION_SUCCESS,
+    failType: types.ANSWER_QUESTION_FAIL
+  },
+  latest: true,
+  async process({ getState, action, api }) {
+    const userId = getState().data.user.currentUser.id
+    return await api.answerQuestion(action.projectId,  action.jurisdictionId, userId, action.questionId, action.answerId,)
+  }
+})
+
 export default [
-  getOutlineLogic
+  getOutlineLogic,
+  answerQuestionLogic
 ]
