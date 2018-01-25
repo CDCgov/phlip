@@ -8,7 +8,7 @@ import SimpleInput from 'components/SimpleInput'
 import Typography from 'material-ui/Typography'
 import Container, { Row, Column } from 'components/Layout'
 
-const QuestionContent = ({ question, userAnswer, onChange, comment, onChangeTextAnswer }) => {
+const QuestionContent = ({ question, userAnswer, onChange, userAnswers, onChangeTextAnswer }) => {
   const questionAnswerPadding = {
     paddingTop: 0,
     paddingRight: 65,
@@ -29,29 +29,31 @@ const QuestionContent = ({ question, userAnswer, onChange, comment, onChangeText
       <Row displayFlex style={{ ...questionAnswerPadding }}>
         <Column flex>
           {question.questionType === 1 &&
-          <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswer={userAnswer}
+          <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
                       onChangePincite={onChangeTextAnswer} />}
 
           {question.questionType === 2 &&
-          <CheckboxGroup choices={question.categories} onChange={onChange} userAnswer={userAnswer}
+          <CheckboxGroup choices={question.categories} onChange={onChange} userAnswer={userAnswers}
                          pincites={false} />}
 
           {question.questionType === 3 &&
-          <CheckboxGroup choices={question.possibleAnswers} onChange={onChange} userAnswer={userAnswer}
+          <CheckboxGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
                          onChangePincite={onChangeTextAnswer} />}
 
           {question.questionType === 4 &&
-          <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswer={userAnswer}
+          <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
                       onChangePincite={onChangeTextAnswer} />}
 
           {question.questionType === 5 &&
           <InputBox rows="5" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
-                    value={userAnswer.fieldValue} />}
+                    value={userAnswers.answers.value} />}
 
           {question.includeComment &&
-          <Row style={{ paddingTop: 30 }}><SimpleInput onChange={onChangeTextAnswer(null, 'comment')} name="comment"
-                                                       placeholder="Enter comment" style={{ width: 600 }} value={comment}/></Row>}
-
+          <Row style={{ paddingTop: 30 }}>
+            <SimpleInput onChange={onChangeTextAnswer(null, 'comment')} name="comment"
+                         placeholder="Enter comment" style={{ width: 600 }} value={userAnswers.comment} />
+          </Row>
+          }
           </Column>
       </Row>
 

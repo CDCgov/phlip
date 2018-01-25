@@ -1,5 +1,6 @@
 import * as types from './actionTypes'
 import { normalize } from 'utils'
+import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 const INITIAL_STATE = {
   question: {},
@@ -7,10 +8,56 @@ const INITIAL_STATE = {
   outline: {},
   jurisdiction: {},
   currentIndex: 0,
-  userAnswer: {},
   comment: '',
   categories: undefined,
   selectedCategory: 0,
+  userAnswers: {}
+}
+
+const normalizeAnswers = (question, allQuestions) => {
+  if (allQuestions[question.questionId].questionType === 2) {
+    return { categories: normalize.arrayToObject(question.categories) }
+  } else if (question.categoryId) {
+    return {
+      categories: {
+        [question.categoryId]: {
+          answers: question.answers.reduce((answerObj, answer) => ({
+            ...answerObj,
+            [answer.answerId]: { ...answer }
+          }), {})
+        }
+      }
+    }
+  } else if (allQuestions[question.questionId].questionType === 5) {
+    return question.answers.length > 0
+      ? {
+        answers: {
+          ...question.answers[0],
+          pincite: question.answers[0].pincite || '',
+          value: question.answers[0].value || ''
+        }
+      }
+      : { answers: { ...question.answers[0], pincite: '', value: '' } }
+  } else {
+    return {
+      answers: question.answers.reduce((answerObj, answer) => ({
+        ...answerObj,
+        [answer.answerId]: { ...answer }
+      }), {})
+    }
+  }
+}
+
+const initializeUserAnswers = (answers, allQuestions) => {
+  return answers.reduce((userA, question) => {
+    return ({
+      ...userA,
+      [question.questionId]: {
+        ...question,
+        ...normalizeAnswers(question, allQuestions)
+      }
+    })
+  }, {})
 }
 
 const initializeAnswers = question => {
@@ -38,7 +85,16 @@ const handleCheckCategories = (state, action) => {
     question: newQuestion,
     currentIndex: action.newIndex,
     comment: '',
-    userAnswer: initializeAnswers(newQuestion)
+    userAnswers: state.userAnswers[action.id]
+      ? { ...state.userAnswers }
+      : {
+        ...state.userAnswers,
+        [action.id]: {
+          questionId: action.id,
+          answers: {},
+          comment: ''
+        }
+      }
   }
 
   if (newQuestion.parentId === 0) {
@@ -54,7 +110,7 @@ const handleCheckCategories = (state, action) => {
   if (parentQuestion.questionType === 2) {
     return {
       ...base,
-      categories: [ ...parentQuestion.categories ],
+      categories: [...parentQuestion.categories],
       selectedCategory: state.selectedCategory
     }
   } else {
@@ -64,8 +120,6 @@ const handleCheckCategories = (state, action) => {
       selectedCategory: 0
     }
   }
-
-
 }
 
 const codingReducer = (state = INITIAL_STATE, action) => {
@@ -78,61 +132,86 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.GET_CODING_OUTLINE_SUCCESS:
+      const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
+
       return {
         ...state,
         outline: action.payload.outline,
         userAnswer: initializeAnswers(action.payload.question),
         scheme: {
-          byId: normalize.arrayToObject(action.payload.scheme),
+          byId: normalizedQuestions,
           order: action.payload.questionOrder
         },
-        question: action.payload.question
+        question: action.payload.question,
+        userAnswers: initializeUserAnswers(action.payload.codedQuestions, normalizedQuestions)
       }
 
     case types.ANSWER_QUESTION_REQUEST:
-      let updatedAnswer = null
+      let updatedUserAnswers = {}
+
       if ([1, 4].includes(state.question.questionType)) {
-        updatedAnswer = { ...state.userAnswer }
-        Object.keys(updatedAnswer).forEach(id => {
-          if (action.answerId == id) {
-            updatedAnswer[id] = { ...updatedAnswer[id], checked: true }
-          } else {
-            updatedAnswer[id] = { ...updatedAnswer[id], checked: false }
+        updatedUserAnswers = {
+          ...state.userAnswers,
+          [action.questionId]: {
+            ...state.userAnswers[action.questionId],
+            answers: { [action.answerId]: { answerId: action.answerId, pincite: '' } }
           }
-        })
-      } else if (state.question.questionType === 3) {
-        updatedAnswer = { ...state.userAnswer }
-        updatedAnswer[action.answerId] = { ...updatedAnswer[action.answerId], checked: action.answerValue }
+        }
+
+      } else if (state.question.questionType === questionTypes.CHECKBOXES) {
+        let currentAnswers = state.userAnswers[action.questionId].answers
+        if (Object.keys(currentAnswers).includes(action.answerId)) delete currentAnswers[action.answerId]
+        else currentAnswers = { ...currentAnswers, [action.answerId]: { answerId: action.answerId, pincite: '' } }
+
+        updatedUserAnswers = {
+          ...state.userAnswers,
+          [action.questionId]: {
+            ...state.userAnswers[action.questionId],
+            answers: { ...currentAnswers }
+          }
+        }
+
       } else if (state.question.questionType === 5) {
-        updatedAnswer = { ...state.userAnswer, fieldValue: action.answerValue }
+        updatedUserAnswers = {
+          ...state.userAnswers,
+          [action.questionId]: { ...updatedUserAnswers[action.questionId], answers: { value: action.answerValue } }
+        }
       } else if (state.question.questionType === 2) {
-        updatedAnswer = { ...state.userAnswer }
+        let updatedAnswer = { ...state.userAnswer }
         updatedAnswer[action.answerId] = { ...updatedAnswer[action.answerId], checked: action.answerValue }
       }
 
       return {
         ...state,
-        userAnswer: updatedAnswer
+        userAnswers: updatedUserAnswers
       }
 
     case types.ON_CHANGE_COMMENT:
       return {
         ...state,
-        comment: action.comment
+        userAnswers: {
+          ...state.userAnswers,
+          [action.questionId]: { ...state.userAnswers[action.questionId], comment: action.comment }
+        }
       }
 
     case types.ON_CHANGE_PINCITE:
+      const question = state.userAnswers[action.questionId]
+
       return {
         ...state,
-        userAnswer: state.question.questionType === 5
-          ? { ...state.userAnswer, pincite: action.pincite }
-          : {
-            ...state.userAnswer,
-            [action.answerId]: {
-              ...state.userAnswer[action.answerId],
-              pincite: action.pincite
-            }
+        userAnswers: {
+          ...state.userAnswers,
+          [action.questionId]: {
+            ...question,
+            answers: state.question.questionType === 5
+              ? { ...question.answers, pincite: action.pincite }
+              : {
+                ...question.answers,
+                [action.answerId]: { ...question.answers[action.answerId], pincite: action.pincite }
+              }
           }
+        }
       }
 
     case types.ON_CHANGE_CATEGORY:

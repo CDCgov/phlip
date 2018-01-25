@@ -49,7 +49,6 @@ export class Coding extends Component {
           this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
         )
     }
-
   }
 
   render() {
@@ -58,6 +57,7 @@ export class Coding extends Component {
         <Header projectName={this.props.projectName} projectId={this.props.projectId} />
         <Container flex column style={{ backgroundColor: '#f5f5f5', padding: '20px 20px 10px 20px' }}>
           <QuestionCard question={this.props.question} onChange={this.onAnswer}
+                        userAnswers={this.props.userAnswers}
                         onChangeTextAnswer={this.onChangeTextAnswer} userAnswer={this.props.userAnswer} categories={this.props.categories}
                         selectedCategory={this.props.selectedCategory} comment={this.props.comment} onChangeCategory={this.props.actions.onChangeCategory}
           />
@@ -92,7 +92,8 @@ const mapStateToProps = (state, ownProps) => ({
   categories: state.scenes.coding.categories || undefined,
   selectedCategory: state.scenes.coding.selectedCategory || 0,
   jurisdictionId: '1',
-  comment: state.scenes.coding.comment || ''
+  comment: state.scenes.coding.comment || '',
+  userAnswers: state.scenes.coding.userAnswers[state.scenes.coding.question.id] || {}
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

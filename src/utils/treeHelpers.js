@@ -36,7 +36,9 @@ export const getQuestionNumbers = questions => {
         number = `${numbering[parentNode.id].number}.${node.positionInParent + 1}`
         numbering[node.id] = { number }
       }
-      qs.push({ ...node, number })
+      let newNode = { ...node }
+      delete newNode.children
+      qs.push({ ...newNode, number })
       order.push(node.id)
     },
     ignoreCollapsed: false

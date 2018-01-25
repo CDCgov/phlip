@@ -11,7 +11,7 @@ const styles = {
   }
 }
 
-export const RadioGroup = ({ choices, userAnswer, onChange, onChangePincite, classes }) => {
+export const RadioGroup = ({ choices, userAnswers, onChange, onChangePincite, classes }) => {
   return (
     <FormControl component="fieldset">
     <FormGroup>
@@ -19,14 +19,14 @@ export const RadioGroup = ({ choices, userAnswer, onChange, onChangePincite, cla
         <div key={choice.id} style={{ display: 'flex', alignItems: 'center'  }}>
           <FormControlLabel
             onChange={onChange(choice.id)}
-            checked={userAnswer[choice.id].checked === true}
+            checked={userAnswers.answers.hasOwnProperty(choice.id)}
             control={
               <Radio classes={{ checked: classes.checked }} />
             }
             label={choice.text}
           />
-          {userAnswer[choice.id].checked === true &&
-          <SimpleInput key={`${choice.id}-pincite`} style={{ width: 300 }} placeholder="Enter pincite" value={choice.pincite} onChange={onChangePincite(choice.id, 'pincite')} />}
+          {userAnswers.answers.hasOwnProperty(choice.id) &&
+          <SimpleInput key={`${choice.id}-pincite`} style={{ width: 300 }} placeholder="Enter pincite" value={userAnswers.answers[choice.id].pincite} onChange={onChangePincite(choice.id, 'pincite')} />}
         </div>
       ))}
     </FormGroup>
