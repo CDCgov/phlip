@@ -10,7 +10,7 @@ const INITIAL_STATE = {
   userAnswer: {},
   comment: '',
   categories: undefined,
-  selectedCategory: 0
+  selectedCategory: 0,
 }
 
 const initializeAnswers = question => {
@@ -71,12 +71,6 @@ const handleCheckCategories = (state, action) => {
 const codingReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_NEXT_QUESTION:
-      return {
-        ...state,
-        ...handleCheckCategories(state, action)
-      }
-
-
     case types.GET_PREV_QUESTION:
       return {
         ...state,

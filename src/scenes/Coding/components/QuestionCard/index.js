@@ -1,14 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Divider from 'material-ui/Divider'
-import Typography from 'material-ui/Typography'
 import Card from 'components/Card/index'
-import Container, { Row, Column } from 'components/Layout'
+import { Row, Column } from 'components/Layout'
 import IconButton from 'components/IconButton'
 import QuestionContent from './components/QuestionContent'
-import Icon from 'components/Icon'
-import SimpleInput from 'components/SimpleInput'
 import Tabs from 'components/Tabs'
+import { Broom } from 'mdi-material-ui'
+import styles from './card-styles.scss'
 
 const TabContainer = props => {
   return (<Tabs tabs={props.tabs} selectedTab={props.selected} onChangeTab={props.onChangeCategory}>
@@ -16,11 +15,14 @@ const TabContainer = props => {
   </Tabs>)
 }
 
-export const QuestionCard = ({ question, comment, userAnswer, categories, selectedCategory, onChangeCategory, onChange, onChangeTextAnswer }) => {
+export const QuestionCard = ({ question, comment, userAnswer, categories, selectedCategory, onClearAnswer, onChangeCategory, onChange, onChangeTextAnswer }) => {
   return (
     <Row displayFlex style={{ flex: '1 0 50%' }}>
       <Column component={<Card />} displayFlex flex>
         <Row displayFlex style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
+          <IconButton onClick={onClearAnswer}>
+            <Broom className={styles.sweep} aria-labelledby="Clear answer" />
+          </IconButton>
           <IconButton color="#d7e0e4">
             flag
           </IconButton>

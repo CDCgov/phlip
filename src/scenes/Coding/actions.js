@@ -43,3 +43,5 @@ export const onChangeCategory = (event, selection) => ({
   type: types.ON_CHANGE_CATEGORY,
   selection
 })
+
+export const onClearAnswer = () => ({ type: types.ON_CLEAR_ANSWER })
