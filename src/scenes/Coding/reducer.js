@@ -13,26 +13,32 @@ const INITIAL_STATE = {
   userAnswers: {}
 }
 
-const normalizeAnswers = (question, allQuestions, userCodedAnswerObj) => {
-  if (allQuestions[question.questionId].questionType === questionTypes.CATEGORY) {
-    return { answers: normalize.arrayToObject(question.answers) }
+/*
+ This function basically takes an array of user coded question answers: { answers: [{ answerId: 1, pincite: '' }] },
+ and converts it to an object like: { answers: { 1: { answerId: 1, pincite: '' }}}.
+
+ It accounts for category children. If the question object has a categoryId, then the final answers object, looks like
+ this: { answers: { [categoryId]: { answers: { 1 : { answerId: 1, pincite: '' } } } }}. Comments are handled the same way
+ for category question children.
+
+ Text field type questions are handled different since there will only be one answer instead of multiple and doesn't have
+ an ID. It looks like this: { answers: { value: '', pincite: '' } }
+ */
+const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) => {
+  if (codingSchemeQuestion.questionType === questionTypes.CATEGORY) {
+    return { answers: normalize.arrayToObject(question.answers, 'answerId') }
   } else if (question.categoryId) {
     return {
       answers: {
         ...userCodedAnswerObj[question.id].answers,
-        [question.categoryId]: {
-          answers: question.answers.reduce((answerObj, answer) => ({
-            ...answerObj,
-            [answer.answerId]: { ...answer }
-          }), {})
-        },
+        [question.categoryId]: { answers: normalize.arrayToObject(question.answers, 'answerId') }
       },
       comment: {
         ...userCodedAnswerObj[question.id].comment,
         [question.categoryId]: ''
       }
     }
-  } else if (allQuestions[question.questionId].questionType === 5) {
+  } else if (codingSchemeQuestion.questionType === questionTypes.TEXT_FIELD) {
     return question.answers.length > 0
       ? {
         answers: {
@@ -41,24 +47,19 @@ const normalizeAnswers = (question, allQuestions, userCodedAnswerObj) => {
           value: question.answers[0].value || ''
         }
       }
-      : { answers: { ...question.answers[0], pincite: '', value: '' } }
+      : { answers: { pincite: '', value: '' } }
   } else {
-    return {
-      answers: question.answers.reduce((answerObj, answer) => ({
-        ...answerObj,
-        [answer.answerId]: { ...answer }
-      }), {})
-    }
+    return { answers: normalize.arrayToObject(question.answers, 'answerId') }
   }
 }
 
-const initializeUserAnswers = (answers, allQuestions) => {
-  return answers.reduce((userA, question) => {
+const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
+  return userCodedQuestions.reduce((codedQuestionObj, question) => {
     return ({
-      ...userA,
+      ...codedQuestionObj,
       [question.questionId]: {
         ...question,
-        ...normalizeAnswers(question, allQuestions, userA)
+        ...normalizeAnswers(question, codingSchemeQuestions[question.questionId], codedQuestionObj)
       }
     })
   }, {})
@@ -241,7 +242,10 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           [action.questionId]: state.question.isCategoryChild
             ? {
               ...state.userAnswers[action.questionId],
-              comment: { ...state.userAnswers[action.questionId].comment, [state.categories[state.selectedCategory].id]: action.comment }
+              comment: {
+                ...state.userAnswers[action.questionId].comment,
+                [state.categories[state.selectedCategory].id]: action.comment
+              }
             }
             : {
               ...state.userAnswers[action.questionId],
