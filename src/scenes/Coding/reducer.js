@@ -14,7 +14,7 @@ const INITIAL_STATE = {
 }
 
 const normalizeAnswers = (question, allQuestions, userCodedAnswerObj) => {
-  if (allQuestions[question.questionId].questionType === 2) {
+  if (allQuestions[question.questionId].questionType === questionTypes.CATEGORY) {
     return { answers: normalize.arrayToObject(question.answers) }
   } else if (question.categoryId) {
     return {
@@ -25,7 +25,11 @@ const normalizeAnswers = (question, allQuestions, userCodedAnswerObj) => {
             ...answerObj,
             [answer.answerId]: { ...answer }
           }), {})
-        }
+        },
+      },
+      comment: {
+        ...userCodedAnswerObj[question.id].comment,
+        [question.categoryId]: ''
       }
     }
   } else if (allQuestions[question.questionId].questionType === 5) {
@@ -65,7 +69,6 @@ const handleCheckCategories = (state, action) => {
   const base = {
     question: newQuestion,
     currentIndex: action.newIndex,
-    comment: '',
     userAnswers: state.userAnswers[action.id]
       ? { ...state.userAnswers }
       : {
@@ -92,13 +95,22 @@ const handleCheckCategories = (state, action) => {
     const selectedCategories = Object.keys(state.userAnswers[parentQuestion.id].answers).length !== 0
       ? parentQuestion.possibleAnswers.filter(category => state.userAnswers[parentQuestion.id].answers.hasOwnProperty(category.id))
       : parentQuestion.possibleAnswers
-    
+
     const answers = selectedCategories.reduce((answerObj, cat) => {
       return {
         ...answerObj,
-        [cat.id]: base.userAnswers[newQuestion.id].answers.hasOwnProperty(cat.id)
-          ? { ...base.userAnswers[newQuestion.id].answers[cat.id] }
-          : { answers: {} }
+        answers: {
+          ...answerObj.answers,
+          [cat.id]: base.userAnswers[newQuestion.id].answers.hasOwnProperty(cat.id)
+            ? { ...base.userAnswers[newQuestion.id].answers[cat.id] }
+            : { answers: {} }
+        },
+        comment: {
+          ...answerObj.comment,
+          [cat.id]: base.userAnswers[newQuestion.id].comment.hasOwnProperty(cat.id)
+            ? base.userAnswers[newQuestion.id].comment[cat.id]
+            : ''
+        }
       }
     }, {})
 
@@ -107,7 +119,7 @@ const handleCheckCategories = (state, action) => {
       question: { ...base.question, isCategoryChild: true },
       categories: [...selectedCategories],
       selectedCategory: state.selectedCategory,
-      userAnswers: { ...state.userAnswers, [newQuestion.id]: { ...base.userAnswers[newQuestion.id], answers } }
+      userAnswers: { ...state.userAnswers, [newQuestion.id]: { ...base.userAnswers[newQuestion.id], ...answers } }
     }
   } else {
     return {
@@ -229,7 +241,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           [action.questionId]: state.question.isCategoryChild
             ? {
               ...state.userAnswers[action.questionId],
-              comment: { [state.categories[state.selectedCategory].id]: action.comment }
+              comment: { ...state.userAnswers[action.questionId].comment, [state.categories[state.selectedCategory].id]: action.comment }
             }
             : {
               ...state.userAnswers[action.questionId],
@@ -240,7 +252,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
     case types.ON_CHANGE_PINCITE:
       const question = state.userAnswers[action.questionId]
-      console.log(state.userAnswers[action.questionId])
 
       return {
         ...state,

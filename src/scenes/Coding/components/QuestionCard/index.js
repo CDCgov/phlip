@@ -31,10 +31,11 @@ export const QuestionCard = ({ question, userAnswers, categories, selectedCatego
         {categories !== undefined
           ? <TabContainer tabs={categories} selected={selectedCategory} onChangeCategory={onChangeCategory}>
             <QuestionContent onChange={onChange} onChangeTextAnswer={onChangeTextAnswer}
-                             userAnswers={userAnswers} question={question} />
+                             comment={userAnswers.comment[categories[selectedCategory].id]}
+                             userAnswers={userAnswers.answers[categories[selectedCategory].id]} question={question} />
           </TabContainer>
           : <QuestionContent onChange={onChange} userAnswers={userAnswers} onChangeTextAnswer={onChangeTextAnswer}
-                             question={question} />
+                             question={question} comment={userAnswers.comment} />
         }
       </Column>
     </Row>

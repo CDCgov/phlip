@@ -91,11 +91,7 @@ const mapStateToProps = (state, ownProps) => ({
   categories: state.scenes.coding.categories || undefined,
   selectedCategory: state.scenes.coding.selectedCategory || 0,
   jurisdictionId: '1',
-  userAnswers: state.scenes.coding.question
-    ? state.scenes.coding.question.isCategoryChild
-      ? state.scenes.coding.userAnswers[state.scenes.coding.question.id].answers[state.scenes.coding.categories[state.scenes.coding.selectedCategory].id]
-      : state.scenes.coding.userAnswers[state.scenes.coding.question.id]
-      : {}
+  userAnswers: state.scenes.coding.userAnswers[state.scenes.coding.question.id] || {}
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
