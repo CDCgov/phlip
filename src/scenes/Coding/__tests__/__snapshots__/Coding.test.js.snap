@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Coding scene should render correctly 1`] = `
+<Container
+  column={true}
+  flex={true}
+  spacing={0}
+>
+  <Header
+    projectId={1}
+    projectName="Test Project"
+  />
+  <Container
+    column={true}
+    flex={true}
+    spacing={0}
+    style={
+      Object {
+        "backgroundColor": "#f5f5f5",
+        "padding": "20px 20px 10px 20px",
+      }
+    }
+  >
+    <QuestionCard
+      categories={Array []}
+      onChange={[Function]}
+      onChangeCategory={[Function]}
+      onChangeTextAnswer={[Function]}
+      onClearAnswer={[Function]}
+      question={Object {}}
+      selectedCategory={0}
+      userAnswers={Object {}}
+    />
+    <FooterNavigate
+      currentIndex={0}
+      getNextQuestion={[Function]}
+      getPrevQuestion={[Function]}
+      totalLength={0}
+    />
+  </Container>
+  <Footer
+    onClose={[Function]}
+  />
+</Container>
+`;

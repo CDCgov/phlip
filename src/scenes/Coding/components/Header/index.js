@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Typography from 'material-ui/Typography'
 import Button from 'components/Button/index'
 import AppBar from 'components/AppBar/index'
-import TextLink from 'components/TextLink/index'
 
 export const Header = ({ projectName, projectId }) => (
   <AppBar>

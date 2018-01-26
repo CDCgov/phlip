@@ -35,10 +35,6 @@ export const onChangePincite = (projectId, jurisdictionId, questionId, answerId,
   pincite
 })
 
-export const clearCategories = () => ({
-  type: types.CLEAR_CATEGORIES
-})
-
 export const onChangeCategory = (event, selection) => ({
   type: types.ON_CHANGE_CATEGORY,
   selection

@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Coding scene --- Header component should render correctly 1`] = `
+<AppBar>
+  <WithStyles
+    color="inherit"
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+    type="title"
+  >
+    <span
+      style={
+        Object {
+          "color": "#0faee6",
+        }
+      }
+    >
+      Test Project
+    </span>
+     |
+  </WithStyles>
+  <WithTheme
+    style={
+      Object {
+        "backgroundColor": "white",
+        "color": "black",
+        "fontWeight": "bold",
+      }
+    }
+    value="View/Edit Protocol"
+  />
+</AppBar>
+`;
