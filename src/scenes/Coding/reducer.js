@@ -67,6 +67,7 @@ const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
 
 const handleCheckCategories = (state, action) => {
   const newQuestion = state.scheme.byId[action.id]
+
   const base = {
     question: newQuestion,
     currentIndex: action.newIndex,
@@ -131,6 +132,33 @@ const handleCheckCategories = (state, action) => {
   }
 }
 
+const updateUserAnswers = (questionType, action, currentUserAnswers = null) => {
+  switch (questionType) {
+    case questionTypes.BINARY:
+    case questionTypes.MULTIPLE_CHOICE:
+      return { [action.answerId]: { answerId: action.answerId, pincite: '' } }
+    case questionTypes.TEXT_FIELD:
+      return { ...currentUserAnswers, value: action.value }
+    case questionTypes.CATEGORY:
+    case questionTypes.CHECKBOXES:
+      if (currentUserAnswers.hasOwnProperty(action.answerId)) delete currentUserAnswers[action.answerId]
+      else currentUserAnswers = { ...currentUserAnswers, [action.answerId]: { answerId: action.answerId, pincite: '' } }
+      return { ...currentUserAnswers }
+  }
+}
+
+const handleUserAnswerCategoryChild = (selectedCategoryId, questionType, action, currentUserAnswerObj) => {
+  return {
+    ...currentUserAnswerObj,
+    [selectedCategoryId]: {
+      ...currentUserAnswerObj[selectedCategoryId],
+      answers: {
+        ...updateUserAnswers(questionType, action, currentUserAnswerObj[selectedCategoryId].answers)
+      }
+    }
+  }
+}
+
 const codingReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_NEXT_QUESTION:
@@ -163,76 +191,26 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
     case types.UPDATE_USER_ANSWER_REQUEST:
       let updatedUserAnswers = {}
-      switch (state.question.questionType) {
-        case questionTypes.BINARY:
-        case questionTypes.MULTIPLE_CHOICE:
-          updatedUserAnswers = {
-            ...state.userAnswers,
-            [action.questionId]: {
-              ...state.userAnswers[action.questionId],
-              answers:
-                state.question.isCategoryChild
-                  ? {
-                    ...state.userAnswers[action.questionId].answers,
-                    [state.categories[state.selectedCategory].id]: {
-                      answers: {
-                        [action.answerId]: {
-                          answerId: action.answerId,
-                          pincite: ''
-                        }
-                      }
-                    }
-                  }
-                  : { [action.answerId]: { answerId: action.answerId, pincite: '' } }
-            }
-          }
-          break
 
-        case questionTypes.TEXT_FIELD:
-          updatedUserAnswers = {
-            ...state.userAnswers,
-            [action.questionId]: {
-              ...state.userAnswers[action.questionId],
-              answers:
-                state.question.isCategoryChild
-                  ? {
-                    ...state.userAnswers[action.questionId].answers,
-                    [state.categories[state.selectedCategory].id]: {
-                      answers: {
-                        ...state.userAnswers[action.questionId][state.categories[state.selectedCategory].id].answers,
-                        value: action.answerValue
-                      }
-                    }
-                  }
-                  : { ...state.userAnswers[action.questionId].answers, value: action.answerValue }
-            }
-          }
-          break
-
-        case questionTypes.CATEGORY:
-        case questionTypes.CHECKBOXES:
-          let currentAnswers = {}
-          if (state.question.isCategoryChild) {
-            currentAnswers = state.userAnswers[action.questionId].answers[state.categories[state.selectedCategory].id].answers
-          } else {
-            currentAnswers = state.userAnswers[action.questionId].answers
-          }
-          if (currentAnswers.hasOwnProperty(action.answerId)) delete currentAnswers[action.answerId]
-          else currentAnswers = { ...currentAnswers, [action.answerId]: { answerId: action.answerId, pincite: '' } }
-
-          updatedUserAnswers = {
-            ...state.userAnswers,
-            [action.questionId]: {
-              ...state.userAnswers[action.questionId],
-              answers: { ...currentAnswers }
-            }
-          }
+      updatedUserAnswers = {
+        answers: {
+          ... state.question.isCategoryChild
+            ? handleUserAnswerCategoryChild([state.categories[state.selectedCategory].id], state.question.questionType, action, state.userAnswers[action.questionId].answers)
+            : updateUserAnswers(state.question.questionType, action, state.userAnswers[action.questionId].answers)
+        }
       }
 
       return {
         ...state,
-        userAnswers: updatedUserAnswers
+        userAnswers: {
+          ...state.userAnswers,
+          [action.questionId]: {
+            ...state.userAnswers[action.questionId],
+            ...updatedUserAnswers
+          }
+        }
       }
+
 
     case types.ON_CHANGE_COMMENT:
       return {
@@ -304,5 +282,4 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       return state
   }
 }
-
 export default codingReducer

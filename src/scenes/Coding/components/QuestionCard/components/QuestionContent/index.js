@@ -8,7 +8,7 @@ import SimpleInput from 'components/SimpleInput'
 import Typography from 'material-ui/Typography'
 import Container, { Row, Column } from 'components/Layout'
 
-const QuestionContent = ({ question, onChange, comment, selectedCategoryId, userAnswers, onChangeTextAnswer }) => {
+const QuestionContent = ({ question, onChange, comment, userAnswers, onChangeTextAnswer }) => {
   const questionAnswerPadding = {
     paddingTop: 0,
     paddingRight: 65,
