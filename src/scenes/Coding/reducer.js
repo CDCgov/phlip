@@ -8,16 +8,12 @@ const INITIAL_STATE = {
   outline: {},
   jurisdiction: {},
   currentIndex: 0,
-  comment: '',
   categories: undefined,
   selectedCategory: 0,
   userAnswers: {}
 }
 
 const normalizeAnswers = (question, allQuestions, userCodedAnswerObj) => {
-  console.log(allQuestions)
-  console.log(question)
-
   if (allQuestions[question.questionId].questionType === 2) {
     return { answers: normalize.arrayToObject(question.answers) }
   } else if (question.categoryId) {
@@ -93,7 +89,10 @@ const handleCheckCategories = (state, action) => {
   const parentQuestion = state.scheme.byId[newQuestion.parentId]
 
   if (parentQuestion.questionType === 2) {
-    const selectedCategories = parentQuestion.possibleAnswers.filter(category => state.userAnswers[parentQuestion.id].answers.hasOwnProperty(category.id))
+    const selectedCategories = Object.keys(state.userAnswers[parentQuestion.id].answers).length !== 0
+      ? parentQuestion.possibleAnswers.filter(category => state.userAnswers[parentQuestion.id].answers.hasOwnProperty(category.id))
+      : parentQuestion.possibleAnswers
+    
     const answers = selectedCategories.reduce((answerObj, cat) => {
       return {
         ...answerObj,
@@ -151,8 +150,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
     case types.UPDATE_USER_ANSWER_REQUEST:
       let updatedUserAnswers = {}
-      console.log(action)
-
       switch (state.question.questionType) {
         case questionTypes.BINARY:
         case questionTypes.MULTIPLE_CHOICE:
@@ -243,6 +240,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
     case types.ON_CHANGE_PINCITE:
       const question = state.userAnswers[action.questionId]
+      console.log(state.userAnswers[action.questionId])
 
       return {
         ...state,
@@ -251,25 +249,22 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           [action.questionId]: {
             ...question,
             answers:
-              state.question.questionType === 5
-                ? state.question.isCategoryChild
-                ? {
+              state.question.questionType === 5 ? state.question.isCategoryChild ? {
                   ...question.answers,
                   [state.categories[state.selectedCategory].id]: {
                     answers: {
-                      ...question.answers[state.categories[state.selectedCategory]].answers,
+                      ...question.answers[state.categories[state.selectedCategory].id].answers,
                       pincite: action.pincite
                     }
                   }
-                }
-                : { ...question.answers, pincite: action.pincite }
+                } : { ...question.answers, pincite: action.pincite }
                 : state.question.isCategoryChild
                 ? {
                   ...question.answers,
                   [state.categories[state.selectedCategory].id]: {
                     answers: {
                       [action.answerId]: {
-                        ...question.answers[state.categories[state.selectedCategory]].answers[action.answerId],
+                        ...question.answers[state.categories[state.selectedCategory].id].answers[action.answerId],
                         pincite: action.pincite
                       }
                     }
@@ -287,12 +282,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         selectedCategory: action.selection
-      }
-
-    case types.CLEAR_CATEGORIES:
-      return {
-        ...state,
-        categories: []
       }
 
     case types.GET_CODING_OUTLINE_REQUEST:

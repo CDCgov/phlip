@@ -20,8 +20,6 @@ export const getOutlineLogic = createLogic({
       throw { error: 'failed to get outline' }
     }
 
-    console.log('codingSchemeQuestions', scheme.codingSchemeQuestions)
-
     const mock = [
       ...scheme.codingSchemeQuestions,
       {
@@ -88,7 +86,6 @@ export const answerQuestionLogic = createLogic({
   async process({ getState, action, api }) {
     const userId = getState().data.user.currentUser.id
     const updatedQuestion = getState().scenes.coding.userAnswers[action.questionId]
-
     return await api.answerQuestion(action.projectId,  action.jurisdictionId, userId, action.questionId, updatedQuestion)
   }
 })
