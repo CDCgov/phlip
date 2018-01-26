@@ -33,7 +33,7 @@ export const getOutlineLogic = createLogic({
         id: 134000,
         questionType: 2,
         text: 'Which of the following categories apply?',
-        categories: [{ id: 1, text: 'Cat 1' }, { id: 2, text: 'Cat 2' }, { id: 3, text: 'Cat 3' }]
+        possibleAnswers: [{ id: 1, text: 'Cat 1' }, { id: 2, text: 'Cat 2' }, { id: 3, text: 'Cat 3' }]
       }, {
         questionType: 1,
         text: 'Are tags issued after rabies vaccination?',

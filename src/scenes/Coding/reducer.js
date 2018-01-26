@@ -88,9 +88,12 @@ const handleCheckCategories = (state, action) => {
   }
 
   const parentQuestion = state.scheme.byId[newQuestion.parentId]
+  console.log(parentQuestion)
+  console.log(state.userAnswers)
+
 
   if (parentQuestion.questionType === 2) {
-    const selectedCategories = parentQuestion.categories.filter(category => state.userAnswers[parentQuestion.id].categories.hasOwnProperty(category.id))
+    const selectedCategories = parentQuestion.possibleAnswers.filter(category => state.userAnswers[parentQuestion.id].answers.hasOwnProperty(category.id))
     const answers = selectedCategories.reduce((answerObj, cat) => {
       return {
         ...answerObj,
