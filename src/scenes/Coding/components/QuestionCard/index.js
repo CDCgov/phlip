@@ -20,9 +20,9 @@ export const QuestionCard = ({ question, userAnswers, categories, selectedCatego
     <Row displayFlex style={{ flex: '1 0 50%' }}>
       <Column component={<Card />} displayFlex flex>
         <Row displayFlex style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
-          <IconButton onClick={onClearAnswer}>
+          {question.questionType !== 2 && <IconButton onClick={onClearAnswer}>
             <Broom className={styles.sweep} aria-labelledby="Clear answer" />
-          </IconButton>
+          </IconButton>}
           <IconButton color="#d7e0e4">
             flag
           </IconButton>

@@ -60,6 +60,7 @@ export class Coding extends Component {
                         userAnswers={this.props.userAnswers}
                         onChangeTextAnswer={this.onChangeTextAnswer} categories={this.props.categories}
                         selectedCategory={this.props.selectedCategory} onChangeCategory={this.props.actions.onChangeCategory}
+                        onClearAnswer={() => this.props.actions.onClearAnswer(this.props.question.id)}
           />
           <FooterNavigate currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion} getPrevQuestion={this.getPrevQuestion}
                           totalLength={this.props.questionOrder.length} />

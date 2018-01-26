@@ -96,7 +96,7 @@ const handleCheckCategories = (state, action) => {
 
   const parentQuestion = state.scheme.byId[newQuestion.parentId]
 
-  if (parentQuestion.questionType === 2) {
+  if (parentQuestion.questionType === questionTypes.CATEGORY) {
     const selectedCategories = Object.keys(state.userAnswers[parentQuestion.id].answers).length !== 0
       ? parentQuestion.possibleAnswers.filter(category => state.userAnswers[parentQuestion.id].answers.hasOwnProperty(category.id))
       : parentQuestion.possibleAnswers
@@ -216,8 +216,26 @@ const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, getFieldVa
   }
 })
 
+const handleClearAnswers = (questionType, currentAnswerObj) => {
+  return questionType === questionTypes.TEXT_FIELD
+    ? { value: '', pincite: '' }
+    : {}
+}
+
+const handleClearCategoryAnswers = (selectedCategoryId, questionType, currentUserAnswerObj) => ({
+  ...currentUserAnswerObj,
+  [selectedCategoryId]: {
+    ...currentUserAnswerObj[selectedCategoryId],
+    answers: {
+      ...handleClearAnswers(questionType, currentUserAnswerObj[selectedCategoryId].answers)
+    }
+  }
+})
+
+
 const codingReducer = (state = INITIAL_STATE, action) => {
   const questionUpdater = handleUpdateUserCodedQuestion(state, action)
+  const selectedCategoryId = state.categories !== undefined ? state.categories[state.selectedCategory].id : 0
 
   switch (action.type) {
     case types.GET_NEXT_QUESTION:
@@ -254,7 +272,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...questionUpdater(
           'answers',
           state.question.isCategoryChild
-            ? handleUserAnswerCategoryChild([state.categories[state.selectedCategory].id], state.question.questionType, action, state.userAnswers[action.questionId].answers)
+            ? handleUserAnswerCategoryChild(selectedCategoryId, state.question.questionType, action, state.userAnswers[action.questionId].answers)
             : handleUpdateUserAnswers(state.question.questionType, action, state.userAnswers[action.questionId].answers)
         )
       }
@@ -265,7 +283,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...questionUpdater(
           'comment',
           state.question.isCategoryChild
-            ? handleUserCommentCategoryChild([state.categories[state.selectedCategory].id], action, state.userAnswers[action.questionId].comment)
+            ? handleUserCommentCategoryChild(selectedCategoryId, action, state.userAnswers[action.questionId].comment)
             : action.comment
         )
       }
@@ -276,8 +294,19 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...questionUpdater(
           'answers',
           state.question.isCategoryChild
-            ? handleUserPinciteCategoryChild([state.categories[state.selectedCategory].id], state.question.questionType, action, state.userAnswers[action.questionId].answers)
+            ? handleUserPinciteCategoryChild(selectedCategoryId, state.question.questionType, action, state.userAnswers[action.questionId].answers)
             : handleUserPinciteQuestion(state.question.questionType, action, state.userAnswers[action.questionId].answers)
+        )
+      }
+
+    case types.ON_CLEAR_ANSWER:
+      return {
+        ...state,
+        ...questionUpdater(
+          'answers',
+          state.question.isCategoryChild
+            ? handleClearCategoryAnswers(selectedCategoryId, state.question.questionType, state.userAnswers[action.questionId].answers)
+            : handleClearAnswers(state.question.questionType, state.userAnswers[action.questionId].answers)
         )
       }
 
