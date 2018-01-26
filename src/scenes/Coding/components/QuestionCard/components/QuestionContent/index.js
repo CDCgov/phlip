@@ -46,7 +46,7 @@ const QuestionContent = ({ question, onChange, userAnswers, onChangeTextAnswer }
 
           {question.questionType === 5 &&
           <InputBox rows="5" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
-                    value={userAnswers.answers.value} />}
+                    value={userAnswers.answers} />}
 
           {question.includeComment &&
           <Row style={{ paddingTop: 30 }}>
