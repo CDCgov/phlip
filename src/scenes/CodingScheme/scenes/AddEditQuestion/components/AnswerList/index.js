@@ -20,14 +20,13 @@ export const AnswerList = ({ fields, answerType, isEdit }) => {
                   name={`${answer}.text`}
                   type="text"
                   answerType={answerType}
-                  placeholder="Add answer"
+                  placeholder={answerType === questionTypes.CATEGORY ? 'Add tab' : 'Add answer'}
                   handleDelete={() => fields.remove(index)}
                   component={SelectInput}
                   isEdit={isEdit}
-                  label={index === 0 ? 'Answers' : ''} />
-
+                  label={(index === 0 && answerType !== questionTypes.CATEGORY) ? 'Answers'
+                    : (index === 0 && answerType === questionTypes.CATEGORY) ? 'Category/Tabs' : ''} />
               </Row>
-
             </Fragment>
           ))}
 

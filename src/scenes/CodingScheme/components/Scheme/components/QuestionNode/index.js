@@ -111,6 +111,7 @@ export const QuestionNode = props => {
                 <Button color="accent" style={actionStyles} value={<Icon color="white">delete</Icon>} />
               </div>
             }
+            {!node.hovering && node.questionType === questionTypes.CATEGORY ? <Icon color="grey">filter_none</Icon> : ''}
           </CardContent>
           <CardActions disableActionSpacing style={{ padding: 0 }}>
             <div style={{ flex: '1 1 auto' }}></div>
