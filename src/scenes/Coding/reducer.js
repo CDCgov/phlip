@@ -14,12 +14,13 @@ const INITIAL_STATE = {
   userAnswers: {}
 }
 
-const normalizeAnswers = (question, allQuestions) => {
+const normalizeAnswers = (question, allQuestions, userCodedAnswerObj) => {
   if (allQuestions[question.questionId].questionType === 2) {
     return { answers: normalize.arrayToObject(question.answers) }
   } else if (question.categoryId) {
     return {
-      categories: {
+      answers: {
+        ...userCodedAnswerObj[question.id].answers,
         [question.categoryId]: {
           answers: question.answers.reduce((answerObj, answer) => ({
             ...answerObj,
@@ -54,7 +55,7 @@ const initializeUserAnswers = (answers, allQuestions) => {
       ...userA,
       [question.questionId]: {
         ...question,
-        ...normalizeAnswers(question, allQuestions)
+        ...normalizeAnswers(question, allQuestions, userA)
       }
     })
   }, {})
@@ -89,10 +90,22 @@ const handleCheckCategories = (state, action) => {
   const parentQuestion = state.scheme.byId[newQuestion.parentId]
 
   if (parentQuestion.questionType === 2) {
+    const selectedCategories = parentQuestion.categories.filter(category => state.userAnswers[parentQuestion.id].categories.hasOwnProperty(category.id))
+    const answers = selectedCategories.reduce((answerObj, cat) => {
+      return {
+        ...answerObj,
+        [cat.id]: base.userAnswers[newQuestion.id].answers.hasOwnProperty(cat.id)
+          ? { ...base.userAnswers[newQuestion.id].answers[cat.id] }
+          : { answers: {} }
+      }
+    }, {})
+
     return {
       ...base,
-      categories: [...parentQuestion.categories.filter(category => state.userAnswers[parentQuestion.id].answers.hasOwnProperty(category.id)) ],
-      selectedCategory: state.selectedCategory
+      question: { ...base.question, isCategoryChild: true },
+      categories: [...selectedCategories],
+      selectedCategory: state.selectedCategory,
+      userAnswers: { ...state.userAnswers, [newQuestion.id]: { ...base.userAnswers[newQuestion.id], answers } }
     }
   } else {
     return {
@@ -128,15 +141,29 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
     case types.ANSWER_QUESTION_REQUEST:
       let updatedUserAnswers = {}
+      console.log(action)
 
-      switch(state.question.questionType) {
+      switch (state.question.questionType) {
         case questionTypes.BINARY:
         case questionTypes.MULTIPLE_CHOICE:
           updatedUserAnswers = {
             ...state.userAnswers,
             [action.questionId]: {
               ...state.userAnswers[action.questionId],
-              answers: { [action.answerId]: { answerId: action.answerId, pincite: '' } }
+              answers:
+                state.question.isCategoryChild
+                  ? {
+                    ...state.userAnswers[action.questionId].answers,
+                    [state.categories[state.selectedCategory].id]: {
+                      answers: {
+                        [action.answerId]: {
+                          answerId: action.answerId,
+                          pincite: ''
+                        }
+                      }
+                    }
+                  }
+                  : { [action.answerId]: { answerId: action.answerId, pincite: '' } }
             }
           }
           break
@@ -144,13 +171,32 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         case questionTypes.TEXT_FIELD:
           updatedUserAnswers = {
             ...state.userAnswers,
-            [action.questionId]: { ...updatedUserAnswers[action.questionId], answers: { value: action.answerValue } }
+            [action.questionId]: {
+              ...state.userAnswers[action.questionId],
+              answers:
+                state.question.isCategoryChild
+                  ? {
+                    ...state.userAnswers[action.questionId].answers,
+                    [state.categories[state.selectedCategory].id]: {
+                      answers: {
+                        ...state.userAnswers[action.questionId][state.categories[state.selectedCategory].id].answers,
+                        value: action.answerValue
+                      }
+                    }
+                  }
+                  : { ...state.userAnswers[action.questionId].answers, value: action.answerValue }
+            }
           }
           break
 
         case questionTypes.CATEGORY:
         case questionTypes.CHECKBOXES:
-          let currentAnswers = state.userAnswers[action.questionId].answers
+          let currentAnswers = {}
+          if (state.question.isCategoryChild) {
+            currentAnswers = state.userAnswers[action.questionId].answers[state.categories[state.selectedCategory].id].answers
+          } else {
+            currentAnswers = state.userAnswers[action.questionId].answers
+          }
           if (currentAnswers.hasOwnProperty(action.answerId)) delete currentAnswers[action.answerId]
           else currentAnswers = { ...currentAnswers, [action.answerId]: { answerId: action.answerId, pincite: '' } }
 
@@ -173,7 +219,15 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...state,
         userAnswers: {
           ...state.userAnswers,
-          [action.questionId]: { ...state.userAnswers[action.questionId], comment: action.comment }
+          [action.questionId]: state.question.isCategoryChild
+            ? {
+              ...state.userAnswers[action.questionId],
+              comment: { [state.categories[state.selectedCategory].id]: action.comment }
+            }
+            : {
+              ...state.userAnswers[action.questionId],
+              comment: action.comment
+            }
         }
       }
 
@@ -186,12 +240,35 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           ...state.userAnswers,
           [action.questionId]: {
             ...question,
-            answers: state.question.questionType === 5
-              ? { ...question.answers, pincite: action.pincite }
-              : {
-                ...question.answers,
-                [action.answerId]: { ...question.answers[action.answerId], pincite: action.pincite }
-              }
+            answers:
+              state.question.questionType === 5
+                ? state.question.isCategoryChild
+                ? {
+                  ...question.answers,
+                  [state.categories[state.selectedCategory].id]: {
+                    answers: {
+                      ...question.answers[state.categories[state.selectedCategory]].answers,
+                      pincite: action.pincite
+                    }
+                  }
+                }
+                : { ...question.answers, pincite: action.pincite }
+                : state.question.isCategoryChild
+                ? {
+                  ...question.answers,
+                  [state.categories[state.selectedCategory].id]: {
+                    answers: {
+                      [action.answerId]: {
+                        ...question.answers[state.categories[state.selectedCategory]].answers[action.answerId],
+                        pincite: action.pincite
+                      }
+                    }
+                  }
+                }
+                : {
+                  ...question.answers,
+                  [action.answerId]: { ...question.answers[action.answerId], pincite: action.pincite }
+                }
           }
         }
       }
