@@ -60,9 +60,9 @@ const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
   return userCodedQuestions.reduce((codedQuestionObj, question) => {
     return ({
       ...codedQuestionObj,
-      [question.questionId]: {
+      [question.codingSchemeQuestionId]: {
         ...question,
-        ...normalizeAnswers(question, codingSchemeQuestions[question.questionId], codedQuestionObj)
+        ...normalizeAnswers(question, codingSchemeQuestions[question.codingSchemeQuestionId], codedQuestionObj)
       }
     })
   }, {})
@@ -79,7 +79,7 @@ const handleCheckCategories = (state, action) => {
       : {
         ...state.userAnswers,
         [action.id]: {
-          questionId: action.id,
+          codingSchemeQuestionId: action.id,
           answers: {},
           comment: ''
         }
@@ -259,6 +259,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           ? initializeUserAnswers(action.payload.codedQuestions, normalizedQuestions)
           : {
             [action.payload.question.id]: {
+              codingSchemeQuestionId: action.payload.question.id,
               comment: '',
               answers: {}
             }
