@@ -159,7 +159,28 @@ const handleUserAnswerCategoryChild = (selectedCategoryId, questionType, action,
   }
 }
 
+const handleUserCommentCategoryChild = (selectedCategoryId, action, currentUserCommentObj) => {
+  return {
+    ...currentUserCommentObj,
+    [selectedCategoryId]: action.comment
+  }
+}
+
+const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, getFieldValues) => {
+  return {
+    userAnswers: {
+      ...state.userAnswers,
+      [action.questionId]: {
+        ...state.userAnswers[action.questionId],
+        [fieldValue]: getFieldValues
+      }
+    }
+  }
+}
+
 const codingReducer = (state = INITIAL_STATE, action) => {
+  const questionUpdater = handleUpdateUserCodedQuestion(state,action)
+
   switch (action.type) {
     case types.GET_NEXT_QUESTION:
     case types.GET_PREV_QUESTION:
@@ -190,46 +211,26 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.UPDATE_USER_ANSWER_REQUEST:
-      let updatedUserAnswers = {}
-
-      updatedUserAnswers = {
-        answers: {
-          ... state.question.isCategoryChild
-            ? handleUserAnswerCategoryChild([state.categories[state.selectedCategory].id], state.question.questionType, action, state.userAnswers[action.questionId].answers)
-            : updateUserAnswers(state.question.questionType, action, state.userAnswers[action.questionId].answers)
-        }
-      }
-
       return {
         ...state,
-        userAnswers: {
-          ...state.userAnswers,
-          [action.questionId]: {
-            ...state.userAnswers[action.questionId],
-            ...updatedUserAnswers
-          }
-        }
+        ...questionUpdater(
+          'answers',
+          state.question.isCategoryChild
+            ? handleUserAnswerCategoryChild([state.categories[state.selectedCategory].id], state.question.questionType, action, state.userAnswers[action.questionId].answers)
+            : updateUserAnswers(state.question.questionType, action, state.userAnswers[action.questionId].answers)
+        )
       }
 
 
     case types.ON_CHANGE_COMMENT:
       return {
         ...state,
-        userAnswers: {
-          ...state.userAnswers,
-          [action.questionId]: state.question.isCategoryChild
-            ? {
-              ...state.userAnswers[action.questionId],
-              comment: {
-                ...state.userAnswers[action.questionId].comment,
-                [state.categories[state.selectedCategory].id]: action.comment
-              }
-            }
-            : {
-              ...state.userAnswers[action.questionId],
-              comment: action.comment
-            }
-        }
+        ...questionUpdater(
+          'comment',
+          state.question.isCategoryChild
+            ? handleUserCommentCategoryChild([state.categories[state.selectedCategory].id], action, state.userAnswers[action.questionId].comment)
+            : action.comment
+        )
       }
 
     case types.ON_CHANGE_PINCITE:

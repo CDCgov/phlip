@@ -45,3 +45,5 @@ export const onChangeCategory = (event, selection) => ({
 })
 
 export const onClearAnswer = () => ({ type: types.ON_CLEAR_ANSWER })
+
+export const onCloseCodeScreen = () => ({ type: types.ON_CLOSE_CODE_SCREEN })
