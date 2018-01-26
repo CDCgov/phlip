@@ -29,7 +29,7 @@ const InputBox = ({ value, onChange, name, rows, classes, ...otherProps }) => {
   return (
     <div className={classes.container}>
       <TextField
-        value={value.value}
+        value={value.textAnswer}
         onChange={onChange(null, 'fieldValue')}
         multiline
         type="text"
@@ -44,7 +44,7 @@ const InputBox = ({ value, onChange, name, rows, classes, ...otherProps }) => {
         }}
         {...otherProps}
       />
-      {value.value && value.value.length > 0 && <SimpleInput name="pincite" value={value.pincite} placeholder="Enter pincite" onChange={onChange(null, 'pincite')} style={{ alignSelf: 'flex-end', paddingLeft: 15, flex: 1 }} />}
+      {value.textAnswer && value.textAnswer.length > 0 && <SimpleInput name="pincite" value={value.pincite} placeholder="Enter pincite" onChange={onChange(null, 'pincite')} style={{ alignSelf: 'flex-end', paddingLeft: 15, flex: 1 }} />}
       </div>
   )
 }

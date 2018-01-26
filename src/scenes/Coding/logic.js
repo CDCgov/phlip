@@ -33,21 +33,21 @@ export const getOutlineLogic = createLogic({
         hint: '',
         includeComment: false,
         possibleAnswers: [{ id: 1010, text: 'Yes' }, { id: 1011, text: 'No' }],
-        id: 1045341,
+        id: 1045341
       }, {
         questionType: 4,
         text: 'Is rabies vaccination required to obtain a license or registration for the animal?',
         hint: '',
         includeComment: true,
         possibleAnswers: [{ id: 1012, text: 'Yes' }, { id: 1013, text: 'No' }, { id: 1014, text: 'Unclear' }],
-        id: 143002,
+        id: 143002
       }, {
         questionType: 4,
         text: 'new non category question',
         hint: '',
         includeComment: true,
         possibleAnswers: [{ id: 1012, text: 'Yes' }, { id: 1013, text: 'No' }, { id: 1014, text: 'Unclear' }],
-        id: 104635463,
+        id: 104635463
       }
     ]
 
@@ -93,18 +93,23 @@ export const answerQuestionLogic = createLogic({
       const selectedCategoryId = codingState.categories[codingState.selectedCategory].id
       finalObject = {
         ...updatedQuestionObject,
-        answers: Object.values(updatedQuestionObject.answers[selectedCategoryId].answers),
+        answers: codingState.question.questionType === 5
+          ? [updatedQuestionObject.answers[selectedCategoryId].answers]
+          : Object.values(updatedQuestionObject.answers[selectedCategoryId].answers),
         comment: updatedQuestionObject.comment[selectedCategoryId],
         categoryId: selectedCategoryId
       }
     } else {
       finalObject = {
         ...updatedQuestionObject,
-        answers: Object.values(updatedQuestionObject.answers)
+        answers: codingState.question.questionType === 5
+          ? [updatedQuestionObject.answers]
+          : Object.values(updatedQuestionObject.answers)
       }
     }
-    
-    return await api.answerQuestion(action.projectId,  action.jurisdictionId, userId, action.questionId, updatedQuestion)
+
+    console.log(finalObject)
+    return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, finalObject)
   }
 })
 

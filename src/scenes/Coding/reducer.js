@@ -26,12 +26,12 @@ const INITIAL_STATE = {
  */
 const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) => {
   if (codingSchemeQuestion.questionType === questionTypes.CATEGORY) {
-    return { answers: normalize.arrayToObject(question.answers, 'answerId') }
+    return { answers: normalize.arrayToObject(question.answers, 'codingSchemeAnswerId') }
   } else if (question.categoryId) {
     return {
       answers: {
         ...userCodedAnswerObj[question.id].answers,
-        [question.categoryId]: { answers: normalize.arrayToObject(question.answers, 'answerId') }
+        [question.categoryId]: { answers: normalize.arrayToObject(question.answers, 'codingSchemeAnswerId') }
       },
       comment: {
         ...userCodedAnswerObj[question.id].comment,
@@ -44,12 +44,12 @@ const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) =>
         answers: {
           ...question.answers[0],
           pincite: question.answers[0].pincite || '',
-          value: question.answers[0].value || ''
+          textAnswer: question.answers[0].textAnswer || ''
         }
       }
-      : { answers: { pincite: '', value: '' } }
+      : { answers: { pincite: '', textAnswer: '' } }
   } else {
-    return { answers: normalize.arrayToObject(question.answers, 'answerId') }
+    return { answers: normalize.arrayToObject(question.answers, 'codingSchemeAnswerId') }
   }
 }
 
@@ -139,13 +139,13 @@ const handleUpdateUserAnswers = (questionType, action, currentUserAnswers = null
   switch (questionType) {
     case questionTypes.BINARY:
     case questionTypes.MULTIPLE_CHOICE:
-      return { [action.answerId]: { answerId: action.answerId, pincite: '' } }
+      return { [action.answerId]: { codingSchemeAnswerId: action.answerId, pincite: '' } }
     case questionTypes.TEXT_FIELD:
-      return { ...currentUserAnswers, value: action.value }
+      return { ...currentUserAnswers, textAnswer: action.answerValue }
     case questionTypes.CATEGORY:
     case questionTypes.CHECKBOXES:
       if (currentUserAnswers.hasOwnProperty(action.answerId)) delete currentUserAnswers[action.answerId]
-      else currentUserAnswers = { ...currentUserAnswers, [action.answerId]: { answerId: action.answerId, pincite: '' } }
+      else currentUserAnswers = { ...currentUserAnswers, [action.answerId]: { codingSchemeAnswerId: action.answerId, pincite: '' } }
       return { ...currentUserAnswers }
   }
 }
@@ -218,7 +218,7 @@ const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, getFieldVa
 
 const handleClearAnswers = (questionType, currentAnswerObj) => {
   return questionType === questionTypes.TEXT_FIELD
-    ? { value: '', pincite: '' }
+    ? { textAnswer: '', pincite: '' }
     : {}
 }
 
@@ -231,7 +231,6 @@ const handleClearCategoryAnswers = (selectedCategoryId, questionType, currentUse
     }
   }
 })
-
 
 const codingReducer = (state = INITIAL_STATE, action) => {
   const questionUpdater = handleUpdateUserCodedQuestion(state, action)
@@ -267,6 +266,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.UPDATE_USER_ANSWER_REQUEST:
+      console.log(action)
       return {
         ...state,
         ...questionUpdater(
