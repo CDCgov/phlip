@@ -142,7 +142,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         userAnswers: initializeUserAnswers(action.payload.codedQuestions, normalizedQuestions)
       }
 
-    case types.ANSWER_QUESTION_REQUEST:
+    case types.UPDATE_USER_ANSWER_REQUEST:
       let updatedUserAnswers = {}
       console.log(action)
 

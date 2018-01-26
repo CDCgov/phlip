@@ -10,7 +10,7 @@ export const getCodingOutlineRequest = (projectId, jurisdictionId) => ({
 })
 
 export const answerQuestionRequest = (projectId, jurisdictionId, questionId, answerId, answerValue) => ({
-  type: types.ANSWER_QUESTION_REQUEST,
+  type: types.UPDATE_USER_ANSWER_REQUEST,
   projectId,
   jurisdictionId,
   questionId,

@@ -90,12 +90,8 @@ export default {
     return api.get(`/projects/${projectId}/codingscheme`).then(res => res.data)
   },
 
-  getQuestion(projectId, jurisdictionId, userId, questionId) {
-    return api.get(`/projects/${projectId}/codingscheme/${questionId}`).then(res => res.data)
-    // TODO: this will change when the real routes are ready
-  },
-
-  answerQuestion(projectId, jurisdictionId, userId, questionId, answerId) {
-    return {}
+  answerQuestion(projectId, jurisdictionId, userId, questionId, updatedQuestion) {
+    return api.post(`/user/${userId}/project/${projectId}/jurisdiction/${jurisdictionId}/question/${questionId}`, updatedQuestion)
+      .then(res => res.data)
   }
 }

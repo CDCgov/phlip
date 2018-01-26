@@ -58,8 +58,8 @@ export class Coding extends Component {
         <Container flex column style={{ backgroundColor: '#f5f5f5', padding: '20px 20px 10px 20px' }}>
           <QuestionCard question={this.props.question} onChange={this.onAnswer}
                         userAnswers={this.props.userAnswers}
-                        onChangeTextAnswer={this.onChangeTextAnswer} userAnswer={this.props.userAnswer} categories={this.props.categories}
-                        selectedCategory={this.props.selectedCategory} comment={this.props.comment} onChangeCategory={this.props.actions.onChangeCategory}
+                        onChangeTextAnswer={this.onChangeTextAnswer} categories={this.props.categories}
+                        selectedCategory={this.props.selectedCategory} onChangeCategory={this.props.actions.onChangeCategory}
           />
           <FooterNavigate currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion} getPrevQuestion={this.getPrevQuestion}
                           totalLength={this.props.questionOrder.length} />
@@ -88,11 +88,9 @@ const mapStateToProps = (state, ownProps) => ({
   outline: state.scenes.coding.outline || {},
   currentIndex: state.scenes.coding.currentIndex || 0,
   questionOrder: state.scenes.coding.scheme.order || [],
-  userAnswer: state.scenes.coding.userAnswer || {},
   categories: state.scenes.coding.categories || undefined,
   selectedCategory: state.scenes.coding.selectedCategory || 0,
   jurisdictionId: '1',
-  comment: state.scenes.coding.comment || '',
   userAnswers: state.scenes.coding.question
     ? state.scenes.coding.question.isCategoryChild
       ? state.scenes.coding.userAnswers[state.scenes.coding.question.id].answers[state.scenes.coding.categories[state.scenes.coding.selectedCategory].id]

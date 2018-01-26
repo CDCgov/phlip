@@ -83,16 +83,18 @@ export const getOutlineLogic = createLogic({
 })
 
 export const answerQuestionLogic = createLogic({
-  type: types.ANSWER_QUESTION_REQUEST,
+  type: types.UPDATE_USER_ANSWER_REQUEST,
   processOptions: {
     dispatchReturn: true,
-    successType: types.ANSWER_QUESTION_SUCCESS,
-    failType: types.ANSWER_QUESTION_FAIL
+    successType: types.UPDATE_USER_ANSWER_SUCCESS,
+    failType: types.UPDATE_USER_ANSWER_FAIL
   },
   latest: true,
   async process({ getState, action, api }) {
     const userId = getState().data.user.currentUser.id
-    return await api.answerQuestion(action.projectId,  action.jurisdictionId, userId, action.questionId, action.answerId,)
+    const updatedQuestion = getState().scenes.coding.userAnswers[action.questionId]
+
+    return await api.answerQuestion(action.projectId,  action.jurisdictionId, userId, action.questionId, updatedQuestion)
   }
 })
 
