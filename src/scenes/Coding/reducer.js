@@ -53,6 +53,9 @@ const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) =>
   }
 }
 
+/*
+  Takes coded questions array and turns it into a object where each key is the question id
+ */
 const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
   return userCodedQuestions.reduce((codedQuestionObj, question) => {
     return ({

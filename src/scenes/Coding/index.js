@@ -64,7 +64,7 @@ export class Coding extends Component {
           <FooterNavigate currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion} getPrevQuestion={this.getPrevQuestion}
                           totalLength={this.props.questionOrder.length} />
         </Container>
-    <Footer />
+    <Footer onClose={() => this.props.actions.onCloseCodeScreen() } />
   </Container>
   )
   }
