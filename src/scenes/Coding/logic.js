@@ -76,7 +76,7 @@ export const getOutlineLogic = createLogic({
 })
 
 export const answerQuestionLogic = createLogic({
-  type: types.UPDATE_USER_ANSWER_REQUEST,
+  type: [types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE],
   processOptions: {
     dispatchReturn: true,
     successType: types.UPDATE_USER_ANSWER_SUCCESS,
@@ -85,7 +85,25 @@ export const answerQuestionLogic = createLogic({
   latest: true,
   async process({ getState, action, api }) {
     const userId = getState().data.user.currentUser.id
-    const updatedQuestion = getState().scenes.coding.userAnswers[action.questionId]
+    const codingState = getState().scenes.coding
+    const updatedQuestionObject = codingState.userAnswers[action.questionId]
+    let finalObject = {}
+
+    if (codingState.question.isCategoryChild) {
+      const selectedCategoryId = codingState.categories[codingState.selectedCategory].id
+      finalObject = {
+        ...updatedQuestionObject,
+        answers: Object.values(updatedQuestionObject.answers[selectedCategoryId].answers),
+        comment: updatedQuestionObject.comment[selectedCategoryId],
+        categoryId: selectedCategoryId
+      }
+    } else {
+      finalObject = {
+        ...updatedQuestionObject,
+        answers: Object.values(updatedQuestionObject.answers)
+      }
+    }
+    
     return await api.answerQuestion(action.projectId,  action.jurisdictionId, userId, action.questionId, updatedQuestion)
   }
 })
