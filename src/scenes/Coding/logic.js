@@ -3,13 +3,6 @@ import * as types from './actionTypes'
 import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
 
-const mockAnswers = [
-  { questionId: 20010, comment: '', answers: [{ value: 'kristin', pincite: '' }]},
-  { questionId: 20011, comment: 'this is a comment', answers: [] },
-  { questionId: 20013, comment: '', answers: [{ answerId: 20027, pincite: 'because' }]},
-  { questionId: 20014, answers: [{ answerId: 20028, pincite: ''}, { answerId: 20029, pincite: '' }]}
-]
-
 export const getOutlineLogic = createLogic({
   type: types.GET_CODING_OUTLINE_REQUEST,
   processOptions: {
@@ -26,6 +19,8 @@ export const getOutlineLogic = createLogic({
     } catch (e) {
       throw { error: 'failed to get outline' }
     }
+
+    console.log('codingSchemeQuestions', scheme.codingSchemeQuestions)
 
     const mock = [
       ...scheme.codingSchemeQuestions,
@@ -77,7 +72,7 @@ export const getOutlineLogic = createLogic({
       scheme: questionsWithNumbers,
       questionOrder: order,
       question: questionsWithNumbers[0],
-      codedQuestions: mockAnswers
+      codedQuestions: []
     }
   }
 })

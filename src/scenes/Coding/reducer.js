@@ -15,6 +15,9 @@ const INITIAL_STATE = {
 }
 
 const normalizeAnswers = (question, allQuestions, userCodedAnswerObj) => {
+  console.log(allQuestions)
+  console.log(question)
+
   if (allQuestions[question.questionId].questionType === 2) {
     return { answers: normalize.arrayToObject(question.answers) }
   } else if (question.categoryId) {
@@ -88,9 +91,6 @@ const handleCheckCategories = (state, action) => {
   }
 
   const parentQuestion = state.scheme.byId[newQuestion.parentId]
-  console.log(parentQuestion)
-  console.log(state.userAnswers)
-
 
   if (parentQuestion.questionType === 2) {
     const selectedCategories = parentQuestion.possibleAnswers.filter(category => state.userAnswers[parentQuestion.id].answers.hasOwnProperty(category.id))
@@ -139,7 +139,14 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           order: action.payload.questionOrder
         },
         question: action.payload.question,
-        userAnswers: initializeUserAnswers(action.payload.codedQuestions, normalizedQuestions)
+        userAnswers: action.payload.codedQuestions.length !== 0
+          ? initializeUserAnswers(action.payload.codedQuestions, normalizedQuestions)
+          : {
+            [action.payload.question.id]: {
+              comment: '',
+              answers: {}
+            }
+          }
       }
 
     case types.UPDATE_USER_ANSWER_REQUEST:
