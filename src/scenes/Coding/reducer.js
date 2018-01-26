@@ -132,7 +132,7 @@ const handleCheckCategories = (state, action) => {
   }
 }
 
-const updateUserAnswers = (questionType, action, currentUserAnswers = null) => {
+const handleUpdateUserAnswers = (questionType, action, currentUserAnswers = null) => {
   switch (questionType) {
     case questionTypes.BINARY:
     case questionTypes.MULTIPLE_CHOICE:
@@ -147,39 +147,74 @@ const updateUserAnswers = (questionType, action, currentUserAnswers = null) => {
   }
 }
 
-const handleUserAnswerCategoryChild = (selectedCategoryId, questionType, action, currentUserAnswerObj) => {
-  return {
-    ...currentUserAnswerObj,
-    [selectedCategoryId]: {
-      ...currentUserAnswerObj[selectedCategoryId],
-      answers: {
-        ...updateUserAnswers(questionType, action, currentUserAnswerObj[selectedCategoryId].answers)
-      }
+/*
+  Handles if the user updates the answer to a category question child
+ */
+const handleUserAnswerCategoryChild = (selectedCategoryId, questionType, action, currentUserAnswerObj) => ({
+  ...currentUserAnswerObj,
+  [selectedCategoryId]: {
+    ...currentUserAnswerObj[selectedCategoryId],
+    answers: {
+      ...handleUpdateUserAnswers(questionType, action, currentUserAnswerObj[selectedCategoryId].answers)
     }
+  }
+})
+
+/*
+  Handles if a user updates the comment of a category question child
+ */
+const handleUserCommentCategoryChild = (selectedCategoryId, action, currentUserCommentObj) => ({
+  ...currentUserCommentObj,
+  [selectedCategoryId]: action.comment
+})
+
+/*
+  Handles if a user updates the pincite of a question
+*/
+const handleUserPinciteQuestion = (questionType, action, currentUserAnswers) => {
+  switch (questionType) {
+    case questionTypes.BINARY:
+    case questionTypes.MULTIPLE_CHOICE:
+      return { [action.answerId]: { ...currentUserAnswers[action.answerId], pincite: action.pincite } }
+    case questionTypes.TEXT_FIELD:
+      return { ...currentUserAnswers, pincite: action.pincite }
+    case questionTypes.CATEGORY:
+    case questionTypes.CHECKBOXES:
+      return {
+        ...currentUserAnswers,
+        [action.answerId]: { ...currentUserAnswers[action.answerId], pincite: action.pincite }
+      }
   }
 }
 
-const handleUserCommentCategoryChild = (selectedCategoryId, action, currentUserCommentObj) => {
-  return {
-    ...currentUserCommentObj,
-    [selectedCategoryId]: action.comment
-  }
-}
-
-const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, getFieldValues) => {
-  return {
-    userAnswers: {
-      ...state.userAnswers,
-      [action.questionId]: {
-        ...state.userAnswers[action.questionId],
-        [fieldValue]: getFieldValues
-      }
+/*
+  Handles if a user updated the pincite of a category question child
+ */
+const handleUserPinciteCategoryChild = (selectedCategoryId, questionType, action, currentUserAnswerObj) => ({
+  ...currentUserAnswerObj,
+  [selectedCategoryId]: {
+    ...currentUserAnswerObj[selectedCategoryId],
+    answers: {
+      ...handleUserPinciteQuestion(questionType, action, currentUserAnswerObj[selectedCategoryId].answers)
     }
   }
-}
+})
+
+/*
+  Reusable function so I stop repeating everything but the fieldValue part
+ */
+const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, getFieldValues) => ({
+  userAnswers: {
+    ...state.userAnswers,
+    [action.questionId]: {
+      ...state.userAnswers[action.questionId],
+      [fieldValue]: getFieldValues
+    }
+  }
+})
 
 const codingReducer = (state = INITIAL_STATE, action) => {
-  const questionUpdater = handleUpdateUserCodedQuestion(state,action)
+  const questionUpdater = handleUpdateUserCodedQuestion(state, action)
 
   switch (action.type) {
     case types.GET_NEXT_QUESTION:
@@ -217,10 +252,9 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           'answers',
           state.question.isCategoryChild
             ? handleUserAnswerCategoryChild([state.categories[state.selectedCategory].id], state.question.questionType, action, state.userAnswers[action.questionId].answers)
-            : updateUserAnswers(state.question.questionType, action, state.userAnswers[action.questionId].answers)
+            : handleUpdateUserAnswers(state.question.questionType, action, state.userAnswers[action.questionId].answers)
         )
       }
-
 
     case types.ON_CHANGE_COMMENT:
       return {
@@ -234,42 +268,14 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ON_CHANGE_PINCITE:
-      const question = state.userAnswers[action.questionId]
-
       return {
         ...state,
-        userAnswers: {
-          ...state.userAnswers,
-          [action.questionId]: {
-            ...question,
-            answers:
-              state.question.questionType === 5 ? state.question.isCategoryChild ? {
-                  ...question.answers,
-                  [state.categories[state.selectedCategory].id]: {
-                    answers: {
-                      ...question.answers[state.categories[state.selectedCategory].id].answers,
-                      pincite: action.pincite
-                    }
-                  }
-                } : { ...question.answers, pincite: action.pincite }
-                : state.question.isCategoryChild
-                ? {
-                  ...question.answers,
-                  [state.categories[state.selectedCategory].id]: {
-                    answers: {
-                      [action.answerId]: {
-                        ...question.answers[state.categories[state.selectedCategory].id].answers[action.answerId],
-                        pincite: action.pincite
-                      }
-                    }
-                  }
-                }
-                : {
-                  ...question.answers,
-                  [action.answerId]: { ...question.answers[action.answerId], pincite: action.pincite }
-                }
-          }
-        }
+        ...questionUpdater(
+          'answers',
+          state.question.isCategoryChild
+            ? handleUserPinciteCategoryChild([state.categories[state.selectedCategory].id], state.question.questionType, action, state.userAnswers[action.questionId].answers)
+            : handleUserPinciteQuestion(state.question.questionType, action, state.userAnswers[action.questionId].answers)
+        )
       }
 
     case types.ON_CHANGE_CATEGORY:
@@ -277,6 +283,9 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...state,
         selectedCategory: action.selection
       }
+
+    case types.ON_CLOSE_CODE_SCREEN:
+      return INITIAL_STATE
 
     case types.GET_CODING_OUTLINE_REQUEST:
     default:
