@@ -33,21 +33,21 @@ export const getOutlineLogic = createLogic({
         hint: '',
         includeComment: false,
         possibleAnswers: [{ id: 1010, text: 'Yes' }, { id: 1011, text: 'No' }],
-        id: 1045341,
+        id: 1045341
       }, {
         questionType: 4,
         text: 'Is rabies vaccination required to obtain a license or registration for the animal?',
         hint: '',
         includeComment: true,
         possibleAnswers: [{ id: 1012, text: 'Yes' }, { id: 1013, text: 'No' }, { id: 1014, text: 'Unclear' }],
-        id: 143002,
+        id: 143002
       }, {
         questionType: 4,
         text: 'new non category question',
         hint: '',
         includeComment: true,
         possibleAnswers: [{ id: 1012, text: 'Yes' }, { id: 1013, text: 'No' }, { id: 1014, text: 'Unclear' }],
-        id: 104635463,
+        id: 104635463
       }
     ]
 
@@ -76,7 +76,7 @@ export const getOutlineLogic = createLogic({
 })
 
 export const answerQuestionLogic = createLogic({
-  type: types.UPDATE_USER_ANSWER_REQUEST,
+  type: [types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE],
   processOptions: {
     dispatchReturn: true,
     successType: types.UPDATE_USER_ANSWER_SUCCESS,
@@ -85,8 +85,31 @@ export const answerQuestionLogic = createLogic({
   latest: true,
   async process({ getState, action, api }) {
     const userId = getState().data.user.currentUser.id
-    const updatedQuestion = getState().scenes.coding.userAnswers[action.questionId]
-    return await api.answerQuestion(action.projectId,  action.jurisdictionId, userId, action.questionId, updatedQuestion)
+    const codingState = getState().scenes.coding
+    const updatedQuestionObject = codingState.userAnswers[action.questionId]
+    let finalObject = {}
+
+    if (codingState.question.isCategoryChild) {
+      const selectedCategoryId = codingState.categories[codingState.selectedCategory].id
+      finalObject = {
+        ...updatedQuestionObject,
+        answers: codingState.question.questionType === 5
+          ? [updatedQuestionObject.answers[selectedCategoryId].answers]
+          : Object.values(updatedQuestionObject.answers[selectedCategoryId].answers),
+        comment: updatedQuestionObject.comment[selectedCategoryId],
+        categoryId: selectedCategoryId
+      }
+    } else {
+      finalObject = {
+        ...updatedQuestionObject,
+        answers: codingState.question.questionType === 5
+          ? [updatedQuestionObject.answers]
+          : Object.values(updatedQuestionObject.answers)
+      }
+    }
+
+    console.log(finalObject)
+    return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, finalObject)
   }
 })
 

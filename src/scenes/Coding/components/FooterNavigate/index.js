@@ -9,7 +9,7 @@ const styles = {
   color: '#0faee6'
 }
 
-const FooterNavigate = ({ currentIndex, getNextQuestion, getPrevQuestion, totalLength }) => {
+export const FooterNavigate = ({ currentIndex, getNextQuestion, getPrevQuestion, totalLength }) => {
   const rowStyles = {
     height: 50,
     alignItems: 'center',
