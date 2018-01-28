@@ -135,20 +135,6 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         flatQuestions: [...state.flatQuestions, action.payload]
       }
 
-    case types.ADD_CHILD_QUESTION_REQUEST:
-      const newTree = addNodeUnderParent({
-        treeData: state.questions,
-        parentKey: action.path[action.path.length - 1],
-        expandParent: true,
-        getNodeKey,
-        newNode: { ...action.question, hovering: false }
-      })
-
-      return {
-        ...state,
-        questions: newTree.treeData
-      }
-
     case types.UPDATE_QUESTION_REQUEST:
       return {
         ...state,
@@ -161,6 +147,22 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ADD_CHILD_QUESTION_SUCCESS:
+      const newTree = addNodeUnderParent({
+        treeData: state.questions,
+        parentKey: action.payload.path[action.payload.path.length - 1],
+        expandParent: true,
+        getNodeKey,
+        newNode: { ...action.payload, hovering: false }
+      })
+
+      return {
+        ...state,
+        questions: newTree.treeData,
+        outline: questionsToOutline([...state.questions, action.payload]),
+        empty: false,
+        flatQuestions: [...state.flatQuestions, action.payload]
+      }
+
     case types.UPDATE_QUESTION_SUCCESS:
       return state
 
