@@ -34,7 +34,7 @@ export class Coding extends Component {
   }
 
   onChangeTextAnswer = (id, field) => event => {
-    switch(field) {
+    switch (field) {
       case 'fieldValue':
         this.props.actions.answerQuestionRequest(
           this.props.projectId, this.props.jurisdictionId, this.props.question.id, null, event.target.value
@@ -60,15 +60,17 @@ export class Coding extends Component {
           <QuestionCard question={this.props.question} onChange={this.onAnswer}
                         userAnswers={this.props.userAnswers}
                         onChangeTextAnswer={this.onChangeTextAnswer} categories={this.props.categories}
-                        selectedCategory={this.props.selectedCategory} onChangeCategory={this.props.actions.onChangeCategory}
+                        selectedCategory={this.props.selectedCategory}
+                        onChangeCategory={this.props.actions.onChangeCategory}
                         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
           />
-          <FooterNavigate currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion} getPrevQuestion={this.getPrevQuestion}
+          <FooterNavigate currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion}
+                          getPrevQuestion={this.getPrevQuestion}
                           totalLength={this.props.questionOrder.length} showNextButton={this.props.showNextButton} />
         </Container>
-    <Footer onClose={() => this.props.actions.onCloseCodeScreen() } />
+    <Footer onClose={() => this.props.actions.onCloseCodeScreen()} />
   </Container>
-  )
+    )
   }
 }
 
@@ -82,15 +84,6 @@ Coding.propTypes = {
   categories: PropTypes.array
 }
 
-const determineShowButton = (state) => {
-  if (state.question.questionType === questionTypes.CATEGORY) {
-    if (Object.keys(state.userAnswers[state.question.id].answers).length === 0) {
-      return false
-    }
-  }
-  return state.scheme.order && state.currentIndex !== (state.scheme.order.length - 1)
-}
-
 const mapStateToProps = (state, ownProps) => ({
   projectName: state.scenes.home.main.projects.byId[ownProps.match.params.id].name,
   projectId: ownProps.match.params.id,
@@ -101,7 +94,7 @@ const mapStateToProps = (state, ownProps) => ({
   selectedCategory: state.scenes.coding.selectedCategory || 0,
   jurisdictionId: '1',
   userAnswers: state.scenes.coding.userAnswers[state.scenes.coding.question.id] || {},
-  showNextButton: determineShowButton(state.scenes.coding)
+  showNextButton: state.scenes.coding.showNextButton
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

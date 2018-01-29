@@ -10,7 +10,8 @@ const INITIAL_STATE = {
   currentIndex: 0,
   categories: undefined,
   selectedCategory: 0,
-  userAnswers: {}
+  userAnswers: {},
+  showNextButton: true
 }
 
 /*
@@ -68,18 +69,50 @@ const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
   }, {})
 }
 
+const determineShowButton = (state) => {
+  if (state.question.questionType === questionTypes.CATEGORY) {
+    if (Object.keys(state.userAnswers[state.question.id].answers).length === 0) {
+      let subArr = [...state.scheme.order].slice(state.currentIndex + 1)
+      let p = subArr.find(id => state.scheme.byId[id].parentId !== state.question.id)
+      if (p !== undefined) {
+        return true
+      } else {
+        return false
+      }
+    } else {
+      return true
+    }
+  } else {
+    return state.scheme.order && state.currentIndex !== (state.scheme.order.length - 1)
+  }
+}
+
 const handleCheckCategories = (state, action) => {
-  const newQuestion = state.scheme.byId[action.id]
+  let newQuestion = state.scheme.byId[action.id]
+  let newIndex = action.newIndex
+
+  if (newQuestion.isCategoryQuestion) {
+    if (Object.keys(state.userAnswers[state.scheme.byId[action.id].parentId].answers).length === 0) {
+      let subArr = [...state.scheme.order].slice(action.newIndex)
+      newQuestion = subArr.find((id, index) => {
+        if (state.scheme.byId[id].parentId !== state.question.id) {
+          newIndex = index
+          return true
+        }
+      })
+      newQuestion = state.scheme.byId[newQuestion]
+    }
+  }
 
   const base = {
     question: newQuestion,
-    currentIndex: action.newIndex,
-    userAnswers: state.userAnswers[action.id]
+    currentIndex: newIndex,
+    userAnswers: state.userAnswers[newQuestion.id]
       ? { ...state.userAnswers }
       : {
         ...state.userAnswers,
-        [action.id]: {
-          codingSchemeQuestionId: action.id,
+        [newQuestion.id]: {
+          codingSchemeQuestionId: newQuestion.id,
           answers: {},
           comment: ''
         }
@@ -156,10 +189,10 @@ const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
       if (currentUserAnswers.hasOwnProperty(action.answerId)) {
         Object.values(state.scheme.byId).forEach(question => {
           if (question.parentId === action.questionId) {
-            console.log(otherAnswerUpdates)
-            delete otherAnswerUpdates[question.id].answers[action.answerId]
-            delete otherAnswerUpdates[question.id].comment[action.answerId]
-            console.log(otherAnswerUpdates)
+            if (otherAnswerUpdates[question.id]) {
+              delete otherAnswerUpdates[question.id].answers[action.answerId]
+              delete otherAnswerUpdates[question.id].comment[action.answerId]
+            }
           }
         })
         delete currentUserAnswers[action.answerId]
@@ -197,19 +230,6 @@ const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
     }
   }
 }
-
-/*
-  Handles if the user updates the answer to a category question child
- */
-const handleUserAnswerCategoryChild = (selectedCategoryId, questionType, action, currentUserAnswerObj) => ({
-  ...currentUserAnswerObj,
-  [selectedCategoryId]: {
-    ...currentUserAnswerObj[selectedCategoryId],
-    answers: {
-      ...handleUpdateUserAnswers(questionType, action, currentUserAnswerObj[selectedCategoryId].answers)
-    }
-  }
-})
 
 /*
   Handles if a user updates the comment of a category question child
@@ -284,10 +304,12 @@ const codingReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_NEXT_QUESTION:
     case types.GET_PREV_QUESTION:
+      const update = { ...state, ...handleCheckCategories(state, action) }
       return {
-        ...state,
-        ...handleCheckCategories(state, action)
+        ...update,
+        showNextButton: determineShowButton(update)
       }
+
 
     case types.GET_CODING_OUTLINE_SUCCESS:
       const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
@@ -312,12 +334,17 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.UPDATE_USER_ANSWER_REQUEST:
-      return {
+      const updated = {
         ...state,
         userAnswers: {
           ...state.userAnswers,
           ...handleUpdateUserAnswers(state, action, selectedCategoryId)
         }
+      }
+
+      return {
+        ...updated,
+        showNextButton: determineShowButton(updated)
       }
 
     case types.ON_CHANGE_COMMENT:

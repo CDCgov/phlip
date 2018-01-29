@@ -408,4 +408,8 @@ describe('Coding reducer', () => {
       }))
     })
   })
+
+  xdescribe('ON_CHANGE_COMMENT', () => {
+
+  })
 })
