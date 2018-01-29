@@ -60,7 +60,7 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
       </Row>
 
       {question.hint &&
-      <Row flex displayFlex style={{ padding: '0 35px 0 35px' }}>
+      <Row flex displayFlex style={{ padding: '0 35px 20px 35px' }}>
             <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
             <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
           </Row>}
