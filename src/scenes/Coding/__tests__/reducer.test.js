@@ -218,6 +218,7 @@ describe('Coding reducer', () => {
           positionInParent: 0,
           isCategoryChild: true
         },
+        showNextButton: false,
         currentIndex: 3,
         userAnswers: {
           ...currentState.userAnswers,
