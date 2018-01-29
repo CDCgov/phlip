@@ -65,6 +65,8 @@ export const getOutlineLogic = createLogic({
 
     const { questionsWithNumbers, order } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
 
+    // /api/user/${userId}/project/${projectId}/jurisdiction/${jid}
+
     return {
       outline: scheme.outline,
       scheme: questionsWithNumbers,
@@ -89,6 +91,8 @@ export const answerQuestionLogic = createLogic({
     const updatedQuestionObject = codingState.userAnswers[action.questionId]
     let finalObject = {}
 
+    // /api/user/${userId}/project/${projectId}/jurisdiction/${jid}/question/${codingSchemeQuestionId}
+
     if (codingState.question.isCategoryChild) {
       const selectedCategoryId = codingState.categories[codingState.selectedCategory].id
       finalObject = {
@@ -108,7 +112,6 @@ export const answerQuestionLogic = createLogic({
       }
     }
 
-    console.log(finalObject)
     return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, finalObject)
   }
 })
