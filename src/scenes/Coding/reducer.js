@@ -11,7 +11,7 @@ const INITIAL_STATE = {
   categories: undefined,
   selectedCategory: 0,
   userAnswers: {}
-  }
+}
 
 /*
  This function basically takes an array of user coded question answers: { answers: [{ answerId: 1, pincite: '' }] },
@@ -100,7 +100,7 @@ const handleCheckCategories = (state, action) => {
     const selectedCategories = Object.keys(state.userAnswers[parentQuestion.id].answers).length !== 0
       ? parentQuestion.possibleAnswers.filter(category => state.userAnswers[parentQuestion.id].answers.hasOwnProperty(category.id))
       : parentQuestion.possibleAnswers
-    
+
     const answers = selectedCategories.reduce((answerObj, cat) => {
       return {
         ...answerObj,
@@ -119,7 +119,6 @@ const handleCheckCategories = (state, action) => {
       }
     }, {})
 
-
     return {
       ...base,
       question: { ...base.question, isCategoryChild: true },
@@ -136,22 +135,66 @@ const handleCheckCategories = (state, action) => {
   }
 }
 
-const handleUpdateUserAnswers = (questionType, action, currentUserAnswers = null) => {
-  switch (questionType) {
+const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
+  let currentUserAnswers = state.question.isCategoryChild
+    ? state.userAnswers[action.questionId].answers[selectedCategoryId].answers
+    : state.userAnswers[action.questionId].answers
+
+  let otherAnswerUpdates = { ...state.userAnswers }
+
+  switch (state.question.questionType) {
     case questionTypes.BINARY:
     case questionTypes.MULTIPLE_CHOICE:
-      return { [action.answerId]: { codingSchemeAnswerId: action.answerId, pincite: '' } }
+      currentUserAnswers = { [action.answerId]: { codingSchemeAnswerId: action.answerId, pincite: '' } }
+      break
+
     case questionTypes.TEXT_FIELD:
-      return { ...currentUserAnswers, textAnswer: action.answerValue }
+      currentUserAnswers = { ...currentUserAnswers, textAnswer: action.answerValue }
+      break
+
     case questionTypes.CATEGORY:
+      if (currentUserAnswers.hasOwnProperty(action.answerId)) {
+        Object.values(state.scheme.byId).forEach(question => {
+          if (question.parentId === action.questionId) {
+            console.log(otherAnswerUpdates)
+            delete otherAnswerUpdates[question.id].answers[action.answerId]
+            delete otherAnswerUpdates[question.id].comment[action.answerId]
+            console.log(otherAnswerUpdates)
+          }
+        })
+        delete currentUserAnswers[action.answerId]
+      } else {
+        currentUserAnswers = {
+          ...currentUserAnswers,
+          [action.answerId]: { codingSchemeAnswerId: action.answerId, pincite: '' }
+        }
+      }
+      break
+
     case questionTypes.CHECKBOXES:
       if (currentUserAnswers.hasOwnProperty(action.answerId)) delete currentUserAnswers[action.answerId]
       else currentUserAnswers = {
         ...currentUserAnswers,
         [action.answerId]: { codingSchemeAnswerId: action.answerId, pincite: '' }
       }
+  }
 
-      return { ...currentUserAnswers }
+  return {
+    ...otherAnswerUpdates,
+    [action.questionId]: {
+      ...state.userAnswers[action.questionId],
+      answers: {
+        ...state.userAnswers[action.questionId].answers,
+        ... state.question.isCategoryChild
+          ? {
+            [selectedCategoryId]: {
+              ...state.userAnswers[action.questionId].answers[selectedCategoryId],
+              answers: { ...currentUserAnswers }
+            }
+          }
+          : { ...currentUserAnswers }
+      }
+    }
   }
 }
 
@@ -208,9 +251,6 @@ const handleUserPinciteCategoryChild = (selectedCategoryId, questionType, action
   }
 })
 
-/*
-  Reusable function so I stop repeating everything but the fieldValue part
- */
 const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, getFieldValues) => ({
   userAnswers: {
     ...state.userAnswers,
@@ -274,12 +314,10 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.UPDATE_USER_ANSWER_REQUEST:
       return {
         ...state,
-        ...questionUpdater(
-          'answers',
-          state.question.isCategoryChild
-            ? handleUserAnswerCategoryChild(selectedCategoryId, state.question.questionType, action, state.userAnswers[action.questionId].answers)
-            : handleUpdateUserAnswers(state.question.questionType, action, state.userAnswers[action.questionId].answers)
-        )
+        userAnswers: {
+          ...state.userAnswers,
+          ...handleUpdateUserAnswers(state, action, selectedCategoryId)
+        }
       }
 
     case types.ON_CHANGE_COMMENT:
