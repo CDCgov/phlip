@@ -8,6 +8,7 @@ import Footer from './components/Footer'
 import QuestionCard from './components/QuestionCard'
 import FooterNavigate from './components/FooterNavigate'
 import * as actions from './actions'
+import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 export class Coding extends Component {
   constructor(props, context) {
@@ -63,7 +64,7 @@ export class Coding extends Component {
                         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.question.id)}
           />
           <FooterNavigate currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion} getPrevQuestion={this.getPrevQuestion}
-                          totalLength={this.props.questionOrder.length} />
+                          totalLength={this.props.questionOrder.length} showNextButton={this.props.showNextButton} />
         </Container>
     <Footer onClose={() => this.props.actions.onCloseCodeScreen() } />
   </Container>
@@ -81,6 +82,15 @@ Coding.propTypes = {
   categories: PropTypes.array
 }
 
+const determineShowButton = (state) => {
+  if (state.question.questionType === questionTypes.CATEGORY) {
+    if (Object.keys(state.userAnswers[state.question.id].answers).length === 0) {
+      return false
+    }
+  }
+  return state.scheme.order && state.currentIndex !== (state.scheme.order.length - 1)
+}
+
 const mapStateToProps = (state, ownProps) => ({
   projectName: state.scenes.home.main.projects.byId[ownProps.match.params.id].name,
   projectId: ownProps.match.params.id,
@@ -90,7 +100,8 @@ const mapStateToProps = (state, ownProps) => ({
   categories: state.scenes.coding.categories || undefined,
   selectedCategory: state.scenes.coding.selectedCategory || 0,
   jurisdictionId: '1',
-  userAnswers: state.scenes.coding.userAnswers[state.scenes.coding.question.id] || {}
+  userAnswers: state.scenes.coding.userAnswers[state.scenes.coding.question.id] || {},
+  showNextButton: determineShowButton(state.scenes.coding)
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

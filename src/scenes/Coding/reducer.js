@@ -11,7 +11,7 @@ const INITIAL_STATE = {
   categories: undefined,
   selectedCategory: 0,
   userAnswers: {}
-}
+  }
 
 /*
  This function basically takes an array of user coded question answers: { answers: [{ answerId: 1, pincite: '' }] },
@@ -100,7 +100,7 @@ const handleCheckCategories = (state, action) => {
     const selectedCategories = Object.keys(state.userAnswers[parentQuestion.id].answers).length !== 0
       ? parentQuestion.possibleAnswers.filter(category => state.userAnswers[parentQuestion.id].answers.hasOwnProperty(category.id))
       : parentQuestion.possibleAnswers
-
+    
     const answers = selectedCategories.reduce((answerObj, cat) => {
       return {
         ...answerObj,
@@ -118,6 +118,7 @@ const handleCheckCategories = (state, action) => {
         }
       }
     }, {})
+
 
     return {
       ...base,
@@ -145,7 +146,11 @@ const handleUpdateUserAnswers = (questionType, action, currentUserAnswers = null
     case questionTypes.CATEGORY:
     case questionTypes.CHECKBOXES:
       if (currentUserAnswers.hasOwnProperty(action.answerId)) delete currentUserAnswers[action.answerId]
-      else currentUserAnswers = { ...currentUserAnswers, [action.answerId]: { codingSchemeAnswerId: action.answerId, pincite: '' } }
+      else currentUserAnswers = {
+        ...currentUserAnswers,
+        [action.answerId]: { codingSchemeAnswerId: action.answerId, pincite: '' }
+      }
+
       return { ...currentUserAnswers }
   }
 }

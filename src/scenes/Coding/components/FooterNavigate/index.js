@@ -9,7 +9,7 @@ const styles = {
   color: '#0faee6'
 }
 
-export const FooterNavigate = ({ currentIndex, getNextQuestion, getPrevQuestion, totalLength }) => {
+export const FooterNavigate = ({ currentIndex, getNextQuestion, getPrevQuestion, showNextButton }) => {
   const rowStyles = {
     height: 50,
     alignItems: 'center',
@@ -25,7 +25,7 @@ export const FooterNavigate = ({ currentIndex, getNextQuestion, getPrevQuestion,
         <IconButton color="black">arrow_back</IconButton>
         <Typography type="body2"><span style={{ ...styles, paddingLeft: 5 }}>Previous question</span></Typography>
       </Row>}
-      {currentIndex !== (totalLength - 1) && <Row displayFlex flex={currentIndex === 0} style={{ cursor: 'pointer' }} onClick={() => getNextQuestion(currentIndex + 1)}>
+      {showNextButton && <Row displayFlex flex={currentIndex === 0} style={{ cursor: 'pointer' }} onClick={() => getNextQuestion(currentIndex + 1)}>
         <Typography type="body2">
           <span style={{ ...styles, paddingRight: 5 }}>Next question</span>
         </Typography>
