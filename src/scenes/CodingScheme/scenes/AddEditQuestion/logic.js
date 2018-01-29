@@ -1,5 +1,6 @@
 import { createLogic } from 'redux-logic'
 import * as types from '../../actionTypes'
+import * as questionTypes from './constants'
 
 
 const updateUserIdLogic = createLogic({
@@ -27,6 +28,19 @@ const updateOutlineLogic = createLogic({
   }
 })
 
+const updateIsCategoryQuestionLogic = createLogic({
+  type: types.ADD_CHILD_QUESTION_REQUEST,
+  transform({ getState, action }, next) {
+    next({
+      ...action,
+      question: {
+        ...action.question,
+        isCategoryQuestion: action.parentNode.questionType === questionTypes.CATEGORY ? true : false
+      }
+    })
+  }
+})
+
 const updateQuestionLogic = createLogic({
   type: types.UPDATE_QUESTION_REQUEST,
   processOptions: {
@@ -47,14 +61,17 @@ const addChildQuestionLogic = createLogic({
   type: types.ADD_CHILD_QUESTION_REQUEST,
   processOptions: {
     dispatchReturn: true,
-    successType: types.ADD_CHILD_QUESTION_SUCCESS
+    successType: types.ADD_CHILD_QUESTION_SUCCESS,
+    failType: types.ADD_CHILD_QUESTION_FAIL
   },
   async process({ api, action }) {
+    console.log(action.question)
     const question = await api.addQuestion(action.question, action.projectId)
     return {
       ...question,
       parentId: action.question.parentId,
       positionInParent: action.question.positionInParent,
+      isCategoryQuestion: action.question.isCategoryQuestion,
       path: action.path,
       hovering: false
     }
@@ -68,6 +85,7 @@ const addQuestionLogic = createLogic({
     successType: types.ADD_QUESTION_SUCCESS
   },
   async process({ api, action }) {
+    console.log(action.question)
     action.question.hovering = false
     const question = await api.addQuestion(action.question, action.projectId)
     return {
@@ -83,6 +101,7 @@ export default [
   updateUserIdLogic,
   updateOutlineLogic,
   updateQuestionLogic,
+  updateIsCategoryQuestionLogic,
   addQuestionLogic,
   addChildQuestionLogic
 ]

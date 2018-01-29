@@ -34,16 +34,19 @@ export class AddEditQuestion extends Component {
     this.defaultForm = {
       questionType: questionTypes.MULTIPLE_CHOICE,
       possibleAnswers: [{}, {}, {}],
-      includeComment: false
+      includeComment: false,
+      isCategoryQuestion: false
     }
     this.binaryForm = {
       questionType: questionTypes.BINARY,
       possibleAnswers: [{ text: 'Yes' }, { text: 'No' }],
-      includeComment: false
+      includeComment: false,
+      isCategoryQuestion: false
     }
     this.textFieldForm = {
       questionType: questionTypes.TEXT_FIELD,
-      includeComment: false
+      includeComment: false,
+      isCategoryQuestion: false
     }
 
     this.onCancel = this.onCancel.bind(this)
@@ -69,7 +72,7 @@ export class AddEditQuestion extends Component {
     }
 
     this.questionDefined ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.questionDefined.id, this.props.location.state.path)
-      : this.parentDefined ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.props.location.state.path)
+      : this.parentDefined ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.parentDefined, this.props.location.state.path)
         : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)
 
     this.props.history.goBack()
