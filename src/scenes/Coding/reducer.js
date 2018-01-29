@@ -216,17 +216,15 @@ const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
     ...otherAnswerUpdates,
     [action.questionId]: {
       ...state.userAnswers[action.questionId],
-      answers: {
-        ...state.userAnswers[action.questionId].answers,
-        ... state.question.isCategoryChild
-          ? {
-            [selectedCategoryId]: {
-              ...state.userAnswers[action.questionId].answers[selectedCategoryId],
-              answers: { ...currentUserAnswers }
-            }
+      answers: state.question.isCategoryChild
+        ? {
+          ...state.userAnswers[action.questionId].answers,
+          [selectedCategoryId]: {
+            ...state.userAnswers[action.questionId].answers[selectedCategoryId],
+            answers: { ...currentUserAnswers }
           }
-          : { ...currentUserAnswers }
-      }
+        }
+        : { ...currentUserAnswers }
     }
   }
 }
