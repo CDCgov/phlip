@@ -69,6 +69,9 @@ const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
   }, {})
 }
 
+/*
+  Handles determining whether or not to show the 'next question' button at the bottom of the screen
+ */
 const determineShowButton = (state) => {
   if (state.question.questionType === questionTypes.CATEGORY) {
     if (Object.keys(state.userAnswers[state.question.id].answers).length === 0) {
@@ -87,10 +90,15 @@ const determineShowButton = (state) => {
   }
 }
 
+/*
+  Handles determining what the next question is, and updating state.userAnswers with question information
+ */
 const handleCheckCategories = (state, action) => {
   let newQuestion = state.scheme.byId[action.id]
   let newIndex = action.newIndex
 
+  // Check to make sure newQuestion is correct. If the newQuestion is a category child, but the user hasn't selected
+  // any categories, then find the next parent question
   if (newQuestion.isCategoryQuestion) {
     if (Object.keys(state.userAnswers[state.scheme.byId[action.id].parentId].answers).length === 0) {
       let subArr = [...state.scheme.order].slice(action.newIndex)
@@ -168,6 +176,9 @@ const handleCheckCategories = (state, action) => {
   }
 }
 
+/*
+  Handles updating state.userAnswers with the user's new answer
+ */
 const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
   let currentUserAnswers = state.question.isCategoryChild
     ? state.userAnswers[action.questionId].answers[selectedCategoryId].answers
@@ -269,6 +280,9 @@ const handleUserPinciteCategoryChild = (selectedCategoryId, questionType, action
   }
 })
 
+/*
+  Updating pincite and comment use this method
+ */
 const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, getFieldValues) => ({
   userAnswers: {
     ...state.userAnswers,
@@ -279,12 +293,18 @@ const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, getFieldVa
   }
 })
 
-const handleClearAnswers = (questionType, currentAnswerObj) => {
+/*
+  Clears answers when user clicks sweep button
+ */
+const handleClearAnswers = questionType => {
   return questionType === questionTypes.TEXT_FIELD
     ? { textAnswer: '', pincite: '' }
     : {}
 }
 
+/*
+  Clears the category for current question from state.userAnswers
+ */
 const handleClearCategoryAnswers = (selectedCategoryId, questionType, currentUserAnswerObj) => ({
   ...currentUserAnswerObj,
   [selectedCategoryId]: {

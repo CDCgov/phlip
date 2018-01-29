@@ -9,7 +9,8 @@ const initial = {
   currentIndex: 0,
   categories: undefined,
   selectedCategory: 0,
-  userAnswers: {}
+  userAnswers: {},
+  showNextButton: true
 }
 
 const getState = other => ({ ...initial, ...other })
