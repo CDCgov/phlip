@@ -10,7 +10,7 @@ const props = {
     enableHover: () => {},
     disableHover: () => {}
   },
-  questions: {}
+  questions: []
 }
 
 describe('CodingScheme scene', () => {

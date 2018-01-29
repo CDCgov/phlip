@@ -26,7 +26,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
       handleHoverOnQuestion={[Function]}
       handleQuestionNodeMove={[Function]}
       handleQuestionTreeChange={[Function]}
-      questions={Object {}}
+      questions={Array []}
     />
   </Container>
   <Footer />

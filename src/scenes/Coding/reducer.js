@@ -267,7 +267,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.UPDATE_USER_ANSWER_REQUEST:
-      console.log(action)
       return {
         ...state,
         ...questionUpdater(
