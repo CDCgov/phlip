@@ -3,18 +3,25 @@ import PropTypes from 'prop-types'
 import SortableTree from 'react-sortable-tree'
 import TreeNode from './components/TreeNode'
 import QuestionNode from './components/QuestionNode'
+import * as questionTypes from '../../scenes/AddEditQuestion/constants'
 
-const canDrop = (nextParent, outline, questions) => {
-  if (nextParent === null) return true
+const canDrop = (node, nextParent, prevParent, outline, questions) => {
+  if (node.isCategoryQuestion) {
+    if (nextParent === null || nextParent.id !== prevParent.id) return false
+    else return true
+  } else {
+    if (nextParent === null) return true
+    if (nextParent.questionType === questionTypes.CATEGORY) return false
 
-  const grandParentId = outline[nextParent.id].parentId
-  let canDrop = true
-  questions.map(question => {
-    if (question.id === grandParentId) {
-      canDrop = question.questionType !== 2
-    }
-  })
-  return canDrop
+    const grandParentId = outline[nextParent.id].parentId
+    let canDrop = true
+    questions.map(question => {
+      if (question.id === grandParentId) {
+        canDrop = question.questionType !== questionTypes.CATEGORY
+      }
+    })
+    return canDrop
+  }
 }
 
 export const Scheme = ({ questions, flatQuestions, handleQuestionTreeChange, handleQuestionNodeMove, handleHoverOnQuestion, enableHover, disableHover, projectId, outline }) => {
@@ -43,7 +50,7 @@ export const Scheme = ({ questions, flatQuestions, handleQuestionTreeChange, han
           projectId: projectId
         }
       }}
-      canDrop={({ nextParent }) => canDrop(nextParent, outline, flatQuestions)}
+      canDrop={({ node, nextParent, prevParent }) => canDrop(node, nextParent, prevParent, outline, flatQuestions)}
       isVirtualized={true}
     />
   )

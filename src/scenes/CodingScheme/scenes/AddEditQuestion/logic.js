@@ -65,7 +65,6 @@ const addChildQuestionLogic = createLogic({
     failType: types.ADD_CHILD_QUESTION_FAIL
   },
   async process({ api, action }) {
-    console.log(action.question)
     const question = await api.addQuestion(action.question, action.projectId)
     return {
       ...question,
@@ -85,7 +84,6 @@ const addQuestionLogic = createLogic({
     successType: types.ADD_QUESTION_SUCCESS
   },
   async process({ api, action }) {
-    console.log(action.question)
     action.question.hovering = false
     const question = await api.addQuestion(action.question, action.projectId)
     return {

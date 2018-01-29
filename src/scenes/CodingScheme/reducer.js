@@ -1,7 +1,13 @@
 import * as types from './actionTypes'
-import { changeNodeAtPath, getFlatDataFromTree, getTreeFromFlatData, walk, map, addNodeUnderParent } from 'react-sortable-tree'
+import {
+  changeNodeAtPath,
+  getFlatDataFromTree,
+  getTreeFromFlatData,
+  walk,
+  map,
+  addNodeUnderParent
+} from 'react-sortable-tree'
 import { sortList, updater } from 'utils'
-
 
 const INITIAL_STATE = {
   questions: [],
@@ -124,7 +130,6 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         allowHover: true
       }
-
 
     case types.ADD_QUESTION_SUCCESS:
       return {
