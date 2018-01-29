@@ -83,7 +83,7 @@ const determineShowButton = (state) => {
       return true
     }
   } else {
-    return state.scheme.order && state.currentIndex !== (state.scheme.order.length - 1)
+    return state.scheme.order && state.question.id !== state.scheme.order[state.scheme.order.length - 1]
   }
 }
 
@@ -309,7 +309,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...update,
         showNextButton: determineShowButton(update)
       }
-
 
     case types.GET_CODING_OUTLINE_SUCCESS:
       const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
