@@ -20,7 +20,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
     >
       Test Project
     </span>
-     |
+    <span />
   </WithStyles>
   <WithTheme
     style={

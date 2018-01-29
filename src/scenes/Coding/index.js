@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Container, { Row, Column } from 'components/Layout'
+import Container from 'components/Layout'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import QuestionCard from './components/QuestionCard'
@@ -75,7 +75,6 @@ Coding.propTypes = {
   projectName: PropTypes.string,
   projectId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   question: PropTypes.object,
-  outline: PropTypes.object,
   currentIndex: PropTypes.number,
   questionOrder: PropTypes.array,
   actions: PropTypes.object,
@@ -86,7 +85,6 @@ const mapStateToProps = (state, ownProps) => ({
   projectName: state.scenes.home.main.projects.byId[ownProps.match.params.id].name,
   projectId: ownProps.match.params.id,
   question: state.scenes.coding.question || {},
-  outline: state.scenes.coding.outline || {},
   currentIndex: state.scenes.coding.currentIndex || 0,
   questionOrder: state.scenes.coding.scheme.order || [],
   categories: state.scenes.coding.categories || undefined,

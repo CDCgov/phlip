@@ -1,0 +1,10 @@
+.header::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 10px;
+  bottom: 10px;
+  left: 9%;
+  border-left: 1px dotted #7e8285;
+  border-top: 1px solid transparent;
+}
