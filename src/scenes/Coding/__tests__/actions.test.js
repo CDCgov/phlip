@@ -59,10 +59,12 @@ describe('Coding scene actions creators', () => {
   test('should create an action to handle clearing answers', () => {
     const expectedAction = {
       type: types.ON_CLEAR_ANSWER,
-      questionId: 1
+      questionId: 1,
+      projectId: 1,
+      jurisdictionId: 1
     }
 
-    expect(actions.onClearAnswer(1)).toEqual(expectedAction)
+    expect(actions.onClearAnswer(1, 1, 1)).toEqual(expectedAction)
   })
 
   test('should create an action to handle close code screen', () => {

@@ -2,6 +2,7 @@ import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
+import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 export const getOutlineLogic = createLogic({
   type: types.GET_CODING_OUTLINE_REQUEST,
@@ -52,13 +53,11 @@ export const answerQuestionLogic = createLogic({
     const updatedQuestionObject = codingState.userAnswers[action.questionId]
     let finalObject = {}
 
-    // /api/user/${userId}/project/${projectId}/jurisdiction/${jid}/question/${codingSchemeQuestionId}
-
     if (codingState.question.isCategoryChild) {
       const selectedCategoryId = codingState.categories[codingState.selectedCategory].id
       finalObject = {
         ...updatedQuestionObject,
-        answers: codingState.question.questionType === 5
+        answers: codingState.question.questionType === questionTypes.TEXT_FIELD
           ? [updatedQuestionObject.answers[selectedCategoryId].answers]
           : Object.values(updatedQuestionObject.answers[selectedCategoryId].answers),
         comment: updatedQuestionObject.comment[selectedCategoryId],
@@ -67,7 +66,7 @@ export const answerQuestionLogic = createLogic({
     } else {
       finalObject = {
         ...updatedQuestionObject,
-        answers: codingState.question.questionType === 5
+        answers: codingState.question.questionType === questionTypes.TEXT_FIELD
           ? [updatedQuestionObject.answers]
           : Object.values(updatedQuestionObject.answers)
       }
