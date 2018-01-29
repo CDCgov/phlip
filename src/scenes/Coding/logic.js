@@ -39,7 +39,7 @@ export const getOutlineLogic = createLogic({
 })
 
 export const answerQuestionLogic = createLogic({
-  type: [types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE],
+  type: [types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER],
   processOptions: {
     dispatchReturn: true,
     successType: types.UPDATE_USER_ANSWER_SUCCESS,
