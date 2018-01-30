@@ -70,8 +70,9 @@ export class Coding extends Component {
 
   onShowGetStartedView = (noScheme, noJurisdictions) => {
     let startedText = ''
-
-    if (noScheme && !noJurisdictions) {
+    if (this.props.userRole === 'Coder') {
+      startedText = 'The coordinator for this project has not created a coding scheme or added jurisdictions.'
+    } else if (noScheme && !noJurisdictions) {
       startedText = 'You must add questions to the project coding scheme before coding.'
     } else if (!noScheme && noJurisdictions) {
       startedText = 'You must add jurisdictions to the project before coding.'
@@ -83,10 +84,10 @@ export class Coding extends Component {
       <Container column flex alignItems="center" style={{ justifyContent: 'center', padding: 30, textAlign: 'center' }}>
         <Typography type="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
         <Row>
-          {noScheme && <TextLink to={{ pathname: `/project/${this.props.projectId}/coding-scheme/` }}>
+          {noScheme && this.props.userRole !== 'Coder' && <TextLink to={{ pathname: `/project/${this.props.projectId}/coding-scheme/` }}>
             <Button value="Create Coding Scheme" color="accent" />
           </TextLink>}
-          {noJurisdictions && <TextLink to={{ pathname: `/project/${this.props.projectId}/jurisdictions/` }}>
+          {noJurisdictions && this.props.userRole !== 'Coder' && <TextLink to={{ pathname: `/project/${this.props.projectId}/jurisdictions/` }}>
             <Button value="Add Jurisdictions" color="accent" style={{ marginLeft: 50 }} />
           </TextLink>}
         </Row>
@@ -163,7 +164,8 @@ const mapStateToProps = (state, ownProps) => {
     jurisdiction: state.scenes.coding.jurisdiction || project.projectJurisdictions.length > 0
       ? project.projectJurisdictions[0]
       : null,
-    isSchemeEmpty: state.scenes.coding.scheme === null ? null : state.scenes.coding.scheme.order.length === 0
+    isSchemeEmpty: state.scenes.coding.scheme === null ? null : state.scenes.coding.scheme.order.length === 0,
+    userRole: state.data.user.currentUser.role
   }
 }
 
