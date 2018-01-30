@@ -47,7 +47,8 @@ const getQuestionsFromOutline = (outline, questions) => {
       {
         ...q,
         ...outline[q.id],
-        hovering: false
+        hovering: false,
+        expanded: true
       }
     ]
   }, [])
