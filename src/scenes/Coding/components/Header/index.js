@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Typography from 'material-ui/Typography'
 import Button from 'components/Button'
@@ -8,12 +8,12 @@ import Select from 'material-ui/Select'
 import JurisdictionSelect from '../JurisdictionSelect'
 import Container, { Column } from 'components/Layout'
 
-export const Header = ({ projectName, projectId, jurisdictionsList, selectedJurisdiction, onJurisdictionChange, currentJurisdiction }) => (
+export const Header = ({ projectName, empty, projectId, jurisdictionsList, selectedJurisdiction, onJurisdictionChange, currentJurisdiction }) => (
   <AppBar>
     <Typography type="title" color="inherit">
       <span style={{ color: '#0faee6' }}>{projectName}</span>
     </Typography>
-    <span className={styles.header} />
+    {!empty && <Fragment><span className={styles.header} />
     <div style={{ flex: '1' }}>
       <JurisdictionSelect options={jurisdictionsList} value={selectedJurisdiction} onChange={onJurisdictionChange} />
     </div>
@@ -27,7 +27,7 @@ export const Header = ({ projectName, projectId, jurisdictionsList, selectedJuri
       </Typography>
     </Column>
     <Column flex></Column>
-    <Button value="View/Edit Protocol" style={{ backgroundColor: 'white', color: 'black', fontWeight: 'bold' }} />
+      <Button value="View/Edit Protocol" style={{ backgroundColor: 'white', color: 'black', fontWeight: 'bold' }} /></Fragment>}
   </AppBar>
 )
 

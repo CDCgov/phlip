@@ -21,18 +21,25 @@ export const getOutlineLogic = createLogic({
       throw { error: 'failed to get outline' }
     }
 
-    const merge = scheme.codingSchemeQuestions.reduce((arr, q) => {
-      return [...arr, { ...q, ...scheme.outline[q.id] }]
-    }, [])
+    if (scheme.codingSchemeQuestions.length === 0) {
+      return {
+        isSchemeEmpty: true
+      }
+    } else {
+      const merge = scheme.codingSchemeQuestions.reduce((arr, q) => {
+        return [...arr, { ...q, ...scheme.outline[q.id] }]
+      }, [])
 
-    const { questionsWithNumbers, order } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
+      const { questionsWithNumbers, order } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
 
-    return {
-      outline: scheme.outline,
-      scheme: questionsWithNumbers,
-      questionOrder: order,
-      question: questionsWithNumbers[0],
-      codedQuestions: []
+      return {
+        outline: scheme.outline,
+        scheme: questionsWithNumbers,
+        questionOrder: order,
+        question: questionsWithNumbers[0],
+        codedQuestions: [],
+        isSchemeEmpty: false
+      }
     }
   }
 })

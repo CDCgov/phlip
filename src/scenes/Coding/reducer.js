@@ -4,7 +4,7 @@ import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/const
 
 const INITIAL_STATE = {
   question: {},
-  scheme: {},
+  scheme: null,
   outline: {},
   jurisdiction: undefined,
   jurisdictionId: undefined,
@@ -330,25 +330,35 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.GET_CODING_OUTLINE_SUCCESS:
-      const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
+      if (action.payload.isSchemeEmpty) {
+        return {
+          ...state,
+          scheme: { order: [], byId: {} },
+          outline: {},
+          question: {},
+          userAnswers: {}
+        }
+      } else {
+        const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
 
-      return {
-        ...state,
-        outline: action.payload.outline,
-        scheme: {
-          byId: normalizedQuestions,
-          order: action.payload.questionOrder
-        },
-        question: action.payload.question,
-        userAnswers: action.payload.codedQuestions.length !== 0
-          ? initializeUserAnswers(action.payload.codedQuestions, normalizedQuestions)
-          : {
-            [action.payload.question.id]: {
-              codingSchemeQuestionId: action.payload.question.id,
-              comment: '',
-              answers: {}
+        return {
+          ...state,
+          outline: action.payload.outline,
+          scheme: {
+            byId: normalizedQuestions,
+            order: action.payload.questionOrder
+          },
+          question: action.payload.question,
+          userAnswers: action.payload.codedQuestions.length !== 0
+            ? initializeUserAnswers(action.payload.codedQuestions, normalizedQuestions)
+            : {
+              [action.payload.question.id]: {
+                codingSchemeQuestionId: action.payload.question.id,
+                comment: '',
+                answers: {}
+              }
             }
-          }
+        }
       }
 
     case types.UPDATE_USER_ANSWER_REQUEST:

@@ -7,6 +7,7 @@ exports[`Coding scene should render correctly 1`] = `
   spacing={0}
 >
   <Header
+    empty={true}
     onJurisdictionChange={[Function]}
     projectId={1}
     projectName="Test Project"
@@ -22,24 +23,7 @@ exports[`Coding scene should render correctly 1`] = `
         "padding": "20px 20px 10px 20px",
       }
     }
-  >
-    <QuestionCard
-      categories={Array []}
-      onChange={[Function]}
-      onChangeCategory={[Function]}
-      onChangeTextAnswer={[Function]}
-      onClearAnswer={[Function]}
-      question={Object {}}
-      selectedCategory={0}
-      userAnswers={Object {}}
-    />
-    <FooterNavigate
-      currentIndex={0}
-      getNextQuestion={[Function]}
-      getPrevQuestion={[Function]}
-      totalLength={0}
-    />
-  </Container>
+  />
   <Footer
     onClose={[Function]}
   />

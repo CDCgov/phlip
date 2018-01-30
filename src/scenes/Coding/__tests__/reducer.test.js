@@ -3,7 +3,7 @@ import reducer from '../reducer'
 
 const initial = {
   question: {},
-  scheme: {},
+  scheme: null,
   outline: {},
   jurisdiction: undefined,
   jurisdictionId: undefined,

@@ -31,7 +31,7 @@ export class AddEditJurisdictions extends Component {
 
   onCloseModal = () => {
     this.props.actions.clearJurisdictions()
-    this.props.history.goBack()
+    this.props.history.push('/')
   }
 
   getButton = () => <Button onClick={() => this.onOpenForm(false)} value="+ Add Jurisdiction" color="accent" />

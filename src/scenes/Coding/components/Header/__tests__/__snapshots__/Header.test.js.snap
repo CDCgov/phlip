@@ -4,11 +4,6 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
 <AppBar>
   <WithStyles
     color="inherit"
-    style={
-      Object {
-        "flex": 2,
-      }
-    }
     type="title"
   >
     <span
@@ -20,75 +15,79 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
     >
       Test Project
     </span>
+  </WithStyles>
+  <React.Fragment>
     <span />
-    <WithStyles
+    <div
       style={
         Object {
-          "marginLeft": "40px",
+          "flex": "1",
         }
       }
+    >
+      <WithStyles />
+    </div>
+    <Column
+      component={
+        <WithStyles
+          item={true}
+        />
+      }
+      displayFlex={false}
+      flex={false}
+    >
+      <WithStyles
+        align="right"
+        color="default"
+        type="caption"
+      >
+        Segment start 
+        <span
+          style={
+            Object {
+              "color": "black",
+            }
+          }
+        >
+          2018-1-1
+        </span>
+      </WithStyles>
+      <WithStyles
+        align="right"
+        color="default"
+        type="caption"
+      >
+        Segment end 
+        <span
+          style={
+            Object {
+              "color": "black",
+            }
+          }
+        >
+          2018-1-18
+        </span>
+      </WithStyles>
+    </Column>
+    <Column
+      component={
+        <WithStyles
+          item={true}
+        />
+      }
+      displayFlex={false}
+      flex={true}
     />
-  </WithStyles>
-  <Column
-    component={
-      <WithStyles
-        item={true}
-      />
-    }
-    displayFlex={false}
-    flex={false}
-  >
-    <WithStyles
-      align="right"
-      color="default"
-      type="caption"
-    >
-      Segment start 
-      <span
-        style={
-          Object {
-            "color": "black",
-          }
+    <WithTheme
+      style={
+        Object {
+          "backgroundColor": "white",
+          "color": "black",
+          "fontWeight": "bold",
         }
-      >
-        2018-1-1
-      </span>
-    </WithStyles>
-    <WithStyles
-      align="right"
-      color="default"
-      type="caption"
-    >
-      Segment end 
-      <span
-        style={
-          Object {
-            "color": "black",
-          }
-        }
-      >
-        2018-1-18
-      </span>
-    </WithStyles>
-  </Column>
-  <Column
-    component={
-      <WithStyles
-        item={true}
-      />
-    }
-    displayFlex={false}
-    flex={true}
-  />
-  <WithTheme
-    style={
-      Object {
-        "backgroundColor": "white",
-        "color": "black",
-        "fontWeight": "bold",
       }
-    }
-    value="View/Edit Protocol"
-  />
+      value="View/Edit Protocol"
+    />
+  </React.Fragment>
 </AppBar>
 `;
