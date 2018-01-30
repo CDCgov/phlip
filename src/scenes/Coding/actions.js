@@ -49,3 +49,9 @@ export const onJurisdictionChange = (event, jurisdictionsList) => ({
   event,
   jurisdictionsList
 })
+
+export const getUserCodedQuestions = (projectId, jurisdictionId) => ({
+  type: types.GET_USER_CODED_QUESTIONS_REQUEST,
+  projectId,
+  jurisdictionId
+})

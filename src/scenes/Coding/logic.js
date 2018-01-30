@@ -13,12 +13,19 @@ export const getOutlineLogic = createLogic({
   },
   async process({ action, getState, api }) {
     let scheme = {}
+    let codedQuestions = []
     const userId = getState().data.user.currentUser.id
 
     try {
       scheme = await api.getScheme(action.projectId)
     } catch (e) {
       throw { error: 'failed to get outline' }
+    }
+
+    try {     //UNCOMMENT WHEN API IS FINISHED
+      codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
+    } catch (e) {
+      throw { error: 'failed to get codeQuestions' }
     }
 
     if (scheme.codingSchemeQuestions.length === 0) {
@@ -37,7 +44,8 @@ export const getOutlineLogic = createLogic({
         scheme: questionsWithNumbers,
         questionOrder: order,
         question: questionsWithNumbers[0],
-        codedQuestions: [],
+        // codedQuestions: [],
+        codedQuestions: codedQuestions,  //UNCOMMENT WHEN API IS FINISHED
         isSchemeEmpty: false
       }
     }
@@ -83,7 +91,39 @@ export const answerQuestionLogic = createLogic({
   }
 })
 
+export const getUserCodedQuestionsLogic = createLogic({
+  type: types.GET_USER_CODED_QUESTIONS_REQUEST,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.GET_USER_CODED_QUESTIONS_SUCCESS,
+    failType: types.GET_USER_CODED_QUESTIONS_FAIL
+  },
+  async process({ action, api, getState }) {
+    console.log(action)
+    let codedQuestions = {}
+    const userId = getState().data.user.currentUser.id
+    const scheme = getState().scenes.coding.scheme
+    try {
+      codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
+    } catch (e) {
+      throw { error: 'failed to get codedQuestions' }
+    }
+
+    const merge = scheme.codingSchemeQuestions.reduce((arr, q) => {
+      return [...arr, { ...q, ...scheme.outline[q.id] }]
+    }, [])
+
+    const { questionsWithNumbers, order } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
+
+    return {
+      scheme: questionsWithNumbers,
+      codedQuestions: codedQuestions
+    }
+  }
+})
+
 export default [
+  getUserCodedQuestionsLogic,
   getOutlineLogic,
   answerQuestionLogic
 ]

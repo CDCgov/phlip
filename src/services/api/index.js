@@ -95,7 +95,7 @@ export default {
       .then(res => res.data)
   },
 
-  getCodedQuestions(userId, projectId, jurisdictionId) {
+  getUserCodedQuestions(userId, projectId, jurisdictionId) {
     return api.get(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions`).then(res => res.data)
   }
 }

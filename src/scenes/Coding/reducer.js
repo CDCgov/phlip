@@ -436,6 +436,15 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         jurisdictionId: action.event,
         jurisdiction: action.jurisdictionsList.find(jurisdiction => jurisdiction.id === action.event)
       }
+
+    case types.GET_USER_CODED_QUESTIONS_SUCCESS:
+      const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
+      return {
+        ...state,
+        userAnswers: initializeUserAnswers(action.payload.codedQuestions, normalizedQuestions)
+      }
+
+    case types.GET_USER_CODED_QUESTIONS_REQUEST:
     case types.GET_CODING_OUTLINE_REQUEST:
     default:
       return state

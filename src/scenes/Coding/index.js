@@ -20,10 +20,11 @@ export class Coding extends Component {
       selectedJurisdiction: this.props.jurisdictionId,
       showViews: false
     }
+
   }
 
   componentWillMount() {
-    this.props.actions.getCodingOutlineRequest(this.props.projectId, '1')
+    this.props.actions.getCodingOutlineRequest(this.props.projectId, this.props.jurisdictionId)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -66,6 +67,7 @@ export class Coding extends Component {
   onJurisdictionChange = (event) => {
     this.setState({ selectedJurisdiction: event.target.value })
     this.props.actions.onJurisdictionChange(event.target.value, this.props.jurisdictionsList)
+    this.props.actions.getUserCodedQuestions(this.props.projectId, this.props.jurisdictionId)
   }
 
   onShowGetStartedView = (noScheme, noJurisdictions) => {
@@ -117,11 +119,11 @@ export class Coding extends Component {
     return (
       <Container column flex>
         <Header projectName={this.props.projectName} projectId={this.props.projectId}
-                jurisdictionsList={this.props.jurisdictionsList}
-                selectedJurisdiction={this.state.selectedJurisdiction}
-                onJurisdictionChange={this.onJurisdictionChange}
-                currentJurisdiction={this.props.jurisdiction}
-                empty={this.props.jurisdiction === null || this.props.questionOrder === null || this.props.questionOrder.length === 0}
+          jurisdictionsList={this.props.jurisdictionsList}
+          selectedJurisdiction={this.state.selectedJurisdiction}
+          onJurisdictionChange={this.onJurisdictionChange}
+          currentJurisdiction={this.props.jurisdiction}
+          empty={this.props.jurisdiction === null || this.props.questionOrder === null || this.props.questionOrder.length === 0}
         />
         <Container flex column style={{ backgroundColor: '#f5f5f5', padding: '20px 20px 10px 20px' }}>
           {this.state.showViews && (this.props.jurisdiction === null || this.props.questionOrder.length === 0
