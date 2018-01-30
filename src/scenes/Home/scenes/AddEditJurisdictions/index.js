@@ -5,7 +5,6 @@ import { bindActionCreators } from 'redux'
 import { default as formActions } from 'redux-form/lib/actions'
 import { withRouter } from 'react-router'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
-import SearchBar from 'components/SearchBar'
 import Button from 'components/Button'
 import Container, { Column } from 'components/Layout'
 import Card from 'components/Card'
@@ -55,10 +54,12 @@ export class AddEditJurisdictions extends Component {
 
     if (this.state.edit) {
       this.props.actions.updateJurisdiction(jurisdiction, this.props.project.id)
+      this.props.actions.updateJurisdictionInProject(jurisdiction, this.props.project.id)
     } else {
       this.props.actions.addJurisdiction(jurisdiction, this.props.project.id)
+      this.props.actions.addJurisdictionToProject(jurisdiction, this.props.project.id)
     }
-
+    
     this.props.actions.updateEditedFields(this.props.project.id)
 
     this.setState({

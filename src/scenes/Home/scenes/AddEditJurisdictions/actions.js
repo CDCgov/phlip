@@ -10,3 +10,5 @@ export const searchJurisdictionList = searchString => ({ type: types.SEARCH_JURI
 export const onSuggestionValueChanged = suggestionValue => ({ type: types.UPDATE_SUGGESTION_VALUE, suggestionValue })
 export const onClearSuggestions = () => ({ type: types.ON_CLEAR_SUGGESTIONS })
 export const onJurisdictionSelected = jurisdiction => ({ type: types.ON_JURISDICTION_SELECTED, jurisdiction })
+export const addJurisdictionToProject = (jurisdiction, projectId) => ({ type: types.ADD_JURISDICTION_TO_PROJECT, jurisdiction, projectId })
+export const updateJurisdictionInProject = (jurisdiction, projectId) => ({ type: types.UPDATE_JURISDICTION_IN_PROJECT, jurisdiction, projectId })
