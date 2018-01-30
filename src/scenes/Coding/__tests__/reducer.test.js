@@ -659,4 +659,121 @@ describe('Coding reducer', () => {
       )
     })
   })
+
+  describe('ON_CLEAR_ANSWER', () => {
+    test('should handle regular questions', () => {
+      const action = {
+        type: types.ON_CLEAR_ANSWER,
+        questionId: 2,
+        projectId: 1,
+        jurisdictionId: 1
+      }
+
+      const state = getReducer(
+        getState({
+          question: {
+            questionType: 3
+          },
+          userAnswers: {
+            2: {
+              codingSchemeQuestionId: 2,
+              answers: {
+                1: {
+                  codingSchemeAnswerId: 1,
+                  pincite: ''
+                },
+                4: {
+                  codingSchemeAnswerId: 4,
+                  pincite: ''
+                }
+              },
+              comment: ''
+            }
+          }
+        }),
+        action
+      )
+
+      expect(state).toEqual(
+        getState({
+          question: {
+            questionType: 3
+          },
+          userAnswers: {
+            2: {
+              codingSchemeQuestionId: 2,
+              answers: {},
+              comment: ''
+            }
+          }
+        })
+      )
+    })
+
+    test('should handle category child questions', () => {
+      const action = {
+        type: types.ON_CLEAR_ANSWER,
+        questionId: 2,
+        projectId: 1,
+        jurisdictionId: 1
+      }
+
+      const state = getReducer(
+        getState({
+          question: {
+            questionType: 4,
+            isCategoryChild: true
+          },
+          userAnswers: {
+            2: {
+              codingSchemeQuestionId: 2,
+              answers: {
+                3: {
+                  answers: {
+                    4: { codingSchemeAnswerId: 4, pincite: 'pincite!' }
+                  }
+                },
+                2: {
+                  answers: {
+                    4: { codingSchemeAnswerId: 4, pincite: '' }
+                  }
+                }
+              },
+              comment: ''
+            }
+          },
+          selectedCategory: 0,
+          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
+        }),
+        action
+      )
+
+      expect(state).toEqual(
+        getState({
+          question: {
+            questionType: 4,
+            isCategoryChild: true
+          },
+          userAnswers: {
+            2: {
+              codingSchemeQuestionId: 2,
+              answers: {
+                3: {
+                  answers: {}
+                },
+                2: {
+                  answers: {
+                    4: { codingSchemeAnswerId: 4, pincite: '' }
+                  }
+                }
+              },
+              comment: ''
+            }
+          },
+          selectedCategory: 0,
+          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
+        })
+      )
+    })
+  })
 })
