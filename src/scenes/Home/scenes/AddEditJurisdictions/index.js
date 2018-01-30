@@ -59,7 +59,7 @@ export class AddEditJurisdictions extends Component {
       this.props.actions.addJurisdiction(jurisdiction, this.props.project.id)
       this.props.actions.addJurisdictionToProject(jurisdiction, this.props.project.id)
     }
-    
+
     this.props.actions.updateEditedFields(this.props.project.id)
 
     this.setState({

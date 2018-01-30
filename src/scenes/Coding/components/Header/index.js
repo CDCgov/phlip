@@ -10,13 +10,17 @@ import Container, { Column } from 'components/Layout'
 
 export const Header = ({ projectName, projectId, jurisdictionsList, selectedJurisdiction, onJurisdictionChange, currentJurisdiction }) => (
   <AppBar>
-    <Typography type="title" color="inherit" style={{ flex: 2 }}>
-      <span style={{ color: '#0faee6' }}>{projectName}</span><span className={styles.header} />
-      <JurisdictionSelect options={jurisdictionsList} value={selectedJurisdiction} onChange={onJurisdictionChange} style={{ marginLeft: '40px' }} />
+    <Typography type="title" color="inherit">
+      <span style={{ color: '#0faee6' }}>{projectName}</span>
     </Typography>
-    <Column >
+    <span className={styles.header} />
+    <div style={{ flex: '1' }}>
+      <JurisdictionSelect options={jurisdictionsList} value={selectedJurisdiction} onChange={onJurisdictionChange} />
+    </div>
+    <Column>
       <Typography type="caption" color="default" align="right">
-        Segment start <span style={{ color: 'black' }}>{new Date(currentJurisdiction.startDate).toLocaleDateString()}</span>
+        Segment start <span
+        style={{ color: 'black' }}>{new Date(currentJurisdiction.startDate).toLocaleDateString()}</span>
       </Typography>
       <Typography type="caption" color="default" align="right">
         Segment end <span style={{ color: 'black' }}>{new Date(currentJurisdiction.endDate).toLocaleDateString()}</span>
