@@ -91,11 +91,11 @@ export default {
   },
 
   answerQuestion(projectId, jurisdictionId, userId, questionId, updatedQuestion) {
-    return api.post(`/user/${userId}/project/${projectId}/jurisdiction/${jurisdictionId}/question/${questionId}`, updatedQuestion)
+    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions`, updatedQuestion)
       .then(res => res.data)
   },
 
   getCodedQuestions(userId, projectId, jurisdictionId) {
-    return api.get(`/users/${userId}/project/${projectId}/jurisdiction/${jurisdictionId}/codedquestions`).then(res => res.data)
+    return api.get(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions`).then(res => res.data)
   }
 }
