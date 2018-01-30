@@ -80,7 +80,7 @@ export const answerQuestionLogic = createLogic({
         ...updatedQuestionObject,
         answers: codingState.question.questionType === questionTypes.TEXT_FIELD
           ? [deleteAnswerIds(updatedQuestionObject.answers[selectedCategoryId].answers)]
-          : Object.values(updatedQuestionObject.answers[selectedCategoryId].answers).map( answer => {
+          : Object.values(updatedQuestionObject.answers[selectedCategoryId].answers).map(answer => {
             let ans = { ...answer }
             if (answer.id) {
               delete ans.id
@@ -105,7 +105,7 @@ export const answerQuestionLogic = createLogic({
       }
     }
 
-    console.log(finalObject)
+    // console.log(finalObject)
 
     return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, finalObject)
   }
@@ -119,7 +119,6 @@ export const getUserCodedQuestionsLogic = createLogic({
     failType: types.GET_USER_CODED_QUESTIONS_FAIL
   },
   async process({ action, api, getState }) {
-    console.log(action)
     let codedQuestions = []
     const userId = getState().data.user.currentUser.id
     const scheme = getState().scenes.coding.scheme
@@ -128,7 +127,6 @@ export const getUserCodedQuestionsLogic = createLogic({
     try {
       codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
     } catch (e) {
-      console.log(e)
       throw { error: 'failed to get codedQuestions' }
     }
 
