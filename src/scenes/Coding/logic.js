@@ -22,10 +22,12 @@ export const getOutlineLogic = createLogic({
       throw { error: 'failed to get outline' }
     }
 
-    try {     //UNCOMMENT WHEN API IS FINISHED
-      codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
-    } catch (e) {
-      throw { error: 'failed to get codeQuestions' }
+    if (action.jurisdictionId) {
+      try {     //UNCOMMENT WHEN API IS FINISHED
+        codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
+      } catch (e) {
+        throw { error: 'failed to get codeQuestions' }
+      }
     }
 
     if (scheme.codingSchemeQuestions.length === 0) {
@@ -106,6 +108,7 @@ export const getUserCodedQuestionsLogic = createLogic({
     try {
       codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
     } catch (e) {
+      console.log(e)
       throw { error: 'failed to get codedQuestions' }
     }
 
@@ -115,6 +118,7 @@ export const getUserCodedQuestionsLogic = createLogic({
 
     const { questionsWithNumbers, order } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
 
+    console.log(codedQuestions)
     return {
       scheme: questionsWithNumbers,
       codedQuestions: codedQuestions
