@@ -102,24 +102,7 @@ const determineShowButton = (state) => {
 /*
   Handles determining what the next question is, and updating state.userAnswers with question information
  */
-const handleCheckCategories = (state, action) => {
-  let newQuestion = state.scheme.byId[action.id]
-  let newIndex = action.newIndex
-
-  // Check to make sure newQuestion is correct. If the newQuestion is a category child, but the user hasn't selected
-  // any categories, then find the next parent question
-  if (newQuestion.isCategoryQuestion) {
-    if (Object.keys(state.userAnswers[state.scheme.byId[action.id].parentId].answers).length === 0) {
-      let subArr = [...state.scheme.order].slice(action.newIndex)
-      newQuestion = subArr.find((id, index) => {
-        if (state.scheme.byId[id].parentId !== state.question.id) {
-          newIndex = index
-          return true
-        }
-      })
-      newQuestion = state.scheme.byId[newQuestion]
-    }
-  }
+const handleCheckCategories = (newQuestion, newIndex, state, action) => {
 
   const base = {
     question: newQuestion,
@@ -183,6 +166,42 @@ const handleCheckCategories = (state, action) => {
       selectedCategory: 0
     }
   }
+}
+
+const getNextQuestion = (state, action) => {
+  let newQuestion = state.scheme.byId[action.id]
+  let newIndex = action.newIndex
+
+  // Check to make sure newQuestion is correct. If the newQuestion is a category child, but the user hasn't selected
+  // any categories, then find the next parent question
+  if (newQuestion.isCategoryQuestion) {
+    if (Object.keys(state.userAnswers[state.scheme.byId[action.id].parentId].answers).length === 0) {
+      let subArr = [...state.scheme.order].slice(action.newIndex)
+      newQuestion = subArr.find(id => {
+        if (state.scheme.byId[id].parentId !== state.question.id) {
+          newIndex = state.scheme.order.indexOf(id)
+          return true
+        }
+      })
+      newQuestion = state.scheme.byId[newQuestion]
+    }
+  }
+
+  return handleCheckCategories(newQuestion, newIndex, state, action)
+}
+
+const getPreviousQuestion = (state, action) => {
+  let newQuestion = state.scheme.byId[action.id]
+  let newIndex = action.newIndex
+
+  if (newQuestion.isCategoryQuestion) {
+    if (Object.keys(state.userAnswers[newQuestion.parentId].answers).length === 0) {
+      newQuestion = state.scheme.byId[newQuestion.parentId]
+      newIndex = state.scheme.order.indexOf(newQuestion.id)
+    }
+  }
+
+  return handleCheckCategories(newQuestion, newIndex, state, action)
 }
 
 /*
@@ -330,8 +349,15 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
   switch (action.type) {
     case types.GET_NEXT_QUESTION:
+      const updatedState = { ...state, ...getNextQuestion(state, action) }
+
+      return {
+        ...updatedState,
+        showNextButton: determineShowButton(updatedState)
+      }
+
     case types.GET_PREV_QUESTION:
-      const update = { ...state, ...handleCheckCategories(state, action) }
+      const update = { ...state, ...getPreviousQuestion(state, action) }
       return {
         ...update,
         showNextButton: determineShowButton(update)

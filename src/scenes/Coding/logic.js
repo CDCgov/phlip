@@ -104,9 +104,7 @@ export const answerQuestionLogic = createLogic({
           })
       }
     }
-
-    console.log(finalObject)
-
+    
     return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, finalObject)
   }
 })
@@ -119,11 +117,8 @@ export const getUserCodedQuestionsLogic = createLogic({
     failType: types.GET_USER_CODED_QUESTIONS_FAIL
   },
   async process({ action, api, getState }) {
-    console.log(action)
     let codedQuestions = []
     const userId = getState().data.user.currentUser.id
-    const scheme = getState().scenes.coding.scheme
-    const outline = getState().scenes.coding.outline
 
     try {
       codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
