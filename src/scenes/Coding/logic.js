@@ -54,6 +54,12 @@ export const getOutlineLogic = createLogic({
   }
 })
 
+const deleteAnswerIds = (answer) => {
+  let ans = { ...answer }
+  if (ans.id) delete ans.id
+  return ans
+}
+
 export const answerQuestionLogic = createLogic({
   type: [types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER],
   processOptions: {
@@ -73,8 +79,14 @@ export const answerQuestionLogic = createLogic({
       finalObject = {
         ...updatedQuestionObject,
         answers: codingState.question.questionType === questionTypes.TEXT_FIELD
-          ? [updatedQuestionObject.answers[selectedCategoryId].answers]
-          : Object.values(updatedQuestionObject.answers[selectedCategoryId].answers),
+          ? [deleteAnswerIds(updatedQuestionObject.answers[selectedCategoryId].answers)]
+          : Object.values(updatedQuestionObject.answers[selectedCategoryId].answers).map( answer => {
+            let ans = { ...answer }
+            if (answer.id) {
+              delete ans.id
+            }
+            return ans
+          }),
         comment: updatedQuestionObject.comment[selectedCategoryId],
         categoryId: selectedCategoryId
       }
@@ -82,7 +94,7 @@ export const answerQuestionLogic = createLogic({
       finalObject = {
         ...updatedQuestionObject,
         answers: codingState.question.questionType === questionTypes.TEXT_FIELD
-          ? [updatedQuestionObject.answers]
+          ? [deleteAnswerIds(updatedQuestionObject.answers)]
           : Object.values(updatedQuestionObject.answers).map(answer => {
             let ans = { ...answer }
             if (answer.id) {
