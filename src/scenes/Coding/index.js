@@ -158,12 +158,12 @@ const mapStateToProps = (state, ownProps) => {
     userAnswers: state.scenes.coding.userAnswers[state.scenes.coding.question.id] || {},
     showNextButton: state.scenes.coding.showNextButton,
     jurisdictionsList: project.projectJurisdictions || [],
-    jurisdictionId: state.scenes.coding.jurisdictionId || project.projectJurisdictions.length > 0
+    jurisdictionId: state.scenes.coding.jurisdictionId || (project.projectJurisdictions.length > 0
       ? project.projectJurisdictions[0].id
-      : null,
-    jurisdiction: state.scenes.coding.jurisdiction || project.projectJurisdictions.length > 0
+      : null),
+    jurisdiction: state.scenes.coding.jurisdiction || (project.projectJurisdictions.length > 0
       ? project.projectJurisdictions[0]
-      : null,
+      : null),
     isSchemeEmpty: state.scenes.coding.scheme === null ? null : state.scenes.coding.scheme.order.length === 0,
     userRole: state.data.user.currentUser.role
   }
