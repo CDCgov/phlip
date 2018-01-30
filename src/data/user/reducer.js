@@ -7,6 +7,8 @@ const INITIAL_STATE = {
 
 function userReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
+
+    case types.UPDATE_CURRENT_USER:
     case types.LOGIN_USER_SUCCESS:
       return {
         ...state,
