@@ -43,3 +43,9 @@ export const onChangeCategory = (event, selection) => ({
 export const onClearAnswer = (projectId, jurisdictionId, questionId) => ({ type: types.ON_CLEAR_ANSWER, questionId, projectId, jurisdictionId })
 
 export const onCloseCodeScreen = () => ({ type: types.ON_CLOSE_CODE_SCREEN })
+
+export const onJurisdictionChange = (event, jurisdictionsList) => ({
+  type: types.ON_JURISDICTION_CHANGE,
+  event,
+  jurisdictionsList
+})

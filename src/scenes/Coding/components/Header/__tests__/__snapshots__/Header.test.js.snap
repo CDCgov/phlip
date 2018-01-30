@@ -21,7 +21,38 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       Test Project
     </span>
     <span />
+    <WithStyles
+      style={
+        Object {
+          "marginLeft": "48px",
+        }
+      }
+    />
   </WithStyles>
+  <Column
+    component={
+      <WithStyles
+        item={true}
+      />
+    }
+    displayFlex={false}
+    flex={true}
+  >
+    <WithStyles
+      color="default"
+      type="caption"
+    >
+      Segment start 
+      2018-1-1
+    </WithStyles>
+    <WithStyles
+      color="default"
+      type="caption"
+    >
+      Segment end 
+      2018-1-18
+    </WithStyles>
+  </Column>
   <WithTheme
     style={
       Object {

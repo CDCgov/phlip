@@ -6,7 +6,8 @@ const INITIAL_STATE = {
   question: {},
   scheme: {},
   outline: {},
-  jurisdiction: {},
+  jurisdiction: undefined,
+  jurisdictionId: undefined,
   currentIndex: 0,
   categories: undefined,
   selectedCategory: 0,
@@ -406,6 +407,12 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.ON_CLOSE_CODE_SCREEN:
       return INITIAL_STATE
 
+    case types.ON_JURISDICTION_CHANGE:
+      return {
+        ...state,
+        jurisdictionId: action.event,
+        jurisdiction: action.jurisdictionsList.find(jurisdiction => jurisdiction.id === action.event)
+      }
     case types.GET_CODING_OUTLINE_REQUEST:
     default:
       return state

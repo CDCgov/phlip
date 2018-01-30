@@ -13,6 +13,10 @@ import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/const
 export class Coding extends Component {
   constructor(props, context) {
     super(props, context)
+
+    this.state = {
+      selectedJurisdiction: this.props.jurisdictionId
+    }
   }
 
   componentWillMount() {
@@ -28,6 +32,7 @@ export class Coding extends Component {
   }
 
   onAnswer = id => (event, value) => {
+
     this.props.actions.answerQuestionRequest(
       this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, value
     )
@@ -52,24 +57,31 @@ export class Coding extends Component {
     }
   }
 
+  onJurisdictionChange = (event) => {
+    this.setState({ selectedJurisdiction: event.target.value })
+    this.props.actions.onJurisdictionChange(event.target.value, this.props.jurisdictionsList)
+  }
+
   render() {
     return (
       <Container column flex>
-        <Header projectName={this.props.projectName} projectId={this.props.projectId} />
+        <Header projectName={this.props.projectName} projectId={this.props.projectId}
+          jurisdictionsList={this.props.jurisdictionsList} selectedJurisdiction={this.state.selectedJurisdiction}
+          onJurisdictionChange={this.onJurisdictionChange} currentJurisdiction={this.props.jurisdiction} />
         <Container flex column style={{ backgroundColor: '#f5f5f5', padding: '20px 20px 10px 20px' }}>
           <QuestionCard question={this.props.question} onChange={this.onAnswer}
-                        userAnswers={this.props.userAnswers}
-                        onChangeTextAnswer={this.onChangeTextAnswer} categories={this.props.categories}
-                        selectedCategory={this.props.selectedCategory}
-                        onChangeCategory={this.props.actions.onChangeCategory}
-                        onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
+            userAnswers={this.props.userAnswers}
+            onChangeTextAnswer={this.onChangeTextAnswer} categories={this.props.categories}
+            selectedCategory={this.props.selectedCategory}
+            onChangeCategory={this.props.actions.onChangeCategory}
+            onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
           />
           <FooterNavigate currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion}
-                          getPrevQuestion={this.getPrevQuestion}
-                          totalLength={this.props.questionOrder.length} showNextButton={this.props.showNextButton} />
+            getPrevQuestion={this.getPrevQuestion}
+            totalLength={this.props.questionOrder.length} showNextButton={this.props.showNextButton} />
         </Container>
-    <Footer onClose={() => this.props.actions.onCloseCodeScreen()} />
-  </Container>
+        <Footer onClose={() => this.props.actions.onCloseCodeScreen()} />
+      </Container>
     )
   }
 }
@@ -92,9 +104,11 @@ const mapStateToProps = (state, ownProps) => ({
   questionOrder: state.scenes.coding.scheme.order || [],
   categories: state.scenes.coding.categories || undefined,
   selectedCategory: state.scenes.coding.selectedCategory || 0,
-  jurisdictionId: '1',
   userAnswers: state.scenes.coding.userAnswers[state.scenes.coding.question.id] || {},
-  showNextButton: state.scenes.coding.showNextButton
+  showNextButton: state.scenes.coding.showNextButton,
+  jurisdictionsList: state.scenes.home.main.projects.byId[ownProps.match.params.id].projectJurisdictions || [],
+  jurisdictionId: state.scenes.coding.jurisdictionId || state.scenes.home.main.projects.byId[ownProps.match.params.id].projectJurisdictions[0].id,
+  jurisdiction: state.scenes.coding.jurisdiction || state.scenes.home.main.projects.byId[ownProps.match.params.id].projectJurisdictions[0]
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
