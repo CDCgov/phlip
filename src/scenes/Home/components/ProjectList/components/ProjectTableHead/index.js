@@ -7,8 +7,8 @@ import IconButton from 'components/IconButton'
 
 const columns = [
   { key: 'name', label: 'Name', style: { textAlign: 'left', maxWidth: 'unset' }, hasSort: true },
-  { key: 'dateLastEdited', label: 'Date Last Edited', style: { width: 150, maxWidth: 150, textAlign: 'unset' }, hasSort: true },
-  { key: 'lastEditedBy', label: 'Last Edited By', style: { width: 150, maxWidth: 150, textAlign: 'unset' }, hasSort: true },
+  { key: 'dateLastEdited', label: 'Date Last Edited', style: { textAlign: 'unset' }, hasSort: true },
+  { key: 'lastEditedBy', label: 'Last Edited By', style: { textAlign: 'unset' }, hasSort: true },
   { key: 'protocol', label: 'Protocol', hasSort: false, style: { textAlign: 'center' }},
   { key: 'jurisdictions', label: 'Jurisdictions', hasSort: false, style: { textAlign: 'center' }},
   { key: 'codingScheme', label: 'Coding Scheme', hasSort: false, style: { textAlign: 'center' }},
@@ -20,7 +20,8 @@ const columns = [
 const hiddenCols = [
   'jurisdictions',
   'codingScheme',
-  'validate'
+  'validate',
+  'export'
 ]
 
 const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSort, onSortBookmarked }) => {
