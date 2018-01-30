@@ -412,7 +412,251 @@ describe('Coding reducer', () => {
     })
   })
 
-  xdescribe('ON_CHANGE_COMMENT', () => {
+  describe('ON_CHANGE_COMMENT', () => {
+    test('should handle regular questions', () => {
+      const action = {
+        type: types.ON_CHANGE_COMMENT,
+        questionId: 2,
+        projectId: 1,
+        jurisdictionId: 1,
+        comment: 'new comment'
+      }
 
+      const state = getReducer(
+        getState({
+          userAnswers: {
+            2: {
+              codingSchemeQuestionId: 2,
+              answers: { 1: { codingSchemeAnswerId: 1 } },
+              comment: ''
+            }
+          }
+        }),
+        action
+      )
+
+      expect(state).toEqual(
+        getState({
+          userAnswers: {
+            2: {
+              codingSchemeQuestionId: 2,
+              answers: { 1: { codingSchemeAnswerId: 1 } },
+              comment: 'new comment'
+            }
+          }
+        })
+      )
+
+    })
+
+    test('should handle category questions', () => {
+      const action = {
+        type: types.ON_CHANGE_COMMENT,
+        questionId: 2,
+        projectId: 1,
+        jurisdictionId: 1,
+        comment: 'new comment for cat 1'
+      }
+
+      const state = getReducer(
+        getState({
+          question: {
+            text: 'la la la',
+            questionType: 2,
+            id: 2,
+            parentId: 0,
+            positionInParent: 1,
+            possibleAnswers: [{ id: 90, text: 'check 1' }, { id: 91, text: 'check 2' }],
+            isCategoryChild: true
+          },
+          userAnswers: {
+            2: {
+              codingSchemeQuestionId: 2,
+              answers: {
+                3: {
+                  answers: { codingSchemeAnswerId: 5 }
+                },
+                2: {
+                  answers: {}
+                }
+              },
+              comment: {
+                3: 'comment for cat 1',
+                2: 'comment for cat 2'
+              }
+            }
+          },
+          selectedCategory: 0,
+          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
+        }),
+        action
+      )
+
+      expect(state).toEqual(
+        getState({
+          question: {
+            text: 'la la la',
+            questionType: 2,
+            id: 2,
+            parentId: 0,
+            positionInParent: 1,
+            possibleAnswers: [{ id: 90, text: 'check 1' }, { id: 91, text: 'check 2' }],
+            isCategoryChild: true
+          },
+          userAnswers: {
+            2: {
+              codingSchemeQuestionId: 2,
+              answers: {
+                3: {
+                  answers: { codingSchemeAnswerId: 5 }
+                },
+                2: {
+                  answers: {}
+                }
+              },
+              comment: {
+                3: 'new comment for cat 1',
+                2: 'comment for cat 2'
+
+              }
+            }
+          },
+          selectedCategory: 0,
+          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
+        })
+      )
+    })
+  })
+
+  describe('ON_CHANGE_PINCITE', () => {
+    test('should handle regular questions', () => {
+      const action = {
+        type: types.ON_CHANGE_PINCITE,
+        questionId: 2,
+        projectId: 1,
+        jurisdictionId: 1,
+        answerId: 4,
+        pincite: 'this is a pincite'
+      }
+
+      const state = getReducer(
+        getState({
+          question: {
+            questionType: 3
+          },
+          userAnswers: {
+            2: {
+              codingSchemeQuestionId: 2,
+              answers: {
+                1: {
+                  codingSchemeAnswerId: 1,
+                  pincite: ''
+                },
+                4: {
+                  codingSchemeAnswerId: 4,
+                  pincite: ''
+                }
+              },
+              comment: ''
+            }
+          }
+        }),
+        action
+      )
+
+      expect(state).toEqual(
+        getState({
+          question: {
+            questionType: 3
+          },
+          userAnswers: {
+            2: {
+              codingSchemeQuestionId: 2,
+              answers: {
+                1: {
+                  codingSchemeAnswerId: 1,
+                  pincite: ''
+                },
+                4: {
+                  codingSchemeAnswerId: 4,
+                  pincite: 'this is a pincite'
+                }
+              },
+              comment: ''
+            }
+          }
+        })
+      )
+    })
+
+    test('should handle category child questions', () => {
+      const action = {
+        type: types.ON_CHANGE_PINCITE,
+        questionId: 2,
+        projectId: 1,
+        jurisdictionId: 1,
+        answerId: 4,
+        pincite: 'this is a pincite'
+      }
+
+      const state = getReducer(
+        getState({
+          question: {
+            questionType: 2,
+            isCategoryChild: true
+          },
+          userAnswers: {
+            2: {
+              codingSchemeQuestionId: 2,
+              answers: {
+                3: {
+                  answers: {
+                    4: { codingSchemeAnswerId: 4, pincite: 'pincite!' }
+                  }
+                },
+                2: {
+                  answers: {
+                    4: { codingSchemeAnswerId: 4, pincite: '' }
+                  }
+                }
+              },
+              comment: ''
+            }
+          },
+          selectedCategory: 1,
+          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
+        }),
+        action
+      )
+
+      expect(state).toEqual(
+        getState({
+          question: {
+            questionType: 2,
+            isCategoryChild: true
+          },
+          userAnswers: {
+            2: {
+              codingSchemeQuestionId: 2,
+              answers: {
+                3: {
+                  answers: {
+                    4: { codingSchemeAnswerId: 4, pincite: 'pincite!' }
+                  }
+                },
+                2: {
+                  answers: {
+                    4: { codingSchemeAnswerId: 4, pincite: 'this is a pincite' }
+                  }
+                }
+              },
+              comment: ''
+            }
+          },
+          selectedCategory: 1,
+          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
+        })
+      )
+    })
   })
 })
