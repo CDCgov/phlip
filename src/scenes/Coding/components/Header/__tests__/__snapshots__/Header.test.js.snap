@@ -6,7 +6,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
     color="inherit"
     style={
       Object {
-        "flex": 1,
+        "flex": 2,
       }
     }
     type="title"
@@ -24,7 +24,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
     <WithStyles
       style={
         Object {
-          "marginLeft": "48px",
+          "marginLeft": "40px",
         }
       }
     />
@@ -36,23 +36,50 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       />
     }
     displayFlex={false}
-    flex={true}
+    flex={false}
   >
     <WithStyles
+      align="right"
       color="default"
       type="caption"
     >
       Segment start 
-      2018-1-1
+      <span
+        style={
+          Object {
+            "color": "black",
+          }
+        }
+      >
+        2018-1-1
+      </span>
     </WithStyles>
     <WithStyles
+      align="right"
       color="default"
       type="caption"
     >
       Segment end 
-      2018-1-18
+      <span
+        style={
+          Object {
+            "color": "black",
+          }
+        }
+      >
+        2018-1-18
+      </span>
     </WithStyles>
   </Column>
+  <Column
+    component={
+      <WithStyles
+        item={true}
+      />
+    }
+    displayFlex={false}
+    flex={true}
+  />
   <WithTheme
     style={
       Object {
