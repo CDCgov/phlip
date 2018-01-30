@@ -131,14 +131,9 @@ export const getUserCodedQuestionsLogic = createLogic({
       console.log(e)
       throw { error: 'failed to get codedQuestions' }
     }
-/*
-    const merge = Object.values(scheme.byId).reduce((arr, q) => {
-      return [...arr, { ...q, ...outline[q.id] }]
-    }, [])
 
-    const { questionsWithNumbers, order } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))*/
     return {
-      codedQuestions: codedQuestions
+      codedQuestions
     }
   }
 })

@@ -67,7 +67,7 @@ export class Coding extends Component {
   onJurisdictionChange = (event) => {
     this.setState({ selectedJurisdiction: event.target.value })
     this.props.actions.onJurisdictionChange(event.target.value, this.props.jurisdictionsList)
-    this.props.actions.getUserCodedQuestions(this.props.projectId, this.props.jurisdictionId)
+    this.props.actions.getUserCodedQuestions(this.props.projectId, event.target.value)
   }
 
   onShowGetStartedView = (noScheme, noJurisdictions) => {

@@ -39,7 +39,7 @@ const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) =>
         },
         comment: {
           ...userCodedAnswerObj[question.codingSchemeQuestionId].comment,
-          [question.categoryId]:  question.comment || ''
+          [question.categoryId]: question.comment || ''
         }
       }
       : {
@@ -440,7 +440,15 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.GET_USER_CODED_QUESTIONS_SUCCESS:
       return {
         ...state,
-        userAnswers: initializeUserAnswers(action.payload.codedQuestions, state.scheme.byId)
+        userAnswers: action.payload.codedQuestions.length !== 0
+          ? initializeUserAnswers(action.payload.codedQuestions, state.scheme.byId)
+          : {
+            [state.question.id]: {
+              codingSchemeQuestionId: state.question.id,
+              comment: '',
+              answers: {}
+            }
+          }
       }
 
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
