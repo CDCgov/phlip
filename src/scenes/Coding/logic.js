@@ -81,7 +81,13 @@ export const answerQuestionLogic = createLogic({
         ...updatedQuestionObject,
         answers: codingState.question.questionType === questionTypes.TEXT_FIELD
           ? [updatedQuestionObject.answers]
-          : Object.values(updatedQuestionObject.answers)
+          : Object.values(updatedQuestionObject.answers).map(answer => {
+            let ans = { ...answer }
+            if (answer.id) {
+              delete ans.id
+            }
+            return ans
+          })
       }
     }
 
