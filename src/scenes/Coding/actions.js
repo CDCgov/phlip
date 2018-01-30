@@ -55,3 +55,5 @@ export const getUserCodedQuestions = (projectId, jurisdictionId) => ({
   projectId,
   jurisdictionId
 })
+
+export const updateEditedFields = projectId => ({ type: types.UPDATE_EDITED_FIELDS, projectId })

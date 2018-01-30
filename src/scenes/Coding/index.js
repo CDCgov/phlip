@@ -20,7 +20,6 @@ export class Coding extends Component {
       selectedJurisdiction: this.props.jurisdictionId,
       showViews: false
     }
-
   }
 
   componentWillMount() {
@@ -43,6 +42,7 @@ export class Coding extends Component {
     this.props.actions.answerQuestionRequest(
       this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, value
     )
+    this.props.actions.updateEditedFields(this.props.projectId)
   }
 
   onChangeTextAnswer = (id, field) => event => {
@@ -62,6 +62,7 @@ export class Coding extends Component {
           this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
         )
     }
+    this.props.actions.updateEditedFields(this.props.projectId)
   }
 
   onJurisdictionChange = (event) => {
