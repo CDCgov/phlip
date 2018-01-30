@@ -39,7 +39,7 @@ describe('Coding reducer', () => {
             2: { parentId: 0, positionInParent: 1 }
           },
           question: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
-          codedQuestions: [{ codingSchemeQuestionId: 1, answers: [{ codingSchemeAnswerId: 3 }] }]
+          codedQuestions: [{ codingSchemeQuestionId: 1, answers: [{ codingSchemeAnswerId: 3, pincite: '' }] }]
         }
       }
 
@@ -64,7 +64,7 @@ describe('Coding reducer', () => {
         userAnswers: {
           1: {
             answers: {
-              3: { codingSchemeAnswerId: 3 }
+              3: { codingSchemeAnswerId: 3, pincite: '' }
             },
             codingSchemeQuestionId: 1
           }
@@ -118,6 +118,99 @@ describe('Coding reducer', () => {
           }
         }
       }))
+    })
+
+    test('should handle category question children in codedQuestions array', () => {
+      const questions = [
+        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
+        { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1 },
+        { text: 'category question child', questionType: 4, id: 3, parentId: 2, positionInParent: 0 }
+      ]
+
+      const action = {
+        type: types.GET_CODING_OUTLINE_SUCCESS,
+        payload: {
+          question: {},
+          scheme: questions,
+          questionOrder: [1, 2, 3],
+          outline: {
+            1: { parentId: 0, positionInParent: 0 },
+            2: { parentId: 0, positionInParent: 1 },
+            3: { parentId: 2, positionInParent: 0 }
+          },
+          codedQuestions: [
+            {
+              codingSchemeQuestionId: 2,
+              answers: [{ codingSchemeAnswerId: 4, pincite: '' }, { codingSchemeAnswerId: 5, pincite: '' }]
+            },
+            {
+              codingSchemeQuestionId: 3,
+              categoryId: 4,
+              answers: [{ codingSchemeAnswerId: 8, pincite: '' }, { codingSchemeAnswerId: 6, pincite: '' }],
+              comment: ''
+            },
+            {
+              codingSchemeQuestionId: 3,
+              categoryId: 5,
+              answers: [{ codingSchemeAnswerId: 11, pincite: '' }, { codingSchemeAnswerId: 8, pincite: '' }],
+              comment: 'this is a comment'
+            }
+          ]
+        }
+      }
+
+      const state = getReducer(
+        getState(),
+        action
+      )
+
+      expect(state).toEqual(getState({
+        question: {},
+        outline: {
+          1: { parentId: 0, positionInParent: 0 },
+          2: { parentId: 0, positionInParent: 1 },
+          3: { parentId: 2, positionInParent: 0 }
+        },
+        scheme: {
+          byId: {
+            1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
+            2: { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1 },
+            3: { text: 'category question child', questionType: 4, id: 3, parentId: 2, positionInParent: 0 }
+          },
+          order: [1, 2, 3]
+        },
+        userAnswers: {
+          2: {
+            answers: {
+              4: {codingSchemeAnswerId: 4, pincite: ''},
+              5: {codingSchemeAnswerId: 5, pincite: ''}
+            },
+            codingSchemeQuestionId: 2
+          },
+          3: {
+            codingSchemeQuestionId: 3,
+            answers: {
+              4: {
+                answers: {
+                  8: { codingSchemeAnswerId: 8, pincite: '' },
+                  6: { codingSchemeAnswerId: 6, pincite: '' }
+                }
+              },
+              5: {
+                answers: {
+                  11: { codingSchemeAnswerId: 11, pincite: '' },
+                  8: { codingSchemeAnswerId: 8, pincite: '' }
+                }
+              }
+            },
+            comment: {
+              4: '',
+              5: 'this is a comment'
+            }
+          }
+        }
+      }))
+
     })
   })
 

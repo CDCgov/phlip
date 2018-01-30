@@ -27,31 +27,40 @@ const INITIAL_STATE = {
  an ID. It looks like this: { answers: { value: '', pincite: '' } }
  */
 const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) => {
-  if (codingSchemeQuestion.questionType === questionTypes.CATEGORY) {
-    return { answers: normalize.arrayToObject(question.answers, 'codingSchemeAnswerId') }
-  } else if (question.categoryId) {
-    return {
-      answers: {
-        ...userCodedAnswerObj[question.id].answers,
-        [question.categoryId]: { answers: normalize.arrayToObject(question.answers, 'codingSchemeAnswerId') }
-      },
-      comment: {
-        ...userCodedAnswerObj[question.id].comment,
-        [question.categoryId]: ''
+  if (question.categoryId) {
+    return userCodedAnswerObj.hasOwnProperty(question.codingSchemeQuestionId)
+      ? {
+        codingSchemeQuestionId: question.codingSchemeQuestionId,
+        answers: {
+          ...userCodedAnswerObj[question.codingSchemeQuestionId].answers,
+          [question.categoryId]: {
+            answers: normalize.arrayToObject(question.answers, 'codingSchemeAnswerId')
+          }
+        },
+        comment: {
+          ...userCodedAnswerObj[question.codingSchemeQuestionId].comment,
+          [question.categoryId]:  question.comment || ''
+        }
       }
-    }
+      : {
+        answers: { [question.categoryId]: { answers: normalize.arrayToObject(question.answers, 'codingSchemeAnswerId') } },
+        comment: {
+          [question.categoryId]: question.comment || ''
+        }
+      }
   } else if (codingSchemeQuestion.questionType === questionTypes.TEXT_FIELD) {
     return question.answers.length > 0
       ? {
+        ...question,
         answers: {
           ...question.answers[0],
           pincite: question.answers[0].pincite || '',
           textAnswer: question.answers[0].textAnswer || ''
         }
       }
-      : { answers: { pincite: '', textAnswer: '' } }
+      : { ...question, answers: { pincite: '', textAnswer: '' } }
   } else {
-    return { answers: normalize.arrayToObject(question.answers, 'codingSchemeAnswerId') }
+    return { ...question, answers: normalize.arrayToObject(question.answers, 'codingSchemeAnswerId') }
   }
 }
 
@@ -63,7 +72,6 @@ const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
     return ({
       ...codedQuestionObj,
       [question.codingSchemeQuestionId]: {
-        ...question,
         ...normalizeAnswers(question, codingSchemeQuestions[question.codingSchemeQuestionId], codedQuestionObj)
       }
     })
@@ -341,7 +349,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       } else {
         const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
 
-        return {
+        let updatedState = {
           ...state,
           outline: action.payload.outline,
           scheme: {
@@ -358,6 +366,11 @@ const codingReducer = (state = INITIAL_STATE, action) => {
                 answers: {}
               }
             }
+        }
+
+        return {
+          ...updatedState,
+          showNextButton: determineShowButton(updatedState)
         }
       }
 
