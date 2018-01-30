@@ -438,10 +438,9 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.GET_USER_CODED_QUESTIONS_SUCCESS:
-      const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
       return {
         ...state,
-        userAnswers: initializeUserAnswers(action.payload.codedQuestions, normalizedQuestions)
+        userAnswers: initializeUserAnswers(action.payload.codedQuestions, state.scheme.byId)
       }
 
     case types.GET_USER_CODED_QUESTIONS_REQUEST:

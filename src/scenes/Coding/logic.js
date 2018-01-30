@@ -120,32 +120,31 @@ export const getUserCodedQuestionsLogic = createLogic({
   },
   async process({ action, api, getState }) {
     console.log(action)
-    let codedQuestions = {}
+    let codedQuestions = []
     const userId = getState().data.user.currentUser.id
     const scheme = getState().scenes.coding.scheme
+    const outline = getState().scenes.coding.outline
+
     try {
       codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
     } catch (e) {
       console.log(e)
       throw { error: 'failed to get codedQuestions' }
     }
-
-    const merge = scheme.codingSchemeQuestions.reduce((arr, q) => {
-      return [...arr, { ...q, ...scheme.outline[q.id] }]
+/*
+    const merge = Object.values(scheme.byId).reduce((arr, q) => {
+      return [...arr, { ...q, ...outline[q.id] }]
     }, [])
 
-    const { questionsWithNumbers, order } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
-
-    console.log(codedQuestions)
+    const { questionsWithNumbers, order } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))*/
     return {
-      scheme: questionsWithNumbers,
       codedQuestions: codedQuestions
     }
   }
 })
 
 export default [
-  getUserCodedQuestionsLogic,
   getOutlineLogic,
+  getUserCodedQuestionsLogic,
   answerQuestionLogic
 ]
