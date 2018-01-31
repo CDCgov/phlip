@@ -48,7 +48,7 @@ const updateChildPositionInParentLogic = createLogic({
       ...action,
       question: {
         ...action.question,
-        positionInParent: parent.children.length
+        positionInParent: parent.children ? parent.children.length : 0
       }
     })
   }

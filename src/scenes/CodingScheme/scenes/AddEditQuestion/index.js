@@ -71,6 +71,8 @@ export class AddEditQuestion extends Component {
       })
     }
 
+    console.log(this.parentDefined)
+
     this.questionDefined ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.questionDefined.id, this.props.location.state.path)
       : this.parentDefined ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.parentDefined, this.props.location.state.path)
         : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)

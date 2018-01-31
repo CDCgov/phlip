@@ -72,6 +72,7 @@ const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
     return ({
       ...codedQuestionObj,
       [question.codingSchemeQuestionId]: {
+        codingSchemeQuestionId: question.codingSchemeQuestionId,
         ...normalizeAnswers(question, codingSchemeQuestions[question.codingSchemeQuestionId], codedQuestionObj)
       }
     })

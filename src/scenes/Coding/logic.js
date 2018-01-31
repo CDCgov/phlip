@@ -105,7 +105,7 @@ export const answerQuestionLogic = createLogic({
       }
     }
 
-    // console.log(finalObject)
+    //console.log(finalObject)
 
     return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, finalObject)
   }
