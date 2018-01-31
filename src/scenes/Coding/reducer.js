@@ -27,7 +27,7 @@ const INITIAL_STATE = {
  an ID. It looks like this: { answers: { value: '', pincite: '' } }
  */
 const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) => {
-  if (question.categoryId) {
+  if (question.categoryId && question.categoryId !== 0) {
     return userCodedAnswerObj.hasOwnProperty(question.codingSchemeQuestionId)
       ? {
         codingSchemeQuestionId: question.codingSchemeQuestionId,
