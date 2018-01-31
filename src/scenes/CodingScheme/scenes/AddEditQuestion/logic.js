@@ -21,8 +21,34 @@ const updateOutlineLogic = createLogic({
       question: {
         ...action.question,
         outline: getState().scenes.codingScheme.outline,
-        parentId: action.parentId,
+        parentId: action.parentId
+      }
+    })
+  }
+})
+
+const updatePositionInParentLogic = createLogic({
+  type: types.ADD_QUESTION_REQUEST,
+  transform({ getState, action }, next) {
+    next({
+      ...action,
+      question: {
+        ...action.question,
         positionInParent: getState().scenes.codingScheme.questions.length
+      }
+    })
+  }
+})
+
+const updateChildPositionInParentLogic = createLogic({
+  type: types.ADD_CHILD_QUESTION_REQUEST,
+  transform({ getState, action }, next) {
+    let parent = getState().scenes.codingScheme.questions.find(question => question.id === action.parentId)
+    next({
+      ...action,
+      question: {
+        ...action.question,
+        positionInParent: parent.children.length
       }
     })
   }
@@ -96,6 +122,8 @@ const addQuestionLogic = createLogic({
 })
 
 export default [
+  updatePositionInParentLogic,
+  updateChildPositionInParentLogic,
   updateUserIdLogic,
   updateOutlineLogic,
   updateQuestionLogic,
