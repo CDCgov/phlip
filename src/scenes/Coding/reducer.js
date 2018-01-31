@@ -465,17 +465,37 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.GET_USER_CODED_QUESTIONS_SUCCESS:
+      let userAnswers = {}, question = { ...state.question }, other = {}
+
+      if (action.payload.codedQuestions.length !== 0) {
+        userAnswers = initializeUserAnswers(action.payload.codedQuestions, state.scheme.byId)
+      }
+
+      if (state.question.isCategoryQuestion) {
+        question = state.scheme.byId[question.parentId]
+        other = {
+          selectedCategoryId: 0,
+          categories: undefined,
+          currentIndex: state.scheme.order.findIndex(id => id === question.id)
+        }
+      }
+
+      if (!userAnswers.hasOwnProperty(question.id)) {
+        userAnswers = {
+          ...userAnswers,
+          [question.id]: {
+            codingSchemeQuestionId: question.id,
+            comment: '',
+            answers: {}
+          }
+        }
+      }
+
       return {
         ...state,
-        userAnswers: action.payload.codedQuestions.length !== 0
-          ? initializeUserAnswers(action.payload.codedQuestions, state.scheme.byId)
-          : {
-            [state.question.id]: {
-              codingSchemeQuestionId: state.question.id,
-              comment: '',
-              answers: {}
-            }
-          }
+        userAnswers,
+        question,
+        ...other
       }
 
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
