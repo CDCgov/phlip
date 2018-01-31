@@ -164,7 +164,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         questions: newTree.treeData,
-        outline: questionsToOutline([...state.questions, action.payload]),
+        outline: questionsToOutline(newTree.treeData),
         empty: false,
         flatQuestions: [...state.flatQuestions, action.payload]
       }
