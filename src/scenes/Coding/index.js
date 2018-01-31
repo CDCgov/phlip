@@ -7,11 +7,14 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import QuestionCard from './components/QuestionCard'
 import FooterNavigate from './components/FooterNavigate'
+import Navigator from './components/Navigator'
 import * as actions from './actions'
 import Typography from 'material-ui/Typography'
 import TextLink from 'components/TextLink'
 import Icon from 'components/Icon'
 import Button from 'components/Button'
+import { withStyles } from 'material-ui/styles'
+import classNames from 'classnames'
 import { default as MuiButton } from 'material-ui/Button'
 
 const navButtonStyles = {
@@ -31,13 +34,32 @@ const iconStyle = {
   transform: 'rotate(90deg)'
 }
 
+const styles = theme => ({
+  mainContent: {
+    flex: '1 !important',
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    marginLeft: -320
+  },
+  openNavShift: {
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginLeft: 0
+  }
+})
+
 export class Coding extends Component {
   constructor(props, context) {
     super(props, context)
 
     this.state = {
       selectedJurisdiction: this.props.jurisdictionId,
-      showViews: false
+      showViews: false,
+      navOpen: false
     }
   }
 
@@ -47,6 +69,10 @@ export class Coding extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.isSchemeEmpty !== null) { this.setState({ showViews: true }) }
+  }
+
+  onToggleNavigator = () => {
+    this.setState({ navOpen: !this.state.navOpen })
   }
 
   getNextQuestion = index => {
@@ -139,7 +165,9 @@ export class Coding extends Component {
 
   render() {
     return (
-      <Container column flex>
+      <Container flex style={{ width: '100%', height: '100%', position: 'relative', display: 'flex' }}>
+        <Navigator open={this.state.navOpen} />
+        <Column displayFlex className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}>
         <Header projectName={this.props.projectName} projectId={this.props.projectId}
                 jurisdictionsList={this.props.jurisdictionsList}
                 selectedJurisdiction={this.state.selectedJurisdiction}
@@ -151,7 +179,7 @@ export class Coding extends Component {
         <Container flex style={{ backgroundColor: '#f5f5f5' }}>
           <Row displayFlex flex>
             <Column>
-              <MuiButton style={navButtonStyles}><Icon color="white" style={iconStyle}>menu</Icon></MuiButton>
+              <MuiButton style={navButtonStyles} onClick={this.onToggleNavigator}><Icon color="white" style={iconStyle}>menu</Icon></MuiButton>
             </Column>
             <Column displayFlex flex style={{ padding: '20px 20px 10px 20px' }}>
               {this.state.showViews && (this.props.jurisdiction === null || this.props.questionOrder.length === 0
@@ -161,6 +189,7 @@ export class Coding extends Component {
           </Row>
         </Container>
         <Footer onClose={() => this.props.actions.onCloseCodeScreen()} />
+        </Column>
       </Container>
     )
   }
@@ -203,4 +232,4 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Coding)
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Coding))
