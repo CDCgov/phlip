@@ -70,7 +70,7 @@ export class AddEditQuestion extends Component {
         else updatedValues.possibleAnswers[i] = answer
       })
     }
-    
+
     this.questionDefined ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.questionDefined.id, this.props.location.state.path)
       : this.parentDefined ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.parentDefined, this.props.location.state.path)
         : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)
@@ -114,6 +114,9 @@ export class AddEditQuestion extends Component {
       { value: questionTypes.MULTIPLE_CHOICE, label: 'Multiple choice' },
       { value: questionTypes.TEXT_FIELD, label: 'Text field' }
     ]
+
+    const categoryChildOptions = options.filter(option => option.value !== questionTypes.CATEGORY)
+
     const actions = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button' },
       {
@@ -124,6 +127,7 @@ export class AddEditQuestion extends Component {
         disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors)
       }
     ]
+
     return (
       <FormModal
         form="questionForm"
@@ -151,7 +155,8 @@ export class AddEditQuestion extends Component {
                     name="questionType"
                     component={DropDown}
                     label="Type"
-                    options={options}
+                    options={this.parentDefined && (this.parentDefined.questionType === questionTypes.CATEGORY)
+                      ? categoryChildOptions : options}
                     defaultValue={questionTypes.MULTIPLE_CHOICE}
                     onChange={this.handleTypeChange}
                     disabled={this.state.edit ? true : false}
