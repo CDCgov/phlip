@@ -366,7 +366,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.GET_CODING_OUTLINE_SUCCESS:
-
       if (action.payload.isSchemeEmpty) {
         return {
           ...state,

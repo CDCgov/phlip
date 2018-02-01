@@ -130,7 +130,7 @@ describe('Coding reducer', () => {
       const action = {
         type: types.GET_CODING_OUTLINE_SUCCESS,
         payload: {
-          question: {},
+          question: { id: 1 },
           scheme: questions,
           questionOrder: [1, 2, 3],
           outline: {
@@ -165,7 +165,7 @@ describe('Coding reducer', () => {
       )
 
       expect(state).toEqual(getState({
-        question: {},
+        question: { id: 1 },
         outline: {
           1: { parentId: 0, positionInParent: 0 },
           2: { parentId: 0, positionInParent: 1 },
@@ -207,6 +207,11 @@ describe('Coding reducer', () => {
               4: '',
               5: 'this is a comment'
             }
+          },
+          1: {
+            codingSchemeQuestionId: 1,
+            answers: {},
+            comment: ''
           }
         }
       }))
