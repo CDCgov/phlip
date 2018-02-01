@@ -153,6 +153,7 @@ const handleCheckCategories = (newQuestion, newIndex, state, action) => {
       }
     }, {})
 
+
     return {
       ...base,
       question: { ...base.question, isCategoryChild: true },
@@ -489,8 +490,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       if (state.question.isCategoryQuestion) {
         question = state.scheme.byId[question.parentId]
         other = {
-          selectedCategoryId: 0,
-          categories: undefined,
           currentIndex: state.scheme.order.findIndex(id => id === question.id)
         }
       }
@@ -510,6 +509,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
       return {
         ...newState,
+        selectedCategory: 0,
+        categories: undefined,
         showNextButton: determineShowButton(newState)
       }
 
