@@ -12,7 +12,7 @@ const INITIAL_STATE = {
   categories: undefined,
   selectedCategory: 0,
   userAnswers: {},
-  showNextButton: true
+  showNextButton: true,
 }
 
 /*
@@ -369,7 +369,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       if (action.payload.isSchemeEmpty) {
         return {
           ...state,
-          scheme: { order: [], byId: {} },
+          scheme: { order: [], byId: {}, tree: [] },
           outline: {},
           question: {},
           userAnswers: {}
@@ -382,7 +382,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           outline: action.payload.outline,
           scheme: {
             byId: normalizedQuestions,
-            order: action.payload.questionOrder
+            order: action.payload.questionOrder,
+            tree: action.payload.tree
           },
           question: action.payload.question,
           userAnswers: action.payload.codedQuestions.length !== 0

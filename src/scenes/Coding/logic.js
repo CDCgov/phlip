@@ -39,12 +39,13 @@ export const getOutlineLogic = createLogic({
         return [...arr, { ...q, ...scheme.outline[q.id] }]
       }, [])
 
-      const { questionsWithNumbers, order } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
+      const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
 
       return {
         outline: scheme.outline,
         scheme: questionsWithNumbers,
         questionOrder: order,
+        tree,
         question: questionsWithNumbers[0],
         // codedQuestions: [],
         codedQuestions: codedQuestions,  //UNCOMMENT WHEN API IS FINISHED

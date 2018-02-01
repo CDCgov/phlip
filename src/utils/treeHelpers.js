@@ -44,7 +44,7 @@ export const getQuestionNumbers = questions => {
     ignoreCollapsed: false
   })
 
-  return { questionsWithNumbers: qs, order }
+  return { questionsWithNumbers: qs, order, tree: questions }
 }
 
 export const getQuestionOrder = questions => {
