@@ -153,6 +153,7 @@ const handleCheckCategories = (newQuestion, newIndex, state, action) => {
       }
     }, {})
 
+
     return {
       ...base,
       question: { ...base.question, isCategoryChild: true },
@@ -395,6 +396,20 @@ const codingReducer = (state = INITIAL_STATE, action) => {
             }
         }
 
+        if (!updatedState.userAnswers.hasOwnProperty(action.payload.question.id)) {
+          updatedState = {
+            ...updatedState,
+            userAnswers: {
+              ...updatedState.userAnswers,
+              [action.payload.question.id]: {
+                codingSchemeQuestionId: action.payload.question.id,
+                comment: '',
+                answers: {}
+              }
+            }
+          }
+        }
+
         return {
           ...updatedState,
           showNextButton: determineShowButton(updatedState)
@@ -474,8 +489,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       if (state.question.isCategoryQuestion) {
         question = state.scheme.byId[question.parentId]
         other = {
-          selectedCategoryId: 0,
-          categories: undefined,
           currentIndex: state.scheme.order.findIndex(id => id === question.id)
         }
       }
@@ -491,11 +504,13 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
+      const newState = { ...state, userAnswers, question, ...other }
+
       return {
-        ...state,
-        userAnswers,
-        question,
-        ...other
+        ...newState,
+        selectedCategory: 0,
+        categories: undefined,
+        showNextButton: determineShowButton(newState)
       }
 
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
