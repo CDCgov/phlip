@@ -365,6 +365,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.GET_CODING_OUTLINE_SUCCESS:
+
       if (action.payload.isSchemeEmpty) {
         return {
           ...state,
@@ -393,6 +394,20 @@ const codingReducer = (state = INITIAL_STATE, action) => {
                 answers: {}
               }
             }
+        }
+
+        if (!updatedState.userAnswers.hasOwnProperty(action.payload.question.id)) {
+          updatedState = {
+            ...updatedState,
+            userAnswers: {
+              ...updatedState.userAnswers,
+              [action.payload.question.id]: {
+                codingSchemeQuestionId: action.payload.question.id,
+                comment: '',
+                answers: {}
+              }
+            }
+          }
         }
 
         return {
@@ -491,11 +506,11 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
+      const newState = { ...state, userAnswers, question, ...other }
+
       return {
-        ...state,
-        userAnswers,
-        question,
-        ...other
+        ...newState,
+        showNextButton: determineShowButton(newState)
       }
 
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
