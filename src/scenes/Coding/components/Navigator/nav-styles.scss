@@ -1,20 +1,22 @@
+.navContainer {
+  display: flex;
+  flex: 1;
+  padding-right: 10px;
+}
+
 .navScroll {
   display: flex;
   flex: 1;
-  padding-top: 10px;
-  padding-right: 10px;
-  padding-bottom: 10px;
 
   &::-webkit-scrollbar {
     width: 9px;
-    background-color: #363f41;
     border-radius: 10px;
   }
 
   &::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 9px rgba(0, 0, 0, 0.3);
     background-color: #363f41;
     border-radius: 10px;
+    margin: 10px;
   }
 
   &::-webkit-scrollbar-thumb {

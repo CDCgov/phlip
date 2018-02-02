@@ -25,18 +25,18 @@ const rowRenderer = (params) => {
 
 export const Navigator = ({ open, classes, treeQuestions, userAnswers, questionsById }) => {
   return (
-    <Drawer classes={{ paper: classes.codeNav }} type="persistent" anchor="left" open={open}>
+    <Drawer classes={{ paper: classes.codeNav }} type="persistent" anchor="left" open={true}>
       <Container column flex>
         <Row displayFlex style={{ backgroundColor: '#363f41', height: 60, alignItems: 'center', justifyContent: 'center', textTransform: 'uppercase' }}>
           <Typography type="headline"><span style={{ color: 'white' }}>Code Navigator</span></Typography>
         </Row>
-        <div className={styles.navScroll}>
-          <div style={{ flex: 1 }}>
-          <AutoSizer>
-            {({ height, width }) => (
-              <List className={styles.navScroll} rowCount={100} rowHeight={20} width={width} rowRenderer={rowRenderer} height={height} overscanRowCount={0} />
-            )}
-          </AutoSizer>
+        <div className={styles.navContainer}>
+          <div style={{ flex: 1, display: 'flex' }}>
+            <AutoSizer>
+              {({ height, width }) => (
+                <List className={styles.navScroll} style={{ height: height }} rowCount={100} rowHeight={20} width={width} rowRenderer={rowRenderer} height={height} overscanRowCount={0} />
+              )}
+            </AutoSizer>
           </div>
         </div>
       </Container>
