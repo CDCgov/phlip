@@ -40,20 +40,6 @@ const updatePositionInParentLogic = createLogic({
   }
 })
 
-const updateChildPositionInParentLogic = createLogic({
-  type: types.ADD_CHILD_QUESTION_REQUEST,
-  transform({ getState, action }, next) {
-    let parent = getState().scenes.codingScheme.questions.find(question => question.id === action.parentId)
-    next({
-      ...action,
-      question: {
-        ...action.question,
-        positionInParent: parent.children ? parent.children.length : 0
-      }
-    })
-  }
-})
-
 const updateIsCategoryQuestionLogic = createLogic({
   type: types.ADD_CHILD_QUESTION_REQUEST,
   transform({ getState, action }, next) {
@@ -95,7 +81,7 @@ const addChildQuestionLogic = createLogic({
     return {
       ...question,
       parentId: action.question.parentId,
-      positionInParent: action.question.positionInParent,
+      positionInParent: action.parentNode.children ? parent.parentNode.children.length : 0,
       isCategoryQuestion: action.question.isCategoryQuestion,
       path: action.path,
       hovering: false
@@ -123,7 +109,6 @@ const addQuestionLogic = createLogic({
 
 export default [
   updatePositionInParentLogic,
-  updateChildPositionInParentLogic,
   updateUserIdLogic,
   updateOutlineLogic,
   updateQuestionLogic,
