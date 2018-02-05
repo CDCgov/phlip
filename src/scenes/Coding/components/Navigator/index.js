@@ -6,10 +6,10 @@ import Drawer from 'material-ui/Drawer'
 import Container, { Row, Column } from 'components/Layout'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import List from 'react-virtualized/dist/commonjs/List'
-import styles from './nav-styles.scss'
+import navStyles from './nav-styles.scss'
 import IconButton from 'components/IconButton'
 
-const navStyles = theme => ({
+const muiNavStyles = theme => ({
   codeNav: {
     position: 'relative',
     width: 320,
@@ -21,17 +21,54 @@ const navStyles = theme => ({
 const rowStyles = {
   display: 'flex',
   alignItems: 'center',
-  color: 'white',
-  fontWeight: 300
+  position: 'relative',
+  height: 30
 }
 
-const QuestionRow = ({ item, children }) => {
+const questionTextStyles = {
+  color: 'white',
+  fontWeight: 300,
+  paddingLeft: 10
+}
+
+const QuestionRow = ({ item, children, treeLength }) => {
+  let scaffold = []
+  let className = ''
+
+  for (let i = 0; i < item.indent + 1; i++) {
+    if (item.children && item.parentId === 0 && item.positionInParent === 0) {
+      className = navStyles.navParentFirst
+    } else if (item.children) {
+      if (i === item.indent) {
+        className = navStyles.navParent
+      } else {
+        className = navStyles.navChild
+      }
+    } else if ((treeLength - 1) === item.positionInParent && i === item.indent) {
+      className = `${navStyles.navChildLast} ${navStyles.navQuestionNoChildren}`
+    } else {
+      if (i === item.indent) {
+        className = `${navStyles.navChild} ${navStyles.navQuestionNoChildren}`
+      } else {
+        className = navStyles.navChild
+      }
+    }
+
+    scaffold.push(<div key={`${item.id}-scaffold-${i}`} className={className} style={{ left: 23 * i }} />)
+  }
+
   return (
-    <div style={{ ...rowStyles, marginLeft: 18 * item.indent }}><Typography style={rowStyles} type="body1" noWrap>{children}</Typography></div>
+    <Fragment>
+      {scaffold}
+      <div style={{ ...rowStyles, marginLeft: 23 * item.indent }}>
+        <span style={{ width: 18, height: 18 }}>{children}</span>
+        <Typography style={questionTextStyles} type="body1" noWrap>{item.text}</Typography>
+      </div>
+    </Fragment>
   )
 }
 
-const questionRenderer = (item, keyPrefix) => {
+const questionRenderer = (item, keyPrefix, treeLength) => {
   const onClick = (event) => {
     event.stopPropagation()
     item.expanded = !item.expanded
@@ -45,15 +82,24 @@ const questionRenderer = (item, keyPrefix) => {
 
   if (item.expanded) {
     props.onClick = onClick
-    itemEl = <QuestionRow key={keyPrefix} item={item}><IconButton iconSize={18} color="secondary">remove_circle_outline</IconButton>{item.text}</QuestionRow>
+    itemEl = (
+      <QuestionRow key={keyPrefix} item={item} treeLength={treeLength}>
+        <IconButton iconSize={20} color="secondary">remove_circle_outline</IconButton>
+      </QuestionRow>
+    )
+
     children = item.children.map((child, index) => {
-      return questionRenderer(child, keyPrefix + '-' + index)
+      return questionRenderer(child, keyPrefix + '-' + index, item.children.length)
     })
   } else if (item.children) {
     props.onClick = onClick
-    itemEl = <QuestionRow key={keyPrefix} item={item}><IconButton iconSize={18} color="secondary">add_circle_outline</IconButton>{item.text}</QuestionRow>
+    itemEl = (
+      <QuestionRow key={keyPrefix} item={item} treeLength={treeLength}>
+        <IconButton iconSize={20} color="secondary">add_circle_outline</IconButton>
+      </QuestionRow>
+    )
   } else {
-    itemEl = <QuestionRow key={keyPrefix} item={item}>{item.text}</QuestionRow>
+    itemEl = <QuestionRow key={keyPrefix} item={item} treeLength={treeLength} />
   }
 
   return [itemEl, ...children]
@@ -63,7 +109,8 @@ const rowRenderer = tree => params => {
   return (
     tree.length !== 0
     && tree[params.index] !== undefined
-    && questionRenderer(tree[params.index], params.index)
+    && <div style={params.style}
+            key={`tree-${params.index}`}>{questionRenderer(tree[params.index], params.index, tree.length)}</div>
   )
 }
 
@@ -96,18 +143,19 @@ export const Navigator = ({ open, classes, questionTree, userAnswers, questionsB
         }}>
           <Typography type="headline"><span style={{ color: 'white' }}>Code Navigator</span></Typography>
         </Row>
-        <div className={styles.navContainer}>
+        <div className={navStyles.navContainer}>
           <div style={{ flex: 1, display: 'flex' }}>
             <AutoSizer>
               {({ height, width }) => (
-                <List className={styles.navScroll}
-                      style={{ height: height }}
+                <List className={navStyles.navScroll}
+                      style={{ height: height, paddingLeft: 10 }}
                       rowCount={questionTree.length}
                       rowHeight={rowHeight(questionTree)}
                       width={width}
                       rowRenderer={rowRenderer(questionTree)}
                       height={height}
                       overscanRowCount={0}
+                      autoHeight
                 />
               )}
             </AutoSizer>
@@ -126,4 +174,4 @@ Navigator.defaultProps = {
   treeQuestions: []
 }
 
-export default withStyles(navStyles)(Navigator)
+export default withStyles(muiNavStyles)(Navigator)

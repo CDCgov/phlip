@@ -36,7 +36,7 @@ const setChildren = (node, number) => {
 }
 
 export const getQuestionNumbers = questions => {
-  const qs = [], order = []
+  let qs = [], order = []
   let count = 0, numbering = {}, number = '', tree = []
 
   walk({

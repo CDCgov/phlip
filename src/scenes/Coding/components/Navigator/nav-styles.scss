@@ -1,3 +1,5 @@
+$rowHeight: 30px;
+
 .navContainer {
   display: flex;
   flex: 1;
@@ -5,9 +7,6 @@
 }
 
 .navScroll {
-  display: flex;
-  flex: 1;
-
   &::-webkit-scrollbar {
     width: 9px;
     border-radius: 10px;
@@ -22,5 +21,97 @@
   &::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background-color: #738083;
+  }
+}
+
+.navRow {
+  height: $rowHeight;
+  width: 19px;
+  outline: 0;
+  border: 0;
+  background-color: transparent;
+  position: absolute;
+}
+
+
+.navChild {
+  @extend .navRow;
+
+  &:after {
+    content: "";
+    height: $rowHeight + 10;
+    width: 1px;
+    left: 50%;
+    top: -5px;
+    background-color: rgb(0, 169, 229);
+    position: absolute;
+  }
+}
+
+.navParentFirst {
+  @extend .navRow;
+
+  &::after {
+    content: "";
+    height: 10px;
+    width: 1px;
+    left: 50%;
+    top: 22px;
+    background-color: rgb(0, 169, 229);
+    position: absolute;
+  }
+}
+
+/* Two vertical bars above and below expand button */
+.navParent {
+  @extend .navRow;
+
+  &::before {
+    content: "";
+    height: 10px;
+    left: 50%;
+    width: 1px;
+    background-color: rgb(0, 169, 229);
+    position: absolute;
+  }
+
+  &::after {
+    content: "";
+    height: 10px;
+    width: 1px;
+    left: 50%;
+    top: 22px;
+    background-color: rgb(0, 169, 229);
+    position: absolute;
+  }
+}
+
+/* Vertical top bar */
+.navChildLast {
+  @extend .navRow;
+
+  &::after {
+    content: "";
+    height: 20px;
+    left: 50%;
+    top: -5px;
+    width: 1px;
+    background-color: rgb(0, 169, 229);
+    position: absolute;
+  }
+}
+
+/* Horizontal bar */
+.navQuestionNoChildren {
+  @extend .navRow;
+
+  &::before {
+    content: "";
+    height: 1px;
+    width: 13px;
+    background-color: rgb(0, 169, 229);
+    position: absolute;
+    top: 50%;
+    left: 50%;
   }
 }
