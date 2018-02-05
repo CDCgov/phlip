@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CodingScheme scene should render correctly 1`] = `
+<Container
+  column={true}
+  flex={true}
+  spacing={0}
+>
+  <Header
+    showButton={false}
+  />
+  <Container
+    column={false}
+    flex={true}
+    spacing={0}
+    style={
+      Object {
+        "backgroundColor": "#f5f5f5",
+        "paddingTop": 25,
+      }
+    }
+  >
+    <Scheme
+      disableHover={[Function]}
+      enableHover={[Function]}
+      handleHoverOnQuestion={[Function]}
+      handleQuestionTreeChange={[Function]}
+      questions={Object {}}
+    />
+  </Container>
+  <Footer />
+  <Route
+    component={[Function]}
+    path="/project/:projectId/coding-scheme/add"
+  />
+  <Route
+    component={[Function]}
+    path="/project/:projectId/coding-scheme/edit/:id"
+  />
+</Container>
+`;

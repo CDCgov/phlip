@@ -8,9 +8,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
 const paths = require('./paths')
 
-module.exports = function makeConfig() {
-  const env = require('./env')('production')
-
+module.exports = function makeConfig(env) {
   return {
     devtool: 'source-map',
     entry: {
@@ -64,36 +62,57 @@ module.exports = function makeConfig() {
             },
             {
               test: /\.css$/,
-              loader:
-                ExtractTextPlugin.extract({
-                  fallback: 'style-loader',
-                  use: [
-                    {
-                      loader: 'css-loader',
-                      options: {
-                        importLoaders: 1,
-                        minimize: true,
-                        sourceMap: true,
-                      }
-                    }, {
-                      loader: require.resolve('postcss-loader'),
-                      options: {
-                        ident: 'postcss',
-                        plugins: () => [
-                          autoprefixer({
-                            browsers: [
-                              'last 2 versions'
-                            ]
-                          }),
+              use: [
+                'style-loader',
+                {
+                  loader: 'css-loader',
+                  options: {
+                    modules: true,
+                    '-autoprefixer': true,
+                    importLoaders: true,
+                  },
+                },
+                {
+                  loader: 'postcss-loader',
+                  options: {
+                    ident: 'postcss',
+                    plugins: () => [
+                      autoprefixer({
+                        browsers: [
+                          'last 2 versions'
                         ],
-                      },
-                    },
-                  ],
-                }),
+                      }),
+                    ],
+                  },
+                },
+              ],
             },
             {
               test: /\.scss$/,
-              loader: 'sass-loader'
+              use: [{
+                loader: "style-loader"
+              }, {
+                loader: "css-loader",
+                options: {
+                  modules: true,
+                  '-autoprefixer': true,
+                  importLoaders: true,
+                },
+              }, {
+                loader: 'postcss-loader',
+                options: {
+                  ident: 'postcss',
+                  plugins: () => [
+                    autoprefixer({
+                      browsers: [
+                        'last 2 versions'
+                      ],
+                    }),
+                  ],
+                },
+              }, {
+                loader: "sass-loader"
+              }]
             },
             {
               exclude: [/\.js$/, /\.html$/, /\.json$/],
@@ -125,9 +144,7 @@ module.exports = function makeConfig() {
         },
       }),
 
-      new webpack.DefinePlugin({
-        env
-      }),
+      new webpack.DefinePlugin(env),
 
       new webpack.optimize.UglifyJsPlugin({
         beautify: false,

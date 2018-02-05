@@ -8,6 +8,9 @@ import { withRouter } from 'react-router-dom'
 import { Field, reduxForm } from 'redux-form'
 import ModalForm from 'components/ModalForm'
 import FormTextInput from 'components/FormTextInput'
+import isEmail from 'sane-email-validation'
+import Container, { Row, Column } from 'components/Layout'
+import { trimWhitespace } from 'utils/formHelpers'
 
 export class AddEditUser extends Component {
   constructor(props, context) {
@@ -21,10 +24,15 @@ export class AddEditUser extends Component {
   }
 
   handleSubmit = (values) => {
+    let updatedValues = { ...values }
+    for (let field of ['firstName', 'lastName']) {
+      updatedValues[field] = trimWhitespace(values[field])
+    }
+
     if (this.props.match.params.id) {
-      this.props.actions.updateUserRequest(values)
+      this.props.actions.updateUserRequest({ role: 'Coordinator', ...updatedValues })
     } else {
-      this.props.actions.addUserRequest(values)
+      this.props.actions.addUserRequest({ role: 'Coordinator', ...updatedValues })
     }
     this.props.history.goBack()
   }
@@ -33,22 +41,31 @@ export class AddEditUser extends Component {
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
     const emails = this.props.users.map(user => user.email)
     return sleep(1).then(() => {
-      if (emails.includes(values.email)) {
+      if (emails.includes(values.email) && !this.props.match.params.id) {
         throw { email: 'This email is already associated with a user account.' }
+      }
+      if (values.email && !isEmail(values.email)) {
+        throw { email: 'Invalid email address' }
       }
     })
   }
 
   componentWillMount() {
-    const userId = this.props.match.params.id
+    const id = this.props.match.params.id
 
-    if (userId && this.props.users.length > 0) {
-      this.selectedUser = getUserById(this.props.users, userId)
+    if (id && this.props.users.length > 0) {
+      this.selectedUser = getUserById(this.props.users, id)
     }
-
   }
 
-  required = value => value ? undefined : 'Required'
+  // required = value => value ? undefined : 'Required'
+  required = value => {
+    if (!value && !this.props.match.params.id) {
+      return 'Required'
+    } else {
+      return undefined
+    }
+  }
 
   render() {
     const actions = [
@@ -75,10 +92,10 @@ export class AddEditUser extends Component {
         asyncBlurFields={['email']}
         width="600px"
         height="400px">
-        <Grid container direction="column" style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
-          <Grid item>
-            <Grid container direction="row" spacing={24}>
-              <Grid item xs={6}>
+        <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
+          <Row>
+            <Container spacing={24}>
+              <Row flex>
                 <Field
                   name="firstName"
                   component={FormTextInput}
@@ -87,8 +104,8 @@ export class AddEditUser extends Component {
                   validate={this.required}
                   fullWidth={true}
                 />
-              </Grid>
-              <Grid item xs={6} >
+              </Row>
+              <Row flex >
                 <Field
                   name="lastName"
                   component={FormTextInput}
@@ -97,12 +114,12 @@ export class AddEditUser extends Component {
                   validate={this.required}
                   fullWidth={true}
                 />
-              </Grid>
-            </Grid>
+              </Row>
+            </Container>
 
-          </Grid>
+          </Row>
 
-          <Grid item>
+          <Row>
             <Field
               name="email"
               component={FormTextInput}
@@ -111,8 +128,8 @@ export class AddEditUser extends Component {
               validate={this.required}
               fullWidth={true}
             />
-          </Grid>
-          <Grid item>
+          </Row>
+          <Row style={{ paddingBottom: '25px' }}>
             <Field
               name="password"
               component={FormTextInput}
@@ -121,19 +138,19 @@ export class AddEditUser extends Component {
               validate={this.required}
               fullWidth={true}
             />
-          </Grid>
-          <Grid item>
+          </Row>
+          <Row>
             <Field
               name="role"
               component={Dropdown}
               label="Role"
               options={roles}
-              defaultValue="Coordinator"
+              defaultValue=""
               id="role"
               style={{ display: 'flex' }}
             />
-          </Grid>
-        </Grid>
+          </Row>
+        </Container>
       </ModalForm>
     )
   }
@@ -144,7 +161,6 @@ function getUserById(users, id) {
   if (user.length) return user[0];
   return null;
 }
-
 
 const mapStateToProps = (state) => {
   return {

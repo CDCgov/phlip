@@ -1,0 +1,159 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Home scene - ProjectList - ProjectRow component should render correctly 1`] = `
+<TableRow
+  key="1"
+>
+  <TableCell
+    key="1-bookmarked"
+    padding="checkbox"
+    style={
+      Object {
+        "width": 48,
+      }
+    }
+  >
+    <IconButton
+      color="#d4d4d4"
+      iconSize={24}
+      onClick={[Function]}
+    >
+      bookmark_border
+    </IconButton>
+  </TableCell>
+  <TableCell
+    key="1-name"
+    padding="checkbox"
+    style={
+      Object {
+        "fontWeight": "normal",
+        "textAlign": "left",
+        "width": 350,
+      }
+    }
+  >
+    <WithTheme
+      to={
+        Object {
+          "pathname": "/project/edit/1",
+          "state": Object {
+            "projectDefined": Object {
+              "dateLastEdited": 2017-10-11T00:00:00.000Z,
+              "id": 1,
+              "lastEditedBy": "Kristin",
+              "name": "Project 1",
+            },
+          },
+        }
+      }
+    >
+      Project 1
+    </WithTheme>
+  </TableCell>
+  <TableCell
+    key="1-dateLastEdited"
+    padding="checkbox"
+    style={
+      Object {
+        "maxWidth": 150,
+        "textAlign": "unset",
+        "width": 150,
+      }
+    }
+  >
+    2017-10-11
+  </TableCell>
+  <TableCell
+    key="1-lastEditedBy"
+    padding="checkbox"
+    style={
+      Object {
+        "fontStyle": "italic",
+        "maxWidth": 150,
+        "textAlign": "unset",
+        "width": 150,
+      }
+    }
+  >
+    Kristin
+  </TableCell>
+  <TableCell
+    key="1-protocol"
+    padding="checkbox"
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
+  >
+    <WithTheme
+      to="/"
+    >
+      Add/Edit
+    </WithTheme>
+  </TableCell>
+  <TableCell
+    key="1-jurisdictions"
+    padding="checkbox"
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
+  >
+    <WithTheme
+      id={1}
+      to="/project/1/jurisdictions"
+    >
+      Add/Edit
+    </WithTheme>
+  </TableCell>
+  <TableCell
+    key="1-codingScheme"
+    padding="checkbox"
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
+  >
+    <WithTheme
+      to="/project/1/coding-scheme"
+    >
+      Edit
+    </WithTheme>
+  </TableCell>
+  <TableCell
+    key="1-code"
+    padding="checkbox"
+  >
+    <WithTheme
+      listButton={true}
+      raised={false}
+      value="Code"
+    />
+  </TableCell>
+  <TableCell
+    key="1-validation"
+    padding="checkbox"
+  >
+    <WithTheme
+      listButton={true}
+      raised={false}
+      value="Validate"
+    />
+  </TableCell>
+  <TableCell
+    key="1-export"
+    padding="checkbox"
+  >
+    <IconButton
+      color="#d4d4d4"
+      iconSize={24}
+      onClick={[Function]}
+    >
+      file_download
+    </IconButton>
+  </TableCell>
+</TableRow>
+`;

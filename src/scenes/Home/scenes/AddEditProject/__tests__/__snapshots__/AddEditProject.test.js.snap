@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Home scene - AddEditProject scene should render correctly 1`] = `
+<FormModal
+  asyncBlurFields={
+    Array [
+      "name",
+    ]
+  }
+  asyncValidate={[Function]}
+  form="projectForm"
+  handleSubmit={[Function]}
+  height="400px"
+  initialValues={Object {}}
+  onClose={[Function]}
+  open={true}
+  width="600px"
+>
+  <ModalTitle
+    closeButton={false}
+    edit={true}
+    editButton={false}
+    onCloseForm={[Function]}
+    onEditForm={[Function]}
+    title="Create New Project"
+  />
+  <WithStyles />
+  <ModalContent>
+    <Container
+      column={true}
+      flex={false}
+      spacing={0}
+      style={
+        Object {
+          "minHeight": 230,
+          "minWidth": 550,
+          "padding": "30px 15px 0 15px",
+        }
+      }
+    >
+      <DetailRow
+        component={[Function]}
+        disabled={false}
+        fullWidth={true}
+        label="Project Name"
+        name="name"
+        placeholder="Enter Project Name"
+        validate={[Function]}
+      />
+      <DetailRow
+        component={[Function]}
+        defaultValue={1}
+        disabled={false}
+        id="type"
+        label="Type"
+        name="type"
+        options={
+          Array [
+            Object {
+              "label": "Assessment",
+              "value": 1,
+            },
+            Object {
+              "label": "Policy Surveillance",
+              "value": 2,
+            },
+            Object {
+              "label": "Environmental Scan",
+              "value": 3,
+            },
+          ]
+        }
+        style={
+          Object {
+            "display": "flex",
+          }
+        }
+      />
+    </Container>
+  </ModalContent>
+  <ModalActions
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Cancel",
+        },
+        Object {
+          "disabled": false,
+          "type": "submit",
+          "value": "Create",
+        },
+      ]
+    }
+    edit={true}
+    raised={false}
+  />
+</FormModal>
+`;

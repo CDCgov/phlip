@@ -2,19 +2,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Grid from 'material-ui/Grid'
-import TextInput from 'components/TextInput'
-import MainButton from 'components/Button'
-import Logo from 'components/Logo'
 import LoginForm from './components/LoginForm'
 import { Field, SubmissionError } from 'redux-form'
 import FormTextInput from 'components/FormTextInput'
 import * as actions from './actions'
 import { withRouter } from 'react-router-dom'
 
-const styles = {
-}
-
-const mockUsers = ['test@cdc.gov', 'mta@cdc.gov', 'kmm@cdc.gov', 'tsavel@cdc.gov', 'mpeck@cdc.gov']
+const styles = {}
 
 export class Login extends Component {
   constructor(props, context) {
@@ -22,29 +16,30 @@ export class Login extends Component {
   }
 
   componentDidUpdate() {
-    if (this.props.user && this.props.session) {
-      setTimeout(this.props.history.push('/'), 3000)
+    if (this.props.session) {
+      this.props.history.push('/')
     }
   }
+
   handleSubmit = (values) => {
-    if (!mockUsers.includes(values.email)) {
-      throw new SubmissionError({
-        email: 'User does not exist',
-        error: 'Login failed!'
-      })
-    } else if (values.password !== 'test') {
-      throw new SubmissionError({
-        password: 'Wrong password',
-        error: 'Login failed!'
-      })
-    } else {
-      this.props.actions.loginUserRequest(values)
-    }
+    /* if (!mockUsers.includes(values.email)) {
+       throw new SubmissionError({
+         email: 'User does not exist',
+         error: 'Login failed!'
+       })
+     } else if (values.password !== 'test') {
+       throw new SubmissionError({
+         password: 'Wrong password',
+         error: 'Login failed!'
+       })
+     }*/
+    this.props.actions.loginUserRequest(values)
   }
 
   render() {
     return (
-      <Grid container spacing={0} direction="row" alignItems="center" justify="center" style={{ backgroundColor: '#f5f5f5' }}>
+      <Grid container spacing={0} direction="row" alignItems="center" justify="center"
+            style={{ backgroundColor: '#f5f5f5' }}>
         <Grid item style={styles}>
           <LoginForm onSubmit={this.handleSubmit}>
             <Grid container direction="column" alignItems="center" spacing={16}>
@@ -73,7 +68,7 @@ export class Login extends Component {
 
 const mapStateToProps = (state) => ({
   user: state.data.user.currentUser || undefined,
-  session: state.scenes.login.session || {}
+  session: state.scenes.login.session || false
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

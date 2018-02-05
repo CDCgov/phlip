@@ -5,3 +5,5 @@ jest_0
 npm-debug.log
 .DS_Store
 .yarnclean
+tests.xml
+.env

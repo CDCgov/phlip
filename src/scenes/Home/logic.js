@@ -1,6 +1,7 @@
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
-import newProjectLogic from './scenes/NewProject/logic'
+import addEditProjectLogic from './scenes/AddEditProject/logic'
+import addEditJurisdictions from './scenes/AddEditJurisdictions/logic'
 
 export const getProjectLogic = createLogic({
   type: types.GET_PROJECTS_REQUEST,
@@ -10,39 +11,62 @@ export const getProjectLogic = createLogic({
     successType: types.GET_PROJECTS_SUCCESS,
     failType: types.GET_PROJECTS_FAIL
   },
-  async process({ api }) {
-    return await api.getProjects()
+  async process({ api, getState }) {
+    const projects = await api.getProjects()
+    return {
+      projects: projects.map(project => ({ ...project, lastEditedBy: project.lastEditedBy.trim() })),
+      bookmarkList: [...getState().data.user.currentUser.bookmarks],
+      error: false, errorContent: '', searchValue: ''
+    }
   }
 })
 
 export const toggleBookmarkLogic = createLogic({
   type: types.TOGGLE_BOOKMARK,
-  transform({ action }, next) {
-    const currentProject = action.project
-    const project = {
-      ...currentProject, 
-      bookmarked: !currentProject.bookmarked
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.TOGGLE_BOOKMARK_SUCCESS
+  },
+  async process({ api, getState, action }) {
+    const currentUser = getState().data.user.currentUser
+    let add = true
+    let bookmarkList = [...currentUser.bookmarks]
+
+    if (bookmarkList.includes(action.project.id)) {
+      bookmarkList.splice(bookmarkList.indexOf(action.project.id), 1)
+      add = false
+    } else {
+      bookmarkList.push(action.project.id)
     }
-    next({ ...action, project })
+
+    let out
+    if (add) {
+      out = await api.addUserBookmark(currentUser.id, action.project.id)
+    } else {
+      out = await api.removeUserBookmark(currentUser.id, action.project.id)
+    }
+
+    return { bookmarkList, user: { ...currentUser, bookmarks: bookmarkList } }
   }
 })
 
-export const updateProjectLogic = createLogic({
-  type: [types.UPDATE_PROJECT_REQUEST, types.TOGGLE_BOOKMARK],
-  latest: true,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.UPDATE_PROJECT_SUCCESS,
-    failType: types.UPDATE_PROJECT_FAIL
-  },
-  async process({ action, api }) {
-    return await api.updateProject(action.project)
+export const updateFieldsLogic = createLogic({
+  type: types.UPDATE_EDITED_FIELDS,
+  transform({ action, getState }, next) {
+    const currentUser = getState().data.user.currentUser
+    const user = `${currentUser.firstName} ${currentUser.lastName}`
+    next({
+      ...action,
+      user,
+      projectId: action.projectId
+    })
   }
 })
 
 export default [
   getProjectLogic,
-  updateProjectLogic,
   toggleBookmarkLogic,
-  ...newProjectLogic
+  updateFieldsLogic,
+  ...addEditProjectLogic,
+  ...addEditJurisdictions
 ]

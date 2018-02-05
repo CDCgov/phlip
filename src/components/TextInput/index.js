@@ -2,18 +2,29 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Input, { InputLabel } from 'material-ui/Input'
 import { FormControl, FormHelperText } from 'material-ui/Form'
+import { withStyles } from 'material-ui/styles'
 
-const TextInput = ({ name, label, type, input, meta: { asyncValidating, touched, error, warning }, ...custom}) => {
+const styles = {
+  disabled: {
+    color: 'black'
+  }
+}
+
+const TextInput = ({ name, label, type, input, disabled, multiline, classes, meta: { asyncValidating, active, touched, error, warning }, ...custom }) => {
   return (
-    <FormControl error={touched && (error || warning)} fullWidth>
+    <FormControl error={Boolean(touched && error && !active || warning)} fullWidth disabled={disabled}>
       <InputLabel htmlFor={name} shrink>{label}</InputLabel>
       <Input
         id={name}
         {...input}
         type={type}
         {...custom}
+        classes={{
+          disabled: classes.disabled
+        }}
+        multiline={multiline}
       />
-      <FormHelperText>{touched && error}</FormHelperText>
+      {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
     </FormControl>
   )
 }
@@ -23,7 +34,12 @@ TextInput.propTypes = {
   label: PropTypes.string,
   type: PropTypes.string,
   input: PropTypes.any,
-  meta: PropTypes.object
+  meta: PropTypes.object,
+  multiline: PropTypes.bool
 }
 
-export default TextInput
+TextInput.defaultProps = {
+  meta: {}
+}
+
+export default withStyles(styles)(TextInput)

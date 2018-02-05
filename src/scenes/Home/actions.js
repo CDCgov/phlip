@@ -1,16 +1,26 @@
 import * as types from './actionTypes'
 
+/* Getting projects */
 export const getProjectsRequest = () => ({ type: types.GET_PROJECTS_REQUEST })
-export const getProjectsSuccess = (payload) => ({ type: types.GET_PROJECTS_SUCCESS, payload })
-export const getProjectsFail = (payload) => ({ type: types.GET_PROJECTS_FAIL, errorValue: payload, error: true })
+export const getProjectsFail = payload => ({ type: types.GET_PROJECTS_FAIL, payload: { errorContent: payload, error: true } })
 
-export const updateProjectRequest = (project) => ({ type: types.UPDATE_PROJECT_REQUEST, project })
-export const updateProjectSuccess = (payload) => ({ type: types.UPDATE_PROJECT_SUCCESS, payload })
-export const updateProjectFail = (payload) => ({ type: types.UPDATE_PROJECT_FAIL, errorValue: payload, error: true })
+/* Updating a project */
+export const updateProjectRequest = project => ({ type: types.UPDATE_PROJECT_REQUEST, project })
+export const updateProjectFail = payload => ({ type: types.UPDATE_PROJECT_FAIL, payload: { errorContent: payload, error: true } })
 
+/* Bookmarking */
 export const toggleBookmark = (project) => ({ type: types.TOGGLE_BOOKMARK, project })
+export const toggleBookmarkSuccess = (payload) => ({ type: types.TOGGLE_BOOKMARK_SUCCESS, payload })
 
-export const sortProjects = (sortBy) => ({ type: types.SORT_PROJECTS, sortBy })
-export const updatePage = (page) => ({ type: types.UPDATE_PAGE, page })
-export const updateRows = (rowsPerPage) => ({ type: types.UPDATE_ROWS, rowsPerPage })
+/* Sorting */
+export const sortBookmarked = sortBookmarked => ({ type: types.SORT_BOOKMARKED, payload: { sortBookmarked } })
+export const sortProjects = sortBy => ({ type: types.SORT_PROJECTS, payload: { sortBy } })
 
+/* Pagination */
+export const updatePage = page => ({ type: types.UPDATE_PAGE, payload: { page } })
+export const updateRows = rowsPerPage => ({ type: types.UPDATE_ROWS, payload: { rowsPerPage } })
+
+/* Filtering */
+export const updateSearchValue = searchValue => ({ type: types.UPDATE_SEARCH_VALUE, payload: { searchValue } })
+
+export const updateEditedFields = projectId => ({ type: types.UPDATE_EDITED_FIELDS, projectId })

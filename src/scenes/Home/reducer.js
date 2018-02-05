@@ -1,133 +1,184 @@
 import * as types from './actionTypes'
 import { combineReducers } from 'redux'
-import newProjectReducer from './scenes/NewProject/reducer'
-import { mockUsers } from 'data/mockUsers'
-
-let moreProjData = {
-  bookmarked: false,
-  dateLastEdited: new Date()
-}
+import addEditProjectReducer from './scenes/AddEditProject/reducer'
+import addEditJurisdictions from './scenes/AddEditJurisdictions/reducer'
+import { sortList, updater, tableUtils, searchUtils, normalize } from 'utils'
 
 const INITIAL_STATE = {
-  projects: [],
-  rowsPerPage: 10,
-  page: 0,
+  projects: {
+    byId: {},
+    allIds: []
+  },
+  matches: [],
+  bookmarkList: [],
   visibleProjects: [],
-  sortBy: 'name',
-  direction: 'asc',
+  searchValue: '',
+  rowsPerPage: '10',
+  page: 0,
+  sortBy: 'dateLastEdited',
+  direction: 'desc',
+  sortBookmarked: false,
   errorContent: '',
-  error: false
+  error: false,
+  projectCount: 0
 }
 
-// TODO: Just until the data model is complete
-const mockUpProject = (project) => {
-  const user = mockUsers[Math.floor(Math.random() * mockUsers.length)]
-  return { ...project, ...moreProjData, lastEditedBy: `${user.firstName} ${user.lastName}` }
+const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => {
+  const bookmarked = sortList(projects.filter(project => bookmarkList.includes(project.id)), sortBy, direction)
+  const nonBookmarked = sortList(projects.filter(project => !bookmarkList.includes(project.id)), sortBy, direction)
+  return [...bookmarked, ...nonBookmarked]
 }
 
-const sliceProjects = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+const sortArray = (arr, state) => {
+  const { bookmarkList, sortBy, direction, sortBookmarked } = state
 
-const sortProjects = (projects, sortBy, direction) => {
-  return (
-    direction === 'asc'
-      ? projects.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1))
-      : projects.sort((a, b) => (b[sortBy] < a[sortBy] ? -1 : 1))
-  )
+  return sortBookmarked
+    ? arr.some(x => bookmarkList.includes(x.id))
+      ? sortProjectsByBookmarked(arr, bookmarkList, sortBy, direction)
+      : sortList(arr, sortBy, direction)
+    : sortList(arr, sortBy, direction)
 }
 
-const updateProjectById = (updatedProject, projectArr) => {
-  return projectArr.map(project =>
-    (project.id === updatedProject.id)
-      ? updatedProject
-      : project
-  )
+const setProjectValues = updatedProjects => (updatedArr, page, rowsPerPage) => {
+  const rows = rowsPerPage === 'All' ? updatedArr.length : parseInt(rowsPerPage)
+  return {
+    projects: {
+      byId: normalize.arrayToObject(updatedProjects),
+      allIds: normalize.mapArray(updatedProjects)
+    },
+    visibleProjects: normalize.mapArray(tableUtils.sliceTable(updatedArr, page, rows)),
+    projectCount: updatedArr.length
+  }
 }
 
-function homeReducer(state = INITIAL_STATE, action) {
+const getProjectArrays = state => {
+  const { projects, searchValue, page, rowsPerPage } = state
+  let matches = searchUtils.searchForMatches(Object.values(state.projects.byId), searchValue, [
+    'name', 'dateLastEdited', 'lastEditedBy'
+  ])
+  const updatedProjects = sortArray(Object.values(state.projects.byId), state)
+  const setArrays = setProjectValues(updatedProjects)
+
+  if (projects.length === 0) return state
+
+  if (searchValue !== undefined && searchValue.length > 0) {
+    if (matches.length === 0) {
+      return { ...state, matches: [], visibleProjects: [], projectCount: 0 }
+    } else {
+      const updatedMatches = sortArray(matches, state)
+      return {
+        ...state,
+        ...setArrays(updatedMatches, page, rowsPerPage),
+        matches: [...normalize.mapArray(updatedMatches)],
+      }
+    }
+  } else {
+    return {
+      ...state,
+      ...setArrays(updatedProjects, page, rowsPerPage),
+      matches: []
+    }
+  }
+}
+
+const mainReducer = (state, action) => {
+  const updateHomeState = updater.updateItemsInState(state, action)
+
   switch (action.type) {
     case types.GET_PROJECTS_SUCCESS:
-      const projects = sortProjects(action.payload.map(mockUpProject), state.sortBy, state.direction)
-      //const projects = sortProjects(action.payload, state.sortBy, state.direction)
       return {
-        ...state,
-        projects,
-        visibleProjects: sliceProjects(projects, state.page, state.rowsPerPage)
+        ...updateHomeState(['error', 'errorContent', 'bookmarkList', 'searchValue']),
+        projects: {
+          byId: normalize.arrayToObject(action.payload.projects),
+          allIds: normalize.mapArray(action.payload.projects)
+        }
       }
 
-    case types.TOGGLE_BOOKMARK:
-      return {
-        ...state,
-        projects: updateProjectById(action.project, [...state.projects]),
-        visibleProjects: updateProjectById(action.project, [...state.visibleProjects])
-      }
+    case types.TOGGLE_BOOKMARK_SUCCESS:
+      return updateHomeState(['bookmarkList'])
+
+    case types.SORT_BOOKMARKED:
+      return updateHomeState(['sortBookmarked'])
+
+    case types.UPDATE_ROWS:
+      return updateHomeState(['rowsPerPage'])
+
+    case types.UPDATE_PAGE:
+      return updateHomeState(['page'])
+
+    case types.UPDATE_SEARCH_VALUE:
+      return updateHomeState(['searchValue'])
 
     case types.UPDATE_PROJECT_SUCCESS:
       return {
         ...state,
-        projects: updateProjectById(action.payload, [...state.projects]),
-        visibleProjects: updateProjectById(action.payload, [...state.visibleProjects])
+        projects: {
+          byId: {
+            ...state.projects.byId,
+            [action.payload.id]: action.payload
+          },
+          allIds: state.projects.allIds
+        }
       }
 
     case types.ADD_PROJECT_SUCCESS:
-      const updatedProjects = [
-        mockUpProject(action.payload), // only here until the data model is complete
-        ...state.projects
-      ]
       return {
-        ...state,
-        projects: updatedProjects,
-        visibleProjects: sliceProjects(updatedProjects, state.page, state.rowsPerPage)
-      }
-
-    case types.UPDATE_ROWS:
-      return {
-        ...state,
-        rowsPerPage: action.rowsPerPage,
-        visibleProjects: sliceProjects(state.projects, state.page, action.rowsPerPage)
-      }
-
-    case types.UPDATE_PAGE:
-      return {
-        ...state,
-        page: action.page,
-        visibleProjects: sliceProjects(state.projects, action.page, state.rowsPerPage)
+        ...INITIAL_STATE,
+        bookmarkList: state.bookmarkList,
+        projects: {
+          byId: { [action.payload.id]: action.payload, ...state.projects.byId},
+          allIds: [action.payload.id, ...state.projects.allIds]
+        }
       }
 
     case types.SORT_PROJECTS:
-      const dir = state.direction === 'asc' ? 'desc' : 'asc'
-      const sorted = sortProjects(state.projects, action.sortBy, dir)
       return {
-        ...state,
-        sortBy: action.sortBy,
-        direction: dir,
-        projects: sorted,
-        visibleProjects: sliceProjects(sorted, state.page, state.rowsPerPage)
-      }
-
-    case types.UPDATE_PROJECT_FAIL:
-      return {
-        ...state,
-        errorContent: 'We failed to update that project. Please try again later.',
-        error: true
+        ...updateHomeState(['sortBy']),
+        direction: state.direction === 'asc' ? 'desc' : 'asc'
       }
 
     case types.GET_PROJECTS_FAIL:
       return {
-        ...state,
-        errorContent: 'We failed to get the list of projects. Please try again later.',
-        error: true
+        ...state, errorContent: 'We failed to get the list of projects. Please try again later.', error: true
       }
 
+    case types.FLUSH_STATE:
+      return { ...INITIAL_STATE, rowsPerPage: state.rowsPerPage }
+
+    case types.UPDATE_EDITED_FIELDS:
+      const project = state.projects.byId[action.projectId]
+      return {
+        ...state,
+        projects: {
+          byId: {
+            ...state.projects.byId,
+            [project.id]: {
+              ...project,
+              lastEditedBy: action.user,
+              dateLastEdited: new Date().toISOString()
+            }
+          },
+          allIds: state.projects.allIds
+        }
+      }
+
+    case types.UPDATE_PROJECT_FAIL:
     case types.GET_PROJECTS_REQUEST:
-    case types.UPDATE_PROJECT_REQUEST:
     default:
       return state
   }
 }
 
+const homeReducer = (state = INITIAL_STATE, action) => {
+  return Object.values(types).includes(action.type)
+    ? { ...state, ...getProjectArrays({ ...mainReducer(state, action) }) }
+    : state
+}
+
 const homeRootReducer = combineReducers({
   main: homeReducer,
-  newProject: newProjectReducer
+  addEditProject: addEditProjectReducer,
+  addEditJurisdictions: addEditJurisdictions
 })
 
 export default homeRootReducer

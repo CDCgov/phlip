@@ -1,9 +1,16 @@
-import { persistCombineReducers } from 'redux-persist'
+import { persistReducer } from 'redux-persist'
+import { combineReducers } from 'redux'
 import storage from 'redux-persist/lib/storage'
 import user from './user/reducer'
 
-const dataReducer = persistCombineReducers({ key: 'data', storage }, {
-  user
+const dataPersistConfig = {
+  key: 'user',
+  storage,
+  blacklist: ['menuAnchor', 'menuOpen']
+}
+
+const dataReducer = combineReducers({
+  user: persistReducer(dataPersistConfig, user)
 })
 
 export default dataReducer

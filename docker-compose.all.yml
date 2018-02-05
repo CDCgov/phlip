@@ -1,0 +1,40 @@
+version: "3.2"
+volumes:
+  sqlvolume2:
+services:
+  frontend:
+    container_name: esquire-frontend-dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: esquire-frontend:dev
+    ports:
+      - 3000:3000
+    volumes:
+      - /usr/src/app/node_modules
+      - .:/usr/src/app
+    environment:
+      - NODE_ENV=development
+      - APP_API_URL=http://0.0.0.0:5000/api
+    links:
+      - backend
+  backend:
+    container_name: esquire-backend
+    image: esquire/app:latest
+    #image: esquire-backend:latest
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+    links:
+      - db
+  db:
+    container_name: esquire-db
+    image: microsoft/mssql-server-linux:latest
+    environment:
+      SA_PASSWORD: "1qazXSW@."
+      ACCEPT_EULA: "Y"
+    ports:
+      - 1433:1433
+    volumes:
+      - sqlvolume2:/var/opt/mssql

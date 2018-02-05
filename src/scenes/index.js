@@ -5,19 +5,28 @@ import Home from './Home'
 import Login from './Login'
 import Admin from './Admin'
 import AuthenticatedRoute from 'components/AuthenticatedRoute'
-import AuthenticatedLayout from 'components/AuthenticatedLayout'
+import HeaderedLayout from 'components/HeaderedLayout'
 import { persistor } from 'services/store'
+import axios from 'axios'
+import { isLoggedInTokenExists, getToken } from '../services/authToken'
+import CodingScheme from './CodingScheme'
 
 const AuthenticatedScenes = () => (
-  <AuthenticatedLayout>
-    <Switch>
-      <Route path="/admin" component={Admin} />
-      <Route path="/" component={Home} />
-    </Switch>
-  </AuthenticatedLayout>
+  <Switch>
+    <Route path="/project/:id/coding-scheme" component={CodingScheme} />
+    <HeaderedLayout>
+      <Switch>
+        <Route path="/admin" component={Admin} />
+        <Route path="/" component={Home} />
+      </Switch>
+    </HeaderedLayout>
+  </Switch>
 )
 
 const Scenes = () => {
+  if (isLoggedInTokenExists()) {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${getToken()}`
+  }
   return (
     <Switch>
       <Route path="/login" component={Login} />

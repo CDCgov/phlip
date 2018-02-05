@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Home scene - AddEditJurisdictions - JurisdictionList should render correctly 1`] = `
+<Table>
+  <WithStyles>
+    <WithStyles
+      key="jurisdiction-header"
+    >
+      <WithStyles
+        key="segment-name"
+      >
+        Segments
+      </WithStyles>
+      <WithStyles
+        key="segment-start"
+      >
+        Segment Start Date
+      </WithStyles>
+      <WithStyles
+        key="segment-end"
+      >
+        Segment End Date
+      </WithStyles>
+      <WithStyles
+        key="segment-edit"
+      >
+        Edit
+      </WithStyles>
+    </WithStyles>
+  </WithStyles>
+  <WithStyles />
+</Table>
+`;

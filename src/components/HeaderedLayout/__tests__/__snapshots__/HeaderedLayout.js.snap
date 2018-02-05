@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HeaderedLayout it should render correctly 1`] = `
+<WithStyles
+  container={true}
+  direction="column"
+  spacing={0}
+  style={
+    Object {
+      "flex": "1",
+    }
+  }
+>
+  <WithTheme
+    handleCloseMenu={[Function]}
+    handleLogoutUser={[Function]}
+    handleOpenAdminPage={[Function]}
+    open={false}
+  />
+  <WithStyles
+    container={true}
+    spacing={0}
+    style={
+      Object {
+        "backgroundColor": "#f5f5f5",
+        "flex": "1",
+        "padding": "0 27px 37px 27px",
+      }
+    }
+  />
+</WithStyles>
+`;

@@ -1,0 +1,145 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render correctly 1`] = `
+<FormModal
+  asyncBlurFields={
+    Array [
+      "name",
+    ]
+  }
+  form="jurisdictionForm"
+  handleSubmit={[Function]}
+  height="400px"
+  initialValues={Object {}}
+  open={true}
+  validate={[Function]}
+  width="600px"
+>
+  <ModalTitle
+    closeButton={true}
+    edit={false}
+    editButton={false}
+    onCloseForm={[Function]}
+    title="Add Jurisdiction"
+  />
+  <WithStyles />
+  <ModalContent>
+    <Container
+      column={true}
+      flex={false}
+      spacing={0}
+      style={
+        Object {
+          "minHeight": 230,
+          "minWidth": 550,
+          "padding": "30px 15px",
+        }
+      }
+    >
+      <Row
+        component={
+          <WithStyles
+            item={true}
+          />
+        }
+        displayFlex={false}
+        flex={false}
+        style={
+          Object {
+            "paddingBottom": 20,
+          }
+        }
+      >
+        <Field
+          component={[Function]}
+          getSuggestionValue={[Function]}
+          handleClearSuggestions={[Function]}
+          handleGetSuggestions={[Function]}
+          handleSuggestionSelected={[Function]}
+          inputProps={
+            Object {
+              "disabled": false,
+              "id": "jurisdiction-name",
+              "label": "Name",
+              "onChange": [Function],
+              "placeholder": "Enter jurisdiction name",
+              "value": "",
+            }
+          }
+          name="name"
+          renderSuggestion={[Function]}
+          suggestions={Array []}
+          validate={[Function]}
+        />
+      </Row>
+      <Container
+        column={false}
+        flex={false}
+        spacing={0}
+        style={
+          Object {
+            "marginTop": 30,
+          }
+        }
+      >
+        <Column
+          component={
+            <WithStyles
+              item={true}
+            />
+          }
+          displayFlex={false}
+          flex={true}
+        >
+          <Field
+            autoOk={true}
+            component={[Function]}
+            dateFormat="MM/DD/YYYY"
+            invalidLabel="mm/dd/yyyy"
+            label="Start Date"
+            name="startDate"
+            validate={[Function]}
+          />
+        </Column>
+        <Column
+          component={
+            <WithStyles
+              item={true}
+            />
+          }
+          displayFlex={false}
+          flex={false}
+        >
+          <Field
+            autoOk={true}
+            component={[Function]}
+            dateFormat="MM/DD/YYYY"
+            invalidLabel="mm/dd/yyyy"
+            label="End Date"
+            name="endDate"
+            validate={[Function]}
+          />
+        </Column>
+      </Container>
+    </Container>
+  </ModalContent>
+  <ModalActions
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Cancel",
+        },
+        Object {
+          "disabled": false,
+          "type": "submit",
+          "value": "Add",
+        },
+      ]
+    }
+    edit={true}
+    raised={false}
+  />
+</FormModal>
+`;

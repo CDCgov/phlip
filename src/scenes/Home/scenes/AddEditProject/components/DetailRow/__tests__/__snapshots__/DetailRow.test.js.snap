@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddEditProject -- DetailRow component should render correctly 1`] = `
+<Row
+  component={
+    <WithStyles
+      item={true}
+    />
+  }
+  displayFlex={false}
+  flex={false}
+  style={
+    Object {
+      "paddingBottom": 20,
+    }
+  }
+>
+  <Field
+    component={[Function]}
+    disableUnderline={false}
+    disabled={false}
+    label="Type"
+    name="type"
+    type="text"
+  />
+</Row>
+`;

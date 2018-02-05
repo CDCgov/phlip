@@ -4,19 +4,19 @@ import Grid from 'material-ui/Grid'
 import { withTheme } from 'material-ui/styles'
 import Logo from 'components/Logo'
 import Greeting from './components/Greeting'
-import Avatar from 'components/Avatar'
-import Admin from '../../scenes/Admin'
+import AvatarMenu from './components/AvatarMenu'
 import { Link } from 'react-router-dom'
 
-
-const Header = ({ theme, user }) => {
+export const Header = ({ theme, user, open, handleLogoutUser, handleCloseMenu, handleOpenAdminPage, handleToggleMenu }) => {
   const bgColor = theme.palette.primary['600']
 
   const styles = {
-    height: '100px',
+    height: '55px',
     backgroundColor: bgColor,
     padding: '0 30px'
   }
+
+  const initials = user.firstName === 'Admin' ? 'A' : user.firstName[0] + user.lastName[0]
 
   return (
     <Grid container spacing={0} alignItems="center" style={styles}>
@@ -28,9 +28,15 @@ const Header = ({ theme, user }) => {
           <Grid item>
             <Greeting firstName={user.firstName} lastName={user.lastName} role={user.role} />
           </Grid>
-          <Grid item>
-            <Link style={{ textDecoration: 'none' }} to="/admin"><Avatar big initials={user.firstName ? `${user.firstName[0]}${user.lastName[0]}` : ''} /></Link>
-          </Grid>
+          <AvatarMenu
+            initials={initials}
+            role={user.role}
+            open={open}
+            onToggleMenu={handleToggleMenu}
+            onCloseMenu={handleCloseMenu}
+            onOpenAdminPage={handleOpenAdminPage}
+            onLogoutUser={handleLogoutUser}
+          />
         </Grid>
       </Grid>
     </Grid>
@@ -39,7 +45,16 @@ const Header = ({ theme, user }) => {
 
 Header.propTypes = {
   theme: PropTypes.object.isRequired,
-  user: PropTypes.object
+  user: PropTypes.object,
+  open: PropTypes.bool,
+  handleLogoutUser: PropTypes.func,
+  handleCloseMenu: PropTypes.func,
+  handleOpenMenu: PropTypes.func
+}
+
+Header.defaultProps = {
+  open: false,
+  user: {}
 }
 
 export default withTheme()(Header)

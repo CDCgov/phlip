@@ -1,0 +1,74 @@
+#before_script:
+
+variables:
+  VERSION: 0.6.0
+  SUB_BUILD: $CI_PIPELINE_ID
+  BRANCH: $CI_COMMIT_REF_NAME
+
+stages:
+  - build
+  - test
+  - push
+
+build_esquire_frontend:
+  stage: build
+  tags:
+    - iiu
+  script:
+    - docker info
+    - yarn -version
+    - npm -version
+    - node -v
+    - yarn build:image:dev
+
+test_esquire_frontend_image:
+  stage: test
+  tags:
+    - iiu
+  script:
+    - docker-compose -f docker-compose.dev.yml run --user=988 dev npm run test:local
+    
+push_esquire_frontend_image:
+  stage: push
+  script:
+    - yarn build:image:prod
+    - curl -fsSL https://git.phiresearchlab.org/snippets/10/raw | bash
+  environment:
+    name: DTR Frontend
+    url: https://dtr.phiresearchlab.org/repositories/iiu/esquire-frontend/tags
+  tags:
+    - iiu
+
+deploy_test_esquire_frontend:
+  stage: push
+  script:
+    - npm install
+    - npm run build
+    - echo "APP_API_URL=http://10.0.0.5:5001">.env
+    - pm2 stop serve
+    - pm2 start scripts/serve.js
+  environment:
+    name: Azure Test
+    url: https://phliptest.phiresearchlab.org
+  when: manual
+  only: 
+    - test
+  tags:
+    - azure-esquire
+
+deploy_stage_esquire_frontend:
+  stage: push
+  script:
+    - npm install
+    - npm run build
+    - echo "APP_API_URL=$TEST_APP_API_URL">.env
+    - pm2 stop serve
+    - pm2 start scripts/serve.js
+  environment:
+    name: Azure Stage
+    url: https://phlipstage.phiresearchlab.org
+  when: manual
+  only: 
+    - stage
+  tags:
+    - azure-esquire

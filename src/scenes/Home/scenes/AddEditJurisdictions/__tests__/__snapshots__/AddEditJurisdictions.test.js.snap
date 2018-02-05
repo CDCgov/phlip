@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
+<WithStyles
+  hideOverflow={true}
+  maxWidth="md"
+  onClose={[Function]}
+  open={true}
+>
+  <ModalTitle
+    SearchBarProps={
+      Object {
+        "handleSearchValueChange": [Function],
+        "placeholder": "Search",
+        "searchValue": undefined,
+        "style": Object {
+          "paddingRight": 10,
+        },
+      }
+    }
+    buttons={
+      <WithTheme
+        color="accent"
+        onClick={[Function]}
+        value="+ Add Jurisdiction"
+      />
+    }
+    closeButton={false}
+    edit={false}
+    editButton={false}
+    onCloseForm={[Function]}
+    search={true}
+    title="Jurisdictions"
+  />
+  <ModalContent
+    style={
+      Object {
+        "display": "flex",
+        "flexDirection": "column",
+      }
+    }
+  >
+    <Container
+      column={false}
+      flex={true}
+      spacing={0}
+      style={
+        Object {
+          "marginTop": 20,
+        }
+      }
+    >
+      <Column
+        component={<Card />}
+        displayFlex={true}
+        flex={true}
+        style={
+          Object {
+            "overflowX": "auto",
+          }
+        }
+      >
+        <JurisdictionList
+          onOpenForm={[Function]}
+        />
+      </Column>
+    </Container>
+  </ModalContent>
+  <Connect(JurisdictionForm)
+    asyncValidate={[Function]}
+    edit={false}
+    jurisdiction={Object {}}
+    onCloseForm={[Function]}
+    onHandleSubmit={[Function]}
+    onJurisdictionSelected={[Function]}
+    onSearchList={[Function]}
+    onSuggestionValueChanged={[Function]}
+    open={false}
+  />
+</WithStyles>
+`;

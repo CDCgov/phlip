@@ -7,11 +7,9 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . .
 
-RUN npm dedupe
 RUN npm install --no-optional
 RUN npm run build
-RUN npm prune
+RUN npm install --production --no-optional
+RUN npm dedupe
 
 CMD npm run serve:local
-
-EXPOSE 5000

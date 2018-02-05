@@ -2,15 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { TableCell as MuiTableCell } from 'material-ui/Table'
 
-const baseStyle = {
-  fontWeight: 'normal',
-  maxWidth: 30,
-  textAlign: 'center'
-}
-
-const TableCell = ({ style, light, children, ...otherProps }) => {
+const TableCell = ({ style, padding, children, ...otherProps }) => {
   return (
-    <MuiTableCell padding="checkbox" style={{...baseStyle, ...style, fontWeight: light ? 'lighter' : 'normal' }} {...otherProps}>
+    <MuiTableCell padding={padding} style={{ ...style }} {...otherProps}>
       {children}
     </MuiTableCell>
   )
@@ -18,8 +12,14 @@ const TableCell = ({ style, light, children, ...otherProps }) => {
 
 TableCell.propTypes = {
   style: PropTypes.object,
-  light: PropTypes.bool, 
-  children: PropTypes.node
+  light: PropTypes.bool,
+  children: PropTypes.node,
+  padding: PropTypes.string
 }
+
+TableCell.defaultProps = {
+  padding: 'checkbox'
+}
+
 
 export default TableCell

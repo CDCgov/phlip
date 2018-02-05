@@ -1,0 +1,144 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Home scene - ProjectList - ProjectTableHead component should render correctly 1`] = `
+<TableRow
+  key="headers"
+>
+  <TableCell
+    key="bookmarked"
+    padding="checkbox"
+    style={
+      Object {
+        "width": 48,
+      }
+    }
+  >
+    <IconButton
+      color="rbg(0,0,0,0.54)"
+      iconSize={24}
+      onClick={[Function]}
+    >
+      bookmark_border
+    </IconButton>
+  </TableCell>
+  <TableCell
+    key="name"
+    padding="checkbox"
+    style={
+      Object {
+        "maxWidth": "unset",
+        "textAlign": "left",
+      }
+    }
+  >
+    <WithStyles
+      active={false}
+      direction="desc"
+      onClick={[Function]}
+      style={
+        Object {
+          "color": "inherit",
+        }
+      }
+    >
+      Name
+    </WithStyles>
+  </TableCell>
+  <TableCell
+    key="dateLastEdited"
+    padding="checkbox"
+    style={
+      Object {
+        "maxWidth": 150,
+        "textAlign": "unset",
+        "width": 150,
+      }
+    }
+  >
+    <WithStyles
+      active={true}
+      direction="desc"
+      onClick={[Function]}
+      style={
+        Object {
+          "color": "inherit",
+        }
+      }
+    >
+      Date Last Edited
+    </WithStyles>
+  </TableCell>
+  <TableCell
+    key="lastEditedBy"
+    padding="checkbox"
+    style={
+      Object {
+        "maxWidth": 150,
+        "textAlign": "unset",
+        "width": 150,
+      }
+    }
+  >
+    <WithStyles
+      active={false}
+      direction="desc"
+      onClick={[Function]}
+      style={
+        Object {
+          "color": "inherit",
+        }
+      }
+    >
+      Last Edited By
+    </WithStyles>
+  </TableCell>
+  <TableCell
+    key="protocol"
+    padding="checkbox"
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
+  >
+    Protocol
+  </TableCell>
+  <TableCell
+    key="jurisdictions"
+    padding="checkbox"
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
+  >
+    Jurisdictions
+  </TableCell>
+  <TableCell
+    key="codingScheme"
+    padding="checkbox"
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
+  >
+    Coding Scheme
+  </TableCell>
+  <TableCell
+    key="code"
+    padding="checkbox"
+    style={Object {}}
+  />
+  <TableCell
+    key="validate"
+    padding="checkbox"
+    style={Object {}}
+  />
+  <TableCell
+    key="export"
+    padding="checkbox"
+    style={Object {}}
+  />
+</TableRow>
+`;

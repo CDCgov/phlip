@@ -1,12 +1,19 @@
-import { persistCombineReducers } from 'redux-persist'
+import { persistReducer } from 'redux-persist'
+import { combineReducers } from 'redux'
 import storage from 'redux-persist/lib/storage'
 import home from './Home/reducer'
 import admin from './Admin/reducer'
 import login from './Login/reducer'
+import codingScheme from './CodingScheme/reducer'
 
-const scenesReducer = persistCombineReducers({ key: 'scenes', storage }, {
-  home,
-  admin,
+const config = {
+  storage
+}
+
+const scenesReducer = combineReducers({
+  home: persistReducer({ ...config, key: 'home', blacklist: ['addEditJurisdictions'] }, home),
+  admin: persistReducer({ ...config, key: 'admin' }, admin),
+  codingScheme,
   login
 })
 

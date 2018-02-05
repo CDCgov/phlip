@@ -9,22 +9,22 @@ import CardError from 'components/CardError'
 import Container from 'components/Layout'
 import PageHeader from './components/PageHeader'
 import ProjectList from './components/ProjectList'
-import SearchBar from './components/SearchBar'
-import NewProject from './scenes/NewProject'
+import AddEditProject from './scenes/AddEditProject'
 import * as actions from './actions'
+import AddEditJurisdictions from './scenes/AddEditJurisdictions'
 
 export class Home extends Component {
   static propTypes = {
     user: PropTypes.object,
     actions: PropTypes.object,
-    projects: PropTypes.arrayOf(PropTypes.object),
-    visibleProjects: PropTypes.arrayOf(PropTypes.object),
+    visibleProjects: PropTypes.arrayOf(PropTypes.number),
     page: PropTypes.number,
-    rowsPerPage: PropTypes.number,
+    rowsPerPage: PropTypes.string,
     sortBy: PropTypes.string,
     direction: PropTypes.string,
+    searchValue: PropTypes.string,
     error: PropTypes.bool,
-    errorContent: PropTypes.string
+    errorContent: PropTypes.string,
   }
 
   constructor(props, context) {
@@ -46,25 +46,35 @@ export class Home extends Component {
       <Container column flex>
         <PageHeader role={this.props.user.role} />
         <Divider />
-        <SearchBar />
         {this.props.error
           ? this.renderErrorMessage()
           : <ProjectList
             user={this.props.user}
-            projects={this.props.visibleProjects}
-            count={this.props.projects.length}
+            projectIds={this.props.visibleProjects}
+            projectCount={this.props.projectCount}
             page={this.props.page}
             rowsPerPage={this.props.rowsPerPage}
             sortBy={this.props.sortBy}
             direction={this.props.direction}
-            handleRequestSort={property => event => this.props.actions.sortProjects(property)}
-            handlePageChange={(event, page) => this.props.actions.updatePage(page)}
-            handleRowsChange={event => this.props.actions.updateRows(event.target.value)}
-            handleToggleBookmark={this.props.actions.toggleBookmark} />
+            sortBookmarked={this.props.sortBookmarked}
+            searchValue={this.props.searchValue}
+            handleSearchValueChange={event => this.props.actions.updateSearchValue(event.target.value)}
+            handleRequestSort={this.props.actions.sortProjects}
+            handlePageChange={this.props.actions.updatePage}
+            handleRowsChange={this.props.actions.updateRows}
+            handleSortBookmarked={() => this.props.actions.sortBookmarked(!this.props.sortBookmarked)}
+          />
         }
         <Route
-          path="/new/project"
-          component={NewProject} />
+          path="/project/add"
+          component={AddEditProject} />
+        <Route
+          path="/project/edit/:id"
+          component={AddEditProject} />
+        <Route
+          path="/project/:id/jurisdictions"
+          component={AddEditJurisdictions} />
+
       </Container>
     )
   }
@@ -72,14 +82,16 @@ export class Home extends Component {
 
 const mapStateToProps = (state) => ({
   user: state.data.user.currentUser,
-  projects: state.scenes.home.main.projects,
   visibleProjects: state.scenes.home.main.visibleProjects,
   page: state.scenes.home.main.page,
   rowsPerPage: state.scenes.home.main.rowsPerPage,
   sortBy: state.scenes.home.main.sortBy,
   direction: state.scenes.home.main.direction,
+  searchValue: state.scenes.home.main.searchValue || '',
+  sortBookmarked: state.scenes.home.main.sortBookmarked,
   error: state.scenes.home.main.error,
-  errorContent: state.scenes.home.main.errorContent
+  errorContent: state.scenes.home.main.errorContent,
+  projectCount: state.scenes.home.main.projectCount || 0,
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

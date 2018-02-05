@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CodingScheme scene --- Header component should render correctly 1`] = `
+<AppBar>
+  <WithStyles
+    color="inherit"
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+    type="title"
+  >
+    Coding Scheme | 
+    <span
+      style={
+        Object {
+          "color": "#0faee6",
+        }
+      }
+    >
+      Test Project
+    </span>
+  </WithStyles>
+  <SearchBar
+    placeholder="Search"
+    style={
+      Object {
+        "paddingRight": 10,
+      }
+    }
+  />
+</AppBar>
+`;

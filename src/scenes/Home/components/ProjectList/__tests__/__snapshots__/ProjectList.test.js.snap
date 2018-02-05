@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Home -- ProjectList component it should render correctly 1`] = `
+exports[`Home scene - ProjectList component should render correctly 1`] = `
 <Container
-  column={false}
+  column={true}
   flex={true}
   spacing={0}
 >
@@ -16,6 +16,21 @@ exports[`Home -- ProjectList component it should render correctly 1`] = `
       }
     }
   >
+    <Container
+      column={false}
+      flex={false}
+      spacing={0}
+      style={
+        Object {
+          "justifyContent": "flex-end",
+          "padding": 20,
+        }
+      }
+    >
+      <SearchBar
+        placeholder="Search"
+      />
+    </Container>
     <Table
       style={
         Object {
@@ -23,47 +38,25 @@ exports[`Home -- ProjectList component it should render correctly 1`] = `
         }
       }
     >
-      <withStyles(TableHead)>
+      <WithStyles>
         <ProjectTableHead
           direction="asc"
           onRequestSort={[Function]}
+          onSortBookmarked={[Function]}
           role="Coordinator"
           sortBy="name"
         />
-      </withStyles(TableHead)>
-      <withStyles(TableBody)>
-        <ProjectTableBody
-          onToggleBookmark={[Function]}
-          projects={
-            Array [
-              Object {
-                "bookmarked": true,
-                "dateLastEdited": 2017-10-11T00:00:00.000Z,
-                "id": 1,
-                "lastEditedBy": "Kristin",
-                "name": "Project 1",
-              },
-              Object {
-                "bookmarked": false,
-                "dateLastEdited": 2017-10-11T00:00:00.000Z,
-                "id": 2,
-                "lastEditedBy": "Michael",
-                "name": "Project 2",
-              },
-            ]
-          }
-          user={
-            Object {
-              "email": "kmusterspaw@cdc.gov",
-              "firstName": "Kristin",
-              "id": 2,
-              "lastName": "Muterspaw",
-              "password": "test",
-              "role": "Coordinator",
-            }
-          }
+      </WithStyles>
+      <WithStyles>
+        <Connect(ProjectRow)
+          id={1}
+          key="1"
         />
-      </withStyles(TableBody)>
+        <Connect(ProjectRow)
+          id={2}
+          key="2"
+        />
+      </WithStyles>
     </Table>
     <div
       style={
@@ -75,16 +68,16 @@ exports[`Home -- ProjectList component it should render correctly 1`] = `
       }
     />
     <Table>
-      <withStyles(TableFooter)>
-        <withStyles(TableRow)>
-          <withStyles(TablePagination)
-            count={2}
+      <WithStyles>
+        <WithStyles>
+          <WithStyles
             onChangePage={[Function]}
+            onChangeRowsPerPage={[Function]}
             page={0}
             rowsPerPage={10}
           />
-        </withStyles(TableRow)>
-      </withStyles(TableFooter)>
+        </WithStyles>
+      </WithStyles>
     </Table>
   </Column>
 </Container>
