@@ -32,9 +32,12 @@ const questionTextStyles = {
 }
 
 const QuestionRow = ({ item, children, treeLength, isParentLast }) => {
-  console.log(item.text, isParentLast)
   let scaffold = []
   let className = ''
+
+  console.log(item)
+  console.log(treeLength)
+  console.log(isParentLast)
 
   for (let i = 0; i < item.indent + 1; i++) {
     if (isParentLast && i === item.indent - 1) {
@@ -51,7 +54,7 @@ const QuestionRow = ({ item, children, treeLength, isParentLast }) => {
       }
     } else if ((treeLength - 1) === item.positionInParent && i === item.indent) {
       className = `${navStyles.navChildLast} ${navStyles.navQuestionNoChildren}`
-    }  else {
+    } else {
       if (i === item.indent) {
         className = `${navStyles.navChild} ${navStyles.navQuestionNoChildren}`
       } else {
@@ -78,7 +81,7 @@ const setRef = ref => {
   QuestionList = ref
 }
 
-const questionRenderer = (item, treeIndex, keyPrefix, treeLength, isParentLast) => {
+const questionRenderer = (userAnswers, scheme, item, treeIndex, keyPrefix, treeLength, isParentLast) => {
   const onClick = (event) => {
     event.stopPropagation()
     item.expanded = !item.expanded
@@ -86,8 +89,8 @@ const questionRenderer = (item, treeIndex, keyPrefix, treeLength, isParentLast) 
     QuestionList.forceUpdate()
   }
 
-  const props = { key: keyPrefix, item, treeLength, isParentLast }
-  const iconProps = { iconSize: 20, color: 'secondary', onClick: onClick }
+  let props = { key: keyPrefix, item, treeLength, isParentLast }
+  const iconProps = { iconSize: 20, color: 'secondary', onClick }
   let children = []
   let itemEl = null
 
@@ -99,9 +102,14 @@ const questionRenderer = (item, treeIndex, keyPrefix, treeLength, isParentLast) 
     )
 
     children = item.children.map((child, index) => {
-      return questionRenderer(child, index, keyPrefix + '-' + index, item.children.length, treeIndex === treeLength - 1)
+      return questionRenderer(
+        userAnswers, scheme, child, index, keyPrefix + '-' + index, item.children.length, treeIndex === treeLength - 1
+      )
     })
-  } else if (item.children) {
+  } else if (item.children || item.isCategoryQuestion) {
+    if (item.isCategoryQuestion) {
+      props = { ...props, children: [] }
+    }
     itemEl = (
       <QuestionRow {...props}>
         <IconButton {...iconProps}>add_circle_outline</IconButton>
@@ -114,36 +122,44 @@ const questionRenderer = (item, treeIndex, keyPrefix, treeLength, isParentLast) 
   return [itemEl, ...children]
 }
 
-const rowRenderer = tree => params => {
+const rowRenderer = (scheme, userAnswers) => params => {
+  const tree = scheme.tree ? scheme.tree : []
   return (
     tree.length !== 0
     && tree[params.index] !== undefined
     && (
       <div style={params.style} key={`tree-${params.index}`}>
-        {questionRenderer(tree[params.index], params.index, params.index, tree.length, params.index === tree.length -
-          1)}
+        {questionRenderer(userAnswers, scheme, tree[params.index], params.index, params.index, tree.length, params.index ===
+          tree.length - 1)}
         </div>
     )
   )
 }
 
-const getExpandedItemCount = item => {
+const getExpandedItemCount = (userAnswers, item) => {
   let count = 1
 
   if (item.expanded) {
-    count += item.children
-      .map(getExpandedItemCount)
-      .reduce((total, count) => {
-        return total + count
-      }, 0)
+    if (item.isCategoryQuestion && Object.keys(userAnswers[item.parentId].answers).length > 0) {
+      count += Object.keys(userAnswers[item.parentId].answers).length
+    }
+
+    else {
+      count += item.children
+        .map(child => getExpandedItemCount(userAnswers, child))
+        .reduce((total, count) => {
+          return total + count
+        }, 0)
+    }
   }
 
   return count
 }
 
-const rowHeight = tree => params => getExpandedItemCount(tree[params.index]) * 40
+const rowHeight = (tree, userAnswers) => params => getExpandedItemCount(userAnswers, tree[params.index]) * 40
 
-export const Navigator = ({ open, classes, questionTree, userAnswers, questionsById }) => {
+export const Navigator = ({ open, classes, scheme, allUserAnswers, questionsById }) => {
+  const questionTree = scheme.tree ? scheme.tree : []
   return (
     <Drawer classes={{ paper: classes.codeNav }} type="persistent" anchor="left" open={open}>
       <Container column flex>
@@ -164,9 +180,9 @@ export const Navigator = ({ open, classes, questionTree, userAnswers, questionsB
                   className={navStyles.navScroll}
                   style={{ height: height, paddingLeft: 10 }}
                   rowCount={questionTree.length}
-                  rowHeight={rowHeight(questionTree)}
+                  rowHeight={rowHeight(questionTree, allUserAnswers)}
                   width={width}
-                  rowRenderer={rowRenderer(questionTree)}
+                  rowRenderer={rowRenderer(scheme, allUserAnswers)}
                   height={height}
                   overscanRowCount={0}
                   ref={setRef}

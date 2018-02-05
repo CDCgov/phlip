@@ -12,7 +12,7 @@ const INITIAL_STATE = {
   categories: undefined,
   selectedCategory: 0,
   userAnswers: {},
-  showNextButton: true,
+  showNextButton: true
 }
 
 /*
@@ -152,7 +152,6 @@ const handleCheckCategories = (newQuestion, newIndex, state, action) => {
         }
       }
     }, {})
-
 
     return {
       ...base,
@@ -345,6 +344,28 @@ const handleClearCategoryAnswers = (selectedCategoryId, questionType, currentUse
   }
 })
 
+const initializeNavigator = (tree, scheme, codedQuestions) => {
+  tree.map(item => {
+    if (item.children) {
+      return initializeNavigator(item.children, scheme, codedQuestions)
+    }
+
+    if (item.isCategoryQuestion) {
+      item.children = codedQuestions[item.parentId]
+        ? Object.values(codedQuestions[item.parentId].answers).map((cat, index) => ({
+          ...cat,
+          text: scheme[item.parentId].possibleAnswers.find(answer => answer.id === cat.codingSchemeAnswerId).text,
+          indent: item.indent + 1,
+          positionInParent: index
+        }))
+        : []
+    }
+    return item
+  })
+
+  return tree
+}
+
 const codingReducer = (state = INITIAL_STATE, action) => {
   const questionUpdater = handleUpdateUserCodedQuestion(state, action)
   const selectedCategoryId = state.categories !== undefined ? state.categories[state.selectedCategory].id : 0
@@ -382,8 +403,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           outline: action.payload.outline,
           scheme: {
             byId: normalizedQuestions,
-            order: action.payload.questionOrder,
-            tree: action.payload.tree
+            order: action.payload.questionOrder
           },
           question: action.payload.question,
           userAnswers: action.payload.codedQuestions.length !== 0
@@ -413,6 +433,11 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
         return {
           ...updatedState,
+          scheme: {
+            ...updatedState.scheme,
+            tree: initializeNavigator(action.payload.tree, normalizedQuestions, updatedState.userAnswers)
+
+      },
           showNextButton: determineShowButton(updatedState)
         }
       }

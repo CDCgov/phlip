@@ -29,7 +29,7 @@ const setChildren = (node, number) => {
   if (node.children) {
     node.expanded = true
     node.children = node.children.map((child, i) => {
-      return { ...setChildren(child, `${number}.${i + 1}`), indent: getIndent(`${number}.${i + 1}`), number: `${number}.${i + 1}` }
+      return { ...setChildren(child, `${number}.${i + 1}`), indent: getIndent(`${number}.${i + 1}`), number: `${number}.${i + 1}`, expanded: node.questionType === questionTypes.CATEGORY }
     })
   }
 
