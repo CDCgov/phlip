@@ -56,8 +56,8 @@ $rowHeight: 40px;
 
   &::after {
     @extend %horizontalBar;
-    height: 15px;
-    top: $rowHeight - 11;
+    height: 20px;
+    top: $rowHeight - 10;
   }
 }
 

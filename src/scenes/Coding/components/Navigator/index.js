@@ -68,23 +68,30 @@ const QuestionRow = ({ item, children, treeLength }) => {
   )
 }
 
+let QuestionList
+const setRef = ref => {
+  QuestionList = ref;
+}
+
 const questionRenderer = (item, keyPrefix, treeLength) => {
   const onClick = (event) => {
+    console.log(event)
     event.stopPropagation()
     item.expanded = !item.expanded
-    List.recomputeRowHeights()
-    List.forceUpdate()
+    console.log(QuestionList)
+    QuestionList.recomputeRowHeights()
+    QuestionList.forceUpdate()
   }
 
-  const props = { key: keyPrefix }
+  const props = { key: keyPrefix, item, treeLength }
+  const iconProps = { iconSize: 20, color: 'secondary', onClick: onClick }
   let children = []
   let itemEl = null
 
   if (item.expanded) {
-    props.onClick = onClick
     itemEl = (
-      <QuestionRow key={keyPrefix} item={item} treeLength={treeLength}>
-        <IconButton iconSize={20} color="secondary">remove_circle_outline</IconButton>
+      <QuestionRow {...props}>
+        <IconButton {...iconProps}>remove_circle_outline</IconButton>
       </QuestionRow>
     )
 
@@ -92,14 +99,13 @@ const questionRenderer = (item, keyPrefix, treeLength) => {
       return questionRenderer(child, keyPrefix + '-' + index, item.children.length)
     })
   } else if (item.children) {
-    props.onClick = onClick
     itemEl = (
-      <QuestionRow key={keyPrefix} item={item} treeLength={treeLength}>
-        <IconButton iconSize={20} color="secondary">add_circle_outline</IconButton>
+      <QuestionRow {...props}>
+        <IconButton {...iconProps}>add_circle_outline</IconButton>
       </QuestionRow>
     )
   } else {
-    itemEl = <QuestionRow key={keyPrefix} item={item} treeLength={treeLength} />
+    itemEl = <QuestionRow {...props} />
   }
 
   return [itemEl, ...children]
@@ -155,8 +161,8 @@ export const Navigator = ({ open, classes, questionTree, userAnswers, questionsB
                       rowRenderer={rowRenderer(questionTree)}
                       height={height}
                       overscanRowCount={0}
-                      autoHeight
-                />
+                      ref={setRef}
+                      autoHeight />
               )}
             </AutoSizer>
           </div>
