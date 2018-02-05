@@ -1,4 +1,4 @@
-$rowHeight: 30px;
+$rowHeight: 40px;
 
 .navContainer {
   display: flex;
@@ -33,18 +33,21 @@ $rowHeight: 30px;
   position: absolute;
 }
 
+%horizontalBar {
+  content: "";
+  width: 1px;
+  left: 50%;
+  background-color: rgb(0, 169, 229);
+  position: absolute;
+}
 
 .navChild {
   @extend .navRow;
 
   &:after {
-    content: "";
-    height: $rowHeight + 10;
-    width: 1px;
-    left: 50%;
-    top: -5px;
-    background-color: rgb(0, 169, 229);
-    position: absolute;
+    @extend %horizontalBar;
+    height: $rowHeight + ($rowHeight / 2);
+    top: -10px;
   }
 }
 
@@ -52,37 +55,20 @@ $rowHeight: 30px;
   @extend .navRow;
 
   &::after {
-    content: "";
-    height: 10px;
-    width: 1px;
-    left: 50%;
-    top: 22px;
-    background-color: rgb(0, 169, 229);
-    position: absolute;
+    @extend %horizontalBar;
+    height: 15px;
+    top: $rowHeight - 11;
   }
 }
 
 /* Two vertical bars above and below expand button */
 .navParent {
-  @extend .navRow;
+  @extend .navParentFirst;
 
   &::before {
-    content: "";
+    @extend %horizontalBar;
     height: 10px;
-    left: 50%;
-    width: 1px;
-    background-color: rgb(0, 169, 229);
-    position: absolute;
-  }
-
-  &::after {
-    content: "";
-    height: 10px;
-    width: 1px;
-    left: 50%;
-    top: 22px;
-    background-color: rgb(0, 169, 229);
-    position: absolute;
+    bottom: $rowHeight - 12;
   }
 }
 
@@ -91,13 +77,9 @@ $rowHeight: 30px;
   @extend .navRow;
 
   &::after {
-    content: "";
-    height: 20px;
-    left: 50%;
-    top: -5px;
-    width: 1px;
-    background-color: rgb(0, 169, 229);
-    position: absolute;
+    @extend %horizontalBar;
+    height: $rowHeight - 10;
+    top: -10px;
   }
 }
 

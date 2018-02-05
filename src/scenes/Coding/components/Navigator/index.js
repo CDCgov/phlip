@@ -22,7 +22,7 @@ const rowStyles = {
   display: 'flex',
   alignItems: 'center',
   position: 'relative',
-  height: 30
+  height: 40
 }
 
 const questionTextStyles = {
@@ -128,7 +128,7 @@ const getExpandedItemCount = item => {
   return count
 }
 
-const rowHeight = tree => params => getExpandedItemCount(tree[params.index]) * 30
+const rowHeight = tree => params => getExpandedItemCount(tree[params.index]) * 40
 
 export const Navigator = ({ open, classes, questionTree, userAnswers, questionsById }) => {
   return (
