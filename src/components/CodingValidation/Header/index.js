@@ -8,8 +8,11 @@ import Select from 'material-ui/Select'
 import JurisdictionSelect from 'components/JurisdictionSelect'
 import Container, { Column } from 'components/Layout'
 
-export const Header = ({ projectName, empty, projectId, jurisdictionsList, selectedJurisdiction, onJurisdictionChange, currentJurisdiction }) => (
+export const Header = ({ projectName, empty, projectId, jurisdictionsList, selectedJurisdiction, onJurisdictionChange, currentJurisdiction, isValidation }) => (
   <AppBar>
+    {isValidation ? <Typography type="title" color="inherit">
+      <span style={{ color: '#FDB760', paddingRight: 10 }}>VALIDATION</span>
+    </Typography> : <div></div>}
     <Typography type="title" color="inherit">
       <span style={{ color: '#0faee6' }}>{projectName}</span>
     </Typography>
@@ -31,10 +34,15 @@ export const Header = ({ projectName, empty, projectId, jurisdictionsList, selec
   </AppBar>
 )
 
+Header.defaultProps = {
+  isValidation: false
+}
+
 Header.propTypes = {
   projectName: PropTypes.string,
   projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  jurisdictionsList: PropTypes.arrayOf(PropTypes.object)
+  jurisdictionsList: PropTypes.arrayOf(PropTypes.object),
+  isValidation: PropTypes.bool
 }
 
 export default Header
