@@ -117,6 +117,7 @@ export class AddEditQuestion extends Component {
 
     const categoryChildOptions = options.filter(option => option.value !== questionTypes.CATEGORY)
 
+
     const actions = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button' },
       {
