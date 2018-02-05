@@ -115,7 +115,7 @@ export class AddEditQuestion extends Component {
       { value: questionTypes.TEXT_FIELD, label: 'Text field' }
     ]
 
-    const categoryChildOptions = options.filter(option => option.value !== questionTypes.CATEGORY)
+    // const categoryChildOptions = options.filter(option => option.value !== questionTypes.CATEGORY)
 
 
     const actions = [
@@ -156,8 +156,9 @@ export class AddEditQuestion extends Component {
                     name="questionType"
                     component={DropDown}
                     label="Type"
-                    options={this.parentDefined && (this.parentDefined.questionType === questionTypes.CATEGORY)
-                      ? categoryChildOptions : options}
+                    // options={this.parentDefined && (this.parentDefined.questionType === questionTypes.CATEGORY)
+                    //   ? categoryChildOptions : options}
+                    options={options}
                     defaultValue={questionTypes.MULTIPLE_CHOICE}
                     onChange={this.handleTypeChange}
                     disabled={this.state.edit ? true : false}
