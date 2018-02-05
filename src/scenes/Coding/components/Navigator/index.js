@@ -45,6 +45,7 @@ const QuestionRow = ({ item, children, treeLength, isParentLast }) => {
     } else if (item.children && item.parentId === 0) {
       if (item.positionInParent === 0) className = navStyles.navParentFirst
       else if (item.positionInParent === (treeLength - 1)) className = navStyles.navParentLast
+      else className = navStyles.navParent
     } else if (item.children) {
       if (i === item.indent) {
         if ((treeLength - 1) === item.positionInParent) className = navStyles.navParentLast

@@ -67,8 +67,8 @@ $rowHeight: 40px;
 
   &::before {
     @extend %verticalBar;
-    height: 10px;
-    bottom: $rowHeight - 12;
+    height: 25px;
+    bottom: $rowHeight - 15;
   }
 }
 
