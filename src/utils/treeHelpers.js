@@ -1,5 +1,6 @@
 import { sortList } from 'utils'
 import { map, walk, getFlatDataFromTree } from 'react-sortable-tree'
+import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 export const getNodeKey = ({ node, treeIndex }) => {
   return treeIndex

@@ -33,7 +33,7 @@ $rowHeight: 40px;
   position: absolute;
 }
 
-%horizontalBar {
+%verticalBar {
   content: "";
   width: 1px;
   left: 50%;
@@ -45,7 +45,7 @@ $rowHeight: 40px;
   @extend .navRow;
 
   &:after {
-    @extend %horizontalBar;
+    @extend %verticalBar;
     height: $rowHeight + ($rowHeight / 2);
     top: -10px;
   }
@@ -55,7 +55,7 @@ $rowHeight: 40px;
   @extend .navRow;
 
   &::after {
-    @extend %horizontalBar;
+    @extend %verticalBar;
     height: 20px;
     top: $rowHeight - 10;
   }
@@ -66,7 +66,17 @@ $rowHeight: 40px;
   @extend .navParentFirst;
 
   &::before {
-    @extend %horizontalBar;
+    @extend %verticalBar;
+    height: 10px;
+    bottom: $rowHeight - 12;
+  }
+}
+
+.navParentLast {
+  @extend .navRow;
+
+  &::before {
+    @extend  %verticalBar;
     height: 10px;
     bottom: $rowHeight - 12;
   }
@@ -77,7 +87,7 @@ $rowHeight: 40px;
   @extend .navRow;
 
   &::after {
-    @extend %horizontalBar;
+    @extend %verticalBar;
     height: $rowHeight - 10;
     top: -10px;
   }

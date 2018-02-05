@@ -31,22 +31,27 @@ const questionTextStyles = {
   paddingLeft: 10
 }
 
-const QuestionRow = ({ item, children, treeLength }) => {
+const QuestionRow = ({ item, children, treeLength, isParentLast }) => {
+  console.log(item.text, isParentLast)
   let scaffold = []
   let className = ''
 
   for (let i = 0; i < item.indent + 1; i++) {
-    if (item.children && item.parentId === 0 && item.positionInParent === 0) {
-      className = navStyles.navParentFirst
+    if (isParentLast && i === item.indent - 1) {
+      className = navStyles.navRow
+    } else if (item.children && item.parentId === 0) {
+      if (item.positionInParent === 0) className = navStyles.navParentFirst
+      else if (item.positionInParent === (treeLength - 1)) className = navStyles.navParentLast
     } else if (item.children) {
       if (i === item.indent) {
-        className = navStyles.navParent
+        if ((treeLength - 1) === item.positionInParent) className = navStyles.navParentLast
+        else className = navStyles.navParent
       } else {
         className = navStyles.navChild
       }
     } else if ((treeLength - 1) === item.positionInParent && i === item.indent) {
       className = `${navStyles.navChildLast} ${navStyles.navQuestionNoChildren}`
-    } else {
+    }  else {
       if (i === item.indent) {
         className = `${navStyles.navChild} ${navStyles.navQuestionNoChildren}`
       } else {
@@ -70,20 +75,18 @@ const QuestionRow = ({ item, children, treeLength }) => {
 
 let QuestionList
 const setRef = ref => {
-  QuestionList = ref;
+  QuestionList = ref
 }
 
-const questionRenderer = (item, keyPrefix, treeLength) => {
+const questionRenderer = (item, treeIndex, keyPrefix, treeLength, isParentLast) => {
   const onClick = (event) => {
-    console.log(event)
     event.stopPropagation()
     item.expanded = !item.expanded
-    console.log(QuestionList)
     QuestionList.recomputeRowHeights()
     QuestionList.forceUpdate()
   }
 
-  const props = { key: keyPrefix, item, treeLength }
+  const props = { key: keyPrefix, item, treeLength, isParentLast }
   const iconProps = { iconSize: 20, color: 'secondary', onClick: onClick }
   let children = []
   let itemEl = null
@@ -96,7 +99,7 @@ const questionRenderer = (item, keyPrefix, treeLength) => {
     )
 
     children = item.children.map((child, index) => {
-      return questionRenderer(child, keyPrefix + '-' + index, item.children.length)
+      return questionRenderer(child, index, keyPrefix + '-' + index, item.children.length, treeIndex === treeLength - 1)
     })
   } else if (item.children) {
     itemEl = (
@@ -115,8 +118,12 @@ const rowRenderer = tree => params => {
   return (
     tree.length !== 0
     && tree[params.index] !== undefined
-    && <div style={params.style}
-            key={`tree-${params.index}`}>{questionRenderer(tree[params.index], params.index, tree.length)}</div>
+    && (
+      <div style={params.style} key={`tree-${params.index}`}>
+        {questionRenderer(tree[params.index], params.index, params.index, tree.length, params.index === tree.length -
+          1)}
+        </div>
+    )
   )
 }
 
@@ -153,16 +160,18 @@ export const Navigator = ({ open, classes, questionTree, userAnswers, questionsB
           <div style={{ flex: 1, display: 'flex' }}>
             <AutoSizer>
               {({ height, width }) => (
-                <List className={navStyles.navScroll}
-                      style={{ height: height, paddingLeft: 10 }}
-                      rowCount={questionTree.length}
-                      rowHeight={rowHeight(questionTree)}
-                      width={width}
-                      rowRenderer={rowRenderer(questionTree)}
-                      height={height}
-                      overscanRowCount={0}
-                      ref={setRef}
-                      autoHeight />
+                <List
+                  className={navStyles.navScroll}
+                  style={{ height: height, paddingLeft: 10 }}
+                  rowCount={questionTree.length}
+                  rowHeight={rowHeight(questionTree)}
+                  width={width}
+                  rowRenderer={rowRenderer(questionTree)}
+                  height={height}
+                  overscanRowCount={0}
+                  ref={setRef}
+                  autoHeight
+                />
               )}
             </AutoSizer>
           </div>
