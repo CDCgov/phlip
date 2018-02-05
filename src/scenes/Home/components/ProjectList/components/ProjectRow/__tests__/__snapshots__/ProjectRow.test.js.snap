@@ -152,10 +152,18 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     }
   >
     <WithTheme
-      listButton={true}
-      raised={false}
-      value="Validate"
-    />
+      to={
+        Object {
+          "pathname": "/project/1/validate",
+        }
+      }
+    >
+      <WithTheme
+        listButton={true}
+        raised={false}
+        value="Validate"
+      />
+    </WithTheme>
   </TableCell>
   <TableCell
     key="1-export"
