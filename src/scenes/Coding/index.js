@@ -166,7 +166,7 @@ export class Coding extends Component {
   render() {
     return (
       <Container flex style={{ width: '100%', height: '100%', position: 'relative', display: 'flex' }}>
-        <Navigator open={this.state.navOpen} />
+        <Navigator open={this.state.navOpen} questionTree={this.props.questionTree} />
         <Column displayFlex className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}>
         <Header projectName={this.props.projectName} projectId={this.props.projectId}
                 jurisdictionsList={this.props.jurisdictionsList}
@@ -226,7 +226,8 @@ const mapStateToProps = (state, ownProps) => {
       ? project.projectJurisdictions[0]
       : null),
     isSchemeEmpty: state.scenes.coding.scheme === null ? null : state.scenes.coding.scheme.order.length === 0,
-    userRole: state.data.user.currentUser.role
+    userRole: state.data.user.currentUser.role,
+    questionTree: state.scenes.coding.scheme === null ? [] : state.scenes.coding.scheme.tree
   }
 }
 
