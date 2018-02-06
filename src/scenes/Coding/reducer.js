@@ -377,10 +377,12 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
         })
         : []
 
-      item.completedProgress = (countAnswered / item.children.length) * 100
-      if ((countAnswered / item.children.length) * 100 === 100) {
-        delete item.completedProgress
-        item.isAnswered = true
+      if (item.children.length > 0) {
+        item.completedProgress = (countAnswered / item.children.length) * 100
+        if ((countAnswered / item.children.length) * 100 === 100) {
+          delete item.completedProgress
+          item.isAnswered = true
+        }
       }
     }
 
