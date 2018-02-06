@@ -44,11 +44,22 @@ const updateChildPositionInParentLogic = createLogic({
   type: types.ADD_CHILD_QUESTION_REQUEST,
   transform({ getState, action }, next) {
     let parent = getState().scenes.codingScheme.questions.find(question => question.id === action.parentId)
+    let positionInParent = 0
+    if (parent) {
+      if (parent.children) {
+        positionInParent = parent.children.length
+      } else {
+        positionInParent = 0
+      }
+    } else {
+      positionInParent = 0
+    }
     next({
       ...action,
       question: {
         ...action.question,
-        positionInParent: parent.children ? parent.children.length : 0
+        // positionInParent: parent.children ? parent.children.length : 0
+        positionInParent: positionInParent
       }
     })
   }
