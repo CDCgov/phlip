@@ -56,8 +56,8 @@ $rowHeight: 40px;
 
   &::after {
     @extend %verticalBar;
-    height: 20px;
-    top: $rowHeight - 10;
+    height: $rowHeight / 2;
+    top: $rowHeight - 15;
   }
 }
 
@@ -67,8 +67,8 @@ $rowHeight: 40px;
 
   &::before {
     @extend %verticalBar;
-    height: 25px;
-    bottom: $rowHeight - 14;
+    height: $rowHeight / 2;
+    bottom: $rowHeight - 10;
   }
 }
 
@@ -77,8 +77,8 @@ $rowHeight: 40px;
 
   &::before {
     @extend  %verticalBar;
-    height: 10px;
-    bottom: $rowHeight - 12;
+    height: $rowHeight / 2;
+    bottom: $rowHeight - 10;
   }
 }
 
