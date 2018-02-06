@@ -47,7 +47,7 @@ $rowHeight: 40px;
   &:after {
     @extend %verticalBar;
     height: $rowHeight + ($rowHeight / 2);
-    top: -10px;
+    top: -8px;
   }
 }
 
@@ -57,7 +57,7 @@ $rowHeight: 40px;
   &::after {
     @extend %verticalBar;
     height: $rowHeight / 2;
-    top: $rowHeight - 15;
+    top: $rowHeight - 12;
   }
 }
 
@@ -67,8 +67,8 @@ $rowHeight: 40px;
 
   &::before {
     @extend %verticalBar;
-    height: $rowHeight / 2;
-    bottom: $rowHeight - 10;
+    height: ($rowHeight / 2) + 2;
+    bottom: $rowHeight - 12;
   }
 }
 
@@ -77,8 +77,8 @@ $rowHeight: 40px;
 
   &::before {
     @extend  %verticalBar;
-    height: $rowHeight / 2;
-    bottom: $rowHeight - 10;
+    height: ($rowHeight / 2) + 2;
+    bottom: $rowHeight - 12;
   }
 }
 

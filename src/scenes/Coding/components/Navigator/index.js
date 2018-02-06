@@ -69,7 +69,7 @@ const QuestionRow = ({ item, children, treeLength }) => {
     <Fragment>
       {scaffold}
       <div style={{ ...rowStyles, marginLeft: 23 * item.indent }}>
-        <span style={{ minWidth: 18, minHeight: 18 }}>{children}</span>
+        <span style={{ minWidth: 20, minHeight: 20, maxHeight: 20, maxWidth: 20 }}>{children}</span>
         <Typography style={questionTextStyles} type="body1" noWrap>{item.text}</Typography>
         {item.isAnswered && <Icon color="primary" size={19} style={{ paddingLeft: 5 }}>check</Icon>}
       </div>
