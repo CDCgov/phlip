@@ -1,0 +1,109 @@
+$rowHeight: 40px;
+
+.navContainer {
+  display: flex;
+  flex: 1;
+  padding-right: 10px;
+}
+
+.navScroll {
+  &::-webkit-scrollbar {
+    width: 9px;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #363f41;
+    border-radius: 10px;
+    margin: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #738083;
+  }
+}
+
+.navRow {
+  height: $rowHeight;
+  width: 19px;
+  outline: 0;
+  border: 0;
+  background-color: transparent;
+  position: absolute;
+}
+
+%verticalBar {
+  content: "";
+  width: 1px;
+  left: 50%;
+  background-color: #6b838b;
+  position: absolute;
+}
+
+.navChild {
+  @extend .navRow;
+
+  &:after {
+    @extend %verticalBar;
+    height: $rowHeight + ($rowHeight / 2);
+    top: -8px;
+  }
+}
+
+.navParentFirst {
+  @extend .navRow;
+
+  &::after {
+    @extend %verticalBar;
+    height: $rowHeight / 2;
+    top: $rowHeight - 12;
+  }
+}
+
+/* Two vertical bars above and below expand button */
+.navParent {
+  @extend .navParentFirst;
+
+  &::before {
+    @extend %verticalBar;
+    height: ($rowHeight / 2) + 2;
+    bottom: $rowHeight - 12;
+  }
+}
+
+.navParentLast {
+  @extend .navRow;
+
+  &::before {
+    @extend  %verticalBar;
+    height: ($rowHeight / 2) + 2;
+    bottom: $rowHeight - 12;
+  }
+}
+
+/* Vertical top bar */
+.navChildLast {
+  @extend .navRow;
+
+  &::after {
+    @extend %verticalBar;
+    height: $rowHeight - 10;
+    top: -10px;
+  }
+}
+
+/* Horizontal bar */
+.navQuestionNoChildren {
+  @extend .navRow;
+
+  &::before {
+    content: "";
+    height: 1px;
+    width: 13px;
+    background-color: #6b838b;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  }
+}

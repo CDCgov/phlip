@@ -344,9 +344,11 @@ const handleClearCategoryAnswers = (selectedCategoryId, questionType, currentUse
   }
 })
 
-const initializeNavigator = (tree, scheme, codedQuestions) => {
+const initializeNavigator = (tree, scheme, codedQuestions, currentQuestion, selectedCategoryId) => {
   tree.map(item => {
-    item.isAnswered = codedQuestions.hasOwnProperty(item.id) ? Object.keys(codedQuestions[item.id].answers).length > 0 : false
+    item.isAnswered = codedQuestions.hasOwnProperty(item.id)
+      ? Object.keys(codedQuestions[item.id].answers).length > 0
+      : false
 
     if (item.children) {
       item.children = initializeNavigator(item.children, scheme, codedQuestions)
@@ -362,6 +364,8 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
         }))
         : []
     }
+
+    if (item.questionType === questionTypes.CATEGORY)
 
     return { ...item }
   })
@@ -437,9 +441,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           ...updatedState,
           scheme: {
             ...updatedState.scheme,
-            tree: initializeNavigator(action.payload.tree, normalizedQuestions, updatedState.userAnswers)
-
-      },
+            tree: initializeNavigator(action.payload.tree, normalizedQuestions, updatedState.userAnswers, updatedState.question, selectedCategoryId)
+          },
           showNextButton: determineShowButton(updatedState)
         }
       }
@@ -458,7 +461,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         showNextButton: determineShowButton(updated),
         scheme: {
           ...updated.scheme,
-          tree: initializeNavigator(state.scheme.tree, updated.scheme.byId, updated.userAnswers)
+          tree: initializeNavigator(state.scheme.tree, updated.scheme.byId, updated.userAnswers, updated.question, selectedCategoryId)
         }
       }
 
