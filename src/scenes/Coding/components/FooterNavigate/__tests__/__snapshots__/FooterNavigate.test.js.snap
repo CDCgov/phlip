@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Coding -- FooterNavigate component should render correctly 1`] = `
+<Row
+  component={
+    <WithStyles
+      item={true}
+    />
+  }
+  displayFlex={true}
+  flex={false}
+  style={
+    Object {
+      "alignItems": "center",
+      "alignSelf": "flex-end",
+      "height": 50,
+      "justifyContent": "space-between",
+      "paddingTop": 10,
+    }
+  }
+/>
+`;

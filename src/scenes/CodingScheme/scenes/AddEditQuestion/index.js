@@ -25,6 +25,8 @@ export class AddEditQuestion extends Component {
       ? null
       : this.props.location.state.questionDefined
 
+    this.parentDefined = this.props.location.state.parentDefined ? this.props.location.state.parentDefined : null
+
     this.state = {
       edit: this.questionDefined
     }
@@ -32,16 +34,19 @@ export class AddEditQuestion extends Component {
     this.defaultForm = {
       questionType: questionTypes.MULTIPLE_CHOICE,
       possibleAnswers: [{}, {}, {}],
-      includeComment: false
+      includeComment: false,
+      isCategoryQuestion: false
     }
     this.binaryForm = {
       questionType: questionTypes.BINARY,
       possibleAnswers: [{ text: 'Yes' }, { text: 'No' }],
-      includeComment: false
+      includeComment: false,
+      isCategoryQuestion: false
     }
     this.textFieldForm = {
       questionType: questionTypes.TEXT_FIELD,
-      includeComment: false
+      includeComment: false,
+      isCategoryQuestion: false
     }
 
     this.onCancel = this.onCancel.bind(this)
@@ -66,9 +71,9 @@ export class AddEditQuestion extends Component {
       })
     }
 
-    this.questionDefined
-      ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.questionDefined.id)
-      : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId)
+    this.questionDefined ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.questionDefined.id, this.props.location.state.path)
+      : this.parentDefined ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.parentDefined, this.props.location.state.path)
+        : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)
 
     this.props.history.goBack()
   }
@@ -78,8 +83,6 @@ export class AddEditQuestion extends Component {
       : value === questionTypes.TEXT_FIELD ? this.props.formActions.initialize('questionForm', this.textFieldForm, true)
         : this.props.formActions.initialize('questionForm', this.defaultForm, true)
   }
-
-
 
   validate = values => {
     const errors = {}
@@ -106,11 +109,15 @@ export class AddEditQuestion extends Component {
   render() {
     const options = [
       { value: questionTypes.BINARY, label: 'Binary' },
-      // { value: questionTypes.CATEGORY, label: 'Category' },  //TODO: Enable when we implement category questions
+      { value: questionTypes.CATEGORY, label: 'Category' },
       { value: questionTypes.CHECKBOXES, label: 'Checkboxes' },
       { value: questionTypes.MULTIPLE_CHOICE, label: 'Multiple choice' },
       { value: questionTypes.TEXT_FIELD, label: 'Text field' }
     ]
+
+    const categoryChildOptions = options.filter(option => option.value !== questionTypes.CATEGORY)
+
+
     const actions = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button' },
       {
@@ -121,6 +128,7 @@ export class AddEditQuestion extends Component {
         disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors)
       }
     ]
+
     return (
       <FormModal
         form="questionForm"
@@ -129,7 +137,6 @@ export class AddEditQuestion extends Component {
         maxWidth='md'
         validate={this.validate}
         onClose={this.onCancel}>
-
         <Container column style={{ minWidth: 890, padding: '20px 20px 0 20px' }}>
           <Container column className={styles.dashed}>
             <ModalTitle title={this.state.edit ? 'Edit Question' : 'Add New Question'} />
@@ -149,7 +156,8 @@ export class AddEditQuestion extends Component {
                     name="questionType"
                     component={DropDown}
                     label="Type"
-                    options={options}
+                    options={this.parentDefined && (this.parentDefined.questionType === questionTypes.CATEGORY)
+                      ? categoryChildOptions : options}
                     defaultValue={questionTypes.MULTIPLE_CHOICE}
                     onChange={this.handleTypeChange}
                     disabled={this.state.edit ? true : false}
@@ -168,6 +176,7 @@ export class AddEditQuestion extends Component {
               </Container>
               <FieldArray name="possibleAnswers"
                 answerType={this.props.form.values ? this.props.form.values.questionType : 4}
+                isEdit={this.state.edit ? true : false}
                 component={AnswerList}
               />
               <Container>

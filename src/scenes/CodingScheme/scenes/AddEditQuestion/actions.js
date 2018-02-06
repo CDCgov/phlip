@@ -1,10 +1,11 @@
 import * as types from '../../actionTypes'
 
-export const addQuestionRequest = (question, projectId) => ({ type: types.ADD_QUESTION_REQUEST, question, projectId })
-export const addQuestionSuccess = (payload) => ({ type: types.ADD_QUESTION_SUCCESS, payload })
-//TODO Fail action
+export const addQuestionRequest = (question, projectId, parentId) => ({ type: types.ADD_QUESTION_REQUEST, question, projectId, parentId })
 
-export const updateQuestionRequest = (question, projectId, questionId) => ({ type: types.UPDATE_QUESTION_REQUEST, question, projectId, questionId })
-export const updateQuestionSuccess = (payload) => ({ type: types.UPDATE_QUESTION_SUCCESS, payload })
+export const addChildQuestionRequest = (question, projectId, parentId, parentNode, path) => ({ type: types.ADD_CHILD_QUESTION_REQUEST, question, projectId, parentId, parentNode, path })
+
+export const addChildQuestionFailure = (payload) => ({ type: types.ADD_CHILD_QUESTION_FAIL, payload: { errorContent: payload, error: true } })
+
+export const updateQuestionRequest = (question, projectId, questionId, path) => ({ type: types.UPDATE_QUESTION_REQUEST, question, projectId, questionId, path })
 
 export const updateType = type => ({ type: types.UPDATE_TYPE, type })

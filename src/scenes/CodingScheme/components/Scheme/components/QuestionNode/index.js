@@ -8,6 +8,7 @@ import Card from 'components/Card'
 import { CardContent, CardActions } from 'material-ui/Card'
 import Typography from 'material-ui/Typography'
 import TextLink from 'components/TextLink/index'
+import * as questionTypes from '../../../../scenes/AddEditQuestion/constants'
 
 const isDescendant = (older, younger) => {
   return (
@@ -98,12 +99,19 @@ export const QuestionNode = props => {
 
             {node.hovering &&
               <div style={{ zIndex: 5 }}>
-                <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} />
-                <TextLink to={{ pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`, state: { questionDefined: { ...node } } }}>
-                  <Button color="accent" style={actionStyles} value={<Icon color="white">mode_edit</Icon>} /></TextLink>
+                {parentNode
+                  ? parentNode.questionType !== questionTypes.CATEGORY && <TextLink to={{ pathname: `/project/${projectId}/coding-scheme/add`, state: { parentDefined: { ...node }, path } }}>
+                    <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} /> </TextLink>
+                  : <TextLink to={{ pathname: `/project/${projectId}/coding-scheme/add`, state: { parentDefined: { ...node }, path } }}>
+                    <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} /> </TextLink>
+                }
+                <TextLink to={{ pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`, state: { questionDefined: { ...node }, path } }}>
+                  <Button color="accent" style={actionStyles} value={<Icon color="white">mode_edit</Icon>} />
+                </TextLink>
                 <Button color="accent" style={actionStyles} value={<Icon color="white">delete</Icon>} />
               </div>
             }
+            {!node.hovering && node.questionType === questionTypes.CATEGORY ? <Icon color="grey">filter_none</Icon> : ''}
           </CardContent>
           <CardActions disableActionSpacing style={{ padding: 0 }}>
             <div style={{ flex: '1 1 auto' }}></div>

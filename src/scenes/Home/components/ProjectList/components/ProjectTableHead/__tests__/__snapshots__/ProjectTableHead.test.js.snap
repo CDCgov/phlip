@@ -49,9 +49,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     padding="checkbox"
     style={
       Object {
-        "maxWidth": 150,
         "textAlign": "unset",
-        "width": 150,
       }
     }
   >
@@ -73,9 +71,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     padding="checkbox"
     style={
       Object {
-        "maxWidth": 150,
         "textAlign": "unset",
-        "width": 150,
       }
     }
   >

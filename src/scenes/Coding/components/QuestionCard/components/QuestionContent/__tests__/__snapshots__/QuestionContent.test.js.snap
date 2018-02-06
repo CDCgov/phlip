@@ -1,0 +1,105 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Coding scene --- QuestionContent component should render correctly 1`] = `
+<Container
+  column={true}
+  flex={true}
+  spacing={0}
+>
+  <Row
+    component={
+      <WithStyles
+        item={true}
+      />
+    }
+    displayFlex={true}
+    flex={false}
+    style={
+      Object {
+        "padding": "20px 20px 10px 20px",
+      }
+    }
+  >
+    <Column
+      component={
+        <WithStyles
+          item={true}
+        />
+      }
+      displayFlex={false}
+      flex={false}
+    >
+      <WithStyles
+        type="subheading"
+      >
+        )
+      </WithStyles>
+    </Column>
+    <Column
+      component={
+        <WithStyles
+          item={true}
+        />
+      }
+      displayFlex={false}
+      flex={true}
+      style={
+        Object {
+          "paddingLeft": 10,
+        }
+      }
+    >
+      <WithStyles
+        type="subheading"
+      >
+        Are tags issued after rabies vaccination?
+      </WithStyles>
+    </Column>
+  </Row>
+  <Row
+    component={
+      <WithStyles
+        item={true}
+      />
+    }
+    displayFlex={true}
+    flex={false}
+    style={
+      Object {
+        "paddingBottom": 40,
+        "paddingLeft": 65,
+        "paddingRight": 65,
+        "paddingTop": 0,
+      }
+    }
+  >
+    <Column
+      component={
+        <WithStyles
+          item={true}
+        />
+      }
+      displayFlex={false}
+      flex={true}
+    >
+      <WithStyles
+        choices={
+          Array [
+            Object {
+              "id": 1010,
+              "text": "Yes",
+            },
+            Object {
+              "id": 1011,
+              "text": "No",
+            },
+          ]
+        }
+        onChange={[Function]}
+        onChangePincite={[Function]}
+        userAnswers={Object {}}
+      />
+    </Column>
+  </Row>
+</Container>
+`;

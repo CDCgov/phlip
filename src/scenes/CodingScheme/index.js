@@ -30,6 +30,9 @@ export class CodingScheme extends Component {
 
   handleQuestionTreeChange = questions => {
     this.props.actions.updateQuestionTree(questions)
+  }
+
+  handleQuestionNodeMove = () => {
     this.props.actions.reorderSchemeRequest(this.props.projectId)
   }
 
@@ -54,10 +57,13 @@ export class CodingScheme extends Component {
             : <Scheme
               questions={this.props.questions}
               handleQuestionTreeChange={this.handleQuestionTreeChange}
+              handleQuestionNodeMove={this.handleQuestionNodeMove}
               handleHoverOnQuestion={this.props.actions.toggleHover}
               disableHover={this.props.actions.disableHover}
               enableHover={this.props.actions.enableHover}
               projectId={this.props.projectId}
+              outline={this.props.outline}
+              flatQuestions={this.props.flatQuestions}
             />}
         </Container>
         <Footer clearState={this.props.actions.clearState} />
@@ -76,14 +82,17 @@ CodingScheme.propTypes = {
   projectName: PropTypes.string,
   projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   questions: PropTypes.array,
-  actions: PropTypes.object
+  actions: PropTypes.object,
+  flatQuestions: PropTypes.array
 }
 
 const mapStateToProps = (state, ownProps) => ({
   projectName: state.scenes.home.main.projects.byId[ownProps.match.params.id].name,
   projectId: ownProps.match.params.id,
   questions: state.scenes.codingScheme.questions || [],
-  empty: state.scenes.codingScheme.empty || false
+  empty: state.scenes.codingScheme.empty || false,
+  outline: state.scenes.codingScheme.outline || {},
+  flatQuestions: state.scenes.codingScheme.flatQuestions || []
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

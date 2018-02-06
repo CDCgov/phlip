@@ -24,8 +24,9 @@ exports[`CodingScheme scene should render correctly 1`] = `
       disableHover={[Function]}
       enableHover={[Function]}
       handleHoverOnQuestion={[Function]}
+      handleQuestionNodeMove={[Function]}
       handleQuestionTreeChange={[Function]}
-      questions={Object {}}
+      questions={Array []}
     />
   </Container>
   <Footer />

@@ -55,9 +55,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     padding="checkbox"
     style={
       Object {
-        "maxWidth": 150,
         "textAlign": "unset",
-        "width": 150,
       }
     }
   >
@@ -69,9 +67,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     style={
       Object {
         "fontStyle": "italic",
-        "maxWidth": 150,
         "textAlign": "unset",
-        "width": 150,
       }
     }
   >
@@ -126,16 +122,34 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   <TableCell
     key="1-code"
     padding="checkbox"
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
   >
     <WithTheme
-      listButton={true}
-      raised={false}
-      value="Code"
-    />
+      to={
+        Object {
+          "pathname": "/project/1/code",
+        }
+      }
+    >
+      <WithTheme
+        listButton={true}
+        raised={false}
+        value="Code"
+      />
+    </WithTheme>
   </TableCell>
   <TableCell
     key="1-validation"
     padding="checkbox"
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
   >
     <WithTheme
       listButton={true}
@@ -146,6 +160,11 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   <TableCell
     key="1-export"
     padding="checkbox"
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
   >
     <IconButton
       color="#d4d4d4"

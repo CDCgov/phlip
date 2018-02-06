@@ -35,7 +35,7 @@ const props = {
   sortBy: 'dateLastEdited',
   direction: 'desc',
   page: 0,
-  rowsPerPage: 10,
+  rowsPerPage: '10',
   searchValue: ''
 }
 

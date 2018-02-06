@@ -146,7 +146,7 @@ const mainReducer = (state, action) => {
       return { ...INITIAL_STATE, rowsPerPage: state.rowsPerPage }
 
     case types.UPDATE_EDITED_FIELDS:
-      const project = state.projects.byId[action.projectId]
+      let project = state.projects.byId[action.projectId]
       return {
         ...state,
         projects: {
@@ -161,6 +161,36 @@ const mainReducer = (state, action) => {
           allIds: state.projects.allIds
         }
       }
+
+    case types.ADD_JURISDICTION_TO_PROJECT:
+      let updatedProject = state.projects.byId[action.projectId]
+      return {
+        ...state,
+        projects: {
+          byId: {
+            ...state.projects.byId,
+            [updatedProject.id]: {
+              ...updatedProject,
+              projectJurisdictions: [ ...updatedProject.projectJurisdictions, action.jurisdiction ]
+            }
+          }
+        }
+      }
+
+    case types.UPDATE_JURISDICTION_IN_PROJECT:
+      return {
+        ...state,
+        projects: {
+          byId: {
+            ...state.projects.byId,
+            [action.projectId]: {
+              ...state.projects.byId[action.projectId],
+              projectJurisdictions: updater.updateByProperty(action.jurisdiction, state.projects.byId[action.projectId].projectJurisdictions, 'id' )
+            }
+          }
+        }
+      }
+
 
     case types.UPDATE_PROJECT_FAIL:
     case types.GET_PROJECTS_REQUEST:

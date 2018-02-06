@@ -4,7 +4,8 @@ import reducer from '../reducer'
 const initial = {
   questions: [],
   outline: {},
-  allowHover: true
+  allowHover: true,
+  flatQuestions: []
 }
 
 const getState = other => ({ ...initial, ...other })
@@ -27,9 +28,9 @@ describe('Coding Scheme reducer', () => {
         payload: {
           codingSchemeQuestions: questions,
           outline: {
-              1: { parentId: 0, positionInParent: 0 },
-              2: { parentId: 0, positionInParent: 1 }
-            }
+            1: { parentId: 0, positionInParent: 0 },
+            2: { parentId: 0, positionInParent: 1 }
+          }
         }
       }
 
@@ -40,15 +41,19 @@ describe('Coding Scheme reducer', () => {
 
       expect(state).toEqual({
         questions: [
-          { text: 'fa la la la', type: 1, hovering: false, id: 1, parentId: 0, positionInParent: 0 },
-          { text: 'la la la', type: 2, hovering: false, id: 2, parentId: 0, positionInParent: 1 }
+          { text: 'fa la la la', type: 1, hovering: false, id: 1, expanded: true, parentId: 0, positionInParent: 0 },
+          { text: 'la la la', type: 2, hovering: false, id: 2, expanded: true, parentId: 0, positionInParent: 1 }
         ],
         outline: {
           1: { parentId: 0, positionInParent: 0 },
           2: { parentId: 0, positionInParent: 1 }
         },
         allowHover: true,
-        empty: false
+        empty: false,
+        flatQuestions: [
+          { id: 1, text: 'fa la la la', type: 1 },
+          { id: 2, text: 'la la la', type: 2, }
+        ]
       })
     })
   })
@@ -78,7 +83,8 @@ describe('Coding Scheme reducer', () => {
           { hovering: true, questionBody: 'la la la', type: 2 }
         ],
         outline: {},
-        allowHover: true
+        allowHover: true,
+        flatQuestions: []
       })
     })
 
@@ -106,7 +112,8 @@ describe('Coding Scheme reducer', () => {
           { hovering: false, questionBody: 'la la la', type: 2 }
         ],
         outline: {},
-        allowHover: true
+        allowHover: true,
+        flatQuestions: []
       })
     })
 
@@ -142,7 +149,8 @@ describe('Coding Scheme reducer', () => {
           { hovering: false, questionBody: 'la la la', type: 2 }
         ],
         outline: {},
-        allowHover: true
+        allowHover: true,
+        flatQuestions: []
       })
     })
 
@@ -170,7 +178,8 @@ describe('Coding Scheme reducer', () => {
           { hovering: false, questionBody: 'la la la', type: 2 }
         ],
         outline: {},
-        allowHover: true
+        allowHover: true,
+        flatQuestions: []
       })
     })
 
@@ -198,7 +207,8 @@ describe('Coding Scheme reducer', () => {
           { hovering: false, questionBody: 'la la la', type: 2 }
         ],
         outline: {},
-        allowHover: false
+        allowHover: false,
+        flatQuestions: []
       })
     })
   })
@@ -244,7 +254,8 @@ describe('Coding Scheme reducer', () => {
           1: { parentId: 2, positionInParent: 0 },
           2: { parentId: 0, positionInParent: 0 }
         },
-        allowHover: true
+        allowHover: true,
+        flatQuestions: []
       })
     })
   })
@@ -262,7 +273,8 @@ describe('Coding Scheme reducer', () => {
       expect(state).toEqual({
         questions: [],
         outline: {},
-        allowHover: true
+        allowHover: true,
+        flatQuestions: []
       })
     })
   })
@@ -280,7 +292,8 @@ describe('Coding Scheme reducer', () => {
       expect(state).toEqual({
         questions: [],
         outline: {},
-        allowHover: false
+        allowHover: false,
+        flatQuestions: []
       })
     })
   })

@@ -1,22 +1,57 @@
 import { createLogic } from 'redux-logic'
 import * as types from '../../actionTypes'
+import * as questionTypes from './constants'
+
+
+const updateUserIdLogic = createLogic({
+  type: [types.ADD_QUESTION_REQUEST, types.UPDATE_QUESTION_REQUEST, types.ADD_CHILD_QUESTION_REQUEST],
+  transform({ getState, action }, next) {
+    next({
+      ...action,
+      question: { ...action.question, userId: getState().data.user.currentUser.id }
+    })
+  }
+})
 
 const updateOutlineLogic = createLogic({
-  type: types.ADD_QUESTION_REQUEST,
+  type: [types.ADD_QUESTION_REQUEST, types.ADD_CHILD_QUESTION_REQUEST],
   transform({ getState, action }, next) {
     next({
       ...action,
       question: {
         ...action.question,
         outline: getState().scenes.codingScheme.outline,
-        parentId: 0,
+        parentId: action.parentId
+      }
+    })
+  }
+})
+
+const updatePositionInParentLogic = createLogic({
+  type: types.ADD_QUESTION_REQUEST,
+  transform({ getState, action }, next) {
+    next({
+      ...action,
+      question: {
+        ...action.question,
         positionInParent: getState().scenes.codingScheme.questions.length
       }
     })
   }
 })
 
-
+const updateIsCategoryQuestionLogic = createLogic({
+  type: types.ADD_CHILD_QUESTION_REQUEST,
+  transform({ getState, action }, next) {
+    next({
+      ...action,
+      question: {
+        ...action.question,
+        isCategoryQuestion: action.parentNode.questionType === questionTypes.CATEGORY ? true : false
+      }
+    })
+  }
+})
 
 const updateQuestionLogic = createLogic({
   type: types.UPDATE_QUESTION_REQUEST,
@@ -29,6 +64,26 @@ const updateQuestionLogic = createLogic({
     const updatedQuestion = await api.updateQuestion(action.question, action.projectId, action.questionId)
     return {
       ...updatedQuestion,
+      hovering: false
+    }
+  }
+})
+
+const addChildQuestionLogic = createLogic({
+  type: types.ADD_CHILD_QUESTION_REQUEST,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.ADD_CHILD_QUESTION_SUCCESS,
+    failType: types.ADD_CHILD_QUESTION_FAIL
+  },
+  async process({ api, action }) {
+    const question = await api.addQuestion(action.question, action.projectId)
+    return {
+      ...question,
+      parentId: action.question.parentId,
+      positionInParent: action.parentNode.children ? action.parentNode.children.length : 0,
+      isCategoryQuestion: action.question.isCategoryQuestion,
+      path: action.path,
       hovering: false
     }
   }
@@ -52,19 +107,12 @@ const addQuestionLogic = createLogic({
   }
 })
 
-const updateUserId = createLogic({
-  type: [types.ADD_QUESTION_REQUEST, types.UPDATE_QUESTION_REQUEST],
-  transform({ getState, action }, next) {
-    next({
-      ...action,
-      question: { ...action.question, userId: getState().data.user.currentUser.id }
-    })
-  }
-})
-
 export default [
-  updateUserId,
+  updatePositionInParentLogic,
+  updateUserIdLogic,
   updateOutlineLogic,
   updateQuestionLogic,
-  addQuestionLogic
+  updateIsCategoryQuestionLogic,
+  addQuestionLogic,
+  addChildQuestionLogic
 ]

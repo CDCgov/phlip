@@ -23,12 +23,12 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
         <TextLink to={{ pathname: `/project/edit/${project.id}`, state: { projectDefined: { ...project } } }}>{project.name}</TextLink>
       </TableCell>
       <TableCell key={`${project.id}-dateLastEdited`}
-        style={{ width: 150, maxWidth: 150, textAlign: 'unset' }}>
+        style={{ textAlign: 'unset' }}>
         {new Date(project.dateLastEdited).toLocaleDateString()}
       </TableCell>
       <TableCell
         key={`${project.id}-lastEditedBy`}
-        style={{ fontStyle: 'italic', width: 150, maxWidth: 150, textAlign: 'unset' }}
+        style={{ fontStyle: 'italic', textAlign: 'unset' }}
       >
         {project.lastEditedBy}
       </TableCell>
@@ -41,21 +41,23 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
         <TextLink to={`/project/${project.id}/jurisdictions`} id={project.id}>Add/Edit</TextLink>
       </TableCell>
       {role !== 'Coder' &&
-        <TableCell key={`${project.id}-codingScheme`} style={{ textAlign: 'center' }} >
+        <TableCell key={`${project.id}-codingScheme`} style={{ textAlign: 'center' }}>
           <TextLink to={`/project/${project.id}/coding-scheme`}>Edit</TextLink>
         </TableCell>
       }
-      <TableCell key={`${project.id}-code`}>
-        <Button raised={false} value="Code" listButton />
+      <TableCell key={`${project.id}-code`} style={{ textAlign: 'center' }}>
+        <TextLink to={{ pathname: `/project/${project.id}/code` }}>
+          <Button raised={false} value="Code" listButton />
+        </TextLink>
       </TableCell>
       {role !== 'Coder' &&
-        <TableCell key={`${project.id}-validation`}>
+        <TableCell key={`${project.id}-validation`} style={{ textAlign: 'center' }}>
           <Button raised={false} value="Validate" listButton />
         </TableCell>
       }
-      <TableCell key={`${project.id}-export`}>
+      {role !== 'Coder' && <TableCell key={`${project.id}-export`} style={{ textAlign: 'center' }}>
         <IconButton color={greyIcon} onClick={() => actions.onExport}>file_download</IconButton>
-      </TableCell>
+      </TableCell>}
     </TableRow>
   )
 }

@@ -31,6 +31,9 @@ export class AddEditUser extends Component {
 
     if (this.props.match.params.id) {
       this.props.actions.updateUserRequest({ role: 'Coordinator', ...updatedValues })
+      if (this.props.currentUser.id === updatedValues.id) {
+        this.props.actions.updateCurrentUser({ ...this.props.currentUser, ...updatedValues })
+      }
     } else {
       this.props.actions.addUserRequest({ role: 'Coordinator', ...updatedValues })
     }
@@ -164,6 +167,7 @@ function getUserById(users, id) {
 
 const mapStateToProps = (state) => {
   return {
+    currentUser: state.data.user.currentUser || {},
     users: state.scenes.admin.main.users || [],
     form: state.form.addEditUser || {},
   }

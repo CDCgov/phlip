@@ -1,11 +1,19 @@
 import * as types from './actionTypes'
-import { changeNodeAtPath, getFlatDataFromTree, getTreeFromFlatData, walk, map } from 'react-sortable-tree'
+import {
+  changeNodeAtPath,
+  getFlatDataFromTree,
+  getTreeFromFlatData,
+  walk,
+  map,
+  addNodeUnderParent
+} from 'react-sortable-tree'
 import { sortList, updater } from 'utils'
 
 const INITIAL_STATE = {
   questions: [],
   outline: {},
-  allowHover: true
+  allowHover: true,
+  flatQuestions: []
 }
 
 const questionsToOutline = questions => {
@@ -39,7 +47,8 @@ const getQuestionsFromOutline = (outline, questions) => {
       {
         ...q,
         ...outline[q.id],
-        hovering: false
+        hovering: false,
+        expanded: true
       }
     ]
   }, [])
@@ -74,6 +83,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
             flatData: getQuestionsFromOutline(action.payload.outline, action.payload.codingSchemeQuestions)
           })
         ),
+        flatQuestions: action.payload.codingSchemeQuestions,
         outline: action.payload.outline,
         empty: action.payload.codingSchemeQuestions <= 0
       }
@@ -127,14 +137,40 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         questions: [...state.questions, action.payload],
         outline: questionsToOutline([...state.questions, action.payload]),
-        empty: false
+        empty: false,
+        flatQuestions: [...state.flatQuestions, action.payload]
+      }
+
+    case types.UPDATE_QUESTION_REQUEST:
+      return {
+        ...state,
+        questions: changeNodeAtPath({
+          treeData: state.questions,
+          path: action.path,
+          getNodeKey,
+          newNode: { ...action.question, hovering: false }
+        })
+      }
+
+    case types.ADD_CHILD_QUESTION_SUCCESS:
+      const newTree = addNodeUnderParent({
+        treeData: state.questions,
+        parentKey: action.payload.path[action.payload.path.length - 1],
+        expandParent: true,
+        getNodeKey,
+        newNode: { ...action.payload, hovering: false }
+      })
+
+      return {
+        ...state,
+        questions: newTree.treeData,
+        outline: questionsToOutline(newTree.treeData),
+        empty: false,
+        flatQuestions: [...state.flatQuestions, action.payload]
       }
 
     case types.UPDATE_QUESTION_SUCCESS:
-      return {
-        ...state,
-        questions: updater.updateByProperty(action.payload, [...state.questions], 'id')
-      }
+      return state
 
     case types.CLEAR_STATE:
       return INITIAL_STATE
