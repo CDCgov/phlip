@@ -77,7 +77,6 @@ const addChildQuestionLogic = createLogic({
     failType: types.ADD_CHILD_QUESTION_FAIL
   },
   async process({ api, action }) {
-    console.log(action)
     const question = await api.addQuestion(action.question, action.projectId)
     return {
       ...question,
