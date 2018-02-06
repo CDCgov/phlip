@@ -455,7 +455,11 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
       return {
         ...updated,
-        showNextButton: determineShowButton(updated)
+        showNextButton: determineShowButton(updated),
+        scheme: {
+          ...updated.scheme,
+          tree: initializeNavigator(state.scheme.tree, updated.scheme.byId, updated.userAnswers)
+        }
       }
 
     case types.ON_CHANGE_COMMENT:
@@ -481,7 +485,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ON_CLEAR_ANSWER:
-      return {
+      const upState = {
         ...state,
         ...questionUpdater(
           'answers',
@@ -489,6 +493,14 @@ const codingReducer = (state = INITIAL_STATE, action) => {
             ? handleClearCategoryAnswers(selectedCategoryId, state.question.questionType, state.userAnswers[action.questionId].answers)
             : handleClearAnswers(state.question.questionType, state.userAnswers[action.questionId].answers)
         )
+      }
+
+      return {
+        ...upState,
+        scheme: {
+          ...upState.scheme,
+          tree: initializeNavigator(state.scheme.tree, upState.scheme.byId, upState.userAnswers)
+        }
       }
 
     case types.ON_CHANGE_CATEGORY:
