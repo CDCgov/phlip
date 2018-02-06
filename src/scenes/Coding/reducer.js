@@ -346,8 +346,10 @@ const handleClearCategoryAnswers = (selectedCategoryId, questionType, currentUse
 
 const initializeNavigator = (tree, scheme, codedQuestions) => {
   tree.map(item => {
+    item.isAnswered = codedQuestions.hasOwnProperty(item.id) ? Object.keys(codedQuestions[item.id].answers).length > 0 : false
+
     if (item.children) {
-      return initializeNavigator(item.children, scheme, codedQuestions)
+      item.children = initializeNavigator(item.children, scheme, codedQuestions)
     }
 
     if (item.isCategoryQuestion) {
@@ -360,9 +362,9 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
         }))
         : []
     }
-    return item
-  })
 
+    return { ...item }
+  })
   return tree
 }
 

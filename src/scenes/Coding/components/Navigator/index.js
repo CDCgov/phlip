@@ -8,6 +8,7 @@ import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import List from 'react-virtualized/dist/commonjs/List'
 import navStyles from './nav-styles.scss'
 import IconButton from 'components/IconButton'
+import Icon from 'components/Icon'
 
 const muiNavStyles = theme => ({
   codeNav: {
@@ -25,19 +26,15 @@ const rowStyles = {
   height: 40
 }
 
-const questionTextStyles = {
-  color: 'white',
-  fontWeight: 300,
-  paddingLeft: 10
-}
-
 const QuestionRow = ({ item, children, treeLength, isParentLast }) => {
   let scaffold = []
   let className = ''
 
-  console.log(item)
-  console.log(treeLength)
-  console.log(isParentLast)
+  const questionTextStyles = {
+    color: item.isAnswered ? '#929b9e' : 'white',
+    fontWeight: 300,
+    paddingLeft: 10
+  }
 
   for (let i = 0; i < item.indent + 1; i++) {
     if (isParentLast && i === item.indent - 1) {
@@ -46,7 +43,7 @@ const QuestionRow = ({ item, children, treeLength, isParentLast }) => {
       if (item.positionInParent === 0) className = navStyles.navParentFirst
       else if (item.positionInParent === (treeLength - 1)) className = navStyles.navParentLast
       else className = navStyles.navParent
-    } else if (item.children) {
+    } else if (item.children && item.children.length > 0) {
       if (i === item.indent) {
         if ((treeLength - 1) === item.positionInParent) className = navStyles.navParentLast
         else className = navStyles.navParent
@@ -72,9 +69,16 @@ const QuestionRow = ({ item, children, treeLength, isParentLast }) => {
       <div style={{ ...rowStyles, marginLeft: 23 * item.indent }}>
         <span style={{ width: 18, height: 18 }}>{children}</span>
         <Typography style={questionTextStyles} type="body1" noWrap>{item.text}</Typography>
+        {item.isAnswered && <Icon color="primary" size={19} style={{ paddingLeft: 5 }}>check</Icon>}
       </div>
     </Fragment>
   )
+}
+
+const checkIfCategoriesSelected = (userAnswers, item) => {
+  if (userAnswers.hasOwnProperty(item.parentId)) {
+    return Object.keys(userAnswers[item.parentId].answers).length > 0
+  } else return false
 }
 
 let QuestionList
@@ -91,7 +95,7 @@ const questionRenderer = (userAnswers, scheme, item, treeIndex, keyPrefix, treeL
   }
 
   let props = { key: keyPrefix, item, treeLength, isParentLast }
-  const iconProps = { iconSize: 20, color: 'secondary', onClick }
+  const iconProps = { iconSize: 20, color: '#6b838b', onClick }
   let children = []
   let itemEl = null
 
@@ -102,20 +106,29 @@ const questionRenderer = (userAnswers, scheme, item, treeIndex, keyPrefix, treeL
       </QuestionRow>
     )
 
+    if (item.isCategoryQuestion) {
+      itemEl = checkIfCategoriesSelected(userAnswers, item)
+        ? itemEl
+        : <QuestionRow {...props} />
+    }
+
     children = item.children.map((child, index) => {
       return questionRenderer(
         userAnswers, scheme, child, index, keyPrefix + '-' + index, item.children.length, treeIndex === treeLength - 1
       )
     })
-  } else if (item.children || item.isCategoryQuestion) {
-    if (item.isCategoryQuestion) {
-      props = { ...props, children: [] }
-    }
+  } else if (item.children) {
     itemEl = (
       <QuestionRow {...props}>
         <IconButton {...iconProps}>add_circle_outline</IconButton>
       </QuestionRow>
     )
+
+    if (item.isCategoryQuestion) {
+      itemEl = checkIfCategoriesSelected(userAnswers, item)
+        ? itemEl
+        : <QuestionRow {...props} />
+    }
   } else {
     itemEl = <QuestionRow {...props} />
   }
@@ -141,11 +154,13 @@ const getExpandedItemCount = (userAnswers, item) => {
   let count = 1
 
   if (item.expanded) {
-    if (item.isCategoryQuestion && Object.keys(userAnswers[item.parentId].answers).length > 0) {
-      count += Object.keys(userAnswers[item.parentId].answers).length
-    }
-
-    else {
+    if (item.isCategoryQuestion) {
+      if (userAnswers.hasOwnProperty(item.parentId)) {
+        if (Object.keys(userAnswers[item.parentId].answers).length > 0) {
+          count += Object.keys(userAnswers[item.parentId].answers).length
+        }
+      }
+    } else {
       count += item.children
         .map(child => getExpandedItemCount(userAnswers, child))
         .reduce((total, count) => {
@@ -159,7 +174,7 @@ const getExpandedItemCount = (userAnswers, item) => {
 
 const rowHeight = (tree, userAnswers) => params => getExpandedItemCount(userAnswers, tree[params.index]) * 40
 
-export const Navigator = ({ open, classes, scheme, allUserAnswers, questionsById }) => {
+export const Navigator = ({ open, classes, scheme, allUserAnswers, currentQuestion }) => {
   const questionTree = scheme.tree ? scheme.tree : []
   return (
     <Drawer classes={{ paper: classes.codeNav }} type="persistent" anchor="left" open={open}>
@@ -183,7 +198,7 @@ export const Navigator = ({ open, classes, scheme, allUserAnswers, questionsById
                   rowCount={questionTree.length}
                   rowHeight={rowHeight(questionTree, allUserAnswers)}
                   width={width}
-                  rowRenderer={rowRenderer(scheme, allUserAnswers)}
+                  rowRenderer={rowRenderer(scheme, allUserAnswers, currentQuestion)}
                   height={height}
                   overscanRowCount={0}
                   ref={setRef}

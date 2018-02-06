@@ -37,7 +37,7 @@ $rowHeight: 40px;
   content: "";
   width: 1px;
   left: 50%;
-  background-color: rgb(0, 169, 229);
+  background-color: #6b838b;
   position: absolute;
 }
 
@@ -68,7 +68,7 @@ $rowHeight: 40px;
   &::before {
     @extend %verticalBar;
     height: 25px;
-    bottom: $rowHeight - 15;
+    bottom: $rowHeight - 14;
   }
 }
 
@@ -101,7 +101,7 @@ $rowHeight: 40px;
     content: "";
     height: 1px;
     width: 13px;
-    background-color: rgb(0, 169, 229);
+    background-color: #6b838b;
     position: absolute;
     top: 50%;
     left: 50%;
