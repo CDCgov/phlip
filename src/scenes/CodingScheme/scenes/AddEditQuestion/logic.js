@@ -77,11 +77,12 @@ const addChildQuestionLogic = createLogic({
     failType: types.ADD_CHILD_QUESTION_FAIL
   },
   async process({ api, action }) {
+    console.log(action)
     const question = await api.addQuestion(action.question, action.projectId)
     return {
       ...question,
       parentId: action.question.parentId,
-      positionInParent: action.parentNode.children ? parent.parentNode.children.length : 0,
+      positionInParent: action.parentNode.children ? action.parentNode.children.length : 0,
       isCategoryQuestion: action.question.isCategoryQuestion,
       path: action.path,
       hovering: false
