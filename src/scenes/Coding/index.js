@@ -36,6 +36,7 @@ const iconStyle = {
 
 const styles = theme => ({
   mainContent: {
+    height: '100vh',
     flex: '1 !important',
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,

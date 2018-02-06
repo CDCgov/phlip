@@ -10,7 +10,8 @@ const styles = theme => ({
     marginTop: theme.spacing.unit * 3,
     backgroundColor: theme.palette.background.paper,
     paddingLeft: 20,
-    paddingRight: 20
+    paddingRight: 20,
+    overflow: 'auto'
   }
 })
 
