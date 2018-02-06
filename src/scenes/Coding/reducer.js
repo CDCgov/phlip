@@ -387,7 +387,7 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
     }
 
     if (item.questionType === questionTypes.CATEGORY) {
-      item
+      item.isAnswered = item.children.filter(child => child.isAnswered).length === item.children.length
     }
 
     return { ...item }
