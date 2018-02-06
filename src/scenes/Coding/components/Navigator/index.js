@@ -26,7 +26,7 @@ const rowStyles = {
   height: 40
 }
 
-const QuestionRow = ({ item, children, treeLength, isParentLast }) => {
+const QuestionRow = ({ item, children, treeLength }) => {
   let scaffold = []
   let className = ''
 
@@ -37,7 +37,9 @@ const QuestionRow = ({ item, children, treeLength, isParentLast }) => {
   }
 
   for (let i = 0; i < item.indent + 1; i++) {
-    if (isParentLast && i === item.indent - 1) {
+    if (item.isParentLast && i === item.indent - 1) {
+      className = navStyles.navRow
+    } else if (i !== item.indent && item.isDescendantOfLast) {
       className = navStyles.navRow
     } else if (item.children && item.parentId === 0) {
       if (item.positionInParent === 0) className = navStyles.navParentFirst
@@ -86,7 +88,7 @@ const setRef = ref => {
   QuestionList = ref
 }
 
-const questionRenderer = (userAnswers, scheme, item, treeIndex, keyPrefix, treeLength, isParentLast) => {
+const questionRenderer = (userAnswers, scheme, rootParentIndex, item, keyPrefix, treeIndex, treeLength, isParentLast, isDescendantOfLast) => {
   const onClick = (event) => {
     event.stopPropagation()
     item.expanded = !item.expanded
@@ -94,7 +96,16 @@ const questionRenderer = (userAnswers, scheme, item, treeIndex, keyPrefix, treeL
     QuestionList.forceUpdate()
   }
 
-  let props = { key: keyPrefix, item, treeLength, isParentLast }
+  let props = {
+    key: keyPrefix,
+    item: {
+      ...item,
+      isParentLast,
+      isDescendantOfLast
+    },
+    treeLength
+  }
+  
   const iconProps = { iconSize: 20, color: '#6b838b', onClick }
   let children = []
   let itemEl = null
@@ -113,9 +124,8 @@ const questionRenderer = (userAnswers, scheme, item, treeIndex, keyPrefix, treeL
     }
 
     children = item.children.map((child, index) => {
-      return questionRenderer(
-        userAnswers, scheme, child, index, keyPrefix + '-' + index, item.children.length, treeIndex === treeLength - 1
-      )
+      return questionRenderer(userAnswers, scheme, rootParentIndex, child, index, keyPrefix + '-' +
+        index, item.children.length, treeIndex === treeLength - 1, rootParentIndex === scheme.tree.length - 1)
     })
   } else if (item.children) {
     itemEl = (
@@ -143,8 +153,7 @@ const rowRenderer = (scheme, userAnswers) => params => {
     && tree[params.index] !== undefined
     && (
       <div style={params.style} key={`tree-${params.index}`}>
-        {questionRenderer(userAnswers, scheme, tree[params.index], params.index, params.index, tree.length, params.index ===
-          tree.length - 1)}
+        {questionRenderer(userAnswers, scheme, params.index, tree[params.index], params.index, params.index, tree.length, false, false)}
         </div>
     )
   )
