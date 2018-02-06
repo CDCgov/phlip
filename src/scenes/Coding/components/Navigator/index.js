@@ -37,7 +37,7 @@ const QuestionRow = ({ item, children, treeLength }) => {
   }
 
   for (let i = 0; i < item.indent + 1; i++) {
-    if (item.isParentLast && i === item.indent - 1) {
+    if (item.isParentLast && i === item.indent - 1 && !item.isDescendantOfLast) {
       className = navStyles.navRow
     } else if (i !== item.indent && item.isDescendantOfLast) {
       className = navStyles.navRow
@@ -105,7 +105,7 @@ const questionRenderer = (userAnswers, scheme, rootParentIndex, item, keyPrefix,
     },
     treeLength
   }
-  
+
   const iconProps = { iconSize: 20, color: '#6b838b', onClick }
   let children = []
   let itemEl = null
@@ -124,8 +124,8 @@ const questionRenderer = (userAnswers, scheme, rootParentIndex, item, keyPrefix,
     }
 
     children = item.children.map((child, index) => {
-      return questionRenderer(userAnswers, scheme, rootParentIndex, child, index, keyPrefix + '-' +
-        index, item.children.length, treeIndex === treeLength - 1, rootParentIndex === scheme.tree.length - 1)
+      return questionRenderer(userAnswers, scheme, rootParentIndex, child, keyPrefix + '-' +
+        index, index, item.children.length, treeIndex === treeLength - 1, rootParentIndex === scheme.tree.length - 1)
     })
   } else if (item.children) {
     itemEl = (
