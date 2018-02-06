@@ -18,7 +18,7 @@ const Tabs = ({ tabs, selectedTab, onChangeTab, children, classes }) => {
   return (
     <div className={classes.root}>
       <AppBar position="static" style={{ backgroundColor: '#e8f9f8' }} elevation={0}>
-        <MuiTabs value={selectedTab} onChange={onChangeTab} indicatorColor="#ffff96" textColor="accent" scrollable>
+        <MuiTabs value={selectedTab} onChange={onChangeTab} indicatorColor="#ffff96" textColor="accent" scrollable scrollButtons="on">
           {tabs.map(tab => (
             <Tab key={tab.id} label={tab.text} />
           ))}
