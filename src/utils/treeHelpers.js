@@ -24,7 +24,7 @@ export const sortQuestions = questions => {
 const getIndent = numberString => numberString.split('.').length > 1 ? numberString.split('.').length - 1 : 0
 
 const setChildren = (node, number) => {
-  if (!node.children) return { ...node, indent: getIndent(number) }
+  if (!node.children) return { ...node, indent: getIndent(number), number }
 
   if (node.children) {
     node.expanded = true
@@ -33,7 +33,7 @@ const setChildren = (node, number) => {
     })
   }
 
-  return { ...node, indent: getIndent(number) }
+  return { ...node, indent: getIndent(number), number }
 }
 
 export const getQuestionNumbers = questions => {
