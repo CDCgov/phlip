@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Typography from 'material-ui/Typography'
 import navStyles from './nav-styles.scss'
 import Icon from 'components/Icon'
+import Progress from 'components/Progress'
 
 export const QuestionRow = ({ item, children, treeLength }) => {
   let scaffold = []
@@ -11,7 +12,8 @@ export const QuestionRow = ({ item, children, treeLength }) => {
   const questionTextStyles = {
     color: item.isAnswered ? '#929b9e' : 'white',
     fontWeight: 300,
-    paddingLeft: 10
+    paddingLeft: 10,
+    paddingRight: 10
   }
 
   const rowStyles = {
@@ -57,6 +59,7 @@ export const QuestionRow = ({ item, children, treeLength }) => {
         <span style={{ minWidth: 20, minHeight: 20, maxHeight: 20, maxWidth: 20 }}>{children}</span>
         <Typography style={questionTextStyles} type="body1" noWrap>{item.text}</Typography>
         {item.isAnswered && <Icon color="primary" size={19} style={{ paddingLeft: 5 }}>check</Icon>}
+        {item.hasOwnProperty('completedProgress') && <Progress progress={item.completedProgress} /> }
       </div>
     </Fragment>
   )

@@ -42,7 +42,7 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: -320
+    marginLeft: -330
   },
   openNavShift: {
     transition: theme.transitions.create('margin', {

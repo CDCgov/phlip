@@ -344,10 +344,10 @@ const handleClearCategoryAnswers = (selectedCategoryId, questionType, currentUse
   }
 })
 
-const initializeNavigator = (tree, scheme, codedQuestions, currentQuestion, selectedCategoryId) => {
+const initializeNavigator = (tree, scheme, codedQuestions) => {
   tree.map(item => {
     item.isAnswered = codedQuestions.hasOwnProperty(item.id)
-      ? Object.keys(codedQuestions[item.id].answers).length > 0
+      ? Object.keys(codedQuestions[item.id].answers).length > 0 && !item.isCategoryQuestion
       : false
 
     if (item.children) {
@@ -355,17 +355,38 @@ const initializeNavigator = (tree, scheme, codedQuestions, currentQuestion, sele
     }
 
     if (item.isCategoryQuestion) {
+      let countAnswered = 0
+
       item.children = codedQuestions[item.parentId]
-        ? Object.values(codedQuestions[item.parentId].answers).map((cat, index) => ({
-          ...cat,
-          text: scheme[item.parentId].possibleAnswers.find(answer => answer.id === cat.codingSchemeAnswerId).text,
-          indent: item.indent + 1,
-          positionInParent: index
-        }))
+        ? Object.values(codedQuestions[item.parentId].answers).map((cat, index) => {
+          const isAnswered = codedQuestions.hasOwnProperty(item.id)
+            ? codedQuestions[item.id].answers.hasOwnProperty(cat.codingSchemeAnswerId)
+              ? Object.keys(codedQuestions[item.id].answers[cat.codingSchemeAnswerId].answers).length > 0
+              : false
+            : false
+
+          countAnswered = isAnswered ? countAnswered += 1 : countAnswered
+
+          return {
+            ...cat,
+            text: scheme[item.parentId].possibleAnswers.find(answer => answer.id === cat.codingSchemeAnswerId).text,
+            indent: item.indent + 1,
+            positionInParent: index,
+            isAnswered
+          }
+        })
         : []
+
+      item.completedProgress = (countAnswered / item.children.length) * 100
+      if ((countAnswered / item.children.length) * 100 === 100) {
+        delete item.completedProgress
+        item.isAnswered = true
+      }
     }
 
-    if (item.questionType === questionTypes.CATEGORY)
+    if (item.questionType === questionTypes.CATEGORY) {
+      item
+    }
 
     return { ...item }
   })

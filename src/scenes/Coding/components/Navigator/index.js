@@ -13,7 +13,7 @@ import QuestionRow from './components/QuestionRow'
 const muiNavStyles = theme => ({
   codeNav: {
     position: 'relative',
-    width: 320,
+    width: 330,
     backgroundColor: '#4c5456',
     borderRight: 0
   }
@@ -157,7 +157,7 @@ export class Navigator extends Component {
               {({ height, width }) => (
                 <List
                   className={navStyles.navScroll}
-                  style={{ height: height, paddingLeft: 10 }}
+                  style={{ height: height, paddingLeft: 10, paddingRight: 20 }}
                   rowCount={questionTree.length}
                   rowHeight={this.rowHeight(questionTree, this.props.allUserAnswers)}
                   width={width}
