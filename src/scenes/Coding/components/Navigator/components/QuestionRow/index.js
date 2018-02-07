@@ -10,7 +10,7 @@ export const QuestionRow = ({ item, children, treeLength }) => {
   let className = ''
 
   const questionTextStyles = {
-    color: item.isAnswered ? '#929b9e' : 'white',
+    color: item.isAnswered ? '#818789' : 'white',
     fontWeight: 300,
     paddingLeft: 10,
     paddingRight: 10
@@ -54,11 +54,11 @@ export const QuestionRow = ({ item, children, treeLength }) => {
 
   return (
     <Fragment>
-      {scaffold}
+      {scaffold}  
       <div style={{ ...rowStyles, marginLeft: 23 * item.indent }}>
         <span style={{ minWidth: 20, minHeight: 20, maxHeight: 20, maxWidth: 20 }}>{children}</span>
         <Typography style={questionTextStyles} type="body1" noWrap>{item.text}</Typography>
-        {item.isAnswered && <Icon color="primary" size={19} style={{ paddingLeft: 5 }}>check</Icon>}
+        {item.isAnswered && <Icon color="#45ad70" size={19}>check</Icon>}
         {item.hasOwnProperty('completedProgress') && <Progress progress={item.completedProgress} /> }
       </div>
     </Fragment>

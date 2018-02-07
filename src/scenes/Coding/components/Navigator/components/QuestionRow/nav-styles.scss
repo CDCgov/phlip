@@ -1,29 +1,5 @@
 $rowHeight: 40px;
 
-.navContainer {
-  display: flex;
-  flex: 1;
-  padding-right: 10px;
-}
-
-.navScroll {
-  &::-webkit-scrollbar {
-    width: 9px;
-    border-radius: 10px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: #363f41;
-    border-radius: 10px;
-    margin: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background-color: #738083;
-  }
-}
-
 .navRow {
   height: $rowHeight;
   width: 19px;
@@ -37,7 +13,7 @@ $rowHeight: 40px;
   content: "";
   width: 1px;
   left: 50%;
-  background-color: #6b838b;
+  background-color: #6f8b95;
   position: absolute;
 }
 
@@ -101,7 +77,7 @@ $rowHeight: 40px;
     content: "";
     height: 1px;
     width: 13px;
-    background-color: #6b838b;
+    background-color: #6f8b95;
     position: absolute;
     top: 50%;
     left: 50%;

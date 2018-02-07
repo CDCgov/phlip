@@ -14,7 +14,7 @@ const muiNavStyles = theme => ({
   codeNav: {
     position: 'relative',
     width: 330,
-    backgroundColor: '#4c5456',
+    backgroundColor: '#4d5456',
     borderRight: 0
   }
 })
@@ -143,7 +143,7 @@ export class Navigator extends Component {
       <Drawer classes={{ paper: this.props.classes.codeNav }} type="persistent" anchor="left" open={this.props.open}>
       <Container column flex>
         <Row displayFlex style={{
-          backgroundColor: '#363f41',
+          backgroundColor: '#373f41',
           height: 60,
           alignItems: 'center',
           justifyContent: 'center',
