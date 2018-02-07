@@ -376,7 +376,7 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
           }
         })
         : []
-      
+
       if (item.children.length > 0) {
         item.completedProgress = (countAnswered / item.children.length) * 100
         if ((countAnswered / item.children.length) * 100 === 100) {
@@ -578,7 +578,11 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...newState,
         selectedCategory: 0,
         categories: undefined,
-        showNextButton: determineShowButton(newState)
+        showNextButton: determineShowButton(newState),
+        scheme: {
+          ...newState.scheme,
+          tree: initializeNavigator(state.scheme.tree, state.scheme.byId, newState.userAnswers)
+        }
       }
 
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
