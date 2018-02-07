@@ -7,6 +7,8 @@ import { Coding } from '../Coding/index';
 import * as actions from './actions'
 import Header from 'components/CodingValidation/Header'
 import Footer from 'components/CodingValidation/Footer'
+import QuestionCard from 'components/CodingValidation/QuestionCard'
+import FooterNavigate from 'components/CodingValidation/FooterNavigate'
 
 
 export class Validation extends Component {
@@ -15,12 +17,77 @@ export class Validation extends Component {
 
     this.state = {
       selectedJurisdiction: this.props.jurisdictionId,
+      showViews: false
     }
   }
 
   componentWillMount() {
     this.props.actions.getValidationOutlineRequest(this.props.projectId, this.props.jurisdictionId)
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.isSchemeEmpty !== null) { this.setState({ showViews: true }) }
+  }
+
+  getNextQuestion = index => {
+    this.props.actions.getNextQuestion(this.props.questionOrder[index], index)
+  }
+
+  getPrevQuestion = index => {
+    this.props.actions.getPrevQuestion(this.props.questionOrder[index], index)
+  }
+
+  onJurisdictionChange = event => {
+    this.setState({ selectedJurisdiction: event.target.value })
+    // this.props.actions.onJurisdictionChange(event.target.value, this.props.jurisdictionsList)
+    // this.props.actions.getUserCodedQuestions(this.props.projectId, event.target.value)
+  }
+
+  onAnswer = id => (event, value) => {
+    this.props.actions.answerQuestionRequest(
+      this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, value
+    )
+    this.props.actions.updateEditedFields(this.props.projectId)
+  }
+
+  onChangeTextAnswer = (id, field) => event => {
+    switch (field) {
+      case 'fieldValue':
+        this.props.actions.answerQuestionRequest(
+          this.props.projectId, this.props.jurisdictionId, this.props.question.id, null, event.target.value
+        )
+        break
+      case 'comment':
+        this.props.actions.onChangeComment(
+          this.props.projectId, this.props.jurisdictionId, this.props.question.id, event.target.value
+        )
+        break
+      case 'pincite':
+        this.props.actions.onChangePincite(
+          this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
+        )
+    }
+    this.props.actions.updateEditedFields(this.props.projectId)
+  }
+
+  onShowCodeView = () => (
+    <Fragment>
+      <QuestionCard
+        question={this.props.question} onChange={this.onAnswer}
+        userAnswers={this.props.userAnswers}
+        onChangeTextAnswer={this.onChangeTextAnswer} categories={this.props.categories}
+        selectedCategory={this.props.selectedCategory}
+        onChangeCategory={this.props.actions.onChangeCategory}
+        onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
+      />
+      <FooterNavigate
+        currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion}
+        getPrevQuestion={this.getPrevQuestion}
+        totalLength={this.props.questionOrder.length} showNextButton={this.props.showNextButton}
+      />
+    </Fragment>
+  )
+
 
   render() {
     return (
@@ -29,10 +96,15 @@ export class Validation extends Component {
           jurisdictionsList={this.props.jurisdictionsList}
           selectedJurisdiction={this.state.selectedJurisdiction}
           currentJurisdiction={this.props.jurisdiction}
+          onJurisdictionChange={this.onJurisdictionChange}
           isValidation={true}
-        // empty={this.props.jurisdiction === null || this.props.questionOrder === null || this.props.questionOrder.length === 0}
+          empty={this.props.jurisdiction === null || this.props.questionOrder === null || this.props.questionOrder.length === 0}
         />
-        <Container></Container>
+        <Container flex column style={{ backgroundColor: '#f5f5f5', padding: '20px 20px 10px 20px' }}>
+          {this.state.showViews && (this.props.jurisdiction === null || this.props.questionOrder.length === 0
+            ? null
+            : this.onShowCodeView())}
+        </Container>
         <Footer></Footer>
       </Container>
     )
