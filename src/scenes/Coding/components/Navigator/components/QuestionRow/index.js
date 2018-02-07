@@ -54,7 +54,7 @@ export const QuestionRow = ({ item, children, treeLength }) => {
 
   return (
     <Fragment>
-      {scaffold}  
+      {scaffold}
       <div style={{ ...rowStyles, marginLeft: 23 * item.indent }}>
         <span style={{ minWidth: 20, minHeight: 20, maxHeight: 20, maxWidth: 20 }}>{children}</span>
         <Typography style={questionTextStyles} type="body1" noWrap>{item.text}</Typography>

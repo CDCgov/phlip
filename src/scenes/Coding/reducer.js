@@ -376,13 +376,15 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
           }
         })
         : []
-
+      
       if (item.children.length > 0) {
         item.completedProgress = (countAnswered / item.children.length) * 100
         if ((countAnswered / item.children.length) * 100 === 100) {
           delete item.completedProgress
           item.isAnswered = true
         }
+      } else {
+        if (item.hasOwnProperty('completedProgress')) delete item.completedProgress
       }
     }
 

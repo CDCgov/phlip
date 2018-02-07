@@ -60,7 +60,7 @@ export class Navigator extends Component {
       treeLength
     }
 
-    const iconProps = { iconSize: 20, color: '#6b838b', onClick }
+    const iconProps = { iconSize: 20, color: '#6f8b95', onClick }
     let children = []
     let itemEl = null
 
