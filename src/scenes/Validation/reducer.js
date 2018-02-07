@@ -1,6 +1,13 @@
 import * as types from './actionTypes'
 import { normalize } from 'utils'
-import { getNextQuestion, getPreviousQuestion, determineShowButton } from 'utils/codingHelpers'
+import {
+  getNextQuestion,
+  getPreviousQuestion,
+  determineShowButton,
+  handleUpdateUserAnswers,
+  handleUpdateUserCodedQuestion,
+  handleClearAnswers
+} from 'utils/codingHelpers'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 const INITIAL_STATE = {
@@ -18,6 +25,7 @@ const INITIAL_STATE = {
 
 const validationReducer = (state = INITIAL_STATE, action) => {
   const selectedCategoryId = state.categories !== undefined ? state.categories[state.selectedCategory].id : 0
+  const questionUpdater = handleUpdateUserCodedQuestion(state, action)
 
   switch (action.type) {
     case types.GET_VALIDATION_NEXT_QUESTION:
@@ -71,6 +79,46 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           showNextButton: determineShowButton(updatedState)
         }
       }
+
+    case types.UPDATE_USER_VALIDATION_REQUEST:
+      const updated = {
+        ...state,
+        userAnswers: {
+          ...state.userAnswers,
+          ...handleUpdateUserAnswers(state, action, selectedCategoryId)
+        }
+      }
+      return {
+        ...updated,
+        showNextButton: determineShowButton(updated)
+      }
+
+    case types.ON_CLEAR_VALIDATION_ANSWER:
+      return {
+        ...state,
+        ...questionUpdater(
+          'answers',
+          state.question.isCategoryChild
+            ? handleClearCategoryAnswers(selectedCategoryId, state.question.questionType, state.userAnswers[action.questionId].answers)
+            : handleClearAnswers(state.question.questionType, state.userAnswers[action.questionId].answers)
+        )
+      }
+
+    case types.ON_CHANGE_VALIDATION_CATEGORY:
+      return {
+        ...state,
+        selectedCategory: action.selection
+      }
+
+    case types.ON_VALIDATION_JURISDICTION_CHANGE:
+      return {
+        ...state,
+        jurisdictionId: action.event,
+        jurisdiction: action.jurisdictionList.find(jurisdiction => jurisdiction.id === action.event)
+      }
+
+    case types.ON_CLOSE_VALIDATION_SCREEN:
+      return INITIAL_STATE
 
     default:
       return state

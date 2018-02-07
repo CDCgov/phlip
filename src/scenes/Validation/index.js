@@ -39,12 +39,12 @@ export class Validation extends Component {
 
   onJurisdictionChange = event => {
     this.setState({ selectedJurisdiction: event.target.value })
-    // this.props.actions.onJurisdictionChange(event.target.value, this.props.jurisdictionsList)
+    this.props.actions.onValidationJurisdictionChange(event.target.value, this.props.jurisdictionsList)
     // this.props.actions.getUserCodedQuestions(this.props.projectId, event.target.value)
   }
 
   onAnswer = id => (event, value) => {
-    this.props.actions.answerQuestionRequest(
+    this.props.actions.validateQuestionRequest(
       this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, value
     )
     this.props.actions.updateEditedFields(this.props.projectId)
