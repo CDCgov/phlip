@@ -43,8 +43,8 @@ export class Navigator extends Component {
     this.QuestionList = ref
   }
 
-  questionRenderer = (scheme, rootParentIndex, item, keyPrefix, treeIndex, treeLength, isParentLast, isDescendantOfLast) => {
-    const onClick = (event) => {
+  questionRenderer = (rootParentIndex, item, keyPrefix, treeIndex, treeLength, isParentLast, isDescendantOfLast) => {
+    const onClick = event => {
       event.stopPropagation()
       item.expanded = !item.expanded
       this.QuestionList.recomputeRowHeights()
@@ -65,14 +65,19 @@ export class Navigator extends Component {
     let children = []
     let itemEl = null
 
-    if (item.id === this.props.currentQuestion.id) {
+    if (item.id === this.props.currentQuestion.id ||
+      (item.codingSchemeQuestionId === this.props.currentQuestion.id && treeIndex === this.props.selectedCategory)) {
       props.item.isCurrent = true
     } else {
       props.item.isCurrent = false
     }
 
-    if (item.expanded) {
-      itemEl = <IconButton {...iconProps}>remove_circle_outline</IconButton>
+    if (item.children) {
+      if (item.expanded) {
+        itemEl = <IconButton {...iconProps}>remove_circle_outline</IconButton>
+      } else {
+        itemEl = <IconButton {...iconProps}>add_circle_outline</IconButton>
+      }
 
       if (item.isCategoryQuestion) {
         itemEl = this.checkIfCategoriesSelected(item)
@@ -81,35 +86,30 @@ export class Navigator extends Component {
       }
 
       children = item.children.map((child, index) => {
-       /* if ((child.id === this.props.currentQuestion.id && item.questionType === questionTypes.CATEGORY) || (child.codingSchemeQuestionId == this.props.currentQuestion.id && child.isCategory)) {
-          item.isCurrent = true
-          child.isCurrent = item.isCategoryQuestion && index === this.props.selectedCategory
+        if ((child.id === this.props.currentQuestion.id && item.questionType === questionTypes.CATEGORY) ||
+          (child.codingSchemeQuestionId === this.props.currentQuestion.id && child.isCategory)) {
+          props.item.isCurrent = true
+          child.isCurrent = index === this.props.selectedCategory
         }
-        console.log('child', child)*/
-        return this.questionRenderer(scheme, rootParentIndex, child, keyPrefix + '-' +
-          index, index, item.children.length, treeIndex === treeLength - 1, rootParentIndex === scheme.tree.length - 1)
+        return this.questionRenderer(rootParentIndex, child, keyPrefix + '-' +
+          index, index, item.children.length, treeIndex === treeLength - 1, rootParentIndex ===
+          this.props.scheme.tree.length - 1)
       })
-    } else if (item.children) {
-      itemEl = <IconButton {...iconProps}>add_circle_outline</IconButton>
 
-      if (item.isCategoryQuestion) {
-        itemEl = this.checkIfCategoriesSelected(item)
-          ? itemEl
-          : null
-      }
+      children = item.expanded ? children : []
     }
 
     return [<QuestionRow {...props}>{itemEl}</QuestionRow>, ...children]
   }
 
-  rowRenderer = scheme => params => {
-    const tree = scheme.tree ? scheme.tree : []
+  rowRenderer = params => {
+    const tree = this.props.scheme.tree ? this.props.scheme.tree : []
     return (
       tree.length !== 0
       && tree[params.index] !== undefined
       && (
         <div style={params.style} key={`tree-${params.index}`}>
-        {this.questionRenderer(scheme, params.index, tree[params.index], params.index, params.index, tree.length, false, false)}
+        {this.questionRenderer(params.index, tree[params.index], params.index, params.index, tree.length, false, false)}
         </div>
       )
     )
@@ -163,7 +163,7 @@ export class Navigator extends Component {
                   rowCount={questionTree.length}
                   rowHeight={this.rowHeight(questionTree, this.props.allUserAnswers)}
                   width={width}
-                  rowRenderer={this.rowRenderer(this.props.scheme, this.props.allUserAnswers)}
+                  rowRenderer={this.rowRenderer}
                   height={height}
                   overscanRowCount={0}
                   ref={this.setRef}
