@@ -40,14 +40,14 @@ const styles = theme => ({
     flex: '1 !important',
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+      duration: theme.transitions.duration.leavingScreen
     }),
     marginLeft: -330
   },
   openNavShift: {
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
+      duration: theme.transitions.duration.enteringScreen
     }),
     marginLeft: 0
   }
@@ -167,8 +167,10 @@ export class Coding extends Component {
   render() {
     return (
       <Container flex style={{ width: '100%', height: '100%', position: 'relative', display: 'flex' }}>
-        <Navigator open={this.state.navOpen} scheme={this.props.scheme} allUserAnswers={this.props.allUserAnswers} />
-        <Column displayFlex className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}>
+        <Navigator open={this.state.navOpen} scheme={this.props.scheme} allUserAnswers={this.props.allUserAnswers}
+                   currentQuestion={this.props.question} selectedCategory={this.props.selectedCategory} />
+        <Column displayFlex
+                className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}>
         <Header projectName={this.props.projectName} projectId={this.props.projectId}
                 jurisdictionsList={this.props.jurisdictionsList}
                 selectedJurisdiction={this.state.selectedJurisdiction}
@@ -180,7 +182,8 @@ export class Coding extends Component {
         <Container flex style={{ backgroundColor: '#f5f5f5' }}>
           <Row displayFlex flex>
             <Column>
-              <MuiButton style={navButtonStyles} onClick={this.onToggleNavigator}><Icon color="white" style={iconStyle}>menu</Icon></MuiButton>
+              <MuiButton style={navButtonStyles} onClick={this.onToggleNavigator}><Icon color="white"
+                                                                                        style={iconStyle}>menu</Icon></MuiButton>
             </Column>
             <Column displayFlex flex style={{ padding: '20px 20px 10px 20px' }}>
               {this.state.showViews && (this.props.jurisdiction === null || this.props.questionOrder.length === 0

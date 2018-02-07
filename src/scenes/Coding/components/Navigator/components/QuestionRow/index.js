@@ -9,8 +9,10 @@ export const QuestionRow = ({ item, children, treeLength }) => {
   let scaffold = []
   let className = ''
 
+ // console.log(item)
+
   const questionTextStyles = {
-    color: item.isAnswered ? '#818789' : 'white',
+    color: item.isCurrent === true ? '#68cff5' : item.isAnswered ? '#818789' : 'white',
     fontWeight: 300,
     paddingLeft: 10,
     paddingRight: 10

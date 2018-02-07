@@ -372,7 +372,9 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
             text: scheme[item.parentId].possibleAnswers.find(answer => answer.id === cat.codingSchemeAnswerId).text,
             indent: item.indent + 1,
             positionInParent: index,
-            isAnswered
+            isAnswered,
+            codingSchemeQuestionId: item.id,
+            isCategory: true
           }
         })
         : []
@@ -389,7 +391,9 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
     }
 
     if (item.questionType === questionTypes.CATEGORY) {
-      item.isAnswered = item.children ? item.children.filter(child => child.isAnswered).length === item.children.length : false
+      item.isAnswered = item.children
+        ? item.children.filter(child => child.isAnswered).length === item.children.length
+        : false
     }
 
     return { ...item }

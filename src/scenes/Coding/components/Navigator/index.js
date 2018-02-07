@@ -9,6 +9,7 @@ import List from 'react-virtualized/dist/commonjs/List'
 import navStyles from './nav-styles.scss'
 import IconButton from 'components/IconButton'
 import QuestionRow from './components/QuestionRow'
+import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 const muiNavStyles = theme => ({
   codeNav: {
@@ -42,7 +43,7 @@ export class Navigator extends Component {
     this.QuestionList = ref
   }
 
-  questionRenderer = (userAnswers, scheme, rootParentIndex, item, keyPrefix, treeIndex, treeLength, isParentLast, isDescendantOfLast) => {
+  questionRenderer = (scheme, rootParentIndex, item, keyPrefix, treeIndex, treeLength, isParentLast, isDescendantOfLast) => {
     const onClick = (event) => {
       event.stopPropagation()
       item.expanded = !item.expanded
@@ -64,50 +65,51 @@ export class Navigator extends Component {
     let children = []
     let itemEl = null
 
+    if (item.id === this.props.currentQuestion.id) {
+      props.item.isCurrent = true
+    } else {
+      props.item.isCurrent = false
+    }
+
     if (item.expanded) {
-      itemEl = (
-        <QuestionRow {...props}>
-        <IconButton {...iconProps}>remove_circle_outline</IconButton>
-      </QuestionRow>
-      )
+      itemEl = <IconButton {...iconProps}>remove_circle_outline</IconButton>
 
       if (item.isCategoryQuestion) {
         itemEl = this.checkIfCategoriesSelected(item)
           ? itemEl
-          : <QuestionRow {...props} />
+          : null
       }
 
       children = item.children.map((child, index) => {
-        return this.questionRenderer(userAnswers, scheme, rootParentIndex, child, keyPrefix + '-' +
+       /* if ((child.id === this.props.currentQuestion.id && item.questionType === questionTypes.CATEGORY) || (child.codingSchemeQuestionId == this.props.currentQuestion.id && child.isCategory)) {
+          item.isCurrent = true
+          child.isCurrent = item.isCategoryQuestion && index === this.props.selectedCategory
+        }
+        console.log('child', child)*/
+        return this.questionRenderer(scheme, rootParentIndex, child, keyPrefix + '-' +
           index, index, item.children.length, treeIndex === treeLength - 1, rootParentIndex === scheme.tree.length - 1)
       })
     } else if (item.children) {
-      itemEl = (
-        <QuestionRow {...props}>
-        <IconButton {...iconProps}>add_circle_outline</IconButton>
-      </QuestionRow>
-      )
+      itemEl = <IconButton {...iconProps}>add_circle_outline</IconButton>
 
       if (item.isCategoryQuestion) {
         itemEl = this.checkIfCategoriesSelected(item)
           ? itemEl
-          : <QuestionRow {...props} />
+          : null
       }
-    } else {
-      itemEl = <QuestionRow {...props} />
     }
 
-    return [itemEl, ...children]
+    return [<QuestionRow {...props}>{itemEl}</QuestionRow>, ...children]
   }
 
-  rowRenderer = (scheme, userAnswers) => params => {
+  rowRenderer = scheme => params => {
     const tree = scheme.tree ? scheme.tree : []
     return (
       tree.length !== 0
       && tree[params.index] !== undefined
       && (
         <div style={params.style} key={`tree-${params.index}`}>
-        {this.questionRenderer(userAnswers, scheme, params.index, tree[params.index], params.index, params.index, tree.length, false, false)}
+        {this.questionRenderer(scheme, params.index, tree[params.index], params.index, params.index, tree.length, false, false)}
         </div>
       )
     )
