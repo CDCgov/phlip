@@ -18,7 +18,7 @@ const TabContainer = props => {
 export const QuestionCard = ({ question, userAnswers, categories, selectedCategory, onClearAnswer, onChangeCategory, onChange, onChangeTextAnswer }) => {
   return (
     <Row displayFlex style={{ flex: '1 0 50%' }}>
-      <Column component={<Card />} displayFlex flex>
+      <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
         <Row displayFlex style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
           {question.questionType !== 2 && <IconButton onClick={onClearAnswer}>
             <Broom className={styles.sweep} aria-labelledby="Clear answer" />

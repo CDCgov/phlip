@@ -19,6 +19,11 @@ exports[`Coding scene --- QuestionCard component should render correctly 1`] = `
     component={<Card />}
     displayFlex={true}
     flex={true}
+    style={
+      Object {
+        "width": "100%",
+      }
+    }
   >
     <Row
       component={
