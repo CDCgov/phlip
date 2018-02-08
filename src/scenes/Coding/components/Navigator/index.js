@@ -39,6 +39,11 @@ export class Navigator extends Component {
     } else return false
   }
 
+  checkIfAnswered = item => {
+    return this.props.allUserAnswers.hasOwnProperty(item.id) &&
+      Object.keys(this.props.allUserAnswers[item.id].answers).length > 0
+  }
+
   setRef = ref => {
     this.QuestionList = ref
   }
@@ -58,7 +63,8 @@ export class Navigator extends Component {
         isParentLast,
         isDescendantOfLast
       },
-      treeLength
+      treeLength,
+      onQuestionSelected: this.props.handleQuestionSelected
     }
 
     const iconProps = { iconSize: 20, color: '#6f8b95', onClick }
@@ -71,8 +77,8 @@ export class Navigator extends Component {
     } else {
       props.item.isCurrent = false
     }
-    
-    if (item.children) {
+
+    if (item.children && item.children.length > 0) {
       if (item.expanded) {
         itemEl = <IconButton {...iconProps}>remove_circle_outline</IconButton>
       } else {
@@ -95,7 +101,6 @@ export class Navigator extends Component {
           index, index, item.children.length, treeIndex === treeLength - 1, rootParentIndex ===
           this.props.scheme.tree.length - 1)
       })
-
       children = item.expanded ? children : []
     }
 

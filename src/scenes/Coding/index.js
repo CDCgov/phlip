@@ -168,7 +168,7 @@ export class Coding extends Component {
     return (
       <Container flex style={{ width: '100%', height: '100%', position: 'relative', display: 'flex' }}>
         <Navigator open={this.state.navOpen} scheme={this.props.scheme} allUserAnswers={this.props.allUserAnswers}
-                   currentQuestion={this.props.question} selectedCategory={this.props.selectedCategory} />
+                   currentQuestion={this.props.question} selectedCategory={this.props.selectedCategory} handleQuestionSelected={this.props.actions.onQuestionSelectedInNav} />
         <Column displayFlex
                 className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}>
         <Header projectName={this.props.projectName} projectId={this.props.projectId}

@@ -5,11 +5,9 @@ import navStyles from './nav-styles.scss'
 import Icon from 'components/Icon'
 import Progress from 'components/Progress'
 
-export const QuestionRow = ({ item, children, treeLength }) => {
+export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) => {
   let scaffold = []
   let className = ''
-
- // console.log(item)
 
   const questionTextStyles = {
     color: item.isCurrent === true ? '#68cff5' : item.isAnswered ? '#818789' : 'white',
@@ -32,7 +30,7 @@ export const QuestionRow = ({ item, children, treeLength }) => {
       className = navStyles.navRow
     } else if (i !== item.indent && item.isDescendantOfLast) {
       className = navStyles.navRow
-    } else if (item.children && item.parentId === 0) {
+    } else if (item.children && item.parentId === 0 && item.children.length > 0) {
       if (item.positionInParent === 0) className = navStyles.navParentFirst
       else if (item.positionInParent === (treeLength - 1)) className = navStyles.navParentLast
       else className = navStyles.navParent
@@ -59,7 +57,7 @@ export const QuestionRow = ({ item, children, treeLength }) => {
   return (
     <Fragment>
       {scaffold}
-      <div style={{ ...rowStyles, marginLeft: 23 * item.indent }}>
+      <div style={{ ...rowStyles, marginLeft: 23 * item.indent, cursor: 'pointer' }} onClick={() => onQuestionSelected(item)}>
         <span style={{ minWidth: 20, minHeight: 20, maxHeight: 20, maxWidth: 20 }}>{children}</span>
         <Typography style={questionTextStyles} type="body1" noWrap>{item.text}</Typography>
         {item.isAnswered && <Icon color="#45ad70" size={19}>check</Icon>}

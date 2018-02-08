@@ -1,5 +1,5 @@
 import * as types from './actionTypes'
-import { normalize, updater } from 'utils'
+import { normalize } from 'utils'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 const INITIAL_STATE = {
@@ -95,7 +95,7 @@ const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
 /*
   Handles determining whether or not to show the 'next question' button at the bottom of the screen
  */
-const determineShowButton = (state) => {
+const determineShowButton = state => {
   if (state.question.questionType === questionTypes.CATEGORY) {
     if (Object.keys(state.userAnswers[state.question.id].answers).length === 0) {
       let subArr = [...state.scheme.order].slice(state.currentIndex + 1)
@@ -117,7 +117,6 @@ const determineShowButton = (state) => {
   Handles determining what the next question is, and updating state.userAnswers with question information
  */
 const handleCheckCategories = (newQuestion, newIndex, state) => {
-
   const base = {
     question: newQuestion,
     currentIndex: newIndex,
@@ -144,9 +143,7 @@ const handleCheckCategories = (newQuestion, newIndex, state) => {
   const parentQuestion = state.scheme.byId[newQuestion.parentId]
 
   if (parentQuestion.questionType === questionTypes.CATEGORY) {
-    const selectedCategories = Object.keys(state.userAnswers[parentQuestion.id].answers).length !== 0
-      ? parentQuestion.possibleAnswers.filter(category => state.userAnswers[parentQuestion.id].answers.hasOwnProperty(category.id))
-      : parentQuestion.possibleAnswers
+    const selectedCategories = parentQuestion.possibleAnswers.filter(category => state.userAnswers[parentQuestion.id].answers.hasOwnProperty(category.id))
 
     const answers = selectedCategories.reduce((answerObj, cat) => {
       return {
@@ -357,6 +354,25 @@ const handleClearCategoryAnswers = (selectedCategoryId, questionType, currentUse
   }
 })
 
+const initializeEmptyCategoryQuestion = categories => {
+  return categories.reduce((obj, category) => ({
+    ...obj,
+    answers: {
+      ...obj.answers,
+      [category.id]: { answers: {} }
+    },
+    comment: {
+      ...obj.comment,
+      [category.id]: ''
+    }
+  }), {})
+}
+
+const checkIfAnswered = (item, userAnswers) => {
+  return userAnswers.hasOwnProperty(item.id) &&
+    Object.keys(userAnswers[item.id].answers).length > 0
+}
+
 const initializeNavigator = (tree, scheme, codedQuestions) => {
   tree.map(item => {
     item.isAnswered = codedQuestions.hasOwnProperty(item.id)
@@ -364,7 +380,10 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
       : false
 
     if (item.children) {
-      item.children = initializeNavigator(item.children, scheme, codedQuestions)
+      item.children = item.questionType === questionTypes.CATEGORY
+        ? checkIfAnswered(item, codedQuestions) ? initializeNavigator(Object.values(scheme)
+          .filter(question => question.parentId === item.id), { ...scheme }, codedQuestions) : []
+        : initializeNavigator(item.children, { ...scheme }, codedQuestions)
     }
 
     if (item.isCategoryQuestion) {
@@ -459,8 +478,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
             }
         }
 
-        console.log(updatedState.userAnswers)
-
         if (!updatedState.userAnswers.hasOwnProperty(action.payload.question.id)) {
           updatedState = {
             ...updatedState,
@@ -479,7 +496,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           ...updatedState,
           scheme: {
             ...updatedState.scheme,
-            tree: initializeNavigator(action.payload.tree, normalizedQuestions, updatedState.userAnswers, updatedState.question, selectedCategoryId)
+            tree: initializeNavigator(action.payload.tree, normalizedQuestions, updatedState.userAnswers)
           },
           showNextButton: determineShowButton(updatedState)
         }
@@ -499,7 +516,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         showNextButton: determineShowButton(updated),
         scheme: {
           ...updated.scheme,
-          tree: initializeNavigator(state.scheme.tree, updated.scheme.byId, updated.userAnswers, updated.question, selectedCategoryId)
+          tree: initializeNavigator(state.scheme.tree, updated.scheme.byId, updated.userAnswers)
         }
       }
 
@@ -596,6 +613,44 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           ...newState.scheme,
           tree: initializeNavigator(state.scheme.tree, state.scheme.byId, newState.userAnswers)
         }
+      }
+
+    case types.ON_QUESTION_SELECTED_IN_NAV:
+      let q = {}, categories = undefined, selectedCategory = 0, answers = { ...state.userAnswers }
+
+      if (action.question.isCategory) {
+        q = state.scheme.byId[action.question.schemeQuestionId]
+        categories = state.scheme.byId[q.parentId].possibleAnswers.filter(category => state.userAnswers[q.parentId].answers.hasOwnProperty(category.id))
+        selectedCategory = action.question.positionInParent
+      } else if (action.question.isCategoryQuestion) {
+        q = state.scheme.byId[action.question.id]
+        categories = state.scheme.byId[q.parentId].possibleAnswers.filter(category => state.userAnswers[q.parentId].answers.hasOwnProperty(category.id))
+        selectedCategory = 0
+      } else {
+        q = state.scheme.byId[action.question.id]
+      }
+
+      if (!state.userAnswers.hasOwnProperty(q.id)) {
+        answers = {
+          ...answers,
+          [q.id]: {
+            schemeQuestionId: q.id,
+            ... q.isCategoryQuestion ? initializeEmptyCategoryQuestion(categories) : { answers: {}, comment: '' }
+          }
+        }
+      }
+
+      const freshState = {
+        ...state,
+        question: q,
+        categories,
+        selectedCategory,
+        userAnswers: answers
+      }
+
+      return {
+        ...freshState,
+        showNextButton: determineShowButton(freshState)
       }
 
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
