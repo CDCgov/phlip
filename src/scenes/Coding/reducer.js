@@ -28,39 +28,52 @@ const INITIAL_STATE = {
  */
 const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) => {
   if (question.categoryId && question.categoryId !== 0) {
-    return userCodedAnswerObj.hasOwnProperty(question.codingSchemeQuestionId)
+    return userCodedAnswerObj.hasOwnProperty(question.schemeQuestionId)
       ? {
-        codingSchemeQuestionId: question.codingSchemeQuestionId,
+        schemeQuestionId: question.schemeQuestionId,
         answers: {
-          ...userCodedAnswerObj[question.codingSchemeQuestionId].answers,
+          ...userCodedAnswerObj[question.schemeQuestionId].answers,
           [question.categoryId]: {
-            answers: normalize.arrayToObject(question.answers, 'codingSchemeAnswerId')
+            answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId')
           }
         },
         comment: {
-          ...userCodedAnswerObj[question.codingSchemeQuestionId].comment,
+          ...userCodedAnswerObj[question.schemeQuestionId].comment,
           [question.categoryId]: question.comment || ''
+        },
+        flag: {
+          ...userCodedAnswerObj[question.schemeQuestionId].flag,
+          [question.categoryId]: question.flag || 0
         }
       }
       : {
-        answers: { [question.categoryId]: { answers: normalize.arrayToObject(question.answers, 'codingSchemeAnswerId') } },
+        schemeQuestionId: question.schemeQuestionId,
+        answers: { [question.categoryId]: { answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId') } },
         comment: {
           [question.categoryId]: question.comment || ''
-        }
+        },
+        flag: { [question.categoryId]: question.flag || 0 }
       }
   } else if (codingSchemeQuestion.questionType === questionTypes.TEXT_FIELD) {
-    return question.answers.length > 0
+    return question.codedAnswers.length > 0
       ? {
-        ...question,
+        schemeQuestionId: question.schemeQuestionId,
+        flag: question.flag || 0,
+        comment: question.comment,
         answers: {
-          ...question.answers[0],
-          pincite: question.answers[0].pincite || '',
-          textAnswer: question.answers[0].textAnswer || ''
+          ...question.codedAnswers[0],
+          pincite: question.codedAnswers[0].pincite || '',
+          textAnswer: question.codedAnswers[0].textAnswer || ''
         }
       }
-      : { ...question, answers: { pincite: '', textAnswer: '' } }
+      : { schemeQuestionId: question.schemeQuestionId, flag: 0, comment: '', answers: { pincite: '', textAnswer: '' } }
   } else {
-    return { ...question, answers: normalize.arrayToObject(question.answers, 'codingSchemeAnswerId') }
+    return {
+      schemeQuestionId: question.schemeQuestionId,
+      flag: question.flag,
+      comment: question.comment,
+      answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId')
+    }
   }
 }
 
@@ -71,9 +84,9 @@ const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
   return userCodedQuestions.reduce((codedQuestionObj, question) => {
     return ({
       ...codedQuestionObj,
-      [question.codingSchemeQuestionId]: {
-        codingSchemeQuestionId: question.codingSchemeQuestionId,
-        ...normalizeAnswers(question, codingSchemeQuestions[question.codingSchemeQuestionId], codedQuestionObj)
+      [question.schemeQuestionId]: {
+        schemeQuestionId: question.schemeQuestionId,
+        ...normalizeAnswers(question, codingSchemeQuestions[question.schemeQuestionId], codedQuestionObj)
       }
     })
   }, {})
@@ -82,7 +95,7 @@ const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
 /*
   Handles determining whether or not to show the 'next question' button at the bottom of the screen
  */
-const determineShowButton = (state) => {
+const determineShowButton = state => {
   if (state.question.questionType === questionTypes.CATEGORY) {
     if (Object.keys(state.userAnswers[state.question.id].answers).length === 0) {
       let subArr = [...state.scheme.order].slice(state.currentIndex + 1)
@@ -103,8 +116,7 @@ const determineShowButton = (state) => {
 /*
   Handles determining what the next question is, and updating state.userAnswers with question information
  */
-const handleCheckCategories = (newQuestion, newIndex, state, action) => {
-
+const handleCheckCategories = (newQuestion, newIndex, state) => {
   const base = {
     question: newQuestion,
     currentIndex: newIndex,
@@ -113,7 +125,7 @@ const handleCheckCategories = (newQuestion, newIndex, state, action) => {
       : {
         ...state.userAnswers,
         [newQuestion.id]: {
-          codingSchemeQuestionId: newQuestion.id,
+          schemeQuestionId: newQuestion.id,
           answers: {},
           comment: ''
         }
@@ -131,9 +143,7 @@ const handleCheckCategories = (newQuestion, newIndex, state, action) => {
   const parentQuestion = state.scheme.byId[newQuestion.parentId]
 
   if (parentQuestion.questionType === questionTypes.CATEGORY) {
-    const selectedCategories = Object.keys(state.userAnswers[parentQuestion.id].answers).length !== 0
-      ? parentQuestion.possibleAnswers.filter(category => state.userAnswers[parentQuestion.id].answers.hasOwnProperty(category.id))
-      : parentQuestion.possibleAnswers
+    const selectedCategories = parentQuestion.possibleAnswers.filter(category => state.userAnswers[parentQuestion.id].answers.hasOwnProperty(category.id))
 
     const answers = selectedCategories.reduce((answerObj, cat) => {
       return {
@@ -152,7 +162,6 @@ const handleCheckCategories = (newQuestion, newIndex, state, action) => {
         }
       }
     }, {})
-
 
     return {
       ...base,
@@ -219,7 +228,7 @@ const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
   switch (state.question.questionType) {
     case questionTypes.BINARY:
     case questionTypes.MULTIPLE_CHOICE:
-      currentUserAnswers = { [action.answerId]: { codingSchemeAnswerId: action.answerId, pincite: '' } }
+      currentUserAnswers = { [action.answerId]: { schemeAnswerId: action.answerId, pincite: '' } }
       break
 
     case questionTypes.TEXT_FIELD:
@@ -240,7 +249,7 @@ const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
       } else {
         currentUserAnswers = {
           ...currentUserAnswers,
-          [action.answerId]: { codingSchemeAnswerId: action.answerId, pincite: '' }
+          [action.answerId]: { schemeAnswerId: action.answerId, pincite: '' }
         }
       }
       break
@@ -249,7 +258,7 @@ const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
       if (currentUserAnswers.hasOwnProperty(action.answerId)) delete currentUserAnswers[action.answerId]
       else currentUserAnswers = {
         ...currentUserAnswers,
-        [action.answerId]: { codingSchemeAnswerId: action.answerId, pincite: '' }
+        [action.answerId]: { schemeAnswerId: action.answerId, pincite: '' }
       }
   }
 
@@ -345,6 +354,79 @@ const handleClearCategoryAnswers = (selectedCategoryId, questionType, currentUse
   }
 })
 
+const initializeEmptyCategoryQuestion = categories => {
+  return categories.reduce((obj, category) => ({
+    ...obj,
+    answers: {
+      ...obj.answers,
+      [category.id]: { answers: {} }
+    },
+    comment: {
+      ...obj.comment,
+      [category.id]: ''
+    }
+  }), {})
+}
+
+const checkIfAnswered = (item, userAnswers) => {
+  return userAnswers.hasOwnProperty(item.id) &&
+    Object.keys(userAnswers[item.id].answers).length > 0
+}
+
+const initializeNavigator = (tree, scheme, codedQuestions) => {
+  tree.map(item => {
+    item.isAnswered = codedQuestions.hasOwnProperty(item.id)
+      ? Object.keys(codedQuestions[item.id].answers).length > 0 && !item.isCategoryQuestion
+      : false
+
+    if (item.children) {
+      item.children = item.questionType === questionTypes.CATEGORY
+        ? checkIfAnswered(item, codedQuestions) ? initializeNavigator(Object.values(scheme)
+          .filter(question => question.parentId === item.id), { ...scheme }, codedQuestions) : []
+        : initializeNavigator(item.children, { ...scheme }, codedQuestions)
+    }
+
+    if (item.isCategoryQuestion) {
+      let countAnswered = 0
+
+      item.children = codedQuestions[item.parentId]
+        ? Object.values(codedQuestions[item.parentId].answers).map((cat, index) => {
+          const isAnswered = codedQuestions.hasOwnProperty(item.id)
+            ? codedQuestions[item.id].answers.hasOwnProperty(cat.schemeAnswerId)
+              ? Object.keys(codedQuestions[item.id].answers[cat.schemeAnswerId].answers).length > 0
+              : false
+            : false
+
+          countAnswered = isAnswered ? countAnswered += 1 : countAnswered
+
+          return {
+            schemeAnswerId: cat.schemeAnswerId,
+            text: scheme[item.parentId].possibleAnswers.find(answer => answer.id === cat.schemeAnswerId).text,
+            indent: item.indent + 1,
+            positionInParent: index,
+            isAnswered,
+            schemeQuestionId: item.id,
+            isCategory: true
+          }
+        })
+        : []
+
+      if (item.children.length > 0) {
+        item.completedProgress = (countAnswered / item.children.length) * 100
+        if ((countAnswered / item.children.length) * 100 === 100) {
+          delete item.completedProgress
+          item.isAnswered = true
+        }
+      } else {
+        if (item.hasOwnProperty('completedProgress')) delete item.completedProgress
+      }
+    }
+
+    return item
+  })
+  return tree
+}
+
 const codingReducer = (state = INITIAL_STATE, action) => {
   const questionUpdater = handleUpdateUserCodedQuestion(state, action)
   const selectedCategoryId = state.categories !== undefined ? state.categories[state.selectedCategory].id : 0
@@ -369,7 +451,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       if (action.payload.isSchemeEmpty) {
         return {
           ...state,
-          scheme: { order: [], byId: {} },
+          scheme: { order: [], byId: {}, tree: [] },
           outline: {},
           question: {},
           userAnswers: {}
@@ -389,7 +471,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
             ? initializeUserAnswers(action.payload.codedQuestions, normalizedQuestions)
             : {
               [action.payload.question.id]: {
-                codingSchemeQuestionId: action.payload.question.id,
+                schemeQuestionId: action.payload.question.id,
                 comment: '',
                 answers: {}
               }
@@ -402,7 +484,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
             userAnswers: {
               ...updatedState.userAnswers,
               [action.payload.question.id]: {
-                codingSchemeQuestionId: action.payload.question.id,
+                schemeQuestionId: action.payload.question.id,
                 comment: '',
                 answers: {}
               }
@@ -412,6 +494,10 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
         return {
           ...updatedState,
+          scheme: {
+            ...updatedState.scheme,
+            tree: initializeNavigator(action.payload.tree, normalizedQuestions, updatedState.userAnswers)
+          },
           showNextButton: determineShowButton(updatedState)
         }
       }
@@ -427,7 +513,11 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
       return {
         ...updated,
-        showNextButton: determineShowButton(updated)
+        showNextButton: determineShowButton(updated),
+        scheme: {
+          ...updated.scheme,
+          tree: initializeNavigator(state.scheme.tree, updated.scheme.byId, updated.userAnswers)
+        }
       }
 
     case types.ON_CHANGE_COMMENT:
@@ -453,7 +543,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ON_CLEAR_ANSWER:
-      return {
+      const upState = {
         ...state,
         ...questionUpdater(
           'answers',
@@ -461,6 +551,14 @@ const codingReducer = (state = INITIAL_STATE, action) => {
             ? handleClearCategoryAnswers(selectedCategoryId, state.question.questionType, state.userAnswers[action.questionId].answers)
             : handleClearAnswers(state.question.questionType, state.userAnswers[action.questionId].answers)
         )
+      }
+
+      return {
+        ...upState,
+        scheme: {
+          ...upState.scheme,
+          tree: initializeNavigator(state.scheme.tree, upState.scheme.byId, upState.userAnswers)
+        }
       }
 
     case types.ON_CHANGE_CATEGORY:
@@ -497,7 +595,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         userAnswers = {
           ...userAnswers,
           [question.id]: {
-            codingSchemeQuestionId: question.id,
+            schemeQuestionId: question.id,
             comment: '',
             answers: {}
           }
@@ -510,7 +608,49 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...newState,
         selectedCategory: 0,
         categories: undefined,
-        showNextButton: determineShowButton(newState)
+        showNextButton: determineShowButton(newState),
+        scheme: {
+          ...newState.scheme,
+          tree: initializeNavigator(state.scheme.tree, state.scheme.byId, newState.userAnswers)
+        }
+      }
+
+    case types.ON_QUESTION_SELECTED_IN_NAV:
+      let q = {}, categories = undefined, selectedCategory = 0, answers = { ...state.userAnswers }
+
+      if (action.question.isCategory) {
+        q = state.scheme.byId[action.question.schemeQuestionId]
+        categories = state.scheme.byId[q.parentId].possibleAnswers.filter(category => state.userAnswers[q.parentId].answers.hasOwnProperty(category.id))
+        selectedCategory = action.question.positionInParent
+      } else if (action.question.isCategoryQuestion) {
+        q = state.scheme.byId[action.question.id]
+        categories = state.scheme.byId[q.parentId].possibleAnswers.filter(category => state.userAnswers[q.parentId].answers.hasOwnProperty(category.id))
+        selectedCategory = 0
+      } else {
+        q = state.scheme.byId[action.question.id]
+      }
+
+      if (!state.userAnswers.hasOwnProperty(q.id)) {
+        answers = {
+          ...answers,
+          [q.id]: {
+            schemeQuestionId: q.id,
+            ... q.isCategoryQuestion ? initializeEmptyCategoryQuestion(categories) : { answers: {}, comment: '' }
+          }
+        }
+      }
+
+      const freshState = {
+        ...state,
+        question: q,
+        categories,
+        selectedCategory,
+        userAnswers: answers
+      }
+
+      return {
+        ...freshState,
+        showNextButton: determineShowButton(freshState)
       }
 
     case types.GET_USER_CODED_QUESTIONS_REQUEST:

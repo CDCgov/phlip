@@ -75,23 +75,28 @@ export default {
   },
 
   reorderScheme(outline, projectId) {
-    return api.put(`/projects/${projectId}/codingscheme`, outline).then(res => res.data)
+    return api.put(`/projects/${projectId}/scheme`, outline).then(res => res.data)
   },
 
   addQuestion(question, projectId) {
-    return api.post(`/projects/${projectId}/codingscheme`, question).then(res => res.data)
+    return api.post(`/projects/${projectId}/scheme`, question).then(res => res.data)
   },
 
   updateQuestion(question, projectId, questionId) {
-    return api.put(`/projects/${projectId}/codingscheme/${questionId}`, question).then(res => res.data)
+    return api.put(`/projects/${projectId}/scheme/${questionId}`, question).then(res => res.data)
   },
 
   getScheme(projectId) {
-    return api.get(`/projects/${projectId}/codingscheme`).then(res => res.data)
+    return api.get(`/projects/${projectId}/scheme`).then(res => res.data)
   },
 
   answerQuestion(projectId, jurisdictionId, userId, questionId, updatedQuestion) {
-    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions`, updatedQuestion)
+    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, updatedQuestion)
+      .then(res => res.data)
+  },
+
+  answerCategoryQuestion(projectId, jurisdictionId, userId, questionId, categoryId, updatedQuestion) {
+    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}/category/${categoryId}`, updatedQuestion)
       .then(res => res.data)
   },
 
