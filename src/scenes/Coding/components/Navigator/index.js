@@ -66,7 +66,7 @@ export class Navigator extends Component {
     let itemEl = null
 
     if (item.id === this.props.currentQuestion.id ||
-      (item.codingSchemeQuestionId === this.props.currentQuestion.id && treeIndex === this.props.selectedCategory)) {
+      (item.schemeQuestionId === this.props.currentQuestion.id && treeIndex === this.props.selectedCategory)) {
       props.item.isCurrent = true
     } else {
       props.item.isCurrent = false
@@ -87,7 +87,7 @@ export class Navigator extends Component {
 
       children = item.children.map((child, index) => {
         if ((child.id === this.props.currentQuestion.id && item.questionType === questionTypes.CATEGORY) ||
-          (child.codingSchemeQuestionId === this.props.currentQuestion.id && child.isCategory)) {
+          (child.schemeQuestionId === this.props.currentQuestion.id && child.isCategory)) {
           props.item.isCurrent = true
           child.isCurrent = index === this.props.selectedCategory
         }

@@ -10,6 +10,7 @@ const SimpleInput = ({ value, onChange, name, ...otherProps }) => {
       multiline
       type="text"
       name={name}
+      fullWidth
       {...otherProps}
     />
   )

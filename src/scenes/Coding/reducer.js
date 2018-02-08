@@ -1,5 +1,5 @@
 import * as types from './actionTypes'
-import { normalize } from 'utils'
+import { normalize, updater } from 'utils'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 const INITIAL_STATE = {
@@ -28,39 +28,54 @@ const INITIAL_STATE = {
  */
 const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) => {
   if (question.categoryId && question.categoryId !== 0) {
-    return userCodedAnswerObj.hasOwnProperty(question.codingSchemeQuestionId)
+    console.log(question)
+    console.log(userCodedAnswerObj)
+    return userCodedAnswerObj.hasOwnProperty(question.schemeQuestionId)
       ? {
-        codingSchemeQuestionId: question.codingSchemeQuestionId,
+        schemeQuestionId: question.schemeQuestionId,
         answers: {
-          ...userCodedAnswerObj[question.codingSchemeQuestionId].answers,
+          ...userCodedAnswerObj[question.schemeQuestionId].answers,
           [question.categoryId]: {
-            answers: normalize.arrayToObject(question.answers, 'codingSchemeAnswerId')
+            answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId')
           }
         },
         comment: {
-          ...userCodedAnswerObj[question.codingSchemeQuestionId].comment,
+          ...userCodedAnswerObj[question.schemeQuestionId].comment,
           [question.categoryId]: question.comment || ''
+        },
+        flag: {
+          ...userCodedAnswerObj[question.schemeQuestionId].flag,
+          [question.categoryId]: question.flag || 0
         }
       }
       : {
-        answers: { [question.categoryId]: { answers: normalize.arrayToObject(question.answers, 'codingSchemeAnswerId') } },
+        schemeQuestionId: question.schemeQuestionId,
+        answers: { [question.categoryId]: { answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId') } },
         comment: {
           [question.categoryId]: question.comment || ''
-        }
+        },
+        flag: { [question.categoryId]: question.flag || 0 }
       }
   } else if (codingSchemeQuestion.questionType === questionTypes.TEXT_FIELD) {
-    return question.answers.length > 0
+    return question.codedAnswers.length > 0
       ? {
-        ...question,
+        schemeQuestionId: question.schemeQuestionId,
+        flag: question.flag,
+        comment: question.comment,
         answers: {
-          ...question.answers[0],
-          pincite: question.answers[0].pincite || '',
-          textAnswer: question.answers[0].textAnswer || ''
+          ...question.codedAnswers[0],
+          pincite: question.codedAnswers[0].pincite || '',
+          textAnswer: question.codedAnswers[0].textAnswer || ''
         }
       }
-      : { ...question, answers: { pincite: '', textAnswer: '' } }
+      : { schemeQuestionId: question.schemeQuestionId, flag: 0, comment: '', answers: { pincite: '', textAnswer: '' } }
   } else {
-    return { ...question, answers: normalize.arrayToObject(question.answers, 'codingSchemeAnswerId') }
+    return {
+      schemeQuestionId: question.schemeQuestionId,
+      flag: question.flag,
+      comment: question.comment,
+      answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId')
+    }
   }
 }
 
@@ -71,9 +86,9 @@ const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
   return userCodedQuestions.reduce((codedQuestionObj, question) => {
     return ({
       ...codedQuestionObj,
-      [question.codingSchemeQuestionId]: {
-        codingSchemeQuestionId: question.codingSchemeQuestionId,
-        ...normalizeAnswers(question, codingSchemeQuestions[question.codingSchemeQuestionId], codedQuestionObj)
+      [question.schemeQuestionId]: {
+        schemeQuestionId: question.schemeQuestionId,
+        ...normalizeAnswers(question, codingSchemeQuestions[question.schemeQuestionId], codedQuestionObj)
       }
     })
   }, {})
@@ -103,7 +118,7 @@ const determineShowButton = (state) => {
 /*
   Handles determining what the next question is, and updating state.userAnswers with question information
  */
-const handleCheckCategories = (newQuestion, newIndex, state, action) => {
+const handleCheckCategories = (newQuestion, newIndex, state) => {
 
   const base = {
     question: newQuestion,
@@ -113,7 +128,7 @@ const handleCheckCategories = (newQuestion, newIndex, state, action) => {
       : {
         ...state.userAnswers,
         [newQuestion.id]: {
-          codingSchemeQuestionId: newQuestion.id,
+          schemeQuestionId: newQuestion.id,
           answers: {},
           comment: ''
         }
@@ -218,7 +233,7 @@ const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
   switch (state.question.questionType) {
     case questionTypes.BINARY:
     case questionTypes.MULTIPLE_CHOICE:
-      currentUserAnswers = { [action.answerId]: { codingSchemeAnswerId: action.answerId, pincite: '' } }
+      currentUserAnswers = { [action.answerId]: { schemeAnswerId: action.answerId, pincite: '' } }
       break
 
     case questionTypes.TEXT_FIELD:
@@ -239,7 +254,7 @@ const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
       } else {
         currentUserAnswers = {
           ...currentUserAnswers,
-          [action.answerId]: { codingSchemeAnswerId: action.answerId, pincite: '' }
+          [action.answerId]: { schemeAnswerId: action.answerId, pincite: '' }
         }
       }
       break
@@ -248,7 +263,7 @@ const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
       if (currentUserAnswers.hasOwnProperty(action.answerId)) delete currentUserAnswers[action.answerId]
       else currentUserAnswers = {
         ...currentUserAnswers,
-        [action.answerId]: { codingSchemeAnswerId: action.answerId, pincite: '' }
+        [action.answerId]: { schemeAnswerId: action.answerId, pincite: '' }
       }
   }
 
@@ -360,8 +375,8 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
       item.children = codedQuestions[item.parentId]
         ? Object.values(codedQuestions[item.parentId].answers).map((cat, index) => {
           const isAnswered = codedQuestions.hasOwnProperty(item.id)
-            ? codedQuestions[item.id].answers.hasOwnProperty(cat.codingSchemeAnswerId)
-              ? Object.keys(codedQuestions[item.id].answers[cat.codingSchemeAnswerId].answers).length > 0
+            ? codedQuestions[item.id].answers.hasOwnProperty(cat.schemeAnswerId)
+              ? Object.keys(codedQuestions[item.id].answers[cat.schemeAnswerId].answers).length > 0
               : false
             : false
 
@@ -369,11 +384,11 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
 
           return {
             ...cat,
-            text: scheme[item.parentId].possibleAnswers.find(answer => answer.id === cat.codingSchemeAnswerId).text,
+            text: scheme[item.parentId].possibleAnswers.find(answer => answer.id === cat.schemeAnswerId).text,
             indent: item.indent + 1,
             positionInParent: index,
             isAnswered,
-            codingSchemeQuestionId: item.id,
+            schemeQuestionId: item.id,
             isCategory: true
           }
         })
@@ -445,12 +460,14 @@ const codingReducer = (state = INITIAL_STATE, action) => {
             ? initializeUserAnswers(action.payload.codedQuestions, normalizedQuestions)
             : {
               [action.payload.question.id]: {
-                codingSchemeQuestionId: action.payload.question.id,
+                schemeQuestionId: action.payload.question.id,
                 comment: '',
                 answers: {}
               }
             }
         }
+
+        console.log(updatedState.userAnswers)
 
         if (!updatedState.userAnswers.hasOwnProperty(action.payload.question.id)) {
           updatedState = {
@@ -458,7 +475,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
             userAnswers: {
               ...updatedState.userAnswers,
               [action.payload.question.id]: {
-                codingSchemeQuestionId: action.payload.question.id,
+                schemeQuestionId: action.payload.question.id,
                 comment: '',
                 answers: {}
               }
@@ -569,7 +586,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         userAnswers = {
           ...userAnswers,
           [question.id]: {
-            codingSchemeQuestionId: question.id,
+            schemeQuestionId: question.id,
             comment: '',
             answers: {}
           }

@@ -51,7 +51,7 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
           {question.includeComment &&
           <Row style={{ paddingTop: 30 }}>
             <SimpleInput onChange={onChangeTextAnswer(null, 'comment')} name="comment"
-                         placeholder="Enter comment" style={{ width: 600 }}
+                         placeholder="Enter comment" style={{ width: '70%' }}
                          value={comment}
             />
           </Row>
