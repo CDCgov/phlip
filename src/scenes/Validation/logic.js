@@ -22,12 +22,12 @@ export const getValidationOutlineLogic = createLogic({
       throw { error: 'failed to get outline' }
     }
 
-    if (scheme.codingSchemeQuestions.length === 0) {
+    if (scheme.schemeQuestions.length === 0) {
       return {
         isSchemeEmpty: true
       }
     } else {
-      const merge = scheme.codingSchemeQuestions.reduce((arr, q) => {
+      const merge = scheme.schemeQuestions.reduce((arr, q) => {
         return [...arr, { ...q, ...scheme.outline[q.id] }]
       }, [])
 
@@ -39,7 +39,7 @@ export const getValidationOutlineLogic = createLogic({
         questionOrder: order,
         question: questionsWithNumbers[0],
         codedQuestions: [],
-        // codedQuestions: codedQuestions,  //UNCOMMENT WHEN API IS FINISHED
+        // codedQuestions,
         isSchemeEmpty: false
       }
     }

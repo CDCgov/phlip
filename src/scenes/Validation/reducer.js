@@ -67,7 +67,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
             ? initializeUserAnswers(action.payload.codedQuestions, normalizedQuestions)
             : {
               [action.payload.question.id]: {
-                codingSchemeQuestionId: action.payload.question.id,
+                schemeQuestionId: action.payload.question.id,
                 comment: '',
                 answers: {}
               }
