@@ -403,13 +403,7 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
       }
     }
 
-    if (item.questionType === questionTypes.CATEGORY) {
-      item.isAnswered = item.children
-        ? item.children.filter(child => child.isAnswered).length === item.children.length
-        : false
-    }
-
-    return { ...item }
+    return item
   })
   return tree
 }
