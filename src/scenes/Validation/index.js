@@ -19,7 +19,28 @@ export class Validation extends Component {
       selectedJurisdiction: this.props.jurisdictionId,
       showViews: false
     }
+
+    this.mockUsersList = [
+      {
+        firstName: 'Admin',
+        lastName: 'User',
+        role: 'Admin',
+        email: 'admin@cdc.gov',
+        id: 1,
+        initials: 'AU'
+      },
+      {
+        firstName: 'Michael',
+        lastName: 'Ta',
+        role: 'Admin',
+        email: 'mta@cdc.gov',
+        id: 1,
+        initials: 'MT'
+      }
+    ]
   }
+
+
 
   componentWillMount() {
     this.props.actions.getValidationOutlineRequest(this.props.projectId, this.props.jurisdictionId)
@@ -79,6 +100,7 @@ export class Validation extends Component {
         selectedCategory={this.props.selectedCategory}
         onChangeCategory={this.props.actions.onChangeCategory}
         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
+        users={this.mockUsersList}
       />
       <FooterNavigate
         currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion}

@@ -8,7 +8,7 @@ import SimpleInput from 'components/SimpleInput'
 import Typography from 'material-ui/Typography'
 import Container, { Row, Column } from 'components/Layout'
 
-export const QuestionContent = ({ question, onChange, comment, userAnswers, onChangeTextAnswer }) => {
+export const QuestionContent = ({ question, onChange, comment, userAnswers, onChangeTextAnswer, users }) => {
   const questionAnswerPadding = {
     paddingTop: 0,
     paddingRight: 65,
@@ -29,42 +29,42 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
       <Row displayFlex style={{ ...questionAnswerPadding }}>
         <Column flex>
           {question.questionType === 1 &&
-          <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
-                      onChangePincite={onChangeTextAnswer} />}
+            <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
+              onChangePincite={onChangeTextAnswer} users={users} />}
 
           {question.questionType === 2 &&
-          <CheckboxGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
-                         pincites={false} />}
+            <CheckboxGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
+              pincites={false} />}
 
           {question.questionType === 3 &&
-          <CheckboxGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
-                         onChangePincite={onChangeTextAnswer} />}
+            <CheckboxGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
+              onChangePincite={onChangeTextAnswer} />}
 
           {question.questionType === 4 &&
-          <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
-                      onChangePincite={onChangeTextAnswer} />}
+            <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
+              onChangePincite={onChangeTextAnswer} users={users} />}
 
           {question.questionType === 5 &&
-          <InputBox rows="5" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
-                    value={userAnswers.answers} />}
+            <InputBox rows="5" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
+              value={userAnswers.answers} />}
 
           {question.includeComment &&
-          <Row style={{ paddingTop: 30 }}>
-            <SimpleInput onChange={onChangeTextAnswer(null, 'comment')} name="comment"
-                         placeholder="Enter comment" style={{ width: 600 }}
-                         value={comment}
-            />
-          </Row>
+            <Row style={{ paddingTop: 30 }}>
+              <SimpleInput onChange={onChangeTextAnswer(null, 'comment')} name="comment"
+                placeholder="Enter comment" style={{ width: 600 }}
+                value={comment}
+              />
+            </Row>
           }
-          </Column>
+        </Column>
       </Row>
 
       {question.hint &&
-      <Row flex displayFlex style={{ padding: '0 35px 20px 35px' }}>
-            <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
-            <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
-          </Row>}
-        </Container>
+        <Row flex displayFlex style={{ padding: '0 35px 20px 35px' }}>
+          <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
+          <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
+        </Row>}
+    </Container>
   )
 }
 

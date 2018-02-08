@@ -15,7 +15,7 @@ const TabContainer = props => {
   </Tabs>)
 }
 
-export const QuestionCard = ({ question, userAnswers, categories, selectedCategory, onClearAnswer, onChangeCategory, onChange, onChangeTextAnswer }) => {
+export const QuestionCard = ({ question, userAnswers, categories, selectedCategory, onClearAnswer, onChangeCategory, onChange, onChangeTextAnswer, users }) => {
   return (
     <Row displayFlex style={{ flex: '1 0 50%' }}>
       <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
@@ -31,11 +31,11 @@ export const QuestionCard = ({ question, userAnswers, categories, selectedCatego
         {categories !== undefined
           ? <TabContainer tabs={categories} selected={selectedCategory} onChangeCategory={onChangeCategory}>
             <QuestionContent onChange={onChange} onChangeTextAnswer={onChangeTextAnswer}
-                             comment={userAnswers.comment[categories[selectedCategory].id]}
-                             userAnswers={userAnswers.answers[categories[selectedCategory].id]} question={question} />
+              comment={userAnswers.comment[categories[selectedCategory].id]}
+              userAnswers={userAnswers.answers[categories[selectedCategory].id]} question={question} users={users} />
           </TabContainer>
           : <QuestionContent onChange={onChange} userAnswers={userAnswers} onChangeTextAnswer={onChangeTextAnswer}
-                             question={question} comment={userAnswers.comment} />
+            question={question} comment={userAnswers.comment} users={users} />
         }
       </Column>
     </Row>
