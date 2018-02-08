@@ -10,8 +10,6 @@ services:
       - 3000:3000
     volumes:
       - /usr/src/app/node_modules/
-      - fe_dev_home:/usr/src/app
+      - .:/usr/src/app
     environment:
       - NODE_ENV=development
-volumes:
-  fe_dev_home:
