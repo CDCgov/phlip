@@ -20,10 +20,20 @@ $rowHeight: 40px;
 .navChild {
   @extend .navRow;
 
-  &:after {
+  &::after {
     @extend %verticalBar;
     height: $rowHeight + ($rowHeight / 2);
     top: -8px;
+  }
+}
+
+.navFirstNoChildren {
+  @extend .navRow;
+
+  &::after {
+    @extend %verticalBar;
+    height: $rowHeight / 2;
+    top: 50%;
   }
 }
 
@@ -37,7 +47,7 @@ $rowHeight: 40px;
   }
 }
 
-/* Two vertical bars above and below expand button */
+/* Two vertical bars, one above and and one below expand button */
 .navParent {
   @extend .navParentFirst;
 

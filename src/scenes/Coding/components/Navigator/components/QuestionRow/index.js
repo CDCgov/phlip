@@ -26,7 +26,9 @@ export const QuestionRow = ({ item, children, treeLength }) => {
   }
 
   for (let i = 0; i < item.indent + 1; i++) {
-    if (item.isParentLast && i === item.indent - 1 && !item.isDescendantOfLast) {
+    if (item.positionInParent === 0 && item.parentId === 0 && !item.children) {
+      className = `${navStyles.navQuestionNoChildren} ${navStyles.navFirstNoChildren}`
+    } else if (item.isParentLast && i === item.indent - 1 && !item.isDescendantOfLast) {
       className = navStyles.navRow
     } else if (i !== item.indent && item.isDescendantOfLast) {
       className = navStyles.navRow
