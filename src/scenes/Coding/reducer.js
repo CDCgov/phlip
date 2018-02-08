@@ -1,5 +1,6 @@
 import * as types from './actionTypes'
 import { normalize } from 'utils'
+import { checkIfAnswered, checkIfExists } from 'utils/codingSchemeHelpers'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 const INITIAL_STATE = {
@@ -113,6 +114,15 @@ const determineShowButton = state => {
   }
 }
 
+const initializeRegularQuestion = id => ({
+  schemeQuestionId: id,
+  answers: {},
+  comment: ''
+})
+
+const getSelectedCategories = (parentQuestion, userAnswers) =>
+  parentQuestion.possibleAnswers.filter(category => checkIfExists(category, userAnswers[parentQuestion.id].answers))
+
 /*
   Handles determining what the next question is, and updating state.userAnswers with question information
  */
@@ -122,14 +132,7 @@ const handleCheckCategories = (newQuestion, newIndex, state) => {
     currentIndex: newIndex,
     userAnswers: state.userAnswers[newQuestion.id]
       ? { ...state.userAnswers }
-      : {
-        ...state.userAnswers,
-        [newQuestion.id]: {
-          schemeQuestionId: newQuestion.id,
-          answers: {},
-          comment: ''
-        }
-      }
+      : { ...state.userAnswers, [newQuestion.id]: initializeRegularQuestion(newQuestion.id) }
   }
 
   if (newQuestion.parentId === 0) {
@@ -140,24 +143,25 @@ const handleCheckCategories = (newQuestion, newIndex, state) => {
     }
   }
 
-  const parentQuestion = state.scheme.byId[newQuestion.parentId]
-
-  if (parentQuestion.questionType === questionTypes.CATEGORY) {
-    const selectedCategories = parentQuestion.possibleAnswers.filter(category => state.userAnswers[parentQuestion.id].answers.hasOwnProperty(category.id))
+  if (newQuestion.isCategoryQuestion) {
+    const parentQuestion = state.scheme.byId[newQuestion.parentId]
+    const selectedCategories = getSelectedCategories(parentQuestion, state.userAnswers)
+    const baseQuestion = base.userAnswers[newQuestion.id]
 
     const answers = selectedCategories.reduce((answerObj, cat) => {
+      checkIfExists(cat, baseQuestion.answers)
+
       return {
-        ...answerObj,
         answers: {
           ...answerObj.answers,
-          [cat.id]: base.userAnswers[newQuestion.id].answers.hasOwnProperty(cat.id)
-            ? { ...base.userAnswers[newQuestion.id].answers[cat.id] }
+          [cat.id]: checkIfExists(cat, baseQuestion.answers)
+            ? { ...baseQuestion.answers[cat.id] }
             : { answers: {} }
         },
         comment: {
           ...answerObj.comment,
-          [cat.id]: base.userAnswers[newQuestion.id].comment.hasOwnProperty(cat.id)
-            ? base.userAnswers[newQuestion.id].comment[cat.id]
+          [cat.id]: checkIfExists(cat, baseQuestion.comment)
+            ? baseQuestion.comment[cat.id]
             : ''
         }
       }
@@ -219,7 +223,7 @@ const getPreviousQuestion = (state, action) => {
   Handles updating state.userAnswers with the user's new answer
  */
 const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
-  let currentUserAnswers = state.question.isCategoryChild
+  let currentUserAnswers = state.question.isCategoryQuestion
     ? state.userAnswers[action.questionId].answers[selectedCategoryId].answers
     : state.userAnswers[action.questionId].answers
 
@@ -266,7 +270,7 @@ const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
     ...otherAnswerUpdates,
     [action.questionId]: {
       ...state.userAnswers[action.questionId],
-      answers: state.question.isCategoryChild
+      answers: state.question.isCategoryQuestion
         ? {
           ...state.userAnswers[action.questionId].answers,
           [selectedCategoryId]: {
@@ -356,7 +360,6 @@ const handleClearCategoryAnswers = (selectedCategoryId, questionType, currentUse
 
 const initializeEmptyCategoryQuestion = categories => {
   return categories.reduce((obj, category) => ({
-    ...obj,
     answers: {
       ...obj.answers,
       [category.id]: { answers: {} }
@@ -364,13 +367,36 @@ const initializeEmptyCategoryQuestion = categories => {
     comment: {
       ...obj.comment,
       [category.id]: ''
+    },
+    flag: {
+      ...obj.flag,
+      [category.id]: 0
     }
   }), {})
 }
 
-const checkIfAnswered = (item, userAnswers) => {
-  return userAnswers.hasOwnProperty(item.id) &&
-    Object.keys(userAnswers[item.id].answers).length > 0
+const initializeQuestionPart = (categories, prop, initial) => {
+  return categories.reduce((obj, category) => ({
+    [prop]: {
+      ...obj[prop],
+      [category.id]: { [prop]: initial }
+    }
+  }), {})
+}
+
+const initializeQuestion = (question, userAnswers, categories) => {
+  let answers = { ...userAnswers }
+  if (!checkIfExists(question, userAnswers)) {
+    answers = {
+      ...answers,
+      [question.id]: {
+        schemeQuestionId: question.id,
+        ... question.isCategoryQuestion ? initializeEmptyCategoryQuestion(categories) : { answers: {}, comment: '' }
+      }
+    }
+  }
+
+  return answers
 }
 
 const initializeNavigator = (tree, scheme, codedQuestions) => {
@@ -525,7 +551,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...state,
         ...questionUpdater(
           'comment',
-          state.question.isCategoryChild
+          state.question.isCategoryQuestion
             ? handleUserCommentCategoryChild(selectedCategoryId, action, state.userAnswers[action.questionId].comment)
             : action.comment
         )
@@ -536,7 +562,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...state,
         ...questionUpdater(
           'answers',
-          state.question.isCategoryChild
+          state.question.isCategoryQuestion
             ? handleUserPinciteCategoryChild(selectedCategoryId, state.question.questionType, action, state.userAnswers[action.questionId].answers)
             : handleUserPinciteQuestion(state.question.questionType, action, state.userAnswers[action.questionId].answers)
         )
@@ -547,7 +573,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...state,
         ...questionUpdater(
           'answers',
-          state.question.isCategoryChild
+          state.question.isCategoryQuestion
             ? handleClearCategoryAnswers(selectedCategoryId, state.question.questionType, state.userAnswers[action.questionId].answers)
             : handleClearAnswers(state.question.questionType, state.userAnswers[action.questionId].answers)
         )
@@ -566,9 +592,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...state,
         selectedCategory: action.selection
       }
-
-    case types.ON_CLOSE_CODE_SCREEN:
-      return INITIAL_STATE
 
     case types.ON_JURISDICTION_CHANGE:
       return {
@@ -630,22 +653,12 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         q = state.scheme.byId[action.question.id]
       }
 
-      if (!state.userAnswers.hasOwnProperty(q.id)) {
-        answers = {
-          ...answers,
-          [q.id]: {
-            schemeQuestionId: q.id,
-            ... q.isCategoryQuestion ? initializeEmptyCategoryQuestion(categories) : { answers: {}, comment: '' }
-          }
-        }
-      }
-
       const freshState = {
         ...state,
         question: q,
         categories,
         selectedCategory,
-        userAnswers: answers
+        userAnswers: initializeQuestion(q, { ...state.userAnswers }, categories)
       }
 
       return {
@@ -653,10 +666,14 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         showNextButton: determineShowButton(freshState)
       }
 
+    case types.ON_CLOSE_CODE_SCREEN:
+      return INITIAL_STATE
+
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
     case types.GET_CODING_OUTLINE_REQUEST:
     default:
       return state
   }
 }
+
 export default codingReducer

@@ -76,8 +76,9 @@ export const answerQuestionLogic = createLogic({
     const updatedQuestionObject = codingState.userAnswers[action.questionId]
     let finalObject = {}
 
-    if (codingState.question.isCategoryChild) {
+    if (codingState.question.isCategoryQuestion) {
       const selectedCategoryId = codingState.categories[codingState.selectedCategory].id
+
       finalObject = {
         ...updatedQuestionObject,
         codedAnswers: codingState.question.questionType === questionTypes.TEXT_FIELD
@@ -91,8 +92,8 @@ export const answerQuestionLogic = createLogic({
           }),
         comment: updatedQuestionObject.comment[selectedCategoryId],
         flag: updatedQuestionObject.flag[selectedCategoryId]
-        //categoryId: selectedCategoryId
       }
+
       const { answers, schemeQuestionId, ...final } = finalObject
       console.log(final)
       return await api.answerCategoryQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, selectedCategoryId, final)
