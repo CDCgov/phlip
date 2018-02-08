@@ -28,8 +28,6 @@ const INITIAL_STATE = {
  */
 const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) => {
   if (question.categoryId && question.categoryId !== 0) {
-    console.log(question)
-    console.log(userCodedAnswerObj)
     return userCodedAnswerObj.hasOwnProperty(question.schemeQuestionId)
       ? {
         schemeQuestionId: question.schemeQuestionId,
@@ -60,7 +58,7 @@ const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) =>
     return question.codedAnswers.length > 0
       ? {
         schemeQuestionId: question.schemeQuestionId,
-        flag: question.flag,
+        flag: question.flag || 0,
         comment: question.comment,
         answers: {
           ...question.codedAnswers[0],
@@ -383,7 +381,7 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
           countAnswered = isAnswered ? countAnswered += 1 : countAnswered
 
           return {
-            ...cat,
+            schemeAnswerId: cat.schemeAnswerId,
             text: scheme[item.parentId].possibleAnswers.find(answer => answer.id === cat.schemeAnswerId).text,
             indent: item.indent + 1,
             positionInParent: index,

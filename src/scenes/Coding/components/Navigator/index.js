@@ -71,7 +71,7 @@ export class Navigator extends Component {
     } else {
       props.item.isCurrent = false
     }
-
+    
     if (item.children) {
       if (item.expanded) {
         itemEl = <IconButton {...iconProps}>remove_circle_outline</IconButton>

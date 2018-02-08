@@ -109,8 +109,8 @@ export const answerQuestionLogic = createLogic({
             return ans
           })
       }
-      delete finalObject.answers
-      return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, finalObject)
+      const { answers, ...final } = finalObject
+      return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, final)
     }
   }
 })
