@@ -1,0 +1,17 @@
+version: "3.2"
+services:
+  test:
+    container_name: esquire-frontend-test
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: esquire-frontend:dev
+    ports:
+      - 3000:3000
+    volumes:
+      - /usr/src/app/node_modules/
+      - fe_dev_home:/usr/src/app
+    environment:
+      - NODE_ENV=development
+volumes:
+  fe_dev_home:
