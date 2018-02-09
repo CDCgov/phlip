@@ -42,10 +42,6 @@ const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) =>
         comment: {
           ...userCodedAnswerObj[question.schemeQuestionId].comment,
           [question.categoryId]: question.comment || ''
-        },
-        flag: {
-          ...userCodedAnswerObj[question.schemeQuestionId].flag,
-          [question.categoryId]: question.flag || 0
         }
       }
       : {
@@ -53,14 +49,12 @@ const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) =>
         answers: { [question.categoryId]: { answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId') } },
         comment: {
           [question.categoryId]: question.comment || ''
-        },
-        flag: { [question.categoryId]: question.flag || 0 }
+        }
       }
   } else if (codingSchemeQuestion.questionType === questionTypes.TEXT_FIELD) {
     return question.codedAnswers.length > 0
       ? {
         schemeQuestionId: question.schemeQuestionId,
-        flag: question.flag || 0,
         comment: question.comment,
         answers: {
           ...question.codedAnswers[0],
@@ -68,11 +62,10 @@ const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) =>
           textAnswer: question.codedAnswers[0].textAnswer || ''
         }
       }
-      : { schemeQuestionId: question.schemeQuestionId, flag: 0, comment: '', answers: { pincite: '', textAnswer: '' } }
+      : { schemeQuestionId: question.schemeQuestionId, comment: '', answers: { pincite: '', textAnswer: '' } }
   } else {
     return {
       schemeQuestionId: question.schemeQuestionId,
-      flag: question.flag,
       comment: question.comment,
       answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId')
     }
@@ -447,7 +440,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           scheme: { order: [], byId: {}, tree: [] },
           outline: {},
           question: {},
-          userAnswers: {}
+          userAnswers: {},
+          categories: undefined
         }
       } else {
         const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
@@ -466,7 +460,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
               { schemeQuestionId: action.payload.question.id, comment: '', codedAnswers: [] },
               ...action.payload.codedQuestions
             ], normalizedQuestions
-          )
+          ),
+          categories: undefined
         }
       }
 
@@ -594,6 +589,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 const codingSceneReducer = (state = INITIAL_STATE, action) => {
   if (Object.values(types).includes(action.type)) {
     const intermediateState = codingReducer(state, action)
+
     return {
       ...intermediateState,
       showNextButton: intermediateState.scheme === null ? false : determineShowButton(intermediateState),

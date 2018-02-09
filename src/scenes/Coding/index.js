@@ -72,6 +72,10 @@ export class Coding extends Component {
     if (nextProps.isSchemeEmpty !== null) { this.setState({ showViews: true }) }
   }
 
+  componentWillUnmount() {
+    this.props.actions.onCloseCodeScreen()
+  }
+
   onToggleNavigator = () => {
     this.setState({ navOpen: !this.state.navOpen })
   }
