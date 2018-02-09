@@ -39,16 +39,11 @@ export class Navigator extends Component {
     } else return false
   }
 
-  checkIfAnswered = item => {
-    return this.props.allUserAnswers.hasOwnProperty(item.id) &&
-      Object.keys(this.props.allUserAnswers[item.id].answers).length > 0
-  }
-
   setRef = ref => {
     this.QuestionList = ref
   }
 
-  questionRenderer = (rootParentIndex, item, keyPrefix, treeIndex, treeLength, isParentLast, isDescendantOfLast) => {
+  questionRenderer = (rootParentIndex, item, keyPrefix, treeIndex, treeLength, isParentLast, isDescendantOfLast, ancestorSiblings = []) => {
     const onClick = event => {
       event.stopPropagation()
       item.expanded = !item.expanded
@@ -56,12 +51,15 @@ export class Navigator extends Component {
       this.QuestionList.forceUpdate()
     }
 
+    if (item.parentId === 0) {
+      ancestorSiblings = [treeLength - item.positionInParent - 1]
+    }
+
     let props = {
       key: keyPrefix,
       item: {
         ...item,
-        isParentLast,
-        isDescendantOfLast
+        ancestorSiblings
       },
       treeLength,
       onQuestionSelected: this.props.handleQuestionSelected
@@ -99,7 +97,7 @@ export class Navigator extends Component {
         }
         return this.questionRenderer(rootParentIndex, child, keyPrefix + '-' +
           index, index, item.children.length, treeIndex === treeLength - 1, rootParentIndex ===
-          this.props.scheme.tree.length - 1)
+          this.props.scheme.tree.length - 1, [...ancestorSiblings, item.children.length - index - 1])
       })
       children = item.expanded ? children : []
     }

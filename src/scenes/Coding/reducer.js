@@ -639,7 +639,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ON_QUESTION_SELECTED_IN_NAV:
-      let q = {}, categories = undefined, selectedCategory = 0, answers = { ...state.userAnswers }
+      let q = {}, categories = undefined, selectedCategory = 0
 
       if (action.question.isCategory) {
         q = state.scheme.byId[action.question.schemeQuestionId]
@@ -658,7 +658,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         question: q,
         categories,
         selectedCategory,
-        userAnswers: initializeQuestion(q, { ...state.userAnswers }, categories)
+        userAnswers: initializeQuestion(q, { ...state.userAnswers }, categories),
+        currentIndex: state.scheme.order.findIndex(id => q.id === id)
       }
 
       return {

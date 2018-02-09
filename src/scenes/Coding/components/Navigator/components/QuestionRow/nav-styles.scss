@@ -37,13 +37,27 @@ $rowHeight: 40px;
   }
 }
 
+.fullVerticalBar {
+  @extend .navRow;
+
+  &::before {
+    height: $rowHeight;
+  }
+}
+
 .navParentFirst {
   @extend .navRow;
 
-  &::after {
+  /*&::after {
     @extend %verticalBar;
     height: $rowHeight / 2;
     top: $rowHeight - 12;
+  }*/
+
+  &::after {
+    @extend %verticalBar;
+    height: ($rowHeight / 2) - 10;
+    top: $rowHeight - 10;
   }
 }
 
