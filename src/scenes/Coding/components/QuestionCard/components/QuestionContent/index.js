@@ -13,7 +13,7 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
     paddingTop: 0,
     paddingRight: 65,
     paddingBottom: 40,
-    paddingLeft: (question.number && (question.number.split('.').length * 3) + 65) || 65
+    paddingLeft: (question.number && (question.number.split('.').length * 3) + 40) || 40
   }
 
   return (
@@ -27,7 +27,7 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
         </Column>
       </Row>
       <Column displayFlex flex style={{ ...questionAnswerPadding }}>
-        <Row flex style={{ overflow: 'auto' }}>
+        <Row flex style={{ overflow: 'auto', marginLeft: 65 - questionAnswerPadding.paddingLeft }}>
           {question.questionType === 1 &&
           <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
                       onChangePincite={onChangeTextAnswer} />}
