@@ -93,19 +93,20 @@ const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
   }, {})
 }
 
+const findNextParentSibling = (scheme, question, currentIndex) => {
+  const subArr = [...scheme.order].slice(currentIndex + 1)
+  return subArr.find(id => scheme.byId[id].parentId !== question.id)
+}
+
 /*
-  Handles determining whether or not to show the 'next question' button at the bottom of the screen
+  Handles determining whether or not to show the 'next question' button at the bottom of the screen. If the question is
+  a category question and no categories have been selected, check if there are any remaining questions in the list that
+  aren't a child of the category questions. If there are none, don't show button, if there are do.
  */
 const determineShowButton = state => {
   if (state.question.questionType === questionTypes.CATEGORY) {
-    if (Object.keys(state.userAnswers[state.question.id].answers).length === 0) {
-      let subArr = [...state.scheme.order].slice(state.currentIndex + 1)
-      let p = subArr.find(id => state.scheme.byId[id].parentId !== state.question.id)
-      if (p !== undefined) {
-        return true
-      } else {
-        return false
-      }
+    if (!checkIfAnswered(state.question, state.userAnswers)) {
+      return findNextParentSibling(state.scheme, state.question, state.currentIndex) !== undefined
     } else {
       return true
     }
@@ -149,8 +150,6 @@ const handleCheckCategories = (newQuestion, newIndex, state) => {
     const baseQuestion = base.userAnswers[newQuestion.id]
 
     const answers = selectedCategories.reduce((answerObj, cat) => {
-      checkIfExists(cat, baseQuestion.answers)
-
       return {
         answers: {
           ...answerObj.answers,
@@ -190,15 +189,12 @@ const getNextQuestion = (state, action) => {
   // Check to make sure newQuestion is correct. If the newQuestion is a category child, but the user hasn't selected
   // any categories, then find the next parent question
   if (newQuestion.isCategoryQuestion) {
-    if (Object.keys(state.userAnswers[state.scheme.byId[action.id].parentId].answers).length === 0) {
-      let subArr = [...state.scheme.order].slice(action.newIndex)
-      newQuestion = subArr.find(id => {
-        if (state.scheme.byId[id].parentId !== state.question.id) {
-          newIndex = state.scheme.order.indexOf(id)
-          return true
-        }
-      })
-      newQuestion = state.scheme.byId[newQuestion]
+    if (!checkIfAnswered(state.scheme.byId[newQuestion.parentId], state.userAnswers)) {
+      const p = findNextParentSibling(state.scheme, state.question, state.currentIndex)
+      if (p !== undefined) {
+        newQuestion = state.scheme.byId[p]
+        newIndex = state.scheme.order.indexOf(p)
+      }
     }
   }
 
@@ -210,7 +206,7 @@ const getPreviousQuestion = (state, action) => {
   let newIndex = action.newIndex
 
   if (newQuestion.isCategoryQuestion) {
-    if (Object.keys(state.userAnswers[newQuestion.parentId].answers).length === 0) {
+    if (!checkIfAnswered(state.scheme.byId[newQuestion.parentId], state.userAnswers)) {
       newQuestion = state.scheme.byId[newQuestion.parentId]
       newIndex = state.scheme.order.indexOf(newQuestion.id)
     }
@@ -641,14 +637,12 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.ON_QUESTION_SELECTED_IN_NAV:
       let q = {}, categories = undefined, selectedCategory = 0
 
-      if (action.question.isCategory) {
-        q = state.scheme.byId[action.question.schemeQuestionId]
-        categories = state.scheme.byId[q.parentId].possibleAnswers.filter(category => state.userAnswers[q.parentId].answers.hasOwnProperty(category.id))
-        selectedCategory = action.question.positionInParent
-      } else if (action.question.isCategoryQuestion) {
-        q = state.scheme.byId[action.question.id]
-        categories = state.scheme.byId[q.parentId].possibleAnswers.filter(category => state.userAnswers[q.parentId].answers.hasOwnProperty(category.id))
-        selectedCategory = 0
+      if (action.question.isCategory || action.question.isCategoryQuestion) {
+        q = action.question.isCategory
+          ? state.scheme.byId[action.question.schemeQuestionId]
+          : state.scheme.byId[action.question.id]
+        categories = getSelectedCategories(state.scheme.byId[q.parentId], state.userAnswers)
+        selectedCategory = action.question.isCategory ? action.question.positionInParent : 0
       } else {
         q = state.scheme.byId[action.question.id]
       }
