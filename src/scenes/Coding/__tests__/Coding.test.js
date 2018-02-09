@@ -23,7 +23,8 @@ const props = {
   categories: [],
   selectedCategory: 0,
   jurisdictionId: 1,
-  userAnswers: {}
+  userAnswers: {},
+  classes: { mainContent: '', openNavShift: '' }
 }
 
 describe('Coding scene', () => {

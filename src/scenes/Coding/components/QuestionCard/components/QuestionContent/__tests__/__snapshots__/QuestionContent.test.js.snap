@@ -56,14 +56,14 @@ exports[`Coding scene --- QuestionContent component should render correctly 1`] 
       </WithStyles>
     </Column>
   </Row>
-  <Row
+  <Column
     component={
       <WithStyles
         item={true}
       />
     }
     displayFlex={true}
-    flex={false}
+    flex={true}
     style={
       Object {
         "paddingBottom": 40,
@@ -73,7 +73,7 @@ exports[`Coding scene --- QuestionContent component should render correctly 1`] 
       }
     }
   >
-    <Column
+    <Row
       component={
         <WithStyles
           item={true}
@@ -81,6 +81,11 @@ exports[`Coding scene --- QuestionContent component should render correctly 1`] 
       }
       displayFlex={false}
       flex={true}
+      style={
+        Object {
+          "overflow": "auto",
+        }
+      }
     >
       <WithStyles
         choices={
@@ -99,7 +104,7 @@ exports[`Coding scene --- QuestionContent component should render correctly 1`] 
         onChangePincite={[Function]}
         userAnswers={Object {}}
       />
-    </Column>
-  </Row>
+    </Row>
+  </Column>
 </Container>
 `;
