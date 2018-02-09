@@ -1,6 +1,7 @@
 import * as types from './actionTypes'
 import { normalize } from 'utils'
 import { checkIfAnswered, checkIfExists } from 'utils/codingSchemeHelpers'
+import sortList from 'utils/sortList'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 const INITIAL_STATE = {
@@ -125,7 +126,7 @@ const handleCheckCategories = (newQuestion, newIndex, state) => {
   const base = {
     question: newQuestion,
     currentIndex: newIndex,
-    userAnswers: state.userAnswers[newQuestion.id]
+    userAnswers: checkIfExists(newQuestion, state.userAnswers)
       ? { ...state.userAnswers }
       : { ...state.userAnswers, [newQuestion.id]: initializeRegularQuestion(newQuestion.id) }
   }
@@ -192,7 +193,7 @@ const getNextQuestion = (state, action) => {
     }
   }
 
-  return handleCheckCategories(newQuestion, newIndex, state, action)
+  return handleCheckCategories(newQuestion, newIndex, state)
 }
 
 const getPreviousQuestion = (state, action) => {
@@ -206,7 +207,7 @@ const getPreviousQuestion = (state, action) => {
     }
   }
 
-  return handleCheckCategories(newQuestion, newIndex, state, action)
+  return handleCheckCategories(newQuestion, newIndex, state)
 }
 
 /*
@@ -371,21 +372,6 @@ const initializeRegularQuestion = id => ({
   comment: ''
 })
 
-const initializeQuestion = (question, userAnswers, categories) => {
-  let answers = { ...userAnswers }
-  if (!checkIfExists(question, userAnswers)) {
-    answers = {
-      ...answers,
-      [question.id]: {
-        schemeQuestionId: question.id,
-        ... question.isCategoryQuestion ? initializeEmptyCategoryQuestion(categories) : { answers: {}, comment: '' }
-      }
-    }
-  }
-
-  return answers
-}
-
 const initializeNavigator = (tree, scheme, codedQuestions) => {
   tree.map(item => {
     item.isAnswered = codedQuestions.hasOwnProperty(item.id)
@@ -394,8 +380,13 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
 
     if (item.children) {
       item.children = item.questionType === questionTypes.CATEGORY
-        ? checkIfAnswered(item, codedQuestions) ? initializeNavigator(Object.values(scheme)
-          .filter(question => question.parentId === item.id), { ...scheme }, codedQuestions) : []
+        ? checkIfAnswered(item, codedQuestions)
+          ? initializeNavigator(
+            sortList(Object.values(scheme)
+              .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
+            { ...scheme },
+            codedQuestions
+          ) : []
         : initializeNavigator(item.children, { ...scheme }, codedQuestions)
     }
 
@@ -591,11 +582,11 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
       return {
         ...state,
-        question: q,
-        categories,
-        selectedCategory,
-        userAnswers: initializeQuestion(q, { ...state.userAnswers }, categories),
-        currentIndex: state.scheme.order.findIndex(id => q.id === id)
+        ...handleCheckCategories(q, state.scheme.order.findIndex(id => q.id === id), {
+          ...state,
+          categories,
+          selectedCategory
+        })
       }
 
     case types.ON_CLOSE_CODE_SCREEN:
