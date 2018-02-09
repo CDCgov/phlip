@@ -48,12 +48,6 @@ $rowHeight: 40px;
 .navParentFirst {
   @extend .navRow;
 
-  /*&::after {
-    @extend %verticalBar;
-    height: $rowHeight / 2;
-    top: $rowHeight - 12;
-  }*/
-
   &::after {
     @extend %verticalBar;
     height: ($rowHeight / 2) - 10;

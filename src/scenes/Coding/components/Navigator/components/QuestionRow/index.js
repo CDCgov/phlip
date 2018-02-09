@@ -42,7 +42,11 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
         className = `${navStyles.navChild}`
       }
     } else if (item.parentId === 0 && item.positionInParent === 0) {
-      className = navStyles.navFirstNoChildren
+      if (item.children && item.children.length > 0) {
+        className = ''
+      } else {
+        className = navStyles.navQuestionNoChildren
+      }
     } else if (i === item.ancestorSiblings.length - 1) {
       if (item.children && item.children.length > 0) {
         className = `${navStyles.navParentLast}`
