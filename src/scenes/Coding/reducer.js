@@ -332,7 +332,7 @@ const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, getFieldVa
  */
 const handleClearAnswers = questionType => {
   return questionType === questionTypes.TEXT_FIELD
-    ? { textAnswer: '', pincite: '' }
+    ? { textAnswer: '', pincite: '', flag: 0 }
     : {}
 }
 
@@ -358,10 +358,6 @@ const initializeEmptyCategoryQuestion = categories => {
     comment: {
       ...obj.comment,
       [category.id]: ''
-    },
-    flag: {
-      ...obj.flag,
-      [category.id]: 0
     }
   }), {})
 }
@@ -374,9 +370,7 @@ const initializeRegularQuestion = id => ({
 
 const initializeNavigator = (tree, scheme, codedQuestions) => {
   tree.map(item => {
-    item.isAnswered = codedQuestions.hasOwnProperty(item.id)
-      ? Object.keys(codedQuestions[item.id].answers).length > 0 && !item.isCategoryQuestion
-      : false
+    item.isAnswered = checkIfAnswered(item, codedQuestions) && !item.isCategoryQuestion
 
     if (item.children) {
       item.children = item.questionType === questionTypes.CATEGORY
@@ -393,19 +387,17 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
     if (item.isCategoryQuestion) {
       let countAnswered = 0
 
-      item.children = codedQuestions[item.parentId]
-        ? Object.values(codedQuestions[item.parentId].answers).map((cat, index) => {
-          const isAnswered = codedQuestions.hasOwnProperty(item.id)
-            ? codedQuestions[item.id].answers.hasOwnProperty(cat.schemeAnswerId)
-              ? Object.keys(codedQuestions[item.id].answers[cat.schemeAnswerId].answers).length > 0
-              : false
-            : false
+      item.children = checkIfExists(scheme[item.parentId], codedQuestions)
+        ? Object.values(codedQuestions[item.parentId].answers).map((category, index) => {
+          const isAnswered =
+            checkIfAnswered(item, codedQuestions) &&
+            checkIfAnswered(category, codedQuestions[item.id].answers, 'schemeAnswerId')
 
           countAnswered = isAnswered ? countAnswered += 1 : countAnswered
 
           return {
-            schemeAnswerId: cat.schemeAnswerId,
-            text: scheme[item.parentId].possibleAnswers.find(answer => answer.id === cat.schemeAnswerId).text,
+            schemeAnswerId: category.schemeAnswerId,
+            text: scheme[item.parentId].possibleAnswers.find(answer => answer.id === category.schemeAnswerId).text,
             indent: item.indent + 1,
             positionInParent: index,
             isAnswered,
@@ -417,12 +409,12 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
 
       if (item.children.length > 0) {
         item.completedProgress = (countAnswered / item.children.length) * 100
-        if ((countAnswered / item.children.length) * 100 === 100) {
+        if (item.completedProgress === 100) {
           delete item.completedProgress
           item.isAnswered = true
         }
       } else {
-        if (item.hasOwnProperty('completedProgress')) delete item.completedProgress
+        if (checkIfExists(item, 'completedProgress')) delete item.completedProgress
       }
     }
 
