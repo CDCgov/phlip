@@ -26,8 +26,8 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
           <Typography type="subheading">{question.text}</Typography>
         </Column>
       </Row>
-      <Row displayFlex style={{ ...questionAnswerPadding }}>
-        <Column flex>
+      <Column displayFlex flex style={{ ...questionAnswerPadding }}>
+        <Row flex style={{ overflow: 'auto' }}>
           {question.questionType === 1 &&
           <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
                       onChangePincite={onChangeTextAnswer} />}
@@ -47,17 +47,17 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
           {question.questionType === 5 &&
           <InputBox rows="5" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
                     value={userAnswers.answers} />}
+          </Row>
 
-          {question.includeComment &&
-          <Row style={{ paddingTop: 30 }}>
+        {question.includeComment &&
+        <Row style={{ paddingTop: 30 }}>
             <SimpleInput onChange={onChangeTextAnswer(null, 'comment')} name="comment"
                          placeholder="Enter comment" style={{ width: '70%' }}
                          value={comment}
             />
           </Row>
-          }
-          </Column>
-      </Row>
+        }
+      </Column>
 
       {question.hint &&
       <Row flex displayFlex style={{ padding: '0 35px 20px 35px' }}>
