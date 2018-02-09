@@ -2,11 +2,14 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Container, { Row, Column } from 'components/Layout'
-import Header from './components/Header'
-import Footer from './components/Footer'
+import Header from 'components/CodingValidation/Header'
+import Footer from 'components/CodingValidation/Footer'
 import QuestionCard from './components/QuestionCard'
-import FooterNavigate from './components/FooterNavigate'
+import FooterNavigate from 'components/CodingValidation/FooterNavigate'
+import Container, { Row, Column } from 'components/Layout'
+// import Header from './components/Header'
+// import Footer from './components/Footer'
+// import FooterNavigate from './components/FooterNavigate'
 import Navigator from './components/Navigator'
 import * as actions from './actions'
 import Typography from 'material-ui/Typography'
@@ -134,13 +137,13 @@ export class Coding extends Component {
         <Typography type="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
         <Row>
           {noScheme && this.props.userRole !== 'Coder' &&
-          <TextLink to={{ pathname: `/project/${this.props.projectId}/coding-scheme/` }}>
-            <Button value="Create Coding Scheme" color="accent" />
-          </TextLink>}
+            <TextLink to={{ pathname: `/project/${this.props.projectId}/coding-scheme/` }}>
+              <Button value="Create Coding Scheme" color="accent" />
+            </TextLink>}
           {noJurisdictions && this.props.userRole !== 'Coder' &&
-          <TextLink to={{ pathname: `/project/${this.props.projectId}/jurisdictions/` }}>
-            <Button value="Add Jurisdictions" color="accent" style={{ marginLeft: 50 }} />
-          </TextLink>}
+            <TextLink to={{ pathname: `/project/${this.props.projectId}/jurisdictions/` }}>
+              <Button value="Add Jurisdictions" color="accent" style={{ marginLeft: 50 }} />
+            </TextLink>}
         </Row>
       </Container>
     )
@@ -168,31 +171,31 @@ export class Coding extends Component {
     return (
       <Container flex style={{ width: '100%', height: '100%', position: 'relative', display: 'flex' }}>
         <Navigator open={this.state.navOpen} scheme={this.props.scheme} allUserAnswers={this.props.allUserAnswers}
-                   currentQuestion={this.props.question} selectedCategory={this.props.selectedCategory} handleQuestionSelected={this.props.actions.onQuestionSelectedInNav} />
+          currentQuestion={this.props.question} selectedCategory={this.props.selectedCategory} handleQuestionSelected={this.props.actions.onQuestionSelectedInNav} />
         <Column displayFlex
-                className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}>
-        <Header projectName={this.props.projectName} projectId={this.props.projectId}
-                jurisdictionsList={this.props.jurisdictionsList}
-                selectedJurisdiction={this.state.selectedJurisdiction}
-                onJurisdictionChange={this.onJurisdictionChange}
-                currentJurisdiction={this.props.jurisdiction}
-                empty={this.props.jurisdiction === null || this.props.questionOrder === null ||
-                this.props.questionOrder.length === 0}
-        />
-        <Container flex style={{ backgroundColor: '#f5f5f5' }}>
-          <Row displayFlex flex>
-            <Column>
-              <MuiButton style={navButtonStyles} onClick={this.onToggleNavigator}><Icon color="white"
-                                                                                        style={iconStyle}>menu</Icon></MuiButton>
-            </Column>
-            <Column displayFlex flex style={{ padding: '20px 20px 10px 20px' }}>
-              {this.state.showViews && (this.props.jurisdiction === null || this.props.questionOrder.length === 0
-                ? this.onShowGetStartedView(this.props.questionOrder.length === 0, this.props.jurisdiction === null)
-                : this.onShowCodeView())}
-            </Column>
-          </Row>
-        </Container>
-        <Footer onClose={() => this.props.actions.onCloseCodeScreen()} />
+          className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}>
+          <Header projectName={this.props.projectName} projectId={this.props.projectId}
+            jurisdictionsList={this.props.jurisdictionsList}
+            selectedJurisdiction={this.state.selectedJurisdiction}
+            onJurisdictionChange={this.onJurisdictionChange}
+            currentJurisdiction={this.props.jurisdiction}
+            empty={this.props.jurisdiction === null || this.props.questionOrder === null ||
+              this.props.questionOrder.length === 0}
+          />
+          <Container flex style={{ backgroundColor: '#f5f5f5' }}>
+            <Row displayFlex flex>
+              <Column>
+                <MuiButton style={navButtonStyles} onClick={this.onToggleNavigator}><Icon color="white"
+                  style={iconStyle}>menu</Icon></MuiButton>
+              </Column>
+              <Column displayFlex flex style={{ padding: '20px 20px 10px 20px' }}>
+                {this.state.showViews && (this.props.jurisdiction === null || this.props.questionOrder.length === 0
+                  ? this.onShowGetStartedView(this.props.questionOrder.length === 0, this.props.jurisdiction === null)
+                  : this.onShowCodeView())}
+              </Column>
+            </Row>
+          </Container>
+          <Footer onClose={() => this.props.actions.onCloseCodeScreen()} />
         </Column>
       </Container>
     )

@@ -8,6 +8,7 @@ exports[`Coding scene should render correctly 1`] = `
 >
   <Header
     empty={true}
+    isValidation={false}
     onJurisdictionChange={[Function]}
     projectId={1}
     projectName="Test Project"

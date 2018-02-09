@@ -2,6 +2,7 @@
 
 exports[`Coding scene --- Header component should render correctly 1`] = `
 <AppBar>
+  <div />
   <WithStyles
     color="inherit"
     type="title"

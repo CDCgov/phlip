@@ -6,6 +6,7 @@ import admin from './Admin/reducer'
 import login from './Login/reducer'
 import codingScheme from './CodingScheme/reducer'
 import coding from './Coding/reducer'
+import validation from './Validation/reducer'
 
 const config = {
   storage
@@ -16,7 +17,8 @@ const scenesReducer = combineReducers({
   admin: persistReducer({ ...config, key: 'admin' }, admin),
   codingScheme,
   login,
-  coding
+  coding,
+  validation
 })
 
 export default scenesReducer
