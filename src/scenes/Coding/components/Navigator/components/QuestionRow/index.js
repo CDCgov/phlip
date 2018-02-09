@@ -70,4 +70,11 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
   )
 }
 
+QuestionRow.propTypes = {
+  item: PropTypes.object,
+  treeLength: PropTypes.number,
+  children: PropTypes.node,
+  onQuestionSelected: PropTypes.func
+}
+
 export default QuestionRow
