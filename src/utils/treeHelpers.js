@@ -23,44 +23,33 @@ export const sortQuestions = questions => {
 
 const getIndent = numberString => numberString.split('.').length > 1 ? numberString.split('.').length - 1 : 0
 
-const setChildren = (node, number) => {
-  if (!node.children) return { ...node, indent: getIndent(number), number }
+const setChildren = (node, number, fullList, numbering, order) => {
+  node.indent = getIndent(number)
+  node.number = number
+  fullList.push(node)
+  numbering[node.id] = { number }
+  order.push(node.id)
 
   if (node.children) {
     node.expanded = true
     node.children = node.children.map((child, i) => {
-      return { ...setChildren(child, `${number}.${i + 1}`), indent: getIndent(`${number}.${i + 1}`), number: `${number}.${i + 1}`, expanded: false }
+      return setChildren(child, `${number}.${i + 1}`, fullList, numbering, order).node
     })
   }
 
-  return { ...node, indent: getIndent(number), number }
+  return { fullList, node, numbering, order }
 }
 
 export const getQuestionNumbers = questions => {
-  let qs = [], order = []
-  let count = 0, numbering = {}, number = '', tree = []
+  let order = [], numbering = {}, tree = [], fullList = []
 
-  walk({
-    treeData: questions,
-    getNodeKey,
-    callback: ({ node, parentNode }) => {
-      if (parentNode === null) {
-        number = `${count + 1}`
-        numbering[node.id] = { number }
-        count += 1
-        tree.push(setChildren(node, `${count}`))
-      } else {
-        number = `${numbering[parentNode.id].number}.${node.positionInParent + 1}`
-        numbering[node.id] = { number }
-      }
-
-      let newNode = { ...node }
-      delete newNode.children
-      qs.push({ ...newNode, number })
-      order.push(node.id)
-    },
-    ignoreCollapsed: false
+  questions.map((question, i) => {
+    const out = setChildren(question, `${i + 1}`, fullList, numbering, order)
+    fullList = out.fullList
+    numbering = out.numbering
+    order = out.order
+    tree.push({ ...out.node })
   })
 
-  return { questionsWithNumbers: qs, order, tree }
+  return { questionsWithNumbers: fullList, order, tree }
 }
