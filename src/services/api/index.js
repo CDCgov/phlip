@@ -102,5 +102,23 @@ export default {
 
   getUserCodedQuestions(userId, projectId, jurisdictionId) {
     return api.get(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions`).then(res => res.data)
+  },
+
+  getValidatedQuestions(projectId, jurisdictionId) {
+    return api.get(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions`).then(res => res.data)
+  },
+
+  validateQuestion(projectId, jurisdictionId, questionId, updatedQuestion) {
+    return api.post(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`, updatedQuestion)
+      .then(res => res.data)
+  },
+
+  validateCategoryQuestion(projectId, jurisdictionId, questionId, categoryId, updatedQuestion) {
+    return api.post(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}/category/${categoryId}`, updatedQuestion)
+      .then(res => res.data)
+  },
+
+  getProjectCoders(projectId) {
+    return api.get(`/projects/${projectId}/coders`)
   }
 }
