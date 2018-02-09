@@ -115,12 +115,6 @@ const determineShowButton = state => {
   }
 }
 
-const initializeRegularQuestion = id => ({
-  schemeQuestionId: id,
-  answers: {},
-  comment: ''
-})
-
 const getSelectedCategories = (parentQuestion, userAnswers) =>
   parentQuestion.possibleAnswers.filter(category => checkIfExists(category, userAnswers[parentQuestion.id].answers))
 
@@ -371,14 +365,11 @@ const initializeEmptyCategoryQuestion = categories => {
   }), {})
 }
 
-const initializeQuestionPart = (categories, prop, initial) => {
-  return categories.reduce((obj, category) => ({
-    [prop]: {
-      ...obj[prop],
-      [category.id]: { [prop]: initial }
-    }
-  }), {})
-}
+const initializeRegularQuestion = id => ({
+  schemeQuestionId: id,
+  answers: {},
+  comment: ''
+})
 
 const initializeQuestion = (question, userAnswers, categories) => {
   let answers = { ...userAnswers }
@@ -455,18 +446,15 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
   switch (action.type) {
     case types.GET_NEXT_QUESTION:
-      const updatedState = { ...state, ...getNextQuestion(state, action) }
-
       return {
-        ...updatedState,
-        showNextButton: determineShowButton(updatedState)
+        ...state,
+        ...getNextQuestion(state, action)
       }
 
     case types.GET_PREV_QUESTION:
-      const update = { ...state, ...getPreviousQuestion(state, action) }
       return {
-        ...update,
-        showNextButton: determineShowButton(update)
+        ...state,
+        ...getPreviousQuestion(state, action)
       }
 
     case types.GET_CODING_OUTLINE_SUCCESS:
@@ -481,64 +469,30 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       } else {
         const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
 
-        let updatedState = {
+        return {
           ...state,
           outline: action.payload.outline,
           scheme: {
             byId: normalizedQuestions,
-            order: action.payload.questionOrder
+            order: action.payload.questionOrder,
+            tree: action.payload.tree
           },
           question: action.payload.question,
-          userAnswers: action.payload.codedQuestions.length !== 0
-            ? initializeUserAnswers(action.payload.codedQuestions, normalizedQuestions)
-            : {
-              [action.payload.question.id]: {
-                schemeQuestionId: action.payload.question.id,
-                comment: '',
-                answers: {}
-              }
-            }
-        }
-
-        if (!updatedState.userAnswers.hasOwnProperty(action.payload.question.id)) {
-          updatedState = {
-            ...updatedState,
-            userAnswers: {
-              ...updatedState.userAnswers,
-              [action.payload.question.id]: {
-                schemeQuestionId: action.payload.question.id,
-                comment: '',
-                answers: {}
-              }
-            }
-          }
-        }
-
-        return {
-          ...updatedState,
-          scheme: {
-            ...updatedState.scheme,
-            tree: initializeNavigator(action.payload.tree, normalizedQuestions, updatedState.userAnswers)
-          },
-          showNextButton: determineShowButton(updatedState)
+          userAnswers: initializeUserAnswers(
+            [
+              { schemeQuestionId: action.payload.question.id, comment: '', codedAnswers: [] },
+              ...action.payload.codedQuestions
+            ], normalizedQuestions
+          )
         }
       }
 
     case types.UPDATE_USER_ANSWER_REQUEST:
-      const updated = {
+      return {
         ...state,
         userAnswers: {
           ...state.userAnswers,
           ...handleUpdateUserAnswers(state, action, selectedCategoryId)
-        }
-      }
-
-      return {
-        ...updated,
-        showNextButton: determineShowButton(updated),
-        scheme: {
-          ...updated.scheme,
-          tree: initializeNavigator(state.scheme.tree, updated.scheme.byId, updated.userAnswers)
         }
       }
 
@@ -565,7 +519,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ON_CLEAR_ANSWER:
-      const upState = {
+      return {
         ...state,
         ...questionUpdater(
           'answers',
@@ -573,14 +527,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
             ? handleClearCategoryAnswers(selectedCategoryId, state.question.questionType, state.userAnswers[action.questionId].answers)
             : handleClearAnswers(state.question.questionType, state.userAnswers[action.questionId].answers)
         )
-      }
-
-      return {
-        ...upState,
-        scheme: {
-          ...upState.scheme,
-          tree: initializeNavigator(state.scheme.tree, upState.scheme.byId, upState.userAnswers)
-        }
       }
 
     case types.ON_CHANGE_CATEGORY:
@@ -621,17 +567,13 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
-      const newState = { ...state, userAnswers, question, ...other }
-
       return {
-        ...newState,
+        ...state,
+        userAnswers,
+        question,
+        ...other,
         selectedCategory: 0,
-        categories: undefined,
-        showNextButton: determineShowButton(newState),
-        scheme: {
-          ...newState.scheme,
-          tree: initializeNavigator(state.scheme.tree, state.scheme.byId, newState.userAnswers)
-        }
+        categories: undefined
       }
 
     case types.ON_QUESTION_SELECTED_IN_NAV:
@@ -647,18 +589,13 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         q = state.scheme.byId[action.question.id]
       }
 
-      const freshState = {
+      return {
         ...state,
         question: q,
         categories,
         selectedCategory,
         userAnswers: initializeQuestion(q, { ...state.userAnswers }, categories),
         currentIndex: state.scheme.order.findIndex(id => q.id === id)
-      }
-
-      return {
-        ...freshState,
-        showNextButton: determineShowButton(freshState)
       }
 
     case types.ON_CLOSE_CODE_SCREEN:
@@ -671,4 +608,20 @@ const codingReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
-export default codingReducer
+const codingSceneReducer = (state = INITIAL_STATE, action) => {
+  if (Object.values(types).includes(action.type)) {
+    const intermediateState = codingReducer(state, action)
+    return {
+      ...intermediateState,
+      showNextButton: intermediateState.scheme === null ? false : determineShowButton(intermediateState),
+      scheme: intermediateState.scheme === null ? null : {
+        ...intermediateState.scheme,
+        tree: initializeNavigator(intermediateState.scheme.tree, intermediateState.scheme.byId, intermediateState.userAnswers)
+      }
+    }
+  } else {
+    return state
+  }
+}
+
+export default codingSceneReducer
