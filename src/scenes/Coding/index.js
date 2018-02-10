@@ -7,9 +7,6 @@ import Footer from 'components/CodingValidation/Footer'
 import QuestionCard from './components/QuestionCard'
 import FooterNavigate from 'components/CodingValidation/FooterNavigate'
 import Container, { Row, Column } from 'components/Layout'
-// import Header from './components/Header'
-// import Footer from './components/Footer'
-// import FooterNavigate from './components/FooterNavigate'
 import Navigator from './components/Navigator'
 import * as actions from './actions'
 import Typography from 'material-ui/Typography'
@@ -40,7 +37,9 @@ const iconStyle = {
 const styles = theme => ({
   mainContent: {
     height: '100vh',
+    width: '100%',
     flex: '1 !important',
+    overflow: 'auto',
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
@@ -73,6 +72,10 @@ export class Coding extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.isSchemeEmpty !== null) { this.setState({ showViews: true }) }
+  }
+
+  componentWillUnmount() {
+    this.props.actions.onCloseCodeScreen()
   }
 
   onToggleNavigator = () => {
@@ -169,7 +172,7 @@ export class Coding extends Component {
 
   render() {
     return (
-      <Container flex style={{ width: '100%', height: '100%', position: 'relative', display: 'flex' }}>
+      <Container flex style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}>
         <Navigator open={this.state.navOpen} scheme={this.props.scheme} allUserAnswers={this.props.allUserAnswers}
           currentQuestion={this.props.question} selectedCategory={this.props.selectedCategory} handleQuestionSelected={this.props.actions.onQuestionSelectedInNav} />
         <Column displayFlex
@@ -183,12 +186,12 @@ export class Coding extends Component {
               this.props.questionOrder.length === 0}
           />
           <Container flex style={{ backgroundColor: '#f5f5f5' }}>
-            <Row displayFlex flex>
+            <Row displayFlex flex style={{ overflow: 'auto' }}>
               <Column>
                 <MuiButton style={navButtonStyles} onClick={this.onToggleNavigator}><Icon color="white"
                   style={iconStyle}>menu</Icon></MuiButton>
               </Column>
-              <Column displayFlex flex style={{ padding: '20px 20px 10px 20px' }}>
+              <Column displayFlex flex style={{ padding: '20px 20px 10px 20px', overflow: 'auto' }}>
                 {this.state.showViews && (this.props.jurisdiction === null || this.props.questionOrder.length === 0
                   ? this.onShowGetStartedView(this.props.questionOrder.length === 0, this.props.jurisdiction === null)
                   : this.onShowCodeView())}

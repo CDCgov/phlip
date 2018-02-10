@@ -38,7 +38,7 @@ export class CodingScheme extends Component {
 
   renderGetStarted = () => (
     <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
-      <Typography type="display1" style={{ marginBottom: '20px' }}>The coding scheme is empty. To get started, add a question.</Typography>
+      <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>The coding scheme is empty. To get started, add a question.</Typography>
       <TextLink
         to={{ pathname: `/project/${this.props.projectId}/coding-scheme/add`, state: { questionDefined: null } }}>
         <Button value="+ Add New Question" color="accent" />

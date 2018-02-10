@@ -90,12 +90,10 @@ export const answerQuestionLogic = createLogic({
             }
             return ans
           }),
-        comment: updatedQuestionObject.comment[selectedCategoryId],
-        flag: updatedQuestionObject.flag[selectedCategoryId]
+        comment: updatedQuestionObject.comment[selectedCategoryId]
       }
 
       const { answers, schemeQuestionId, ...final } = finalObject
-      console.log(final)
       return await api.answerCategoryQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, selectedCategoryId, final)
     } else {
       finalObject = {

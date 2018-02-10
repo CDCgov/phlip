@@ -2,7 +2,6 @@ import { normalize } from 'utils'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 import { checkIfAnswered, checkIfExists } from 'utils/codingSchemeHelpers'
 
-
 /*
  This function basically takes an array of user coded question answers: { answers: [{ answerId: 1, pincite: '' }] },
  and converts it to an object like: { answers: { 1: { answerId: 1, pincite: '' }}}.
