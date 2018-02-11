@@ -40,10 +40,10 @@ export class Validation extends Component {
     ]
   }
 
-
-
   componentWillMount() {
     this.props.actions.getValidationOutlineRequest(this.props.projectId, this.props.jurisdictionId)
+    this.props.actions.getCodedUsersAnswers(this.props.projectId, this.props.jurisdictionId)
+
   }
 
   componentWillReceiveProps(nextProps) {
@@ -61,7 +61,7 @@ export class Validation extends Component {
   onJurisdictionChange = event => {
     this.setState({ selectedJurisdiction: event.target.value })
     this.props.actions.onValidationJurisdictionChange(event.target.value, this.props.jurisdictionsList)
-    // this.props.actions.getUserCodedQuestions(this.props.projectId, event.target.value)
+    this.props.actions.getUserValidatedQuestionsRequest(this.props.projectId, event.target.value)
   }
 
   onAnswer = id => (event, value) => {
@@ -127,7 +127,7 @@ export class Validation extends Component {
             ? null
             : this.onShowCodeView())}
         </Container>
-        <Footer></Footer>
+        <Footer onClose={() => this.props.actions.onCloseValidationScreen()}></Footer>
       </Container>
     )
   }

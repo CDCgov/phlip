@@ -159,7 +159,30 @@ export const getProjectCodersLogic = createLogic({
   }
 })
 
+export const getUserValidatedQuestionsLogic = createLogic({
+  type: types.GET_USER_VALIDATED_QUESTIONS_REQUEST,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.GET_USER_VALIDATED_QUESTIONS_SUCCESS,
+    failType: types.GET_USER_VALIDATED_QUESTIONS_FAIL
+  },
+  async process({ action, api, getState }) {
+    let codedQuestions = []
+
+    try {
+      codedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
+    } catch (e) {
+      throw { error: 'failed to get codedQuestions' }
+    }
+
+    return {
+      codedQuestions
+    }
+  }
+})
+
 export default [
+  getUserValidatedQuestionsLogic,
   getProjectCodersLogic,
   validateQuestionLogic,
   getValidationOutlineLogic

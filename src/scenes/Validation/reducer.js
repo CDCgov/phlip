@@ -119,6 +119,40 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         jurisdiction: action.jurisdictionList.find(jurisdiction => jurisdiction.id === action.event)
       }
 
+    case types.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
+      let userAnswers = {}, question = { ...state.question }, other = {}
+
+      if (action.payload.codedQuestions.length !== 0) {
+        userAnswers = initializeUserAnswers(action.payload.codedQuestions, state.scheme.byId)
+      }
+
+      if (state.question.isCategoryQuestion) {
+        question = state.scheme.byId[question.parentId]
+        other = {
+          currentIndex: state.scheme.order.findIndex(id => id === question.id)
+        }
+      }
+
+      if (!userAnswers.hasOwnProperty(question.id)) {
+        userAnswers = {
+          ...userAnswers,
+          [question.id]: {
+            schemeQuestionId: question.id,
+            comment: '',
+            answers: {}
+          }
+        }
+      }
+
+      return {
+        ...state,
+        userAnswers,
+        question,
+        ...other,
+        selectedCategory: 0,
+        categories: undefined
+      }
+
     case types.ON_CLOSE_VALIDATION_SCREEN:
       return INITIAL_STATE
 

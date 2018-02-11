@@ -119,6 +119,6 @@ export default {
   },
 
   getProjectCoders(projectId) {
-    return api.get(`/projects/${projectId}/coders`)
+    return api.get(`/projects/${projectId}/coders`).then(res => res.data)
   }
 }

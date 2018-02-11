@@ -18,10 +18,22 @@ export const validateQuestionRequest = (projectId, jurisdictionId, questionId, a
   answerValue
 })
 
+export const getUserValidatedQuestionsRequest = (projectId, jurisdictionId) => ({
+  type: types.GET_USER_VALIDATED_QUESTIONS_REQUEST,
+  projectId,
+  jurisdictionId
+})
+
 export const onValidationJurisdictionChange = (event, jurisdictionList) => ({
   type: types.ON_VALIDATION_JURISDICTION_CHANGE,
   event,
   jurisdictionList
+})
+
+export const getCodedUsersAnswers = (projectId, jurisdictionId) => ({
+  type: types.GET_CODED_USERS_LIST_REQUEST,
+  projectId,
+  jurisdictionId
 })
 
 export const onCloseValidationScreen = () => ({ type: types.ON_CLOSE_VALIDATION_SCREEN })
