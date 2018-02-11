@@ -27,10 +27,6 @@ export const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswer
         comment: {
           ...userCodedAnswerObj[question.schemeQuestionId].comment,
           [question.categoryId]: question.comment || ''
-        },
-        flag: {
-          ...userCodedAnswerObj[question.schemeQuestionId].flag,
-          [question.categoryId]: question.flag || 0
         }
       }
       : {
@@ -38,14 +34,12 @@ export const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswer
         answers: { [question.categoryId]: { answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId') } },
         comment: {
           [question.categoryId]: question.comment || ''
-        },
-        flag: { [question.categoryId]: question.flag || 0 }
+        }
       }
   } else if (codingSchemeQuestion.questionType === questionTypes.TEXT_FIELD) {
     return question.codedAnswers.length > 0
       ? {
         schemeQuestionId: question.schemeQuestionId,
-        flag: question.flag || 0,
         comment: question.comment,
         answers: {
           ...question.codedAnswers[0],
@@ -53,11 +47,10 @@ export const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswer
           textAnswer: question.codedAnswers[0].textAnswer || ''
         }
       }
-      : { schemeQuestionId: question.schemeQuestionId, flag: 0, comment: '', answers: { pincite: '', textAnswer: '' } }
+      : { schemeQuestionId: question.schemeQuestionId, comment: '', answers: { pincite: '', textAnswer: '' } }
   } else {
     return {
       schemeQuestionId: question.schemeQuestionId,
-      flag: question.flag,
       comment: question.comment,
       answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId')
     }
@@ -79,19 +72,20 @@ export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions)
   }, {})
 }
 
+export const findNextParentSibling = (scheme, question, currentIndex) => {
+  const subArr = [...scheme.order].slice(currentIndex + 1)
+  return subArr.find(id => scheme.byId[id].parentId !== question.id)
+}
+
 /*
-  Handles determining whether or not to show the 'next question' button at the bottom of the screen
+  Handles determining whether or not to show the 'next question' button at the bottom of the screen. If the question is
+  a category question and no categories have been selected, check if there are any remaining questions in the list that
+  aren't a child of the category questions. If there are none, don't show button, if there are do.
  */
 export const determineShowButton = state => {
   if (state.question.questionType === questionTypes.CATEGORY) {
-    if (Object.keys(state.userAnswers[state.question.id].answers).length === 0) {
-      let subArr = [...state.scheme.order].slice(state.currentIndex + 1)
-      let p = subArr.find(id => state.scheme.byId[id].parentId !== state.question.id)
-      if (p !== undefined) {
-        return true
-      } else {
-        return false
-      }
+    if (!checkIfAnswered(state.question, state.userAnswers)) {
+      return findNextParentSibling(state.scheme, state.question, state.currentIndex) !== undefined
     } else {
       return true
     }
@@ -99,12 +93,6 @@ export const determineShowButton = state => {
     return state.scheme.order && state.question.id !== state.scheme.order[state.scheme.order.length - 1]
   }
 }
-
-export const initializeRegularQuestion = id => ({
-  schemeQuestionId: id,
-  answers: {},
-  comment: ''
-})
 
 export const getSelectedCategories = (parentQuestion, userAnswers) =>
   parentQuestion.possibleAnswers.filter(category => checkIfExists(category, userAnswers[parentQuestion.id].answers))
@@ -116,7 +104,7 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
   const base = {
     question: newQuestion,
     currentIndex: newIndex,
-    userAnswers: state.userAnswers[newQuestion.id]
+    userAnswers: checkIfExists(newQuestion, state.userAnswers)
       ? { ...state.userAnswers }
       : { ...state.userAnswers, [newQuestion.id]: initializeRegularQuestion(newQuestion.id) }
   }
@@ -135,8 +123,6 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
     const baseQuestion = base.userAnswers[newQuestion.id]
 
     const answers = selectedCategories.reduce((answerObj, cat) => {
-      checkIfExists(cat, baseQuestion.answers)
-
       return {
         answers: {
           ...answerObj.answers,
@@ -176,19 +162,16 @@ export const getNextQuestion = (state, action) => {
   // Check to make sure newQuestion is correct. If the newQuestion is a category child, but the user hasn't selected
   // any categories, then find the next parent question
   if (newQuestion.isCategoryQuestion) {
-    if (Object.keys(state.userAnswers[state.scheme.byId[action.id].parentId].answers).length === 0) {
-      let subArr = [...state.scheme.order].slice(action.newIndex)
-      newQuestion = subArr.find(id => {
-        if (state.scheme.byId[id].parentId !== state.question.id) {
-          newIndex = state.scheme.order.indexOf(id)
-          return true
-        }
-      })
-      newQuestion = state.scheme.byId[newQuestion]
+    if (!checkIfAnswered(state.scheme.byId[newQuestion.parentId], state.userAnswers)) {
+      const p = findNextParentSibling(state.scheme, state.question, state.currentIndex)
+      if (p !== undefined) {
+        newQuestion = state.scheme.byId[p]
+        newIndex = state.scheme.order.indexOf(p)
+      }
     }
   }
 
-  return handleCheckCategories(newQuestion, newIndex, state, action)
+  return handleCheckCategories(newQuestion, newIndex, state)
 }
 
 export const getPreviousQuestion = (state, action) => {
@@ -196,13 +179,13 @@ export const getPreviousQuestion = (state, action) => {
   let newIndex = action.newIndex
 
   if (newQuestion.isCategoryQuestion) {
-    if (Object.keys(state.userAnswers[newQuestion.parentId].answers).length === 0) {
+    if (!checkIfAnswered(state.scheme.byId[newQuestion.parentId], state.userAnswers)) {
       newQuestion = state.scheme.byId[newQuestion.parentId]
       newIndex = state.scheme.order.indexOf(newQuestion.id)
     }
   }
 
-  return handleCheckCategories(newQuestion, newIndex, state, action)
+  return handleCheckCategories(newQuestion, newIndex, state)
 }
 
 /*
@@ -327,7 +310,7 @@ export const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, get
  */
 export const handleClearAnswers = questionType => {
   return questionType === questionTypes.TEXT_FIELD
-    ? { textAnswer: '', pincite: '' }
+    ? { textAnswer: '', pincite: '', flag: 0 }
     : {}
 }
 
@@ -353,67 +336,46 @@ export const initializeEmptyCategoryQuestion = categories => {
     comment: {
       ...obj.comment,
       [category.id]: ''
-    },
-    flag: {
-      ...obj.flag,
-      [category.id]: 0
     }
   }), {})
 }
 
-export const initializeQuestionPart = (categories, prop, initial) => {
-  return categories.reduce((obj, category) => ({
-    [prop]: {
-      ...obj[prop],
-      [category.id]: { [prop]: initial }
-    }
-  }), {})
-}
-
-export const initializeQuestion = (question, userAnswers, categories) => {
-  let answers = { ...userAnswers }
-  if (!checkIfExists(question, userAnswers)) {
-    answers = {
-      ...answers,
-      [question.id]: {
-        schemeQuestionId: question.id,
-        ...question.isCategoryQuestion ? initializeEmptyCategoryQuestion(categories) : { answers: {}, comment: '' }
-      }
-    }
-  }
-
-  return answers
-}
+export const initializeRegularQuestion = id => ({
+  schemeQuestionId: id,
+  answers: {},
+  comment: ''
+})
 
 export const initializeNavigator = (tree, scheme, codedQuestions) => {
   tree.map(item => {
-    item.isAnswered = codedQuestions.hasOwnProperty(item.id)
-      ? Object.keys(codedQuestions[item.id].answers).length > 0 && !item.isCategoryQuestion
-      : false
+    item.isAnswered = checkIfAnswered(item, codedQuestions) && !item.isCategoryQuestion
 
     if (item.children) {
       item.children = item.questionType === questionTypes.CATEGORY
-        ? checkIfAnswered(item, codedQuestions) ? initializeNavigator(Object.values(scheme)
-          .filter(question => question.parentId === item.id), { ...scheme }, codedQuestions) : []
+        ? checkIfAnswered(item, codedQuestions)
+          ? initializeNavigator(
+            sortList(Object.values(scheme)
+              .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
+            { ...scheme },
+            codedQuestions
+          ) : []
         : initializeNavigator(item.children, { ...scheme }, codedQuestions)
     }
 
     if (item.isCategoryQuestion) {
       let countAnswered = 0
 
-      item.children = codedQuestions[item.parentId]
-        ? Object.values(codedQuestions[item.parentId].answers).map((cat, index) => {
-          const isAnswered = codedQuestions.hasOwnProperty(item.id)
-            ? codedQuestions[item.id].answers.hasOwnProperty(cat.schemeAnswerId)
-              ? Object.keys(codedQuestions[item.id].answers[cat.schemeAnswerId].answers).length > 0
-              : false
-            : false
+      item.children = checkIfExists(scheme[item.parentId], codedQuestions)
+        ? Object.values(codedQuestions[item.parentId].answers).map((category, index) => {
+          const isAnswered =
+            checkIfAnswered(item, codedQuestions) &&
+            checkIfAnswered(category, codedQuestions[item.id].answers, 'schemeAnswerId')
 
           countAnswered = isAnswered ? countAnswered += 1 : countAnswered
 
           return {
-            schemeAnswerId: cat.schemeAnswerId,
-            text: scheme[item.parentId].possibleAnswers.find(answer => answer.id === cat.schemeAnswerId).text,
+            schemeAnswerId: category.schemeAnswerId,
+            text: scheme[item.parentId].possibleAnswers.find(answer => answer.id === category.schemeAnswerId).text,
             indent: item.indent + 1,
             positionInParent: index,
             isAnswered,
@@ -425,12 +387,12 @@ export const initializeNavigator = (tree, scheme, codedQuestions) => {
 
       if (item.children.length > 0) {
         item.completedProgress = (countAnswered / item.children.length) * 100
-        if ((countAnswered / item.children.length) * 100 === 100) {
+        if (item.completedProgress === 100) {
           delete item.completedProgress
           item.isAnswered = true
         }
       } else {
-        if (item.hasOwnProperty('completedProgress')) delete item.completedProgress
+        if (checkIfExists(item, 'completedProgress')) delete item.completedProgress
       }
     }
 

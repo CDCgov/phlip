@@ -6,7 +6,9 @@ import {
   determineShowButton,
   handleUpdateUserAnswers,
   handleUpdateUserCodedQuestion,
-  handleClearAnswers
+  handleClearAnswers,
+  handleClearCategoryAnswers,
+  initializeUserAnswers
 } from 'utils/codingHelpers'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
