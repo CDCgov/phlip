@@ -43,10 +43,10 @@ describe('Coding logic', () => {
           payload: {
             outline: { 1: { parentId: 0, positionInParent: 0 } },
             codedQuestions: [],
-            question: { id: 1, text: 'question 1', number: '1', parentId: 0, positionInParent: 0 },
+            question: { id: 1, text: 'question 1', indent: 0, number: '1', parentId: 0, positionInParent: 0 },
             isSchemeEmpty: false,
             questionOrder: [1],
-            scheme: [{ id: 1, text: 'question 1', number: '1', parentId: 0, positionInParent: 0 }],
+            scheme: [{ id: 1, text: 'question 1', indent: 0, number: '1', parentId: 0, positionInParent: 0 }],
             tree: [{ id: 1, text: 'question 1', indent: 0, number: '1', parentId: 0, positionInParent: 0 }]
           }
         }
@@ -90,14 +90,14 @@ describe('Coding logic', () => {
               3: { parentId: 2, positionInParent: 0 }
             },
             codedQuestions: [],
-            question: { id: 1, text: 'question 1', number: '1', parentId: 0, positionInParent: 0 },
+            question: { id: 1, text: 'question 1', indent: 0, number: '1', parentId: 0, positionInParent: 0 },
             isSchemeEmpty: false,
             questionOrder: [1, 4, 2, 3],
             scheme: [
-              { id: 1, text: 'question 1', number: '1', parentId: 0, positionInParent: 0 },
-              { id: 4, text: 'question 2', number: '2', parentId: 0, positionInParent: 1 },
-              { id: 2, text: 'question 3', number: '3', parentId: 0, positionInParent: 2, },
-              { id: 3, text: 'question 4', number: '3.1', parentId: 2, positionInParent: 0 }
+              { id: 1, text: 'question 1', indent: 0, number: '1', parentId: 0, positionInParent: 0 },
+              { id: 4, text: 'question 2', indent: 0, number: '2', parentId: 0, positionInParent: 1 },
+              { id: 2, text: 'question 3', indent: 0, number: '3', parentId: 0, positionInParent: 2, },
+              { id: 3, text: 'question 4', indent: 1, number: '3.1', parentId: 2, positionInParent: 0 }
             ],
             tree: [
               { id: 1, text: 'question 1', indent: 0, number: '1', parentId: 0, positionInParent: 0 },
