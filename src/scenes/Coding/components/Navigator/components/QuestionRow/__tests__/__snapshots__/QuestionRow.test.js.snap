@@ -47,7 +47,7 @@ exports[`Coding scene - QuestionRow should render correctly 1`] = `
       }
       type="body1"
     >
-      question 3
+      3. question 3
     </WithStyles>
   </div>
 </React.Fragment>
