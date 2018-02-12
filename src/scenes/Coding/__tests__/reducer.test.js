@@ -482,6 +482,7 @@ describe('Coding reducer', () => {
 
       expect(state)
         .toHaveProperty('question', { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1 })
+
       expect(state.userAnswers).toHaveProperty('2', {
         schemeQuestionId: 2,
         comment: 'this is a comment',
@@ -489,6 +490,86 @@ describe('Coding reducer', () => {
       })
 
       expect(state).toHaveProperty('currentIndex', 1)
+    })
+
+    test('should handle if next question is category child and no categories have been selected', () => {
+      const currentState = {
+        question: {
+          text: 'cat question',
+          questionType: 2,
+          id: 3,
+          parentId: 0,
+          positionInParent: 2,
+          possibleAnswers: [
+            { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
+          ]
+        },
+        outline: {
+          1: { parentId: 0, positionInParent: 0 },
+          2: { parentId: 0, positionInParent: 1 },
+          3: { parentId: 0, positionInParent: 2 },
+          4: { parentId: 3, positionInParent: 0 },
+          5: { parentId: 0, positionInParent: 3 }
+        },
+        scheme: {
+          byId: {
+            1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
+            2: { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1 },
+            3: {
+              text: 'cat question',
+              questionType: 2,
+              id: 3,
+              parentId: 0,
+              positionInParent: 2,
+              possibleAnswers: [
+                { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
+              ]
+            },
+            4: {
+              text: 'cat question child',
+              questionType: 3,
+              id: 4,
+              parentId: 3,
+              positionInParent: 0,
+              isCategoryQuestion: true
+            },
+            5: {
+              text: 'next sibling',
+              questionType: 3,
+              id: 5,
+              parentId: 0,
+              positionInParent: 3
+            }
+          },
+          order: [1, 2, 3, 4, 5],
+          tree: []
+        },
+        userAnswers: {},
+        currentIndex: 2
+      }
+
+      const action = {
+        type: types.GET_NEXT_QUESTION,
+        id: 4,
+        newIndex: 3
+      }
+
+      const state = getReducer(
+        getState(currentState),
+        action
+      )
+
+      expect(state)
+        .toHaveProperty('question', {
+          text: 'next sibling',
+          questionType: 3,
+          id: 5,
+          parentId: 0,
+          positionInParent: 3
+        })
+
+      expect(state).toHaveProperty('currentIndex', 4)
+      expect(state).toHaveProperty('showNextButton', false)
     })
   })
 
