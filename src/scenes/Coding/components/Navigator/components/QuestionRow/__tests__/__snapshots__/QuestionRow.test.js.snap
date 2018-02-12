@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Coding scene - QuestionRow should render correctly 1`] = `
+<React.Fragment>
+  <div
+    className="undefined"
+    key="2-scaffold-0"
+    style={
+      Object {
+        "left": 0,
+      }
+    }
+  />
+  <div
+    onClick={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "cursor": "pointer",
+        "display": "flex",
+        "height": 40,
+        "marginLeft": 0,
+        "position": "relative",
+      }
+    }
+  >
+    <span
+      style={
+        Object {
+          "maxHeight": 20,
+          "maxWidth": 20,
+          "minHeight": 20,
+          "minWidth": 20,
+        }
+      }
+    />
+    <WithStyles
+      noWrap={true}
+      style={
+        Object {
+          "color": "white",
+          "fontSize": "13px",
+          "fontWeight": 300,
+          "paddingLeft": 10,
+          "paddingRight": 10,
+        }
+      }
+      type="body1"
+    >
+      3. question 3
+    </WithStyles>
+  </div>
+</React.Fragment>
+`;

@@ -8,7 +8,7 @@ exports[`Home scene - PageHeader component should render correctly 1`] = `
   spacing={0}
   style={
     Object {
-      "height": "75px",
+      "height": "80px",
     }
   }
 >

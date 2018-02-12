@@ -108,7 +108,6 @@ export const QuestionNode = props => {
                 <TextLink to={{ pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`, state: { questionDefined: { ...node }, path } }}>
                   <Button color="accent" style={actionStyles} value={<Icon color="white">mode_edit</Icon>} />
                 </TextLink>
-                <Button color="accent" style={actionStyles} value={<Icon color="white">delete</Icon>} />
               </div>
             }
             {!node.hovering && node.questionType === questionTypes.CATEGORY ? <Icon color="grey">filter_none</Icon> : ''}

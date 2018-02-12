@@ -11,16 +11,17 @@ const loginReducer = (state = INITIAL_STATE, action) => {
     case types.LOGIN_USER_SUCCESS:
       return {
         ...state,
-        session: !!localStorage.esquire_token
+        session: !!localStorage.esquire_token,
+        error: null
       }
     case types.LOGIN_USER_FAIL:
-      return state
+      return { ...state, error: 'Login failed. Please check email and password' }
     case types.LOGIN_USER_REQUEST:
       return state
     case 'FLUSH_STATE':
       return INITIAL_STATE
 
-    default: return state
+    default: return { ...state, error: null }
   }
 }
 

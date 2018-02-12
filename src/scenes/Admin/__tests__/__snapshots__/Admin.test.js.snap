@@ -6,7 +6,7 @@ exports[`Admin Scene it should render correctly 1`] = `
   flex={true}
   spacing={0}
 >
-  <PageHeader />
+  <withRouter(PageHeader) />
   <WithStyles />
   <UserList
     count={6}

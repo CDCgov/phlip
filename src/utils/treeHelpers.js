@@ -1,5 +1,6 @@
 import { sortList } from 'utils'
 import { map, walk, getFlatDataFromTree } from 'react-sortable-tree'
+import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 export const getNodeKey = ({ node, treeIndex }) => {
   return treeIndex
@@ -20,37 +21,39 @@ export const sortQuestions = questions => {
   return sortList(sortedChildren, 'positionInParent', 'asc')
 }
 
-export const getQuestionNumbers = questions => {
-  const qs = [], order = []
-  let count = 0, numbering = {}, number = ''
+const getIndent = numberString => numberString.split('.').length > 1 ? numberString.split('.').length - 1 : 0
 
-  walk({
-    treeData: questions,
-    getNodeKey,
-    callback: ({ node, parentNode }) => {
-      if (parentNode === null) {
-        number = `${count + 1}`
-        numbering[node.id] = { number }
-        count += 1
-      } else {
-        number = `${numbering[parentNode.id].number}.${node.positionInParent + 1}`
-        numbering[node.id] = { number }
-      }
-      let newNode = { ...node }
-      delete newNode.children
-      qs.push({ ...newNode, number })
-      order.push(node.id)
-    },
-    ignoreCollapsed: false
-  })
+const setChildren = (node, number, fullList, numbering, order) => {
+  node.indent = getIndent(number)
+  node.number = number
 
-  return { questionsWithNumbers: qs, order }
+  let fullNode = { ...node }
+  delete fullNode.children
+
+  fullList.push({ ...fullNode })
+  numbering[node.id] = { number }
+  order.push(node.id)
+
+  if (node.children) {
+    node.expanded = true
+    node.children = node.children.map((child, i) => {
+      return setChildren(child, `${number}.${i + 1}`, fullList, numbering, order).node
+    })
+  }
+
+  return { fullList, node, numbering, order }
 }
 
-export const getQuestionOrder = questions => {
-  return getFlatDataFromTree({
-    treeData: questions,
-    getNodeKey,
-    ignoreCollapsed: false
-  }).map(question => question.node.id)
+export const getQuestionNumbers = questions => {
+  let order = [], numbering = {}, tree = [], fullList = []
+
+  questions.map((question, i) => {
+    const out = setChildren(question, `${i + 1}`, fullList, numbering, order)
+    fullList = out.fullList
+    numbering = out.numbering
+    order = out.order
+    tree.push({ ...out.node })
+  })
+
+  return { questionsWithNumbers: fullList, order, tree }
 }

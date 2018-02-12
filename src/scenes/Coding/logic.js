@@ -23,31 +23,31 @@ export const getOutlineLogic = createLogic({
     }
 
     if (action.jurisdictionId) {
-      try {     //UNCOMMENT WHEN API IS FINISHED
+      try {
         codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
       } catch (e) {
-        throw { error: 'failed to get codeQuestions' }
+        throw { error: 'failed to get codedQuestions' }
       }
     }
 
-    if (scheme.codingSchemeQuestions.length === 0) {
+    if (scheme.schemeQuestions.length === 0) {
       return {
         isSchemeEmpty: true
       }
     } else {
-      const merge = scheme.codingSchemeQuestions.reduce((arr, q) => {
+      const merge = scheme.schemeQuestions.reduce((arr, q) => {
         return [...arr, { ...q, ...scheme.outline[q.id] }]
       }, [])
 
-      const { questionsWithNumbers, order } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
+      const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
 
       return {
         outline: scheme.outline,
         scheme: questionsWithNumbers,
         questionOrder: order,
+        tree,
         question: questionsWithNumbers[0],
-        // codedQuestions: [],
-        codedQuestions: codedQuestions,  //UNCOMMENT WHEN API IS FINISHED
+        codedQuestions,
         isSchemeEmpty: false
       }
     }
@@ -74,11 +74,12 @@ export const answerQuestionLogic = createLogic({
     const updatedQuestionObject = codingState.userAnswers[action.questionId]
     let finalObject = {}
 
-    if (codingState.question.isCategoryChild) {
+    if (codingState.question.isCategoryQuestion) {
       const selectedCategoryId = codingState.categories[codingState.selectedCategory].id
+
       finalObject = {
         ...updatedQuestionObject,
-        answers: codingState.question.questionType === questionTypes.TEXT_FIELD
+        codedAnswers: codingState.question.questionType === questionTypes.TEXT_FIELD
           ? [deleteAnswerIds(updatedQuestionObject.answers[selectedCategoryId].answers)]
           : Object.values(updatedQuestionObject.answers[selectedCategoryId].answers).map(answer => {
             let ans = { ...answer }
@@ -87,13 +88,15 @@ export const answerQuestionLogic = createLogic({
             }
             return ans
           }),
-        comment: updatedQuestionObject.comment[selectedCategoryId],
-        categoryId: selectedCategoryId
+        comment: updatedQuestionObject.comment[selectedCategoryId]
       }
+
+      const { answers, schemeQuestionId, ...final } = finalObject
+      return await api.answerCategoryQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, selectedCategoryId, final)
     } else {
       finalObject = {
         ...updatedQuestionObject,
-        answers: codingState.question.questionType === questionTypes.TEXT_FIELD
+        codedAnswers: codingState.question.questionType === questionTypes.TEXT_FIELD
           ? [deleteAnswerIds(updatedQuestionObject.answers)]
           : Object.values(updatedQuestionObject.answers).map(answer => {
             let ans = { ...answer }
@@ -103,11 +106,9 @@ export const answerQuestionLogic = createLogic({
             return ans
           })
       }
+      const { answers, ...final } = finalObject
+      return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, final)
     }
-
-    //console.log(finalObject)
-
-    return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, finalObject)
   }
 })
 

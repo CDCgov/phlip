@@ -26,7 +26,7 @@ describe('Coding Scheme reducer', () => {
       const action = {
         type: types.GET_SCHEME_SUCCESS,
         payload: {
-          codingSchemeQuestions: questions,
+          schemeQuestions: questions,
           outline: {
             1: { parentId: 0, positionInParent: 0 },
             2: { parentId: 0, positionInParent: 1 }
