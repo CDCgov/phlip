@@ -6,7 +6,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
   flex={true}
   spacing={0}
 >
-  <Header
+  <withRouter(Header)
     showButton={false}
   />
   <Container
@@ -16,6 +16,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
     style={
       Object {
         "backgroundColor": "#f5f5f5",
+        "marginLeft": -30,
         "paddingTop": 25,
       }
     }
@@ -29,7 +30,6 @@ exports[`CodingScheme scene should render correctly 1`] = `
       questions={Array []}
     />
   </Container>
-  <Footer />
   <Route
     component={[Function]}
     path="/project/:projectId/coding-scheme/add"

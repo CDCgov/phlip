@@ -5,6 +5,11 @@ exports[`Home scene should render correctly 1`] = `
   column={true}
   flex={true}
   spacing={0}
+  style={
+    Object {
+      "paddingBottom": "25px",
+    }
+  }
 >
   <PageHeader
     role="Coordinator"

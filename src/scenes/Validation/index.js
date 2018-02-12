@@ -113,7 +113,7 @@ export class Validation extends Component {
 
   render() {
     return (
-      <Container column flex style={{ width: '100%', height: '100vh', flexWrap: 'nowrap' }}>
+      <Container column flex style={{ width: '100%', flexWrap: 'nowrap' }}>
         <Header projectName={this.props.projectName} projectId={this.props.projectId}
           jurisdictionsList={this.props.jurisdictionsList}
           selectedJurisdiction={this.state.selectedJurisdiction}
@@ -122,12 +122,11 @@ export class Validation extends Component {
           isValidation={true}
           empty={this.props.jurisdiction === null || this.props.questionOrder === null || this.props.questionOrder.length === 0}
         />
-        <Container flex column style={{ backgroundColor: '#f5f5f5', padding: '20px 20px 10px 20px', overflow: 'auto' }}>
+        <Container flex column style={{ backgroundColor: '#f5f5f5' }}>
           {this.state.showViews && (this.props.jurisdiction === null || this.props.questionOrder.length === 0
             ? null
             : this.onShowCodeView())}
         </Container>
-        <Footer></Footer>
       </Container>
     )
   }

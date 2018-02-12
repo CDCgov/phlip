@@ -15,12 +15,12 @@ import Validation from './Validation'
 
 const AuthenticatedScenes = () => (
   <Switch>
-    <Route path="/project/:id/coding-scheme" component={CodingScheme} />
     <Route path="/project/:id/code" component={Coding} />
-    {/*<Route path="/project/:id/validate" component={Validation} />*/}
     <HeaderedLayout>
       <Switch>
         <Route path="/admin" component={Admin} />
+        <Route path="/project/:id/coding-scheme" component={CodingScheme} />
+        <Route path="/project/:id/validate" component={Validation} />
         <Route path="/" component={Home} />
       </Switch>
     </HeaderedLayout>

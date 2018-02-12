@@ -9,9 +9,9 @@ import { withRouter } from 'react-router-dom'
 import TextLink from 'components/TextLink'
 
 export const Header = ({ projectName, showButton, projectId, history }) => (
-  <Container alignItems="center" style={{ height: '80px' }}>
+  <Container alignItems="center" style={{ height: '75px' }}>
     <Column style={{ paddingRight: 5 }}>
-      <IconButton iconSize={30} color="black" onClick={() => history.push('/')}>arrow_back</IconButton>
+      <IconButton iconSize={30} color="black" onClick={() => history.goBack()}>arrow_back</IconButton>
     </Column>
     <Column flex>
       <Typography type="title">Coding Scheme | <span style={{ color: '#0faee6' }}>{projectName}</span></Typography>

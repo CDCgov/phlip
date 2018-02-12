@@ -2,14 +2,17 @@ import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Typography from 'material-ui/Typography'
 import Button from 'components/Button'
-import AppBar from 'components/AppBar'
 import styles from './header-styles.scss'
-import Select from 'material-ui/Select'
 import JurisdictionSelect from 'components/JurisdictionSelect'
 import Container, { Column } from 'components/Layout'
+import IconButton from 'components/IconButton'
+import { withRouter } from 'react-router-dom'
 
-export const Header = ({ projectName, empty, projectId, jurisdictionsList, selectedJurisdiction, onJurisdictionChange, currentJurisdiction, isValidation }) => (
-  <AppBar>
+export const Header = ({ projectName, empty, projectId, jurisdictionsList, selectedJurisdiction, onJurisdictionChange, currentJurisdiction, isValidation, history }) => (
+  <Container alignItems="center" style={{ height: '80px', padding: isValidation ? '' : '20px 27px' }}>
+    <Column style={{ paddingRight: 5 }}>
+      <IconButton iconSize={30} color="black" onClick={() => history.push('/')}>arrow_back</IconButton>
+    </Column>
     {isValidation ? <Typography type="title" color="inherit">
       <span style={{ color: '#FDB760', paddingRight: 10 }}>VALIDATION</span>
     </Typography> : <div></div>}
@@ -22,8 +25,7 @@ export const Header = ({ projectName, empty, projectId, jurisdictionsList, selec
       </div>
       <Column>
         <Typography type="caption" color="default" align="right">
-          Segment start <span
-            style={{ color: 'black' }}>{new Date(currentJurisdiction.startDate).toLocaleDateString()}</span>
+          Segment start <span style={{ color: 'black' }}>{new Date(currentJurisdiction.startDate).toLocaleDateString()}</span>
         </Typography>
         <Typography type="caption" color="default" align="right">
           Segment end <span style={{ color: 'black' }}>{new Date(currentJurisdiction.endDate).toLocaleDateString()}</span>
@@ -31,7 +33,7 @@ export const Header = ({ projectName, empty, projectId, jurisdictionsList, selec
       </Column>
       <Column flex></Column>
       <Button value="View/Edit Protocol" style={{ backgroundColor: 'white', color: 'black', fontWeight: 'bold' }} /></Fragment>}
-  </AppBar>
+  </Container>
 )
 
 Header.defaultProps = {
@@ -45,4 +47,4 @@ Header.propTypes = {
   isValidation: PropTypes.bool
 }
 
-export default Header
+export default withRouter(Header)

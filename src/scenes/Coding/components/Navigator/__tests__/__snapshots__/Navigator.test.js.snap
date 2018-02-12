@@ -27,7 +27,7 @@ exports[`Coding scene - Navigator should render correctly 1`] = `
         Object {
           "alignItems": "center",
           "backgroundColor": "#373f41",
-          "height": 60,
+          "height": 55,
           "justifyContent": "center",
           "textTransform": "uppercase",
         }
