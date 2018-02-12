@@ -67,7 +67,7 @@ exports[`Coding scene --- QuestionContent component should render correctly 1`] 
     style={
       Object {
         "paddingBottom": 40,
-        "paddingLeft": 65,
+        "paddingLeft": 40,
         "paddingRight": 65,
         "paddingTop": 0,
       }
@@ -84,6 +84,7 @@ exports[`Coding scene --- QuestionContent component should render correctly 1`] 
       style={
         Object {
           "overflow": "auto",
+          "paddingLeft": 25,
         }
       }
     >
