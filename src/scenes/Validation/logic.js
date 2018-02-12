@@ -46,6 +46,65 @@ export const getValidationOutlineLogic = createLogic({
   }
 })
 
+export const validateQuestionLogic = createLogic({
+  type: [types.UPDATE_USER_VALIDATION_REQUEST, types.ON_CHANGE_VALIDATION_PINCITE, types.ON_CLEAR_VALIDATION_ANSWER],
+  // type: [types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER],
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.UPDATE_USER_VALIDATION_SUCCESS,
+    failType: types.UPDATE_USER_VALIDATION_FAIL
+  },
+  latest: true,
+  async process({ getState, action, api }) {
+    console.log(action)
+    const validationState = getState().scenes.validation
+    const updatedQuestionObject = validationState.userAnswers[action.questionId]
+    let finalObject = {}
+
+    if (validationState.question.isCategoryQuestion) {
+      const selectedCategoryId = validationState.categories[validationState.selectedCategory].id
+
+      finalObject = {
+        ...updatedQuestionObject,
+        codedAnswers: validationState.question.questionType === questionTypes.TEXT_FIELD
+          ? [deleteAnswerIds(updatedQuestionObject.answers[selectedCategoryId].answers)]
+          : Object.values(updatedQuestionObject.answers[selectedCategoryId].answers).map(answer => {
+            let ans = { ...answer }
+            if (answer.id) {
+              delete ans.id
+            }
+            return ans
+          }),
+        comment: updatedQuestionObject.comment[selectedCategoryId],
+        flag: updatedQuestionObject.flag[selectedCategoryId]
+      }
+
+      const { answers, schemeQuestionId, ...final } = finalObject
+      // console.log(final)
+      return await api.validateCategoryQuestion(action.projectId, action.jurisdictionId, action.questionId, selectedCategoryId, final)
+    } else {
+      finalObject = {
+        ...updatedQuestionObject,
+        codedAnswers: validationState.question.questionType === questionTypes.TEXT_FIELD
+          ? [deleteAnswerIds(updatedQuestionObject.answers)]
+          : Object.values(updatedQuestionObject.answers).map(answer => {
+            let ans = { ...answer }
+            if (answer.id) {
+              delete ans.id
+            }
+            return ans
+          })
+      }
+      const { answers, ...final } = finalObject
+      console.log(final)
+      return await api.validateQuestion(action.projectId, action.jurisdictionId, action.questionId, final)
+    }
+  }
+})
+
+
+
 export default [
+  validateQuestionLogic,
   getValidationOutlineLogic
 ]
