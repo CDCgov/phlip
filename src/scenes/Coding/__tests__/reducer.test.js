@@ -436,22 +436,20 @@ describe('Coding reducer', () => {
       expect(state).toHaveProperty('showNextButton', false)
       expect(state).toHaveProperty('currentIndex', 3)
       expect(state).toHaveProperty('userAnswers', {
-        userAnswers: {
-          ...currentState.userAnswers,
-          3: {
-            schemeQuestionId: 3,
-            answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
+        ...currentState.userAnswers,
+        3: {
+          schemeQuestionId: 3,
+          answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
+        },
+        4: {
+          schemeQuestionId: 4,
+          answers: {
+            10: { answers: {} },
+            20: { answers: {} }
           },
-          4: {
-            schemeQuestionId: 4,
-            answers: {
-              10: { answers: {} },
-              20: { answers: {} }
-            },
-            comment: {
-              10: '',
-              20: ''
-            }
+          comment: {
+            10: '',
+            20: ''
           }
         }
       })
@@ -524,9 +522,51 @@ describe('Coding reducer', () => {
               { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
             ]
           },
-          4: { text: 'cat question child', questionType: 3, id: 4, parentId: 3, positionInParent: 0 }
+          4: {
+            text: 'cat question child',
+            questionType: 3,
+            id: 4,
+            parentId: 3,
+            positionInParent: 0,
+            indent: 2,
+            isCategoryQuestion: true,
+            possibleAnswers: [
+              { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
+            ]
+          }
         },
-        order: [1, 2, 3, 4]
+        order: [1, 2, 3, 4],
+        tree: [
+          { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: false },
+          { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, isAnswered: false },
+          {
+            text: 'cat question',
+            questionType: 2,
+            id: 3,
+            parentId: 0,
+            positionInParent: 2,
+            isAnswered: true,
+            indent: 1,
+            possibleAnswers: [
+              { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
+            ],
+            children: [
+              {
+                text: 'cat question child',
+                questionType: 3,
+                isCategoryQuestion: true,
+                id: 4,
+                indent: 2,
+                parentId: 3,
+                positionInParent: 0,
+                isAnswered: false,
+                possibleAnswers: [
+                  { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
+                ]
+              }
+            ]
+          }
+        ]
       },
       userAnswers: {
         1: {
@@ -577,6 +617,59 @@ describe('Coding reducer', () => {
           }
         }
       }))
+
+      expect(state).toHaveProperty('scheme.tree', [
+        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: true },
+        { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, isAnswered: false },
+        {
+          text: 'cat question',
+          questionType: 2,
+          id: 3,
+          parentId: 0,
+          positionInParent: 2,
+          isAnswered: true,
+          indent: 1,
+          possibleAnswers: [
+            { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
+          ],
+          children: [
+            {
+              text: 'cat question child',
+              questionType: 3,
+              isCategoryQuestion: true,
+              id: 4,
+              parentId: 3,
+              positionInParent: 0,
+              isAnswered: false,
+              indent: 2,
+              possibleAnswers: [
+                { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
+              ],
+              children: [
+                {
+                  schemeAnswerId: 10,
+                  schemeQuestionId: 4,
+                  indent: 3,
+                  isCategory: true,
+                  positionInParent: 0,
+                  text: 'category 2',
+                  isAnswered: false
+                },
+                {
+                  schemeAnswerId: 20,
+                  schemeQuestionId: 4,
+                  indent: 3,
+                  isCategory: true,
+                  positionInParent: 1,
+                  text: 'category 3',
+                  isAnswered: false
+                }
+              ],
+              completedProgress: 0
+            }
+          ]
+        }
+      ])
     })
 
     test('should handle checkbox / category choice type questions', () => {
@@ -656,7 +749,8 @@ describe('Coding reducer', () => {
               answers: { 1: { schemeAnswerId: 1 } },
               comment: 'new comment'
             }
-          }
+          },
+          showNextButton: false
         })
       )
 
@@ -680,7 +774,7 @@ describe('Coding reducer', () => {
             parentId: 0,
             positionInParent: 1,
             possibleAnswers: [{ id: 90, text: 'check 1' }, { id: 91, text: 'check 2' }],
-            isCategoryChild: true
+            isCategoryQuestion: true
           },
           userAnswers: {
             2: {
@@ -714,7 +808,7 @@ describe('Coding reducer', () => {
             parentId: 0,
             positionInParent: 1,
             possibleAnswers: [{ id: 90, text: 'check 1' }, { id: 91, text: 'check 2' }],
-            isCategoryChild: true
+            isCategoryQuestion: true
           },
           userAnswers: {
             2: {
@@ -734,6 +828,7 @@ describe('Coding reducer', () => {
               }
             }
           },
+          showNextButton: false,
           selectedCategory: 0,
           categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
         })
@@ -797,7 +892,8 @@ describe('Coding reducer', () => {
               },
               comment: ''
             }
-          }
+          },
+          showNextButton: false
         })
       )
     })
@@ -815,8 +911,8 @@ describe('Coding reducer', () => {
       const state = getReducer(
         getState({
           question: {
-            questionType: 2,
-            isCategoryChild: true
+            questionType: 3,
+            isCategoryQuestion: true
           },
           userAnswers: {
             2: {
@@ -845,8 +941,8 @@ describe('Coding reducer', () => {
       expect(state).toEqual(
         getState({
           question: {
-            questionType: 2,
-            isCategoryChild: true
+            questionType: 3,
+            isCategoryQuestion: true
           },
           userAnswers: {
             2: {
@@ -867,6 +963,7 @@ describe('Coding reducer', () => {
             }
           },
           selectedCategory: 1,
+          showNextButton: false,
           categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
         })
       )
@@ -918,7 +1015,8 @@ describe('Coding reducer', () => {
               answers: {},
               comment: ''
             }
-          }
+          },
+          showNextButton: false
         })
       )
     })
@@ -935,7 +1033,7 @@ describe('Coding reducer', () => {
         getState({
           question: {
             questionType: 4,
-            isCategoryChild: true
+            isCategoryQuestion: true
           },
           userAnswers: {
             2: {
@@ -965,7 +1063,7 @@ describe('Coding reducer', () => {
         getState({
           question: {
             questionType: 4,
-            isCategoryChild: true
+            isCategoryQuestion: true
           },
           userAnswers: {
             2: {
@@ -984,9 +1082,161 @@ describe('Coding reducer', () => {
             }
           },
           selectedCategory: 0,
-          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
+          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }],
+          showNextButton: false
         })
       )
+    })
+
+    test('should update scheme.tree for category questions', () => {
+      const currentState = {
+        question: {
+          text: 'fa la la la',
+          questionType: 1,
+          id: 1,
+          parentId: 0,
+          positionInParent: 0,
+          possibleAnswers: [{ id: 123, text: 'answer 1', id: 234, text: 'answer 2' }]
+        },
+        outline: {
+          1: { parentId: 0, positionInParent: 0 },
+          2: { parentId: 0, positionInParent: 1 },
+          3: { parentId: 0, positionInParent: 2 },
+          4: { parentId: 3, positionInParent: 0 }
+        },
+        scheme: {
+          byId: {
+            1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
+            2: { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1 },
+            3: {
+              text: 'cat question',
+              questionType: 2,
+              id: 3,
+              parentId: 0,
+              positionInParent: 2,
+              possibleAnswers: [
+                { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
+              ]
+            },
+            4: {
+              text: 'cat question child',
+              questionType: 3,
+              id: 4,
+              parentId: 3,
+              positionInParent: 0,
+              indent: 2,
+              isCategoryQuestion: true,
+              possibleAnswers: [
+                { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
+              ]
+            }
+          },
+          order: [1, 2, 3, 4],
+          tree: [
+            { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: true },
+            { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, isAnswered: false },
+            {
+              text: 'cat question',
+              questionType: 2,
+              id: 3,
+              parentId: 0,
+              positionInParent: 2,
+              isAnswered: true,
+              indent: 1,
+              possibleAnswers: [
+                { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
+              ],
+              children: [
+                {
+                  text: 'cat question child',
+                  questionType: 3,
+                  isCategoryQuestion: true,
+                  id: 4,
+                  parentId: 3,
+                  positionInParent: 0,
+                  isAnswered: false,
+                  indent: 2,
+                  possibleAnswers: [
+                    { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
+                  ],
+                  children: [
+                    {
+                      schemeAnswerId: 10,
+                      schemeQuestionId: 4,
+                      indent: 3,
+                      isCategory: true,
+                      positionInParent: 0,
+                      text: 'category 2',
+                      isAnswered: false
+                    },
+                    {
+                      schemeAnswerId: 20,
+                      schemeQuestionId: 4,
+                      indent: 3,
+                      isCategory: true,
+                      positionInParent: 1,
+                      text: 'category 3',
+                      isAnswered: false
+                    }
+                  ],
+                  completedProgress: 0
+                }
+              ]
+            }
+          ]
+        },
+        userAnswers: {
+          1: {
+            answers: { 123: { schemeAnswerId: 123, pincite: '' } },
+            schemeQuestionId: 1,
+            comment: ''
+          },
+          2: {
+            answers: {},
+            schemeQuestionId: 2,
+            comment: ''
+          },
+          3: {
+            schemeQuestionId: 3,
+            answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
+          },
+          4: {
+            schemeQuestionId: 4,
+            answers: {
+              10: { answers: {} },
+              20: { answers: {} }
+            },
+            comment: {
+              10: '',
+              20: ''
+            }
+          }
+        }
+      }
+
+      const action = {
+        type: types.ON_CLEAR_ANSWER,
+        questionId: 3,
+        projectId: 1,
+        jurisdictionId: 1
+      }
+
+      const state = getReducer(currentState, action)
+      expect(state).toHaveProperty('scheme.tree', [
+        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: true },
+        { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, isAnswered: false },
+        {
+          text: 'cat question',
+          questionType: 2,
+          id: 3,
+          parentId: 0,
+          positionInParent: 2,
+          isAnswered: false,
+          indent: 1,
+          possibleAnswers: [{ id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }],
+          children: []
+        }
+      ])
     })
   })
 })
