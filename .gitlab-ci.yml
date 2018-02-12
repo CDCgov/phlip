@@ -27,7 +27,7 @@ test_esquire_frontend_image:
     - iiu
   script:
     - docker-compose -f docker-compose.dev.yml run --user=988 dev npm run test:local
-    - docker rm esquirefrontend_dev_run_1 -v
+    - docker-compose -f docker-compose.dev.yml down
 
 push_esquire_frontend_image:
   stage: push
