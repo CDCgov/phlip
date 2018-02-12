@@ -27,7 +27,7 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
         </Column>
       </Row>
       <Column displayFlex flex style={{ ...questionAnswerPadding }}>
-        <Row flex style={{ overflow: 'auto', paddingLeft: 65 - questionAnswerPadding.paddingLeft }}>
+        <Row flex style={{ overflow: 'auto', paddingLeft: 65 - questionAnswerPadding.paddingLeft, flexBasis: '50%' }}>
           {question.questionType === 1 &&
           <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
                       onChangePincite={onChangeTextAnswer} />}
@@ -50,7 +50,7 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
           </Row>
 
         {question.includeComment &&
-        <Row style={{ paddingTop: 30, paddingLeft: 65 - questionAnswerPadding.paddingLeft }}>
+        <Row style={{ paddingTop: 30, paddingLeft: 65 - questionAnswerPadding.paddingLeft, flexBasis: '50%' }}>
             <SimpleInput onChange={onChangeTextAnswer(null, 'comment')} name="comment"
                          placeholder="Enter comment" style={{ width: '70%' }}
                          value={comment}

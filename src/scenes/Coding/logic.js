@@ -30,8 +30,6 @@ export const getOutlineLogic = createLogic({
       }
     }
 
-    console.log(codedQuestions)
-
     if (scheme.schemeQuestions.length === 0) {
       return {
         isSchemeEmpty: true

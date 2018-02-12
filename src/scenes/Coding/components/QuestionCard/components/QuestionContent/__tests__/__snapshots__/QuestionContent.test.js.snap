@@ -83,6 +83,7 @@ exports[`Coding scene --- QuestionContent component should render correctly 1`] 
       flex={true}
       style={
         Object {
+          "flexBasis": "50%",
           "overflow": "auto",
           "paddingLeft": 25,
         }
