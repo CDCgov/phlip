@@ -11,11 +11,13 @@ import axios from 'axios'
 import { isLoggedInTokenExists, getToken } from '../services/authToken'
 import CodingScheme from './CodingScheme'
 import Coding from './Coding'
+import Validation from './Validation'
 
 const AuthenticatedScenes = () => (
   <Switch>
     <Route path="/project/:id/coding-scheme" component={CodingScheme} />
     <Route path="/project/:id/code" component={Coding} />
+    {/*<Route path="/project/:id/validate" component={Validation} />*/}
     <HeaderedLayout>
       <Switch>
         <Route path="/admin" component={Admin} />

@@ -23,11 +23,11 @@ export const FooterNavigate = ({ currentIndex, getNextQuestion, getPrevQuestion,
       {currentIndex !== 0 &&
       <Row displayFlex style={{ cursor: 'pointer' }} onClick={() => getPrevQuestion(currentIndex - 1)}>
         <IconButton color="black">arrow_back</IconButton>
-        <Typography type="body2"><span style={{ ...styles, paddingLeft: 5 }}>Previous question</span></Typography>
+        <Typography type="body2"><span style={{ ...styles, paddingLeft: 5, userSelect: 'none' }}>Previous question</span></Typography>
       </Row>}
       {showNextButton && <Row displayFlex flex={currentIndex === 0} style={{ cursor: 'pointer' }} onClick={() => getNextQuestion(currentIndex + 1)}>
         <Typography type="body2">
-          <span style={{ ...styles, paddingRight: 5 }}>Next question</span>
+          <span style={{ ...styles, paddingRight: 5, userSelect: 'none' }}>Next question</span>
         </Typography>
         <IconButton color="black">arrow_forward</IconButton>
       </Row>}

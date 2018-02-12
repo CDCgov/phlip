@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Grid from 'material-ui/Grid'
-import Header from 'components/Header'
+import AppBarHeader from 'components/AppBarHeader'
 import * as actions from 'data/user/actions'
 import { withRouter } from 'react-router-dom'
 
@@ -16,7 +16,7 @@ const mainStyles = {
 export const HeaderedLayout = ({ user, open, actions, children, history }) => {
   return (
     <Grid container spacing={0} direction="column" style={{ flex: '1' }}>
-      <Header
+      <AppBarHeader
         user={user}
         open={open}
         handleLogoutUser={() => { history.push('/'); actions.logoutUser() }}

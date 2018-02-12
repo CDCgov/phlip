@@ -1505,6 +1505,10 @@ chalk@^2.3.0:
     escape-string-regexp "^1.0.5"
     supports-color "^4.0.0"
 
+chance@^1.0.13:
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/chance/-/chance-1.0.13.tgz#666bec2db42b3084456a3e4f4c28a82db5ccb7e6"
+
 change-emitter@^0.1.2:
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/change-emitter/-/change-emitter-0.1.6.tgz#e8b2fe3d7f1ab7d69a32199aff91ea6931409515"
@@ -4406,6 +4410,10 @@ md5.js@^1.3.4:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
+mdi-material-ui@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/mdi-material-ui/-/mdi-material-ui-3.0.1.tgz#26f37866f6ad60ff47d512deb36fd7d13c3fb358"
+
 media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
@@ -5825,6 +5833,16 @@ react-virtualized@^9.13.0:
     dom-helpers "^2.4.0 || ^3.0.0"
     loose-envify "^1.3.0"
     prop-types "^15.5.4"
+
+react-virtualized@^9.18.5:
+  version "9.18.5"
+  resolved "https://registry.yarnpkg.com/react-virtualized/-/react-virtualized-9.18.5.tgz#42dd390ebaa7ea809bfcaf775d39872641679b89"
+  dependencies:
+    babel-runtime "^6.26.0"
+    classnames "^2.2.3"
+    dom-helpers "^2.4.0 || ^3.0.0"
+    loose-envify "^1.3.0"
+    prop-types "^15.6.0"
 
 react@^16.0.0:
   version "16.0.0"

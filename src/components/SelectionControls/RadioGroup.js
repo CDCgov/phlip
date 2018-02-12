@@ -4,6 +4,7 @@ import Radio, { RadioGroup as MuiRadioGroup } from 'material-ui/Radio'
 import { FormControlLabel, FormControl, FormGroup } from 'material-ui/Form'
 import { withStyles } from 'material-ui/styles'
 import SimpleInput from 'components/SimpleInput'
+import AvatarList from 'components/AvatarList'
 
 const styles = {
   checked: {
@@ -11,25 +12,26 @@ const styles = {
   }
 }
 
-export const RadioGroup = ({ choices, userAnswers, onChange, onChangePincite, classes }) => {
+export const RadioGroup = ({ choices, userAnswers, onChange, onChangePincite, classes, users }) => {
   return (
     <FormControl component="fieldset">
-    <FormGroup>
-      {choices.map(choice => (
-        <div key={choice.id} style={{ display: 'flex', alignItems: 'center'  }}>
-          <FormControlLabel
-            onChange={onChange(choice.id)}
-            checked={userAnswers.answers.hasOwnProperty(choice.id)}
-            control={
-              <Radio classes={{ checked: classes.checked }} />
-            }
-            label={choice.text}
-          />
-          {userAnswers.answers.hasOwnProperty(choice.id) &&
-          <SimpleInput key={`${choice.id}-pincite`} style={{ width: 300 }} placeholder="Enter pincite" value={userAnswers.answers[choice.id].pincite} onChange={onChangePincite(choice.id, 'pincite')} />}
-        </div>
-      ))}
-    </FormGroup>
+      <FormGroup>
+        {choices.map(choice => (
+          <div key={choice.id} style={{ display: 'flex', alignItems: 'center' }}>
+            <FormControlLabel
+              onChange={onChange(choice.id)}
+              checked={userAnswers.answers.hasOwnProperty(choice.id)}
+              control={
+                <Radio classes={{ checked: classes.checked }} />
+              }
+              label={choice.text}
+            />
+            {users && <AvatarList users={users} />}
+            {userAnswers.answers.hasOwnProperty(choice.id) &&
+              <SimpleInput key={`${choice.id}-pincite`} style={{ width: 300 }} placeholder="Enter pincite" value={userAnswers.answers[choice.id].pincite} onChange={onChangePincite(choice.id, 'pincite')} />}
+          </div>
+        ))}
+      </FormGroup>
     </FormControl>
   )
 }

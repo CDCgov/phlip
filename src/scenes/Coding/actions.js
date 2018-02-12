@@ -57,3 +57,5 @@ export const getUserCodedQuestions = (projectId, jurisdictionId) => ({
 })
 
 export const updateEditedFields = projectId => ({ type: types.UPDATE_EDITED_FIELDS, projectId })
+
+export const onQuestionSelectedInNav = question => ({ type: types.ON_QUESTION_SELECTED_IN_NAV, question })
