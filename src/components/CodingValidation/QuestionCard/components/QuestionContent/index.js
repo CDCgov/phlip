@@ -13,7 +13,7 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
     paddingTop: 0,
     paddingRight: 65,
     paddingBottom: 40,
-    paddingLeft: (question.number && (question.number.split('.').length * 3) + 65) || 65
+    paddingLeft: (question.number && (question.number.split('.').length * 3) + 40) || 40
   }
 
   return (
@@ -26,44 +26,54 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
           <Typography type="subheading">{question.text}</Typography>
         </Column>
       </Row>
-      <Row displayFlex style={{ ...questionAnswerPadding }}>
-        <Column flex>
+      <Column displayFlex flex style={{ ...questionAnswerPadding }}>
+        <Row flex style={{ overflow: 'auto', paddingLeft: 65 - questionAnswerPadding.paddingLeft, flexBasis: '50%' }}>
           {question.questionType === 1 &&
-            <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
-              onChangePincite={onChangeTextAnswer} users={users} />}
+          <RadioGroup
+            choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
+            onChangePincite={onChangeTextAnswer} users={users}
+          />}
 
           {question.questionType === 2 &&
-            <CheckboxGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
-              pincites={false} />}
+          <CheckboxGroup
+            choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
+            pincites={false}
+          />}
 
           {question.questionType === 3 &&
-            <CheckboxGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
-              onChangePincite={onChangeTextAnswer} />}
+          <CheckboxGroup
+            choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
+            onChangePincite={onChangeTextAnswer}
+          />}
 
           {question.questionType === 4 &&
-            <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
-              onChangePincite={onChangeTextAnswer} users={users} />}
+          <RadioGroup
+            choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
+            onChangePincite={onChangeTextAnswer} users={users}
+          />}
 
           {question.questionType === 5 &&
-            <InputBox rows="5" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
-              value={userAnswers.answers} />}
-
+          <InputBox
+            rows="5" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
+            value={userAnswers.answers}
+          />}
+        </Row>
+        <Row flex style={{ paddingTop: 30, paddingLeft: 65 - questionAnswerPadding.paddingLeft }}>
           {question.includeComment &&
-            <Row style={{ paddingTop: 30 }}>
-              <SimpleInput onChange={onChangeTextAnswer(null, 'comment')} name="comment"
-                placeholder="Enter comment" style={{ width: 600 }}
-                value={comment}
-              />
-            </Row>
-          }
-        </Column>
-      </Row>
+          <Row>
+            <SimpleInput
+              onChange={onChangeTextAnswer(null, 'comment')} name="comment" placeholder="Enter comment"
+              style={{ width: '70%' }} value={comment} label="Comment"
+            />
+          </Row>}
+        </Row>
+      </Column>
 
       {question.hint &&
-        <Row flex displayFlex style={{ padding: '0 35px 20px 35px' }}>
-          <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
-          <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
-        </Row>}
+      <Row displayFlex style={{ padding: '0px 35px 50px 35px' }}>
+        <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
+        <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
+      </Row>}
     </Container>
   )
 }
