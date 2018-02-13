@@ -71,7 +71,7 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
 }
 
 QuestionContent.defaultProps = {
-  mergedUserQuestions: []
+  mergedUserQuestions: { answers: [] }
 }
 
 QuestionContent.propTypes = {

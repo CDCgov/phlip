@@ -155,7 +155,7 @@ const mapStateToProps = (state, ownProps) => {
     categories: state.scenes.validation.categories || undefined,
     selectedCategory: state.scenes.validation.selectedCategory || 0,
     userAnswers: state.scenes.validation.userAnswers[state.scenes.validation.question.id] || {},
-    mergedUserQuestions: state.scenes.validation.mergedUserQuestions[state.scenes.validation.question.id] || [],
+    mergedUserQuestions: state.scenes.validation.mergedUserQuestions[state.scenes.validation.question.id] || { answers: [] },
     showNextButton: state.scenes.validation.showNextButton,
     jurisdictionsList: project.projectJurisdictions || [],
     jurisdictionId: state.scenes.validation.jurisdictionId || (project.projectJurisdictions.length > 0
