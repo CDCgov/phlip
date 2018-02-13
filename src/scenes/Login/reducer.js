@@ -20,8 +20,13 @@ const loginReducer = (state = INITIAL_STATE, action) => {
       return state
     case 'FLUSH_STATE':
       return INITIAL_STATE
+    case '@@redux-form/CHANGE':
+      return {
+        ...state,
+        error: state.error === null ? state.error : null
+      }
 
-    default: return { ...state, error: null }
+    default: return { ...state }
   }
 }
 
