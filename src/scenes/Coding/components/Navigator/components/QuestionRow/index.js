@@ -63,10 +63,13 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
   return (
     <Fragment>
       {scaffold}
-      <div style={{ ...rowStyles, marginLeft: 23 * item.indent, cursor: 'pointer' }}
-           onClick={() => onQuestionSelected(item)}>
+      <div
+        style={{ ...rowStyles, marginLeft: 23 * item.indent, cursor: 'pointer' }}
+        onClick={() => onQuestionSelected(item)}>
         <span style={{ minWidth: 20, minHeight: 20, maxHeight: 20, maxWidth: 20 }}>{children}</span>
-        <Typography style={questionTextStyles} type="body1" noWrap>{`${item.number}. ${item.text}`}</Typography>
+        <Typography style={questionTextStyles} type="body1" noWrap>
+          {item.number && <span>{`${item.number}. `}</span>}{item.text}
+        </Typography>
         {item.isAnswered && <Icon color="#45ad70" size={19}>check</Icon>}
         {item.hasOwnProperty('completedProgress') && <Progress progress={item.completedProgress} />}
       </div>
