@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Grid from 'material-ui/Grid'
+import Typography from 'material-ui/Typography'
+import Container, { Row, Column } from 'components/Layout'
 import { withTheme } from 'material-ui/styles'
 import Logo from 'components/Logo'
 import Button from 'components/Button'
@@ -37,6 +39,9 @@ let LoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, chil
       </div>
       <form onSubmit={handleSubmit}>
         {children}
+        {error && <Row style={{ paddingTop: 10, paddingBottom: 20, justifyContent: 'center' }}>
+          <Typography color="error" align="center">{error}</Typography>
+        </Row>}
         <Grid container direction="column" alignItems="center" justify="center">
           <Grid item>
             <Button type="submit" color="accent" value="Login" disabled={pristine || submitting} />

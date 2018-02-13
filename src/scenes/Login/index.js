@@ -7,7 +7,6 @@ import LoginForm from './components/LoginForm'
 import { Field, SubmissionError } from 'redux-form'
 import FormTextInput from 'components/FormTextInput'
 import * as actions from './actions'
-import Typography from 'material-ui/Typography'
 import { withRouter } from 'react-router-dom'
 
 export class Login extends Component {
@@ -45,9 +44,6 @@ export class Login extends Component {
                 component={FormTextInput}
                 width={250} />
             </Grid>
-            <Row style={{ paddingTop: 10, paddingBottom: 20, justifyContent: 'center' }}>
-              <Typography color="error" align="center">{this.props.error}</Typography>
-            </Row>
           </Grid>
         </LoginForm>
       </Container>
@@ -57,8 +53,7 @@ export class Login extends Component {
 
 const mapStateToProps = (state) => ({
   user: state.data.user.currentUser || undefined,
-  session: state.scenes.login.session || false,
-  error: state.scenes.login.error || ''
+  session: state.scenes.login.session || false
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
