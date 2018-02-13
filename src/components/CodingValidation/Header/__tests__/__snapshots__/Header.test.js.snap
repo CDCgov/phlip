@@ -1,7 +1,40 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Coding scene --- Header component should render correctly 1`] = `
-<AppBar>
+<Container
+  alignItems="center"
+  column={false}
+  flex={false}
+  spacing={0}
+  style={
+    Object {
+      "height": "80px",
+      "padding": "20px 27px",
+    }
+  }
+>
+  <Column
+    component={
+      <WithStyles
+        item={true}
+      />
+    }
+    displayFlex={false}
+    flex={false}
+    style={
+      Object {
+        "paddingRight": 5,
+      }
+    }
+  >
+    <IconButton
+      color="black"
+      iconSize={30}
+      onClick={[Function]}
+    >
+      arrow_back
+    </IconButton>
+  </Column>
   <div />
   <WithStyles
     color="inherit"
@@ -90,5 +123,5 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       value="View/Edit Protocol"
     />
   </React.Fragment>
-</AppBar>
+</Container>
 `;

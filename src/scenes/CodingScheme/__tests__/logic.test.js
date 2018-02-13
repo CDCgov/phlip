@@ -24,9 +24,9 @@ describe('CodingScheme logic', () => {
     })
   }
 
-  xtest('should call the api to get the coding scheme and dispatch GET_SCHEME_SUCCESS when successful', (done) => {
-    mock.onGet('/projects/1/codingscheme').reply(200, {
-      codingSchemeQuestions: [{ id: 1, text: 'question 1' }],
+  test('should call the api to get the coding scheme and dispatch GET_SCHEME_SUCCESS when successful', (done) => {
+    mock.onGet('/projects/1/scheme').reply(200, {
+      schemeQuestions: [{ id: 1, text: 'question 1' }],
       outline: { 1: { parentId: 0, positionInParent: 0 } }
     })
 
@@ -39,7 +39,7 @@ describe('CodingScheme logic', () => {
         {
           type: types.GET_SCHEME_SUCCESS,
           payload: {
-            codingSchemeQuestions: [{ id: 1, text: 'question 1' }],
+            schemeQuestions: [{ id: 1, text: 'question 1' }],
             outline: { 1: { parentId: 0, positionInParent: 0 } }
           }
         }

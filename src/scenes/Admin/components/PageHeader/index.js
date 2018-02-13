@@ -1,33 +1,27 @@
 import React from 'react'
-import Grid from 'material-ui/Grid'
 import Typography from 'material-ui/Typography'
 import Button from 'components/Button'
-import CircleIcon from 'components/CircleIcon'
+import IconButton from 'components/IconButton'
 import TextLink from 'components/TextLink'
 import Container, { Column } from 'components/Layout'
+import { withRouter } from 'react-router-dom'
 
-export const PageHeader = () => {
+export const PageHeader = ({ history }) => {
   return (
-    <Container alignItems="center" style={{ height: '75px' }}>
+    <Container alignItems="center" style={{ height: '80px' }}>
+      <Column style={{ paddingRight: 5 }}>
+        <IconButton iconSize={30} color="black" onClick={() => history.push('/')}>arrow_back</IconButton>
+      </Column>
       <Column flex>
-        <Container spacing={8} alignItems="center">
-          <Column>
-            <CircleIcon circleColor="error" iconColor="white" circleSize="30px" iconSize="19px">face</CircleIcon>
-          </Column>
-          <Column>
-            <Typography type="title">User Management</Typography>
-          </Column>
-        </Container>
+        <Typography type="title">User Management</Typography>
       </Column>
       <Column>
-        <TextLink to="/admin/new/user" style={{ color: 'white' }}>
-          <Button value=" + Add new user" color="accent" />
+        <TextLink to={{ pathname: '/admin/new/user' }}>
+          <Button value="+ Add New User" color="accent" />
         </TextLink>
       </Column>
     </Container>
   )
 }
 
-
-
-export default PageHeader
+export default withRouter(PageHeader)

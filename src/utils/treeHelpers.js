@@ -26,7 +26,11 @@ const getIndent = numberString => numberString.split('.').length > 1 ? numberStr
 const setChildren = (node, number, fullList, numbering, order) => {
   node.indent = getIndent(number)
   node.number = number
-  fullList.push(node)
+
+  let fullNode = { ...node }
+  delete fullNode.children
+
+  fullList.push({ ...fullNode })
   numbering[node.id] = { number }
   order.push(node.id)
 

@@ -1,34 +1,80 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CodingScheme scene --- Header component should render correctly 1`] = `
-<AppBar>
-  <WithStyles
-    color="inherit"
+<Container
+  alignItems="center"
+  column={false}
+  flex={false}
+  spacing={0}
+  style={
+    Object {
+      "height": "80px",
+    }
+  }
+>
+  <Column
+    component={
+      <WithStyles
+        item={true}
+      />
+    }
+    displayFlex={false}
+    flex={false}
     style={
       Object {
-        "flex": 1,
+        "paddingRight": 5,
       }
     }
-    type="title"
   >
-    Coding Scheme | 
-    <span
+    <IconButton
+      color="black"
+      iconSize={30}
+      onClick={[Function]}
+    >
+      arrow_back
+    </IconButton>
+  </Column>
+  <Column
+    component={
+      <WithStyles
+        item={true}
+      />
+    }
+    displayFlex={false}
+    flex={true}
+  >
+    <WithStyles
+      type="title"
+    >
+      Coding Scheme | 
+      <span
+        style={
+          Object {
+            "color": "#0faee6",
+          }
+        }
+      >
+        Test Project
+      </span>
+    </WithStyles>
+  </Column>
+  <Column
+    component={
+      <WithStyles
+        item={true}
+      />
+    }
+    displayFlex={false}
+    flex={false}
+  >
+    <SearchBar
+      placeholder="Search"
       style={
         Object {
-          "color": "#0faee6",
+          "paddingRight": 20,
         }
       }
-    >
-      Test Project
-    </span>
-  </WithStyles>
-  <SearchBar
-    placeholder="Search"
-    style={
-      Object {
-        "paddingRight": 10,
-      }
-    }
-  />
-</AppBar>
+    />
+  </Column>
+</Container>
 `;

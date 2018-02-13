@@ -3,6 +3,15 @@
 exports[`Coding scene - QuestionRow should render correctly 1`] = `
 <React.Fragment>
   <div
+    className="undefined"
+    key="2-scaffold-0"
+    style={
+      Object {
+        "left": 0,
+      }
+    }
+  />
+  <div
     onClick={[Function]}
     style={
       Object {
@@ -10,7 +19,7 @@ exports[`Coding scene - QuestionRow should render correctly 1`] = `
         "cursor": "pointer",
         "display": "flex",
         "height": 40,
-        "marginLeft": NaN,
+        "marginLeft": 0,
         "position": "relative",
       }
     }
@@ -37,7 +46,9 @@ exports[`Coding scene - QuestionRow should render correctly 1`] = `
         }
       }
       type="body1"
-    />
+    >
+      3. question 3
+    </WithStyles>
   </div>
 </React.Fragment>
 `;

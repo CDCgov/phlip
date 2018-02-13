@@ -19,9 +19,9 @@ export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, on
             <Avatar onClick={onToggleMenu} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />
           </Target>
           {open &&
-          <Popper placement="bottom-start">
-            <Grow in={open} id="avatar-menu" style={{ transformOrigin: '0 0 0' }}>
-              <Paper style={{ marginRight: 20, marginTop: 5 }}>
+          <Popper placement="bottom-end">
+            <Grow in={open} id="avatar-menu">
+              <Paper style={{ marginTop: 5 }}>
                 <MenuList role="menu">
                   {role === 'Admin' &&
                   <MenuItem onClick={onOpenAdminPage} selected={false} key="admin-menu">

@@ -34,7 +34,7 @@ describe('Admin Scene', () => {
     expect(shallow(<Admin {...props} />)).toMatchSnapshot()
   })
 
-  test('should render UserList component', () => {
+  xtest('should render UserList component', () => {
     let wrapper = shallow(<Admin {...props} />)
     expect(wrapper.find(UserList)).toHaveLength(1)
     expect(wrapper.find(PageHeader)).toHaveLength(1)

@@ -141,7 +141,7 @@ export class Navigator extends Component {
       <Container column flex>
         <Row displayFlex style={{
           backgroundColor: '#373f41',
-          height: 60,
+          height: 55,
           alignItems: 'center',
           justifyContent: 'center',
           textTransform: 'uppercase'

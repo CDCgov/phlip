@@ -20,8 +20,6 @@ build_esquire_frontend:
     - npm -version
     - node -v
     - yarn build:image:dev
-  except:
-    - navigator
 
 test_esquire_frontend_image:
   stage: test
@@ -29,9 +27,8 @@ test_esquire_frontend_image:
     - iiu
   script:
     - docker-compose -f docker-compose.dev.yml run --user=988 dev npm run test:local
-  except:
-    - navigator
-    
+    - docker-compose -f docker-compose.dev.yml down
+
 push_esquire_frontend_image:
   stage: push
   script:
@@ -42,8 +39,6 @@ push_esquire_frontend_image:
     url: https://dtr.phiresearchlab.org/repositories/iiu/esquire-frontend/tags
   tags:
     - iiu
-  except:
-    - navigator
 
 deploy_test_esquire_frontend:
   stage: push
