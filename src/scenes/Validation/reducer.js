@@ -8,7 +8,8 @@ import {
   handleUpdateUserCodedQuestion,
   handleClearAnswers,
   handleClearCategoryAnswers,
-  initializeUserAnswers
+  initializeUserAnswers,
+  initilizedCodedUsers
 } from 'utils/codingHelpers'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
@@ -22,7 +23,8 @@ const INITIAL_STATE = {
   categories: undefined,
   selectedCategory: 0,
   userAnswers: {},
-  showNextButton: true
+  showNextButton: true,
+  mergedUserQuestions: {}
 }
 
 const validationReducer = (state = INITIAL_STATE, action) => {
@@ -52,7 +54,8 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           scheme: { order: [], byId: {} },
           outline: {},
           question: {},
-          userAnswers: {}
+          userAnswers: {},
+          combinedUserAnswers: {}
         }
       } else {
         const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
@@ -67,6 +70,15 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           question: action.payload.question,
           userAnswers: action.payload.codedQuestions.length !== 0
             ? initializeUserAnswers(action.payload.codedQuestions, normalizedQuestions)
+            : {
+              [action.payload.question.id]: {
+                schemeQuestionId: action.payload.question.id,
+                comment: '',
+                answers: {}
+              }
+            },
+          mergedUserQuestions: action.payload.mergedUserQuestions.length !== 0
+            ? initilizedCodedUsers(action.payload.mergedUserQuestions, normalizedQuestions)
             : {
               [action.payload.question.id]: {
                 schemeQuestionId: action.payload.question.id,

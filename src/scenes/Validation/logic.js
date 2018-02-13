@@ -14,6 +14,10 @@ export const getValidationOutlineLogic = createLogic({
   async process({ action, getState, api }) {
     let scheme = {}
     let codedQuestions = []
+    let projectCoders = []
+    let codeQuestionsPerUser = []
+    let combinedCodedQuestions = {}
+
     const userId = getState().data.user.currentUser.id
 
     try {
@@ -22,6 +26,14 @@ export const getValidationOutlineLogic = createLogic({
       throw { error: 'failed to get outline' }
     }
 
+    try {
+      projectCoders = await api.getProjectCoders(action.projectId)
+    } catch (e) {
+      throw { error: 'failed to get project coders' }
+    }
+    // console.log('returned object [projectCoders]: ', projectCoders)
+
+
     if (action.jurisdictionId) {
       try {
         codedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
@@ -29,6 +41,47 @@ export const getValidationOutlineLogic = createLogic({
         throw { error: 'failed to get codedQuestions' }
       }
     }
+
+    if (projectCoders.length === 0) {
+
+    } else {
+
+      for (let coder of projectCoders) {
+        try {
+          codeQuestionsPerUser = await api.getUserCodedQuestions(coder.userId, action.projectId, action.jurisdictionId)
+          combinedCodedQuestions = [...combinedCodedQuestions, { codeQuestionsPerUser, coder }]
+          // combindedCodedQuestions = codeQuestionsPerUser.reduce((item, index) => {
+          //   return { ...item, codedWithUser: [item.codedAnswers, { ...item.codedAnswers, ...coder }] }
+          // })
+          // combindedCodedQuestions = { ...combindedCodedQuestions, codedQuestions: [...combindedCodedQuestions, ...codeQuestionsPerUser] }
+          // combinedCodedQuestionsList = [...combinedCodedQuestionsList, { ...combindedCodedQuestions }]
+
+
+        } catch (e) {
+          throw { error: 'failed to get codedQuestions for user' }
+        }
+      }
+    }
+
+    let mergedUserQuestions = []
+
+
+
+    for (let item of combinedCodedQuestions) {
+      // console.log(item.codeQuestionsPerUser, item.coder)
+      for (let codedQuestion of item.codeQuestionsPerUser) {
+        for (let codedAnswer of codedQuestion.codedAnswers) {
+          // mergedCodedAnswers = [...mergedCodedAnswers, { ...codedAnswer, ...item.coder }]
+          mergedUserQuestions = [...mergedUserQuestions, { ...codedQuestion, codedAnswers: { ...codedAnswer, ...item.coder } }]
+        }
+        // console.log(codedQuestion)
+        // mergedUserQuestions = [...mergedUserQuestions, { ...codedQuestion, codedAnswers: { ...mergedCodedAnswers } }]
+      }
+    }
+
+
+    // console.log(mergedUserQuestions)
+
 
     if (scheme.schemeQuestions.length === 0) {
       return {
@@ -41,12 +94,28 @@ export const getValidationOutlineLogic = createLogic({
 
       const { questionsWithNumbers, order } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
 
+      let output = []
+
+      mergedUserQuestions.forEach((value) => {
+        var existing = output.filter((v, i) => {
+          return v.schemeQuestionId == value.schemeQuestionId
+        })
+        if (existing.length) {
+          var existingIndex = output.indexOf(existing[0])
+          output[existingIndex].codedAnswers = output[existingIndex].codedAnswers.concat(value.codedAnswers)
+        } else {
+          if (typeof value.codedAnswers == 'object')
+            value.codedAnswers = [value.codedAnswers]
+          output.push(value);
+        }
+      })
+
       return {
         outline: scheme.outline,
         scheme: questionsWithNumbers,
         questionOrder: order,
         question: questionsWithNumbers[0],
-        // codedQuestions: [],
+        mergedUserQuestions: output,
         codedQuestions,
         isSchemeEmpty: false
       }
@@ -63,7 +132,7 @@ export const validateQuestionLogic = createLogic({
   },
   latest: true,
   async process({ getState, action, api }) {
-    console.log(action)
+    // console.log(action)
     const validationState = getState().scenes.validation
     const updatedQuestionObject = validationState.userAnswers[action.questionId]
     let finalObject = {}
@@ -85,7 +154,7 @@ export const validateQuestionLogic = createLogic({
       }
 
       const { answers, schemeQuestionId, ...final } = finalObject
-      console.log(final)
+      // console.log(final)
       return await api.validateCategoryQuestion(action.projectId, action.jurisdictionId, action.questionId, selectedCategoryId, final)
     } else {
       finalObject = {
@@ -101,61 +170,9 @@ export const validateQuestionLogic = createLogic({
           })
       }
       const { answers, ...final } = finalObject
-      console.log(final)
+      // console.log(final)
       return await api.validateQuestion(action.projectId, action.jurisdictionId, action.questionId, final)
     }
-  }
-})
-
-export const getProjectCodersLogic = createLogic({
-  type: types.GET_CODED_USERS_LIST_REQUEST,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.GET_CODED_USERS_LIST_SUCCESS,
-    failType: types.GET_CODED_USERS_LIST_FAIL
-  },
-  async process({ action, getState, api }) {
-    let projectCoders = []
-    let codedQuestions = []
-    let combindedCodedQuestions = []
-
-    try {
-      projectCoders = await api.getProjectCoders(action.projectId)
-    } catch (e) {
-      throw { error: 'failed to get project coders' }
-    }
-    // console.log('returned object [projectCoders]: ', projectCoders)
-
-    if (projectCoders.length === 0) {
-      return {
-        isCodersEmpty: true
-      }
-    } else {
-
-      for (let coder of projectCoders) {
-        try {
-          codedQuestions = await api.getUserCodedQuestions(coder.userId, action.projectId, action.jurisdictionId)
-          combindedCodedQuestions = [...combindedCodedQuestions, { ...coder, codedQuestions }]
-
-        } catch (e) {
-          throw { error: 'failed to get codedQuestions for user' }
-        }
-      }
-
-      console.log(combindedCodedQuestions)
-      // projectCoders.map(async coder => {
-      //   try {
-      //     codedQuestions = await api.getUserCodedQuestions(coder.userId, action.projectId, action.jurisdictionId)
-
-      //   } catch (e) {
-      //     throw { error: 'failed to get codedQuestions for user' }
-      //   }
-
-
-
-      // })
-    }
-
   }
 })
 
@@ -183,7 +200,6 @@ export const getUserValidatedQuestionsLogic = createLogic({
 
 export default [
   getUserValidatedQuestionsLogic,
-  getProjectCodersLogic,
   validateQuestionLogic,
   getValidationOutlineLogic
 ]

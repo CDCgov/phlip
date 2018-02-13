@@ -4,6 +4,7 @@ import Checkbox from 'material-ui/Checkbox'
 import { FormGroup, FormControlLabel, FormControl } from 'material-ui/Form'
 import { withStyles } from 'material-ui/styles'
 import SimpleInput from 'components/SimpleInput'
+import Avatar from 'components/Avatar'
 
 const styles = {
   checked: {
@@ -11,7 +12,7 @@ const styles = {
   }
 }
 
-export const CheckboxGroup = ({ choices, userAnswers, onChange, onChangePincite, pincites, classes }) => {
+export const CheckboxGroup = ({ choices, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions }) => {
   return (
     <FormControl component="fieldset">
       <FormGroup>
@@ -25,13 +26,16 @@ export const CheckboxGroup = ({ choices, userAnswers, onChange, onChangePincite,
               }
               label={choice.text}
             />
+            {mergedUserQuestions && mergedUserQuestions.answers.map((answer, index) => (
+              answer.schemeAnswerId === choice.id && <Avatar style={styles} key={index} initials={answer.firstName[0] + answer.lastName[0]} />
+            ))}
             {userAnswers.answers.hasOwnProperty(choice.id) && pincites &&
-            <SimpleInput key={`${choice.id}-pincite`} style={{ width: 300 }} placeholder="Enter pincite"
-                         value={userAnswers.answers[choice.id].pincite}
-                         onChange={onChangePincite(choice.id, 'pincite')} />}
+              <SimpleInput key={`${choice.id}-pincite`} style={{ width: 300 }} placeholder="Enter pincite"
+                value={userAnswers.answers[choice.id].pincite}
+                onChange={onChangePincite(choice.id, 'pincite')} />}
           </div>)
         })}
-        </FormGroup>
+      </FormGroup>
     </FormControl>
   )
 }

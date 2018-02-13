@@ -5,6 +5,7 @@ import { FormControlLabel, FormControl, FormGroup } from 'material-ui/Form'
 import { withStyles } from 'material-ui/styles'
 import SimpleInput from 'components/SimpleInput'
 import AvatarList from 'components/AvatarList'
+import Avatar from 'components/Avatar'
 
 const styles = {
   checked: {
@@ -12,7 +13,7 @@ const styles = {
   }
 }
 
-export const RadioGroup = ({ choices, userAnswers, onChange, onChangePincite, classes, users }) => {
+export const RadioGroup = ({ choices, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions }) => {
   return (
     <FormControl component="fieldset">
       <FormGroup>
@@ -26,9 +27,11 @@ export const RadioGroup = ({ choices, userAnswers, onChange, onChangePincite, cl
               }
               label={choice.text}
             />
-            {users && <AvatarList users={users} />}
+            {mergedUserQuestions && mergedUserQuestions.answers.map((answer, index) => (
+              answer.schemeAnswerId === choice.id && <Avatar style={styles} key={index} initials={answer.firstName[0] + answer.lastName[0]} />
+            ))}
             {userAnswers.answers.hasOwnProperty(choice.id) &&
-              <SimpleInput key={`${choice.id}-pincite`} style={{ width: 300 }} placeholder="Enter pincite" value={userAnswers.answers[choice.id].pincite} onChange={onChangePincite(choice.id, 'pincite')} />}
+              <SimpleInput key={`${choice.id}-pincite`} style={{ width: 300, marginLeft: '29px' }} placeholder="Enter pincite" value={userAnswers.answers[choice.id].pincite} onChange={onChangePincite(choice.id, 'pincite')} />}
           </div>
         ))}
       </FormGroup>

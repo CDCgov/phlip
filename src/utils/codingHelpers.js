@@ -14,6 +14,7 @@ import { checkIfAnswered, checkIfExists } from 'utils/codingSchemeHelpers'
  an ID. It looks like this: { answers: { value: '', pincite: '' } }
  */
 export const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) => {
+  // console.log('question: ', question)
   if (question.categoryId && question.categoryId !== 0) {
     return userCodedAnswerObj.hasOwnProperty(question.schemeQuestionId)
       ? {
@@ -57,16 +58,80 @@ export const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswer
   }
 }
 
+export const normalizeCodedUserAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) => {
+  // console.log('question: ', question)
+  if (question.categoryId && question.categoryId !== 0) {
+    return userCodedAnswerObj.hasOwnProperty(question.schemeQuestionId)
+      ? {
+        schemeQuestionId: question.schemeQuestionId,
+        answers: {
+          ...userCodedAnswerObj[question.schemeQuestionId].answers,
+          [question.categoryId]: {
+            answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId')
+          }
+        },
+        comment: {
+          ...userCodedAnswerObj[question.schemeQuestionId].comment,
+          [question.categoryId]: question.comment || ''
+        }
+      }
+      : {
+        schemeQuestionId: question.schemeQuestionId,
+        answers: { [question.categoryId]: { answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId') } },
+        comment: {
+          [question.categoryId]: question.comment || ''
+        }
+      }
+  } else if (codingSchemeQuestion.questionType === questionTypes.TEXT_FIELD) {
+    return question.codedAnswers.length > 0
+      ? {
+        schemeQuestionId: question.schemeQuestionId,
+        comment: question.comment,
+        answers: {
+          ...question.codedAnswers[0],
+          pincite: question.codedAnswers[0].pincite || '',
+          textAnswer: question.codedAnswers[0].textAnswer || ''
+        }
+      }
+      : { schemeQuestionId: question.schemeQuestionId, comment: '', answers: { pincite: '', textAnswer: '' } }
+  } else {
+    return {
+      schemeQuestionId: question.schemeQuestionId,
+      comment: question.comment,
+      answers: question.codedAnswers
+    }
+  }
+}
+
+
+
 /*
   Takes coded questions array and turns it into a object where each key is the question id
  */
 export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
+  // console.log('userCodedQuestions :', userCodedQuestions)
+  // console.log('codingSchemeQuestions: ', codingSchemeQuestions)
   return userCodedQuestions.reduce((codedQuestionObj, question) => {
     return ({
       ...codedQuestionObj,
       [question.schemeQuestionId]: {
         schemeQuestionId: question.schemeQuestionId,
         ...normalizeAnswers(question, codingSchemeQuestions[question.schemeQuestionId], codedQuestionObj)
+      }
+    })
+  }, {})
+}
+
+/*
+  Takes coded questions array and turns it into a object where each key is the question id
+ */
+export const initilizedCodedUsers = (userCodedQuestions, codingSchemeQuestions) => {
+  return userCodedQuestions.reduce((codedQuestionObj, question) => {
+    return ({
+      ...codedQuestionObj,
+      [question.schemeQuestionId]: {
+        schemeQuestionId: question.schemeQuestionId,
+        ...normalizeCodedUserAnswers(question, codingSchemeQuestions[question.schemeQuestionId], codedQuestionObj)
       }
     })
   }, {})

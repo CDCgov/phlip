@@ -27,7 +27,8 @@ export class Validation extends Component {
         role: 'Admin',
         email: 'admin@cdc.gov',
         id: 1,
-        initials: 'AU'
+        initials: 'AU',
+        pincite: '038409834092834'
       },
       {
         firstName: 'Michael',
@@ -43,7 +44,6 @@ export class Validation extends Component {
   componentWillMount() {
     this.props.actions.getValidationOutlineRequest(this.props.projectId, this.props.jurisdictionId)
     this.props.actions.getCodedUsersAnswers(this.props.projectId, this.props.jurisdictionId)
-
   }
 
   componentWillReceiveProps(nextProps) {
@@ -96,6 +96,7 @@ export class Validation extends Component {
       <QuestionCard
         question={this.props.question} onChange={this.onAnswer}
         userAnswers={this.props.userAnswers}
+        mergedUserQuestions={this.props.mergedUserQuestions}
         onChangeTextAnswer={this.onChangeTextAnswer} categories={this.props.categories}
         selectedCategory={this.props.selectedCategory}
         onChangeCategory={this.props.actions.onChangeCategory}
@@ -146,7 +147,6 @@ Validation.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   const project = state.scenes.home.main.projects.byId[ownProps.match.params.id]
-
   return {
     projectName: project.name,
     projectId: ownProps.match.params.id,
@@ -156,6 +156,7 @@ const mapStateToProps = (state, ownProps) => {
     categories: state.scenes.validation.categories || undefined,
     selectedCategory: state.scenes.validation.selectedCategory || 0,
     userAnswers: state.scenes.validation.userAnswers[state.scenes.validation.question.id] || {},
+    mergedUserQuestions: state.scenes.validation.mergedUserQuestions[state.scenes.validation.question.id] || {},
     showNextButton: state.scenes.validation.showNextButton,
     jurisdictionsList: project.projectJurisdictions || [],
     jurisdictionId: state.scenes.validation.jurisdictionId || (project.projectJurisdictions.length > 0

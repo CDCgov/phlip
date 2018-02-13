@@ -8,7 +8,7 @@ import SimpleInput from 'components/SimpleInput'
 import Typography from 'material-ui/Typography'
 import Container, { Row, Column } from 'components/Layout'
 
-export const QuestionContent = ({ question, onChange, comment, userAnswers, onChangeTextAnswer, users }) => {
+export const QuestionContent = ({ question, onChange, comment, userAnswers, onChangeTextAnswer, mergedUserQuestions }) => {
   const questionAnswerPadding = {
     paddingTop: 0,
     paddingRight: 65,
@@ -30,19 +30,19 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
         <Column flex>
           {question.questionType === 1 &&
             <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
-              onChangePincite={onChangeTextAnswer} users={users} />}
+              onChangePincite={onChangeTextAnswer} mergedUserQuestions={mergedUserQuestions} />}
 
           {question.questionType === 2 &&
             <CheckboxGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
-              pincites={false} />}
+              pincites={false} mergedUserQuestions={mergedUserQuestions} />}
 
           {question.questionType === 3 &&
             <CheckboxGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
-              onChangePincite={onChangeTextAnswer} />}
+              onChangePincite={onChangeTextAnswer} mergedUserQuestions={mergedUserQuestions} />}
 
           {question.questionType === 4 &&
             <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
-              onChangePincite={onChangeTextAnswer} users={users} />}
+              onChangePincite={onChangeTextAnswer} mergedUserQuestions={mergedUserQuestions} />}
 
           {question.questionType === 5 &&
             <InputBox rows="5" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
