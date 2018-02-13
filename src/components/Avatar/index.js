@@ -8,6 +8,7 @@ const Avatar = ({ big, initials, style, ...otherProps }) => {
     backgroundColor: 'teal',
     width: big ? '45px' : '30px',
     height: big ? '45px' : '30px',
+    fontSize: '1rem',
     ...style
   }
   
