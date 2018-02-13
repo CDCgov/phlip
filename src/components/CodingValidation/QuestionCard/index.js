@@ -30,12 +30,19 @@ export const QuestionCard = ({ question, userAnswers, categories, selectedCatego
         <Divider />
         {categories !== undefined
           ? <TabContainer tabs={categories} selected={selectedCategory} onChangeCategory={onChangeCategory}>
-            <QuestionContent onChange={onChange} onChangeTextAnswer={onChangeTextAnswer}
+            <QuestionContent
+              onChange={onChange}
+              onChangeTextAnswer={onChangeTextAnswer}
               comment={userAnswers.comment[categories[selectedCategory].id]}
-              userAnswers={userAnswers.answers[categories[selectedCategory].id]} question={question} mergedUserQuestions={mergedUserQuestions} />
+              userAnswers={userAnswers.answers[categories[selectedCategory].id]}
+              question={question}
+              mergedUserQuestions={mergedUserQuestions}
+            />
           </TabContainer>
-          : <QuestionContent onChange={onChange} userAnswers={userAnswers} onChangeTextAnswer={onChangeTextAnswer}
-            question={question} comment={userAnswers.comment} mergedUserQuestions={mergedUserQuestions} />
+          : <QuestionContent
+            onChange={onChange} userAnswers={userAnswers} onChangeTextAnswer={onChangeTextAnswer}
+            question={question} comment={userAnswers.comment} mergedUserQuestions={mergedUserQuestions}
+          />
         }
       </Column>
     </Row>
