@@ -34,10 +34,7 @@ export const QuestionCard = ({ question, userAnswers, categories, selectedCatego
               onChange={onChange}
               onChangeTextAnswer={onChangeTextAnswer}
               comment={userAnswers.comment[categories[selectedCategory].id]}
-              userAnswers={userAnswers.answers[categories[selectedCategory].id]}
-              question={question}
-              mergedUserQuestions={mergedUserQuestions}
-            />
+              userAnswers={userAnswers.answers[categories[selectedCategory].id]} question={question} mergedUserQuestions={mergedUserQuestions.answers[categories[selectedCategory].id]} />
           </TabContainer>
           : <QuestionContent
             onChange={onChange} userAnswers={userAnswers} onChangeTextAnswer={onChangeTextAnswer}

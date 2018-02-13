@@ -24,7 +24,7 @@ const INITIAL_STATE = {
   selectedCategory: 0,
   userAnswers: {},
   showNextButton: true,
-  mergedUserQuestions: {}
+  mergedUserQuestions: []
 }
 
 const validationReducer = (state = INITIAL_STATE, action) => {
@@ -55,7 +55,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           outline: {},
           question: {},
           userAnswers: {},
-          combinedUserAnswers: {}
+          mergedUserQuestions: {}
         }
       } else {
         const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
@@ -83,7 +83,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
               [action.payload.question.id]: {
                 schemeQuestionId: action.payload.question.id,
                 comment: '',
-                answers: {}
+                answers: []
               }
             }
         }
@@ -132,16 +132,32 @@ const validationReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
-      let userAnswers = {}, question = { ...state.question }, other = {}
+      let userAnswers = {}, question = { ...state.question }, other = {}, mergedUserQuestions = {}
+
 
       if (action.payload.codedQuestions.length !== 0) {
         userAnswers = initializeUserAnswers(action.payload.codedQuestions, state.scheme.byId)
+      }
+
+      if (action.payload.mergedUserQuestions.length !== 0) {
+        mergedUserQuestions = initilizedCodedUsers(action.payload.mergedUserQuestions, state.scheme.byId)
       }
 
       if (state.question.isCategoryQuestion) {
         question = state.scheme.byId[question.parentId]
         other = {
           currentIndex: state.scheme.order.findIndex(id => id === question.id)
+        }
+      }
+
+      if (!mergedUserQuestions.hasOwnProperty(question.id)) {
+        mergedUserQuestions = {
+          ...mergedUserQuestions,
+          [question.id]: {
+            schemeQuestionId: question.id,
+            comment: '',
+            answers: []
+          }
         }
       }
 
@@ -159,6 +175,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         userAnswers,
+        mergedUserQuestions,
         question,
         ...other,
         selectedCategory: 0,

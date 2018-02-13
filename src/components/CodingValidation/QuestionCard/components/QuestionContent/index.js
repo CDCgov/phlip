@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import InputBox from 'components/InputBox'
-import RadioGroup from 'components/SelectionControls/RadioGroup'
-import CheckboxGroup from 'components/SelectionControls/CheckboxGroup'
+import RadioGroupValidation from 'components/SelectionControls/RadioGroupValidation'
+import CheckboxGroupValidation from 'components/SelectionControls/CheckboxGroupValidation'
 import Icon from 'components/Icon'
 import SimpleInput from 'components/SimpleInput'
 import Typography from 'material-ui/Typography'
@@ -29,45 +29,49 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
       <Column displayFlex flex style={{ ...questionAnswerPadding }}>
         <Row flex style={{ overflow: 'auto', paddingLeft: 65 - questionAnswerPadding.paddingLeft, flexBasis: '50%' }}>
           {question.questionType === 1 &&
-            <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
+            <RadioGroupValidation choices={question.possibleAnswers} question={question} onChange={onChange} userAnswers={userAnswers}
               onChangePincite={onChangeTextAnswer} mergedUserQuestions={mergedUserQuestions} />}
 
           {question.questionType === 2 &&
-            <CheckboxGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
+            <CheckboxGroupValidation choices={question.possibleAnswers} onChange={onChange} question={question} userAnswers={userAnswers}
               pincites={false} mergedUserQuestions={mergedUserQuestions} />}
 
           {question.questionType === 3 &&
-            <CheckboxGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
+            <CheckboxGroupValidation choices={question.possibleAnswers} onChange={onChange} question={question} userAnswers={userAnswers}
               onChangePincite={onChangeTextAnswer} mergedUserQuestions={mergedUserQuestions} />}
 
           {question.questionType === 4 &&
-            <RadioGroup choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
+            <RadioGroupValidation choices={question.possibleAnswers} onChange={onChange} question={question} userAnswers={userAnswers}
               onChangePincite={onChangeTextAnswer} mergedUserQuestions={mergedUserQuestions} />}
 
           {question.questionType === 5 &&
-          <InputBox
-            rows="5" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
-            value={userAnswers.answers}
-          />}
+            <InputBox
+              rows="5" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
+              value={userAnswers.answers}
+            />}
         </Row>
         <Row flex style={{ paddingTop: 30, paddingLeft: 65 - questionAnswerPadding.paddingLeft }}>
           {question.includeComment &&
-          <Row>
-            <SimpleInput
-              onChange={onChangeTextAnswer(null, 'comment')} name="comment" placeholder="Enter comment"
-              style={{ width: '70%' }} value={comment} label="Comment"
-            />
-          </Row>}
+            <Row>
+              <SimpleInput
+                onChange={onChangeTextAnswer(null, 'comment')} name="comment" placeholder="Enter comment"
+                style={{ width: '70%' }} value={comment} label="Comment"
+              />
+            </Row>}
         </Row>
       </Column>
 
       {question.hint &&
-      <Row displayFlex style={{ padding: '0px 35px 50px 35px' }}>
-        <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
-        <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
-      </Row>}
+        <Row displayFlex style={{ padding: '0px 35px 50px 35px' }}>
+          <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
+          <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
+        </Row>}
     </Container>
   )
+}
+
+QuestionContent.defaultProps = {
+  mergedUserQuestions: []
 }
 
 QuestionContent.propTypes = {

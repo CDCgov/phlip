@@ -12,7 +12,15 @@ const styles = {
   }
 }
 
-export const CheckboxGroup = ({ choices, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions }) => {
+const avatarStyles = {
+  marginRight: '-6px',
+  border: 'solid 3px white',
+  boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.19)',
+  width: '38px',
+  height: '38px'
+}
+
+export const CheckboxGroupValidation = ({ choices, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions }) => {
   console.log(mergedUserQuestions)
   return (
     <FormControl component="fieldset">
@@ -27,6 +35,9 @@ export const CheckboxGroup = ({ choices, userAnswers, onChange, onChangePincite,
               }
               label={choice.text}
             />
+            {mergedUserQuestions && mergedUserQuestions.answers.map((answer, index) => (
+              answer.schemeAnswerId === choice.id && <Avatar style={avatarStyles} key={index} initials={answer.firstName[0] + answer.lastName[0]} />
+            ))}
             {userAnswers.answers.hasOwnProperty(choice.id) && pincites &&
               <SimpleInput key={`${choice.id}-pincite`} style={{ width: 300 }} placeholder="Enter pincite"
                 value={userAnswers.answers[choice.id].pincite}
@@ -38,13 +49,13 @@ export const CheckboxGroup = ({ choices, userAnswers, onChange, onChangePincite,
   )
 }
 
-CheckboxGroup.defaultProps = {
+CheckboxGroupValidation.defaultProps = {
   pincites: true
 }
 
-CheckboxGroup.propTypes = {
+CheckboxGroupValidation.propTypes = {
   choices: PropTypes.array,
   onChange: PropTypes.func
 }
 
-export default withStyles(styles)(CheckboxGroup)
+export default withStyles(styles)(CheckboxGroupValidation)

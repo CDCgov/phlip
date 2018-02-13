@@ -21,7 +21,7 @@ const styles = {
   }
 }
 
-export const RadioGroup = ({ choices, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions }) => {
+export const RadioGroup = ({ choices, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions, question }) => {
   return (
     <FormControl component="fieldset">
       <FormGroup>
@@ -35,6 +35,9 @@ export const RadioGroup = ({ choices, userAnswers, onChange, onChangePincite, cl
               }
               label={choice.text}
             />
+            {mergedUserQuestions && mergedUserQuestions.answers.map((answer, index) => (
+              answer.schemeAnswerId === choice.id && <Avatar style={avatarStyles} key={index} initials={answer.firstName[0] + answer.lastName[0]} />
+            ))}
             {userAnswers.answers.hasOwnProperty(choice.id) &&
               <SimpleInput key={`${choice.id}-pincite`} style={{ width: 300, marginLeft: '29px' }} placeholder="Enter pincite" value={userAnswers.answers[choice.id].pincite} onChange={onChangePincite(choice.id, 'pincite')} />}
           </div>

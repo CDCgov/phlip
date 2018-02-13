@@ -4,6 +4,20 @@ import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
+
+const mergeUserAnswers = (combinedCodedQuestions) => {
+  let mergedUserQuestions = []
+
+  for (let item of combinedCodedQuestions) {
+    for (let codedQuestion of item.codeQuestionsPerUser) {
+      for (let codedAnswer of codedQuestion.codedAnswers) {
+        mergedUserQuestions = [...mergedUserQuestions, { ...codedQuestion, codedAnswers: { ...codedAnswer, ...item.coder } }]
+      }
+    }
+  }
+  return mergedUserQuestions
+}
+
 export const getValidationOutlineLogic = createLogic({
   type: types.GET_VALIDATION_OUTLINE_REQUEST,
   processOptions: {
@@ -31,7 +45,6 @@ export const getValidationOutlineLogic = createLogic({
     } catch (e) {
       throw { error: 'failed to get project coders' }
     }
-    // console.log('returned object [projectCoders]: ', projectCoders)
 
 
     if (action.jurisdictionId) {
@@ -50,38 +63,12 @@ export const getValidationOutlineLogic = createLogic({
         try {
           codeQuestionsPerUser = await api.getUserCodedQuestions(coder.userId, action.projectId, action.jurisdictionId)
           combinedCodedQuestions = [...combinedCodedQuestions, { codeQuestionsPerUser, coder }]
-          // combindedCodedQuestions = codeQuestionsPerUser.reduce((item, index) => {
-          //   return { ...item, codedWithUser: [item.codedAnswers, { ...item.codedAnswers, ...coder }] }
-          // })
-          // combindedCodedQuestions = { ...combindedCodedQuestions, codedQuestions: [...combindedCodedQuestions, ...codeQuestionsPerUser] }
-          // combinedCodedQuestionsList = [...combinedCodedQuestionsList, { ...combindedCodedQuestions }]
-
 
         } catch (e) {
           throw { error: 'failed to get codedQuestions for user' }
         }
       }
     }
-
-    let mergedUserQuestions = []
-
-
-
-    for (let item of combinedCodedQuestions) {
-      // console.log(item.codeQuestionsPerUser, item.coder)
-      for (let codedQuestion of item.codeQuestionsPerUser) {
-        for (let codedAnswer of codedQuestion.codedAnswers) {
-          // mergedCodedAnswers = [...mergedCodedAnswers, { ...codedAnswer, ...item.coder }]
-          mergedUserQuestions = [...mergedUserQuestions, { ...codedQuestion, codedAnswers: { ...codedAnswer, ...item.coder } }]
-        }
-        // console.log(codedQuestion)
-        // mergedUserQuestions = [...mergedUserQuestions, { ...codedQuestion, codedAnswers: { ...mergedCodedAnswers } }]
-      }
-    }
-
-
-    // console.log(mergedUserQuestions)
-
 
     if (scheme.schemeQuestions.length === 0) {
       return {
@@ -94,6 +81,7 @@ export const getValidationOutlineLogic = createLogic({
 
       const { questionsWithNumbers, order } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
 
+      let mergedUserQuestions = mergeUserAnswers(combinedCodedQuestions)
       let output = []
 
       mergedUserQuestions.forEach((value) => {
@@ -185,6 +173,9 @@ export const getUserValidatedQuestionsLogic = createLogic({
   },
   async process({ action, api, getState }) {
     let codedQuestions = []
+    let projectCoders = []
+    let codeQuestionsPerUser = []
+    let combinedCodedQuestions = {}
 
     try {
       codedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
@@ -192,8 +183,49 @@ export const getUserValidatedQuestionsLogic = createLogic({
       throw { error: 'failed to get codedQuestions' }
     }
 
+    try {
+      projectCoders = await api.getProjectCoders(action.projectId)
+    } catch (e) {
+      throw { error: 'failed to get project coders' }
+    }
+
+    if (projectCoders.length === 0) {
+
+    } else {
+
+      for (let coder of projectCoders) {
+        try {
+          codeQuestionsPerUser = await api.getUserCodedQuestions(coder.userId, action.projectId, action.jurisdictionId)
+          combinedCodedQuestions = [...combinedCodedQuestions, { codeQuestionsPerUser, coder }]
+
+        } catch (e) {
+          throw { error: 'failed to get codedQuestions for user' }
+        }
+      }
+    }
+
+
+    let mergedUserQuestions = mergeUserAnswers(combinedCodedQuestions)
+    let output = []
+
+    mergedUserQuestions.forEach((value) => {
+      var existing = output.filter((v, i) => {
+        return v.schemeQuestionId == value.schemeQuestionId
+      })
+      if (existing.length) {
+        var existingIndex = output.indexOf(existing[0])
+        output[existingIndex].codedAnswers = output[existingIndex].codedAnswers.concat(value.codedAnswers)
+      } else {
+        if (typeof value.codedAnswers == 'object')
+          value.codedAnswers = [value.codedAnswers]
+        output.push(value);
+      }
+    })
+
+
     return {
-      codedQuestions
+      codedQuestions,
+      mergedUserQuestions: output
     }
   }
 })

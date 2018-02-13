@@ -67,7 +67,7 @@ export const normalizeCodedUserAnswers = (question, codingSchemeQuestion, userCo
         answers: {
           ...userCodedAnswerObj[question.schemeQuestionId].answers,
           [question.categoryId]: {
-            answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId')
+            answers: question.codedAnswers
           }
         },
         comment: {
@@ -77,7 +77,7 @@ export const normalizeCodedUserAnswers = (question, codingSchemeQuestion, userCo
       }
       : {
         schemeQuestionId: question.schemeQuestionId,
-        answers: { [question.categoryId]: { answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId') } },
+        answers: { [question.categoryId]: { answers: question.codedAnswers } },
         comment: {
           [question.categoryId]: question.comment || ''
         }
