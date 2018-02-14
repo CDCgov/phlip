@@ -85,9 +85,18 @@ export const getValidationOutlineLogic = createLogic({
       let output = []
 
       mergedUserQuestions.forEach((value) => {
-        var existing = output.filter((v, i) => {
-          return v.schemeQuestionId == value.schemeQuestionId
-        })
+        let existing = []
+
+        if (value.hasOwnProperty('categoryId')) {
+          existing = output.filter((v, i) => {
+            return v.categoryId === value.categoryId && v.schemeQuestionId === value.schemeQuestionId
+          })
+        } else {
+          existing = output.filter((v, i) => {
+            return v.schemeQuestionId == value.schemeQuestionId
+          })
+        }
+
         if (existing.length) {
           var existingIndex = output.indexOf(existing[0])
           output[existingIndex].codedAnswers = output[existingIndex].codedAnswers.concat(value.codedAnswers)

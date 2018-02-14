@@ -17,7 +17,7 @@ const props = {
   onChangeTextAnswer: () => {}
 }
 
-describe('Coding scene --- QuestionContent component', () => {
+xdescribe('Coding scene --- QuestionContent component', () => {
   test('should render correctly', () => {
     expect(shallow(<QuestionContent {...props} />)).toMatchSnapshot()
   })

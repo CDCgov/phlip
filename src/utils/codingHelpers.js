@@ -59,7 +59,6 @@ export const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswer
 }
 
 export const normalizeCodedUserAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) => {
-  // console.log('question: ', question)
   if (question.categoryId && question.categoryId !== 0) {
     return userCodedAnswerObj.hasOwnProperty(question.schemeQuestionId)
       ? {
