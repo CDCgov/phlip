@@ -79,7 +79,7 @@ exports[`Coding scene --- QuestionContent component should render correctly 1`] 
           item={true}
         />
       }
-      displayFlex={false}
+      displayFlex={true}
       flex={true}
       style={
         Object {
@@ -102,8 +102,32 @@ exports[`Coding scene --- QuestionContent component should render correctly 1`] 
             },
           ]
         }
+        mergedUserQuestions={
+          Object {
+            "answers": Array [],
+          }
+        }
         onChange={[Function]}
         onChangePincite={[Function]}
+        question={
+          Object {
+            "hint": "",
+            "id": 1045341,
+            "includeComment": false,
+            "possibleAnswers": Array [
+              Object {
+                "id": 1010,
+                "text": "Yes",
+              },
+              Object {
+                "id": 1011,
+                "text": "No",
+              },
+            ],
+            "questionType": 1,
+            "text": "Are tags issued after rabies vaccination?",
+          }
+        }
         userAnswers={Object {}}
       />
     </Row>

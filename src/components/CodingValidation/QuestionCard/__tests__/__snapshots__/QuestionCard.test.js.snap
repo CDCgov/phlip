@@ -60,6 +60,11 @@ exports[`Coding scene --- QuestionCard component should render correctly 1`] = `
     </Row>
     <WithStyles />
     <QuestionContent
+      mergedUserQuestions={
+        Object {
+          "answers": Array [],
+        }
+      }
       onChange={[Function]}
       onChangeTextAnswer={[Function]}
       question={Object {}}

@@ -163,7 +163,7 @@ export class Coding extends Component {
         onChangeTextAnswer={this.onChangeTextAnswer} categories={this.props.categories}
         selectedCategory={this.props.selectedCategory}
         onChangeCategory={this.props.actions.onChangeCategory}
-        mergedUserQuestions={{ answers: [] }}
+        mergedUserQuestions={null}
         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
       />
       <FooterNavigate

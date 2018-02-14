@@ -15,7 +15,7 @@ const TabContainer = props => {
   </Tabs>)
 }
 
-export const QuestionCard = ({ question, userAnswers, categories, selectedCategory, onClearAnswer, onChangeCategory, onChange, onChangeTextAnswer, mergedUserQuestions }) => {
+export const QuestionCard = ({ question, currentUserInitials, userAnswers, categories, selectedCategory, onClearAnswer, onChangeCategory, onChange, onChangeTextAnswer, mergedUserQuestions }) => {
   return (
     <Row displayFlex style={{ flex: '1 0 50%' }}>
       <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
@@ -33,10 +33,13 @@ export const QuestionCard = ({ question, userAnswers, categories, selectedCatego
             <QuestionContent
               onChange={onChange}
               onChangeTextAnswer={onChangeTextAnswer}
+              currentUserInitials={currentUserInitials}
               comment={userAnswers.comment[categories[selectedCategory].id]}
-              userAnswers={userAnswers.answers[categories[selectedCategory].id]} question={question} mergedUserQuestions={mergedUserQuestions.answers[categories[selectedCategory].id]} />
+              userAnswers={userAnswers.answers[categories[selectedCategory].id]} question={question}
+              mergedUserQuestions={mergedUserQuestions !== null ? mergedUserQuestions.answers[categories[selectedCategory].id] : null} />
           </TabContainer>
           : <QuestionContent
+            currentUserInitials={currentUserInitials}
             onChange={onChange} userAnswers={userAnswers} onChangeTextAnswer={onChangeTextAnswer}
             question={question} comment={userAnswers.comment} mergedUserQuestions={mergedUserQuestions}
           />

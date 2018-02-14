@@ -20,7 +20,7 @@ const avatarStyles = {
   height: '38px'
 }
 
-export const CheckboxGroupValidation = ({ choices, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions }) => {
+export const CheckboxGroupValidation = ({ choices, currentUserInitials, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions }) => {
   return (
     <FormControl component="fieldset">
       <FormGroup>
@@ -34,15 +34,28 @@ export const CheckboxGroupValidation = ({ choices, userAnswers, onChange, onChan
               }
               label={choice.text}
             />
-            {mergedUserQuestions && mergedUserQuestions.answers.map((answer, index) => (
+            {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
               answer.schemeAnswerId === choice.id &&
-              <Avatar style={avatarStyles} key={index} initials={answer.firstName[0] + answer.lastName[0]} />
+              <Avatar
+                style={avatarStyles}
+                key={index}
+                initials={answer.firstName === 'Admin'
+                  ? answer.firstName[0]
+                  : answer.firstName[0] + answer.lastName[0]}
+              />
             ))}
+            {userAnswers.answers.hasOwnProperty(choice.id)
+            && mergedUserQuestions !== null
+            && <Avatar
+              style={avatarStyles}
+              key={mergedUserQuestions.answers.length + 1}
+              initials={currentUserInitials}
+            />}
             {userAnswers.answers.hasOwnProperty(choice.id) && pincites &&
             <SimpleInput
               key={`${choice.id}-pincite`} placeholder="Enter pincite"
               value={userAnswers.answers[choice.id].pincite}
-              style={{ width: 300, marginLeft: mergedUserQuestions.answers.length !== 0 ? '15px' : '0px' }}
+              style={{ width: 300, marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id)) ? '15px' : '0px' }}
               onChange={onChangePincite(choice.id, 'pincite')}
             />}
           </div>)
