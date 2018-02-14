@@ -9,7 +9,9 @@ import {
   handleClearAnswers,
   handleClearCategoryAnswers,
   initializeUserAnswers,
-  initilizedCodedUsers
+  initilizedCodedUsers,
+  handleUserPinciteCategoryChild,
+  handleUserPinciteQuestion
 } from 'utils/codingHelpers'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
@@ -105,6 +107,17 @@ const validationReducer = (state = INITIAL_STATE, action) => {
       return {
         ...updated,
         showNextButton: determineShowButton(updated)
+      }
+
+    case types.ON_CHANGE_VALIDATION_PINCITE:
+      return {
+        ...state,
+        ...questionUpdater(
+          'answers',
+          state.question.isCategoryQuestion
+            ? handleUserPinciteCategoryChild(selectedCategoryId, state.question.questionType, action, state.userAnswers[action.questionId].answers)
+            : handleUserPinciteQuestion(state.question.questionType, action, state.userAnswers[action.questionId].answers)
+        )
       }
 
     case types.ON_CLEAR_VALIDATION_ANSWER:
