@@ -163,6 +163,7 @@ export class Coding extends Component {
         onChangeTextAnswer={this.onChangeTextAnswer} categories={this.props.categories}
         selectedCategory={this.props.selectedCategory}
         onChangeCategory={this.props.actions.onChangeCategory}
+        mergedUserQuestions={null}
         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
       />
       <FooterNavigate
@@ -177,7 +178,8 @@ export class Coding extends Component {
     return (
       <Container
         flex
-        style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}>
+        style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}
+      >
         <Navigator
           open={this.state.navOpen}
           scheme={this.props.scheme}
@@ -186,10 +188,11 @@ export class Coding extends Component {
           selectedCategory={this.props.selectedCategory}
           handleQuestionSelected={this.props.actions.onQuestionSelectedInNav}
         />
-        <HeaderedLayout padding={false} className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}>
-          <Column
-            flex
-            displayFlex>
+        <HeaderedLayout
+          padding={false}
+          className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}
+        >
+          <Column flex displayFlex>
             <Header
               projectName={this.props.projectName} projectId={this.props.projectId}
               jurisdictionsList={this.props.jurisdictionsList}
@@ -202,7 +205,8 @@ export class Coding extends Component {
             <Container flex style={{ backgroundColor: '#f5f5f5' }}>
               <Row displayFlex flex style={{ overflow: 'auto' }}>
                 <Column>
-                  {this.state.showViews && (this.props.jurisdiction !== null && this.props.questionOrder.length !== 0) &&
+                  {this.state.showViews &&
+                  (this.props.jurisdiction !== null && this.props.questionOrder.length !== 0) &&
                   <MuiButton style={navButtonStyles} onClick={this.onToggleNavigator}>
                     <Icon color="white" style={iconStyle}>menu</Icon></MuiButton>}
                 </Column>

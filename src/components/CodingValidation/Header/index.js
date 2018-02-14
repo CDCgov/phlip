@@ -23,7 +23,7 @@ export const Header = ({ projectName, empty, projectId, jurisdictionsList, selec
       <div style={{ flex: '1' }}>
         <JurisdictionSelect options={jurisdictionsList} value={selectedJurisdiction} onChange={onJurisdictionChange} />
       </div>
-      <Column>
+      <Column flex>
         <Typography type="caption" color="default" align="right">
           Segment start <span style={{ color: 'black' }}>{new Date(currentJurisdiction.startDate).toLocaleDateString()}</span>
         </Typography>

@@ -10,7 +10,7 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
   let className = ''
 
   const questionTextStyles = {
-    color: item.isCurrent === true ? '#68cff5' : item.isAnswered ? '#818789' : 'white',
+    color: item.isCurrent === true ? '#68cff5' : item.isAnswered ? '#818789' : item.completedProgress === 100 ? '#818789' : 'white',
     fontWeight: 300,
     paddingLeft: 10,
     paddingRight: 10,

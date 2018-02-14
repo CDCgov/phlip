@@ -6,7 +6,12 @@ import {
   determineShowButton,
   handleUpdateUserAnswers,
   handleUpdateUserCodedQuestion,
-  handleClearAnswers
+  handleClearAnswers,
+  handleClearCategoryAnswers,
+  initializeUserAnswers,
+  initilizedCodedUsers,
+  handleUserPinciteCategoryChild,
+  handleUserPinciteQuestion
 } from 'utils/codingHelpers'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
@@ -20,7 +25,8 @@ const INITIAL_STATE = {
   categories: undefined,
   selectedCategory: 0,
   userAnswers: {},
-  showNextButton: true
+  showNextButton: true,
+  mergedUserQuestions: []
 }
 
 const validationReducer = (state = INITIAL_STATE, action) => {
@@ -50,7 +56,8 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           scheme: { order: [], byId: {} },
           outline: {},
           question: {},
-          userAnswers: {}
+          userAnswers: {},
+          mergedUserQuestions: {}
         }
       } else {
         const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
@@ -70,6 +77,15 @@ const validationReducer = (state = INITIAL_STATE, action) => {
                 schemeQuestionId: action.payload.question.id,
                 comment: '',
                 answers: {}
+              }
+            },
+          mergedUserQuestions: action.payload.mergedUserQuestions.length !== 0
+            ? initilizedCodedUsers(action.payload.mergedUserQuestions, normalizedQuestions)
+            : {
+              [action.payload.question.id]: {
+                schemeQuestionId: action.payload.question.id,
+                comment: '',
+                answers: []
               }
             }
         }
@@ -91,6 +107,17 @@ const validationReducer = (state = INITIAL_STATE, action) => {
       return {
         ...updated,
         showNextButton: determineShowButton(updated)
+      }
+
+    case types.ON_CHANGE_VALIDATION_PINCITE:
+      return {
+        ...state,
+        ...questionUpdater(
+          'answers',
+          state.question.isCategoryQuestion
+            ? handleUserPinciteCategoryChild(selectedCategoryId, state.question.questionType, action, state.userAnswers[action.questionId].answers)
+            : handleUserPinciteQuestion(state.question.questionType, action, state.userAnswers[action.questionId].answers)
+        )
       }
 
     case types.ON_CLEAR_VALIDATION_ANSWER:
@@ -115,6 +142,57 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         ...state,
         jurisdictionId: action.event,
         jurisdiction: action.jurisdictionList.find(jurisdiction => jurisdiction.id === action.event)
+      }
+
+    case types.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
+      let userAnswers = {}, question = { ...state.question }, other = {}, mergedUserQuestions = {}
+
+
+      if (action.payload.codedQuestions.length !== 0) {
+        userAnswers = initializeUserAnswers(action.payload.codedQuestions, state.scheme.byId)
+      }
+
+      if (action.payload.mergedUserQuestions.length !== 0) {
+        mergedUserQuestions = initilizedCodedUsers(action.payload.mergedUserQuestions, state.scheme.byId)
+      }
+
+      if (state.question.isCategoryQuestion) {
+        question = state.scheme.byId[question.parentId]
+        other = {
+          currentIndex: state.scheme.order.findIndex(id => id === question.id)
+        }
+      }
+
+      if (!mergedUserQuestions.hasOwnProperty(question.id)) {
+        mergedUserQuestions = {
+          ...mergedUserQuestions,
+          [question.id]: {
+            schemeQuestionId: question.id,
+            comment: '',
+            answers: []
+          }
+        }
+      }
+
+      if (!userAnswers.hasOwnProperty(question.id)) {
+        userAnswers = {
+          ...userAnswers,
+          [question.id]: {
+            schemeQuestionId: question.id,
+            comment: '',
+            answers: {}
+          }
+        }
+      }
+
+      return {
+        ...state,
+        userAnswers,
+        mergedUserQuestions,
+        question,
+        ...other,
+        selectedCategory: 0,
+        categories: undefined
       }
 
     case types.ON_CLOSE_VALIDATION_SCREEN:

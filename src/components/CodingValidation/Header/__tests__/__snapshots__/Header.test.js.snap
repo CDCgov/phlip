@@ -68,7 +68,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
         />
       }
       displayFlex={false}
-      flex={false}
+      flex={true}
     >
       <WithStyles
         align="right"

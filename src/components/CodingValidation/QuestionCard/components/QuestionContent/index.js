@@ -1,14 +1,14 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import InputBox from 'components/InputBox'
-import RadioGroup from 'components/SelectionControls/RadioGroup'
-import CheckboxGroup from 'components/SelectionControls/CheckboxGroup'
+import RadioGroupValidation from 'components/SelectionControls/RadioGroupValidation'
+import CheckboxGroupValidation from 'components/SelectionControls/CheckboxGroupValidation'
 import Icon from 'components/Icon'
 import SimpleInput from 'components/SimpleInput'
 import Typography from 'material-ui/Typography'
 import Container, { Row, Column } from 'components/Layout'
 
-export const QuestionContent = ({ question, onChange, comment, userAnswers, onChangeTextAnswer, users }) => {
+export const QuestionContent = ({ question, currentUserInitials, onChange, comment, userAnswers, onChangeTextAnswer, mergedUserQuestions }) => {
   const questionAnswerPadding = {
     paddingTop: 0,
     paddingRight: 65,
@@ -27,29 +27,38 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
         </Column>
       </Row>
       <Column displayFlex flex style={{ ...questionAnswerPadding }}>
-        <Row flex style={{ overflow: 'auto', paddingLeft: 65 - questionAnswerPadding.paddingLeft, flexBasis: '50%' }}>
+        <Row
+          flex
+          displayFlex
+          style={{ overflow: 'auto', paddingLeft: 65 - questionAnswerPadding.paddingLeft, flexBasis: '50%' }}
+        >
           {question.questionType === 1 &&
-          <RadioGroup
-            choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
-            onChangePincite={onChangeTextAnswer} users={users}
+          <RadioGroupValidation
+            choices={question.possibleAnswers}
+            question={question}
+            onChange={onChange}
+            userAnswers={userAnswers}
+            onChangePincite={onChangeTextAnswer}
+            mergedUserQuestions={mergedUserQuestions}
+            currentUserInitials={currentUserInitials}
           />}
 
           {question.questionType === 2 &&
-          <CheckboxGroup
-            choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
-            pincites={false}
+          <CheckboxGroupValidation
+            choices={question.possibleAnswers} onChange={onChange} question={question} userAnswers={userAnswers}
+            pincites={false} mergedUserQuestions={mergedUserQuestions} currentUserInitials={currentUserInitials}
           />}
 
           {question.questionType === 3 &&
-          <CheckboxGroup
-            choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
-            onChangePincite={onChangeTextAnswer}
+          <CheckboxGroupValidation
+            choices={question.possibleAnswers} onChange={onChange} question={question} userAnswers={userAnswers}
+            onChangePincite={onChangeTextAnswer} mergedUserQuestions={mergedUserQuestions} currentUserInitials={currentUserInitials}
           />}
 
           {question.questionType === 4 &&
-          <RadioGroup
-            choices={question.possibleAnswers} onChange={onChange} userAnswers={userAnswers}
-            onChangePincite={onChangeTextAnswer} users={users}
+          <RadioGroupValidation
+            choices={question.possibleAnswers} onChange={onChange} question={question} userAnswers={userAnswers}
+            onChangePincite={onChangeTextAnswer} mergedUserQuestions={mergedUserQuestions} currentUserInitials={currentUserInitials}
           />}
 
           {question.questionType === 5 &&
@@ -76,6 +85,10 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
       </Row>}
     </Container>
   )
+}
+
+QuestionContent.defaultProps = {
+  mergedUserQuestions: { answers: [] }
 }
 
 QuestionContent.propTypes = {

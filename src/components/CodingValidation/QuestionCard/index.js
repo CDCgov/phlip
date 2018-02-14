@@ -15,7 +15,7 @@ const TabContainer = props => {
   </Tabs>)
 }
 
-export const QuestionCard = ({ question, userAnswers, categories, selectedCategory, onClearAnswer, onChangeCategory, onChange, onChangeTextAnswer, users }) => {
+export const QuestionCard = ({ question, currentUserInitials, userAnswers, categories, selectedCategory, onClearAnswer, onChangeCategory, onChange, onChangeTextAnswer, mergedUserQuestions }) => {
   return (
     <Row displayFlex style={{ flex: '1 0 50%' }}>
       <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
@@ -30,12 +30,19 @@ export const QuestionCard = ({ question, userAnswers, categories, selectedCatego
         <Divider />
         {categories !== undefined
           ? <TabContainer tabs={categories} selected={selectedCategory} onChangeCategory={onChangeCategory}>
-            <QuestionContent onChange={onChange} onChangeTextAnswer={onChangeTextAnswer}
+            <QuestionContent
+              onChange={onChange}
+              onChangeTextAnswer={onChangeTextAnswer}
+              currentUserInitials={currentUserInitials}
               comment={userAnswers.comment[categories[selectedCategory].id]}
-              userAnswers={userAnswers.answers[categories[selectedCategory].id]} question={question} users={users} />
+              userAnswers={userAnswers.answers[categories[selectedCategory].id]} question={question}
+              mergedUserQuestions={mergedUserQuestions !== null ? mergedUserQuestions.answers[categories[selectedCategory].id] : null} />
           </TabContainer>
-          : <QuestionContent onChange={onChange} userAnswers={userAnswers} onChangeTextAnswer={onChangeTextAnswer}
-            question={question} comment={userAnswers.comment} users={users} />
+          : <QuestionContent
+            currentUserInitials={currentUserInitials}
+            onChange={onChange} userAnswers={userAnswers} onChangeTextAnswer={onChangeTextAnswer}
+            question={question} comment={userAnswers.comment} mergedUserQuestions={mergedUserQuestions}
+          />
         }
       </Column>
     </Row>
