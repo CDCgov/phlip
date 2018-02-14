@@ -356,8 +356,7 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
       item.children = item.questionType === questionTypes.CATEGORY
         ? checkIfAnswered(item, codedQuestions)
           ? initializeNavigator(
-            sortList(Object.values(scheme)
-              .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
+            sortList(Object.values(scheme).filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
             { ...scheme },
             codedQuestions
           ) : []
@@ -389,10 +388,6 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
 
       if (item.children.length > 0) {
         item.completedProgress = (countAnswered / item.children.length) * 100
-        if (item.completedProgress === 100) {
-          delete item.completedProgress
-          item.isAnswered = true
-        }
       } else {
         if (checkIfExists(item, 'completedProgress')) delete item.completedProgress
       }
