@@ -36,10 +36,17 @@ export const RadioGroup = ({ choices, userAnswers, onChange, onChangePincite, cl
               label={choice.text}
             />
             {mergedUserQuestions && mergedUserQuestions.answers.map((answer, index) => (
-              answer.schemeAnswerId === choice.id && <Avatar style={avatarStyles} key={index} initials={answer.firstName[0] + answer.lastName[0]} />
+              answer.schemeAnswerId === choice.id &&
+              <Avatar style={avatarStyles} key={index} initials={answer.firstName[0] + answer.lastName[0]} />
             ))}
             {userAnswers.answers.hasOwnProperty(choice.id) &&
-              <SimpleInput key={`${choice.id}-pincite`} style={{ width: 300, marginLeft: '29px' }} placeholder="Enter pincite" value={userAnswers.answers[choice.id].pincite} onChange={onChangePincite(choice.id, 'pincite')} />}
+            <SimpleInput
+              key={`${choice.id}-pincite`}
+              style={{ width: 300, marginLeft: mergedUserQuestions.answers.length !== 0 ? '15px' : '0px' }}
+              placeholder="Enter pincite"
+              value={userAnswers.answers[choice.id].pincite}
+              onChange={onChangePincite(choice.id, 'pincite')}
+            />}
           </div>
         ))}
       </FormGroup>
@@ -47,7 +54,6 @@ export const RadioGroup = ({ choices, userAnswers, onChange, onChangePincite, cl
   )
 }
 
-RadioGroup.propTypes = {
-}
+RadioGroup.propTypes = {}
 
 export default withStyles(styles)(RadioGroup)

@@ -27,7 +27,7 @@ export const QuestionContent = ({ question, onChange, comment, userAnswers, onCh
         </Column>
       </Row>
       <Column displayFlex flex style={{ ...questionAnswerPadding }}>
-        <Row flex style={{ overflow: 'auto', paddingLeft: 65 - questionAnswerPadding.paddingLeft, flexBasis: '50%' }}>
+        <Row flex displayFlex style={{ overflow: 'auto', paddingLeft: 65 - questionAnswerPadding.paddingLeft, flexBasis: '50%' }}>
           {question.questionType === 1 &&
             <RadioGroupValidation choices={question.possibleAnswers} question={question} onChange={onChange} userAnswers={userAnswers}
               onChangePincite={onChangeTextAnswer} mergedUserQuestions={mergedUserQuestions} />}

@@ -21,7 +21,6 @@ const avatarStyles = {
 }
 
 export const CheckboxGroupValidation = ({ choices, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions }) => {
-  console.log(mergedUserQuestions)
   return (
     <FormControl component="fieldset">
       <FormGroup>
@@ -36,12 +35,16 @@ export const CheckboxGroupValidation = ({ choices, userAnswers, onChange, onChan
               label={choice.text}
             />
             {mergedUserQuestions && mergedUserQuestions.answers.map((answer, index) => (
-              answer.schemeAnswerId === choice.id && <Avatar style={avatarStyles} key={index} initials={answer.firstName[0] + answer.lastName[0]} />
+              answer.schemeAnswerId === choice.id &&
+              <Avatar style={avatarStyles} key={index} initials={answer.firstName[0] + answer.lastName[0]} />
             ))}
             {userAnswers.answers.hasOwnProperty(choice.id) && pincites &&
-              <SimpleInput key={`${choice.id}-pincite`} style={{ width: 300 }} placeholder="Enter pincite"
-                value={userAnswers.answers[choice.id].pincite}
-                onChange={onChangePincite(choice.id, 'pincite')} />}
+            <SimpleInput
+              key={`${choice.id}-pincite`} placeholder="Enter pincite"
+              value={userAnswers.answers[choice.id].pincite}
+              style={{ width: 300, marginLeft: mergedUserQuestions.answers.length !== 0 ? '15px' : '0px' }}
+              onChange={onChangePincite(choice.id, 'pincite')}
+            />}
           </div>)
         })}
       </FormGroup>
