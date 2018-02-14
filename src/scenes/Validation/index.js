@@ -163,7 +163,7 @@ const mapStateToProps = (state, ownProps) => {
     userAnswers: state.scenes.validation.userAnswers[state.scenes.validation.question.id] || {},
     mergedUserQuestions: state.scenes.validation.mergedUserQuestions[state.scenes.validation.question.id] ||
     { answers: [] },
-    showNextButtonw: state.scenes.validation.showNextButton,
+    showNextButton: state.scenes.validation.showNextButton,
     jurisdictionsList: project.projectJurisdictions || [],
     jurisdictionId: state.scenes.validation.jurisdictionId || (project.projectJurisdictions.length > 0
       ? project.projectJurisdictions[0].id
