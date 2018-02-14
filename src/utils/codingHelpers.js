@@ -152,7 +152,7 @@ export const determineShowButton = state => {
     if (!checkIfAnswered(state.question, state.userAnswers)) {
       return findNextParentSibling(state.scheme, state.question, state.currentIndex) !== undefined
     } else {
-      return true
+      return state.question.id !== state.scheme.order[state.scheme.order.length - 1]
     }
   } else {
     return state.scheme.order && state.question.id !== state.scheme.order[state.scheme.order.length - 1]
