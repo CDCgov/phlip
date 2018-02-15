@@ -48,7 +48,11 @@ export const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswer
           textAnswer: question.codedAnswers[0].textAnswer || ''
         }
       }
-      : { schemeQuestionId: question.schemeQuestionId, comment: '', answers: { pincite: '', textAnswer: '' } }
+      : {
+        schemeQuestionId: question.schemeQuestionId,
+        comment: '',
+        answers: { schemeAnswerId: question.codedAnswers[0].schemeAnswerId, pincite: '', textAnswer: '' }
+      }
   } else {
     return {
       schemeQuestionId: question.schemeQuestionId,
@@ -92,7 +96,11 @@ export const normalizeCodedUserAnswers = (question, codingSchemeQuestion, userCo
           textAnswer: question.codedAnswers[0].textAnswer || ''
         }
       }
-      : { schemeQuestionId: question.schemeQuestionId, comment: '', answers: { pincite: '', textAnswer: '' } }
+      : {
+        schemeQuestionId: question.schemeQuestionId,
+        comment: '',
+        answers: { schemeAnswerId: question.codedAnswers[0].schemeAnswerId, pincite: '', textAnswer: '' }
+      }
   } else {
     return {
       schemeQuestionId: question.schemeQuestionId,
@@ -101,8 +109,6 @@ export const normalizeCodedUserAnswers = (question, codingSchemeQuestion, userCo
     }
   }
 }
-
-
 
 /*
   Takes coded questions array and turns it into a object where each key is the question id
@@ -269,7 +275,7 @@ export const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
       break
 
     case questionTypes.TEXT_FIELD:
-      currentUserAnswers = { ...currentUserAnswers, textAnswer: action.answerValue }
+      currentUserAnswers = { ...currentUserAnswers, schemeAnswerId: action.answerId, textAnswer: action.answerValue }
       break
 
     case questionTypes.CATEGORY:
@@ -419,7 +425,7 @@ export const initializeNavigator = (tree, scheme, codedQuestions) => {
         ? checkIfAnswered(item, codedQuestions)
           ? initializeNavigator(
             sortList(Object.values(scheme)
-              .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
+            .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
             { ...scheme },
             codedQuestions
           ) : []

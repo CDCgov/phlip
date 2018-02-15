@@ -147,6 +147,7 @@ export class AddEditQuestion extends Component {
                     name="text"
                     component={TextInput}
                     label='Question'
+                    shrinkLabel={true}
                     multiline={true}
                     placeholder="Enter question"
                   />
@@ -169,6 +170,7 @@ export class AddEditQuestion extends Component {
                   <Field
                     name="hint"
                     component={TextInput}
+                    shrinkLabel={true}
                     label="Question Hint"
                     placeholder="Enter hint"
                   />
