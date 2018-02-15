@@ -37,7 +37,7 @@ export const CheckboxGroupValidation = ({ choices, currentUserInitials, userAnsw
             {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
               answer.schemeAnswerId === choice.id &&
               <Avatar
-                style={avatarStyles}
+                cardAvatar
                 key={index}
                 initials={answer.firstName === 'Admin'
                   ? answer.firstName[0]
@@ -47,7 +47,7 @@ export const CheckboxGroupValidation = ({ choices, currentUserInitials, userAnsw
             {userAnswers.answers.hasOwnProperty(choice.id)
             && mergedUserQuestions !== null
             && <Avatar
-              style={avatarStyles}
+              cardAvatar
               key={mergedUserQuestions.answers.length + 1}
               initials={currentUserInitials}
             />}

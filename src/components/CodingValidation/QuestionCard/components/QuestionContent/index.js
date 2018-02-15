@@ -8,6 +8,7 @@ import SimpleInput from 'components/SimpleInput'
 import Typography from 'material-ui/Typography'
 import Container, { Row, Column } from 'components/Layout'
 import * as questionTypes from 'components/CodingValidation/constants'
+import TextFieldQuestions from '../TextFieldQuestions'
 
 export const QuestionContent = ({ question, currentUserInitials, onChange, comment, userAnswers, onChangeTextAnswer, mergedUserQuestions }) => {
   const questionAnswerPadding = {
@@ -57,11 +58,21 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
             currentUserInitials={currentUserInitials}
           />}
 
-          {question.questionType === questionTypes.TEXT_FIELD &&
+          {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions === null &&
           <InputBox
             rows="5" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
             value={userAnswers.answers} answerId={question.possibleAnswers[0].id}
           />}
+
+          {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions !== null &&
+          <Column flex>
+            <TextFieldQuestions mergedUserQuestions={mergedUserQuestions} />
+            <InputBox
+              rows="5" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
+              value={userAnswers.answers} answerId={question.possibleAnswers[0].id}
+            />
+          </Column>
+          }
         </Row>
         <Row flex style={{ paddingTop: 30, paddingLeft: 65 - questionAnswerPadding.paddingLeft }}>
           {question.includeComment &&

@@ -85,22 +85,6 @@ export const normalizeCodedUserAnswers = (question, codingSchemeQuestion, userCo
           [question.categoryId]: question.comment || ''
         }
       }
-  } else if (codingSchemeQuestion.questionType === questionTypes.TEXT_FIELD) {
-    return question.codedAnswers.length > 0
-      ? {
-        schemeQuestionId: question.schemeQuestionId,
-        comment: question.comment,
-        answers: {
-          ...question.codedAnswers[0],
-          pincite: question.codedAnswers[0].pincite || '',
-          textAnswer: question.codedAnswers[0].textAnswer || ''
-        }
-      }
-      : {
-        schemeQuestionId: question.schemeQuestionId,
-        comment: '',
-        answers: { schemeAnswerId: question.codedAnswers[0].schemeAnswerId, pincite: '', textAnswer: '' }
-      }
   } else {
     return {
       schemeQuestionId: question.schemeQuestionId,
@@ -114,8 +98,6 @@ export const normalizeCodedUserAnswers = (question, codingSchemeQuestion, userCo
   Takes coded questions array and turns it into a object where each key is the question id
  */
 export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
-  // console.log('userCodedQuestions :', userCodedQuestions)
-  // console.log('codingSchemeQuestions: ', codingSchemeQuestions)
   return userCodedQuestions.reduce((codedQuestionObj, question) => {
     return ({
       ...codedQuestionObj,
@@ -130,7 +112,7 @@ export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions)
 /*
   Takes coded questions array and turns it into a object where each key is the question id
  */
-export const initilizedCodedUsers = (userCodedQuestions, codingSchemeQuestions) => {
+export const initializeCodedUsers = (userCodedQuestions, codingSchemeQuestions) => {
   return userCodedQuestions.reduce((codedQuestionObj, question) => {
     return ({
       ...codedQuestionObj,

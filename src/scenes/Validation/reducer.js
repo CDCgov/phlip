@@ -9,7 +9,7 @@ import {
   handleClearAnswers,
   handleClearCategoryAnswers,
   initializeUserAnswers,
-  initilizedCodedUsers,
+  initializeCodedUsers,
   handleUserPinciteCategoryChild,
   handleUserPinciteQuestion
 } from 'utils/codingHelpers'
@@ -80,7 +80,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
               }
             },
           mergedUserQuestions: action.payload.mergedUserQuestions.length !== 0
-            ? initilizedCodedUsers(action.payload.mergedUserQuestions, normalizedQuestions)
+            ? initializeCodedUsers(action.payload.mergedUserQuestions, normalizedQuestions)
             : {
               [action.payload.question.id]: {
                 schemeQuestionId: action.payload.question.id,

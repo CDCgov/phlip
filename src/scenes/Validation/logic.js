@@ -98,7 +98,7 @@ export const getValidationOutlineLogic = createLogic({
         }
 
         if (existing.length) {
-          var existingIndex = output.indexOf(existing[0])
+          let existingIndex = output.indexOf(existing[0])
           output[existingIndex].codedAnswers = output[existingIndex].codedAnswers.concat(value.codedAnswers)
         } else {
           if (typeof value.codedAnswers == 'object')

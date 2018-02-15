@@ -77,7 +77,7 @@ export class Validation extends Component {
   onChangeTextAnswer = (id, field) => event => {
     switch (field) {
       case 'textAnswer':
-        this.props.actions.answerQuestionRequest(
+        this.props.actions.validateQuestionRequest(
           this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
         )
         break
