@@ -99,6 +99,7 @@ export const JurisdictionForm = props => {
                 label: 'Name',
                 placeholder: 'Enter jurisdiction name',
               }}
+              shrinkLabel={true}
               handleSuggestionSelected={onJurisdictionSelected}
               renderSuggestion={renderSuggestion}
               getSuggestionValue={getSuggestionValue}
