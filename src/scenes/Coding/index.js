@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Header from 'components/CodingValidation/Header'
-import Footer from 'components/CodingValidation/Footer'
 import QuestionCard from 'components/CodingValidation/QuestionCard'
 import FooterNavigate from 'components/CodingValidation/FooterNavigate'
 import Container, { Row, Column } from 'components/Layout'
@@ -102,11 +101,6 @@ export class Coding extends Component {
 
   onChangeTextAnswer = (id, field) => event => {
     switch (field) {
-      case 'fieldValue':
-        this.props.actions.answerQuestionRequest(
-          this.props.projectId, this.props.jurisdictionId, this.props.question.id, null, event.target.value
-        )
-        break
       case 'comment':
         this.props.actions.onChangeComment(
           this.props.projectId, this.props.jurisdictionId, this.props.question.id, event.target.value

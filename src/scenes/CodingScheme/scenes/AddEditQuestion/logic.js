@@ -2,7 +2,6 @@ import { createLogic } from 'redux-logic'
 import * as types from '../../actionTypes'
 import * as questionTypes from './constants'
 
-
 const updateUserIdLogic = createLogic({
   type: [types.ADD_QUESTION_REQUEST, types.UPDATE_QUESTION_REQUEST, types.ADD_CHILD_QUESTION_REQUEST],
   transform({ getState, action }, next) {
@@ -21,7 +20,10 @@ const updateOutlineLogic = createLogic({
       question: {
         ...action.question,
         outline: getState().scenes.codingScheme.outline,
-        parentId: action.parentId
+        parentId: action.parentId,
+        possibleAnswers: action.question.questionType === questionTypes.TEXT_FIELD
+          ? [{ text: '' }]
+          : action.question.possibleAnswers
       }
     })
   }
@@ -64,7 +66,6 @@ const updateChildPositionInParentLogic = createLogic({
     })
   }
 })
-
 
 const updateIsCategoryQuestionLogic = createLogic({
   type: types.ADD_CHILD_QUESTION_REQUEST,

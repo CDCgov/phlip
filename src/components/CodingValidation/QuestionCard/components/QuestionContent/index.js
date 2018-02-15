@@ -1,12 +1,13 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import InputBox from 'components/InputBox'
-import RadioGroupValidation from '../../../../SelectionControls/RadioGroupValidation'
-import CheckboxGroupValidation from '../../../../SelectionControls/CheckboxGroupValidation'
+import RadioGroupValidation from 'components/SelectionControls/RadioGroupValidation'
+import CheckboxGroupValidation from 'components/SelectionControls/CheckboxGroupValidation'
 import Icon from 'components/Icon'
 import SimpleInput from 'components/SimpleInput'
 import Typography from 'material-ui/Typography'
 import Container, { Row, Column } from 'components/Layout'
+import * as questionTypes from 'components/CodingValidation/constants'
 
 export const QuestionContent = ({ question, currentUserInitials, onChange, comment, userAnswers, onChangeTextAnswer, mergedUserQuestions }) => {
   const questionAnswerPadding = {
@@ -32,7 +33,8 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
           displayFlex
           style={{ overflow: 'auto', paddingLeft: 65 - questionAnswerPadding.paddingLeft, flexBasis: '50%' }}
         >
-          {question.questionType === 1 &&
+          {(question.questionType === questionTypes.MULTIPLE_CHOICE ||
+            question.questionType === questionTypes.BINARY) &&
           <RadioGroupValidation
             choices={question.possibleAnswers}
             question={question}
@@ -43,28 +45,22 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
             currentUserInitials={currentUserInitials}
           />}
 
-          {question.questionType === 2 &&
+          {(question.questionType === questionTypes.CATEGORY ||
+            question.questionType === questionTypes.CHECKBOXES) &&
           <CheckboxGroupValidation
-            choices={question.possibleAnswers} onChange={onChange} question={question} userAnswers={userAnswers}
-            pincites={false} mergedUserQuestions={mergedUserQuestions} currentUserInitials={currentUserInitials}
+            choices={question.possibleAnswers}
+            onChange={onChange}
+            question={question}
+            userAnswers={userAnswers}
+            pincites={question.questionType !== questionTypes.CATEGORY}
+            mergedUserQuestions={mergedUserQuestions}
+            currentUserInitials={currentUserInitials}
           />}
 
-          {question.questionType === 3 &&
-          <CheckboxGroupValidation
-            choices={question.possibleAnswers} onChange={onChange} question={question} userAnswers={userAnswers}
-            onChangePincite={onChangeTextAnswer} mergedUserQuestions={mergedUserQuestions} currentUserInitials={currentUserInitials}
-          />}
-
-          {question.questionType === 4 &&
-          <RadioGroupValidation
-            choices={question.possibleAnswers} onChange={onChange} question={question} userAnswers={userAnswers}
-            onChangePincite={onChangeTextAnswer} mergedUserQuestions={mergedUserQuestions} currentUserInitials={currentUserInitials}
-          />}
-
-          {question.questionType === 5 &&
+          {question.questionType === questionTypes.TEXT_FIELD &&
           <InputBox
             rows="5" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
-            value={userAnswers.answers}
+            value={userAnswers.answers} answerId={question.possibleAnswers[0].id}
           />}
         </Row>
         <Row flex style={{ paddingTop: 30, paddingLeft: 65 - questionAnswerPadding.paddingLeft }}>

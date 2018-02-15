@@ -4,8 +4,8 @@ import { bindActionCreators } from 'redux'
 import Grid from 'material-ui/Grid'
 import Container, { Row, Column } from 'components/Layout'
 import LoginForm from './components/LoginForm'
-import { Field, SubmissionError } from 'redux-form'
-import FormTextInput from 'components/FormTextInput'
+import { Field } from 'redux-form'
+import TextInput from 'components/TextInput'
 import * as actions from './actions'
 import { withRouter } from 'react-router-dom'
 
@@ -28,23 +28,23 @@ export class Login extends Component {
     return (
       <Container column flex alignItems="center" justify="center" style={{ backgroundColor: '#f5f5f5' }}>
         <LoginForm onSubmit={this.handleSubmit}>
-          <Grid container direction="column" alignItems="center" spacing={16}>
-            <Grid item>
+          <Column displayFlex style={{ justifyContent: 'space-around', alignItems: 'center' }}>
+            <Row style={{ width: 280, padding: 16 }}>
               <Field
                 name="email"
                 label="Email"
-                component={FormTextInput}
-                width={250} />
-            </Grid>
-            <Grid item>
+                component={TextInput}
+              />
+            </Row>
+            <Row style={{ width: 280, padding: 16 }}>
               <Field
                 name="password"
                 label="Password"
                 type="password"
-                component={FormTextInput}
-                width={250} />
-            </Grid>
-          </Grid>
+                component={TextInput}
+              />
+            </Row>
+          </Column>
         </LoginForm>
       </Container>
     )

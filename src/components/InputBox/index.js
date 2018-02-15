@@ -25,12 +25,12 @@ const styles = theme => ({
   }
 })
 
-const InputBox = ({ value, onChange, name, rows, classes, ...otherProps }) => {
+const InputBox = ({ value, onChange, name, rows, answerId, classes, ...otherProps }) => {
   return (
     <div className={classes.container}>
       <TextField
         value={value.textAnswer}
-        onChange={onChange(null, 'fieldValue')}
+        onChange={onChange(answerId)}
         multiline
         type="text"
         name={name}
@@ -40,12 +40,19 @@ const InputBox = ({ value, onChange, name, rows, classes, ...otherProps }) => {
           classes: {
             root: classes.textFieldRoot,
             input: classes.textFieldInput
-          },
+          }
         }}
         {...otherProps}
       />
-      {value.textAnswer && value.textAnswer.length > 0 && <SimpleInput name="pincite" value={value.pincite} placeholder="Enter pincite" onChange={onChange(null, 'pincite')} style={{ alignSelf: 'flex-end', paddingLeft: 15, flex: 1 }} />}
-      </div>
+      {value.textAnswer && value.textAnswer.length > 0 &&
+      <SimpleInput
+        name="pincite"
+        value={value.pincite}
+        placeholder="Enter pincite"
+        onChange={onChange(answerId, 'pincite')}
+        style={{ alignSelf: 'flex-end', paddingLeft: 15, flex: 1 }}
+      />}
+    </div>
   )
 }
 

@@ -62,7 +62,11 @@ const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) =>
           textAnswer: question.codedAnswers[0].textAnswer || ''
         }
       }
-      : { schemeQuestionId: question.schemeQuestionId, comment: '', answers: { pincite: '', textAnswer: '' } }
+      : {
+        schemeQuestionId: question.schemeQuestionId,
+        comment: '',
+        answers: { schemeAnswerId: question.codedAnswers[0].schemeAnswerId, pincite: '', textAnswer: '' }
+      }
   } else {
     return {
       schemeQuestionId: question.schemeQuestionId,
@@ -73,7 +77,7 @@ const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) =>
 }
 
 /*
-  Takes coded questions array and turns it into a object where each key is the question id
+  Takes coded questions array and turns it into a object where each key is the question id.
  */
 const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
   return userCodedQuestions.reduce((codedQuestionObj, question) => {
@@ -220,7 +224,7 @@ const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
       break
 
     case questionTypes.TEXT_FIELD:
-      currentUserAnswers = { ...currentUserAnswers, textAnswer: action.answerValue }
+      currentUserAnswers = { ...currentUserAnswers, schemeAnswerId: action.answerId, textAnswer: action.answerValue }
       break
 
     case questionTypes.CATEGORY:
