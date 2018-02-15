@@ -40,6 +40,23 @@ push_esquire_frontend_image:
   tags:
     - iiu
 
+  deploy_local_test_esquire_frontend:
+  stage: push
+  script:
+    - npm install
+    - npm run build
+    - echo "APP_API_URL=$TEST_APP_API_URL">.env
+    - pm2 stop serve
+    - pm2 start scripts/serve.js
+  environment:
+    name: IIU Esquire Test
+    url: https://esquiretest.phiresearchlab.org
+  when: manual
+  only: 
+    - test
+  tags:
+    - iiu
+
 deploy_test_esquire_frontend:
   stage: push
   script:
