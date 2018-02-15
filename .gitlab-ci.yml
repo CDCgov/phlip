@@ -40,7 +40,7 @@ push_esquire_frontend_image:
   tags:
     - iiu
 
-  deploy_local_test_esquire_frontend:
+deploy_local_test_esquire_frontend:
   stage: push
   script:
     - npm install
