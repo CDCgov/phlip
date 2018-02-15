@@ -30,7 +30,7 @@ const InputBox = ({ value, onChange, name, rows, answerId, classes, ...otherProp
     <div className={classes.container}>
       <TextField
         value={value.textAnswer}
-        onChange={onChange(answerId)}
+        onChange={onChange(answerId, 'textAnswer')}
         multiline
         type="text"
         name={name}
@@ -50,7 +50,8 @@ const InputBox = ({ value, onChange, name, rows, answerId, classes, ...otherProp
         value={value.pincite}
         placeholder="Enter pincite"
         onChange={onChange(answerId, 'pincite')}
-        style={{ alignSelf: 'flex-end', paddingLeft: 15, flex: 1 }}
+        rowsMax={5}
+        style={{ display: 'inline-flex', paddingLeft: 15, flex: 1 }}
       />}
     </div>
   )
