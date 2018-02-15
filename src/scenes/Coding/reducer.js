@@ -348,7 +348,7 @@ const initializeRegularQuestion = id => ({
   comment: ''
 })
 
-const initializeNavigator = (tree, scheme, codedQuestions) => {
+const initializeNavigator = (tree, scheme, codedQuestions, currentQuestion) => {
   tree.map(item => {
     item.isAnswered = checkIfAnswered(item, codedQuestions) && !item.isCategoryQuestion
 
@@ -356,11 +356,17 @@ const initializeNavigator = (tree, scheme, codedQuestions) => {
       item.children = item.questionType === questionTypes.CATEGORY
         ? checkIfAnswered(item, codedQuestions)
           ? initializeNavigator(
-            sortList(Object.values(scheme).filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
+            sortList(Object.values(scheme)
+            .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
             { ...scheme },
-            codedQuestions
+            codedQuestions,
+            currentQuestion
           ) : []
-        : initializeNavigator(item.children, { ...scheme }, codedQuestions)
+        : initializeNavigator(item.children, { ...scheme }, codedQuestions, currentQuestion)
+    }
+
+    if ((item.id === currentQuestion.id || currentQuestion.parentId === item.id) && item.children) {
+      item.expanded = true
     }
 
     if (item.isCategoryQuestion) {
@@ -577,7 +583,7 @@ const codingSceneReducer = (state = INITIAL_STATE, action) => {
       showNextButton: intermediateState.scheme === null ? false : determineShowButton(intermediateState),
       scheme: intermediateState.scheme === null ? null : {
         ...intermediateState.scheme,
-        tree: initializeNavigator(intermediateState.scheme.tree, intermediateState.scheme.byId, intermediateState.userAnswers)
+        tree: initializeNavigator(intermediateState.scheme.tree, intermediateState.scheme.byId, intermediateState.userAnswers, intermediateState.question)
       }
     }
   } else {
