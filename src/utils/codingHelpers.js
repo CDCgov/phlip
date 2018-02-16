@@ -51,7 +51,7 @@ export const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswer
       : {
         schemeQuestionId: question.schemeQuestionId,
         comment: '',
-        answers: { schemeAnswerId: question.codedAnswers[0].schemeAnswerId, pincite: '', textAnswer: '' }
+        answers: { pincite: '', textAnswer: '' }
       }
   } else {
     return {

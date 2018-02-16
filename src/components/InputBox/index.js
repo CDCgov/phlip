@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import TextField from 'material-ui/TextField'
 import SimpleInput from 'components/SimpleInput'
 import { withStyles } from 'material-ui/styles'
+import { Row, Column } from 'components/Layout'
+import Avatar from 'components/Avatar'
 
 const styles = theme => ({
   container: {
@@ -21,27 +23,30 @@ const styles = theme => ({
   }
 })
 
-const InputBox = ({ value, onChange, name, rows, answerId, classes, ...otherProps }) => {
+const InputBox = ({ value, onChange, name, rows, answerId, classes, currentUserInitials, isValidation, style, ...otherProps }) => {
   return (
-    <Fragment>
-      <TextField
-        value={value.textAnswer}
-        onChange={onChange(answerId, 'textAnswer')}
-        multiline
-        type="text"
-        name={name}
-        fullWidth
-        rows={rows}
-        InputProps={{
-          disableUnderline: true,
-          classes: {
-            input: classes.textFieldInput
-          }
-        }}
-        {...otherProps}
-      />
+    <Column style={style}>
+      <Row displayFlex style={{ alignItems: 'center', padding: isValidation ? '10px 15px 0 0' : '' }}>
+        {isValidation && <Avatar style={{ marginRight: 15 }} cardAvatar initials={currentUserInitials} />}
+        <TextField
+          value={value.textAnswer}
+          onChange={onChange(answerId, 'textAnswer')}
+          multiline
+          type="text"
+          name={name}
+          fullWidth
+          rows={rows}
+          InputProps={{
+            disableUnderline: true,
+            classes: {
+              input: classes.textFieldInput
+            }
+          }}
+          {...otherProps}
+        />
+      </Row>
       {value.textAnswer && value.textAnswer.length > 0 &&
-      <div style={{ paddingTop: 20 }}>
+      <div style={{ paddingTop: 10, paddingBottom: 20 }}>
         <SimpleInput
           name="pincite"
           value={value.pincite}
@@ -52,7 +57,7 @@ const InputBox = ({ value, onChange, name, rows, answerId, classes, ...otherProp
           style={{ flex: 1 }}
         />
       </div>}
-    </Fragment>
+    </Column>
   )
 }
 

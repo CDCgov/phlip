@@ -129,7 +129,6 @@ export const validateQuestionLogic = createLogic({
   },
   latest: true,
   async process({ getState, action, api }) {
-    // console.log(action)
     const validationState = getState().scenes.validation
     const updatedQuestionObject = validationState.userAnswers[action.questionId]
     let finalObject = {}
@@ -139,7 +138,7 @@ export const validateQuestionLogic = createLogic({
       finalObject = {
         ...updatedQuestionObject,
         codedAnswers: validationState.question.questionType === questionTypes.TEXT_FIELD
-          ? [deleteAnswerIds(updatedQuestionObject.answers[selectedCategoryId].answers)]
+          ? [{ ...updatedQuestionObject.answers[selectedCategoryId].answers }]
           : Object.values(updatedQuestionObject.answers[selectedCategoryId].answers).map(answer => {
             let ans = { ...answer }
             if (answer.id) {
@@ -151,13 +150,12 @@ export const validateQuestionLogic = createLogic({
       }
 
       const { answers, schemeQuestionId, ...final } = finalObject
-      // console.log(final)
       return await api.validateCategoryQuestion(action.projectId, action.jurisdictionId, action.questionId, selectedCategoryId, final)
     } else {
       finalObject = {
         ...updatedQuestionObject,
         codedAnswers: validationState.question.questionType === questionTypes.TEXT_FIELD
-          ? [deleteAnswerIds(updatedQuestionObject.answers)]
+          ? [{ ...updatedQuestionObject.answers }]
           : Object.values(updatedQuestionObject.answers).map(answer => {
             let ans = { ...answer }
             if (answer.id) {
@@ -167,7 +165,6 @@ export const validateQuestionLogic = createLogic({
           })
       }
       const { answers, ...final } = finalObject
-      // console.log(final)
       return await api.validateQuestion(action.projectId, action.jurisdictionId, action.questionId, final)
     }
   }
@@ -218,11 +215,20 @@ export const getUserValidatedQuestionsLogic = createLogic({
     let output = []
 
     mergedUserQuestions.forEach((value) => {
-      var existing = output.filter((v, i) => {
-        return v.schemeQuestionId == value.schemeQuestionId
-      })
+      let existing = []
+
+      if (value.hasOwnProperty('categoryId')) {
+        existing = output.filter((v, i) => {
+          return v.categoryId === value.categoryId && v.schemeQuestionId === value.schemeQuestionId
+        })
+      } else {
+        existing = output.filter((v, i) => {
+          return v.schemeQuestionId == value.schemeQuestionId
+        })
+      }
+
       if (existing.length) {
-        var existingIndex = output.indexOf(existing[0])
+        let existingIndex = output.indexOf(existing[0])
         output[existingIndex].codedAnswers = output[existingIndex].codedAnswers.concat(value.codedAnswers)
       } else {
         if (typeof value.codedAnswers == 'object')

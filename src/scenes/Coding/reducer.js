@@ -52,7 +52,6 @@ const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) =>
         }
       }
   } else if (codingSchemeQuestion.questionType === questionTypes.TEXT_FIELD) {
-    console.log(question)
     return question.codedAnswers.length > 0
       ? {
         schemeQuestionId: question.schemeQuestionId,

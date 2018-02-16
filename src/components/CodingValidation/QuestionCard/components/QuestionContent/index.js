@@ -72,6 +72,7 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
 
         {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions !== null &&
         <TextFieldQuestions
+          style={{ ...answerPadding, paddingRight: 0 }}
           mergedUserQuestions={mergedUserQuestions}
           validatorAnswer={userAnswers.answers}
           onChange={onChangeTextAnswer}
