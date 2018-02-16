@@ -75,9 +75,10 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
       >
         <span style={{ minWidth: 20, minHeight: 20, maxHeight: 20, maxWidth: 20 }}>{children}</span>
         <Typography style={questionTextStyles} type="body1" noWrap>
-          {item.number && <span>{`${item.number}. `}</span>}{item.questionType === 2 &&
-        <Icon size={11} color={questionTextStyles.color} style={{ paddingRight: 5 }}>filter_none</Icon>}{item.text}
+          {item.number && <span>{`${item.number}. `}</span>}
+          {item.text}
         </Typography>
+        {item.questionType === 2 && <Icon size={12} color={questionTextStyles.color} style={{ paddingRight: 5 }}>filter_none</Icon>}
         {item.isAnswered && <Icon color="#45ad70" size={19}>check</Icon>}
         {item.hasOwnProperty('completedProgress') && <Progress progress={item.completedProgress} />}
       </div>
