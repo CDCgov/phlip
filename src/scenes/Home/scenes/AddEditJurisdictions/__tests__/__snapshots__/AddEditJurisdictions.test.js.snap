@@ -32,6 +32,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
     search={true}
     title="Jurisdictions"
   />
+  <WithStyles />
   <ModalContent
     style={
       Object {
@@ -51,7 +52,11 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       }
     >
       <Column
-        component={<Card />}
+        component={
+          <WithStyles
+            item={true}
+          />
+        }
         displayFlex={true}
         flex={true}
         style={
