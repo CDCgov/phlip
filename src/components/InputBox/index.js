@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import TextField from 'material-ui/TextField'
 import SimpleInput from 'components/SimpleInput'
@@ -10,10 +10,6 @@ const styles = theme => ({
     flexWrap: 'wrap',
     flex: 1,
     paddingTop: 10
-  },
-  textFieldRoot: {
-    padding: 0,
-    width: 600
   },
   textFieldInput: {
     outline: 0,
@@ -27,33 +23,36 @@ const styles = theme => ({
 
 const InputBox = ({ value, onChange, name, rows, answerId, classes, ...otherProps }) => {
   return (
-    <div className={classes.container}>
+    <Fragment>
       <TextField
         value={value.textAnswer}
         onChange={onChange(answerId, 'textAnswer')}
         multiline
         type="text"
         name={name}
+        fullWidth
         rows={rows}
         InputProps={{
           disableUnderline: true,
           classes: {
-            root: classes.textFieldRoot,
             input: classes.textFieldInput
           }
         }}
         {...otherProps}
       />
       {value.textAnswer && value.textAnswer.length > 0 &&
-      <SimpleInput
-        name="pincite"
-        value={value.pincite}
-        placeholder="Enter pincite"
-        onChange={onChange(answerId, 'pincite')}
-        rowsMax={5}
-        style={{ display: 'inline-flex', paddingLeft: 15, flex: 1 }}
-      />}
-    </div>
+      <div style={{ paddingTop: 20 }}>
+        <SimpleInput
+          name="pincite"
+          value={value.pincite}
+          placeholder="Enter pincite"
+          label="Pincite"
+          onChange={onChange(answerId, 'pincite')}
+          rowsMax={5}
+          style={{ flex: 1 }}
+        />
+      </div>}
+    </Fragment>
   )
 }
 

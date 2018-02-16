@@ -52,6 +52,7 @@ const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) =>
         }
       }
   } else if (codingSchemeQuestion.questionType === questionTypes.TEXT_FIELD) {
+    console.log(question)
     return question.codedAnswers.length > 0
       ? {
         schemeQuestionId: question.schemeQuestionId,
@@ -65,7 +66,7 @@ const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) =>
       : {
         schemeQuestionId: question.schemeQuestionId,
         comment: '',
-        answers: { schemeAnswerId: question.codedAnswers[0].schemeAnswerId, pincite: '', textAnswer: '' }
+        answers: { pincite: '', textAnswer: '' }
       }
   } else {
     return {

@@ -18,6 +18,11 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
     paddingLeft: (question.number && (question.number.split('.').length * 3) + 40) || 40
   }
 
+  const answerPadding = {
+    ...questionAnswerPadding,
+    paddingLeft: 65 - questionAnswerPadding.paddingLeft
+  }
+
   return (
     <Container column flex>
       <Row displayFlex style={{ padding: '20px 20px 10px 20px' }}>
@@ -29,13 +34,9 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
         </Column>
       </Row>
       <Column displayFlex flex style={{ ...questionAnswerPadding }}>
-        <Row
-          flex
-          displayFlex
-          style={{ overflow: 'auto', paddingLeft: 65 - questionAnswerPadding.paddingLeft, flexBasis: '50%' }}
-        >
-          {(question.questionType === questionTypes.MULTIPLE_CHOICE ||
-            question.questionType === questionTypes.BINARY) &&
+        {(question.questionType === questionTypes.MULTIPLE_CHOICE ||
+          question.questionType === questionTypes.BINARY) &&
+        <Row flex displayFlex style={{ ...answerPadding, paddingRight: 0,  overflow: 'auto' }}>
           <RadioGroupValidation
             choices={question.possibleAnswers}
             question={question}
@@ -44,10 +45,12 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
             onChangePincite={onChangeTextAnswer}
             mergedUserQuestions={mergedUserQuestions}
             currentUserInitials={currentUserInitials}
-          />}
+          />
+        </Row>}
 
-          {(question.questionType === questionTypes.CATEGORY ||
-            question.questionType === questionTypes.CHECKBOXES) &&
+        {(question.questionType === questionTypes.CATEGORY ||
+          question.questionType === questionTypes.CHECKBOXES) &&
+        <Row flex displayFlex style={{ ...answerPadding, paddingRight: 0, overflow: 'auto' }}>
           <CheckboxGroupValidation
             choices={question.possibleAnswers}
             onChange={onChange}
@@ -56,30 +59,35 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
             pincites={question.questionType !== questionTypes.CATEGORY}
             mergedUserQuestions={mergedUserQuestions}
             currentUserInitials={currentUserInitials}
-          />}
+          />
+        </Row>}
 
-          {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions === null &&
+        {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions === null &&
+        <Column displayFlex style={{ ...answerPadding, paddingRight: 0 }}>
           <InputBox
-            rows="5" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
+            rows="7" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
             value={userAnswers.answers} answerId={question.possibleAnswers[0].id}
-          />}
+          />
+        </Column>}
 
-          {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions !== null &&
-          <Column flex>
-            <TextFieldQuestions mergedUserQuestions={mergedUserQuestions} />
-            <InputBox
-              rows="5" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
-              value={userAnswers.answers} answerId={question.possibleAnswers[0].id}
-            />
-          </Column>
-          }
-        </Row>
-        <Row flex style={{ paddingTop: 30, paddingLeft: 65 - questionAnswerPadding.paddingLeft }}>
+        {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions !== null &&
+        <TextFieldQuestions
+          mergedUserQuestions={mergedUserQuestions}
+          validatorAnswer={userAnswers.answers}
+          onChange={onChangeTextAnswer}
+          answerId={question.possibleAnswers[0].id}
+          currentUserInitials={currentUserInitials}
+        />
+        }
+        <Row style={{ ...answerPadding, paddingRight: 0 }}>
           {question.includeComment &&
           <Row>
             <SimpleInput
-              onChange={onChangeTextAnswer(null, 'comment')} name="comment" placeholder="Enter comment"
-              style={{ width: '70%' }} value={comment} label="Comment"
+              onChange={onChangeTextAnswer(null, 'comment')}
+              name="comment"
+              placeholder="Enter comment"
+              value={comment}
+              label="Comment"
             />
           </Row>}
         </Row>
@@ -89,7 +97,8 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
       <Row displayFlex style={{ padding: '0px 35px 50px 35px' }}>
         <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
         <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
-      </Row>}
+      </Row>
+      }
     </Container>
   )
 }
