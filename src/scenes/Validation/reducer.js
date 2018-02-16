@@ -147,13 +147,8 @@ const validationReducer = (state = INITIAL_STATE, action) => {
     case types.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
       let userAnswers = {}, question = { ...state.question }, other = {}, mergedUserQuestions = {}
 
-
-      if (action.payload.codedQuestions.length !== 0) {
-        userAnswers = initializeUserAnswers(action.payload.codedQuestions, state.scheme.byId)
-      }
-
       if (action.payload.mergedUserQuestions.length !== 0) {
-        mergedUserQuestions = initilizedCodedUsers(action.payload.mergedUserQuestions, state.scheme.byId)
+        mergedUserQuestions = initializeCodedUsers(action.payload.mergedUserQuestions, state.scheme.byId)
       }
 
       if (state.question.isCategoryQuestion) {
@@ -174,16 +169,16 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
-      if (!userAnswers.hasOwnProperty(question.id)) {
-        userAnswers = {
-          ...userAnswers,
-          [question.id]: {
+      userAnswers = initializeUserAnswers(
+        [
+          {
             schemeQuestionId: question.id,
             comment: '',
-            answers: {}
-          }
-        }
-      }
+            codedAnswers: []
+          }, ...action.payload.codedQuestions
+        ],
+        state.scheme.byId
+      )
 
       return {
         ...state,

@@ -515,10 +515,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.GET_USER_CODED_QUESTIONS_SUCCESS:
       let userAnswers = {}, question = { ...state.question }, other = {}
 
-      if (action.payload.codedQuestions.length !== 0) {
-        userAnswers = initializeUserAnswers(action.payload.codedQuestions, state.scheme.byId)
-      }
-
       if (state.question.isCategoryQuestion) {
         question = state.scheme.byId[question.parentId]
         other = {
@@ -526,16 +522,16 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
-      if (!userAnswers.hasOwnProperty(question.id)) {
-        userAnswers = {
-          ...userAnswers,
-          [question.id]: {
+      userAnswers = initializeUserAnswers(
+        [
+          {
             schemeQuestionId: question.id,
             comment: '',
-            answers: {}
-          }
-        }
-      }
+            codedAnswers: []
+          }, ...action.payload.codedQuestions
+        ],
+        state.scheme.byId
+      )
 
       return {
         ...state,
