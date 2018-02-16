@@ -10,7 +10,13 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
   let className = ''
 
   const questionTextStyles = {
-    color: item.isCurrent === true ? '#68cff5' : item.isAnswered ? '#818789' : item.completedProgress === 100 ? '#818789' : 'white',
+    color: item.isCurrent === true
+      ? '#68cff5'
+      : item.isAnswered
+        ? '#818789'
+        : item.completedProgress === 100
+          ? '#818789'
+          : 'white',
     fontWeight: 300,
     paddingLeft: 10,
     paddingRight: 10,
@@ -65,10 +71,12 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
       {scaffold}
       <div
         style={{ ...rowStyles, marginLeft: 23 * item.indent, cursor: 'pointer' }}
-        onClick={() => onQuestionSelected(item)}>
+        onClick={() => onQuestionSelected(item)}
+      >
         <span style={{ minWidth: 20, minHeight: 20, maxHeight: 20, maxWidth: 20 }}>{children}</span>
         <Typography style={questionTextStyles} type="body1" noWrap>
-          {item.number && <span>{`${item.number}. `}</span>}{item.text}
+          {item.number && <span>{`${item.number}. `}</span>}{item.questionType === 2 &&
+        <Icon size={11} color={questionTextStyles.color} style={{ paddingRight: 5 }}>filter_none</Icon>}{item.text}
         </Typography>
         {item.isAnswered && <Icon color="#45ad70" size={19}>check</Icon>}
         {item.hasOwnProperty('completedProgress') && <Progress progress={item.completedProgress} />}
