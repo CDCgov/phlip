@@ -354,7 +354,9 @@ const initializeRegularQuestion = id => ({
 
 const initializeNavigator = (tree, scheme, codedQuestions, currentQuestion) => {
   tree.map(item => {
-    item.isAnswered = checkIfAnswered(item, codedQuestions) && !item.isCategoryQuestion
+    item.isAnswered = item.questionType === questionTypes.TEXT_FIELD
+      ? codedQuestions[item.id].answers.textAnswer.length > 0
+      : checkIfAnswered(item, codedQuestions) && !item.isCategoryQuestion
 
     if (item.children) {
       item.children = item.questionType === questionTypes.CATEGORY

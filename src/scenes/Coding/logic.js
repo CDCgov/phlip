@@ -80,7 +80,7 @@ export const answerQuestionLogic = createLogic({
       finalObject = {
         ...updatedQuestionObject,
         codedAnswers: codingState.question.questionType === questionTypes.TEXT_FIELD
-          ? [deleteAnswerIds(updatedQuestionObject.answers[selectedCategoryId].answers)]
+          ? updatedQuestionObject.answers.textAnswer === '' ? [] : [deleteAnswerIds(updatedQuestionObject.answers[selectedCategoryId].answers)]
           : Object.values(updatedQuestionObject.answers[selectedCategoryId].answers).map(answer => {
             let ans = { ...answer }
             if (answer.id) {
@@ -97,7 +97,7 @@ export const answerQuestionLogic = createLogic({
       finalObject = {
         ...updatedQuestionObject,
         codedAnswers: codingState.question.questionType === questionTypes.TEXT_FIELD
-          ? [deleteAnswerIds(updatedQuestionObject.answers)]
+          ? updatedQuestionObject.answers.textAnswer === '' ? [] : [deleteAnswerIds(updatedQuestionObject.answers)]
           : Object.values(updatedQuestionObject.answers).map(answer => {
             let ans = { ...answer }
             if (answer.id) {
@@ -108,6 +108,7 @@ export const answerQuestionLogic = createLogic({
       }
 
       const { answers, ...final } = finalObject
+      console.log(final)
       return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, final)
     }
   }

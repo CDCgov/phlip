@@ -138,7 +138,7 @@ export const validateQuestionLogic = createLogic({
       finalObject = {
         ...updatedQuestionObject,
         codedAnswers: validationState.question.questionType === questionTypes.TEXT_FIELD
-          ? [{ ...updatedQuestionObject.answers[selectedCategoryId].answers }]
+          ? updatedQuestionObject.answers.textAnswer === '' ? [] : [{ ...updatedQuestionObject.answers[selectedCategoryId].answers }]
           : Object.values(updatedQuestionObject.answers[selectedCategoryId].answers).map(answer => {
             let ans = { ...answer }
             if (answer.id) {
@@ -155,7 +155,7 @@ export const validateQuestionLogic = createLogic({
       finalObject = {
         ...updatedQuestionObject,
         codedAnswers: validationState.question.questionType === questionTypes.TEXT_FIELD
-          ? [{ ...updatedQuestionObject.answers }]
+          ? updatedQuestionObject.answers.textAnswer === '' ? [] : [{ ...updatedQuestionObject.answers }]
           : Object.values(updatedQuestionObject.answers).map(answer => {
             let ans = { ...answer }
             if (answer.id) {
