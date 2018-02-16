@@ -193,7 +193,7 @@ export class Coding extends Component {
           padding={false}
           className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}
         >
-          <Column flex displayFlex>
+          <Column flex displayFlex style={{ width: '100%' }}>
             <Header
               projectName={this.props.projectName} projectId={this.props.projectId}
               jurisdictionsList={this.props.jurisdictionsList}
