@@ -74,20 +74,13 @@ export const answerQuestionLogic = createLogic({
     const updatedQuestionObject = codingState.userAnswers[action.questionId]
     let finalObject = {}
 
+
     if (codingState.question.isCategoryQuestion) {
       const selectedCategoryId = codingState.categories[codingState.selectedCategory].id
 
       finalObject = {
         ...updatedQuestionObject,
-        codedAnswers: codingState.question.questionType === questionTypes.TEXT_FIELD
-          ? updatedQuestionObject.answers.textAnswer === '' ? [] : [deleteAnswerIds(updatedQuestionObject.answers[selectedCategoryId].answers)]
-          : Object.values(updatedQuestionObject.answers[selectedCategoryId].answers).map(answer => {
-            let ans = { ...answer }
-            if (answer.id) {
-              delete ans.id
-            }
-            return ans
-          }),
+        codedAnswers: Object.values(updatedQuestionObject.answers[selectedCategoryId].answers).map(deleteAnswerIds),
         comment: updatedQuestionObject.comment[selectedCategoryId]
       }
 
@@ -96,19 +89,10 @@ export const answerQuestionLogic = createLogic({
     } else {
       finalObject = {
         ...updatedQuestionObject,
-        codedAnswers: codingState.question.questionType === questionTypes.TEXT_FIELD
-          ? updatedQuestionObject.answers.textAnswer === '' ? [] : [deleteAnswerIds(updatedQuestionObject.answers)]
-          : Object.values(updatedQuestionObject.answers).map(answer => {
-            let ans = { ...answer }
-            if (answer.id) {
-              delete ans.id
-            }
-            return ans
-          })
+        codedAnswers: Object.values(updatedQuestionObject.answers).map(deleteAnswerIds)
       }
 
       const { answers, ...final } = finalObject
-      console.log(final)
       return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, final)
     }
   }

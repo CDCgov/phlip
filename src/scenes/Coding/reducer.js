@@ -30,7 +30,7 @@ const INITIAL_STATE = {
  */
 const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) => {
   if (question.categoryId && question.categoryId !== 0) {
-    return userCodedAnswerObj.hasOwnProperty(question.schemeQuestionId)
+    return checkIfExists(question, userCodedAnswerObj, 'schemeQuestionId')
       ? {
         schemeQuestionId: question.schemeQuestionId,
         answers: {
@@ -50,22 +50,6 @@ const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) =>
         comment: {
           [question.categoryId]: question.comment || ''
         }
-      }
-  } else if (codingSchemeQuestion.questionType === questionTypes.TEXT_FIELD) {
-    return question.codedAnswers.length > 0
-      ? {
-        schemeQuestionId: question.schemeQuestionId,
-        comment: question.comment,
-        answers: {
-          ...question.codedAnswers[0],
-          pincite: question.codedAnswers[0].pincite || '',
-          textAnswer: question.codedAnswers[0].textAnswer || ''
-        }
-      }
-      : {
-        schemeQuestionId: question.schemeQuestionId,
-        comment: '',
-        answers: { pincite: '', textAnswer: '' }
       }
   } else {
     return {
@@ -224,7 +208,13 @@ const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
       break
 
     case questionTypes.TEXT_FIELD:
-      currentUserAnswers = { ...currentUserAnswers, schemeAnswerId: action.answerId, textAnswer: action.answerValue }
+      currentUserAnswers = {
+        [action.answerId]: {
+          ...currentUserAnswers[action.answerId],
+          schemeAnswerId: action.answerId,
+          textAnswer: action.answerValue
+        }
+      }
       break
 
     case questionTypes.CATEGORY:
@@ -286,9 +276,8 @@ const handleUserPinciteQuestion = (questionType, action, currentUserAnswers) => 
   switch (questionType) {
     case questionTypes.BINARY:
     case questionTypes.MULTIPLE_CHOICE:
-      return { [action.answerId]: { ...currentUserAnswers[action.answerId], pincite: action.pincite } }
     case questionTypes.TEXT_FIELD:
-      return { ...currentUserAnswers, pincite: action.pincite }
+      return { [action.answerId]: { ...currentUserAnswers[action.answerId], pincite: action.pincite } }
     case questionTypes.CATEGORY:
     case questionTypes.CHECKBOXES:
       return {
@@ -327,11 +316,7 @@ const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, getFieldVa
 /*
   Clears answers when user clicks sweep button
  */
-const handleClearAnswers = questionType => {
-  return questionType === questionTypes.TEXT_FIELD
-    ? { textAnswer: '', pincite: '', flag: 0 }
-    : {}
-}
+const handleClearAnswers = questionType => ({})
 
 /*
   Clears the category for current question from state.userAnswers
@@ -354,9 +339,7 @@ const initializeRegularQuestion = id => ({
 
 const initializeNavigator = (tree, scheme, codedQuestions, currentQuestion) => {
   tree.map(item => {
-    item.isAnswered = item.questionType === questionTypes.TEXT_FIELD
-      ? codedQuestions[item.id].answers.textAnswer.length > 0
-      : checkIfAnswered(item, codedQuestions) && !item.isCategoryQuestion
+    item.isAnswered = checkIfAnswered(item, codedQuestions) && !item.isCategoryQuestion
 
     if (item.children) {
       item.children = item.questionType === questionTypes.CATEGORY

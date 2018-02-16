@@ -18,6 +18,12 @@ const mergeUserAnswers = (combinedCodedQuestions) => {
   return mergedUserQuestions
 }
 
+const deleteAnswerIds = (answer) => {
+  let ans = { ...answer }
+  if (ans.id) delete ans.id
+  return ans
+}
+
 export const getValidationOutlineLogic = createLogic({
   type: types.GET_VALIDATION_OUTLINE_REQUEST,
   processOptions: {
@@ -137,15 +143,7 @@ export const validateQuestionLogic = createLogic({
       const selectedCategoryId = validationState.categories[validationState.selectedCategory].id
       finalObject = {
         ...updatedQuestionObject,
-        codedAnswers: validationState.question.questionType === questionTypes.TEXT_FIELD
-          ? updatedQuestionObject.answers.textAnswer === '' ? [] : [{ ...updatedQuestionObject.answers[selectedCategoryId].answers }]
-          : Object.values(updatedQuestionObject.answers[selectedCategoryId].answers).map(answer => {
-            let ans = { ...answer }
-            if (answer.id) {
-              delete ans.id
-            }
-            return ans
-          }),
+        codedAnswers: Object.values(updatedQuestionObject.answers[selectedCategoryId].answers).map(deleteAnswerIds),
         comment: updatedQuestionObject.comment[selectedCategoryId]
       }
 
@@ -154,15 +152,7 @@ export const validateQuestionLogic = createLogic({
     } else {
       finalObject = {
         ...updatedQuestionObject,
-        codedAnswers: validationState.question.questionType === questionTypes.TEXT_FIELD
-          ? updatedQuestionObject.answers.textAnswer === '' ? [] : [{ ...updatedQuestionObject.answers }]
-          : Object.values(updatedQuestionObject.answers).map(answer => {
-            let ans = { ...answer }
-            if (answer.id) {
-              delete ans.id
-            }
-            return ans
-          })
+        codedAnswers: Object.values(updatedQuestionObject.answers).map(deleteAnswerIds)
       }
       const { answers, ...final } = finalObject
       return await api.validateQuestion(action.projectId, action.jurisdictionId, action.questionId, final)

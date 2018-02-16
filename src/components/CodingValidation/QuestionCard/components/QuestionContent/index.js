@@ -56,6 +56,7 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
             onChange={onChange}
             question={question}
             userAnswers={userAnswers}
+            onChangePincite={onChangeTextAnswer}
             pincites={question.questionType !== questionTypes.CATEGORY}
             mergedUserQuestions={mergedUserQuestions}
             currentUserInitials={currentUserInitials}
@@ -66,7 +67,7 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
         <Column displayFlex style={{ ...answerPadding, paddingRight: 0 }}>
           <InputBox
             rows="7" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
-            value={userAnswers.answers} answerId={question.possibleAnswers[0].id}
+            value={userAnswers.answers[question.possibleAnswers[0].id]} answerId={question.possibleAnswers[0].id}
           />
         </Column>}
 
@@ -74,7 +75,7 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
         <TextFieldQuestions
           style={{ ...answerPadding, paddingRight: 0 }}
           mergedUserQuestions={mergedUserQuestions}
-          validatorAnswer={userAnswers.answers}
+          validatorAnswer={userAnswers.answers[question.possibleAnswers[0].id]}
           onChange={onChangeTextAnswer}
           answerId={question.possibleAnswers[0].id}
           currentUserInitials={currentUserInitials}

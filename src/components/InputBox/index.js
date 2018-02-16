@@ -24,12 +24,13 @@ const styles = theme => ({
 })
 
 const InputBox = ({ value, onChange, name, rows, answerId, classes, currentUserInitials, isValidation, style, ...otherProps }) => {
+  const textValues = value === undefined ? { textAnswer: '', pincite: '' } : value
   return (
     <Column style={style}>
       <Row displayFlex style={{ alignItems: 'center', padding: isValidation ? '10px 0 0 0' : '' }}>
         {isValidation && <Avatar style={{ marginRight: 15 }} cardAvatar initials={currentUserInitials} />}
         <TextField
-          value={value.textAnswer}
+          value={textValues.textAnswer}
           onChange={onChange(answerId, 'textAnswer')}
           multiline
           type="text"
@@ -45,11 +46,11 @@ const InputBox = ({ value, onChange, name, rows, answerId, classes, currentUserI
           {...otherProps}
         />
       </Row>
-      {value.textAnswer && value.textAnswer.length > 0 &&
+      {textValues.textAnswer && textValues.textAnswer.length > 0 &&
       <div style={{ paddingTop: 10, paddingBottom: 20 }}>
         <SimpleInput
           name="pincite"
-          value={value.pincite}
+          value={textValues.pincite === null ? '' : textValues.pincite}
           placeholder="Enter pincite"
           label="Pincite"
           onChange={onChange(answerId, 'pincite')}
