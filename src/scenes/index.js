@@ -12,6 +12,7 @@ import { isLoggedInTokenExists, getToken } from '../services/authToken'
 import CodingScheme from './CodingScheme'
 import Coding from './Coding'
 import Validation from './Validation'
+import Protocol from './Protocol'
 
 const AuthenticatedScenes = () => (
   <Switch>
@@ -21,6 +22,7 @@ const AuthenticatedScenes = () => (
       <Switch>
         <Route path="/admin" component={Admin} />
         <Route path="/project/:id/coding-scheme" component={CodingScheme} />
+        <Route path="/project/:id/protocol" component={Protocol} />
         <Route path="/" component={Home} />
       </Switch>
     </HeaderedLayout>
