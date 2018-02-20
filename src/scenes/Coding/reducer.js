@@ -199,8 +199,6 @@ const getPreviousQuestion = (state, action) => {
   Handles updating state.userAnswers with the user's new answer
  */
 const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
-  console.log(action)
-  console.log(selectedCategoryId)
   let currentUserAnswers = state.question.isCategoryQuestion
     ? state.userAnswers[action.questionId].answers[selectedCategoryId].answers
     : state.userAnswers[action.questionId].answers

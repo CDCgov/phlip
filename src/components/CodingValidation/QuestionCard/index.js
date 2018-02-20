@@ -41,7 +41,7 @@ export const QuestionCard = ({ question, currentUserInitials, userAnswers, categ
           </TabContainer>
           : <QuestionContent
             currentUserInitials={currentUserInitials}
-            onChange={onChange} userAnswers={userAnswers} onChangeTextAnswer={onChangeTextAnswer} onOpenAlert={onOpenAlert}w
+            onChange={onChange} userAnswers={userAnswers} onChangeTextAnswer={onChangeTextAnswer} onOpenAlert={onOpenAlert}
             question={question} comment={userAnswers.comment} mergedUserQuestions={mergedUserQuestions}
           />
         }

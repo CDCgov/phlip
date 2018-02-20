@@ -75,7 +75,6 @@ export const answerQuestionLogic = createLogic({
     const userId = getState().data.user.currentUser.id
     const codingState = getState().scenes.coding
     const questionObject = codingState.userAnswers[action.questionId]
-    console.log(questionObject)
 
     const { answers, categoryId, schemeQuestionId, ...answerObject } = codingState.question.isCategoryQuestion
       ? {
@@ -91,7 +90,6 @@ export const answerQuestionLogic = createLogic({
         codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds)
       }
 
-    console.log(answerObject)
     return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, answerObject)
   }
 })
