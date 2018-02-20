@@ -74,7 +74,7 @@ export class Coding extends Component {
         onClick: this.onCloseApplyAllAlert
       },
       {
-        value: 'Yes',
+        value: 'Continue',
         type: 'button',
         onClick: this.onApplyToAll
       }
@@ -217,8 +217,7 @@ export class Coding extends Component {
         <Modal open={this.state.applyAllAlertOpen}>
           <ModalContent>
             <Typography variant="body1">
-              Applying your answer to all categories will replace all answers for any categories that you might have
-              already answered. Do you want to continue?
+              You are applying your answer to ALL categories. Previously answered questions will be changed.
             </Typography>
           </ModalContent>
           <ModalActions actions={this.modalActions} />
