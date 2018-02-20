@@ -52,6 +52,7 @@ export const RadioGroup = ({ choices, currentUserInitials, userAnswers, onChange
                   : '0px'
               }}
               placeholder="Enter pincite"
+              multiline={false}
               value={userAnswers.answers[choice.id].pincite}
               onChange={onChangePincite(choice.id, 'pincite')}
             />}

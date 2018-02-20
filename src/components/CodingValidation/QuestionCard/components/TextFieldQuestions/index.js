@@ -22,7 +22,7 @@ export const TextFieldQuestions = ({ mergedUserQuestions, validatorAnswer, onCha
                   initials={getInitials(answer.firstName, answer.lastName)}
                 />
                 <Paper elevation={0}>
-                  <Typography>{answer.textAnswer}</Typography>
+                  <Typography style={{ whiteSpace: 'pre-wrap' }}>{answer.textAnswer}</Typography>
                 </Paper>
               </Row>
               <Divider />

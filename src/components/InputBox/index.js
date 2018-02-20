@@ -19,6 +19,7 @@ const styles = theme => ({
     border: '1px solid #ced4da',
     fontSize: 16,
     padding: '10px 12px',
+    whiteSpace: 'pre-wrap',
     transition: theme.transitions.create(['border-color', 'box-shadow'])
   }
 })
@@ -54,7 +55,7 @@ const InputBox = ({ value, onChange, name, rows, answerId, classes, currentUserI
           placeholder="Enter pincite"
           label="Pincite"
           onChange={onChange(answerId, 'pincite')}
-          rowsMax={5}
+          multiline={false}
           style={{ flex: 1 }}
         />
       </div>}

@@ -87,6 +87,7 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
             <SimpleInput
               onChange={onChangeTextAnswer(null, 'comment')}
               name="comment"
+              style={{ whiteSpace: 'pre-wrap' }}
               placeholder="Enter comment"
               value={comment}
               label="Comment"
