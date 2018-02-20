@@ -106,7 +106,7 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
       </Row>
       }
 
-      {question.isCategoryChild &&
+      {question.isCategoryQuestion && mergedUserQuestions === null &&
       <Fragment>
         <Divider />
         <Row

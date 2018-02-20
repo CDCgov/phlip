@@ -10,6 +10,7 @@ const initial = {
   currentIndex: 0,
   categories: undefined,
   selectedCategory: 0,
+  selectedCategoryId: null,
   userAnswers: {},
   showNextButton: true
 }
@@ -875,6 +876,7 @@ describe('Coding reducer', () => {
             }
           },
           selectedCategory: 0,
+          selectedCategoryId: 3,
           categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
         }),
         action
@@ -911,6 +913,7 @@ describe('Coding reducer', () => {
           },
           showNextButton: false,
           selectedCategory: 0,
+          selectedCategoryId: 3,
           categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
         })
       )
@@ -1014,6 +1017,7 @@ describe('Coding reducer', () => {
             }
           },
           selectedCategory: 1,
+          selectedCategoryId: 2,
           categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
         }),
         action
@@ -1045,6 +1049,7 @@ describe('Coding reducer', () => {
           },
           selectedCategory: 1,
           showNextButton: false,
+          selectedCategoryId: 2,
           categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
         })
       )
@@ -1135,6 +1140,7 @@ describe('Coding reducer', () => {
             }
           },
           selectedCategory: 0,
+          selectedCategoryId: 3,
           categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
         }),
         action
@@ -1163,6 +1169,7 @@ describe('Coding reducer', () => {
             }
           },
           selectedCategory: 0,
+          selectedCategoryId: 3,
           categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }],
           showNextButton: false
         })
