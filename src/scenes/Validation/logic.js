@@ -4,14 +4,15 @@ import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
-
 const mergeUserAnswers = (combinedCodedQuestions) => {
   let mergedUserQuestions = []
 
   for (let item of combinedCodedQuestions) {
     for (let codedQuestion of item.codeQuestionsPerUser) {
       for (let codedAnswer of codedQuestion.codedAnswers) {
-        mergedUserQuestions = [...mergedUserQuestions, { ...codedQuestion, codedAnswers: { ...codedAnswer, ...item.coder } }]
+        mergedUserQuestions = [
+          ...mergedUserQuestions, { ...codedQuestion, codedAnswers: { ...codedAnswer, ...item.coder } }
+        ]
       }
     }
   }
@@ -51,7 +52,6 @@ export const getValidationOutlineLogic = createLogic({
     } catch (e) {
       throw { error: 'failed to get project coders' }
     }
-
 
     if (action.jurisdictionId) {
       try {
@@ -109,7 +109,7 @@ export const getValidationOutlineLogic = createLogic({
         } else {
           if (typeof value.codedAnswers == 'object')
             value.codedAnswers = [value.codedAnswers]
-          output.push(value);
+          output.push(value)
         }
       })
 
@@ -136,27 +136,20 @@ export const validateQuestionLogic = createLogic({
   latest: true,
   async process({ getState, action, api }) {
     const validationState = getState().scenes.validation
-    const updatedQuestionObject = validationState.userAnswers[action.questionId]
-    let finalObject = {}
+    const questionObject = validationState.userAnswers[action.questionId]
 
-    if (validationState.question.isCategoryQuestion) {
-      const selectedCategoryId = validationState.categories[validationState.selectedCategory].id
-      finalObject = {
-        ...updatedQuestionObject,
-        codedAnswers: Object.values(updatedQuestionObject.answers[selectedCategoryId].answers).map(deleteAnswerIds),
-        comment: updatedQuestionObject.comment[selectedCategoryId]
+    const { answers, categoryId, schemeQuestionId, ...answerObject } = validationState.question.isCategoryQuestion
+      ? {
+        ...questionObject,
+        codedAnswers: Object.values(questionObject.answers[validationState.selectedCategoryId].answers).map(deleteAnswerIds),
+        comment: questionObject.comment[validationState.selectedCategoryId],
+        categories: [validationState.selectedCategoryId]
       }
-
-      const { answers, schemeQuestionId, ...final } = finalObject
-      return await api.validateCategoryQuestion(action.projectId, action.jurisdictionId, action.questionId, selectedCategoryId, final)
-    } else {
-      finalObject = {
-        ...updatedQuestionObject,
-        codedAnswers: Object.values(updatedQuestionObject.answers).map(deleteAnswerIds)
+      : {
+        ...questionObject,
+        codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds)
       }
-      const { answers, ...final } = finalObject
-      return await api.validateQuestion(action.projectId, action.jurisdictionId, action.questionId, final)
-    }
+    return await api.validateQuestion(action.projectId, action.jurisdictionId, action.questionId, answerObject)
   }
 })
 
@@ -200,7 +193,6 @@ export const getUserValidatedQuestionsLogic = createLogic({
       }
     }
 
-
     let mergedUserQuestions = mergeUserAnswers(combinedCodedQuestions)
     let output = []
 
@@ -223,10 +215,9 @@ export const getUserValidatedQuestionsLogic = createLogic({
       } else {
         if (typeof value.codedAnswers == 'object')
           value.codedAnswers = [value.codedAnswers]
-        output.push(value);
+        output.push(value)
       }
     })
-
 
     return {
       codedQuestions,

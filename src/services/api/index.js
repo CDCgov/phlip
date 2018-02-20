@@ -95,11 +95,6 @@ export default {
       .then(res => res.data)
   },
 
-  answerCategoryQuestion(projectId, jurisdictionId, userId, questionId, categoryId, updatedQuestion) {
-    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}/category/${categoryId}`, updatedQuestion)
-      .then(res => res.data)
-  },
-
   getUserCodedQuestions(userId, projectId, jurisdictionId) {
     return api.get(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions`).then(res => res.data)
   },
@@ -110,11 +105,6 @@ export default {
 
   validateQuestion(projectId, jurisdictionId, questionId, updatedQuestion) {
     return api.post(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`, updatedQuestion)
-      .then(res => res.data)
-  },
-
-  validateCategoryQuestion(projectId, jurisdictionId, questionId, categoryId, updatedQuestion) {
-    return api.post(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}/category/${categoryId}`, updatedQuestion)
       .then(res => res.data)
   },
 
