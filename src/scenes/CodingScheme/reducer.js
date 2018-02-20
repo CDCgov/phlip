@@ -80,12 +80,12 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         questions: sortQuestions(
           getTreeFromFlatData({
-            flatData: getQuestionsFromOutline(action.payload.outline, action.payload.codingSchemeQuestions)
+            flatData: getQuestionsFromOutline(action.payload.outline, action.payload.schemeQuestions)
           })
         ),
-        flatQuestions: action.payload.codingSchemeQuestions,
+        flatQuestions: action.payload.schemeQuestions,
         outline: action.payload.outline,
-        empty: action.payload.codingSchemeQuestions <= 0
+        empty: action.payload.schemeQuestions <= 0
       }
 
     case types.SET_EMPTY_STATE:

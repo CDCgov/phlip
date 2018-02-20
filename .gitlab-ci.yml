@@ -27,7 +27,8 @@ test_esquire_frontend_image:
     - iiu
   script:
     - docker-compose -f docker-compose.dev.yml run --user=988 dev npm run test:local
-    
+    - docker-compose -f docker-compose.dev.yml down
+
 push_esquire_frontend_image:
   stage: push
   script:
@@ -36,6 +37,23 @@ push_esquire_frontend_image:
   environment:
     name: DTR Frontend
     url: https://dtr.phiresearchlab.org/repositories/iiu/esquire-frontend/tags
+  tags:
+    - iiu
+
+deploy_local_test_esquire_frontend:
+  stage: push
+  script:
+    - npm install
+    - npm run build
+    - echo "APP_API_URL=$TEST_APP_API_URL">.env
+    - pm2 stop serve
+    - pm2 start scripts/serve.js
+  environment:
+    name: IIU Esquire Test
+    url: https://esquiretest.phiresearchlab.org
+  when: manual
+  only: 
+    - test
   tags:
     - iiu
 

@@ -11,7 +11,7 @@ exports[`AddEditProject -- DetailRow component should render correctly 1`] = `
   flex={false}
   style={
     Object {
-      "paddingBottom": 20,
+      "paddingBottom": 25,
     }
   }
 >
@@ -21,6 +21,7 @@ exports[`AddEditProject -- DetailRow component should render correctly 1`] = `
     disabled={false}
     label="Type"
     name="type"
+    shrinkLabel={true}
     type="text"
   />
 </Row>

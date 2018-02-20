@@ -43,7 +43,7 @@ export class Home extends Component {
 
   render() {
     return (
-      <Container column flex>
+      <Container column flex style={{ paddingBottom: '25px' }}>
         <PageHeader role={this.props.user.role} />
         <Divider />
         {this.props.error

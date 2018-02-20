@@ -63,6 +63,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
               "label": "Name",
               "onChange": [Function],
               "placeholder": "Enter jurisdiction name",
+              "shrinkLabel": true,
               "value": "",
             }
           }

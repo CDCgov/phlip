@@ -24,14 +24,14 @@ const styles = theme => ({
   }
 })
 
-const Dropdown = ({ input, label, id, defaultValue, classes, disabled, meta: { touched, error }, options, ...otherProps }) => {
+const Dropdown = ({ input, label, id, defaultValue, classes, shrinkLabel, disabled, meta: { touched, error }, options, ...otherProps }) => {
   let menuItems = options.map(option => (
     <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
   ))
 
   return (
     <FormControl style={{ minWidth: '120px' }}>
-      <InputLabel htmlFor={id} shrink={true}>{label}</InputLabel>
+      <InputLabel htmlFor={id} shrink={shrinkLabel}>{label}</InputLabel>
       <Select
         input={<Input id={id} />}
         value={(input.value ? input.value : defaultValue)}
@@ -56,6 +56,10 @@ Dropdown.propTypes = {
   defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   meta: PropTypes.object,
   options: PropTypes.arrayOf(PropTypes.object)
+}
+
+Dropdown.defaultProps = {
+  shrinkLabel: true
 }
 
 export default withStyles(styles)(Dropdown)

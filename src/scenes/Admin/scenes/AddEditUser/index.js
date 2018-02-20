@@ -1,16 +1,19 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Grid from 'material-ui/Grid'
 import * as actions from './actions'
 import Dropdown from 'components/Dropdown'
 import { withRouter } from 'react-router-dom'
 import { Field, reduxForm } from 'redux-form'
 import ModalForm from 'components/ModalForm'
-import FormTextInput from 'components/FormTextInput'
+import TextInput from 'components/TextInput'
 import isEmail from 'sane-email-validation'
 import Container, { Row, Column } from 'components/Layout'
 import { trimWhitespace } from 'utils/formHelpers'
+
+const rowStyles = {
+  paddingBottom: 20
+}
 
 export class AddEditUser extends Component {
   constructor(props, context) {
@@ -79,7 +82,7 @@ export class AddEditUser extends Component {
     const roles = [
       { value: 'Admin', label: 'Admin' },
       { value: 'Coordinator', label: 'Coordinator' },
-      { value: 'Coder', label: 'Coder' },
+      { value: 'Coder', label: 'Coder' }
     ]
 
     return (
@@ -94,48 +97,45 @@ export class AddEditUser extends Component {
         initialValues={this.selectedUser}
         asyncBlurFields={['email']}
         width="600px"
-        height="400px">
+        height="400px"
+      >
         <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
-          <Row>
-            <Container spacing={24}>
-              <Row flex>
-                <Field
-                  name="firstName"
-                  component={FormTextInput}
-                  label="First Name"
-                  placeholder="Enter First Name"
-                  validate={this.required}
-                  fullWidth={true}
-                />
-              </Row>
-              <Row flex >
-                <Field
-                  name="lastName"
-                  component={FormTextInput}
-                  label="Last Name"
-                  placeholder="Enter Last Name"
-                  validate={this.required}
-                  fullWidth={true}
-                />
-              </Row>
-            </Container>
-
+          <Row displayFlex style={{ ...rowStyles, justifyContent: 'space-between' }}>
+            <Column flex style={{ paddingRight: 10 }}>
+              <Field
+                name="firstName"
+                component={TextInput}
+                label="First Name"
+                placeholder="Enter First Name"
+                validate={this.required}
+                fullWidth={true}
+              />
+            </Column>
+            <Column flex style={{ paddingLeft: 10 }}>
+              <Field
+                name="lastName"
+                component={TextInput}
+                label="Last Name"
+                placeholder="Enter Last Name"
+                validate={this.required}
+                fullWidth={true}
+              />
+            </Column>
           </Row>
-
-          <Row>
+          <Row style={rowStyles}>
             <Field
               name="email"
-              component={FormTextInput}
+              component={TextInput}
               label="Email"
               placeholder="Enter Email"
               validate={this.required}
               fullWidth={true}
             />
           </Row>
-          <Row style={{ paddingBottom: '25px' }}>
+          <Row style={{ paddingBottom: 25 }}>
             <Field
               name="password"
-              component={FormTextInput}
+              component={TextInput}
               label="Password"
               placeholder="Enter Password"
               validate={this.required}
@@ -160,19 +160,18 @@ export class AddEditUser extends Component {
 }
 
 function getUserById(users, id) {
-  const user = users.filter(user => user.id == id);
-  if (user.length) return user[0];
-  return null;
+  const user = users.filter(user => user.id == id)
+  if (user.length) return user[0]
+  return null
 }
 
 const mapStateToProps = (state) => {
   return {
     currentUser: state.data.user.currentUser || {},
     users: state.scenes.admin.main.users || [],
-    form: state.form.addEditUser || {},
+    form: state.form.addEditUser || {}
   }
 }
-
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 

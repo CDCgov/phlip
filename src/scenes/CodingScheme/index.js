@@ -7,7 +7,6 @@ import { Route } from 'react-router-dom'
 import * as actions from './actions'
 import Container from 'components/Layout'
 import Header from './components/Header'
-import Footer from './components/Footer'
 import Scheme from './components/Scheme'
 import Button from 'components/Button'
 import TextLink from 'components/TextLink'
@@ -38,7 +37,7 @@ export class CodingScheme extends Component {
 
   renderGetStarted = () => (
     <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
-      <Typography type="display1" style={{ marginBottom: '20px' }}>The coding scheme is empty. To get started, add a question.</Typography>
+      <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>The coding scheme is empty. To get started, add a question.</Typography>
       <TextLink
         to={{ pathname: `/project/${this.props.projectId}/coding-scheme/add`, state: { questionDefined: null } }}>
         <Button value="+ Add New Question" color="accent" />
@@ -51,7 +50,7 @@ export class CodingScheme extends Component {
       <Container column flex>
         <Header projectName={this.props.projectName} showButton={this.props.questions.length > 0}
           projectId={this.props.projectId} />
-        <Container flex style={{ backgroundColor: '#f5f5f5', paddingTop: 25 }}>
+        <Container flex style={{ backgroundColor: '#f5f5f5', paddingTop: 25, marginLeft: -30 }}>
           {this.props.empty
             ? this.renderGetStarted()
             : <Scheme
@@ -66,7 +65,6 @@ export class CodingScheme extends Component {
               flatQuestions={this.props.flatQuestions}
             />}
         </Container>
-        <Footer clearState={this.props.actions.clearState} />
         <Route
           path="/project/:projectId/coding-scheme/add"
           component={AddEditQuestion} />

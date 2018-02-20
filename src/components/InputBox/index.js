@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import TextField from 'material-ui/TextField'
 import SimpleInput from 'components/SimpleInput'
 import { withStyles } from 'material-ui/styles'
+import { Row, Column } from 'components/Layout'
+import Avatar from 'components/Avatar'
 
 const styles = theme => ({
   container: {
@@ -11,41 +13,53 @@ const styles = theme => ({
     flex: 1,
     paddingTop: 10
   },
-  textFieldRoot: {
-    padding: 0,
-    width: 600
-  },
   textFieldInput: {
     outline: 0,
     backgroundColor: theme.palette.common.white,
     border: '1px solid #ced4da',
     fontSize: 16,
     padding: '10px 12px',
+    whiteSpace: 'pre-wrap',
     transition: theme.transitions.create(['border-color', 'box-shadow'])
   }
 })
 
-const InputBox = ({ value, onChange, name, rows, classes, ...otherProps }) => {
+const InputBox = ({ value, onChange, name, rows, answerId, classes, currentUserInitials, isValidation, style, ...otherProps }) => {
+  const textValues = value === undefined ? { textAnswer: '', pincite: '' } : value
   return (
-    <div className={classes.container}>
-      <TextField
-        value={value.textAnswer}
-        onChange={onChange(null, 'fieldValue')}
-        multiline
-        type="text"
-        name={name}
-        rows={rows}
-        InputProps={{
-          disableUnderline: true,
-          classes: {
-            root: classes.textFieldRoot,
-            input: classes.textFieldInput
-          },
-        }}
-        {...otherProps}
-      />
-      {value.textAnswer && value.textAnswer.length > 0 && <SimpleInput name="pincite" value={value.pincite} placeholder="Enter pincite" onChange={onChange(null, 'pincite')} style={{ alignSelf: 'flex-end', paddingLeft: 15, flex: 1 }} />}
-      </div>
+    <Column style={style}>
+      <Row displayFlex style={{ alignItems: 'center', padding: isValidation ? '10px 0 0 0' : '' }}>
+        {isValidation && <Avatar style={{ marginRight: 15 }} cardAvatar initials={currentUserInitials} />}
+        <TextField
+          value={textValues.textAnswer}
+          onChange={onChange(answerId, 'textAnswer')}
+          multiline
+          type="text"
+          name={name}
+          fullWidth
+          rows={rows}
+          InputProps={{
+            disableUnderline: true,
+            classes: {
+              input: classes.textFieldInput
+            }
+          }}
+          {...otherProps}
+        />
+      </Row>
+      {textValues.textAnswer && textValues.textAnswer.length > 0 &&
+      <div style={{ paddingTop: 10, paddingBottom: 20 }}>
+        <SimpleInput
+          name="pincite"
+          value={textValues.pincite === null ? '' : textValues.pincite}
+          placeholder="Enter pincite"
+          label="Pincite"
+          onChange={onChange(answerId, 'pincite')}
+          multiline={false}
+          style={{ flex: 1 }}
+        />
+      </div>}
+    </Column>
   )
 }
 

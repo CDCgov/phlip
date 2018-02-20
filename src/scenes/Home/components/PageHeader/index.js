@@ -8,7 +8,7 @@ import Container, { Column } from 'components/Layout'
 
 export const PageHeader = ({ role }) => {
   return (
-    <Container alignItems="center" style={{ height: '75px' }}>
+    <Container alignItems="center" style={{ height: '80px' }}>
       <Column flex>
         <Container alignItems="center" spacing={8}>
           <Column>

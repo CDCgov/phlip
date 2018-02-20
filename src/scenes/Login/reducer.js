@@ -20,7 +20,7 @@ const loginReducer = (state = INITIAL_STATE, action) => {
     case 'FLUSH_STATE':
       return INITIAL_STATE
 
-    default: return state
+    default: return { ...state }
   }
 }
 

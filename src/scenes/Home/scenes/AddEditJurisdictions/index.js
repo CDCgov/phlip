@@ -7,13 +7,13 @@ import { withRouter } from 'react-router'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import Button from 'components/Button'
 import Container, { Column } from 'components/Layout'
-import Card from 'components/Card'
 import JurisdictionList from './components/JurisdictionList'
 import * as actions from './actions'
 import JurisdictionForm from './components/JurisdictionForm'
 import moment from 'moment'
 import api from 'services/api'
 import { normalize } from 'utils'
+import Divider from 'material-ui/Divider'
 
 export class AddEditJurisdictions extends Component {
   constructor (props, context) {
@@ -135,9 +135,10 @@ export class AddEditJurisdictions extends Component {
             style: { paddingRight: 10 }
           }}
         />
+        <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
           <Container flex style={{ marginTop: 20 }}>
-            <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card />}>
+            <Column flex displayFlex style={{ overflowX: 'auto' }}>
               <JurisdictionList jurisdictions={this.props.visibleJurisdictions} onOpenForm={this.onOpenForm} />
             </Column>
           </Container>
