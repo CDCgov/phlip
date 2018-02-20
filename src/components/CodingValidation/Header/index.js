@@ -9,7 +9,7 @@ import IconButton from 'components/IconButton'
 import { withRouter } from 'react-router-dom'
 
 export const Header = ({ projectName, empty, projectId, jurisdictionsList, selectedJurisdiction, onJurisdictionChange, currentJurisdiction, isValidation, history }) => (
-  <Container alignItems="center" style={{ height: '80px', padding: isValidation ? '' : '20px 27px' }}>
+  <Container alignItems="center" style={{ height: '80px', padding: '20px 27px' }}>
     <Column style={{ paddingRight: 5 }}>
       <IconButton iconSize={30} color="black" onClick={() => history.push('/')}>arrow_back</IconButton>
     </Column>

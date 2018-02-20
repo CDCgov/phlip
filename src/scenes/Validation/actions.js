@@ -47,6 +47,8 @@ export const onChangeCategory = (event, selection) => ({
   selection
 })
 
+export const onQuestionSelectedInNav = question => ({ type: types.ON_QUESTION_SELECTED_IN_VAL_NAV, question })
+
 export const onChangePincite = (projectId, jurisdictionId, questionId, answerId, pincite) => ({
   type: types.ON_CHANGE_VALIDATION_PINCITE,
   projectId,

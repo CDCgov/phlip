@@ -12,7 +12,8 @@ import {
   initializeCodedUsers,
   handleUserPinciteCategoryChild,
   handleUserPinciteQuestion,
-  initializeNavigator
+  initializeNavigator,
+  getQuestionSelectedInNav
 } from 'utils/codingHelpers'
 
 const INITIAL_STATE = {
@@ -65,7 +66,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           scheme: {
             byId: normalizedQuestions,
             order: action.payload.questionOrder,
-            tree: []
+            tree: action.payload.tree
           },
           question: action.payload.question,
           userAnswers: initializeUserAnswers(
@@ -177,6 +178,9 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         categories: undefined,
         selectedCategoryId: null
       }
+
+    case types.ON_QUESTION_SELECTED_IN_VAL_NAV:
+      return getQuestionSelectedInNav(state, action)
 
     case types.ON_CLOSE_VALIDATION_SCREEN:
       return INITIAL_STATE

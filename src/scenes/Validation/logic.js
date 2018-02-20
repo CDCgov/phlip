@@ -85,7 +85,7 @@ export const getValidationOutlineLogic = createLogic({
         return [...arr, { ...q, ...scheme.outline[q.id] }]
       }, [])
 
-      const { questionsWithNumbers, order } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
+      const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
 
       let mergedUserQuestions = mergeUserAnswers(combinedCodedQuestions)
       let output = []
@@ -116,6 +116,7 @@ export const getValidationOutlineLogic = createLogic({
       return {
         outline: scheme.outline,
         scheme: questionsWithNumbers,
+        tree,
         questionOrder: order,
         question: questionsWithNumbers[0],
         mergedUserQuestions: output,
