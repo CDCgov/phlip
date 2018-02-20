@@ -1327,4 +1327,138 @@ describe('Coding reducer', () => {
       ])
     })
   })
+
+  describe('APPLY_ANSWER_TO_ALL', () => {
+    const currentState = {
+      question: {
+        id: 4
+      },
+      categories: [{id: 10, text: 'cat 1'}, {id: 20, text: 'cat 2'}],
+      outline: {
+        1: { parentId: 0, positionInParent: 0 },
+        2: { parentId: 0, positionInParent: 1 },
+        3: { parentId: 0, positionInParent: 2 },
+        4: { parentId: 3, positionInParent: 0 }
+      },
+      scheme: {
+        byId: {
+          1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
+          2: { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1 },
+          3: {
+            text: 'cat question',
+            questionType: 2,
+            id: 3,
+            parentId: 0,
+            positionInParent: 2,
+            possibleAnswers: [
+              { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
+            ]
+          },
+          4: {
+            text: 'cat question child',
+            questionType: 3,
+            id: 4,
+            parentId: 3,
+            positionInParent: 0,
+            indent: 2,
+            isCategoryQuestion: true,
+            possibleAnswers: [
+              { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
+            ]
+          }
+        },
+        order: [1, 2, 3, 4],
+        tree: [
+          { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: false },
+          { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, isAnswered: false },
+          {
+            text: 'cat question',
+            questionType: 2,
+            id: 3,
+            parentId: 0,
+            positionInParent: 2,
+            isAnswered: true,
+            indent: 1,
+            possibleAnswers: [
+              { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
+            ],
+            children: [
+              {
+                text: 'cat question child',
+                questionType: 3,
+                isCategoryQuestion: true,
+                id: 4,
+                indent: 2,
+                parentId: 3,
+                positionInParent: 0,
+                isAnswered: false,
+                possibleAnswers: [
+                  { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      selectedCategoryId: 10,
+      userAnswers: {
+        1: {
+          answers: {},
+          schemeQuestionId: 1,
+          comment: ''
+        },
+        2: {
+          answers: {},
+          schemeQuestionId: 2,
+          comment: ''
+        },
+        3: {
+          schemeQuestionId: 3,
+          answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
+        },
+        4: {
+          schemeQuestionId: 4,
+          answers: {
+            10: { answers: { schemeAnswerId: 42, pincite: "" } },
+            20: { answers: {} }
+          },
+          comment: {
+            10: '',
+            20: ''
+          }
+        }
+      }
+    }
+
+
+    test('should apply answers to all categories', () => {
+      const action = {
+        type: types.APPLY_ANSWER_TO_ALL,
+        jurisdictionId: 1,
+        projectId: 3,
+        questionId: 4
+      }
+
+      const state = getReducer(getState(currentState), action)
+
+      expect(state).toEqual(getState({
+        ...currentState,
+        userAnswers: {
+          ...currentState.userAnswers,
+          4: {
+            schemeQuestionId: 4,
+            answers: {
+              10: { answers: { schemeAnswerId: 42, pincite: "" } },
+              20: { answers: { schemeAnswerId: 42, pincite: "" } }
+            },
+            comment: {
+              10: '',
+              20: ''
+            }
+          }
+        },
+        showNextButton: false
+      }))
+    })
+  })
 })
