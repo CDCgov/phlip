@@ -13,6 +13,7 @@ const INITIAL_STATE = {
   currentIndex: 0,
   categories: undefined,
   selectedCategory: 0,
+  selectedCategoryId: null,
   userAnswers: {},
   showNextButton: true
 }
@@ -116,7 +117,8 @@ const handleCheckCategories = (newQuestion, newIndex, state) => {
     return {
       ...base,
       categories: undefined,
-      selectedCategory: 0
+      selectedCategory: 0,
+      selectedCategoryId: null
     }
   }
 
@@ -147,13 +149,15 @@ const handleCheckCategories = (newQuestion, newIndex, state) => {
       question: { ...base.question, isCategoryChild: true },
       categories: [...selectedCategories],
       selectedCategory: state.selectedCategory,
-      userAnswers: { ...state.userAnswers, [newQuestion.id]: { ...base.userAnswers[newQuestion.id], ...answers } }
+      userAnswers: { ...state.userAnswers, [newQuestion.id]: { ...base.userAnswers[newQuestion.id], ...answers } },
+      selectedCategoryId: selectedCategories[state.selectedCategory].id
     }
   } else {
     return {
       ...base,
       categories: undefined,
-      selectedCategory: 0
+      selectedCategory: 0,
+      selectedCategoryId: null
     }
   }
 }
@@ -195,6 +199,8 @@ const getPreviousQuestion = (state, action) => {
   Handles updating state.userAnswers with the user's new answer
  */
 const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
+  console.log(action)
+  console.log(selectedCategoryId)
   let currentUserAnswers = state.question.isCategoryQuestion
     ? state.userAnswers[action.questionId].answers[selectedCategoryId].answers
     : state.userAnswers[action.questionId].answers
@@ -395,7 +401,6 @@ const initializeNavigator = (tree, scheme, codedQuestions, currentQuestion) => {
 
 const codingReducer = (state = INITIAL_STATE, action) => {
   const questionUpdater = handleUpdateUserCodedQuestion(state, action)
-  const selectedCategoryId = state.categories !== undefined ? state.categories[state.selectedCategory].id : 0
 
   switch (action.type) {
     case types.GET_NEXT_QUESTION:
@@ -447,7 +452,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...state,
         userAnswers: {
           ...state.userAnswers,
-          ...handleUpdateUserAnswers(state, action, selectedCategoryId)
+          ...handleUpdateUserAnswers(state, action, state.selectedCategoryId)
         }
       }
 
@@ -457,7 +462,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...questionUpdater(
           'comment',
           state.question.isCategoryQuestion
-            ? handleUserCommentCategoryChild(selectedCategoryId, action, state.userAnswers[action.questionId].comment)
+            ? handleUserCommentCategoryChild(state.selectedCategoryId, action, state.userAnswers[action.questionId].comment)
             : action.comment
         )
       }
@@ -468,9 +473,32 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...questionUpdater(
           'answers',
           state.question.isCategoryQuestion
-            ? handleUserPinciteCategoryChild(selectedCategoryId, state.question.questionType, action, state.userAnswers[action.questionId].answers)
+            ? handleUserPinciteCategoryChild(state.selectedCategoryId, state.question.questionType, action, state.userAnswers[action.questionId].answers)
             : handleUserPinciteQuestion(state.question.questionType, action, state.userAnswers[action.questionId].answers)
         )
+      }
+
+    case types.APPLY_ANSWER_TO_ALL:
+      const answer = state.userAnswers[state.question.id].answers[state.selectedCategoryId]
+      return {
+        ...state,
+        userAnswers: {
+          ...state.userAnswers,
+          [state.question.id]: {
+            ...state.userAnswers[state.question.id],
+            ...state.categories.reduce((obj, category) => ({
+              ...obj,
+              answers: {
+                ...obj.answers,
+                [category.id]: { ...answer }
+              },
+              comment: {
+                ...obj.comment,
+                [category.id]: ''
+              }
+            }), {})
+          }
+        }
       }
 
     case types.ON_CLEAR_ANSWER:
@@ -479,7 +507,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...questionUpdater(
           'answers',
           state.question.isCategoryQuestion
-            ? handleClearCategoryAnswers(selectedCategoryId, state.question.questionType, state.userAnswers[action.questionId].answers)
+            ? handleClearCategoryAnswers(state.selectedCategoryId, state.question.questionType, state.userAnswers[action.questionId].answers)
             : handleClearAnswers(state.question.questionType, state.userAnswers[action.questionId].answers)
         )
       }
@@ -487,7 +515,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.ON_CHANGE_CATEGORY:
       return {
         ...state,
-        selectedCategory: action.selection
+        selectedCategory: action.selection,
+        selectedCategoryId: state.categories[action.selection].id
       }
 
     case types.ON_JURISDICTION_CHANGE:
@@ -524,11 +553,12 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         question,
         ...other,
         selectedCategory: 0,
-        categories: undefined
+        categories: undefined,
+        selectedCategoryId: null
       }
 
     case types.ON_QUESTION_SELECTED_IN_NAV:
-      let q = {}, categories = undefined, selectedCategory = 0
+      let q = {}, categories = undefined, selectedCategory = 0, selectedCategoryId = null
 
       if (action.question.isCategory || action.question.isCategoryQuestion) {
         q = action.question.isCategory
@@ -536,6 +566,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           : state.scheme.byId[action.question.id]
         categories = getSelectedCategories(state.scheme.byId[q.parentId], state.userAnswers)
         selectedCategory = action.question.isCategory ? action.question.positionInParent : 0
+        selectedCategoryId = categories[selectedCategory].id
       } else {
         q = state.scheme.byId[action.question.id]
       }
@@ -545,7 +576,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...handleCheckCategories(q, state.scheme.order.findIndex(id => q.id === id), {
           ...state,
           categories,
-          selectedCategory
+          selectedCategory,
+          selectedCategoryId
         })
       }
 

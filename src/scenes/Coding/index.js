@@ -155,7 +155,8 @@ export class Coding extends Component {
   }
 
   onApplyToAll = () => {
-
+    this.onCloseApplyAllAlert()
+    this.props.actions.applyAnswerToAll(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
   }
 
   onShowGetStartedView = (noScheme, noJurisdictions) => {
