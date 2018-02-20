@@ -54,7 +54,8 @@ const InputBox = ({ value, onChange, name, rows, answerId, classes, currentUserI
           placeholder="Enter pincite"
           label="Pincite"
           onChange={onChange(answerId, 'pincite')}
-          rowsMax={5}
+          multiline={false}
+          shrinkLabel
           style={{ flex: 1 }}
         />
       </div>}

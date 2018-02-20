@@ -87,8 +87,10 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
           {question.includeComment &&
           <Row>
             <SimpleInput
+              shrinkLabel={true}
               onChange={onChangeTextAnswer(null, 'comment')}
               name="comment"
+              rowsMax={5}
               placeholder="Enter comment"
               value={comment}
               label="Comment"

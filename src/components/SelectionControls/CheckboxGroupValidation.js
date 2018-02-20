@@ -55,7 +55,11 @@ export const CheckboxGroupValidation = ({ choices, currentUserInitials, userAnsw
             <SimpleInput
               key={`${choice.id}-pincite`} placeholder="Enter pincite"
               value={userAnswers.answers[choice.id].pincite}
-              style={{ width: 300, marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id)) ? '15px' : '0px' }}
+              style={{ width: 300,
+                marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
+                  ? '15px'
+                  : '0px'
+              }}
               onChange={onChangePincite(choice.id, 'pincite')}
             />}
           </div>)
