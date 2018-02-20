@@ -12,7 +12,7 @@ import TextFieldQuestions from '../TextFieldQuestions'
 import Divider from 'material-ui/Divider'
 import Button from 'components/Button'
 
-export const QuestionContent = ({ question, currentUserInitials, onChange, comment, userAnswers, onChangeTextAnswer, onApplyToAll, onOpenAlert, mergedUserQuestions }) => {
+export const QuestionContent = ({ question, currentUserInitials, onChange, comment, userAnswers, onChangeTextAnswer, onOpenAlert, mergedUserQuestions }) => {
   const questionAnswerPadding = {
     paddingTop: 0,
     paddingRight: 65,
@@ -115,7 +115,8 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
             paddingTop: 20,
             paddingRight: 0,
             justifyContent: 'flex-end'
-          }}>
+          }}
+        >
           <Button onClick={onOpenAlert} color="accent" value="Apply Answer to all categories" />
         </Row>
       </Fragment>}

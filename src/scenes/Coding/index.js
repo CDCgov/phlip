@@ -16,6 +16,7 @@ import { withStyles } from 'material-ui/styles'
 import classNames from 'classnames'
 import { default as MuiButton } from 'material-ui/Button'
 import HeaderedLayout from 'components/HeaderedLayout'
+import Modal, { ModalContent, ModalActions } from 'components/Modal'
 
 const navButtonStyles = {
   height: 90,
@@ -62,8 +63,22 @@ export class Coding extends Component {
     this.state = {
       selectedJurisdiction: this.props.jurisdictionId,
       showViews: false,
-      navOpen: false
+      navOpen: false,
+      applyAllAlertOpen: false
     }
+
+    this.modalActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.onCloseApplyAllAlert
+      },
+      {
+        value: 'Yes',
+        type: 'button',
+        onClick: this.onApplyToAll
+      }
+    ]
   }
 
   componentWillMount() {
@@ -127,6 +142,22 @@ export class Coding extends Component {
     this.props.actions.getUserCodedQuestions(this.props.projectId, event.target.value)
   }
 
+  onOpenApplyAllAlert = () => {
+    this.setState({
+      applyAllAlertOpen: true
+    })
+  }
+
+  onCloseApplyAllAlert = () => {
+    this.setState({
+      applyAllAlertOpen: false
+    })
+  }
+
+  onApplyToAll = () => {
+
+  }
+
   onShowGetStartedView = (noScheme, noJurisdictions) => {
     let startedText = ''
     if (this.props.userRole === 'Coder') {
@@ -166,6 +197,7 @@ export class Coding extends Component {
         onChangeCategory={this.props.actions.onChangeCategory}
         mergedUserQuestions={null}
         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
+        onOpenAlert={this.onOpenApplyAllAlert}
       />
       <FooterNavigate
         currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion}
@@ -181,6 +213,15 @@ export class Coding extends Component {
         flex
         style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}
       >
+        <Modal open={this.state.applyAllAlertOpen}>
+          <ModalContent>
+            <Typography variant="body1">
+              Applying your answer to all categories will replace all answers for any categories that you might have
+              already answered. Do you want to continue?
+            </Typography>
+          </ModalContent>
+          <ModalActions actions={this.modalActions} />
+        </Modal>
         <Navigator
           open={this.state.navOpen}
           scheme={this.props.scheme}
