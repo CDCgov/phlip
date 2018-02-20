@@ -63,12 +63,12 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
               "label": "Name",
               "onChange": [Function],
               "placeholder": "Enter jurisdiction name",
+              "shrinkLabel": true,
               "value": "",
             }
           }
           name="name"
           renderSuggestion={[Function]}
-          shrinkLabel={true}
           suggestions={Array []}
           validate={[Function]}
         />

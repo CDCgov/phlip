@@ -19,6 +19,7 @@ const styles = theme => ({
     border: '1px solid #ced4da',
     fontSize: 16,
     padding: '10px 12px',
+    whiteSpace: 'pre-wrap',
     transition: theme.transitions.create(['border-color', 'box-shadow'])
   }
 })

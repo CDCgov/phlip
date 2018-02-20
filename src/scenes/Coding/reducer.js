@@ -214,13 +214,17 @@ const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
       break
 
     case questionTypes.TEXT_FIELD:
-      currentUserAnswers = {
-        [action.answerId]: {
-          ...currentUserAnswers[action.answerId],
-          schemeAnswerId: action.answerId,
-          textAnswer: action.answerValue
+      if (action.answerValue === '') currentUserAnswers = {}
+      else {
+        currentUserAnswers = {
+          [action.answerId]: {
+            ...currentUserAnswers[action.answerId],
+            schemeAnswerId: action.answerId,
+            textAnswer: action.answerValue
+          }
         }
       }
+
       break
 
     case questionTypes.CATEGORY:

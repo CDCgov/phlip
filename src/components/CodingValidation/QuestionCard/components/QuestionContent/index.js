@@ -9,10 +9,8 @@ import Typography from 'material-ui/Typography'
 import Container, { Row, Column } from 'components/Layout'
 import * as questionTypes from 'components/CodingValidation/constants'
 import TextFieldQuestions from '../TextFieldQuestions'
-import Divider from 'material-ui/Divider'
-import Button from 'components/Button'
 
-export const QuestionContent = ({ question, currentUserInitials, onChange, comment, userAnswers, onChangeTextAnswer, onOpenAlert, mergedUserQuestions }) => {
+export const QuestionContent = ({ question, currentUserInitials, onChange, comment, userAnswers, onChangeTextAnswer, mergedUserQuestions }) => {
   const questionAnswerPadding = {
     paddingTop: 0,
     paddingRight: 65,
@@ -26,7 +24,7 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
   }
 
   return (
-    <Container column flex style={{ flexWrap: 'nowrap' }}>
+    <Container column flex>
       <Row displayFlex style={{ padding: '20px 20px 10px 20px' }}>
         <Column>
           <Typography type="subheading">{question.number})</Typography>
@@ -38,7 +36,7 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
       <Column displayFlex flex style={{ ...questionAnswerPadding }}>
         {(question.questionType === questionTypes.MULTIPLE_CHOICE ||
           question.questionType === questionTypes.BINARY) &&
-        <Row flex displayFlex style={{ ...answerPadding, paddingRight: 0, overflow: 'auto' }}>
+        <Row flex displayFlex style={{ ...answerPadding, paddingRight: 0,  overflow: 'auto' }}>
           <RadioGroupValidation
             choices={question.possibleAnswers}
             question={question}
@@ -87,10 +85,9 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
           {question.includeComment &&
           <Row>
             <SimpleInput
-              shrinkLabel={true}
               onChange={onChangeTextAnswer(null, 'comment')}
               name="comment"
-              rowsMax={5}
+              style={{ whiteSpace: 'pre-wrap' }}
               placeholder="Enter comment"
               value={comment}
               label="Comment"
@@ -105,23 +102,6 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
         <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
       </Row>
       }
-
-      {question.isCategoryChild &&
-      <Fragment>
-        <Divider />
-        <Row
-          displayFlex
-          style={{
-            ...answerPadding,
-            paddingBottom: 20,
-            paddingTop: 20,
-            paddingRight: 0,
-            justifyContent: 'flex-end'
-          }}
-        >
-          <Button onClick={onOpenAlert} color="accent" value="Apply Answer to all categories" />
-        </Row>
-      </Fragment>}
     </Container>
   )
 }
