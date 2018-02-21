@@ -7,6 +7,7 @@ import login from './Login/reducer'
 import codingScheme from './CodingScheme/reducer'
 import coding from './Coding/reducer'
 import validation from './Validation/reducer'
+import protocol from './Protocol/reducer'
 
 const config = {
   storage
@@ -18,7 +19,8 @@ const scenesReducer = combineReducers({
   codingScheme,
   login,
   coding,
-  validation
+  validation,
+  protocol
 })
 
 export default scenesReducer

@@ -5,13 +5,14 @@ import Header from './components/Header'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Card from 'components/Card'
-import styles from './editor-styles.scss'
-
+import * as actions from './actions'
 import tinymce from 'tinymce/tinymce'
+
 import 'tinymce/themes/modern/theme'
-import 'tinymce/themes/inlite/theme'
 import 'tinymce/plugins/paste'
 import 'tinymce/plugins/link'
+import 'tinymce/plugins/image'
+
 import { Editor } from '@tinymce/tinymce-react'
 
 export class Protocol extends Component {
@@ -23,18 +24,18 @@ export class Protocol extends Component {
     this.state = {
       editMode: false
     }
-
-    tinymce.init({
-      selector: '#tiny'
-    })
   }
 
-  componentWillMount() {
+  componentDidMount() {
     require.context(
       '!file-loader?name=[path][name].[ext]&context=node_modules/tinymce!tinymce/skins',
       true,
       /.*/
     )
+  }
+
+  componentWillUnmount() {
+    tinymce.remove(this.state.editor)
   }
 
   onToggleEdit = () => {
@@ -45,7 +46,7 @@ export class Protocol extends Component {
 
   render() {
     return (
-      <Container flex column style={{ paddingBottom: 20 }}>
+      <Container flex column style={{ paddingBottom: 20, flexWrap: 'nowrap' }}>
         <Header
           projectName={this.props.projectName}
           projectId={this.props.projectId}
@@ -57,17 +58,20 @@ export class Protocol extends Component {
             <Editor
               init={{
                 statusbar: false,
-                plugins: ['paste', 'link'],
+                plugins: ['paste', 'link', 'image'],
+                toolbar: 'undo redo | styleselect | bold italic strikethrough underline | alignleft alignright aligncenter alignjustify | link image',
                 theme: 'modern',
                 skin_url: '/skins/custom',
                 branding: false,
                 resize: false,
-                menubar: false
+                menubar: false,
+                content_style: '* {font-family: Roboto }'
               }}
-              initialValue="<p>Initial value</p>"
+              onChange={e => this.props.actions.updateProtocol(e.target.getContent())}
+              initialValue={this.props.protocolContent}
             />
           </Card>
-          : <Card></Card>
+          : <Card style={{ padding: 25, fontFamily: 'Roboto', overflow: 'auto' }} dangerouslySetInnerHTML={{ __html: this.props.protocolContent }}></Card>
         }
       </Container>
     )
@@ -81,9 +85,10 @@ Protocol.propTypes = {
 
 const mapStateToProps = (state, ownProps) => ({
   projectName: state.scenes.home.main.projects.byId[ownProps.match.params.id].name,
-  projectId: ownProps.match.params.id
+  projectId: ownProps.match.params.id,
+  protocolContent: state.scenes.protocol.content || ''
 })
 
-//const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
+const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps)(Protocol)
+export default connect(mapStateToProps, mapDispatchToProps)(Protocol)
