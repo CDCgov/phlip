@@ -7,7 +7,7 @@ import IconButton from 'components/IconButton'
 import { withRouter } from 'react-router-dom'
 import styles from 'components/CodingValidation/Header/header-styles.scss'
 
-export const Header = ({ projectName, showButton, projectId, history }) => (
+export const Header = ({ projectName, onToggleEdit, editEnabled, projectId, history }) => (
   <Container alignItems="center" style={{ height: '80px' }}>
     <Column style={{ paddingRight: 5 }}>
       <IconButton iconSize={30} color="black" onClick={() => history.goBack()}>arrow_back</IconButton>
@@ -18,14 +18,13 @@ export const Header = ({ projectName, showButton, projectId, history }) => (
       <Typography type="title" style={{ alignSelf: 'center' }}><span style={{ color: '#0faee6' }}>{projectName}</span></Typography>
     </Row>
     <Column>
-      <Button value="Edit" color="accent" />
+      <Button value={editEnabled ? 'Save' : 'Edit'} onClick={onToggleEdit} color="accent" />
     </Column>
   </Container>
 )
 
 Header.propTypes = {
   projectName: PropTypes.string,
-  showButton: PropTypes.bool,
   projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 }
 
