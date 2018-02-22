@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Container, { Row } from 'components/Layout'
+import { Coding } from '../Coding/index';
+import { findDOMNode } from 'react-dom';
 import * as actions from './actions'
 import Header from 'components/CodingValidation/Header'
 import QuestionCard from 'components/CodingValidation/QuestionCard'
@@ -14,33 +16,18 @@ export class Validation extends Component {
 
     this.state = {
       selectedJurisdiction: this.props.jurisdictionId,
-      showViews: false
+      showViews: false,
+      anchorEl: null,
     }
-
-    this.mockUsersList = [
-      {
-        firstName: 'Admin',
-        lastName: 'User',
-        role: 'Admin',
-        email: 'admin@cdc.gov',
-        id: 1,
-        initials: 'AU',
-        pincite: '038409834092834'
-      },
-      {
-        firstName: 'Michael',
-        lastName: 'Ta',
-        role: 'Admin',
-        email: 'mta@cdc.gov',
-        id: 1,
-        initials: 'MT'
-      }
-    ]
   }
 
   componentWillMount() {
     this.props.actions.getValidationOutlineRequest(this.props.projectId, this.props.jurisdictionId)
     this.props.actions.getCodedUsersAnswers(this.props.projectId, this.props.jurisdictionId)
+  }
+
+  componentWillUnmount() {
+    this.props.actions.onCloseValidationScreen()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -95,6 +82,19 @@ export class Validation extends Component {
     this.props.actions.updateEditedFields(this.props.projectId)
   }
 
+  handlePopoverOpen = event => {
+    this.setState({
+      anchorEl: event.target
+    })
+  }
+
+  handlePopoverClose = () => {
+    this.setState({
+      anchorEl: null
+    })
+  }
+
+
   onShowCodeView = () => (
     <Fragment>
       <QuestionCard
@@ -105,6 +105,9 @@ export class Validation extends Component {
         selectedCategory={this.props.selectedCategory}
         onChangeCategory={this.props.actions.onChangeCategory}
         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
+        onPopoverOpen={this.handlePopoverOpen}
+        onPopoverClose={this.handlePopoverClose}
+        popoverOpen={!!this.state.anchorEl} anchorEl={this.state.anchorEl}
         users={this.mockUsersList}
         currentUserInitials={this.props.currentUserInitials}
       />
@@ -127,7 +130,7 @@ export class Validation extends Component {
           onJurisdictionChange={this.onJurisdictionChange}
           isValidation={true}
           empty={this.props.jurisdiction === null || this.props.questionOrder === null ||
-          this.props.questionOrder.length === 0}
+            this.props.questionOrder.length === 0}
         />
         <Container flex column style={{ backgroundColor: '#f5f5f5' }}>
           {this.state.showViews && (this.props.jurisdiction === null || this.props.questionOrder.length === 0
@@ -161,7 +164,7 @@ const mapStateToProps = (state, ownProps) => {
     selectedCategory: state.scenes.validation.selectedCategory || 0,
     userAnswers: state.scenes.validation.userAnswers[state.scenes.validation.question.id] || {},
     mergedUserQuestions: state.scenes.validation.mergedUserQuestions[state.scenes.validation.question.id] ||
-    { answers: [] },
+      { answers: [] },
     showNextButton: state.scenes.validation.showNextButton,
     jurisdictionsList: project.projectJurisdictions || [],
     jurisdictionId: state.scenes.validation.jurisdictionId || (project.projectJurisdictions.length > 0

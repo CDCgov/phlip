@@ -2,7 +2,8 @@ import React, { Fragment } from 'react'
 import Avatar from 'components/Avatar'
 import { Row } from 'components/Layout/index'
 
-export const AvatarList = ({ users, }) => {
+export const AvatarList = ({ mergedUserQuestions }) => {
+  console.log(mergedUserQuestions)
   const styles = {
     marginRight: '-6px',
     border: 'solid 3px white',
@@ -13,8 +14,8 @@ export const AvatarList = ({ users, }) => {
 
   return (
     <Fragment>
-      {users.map((user, index) => (
-        <Avatar style={styles} key={index} initials={user.initials ? user.initials : ''} />
+      {mergedUserQuestions.map((user, index) => (
+        <Avatar style={styles} key={index} initials={user.firstName[0] + user.lastName[0]} />
       ))}
     </Fragment>
   )
