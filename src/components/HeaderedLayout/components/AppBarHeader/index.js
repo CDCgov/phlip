@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import Grid from 'material-ui/Grid'
 import { withTheme } from 'material-ui/styles'
 import Logo from 'components/Logo'
-import Greeting from './components/Greeting'
-import AvatarMenu from './components/AvatarMenu'
+import Greeting from './components/Greeting/index'
+import AvatarMenu from './components/AvatarMenu/index'
 import { Link } from 'react-router-dom'
 
 export const Header = ({ theme, user, open, handleLogoutUser, handleCloseMenu, handleOpenAdminPage, handleToggleMenu }) => {

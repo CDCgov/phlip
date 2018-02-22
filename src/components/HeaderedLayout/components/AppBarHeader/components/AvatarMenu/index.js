@@ -12,14 +12,14 @@ import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
 
 export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, onOpenAdminPage, onToggleMenu }) => {
   return (
-    <ClickAwayListener onClickAway={onCloseMenu}>
+    <ClickAwayListener onClickAway={open ? onCloseMenu : () => {}}>
       <Grid item style={{ zIndex: 2 }}>
         <Manager>
           <Target>
             <Avatar onClick={onToggleMenu} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />
           </Target>
           {open &&
-          <Popper placement="bottom-end">
+          <Popper placement="bottom-end" eventsEnabled={open}>
             <Grow in={open} id="avatar-menu">
               <Paper style={{ marginTop: 5 }}>
                 <MenuList role="menu">

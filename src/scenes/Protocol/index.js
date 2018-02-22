@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Container, { Row } from 'components/Layout'
-import Header from './components/Header'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Card from 'components/Card'
 import * as actions from './actions'
+import PageHeader from 'components/PageHeader'
 
 import tinymce from 'tinymce/tinymce'
 import 'tinymce/themes/modern/theme'
@@ -64,24 +64,19 @@ export class Protocol extends Component {
   }
 
   render() {
-    const toolbar =
-      'undo redo | \
-       styleselect | \
-       bold italic strikethrough underline | \
-       anchor pagebreak | \
-       table | \
-       alignleft alignright aligncenter alignjustify | \
-       numlist bullist | \
-       link image'
-
     return (
       <Container flex column style={{ paddingBottom: 20, flexWrap: 'nowrap' }}>
-        <Header
+        <PageHeader
           projectName={this.props.projectName}
+          showButton
           projectId={this.props.projectId}
-          onEnableEdit={this.onEnableEdit}
-          onSaveProtocol={this.onSaveProtocol}
-          editEnabled={this.state.editMode}
+          pageTitle="Protocol"
+          protocolButton={false}
+          otherButton={{
+            isLink: false,
+            text: this.state.editMode ? 'Save' : 'Edit',
+            onClick: this.state.editMode ? this.onSaveProtocol : this.onEnableEdit
+          }}
         />
         {this.state.editMode
           ? <Card id="tiny">
@@ -89,7 +84,14 @@ export class Protocol extends Component {
               init={{
                 statusbar: false,
                 plugins: ['paste', 'link', 'image', 'anchor', 'pagebreak', 'lists', 'advlist', 'table', 'paste'],
-                toolbar,
+                toolbar: 'undo redo | \
+                          styleselect | \
+                          bold italic strikethrough underline | \
+                          anchor pagebreak | \
+                          table | \
+                          alignleft alignright aligncenter alignjustify | \
+                          numlist bullist | \
+                          link image',
                 theme: 'modern',
                 skin_url: '/skins/custom',
                 branding: false,
