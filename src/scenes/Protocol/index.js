@@ -22,7 +22,12 @@ import 'tinymce/plugins/paste'
 import { Editor } from '@tinymce/tinymce-react'
 
 export class Protocol extends Component {
-  static propTypes = {}
+  static propTypes = {
+    projectName: PropTypes.string,
+    projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    protocolContent: PropTypes.string,
+    actions: PropTypes.object
+  }
 
   constructor(props, context) {
     super(props, context)
@@ -43,7 +48,7 @@ export class Protocol extends Component {
       /.*/
     )
   }
-  
+
   onEnableEdit = () => {
     this.setState({
       editMode: true
@@ -111,13 +116,6 @@ export class Protocol extends Component {
       </Container>
     )
   }
-}
-
-Protocol.propTypes = {
-  projectName: PropTypes.string,
-  projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  protocolContent: PropTypes.string,
-  actions: PropTypes.object
 }
 
 const mapStateToProps = (state, ownProps) => ({

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Typography from 'material-ui/Typography'
 import Button from 'components/Button'
 import Container, { Column, Row } from 'components/Layout'
-import SearchBar from 'components/SearchBar'
 import IconButton from 'components/IconButton'
 import { withRouter } from 'react-router-dom'
 import TextLink from 'components/TextLink'
@@ -20,7 +19,6 @@ export const Header = ({ projectName, showButton, projectId, history }) => (
       <Typography type="title" style={{ alignSelf: 'center' }}><span style={{ color: '#0faee6' }}>{projectName}</span></Typography>
     </Row>
     <Row displayFlex>
-      <SearchBar style={{ paddingRight: 20 }} placeholder="Search" />
       <div style={{ paddingRight: 15 }}>
         <TextLink to={`/project/${projectId}/protocol`}>
           <Button value="View/Edit Protocol" style={{ backgroundColor: 'white', color: 'black', fontWeight: 'bold' }} />
