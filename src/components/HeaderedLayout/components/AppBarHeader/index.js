@@ -11,20 +11,19 @@ export const Header = ({ theme, user, open, handleLogoutUser, handleCloseMenu, h
   const bgColor = theme.palette.primary['600']
 
   const styles = {
-    height: '55px',
     backgroundColor: bgColor,
-    padding: '0 30px'
+    padding: '6px 30px'
   }
 
   const initials = user.firstName === 'Admin' ? 'A' : user.firstName[0] + user.lastName[0]
 
   return (
     <Grid container spacing={0} alignItems="center" style={styles}>
-      <Grid item xs>
+      <Grid item>
         <Link style={{ textDecoration: 'none' }} to="/"><Logo fontSize="30px" /></Link>
       </Grid>
-      <Grid item>
-        <Grid container spacing={8} alignItems="center">
+      <Grid item xs>
+        <Grid container spacing={8} alignItems="center" style={{ justifyContent: 'flex-end' }}>
           <Grid item>
             <Greeting firstName={user.firstName} lastName={user.lastName} role={user.role} />
           </Grid>
