@@ -95,7 +95,13 @@ export class Protocol extends Component {
                 resize: false,
                 menubar: 'insert',
                 content_style: '* {font-family: Roboto }',
-                advlist_bullet_styles: 'default,circle,square,disc'
+                advlist_bullet_styles: 'default,circle,square,disc',
+                link_title: false,
+                target_list: false,
+                link_assume_external_targets: true,
+                default_link_target: '_blank',
+                anchor_bottom: false,
+                anchor_top: false
               }}
               onChange={e => this.props.actions.updateProtocol(e.target.getContent())}
               initialValue={this.props.protocolContent}
