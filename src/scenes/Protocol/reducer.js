@@ -11,6 +11,16 @@ const protocolReducer = (state = INITIAL_STATE, action) => {
         ...state,
         content: action.content
       }
+
+    case types.GET_PROTOCOL_SUCCESS:
+      return {
+        ...state,
+        content: action.payload
+      }
+
+    case types.SAVE_PROTOCOL_SUCCESS:
+    case types.GET_PROTOCOL_REQUEST:
+    case types.SAVE_PROTOCOL_REQUEST:
     default:
       return state
   }

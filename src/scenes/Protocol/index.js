@@ -26,6 +26,10 @@ export class Protocol extends Component {
     }
   }
 
+  componentWillMount() {
+    this.props.actions.getProtocolRequest(this.props.projectId)
+  }
+
   componentDidMount() {
     require.context(
       '!file-loader?name=[path][name].[ext]&context=node_modules/tinymce!tinymce/skins',
@@ -38,10 +42,18 @@ export class Protocol extends Component {
     tinymce.remove(this.state.editor)
   }
 
-  onToggleEdit = () => {
+  onEnableEdit = () => {
     this.setState({
-      editMode: !this.state.editMode
+      editMode: true
     })
+  }
+
+  onSaveProtocol = () => {
+    this.setState({
+      editMode: false
+    })
+
+    this.props.actions.saveProtocolRequest(this.props.protocolContent, this.props.projectId)
   }
 
   render() {
@@ -50,7 +62,8 @@ export class Protocol extends Component {
         <Header
           projectName={this.props.projectName}
           projectId={this.props.projectId}
-          onToggleEdit={this.onToggleEdit}
+          onEnableEdit={this.onEnableEdit}
+          onSaveProtocol={this.onSaveProtocol}
           editEnabled={this.state.editMode}
         />
         {this.state.editMode
@@ -71,7 +84,9 @@ export class Protocol extends Component {
               initialValue={this.props.protocolContent}
             />
           </Card>
-          : <Card style={{ padding: 25, fontFamily: 'Roboto', overflow: 'auto' }} dangerouslySetInnerHTML={{ __html: this.props.protocolContent }}></Card>
+          : <Card
+            style={{ padding: 25, fontFamily: 'Roboto', overflow: 'auto' }}
+            dangerouslySetInnerHTML={{ __html: this.props.protocolContent }} />
         }
       </Container>
     )
@@ -80,7 +95,9 @@ export class Protocol extends Component {
 
 Protocol.propTypes = {
   projectName: PropTypes.string,
-  projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  protocolContent: PropTypes.string,
+  actions: PropTypes.object
 }
 
 const mapStateToProps = (state, ownProps) => ({
