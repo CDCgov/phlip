@@ -43,11 +43,7 @@ export class Protocol extends Component {
       /.*/
     )
   }
-
-  componentWillUnmount() {
-    tinymce.remove(this.state.editor)
-  }
-
+  
   onEnableEdit = () => {
     this.setState({
       editMode: true
