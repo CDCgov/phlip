@@ -14,6 +14,10 @@ import 'tinymce/plugins/link'
 import 'tinymce/plugins/image'
 import 'tinymce/plugins/anchor'
 import 'tinymce/plugins/pagebreak'
+import 'tinymce/plugins/lists'
+import 'tinymce/plugins/advlist'
+import 'tinymce/plugins/table'
+import 'tinymce/plugins/paste'
 
 import { Editor } from '@tinymce/tinymce-react'
 
@@ -60,11 +64,13 @@ export class Protocol extends Component {
 
   render() {
     const toolbar =
-      'styleselect | \
-       undo redo | \
+      'undo redo | \
+       styleselect | \
        bold italic strikethrough underline | \
        anchor pagebreak | \
+       table | \
        alignleft alignright aligncenter alignjustify | \
+       numlist bullist | \
        link image'
 
     return (
@@ -81,14 +87,15 @@ export class Protocol extends Component {
             <Editor
               init={{
                 statusbar: false,
-                plugins: ['paste', 'link', 'image', 'anchor'],
+                plugins: ['paste', 'link', 'image', 'anchor', 'pagebreak', 'lists', 'advlist', 'table', 'paste'],
                 toolbar,
                 theme: 'modern',
                 skin_url: '/skins/custom',
                 branding: false,
                 resize: false,
                 menubar: 'insert',
-                content_style: '* {font-family: Roboto }'
+                content_style: '* {font-family: Roboto }',
+                advlist_bullet_styles: 'default,circle,square,disc'
               }}
               onChange={e => this.props.actions.updateProtocol(e.target.getContent())}
               initialValue={this.props.protocolContent}
