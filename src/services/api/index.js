@@ -110,5 +110,13 @@ export default {
 
   getProjectCoders(projectId) {
     return api.get(`/projects/${projectId}/coders`).then(res => res.data)
+  },
+
+  getProtocol(projectId) {
+    return api.get(`/projects/${projectId}/protocol`).then(res => res.data)
+  },
+
+  saveProtocol(projectId, userId, protocol) {
+    return api.put(`/projects/${projectId}/protocol`, { userId, protocol }).then(res => res.data)
   }
 }
