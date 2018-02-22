@@ -22,6 +22,13 @@
     border-bottom: 1px solid #d3d3d3
 }
 
+.mce-container-body.mce-stack-layout .mce-top-part.mce-container.mce-stack-layout-item.mce-first .mce-container-body:first-of-type {
+    display: flex !important;
+    padding: 8px 0;
+    align-items: center;
+    justify-content: center
+}
+
 .mce-container-body.mce-stack-layout .mce-edit-area.mce-container.mce-panel.mce-stack-layout-item.mce-last {
     margin: 0 35px 35px;
     border: 1px solid #d3d3d3;
@@ -44,11 +51,8 @@
     background-color: #fff
 }
 
-.mce-container-body.mce-stack-layout .mce-top-part.mce-container.mce-stack-layout-item.mce-first .mce-container-body:not(.mce-flow-layout) {
-    display: flex!important;
-    padding: 8px 0;
-    align-items: center;
-    justify-content: center
+.mce-container-body.mce-stack-layout .mce-top-part.mce-container.mce-stack-layout-item.mce-first .mce-container-body.mce-flow-layout .mce-flow-layout-item {
+    margin: 0 2px 0 0;
 }
 
 .mce-menu-item.mce-menu-item-preview.mce-stack-layout-item .mce-text {
@@ -1320,7 +1324,7 @@ body .mce-abs-layout-item {
     margin: 0 0 0 2px
 }
 
-.mce-btn-group:not(:first-child) {
+.mce-btn-group {
     border-left: 1px solid #d9d9d9;
     padding-left: 3px;
     margin-left: 3px
@@ -1815,7 +1819,8 @@ i.mce-i-checkbox {
 .mce-menubar .mce-menubtn button,
 .mce-menubar .mce-menubtn button span,
 .mce-menubtn button {
-    color: #333
+    color: #333;
+    padding-right: 5px;
 }
 
 .mce-menubar .mce-menubtn {

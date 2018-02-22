@@ -6,12 +6,14 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Card from 'components/Card'
 import * as actions from './actions'
-import tinymce from 'tinymce/tinymce'
 
+import tinymce from 'tinymce/tinymce'
 import 'tinymce/themes/modern/theme'
 import 'tinymce/plugins/paste'
 import 'tinymce/plugins/link'
 import 'tinymce/plugins/image'
+import 'tinymce/plugins/anchor'
+import 'tinymce/plugins/pagebreak'
 
 import { Editor } from '@tinymce/tinymce-react'
 
@@ -57,6 +59,14 @@ export class Protocol extends Component {
   }
 
   render() {
+    const toolbar =
+      'styleselect | \
+       undo redo | \
+       bold italic strikethrough underline | \
+       anchor pagebreak | \
+       alignleft alignright aligncenter alignjustify | \
+       link image'
+
     return (
       <Container flex column style={{ paddingBottom: 20, flexWrap: 'nowrap' }}>
         <Header
@@ -71,13 +81,13 @@ export class Protocol extends Component {
             <Editor
               init={{
                 statusbar: false,
-                plugins: ['paste', 'link', 'image'],
-                toolbar: 'undo redo | styleselect | bold italic strikethrough underline | alignleft alignright aligncenter alignjustify | link image',
+                plugins: ['paste', 'link', 'image', 'anchor'],
+                toolbar,
                 theme: 'modern',
                 skin_url: '/skins/custom',
                 branding: false,
                 resize: false,
-                menubar: false,
+                menubar: 'insert',
                 content_style: '* {font-family: Roboto }'
               }}
               onChange={e => this.props.actions.updateProtocol(e.target.getContent())}
@@ -86,7 +96,8 @@ export class Protocol extends Component {
           </Card>
           : <Card
             style={{ padding: 25, fontFamily: 'Roboto', overflow: 'auto' }}
-            dangerouslySetInnerHTML={{ __html: this.props.protocolContent }} />
+            dangerouslySetInnerHTML={{ __html: this.props.protocolContent }}
+          />
         }
       </Container>
     )
