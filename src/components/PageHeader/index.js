@@ -38,7 +38,7 @@ export const PageHeader = ({ projectName, pageTitle, projectId, showButton, prot
         ? <TextLink to={{ pathname: `${otherButton.path}`, state: { ...otherButton.state } }}>
           <Button value={otherButton.text} color="accent" />
         </TextLink>
-        : <Button value={otherButton.text} color="accent" onClick={otherButton.onClick} />)
+        : <Button value={otherButton.text} color="accent" style={otherButton.style} onClick={otherButton.onClick} />)
       }
     </Row>
   </Container>

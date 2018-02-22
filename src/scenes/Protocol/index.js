@@ -76,7 +76,8 @@ export class Protocol extends Component {
           otherButton={{
             isLink: false,
             text: this.state.editMode ? 'Save' : 'Edit',
-            onClick: this.state.editMode ? this.onSaveProtocol : this.onEnableEdit
+            onClick: this.state.editMode ? this.onSaveProtocol : this.onEnableEdit,
+            style: { color: 'black', backgroundColor: 'white',  fontWeight: 'bold' }
           }}
         />
         {this.state.editMode
