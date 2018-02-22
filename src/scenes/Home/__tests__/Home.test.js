@@ -6,6 +6,7 @@ import theme from 'services/theme'
 import { Home } from '../index'
 import { ProjectList } from '../components/ProjectList'
 import { mockProjects } from 'data/mockProjects'
+import { PageHeader } from 'components/PageHeader'
 
 const props = {
   actions: {

@@ -11,8 +11,21 @@ exports[`Home scene should render correctly 1`] = `
     }
   }
 >
-  <PageHeader
-    role="Coordinator"
+  <withRouter(PageHeader)
+    otherButton={
+      Object {
+        "isLink": true,
+        "path": "/project/add",
+        "state": Object {
+          "userDefined": null,
+        },
+        "text": "+ Create New Project",
+      }
+    }
+    pageTitle="Project List"
+    projectName=""
+    protocolButton={false}
+    showButton={true}
   />
   <WithStyles />
   <ProjectList

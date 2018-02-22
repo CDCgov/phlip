@@ -8,14 +8,12 @@ exports[`Header should render correctly 1`] = `
   style={
     Object {
       "backgroundColor": "#4aac72",
-      "height": "55px",
-      "padding": "0 30px",
+      "padding": "6px 30px",
     }
   }
 >
   <WithStyles
     item={true}
-    xs={true}
   >
     <Link
       replace={false}
@@ -33,11 +31,17 @@ exports[`Header should render correctly 1`] = `
   </WithStyles>
   <WithStyles
     item={true}
+    xs={true}
   >
     <WithStyles
       alignItems="center"
       container={true}
       spacing={8}
+      style={
+        Object {
+          "justifyContent": "flex-end",
+        }
+      }
     >
       <WithStyles
         item={true}
