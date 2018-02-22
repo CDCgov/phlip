@@ -138,11 +138,13 @@ export const validateQuestionLogic = createLogic({
   async process({ getState, action, api }) {
     const validationState = getState().scenes.validation
     const questionObject = validationState.userAnswers[action.questionId]
+    const validatorId = getState().data.user.currentUser.id
 
     const { answers, categoryId, schemeQuestionId, ...answerObject } = validationState.question.isCategoryQuestion
       ? {
         ...questionObject,
-        codedAnswers: Object.values(questionObject.answers[validationState.selectedCategoryId].answers).map(deleteAnswerIds),
+        codedAnswers: Object.values(questionObject.answers[validationState.selectedCategoryId].answers)
+        .map(deleteAnswerIds),
         comment: questionObject.comment[validationState.selectedCategoryId],
         categories: [validationState.selectedCategoryId]
       }
@@ -150,7 +152,10 @@ export const validateQuestionLogic = createLogic({
         ...questionObject,
         codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds)
       }
-    return await api.validateQuestion(action.projectId, action.jurisdictionId, action.questionId, answerObject)
+    return await api.validateQuestion(action.projectId, action.jurisdictionId, action.questionId, {
+      ...answerObject,
+      validatedBy: validatorId
+    })
   }
 })
 
