@@ -457,3 +457,27 @@ export const getQuestionSelectedInNav = (state, action) => {
     })
   }
 }
+
+const deleteAnswerIds = (answer) => {
+  let ans = { ...answer }
+  if (ans.id) delete ans.id
+  return ans
+}
+
+export const getFinalCodedObject = (state, action, applyAll = false) => {
+  const questionObject = state.userAnswers[action.questionId]
+  const { answers, categoryId, schemeQuestionId, ...answerObject } = state.question.isCategoryQuestion
+    ? {
+      ...questionObject,
+      codedAnswers: Object.values(questionObject.answers[state.selectedCategoryId].answers).map(deleteAnswerIds),
+      comment: questionObject.comment[state.selectedCategoryId],
+      categories: applyAll
+        ? [...state.categories.map(cat => cat.id)]
+        : [state.selectedCategoryId]
+    }
+    : {
+      ...questionObject,
+      codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds)
+    }
+    return answerObject
+}

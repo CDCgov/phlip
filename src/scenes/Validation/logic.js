@@ -2,7 +2,7 @@ import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
-import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
+import { getFinalCodedObject } from 'utils/codingHelpers'
 
 const mergeUserAnswers = (combinedCodedQuestions) => {
   let mergedUserQuestions = []
@@ -17,12 +17,6 @@ const mergeUserAnswers = (combinedCodedQuestions) => {
     }
   }
   return mergedUserQuestions
-}
-
-const deleteAnswerIds = (answer) => {
-  let ans = { ...answer }
-  if (ans.id) delete ans.id
-  return ans
 }
 
 export const getValidationOutlineLogic = createLogic({
@@ -137,21 +131,8 @@ export const validateQuestionLogic = createLogic({
   latest: true,
   async process({ getState, action, api }) {
     const validationState = getState().scenes.validation
-    const questionObject = validationState.userAnswers[action.questionId]
     const validatorId = getState().data.user.currentUser.id
-
-    const { answers, categoryId, schemeQuestionId, ...answerObject } = validationState.question.isCategoryQuestion
-      ? {
-        ...questionObject,
-        codedAnswers: Object.values(questionObject.answers[validationState.selectedCategoryId].answers)
-        .map(deleteAnswerIds),
-        comment: questionObject.comment[validationState.selectedCategoryId],
-        categories: [validationState.selectedCategoryId]
-      }
-      : {
-        ...questionObject,
-        codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds)
-      }
+    const answerObject = getFinalCodedObject(validationState, action, false)
     return await api.validateQuestion(action.projectId, action.jurisdictionId, action.questionId, {
       ...answerObject,
       validatedBy: validatorId
