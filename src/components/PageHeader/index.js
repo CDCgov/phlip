@@ -13,7 +13,7 @@ export const PageHeader = ({ projectName, pageTitle, projectId, showButton, prot
   <Container alignItems="center" style={{ height: '80px' }}>
     <Column style={{ paddingRight: 5 }}>
       {pageTitle !== 'Project List'
-        ? <IconButton iconSize={30} color="black" onClick={() => history.push('/')}>arrow_back</IconButton>
+        ? <IconButton iconSize={30} color="black" onClick={() => history.goBack()}>arrow_back</IconButton>
         : <CircleIcon circleColor="error" iconColor="white" circleSize="30px" iconSize="19px">home</CircleIcon>
       }
     </Column>
