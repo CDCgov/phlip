@@ -19,6 +19,37 @@ const mergeUserAnswers = (combinedCodedQuestions) => {
   return mergedUserQuestions
 }
 
+const consolidateAnswers = combinedCodedQuestions => {
+  let mergedUserQuestions = mergeUserAnswers(combinedCodedQuestions)
+  let output = []
+
+  mergedUserQuestions.forEach((value) => {
+    let existing = []
+
+    if (value.hasOwnProperty('categoryId')) {
+      existing = output.filter((v, i) => {
+        return v.categoryId === value.categoryId && v.schemeQuestionId === value.schemeQuestionId
+      })
+    } else {
+      existing = output.filter((v, i) => {
+        return v.schemeQuestionId == value.schemeQuestionId
+      })
+    }
+
+    if (existing.length) {
+      let existingIndex = output.indexOf(existing[0])
+      output[existingIndex].codedAnswers = output[existingIndex].codedAnswers.concat(value.codedAnswers)
+    } else {
+      if (typeof value.codedAnswers == 'object')
+        value.codedAnswers = [value.codedAnswers]
+      output.push(value)
+    }
+  })
+
+  return output
+}
+
+
 export const getValidationOutlineLogic = createLogic({
   type: types.GET_VALIDATION_OUTLINE_REQUEST,
   processOptions: {
@@ -80,32 +111,7 @@ export const getValidationOutlineLogic = createLogic({
       }, [])
 
       const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
-
-      let mergedUserQuestions = mergeUserAnswers(combinedCodedQuestions)
-      let output = []
-
-      mergedUserQuestions.forEach((value) => {
-        let existing = []
-
-        if (value.hasOwnProperty('categoryId')) {
-          existing = output.filter((v, i) => {
-            return v.categoryId === value.categoryId && v.schemeQuestionId === value.schemeQuestionId
-          })
-        } else {
-          existing = output.filter((v, i) => {
-            return v.schemeQuestionId == value.schemeQuestionId
-          })
-        }
-
-        if (existing.length) {
-          let existingIndex = output.indexOf(existing[0])
-          output[existingIndex].codedAnswers = output[existingIndex].codedAnswers.concat(value.codedAnswers)
-        } else {
-          if (typeof value.codedAnswers == 'object')
-            value.codedAnswers = [value.codedAnswers]
-          output.push(value)
-        }
-      })
+      const output = consolidateAnswers(combinedCodedQuestions)
 
       return {
         outline: scheme.outline,
@@ -173,38 +179,13 @@ export const getUserValidatedQuestionsLogic = createLogic({
         try {
           codeQuestionsPerUser = await api.getUserCodedQuestions(coder.userId, action.projectId, action.jurisdictionId)
           combinedCodedQuestions = [...combinedCodedQuestions, { codeQuestionsPerUser, coder }]
-
         } catch (e) {
           throw { error: 'failed to get codedQuestions for user' }
         }
       }
     }
 
-    let mergedUserQuestions = mergeUserAnswers(combinedCodedQuestions)
-    let output = []
-
-    mergedUserQuestions.forEach((value) => {
-      let existing = []
-
-      if (value.hasOwnProperty('categoryId')) {
-        existing = output.filter((v, i) => {
-          return v.categoryId === value.categoryId && v.schemeQuestionId === value.schemeQuestionId
-        })
-      } else {
-        existing = output.filter((v, i) => {
-          return v.schemeQuestionId == value.schemeQuestionId
-        })
-      }
-
-      if (existing.length) {
-        let existingIndex = output.indexOf(existing[0])
-        output[existingIndex].codedAnswers = output[existingIndex].codedAnswers.concat(value.codedAnswers)
-      } else {
-        if (typeof value.codedAnswers == 'object')
-          value.codedAnswers = [value.codedAnswers]
-        output.push(value)
-      }
-    })
+    const output = consolidateAnswers(combinedCodedQuestions)
 
     return {
       codedQuestions,
