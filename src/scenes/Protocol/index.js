@@ -61,6 +61,7 @@ export class Protocol extends Component {
     })
 
     this.props.actions.saveProtocolRequest(this.props.protocolContent, this.props.projectId)
+    this.props.actions.updateEditedFields(this.props.projectId)
   }
 
   render() {
