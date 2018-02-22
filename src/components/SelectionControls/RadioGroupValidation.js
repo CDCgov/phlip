@@ -4,7 +4,7 @@ import Radio, { RadioGroup as MuiRadioGroup } from 'material-ui/Radio'
 import { FormControlLabel, FormControl, FormGroup } from 'material-ui/Form'
 import { withStyles } from 'material-ui/styles'
 import SimpleInput from 'components/SimpleInput'
-import AvatarList from 'components/AvatarList'
+import { getInitials } from 'utils/normalize'
 import Avatar from 'components/Avatar'
 
 const styles = {
@@ -14,6 +14,7 @@ const styles = {
 }
 
 export const RadioGroup = ({ choices, currentUserInitials, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions, question }) => {
+  console.log(userAnswers)
   return (
     <FormControl component="fieldset">
       <FormGroup>
@@ -28,25 +29,28 @@ export const RadioGroup = ({ choices, currentUserInitials, userAnswers, onChange
               label={choice.text}
             />
             {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
-             answer.schemeAnswerId === choice.id &&
+              answer.schemeAnswerId === choice.id &&
               <Avatar
                 cardAvatar
                 key={index}
-                initials={answer.firstName === 'Admin'
-                  ? answer.firstName[0] : answer.firstName[0] + answer.lastName[0]}
+                initials={getInitials(answer.firstName, answer.lastName)}
               />
-              ))}
+            ))}
             {userAnswers.answers.hasOwnProperty(choice.id)
             && mergedUserQuestions !== null
             && <Avatar
               cardAvatar
+              style={{ backgroundColor: '#c17362' }}
               key={mergedUserQuestions.answers.length + 1}
-              initials={currentUserInitials}
+              initials={userAnswers.validatedBy === null
+                ? ''
+                : getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
             />}
             {userAnswers.answers.hasOwnProperty(choice.id) &&
             <SimpleInput
               key={`${choice.id}-pincite`}
-              style={{ width: 300,
+              style={{
+                width: 300,
                 marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
                   ? '15px'
                   : '0px'

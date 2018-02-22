@@ -24,12 +24,12 @@ const styles = theme => ({
   }
 })
 
-const InputBox = ({ value, onChange, name, rows, answerId, classes, currentUserInitials, isValidation, style, ...otherProps }) => {
+const InputBox = ({ value, onChange, name, rows, answerId, classes, currentUserInitials, validator, isValidation, style, ...otherProps }) => {
   const textValues = value === undefined ? { textAnswer: '', pincite: '' } : value
   return (
     <Column style={style}>
       <Row displayFlex style={{ alignItems: 'center', padding: isValidation ? '10px 0 0 0' : '' }}>
-        {isValidation && <Avatar style={{ marginRight: 15 }} cardAvatar initials={currentUserInitials} />}
+        {isValidation && <Avatar cardAvatar style={{ marginRight: 15, backgroundColor: '#c17362' }} initials={validator} />}
         <TextField
           value={textValues.textAnswer}
           onChange={onChange(answerId, 'textAnswer')}

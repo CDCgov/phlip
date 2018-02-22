@@ -27,8 +27,7 @@ const Avatar = ({ big, initials, style, cardAvatar, ...otherProps }) => {
 }
 
 Avatar.propTypes = {
-  big: PropTypes.bool,
-  initials: PropTypes.string
+  big: PropTypes.bool
 }
 
 Avatar.defaultProps = {

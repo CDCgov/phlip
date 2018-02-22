@@ -25,6 +25,17 @@ const deleteAnswerIds = (answer) => {
   return ans
 }
 
+export const updateValidatorLogic = createLogic({
+  type: types.UPDATE_USER_VALIDATION_REQUEST,
+  transform({ action, getState }, next) {
+    next({
+      ...action,
+      validatedBy: { ...getState().data.user.currentUser },
+      isValidation: true
+    })
+  }
+})
+
 export const getValidationOutlineLogic = createLogic({
   type: types.GET_VALIDATION_OUTLINE_REQUEST,
   processOptions: {
@@ -233,6 +244,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
 })
 
 export default [
+  updateValidatorLogic,
   getUserValidatedQuestionsLogic,
   validateQuestionLogic,
   getValidationOutlineLogic

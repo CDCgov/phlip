@@ -86,6 +86,7 @@ export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions)
     return ({
       ...codedQuestionObj,
       [question.schemeQuestionId]: {
+        ...question,
         schemeQuestionId: question.schemeQuestionId,
         ...normalizeAnswers(question, codingSchemeQuestions[question.schemeQuestionId], codedQuestionObj)
       }
@@ -230,7 +231,7 @@ export const getPreviousQuestion = (state, action) => {
 /*
   Handles updating state.userAnswers with the user's new answer
  */
-export const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
+export const handleUpdateUserAnswers = (state, action, selectedCategoryId, isValidation = false) => {
   let currentUserAnswers = state.question.isCategoryQuestion
     ? state.userAnswers[action.questionId].answers[selectedCategoryId].answers
     : state.userAnswers[action.questionId].answers
@@ -288,6 +289,7 @@ export const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
     ...otherAnswerUpdates,
     [action.questionId]: {
       ...state.userAnswers[action.questionId],
+      ... action.isValidation ? { validatedBy: action.validatedBy } : {},
       answers: state.question.isCategoryQuestion
         ? {
           ...state.userAnswers[action.questionId].answers,
