@@ -113,11 +113,10 @@ export default {
   },
 
   getProtocol(projectId) {
-    //return api.get(`/projects/${projectId}/protocol`).then(res => res.data)
-    return 'this is just a mock protocol'
+    return api.get(`/projects/${projectId}/protocol`).then(res => res.data.text)
   },
 
   saveProtocol(projectId, userId, protocol) {
-    return api.put(`/projects/${projectId}/protocol`, { userId, protocol }).then(res => res.data)
+    return api.put(`/projects/${projectId}/protocol`, { userId, text: protocol }).then(res => res.data)
   }
 }

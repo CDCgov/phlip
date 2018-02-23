@@ -41,6 +41,10 @@ export class Protocol extends Component {
     this.props.actions.getProtocolRequest(this.props.projectId)
   }
 
+  componentWillUnmount() {
+    this.props.actions.clearState()
+  }
+
   componentDidMount() {
     require.context(
       '!file-loader?name=[path][name].[ext]&context=node_modules/tinymce!tinymce/skins',
