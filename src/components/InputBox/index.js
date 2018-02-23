@@ -29,7 +29,7 @@ const InputBox = ({ value, onChange, name, rows, answerId, classes, currentUserI
   return (
     <Column style={style}>
       <Row displayFlex style={{ alignItems: 'center', padding: isValidation ? '10px 0 0 0' : '' }}>
-        {isValidation && <Avatar cardAvatar style={{ marginRight: 15, backgroundColor: '#c17362' }} initials={validator} />}
+        {isValidation && <Avatar cardAvatar style={{ marginRight: 15, backgroundColor: 'white', color: 'teal', borderColor: 'teal' }} initials={validator} />}
         <TextField
           value={textValues.textAnswer}
           onChange={onChange(answerId, 'textAnswer')}

@@ -39,7 +39,7 @@ export const RadioGroup = ({ choices, currentUserInitials, userAnswers, onChange
             && mergedUserQuestions !== null
             && <Avatar
               cardAvatar
-              style={{ backgroundColor: '#c17362' }}
+              style={{ backgroundColor: 'white', color: 'teal', borderColor: 'teal'}}
               key={mergedUserQuestions.answers.length + 1}
               initials={userAnswers.validatedBy === null
                 ? ''
