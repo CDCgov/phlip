@@ -78,6 +78,7 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
           style={{ ...answerPadding, paddingRight: 0 }}
           mergedUserQuestions={mergedUserQuestions}
           validatorAnswer={userAnswers.answers[question.possibleAnswers[0].id]}
+          validator={userAnswers.validatedBy}
           onChange={onChangeTextAnswer}
           answerId={question.possibleAnswers[0].id}
           currentUserInitials={currentUserInitials}
