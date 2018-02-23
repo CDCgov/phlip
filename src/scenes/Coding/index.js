@@ -13,7 +13,7 @@ import { withStyles } from 'material-ui/styles'
 import classNames from 'classnames'
 import { default as MuiButton } from 'material-ui/Button'
 import HeaderedLayout from 'components/HeaderedLayout'
-import Modal, { ModalContent, ModalActions } from 'components/Modal'
+import Alert from 'components/Alert'
 
 const navButtonStyles = {
   height: 90,
@@ -190,16 +190,10 @@ export class Coding extends Component {
     return (
       <Container
         flex
-        style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}
-      >
-        <Modal open={this.state.applyAllAlertOpen}>
-          <ModalContent>
-            <Typography variant="body1">
-              You are applying your answer to ALL categories. Previously answered questions will be changed.
-            </Typography>
-          </ModalContent>
-          <ModalActions actions={this.modalActions} />
-        </Modal>
+        style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}>
+        <Alert open={this.state.applyAllAlertOpen}
+               text="You are applying your answer to ALL categories. Previously answered questions will be changed."
+               actions={this.modalActions} />
         <Navigator
           open={this.state.navOpen}
           scheme={this.props.scheme}
@@ -240,24 +234,24 @@ export class Coding extends Component {
           </Column>
         </HeaderedLayout>
       </Container>
-    )
+  )
   }
-}
+  }
 
-Coding.propTypes = {
-  projectName: PropTypes.string,
-  projectId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  question: PropTypes.object,
-  currentIndex: PropTypes.number,
-  questionOrder: PropTypes.array,
-  actions: PropTypes.object,
-  categories: PropTypes.array
-}
+  Coding.propTypes = {
+    projectName: PropTypes.string,
+    projectId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    question: PropTypes.object,
+    currentIndex: PropTypes.number,
+    questionOrder: PropTypes.array,
+    actions: PropTypes.object,
+    categories: PropTypes.array
+  }
 
-const mapStateToProps = (state, ownProps) => {
-  const project = state.scenes.home.main.projects.byId[ownProps.match.params.id]
+  const mapStateToProps = (state, ownProps) => {
+    const project = state.scenes.home.main.projects.byId[ownProps.match.params.id]
 
-  return {
+    return {
     projectName: project.name,
     projectId: ownProps.match.params.id,
     question: state.scenes.coding.question || {},
@@ -269,18 +263,18 @@ const mapStateToProps = (state, ownProps) => {
     showNextButton: state.scenes.coding.showNextButton,
     jurisdictionsList: project.projectJurisdictions || [],
     jurisdictionId: state.scenes.coding.jurisdictionId || (project.projectJurisdictions.length > 0
-      ? project.projectJurisdictions[0].id
-      : null),
+    ? project.projectJurisdictions[0].id
+    : null),
     jurisdiction: state.scenes.coding.jurisdiction || (project.projectJurisdictions.length > 0
-      ? project.projectJurisdictions[0]
-      : null),
+    ? project.projectJurisdictions[0]
+    : null),
     isSchemeEmpty: state.scenes.coding.scheme === null ? null : state.scenes.coding.scheme.order.length === 0,
     userRole: state.data.user.currentUser.role,
     scheme: state.scenes.coding.scheme === null ? {} : state.scenes.coding.scheme,
     allUserAnswers: state.scenes.coding.userAnswers || {}
   }
-}
+  }
 
-const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
+  const mapDispatchToProps = (dispatch) => ({actions: bindActionCreators(actions, dispatch)})
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Coding))
+  export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Coding))
