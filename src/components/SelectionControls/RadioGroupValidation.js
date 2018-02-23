@@ -13,8 +13,7 @@ const styles = {
   }
 }
 
-export const RadioGroup = ({ choices, currentUserInitials, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions, question }) => {
-  console.log(userAnswers)
+export const RadioGroup = ({ choices, currentUserInitials, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions }) => {
   return (
     <FormControl component="fieldset">
       <FormGroup>

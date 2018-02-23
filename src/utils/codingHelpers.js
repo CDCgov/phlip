@@ -22,6 +22,7 @@ export const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswer
         answers: {
           ...userCodedAnswerObj[question.schemeQuestionId].answers,
           [question.categoryId]: {
+            ...question,
             answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId')
           }
         },
@@ -32,13 +33,19 @@ export const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswer
       }
       : {
         schemeQuestionId: question.schemeQuestionId,
-        answers: { [question.categoryId]: { answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId') } },
+        answers: {
+          [question.categoryId]: {
+            ...question,
+            answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId')
+          }
+        },
         comment: {
           [question.categoryId]: question.comment || ''
         }
       }
   } else {
     return {
+      ...question,
       schemeQuestionId: question.schemeQuestionId,
       comment: question.comment,
       answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId')
@@ -86,7 +93,6 @@ export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions)
     return ({
       ...codedQuestionObj,
       [question.schemeQuestionId]: {
-        ...question,
         schemeQuestionId: question.schemeQuestionId,
         ...normalizeAnswers(question, codingSchemeQuestions[question.schemeQuestionId], codedQuestionObj)
       }
@@ -289,12 +295,13 @@ export const handleUpdateUserAnswers = (state, action, selectedCategoryId, isVal
     ...otherAnswerUpdates,
     [action.questionId]: {
       ...state.userAnswers[action.questionId],
-      ... action.isValidation ? { validatedBy: action.validatedBy } : {},
+      ... (action.isValidation && !state.question.isCategoryQuestion) ? { validatedBy: action.validatedBy } : {},
       answers: state.question.isCategoryQuestion
         ? {
           ...state.userAnswers[action.questionId].answers,
           [selectedCategoryId]: {
             ...state.userAnswers[action.questionId].answers[selectedCategoryId],
+            ... action.isValidation ? { validatedBy: action.validatedBy } : {},
             answers: { ...currentUserAnswers }
           }
         }
