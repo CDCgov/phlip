@@ -50,7 +50,7 @@ const consolidateAnswers = combinedCodedQuestions => {
 }
 
 export const updateValidatorLogic = createLogic({
-  type: types.UPDATE_USER_VALIDATION_REQUEST,
+  type: [types.UPDATE_USER_VALIDATION_REQUEST, types.ON_APPLY_VALIDATION_TO_ALL],
   transform({ action, getState }, next) {
     next({
       ...action,
@@ -138,7 +138,10 @@ export const getValidationOutlineLogic = createLogic({
 })
 
 export const validateQuestionLogic = createLogic({
-  type: [types.UPDATE_USER_VALIDATION_REQUEST, types.ON_CHANGE_VALIDATION_PINCITE, types.ON_CLEAR_VALIDATION_ANSWER, types.ON_APPLY_VALIDATION_TO_ALL],
+  type: [
+    types.UPDATE_USER_VALIDATION_REQUEST, types.ON_CHANGE_VALIDATION_PINCITE, types.ON_CLEAR_VALIDATION_ANSWER,
+    types.ON_APPLY_VALIDATION_TO_ALL
+  ],
   processOptions: {
     dispatchReturn: true,
     successType: types.UPDATE_USER_VALIDATION_SUCCESS,

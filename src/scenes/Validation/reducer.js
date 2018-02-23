@@ -187,17 +187,19 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           ...state.userAnswers,
           [state.question.id]: {
             ...state.userAnswers[state.question.id],
-            ...state.categories.reduce((obj, category) => ({
-              ...obj,
-              answers: {
-                ...obj.answers,
-                [category.id]: { ...answer, validatedBy: action.validatedBy }
-              },
-              comment: {
-                ...obj.comment,
-                [category.id]: ''
+            ...state.categories.reduce((obj, category) => {
+              return {
+                ...obj,
+                answers: {
+                  ...obj.answers,
+                  [category.id]: { ...answer, validatedBy: action.validatedBy }
+                },
+                comment: {
+                  ...obj.comment,
+                  [category.id]: ''
+                }
               }
-            }), {})
+            }, {})
           }
         }
       }
