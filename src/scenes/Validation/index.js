@@ -10,6 +10,7 @@ import classNames from 'classnames'
 import { withStyles } from 'material-ui/styles'
 import { default as MuiButton } from 'material-ui/Button'
 import HeaderedLayout from 'components/HeaderedLayout'
+import Alert from 'components/Alert'
 
 const navButtonStyles = {
   height: 90,
@@ -38,8 +39,22 @@ export class Validation extends Component {
     this.state = {
       selectedJurisdiction: this.props.jurisdictionId,
       showViews: false,
-      navOpen: false
+      navOpen: false,
+      applyAllAlertOpen: false
     }
+
+    this.modalActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.onCloseApplyAllAlert
+      },
+      {
+        value: 'Continue',
+        type: 'button',
+        onClick: this.onApplyToAll
+      }
+    ]
   }
 
   componentWillMount() {
@@ -103,6 +118,23 @@ export class Validation extends Component {
     this.props.actions.updateEditedFields(this.props.projectId)
   }
 
+  onOpenApplyAllAlert = () => {
+    this.setState({
+      applyAllAlertOpen: true
+    })
+  }
+
+  onCloseApplyAllAlert = () => {
+    this.setState({
+      applyAllAlertOpen: false
+    })
+  }
+
+  onApplyToAll = () => {
+    this.onCloseApplyAllAlert()
+    this.props.actions.applyAnswerToAll(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+  }
+
   onShowCodeView = () => (
     <Fragment>
       <QuestionCard
@@ -114,6 +146,7 @@ export class Validation extends Component {
         onChangeCategory={this.props.actions.onChangeCategory}
         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
         currentUserInitials={this.props.currentUserInitials}
+        onOpenAlert={this.onOpenApplyAllAlert}
       />
       <FooterNavigate
         currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion}
@@ -129,6 +162,11 @@ export class Validation extends Component {
         flex
         style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}
       >
+        <Alert
+          open={this.state.applyAllAlertOpen}
+          text="You are applying your answer to ALL categories. Previously answered questions will be changed."
+          actions={this.modalActions}
+        />
         <Navigator
           open={this.state.navOpen}
           scheme={this.props.scheme}

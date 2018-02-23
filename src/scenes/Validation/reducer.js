@@ -179,6 +179,29 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         selectedCategoryId: null
       }
 
+    case types.ON_APPLY_VALIDATION_TO_ALL:
+      const answer = state.userAnswers[state.question.id].answers[state.selectedCategoryId]
+      return {
+        ...state,
+        userAnswers: {
+          ...state.userAnswers,
+          [state.question.id]: {
+            ...state.userAnswers[state.question.id],
+            ...state.categories.reduce((obj, category) => ({
+              ...obj,
+              answers: {
+                ...obj.answers,
+                [category.id]: { ...answer, validatedBy: action.validatedBy }
+              },
+              comment: {
+                ...obj.comment,
+                [category.id]: ''
+              }
+            }), {})
+          }
+        }
+      }
+
     case types.ON_QUESTION_SELECTED_IN_VAL_NAV:
       return getQuestionSelectedInNav(state, action)
 

@@ -2,7 +2,7 @@ import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
-import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
+import { getFinalCodedObject } from 'utils/codingHelpers'
 
 const mergeUserAnswers = (combinedCodedQuestions) => {
   let mergedUserQuestions = []
@@ -19,10 +19,34 @@ const mergeUserAnswers = (combinedCodedQuestions) => {
   return mergedUserQuestions
 }
 
-const deleteAnswerIds = (answer) => {
-  let ans = { ...answer }
-  if (ans.id) delete ans.id
-  return ans
+const consolidateAnswers = combinedCodedQuestions => {
+  let mergedUserQuestions = mergeUserAnswers(combinedCodedQuestions)
+  let output = []
+
+  mergedUserQuestions.forEach((value) => {
+    let existing = []
+
+    if (value.hasOwnProperty('categoryId')) {
+      existing = output.filter((v, i) => {
+        return v.categoryId === value.categoryId && v.schemeQuestionId === value.schemeQuestionId
+      })
+    } else {
+      existing = output.filter((v, i) => {
+        return v.schemeQuestionId == value.schemeQuestionId
+      })
+    }
+
+    if (existing.length) {
+      let existingIndex = output.indexOf(existing[0])
+      output[existingIndex].codedAnswers = output[existingIndex].codedAnswers.concat(value.codedAnswers)
+    } else {
+      if (typeof value.codedAnswers == 'object')
+        value.codedAnswers = [value.codedAnswers]
+      output.push(value)
+    }
+  })
+
+  return output
 }
 
 export const updateValidatorLogic = createLogic({
@@ -97,32 +121,7 @@ export const getValidationOutlineLogic = createLogic({
       }, [])
 
       const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
-
-      let mergedUserQuestions = mergeUserAnswers(combinedCodedQuestions)
-      let output = []
-
-      mergedUserQuestions.forEach((value) => {
-        let existing = []
-
-        if (value.hasOwnProperty('categoryId')) {
-          existing = output.filter((v, i) => {
-            return v.categoryId === value.categoryId && v.schemeQuestionId === value.schemeQuestionId
-          })
-        } else {
-          existing = output.filter((v, i) => {
-            return v.schemeQuestionId == value.schemeQuestionId
-          })
-        }
-
-        if (existing.length) {
-          let existingIndex = output.indexOf(existing[0])
-          output[existingIndex].codedAnswers = output[existingIndex].codedAnswers.concat(value.codedAnswers)
-        } else {
-          if (typeof value.codedAnswers == 'object')
-            value.codedAnswers = [value.codedAnswers]
-          output.push(value)
-        }
-      })
+      const output = consolidateAnswers(combinedCodedQuestions)
 
       return {
         outline: scheme.outline,
@@ -139,7 +138,7 @@ export const getValidationOutlineLogic = createLogic({
 })
 
 export const validateQuestionLogic = createLogic({
-  type: [types.UPDATE_USER_VALIDATION_REQUEST, types.ON_CHANGE_VALIDATION_PINCITE, types.ON_CLEAR_VALIDATION_ANSWER],
+  type: [types.UPDATE_USER_VALIDATION_REQUEST, types.ON_CHANGE_VALIDATION_PINCITE, types.ON_CLEAR_VALIDATION_ANSWER, types.ON_APPLY_VALIDATION_TO_ALL],
   processOptions: {
     dispatchReturn: true,
     successType: types.UPDATE_USER_VALIDATION_SUCCESS,
@@ -148,21 +147,8 @@ export const validateQuestionLogic = createLogic({
   latest: true,
   async process({ getState, action, api }) {
     const validationState = getState().scenes.validation
-    const questionObject = validationState.userAnswers[action.questionId]
     const validatorId = getState().data.user.currentUser.id
-
-    const { answers, categoryId, schemeQuestionId, ...answerObject } = validationState.question.isCategoryQuestion
-      ? {
-        ...questionObject,
-        codedAnswers: Object.values(questionObject.answers[validationState.selectedCategoryId].answers)
-        .map(deleteAnswerIds),
-        comment: questionObject.comment[validationState.selectedCategoryId],
-        categories: [validationState.selectedCategoryId]
-      }
-      : {
-        ...questionObject,
-        codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds)
-      }
+    const answerObject = getFinalCodedObject(validationState, action, action.type === types.ON_APPLY_VALIDATION_TO_ALL)
     return await api.validateQuestion(action.projectId, action.jurisdictionId, action.questionId, {
       ...answerObject,
       validatedBy: validatorId
@@ -203,38 +189,13 @@ export const getUserValidatedQuestionsLogic = createLogic({
         try {
           codeQuestionsPerUser = await api.getUserCodedQuestions(coder.userId, action.projectId, action.jurisdictionId)
           combinedCodedQuestions = [...combinedCodedQuestions, { codeQuestionsPerUser, coder }]
-
         } catch (e) {
           throw { error: 'failed to get codedQuestions for user' }
         }
       }
     }
 
-    let mergedUserQuestions = mergeUserAnswers(combinedCodedQuestions)
-    let output = []
-
-    mergedUserQuestions.forEach((value) => {
-      let existing = []
-
-      if (value.hasOwnProperty('categoryId')) {
-        existing = output.filter((v, i) => {
-          return v.categoryId === value.categoryId && v.schemeQuestionId === value.schemeQuestionId
-        })
-      } else {
-        existing = output.filter((v, i) => {
-          return v.schemeQuestionId == value.schemeQuestionId
-        })
-      }
-
-      if (existing.length) {
-        let existingIndex = output.indexOf(existing[0])
-        output[existingIndex].codedAnswers = output[existingIndex].codedAnswers.concat(value.codedAnswers)
-      } else {
-        if (typeof value.codedAnswers == 'object')
-          value.codedAnswers = [value.codedAnswers]
-        output.push(value)
-      }
-    })
+    const output = consolidateAnswers(combinedCodedQuestions)
 
     return {
       codedQuestions,

@@ -57,3 +57,10 @@ export const onChangePincite = (projectId, jurisdictionId, questionId, answerId,
   answerId,
   pincite
 })
+
+export const applyAnswerToAll = (projectId, jurisdictionId, questionId) => ({
+  type: types.ON_APPLY_VALIDATION_TO_ALL,
+  projectId,
+  jurisdictionId,
+  questionId
+})
