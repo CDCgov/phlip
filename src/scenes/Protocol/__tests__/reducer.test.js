@@ -5,9 +5,6 @@ const initial = {
   content: ''
 }
 
-const getState = other => ({ ...initial, ...other })
-const getReducer = (state, action) => reducer(state, action)
-
 describe('Protocol reducer', () => {
   test('should return initial state', () => {
     expect(reducer(undefined, {})).toEqual(initial)
@@ -23,5 +20,9 @@ describe('Protocol reducer', () => {
     expect(reducer(initial, { type: types.UPDATE_PROTOCOL, content: 'this is protocol' })).toEqual({
       content: 'this is protocol'
     })
+  })
+
+  test('CLEAR_STATE', () => {
+    expect(reducer({ content: 'protocol content'}, { type: types.CLEAR_STATE })).toEqual({ content: '' })
   })
 })

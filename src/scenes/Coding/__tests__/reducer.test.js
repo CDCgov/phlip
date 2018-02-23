@@ -80,7 +80,7 @@ describe('Coding reducer', () => {
       expect(state).toHaveProperty('scheme.byId', updatedState.scheme.byId)
       expect(state).toHaveProperty('scheme.order', updatedState.scheme.order)
       expect(state).toHaveProperty('question', updatedState.question)
-      expect(state).toHaveProperty('userAnswers', updatedState.userAnswers)
+      expect(state.userAnswers).toMatchObject(updatedState.userAnswers)
     })
 
     test('should set scheme.tree based on action.payload.tree', () => {
@@ -140,7 +140,7 @@ describe('Coding reducer', () => {
         action
       )
 
-      expect(state).toEqual(getState({
+      expect(state).toMatchObject(getState({
         question: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
         outline: {
           1: { parentId: 0, positionInParent: 0 },
@@ -217,7 +217,7 @@ describe('Coding reducer', () => {
 
       const state = getReducer(getState(), action)
 
-      expect(state).toHaveProperty('userAnswers', {
+      expect(state.userAnswers).toMatchObject({
         1: {
           answers: {}
         },
