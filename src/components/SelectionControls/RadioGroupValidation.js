@@ -30,28 +30,32 @@ export const RadioGroup = ({ choices, currentUserInitials, userAnswers, onChange
               label={choice.text}
             />
             {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => {
-              console.log(answer)
-            }
-              // (
-              //   answer.schemeAnswerId === choice.id &&
-              //   <Fragment key={index}>
-              //     <ValidationAvatar
-              //       handlePopoverOpen={onPopoverOpen}
-              //       handleClose={onPopoverClose}
-              //       popoverOpen={popoverOpen}
-              //       anchorEl={anchorEl}
-              //       answer={answer}
-              //       choice={choice.id}
-              //     />
-              //     {/* <Popover
-              //       answer={answer}
-              //       handleClose={onPopoverClose}
-              //       popoverOpen={popoverOpen}
-              //       anchorEl={anchorEl}
-              //     /> */}
-              //   </Fragment>
 
-              // )
+              if (answer.schemeAnswerId === choice.id) {
+                console.log(answer)
+              }
+              return (
+                answer.schemeAnswerId === choice.id &&
+                <Fragment key={index}>
+                  <ValidationAvatar
+                    handlePopoverOpen={onPopoverOpen}
+                    handleClose={onPopoverClose}
+                    popoverOpen={popoverOpen}
+                    anchorEl={anchorEl}
+                    answer={answer}
+                    choice={choice.id}
+                  />
+                  {/* <Popover
+                    answer={answer}
+                    handleClose={onPopoverClose}
+                    popoverOpen={popoverOpen}
+                    anchorEl={anchorEl}
+                  /> */}
+                </Fragment>
+
+              )
+            }
+
             )}
             {userAnswers.answers.hasOwnProperty(choice.id)
               && mergedUserQuestions !== null
