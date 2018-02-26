@@ -36,7 +36,7 @@ export const Header = ({ projectName, empty, projectId, jurisdictionsList, selec
       </Column>
       <Column flex></Column>
       <TextLink to={`/project/${projectId}/protocol`}>
-        <Button value="View/Edit Protocol" style={{ backgroundColor: 'white', color: 'black', fontWeight: 'bold' }} />
+        <Button value="View/Edit Protocol" style={{ backgroundColor: 'white', color: 'black' }} />
       </TextLink>
     </Fragment>}
   </Container>

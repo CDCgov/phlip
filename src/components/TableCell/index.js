@@ -18,7 +18,7 @@ TableCell.propTypes = {
 }
 
 TableCell.defaultProps = {
-  padding: 'checkbox'
+  padding: 'default'
 }
 
 

@@ -6,12 +6,12 @@ import TableCell from 'components/TableCell'
 import IconButton from 'components/IconButton'
 
 const columns = [
-  { key: 'name', label: 'Name', style: { textAlign: 'left', maxWidth: 'unset' }, hasSort: true },
-  { key: 'dateLastEdited', label: 'Date Last Edited', style: { textAlign: 'unset' }, hasSort: true },
-  { key: 'lastEditedBy', label: 'Last Edited By', style: { textAlign: 'unset' }, hasSort: true },
-  { key: 'protocol', label: 'Protocol', hasSort: false, style: { textAlign: 'center' }},
-  { key: 'jurisdictions', label: 'Jurisdictions', hasSort: false, style: { textAlign: 'center' }},
-  { key: 'codingScheme', label: 'Coding Scheme', hasSort: false, style: { textAlign: 'center' }},
+  { key: 'name', label: 'Name', hasSort: true },
+  { key: 'dateLastEdited', label: 'Date Last Edited', hasSort: true },
+  { key: 'lastEditedBy', label: 'Last Edited By', hasSort: true },
+  { key: 'protocol', label: 'Protocol', hasSort: false, style: { textAlign: 'center' } },
+  { key: 'jurisdictions', label: 'Jurisdictions', hasSort: false, style: { textAlign: 'center' } },
+  { key: 'codingScheme', label: 'Coding Scheme', hasSort: false, style: { textAlign: 'center' } },
   { key: 'code', label: '', hasSort: false },
   { key: 'validate', label: '', hasSort: false },
   { key: 'export', label: '', hasSort: false }
@@ -31,14 +31,18 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
     <TableRow key="headers">
       <TableCell key="bookmarked" style={{ width: 48 }}>
         <IconButton color="rbg(0,0,0,0.54)" onClick={() => onSortBookmarked()}>
-          { sortBookmarked ? 'bookmark' : 'bookmark_border' }
+          {sortBookmarked ? 'bookmark' : 'bookmark_border'}
         </IconButton>
       </TableCell>
 
       {visible.map(c => (
         <TableCell key={c.key} style={{ ...c.style }}>
           {c.hasSort ? (
-            <TableSortLabel active={sortBy === c.key} style={{ color: 'inherit' }} direction={direction} onClick={() => onRequestSort(c.key)}>
+            <TableSortLabel
+              active={sortBy === c.key}
+              style={{ color: 'inherit' }}
+              direction={direction}
+              onClick={() => onRequestSort(c.key)}>
               {c.label}
             </TableSortLabel>
           ) : c.label}

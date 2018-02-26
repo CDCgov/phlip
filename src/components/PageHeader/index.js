@@ -30,7 +30,7 @@ export const PageHeader = ({ projectName, pageTitle, projectId, showButton, prot
       {children}
       {protocolButton && <div style={{ paddingRight: 15 }}>
         <TextLink to={`/project/${projectId}/protocol`}>
-          <Button value="View/Edit Protocol" style={{ backgroundColor: 'white', color: 'black', fontWeight: 'bold' }} />
+          <Button value="View/Edit Protocol" style={{ backgroundColor: 'white', color: 'black' }} />
         </TextLink>
       </div>}
       {showButton && (otherButton.isLink

@@ -133,7 +133,6 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
           Object {
             "backgroundColor": "white",
             "color": "black",
-            "fontWeight": "bold",
           }
         }
         value="View/Edit Protocol"
