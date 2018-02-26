@@ -113,15 +113,19 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       flex={true}
     />
     <WithTheme
-      style={
-        Object {
-          "backgroundColor": "white",
-          "color": "black",
-          "fontWeight": "bold",
+      to="/project/1/protocol"
+    >
+      <WithTheme
+        style={
+          Object {
+            "backgroundColor": "white",
+            "color": "black",
+            "fontWeight": "bold",
+          }
         }
-      }
-      value="View/Edit Protocol"
-    />
+        value="View/Edit Protocol"
+      />
+    </WithTheme>
   </React.Fragment>
 </Container>
 `;

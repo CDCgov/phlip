@@ -3,6 +3,7 @@
 const autoprefixer = require('autoprefixer')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const paths = require('./paths')
 
 module.exports = function makeConfig(env) {
@@ -34,6 +35,19 @@ module.exports = function makeConfig(env) {
           enforce: 'pre',
           loader: 'eslint-loader',
           include: paths.appSrc
+        },
+        {
+          test: require.resolve('tinymce/tinymce'),
+          loaders: [
+            'imports-loader?this=>window',
+            'exports-loader?window.tinymce'
+          ]
+        },
+        {
+          test: /tinymce\/(themes|plugins)\//,
+          loaders: [
+            'imports-loader?this=>window'
+          ]
         },
         {
           oneOf: [
@@ -148,7 +162,11 @@ module.exports = function makeConfig(env) {
       new webpack.NamedModulesPlugin(),
       new webpack.HotModuleReplacementPlugin(),
 
-      new webpack.DefinePlugin(env)
+      new webpack.DefinePlugin(env),
+
+      new CopyWebpackPlugin([{
+        from: paths.appPublic
+      }])
     ]
   }
 }

@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Header should render correctly 1`] = `
+<WithStyles
+  alignItems="center"
+  container={true}
+  spacing={0}
+  style={
+    Object {
+      "backgroundColor": "#4aac72",
+      "padding": "6px 30px",
+    }
+  }
+>
+  <WithStyles
+    item={true}
+  >
+    <Link
+      replace={false}
+      style={
+        Object {
+          "textDecoration": "none",
+        }
+      }
+      to="/"
+    >
+      <Logo
+        fontSize="30px"
+      />
+    </Link>
+  </WithStyles>
+  <WithStyles
+    item={true}
+    xs={true}
+  >
+    <WithStyles
+      alignItems="center"
+      container={true}
+      spacing={8}
+      style={
+        Object {
+          "justifyContent": "flex-end",
+        }
+      }
+    >
+      <WithStyles
+        item={true}
+      >
+        <Greeting
+          firstName="Test"
+          lastName="User"
+          role="Coordinator"
+        />
+      </WithStyles>
+      <AvatarMenu
+        initials="TU"
+        onCloseMenu={[Function]}
+        onLogoutUser={[Function]}
+        onToggleMenu={[Function]}
+        open={false}
+        role="Coordinator"
+      />
+    </WithStyles>
+  </WithStyles>
+</WithStyles>
+`;

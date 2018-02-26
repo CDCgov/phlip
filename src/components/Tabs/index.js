@@ -11,7 +11,9 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper,
     paddingLeft: 20,
     paddingRight: 20,
-    overflow: 'auto'
+    overflow: 'auto',
+    display: 'flex',
+    flexDirection: 'column'
   }
 })
 
@@ -19,7 +21,7 @@ const Tabs = ({ tabs, selectedTab, onChangeTab, children, classes }) => {
   return (
     <div className={classes.root}>
       <AppBar position="static" style={{ backgroundColor: '#e8f9f8' }} elevation={0}>
-        <MuiTabs value={selectedTab} onChange={onChangeTab} indicatorColor="#ffff96" textColor="accent" scrollable scrollButtons="on">
+        <MuiTabs value={selectedTab} onChange={onChangeTab} indicatorColor="accent" textColor="accent" scrollable scrollButtons="on">
           {tabs.map(tab => (
             <Tab key={tab.id} label={tab.text} />
           ))}

@@ -2,7 +2,7 @@ import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
-import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
+import { getFinalCodedObject } from 'utils/codingHelpers'
 
 export const getOutlineLogic = createLogic({
   type: types.GET_CODING_OUTLINE_REQUEST,
@@ -54,14 +54,11 @@ export const getOutlineLogic = createLogic({
   }
 })
 
-const deleteAnswerIds = (answer) => {
-  let ans = { ...answer }
-  if (ans.id) delete ans.id
-  return ans
-}
-
 export const answerQuestionLogic = createLogic({
-  type: [types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER],
+  type: [
+    types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER,
+    types.APPLY_ANSWER_TO_ALL
+  ],
   processOptions: {
     dispatchReturn: true,
     successType: types.UPDATE_USER_ANSWER_SUCCESS,
@@ -71,30 +68,8 @@ export const answerQuestionLogic = createLogic({
   async process({ getState, action, api }) {
     const userId = getState().data.user.currentUser.id
     const codingState = getState().scenes.coding
-    const updatedQuestionObject = codingState.userAnswers[action.questionId]
-    let finalObject = {}
-
-
-    if (codingState.question.isCategoryQuestion) {
-      const selectedCategoryId = codingState.categories[codingState.selectedCategory].id
-
-      finalObject = {
-        ...updatedQuestionObject,
-        codedAnswers: Object.values(updatedQuestionObject.answers[selectedCategoryId].answers).map(deleteAnswerIds),
-        comment: updatedQuestionObject.comment[selectedCategoryId]
-      }
-
-      const { answers, schemeQuestionId, ...final } = finalObject
-      return await api.answerCategoryQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, selectedCategoryId, final)
-    } else {
-      finalObject = {
-        ...updatedQuestionObject,
-        codedAnswers: Object.values(updatedQuestionObject.answers).map(deleteAnswerIds)
-      }
-
-      const { answers, ...final } = finalObject
-      return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, final)
-    }
+    const answerObject = getFinalCodedObject(codingState, action, action.type === types.APPLY_ANSWER_TO_ALL)
+    return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, answerObject)
   }
 })
 

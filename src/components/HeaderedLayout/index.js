@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Grid from 'material-ui/Grid'
-import AppBarHeader from 'components/AppBarHeader'
+import AppBarHeader from './components/AppBarHeader'
 import * as actions from 'data/user/actions'
 import { withRouter } from 'react-router-dom'
 

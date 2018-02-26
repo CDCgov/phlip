@@ -34,7 +34,7 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
       </TableCell>
       {role !== 'Coder' &&
         <TableCell key={`${project.id}-protocol`} style={{ textAlign: 'center' }}>
-          <TextLink to="/">Add/Edit</TextLink>
+          <TextLink to={`/project/${project.id}/protocol`}>Add/Edit</TextLink>
         </TableCell>
       }
       <TableCell key={`${project.id}-jurisdictions`} style={{ textAlign: 'center' }}>

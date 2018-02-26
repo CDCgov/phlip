@@ -24,12 +24,12 @@ const styles = theme => ({
   }
 })
 
-const InputBox = ({ value, onChange, name, rows, answerId, classes, currentUserInitials, isValidation, style, ...otherProps }) => {
+const InputBox = ({ value, onChange, name, rows, answerId, classes, currentUserInitials, validator, isValidation, style, ...otherProps }) => {
   const textValues = value === undefined ? { textAnswer: '', pincite: '' } : value
   return (
     <Column style={style}>
       <Row displayFlex style={{ alignItems: 'center', padding: isValidation ? '10px 0 0 0' : '' }}>
-        {isValidation && <Avatar style={{ marginRight: 15 }} cardAvatar initials={currentUserInitials} />}
+        {isValidation && <Avatar cardAvatar style={{ marginRight: 15, backgroundColor: 'white', color: 'teal', borderColor: 'teal' }} initials={validator} />}
         <TextField
           value={textValues.textAnswer}
           onChange={onChange(answerId, 'textAnswer')}
@@ -56,6 +56,7 @@ const InputBox = ({ value, onChange, name, rows, answerId, classes, currentUserI
           label="Pincite"
           onChange={onChange(answerId, 'pincite')}
           multiline={false}
+          shrinkLabel
           style={{ flex: 1 }}
         />
       </div>}
