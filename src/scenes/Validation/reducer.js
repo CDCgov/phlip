@@ -13,7 +13,8 @@ import {
   handleUserPinciteCategoryChild,
   handleUserPinciteQuestion,
   initializeNavigator,
-  getQuestionSelectedInNav
+  getQuestionSelectedInNav,
+  handleUserCommentCategoryChild
 } from 'utils/codingHelpers'
 
 const INITIAL_STATE = {
@@ -104,6 +105,17 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           state.question.isCategoryQuestion
             ? handleUserPinciteCategoryChild(state.selectedCategoryId, state.question.questionType, action, state.userAnswers[action.questionId].answers)
             : handleUserPinciteQuestion(state.question.questionType, action, state.userAnswers[action.questionId].answers)
+        )
+      }
+
+    case types.ON_CHANGE_VALIDATION_COMMENT:
+      return {
+        ...state,
+        ...questionUpdater(
+          'comment',
+          state.question.isCategoryQuestion
+            ? handleUserCommentCategoryChild(state.selectedCategoryId, action, state.userAnswers[action.questionId].comment)
+            : action.comment
         )
       }
 

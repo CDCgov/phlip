@@ -140,7 +140,7 @@ export const getValidationOutlineLogic = createLogic({
 export const validateQuestionLogic = createLogic({
   type: [
     types.UPDATE_USER_VALIDATION_REQUEST, types.ON_CHANGE_VALIDATION_PINCITE, types.ON_CLEAR_VALIDATION_ANSWER,
-    types.ON_APPLY_VALIDATION_TO_ALL
+    types.ON_APPLY_VALIDATION_TO_ALL, types.ON_CHANGE_VALIDATION_COMMENT
   ],
   processOptions: {
     dispatchReturn: true,

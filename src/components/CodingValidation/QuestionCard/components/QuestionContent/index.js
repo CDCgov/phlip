@@ -89,7 +89,7 @@ export const QuestionContent = props => {
           currentUserInitials={currentUserInitials}
         />
         }
-        <Row style={{ ...answerPadding, paddingRight: 0 }}>
+        <Row style={{ ...answerPadding, paddingRight: 0, paddingTop: 20 }}>
           {question.includeComment &&
           <Row>
             <SimpleInput
