@@ -81,14 +81,14 @@ export class ValidationAvatar extends Component {
   render() {
     return (
       <Fragment>
-        <Snackbar
+        {this.props.answer.pincite.length > 0 && <Snackbar
           open={this.state.copied}
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           onClose={this.handleCloseSnackbar}
           content={<span>Pincite copied!</span>}
           action={<Button key="close-snackbar" color="accent" size="small" onClick={this.handleCloseSnackbar}>OK</Button>}
-        />
-        <CopyToClipboard text={this.props.answer.pincite} onCopy={this.handlePinciteCopy}>
+        />}
+        <CopyToClipboard text={this.props.answer.pincite} onCopy={this.props.answer.pincite.length > 0 && this.handlePinciteCopy}>
           <Avatar
             cardAvatar
             initials={this.state.initials}
@@ -97,7 +97,7 @@ export class ValidationAvatar extends Component {
           />
         </CopyToClipboard>
         <Popover
-          open={this.state.open}
+          open={this.state.open && this.props.answer.pincite.length > 0}
           anchorEl={this.state.anchorEl}
           onClose={this.handleClose}
           className={this.props.classes.popover}
