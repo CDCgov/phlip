@@ -81,13 +81,13 @@ export class ValidationAvatar extends Component {
   render() {
     return (
       <Fragment>
-        {this.props.answer.pincite.length > 0 && <Snackbar
+        {this.props.answer.pincite !== null ? this.props.answer.pincite.length > 0 && <Snackbar
           open={this.state.copied}
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           onClose={this.handleCloseSnackbar}
           content={<span>Pincite copied!</span>}
           action={<Button key="close-snackbar" color="accent" size="small" onClick={this.handleCloseSnackbar}>OK</Button>}
-        />}
+        />: null}
         <CopyToClipboard text={this.props.answer.pincite} onCopy={this.props.answer.pincite.length > 0 && this.handlePinciteCopy}>
           <Avatar
             cardAvatar
