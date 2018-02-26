@@ -21,8 +21,6 @@ const userRow = (answer, index) => (
   </Fragment>
 )
 
-
-
 export const TextFieldQuestions = ({ mergedUserQuestions, validator, validatorAnswer, onChange, answerId, currentUserInitials, style }) => {
   return (
     <Fragment>

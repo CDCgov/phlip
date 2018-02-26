@@ -7,7 +7,25 @@ import { getInitials } from 'utils/normalize'
 
 const styles = theme => ({
   paper: {
-    padding: theme.spacing.unit
+    padding: theme.spacing.unit,
+    '&:after': {
+      content: '""',
+      position: 'absolute',
+      left: '44%',
+      border: '10px solid transparent',
+      borderTopColor: '#f7f7f2',
+      top: '99%',
+      zIndex: 1
+    },
+    '&:before': {
+      content: '""',
+      position: 'absolute',
+      left: '44%',
+      border: '10px solid transparent',
+      borderTopColor: 'rgb(215, 214, 202)',
+      top: '104%',
+      zIndex: 1
+    }
   },
   popover: {
     pointerEvents: 'none'
@@ -52,7 +70,15 @@ export class ValidationAvatar extends Component {
           onClose={this.handleClose}
           className={this.props.classes.popover}
           PaperProps={{
-            style: { backgroundColor: '#f7f7f2', border: '1px solid #d7d6ca', padding: '6px 12px', minWidth: 150 }
+            style: {
+              backgroundColor: '#f7f7f2',
+              border: '2px solid #d7d6ca',
+              padding: '6px 12px',
+              minWidth: 150,
+              borderRadius: 6,
+              overflow: 'visible'
+            },
+            elevation: 0
           }}
           classes={{
             paper: this.props.classes.paper
@@ -62,7 +88,7 @@ export class ValidationAvatar extends Component {
             horizontal: 'center'
           }}
           transformOrigin={{
-            vertical: 'bottom',
+            vertical: 72,
             horizontal: 'center'
           }}
           disableRestoreFocus
@@ -76,35 +102,5 @@ export class ValidationAvatar extends Component {
     )
   }
 }
-
-/*export const ValidationAvatar = ({ answer, handlePopoverOpen, handleClose, popoverOpen, anchorEl, classes }) => {
-  const initials = getInitials(answer.firstName, answer.lastName)
-  console.log(answer)
-  return (
-    <Fragment>
-      <Avatar cardAvatar initials={initials} onMouseOver={handlePopoverOpen} onMouseOut={handleClose} />
-      <Popover
-        open={popoverOpen}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        className={classes.popover}
-        classes={{
-          paper: classes.paper,
-        }}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        disableRestoreFocus>
-        <Typography>{answer.firstName + ' ' + answer.lastName}</Typography>
-        <Typography>{answer.pincite}</Typography>
-      </Popover>
-    </Fragment>
-  )
-}*/
 
 export default withStyles(styles)(ValidationAvatar)
