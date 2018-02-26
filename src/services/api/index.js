@@ -120,5 +120,9 @@ export default {
 
   getProjectCoders(projectId) {
     return api.get(`/projects/${projectId}/coders`).then(res => res.data)
+  },
+
+  addUserPicture(userId, avatarFile) {
+    return api.post(`/users/${userId}/avatar`, avatarFile).then(res => res.data)
   }
 }

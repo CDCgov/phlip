@@ -25,7 +25,21 @@ export const updateUserLogic = createLogic({
   }
 })
 
+export const addUserPictureLogic = createLogic({
+  type: types.ADD_USER_PICTURE_REQUEST,
+  latest: true,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.ADD_USER_PICTURE_SUCCESS
+  },
+  async process({ action, api }) {
+    console.log(action)
+    return await api.addUserPicture(action.userId, action.avatarFile)
+  }
+})
+
 export default [
+  addUserPictureLogic,
   updateUserLogic,
   addUserLogic
 ]

@@ -10,6 +10,8 @@ import TextInput from 'components/TextInput'
 import isEmail from 'sane-email-validation'
 import Container, { Row, Column } from 'components/Layout'
 import { trimWhitespace } from 'utils/formHelpers'
+import Avatar from 'components/Avatar'
+import ReactFileReader from 'react-file-reader'
 
 const rowStyles = {
   paddingBottom: 20
@@ -64,7 +66,13 @@ export class AddEditUser extends Component {
     }
   }
 
-  // required = value => value ? undefined : 'Required'
+  handleFiles = files => {
+    const formData = new FormData()
+    formData.append('avatarFile', files.fileList[0])
+    console.log(files)
+    this.props.actions.addUserPictureRequest(this.selectedUser.id, formData)
+  }
+
   required = value => {
     if (!value && !this.props.match.params.id) {
       return 'Required'
@@ -100,7 +108,14 @@ export class AddEditUser extends Component {
         height="400px"
       >
         <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
+
           <Row displayFlex style={{ ...rowStyles, justifyContent: 'space-between' }}>
+            <Column flex>
+              <Avatar big src={`http://localhost:5200/api/users/${this.selectedUser.id}/avatar`} />
+              <ReactFileReader handleFiles={this.handleFiles}>
+                <button className='btn'>Upload Image</button>
+              </ReactFileReader>
+            </Column>
             <Column flex style={{ paddingRight: 10 }}>
               <Field
                 name="firstName"

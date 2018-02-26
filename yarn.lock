@@ -264,6 +264,12 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
+attr-accept@^1.0.3:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/attr-accept/-/attr-accept-1.1.2.tgz#6836bfe054e4ef1ee3076fdde56cec9bb3ffead6"
+  dependencies:
+    core-js "^2.5.0"
+
 autoprefixer@^6.3.1:
   version "6.7.7"
   resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-6.7.7.tgz#1dbd1c835658e35ce3f9984099db00585c782014"
@@ -5491,7 +5497,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@15.6.0, prop-types@^15.5.6, prop-types@^15.5.8, prop-types@^15.5.9, prop-types@^15.6.0:
+prop-types@15.6.0, prop-types@^15.5.0, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.5.9, prop-types@^15.6.0:
   version "15.6.0"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
   dependencies:
@@ -5692,6 +5698,13 @@ react-dom@^16.0.0:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
+react-dropzone@^4.2.8:
+  version "4.2.8"
+  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-4.2.8.tgz#27ce163544d92c75734b0e1e54c471979587e737"
+  dependencies:
+    attr-accept "^1.0.3"
+    prop-types "^15.5.7"
+
 react-event-listener@^0.5.0, react-event-listener@^0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/react-event-listener/-/react-event-listener-0.5.1.tgz#ba36076e47bc37c5a67ff5ccd4a9ff0f15621040"
@@ -5700,6 +5713,13 @@ react-event-listener@^0.5.0, react-event-listener@^0.5.1:
     fbjs "^0.8.16"
     prop-types "^15.6.0"
     warning "^3.0.0"
+
+react-file-reader@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/react-file-reader/-/react-file-reader-1.1.4.tgz#1838f1f3fa70dcfdef4ef525d74dda3c6312089a"
+  dependencies:
+    prop-types "^15.5.0"
+    uuid4 "^1.0.0"
 
 react-hot-loader@3.1.1:
   version "3.1.1"
@@ -5724,13 +5744,6 @@ react-jss@^8.1.0:
 react-popper@^0.7.4:
   version "0.7.4"
   resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-0.7.4.tgz#8649d539837e7c6f47bc9b24c9cf57a404e199a1"
-  dependencies:
-    popper.js "^1.12.5"
-    prop-types "^15.5.10"
-
-react-popper@^0.7.5:
-  version "0.7.5"
-  resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-0.7.5.tgz#71c25946f291db381231281f6b95729e8b801596"
   dependencies:
     popper.js "^1.12.5"
     prop-types "^15.5.10"
@@ -6995,6 +7008,10 @@ utila@~0.4:
 utils-merge@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
+
+uuid4@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/uuid4/-/uuid4-1.0.0.tgz#813aaeaf11ea2f68909c5ad57d894f83202d6720"
 
 uuid@^2.0.2:
   version "2.0.3"
