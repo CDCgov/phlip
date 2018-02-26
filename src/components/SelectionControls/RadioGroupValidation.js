@@ -1,13 +1,12 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import Radio, { RadioGroup as MuiRadioGroup } from 'material-ui/Radio'
+import Radio from 'material-ui/Radio'
 import { FormControlLabel, FormControl, FormGroup } from 'material-ui/Form'
 import { withStyles } from 'material-ui/styles'
 import SimpleInput from 'components/SimpleInput'
 import { getInitials } from 'utils/normalize'
 import Avatar from 'components/Avatar'
 import ValidationAvatar from 'components/ValidationAvatar'
-import Popover from 'components/Popover'
 
 const styles = {
   checked: {
@@ -29,31 +28,10 @@ export const RadioGroup = ({ choices, currentUserInitials, userAnswers, onChange
               }
               label={choice.text}
             />
-            {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => {
-                if (answer.schemeAnswerId === choice.id) {
-                  console.log(answer)
-                }
-                return (
-                  answer.schemeAnswerId === choice.id &&
-                  <Fragment key={index}>
-                    <ValidationAvatar
-                      handlePopoverOpen={onPopoverOpen}
-                      handleClose={onPopoverClose}
-                      popoverOpen={popoverOpen}
-                      anchorEl={anchorEl}
-                      answer={answer}
-                      choice={choice.id}
-                    />
-                    {/* <Popover
-                   answer={answer}
-                   handleClose={onPopoverClose}
-                   popoverOpen={popoverOpen}
-                   anchorEl={anchorEl}
-                 /> */}
-                  </Fragment>
-                )
-              }
-            )}
+            {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
+              answer.schemeAnswerId === choice.id &&
+              <ValidationAvatar key={`user-answer-${index}`} answer={answer} choice={choice.id} />
+            ))}
             {userAnswers.answers.hasOwnProperty(choice.id)
             && mergedUserQuestions !== null
             && <Avatar

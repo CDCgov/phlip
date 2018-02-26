@@ -6,6 +6,7 @@ import { withStyles } from 'material-ui/styles'
 import SimpleInput from 'components/SimpleInput'
 import { getInitials } from 'utils/normalize'
 import Avatar from 'components/Avatar'
+import ValidationAvatar from 'components/ValidationAvatar'
 
 const styles = {
   checked: {
@@ -29,11 +30,7 @@ export const CheckboxGroupValidation = ({ choices, currentUserInitials, userAnsw
             />
             {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
               answer.schemeAnswerId === choice.id &&
-              <Avatar
-                cardAvatar
-                key={index}
-                initials={getInitials(answer.firstName, answer.lastName)}
-              />
+              <ValidationAvatar key={`user-answer-${index}`} answer={answer} />
             ))}
             {userAnswers.answers.hasOwnProperty(choice.id)
             && mergedUserQuestions !== null

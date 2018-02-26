@@ -7,16 +7,13 @@ import { getInitials } from 'utils/normalize'
 import Paper from 'material-ui/Paper'
 import Typography from 'material-ui/Typography'
 import InputBox from 'components/InputBox'
+import ValidationAvatar from 'components/ValidationAvatar'
 
-const userRow = answer => (
+const userRow = (answer, index) => (
   <Fragment key={answer.id}>
     <Row displayFlex style={{ alignItems: 'center', paddingTop: 20, paddingBottom: 20, paddingRight: 5 }}>
-      <Avatar
-        cardAvatar
-        style={{ marginRight: 15 }}
-        initials={getInitials(answer.firstName, answer.lastName)}
-      />
-      <Paper elevation={0}>
+      <ValidationAvatar answer={answer} key={`user-answer-${index}`} />
+      <Paper elevation={0} style={{ marginLeft: 20 }}>
         <Typography style={{ whiteSpace: 'pre-wrap' }}>{answer.textAnswer}</Typography>
       </Paper>
     </Row>

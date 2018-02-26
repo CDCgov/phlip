@@ -14,8 +14,8 @@ import Button from 'components/Button'
 
 export const QuestionContent = props => {
   const {
-    question, currentUserInitials, comment, userAnswers, popoverOpen, anchorEl, mergedUserQuestions,
-    onPopoverOpen, onPopoverClose, onChange, onChangeTextAnswer, onOpenAlert
+    question, currentUserInitials, comment, userAnswers, mergedUserQuestions,
+    onChange, onChangeTextAnswer, onOpenAlert
   } = props
 
   const questionAnswerPadding = {
@@ -52,10 +52,6 @@ export const QuestionContent = props => {
             onChangePincite={onChangeTextAnswer}
             mergedUserQuestions={mergedUserQuestions}
             currentUserInitials={currentUserInitials}
-            onPopoverOpen={onPopoverOpen}
-            onPopoverClose={onPopoverClose}
-            popoverOpen={popoverOpen}
-            anchorEl={anchorEl}
           />
         </Row>}
 

@@ -39,7 +39,6 @@ export class Validation extends Component {
     this.state = {
       selectedJurisdiction: this.props.jurisdictionId,
       showViews: false,
-      anchorEl: null,
       navOpen: true,
       applyAllAlertOpen: false
     }
@@ -123,18 +122,6 @@ export class Validation extends Component {
     this.props.actions.updateEditedFields(this.props.projectId)
   }
 
-  handlePopoverOpen = event => {
-    this.setState({
-      anchorEl: event.target
-    })
-  }
-
-  handlePopoverClose = () => {
-    this.setState({
-      anchorEl: null
-    })
-  }
-
   onOpenApplyAllAlert = () => {
     this.setState({
       applyAllAlertOpen: true
@@ -155,24 +142,24 @@ export class Validation extends Component {
   onShowCodeView = () => (
     <Fragment>
       <QuestionCard
-        question={this.props.question} onChange={this.onAnswer}
+        question={this.props.question}
+        onChange={this.onAnswer}
         userAnswers={this.props.userAnswers}
         mergedUserQuestions={this.props.mergedUserQuestions}
-        onChangeTextAnswer={this.onChangeTextAnswer} categories={this.props.categories}
+        onChangeTextAnswer={this.onChangeTextAnswer}
+        categories={this.props.categories}
         selectedCategory={this.props.selectedCategory}
         onChangeCategory={this.props.actions.onChangeCategory}
         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
-        onPopoverOpen={this.handlePopoverOpen}
-        onPopoverClose={this.handlePopoverClose}
-        popoverOpen={!!this.state.anchorEl} anchorEl={this.state.anchorEl}
-        users={this.mockUsersList}
         currentUserInitials={this.props.currentUserInitials}
         onOpenAlert={this.onOpenApplyAllAlert}
       />
       <FooterNavigate
-        currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion}
+        currentIndex={this.props.currentIndex}
+        getNextQuestion={this.getNextQuestion}
         getPrevQuestion={this.getPrevQuestion}
-        totalLength={this.props.questionOrder.length} showNextButton={this.props.showNextButton}
+        totalLength={this.props.questionOrder.length}
+        showNextButton={this.props.showNextButton}
       />
     </Fragment>
   )

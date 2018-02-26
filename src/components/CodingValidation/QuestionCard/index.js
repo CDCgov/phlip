@@ -20,8 +20,8 @@ const TabContainer = props => {
 
 export const QuestionCard = props => {
   const {
-    question, currentUserInitials, userAnswers, categories, mergedUserQuestions, selectedCategory, popoverOpen, anchorEl,
-    onClearAnswer, onOpenAlert, onChangeCategory, onChange, onChangeTextAnswer, onPopoverOpen, onPopoverClose
+    question, currentUserInitials, userAnswers, categories, mergedUserQuestions, selectedCategory,
+    onClearAnswer, onOpenAlert, onChangeCategory, onChange, onChangeTextAnswer
   } = props
 
   const questionContentProps = {
@@ -29,11 +29,7 @@ export const QuestionCard = props => {
     onChangeTextAnswer,
     currentUserInitials,
     question,
-    onOpenAlert,
-    onPopoverOpen,
-    onPopoverClose,
-    popoverOpen,
-    anchorEl
+    onOpenAlert
   }
 
   return (
