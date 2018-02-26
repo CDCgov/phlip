@@ -14,9 +14,10 @@ import moment from 'moment'
 import api from 'services/api'
 import { normalize } from 'utils'
 import Divider from 'material-ui/Divider'
+import Typography from 'material-ui/Typography'
 
 export class AddEditJurisdictions extends Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
       formOpen: false,
@@ -25,7 +26,7 @@ export class AddEditJurisdictions extends Component {
     }
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this.props.actions.getProjectJurisdictions(this.props.project.id)
   }
 
@@ -118,11 +119,16 @@ export class AddEditJurisdictions extends Component {
     this.props.actions.onJurisdictionSelected(suggestionValue)
   }
 
-  render () {
+  render() {
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="md" hideOverflow>
         <ModalTitle
-          title="Jurisdictions"
+          title={
+            <Typography type="title">
+              <span style={{ paddingRight: 10 }}>Jurisdictions</span>
+              <span style={{ color: '#0faee6' }}>{this.props.project.name}</span>
+            </Typography>
+          }
           buttons={this.getButton()}
           editButton={false}
           closeButton={false}

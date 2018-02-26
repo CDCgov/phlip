@@ -18,10 +18,9 @@ export const PageHeader = ({ projectName, pageTitle, projectId, showButton, prot
       }
     </Column>
     <Row displayFlex flex>
-      <Typography type="title" style={{ alignSelf: 'center' }}>{pageTitle}</Typography>
+      <Typography type="title" style={{ alignSelf: 'center', paddingRight: 10 }}>{pageTitle}</Typography>
       {projectName !== '' &&
       <Fragment>
-        <span className={styles.header} />
         <Typography type="title" style={{ alignSelf: 'center' }}>
           <span style={{ color: '#0faee6' }}>{projectName}</span>
         </Typography>
