@@ -68,12 +68,14 @@ export class ValidationAvatar extends Component {
     this.setState({
       copied: true
     })
+    setTimeout(this.handleCloseSnackbar, 3500)
   }
 
   handleCloseSnackbar = () => {
     this.setState({
       copied: false
     })
+    clearTimeout()
   }
 
   render() {
