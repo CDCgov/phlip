@@ -35,6 +35,19 @@ module.exports = function makeConfig(env) {
         {
           oneOf: [
             {
+              test: require.resolve('tinymce/tinymce'),
+              loaders: [
+                'imports-loader?this=>window',
+                'exports-loader?window.tinymce'
+              ]
+            },
+            {
+              test: /tinymce\/(themes|plugins)\//,
+              loaders: [
+                'imports-loader?this=>window'
+              ]
+            },
+            {
               test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
               loader: 'url-loader',
               options: {

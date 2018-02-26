@@ -6,7 +6,19 @@ exports[`CodingScheme scene should render correctly 1`] = `
   flex={true}
   spacing={0}
 >
-  <withRouter(Header)
+  <withRouter(PageHeader)
+    otherButton={
+      Object {
+        "isLink": true,
+        "path": "/project/undefined/coding-scheme/add",
+        "state": Object {
+          "questionDefined": null,
+        },
+        "text": "+ Add New Question",
+      }
+    }
+    pageTitle="Coding Scheme"
+    protocolButton={true}
     showButton={false}
   />
   <Container

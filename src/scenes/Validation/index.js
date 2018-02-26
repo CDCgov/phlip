@@ -2,13 +2,35 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Container, { Row } from 'components/Layout'
-import { Coding } from '../Coding/index';
-import { findDOMNode } from 'react-dom';
+import { findDOMNode } from 'react-dom'
+import Container, { Row, Column } from 'components/Layout'
+import Icon from 'components/Icon'
 import * as actions from './actions'
-import Header from 'components/CodingValidation/Header'
-import QuestionCard from 'components/CodingValidation/QuestionCard'
-import FooterNavigate from 'components/CodingValidation/FooterNavigate'
+import { Header, QuestionCard, FooterNavigate, Navigator, bodyStyles } from 'components/CodingValidation'
+import classNames from 'classnames'
+import { withStyles } from 'material-ui/styles'
+import { default as MuiButton } from 'material-ui/Button'
+import HeaderedLayout from 'components/HeaderedLayout'
+import Alert from 'components/Alert'
+
+const navButtonStyles = {
+  height: 90,
+  width: 20,
+  minWidth: 'unset',
+  minHeight: 'unset',
+  backgroundColor: '#a7bdc6',
+  padding: 0,
+  top: '35%',
+  borderRadius: '0 5px 5px 0',
+  boxShadow: '0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)',
+  color: 'white'
+}
+
+const iconStyle = {
+  transform: 'rotate(90deg)'
+}
+
+const styles = theme => bodyStyles(theme)
 
 export class Validation extends Component {
   constructor(props, context) {
@@ -18,7 +40,22 @@ export class Validation extends Component {
       selectedJurisdiction: this.props.jurisdictionId,
       showViews: false,
       anchorEl: null,
+      navOpen: true,
+      applyAllAlertOpen: false
     }
+
+    this.modalActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.onCloseApplyAllAlert
+      },
+      {
+        value: 'Continue',
+        type: 'button',
+        onClick: this.onApplyToAll
+      }
+    ]
   }
 
   componentWillMount() {
@@ -38,6 +75,10 @@ export class Validation extends Component {
 
   componentWillUnmount() {
     this.props.actions.onCloseValidationScreen()
+  }
+
+  onToggleNavigator = () => {
+    this.setState({ navOpen: !this.state.navOpen })
   }
 
   getNextQuestion = index => {
@@ -94,6 +135,22 @@ export class Validation extends Component {
     })
   }
 
+  onOpenApplyAllAlert = () => {
+    this.setState({
+      applyAllAlertOpen: true
+    })
+  }
+
+  onCloseApplyAllAlert = () => {
+    this.setState({
+      applyAllAlertOpen: false
+    })
+  }
+
+  onApplyToAll = () => {
+    this.onCloseApplyAllAlert()
+    this.props.actions.applyAnswerToAll(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+  }
 
   onShowCodeView = () => (
     <Fragment>
@@ -110,6 +167,7 @@ export class Validation extends Component {
         popoverOpen={!!this.state.anchorEl} anchorEl={this.state.anchorEl}
         users={this.mockUsersList}
         currentUserInitials={this.props.currentUserInitials}
+        onOpenAlert={this.onOpenApplyAllAlert}
       />
       <FooterNavigate
         currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion}
@@ -121,22 +179,55 @@ export class Validation extends Component {
 
   render() {
     return (
-      <Container column flex style={{ width: '100%', flexWrap: 'nowrap' }}>
-        <Header
-          projectName={this.props.projectName} projectId={this.props.projectId}
-          jurisdictionsList={this.props.jurisdictionsList}
-          selectedJurisdiction={this.state.selectedJurisdiction}
-          currentJurisdiction={this.props.jurisdiction}
-          onJurisdictionChange={this.onJurisdictionChange}
-          isValidation={true}
-          empty={this.props.jurisdiction === null || this.props.questionOrder === null ||
-            this.props.questionOrder.length === 0}
+      <Container
+        flex
+        style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}
+      >
+        <Alert
+          open={this.state.applyAllAlertOpen}
+          text="You are applying your answer to ALL categories. Previously answered questions will be changed."
+          actions={this.modalActions}
         />
-        <Container flex column style={{ backgroundColor: '#f5f5f5' }}>
-          {this.state.showViews && (this.props.jurisdiction === null || this.props.questionOrder.length === 0
-            ? null
-            : this.onShowCodeView())}
-        </Container>
+        <Navigator
+          open={this.state.navOpen}
+          scheme={this.props.scheme}
+          allUserAnswers={this.props.allUserAnswers}
+          currentQuestion={this.props.question}
+          selectedCategory={this.props.selectedCategory}
+          handleQuestionSelected={this.props.actions.onQuestionSelectedInNav}
+        />
+        <HeaderedLayout
+          padding={false}
+          className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}
+        >
+          <Column flex displayFlex style={{ width: '100%', flexWrap: 'nowrap' }}>
+            <Header
+              projectName={this.props.projectName} projectId={this.props.projectId}
+              jurisdictionsList={this.props.jurisdictionsList}
+              selectedJurisdiction={this.state.selectedJurisdiction}
+              currentJurisdiction={this.props.jurisdiction}
+              onJurisdictionChange={this.onJurisdictionChange}
+              isValidation={true}
+              empty={this.props.jurisdiction === null || this.props.questionOrder === null ||
+              this.props.questionOrder.length === 0}
+            />
+            <Container flex style={{ backgroundColor: '#f5f5f5' }}>
+              <Row displayFlex flex style={{ overflow: 'auto' }}>
+                <Column>
+                  {this.state.showViews &&
+                  (this.props.jurisdiction !== null && this.props.questionOrder.length !== 0) &&
+                  <MuiButton style={navButtonStyles} onClick={this.onToggleNavigator}>
+                    <Icon color="white" style={iconStyle}>menu</Icon></MuiButton>}
+                </Column>
+                <Column displayFlex flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
+                  {this.state.showViews && (this.props.jurisdiction === null || this.props.questionOrder.length === 0
+                    ? null
+                    : this.onShowCodeView())}
+                </Column>
+              </Row>
+            </Container>
+          </Column>
+        </HeaderedLayout>
       </Container>
     )
   }
@@ -164,7 +255,7 @@ const mapStateToProps = (state, ownProps) => {
     selectedCategory: state.scenes.validation.selectedCategory || 0,
     userAnswers: state.scenes.validation.userAnswers[state.scenes.validation.question.id] || {},
     mergedUserQuestions: state.scenes.validation.mergedUserQuestions[state.scenes.validation.question.id] ||
-      { answers: [] },
+    { answers: [] },
     showNextButton: state.scenes.validation.showNextButton,
     jurisdictionsList: project.projectJurisdictions || [],
     jurisdictionId: state.scenes.validation.jurisdictionId || (project.projectJurisdictions.length > 0
@@ -177,10 +268,12 @@ const mapStateToProps = (state, ownProps) => {
     userRole: state.data.user.currentUser.role,
     currentUserInitials: state.data.user.currentUser.firstName === 'Admin'
       ? state.data.user.currentUser.firstName[0]
-      : state.data.user.currentUser.firstName[0] + state.data.user.currentUser.lastName[0]
+      : state.data.user.currentUser.firstName[0] + state.data.user.currentUser.lastName[0],
+    scheme: state.scenes.validation.scheme === null ? {} : state.scenes.validation.scheme,
+    allUserAnswers: state.scenes.validation.userAnswers || {}
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Validation)
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Validation))

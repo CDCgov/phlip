@@ -40,7 +40,12 @@ export const onChangeCategory = (event, selection) => ({
   selection
 })
 
-export const onClearAnswer = (projectId, jurisdictionId, questionId) => ({ type: types.ON_CLEAR_ANSWER, questionId, projectId, jurisdictionId })
+export const onClearAnswer = (projectId, jurisdictionId, questionId) => ({
+  type: types.ON_CLEAR_ANSWER,
+  questionId,
+  projectId,
+  jurisdictionId
+})
 
 export const onCloseCodeScreen = () => ({ type: types.ON_CLOSE_CODE_SCREEN })
 
@@ -59,3 +64,10 @@ export const getUserCodedQuestions = (projectId, jurisdictionId) => ({
 export const updateEditedFields = projectId => ({ type: types.UPDATE_EDITED_FIELDS, projectId })
 
 export const onQuestionSelectedInNav = question => ({ type: types.ON_QUESTION_SELECTED_IN_NAV, question })
+
+export const applyAnswerToAll = (projectId, jurisdictionId, questionId) => ({
+  type: types.APPLY_ANSWER_TO_ALL,
+  projectId,
+  jurisdictionId,
+  questionId
+})

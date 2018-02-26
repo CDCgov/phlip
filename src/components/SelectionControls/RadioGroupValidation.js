@@ -4,6 +4,7 @@ import Radio, { RadioGroup as MuiRadioGroup } from 'material-ui/Radio'
 import { FormControlLabel, FormControl, FormGroup } from 'material-ui/Form'
 import { withStyles } from 'material-ui/styles'
 import SimpleInput from 'components/SimpleInput'
+import { getInitials } from 'utils/normalize'
 import Avatar from 'components/Avatar'
 import ValidationAvatar from 'components/ValidationAvatar'
 import Popover from 'components/Popover'
@@ -14,8 +15,7 @@ const styles = {
   }
 }
 
-export const RadioGroup = ({ choices, currentUserInitials, userAnswers, onChange, onChangePincite, classes,
-  mergedUserQuestions, question, onPopoverOpen, onPopoverClose, popoverOpen, anchorEl }) => {
+export const RadioGroup = ({ choices, currentUserInitials, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions, question, onPopoverOpen, onPopoverClose, popoverOpen, anchorEl }) => {
   return (
     <FormControl component="fieldset">
       <FormGroup>
@@ -30,54 +30,54 @@ export const RadioGroup = ({ choices, currentUserInitials, userAnswers, onChange
               label={choice.text}
             />
             {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => {
-
-              if (answer.schemeAnswerId === choice.id) {
-                console.log(answer)
+                if (answer.schemeAnswerId === choice.id) {
+                  console.log(answer)
+                }
+                return (
+                  answer.schemeAnswerId === choice.id &&
+                  <Fragment key={index}>
+                    <ValidationAvatar
+                      handlePopoverOpen={onPopoverOpen}
+                      handleClose={onPopoverClose}
+                      popoverOpen={popoverOpen}
+                      anchorEl={anchorEl}
+                      answer={answer}
+                      choice={choice.id}
+                    />
+                    {/* <Popover
+                   answer={answer}
+                   handleClose={onPopoverClose}
+                   popoverOpen={popoverOpen}
+                   anchorEl={anchorEl}
+                 /> */}
+                  </Fragment>
+                )
               }
-              return (
-                answer.schemeAnswerId === choice.id &&
-                <Fragment key={index}>
-                  <ValidationAvatar
-                    handlePopoverOpen={onPopoverOpen}
-                    handleClose={onPopoverClose}
-                    popoverOpen={popoverOpen}
-                    anchorEl={anchorEl}
-                    answer={answer}
-                    choice={choice.id}
-                  />
-                  {/* <Popover
-                    answer={answer}
-                    handleClose={onPopoverClose}
-                    popoverOpen={popoverOpen}
-                    anchorEl={anchorEl}
-                  /> */}
-                </Fragment>
-
-              )
-            }
-
             )}
             {userAnswers.answers.hasOwnProperty(choice.id)
-              && mergedUserQuestions !== null
-              && <Avatar
-                cardAvatar
-                key={mergedUserQuestions.answers.length + 1}
-                initials={currentUserInitials}
-              />}
+            && mergedUserQuestions !== null
+            && <Avatar
+              cardAvatar
+              style={{ backgroundColor: 'white', color: 'teal', borderColor: 'teal' }}
+              key={mergedUserQuestions.answers.length + 1}
+              initials={userAnswers.validatedBy === null
+                ? ''
+                : getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
+            />}
             {userAnswers.answers.hasOwnProperty(choice.id) &&
-              <SimpleInput
-                key={`${choice.id}-pincite`}
-                style={{
-                  width: 300,
-                  marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
-                    ? '15px'
-                    : '0px'
-                }}
-                placeholder="Enter pincite"
-                multiline={false}
-                value={userAnswers.answers[choice.id].pincite}
-                onChange={onChangePincite(choice.id, 'pincite')}
-              />}
+            <SimpleInput
+              key={`${choice.id}-pincite`}
+              style={{
+                width: 300,
+                marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
+                  ? '15px'
+                  : '0px'
+              }}
+              placeholder="Enter pincite"
+              multiline={false}
+              value={userAnswers.answers[choice.id].pincite}
+              onChange={onChangePincite(choice.id, 'pincite')}
+            />}
           </div>
         ))}
       </FormGroup>

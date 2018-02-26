@@ -95,11 +95,6 @@ export default {
       .then(res => res.data)
   },
 
-  answerCategoryQuestion(projectId, jurisdictionId, userId, questionId, categoryId, updatedQuestion) {
-    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}/category/${categoryId}`, updatedQuestion)
-      .then(res => res.data)
-  },
-
   getUserCodedQuestions(userId, projectId, jurisdictionId) {
     return api.get(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions`).then(res => res.data)
   },
@@ -113,12 +108,15 @@ export default {
       .then(res => res.data)
   },
 
-  validateCategoryQuestion(projectId, jurisdictionId, questionId, categoryId, updatedQuestion) {
-    return api.post(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}/category/${categoryId}`, updatedQuestion)
-      .then(res => res.data)
-  },
-
   getProjectCoders(projectId) {
     return api.get(`/projects/${projectId}/coders`).then(res => res.data)
+  },
+
+  getProtocol(projectId) {
+    return api.get(`/projects/${projectId}/protocol`).then(res => res.data.text)
+  },
+
+  saveProtocol(projectId, userId, protocol) {
+    return api.put(`/projects/${projectId}/protocol`, { userId, text: protocol }).then(res => res.data)
   }
 }

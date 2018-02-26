@@ -11,9 +11,10 @@ import {
   initializeUserAnswers,
   initializeCodedUsers,
   handleUserPinciteCategoryChild,
-  handleUserPinciteQuestion
+  handleUserPinciteQuestion,
+  initializeNavigator,
+  getQuestionSelectedInNav
 } from 'utils/codingHelpers'
-import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 const INITIAL_STATE = {
   question: {},
@@ -26,34 +27,31 @@ const INITIAL_STATE = {
   selectedCategory: 0,
   userAnswers: {},
   showNextButton: true,
-  mergedUserQuestions: []
+  mergedUserQuestions: [],
+  selectedCategoryId: null
 }
 
 const validationReducer = (state = INITIAL_STATE, action) => {
-  const selectedCategoryId = state.categories !== undefined ? state.categories[state.selectedCategory].id : 0
   const questionUpdater = handleUpdateUserCodedQuestion(state, action)
 
   switch (action.type) {
     case types.GET_VALIDATION_NEXT_QUESTION:
-      const updatedState = { ...state, ...getNextQuestion(state, action) }
-
       return {
-        ...updatedState,
-        showNextButton: determineShowButton(updatedState)
+        ...state,
+        ...getNextQuestion(state, action)
       }
 
     case types.GET_VALIDATION_PREV_QUESTIONS:
-      const update = { ...state, ...getPreviousQuestion(state, action) }
       return {
-        ...update,
-        showNextButton: determineShowButton(update)
+        ...state,
+        ...getPreviousQuestion(state, action)
       }
 
     case types.GET_VALIDATION_OUTLINE_SUCCESS:
       if (action.payload.isSchemeEmpty) {
         return {
           ...state,
-          scheme: { order: [], byId: {} },
+          scheme: { order: [], byId: {}, tree: [] },
           outline: {},
           question: {},
           userAnswers: {},
@@ -62,12 +60,13 @@ const validationReducer = (state = INITIAL_STATE, action) => {
       } else {
         const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
 
-        let updatedState = {
+        return {
           ...state,
           outline: action.payload.outline,
           scheme: {
             byId: normalizedQuestions,
-            order: action.payload.questionOrder
+            order: action.payload.questionOrder,
+            tree: action.payload.tree
           },
           question: action.payload.question,
           userAnswers: initializeUserAnswers(
@@ -86,24 +85,15 @@ const validationReducer = (state = INITIAL_STATE, action) => {
               }
             }
         }
-
-        return {
-          ...updatedState,
-          showNextButton: determineShowButton(updatedState)
-        }
       }
 
     case types.UPDATE_USER_VALIDATION_REQUEST:
-      const updated = {
+      return {
         ...state,
         userAnswers: {
           ...state.userAnswers,
-          ...handleUpdateUserAnswers(state, action, selectedCategoryId)
+          ...handleUpdateUserAnswers(state, action, state.selectedCategoryId)
         }
-      }
-      return {
-        ...updated,
-        showNextButton: determineShowButton(updated)
       }
 
     case types.ON_CHANGE_VALIDATION_PINCITE:
@@ -112,7 +102,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         ...questionUpdater(
           'answers',
           state.question.isCategoryQuestion
-            ? handleUserPinciteCategoryChild(selectedCategoryId, state.question.questionType, action, state.userAnswers[action.questionId].answers)
+            ? handleUserPinciteCategoryChild(state.selectedCategoryId, state.question.questionType, action, state.userAnswers[action.questionId].answers)
             : handleUserPinciteQuestion(state.question.questionType, action, state.userAnswers[action.questionId].answers)
         )
       }
@@ -123,7 +113,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         ...questionUpdater(
           'answers',
           state.question.isCategoryChild
-            ? handleClearCategoryAnswers(selectedCategoryId, state.question.questionType, state.userAnswers[action.questionId].answers)
+            ? handleClearCategoryAnswers(state.selectedCategoryId, state.question.questionType, state.userAnswers[action.questionId].answers)
             : handleClearAnswers(state.question.questionType, state.userAnswers[action.questionId].answers)
         )
       }
@@ -131,7 +121,8 @@ const validationReducer = (state = INITIAL_STATE, action) => {
     case types.ON_CHANGE_VALIDATION_CATEGORY:
       return {
         ...state,
-        selectedCategory: action.selection
+        selectedCategory: action.selection,
+        selectedCategoryId: state.categories[action.selection].id
       }
 
     case types.ON_VALIDATION_JURISDICTION_CHANGE:
@@ -184,8 +175,37 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         question,
         ...other,
         selectedCategory: 0,
-        categories: undefined
+        categories: undefined,
+        selectedCategoryId: null
       }
+
+    case types.ON_APPLY_VALIDATION_TO_ALL:
+      const answer = state.userAnswers[state.question.id].answers[state.selectedCategoryId]
+      return {
+        ...state,
+        userAnswers: {
+          ...state.userAnswers,
+          [state.question.id]: {
+            ...state.userAnswers[state.question.id],
+            ...state.categories.reduce((obj, category) => {
+              return {
+                ...obj,
+                answers: {
+                  ...obj.answers,
+                  [category.id]: { ...answer, validatedBy: action.validatedBy }
+                },
+                comment: {
+                  ...obj.comment,
+                  [category.id]: ''
+                }
+              }
+            }, {})
+          }
+        }
+      }
+
+    case types.ON_QUESTION_SELECTED_IN_VAL_NAV:
+      return getQuestionSelectedInNav(state, action)
 
     case types.ON_CLOSE_VALIDATION_SCREEN:
       return INITIAL_STATE
@@ -195,4 +215,21 @@ const validationReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
-export default validationReducer
+const validationSceneReducer = (state = INITIAL_STATE, action) => {
+  if (Object.values(types).includes(action.type)) {
+    const intermediateState = validationReducer(state, action)
+
+    return {
+      ...intermediateState,
+      showNextButton: intermediateState.scheme === null ? false : determineShowButton(intermediateState),
+      scheme: intermediateState.scheme === null ? null : {
+        ...intermediateState.scheme,
+        tree: initializeNavigator(intermediateState.scheme.tree, intermediateState.scheme.byId, intermediateState.userAnswers, intermediateState.question)
+      }
+    }
+  } else {
+    return state
+  }
+}
+
+export default validationSceneReducer

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { withTheme } from 'material-ui/styles'
 import Divider from 'material-ui/Divider'
 import UserList from './components/UserList/index'
-import PageHeader from './components/PageHeader'
+import PageHeader from 'components/PageHeader'
 import * as actions from './actions'
 import { bindActionCreators } from 'redux';
 import AddEditUser from './scenes/AddEditUser'
@@ -31,7 +31,13 @@ export class Admin extends Component {
   render() {
     return (
       <Container column flex>
-        <PageHeader />
+        <PageHeader
+          showButton={true}
+          pageTitle="User Management"
+          protocolButton={false}
+          projectName=""
+          otherButton={{ isLink: true, text: '+ Add New User', path: '/admin/new/user', state: {}}}
+        />
         <Divider />
         <UserList
           users={this.props.visibleUsers}

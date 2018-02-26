@@ -3,6 +3,7 @@ import Avatar from 'components/Avatar'
 import Popover from 'material-ui/Popover'
 import Typography from 'material-ui/Typography'
 import { withStyles } from 'material-ui/styles'
+import { getInitials } from 'utils/normalize'
 
 const styles = theme => ({
   paper: {
@@ -17,9 +18,7 @@ const styles = theme => ({
 });
 
 export const ValidationAvatar = ({ answer, handlePopoverOpen, handleClose, popoverOpen, anchorEl, classes }) => {
-  console.log(answer)
-
-  const initials = answer.firstName[0] + answer.lastName[0]
+  const initials = getInitials(answer.firstName, answer.lastName)
   return (
     <Fragment>
       <Avatar cardAvatar initials={initials} onMouseOver={handlePopoverOpen} onMouseOut={handleClose} />

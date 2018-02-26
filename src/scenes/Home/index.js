@@ -7,7 +7,7 @@ import { withTheme } from 'material-ui/styles'
 import Divider from 'material-ui/Divider'
 import CardError from 'components/CardError'
 import Container from 'components/Layout'
-import PageHeader from './components/PageHeader'
+import PageHeader from 'components/PageHeader'
 import ProjectList from './components/ProjectList'
 import AddEditProject from './scenes/AddEditProject'
 import * as actions from './actions'
@@ -44,7 +44,13 @@ export class Home extends Component {
   render() {
     return (
       <Container column flex style={{ paddingBottom: '25px' }}>
-        <PageHeader role={this.props.user.role} />
+        <PageHeader
+          showButton={this.props.user.role !== 'Coder'}
+          pageTitle="Project List"
+          protocolButton={false}
+          projectName=""
+          otherButton={{ isLink: true, text: '+ Create New Project', path: '/project/add', state: { userDefined: null }}}
+        />
         <Divider />
         {this.props.error
           ? this.renderErrorMessage()

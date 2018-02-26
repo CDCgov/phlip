@@ -83,7 +83,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     }
   >
     <WithTheme
-      to="/"
+      to="/project/1/protocol"
     >
       Add/Edit
     </WithTheme>

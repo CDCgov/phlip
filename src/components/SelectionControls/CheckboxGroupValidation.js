@@ -4,20 +4,13 @@ import Checkbox from 'material-ui/Checkbox'
 import { FormGroup, FormControlLabel, FormControl } from 'material-ui/Form'
 import { withStyles } from 'material-ui/styles'
 import SimpleInput from 'components/SimpleInput'
+import { getInitials } from 'utils/normalize'
 import Avatar from 'components/Avatar'
 
 const styles = {
   checked: {
     color: '#00a9e5'
   }
-}
-
-const avatarStyles = {
-  marginRight: '-6px',
-  border: 'solid 3px white',
-  boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.19)',
-  width: '38px',
-  height: '38px'
 }
 
 export const CheckboxGroupValidation = ({ choices, currentUserInitials, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions }) => {
@@ -39,9 +32,7 @@ export const CheckboxGroupValidation = ({ choices, currentUserInitials, userAnsw
               <Avatar
                 cardAvatar
                 key={index}
-                initials={answer.firstName === 'Admin'
-                  ? answer.firstName[0]
-                  : answer.firstName[0] + answer.lastName[0]}
+                initials={getInitials(answer.firstName, answer.lastName)}
               />
             ))}
             {userAnswers.answers.hasOwnProperty(choice.id)
@@ -49,7 +40,10 @@ export const CheckboxGroupValidation = ({ choices, currentUserInitials, userAnsw
             && <Avatar
               cardAvatar
               key={mergedUserQuestions.answers.length + 1}
-              initials={currentUserInitials}
+              style={{ backgroundColor: 'white', color: 'teal', borderColor: 'teal' }}
+              initials={userAnswers.validatedBy === null
+                ? ''
+                : getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
             />}
             {userAnswers.answers.hasOwnProperty(choice.id) && pincites &&
             <SimpleInput
