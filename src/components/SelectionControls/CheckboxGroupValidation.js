@@ -14,7 +14,11 @@ const styles = {
   }
 }
 
-export const CheckboxGroupValidation = ({ choices, currentUserInitials, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions }) => {
+export const CheckboxGroupValidation = props => {
+  const {
+    choices, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions
+  } = props
+
   return (
     <FormControl component="fieldset">
       <FormGroup>
@@ -47,7 +51,12 @@ export const CheckboxGroupValidation = ({ choices, currentUserInitials, userAnsw
               key={`${choice.id}-pincite`} placeholder="Enter pincite"
               value={userAnswers.answers[choice.id].pincite}
               multiline={false}
-              style={{ width: 300, marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id)) ? '15px' : '0px' }}
+              style={{
+                width: 300,
+                marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
+                  ? '15px'
+                  : '0px'
+              }}
               onChange={onChangePincite(choice.id, 'pincite')}
             />}
           </div>)

@@ -4,6 +4,9 @@ import Popover from 'material-ui/Popover'
 import Typography from 'material-ui/Typography'
 import { withStyles } from 'material-ui/styles'
 import { getInitials } from 'utils/normalize'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import Snackbar from 'components/Snackbar'
+import Button from 'material-ui/Button'
 
 const styles = theme => ({
   paper: {
@@ -42,7 +45,8 @@ export class ValidationAvatar extends Component {
     this.state = {
       open: false,
       anchorEl: null,
-      initials: getInitials(this.props.answer.firstName, this.props.answer.lastName)
+      initials: getInitials(this.props.answer.firstName, this.props.answer.lastName),
+      copied: false
     }
   }
 
@@ -60,10 +64,36 @@ export class ValidationAvatar extends Component {
     })
   }
 
+  handlePinciteCopy = () => {
+    this.setState({
+      copied: true
+    })
+  }
+
+  handleCloseSnackbar = () => {
+    this.setState({
+      copied: false
+    })
+  }
+
   render() {
     return (
       <Fragment>
-        <Avatar cardAvatar initials={this.state.initials} onMouseOver={this.handleOpen} onMouseOut={this.handleClose} />
+        <Snackbar
+          open={this.state.copied}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          onClose={this.handleCloseSnackbar}
+          content={<span>Pincite copied!</span>}
+          action={<Button key="close-snackbar" color="accent" size="small" onClick={this.handleCloseSnackbar}>OK</Button>}
+        />
+        <CopyToClipboard text={this.props.answer.pincite} onCopy={this.handlePinciteCopy}>
+          <Avatar
+            cardAvatar
+            initials={this.state.initials}
+            onMouseOver={this.handleOpen}
+            onMouseOut={this.handleClose}
+          />
+        </CopyToClipboard>
         <Popover
           open={this.state.open}
           anchorEl={this.state.anchorEl}

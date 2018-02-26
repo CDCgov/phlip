@@ -14,7 +14,11 @@ const styles = {
   }
 }
 
-export const RadioGroup = ({ choices, currentUserInitials, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions, question, onPopoverOpen, onPopoverClose, popoverOpen, anchorEl }) => {
+export const RadioGroup = props => {
+  const {
+    choices, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions
+  } = props
+
   return (
     <FormControl component="fieldset">
       <FormGroup>
