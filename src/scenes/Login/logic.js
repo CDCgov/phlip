@@ -1,6 +1,6 @@
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
-import { urlHelper } from 'utils'
+import { createAvatarUrl } from 'utils/urlHelper'
 
 export const loginLogic = createLogic({
   type: types.LOGIN_USER_REQUEST,
@@ -25,11 +25,12 @@ export const loginLogic = createLogic({
 
     try {
       hasAvatarImage = await api.getUserPicture(user.id)
+      avatarUrl = hasAvatarImage ? createAvatarUrl(user.id) : null
     } catch (e) {
       error = 'failed to get avatar image'
     }
 
-    avatarUrl = hasAvatarImage ? urlHelper.createAvatarUrl(user.id) : null
+
 
     return {
       ...user,
