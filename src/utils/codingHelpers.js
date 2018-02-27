@@ -257,7 +257,8 @@ export const handleUpdateUserAnswers = (state, action, selectedCategoryId, isVal
           [action.answerId]: {
             ...currentUserAnswers[action.answerId],
             schemeAnswerId: action.answerId,
-            textAnswer: action.answerValue
+            textAnswer: action.answerValue,
+            pincite: currentUserAnswers[action.answerId] ? currentUserAnswers[action.answerId].pincite || '' : ''
           }
         }
       }

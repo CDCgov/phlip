@@ -55,7 +55,6 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
               style={
                 Object {
                   "flex": 1,
-                  "opacity": "",
                 }
               }
               type="subheading"

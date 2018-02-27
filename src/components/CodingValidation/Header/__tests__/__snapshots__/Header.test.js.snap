@@ -8,7 +8,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
   spacing={0}
   style={
     Object {
-      "height": "80px",
+      "height": 80,
       "padding": "20px 27px",
     }
   }
@@ -35,7 +35,20 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       arrow_back
     </IconButton>
   </Column>
-  <div />
+  <WithStyles
+    color="inherit"
+    type="title"
+  >
+    <span
+      style={
+        Object {
+          "paddingRight": 10,
+        }
+      }
+    >
+      Coding
+    </span>
+  </WithStyles>
   <WithStyles
     color="inherit"
     type="title"
@@ -120,7 +133,6 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
           Object {
             "backgroundColor": "white",
             "color": "black",
-            "fontWeight": "bold",
           }
         }
         value="View/Edit Protocol"

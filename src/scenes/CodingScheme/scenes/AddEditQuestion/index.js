@@ -17,7 +17,6 @@ import styles from './add-edit-question.scss'
 import { trimWhitespace } from 'utils/formHelpers'
 import * as questionTypes from './constants'
 
-
 export class AddEditQuestion extends Component {
   constructor(props, context) {
     super(props, context)
@@ -66,14 +65,19 @@ export class AddEditQuestion extends Component {
 
     if (values.possibleAnswers) {
       values.possibleAnswers.forEach((answer, i) => {
-        if (updatedValues.possibleAnswers[i].text) updatedValues.possibleAnswers[i] = { ...answer, text: answer.text.trim() }
+        if (updatedValues.possibleAnswers[i].text) updatedValues.possibleAnswers[i] = {
+          ...answer,
+          text: answer.text.trim()
+        }
         else updatedValues.possibleAnswers[i] = answer
       })
     }
 
-    this.questionDefined ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.questionDefined.id, this.props.location.state.path)
-      : this.parentDefined ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.parentDefined, this.props.location.state.path)
-        : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)
+    this.questionDefined
+      ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.questionDefined.id, this.props.location.state.path)
+      : this.parentDefined
+      ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.parentDefined, this.props.location.state.path)
+      : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)
 
     this.props.history.goBack()
   }
@@ -81,7 +85,7 @@ export class AddEditQuestion extends Component {
   handleTypeChange = (event, value) => {
     value === questionTypes.BINARY ? this.props.formActions.initialize('questionForm', this.binaryForm, true)
       : value === questionTypes.TEXT_FIELD ? this.props.formActions.initialize('questionForm', this.textFieldForm, true)
-        : this.props.formActions.initialize('questionForm', this.defaultForm, true)
+      : this.props.formActions.initialize('questionForm', this.defaultForm, true)
   }
 
   validate = values => {
@@ -117,7 +121,6 @@ export class AddEditQuestion extends Component {
 
     const categoryChildOptions = options.filter(option => option.value !== questionTypes.CATEGORY)
 
-
     const actions = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button' },
       {
@@ -134,9 +137,10 @@ export class AddEditQuestion extends Component {
         form="questionForm"
         handleSubmit={this.handleSubmit}
         initialValues={this.questionDefined || this.defaultForm}
-        maxWidth='md'
+        maxWidth="md"
         validate={this.validate}
-        onClose={this.onCancel}>
+        onClose={this.onCancel}
+      >
         <Container column style={{ minWidth: 890, padding: '20px 20px 0 20px' }}>
           <Container column className={styles.dashed}>
             <ModalTitle title={this.state.edit ? 'Edit Question' : 'Add New Question'} />
@@ -146,7 +150,7 @@ export class AddEditQuestion extends Component {
                   <Field
                     name="text"
                     component={TextInput}
-                    label='Question'
+                    label="Question"
                     shrinkLabel={true}
                     multiline={true}
                     placeholder="Enter question"
@@ -176,13 +180,20 @@ export class AddEditQuestion extends Component {
                   />
                 </Row>
               </Container>
-              <FieldArray name="possibleAnswers"
+              <FieldArray
+                name="possibleAnswers"
                 answerType={this.props.form.values ? this.props.form.values.questionType : 4}
                 isEdit={this.state.edit ? true : false}
                 component={AnswerList}
               />
               <Container>
-                <Row flex style={{ paddingLeft: '47px' }}>
+                <Row
+                  flex
+                  style={{
+                    paddingLeft: this.props.form.values ? (this.props.form.values.questionType !==
+                      questionTypes.TEXT_FIELD && '47px') : '47px'
+                  }}
+                >
                   <Field
                     name="includeComment"
                     label="Include comment box"
@@ -192,7 +203,12 @@ export class AddEditQuestion extends Component {
               </Container>
             </ModalContent>
           </Container>
-          <ModalActions edit={this.state.edit} actions={actions} raised={true} style={{ paddingTop: 15, paddingBottom: 15, margin: 0 }}></ModalActions>
+          <ModalActions
+            edit={this.state.edit}
+            actions={actions}
+            raised={true}
+            style={{ paddingTop: 15, paddingBottom: 15, margin: 0 }}
+          ></ModalActions>
         </Container>
       </FormModal>
     )

@@ -38,7 +38,7 @@ export const AnswerList = ({ fields, answerType, isEdit }) => {
               color="accent"
               raised={false}
               disableRipple={true}
-              style={{ paddingLeft: '48px', fontWeight: 'normal' }}
+              style={{ marginLeft: 32, fontWeight: 'normal' }}
               onClick={() => fields.push({})} />
           }
         </Row>

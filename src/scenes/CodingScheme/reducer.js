@@ -73,6 +73,18 @@ const getNodeKey = ({ node, treeIndex }) => {
   return treeIndex
 }
 
+const setHovering = (node, hovering) => {
+  node.hovering = hovering
+
+  if (node.children) {
+    node.children = node.children.map((child, i) => {
+      return setHovering(child, false)
+    })
+  }
+
+  return node
+}
+
 const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_SCHEME_SUCCESS:
@@ -110,7 +122,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
               treeData: state.questions,
               path: action.path,
               getNodeKey,
-              newNode: { ...action.node, hovering: action.hover }
+              newNode: setHovering({ ...action.node }, action.hover)
             })
           }
         } catch (e) {
