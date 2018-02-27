@@ -8,3 +8,6 @@ export const updateCurrentUser = (payload) => ({ type: types.UPDATE_CURRENT_USER
 
 export const addUserPictureRequest = (userId, avatarFile) => ({ type: types.ADD_USER_PICTURE_REQUEST, userId, avatarFile })
 export const addUserPictureSuccess = (user) => ({ type: types.ADD_USER_PICTURE_SUCCESS, user })
+export const onCloseAddEditUser = () => ({ type: types.ON_CLOSE_ADD_EDIT_USER })
+
+export const getUserPictureRequest = userId => ({ type: types.GET_USER_PICTURE_REQUEST, userId })

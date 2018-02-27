@@ -12,6 +12,7 @@ import Container, { Row, Column } from 'components/Layout'
 import { trimWhitespace } from 'utils/formHelpers'
 import Avatar from 'components/Avatar'
 import ReactFileReader from 'react-file-reader'
+import Button from 'components/Button'
 
 const rowStyles = {
   paddingBottom: 20
@@ -64,12 +65,12 @@ export class AddEditUser extends Component {
     if (id && this.props.users.length > 0) {
       this.selectedUser = getUserById(this.props.users, id)
     }
+    this.props.actions.getUserPictureRequest(id)
   }
 
   handleFiles = files => {
     const formData = new FormData()
     formData.append('avatarFile', files.fileList[0])
-    console.log(files)
     this.props.actions.addUserPictureRequest(this.selectedUser.id, formData)
   }
 
@@ -79,6 +80,11 @@ export class AddEditUser extends Component {
     } else {
       return undefined
     }
+  }
+
+  onCancel = () => {
+    this.props.actions.onCloseAddEditUser()
+    this.props.history.goBack()
   }
 
   render() {
@@ -104,16 +110,17 @@ export class AddEditUser extends Component {
         asyncValidate={this.validateEmail}
         initialValues={this.selectedUser}
         asyncBlurFields={['email']}
+        onClose={this.handleClose}
         width="600px"
         height="400px"
       >
         <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
 
           <Row displayFlex style={{ ...rowStyles, justifyContent: 'space-between' }}>
-            <Column flex>
-              <Avatar big src={`http://localhost:5200/api/users/${this.selectedUser.id}/avatar`} />
-              <ReactFileReader handleFiles={this.handleFiles}>
-                <button className='btn'>Upload Image</button>
+            <Column style={{ alignItems: 'center' }}>
+              {this.props.avatarUrl ? <Avatar big avatarUrl={this.props.avatarUrl} /> : <div></div>}
+              <ReactFileReader base64={true} handleFiles={this.handleFiles}>
+                <Button raised={false} value={'Upload Image'} style={{ fontSize: '10px' }} />
               </ReactFileReader>
             </Column>
             <Column flex style={{ paddingRight: 10 }}>
@@ -174,7 +181,7 @@ export class AddEditUser extends Component {
   }
 }
 
-function getUserById(users, id) {
+const getUserById = (users, id) => {
   const user = users.filter(user => user.id == id)
   if (user.length) return user[0]
   return null
@@ -184,7 +191,8 @@ const mapStateToProps = (state) => {
   return {
     currentUser: state.data.user.currentUser || {},
     users: state.scenes.admin.main.users || [],
-    form: state.form.addEditUser || {}
+    form: state.form.addEditUser || {},
+    avatarUrl: state.scenes.admin.addEditUser.avatarUrl || null
   }
 }
 
