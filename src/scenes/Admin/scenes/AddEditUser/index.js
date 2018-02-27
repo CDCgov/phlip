@@ -117,11 +117,16 @@ export class AddEditUser extends Component {
         <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
 
           <Row displayFlex style={{ ...rowStyles, justifyContent: 'space-between' }}>
-            <Column style={{ alignItems: 'center' }}>
-              {this.props.avatarUrl ? <Avatar big avatarUrl={this.props.avatarUrl} /> : <div></div>}
-              <ReactFileReader base64={true} handleFiles={this.handleFiles}>
-                <Button raised={false} value={'Upload Image'} style={{ fontSize: '10px' }} />
-              </ReactFileReader>
+            <Column style={{ paddingRight: 30 }}>
+              {this.props.avatarUrl ?
+                <ReactFileReader base64={true} handleFiles={this.handleFiles}>
+                  <Avatar big avatarUrl={this.props.avatarUrl} />
+                </ReactFileReader>
+                : <ReactFileReader base64={true} handleFiles={this.handleFiles}>
+                  <Button raised={false} value={'Add picture'} style={{ fontSize: '12px' }} />
+
+                </ReactFileReader>
+              }
             </Column>
             <Column flex style={{ paddingRight: 10 }}>
               <Field
