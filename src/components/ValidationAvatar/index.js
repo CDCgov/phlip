@@ -91,6 +91,7 @@ export class ValidationAvatar extends Component {
         <CopyToClipboard text={this.props.answer.pincite} onCopy={this.props.answer.pincite.length > 0 && this.handlePinciteCopy}>
           <Avatar
             cardAvatar
+            avatarUrl={this.props.answer.avatarUrl}
             initials={this.state.initials}
             onMouseOver={this.handleOpen}
             onMouseOut={this.handleClose}

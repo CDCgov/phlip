@@ -16,8 +16,7 @@ export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, on
       <Grid item style={{ zIndex: 2 }}>
         <Manager>
           <Target>
-            {avatarUrl ? <Avatar onClick={onToggleMenu} src={avatarUrl} style={{ cursor: 'pointer' }} /> :
-              <Avatar onClick={onToggleMenu} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />}
+            <Avatar onClick={onToggleMenu} avatarUrl={avatarUrl} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />
           </Target>
           {open &&
             <Popper placement="bottom-end" eventsEnabled={open}>

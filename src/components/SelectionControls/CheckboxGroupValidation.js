@@ -37,28 +37,29 @@ export const CheckboxGroupValidation = props => {
               <ValidationAvatar key={`user-answer-${index}`} answer={answer} />
             ))}
             {userAnswers.answers.hasOwnProperty(choice.id)
-            && mergedUserQuestions !== null
-            && <Avatar
-              cardAvatar
-              key={mergedUserQuestions.answers.length + 1}
-              style={{ backgroundColor: 'white', color: 'teal', borderColor: 'teal' }}
-              initials={userAnswers.validatedBy === null
-                ? ''
-                : getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
-            />}
+              && mergedUserQuestions !== null
+              && <Avatar
+                cardAvatar
+                avatarUrl={userAnswers.validatedBy.avatarUrl}
+                key={mergedUserQuestions.answers.length + 1}
+                style={{ backgroundColor: 'white', color: 'teal', borderColor: 'teal' }}
+                initials={userAnswers.validatedBy === null
+                  ? ''
+                  : getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
+              />}
             {userAnswers.answers.hasOwnProperty(choice.id) && pincites &&
-            <SimpleInput
-              key={`${choice.id}-pincite`} placeholder="Enter pincite"
-              value={userAnswers.answers[choice.id].pincite}
-              multiline={false}
-              style={{
-                width: 300,
-                marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
-                  ? '15px'
-                  : '0px'
-              }}
-              onChange={onChangePincite(choice.id, 'pincite')}
-            />}
+              <SimpleInput
+                key={`${choice.id}-pincite`} placeholder="Enter pincite"
+                value={userAnswers.answers[choice.id].pincite}
+                multiline={false}
+                style={{
+                  width: 300,
+                  marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
+                    ? '15px'
+                    : '0px'
+                }}
+                onChange={onChangePincite(choice.id, 'pincite')}
+              />}
           </div>)
         })}
       </FormGroup>
