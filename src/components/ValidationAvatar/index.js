@@ -13,8 +13,10 @@ const styles = theme => ({
     padding: theme.spacing.unit,
     '&:after': {
       content: '""',
+      height: 0,
+      width: 0,
       position: 'absolute',
-      left: '44%',
+      left: '45%',
       border: '10px solid transparent',
       borderTopColor: '#f7f7f2',
       top: '99%',
@@ -23,10 +25,12 @@ const styles = theme => ({
     '&:before': {
       content: '""',
       position: 'absolute',
-      left: '44%',
+      left: '45%',
+      height: 0,
+      width: 0,
       border: '10px solid transparent',
       borderTopColor: 'rgb(215, 214, 202)',
-      top: '104%',
+      top: '100%',
       zIndex: 1
     }
   },
@@ -119,7 +123,8 @@ export class ValidationAvatar extends Component {
               padding: '6px 12px',
               minWidth: 150,
               borderRadius: 6,
-              overflow: 'visible'
+              overflow: 'visible',
+              maxWidth: 200
             },
             elevation: 0
           }}
@@ -131,7 +136,7 @@ export class ValidationAvatar extends Component {
             horizontal: 'center'
           }}
           transformOrigin={{
-            vertical: 72,
+            vertical: 'bottom',
             horizontal: 'center'
           }}
           disableRestoreFocus
