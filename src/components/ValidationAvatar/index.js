@@ -11,10 +11,12 @@ import Button from 'material-ui/Button'
 const styles = theme => ({
   paper: {
     padding: theme.spacing.unit,
-    '&:after': {
+    /*'&:after': {
       content: '""',
+      height: 0,
+      width: 0,
       position: 'absolute',
-      left: '44%',
+      left: '48%',
       border: '10px solid transparent',
       borderTopColor: '#f7f7f2',
       top: '99%',
@@ -23,12 +25,14 @@ const styles = theme => ({
     '&:before': {
       content: '""',
       position: 'absolute',
-      left: '44%',
+      left: '48%',
+      height: 0,
+      width: 0,
       border: '10px solid transparent',
       borderTopColor: 'rgb(215, 214, 202)',
-      top: '104%',
+      top: '100%',
       zIndex: 1
-    }
+    }*/
   },
   popover: {
     pointerEvents: 'none'
@@ -120,7 +124,9 @@ export class ValidationAvatar extends Component {
               padding: '6px 12px',
               minWidth: 150,
               borderRadius: 6,
-              overflow: 'visible'
+              overflow: 'visible',
+              maxHeight: 400,
+              maxWidth: '60%'
             },
             elevation: 0
           }}
@@ -132,7 +138,7 @@ export class ValidationAvatar extends Component {
             horizontal: 'center'
           }}
           transformOrigin={{
-            vertical: 72,
+            vertical: 'bottom',
             horizontal: 'center'
           }}
           disableRestoreFocus
