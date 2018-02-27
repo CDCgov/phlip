@@ -10,36 +10,37 @@ import Paper from 'material-ui/Paper'
 import { Manager, Target, Popper } from 'react-popper'
 import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
 
-export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, onOpenAdminPage, onToggleMenu }) => {
+export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, onOpenAdminPage, onToggleMenu, avatarUrl }) => {
   return (
-    <ClickAwayListener onClickAway={open ? onCloseMenu : () => {}}>
+    <ClickAwayListener onClickAway={open ? onCloseMenu : () => { }}>
       <Grid item style={{ zIndex: 2 }}>
         <Manager>
           <Target>
-            <Avatar onClick={onToggleMenu} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />
+            {avatarUrl ? <Avatar onClick={onToggleMenu} src={avatarUrl} style={{ cursor: 'pointer' }} /> :
+              <Avatar onClick={onToggleMenu} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />}
           </Target>
           {open &&
-          <Popper placement="bottom-end" eventsEnabled={open}>
-            <Grow in={open} id="avatar-menu">
-              <Paper style={{ marginTop: 5 }}>
-                <MenuList role="menu">
-                  {role === 'Admin' &&
-                  <MenuItem onClick={onOpenAdminPage} selected={false} key="admin-menu">
-                    <ListItemIcon>
-                      <Icon color="accent">person</Icon>
-                    </ListItemIcon>
-                    <ListItemText style={{ color: '#5f6060' }} disableTypography={true} primary="User Management" />
-                  </MenuItem>}
-                  <MenuItem onClick={onLogoutUser} key="logout-menu">
-                    <ListItemIcon>
-                      <Icon color="accent">exit_to_app</Icon>
-                    </ListItemIcon>
-                    <ListItemText style={{ color: '#5f6060' }} disableTypography={true} primary="Logout" />
-                  </MenuItem>
-                </MenuList>
-              </Paper>
-            </Grow>
-          </Popper>}
+            <Popper placement="bottom-end" eventsEnabled={open}>
+              <Grow in={open} id="avatar-menu">
+                <Paper style={{ marginTop: 5 }}>
+                  <MenuList role="menu">
+                    {role === 'Admin' &&
+                      <MenuItem onClick={onOpenAdminPage} selected={false} key="admin-menu">
+                        <ListItemIcon>
+                          <Icon color="accent">person</Icon>
+                        </ListItemIcon>
+                        <ListItemText style={{ color: '#5f6060' }} disableTypography={true} primary="User Management" />
+                      </MenuItem>}
+                    <MenuItem onClick={onLogoutUser} key="logout-menu">
+                      <ListItemIcon>
+                        <Icon color="accent">exit_to_app</Icon>
+                      </ListItemIcon>
+                      <ListItemText style={{ color: '#5f6060' }} disableTypography={true} primary="Logout" />
+                    </MenuItem>
+                  </MenuList>
+                </Paper>
+              </Grow>
+            </Popper>}
         </Manager>
       </Grid>
     </ClickAwayListener>
