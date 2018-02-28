@@ -13,7 +13,8 @@ import {
   handleUserPinciteQuestion,
   initializeNavigator,
   getQuestionSelectedInNav,
-  handleUserCommentCategoryChild
+  handleUserCommentCategoryChild,
+  handleUserSaveFlagCategoryChild
 } from 'utils/codingHelpers'
 
 const INITIAL_STATE = {
@@ -95,6 +96,17 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           state.question.isCategoryQuestion
             ? handleUserCommentCategoryChild(state.selectedCategoryId, action, state.userAnswers[action.questionId].comment)
             : action.comment
+        )
+      }
+
+    case types.ON_SAVE_FLAG:
+      return {
+        ...state,
+        ...questionUpdater(
+          'flag',
+          state.question.isCategoryQuestion
+            ? handleUserSaveFlagCategoryChild(state.selectedCategoryId, action, state.userAnswers[action.questionId].flag)
+            : action.flagInfo
         )
       }
 

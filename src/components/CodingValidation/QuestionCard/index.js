@@ -21,8 +21,8 @@ const TabContainer = props => {
 
 export const QuestionCard = props => {
   const {
-    question, currentUserInitials, userAnswers, categories, mergedUserQuestions, selectedCategory, isValidation,
-    onClearAnswer, onOpenAlert, onChangeCategory, onChange, onChangeTextAnswer
+    question, currentUserInitials, userAnswers, categories, mergedUserQuestions, selectedCategory, isValidation, selectedCategoryId,
+    onClearAnswer, onOpenAlert, onChangeCategory, onChange, onChangeTextAnswer, onSaveFlag
   } = props
 
   const questionContentProps = {
@@ -40,17 +40,20 @@ export const QuestionCard = props => {
           {question.questionType !== questionTypes.CATEGORY && <IconButton onClick={onClearAnswer}>
             <Broom className={styles.sweep} aria-labelledby="Clear answer" />
           </IconButton>}
-          {!isValidation && <FlagPopover userFlag={userAnswers.flag} />}
+          {!isValidation && <FlagPopover
+            userFlag={categories !== undefined ? userAnswers.flag[selectedCategoryId] : userAnswers.flag}
+            onSaveFlag={onSaveFlag}
+          />}
         </Row>
         <Divider />
         {categories !== undefined
           ? <TabContainer tabs={categories} selected={selectedCategory} onChangeCategory={onChangeCategory}>
             <QuestionContent
               {...questionContentProps}
-              comment={userAnswers.comment[categories[selectedCategory].id]}
-              userAnswers={userAnswers.answers[categories[selectedCategory].id]} question={question}
+              comment={userAnswers.comment[selectedCategoryId]}
+              userAnswers={userAnswers.answers[selectedCategoryId]} question={question}
               mergedUserQuestions={mergedUserQuestions !== null
-                ? mergedUserQuestions.answers[categories[selectedCategory].id]
+                ? mergedUserQuestions.answers[selectedCategoryId]
                 : null}
             />
           </TabContainer>

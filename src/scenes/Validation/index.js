@@ -153,6 +153,8 @@ export class Validation extends Component {
         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
         currentUserInitials={this.props.currentUserInitials}
         onOpenAlert={this.onOpenApplyAllAlert}
+        isValidation={true}
+        selectedCategoryId={this.props.selectedCategoryId}
       />
       <FooterNavigate
         currentIndex={this.props.currentIndex}
@@ -257,7 +259,8 @@ const mapStateToProps = (state, ownProps) => {
       ? state.data.user.currentUser.firstName[0]
       : state.data.user.currentUser.firstName[0] + state.data.user.currentUser.lastName[0],
     scheme: state.scenes.validation.scheme === null ? {} : state.scenes.validation.scheme,
-    allUserAnswers: state.scenes.validation.userAnswers || {}
+    allUserAnswers: state.scenes.validation.userAnswers || {},
+    selectedCategoryId: state.scenes.validation.selectedCategoryId || null
   }
 }
 

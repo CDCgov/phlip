@@ -29,6 +29,10 @@ export const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswer
         comment: {
           ...userCodedAnswerObj[question.schemeQuestionId].comment,
           [question.categoryId]: question.comment || ''
+        },
+        flag: {
+          ...userCodedAnswerObj[question.schemeQuestionId].flag,
+          [question.categoryId]: question.flag || { notes: '', type: 0 }
         }
       }
       : {
@@ -41,6 +45,9 @@ export const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswer
         },
         comment: {
           [question.categoryId]: question.comment || ''
+        },
+        flag: {
+          [question.categoryId]: question.flag || { notes: '', type: 0 }
         }
       }
   } else {
@@ -48,7 +55,8 @@ export const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswer
       ...question,
       schemeQuestionId: question.schemeQuestionId,
       comment: question.comment,
-      answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId')
+      answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId'),
+      flag: question.flag || { notes: '', type: 0 }
     }
   }
 }
@@ -350,6 +358,11 @@ export const handleUserPinciteCategoryChild = (selectedCategoryId, questionType,
   }
 })
 
+export const handleUserSaveFlagCategoryChild = (selectedCategoryId, action, currentUserAnswerObj) => ({
+  ...currentUserAnswerObj,
+  [selectedCategoryId]: { ...action.flagInfo }
+})
+
 /*
   Updating pincite and comment use this method
  */
@@ -483,7 +496,8 @@ export const getFinalCodedObject = (state, action, applyAll = false) => {
       comment: questionObject.comment[state.selectedCategoryId],
       categories: applyAll
         ? [...state.categories.map(cat => cat.id)]
-        : [state.selectedCategoryId]
+        : [state.selectedCategoryId],
+      flag: questionObject.flag[state.selectedCategoryId]
     }
     : {
       ...questionObject,

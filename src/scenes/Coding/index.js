@@ -137,6 +137,10 @@ export class Coding extends Component {
     this.props.actions.applyAnswerToAll(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
   }
 
+  onSaveFlag = flagInfo => {
+    this.props.actions.onSaveFlag(this.props.projectId, this.props.jurisdictionId, this.props.question.id, flagInfo)
+  }
+
   onShowGetStartedView = (noScheme, noJurisdictions) => {
     let startedText = ''
     if (this.props.userRole === 'Coder') {
@@ -178,6 +182,8 @@ export class Coding extends Component {
         isValidation={false}
         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
         onOpenAlert={this.onOpenApplyAllAlert}
+        onSaveFlag={this.onSaveFlag}
+        selectedCategoryId={this.props.selectedCategoryId}
       />
       <FooterNavigate
         currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion}
@@ -275,7 +281,8 @@ const mapStateToProps = (state, ownProps) => {
     isSchemeEmpty: state.scenes.coding.scheme === null ? null : state.scenes.coding.scheme.order.length === 0,
     userRole: state.data.user.currentUser.role,
     scheme: state.scenes.coding.scheme === null ? {} : state.scenes.coding.scheme,
-    allUserAnswers: state.scenes.coding.userAnswers || {}
+    allUserAnswers: state.scenes.coding.userAnswers || {},
+    selectedCategoryId: state.scenes.coding.selectedCategoryId || null
   }
 }
 
