@@ -12,7 +12,8 @@ import Container, { Row, Column } from 'components/Layout'
 import { trimWhitespace } from 'utils/formHelpers'
 import Avatar from 'components/Avatar'
 import ReactFileReader from 'react-file-reader'
-import Button from 'components/Button'
+// import Button from 'components/Button'
+import IconButton from 'components/IconButton'
 
 const rowStyles = {
   paddingBottom: 20
@@ -123,7 +124,7 @@ export class AddEditUser extends Component {
                   <Avatar big avatarUrl={this.props.avatarUrl} />
                 </ReactFileReader>
                 : <ReactFileReader base64={true} handleFiles={this.handleFiles}>
-                  <Button raised={false} value={'Add picture'} style={{ fontSize: '12px' }} />
+                  <IconButton color={'#757575'} iconSize={45}>add_a_photo</IconButton>
 
                 </ReactFileReader>
               }
