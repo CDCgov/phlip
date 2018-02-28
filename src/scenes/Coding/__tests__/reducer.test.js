@@ -1056,6 +1056,51 @@ describe('Coding reducer', () => {
     })
   })
 
+  describe('ON_SAVE_FLAG', () => {
+    test('should handle regular questions', () => {
+      const action = {
+        type: types.ON_SAVE_FLAG,
+        questionId: 1,
+        projectId: 1,
+        jurisdictionId: 1,
+        flagInfo: { notes: 'notes!!', type: 2 }
+      }
+
+      const state = getReducer(getState({
+        question: { id: 1, isCategoryQuestion: false },
+        userAnswers: {
+          1: {
+            flag: { notes: '', type: 0 }
+          }
+        }
+      }), action)
+
+      expect(state).toHaveProperty('userAnswers.1.flag', { notes: 'notes!!', type: 2 })
+    })
+
+    test('should handle category child questions', () => {
+      const action = {
+        type: types.ON_SAVE_FLAG,
+        questionId: 1,
+        projectId: 1,
+        jurisdictionId: 1,
+        flagInfo: { notes: 'notes!!', type: 2 }
+      }
+
+      const state = getReducer(getState({
+        question: { id: 1, isCategoryQuestion: true },
+        selectedCategoryId: 5,
+        userAnswers: {
+          1: {
+             5: { flag: { notes: '', type: 0 } }
+          }
+        }
+      }), action)
+
+      expect(state).toHaveProperty('userAnswers.1.flag.5', { notes: 'notes!!', type: 2 })
+    })
+  })
+
   describe('ON_CLEAR_ANSWER', () => {
     test('should handle regular questions', () => {
       const action = {
