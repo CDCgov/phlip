@@ -175,6 +175,7 @@ export class Coding extends Component {
         selectedCategory={this.props.selectedCategory}
         onChangeCategory={this.props.actions.onChangeCategory}
         mergedUserQuestions={null}
+        isValidation={false}
         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
         onOpenAlert={this.onOpenApplyAllAlert}
       />

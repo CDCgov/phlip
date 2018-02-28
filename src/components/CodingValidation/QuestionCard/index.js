@@ -9,6 +9,7 @@ import Tabs from 'components/Tabs'
 import { Broom } from 'mdi-material-ui'
 import styles from './card-styles.scss'
 import * as questionTypes from '../constants'
+import FlagPopover from './components/FlagPopover'
 
 const TabContainer = props => {
   return (
@@ -20,7 +21,7 @@ const TabContainer = props => {
 
 export const QuestionCard = props => {
   const {
-    question, currentUserInitials, userAnswers, categories, mergedUserQuestions, selectedCategory,
+    question, currentUserInitials, userAnswers, categories, mergedUserQuestions, selectedCategory, isValidation,
     onClearAnswer, onOpenAlert, onChangeCategory, onChange, onChangeTextAnswer
   } = props
 
@@ -39,9 +40,7 @@ export const QuestionCard = props => {
           {question.questionType !== questionTypes.CATEGORY && <IconButton onClick={onClearAnswer}>
             <Broom className={styles.sweep} aria-labelledby="Clear answer" />
           </IconButton>}
-          <IconButton color="#d7e0e4">
-            flag
-          </IconButton>
+          {!isValidation && <FlagPopover userFlag={userAnswers.flag} />}
         </Row>
         <Divider />
         {categories !== undefined
