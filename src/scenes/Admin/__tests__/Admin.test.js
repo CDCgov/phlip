@@ -5,7 +5,7 @@ import { MuiThemeProvider } from 'material-ui/styles'
 import theme from 'services/theme'
 import { Admin } from '../'
 import { UserList } from '../components/UserList'
-import { PageHeader } from '../components/PageHeader'
+import { PageHeader } from 'components/PageHeader'
 import { mockUsers } from 'data/mockUsers'
 
 const props = {

@@ -8,7 +8,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
   spacing={0}
   style={
     Object {
-      "height": "80px",
+      "height": 80,
       "padding": "20px 27px",
     }
   }
@@ -35,7 +35,20 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       arrow_back
     </IconButton>
   </Column>
-  <div />
+  <WithStyles
+    color="inherit"
+    type="title"
+  >
+    <span
+      style={
+        Object {
+          "paddingRight": 10,
+        }
+      }
+    >
+      Coding
+    </span>
+  </WithStyles>
   <WithStyles
     color="inherit"
     type="title"
@@ -113,15 +126,18 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       flex={true}
     />
     <WithTheme
-      style={
-        Object {
-          "backgroundColor": "white",
-          "color": "black",
-          "fontWeight": "bold",
+      to="/project/1/protocol"
+    >
+      <WithTheme
+        style={
+          Object {
+            "backgroundColor": "white",
+            "color": "black",
+          }
         }
-      }
-      value="View/Edit Protocol"
-    />
+        value="View/Edit Protocol"
+      />
+    </WithTheme>
   </React.Fragment>
 </Container>
 `;

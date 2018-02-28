@@ -19,22 +19,19 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
           {bookmarked ? 'bookmark' : 'bookmark_border'}
         </IconButton>
       </TableCell>
-      <TableCell key={`${project.id}-name`} style={{ textAlign: 'left', width: 350, fontWeight: 'normal' }}>
+      <TableCell key={`${project.id}-name`}>
         <TextLink to={{ pathname: `/project/edit/${project.id}`, state: { projectDefined: { ...project } } }}>{project.name}</TextLink>
       </TableCell>
       <TableCell key={`${project.id}-dateLastEdited`}
         style={{ textAlign: 'unset' }}>
         {new Date(project.dateLastEdited).toLocaleDateString()}
       </TableCell>
-      <TableCell
-        key={`${project.id}-lastEditedBy`}
-        style={{ fontStyle: 'italic', textAlign: 'unset' }}
-      >
+      <TableCell key={`${project.id}-lastEditedBy`}>
         {project.lastEditedBy}
       </TableCell>
       {role !== 'Coder' &&
         <TableCell key={`${project.id}-protocol`} style={{ textAlign: 'center' }}>
-          <TextLink to="/">Add/Edit</TextLink>
+          <TextLink to={`/project/${project.id}/protocol`}>Add/Edit</TextLink>
         </TableCell>
       }
       <TableCell key={`${project.id}-jurisdictions`} style={{ textAlign: 'center' }}>

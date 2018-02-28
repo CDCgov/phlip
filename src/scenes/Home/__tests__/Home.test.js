@@ -4,9 +4,9 @@ import { MemoryRouter } from 'react-router-dom'
 import { MuiThemeProvider } from 'material-ui/styles'
 import theme from 'services/theme'
 import { Home } from '../index'
-import { PageHeader } from '../components/PageHeader'
 import { ProjectList } from '../components/ProjectList'
 import { mockProjects } from 'data/mockProjects'
+import { PageHeader } from 'components/PageHeader'
 
 const props = {
   actions: {
@@ -57,7 +57,6 @@ describe('Home scene', () => {
   test('should render ProjectList and PageHeader components', () => {
     let wrapper = shallow(<Home {...props} />)
     expect(wrapper.find(ProjectList)).toHaveLength(1)
-    expect(wrapper.find(PageHeader)).toHaveLength(1)
   })
 
   test('should open the New Project modal when Create New Project is clicked', () => {

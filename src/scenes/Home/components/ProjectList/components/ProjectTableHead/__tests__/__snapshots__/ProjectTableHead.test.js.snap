@@ -6,7 +6,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
 >
   <TableCell
     key="bookmarked"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
         "width": 48,
@@ -23,13 +23,8 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   </TableCell>
   <TableCell
     key="name"
-    padding="checkbox"
-    style={
-      Object {
-        "maxWidth": "unset",
-        "textAlign": "left",
-      }
-    }
+    padding="default"
+    style={Object {}}
   >
     <WithStyles
       active={false}
@@ -46,12 +41,8 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   </TableCell>
   <TableCell
     key="dateLastEdited"
-    padding="checkbox"
-    style={
-      Object {
-        "textAlign": "unset",
-      }
-    }
+    padding="default"
+    style={Object {}}
   >
     <WithStyles
       active={true}
@@ -68,12 +59,8 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   </TableCell>
   <TableCell
     key="lastEditedBy"
-    padding="checkbox"
-    style={
-      Object {
-        "textAlign": "unset",
-      }
-    }
+    padding="default"
+    style={Object {}}
   >
     <WithStyles
       active={false}
@@ -90,7 +77,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   </TableCell>
   <TableCell
     key="protocol"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
         "textAlign": "center",
@@ -101,7 +88,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   </TableCell>
   <TableCell
     key="jurisdictions"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
         "textAlign": "center",
@@ -112,7 +99,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   </TableCell>
   <TableCell
     key="codingScheme"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
         "textAlign": "center",
@@ -123,17 +110,17 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   </TableCell>
   <TableCell
     key="code"
-    padding="checkbox"
+    padding="default"
     style={Object {}}
   />
   <TableCell
     key="validate"
-    padding="checkbox"
+    padding="default"
     style={Object {}}
   />
   <TableCell
     key="export"
-    padding="checkbox"
+    padding="default"
     style={Object {}}
   />
 </TableRow>

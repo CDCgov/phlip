@@ -7,15 +7,16 @@ import JurisdictionSelect from 'components/JurisdictionSelect'
 import Container, { Column } from 'components/Layout'
 import IconButton from 'components/IconButton'
 import { withRouter } from 'react-router-dom'
+import TextLink from 'components/TextLink'
 
 export const Header = ({ projectName, empty, projectId, jurisdictionsList, selectedJurisdiction, onJurisdictionChange, currentJurisdiction, isValidation, history }) => (
-  <Container alignItems="center" style={{ height: '80px', padding: isValidation ? '' : '20px 27px' }}>
+  <Container alignItems="center" style={{ height: 80, padding: '20px 27px' }}>
     <Column style={{ paddingRight: 5 }}>
       <IconButton iconSize={30} color="black" onClick={() => history.push('/')}>arrow_back</IconButton>
     </Column>
-    {isValidation ? <Typography type="title" color="inherit">
-      <span style={{ color: '#FDB760', paddingRight: 10 }}>VALIDATION</span>
-    </Typography> : <div></div>}
+    <Typography type="title" color="inherit">
+      <span style={{ paddingRight: 10 }}>{isValidation ? 'Validation' : 'Coding'}</span>
+    </Typography>
     <Typography type="title" color="inherit">
       <span style={{ color: '#0faee6' }}>{projectName}</span>
     </Typography>
@@ -25,14 +26,19 @@ export const Header = ({ projectName, empty, projectId, jurisdictionsList, selec
       </div>
       <Column flex>
         <Typography type="caption" color="default" align="right">
-          Segment start <span style={{ color: 'black' }}>{new Date(currentJurisdiction.startDate).toLocaleDateString()}</span>
+          Segment
+          start <span style={{ color: 'black' }}>{new Date(currentJurisdiction.startDate).toLocaleDateString()}</span>
         </Typography>
         <Typography type="caption" color="default" align="right">
-          Segment end <span style={{ color: 'black' }}>{new Date(currentJurisdiction.endDate).toLocaleDateString()}</span>
+          Segment
+          end <span style={{ color: 'black' }}>{new Date(currentJurisdiction.endDate).toLocaleDateString()}</span>
         </Typography>
       </Column>
       <Column flex></Column>
-      <Button value="View/Edit Protocol" style={{ backgroundColor: 'white', color: 'black', fontWeight: 'bold' }} /></Fragment>}
+      <TextLink to={`/project/${projectId}/protocol`}>
+        <Button value="View/Edit Protocol" style={{ backgroundColor: 'white', color: 'black' }} />
+      </TextLink>
+    </Fragment>}
   </Container>
 )
 

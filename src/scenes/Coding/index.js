@@ -2,11 +2,8 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Header from 'components/CodingValidation/Header'
-import QuestionCard from 'components/CodingValidation/QuestionCard'
-import FooterNavigate from 'components/CodingValidation/FooterNavigate'
+import { Header, QuestionCard, FooterNavigate, Navigator, bodyStyles } from 'components/CodingValidation'
 import Container, { Row, Column } from 'components/Layout'
-import Navigator from './components/Navigator'
 import * as actions from './actions'
 import Typography from 'material-ui/Typography'
 import TextLink from 'components/TextLink'
@@ -16,6 +13,7 @@ import { withStyles } from 'material-ui/styles'
 import classNames from 'classnames'
 import { default as MuiButton } from 'material-ui/Button'
 import HeaderedLayout from 'components/HeaderedLayout'
+import Alert from 'components/Alert'
 
 const navButtonStyles = {
   height: 90,
@@ -34,26 +32,7 @@ const iconStyle = {
   transform: 'rotate(90deg)'
 }
 
-const styles = theme => ({
-  mainContent: {
-    height: '100vh',
-    width: '100%',
-    flex: '1 !important',
-    overflow: 'auto',
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    marginLeft: -330
-  },
-  openNavShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginLeft: 0
-  }
-})
+const styles = theme => bodyStyles(theme)
 
 export class Coding extends Component {
   constructor(props, context) {
@@ -62,8 +41,22 @@ export class Coding extends Component {
     this.state = {
       selectedJurisdiction: this.props.jurisdictionId,
       showViews: false,
-      navOpen: false
+      navOpen: true,
+      applyAllAlertOpen: false
     }
+
+    this.modalActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.onCloseApplyAllAlert
+      },
+      {
+        value: 'Continue',
+        type: 'button',
+        onClick: this.onApplyToAll
+      }
+    ]
   }
 
   componentWillMount() {
@@ -127,6 +120,23 @@ export class Coding extends Component {
     this.props.actions.getUserCodedQuestions(this.props.projectId, event.target.value)
   }
 
+  onOpenApplyAllAlert = () => {
+    this.setState({
+      applyAllAlertOpen: true
+    })
+  }
+
+  onCloseApplyAllAlert = () => {
+    this.setState({
+      applyAllAlertOpen: false
+    })
+  }
+
+  onApplyToAll = () => {
+    this.onCloseApplyAllAlert()
+    this.props.actions.applyAnswerToAll(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+  }
+
   onShowGetStartedView = (noScheme, noJurisdictions) => {
     let startedText = ''
     if (this.props.userRole === 'Coder') {
@@ -166,6 +176,7 @@ export class Coding extends Component {
         onChangeCategory={this.props.actions.onChangeCategory}
         mergedUserQuestions={null}
         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
+        onOpenAlert={this.onOpenApplyAllAlert}
       />
       <FooterNavigate
         currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion}
@@ -181,6 +192,11 @@ export class Coding extends Component {
         flex
         style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}
       >
+        <Alert
+          open={this.state.applyAllAlertOpen}
+          text="You are applying your answer to ALL categories. Previously answered questions will be changed."
+          actions={this.modalActions}
+        />
         <Navigator
           open={this.state.navOpen}
           scheme={this.props.scheme}
@@ -193,7 +209,7 @@ export class Coding extends Component {
           padding={false}
           className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}
         >
-          <Column flex displayFlex style={{ width: '100%' }}>
+          <Column flex displayFlex style={{ width: '100%', flexWrap: 'nowrap' }}>
             <Header
               projectName={this.props.projectName} projectId={this.props.projectId}
               jurisdictionsList={this.props.jurisdictionsList}

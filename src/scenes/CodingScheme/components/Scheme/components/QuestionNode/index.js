@@ -95,7 +95,7 @@ export const QuestionNode = props => {
               noWrap
               type="subheading"
               component="h4"
-              style={{ opacity: node.hovering ? '.3' : '', flex: 1 }}>{questionBody}</Typography>
+              style={{ flex: 1 }}>{questionBody}</Typography>
 
             {node.hovering &&
               <div style={{ zIndex: 5 }}>

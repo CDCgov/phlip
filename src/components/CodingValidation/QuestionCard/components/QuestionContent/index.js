@@ -9,8 +9,15 @@ import Typography from 'material-ui/Typography'
 import Container, { Row, Column } from 'components/Layout'
 import * as questionTypes from 'components/CodingValidation/constants'
 import TextFieldQuestions from '../TextFieldQuestions'
+import Divider from 'material-ui/Divider'
+import Button from 'components/Button'
 
-export const QuestionContent = ({ question, currentUserInitials, onChange, comment, userAnswers, onChangeTextAnswer, mergedUserQuestions }) => {
+export const QuestionContent = props => {
+  const {
+    question, currentUserInitials, comment, userAnswers, mergedUserQuestions,
+    onChange, onChangeTextAnswer, onOpenAlert
+  } = props
+
   const questionAnswerPadding = {
     paddingTop: 0,
     paddingRight: 65,
@@ -24,7 +31,7 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
   }
 
   return (
-    <Container column flex>
+    <Container column flex style={{ flexWrap: 'nowrap' }}>
       <Row displayFlex style={{ padding: '20px 20px 10px 20px' }}>
         <Column>
           <Typography type="subheading">{question.number})</Typography>
@@ -36,7 +43,7 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
       <Column displayFlex flex style={{ ...questionAnswerPadding }}>
         {(question.questionType === questionTypes.MULTIPLE_CHOICE ||
           question.questionType === questionTypes.BINARY) &&
-        <Row flex displayFlex style={{ ...answerPadding, paddingRight: 0,  overflow: 'auto' }}>
+        <Row flex displayFlex style={{ ...answerPadding, paddingRight: 0, overflow: 'auto' }}>
           <RadioGroupValidation
             choices={question.possibleAnswers}
             question={question}
@@ -76,17 +83,19 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
           style={{ ...answerPadding, paddingRight: 0 }}
           mergedUserQuestions={mergedUserQuestions}
           validatorAnswer={userAnswers.answers[question.possibleAnswers[0].id]}
+          validator={userAnswers.validatedBy}
           onChange={onChangeTextAnswer}
           answerId={question.possibleAnswers[0].id}
           currentUserInitials={currentUserInitials}
         />
         }
-        <Row style={{ ...answerPadding, paddingRight: 0 }}>
+        <Row style={{ ...answerPadding, paddingRight: 0, paddingTop: 20 }}>
           {question.includeComment &&
           <Row>
             <SimpleInput
               onChange={onChangeTextAnswer(null, 'comment')}
               name="comment"
+              shrinkLabel={true}
               style={{ whiteSpace: 'pre-wrap' }}
               placeholder="Enter comment"
               value={comment}
@@ -102,6 +111,23 @@ export const QuestionContent = ({ question, currentUserInitials, onChange, comme
         <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
       </Row>
       }
+
+      {question.isCategoryQuestion &&
+      <Fragment>
+        <Divider />
+        <Row
+          displayFlex
+          style={{
+            ...answerPadding,
+            paddingBottom: 20,
+            paddingTop: 20,
+            paddingRight: 0,
+            justifyContent: 'flex-end'
+          }}
+        >
+          <Button onClick={onOpenAlert} color="accent" value="Apply Answer to all categories" />
+        </Row>
+      </Fragment>}
     </Container>
   )
 }

@@ -4,6 +4,7 @@ import loginLogic from './Login/logic'
 import codingSchemeLogic from './CodingScheme/logic'
 import codingLogic from './Coding/logic'
 import validationLogic from './Validation/logic'
+import protocolLogic from './Protocol/logic'
 
 export default [
   ...projectLogic,
@@ -11,5 +12,6 @@ export default [
   ...loginLogic,
   ...codingSchemeLogic,
   ...codingLogic,
-  ...validationLogic
+  ...validationLogic,
+  ...protocolLogic
 ]

@@ -10,6 +10,9 @@ import TextInput from 'components/TextInput'
 import isEmail from 'sane-email-validation'
 import Container, { Row, Column } from 'components/Layout'
 import { trimWhitespace } from 'utils/formHelpers'
+import Avatar from 'components/Avatar'
+import ReactFileReader from 'react-file-reader'
+import Button from 'components/Button'
 
 const rowStyles = {
   paddingBottom: 20
@@ -62,15 +65,26 @@ export class AddEditUser extends Component {
     if (id && this.props.users.length > 0) {
       this.selectedUser = getUserById(this.props.users, id)
     }
+    this.props.actions.getUserPictureRequest(id)
   }
 
-  // required = value => value ? undefined : 'Required'
+  handleFiles = files => {
+    const formData = new FormData()
+    formData.append('avatarFile', files.fileList[0])
+    this.props.actions.addUserPictureRequest(this.selectedUser.id, formData)
+  }
+
   required = value => {
     if (!value && !this.props.match.params.id) {
       return 'Required'
     } else {
       return undefined
     }
+  }
+
+  onCancel = () => {
+    this.props.actions.onCloseAddEditUser()
+    this.props.history.goBack()
   }
 
   render() {
@@ -96,11 +110,24 @@ export class AddEditUser extends Component {
         asyncValidate={this.validateEmail}
         initialValues={this.selectedUser}
         asyncBlurFields={['email']}
+        onClose={this.handleClose}
         width="600px"
         height="400px"
       >
         <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
+
           <Row displayFlex style={{ ...rowStyles, justifyContent: 'space-between' }}>
+            <Column style={{ paddingRight: 30 }}>
+              {this.props.avatarUrl ?
+                <ReactFileReader base64={true} handleFiles={this.handleFiles}>
+                  <Avatar big avatarUrl={this.props.avatarUrl} />
+                </ReactFileReader>
+                : <ReactFileReader base64={true} handleFiles={this.handleFiles}>
+                  <Button raised={false} value={'Add picture'} style={{ fontSize: '12px' }} />
+
+                </ReactFileReader>
+              }
+            </Column>
             <Column flex style={{ paddingRight: 10 }}>
               <Field
                 name="firstName"
@@ -159,7 +186,7 @@ export class AddEditUser extends Component {
   }
 }
 
-function getUserById(users, id) {
+const getUserById = (users, id) => {
   const user = users.filter(user => user.id == id)
   if (user.length) return user[0]
   return null
@@ -169,7 +196,8 @@ const mapStateToProps = (state) => {
   return {
     currentUser: state.data.user.currentUser || {},
     users: state.scenes.admin.main.users || [],
-    form: state.form.addEditUser || {}
+    form: state.form.addEditUser || {},
+    avatarUrl: state.scenes.admin.addEditUser.avatarUrl || null
   }
 }
 

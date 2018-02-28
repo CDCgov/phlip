@@ -30,7 +30,28 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
     editButton={false}
     onCloseForm={[Function]}
     search={true}
-    title="Jurisdictions"
+    title={
+      <WithStyles
+        type="title"
+      >
+        <span
+          style={
+            Object {
+              "paddingRight": 10,
+            }
+          }
+        >
+          Jurisdictions
+        </span>
+        <span
+          style={
+            Object {
+              "color": "#0faee6",
+            }
+          }
+        />
+      </WithStyles>
+    }
   />
   <WithStyles />
   <ModalContent

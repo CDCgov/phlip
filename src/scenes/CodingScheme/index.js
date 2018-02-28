@@ -6,11 +6,11 @@ import Typography from 'material-ui/Typography'
 import { Route } from 'react-router-dom'
 import * as actions from './actions'
 import Container from 'components/Layout'
-import Header from './components/Header'
 import Scheme from './components/Scheme'
 import Button from 'components/Button'
 import TextLink from 'components/TextLink'
 import AddEditQuestion from './scenes/AddEditQuestion'
+import PageHeader from 'components/PageHeader'
 
 export class CodingScheme extends Component {
   constructor(props, context) {
@@ -37,9 +37,14 @@ export class CodingScheme extends Component {
 
   renderGetStarted = () => (
     <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
-      <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>The coding scheme is empty. To get started, add a question.</Typography>
+      <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
+        The coding scheme is empty. To get started, add a question.</Typography>
       <TextLink
-        to={{ pathname: `/project/${this.props.projectId}/coding-scheme/add`, state: { questionDefined: null } }}>
+        to={{
+          pathname: `/project/${this.props.projectId}/coding-scheme/add`,
+          state: { questionDefined: null }
+        }}
+      >
         <Button value="+ Add New Question" color="accent" />
       </TextLink>
     </Container>
@@ -48,8 +53,19 @@ export class CodingScheme extends Component {
   render() {
     return (
       <Container column flex>
-        <Header projectName={this.props.projectName} showButton={this.props.questions.length > 0}
-          projectId={this.props.projectId} />
+        <PageHeader
+          projectName={this.props.projectName}
+          showButton={this.props.questions.length > 0}
+          projectId={this.props.projectId}
+          pageTitle="Coding Scheme"
+          protocolButton
+          otherButton={{
+            isLink: true,
+            text: '+ Add New Question',
+            path: `/project/${this.props.projectId}/coding-scheme/add`,
+            state: { questionDefined: null }
+          }}
+        />
         <Container flex style={{ backgroundColor: '#f5f5f5', paddingTop: 25, marginLeft: -30 }}>
           {this.props.empty
             ? this.renderGetStarted()
@@ -67,10 +83,12 @@ export class CodingScheme extends Component {
         </Container>
         <Route
           path="/project/:projectId/coding-scheme/add"
-          component={AddEditQuestion} />
+          component={AddEditQuestion}
+        />
         <Route
           path="/project/:projectId/coding-scheme/edit/:id"
-          component={AddEditQuestion} />
+          component={AddEditQuestion}
+        />
       </Container>
     )
   }

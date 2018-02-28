@@ -6,7 +6,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
 >
   <TableCell
     key="1-bookmarked"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
         "width": 48,
@@ -23,14 +23,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-name"
-    padding="checkbox"
-    style={
-      Object {
-        "fontWeight": "normal",
-        "textAlign": "left",
-        "width": 350,
-      }
-    }
+    padding="default"
   >
     <WithTheme
       to={
@@ -52,7 +45,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-dateLastEdited"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
         "textAlign": "unset",
@@ -63,19 +56,13 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-lastEditedBy"
-    padding="checkbox"
-    style={
-      Object {
-        "fontStyle": "italic",
-        "textAlign": "unset",
-      }
-    }
+    padding="default"
   >
     Kristin
   </TableCell>
   <TableCell
     key="1-protocol"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
         "textAlign": "center",
@@ -83,14 +70,14 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     }
   >
     <WithTheme
-      to="/"
+      to="/project/1/protocol"
     >
       Add/Edit
     </WithTheme>
   </TableCell>
   <TableCell
     key="1-jurisdictions"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
         "textAlign": "center",
@@ -106,7 +93,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-codingScheme"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
         "textAlign": "center",
@@ -121,7 +108,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-code"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
         "textAlign": "center",
@@ -144,7 +131,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-validation"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
         "textAlign": "center",
@@ -167,7 +154,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   </TableCell>
   <TableCell
     key="1-export"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
         "textAlign": "center",

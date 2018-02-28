@@ -11,7 +11,9 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper,
     paddingLeft: 20,
     paddingRight: 20,
-    overflow: 'auto'
+    overflow: 'auto',
+    display: 'flex',
+    flexDirection: 'column'
   }
 })
 
