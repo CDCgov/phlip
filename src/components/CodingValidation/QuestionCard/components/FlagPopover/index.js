@@ -42,6 +42,12 @@ export class FlagPopover extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      updatedFlag: { ...nextProps.userFlag }
+    })
+  }
+
   onOpenPopover = () => {
     this.setState({
       flagOpen: !this.state.flagOpen

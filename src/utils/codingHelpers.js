@@ -187,6 +187,12 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
           [cat.id]: checkIfExists(cat, baseQuestion.comment)
             ? baseQuestion.comment[cat.id]
             : ''
+        },
+        flag: {
+          ...answerObj.flag,
+          [cat.id]: checkIfExists(cat, baseQuestion.flag)
+            ? baseQuestion.flag[cat.id]
+            : { notes: '', type: 0 }
         }
       }
     }, {})
@@ -397,7 +403,8 @@ export const handleClearCategoryAnswers = (selectedCategoryId, questionType, cur
 export const initializeRegularQuestion = id => ({
   schemeQuestionId: id,
   answers: {},
-  comment: ''
+  comment: '',
+  flag: { notes: '', type: 0 }
 })
 
 export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestion) => {
