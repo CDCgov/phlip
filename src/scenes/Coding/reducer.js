@@ -137,7 +137,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
               },
               comment: {
                 ...obj.comment,
-                [category.id]: { ...catQuestion.comment[state.selectedCategoryId] }
+                [category.id]: catQuestion.comment[state.selectedCategoryId]
               },
               flag: {
                 ...obj.flag,

@@ -193,6 +193,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
 
     case types.ON_APPLY_VALIDATION_TO_ALL:
       const answer = state.userAnswers[state.question.id].answers[state.selectedCategoryId]
+      const catQuestion = state.userAnswers[state.question.id]
       return {
         ...state,
         userAnswers: {
@@ -204,11 +205,11 @@ const validationReducer = (state = INITIAL_STATE, action) => {
                 ...obj,
                 answers: {
                   ...obj.answers,
-                  [category.id]: { ...answer, validatedBy: action.validatedBy }
+                  [category.id]: { ...catQuestion.answers[state.selectedCategoryId], validatedBy: action.validatedBy }
                 },
                 comment: {
                   ...obj.comment,
-                  [category.id]: ''
+                  [category.id]: catQuestion.comment[state.selectedCategoryId]
                 }
               }
             }, {})
