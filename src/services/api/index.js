@@ -112,6 +112,24 @@ export default {
     return api.get(`/projects/${projectId}/coders`).then(res => res.data)
   },
 
+  addUserPicture(userId, avatarFile) {
+    return api.post(`/users/${userId}/avatar`, avatarFile).then(res => {
+      let returnObj = {
+        userId: userId,
+        data: res.data
+      }
+      return returnObj
+    })
+  },
+
+  getUserPicture(userId) {
+    return api.get(`/users/${userId}/avatar`).then(res => {
+      return true
+    }).catch(error => {
+      return false
+    })
+  },
+
   getProtocol(projectId) {
     return api.get(`/projects/${projectId}/protocol`).then(res => res.data.text)
   },

@@ -37,29 +37,30 @@ export const RadioGroup = props => {
               <ValidationAvatar key={`user-answer-${index}`} answer={answer} choice={choice.id} />
             ))}
             {userAnswers.answers.hasOwnProperty(choice.id)
-            && mergedUserQuestions !== null
-            && <Avatar
-              cardAvatar
-              style={{ backgroundColor: 'white', color: 'teal', borderColor: 'teal' }}
-              key={mergedUserQuestions.answers.length + 1}
-              initials={userAnswers.validatedBy === null
-                ? ''
-                : getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
-            />}
+              && mergedUserQuestions !== null
+              && <Avatar
+                cardAvatar
+                avatarUrl={userAnswers.validatedBy.avatarUrl}
+                style={{ backgroundColor: 'white', color: 'teal', borderColor: 'teal' }}
+                key={mergedUserQuestions.answers.length + 1}
+                initials={userAnswers.validatedBy === null
+                  ? ''
+                  : getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
+              />}
             {userAnswers.answers.hasOwnProperty(choice.id) &&
-            <SimpleInput
-              key={`${choice.id}-pincite`}
-              style={{
-                width: 300,
-                marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
-                  ? '15px'
-                  : '0px'
-              }}
-              placeholder="Enter pincite"
-              multiline={false}
-              value={userAnswers.answers[choice.id].pincite}
-              onChange={onChangePincite(choice.id, 'pincite')}
-            />}
+              <SimpleInput
+                key={`${choice.id}-pincite`}
+                style={{
+                  width: 300,
+                  marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
+                    ? '15px'
+                    : '0px'
+                }}
+                placeholder="Enter pincite"
+                multiline={false}
+                value={userAnswers.answers[choice.id].pincite}
+                onChange={onChangePincite(choice.id, 'pincite')}
+              />}
           </div>
         ))}
       </FormGroup>
