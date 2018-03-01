@@ -122,7 +122,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.APPLY_ANSWER_TO_ALL:
-      const answer = state.userAnswers[state.question.id].answers[state.selectedCategoryId]
+      const catQuestion = state.userAnswers[state.question.id]
       return {
         ...state,
         userAnswers: {
@@ -133,11 +133,15 @@ const codingReducer = (state = INITIAL_STATE, action) => {
               ...obj,
               answers: {
                 ...obj.answers,
-                [category.id]: { ...answer }
+                [category.id]: { ...catQuestion.answers[state.selectedCategoryId] }
               },
               comment: {
                 ...obj.comment,
-                [category.id]: ''
+                [category.id]: { ...catQuestion.comment[state.selectedCategoryId] }
+              },
+              flag: {
+                ...obj.flag,
+                [category.id]: { ...catQuestion.flag[state.selectedCategoryId] }
               }
             }), {})
           }
