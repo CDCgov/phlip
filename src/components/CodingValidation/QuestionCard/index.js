@@ -41,7 +41,7 @@ export const QuestionCard = props => {
             <Broom className={styles.sweep} aria-labelledby="Clear answer" />
           </IconButton>}
           {!isValidation && <FlagPopover
-            userFlag={categories !== undefined ? userAnswers.flag[selectedCategoryId] : userAnswers.flag}
+            userFlag={userAnswers.flag}
             onSaveFlag={onSaveFlag}
           />}
         </Row>
@@ -50,11 +50,13 @@ export const QuestionCard = props => {
           ? <TabContainer tabs={categories} selected={selectedCategory} onChangeCategory={onChangeCategory}>
             <QuestionContent
               {...questionContentProps}
-              comment={userAnswers.comment[selectedCategoryId]}
-              userAnswers={userAnswers.answers[selectedCategoryId]} question={question}
+              userAnswers={userAnswers}
+              comment={userAnswers.comment}
+              question={question}
               mergedUserQuestions={mergedUserQuestions !== null
                 ? mergedUserQuestions.answers[selectedCategoryId]
                 : null}
+              isValidation={isValidation}
             />
           </TabContainer>
           : <QuestionContent
@@ -62,6 +64,7 @@ export const QuestionCard = props => {
             userAnswers={userAnswers}
             comment={userAnswers.comment}
             mergedUserQuestions={mergedUserQuestions}
+            isValidation={isValidation}
           />
         }
       </Column>

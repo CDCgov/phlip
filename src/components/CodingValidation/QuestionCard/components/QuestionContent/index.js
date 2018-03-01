@@ -11,10 +11,11 @@ import * as questionTypes from 'components/CodingValidation/constants'
 import TextFieldQuestions from '../TextFieldQuestions'
 import Divider from 'material-ui/Divider'
 import Button from 'components/Button'
+import ValidationTable from '../ValidationTable'
 
 export const QuestionContent = props => {
   const {
-    question, currentUserInitials, comment, userAnswers, mergedUserQuestions,
+    question, currentUserInitials, comment, userAnswers, mergedUserQuestions, isValidation,
     onChange, onChangeTextAnswer, onOpenAlert
   } = props
 
@@ -111,6 +112,8 @@ export const QuestionContent = props => {
         <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
       </Row>
       }
+
+      {isValidation && <ValidationTable mergedUserQuestions={mergedUserQuestions} /> }
 
       {question.isCategoryQuestion &&
       <Fragment>

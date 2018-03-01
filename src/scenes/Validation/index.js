@@ -144,7 +144,9 @@ export class Validation extends Component {
       <QuestionCard
         question={this.props.question}
         onChange={this.onAnswer}
-        userAnswers={this.props.userAnswers}
+        userAnswers={this.props.question.isCategoryQuestion
+          ? this.props.userAnswers[this.props.selectedCategoryId]
+          : this.props.userAnswers}
         mergedUserQuestions={this.props.mergedUserQuestions}
         onChangeTextAnswer={this.onChangeTextAnswer}
         categories={this.props.categories}

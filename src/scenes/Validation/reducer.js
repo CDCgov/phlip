@@ -6,15 +6,13 @@ import {
   determineShowButton,
   handleUpdateUserAnswers,
   handleUpdateUserCodedQuestion,
+  handleUpdateUserCategoryChild,
   handleClearAnswers,
-  handleClearCategoryAnswers,
   initializeUserAnswers,
-  initializeCodedUsers,
-  handleUserPinciteCategoryChild,
   handleUserPinciteQuestion,
   initializeNavigator,
   getQuestionSelectedInNav,
-  handleUserCommentCategoryChild
+  initializeCodedUsers
 } from 'utils/codingHelpers'
 
 const INITIAL_STATE = {
@@ -33,7 +31,9 @@ const INITIAL_STATE = {
 }
 
 const validationReducer = (state = INITIAL_STATE, action) => {
-  const questionUpdater = handleUpdateUserCodedQuestion(state, action)
+  const questionUpdater = state.question.isCategoryQuestion
+    ? handleUpdateUserCategoryChild(state, action)
+    : handleUpdateUserCodedQuestion(state, action)
 
   switch (action.type) {
     case types.GET_VALIDATION_NEXT_QUESTION:
@@ -82,7 +82,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
               [action.payload.question.id]: {
                 schemeQuestionId: action.payload.question.id,
                 comment: '',
-                answers: []
+                answers: [],
               }
             }
         }
@@ -93,41 +93,26 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         ...state,
         userAnswers: {
           ...state.userAnswers,
-          ...handleUpdateUserAnswers(state, action, state.selectedCategoryId)
+          ...handleUpdateUserAnswers(state, action, state.selectedCategoryId, true)
         }
       }
 
     case types.ON_CHANGE_VALIDATION_PINCITE:
       return {
         ...state,
-        ...questionUpdater(
-          'answers',
-          state.question.isCategoryQuestion
-            ? handleUserPinciteCategoryChild(state.selectedCategoryId, state.question.questionType, action, state.userAnswers[action.questionId].answers)
-            : handleUserPinciteQuestion(state.question.questionType, action, state.userAnswers[action.questionId].answers)
-        )
+        ...questionUpdater('answers', handleUserPinciteQuestion)
       }
 
     case types.ON_CHANGE_VALIDATION_COMMENT:
       return {
         ...state,
-        ...questionUpdater(
-          'comment',
-          state.question.isCategoryQuestion
-            ? handleUserCommentCategoryChild(state.selectedCategoryId, action, state.userAnswers[action.questionId].comment)
-            : action.comment
-        )
+        ...questionUpdater('comment', action.comment)
       }
 
     case types.ON_CLEAR_VALIDATION_ANSWER:
       return {
         ...state,
-        ...questionUpdater(
-          'answers',
-          state.question.isCategoryChild
-            ? handleClearCategoryAnswers(state.selectedCategoryId, state.question.questionType, state.userAnswers[action.questionId].answers)
-            : handleClearAnswers(state.question.questionType, state.userAnswers[action.questionId].answers)
-        )
+        ...questionUpdater('answers', handleClearAnswers)
       }
 
     case types.ON_CHANGE_VALIDATION_CATEGORY:
@@ -192,27 +177,16 @@ const validationReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ON_APPLY_VALIDATION_TO_ALL:
-      const answer = state.userAnswers[state.question.id].answers[state.selectedCategoryId]
-      const catQuestion = state.userAnswers[state.question.id]
+      const catQuestion = state.userAnswers[state.question.id][state.selectedCategoryId]
       return {
         ...state,
         userAnswers: {
           ...state.userAnswers,
           [state.question.id]: {
-            ...state.userAnswers[state.question.id],
-            ...state.categories.reduce((obj, category) => {
-              return {
-                ...obj,
-                answers: {
-                  ...obj.answers,
-                  [category.id]: { ...catQuestion.answers[state.selectedCategoryId], validatedBy: action.validatedBy }
-                },
-                comment: {
-                  ...obj.comment,
-                  [category.id]: catQuestion.comment[state.selectedCategoryId]
-                }
-              }
-            }, {})
+            ...state.categories.reduce((obj, category) => ({
+              ...obj,
+              [category.id]: { ...catQuestion, categoryId: category.id }
+            }), {})
           }
         }
       }

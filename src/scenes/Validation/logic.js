@@ -123,6 +123,7 @@ export const getValidationOutlineLogic = createLogic({
 
         try {
           codeQuestionsPerUser = await api.getUserCodedQuestions(coder.userId, action.projectId, action.jurisdictionId)
+          console.log(codeQuestionsPerUser)
           combinedCodedQuestions = [...combinedCodedQuestions, { codeQuestionsPerUser, coder }]
 
         } catch (e) {

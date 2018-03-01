@@ -6,15 +6,12 @@ import {
   determineShowButton,
   handleUpdateUserAnswers,
   handleUpdateUserCodedQuestion,
+  handleUpdateUserCategoryChild,
   handleClearAnswers,
-  handleClearCategoryAnswers,
   initializeUserAnswers,
-  handleUserPinciteCategoryChild,
   handleUserPinciteQuestion,
   initializeNavigator,
-  getQuestionSelectedInNav,
-  handleUserCommentCategoryChild,
-  handleUserSaveFlagCategoryChild
+  getQuestionSelectedInNav
 } from 'utils/codingHelpers'
 
 const INITIAL_STATE = {
@@ -32,7 +29,9 @@ const INITIAL_STATE = {
 }
 
 const codingReducer = (state = INITIAL_STATE, action) => {
-  const questionUpdater = handleUpdateUserCodedQuestion(state, action)
+  const questionUpdater = state.question.isCategoryQuestion
+    ? handleUpdateUserCategoryChild(state, action)
+    : handleUpdateUserCodedQuestion(state, action)
 
   switch (action.type) {
     case types.GET_NEXT_QUESTION:
@@ -91,58 +90,31 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.ON_CHANGE_COMMENT:
       return {
         ...state,
-        ...questionUpdater(
-          'comment',
-          state.question.isCategoryQuestion
-            ? handleUserCommentCategoryChild(state.selectedCategoryId, action, state.userAnswers[action.questionId].comment)
-            : action.comment
-        )
+        ...questionUpdater('comment', action.comment)
       }
 
     case types.ON_SAVE_FLAG:
       return {
         ...state,
-        ...questionUpdater(
-          'flag',
-          state.question.isCategoryQuestion
-            ? handleUserSaveFlagCategoryChild(state.selectedCategoryId, action, state.userAnswers[action.questionId].flag)
-            : action.flagInfo
-        )
+        ...questionUpdater('flag', action.flagInfo)
       }
 
     case types.ON_CHANGE_PINCITE:
       return {
         ...state,
-        ...questionUpdater(
-          'answers',
-          state.question.isCategoryQuestion
-            ? handleUserPinciteCategoryChild(state.selectedCategoryId, state.question.questionType, action, state.userAnswers[action.questionId].answers)
-            : handleUserPinciteQuestion(state.question.questionType, action, state.userAnswers[action.questionId].answers)
-        )
+        ...questionUpdater('answers', handleUserPinciteQuestion)
       }
 
     case types.APPLY_ANSWER_TO_ALL:
-      const catQuestion = state.userAnswers[state.question.id]
+      const catQuestion = state.userAnswers[state.question.id][state.selectedCategoryId]
       return {
         ...state,
         userAnswers: {
           ...state.userAnswers,
           [state.question.id]: {
-            ...state.userAnswers[state.question.id],
             ...state.categories.reduce((obj, category) => ({
               ...obj,
-              answers: {
-                ...obj.answers,
-                [category.id]: { ...catQuestion.answers[state.selectedCategoryId] }
-              },
-              comment: {
-                ...obj.comment,
-                [category.id]: catQuestion.comment[state.selectedCategoryId]
-              },
-              flag: {
-                ...obj.flag,
-                [category.id]: { ...catQuestion.flag[state.selectedCategoryId] }
-              }
+              [category.id]: { ...catQuestion, categoryId: category.id }
             }), {})
           }
         }
@@ -151,12 +123,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.ON_CLEAR_ANSWER:
       return {
         ...state,
-        ...questionUpdater(
-          'answers',
-          state.question.isCategoryQuestion
-            ? handleClearCategoryAnswers(state.selectedCategoryId, state.question.questionType, state.userAnswers[action.questionId].answers)
-            : handleClearAnswers(state.question.questionType, state.userAnswers[action.questionId].answers)
-        )
+        ...questionUpdater('answers', handleClearAnswers)
       }
 
     case types.ON_CHANGE_CATEGORY:
