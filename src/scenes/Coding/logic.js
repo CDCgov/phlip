@@ -48,7 +48,8 @@ export const getOutlineLogic = createLogic({
         tree,
         question: questionsWithNumbers[0],
         codedQuestions,
-        isSchemeEmpty: false
+        isSchemeEmpty: false,
+        userId
       }
     }
   }

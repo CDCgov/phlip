@@ -73,7 +73,6 @@ export const getValidationOutlineLogic = createLogic({
     let scheme = {}, codedQuestions = [], projectCoders = [],
       codeQuestionsPerUser = [], combinedCodedQuestions = {}, updatedCodedQuestions = []
 
-
     const userId = getState().data.user.currentUser.id
 
     try {
@@ -155,7 +154,8 @@ export const getValidationOutlineLogic = createLogic({
         question: questionsWithNumbers[0],
         mergedUserQuestions: output,
         codedQuestions: updatedCodedQuestions,
-        isSchemeEmpty: false
+        isSchemeEmpty: false,
+        userId
       }
     }
   }

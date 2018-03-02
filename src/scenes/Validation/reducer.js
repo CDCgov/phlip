@@ -74,7 +74,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
             [
               { schemeQuestionId: action.payload.question.id, comment: '', codedAnswers: [] },
               ...action.payload.codedQuestions
-            ], normalizedQuestions
+            ], normalizedQuestions, action.payload.userId
           ),
           mergedUserQuestions: action.payload.mergedUserQuestions.length !== 0
             ? initializeCodedUsers(action.payload.mergedUserQuestions, normalizedQuestions)

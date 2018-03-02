@@ -41,7 +41,7 @@ export class Coding extends Component {
     this.state = {
       selectedJurisdiction: this.props.jurisdictionId,
       showViews: false,
-      navOpen: true,
+      navOpen: false,
       applyAllAlertOpen: false
     }
 
@@ -173,11 +173,13 @@ export class Coding extends Component {
   onShowCodeView = () => (
     <Fragment>
       <QuestionCard
-        question={this.props.question} onChange={this.onAnswer}
+        question={this.props.question}
+        onChange={this.onAnswer}
         userAnswers={this.props.question.isCategoryQuestion
           ? this.props.userAnswers[this.props.selectedCategoryId]
           : this.props.userAnswers}
-        onChangeTextAnswer={this.onChangeTextAnswer} categories={this.props.categories}
+        onChangeTextAnswer={this.onChangeTextAnswer}
+        categories={this.props.categories}
         selectedCategory={this.props.selectedCategory}
         onChangeCategory={this.props.actions.onChangeCategory}
         mergedUserQuestions={null}

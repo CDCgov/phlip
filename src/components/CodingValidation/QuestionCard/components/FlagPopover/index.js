@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Manager, Popper, Target } from 'react-popper'
-import Typography from 'material-ui/Typography'
-import Grow from 'material-ui/transitions/Grow'
-import IconButton from 'components/IconButton'
-import Card from 'components/Card'
-import Divider from 'material-ui/Divider'
-import { Column, Row } from 'components/Layout'
+import Container, { Column, Row } from 'components/Layout'
 import RadioGroup from 'components/SelectionControls/RadioGroup'
 import SimpleInput from 'components/SimpleInput'
 import Button from 'components/Button'
 import Icon from 'components/Icon'
+import { TableBody, TableHead } from 'material-ui/Table'
+import Table from 'components/Table'
+import TableRow from 'components/TableRow'
+import TableCell from 'components/TableCell'
+import Popover from './components/Popover'
+import { updater } from 'utils'
 
 const getFlagText = (color, text) => (
   <Row displayFlex style={{ alignItems: 'center' }}>
@@ -30,41 +30,66 @@ export class FlagPopover extends Component {
     userFlag: {
       notes: '',
       type: 0
-    }
+    },
+    questionFlags: []
+  }
+
+  static propTypes = {
+    userFlag: PropTypes.object,
+    questionFlags: PropTypes.array,
+    onSaveFlag: PropTypes.func
   }
 
   constructor(props, context) {
     super(props, context)
 
     this.state = {
-      flagOpen: false,
-      updatedFlag: { ...props.userFlag }
+      redFlagOpen: false,
+      otherFlagOpen: false,
+      updatedFlag: { ...props.userFlag },
+      questionFlags: [ ...props.questionFlags ]
     }
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      updatedFlag: { ...nextProps.userFlag }
+      updatedFlag: { ...nextProps.userFlag },
+      questionFlags: [ ...nextProps.questionFlags ]
     })
   }
 
-  onOpenPopover = () => {
+  onOpenRedPopover = () => {
     this.setState({
-      flagOpen: !this.state.flagOpen
+      redFlagOpen: !this.state.redFlagOpen,
+      otherFlagOpen: false
     })
   }
 
-  onClosePopover = () => {
+  onOpenOtherPopover = () => {
     this.setState({
-      flagOpen: false,
+      redFlagOpen: false,
+      otherFlagOpen: !this.state.otherFlagOpen
+    })
+  }
+
+  onCloseOtherPopover = () => {
+    this.setState({
+      otherFlagOpen: false,
       updatedFlag: this.props.userFlag
     })
   }
 
-  onSavePopover = () => {
+  onCloseRedPopover = () => {
+    this.setState({
+      redFlagOpen: false
+    })
+  }
+
+  onSavePopover = e => {
+    e.preventDefault()
     this.props.onSaveFlag(this.state.updatedFlag)
     this.setState({
-      flagOpen: false
+      otherFlagOpen: false
     })
   }
 
@@ -89,53 +114,72 @@ export class FlagPopover extends Component {
 
   render() {
     return (
-      <Manager>
-        <Target>
-          <IconButton
-            color={this.state.flagOpen
-              ? 'secondary'
-              : this.props.userFlag.type !== 0 ? userFlagColors[this.props.userFlag.type].color : '#d7e0e4'}
-            onClick={this.onOpenPopover}
-          >
-            flag
-          </IconButton>
-        </Target>
-        <Popper placement="bottom-end" eventsEnabled={this.state.flagOpen} style={{ zIndex: 1200 }}>
-          <Grow in={this.state.flagOpen}>
-            <Card style={{ display: 'flex', flexDirection: 'column', zIndex: 1200 }}>
-              <Row style={{ padding: 16 }}>
-                <Typography type="button">FLAG</Typography>
-              </Row>
-              <Divider />
-              <Row style={{ padding: 16, minWidth: 450 }}>
-                <RadioGroup
-                  selected={this.state.updatedFlag.type}
-                  choices={Object.values(userFlagColors)}
-                  onChange={this.onChangeFlagType}
-                />
-              </Row>
-              <Row style={{ padding: 16 }}>
-                <form>
-                <SimpleInput
-                  value={this.state.updatedFlag.notes}
-                  onChange={this.onChangeFlagNotes}
-                  shrinkLabel={true}
-                  id="flag-notes"
-                  label="Notes"
-                  placeholder="Enter Notes"
-                  multiline={false}
-                  type="text"
-                />
-                </form>
-              </Row>
-              <Row displayFlex style={{ justifyContent: 'flex-end', padding: 16 }}>
-                <Button onClick={this.onClosePopover} raised={false} color="accent" value="Cancel" />
-                <Button onClick={this.onSavePopover} raised={false} color="accent" value="Save" />
-              </Row>
-            </Card>
-          </Grow>
-        </Popper>
-      </Manager>
+      <Container style={{ width: 'unset' }}>
+        {this.props.questionFlags.length > 0 &&
+        <Popover
+          title="Raised Red Flags"
+          open={this.state.redFlagOpen}
+          targetIcon="report"
+          targetColor={userFlagColors[3].color}
+          onOpen={this.onOpenRedPopover}
+          onClose={this.onCloseRedPopover}
+        >
+          <Table style={{ width: '90%', alignSelf: 'center', minWidth: 550, margin: '0 16px' }}>
+            <TableHead>
+              <TableRow>
+                <TableCell padding="checkbox">Raised By</TableCell>
+                <TableCell padding="checkbox">Notes</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.state.questionFlags.map((flag, index) => (
+                <TableRow key={`red-flag-${index}`}>
+                  <TableCell padding="checkbox">{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}</TableCell>
+                  <TableCell padding="checkbox">{flag.notes}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <Row displayFlex style={{ justifyContent: 'flex-end', padding: 16 }}>
+            <Button onClick={this.onCloseRedPopover} raised={false} color="accent" value="Cancel" />
+          </Row>
+        </Popover>}
+        <Popover
+          title="Flags"
+          open={this.state.otherFlagOpen}
+          targetIcon="flag"
+          targetColor={this.props.userFlag.type !== 0
+            ? userFlagColors[this.props.userFlag.type].color
+            : '#d7e0e4'}
+          onOpen={this.onOpenOtherPopover}
+          onClose={this.onCloseOtherPopover}>
+          <form onSubmit={this.onSavePopover}>
+            <Row style={{ padding: 16, minWidth: 450 }}>
+              <RadioGroup
+                selected={this.state.updatedFlag.type}
+                choices={Object.values(userFlagColors)}
+                onChange={this.onChangeFlagType}
+              />
+            </Row>
+            <Row style={{ padding: 16 }}>
+              <SimpleInput
+                value={this.state.updatedFlag.notes}
+                onChange={this.onChangeFlagNotes}
+                shrinkLabel={true}
+                id="flag-notes"
+                label="Notes"
+                placeholder="Enter Notes"
+                multiline={false}
+                type="text"
+              />
+            </Row>
+            <Row displayFlex style={{ justifyContent: 'flex-end', padding: 16 }}>
+              <Button type="button" onClick={this.onCloseOtherPopover} raised={false} color="accent" value="Cancel" />
+              <Button type="submit" onClick={this.onSavePopover} raised={false} color="accent" value="Save" />
+            </Row>
+          </form>
+        </Popover>
+      </Container>
     )
   }
 }

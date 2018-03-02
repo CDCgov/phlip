@@ -30,7 +30,11 @@ export const QuestionCard = props => {
     onChangeTextAnswer,
     currentUserInitials,
     question,
-    onOpenAlert
+    onOpenAlert,
+    userAnswers,
+    comment: userAnswers.comment,
+    isValidation,
+    question
   }
 
   return (
@@ -40,32 +44,17 @@ export const QuestionCard = props => {
           {question.questionType !== questionTypes.CATEGORY && <IconButton onClick={onClearAnswer}>
             <Broom className={styles.sweep} aria-labelledby="Clear answer" />
           </IconButton>}
-          {!isValidation && <FlagPopover
-            userFlag={userAnswers.flag}
-            onSaveFlag={onSaveFlag}
-          />}
+          {!isValidation && <FlagPopover userFlag={userAnswers.flag} onSaveFlag={onSaveFlag} questionFlags={question.flags} />}
         </Row>
         <Divider />
         {categories !== undefined
           ? <TabContainer tabs={categories} selected={selectedCategory} onChangeCategory={onChangeCategory}>
-            <QuestionContent
-              {...questionContentProps}
-              userAnswers={userAnswers}
-              comment={userAnswers.comment}
-              question={question}
-              mergedUserQuestions={mergedUserQuestions !== null
-                ? mergedUserQuestions.answers[selectedCategoryId]
-                : null}
-              isValidation={isValidation}
-            />
-          </TabContainer>
-          : <QuestionContent
-            {...questionContentProps}
-            userAnswers={userAnswers}
-            comment={userAnswers.comment}
-            mergedUserQuestions={mergedUserQuestions}
-            isValidation={isValidation}
-          />
+              <QuestionContent
+                {...questionContentProps}
+                mergedUserQuestions={isValidation ? mergedUserQuestions.answers[selectedCategoryId] : null}
+              />
+            </TabContainer>
+          : <QuestionContent{...questionContentProps} mergedUserQuestions={mergedUserQuestions} />
         }
       </Column>
     </Row>

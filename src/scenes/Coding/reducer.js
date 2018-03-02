@@ -1,5 +1,5 @@
 import * as types from './actionTypes'
-import { normalize } from 'utils'
+import { normalize, updater } from 'utils'
 import {
   getNextQuestion,
   getPreviousQuestion,
@@ -70,9 +70,14 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           question: action.payload.question,
           userAnswers: initializeUserAnswers(
             [
-              { schemeQuestionId: action.payload.question.id, comment: '', codedAnswers: [] },
+              {
+                schemeQuestionId: action.payload.question.id,
+                comment: '',
+                codedAnswers: [],
+                flag: { notes: '', type: 0, raisedBy: {} }
+              },
               ...action.payload.codedQuestions
-            ], normalizedQuestions
+            ], normalizedQuestions, action.payload.userId
           ),
           categories: undefined
         }
@@ -94,9 +99,36 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ON_SAVE_FLAG:
-      return {
-        ...state,
-        ...questionUpdater('flag', action.flagInfo)
+      // If the flag type if red, add it to schemeQuestionFlags
+      if (action.flagInfo.type === 3) {
+        const question = { ...state.scheme.byId[action.questionId] }
+        return {
+          ...state,
+          ...questionUpdater('flag', action.flagInfo),
+          question: {
+            ...state.question,
+            flags: action.flagInfo.hasOwnProperty('id')
+              ? updater.updateByProperty(action.flagInfo, question.flags, 'id')
+              : [ ...question.flags, action.flagInfo ]
+          },
+          scheme: {
+            ...state.scheme,
+            byId: {
+              ...state.scheme.byId,
+              [action.questionId]: {
+                ...question,
+                flags: action.flagInfo.hasOwnProperty('id')
+                  ? updater.updateByProperty(action.flagInfo, question.flags, 'id')
+                  : [ ...question.flags, action.flagInfo ]
+              }
+            }
+          }
+        }
+      } else {
+        return {
+          ...state,
+          ...questionUpdater('flag', action.flagInfo)
+        }
       }
 
     case types.ON_CHANGE_PINCITE:

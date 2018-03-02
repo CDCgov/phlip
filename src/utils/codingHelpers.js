@@ -3,29 +3,15 @@ import { checkIfAnswered, checkIfExists, checkIfCategoryAnswered } from 'utils/c
 import sortList from 'utils/sortList'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
-const initializeValues = question => ({
-  ...question,
-  comment: question.comment || '',
-  flag: question.flag || { notes: '', type: 0 },
-  answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId'),
-  schemeQuestionId: question.schemeQuestionId
-})
-
-/*
- This function basically takes an array of user coded question answers: { answers: [{ answerId: 1, pincite: '' }] },
- and converts it to an object like: { answers: { 1: { answerId: 1, pincite: '' }}}.
-
- It accounts for category children. If the question object has a categoryId, then the final answers object, looks like
- this: { answers: { [categoryId]: { answers: { 1 : { answerId: 1, pincite: '' } } } }}. Comments are handled the same way
- for category question children.
-
- Text field type questions are handled different since there will only be one answer instead of multiple and doesn't have
- an ID. It looks like this: { answers: { value: '', pincite: '' } }
- */
-export const normalizeCodedAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) => {
-  return (question.categoryId && question.categoryId !== 0)
-    ? { ...userCodedAnswerObj[question.schemeQuestionId], [question.categoryId]: initializeValues(question) }
-    : { ...initializeValues(question) }
+const initializeValues = (question, codingSchemeQuestion, userId) => {
+  const redUserFlag = codingSchemeQuestion.flags.filter(flag => flag.raisedBy.userId === userId)
+  return {
+    ...question,
+    comment: question.comment || '',
+    flag: redUserFlag.length ? redUserFlag[0] : (question.flag || { notes: '', type: 0 }),
+    answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId'),
+    schemeQuestionId: question.schemeQuestionId
+  }
 }
 
 export const normalizeCodedUserAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) => {
@@ -69,15 +55,26 @@ export const normalizeCodedUserAnswers = (question, codingSchemeQuestion, userCo
 }
 
 /*
-  Takes coded questions array and turns it into a object where each key is the question id.
+ This function basically takes an array of user coded question answers: { answers: [{ answerId: 1, pincite: '' }] },
+ and converts it to an object like: { answers: { 1: { answerId: 1, pincite: '' }}}.
+
+ It accounts for category children. If the question object has a categoryId, then the final answers object, looks like
+ this: { answers: { [categoryId]: { answers: { 1 : { answerId: 1, pincite: '' } } } }}. Comments are handled the same way
+ for category question children.
+
+ Text field type questions are handled different since there will only be one answer instead of multiple and doesn't have
+ an ID. It looks like this: { answers: { value: '', pincite: '' } }
  */
-export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
+export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions, userId) => {
   return userCodedQuestions.reduce((codedQuestionObj, question) => {
     return ({
       ...codedQuestionObj,
-      [question.schemeQuestionId]: {
-        ...normalizeCodedAnswers(question, codingSchemeQuestions[question.schemeQuestionId], codedQuestionObj)
-      }
+      [question.schemeQuestionId]: question.categoryId && question.categoryId !== 0
+        ? {
+          ...codedQuestionObj[question.schemeQuestionId],
+          [question.categoryId]: { ...initializeValues(question, codingSchemeQuestions[question.schemeQuestionId], userId) }
+        }
+        : { ...initializeValues(question, codingSchemeQuestions[question.schemeQuestionId], userId) }
     })
   }, {})
 }
@@ -442,13 +439,13 @@ export const getFinalCodedObject = (state, action, applyAll = false) => {
     : state.userAnswers[action.questionId]
 
   const { answers, categoryId, schemeQuestionId, ...answerObject } = {
-      ...questionObject,
-      codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds),
-      ...state.question.isCategoryQuestion
+    ...questionObject,
+    codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds),
+    ...state.question.isCategoryQuestion
       ? { categories: applyAll ? [...state.categories.map(cat => cat.id)] : [state.selectedCategoryId] }
       : {}
-    }
+  }
 
-    console.log(answerObject)
+  console.log(answerObject)
   return answerObject
 }
