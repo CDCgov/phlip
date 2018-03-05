@@ -113,7 +113,7 @@ export const QuestionContent = props => {
       </Row>
       }
 
-      {isValidation && <ValidationTable mergedUserQuestions={mergedUserQuestions} /> }
+      {isValidation && <ValidationTable mergedUserQuestions={mergedUserQuestions} questionFlags={question.flags} /> }
 
       {question.isCategoryQuestion &&
       <Fragment>

@@ -18,14 +18,15 @@ const flagColors = {
 }
 
 export const ValidationTable = props => {
-  const { mergedUserQuestions } = props
+  const { mergedUserQuestions, questionFlags } = props
 
   const hasFlags = mergedUserQuestions.hasOwnProperty('flag')
   const hasComments = mergedUserQuestions.hasOwnProperty('comment')
+  const allFlags = [...mergedUserQuestions.flag, ...questionFlags]
 
   return (
     ((hasFlags && mergedUserQuestions.flag.length > 0) || (hasComments && mergedUserQuestions.comment.length > 0)) &&
-    <Container column style={{ padding: 12 }}>
+    <Container column style={{ padding: 20 }}>
       <Row style={{ paddingBottom: 10 }}><Typography type="title" style={{ color: '#a7bdc6' }}>
         Flags and Notes
       </Typography></Row>
@@ -39,16 +40,16 @@ export const ValidationTable = props => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {mergedUserQuestions.flag.map((flag, i) => (
-              <TableRow key={`flag-${i}`}>
-                <TableCell style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+            {allFlags.map((flag, i) => {
+              return (<TableRow key={`flag-${i}`}>
+                <TableCell style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', padding: '5px 12px' }}>
                   <Avatar
                     cardAvatar
                     style={{ marginRight: 15 }}
-                    initials={getInitials(flag.firstName, flag.lastName)}
-                    avatarUrl={flag.avatarUrl}
+                    initials={getInitials(flag.raisedBy.firstName, flag.raisedBy.lastName)}
+                    avatarUrl={flag.raisedBy.avatarUrl}
                   />
-                  <Typography type="caption">{`${flag.firstName} ${flag.lastName}`}</Typography>
+                  <Typography type="caption">{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}</Typography>
                 </TableCell>
                 <TableCell padding="none">
                   <Icon color={flagColors[flag.type]}>flag</Icon>
@@ -56,8 +57,8 @@ export const ValidationTable = props => {
                 <TableCell>
                   <Typography type="caption">{flag.notes}</Typography>
                 </TableCell>
-              </TableRow>
-            ))}
+              </TableRow>)}
+            )}
           </TableBody>
         </Table>
       </Row>
