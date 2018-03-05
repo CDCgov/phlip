@@ -21,7 +21,7 @@ const TabContainer = props => {
 
 export const QuestionCard = props => {
   const {
-    question, currentUserInitials, userAnswers, categories, mergedUserQuestions, selectedCategory, isValidation, selectedCategoryId,
+    question, currentUserInitials, userAnswers, categories, mergedUserQuestions, selectedCategory, isValidation, user,
     onClearAnswer, onOpenAlert, onChangeCategory, onChange, onChangeTextAnswer, onSaveFlag
   } = props
 
@@ -29,6 +29,7 @@ export const QuestionCard = props => {
     onChange,
     onChangeTextAnswer,
     currentUserInitials,
+    user,
     question,
     onOpenAlert,
     userAnswers,
@@ -45,7 +46,7 @@ export const QuestionCard = props => {
           {question.questionType !== questionTypes.CATEGORY && <IconButton onClick={onClearAnswer}>
             <Broom className={styles.sweep} aria-labelledby="Clear answer" />
           </IconButton>}
-          {!isValidation && <FlagPopover userFlag={userAnswers.flag} onSaveFlag={onSaveFlag} questionFlags={question.flags} />}
+          {!isValidation && <FlagPopover userFlag={userAnswers.flag} onSaveFlag={onSaveFlag} questionFlags={question.flags} user={user}/>}
         </Row>
         <Divider />
         {categories !== undefined

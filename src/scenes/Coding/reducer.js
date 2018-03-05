@@ -104,7 +104,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         const question = { ...state.scheme.byId[action.questionId] }
         return {
           ...state,
-          ...questionUpdater('flag', action.flagInfo),
           question: {
             ...state.question,
             flags: question.flags.length > 0

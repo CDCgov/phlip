@@ -10,13 +10,13 @@ import Card from 'components/Card'
 import { Row } from 'components/Layout'
 
 export const Popover = props => {
-  const { targetIcon, targetColor, open, title, onOpen, onClose, children } = props
+  const { targetIcon, targetColor, targetStyle, open, title, onOpen, onClose, children } = props
 
   return (
     <ClickAwayListener onClickAway={open ? onClose : () => {}}>
       <Manager>
         <Target>
-          <IconButton color={open ? 'secondary' : targetColor} onClick={onOpen}>
+          <IconButton color={open ? 'secondary' : targetColor} style={targetStyle} onClick={onOpen}>
             {targetIcon}
           </IconButton>
         </Target>

@@ -139,7 +139,7 @@ export class Coding extends Component {
 
   onSaveFlag = flagInfo => {
     this.props.actions.onSaveFlag(this.props.projectId, this.props.jurisdictionId, this.props.question.id, {
-      raisedBy: { ...this.props.user },
+      raisedBy: { userId: this.props.user.id, firstName: this.props.user.firstName, lastName: this.props.user.lastName },
       ...flagInfo
     })
   }
@@ -191,6 +191,7 @@ export class Coding extends Component {
         onOpenAlert={this.onOpenApplyAllAlert}
         onSaveFlag={this.onSaveFlag}
         selectedCategoryId={this.props.selectedCategoryId}
+        user={this.props.user}
       />
       <FooterNavigate
         currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion}

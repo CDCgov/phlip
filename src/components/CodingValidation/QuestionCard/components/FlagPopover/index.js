@@ -5,6 +5,7 @@ import RadioGroup from 'components/SelectionControls/RadioGroup'
 import SimpleInput from 'components/SimpleInput'
 import Button from 'components/Button'
 import Icon from 'components/Icon'
+import IconButton from 'components/IconButton'
 import { TableBody, TableHead } from 'material-ui/Table'
 import Table from 'components/Table'
 import TableRow from 'components/TableRow'
@@ -20,6 +21,10 @@ const getFlagText = (color, text) => (
 )
 
 const checkForSameType = (userType, choiceType) => userType !== 0 ? userType !== choiceType : false
+
+const checkForRedFlag = (questionFlags, user) => questionFlags.filter(flag => flag.raisedBy.userId === user.id)
+
+const redFlagColor = '#d90525'
 
 export class FlagPopover extends Component {
   static defaultProps = {
@@ -43,7 +48,9 @@ export class FlagPopover extends Component {
       redFlagOpen: false,
       otherFlagOpen: false,
       updatedFlag: { ...props.userFlag },
-      questionFlags: [...props.questionFlags]
+      questionFlags: [...props.questionFlags],
+      userRedFlag: checkForRedFlag(props.questionFlags, props.user)[0] || { notes: '', type: 3 },
+      inEditMode: false
     }
 
     this.userFlagColors = {
@@ -58,12 +65,6 @@ export class FlagPopover extends Component {
         color: '#fca63a',
         text: getFlagText('#fca63a', 'Notify coordinator'),
         disabled: checkForSameType(props.userFlag.type, 2)
-      },
-      3: {
-        type: 3,
-        color: '#d90525',
-        text: getFlagText('#d90525', 'Stop coding'),
-        disabled: checkForSameType(props.userFlag.type, 3)
       }
     }
   }
@@ -71,7 +72,8 @@ export class FlagPopover extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       updatedFlag: { ...nextProps.userFlag },
-      questionFlags: [...nextProps.questionFlags]
+      questionFlags: [...nextProps.questionFlags],
+      userRedFlag: checkForRedFlag(nextProps.questionFlags, nextProps.user)[0] || { notes: '', type: 3 }
     })
 
     for (let type in this.userFlagColors) {
@@ -89,6 +91,36 @@ export class FlagPopover extends Component {
     })
   }
 
+  onCloseRedPopover = () => {
+    this.setState({
+      redFlagOpen: false,
+      inEditMode: false
+    })
+  }
+
+  onSaveRedPopover = e => {
+    e.preventDefault()
+    this.props.onSaveFlag(this.state.userRedFlag)
+    this.setState({
+      inEditMode: false
+    })
+  }
+
+  onUpdateRedFlagNotes = event => {
+    this.setState({
+      userRedFlag: {
+        ...this.state.userRedFlag,
+        notes: event.target.value
+      }
+    })
+  }
+
+  toggleEditMode = () => {
+    this.setState({
+      inEditMode: !this.state.inEditMode
+    })
+  }
+
   onOpenOtherPopover = () => {
     this.setState({
       redFlagOpen: false,
@@ -103,13 +135,7 @@ export class FlagPopover extends Component {
     })
   }
 
-  onCloseRedPopover = () => {
-    this.setState({
-      redFlagOpen: false
-    })
-  }
-
-  onSavePopover = e => {
+  onSaveOtherPopover = e => {
     e.preventDefault()
     this.props.onSaveFlag(this.state.updatedFlag)
     this.setState({
@@ -138,36 +164,67 @@ export class FlagPopover extends Component {
 
   render() {
     return (
-      <Container style={{ width: 'unset' }}>
-        {this.props.questionFlags.length > 0 &&
+      <Container style={{ width: 'unset', height: 24 }}>
         <Popover
-          title="Raised Red Flags"
+          title="Red Flags"
           open={this.state.redFlagOpen}
           targetIcon="report"
-          targetColor={this.userFlagColors[3].color}
+          targetColor={this.props.questionFlags.length > 0 ? redFlagColor : '#d7e0e4'}
+          targetStyle={{ paddingRight: 15, paddingLeft: 15 }}
           onOpen={this.onOpenRedPopover}
           onClose={this.onCloseRedPopover}
         >
-          <Table style={{ width: '90%', alignSelf: 'center', minWidth: 550, margin: '0 16px' }}>
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox">Raised By</TableCell>
-                <TableCell padding="checkbox">Notes</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {this.state.questionFlags.map((flag, index) => (
-                <TableRow key={`red-flag-${index}`}>
-                  <TableCell padding="checkbox">{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}</TableCell>
-                  <TableCell padding="checkbox">{flag.notes}</TableCell>
+          <Container column style={{ minWidth: 450, alignItems: 'center', paddingTop: 10 }}>
+            {(this.props.questionFlags.length > 0 && !this.state.inEditMode) &&
+            <Table style={{ width: '90%', minWidth: 550, margin: '10px 16px' }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell padding="checkbox">Raised By</TableCell>
+                  <TableCell padding="checkbox">Notes</TableCell>
+                  {this.state.userRedFlag.notes.length > 0 && <TableCell padding="checkbox">Edit</TableCell>}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <Row displayFlex style={{ justifyContent: 'flex-end', padding: 16 }}>
-            <Button onClick={this.onCloseRedPopover} raised={false} color="accent" value="Cancel" />
-          </Row>
-        </Popover>}
+              </TableHead>
+              <TableBody>
+                {this.state.questionFlags.map((flag, index) => (
+                  <TableRow key={`red-flag-${index}`}>
+                    <TableCell padding="checkbox">{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}</TableCell>
+                    <TableCell padding="checkbox">{flag.notes}</TableCell>
+                    {flag.raisedBy.userId === this.props.user.id &&
+                    <TableCell padding="checkbox">
+                      <IconButton onClick={this.toggleEditMode} color="#5f6060">edit</IconButton></TableCell>}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>}
+            {!this.state.inEditMode && !this.state.userRedFlag.notes.length > 0 &&
+            <Button onClick={this.toggleEditMode} color="accent" value="+ Add Red Flag" />}
+            {this.state.inEditMode &&
+            <form onSubmit={this.onSaveRedPopover} style={{ alignSelf: 'stretch' }}>
+              <Row style={{ padding: 16 }}>
+                <SimpleInput
+                  value={this.state.userRedFlag.notes}
+                  onChange={this.onUpdateRedFlagNotes}
+                  shrinkLabel={true}
+                  id="flag-notes"
+                  label="Notes"
+                  placeholder="Enter Notes"
+                  multiline={false}
+                  type="text"
+                />
+              </Row>
+            </form>}
+            <Row displayFlex style={{ alignSelf: 'flex-end', padding: 16 }}>
+              <Button
+                onClick={this.state.inEditMode ? this.toggleEditMode : this.onCloseRedPopover}
+                raised={false}
+                color="accent"
+                value="Cancel"
+              />
+              {this.state.inEditMode &&
+              <Button type="submit" onClick={this.onSaveRedPopover} raised={false} color="accent" value="Save" />}
+            </Row>
+          </Container>
+        </Popover>
         <Popover
           title="Flags"
           open={this.state.otherFlagOpen}
@@ -178,7 +235,7 @@ export class FlagPopover extends Component {
           onOpen={this.onOpenOtherPopover}
           onClose={this.onCloseOtherPopover}
         >
-          <form onSubmit={this.onSavePopover}>
+          <form onSubmit={this.onSaveOtherPopover}>
             <Row style={{ padding: 16, minWidth: 450 }}>
               <RadioGroup
                 selected={this.state.updatedFlag.type}
@@ -200,7 +257,7 @@ export class FlagPopover extends Component {
             </Row>
             <Row displayFlex style={{ justifyContent: 'flex-end', padding: 16 }}>
               <Button type="button" onClick={this.onCloseOtherPopover} raised={false} color="accent" value="Cancel" />
-              <Button type="submit" onClick={this.onSavePopover} raised={false} color="accent" value="Save" />
+              <Button type="submit" onClick={this.onSaveOtherPopover} raised={false} color="accent" value="Save" />
             </Row>
           </form>
         </Popover>

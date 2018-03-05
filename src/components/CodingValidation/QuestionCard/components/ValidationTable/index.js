@@ -22,7 +22,7 @@ export const ValidationTable = props => {
 
   const hasFlags = mergedUserQuestions.hasOwnProperty('flag')
   const hasComments = mergedUserQuestions.hasOwnProperty('comment')
-  
+
   return (
     ((hasFlags && mergedUserQuestions.flag.length > 0) || (hasComments && mergedUserQuestions.comment.length > 0)) &&
     <Container column style={{ padding: 12 }}>
