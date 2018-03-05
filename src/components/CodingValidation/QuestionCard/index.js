@@ -34,6 +34,7 @@ export const QuestionCard = props => {
     userAnswers,
     comment: userAnswers.comment,
     isValidation,
+    mergedUserQuestions,
     question
   }
 
@@ -49,12 +50,9 @@ export const QuestionCard = props => {
         <Divider />
         {categories !== undefined
           ? <TabContainer tabs={categories} selected={selectedCategory} onChangeCategory={onChangeCategory}>
-              <QuestionContent
-                {...questionContentProps}
-                mergedUserQuestions={isValidation ? mergedUserQuestions.answers[selectedCategoryId] : null}
-              />
+              <QuestionContent {...questionContentProps} />
             </TabContainer>
-          : <QuestionContent{...questionContentProps} mergedUserQuestions={mergedUserQuestions} />
+          : <QuestionContent{...questionContentProps} />
         }
       </Column>
     </Row>

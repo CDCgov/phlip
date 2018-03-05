@@ -76,15 +76,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
               ...action.payload.codedQuestions
             ], normalizedQuestions, action.payload.userId
           ),
-          mergedUserQuestions: action.payload.mergedUserQuestions.length !== 0
-            ? initializeCodedUsers(action.payload.mergedUserQuestions, normalizedQuestions)
-            : {
-              [action.payload.question.id]: {
-                schemeQuestionId: action.payload.question.id,
-                comment: '',
-                answers: [],
-              }
-            }
+          mergedUserQuestions: action.payload.mergedUserQuestions
         }
       }
 
@@ -132,25 +124,10 @@ const validationReducer = (state = INITIAL_STATE, action) => {
     case types.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
       let userAnswers = {}, question = { ...state.question }, other = {}, mergedUserQuestions = {}
 
-      if (action.payload.mergedUserQuestions.length !== 0) {
-        mergedUserQuestions = initializeCodedUsers(action.payload.mergedUserQuestions, state.scheme.byId)
-      }
-
       if (state.question.isCategoryQuestion) {
         question = state.scheme.byId[question.parentId]
         other = {
           currentIndex: state.scheme.order.findIndex(id => id === question.id)
-        }
-      }
-
-      if (!mergedUserQuestions.hasOwnProperty(question.id)) {
-        mergedUserQuestions = {
-          ...mergedUserQuestions,
-          [question.id]: {
-            schemeQuestionId: question.id,
-            comment: '',
-            answers: []
-          }
         }
       }
 
@@ -168,7 +145,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         userAnswers,
-        mergedUserQuestions,
+        mergedUserQuestions: action.payload.mergedUserQuestions,
         question,
         ...other,
         selectedCategory: 0,

@@ -4,50 +4,44 @@ import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
 import { getFinalCodedObject } from 'utils/codingHelpers'
 import { createAvatarUrl } from 'utils/urlHelper'
+import { checkIfExists } from 'utils/codingSchemeHelpers'
 
-const mergeUserAnswers = (combinedCodedQuestions) => {
-  let mergedUserQuestions = []
+const addCoderToAnswers = (existingQuestion, question, coder) => ({
+  ...existingQuestion,
+  answers: [...existingQuestion.answers, ...question.codedAnswers.map(answer => ({ ...answer, ...coder }))],
+  flag: question.flag !== null
+    ? [...existingQuestion.flag, { ...question.flag, ...coder }]
+    : [...existingQuestion.flag],
+  comment: question.comment !== ''
+    ? [...existingQuestion.comment, { ...question.comment, ...coder }]
+    : [...existingQuestion.comment]
+})
 
-  for (let item of combinedCodedQuestions) {
-    for (let codedQuestion of item.codeQuestionsPerUser) {
-      for (let codedAnswer of codedQuestion.codedAnswers) {
-        mergedUserQuestions = [
-          ...mergedUserQuestions, { ...codedQuestion, codedAnswers: { ...codedAnswer, ...item.coder } }
-        ]
-      }
+const mergeInUserCodedQuestions = (codedQuestions, codeQuestionsPerUser, coder) => {
+  const baseQuestion = { flag: [], comment: [], answers: [] }
+  return codeQuestionsPerUser.reduce((allCodedQuestions, question) => {
+    const doesExist = checkIfExists(question, allCodedQuestions, 'schemeQuestionId')
+    return {
+      ...allCodedQuestions,
+      [question.schemeQuestionId]: question.categoryId && question.categoryId !== 0
+        ? {
+          ...allCodedQuestions[question.schemeQuestionId],
+          [question.categoryId]: {
+            ...addCoderToAnswers(
+              doesExist
+                ? checkIfExists(question, allCodedQuestions[question.schemeQuestionId], 'categoryId')
+                ? allCodedQuestions[question.schemeQuestionId][question.categoryId]
+                : baseQuestion
+                : baseQuestion, question, coder)
+          }
+        }
+        : {
+          ...addCoderToAnswers(doesExist
+            ? allCodedQuestions[question.schemeQuestionId]
+            : baseQuestion, question, coder)
+        }
     }
-  }
-  return mergedUserQuestions
-}
-
-const consolidateAnswers = combinedCodedQuestions => {
-  let mergedUserQuestions = mergeUserAnswers(combinedCodedQuestions)
-  let output = []
-
-  mergedUserQuestions.forEach((value) => {
-    let existing = []
-
-    if (value.hasOwnProperty('categoryId')) {
-      existing = output.filter((v, i) => {
-        return v.categoryId === value.categoryId && v.schemeQuestionId === value.schemeQuestionId
-      })
-    } else {
-      existing = output.filter((v, i) => {
-        return v.schemeQuestionId == value.schemeQuestionId
-      })
-    }
-
-    if (existing.length) {
-      let existingIndex = output.indexOf(existing[0])
-      output[existingIndex].codedAnswers = output[existingIndex].codedAnswers.concat(value.codedAnswers)
-    } else {
-      if (typeof value.codedAnswers == 'object')
-        value.codedAnswers = [value.codedAnswers]
-      output.push(value)
-    }
-  })
-
-  return output
+  }, codedQuestions)
 }
 
 export const updateValidatorLogic = createLogic({
@@ -71,7 +65,7 @@ export const getValidationOutlineLogic = createLogic({
   },
   async process({ action, getState, api }) {
     let scheme = {}, codedQuestions = [], projectCoders = [],
-      codeQuestionsPerUser = [], combinedCodedQuestions = {}, updatedCodedQuestions = []
+      codeQuestionsPerUser = [], updatedCodedQuestions = [], codedQuestionObj = {}
 
     const userId = getState().data.user.currentUser.id
 
@@ -89,9 +83,7 @@ export const getValidationOutlineLogic = createLogic({
 
     if (action.jurisdictionId) {
       try {
-
         codedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
-
         for (let question of codedQuestions) {
           try {
             let hasAvatarImage = await api.getUserPicture(question.validatedBy.userId)
@@ -102,17 +94,14 @@ export const getValidationOutlineLogic = createLogic({
             throw { error: 'failed to get avatar image for validator' }
           }
         }
-
       } catch (e) {
         throw { error: 'failed to get codedQuestions' }
       }
     }
 
     if (projectCoders.length !== 0) {
-
       for (let coder of projectCoders) {
         try {
-
           let hasAvatarImage = await api.getUserPicture(coder.userId)
           let avatarUrl = hasAvatarImage ? createAvatarUrl(coder.userId) : null
           coder = { ...coder, avatarUrl }
@@ -122,15 +111,11 @@ export const getValidationOutlineLogic = createLogic({
 
         try {
           codeQuestionsPerUser = await api.getUserCodedQuestions(coder.userId, action.projectId, action.jurisdictionId)
-          console.log(codeQuestionsPerUser)
-          combinedCodedQuestions = [...combinedCodedQuestions, { codeQuestionsPerUser, coder }]
-
+          codedQuestionObj = { ...mergeInUserCodedQuestions(codedQuestionObj, codeQuestionsPerUser, coder) }
+          console.log(codedQuestionObj)
         } catch (e) {
           throw { error: 'failed to get codedQuestions for user' }
         }
-
-
-
       }
     }
 
@@ -144,7 +129,6 @@ export const getValidationOutlineLogic = createLogic({
       }, [])
 
       const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
-      const output = consolidateAnswers(combinedCodedQuestions)
 
       return {
         outline: scheme.outline,
@@ -152,7 +136,7 @@ export const getValidationOutlineLogic = createLogic({
         tree,
         questionOrder: order,
         question: questionsWithNumbers[0],
-        mergedUserQuestions: output,
+        mergedUserQuestions: codedQuestionObj,
         codedQuestions: updatedCodedQuestions,
         isSchemeEmpty: false,
         userId
@@ -191,10 +175,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
     failType: types.GET_USER_VALIDATED_QUESTIONS_FAIL
   },
   async process({ action, api, getState }) {
-    let codedQuestions = []
-    let projectCoders = []
-    let codeQuestionsPerUser = []
-    let combinedCodedQuestions = {}
+    let codedQuestions = [], projectCoders = [], codeQuestionsPerUser = [], codedQuestionObj = {}
 
     try {
       codedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
@@ -211,11 +192,11 @@ export const getUserValidatedQuestionsLogic = createLogic({
     if (projectCoders.length === 0) {
 
     } else {
-
       for (let coder of projectCoders) {
         try {
           codeQuestionsPerUser = await api.getUserCodedQuestions(coder.userId, action.projectId, action.jurisdictionId)
-          combinedCodedQuestions = [...combinedCodedQuestions, { codeQuestionsPerUser, coder }]
+          codedQuestionObj = { ...mergeInUserCodedQuestions(codedQuestionObj, codeQuestionsPerUser, coder) }
+          console.log(codedQuestionObj)
         } catch (e) {
           throw { error: 'failed to get codedQuestions for user' }
         }
@@ -226,7 +207,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
 
     return {
       codedQuestions,
-      mergedUserQuestions: output
+      mergedUserQuestions: codedQuestionObj
     }
   }
 })
