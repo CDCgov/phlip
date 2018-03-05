@@ -138,7 +138,10 @@ export class Coding extends Component {
   }
 
   onSaveFlag = flagInfo => {
-    this.props.actions.onSaveFlag(this.props.projectId, this.props.jurisdictionId, this.props.question.id, flagInfo)
+    this.props.actions.onSaveFlag(this.props.projectId, this.props.jurisdictionId, this.props.question.id, {
+      raisedBy: { ...this.props.user },
+      ...flagInfo
+    })
   }
 
   onShowGetStartedView = (noScheme, noJurisdictions) => {
@@ -284,6 +287,7 @@ const mapStateToProps = (state, ownProps) => {
       : null),
     isSchemeEmpty: state.scenes.coding.scheme === null ? null : state.scenes.coding.scheme.order.length === 0,
     userRole: state.data.user.currentUser.role,
+    user: state.data.user.currentUser,
     scheme: state.scenes.coding.scheme === null ? {} : state.scenes.coding.scheme,
     allUserAnswers: state.scenes.coding.userAnswers || {},
     selectedCategoryId: state.scenes.coding.selectedCategoryId || null
