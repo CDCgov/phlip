@@ -73,7 +73,7 @@ export class FlagPopover extends Component {
     this.setState({
       updatedFlag: { ...nextProps.userFlag },
       questionFlags: [...nextProps.questionFlags],
-      userRedFlag: checkForRedFlag(nextProps.questionFlags, nextProps.user)[0] || { notes: '', type: 3 }
+      userRedFlag: checkForRedFlag(nextProps.questionFlags, nextProps.user)[0] || { notes: null }
     })
 
     for (let type in this.userFlagColors) {
@@ -117,7 +117,8 @@ export class FlagPopover extends Component {
 
   toggleEditMode = () => {
     this.setState({
-      inEditMode: !this.state.inEditMode
+      inEditMode: !this.state.inEditMode,
+      userRedFlag: this.state.userRedFlag || { notes: null }
     })
   }
 
@@ -181,7 +182,7 @@ export class FlagPopover extends Component {
                 <TableRow>
                   <TableCell padding="checkbox">Raised By</TableCell>
                   <TableCell padding="checkbox">Notes</TableCell>
-                  {this.state.userRedFlag.notes.length > 0 && <TableCell padding="checkbox">Edit</TableCell>}
+                  {this.state.userRedFlag.notes !== null && <TableCell padding="checkbox">Edit</TableCell>}
                 </TableRow>
               </TableHead>
               <TableBody>
