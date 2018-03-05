@@ -19,11 +19,7 @@ const getFlagText = (color, text) => (
   </Row>
 )
 
-const userFlagColors = {
-  1: { type: 1, color: '#2cad73', text: getFlagText('#2cad73', 'Flag for analysis') },
-  2: { type: 2, color: '#fca63a', text: getFlagText('#fca63a', 'Notify coordinator') },
-  3: { type: 3, color: '#d90525', text: getFlagText('#d90525', 'Stop coding') }
-}
+const checkForSameType = (userType, choiceType) => userType !== 0 ? userType !== choiceType : false
 
 export class FlagPopover extends Component {
   static defaultProps = {
@@ -47,15 +43,43 @@ export class FlagPopover extends Component {
       redFlagOpen: false,
       otherFlagOpen: false,
       updatedFlag: { ...props.userFlag },
-      questionFlags: [ ...props.questionFlags ]
+      questionFlags: [...props.questionFlags]
+    }
+
+    this.userFlagColors = {
+      1: {
+        type: 1,
+        color: '#2cad73',
+        text: getFlagText('#2cad73', 'Flag for analysis'),
+        disabled: checkForSameType(props.userFlag.type, 1)
+      },
+      2: {
+        type: 2,
+        color: '#fca63a',
+        text: getFlagText('#fca63a', 'Notify coordinator'),
+        disabled: checkForSameType(props.userFlag.type, 2)
+      },
+      3: {
+        type: 3,
+        color: '#d90525',
+        text: getFlagText('#d90525', 'Stop coding'),
+        disabled: checkForSameType(props.userFlag.type, 3)
+      }
     }
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
       updatedFlag: { ...nextProps.userFlag },
-      questionFlags: [ ...nextProps.questionFlags ]
+      questionFlags: [...nextProps.questionFlags]
     })
+
+    for (let type in this.userFlagColors) {
+      this.userFlagColors[type] = {
+        ...this.userFlagColors[type],
+        disabled: checkForSameType(nextProps.userFlag.type, type)
+      }
+    }
   }
 
   onOpenRedPopover = () => {
@@ -120,7 +144,7 @@ export class FlagPopover extends Component {
           title="Raised Red Flags"
           open={this.state.redFlagOpen}
           targetIcon="report"
-          targetColor={userFlagColors[3].color}
+          targetColor={this.userFlagColors[3].color}
           onOpen={this.onOpenRedPopover}
           onClose={this.onCloseRedPopover}
         >
@@ -149,15 +173,16 @@ export class FlagPopover extends Component {
           open={this.state.otherFlagOpen}
           targetIcon="flag"
           targetColor={this.props.userFlag.type !== 0
-            ? userFlagColors[this.props.userFlag.type].color
+            ? this.userFlagColors[this.props.userFlag.type].color
             : '#d7e0e4'}
           onOpen={this.onOpenOtherPopover}
-          onClose={this.onCloseOtherPopover}>
+          onClose={this.onCloseOtherPopover}
+        >
           <form onSubmit={this.onSavePopover}>
             <Row style={{ padding: 16, minWidth: 450 }}>
               <RadioGroup
                 selected={this.state.updatedFlag.type}
-                choices={Object.values(userFlagColors)}
+                choices={Object.values(this.userFlagColors)}
                 onChange={this.onChangeFlagType}
               />
             </Row>

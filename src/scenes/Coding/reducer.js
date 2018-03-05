@@ -99,7 +99,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ON_SAVE_FLAG:
-      // If the flag type if red, add it to schemeQuestionFlags
+      // If the flag type is red, add it to schemeQuestionFlags
       if (action.flagInfo.type === 3) {
         const question = { ...state.scheme.byId[action.questionId] }
         return {
@@ -107,9 +107,11 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           ...questionUpdater('flag', action.flagInfo),
           question: {
             ...state.question,
-            flags: action.flagInfo.hasOwnProperty('id')
-              ? updater.updateByProperty(action.flagInfo, question.flags, 'id')
-              : [ ...question.flags, action.flagInfo ]
+            flags: question.flags.length > 0
+              ? action.flagInfo.hasOwnProperty('id')
+                ? updater.updateByProperty(action.flagInfo, question.flags, 'id')
+                : [ ...question.flags, action.flagInfo ]
+              : [action.flagInfo]
           },
           scheme: {
             ...state.scheme,

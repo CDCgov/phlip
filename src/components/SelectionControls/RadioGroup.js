@@ -21,6 +21,7 @@ export const RadioGroup = ({ choices, selected, onChange, classes }) => {
               checked={selected === choice.type}
               control={<Radio classes={{ checked: classes.checked }} />}
               label={choice.text}
+              disabled={choice.disabled}
             />
           </div>
         ))}
