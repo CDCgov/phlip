@@ -9,6 +9,7 @@ import Icon from 'components/Icon'
 import Avatar from 'components/Avatar'
 import { getInitials } from 'utils/normalize'
 import Typography from 'material-ui/Typography'
+import { checkIfExists } from 'utils/codingSchemeHelpers'
 
 const flagColors = {
   1: '#2cad73',
@@ -19,7 +20,11 @@ const flagColors = {
 export const ValidationTable = props => {
   const { mergedUserQuestions } = props
 
+  const hasFlags = mergedUserQuestions.hasOwnProperty('flag')
+  const hasComments = mergedUserQuestions.hasOwnProperty('comment')
+  
   return (
+    ((hasFlags && mergedUserQuestions.flag.length > 0) || (hasComments && mergedUserQuestions.comment.length > 0)) &&
     <Container column style={{ padding: 12 }}>
       <Row style={{ paddingBottom: 10 }}><Typography type="title" style={{ color: '#a7bdc6' }}>
         Flags and Notes
@@ -40,10 +45,10 @@ export const ValidationTable = props => {
                   <Avatar
                     cardAvatar
                     style={{ marginRight: 15 }}
-                    initials={getInitials(flag.raisedBy.firstName, flag.raisedBy.lastName)}
+                    initials={getInitials(flag.firstName, flag.lastName)}
                     avatarUrl={flag.avatarUrl}
                   />
-                  <Typography type="caption">{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}</Typography>
+                  <Typography type="caption">{`${flag.firstName} ${flag.lastName}`}</Typography>
                 </TableCell>
                 <TableCell padding="none">
                   <Icon color={flagColors[flag.type]}>flag</Icon>

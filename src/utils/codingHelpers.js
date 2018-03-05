@@ -4,53 +4,12 @@ import sortList from 'utils/sortList'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 const initializeValues = (question, codingSchemeQuestion, userId) => {
-  const redUserFlag = codingSchemeQuestion.flags.filter(flag => flag.raisedBy.userId === userId)
   return {
     ...question,
     comment: question.comment || '',
-    flag: redUserFlag.length ? redUserFlag[0] : (question.flag || { notes: '', type: 0 }),
+    flag: question.flag || { notes: '', type: 0 },
     answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId'),
     schemeQuestionId: question.schemeQuestionId
-  }
-}
-
-export const normalizeCodedUserAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) => {
-  if (question.categoryId && question.categoryId !== 0) {
-    return checkIfExists(question, userCodedAnswerObj, 'schemeQuestionId')
-      ? {
-        schemeQuestionId: question.schemeQuestionId,
-        answers: {
-          ...userCodedAnswerObj[question.schemeQuestionId].answers,
-          [question.categoryId]: {
-            answers: question.codedAnswers
-          }
-        },
-        comment: {
-          ...userCodedAnswerObj[question.schemeQuestionId].comment,
-          [question.categoryId]: question.comment || ''
-        },
-        flag: {
-          ...userCodedAnswerObj[question.schemeQuestionId].flag,
-          [question.categoryId]: question.flag || { notes: '', type: 0 }
-        }
-      }
-      : {
-        schemeQuestionId: question.schemeQuestionId,
-        answers: { [question.categoryId]: { answers: question.codedAnswers } },
-        comment: {
-          [question.categoryId]: question.comment || ''
-        },
-        flag: {
-          [question.categoryId]: question.flag || { notes: '', type: 0 }
-        }
-      }
-  } else {
-    return {
-      schemeQuestionId: question.schemeQuestionId,
-      comment: question.comment,
-      answers: question.codedAnswers,
-      flag: question.flag
-    }
   }
 }
 
@@ -75,21 +34,6 @@ export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions,
           [question.categoryId]: { ...initializeValues(question, codingSchemeQuestions[question.schemeQuestionId], userId) }
         }
         : { ...initializeValues(question, codingSchemeQuestions[question.schemeQuestionId], userId) }
-    })
-  }, {})
-}
-
-/*
-  Takes coded questions array and turns it into a object where each key is the question id
- */
-export const initializeCodedUsers = (userCodedQuestions, codingSchemeQuestions) => {
-  return userCodedQuestions.reduce((codedQuestionObj, question) => {
-    return ({
-      ...codedQuestionObj,
-      [question.schemeQuestionId]: {
-        schemeQuestionId: question.schemeQuestionId,
-        ...normalizeCodedUserAnswers(question, codingSchemeQuestions[question.schemeQuestionId], codedQuestionObj)
-      }
     })
   }, {})
 }
