@@ -24,8 +24,10 @@ export const ValidationTable = props => {
   const hasComments = mergedUserQuestions.hasOwnProperty('comment')
   const allFlags = [...mergedUserQuestions.flag, ...questionFlags]
 
+  console.log(allFlags)
+
   return (
-    ((hasFlags && mergedUserQuestions.flag.length > 0) || (hasComments && mergedUserQuestions.comment.length > 0)) &&
+    ((hasFlags && allFlags.length > 0) || (hasComments && mergedUserQuestions.comment.length > 0)) &&
     <Container column style={{ padding: 20 }}>
       <Row style={{ paddingBottom: 10 }}><Typography type="title" style={{ color: '#a7bdc6' }}>
         Flags and Notes
