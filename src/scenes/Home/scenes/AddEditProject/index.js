@@ -157,7 +157,7 @@ export class AddEditProject extends Component {
             }
           </Container>
         </ModalContent>
-        <ModalActions edit={this.state.edit} actions={actions} />
+        <ModalActions actions={actions} />
       </FormModal>
     )
   }
