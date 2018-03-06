@@ -46,7 +46,7 @@ export class ExpansionTextPanel extends Component {
 
   onOpenPopper = () => {
     this.setState({
-      open: true
+      open: !this.state.open
     })
   }
 

@@ -118,7 +118,6 @@ export const getValidationOutlineLogic = createLogic({
         try {
           codeQuestionsPerUser = await api.getUserCodedQuestions(coder.userId, action.projectId, action.jurisdictionId)
           codedQuestionObj = { ...mergeInUserCodedQuestions(codedQuestionObj, codeQuestionsPerUser, coder) }
-          console.log(codedQuestionObj)
         } catch (e) {
           throw { error: 'failed to get codedQuestions for user' }
         }

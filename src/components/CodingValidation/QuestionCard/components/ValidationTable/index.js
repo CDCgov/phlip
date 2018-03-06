@@ -21,7 +21,8 @@ const flagColors = {
 
 export const ValidationTable = props => {
   const { mergedUserQuestions, questionFlags, onOpenAlert } = props
-  const allFlags = [...mergedUserQuestions.flagsComments, ...questionFlags]
+  const hasFlagsComments = mergedUserQuestions.hasOwnProperty('flagsComments')
+  const allFlags = hasFlagsComments ? [...mergedUserQuestions.flagsComments, ...questionFlags] : [...questionFlags]
 
   return (
     allFlags.length > 0 &&
