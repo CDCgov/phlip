@@ -40,8 +40,14 @@ export class Validation extends Component {
       selectedJurisdiction: this.props.jurisdictionId,
       showViews: false,
       navOpen: true,
-      applyAllAlertOpen: false
+      applyAllAlertOpen: false,
+      flagConfirmAlertOpen: false
     }
+
+    this.confirmAlertActions = [
+      { value: 'Cancel', type: 'button', onClick: this.onCloseFlagConfigAlert },
+      { value: 'Yes', type: 'button', onClick: this.onClearFlag }
+    ]
 
     this.modalActions = [
       {
@@ -122,6 +128,21 @@ export class Validation extends Component {
     this.props.actions.updateEditedFields(this.props.projectId)
   }
 
+  onOpenFlagConfirmAlert = () => {
+    this.setState({
+      flagConfirmAlertOpen: true
+    })
+  }
+
+  onClearFlag = flagId => {
+  }
+
+  onCloseFlagConfigAlert = () => {
+    this.setState({
+      flagConfirmAlertOpen: false
+    })
+  }
+
   onOpenApplyAllAlert = () => {
     this.setState({
       applyAllAlertOpen: true
@@ -157,6 +178,7 @@ export class Validation extends Component {
         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
         currentUserInitials={this.props.currentUserInitials}
         onOpenAlert={this.onOpenApplyAllAlert}
+        onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
         isValidation={true}
         selectedCategoryId={this.props.selectedCategoryId}
       />
@@ -180,6 +202,11 @@ export class Validation extends Component {
           open={this.state.applyAllAlertOpen}
           text="You are applying your answer to ALL categories. Previously answered questions will be changed."
           actions={this.modalActions}
+        />
+        <Alert
+          open={this.state.flagConfirmAlertOpen}
+          text="Are you sure you want to clear this flag?"
+          actions={this.confirmAlertActions}
         />
         <Navigator
           open={this.state.navOpen}

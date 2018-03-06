@@ -16,7 +16,7 @@ import ValidationTable from '../ValidationTable'
 export const QuestionContent = props => {
   const {
     question, currentUserInitials, comment, userAnswers, mergedUserQuestions, isValidation,
-    onChange, onChangeTextAnswer, onOpenAlert
+    onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert
   } = props
 
   const questionAnswerPadding = {
@@ -113,7 +113,11 @@ export const QuestionContent = props => {
       </Row>
       }
 
-      {isValidation && <ValidationTable mergedUserQuestions={mergedUserQuestions} questionFlags={question.flags} /> }
+      {isValidation && <ValidationTable
+        onOpenAlert={onOpenFlagConfirmAlert}
+        mergedUserQuestions={mergedUserQuestions}
+        questionFlags={question.flags}
+      />}
 
       {question.isCategoryQuestion &&
       <Fragment>

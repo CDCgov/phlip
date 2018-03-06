@@ -22,12 +22,13 @@ const TabContainer = props => {
 export const QuestionCard = props => {
   const {
     question, currentUserInitials, userAnswers, categories, mergedUserQuestions, selectedCategory, isValidation, user,
-    onClearAnswer, onOpenAlert, onChangeCategory, onChange, onChangeTextAnswer, onSaveFlag
+    onClearAnswer, onOpenAlert, onChangeCategory, onChange, onChangeTextAnswer, onSaveFlag, onOpenFlagConfirmAlert
   } = props
 
   const questionContentProps = {
     onChange,
     onChangeTextAnswer,
+    onOpenFlagConfirmAlert,
     currentUserInitials,
     user,
     question,

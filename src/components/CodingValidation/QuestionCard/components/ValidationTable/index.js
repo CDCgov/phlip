@@ -6,6 +6,7 @@ import Table from 'components/Table'
 import TableRow from 'components/TableRow'
 import TableCell from 'components/TableCell'
 import Icon from 'components/Icon'
+import IconButton from 'components/IconButton'
 import Avatar from 'components/Avatar'
 import { getInitials } from 'utils/normalize'
 import Typography from 'material-ui/Typography'
@@ -18,13 +19,11 @@ const flagColors = {
 }
 
 export const ValidationTable = props => {
-  const { mergedUserQuestions, questionFlags } = props
+  const { mergedUserQuestions, questionFlags, onOpenAlert } = props
 
   const hasFlags = mergedUserQuestions.hasOwnProperty('flag')
   const hasComments = mergedUserQuestions.hasOwnProperty('comment')
   const allFlags = [...mergedUserQuestions.flag, ...questionFlags]
-
-  console.log(allFlags)
 
   return (
     ((hasFlags && allFlags.length > 0) || (hasComments && mergedUserQuestions.comment.length > 0)) &&
@@ -36,7 +35,7 @@ export const ValidationTable = props => {
         <Table>
           <TableHead>
             <TableRow style={{ backgroundColor: '#fff' }}>
-              <TableCell>User</TableCell>
+              <TableCell style={{ padding: '5px 15px' }}>User</TableCell>
               <TableCell padding="none">Flag</TableCell>
               <TableCell>Notes</TableCell>
             </TableRow>
@@ -54,7 +53,7 @@ export const ValidationTable = props => {
                   <Typography type="caption">{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}</Typography>
                 </TableCell>
                 <TableCell padding="none">
-                  <Icon color={flagColors[flag.type]}>flag</Icon>
+                  <IconButton onClick={() => onOpenAlert(flag.id)} color={flagColors[flag.type]}>flag</IconButton>
                 </TableCell>
                 <TableCell>
                   <Typography type="caption">{flag.notes}</Typography>
