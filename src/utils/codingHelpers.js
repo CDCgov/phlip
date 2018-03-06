@@ -80,7 +80,12 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
     currentIndex: newIndex,
     userAnswers: checkIfExists(newQuestion, state.userAnswers)
       ? { ...state.userAnswers }
-      : { ...state.userAnswers, [newQuestion.id]: initializeRegularQuestion(newQuestion.id) }
+      : newQuestion.isCategoryQuestion
+        ? { ...state.userAnswers }
+        : {
+          ...state.userAnswers,
+          [newQuestion.id]: initializeRegularQuestion(newQuestion.id)
+        }
   }
 
   if (newQuestion.parentId === 0) {
@@ -98,7 +103,13 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
     const baseQuestion = base.userAnswers[newQuestion.id]
 
     const answers = selectedCategories.reduce((answerObj, cat) => {
-      return { ...answerObj, [cat.id]: initializeNextQuestion(baseQuestion[cat.id], base.question.id) }
+      return { ...answerObj,
+        [cat.id]: {
+          ...initializeRegularQuestion(base.question.id),
+          categoryId: cat.id,
+          schemeQuestionId: base.question.id
+        }
+      }
     }, {})
 
     return {
@@ -106,7 +117,7 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
       question: { ...base.question },
       categories: [...selectedCategories],
       selectedCategory: state.selectedCategory,
-      userAnswers: { ...state.userAnswers, [newQuestion.id]: { ...base.userAnswers[newQuestion.id], ...answers } },
+      userAnswers: { ...state.userAnswers, [newQuestion.id]: { ...answers } },
       selectedCategoryId: selectedCategories[state.selectedCategory].id
     }
   } else {
@@ -296,7 +307,7 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
         ? checkIfAnswered(item, codedQuestions)
           ? initializeNavigator(
             sortList(Object.values(scheme)
-            .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
+              .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
             { ...scheme },
             codedQuestions,
             currentQuestion

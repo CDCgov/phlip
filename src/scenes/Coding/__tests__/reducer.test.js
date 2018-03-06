@@ -271,7 +271,14 @@ describe('Coding reducer', () => {
           positionInParent: 1,
           possibleAnswers: [{ id: 4, text: 'cat 2' }, { id: 5, text: 'cat 1' }]
         },
-        { text: 'category question child', questionType: 4, id: 3, parentId: 2, positionInParent: 0 }
+        {
+          text: 'category question child',
+          questionType: 4,
+          id: 3,
+          parentId: 2,
+          positionInParent: 0,
+          isCategoryQuestion: true
+        }
       ]
 
       const action = {
@@ -294,6 +301,7 @@ describe('Coding reducer', () => {
                   text: 'category question child',
                   questionType: 4,
                   id: 3,
+                  isCategoryQuestion: true,
                   parentId: 2,
                   positionInParent: 0
                 }
@@ -346,6 +354,7 @@ describe('Coding reducer', () => {
                 text: 'category question child',
                 questionType: 4,
                 id: 3,
+                isCategoryQuestion: true,
                 parentId: 2,
                 positionInParent: 0,
                 isAnswered: true
