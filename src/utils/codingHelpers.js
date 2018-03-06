@@ -38,7 +38,6 @@ export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions,
   }, {})
 }
 
-
 export const findNextParentSibling = (scheme, question, currentIndex) => {
   const subArr = [...scheme.order].slice(currentIndex + 1)
   return subArr.find(id => scheme.byId[id].parentId !== question.id)
@@ -388,7 +387,8 @@ export const getFinalCodedObject = (state, action, applyAll = false) => {
     codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds),
     ...state.question.isCategoryQuestion
       ? { categories: applyAll ? [...state.categories.map(cat => cat.id)] : [state.selectedCategoryId] }
-      : {}
+      : {},
+    flag: action.type == 'ON_SAVE_FLAG' ? { ...action.flagInfo } : { ...questionObject.flag }
   }
 
   console.log(answerObject)

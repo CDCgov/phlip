@@ -122,7 +122,7 @@ export class FlagPopover extends Component {
       userRedFlag: {
         ...this.state.userRedFlag,
         notes: event.target.value
-      },
+      }
     })
   }
 
@@ -190,9 +190,9 @@ export class FlagPopover extends Component {
           onOpen={this.onOpenRedPopover}
           onClose={this.onCloseRedPopover}
         >
-          <Container column style={{ minWidth: 450, alignItems: 'center', paddingTop: 10 }}>
+          <Container column style={{ minWidth: 450, minHeight: 200, alignItems: 'center', paddingTop: 10 }}>
             {(this.props.questionFlags.length > 0 && !this.state.inEditMode) &&
-            <Table style={{ width: '90%', minWidth: 550, minHeight: 450, margin: '10px 16px' }}>
+            <Table style={{ width: '90%', minWidth: 550, margin: '10px 16px' }}>
               <TableHead>
                 <TableRow>
                   <TableCell padding="checkbox">Raised By</TableCell>
@@ -213,9 +213,13 @@ export class FlagPopover extends Component {
               </TableBody>
             </Table>}
             {!this.state.inEditMode && this.state.questionFlags.length === 0 &&
-            <Button onClick={this.toggleEditMode} color="accent" value="+ Add Red Flag" />}
+            <Row displayFlex flex style={{ alignItems: 'center' }}><Button
+              onClick={this.toggleEditMode}
+              color="accent"
+              value="+ Add Red Flag"
+            /></Row>}
             {this.state.inEditMode &&
-            <form onSubmit={this.onSaveRedPopover} style={{ alignSelf: 'stretch' }}>
+            <form onSubmit={this.onSaveRedPopover} style={{ alignSelf: 'stretch', flex: 1 }}>
               <Row style={{ padding: 16 }}>
                 <SimpleInput
                   value={this.state.userRedFlag.notes}
@@ -252,7 +256,7 @@ export class FlagPopover extends Component {
             </Row>
           </Container>
         </Popover>
-        <Popover
+        {this.state.questionFlags.length === 0 && <Popover
           title="Flags"
           open={this.state.otherFlagOpen}
           targetIcon="flag"
@@ -301,7 +305,7 @@ export class FlagPopover extends Component {
               />
             </Row>
           </form>
-        </Popover>
+        </Popover>}
       </Container>
     )
   }
