@@ -232,7 +232,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
 
 export default [
   updateValidatorLogic,
-  // getUserValidatedQuestionsLogic,
+  getUserValidatedQuestionsLogic,
   validateQuestionLogic,
   getValidationOutlineLogic
 ]
