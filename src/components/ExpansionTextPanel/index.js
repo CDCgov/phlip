@@ -53,7 +53,7 @@ export class ExpansionTextPanel extends Component {
   render() {
     return (
       <ClickAwayListener onClickAway={this.onClosePopper}>
-        <Row flex displayFlex style={{ overflow: 'hidden', alignItems: 'center' }}>
+        <Row flex displayFlex style={{ alignItems: 'center' }}>
           <Typography noWrap {...this.props.textProps} style={{ flex: 1 }}>{this.props.text}</Typography>
           <Manager>
             <Target>

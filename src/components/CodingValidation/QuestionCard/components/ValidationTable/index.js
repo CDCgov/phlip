@@ -59,14 +59,14 @@ export const ValidationTable = props => {
                     />
                     <Typography type="caption">{`${item.raisedBy.firstName} ${item.raisedBy.lastName}`}</Typography>
                   </TableCell>
-                  <TableCell>
+                  <TableCell style={{ maxWidth: 0 }}>
                     {item.comment && <ExpansionTextPanel textProps={{ type: 'caption' }} text={item.comment} />}
                   </TableCell>
                   <TableCell padding="none">
                     {item.type &&
                     <IconButton onClick={() => onOpenAlert(item.id)} color={flagColors[item.type]}>flag</IconButton>}
                   </TableCell>
-                  <TableCell>
+                  <TableCell style={{ maxWidth: 0 }}>
                     {item.type && <ExpansionTextPanel textProps={{ type: 'caption' }} text={item.notes} />}
                   </TableCell>
                 </TableRow>
