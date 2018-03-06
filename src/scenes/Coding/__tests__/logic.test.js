@@ -24,7 +24,7 @@ describe('Coding logic', () => {
     })
   }
 
-  test('should call the api to get the scheme and coded questions and dispatch GET_CODING_OUTLINE when successful', (done) => {
+  test('should call the api to get the scheme and coded questions and dispatch GET_CODING_OUTLINE_SUCCESS when successful', (done) => {
     mock.onGet('/projects/1/scheme').reply(200, {
       schemeQuestions: [{ id: 1, text: 'question 1' }],
       outline: { 1: { parentId: 0, positionInParent: 0 } }
@@ -47,7 +47,8 @@ describe('Coding logic', () => {
             isSchemeEmpty: false,
             questionOrder: [1],
             scheme: [{ id: 1, text: 'question 1', indent: 0, number: '1', parentId: 0, positionInParent: 0 }],
-            tree: [{ id: 1, text: 'question 1', indent: 0, number: '1', parentId: 0, positionInParent: 0 }]
+            tree: [{ id: 1, text: 'question 1', indent: 0, number: '1', parentId: 0, positionInParent: 0 }],
+            userId: 1
           }
         }
       ])
@@ -109,7 +110,8 @@ describe('Coding logic', () => {
                   { id: 3, text: 'question 4', indent: 1, number: '3.1', parentId: 2, positionInParent: 0 }
                 ]
               }
-            ]
+            ],
+            userId: 1
           }
         })
       done()
