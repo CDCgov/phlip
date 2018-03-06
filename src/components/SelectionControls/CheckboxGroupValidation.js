@@ -42,7 +42,7 @@ export const CheckboxGroupValidation = props => {
                 cardAvatar
                 avatarUrl={userAnswers.validatedBy.avatarUrl}
                 key={mergedUserQuestions.answers.length + 1}
-                style={{ backgroundColor: 'white', color: 'teal', borderColor: 'teal' }}
+                style={{ backgroundColor: 'white', color: '#35ac74', borderColor: '#35ac74' }}
                 initials={userAnswers.validatedBy === null
                   ? ''
                   : getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
