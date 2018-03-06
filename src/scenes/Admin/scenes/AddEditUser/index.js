@@ -101,7 +101,6 @@ export class AddEditUser extends Component {
     ]
 
     return (
-
       <ModalForm
         open={true}
         title="Add/Edit User"
@@ -111,7 +110,7 @@ export class AddEditUser extends Component {
         asyncValidate={this.validateEmail}
         initialValues={this.selectedUser}
         asyncBlurFields={['email']}
-        onClose={this.handleClose}
+        onClose={this.onCancel}
         width="600px"
         height="400px"
       >
