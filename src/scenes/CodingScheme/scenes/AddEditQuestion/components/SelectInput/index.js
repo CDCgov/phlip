@@ -9,8 +9,7 @@ import { FormControl, FormHelperText } from 'material-ui/Form'
 import IconButton from 'components/IconButton'
 import * as questionTypes from '../../constants'
 
-const SelectInput = ({ name, label, answerType, type, input, classes, meta: { asyncValidating, active, touched, error, warning }, handleDelete, isEdit, ...custom }) => {
-  //Refactor this 12/17/2018
+const SelectInput = ({ name, label, answerType, type, input, classes, currentValue, meta: { asyncValidating, active, touched, error, warning, dirty }, handleDelete, isEdit, ...custom }) => {
   return (
     <Container alignItems={'center'}>
       <Column style={{ marginTop: 8 }}>
@@ -42,9 +41,13 @@ const SelectInput = ({ name, label, answerType, type, input, classes, meta: { as
         </FormControl>
       </Column>
       <Column>
-        {(answerType === questionTypes.BINARY || isEdit) ? <div></div> :
-          <IconButton color="action" onClick={handleDelete}
+        {(currentValue.isNew)
+          ? <IconButton color="action" onClick={handleDelete}
             iconSize={20}>delete</IconButton>
+          : (answerType === questionTypes.BINARY || isEdit)
+            ? null
+            : <IconButton color="action" onClick={handleDelete}
+              iconSize={20}>delete</IconButton>
         }
       </Column>
     </Container>
