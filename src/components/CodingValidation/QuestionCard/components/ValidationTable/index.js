@@ -5,7 +5,6 @@ import { TableBody, TableHead } from 'material-ui/Table'
 import Table from 'components/Table'
 import TableRow from 'components/TableRow'
 import TableCell from 'components/TableCell'
-import Icon from 'components/Icon'
 import IconButton from 'components/IconButton'
 import Avatar from 'components/Avatar'
 import { getInitials } from 'utils/normalize'
@@ -42,7 +41,7 @@ export const ValidationTable = props => {
           </TableHead>
           <TableBody>
             {allFlags.map((item, i) => {
-              return (
+              return Object.keys(item).length > 0 &&
                 <TableRow key={`flag-${i}`}>
                   <TableCell
                     style={{
@@ -70,7 +69,6 @@ export const ValidationTable = props => {
                     {item.type && <ExpansionTextPanel textProps={{ type: 'caption' }} text={item.notes} />}
                   </TableCell>
                 </TableRow>
-              )
             })}
           </TableBody>
         </Table>
