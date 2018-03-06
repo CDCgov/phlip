@@ -21,13 +21,10 @@ const flagColors = {
 
 export const ValidationTable = props => {
   const { mergedUserQuestions, questionFlags, onOpenAlert } = props
-
-  const hasFlags = mergedUserQuestions.hasOwnProperty('flag')
-  const hasComments = mergedUserQuestions.hasOwnProperty('comment')
-  const allFlags = [...mergedUserQuestions.flag, ...questionFlags]
+  const allFlags = [...mergedUserQuestions.flagsComments, ...questionFlags]
 
   return (
-    ((hasFlags && allFlags.length > 0) || (hasComments && mergedUserQuestions.comment.length > 0)) &&
+    allFlags.length > 0 &&
     <Container column style={{ padding: 20 }}>
       <Row style={{ paddingBottom: 10 }}><Typography type="title" style={{ color: '#a7bdc6' }}>
         Flags and Notes
@@ -37,30 +34,43 @@ export const ValidationTable = props => {
           <TableHead>
             <TableRow style={{ backgroundColor: '#fff' }}>
               <TableCell style={{ padding: '5px 15px' }}>User</TableCell>
+              <TableCell>Question Comment</TableCell>
               <TableCell padding="none">Flag</TableCell>
-              <TableCell>Notes</TableCell>
+              <TableCell>Reason For Flag</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {allFlags.map((flag, i) => {
-              return (<TableRow key={`flag-${i}`}>
-                <TableCell style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', padding: '5px 12px' }}>
-                  <Avatar
-                    cardAvatar
-                    style={{ marginRight: 15 }}
-                    initials={getInitials(flag.raisedBy.firstName, flag.raisedBy.lastName)}
-                    avatarUrl={flag.raisedBy.avatarUrl}
-                  />
-                  <Typography type="caption">{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}</Typography>
-                </TableCell>
-                <TableCell padding="none">
-                  <IconButton onClick={() => onOpenAlert(flag.id)} color={flagColors[flag.type]}>flag</IconButton>
-                </TableCell>
-                <TableCell>
-                  <ExpansionTextPanel textProps={{ type: 'caption' }} text={flag.notes} />
-                </TableCell>
-              </TableRow>)}
-            )}
+            {allFlags.map((item, i) => {
+              return (
+                <TableRow key={`flag-${i}`}>
+                  <TableCell
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      padding: '5px 12px'
+                    }}>
+                    <Avatar
+                      cardAvatar
+                      style={{ marginRight: 15 }}
+                      initials={getInitials(item.raisedBy.firstName, item.raisedBy.lastName)}
+                      avatarUrl={item.raisedBy.avatarUrl}
+                    />
+                    <Typography type="caption">{`${item.raisedBy.firstName} ${item.raisedBy.lastName}`}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    {item.comment && <ExpansionTextPanel textProps={{ type: 'caption' }} text={item.comment} />}
+                  </TableCell>
+                  <TableCell padding="none">
+                    {item.type &&
+                    <IconButton onClick={() => onOpenAlert(item.id)} color={flagColors[item.type]}>flag</IconButton>}
+                  </TableCell>
+                  <TableCell>
+                    {item.type && <ExpansionTextPanel textProps={{ type: 'caption' }} text={item.notes} />}
+                  </TableCell>
+                </TableRow>
+              )
+            })}
           </TableBody>
         </Table>
       </Row>

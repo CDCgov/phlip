@@ -51,8 +51,6 @@ export class ExpansionTextPanel extends Component {
   }
 
   render() {
-    console.log(this.state)
-
     return (
       <ClickAwayListener onClickAway={this.onClosePopper}>
         <Row flex displayFlex style={{ overflow: 'hidden', alignItems: 'center' }}>

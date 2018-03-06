@@ -6,19 +6,25 @@ import { getFinalCodedObject } from 'utils/codingHelpers'
 import { createAvatarUrl } from 'utils/urlHelper'
 import { checkIfExists } from 'utils/codingSchemeHelpers'
 
-const addCoderToAnswers = (existingQuestion, question, coder) => ({
-  ...existingQuestion,
-  answers: [...existingQuestion.answers, ...question.codedAnswers.map(answer => ({ ...answer, ...coder }))],
-  flag: question.flag !== null
-    ? [...existingQuestion.flag, { ...question.flag, ...coder }]
-    : [...existingQuestion.flag],
-  comment: question.comment !== ''
-    ? [...existingQuestion.comment, { ...question.comment, ...coder }]
-    : [...existingQuestion.comment]
-})
+const addCoderToAnswers = (existingQuestion, question, coder) => {
+  let flagComment = {}
+
+  if (question.flag !== null) {
+    flagComment = { ...question.flag, raisedBy: { ...coder } }
+  }
+  if (question.comment !== '') {
+    flagComment = { ...flagComment, comment: question.comment, raisedBy: { ...coder }}
+  }
+
+  return {
+    ...existingQuestion,
+    answers: [...existingQuestion.answers, ...question.codedAnswers.map(answer => ({ ...answer, ...coder }))],
+    flagsComments: [...existingQuestion.flagsComments, flagComment]
+  }
+}
 
 const mergeInUserCodedQuestions = (codedQuestions, codeQuestionsPerUser, coder) => {
-  const baseQuestion = { flag: [], comment: [], answers: [] }
+  const baseQuestion = { flagsComments: [], answers: [] }
   return codeQuestionsPerUser.reduce((allCodedQuestions, question) => {
     const doesExist = checkIfExists(question, allCodedQuestions, 'schemeQuestionId')
     return {

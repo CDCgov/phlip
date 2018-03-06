@@ -391,6 +391,5 @@ export const getFinalCodedObject = (state, action, applyAll = false) => {
     flag: action.type == 'ON_SAVE_FLAG' ? { ...action.flagInfo } : { ...questionObject.flag }
   }
 
-  console.log(answerObject)
   return answerObject
 }
