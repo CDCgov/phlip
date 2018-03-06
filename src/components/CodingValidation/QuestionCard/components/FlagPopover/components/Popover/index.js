@@ -20,7 +20,10 @@ export const Popover = props => {
             {targetIcon}
           </IconButton>
         </Target>
-        <Popper placement="bottom-end" eventsEnabled={open} style={{ zIndex: open ? 1200 : 0 }}>
+        <Popper
+          placement="bottom-end"
+          eventsEnabled={open}
+          style={{ zIndex: open ? 1200 : 0, display: open ? 'flex' : 'none' }}>
           <Grow in={open}>
             <Card style={{ display: 'flex', flexDirection: 'column', zIndex: open ? 1200 : 0 }}>
               <Row style={{ padding: 16 }}>

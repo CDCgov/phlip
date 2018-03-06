@@ -192,7 +192,7 @@ export class FlagPopover extends Component {
         >
           <Container column style={{ minWidth: 450, minHeight: 200, alignItems: 'center', paddingTop: 10 }}>
             {(this.props.questionFlags.length > 0 && !this.state.inEditMode) &&
-            <Table style={{ width: '90%', minWidth: 550, margin: '10px 16px' }}>
+            <Table style={{ width: '90%', width: 580, margin: '10px 16px' }}>
               <TableHead>
                 <TableRow>
                   <TableCell padding="checkbox">Raised By</TableCell>
@@ -219,7 +219,7 @@ export class FlagPopover extends Component {
               value="+ Add Red Flag"
             /></Row>}
             {this.state.inEditMode &&
-            <form onSubmit={this.onSaveRedPopover} style={{ alignSelf: 'stretch', flex: 1 }}>
+            <form onSubmit={this.onSaveRedPopover} style={{ alignSelf: 'stretch', flex: 1, width: 580 }}>
               <Row style={{ padding: 16 }}>
                 <SimpleInput
                   value={this.state.userRedFlag.notes}
