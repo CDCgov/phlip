@@ -49,8 +49,8 @@ export class FlagPopover extends Component {
       otherFlagOpen: false,
       updatedFlag: { ...props.userFlag },
       questionFlags: [...props.questionFlags],
-      userRedFlag: checkForRedFlag(props.questionFlags, props.user)[0] || { notes: null, type: 3 },
-      inEditMode: false,
+      userRedFlag: checkForRedFlag(props.questionFlags, props.user)[0] || { notes: '', type: 3 },
+      inEditMode: props.questionFlags.length === 0,
       helperText: ''
     }
 
@@ -59,13 +59,13 @@ export class FlagPopover extends Component {
         type: 1,
         color: '#2cad73',
         text: getFlagText('#2cad73', 'Flag for analysis'),
-        disabled: checkForSameType(props.userFlag.type, 1)
+        disabled: this.state.questionFlags.length > 0
       },
       2: {
         type: 2,
         color: '#fca63a',
         text: getFlagText('#fca63a', 'Notify coordinator'),
-        disabled: checkForSameType(props.userFlag.type, 2)
+        disabled: this.state.questionFlags.length > 0
       }
     }
   }
@@ -74,13 +74,14 @@ export class FlagPopover extends Component {
     this.setState({
       updatedFlag: { ...nextProps.userFlag },
       questionFlags: [...nextProps.questionFlags],
-      userRedFlag: checkForRedFlag(nextProps.questionFlags, nextProps.user)[0] || { notes: null, type: 3 }
+      userRedFlag: checkForRedFlag(nextProps.questionFlags, nextProps.user)[0] || { notes: '', type: 3 },
+      inEditMode: nextProps.questionFlags.length === 0
     })
 
     for (let type in this.userFlagColors) {
       this.userFlagColors[type] = {
         ...this.userFlagColors[type],
-        disabled: checkForSameType(nextProps.userFlag.type, type)
+        disabled: nextProps.questionFlags.length > 0
       }
     }
   }
@@ -95,7 +96,6 @@ export class FlagPopover extends Component {
   onCloseRedPopover = () => {
     this.setState({
       redFlagOpen: false,
-      inEditMode: false,
       helperText: ''
     })
   }
@@ -182,7 +182,7 @@ export class FlagPopover extends Component {
     return (
       <Container style={{ width: 'unset', height: 24 }}>
         <Popover
-          title="Red Flags"
+          title="Stop Coding this Question"
           open={this.state.redFlagOpen}
           targetIcon="report"
           targetColor={this.props.questionFlags.length > 0 ? redFlagColor : '#d7e0e4'}
@@ -197,7 +197,7 @@ export class FlagPopover extends Component {
                 <TableRow>
                   <TableCell padding="checkbox">Raised By</TableCell>
                   <TableCell padding="checkbox">Notes</TableCell>
-                  {this.state.userRedFlag.notes !== null && <TableCell padding="checkbox">Edit</TableCell>}
+                  {this.state.questionFlags[0].raisedBy.userId === this.props.user.id && <TableCell padding="checkbox">Edit</TableCell>}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -212,12 +212,6 @@ export class FlagPopover extends Component {
                 ))}
               </TableBody>
             </Table>}
-            {!this.state.inEditMode && this.state.questionFlags.length === 0 &&
-            <Row displayFlex flex style={{ alignItems: 'center' }}><Button
-              onClick={this.toggleEditMode}
-              color="accent"
-              value="+ Add Red Flag"
-            /></Row>}
             {this.state.inEditMode &&
             <form onSubmit={this.onSaveRedPopover} style={{ alignSelf: 'stretch', flex: 1, width: 580 }}>
               <Row style={{ padding: 16 }}>
@@ -256,7 +250,7 @@ export class FlagPopover extends Component {
             </Row>
           </Container>
         </Popover>
-        {this.state.questionFlags.length === 0 && <Popover
+        <Popover
           title="Flags"
           open={this.state.otherFlagOpen}
           targetIcon="flag"
@@ -285,6 +279,7 @@ export class FlagPopover extends Component {
                 id="flag-notes"
                 label="Notes"
                 required
+                disabled={this.state.questionFlags.length > 0}
                 error={this.state.helperText !== ''}
                 onBlur={this.checkNotes}
                 helperText={this.state.helperText}
@@ -305,7 +300,7 @@ export class FlagPopover extends Component {
               />
             </Row>
           </form>
-        </Popover>}
+        </Popover>
       </Container>
     )
   }
