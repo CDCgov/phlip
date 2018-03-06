@@ -11,6 +11,7 @@ import Avatar from 'components/Avatar'
 import { getInitials } from 'utils/normalize'
 import Typography from 'material-ui/Typography'
 import { checkIfExists } from 'utils/codingSchemeHelpers'
+import ExpansionTextPanel from 'components/ExpansionTextPanel'
 
 const flagColors = {
   1: '#2cad73',
@@ -56,7 +57,7 @@ export const ValidationTable = props => {
                   <IconButton onClick={() => onOpenAlert(flag.id)} color={flagColors[flag.type]}>flag</IconButton>
                 </TableCell>
                 <TableCell>
-                  <Typography type="caption">{flag.notes}</Typography>
+                  <ExpansionTextPanel textProps={{ type: 'caption' }} text={flag.notes} />
                 </TableCell>
               </TableRow>)}
             )}

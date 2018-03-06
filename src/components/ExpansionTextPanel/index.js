@@ -56,15 +56,15 @@ export class ExpansionTextPanel extends Component {
     return (
       <ClickAwayListener onClickAway={this.onClosePopper}>
         <Row flex displayFlex style={{ overflow: 'hidden', alignItems: 'center' }}>
-          <Typography noWrap style={{ flex: 1 }}>{this.props.text}</Typography>
+          <Typography noWrap {...this.props.textProps} style={{ flex: 1 }}>{this.props.text}</Typography>
           <Manager>
             <Target>
               <IconButton onClick={this.onOpenPopper} color="#768f99">expand_more</IconButton>
             </Target>
-            <Popper placement="bottom-end" id="text-popper" style={{ width: 500, zIndex: this.state.open ? 2 : '' }}>
+            <Popper placement="bottom-end" id="text-popper" style={{ width: 450, zIndex: this.state.open ? 2 : '' }}>
               <Grow in={this.state.open}>
                 <Paper elevation={8} style={{ padding: 25 }}>
-                  <Typography>{this.props.text}</Typography>
+                  <Typography {...this.props.textProps}>{this.props.text}</Typography>
                 </Paper>
               </Grow>
             </Popper>
