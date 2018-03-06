@@ -3,7 +3,7 @@ import { checkIfAnswered, checkIfExists, checkIfCategoryAnswered } from 'utils/c
 import sortList from 'utils/sortList'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
-const initializeValues = (question, codingSchemeQuestion, userId) => {
+const initializeValues = question => {
   return {
     ...question,
     comment: question.comment || '',
@@ -37,6 +37,7 @@ export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions,
     })
   }, {})
 }
+
 
 export const findNextParentSibling = (scheme, question, currentIndex) => {
   const subArr = [...scheme.order].slice(currentIndex + 1)
