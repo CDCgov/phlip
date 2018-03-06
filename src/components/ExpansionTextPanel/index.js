@@ -51,7 +51,7 @@ export class ExpansionTextPanel extends Component {
   }
 
   render() {
-    console.log(this.state)
+    // console.log(this.state)
 
     return (
       <ClickAwayListener onClickAway={this.onClosePopper}>

@@ -3,7 +3,7 @@ import Avatar from 'components/Avatar'
 import { Row } from 'components/Layout/index'
 
 export const AvatarList = ({ mergedUserQuestions }) => {
-  console.log(mergedUserQuestions)
+  // console.log(mergedUserQuestions)
   const styles = {
     marginRight: '-6px',
     border: 'solid 3px white',

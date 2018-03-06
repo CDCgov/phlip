@@ -9,7 +9,7 @@ export default function addEditUserReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
 
     case types.GET_USER_PICTURE_SUCCESS:
-      console.log(action)
+      // console.log(action)
       return {
         ...state,
         avatarUrl: action.payload
