@@ -91,7 +91,8 @@ export class FlagPopover extends Component {
     this.setState({
       redFlagOpen: !this.state.redFlagOpen,
       otherFlagOpen: false,
-      helperText: ''
+      helperText: '',
+      inEditMode: this.state.questionFlags.length === 0
     })
   }
 
