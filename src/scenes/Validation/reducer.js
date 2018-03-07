@@ -121,8 +121,64 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         jurisdiction: action.jurisdictionList.find(jurisdiction => jurisdiction.id === action.event)
       }
 
+    case types.CLEAR_FLAG:
+      let flagIndex = null
+
+      const flagComments = state.question.isCategoryQuestion
+        ? state.mergedUserQuestions[action.questionId][state.selectedCategoryId].flagsComments
+        : state.mergedUserQuestions[action.questionId].flagsComments
+
+      const { id, type, notes, ...flag } = flagComments.find((item, i) => {
+        if (item.id === action.flagId) {
+          flagIndex = i
+        }
+        return item.id === action.flagId
+      })
+
+      if (Object.keys(flag).length === 1) {
+        flagComments.splice(flagIndex, 1)
+      } else {
+        flagComments.splice(flagIndex, 1, flag)
+      }
+
+      return {
+        ...state,
+        mergedUserQuestions: {
+          ...state.mergedUserQuestions,
+          [action.questionId]: {
+            ...state.mergedUserQuestions[action.questionId],
+            ...state.question.isCategoryQuestion
+              ? {
+                [state.selectedCategoryId]: {
+                  ...state.mergedUserQuestions[action.questionId][state.selectedCategoryId],
+                  flagComments
+                }
+              }
+              : {
+                flagComments
+              }
+          }
+        }
+      }
+
+    case types.CLEAR_RED_FLAG:
+      return {
+        ...state,
+        question: { ...state.question, flags: [] },
+        scheme: {
+          ...state.scheme,
+          byId: {
+            ...state.scheme.byId,
+            [action.questionId]: {
+              ...state.scheme.byId[action.questionId],
+              flags: []
+            }
+          }
+        }
+      }
+
     case types.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
-      let userAnswers = {}, question = { ...state.question }, other = {}, mergedUserQuestions = {}
+      let userAnswers = {}, question = { ...state.question }, other = {}
 
       if (state.question.isCategoryQuestion) {
         question = state.scheme.byId[question.parentId]

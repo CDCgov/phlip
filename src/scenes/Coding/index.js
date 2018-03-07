@@ -138,10 +138,17 @@ export class Coding extends Component {
   }
 
   onSaveFlag = flagInfo => {
-    this.props.actions.onSaveFlag(this.props.projectId, this.props.jurisdictionId, this.props.question.id, {
-      raisedBy: { userId: this.props.user.id, firstName: this.props.user.firstName, lastName: this.props.user.lastName },
-      ...flagInfo
-    })
+    if (flagInfo.type === 3) {
+      this.props.actions.onSaveRedFlag(this.props.projectId, this.props.question.id, {
+        raisedBy: { userId: this.props.user.id, firstName: this.props.user.firstName, lastName: this.props.user.lastName },
+        ...flagInfo
+      })
+    } else {
+      this.props.actions.onSaveFlag(this.props.projectId, this.props.jurisdictionId, this.props.question.id, {
+        raisedBy: { userId: this.props.user.id, firstName: this.props.user.firstName, lastName: this.props.user.lastName },
+        ...flagInfo
+      })
+    }
   }
 
   onShowGetStartedView = (noScheme, noJurisdictions) => {

@@ -98,38 +98,37 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...questionUpdater('comment', action.comment)
       }
 
-    case types.ON_SAVE_FLAG:
-      // If the flag type is red, add it to schemeQuestionFlags
-      if (action.flagInfo.type === 3) {
-        const question = { ...state.scheme.byId[action.questionId] }
-        return {
-          ...state,
-          question: {
-            ...state.question,
-            flags: question.flags.length > 0
-              ? action.flagInfo.hasOwnProperty('id')
-                ? updater.updateByProperty(action.flagInfo, question.flags, 'id')
-                : [ ...question.flags, action.flagInfo ]
-              : [action.flagInfo]
-          },
-          scheme: {
-            ...state.scheme,
-            byId: {
-              ...state.scheme.byId,
-              [action.questionId]: {
-                ...question,
-                flags: action.flagInfo.hasOwnProperty('id')
-                  ? updater.updateByProperty(action.flagInfo, question.flags, 'id')
-                  : [ ...question.flags, action.flagInfo ]
-              }
+    case types.ON_SAVE_RED_FLAG:
+      const curQuestion = { ...state.scheme.byId[action.questionId] }
+      console.log(curQuestion)
+      return {
+        ...state,
+        question: {
+          ...state.question,
+          flags: curQuestion.flags.length > 0
+            ? action.flagInfo.hasOwnProperty('id')
+              ? updater.updateByProperty(action.flagInfo, curQuestion.flags, 'id')
+              : [...curQuestion.flags, action.flagInfo]
+            : [action.flagInfo]
+        },
+        scheme: {
+          ...state.scheme,
+          byId: {
+            ...state.scheme.byId,
+            [action.questionId]: {
+              ...curQuestion,
+              flags: action.flagInfo.hasOwnProperty('id')
+                ? updater.updateByProperty(action.flagInfo, curQuestion.flags, 'id')
+                : [...curQuestion.flags, action.flagInfo]
             }
           }
         }
-      } else {
-        return {
-          ...state,
-          ...questionUpdater('flag', action.flagInfo)
-        }
+      }
+
+    case types.ON_SAVE_FLAG:
+      return {
+        ...state,
+        ...questionUpdater('flag', action.flagInfo)
       }
 
     case types.ON_CHANGE_PINCITE:

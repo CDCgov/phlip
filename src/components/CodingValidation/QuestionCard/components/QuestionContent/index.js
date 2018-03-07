@@ -100,6 +100,7 @@ export const QuestionContent = props => {
               style={{ whiteSpace: 'pre-wrap' }}
               placeholder="Enter comment"
               value={comment}
+              rowsMax={6}
               label="Comment"
             />
           </Row>}

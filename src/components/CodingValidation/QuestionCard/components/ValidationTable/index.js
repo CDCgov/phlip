@@ -55,7 +55,7 @@ export const ValidationTable = props => {
                 {item.type &&
                 <Row displayFlex flex style={{ alignItems: 'center', overflow:' hidden' }}>
                   <Column style={{ paddingRight: 8 }}>
-                    <IconButton onClick={() => onOpenAlert(item.id)} color={flagColors[item.type]}>flag</IconButton>
+                    <IconButton onClick={() => onOpenAlert(item.id, item.type)} color={flagColors[item.type]}>flag</IconButton>
                   </Column>
                   <Row displayFlex flex style={{ alignItems: 'center', overflow: 'hidden' }}>
                     <Typography type="caption" style={{ fontWeight: 'bold' }}>

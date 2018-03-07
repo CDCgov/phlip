@@ -4,7 +4,7 @@ import { TableCell as MuiTableCell } from 'material-ui/Table'
 
 const TableCell = ({ style, padding, children, ...otherProps }) => {
   return (
-    <MuiTableCell padding={padding} style={{ ...style }} {...otherProps}>
+    <MuiTableCell padding={padding} style={{ ...style, maxWidth: 0 }} {...otherProps}>
       {children}
     </MuiTableCell>
   )

@@ -198,9 +198,17 @@ export const getUserValidatedQuestionsLogic = createLogic({
   }
 })
 
+export const clearFlagLogic = createLogic({
+  type: [types.CLEAR_RED_FLAG, types.CLEAR_FLAG],
+  async process({ action, api }) {
+    return await api.clearFlag(action.flagId)
+  }
+})
+
 export default [
   updateValidatorLogic,
   getUserValidatedQuestionsLogic,
   validateQuestionLogic,
-  getValidationOutlineLogic
+  getValidationOutlineLogic,
+  clearFlagLogic
 ]
