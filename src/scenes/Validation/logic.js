@@ -50,6 +50,60 @@ const mergeInUserCodedQuestions = (codedQuestions, codeQuestionsPerUser, coder) 
   }, codedQuestions)
 }
 
+const getCoderInformation = async ({ api, action }) => {
+  let codedQuestions = [], updatedCodedQuestions = [], projectCoders = [], codeQuestionsPerUser = [],
+    codedQuestionObj = {}
+
+  try {
+    codedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
+    for (let question of codedQuestions) {
+      try {
+        let hasAvatarImage = await api.getUserPicture(question.validatedBy.userId)
+        let avatarUrl = hasAvatarImage ? createAvatarUrl(question.validatedBy.userId) : null
+        let validatedBy = { ...question.validatedBy, avatarUrl }
+        updatedCodedQuestions = [...updatedCodedQuestions, { ...question, validatedBy }]
+      } catch (e) {
+        throw { error: 'failed to get avatar image for validator' }
+      }
+    }
+  } catch (e) {
+    throw { error: 'failed to get codedQuestions' }
+  }
+
+  try {
+    projectCoders = await api.getProjectCoders(action.projectId)
+  } catch (e) {
+    throw { error: 'failed to get project coders' }
+  }
+
+  if (projectCoders.length !== 0) {
+    for (let coder of projectCoders) {
+      try {
+        let hasAvatarImage = await api.getUserPicture(coder.userId)
+        let avatarUrl = hasAvatarImage ? createAvatarUrl(coder.userId) : null
+        coder = { ...coder, avatarUrl }
+      } catch (e) {
+        throw { error: 'failed to get avatar image' }
+      }
+
+      try {
+        codeQuestionsPerUser = await api.getUserCodedQuestions(coder.userId, action.projectId, action.jurisdictionId)
+        if (codeQuestionsPerUser.length > 0) {
+          codedQuestionObj = { ...mergeInUserCodedQuestions(codedQuestionObj, codeQuestionsPerUser, coder) }
+        }
+      } catch (e) {
+        throw { error: 'failed to get codedQuestions for user' }
+      }
+    }
+  }
+
+  return {
+    codedQuestionObj,
+    updatedCodedQuestions,
+    codedQuestions
+  }
+}
+
 export const updateValidatorLogic = createLogic({
   type: [types.UPDATE_USER_VALIDATION_REQUEST, types.ON_APPLY_VALIDATION_TO_ALL],
   transform({ action, getState }, next) {
@@ -70,8 +124,7 @@ export const getValidationOutlineLogic = createLogic({
     failType: types.GET_VALIDATION_OUTLINE_FAIL
   },
   async process({ action, getState, api }) {
-    let scheme = {}, codedQuestions = [], projectCoders = [],
-      codeQuestionsPerUser = [], updatedCodedQuestions = [], codedQuestionObj = {}
+    let scheme = {}
 
     const userId = getState().data.user.currentUser.id
 
@@ -81,53 +134,10 @@ export const getValidationOutlineLogic = createLogic({
       throw { error: 'failed to get outline' }
     }
 
-    try {
-      projectCoders = await api.getProjectCoders(action.projectId)
-    } catch (e) {
-      throw { error: 'failed to get project coders' }
-    }
-
-    if (action.jurisdictionId) {
-      try {
-        codedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
-        for (let question of codedQuestions) {
-          try {
-            let hasAvatarImage = await api.getUserPicture(question.validatedBy.userId)
-            let avatarUrl = hasAvatarImage ? createAvatarUrl(question.validatedBy.userId) : null
-            let validatedBy = { ...question.validatedBy, avatarUrl }
-            updatedCodedQuestions = [...updatedCodedQuestions, { ...question, validatedBy }]
-          } catch (e) {
-            throw { error: 'failed to get avatar image for validator' }
-          }
-        }
-      } catch (e) {
-        throw { error: 'failed to get codedQuestions' }
-      }
-    }
-
-    if (projectCoders.length !== 0) {
-      for (let coder of projectCoders) {
-        try {
-          let hasAvatarImage = await api.getUserPicture(coder.userId)
-          let avatarUrl = hasAvatarImage ? createAvatarUrl(coder.userId) : null
-          coder = { ...coder, avatarUrl }
-        } catch (e) {
-          throw { error: 'failed to get avatar image' }
-        }
-
-        try {
-          codeQuestionsPerUser = await api.getUserCodedQuestions(coder.userId, action.projectId, action.jurisdictionId)
-          codedQuestionObj = { ...mergeInUserCodedQuestions(codedQuestionObj, codeQuestionsPerUser, coder) }
-        } catch (e) {
-          throw { error: 'failed to get codedQuestions for user' }
-        }
-      }
-    }
+    const { codedQuestionObj, updatedCodedQuestions } = await getCoderInformation({ api, action })
 
     if (scheme.schemeQuestions.length === 0) {
-      return {
-        isSchemeEmpty: true
-      }
+      return { isSchemeEmpty: true }
     } else {
       const merge = scheme.schemeQuestions.reduce((arr, q) => {
         return [...arr, { ...q, ...scheme.outline[q.id] }]
@@ -179,52 +189,9 @@ export const getUserValidatedQuestionsLogic = createLogic({
     successType: types.GET_USER_VALIDATED_QUESTIONS_SUCCESS,
     failType: types.GET_USER_VALIDATED_QUESTIONS_FAIL
   },
-  async process({ action, api, getState }) {
-    let codedQuestions = [], projectCoders = [], codeQuestionsPerUser = [], codedQuestionObj = {}, updatedCodedQuestions = []
-
-    try {
-      codedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
-      for (let question of codedQuestions) {
-        try {
-          let hasAvatarImage = await api.getUserPicture(question.validatedBy.userId)
-          let avatarUrl = hasAvatarImage ? createAvatarUrl(question.validatedBy.userId) : null
-          let validatedBy = { ...question.validatedBy, avatarUrl }
-          updatedCodedQuestions = [...updatedCodedQuestions, { ...question, validatedBy }]
-        } catch (e) {
-          throw { error: 'failed to get avatar image for validator' }
-        }
-      }
-    } catch (e) {
-      throw { error: 'failed to get codedQuestions' }
-    }
-
-    try {
-      projectCoders = await api.getProjectCoders(action.projectId)
-    } catch (e) {
-      throw { error: 'failed to get project coders' }
-    }
-
-    if (projectCoders.length !== 0) {
-      for (let coder of projectCoders) {
-        try {
-          let hasAvatarImage = await api.getUserPicture(coder.userId)
-          let avatarUrl = hasAvatarImage ? createAvatarUrl(coder.userId) : null
-          coder = { ...coder, avatarUrl }
-        } catch (e) {
-          throw { error: 'failed to get avatar image' }
-        }
-
-        try {
-          codeQuestionsPerUser = await api.getUserCodedQuestions(coder.userId, action.projectId, action.jurisdictionId)
-          codedQuestionObj = { ...mergeInUserCodedQuestions(codedQuestionObj, codeQuestionsPerUser, coder) }
-        } catch (e) {
-          throw { error: 'failed to get codedQuestions for user' }
-        }
-      }
-    }
-
+  async process({ action, api }) {
+    const { codedQuestionObj, updatedCodedQuestions } = await getCoderInformation({ api, action })
     return {
-      codedQuestions,
       mergedUserQuestions: codedQuestionObj,
       codedQuestions: updatedCodedQuestions
     }
