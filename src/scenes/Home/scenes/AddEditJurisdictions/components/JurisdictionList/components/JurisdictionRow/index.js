@@ -4,28 +4,30 @@ import { TableRow, TableCell } from 'material-ui/Table'
 import IconButton from 'components/IconButton'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import TextLink from 'components/TextLink'
 
-export const JurisdictionRow = ({ jurisdiction, id, onOpenForm }) => (
-  <TableRow key={`jurisdiction-${id}`}>
+export const JurisdictionRow = ({ jurisdiction, id, projectId }) => {
+  return (<TableRow key={`jurisdiction-${id}`}>
     <TableCell key={`${id}-segment-name`}>
       {jurisdiction.name}
-      </TableCell>
+    </TableCell>
     <TableCell key={`${id}-segment-start`}>
       {new Date(jurisdiction.startDate).toLocaleDateString()}
-      </TableCell>
+    </TableCell>
     <TableCell key={`${id}-segment-end`}>
       {new Date(jurisdiction.endDate).toLocaleDateString()}
-      </TableCell>
-    <TableCell>
-      <IconButton color="accent" onClick={() => onOpenForm(true, jurisdiction)}>mode_edit</IconButton>
     </TableCell>
-  </TableRow>
-)
+    <TableCell>
+      <TextLink to={{ pathname: `/project/${projectId}/jurisdictions/${jurisdiction.id}/edit`, state: { jurisdictionDefined: { ...jurisdiction }}}}>
+        <IconButton color="accent">mode_edit</IconButton>
+      </TextLink>
+    </TableCell>
+  </TableRow>)
+}
 
 JurisdictionRow.propTypes = {
   jurisdiction: PropTypes.object,
-  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  onOpenForm: PropTypes.func
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 }
 
 const mapStateToProps = (state, ownProps) => ({

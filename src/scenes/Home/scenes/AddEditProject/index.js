@@ -12,7 +12,7 @@ import TextInput from 'components/TextInput'
 import Dropdown from 'components/Dropdown'
 import Container, { Row } from 'components/Layout'
 import DetailRow from './components/DetailRow'
-import Alert from 'components/Alert'
+import withFormAlert from 'components/withFormAlert'
 
 export class AddEditProject extends Component {
   static propTypes = {
@@ -27,8 +27,7 @@ export class AddEditProject extends Component {
     super(props, context)
     this.projectDefined = this.props.match.url === '/project/add' ? null : this.props.location.state.projectDefined
     this.state = {
-      edit: !this.projectDefined,
-      alertOpen: false
+      edit: !this.projectDefined
     }
   }
 
@@ -39,29 +38,6 @@ export class AddEditProject extends Component {
         ? this.setState({ edit: !this.state.edit })
         : this.props.history.goBack()
       : this.props.history.goBack()
-  }
-
-  onCloseModal = () => {
-    if ((this.props.form.initial.type !== this.props.form.values.type) ||
-      (this.props.form.initial.name !== this.props.form.values.name)) {
-      this.setState({ alertOpen: true })
-    } else {
-      this.props.history.goBack()
-    }
-  }
-
-  onCloseAlert = () => {
-    this.setState({
-      alertOpen: false
-    })
-  }
-
-  onContinue = () => {
-    this.props.formActions.reset('projectForm')
-    this.setState({
-      alertOpen: false
-    })
-    this.props.history.goBack()
   }
 
   handleSubmit = values => {
@@ -128,37 +104,19 @@ export class AddEditProject extends Component {
       { value: 3, label: 'Environmental Scan' }
     ]
 
-    const alertActions = [
-      {
-        value: 'Cancel',
-        type: 'button',
-        onClick: this.onCloseAlert
-      },
-      {
-        value: 'Continue',
-        type: 'button',
-        onClick: this.onContinue
-      }
-    ]
-
     return (
       <FormModal
         form="projectForm"
         handleSubmit={this.handleSubmit}
         asyncValidate={this.validateProjectName}
         asyncBlurFields={['name']}
-        onClose={this.onCloseModal}
+        onClose={this.props.onCloseModal}
         initialValues={this.props.location.state.projectDefined || {}}
         width="600px" height="400px"
       >
         <ModalTitle
           title={this.getModalTitle()} edit={this.state.edit}
           closeButton={!!this.projectDefined} onEditForm={this.onEditForm} onCloseForm={this.onCancel}
-        />
-        <Alert
-          open={this.state.alertOpen}
-          text="You have unsaved changes that will be lost if you decide to continue. Are you sure you want to continue?"
-          actions={alertActions}
         />
         <Divider />
         <ModalContent>
@@ -209,7 +167,8 @@ export class AddEditProject extends Component {
 
 const mapStateToProps = (state) => ({
   projects: Object.values(state.scenes.home.main.projects.byId) || [],
-  form: state.form.projectForm || {}
+  form: state.form.projectForm || {},
+  formName: 'projectForm'
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -217,4 +176,4 @@ const mapDispatchToProps = (dispatch) => ({
   formActions: bindActionCreators(formActions, dispatch)
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEditProject))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withFormAlert(AddEditProject)))
