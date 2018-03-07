@@ -206,7 +206,6 @@ export class AddEditQuestion extends Component {
           <ModalActions
             edit={this.state.edit}
             actions={actions}
-            raised={true}
             style={{ paddingTop: 15, paddingBottom: 15, margin: 0 }}
           ></ModalActions>
         </Container>

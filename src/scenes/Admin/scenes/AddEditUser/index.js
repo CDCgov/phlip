@@ -12,7 +12,6 @@ import Container, { Row, Column } from 'components/Layout'
 import { trimWhitespace } from 'utils/formHelpers'
 import Avatar from 'components/Avatar'
 import ReactFileReader from 'react-file-reader'
-// import Button from 'components/Button'
 import IconButton from 'components/IconButton'
 
 const rowStyles = {
@@ -101,7 +100,6 @@ export class AddEditUser extends Component {
     ]
 
     return (
-
       <ModalForm
         open={true}
         title="Add/Edit User"
@@ -111,7 +109,7 @@ export class AddEditUser extends Component {
         asyncValidate={this.validateEmail}
         initialValues={this.selectedUser}
         asyncBlurFields={['email']}
-        onClose={this.handleClose}
+        onClose={this.onCancel}
         width="600px"
         height="400px"
       >
@@ -205,4 +203,3 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEditUser))
-

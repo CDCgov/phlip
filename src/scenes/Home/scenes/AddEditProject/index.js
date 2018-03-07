@@ -79,18 +79,22 @@ export class AddEditProject extends Component {
   formatDate = (value, name) => new Date(value).toLocaleDateString()
 
   render() {
-    const editAction = [{ value: 'Edit', onClick: this.onEditForm, type: 'button' }]
+    const editAction = [
+      { value: 'Cancel', onClick: this.onCancel, type: 'button' },
+      { value: 'Edit', onClick: this.onEditForm, type: 'button' }
+    ]
 
     const actions = this.projectDefined && !this.state.edit
       ? editAction
-      : [{ value: 'Cancel', onClick: this.onCancel, type: 'button' },
-      {
-        value: this.projectDefined
-          ? 'Save'
-          : 'Create',
-        type: 'submit',
-        disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors)
-      }
+      : [
+        { value: 'Cancel', onClick: this.onCancel, type: 'button' },
+        {
+          value: this.projectDefined
+            ? 'Save'
+            : 'Create',
+          type: 'submit',
+          disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors)
+        }
       ]
 
     const options = [
@@ -106,9 +110,12 @@ export class AddEditProject extends Component {
         asyncValidate={this.validateProjectName}
         asyncBlurFields={['name']} onClose={this.onCancel}
         initialValues={this.props.location.state.projectDefined || {}}
-        width="600px" height="400px">
-        <ModalTitle title={this.getModalTitle()} edit={this.state.edit}
-          closeButton={!!this.projectDefined} onEditForm={this.onEditForm} onCloseForm={this.onCancel} />
+        width="600px" height="400px"
+      >
+        <ModalTitle
+          title={this.getModalTitle()} edit={this.state.edit}
+          closeButton={!!this.projectDefined} onEditForm={this.onEditForm} onCloseForm={this.onCancel}
+        />
         <Divider />
         <ModalContent>
           <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px 0 15px' }}>
@@ -132,25 +139,25 @@ export class AddEditProject extends Component {
               disabled={!this.state.edit}
             />
             {this.projectDefined &&
-              <DetailRow
-                component={TextInput}
-                disabled={true}
-                label="Created By"
-                name="createdBy"
-              />}
+            <DetailRow
+              component={TextInput}
+              disabled={true}
+              label="Created By"
+              name="createdBy"
+            />}
             {this.projectDefined &&
-              <DetailRow
-                component={TextInput}
-                disabled={true}
-                label="Created Date"
-                name="dateCreated"
-                format={this.formatDate}
-                style={{ paddingBottom: 0 }}
-              />
+            <DetailRow
+              component={TextInput}
+              disabled={true}
+              label="Created Date"
+              name="dateCreated"
+              format={this.formatDate}
+              style={{ paddingBottom: 0 }}
+            />
             }
           </Container>
         </ModalContent>
-        <ModalActions edit={this.state.edit} actions={actions} />
+        <ModalActions actions={actions} />
       </FormModal>
     )
   }

@@ -78,6 +78,7 @@ export const JurisdictionForm = props => {
       width="600px" height="400px"
       validate={validateDateRanges}
       open={open}
+      onClose={onCloseForm}
     >
       <ModalTitle title={edit ? 'Edit Jurisdiction' : 'Add Jurisdiction'} closeButton onCloseForm={onCloseForm} />
       <Divider />

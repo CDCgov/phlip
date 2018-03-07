@@ -149,6 +149,7 @@ export class AddEditJurisdictions extends Component {
             </Column>
           </Container>
         </ModalContent>
+        <ModalActions actions={[{value: 'Close', onClick: this.onCloseModal, type: 'button' }]}/>
         <JurisdictionForm
           open={this.state.formOpen} edit={this.state.edit} jurisdiction={this.state.formJurisdiction}
           onHandleSubmit={this.onSubmitForm} onCloseForm={this.onCloseForm}
