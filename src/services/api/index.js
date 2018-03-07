@@ -124,7 +124,7 @@ export default {
 
   getUserPicture(userId) {
     return api.get(`/users/${userId}/avatar`).then(res => {
-      return true
+      return res.status === 204 ? false : true
     }).catch(error => {
       return false
     })

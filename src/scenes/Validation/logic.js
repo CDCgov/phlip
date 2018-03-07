@@ -13,7 +13,7 @@ const addCoderToAnswers = (existingQuestion, question, coder) => {
     flagComment = { ...question.flag, raisedBy: { ...coder } }
   }
   if (question.comment !== '') {
-    flagComment = { ...flagComment, comment: question.comment, raisedBy: { ...coder }}
+    flagComment = { ...flagComment, comment: question.comment, raisedBy: { ...coder } }
   }
 
   return {
@@ -53,7 +53,6 @@ const mergeInUserCodedQuestions = (codedQuestions, codeQuestionsPerUser, coder) 
 export const updateValidatorLogic = createLogic({
   type: [types.UPDATE_USER_VALIDATION_REQUEST, types.ON_APPLY_VALIDATION_TO_ALL],
   transform({ action, getState }, next) {
-
     next({
       ...action,
       validatedBy: { ...getState().data.user.currentUser },
@@ -62,6 +61,7 @@ export const updateValidatorLogic = createLogic({
   }
 })
 
+//REFACTOR getValidationOutlineLogic & getUserValidatedQuestionsLogic
 export const getValidationOutlineLogic = createLogic({
   type: types.GET_VALIDATION_OUTLINE_REQUEST,
   processOptions: {
@@ -180,10 +180,20 @@ export const getUserValidatedQuestionsLogic = createLogic({
     failType: types.GET_USER_VALIDATED_QUESTIONS_FAIL
   },
   async process({ action, api, getState }) {
-    let codedQuestions = [], projectCoders = [], codeQuestionsPerUser = [], codedQuestionObj = {}
+    let codedQuestions = [], projectCoders = [], codeQuestionsPerUser = [], codedQuestionObj = {}, updatedCodedQuestions = []
 
     try {
       codedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
+      for (let question of codedQuestions) {
+        try {
+          let hasAvatarImage = await api.getUserPicture(question.validatedBy.userId)
+          let avatarUrl = hasAvatarImage ? createAvatarUrl(question.validatedBy.userId) : null
+          let validatedBy = { ...question.validatedBy, avatarUrl }
+          updatedCodedQuestions = [...updatedCodedQuestions, { ...question, validatedBy }]
+        } catch (e) {
+          throw { error: 'failed to get avatar image for validator' }
+        }
+      }
     } catch (e) {
       throw { error: 'failed to get codedQuestions' }
     }
@@ -194,32 +204,36 @@ export const getUserValidatedQuestionsLogic = createLogic({
       throw { error: 'failed to get project coders' }
     }
 
-    if (projectCoders.length === 0) {
-
-    } else {
+    if (projectCoders.length !== 0) {
       for (let coder of projectCoders) {
+        try {
+          let hasAvatarImage = await api.getUserPicture(coder.userId)
+          let avatarUrl = hasAvatarImage ? createAvatarUrl(coder.userId) : null
+          coder = { ...coder, avatarUrl }
+        } catch (e) {
+          throw { error: 'failed to get avatar image' }
+        }
+
         try {
           codeQuestionsPerUser = await api.getUserCodedQuestions(coder.userId, action.projectId, action.jurisdictionId)
           codedQuestionObj = { ...mergeInUserCodedQuestions(codedQuestionObj, codeQuestionsPerUser, coder) }
-          console.log(codedQuestionObj)
         } catch (e) {
           throw { error: 'failed to get codedQuestions for user' }
         }
       }
     }
 
-    const output = consolidateAnswers(combinedCodedQuestions)
-
     return {
       codedQuestions,
-      mergedUserQuestions: codedQuestionObj
+      mergedUserQuestions: codedQuestionObj,
+      codedQuestions: updatedCodedQuestions
     }
   }
 })
 
 export default [
   updateValidatorLogic,
-  // getUserValidatedQuestionsLogic,
+  getUserValidatedQuestionsLogic,
   validateQuestionLogic,
   getValidationOutlineLogic
 ]
