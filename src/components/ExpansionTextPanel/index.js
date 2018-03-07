@@ -19,16 +19,6 @@ const styles = {
   }
 }
 
-/*export const ExpansionTextPanel = ({ text, classes }) => {
-  return (
-    <ExpansionPanel elevation={0} classes={{ root: classes.root }}>
-      <ExpansionPanelSummary expandIcon={<Icon color="#768f99">expand_more</Icon>}>
-        <ExpansionPanelDetails><Typography>{text}</Typography></ExpansionPanelDetails>
-      </ExpansionPanelSummary>
-    </ExpansionPanel>
-  )
-}*/
-
 export class ExpansionTextPanel extends Component {
   constructor(props, context) {
     super(props, context)
@@ -59,7 +49,7 @@ export class ExpansionTextPanel extends Component {
           </Typography>
           <Manager style={{ height: 24 }}>
             <Target style={{ height: 24 }}>
-              <IconButton onClick={this.onOpenPopper} color="#768f99">expand_more</IconButton>
+              <IconButton onClick={this.onOpenPopper} color="#768f99">arrow_drop_down</IconButton>
             </Target>
             <Popper
               placement="top-end"

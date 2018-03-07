@@ -1081,6 +1081,28 @@ describe('Coding reducer', () => {
     })
   })
 
+  describe('ON_SAVE_RED_FLAG', () => {
+    test('should handle regular questions', () => {
+      const action = {
+        type: types.ON_SAVE_RED_FLAG,
+        questionId: 1,
+        projectId: 1,
+        flagInfo: { notes: 'notes!!', type: 3}
+      }
+
+      const state = getReducer(getState({
+        question: { id: 1, isCategoryQuestion: false, flags: [] },
+        scheme: {
+          byId: { 1: { id: 1, isCategoryQuestion: false, flags: [] }},
+          tree: []
+        }
+      }), action)
+
+      expect(state).toHaveProperty('question.flags', [{ notes: 'notes!!', type: 3 }])
+      expect(state).toHaveProperty('scheme.byId.1.flags', [{ notes: 'notes!!', type: 3 }])
+    })
+  })
+
   describe('ON_CLEAR_ANSWER', () => {
     test('should handle regular questions', () => {
       const action = {
