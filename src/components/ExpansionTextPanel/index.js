@@ -54,7 +54,7 @@ export class ExpansionTextPanel extends Component {
     return (
       <ClickAwayListener onClickAway={this.onClosePopper}>
         <Row flex displayFlex style={{ alignItems: 'center', overflow: 'hidden' }}>
-          <Typography noWrap {...this.props.textProps} style={{ flex: 1, minWidth: 0 }}>
+          <Typography noWrap {...this.props.textProps} style={{ flex: 1, minWidth: 0, color: '#b2b4b4' }}>
             {this.props.text}
           </Typography>
           <Manager style={{ height: 24 }}>

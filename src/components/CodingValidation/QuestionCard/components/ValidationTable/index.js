@@ -42,7 +42,7 @@ export const ValidationTable = props => {
                 borderBottom: '1px solid lightgrey'
               }}
             >
-              <Row displayFlex style={{ alignItems: 'center', paddingRight: 10, flexBasis: '20%', flexGrow: 1 }}>
+              <Row displayFlex style={{ alignItems: 'center', paddingRight: 12, flexBasis: '30%', flexGrow: 1 }}>
                 <Avatar
                   cardAvatar
                   style={{ marginRight: 10 }}
@@ -51,9 +51,9 @@ export const ValidationTable = props => {
                 />
                 <Typography type="caption">{`${item.raisedBy.firstName} ${item.raisedBy.lastName}`}</Typography>
               </Row>
-              <Row displayFlex flex style={{ flexBasis: '80%', overflow: 'hidden' }}>
+              <Row displayFlex flex style={{ flexBasis: '70%', overflow: 'hidden' }}>
                 {item.type &&
-                <Row displayFlex flex style={{ alignItems: 'center', overflow:' hidden', paddingRight: 30 }}>
+                <Row displayFlex flex style={{ alignItems: 'center', overflow:' hidden' }}>
                   <Column style={{ paddingRight: 8 }}>
                     <IconButton onClick={() => onOpenAlert(item.id)} color={flagColors[item.type]}>flag</IconButton>
                   </Column>
@@ -64,6 +64,7 @@ export const ValidationTable = props => {
                     <ExpansionTextPanel textProps={{ type: 'caption' }} text={item.notes} />
                   </Row>
                 </Row>}
+                {item.comment && item.type && <span style={{ paddingLeft: 30 }}></span>}
                 {item.comment &&
                 <Row displayFlex flex style={{ alignItems: 'center', overflow: 'hidden' }}>
                   <Typography type="caption" style={{ fontWeight: 'bold' }}>
