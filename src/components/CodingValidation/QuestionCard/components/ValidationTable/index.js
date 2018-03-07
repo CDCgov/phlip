@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Container, { Column, Row } from 'components/Layout'
 import { TableBody, TableHead } from 'material-ui/Table'
@@ -25,54 +25,57 @@ export const ValidationTable = props => {
 
   return (
     allFlags.length > 0 &&
-    <Container column style={{ padding: 20 }}>
-      <Row style={{ paddingBottom: 10 }}><Typography type="title" style={{ color: '#a7bdc6' }}>
-        Flags and Notes
-      </Typography></Row>
-      <Row displayFlex style={{ backgroundColor: '#f1f7f8', padding: 12 }}>
-        <Table>
-          <TableHead>
-            <TableRow style={{ backgroundColor: '#fff' }}>
-              <TableCell style={{ padding: '5px 15px' }}>User</TableCell>
-              <TableCell>Question Comment</TableCell>
-              <TableCell padding="none">Flag</TableCell>
-              <TableCell>Reason For Flag</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {allFlags.map((item, i) => {
-              return Object.keys(item).length > 0 &&
-                <TableRow key={`flag-${i}`}>
-                  <TableCell
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      padding: '5px 12px'
-                    }}>
-                    <Avatar
-                      cardAvatar
-                      style={{ marginRight: 15 }}
-                      initials={getInitials(item.raisedBy.firstName, item.raisedBy.lastName)}
-                      avatarUrl={item.raisedBy.avatarUrl}
-                    />
-                    <Typography type="caption">{`${item.raisedBy.firstName} ${item.raisedBy.lastName}`}</Typography>
-                  </TableCell>
-                  <TableCell style={{ maxWidth: 0 }}>
-                    {item.comment && <ExpansionTextPanel textProps={{ type: 'caption' }} text={item.comment} />}
-                  </TableCell>
-                  <TableCell padding="none">
-                    {item.type &&
-                    <IconButton onClick={() => onOpenAlert(item.id)} color={flagColors[item.type]}>flag</IconButton>}
-                  </TableCell>
-                  <TableCell style={{ maxWidth: 0 }}>
-                    {item.type && <ExpansionTextPanel textProps={{ type: 'caption' }} text={item.notes} />}
-                  </TableCell>
-                </TableRow>
-            })}
-          </TableBody>
-        </Table>
+    <Container column style={{ padding: 25 }}>
+      <Row style={{ paddingBottom: 10 }}>
+        <Typography type="subheading" style={{ color: '#a7bdc6' }}>Flags and Comments</Typography>
       </Row>
+      <Column displayFlex style={{ backgroundColor: '#f1f7f8', padding: 12 }}>
+        {allFlags.map((item, i) => {
+          return Object.keys(item).length > 0 &&
+            <Row
+              key={`flags-comments-${i}`}
+              displayFlex
+              style={{
+                alignItems: 'center',
+                backgroundColor: 'white',
+                padding: 8,
+                borderBottom: '1px solid lightgrey'
+              }}
+            >
+              <Row displayFlex style={{ alignItems: 'center', paddingRight: 10, flexBasis: '20%', flexGrow: 1 }}>
+                <Avatar
+                  cardAvatar
+                  style={{ marginRight: 10 }}
+                  initials={getInitials(item.raisedBy.firstName, item.raisedBy.lastName)}
+                  avatarUrl={item.raisedBy.avatarUrl}
+                />
+                <Typography type="caption">{`${item.raisedBy.firstName} ${item.raisedBy.lastName}`}</Typography>
+              </Row>
+              <Row displayFlex flex style={{ flexBasis: '80%', overflow: 'hidden' }}>
+                {item.type &&
+                <Row displayFlex flex style={{ alignItems: 'center', overflow:' hidden', paddingRight: 30 }}>
+                  <Column style={{ paddingRight: 8 }}>
+                    <IconButton onClick={() => onOpenAlert(item.id)} color={flagColors[item.type]}>flag</IconButton>
+                  </Column>
+                  <Row displayFlex flex style={{ alignItems: 'center', overflow: 'hidden' }}>
+                    <Typography type="caption" style={{ fontWeight: 'bold' }}>
+                      Reason for flag -<span>&nbsp;</span>
+                    </Typography>
+                    <ExpansionTextPanel textProps={{ type: 'caption' }} text={item.notes} />
+                  </Row>
+                </Row>}
+                {item.comment &&
+                <Row displayFlex flex style={{ alignItems: 'center', overflow: 'hidden' }}>
+                  <Typography type="caption" style={{ fontWeight: 'bold' }}>
+                    Comment -<span>&nbsp;</span>
+                  </Typography>
+                  <ExpansionTextPanel textProps={{ type: 'caption' }} text={item.comment} />
+                </Row>
+                }
+              </Row>
+          </Row>
+        })}
+      </Column>
     </Container>
   )
 }

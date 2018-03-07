@@ -92,6 +92,17 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       </Column>
     </Container>
   </ModalContent>
+  <WithStyles
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Close",
+        },
+      ]
+    }
+  />
   <Connect(JurisdictionForm)
     asyncValidate={[Function]}
     edit={false}

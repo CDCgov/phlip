@@ -177,7 +177,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
         </Container>
       </ModalContent>
     </Container>
-    <ModalActions
+    <WithStyles
       actions={
         Array [
           Object {
@@ -192,7 +192,6 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
           },
         ]
       }
-      raised={true}
       style={
         Object {
           "margin": 0,
