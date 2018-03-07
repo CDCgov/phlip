@@ -62,7 +62,7 @@ export class ExpansionTextPanel extends Component {
               <IconButton onClick={this.onOpenPopper} color="#768f99">expand_more</IconButton>
             </Target>
             <Popper
-              placement="bottom-end"
+              placement="top-end"
               id="text-popper"
               style={{
                 width: 450,
