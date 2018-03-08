@@ -17,6 +17,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       color="#d4d4d4"
       iconSize={24}
       onClick={[Function]}
+      tooltipText="Bookmark project"
     >
       bookmark_border
     </IconButton>
@@ -165,6 +166,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       color="#d4d4d4"
       iconSize={24}
       onClick={[Function]}
+      tooltipText="Export validated questions"
     >
       file_download
     </IconButton>

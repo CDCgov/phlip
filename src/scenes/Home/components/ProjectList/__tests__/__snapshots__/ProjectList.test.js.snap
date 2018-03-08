@@ -16,13 +16,17 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
       }
     }
   >
-    <Container
-      column={false}
+    <Row
+      component={
+        <WithStyles
+          item={true}
+        />
+      }
+      displayFlex={false}
       flex={false}
-      spacing={0}
       style={
         Object {
-          "justifyContent": "flex-end",
+          "alignSelf": "flex-end",
           "padding": 20,
         }
       }
@@ -30,11 +34,12 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
       <SearchBar
         placeholder="Search"
       />
-    </Container>
+    </Row>
     <Table
       style={
         Object {
           "borderCollapse": "separate",
+          "overflow": "unset",
         }
       }
     >
