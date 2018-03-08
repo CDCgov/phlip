@@ -283,7 +283,6 @@ export class FlagPopover extends Component {
                 shrinkLabel={true}
                 id="flag-notes"
                 label="Notes"
-                required
                 disabled={this.state.questionFlags.length > 0}
                 error={this.state.helperText !== ''}
                 onBlur={this.checkNotes}
