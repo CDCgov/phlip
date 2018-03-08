@@ -24,6 +24,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
         to="/project/undefined/jurisdictions/add"
       >
         <WithTheme
+          aria-label="Add jurisidiction to project"
           color="accent"
           value="+ Add Jurisdiction"
         />
@@ -99,6 +100,9 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
+          "otherProps": Object {
+            "aria-label": "Close modal",
+          },
           "type": "button",
           "value": "Close",
         },

@@ -12,7 +12,9 @@ exports[`Coding scene - QuestionRow should render correctly 1`] = `
     }
   />
   <div
+    aria-label="Click to show this question"
     onClick={[Function]}
+    role="row"
     style={
       Object {
         "alignItems": "center",
@@ -23,8 +25,10 @@ exports[`Coding scene - QuestionRow should render correctly 1`] = `
         "position": "relative",
       }
     }
+    tabIndex={0}
   >
     <span
+      role="gridcell"
       style={
         Object {
           "maxHeight": 20,
@@ -33,9 +37,12 @@ exports[`Coding scene - QuestionRow should render correctly 1`] = `
           "minWidth": 20,
         }
       }
+      tabIndex={-1}
     />
     <WithStyles
+      aria-label="Question number and text"
       noWrap={true}
+      role="gridcell"
       style={
         Object {
           "color": "white",
@@ -45,6 +52,7 @@ exports[`Coding scene - QuestionRow should render correctly 1`] = `
           "paddingRight": 10,
         }
       }
+      tabIndex={-1}
       type="body1"
     >
       <span>

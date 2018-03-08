@@ -130,11 +130,17 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       Array [
         Object {
           "onClick": [Function],
+          "otherProps": Object {
+            "aria-label": "Close form",
+          },
           "type": "button",
           "value": "Cancel",
         },
         Object {
           "disabled": false,
+          "otherProps": Object {
+            "aria-label": "Save form",
+          },
           "type": "submit",
           "value": "Add",
         },

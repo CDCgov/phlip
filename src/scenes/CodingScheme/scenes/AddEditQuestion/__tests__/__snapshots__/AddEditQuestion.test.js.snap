@@ -181,11 +181,17 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
         Array [
           Object {
             "onClick": [Function],
+            "otherProps": Object {
+              "aria-label": "Cancel and close form",
+            },
             "type": "button",
             "value": "Cancel",
           },
           Object {
             "disabled": false,
+            "otherProps": Object {
+              "aria-label": "Save form",
+            },
             "type": "submit",
             "value": "Add",
           },

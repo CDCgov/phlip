@@ -28,6 +28,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
     }
   >
     <IconButton
+      aria-label="Go back"
       color="black"
       iconSize={30}
       onClick={[Function]}
@@ -130,6 +131,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       to="/project/1/protocol"
     >
       <WithTheme
+        aria-label="View and edit protocol"
         style={
           Object {
             "backgroundColor": "white",
