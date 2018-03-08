@@ -222,8 +222,8 @@ export class Coding extends Component {
                 <Column>
                   {this.state.showViews &&
                   (this.props.jurisdiction !== null && this.props.questionOrder.length !== 0) &&
-                  <Tooltip text="Toggle Navigator" placement="right">
-                    <MuiButton style={navButtonStyles} onClick={this.onToggleNavigator}>
+                  <Tooltip text="Toggle Navigator" placement="right" id="toggle-navigator" aria-label="Toggle Navigator">
+                    <MuiButton style={navButtonStyles} aria-label="Toggle Navigator" onClick={this.onToggleNavigator}>
                       <Icon color="white" style={iconStyle}>menu</Icon>
                     </MuiButton>
                   </Tooltip>

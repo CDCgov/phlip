@@ -116,13 +116,14 @@ export const QuestionNode = props => {
               <Tooltip
                 text="Edit question"
                 id={`edit-question-${listIndex}`}
-                aria-label="Edit question"
+                aria-label="View and edit question"
                 placement="right">
                 <TextLink
-                  aria-label="Edit question" to={{
-                  pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`,
-                  state: { questionDefined: { ...node }, path }
-                }}>
+                  aria-label="Edit question"
+                  to={{
+                    pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`,
+                    state: { questionDefined: { ...node }, path }
+                  }}>
                   <Button
                     color="accent"
                     aria-label="Edit question"
@@ -132,7 +133,7 @@ export const QuestionNode = props => {
               </Tooltip>
             </div>}
             {!node.hovering && node.questionType === questionTypes.CATEGORY
-              ? <Icon color="grey">filter_none</Icon>
+              ? <Icon aria-label="This question is a category question" color="grey">filter_none</Icon>
               : ''
             }
           </CardContent>

@@ -49,7 +49,8 @@ export class Navigator extends Component {
       key: key,
       item: {
         ...item,
-        ancestorSiblings
+        ancestorSiblings,
+        treeIndex
       },
       treeLength,
       onQuestionSelected: this.props.handleQuestionSelected
@@ -68,9 +69,9 @@ export class Navigator extends Component {
 
     if (item.children && item.children.length > 0) {
       if (item.expanded) {
-        itemEl = <IconButton {...iconProps}>remove_circle_outline</IconButton>
+        itemEl = <IconButton {...iconProps} aria-label="Click to collapse">remove_circle_outline</IconButton>
       } else {
-        itemEl = <IconButton {...iconProps}>add_circle_outline</IconButton>
+        itemEl = <IconButton {...iconProps} aria-label="Click to expand">add_circle_outline</IconButton>
       }
 
       children = item.children.map((child, index) => {
@@ -96,14 +97,20 @@ export class Navigator extends Component {
       tree.length !== 0
       && tree[params.index] !== undefined
       && (
-        <div style={params.style} key={`tree-${params.index}`}>
-        {this.questionRenderer({
-          item: tree[params.index],
-          key: params.index,
-          treeIndex: params.index,
-          treeLength: tree.length,
-          ancestorSiblings: [tree.length - params.index - 1]
-        })}
+        <div
+          style={params.style}
+          key={`tree-${params.index}`}
+          tabIndex={0}
+          role="row"
+          aria-rowindex={params.index}
+          aria-rowcount={tree.length}>
+          {this.questionRenderer({
+            item: tree[params.index],
+            key: params.index,
+            treeIndex: params.index,
+            treeLength: tree.length,
+            ancestorSiblings: [tree.length - params.index - 1]
+          })}
         </div>
       )
     )
@@ -133,37 +140,37 @@ export class Navigator extends Component {
     const questionTree = this.props.scheme.tree ? this.props.scheme.tree : []
     return (
       <Drawer classes={{ paper: this.props.classes.codeNav }} type="persistent" anchor="left" open={this.props.open}>
-      <Container column flex>
-        <Row displayFlex style={{
-          backgroundColor: '#373f41',
-          height: 55,
-          alignItems: 'center',
-          justifyContent: 'center',
-          textTransform: 'uppercase'
-        }}>
-          <Typography type="headline"><span style={{ color: 'white' }}>Code Navigator</span></Typography>
-        </Row>
-        <div className={navStyles.navContainer}>
-          <div style={{ flex: 1, display: 'flex' }}>
-            <AutoSizer>
-              {({ height, width }) => (
-                <List
-                  className={navStyles.navScroll}
-                  style={{ height: height, paddingLeft: 10, paddingRight: 20 }}
-                  rowCount={questionTree.length}
-                  rowHeight={this.rowHeight(questionTree)}
-                  width={width}
-                  rowRenderer={this.rowRenderer}
-                  height={height}
-                  overscanRowCount={0}
-                  ref={this.setRef}
-                />
-              )}
-            </AutoSizer>
+        <Container column flex>
+          <Row
+            displayFlex style={{
+            backgroundColor: '#373f41',
+            height: 55,
+            alignItems: 'center',
+            justifyContent: 'center',
+            textTransform: 'uppercase'
+          }}>
+            <Typography type="headline"><span style={{ color: 'white' }}>Code Navigator</span></Typography>
+          </Row>
+          <div className={navStyles.navContainer}>
+            <div style={{ flex: 1, display: 'flex' }}>
+              <AutoSizer>
+                {({ height, width }) => (
+                  <List
+                    className={navStyles.navScroll}
+                    style={{ height: height, paddingLeft: 10, paddingRight: 20 }}
+                    rowCount={questionTree.length}
+                    rowHeight={this.rowHeight(questionTree)}
+                    width={width}
+                    rowRenderer={this.rowRenderer}
+                    height={height}
+                    overscanRowCount={0}
+                    ref={this.setRef} />
+                )}
+              </AutoSizer>
+            </div>
           </div>
-        </div>
-      </Container>
-    </Drawer>
+        </Container>
+      </Drawer>
     )
   }
 }

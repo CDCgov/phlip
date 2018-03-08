@@ -8,6 +8,7 @@ import Progress from 'components/Progress'
 export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) => {
   let scaffold = []
   let className = ''
+  console.log(item)
 
   const questionTextStyles = {
     color: item.isCurrent === true
@@ -70,17 +71,29 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
     <Fragment>
       {scaffold}
       <div
+        role="row"
         style={{ ...rowStyles, marginLeft: 23 * item.indent, cursor: 'pointer' }}
         onClick={() => onQuestionSelected(item)}
-      >
-        <span style={{ minWidth: 20, minHeight: 20, maxHeight: 20, maxWidth: 20 }}>{children}</span>
-        <Typography style={questionTextStyles} type="body1" noWrap>
+        aria-label="Click to show this question"
+        tabIndex={0}
+        aria-rowindex={item.treeIndex}>
+        <span style={{ minWidth: 20, minHeight: 20, maxHeight: 20, maxWidth: 20 }} tabIndex={-1} role="gridcell">{children}</span>
+        <Typography tabIndex={-1} style={questionTextStyles} role="gridcell" type="body1" noWrap aria-label="Question number and text">
           {item.number && <span>{`${item.number}. `}</span>}
           {item.text}
         </Typography>
-        {item.questionType === 2 && <Icon size={12} color={questionTextStyles.color} style={{ paddingRight: 5 }}>filter_none</Icon>}
-        {item.isAnswered && <Icon color="#45ad70" size={19}>check</Icon>}
-        {item.hasOwnProperty('completedProgress') && <Progress progress={item.completedProgress} />}
+        {item.questionType === 2 && <Icon
+          role="gridcell"
+          size={12}
+          tabIndex={-1}
+          aria-label="Question is of type cateogry"
+          color={questionTextStyles.color}
+          style={{ paddingRight: 5 }}>filter_none</Icon>}
+        {item.isAnswered && <Icon aria-label="Question has been answered" role="gridcell" tabIndex={-1} color="#45ad70" size={19}>check</Icon>}
+        {item.hasOwnProperty('completedProgress') && <Progress
+          role="gridcell"
+          aria-label={`This question is ${item.completedProgress} percent answered`}
+          progress={item.completedProgress} />}
       </div>
     </Fragment>
   )
