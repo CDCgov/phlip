@@ -71,6 +71,10 @@ export class JurisdictionForm extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.actions.clearJurisdictions()
+  }
+
   onSubmitForm = values => {
     const jurisdiction = {
       ...values,
