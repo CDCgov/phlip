@@ -88,7 +88,7 @@ export class AddEditQuestion extends Component {
   }
 
   onCancel = () => {
-    this.props.formActions.resetForm('questionForm')
+    this.props.formActions.reset('questionForm')
     this.props.history.goBack()
   }
 
