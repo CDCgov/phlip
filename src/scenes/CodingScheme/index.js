@@ -44,8 +44,9 @@ export class CodingScheme extends Component {
           pathname: `/project/${this.props.projectId}/coding-scheme/add`,
           state: { questionDefined: null }
         }}
+        aria-label="Add new question"
       >
-        <Button value="+ Add New Question" color="accent" />
+        <Button value="+ Add New Question" color="accent" aria-label="Add new question to coding scheme" />
       </TextLink>
     </Container>
   )
@@ -63,7 +64,8 @@ export class CodingScheme extends Component {
             isLink: true,
             text: '+ Add New Question',
             path: `/project/${this.props.projectId}/coding-scheme/add`,
-            state: { questionDefined: null }
+            state: { questionDefined: null },
+            props: { 'aria-label': 'Add new question to  coding scheme' }
           }}
         />
         <Container flex style={{ backgroundColor: '#f5f5f5', paddingTop: 25, marginLeft: -30 }}>

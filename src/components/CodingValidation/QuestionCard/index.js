@@ -37,10 +37,10 @@ export const QuestionCard = props => {
       <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
         <Row displayFlex style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
           {question.questionType !== questionTypes.CATEGORY &&
-          <IconButton onClick={onClearAnswer} tooltipText="Clear answer">
+          <IconButton onClick={onClearAnswer} tooltipText="Clear answer" id="clear-question-answers" aria-label="Clear question answered">
             <Broom className={styles.sweep} aria-labelledby="Clear answer" />
           </IconButton>}
-          <IconButton color="#d7e0e4" tooltipText="Flag this question" placement="top">
+          <IconButton color="#d7e0e4" tooltipText="Flag this question" id="flag-question" aria-label="Flag this question" placement="top">
             flag
           </IconButton>
         </Row>

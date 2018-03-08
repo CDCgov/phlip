@@ -101,8 +101,18 @@ export class AddEditUser extends Component {
 
   render() {
     const actions = [
-      { value: 'Cancel', onClick: this.onCancel, type: 'button' },
-      { value: 'Save', type: 'submit', disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors) }
+      {
+        value: 'Cancel',
+        onClick: this.onCancel,
+        type: 'button',
+        otherProps: { 'aria-label': 'Cancel and close form' }
+      },
+      {
+        value: 'Save',
+        type: 'submit',
+        disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors),
+        otherProps: { 'aria-label': 'Save form' }
+      }
     ]
 
     const roles = [
@@ -123,18 +133,15 @@ export class AddEditUser extends Component {
         asyncBlurFields={['email']}
         onClose={this.props.onCloseModal}
         width="600px"
-        height="400px"
-      >
+        height="400px">
         <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
-
           <Row displayFlex style={{ ...rowStyles, justifyContent: 'space-between' }}>
             <Column style={{ paddingRight: 30 }}>
               {this.props.avatarUrl ? <ReactFileReader base64={true} handleFiles={this.handleFiles}>
                   <Avatar big avatarUrl={this.props.avatarUrl} />
                 </ReactFileReader>
                 : <ReactFileReader base64={true} handleFiles={this.handleFiles}>
-                  <IconButton color={'#757575'} iconSize={45}>add_a_photo</IconButton>
-
+                  <IconButton color={'#757575'} iconSize={45} tooltipText="Add photo" id="add-user-photo">add_a_photo</IconButton>
                 </ReactFileReader>
               }
             </Column>
@@ -145,8 +152,7 @@ export class AddEditUser extends Component {
                 label="First Name"
                 placeholder="Enter First Name"
                 validate={this.required}
-                fullWidth={true}
-              />
+                fullWidth={true} />
             </Column>
             <Column flex style={{ paddingLeft: 10 }}>
               <Field
@@ -155,8 +161,7 @@ export class AddEditUser extends Component {
                 label="Last Name"
                 placeholder="Enter Last Name"
                 validate={this.required}
-                fullWidth={true}
-              />
+                fullWidth={true} />
             </Column>
           </Row>
           <Row style={rowStyles}>
@@ -166,8 +171,7 @@ export class AddEditUser extends Component {
               label="Email"
               placeholder="Enter Email"
               validate={this.required}
-              fullWidth={true}
-            />
+              fullWidth={true} />
           </Row>
           <Row style={{ paddingBottom: 25 }}>
             <Field
@@ -176,8 +180,7 @@ export class AddEditUser extends Component {
               label="Password"
               placeholder="Enter Password"
               validate={this.required}
-              fullWidth={true}
-            />
+              fullWidth={true} />
           </Row>
           <Row>
             <Field
@@ -187,8 +190,7 @@ export class AddEditUser extends Component {
               options={roles}
               defaultValue=""
               id="role"
-              style={{ display: 'flex' }}
-            />
+              style={{ display: 'flex' }} />
           </Row>
         </Container>
       </ModalForm>

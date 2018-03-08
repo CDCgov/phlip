@@ -85,20 +85,21 @@ export class AddEditProject extends Component {
 
   render() {
     const editAction = [
-      { value: 'Cancel', onClick: this.onCancel, type: 'button' },
-      { value: 'Edit', onClick: this.onEditForm, type: 'button' }
+      { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Close modal' } },
+      { value: 'Edit', onClick: this.onEditForm, type: 'button', otherProps: { 'aria-label': 'Edit this project' } }
     ]
 
     const actions = this.projectDefined && !this.state.edit
       ? editAction
       : [
-        { value: 'Cancel', onClick: this.onCancel, type: 'button' },
+        { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Cancel edit view' } },
         {
           value: this.projectDefined
             ? 'Save'
             : 'Create',
           type: 'submit',
-          disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors)
+          disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors),
+          otherProps: { 'aria-label': 'Save form' }
         }
       ]
 

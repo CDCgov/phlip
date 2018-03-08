@@ -21,6 +21,7 @@ const ModalActions = ({ edit, actions, raised, classes, ...otherProps }) => {
           color="accent"
           disabled={action.disabled || false}
           onClick={action.onClick}
+          {...action.otherProps}
         />
       ))}
     </DialogActions>

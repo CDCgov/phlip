@@ -132,13 +132,14 @@ export class AddEditQuestion extends Component {
     const categoryChildOptions = options.filter(option => option.value !== questionTypes.CATEGORY)
 
     const actions = [
-      { value: 'Cancel', onClick: this.onCancel, type: 'button' },
+      { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Cancel and close form' } },
       {
         value: this.questionDefined
           ? 'Save'
           : 'Add',
         type: 'submit',
-        disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors)
+        disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors),
+        otherProps: { 'aria-label': 'Save form' }
       }
     ]
 

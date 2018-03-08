@@ -97,22 +97,37 @@ export const QuestionNode = props => {
             {node.hovering &&
             <div style={{ zIndex: 5 }}>
               {(parentNode === null || parentNode.questionType !== questionTypes.CATEGORY) &&
-              <Tooltip text="Add child question" placement="left">
+              <Tooltip
+                text="Add child question"
+                id={`add-child-question-${listIndex}`}
+                aria-label="Add child question"
+                placement="left">
                 <TextLink
-                  to={{
-                    pathname: `/project/${projectId}/coding-scheme/add`,
-                    state: { parentDefined: { ...node }, path }
-                  }}>
+                  aria-label="Add child question" to={{
+                  pathname: `/project/${projectId}/coding-scheme/add`,
+                  state: { parentDefined: { ...node }, path }
+                }}>
                   <Button
-                    color="accent" style={{ ...actionStyles, marginRight: 10 }} value={<Icon color="white">subdirectory_arrow_right</Icon>} />
+                    aria-label="Add child question"
+                    color="accent"
+                    style={{ ...actionStyles, marginRight: 10 }}
+                    value={<Icon color="white">subdirectory_arrow_right</Icon>} />
                 </TextLink></Tooltip>}
-              <Tooltip text="Edit question" placement="right">
+              <Tooltip
+                text="Edit question"
+                id={`edit-question-${listIndex}`}
+                aria-label="Edit question"
+                placement="right">
                 <TextLink
-                  to={{
-                    pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`,
-                    state: { questionDefined: { ...node }, path }
-                  }}>
-                  <Button color="accent" style={actionStyles} value={<Icon color="white">mode_edit</Icon>} />
+                  aria-label="Edit question" to={{
+                  pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`,
+                  state: { questionDefined: { ...node }, path }
+                }}>
+                  <Button
+                    color="accent"
+                    aria-label="Edit question"
+                    style={actionStyles}
+                    value={<Icon color="white">mode_edit</Icon>} />
                 </TextLink>
               </Tooltip>
             </div>}

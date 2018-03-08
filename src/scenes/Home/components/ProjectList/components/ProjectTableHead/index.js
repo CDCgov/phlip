@@ -39,7 +39,7 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
       {visible.map(c => (
         <TableCell key={c.key} style={{ ...c.style }}>
           {c.hasSort ? (
-            <Tooltip text={`Sort by ${c.label}`}>
+            <Tooltip text={`Sort projects by ${c.label}`} id={`sort-by-${c.key}`} aria-label={`Sort list of projects by ${c.label}`}>
             <TableSortLabel
               active={sortBy === c.key}
               style={{ color: 'inherit' }}

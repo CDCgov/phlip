@@ -40,7 +40,7 @@ export class AddEditJurisdictions extends Component {
   getButton = () => {
     return (
       <TextLink to={`/project/${this.props.project.id}/jurisdictions/add`} state={{}}>
-        <Button value="+ Add Jurisdiction" color="accent" />
+        <Button value="+ Add Jurisdiction" color="accent" aria-label="Add jurisidiction to project" />
       </TextLink>
     )
   }
@@ -65,8 +65,7 @@ export class AddEditJurisdictions extends Component {
             handleSearchValueChange: (event) => this.props.actions.updateSearchValue(event.target.value),
             placeholder: 'Search',
             style: { paddingRight: 10 }
-          }}
-        />
+          }} />
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
           <Container flex style={{ marginTop: 20 }}>
@@ -75,7 +74,15 @@ export class AddEditJurisdictions extends Component {
             </Column>
           </Container>
         </ModalContent>
-        <ModalActions actions={[{ value: 'Close', onClick: this.onCloseModal, type: 'button' }]} />
+        <ModalActions
+          actions={[
+            {
+              value: 'Close',
+              onClick: this.onCloseModal,
+              type: 'button',
+              otherProps: { 'aria-label': 'Close modal' }
+            }
+          ]} />
         <Route path="/project/:id/jurisdictions/add" component={JurisdictionForm} />
         <Route path="/project/:id/jurisdictions/:jid/edit" component={JurisdictionForm} />
       </Modal>

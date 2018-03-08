@@ -141,13 +141,14 @@ export class JurisdictionForm extends Component {
 
   render() {
     const formActions = [
-      { value: 'Cancel', onClick: this.onCloseForm, type: 'button' },
+      { value: 'Cancel', onClick: this.onCloseForm, type: 'button', otherProps: { 'aria-label': 'Close form' } },
       {
         value: this.state.edit
           ? 'Save'
           : 'Add',
         type: 'submit',
-        disabled: Boolean(this.props.form.syncErrors || (this.props.form.asyncErrors ? this.props.form.asyncErrors.name : false))
+        disabled: Boolean(this.props.form.syncErrors || (this.props.form.asyncErrors ? this.props.form.asyncErrors.name : false)),
+        otherProps: { 'aria-label': 'Save form' }
       }
     ]
 

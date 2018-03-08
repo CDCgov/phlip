@@ -14,7 +14,7 @@ const UserTableBody = ({ users }) => {
           <span style={{ fontStyle: 'italic' }} padding="default">{user.role}</span>
         </TableCell>
         <TableCell key={`${user.id}-edit`} padding="default" header="edit">
-          <TextLink to={'/admin/edit/user/' + user.id}>Edit</TextLink>
+          <TextLink aria-label="Edit user" to={'/admin/edit/user/' + user.id}>Edit</TextLink>
         </TableCell>
       </TableRow>
     ))

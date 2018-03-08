@@ -12,7 +12,7 @@ import TextLink from 'components/TextLink'
 export const Header = ({ projectName, empty, projectId, jurisdictionsList, selectedJurisdiction, onJurisdictionChange, currentJurisdiction, isValidation, history }) => (
   <Container alignItems="center" style={{ height: 80, padding: '20px 27px' }}>
     <Column style={{ paddingRight: 5 }}>
-      <IconButton iconSize={30} color="black" onClick={() => history.push('/')}>arrow_back</IconButton>
+      <IconButton iconSize={30} color="black" onClick={() => history.push('/')} aria-label="Go back">arrow_back</IconButton>
     </Column>
     <Typography type="title" color="inherit">
       <span style={{ paddingRight: 10 }}>{isValidation ? 'Validation' : 'Coding'}</span>
@@ -36,7 +36,7 @@ export const Header = ({ projectName, empty, projectId, jurisdictionsList, selec
       </Column>
       <Column flex></Column>
       <TextLink to={`/project/${projectId}/protocol`}>
-        <Button value="View/Edit Protocol" style={{ backgroundColor: 'white', color: 'black' }} />
+        <Button value="View/Edit Protocol" style={{ backgroundColor: 'white', color: 'black' }} aria-label="View and edit protocol"/>
       </TextLink>
     </Fragment>}
   </Container>

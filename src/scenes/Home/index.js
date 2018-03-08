@@ -24,7 +24,7 @@ export class Home extends Component {
     direction: PropTypes.string,
     searchValue: PropTypes.string,
     error: PropTypes.bool,
-    errorContent: PropTypes.string,
+    errorContent: PropTypes.string
   }
 
   constructor(props, context) {
@@ -49,8 +49,11 @@ export class Home extends Component {
           pageTitle="Project List"
           protocolButton={false}
           projectName=""
-          otherButton={{ isLink: true, text: '+ Create New Project', path: '/project/add', state: { userDefined: null }}}
-        />
+          otherButton={{
+            isLink: true, text: '+ Create New Project', path: '/project/add', state: { userDefined: null }, props: {
+              'aria-label': 'Create New Project'
+            }
+          }} />
         <Divider />
         {this.props.error
           ? this.renderErrorMessage()
@@ -68,19 +71,14 @@ export class Home extends Component {
             handleRequestSort={this.props.actions.sortProjects}
             handlePageChange={this.props.actions.updatePage}
             handleRowsChange={this.props.actions.updateRows}
-            handleSortBookmarked={() => this.props.actions.sortBookmarked(!this.props.sortBookmarked)}
-          />
+            handleSortBookmarked={() => this.props.actions.sortBookmarked(!this.props.sortBookmarked)} />
         }
         <Route
-          path="/project/add"
-          component={AddEditProject} />
+          path="/project/add" component={AddEditProject} />
         <Route
-          path="/project/edit/:id"
-          component={AddEditProject} />
+          path="/project/edit/:id" component={AddEditProject} />
         <Route
-          path="/project/:id/jurisdictions"
-          component={AddEditJurisdictions} />
-
+          path="/project/:id/jurisdictions" component={AddEditJurisdictions} />
       </Container>
     )
   }
@@ -97,7 +95,7 @@ const mapStateToProps = (state) => ({
   sortBookmarked: state.scenes.home.main.sortBookmarked,
   error: state.scenes.home.main.error,
   errorContent: state.scenes.home.main.errorContent,
-  projectCount: state.scenes.home.main.projectCount || 0,
+  projectCount: state.scenes.home.main.projectCount || 0
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

@@ -13,7 +13,7 @@ export const PageHeader = ({ projectName, pageTitle, projectId, showButton, prot
   <Container alignItems="center" style={{ height: '80px' }}>
     <Column style={{ paddingRight: 5 }}>
       {pageTitle !== 'Project List'
-        ? <IconButton iconSize={30} color="black" onClick={() => history.goBack()}>arrow_back</IconButton>
+        ? <IconButton iconSize={30} color="black" onClick={() => history.goBack()} aria-label="Go back">arrow_back</IconButton>
         : <CircleIcon circleColor="error" iconColor="white" circleSize="30px" iconSize="19px">home</CircleIcon>
       }
     </Column>
@@ -30,14 +30,14 @@ export const PageHeader = ({ projectName, pageTitle, projectId, showButton, prot
       {children}
       {protocolButton && <div style={{ paddingRight: 15 }}>
         <TextLink to={`/project/${projectId}/protocol`}>
-          <Button value="View/Edit Protocol" style={{ backgroundColor: 'white', color: 'black' }} />
+          <Button value="View/Edit Protocol" aria-label="View and Edit Protocol" style={{ backgroundColor: 'white', color: 'black' }} />
         </TextLink>
       </div>}
       {showButton && (otherButton.isLink
         ? <TextLink to={{ pathname: `${otherButton.path}`, state: { ...otherButton.state } }}>
-          <Button value={otherButton.text} color="accent" />
+          <Button value={otherButton.text} color="accent" {...otherButton.props} />
         </TextLink>
-        : <Button value={otherButton.text} color="accent" style={otherButton.style} onClick={otherButton.onClick} />)
+        : <Button value={otherButton.text} color="accent" style={otherButton.style} onClick={otherButton.onClick} {...otherButton.props} />)
       }
     </Row>
   </Container>

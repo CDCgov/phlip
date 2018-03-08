@@ -73,7 +73,7 @@ export const TreeNode = props => {
   })
 
   return connectDropTarget(
-    <div {...otherProps} className={styles.node}>
+    <div {...otherProps} role="row" className={styles.node}>
       {scaffold}
       {Children.map(children, child =>
         cloneElement(child, {
