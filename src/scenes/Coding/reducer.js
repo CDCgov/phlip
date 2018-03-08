@@ -100,7 +100,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
     case types.ON_SAVE_RED_FLAG:
       const curQuestion = { ...state.scheme.byId[action.questionId] }
-      console.log(curQuestion)
       return {
         ...state,
         question: {
