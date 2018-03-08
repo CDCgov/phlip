@@ -4,7 +4,7 @@ import { default as MuiIconButton } from 'material-ui/IconButton'
 import Icon from 'components/Icon'
 import Tooltip from 'components/Tooltip'
 
-const IconButton = ({ color, onClick, iconSize, style, iconStyle, tooltipText, id, children, ...otherProps }) => {
+const IconButton = ({ color, onClick, iconSize, style, iconStyle, tooltipText, id, placement, children, ...otherProps }) => {
   const styles = {
     width: iconSize,
     height: iconSize,
@@ -20,7 +20,7 @@ const IconButton = ({ color, onClick, iconSize, style, iconStyle, tooltipText, i
   )
 
   return tooltipText.length > 0
-    ? <Tooltip id={id} text={tooltipText}>{Button}</Tooltip>
+    ? <Tooltip id={id} text={tooltipText} placement={placement}>{Button}</Tooltip>
     : Button
 }
 
@@ -32,6 +32,7 @@ IconButton.propTypes = {
   iconStyle: PropTypes.object,
   tooltipText: PropTypes.string,
   id: PropTypes.string,
+  placement: PropTypes.string,
   children: PropTypes.node
 }
 

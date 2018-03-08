@@ -36,10 +36,11 @@ export const QuestionCard = props => {
     <Row displayFlex style={{ flex: '1 0 50%' }}>
       <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
         <Row displayFlex style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
-          {question.questionType !== questionTypes.CATEGORY && <IconButton onClick={onClearAnswer}>
+          {question.questionType !== questionTypes.CATEGORY &&
+          <IconButton onClick={onClearAnswer} tooltipText="Clear answer">
             <Broom className={styles.sweep} aria-labelledby="Clear answer" />
           </IconButton>}
-          <IconButton color="#d7e0e4">
+          <IconButton color="#d7e0e4" tooltipText="Flag this question" placement="top">
             flag
           </IconButton>
         </Row>
@@ -47,20 +48,17 @@ export const QuestionCard = props => {
         {categories !== undefined
           ? <TabContainer tabs={categories} selected={selectedCategory} onChangeCategory={onChangeCategory}>
             <QuestionContent
-              {...questionContentProps}
-              comment={userAnswers.comment[categories[selectedCategory].id]}
-              userAnswers={userAnswers.answers[categories[selectedCategory].id]} question={question}
+              {...questionContentProps} comment={userAnswers.comment[categories[selectedCategory].id]}
+              userAnswers={userAnswers.answers[categories[selectedCategory].id]}
+              question={question}
               mergedUserQuestions={mergedUserQuestions !== null
                 ? mergedUserQuestions.answers[categories[selectedCategory].id]
-                : null}
-            />
+                : null} />
           </TabContainer>
           : <QuestionContent
-            {...questionContentProps}
-            userAnswers={userAnswers}
+            {...questionContentProps} userAnswers={userAnswers}
             comment={userAnswers.comment}
-            mergedUserQuestions={mergedUserQuestions}
-          />
+            mergedUserQuestions={mergedUserQuestions} />
         }
       </Column>
     </Row>

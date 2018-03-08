@@ -14,6 +14,7 @@ import classNames from 'classnames'
 import { default as MuiButton } from 'material-ui/Button'
 import HeaderedLayout from 'components/HeaderedLayout'
 import Alert from 'components/Alert'
+import Tooltip from 'components/Tooltip'
 
 const navButtonStyles = {
   height: 90,
@@ -169,63 +170,64 @@ export class Coding extends Component {
   onShowCodeView = () => (
     <Fragment>
       <QuestionCard
-        question={this.props.question} onChange={this.onAnswer}
+        question={this.props.question}
+        onChange={this.onAnswer}
         userAnswers={this.props.userAnswers}
-        onChangeTextAnswer={this.onChangeTextAnswer} categories={this.props.categories}
+        onChangeTextAnswer={this.onChangeTextAnswer}
+        categories={this.props.categories}
         selectedCategory={this.props.selectedCategory}
         onChangeCategory={this.props.actions.onChangeCategory}
         mergedUserQuestions={null}
         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
-        onOpenAlert={this.onOpenApplyAllAlert}
-      />
+        onOpenAlert={this.onOpenApplyAllAlert} />
       <FooterNavigate
-        currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion}
+        currentIndex={this.props.currentIndex}
+        getNextQuestion={this.getNextQuestion}
         getPrevQuestion={this.getPrevQuestion}
-        totalLength={this.props.questionOrder.length} showNextButton={this.props.showNextButton}
-      />
+        totalLength={this.props.questionOrder.length}
+        showNextButton={this.props.showNextButton} />
     </Fragment>
   )
 
   render() {
     return (
       <Container
-        flex
-        style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}
-      >
+        flex style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}>
         <Alert
           open={this.state.applyAllAlertOpen}
           text="You are applying your answer to ALL categories. Previously answered questions will be changed."
-          actions={this.modalActions}
-        />
+          actions={this.modalActions} />
         <Navigator
           open={this.state.navOpen}
           scheme={this.props.scheme}
           allUserAnswers={this.props.allUserAnswers}
           currentQuestion={this.props.question}
           selectedCategory={this.props.selectedCategory}
-          handleQuestionSelected={this.props.actions.onQuestionSelectedInNav}
-        />
+          handleQuestionSelected={this.props.actions.onQuestionSelectedInNav} />
         <HeaderedLayout
           padding={false}
-          className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}
-        >
+          className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}>
           <Column flex displayFlex style={{ width: '100%', flexWrap: 'nowrap' }}>
             <Header
-              projectName={this.props.projectName} projectId={this.props.projectId}
+              projectName={this.props.projectName}
+              projectId={this.props.projectId}
               jurisdictionsList={this.props.jurisdictionsList}
               selectedJurisdiction={this.state.selectedJurisdiction}
               onJurisdictionChange={this.onJurisdictionChange}
               currentJurisdiction={this.props.jurisdiction}
               empty={this.props.jurisdiction === null || this.props.questionOrder === null ||
-              this.props.questionOrder.length === 0}
-            />
+              this.props.questionOrder.length === 0} />
             <Container flex style={{ backgroundColor: '#f5f5f5' }}>
               <Row displayFlex flex style={{ overflow: 'auto' }}>
                 <Column>
                   {this.state.showViews &&
                   (this.props.jurisdiction !== null && this.props.questionOrder.length !== 0) &&
-                  <MuiButton style={navButtonStyles} onClick={this.onToggleNavigator}>
-                    <Icon color="white" style={iconStyle}>menu</Icon></MuiButton>}
+                  <Tooltip text="Toggle Navigator" placement="right">
+                    <MuiButton style={navButtonStyles} onClick={this.onToggleNavigator}>
+                      <Icon color="white" style={iconStyle}>menu</Icon>
+                    </MuiButton>
+                  </Tooltip>
+                  }
                 </Column>
                 <Column displayFlex flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
                   {this.state.showViews && (this.props.jurisdiction === null || this.props.questionOrder.length === 0

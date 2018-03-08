@@ -12,6 +12,7 @@ import { withStyles } from 'material-ui/styles'
 import { default as MuiButton } from 'material-ui/Button'
 import HeaderedLayout from 'components/HeaderedLayout'
 import Alert from 'components/Alert'
+import Tooltip from 'components/Tooltip'
 
 const navButtonStyles = {
   height: 90,
@@ -203,8 +204,9 @@ export class Validation extends Component {
                 <Column>
                   {this.state.showViews &&
                   (this.props.jurisdiction !== null && this.props.questionOrder.length !== 0) &&
+                  <Tooltip text="Toggle Navigator" placement="right">
                   <MuiButton style={navButtonStyles} onClick={this.onToggleNavigator}>
-                    <Icon color="white" style={iconStyle}>menu</Icon></MuiButton>}
+                    <Icon color="white" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
                 </Column>
                 <Column displayFlex flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
                   {this.state.showViews && (this.props.jurisdiction === null || this.props.questionOrder.length === 0
