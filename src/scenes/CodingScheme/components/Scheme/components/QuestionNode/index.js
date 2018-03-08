@@ -9,6 +9,7 @@ import { CardContent, CardActions } from 'material-ui/Card'
 import Typography from 'material-ui/Typography'
 import TextLink from 'components/TextLink/index'
 import * as questionTypes from '../../../../scenes/AddEditQuestion/constants'
+import Tooltip from 'components/Tooltip'
 
 const isDescendant = (older, younger) => {
   return (
@@ -58,7 +59,9 @@ export const QuestionNode = props => {
 
   const handle = connectDragSource(
     <div className={styles.handle}>
-      <Icon size="24" color="black">reorder</Icon>
+      <Tooltip text="Drag to reorder" placement="bottom">
+        <Icon size="24" color="black">reorder</Icon>
+      </Tooltip>
     </div>,
     { dropEffect: 'copy' }
   )
@@ -67,7 +70,6 @@ export const QuestionNode = props => {
     height: 40,
     width: 40,
     padding: 0,
-    marginRight: 10,
     minHeight: 'unset',
     minWidth: 'unset'
   }
@@ -75,42 +77,49 @@ export const QuestionNode = props => {
   const dragPreview = connectDragPreview(
     <div onDragStart={disableHover} onDragEnd={enableHover}>
       <Card
-        className={styles.nodeCard}
-        style={{
-          backgroundColor: isLandingPadActive ? (canDrop ? 'lightblue' : '#e6a8ad') : 'white',
-          border: isLandingPadActive ? (canDrop ? '3px dotted navy' : '3px dotted black') : 'none',
-          opacity: isDraggedDescendant ? 0.5 : 1,
-          padding: '5px 10px',
-          width: 830
-        }}>
+        className={styles.nodeCard} style={{
+        backgroundColor: isLandingPadActive ? (canDrop ? 'lightblue' : '#e6a8ad') : 'white',
+        border: isLandingPadActive ? (canDrop ? '3px dotted navy' : '3px dotted black') : 'none',
+        opacity: isDraggedDescendant ? 0.5 : 1,
+        padding: '5px 10px',
+        width: 830
+      }}>
         <div className={styles.rowContents + (!canDrag ? ` ${styles.rowContentsDragDisabled}` : '')}>
           {handle}
           <CardContent
             className={styles.rowLabel}
             style={{ padding: 5, display: 'flex', flex: 1, alignItems: 'center' }}
             onMouseEnter={!isDragging ? turnOnHover : null}
-            onMouseLeave={!isDragging ? turnOffHover : null}
-          >
-            <Typography
-              noWrap
-              type="subheading"
-              component="h4"
-              style={{ flex: 1 }}>{questionBody}</Typography>
-
+            onMouseLeave={!isDragging ? turnOffHover : null}>
+            <Typography noWrap type="subheading" component="h4" style={{ flex: 1 }}>
+              {questionBody}
+            </Typography>
             {node.hovering &&
-              <div style={{ zIndex: 5 }}>
-                {parentNode
-                  ? parentNode.questionType !== questionTypes.CATEGORY && <TextLink to={{ pathname: `/project/${projectId}/coding-scheme/add`, state: { parentDefined: { ...node }, path } }}>
-                    <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} /> </TextLink>
-                  : <TextLink to={{ pathname: `/project/${projectId}/coding-scheme/add`, state: { parentDefined: { ...node }, path } }}>
-                    <Button color="accent" style={actionStyles} value={<Icon color="white">subdirectory_arrow_right</Icon>} /> </TextLink>
-                }
-                <TextLink to={{ pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`, state: { questionDefined: { ...node }, path } }}>
+            <div style={{ zIndex: 5 }}>
+              {(parentNode === null || parentNode.questionType !== questionTypes.CATEGORY) &&
+              <Tooltip text="Add child question" placement="left">
+                <TextLink
+                  to={{
+                    pathname: `/project/${projectId}/coding-scheme/add`,
+                    state: { parentDefined: { ...node }, path }
+                  }}>
+                  <Button
+                    color="accent" style={{ ...actionStyles, marginRight: 10 }} value={<Icon color="white">subdirectory_arrow_right</Icon>} />
+                </TextLink></Tooltip>}
+              <Tooltip text="Edit question" placement="right">
+                <TextLink
+                  to={{
+                    pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`,
+                    state: { questionDefined: { ...node }, path }
+                  }}>
                   <Button color="accent" style={actionStyles} value={<Icon color="white">mode_edit</Icon>} />
                 </TextLink>
-              </div>
+              </Tooltip>
+            </div>}
+            {!node.hovering && node.questionType === questionTypes.CATEGORY
+              ? <Icon color="grey">filter_none</Icon>
+              : ''
             }
-            {!node.hovering && node.questionType === questionTypes.CATEGORY ? <Icon color="grey">filter_none</Icon> : ''}
           </CardContent>
           <CardActions disableActionSpacing style={{ padding: 0 }}>
             <div style={{ flex: '1 1 auto' }}></div>
@@ -123,22 +132,26 @@ export const QuestionNode = props => {
   return (
     <div className={styles.nodeContent} style={{ left: scaffoldBlockCount * scaffoldBlockPxWidth }}>
       {toggleChildrenVisibility && node.children && node.children.length > 0 &&
-        <div>
-          <IconButton
-            type="button"
-            aria-label={node.expanded ? 'Collapse' : 'Expand'}
-            className={styles.expandCollapseButton}
-            color="#aabdc6"
-            style={{ backgroundColor: '#f5f5f5' }}
-            iconSize={28}
-            onClick={() => toggleChildrenVisibility({ node, path, treeIndex })}
-          >
-            {node.expanded ? 'remove_circle' : 'add_circle'}
-          </IconButton>
-          {node.expanded && !isDragging && (
-            <div style={{ width: scaffoldBlockPxWidth }} className={styles.lineChildren} />
-          )}
-        </div>}
+      <div>
+        <IconButton
+          type="button"
+          aria-label={node.expanded
+            ? 'Collapse'
+            : 'Expand'}
+          className={styles.expandCollapseButton}
+          color="#aabdc6"
+          style={{ backgroundColor: '#f5f5f5' }}
+          iconSize={28}
+          onClick={() => toggleChildrenVisibility({
+            node,
+            path,
+            treeIndex
+          })}>
+          {node.expanded ? 'remove_circle' : 'add_circle'}
+        </IconButton> {node.expanded && !isDragging && (
+        <div style={{ width: scaffoldBlockPxWidth }} className={styles.lineChildren} />
+      )}
+      </div>}
       <div className={styles.rowWrapper + (!canDrag ? ` ${styles.rowWrapperDisabled}` : '')}>
         {dragPreview}
       </div>

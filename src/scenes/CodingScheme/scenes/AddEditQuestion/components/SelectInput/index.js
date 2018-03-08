@@ -43,8 +43,7 @@ const SelectInput = ({ name, label, answerType, type, input, classes, meta: { as
       </Column>
       <Column>
         {(answerType === questionTypes.BINARY || isEdit) ? <div></div> :
-          <IconButton color="action" onClick={handleDelete}
-            iconSize={20}>delete</IconButton>
+          <IconButton color="action" onClick={handleDelete} iconSize={20} tooltipText="Delete answer">delete</IconButton>
         }
       </Column>
     </Container>
