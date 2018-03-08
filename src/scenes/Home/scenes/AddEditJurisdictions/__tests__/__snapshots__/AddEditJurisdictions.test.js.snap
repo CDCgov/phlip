@@ -20,10 +20,14 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
     }
     buttons={
       <WithTheme
-        color="accent"
-        onClick={[Function]}
-        value="+ Add Jurisdiction"
-      />
+        state={Object {}}
+        to="/project/undefined/jurisdictions/add"
+      >
+        <WithTheme
+          color="accent"
+          value="+ Add Jurisdiction"
+        />
+      </WithTheme>
     }
     closeButton={false}
     edit={false}
@@ -86,22 +90,28 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
           }
         }
       >
-        <JurisdictionList
-          onOpenForm={[Function]}
-        />
+        <JurisdictionList />
       </Column>
     </Container>
   </ModalContent>
-  <Connect(JurisdictionForm)
-    asyncValidate={[Function]}
-    edit={false}
-    jurisdiction={Object {}}
-    onCloseForm={[Function]}
-    onHandleSubmit={[Function]}
-    onJurisdictionSelected={[Function]}
-    onSearchList={[Function]}
-    onSuggestionValueChanged={[Function]}
-    open={false}
+  <WithStyles
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Close",
+        },
+      ]
+    }
+  />
+  <Route
+    component={[Function]}
+    path="/project/:id/jurisdictions/add"
+  />
+  <Route
+    component={[Function]}
+    path="/project/:id/jurisdictions/:jid/edit"
   />
 </WithStyles>
 `;

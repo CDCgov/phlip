@@ -7,10 +7,12 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       "name",
     ]
   }
+  asyncValidate={[Function]}
   form="jurisdictionForm"
   handleSubmit={[Function]}
   height="400px"
   initialValues={Object {}}
+  onClose={[Function]}
   open={true}
   validate={[Function]}
   width="600px"
@@ -53,7 +55,6 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
         <Field
           component={[Function]}
           getSuggestionValue={[Function]}
-          handleClearSuggestions={[Function]}
           handleGetSuggestions={[Function]}
           handleSuggestionSelected={[Function]}
           inputProps={
@@ -124,7 +125,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       </Container>
     </Container>
   </ModalContent>
-  <ModalActions
+  <WithStyles
     actions={
       Array [
         Object {
@@ -140,7 +141,6 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       ]
     }
     edit={true}
-    raised={false}
   />
 </FormModal>
 `;
