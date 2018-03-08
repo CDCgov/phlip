@@ -47,6 +47,22 @@ const renderSuggestion = (suggestion, { query, isHighlighted }) => {
 }
 
 export class JurisdictionForm extends Component {
+  static propTypes = {
+    form: PropTypes.object,
+    formName: PropTypes.string,
+    jurisdiction: PropTypes.object,
+    jurisdictions: PropTypes.array,
+    suggestions: PropTypes.array,
+    suggestionValue: PropTypes.string,
+    actions: PropTypes.object,
+    formActions: PropTypes.object,
+    location: PropTypes.object,
+    match: PropTypes.object,
+    history: PropTypes.object,
+    onCloseModal: PropTypes.func
+  }
+
+
   constructor(props, context) {
     super(props, context)
     this.jurisdictionDefined = this.props.location.state !== undefined ? props.location.state.jurisdictionDefined : null
@@ -123,7 +139,7 @@ export class JurisdictionForm extends Component {
     const formActions = [
       { value: 'Cancel', onClick: this.onCloseForm, type: 'button' },
       {
-        value: this.props.edit
+        value: this.state.edit
           ? 'Save'
           : 'Add',
         type: 'submit',
@@ -187,20 +203,14 @@ export class JurisdictionForm extends Component {
   }
 }
 
-JurisdictionForm.propTypes = {
-}
-
 const mapStateToProps = (state, ownProps) => ({
   project: state.scenes.home.main.projects.byId[ownProps.match.params.id],
   form: state.form.jurisdictionForm || {},
   formName: 'jurisdictionForm',
-  visibleJurisdictions: state.scenes.home.addEditJurisdictions.visibleJurisdictions || [],
-  searchValue: state.scenes.home.addEditJurisdictions.searchValue || '',
   suggestions: state.scenes.home.addEditJurisdictions.suggestions || [],
   suggestionValue: state.scenes.home.addEditJurisdictions.suggestionValue || '',
   jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || {},
-  jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') ||
-  []
+  jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') || []
 })
 
 const mapDispatchToProps = (dispatch) => ({

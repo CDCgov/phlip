@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { default as formActions } from 'redux-form/lib/actions'
 import { withRouter } from 'react-router'
 import { Route } from 'react-router-dom'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
@@ -17,6 +16,14 @@ import Typography from 'material-ui/Typography'
 import TextLink from 'components/TextLink'
 
 export class AddEditJurisdictions extends Component {
+  static propTypes = {
+    project: PropTypes.object,
+    visibleJurisdictions: PropTypes.array,
+    searchValue: PropTypes.string,
+    history: PropTypes.object,
+    actions: PropTypes.object
+  }
+
   constructor(props, context) {
     super(props, context)
   }
@@ -64,11 +71,7 @@ export class AddEditJurisdictions extends Component {
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
           <Container flex style={{ marginTop: 20 }}>
             <Column flex displayFlex style={{ overflowX: 'auto' }}>
-              <JurisdictionList
-                jurisdictions={this.props.visibleJurisdictions}
-                projectId={this.props.project.id}
-                onOpenForm={this.onOpenForm}
-              />
+              <JurisdictionList jurisdictions={this.props.visibleJurisdictions} projectId={this.props.project.id} />
             </Column>
           </Container>
         </ModalContent>
@@ -78,12 +81,6 @@ export class AddEditJurisdictions extends Component {
       </Modal>
     )
   }
-}
-
-AddEditJurisdictions.propTypes = {
-  project: PropTypes.object,
-  visibleJurisdictions: PropTypes.array,
-  searchValue: PropTypes.string
 }
 
 const mapStateToProps = (state, ownProps) => ({

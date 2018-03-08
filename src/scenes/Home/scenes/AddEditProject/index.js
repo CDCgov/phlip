@@ -17,10 +17,14 @@ import withFormAlert from 'components/withFormAlert'
 export class AddEditProject extends Component {
   static propTypes = {
     actions: PropTypes.object,
+    formActions: PropTypes.object,
     projects: PropTypes.arrayOf(PropTypes.object),
     form: PropTypes.object,
+    formName: PropTypes.string,
+    match: PropTypes.object,
     history: PropTypes.object,
-    location: PropTypes.object
+    location: PropTypes.object,
+    onCloseModal: PropTypes.func
   }
 
   constructor(props, context) {

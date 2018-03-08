@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from './actions'
@@ -21,10 +22,23 @@ const rowStyles = {
 }
 
 export class AddEditUser extends Component {
+  static propTypes = {
+    form: PropTypes.object,
+    formName: PropTypes.string,
+    users: PropTypes.array,
+    avatarUrl: PropTypes.string,
+    currentUser: PropTypes.object,
+    actions: PropTypes.object,
+    formActions: PropTypes.object,
+    location: PropTypes.object,
+    match: PropTypes.object,
+    history: PropTypes.object,
+    onCloseModal: PropTypes.func
+  }
+
   constructor(props, context) {
     super(props, context)
     this.selectedUser = undefined
-    console.log(formActions)
   }
 
   handleSubmit = (values) => {
@@ -188,15 +202,13 @@ const getUserById = (users, id) => {
   return null
 }
 
-const mapStateToProps = (state) => {
-  return {
-    currentUser: state.data.user.currentUser || {},
-    users: state.scenes.admin.main.users || [],
-    form: state.form.addEditUser || {},
-    avatarUrl: state.scenes.admin.addEditUser.avatarUrl || null,
-    formName: 'addEditUser'
-  }
-}
+const mapStateToProps = (state) => ({
+  currentUser: state.data.user.currentUser || {},
+  users: state.scenes.admin.main.users || [],
+  form: state.form.addEditUser || {},
+  avatarUrl: state.scenes.admin.addEditUser.avatarUrl || null,
+  formName: 'addEditUser'
+})
 
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(actions, dispatch),
