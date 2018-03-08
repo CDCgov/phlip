@@ -2,10 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { DialogActions } from 'material-ui/Dialog'
 import Button from 'components/Button'
+import { withStyles } from 'material-ui/styles'
 
-const ModalActions = ({ edit, actions, raised, ...otherProps }) => {
+const styles = {
+  root: {
+    margin: '24px'
+  }
+}
+
+const ModalActions = ({ edit, actions, raised, classes, ...otherProps }) => {
   return (
-    <DialogActions {...otherProps} >
+    <DialogActions classes={{ root: classes.root }} {...otherProps} >
       {actions.map(action => (
         <Button
           key={action.value}
@@ -13,7 +20,8 @@ const ModalActions = ({ edit, actions, raised, ...otherProps }) => {
           type={action.type}
           color="accent"
           disabled={action.disabled || false}
-          onClick={action.onClick} />
+          onClick={action.onClick}
+        />
       ))}
     </DialogActions>
   )
@@ -23,4 +31,4 @@ ModalActions.defaultProps = {
   raised: false
 }
 
-export default ModalActions
+export default withStyles(styles)(ModalActions)

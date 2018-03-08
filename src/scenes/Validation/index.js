@@ -39,9 +39,10 @@ export class Validation extends Component {
     this.state = {
       selectedJurisdiction: this.props.jurisdictionId,
       showViews: false,
-      navOpen: true,
+      navOpen: false,
       applyAllAlertOpen: false,
-      flagConfirmAlertOpen: false
+      flagConfirmAlertOpen: false,
+      flagToDelete: null
     }
 
     this.confirmAlertActions = [
@@ -128,18 +129,29 @@ export class Validation extends Component {
     this.props.actions.updateEditedFields(this.props.projectId)
   }
 
-  onOpenFlagConfirmAlert = () => {
+  onOpenFlagConfirmAlert = (flagId, type) => {
     this.setState({
-      flagConfirmAlertOpen: true
+      flagConfirmAlertOpen: true,
+      flagToDelete: { id: flagId, type }
     })
   }
 
-  onClearFlag = flagId => {
+  onClearFlag = () => {
+    if (this.state.flagToDelete.type === 3) {
+      this.props.actions.clearRedFlag(this.state.flagToDelete.id, this.props.question.id)
+    } else {
+      this.props.actions.clearFlag(this.state.flagToDelete.id, this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+    }
+    this.setState({
+      flagConfirmAlertOpen: false,
+      flagToDelete: null
+    })
   }
 
   onCloseFlagConfigAlert = () => {
     this.setState({
-      flagConfirmAlertOpen: false
+      flagConfirmAlertOpen: false,
+      flagToDelete: null
     })
   }
 

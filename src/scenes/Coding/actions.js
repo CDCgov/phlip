@@ -79,3 +79,10 @@ export const onSaveFlag = (projectId, jurisdictionId, questionId, flagInfo) => (
   questionId,
   flagInfo
 })
+
+export const onSaveRedFlag = (projectId, questionId, flagInfo) => ({
+  type: types.ON_SAVE_RED_FLAG,
+  projectId,
+  questionId,
+  flagInfo
+})

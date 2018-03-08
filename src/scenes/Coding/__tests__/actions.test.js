@@ -106,4 +106,15 @@ describe('Coding scene actions creators', () => {
 
     expect(actions.onSaveFlag(1,1,1, { notes: 'lalala', type: 1 })).toEqual(expectedAction)
   })
+
+  test('should create an action to handle to save red flag info', () => {
+    const expectedAction = {
+      type: types.ON_SAVE_RED_FLAG,
+      projectId: 1,
+      questionId: 1,
+      flagInfo: { notes: 'lalala', type: 3 }
+    }
+
+    expect(actions.onSaveRedFlag(1,1, { notes: 'lalala', type: 3 })).toEqual(expectedAction)
+  })
 })

@@ -124,7 +124,7 @@ export default {
 
   getUserPicture(userId) {
     return api.get(`/users/${userId}/avatar`).then(res => {
-      return true
+      return res.status === 204 ? false : true
     }).catch(error => {
       return false
     })
@@ -136,5 +136,13 @@ export default {
 
   saveProtocol(projectId, userId, protocol) {
     return api.put(`/projects/${projectId}/protocol`, { userId, text: protocol }).then(res => res.data)
+  },
+
+  saveRedFlag(projectId, questionId, flagInfo) {
+    return api.post(`/projects/${projectId}/question/${questionId}`, { ...flagInfo }).then(res => res.data)
+  },
+
+  clearFlag(flagId) {
+    return api.delete(`/flags/${flagId}`).then(res => res.data)
   }
 }

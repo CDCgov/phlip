@@ -22,7 +22,7 @@ export const QuestionContent = props => {
   const questionAnswerPadding = {
     paddingTop: 0,
     paddingRight: 65,
-    paddingBottom: 40,
+    paddingBottom: 30,
     paddingLeft: (question.number && (question.number.split('.').length * 3) + 40) || 40
   }
 
@@ -41,7 +41,7 @@ export const QuestionContent = props => {
           <Typography type="subheading">{question.text}</Typography>
         </Column>
       </Row>
-      <Column displayFlex flex style={{ ...questionAnswerPadding }}>
+      <Column displayFlex flex style={{ ...questionAnswerPadding, flexBasis: '60%' }}>
         {(question.questionType === questionTypes.MULTIPLE_CHOICE ||
           question.questionType === questionTypes.BINARY) &&
         <Row flex displayFlex style={{ ...answerPadding, paddingRight: 0, overflow: 'auto' }}>
@@ -90,7 +90,7 @@ export const QuestionContent = props => {
           currentUserInitials={currentUserInitials}
         />
         }
-        <Row style={{ ...answerPadding, paddingRight: 0, paddingTop: 20 }}>
+        <Row style={{ ...answerPadding, paddingRight: 0, paddingTop: 20, paddingBottom: 0 }}>
           {question.includeComment &&
           <Row>
             <SimpleInput
@@ -100,6 +100,7 @@ export const QuestionContent = props => {
               style={{ whiteSpace: 'pre-wrap' }}
               placeholder="Enter comment"
               value={comment}
+              rowsMax={6}
               label="Comment"
             />
           </Row>}

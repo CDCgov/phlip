@@ -7,34 +7,27 @@ import Dialog, {
 } from 'material-ui/Dialog'
 import Divider from 'material-ui/Divider'
 import Button from 'components/Button'
-import IconButton from 'components/IconButton'
 import Form from 'components/Form'
 import Container, { Column } from 'components/Layout'
+import { withStyles } from 'material-ui/styles'
 
-const ModalForm = ({ handleSubmit, form, onClose, open, actions, title, width, height, children, asyncValidate, asyncBlurFields, initialValues, editForm, edit, editButton }) => {
+const styles = {
+  actions: {
+    margin: '24px'
+  }
+}
+
+const ModalForm = ({ handleSubmit, classes, form, onClose, open, actions, title, width, height, children, asyncValidate, asyncBlurFields, initialValues, editForm, edit, editButton }) => {
   return (
     <Dialog open={open} onClose={onClose}>
-      <Form onSubmit={handleSubmit} form={form} asyncValidate={asyncValidate} asyncBlurFields={asyncBlurFields}
-            initialValues={initialValues} style={{ width, height }}>
-        <DialogTitle>
-          <Container alignItems="center">
-            <Column flex>
-              {title}
-            </Column>
-            <Column>
-              <Container alignItems="center">
-                {!edit && editButton && <IconButton onClick={editForm} color="secondary">mode_edit</IconButton>}
-                {!edit && <IconButton onClick={onClose} color="error" iconSize={25}
-                                      style={{ fontWeight: 'bold' }}>close</IconButton>}
-              </Container>
-            </Column>
-          </Container>
-        </DialogTitle>
+      <Form
+        onSubmit={handleSubmit} form={form} asyncValidate={asyncValidate} asyncBlurFields={asyncBlurFields}
+        initialValues={initialValues} style={{ width, height }}
+      >
+        <DialogTitle>{title}</DialogTitle>
         <Divider />
-        <DialogContent>
-          {children}
-        </DialogContent>
-        <DialogActions>
+        <DialogContent>{children}</DialogContent>
+        <DialogActions classes={{ root: classes.actions }}>
           {edit && actions.map(action => (
             <Button
               key={action.value}
@@ -42,7 +35,8 @@ const ModalForm = ({ handleSubmit, form, onClose, open, actions, title, width, h
               type={action.type}
               color="accent"
               disabled={action.disabled || false}
-              onClick={action.onClick} />
+              onClick={action.onClick}
+            />
           ))}
         </DialogActions>
       </Form>
@@ -72,4 +66,4 @@ ModalForm.defaultProps = {
   edit: true
 }
 
-export default ModalForm
+export default withStyles(styles)(ModalForm)

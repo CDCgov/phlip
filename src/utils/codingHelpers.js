@@ -398,8 +398,7 @@ export const getFinalCodedObject = (state, action, applyAll = false) => {
     codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds),
     ...state.question.isCategoryQuestion
       ? { categories: applyAll ? [...state.categories.map(cat => cat.id)] : [state.selectedCategoryId] }
-      : {},
-    flag: action.type == 'ON_SAVE_FLAG' ? { ...action.flagInfo } : { ...questionObject.flag }
+      : {}
   }
 
   return answerObject
