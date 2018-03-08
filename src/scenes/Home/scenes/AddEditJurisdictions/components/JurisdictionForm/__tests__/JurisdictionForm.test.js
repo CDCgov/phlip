@@ -3,18 +3,18 @@ import { shallow } from 'enzyme'
 import { JurisdictionForm } from '../index'
 
 const props = {
-  open: true,
-  edit: false,
+  form: {},
+  formName: 'jurisdictionForm',
   jurisdiction: {},
+  jurisdictions: [],
   suggestions: [],
   suggestionValue: '',
-  form: {},
-  onClearSuggestions: () => {},
-  onJurisdictionSelected: () => {},
-  onSearchList: () => {},
-  onSuggestionValueChanged: () => {},
-  onHandleSubmit: () => {},
-  onCloseForm: () => {}
+  actions: {},
+  formActions: {},
+  location: { state: undefined },
+  match: {},
+  history: {},
+  onCloseModal: () => {}
 }
 
 describe('Home scene - AddEditJurisdictions - JurisdictionForm', () => {

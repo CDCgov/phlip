@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Divider from 'material-ui/Divider'
 import { MenuItem } from 'material-ui/Menu'
+import { withRouter } from 'react-router'
 import parse from 'autosuggest-highlight/parse'
 import match from 'autosuggest-highlight/match'
 import { Field } from 'redux-form'
@@ -14,6 +15,11 @@ import * as actions from '../../actions'
 import { validateRequired, validateDate, validateDateRanges } from 'utils/formHelpers'
 import DatePicker from 'components/DatePicker'
 import Autocomplete from 'components/Autocomplete'
+import { default as formActions } from 'redux-form/lib/actions'
+import withFormAlert from 'components/withFormAlert'
+import moment from 'moment'
+import api from 'services/api'
+import { normalize } from 'utils'
 
 const getSuggestionValue = suggestion => suggestion
 
@@ -40,108 +46,176 @@ const renderSuggestion = (suggestion, { query, isHighlighted }) => {
   )
 }
 
-export const JurisdictionForm = props => {
-  const {
-    open,
-    edit,
-    jurisdiction,
-    suggestions,
-    suggestionValue,
-    form,
-    asyncValidate,
-    onClearSuggestions,
-    onJurisdictionSelected,
-    onSearchList,
-    onSuggestionValueChanged,
-    onHandleSubmit,
-    onCloseForm
-  } = props
+export class JurisdictionForm extends Component {
+  static propTypes = {
+    form: PropTypes.object,
+    formName: PropTypes.string,
+    jurisdiction: PropTypes.object,
+    jurisdictions: PropTypes.array,
+    suggestions: PropTypes.array,
+    suggestionValue: PropTypes.string,
+    actions: PropTypes.object,
+    formActions: PropTypes.object,
+    location: PropTypes.object,
+    match: PropTypes.object,
+    history: PropTypes.object,
+    onCloseModal: PropTypes.func
+  }
 
-  const formActions = [
-    { value: 'Cancel', onClick: onCloseForm, type: 'button' },
-    {
-      value: edit
-        ? 'Save'
-        : 'Add',
-      type: 'submit',
-      disabled: Boolean(form.syncErrors || (form.asyncErrors ? form.asyncErrors.name : false))
+
+  constructor(props, context) {
+    super(props, context)
+    this.jurisdictionDefined = this.props.location.state !== undefined ? props.location.state.jurisdictionDefined : null
+    this.state = {
+      edit: this.jurisdictionDefined !== null
     }
-  ]
+  }
 
-  return (
-    <FormModal
-      form="jurisdictionForm"
-      handleSubmit={onHandleSubmit}
-      initialValues={edit ? jurisdiction : {}}
-      asyncValidate={edit ? null : asyncValidate}
-      asyncBlurFields={['name']}
-      width="600px" height="400px"
-      validate={validateDateRanges}
-      open={open}
-      onClose={onCloseForm}
-    >
-      <ModalTitle title={edit ? 'Edit Jurisdiction' : 'Add Jurisdiction'} closeButton onCloseForm={onCloseForm} />
-      <Divider />
-      <ModalContent>
-        <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
-          <Row style={{ paddingBottom: 20 }}>
-            <Field
-              name="name"
-              component={Autocomplete}
-              validate={validateRequired}
-              suggestions={suggestions}
-              handleGetSuggestions={onSearchList}
-              handleClearSuggestions={onClearSuggestions}
-              inputProps={{
-                value: edit ? jurisdiction.name : suggestionValue,
-                onChange: onSuggestionValueChanged,
-                id: 'jurisdiction-name',
-                disabled: edit,
-                label: 'Name',
-                placeholder: 'Enter jurisdiction name',
-                shrinkLabel: true
-              }}
-              handleSuggestionSelected={onJurisdictionSelected}
-              renderSuggestion={renderSuggestion}
-              getSuggestionValue={getSuggestionValue}
-            />
-          </Row>
-          <Container style={{ marginTop: 30 }}>
-            <Column flex>
-              <Field component={DatePicker} name="startDate" invalidLabel="mm/dd/yyyy" label="Start Date"
-                     dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
-            </Column>
-            <Column>
-              <Field component={DatePicker} name="endDate" invalidLabel="mm/dd/yyyy" label="End Date"
-                     dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
-            </Column>
+  onSubmitForm = values => {
+    const jurisdiction = {
+      ...values,
+      startDate: moment(values.startDate).toISOString(),
+      endDate: moment(values.endDate).toISOString(),
+      ...this.props.jurisdiction
+    }
+
+    if (this.state.edit) {
+      this.props.actions.updateJurisdiction(jurisdiction, this.props.project.id)
+      this.props.actions.updateJurisdictionInProject(jurisdiction, this.props.project.id)
+    } else {
+      this.props.actions.addJurisdiction(jurisdiction, this.props.project.id)
+      this.props.actions.addJurisdictionToProject(jurisdiction, this.props.project.id)
+    }
+
+    this.props.actions.updateEditedFields(this.props.project.id)
+    this.props.actions.clearJurisdictions()
+    this.props.history.goBack()
+  }
+
+  throwErrors = (values, out) => {
+    if (out.length === 0) {
+      throw { name: 'You must choose a pre-defined jurisdiction name.' }
+    } else if (this.props.jurisdictions.includes(values.name)) {
+      throw { name: 'This jurisdiction is already included in this project.' }
+    } else if (out.length > 1) {
+      throw { name: 'There are multiple jurisdictions that match this string. Please choose one from the list.' }
+    } else {
+      this.props.actions.onJurisdictionSelected(out[0])
+      this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
+    }
+  }
+
+  validateJurisdiction = values => {
+    const updatedValues = { ...values, name: values.name.trim() }
+    const prom = new Promise(resolve => resolve(api.searchJurisdictionList(updatedValues.name)))
+    return prom.then(out => {
+      if (!this.state.edit) {
+        if (!this.props.jurisdiction) {
+          this.throwErrors(updatedValues, out)
+        } else if (this.props.jurisdiction && this.props.jurisdiction.name !== updatedValues.name) {
+          this.throwErrors(updatedValues, out)
+        } else {
+          this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
+        }
+      }
+    })
+  }
+
+  onJurisdictionsFetchRequest = ({ value }) => {
+    this.props.actions.searchJurisdictionList(value)
+  }
+
+  onCloseForm = () => {
+    this.props.actions.clearJurisdictions()
+    this.props.history.goBack()
+  }
+
+  onJurisdictionSelected = (event, { suggestionValue }) => {
+    this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
+    this.props.actions.onJurisdictionSelected(suggestionValue)
+  }
+
+  render() {
+    const formActions = [
+      { value: 'Cancel', onClick: this.onCloseForm, type: 'button' },
+      {
+        value: this.state.edit
+          ? 'Save'
+          : 'Add',
+        type: 'submit',
+        disabled: Boolean(this.props.form.syncErrors || (this.props.form.asyncErrors ? this.props.form.asyncErrors.name : false))
+      }
+    ]
+
+    return (
+      <FormModal
+        form="jurisdictionForm"
+        handleSubmit={this.onSubmitForm}
+        initialValues={this.jurisdictionDefined || {}}
+        asyncValidate={this.state.edit ? null : this.validateJurisdiction}
+        asyncBlurFields={['name']}
+        width="600px" height="400px"
+        validate={validateDateRanges}
+        open={true}
+        onClose={this.props.onCloseModal}
+      >
+        <ModalTitle title={this.state.edit ? 'Edit Jurisdiction' : 'Add Jurisdiction'} closeButton onCloseForm={this.onCloseForm} />
+        <Divider />
+        <ModalContent>
+          <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
+            <Row style={{ paddingBottom: 20 }}>
+              <Field
+                name="name"
+                component={Autocomplete}
+                validate={validateRequired}
+                suggestions={this.props.suggestions}
+                handleGetSuggestions={this.onJurisdictionsFetchRequest}
+                handleClearSuggestions={this.props.actions.onClearSuggestions}
+                inputProps={{
+                  value: this.state.edit ? this.jurisdictionDefined.name : this.props.suggestionValue,
+                  onChange: event => this.props.actions.onSuggestionValueChanged(event.target.value),
+                  id: 'jurisdiction-name',
+                  disabled: this.state.edit,
+                  label: 'Name',
+                  placeholder: 'Enter jurisdiction name',
+                  shrinkLabel: true
+                }}
+                handleSuggestionSelected={this.onJurisdictionSelected}
+                renderSuggestion={renderSuggestion}
+                getSuggestionValue={getSuggestionValue}
+              />
+            </Row>
+            <Container style={{ marginTop: 30 }}>
+              <Column flex>
+                <Field component={DatePicker} name="startDate" invalidLabel="mm/dd/yyyy" label="Start Date"
+                       dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
+              </Column>
+              <Column>
+                <Field component={DatePicker} name="endDate" invalidLabel="mm/dd/yyyy" label="End Date"
+                       dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
+              </Column>
+            </Container>
           </Container>
-        </Container>
-      </ModalContent>
-      <ModalActions edit={true} actions={formActions}></ModalActions>
-    </FormModal>
-  )
+        </ModalContent>
+        <ModalActions edit={true} actions={formActions}></ModalActions>
+      </FormModal>
+    )
+  }
 }
 
-JurisdictionForm.propTypes = {
-  open: PropTypes.bool,
-  edit: PropTypes.bool,
-  jurisdiction: PropTypes.object,
-  suggestions: PropTypes.array,
-  suggestionValue: PropTypes.string,
-  form: PropTypes.object,
-  onClearSuggestions: PropTypes.func,
-  onJurisdictionSelected: PropTypes.func,
-  onSearchList: PropTypes.func,
-  onSuggestionValueChanged: PropTypes.func,
-  onHandleSubmit: PropTypes.func,
-  onCloseForm: PropTypes.func
-}
-
-const mapStateToProps = (state) => ({
-  form: state.form.jurisdictionForm || {}
+const mapStateToProps = (state, ownProps) => ({
+  project: state.scenes.home.main.projects.byId[ownProps.match.params.id],
+  form: state.form.jurisdictionForm || {},
+  formName: 'jurisdictionForm',
+  suggestions: state.scenes.home.addEditJurisdictions.suggestions || [],
+  suggestionValue: state.scenes.home.addEditJurisdictions.suggestionValue || '',
+  jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || {},
+  jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') || []
 })
 
-const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(actions, dispatch),
+  formActions: bindActionCreators(formActions, dispatch)
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(JurisdictionForm)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withFormAlert(JurisdictionForm)))

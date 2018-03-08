@@ -17,7 +17,6 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
     }
   }
   maxWidth="md"
-  onClose={[Function]}
   open={true}
   validate={[Function]}
 >

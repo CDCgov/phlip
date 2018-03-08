@@ -12,7 +12,6 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
   handleSubmit={[Function]}
   height="400px"
   initialValues={Object {}}
-  onClose={[Function]}
   open={true}
   width="600px"
 >

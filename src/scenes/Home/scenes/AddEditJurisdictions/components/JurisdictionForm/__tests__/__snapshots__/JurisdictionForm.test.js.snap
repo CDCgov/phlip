@@ -7,6 +7,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       "name",
     ]
   }
+  asyncValidate={[Function]}
   form="jurisdictionForm"
   handleSubmit={[Function]}
   height="400px"
@@ -54,7 +55,6 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
         <Field
           component={[Function]}
           getSuggestionValue={[Function]}
-          handleClearSuggestions={[Function]}
           handleGetSuggestions={[Function]}
           handleSuggestionSelected={[Function]}
           inputProps={

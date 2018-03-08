@@ -12,14 +12,19 @@ import TextInput from 'components/TextInput'
 import Dropdown from 'components/Dropdown'
 import Container, { Row } from 'components/Layout'
 import DetailRow from './components/DetailRow'
+import withFormAlert from 'components/withFormAlert'
 
 export class AddEditProject extends Component {
   static propTypes = {
     actions: PropTypes.object,
+    formActions: PropTypes.object,
     projects: PropTypes.arrayOf(PropTypes.object),
     form: PropTypes.object,
+    formName: PropTypes.string,
+    match: PropTypes.object,
     history: PropTypes.object,
-    location: PropTypes.object
+    location: PropTypes.object,
+    onCloseModal: PropTypes.func
   }
 
   constructor(props, context) {
@@ -108,7 +113,8 @@ export class AddEditProject extends Component {
         form="projectForm"
         handleSubmit={this.handleSubmit}
         asyncValidate={this.validateProjectName}
-        asyncBlurFields={['name']} onClose={this.onCancel}
+        asyncBlurFields={['name']}
+        onClose={this.props.onCloseModal}
         initialValues={this.props.location.state.projectDefined || {}}
         width="600px" height="400px"
       >
@@ -165,7 +171,8 @@ export class AddEditProject extends Component {
 
 const mapStateToProps = (state) => ({
   projects: Object.values(state.scenes.home.main.projects.byId) || [],
-  form: state.form.projectForm || {}
+  form: state.form.projectForm || {},
+  formName: 'projectForm'
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -173,4 +180,4 @@ const mapDispatchToProps = (dispatch) => ({
   formActions: bindActionCreators(formActions, dispatch)
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEditProject))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withFormAlert(AddEditProject)))

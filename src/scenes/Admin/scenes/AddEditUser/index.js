@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actions from './actions'
@@ -12,22 +13,32 @@ import Container, { Row, Column } from 'components/Layout'
 import { trimWhitespace } from 'utils/formHelpers'
 import Avatar from 'components/Avatar'
 import ReactFileReader from 'react-file-reader'
-// import Button from 'components/Button'
 import IconButton from 'components/IconButton'
+import withFormAlert from 'components/withFormAlert'
+import { default as formActions } from 'redux-form/lib/actions'
 
 const rowStyles = {
   paddingBottom: 20
 }
 
 export class AddEditUser extends Component {
-  constructor(props, context) {
-    super(props, context)
-    this.onCancel = this.onCancel.bind(this)
-    this.selectedUser = undefined
+  static propTypes = {
+    form: PropTypes.object,
+    formName: PropTypes.string,
+    users: PropTypes.array,
+    avatarUrl: PropTypes.string,
+    currentUser: PropTypes.object,
+    actions: PropTypes.object,
+    formActions: PropTypes.object,
+    location: PropTypes.object,
+    match: PropTypes.object,
+    history: PropTypes.object,
+    onCloseModal: PropTypes.func
   }
 
-  onCancel() {
-    this.props.history.goBack()
+  constructor(props, context) {
+    super(props, context)
+    this.selectedUser = undefined
   }
 
   handleSubmit = (values) => {
@@ -108,9 +119,9 @@ export class AddEditUser extends Component {
         form="addEditUser"
         handleSubmit={this.handleSubmit}
         asyncValidate={this.validateEmail}
-        initialValues={this.selectedUser}
+        initialValues={this.selectedUser || {}}
         asyncBlurFields={['email']}
-        onClose={this.onCancel}
+        onClose={this.props.onCloseModal}
         width="600px"
         height="400px"
       >
@@ -118,8 +129,7 @@ export class AddEditUser extends Component {
 
           <Row displayFlex style={{ ...rowStyles, justifyContent: 'space-between' }}>
             <Column style={{ paddingRight: 30 }}>
-              {this.props.avatarUrl ?
-                <ReactFileReader base64={true} handleFiles={this.handleFiles}>
+              {this.props.avatarUrl ? <ReactFileReader base64={true} handleFiles={this.handleFiles}>
                   <Avatar big avatarUrl={this.props.avatarUrl} />
                 </ReactFileReader>
                 : <ReactFileReader base64={true} handleFiles={this.handleFiles}>
@@ -192,16 +202,17 @@ const getUserById = (users, id) => {
   return null
 }
 
-const mapStateToProps = (state) => {
-  return {
-    currentUser: state.data.user.currentUser || {},
-    users: state.scenes.admin.main.users || [],
-    form: state.form.addEditUser || {},
-    avatarUrl: state.scenes.admin.addEditUser.avatarUrl || null
-  }
-}
+const mapStateToProps = (state) => ({
+  currentUser: state.data.user.currentUser || {},
+  users: state.scenes.admin.main.users || [],
+  form: state.form.addEditUser || {},
+  avatarUrl: state.scenes.admin.addEditUser.avatarUrl || null,
+  formName: 'addEditUser'
+})
 
-const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(actions, dispatch),
+  formActions: bindActionCreators(formActions, dispatch)
+})
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEditUser))
-
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withFormAlert(AddEditUser)))
