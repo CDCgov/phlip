@@ -71,3 +71,18 @@ export const applyAnswerToAll = (projectId, jurisdictionId, questionId) => ({
   jurisdictionId,
   questionId
 })
+
+export const onSaveFlag = (projectId, jurisdictionId, questionId, flagInfo) => ({
+  type: types.ON_SAVE_FLAG,
+  projectId,
+  jurisdictionId,
+  questionId,
+  flagInfo
+})
+
+export const onSaveRedFlag = (projectId, questionId, flagInfo) => ({
+  type: types.ON_SAVE_RED_FLAG,
+  projectId,
+  questionId,
+  flagInfo
+})

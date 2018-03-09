@@ -19,16 +19,6 @@ const styles = {
   }
 }
 
-/*export const ExpansionTextPanel = ({ text, classes }) => {
-  return (
-    <ExpansionPanel elevation={0} classes={{ root: classes.root }}>
-      <ExpansionPanelSummary expandIcon={<Icon color="#768f99">expand_more</Icon>}>
-        <ExpansionPanelDetails><Typography>{text}</Typography></ExpansionPanelDetails>
-      </ExpansionPanelSummary>
-    </ExpansionPanel>
-  )
-}*/
-
 export class ExpansionTextPanel extends Component {
   constructor(props, context) {
     super(props, context)
@@ -46,25 +36,33 @@ export class ExpansionTextPanel extends Component {
 
   onOpenPopper = () => {
     this.setState({
-      open: true
+      open: !this.state.open
     })
   }
 
   render() {
-    console.log(this.state)
-
     return (
       <ClickAwayListener onClickAway={this.onClosePopper}>
-        <Row flex displayFlex style={{ overflow: 'hidden', alignItems: 'center' }}>
-          <Typography noWrap style={{ flex: 1 }}>{this.props.text}</Typography>
-          <Manager>
-            <Target>
-              <IconButton onClick={this.onOpenPopper} color="#768f99">expand_more</IconButton>
+        <Row flex displayFlex style={{ alignItems: 'center', overflow: 'hidden' }}>
+          <Typography noWrap {...this.props.textProps} style={{ flex: 1, minWidth: 0, color: '#b2b4b4' }}>
+            {this.props.text}
+          </Typography>
+          <Manager style={{ height: 24 }}>
+            <Target style={{ height: 24 }}>
+              <IconButton onClick={this.onOpenPopper} color="#768f99">arrow_drop_down</IconButton>
             </Target>
-            <Popper placement="bottom-end" id="text-popper" style={{ width: 500, zIndex: this.state.open ? 2 : '' }}>
+            <Popper
+              placement="top-end"
+              id="text-popper"
+              style={{
+                width: 450,
+                zIndex: this.state.open ? 2 : '',
+                display: this.state.open ? 'block' : 'none'
+              }}
+            >
               <Grow in={this.state.open}>
                 <Paper elevation={8} style={{ padding: 25 }}>
-                  <Typography>{this.props.text}</Typography>
+                  <Typography {...this.props.textProps}>{this.props.text}</Typography>
                 </Paper>
               </Grow>
             </Popper>

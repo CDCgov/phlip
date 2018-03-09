@@ -5,22 +5,25 @@ import Typography from 'material-ui/Typography'
 import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
 import Grow from 'material-ui/transitions/Grow'
 import Divider from 'material-ui/Divider'
+import IconButton from 'components/IconButton'
 import Card from 'components/Card'
 import { Row } from 'components/Layout'
 
 export const Popover = props => {
-  const { target, open, title, onOpen, onClose, children } = props
+  const { targetIcon, targetColor, targetStyle, open, title, onOpen, onClose, children } = props
 
   return (
-    <ClickAwayListener
-      onClickAway={open ? onClose : () => {
-      }}
-    >
+    <ClickAwayListener onClickAway={open ? onClose : () => {}}>
       <Manager>
         <Target>
-          <span onClick={onOpen}>{target}</span>
+          <IconButton color={open ? 'secondary' : targetColor} style={targetStyle} onClick={onOpen}>
+            {targetIcon}
+          </IconButton>
         </Target>
-        <Popper placement="bottom-end" eventsEnabled={open} style={{ zIndex: open ? 1200 : 0 }}>
+        <Popper
+          placement="bottom-end"
+          eventsEnabled={open}
+          style={{ zIndex: open ? 1200 : 0, display: open ? 'flex' : 'none' }}>
           <Grow in={open}>
             <Card style={{ display: 'flex', flexDirection: 'column', zIndex: open ? 1200 : 0 }}>
               <Row style={{ padding: 16 }}>
@@ -37,6 +40,8 @@ export const Popover = props => {
 }
 
 Popover.propTypes = {
+  targetIcon: PropTypes.string,
+  targetColor: PropTypes.string,
   open: PropTypes.bool,
   title: PropTypes.string,
   onOpen: PropTypes.func,

@@ -6,7 +6,7 @@ import { withTheme } from 'material-ui/styles'
 const Button = ({ value, color, onClick, closeButton, raised, theme, listButton, style, ...otherProps }) => {
   const styles = {
     color: raised || listButton ? 'white' : color || '',
-    fontWeight: 'lighter',
+    fontWeight: '400',
     backgroundColor: raised ? closeButton ? theme.buttons.closeButton : '' : listButton ? theme.buttons.listButtons : '',
     ...style
   }

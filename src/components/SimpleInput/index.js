@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import TextField from 'material-ui/TextField'
 
-const SimpleInput = ({ value, onChange, name, multiline, shrinkLabel, ...otherProps }) => {
+const SimpleInput = ({ value, onChange, name, multiline, shrinkLabel, placeholder, label,  ...otherProps }) => {
   return (
     <TextField
       value={value}
@@ -11,10 +11,11 @@ const SimpleInput = ({ value, onChange, name, multiline, shrinkLabel, ...otherPr
       InputLabelProps={{
         shrink: shrinkLabel
       }}
-      type="text"
+      placeholder={placeholder}
+      label={label}
       name={name}
       fullWidth
-      {...otherProps}
+      { ...otherProps }
     />
   )
 }

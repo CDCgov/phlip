@@ -10,14 +10,12 @@ import { withRouter } from 'react-router-dom'
 import TextLink from 'components/TextLink'
 
 export const Header = ({ projectName, empty, projectId, jurisdictionsList, selectedJurisdiction, onJurisdictionChange, currentJurisdiction, isValidation, history }) => (
-  <Container alignItems="center" style={{ height: 80, padding: '20px 27px' }}>
-    <Column style={{ paddingRight: 5 }}>
-      <IconButton iconSize={30} color="black" onClick={() => history.push('/')} aria-label="Go back">arrow_back</IconButton>
+  <Container alignItems="center" style={{ padding: '20px 27px' }}>
+    <Column style={{ paddingRight: 5, display: 'flex' }}>
+      <IconButton iconSize={28} color="black" onClick={() => history.push('/')} aria-label="Go back">arrow_back</IconButton>
     </Column>
     <Typography type="title" color="inherit">
       <span style={{ paddingRight: 10 }}>{isValidation ? 'Validation' : 'Coding'}</span>
-    </Typography>
-    <Typography type="title" color="inherit">
       <span style={{ color: '#0faee6' }}>{projectName}</span>
     </Typography>
     {!empty && <Fragment><span className={styles.header} />

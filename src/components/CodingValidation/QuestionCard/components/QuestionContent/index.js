@@ -11,17 +11,18 @@ import * as questionTypes from 'components/CodingValidation/constants'
 import TextFieldQuestions from '../TextFieldQuestions'
 import Divider from 'material-ui/Divider'
 import Button from 'components/Button'
+import ValidationTable from '../ValidationTable'
 
 export const QuestionContent = props => {
   const {
-    question, currentUserInitials, comment, userAnswers, mergedUserQuestions,
-    onChange, onChangeTextAnswer, onOpenAlert
+    question, currentUserInitials, comment, userAnswers, mergedUserQuestions, isValidation,
+    onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert
   } = props
 
   const questionAnswerPadding = {
     paddingTop: 0,
     paddingRight: 65,
-    paddingBottom: 40,
+    paddingBottom: 30,
     paddingLeft: (question.number && (question.number.split('.').length * 3) + 40) || 40
   }
 
@@ -40,7 +41,7 @@ export const QuestionContent = props => {
           <Typography type="subheading">{question.text}</Typography>
         </Column>
       </Row>
-      <Column displayFlex flex style={{ ...questionAnswerPadding }}>
+      <Column displayFlex flex style={{ ...questionAnswerPadding, flexBasis: '60%' }}>
         {(question.questionType === questionTypes.MULTIPLE_CHOICE ||
           question.questionType === questionTypes.BINARY) &&
         <Row flex displayFlex style={{ ...answerPadding, paddingRight: 0, overflow: 'auto' }}>
@@ -89,7 +90,7 @@ export const QuestionContent = props => {
           currentUserInitials={currentUserInitials}
         />
         }
-        <Row style={{ ...answerPadding, paddingRight: 0, paddingTop: 20 }}>
+        <Row style={{ ...answerPadding, paddingRight: 0, paddingTop: 20, paddingBottom: 0 }}>
           {question.includeComment &&
           <Row>
             <SimpleInput
@@ -99,6 +100,7 @@ export const QuestionContent = props => {
               style={{ whiteSpace: 'pre-wrap' }}
               placeholder="Enter comment"
               value={comment}
+              rowsMax={6}
               label="Comment"
             />
           </Row>}
@@ -111,6 +113,12 @@ export const QuestionContent = props => {
         <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
       </Row>
       }
+
+      {isValidation && <ValidationTable
+        onOpenAlert={onOpenFlagConfirmAlert}
+        mergedUserQuestions={mergedUserQuestions}
+        questionFlags={question.flags}
+      />}
 
       {question.isCategoryQuestion &&
       <Fragment>

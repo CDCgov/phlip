@@ -230,24 +230,25 @@ describe('Coding reducer', () => {
           schemeQuestionId: 2
         },
         3: {
-          schemeQuestionId: 3,
-          answers: {
-            4: {
-              answers: {
-                8: { schemeAnswerId: 8, pincite: '' },
-                6: { schemeAnswerId: 6, pincite: '' }
-              }
+          4: {
+            answers: {
+              8: { schemeAnswerId: 8, pincite: '' },
+              6: { schemeAnswerId: 6, pincite: '' }
             },
-            5: {
-              answers: {
-                11: { schemeAnswerId: 11, pincite: '' },
-                8: { schemeAnswerId: 8, pincite: '' }
-              }
-            }
+            comment: '',
+            flag: { notes: '', type: 0 },
+            categoryId: 4,
+            schemeQuestionId: 3
           },
-          comment: {
-            4: '',
-            5: 'this is a comment'
+          5: {
+            answers: {
+              11: { schemeAnswerId: 11, pincite: '' },
+              8: { schemeAnswerId: 8, pincite: '' }
+            },
+            comment: 'this is a comment',
+            flag: { notes: '', type: 0 },
+            categoryId: 5,
+            schemeQuestionId: 3
           }
         },
         1: {
@@ -259,7 +260,7 @@ describe('Coding reducer', () => {
 
     })
 
-    test('should have categories and children for scheme.tree', () => {
+    test('should handle categories and children for scheme.tree', () => {
       const questions = [
         { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
         {
@@ -270,7 +271,14 @@ describe('Coding reducer', () => {
           positionInParent: 1,
           possibleAnswers: [{ id: 4, text: 'cat 2' }, { id: 5, text: 'cat 1' }]
         },
-        { text: 'category question child', questionType: 4, id: 3, parentId: 2, positionInParent: 0 }
+        {
+          text: 'category question child',
+          questionType: 4,
+          id: 3,
+          parentId: 2,
+          positionInParent: 0,
+          isCategoryQuestion: true
+        }
       ]
 
       const action = {
@@ -293,6 +301,7 @@ describe('Coding reducer', () => {
                   text: 'category question child',
                   questionType: 4,
                   id: 3,
+                  isCategoryQuestion: true,
                   parentId: 2,
                   positionInParent: 0
                 }
@@ -345,6 +354,7 @@ describe('Coding reducer', () => {
                 text: 'category question child',
                 questionType: 4,
                 id: 3,
+                isCategoryQuestion: true,
                 parentId: 2,
                 positionInParent: 0,
                 isAnswered: true
@@ -430,8 +440,7 @@ describe('Coding reducer', () => {
         id: 4,
         parentId: 3,
         positionInParent: 0,
-        isCategoryQuestion: true,
-        isCategoryChild: true
+        isCategoryQuestion: true
       })
 
       expect(state).toHaveProperty('showNextButton', false)
@@ -443,15 +452,8 @@ describe('Coding reducer', () => {
           answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
         },
         4: {
-          schemeQuestionId: 4,
-          answers: {
-            10: { answers: {} },
-            20: { answers: {} }
-          },
-          comment: {
-            10: '',
-            20: ''
-          }
+          10: { answers: {}, comment: '', flag: { notes: '', type: 0 }, schemeQuestionId: 4, categoryId: 10 },
+          20: { answers: {}, comment: '', flag: { notes: '', type: 0 }, schemeQuestionId: 4, categoryId: 20 }
         }
       })
 
@@ -666,15 +668,8 @@ describe('Coding reducer', () => {
           answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
         },
         4: {
-          schemeQuestionId: 4,
-          answers: {
-            10: { answers: {} },
-            20: { answers: {} }
-          },
-          comment: {
-            10: '',
-            20: ''
-          }
+          10: { answers: {}, comment: '', flag: {} },
+          20: { answers: {}, comment: '', flag: {} }
         }
       }
     }
@@ -861,17 +856,11 @@ describe('Coding reducer', () => {
           userAnswers: {
             2: {
               schemeQuestionId: 2,
-              answers: {
-                3: {
-                  answers: { schemeAnswerId: 5 }
-                },
-                2: {
-                  answers: {}
-                }
+              3: {
+                answers: { schemeAnswerId: 5 }, comment: 'comment for cat 1', flag: {}
               },
-              comment: {
-                3: 'comment for cat 1',
-                2: 'comment for cat 2'
+              2: {
+                answers: {}, comment: 'comment for cat 2', flag: {}
               }
             }
           },
@@ -896,18 +885,11 @@ describe('Coding reducer', () => {
           userAnswers: {
             2: {
               schemeQuestionId: 2,
-              answers: {
-                3: {
-                  answers: { schemeAnswerId: 5 }
-                },
-                2: {
-                  answers: {}
-                }
+              3: {
+                answers: { schemeAnswerId: 5 }, comment: 'new comment for cat 1', flag: {}
               },
-              comment: {
-                3: 'new comment for cat 1',
-                2: 'comment for cat 2'
-
+              2: {
+                answers: {}, comment: 'comment for cat 2', flag: {}
               }
             }
           },
@@ -1001,19 +983,18 @@ describe('Coding reducer', () => {
           userAnswers: {
             2: {
               schemeQuestionId: 2,
-              answers: {
-                3: {
-                  answers: {
-                    4: { schemeAnswerId: 4, pincite: 'pincite!' }
-                  }
+              3: {
+                answers: {
+                  4: { schemeAnswerId: 4, pincite: 'pincite!' }
                 },
-                2: {
-                  answers: {
-                    4: { schemeAnswerId: 4, pincite: '' }
-                  }
-                }
+                comment: ''
               },
-              comment: ''
+              2: {
+                answers: {
+                  4: { schemeAnswerId: 4, pincite: '' }
+                },
+                comment: ''
+              }
             }
           },
           selectedCategory: 1,
@@ -1032,19 +1013,18 @@ describe('Coding reducer', () => {
           userAnswers: {
             2: {
               schemeQuestionId: 2,
-              answers: {
-                3: {
-                  answers: {
-                    4: { schemeAnswerId: 4, pincite: 'pincite!' }
-                  }
+              3: {
+                answers: {
+                  4: { schemeAnswerId: 4, pincite: 'pincite!' }
                 },
-                2: {
-                  answers: {
-                    4: { schemeAnswerId: 4, pincite: 'this is a pincite' }
-                  }
-                }
+                comment: ''
               },
-              comment: ''
+              2: {
+                answers: {
+                  4: { schemeAnswerId: 4, pincite: 'this is a pincite' }
+                },
+                comment: ''
+              }
             }
           },
           selectedCategory: 1,
@@ -1053,6 +1033,73 @@ describe('Coding reducer', () => {
           categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
         })
       )
+    })
+  })
+
+  describe('ON_SAVE_FLAG', () => {
+    test('should handle regular questions', () => {
+      const action = {
+        type: types.ON_SAVE_FLAG,
+        questionId: 1,
+        projectId: 1,
+        jurisdictionId: 1,
+        flagInfo: { notes: 'notes!!', type: 2 }
+      }
+
+      const state = getReducer(getState({
+        question: { id: 1, isCategoryQuestion: false },
+        userAnswers: {
+          1: {
+            flag: { notes: '', type: 0 }
+          }
+        }
+      }), action)
+
+      expect(state).toHaveProperty('userAnswers.1.flag', { notes: 'notes!!', type: 2 })
+    })
+
+    test('should handle category child questions', () => {
+      const action = {
+        type: types.ON_SAVE_FLAG,
+        questionId: 1,
+        projectId: 1,
+        jurisdictionId: 1,
+        flagInfo: { notes: 'notes!!', type: 2 }
+      }
+
+      const state = getReducer(getState({
+        question: { id: 1, isCategoryQuestion: true },
+        selectedCategoryId: 5,
+        userAnswers: {
+          1: {
+            5: { flag: { notes: '', type: 0 } }
+          }
+        }
+      }), action)
+
+      expect(state).toHaveProperty('userAnswers.1.5.flag', { notes: 'notes!!', type: 2 })
+    })
+  })
+
+  describe('ON_SAVE_RED_FLAG', () => {
+    test('should handle regular questions', () => {
+      const action = {
+        type: types.ON_SAVE_RED_FLAG,
+        questionId: 1,
+        projectId: 1,
+        flagInfo: { notes: 'notes!!', type: 3}
+      }
+
+      const state = getReducer(getState({
+        question: { id: 1, isCategoryQuestion: false, flags: [] },
+        scheme: {
+          byId: { 1: { id: 1, isCategoryQuestion: false, flags: [] }},
+          tree: []
+        }
+      }), action)
+
+      expect(state).toHaveProperty('question.flags', [{ notes: 'notes!!', type: 3 }])
+      expect(state).toHaveProperty('scheme.byId.1.flags', [{ notes: 'notes!!', type: 3 }])
     })
   })
 
@@ -1124,19 +1171,18 @@ describe('Coding reducer', () => {
           userAnswers: {
             2: {
               schemeQuestionId: 2,
-              answers: {
-                3: {
-                  answers: {
-                    4: { schemeAnswerId: 4, pincite: 'pincite!' }
-                  }
+              3: {
+                answers: {
+                  4: { schemeAnswerId: 4, pincite: 'pincite!' }
                 },
-                2: {
-                  answers: {
-                    4: { schemeAnswerId: 4, pincite: '' }
-                  }
-                }
+                comment: ''
               },
-              comment: ''
+              2: {
+                answers: {
+                  4: { schemeAnswerId: 4, pincite: '' }
+                },
+                comment: ''
+              }
             }
           },
           selectedCategory: 0,
@@ -1155,17 +1201,15 @@ describe('Coding reducer', () => {
           userAnswers: {
             2: {
               schemeQuestionId: 2,
-              answers: {
-                3: {
-                  answers: {}
-                },
-                2: {
-                  answers: {
-                    4: { schemeAnswerId: 4, pincite: '' }
-                  }
-                }
+              3: {
+                answers: {}, comment: ''
               },
-              comment: ''
+              2: {
+                answers: {
+                  4: { schemeAnswerId: 4, pincite: '' }
+                },
+                comment: ''
+              }
             }
           },
           selectedCategory: 0,
@@ -1290,14 +1334,8 @@ describe('Coding reducer', () => {
           },
           4: {
             schemeQuestionId: 4,
-            answers: {
-              10: { answers: {} },
-              20: { answers: {} }
-            },
-            comment: {
-              10: '',
-              20: ''
-            }
+            10: { answers: {}, comment: '' },
+            20: { answers: {}, comment: '' }
           }
         }
       }
@@ -1321,7 +1359,9 @@ describe('Coding reducer', () => {
           positionInParent: 2,
           isAnswered: false,
           indent: 1,
-          possibleAnswers: [{ id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }],
+          possibleAnswers: [
+            { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
+          ],
           children: []
         }
       ])
@@ -1333,7 +1373,7 @@ describe('Coding reducer', () => {
       question: {
         id: 4
       },
-      categories: [{id: 10, text: 'cat 1'}, {id: 20, text: 'cat 2'}],
+      categories: [{ id: 10, text: 'cat 1' }, { id: 20, text: 'cat 2' }],
       outline: {
         1: { parentId: 0, positionInParent: 0 },
         2: { parentId: 0, positionInParent: 1 },
@@ -1417,19 +1457,11 @@ describe('Coding reducer', () => {
           answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
         },
         4: {
-          schemeQuestionId: 4,
-          answers: {
-            10: { answers: { schemeAnswerId: 42, pincite: "" } },
-            20: { answers: {} }
-          },
-          comment: {
-            10: '',
-            20: ''
-          }
+          10: { answers: { schemeAnswerId: 42, pincite: '' }, comment: '', categoryId: 10 },
+          20: { answers: {}, comment: '', categoryId: 20 }
         }
       }
     }
-
 
     test('should apply answers to all categories', () => {
       const action = {
@@ -1446,14 +1478,15 @@ describe('Coding reducer', () => {
         userAnswers: {
           ...currentState.userAnswers,
           4: {
-            schemeQuestionId: 4,
-            answers: {
-              10: { answers: { schemeAnswerId: 42, pincite: "" } },
-              20: { answers: { schemeAnswerId: 42, pincite: "" } }
+            10: {
+              answers: { schemeAnswerId: 42, pincite: '' },
+              comment: '',
+              categoryId: 10
             },
-            comment: {
-              10: '',
-              20: ''
+            20: {
+              answers: { schemeAnswerId: 42, pincite: '' },
+              comment: '',
+              categoryId: 20
             }
           }
         },
