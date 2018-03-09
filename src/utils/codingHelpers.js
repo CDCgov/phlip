@@ -88,6 +88,8 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
         }
   }
 
+  console.log(base)
+
   if (newQuestion.parentId === 0) {
     return {
       ...base,
@@ -117,7 +119,7 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
       question: { ...base.question },
       categories: [...selectedCategories],
       selectedCategory: state.selectedCategory,
-      userAnswers: { ...state.userAnswers, [newQuestion.id]: { ...answers } },
+      userAnswers: { ...state.userAnswers, [newQuestion.id]: { ...answers, ...baseQuestion } },
       selectedCategoryId: selectedCategories[state.selectedCategory].id
     }
   } else {
@@ -195,12 +197,12 @@ export const handleUpdateUserAnswers = (state, action, selectedCategoryId, isVal
       break
 
     case questionTypes.CATEGORY:
-      if (currentUserAnswers.hasOwnProperty(action.answerId)) {
+      // If they uncheck a category, then delete all other answers that have been associated with that category
+      if (checkIfExists(action, currentUserAnswers, 'answerId')) {
         Object.values(state.scheme.byId).forEach(question => {
           if (question.parentId === action.questionId) {
             if (otherAnswerUpdates[question.id]) {
-              delete otherAnswerUpdates[question.id].answers[action.answerId]
-              delete otherAnswerUpdates[question.id].comment[action.answerId]
+              delete otherAnswerUpdates[question.id][action.answerId]
             }
           }
         })
