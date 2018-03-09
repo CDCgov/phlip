@@ -194,7 +194,8 @@ export class FlagPopover extends Component {
           icon: 'report',
           color: this.props.questionFlags.length > 0 ? redFlagColor : '#d7e0e4',
           style: { paddingRight: 15, paddingLeft: 15 },
-          tooltip: 'Stop coding this question'
+          tooltip: 'Stop coding this question',
+          id: 'stop-coding-question'
         }} onOpen={this.onOpenRedPopover} onClose={this.onCloseRedPopover}>
           <Container column style={{ minWidth: 450, minHeight: 200, alignItems: 'center', paddingTop: 10 }}>
             {(this.props.questionFlags.length > 0 && !this.state.inEditMode) &&
@@ -260,7 +261,8 @@ export class FlagPopover extends Component {
           target={{
             icon: 'flag',
             color: this.props.userFlag.type !== 0 ? this.userFlagColors[this.props.userFlag.type].color : '#d7e0e4',
-            tooltip: 'Flag this question'
+            tooltip: 'Flag this question',
+            id: 'flag-question'
           }}
           onOpen={this.onOpenOtherPopover}
           onClose={this.onCloseOtherPopover}>

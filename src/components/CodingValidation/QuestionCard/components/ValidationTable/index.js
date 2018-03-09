@@ -70,13 +70,21 @@ export const ValidationTable = props => {
                   <Column style={{ paddingRight: 8 }}>
                     <IconButton
                       onClick={() => onOpenAlert(item.id, item.type)}
+                      tooltipText="Clear this flag"
+                      id="clear-flag"
+                      aria-label="Clear this flag"
                       color={flagColors[item.type]}>flag</IconButton>
                   </Column>
                   <Row displayFlex flex style={{ alignItems: 'center', overflow: 'hidden' }}>
                     <Typography type="caption" style={{ fontWeight: 'bold' }}>
                       Reason for flag -<span>&nbsp;</span>
                     </Typography>
-                    <ExpansionTextPanel textProps={{ type: 'caption' }} text={item.notes} />
+                    <ExpansionTextPanel
+                      textProps={{ type: 'caption' }} text={item.notes} dropdownIconProps={{
+                      tooltipText: 'Expand notes',
+                      id: 'expand-flag-notes',
+                      'aria-label': 'Expand notes'
+                    }} />
                   </Row>
                 </Row>}
                 {item.comment && item.type && <span style={{ paddingLeft: 30 }}></span>}
@@ -85,7 +93,15 @@ export const ValidationTable = props => {
                   <Typography type="caption" style={{ fontWeight: 'bold' }}>
                     Comment -<span>&nbsp;</span>
                   </Typography>
-                  <ExpansionTextPanel textProps={{ type: 'caption' }} text={item.comment} />
+                  <ExpansionTextPanel
+                    textProps={{ type: 'caption' }}
+                    text={item.comment}
+                    dropdownIconProps={{
+                      tooltipText: 'Expand comment',
+                      id: 'expand-comment',
+                      'aria-label': 'Expand comment'
+                    }}
+                  />
                 </Row>
                 }
               </Row>

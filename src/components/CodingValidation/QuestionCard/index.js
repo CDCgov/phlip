@@ -44,16 +44,21 @@ export const QuestionCard = props => {
     <Row displayFlex style={{ flex: '1 0 50%' }}>
       <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
         <Row displayFlex style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
-          {question.questionType !== questionTypes.CATEGORY && <IconButton onClick={onClearAnswer}>
+          {question.questionType !== questionTypes.CATEGORY &&
+          <IconButton onClick={onClearAnswer} aria-label="Clear answer" tooltipText="Clear answer" id="clear-answer">
             <Broom className={styles.sweep} aria-labelledby="Clear answer" />
           </IconButton>}
-          {!isValidation && <FlagPopover userFlag={userAnswers.flag} onSaveFlag={onSaveFlag} questionFlags={question.flags} user={user}/>}
+          {!isValidation && <FlagPopover
+            userFlag={userAnswers.flag}
+            onSaveFlag={onSaveFlag}
+            questionFlags={question.flags}
+            user={user} />}
         </Row>
         <Divider />
         {categories !== undefined
           ? <TabContainer tabs={categories} selected={selectedCategory} onChangeCategory={onChangeCategory}>
-              <QuestionContent {...questionContentProps} />
-            </TabContainer>
+            <QuestionContent {...questionContentProps} />
+          </TabContainer>
           : <QuestionContent{...questionContentProps} />
         }
       </Column>

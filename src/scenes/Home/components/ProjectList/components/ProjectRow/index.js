@@ -70,6 +70,7 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
         <IconButton
           color={greyIcon}
           tooltipText="Export validated questions"
+          aria-label="Export validated questions"
           onClick={() => actions.onExport}
           id="export-validated">
           file_download

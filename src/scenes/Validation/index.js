@@ -40,7 +40,7 @@ export class Validation extends Component {
     this.state = {
       selectedJurisdiction: this.props.jurisdictionId,
       showViews: false,
-      navOpen: false,
+      navOpen: true,
       applyAllAlertOpen: false,
       flagConfirmAlertOpen: false,
       flagToDelete: null

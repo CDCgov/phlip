@@ -49,7 +49,7 @@ export class ExpansionTextPanel extends Component {
           </Typography>
           <Manager style={{ height: 24 }}>
             <Target style={{ height: 24 }}>
-              <IconButton onClick={this.onOpenPopper} color="#768f99">arrow_drop_down</IconButton>
+              <IconButton onClick={this.onOpenPopper} color="#768f99" {...this.props.dropdownIconProps}>arrow_drop_down</IconButton>
             </Target>
             <Popper
               placement="top-end"

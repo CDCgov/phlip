@@ -13,10 +13,19 @@ export const Popover = props => {
   const { target, open, title, onOpen, onClose, children } = props
 
   return (
-    <ClickAwayListener onClickAway={open ? onClose : () => {}}>
+    <ClickAwayListener
+      onClickAway={open ? onClose : () => {
+      }}>
       <Manager>
         <Target>
-          <IconButton placement="top" tooltipText={target.tooltip} color={open ? 'secondary' : target.color} style={target.style} onClick={onOpen}>
+          <IconButton
+            placement="top"
+            tooltipText={target.tooltip}
+            aria-label={target.tooltip}
+            id={target.id}
+            color={open ? 'secondary' : target.color}
+            style={target.style}
+            onClick={onOpen}>
             {target.icon}
           </IconButton>
         </Target>

@@ -31,7 +31,13 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
   return (
     <TableRow key="headers">
       <TableCell key="bookmarked" style={{ width: 48 }}>
-        <IconButton id="sort-bookmarked" color="rbg(0,0,0,0.54)" onClick={() => onSortBookmarked()} tooltipText="Sort bookmarked">
+        <IconButton
+          id="sort-bookmarked"
+          color="rbg(0,0,0,0.54)"
+          onClick={() => onSortBookmarked()}
+          aria-label="Sort bookmarked"
+          placement="top-start"
+          tooltipText="Sort bookmarked">
           {sortBookmarked ? 'bookmark' : 'bookmark_border'}
         </IconButton>
       </TableCell>
@@ -39,14 +45,17 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
       {visible.map(c => (
         <TableCell key={c.key} style={{ ...c.style }}>
           {c.hasSort ? (
-            <Tooltip text={`Sort projects by ${c.label}`} id={`sort-by-${c.key}`} aria-label={`Sort list of projects by ${c.label}`}>
-            <TableSortLabel
-              active={sortBy === c.key}
-              style={{ color: 'inherit' }}
-              direction={direction}
-              onClick={() => onRequestSort(c.key)}>
-              {c.label}
-            </TableSortLabel>
+            <Tooltip
+              text={`Sort projects by ${c.label}`}
+              id={`sort-by-${c.key}`}
+              aria-label={`Sort list of projects by ${c.label}`}>
+              <TableSortLabel
+                active={sortBy === c.key}
+                style={{ color: 'inherit' }}
+                direction={direction}
+                onClick={() => onRequestSort(c.key)}>
+                {c.label}
+              </TableSortLabel>
             </Tooltip>
           ) : c.label}
         </TableCell>

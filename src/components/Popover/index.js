@@ -1,39 +1,79 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { findDOMNode } from 'react-dom'
 import PropTypes from 'prop-types'
 import { Manager, Popper, Target } from 'react-popper'
-import Typography from 'material-ui/Typography'
-import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
-import Grow from 'material-ui/transitions/Grow'
-import Divider from 'material-ui/Divider'
-import Card from 'components/Card'
 import { Row } from 'components/Layout'
 
-export const Popover = props => {
-  const { target, open, title, onOpen, onClose, children } = props
+export class Popover extends Component {
+  state = {
+    open: true
+  }
 
-  return (
-    <ClickAwayListener
-      onClickAway={open ? onClose : () => {
-      }}
-    >
+  target = null
+
+  constructor(props, context) {
+    super(props, context)
+  }
+
+  onOpenTooltip = () => {
+    this.setState({
+      open: true
+    })
+  }
+
+  onCloseTooltip = () => {
+    this.setState({
+      open: false
+    })
+  }
+
+  render() {
+    const tooltipStyles = {
+      backgroundColor: '#6d6d6d',
+      opacity: this.state.open ? .9 : 0,
+      color: 'white',
+      padding: 8,
+      borderRadius: 2,
+      fontSize: 10,
+      fontFamily: 'Roboto',
+      transform: this.state.open ? 'scale(1)' : 'scale(0)'
+    }
+
+    return (
       <Manager>
         <Target>
-          <span onClick={onOpen}>{target}</span>
+          {({ targetProps }) => (
+            React.cloneElement(this.props.children, {
+              ...this.props.children.props,
+              onMouseEnter: this.onOpenTooltip,
+              onMouseLeave: this.onCloseTooltip,
+              ref: node => {
+                this.target = findDOMNode(node)
+                targetProps.ref(this.target)
+              }
+            })
+          )}
         </Target>
-        <Popper placement="bottom-end" eventsEnabled={open} style={{ zIndex: open ? 1200 : 0 }}>
-          <Grow in={open}>
-            <Card style={{ display: 'flex', flexDirection: 'column', zIndex: open ? 1200 : 0 }}>
-              <Row style={{ padding: 16 }}>
-                <Typography type="button">{title}</Typography>
-              </Row>
-              <Divider />
-              {children}
-            </Card>
-          </Grow>
+        <Popper
+          placement="top"
+          eventsEnabled={this.state.open}
+          modifiers={{
+            preventOverflow: {
+              enabled: false
+            }
+          }}
+          style={{ zIndex: this.state.open ? 1200 : 0 }}>
+          {({ popperProps, restProps }) => {
+            return (
+              <div {...popperProps} {...restProps} style={{ ...popperProps.style, ...restProps.style }}>
+                <div style={tooltipStyles}>{this.props.title}</div>
+              </div>
+            )
+          }}
         </Popper>
       </Manager>
-    </ClickAwayListener>
-  )
+    )
+  }
 }
 
 Popover.propTypes = {

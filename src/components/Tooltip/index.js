@@ -4,7 +4,17 @@ import { default as MuiTooltip } from 'material-ui/Tooltip'
 
 export const Tooltip = ({ text, placement, children, ...otherProps }) => {
   return (
-    <MuiTooltip placement={placement} title={text} enterDelay={8} {...otherProps}>
+    <MuiTooltip
+      placement={placement}
+      title={text}
+      enterDelay={8}
+      {...otherProps}
+      PopperProps={{
+        modifiers: {
+          preventOverflow: { enabled: false },
+          hide: { enabled: false }
+        }
+      }}>
       {children}
     </MuiTooltip>
   )
