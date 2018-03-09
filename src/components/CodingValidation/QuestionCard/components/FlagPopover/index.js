@@ -81,7 +81,8 @@ export class FlagPopover extends Component {
     for (let type in this.userFlagColors) {
       this.userFlagColors[type] = {
         ...this.userFlagColors[type],
-        text: getFlagText(this.userFlagColors[type].color, this.userFlagColors[type].label, nextProps.questionFlags.length > 0),
+        text: getFlagText(this.userFlagColors[type].color, this.userFlagColors[type].label, nextProps.questionFlags.length >
+          0),
         disabled: nextProps.questionFlags.length > 0
       }
     }
@@ -195,25 +196,25 @@ export class FlagPopover extends Component {
           targetColor={this.props.questionFlags.length > 0 ? redFlagColor : '#d7e0e4'}
           targetStyle={{ paddingRight: 15, paddingLeft: 15 }}
           onOpen={this.onOpenRedPopover}
-          onClose={this.onCloseRedPopover}
-        >
+          onClose={this.onCloseRedPopover}>
           <Container column style={{ minWidth: 450, minHeight: 200, alignItems: 'center', paddingTop: 10 }}>
             {(this.props.questionFlags.length > 0 && !this.state.inEditMode) &&
             <Table style={{ width: '90%', width: 580, margin: '10px 16px' }}>
               <TableHead>
                 <TableRow>
-                  <TableCell padding="checkbox">Raised By</TableCell>
+                  <TableCell padding="checkbox" style={{ maxWidth: 150, width: 150 }}>Raised By</TableCell>
                   <TableCell padding="checkbox">Notes</TableCell>
-                  {this.state.questionFlags[0].raisedBy.userId === this.props.user.id && <TableCell padding="checkbox">Edit</TableCell>}
+                  {this.state.questionFlags[0].raisedBy.userId === this.props.user.id &&
+                  <TableCell padding="checkbox" style={{ width: 48, paddingRight: 12 }}>Edit</TableCell>}
                 </TableRow>
               </TableHead>
               <TableBody>
                 {this.state.questionFlags.map((flag, index) => (
                   <TableRow key={`red-flag-${index}`}>
-                    <TableCell padding="checkbox">{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}</TableCell>
-                    <TableCell padding="checkbox">{flag.notes}</TableCell>
+                    <TableCell padding="checkbox" style={{ maxWidth: 150, width: 150 }}>{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}</TableCell>
+                    <TableCell padding="checkbox" style={{ width: 'unset' }}>{flag.notes}</TableCell>
                     {flag.raisedBy.userId === this.props.user.id &&
-                    <TableCell padding="checkbox">
+                    <TableCell padding="checkbox" style={{ width: 48, paddingRight: 12 }}>
                       <IconButton onClick={this.toggleEditMode} color="#5f6060">edit</IconButton></TableCell>}
                   </TableRow>
                 ))}
@@ -233,17 +234,12 @@ export class FlagPopover extends Component {
                   helperText={this.state.helperText}
                   placeholder="Enter Notes"
                   multiline={false}
-                  type="text"
-                />
+                  type="text" />
               </Row>
             </form>}
             <Row displayFlex style={{ alignSelf: 'flex-end', padding: 16 }}>
               <Button
-                onClick={this.onCloseRedPopover}
-                raised={false}
-                color="accent"
-                value="Cancel"
-              />
+                onClick={this.onCloseRedPopover} raised={false} color="accent" value="Cancel" />
               {this.state.inEditMode &&
               <Button
                 type="submit"
@@ -251,21 +247,14 @@ export class FlagPopover extends Component {
                 raised={false}
                 color="accent"
                 value="Save"
-                disabled={this.state.userRedFlag.notes === ''}
-              />}
+                disabled={this.state.userRedFlag.notes === ''} />}
             </Row>
           </Container>
         </Popover>
         <Popover
-          title="Flags"
-          open={this.state.otherFlagOpen}
-          targetIcon="flag"
-          targetColor={this.props.userFlag.type !== 0
-            ? this.userFlagColors[this.props.userFlag.type].color
-            : '#d7e0e4'}
-          onOpen={this.onOpenOtherPopover}
-          onClose={this.onCloseOtherPopover}
-        >
+          title="Flags" open={this.state.otherFlagOpen} targetIcon="flag" targetColor={this.props.userFlag.type !== 0
+          ? this.userFlagColors[this.props.userFlag.type].color
+          : '#d7e0e4'} onOpen={this.onOpenOtherPopover} onClose={this.onCloseOtherPopover}>
           <form onSubmit={this.onSaveOtherPopover}>
             <Row style={{ padding: 16, minWidth: 450 }}>
               <RadioGroup
@@ -273,8 +262,7 @@ export class FlagPopover extends Component {
                 choices={Object.values(this.userFlagColors)}
                 onChange={this.onChangeFlagType}
                 error={this.state.touched && this.state.updatedFlag.type === 0}
-                helperText="Required"
-              />
+                helperText="Required" />
             </Row>
             <Row style={{ padding: 16 }}>
               <SimpleInput
@@ -289,8 +277,7 @@ export class FlagPopover extends Component {
                 helperText={this.state.helperText}
                 placeholder="Enter Notes"
                 multiline={false}
-                type="text"
-              />
+                type="text" />
             </Row>
             <Row displayFlex style={{ justifyContent: 'flex-end', padding: 16 }}>
               <Button type="button" onClick={this.onCloseOtherPopover} raised={false} color="accent" value="Cancel" />
@@ -300,8 +287,7 @@ export class FlagPopover extends Component {
                 raised={false}
                 color="accent"
                 value="Save"
-                disabled={this.state.updatedFlag.notes === '' || this.state.updatedFlag.type === 0}
-              />
+                disabled={this.state.updatedFlag.notes === '' || this.state.updatedFlag.type === 0} />
             </Row>
           </form>
         </Popover>
