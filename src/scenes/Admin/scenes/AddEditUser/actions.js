@@ -11,3 +11,4 @@ export const addUserPictureSuccess = (user) => ({ type: types.ADD_USER_PICTURE_S
 export const onCloseAddEditUser = () => ({ type: types.ON_CLOSE_ADD_EDIT_USER })
 
 export const getUserPictureRequest = userId => ({ type: types.GET_USER_PICTURE_REQUEST, userId })
+export const deleteUserPictureRequest = userId => ({ type: types.DELETE_USER_PICTURE_REQUEST, userId })
