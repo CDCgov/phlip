@@ -19,7 +19,9 @@ const addCoderToAnswers = (existingQuestion, question, coder) => {
   return {
     ...existingQuestion,
     answers: [...existingQuestion.answers, ...question.codedAnswers.map(answer => ({ ...answer, ...coder }))],
-    flagsComments: [...existingQuestion.flagsComments, flagComment]
+    flagsComments: Object.keys(flagComment).length > 0
+      ? [...existingQuestion.flagsComments, flagComment]
+      : [...existingQuestion.flagsComments]
   }
 }
 

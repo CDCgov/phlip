@@ -138,8 +138,8 @@ export default {
     return api.put(`/projects/${projectId}/protocol`, { userId, text: protocol }).then(res => res.data)
   },
 
-  saveRedFlag(projectId, questionId, flagInfo) {
-    return api.post(`/projects/${projectId}/question/${questionId}`, { ...flagInfo }).then(res => res.data)
+  saveRedFlag(questionId, flagInfo) {
+    return api.post(`/flags/schemequestionflag/${questionId}`, { ...flagInfo }).then(res => res.data)
   },
 
   clearFlag(flagId) {

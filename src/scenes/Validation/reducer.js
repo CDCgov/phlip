@@ -128,7 +128,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         ? state.mergedUserQuestions[action.questionId][state.selectedCategoryId].flagsComments
         : state.mergedUserQuestions[action.questionId].flagsComments
 
-      const { id, type, notes, ...flag } = flagComments.find((item, i) => {
+      const { id, type, notes, raisedAt, ...flag } = flagComments.find((item, i) => {
         if (item.id === action.flagId) {
           flagIndex = i
         }
@@ -138,7 +138,11 @@ const validationReducer = (state = INITIAL_STATE, action) => {
       if (Object.keys(flag).length === 1) {
         flagComments.splice(flagIndex, 1)
       } else {
-        flagComments.splice(flagIndex, 1, flag)
+        if (flag.comment.length === 0) {
+          flagComments.splice(flagIndex, 1)
+        } else {
+          flagComments.splice(flagIndex, 1, flag)
+        }
       }
 
       return {

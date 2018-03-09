@@ -100,16 +100,11 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
     case types.ON_SAVE_RED_FLAG:
       const curQuestion = { ...state.scheme.byId[action.questionId] }
-      console.log(curQuestion)
       return {
         ...state,
         question: {
           ...state.question,
-          flags: curQuestion.flags.length > 0
-            ? action.flagInfo.hasOwnProperty('id')
-              ? updater.updateByProperty(action.flagInfo, curQuestion.flags, 'id')
-              : [...curQuestion.flags, action.flagInfo]
-            : [action.flagInfo]
+          flags: [action.flagInfo]
         },
         scheme: {
           ...state.scheme,
@@ -117,9 +112,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
             ...state.scheme.byId,
             [action.questionId]: {
               ...curQuestion,
-              flags: action.flagInfo.hasOwnProperty('id')
-                ? updater.updateByProperty(action.flagInfo, curQuestion.flags, 'id')
-                : [...curQuestion.flags, action.flagInfo]
+              flags: [action.flagInfo]
             }
           }
         }
