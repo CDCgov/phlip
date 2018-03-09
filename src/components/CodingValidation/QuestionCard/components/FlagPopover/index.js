@@ -190,13 +190,12 @@ export class FlagPopover extends Component {
     return (
       <Container style={{ width: 'unset', height: 24 }}>
         <Popover
-          title="Stop Coding this Question"
-          open={this.state.redFlagOpen}
-          targetIcon="report"
-          targetColor={this.props.questionFlags.length > 0 ? redFlagColor : '#d7e0e4'}
-          targetStyle={{ paddingRight: 15, paddingLeft: 15 }}
-          onOpen={this.onOpenRedPopover}
-          onClose={this.onCloseRedPopover}>
+          title="Stop Coding this Question" open={this.state.redFlagOpen} target={{
+          icon: 'report',
+          color: this.props.questionFlags.length > 0 ? redFlagColor : '#d7e0e4',
+          style: { paddingRight: 15, paddingLeft: 15 },
+          tooltip: 'Stop coding this question'
+        }} onOpen={this.onOpenRedPopover} onClose={this.onCloseRedPopover}>
           <Container column style={{ minWidth: 450, minHeight: 200, alignItems: 'center', paddingTop: 10 }}>
             {(this.props.questionFlags.length > 0 && !this.state.inEditMode) &&
             <Table style={{ width: '90%', width: 580, margin: '10px 16px' }}>
@@ -211,7 +210,11 @@ export class FlagPopover extends Component {
               <TableBody>
                 {this.state.questionFlags.map((flag, index) => (
                   <TableRow key={`red-flag-${index}`}>
-                    <TableCell padding="checkbox" style={{ maxWidth: 150, width: 150 }}>{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}</TableCell>
+                    <TableCell
+                      padding="checkbox" style={{
+                      maxWidth: 150,
+                      width: 150
+                    }}>{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}</TableCell>
                     <TableCell padding="checkbox" style={{ width: 'unset' }}>{flag.notes}</TableCell>
                     {flag.raisedBy.userId === this.props.user.id &&
                     <TableCell padding="checkbox" style={{ width: 48, paddingRight: 12 }}>
@@ -252,9 +255,15 @@ export class FlagPopover extends Component {
           </Container>
         </Popover>
         <Popover
-          title="Flags" open={this.state.otherFlagOpen} targetIcon="flag" targetColor={this.props.userFlag.type !== 0
-          ? this.userFlagColors[this.props.userFlag.type].color
-          : '#d7e0e4'} onOpen={this.onOpenOtherPopover} onClose={this.onCloseOtherPopover}>
+          title="Flags"
+          open={this.state.otherFlagOpen}
+          target={{
+            icon: 'flag',
+            color: this.props.userFlag.type !== 0 ? this.userFlagColors[this.props.userFlag.type].color : '#d7e0e4',
+            tooltip: 'Flag this question'
+          }}
+          onOpen={this.onOpenOtherPopover}
+          onClose={this.onCloseOtherPopover}>
           <form onSubmit={this.onSaveOtherPopover}>
             <Row style={{ padding: 16, minWidth: 450 }}>
               <RadioGroup
