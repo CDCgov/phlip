@@ -59,11 +59,11 @@ export class AvatarForm extends Component {
         open={true}
         maxWidth="xs"
         hideOverflow height="450px" width="315px">
-        <ModalTitle title='Edit image' />
+        <ModalTitle title={this.state.isEdit ? 'View image' : 'Preview image'} />
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
           {this.state.isEdit
-            ? <Container flex style={{ padding: '15px 0 0 33px' }}>
+            ? <Container flex style={{ padding: '15px 0 0 15px', width: '315px' }}>
               <Avatar cardAvatar style={{ width: '200px', height: '200px' }} src={this.props.avatarUrl} />
             </Container>
             : <Container flex>
