@@ -26,8 +26,12 @@ describe('Coding reducer', () => {
   describe('GET_CODING_OUTLINE_SUCCESS', () => {
     test('should set outline, scheme, current question and userAnswers based on action.payload', () => {
       const questions = [
-        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
-        { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1 }
+        {
+          text: 'fa la la la', questionType: 1, id: 1, parentId: 0,
+          positionInParent: 0,
+          possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+        },
+        { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
       ]
 
       const action = {
@@ -53,15 +57,15 @@ describe('Coding reducer', () => {
       )
 
       const updatedState = {
-        question: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
+        question: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
         outline: {
           1: { parentId: 0, positionInParent: 0 },
           2: { parentId: 0, positionInParent: 1 }
         },
         scheme: {
           byId: {
-            1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
-            2: { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1 }
+            1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+            2: { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
           },
           order: [1, 2]
         },
@@ -85,19 +89,19 @@ describe('Coding reducer', () => {
 
     test('should set scheme.tree based on action.payload.tree', () => {
       const questions = [
-        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
-        { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1 }
+        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+        { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
       ]
 
       const action = {
         type: types.GET_CODING_OUTLINE_SUCCESS,
         payload: {
-          question: { id: 1 },
+          question: { id: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
           scheme: questions,
           questionOrder: [1, 2],
           tree: [
-            { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
-            { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1 }
+            { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+            { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
           ],
           codedQuestions: [{ schemeQuestionId: 1, codedAnswers: [{ schemeAnswerId: 3, pincite: '' }], comment: '' }]
         }
@@ -106,15 +110,15 @@ describe('Coding reducer', () => {
       const state = getReducer(getState(), action)
 
       expect(state).toHaveProperty('scheme.tree', [
-        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: true },
-        { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1, isAnswered: false }
+        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: true, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+        { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1, isAnswered: false, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
       ])
     })
 
     test('should initialize user answers to empty if payload.codedQuestions is empty', () => {
       const questions = [
-        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
-        { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1 }
+        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+        { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
       ]
 
       const action = {
@@ -130,7 +134,7 @@ describe('Coding reducer', () => {
             1: { parentId: 0, positionInParent: 0 },
             2: { parentId: 0, positionInParent: 1 }
           },
-          question: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
+          question: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
           codedQuestions: []
         }
       }
@@ -169,22 +173,22 @@ describe('Coding reducer', () => {
 
     test('should handle category question children in codedQuestions array for userAnswers', () => {
       const questions = [
-        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
+        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
         {
           text: 'la la la',
           questionType: 2,
           id: 2,
           parentId: 0,
           positionInParent: 1,
-          possibleAnswers: [{ id: 4, text: 'cat 2' }, { id: 5, text: 'cat 1' }]
+          possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
         },
-        { text: 'category question child', questionType: 4, id: 3, parentId: 2, positionInParent: 0 }
+        { text: 'category question child', questionType: 4, id: 3, parentId: 2, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
       ]
 
       const action = {
         type: types.GET_CODING_OUTLINE_SUCCESS,
         payload: {
-          question: { id: 1 },
+          question: { id: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
           scheme: questions,
           questionOrder: [1, 2, 3],
           outline: {
@@ -262,14 +266,13 @@ describe('Coding reducer', () => {
 
     test('should handle categories and children for scheme.tree', () => {
       const questions = [
-        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
+        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
         {
           text: 'la la la',
           questionType: 2,
           id: 2,
           parentId: 0,
-          positionInParent: 1,
-          possibleAnswers: [{ id: 4, text: 'cat 2' }, { id: 5, text: 'cat 1' }]
+          positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
         },
         {
           text: 'category question child',
@@ -277,14 +280,14 @@ describe('Coding reducer', () => {
           id: 3,
           parentId: 2,
           positionInParent: 0,
-          isCategoryQuestion: true
+          isCategoryQuestion: true, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
         }
       ]
 
       const action = {
         type: types.GET_CODING_OUTLINE_SUCCESS,
         payload: {
-          question: { id: 1 },
+          question: { id: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
           scheme: questions,
           questionOrder: [1, 2, 3],
           tree: [
@@ -295,7 +298,7 @@ describe('Coding reducer', () => {
               id: 2,
               parentId: 0,
               positionInParent: 1,
-              possibleAnswers: [{ id: 4, text: 'cat 2' }, { id: 5, text: 'cat 1' }],
+              possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }],
               children: [
                 {
                   text: 'category question child',
@@ -334,20 +337,20 @@ describe('Coding reducer', () => {
 
       expect(state)
         .toHaveProperty('scheme.tree', {
-            text: 'fa la la la',
-            questionType: 1,
-            id: 1,
-            parentId: 0,
-            positionInParent: 0,
-            isAnswered: false
-          },
+          text: 'fa la la la',
+          questionType: 1,
+          id: 1,
+          parentId: 0,
+          positionInParent: 0,
+          isAnswered: false
+        },
           {
             text: 'la la la',
             questionType: 2,
             id: 2,
             parentId: 0,
             positionInParent: 1,
-            possibleAnswers: [{ id: 4, text: 'cat 2' }, { id: 5, text: 'cat 1' }],
+            possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }],
             isAnswered: true,
             children: [
               {
@@ -366,7 +369,7 @@ describe('Coding reducer', () => {
 
   describe('GET_NEXT_QUESTION && GET_PREV_QUESTION', () => {
     const currentState = {
-      question: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
+      question: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
       outline: {
         1: { parentId: 0, positionInParent: 0 },
         2: { parentId: 0, positionInParent: 1 },
@@ -375,17 +378,15 @@ describe('Coding reducer', () => {
       },
       scheme: {
         byId: {
-          1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
-          2: { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1 },
+          1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+          2: { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
           3: {
             text: 'cat question',
             questionType: 2,
             id: 3,
             parentId: 0,
             positionInParent: 2,
-            possibleAnswers: [
-              { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
-            ]
+            possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
           },
           4: {
             text: 'cat question child',
@@ -393,7 +394,8 @@ describe('Coding reducer', () => {
             id: 4,
             parentId: 3,
             positionInParent: 0,
-            isCategoryQuestion: true
+            isCategoryQuestion: true,
+            possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
           }
         },
         order: [1, 2, 3, 4],
@@ -413,7 +415,7 @@ describe('Coding reducer', () => {
       const state = getReducer(getState(currentState), action)
 
       expect(state)
-        .toHaveProperty('question', { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1 })
+        .toHaveProperty('question', { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] })
       expect(state).toHaveProperty('showNextButton', true)
     })
 
@@ -484,7 +486,7 @@ describe('Coding reducer', () => {
       )
 
       expect(state)
-        .toHaveProperty('question', { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1 })
+        .toHaveProperty('question', { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] })
 
       expect(state.userAnswers).toHaveProperty('2', {
         schemeQuestionId: 2,
@@ -503,9 +505,7 @@ describe('Coding reducer', () => {
           id: 3,
           parentId: 0,
           positionInParent: 2,
-          possibleAnswers: [
-            { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
-          ]
+          possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
         },
         outline: {
           1: { parentId: 0, positionInParent: 0 },
@@ -516,17 +516,15 @@ describe('Coding reducer', () => {
         },
         scheme: {
           byId: {
-            1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
-            2: { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1 },
+            1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+            2: { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
             3: {
               text: 'cat question',
               questionType: 2,
               id: 3,
               parentId: 0,
               positionInParent: 2,
-              possibleAnswers: [
-                { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
-              ]
+              possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
             },
             4: {
               text: 'cat question child',
@@ -541,7 +539,7 @@ describe('Coding reducer', () => {
               questionType: 3,
               id: 5,
               parentId: 0,
-              positionInParent: 3
+              positionInParent: 3, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
             }
           },
           order: [1, 2, 3, 4, 5],
@@ -568,7 +566,8 @@ describe('Coding reducer', () => {
           questionType: 3,
           id: 5,
           parentId: 0,
-          positionInParent: 3
+          positionInParent: 3,
+          possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
         })
 
       expect(state).toHaveProperty('currentIndex', 4)
@@ -1087,13 +1086,13 @@ describe('Coding reducer', () => {
         type: types.ON_SAVE_RED_FLAG,
         questionId: 1,
         projectId: 1,
-        flagInfo: { notes: 'notes!!', type: 3}
+        flagInfo: { notes: 'notes!!', type: 3 }
       }
 
       const state = getReducer(getState({
         question: { id: 1, isCategoryQuestion: false, flags: [] },
         scheme: {
-          byId: { 1: { id: 1, isCategoryQuestion: false, flags: [] }},
+          byId: { 1: { id: 1, isCategoryQuestion: false, flags: [] } },
           tree: []
         }
       }), action)

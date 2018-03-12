@@ -8,10 +8,24 @@ import Input, { InputLabel } from 'material-ui/Input'
 import { FormControl, FormHelperText } from 'material-ui/Form'
 import IconButton from 'components/IconButton'
 import * as questionTypes from '../../constants'
+import Icon from 'components/Icon'
 
-const SelectInput = ({ name, label, answerType, type, input, classes, currentValue, meta: { asyncValidating, active, touched, error, warning, dirty }, handleDelete, isEdit, ...custom }) => {
+const SelectInput = ({ name, label, answerType, type, input, classes, index, currentValue, meta: { asyncValidating, active, touched, error, warning, dirty }, handleDelete, handleUp, handleDown, fields, isEdit, ...custom }) => {
   return (
     <Container alignItems={'center'}>
+      {answerType !== questionTypes.BINARY && <Column>
+        <Row>
+          {index - 1 >= 0
+            ? <IconButton color="action" onClick={handleUp}>keyboard_arrow_up</IconButton>
+            : <IconButton color="action" disabled onClick={handleUp}>keyboard_arrow_up</IconButton>}
+
+        </Row>
+        <Row>
+          {index + 1 == fields.length
+            ? <IconButton color="action" disabled onClick={handleDown}>keyboard_arrow_down</IconButton>
+            : <IconButton color="action" onClick={handleDown}>keyboard_arrow_down</IconButton>}
+        </Row>
+      </Column>}
       <Column style={{ marginTop: 8 }}>
         {(() => {
           switch (answerType) {

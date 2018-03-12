@@ -26,6 +26,9 @@ export const AnswerList = ({ fields, answerType, isEdit }) => {
                     component={SelectInput}
                     isEdit={isEdit}
                     index={index}
+                    fields={fields}
+                    handleDown={() => fields.swap(index, index + 1)}
+                    handleUp={() => fields.swap(index, index - 1)}
                     currentValue={fields.get(index)}
                     label={(index === 0 && answerType !== questionTypes.CATEGORY) ? 'Answers'
                       : (index === 0 && answerType === questionTypes.CATEGORY) ? 'Category/Tabs' : ''} />
@@ -43,7 +46,7 @@ export const AnswerList = ({ fields, answerType, isEdit }) => {
               raised={false}
               disableRipple={true}
               style={{ marginLeft: 32, fontWeight: 'normal' }}
-              onClick={() => fields.push({ isNew: true })} />
+              onClick={() => fields.push({ isNew: true, order: fields.length })} />
           }
         </Row>
       }

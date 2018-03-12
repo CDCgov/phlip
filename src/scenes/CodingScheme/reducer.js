@@ -55,8 +55,12 @@ const getQuestionsFromOutline = (outline, questions) => {
 }
 
 const sortQuestions = questions => {
+  const sortedPossibleAnswerQuestion = questions.map(question => {
+    return { ...question, possibleAnswers: sortList(question.possibleAnswers, 'order', 'asc') }
+  })
+
   const sortedChildren = map({
-    treeData: questions,
+    treeData: sortedPossibleAnswerQuestion,
     getNodeKey,
     callback: ({ node }) => {
       if (node.children) {
@@ -85,9 +89,16 @@ const setHovering = (node, hovering) => {
   return node
 }
 
+const sortPossibleAnswers = questions => {
+  return questions.map((question) => {
+    return sortList(question.possibleAnswers, 'order', 'asc')
+  })
+}
+
 const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_SCHEME_SUCCESS:
+      // sortPossibleAnswers(action.payload.schemeQuestions)
       return {
         ...state,
         questions: sortQuestions(
@@ -177,6 +188,8 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         getNodeKey,
         newNode: { ...action.payload, hovering: false }
       })
+
+
 
       return {
         ...state,
