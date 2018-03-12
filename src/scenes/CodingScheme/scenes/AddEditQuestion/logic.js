@@ -91,6 +91,8 @@ const updateQuestionLogic = createLogic({
     const updatedQuestion = await api.updateQuestion(action.question, action.projectId, action.questionId)
     return {
       ...updatedQuestion,
+      children: action.question.children,
+      expanded: true,
       hovering: false,
       path: action.path
     }
