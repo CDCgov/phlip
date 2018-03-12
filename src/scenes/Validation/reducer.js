@@ -14,7 +14,6 @@ import {
   getQuestionSelectedInNav,
   initializeCodedUsers
 } from 'utils/codingHelpers'
-import { sortList } from 'utils'
 
 const INITIAL_STATE = {
   question: {},
@@ -61,7 +60,6 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         }
       } else {
         const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
-        sortList(action.payload.question.possibleAnswers, 'order', 'asc')
         return {
           ...state,
           outline: action.payload.outline,

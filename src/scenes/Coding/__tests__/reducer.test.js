@@ -386,7 +386,9 @@ describe('Coding reducer', () => {
             id: 3,
             parentId: 0,
             positionInParent: 2,
-            possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+            possibleAnswers: [
+              { id: 5, text: 'category 1', order: 1 }, { id: 10, text: 'category 2', order: 2 }, { id: 20, text: 'category 3', order: 3 }
+            ]
           },
           4: {
             text: 'cat question child',
@@ -442,7 +444,8 @@ describe('Coding reducer', () => {
         id: 4,
         parentId: 3,
         positionInParent: 0,
-        isCategoryQuestion: true
+        isCategoryQuestion: true,
+        possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
       })
 
       expect(state).toHaveProperty('showNextButton', false)
@@ -459,7 +462,7 @@ describe('Coding reducer', () => {
         }
       })
 
-      expect(state).toHaveProperty('categories', [{ id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }])
+      expect(state).toHaveProperty('categories', [{ id: 10, text: 'category 2', order: 2 }, { id: 20, text: 'category 3', order: 3 }])
 
     })
 

@@ -126,6 +126,7 @@ const addChildQuestionLogic = createLogic({
     const question = await api.addQuestion(action.question, action.projectId)
     return {
       ...question,
+      possibleAnswers: sortList(action.question.possibleAnswers),
       parentId: action.question.parentId,
       positionInParent: action.parentNode.children ? action.parentNode.children.length : 0,
       isCategoryQuestion: action.question.isCategoryQuestion,
@@ -152,7 +153,7 @@ const addQuestionLogic = createLogic({
     const question = await api.addQuestion(action.question, action.projectId)
     return {
       ...question,
-
+      possibleAnswers: sortList(action.question.possibleAnswers),
       parentId: action.question.parentId,
       positionInParent: action.question.positionInParent,
       hovering: false
