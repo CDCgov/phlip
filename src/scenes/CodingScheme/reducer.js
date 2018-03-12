@@ -98,7 +98,7 @@ const sortPossibleAnswers = questions => {
 const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_SCHEME_SUCCESS:
-      // sortPossibleAnswers(action.payload.schemeQuestions)
+      sortPossibleAnswers(action.payload.schemeQuestions)
       return {
         ...state,
         questions: sortQuestions(
