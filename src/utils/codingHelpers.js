@@ -88,7 +88,7 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
         }
   }
 
-  console.log(base)
+  // console.log(base)
 
   if (newQuestion.parentId === 0) {
     return {
@@ -105,7 +105,8 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
     const baseQuestion = base.userAnswers[newQuestion.id]
 
     const answers = selectedCategories.reduce((answerObj, cat) => {
-      return { ...answerObj,
+      return {
+        ...answerObj,
         [cat.id]: {
           ...initializeRegularQuestion(base.question.id),
           categoryId: cat.id,
@@ -147,6 +148,7 @@ export const getNextQuestion = (state, action) => {
       }
     }
   }
+  sortList(newQuestion.possibleAnswers, 'order', 'asc')
 
   return handleCheckCategories(newQuestion, newIndex, state)
 }
@@ -161,7 +163,7 @@ export const getPreviousQuestion = (state, action) => {
       newIndex = state.scheme.order.indexOf(newQuestion.id)
     }
   }
-
+  sortList(newQuestion.possibleAnswers, 'order', 'asc')
   return handleCheckCategories(newQuestion, newIndex, state)
 }
 
@@ -372,7 +374,7 @@ export const getQuestionSelectedInNav = (state, action) => {
   } else {
     q = state.scheme.byId[action.question.id]
   }
-
+  sortList(q.possibleAnswers, 'order', 'asc')
   return {
     ...state,
     ...handleCheckCategories(q, state.scheme.order.findIndex(id => q.id === id), {

@@ -130,6 +130,10 @@ export default {
     })
   },
 
+  deleteUserPicture(userId) {
+    return api.delete(`/users/${userId}/avatar`).then(res => res.data)
+  },
+
   getProtocol(projectId) {
     return api.get(`/projects/${projectId}/protocol`).then(res => res.data.text)
   },

@@ -8,11 +8,12 @@ import Input, { InputLabel } from 'material-ui/Input'
 import { FormControl, FormHelperText } from 'material-ui/Form'
 import IconButton from 'components/IconButton'
 import * as questionTypes from '../../constants'
+import Icon from 'components/Icon'
 
-const SelectInput = ({ name, label, answerType, type, input, classes, meta: { asyncValidating, active, touched, error, warning }, handleDelete, isEdit, ...custom }) => {
-  //Refactor this 12/17/2018
+const SelectInput = ({ name, label, answerType, type, input, classes, index, currentValue, meta: { asyncValidating, active, touched, error, warning, dirty }, handleDelete, handleUp, handleDown, fields, isEdit, ...custom }) => {
   return (
     <Container alignItems={'center'}>
+
       <Column style={{ marginTop: 8 }}>
         {(() => {
           switch (answerType) {
@@ -25,7 +26,7 @@ const SelectInput = ({ name, label, answerType, type, input, classes, meta: { as
               return <Checkbox disabled />
 
             default:
-              break;
+              break
           }
         })()}
       </Column>
@@ -42,14 +43,48 @@ const SelectInput = ({ name, label, answerType, type, input, classes, meta: { as
         </FormControl>
       </Column>
       <Column>
-        {(answerType === questionTypes.BINARY || isEdit) ? <div></div> :
-          <IconButton color="action" onClick={handleDelete} iconSize={20} tooltipText="Delete answer">delete</IconButton>
+        {(currentValue.isNew)
+          ? <IconButton
+            color="action"
+            onClick={handleDelete}
+            iconSize={20}
+            tooltipText="Delete answer"
+            id={`delete-answer-${index}`}>delete</IconButton>
+          : (answerType === questionTypes.BINARY || isEdit)
+            ? null
+            : <IconButton
+              color="action"
+              onClick={handleDelete}
+              iconSize={20}
+              tooltipText="Delete answer"
+              id={`delete-answer-${index}`}>delete</IconButton>
         }
       </Column>
+      {answerType !== questionTypes.BINARY && <Column>
+        <Row>
+          <IconButton
+            color="action"
+            iconSize={36}
+            disableRipple={false}
+            disabled={!index - 1 >= 0}
+            tooltipText="Move answer choice up one position"
+            id={`move-answer-${index}-up`}
+            onClick={handleUp}>arrow_drop_up</IconButton>
+        </Row>
+        <Row style={{ marginTop: -20 }}>
+          <IconButton
+            color="action"
+            iconSize={36}
+            disableRipple={false}
+            disabled={index + 1 === fields.length}
+            tooltipText="Move answer choice down one position"
+            id={`move-answer-${index}-down`}
+            onClick={handleDown}>arrow_drop_down</IconButton>
+        </Row>
+      </Column>}
     </Container>
   )
 }
-
 
 SelectInput.propTypes = {
   name: PropTypes.string,

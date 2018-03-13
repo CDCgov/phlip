@@ -14,6 +14,8 @@ import {
   getQuestionSelectedInNav
 } from 'utils/codingHelpers'
 
+import { sortList } from 'utils'
+
 const INITIAL_STATE = {
   question: {},
   scheme: null,
@@ -27,6 +29,7 @@ const INITIAL_STATE = {
   userAnswers: {},
   showNextButton: true
 }
+
 
 const codingReducer = (state = INITIAL_STATE, action) => {
   const questionUpdater = state.question.isCategoryQuestion
@@ -58,7 +61,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         }
       } else {
         const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
-
+        sortList(action.payload.question.possibleAnswers, 'order', 'asc')
         return {
           ...state,
           outline: action.payload.outline,

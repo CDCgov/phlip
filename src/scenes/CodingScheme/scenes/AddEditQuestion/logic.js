@@ -1,6 +1,9 @@
 import { createLogic } from 'redux-logic'
 import * as types from '../../actionTypes'
 import * as questionTypes from './constants'
+import { sortList } from 'utils'
+
+
 
 const updateUserIdLogic = createLogic({
   type: [types.ADD_QUESTION_REQUEST, types.UPDATE_QUESTION_REQUEST, types.ADD_CHILD_QUESTION_REQUEST],
@@ -88,10 +91,21 @@ const updateQuestionLogic = createLogic({
   },
   async process({ api, action }) {
     action.question.hovering = false
+    const orderedAnswers = action.question.possibleAnswers.map((answer, index) => {
+      return { ...answer, order: index + 1 }
+    })
+
+    action.question.possibleAnswers = orderedAnswers
+    // action.question.hovering = false
     const updatedQuestion = await api.updateQuestion(action.question, action.projectId, action.questionId)
+
     return {
       ...updatedQuestion,
-      hovering: false
+      possibleAnswers: sortList(action.question.possibleAnswers),
+      children: action.question.children,
+      expanded: true,
+      hovering: false,
+      path: action.path
     }
   }
 })
@@ -104,9 +118,15 @@ const addChildQuestionLogic = createLogic({
     failType: types.ADD_CHILD_QUESTION_FAIL
   },
   async process({ api, action }) {
+    const orderedAnswers = action.question.possibleAnswers.map((answer, index) => {
+      return { ...answer, order: index + 1 }
+    })
+
+    action.question.possibleAnswers = orderedAnswers
     const question = await api.addQuestion(action.question, action.projectId)
     return {
       ...question,
+      possibleAnswers: sortList(action.question.possibleAnswers),
       parentId: action.question.parentId,
       positionInParent: action.parentNode.children ? action.parentNode.children.length : 0,
       isCategoryQuestion: action.question.isCategoryQuestion,
@@ -124,9 +144,16 @@ const addQuestionLogic = createLogic({
   },
   async process({ api, action }) {
     action.question.hovering = false
+    const orderedAnswers = action.question.possibleAnswers.map((answer, index) => {
+      return { ...answer, order: index + 1 }
+    })
+
+    action.question.possibleAnswers = orderedAnswers
+    // action.question.hovering = false
     const question = await api.addQuestion(action.question, action.projectId)
     return {
       ...question,
+      possibleAnswers: sortList(action.question.possibleAnswers),
       parentId: action.question.parentId,
       positionInParent: action.question.positionInParent,
       hovering: false

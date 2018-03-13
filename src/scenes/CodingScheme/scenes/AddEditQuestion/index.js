@@ -81,8 +81,8 @@ export class AddEditQuestion extends Component {
     this.questionDefined
       ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.questionDefined.id, this.props.location.state.path)
       : this.parentDefined
-      ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.parentDefined, this.props.location.state.path)
-      : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)
+        ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.parentDefined, this.props.location.state.path)
+        : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)
 
     this.props.history.goBack()
   }
@@ -95,7 +95,7 @@ export class AddEditQuestion extends Component {
   handleTypeChange = (event, value) => {
     value === questionTypes.BINARY ? this.props.formActions.initialize('questionForm', this.binaryForm, true)
       : value === questionTypes.TEXT_FIELD ? this.props.formActions.initialize('questionForm', this.textFieldForm, true)
-      : this.props.formActions.initialize('questionForm', this.defaultForm, true)
+        : this.props.formActions.initialize('questionForm', this.defaultForm, true)
   }
 
   validate = values => {
@@ -193,7 +193,7 @@ export class AddEditQuestion extends Component {
               </Container>
               <FieldArray
                 name="possibleAnswers"
-                answerType={this.props.form.values ? this.props.form.values.questionType : 4}
+                answerType={this.props.form.values ? this.props.form.values.questionType : questionTypes.MULTIPLE_CHOICE}
                 isEdit={!!this.state.edit}
                 component={AnswerList}
               />
