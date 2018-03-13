@@ -54,10 +54,10 @@ const SelectInput = ({ name, label, answerType, type, input, classes, index, cur
       </Column>
       {answerType !== questionTypes.BINARY && <Column>
         <Row>
-          <IconButton color="action" iconSize={36} disabled={!index - 1 >= 0} onClick={handleUp}>arrow_drop_up</IconButton>
+          <IconButton color="action" iconSize={36} disableRipple={false} disabled={!index - 1 >= 0} onClick={handleUp}>arrow_drop_up</IconButton>
         </Row>
-        <Row style={{ marginTop: -23 }}>
-          <IconButton color="action" iconSize={36} disabled={index + 1 === fields.length} onClick={handleDown}>arrow_drop_down</IconButton>
+        <Row style={{ marginTop: -20 }}>
+          <IconButton color="action" iconSize={36} disableRipple={false} disabled={index + 1 === fields.length} onClick={handleDown}>arrow_drop_down</IconButton>
         </Row>
       </Column>}
     </Container>
