@@ -13,19 +13,7 @@ import Icon from 'components/Icon'
 const SelectInput = ({ name, label, answerType, type, input, classes, index, currentValue, meta: { asyncValidating, active, touched, error, warning, dirty }, handleDelete, handleUp, handleDown, fields, isEdit, ...custom }) => {
   return (
     <Container alignItems={'center'}>
-      {answerType !== questionTypes.BINARY && <Column>
-        <Row>
-          {index - 1 >= 0
-            ? <IconButton color="action" onClick={handleUp}>keyboard_arrow_up</IconButton>
-            : <IconButton color="action" disabled onClick={handleUp}>keyboard_arrow_up</IconButton>}
 
-        </Row>
-        <Row>
-          {index + 1 == fields.length
-            ? <IconButton color="action" disabled onClick={handleDown}>keyboard_arrow_down</IconButton>
-            : <IconButton color="action" onClick={handleDown}>keyboard_arrow_down</IconButton>}
-        </Row>
-      </Column>}
       <Column style={{ marginTop: 8 }}>
         {(() => {
           switch (answerType) {
@@ -64,6 +52,14 @@ const SelectInput = ({ name, label, answerType, type, input, classes, index, cur
               iconSize={20}>delete</IconButton>
         }
       </Column>
+      {answerType !== questionTypes.BINARY && <Column>
+        <Row>
+          <IconButton color="action" iconSize={36} disabled={!index - 1 >= 0} onClick={handleUp}>arrow_drop_up</IconButton>
+        </Row>
+        <Row style={{ marginTop: -23 }}>
+          <IconButton color="action" iconSize={36} disabled={index + 1 === fields.length} onClick={handleDown}>arrow_drop_down</IconButton>
+        </Row>
+      </Column>}
     </Container>
   )
 }
