@@ -88,8 +88,6 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
         }
   }
 
-  // console.log(base)
-
   if (newQuestion.parentId === 0) {
     return {
       ...base,
@@ -101,7 +99,7 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
 
   if (newQuestion.isCategoryQuestion) {
     const parentQuestion = state.scheme.byId[newQuestion.parentId]
-    const selectedCategories = getSelectedCategories(parentQuestion, state.userAnswers)
+    const selectedCategories = sortList(getSelectedCategories(parentQuestion, state.userAnswers), 'order', 'asc')
     const baseQuestion = base.userAnswers[newQuestion.id]
 
     const answers = selectedCategories.reduce((answerObj, cat) => {
@@ -114,6 +112,7 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
         }
       }
     }, {})
+
 
     return {
       ...base,
@@ -329,17 +328,21 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
       /*
        item: category question children
        */
-      item.children = checkIfExists(scheme[item.parentId], codedQuestions)
-        ? Object.values(codedQuestions[item.parentId].answers).map((category, index) => {
+      if (checkIfExists(scheme[item.parentId], codedQuestions)) {
+        const sortedSelectedCategories = sortList(Object.values(codedQuestions[item.parentId].answers), 'order', 'asc')
+        item.children = sortedSelectedCategories.map((category, index) => {
           const isAnswered =
             checkIfExists(item, codedQuestions) &&
             checkIfAnswered(category, codedQuestions[item.id], 'schemeAnswerId')
 
           countAnswered = isAnswered ? countAnswered += 1 : countAnswered
 
+          const schemeAnswer = scheme[item.parentId].possibleAnswers.find(answer => answer.id === category.schemeAnswerId)
+
           return {
             schemeAnswerId: category.schemeAnswerId,
-            text: scheme[item.parentId].possibleAnswers.find(answer => answer.id === category.schemeAnswerId).text,
+            text: schemeAnswer.text,
+            order: schemeAnswer.order,
             indent: item.indent + 1,
             positionInParent: index,
             isAnswered,
@@ -347,7 +350,11 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
             isCategory: true
           }
         })
-        : []
+      } else {
+        item.children = []
+      }
+
+      item.children = sortList([...item.children], 'order', 'asc')
 
       if (item.children.length > 0) {
         item.completedProgress = (countAnswered / item.children.length) * 100

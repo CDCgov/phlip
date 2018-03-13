@@ -9,6 +9,10 @@ $rowHeight: 40px;
   position: absolute;
 }
 
+.navRow:focus {
+  outline: 0;
+}
+
 %verticalBar {
   content: "";
   width: 1px;

@@ -605,7 +605,7 @@ describe('Coding reducer', () => {
             parentId: 0,
             positionInParent: 2,
             possibleAnswers: [
-              { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
+              { id: 5, text: 'category 1', order: 1 }, { id: 10, text: 'category 2', order: 2 }, { id: 20, text: 'category 3', order: 3 }
             ]
           },
           4: {
@@ -617,7 +617,7 @@ describe('Coding reducer', () => {
             indent: 2,
             isCategoryQuestion: true,
             possibleAnswers: [
-              { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
+              { id: 432, text: 'answer 1', order: 1 }, { id: 2124, text: 'answer 2', order: 2 }
             ]
           }
         },
@@ -634,7 +634,7 @@ describe('Coding reducer', () => {
             isAnswered: true,
             indent: 1,
             possibleAnswers: [
-              { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
+              { id: 5, text: 'category 1', order: 1 }, { id: 10, text: 'category 2', order: 2 }, { id: 20, text: 'category 3', order: 3 }
             ],
             children: [
               {
@@ -647,7 +647,7 @@ describe('Coding reducer', () => {
                 positionInParent: 0,
                 isAnswered: false,
                 possibleAnswers: [
-                  { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
+                  { id: 432, text: 'answer 1', order: 1 }, { id: 2124, text: 'answer 2', order: 2 }
                 ]
               }
             ]
@@ -709,7 +709,7 @@ describe('Coding reducer', () => {
           isAnswered: true,
           indent: 1,
           possibleAnswers: [
-            { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
+            { id: 5, text: 'category 1', order: 1 }, { id: 10, text: 'category 2', order: 2 }, { id: 20, text: 'category 3', order: 3 }
           ],
           children: [
             {
@@ -722,7 +722,7 @@ describe('Coding reducer', () => {
               isAnswered: false,
               indent: 2,
               possibleAnswers: [
-                { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
+                { id: 432, text: 'answer 1', order: 1 }, { id: 2124, text: 'answer 2', order: 2 }
               ],
               children: [
                 {
@@ -730,6 +730,7 @@ describe('Coding reducer', () => {
                   schemeQuestionId: 4,
                   indent: 3,
                   isCategory: true,
+                  order: 2,
                   positionInParent: 0,
                   text: 'category 2',
                   isAnswered: false
@@ -739,6 +740,7 @@ describe('Coding reducer', () => {
                   schemeQuestionId: 4,
                   indent: 3,
                   isCategory: true,
+                  order: 3,
                   positionInParent: 1,
                   text: 'category 3',
                   isAnswered: false

@@ -22,19 +22,20 @@ exports[`Coding scene - QuestionRow should render correctly 1`] = `
         "display": "flex",
         "height": 40,
         "marginLeft": 0,
+        "outline": 0,
         "position": "relative",
       }
     }
     tabIndex={0}
   >
     <span
-      role="gridcell"
       style={
         Object {
           "maxHeight": 20,
           "maxWidth": 20,
           "minHeight": 20,
           "minWidth": 20,
+          "outline": 0,
         }
       }
       tabIndex={-1}
@@ -42,12 +43,12 @@ exports[`Coding scene - QuestionRow should render correctly 1`] = `
     <WithStyles
       aria-label="Question number and text"
       noWrap={true}
-      role="gridcell"
       style={
         Object {
           "color": "white",
           "fontSize": "13px",
           "fontWeight": 300,
+          "outline": 0,
           "paddingLeft": 10,
           "paddingRight": 10,
         }
