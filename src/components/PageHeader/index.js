@@ -7,10 +7,9 @@ import IconButton from 'components/IconButton'
 import CircleIcon from 'components/CircleIcon'
 import { withRouter } from 'react-router-dom'
 import TextLink from 'components/TextLink'
-import styles from 'components/CodingValidation/Header/header-styles.scss'
 
 export const PageHeader = ({ projectName, pageTitle, projectId, showButton, protocolButton, otherButton, children, history }) => (
-  <Container alignItems="center" style={{ height: '80px' }}>
+  <Container alignItems="center" style={{ padding: '20px 0' }}>
     <Column style={{ paddingRight: 5 }}>
       {pageTitle !== 'Project List'
         ? <IconButton iconSize={30} color="black" onClick={() => history.goBack()}>arrow_back</IconButton>

@@ -19,8 +19,8 @@ describe('Coding Scheme reducer', () => {
   describe('GET_SCHEME_SUCCESS', () => {
     test('should set state.questions to action.payload and set hovering to false on all questions', () => {
       const questions = [
-        { text: 'fa la la la', type: 1, id: 1 },
-        { text: 'la la la', type: 2, id: 2 }
+        { text: 'fa la la la', type: 1, id: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+        { text: 'la la la', type: 2, id: 2, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
       ]
 
       const action = {
@@ -41,8 +41,8 @@ describe('Coding Scheme reducer', () => {
 
       expect(state).toEqual({
         questions: [
-          { text: 'fa la la la', type: 1, hovering: false, id: 1, expanded: true, parentId: 0, positionInParent: 0 },
-          { text: 'la la la', type: 2, hovering: false, id: 2, expanded: true, parentId: 0, positionInParent: 1 }
+          { text: 'fa la la la', type: 1, hovering: false, id: 1, expanded: true, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+          { text: 'la la la', type: 2, hovering: false, id: 2, expanded: true, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
         ],
         outline: {
           1: { parentId: 0, positionInParent: 0 },
@@ -51,8 +51,8 @@ describe('Coding Scheme reducer', () => {
         allowHover: true,
         empty: false,
         flatQuestions: [
-          { id: 1, text: 'fa la la la', type: 1 },
-          { id: 2, text: 'la la la', type: 2, }
+          { id: 1, text: 'fa la la la', type: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+          { id: 2, text: 'la la la', type: 2, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
         ]
       })
     })

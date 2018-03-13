@@ -48,7 +48,8 @@ export const getOutlineLogic = createLogic({
         tree,
         question: questionsWithNumbers[0],
         codedQuestions,
-        isSchemeEmpty: false
+        isSchemeEmpty: false,
+        userId
       }
     }
   }
@@ -57,7 +58,7 @@ export const getOutlineLogic = createLogic({
 export const answerQuestionLogic = createLogic({
   type: [
     types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER,
-    types.APPLY_ANSWER_TO_ALL
+    types.APPLY_ANSWER_TO_ALL, types.ON_SAVE_FLAG
   ],
   processOptions: {
     dispatchReturn: true,
@@ -96,8 +97,17 @@ export const getUserCodedQuestionsLogic = createLogic({
   }
 })
 
+export const saveRedFlagLogic = createLogic({
+  type: types.ON_SAVE_RED_FLAG,
+  async process({ action, api }) {
+    const flag = { ...action.flagInfo, raisedBy: action.flagInfo.raisedBy.userId }
+    return await api.saveRedFlag(action.questionId, flag)
+  }
+})
+
 export default [
   getOutlineLogic,
   getUserCodedQuestionsLogic,
-  answerQuestionLogic
+  answerQuestionLogic,
+  saveRedFlagLogic
 ]

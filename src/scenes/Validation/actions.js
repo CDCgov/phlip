@@ -72,3 +72,17 @@ export const applyAnswerToAll = (projectId, jurisdictionId, questionId) => ({
   jurisdictionId,
   questionId
 })
+
+export const clearFlag = (flagId, projectId, jurisdictionId, questionId) => ({
+  type: types.CLEAR_FLAG,
+  flagId,
+  projectId,
+  jurisdictionId,
+  questionId
+})
+
+export const clearRedFlag = (flagId, questionId) => ({
+  type: types.CLEAR_RED_FLAG,
+  flagId,
+  questionId
+})

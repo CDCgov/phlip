@@ -40,8 +40,15 @@ export class Validation extends Component {
       selectedJurisdiction: this.props.jurisdictionId,
       showViews: false,
       navOpen: true,
-      applyAllAlertOpen: false
+      applyAllAlertOpen: false,
+      flagConfirmAlertOpen: false,
+      flagToDelete: null
     }
+
+    this.confirmAlertActions = [
+      { value: 'Cancel', type: 'button', onClick: this.onCloseFlagConfigAlert },
+      { value: 'Yes', type: 'button', onClick: this.onClearFlag }
+    ]
 
     this.modalActions = [
       {
@@ -122,6 +129,32 @@ export class Validation extends Component {
     this.props.actions.updateEditedFields(this.props.projectId)
   }
 
+  onOpenFlagConfirmAlert = (flagId, type) => {
+    this.setState({
+      flagConfirmAlertOpen: true,
+      flagToDelete: { id: flagId, type }
+    })
+  }
+
+  onClearFlag = () => {
+    if (this.state.flagToDelete.type === 3) {
+      this.props.actions.clearRedFlag(this.state.flagToDelete.id, this.props.question.id)
+    } else {
+      this.props.actions.clearFlag(this.state.flagToDelete.id, this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+    }
+    this.setState({
+      flagConfirmAlertOpen: false,
+      flagToDelete: null
+    })
+  }
+
+  onCloseFlagConfigAlert = () => {
+    this.setState({
+      flagConfirmAlertOpen: false,
+      flagToDelete: null
+    })
+  }
+
   onOpenApplyAllAlert = () => {
     this.setState({
       applyAllAlertOpen: true
@@ -144,8 +177,12 @@ export class Validation extends Component {
       <QuestionCard
         question={this.props.question}
         onChange={this.onAnswer}
-        userAnswers={this.props.userAnswers}
-        mergedUserQuestions={this.props.mergedUserQuestions}
+        userAnswers={this.props.question.isCategoryQuestion
+          ? this.props.userAnswers[this.props.selectedCategoryId]
+          : this.props.userAnswers}
+        mergedUserQuestions={this.props.question.isCategoryQuestion
+          ? this.props.mergedUserQuestions[this.props.selectedCategoryId]
+          : this.props.mergedUserQuestions}
         onChangeTextAnswer={this.onChangeTextAnswer}
         categories={this.props.categories}
         selectedCategory={this.props.selectedCategory}
@@ -153,6 +190,9 @@ export class Validation extends Component {
         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
         currentUserInitials={this.props.currentUserInitials}
         onOpenAlert={this.onOpenApplyAllAlert}
+        onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
+        isValidation={true}
+        selectedCategoryId={this.props.selectedCategoryId}
       />
       <FooterNavigate
         currentIndex={this.props.currentIndex}
@@ -174,6 +214,11 @@ export class Validation extends Component {
           open={this.state.applyAllAlertOpen}
           text="You are applying your answer to ALL categories. Previously answered questions will be changed."
           actions={this.modalActions}
+        />
+        <Alert
+          open={this.state.flagConfirmAlertOpen}
+          text="Are you sure you want to clear this flag?"
+          actions={this.confirmAlertActions}
         />
         <Navigator
           open={this.state.navOpen}
@@ -257,7 +302,8 @@ const mapStateToProps = (state, ownProps) => {
       ? state.data.user.currentUser.firstName[0]
       : state.data.user.currentUser.firstName[0] + state.data.user.currentUser.lastName[0],
     scheme: state.scenes.validation.scheme === null ? {} : state.scenes.validation.scheme,
-    allUserAnswers: state.scenes.validation.userAnswers || {}
+    allUserAnswers: state.scenes.validation.userAnswers || {},
+    selectedCategoryId: state.scenes.validation.selectedCategoryId || null
   }
 }
 

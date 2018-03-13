@@ -6,16 +6,15 @@ import {
   determineShowButton,
   handleUpdateUserAnswers,
   handleUpdateUserCodedQuestion,
+  handleUpdateUserCategoryChild,
   handleClearAnswers,
-  handleClearCategoryAnswers,
   initializeUserAnswers,
-  initializeCodedUsers,
-  handleUserPinciteCategoryChild,
   handleUserPinciteQuestion,
   initializeNavigator,
   getQuestionSelectedInNav,
-  handleUserCommentCategoryChild
+  initializeCodedUsers
 } from 'utils/codingHelpers'
+import { sortList } from 'utils'
 
 const INITIAL_STATE = {
   question: {},
@@ -33,7 +32,9 @@ const INITIAL_STATE = {
 }
 
 const validationReducer = (state = INITIAL_STATE, action) => {
-  const questionUpdater = handleUpdateUserCodedQuestion(state, action)
+  const questionUpdater = state.question.isCategoryQuestion
+    ? handleUpdateUserCategoryChild(state, action)
+    : handleUpdateUserCodedQuestion(state, action)
 
   switch (action.type) {
     case types.GET_VALIDATION_NEXT_QUESTION:
@@ -60,7 +61,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         }
       } else {
         const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
-
+        sortList(action.payload.question.possibleAnswers, 'order', 'asc')
         return {
           ...state,
           outline: action.payload.outline,
@@ -74,17 +75,9 @@ const validationReducer = (state = INITIAL_STATE, action) => {
             [
               { schemeQuestionId: action.payload.question.id, comment: '', codedAnswers: [] },
               ...action.payload.codedQuestions
-            ], normalizedQuestions
+            ], normalizedQuestions, action.payload.userId
           ),
-          mergedUserQuestions: action.payload.mergedUserQuestions.length !== 0
-            ? initializeCodedUsers(action.payload.mergedUserQuestions, normalizedQuestions)
-            : {
-              [action.payload.question.id]: {
-                schemeQuestionId: action.payload.question.id,
-                comment: '',
-                answers: []
-              }
-            }
+          mergedUserQuestions: action.payload.mergedUserQuestions
         }
       }
 
@@ -93,41 +86,26 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         ...state,
         userAnswers: {
           ...state.userAnswers,
-          ...handleUpdateUserAnswers(state, action, state.selectedCategoryId)
+          ...handleUpdateUserAnswers(state, action, state.selectedCategoryId, true)
         }
       }
 
     case types.ON_CHANGE_VALIDATION_PINCITE:
       return {
         ...state,
-        ...questionUpdater(
-          'answers',
-          state.question.isCategoryQuestion
-            ? handleUserPinciteCategoryChild(state.selectedCategoryId, state.question.questionType, action, state.userAnswers[action.questionId].answers)
-            : handleUserPinciteQuestion(state.question.questionType, action, state.userAnswers[action.questionId].answers)
-        )
+        ...questionUpdater('answers', handleUserPinciteQuestion)
       }
 
     case types.ON_CHANGE_VALIDATION_COMMENT:
       return {
         ...state,
-        ...questionUpdater(
-          'comment',
-          state.question.isCategoryQuestion
-            ? handleUserCommentCategoryChild(state.selectedCategoryId, action, state.userAnswers[action.questionId].comment)
-            : action.comment
-        )
+        ...questionUpdater('comment', action.comment)
       }
 
     case types.ON_CLEAR_VALIDATION_ANSWER:
       return {
         ...state,
-        ...questionUpdater(
-          'answers',
-          state.question.isCategoryChild
-            ? handleClearCategoryAnswers(state.selectedCategoryId, state.question.questionType, state.userAnswers[action.questionId].answers)
-            : handleClearAnswers(state.question.questionType, state.userAnswers[action.questionId].answers)
-        )
+        ...questionUpdater('answers', handleClearAnswers)
       }
 
     case types.ON_CHANGE_VALIDATION_CATEGORY:
@@ -144,28 +122,73 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         jurisdiction: action.jurisdictionList.find(jurisdiction => jurisdiction.id === action.event)
       }
 
-    case types.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
-      let userAnswers = {}, question = { ...state.question }, other = {}, mergedUserQuestions = {}
+    case types.CLEAR_FLAG:
+      let flagIndex = null
 
-      if (action.payload.mergedUserQuestions.length !== 0) {
-        mergedUserQuestions = initializeCodedUsers(action.payload.mergedUserQuestions, state.scheme.byId)
+      const flagComments = state.question.isCategoryQuestion
+        ? state.mergedUserQuestions[action.questionId][state.selectedCategoryId].flagsComments
+        : state.mergedUserQuestions[action.questionId].flagsComments
+
+      const { id, type, notes, raisedAt, ...flag } = flagComments.find((item, i) => {
+        if (item.id === action.flagId) {
+          flagIndex = i
+        }
+        return item.id === action.flagId
+      })
+
+      if (Object.keys(flag).length === 1) {
+        flagComments.splice(flagIndex, 1)
+      } else {
+        if (flag.comment.length === 0) {
+          flagComments.splice(flagIndex, 1)
+        } else {
+          flagComments.splice(flagIndex, 1, flag)
+        }
       }
+
+      return {
+        ...state,
+        mergedUserQuestions: {
+          ...state.mergedUserQuestions,
+          [action.questionId]: {
+            ...state.mergedUserQuestions[action.questionId],
+            ...state.question.isCategoryQuestion
+              ? {
+                [state.selectedCategoryId]: {
+                  ...state.mergedUserQuestions[action.questionId][state.selectedCategoryId],
+                  flagComments
+                }
+              }
+              : {
+                flagComments
+              }
+          }
+        }
+      }
+
+    case types.CLEAR_RED_FLAG:
+      return {
+        ...state,
+        question: { ...state.question, flags: [] },
+        scheme: {
+          ...state.scheme,
+          byId: {
+            ...state.scheme.byId,
+            [action.questionId]: {
+              ...state.scheme.byId[action.questionId],
+              flags: []
+            }
+          }
+        }
+      }
+
+    case types.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
+      let userAnswers = {}, question = { ...state.question }, other = {}
 
       if (state.question.isCategoryQuestion) {
         question = state.scheme.byId[question.parentId]
         other = {
           currentIndex: state.scheme.order.findIndex(id => id === question.id)
-        }
-      }
-
-      if (!mergedUserQuestions.hasOwnProperty(question.id)) {
-        mergedUserQuestions = {
-          ...mergedUserQuestions,
-          [question.id]: {
-            schemeQuestionId: question.id,
-            comment: '',
-            answers: []
-          }
         }
       }
 
@@ -183,7 +206,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         userAnswers,
-        mergedUserQuestions,
+        mergedUserQuestions: action.payload.mergedUserQuestions,
         question,
         ...other,
         selectedCategory: 0,
@@ -192,26 +215,16 @@ const validationReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ON_APPLY_VALIDATION_TO_ALL:
-      const answer = state.userAnswers[state.question.id].answers[state.selectedCategoryId]
+      const catQuestion = state.userAnswers[state.question.id][state.selectedCategoryId]
       return {
         ...state,
         userAnswers: {
           ...state.userAnswers,
           [state.question.id]: {
-            ...state.userAnswers[state.question.id],
-            ...state.categories.reduce((obj, category) => {
-              return {
-                ...obj,
-                answers: {
-                  ...obj.answers,
-                  [category.id]: { ...answer, validatedBy: action.validatedBy }
-                },
-                comment: {
-                  ...obj.comment,
-                  [category.id]: ''
-                }
-              }
-            }, {})
+            ...state.categories.reduce((obj, category) => ({
+              ...obj,
+              [category.id]: { ...catQuestion, categoryId: category.id }
+            }), {})
           }
         }
       }

@@ -1,7 +1,17 @@
 import { normalize } from 'utils'
-import { checkIfAnswered, checkIfExists } from 'utils/codingSchemeHelpers'
+import { checkIfAnswered, checkIfExists, checkIfCategoryAnswered } from 'utils/codingSchemeHelpers'
 import sortList from 'utils/sortList'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
+
+const initializeValues = question => {
+  return {
+    ...question,
+    comment: question.comment || '',
+    flag: question.flag || { notes: '', type: 0 },
+    answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId'),
+    schemeQuestionId: question.schemeQuestionId
+  }
+}
 
 /*
  This function basically takes an array of user coded question answers: { answers: [{ answerId: 1, pincite: '' }] },
@@ -14,103 +24,16 @@ import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/const
  Text field type questions are handled different since there will only be one answer instead of multiple and doesn't have
  an ID. It looks like this: { answers: { value: '', pincite: '' } }
  */
-export const normalizeAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) => {
-  if (question.categoryId && question.categoryId !== 0) {
-    return checkIfExists(question, userCodedAnswerObj, 'schemeQuestionId')
-      ? {
-        schemeQuestionId: question.schemeQuestionId,
-        answers: {
-          ...userCodedAnswerObj[question.schemeQuestionId].answers,
-          [question.categoryId]: {
-            ...question,
-            answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId')
-          }
-        },
-        comment: {
-          ...userCodedAnswerObj[question.schemeQuestionId].comment,
-          [question.categoryId]: question.comment || ''
-        }
-      }
-      : {
-        schemeQuestionId: question.schemeQuestionId,
-        answers: {
-          [question.categoryId]: {
-            ...question,
-            answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId')
-          }
-        },
-        comment: {
-          [question.categoryId]: question.comment || ''
-        }
-      }
-  } else {
-    return {
-      ...question,
-      schemeQuestionId: question.schemeQuestionId,
-      comment: question.comment,
-      answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId')
-    }
-  }
-}
-
-export const normalizeCodedUserAnswers = (question, codingSchemeQuestion, userCodedAnswerObj) => {
-  if (question.categoryId && question.categoryId !== 0) {
-    return userCodedAnswerObj.hasOwnProperty(question.schemeQuestionId)
-      ? {
-        schemeQuestionId: question.schemeQuestionId,
-        answers: {
-          ...userCodedAnswerObj[question.schemeQuestionId].answers,
-          [question.categoryId]: {
-            answers: question.codedAnswers
-          }
-        },
-        comment: {
-          ...userCodedAnswerObj[question.schemeQuestionId].comment,
-          [question.categoryId]: question.comment || ''
-        }
-      }
-      : {
-        schemeQuestionId: question.schemeQuestionId,
-        answers: { [question.categoryId]: { answers: question.codedAnswers } },
-        comment: {
-          [question.categoryId]: question.comment || ''
-        }
-      }
-  } else {
-    return {
-      schemeQuestionId: question.schemeQuestionId,
-      comment: question.comment,
-      answers: question.codedAnswers
-    }
-  }
-}
-
-/*
-  Takes coded questions array and turns it into a object where each key is the question id.
- */
-export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions) => {
+export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions, userId) => {
   return userCodedQuestions.reduce((codedQuestionObj, question) => {
     return ({
       ...codedQuestionObj,
-      [question.schemeQuestionId]: {
-        schemeQuestionId: question.schemeQuestionId,
-        ...normalizeAnswers(question, codingSchemeQuestions[question.schemeQuestionId], codedQuestionObj)
-      }
-    })
-  }, {})
-}
-
-/*
-  Takes coded questions array and turns it into a object where each key is the question id
- */
-export const initializeCodedUsers = (userCodedQuestions, codingSchemeQuestions) => {
-  return userCodedQuestions.reduce((codedQuestionObj, question) => {
-    return ({
-      ...codedQuestionObj,
-      [question.schemeQuestionId]: {
-        schemeQuestionId: question.schemeQuestionId,
-        ...normalizeCodedUserAnswers(question, codingSchemeQuestions[question.schemeQuestionId], codedQuestionObj)
-      }
+      [question.schemeQuestionId]: question.categoryId && question.categoryId !== 0
+        ? {
+          ...codedQuestionObj[question.schemeQuestionId],
+          [question.categoryId]: { ...initializeValues(question, codingSchemeQuestions[question.schemeQuestionId], userId) }
+        }
+        : { ...initializeValues(question, codingSchemeQuestions[question.schemeQuestionId], userId) }
     })
   }, {})
 }
@@ -140,6 +63,14 @@ export const determineShowButton = state => {
 export const getSelectedCategories = (parentQuestion, userAnswers) =>
   parentQuestion.possibleAnswers.filter(category => checkIfExists(category, userAnswers[parentQuestion.id].answers))
 
+const initializeNextQuestion = (question, questionId) => ({
+  comment: '',
+  flag: { notes: '', type: 0 },
+  answers: {},
+  schemeQuestionId: questionId,
+  ...question
+})
+
 /*
   Handles determining what the next question is, and updating state.userAnswers with question information
  */
@@ -149,8 +80,15 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
     currentIndex: newIndex,
     userAnswers: checkIfExists(newQuestion, state.userAnswers)
       ? { ...state.userAnswers }
-      : { ...state.userAnswers, [newQuestion.id]: initializeRegularQuestion(newQuestion.id) }
+      : newQuestion.isCategoryQuestion
+        ? { ...state.userAnswers }
+        : {
+          ...state.userAnswers,
+          [newQuestion.id]: initializeRegularQuestion(newQuestion.id)
+        }
   }
+
+  // console.log(base)
 
   if (newQuestion.parentId === 0) {
     return {
@@ -168,27 +106,21 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
 
     const answers = selectedCategories.reduce((answerObj, cat) => {
       return {
-        answers: {
-          ...answerObj.answers,
-          [cat.id]: checkIfExists(cat, baseQuestion.answers)
-            ? { ...baseQuestion.answers[cat.id] }
-            : { answers: {} }
-        },
-        comment: {
-          ...answerObj.comment,
-          [cat.id]: checkIfExists(cat, baseQuestion.comment)
-            ? baseQuestion.comment[cat.id]
-            : ''
+        ...answerObj,
+        [cat.id]: {
+          ...initializeRegularQuestion(base.question.id),
+          categoryId: cat.id,
+          schemeQuestionId: base.question.id
         }
       }
     }, {})
 
     return {
       ...base,
-      question: { ...base.question, isCategoryChild: true },
+      question: { ...base.question },
       categories: [...selectedCategories],
       selectedCategory: state.selectedCategory,
-      userAnswers: { ...state.userAnswers, [newQuestion.id]: { ...base.userAnswers[newQuestion.id], ...answers } },
+      userAnswers: { ...state.userAnswers, [newQuestion.id]: { ...answers, ...baseQuestion } },
       selectedCategoryId: selectedCategories[state.selectedCategory].id
     }
   } else {
@@ -216,6 +148,7 @@ export const getNextQuestion = (state, action) => {
       }
     }
   }
+  sortList(newQuestion.possibleAnswers, 'order', 'asc')
 
   return handleCheckCategories(newQuestion, newIndex, state)
 }
@@ -230,7 +163,7 @@ export const getPreviousQuestion = (state, action) => {
       newIndex = state.scheme.order.indexOf(newQuestion.id)
     }
   }
-
+  sortList(newQuestion.possibleAnswers, 'order', 'asc')
   return handleCheckCategories(newQuestion, newIndex, state)
 }
 
@@ -239,7 +172,7 @@ export const getPreviousQuestion = (state, action) => {
  */
 export const handleUpdateUserAnswers = (state, action, selectedCategoryId, isValidation = false) => {
   let currentUserAnswers = state.question.isCategoryQuestion
-    ? state.userAnswers[action.questionId].answers[selectedCategoryId].answers
+    ? state.userAnswers[action.questionId][selectedCategoryId].answers
     : state.userAnswers[action.questionId].answers
 
   let otherAnswerUpdates = { ...state.userAnswers }
@@ -266,12 +199,12 @@ export const handleUpdateUserAnswers = (state, action, selectedCategoryId, isVal
       break
 
     case questionTypes.CATEGORY:
-      if (currentUserAnswers.hasOwnProperty(action.answerId)) {
+      // If they uncheck a category, then delete all other answers that have been associated with that category
+      if (checkIfExists(action, currentUserAnswers, 'answerId')) {
         Object.values(state.scheme.byId).forEach(question => {
           if (question.parentId === action.questionId) {
             if (otherAnswerUpdates[question.id]) {
-              delete otherAnswerUpdates[question.id].answers[action.answerId]
-              delete otherAnswerUpdates[question.id].comment[action.answerId]
+              delete otherAnswerUpdates[question.id][action.answerId]
             }
           }
         })
@@ -296,34 +229,29 @@ export const handleUpdateUserAnswers = (state, action, selectedCategoryId, isVal
     ...otherAnswerUpdates,
     [action.questionId]: {
       ...state.userAnswers[action.questionId],
-      ... (action.isValidation && !state.question.isCategoryQuestion) ? { validatedBy: action.validatedBy } : {},
-      answers: state.question.isCategoryQuestion
+      ...state.question.isCategoryQuestion
         ? {
-          ...state.userAnswers[action.questionId].answers,
           [selectedCategoryId]: {
-            ...state.userAnswers[action.questionId].answers[selectedCategoryId],
-            ... action.isValidation ? { validatedBy: action.validatedBy } : {},
-            answers: { ...currentUserAnswers }
+            ...state.userAnswers[action.questionId][selectedCategoryId],
+            answers: { ...currentUserAnswers },
+            ...isValidation ? { validatedBy: action.validatedBy } : {}
           }
         }
-        : { ...currentUserAnswers }
+        : { answers: { ...currentUserAnswers }, ...isValidation ? { validatedBy: action.validatedBy } : {} }
+
     }
   }
 }
 
 /*
-  Handles if a user updates the comment of a category question child
- */
-export const handleUserCommentCategoryChild = (selectedCategoryId, action, currentUserCommentObj) => ({
-  ...currentUserCommentObj,
-  [selectedCategoryId]: action.comment
-})
-
-/*
   Handles if a user updates the pincite of a question
 */
-export const handleUserPinciteQuestion = (questionType, action, currentUserAnswers) => {
-  switch (questionType) {
+export const handleUserPinciteQuestion = (state, action) => {
+  let currentUserAnswers = state.question.isCategoryQuestion
+    ? state.userAnswers[action.questionId][state.selectedCategoryId].answers
+    : state.userAnswers[action.questionId].answers
+
+  switch (state.question.questionType) {
     case questionTypes.BINARY:
     case questionTypes.MULTIPLE_CHOICE:
     case questionTypes.TEXT_FIELD:
@@ -338,19 +266,6 @@ export const handleUserPinciteQuestion = (questionType, action, currentUserAnswe
 }
 
 /*
-  Handles if a user updated the pincite of a category question child
- */
-export const handleUserPinciteCategoryChild = (selectedCategoryId, questionType, action, currentUserAnswerObj) => ({
-  ...currentUserAnswerObj,
-  [selectedCategoryId]: {
-    ...currentUserAnswerObj[selectedCategoryId],
-    answers: {
-      ...handleUserPinciteQuestion(questionType, action, currentUserAnswerObj[selectedCategoryId].answers)
-    }
-  }
-})
-
-/*
   Updating pincite and comment use this method
  */
 export const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, getFieldValues) => ({
@@ -358,7 +273,20 @@ export const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, get
     ...state.userAnswers,
     [action.questionId]: {
       ...state.userAnswers[action.questionId],
-      [fieldValue]: getFieldValues
+      [fieldValue]: typeof getFieldValues === 'function' ? getFieldValues(state, action) : getFieldValues
+    }
+  }
+})
+
+export const handleUpdateUserCategoryChild = (state, action) => (fieldValue, getFieldValues) => ({
+  userAnswers: {
+    ...state.userAnswers,
+    [action.questionId]: {
+      ...state.userAnswers[action.questionId],
+      [state.selectedCategoryId]: {
+        ...state.userAnswers[action.questionId][state.selectedCategoryId],
+        [fieldValue]: typeof getFieldValues === 'function' ? getFieldValues(state, action) : getFieldValues
+      }
     }
   }
 })
@@ -366,37 +294,24 @@ export const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, get
 /*
   Clears answers when user clicks sweep button
  */
-export const handleClearAnswers = questionType => ({})
-
-/*
-  Clears the category for current question from state.userAnswers
- */
-export const handleClearCategoryAnswers = (selectedCategoryId, questionType, currentUserAnswerObj) => ({
-  ...currentUserAnswerObj,
-  [selectedCategoryId]: {
-    ...currentUserAnswerObj[selectedCategoryId],
-    answers: {
-      ...handleClearAnswers(questionType, currentUserAnswerObj[selectedCategoryId].answers)
-    }
-  }
-})
+export const handleClearAnswers = () => ({})
 
 export const initializeRegularQuestion = id => ({
   schemeQuestionId: id,
   answers: {},
-  comment: ''
+  comment: '',
+  flag: { notes: '', type: 0 }
 })
 
 export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestion) => {
   tree.map(item => {
-    item.isAnswered = checkIfAnswered(item, codedQuestions) && !item.isCategoryQuestion
-
+    item.isAnswered = item.isCategoryQuestion ? false : checkIfAnswered(item, codedQuestions)
     if (item.children) {
       item.children = item.questionType === questionTypes.CATEGORY
         ? checkIfAnswered(item, codedQuestions)
           ? initializeNavigator(
             sortList(Object.values(scheme)
-            .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
+              .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
             { ...scheme },
             codedQuestions,
             currentQuestion
@@ -411,11 +326,14 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
     if (item.isCategoryQuestion) {
       let countAnswered = 0
 
+      /*
+       item: category question children
+       */
       item.children = checkIfExists(scheme[item.parentId], codedQuestions)
         ? Object.values(codedQuestions[item.parentId].answers).map((category, index) => {
           const isAnswered =
-            checkIfAnswered(item, codedQuestions) &&
-            checkIfAnswered(category, codedQuestions[item.id].answers, 'schemeAnswerId')
+            checkIfExists(item, codedQuestions) &&
+            checkIfAnswered(category, codedQuestions[item.id], 'schemeAnswerId')
 
           countAnswered = isAnswered ? countAnswered += 1 : countAnswered
 
@@ -456,7 +374,7 @@ export const getQuestionSelectedInNav = (state, action) => {
   } else {
     q = state.scheme.byId[action.question.id]
   }
-
+  sortList(q.possibleAnswers, 'order', 'asc')
   return {
     ...state,
     ...handleCheckCategories(q, state.scheme.order.findIndex(id => q.id === id), {
@@ -475,19 +393,17 @@ const deleteAnswerIds = (answer) => {
 }
 
 export const getFinalCodedObject = (state, action, applyAll = false) => {
-  const questionObject = state.userAnswers[action.questionId]
-  const { answers, categoryId, schemeQuestionId, ...answerObject } = state.question.isCategoryQuestion
-    ? {
-      ...questionObject,
-      codedAnswers: Object.values(questionObject.answers[state.selectedCategoryId].answers).map(deleteAnswerIds),
-      comment: questionObject.comment[state.selectedCategoryId],
-      categories: applyAll
-        ? [...state.categories.map(cat => cat.id)]
-        : [state.selectedCategoryId]
-    }
-    : {
-      ...questionObject,
-      codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds)
-    }
-    return answerObject
+  const questionObject = state.question.isCategoryQuestion
+    ? state.userAnswers[action.questionId][state.selectedCategoryId]
+    : state.userAnswers[action.questionId]
+
+  const { answers, categoryId, schemeQuestionId, ...answerObject } = {
+    ...questionObject,
+    codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds),
+    ...state.question.isCategoryQuestion
+      ? { categories: applyAll ? [...state.categories.map(cat => cat.id)] : [state.selectedCategoryId] }
+      : {}
+  }
+
+  return answerObject
 }

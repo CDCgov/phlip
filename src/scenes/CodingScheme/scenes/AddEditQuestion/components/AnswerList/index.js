@@ -13,25 +13,32 @@ export const AnswerList = ({ fields, answerType, isEdit }) => {
     <Fragment>
       {answerType === questionTypes.TEXT_FIELD ? <div></div>
         : <Row>
-          {fields.map((answer, index) => (
-            <Fragment key={index}>
-              <Row>
-                <Field
-                  name={`${answer}.text`}
-                  type="text"
-                  answerType={answerType}
-                  placeholder={answerType === questionTypes.CATEGORY ? 'Add tab' : 'Add answer'}
-                  handleDelete={() => fields.remove(index)}
-                  component={SelectInput}
-                  isEdit={isEdit}
-                  label={(index === 0 && answerType !== questionTypes.CATEGORY) ? 'Answers'
-                    : (index === 0 && answerType === questionTypes.CATEGORY) ? 'Category/Tabs' : ''} />
-              </Row>
-            </Fragment>
-          ))}
+          {fields.map((answer, index, fields) => {
+            return (
+              <Fragment key={index}>
+                <Row>
+                  <Field
+                    name={`${answer}.text`}
+                    type="text"
+                    answerType={answerType}
+                    placeholder={answerType === questionTypes.CATEGORY ? 'Add tab' : 'Add answer'}
+                    handleDelete={() => fields.remove(index)}
+                    component={SelectInput}
+                    isEdit={isEdit}
+                    index={index}
+                    fields={fields}
+                    handleDown={() => fields.swap(index, index + 1)}
+                    handleUp={() => fields.swap(index, index - 1)}
+                    currentValue={fields.get(index)}
+                    label={(index === 0 && answerType !== questionTypes.CATEGORY) ? 'Answers'
+                      : (index === 0 && answerType === questionTypes.CATEGORY) ? 'Category/Tabs' : ''} />
+                </Row>
+              </Fragment>
+            )
+          })}
 
           {answerType === questionTypes.BINARY
-            ? <div></div>
+            ? null
             : <Button
               value="Add more"
               type="button"
@@ -39,7 +46,7 @@ export const AnswerList = ({ fields, answerType, isEdit }) => {
               raised={false}
               disableRipple={true}
               style={{ marginLeft: 32, fontWeight: 'normal' }}
-              onClick={() => fields.push({})} />
+              onClick={() => fields.push({ isNew: true, order: fields.length })} />
           }
         </Row>
       }

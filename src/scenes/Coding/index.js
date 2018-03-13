@@ -137,6 +137,20 @@ export class Coding extends Component {
     this.props.actions.applyAnswerToAll(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
   }
 
+  onSaveFlag = flagInfo => {
+    if (flagInfo.type === 3) {
+      this.props.actions.onSaveRedFlag(this.props.projectId, this.props.question.id, {
+        raisedBy: { userId: this.props.user.id, firstName: this.props.user.firstName, lastName: this.props.user.lastName },
+        ...flagInfo
+      })
+    } else {
+      this.props.actions.onSaveFlag(this.props.projectId, this.props.jurisdictionId, this.props.question.id, {
+        raisedBy: { userId: this.props.user.id, firstName: this.props.user.firstName, lastName: this.props.user.lastName },
+        ...flagInfo
+      })
+    }
+  }
+
   onShowGetStartedView = (noScheme, noJurisdictions) => {
     let startedText = ''
     if (this.props.userRole === 'Coder') {
@@ -169,14 +183,22 @@ export class Coding extends Component {
   onShowCodeView = () => (
     <Fragment>
       <QuestionCard
-        question={this.props.question} onChange={this.onAnswer}
-        userAnswers={this.props.userAnswers}
-        onChangeTextAnswer={this.onChangeTextAnswer} categories={this.props.categories}
+        question={this.props.question}
+        onChange={this.onAnswer}
+        userAnswers={this.props.question.isCategoryQuestion
+          ? this.props.userAnswers[this.props.selectedCategoryId]
+          : this.props.userAnswers}
+        onChangeTextAnswer={this.onChangeTextAnswer}
+        categories={this.props.categories}
         selectedCategory={this.props.selectedCategory}
         onChangeCategory={this.props.actions.onChangeCategory}
         mergedUserQuestions={null}
+        isValidation={false}
         onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
         onOpenAlert={this.onOpenApplyAllAlert}
+        onSaveFlag={this.onSaveFlag}
+        selectedCategoryId={this.props.selectedCategoryId}
+        user={this.props.user}
       />
       <FooterNavigate
         currentIndex={this.props.currentIndex} getNextQuestion={this.getNextQuestion}
@@ -273,8 +295,10 @@ const mapStateToProps = (state, ownProps) => {
       : null),
     isSchemeEmpty: state.scenes.coding.scheme === null ? null : state.scenes.coding.scheme.order.length === 0,
     userRole: state.data.user.currentUser.role,
+    user: state.data.user.currentUser,
     scheme: state.scenes.coding.scheme === null ? {} : state.scenes.coding.scheme,
-    allUserAnswers: state.scenes.coding.userAnswers || {}
+    allUserAnswers: state.scenes.coding.userAnswers || {},
+    selectedCategoryId: state.scenes.coding.selectedCategoryId || null
   }
 }
 
