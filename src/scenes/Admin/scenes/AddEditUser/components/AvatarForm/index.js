@@ -31,7 +31,7 @@ export class AvatarForm extends Component {
 
   onSubmitForm = () => {
     const formData = new FormData()
-    formData.append('avatarFile', this.state.editFile.file)
+    formData.append('avatarFile', this.state.editFile.file.fileList[0])
     this.props.actions.addUserPictureRequest(this.state.userId, formData)
   }
 
@@ -41,7 +41,6 @@ export class AvatarForm extends Component {
   }
 
   render() {
-
     const formActions = [
       { value: 'Cancel', onClick: this.onCloseModal, type: 'button' },
       { value: 'Save', type: 'submit' }
@@ -49,7 +48,7 @@ export class AvatarForm extends Component {
     const formEditActions = [
       { value: 'Cancel', onClick: this.onCloseModal, type: 'button' },
       { value: 'Remove', onClick: this.handleDeleteAvatar, type: 'button', },
-      { value: 'Save', type: 'submit' }
+      // { value: 'Save', type: 'submit' }
     ]
     return (
       <FormModal
@@ -63,19 +62,22 @@ export class AvatarForm extends Component {
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
           {this.state.isEdit
-            ? <Container flex style={{ padding: '15px 0 0 15px', width: '315px' }}>
+            ? <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
               <Avatar cardAvatar style={{ width: '200px', height: '200px' }} src={this.props.avatarUrl} />
             </Container>
-            : <Container flex>
-              <AvatarEditor
-                image={this.state.editFile.file}
-                width={200}
-                height={200}
-                border={50}
-                borderRadius={200}
-                color={[255, 255, 255, 0.6]}
-                scale={1.2}
-                rotate={0} />
+            // : <Container flex>
+            //   <AvatarEditor
+            //     image={this.state.editFile.file.fileList[0]}
+            //     width={200}
+            //     height={200}
+            //     border={50}
+            //     borderRadius={200}
+            //     color={[255, 255, 255, 0.6]}
+            //     scale={1.2}
+            //     rotate={0} />
+            // </Container>}
+            : <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
+              <Avatar cardAvatar style={{ width: '200px', height: '200px' }} src={this.state.editFile.file.base64} />
             </Container>}
         </ModalContent>
         <ModalActions edit={true} actions={this.state.isEdit ? formEditActions : formActions}></ModalActions>

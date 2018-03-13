@@ -94,7 +94,7 @@ export class AddEditUser extends Component {
     this.props.history.push({
       pathname: `/admin/edit/user/${this.selectedUser.id}/avatar`,
       state: {
-        file: files.fileList[0],
+        file: files,
         userId: this.selectedUser.id
       }
     })
