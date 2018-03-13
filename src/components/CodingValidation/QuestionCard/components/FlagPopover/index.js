@@ -190,7 +190,7 @@ export class FlagPopover extends Component {
     return (
       <Container style={{ width: 'unset', height: 24 }}>
         <Popover
-          title="Stop Coding this Question" open={this.state.redFlagOpen} target={{
+          title="Stop Coding This Question" open={this.state.redFlagOpen} target={{
           icon: 'report',
           color: this.props.questionFlags.length > 0 ? redFlagColor : '#d7e0e4',
           style: { paddingRight: 15, paddingLeft: 15 },
@@ -243,7 +243,7 @@ export class FlagPopover extends Component {
             </form>}
             <Row displayFlex style={{ alignSelf: 'flex-end', padding: 16 }}>
               <Button
-                onClick={this.onCloseRedPopover} raised={false} color="accent" value="Cancel" />
+                onClick={this.onCloseRedPopover} raised={false} color="accent" value={this.state.inEditMode ? 'Cancel' : 'Close' } />
               {this.state.inEditMode &&
               <Button
                 type="submit"

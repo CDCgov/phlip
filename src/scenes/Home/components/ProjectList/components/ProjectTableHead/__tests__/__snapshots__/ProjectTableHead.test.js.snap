@@ -31,9 +31,9 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     style={Object {}}
   >
     <WithStyles
-      aria-label="Sort list of projects by Name"
+      aria-label="Sort by Name"
       id="sort-by-name"
-      text="Sort projects by Name"
+      text="Sort by Name"
     >
       <WithStyles
         active={false}
@@ -55,9 +55,9 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     style={Object {}}
   >
     <WithStyles
-      aria-label="Sort list of projects by Date Last Edited"
+      aria-label="Sort by Date Last Edited"
       id="sort-by-dateLastEdited"
-      text="Sort projects by Date Last Edited"
+      text="Sort by Date Last Edited"
     >
       <WithStyles
         active={true}
@@ -79,9 +79,9 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     style={Object {}}
   >
     <WithStyles
-      aria-label="Sort list of projects by Last Edited By"
+      aria-label="Sort by Last Edited By"
       id="sort-by-lastEditedBy"
-      text="Sort projects by Last Edited By"
+      text="Sort by Last Edited By"
     >
       <WithStyles
         active={false}

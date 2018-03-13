@@ -36,7 +36,7 @@ export const Popover = props => {
           <Grow in={open}>
             <Card style={{ display: 'flex', flexDirection: 'column', zIndex: open ? 1200 : 0 }}>
               <Row style={{ padding: 16 }}>
-                <Typography type="button">{title}</Typography>
+                <Typography type="body2">{title}</Typography>
               </Row>
               <Divider />
               {children}
