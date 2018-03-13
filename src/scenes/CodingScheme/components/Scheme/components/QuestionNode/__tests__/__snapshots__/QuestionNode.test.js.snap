@@ -30,7 +30,7 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
           className="undefined undefined"
         >
           <div>
-            <Tooltip
+            <WithStyles
               placement="bottom"
               text="Drag to reorder"
             >
@@ -40,7 +40,7 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
               >
                 reorder
               </WithTheme>
-            </Tooltip>
+            </WithStyles>
           </div>
           <WithStyles
             onMouseEnter={[Function]}

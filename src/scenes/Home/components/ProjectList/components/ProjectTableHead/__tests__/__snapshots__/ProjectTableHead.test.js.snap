@@ -14,10 +14,12 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     }
   >
     <IconButton
+      aria-label="Sort bookmarked"
       color="rbg(0,0,0,0.54)"
       iconSize={24}
       id="sort-bookmarked"
       onClick={[Function]}
+      placement="top-start"
       tooltipText="Sort bookmarked"
     >
       bookmark_border
@@ -28,10 +30,9 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     padding="default"
     style={Object {}}
   >
-    <Tooltip
+    <WithStyles
       aria-label="Sort list of projects by Name"
       id="sort-by-name"
-      placement="top"
       text="Sort projects by Name"
     >
       <WithStyles
@@ -46,17 +47,16 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
       >
         Name
       </WithStyles>
-    </Tooltip>
+    </WithStyles>
   </TableCell>
   <TableCell
     key="dateLastEdited"
     padding="default"
     style={Object {}}
   >
-    <Tooltip
+    <WithStyles
       aria-label="Sort list of projects by Date Last Edited"
       id="sort-by-dateLastEdited"
-      placement="top"
       text="Sort projects by Date Last Edited"
     >
       <WithStyles
@@ -71,17 +71,16 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
       >
         Date Last Edited
       </WithStyles>
-    </Tooltip>
+    </WithStyles>
   </TableCell>
   <TableCell
     key="lastEditedBy"
     padding="default"
     style={Object {}}
   >
-    <Tooltip
+    <WithStyles
       aria-label="Sort list of projects by Last Edited By"
       id="sort-by-lastEditedBy"
-      placement="top"
       text="Sort projects by Last Edited By"
     >
       <WithStyles
@@ -96,7 +95,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
       >
         Last Edited By
       </WithStyles>
-    </Tooltip>
+    </WithStyles>
   </TableCell>
   <TableCell
     key="protocol"

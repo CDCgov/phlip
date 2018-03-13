@@ -8,7 +8,6 @@ import Progress from 'components/Progress'
 export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) => {
   let scaffold = []
   let className = ''
-  console.log(item)
 
   const questionTextStyles = {
     color: item.isCurrent === true

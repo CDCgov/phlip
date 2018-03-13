@@ -4,22 +4,22 @@ import { default as MuiIconButton } from 'material-ui/IconButton'
 import Icon from 'components/Icon'
 import Tooltip from 'components/Tooltip'
 
-const IconButton = ({ color, onClick, iconSize, style, iconStyle, tooltipText, id, placement, children, ...otherProps }) => {
+const IconButton = ({ color, onClick, iconSize, style, iconStyle, tooltipText, id, placement, children, disabled, ...otherProps }) => {
   const styles = {
     width: iconSize,
     height: iconSize,
-    ...style
+    ...style,
   }
 
   const Button = (
-    <MuiIconButton onClick={onClick} disableRipple style={styles} {...otherProps}>
-      <Icon color={color} size={iconSize} style={iconStyle}>
+    <MuiIconButton onClick={onClick} disableRipple style={styles} {...otherProps} disabled={disabled}>
+      <Icon color={color} size={iconSize} style={{ ...iconStyle }}>
         {children}
       </Icon>
     </MuiIconButton>
   )
 
-  return tooltipText.length > 0
+  return (tooltipText.length > 0 && !disabled)
     ? <Tooltip id={id} text={tooltipText} placement={placement}>{Button}</Tooltip>
     : Button
 }

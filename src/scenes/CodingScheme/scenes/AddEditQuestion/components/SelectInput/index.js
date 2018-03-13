@@ -9,11 +9,16 @@ import { FormControl, FormHelperText } from 'material-ui/Form'
 import IconButton from 'components/IconButton'
 import * as questionTypes from '../../constants'
 import Icon from 'components/Icon'
+import { MenuDown } from 'mdi-material-ui'
+
+const iconButtonStyles = {
+  height: 25,
+  width: 20
+}
 
 const SelectInput = ({ name, label, answerType, type, input, classes, index, currentValue, meta: { asyncValidating, active, touched, error, warning, dirty }, handleDelete, handleUp, handleDown, fields, isEdit, ...custom }) => {
   return (
     <Container alignItems={'center'}>
-
       <Column style={{ marginTop: 8 }}>
         {(() => {
           switch (answerType) {
@@ -49,6 +54,7 @@ const SelectInput = ({ name, label, answerType, type, input, classes, index, cur
             onClick={handleDelete}
             iconSize={20}
             tooltipText="Delete answer"
+            aria-label={`Delete ${index} answer`}
             id={`delete-answer-${index}`}>delete</IconButton>
           : (answerType === questionTypes.BINARY || isEdit)
             ? null
@@ -56,6 +62,7 @@ const SelectInput = ({ name, label, answerType, type, input, classes, index, cur
               color="action"
               onClick={handleDelete}
               iconSize={20}
+              aria-label={`Delete ${index} answer`}
               tooltipText="Delete answer"
               id={`delete-answer-${index}`}>delete</IconButton>
         }
@@ -67,8 +74,10 @@ const SelectInput = ({ name, label, answerType, type, input, classes, index, cur
             iconSize={36}
             disableRipple={false}
             disabled={!index - 1 >= 0}
-            tooltipText="Move answer choice up one position"
+            tooltipText="Move answer choice up"
+            aria-label="Move answer choice up one position"
             id={`move-answer-${index}-up`}
+            placement="top"
             onClick={handleUp}>arrow_drop_up</IconButton>
         </Row>
         <Row style={{ marginTop: -20 }}>
@@ -77,7 +86,9 @@ const SelectInput = ({ name, label, answerType, type, input, classes, index, cur
             iconSize={36}
             disableRipple={false}
             disabled={index + 1 === fields.length}
-            tooltipText="Move answer choice down one position"
+            placement="bottom"
+            tooltipText="Move answer choice down"
+            aria-label="Move answer choice down one position"
             id={`move-answer-${index}-down`}
             onClick={handleDown}>arrow_drop_down</IconButton>
         </Row>

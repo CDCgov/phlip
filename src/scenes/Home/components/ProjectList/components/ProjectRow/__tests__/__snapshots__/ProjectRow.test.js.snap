@@ -171,10 +171,12 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     }
   >
     <IconButton
+      aria-label="Export validated questions"
       color="#d4d4d4"
       iconSize={24}
       id="export-validated"
       onClick={[Function]}
+      placement="top-end"
       tooltipText="Export validated questions"
     >
       file_download
