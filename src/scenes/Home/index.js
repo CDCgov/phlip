@@ -74,10 +74,13 @@ export class Home extends Component {
             handleSortBookmarked={() => this.props.actions.sortBookmarked(!this.props.sortBookmarked)} />
         }
         <Route
+          exact
           path="/project/add" component={AddEditProject} />
         <Route
+          exact
           path="/project/edit/:id" component={AddEditProject} />
         <Route
+          exact
           path="/project/:id/jurisdictions" component={AddEditJurisdictions} />
       </Container>
     )

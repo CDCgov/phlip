@@ -9,7 +9,7 @@ export const getValidationOutlineRequest = (projectId, jurisdictionId) => ({
   jurisdictionId
 })
 
-export const validateQuestionRequest = (projectId, jurisdictionId, questionId, answerId, answerValue) => ({
+export const answerQuestionRequest = (projectId, jurisdictionId, questionId, answerId, answerValue) => ({
   type: types.UPDATE_USER_VALIDATION_REQUEST,
   projectId,
   jurisdictionId,

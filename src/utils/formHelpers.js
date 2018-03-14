@@ -18,3 +18,5 @@ export const validateDateRanges = values => {
 }
 
 export const trimWhitespace = str => str.trim()
+
+export const capitalizeFirstLetter = text => text.trim()[0].toUpperCase() + text.trim().slice(1)
