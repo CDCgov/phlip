@@ -13,17 +13,22 @@ import CodingScheme from './CodingScheme'
 import Coding from './Coding'
 import Validation from './Validation'
 import Protocol from './Protocol'
+import { Authorization } from 'components/AuthorizedRoute'
+
+const Coordinator = Authorization(['Admin', 'Coordinator'])
+const AdminRole = Authorization(['Admin'])
+const AllRoles = Authorization(['Admin', 'Coordinator', 'Coder'])
 
 const AuthenticatedScenes = () => (
   <Switch>
-    <Route path="/project/:id/code" component={Coding} />
-    <Route path="/project/:id/validate" component={Validation} />
+    <Route path="/project/:id/code" component={AllRoles(Coding)} />
+    <Route path="/project/:id/validate" component={AllRoles(Validation)} />
     <HeaderedLayout>
       <Switch>
-        <Route path="/admin" component={Admin} />
-        <Route path="/project/:id/coding-scheme" component={CodingScheme} />
-        <Route path="/project/:id/protocol" component={Protocol} />
-        <Route path="/" component={Home} />
+        <Route path="/admin" component={AdminRole(Admin)} />
+        <Route strict path="/project/:id/coding-scheme" component={Coordinator(CodingScheme)} />
+        <Route exact strict path="/project/:id/protocol" component={AllRoles(Protocol)} />
+        <Route strict path="/" component={AllRoles(Home)} />
       </Switch>
     </HeaderedLayout>
   </Switch>

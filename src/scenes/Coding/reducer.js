@@ -27,7 +27,8 @@ const INITIAL_STATE = {
   selectedCategory: 0,
   selectedCategoryId: null,
   userAnswers: {},
-  showNextButton: true
+  showNextButton: true,
+  mergedUserQuestions: null
 }
 
 
