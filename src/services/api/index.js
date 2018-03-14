@@ -122,6 +122,10 @@ export default {
     })
   },
 
+  updateUserImage(userId, image) {
+    return api.patch(`/users/${userId}`, image).then(res => res.data)
+  },
+
   getUserPicture(userId) {
     return api.get(`/users/${userId}/avatar`).then(res => {
       return res.status === 204 ? false : true
