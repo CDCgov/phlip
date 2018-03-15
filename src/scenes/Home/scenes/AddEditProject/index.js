@@ -86,7 +86,13 @@ export class AddEditProject extends Component {
   render() {
     const editAction = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Close modal' } },
-      { value: 'Edit', onClick: this.onEditForm, type: 'button', otherProps: { 'aria-label': 'Edit this project' } }
+      {
+        value: 'Edit',
+        onClick: this.onEditForm,
+        disabled: this.props.userRole === 'Coder',
+        type: 'button',
+        otherProps: { 'aria-label': 'Edit this project' }
+      }
     ]
 
     const actions = this.projectDefined && !this.state.edit
@@ -173,7 +179,8 @@ export class AddEditProject extends Component {
 const mapStateToProps = (state) => ({
   projects: Object.values(state.scenes.home.main.projects.byId) || [],
   form: state.form.projectForm || {},
-  formName: 'projectForm'
+  formName: 'projectForm',
+  userRole: state.data.user.currentUser.role || ''
 })
 
 const mapDispatchToProps = (dispatch) => ({
