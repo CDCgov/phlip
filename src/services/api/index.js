@@ -130,11 +130,23 @@ export default {
     })
   },
 
+  deleteUserPicture(userId) {
+    return api.delete(`/users/${userId}/avatar`).then(res => res.data)
+  },
+
   getProtocol(projectId) {
     return api.get(`/projects/${projectId}/protocol`).then(res => res.data.text)
   },
 
   saveProtocol(projectId, userId, protocol) {
     return api.put(`/projects/${projectId}/protocol`, { userId, text: protocol }).then(res => res.data)
+  },
+
+  saveRedFlag(questionId, flagInfo) {
+    return api.post(`/flags/schemequestionflag/${questionId}`, { ...flagInfo }).then(res => res.data)
+  },
+
+  clearFlag(flagId) {
+    return api.delete(`/flags/${flagId}`).then(res => res.data)
   }
 }

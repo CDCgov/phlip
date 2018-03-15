@@ -9,6 +9,7 @@ import Tabs from 'components/Tabs'
 import { Broom } from 'mdi-material-ui'
 import styles from './card-styles.scss'
 import * as questionTypes from '../constants'
+import FlagPopover from './components/FlagPopover'
 
 const TabContainer = props => {
   return (
@@ -20,47 +21,45 @@ const TabContainer = props => {
 
 export const QuestionCard = props => {
   const {
-    question, currentUserInitials, userAnswers, categories, mergedUserQuestions, selectedCategory,
-    onClearAnswer, onOpenAlert, onChangeCategory, onChange, onChangeTextAnswer
+    question, currentUserInitials, userAnswers, categories, mergedUserQuestions, selectedCategory, isValidation, user,
+    onClearAnswer, onOpenAlert, onChangeCategory, onChange, onChangeTextAnswer, onSaveFlag, onOpenFlagConfirmAlert
   } = props
 
   const questionContentProps = {
     onChange,
     onChangeTextAnswer,
+    onOpenFlagConfirmAlert,
     currentUserInitials,
+    user,
     question,
-    onOpenAlert
+    onOpenAlert,
+    userAnswers,
+    comment: userAnswers.comment,
+    isValidation,
+    mergedUserQuestions,
+    question
   }
 
   return (
     <Row displayFlex style={{ flex: '1 0 50%' }}>
       <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
         <Row displayFlex style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
-          {question.questionType !== questionTypes.CATEGORY && <IconButton onClick={onClearAnswer}>
+          {question.questionType !== questionTypes.CATEGORY &&
+          <IconButton onClick={onClearAnswer} aria-label="Clear answer" tooltipText="Clear answer" id="clear-answer">
             <Broom className={styles.sweep} aria-labelledby="Clear answer" />
           </IconButton>}
-          <IconButton color="#d7e0e4">
-            flag
-          </IconButton>
+          {!isValidation && <FlagPopover
+            userFlag={userAnswers.flag}
+            onSaveFlag={onSaveFlag}
+            questionFlags={question.flags}
+            user={user} />}
         </Row>
         <Divider />
         {categories !== undefined
           ? <TabContainer tabs={categories} selected={selectedCategory} onChangeCategory={onChangeCategory}>
-            <QuestionContent
-              {...questionContentProps}
-              comment={userAnswers.comment[categories[selectedCategory].id]}
-              userAnswers={userAnswers.answers[categories[selectedCategory].id]} question={question}
-              mergedUserQuestions={mergedUserQuestions !== null
-                ? mergedUserQuestions.answers[categories[selectedCategory].id]
-                : null}
-            />
+            <QuestionContent {...questionContentProps} />
           </TabContainer>
-          : <QuestionContent
-            {...questionContentProps}
-            userAnswers={userAnswers}
-            comment={userAnswers.comment}
-            mergedUserQuestions={mergedUserQuestions}
-          />
+          : <QuestionContent{...questionContentProps} />
         }
       </Column>
     </Row>

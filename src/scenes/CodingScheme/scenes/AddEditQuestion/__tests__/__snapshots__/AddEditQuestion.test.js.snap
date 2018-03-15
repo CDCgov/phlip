@@ -17,7 +17,6 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
     }
   }
   maxWidth="md"
-  onClose={[Function]}
   open={true}
   validate={[Function]}
 >
@@ -177,22 +176,27 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
         </Container>
       </ModalContent>
     </Container>
-    <ModalActions
+    <WithStyles
       actions={
         Array [
           Object {
             "onClick": [Function],
+            "otherProps": Object {
+              "aria-label": "Cancel and close form",
+            },
             "type": "button",
             "value": "Cancel",
           },
           Object {
             "disabled": false,
+            "otherProps": Object {
+              "aria-label": "Save form",
+            },
             "type": "submit",
             "value": "Add",
           },
         ]
       }
-      raised={true}
       style={
         Object {
           "margin": 0,

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { TableBody, TableHead, TableFooter, TableRow } from 'material-ui/Table'
-import Container, { Column } from 'components/Layout'
+import Container, { Column, Row } from 'components/Layout'
 import Card from 'components/Card'
 import Table from 'components/Table'
 import ProjectRow from './components/ProjectRow'
@@ -15,14 +15,14 @@ export const ProjectList = props => {
   return (
     <Container column flex>
       <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card />}>
-        <Container style={{ padding: 20, justifyContent: 'flex-end' }}>
+        <Row style={{ padding: 20, alignSelf: 'flex-end' }}>
           <SearchBar
             searchValue={searchValue}
             handleSearchValueChange={handleSearchValueChange}
             placeholder="Search"
           />
-        </Container>
-        <Table style={{ borderCollapse: 'separate' }}>
+        </Row>
+        <Table style={{ borderCollapse: 'separate', overflow: 'unset' }}>
           <TableHead>
             <ProjectTableHead
               role={user.role}

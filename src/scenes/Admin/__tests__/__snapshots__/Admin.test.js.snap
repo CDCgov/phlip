@@ -11,6 +11,9 @@ exports[`Admin Scene it should render correctly 1`] = `
       Object {
         "isLink": true,
         "path": "/admin/new/user",
+        "props": Object {
+          "aria-label": "Add new user",
+        },
         "state": Object {},
         "text": "+ Add New User",
       }

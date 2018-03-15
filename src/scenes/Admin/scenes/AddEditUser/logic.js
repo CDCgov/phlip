@@ -58,7 +58,20 @@ export const getUserPictureLogic = createLogic({
   }
 })
 
+export const deleteUserPictureLogic = createLogic({
+  type: types.DELETE_USER_PICTURE_REQUEST,
+  latest: true,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.DELETE_USER_PICTURE_SUCCESS,
+  },
+  async process({ action, api }) {
+    return await api.deleteUserPicture(action.userId)
+  }
+})
+
 export default [
+  deleteUserPictureLogic,
   getUserPictureLogic,
   addUserPictureLogic,
   updateUserLogic,

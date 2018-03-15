@@ -14,9 +14,13 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     }
   >
     <IconButton
+      aria-label="Sort bookmarked"
       color="rbg(0,0,0,0.54)"
       iconSize={24}
+      id="sort-bookmarked"
       onClick={[Function]}
+      placement="top-start"
+      tooltipText="Sort bookmarked"
     >
       bookmark_border
     </IconButton>
@@ -27,16 +31,22 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     style={Object {}}
   >
     <WithStyles
-      active={false}
-      direction="desc"
-      onClick={[Function]}
-      style={
-        Object {
-          "color": "inherit",
-        }
-      }
+      aria-label="Sort by Name"
+      id="sort-by-name"
+      text="Sort by Name"
     >
-      Name
+      <WithStyles
+        active={false}
+        direction="desc"
+        onClick={[Function]}
+        style={
+          Object {
+            "color": "inherit",
+          }
+        }
+      >
+        Name
+      </WithStyles>
     </WithStyles>
   </TableCell>
   <TableCell
@@ -45,16 +55,22 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     style={Object {}}
   >
     <WithStyles
-      active={true}
-      direction="desc"
-      onClick={[Function]}
-      style={
-        Object {
-          "color": "inherit",
-        }
-      }
+      aria-label="Sort by Date Last Edited"
+      id="sort-by-dateLastEdited"
+      text="Sort by Date Last Edited"
     >
-      Date Last Edited
+      <WithStyles
+        active={true}
+        direction="desc"
+        onClick={[Function]}
+        style={
+          Object {
+            "color": "inherit",
+          }
+        }
+      >
+        Date Last Edited
+      </WithStyles>
     </WithStyles>
   </TableCell>
   <TableCell
@@ -63,16 +79,22 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     style={Object {}}
   >
     <WithStyles
-      active={false}
-      direction="desc"
-      onClick={[Function]}
-      style={
-        Object {
-          "color": "inherit",
-        }
-      }
+      aria-label="Sort by Last Edited By"
+      id="sort-by-lastEditedBy"
+      text="Sort by Last Edited By"
     >
-      Last Edited By
+      <WithStyles
+        active={false}
+        direction="desc"
+        onClick={[Function]}
+        style={
+          Object {
+            "color": "inherit",
+          }
+        }
+      >
+        Last Edited By
+      </WithStyles>
     </WithStyles>
   </TableCell>
   <TableCell

@@ -12,7 +12,6 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
   handleSubmit={[Function]}
   height="400px"
   initialValues={Object {}}
-  onClose={[Function]}
   open={true}
   width="600px"
 >
@@ -78,23 +77,27 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
       />
     </Container>
   </ModalContent>
-  <ModalActions
+  <WithStyles
     actions={
       Array [
         Object {
           "onClick": [Function],
+          "otherProps": Object {
+            "aria-label": "Cancel edit view",
+          },
           "type": "button",
           "value": "Cancel",
         },
         Object {
           "disabled": false,
+          "otherProps": Object {
+            "aria-label": "Save form",
+          },
           "type": "submit",
           "value": "Create",
         },
       ]
     }
-    edit={true}
-    raised={false}
   />
 </FormModal>
 `;

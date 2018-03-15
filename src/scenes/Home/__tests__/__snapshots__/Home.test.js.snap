@@ -16,6 +16,9 @@ exports[`Home scene should render correctly 1`] = `
       Object {
         "isLink": true,
         "path": "/project/add",
+        "props": Object {
+          "aria-label": "Create New Project",
+        },
         "state": Object {
           "userDefined": null,
         },

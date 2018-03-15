@@ -1,48 +1,86 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { findDOMNode } from 'react-dom'
 import PropTypes from 'prop-types'
-import { default as MuiPopover } from 'material-ui/Popover'
-import Typography from 'material-ui/Typography'
-import { withStyles } from 'material-ui/styles'
-import Paper from 'material-ui/Paper'
+import { Manager, Popper, Target } from 'react-popper'
+import { Row } from 'components/Layout'
 
-const styles = theme => ({
-  paper: {
-    padding: theme.spacing.unit,
-  },
-  popover: {
-    pointerEvents: 'none',
-  },
-  popperClose: {
-    pointerEvents: 'none',
-  },
-})
+export class Popover extends Component {
+  state = {
+    open: true
+  }
 
-export const Popover = ({ answer, handleClose, popoverOpen, anchorEl, classes }) => {
+  target = null
 
-  return (
-    <Popover
-      open={popoverOpen}
-      anchorEl={anchorEl}
-      onClose={handleClose}
-      className={classes.popover}
-      classes={{
-        paper: classes.paper,
-      }}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'center',
-      }}
-      transformOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center',
-      }}
-      disableRestoreFocus
-    >
-      <Typography>{answer.firstName + ' ' + answer.lastName}</Typography>
-      <Typography>{answer.pincite}</Typography>
-    </Popover>
-  )
+  constructor(props, context) {
+    super(props, context)
+  }
+
+  onOpenTooltip = () => {
+    this.setState({
+      open: true
+    })
+  }
+
+  onCloseTooltip = () => {
+    this.setState({
+      open: false
+    })
+  }
+
+  render() {
+    const tooltipStyles = {
+      backgroundColor: '#6d6d6d',
+      opacity: this.state.open ? .9 : 0,
+      color: 'white',
+      padding: 8,
+      borderRadius: 2,
+      fontSize: 10,
+      fontFamily: 'Roboto',
+      transform: this.state.open ? 'scale(1)' : 'scale(0)'
+    }
+
+    return (
+      <Manager>
+        <Target>
+          {({ targetProps }) => (
+            React.cloneElement(this.props.children, {
+              ...this.props.children.props,
+              onMouseEnter: this.onOpenTooltip,
+              onMouseLeave: this.onCloseTooltip,
+              ref: node => {
+                this.target = findDOMNode(node)
+                targetProps.ref(this.target)
+              }
+            })
+          )}
+        </Target>
+        <Popper
+          placement="top"
+          eventsEnabled={this.state.open}
+          modifiers={{
+            preventOverflow: {
+              enabled: false
+            }
+          }}
+          style={{ zIndex: this.state.open ? 1200 : 0 }}>
+          {({ popperProps, restProps }) => {
+            return (
+              <div {...popperProps} {...restProps} style={{ ...popperProps.style, ...restProps.style }}>
+                <div style={tooltipStyles}>{this.props.title}</div>
+              </div>
+            )
+          }}
+        </Popper>
+      </Manager>
+    )
+  }
 }
 
+Popover.propTypes = {
+  open: PropTypes.bool,
+  title: PropTypes.string,
+  onOpen: PropTypes.func,
+  onClose: PropTypes.func
+}
 
-export default withStyles(styles)(Popover)
+export default Popover

@@ -81,7 +81,8 @@ export class Protocol extends Component {
             isLink: false,
             text: this.state.editMode ? 'Save' : 'Edit',
             onClick: this.state.editMode ? this.onSaveProtocol : this.onEnableEdit,
-            style: { color: 'black', backgroundColor: 'white' }
+            style: { color: 'black', backgroundColor: 'white' },
+            otherProps: { 'aria-label': this.state.editMode ? 'Edit protocol' : 'Save protocol' }
           }}
         />
         {this.state.editMode

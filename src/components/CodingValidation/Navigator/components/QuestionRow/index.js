@@ -20,14 +20,16 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
     fontWeight: 300,
     paddingLeft: 10,
     paddingRight: 10,
-    fontSize: '13px'
+    fontSize: '13px',
+    outline: 0
   }
 
   const rowStyles = {
     display: 'flex',
     alignItems: 'center',
     position: 'relative',
-    height: 40
+    height: 40,
+    outline: 0
   }
 
   item.ancestorSiblings.forEach((count, i) => {
@@ -70,17 +72,27 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
     <Fragment>
       {scaffold}
       <div
-        style={{ ...rowStyles, marginLeft: 23 * item.indent, cursor: 'pointer' }}
+        role="row"
+        style={{ ...rowStyles, marginLeft: 23 * item.indent, cursor: 'pointer', outline: 0 }}
         onClick={() => onQuestionSelected(item)}
-      >
-        <span style={{ minWidth: 20, minHeight: 20, maxHeight: 20, maxWidth: 20 }}>{children}</span>
-        <Typography style={questionTextStyles} type="body1" noWrap>
+        aria-label="Click to show this question"
+        tabIndex={0}
+        aria-rowindex={item.treeIndex}>
+        <span style={{ minWidth: 20, minHeight: 20, maxHeight: 20, maxWidth: 20, outline: 0 }} tabIndex={-1}>{children}</span>
+        <Typography tabIndex={-1} style={questionTextStyles} type="body1" noWrap aria-label="Question number and text">
           {item.number && <span>{`${item.number}. `}</span>}
           {item.text}
         </Typography>
-        {item.questionType === 2 && <Icon size={12} color={questionTextStyles.color} style={{ paddingRight: 5 }}>filter_none</Icon>}
-        {item.isAnswered && <Icon color="#45ad70" size={19}>check</Icon>}
-        {item.hasOwnProperty('completedProgress') && <Progress progress={item.completedProgress} />}
+        {item.questionType === 2 && <Icon
+          size={12}
+          tabIndex={-1}
+          aria-label="Question is of type cateogry"
+          color={questionTextStyles.color}
+          style={{ paddingRight: 5 }}>filter_none</Icon>}
+        {item.isAnswered && <Icon aria-label="Question has been answered" role="gridcell" tabIndex={-1} color="#45ad70" size={19}>check</Icon>}
+        {item.hasOwnProperty('completedProgress') && <Progress
+          aria-label={`This question is ${item.completedProgress} percent answered`}
+          progress={item.completedProgress} />}
       </div>
     </Fragment>
   )

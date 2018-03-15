@@ -15,54 +15,73 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
   return (
     <TableRow key={project.id}>
       <TableCell key={`${project.id}-bookmarked`} style={{ width: 48 }}>
-        <IconButton color={bookmarked ? '#fdc43b' : greyIcon} onClick={() => actions.toggleBookmark(project)}>
+        <IconButton
+          color={bookmarked ? '#fdc43b' : greyIcon}
+          onClick={() => actions.toggleBookmark(project)}
+          tooltipText="Bookmark project"
+          aria-label="Bookmark this project"
+          id="bookmark-project">
           {bookmarked ? 'bookmark' : 'bookmark_border'}
         </IconButton>
       </TableCell>
       <TableCell key={`${project.id}-name`}>
-        <TextLink to={{ pathname: `/project/edit/${project.id}`, state: { projectDefined: { ...project } } }}>{project.name}</TextLink>
+        <TextLink
+          aria-label="Edit project details" to={{
+          pathname: `/project/edit/${project.id}`,
+          state: { projectDefined: { ...project } }
+        }}>{project.name}</TextLink>
       </TableCell>
-      <TableCell key={`${project.id}-dateLastEdited`}
-        style={{ textAlign: 'unset' }}>
+      <TableCell
+        key={`${project.id}-dateLastEdited`} style={{ textAlign: 'unset' }}>
         {new Date(project.dateLastEdited).toLocaleDateString()}
       </TableCell>
       <TableCell key={`${project.id}-lastEditedBy`}>
         {project.lastEditedBy}
       </TableCell>
       {role !== 'Coder' &&
-        <TableCell key={`${project.id}-protocol`} style={{ textAlign: 'center' }}>
-          <TextLink to={`/project/${project.id}/protocol`}>Add/Edit</TextLink>
-        </TableCell>
+      <TableCell key={`${project.id}-protocol`} style={{ textAlign: 'center' }}>
+        <TextLink aria-label="Add and edit project protocol" to={`/project/${project.id}/protocol`}>Add/Edit</TextLink>
+      </TableCell>
       }
       <TableCell key={`${project.id}-jurisdictions`} style={{ textAlign: 'center' }}>
-        <TextLink to={`/project/${project.id}/jurisdictions`} id={project.id}>Add/Edit</TextLink>
+        <TextLink
+          aria-label="Add and edit project jurisdictions"
+          to={`/project/${project.id}/jurisdictions`}
+          id={project.id}>Add/Edit</TextLink>
       </TableCell>
       {role !== 'Coder' &&
-        <TableCell key={`${project.id}-codingScheme`} style={{ textAlign: 'center' }}>
-          <TextLink to={`/project/${project.id}/coding-scheme`}>Edit</TextLink>
-        </TableCell>
+      <TableCell key={`${project.id}-codingScheme`} style={{ textAlign: 'center' }}>
+        <TextLink aria-label="Add and edit project coding scheme" to={`/project/${project.id}/coding-scheme`}>Edit</TextLink>
+      </TableCell>
       }
       <TableCell key={`${project.id}-code`} style={{ textAlign: 'center' }}>
         <TextLink to={{ pathname: `/project/${project.id}/code` }}>
-          <Button raised={false} value="Code" listButton />
+          <Button raised={false} value="Code" listButton aria-label="Code project" />
         </TextLink>
       </TableCell>
       {role !== 'Coder' &&
-        <TableCell key={`${project.id}-validation`} style={{ textAlign: 'center' }}>
-          <TextLink to={{ pathname: `/project/${project.id}/validate` }}>
-            <Button raised={false} value="Validate" listButton />
-          </TextLink>
-        </TableCell>
+      <TableCell key={`${project.id}-validation`} style={{ textAlign: 'center' }}>
+        <TextLink to={{ pathname: `/project/${project.id}/validate` }}>
+          <Button raised={false} value="Validate" listButton aria-label="Validate project" />
+        </TextLink>
+      </TableCell>
       }
       {role !== 'Coder' && <TableCell key={`${project.id}-export`} style={{ textAlign: 'center' }}>
-        <IconButton color={greyIcon} onClick={() => actions.onExport}>file_download</IconButton>
+        <IconButton
+          color={greyIcon}
+          tooltipText="Export validated questions"
+          placement="top-end"
+          aria-label="Export validated questions"
+          onClick={() => actions.onExport}
+          id="export-validated">
+          file_download
+        </IconButton>
       </TableCell>}
     </TableRow>
   )
 }
 
-ProjectRow.propTypes = {
-}
+ProjectRow.propTypes = {}
 
 const mapStateToProps = (state, ownProps) => ({
   project: state.scenes.home.main.projects.byId[ownProps.id],

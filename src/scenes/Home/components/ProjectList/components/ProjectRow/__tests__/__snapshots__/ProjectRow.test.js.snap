@@ -14,9 +14,12 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     }
   >
     <IconButton
+      aria-label="Bookmark this project"
       color="#d4d4d4"
       iconSize={24}
+      id="bookmark-project"
       onClick={[Function]}
+      tooltipText="Bookmark project"
     >
       bookmark_border
     </IconButton>
@@ -26,6 +29,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     padding="default"
   >
     <WithTheme
+      aria-label="Edit project details"
       to={
         Object {
           "pathname": "/project/edit/1",
@@ -70,6 +74,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     }
   >
     <WithTheme
+      aria-label="Add and edit project protocol"
       to="/project/1/protocol"
     >
       Add/Edit
@@ -85,6 +90,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     }
   >
     <WithTheme
+      aria-label="Add and edit project jurisdictions"
       id={1}
       to="/project/1/jurisdictions"
     >
@@ -101,6 +107,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     }
   >
     <WithTheme
+      aria-label="Add and edit project coding scheme"
       to="/project/1/coding-scheme"
     >
       Edit
@@ -123,6 +130,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     >
       <WithTheme
+        aria-label="Code project"
         listButton={true}
         raised={false}
         value="Code"
@@ -146,6 +154,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     >
       <WithTheme
+        aria-label="Validate project"
         listButton={true}
         raised={false}
         value="Validate"
@@ -162,9 +171,13 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     }
   >
     <IconButton
+      aria-label="Export validated questions"
       color="#d4d4d4"
       iconSize={24}
+      id="export-validated"
       onClick={[Function]}
+      placement="top-end"
+      tooltipText="Export validated questions"
     >
       file_download
     </IconButton>

@@ -8,7 +8,6 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
   spacing={0}
   style={
     Object {
-      "height": 80,
       "padding": "20px 27px",
     }
   }
@@ -23,14 +22,17 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
     flex={false}
     style={
       Object {
+        "display": "flex",
         "paddingRight": 5,
       }
     }
   >
     <IconButton
+      aria-label="Go back"
       color="black"
-      iconSize={30}
+      iconSize={28}
       onClick={[Function]}
+      tooltipText=""
     >
       arrow_back
     </IconButton>
@@ -48,11 +50,6 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
     >
       Coding
     </span>
-  </WithStyles>
-  <WithStyles
-    color="inherit"
-    type="title"
-  >
     <span
       style={
         Object {
@@ -129,6 +126,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       to="/project/1/protocol"
     >
       <WithTheme
+        aria-label="View and edit protocol"
         style={
           Object {
             "backgroundColor": "white",

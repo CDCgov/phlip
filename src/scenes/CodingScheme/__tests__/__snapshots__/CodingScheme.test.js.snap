@@ -11,6 +11,9 @@ exports[`CodingScheme scene should render correctly 1`] = `
       Object {
         "isLink": true,
         "path": "/project/undefined/coding-scheme/add",
+        "props": Object {
+          "aria-label": "Add new question to  coding scheme",
+        },
         "state": Object {
           "questionDefined": null,
         },

@@ -55,8 +55,12 @@ const getQuestionsFromOutline = (outline, questions) => {
 }
 
 const sortQuestions = questions => {
+  const sortedPossibleAnswerQuestion = questions.map(question => {
+    return { ...question, possibleAnswers: sortList(question.possibleAnswers, 'order', 'asc') }
+  })
+
   const sortedChildren = map({
-    treeData: questions,
+    treeData: sortedPossibleAnswerQuestion,
     getNodeKey,
     callback: ({ node }) => {
       if (node.children) {
@@ -85,9 +89,16 @@ const setHovering = (node, hovering) => {
   return node
 }
 
+const sortPossibleAnswers = questions => {
+  return questions.map((question) => {
+    return sortList(question.possibleAnswers, 'order', 'asc')
+  })
+}
+
 const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_SCHEME_SUCCESS:
+      sortPossibleAnswers(action.payload.schemeQuestions)
       return {
         ...state,
         questions: sortQuestions(
@@ -153,17 +164,6 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         flatQuestions: [...state.flatQuestions, action.payload]
       }
 
-    case types.UPDATE_QUESTION_REQUEST:
-      return {
-        ...state,
-        questions: changeNodeAtPath({
-          treeData: state.questions,
-          path: action.path,
-          getNodeKey,
-          newNode: { ...action.question, hovering: false }
-        })
-      }
-
     case types.ADD_CHILD_QUESTION_SUCCESS:
       const newTree = addNodeUnderParent({
         treeData: state.questions,
@@ -182,7 +182,21 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.UPDATE_QUESTION_SUCCESS:
-      return state
+      const updatedTree = changeNodeAtPath({
+        treeData: state.questions,
+        path: action.payload.path,
+        getNodeKey,
+        newNode: { ...action.payload, hovering: false }
+      })
+
+
+
+      return {
+        ...state,
+        questions: updatedTree,
+        outline: questionsToOutline(updatedTree),
+        empty: false
+      }
 
     case types.CLEAR_STATE:
       return INITIAL_STATE

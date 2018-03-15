@@ -30,12 +30,17 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
           className="undefined undefined"
         >
           <div>
-            <WithTheme
-              color="black"
-              size="24"
+            <WithStyles
+              placement="bottom"
+              text="Drag to reorder"
             >
-              reorder
-            </WithTheme>
+              <WithTheme
+                color="black"
+                size="24"
+              >
+                reorder
+              </WithTheme>
+            </WithStyles>
           </div>
           <WithStyles
             onMouseEnter={[Function]}

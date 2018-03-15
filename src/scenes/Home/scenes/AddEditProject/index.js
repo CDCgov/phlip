@@ -12,14 +12,19 @@ import TextInput from 'components/TextInput'
 import Dropdown from 'components/Dropdown'
 import Container, { Row } from 'components/Layout'
 import DetailRow from './components/DetailRow'
+import withFormAlert from 'components/withFormAlert'
 
 export class AddEditProject extends Component {
   static propTypes = {
     actions: PropTypes.object,
+    formActions: PropTypes.object,
     projects: PropTypes.arrayOf(PropTypes.object),
     form: PropTypes.object,
+    formName: PropTypes.string,
+    match: PropTypes.object,
     history: PropTypes.object,
-    location: PropTypes.object
+    location: PropTypes.object,
+    onCloseModal: PropTypes.func
   }
 
   constructor(props, context) {
@@ -79,18 +84,23 @@ export class AddEditProject extends Component {
   formatDate = (value, name) => new Date(value).toLocaleDateString()
 
   render() {
-    const editAction = [{ value: 'Edit', onClick: this.onEditForm, type: 'button' }]
+    const editAction = [
+      { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Close modal' } },
+      { value: 'Edit', onClick: this.onEditForm, type: 'button', otherProps: { 'aria-label': 'Edit this project' } }
+    ]
 
     const actions = this.projectDefined && !this.state.edit
       ? editAction
-      : [{ value: 'Cancel', onClick: this.onCancel, type: 'button' },
-      {
-        value: this.projectDefined
-          ? 'Save'
-          : 'Create',
-        type: 'submit',
-        disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors)
-      }
+      : [
+        { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Cancel edit view' } },
+        {
+          value: this.projectDefined
+            ? 'Save'
+            : 'Create',
+          type: 'submit',
+          disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors),
+          otherProps: { 'aria-label': 'Save form' }
+        }
       ]
 
     const options = [
@@ -104,11 +114,15 @@ export class AddEditProject extends Component {
         form="projectForm"
         handleSubmit={this.handleSubmit}
         asyncValidate={this.validateProjectName}
-        asyncBlurFields={['name']} onClose={this.onCancel}
+        asyncBlurFields={['name']}
+        onClose={this.props.onCloseModal}
         initialValues={this.props.location.state.projectDefined || {}}
-        width="600px" height="400px">
-        <ModalTitle title={this.getModalTitle()} edit={this.state.edit}
-          closeButton={!!this.projectDefined} onEditForm={this.onEditForm} onCloseForm={this.onCancel} />
+        width="600px" height="400px"
+      >
+        <ModalTitle
+          title={this.getModalTitle()} edit={this.state.edit}
+          closeButton={!!this.projectDefined} onEditForm={this.onEditForm} onCloseForm={this.onCancel}
+        />
         <Divider />
         <ModalContent>
           <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px 0 15px' }}>
@@ -132,25 +146,25 @@ export class AddEditProject extends Component {
               disabled={!this.state.edit}
             />
             {this.projectDefined &&
-              <DetailRow
-                component={TextInput}
-                disabled={true}
-                label="Created By"
-                name="createdBy"
-              />}
+            <DetailRow
+              component={TextInput}
+              disabled={true}
+              label="Created By"
+              name="createdBy"
+            />}
             {this.projectDefined &&
-              <DetailRow
-                component={TextInput}
-                disabled={true}
-                label="Created Date"
-                name="dateCreated"
-                format={this.formatDate}
-                style={{ paddingBottom: 0 }}
-              />
+            <DetailRow
+              component={TextInput}
+              disabled={true}
+              label="Created Date"
+              name="dateCreated"
+              format={this.formatDate}
+              style={{ paddingBottom: 0 }}
+            />
             }
           </Container>
         </ModalContent>
-        <ModalActions edit={this.state.edit} actions={actions} />
+        <ModalActions actions={actions} />
       </FormModal>
     )
   }
@@ -158,7 +172,8 @@ export class AddEditProject extends Component {
 
 const mapStateToProps = (state) => ({
   projects: Object.values(state.scenes.home.main.projects.byId) || [],
-  form: state.form.projectForm || {}
+  form: state.form.projectForm || {},
+  formName: 'projectForm'
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -166,4 +181,4 @@ const mapDispatchToProps = (dispatch) => ({
   formActions: bindActionCreators(formActions, dispatch)
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEditProject))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withFormAlert(AddEditProject)))

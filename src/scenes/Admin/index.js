@@ -6,7 +6,7 @@ import Divider from 'material-ui/Divider'
 import UserList from './components/UserList/index'
 import PageHeader from 'components/PageHeader'
 import * as actions from './actions'
-import { bindActionCreators } from 'redux';
+import { bindActionCreators } from 'redux'
 import AddEditUser from './scenes/AddEditUser'
 import { Route } from 'react-router-dom'
 import Container from 'components/Layout'
@@ -36,8 +36,13 @@ export class Admin extends Component {
           pageTitle="User Management"
           protocolButton={false}
           projectName=""
-          otherButton={{ isLink: true, text: '+ Add New User', path: '/admin/new/user', state: {}}}
-        />
+          otherButton={{
+            isLink: true,
+            text: '+ Add New User',
+            path: '/admin/new/user',
+            state: {},
+            props: { 'aria-label': 'Add new user' }
+          }} />
         <Divider />
         <UserList
           users={this.props.visibleUsers}
@@ -50,11 +55,9 @@ export class Admin extends Component {
           handlePagechange={(event, page) => this.props.actions.updateUserPage(page)}
           handleRowsChange={event => this.props.actions.updateUserRows(event.target.value)} />
         <Route
-          path="/admin/new/user"
-          component={AddEditUser} />
+          path="/admin/new/user" component={AddEditUser} />
         <Route
-          path="/admin/edit/user/:id"
-          component={AddEditUser} />
+          path="/admin/edit/user/:id" component={AddEditUser} />
       </Container>
     )
   }
@@ -69,6 +72,5 @@ const mapStateToProps = (state) => ({
   direction: state.scenes.admin.main.direction
 })
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
-
 
 export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(Admin))

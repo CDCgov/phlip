@@ -4,6 +4,7 @@ import { TableSortLabel } from 'material-ui/Table'
 import TableRow from 'components/TableRow'
 import TableCell from 'components/TableCell'
 import IconButton from 'components/IconButton'
+import Tooltip from 'components/Tooltip'
 
 const columns = [
   { key: 'name', label: 'Name', hasSort: true },
@@ -30,7 +31,13 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
   return (
     <TableRow key="headers">
       <TableCell key="bookmarked" style={{ width: 48 }}>
-        <IconButton color="rbg(0,0,0,0.54)" onClick={() => onSortBookmarked()}>
+        <IconButton
+          id="sort-bookmarked"
+          color="rbg(0,0,0,0.54)"
+          onClick={() => onSortBookmarked()}
+          aria-label="Sort bookmarked"
+          placement="top-start"
+          tooltipText="Sort bookmarked">
           {sortBookmarked ? 'bookmark' : 'bookmark_border'}
         </IconButton>
       </TableCell>
@@ -38,13 +45,18 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
       {visible.map(c => (
         <TableCell key={c.key} style={{ ...c.style }}>
           {c.hasSort ? (
-            <TableSortLabel
-              active={sortBy === c.key}
-              style={{ color: 'inherit' }}
-              direction={direction}
-              onClick={() => onRequestSort(c.key)}>
-              {c.label}
-            </TableSortLabel>
+            <Tooltip
+              text={`Sort by ${c.label}`}
+              id={`sort-by-${c.key}`}
+              aria-label={`Sort by ${c.label}`}>
+              <TableSortLabel
+                active={sortBy === c.key}
+                style={{ color: 'inherit' }}
+                direction={direction}
+                onClick={() => onRequestSort(c.key)}>
+                {c.label}
+              </TableSortLabel>
+            </Tooltip>
           ) : c.label}
         </TableCell>
       ))}

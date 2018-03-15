@@ -40,12 +40,12 @@ describe('Home scene - ProjectList - ProjectRow component', () => {
   describe('bookmark icon', () => {
     test('should be `bookmark` if the project is bookmarked', () => {
       const wrapper = setup({ bookmarked: true }).find('tr').find('td').at(0)
-      expect(wrapper.text()).toEqual('bookmark')
+      expect(wrapper.text()).toContain('bookmark')
     })
 
     test('should be `bookmark_border` if the project is not bookmarked', () => {
       const wrapper = setup().find('tr').find('td').at(0)
-      expect(wrapper.text()).toEqual('bookmark_border')
+      expect(wrapper.text()).toContain('bookmark_border')
     })
 
     test('should be grey if the project is not bookmarked', () => {
@@ -62,7 +62,7 @@ describe('Home scene - ProjectList - ProjectRow component', () => {
   test('should call actions.toggleBookmark', () => {
     const spy = jest.spyOn(props.actions, 'toggleBookmark')
     let wrapper = setup()
-    wrapper.find('tr').find('td').at(0).find('IconButton').at(0).simulate('click')
+    wrapper.find('tr').find('td').at(0).find('Tooltip').at(0).find('IconButton').at(0).simulate('click')
     wrapper.update()
     expect(spy).toHaveBeenCalled()
   })
@@ -70,7 +70,7 @@ describe('Home scene - ProjectList - ProjectRow component', () => {
   xtest('should call onExport', () => {
     const spy = jest.spyOn(props.actions, 'onExport')
     let wrapper = setup()
-    wrapper.find('tr').find('td').at(9).find('IconButton').at(0).simulate('click')
+    wrapper.find('tr').find('td').at(9).find('Tooltip').at(0).find('IconButton').at(0).simulate('click')
     wrapper.update()
     expect(spy).toHaveBeenCalled()
   })
