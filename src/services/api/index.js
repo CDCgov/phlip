@@ -50,6 +50,22 @@ export default {
     return api.put(`/users/${user.id}`, user).then(res => res.data)
   },
 
+  // Adds an avatar to a user, called in Admin/scenes/AddEditUser/logic
+  addUserPicture(userId, avatarFile) {
+    return api.post(`/users/${userId}/avatar`, avatarFile).then(res => {
+      let returnObj = {
+        userId: userId,
+        data: res.data
+      }
+      return returnObj
+    })
+  },
+
+  // Deletes an avatar for a user, called in Admin/scenes/AddEditUser/logic
+  deleteUserPicture(userId) {
+    return api.delete(`/users/${userId}/avatar`).then(res => res.data)
+  },
+
   // Get project bookmarks for a user, called in Login/logic
   getUserBookmarks(id) {
     return api.get(`/users/${id}/bookmarkedprojects`).then(res => res.data)
@@ -125,6 +141,16 @@ export default {
       .then(res => res.data)
   },
 
+  // Saves a red flag for a schemequestion, called in Coding/logic
+  saveRedFlag(questionId, flagInfo) {
+    return api.post(`/flags/schemequestionflag/${questionId}`, { ...flagInfo }).then(res => res.data)
+  },
+
+  // Clears a flag based on flag id, called in Validation/logic
+  clearFlag(flagId) {
+    return api.delete(`/flags/${flagId}`).then(res => res.data)
+  },
+
   // Gets user coded questions for a project and jurisdiction, called in Coding/logic, Validation/logic
   getUserCodedQuestions(userId, projectId, jurisdictionId) {
     return api.get(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions`).then(res => res.data)
@@ -146,16 +172,7 @@ export default {
     return api.get(`/projects/${projectId}/coders`).then(res => res.data)
   },
 
-  addUserPicture(userId, avatarFile) {
-    return api.post(`/users/${userId}/avatar`, avatarFile).then(res => {
-      let returnObj = {
-        userId: userId,
-        data: res.data
-      }
-      return returnObj
-    })
-  },
-
+  // Gets a picture for user, called in Admin/scenes/AddEditUser/logic, Validation/logic
   getUserPicture(userId) {
     return api.get(`/users/${userId}/avatar`).then(res => {
       return res.status !== 204
@@ -164,23 +181,13 @@ export default {
     })
   },
 
-  deleteUserPicture(userId) {
-    return api.delete(`/users/${userId}/avatar`).then(res => res.data)
-  },
-
+  // Gets the protocol for a project, called in Protocol/logic
   getProtocol(projectId) {
     return api.get(`/projects/${projectId}/protocol`).then(res => res.data.text)
   },
 
+  // Saves the protocol for a project, called in Protocol/logic
   saveProtocol(projectId, userId, protocol) {
     return api.put(`/projects/${projectId}/protocol`, { userId, text: protocol }).then(res => res.data)
-  },
-
-  saveRedFlag(questionId, flagInfo) {
-    return api.post(`/flags/schemequestionflag/${questionId}`, { ...flagInfo }).then(res => res.data)
-  },
-
-  clearFlag(flagId) {
-    return api.delete(`/flags/${flagId}`).then(res => res.data)
   }
 }
