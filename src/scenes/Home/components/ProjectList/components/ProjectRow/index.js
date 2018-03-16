@@ -38,17 +38,16 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
       <TableCell key={`${project.id}-lastEditedBy`}>
         {project.lastEditedBy}
       </TableCell>
-      {role !== 'Coder' &&
       <TableCell key={`${project.id}-protocol`} style={{ textAlign: 'center' }}>
         <TextLink aria-label="Add and edit project protocol" to={`/project/${project.id}/protocol`}>Add/Edit</TextLink>
       </TableCell>
-      }
+      {role !== 'Coder' &&
       <TableCell key={`${project.id}-jurisdictions`} style={{ textAlign: 'center' }}>
         <TextLink
           aria-label="Add and edit project jurisdictions"
           to={`/project/${project.id}/jurisdictions`}
           id={project.id}>Add/Edit</TextLink>
-      </TableCell>
+      </TableCell>}
       {role !== 'Coder' &&
       <TableCell key={`${project.id}-codingScheme`} style={{ textAlign: 'center' }}>
         <TextLink aria-label="Add and edit project coding scheme" to={`/project/${project.id}/coding-scheme`}>Edit</TextLink>
