@@ -16,7 +16,7 @@ const props = {
     updateRows: jest.fn(),
     toggleBookmark: jest.fn(),
     sortBookmarked: jest.fn(),
-    updateSearchValue: jest.fn(),
+    updateSearchValue: jest.fn()
   },
   user: {
     id: 2,
@@ -76,6 +76,21 @@ describe('Home scene', () => {
     test('should display the content of errorContent prop in error message', () => {
       const wrapper = setup({ error: true, errorContent: 'We could not get projects.' })
       expect(wrapper.find('CardError').text()).toContain('Uh-oh, something went wrong. We could not get projects.')
+    })
+  })
+
+  describe('Unauthorized routes', () => {
+    test('should display PageNotFound if the user role is Coder and they try to go to add project', () => {
+      const wrapper = setup({ user: { role: 'Coder' }, location: { pathname: '/project/add' } }, ['/project/add'])
+      expect(wrapper.find('PageNotFound')).toHaveLength(1)
+    })
+
+    test('should display PageNotFound if the user role is Coder and they try to go to jurisdictions', () => {
+      const wrapper = setup({
+        user: { role: 'Coder' },
+        location: { pathname: '/project/1/jurisdictions' }
+      }, ['/project/1/jurisdictions'])
+      expect(wrapper.find('PageNotFound')).toHaveLength(1)
     })
   })
 })
