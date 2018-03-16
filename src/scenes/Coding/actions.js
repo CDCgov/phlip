@@ -80,7 +80,7 @@ export const getUserCodedQuestions = (projectId, jurisdictionId) => ({
 export const updateEditedFields = projectId => ({ type: types.UPDATE_EDITED_FIELDS, projectId })
 
 // Dispatched when a user selected a question from the navigator
-export const onQuestionSelectedInNav = question => ({ type: types.ON_QUESTION_SELECTED_IN_NAV, question })
+export const onQuestionSelectedInNav = (question, projectId, jurisdictionId) => ({ type: types.ON_QUESTION_SELECTED_IN_NAV, question, projectId, jurisdictionId })
 
 // Dispatched when a user clicks the 'Apply answer to all categories' button for a category question
 export const applyAnswerToAll = (projectId, jurisdictionId, questionId) => ({

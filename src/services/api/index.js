@@ -132,8 +132,9 @@ export default {
 
   // Create an empty coded question object, called in Coding/logic, Validation/logic
   createEmptyCodedQuestion(questionId, projectId, jurisdictionId, userId, questionObj) {
-    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}/stage`, questionObj)
-      .then(res => res.data)
+    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, questionObj)
+     // .then(res => res.data)
+      .then(res => questionObj.categories.length > 0 ? { ...questionObj, categoryId: questionObj.categories[0] } : questionObj)
   },
 
   // Answer a question for a user (creates a coded question), jurisdiction and project, called in Coding/logic

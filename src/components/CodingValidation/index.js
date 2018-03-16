@@ -199,7 +199,7 @@ const withCodingValidation = (WrappedComponent, actions) => {
             allUserAnswers={this.props.allUserAnswers}
             currentQuestion={this.props.question}
             selectedCategory={this.props.selectedCategory}
-            handleQuestionSelected={this.props.actions.onQuestionSelectedInNav} />
+            handleQuestionSelected={(item) => this.props.actions.onQuestionSelectedInNav(item, this.props.projectId, this.props.jurisdictionId)} />
           <HeaderedLayout
             padding={false}
             className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}>

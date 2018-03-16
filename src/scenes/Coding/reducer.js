@@ -1,19 +1,14 @@
 import * as types from './actionTypes'
-import { normalize, updater } from 'utils'
 import {
-  getNextQuestion,
-  getPreviousQuestion,
   determineShowButton,
   handleUpdateUserAnswers,
   handleUpdateUserCodedQuestion,
   handleUpdateUserCategoryChild,
   handleClearAnswers,
-  initializeUserAnswers,
   handleUserPinciteQuestion,
   initializeNavigator,
-  getQuestionSelectedInNav, handleCheckCategories
+  handleCheckCategories
 } from 'utils/codingHelpers'
-
 import { sortList } from 'utils'
 
 const INITIAL_STATE = {
@@ -60,18 +55,12 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.GET_QUESTION_SUCCESS:
-      const updatedState = {
-        ...state,
-        userAnswers: action.payload.userAnswers,
-        scheme: action.payload.scheme
-      }
-
       return {
-        ...updatedState,
+        ...action.payload.updatedState,
         ...handleCheckCategories(
           action.payload.question,
           action.payload.currentIndex,
-          updatedState
+          action.payload.updatedState
         )
       }
 

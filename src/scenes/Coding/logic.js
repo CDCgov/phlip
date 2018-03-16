@@ -130,29 +130,40 @@ export const getQuestionLogic = createLogic({
       : checkIfAnswered(state.scheme.byId[combinedQuestion.id], state.userAnswers)
 
     // If it's not answered create an empty coded question object
-    /*if (!answered) {
-      codedQuestion = await api.createEmptyCodedQuestion(combinedQuestion.id, action.projectId, action.jurisdictionId, userId, getFinalCodedObject(state, action))
+    if (!answered) {
+      codedQuestion = await api.createEmptyCodedQuestion(
+        combinedQuestion.id, action.projectId, action.jurisdictionId, userId, {
+          categories: questionInfo.selectedCategoryId === null ? [] : [questionInfo.selectedCategoryId],
+          flag: { notes: '', type: 0 },
+          codedAnswers: [],
+          comment: '',
+          schemeQuestionId: combinedQuestion.id
+        })
     } else {
       codedQuestion = state.userAnswers[combinedQuestion.id]
     }
-
-    const userAnswers = {
-      ...state.userAnswers,
-      [combinedQuestion.id]: { ...codedQuestion }
-    }*/
-
-    return {
-      question: combinedQuestion,
-      currentIndex: questionInfo.index,
-      //userAnswers,
-      userAnswers: state.userAnswers,
+    
+    const updatedState = {
+      userAnswers: {
+        ...state.userAnswers,
+        [combinedQuestion.id]: { ...codedQuestion }
+      },
       scheme: {
         ...state.scheme,
         byId: {
           ...state.scheme.byId,
-          [newSchemeQuestion.id]: combinedQuestion
+          [combinedQuestion.id]: combinedQuestion
         }
-      }
+      },
+      selectedCategory: questionInfo.selectedCategory,
+      selectedCategoryId: questionInfo.selectedCategoryId,
+      categories: questionInfo.categories
+    }
+
+    return {
+      question: combinedQuestion,
+      currentIndex: questionInfo.index,
+      updatedState
     }
   }
 })

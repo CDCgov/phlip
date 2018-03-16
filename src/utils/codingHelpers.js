@@ -63,7 +63,7 @@ export const determineShowButton = state => {
 export const getSelectedCategories = (parentQuestion, userAnswers) =>
   parentQuestion.possibleAnswers.filter(category => checkIfExists(category, userAnswers[parentQuestion.id].answers))
 
-const initializeNextQuestion = (question, questionId) => ({
+export const initializeNextQuestion = (question, questionId) => ({
   comment: '',
   flag: { notes: '', type: 0 },
   answers: {},
@@ -139,13 +139,17 @@ export const getNextQuestion = (state, action) => {
   // Check to make sure newQuestion is correct. If the newQuestion is a category child, but the user hasn't selected
   // any categories, then find the next parent question
   if (newQuestion.isCategoryQuestion) {
+    categories = getSelectedCategories(state.scheme.byId[newQuestion.parentId], state.userAnswers)
+    selectedCategory = state.selectedCategory
+    selectedCategoryId = categories[selectedCategory].id
+
     if (!checkIfAnswered(state.scheme.byId[newQuestion.parentId], state.userAnswers)) {
       const p = findNextParentSibling(state.scheme, state.question, state.currentIndex)
       if (p !== undefined) {
         newQuestion = state.scheme.byId[p]
         newIndex = state.scheme.order.indexOf(p)
-        categories = null
-        selectedCategoryId = undefined
+        categories = undefined
+        selectedCategoryId = null
         selectedCategory = 0
       }
     }
@@ -159,11 +163,14 @@ export const getPreviousQuestion = (state, action) => {
   let categories = state.categories, selectedCategoryId = state.selectedCategoryId, selectedCategory = state.selectedCategory
 
   if (newQuestion.isCategoryQuestion) {
+    categories = getSelectedCategories(state.scheme.byId[newQuestion.parentId], state.userAnswers)
+    selectedCategory = state.selectedCategory
+    selectedCategoryId = categories[selectedCategory].id
     if (!checkIfAnswered(state.scheme.byId[newQuestion.parentId], state.userAnswers)) {
       newQuestion = state.scheme.byId[newQuestion.parentId]
       newIndex = state.scheme.order.indexOf(newQuestion.id)
-      categories = null
-      selectedCategoryId = undefined
+      categories = undefined
+      selectedCategoryId = null
       selectedCategory = 0
     }
   }
@@ -333,8 +340,7 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
        item: category question children
        */
       if (checkIfExists(scheme[item.parentId], codedQuestions)) {
-        const sortedSelectedCategories = sortList(Object.values(codedQuestions[item.parentId].answers), 'order', 'asc')
-        item.children = sortedSelectedCategories.map((category, index) => {
+        item.children = Object.values(codedQuestions[item.parentId].answers).map((category, index) => {
           const isAnswered =
             checkIfExists(item, codedQuestions) &&
             checkIfAnswered(category, codedQuestions[item.id], 'schemeAnswerId')
@@ -349,7 +355,7 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
             text: schemeAnswer.text,
             order: schemeAnswer.order,
             indent: item.indent + 1,
-            positionInParent: index,
+            positionInParent: schemeAnswer.order - 1,
             isAnswered,
             schemeQuestionId: item.id,
             isCategory: true
@@ -375,12 +381,14 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
 
 export const getQuestionSelectedInNav = (state, action) => {
   let q = {}, categories = undefined, selectedCategory = 0, selectedCategoryId = null
+  console.log(action.question)
 
   if (action.question.isCategory || action.question.isCategoryQuestion) {
     q = action.question.isCategory
       ? state.scheme.byId[action.question.schemeQuestionId]
       : state.scheme.byId[action.question.id]
     categories = getSelectedCategories(state.scheme.byId[q.parentId], state.userAnswers)
+    console.log(categories)
     selectedCategory = action.question.isCategory ? action.question.positionInParent : 0
     selectedCategoryId = categories[selectedCategory].id
   } else {
@@ -394,16 +402,6 @@ export const getQuestionSelectedInNav = (state, action) => {
     selectedCategoryId,
     selectedCategory
   }
-  /*
-  return {
-    ...state,
-    ...handleCheckCategories(q, state.scheme.order.findIndex(id => q.id === id), {
-      ...state,
-      categories,
-      selectedCategory,
-      selectedCategoryId
-    })
-  }*/
 }
 
 const deleteAnswerIds = (answer) => {
