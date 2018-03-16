@@ -37,12 +37,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     : handleUpdateUserCodedQuestion(state, action)
 
   switch (action.type) {
-    case types.GET_PREV_QUESTION:
-      return {
-        ...state,
-        ...getPreviousQuestion(state, action)
-      }
-
     case types.GET_CODING_OUTLINE_SUCCESS:
       if (action.payload.isSchemeEmpty) {
         return {
@@ -175,13 +169,12 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         selectedCategoryId: null
       }
 
-    case types.ON_QUESTION_SELECTED_IN_NAV:
-      return getQuestionSelectedInNav(state, action)
-
     case types.ON_CLOSE_CODE_SCREEN:
       return INITIAL_STATE
 
+    case types.GET_PREV_QUESTION:
     case types.GET_NEXT_QUESTION:
+    case types.ON_QUESTION_SELECTED_IN_NAV:
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
     case types.GET_CODING_OUTLINE_REQUEST:
     default:

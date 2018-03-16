@@ -113,7 +113,6 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
       }
     }, {})
 
-
     return {
       ...base,
       question: { ...base.question },
@@ -135,6 +134,7 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
 export const getNextQuestion = (state, action) => {
   let newQuestion = state.scheme.byId[action.id]
   let newIndex = action.newIndex
+  let categories = state.categories, selectedCategoryId = state.selectedCategoryId, selectedCategory = state.selectedCategory
 
   // Check to make sure newQuestion is correct. If the newQuestion is a category child, but the user hasn't selected
   // any categories, then find the next parent question
@@ -144,25 +144,30 @@ export const getNextQuestion = (state, action) => {
       if (p !== undefined) {
         newQuestion = state.scheme.byId[p]
         newIndex = state.scheme.order.indexOf(p)
+        categories = null
+        selectedCategoryId = undefined
+        selectedCategory = 0
       }
     }
   }
-  return { index: newIndex, question: newQuestion }
-  //return handleCheckCategories(newQuestion, newIndex, state)
+  return { index: newIndex, question: newQuestion, categories, selectedCategoryId, selectedCategory }
 }
 
 export const getPreviousQuestion = (state, action) => {
   let newQuestion = state.scheme.byId[action.id]
   let newIndex = action.newIndex
+  let categories = state.categories, selectedCategoryId = state.selectedCategoryId, selectedCategory = state.selectedCategory
 
   if (newQuestion.isCategoryQuestion) {
     if (!checkIfAnswered(state.scheme.byId[newQuestion.parentId], state.userAnswers)) {
       newQuestion = state.scheme.byId[newQuestion.parentId]
       newIndex = state.scheme.order.indexOf(newQuestion.id)
+      categories = null
+      selectedCategoryId = undefined
+      selectedCategory = 0
     }
   }
-  sortList(newQuestion.possibleAnswers, 'order', 'asc')
-  return handleCheckCategories(newQuestion, newIndex, state)
+  return { index: newIndex, question: newQuestion, categories, selectedCategoryId, selectedCategory }
 }
 
 /*
@@ -336,7 +341,8 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
 
           countAnswered = isAnswered ? countAnswered += 1 : countAnswered
 
-          const schemeAnswer = scheme[item.parentId].possibleAnswers.find(answer => answer.id === category.schemeAnswerId)
+          const schemeAnswer = scheme[item.parentId].possibleAnswers.find(answer => answer.id ===
+            category.schemeAnswerId)
 
           return {
             schemeAnswerId: category.schemeAnswerId,
@@ -382,6 +388,14 @@ export const getQuestionSelectedInNav = (state, action) => {
   }
   sortList(q.possibleAnswers, 'order', 'asc')
   return {
+    question: q,
+    index: state.scheme.order.findIndex(id => q.id === id),
+    categories,
+    selectedCategoryId,
+    selectedCategory
+  }
+  /*
+  return {
     ...state,
     ...handleCheckCategories(q, state.scheme.order.findIndex(id => q.id === id), {
       ...state,
@@ -389,7 +403,7 @@ export const getQuestionSelectedInNav = (state, action) => {
       selectedCategory,
       selectedCategoryId
     })
-  }
+  }*/
 }
 
 const deleteAnswerIds = (answer) => {

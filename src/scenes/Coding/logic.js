@@ -125,7 +125,7 @@ export const getQuestionLogic = createLogic({
     // Check if question is answered
     const answered = combinedQuestion.isCategoryQuestion
       ? checkIfExists(combinedQuestion, state.userAnswers)
-        ? checkIfAnswered(state.scheme.byId[combinedQuestion.parentId].possibleAnswers[state.selectedCategory], state.userAnswers[combinedQuestion.id])
+        ? checkIfAnswered(state.scheme.byId[combinedQuestion.parentId].possibleAnswers[questionInfo.selectedCategory], state.userAnswers[combinedQuestion.id])
         : false
       : checkIfAnswered(state.scheme.byId[combinedQuestion.id], state.userAnswers)
 
