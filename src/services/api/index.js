@@ -131,13 +131,14 @@ export default {
   },
 
   // Create an empty coded question object, called in Coding/logic, Validation/logic
-  createEmptyCodedQuestion(questionId, projectId, jurisdictionId) {
-    return api.post(`/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`).then(res => res.data)
+  createEmptyCodedQuestion(questionId, projectId, jurisdictionId, userId, questionObj) {
+    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}/stage`, questionObj)
+      .then(res => res.data)
   },
 
   // Answer a question for a user (creates a coded question), jurisdiction and project, called in Coding/logic
   answerQuestion(projectId, jurisdictionId, userId, questionId, updatedQuestion) {
-    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, updatedQuestion)
+    return api.put(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, updatedQuestion)
       .then(res => res.data)
   },
 
@@ -153,7 +154,8 @@ export default {
 
   // Gets user coded questions for a project and jurisdiction, called in Coding/logic, Validation/logic
   getUserCodedQuestions(userId, projectId, jurisdictionId) {
-    return api.get(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions`).then(res => res.data)
+    return api.get(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions`)
+      .then(res => res.data)
   },
 
   // Gets all validates questions for a jurisdiction and project, called in Validation/logic

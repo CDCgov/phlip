@@ -4,10 +4,10 @@ import * as types from './actionTypes'
 export const getQuestionRequest = (questionId, projectId) => ({ type: types.GET_QUESTION_REQUEST, questionId, projectId })
 
 // Dispatched when a user clicks the 'next question' button at the bottom of the page
-export const getNextQuestion = (id, newIndex) => ({ type: types.GET_NEXT_QUESTION, id, newIndex })
+export const getNextQuestion = (id, newIndex, projectId, jurisdictionId) => ({ type: types.GET_NEXT_QUESTION, id, newIndex, projectId, jurisdictionId })
 
 // Dispatched when a user click the 'previous question' button at the bottom of the page
-export const getPrevQuestion = (id, newIndex) => ({ type: types.GET_PREV_QUESTION, id, newIndex })
+export const getPrevQuestion = (id, newIndex, projectId, jurisdictionId) => ({ type: types.GET_PREV_QUESTION, id, newIndex, projectId, jurisdictionId })
 
 // Dispatched when coding component mounts to get coding scheme
 export const getCodingOutlineRequest = (projectId, jurisdictionId) => ({

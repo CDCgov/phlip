@@ -69,11 +69,11 @@ const withCodingValidation = (WrappedComponent, actions) => {
     }
 
     getNextQuestion = index => {
-      this.props.actions.getNextQuestion(this.props.questionOrder[index], index)
+      this.props.actions.getNextQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
     }
 
     getPrevQuestion = index => {
-      this.props.actions.getPrevQuestion(this.props.questionOrder[index], index)
+      this.props.actions.getPrevQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
     }
 
     onAnswer = id => (event, value) => {

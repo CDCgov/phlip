@@ -11,7 +11,7 @@ import {
   initializeUserAnswers,
   handleUserPinciteQuestion,
   initializeNavigator,
-  getQuestionSelectedInNav
+  getQuestionSelectedInNav, handleCheckCategories
 } from 'utils/codingHelpers'
 
 import { sortList } from 'utils'
@@ -31,19 +31,12 @@ const INITIAL_STATE = {
   mergedUserQuestions: null
 }
 
-
 const codingReducer = (state = INITIAL_STATE, action) => {
   const questionUpdater = state.question.isCategoryQuestion
     ? handleUpdateUserCategoryChild(state, action)
     : handleUpdateUserCodedQuestion(state, action)
 
   switch (action.type) {
-    case types.GET_NEXT_QUESTION:
-      return {
-        ...state,
-        ...getNextQuestion(state, action)
-      }
-
     case types.GET_PREV_QUESTION:
       return {
         ...state,
@@ -61,35 +54,31 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           categories: undefined
         }
       } else {
-        const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
         sortList(action.payload.question.possibleAnswers, 'order', 'asc')
         return {
           ...state,
           outline: action.payload.outline,
-          scheme: {
-            byId: normalizedQuestions,
-            order: action.payload.questionOrder,
-            tree: action.payload.tree
-          },
+          scheme: action.payload.scheme,
           question: action.payload.question,
-          userAnswers: initializeUserAnswers(
-            [
-              {
-                schemeQuestionId: action.payload.question.id,
-                comment: '',
-                codedAnswers: [],
-                flag: { notes: '', type: 0, raisedBy: {} }
-              },
-              ...action.payload.codedQuestions
-            ], normalizedQuestions, action.payload.userId
-          ),
+          userAnswers: action.payload.userAnswers,
           categories: undefined
         }
       }
 
     case types.GET_QUESTION_SUCCESS:
-      return {
+      const updatedState = {
         ...state,
+        userAnswers: action.payload.userAnswers,
+        scheme: action.payload.scheme
+      }
+
+      return {
+        ...updatedState,
+        ...handleCheckCategories(
+          action.payload.question,
+          action.payload.currentIndex,
+          updatedState
+        )
       }
 
     case types.UPDATE_USER_ANSWER_REQUEST:
@@ -175,31 +164,12 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.GET_USER_CODED_QUESTIONS_SUCCESS:
-      let userAnswers = {}, question = { ...state.question }, other = {}
-
-      if (state.question.isCategoryQuestion) {
-        question = state.scheme.byId[question.parentId]
-        other = {
-          currentIndex: state.scheme.order.findIndex(id => id === question.id)
-        }
-      }
-
-      userAnswers = initializeUserAnswers(
-        [
-          {
-            schemeQuestionId: question.id,
-            comment: '',
-            codedAnswers: []
-          }, ...action.payload.codedQuestions
-        ],
-        state.scheme.byId
-      )
-
       return {
         ...state,
-        userAnswers,
-        question,
-        ...other,
+        userAnswers: action.payload.userAnswers,
+        question: action.payload.question,
+        scheme: action.payload.scheme,
+        ...action.payload.otherUpdates,
         selectedCategory: 0,
         categories: undefined,
         selectedCategoryId: null
@@ -211,6 +181,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.ON_CLOSE_CODE_SCREEN:
       return INITIAL_STATE
 
+    case types.GET_NEXT_QUESTION:
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
     case types.GET_CODING_OUTLINE_REQUEST:
     default:

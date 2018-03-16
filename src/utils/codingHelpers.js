@@ -5,7 +5,7 @@ import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/const
 
 const initializeValues = question => {
   return {
-    ...question,
+    ... question.id ? { id: question.id } : {},
     comment: question.comment || '',
     flag: question.flag || { notes: '', type: 0 },
     answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId'),
@@ -147,9 +147,8 @@ export const getNextQuestion = (state, action) => {
       }
     }
   }
-  sortList(newQuestion.possibleAnswers, 'order', 'asc')
-
-  return handleCheckCategories(newQuestion, newIndex, state)
+  return { index: newIndex, question: newQuestion }
+  //return handleCheckCategories(newQuestion, newIndex, state)
 }
 
 export const getPreviousQuestion = (state, action) => {
