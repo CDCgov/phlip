@@ -7,8 +7,7 @@ import {
   initializeUserAnswers,
   getQuestionSelectedInNav,
   getNextQuestion,
-  getPreviousQuestion,
-  handleCheckCategories
+  getPreviousQuestion
 } from 'utils/codingHelpers'
 import { checkIfAnswered, checkIfExists } from 'utils/codingSchemeHelpers'
 import { normalize } from 'utils'
@@ -41,10 +40,9 @@ export const getOutlineLogic = createLogic({
       }
     }
 
+    // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
     if (scheme.schemeQuestions.length === 0) {
-      return {
-        isSchemeEmpty: true
-      }
+      return { isSchemeEmpty: true }
     } else {
       const merge = scheme.schemeQuestions.reduce((arr, q) => {
         return [...arr, { ...q, ...scheme.outline[q.id] }]
@@ -70,16 +68,13 @@ export const getOutlineLogic = createLogic({
       // on the backend. This fixes issues with duplication of text fields answer props
       const answered = checkIfAnswered(questionsById[firstQuestion.id], userAnswers)
       if (!answered) {
-        await api.createEmptyCodedQuestion(firstQuestion.id, action.projectId, action.jurisdictionId, userId, userAnswers[firstQuestion.id])
+        const q = await api.createEmptyCodedQuestion(firstQuestion.id, action.projectId, action.jurisdictionId, userId, userAnswers[firstQuestion.id])
+        userAnswers[firstQuestion.id] = { ...userAnswers[firstQuestion.id], id: q.id }
       }
 
       return {
         outline: scheme.outline,
-        scheme: {
-          byId: questionsById,
-          tree,
-          order
-        },
+        scheme: { byId: questionsById, tree, order },
         userAnswers,
         question: firstQuestion,
         codedQuestions,
@@ -90,8 +85,7 @@ export const getOutlineLogic = createLogic({
   }
 })
 
-// TODO: make sure to create an empty coded question when a user changes categories, handle previous question and selecting
-// question in nav
+// TODO: make sure to create an empty coded question when a user changes categories, handle previous question and selecting question in nav
 export const getQuestionLogic = createLogic({
   type: [types.ON_QUESTION_SELECTED_IN_NAV, types.GET_NEXT_QUESTION, types.GET_PREV_QUESTION],
   processOptions: {
@@ -131,22 +125,31 @@ export const getQuestionLogic = createLogic({
 
     // If it's not answered create an empty coded question object
     if (!answered) {
-      codedQuestion = await api.createEmptyCodedQuestion(
+      /*codedQuestion = await api.createEmptyCodedQuestion(
         combinedQuestion.id, action.projectId, action.jurisdictionId, userId, {
           categories: questionInfo.selectedCategoryId === null ? [] : [questionInfo.selectedCategoryId],
           flag: { notes: '', type: 0 },
           codedAnswers: [],
           comment: '',
           schemeQuestionId: combinedQuestion.id
-        })
+        })*/
+      codedQuestion = {
+        categoryId: questionInfo.selectedCategoryId === null ? 0 : questionInfo.selectedCategoryId,
+        flag: { notes: '', type: 0 },
+        answers: {},
+        comment: '',
+        schemeQuestionId: combinedQuestion.id
+      }
     } else {
-      codedQuestion = state.userAnswers[combinedQuestion.id]
+      codedQuestion = combinedQuestion.isCategoryQuestion ? state.userAnswers[combinedQuestion.id][questionInfo.selectedCategoryId] : state.userAnswers[combinedQuestion.id]
     }
     
     const updatedState = {
       userAnswers: {
         ...state.userAnswers,
-        [combinedQuestion.id]: { ...codedQuestion }
+        [combinedQuestion.id]: combinedQuestion.isCategoryQuestion
+          ? { ...state.userAnswers[combinedQuestion.id], [questionInfo.selectedCategoryId]: { ...codedQuestion } }
+          : { ...codedQuestion }
       },
       scheme: {
         ...state.scheme,
@@ -159,6 +162,8 @@ export const getQuestionLogic = createLogic({
       selectedCategoryId: questionInfo.selectedCategoryId,
       categories: questionInfo.categories
     }
+
+    console.log(updatedState)
 
     return {
       question: combinedQuestion,

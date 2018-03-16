@@ -38,6 +38,7 @@ export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions,
   }, {})
 }
 
+
 export const findNextParentSibling = (scheme, question, currentIndex) => {
   const subArr = [...scheme.order].slice(currentIndex + 1)
   return subArr.find(id => scheme.byId[id].parentId !== question.id)
@@ -381,14 +382,12 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
 
 export const getQuestionSelectedInNav = (state, action) => {
   let q = {}, categories = undefined, selectedCategory = 0, selectedCategoryId = null
-  console.log(action.question)
 
   if (action.question.isCategory || action.question.isCategoryQuestion) {
     q = action.question.isCategory
       ? state.scheme.byId[action.question.schemeQuestionId]
       : state.scheme.byId[action.question.id]
     categories = getSelectedCategories(state.scheme.byId[q.parentId], state.userAnswers)
-    console.log(categories)
     selectedCategory = action.question.isCategory ? action.question.positionInParent : 0
     selectedCategoryId = categories[selectedCategory].id
   } else {
