@@ -54,7 +54,6 @@ export class Home extends Component {
     let isAllowed = false
     nonCoderPaths.forEach(path => {
       if (matchPath(this.props.location.pathname, { path }) !== null) isAllowed = true
-      console.log(matchPath(this.props.location.pathname, { path }))
     })
     return isAllowed
   }

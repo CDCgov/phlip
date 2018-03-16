@@ -12,7 +12,8 @@ const initial = {
   selectedCategory: 0,
   selectedCategoryId: null,
   userAnswers: {},
-  showNextButton: true
+  showNextButton: true,
+  mergedUserQuestions: null
 }
 
 const getState = other => ({ ...initial, ...other })

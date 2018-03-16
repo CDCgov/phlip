@@ -39,9 +39,9 @@ const props = {
   searchValue: ''
 }
 
-const setup = otherProps => {
+const setup = (otherProps = {}, initialEntries = ['/']) => {
   return mount(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={initialEntries}>
       <MuiThemeProvider theme={theme}>
         <Home {...props} {...otherProps} />
       </MuiThemeProvider>
@@ -55,12 +55,12 @@ describe('Home scene', () => {
   })
 
   test('should render ProjectList and PageHeader components', () => {
-    let wrapper = shallow(<Home {...props} />)
+    const wrapper = setup()
     expect(wrapper.find(ProjectList)).toHaveLength(1)
   })
 
   test('should open the New Project modal when Create New Project is clicked', () => {
-    let wrapper = setup()
+    const wrapper = setup()
     wrapper.find(PageHeader).find('Button').at(0).simulate('click')
     wrapper.update()
     expect(wrapper.find('Modal')).toHaveLength(1)
@@ -68,16 +68,14 @@ describe('Home scene', () => {
 
   describe('Error handling', () => {
     test('should display an error message if prop: error is true', () => {
-      let wrapper = shallow(<Home {...props} />)
-      expect(wrapper.find('ProjectList')).toHaveLength(1)
-      wrapper.setProps({ error: true, errorContent: 'We could not get list of projects.' })
+      const wrapper = setup({ error: true, errorContent: 'We could not get projects.' })
       expect(wrapper.find('CardError')).toHaveLength(1)
       expect(wrapper.find('ProjectList')).toHaveLength(0)
     })
 
     test('should display the content of errorContent prop in error message', () => {
-      let wrapper = shallow(<Home {...props } error={true} errorContent="We could not get projects." />)
-      expect(wrapper.find('CardError').render().text()).toContain('Uh-oh, something went wrong. We could not get projects.')
+      const wrapper = setup({ error: true, errorContent: 'We could not get projects.' })
+      expect(wrapper.find('CardError').text()).toContain('Uh-oh, something went wrong. We could not get projects.')
     })
   })
 })
