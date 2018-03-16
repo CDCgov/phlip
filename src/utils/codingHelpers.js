@@ -329,8 +329,7 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
        item: category question children
        */
       if (checkIfExists(scheme[item.parentId], codedQuestions)) {
-        const sortedSelectedCategories = sortList(Object.values(codedQuestions[item.parentId].answers), 'order', 'asc')
-        item.children = sortedSelectedCategories.map((category, index) => {
+        item.children = Object.values(codedQuestions[item.parentId].answers).map((category, index) => {
           const isAnswered =
             checkIfExists(item, codedQuestions) &&
             checkIfAnswered(category, codedQuestions[item.id], 'schemeAnswerId')
@@ -376,7 +375,7 @@ export const getQuestionSelectedInNav = (state, action) => {
       ? state.scheme.byId[action.question.schemeQuestionId]
       : state.scheme.byId[action.question.id]
     categories = getSelectedCategories(state.scheme.byId[q.parentId], state.userAnswers)
-    selectedCategory = action.question.isCategory ? action.question.positionInParent : 0
+    selectedCategory = action.question.isCategory ? action.question.order - 1 : 0
     selectedCategoryId = categories[selectedCategory].id
   } else {
     q = state.scheme.byId[action.question.id]
