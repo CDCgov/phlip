@@ -87,6 +87,11 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
+    case types.GET_QUESTION_SUCCESS:
+      return {
+        ...state,
+      }
+
     case types.UPDATE_USER_ANSWER_REQUEST:
       return {
         ...state,

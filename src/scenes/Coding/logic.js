@@ -55,6 +55,20 @@ export const getOutlineLogic = createLogic({
   }
 })
 
+export const getQuestionLogic = createLogic({
+  type: types.GET_QUESTION_REQUEST,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.GET_QUESTION_SUCCESS,
+    failType: types.GET_QUESTION_FAIL
+  },
+  latest: true,
+  async process({ getState, action, api }) {
+    const questionId = action.questionId
+    const schemeQuestion = api.getSchemeQuestion(action.questionId, action.projectId)
+  }
+})
+
 export const answerQuestionLogic = createLogic({
   type: [
     types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER,
@@ -107,6 +121,7 @@ export const saveRedFlagLogic = createLogic({
 
 export default [
   getOutlineLogic,
+  getQuestionLogic,
   getUserCodedQuestionsLogic,
   answerQuestionLogic,
   saveRedFlagLogic
