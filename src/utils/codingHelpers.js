@@ -4,7 +4,6 @@ import sortList from 'utils/sortList'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 const initializeValues = question => {
-  console.log(question)
   return {
     ... question.id ? { id: question.id } : {},
     comment: question.comment || '',
@@ -140,10 +139,6 @@ export const getNextQuestion = (state, action) => {
   // Check to make sure newQuestion is correct. If the newQuestion is a category child, but the user hasn't selected
   // any categories, then find the next parent question
   if (newQuestion.isCategoryQuestion) {
-    categories = getSelectedCategories(state.scheme.byId[newQuestion.parentId], state.userAnswers)
-    selectedCategory = state.selectedCategory
-    selectedCategoryId = categories[selectedCategory].id
-
     if (!checkIfAnswered(state.scheme.byId[newQuestion.parentId], state.userAnswers)) {
       const p = findNextParentSibling(state.scheme, state.question, state.currentIndex)
       if (p !== undefined) {
@@ -153,6 +148,10 @@ export const getNextQuestion = (state, action) => {
         selectedCategoryId = null
         selectedCategory = 0
       }
+    } else {
+      categories = getSelectedCategories(state.scheme.byId[newQuestion.parentId], state.userAnswers)
+      selectedCategory = state.selectedCategory
+      selectedCategoryId = categories[selectedCategory].id
     }
   }
   return { index: newIndex, question: newQuestion, categories, selectedCategoryId, selectedCategory }
@@ -319,33 +318,29 @@ export const initializeRegularQuestion = id => ({
   flag: { notes: '', type: 0, raisedBy: {} }
 })
 
+export const updateItemsInNavigator = (tree, scheme, codedQuestions, currentQuestion) => {
+  return tree.map(item => {
+    if (!item.isCategory) {
+      item = { }
+    }
+  })
+}
+
 /*
  Initializes and updates the navigator
  */
 export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestion) => {
-  //console.log('tree', tree)
-  tree.map(item => {
-    // Get updates from the scheme question in case something has changed, but keep all of the navigator changes
-   /* if (!item.isCategory) {
-      item = { ...item, text: scheme[item.id].text, possibleAnswers: scheme[item.id].possibleAnswers }
-    }*/
-
+  return tree.map(item => {
     item.isAnswered = item.isCategoryQuestion ? false : checkIfAnswered(item, codedQuestions)
     if (item.children) {
       item.children = item.questionType === questionTypes.CATEGORY
         ? item.isAnswered
-          ? initializeNavigator(
-            sortList(Object.values(scheme).filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
-            scheme,
+          ? initializeNavigator(sortList(Object.values(scheme).filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
+            { ...scheme },
             codedQuestions,
             currentQuestion
           ) : []
-        : initializeNavigator(item.children, scheme, codedQuestions, currentQuestion)
-      //console.log('item.children', item.children)
-    }
-
-    if ((item.id === currentQuestion.id || currentQuestion.parentId === item.id) && item.children) {
-      item.expanded = true
+        : initializeNavigator(item.children, { ...scheme }, codedQuestions, currentQuestion)
     }
 
     if (item.isCategoryQuestion) {
@@ -388,11 +383,23 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
         if (checkIfExists(item, 'completedProgress')) delete item.completedProgress
       }
     }
-    //console.log('item', item)
+
+   /* console.log(item)
+    console.log(currentQuestion)
+    // Get updates from the scheme question in case something has changed, but keep all of the navigator changes
+    if (!item.isCategory) {
+      console.log('scheme[item.id]', scheme[item.id])
+      console.log('before', item)
+      item = { ...item, ...scheme[item.id], expanded: item.expanded }
+      console.log('after', item)
+    }*/
+
+    if ((item.id === currentQuestion.id || currentQuestion.parentId === item.id) && item.children) {
+      item.expanded = true
+    }
 
     return item
   })
-  return tree
 }
 
 /*
@@ -446,8 +453,6 @@ export const getFinalCodedObject = (state, action, applyAll = false) => {
       ? { categories: applyAll ? [...Object.values(state.userAnswers[action.questionId]).map(cat => cat.id)] : [id] }
       : { id }
   }
-
-  console.log(answerObject)
 
   return answerObject
 }

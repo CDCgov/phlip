@@ -168,6 +168,12 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.GET_PREV_QUESTION:
     case types.GET_NEXT_QUESTION:
     case types.ON_QUESTION_SELECTED_IN_NAV:
+      console.log(action.questionInfo)
+      return {
+        ...state,
+        //...action.questionInfo
+      }
+
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
     case types.GET_CODING_OUTLINE_REQUEST:
     default:
@@ -178,6 +184,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 const codingSceneReducer = (state = INITIAL_STATE, action) => {
   if (Object.values(types).includes(action.type)) {
     const intermediateState = codingReducer(state, action)
+    console.log('intermediate state', intermediateState)
 
     return {
       ...intermediateState,

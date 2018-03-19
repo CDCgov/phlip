@@ -25,7 +25,6 @@ const initializeAndCheckAnswered = async (question, codedQuestions, schemeById, 
   const answered = checkIfAnswered(question, userAnswers)
   if (!answered) {
     const q = await api.createEmptyCodedQuestion(question.id, action.projectId, action.jurisdictionId, userId, userAnswers[question.id])
-    console.log('empty question response', q)
     userAnswers[question.id] = { ...userAnswers[question.id], id: q.id }
   }
 
@@ -91,6 +90,29 @@ export const getOutlineLogic = createLogic({
   }
 })
 
+export const setQuestionInfoLogic = createLogic({
+  type: [types.ON_QUESTION_SELECTED_IN_NAV, types.GET_NEXT_QUESTION, types.GET_PREV_QUESTION],
+  transform({ getState, action }, next) {
+    let questionInfo = {}, state = getState().scenes.coding
+    // How did the user navigate to the currently selected question
+    switch (action.type) {
+      case types.ON_QUESTION_SELECTED_IN_NAV:
+        questionInfo = getQuestionSelectedInNav(state, action)
+        break
+      case types.GET_NEXT_QUESTION:
+        questionInfo = getNextQuestion(state, action)
+        break
+      case types.GET_PREV_QUESTION:
+        questionInfo = getPreviousQuestion(state, action)
+        break
+    }
+    next({
+      ...action,
+      questionInfo: { ...questionInfo, question: { ...questionInfo.question, expanded: true } }
+    })
+  }
+})
+
 export const getQuestionLogic = createLogic({
   type: [types.ON_QUESTION_SELECTED_IN_NAV, types.GET_NEXT_QUESTION, types.GET_PREV_QUESTION],
   processOptions: {
@@ -116,12 +138,17 @@ export const getQuestionLogic = createLogic({
         questionInfo = getPreviousQuestion(state, action)
         break
     }
-
+    
     // Get the scheme question from the db in case it has changed
     const newSchemeQuestion = await api.getSchemeQuestion(questionInfo.question.id, action.projectId)
     sortList(newSchemeQuestion.possibleAnswers, 'order', 'asc')
     const combinedQuestion = { ...state.scheme.byId[questionInfo.question.id], ...newSchemeQuestion }
-    const updatedScheme = { ...state.scheme, byId: { ...state.scheme.byId, [combinedQuestion.id]: combinedQuestion } }
+    const updatedScheme = { ...state.scheme,
+      byId: {
+        ...state.scheme.byId,
+        [combinedQuestion.id]: { ...state.scheme.byId[combinedQuestion.id], ...combinedQuestion }
+      }
+    }
 
     // Check if question is answered
     if (combinedQuestion.isCategoryQuestion) {
@@ -143,14 +170,14 @@ export const getQuestionLogic = createLogic({
           flag: { notes: '', type: 0 },
           codedAnswers: [],
           comment: '',
-          schemeQuestionId: combinedQuestion.id,
-          answers: {}
+          schemeQuestionId: combinedQuestion.id
         })
       updatedAnswers = initializeUserAnswers(combinedQuestion.isCategoryQuestion
         ? [...question] : [question], updatedScheme, userId, updatedAnswers)
     }
 
     const updatedState = {
+      ...state,
       userAnswers: updatedAnswers,
       scheme: updatedScheme,
       selectedCategory: questionInfo.selectedCategory,
@@ -250,6 +277,7 @@ export const saveRedFlagLogic = createLogic({
 
 export default [
   getOutlineLogic,
+  // setQuestionInfoLogic,
   getQuestionLogic,
   getUserCodedQuestionsLogic,
   answerQuestionLogic,
