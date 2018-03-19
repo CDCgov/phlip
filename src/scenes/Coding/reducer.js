@@ -184,8 +184,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 const codingSceneReducer = (state = INITIAL_STATE, action) => {
   if (Object.values(types).includes(action.type)) {
     const intermediateState = codingReducer(state, action)
-    console.log('intermediate state', intermediateState)
-
     return {
       ...intermediateState,
       showNextButton: intermediateState.scheme === null ? false : determineShowButton(intermediateState),

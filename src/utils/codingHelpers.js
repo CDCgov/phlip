@@ -163,15 +163,16 @@ export const getPreviousQuestion = (state, action) => {
   let categories = state.categories, selectedCategoryId = state.selectedCategoryId, selectedCategory = state.selectedCategory
 
   if (newQuestion.isCategoryQuestion) {
-    categories = getSelectedCategories(state.scheme.byId[newQuestion.parentId], state.userAnswers)
-    selectedCategory = state.selectedCategory
-    selectedCategoryId = categories[selectedCategory].id
     if (!checkIfAnswered(state.scheme.byId[newQuestion.parentId], state.userAnswers)) {
       newQuestion = state.scheme.byId[newQuestion.parentId]
       newIndex = state.scheme.order.indexOf(newQuestion.id)
       categories = undefined
       selectedCategoryId = null
       selectedCategory = 0
+    } else {
+      categories = getSelectedCategories(state.scheme.byId[newQuestion.parentId], state.userAnswers)
+      selectedCategory = state.selectedCategory
+      selectedCategoryId = categories[selectedCategory].id
     }
   }
   return { index: newIndex, question: newQuestion, categories, selectedCategoryId, selectedCategory }
@@ -318,19 +319,17 @@ export const initializeRegularQuestion = id => ({
   flag: { notes: '', type: 0, raisedBy: {} }
 })
 
-export const updateItemsInNavigator = (tree, scheme, codedQuestions, currentQuestion) => {
-  return tree.map(item => {
-    if (!item.isCategory) {
-      item = { }
-    }
-  })
-}
-
 /*
  Initializes and updates the navigator
  */
 export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestion) => {
   return tree.map(item => {
+    if (!item.isCategory) {
+      item.text = scheme[item.id].text
+      item.hint = scheme[item.id].hint
+      item.possibleAnswers = scheme[item.id].possibleAnswers
+    }
+
     item.isAnswered = item.isCategoryQuestion ? false : checkIfAnswered(item, codedQuestions)
     if (item.children) {
       item.children = item.questionType === questionTypes.CATEGORY
@@ -383,16 +382,6 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
         if (checkIfExists(item, 'completedProgress')) delete item.completedProgress
       }
     }
-
-   /* console.log(item)
-    console.log(currentQuestion)
-    // Get updates from the scheme question in case something has changed, but keep all of the navigator changes
-    if (!item.isCategory) {
-      console.log('scheme[item.id]', scheme[item.id])
-      console.log('before', item)
-      item = { ...item, ...scheme[item.id], expanded: item.expanded }
-      console.log('after', item)
-    }*/
 
     if ((item.id === currentQuestion.id || currentQuestion.parentId === item.id) && item.children) {
       item.expanded = true
