@@ -26,8 +26,7 @@ const setChildren = (node, number, fullList, numbering, order) => {
   node.indent = getIndent(number)
   node.number = number
 
-  let fullNode = { ...node }
-  delete fullNode.children
+  const { children, ...fullNode } = { ...node }
 
   fullList.push({ ...fullNode })
   numbering[node.id] = { number }

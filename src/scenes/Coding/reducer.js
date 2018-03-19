@@ -120,7 +120,11 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           [state.question.id]: {
             ...state.categories.reduce((obj, category) => ({
               ...obj,
-              [category.id]: { ...catQuestion, categoryId: category.id }
+              [category.id]: {
+                ...catQuestion,
+                categoryId: category.id,
+                id: state.userAnswers[state.question.id][category.id].id
+              }
             }), {})
           }
         }

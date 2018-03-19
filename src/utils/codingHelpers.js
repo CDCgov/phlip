@@ -206,7 +206,6 @@ export const handleUpdateUserAnswers = (state, action, selectedCategoryId, isVal
           }
         }
       }
-
       break
 
     case questionTypes.CATEGORY:
@@ -324,19 +323,25 @@ export const initializeRegularQuestion = id => ({
  Initializes and updates the navigator
  */
 export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestion) => {
+  console.log('tree', tree)
   tree.map(item => {
-    console.log(item)
+    // Get updates from the scheme question in case something has changed, but keep all of the navigator changes
+   /* if (!item.isCategory) {
+      item = { ...item, text: scheme[item.id].text, possibleAnswers: scheme[item.id].possibleAnswers }
+    }*/
+
     item.isAnswered = item.isCategoryQuestion ? false : checkIfAnswered(item, codedQuestions)
     if (item.children) {
       item.children = item.questionType === questionTypes.CATEGORY
-        ? checkIfAnswered(item, codedQuestions)
+        ? item.isAnswered
           ? initializeNavigator(
             sortList(Object.values(scheme).filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
-            { ...scheme },
+            scheme,
             codedQuestions,
             currentQuestion
           ) : []
-        : initializeNavigator(item.children, { ...scheme }, codedQuestions, currentQuestion)
+        : initializeNavigator(item.children, scheme, codedQuestions, currentQuestion)
+      console.log('item.children', item.children)
     }
 
     if ((item.id === currentQuestion.id || currentQuestion.parentId === item.id) && item.children) {
@@ -383,12 +388,17 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
         if (checkIfExists(item, 'completedProgress')) delete item.completedProgress
       }
     }
+    console.log('item', item)
 
     return item
   })
   return tree
 }
 
+/*
+  Determines what question was selected in the navigator, and updates the state accordingly, even if the user selects a
+  a category
+ */
 export const getQuestionSelectedInNav = (state, action) => {
   let q = {}, categories = undefined, selectedCategory = 0, selectedCategoryId = null
 
@@ -425,7 +435,7 @@ const deleteAnswerIds = (answer) => {
  Used to retrieve the request object body for updating a question answer, pincite, comment, flag, etc.
  */
 export const getFinalCodedObject = (state, action, applyAll = false) => {
-  const questionObject = state.question.isCategoryQuestion
+  const { id, ...questionObject } = state.question.isCategoryQuestion
     ? state.userAnswers[action.questionId][state.selectedCategoryId]
     : state.userAnswers[action.questionId]
 
@@ -433,8 +443,8 @@ export const getFinalCodedObject = (state, action, applyAll = false) => {
     ...questionObject,
     codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds),
     ...state.question.isCategoryQuestion
-      ? { categories: applyAll ? [...state.categories.map(cat => cat.id)] : [state.selectedCategoryId] }
-      : {}
+      ? { categories: applyAll ? [...Object.values(state.userAnswers[action.questionId]).map(cat => cat.id)] : [questionObject.id] }
+      : { id }
   }
 
   return answerObject
