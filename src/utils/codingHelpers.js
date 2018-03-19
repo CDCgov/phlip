@@ -4,6 +4,7 @@ import sortList from 'utils/sortList'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 const initializeValues = question => {
+  console.log(question)
   return {
     ... question.id ? { id: question.id } : {},
     comment: question.comment || '',
@@ -64,12 +65,11 @@ export const determineShowButton = state => {
 export const getSelectedCategories = (parentQuestion, userAnswers) =>
   parentQuestion.possibleAnswers.filter(category => checkIfExists(category, userAnswers[parentQuestion.id].answers))
 
-export const initializeNextQuestion = (question, questionId) => ({
+export const initializeNextQuestion = question => ({
   comment: '',
   flag: { notes: '', type: 0, raisedBy: {} },
-  answers: {},
-  schemeQuestionId: questionId,
-  ...question
+  codedAnswers: [],
+  schemeQuestionId: question.id,
 })
 
 /*
@@ -323,7 +323,7 @@ export const initializeRegularQuestion = id => ({
  Initializes and updates the navigator
  */
 export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestion) => {
-  console.log('tree', tree)
+  //console.log('tree', tree)
   tree.map(item => {
     // Get updates from the scheme question in case something has changed, but keep all of the navigator changes
    /* if (!item.isCategory) {
@@ -341,7 +341,7 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
             currentQuestion
           ) : []
         : initializeNavigator(item.children, scheme, codedQuestions, currentQuestion)
-      console.log('item.children', item.children)
+      //console.log('item.children', item.children)
     }
 
     if ((item.id === currentQuestion.id || currentQuestion.parentId === item.id) && item.children) {
@@ -388,7 +388,7 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
         if (checkIfExists(item, 'completedProgress')) delete item.completedProgress
       }
     }
-    console.log('item', item)
+    //console.log('item', item)
 
     return item
   })
@@ -443,9 +443,11 @@ export const getFinalCodedObject = (state, action, applyAll = false) => {
     ...questionObject,
     codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds),
     ...state.question.isCategoryQuestion
-      ? { categories: applyAll ? [...Object.values(state.userAnswers[action.questionId]).map(cat => cat.id)] : [questionObject.id] }
+      ? { categories: applyAll ? [...Object.values(state.userAnswers[action.questionId]).map(cat => cat.id)] : [id] }
       : { id }
   }
+
+  console.log(answerObject)
 
   return answerObject
 }

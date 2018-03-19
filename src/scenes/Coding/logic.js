@@ -8,7 +8,7 @@ import {
   getQuestionSelectedInNav,
   getNextQuestion,
   getPreviousQuestion,
-  initializeRegularQuestion
+  initializeNextQuestion
 } from 'utils/codingHelpers'
 import { checkIfAnswered, checkIfExists } from 'utils/codingSchemeHelpers'
 import { normalize } from 'utils'
@@ -17,13 +17,15 @@ import sortList from 'utils/sortList'
 const initializeAndCheckAnswered = async (question, codedQuestions, schemeById, userId, action, api) => {
   // Initialize object for holding user answers, if question already exists in user answers, then the initialized object
   // will get overwritten (which is what we want, if it exists)
-  const userAnswers = initializeUserAnswers([...initializeRegularQuestion(question.id), ...codedQuestions], schemeById)
+  const coded = [initializeNextQuestion(question), ...codedQuestions]
+  const userAnswers = initializeUserAnswers([...coded], schemeById, userId)
 
   // Check if the first question is answered, if it's not, then send a request to create an empty coded question
   // on the backend. This fixes issues with duplication of text fields answer props
   const answered = checkIfAnswered(question, userAnswers)
   if (!answered) {
     const q = await api.createEmptyCodedQuestion(question.id, action.projectId, action.jurisdictionId, userId, userAnswers[question.id])
+    console.log('empty question response', q)
     userAnswers[question.id] = { ...userAnswers[question.id], id: q.id }
   }
 
