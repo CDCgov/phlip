@@ -134,12 +134,11 @@ export default {
   createEmptyCodedQuestion(questionId, projectId, jurisdictionId, userId, questionObj) {
     return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, questionObj)
      .then(res => res.data)
-      //.then(res => questionObj.categories.length > 0 ? { ...questionObj, categoryId: questionObj.categories[0] } : questionObj)
   },
 
   // Answer a question for a user (creates a coded question), jurisdiction and project, called in Coding/logic
   answerQuestion(projectId, jurisdictionId, userId, questionId, updatedQuestion) {
-    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, updatedQuestion)
+    return api.put(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, updatedQuestion)
       .then(res => res.data)
   },
 

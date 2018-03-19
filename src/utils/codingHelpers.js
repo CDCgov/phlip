@@ -18,13 +18,13 @@ const initializeValues = question => {
  and converts it to an object like: { answers: { 1: { answerId: 1, pincite: '' }}}.
 
  It accounts for category children. If the question object has a categoryId, then the final answers object, looks like
- this: { answers: { [categoryId]: { answers: { 1 : { answerId: 1, pincite: '' } } } }}. Comments are handled the same way
+ this: { [categoryId]: { answers: { 1 : { answerId: 1, pincite: '' } } }}. Comments are handled the same way
  for category question children.
 
  Text field type questions are handled different since there will only be one answer instead of multiple and doesn't have
  an ID. It looks like this: { answers: { value: '', pincite: '' } }
  */
-export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions, userId) => {
+export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions, userId, initialObj = {}) => {
   return userCodedQuestions.reduce((codedQuestionObj, question) => {
     return ({
       ...codedQuestionObj,
@@ -35,7 +35,7 @@ export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions,
         }
         : { ...initializeValues(question, codingSchemeQuestions[question.schemeQuestionId], userId) }
     })
-  }, {})
+  }, initialObj)
 }
 
 

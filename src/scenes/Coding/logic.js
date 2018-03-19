@@ -13,6 +13,36 @@ import { checkIfAnswered, checkIfExists } from 'utils/codingSchemeHelpers'
 import { normalize } from 'utils'
 import sortList from 'utils/sortList'
 
+const initializeAndCheckAnswered = async (question, codedQuestions, schemeById, userId, action, api) => {
+  // Initialize object for holding user answers
+  const userAnswers = initializeUserAnswers(
+    [
+      {
+        schemeQuestionId: question.id,
+        comment: '',
+        codedAnswers: [],
+        flag: { notes: '', type: 0, raisedBy: {} }
+      }, ...codedQuestions
+    ],
+    schemeById
+  )
+
+  console.log(question)
+
+  // Check if the first question is answered, if it's not, then send a request to create an empty coded question
+  // on the backend. This fixes issues with duplication of text fields answer props
+  const answered = checkIfAnswered(question, userAnswers)
+  console.log(answered)
+  if (!answered) {
+    const q = await api.createEmptyCodedQuestion(question.id, action.projectId, action.jurisdictionId, userId, userAnswers[question.id])
+    userAnswers[question.id] = { ...userAnswers[question.id], id: q.id }
+  }
+
+  console.log(userAnswers)
+
+  return { userAnswers }
+}
+
 // TODO: use returned object from creating a coded question, because codedQuestionId is needed
 export const getOutlineLogic = createLogic({
   type: types.GET_CODING_OUTLINE_REQUEST,
@@ -52,25 +82,7 @@ export const getOutlineLogic = createLogic({
       const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
       const questionsById = normalize.arrayToObject(questionsWithNumbers)
       const firstQuestion = questionsWithNumbers[0]
-
-      // Initializes the object the will hold the user answers (coded questions)
-      const userAnswers = initializeUserAnswers([
-        {
-          schemeQuestionId: firstQuestion.id,
-          comment: '',
-          codedAnswers: [],
-          flag: { notes: '', type: 0, raisedBy: {} }
-        },
-        ...codedQuestions
-      ], questionsById, userId)
-
-      // Check if the first question is answered, if it's not, then send a request to create an empty coded question
-      // on the backend. This fixes issues with duplication of text fields answer props
-      const answered = checkIfAnswered(questionsById[firstQuestion.id], userAnswers)
-      if (!answered) {
-        const q = await api.createEmptyCodedQuestion(firstQuestion.id, action.projectId, action.jurisdictionId, userId, userAnswers[firstQuestion.id])
-        userAnswers[firstQuestion.id] = { ...userAnswers[firstQuestion.id], id: q.id }
-      }
+      const { userAnswers } = await initializeAndCheckAnswered(firstQuestion, codedQuestions, questionsById, userId, action, api)
 
       return {
         outline: scheme.outline,
@@ -97,7 +109,8 @@ export const getQuestionLogic = createLogic({
   async process({ getState, action, api }) {
     const state = getState().scenes.coding
     const userId = getState().data.user.currentUser.id
-    let questionInfo = {}, codedQuestion = {}
+    let questionInfo = {}, answered = false, unanswered = [],
+      updatedAnswers = { ...state.userAnswers }
 
     switch (action.type) {
       case types.ON_QUESTION_SELECTED_IN_NAV:
@@ -117,40 +130,36 @@ export const getQuestionLogic = createLogic({
     const combinedQuestion = { ...state.scheme.byId[questionInfo.question.id], ...newSchemeQuestion }
 
     // Check if question is answered
-    const answered = combinedQuestion.isCategoryQuestion
-      ? checkIfExists(combinedQuestion, state.userAnswers)
-        ? checkIfAnswered(state.scheme.byId[combinedQuestion.parentId].possibleAnswers[questionInfo.selectedCategory], state.userAnswers[combinedQuestion.id])
-        : false
-      : checkIfAnswered(state.scheme.byId[combinedQuestion.id], state.userAnswers)
+    if (combinedQuestion.isCategoryQuestion) {
+      unanswered = questionInfo.categories.filter(category => {
+        return checkIfExists(combinedQuestion, state.userAnswers)
+          ? !checkIfExists(category, state.userAnswers[combinedQuestion.id])
+          : true
+      })
+      answered = unanswered.length === 0
+    } else {
+      answered = checkIfAnswered(state.scheme.byId[combinedQuestion.id], state.userAnswers)
+    }
 
     // If it's not answered create an empty coded question object
     if (!answered) {
-      /*codedQuestion = await api.createEmptyCodedQuestion(
+      const question = await api.createEmptyCodedQuestion(
         combinedQuestion.id, action.projectId, action.jurisdictionId, userId, {
-          categories: questionInfo.selectedCategoryId === null ? [] : [questionInfo.selectedCategoryId],
+          categories: questionInfo.selectedCategoryId === null ? [] : [...unanswered.map(cat => cat.id)],
           flag: { notes: '', type: 0 },
           codedAnswers: [],
           comment: '',
-          schemeQuestionId: combinedQuestion.id
-        })*/
-      codedQuestion = {
-        categoryId: questionInfo.selectedCategoryId === null ? 0 : questionInfo.selectedCategoryId,
-        flag: { notes: '', type: 0 },
-        answers: {},
-        comment: '',
-        schemeQuestionId: combinedQuestion.id
-      }
-    } else {
-      codedQuestion = combinedQuestion.isCategoryQuestion ? state.userAnswers[combinedQuestion.id][questionInfo.selectedCategoryId] : state.userAnswers[combinedQuestion.id]
+          schemeQuestionId: combinedQuestion.id,
+          answers: {}
+        })
+      updatedAnswers = initializeUserAnswers(combinedQuestion.isCategoryQuestion ? [...question] : [question], {
+        ...state.scheme.byId,
+        [combinedQuestion.id]: combinedQuestion
+      }, userId, updatedAnswers)
     }
-    
+
     const updatedState = {
-      userAnswers: {
-        ...state.userAnswers,
-        [combinedQuestion.id]: combinedQuestion.isCategoryQuestion
-          ? { ...state.userAnswers[combinedQuestion.id], [questionInfo.selectedCategoryId]: { ...codedQuestion } }
-          : { ...codedQuestion }
-      },
+      userAnswers: updatedAnswers,
       scheme: {
         ...state.scheme,
         byId: {
@@ -162,8 +171,6 @@ export const getQuestionLogic = createLogic({
       selectedCategoryId: questionInfo.selectedCategoryId,
       categories: questionInfo.categories
     }
-
-    console.log(updatedState)
 
     return {
       question: combinedQuestion,
@@ -235,17 +242,7 @@ export const getUserCodedQuestionsLogic = createLogic({
       }
     }
 
-    // Initialize object for holding user answers
-    const userAnswers = initializeUserAnswers(
-      [
-        {
-          schemeQuestionId: question.id,
-          comment: '',
-          codedAnswers: []
-        }, ...codedQuestions
-      ],
-      updatedScheme.byId
-    )
+    const { userAnswers } = await initializeAndCheckAnswered(updatedSchemeQuestion, codedQuestions, updatedScheme.byId, userId, action, api)
 
     return {
       userAnswers,
@@ -256,6 +253,7 @@ export const getUserCodedQuestionsLogic = createLogic({
   }
 })
 
+// Save red flag logic
 export const saveRedFlagLogic = createLogic({
   type: types.ON_SAVE_RED_FLAG,
   async process({ action, api }) {
