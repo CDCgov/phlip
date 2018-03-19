@@ -7,43 +7,30 @@ import {
   initializeUserAnswers,
   getQuestionSelectedInNav,
   getNextQuestion,
-  getPreviousQuestion
+  getPreviousQuestion,
+  initializeRegularQuestion
 } from 'utils/codingHelpers'
 import { checkIfAnswered, checkIfExists } from 'utils/codingSchemeHelpers'
 import { normalize } from 'utils'
 import sortList from 'utils/sortList'
 
 const initializeAndCheckAnswered = async (question, codedQuestions, schemeById, userId, action, api) => {
-  // Initialize object for holding user answers
-  const userAnswers = initializeUserAnswers(
-    [
-      {
-        schemeQuestionId: question.id,
-        comment: '',
-        codedAnswers: [],
-        flag: { notes: '', type: 0, raisedBy: {} }
-      }, ...codedQuestions
-    ],
-    schemeById
-  )
-
-  console.log(question)
+  // Initialize object for holding user answers, if question already exists in user answers, then the initialized object
+  // will get overwritten (which is what we want, if it exists)
+  const userAnswers = initializeUserAnswers([...initializeRegularQuestion(question.id), ...codedQuestions], schemeById)
 
   // Check if the first question is answered, if it's not, then send a request to create an empty coded question
   // on the backend. This fixes issues with duplication of text fields answer props
   const answered = checkIfAnswered(question, userAnswers)
-  console.log(answered)
   if (!answered) {
     const q = await api.createEmptyCodedQuestion(question.id, action.projectId, action.jurisdictionId, userId, userAnswers[question.id])
     userAnswers[question.id] = { ...userAnswers[question.id], id: q.id }
   }
 
-  console.log(userAnswers)
-
+  // Return initialized user answers object
   return { userAnswers }
 }
 
-// TODO: use returned object from creating a coded question, because codedQuestionId is needed
 export const getOutlineLogic = createLogic({
   type: types.GET_CODING_OUTLINE_REQUEST,
   processOptions: {
@@ -56,12 +43,14 @@ export const getOutlineLogic = createLogic({
     let codedQuestions = []
     const userId = getState().data.user.currentUser.id
 
+    // Try to get the project coding scheme
     try {
       scheme = await api.getScheme(action.projectId)
     } catch (e) {
       throw { error: 'failed to get outline' }
     }
 
+    // Get user coded questions for currently selected jurisdiction
     if (action.jurisdictionId) {
       try {
         codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
@@ -74,6 +63,7 @@ export const getOutlineLogic = createLogic({
     if (scheme.schemeQuestions.length === 0) {
       return { isSchemeEmpty: true }
     } else {
+      // Create one array with the outline information in the question information
       const merge = scheme.schemeQuestions.reduce((arr, q) => {
         return [...arr, { ...q, ...scheme.outline[q.id] }]
       }, [])
@@ -82,6 +72,8 @@ export const getOutlineLogic = createLogic({
       const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
       const questionsById = normalize.arrayToObject(questionsWithNumbers)
       const firstQuestion = questionsWithNumbers[0]
+
+      // Check if the first question has answers, if it doesn't send a request to create an empty coded question
       const { userAnswers } = await initializeAndCheckAnswered(firstQuestion, codedQuestions, questionsById, userId, action, api)
 
       return {
@@ -97,7 +89,6 @@ export const getOutlineLogic = createLogic({
   }
 })
 
-// TODO: make sure to create an empty coded question when a user changes categories, handle previous question and selecting question in nav
 export const getQuestionLogic = createLogic({
   type: [types.ON_QUESTION_SELECTED_IN_NAV, types.GET_NEXT_QUESTION, types.GET_PREV_QUESTION],
   processOptions: {
@@ -109,9 +100,9 @@ export const getQuestionLogic = createLogic({
   async process({ getState, action, api }) {
     const state = getState().scenes.coding
     const userId = getState().data.user.currentUser.id
-    let questionInfo = {}, answered = false, unanswered = [],
-      updatedAnswers = { ...state.userAnswers }
+    let questionInfo = {}, answered = false, unanswered = [], updatedAnswers = { ...state.userAnswers }
 
+    // How did the user navigate to the currently selected question
     switch (action.type) {
       case types.ON_QUESTION_SELECTED_IN_NAV:
         questionInfo = getQuestionSelectedInNav(state, action)
@@ -128,6 +119,7 @@ export const getQuestionLogic = createLogic({
     const newSchemeQuestion = await api.getSchemeQuestion(questionInfo.question.id, action.projectId)
     sortList(newSchemeQuestion.possibleAnswers, 'order', 'asc')
     const combinedQuestion = { ...state.scheme.byId[questionInfo.question.id], ...newSchemeQuestion }
+    const updatedScheme = { ...state.scheme, byId: { ...state.scheme.byId, [combinedQuestion.id]: combinedQuestion } }
 
     // Check if question is answered
     if (combinedQuestion.isCategoryQuestion) {
@@ -152,21 +144,13 @@ export const getQuestionLogic = createLogic({
           schemeQuestionId: combinedQuestion.id,
           answers: {}
         })
-      updatedAnswers = initializeUserAnswers(combinedQuestion.isCategoryQuestion ? [...question] : [question], {
-        ...state.scheme.byId,
-        [combinedQuestion.id]: combinedQuestion
-      }, userId, updatedAnswers)
+      updatedAnswers = initializeUserAnswers(combinedQuestion.isCategoryQuestion
+        ? [...question] : [question], updatedScheme, userId, updatedAnswers)
     }
 
     const updatedState = {
       userAnswers: updatedAnswers,
-      scheme: {
-        ...state.scheme,
-        byId: {
-          ...state.scheme.byId,
-          [combinedQuestion.id]: combinedQuestion
-        }
-      },
+      scheme: updatedScheme,
       selectedCategory: questionInfo.selectedCategory,
       selectedCategoryId: questionInfo.selectedCategoryId,
       categories: questionInfo.categories
@@ -180,7 +164,7 @@ export const getQuestionLogic = createLogic({
   }
 })
 
-// TODO: make sure the codedQuestionId is not removed when answering a question
+// Logic for any time of action that happens on question
 export const answerQuestionLogic = createLogic({
   type: [
     types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER,

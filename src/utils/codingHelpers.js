@@ -66,7 +66,7 @@ export const getSelectedCategories = (parentQuestion, userAnswers) =>
 
 export const initializeNextQuestion = (question, questionId) => ({
   comment: '',
-  flag: { notes: '', type: 0 },
+  flag: { notes: '', type: 0, raisedBy: {} },
   answers: {},
   schemeQuestionId: questionId,
   ...question
@@ -277,7 +277,7 @@ export const handleUserPinciteQuestion = (state, action) => {
 }
 
 /*
-  Updating pincite and comment use this method
+  Handles any updates for 'fieldValue' in state.userAnswers that are for regular questions
  */
 export const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, getFieldValues) => ({
   userAnswers: {
@@ -289,6 +289,9 @@ export const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, get
   }
 })
 
+/*
+  Handles any updates for 'fieldValue' in state.userAnswers that are for category child questions
+ */
 export const handleUpdateUserCategoryChild = (state, action) => (fieldValue, getFieldValues) => ({
   userAnswers: {
     ...state.userAnswers,
@@ -307,22 +310,28 @@ export const handleUpdateUserCategoryChild = (state, action) => (fieldValue, get
  */
 export const handleClearAnswers = () => ({})
 
+/*
+ Sends back an initialized object for a question in userAnswers
+ */
 export const initializeRegularQuestion = id => ({
   schemeQuestionId: id,
   answers: {},
   comment: '',
-  flag: { notes: '', type: 0 }
+  flag: { notes: '', type: 0, raisedBy: {} }
 })
 
+/*
+ Initializes and updates the navigator
+ */
 export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestion) => {
   tree.map(item => {
+    console.log(item)
     item.isAnswered = item.isCategoryQuestion ? false : checkIfAnswered(item, codedQuestions)
     if (item.children) {
       item.children = item.questionType === questionTypes.CATEGORY
         ? checkIfAnswered(item, codedQuestions)
           ? initializeNavigator(
-            sortList(Object.values(scheme)
-              .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
+            sortList(Object.values(scheme).filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
             { ...scheme },
             codedQuestions,
             currentQuestion
@@ -403,12 +412,18 @@ export const getQuestionSelectedInNav = (state, action) => {
   }
 }
 
+/*
+  Delete any 'ids' in answer objects in userAnswers because it fails on the backend with them
+ */
 const deleteAnswerIds = (answer) => {
   let ans = { ...answer }
   if (ans.id) delete ans.id
   return ans
 }
 
+/*
+ Used to retrieve the request object body for updating a question answer, pincite, comment, flag, etc.
+ */
 export const getFinalCodedObject = (state, action, applyAll = false) => {
   const questionObject = state.question.isCategoryQuestion
     ? state.userAnswers[action.questionId][state.selectedCategoryId]
