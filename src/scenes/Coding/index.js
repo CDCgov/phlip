@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import * as actions from './actions'
+import actions, * as otherActions from './actions'
 import withCodingValidation from 'components/CodingValidation'
 
 export class Coding extends Component {
@@ -16,6 +16,12 @@ export class Coding extends Component {
     if (nextProps.isSchemeEmpty !== null) {
       this.setState({ showViews: true })
     }
+  }
+
+  onJurisdictionChange = (event) => {
+    this.setState({ selectedJurisdiction: event.target.value })
+    this.props.actions.onChangeJurisdiction(event.target.value, this.props.jurisdictionsList)
+    this.props.actions.getUserCodedQuestions(this.props.projectId, event.target.value)
   }
 
   onSaveFlag = flagInfo => {
@@ -53,4 +59,4 @@ Coding.propTypes = {
   categories: PropTypes.array
 }
 
-export default withCodingValidation(Coding, actions)
+export default withCodingValidation(Coding, { ...actions, ...otherActions })

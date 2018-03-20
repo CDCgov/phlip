@@ -7,17 +7,12 @@ import {
   getQuestionSelectedInNav,
   getNextQuestion,
   getPreviousQuestion,
-  initializeNextQuestion,
   initializeAndCheckAnswered
 } from 'utils/codingHelpers'
 import { checkIfAnswered, checkIfExists } from 'utils/codingSchemeHelpers'
 import { normalize } from 'utils'
 import sortList from 'utils/sortList'
-
-import * as codingValidationTypes from './actionTypes'
-import * as otherActionTypes from 'components/CodingValidation/actionTypes'
-
-const types = { ...codingValidationTypes, ...otherActionTypes }
+import * as types from './actionTypes'
 
 export const getOutlineLogic = createLogic({
   type: types.GET_CODING_OUTLINE_REQUEST,

@@ -21,13 +21,13 @@ const INITIAL_STATE = {
   mergedUserQuestions: null
 }
 
-const codingValidationReducer = (state = INITIAL_STATE, action) => {
+const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
   const questionUpdater = state.question.isCategoryQuestion
     ? handleUpdateUserCategoryChild(state, action)
     : handleUpdateUserCodedQuestion(state, action)
 
   switch (action.type) {
-    case types.UPDATE_USER_ANSWER_REQUEST:
+    case `${types.UPDATE_USER_ANSWER_REQUEST}_${name}`:
       return {
         ...state,
         userAnswers: {
@@ -36,33 +36,43 @@ const codingValidationReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
-    case types.ON_CHANGE_PINCITE:
+    case `${types.ON_CHANGE_PINCITE}_${name}`:
       return {
         ...state,
         ...questionUpdater('answers', handleUserPinciteQuestion)
       }
 
-    case types.ON_CHANGE_COMMENT:
+    case `${types.ON_CHANGE_COMMENT}_${name}`:
       return {
         ...state,
         ...questionUpdater('comment', action.comment)
       }
 
-    case types.ON_CHANGE_CATEGORY:
+    case `${types.ON_CHANGE_CATEGORY}_${name}`:
       return {
         ...state,
         selectedCategory: action.selection,
         selectedCategoryId: state.categories[action.selection].id
       }
 
-    case types.ON_CHANGE_JURISDICTION:
+    case `${types.ON_CHANGE_JURISDICTION}_${name}`:
       return {
         ...state,
         jurisdictionId: action.event,
         jurisdiction: action.jurisdictionsList.find(jurisdiction => jurisdiction.id === action.event)
       }
 
-    case types.ON_APPLY_ANSWER_TO_ALL:
+    case `${types.GET_QUESTION_SUCCESS}_${name}`:
+      return {
+        ...action.payload.updatedState,
+        ...handleCheckCategories(
+          action.payload.question,
+          action.payload.currentIndex,
+          action.payload.updatedState
+        )
+      }
+
+    case `${types.ON_APPLY_ANSWER_TO_ALL}_${name}`:
       const catQuestion = state.userAnswers[state.question.id][state.selectedCategoryId]
       return {
         ...state,
@@ -81,23 +91,13 @@ const codingValidationReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
-    case types.GET_QUESTION_SUCCESS:
-      return {
-        ...action.payload.updatedState,
-        ...handleCheckCategories(
-          action.payload.question,
-          action.payload.currentIndex,
-          action.payload.updatedState
-        )
-      }
-
-    case types.ON_CLEAR_ANSWER:
+    case `${types.ON_CLEAR_ANSWER}_${name}`:
       return {
         ...state,
         ...questionUpdater('answers', handleClearAnswers)
       }
 
-    case types.ON_CLOSE_SCREEN:
+    case `${types.ON_CLOSE_SCREEN}_${name}`:
       return INITIAL_STATE
 
     default:
@@ -121,11 +121,7 @@ export const createCodingValidationReducer = (uniqueReducer, handlers, name) => 
     if (handlers.includes(action.type)) {
       return treeAndButton(uniqueReducer(state, action))
     } else {
-      if (name !== action.reducerName) {
-        return state
-      } else {
-        return treeAndButton(codingValidationReducer(state, action))
-      }
+      return treeAndButton(codingValidationReducer(state, action, name))
     }
   }
 }

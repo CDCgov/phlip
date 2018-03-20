@@ -9,9 +9,7 @@ import { createAvatarUrl } from 'utils/urlHelper'
 import { checkIfAnswered, checkIfExists } from 'utils/codingSchemeHelpers'
 import { normalize } from 'utils'
 import sortList from 'utils/sortList'
-import * as codingValidationTypes from 'scenes/Validation/actionTypes'
-import * as otherActionTypes from 'components/CodingValidation/actionTypes'
-const types = { ...codingValidationTypes, ...otherActionTypes }
+import * as types from './actionTypes'
 
 const addCoderToAnswers = (existingQuestion, question, coder) => {
   let flagComment = {}
@@ -162,7 +160,7 @@ export const getValidationOutlineLogic = createLogic({
         throw { error: 'failed to get validated questions' }
       }
     }
-    
+
     // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
     if (scheme.schemeQuestions.length === 0) {
       return { isSchemeEmpty: true }
@@ -299,8 +297,8 @@ export const validateQuestionLogic = createLogic({
   ],
   processOptions: {
     dispatchReturn: true,
-    successType: types.UPDATE_USER_VALIDATION_SUCCESS,
-    failType: types.UPDATE_USER_VALIDATION_FAIL
+    successType: types.UPDATE_USER_ANSWER_SUCCESS,
+    failType: types.UPDATE_USER_ANSWER_FAIL
   },
   latest: true,
   async process({ getState, action, api }) {

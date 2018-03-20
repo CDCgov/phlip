@@ -20,8 +20,8 @@ const scenesReducer = combineReducers({
   admin: persistReducer({ ...config, key: 'admin' }, admin),
   codingScheme,
   login,
-  coding: createCodingValidationReducer(coding, codingHandlers, 'coding'),
-  validation: createCodingValidationReducer(validation, validationHandlers, 'validation'),
+  coding: createCodingValidationReducer(coding, codingHandlers, 'CODING' ),
+  validation: createCodingValidationReducer(validation, validationHandlers, 'VALIDATION'),
   protocol
 })
 

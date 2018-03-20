@@ -1,4 +1,12 @@
 import * as types from './actionTypes'
+import { makeActionCreator, actions as commonActions } from 'components/CodingValidation/actions'
+
+const scene = 'CODING'
+let actions = {}
+
+for (let action in commonActions) {
+  actions = { ...actions, [action]: makeActionCreator(commonActions[action].type, scene, commonActions[action].args) }
+}
 
 // Dispatched when a user navigates to any question
 export const getQuestionRequest = (questionId, projectId) => ({

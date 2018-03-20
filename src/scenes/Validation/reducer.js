@@ -24,16 +24,6 @@ const INITIAL_STATE = {
 
 const validationReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case types.GET_QUESTION_SUCCESS:
-      return {
-        ...action.payload.updatedState,
-        ...handleCheckCategories(
-          action.payload.question,
-          action.payload.currentIndex,
-          action.payload.updatedState
-        )
-      }
-
     case types.GET_VALIDATION_OUTLINE_SUCCESS:
       if (action.payload.isSchemeEmpty) {
         return {
@@ -162,8 +152,7 @@ export const validationHandlers = [
   'GET_USER_VALIDATED_QUESTIONS_REQUEST',
   'GET_USER_VALIDATED_QUESTIONS_SUCCESS',
   'CLEAR_FLAG',
-  'CLEAR_RED_FLAG',
-  'GET_QUESTION_SUCCESS'
+  'CLEAR_RED_FLAG'
 ]
 
 export default validationReducer

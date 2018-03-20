@@ -1,12 +1,6 @@
 import {
-  determineShowButton,
-  handleUpdateUserAnswers,
   handleUpdateUserCodedQuestion,
   handleUpdateUserCategoryChild,
-  handleClearAnswers,
-  handleUserPinciteQuestion,
-  initializeNavigator,
-  handleCheckCategories
 } from 'utils/codingHelpers'
 import { sortList } from 'utils'
 import * as codingValidationTypes from 'scenes/Coding/actionTypes'
@@ -54,16 +48,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           userAnswers: action.payload.userAnswers,
           categories: undefined
         }
-      }
-
-    case types.GET_QUESTION_SUCCESS:
-      return {
-        ...action.payload.updatedState,
-        ...handleCheckCategories(
-          action.payload.question,
-          action.payload.currentIndex,
-          action.payload.updatedState
-        )
       }
 
     case types.ON_SAVE_RED_FLAG:
@@ -114,8 +98,7 @@ export const codingHandlers = [
   'GET_USER_CODED_QUESTIONS_REQUEST',
   'GET_USER_CODED_QUESTIONS_SUCCESS',
   'ON_SAVE_RED_FLAG',
-  'ON_SAVE_FLAG',
-  'GET_QUESTION_SUCCESS'
+  'ON_SAVE_FLAG'
 ]
 
 export default codingReducer
