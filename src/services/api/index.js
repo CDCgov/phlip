@@ -177,6 +177,11 @@ export default {
       .then(res => res.data)
   },
 
+  // Get all coded questions for a specific question
+  getAllCodedQuestionsForQuestion(projectId, jurisdictionId, questionId) {
+    return api.get(`/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`).then(res => res.data)
+  },
+
   // Gets a list of all the coders for a project, called in Validation/logic
   getProjectCoders(projectId) {
     return api.get(`/projects/${projectId}/coders`).then(res => res.data)

@@ -43,8 +43,6 @@ const withCodingValidation = (WrappedComponent, actions) => {
     constructor(context, props) {
       super(context, props)
 
-      console.log(this.props)
-
       this.state = {
         selectedJurisdiction: this.props.jurisdictionId,
         showViews: false,

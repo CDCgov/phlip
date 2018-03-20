@@ -2,6 +2,7 @@ import { normalize } from 'utils'
 import { checkIfAnswered, checkIfExists, checkIfCategoryAnswered } from 'utils/codingSchemeHelpers'
 import sortList from 'utils/sortList'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
+import * as types from 'scenes/Validation/actionTypes'
 
 const initializeValues = question => {
   return {
@@ -480,4 +481,69 @@ export const initializeAndCheckAnswered = async (question, codedQuestions, schem
 
   // Return initialized user answers object
   return { userAnswers }
+}
+
+/*
+  Gets a specific question, and initializes it
+ */
+export const getQuestionAndInitialize = async (state, action, userId, api, createEmptyQuestion, questionInfo) => {
+  let unanswered = [], answered = false, updatedAnswers = { ...state.userAnswers }
+
+  // Get the scheme question from the db in case it has changed
+  const newSchemeQuestion = await api.getSchemeQuestion(questionInfo.question.id, action.projectId)
+  sortList(newSchemeQuestion.possibleAnswers, 'order', 'asc')
+  const combinedQuestion = { ...state.scheme.byId[questionInfo.question.id], ...newSchemeQuestion }
+  const updatedScheme = {
+    ...state.scheme,
+    byId: {
+      ...state.scheme.byId,
+      [combinedQuestion.id]: { ...state.scheme.byId[combinedQuestion.id], ...combinedQuestion }
+    }
+  }
+
+  // Check if question is answered
+  if (combinedQuestion.isCategoryQuestion) {
+    unanswered = questionInfo.categories.filter(category => {
+      return checkIfExists(combinedQuestion, state.userAnswers)
+        ? !checkIfExists(category, state.userAnswers[combinedQuestion.id])
+        : true
+    })
+    answered = unanswered.length === 0
+  } else {
+    answered = checkIfAnswered(state.scheme.byId[combinedQuestion.id], state.userAnswers)
+  }
+
+  // If it's not answered create an empty coded question object
+  if (!answered) {
+    const question = await createEmptyQuestion({
+      questionId: combinedQuestion.id,
+      projectId: action.projectId,
+      jurisdictionId: action.jurisdictionId,
+      userId,
+      questionObj: {
+        categories: questionInfo.selectedCategoryId === null ? [] : [...unanswered.map(cat => cat.id)],
+        flag: { notes: '', type: 0 },
+        codedAnswers: [],
+        comment: '',
+        schemeQuestionId: combinedQuestion.id
+      }
+    })
+    updatedAnswers = initializeUserAnswers(combinedQuestion.isCategoryQuestion
+      ? [...question] : [question], updatedScheme, userId, updatedAnswers)
+  }
+
+  const updatedState = {
+    ...state,
+    userAnswers: updatedAnswers,
+    scheme: updatedScheme,
+    selectedCategory: questionInfo.selectedCategory,
+    selectedCategoryId: questionInfo.selectedCategoryId,
+    categories: questionInfo.categories
+  }
+
+  return {
+    question: combinedQuestion,
+    currentIndex: questionInfo.index,
+    updatedState
+  }
 }

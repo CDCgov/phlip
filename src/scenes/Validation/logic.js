@@ -2,13 +2,12 @@ import { createLogic } from 'redux-logic'
 import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
 import {
-  getFinalCodedObject, getNextQuestion, getPreviousQuestion, getQuestionSelectedInNav, initializeAndCheckAnswered,
-  initializeUserAnswers
+  getFinalCodedObject, initializeAndCheckAnswered, getQuestionAndInitialize,
+  getPreviousQuestion, getQuestionSelectedInNav, getNextQuestion
 } from 'utils/codingHelpers'
 import { createAvatarUrl } from 'utils/urlHelper'
 import { checkIfAnswered, checkIfExists } from 'utils/codingSchemeHelpers'
 import { normalize } from 'utils'
-import sortList from 'utils/sortList'
 import * as types from './actionTypes'
 
 const addCoderToAnswers = (existingQuestion, question, coder) => {
@@ -205,7 +204,7 @@ export const getQuestionLogicValidation = createLogic({
   async process({ getState, action, api }) {
     const state = getState().scenes.validation
     const userId = getState().data.user.currentUser.id
-    let questionInfo = {}, answered = false, unanswered = [], updatedAnswers = { ...state.userAnswers }
+    let questionInfo = {}
 
     // How did the user navigate to the currently selected question
     switch (action.type) {
@@ -219,64 +218,7 @@ export const getQuestionLogicValidation = createLogic({
         questionInfo = getPreviousQuestion(state, action)
         break
     }
-
-    // Get the scheme question from the db in case it has changed
-    const newSchemeQuestion = await api.getSchemeQuestion(questionInfo.question.id, action.projectId)
-    sortList(newSchemeQuestion.possibleAnswers, 'order', 'asc')
-    const combinedQuestion = { ...state.scheme.byId[questionInfo.question.id], ...newSchemeQuestion }
-    const updatedScheme = {
-      ...state.scheme,
-      byId: {
-        ...state.scheme.byId,
-        [combinedQuestion.id]: { ...state.scheme.byId[combinedQuestion.id], ...combinedQuestion }
-      }
-    }
-
-    // Check if question is answered
-    if (combinedQuestion.isCategoryQuestion) {
-      unanswered = questionInfo.categories.filter(category => {
-        return checkIfExists(combinedQuestion, state.userAnswers)
-          ? !checkIfExists(category, state.userAnswers[combinedQuestion.id])
-          : true
-      })
-      answered = unanswered.length === 0
-    } else {
-      answered = checkIfAnswered(state.scheme.byId[combinedQuestion.id], state.userAnswers)
-    }
-
-    // If it's not answered create an empty coded question object
-    if (!answered) {
-      const question = await api.createEmptyValidatedQuestion({
-        questionId: combinedQuestion.id,
-        projectId: action.projectId,
-        jurisdictionId: action.jurisdictionId,
-        userId,
-        questionObj: {
-          categories: questionInfo.selectedCategoryId === null ? [] : [...unanswered.map(cat => cat.id)],
-          flag: { notes: '', type: 0 },
-          codedAnswers: [],
-          comment: '',
-          schemeQuestionId: combinedQuestion.id
-        }
-      })
-      updatedAnswers = initializeUserAnswers(combinedQuestion.isCategoryQuestion
-        ? [...question] : [question], updatedScheme, userId, updatedAnswers)
-    }
-
-    const updatedState = {
-      ...state,
-      userAnswers: updatedAnswers,
-      scheme: updatedScheme,
-      selectedCategory: questionInfo.selectedCategory,
-      selectedCategoryId: questionInfo.selectedCategoryId,
-      categories: questionInfo.categories
-    }
-
-    return {
-      question: combinedQuestion,
-      currentIndex: questionInfo.index,
-      updatedState
-    }
+    return await getQuestionAndInitialize(state, action, userId, api, api.createEmptyValidatedQuestion, questionInfo)
   }
 })
 
