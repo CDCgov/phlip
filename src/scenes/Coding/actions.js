@@ -5,7 +5,7 @@ const scene = 'CODING'
 let actions = {}
 
 for (let action in commonActions) {
-  actions = { ...actions, [action]: makeActionCreator(commonActions[action].type, scene, commonActions[action].args) }
+  actions = { ...actions, [action]: makeActionCreator(commonActions[action].type, scene, ...commonActions[action].args) }
 }
 
 // Dispatched when a user navigates to any question
@@ -46,3 +46,5 @@ export const onSaveRedFlag = (projectId, questionId, flagInfo) => ({
   questionId,
   flagInfo
 })
+
+export default actions

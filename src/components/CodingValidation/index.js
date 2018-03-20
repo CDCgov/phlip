@@ -43,6 +43,8 @@ const withCodingValidation = (WrappedComponent, actions) => {
     constructor(context, props) {
       super(context, props)
 
+      console.log(this.props)
+
       this.state = {
         selectedJurisdiction: this.props.jurisdictionId,
         showViews: false,
@@ -65,7 +67,7 @@ const withCodingValidation = (WrappedComponent, actions) => {
     }
 
     componentWillUnmount() {
-      this.props.actions.onCloseScreen(this.props.page)
+      this.props.actions.onCloseScreen()
     }
 
     onToggleNavigator = () => {

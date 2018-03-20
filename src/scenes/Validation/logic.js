@@ -116,18 +116,11 @@ const getCoderInformation = async ({ api, action }) => {
 export const updateValidatorLogic = createLogic({
   type: [types.UPDATE_USER_ANSWER_REQUEST, types.ON_APPLY_ANSWER_TO_ALL],
   transform({ action, getState }, next) {
-    if (action.reducerName === 'validation') {
-      next({
-        ...action,
-        otherProps: { validatedBy: { ...getState().data.user.currentUser } },
-        isValidation: true
-      })
-    } else {
-      next({
-        ...action,
-        isValidation: false
-      })
-    }
+    next({
+      ...action,
+      otherProps: { validatedBy: { ...getState().data.user.currentUser } },
+      isValidation: true
+    })
   }
 })
 
@@ -191,7 +184,7 @@ export const getValidationOutlineLogic = createLogic({
         validatedQuestions,
         isSchemeEmpty: false,
         userId,
-        mergedUserQuestions: {}
+        mergedUserQuestions: codedQuestionObj
       }
     }
   }
