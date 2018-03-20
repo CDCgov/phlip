@@ -38,7 +38,6 @@ export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions,
   }, initialObj)
 }
 
-
 export const findNextParentSibling = (scheme, question, currentIndex) => {
   const subArr = [...scheme.order].slice(currentIndex + 1)
   return subArr.find(id => scheme.byId[id].parentId !== question.id)
@@ -68,7 +67,7 @@ export const initializeNextQuestion = question => ({
   comment: '',
   flag: { notes: '', type: 0, raisedBy: {} },
   codedAnswers: [],
-  schemeQuestionId: question.id,
+  schemeQuestionId: question.id
 })
 
 /*
@@ -134,7 +133,8 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
 export const getNextQuestion = (state, action) => {
   let newQuestion = state.scheme.byId[action.id]
   let newIndex = action.newIndex
-  let categories = state.categories, selectedCategoryId = state.selectedCategoryId, selectedCategory = state.selectedCategory
+  let categories = state.categories, selectedCategoryId = state.selectedCategoryId,
+    selectedCategory = state.selectedCategory
 
   // Check to make sure newQuestion is correct. If the newQuestion is a category child, but the user hasn't selected
   // any categories, then find the next parent question
@@ -160,7 +160,8 @@ export const getNextQuestion = (state, action) => {
 export const getPreviousQuestion = (state, action) => {
   let newQuestion = state.scheme.byId[action.id]
   let newIndex = action.newIndex
-  let categories = state.categories, selectedCategoryId = state.selectedCategoryId, selectedCategory = state.selectedCategory
+  let categories = state.categories, selectedCategoryId = state.selectedCategoryId,
+    selectedCategory = state.selectedCategory
 
   if (newQuestion.isCategoryQuestion) {
     if (!checkIfAnswered(state.scheme.byId[newQuestion.parentId], state.userAnswers)) {
@@ -247,7 +248,11 @@ export const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
             ...action.isValidation ? { validatedBy: action.otherProps.validatedBy } : {}
           }
         }
-        : { answers: { ...currentUserAnswers }, ...action.isValidation ? { validatedBy: action.otherProps.validatedBy } : {} }
+        : {
+          answers: { ...currentUserAnswers }, ...action.isValidation
+            ? { validatedBy: action.otherProps.validatedBy }
+            : {}
+        }
 
     }
   }
@@ -334,7 +339,8 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
     if (item.children) {
       item.children = item.questionType === questionTypes.CATEGORY
         ? item.isAnswered
-          ? initializeNavigator(sortList(Object.values(scheme).filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
+          ? initializeNavigator(sortList(Object.values(scheme)
+              .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
             { ...scheme },
             codedQuestions,
             currentQuestion
@@ -444,4 +450,34 @@ export const getFinalCodedObject = (state, action, applyAll = false) => {
   }
 
   return answerObject
+}
+
+/*
+  Check answered status and send response to create empty validated/coded question
+ */
+export const initializeAndCheckAnswered = async (question, codedQuestions, schemeById, userId, action, createEmptyQuestion) => {
+  // Initialize object for holding user answers, if question already exists in user answers, then the initialized object
+  // will get overwritten (which is what we want, if it exists)
+  const coded = [initializeNextQuestion(question), ...codedQuestions]
+  const userAnswers = initializeUserAnswers([...coded], schemeById, userId)
+  console.log(userAnswers)
+
+  // Check if the first question is answered, if it's not, then send a request to create an empty coded question
+  // on the backend. This fixes issues with duplication of text fields answer props
+  const answered = checkIfAnswered(question, userAnswers)
+
+  if (!answered) {
+    const { answers, ...questionObj } = userAnswers[question.id]
+    const q = await createEmptyQuestion({
+      questionId: question.id,
+      projectId: action.projectId,
+      jurisdictionId: action.jurisdictionId,
+      userId: userId,
+      questionObj: { ...questionObj, codedAnswers: [] }
+    })
+    userAnswers[question.id] = { ...userAnswers[question.id], id: q.id }
+  }
+
+  // Return initialized user answers object
+  return { userAnswers }
 }

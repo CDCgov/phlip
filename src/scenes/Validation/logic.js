@@ -1,11 +1,12 @@
 import { createLogic } from 'redux-logic'
 import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
-import { getFinalCodedObject } from 'utils/codingHelpers'
+import { getFinalCodedObject, initializeAndCheckAnswered } from 'utils/codingHelpers'
 import { createAvatarUrl } from 'utils/urlHelper'
 import { checkIfExists } from 'utils/codingSchemeHelpers'
 import * as codingValidationTypes from 'scenes/Validation/actionTypes'
 import * as otherActionTypes from 'components/CodingValidation/actionTypes'
+import { normalize } from 'utils'
 
 const types = { ...codingValidationTypes, ...otherActionTypes }
 
@@ -59,25 +60,6 @@ const getCoderInformation = async ({ api, action }) => {
   let codedQuestions = [], updatedCodedQuestions = [], projectCoders = [], codeQuestionsPerUser = [],
     codedQuestionObj = {}
 
-  console.log(action)
-  console.log(api)
-  try {
-    codedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
-    console.log(codedQuestions)
-    /*for (let question of codedQuestions) {
-      try {
-        let hasAvatarImage = await api.getUserPicture(question.validatedBy.userId)
-        let avatarUrl = hasAvatarImage ? createAvatarUrl(question.validatedBy.userId) : null
-        let validatedBy = { ...question.validatedBy, avatarUrl }
-        updatedCodedQuestions = [...updatedCodedQuestions, { ...question, validatedBy }]
-      } catch (e) {
-        throw { error: 'failed to get avatar image for validator' }
-      }
-    }*/
-  } catch (e) {
-    throw { error: 'failed to get codedQuestions' }
-  }
-
   try {
     projectCoders = await api.getProjectCoders(action.projectId)
   } catch (e) {
@@ -112,6 +94,9 @@ const getCoderInformation = async ({ api, action }) => {
   }
 }
 
+/*
+  Some of the reusable functions need to know whether we're on the validation screen or not, so that's what this is for
+ */
 export const updateValidatorLogic = createLogic({
   type: [types.UPDATE_USER_ANSWER_REQUEST, types.ON_APPLY_ANSWER_TO_ALL],
   transform({ action, getState }, next) {
@@ -130,6 +115,9 @@ export const updateValidatorLogic = createLogic({
   }
 })
 
+/*
+  Logic for when the user first opens the validation screen
+ */
 export const getValidationOutlineLogic = createLogic({
   type: types.GET_VALIDATION_OUTLINE_REQUEST,
   processOptions: {
@@ -138,7 +126,7 @@ export const getValidationOutlineLogic = createLogic({
     failType: types.GET_VALIDATION_OUTLINE_FAIL
   },
   async process({ action, getState, api }) {
-    let scheme = {}
+    let scheme = {}, validatedQuestions = []
     const userId = getState().data.user.currentUser.id
 
     // Try to get the project coding scheme
@@ -148,32 +136,56 @@ export const getValidationOutlineLogic = createLogic({
       throw { error: 'failed to get outline' }
     }
 
-    const { codedQuestionObj, updatedCodedQuestions } = await getCoderInformation({ api, action })
+    // Get user coded questions for currently selected jurisdiction
+    if (action.jurisdictionId) {
+      try {
+        validatedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
+      } catch (e) {
+        throw { error: 'failed to get validated questions' }
+      }
+    }
 
+    // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
     if (scheme.schemeQuestions.length === 0) {
       return { isSchemeEmpty: true }
     } else {
+      // Create one array with the outline information in the question information
       const merge = scheme.schemeQuestions.reduce((arr, q) => {
         return [...arr, { ...q, ...scheme.outline[q.id] }]
       }, [])
 
+      // Create a sorted question tree with sorted children with question numbering and order
       const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
+      const questionsById = normalize.arrayToObject(questionsWithNumbers)
+      const firstQuestion = questionsWithNumbers[0]
+
+      // Check if the first question has answers, if it doesn't send a request to create an empty coded question
+      const { userAnswers } = await initializeAndCheckAnswered(
+        firstQuestion, validatedQuestions, questionsById, userId, action, api.createEmptyValidatedQuestion
+      )
+
+      console.log(validatedQuestions)
+
+      // Get all the coded questions for this question
+      const { codedQuestionObj, updatedCodedQuestions } = await getCoderInformation({ api, action })
 
       return {
         outline: scheme.outline,
-        scheme: questionsWithNumbers,
-        tree,
-        questionOrder: order,
-        question: questionsWithNumbers[0],
-        mergedUserQuestions: codedQuestionObj,
-        codedQuestions: updatedCodedQuestions,
+        scheme: { byId: questionsById, tree, order },
+        userAnswers,
+        question: firstQuestion,
+        validatedQuestions,
         isSchemeEmpty: false,
-        userId
+        userId,
+        mergedUserQuestion: codedQuestionObj
       }
     }
   }
 })
 
+/*
+  Logic for when a validator does anything to a validation question
+ */
 export const validateQuestionLogic = createLogic({
   type: [
     types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER,
@@ -196,6 +208,9 @@ export const validateQuestionLogic = createLogic({
   }
 })
 
+/*
+  Logic for when the validator changes jurisdictions on the validation screen
+ */
 export const getUserValidatedQuestionsLogic = createLogic({
   type: types.GET_USER_VALIDATED_QUESTIONS_REQUEST,
   processOptions: {

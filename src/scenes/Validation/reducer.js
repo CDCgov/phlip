@@ -1,13 +1,5 @@
-import { normalize } from 'utils'
 import {
-  determineShowButton,
-  handleUpdateUserAnswers,
-  handleUpdateUserCodedQuestion,
-  handleUpdateUserCategoryChild,
-  handleClearAnswers,
   initializeUserAnswers,
-  handleUserPinciteQuestion,
-  initializeNavigator,
   initializeCodedUsers
 } from 'utils/codingHelpers'
 import { sortList } from 'utils'
@@ -46,24 +38,15 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           mergedUserQuestions: {}
         }
       } else {
-        const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
         sortList(action.payload.question.possibleAnswers, 'order', 'asc')
         return {
           ...state,
           outline: action.payload.outline,
-          scheme: {
-            byId: normalizedQuestions,
-            order: action.payload.questionOrder,
-            tree: action.payload.tree
-          },
+          scheme: action.payload.scheme,
           question: action.payload.question,
-          userAnswers: initializeUserAnswers(
-            [
-              { schemeQuestionId: action.payload.question.id, comment: '', codedAnswers: [] },
-              ...action.payload.codedQuestions
-            ], normalizedQuestions, action.payload.userId
-          ),
-          mergedUserQuestions: action.payload.mergedUserQuestions
+          userAnswers: action.payload.userAnswers,
+          mergedUserQuestions: action.pwayload.mergedUserQuestions,
+          categories: undefined
         }
       }
 

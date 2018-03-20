@@ -131,8 +131,8 @@ export default {
   },
 
   // Create an empty coded question object, called in Coding/logic, Validation/logic
-  createEmptyCodedQuestion(questionId, projectId, jurisdictionId, userId, questionObj) {
-    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, questionObj)
+  createEmptyCodedQuestion({ questionId, projectId, jurisdictionId, userId, questionObj }) {
+    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, { ...questionObj })
      .then(res => res.data)
   },
 
@@ -152,7 +152,7 @@ export default {
     return api.delete(`/flags/${flagId}`).then(res => res.data)
   },
 
-  // Gets user coded questions for a project and jurisdiction, called in Coding/logic, Validation/logic
+  // Gets user coded questions for a project and jurisdiction, called in Coding/logic
   getUserCodedQuestions(userId, projectId, jurisdictionId) {
     return api.get(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions`)
       .then(res => res.data)
@@ -163,9 +163,14 @@ export default {
     return api.get(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions`).then(res => res.data)
   },
 
+  // Create an empty validated question, called in Validation/logic
+  createEmptyValidatedQuestion({ projectId, jurisdictionId, questionId, questionObj }) {
+    return api.post(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`, { ...questionObj }).then(res => res.data)
+  },
+
   // Validates a question for a jurisdiction and project, called in Validation/logic
   validateQuestion(projectId, jurisdictionId, questionId, updatedQuestion) {
-    return api.post(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`, updatedQuestion)
+    return api.put(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`, updatedQuestion)
       .then(res => res.data)
   },
 

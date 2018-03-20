@@ -7,7 +7,8 @@ import {
   getQuestionSelectedInNav,
   getNextQuestion,
   getPreviousQuestion,
-  initializeNextQuestion
+  initializeNextQuestion,
+  initializeAndCheckAnswered
 } from 'utils/codingHelpers'
 import { checkIfAnswered, checkIfExists } from 'utils/codingSchemeHelpers'
 import { normalize } from 'utils'
@@ -15,25 +16,8 @@ import sortList from 'utils/sortList'
 
 import * as codingValidationTypes from './actionTypes'
 import * as otherActionTypes from 'components/CodingValidation/actionTypes'
+
 const types = { ...codingValidationTypes, ...otherActionTypes }
-
-const initializeAndCheckAnswered = async (question, codedQuestions, schemeById, userId, action, api) => {
-  // Initialize object for holding user answers, if question already exists in user answers, then the initialized object
-  // will get overwritten (which is what we want, if it exists)
-  const coded = [initializeNextQuestion(question), ...codedQuestions]
-  const userAnswers = initializeUserAnswers([...coded], schemeById, userId)
-
-  // Check if the first question is answered, if it's not, then send a request to create an empty coded question
-  // on the backend. This fixes issues with duplication of text fields answer props
-  const answered = checkIfAnswered(question, userAnswers)
-  if (!answered) {
-    const q = await api.createEmptyCodedQuestion(question.id, action.projectId, action.jurisdictionId, userId, userAnswers[question.id])
-    userAnswers[question.id] = { ...userAnswers[question.id], id: q.id }
-  }
-
-  // Return initialized user answers object
-  return { userAnswers }
-}
 
 export const getOutlineLogic = createLogic({
   type: types.GET_CODING_OUTLINE_REQUEST,
@@ -78,7 +62,7 @@ export const getOutlineLogic = createLogic({
       const firstQuestion = questionsWithNumbers[0]
 
       // Check if the first question has answers, if it doesn't send a request to create an empty coded question
-      const { userAnswers } = await initializeAndCheckAnswered(firstQuestion, codedQuestions, questionsById, userId, action, api)
+      const { userAnswers } = await initializeAndCheckAnswered(firstQuestion, codedQuestions, questionsById, userId, action, api.createEmptyCodedQuestion)
 
       return {
         outline: scheme.outline,
@@ -87,8 +71,7 @@ export const getOutlineLogic = createLogic({
         question: firstQuestion,
         codedQuestions,
         isSchemeEmpty: false,
-        userId,
-        reducerName: 'coding'
+        userId
       }
     }
   }
@@ -124,7 +107,8 @@ export const getQuestionLogic = createLogic({
     const newSchemeQuestion = await api.getSchemeQuestion(questionInfo.question.id, action.projectId)
     sortList(newSchemeQuestion.possibleAnswers, 'order', 'asc')
     const combinedQuestion = { ...state.scheme.byId[questionInfo.question.id], ...newSchemeQuestion }
-    const updatedScheme = { ...state.scheme,
+    const updatedScheme = {
+      ...state.scheme,
       byId: {
         ...state.scheme.byId,
         [combinedQuestion.id]: { ...state.scheme.byId[combinedQuestion.id], ...combinedQuestion }
@@ -145,14 +129,19 @@ export const getQuestionLogic = createLogic({
 
     // If it's not answered create an empty coded question object
     if (!answered) {
-      const question = await api.createEmptyCodedQuestion(
-        combinedQuestion.id, action.projectId, action.jurisdictionId, userId, {
+      const question = await api.createEmptyCodedQuestion({
+        questionId: combinedQuestion.id,
+        projectId: action.projectId,
+        jurisdictionId: action.jurisdictionId,
+        userId,
+        questionObj: {
           categories: questionInfo.selectedCategoryId === null ? [] : [...unanswered.map(cat => cat.id)],
           flag: { notes: '', type: 0 },
           codedAnswers: [],
           comment: '',
           schemeQuestionId: combinedQuestion.id
-        })
+        }
+      })
       updatedAnswers = initializeUserAnswers(combinedQuestion.isCategoryQuestion
         ? [...question] : [question], updatedScheme, userId, updatedAnswers)
     }
@@ -235,7 +224,7 @@ export const getUserCodedQuestionsLogic = createLogic({
       }
     }
 
-    const { userAnswers } = await initializeAndCheckAnswered(updatedSchemeQuestion, codedQuestions, updatedScheme.byId, userId, action, api)
+    const { userAnswers } = await initializeAndCheckAnswered(updatedSchemeQuestion, codedQuestions, updatedScheme.byId, userId, action, api.createEmptyCodedQuestion)
 
     return {
       userAnswers,
