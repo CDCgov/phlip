@@ -6,6 +6,7 @@ import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/const
 const initializeValues = question => {
   return {
     ... question.id ? { id: question.id } : {},
+    ...question,
     comment: question.comment || '',
     flag: question.flag || { notes: '', type: 0 },
     answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId'),
@@ -460,7 +461,6 @@ export const initializeAndCheckAnswered = async (question, codedQuestions, schem
   // will get overwritten (which is what we want, if it exists)
   const coded = [initializeNextQuestion(question), ...codedQuestions]
   const userAnswers = initializeUserAnswers([...coded], schemeById, userId)
-  console.log(userAnswers)
 
   // Check if the first question is answered, if it's not, then send a request to create an empty coded question
   // on the backend. This fixes issues with duplication of text fields answer props
@@ -468,14 +468,14 @@ export const initializeAndCheckAnswered = async (question, codedQuestions, schem
 
   if (!answered) {
     const { answers, ...questionObj } = userAnswers[question.id]
-    const q = await createEmptyQuestion({
+    const { codedAnswers, ...q } = await createEmptyQuestion({
       questionId: question.id,
       projectId: action.projectId,
       jurisdictionId: action.jurisdictionId,
       userId: userId,
       questionObj: { ...questionObj, codedAnswers: [] }
     })
-    userAnswers[question.id] = { ...userAnswers[question.id], id: q.id }
+    userAnswers[question.id] = { ...userAnswers[question.id], ...q }
   }
 
   // Return initialized user answers object

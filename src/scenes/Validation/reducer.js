@@ -1,6 +1,6 @@
 import {
   initializeUserAnswers,
-  initializeCodedUsers
+  initializeCodedUsers, handleCheckCategories
 } from 'utils/codingHelpers'
 import { sortList } from 'utils'
 import * as codingValidationTypes from 'scenes/Validation/actionTypes'
@@ -25,7 +25,14 @@ const INITIAL_STATE = {
 const validationReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_QUESTION_SUCCESS:
-      return state
+      return {
+        ...action.payload.updatedState,
+        ...handleCheckCategories(
+          action.payload.question,
+          action.payload.currentIndex,
+          action.payload.updatedState
+        )
+      }
 
     case types.GET_VALIDATION_OUTLINE_SUCCESS:
       if (action.payload.isSchemeEmpty) {
@@ -45,7 +52,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           scheme: action.payload.scheme,
           question: action.payload.question,
           userAnswers: action.payload.userAnswers,
-          mergedUserQuestions: action.pwayload.mergedUserQuestions,
+          mergedUserQuestions: action.payload.mergedUserQuestions,
           categories: undefined
         }
       }
@@ -155,7 +162,8 @@ export const validationHandlers = [
   'GET_USER_VALIDATED_QUESTIONS_REQUEST',
   'GET_USER_VALIDATED_QUESTIONS_SUCCESS',
   'CLEAR_FLAG',
-  'CLEAR_RED_FLAG'
+  'CLEAR_RED_FLAG',
+  'GET_QUESTION_SUCCESS'
 ]
 
 export default validationReducer
