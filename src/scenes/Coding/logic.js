@@ -1,5 +1,4 @@
 import { createLogic } from 'redux-logic'
-import * as types from './actionTypes'
 import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
 import {
@@ -13,6 +12,10 @@ import {
 import { checkIfAnswered, checkIfExists } from 'utils/codingSchemeHelpers'
 import { normalize } from 'utils'
 import sortList from 'utils/sortList'
+
+import * as codingValidationTypes from './actionTypes'
+import * as otherActionTypes from 'components/CodingValidation/actionTypes'
+const types = { ...codingValidationTypes, ...otherActionTypes }
 
 const initializeAndCheckAnswered = async (question, codedQuestions, schemeById, userId, action, api) => {
   // Initialize object for holding user answers, if question already exists in user answers, then the initialized object
@@ -84,7 +87,8 @@ export const getOutlineLogic = createLogic({
         question: firstQuestion,
         codedQuestions,
         isSchemeEmpty: false,
-        userId
+        userId,
+        reducerName: 'coding'
       }
     }
   }
@@ -179,13 +183,13 @@ export const answerQuestionLogic = createLogic({
   processOptions: {
     dispatchReturn: true,
     successType: types.UPDATE_USER_ANSWER_SUCCESS,
-    failType: types.UPDATE_USER_ANSWER_FAIL
+    failType: types.UPDATE_USER_ANSWER_FAILw
   },
   latest: true,
   async process({ getState, action, api }) {
     const userId = getState().data.user.currentUser.id
     const codingState = getState().scenes.coding
-    const answerObject = getFinalCodedObject(codingState, action, action.type === types.APPLY_ANSWER_TO_ALL)
+    const answerObject = getFinalCodedObject(codingState, action, action.type === types.ON_APPLY_ANSWER_TO_ALL)
     return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, answerObject)
   }
 })

@@ -30,10 +30,6 @@ export class Validation extends Component {
     }
   }
 
-  componentWillUnmount() {
-    this.props.actions.onCloseValidationScreen()
-  }
-
   onJurisdictionChange = event => {
     this.setState({ selectedJurisdiction: event.target.value })
     this.props.actions.onValidationJurisdictionChange(event.target.value, this.props.jurisdictionsList)

@@ -5,9 +5,11 @@ import home from './Home/reducer'
 import admin from './Admin/reducer'
 import login from './Login/reducer'
 import codingScheme from './CodingScheme/reducer'
-import coding from './Coding/reducer'
-import validation from './Validation/reducer'
+import coding, { codingHandlers } from './Coding/reducer'
+import validation, { validationHandlers } from './Validation/reducer'
 import protocol from './Protocol/reducer'
+
+import { createCodingValidationReducer } from 'components/CodingValidation/reducer'
 
 const config = {
   storage
@@ -18,8 +20,8 @@ const scenesReducer = combineReducers({
   admin: persistReducer({ ...config, key: 'admin' }, admin),
   codingScheme,
   login,
-  coding,
-  validation,
+  coding: createCodingValidationReducer(coding, codingHandlers, 'coding'),
+  validation: createCodingValidationReducer(validation, validationHandlers, 'validation'),
   protocol
 })
 

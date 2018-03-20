@@ -1,10 +1,13 @@
 import { createLogic } from 'redux-logic'
-import * as types from './actionTypes'
 import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
 import { getFinalCodedObject } from 'utils/codingHelpers'
 import { createAvatarUrl } from 'utils/urlHelper'
 import { checkIfExists } from 'utils/codingSchemeHelpers'
+import * as codingValidationTypes from 'scenes/Validation/actionTypes'
+import * as otherActionTypes from 'components/CodingValidation/actionTypes'
+
+const types = { ...codingValidationTypes, ...otherActionTypes }
 
 const addCoderToAnswers = (existingQuestion, question, coder) => {
   let flagComment = {}
@@ -58,6 +61,7 @@ const getCoderInformation = async ({ api, action }) => {
 
   try {
     codedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
+    console.log(codedQuestions)
     for (let question of codedQuestions) {
       try {
         let hasAvatarImage = await api.getUserPicture(question.validatedBy.userId)
@@ -106,8 +110,20 @@ const getCoderInformation = async ({ api, action }) => {
   }
 }
 
+export const getQuestionLogic = createLogic({
+  type: [types.GET_NEXT_QUESTION, types.GET_PREV_QUESTION, types.ON_QUESTION_SELECTED_IN_NAV],
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.GET_QUESTION_SUCCESS
+  },
+  latest: true,
+  async process({ getState, api, action }) {
+
+  }
+})
+
 export const updateValidatorLogic = createLogic({
-  type: [types.UPDATE_USER_VALIDATION_REQUEST, types.ON_APPLY_VALIDATION_TO_ALL],
+  type: [types.UPDATE_USER_ANSWER_REQUEST, types.ON_APPLY_ANSWER_TO_ALL],
   transform({ action, getState }, next) {
     next({
       ...action,
@@ -164,8 +180,8 @@ export const getValidationOutlineLogic = createLogic({
 
 export const validateQuestionLogic = createLogic({
   type: [
-    types.UPDATE_USER_VALIDATION_REQUEST, types.ON_CHANGE_VALIDATION_PINCITE, types.ON_CLEAR_VALIDATION_ANSWER,
-    types.ON_APPLY_VALIDATION_TO_ALL, types.ON_CHANGE_VALIDATION_COMMENT
+    types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER,
+    types.ON_APPLY_ANSWER_TO_ALL, types.ON_CHANGE_COMMENT
   ],
   processOptions: {
     dispatchReturn: true,
@@ -176,7 +192,7 @@ export const validateQuestionLogic = createLogic({
   async process({ getState, action, api }) {
     const validationState = getState().scenes.validation
     const validatorId = getState().data.user.currentUser.id
-    const answerObject = getFinalCodedObject(validationState, action, action.type === types.ON_APPLY_VALIDATION_TO_ALL)
+    const answerObject = getFinalCodedObject(validationState, action, action.type === types.ON_APPLY_ANSWER_TO_ALL)
     return await api.validateQuestion(action.projectId, action.jurisdictionId, action.questionId, {
       ...answerObject,
       validatedBy: validatorId
@@ -200,6 +216,9 @@ export const getUserValidatedQuestionsLogic = createLogic({
   }
 })
 
+/*
+  Calls an api route to clear the flag based on the action.flagId
+ */
 export const clearFlagLogic = createLogic({
   type: [types.CLEAR_RED_FLAG, types.CLEAR_FLAG],
   async process({ action, api }) {

@@ -18,6 +18,7 @@ import HeaderedLayout from 'components/HeaderedLayout'
 import Alert from 'components/Alert'
 import Tooltip from 'components/Tooltip'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
+import * as actions from './actions'
 
 const navButtonStyles = {
   height: 90,
@@ -38,7 +39,7 @@ const iconStyle = {
 
 const styles = theme => bodyStyles(theme)
 
-const withCodingValidation = (WrappedComponent, actions) => {
+const withCodingValidation = (WrappedComponent, otherActions) => {
   class CodingValidation extends WrappedComponent {
     constructor(context, props) {
       super(context, props)
@@ -64,21 +65,31 @@ const withCodingValidation = (WrappedComponent, actions) => {
       ]
     }
 
+    componentWillUnmount() {
+      this.props.actions.onCloseScreen(this.props.page)
+    }
+
+    onJurisdictionChange = (event) => {
+      this.setState({ selectedJurisdiction: event.target.value })
+      this.props.actions.onJurisdictionChange(event.target.value, this.props.jurisdictionsList, this.props.page)
+      this.props.actions.getUserCodedQuestions(this.props.projectId, event.target.value, this.props.page)
+    }
+
     onToggleNavigator = () => {
       this.setState({ navOpen: !this.state.navOpen })
     }
 
     getNextQuestion = index => {
-      this.props.actions.getNextQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
+      this.props.actions.getNextQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId, this.props.page)
     }
 
     getPrevQuestion = index => {
-      this.props.actions.getPrevQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
+      this.props.actions.getPrevQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId, this.props.page)
     }
 
     onAnswer = id => (event, value) => {
       this.props.actions.answerQuestionRequest(
-        this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, value
+        this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, value, this.props.page, this.props.page
       )
       this.props.actions.updateEditedFields(this.props.projectId)
     }
@@ -87,19 +98,19 @@ const withCodingValidation = (WrappedComponent, actions) => {
       switch (field) {
         case 'textAnswer':
           this.props.actions.answerQuestionRequest(
-            this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
+            this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value, this.props.page
           )
           break
 
         case 'comment':
           this.props.actions.onChangeComment(
-            this.props.projectId, this.props.jurisdictionId, this.props.question.id, event.target.value
+            this.props.projectId, this.props.jurisdictionId, this.props.question.id, event.target.value, this.props.page
           )
           break
 
         case 'pincite':
           this.props.actions.onChangePincite(
-            this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
+            this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value, this.props.page
           )
       }
       this.props.actions.updateEditedFields(this.props.projectId)
@@ -119,7 +130,7 @@ const withCodingValidation = (WrappedComponent, actions) => {
 
     onApplyToAll = () => {
       this.onCloseApplyAllAlert()
-      this.props.actions.applyAnswerToAll(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+      this.props.actions.applyAnswerToAll(this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.page)
     }
 
     onShowGetStartedView = (noScheme, noJurisdictions) => {
@@ -166,10 +177,10 @@ const withCodingValidation = (WrappedComponent, actions) => {
           onChangeTextAnswer={this.onChangeTextAnswer}
           categories={this.props.categories}
           selectedCategory={this.props.selectedCategory}
-          onChangeCategory={this.props.actions.onChangeCategory}
+          onChangeCategory={(event, selection) => this.props.actions.onChangeCategory(selection, this.props.page)}
           isValidation={this.props.isValidation}
           mergedUserQuestions={this.props.mergedUserQuestions}
-          onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
+          onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.page)}
           onOpenAlert={this.onOpenApplyAllAlert}
           onSaveFlag={this.onSaveFlag}
           onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
@@ -210,7 +221,7 @@ const withCodingValidation = (WrappedComponent, actions) => {
                 jurisdictionsList={this.props.jurisdictionsList}
                 selectedJurisdiction={this.state.selectedJurisdiction}
                 onJurisdictionChange={this.onJurisdictionChange}
-                pageTitle={this.props.pageTitle}
+                pageTitle={capitalizeFirstLetter(this.props.page)}
                 currentJurisdiction={this.props.jurisdiction}
                 empty={this.props.jurisdiction === null || this.props.questionOrder === null ||
                 this.props.questionOrder.length === 0} />
@@ -249,7 +260,7 @@ const withCodingValidation = (WrappedComponent, actions) => {
 
     return {
       projectName: project.name,
-      pageTitle: capitalizeFirstLetter(page),
+      page,
       isValidation: page === 'validation',
       projectId: ownProps.match.params.id,
       question: pageState.question || {},
@@ -280,7 +291,7 @@ const withCodingValidation = (WrappedComponent, actions) => {
     }
   }
 
-  const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
+  const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators({ ...actions, ...otherActions }, dispatch) })
   return connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CodingValidation))
 }
 

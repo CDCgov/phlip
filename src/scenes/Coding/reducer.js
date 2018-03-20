@@ -1,4 +1,3 @@
-import * as types from './actionTypes'
 import {
   determineShowButton,
   handleUpdateUserAnswers,
@@ -10,6 +9,9 @@ import {
   handleCheckCategories
 } from 'utils/codingHelpers'
 import { sortList } from 'utils'
+import * as codingValidationTypes from 'scenes/Coding/actionTypes'
+import * as otherActionTypes from 'components/CodingValidation/actionTypes'
+const types = { ...codingValidationTypes, ...otherActionTypes }
 
 const INITIAL_STATE = {
   question: {},
@@ -64,21 +66,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         )
       }
 
-    case types.UPDATE_USER_ANSWER_REQUEST:
-      return {
-        ...state,
-        userAnswers: {
-          ...state.userAnswers,
-          ...handleUpdateUserAnswers(state, action, state.selectedCategoryId)
-        }
-      }
-
-    case types.ON_CHANGE_COMMENT:
-      return {
-        ...state,
-        ...questionUpdater('comment', action.comment)
-      }
-
     case types.ON_SAVE_RED_FLAG:
       const curQuestion = { ...state.scheme.byId[action.questionId] }
       return {
@@ -105,51 +92,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...questionUpdater('flag', action.flagInfo)
       }
 
-    case types.ON_CHANGE_PINCITE:
-      return {
-        ...state,
-        ...questionUpdater('answers', handleUserPinciteQuestion)
-      }
-
-    case types.APPLY_ANSWER_TO_ALL:
-      const catQuestion = state.userAnswers[state.question.id][state.selectedCategoryId]
-      return {
-        ...state,
-        userAnswers: {
-          ...state.userAnswers,
-          [state.question.id]: {
-            ...state.categories.reduce((obj, category) => ({
-              ...obj,
-              [category.id]: {
-                ...catQuestion,
-                categoryId: category.id,
-                id: state.userAnswers[state.question.id][category.id].id
-              }
-            }), {})
-          }
-        }
-      }
-
-    case types.ON_CLEAR_ANSWER:
-      return {
-        ...state,
-        ...questionUpdater('answers', handleClearAnswers)
-      }
-
-    case types.ON_CHANGE_CATEGORY:
-      return {
-        ...state,
-        selectedCategory: action.selection,
-        selectedCategoryId: state.categories[action.selection].id
-      }
-
-    case types.ON_JURISDICTION_CHANGE:
-      return {
-        ...state,
-        jurisdictionId: action.event,
-        jurisdiction: action.jurisdictionsList.find(jurisdiction => jurisdiction.id === action.event)
-      }
-
     case types.GET_USER_CODED_QUESTIONS_SUCCESS:
       return {
         ...state,
@@ -157,21 +99,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         question: action.payload.question,
         scheme: action.payload.scheme,
         ...action.payload.otherUpdates,
-        selectedCategory: 0,
-        categories: undefined,
-        selectedCategoryId: null
-      }
-
-    case types.ON_CLOSE_CODE_SCREEN:
-      return INITIAL_STATE
-
-    case types.GET_PREV_QUESTION:
-    case types.GET_NEXT_QUESTION:
-    case types.ON_QUESTION_SELECTED_IN_NAV:
-      console.log(action.questionInfo)
-      return {
-        ...state,
-        //...action.questionInfo
       }
 
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
@@ -181,20 +108,14 @@ const codingReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
-const codingSceneReducer = (state = INITIAL_STATE, action) => {
-  if (Object.values(types).includes(action.type)) {
-    const intermediateState = codingReducer(state, action)
-    return {
-      ...intermediateState,
-      showNextButton: intermediateState.scheme === null ? false : determineShowButton(intermediateState),
-      scheme: intermediateState.scheme === null ? null : {
-        ...intermediateState.scheme,
-        tree: initializeNavigator(intermediateState.scheme.tree, intermediateState.scheme.byId, intermediateState.userAnswers, intermediateState.question)
-      }
-    }
-  } else {
-    return state
-  }
-}
+export const codingHandlers = [
+  'GET_CODING_OUTLINE_REQUEST',
+  'GET_CODING_OUTLINE_SUCCESS',
+  'GET_USER_CODED_QUESTIONS_REQUEST',
+  'GET_USER_CODED_QUESTIONS_SUCCESS',
+  'ON_SAVE_RED_FLAG',
+  'ON_SAVE_FLAG',
+  'GET_QUESTION_SUCCESS'
+]
 
-export default codingSceneReducer
+export default codingReducer

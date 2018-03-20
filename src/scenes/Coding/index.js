@@ -9,23 +9,13 @@ export class Coding extends Component {
   }
 
   componentWillMount() {
-    this.props.actions.getCodingOutlineRequest(this.props.projectId, this.props.jurisdictionId)
+    this.props.actions.getCodingOutlineRequest(this.props.projectId, this.props.jurisdictionId, 'coding')
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.isSchemeEmpty !== null) {
       this.setState({ showViews: true })
     }
-  }
-
-  componentWillUnmount() {
-    this.props.actions.onCloseCodeScreen()
-  }
-
-  onJurisdictionChange = (event) => {
-    this.setState({ selectedJurisdiction: event.target.value })
-    this.props.actions.onJurisdictionChange(event.target.value, this.props.jurisdictionsList)
-    this.props.actions.getUserCodedQuestions(this.props.projectId, event.target.value)
   }
 
   onSaveFlag = flagInfo => {
