@@ -181,7 +181,7 @@ export const getPreviousQuestion = (state, action) => {
 /*
   Handles updating state.userAnswers with the user's new answer
  */
-export const handleUpdateUserAnswers = (state, action, selectedCategoryId, isValidation = false) => {
+export const handleUpdateUserAnswers = (state, action, selectedCategoryId) => {
   let currentUserAnswers = state.question.isCategoryQuestion
     ? state.userAnswers[action.questionId][selectedCategoryId].answers
     : state.userAnswers[action.questionId].answers
@@ -244,10 +244,10 @@ export const handleUpdateUserAnswers = (state, action, selectedCategoryId, isVal
           [selectedCategoryId]: {
             ...state.userAnswers[action.questionId][selectedCategoryId],
             answers: { ...currentUserAnswers },
-            ...isValidation ? { validatedBy: action.validatedBy } : {}
+            ...action.isValidation ? { validatedBy: action.otherProps.validatedBy } : {}
           }
         }
-        : { answers: { ...currentUserAnswers }, ...isValidation ? { validatedBy: action.validatedBy } : {} }
+        : { answers: { ...currentUserAnswers }, ...action.isValidation ? { validatedBy: action.otherProps.validatedBy } : {} }
 
     }
   }

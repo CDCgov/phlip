@@ -32,7 +32,7 @@ const codingValidationReducer = (state = INITIAL_STATE, action) => {
         ...state,
         userAnswers: {
           ...state.userAnswers,
-          ...handleUpdateUserAnswers(state, action, state.selectedCategoryId, true)
+          ...handleUpdateUserAnswers(state, action, state.selectedCategoryId)
         }
       }
 

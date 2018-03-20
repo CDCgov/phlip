@@ -59,10 +59,12 @@ const getCoderInformation = async ({ api, action }) => {
   let codedQuestions = [], updatedCodedQuestions = [], projectCoders = [], codeQuestionsPerUser = [],
     codedQuestionObj = {}
 
+  console.log(action)
+  console.log(api)
   try {
     codedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
     console.log(codedQuestions)
-    for (let question of codedQuestions) {
+    /*for (let question of codedQuestions) {
       try {
         let hasAvatarImage = await api.getUserPicture(question.validatedBy.userId)
         let avatarUrl = hasAvatarImage ? createAvatarUrl(question.validatedBy.userId) : null
@@ -71,7 +73,7 @@ const getCoderInformation = async ({ api, action }) => {
       } catch (e) {
         throw { error: 'failed to get avatar image for validator' }
       }
-    }
+    }*/
   } catch (e) {
     throw { error: 'failed to get codedQuestions' }
   }
@@ -110,30 +112,24 @@ const getCoderInformation = async ({ api, action }) => {
   }
 }
 
-export const getQuestionLogic = createLogic({
-  type: [types.GET_NEXT_QUESTION, types.GET_PREV_QUESTION, types.ON_QUESTION_SELECTED_IN_NAV],
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.GET_QUESTION_SUCCESS
-  },
-  latest: true,
-  async process({ getState, api, action }) {
-
-  }
-})
-
 export const updateValidatorLogic = createLogic({
   type: [types.UPDATE_USER_ANSWER_REQUEST, types.ON_APPLY_ANSWER_TO_ALL],
   transform({ action, getState }, next) {
-    next({
-      ...action,
-      validatedBy: { ...getState().data.user.currentUser },
-      isValidation: true
-    })
+    if (action.reducerName === 'validation') {
+      next({
+        ...action,
+        otherProps: { validatedBy: { ...getState().data.user.currentUser } },
+        isValidation: true
+      })
+    } else {
+      next({
+        ...action,
+        isValidation: false
+      })
+    }
   }
 })
 
-//REFACTOR getValidationOutlineLogic & getUserValidatedQuestionsLogic
 export const getValidationOutlineLogic = createLogic({
   type: types.GET_VALIDATION_OUTLINE_REQUEST,
   processOptions: {
@@ -143,9 +139,9 @@ export const getValidationOutlineLogic = createLogic({
   },
   async process({ action, getState, api }) {
     let scheme = {}
-
     const userId = getState().data.user.currentUser.id
 
+    // Try to get the project coding scheme
     try {
       scheme = await api.getScheme(action.projectId)
     } catch (e) {

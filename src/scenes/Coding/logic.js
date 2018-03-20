@@ -178,12 +178,12 @@ export const getQuestionLogic = createLogic({
 export const answerQuestionLogic = createLogic({
   type: [
     types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER,
-    types.APPLY_ANSWER_TO_ALL, types.ON_SAVE_FLAG
+    types.ON_APPLY_ANSWER_TO_ALL, types.ON_SAVE_FLAG
   ],
   processOptions: {
     dispatchReturn: true,
     successType: types.UPDATE_USER_ANSWER_SUCCESS,
-    failType: types.UPDATE_USER_ANSWER_FAILw
+    failType: types.UPDATE_USER_ANSWER_FAIL
   },
   latest: true,
   async process({ getState, action, api }) {
@@ -194,7 +194,6 @@ export const answerQuestionLogic = createLogic({
   }
 })
 
-// TODO: update the tree item when a scheme question is updated
 export const getUserCodedQuestionsLogic = createLogic({
   type: types.GET_USER_CODED_QUESTIONS_REQUEST,
   processOptions: {
