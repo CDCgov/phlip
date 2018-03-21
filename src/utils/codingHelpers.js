@@ -5,7 +5,7 @@ import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/const
 import * as types from 'scenes/Validation/actionTypes'
 
 const initializeValues = question => {
-  return {
+  const { codedAnswers, ...initlaizedQuestion } = {
     ... question.id ? { id: question.id } : {},
     ...question,
     comment: question.comment || '',
@@ -13,6 +13,7 @@ const initializeValues = question => {
     answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId'),
     schemeQuestionId: question.schemeQuestionId
   }
+  return initlaizedQuestion
 }
 
 /*
