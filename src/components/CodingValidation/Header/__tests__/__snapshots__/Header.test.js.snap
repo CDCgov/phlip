@@ -47,9 +47,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
           "paddingRight": 10,
         }
       }
-    >
-      Coding
-    </span>
+    />
     <span
       style={
         Object {

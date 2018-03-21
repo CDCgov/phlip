@@ -20,7 +20,7 @@
   },
   "jest": {
     "setupFiles": [
-      "<rootDir>/config/tests/setupFiles.js"
+      "raf/polyfill", "<rootDir>/config/tests/setupFiles.js"
     ],
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}"

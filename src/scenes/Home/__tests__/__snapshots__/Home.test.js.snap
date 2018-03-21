@@ -1,63 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene should render correctly 1`] = `
-<Container
-  column={true}
-  flex={true}
-  spacing={0}
-  style={
-    Object {
-      "paddingBottom": "25px",
-    }
-  }
->
-  <withRouter(PageHeader)
-    otherButton={
-      Object {
-        "isLink": true,
-        "path": "/project/add",
-        "props": Object {
-          "aria-label": "Create New Project",
-        },
-        "state": Object {
-          "userDefined": null,
-        },
-        "text": "+ Create New Project",
-      }
-    }
-    pageTitle="Project List"
-    projectName=""
-    protocolButton={false}
-    showButton={true}
-  />
-  <WithStyles />
-  <ProjectList
-    direction="desc"
-    handlePageChange={[Function]}
-    handleRequestSort={[Function]}
-    handleRowsChange={[Function]}
-    handleSearchValueChange={[Function]}
-    handleSortBookmarked={[Function]}
-    page={0}
-    projectIds={Array []}
-    rowsPerPage="10"
-    searchValue=""
-    sortBookmarked={false}
-    sortBy="dateLastEdited"
-    user={
-      Object {
-        "email": "kmuterspaw@cdc.gov",
-        "firstName": "Kristin",
-        "id": 2,
-        "lastName": "Muterspaw",
-        "password": "test",
-        "role": "Coordinator",
-      }
-    }
-  />
+<React.Fragment>
   <Route
-    component={[Function]}
-    path="/project/add"
+    exact={false}
+    path="/"
+    render={[Function]}
   />
   <Route
     component={[Function]}
@@ -65,7 +13,11 @@ exports[`Home scene should render correctly 1`] = `
   />
   <Route
     component={[Function]}
+    path="/project/add"
+  />
+  <Route
+    component={[Function]}
     path="/project/:id/jurisdictions"
   />
-</Container>
+</React.Fragment>
 `;

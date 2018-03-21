@@ -113,7 +113,7 @@ export class ValidationAvatar extends Component {
           />
         </CopyToClipboard>
         <Popover
-          open={this.state.open && this.hasPincite(this.props.answer.pincite)}
+          open={this.state.open}
           anchorEl={this.state.anchorEl}
           onClose={this.handleClose}
           className={this.props.classes.popover}

@@ -14,21 +14,23 @@ import Coding from './Coding'
 import Validation from './Validation'
 import Protocol from './Protocol'
 import { Authorization } from 'components/AuthorizedRoute'
+import PageNotFound from 'components/PageNotFound'
 
 const Coordinator = Authorization(['Admin', 'Coordinator'])
 const AdminRole = Authorization(['Admin'])
 const AllRoles = Authorization(['Admin', 'Coordinator', 'Coder'])
 
-const AuthenticatedScenes = () => (
+const AuthenticatedScenes = ({ match, location }) => (
   <Switch>
     <Route path="/project/:id/code" component={AllRoles(Coding)} />
-    <Route path="/project/:id/validate" component={AllRoles(Validation)} />
+    <Route path="/project/:id/validate" component={Coordinator(Validation)} />
     <HeaderedLayout>
       <Switch>
         <Route path="/admin" component={AdminRole(Admin)} />
         <Route strict path="/project/:id/coding-scheme" component={Coordinator(CodingScheme)} />
         <Route exact strict path="/project/:id/protocol" component={AllRoles(Protocol)} />
-        <Route strict path="/" component={AllRoles(Home)} />
+        <Route path="/" component={Home} />
+        <Route component={PageNotFound} />
       </Switch>
     </HeaderedLayout>
   </Switch>
@@ -42,7 +44,7 @@ const Scenes = () => {
     <Switch>
       <Route path="/login" component={Login} />
       <PersistGate persistor={persistor}>
-        <AuthenticatedRoute path="/" component={AuthenticatedScenes} />
+        <AuthenticatedRoute component={AuthenticatedScenes} />
       </PersistGate>
     </Switch>
   )
