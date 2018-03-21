@@ -114,35 +114,13 @@ const validationReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
-      let userAnswers = {}, question = { ...state.question }, other = {}
-
-      if (state.question.isCategoryQuestion) {
-        question = state.scheme.byId[question.parentId]
-        other = {
-          currentIndex: state.scheme.order.findIndex(id => id === question.id)
-        }
-      }
-
-      userAnswers = initializeUserAnswers(
-        [
-          {
-            schemeQuestionId: question.id,
-            comment: '',
-            codedAnswers: []
-          }, ...action.payload.codedQuestions
-        ],
-        state.scheme.byId
-      )
-
       return {
         ...state,
-        userAnswers,
+        userAnswers: action.payload.userAnswers,
+        question: action.payload.question,
+        scheme: action.payload.scheme,
         mergedUserQuestions: action.payload.mergedUserQuestions,
-        question,
-        ...other,
-        selectedCategory: 0,
-        categories: undefined,
-        selectedCategoryId: null
+        ...action.payload.otherUpdates,
       }
 
     case types.GET_VALIDATION_OUTLINE_REQUEST:

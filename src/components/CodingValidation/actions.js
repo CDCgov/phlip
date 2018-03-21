@@ -61,7 +61,7 @@ export const actions = {
   },
   onChangeJurisdiction: {
     type: types.ON_CHANGE_JURISDICTION,
-    args: ['event', 'jurisdictionList']
+    args: ['event', 'jurisdictionsList']
   }
 }
 

@@ -6,7 +6,7 @@ import {
   getPreviousQuestion, getQuestionSelectedInNav, getNextQuestion
 } from 'utils/codingHelpers'
 import { createAvatarUrl } from 'utils/urlHelper'
-import { checkIfAnswered, checkIfExists } from 'utils/codingSchemeHelpers'
+import { checkIfExists } from 'utils/codingSchemeHelpers'
 import { normalize } from 'utils'
 import * as types from './actionTypes'
 
@@ -54,6 +54,14 @@ const mergeInUserCodedQuestions = (codedQuestions, codeQuestionsPerUser, coder) 
         }
     }
   }, codedQuestions)
+}
+
+/*
+  Returns a list of all coded questions for a specific question id
+  [{ coder: {}, codedQuestions: []}]
+ */
+const getAllCodedQuestionsForQuestion = async ({ api, questionId }) => {
+
 }
 
 const getCoderInformation = async ({ api, action }) => {
@@ -259,11 +267,53 @@ export const getUserValidatedQuestionsLogic = createLogic({
     successType: types.GET_USER_VALIDATED_QUESTIONS_SUCCESS,
     failType: types.GET_USER_VALIDATED_QUESTIONS_FAIL
   },
-  async process({ action, api }) {
+  async process({ action, api, getState }) {
+    let validatedQuestions = []
+    const userId = getState().data.user.currentUser.id
+    const state = getState().scenes.validation
+    let question = { ...state.question }
+    let otherUpdates = {}
+    
+    // Get user coded questions for a project and jurisdiction
+    try {
+      validatedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
+    } catch (e) {
+      throw { error: 'failed to get codedQuestions' }
+    }
+
+    // If the current question is a category question, then change the current question to parent
+    if (state.question.isCategoryQuestion) {
+      question = state.scheme.byId[question.parentId]
+      otherUpdates = {
+        currentIndex: state.scheme.order.findIndex(id => id === question.id)
+      }
+    }
+
+    // Get scheme question in case there are changes
+    const updatedSchemeQuestion = await api.getSchemeQuestion(question.id, action.projectId)
+
+    // Update scheme with new scheme question
+    const updatedScheme = {
+      ...state.scheme,
+      byId: {
+        ...state.scheme.byId,
+        [updatedSchemeQuestion.id]: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion }
+      }
+    }
+
+    const { userAnswers } = await initializeAndCheckAnswered(
+      updatedSchemeQuestion, validatedQuestions, updatedScheme.byId, userId, action, api.createEmptyValidatedQuestion
+    )
+
     const { codedQuestionObj, updatedCodedQuestions } = await getCoderInformation({ api, action })
+
+
     return {
+      userAnswers,
+      question: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion },
+      scheme: updatedScheme,
+      otherUpdates,
       mergedUserQuestions: codedQuestionObj,
-      codedQuestions: updatedCodedQuestions
     }
   }
 })
