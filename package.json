@@ -20,7 +20,8 @@
   },
   "jest": {
     "setupFiles": [
-      "raf/polyfill", "<rootDir>/config/tests/setupFiles.js"
+      "raf/polyfill",
+      "<rootDir>/config/tests/setupFiles.js"
     ],
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}"
@@ -62,6 +63,7 @@
     "autosuggest-highlight": "^3.1.1",
     "axios": "^0.16.2",
     "babel-runtime": "6.26.0",
+    "browser-compress-image": "^1.0.2",
     "chalk": "^2.1.0",
     "classnames": "^2.2.5",
     "dotenv": "^4.0.0",

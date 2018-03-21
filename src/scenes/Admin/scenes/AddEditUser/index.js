@@ -21,6 +21,7 @@ import AvatarForm from './components/AvatarForm'
 import TextLink from 'components/TextLink'
 import Button from 'components/Button'
 import Tooltip from 'components/Tooltip'
+import compressImage from 'browser-compress-image'
 
 
 const rowStyles = {
@@ -91,27 +92,21 @@ export class AddEditUser extends Component {
   }
 
   openAvatarForm = files => {
-    // let compressedResult
-    // new ImageCompressor(files.fileList[0], {
-    //   quality: .6,
-    //   success(result) {
-    //     console.log(result)
-    //   }, error(e) {
-    //     console.log(e.message);
-    //   },
-    // })
+    compressImage(files.fileList[0]).then(({ shrunkBase64, compressedFile }) => {
 
-    // console.log(files)
-    // const localImageUrl = window.URL.createObjectURL(new Blob(files.base64))
+      files.file = compressedFile
+      files.base64 = shrunkBase64
 
-    // console.log(localImageUrl)
-    this.props.history.push({
-      pathname: `/admin/edit/user/${this.selectedUser.id}/avatar`,
-      state: {
-        file: files,
-        userId: this.selectedUser.id
-      }
+      this.props.history.push({
+        pathname: `/admin/edit/user/${this.selectedUser.id}/avatar`,
+        state: {
+          file: files,
+
+          userId: this.selectedUser.id
+        }
+      })
     })
+
   }
 
   required = value => {
