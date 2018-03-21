@@ -165,7 +165,7 @@ export class AddEditUser extends Component {
         <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
           <Row displayFlex style={{ ...rowStyles, justifyContent: 'space-between' }}>
             {this.selectedUser ? <Column style={{ paddingRight: 30 }}>
-              {this.selectedUser.avatarUrl ? <Tooltip text="Edit photo" placement="top" aria-label="Edit picture" id="edit-picture">
+              {(this.selectedUser.avatarUrl || this.props.avatarUrl) ? <Tooltip text="Edit photo" placement="top" aria-label="Edit picture" id="edit-picture">
                 <TextLink
                   to={{
                     pathname: `/admin/edit/user/${this.selectedUser.id}/avatar`,
@@ -174,7 +174,7 @@ export class AddEditUser extends Component {
                   <Avatar
                     cardAvatar
                     style={{ width: '65px', height: '65px' }}
-                    avatarUrl={this.selectedUser.avatarUrl} /></TextLink>
+                    avatarUrl={this.selectedUser.avatarUrl || this.props.avatarUrl} /></TextLink>
               </Tooltip>
                 : <ReactFileReader base64={true} fileTypes={['.jpg']} handleFiles={this.openAvatarForm}>
                   <IconButton
