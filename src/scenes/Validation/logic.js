@@ -74,8 +74,6 @@ const getCoderInformation = async ({ api, action, questionId }) => {
     throw { error: 'failed to get codedQuestions' }
   }*/
 
-  console.log(questionId)
-
   try {
     allCodedQuestions = await api.getAllCodedQuestionsForQuestion(action.projectId, action.jurisdictionId, questionId)
   } catch (e) {
@@ -95,7 +93,7 @@ const getCoderInformation = async ({ api, action, questionId }) => {
       codedQuestionObj = { ...mergeInUserCodedQuestions(codedQuestionObj, coderUser.codedQuestions, coderUser.coder) }
     }
   }
-  
+
   return { codedQuestionObj }
 }
 
