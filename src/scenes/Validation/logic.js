@@ -80,6 +80,10 @@ const getCoderInformation = async ({ api, action, questionId }) => {
     throw { error: 'failed to get all coded questions' }
   }
 
+  if (allCodedQuestions.length === 0) {
+    codedQuestionObj = { [questionId]: { answers: [], flagsComments: [] } }
+  }
+
   for (let coderUser of allCodedQuestions) {
     try {
       let hasAvatarImage = await api.getUserPicture(coderUser.coder.userId)
