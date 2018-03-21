@@ -17,7 +17,7 @@ export default function addEditUserReducer(state = INITIAL_STATE, action) {
     case types.ADD_USER_PICTURE_SUCCESS:
       return {
         ...state,
-        avatarUrl: createAvatarUrl(action.payload.userId) //TODO: FIX THIS
+        avatarUrl: action.payload
       }
 
     case types.DELETE_USER_PICTURE_SUCCESS:

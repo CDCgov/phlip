@@ -22,6 +22,7 @@ import TextLink from 'components/TextLink'
 import Button from 'components/Button'
 import Tooltip from 'components/Tooltip'
 
+
 const rowStyles = {
   paddingBottom: 20
 }
@@ -84,12 +85,26 @@ export class AddEditUser extends Component {
 
     if (id && this.props.users.length > 0) {
       this.selectedUser = getUserById(this.props.users, id)
-      this.props.actions.getUserPictureRequest(id)
+      // this.props.actions.getUserPictureRequest(id)
     }
 
   }
 
   openAvatarForm = files => {
+    // let compressedResult
+    // new ImageCompressor(files.fileList[0], {
+    //   quality: .6,
+    //   success(result) {
+    //     console.log(result)
+    //   }, error(e) {
+    //     console.log(e.message);
+    //   },
+    // })
+
+    // console.log(files)
+    // const localImageUrl = window.URL.createObjectURL(new Blob(files.base64))
+
+    // console.log(localImageUrl)
     this.props.history.push({
       pathname: `/admin/edit/user/${this.selectedUser.id}/avatar`,
       state: {
@@ -150,18 +165,18 @@ export class AddEditUser extends Component {
         <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
           <Row displayFlex style={{ ...rowStyles, justifyContent: 'space-between' }}>
             {this.selectedUser ? <Column style={{ paddingRight: 30 }}>
-              {this.props.avatarUrl ? <Tooltip text="Edit photo" placement="top" aria-label="Edit picture" id="edit-picture">
-                  <TextLink
-                    to={{
-                      pathname: `/admin/edit/user/${this.selectedUser.id}/avatar`,
-                      state: { isEdit: true, userId: this.selectedUser.id }
-                    }}>
-                    <Avatar
-                      cardAvatar
-                      style={{ width: '65px', height: '65px' }}
-                      avatarUrl={this.props.avatarUrl} /></TextLink>
-                </Tooltip>
-                : <ReactFileReader base64={true} handleFiles={this.openAvatarForm}>
+              {this.selectedUser.avatarUrl ? <Tooltip text="Edit photo" placement="top" aria-label="Edit picture" id="edit-picture">
+                <TextLink
+                  to={{
+                    pathname: `/admin/edit/user/${this.selectedUser.id}/avatar`,
+                    state: { isEdit: true, userId: this.selectedUser.id }
+                  }}>
+                  <Avatar
+                    cardAvatar
+                    style={{ width: '65px', height: '65px' }}
+                    avatarUrl={this.selectedUser.avatarUrl} /></TextLink>
+              </Tooltip>
+                : <ReactFileReader base64={true} fileTypes={['.jpg']} handleFiles={this.openAvatarForm}>
                   <IconButton
                     color={'#757575'}
                     iconSize={50}

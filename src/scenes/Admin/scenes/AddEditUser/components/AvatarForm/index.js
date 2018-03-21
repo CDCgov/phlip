@@ -30,13 +30,13 @@ export class AvatarForm extends Component {
   }
 
   onSubmitForm = () => {
-    const formData = new FormData()
-    formData.append('avatarFile', this.state.editFile.file.fileList[0])
-    this.props.actions.addUserPictureRequest(this.state.userId, formData)
+    let patchOperation = [{ 'op': 'replace', 'path': '/avatar', 'value': this.state.editFile.file.base64 }]
+    this.props.actions.addUserPictureRequest(this.state.userId, patchOperation)
   }
 
   handleDeleteAvatar = () => {
-    this.props.actions.deleteUserPictureRequest(this.state.userId)
+    const patchRemoveOperation = [{ 'op': 'remove', 'path': '/avatar' }]
+    this.props.actions.deleteUserPictureRequest(this.state.userId, patchRemoveOperation)
     this.props.history.goBack()
   }
 
@@ -63,19 +63,8 @@ export class AvatarForm extends Component {
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
           {this.state.isEdit
             ? <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
-              <Avatar cardAvatar style={{ width: '200px', height: '200px' }} src={this.props.avatarUrl} />
+              <Avatar cardAvatar style={{ width: '200px', height: '200px' }} src={this.props.form.values.avatarUrl} />
             </Container>
-            // : <Container flex>
-            //   <AvatarEditor
-            //     image={this.state.editFile.file.fileList[0]}
-            //     width={200}
-            //     height={200}
-            //     border={50}
-            //     borderRadius={200}
-            //     color={[255, 255, 255, 0.6]}
-            //     scale={1.2}
-            //     rotate={0} />
-            // </Container>}
             : <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
               <Avatar cardAvatar style={{ width: '200px', height: '200px' }} src={this.state.editFile.file.base64} />
             </Container>}
@@ -89,7 +78,6 @@ const mapStateToProps = (state) => ({
   currentUser: state.data.user.currentUser || {},
   users: state.scenes.admin.main.users || [],
   form: state.form.addEditUser || {},
-  avatarUrl: state.scenes.admin.addEditUser.avatarUrl || null,
   formName: 'avatarForm'
 })
 

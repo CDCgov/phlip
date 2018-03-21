@@ -26,7 +26,7 @@ export const updateUserLogic = createLogic({
   }
 })
 
-export const addUserPictureLogic = createLogic({
+export const patchUserPictureLogic = createLogic({
   type: types.ADD_USER_PICTURE_REQUEST,
   latest: true,
   processOptions: {
@@ -34,7 +34,7 @@ export const addUserPictureLogic = createLogic({
     successType: types.ADD_USER_PICTURE_SUCCESS
   },
   async process({ action, api }) {
-    return await api.addUserPicture(action.userId, action.avatarFile)
+    return await api.updateUserImage(action.userId, action.patchOperation)
   }
 })
 
@@ -46,15 +46,7 @@ export const getUserPictureLogic = createLogic({
     successType: types.GET_USER_PICTURE_SUCCESS
   },
   async process({ action, api }) {
-    let avatarUrl = ''
-    try {
-      let hasAvatarImage = await api.getUserPicture(action.userId)
-      avatarUrl = hasAvatarImage ? createAvatarUrl(action.userId) : null
-    } catch (e) {
-      error = 'failed to get avatar image'
-    }
-
-    return avatarUrl
+    return await api.getUserImage(action.userId)
   }
 })
 
@@ -66,14 +58,14 @@ export const deleteUserPictureLogic = createLogic({
     successType: types.DELETE_USER_PICTURE_SUCCESS,
   },
   async process({ action, api }) {
-    return await api.deleteUserPicture(action.userId)
+    return await api.deleteUserPicture(action.userId, action.operation)
   }
 })
 
 export default [
   deleteUserPictureLogic,
   getUserPictureLogic,
-  addUserPictureLogic,
+  patchUserPictureLogic,
   updateUserLogic,
   addUserLogic
 ]

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { login, logout } from '../authToken'
 import { scheme, outline } from 'data/mockCodingScheme'
+import { isUndefined } from 'util';
 
 export const api = axios.create({
   baseURL: '/api'
@@ -112,30 +113,46 @@ export default {
     return api.get(`/projects/${projectId}/coders`).then(res => res.data)
   },
 
-  addUserPicture(userId, avatarFile) {
-    return api.post(`/users/${userId}/avatar`, avatarFile).then(res => {
-      let returnObj = {
-        userId: userId,
-        data: res.data
-      }
-      return returnObj
+  // addUserPicture(userId, avatarFile) {
+  //   return api.post(`/users/${userId}/avatar`, avatarFile).then(res => {
+  //     let returnObj = {
+  //       userId: userId,
+  //       data: res.data
+  //     }
+  //     return returnObj
+  //   })
+  // },
+
+  updateUserImage(userId, operation) {
+    return api.patch(`/users/${userId}`, operation).then(res => {
+
+      return fetch(res.data.avatar)
+        .then(res => res.blob())
+        .then(blob => window.URL.createObjectURL(blob))
+        .then(imageUrl => imageUrl)
+    }).catch(error => {
+      return error
     })
+
   },
 
-  updateUserImage(userId, image) {
-    return api.patch(`/users/${userId}`, image).then(res => res.data)
-  },
-
-  getUserPicture(userId) {
+  getUserImage(userId) {
     return api.get(`/users/${userId}/avatar`).then(res => {
-      return res.status === 204 ? false : true
+      if (res.data) {
+        return fetch(res.data)
+          .then(res => res.blob())
+          .then(blob => window.URL.createObjectURL(blob))
+          .then(imageurl => imageurl)
+      } else {
+        return null
+      }
     }).catch(error => {
       return false
     })
   },
 
-  deleteUserPicture(userId) {
-    return api.delete(`/users/${userId}/avatar`).then(res => res.data)
+  deleteUserPicture(userId, operation) {
+    return api.patch(`/users/${userId}`, operation).then(res => res.data)
   },
 
   getProtocol(projectId) {

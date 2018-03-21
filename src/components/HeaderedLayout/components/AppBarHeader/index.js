@@ -35,7 +35,7 @@ export const Header = ({ theme, user, open, handleLogoutUser, handleCloseMenu, h
             onCloseMenu={handleCloseMenu}
             onOpenAdminPage={handleOpenAdminPage}
             onLogoutUser={handleLogoutUser}
-            avatarUrl={user.avatarUrl}
+            avatarUrl={user.avatar}
           />
         </Grid>
       </Grid>
