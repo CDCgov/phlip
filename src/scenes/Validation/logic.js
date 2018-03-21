@@ -38,8 +38,8 @@ const mergeInUserCodedQuestions = (codedQuestions, codeQuestionsPerUser, coder) 
             ...addCoderToAnswers(
               doesExist
                 ? checkIfExists(question, allCodedQuestions[question.schemeQuestionId], 'categoryId')
-                ? allCodedQuestions[question.schemeQuestionId][question.categoryId]
-                : baseQuestion
+                  ? allCodedQuestions[question.schemeQuestionId][question.categoryId]
+                  : baseQuestion
                 : baseQuestion, question, coder)
           }
         }
@@ -60,8 +60,8 @@ const getCoderInformation = async ({ api, action }) => {
     codedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
     for (let question of codedQuestions) {
       try {
-        let hasAvatarImage = await api.getUserPicture(question.validatedBy.userId)
-        let avatarUrl = hasAvatarImage ? createAvatarUrl(question.validatedBy.userId) : null
+        let avatarUrl = await api.getUserImage(question.validatedBy.userId)
+        // let avatarUrl = hasAvatarImage ? createAvatarUrl(question.validatedBy.userId) : null
         let validatedBy = { ...question.validatedBy, avatarUrl }
         updatedCodedQuestions = [...updatedCodedQuestions, { ...question, validatedBy }]
       } catch (e) {
@@ -81,8 +81,8 @@ const getCoderInformation = async ({ api, action }) => {
   if (projectCoders.length !== 0) {
     for (let coder of projectCoders) {
       try {
-        let hasAvatarImage = await api.getUserPicture(coder.userId)
-        let avatarUrl = hasAvatarImage ? createAvatarUrl(coder.userId) : null
+        let avatarUrl = await api.getUserImage(coder.userId)
+        // let avatarUrl = hasAvatarImage ? createAvatarUrl(coder.userId) : null
         coder = { ...coder, avatarUrl }
       } catch (e) {
         throw { error: 'failed to get avatar image' }
