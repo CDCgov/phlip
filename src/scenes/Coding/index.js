@@ -12,12 +12,6 @@ export class Coding extends Component {
     this.props.actions.getCodingOutlineRequest(this.props.projectId, this.props.jurisdictionId, 'coding')
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.isSchemeEmpty !== null) {
-      this.setState({ showViews: true })
-    }
-  }
-
   onJurisdictionChange = (event) => {
     this.setState({ selectedJurisdiction: event.target.value })
     this.props.actions.onChangeJurisdiction(event.target.value, this.props.jurisdictionsList)

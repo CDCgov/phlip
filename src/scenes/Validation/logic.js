@@ -151,40 +151,42 @@ export const getValidationOutlineLogic = createLogic({
       } catch (e) {
         throw { error: 'failed to get validated questions' }
       }
+    } else {
+      // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
+      if (scheme.schemeQuestions.length === 0) {
+        return { isSchemeEmpty: true, areJurisdictionsEmpty: true }
+      }
+      return { isSchemeEmpty: false, areJurisdictionsEmpty: true }
     }
 
-    // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
-    if (scheme.schemeQuestions.length === 0) {
-      return { isSchemeEmpty: true }
-    } else {
-      // Create one array with the outline information in the question information
-      const merge = scheme.schemeQuestions.reduce((arr, q) => {
-        return [...arr, { ...q, ...scheme.outline[q.id] }]
-      }, [])
+    // Create one array with the outline information in the question information
+    const merge = scheme.schemeQuestions.reduce((arr, q) => {
+      return [...arr, { ...q, ...scheme.outline[q.id] }]
+    }, [])
 
-      // Create a sorted question tree with sorted children with question numbering and order
-      const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
-      const questionsById = normalize.arrayToObject(questionsWithNumbers)
-      const firstQuestion = questionsWithNumbers[0]
+    // Create a sorted question tree with sorted children with question numbering and order
+    const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
+    const questionsById = normalize.arrayToObject(questionsWithNumbers)
+    const firstQuestion = questionsWithNumbers[0]
 
-      // Check if the first question has answers, if it doesn't send a request to create an empty coded question
-      const { userAnswers } = await initializeAndCheckAnswered(
-        firstQuestion, validatedQuestions, questionsById, userId, action, api.createEmptyValidatedQuestion
-      )
+    // Check if the first question has answers, if it doesn't send a request to create an empty coded question
+    const { userAnswers } = await initializeAndCheckAnswered(
+      firstQuestion, validatedQuestions, questionsById, userId, action, api.createEmptyValidatedQuestion
+    )
 
-      // Get all the coded questions for this question
-      const { codedQuestionObj, updatedCodedQuestions } = await getCoderInformation({ api, action })
+    // Get all the coded questions for this question
+    const { codedQuestionObj, updatedCodedQuestions } = await getCoderInformation({ api, action })
 
-      return {
-        outline: scheme.outline,
-        scheme: { byId: questionsById, tree, order },
-        userAnswers,
-        question: firstQuestion,
-        validatedQuestions,
-        isSchemeEmpty: false,
-        userId,
-        mergedUserQuestions: codedQuestionObj
-      }
+    return {
+      outline: scheme.outline,
+      scheme: { byId: questionsById, tree, order },
+      userAnswers,
+      question: firstQuestion,
+      validatedQuestions,
+      isSchemeEmpty: false,
+      areJurisdictionsEmpty: false,
+      userId,
+      mergedUserQuestions: codedQuestionObj
     }
   }
 })

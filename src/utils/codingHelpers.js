@@ -454,6 +454,10 @@ export const getFinalCodedObject = (state, action, applyAll = false) => {
   return answerObject
 }
 
+export const getSchemeAndCodedQuestions = async (api, getQuestions) => {
+
+}
+
 /*
   Check answered status and send response to create empty validated/coded question
  */
@@ -476,7 +480,7 @@ export const initializeAndCheckAnswered = async (question, codedQuestions, schem
       userId: userId,
       questionObj: { ...questionObj, codedAnswers: [] }
     })
-    userAnswers[question.id] = { ...userAnswers[question.id], ...q }
+    userAnswers[question.id] = { ...q, ...userAnswers[question.id] }
   }
 
   // Return initialized user answers object
@@ -484,7 +488,8 @@ export const initializeAndCheckAnswered = async (question, codedQuestions, schem
 }
 
 /*
-  Gets a specific question, and initializes it
+  Gets a specific scheme question, checks if it's answered and initializes it by sending a post if it's not. Sends back
+  the updated user answers object. Called in Validation/logic and Coding/logic
  */
 export const getQuestionAndInitialize = async (state, action, userId, api, createEmptyQuestion, questionInfo) => {
   let unanswered = [], answered = false, updatedAnswers = { ...state.userAnswers }

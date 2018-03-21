@@ -18,7 +18,9 @@ const INITIAL_STATE = {
   selectedCategoryId: null,
   userAnswers: {},
   showNextButton: true,
-  mergedUserQuestions: null
+  mergedUserQuestions: null,
+  isSchemeEmpty: null,
+  areJurisdictionsEmpty: null
 }
 
 const codingValidationReducer = (state = INITIAL_STATE, action, name) => {

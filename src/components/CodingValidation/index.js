@@ -64,6 +64,12 @@ const withCodingValidation = (WrappedComponent, actions) => {
       ]
     }
 
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.isSchemeEmpty !== null) {
+        this.setState({ showViews: true })
+      }
+    }
+
     componentWillUnmount() {
       this.props.actions.onCloseScreen()
     }
@@ -232,9 +238,8 @@ const withCodingValidation = (WrappedComponent, actions) => {
                         <Icon color="white" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
                   </Column>
                   <Column displayFlex flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
-                    {this.state.showViews && (this.props.jurisdiction === null || this.props.questionOrder.length === 0
-                      ? this.onShowGetStartedView(this.props.questionOrder.length === 0, this.props.jurisdiction ===
-                        null)
+                    {this.state.showViews && (this.props.areJurisdictionsEmpty === true || this.props.isSchemeEmpty === true
+                      ? this.onShowGetStartedView(this.props.isSchemeEmpty, this.props.areJurisdictionsEmpty)
                       : this.onShowCodeView())}
                   </Column>
                 </Row>
@@ -259,23 +264,24 @@ const withCodingValidation = (WrappedComponent, actions) => {
       question: pageState.question || {},
       currentIndex: pageState.currentIndex || 0,
       questionOrder: pageState.scheme === null ? null : pageState.scheme.order,
-      categories: state.scenes[page].categories || undefined,
-      selectedCategory: state.scenes[page].selectedCategory || 0,
-      userAnswers: state.scenes[page].userAnswers[state.scenes[page].question.id] || {},
-      showNextButton: state.scenes[page].showNextButton,
+      categories: pageState.categories || undefined,
+      selectedCategory: pageState.selectedCategory || 0,
+      userAnswers: pageState.userAnswers[pageState.question.id] || {},
+      showNextButton: pageState.showNextButton,
       jurisdictionsList: project.projectJurisdictions || [],
-      jurisdictionId: state.scenes[page].jurisdictionId || (project.projectJurisdictions.length > 0
+      jurisdictionId: pageState.jurisdictionId || (project.projectJurisdictions.length > 0
         ? project.projectJurisdictions[0].id
         : null),
-      jurisdiction: state.scenes[page].jurisdiction || (project.projectJurisdictions.length > 0
+      jurisdiction: pageState.jurisdiction || (project.projectJurisdictions.length > 0
         ? project.projectJurisdictions[0]
         : null),
-      isSchemeEmpty: state.scenes[page].scheme === null ? null : state.scenes[page].scheme.order.length === 0,
+      isSchemeEmpty: pageState.isSchemeEmpty,
+      areJurisdictionsEmpty: pageState.areJurisdictionsEmpty,
       userRole: state.data.user.currentUser.role,
       user: state.data.user.currentUser,
-      scheme: state.scenes[page].scheme === null ? {} : state.scenes[page].scheme,
-      allUserAnswers: state.scenes[page].userAnswers || {},
-      selectedCategoryId: state.scenes[page].selectedCategoryId || null,
+      scheme: pageState.scheme === null ? {} : pageState.scheme,
+      allUserAnswers: pageState.userAnswers || {},
+      selectedCategoryId: pageState.selectedCategoryId || null,
       mergedUserQuestions: pageState.mergedUserQuestions
         ? pageState.question.isCategoryQuestion
           ? pageState.mergedUserQuestions[pageState.question.id][pageState.selectedCategoryId]

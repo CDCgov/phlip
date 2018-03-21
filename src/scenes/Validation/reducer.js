@@ -19,20 +19,24 @@ const INITIAL_STATE = {
   userAnswers: {},
   showNextButton: true,
   mergedUserQuestions: [],
-  selectedCategoryId: null
+  selectedCategoryId: null,
+  isSchemeEmpty: null,
+  areJurisdictionsEmpty: null
 }
 
 const validationReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_VALIDATION_OUTLINE_SUCCESS:
-      if (action.payload.isSchemeEmpty) {
+      if (action.payload.isSchemeEmpty || action.payload.areJurisdictionsEmpty) {
         return {
           ...state,
           scheme: { order: [], byId: {}, tree: [] },
           outline: {},
           question: {},
           userAnswers: {},
-          mergedUserQuestions: {}
+          mergedUserQuestions: {},
+          isSchemeEmpty: action.payload.isSchemeEmpty,
+          areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty
         }
       } else {
         sortList(action.payload.question.possibleAnswers, 'order', 'asc')
@@ -43,7 +47,9 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           question: action.payload.question,
           userAnswers: action.payload.userAnswers,
           mergedUserQuestions: action.payload.mergedUserQuestions,
-          categories: undefined
+          categories: undefined,
+          isSchemeEmpty: false,
+          areJurisdictionsEmpty: false
         }
       }
 

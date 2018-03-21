@@ -29,14 +29,16 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 
   switch (action.type) {
     case types.GET_CODING_OUTLINE_SUCCESS:
-      if (action.payload.isSchemeEmpty) {
+      if (action.payload.isSchemeEmpty || action.payload.areJurisdictionsEmpty) {
         return {
           ...state,
           scheme: { order: [], byId: {}, tree: [] },
           outline: {},
           question: {},
           userAnswers: {},
-          categories: undefined
+          categories: undefined,
+          areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty,
+          isSchemeEmpty: action.payload.isSchemeEmpty
         }
       } else {
         sortList(action.payload.question.possibleAnswers, 'order', 'asc')
@@ -46,7 +48,9 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           scheme: action.payload.scheme,
           question: action.payload.question,
           userAnswers: action.payload.userAnswers,
-          categories: undefined
+          categories: undefined,
+          areJurisdictionsEmpty: false,
+          isSchemeEmpty: false
         }
       }
 

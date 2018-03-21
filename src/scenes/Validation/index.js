@@ -24,12 +24,6 @@ export class Validation extends Component {
     this.props.actions.getCodedUsersAnswers(this.props.projectId, this.props.jurisdictionId)
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.isSchemeEmpty !== null) {
-      this.setState({ showViews: true })
-    }
-  }
-
   onJurisdictionChange = event => {
     this.setState({ selectedJurisdiction: event.target.value })
     this.props.actions.onChangeJurisdiction(event.target.value, this.props.jurisdictionsList)
