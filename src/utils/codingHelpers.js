@@ -470,7 +470,7 @@ export const initializeAndCheckAnswered = async (question, codedQuestions, schem
 
   // Check if the first question is answered, if it's not, then send a request to create an empty coded question
   // on the backend. This fixes issues with duplication of text fields answer props
-  const answered = checkIfExists(question, userAnswers)
+  const answered = userAnswers[question.id].hasOwnProperty('id')
 
   if (!answered) {
     const { answers, ...questionObj } = userAnswers[question.id]
@@ -517,6 +517,9 @@ export const getQuestionAndInitialize = async (state, action, userId, api, creat
     answered = unanswered.length === 0
   } else {
     answered = checkIfExists(state.scheme.byId[combinedQuestion.id], state.userAnswers)
+    if (answered) {
+      answered = state.userAnswers[combinedQuestion.id].hasOwnProperty('id')
+    }
   }
 
   // If it's not answered create an empty coded question object
