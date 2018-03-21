@@ -13,9 +13,16 @@ describe('Coding logic', () => {
     mock = new MockAdapter(api)
   })
 
-  const setupStore = other => {
+  const setupStore = (currentState = {}) => {
     return createMockStore({
-      initialState: { data: { user: { currentUser: { id: 1 } } } },
+      initialState: {
+        data: {
+          user: { currentUser: { id: 1 } }
+        },
+        scenes: {
+          coding: { ...currentState }
+        }
+      },
       reducer: mockReducer,
       logic,
       injectedDeps: {
@@ -169,6 +176,339 @@ describe('Coding logic', () => {
             }
           })
         done()
+      })
+    })
+  })
+
+  describe('GET_NEXT_QUESTION, GET_PREV_QUESTION, ON_QUESTION_SELECTED_IN_NAV logic', () => {
+    const currentState = {
+      question: {
+        text: 'fa la la la',
+        questionType: 1,
+        id: 1,
+        parentId: 0,
+        positionInParent: 0,
+        possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+      },
+      outline: {
+        1: { parentId: 0, positionInParent: 0 },
+        2: { parentId: 0, positionInParent: 1 },
+        3: { parentId: 0, positionInParent: 2 },
+        4: { parentId: 3, positionInParent: 0 }
+      },
+      scheme: {
+        byId: {
+          1: {
+            text: 'fa la la la',
+            questionType: 1,
+            id: 1,
+            parentId: 0,
+            positionInParent: 0,
+            possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+          },
+          2: {
+            text: 'la la la',
+            questionType: 3,
+            id: 2,
+            parentId: 0,
+            positionInParent: 1,
+            possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+          },
+          3: {
+            text: 'cat question',
+            questionType: 2,
+            id: 3,
+            parentId: 0,
+            positionInParent: 2,
+            possibleAnswers: [
+              { id: 5, text: 'category 1', order: 1 }, { id: 10, text: 'category 2', order: 2 },
+              { id: 20, text: 'category 3', order: 3 }
+            ]
+          },
+          4: {
+            text: 'cat question child',
+            questionType: 3,
+            id: 4,
+            parentId: 3,
+            positionInParent: 0,
+            isCategoryQuestion: true,
+            possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+          }
+        },
+        order: [1, 2, 3, 4],
+        tree: []
+      },
+      userAnswers: {
+        1: {
+          answers: {},
+          schemeQuestionId: 1,
+          comment: ''
+        },
+        3: {
+          schemeQuestionId: 3,
+          answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
+        }
+      }
+    }
+
+    describe('should GET_NEXT_QUESTION based on action and state information', () => {
+      test('should handle regular questions', (done) => {
+        mock.onPost('/users/1/projects/1/jurisdictions/1/codedquestions/2')
+          .reply(200, { schemeQuestionId: 2, id: 200, codedAnswers: [] })
+
+        mock.onGet('/projects/1/scheme/2').reply(200, {
+          id: 2, text: 'la la la updated',
+          questionType: 3,
+          parentId: 0,
+          positionInParent: 1,
+          possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+        })
+
+        const store = setupStore(currentState)
+        store.dispatch({ type: types.GET_NEXT_QUESTION, id: 2, newIndex: 1, projectId: 1, jurisdictionId: 1 })
+        store.whenComplete(() => {
+          expect(store.actions[0])
+            .toEqual({ type: types.GET_NEXT_QUESTION, id: 2, newIndex: 1, projectId: 1, jurisdictionId: 1 })
+
+          // Should get the correct next question and should update from the api response
+          expect(store.actions[1]).toHaveProperty('payload.question', {
+            text: 'la la la updated',
+            questionType: 3,
+            id: 2,
+            parentId: 0,
+            positionInParent: 1,
+            possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+          })
+
+          // Should add the new unanswered question to user answers
+          expect(store.actions[1].payload).toHaveProperty('updatedState.userAnswers', {
+            1: {
+              answers: {},
+              schemeQuestionId: 1,
+              comment: ''
+            },
+            2: {
+              answers: {},
+              id: 200,
+              schemeQuestionId: 2,
+              comment: '',
+              flag: { notes: '', type: 0 }
+            },
+            3: {
+              schemeQuestionId: 3,
+              answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
+            }
+          })
+          done()
+        })
+      })
+
+      test('should handle category question children', (done) => {
+        mock.onPost('/users/1/projects/1/jurisdictions/1/codedquestions/4')
+          .reply(200, [
+            { schemeQuestionId: 4, categoryId: 10, id: 1000, codedAnswers: [] },
+            { schemeQuestionId: 4, categoryId: 20, id: 2000, codedAnswers: [] }
+          ])
+
+        mock.onGet('/projects/1/scheme/4').reply(200, {
+          text: 'cat question child',
+          questionType: 3,
+          id: 4,
+          parentId: 3,
+          positionInParent: 0,
+          isCategoryQuestion: true,
+          possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+        })
+
+        const store = setupStore({ ...currentState, selectedCategory: 0 })
+        store.dispatch({ type: types.GET_NEXT_QUESTION, id: 4, newIndex: 3, projectId: 1, jurisdictionId: 1 })
+        store.whenComplete(() => {
+          expect(store.actions[0])
+            .toEqual({ type: types.GET_NEXT_QUESTION, id: 4, newIndex: 3, projectId: 1, jurisdictionId: 1 })
+
+          console.log(store.actions)
+
+          // Should get the correct next question and should update from the api response
+          expect(store.actions[1]).toHaveProperty('payload.question', {
+            text: 'cat question child',
+            questionType: 3,
+            id: 4,
+            parentId: 3,
+            positionInParent: 0,
+            isCategoryQuestion: true,
+            possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+          })
+
+          // Should add the new unanswered question to user answers
+          expect(store.actions[1].payload).toHaveProperty('updatedState.userAnswers', {
+            1: {
+              answers: {},
+              schemeQuestionId: 1,
+              comment: ''
+            },
+            3: {
+              schemeQuestionId: 3,
+              answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
+            },
+            4: {
+              10: {
+                id: 1000,
+                answers: {},
+                comment: '',
+                flag: { notes: '', type: 0 },
+                schemeQuestionId: 4,
+                categoryId: 10
+              },
+              20: {
+                id: 2000,
+                answers: {},
+                comment: '',
+                flag: { notes: '', type: 0 },
+                schemeQuestionId: 4,
+                categoryId: 20
+              }
+            }
+          })
+
+          expect(store.actions[1]).toHaveProperty('payload.updatedState.categories', [
+            { id: 10, text: 'category 2', order: 2 }, { id: 20, text: 'category 3', order: 3 }
+          ])
+
+          done()
+        })
+      })
+
+      xtest('should handle if next question is already in state.userAnswers', () => {
+        const action = {
+          type: types.GET_NEXT_QUESTION,
+          id: 2,
+          newIndex: 1
+        }
+
+        const state = getReducer(
+          getState({
+            ...currentState,
+            userAnswers: {
+              ...currentState.userAnswers,
+              2: {
+                schemeQuestionId: 2,
+                comment: 'this is a comment',
+                answers: {}
+              }
+            }
+          }),
+          action
+        )
+
+        expect(state)
+          .toHaveProperty('question', {
+            text: 'la la la',
+            questionType: 3,
+            id: 2,
+            parentId: 0,
+            positionInParent: 1,
+            possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+          })
+
+        expect(state.userAnswers).toHaveProperty('2', {
+          schemeQuestionId: 2,
+          comment: 'this is a comment',
+          answers: {}
+        })
+
+        expect(state).toHaveProperty('currentIndex', 1)
+      })
+
+      xtest('should handle if next question is category child and no categories have been selected', () => {
+        const currentState = {
+          question: {
+            text: 'cat question',
+            questionType: 2,
+            id: 3,
+            parentId: 0,
+            positionInParent: 2,
+            possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+          },
+          outline: {
+            1: { parentId: 0, positionInParent: 0 },
+            2: { parentId: 0, positionInParent: 1 },
+            3: { parentId: 0, positionInParent: 2 },
+            4: { parentId: 3, positionInParent: 0 },
+            5: { parentId: 0, positionInParent: 3 }
+          },
+          scheme: {
+            byId: {
+              1: {
+                text: 'fa la la la',
+                questionType: 1,
+                id: 1,
+                parentId: 0,
+                positionInParent: 0,
+                possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+              },
+              2: {
+                text: 'la la la',
+                questionType: 3,
+                id: 2,
+                parentId: 0,
+                positionInParent: 1,
+                possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+              },
+              3: {
+                text: 'cat question',
+                questionType: 2,
+                id: 3,
+                parentId: 0,
+                positionInParent: 2,
+                possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+              },
+              4: {
+                text: 'cat question child',
+                questionType: 3,
+                id: 4,
+                parentId: 3,
+                positionInParent: 0,
+                isCategoryQuestion: true
+              },
+              5: {
+                text: 'next sibling',
+                questionType: 3,
+                id: 5,
+                parentId: 0,
+                positionInParent: 3,
+                possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+              }
+            },
+            order: [1, 2, 3, 4, 5],
+            tree: []
+          },
+          userAnswers: {},
+          currentIndex: 2
+        }
+
+        const action = {
+          type: types.GET_NEXT_QUESTION,
+          id: 4,
+          newIndex: 3
+        }
+
+        const state = getReducer(
+          getState(currentState),
+          action
+        )
+
+        expect(state)
+          .toHaveProperty('question', {
+            text: 'next sibling',
+            questionType: 3,
+            id: 5,
+            parentId: 0,
+            positionInParent: 3,
+            possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+          })
+
+        expect(state).toHaveProperty('currentIndex', 4)
+        expect(state).toHaveProperty('showNextButton', false)
       })
     })
   })
