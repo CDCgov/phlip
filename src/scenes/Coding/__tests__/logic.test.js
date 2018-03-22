@@ -325,7 +325,7 @@ describe('Coding logic', () => {
         store.whenComplete(() => {
           expect(store.actions[0])
             .toEqual({ type: types.GET_NEXT_QUESTION, id: 4, newIndex: 3, projectId: 1, jurisdictionId: 1 })
-          
+
           // Should get the correct next question and should update from the api response
           expect(store.actions[1]).toHaveProperty('payload.question', {
             text: 'cat question child',

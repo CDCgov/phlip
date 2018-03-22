@@ -57,7 +57,7 @@ export const actions = {
   },
   onClearAnswer: {
     type: types.ON_CLEAR_ANSWER,
-    args: ['questionId', 'projectId', 'jurisdictionId']
+    args: ['projectId', 'jurisdictionId', 'questionId']
   },
   onChangeJurisdiction: {
     type: types.ON_CHANGE_JURISDICTION,

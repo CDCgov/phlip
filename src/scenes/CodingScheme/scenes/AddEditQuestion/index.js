@@ -151,6 +151,7 @@ export class AddEditQuestion extends Component {
         maxWidth="md"
         validate={this.validate}
         onClose={this.props.onCloseModal}
+        style={{ position: 'static' }}
       >
         <Container column style={{ minWidth: 890, padding: '20px 20px 0 20px' }}>
           <Container column className={styles.dashed}>
