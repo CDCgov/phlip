@@ -21,7 +21,7 @@ export const QuestionContent = props => {
 
   const questionAnswerPadding = {
     paddingTop: 0,
-    paddingRight: 65,
+    paddingRight: 25,
     paddingBottom: 30,
     paddingLeft: (question.number && (question.number.split('.').length * 3) + 40) || 40
   }
@@ -100,7 +100,7 @@ export const QuestionContent = props => {
               style={{ whiteSpace: 'pre-wrap' }}
               placeholder="Enter comment"
               value={comment}
-              rowsMax={6}
+              rowsMax={3}
               label="Comment"
             />
           </Row>}
