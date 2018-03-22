@@ -198,5 +198,12 @@ export default {
   // Saves the protocol for a project, called in Protocol/logic
   saveProtocol(projectId, userId, protocol) {
     return api.put(`/projects/${projectId}/protocol`, { userId, text: protocol }).then(res => res.data)
+  },
+
+  // Export project data
+  exportData(projectId, type) {
+    //window.open('/export')
+    //window.location.href = `/api/exports/${projectId}/${type}`
+    window.location.href = '/export/'
   }
 }
