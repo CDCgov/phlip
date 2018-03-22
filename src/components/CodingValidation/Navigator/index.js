@@ -27,8 +27,6 @@ export class Navigator extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps)
-    console.log(this.props)
     if ((nextProps.tree !== this.props.tree) || (nextProps.currentQuestion !== this.props.currentQuestion)) {
       this.QuestionList.recomputeRowHeights()
       this.QuestionList.forceUpdate()

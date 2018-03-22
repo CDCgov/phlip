@@ -52,7 +52,7 @@ export class QuestionCard extends Component {
             </IconButton>}
             {!this.props.isValidation && <FlagPopover
               userFlag={this.props.userAnswers.flag}
-              onSaveFlag={onSaveFlag}
+              onSaveFlag={this.props.onSaveFlag}
               questionFlags={this.props.question.flags}
               user={this.props.user} />}
           </Row>
