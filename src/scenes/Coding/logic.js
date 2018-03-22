@@ -148,7 +148,10 @@ export const getUserCodedQuestionsLogic = createLogic({
     if (state.question.isCategoryQuestion) {
       question = state.scheme.byId[question.parentId]
       otherUpdates = {
-        currentIndex: state.scheme.order.findIndex(id => id === question.id)
+        currentIndex: state.scheme.order.findIndex(id => id === question.id),
+        categories: undefined,
+        selectedCategory: 0,
+        selectedCategoryId: null
       }
     }
 
