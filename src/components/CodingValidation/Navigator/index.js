@@ -27,15 +27,10 @@ export class Navigator extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if ((nextProps.tree !== this.props.tree) || (nextProps.currentQuestion !== this.props.currentQuestion)) {
+    if (nextProps !== this.props) {
       this.QuestionList.recomputeRowHeights()
       this.QuestionList.forceUpdate()
     }
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return (((nextProps.tree !== this.props.tree) || (nextProps.currentQuestion !== this.props.currentQuestion)) ||
-      nextState !== this.state)
   }
 
   setRef = ref => {

@@ -83,7 +83,11 @@ const mapStateToProps = (state, ownProps) => {
     question: pageState.question,
     categories: pageState.categories || undefined,
     selectedCategory: pageState.selectedCategory || 0,
-    userAnswers: pageState.userAnswers[pageState.question.id] || {},
+    userAnswers: pageState.userAnswers
+      ? pageState.question.isCategoryQuestion
+        ? pageState.userAnswers[pageState.question.id][pageState.selectedCategoryId]
+        : pageState.userAnswers[pageState.question.id]
+      : {},
     selectedCategoryId: pageState.selectedCategoryId || null,
     mergedUserQuestions: pageState.mergedUserQuestions
       ? pageState.question.isCategoryQuestion

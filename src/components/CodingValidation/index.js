@@ -264,7 +264,8 @@ const withCodingValidation = (WrappedComponent, actions) => {
       isSchemeEmpty: pageState.isSchemeEmpty,
       areJurisdictionsEmpty: pageState.areJurisdictionsEmpty,
       userRole: state.data.user.currentUser.role,
-      user: state.data.user.currentUser
+      user: state.data.user.currentUser,
+      selectedCategory: pageState.selectedCategory
     }
   }
 
