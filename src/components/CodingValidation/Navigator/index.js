@@ -9,7 +9,7 @@ import List from 'react-virtualized/dist/commonjs/List'
 import navStyles from './nav-styles.scss'
 import IconButton from 'components/IconButton'
 import QuestionRow from './components/QuestionRow'
-import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
+import { connect } from 'react-redux'
 
 const muiNavStyles = {
   codeNav: {
@@ -91,7 +91,7 @@ export class Navigator extends Component {
   }
 
   rowRenderer = params => {
-    const tree = this.props.scheme.tree ? this.props.scheme.tree : []
+    const tree = this.props.tree
 
     return (
       tree.length !== 0
@@ -137,7 +137,7 @@ export class Navigator extends Component {
   rowHeight = tree => params => this.getExpandedItemCount(tree[params.index]) * 40
 
   render() {
-    const questionTree = this.props.scheme.tree ? this.props.scheme.tree : []
+    const questionTree = this.props.tree
     return (
       <Drawer classes={{ paper: this.props.classes.codeNav }} type="persistent" anchor="left" open={this.props.open}>
         <Container column flex>
@@ -184,4 +184,11 @@ Navigator.propTypes = {
   selectedCategory: PropTypes.number
 }
 
-export default withStyles(muiNavStyles)(Navigator)
+const mapStateToProps = (state, ownProps) => {
+  return {
+    tree: state.scenes[ownProps.page].scheme === null ? [] : state.scenes[ownProps.page].scheme.tree,
+    currentQuestion: state.scenes[ownProps.page].question || {}
+  }
+}
+
+export default connect(mapStateToProps, null)(withStyles(muiNavStyles)(Navigator))

@@ -64,16 +64,26 @@ const withCodingValidation = (WrappedComponent, actions) => {
       ]
     }
 
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.isSchemeEmpty !== null) {
+        this.setState({ showViews: true })
+      }
+    }
+
+    componentWillUnmount() {
+      this.props.actions.onCloseScreen()
+    }
+
     onToggleNavigator = () => {
       this.setState({ navOpen: !this.state.navOpen })
     }
 
     getNextQuestion = index => {
-      this.props.actions.getNextQuestion(this.props.questionOrder[index], index)
+      this.props.actions.getNextQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
     }
 
     getPrevQuestion = index => {
-      this.props.actions.getPrevQuestion(this.props.questionOrder[index], index)
+      this.props.actions.getPrevQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
     }
 
     onAnswer = id => (event, value) => {
@@ -141,14 +151,14 @@ const withCodingValidation = (WrappedComponent, actions) => {
           alignItems="center"
           style={{ justifyContent: 'center', padding: 30, textAlign: 'center' }}>
           <Typography type="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
-          <Row>
+          <Row displayFlex style={{ width: '100%', justifyContent: 'space-evenly' }}>
             {noScheme && this.props.userRole !== 'Coder' &&
             <TextLink to={{ pathname: `/project/${this.props.projectId}/coding-scheme/` }}>
               <Button value="Create Coding Scheme" color="accent" />
             </TextLink>}
             {noJurisdictions && this.props.userRole !== 'Coder' &&
             <TextLink to={{ pathname: `/project/${this.props.projectId}/jurisdictions/` }}>
-              <Button value="Add Jurisdictions" color="accent" style={{ marginLeft: 50 }} />
+              <Button value="Add Jurisdictions" color="accent"/>
             </TextLink>}
           </Row>
         </Container>
@@ -158,23 +168,14 @@ const withCodingValidation = (WrappedComponent, actions) => {
     onShowCodeView = () => (
       <Fragment>
         <QuestionCard
-          question={this.props.question}
+          page={this.props.page}
           onChange={this.onAnswer}
-          userAnswers={this.props.question.isCategoryQuestion
-            ? this.props.userAnswers[this.props.selectedCategoryId]
-            : this.props.userAnswers}
           onChangeTextAnswer={this.onChangeTextAnswer}
-          categories={this.props.categories}
-          selectedCategory={this.props.selectedCategory}
-          onChangeCategory={this.props.actions.onChangeCategory}
-          isValidation={this.props.isValidation}
-          mergedUserQuestions={this.props.mergedUserQuestions}
+          onChangeCategory={(event, selection) => this.props.actions.onChangeCategory(selection)}
           onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
           onOpenAlert={this.onOpenApplyAllAlert}
           onSaveFlag={this.onSaveFlag}
-          onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
-          selectedCategoryId={this.props.selectedCategoryId}
-          user={this.props.user} />
+          onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert} />
         <FooterNavigate
           currentIndex={this.props.currentIndex}
           getNextQuestion={this.getNextQuestion}
@@ -188,18 +189,15 @@ const withCodingValidation = (WrappedComponent, actions) => {
       return (
         <Container
           flex style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}>
-          {super.render()}
           <Alert
             open={this.state.applyAllAlertOpen}
             text="You are applying your answer to ALL categories. Previously answered questions will be changed."
             actions={this.modalActions} />
           <Navigator
             open={this.state.navOpen}
-            scheme={this.props.scheme}
-            allUserAnswers={this.props.allUserAnswers}
-            currentQuestion={this.props.question}
+            page={this.props.page}
             selectedCategory={this.props.selectedCategory}
-            handleQuestionSelected={this.props.actions.onQuestionSelectedInNav} />
+            handleQuestionSelected={(item) => this.props.actions.onQuestionSelectedInNav(item, this.props.projectId, this.props.jurisdictionId)} />
           <HeaderedLayout
             padding={false}
             className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}>
@@ -210,7 +208,7 @@ const withCodingValidation = (WrappedComponent, actions) => {
                 jurisdictionsList={this.props.jurisdictionsList}
                 selectedJurisdiction={this.state.selectedJurisdiction}
                 onJurisdictionChange={this.onJurisdictionChange}
-                pageTitle={this.props.pageTitle}
+                pageTitle={capitalizeFirstLetter(this.props.page)}
                 currentJurisdiction={this.props.jurisdiction}
                 empty={this.props.jurisdiction === null || this.props.questionOrder === null ||
                 this.props.questionOrder.length === 0} />
@@ -228,15 +226,15 @@ const withCodingValidation = (WrappedComponent, actions) => {
                         <Icon color="white" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
                   </Column>
                   <Column displayFlex flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
-                    {this.state.showViews && (this.props.jurisdiction === null || this.props.questionOrder.length === 0
-                      ? this.onShowGetStartedView(this.props.questionOrder.length === 0, this.props.jurisdiction ===
-                        null)
+                    {this.state.showViews && (this.props.areJurisdictionsEmpty === true || this.props.isSchemeEmpty === true
+                      ? this.onShowGetStartedView(this.props.isSchemeEmpty, this.props.areJurisdictionsEmpty)
                       : this.onShowCodeView())}
                   </Column>
                 </Row>
               </Container>
             </Column>
           </HeaderedLayout>
+          {super.render()}
         </Container>
       )
     }
@@ -249,34 +247,25 @@ const withCodingValidation = (WrappedComponent, actions) => {
 
     return {
       projectName: project.name,
-      pageTitle: capitalizeFirstLetter(page),
+      page,
       isValidation: page === 'validation',
       projectId: ownProps.match.params.id,
       question: pageState.question || {},
       currentIndex: pageState.currentIndex || 0,
       questionOrder: pageState.scheme === null ? null : pageState.scheme.order,
-      categories: state.scenes[page].categories || undefined,
-      selectedCategory: state.scenes[page].selectedCategory || 0,
-      userAnswers: state.scenes[page].userAnswers[state.scenes[page].question.id] || {},
-      showNextButton: state.scenes[page].showNextButton,
+      showNextButton: pageState.showNextButton,
       jurisdictionsList: project.projectJurisdictions || [],
-      jurisdictionId: state.scenes[page].jurisdictionId || (project.projectJurisdictions.length > 0
+      jurisdictionId: pageState.jurisdictionId || (project.projectJurisdictions.length > 0
         ? project.projectJurisdictions[0].id
         : null),
-      jurisdiction: state.scenes[page].jurisdiction || (project.projectJurisdictions.length > 0
+      jurisdiction: pageState.jurisdiction || (project.projectJurisdictions.length > 0
         ? project.projectJurisdictions[0]
         : null),
-      isSchemeEmpty: state.scenes[page].scheme === null ? null : state.scenes[page].scheme.order.length === 0,
+      isSchemeEmpty: pageState.isSchemeEmpty,
+      areJurisdictionsEmpty: pageState.areJurisdictionsEmpty,
       userRole: state.data.user.currentUser.role,
       user: state.data.user.currentUser,
-      scheme: state.scenes[page].scheme === null ? {} : state.scenes[page].scheme,
-      allUserAnswers: state.scenes[page].userAnswers || {},
-      selectedCategoryId: state.scenes[page].selectedCategoryId || null,
-      mergedUserQuestions: pageState.mergedUserQuestions
-        ? pageState.question.isCategoryQuestion
-          ? pageState.mergedUserQuestions[pageState.question.id][pageState.selectedCategoryId]
-          : pageState.mergedUserQuestions[pageState.question.id]
-        : null
+      selectedCategory: pageState.selectedCategory
     }
   }
 

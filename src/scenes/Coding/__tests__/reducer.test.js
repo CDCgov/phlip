@@ -26,100 +26,159 @@ describe('Coding reducer', () => {
 
   describe('GET_CODING_OUTLINE_SUCCESS', () => {
     test('should set outline, scheme, current question and userAnswers based on action.payload', () => {
-      const questions = [
-        {
+      const questions = {
+        1: {
           text: 'fa la la la', questionType: 1, id: 1, parentId: 0,
           positionInParent: 0,
           possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
         },
-        { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
-      ]
+        2: {
+          text: 'la la la', questionType: 2, id: 2, parentId: 0,
+          positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+        }
+      }
 
       const action = {
         type: types.GET_CODING_OUTLINE_SUCCESS,
         payload: {
-          scheme: questions,
-          questionOrder: [1, 2],
           outline: {
             1: { parentId: 0, positionInParent: 0 },
             2: { parentId: 0, positionInParent: 1 }
           },
-          tree: [],
-          question: questions[0],
-          codedQuestions: [
-            { schemeQuestionId: 1, codedAnswers: [{ schemeAnswerId: 3, pincite: '' }], comment: '' }
-          ]
-        }
-      }
-
-      const state = getReducer(
-        getState(),
-        action
-      )
-
-      const updatedState = {
-        question: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
-        outline: {
-          1: { parentId: 0, positionInParent: 0 },
-          2: { parentId: 0, positionInParent: 1 }
-        },
-        scheme: {
-          byId: {
-            1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
-            2: { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
+          scheme: {
+            byId: questions,
+            tree: [
+              {
+                text: 'fa la la la',
+                questionType: 1,
+                id: 1,
+                parentId: 0,
+                positionInParent: 0,
+                possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+              },
+              {
+                text: 'la la la',
+                questionType: 2,
+                id: 2,
+                parentId: 0,
+                positionInParent: 1,
+                possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+              }
+            ],
+            order: [1, 2]
           },
-          order: [1, 2]
-        },
-        userAnswers: {
-          1: {
-            answers: {
-              3: { schemeAnswerId: 3, pincite: '' }
-            },
-            schemeQuestionId: 1,
-            comment: ''
-          }
-        }
-      }
-
-      expect(state).toHaveProperty('outline', updatedState.outline)
-      expect(state).toHaveProperty('scheme.byId', updatedState.scheme.byId)
-      expect(state).toHaveProperty('scheme.order', updatedState.scheme.order)
-      expect(state).toHaveProperty('question', updatedState.question)
-      expect(state.userAnswers).toMatchObject(updatedState.userAnswers)
-    })
-
-    test('should set scheme.tree based on action.payload.tree', () => {
-      const questions = [
-        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
-        { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
-      ]
-
-      const action = {
-        type: types.GET_CODING_OUTLINE_SUCCESS,
-        payload: {
-          question: { id: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
-          scheme: questions,
-          questionOrder: [1, 2],
-          tree: [
-            { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
-            { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
-          ],
-          codedQuestions: [{ schemeQuestionId: 1, codedAnswers: [{ schemeAnswerId: 3, pincite: '' }], comment: '' }]
+          userAnswers: {
+            1: {
+              answers: {
+                3: { schemeAnswerId: 3, pincite: '' }
+              },
+              schemeQuestionId: 1,
+              comment: ''
+            }
+          },
+          question: questions[1],
+          isSchemeEmpty: false,
+          areJurisdictionsEmpty: false,
+          userId: 1
         }
       }
 
       const state = getReducer(getState(), action)
 
-      expect(state).toHaveProperty('scheme.tree', [
-        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: true, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
-        { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1, isAnswered: false, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
-      ])
+      expect(state).toHaveProperty('outline', action.payload.outline)
+      expect(state).toHaveProperty('scheme.byId', action.payload.scheme.byId)
+      expect(state).toHaveProperty('scheme.order', action.payload.scheme.order)
+      expect(state).toHaveProperty('question', action.payload.question)
+      expect(state.userAnswers).toMatchObject(action.payload.userAnswers)
+    })
+  })
+
+  describe('ON_SAVE_FLAG', () => {
+    test('should handle regular questions', () => {
+      const action = {
+        type: types.ON_SAVE_FLAG,
+        questionId: 1,
+        projectId: 1,
+        jurisdictionId: 1,
+        flagInfo: { notes: 'notes!!', type: 2 }
+      }
+
+      const state = getReducer(getState({
+        question: { id: 1, isCategoryQuestion: false },
+        userAnswers: {
+          1: {
+            flag: { notes: '', type: 0 }
+          }
+        }
+      }), action)
+
+      expect(state).toHaveProperty('userAnswers.1.flag', { notes: 'notes!!', type: 2 })
     })
 
-    test('should initialize user answers to empty if payload.codedQuestions is empty', () => {
+    test('should handle category child questions', () => {
+      const action = {
+        type: types.ON_SAVE_FLAG,
+        questionId: 1,
+        projectId: 1,
+        jurisdictionId: 1,
+        flagInfo: { notes: 'notes!!', type: 2 }
+      }
+
+      const state = getReducer(getState({
+        question: { id: 1, isCategoryQuestion: true },
+        selectedCategoryId: 5,
+        userAnswers: {
+          1: {
+            5: { flag: { notes: '', type: 0 } }
+          }
+        }
+      }), action)
+
+      expect(state).toHaveProperty('userAnswers.1.5.flag', { notes: 'notes!!', type: 2 })
+    })
+  })
+
+  describe('ON_SAVE_RED_FLAG', () => {
+    test('should handle regular questions', () => {
+      const action = {
+        type: types.ON_SAVE_RED_FLAG,
+        questionId: 1,
+        projectId: 1,
+        flagInfo: { notes: 'notes!!', type: 3 }
+      }
+
+      const state = getReducer(getState({
+        question: { id: 1, isCategoryQuestion: false, flags: [] },
+        scheme: {
+          byId: { 1: { id: 1, isCategoryQuestion: false, flags: [] } },
+          tree: []
+        }
+      }), action)
+
+      expect(state).toHaveProperty('question.flags', [{ notes: 'notes!!', type: 3 }])
+      expect(state).toHaveProperty('scheme.byId.1.flags', [{ notes: 'notes!!', type: 3 }])
+    })
+  })
+})
+
+   /* test('should initialize user answers to empty if payload.codedQuestions is empty', () => {
       const questions = [
-        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
-        { text: 'la la la', questionType: 2, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
+        {
+          text: 'fa la la la',
+          questionType: 1,
+          id: 1,
+          parentId: 0,
+          positionInParent: 0,
+          possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+        },
+        {
+          text: 'la la la',
+          questionType: 2,
+          id: 2,
+          parentId: 0,
+          positionInParent: 1,
+          possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+        }
       ]
 
       const action = {
@@ -135,7 +194,14 @@ describe('Coding reducer', () => {
             1: { parentId: 0, positionInParent: 0 },
             2: { parentId: 0, positionInParent: 1 }
           },
-          question: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+          question: {
+            text: 'fa la la la',
+            questionType: 1,
+            id: 1,
+            parentId: 0,
+            positionInParent: 0,
+            possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+          },
           codedQuestions: []
         }
       }
@@ -174,7 +240,14 @@ describe('Coding reducer', () => {
 
     test('should handle category question children in codedQuestions array for userAnswers', () => {
       const questions = [
-        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+        {
+          text: 'fa la la la',
+          questionType: 1,
+          id: 1,
+          parentId: 0,
+          positionInParent: 0,
+          possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+        },
         {
           text: 'la la la',
           questionType: 2,
@@ -183,13 +256,23 @@ describe('Coding reducer', () => {
           positionInParent: 1,
           possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
         },
-        { text: 'category question child', questionType: 4, id: 3, parentId: 2, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
+        {
+          text: 'category question child',
+          questionType: 4,
+          id: 3,
+          parentId: 2,
+          positionInParent: 0,
+          possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+        }
       ]
 
       const action = {
         type: types.GET_CODING_OUTLINE_SUCCESS,
         payload: {
-          question: { id: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+          question: {
+            id: 1,
+            possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+          },
           scheme: questions,
           questionOrder: [1, 2, 3],
           outline: {
@@ -267,7 +350,14 @@ describe('Coding reducer', () => {
 
     test('should handle categories and children for scheme.tree', () => {
       const questions = [
-        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+        {
+          text: 'fa la la la',
+          questionType: 1,
+          id: 1,
+          parentId: 0,
+          positionInParent: 0,
+          possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+        },
         {
           text: 'la la la',
           questionType: 2,
@@ -281,14 +371,18 @@ describe('Coding reducer', () => {
           id: 3,
           parentId: 2,
           positionInParent: 0,
-          isCategoryQuestion: true, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+          isCategoryQuestion: true,
+          possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
         }
       ]
 
       const action = {
         type: types.GET_CODING_OUTLINE_SUCCESS,
         payload: {
-          question: { id: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+          question: {
+            id: 1,
+            possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+          },
           scheme: questions,
           questionOrder: [1, 2, 3],
           tree: [
@@ -338,13 +432,13 @@ describe('Coding reducer', () => {
 
       expect(state)
         .toHaveProperty('scheme.tree', {
-          text: 'fa la la la',
-          questionType: 1,
-          id: 1,
-          parentId: 0,
-          positionInParent: 0,
-          isAnswered: false
-        },
+            text: 'fa la la la',
+            questionType: 1,
+            id: 1,
+            parentId: 0,
+            positionInParent: 0,
+            isAnswered: false
+          },
           {
             text: 'la la la',
             questionType: 2,
@@ -366,1137 +460,4 @@ describe('Coding reducer', () => {
             ]
           })
     })
-  })
-
-  describe('GET_NEXT_QUESTION && GET_PREV_QUESTION', () => {
-    const currentState = {
-      question: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
-      outline: {
-        1: { parentId: 0, positionInParent: 0 },
-        2: { parentId: 0, positionInParent: 1 },
-        3: { parentId: 0, positionInParent: 2 },
-        4: { parentId: 3, positionInParent: 0 }
-      },
-      scheme: {
-        byId: {
-          1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
-          2: { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
-          3: {
-            text: 'cat question',
-            questionType: 2,
-            id: 3,
-            parentId: 0,
-            positionInParent: 2,
-            possibleAnswers: [
-              { id: 5, text: 'category 1', order: 1 }, { id: 10, text: 'category 2', order: 2 }, { id: 20, text: 'category 3', order: 3 }
-            ]
-          },
-          4: {
-            text: 'cat question child',
-            questionType: 3,
-            id: 4,
-            parentId: 3,
-            positionInParent: 0,
-            isCategoryQuestion: true,
-            possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
-          }
-        },
-        order: [1, 2, 3, 4],
-        tree: []
-      },
-      userAnswers: {
-        1: {
-          answers: {},
-          schemeQuestionId: 1,
-          comment: ''
-        }
-      }
-    }
-
-    test('should handle regular questions', () => {
-      const action = { type: types.GET_NEXT_QUESTION, id: 2, newIndex: 1 }
-      const state = getReducer(getState(currentState), action)
-
-      expect(state)
-        .toHaveProperty('question', { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] })
-      expect(state).toHaveProperty('showNextButton', true)
-    })
-
-    test('should handle category question children', () => {
-      const action = { type: types.GET_NEXT_QUESTION, id: 4, newIndex: 3 }
-
-      const state = getReducer(
-        getState({
-          ...currentState,
-          userAnswers: {
-            ...currentState.userAnswers,
-            3: {
-              schemeQuestionId: 3,
-              answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
-            }
-          }
-        }),
-        action
-      )
-
-      expect(state).toHaveProperty('question', {
-        text: 'cat question child',
-        questionType: 3,
-        id: 4,
-        parentId: 3,
-        positionInParent: 0,
-        isCategoryQuestion: true,
-        possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
-      })
-
-      expect(state).toHaveProperty('showNextButton', false)
-      expect(state).toHaveProperty('currentIndex', 3)
-      expect(state).toHaveProperty('userAnswers', {
-        ...currentState.userAnswers,
-        3: {
-          schemeQuestionId: 3,
-          answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
-        },
-        4: {
-          10: { answers: {}, comment: '', flag: { notes: '', type: 0 }, schemeQuestionId: 4, categoryId: 10 },
-          20: { answers: {}, comment: '', flag: { notes: '', type: 0 }, schemeQuestionId: 4, categoryId: 20 }
-        }
-      })
-
-      expect(state).toHaveProperty('categories', [{ id: 10, text: 'category 2', order: 2 }, { id: 20, text: 'category 3', order: 3 }])
-
-    })
-
-    test('should if next question is already in state.userAnswers', () => {
-      const action = {
-        type: types.GET_NEXT_QUESTION,
-        id: 2,
-        newIndex: 1
-      }
-
-      const state = getReducer(
-        getState({
-          ...currentState,
-          userAnswers: {
-            ...currentState.userAnswers,
-            2: {
-              schemeQuestionId: 2,
-              comment: 'this is a comment',
-              answers: {}
-            }
-          }
-        }),
-        action
-      )
-
-      expect(state)
-        .toHaveProperty('question', { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] })
-
-      expect(state.userAnswers).toHaveProperty('2', {
-        schemeQuestionId: 2,
-        comment: 'this is a comment',
-        answers: {}
-      })
-
-      expect(state).toHaveProperty('currentIndex', 1)
-    })
-
-    test('should handle if next question is category child and no categories have been selected', () => {
-      const currentState = {
-        question: {
-          text: 'cat question',
-          questionType: 2,
-          id: 3,
-          parentId: 0,
-          positionInParent: 2,
-          possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
-        },
-        outline: {
-          1: { parentId: 0, positionInParent: 0 },
-          2: { parentId: 0, positionInParent: 1 },
-          3: { parentId: 0, positionInParent: 2 },
-          4: { parentId: 3, positionInParent: 0 },
-          5: { parentId: 0, positionInParent: 3 }
-        },
-        scheme: {
-          byId: {
-            1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
-            2: { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
-            3: {
-              text: 'cat question',
-              questionType: 2,
-              id: 3,
-              parentId: 0,
-              positionInParent: 2,
-              possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
-            },
-            4: {
-              text: 'cat question child',
-              questionType: 3,
-              id: 4,
-              parentId: 3,
-              positionInParent: 0,
-              isCategoryQuestion: true
-            },
-            5: {
-              text: 'next sibling',
-              questionType: 3,
-              id: 5,
-              parentId: 0,
-              positionInParent: 3, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
-            }
-          },
-          order: [1, 2, 3, 4, 5],
-          tree: []
-        },
-        userAnswers: {},
-        currentIndex: 2
-      }
-
-      const action = {
-        type: types.GET_NEXT_QUESTION,
-        id: 4,
-        newIndex: 3
-      }
-
-      const state = getReducer(
-        getState(currentState),
-        action
-      )
-
-      expect(state)
-        .toHaveProperty('question', {
-          text: 'next sibling',
-          questionType: 3,
-          id: 5,
-          parentId: 0,
-          positionInParent: 3,
-          possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
-        })
-
-      expect(state).toHaveProperty('currentIndex', 4)
-      expect(state).toHaveProperty('showNextButton', false)
-    })
-  })
-
-  describe('UPDATE_USER_ANSWER_REQUEST', () => {
-    const currentState = {
-      question: {
-        text: 'fa la la la',
-        questionType: 1,
-        id: 1,
-        parentId: 0,
-        positionInParent: 0,
-        possibleAnswers: [{ id: 123, text: 'answer 1', id: 234, text: 'answer 2' }]
-      },
-      outline: {
-        1: { parentId: 0, positionInParent: 0 },
-        2: { parentId: 0, positionInParent: 1 },
-        3: { parentId: 0, positionInParent: 2 },
-        4: { parentId: 3, positionInParent: 0 }
-      },
-      scheme: {
-        byId: {
-          1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
-          2: { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1 },
-          3: {
-            text: 'cat question',
-            questionType: 2,
-            id: 3,
-            parentId: 0,
-            positionInParent: 2,
-            possibleAnswers: [
-              { id: 5, text: 'category 1', order: 1 }, { id: 10, text: 'category 2', order: 2 }, { id: 20, text: 'category 3', order: 3 }
-            ]
-          },
-          4: {
-            text: 'cat question child',
-            questionType: 3,
-            id: 4,
-            parentId: 3,
-            positionInParent: 0,
-            indent: 2,
-            isCategoryQuestion: true,
-            possibleAnswers: [
-              { id: 432, text: 'answer 1', order: 1 }, { id: 2124, text: 'answer 2', order: 2 }
-            ]
-          }
-        },
-        order: [1, 2, 3, 4],
-        tree: [
-          { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: false },
-          { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, isAnswered: false },
-          {
-            text: 'cat question',
-            questionType: 2,
-            id: 3,
-            parentId: 0,
-            positionInParent: 2,
-            isAnswered: true,
-            indent: 1,
-            possibleAnswers: [
-              { id: 5, text: 'category 1', order: 1 }, { id: 10, text: 'category 2', order: 2 }, { id: 20, text: 'category 3', order: 3 }
-            ],
-            children: [
-              {
-                text: 'cat question child',
-                questionType: 3,
-                isCategoryQuestion: true,
-                id: 4,
-                indent: 2,
-                parentId: 3,
-                positionInParent: 0,
-                isAnswered: false,
-                possibleAnswers: [
-                  { id: 432, text: 'answer 1', order: 1 }, { id: 2124, text: 'answer 2', order: 2 }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      userAnswers: {
-        1: {
-          answers: {},
-          schemeQuestionId: 1,
-          comment: ''
-        },
-        2: {
-          answers: {},
-          schemeQuestionId: 2,
-          comment: ''
-        },
-        3: {
-          schemeQuestionId: 3,
-          answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
-        },
-        4: {
-          10: { answers: {}, comment: '', flag: {} },
-          20: { answers: {}, comment: '', flag: {} }
-        }
-      }
-    }
-
-    test('should handle binary / multiple choice type questions', () => {
-      const action = {
-        type: types.UPDATE_USER_ANSWER_REQUEST,
-        answerId: 123,
-        questionId: 1
-      }
-
-      const state = getReducer(getState(currentState), action)
-
-      expect(state).toEqual(getState({
-        ...currentState,
-        userAnswers: {
-          ...currentState.userAnswers,
-          1: {
-            answers: { 123: { schemeAnswerId: 123, pincite: '' } },
-            schemeQuestionId: 1,
-            comment: ''
-          }
-        }
-      }))
-
-      expect(state).toHaveProperty('scheme.tree', [
-        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: true },
-        { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, isAnswered: false },
-        {
-          text: 'cat question',
-          questionType: 2,
-          id: 3,
-          parentId: 0,
-          positionInParent: 2,
-          isAnswered: true,
-          indent: 1,
-          possibleAnswers: [
-            { id: 5, text: 'category 1', order: 1 }, { id: 10, text: 'category 2', order: 2 }, { id: 20, text: 'category 3', order: 3 }
-          ],
-          children: [
-            {
-              text: 'cat question child',
-              questionType: 3,
-              isCategoryQuestion: true,
-              id: 4,
-              parentId: 3,
-              positionInParent: 0,
-              isAnswered: false,
-              indent: 2,
-              possibleAnswers: [
-                { id: 432, text: 'answer 1', order: 1 }, { id: 2124, text: 'answer 2', order: 2 }
-              ],
-              children: [
-                {
-                  schemeAnswerId: 10,
-                  schemeQuestionId: 4,
-                  indent: 3,
-                  isCategory: true,
-                  order: 2,
-                  positionInParent: 0,
-                  text: 'category 2',
-                  isAnswered: false
-                },
-                {
-                  schemeAnswerId: 20,
-                  schemeQuestionId: 4,
-                  indent: 3,
-                  isCategory: true,
-                  order: 3,
-                  positionInParent: 1,
-                  text: 'category 3',
-                  isAnswered: false
-                }
-              ],
-              completedProgress: 0
-            }
-          ]
-        }
-      ])
-    })
-
-    test('should handle checkbox / category choice type questions', () => {
-      const action = {
-        type: types.UPDATE_USER_ANSWER_REQUEST,
-        answerId: 90,
-        questionId: 2
-      }
-
-      const state = getReducer(
-        getState({
-          ...currentState,
-          question: {
-            text: 'la la la',
-            questionType: 3,
-            id: 2,
-            parentId: 0,
-            positionInParent: 1,
-            possibleAnswers: [{ id: 90, text: 'check 1' }, { id: 91, text: 'check 2' }]
-          }
-        }),
-        action
-      )
-
-      expect(state).toEqual(getState({
-        ...currentState,
-        question: {
-          text: 'la la la',
-          questionType: 3,
-          id: 2,
-          parentId: 0,
-          positionInParent: 1,
-          possibleAnswers: [{ id: 90, text: 'check 1' }, { id: 91, text: 'check 2' }]
-        },
-        userAnswers: {
-          ...currentState.userAnswers,
-          2: {
-            comment: '',
-            schemeQuestionId: 2,
-            answers: {
-              90: { schemeAnswerId: 90, pincite: '' }
-            }
-          }
-        }
-      }))
-    })
-  })
-
-  describe('ON_CHANGE_COMMENT', () => {
-    test('should handle regular questions', () => {
-      const action = {
-        type: types.ON_CHANGE_COMMENT,
-        questionId: 2,
-        projectId: 1,
-        jurisdictionId: 1,
-        comment: 'new comment'
-      }
-
-      const state = getReducer(
-        getState({
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              answers: { 1: { schemeAnswerId: 1 } },
-              comment: ''
-            }
-          }
-        }),
-        action
-      )
-
-      expect(state).toEqual(
-        getState({
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              answers: { 1: { schemeAnswerId: 1 } },
-              comment: 'new comment'
-            }
-          },
-          showNextButton: false
-        })
-      )
-
-    })
-
-    test('should handle category questions', () => {
-      const action = {
-        type: types.ON_CHANGE_COMMENT,
-        questionId: 2,
-        projectId: 1,
-        jurisdictionId: 1,
-        comment: 'new comment for cat 1'
-      }
-
-      const state = getReducer(
-        getState({
-          question: {
-            text: 'la la la',
-            questionType: 2,
-            id: 2,
-            parentId: 0,
-            positionInParent: 1,
-            possibleAnswers: [{ id: 90, text: 'check 1' }, { id: 91, text: 'check 2' }],
-            isCategoryQuestion: true
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              3: {
-                answers: { schemeAnswerId: 5 }, comment: 'comment for cat 1', flag: {}
-              },
-              2: {
-                answers: {}, comment: 'comment for cat 2', flag: {}
-              }
-            }
-          },
-          selectedCategory: 0,
-          selectedCategoryId: 3,
-          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
-        }),
-        action
-      )
-
-      expect(state).toEqual(
-        getState({
-          question: {
-            text: 'la la la',
-            questionType: 2,
-            id: 2,
-            parentId: 0,
-            positionInParent: 1,
-            possibleAnswers: [{ id: 90, text: 'check 1' }, { id: 91, text: 'check 2' }],
-            isCategoryQuestion: true
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              3: {
-                answers: { schemeAnswerId: 5 }, comment: 'new comment for cat 1', flag: {}
-              },
-              2: {
-                answers: {}, comment: 'comment for cat 2', flag: {}
-              }
-            }
-          },
-          showNextButton: false,
-          selectedCategory: 0,
-          selectedCategoryId: 3,
-          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
-        })
-      )
-    })
-  })
-
-  describe('ON_CHANGE_PINCITE', () => {
-    test('should handle regular questions', () => {
-      const action = {
-        type: types.ON_CHANGE_PINCITE,
-        questionId: 2,
-        projectId: 1,
-        jurisdictionId: 1,
-        answerId: 4,
-        pincite: 'this is a pincite'
-      }
-
-      const state = getReducer(
-        getState({
-          question: {
-            questionType: 3
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              answers: {
-                1: {
-                  schemeAnswerId: 1,
-                  pincite: ''
-                },
-                4: {
-                  schemeAnswerId: 4,
-                  pincite: ''
-                }
-              },
-              comment: ''
-            }
-          }
-        }),
-        action
-      )
-
-      expect(state).toEqual(
-        getState({
-          question: {
-            questionType: 3
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              answers: {
-                1: {
-                  schemeAnswerId: 1,
-                  pincite: ''
-                },
-                4: {
-                  schemeAnswerId: 4,
-                  pincite: 'this is a pincite'
-                }
-              },
-              comment: ''
-            }
-          },
-          showNextButton: false
-        })
-      )
-    })
-
-    test('should handle category child questions', () => {
-      const action = {
-        type: types.ON_CHANGE_PINCITE,
-        questionId: 2,
-        projectId: 1,
-        jurisdictionId: 1,
-        answerId: 4,
-        pincite: 'this is a pincite'
-      }
-
-      const state = getReducer(
-        getState({
-          question: {
-            questionType: 3,
-            isCategoryQuestion: true
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              3: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: 'pincite!' }
-                },
-                comment: ''
-              },
-              2: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: '' }
-                },
-                comment: ''
-              }
-            }
-          },
-          selectedCategory: 1,
-          selectedCategoryId: 2,
-          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
-        }),
-        action
-      )
-
-      expect(state).toEqual(
-        getState({
-          question: {
-            questionType: 3,
-            isCategoryQuestion: true
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              3: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: 'pincite!' }
-                },
-                comment: ''
-              },
-              2: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: 'this is a pincite' }
-                },
-                comment: ''
-              }
-            }
-          },
-          selectedCategory: 1,
-          showNextButton: false,
-          selectedCategoryId: 2,
-          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
-        })
-      )
-    })
-  })
-
-  describe('ON_SAVE_FLAG', () => {
-    test('should handle regular questions', () => {
-      const action = {
-        type: types.ON_SAVE_FLAG,
-        questionId: 1,
-        projectId: 1,
-        jurisdictionId: 1,
-        flagInfo: { notes: 'notes!!', type: 2 }
-      }
-
-      const state = getReducer(getState({
-        question: { id: 1, isCategoryQuestion: false },
-        userAnswers: {
-          1: {
-            flag: { notes: '', type: 0 }
-          }
-        }
-      }), action)
-
-      expect(state).toHaveProperty('userAnswers.1.flag', { notes: 'notes!!', type: 2 })
-    })
-
-    test('should handle category child questions', () => {
-      const action = {
-        type: types.ON_SAVE_FLAG,
-        questionId: 1,
-        projectId: 1,
-        jurisdictionId: 1,
-        flagInfo: { notes: 'notes!!', type: 2 }
-      }
-
-      const state = getReducer(getState({
-        question: { id: 1, isCategoryQuestion: true },
-        selectedCategoryId: 5,
-        userAnswers: {
-          1: {
-            5: { flag: { notes: '', type: 0 } }
-          }
-        }
-      }), action)
-
-      expect(state).toHaveProperty('userAnswers.1.5.flag', { notes: 'notes!!', type: 2 })
-    })
-  })
-
-  describe('ON_SAVE_RED_FLAG', () => {
-    test('should handle regular questions', () => {
-      const action = {
-        type: types.ON_SAVE_RED_FLAG,
-        questionId: 1,
-        projectId: 1,
-        flagInfo: { notes: 'notes!!', type: 3 }
-      }
-
-      const state = getReducer(getState({
-        question: { id: 1, isCategoryQuestion: false, flags: [] },
-        scheme: {
-          byId: { 1: { id: 1, isCategoryQuestion: false, flags: [] } },
-          tree: []
-        }
-      }), action)
-
-      expect(state).toHaveProperty('question.flags', [{ notes: 'notes!!', type: 3 }])
-      expect(state).toHaveProperty('scheme.byId.1.flags', [{ notes: 'notes!!', type: 3 }])
-    })
-  })
-
-  describe('ON_CLEAR_ANSWER', () => {
-    test('should handle regular questions', () => {
-      const action = {
-        type: types.ON_CLEAR_ANSWER,
-        questionId: 2,
-        projectId: 1,
-        jurisdictionId: 1
-      }
-
-      const state = getReducer(
-        getState({
-          question: {
-            questionType: 3
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              answers: {
-                1: {
-                  schemeAnswerId: 1,
-                  pincite: ''
-                },
-                4: {
-                  schemeAnswerId: 4,
-                  pincite: ''
-                }
-              },
-              comment: ''
-            }
-          }
-        }),
-        action
-      )
-
-      expect(state).toEqual(
-        getState({
-          question: {
-            questionType: 3
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              answers: {},
-              comment: ''
-            }
-          },
-          showNextButton: false
-        })
-      )
-    })
-
-    test('should handle category child questions', () => {
-      const action = {
-        type: types.ON_CLEAR_ANSWER,
-        questionId: 2,
-        projectId: 1,
-        jurisdictionId: 1
-      }
-
-      const state = getReducer(
-        getState({
-          question: {
-            questionType: 4,
-            isCategoryQuestion: true
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              3: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: 'pincite!' }
-                },
-                comment: ''
-              },
-              2: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: '' }
-                },
-                comment: ''
-              }
-            }
-          },
-          selectedCategory: 0,
-          selectedCategoryId: 3,
-          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
-        }),
-        action
-      )
-
-      expect(state).toEqual(
-        getState({
-          question: {
-            questionType: 4,
-            isCategoryQuestion: true
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              3: {
-                answers: {}, comment: ''
-              },
-              2: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: '' }
-                },
-                comment: ''
-              }
-            }
-          },
-          selectedCategory: 0,
-          selectedCategoryId: 3,
-          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }],
-          showNextButton: false
-        })
-      )
-    })
-
-    test('should update scheme.tree for category questions', () => {
-      const currentState = {
-        question: {
-          text: 'fa la la la',
-          questionType: 1,
-          id: 1,
-          parentId: 0,
-          positionInParent: 0,
-          possibleAnswers: [{ id: 123, text: 'answer 1', id: 234, text: 'answer 2' }]
-        },
-        outline: {
-          1: { parentId: 0, positionInParent: 0 },
-          2: { parentId: 0, positionInParent: 1 },
-          3: { parentId: 0, positionInParent: 2 },
-          4: { parentId: 3, positionInParent: 0 }
-        },
-        scheme: {
-          byId: {
-            1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
-            2: { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1 },
-            3: {
-              text: 'cat question',
-              questionType: 2,
-              id: 3,
-              parentId: 0,
-              positionInParent: 2,
-              possibleAnswers: [
-                { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
-              ]
-            },
-            4: {
-              text: 'cat question child',
-              questionType: 3,
-              id: 4,
-              parentId: 3,
-              positionInParent: 0,
-              indent: 2,
-              isCategoryQuestion: true,
-              possibleAnswers: [
-                { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
-              ]
-            }
-          },
-          order: [1, 2, 3, 4],
-          tree: [
-            { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: true },
-            { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, isAnswered: false },
-            {
-              text: 'cat question',
-              questionType: 2,
-              id: 3,
-              parentId: 0,
-              positionInParent: 2,
-              isAnswered: true,
-              indent: 1,
-              possibleAnswers: [
-                { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
-              ],
-              children: [
-                {
-                  text: 'cat question child',
-                  questionType: 3,
-                  isCategoryQuestion: true,
-                  id: 4,
-                  parentId: 3,
-                  positionInParent: 0,
-                  isAnswered: false,
-                  indent: 2,
-                  possibleAnswers: [
-                    { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
-                  ],
-                  children: [
-                    {
-                      schemeAnswerId: 10,
-                      schemeQuestionId: 4,
-                      indent: 3,
-                      isCategory: true,
-                      positionInParent: 0,
-                      text: 'category 2',
-                      isAnswered: false
-                    },
-                    {
-                      schemeAnswerId: 20,
-                      schemeQuestionId: 4,
-                      indent: 3,
-                      isCategory: true,
-                      positionInParent: 1,
-                      text: 'category 3',
-                      isAnswered: false
-                    }
-                  ],
-                  completedProgress: 0
-                }
-              ]
-            }
-          ]
-        },
-        userAnswers: {
-          1: {
-            answers: { 123: { schemeAnswerId: 123, pincite: '' } },
-            schemeQuestionId: 1,
-            comment: ''
-          },
-          2: {
-            answers: {},
-            schemeQuestionId: 2,
-            comment: ''
-          },
-          3: {
-            schemeQuestionId: 3,
-            answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
-          },
-          4: {
-            schemeQuestionId: 4,
-            10: { answers: {}, comment: '' },
-            20: { answers: {}, comment: '' }
-          }
-        }
-      }
-
-      const action = {
-        type: types.ON_CLEAR_ANSWER,
-        questionId: 3,
-        projectId: 1,
-        jurisdictionId: 1
-      }
-
-      const state = getReducer(currentState, action)
-      expect(state).toHaveProperty('scheme.tree', [
-        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: true },
-        { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, isAnswered: false },
-        {
-          text: 'cat question',
-          questionType: 2,
-          id: 3,
-          parentId: 0,
-          positionInParent: 2,
-          isAnswered: false,
-          indent: 1,
-          possibleAnswers: [
-            { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
-          ],
-          children: []
-        }
-      ])
-    })
-  })
-
-  describe('APPLY_ANSWER_TO_ALL', () => {
-    const currentState = {
-      question: {
-        id: 4
-      },
-      categories: [{ id: 10, text: 'cat 1' }, { id: 20, text: 'cat 2' }],
-      outline: {
-        1: { parentId: 0, positionInParent: 0 },
-        2: { parentId: 0, positionInParent: 1 },
-        3: { parentId: 0, positionInParent: 2 },
-        4: { parentId: 3, positionInParent: 0 }
-      },
-      scheme: {
-        byId: {
-          1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
-          2: { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1 },
-          3: {
-            text: 'cat question',
-            questionType: 2,
-            id: 3,
-            parentId: 0,
-            positionInParent: 2,
-            possibleAnswers: [
-              { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
-            ]
-          },
-          4: {
-            text: 'cat question child',
-            questionType: 3,
-            id: 4,
-            parentId: 3,
-            positionInParent: 0,
-            indent: 2,
-            isCategoryQuestion: true,
-            possibleAnswers: [
-              { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
-            ]
-          }
-        },
-        order: [1, 2, 3, 4],
-        tree: [
-          { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: false },
-          { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, isAnswered: false },
-          {
-            text: 'cat question',
-            questionType: 2,
-            id: 3,
-            parentId: 0,
-            positionInParent: 2,
-            isAnswered: true,
-            indent: 1,
-            possibleAnswers: [
-              { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
-            ],
-            children: [
-              {
-                text: 'cat question child',
-                questionType: 3,
-                isCategoryQuestion: true,
-                id: 4,
-                indent: 2,
-                parentId: 3,
-                positionInParent: 0,
-                isAnswered: false,
-                possibleAnswers: [
-                  { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      selectedCategoryId: 10,
-      userAnswers: {
-        1: {
-          answers: {},
-          schemeQuestionId: 1,
-          comment: ''
-        },
-        2: {
-          answers: {},
-          schemeQuestionId: 2,
-          comment: ''
-        },
-        3: {
-          schemeQuestionId: 3,
-          answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
-        },
-        4: {
-          10: { answers: { schemeAnswerId: 42, pincite: '' }, comment: '', categoryId: 10 },
-          20: { answers: {}, comment: '', categoryId: 20 }
-        }
-      }
-    }
-
-    test('should apply answers to all categories', () => {
-      const action = {
-        type: types.APPLY_ANSWER_TO_ALL,
-        jurisdictionId: 1,
-        projectId: 3,
-        questionId: 4
-      }
-
-      const state = getReducer(getState(currentState), action)
-
-      expect(state).toEqual(getState({
-        ...currentState,
-        userAnswers: {
-          ...currentState.userAnswers,
-          4: {
-            10: {
-              answers: { schemeAnswerId: 42, pincite: '' },
-              comment: '',
-              categoryId: 10
-            },
-            20: {
-              answers: { schemeAnswerId: 42, pincite: '' },
-              comment: '',
-              categoryId: 20
-            }
-          }
-        },
-        showNextButton: false
-      }))
-    })
-  })
-})
+  })*/
