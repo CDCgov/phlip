@@ -1,20 +1,11 @@
-import * as types from './actionTypes'
-import { normalize } from 'utils'
 import {
-  getNextQuestion,
-  getPreviousQuestion,
-  determineShowButton,
-  handleUpdateUserAnswers,
-  handleUpdateUserCodedQuestion,
-  handleUpdateUserCategoryChild,
-  handleClearAnswers,
   initializeUserAnswers,
-  handleUserPinciteQuestion,
-  initializeNavigator,
-  getQuestionSelectedInNav,
-  initializeCodedUsers
+  initializeCodedUsers, handleCheckCategories
 } from 'utils/codingHelpers'
 import { sortList } from 'utils'
+import * as codingValidationTypes from 'scenes/Validation/actionTypes'
+import * as otherActionTypes from 'components/CodingValidation/actionTypes'
+const types = { ...codingValidationTypes, ...otherActionTypes }
 
 const INITIAL_STATE = {
   question: {},
@@ -28,98 +19,38 @@ const INITIAL_STATE = {
   userAnswers: {},
   showNextButton: true,
   mergedUserQuestions: [],
-  selectedCategoryId: null
+  selectedCategoryId: null,
+  isSchemeEmpty: null,
+  areJurisdictionsEmpty: null
 }
 
 const validationReducer = (state = INITIAL_STATE, action) => {
-  const questionUpdater = state.question.isCategoryQuestion
-    ? handleUpdateUserCategoryChild(state, action)
-    : handleUpdateUserCodedQuestion(state, action)
-
   switch (action.type) {
-    case types.GET_VALIDATION_NEXT_QUESTION:
-      return {
-        ...state,
-        ...getNextQuestion(state, action)
-      }
-
-    case types.GET_VALIDATION_PREV_QUESTIONS:
-      return {
-        ...state,
-        ...getPreviousQuestion(state, action)
-      }
-
     case types.GET_VALIDATION_OUTLINE_SUCCESS:
-      if (action.payload.isSchemeEmpty) {
+      if (action.payload.isSchemeEmpty || action.payload.areJurisdictionsEmpty) {
         return {
           ...state,
           scheme: { order: [], byId: {}, tree: [] },
           outline: {},
           question: {},
           userAnswers: {},
-          mergedUserQuestions: {}
+          mergedUserQuestions: {},
+          isSchemeEmpty: action.payload.isSchemeEmpty,
+          areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty
         }
       } else {
-        const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
         sortList(action.payload.question.possibleAnswers, 'order', 'asc')
         return {
           ...state,
           outline: action.payload.outline,
-          scheme: {
-            byId: normalizedQuestions,
-            order: action.payload.questionOrder,
-            tree: action.payload.tree
-          },
+          scheme: action.payload.scheme,
           question: action.payload.question,
-          userAnswers: initializeUserAnswers(
-            [
-              { schemeQuestionId: action.payload.question.id, comment: '', codedAnswers: [] },
-              ...action.payload.codedQuestions
-            ], normalizedQuestions, action.payload.userId
-          ),
-          mergedUserQuestions: action.payload.mergedUserQuestions
+          userAnswers: action.payload.userAnswers,
+          mergedUserQuestions: action.payload.mergedUserQuestions,
+          categories: undefined,
+          isSchemeEmpty: false,
+          areJurisdictionsEmpty: false
         }
-      }
-
-    case types.UPDATE_USER_VALIDATION_REQUEST:
-      return {
-        ...state,
-        userAnswers: {
-          ...state.userAnswers,
-          ...handleUpdateUserAnswers(state, action, state.selectedCategoryId, true)
-        }
-      }
-
-    case types.ON_CHANGE_VALIDATION_PINCITE:
-      return {
-        ...state,
-        ...questionUpdater('answers', handleUserPinciteQuestion)
-      }
-
-    case types.ON_CHANGE_VALIDATION_COMMENT:
-      return {
-        ...state,
-        ...questionUpdater('comment', action.comment)
-      }
-
-    case types.ON_CLEAR_VALIDATION_ANSWER:
-      return {
-        ...state,
-        ...questionUpdater('answers', handleClearAnswers)
-      }
-
-    case types.ON_CHANGE_VALIDATION_CATEGORY:
-      return {
-        ...state,
-        selectedCategory: action.selection,
-        selectedCategoryId: state.categories[action.selection].id
-      }
-
-    case types.ON_VALIDATION_JURISDICTION_CHANGE:
-      return {
-        ...state,
-        jurisdictionId: action.event,
-        jurisdiction: action.jurisdictionList.find(jurisdiction => jurisdiction.id === action.event)
       }
 
     case types.CLEAR_FLAG:
@@ -183,78 +114,29 @@ const validationReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
-      let userAnswers = {}, question = { ...state.question }, other = {}
-
-      if (state.question.isCategoryQuestion) {
-        question = state.scheme.byId[question.parentId]
-        other = {
-          currentIndex: state.scheme.order.findIndex(id => id === question.id)
-        }
-      }
-
-      userAnswers = initializeUserAnswers(
-        [
-          {
-            schemeQuestionId: question.id,
-            comment: '',
-            codedAnswers: []
-          }, ...action.payload.codedQuestions
-        ],
-        state.scheme.byId
-      )
-
       return {
         ...state,
-        userAnswers,
+        userAnswers: action.payload.userAnswers,
+        question: action.payload.question,
+        scheme: action.payload.scheme,
         mergedUserQuestions: action.payload.mergedUserQuestions,
-        question,
-        ...other,
-        selectedCategory: 0,
-        categories: undefined,
-        selectedCategoryId: null
+        ...action.payload.otherUpdates,
       }
 
-    case types.ON_APPLY_VALIDATION_TO_ALL:
-      const catQuestion = state.userAnswers[state.question.id][state.selectedCategoryId]
-      return {
-        ...state,
-        userAnswers: {
-          ...state.userAnswers,
-          [state.question.id]: {
-            ...state.categories.reduce((obj, category) => ({
-              ...obj,
-              [category.id]: { ...catQuestion, categoryId: category.id }
-            }), {})
-          }
-        }
-      }
-
-    case types.ON_QUESTION_SELECTED_IN_VAL_NAV:
-      return getQuestionSelectedInNav(state, action)
-
-    case types.ON_CLOSE_VALIDATION_SCREEN:
-      return INITIAL_STATE
-
+    case types.GET_VALIDATION_OUTLINE_REQUEST:
+    case types.GET_USER_VALIDATED_QUESTIONS_REQUEST:
     default:
       return state
   }
 }
 
-const validationSceneReducer = (state = INITIAL_STATE, action) => {
-  if (Object.values(types).includes(action.type)) {
-    const intermediateState = validationReducer(state, action)
+export const validationHandlers = [
+  'GET_VALIDATION_OUTLINE_REQUEST',
+  'GET_VALIDATION_OUTLINE_SUCCESS',
+  'GET_USER_VALIDATED_QUESTIONS_REQUEST',
+  'GET_USER_VALIDATED_QUESTIONS_SUCCESS',
+  'CLEAR_FLAG',
+  'CLEAR_RED_FLAG'
+]
 
-    return {
-      ...intermediateState,
-      showNextButton: intermediateState.scheme === null ? false : determineShowButton(intermediateState),
-      scheme: intermediateState.scheme === null ? null : {
-        ...intermediateState.scheme,
-        tree: initializeNavigator(intermediateState.scheme.tree, intermediateState.scheme.byId, intermediateState.userAnswers, intermediateState.question)
-      }
-    }
-  } else {
-    return state
-  }
-}
-
-export default validationSceneReducer
+export default validationReducer

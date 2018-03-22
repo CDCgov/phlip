@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Alert from 'components/Alert'
 import PropTypes from 'prop-types'
-import * as actions from './actions'
+import actions, * as otherActions from './actions'
 import withCodingValidation from 'components/CodingValidation'
 
 export class Validation extends Component {
@@ -24,19 +24,9 @@ export class Validation extends Component {
     this.props.actions.getCodedUsersAnswers(this.props.projectId, this.props.jurisdictionId)
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.isSchemeEmpty !== null) {
-      this.setState({ showViews: true })
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.actions.onCloseValidationScreen()
-  }
-
   onJurisdictionChange = event => {
     this.setState({ selectedJurisdiction: event.target.value })
-    this.props.actions.onValidationJurisdictionChange(event.target.value, this.props.jurisdictionsList)
+    this.props.actions.onChangeJurisdiction(event.target.value, this.props.jurisdictionsList)
     this.props.actions.getUserValidatedQuestionsRequest(this.props.projectId, event.target.value)
   }
 
@@ -87,4 +77,4 @@ Validation.propTypes = {
   categories: PropTypes.array
 }
 
-export default withCodingValidation(Validation, actions)
+export default withCodingValidation(Validation, { ...actions, ...otherActions })

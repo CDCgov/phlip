@@ -30,8 +30,6 @@ export const loginLogic = createLogic({
       error = 'failed to get avatar image'
     }
 
-
-
     return {
       ...user,
       bookmarks: bookmarks.reduce((arr, project) => {
