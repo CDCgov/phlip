@@ -14,6 +14,7 @@ import AddEditProject from './scenes/AddEditProject'
 import * as actions from './actions'
 import AddEditJurisdictions from './scenes/AddEditJurisdictions'
 import PageNotFound from 'components/PageNotFound'
+import ExportDialog from './components/ExportDialog'
 
 const nonCoderPaths = [
   '/project/add',
@@ -38,10 +39,28 @@ export class Home extends Component {
 
   constructor(props, context) {
     super(props, context)
+    this.state = {
+      exportDialogOpen: false,
+      projectToExport: null
+    }
   }
 
   componentWillMount() {
     this.props.actions.getProjectsRequest()
+  }
+
+  onToggleExportDialog = projectId => {
+    this.setState({
+      exportDialogOpen: !this.state.exportDialogOpen,
+      projectToExport: projectId
+    })
+  }
+
+  onChooseExport = type => {
+    this.setState({
+      exportDialogOpen: false,
+      projectToExport: null
+    })
   }
 
   renderErrorMessage = () => (
@@ -88,12 +107,17 @@ export class Home extends Component {
                 direction={this.props.direction}
                 sortBookmarked={this.props.sortBookmarked}
                 searchValue={this.props.searchValue}
+                handleExport={this.onToggleExportDialog}
                 handleSearchValueChange={event => this.props.actions.updateSearchValue(event.target.value)}
                 handleRequestSort={this.props.actions.sortProjects}
                 handlePageChange={this.props.actions.updatePage}
                 handleRowsChange={this.props.actions.updateRows}
                 handleSortBookmarked={() => this.props.actions.sortBookmarked(!this.props.sortBookmarked)} />
             }
+            <ExportDialog
+              open={this.state.exportDialogOpen}
+              onChooseExport={this.onChooseExport}
+              onClose={this.onToggleExportDialog} />
           </Container>
         )
         } />

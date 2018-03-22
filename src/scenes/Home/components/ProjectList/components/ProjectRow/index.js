@@ -11,7 +11,7 @@ import * as actions from 'scenes/Home/actions'
 
 const greyIcon = '#d4d4d4'
 
-export const ProjectRow = ({ project, role, bookmarked, actions }) => {
+export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => {
   return (
     <TableRow key={project.id}>
       <TableCell key={`${project.id}-bookmarked`} style={{ width: 48 }}>
@@ -75,7 +75,7 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
           tooltipText="Export validated questions"
           placement="top-end"
           aria-label="Export validated questions"
-          onClick={() => actions.onExport}
+          onClick={() => onExport(project.id)}
           id="export-validated">
           file_download
         </IconButton>

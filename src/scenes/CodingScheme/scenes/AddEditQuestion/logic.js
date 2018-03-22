@@ -3,8 +3,6 @@ import * as types from '../../actionTypes'
 import * as questionTypes from './constants'
 import { sortList } from 'utils'
 
-
-
 const updateUserIdLogic = createLogic({
   type: [types.ADD_QUESTION_REQUEST, types.UPDATE_QUESTION_REQUEST, types.ADD_CHILD_QUESTION_REQUEST],
   transform({ getState, action }, next) {
