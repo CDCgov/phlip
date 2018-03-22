@@ -198,16 +198,13 @@ const withCodingValidation = (WrappedComponent, actions) => {
       return (
         <Container
           flex style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}>
-          {super.render()}
           <Alert
             open={this.state.applyAllAlertOpen}
             text="You are applying your answer to ALL categories. Previously answered questions will be changed."
             actions={this.modalActions} />
           <Navigator
             open={this.state.navOpen}
-            scheme={this.props.scheme}
-            allUserAnswers={this.props.allUserAnswers}
-            currentQuestion={this.props.question}
+            page={this.props.page}
             selectedCategory={this.props.selectedCategory}
             handleQuestionSelected={(item) => this.props.actions.onQuestionSelectedInNav(item, this.props.projectId, this.props.jurisdictionId)} />
           <HeaderedLayout
@@ -246,6 +243,7 @@ const withCodingValidation = (WrappedComponent, actions) => {
               </Container>
             </Column>
           </HeaderedLayout>
+          {super.render()}
         </Container>
       )
     }
@@ -280,7 +278,6 @@ const withCodingValidation = (WrappedComponent, actions) => {
       userRole: state.data.user.currentUser.role,
       user: state.data.user.currentUser,
       scheme: pageState.scheme === null ? {} : pageState.scheme,
-      allUserAnswers: pageState.userAnswers || {},
       selectedCategoryId: pageState.selectedCategoryId || null,
       mergedUserQuestions: pageState.mergedUserQuestions
         ? pageState.question.isCategoryQuestion
