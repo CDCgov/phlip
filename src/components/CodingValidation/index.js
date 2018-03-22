@@ -168,23 +168,14 @@ const withCodingValidation = (WrappedComponent, actions) => {
     onShowCodeView = () => (
       <Fragment>
         <QuestionCard
-          question={this.props.question}
+          page={this.props.page}
           onChange={this.onAnswer}
-          userAnswers={this.props.question.isCategoryQuestion
-            ? this.props.userAnswers[this.props.selectedCategoryId]
-            : this.props.userAnswers}
           onChangeTextAnswer={this.onChangeTextAnswer}
-          categories={this.props.categories}
-          selectedCategory={this.props.selectedCategory}
           onChangeCategory={(event, selection) => this.props.actions.onChangeCategory(selection)}
-          isValidation={this.props.isValidation}
-          mergedUserQuestions={this.props.mergedUserQuestions}
           onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
           onOpenAlert={this.onOpenApplyAllAlert}
           onSaveFlag={this.onSaveFlag}
-          onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
-          selectedCategoryId={this.props.selectedCategoryId}
-          user={this.props.user} />
+          onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert} />
         <FooterNavigate
           currentIndex={this.props.currentIndex}
           getNextQuestion={this.getNextQuestion}
@@ -262,9 +253,6 @@ const withCodingValidation = (WrappedComponent, actions) => {
       question: pageState.question || {},
       currentIndex: pageState.currentIndex || 0,
       questionOrder: pageState.scheme === null ? null : pageState.scheme.order,
-      categories: pageState.categories || undefined,
-      selectedCategory: pageState.selectedCategory || 0,
-      userAnswers: pageState.userAnswers[pageState.question.id] || {},
       showNextButton: pageState.showNextButton,
       jurisdictionsList: project.projectJurisdictions || [],
       jurisdictionId: pageState.jurisdictionId || (project.projectJurisdictions.length > 0
@@ -276,14 +264,7 @@ const withCodingValidation = (WrappedComponent, actions) => {
       isSchemeEmpty: pageState.isSchemeEmpty,
       areJurisdictionsEmpty: pageState.areJurisdictionsEmpty,
       userRole: state.data.user.currentUser.role,
-      user: state.data.user.currentUser,
-      scheme: pageState.scheme === null ? {} : pageState.scheme,
-      selectedCategoryId: pageState.selectedCategoryId || null,
-      mergedUserQuestions: pageState.mergedUserQuestions
-        ? pageState.question.isCategoryQuestion
-          ? pageState.mergedUserQuestions[pageState.question.id][pageState.selectedCategoryId]
-          : pageState.mergedUserQuestions[pageState.question.id]
-        : null
+      user: state.data.user.currentUser
     }
   }
 
