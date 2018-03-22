@@ -412,7 +412,7 @@ export const getQuestionSelectedInNav = (state, action) => {
       ? state.scheme.byId[action.question.schemeQuestionId]
       : state.scheme.byId[action.question.id]
     categories = getSelectedCategories(state.scheme.byId[q.parentId], state.userAnswers)
-    selectedCategory = action.question.isCategory ? action.question.order - 1 : 0
+    selectedCategory = action.question.isCategory ? action.question.treeIndex : 0
     selectedCategoryId = categories[selectedCategory].id
   } else {
     q = state.scheme.byId[action.question.id]
