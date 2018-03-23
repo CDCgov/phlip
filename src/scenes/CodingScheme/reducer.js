@@ -121,8 +121,10 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ADD_QUESTION_FAIL:
+    case types.ADD_CHILD_QUESTION_FAIL:
+    case types.UPDATE_QUESTION_FAIL:
       return {
-        ...INITIAL_STATE,
+        ...state,
         formError: action.payload
       }
 
