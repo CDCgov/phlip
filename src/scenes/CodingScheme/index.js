@@ -35,6 +35,16 @@ export class CodingScheme extends Component {
     this.props.actions.reorderSchemeRequest(this.props.projectId)
   }
 
+  renderError = () => {
+    return (
+      <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
+        <Typography type="display1" style={{ textAlign: 'center' }}>
+          {this.props.error}
+        </Typography>
+      </Container>
+    )
+  }
+
   renderGetStarted = () => (
     <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
       <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
@@ -69,19 +79,21 @@ export class CodingScheme extends Component {
           }}
         />
         <Container flex style={{ backgroundColor: '#f5f5f5', paddingTop: 25, marginLeft: -30 }}>
-          {this.props.empty
-            ? this.renderGetStarted()
-            : <Scheme
-              questions={this.props.questions}
-              handleQuestionTreeChange={this.handleQuestionTreeChange}
-              handleQuestionNodeMove={this.handleQuestionNodeMove}
-              handleHoverOnQuestion={this.props.actions.toggleHover}
-              disableHover={this.props.actions.disableHover}
-              enableHover={this.props.actions.enableHover}
-              projectId={this.props.projectId}
-              outline={this.props.outline}
-              flatQuestions={this.props.flatQuestions}
-            />}
+          {this.props.error !== null
+            ? this.renderError()
+            : this.props.empty
+              ? this.renderGetStarted()
+              : <Scheme
+                questions={this.props.questions}
+                handleQuestionTreeChange={this.handleQuestionTreeChange}
+                handleQuestionNodeMove={this.handleQuestionNodeMove}
+                handleHoverOnQuestion={this.props.actions.toggleHover}
+                disableHover={this.props.actions.disableHover}
+                enableHover={this.props.actions.enableHover}
+                projectId={this.props.projectId}
+                outline={this.props.outline}
+                flatQuestions={this.props.flatQuestions}
+              />}
         </Container>
         <Route
           path="/project/:projectId/coding-scheme/add"
@@ -101,7 +113,9 @@ CodingScheme.propTypes = {
   projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   questions: PropTypes.array,
   actions: PropTypes.object,
-  flatQuestions: PropTypes.array
+  outline: PropTypes.object,
+  flatQuestions: PropTypes.array,
+  error: PropTypes.string
 }
 
 const mapStateToProps = (state, ownProps) => ({
@@ -110,7 +124,8 @@ const mapStateToProps = (state, ownProps) => ({
   questions: state.scenes.codingScheme.questions || [],
   empty: state.scenes.codingScheme.empty || false,
   outline: state.scenes.codingScheme.outline || {},
-  flatQuestions: state.scenes.codingScheme.flatQuestions || []
+  flatQuestions: state.scenes.codingScheme.flatQuestions || [],
+  error: state.scenes.codingScheme.error || null
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

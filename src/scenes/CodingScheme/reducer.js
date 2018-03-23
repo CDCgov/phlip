@@ -13,7 +13,8 @@ const INITIAL_STATE = {
   questions: [],
   outline: {},
   allowHover: true,
-  flatQuestions: []
+  flatQuestions: [],
+  error: null
 }
 
 const questionsToOutline = questions => {
@@ -108,7 +109,14 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ),
         flatQuestions: action.payload.schemeQuestions,
         outline: action.payload.outline,
-        empty: action.payload.schemeQuestions <= 0
+        empty: action.payload.schemeQuestions <= 0,
+        error: null
+      }
+
+    case types.GET_SCHEME_FAIL:
+      return {
+        ...INITIAL_STATE,
+        error: 'We failed to get the project coding scheme. Please try again later.'
       }
 
     case types.SET_EMPTY_STATE:
@@ -188,8 +196,6 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         getNodeKey,
         newNode: { ...action.payload, hovering: false }
       })
-
-
 
       return {
         ...state,
