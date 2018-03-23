@@ -31,7 +31,21 @@ export class AddEditProject extends Component {
     super(props, context)
     this.projectDefined = this.props.match.url === '/project/add' ? null : this.props.location.state.projectDefined
     this.state = {
-      edit: !this.projectDefined
+      edit: !this.projectDefined,
+      submitting: false
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.state.submitting === true) {
+      if (nextProps.formError !== null) {
+        this.props.onSubmitError(nextProps.formError)
+      } else {
+        this.props.history.goBack()
+      }
+      this.setState({
+        submitting: false
+      })
     }
   }
 
@@ -45,11 +59,13 @@ export class AddEditProject extends Component {
   }
 
   handleSubmit = values => {
+    this.setState({
+      submitting: true
+    })
+
     this.projectDefined
       ? this.props.actions.updateProjectRequest({ ...values, name: this.capitalizeFirstLetter(values.name) })
       : this.props.actions.addProjectRequest({ type: 1, ...values, name: this.capitalizeFirstLetter(values.name) })
-
-    this.props.history.goBack()
   }
 
   capitalizeFirstLetter = text => text.trim()[0].toUpperCase() + text.trim().slice(1)
@@ -180,7 +196,8 @@ const mapStateToProps = (state) => ({
   projects: Object.values(state.scenes.home.main.projects.byId) || [],
   form: state.form.projectForm || {},
   formName: 'projectForm',
-  userRole: state.data.user.currentUser.role || ''
+  userRole: state.data.user.currentUser.role || '',
+  formError: state.scenes.home.main.formError || null
 })
 
 const mapDispatchToProps = (dispatch) => ({

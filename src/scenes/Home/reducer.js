@@ -1,6 +1,5 @@
 import * as types from './actionTypes'
 import { combineReducers } from 'redux'
-import addEditProjectReducer from './scenes/AddEditProject/reducer'
 import addEditJurisdictions from './scenes/AddEditJurisdictions/reducer'
 import { sortList, updater, tableUtils, searchUtils, normalize } from 'utils'
 
@@ -20,7 +19,8 @@ const INITIAL_STATE = {
   sortBookmarked: false,
   errorContent: '',
   error: false,
-  projectCount: 0
+  projectCount: 0,
+  formError: null
 }
 
 const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => {
@@ -118,7 +118,8 @@ const mainReducer = (state, action) => {
             [action.payload.id]: action.payload
           },
           allIds: state.projects.allIds
-        }
+        },
+        formError: null
       }
 
     case types.ADD_PROJECT_SUCCESS:
@@ -128,7 +129,15 @@ const mainReducer = (state, action) => {
         projects: {
           byId: { [action.payload.id]: action.payload, ...state.projects.byId},
           allIds: [action.payload.id, ...state.projects.allIds]
-        }
+        },
+        formError: null
+      }
+
+    case types.UPDATE_PROJECT_FAIL:
+    case types.ADD_PROJECT_FAIL:
+      return {
+        ...state,
+        formError: action.payload
       }
 
     case types.SORT_PROJECTS:
@@ -191,8 +200,8 @@ const mainReducer = (state, action) => {
         }
       }
 
-
-    case types.UPDATE_PROJECT_FAIL:
+    case types.ADD_PROJECT_REQUEST:
+    case types.UPDATE_PROJECT_REQUEST:
     case types.GET_PROJECTS_REQUEST:
     default:
       return state
@@ -207,7 +216,6 @@ const homeReducer = (state = INITIAL_STATE, action) => {
 
 const homeRootReducer = combineReducers({
   main: homeReducer,
-  addEditProject: addEditProjectReducer,
   addEditJurisdictions: addEditJurisdictions
 })
 
