@@ -15,7 +15,10 @@ const INITIAL_STATE = {
   allowHover: true,
   flatQuestions: [],
   schemeError: null,
-  formError: null
+  formError: null,
+  reorderError: null,
+  previousQuestions: [],
+  previousOutline: {}
 }
 
 const questionsToOutline = questions => {
@@ -120,6 +123,30 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         schemeError: action.payload
       }
 
+    case types.RESET_REORDER_ERROR:
+      return {
+        ...state,
+        reorderError: null
+      }
+
+    case types.REORDER_SCHEME_FAIL:
+      return {
+        ...state,
+        reorderError: action.payload,
+        questions: state.previousQuestions,
+        outline: state.previousOutline,
+        previousQuestions: [],
+        previousOutline: {}
+      }
+
+    case types.REORDER_SCHEME_SUCCESS:
+      return {
+        ...state,
+        reorderError: null,
+        previousQuestion: [],
+        previousOutline: {}
+      }
+
     case types.ADD_QUESTION_FAIL:
     case types.ADD_CHILD_QUESTION_FAIL:
     case types.UPDATE_QUESTION_FAIL:
@@ -137,6 +164,8 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
     case types.HANDLE_QUESTION_TREE_CHANGE:
       return {
         ...state,
+        previousQuestions: state.questions,
+        previousOutline: state.outline,
         questions: action.questions,
         outline: questionsToOutline(action.questions)
       }
@@ -225,6 +254,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
     case types.CLEAR_STATE:
       return INITIAL_STATE
 
+    case types.REORDER_SCHEME_REQUEST:
     default:
       return state
   }

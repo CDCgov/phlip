@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -11,6 +11,8 @@ import Button from 'components/Button'
 import TextLink from 'components/TextLink'
 import AddEditQuestion from './scenes/AddEditQuestion'
 import PageHeader from 'components/PageHeader'
+import Alert from 'components/Alert'
+import Icon from 'components/Icon'
 
 export class CodingScheme extends Component {
   constructor(props, context) {
@@ -25,6 +27,10 @@ export class CodingScheme extends Component {
     setTimeout(() => {
       this.props.actions.setEmptyState()
     }, 1000)
+  }
+
+  onCloseAlert = () => {
+    this.props.actions.resetReorderError()
   }
 
   handleQuestionTreeChange = questions => {
@@ -64,6 +70,15 @@ export class CodingScheme extends Component {
   render() {
     return (
       <Container column flex>
+        <Alert
+          actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseAlert }]}
+          open={this.props.reorderError !== null}
+          title={<Fragment><Icon size={30} color="red" style={{ paddingRight: 10 }}>sentiment_very_dissatisfied</Icon>
+            Uh-oh! Something went wrong.</Fragment>}>
+          <Typography variant="body1">
+            We failed to save the reorder of the scheme. The question order has been reset. Please try again later.
+          </Typography>
+        </Alert>
         <PageHeader
           projectName={this.props.projectName}
           showButton={this.props.questions.length > 0}
@@ -115,7 +130,8 @@ CodingScheme.propTypes = {
   actions: PropTypes.object,
   outline: PropTypes.object,
   flatQuestions: PropTypes.array,
-  schemeError: PropTypes.string
+  schemeError: PropTypes.string,
+  reorderError: PropTypes.string
 }
 
 const mapStateToProps = (state, ownProps) => ({
@@ -125,7 +141,8 @@ const mapStateToProps = (state, ownProps) => ({
   empty: state.scenes.codingScheme.empty || false,
   outline: state.scenes.codingScheme.outline || {},
   flatQuestions: state.scenes.codingScheme.flatQuestions || [],
-  schemeError: state.scenes.codingScheme.schemeError || null
+  schemeError: state.scenes.codingScheme.schemeError || null,
+  reorderError: state.scenes.codingScheme.reorderError || null
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
