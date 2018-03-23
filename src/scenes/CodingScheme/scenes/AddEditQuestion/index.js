@@ -66,6 +66,8 @@ export class AddEditQuestion extends Component {
     if (this.state.submitting === true) {
       if (nextProps.formError !== null) {
         this.props.onSubmitError(nextProps.formError)
+      } else {
+        this.props.history.goBack()
       }
       this.setState({
         submitting: false
