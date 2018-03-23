@@ -15,6 +15,7 @@ import Validation from './Validation'
 import Protocol from './Protocol'
 import { Authorization } from 'components/AuthorizedRoute'
 import PageNotFound from 'components/PageNotFound'
+import DownloadPage from 'components/DownloadPage'
 
 const Coordinator = Authorization(['Admin', 'Coordinator'])
 const AdminRole = Authorization(['Admin'])
@@ -29,6 +30,7 @@ const AuthenticatedScenes = ({ match, location }) => (
         <Route path="/admin" component={AdminRole(Admin)} />
         <Route strict path="/project/:id/coding-scheme" component={Coordinator(CodingScheme)} />
         <Route exact strict path="/project/:id/protocol" component={AllRoles(Protocol)} />
+        <Route path="/project/:id/export" component={DownloadPage} />
         <Route path="/" component={Home} />
         <Route component={PageNotFound} />
       </Switch>

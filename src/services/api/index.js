@@ -202,8 +202,6 @@ export default {
 
   // Export project data
   exportData(projectId, type) {
-    //window.open('/export')
-    //window.location.href = `/api/exports/${projectId}/${type}`
-    window.location.href = '/export/'
+    window.location.href = `/api/exports/project/${projectId}/data`
   }
 }

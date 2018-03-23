@@ -15,7 +15,6 @@ import * as actions from './actions'
 import AddEditJurisdictions from './scenes/AddEditJurisdictions'
 import PageNotFound from 'components/PageNotFound'
 import ExportDialog from './components/ExportDialog'
-import api from 'services/api'
 
 const nonCoderPaths = [
   '/project/add',
@@ -57,12 +56,11 @@ export class Home extends Component {
     })
   }
 
-  onChooseExport = async (type) => {
+  onChooseExport = () => {
     this.setState({
       exportDialogOpen: false,
       projectToExport: null
     })
-    await api.exportData(this.state.projectToExport.id, type)
   }
 
   renderErrorMessage = () => (
