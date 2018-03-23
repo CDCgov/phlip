@@ -46,7 +46,7 @@ export class Home extends Component {
 
   renderErrorMessage = () => (
     <CardError>
-      {`Uh-oh, something went wrong. ${this.props.errorContent}`}
+      {`Uh-oh! Something went wrong. ${this.props.errorContent}`}
     </CardError>
   )
 

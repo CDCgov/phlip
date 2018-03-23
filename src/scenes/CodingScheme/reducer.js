@@ -14,7 +14,8 @@ const INITIAL_STATE = {
   outline: {},
   allowHover: true,
   flatQuestions: [],
-  error: null
+  schemeError: null,
+  formError: null
 }
 
 const questionsToOutline = questions => {
@@ -116,7 +117,13 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
     case types.GET_SCHEME_FAIL:
       return {
         ...INITIAL_STATE,
-        error: 'We failed to get the project coding scheme. Please try again later.'
+        schemeError: action.payload
+      }
+
+    case types.ADD_QUESTION_FAIL:
+      return {
+        ...INITIAL_STATE,
+        formError: action.payload
       }
 
     case types.SET_EMPTY_STATE:
@@ -169,7 +176,8 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         questions: [...state.questions, action.payload],
         outline: questionsToOutline([...state.questions, action.payload]),
         empty: false,
-        flatQuestions: [...state.flatQuestions, action.payload]
+        flatQuestions: [...state.flatQuestions, action.payload],
+        error: null
       }
 
     case types.ADD_CHILD_QUESTION_SUCCESS:
@@ -202,6 +210,14 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         questions: updatedTree,
         outline: questionsToOutline(updatedTree),
         empty: false
+      }
+
+    case types.ADD_QUESTION_REQUEST:
+    case types.ADD_CHILD_QUESTION_REQUEST:
+    case types.UPDATE_QUESTION_REQUEST:
+      return {
+        ...state,
+        formError: null
       }
 
     case types.CLEAR_STATE:

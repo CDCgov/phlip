@@ -79,7 +79,7 @@ export class CodingScheme extends Component {
           }}
         />
         <Container flex style={{ backgroundColor: '#f5f5f5', paddingTop: 25, marginLeft: -30 }}>
-          {this.props.error !== null
+          {this.props.schemeError !== null
             ? this.renderError()
             : this.props.empty
               ? this.renderGetStarted()
@@ -115,7 +115,7 @@ CodingScheme.propTypes = {
   actions: PropTypes.object,
   outline: PropTypes.object,
   flatQuestions: PropTypes.array,
-  error: PropTypes.string
+  schemeError: PropTypes.string
 }
 
 const mapStateToProps = (state, ownProps) => ({
@@ -125,7 +125,7 @@ const mapStateToProps = (state, ownProps) => ({
   empty: state.scenes.codingScheme.empty || false,
   outline: state.scenes.codingScheme.outline || {},
   flatQuestions: state.scenes.codingScheme.flatQuestions || [],
-  error: state.scenes.codingScheme.error || null
+  schemeError: state.scenes.codingScheme.schemeError || null
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

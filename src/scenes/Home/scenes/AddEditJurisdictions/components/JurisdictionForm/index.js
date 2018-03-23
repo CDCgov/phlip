@@ -202,7 +202,7 @@ export class JurisdictionForm extends Component {
             </Container>
           </Container>
         </ModalContent>
-        <ModalActions edit={true} actions={formActions}></ModalActions>
+        <ModalActions actions={formActions}></ModalActions>
       </FormModal>
     )
   }

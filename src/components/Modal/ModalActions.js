@@ -10,7 +10,7 @@ const styles = {
   }
 }
 
-const ModalActions = ({ edit, actions, raised, classes, ...otherProps }) => {
+const ModalActions = ({ actions, raised, classes, ...otherProps }) => {
   return (
     <DialogActions classes={{ root: classes.root }} {...otherProps} >
       {actions.map(action => (
@@ -28,8 +28,16 @@ const ModalActions = ({ edit, actions, raised, classes, ...otherProps }) => {
   )
 }
 
+ModalActions.propTypes = {
+  raised: PropTypes.bool,
+  actions: PropTypes.array.isRequired,
+  classes: PropTypes.object
+}
+
 ModalActions.defaultProps = {
-  raised: false
+  raised: false,
+  actions: [],
+  classes: {}
 }
 
 export default withStyles(styles)(ModalActions)

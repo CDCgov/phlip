@@ -3,8 +3,6 @@ import * as types from '../../actionTypes'
 import * as questionTypes from './constants'
 import { sortList } from 'utils'
 
-
-
 const updateUserIdLogic = createLogic({
   type: [types.ADD_QUESTION_REQUEST, types.UPDATE_QUESTION_REQUEST, types.ADD_CHILD_QUESTION_REQUEST],
   transform({ getState, action }, next) {
@@ -77,7 +75,7 @@ const updateIsCategoryQuestionLogic = createLogic({
       ...action,
       question: {
         ...action.question,
-        isCategoryQuestion: action.parentNode.questionType === questionTypes.CATEGORY ? true : false
+        isCategoryQuestion: action.parentNode.questionType === questionTypes.CATEGORY
       }
     })
   }
@@ -138,26 +136,33 @@ const addChildQuestionLogic = createLogic({
 
 const addQuestionLogic = createLogic({
   type: types.ADD_QUESTION_REQUEST,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.ADD_QUESTION_SUCCESS
-  },
-  async process({ api, action }) {
+  async process({ api, action }, dispatch, done) {
     action.question.hovering = false
     const orderedAnswers = action.question.possibleAnswers.map((answer, index) => {
       return { ...answer, order: index + 1 }
     })
 
     action.question.possibleAnswers = orderedAnswers
-    // action.question.hovering = false
-    const question = await api.addQuestion(action.question, action.projectId)
-    return {
-      ...question,
-      possibleAnswers: sortList(action.question.possibleAnswers),
-      parentId: action.question.parentId,
-      positionInParent: action.question.positionInParent,
-      hovering: false
+    try {
+      const question = await api.addQuestion(action.question, action.projectId)
+      dispatch({
+        type: types.ADD_QUESTION_SUCCESS,
+        payload: {
+          ...question,
+          possibleAnswers: sortList(action.question.possibleAnswers),
+          parentId: action.question.parentId,
+          positionInParent: action.question.positionInParent,
+          hovering: false
+        }
+      })
+    } catch (error) {
+      dispatch({
+        type: types.ADD_QUESTION_FAIL,
+        payload: 'We couldn\'t add the question. Please try again later.',
+        error: true
+      })
     }
+    done()
   }
 })
 
