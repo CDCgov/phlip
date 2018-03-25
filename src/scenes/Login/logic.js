@@ -1,6 +1,5 @@
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
-import { createAvatarUrl } from 'utils/urlHelper'
 
 export const loginLogic = createLogic({
   type: types.LOGIN_USER_REQUEST,
@@ -10,7 +9,7 @@ export const loginLogic = createLogic({
     failType: types.LOGIN_USER_FAIL
   },
   async process({ action, api }) {
-    let user = {}, bookmarks = [], error = '', hasAvatarImage = false, avatarUrl = ''
+    let user = {}, bookmarks = [], error = '', avatar = ''
     try {
       user = await api.login(action.credentials)
     } catch (e) {
@@ -24,8 +23,7 @@ export const loginLogic = createLogic({
     }
 
     try {
-      hasAvatarImage = await api.getUserPicture(user.id)
-      avatarUrl = hasAvatarImage ? createAvatarUrl(user.id) : null
+      avatar = await api.getUserImage(user.id)
     } catch (e) {
       error = 'failed to get avatar image'
     }
@@ -37,7 +35,7 @@ export const loginLogic = createLogic({
         return arr
       }, []),
       error,
-      avatarUrl
+      avatar
     }
   }
 })

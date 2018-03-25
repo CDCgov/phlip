@@ -30,20 +30,37 @@ export class AvatarForm extends Component {
   }
 
   onSubmitForm = () => {
-    let patchOperation = [{ 'op': 'replace', 'path': '/avatar', 'value': this.state.editFile.file.base64 }]
+    const base64Image = this.state.editFile.file.base64
+    let patchOperation = [{ 'op': 'replace', 'path': '/avatar', 'value': base64Image }]
+
     this.props.actions.addUserPictureRequest(this.state.userId, patchOperation)
+    if (this.state.userId === this.props.currentUser.id) {
+      this.props.actions.updateCurrentUserAvatar(this.state.editFile.file.base64)
+    }
   }
 
   handleDeleteAvatar = () => {
     const patchRemoveOperation = [{ 'op': 'remove', 'path': '/avatar' }]
     this.props.actions.deleteUserPictureRequest(this.state.userId, patchRemoveOperation)
+    if (this.state.userId === this.props.currentUser.id) {
+      this.props.actions.removeCurrentUserAvatar()
+    }
     this.props.history.goBack()
   }
 
   render() {
     const formActions = [
-      { value: 'Cancel', onClick: this.onCloseModal, type: 'button' },
-      { value: 'Save', type: 'submit' }
+      {
+        value: 'Cancel',
+        onClick: this.onCloseModal,
+        type: 'button',
+        otherProps: { 'aria-label': 'Cancel and close form' }
+      },
+      {
+        value: 'Save',
+        type: 'submit',
+        otherProps: { 'aria-label': 'Save form' }
+      }
     ]
     const formEditActions = [
       { value: 'Cancel', onClick: this.onCloseModal, type: 'button' },
@@ -63,11 +80,14 @@ export class AvatarForm extends Component {
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
           {this.state.isEdit
             ? <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
-              <Avatar cardAvatar style={{ width: '200px', height: '200px' }} src={this.props.form.values.avatarUrl} />
+              <Avatar cardAvatar style={{ width: '200px', height: '200px' }} src={this.props.location.state.avatarUrl} />
             </Container>
             : <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
               <Avatar cardAvatar style={{ width: '200px', height: '200px' }} src={this.state.editFile.file.base64} />
             </Container>}
+          {/* <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
+            <Avatar cardAvatar style={{ width: '200px', height: '200px' }} src={this.state.editFile.file.base64 || this.props.location.state.avatarUrl} />
+          </Container> */}
         </ModalContent>
         <ModalActions edit={true} actions={this.state.isEdit ? formEditActions : formActions}></ModalActions>
       </FormModal>
@@ -77,7 +97,7 @@ export class AvatarForm extends Component {
 const mapStateToProps = (state) => ({
   currentUser: state.data.user.currentUser || {},
   users: state.scenes.admin.main.users || [],
-  form: state.form.addEditUser || {},
+  form: state.form.avatarForm || {},
   formName: 'avatarForm'
 })
 

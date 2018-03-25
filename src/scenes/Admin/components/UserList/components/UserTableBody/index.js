@@ -12,7 +12,7 @@ const UserTableBody = ({ users }) => {
     users.map(user => (
       <TableRow key={user.id}>
         <TableCell key={`${user.id}-avatar`} style={{ width: 1 }}>
-          <Avatar cardAvatar avatarUrl={user.avatarUrl} initials={getInitials(user.firstName, user.lastName)} style={{ cursor: 'pointer' }} />
+          <Avatar cardAvatar avatarUrl={user.avatar} initials={getInitials(user.firstName, user.lastName)} style={{ cursor: 'pointer' }} />
         </TableCell>
         <TableCell key={`${user.id}-name`} header="name" padding="default"><span>{user.firstName} {user.lastName}</span></TableCell>
         <TableCell key={`${user.id}-email`} header="email" padding="default">{user.email}</TableCell>

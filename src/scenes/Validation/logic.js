@@ -59,49 +59,15 @@ const mergeInUserCodedQuestions = (codedQuestions, codeQuestionsPerUser, coder) 
 const getCoderInformation = async ({ api, action, questionId }) => {
   let codedQuestionObj = {}, allCodedQuestions = []
 
-  /*try {
-    for (let question of codedQuestions) {
-      try {
-        let avatarUrl = await api.getUserImage(question.validatedBy.userId)
-        // let avatarUrl = hasAvatarImage ? createAvatarUrl(question.validatedBy.userId) : null
-        let validatedBy = { ...question.validatedBy, avatarUrl }
-        updatedCodedQuestions = [...updatedCodedQuestions, { ...question, validatedBy }]
-      } catch (e) {
-        throw { error: 'failed to get avatar image for validator' }
-      }
-    }
-  } catch (e) {
-    throw { error: 'failed to get codedQuestions' }
-  }*/
-
   try {
     allCodedQuestions = await api.getAllCodedQuestionsForQuestion(action.projectId, action.jurisdictionId, questionId)
   } catch (e) {
     throw { error: 'failed to get all coded questions' }
   }
-
-  // if (projectCoders.length !== 0) {
-  //   for (let coder of projectCoders) {
-  //     try {
-  //       let avatarUrl = await api.getUserImage(coder.userId)
-  //       // let avatarUrl = hasAvatarImage ? createAvatarUrl(coder.userId) : null
-  //       coder = { ...coder, avatarUrl }
-  //     } catch (e) {
-  //       throw { error: 'failed to get avatar image' }
-  //     }
   if (allCodedQuestions.length === 0) {
     codedQuestionObj = { [questionId]: { answers: [], flagsComments: [] } }
   }
-
   for (let coderUser of allCodedQuestions) {
-    try {
-      let hasAvatarImage = await api.getUserPicture(coderUser.coder.userId)
-      let avatarUrl = hasAvatarImage ? createAvatarUrl(coderUser.coder.userId) : null
-      coderUser.coder = { ...coderUser.coder, avatarUrl }
-    } catch (e) {
-      throw { error: 'failed to get avatar image' }
-    }
-
     if (coderUser.codedQuestions.length > 0) {
       codedQuestionObj = { ...mergeInUserCodedQuestions(codedQuestionObj, coderUser.codedQuestions, coderUser.coder) }
     }
@@ -230,6 +196,7 @@ export const getQuestionLogicValidation = createLogic({
     )
 
     const { codedQuestionObj } = await getCoderInformation({ api, action, questionId: question.id })
+
 
     return {
       updatedState: { ...updatedState, mergedUserQuestions: { ...state.mergedUserQuestions, ...codedQuestionObj } },

@@ -160,16 +160,16 @@ export class AddEditUser extends Component {
         <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
           <Row displayFlex style={{ ...rowStyles, justifyContent: 'space-between' }}>
             {this.selectedUser ? <Column style={{ paddingRight: 30 }}>
-              {(this.selectedUser.avatarUrl || this.props.avatarUrl) ? <Tooltip text="Edit photo" placement="top" aria-label="Edit picture" id="edit-picture">
+              {this.selectedUser.avatar ? <Tooltip text="Edit photo" placement="top" aria-label="Edit picture" id="edit-picture">
                 <TextLink
                   to={{
                     pathname: `/admin/edit/user/${this.selectedUser.id}/avatar`,
-                    state: { isEdit: true, userId: this.selectedUser.id }
+                    state: { isEdit: true, userId: this.selectedUser.id, avatarUrl: this.selectedUser.avatar }
                   }}>
                   <Avatar
                     cardAvatar
                     style={{ width: '65px', height: '65px' }}
-                    avatarUrl={this.selectedUser.avatarUrl || this.props.avatarUrl} /></TextLink>
+                    avatarUrl={this.selectedUser.avatar} /></TextLink>
               </Tooltip>
                 : <ReactFileReader base64={true} fileTypes={['.jpg']} handleFiles={this.openAvatarForm}>
                   <IconButton
@@ -244,7 +244,7 @@ const mapStateToProps = (state) => ({
   currentUser: state.data.user.currentUser || {},
   users: state.scenes.admin.main.users || [],
   form: state.form.addEditUser || {},
-  avatarUrl: state.scenes.admin.addEditUser.avatarUrl || null,
+  avatar: state.scenes.admin.addEditUser.avatar || null,
   formName: 'addEditUser'
 })
 

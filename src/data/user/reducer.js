@@ -15,6 +15,12 @@ function userReducer(state = INITIAL_STATE, action) {
         currentUser: action.payload
       }
 
+    case types.UPDATE_CURRENT_USER_AVATAR:
+      return {
+        ...state,
+        currentUser: { ...state.currentUser, avatar: action.payload }
+      }
+
     case types.TOGGLE_MENU:
       return {
         ...state,

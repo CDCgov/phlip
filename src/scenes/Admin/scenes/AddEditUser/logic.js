@@ -26,46 +26,46 @@ export const updateUserLogic = createLogic({
   }
 })
 
-export const patchUserPictureLogic = createLogic({
-  type: types.ADD_USER_PICTURE_REQUEST,
+export const patchUserImageLogic = createLogic({
+  type: types.ADD_USER_IMAGE_REQUEST,
   latest: true,
   processOptions: {
     dispatchReturn: true,
-    successType: types.ADD_USER_PICTURE_SUCCESS
+    successType: types.ADD_USER_IMAGE_SUCCESS
   },
   async process({ action, api }) {
     return await api.updateUserImage(action.userId, action.patchOperation)
   }
 })
 
-export const getUserPictureLogic = createLogic({
-  type: types.GET_USER_PICTURE_REQUEST,
+export const getUserImageLogic = createLogic({
+  type: types.GET_USER_IMAGE_REQUEST,
   latest: true,
   processOptions: {
     dispatchReturn: true,
-    successType: types.GET_USER_PICTURE_SUCCESS
+    successType: types.GET_USER_IMAGE_SUCCESS
   },
   async process({ action, api }) {
     return await api.getUserImage(action.userId)
   }
 })
 
-export const deleteUserPictureLogic = createLogic({
-  type: types.DELETE_USER_PICTURE_REQUEST,
+export const deleteUserImageLogic = createLogic({
+  type: types.DELETE_USER_IMAGE_REQUEST,
   latest: true,
   processOptions: {
     dispatchReturn: true,
-    successType: types.DELETE_USER_PICTURE_SUCCESS,
+    successType: types.DELETE_USER_IMAGE_SUCCESS,
   },
   async process({ action, api }) {
-    return await api.deleteUserPicture(action.userId, action.operation)
+    return await api.deleteUserImage(action.userId, action.operation)
   }
 })
 
 export default [
-  deleteUserPictureLogic,
-  getUserPictureLogic,
-  patchUserPictureLogic,
+  deleteUserImageLogic,
+  getUserImageLogic,
+  patchUserImageLogic,
   updateUserLogic,
   addUserLogic
 ]
