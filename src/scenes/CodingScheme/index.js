@@ -13,6 +13,7 @@ import AddEditQuestion from './scenes/AddEditQuestion'
 import PageHeader from 'components/PageHeader'
 import Alert from 'components/Alert'
 import Icon from 'components/Icon'
+import ApiErrorView from 'components/ApiErrorView'
 
 export class CodingScheme extends Component {
   constructor(props, context) {
@@ -39,16 +40,6 @@ export class CodingScheme extends Component {
 
   handleQuestionNodeMove = () => {
     this.props.actions.reorderSchemeRequest(this.props.projectId)
-  }
-
-  renderError = () => {
-    return (
-      <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
-        <Typography type="display1" style={{ textAlign: 'center' }}>
-          {this.props.error}
-        </Typography>
-      </Container>
-    )
   }
 
   renderGetStarted = () => (
@@ -93,9 +84,9 @@ export class CodingScheme extends Component {
             props: { 'aria-label': 'Add new question to  coding scheme' }
           }}
         />
-        <Container flex style={{ backgroundColor: '#f5f5f5', paddingTop: 25, marginLeft: -30 }}>
+        <Container flex style={{ backgroundColor: '#f5f5f5', paddingTop: 25, marginLeft: this.props.schemeError ? 0 : -30 }}>
           {this.props.schemeError !== null
-            ? this.renderError()
+            ? <ApiErrorView error={this.props.schemeError} />
             : this.props.empty
               ? this.renderGetStarted()
               : <Scheme

@@ -18,6 +18,7 @@ import HeaderedLayout from 'components/HeaderedLayout'
 import Alert from 'components/Alert'
 import Tooltip from 'components/Tooltip'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
+import ApiErrorView from 'components/ApiErrorView'
 
 const navButtonStyles = {
   height: 90,
@@ -47,7 +48,8 @@ const withCodingValidation = (WrappedComponent, actions) => {
         selectedJurisdiction: this.props.jurisdictionId,
         showViews: false,
         navOpen: false,
-        applyAllAlertOpen: false
+        applyAllAlertOpen: false,
+        showSchemeError: false
       }
 
       this.modalActions = [
@@ -65,8 +67,16 @@ const withCodingValidation = (WrappedComponent, actions) => {
     }
 
     componentWillReceiveProps(nextProps) {
-      if (nextProps.isSchemeEmpty !== null) {
-        this.setState({ showViews: true })
+      if (this.props.isSchemeEmpty === null) {
+        if (nextProps.isSchemeEmpty !== null) {
+          this.setState({ showViews: true })
+        }
+        if (nextProps.schemeError !== null) {
+          this.setState({ showSchemeError: true })
+        }
+        if (nextProps.isSchemeEmpty === false && nextProps.areJurisdictionsEmpty === false) {
+          this.setState({ navOpen: true })
+        }
       }
     }
 
@@ -166,9 +176,6 @@ const withCodingValidation = (WrappedComponent, actions) => {
     }
 
     onShowCodeView = () => {
-      this.setState({
-        navOpen: true
-      })
       return (<Fragment>
         <QuestionCard
           page={this.props.page}
@@ -229,6 +236,8 @@ const withCodingValidation = (WrappedComponent, actions) => {
                         <Icon color="white" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
                   </Column>
                   <Column displayFlex flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
+                    {this.state.showSchemeError &&
+                    <ApiErrorView error="We couldn't get the coding scheme for this project." />}
                     {this.state.showViews &&
                     (this.props.areJurisdictionsEmpty === true || this.props.isSchemeEmpty === true
                       ? this.onShowGetStartedView(this.props.isSchemeEmpty, this.props.areJurisdictionsEmpty)
@@ -269,7 +278,8 @@ const withCodingValidation = (WrappedComponent, actions) => {
       areJurisdictionsEmpty: pageState.areJurisdictionsEmpty,
       userRole: state.data.user.currentUser.role,
       user: state.data.user.currentUser,
-      selectedCategory: pageState.selectedCategory
+      selectedCategory: pageState.selectedCategory,
+      schemeError: pageState.schemeError || null
     }
   }
 

@@ -13,7 +13,7 @@ import JurisdictionForm from './components/JurisdictionForm'
 import Divider from 'material-ui/Divider'
 import Typography from 'material-ui/Typography'
 import TextLink from 'components/TextLink'
-import Icon from 'components/Icon'
+import ApiErrorView from 'components/ApiErrorView'
 
 export class AddEditJurisdictions extends Component {
   static propTypes = {
@@ -45,23 +45,6 @@ export class AddEditJurisdictions extends Component {
     )
   }
 
-  renderError = () => {
-    return (
-      <Fragment>
-        <Row displayFlex style={{ justifyContent: 'center' }}>
-          <Icon size={175} color="#757575">
-            sentiment_very_dissatisfied
-          </Icon>
-        </Row>
-        <Row displayFlex style={{ justifyContent: 'center' }}>
-          <Typography type="display2" style={{ textAlign: 'center' }}>
-            {this.props.errorContent}
-          </Typography>
-        </Row>
-      </Fragment>
-    )
-  }
-
   render() {
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="md" hideOverflow>
@@ -86,7 +69,7 @@ export class AddEditJurisdictions extends Component {
           <Container flex style={{ marginTop: 20 }}>
             <Column flex displayFlex style={{ overflowX: 'auto' }}>
               {this.props.error === true
-                ? this.renderError()
+                ? <ApiErrorView error={this.props.errorContent}/>
                 : <JurisdictionList jurisdictions={this.props.visibleJurisdictions} projectId={this.props.project.id} />}
             </Column>
           </Container>

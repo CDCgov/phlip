@@ -14,64 +14,74 @@ import * as types from './actionTypes'
 
 export const getOutlineLogic = createLogic({
   type: types.GET_CODING_OUTLINE_REQUEST,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.GET_CODING_OUTLINE_SUCCESS,
-    failType: types.GET_CODING_OUTLINE_FAIL
-  },
   async process({ action, getState, api }, dispatch, done) {
-    let scheme = {}
+    let scheme = {}, errors = {}, payload = {}
     let codedQuestions = []
     const userId = getState().data.user.currentUser.id
 
     // Try to get the project coding scheme
     try {
       scheme = await api.getScheme(action.projectId)
+      // Get user coded questions for currently selected jurisdiction
+      if (action.jurisdictionId) {
+        if (scheme.schemeQuestions.length === 0) {
+          payload = { isSchemeEmpty: true, areJurisdictionsEmpty: false }
+        } else {
+          try {
+            codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
+          } catch (e) {
+            errors = { codedQuestions: 'Failed to get coded questions.' }
+          }
+
+          // Create one array with the outline information in the question information
+          const merge = scheme.schemeQuestions.reduce((arr, q) => {
+            return [...arr, { ...q, ...scheme.outline[q.id] }]
+          }, [])
+
+          // Create a sorted question tree with sorted children with question numbering and order
+          const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
+          const questionsById = normalize.arrayToObject(questionsWithNumbers)
+          const firstQuestion = questionsWithNumbers[0]
+
+          // Check if the first question has answers, if it doesn't send a request to create an empty coded question
+          const { userAnswers } = await initializeAndCheckAnswered(firstQuestion, codedQuestions, questionsById, userId, action, api.createEmptyCodedQuestion)
+          payload = {
+            ...payload,
+            outline: scheme.outline,
+            scheme: { byId: questionsById, tree, order },
+            userAnswers,
+            question: firstQuestion,
+            codedQuestions,
+            isSchemeEmpty: false,
+            areJurisdictionsEmpty: false,
+            userId
+          }
+
+        }
+      } else {
+        // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
+        if (scheme.schemeQuestions.length === 0) {
+          payload = { isSchemeEmpty: true, areJurisdictionsEmpty: true }
+        }
+        payload = { isSchemeEmpty: false, areJurisdictionsEmpty: true }
+      }
+
+      dispatch({
+        type: types.GET_CODING_OUTLINE_SUCCESS,
+        payload: {
+          ...payload,
+          errors
+        }
+      })
+      done()
     } catch (e) {
-      throw { error: 'failed to get outline', payload: 'Failed to get coding scheme.' }
+      dispatch({
+        type: types.GET_CODING_OUTLINE_FAIL,
+        payload: 'Failed to get outline.',
+        error: true
+      })
     }
-
-    // Get user coded questions for currently selected jurisdiction
-    if (action.jurisdictionId) {
-      if (scheme.schemeQuestions.length === 0) {
-        return { isSchemeEmpty: true, areJurisdictionsEmpty: false }
-      }
-      try {
-        codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
-      } catch (e) {
-        throw { error: 'failed to get codedQuestions' }
-      }
-    } else {
-      // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
-      if (scheme.schemeQuestions.length === 0) {
-        return { isSchemeEmpty: true, areJurisdictionsEmpty: true }
-      }
-      return { isSchemeEmpty: false, areJurisdictionsEmpty: true }
-    }
-
-    // Create one array with the outline information in the question information
-    const merge = scheme.schemeQuestions.reduce((arr, q) => {
-      return [...arr, { ...q, ...scheme.outline[q.id] }]
-    }, [])
-
-    // Create a sorted question tree with sorted children with question numbering and order
-    const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
-    const questionsById = normalize.arrayToObject(questionsWithNumbers)
-    const firstQuestion = questionsWithNumbers[0]
-
-    // Check if the first question has answers, if it doesn't send a request to create an empty coded question
-    const { userAnswers } = await initializeAndCheckAnswered(firstQuestion, codedQuestions, questionsById, userId, action, api.createEmptyCodedQuestion)
-
-    return {
-      outline: scheme.outline,
-      scheme: { byId: questionsById, tree, order },
-      userAnswers,
-      question: firstQuestion,
-      codedQuestions,
-      isSchemeEmpty: false,
-      areJurisdictionsEmpty: false,
-      userId
-    }
+    done()
   }
 })
 

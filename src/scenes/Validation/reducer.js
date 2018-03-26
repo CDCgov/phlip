@@ -21,7 +21,8 @@ const INITIAL_STATE = {
   mergedUserQuestions: [],
   selectedCategoryId: null,
   isSchemeEmpty: null,
-  areJurisdictionsEmpty: null
+  areJurisdictionsEmpty: null,
+  schemeError: null
 }
 
 const validationReducer = (state = INITIAL_STATE, action) => {
@@ -36,7 +37,8 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           userAnswers: {},
           mergedUserQuestions: {},
           isSchemeEmpty: action.payload.isSchemeEmpty,
-          areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty
+          areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty,
+          schemeError: null
         }
       } else {
         sortList(action.payload.question.possibleAnswers, 'order', 'asc')
@@ -49,7 +51,8 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           mergedUserQuestions: action.payload.mergedUserQuestions,
           categories: undefined,
           isSchemeEmpty: false,
-          areJurisdictionsEmpty: false
+          areJurisdictionsEmpty: false,
+          schemeError: null
         }
       }
 
@@ -123,6 +126,12 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         ...action.payload.otherUpdates,
       }
 
+    case types.GET_VALIDATION_OUTLINE_FAIL:
+      return {
+        ...state,
+        schemeError: action.payload
+      }
+
     case types.GET_VALIDATION_OUTLINE_REQUEST:
     case types.GET_USER_VALIDATED_QUESTIONS_REQUEST:
     default:
@@ -133,6 +142,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
 export const validationHandlers = [
   'GET_VALIDATION_OUTLINE_REQUEST',
   'GET_VALIDATION_OUTLINE_SUCCESS',
+  'GET_VALIDATION_OUTLINE_FAIL',
   'GET_USER_VALIDATED_QUESTIONS_REQUEST',
   'GET_USER_VALIDATED_QUESTIONS_SUCCESS',
   'CLEAR_FLAG',

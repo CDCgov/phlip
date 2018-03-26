@@ -19,7 +19,8 @@ const INITIAL_STATE = {
   selectedCategoryId: null,
   userAnswers: {},
   showNextButton: true,
-  mergedUserQuestions: null
+  mergedUserQuestions: null,
+  schemeError: null
 }
 
 const codingReducer = (state = INITIAL_STATE, action) => {
@@ -38,7 +39,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           userAnswers: {},
           categories: undefined,
           areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty,
-          isSchemeEmpty: action.payload.isSchemeEmpty
+          isSchemeEmpty: action.payload.isSchemeEmpty,
+          schemeError: null
         }
       } else {
         sortList(action.payload.question.possibleAnswers, 'order', 'asc')
@@ -50,7 +52,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           userAnswers: action.payload.userAnswers,
           categories: undefined,
           areJurisdictionsEmpty: false,
-          isSchemeEmpty: false
+          isSchemeEmpty: false,
+          schemeError: null
         }
       }
 
@@ -80,6 +83,12 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...questionUpdater('flag', action.flagInfo)
       }
 
+    case types.GET_CODING_OUTLINE_FAIL:
+      return {
+        ...state,
+        schemeError: action.payload
+      }
+
     case types.GET_USER_CODED_QUESTIONS_SUCCESS:
       return {
         ...state,
@@ -99,6 +108,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 export const codingHandlers = [
   'GET_CODING_OUTLINE_REQUEST',
   'GET_CODING_OUTLINE_SUCCESS',
+  'GET_CODING_OUTLINE_FAIL',
   'GET_USER_CODED_QUESTIONS_REQUEST',
   'GET_USER_CODED_QUESTIONS_SUCCESS',
   'ON_SAVE_RED_FLAG',

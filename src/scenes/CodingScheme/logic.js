@@ -15,7 +15,7 @@ const getSchemeLogic = createLogic({
       dispatch({
         type: types.GET_SCHEME_FAIL,
         error: true,
-        payload: 'We could not get the project coding scheme. Please try again later.'
+        payload: 'We couldn\'t get the project coding scheme.'
       })
     }
     done()

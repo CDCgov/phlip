@@ -112,7 +112,7 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         error: true,
-        errorContent: 'We couldn\'t get the jurisdictions for this project. Please try again later.'
+        errorContent: 'We couldn\'t get the jurisdictions for this project.'
       }
 
     case types.RESET_FORM_ERROR:
