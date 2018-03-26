@@ -55,6 +55,12 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         errorTypeMsg: errorTypes[1]
       }
 
+    case types.DISMISS_API_ALERT:
+      return {
+        ...state,
+        [action.alertType]: null
+      }
+
     case `${types.UPDATE_USER_ANSWER_SUCCESS}_${name}`:
       return {
         ...state,

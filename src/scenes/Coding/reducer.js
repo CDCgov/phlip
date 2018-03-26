@@ -83,12 +83,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
        saveFlagErrorContent: 'We couldn\'t save the red flag for this question.'
       }
 
-    case types.DISMISS_API_ALERT:
-      return {
-        ...state,
-        [action.alertType]: null
-      }
-
     case types.ON_SAVE_FLAG:
       return {
         ...state,

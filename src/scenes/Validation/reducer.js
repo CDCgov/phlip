@@ -56,64 +56,71 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
-    case types.CLEAR_FLAG:
-      let flagIndex = null
-
-      const flagComments = state.question.isCategoryQuestion
-        ? state.mergedUserQuestions[action.questionId][state.selectedCategoryId].flagsComments
-        : state.mergedUserQuestions[action.questionId].flagsComments
-
-      const { id, type, notes, raisedAt, ...flag } = flagComments.find((item, i) => {
-        if (item.id === action.flagId) {
-          flagIndex = i
-        }
-        return item.id === action.flagId
-      })
-
-      if (Object.keys(flag).length === 1) {
-        flagComments.splice(flagIndex, 1)
-      } else {
-        if (flag.comment.length === 0) {
-          flagComments.splice(flagIndex, 1)
-        } else {
-          flagComments.splice(flagIndex, 1, flag)
-        }
-      }
-
-      return {
-        ...state,
-        mergedUserQuestions: {
-          ...state.mergedUserQuestions,
-          [action.questionId]: {
-            ...state.mergedUserQuestions[action.questionId],
-            ...state.question.isCategoryQuestion
-              ? {
-                [state.selectedCategoryId]: {
-                  ...state.mergedUserQuestions[action.questionId][state.selectedCategoryId],
-                  flagComments
-                }
+    case types.CLEAR_FLAG_SUCCESS:
+      if (action.payload.type === 1) {
+        return {
+          ...state,
+          question: { ...state.question, flags: [] },
+          scheme: {
+            ...state.scheme,
+            byId: {
+              ...state.scheme.byId,
+              [action.questionId]: {
+                ...state.scheme.byId[action.questionId],
+                flags: []
               }
-              : {
-                flagComments
-              }
-          }
-        }
-      }
-
-    case types.CLEAR_RED_FLAG:
-      return {
-        ...state,
-        question: { ...state.question, flags: [] },
-        scheme: {
-          ...state.scheme,
-          byId: {
-            ...state.scheme.byId,
-            [action.questionId]: {
-              ...state.scheme.byId[action.questionId],
-              flags: []
             }
           }
         }
+      } else {
+        let flagIndex = null
+
+        const flagComments = state.question.isCategoryQuestion
+          ? state.mergedUserQuestions[state.question.id][state.selectedCategoryId].flagsComments
+          : state.mergedUserQuestions[state.question.id].flagsComments
+
+        const { id, type, notes, raisedAt, ...flag } = flagComments.find((item, i) => {
+          if (item.id === action.flagId) {
+            flagIndex = i
+          }
+          return item.id === action.flagId
+        })
+
+        if (Object.keys(flag).length === 1) {
+          flagComments.splice(flagIndex, 1)
+        } else {
+          if (flag.comment.length === 0) {
+            flagComments.splice(flagIndex, 1)
+          } else {
+            flagComments.splice(flagIndex, 1, flag)
+          }
+        }
+
+        return {
+          ...state,
+          mergedUserQuestions: {
+            ...state.mergedUserQuestions,
+            [state.question.id]: {
+              ...state.mergedUserQuestions[state.question.id],
+              ...state.question.isCategoryQuestion
+                ? {
+                  [state.selectedCategoryId]: {
+                    ...state.mergedUserQuestions[state.question.id][state.selectedCategoryId],
+                    flagComments
+                  }
+                }
+                : {
+                  flagComments
+                }
+            }
+          }
+        }
+      }
+
+    case types.CLEAR_FLAG_FAIL:
+      return {
+        ...state,
+        saveFlagErrorContent: 'We couldn\'t clear this flag.'
       }
 
     case types.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
@@ -132,6 +139,8 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         schemeError: action.payload
       }
 
+    case types.CLEAR_RED_FLAG:
+    case types.CLEAR_FLAG:
     case types.GET_VALIDATION_OUTLINE_REQUEST:
     case types.GET_USER_VALIDATED_QUESTIONS_REQUEST:
     default:
@@ -146,7 +155,9 @@ export const validationHandlers = [
   'GET_USER_VALIDATED_QUESTIONS_REQUEST',
   'GET_USER_VALIDATED_QUESTIONS_SUCCESS',
   'CLEAR_FLAG',
-  'CLEAR_RED_FLAG'
+  'CLEAR_RED_FLAG',
+  'CLEAR_FLAG_SUCCESS',
+  'CLEAR_FLAG_FAIL'
 ]
 
 export default validationReducer

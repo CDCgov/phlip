@@ -329,12 +329,18 @@ export const getUserValidatedQuestionsLogic = createLogic({
 })
 
 /*
-  Calls an api route to clear the flag based on the action.flagId
+  Calls an api route to clear the flag based on the action.flagId, type 1 === red, type 2 === other
  */
 export const clearFlagLogic = createLogic({
   type: [types.CLEAR_RED_FLAG, types.CLEAR_FLAG],
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.CLEAR_FLAG_SUCCESS,
+    failType: types.CLEAR_FLAG_FAIL
+  },
   async process({ action, api }) {
-    return await api.clearFlag(action.flagId)
+    const out = await api.clearFlag(action.flagId)
+    return { ...out, type: action.type === types.CLEAR_RED_FLAG ? 1 : 2 }
   }
 })
 
