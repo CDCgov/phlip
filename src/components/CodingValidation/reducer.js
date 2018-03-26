@@ -75,13 +75,19 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
     case `${types.ON_CHANGE_PINCITE}_${name}`:
       return {
         ...state,
-        ...questionUpdater('answers', handleUserPinciteQuestion)
+        ...questionUpdater('answers', handleUserPinciteQuestion),
+        snapshotUserAnswer: state.question.isCategoryQuestion
+          ? state.userAnswers[action.questionId][state.selectedCategoryId]
+          : state.userAnswers[action.questionId]
       }
 
     case `${types.ON_CHANGE_COMMENT}_${name}`:
       return {
         ...state,
-        ...questionUpdater('comment', action.comment)
+        ...questionUpdater('comment', action.comment),
+        snapshotUserAnswer: state.question.isCategoryQuestion
+          ? state.userAnswers[action.questionId][state.selectedCategoryId]
+          : state.userAnswers[action.questionId]
       }
 
     case `${types.ON_CHANGE_CATEGORY}_${name}`:
@@ -130,7 +136,10 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
     case `${types.ON_CLEAR_ANSWER}_${name}`:
       return {
         ...state,
-        ...questionUpdater('answers', handleClearAnswers)
+        ...questionUpdater('answers', handleClearAnswers),
+        snapshotUserAnswer: state.question.isCategoryQuestion
+          ? state.userAnswers[action.questionId][state.selectedCategoryId]
+          : state.userAnswers[action.questionId]
       }
 
     case `${types.ON_CLOSE_SCREEN}_${name}`:
