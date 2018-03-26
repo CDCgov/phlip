@@ -70,20 +70,20 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => 
       </TableCell>
       }
       {role !== 'Coder' && <TableCell key={`${project.id}-export`} style={{ textAlign: 'center' }}>
-        <TextLink
-          target="_blank"
-          //href={`/api/exports/project/${project.id}/data`}
-          //to={{ pathname: `/project/${project.id}/export` }}
-          to={{ pathname: `/api/exports/project/${project.id}/data`}}
-          >
+        {/*<TextLink
+          //target="_blank"
+          to={{ pathname: `/project/${project.id}/export` }}
+          //to={{ pathname: `/api/exports/project/${project.id}/data`}}
+        >*/}
           <IconButton
             color={greyIcon}
             tooltipText="Export validated questions"
             placement="top-end"
             aria-label="Export validated questions"
+            onClick={() => onExport(project.id)}
             id="export-validated">
             file_download
-          </IconButton></TextLink>
+          </IconButton>{/*</TextLink>*/}
       </TableCell>}
     </TableRow>
   )

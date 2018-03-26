@@ -57,6 +57,7 @@ export class Home extends Component {
   }
 
   onChooseExport = () => {
+    window.open(`/project/${this.state.projectToExport}/export`, '_blank')
     this.setState({
       exportDialogOpen: false,
       projectToExport: null
