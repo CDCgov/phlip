@@ -37,15 +37,18 @@ export class AddEditProject extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log('this.props', this.props)
+    console.log('nextProps', nextProps)
+    console.log('this.state', this.state)
     if (this.state.submitting === true) {
       if (nextProps.formError !== null) {
+        this.setState({
+          submitting: false
+        })
         this.props.onSubmitError(nextProps.formError)
-      } else {
+      } else if (nextProps.goBack === true) {
         this.props.history.goBack()
       }
-      this.setState({
-        submitting: false
-      })
     }
   }
 
@@ -197,7 +200,8 @@ const mapStateToProps = (state) => ({
   form: state.form.projectForm || {},
   formName: 'projectForm',
   userRole: state.data.user.currentUser.role || '',
-  formError: state.scenes.home.main.formError || null
+  formError: state.scenes.home.addEditProject.formError || null,
+  goBack: state.scenes.home.addEditProject.goBack || false
 })
 
 const mapDispatchToProps = (dispatch) => ({

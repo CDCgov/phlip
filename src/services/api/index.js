@@ -31,7 +31,7 @@ export default {
 
   // Update a project, called in Home/scenes/AddEditProject/logic
   updateProject(project) {
-    return api.put(`/projectl/${project.id}`, project).then(res => res.data)
+    return api.put(`/projects/${project.id}`, project).then(res => res.data)
   },
 
   // Get all users, called in Admin/logic

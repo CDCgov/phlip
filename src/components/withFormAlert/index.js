@@ -24,6 +24,11 @@ export const withFormAlert = (WrappedComponent) => {
       })
     }
 
+    onDismissFormError = () => {
+      this.onClose()
+      this.props.actions.resetFormError()
+    }
+
     onContinue = () => {
       this.props.formActions.reset(this.props.formName)
       this.setState({ open: false, text: null, actions: [] })
@@ -72,7 +77,7 @@ export const withFormAlert = (WrappedComponent) => {
           {
             value: 'Dismiss',
             type: 'button',
-            onClick: this.onClose
+            onClick: this.onDismissFormError
           }
         ],
         title: <Fragment>
