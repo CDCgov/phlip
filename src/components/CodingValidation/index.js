@@ -46,7 +46,7 @@ const withCodingValidation = (WrappedComponent, actions) => {
       this.state = {
         selectedJurisdiction: this.props.jurisdictionId,
         showViews: false,
-        navOpen: true,
+        navOpen: false,
         applyAllAlertOpen: false
       }
 
@@ -158,15 +158,18 @@ const withCodingValidation = (WrappedComponent, actions) => {
             </TextLink>}
             {noJurisdictions && this.props.userRole !== 'Coder' &&
             <TextLink to={{ pathname: `/project/${this.props.projectId}/jurisdictions/` }}>
-              <Button value="Add Jurisdictions" color="accent"/>
+              <Button value="Add Jurisdictions" color="accent" />
             </TextLink>}
           </Row>
         </Container>
       )
     }
 
-    onShowCodeView = () => (
-      <Fragment>
+    onShowCodeView = () => {
+      this.setState({
+        navOpen: true
+      })
+      return (<Fragment>
         <QuestionCard
           page={this.props.page}
           onChange={this.onAnswer}
@@ -182,8 +185,8 @@ const withCodingValidation = (WrappedComponent, actions) => {
           getPrevQuestion={this.getPrevQuestion}
           totalLength={this.props.questionOrder.length}
           showNextButton={this.props.showNextButton} />
-      </Fragment>
-    )
+      </Fragment>)
+    }
 
     render() {
       return (
@@ -226,7 +229,8 @@ const withCodingValidation = (WrappedComponent, actions) => {
                         <Icon color="white" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
                   </Column>
                   <Column displayFlex flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
-                    {this.state.showViews && (this.props.areJurisdictionsEmpty === true || this.props.isSchemeEmpty === true
+                    {this.state.showViews &&
+                    (this.props.areJurisdictionsEmpty === true || this.props.isSchemeEmpty === true
                       ? this.onShowGetStartedView(this.props.isSchemeEmpty, this.props.areJurisdictionsEmpty)
                       : this.onShowCodeView())}
                   </Column>

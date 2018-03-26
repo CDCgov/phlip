@@ -9,9 +9,7 @@ import {
   getPreviousQuestion,
   initializeAndCheckAnswered, getQuestionAndInitialize
 } from 'utils/codingHelpers'
-import { checkIfAnswered, checkIfExists } from 'utils/codingSchemeHelpers'
 import { normalize } from 'utils'
-import sortList from 'utils/sortList'
 import * as types from './actionTypes'
 
 export const getOutlineLogic = createLogic({
@@ -21,7 +19,7 @@ export const getOutlineLogic = createLogic({
     successType: types.GET_CODING_OUTLINE_SUCCESS,
     failType: types.GET_CODING_OUTLINE_FAIL
   },
-  async process({ action, getState, api }) {
+  async process({ action, getState, api }, dispatch, done) {
     let scheme = {}
     let codedQuestions = []
     const userId = getState().data.user.currentUser.id
@@ -30,11 +28,14 @@ export const getOutlineLogic = createLogic({
     try {
       scheme = await api.getScheme(action.projectId)
     } catch (e) {
-      throw { error: 'failed to get outline' }
+      throw { error: 'failed to get outline', payload: 'Failed to get coding scheme.' }
     }
 
     // Get user coded questions for currently selected jurisdiction
     if (action.jurisdictionId) {
+      if (scheme.schemeQuestions.length === 0) {
+        return { isSchemeEmpty: true, areJurisdictionsEmpty: false }
+      }
       try {
         codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
       } catch (e) {
