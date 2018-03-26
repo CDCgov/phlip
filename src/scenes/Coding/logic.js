@@ -191,7 +191,12 @@ export const getUserCodedQuestionsLogic = createLogic({
 
 // Save red flag logic
 export const saveRedFlagLogic = createLogic({
-  type: types.ON_SAVE_RED_FLAG,
+  type: types.ON_SAVE_RED_FLAG_REQUEST,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.ON_SAVE_RED_FLAG_SUCCESS,
+    failType: types.ON_SAVE_RED_FLAG_FAIL
+  },
   async process({ action, api }) {
     const flag = { ...action.flagInfo, raisedBy: action.flagInfo.raisedBy.userId }
     return await api.saveRedFlag(action.questionId, flag)

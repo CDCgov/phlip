@@ -6,6 +6,14 @@ import {
   handleUserPinciteQuestion, initializeNavigator
 } from 'utils/codingHelpers'
 
+const errorTypes = {
+  1: 'We couldn\'t save the answer for this question. Your answer will be reset to the previous state.',
+  2: 'We couldn\'t save the comment for this question. Your comment will be reset to the previous state.',
+  3: 'We couldn\'t save the pincite for this answer choice. Your pincite will be reset to the previous state.',
+  4: 'We couldn\'t clear the answer for this question. Your answer will be reset to the previous state.',
+  5: 'We couldn\'t save your flag for this question. Your flag will be reset to the previous state.'
+}
+
 const INITIAL_STATE = {
   question: {},
   scheme: null,
@@ -23,7 +31,9 @@ const INITIAL_STATE = {
   areJurisdictionsEmpty: null,
   snapshotUserAnswer: {},
   updateAnswerError: null,
-  answerErrorContent: ''
+  errorTypeMsg: '',
+  schemeError: null,
+  saveFlagErrorContent: null
 }
 
 const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
@@ -41,28 +51,28 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         },
         snapshotUserAnswer: state.question.isCategoryQuestion
           ? state.userAnswers[action.questionId][state.selectedCategoryId]
-          : state.userAnswers[action.questionId]
+          : state.userAnswers[action.questionId],
+        errorTypeMsg: errorTypes[1]
       }
 
     case `${types.UPDATE_USER_ANSWER_SUCCESS}_${name}`:
       return {
         ...state,
         snapshotUserAnswer: {},
-        updateAnswerError: null
+        updateAnswerError: null,
+        errorTypeMsg: ''
       }
 
     case `${types.UPDATE_USER_ANSWER_FAIL}_${name}`:
       return {
         ...state,
-        updateAnswerError: true,
-        answerErrorContent: 'We couldn\'t update your answer to this question. Your answer will be reset to the previous answer.'
+        updateAnswerError: true
       }
 
     case `${types.CLEAR_ANSWER_ERROR}_${name}`:
       return {
         ...state,
         updateAnswerError: null,
-        answerErrorContent: '',
         snapshotUserAnswer: {},
         userAnswers: {
           ...state.userAnswers,
@@ -70,6 +80,7 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
             ? { [state.selectedCategoryId]: { ...state.snapshotUserAnswer } }
             : { ...state.snapshotUserAnswer }
         },
+        errorTypeMsg: ''
       }
 
     case `${types.ON_CHANGE_PINCITE}_${name}`:
@@ -78,7 +89,8 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         ...questionUpdater('answers', handleUserPinciteQuestion),
         snapshotUserAnswer: state.question.isCategoryQuestion
           ? state.userAnswers[action.questionId][state.selectedCategoryId]
-          : state.userAnswers[action.questionId]
+          : state.userAnswers[action.questionId],
+        errorTypeMsg: errorTypes[3]
       }
 
     case `${types.ON_CHANGE_COMMENT}_${name}`:
@@ -87,7 +99,8 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         ...questionUpdater('comment', action.comment),
         snapshotUserAnswer: state.question.isCategoryQuestion
           ? state.userAnswers[action.questionId][state.selectedCategoryId]
-          : state.userAnswers[action.questionId]
+          : state.userAnswers[action.questionId],
+        errorTypeMsg: errorTypes[2]
       }
 
     case `${types.ON_CHANGE_CATEGORY}_${name}`:
@@ -139,7 +152,8 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         ...questionUpdater('answers', handleClearAnswers),
         snapshotUserAnswer: state.question.isCategoryQuestion
           ? state.userAnswers[action.questionId][state.selectedCategoryId]
-          : state.userAnswers[action.questionId]
+          : state.userAnswers[action.questionId],
+        errorTypeMsg: errorTypes[4]
       }
 
     case `${types.ON_CLOSE_SCREEN}_${name}`:

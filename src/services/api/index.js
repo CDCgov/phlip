@@ -172,7 +172,7 @@ export default {
 
   // Validates a question for a jurisdiction and project, called in Validation/logic
   validateQuestion(projectId, jurisdictionId, questionId, updatedQuestion) {
-    return api.put(`/project/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`, updatedQuestion)
+    return api.put(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`, updatedQuestion)
       .then(res => res.data)
   },
 

@@ -57,30 +57,46 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
-    case types.ON_SAVE_RED_FLAG:
-      const curQuestion = { ...state.scheme.byId[action.questionId] }
+    case types.ON_SAVE_RED_FLAG_SUCCESS:
+      const curQuestion = { ...state.scheme.byId[state.question.id] }
       return {
         ...state,
         question: {
           ...state.question,
-          flags: [action.flagInfo]
+          flags: [action.payload]
         },
         scheme: {
           ...state.scheme,
           byId: {
             ...state.scheme.byId,
-            [action.questionId]: {
+            [state.question.id]: {
               ...curQuestion,
-              flags: [action.flagInfo]
+              flags: [action.payload]
             }
           }
         }
       }
 
+    case types.ON_SAVE_RED_FLAG_FAIL:
+      return {
+        ...state,
+       saveFlagErrorContent: 'We couldn\'t save the red flag for this question.'
+      }
+
+    case types.DISMISS_API_ALERT:
+      return {
+        ...state,
+        [action.alertType]: null
+      }
+
     case types.ON_SAVE_FLAG:
       return {
         ...state,
-        ...questionUpdater('flag', action.flagInfo)
+        ...questionUpdater('flag', action.flagInfo),
+        errorTypeMsg: 'We couldn\'t save your flag for this question. Your flag will be reset to the previous state.',
+        snapshotUserAnswer: state.question.isCategoryQuestion
+          ? state.userAnswers[action.questionId][state.selectedCategoryId]
+          : state.userAnswers[action.questionId],
       }
 
     case types.GET_CODING_OUTLINE_FAIL:
@@ -98,6 +114,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...action.payload.otherUpdates,
       }
 
+    case types.ON_SAVE_RED_FLAG_REQUEST:
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
     case types.GET_CODING_OUTLINE_REQUEST:
     default:
@@ -111,7 +128,10 @@ export const codingHandlers = [
   'GET_CODING_OUTLINE_FAIL',
   'GET_USER_CODED_QUESTIONS_REQUEST',
   'GET_USER_CODED_QUESTIONS_SUCCESS',
-  'ON_SAVE_RED_FLAG',
+  'ON_SAVE_RED_FLAG_REQUEST',
+  'ON_SAVE_RED_FLAG_SUCCESS',
+  'ON_SAVE_RED_FLAG_FAIL',
+  'DISMISS_API_ALERT',
   'ON_SAVE_FLAG'
 ]
 

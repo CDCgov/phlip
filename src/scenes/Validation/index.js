@@ -43,6 +43,7 @@ export class Validation extends Component {
     } else {
       this.props.actions.clearFlag(this.state.flagToDelete.id, this.props.projectId, this.props.jurisdictionId, this.props.question.id)
     }
+
     this.setState({
       flagConfirmAlertOpen: false,
       flagToDelete: null

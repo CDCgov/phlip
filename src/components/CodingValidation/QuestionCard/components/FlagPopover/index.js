@@ -11,7 +11,7 @@ import Table from 'components/Table'
 import TableRow from 'components/TableRow'
 import TableCell from 'components/TableCell'
 import Popover from './components/Popover'
-import { updater } from 'utils'
+import { Flag, Report } from 'mdi-material-ui'
 
 const getFlagText = (color, text, disabled) => (
   <Row displayFlex style={{ alignItems: 'center' }}>
@@ -259,7 +259,7 @@ export class FlagPopover extends Component {
           title="Flags"
           open={this.state.otherFlagOpen}
           target={{
-            icon: 'flag',
+            icon: <Flag />,
             color: this.props.userFlag.type !== 0 ? this.userFlagColors[this.props.userFlag.type].color : '#d7e0e4',
             tooltip: 'Flag this question',
             id: 'flag-question'

@@ -290,7 +290,8 @@ const withCodingValidation = (WrappedComponent, actions) => {
       selectedCategory: pageState.selectedCategory,
       schemeError: pageState.schemeError || null,
       updateAnswerError: pageState.updateAnswerError || null,
-      answerErrorContent: pageState.answerErrorContent || ''
+      answerErrorContent: pageState.errorTypeMsg || '',
+      saveFlagErrorContent: pageState.saveFlagErrorContent || null
     }
   }
 
