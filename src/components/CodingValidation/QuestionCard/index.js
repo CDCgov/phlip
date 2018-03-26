@@ -13,6 +13,7 @@ import FlagPopover from './components/FlagPopover'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getInitials } from 'utils/normalize'
+import Alert from 'components/Alert'
 
 const TabContainer = props => {
   return (
@@ -25,11 +26,46 @@ const TabContainer = props => {
 export class QuestionCard extends Component {
   constructor(props, context) {
     super(props, context)
+    this.state = {
+      categoryToUncheck: {},
+      confirmCategoryUncheckOpen: false
+    }
+  }
+
+  // Need to check if the user is un-checking a category
+  onChangeAnswer = id => (event, value) => {
+    if (this.props.question.questionType === questionTypes.CATEGORY) {
+      if (this.props.userAnswers.answers.hasOwnProperty(id)) {
+        this.setState({
+          confirmCategoryUncheckOpen: true,
+          categoryToUncheck: { id, event, value }
+        })
+      } else {
+        this.props.onChange(id)(event, value)
+      }
+    } else {
+      this.props.onChange(id)(event, value)
+    }
+  }
+
+  onCancel = () => {
+    this.setState({
+      confirmCategoryUncheckOpen: false,
+      categoryToUncheck: {}
+    })
+  }
+
+  onContinue = () => {
+    this.props.onChange(this.state.categoryToUncheck.id)(this.state.categoryToUncheck.event, this.state.categoryToUncheck.value)
+    this.setState({
+      confirmCategoryUncheckOpen: false,
+      categoryToUncheck: {}
+    })
   }
 
   render() {
     const questionContentProps = {
-      onChange: this.props.onChange,
+      onChange: this.onChangeAnswer,
       onChangeTextAnswer: this.props.onChangeTextAnswer,
       onOpenFlagConfirmAlert: this.props.onOpenFlagConfirmAlert,
       currentUserInitials: getInitials(this.props.user.firstName, this.props.user.lastName),
@@ -39,15 +75,37 @@ export class QuestionCard extends Component {
       userAnswers: this.props.userAnswers,
       comment: this.props.userAnswers.comment,
       isValidation: this.props.isValidation,
-      mergedUserQuestions: this.props.mergedUserQuestions,
+      mergedUserQuestions: this.props.mergedUserQuestions
     }
+
+    const alertActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.onCancel
+      },
+      {
+        value: 'Continue',
+        type: 'button',
+        onClick: this.onContinue
+      }
+    ]
 
     return (
       <Row displayFlex style={{ flex: '1 0 50%' }}>
+        <Alert
+          text="Unselecting a category will remove any answers associated to this category. Do you wish to continue?"
+          actions={alertActions}
+          open={this.state.confirmCategoryUncheckOpen}
+        />
         <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
           <Row displayFlex style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
             {this.props.question.questionType !== questionTypes.CATEGORY &&
-            <IconButton onClick={this.props.onClearAnswer} aria-label="Clear answer" tooltipText="Clear answer" id="clear-answer">
+            <IconButton
+              onClick={this.props.onClearAnswer}
+              aria-label="Clear answer"
+              tooltipText="Clear answer"
+              id="clear-answer">
               <Broom className={styles.sweep} aria-labelledby="Clear answer" />
             </IconButton>}
             {!this.props.isValidation && <FlagPopover
@@ -58,7 +116,10 @@ export class QuestionCard extends Component {
           </Row>
           <Divider />
           {this.props.categories !== undefined
-            ? <TabContainer tabs={this.props.categories} selected={this.props.selectedCategory} onChangeCategory={this.props.onChangeCategory}>
+            ? <TabContainer
+              tabs={this.props.categories}
+              selected={this.props.selectedCategory}
+              onChangeCategory={this.props.onChangeCategory}>
               <QuestionContent {...questionContentProps} />
             </TabContainer>
             : <QuestionContent{...questionContentProps} />
