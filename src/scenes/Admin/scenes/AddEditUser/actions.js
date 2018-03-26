@@ -14,3 +14,5 @@ export const onCloseAddEditUser = () => ({ type: types.ON_CLOSE_ADD_EDIT_USER })
 
 export const getUserPictureRequest = userId => ({ type: types.GET_USER_IMAGE_REQUEST, userId })
 export const deleteUserPictureRequest = (userId, operation) => ({ type: types.DELETE_USER_IMAGE_REQUEST, userId, operation })
+
+export const loadAddEditAvatar = (avatar) => ({ type: types.LOAD_ADD_EDIT_AVATAR, avatar })

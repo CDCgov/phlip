@@ -80,14 +80,11 @@ export class AvatarForm extends Component {
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
           {this.state.isEdit
             ? <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
-              <Avatar cardAvatar style={{ width: '200px', height: '200px' }} src={this.props.location.state.avatarUrl} />
+              <Avatar cardAvatar style={{ width: '200px', height: '200px' }} avatar={this.props.location.state.avatar} />
             </Container>
             : <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
-              <Avatar cardAvatar style={{ width: '200px', height: '200px' }} src={this.state.editFile.file.base64} />
+              <Avatar cardAvatar style={{ width: '200px', height: '200px' }} avatar={this.state.editFile.file.base64} />
             </Container>}
-          {/* <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
-            <Avatar cardAvatar style={{ width: '200px', height: '200px' }} src={this.state.editFile.file.base64 || this.props.location.state.avatarUrl} />
-          </Container> */}
         </ModalContent>
         <ModalActions edit={true} actions={this.state.isEdit ? formEditActions : formActions}></ModalActions>
       </FormModal>

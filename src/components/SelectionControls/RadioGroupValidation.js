@@ -40,7 +40,7 @@ export const RadioGroup = props => {
               && mergedUserQuestions !== null
               && <Avatar
                 cardAvatar
-                avatarUrl={userAnswers.validatedBy.avatar || userAnswers.validatedBy.avatarUrl}
+                avatar={userAnswers.validatedBy.avatar}
                 style={{ backgroundColor: 'white', color: '#35ac74', borderColor: '#35ac74' }}
                 key={mergedUserQuestions.answers.length + 1}
                 initials={userAnswers.validatedBy === null

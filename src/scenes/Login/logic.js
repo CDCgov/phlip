@@ -22,11 +22,11 @@ export const loginLogic = createLogic({
       error = 'could not get bookmarks'
     }
 
-    try {
-      avatar = await api.getUserImage(user.id)
-    } catch (e) {
-      error = 'failed to get avatar image'
-    }
+    // try {
+    //   avatar = await api.getUserImage(user.id)
+    // } catch (e) {
+    //   error = 'failed to get avatar image'
+    // }
 
     return {
       ...user,
@@ -34,8 +34,7 @@ export const loginLogic = createLogic({
         arr.push(project.projectId)
         return arr
       }, []),
-      error,
-      avatar
+      error
     }
   }
 })

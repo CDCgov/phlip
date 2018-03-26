@@ -106,7 +106,7 @@ export class ValidationAvatar extends Component {
           onCopy={this.hasPincite(this.props.answer.pincite) && this.handlePinciteCopy}>
           <Avatar
             cardAvatar
-            avatarUrl={this.props.answer.avatar}
+            avatar={this.props.answer.avatar}
             initials={this.state.initials}
             onMouseOver={this.handleOpen}
             onMouseOut={this.handleClose}

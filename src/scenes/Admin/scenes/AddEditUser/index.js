@@ -22,6 +22,7 @@ import TextLink from 'components/TextLink'
 import Button from 'components/Button'
 import Tooltip from 'components/Tooltip'
 import compressImage from 'browser-compress-image'
+import Alert from 'components/Alert'
 
 
 const rowStyles = {
@@ -33,7 +34,7 @@ export class AddEditUser extends Component {
     form: PropTypes.object,
     formName: PropTypes.string,
     users: PropTypes.array,
-    avatarUrl: PropTypes.string,
+    avatar: PropTypes.string,
     currentUser: PropTypes.object,
     actions: PropTypes.object,
     formActions: PropTypes.object,
@@ -45,9 +46,9 @@ export class AddEditUser extends Component {
 
   constructor(props, context) {
     super(props, context)
-    this.selectedUser = undefined
     this.state = {
-      file: null
+      file: null,
+      selectedUser: null
     }
   }
 
@@ -85,27 +86,37 @@ export class AddEditUser extends Component {
     const id = this.props.match.params.id
 
     if (id && this.props.users.length > 0) {
-      this.selectedUser = getUserById(this.props.users, id)
+      this.state.selectedUser = getUserById(this.props.users, id)
+      this.props.actions.loadAddEditAvatar(this.state.selectedUser.avatar)
       // this.props.actions.getUserPictureRequest(id)
     }
 
   }
 
   openAvatarForm = files => {
-    compressImage(files.fileList[0]).then(({ shrunkBase64, compressedFile }) => {
+    const maxSize = 500000
 
-      files.file = compressedFile
-      files.base64 = shrunkBase64
+    if (files.fileList[0].size > maxSize) {
+      console.log('file too big')
+    } else {
+      compressImage(files.fileList[0]).then(({ shrunkBase64, compressedFile }) => {
 
-      this.props.history.push({
-        pathname: `/admin/edit/user/${this.selectedUser.id}/avatar`,
-        state: {
-          file: files,
 
-          userId: this.selectedUser.id
-        }
+        files.file = compressedFile
+        files.base64 = shrunkBase64
+
+
+        this.props.history.push({
+          pathname: `/admin/edit/user/${this.state.selectedUser.id}/avatar`,
+          state: {
+            file: files,
+
+            userId: this.state.selectedUser.id
+          }
+        })
       })
-    })
+    }
+
 
   }
 
@@ -147,29 +158,29 @@ export class AddEditUser extends Component {
     return (
       <ModalForm
         open={true}
-        title={this.selectedUser ? 'Edit User' : 'Add New User'}
+        title={this.state.selectedUser ? 'Edit User' : 'Add New User'}
         actions={actions}
         form="addEditUser"
         handleSubmit={this.handleSubmit}
         asyncValidate={this.validateEmail}
-        initialValues={this.selectedUser || {}}
+        initialValues={this.state.selectedUser || {}}
         asyncBlurFields={['email']}
         onClose={this.props.onCloseModal}
         width="600px"
         height="400px">
         <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
           <Row displayFlex style={{ ...rowStyles, justifyContent: 'space-between' }}>
-            {this.selectedUser ? <Column style={{ paddingRight: 30 }}>
-              {this.selectedUser.avatar ? <Tooltip text="Edit photo" placement="top" aria-label="Edit picture" id="edit-picture">
+            {this.state.selectedUser ? <Column style={{ paddingRight: 30 }}>
+              {(this.props.avatar) ? <Tooltip text="Edit photo" placement="top" aria-label="Edit picture" id="edit-picture">
                 <TextLink
                   to={{
-                    pathname: `/admin/edit/user/${this.selectedUser.id}/avatar`,
-                    state: { isEdit: true, userId: this.selectedUser.id, avatarUrl: this.selectedUser.avatar }
+                    pathname: `/admin/edit/user/${this.state.selectedUser.id}/avatar`,
+                    state: { isEdit: true, userId: this.state.selectedUser.id, avatar: this.state.selectedUser.avatar }
                   }}>
                   <Avatar
                     cardAvatar
                     style={{ width: '65px', height: '65px' }}
-                    avatarUrl={this.selectedUser.avatar} /></TextLink>
+                    avatar={this.props.avatar} /></TextLink>
               </Tooltip>
                 : <ReactFileReader base64={true} fileTypes={['.jpg']} handleFiles={this.openAvatarForm}>
                   <IconButton

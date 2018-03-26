@@ -10,6 +10,7 @@ function userReducer(state = INITIAL_STATE, action) {
 
     case types.UPDATE_CURRENT_USER:
     case types.LOGIN_USER_SUCCESS:
+      // console.log(action.payload)
       return {
         ...state,
         currentUser: action.payload

@@ -2,7 +2,7 @@ import * as types from './actionTypes'
 import { createAvatarUrl } from 'utils/urlHelper'
 
 const INITIAL_STATE = {
-  avatarUrl: null
+  avatar: null
 }
 
 export default function addEditUserReducer(state = INITIAL_STATE, action) {
@@ -11,13 +11,19 @@ export default function addEditUserReducer(state = INITIAL_STATE, action) {
     case types.GET_USER_IMAGE_SUCCESS:
       return {
         ...state,
-        avatarUrl: action.payload
+        avatar: action.payload
       }
 
     case types.ADD_USER_IMAGE_SUCCESS:
       return {
         ...state,
-        avatarUrl: action.payload
+        avatar: action.payload
+      }
+
+    case types.LOAD_ADD_EDIT_AVATAR:
+      return {
+        ...state,
+        avatar: action.avatar
       }
 
     case types.DELETE_USER_IMAGE_SUCCESS:
