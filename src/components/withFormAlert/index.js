@@ -9,7 +9,8 @@ export const withFormAlert = (WrappedComponent) => {
     state = {
       open: false,
       text: null,
-      actions: []
+      actions: [],
+      title: null
     }
 
     constructor(props, context) {
@@ -20,7 +21,8 @@ export const withFormAlert = (WrappedComponent) => {
       this.setState({
         open: false,
         text: null,
-        actions: []
+        actions: [],
+        title: null
       })
     }
 
@@ -31,7 +33,7 @@ export const withFormAlert = (WrappedComponent) => {
 
     onContinue = () => {
       this.props.formActions.reset(this.props.formName)
-      this.setState({ open: false, text: null, actions: [] })
+      this.setState({ open: false, text: null, actions: [], title: null })
       this.props.history.goBack()
     }
 
@@ -61,7 +63,8 @@ export const withFormAlert = (WrappedComponent) => {
               type: 'button',
               onClick: this.onContinue
             }
-          ]
+          ],
+          title: null
         })
       } else {
         this.props.history.goBack()

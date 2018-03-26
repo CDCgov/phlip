@@ -37,9 +37,6 @@ export class AddEditProject extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('this.props', this.props)
-    console.log('nextProps', nextProps)
-    console.log('this.state', this.state)
     if (this.state.submitting === true) {
       if (nextProps.formError !== null) {
         this.setState({
