@@ -20,7 +20,10 @@ const INITIAL_STATE = {
   showNextButton: true,
   mergedUserQuestions: null,
   isSchemeEmpty: null,
-  areJurisdictionsEmpty: null
+  areJurisdictionsEmpty: null,
+  snapshotUserAnswer: {},
+  updateAnswerError: null,
+  answerErrorContent: ''
 }
 
 const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
@@ -35,7 +38,38 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         userAnswers: {
           ...state.userAnswers,
           ...handleUpdateUserAnswers(state, action, state.selectedCategoryId)
-        }
+        },
+        snapshotUserAnswer: state.question.isCategoryQuestion
+          ? state.userAnswers[action.questionId][state.selectedCategoryId]
+          : state.userAnswers[action.questionId]
+      }
+
+    case `${types.UPDATE_USER_ANSWER_SUCCESS}_${name}`:
+      return {
+        ...state,
+        snapshotUserAnswer: {},
+        updateAnswerError: null
+      }
+
+    case `${types.UPDATE_USER_ANSWER_FAIL}_${name}`:
+      return {
+        ...state,
+        updateAnswerError: true,
+        answerErrorContent: 'We couldn\'t update your answer to this question. Your answer will be reset to the previous answer.'
+      }
+
+    case `${types.CLEAR_ANSWER_ERROR}_${name}`:
+      return {
+        ...state,
+        updateAnswerError: null,
+        answerErrorContent: '',
+        snapshotUserAnswer: {},
+        userAnswers: {
+          ...state.userAnswers,
+          [state.question.id]: state.question.isCategoryQuestion
+            ? { [state.selectedCategoryId]: { ...state.snapshotUserAnswer } }
+            : { ...state.snapshotUserAnswer }
+        },
       }
 
     case `${types.ON_CHANGE_PINCITE}_${name}`:

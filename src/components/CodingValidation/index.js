@@ -19,6 +19,7 @@ import Alert from 'components/Alert'
 import Tooltip from 'components/Tooltip'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
 import ApiErrorView from 'components/ApiErrorView'
+import ApiErrorAlert from 'components/ApiErrorAlert'
 
 const navButtonStyles = {
   height: 90,
@@ -131,6 +132,10 @@ const withCodingValidation = (WrappedComponent, actions) => {
       })
     }
 
+    onCloseAlert = () => {
+      this.props.actions.clearAnswerError()
+    }
+
     onCloseApplyAllAlert = () => {
       this.setState({
         applyAllAlertOpen: false
@@ -203,6 +208,10 @@ const withCodingValidation = (WrappedComponent, actions) => {
             open={this.state.applyAllAlertOpen}
             text="You are applying your answer to ALL categories. Previously answered questions will be changed."
             actions={this.modalActions} />
+          <ApiErrorAlert
+            open={this.props.updateAnswerError !== null}
+            content={this.props.answerErrorContent}
+            onCloseAlert={this.onCloseAlert} />
           <Navigator
             open={this.state.navOpen}
             page={this.props.page}
@@ -279,7 +288,9 @@ const withCodingValidation = (WrappedComponent, actions) => {
       userRole: state.data.user.currentUser.role,
       user: state.data.user.currentUser,
       selectedCategory: pageState.selectedCategory,
-      schemeError: pageState.schemeError || null
+      schemeError: pageState.schemeError || null,
+      updateAnswerError: pageState.updateAnswerError || null,
+      answerErrorContent: pageState.answerErrorContent || ''
     }
   }
 

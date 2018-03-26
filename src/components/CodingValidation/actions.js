@@ -55,6 +55,10 @@ export const actions = {
     type: types.ON_CLOSE_SCREEN,
     args: []
   },
+  clearAnswerError: {
+    type: types.CLEAR_ANSWER_ERROR,
+    args: []
+  },
   onClearAnswer: {
     type: types.ON_CLEAR_ANSWER,
     args: ['projectId', 'jurisdictionId', 'questionId']
