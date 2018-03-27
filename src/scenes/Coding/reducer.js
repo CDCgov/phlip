@@ -1,6 +1,7 @@
 import {
   handleUpdateUserCodedQuestion,
   handleUpdateUserCategoryChild,
+  generateError
 } from 'utils/codingHelpers'
 import { sortList } from 'utils'
 import * as codingValidationTypes from 'scenes/Coding/actionTypes'
@@ -19,7 +20,10 @@ const INITIAL_STATE = {
   selectedCategoryId: null,
   userAnswers: {},
   showNextButton: true,
-  mergedUserQuestions: null
+  mergedUserQuestions: null,
+  schemeError: null,
+  getQuestionErrors: null,
+  codedQuestionsError: null
 }
 
 const codingReducer = (state = INITIAL_STATE, action) => {
@@ -38,10 +42,12 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           userAnswers: {},
           categories: undefined,
           areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty,
-          isSchemeEmpty: action.payload.isSchemeEmpty
+          isSchemeEmpty: action.payload.isSchemeEmpty,
+          schemeError: null
         }
       } else {
         sortList(action.payload.question.possibleAnswers, 'order', 'asc')
+        const errors = generateError(action.payload.errors)
         return {
           ...state,
           outline: action.payload.outline,
@@ -50,46 +56,80 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           userAnswers: action.payload.userAnswers,
           categories: undefined,
           areJurisdictionsEmpty: false,
-          isSchemeEmpty: false
+          isSchemeEmpty: false,
+          schemeError: null,
+          getQuestionErrors: errors.length > 0 ? errors : null,
+          codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null
         }
       }
 
-    case types.ON_SAVE_RED_FLAG:
-      const curQuestion = { ...state.scheme.byId[action.questionId] }
+    case types.ON_SAVE_RED_FLAG_SUCCESS:
+      const curQuestion = { ...state.scheme.byId[state.question.id] }
       return {
         ...state,
         question: {
           ...state.question,
-          flags: [action.flagInfo]
+          flags: [action.payload]
         },
         scheme: {
           ...state.scheme,
           byId: {
             ...state.scheme.byId,
-            [action.questionId]: {
+            [state.question.id]: {
               ...curQuestion,
-              flags: [action.flagInfo]
+              flags: [action.payload]
             }
           }
         }
       }
 
+    case types.ON_SAVE_RED_FLAG_FAIL:
+      return {
+        ...state,
+       saveFlagErrorContent: 'We couldn\'t save the red flag for this question.'
+      }
+
     case types.ON_SAVE_FLAG:
       return {
         ...state,
-        ...questionUpdater('flag', action.flagInfo)
+        ...questionUpdater('flag', action.flagInfo),
+        errorTypeMsg: 'We couldn\'t save your flag for this question. Your flag will be reset to the previous state.',
+        snapshotUserAnswer: state.question.isCategoryQuestion
+          ? state.userAnswers[action.questionId][state.selectedCategoryId]
+          : state.userAnswers[action.questionId],
+      }
+
+    case types.GET_CODING_OUTLINE_FAIL:
+      return {
+        ...state,
+        schemeError: action.payload
       }
 
     case types.GET_USER_CODED_QUESTIONS_SUCCESS:
+      const errors = generateError(action.payload.errors)
       return {
         ...state,
         userAnswers: action.payload.userAnswers,
         question: action.payload.question,
         scheme: action.payload.scheme,
+        getQuestionErrors: errors.length > 0 ? errors : null,
+        codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
         ...action.payload.otherUpdates,
       }
 
+    case types.GET_USER_CODED_QUESTIONS_FAIL:
+      return {
+        ...state,
+        getQuestionsError: ''
+      }
+
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
+      return {
+        ...state,
+        codedQuestionsError: null
+      }
+
+    case types.ON_SAVE_RED_FLAG_REQUEST:
     case types.GET_CODING_OUTLINE_REQUEST:
     default:
       return state
@@ -99,9 +139,12 @@ const codingReducer = (state = INITIAL_STATE, action) => {
 export const codingHandlers = [
   'GET_CODING_OUTLINE_REQUEST',
   'GET_CODING_OUTLINE_SUCCESS',
+  'GET_CODING_OUTLINE_FAIL',
   'GET_USER_CODED_QUESTIONS_REQUEST',
   'GET_USER_CODED_QUESTIONS_SUCCESS',
-  'ON_SAVE_RED_FLAG',
+  'ON_SAVE_RED_FLAG_REQUEST',
+  'ON_SAVE_RED_FLAG_SUCCESS',
+  'ON_SAVE_RED_FLAG_FAIL',
   'ON_SAVE_FLAG'
 ]
 

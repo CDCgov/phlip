@@ -1,8 +1,10 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import Alert from 'components/Alert'
 import PropTypes from 'prop-types'
 import actions, * as otherActions from './actions'
 import withCodingValidation from 'components/CodingValidation'
+import ApiErrorAlert from 'components/ApiErrorAlert'
+import Typography from 'material-ui/Typography'
 
 export class Validation extends Component {
   constructor(props, context) {
@@ -39,10 +41,11 @@ export class Validation extends Component {
 
   onClearFlag = () => {
     if (this.state.flagToDelete.type === 3) {
-      this.props.actions.clearRedFlag(this.state.flagToDelete.id, this.props.question.id)
+      this.props.actions.clearRedFlag(this.state.flagToDelete.id, this.props.question.id, this.props.projectId)
     } else {
       this.props.actions.clearFlag(this.state.flagToDelete.id, this.props.projectId, this.props.jurisdictionId, this.props.question.id)
     }
+
     this.setState({
       flagConfirmAlertOpen: false,
       flagToDelete: null
@@ -58,11 +61,16 @@ export class Validation extends Component {
 
   render() {
     return (
-      <Alert
-        open={this.state.flagConfirmAlertOpen}
-        text="Are you sure you want to clear this flag?"
-        actions={this.confirmAlertActions}
-      />
+      <Fragment>
+        <Alert open={this.state.flagConfirmAlertOpen} actions={this.confirmAlertActions}>
+          <Typography variant="body1">Are you sure you want to clear this flag?</Typography>
+        </Alert>
+
+        <ApiErrorAlert
+          content={this.props.saveFlagErrorContent}
+          open={this.props.saveFlagErrorContent !== null}
+          onCloseAlert={() => this.props.actions.dismissApiAlert('saveFlagErrorContent')} />
+      </Fragment>
     )
   }
 }

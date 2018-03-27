@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import actions, * as otherActions from './actions'
 import withCodingValidation from 'components/CodingValidation'
+import ApiErrorAlert from 'components/ApiErrorAlert'
 
 export class Coding extends Component {
   constructor(props, context) {
@@ -40,7 +41,14 @@ export class Coding extends Component {
     }
   }
 
-  render() {}
+  render() {
+    return (
+      <ApiErrorAlert
+        content={this.props.saveFlagErrorContent}
+        open={this.props.saveFlagErrorContent !== null}
+        onCloseAlert={() => this.props.actions.dismissApiAlert('saveFlagErrorContent')} />
+    )
+  }
 }
 
 Coding.propTypes = {

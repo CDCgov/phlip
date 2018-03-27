@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -6,14 +6,14 @@ import { withRouter } from 'react-router'
 import { Route } from 'react-router-dom'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import Button from 'components/Button'
-import Container, { Column } from 'components/Layout'
+import Container, { Column, Row } from 'components/Layout'
 import JurisdictionList from './components/JurisdictionList'
 import * as actions from './actions'
 import JurisdictionForm from './components/JurisdictionForm'
-import { normalize } from 'utils'
 import Divider from 'material-ui/Divider'
 import Typography from 'material-ui/Typography'
 import TextLink from 'components/TextLink'
+import ApiErrorView from 'components/ApiErrorView'
 
 export class AddEditJurisdictions extends Component {
   static propTypes = {
@@ -55,9 +55,7 @@ export class AddEditJurisdictions extends Component {
               <span style={{ color: '#0faee6' }}>{this.props.project.name}</span>
             </Typography>
           }
-          buttons={this.getButton()}
-          editButton={false}
-          closeButton={false}
+          buttons={this.props.error === true ? [] : this.getButton()}
           onCloseForm={this.onCloseModal}
           search
           SearchBarProps={{
@@ -70,7 +68,9 @@ export class AddEditJurisdictions extends Component {
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
           <Container flex style={{ marginTop: 20 }}>
             <Column flex displayFlex style={{ overflowX: 'auto' }}>
-              <JurisdictionList jurisdictions={this.props.visibleJurisdictions} projectId={this.props.project.id} />
+              {this.props.error === true
+                ? <ApiErrorView error={this.props.errorContent}/>
+                : <JurisdictionList jurisdictions={this.props.visibleJurisdictions} projectId={this.props.project.id} />}
             </Column>
           </Container>
         </ModalContent>
@@ -92,7 +92,9 @@ export class AddEditJurisdictions extends Component {
 
 const mapStateToProps = (state, ownProps) => ({
   project: state.scenes.home.main.projects.byId[ownProps.match.params.id],
-  visibleJurisdictions: state.scenes.home.addEditJurisdictions.visibleJurisdictions || []
+  visibleJurisdictions: state.scenes.home.addEditJurisdictions.visibleJurisdictions || [],
+  error: state.scenes.home.addEditJurisdictions.error || false,
+  errorContent: state.scenes.home.addEditJurisdictions.errorContent || ''
 })
 
 const mapDispatchToProps = (dispatch) => ({

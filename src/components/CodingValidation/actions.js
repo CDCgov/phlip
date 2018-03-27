@@ -55,6 +55,14 @@ export const actions = {
     type: types.ON_CLOSE_SCREEN,
     args: []
   },
+  clearAnswerError: {
+    type: types.CLEAR_ANSWER_ERROR,
+    args: []
+  },
+  dismissApiAlert: {
+    type: types.DISMISS_API_ALERT,
+    args: ['errorType']
+  },
   onClearAnswer: {
     type: types.ON_CLEAR_ANSWER,
     args: ['projectId', 'jurisdictionId', 'questionId']

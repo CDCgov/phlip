@@ -5,7 +5,12 @@ const initial = {
   questions: [],
   outline: {},
   allowHover: true,
-  flatQuestions: []
+  flatQuestions: [],
+  formError: null,
+  previousOutline: {},
+  previousQuestions: [],
+  reorderError: null,
+  schemeError: null
 }
 
 const getState = other => ({ ...initial, ...other })
@@ -40,6 +45,7 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [
           { text: 'fa la la la', type: 1, hovering: false, id: 1, expanded: true, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
           { text: 'la la la', type: 2, hovering: false, id: 2, expanded: true, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
@@ -50,6 +56,7 @@ describe('Coding Scheme reducer', () => {
         },
         allowHover: true,
         empty: false,
+        error: null,
         flatQuestions: [
           { id: 1, text: 'fa la la la', type: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
           { id: 2, text: 'la la la', type: 2, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
@@ -78,6 +85,7 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [
           { hovering: false, questionBody: 'fa la la la', type: 1 },
           { hovering: true, questionBody: 'la la la', type: 2 }
@@ -107,6 +115,7 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [
           { hovering: false, questionBody: 'fa la la la', type: 1 },
           { hovering: false, questionBody: 'la la la', type: 2 }
@@ -140,6 +149,7 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [
           {
             hovering: false, questionBody: 'fa la la la', type: 1, children: [
@@ -173,6 +183,7 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [
           { hovering: false, questionBody: 'fa la la la', type: 1 },
           { hovering: false, questionBody: 'la la la', type: 2 }
@@ -202,6 +213,7 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [
           { hovering: false, questionBody: 'fa la la la', type: 1 },
           { hovering: false, questionBody: 'la la la', type: 2 }
@@ -239,6 +251,7 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [
           {
             hovering: false,
@@ -255,7 +268,12 @@ describe('Coding Scheme reducer', () => {
           2: { parentId: 0, positionInParent: 0 }
         },
         allowHover: true,
-        flatQuestions: []
+        flatQuestions: [],
+        previousOutline: {},
+        previousQuestions: [
+          { hovering: false, questionBody: 'la la la', type: 2, id: 1 },
+          { hovering: false, questionBody: 'fa la la la', type: 1, id: 2 }
+        ]
       })
     })
   })
@@ -271,6 +289,7 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [],
         outline: {},
         allowHover: true,
@@ -290,6 +309,7 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [],
         outline: {},
         allowHover: false,

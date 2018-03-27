@@ -39,7 +39,8 @@ export class AddEditQuestion extends Component {
     this.parentDefined = this.props.location.state.parentDefined ? this.props.location.state.parentDefined : null
 
     this.state = {
-      edit: this.questionDefined
+      edit: this.questionDefined,
+      submitting: false
     }
 
     this.defaultForm = {
@@ -61,7 +62,23 @@ export class AddEditQuestion extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.state.submitting === true) {
+      if (nextProps.formError !== null) {
+        this.props.onSubmitError(nextProps.formError)
+      } else {
+        this.props.history.goBack()
+      }
+      this.setState({
+        submitting: false
+      })
+    }
+  }
+
   handleSubmit = values => {
+    this.setState({
+      submitting: true
+    })
     let updatedValues = { ...values }
     for (let field of ['text', 'hint']) {
       if (updatedValues[field]) updatedValues[field] = trimWhitespace(values[field])
@@ -84,7 +101,6 @@ export class AddEditQuestion extends Component {
         ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.parentDefined, this.props.location.state.path)
         : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)
 
-    this.props.history.goBack()
   }
 
   onCancel = () => {
@@ -227,7 +243,8 @@ export class AddEditQuestion extends Component {
 const mapStateToProps = (state, ownProps) => ({
   form: state.form.questionForm || {},
   projectId: ownProps.match.params.projectId,
-  formName: 'questionForm'
+  formName: 'questionForm',
+  formError: state.scenes.codingScheme.formError || null
 })
 
 const mapDispatchToProps = (dispatch) => ({

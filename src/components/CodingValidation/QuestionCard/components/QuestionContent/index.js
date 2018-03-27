@@ -15,7 +15,7 @@ import ValidationTable from '../ValidationTable'
 
 export const QuestionContent = props => {
   const {
-    question, currentUserInitials, comment, userAnswers, mergedUserQuestions, isValidation,
+    question, currentUserInitials, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
     onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages
   } = props
 
@@ -44,69 +44,74 @@ export const QuestionContent = props => {
       <Column displayFlex flex style={{ ...questionAnswerPadding, flexBasis: '60%' }}>
         {(question.questionType === questionTypes.MULTIPLE_CHOICE ||
           question.questionType === questionTypes.BINARY) &&
-          <Row flex displayFlex style={{ ...answerPadding, paddingRight: 0, overflow: 'auto' }}>
-            <RadioGroupValidation
-              choices={question.possibleAnswers}
-              question={question}
-              onChange={onChange}
-              userAnswers={userAnswers}
-              userImages={userImages}
-              onChangePincite={onChangeTextAnswer}
-              mergedUserQuestions={mergedUserQuestions}
-              currentUserInitials={currentUserInitials}
-            />
-          </Row>}
+        <Row flex displayFlex style={{ ...answerPadding, paddingRight: 0, overflow: 'auto' }}>
+          <RadioGroupValidation
+            choices={question.possibleAnswers}
+            question={question}
+            onChange={onChange}
+            userAnswers={userAnswers}
+            onChangePincite={onChangeTextAnswer}
+            mergedUserQuestions={mergedUserQuestions}
+            currentUserInitials={currentUserInitials}
+            disableAll={disableAll}
+            userImages={userImages}
+          />
+        </Row>}
 
         {(question.questionType === questionTypes.CATEGORY ||
           question.questionType === questionTypes.CHECKBOXES) &&
-          <Row flex displayFlex style={{ ...answerPadding, paddingRight: 0, overflow: 'auto' }}>
-            <CheckboxGroupValidation
-              choices={question.possibleAnswers}
-              onChange={onChange}
-              question={question}
-              userAnswers={userAnswers}
-              onChangePincite={onChangeTextAnswer}
-              pincites={question.questionType !== questionTypes.CATEGORY}
-              mergedUserQuestions={mergedUserQuestions}
-              currentUserInitials={currentUserInitials}
-              userImages={userImages}
-            />
-          </Row>}
+        <Row flex displayFlex style={{ ...answerPadding, paddingRight: 0, overflow: 'auto' }}>
+          <CheckboxGroupValidation
+            choices={question.possibleAnswers}
+            onChange={onChange}
+            question={question}
+            userAnswers={userAnswers}
+            onChangePincite={onChangeTextAnswer}
+            pincites={question.questionType !== questionTypes.CATEGORY}
+            mergedUserQuestions={mergedUserQuestions}
+            currentUserInitials={currentUserInitials}
+            disableAll={disableAll}
+            userImages={userImages}
+          />
+        </Row>}
 
         {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions === null &&
-          <Column displayFlex style={{ ...answerPadding, paddingRight: 0 }}>
-            <InputBox
-              rows="7" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
-              value={userAnswers.answers[question.possibleAnswers[0].id]} answerId={question.possibleAnswers[0].id}
-            />
-          </Column>}
+        <Column displayFlex style={{ ...answerPadding, paddingRight: 0 }}>
+          <InputBox
+            rows="7" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
+            value={userAnswers.answers[question.possibleAnswers[0].id]} answerId={question.possibleAnswers[0].id}
+            disabled={disableAll}
+          />
+        </Column>}
 
         {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions !== null &&
-          <TextFieldQuestions
-            style={{ ...answerPadding, paddingRight: 0 }}
-            mergedUserQuestions={mergedUserQuestions}
-            validatorAnswer={userAnswers.answers[question.possibleAnswers[0].id]}
-            userImages={userImages}
-            validator={userAnswers.validatedBy}
-            onChange={onChangeTextAnswer}
-            answerId={question.possibleAnswers[0].id}
-            currentUserInitials={currentUserInitials}
-          />
+        <TextFieldQuestions
+          style={{ ...answerPadding, paddingRight: 0 }}
+          mergedUserQuestions={mergedUserQuestions}
+          validatorAnswer={userAnswers.answers[question.possibleAnswers[0].id]}
+          validator={userAnswers.validatedBy}
+          onChange={onChangeTextAnswer}
+          userImages={userImages}
+          answerId={question.possibleAnswers[0].id}
+          currentUserInitials={currentUserInitials}
+          disabled={disableAll}
+        />
         }
         <Row style={{ ...answerPadding, paddingRight: 0, paddingTop: 20, paddingBottom: 0 }}>
           {question.includeComment &&
-            <Row>
-              <SimpleInput
-                onChange={onChangeTextAnswer(null, 'comment')}
-                name="comment"
-                shrinkLabel={true}
-                style={{ whiteSpace: 'pre-wrap' }}
-                placeholder="Enter comment"
-                value={comment}
-                rowsMax={3}
-                label="Comment"
-              />
-            </Row>}
+          <Row>
+            <SimpleInput
+              onChange={onChangeTextAnswer(null, 'comment')}
+              name="comment"
+              shrinkLabel={true}
+              style={{ whiteSpace: 'pre-wrap' }}
+              placeholder="Enter comment"
+              value={comment}
+              rowsMax={3}
+              label="Comment"
+              disabled={disableAll}
+            />
+          </Row>}
         </Row>
       </Column>
 

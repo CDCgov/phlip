@@ -455,10 +455,6 @@ export const getFinalCodedObject = (state, action, applyAll = false) => {
   return answerObject
 }
 
-export const getSchemeAndCodedQuestions = async (api, getQuestions) => {
-
-}
-
 /*
   Check answered status and send response to create empty validated/coded question
  */
@@ -467,25 +463,30 @@ export const initializeAndCheckAnswered = async (question, codedQuestions, schem
   // will get overwritten (which is what we want, if it exists)
   const coded = [initializeNextQuestion(question), ...codedQuestions]
   const userAnswers = initializeUserAnswers([...coded], schemeById, userId)
+  let initializeErrors = {}
 
   // Check if the first question is answered, if it's not, then send a request to create an empty coded question
   // on the backend. This fixes issues with duplication of text fields answer props
   const answered = userAnswers[question.id].hasOwnProperty('id')
 
   if (!answered) {
-    const { answers, ...questionObj } = userAnswers[question.id]
-    const { codedAnswers, ...q } = await createEmptyQuestion({
-      questionId: question.id,
-      projectId: action.projectId,
-      jurisdictionId: action.jurisdictionId,
-      userId: userId,
-      questionObj: { ...questionObj, codedAnswers: [] }
-    })
-    userAnswers[question.id] = { ...q, ...userAnswers[question.id] }
+    try {
+      const { answers, ...questionObj } = userAnswers[question.id]
+      const { codedAnswers, ...q } = await createEmptyQuestion({
+        questionId: question.id,
+        projectId: action.projectId,
+        jurisdictionId: action.jurisdictionId,
+        userId: userId,
+        questionObj: { ...questionObj, codedAnswers: [] }
+      })
+      userAnswers[question.id] = { ...q, ...userAnswers[question.id] }
+    } catch (error) {
+      initializeErrors = { 'initializeEmpty': 'We couldn\'t initialize this question. Unfortunately, you will not be able to answer it at this time.' }
+    }
   }
 
   // Return initialized user answers object
-  return { userAnswers }
+  return { userAnswers, initializeErrors }
 }
 
 /*
@@ -493,17 +494,28 @@ export const initializeAndCheckAnswered = async (question, codedQuestions, schem
   the updated user answers object. Called in Validation/logic and Coding/logic
  */
 export const getQuestionAndInitialize = async (state, action, userId, api, createEmptyQuestion, questionInfo) => {
-  let unanswered = [], answered = false, updatedAnswers = { ...state.userAnswers }
+  let unanswered = [], answered = false, updatedAnswers = { ...state.userAnswers },
+    errors = {}, newSchemeQuestion = {},
+    combinedQuestion = { ...state.scheme.byId[questionInfo.question.id] },
+    updatedScheme = { ...state.scheme }
 
   // Get the scheme question from the db in case it has changed
-  const newSchemeQuestion = await api.getSchemeQuestion(questionInfo.question.id, action.projectId)
-  sortList(newSchemeQuestion.possibleAnswers, 'order', 'asc')
-  const combinedQuestion = { ...state.scheme.byId[questionInfo.question.id], ...newSchemeQuestion }
-  const updatedScheme = {
-    ...state.scheme,
-    byId: {
-      ...state.scheme.byId,
-      [combinedQuestion.id]: { ...state.scheme.byId[combinedQuestion.id], ...combinedQuestion }
+  try {
+    newSchemeQuestion = await api.getSchemeQuestion(questionInfo.question.id, action.projectId)
+    sortList(newSchemeQuestion.possibleAnswers, 'order', 'asc')
+    combinedQuestion = { ...state.scheme.byId[questionInfo.question.id], ...newSchemeQuestion }
+    updatedScheme = {
+      ...state.scheme,
+      byId: {
+        ...state.scheme.byId,
+        [combinedQuestion.id]: { ...state.scheme.byId[combinedQuestion.id], ...combinedQuestion }
+      }
+    }
+  } catch (error) {
+    // Couldn't get the updated scheme question so use the old one
+    errors = {
+      newSchemeQuestion:
+        'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
     }
   }
 
@@ -522,23 +534,34 @@ export const getQuestionAndInitialize = async (state, action, userId, api, creat
     }
   }
 
+  const questionObj = {
+    categories: questionInfo.selectedCategoryId === null ? [] : [...unanswered.map(cat => cat.id)],
+    flag: { notes: '', type: 0 },
+    codedAnswers: [],
+    comment: '',
+    schemeQuestionId: combinedQuestion.id
+  }
+
   // If it's not answered create an empty coded question object
   if (!answered) {
-    const question = await createEmptyQuestion({
-      questionId: combinedQuestion.id,
-      projectId: action.projectId,
-      jurisdictionId: action.jurisdictionId,
-      userId,
-      questionObj: {
-        categories: questionInfo.selectedCategoryId === null ? [] : [...unanswered.map(cat => cat.id)],
-        flag: { notes: '', type: 0 },
-        codedAnswers: [],
-        comment: '',
-        schemeQuestionId: combinedQuestion.id
+    try {
+      const question = await createEmptyQuestion({
+        questionId: combinedQuestion.id,
+        projectId: action.projectId,
+        jurisdictionId: action.jurisdictionId,
+        userId,
+        questionObj
+      })
+      updatedAnswers = initializeUserAnswers(combinedQuestion.isCategoryQuestion
+        ? [...question] : [question], updatedScheme, userId, updatedAnswers)
+    } catch (error) {
+      errors = {
+        ...errors,
+        emptyQuestion: 'We couldn\'t initialize this question. Unfortunately, you will not be able to answer it at this time.'
       }
-    })
-    updatedAnswers = initializeUserAnswers(combinedQuestion.isCategoryQuestion
-      ? [...question] : [question], updatedScheme, userId, updatedAnswers)
+      updatedAnswers = initializeUserAnswers(combinedQuestion.isCategoryQuestion
+        ? [...questionObj] : [questionObj], updatedScheme, userId, updatedAnswers)
+    }
   }
 
   const updatedState = {
@@ -553,6 +576,11 @@ export const getQuestionAndInitialize = async (state, action, userId, api, creat
   return {
     question: combinedQuestion,
     currentIndex: questionInfo.index,
-    updatedState
+    updatedState,
+    errors
   }
+}
+
+export const generateError = errorsObj => {
+  return Object.values(errorsObj).join('\n\n')
 }

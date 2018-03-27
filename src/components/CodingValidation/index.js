@@ -18,6 +18,8 @@ import HeaderedLayout from 'components/HeaderedLayout'
 import Alert from 'components/Alert'
 import Tooltip from 'components/Tooltip'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
+import ApiErrorView from 'components/ApiErrorView'
+import ApiErrorAlert from 'components/ApiErrorAlert'
 
 const navButtonStyles = {
   height: 90,
@@ -46,8 +48,9 @@ const withCodingValidation = (WrappedComponent, actions) => {
       this.state = {
         selectedJurisdiction: this.props.jurisdictionId,
         showViews: false,
-        navOpen: true,
-        applyAllAlertOpen: false
+        navOpen: false,
+        applyAllAlertOpen: false,
+        showSchemeError: false
       }
 
       this.modalActions = [
@@ -65,8 +68,16 @@ const withCodingValidation = (WrappedComponent, actions) => {
     }
 
     componentWillReceiveProps(nextProps) {
-      if (nextProps.isSchemeEmpty !== null) {
-        this.setState({ showViews: true })
+      if (this.props.isSchemeEmpty === null) {
+        if (nextProps.isSchemeEmpty !== null) {
+          this.setState({ showViews: true })
+        }
+        if (nextProps.schemeError !== null) {
+          this.setState({ showSchemeError: true })
+        }
+        if (nextProps.isSchemeEmpty === false && nextProps.areJurisdictionsEmpty === false) {
+          this.setState({ navOpen: true })
+        }
       }
     }
 
@@ -90,7 +101,6 @@ const withCodingValidation = (WrappedComponent, actions) => {
       this.props.actions.answerQuestionRequest(
         this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, value
       )
-      this.props.actions.updateEditedFields(this.props.projectId)
     }
 
     onChangeTextAnswer = (id, field) => event => {
@@ -112,13 +122,16 @@ const withCodingValidation = (WrappedComponent, actions) => {
             this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
           )
       }
-      this.props.actions.updateEditedFields(this.props.projectId)
     }
 
     onOpenApplyAllAlert = () => {
       this.setState({
         applyAllAlertOpen: true
       })
+    }
+
+    onCloseAlert = () => {
+      this.props.actions.clearAnswerError()
     }
 
     onCloseApplyAllAlert = () => {
@@ -158,15 +171,15 @@ const withCodingValidation = (WrappedComponent, actions) => {
             </TextLink>}
             {noJurisdictions && this.props.userRole !== 'Coder' &&
             <TextLink to={{ pathname: `/project/${this.props.projectId}/jurisdictions/` }}>
-              <Button value="Add Jurisdictions" color="accent"/>
+              <Button value="Add Jurisdictions" color="accent" />
             </TextLink>}
           </Row>
         </Container>
       )
     }
 
-    onShowCodeView = () => (
-      <Fragment>
+    onShowCodeView = () => {
+      return (<Fragment>
         <QuestionCard
           page={this.props.page}
           onChange={this.onAnswer}
@@ -182,8 +195,8 @@ const withCodingValidation = (WrappedComponent, actions) => {
           getPrevQuestion={this.getPrevQuestion}
           totalLength={this.props.questionOrder.length}
           showNextButton={this.props.showNextButton} />
-      </Fragment>
-    )
+      </Fragment>)
+    }
 
     render() {
       return (
@@ -193,6 +206,14 @@ const withCodingValidation = (WrappedComponent, actions) => {
             open={this.state.applyAllAlertOpen}
             text="You are applying your answer to ALL categories. Previously answered questions will be changed."
             actions={this.modalActions} />
+          <ApiErrorAlert
+            open={this.props.updateAnswerError !== null}
+            content={this.props.answerErrorContent}
+            onCloseAlert={this.onCloseAlert} />
+          <ApiErrorAlert
+            open={this.props.getQuestionErrors !== null}
+            content={this.props.getQuestionErrors}
+            onCloseAlert={() => this.props.actions.dismissApiAlert('getQuestionErrors')} />
           <Navigator
             open={this.state.navOpen}
             page={this.props.page}
@@ -226,7 +247,10 @@ const withCodingValidation = (WrappedComponent, actions) => {
                         <Icon color="white" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
                   </Column>
                   <Column displayFlex flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
-                    {this.state.showViews && (this.props.areJurisdictionsEmpty === true || this.props.isSchemeEmpty === true
+                    {this.state.showSchemeError &&
+                    <ApiErrorView error="We couldn't get the coding scheme for this project." />}
+                    {this.state.showViews &&
+                    (this.props.areJurisdictionsEmpty === true || this.props.isSchemeEmpty === true
                       ? this.onShowGetStartedView(this.props.isSchemeEmpty, this.props.areJurisdictionsEmpty)
                       : this.onShowCodeView())}
                   </Column>
@@ -265,7 +289,12 @@ const withCodingValidation = (WrappedComponent, actions) => {
       areJurisdictionsEmpty: pageState.areJurisdictionsEmpty,
       userRole: state.data.user.currentUser.role,
       user: state.data.user.currentUser,
-      selectedCategory: pageState.selectedCategory
+      selectedCategory: pageState.selectedCategory,
+      schemeError: pageState.schemeError || null,
+      updateAnswerError: pageState.updateAnswerError || null,
+      answerErrorContent: pageState.errorTypeMsg || '',
+      saveFlagErrorContent: pageState.saveFlagErrorContent || null,
+      getQuestionErrors: pageState.getQuestionErrors || null
     }
   }
 

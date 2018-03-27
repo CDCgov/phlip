@@ -41,7 +41,7 @@ export const onSaveFlag = (projectId, jurisdictionId, questionId, flagInfo) => (
 
 // Dispatched when a user saves a red flag for a question in the 'stop coding this question' popover
 export const onSaveRedFlag = (projectId, questionId, flagInfo) => ({
-  type: types.ON_SAVE_RED_FLAG,
+  type: types.ON_SAVE_RED_FLAG_REQUEST,
   projectId,
   questionId,
   flagInfo

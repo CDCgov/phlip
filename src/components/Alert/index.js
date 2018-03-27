@@ -1,15 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Typography from 'material-ui/Typography'
-import Modal, { ModalContent, ModalActions } from 'components/Modal'
+import Modal, { ModalContent, ModalActions, ModalTitle } from 'components/Modal'
 
-export const Alert = ({ text, actions, open }) => {
+export const Alert = ({ actions, open, title, children }) => {
   return (
     <Modal open={open}>
-      <ModalContent>
-        <Typography variant="body1">
-          {text}
-        </Typography>
+      {title !== null && <ModalTitle style={{ display: 'flex', alignItems: 'center' }} title={title} />}
+      <ModalContent style={{ minWidth: 350 }}>
+        {children}
       </ModalContent>
       <ModalActions actions={actions} />
     </Modal>
@@ -17,13 +15,11 @@ export const Alert = ({ text, actions, open }) => {
 }
 
 Alert.propTypes = {
-  text: PropTypes.string,
   open: PropTypes.bool.isRequired,
   actions: PropTypes.array.isRequired
 }
 
 Alert.defaultProps = {
-  text: 'You have un-saved changes. Do you want to exit and clear those save or save?',
   open: false
 }
 

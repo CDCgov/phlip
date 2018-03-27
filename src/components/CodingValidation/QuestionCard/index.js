@@ -76,6 +76,7 @@ export class QuestionCard extends Component {
       comment: this.props.userAnswers.comment,
       isValidation: this.props.isValidation,
       mergedUserQuestions: this.props.mergedUserQuestions,
+      disableAll: this.props.disableAll,
       userImages: this.props.userImages
     }
 
@@ -102,18 +103,19 @@ export class QuestionCard extends Component {
         <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
           <Row displayFlex style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
             {this.props.question.questionType !== questionTypes.CATEGORY &&
-              <IconButton
-                onClick={this.props.onClearAnswer}
-                aria-label="Clear answer"
-                tooltipText="Clear answer"
-                id="clear-answer">
-                <Broom className={styles.sweep} aria-labelledby="Clear answer" />
-              </IconButton>}
+            <IconButton
+              onClick={this.props.onClearAnswer}
+              aria-label="Clear answer"
+              tooltipText="Clear answer"
+              id="clear-answer">
+              {!this.props.disableAll && <Broom className={styles.sweep} aria-labelledby="Clear answer" />}
+            </IconButton>}
             {!this.props.isValidation && <FlagPopover
               userFlag={this.props.userAnswers.flag}
               onSaveFlag={this.props.onSaveFlag}
               questionFlags={this.props.question.flags}
-              user={this.props.user} />}
+              user={this.props.user}
+              disableAll={this.props.disableAll} />}
           </Row>
           <Divider />
           {this.props.categories !== undefined
@@ -156,6 +158,7 @@ const mapStateToProps = (state, ownProps) => {
         ? pageState.mergedUserQuestions[pageState.question.id][pageState.selectedCategoryId]
         : pageState.mergedUserQuestions[pageState.question.id]
       : null,
+    disableAll: pageState.codedQuestionsError !== null || false,
     userImages: pageState.userImages
   }
 }

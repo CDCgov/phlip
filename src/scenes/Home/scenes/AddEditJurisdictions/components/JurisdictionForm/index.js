@@ -59,7 +59,9 @@ export class JurisdictionForm extends Component {
     location: PropTypes.object,
     match: PropTypes.object,
     history: PropTypes.object,
-    onCloseModal: PropTypes.func
+    onCloseModal: PropTypes.func,
+    formError: PropTypes.string,
+    goBack: PropTypes.bool
   }
 
 
@@ -67,7 +69,21 @@ export class JurisdictionForm extends Component {
     super(props, context)
     this.jurisdictionDefined = this.props.location.state !== undefined ? props.location.state.jurisdictionDefined : null
     this.state = {
-      edit: this.jurisdictionDefined !== null
+      edit: this.jurisdictionDefined !== null,
+      submitting: false
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.state.submitting === true) {
+      if (nextProps.formError !== null) {
+        this.setState({
+          submitting: false
+        })
+        this.props.onSubmitError(nextProps.formError)
+      } else if (nextProps.goBack === true) {
+        this.props.history.goBack()
+      }
     }
   }
 
@@ -76,6 +92,10 @@ export class JurisdictionForm extends Component {
   }
 
   onSubmitForm = values => {
+    this.setState({
+      submitting: true
+    })
+
     const jurisdiction = {
       ...values,
       startDate: moment(values.startDate).toISOString(),
@@ -92,8 +112,6 @@ export class JurisdictionForm extends Component {
     }
 
     this.props.actions.updateEditedFields(this.props.project.id)
-    this.props.actions.clearJurisdictions()
-    this.props.history.goBack()
   }
 
   throwErrors = (values, out) => {
@@ -202,7 +220,7 @@ export class JurisdictionForm extends Component {
             </Container>
           </Container>
         </ModalContent>
-        <ModalActions edit={true} actions={formActions}></ModalActions>
+        <ModalActions actions={formActions}></ModalActions>
       </FormModal>
     )
   }
@@ -215,7 +233,9 @@ const mapStateToProps = (state, ownProps) => ({
   suggestions: state.scenes.home.addEditJurisdictions.suggestions || [],
   suggestionValue: state.scenes.home.addEditJurisdictions.suggestionValue || '',
   jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || {},
-  jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') || []
+  jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') || [],
+  formError: state.scenes.home.addEditJurisdictions.formError || null,
+  goBack: state.scenes.home.addEditJurisdictions.goBack || false
 })
 
 const mapDispatchToProps = (dispatch) => ({
