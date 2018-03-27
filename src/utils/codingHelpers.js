@@ -455,10 +455,6 @@ export const getFinalCodedObject = (state, action, applyAll = false) => {
   return answerObject
 }
 
-export const getSchemeAndCodedQuestions = async (api, getQuestions) => {
-
-}
-
 /*
   Check answered status and send response to create empty validated/coded question
  */
@@ -467,25 +463,30 @@ export const initializeAndCheckAnswered = async (question, codedQuestions, schem
   // will get overwritten (which is what we want, if it exists)
   const coded = [initializeNextQuestion(question), ...codedQuestions]
   const userAnswers = initializeUserAnswers([...coded], schemeById, userId)
+  let initializeErrors = {}
 
   // Check if the first question is answered, if it's not, then send a request to create an empty coded question
   // on the backend. This fixes issues with duplication of text fields answer props
   const answered = userAnswers[question.id].hasOwnProperty('id')
 
   if (!answered) {
-    const { answers, ...questionObj } = userAnswers[question.id]
-    const { codedAnswers, ...q } = await createEmptyQuestion({
-      questionId: question.id,
-      projectId: action.projectId,
-      jurisdictionId: action.jurisdictionId,
-      userId: userId,
-      questionObj: { ...questionObj, codedAnswers: [] }
-    })
-    userAnswers[question.id] = { ...q, ...userAnswers[question.id] }
+    try {
+      const { answers, ...questionObj } = userAnswers[question.id]
+      const { codedAnswers, ...q } = await createEmptyQuestion({
+        questionId: question.id,
+        projectId: action.projectId,
+        jurisdictionId: action.jurisdictionId,
+        userId: userId,
+        questionObj: { ...questionObj, codedAnswers: [] }
+      })
+      userAnswers[question.id] = { ...q, ...userAnswers[question.id] }
+    } catch (error) {
+      initializeErrors = { 'initializeEmpty': 'We couldn\'t initialize this question. Unfortunately, you will not be able to answer it at this time.' }
+    }
   }
 
   // Return initialized user answers object
-  return { userAnswers }
+  return { userAnswers, initializeErrors }
 }
 
 /*
@@ -578,4 +579,8 @@ export const getQuestionAndInitialize = async (state, action, userId, api, creat
     updatedState,
     errors
   }
+}
+
+export const generateError = errorsObj => {
+  return Object.values(errorsObj).join('\n\n')
 }

@@ -121,7 +121,7 @@ export const updateValidatorLogic = createLogic({
 export const getValidationOutlineLogic = createLogic({
   type: types.GET_VALIDATION_OUTLINE_REQUEST,
   async process({ action, getState, api }, dispatch, done) {
-    let scheme = {}, validatedQuestions = [], errors = {}, payload = {}
+    let scheme = {}, validatedQuestions = [], errors = {}, payload = {}, codedQuestionObj = {}
     const userId = getState().data.user.currentUser.id
 
     try {
@@ -136,7 +136,7 @@ export const getValidationOutlineLogic = createLogic({
           try {
             validatedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
           } catch (e) {
-            errors = { ...errors, validatedQuestions: 'Failed to get validated questions' }
+            errors = { ...errors, validatedQuestions: 'We couldn\'t get the validated questions for this project.' }
           }
           // Create one array with the outline information in the question information
           const merge = scheme.schemeQuestions.reduce((arr, q) => {
@@ -149,16 +149,21 @@ export const getValidationOutlineLogic = createLogic({
           const firstQuestion = questionsWithNumbers[0]
 
           // Check if the first question has answers, if it doesn't send a request to create an empty coded question
-          const { userAnswers } = await initializeAndCheckAnswered(
+          const { userAnswers, initializeErrors } = await initializeAndCheckAnswered(
             firstQuestion, validatedQuestions, questionsById, userId, action, api.createEmptyValidatedQuestion
           )
 
           // Get all the coded questions for this question
-          const { codedQuestionObj } = await getCoderInformation({
-            api,
-            action,
-            questionId: firstQuestion.id
-          })
+          try {
+            codedQuestionObj = await getCoderInformation({
+              api,
+              action,
+              questionId: firstQuestion.id
+            })
+          } catch (error) {
+            errors = { ...errors, codedQuestions: 'We couldn\'t get the user coded answers for this question.' }
+          }
+
 
           payload = {
             outline: scheme.outline,
@@ -169,7 +174,8 @@ export const getValidationOutlineLogic = createLogic({
             isSchemeEmpty: false,
             areJurisdictionsEmpty: false,
             userId,
-            mergedUserQuestions: codedQuestionObj
+            mergedUserQuestions: codedQuestionObj,
+            errors: { ...errors, ...initializeErrors }
           }
         }
       } else {
@@ -181,10 +187,7 @@ export const getValidationOutlineLogic = createLogic({
       }
       dispatch({
         type: types.GET_VALIDATION_OUTLINE_SUCCESS,
-        payload: {
-          ...payload,
-          errors
-        }
+        payload
       })
     } catch (e) {
       dispatch({

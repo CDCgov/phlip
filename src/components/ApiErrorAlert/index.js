@@ -14,7 +14,7 @@ export const ApiErrorAlert = ({ content, onCloseAlert, open }) => {
       actions={[{ value: 'Dismiss', type: 'button', onClick: onCloseAlert }]}
       open={open}
       title={title}>
-      <Typography variant="body1">
+      <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
         {content} Please try again later.
       </Typography>
     </Alert>

@@ -1,6 +1,6 @@
 import {
   initializeUserAnswers,
-  initializeCodedUsers, handleCheckCategories
+  initializeCodedUsers, handleCheckCategories, generateError
 } from 'utils/codingHelpers'
 import { sortList } from 'utils'
 import * as codingValidationTypes from 'scenes/Validation/actionTypes'
@@ -22,7 +22,8 @@ const INITIAL_STATE = {
   selectedCategoryId: null,
   isSchemeEmpty: null,
   areJurisdictionsEmpty: null,
-  schemeError: null
+  schemeError: null,
+  getQuestionErrors: null
 }
 
 const validationReducer = (state = INITIAL_STATE, action) => {
@@ -42,6 +43,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         }
       } else {
         sortList(action.payload.question.possibleAnswers, 'order', 'asc')
+        const errors = generateError(action.payload.errors)
         return {
           ...state,
           outline: action.payload.outline,
@@ -52,7 +54,8 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           categories: undefined,
           isSchemeEmpty: false,
           areJurisdictionsEmpty: false,
-          schemeError: null
+          schemeError: null,
+          getQuestionErrors: errors.length > 0 ? errors : null
         }
       }
 

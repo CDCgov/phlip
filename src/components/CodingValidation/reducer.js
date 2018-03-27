@@ -3,7 +3,7 @@ import {
   determineShowButton, handleCheckCategories,
   handleClearAnswers,
   handleUpdateUserAnswers, handleUpdateUserCategoryChild, handleUpdateUserCodedQuestion,
-  handleUserPinciteQuestion, initializeNavigator
+  handleUserPinciteQuestion, initializeNavigator, generateError
 } from 'utils/codingHelpers'
 
 const errorTypes = {
@@ -35,10 +35,6 @@ const INITIAL_STATE = {
   schemeError: null,
   saveFlagErrorContent: null,
   getQuestionErrors: null
-}
-
-const generateError = errorsObj => {
-  return Object.values(errorsObj).join(' ')
 }
 
 const codingValidationReducer = (state = INITIAL_STATE, action, name) => {

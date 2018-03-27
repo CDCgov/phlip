@@ -1,6 +1,7 @@
 import {
   handleUpdateUserCodedQuestion,
   handleUpdateUserCategoryChild,
+  generateError
 } from 'utils/codingHelpers'
 import { sortList } from 'utils'
 import * as codingValidationTypes from 'scenes/Coding/actionTypes'
@@ -20,7 +21,8 @@ const INITIAL_STATE = {
   userAnswers: {},
   showNextButton: true,
   mergedUserQuestions: null,
-  schemeError: null
+  schemeError: null,
+  getQuestionErrors: null
 }
 
 const codingReducer = (state = INITIAL_STATE, action) => {
@@ -44,6 +46,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         }
       } else {
         sortList(action.payload.question.possibleAnswers, 'order', 'asc')
+        const errors = generateError(action.payload.errors)
         return {
           ...state,
           outline: action.payload.outline,
@@ -53,7 +56,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           categories: undefined,
           areJurisdictionsEmpty: false,
           isSchemeEmpty: false,
-          schemeError: null
+          schemeError: null,
+          getQuestionErrors: errors.length > 0 ? errors : null
         }
       }
 

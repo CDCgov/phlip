@@ -30,7 +30,7 @@ export const getOutlineLogic = createLogic({
           try {
             codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
           } catch (e) {
-            errors = { codedQuestions: 'Failed to get coded questions.' }
+            errors = { codedQuestions: 'We couldn\'t get your coded questions for the project.' }
           }
 
           // Create one array with the outline information in the question information
@@ -44,7 +44,7 @@ export const getOutlineLogic = createLogic({
           const firstQuestion = questionsWithNumbers[0]
 
           // Check if the first question has answers, if it doesn't send a request to create an empty coded question
-          const { userAnswers } = await initializeAndCheckAnswered(firstQuestion, codedQuestions, questionsById, userId, action, api.createEmptyCodedQuestion)
+          const { userAnswers, initializeErrors } = await initializeAndCheckAnswered(firstQuestion, codedQuestions, questionsById, userId, action, api.createEmptyCodedQuestion)
           payload = {
             ...payload,
             outline: scheme.outline,
@@ -54,7 +54,8 @@ export const getOutlineLogic = createLogic({
             codedQuestions,
             isSchemeEmpty: false,
             areJurisdictionsEmpty: false,
-            userId
+            userId,
+            errors: { ...errors, ...initializeErrors }
           }
 
         }
@@ -68,10 +69,7 @@ export const getOutlineLogic = createLogic({
 
       dispatch({
         type: types.GET_CODING_OUTLINE_SUCCESS,
-        payload: {
-          ...payload,
-          errors
-        }
+        payload
       })
       done()
     } catch (e) {
