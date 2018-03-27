@@ -11,7 +11,7 @@ import * as actions from 'scenes/Home/actions'
 
 const greyIcon = '#d4d4d4'
 
-export const ProjectRow = ({ project, role, bookmarked, actions }) => {
+export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => {
   return (
     <TableRow key={project.id}>
       <TableCell key={`${project.id}-bookmarked`} style={{ width: 48 }}>
@@ -70,15 +70,20 @@ export const ProjectRow = ({ project, role, bookmarked, actions }) => {
       </TableCell>
       }
       {role !== 'Coder' && <TableCell key={`${project.id}-export`} style={{ textAlign: 'center' }}>
-        <IconButton
-          color={greyIcon}
-          tooltipText="Export validated questions"
-          placement="top-end"
-          aria-label="Export validated questions"
-          onClick={() => actions.onExport}
-          id="export-validated">
-          file_download
-        </IconButton>
+        {/*<TextLink
+          //target="_blank"
+          to={{ pathname: `/project/${project.id}/export` }}
+          //to={{ pathname: `/api/exports/project/${project.id}/data`}}
+        >*/}
+          <IconButton
+            color={greyIcon}
+            tooltipText="Export validated questions"
+            placement="top-end"
+            aria-label="Export validated questions"
+            onClick={() => onExport(project.id)}
+            id="export-validated">
+            file_download
+          </IconButton>{/*</TextLink>*/}
       </TableCell>}
     </TableRow>
   )

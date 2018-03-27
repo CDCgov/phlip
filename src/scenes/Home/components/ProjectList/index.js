@@ -11,7 +11,7 @@ import SearchBar from 'components/SearchBar'
 
 export const ProjectList = props => {
   const { projectIds, user, page, rowsPerPage, projectCount, sortBy, direction, sortBookmarked, searchValue } = props
-  const { handlePageChange, handleRowsChange, handleRequestSort, handleSortBookmarked, handleSearchValueChange } = props
+  const { handlePageChange, handleRowsChange, handleRequestSort, handleSortBookmarked, handleSearchValueChange, handleExport } = props
   return (
     <Container column flex>
       <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card />}>
@@ -35,7 +35,7 @@ export const ProjectList = props => {
           </TableHead>
           <TableBody>
             {projectIds.map(id => (
-              <ProjectRow key={id} id={id} />
+              <ProjectRow key={id} id={id} onExport={handleExport} />
             ))}
           </TableBody>
         </Table>
