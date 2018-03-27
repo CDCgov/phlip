@@ -291,7 +291,7 @@ export const validateQuestionLogic = createLogic({
     } catch (error) {
       dispatch({
         type: types.UPDATE_USER_ANSWER_FAIL,
-        payload: 'Couldn\'t update answer'
+        payload: { error: 'Couldnt update answer', isApplyAll: action.type === types.ON_APPLY_ANSWER_TO_ALL }
       })
     }
     done()

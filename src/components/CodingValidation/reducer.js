@@ -35,7 +35,8 @@ const INITIAL_STATE = {
   schemeError: null,
   saveFlagErrorContent: null,
   getQuestionErrors: null,
-  codedQuestionsError: null
+  codedQuestionsError: null,
+  isApplyAllError: null
 }
 
 const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
@@ -68,7 +69,8 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
     case `${types.UPDATE_USER_ANSWER_FAIL}_${name}`:
       return {
         ...state,
-        updateAnswerError: true
+        updateAnswerError: true,
+        isApplyAllError: action.payload.isApplyAll
       }
 
     case `${types.CLEAR_ANSWER_ERROR}_${name}`:
@@ -78,11 +80,14 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         snapshotUserAnswer: {},
         userAnswers: {
           ...state.userAnswers,
-          [state.question.id]: state.question.isCategoryQuestion
-            ? { [state.selectedCategoryId]: { ...state.snapshotUserAnswer } }
-            : { ...state.snapshotUserAnswer }
+          [state.question.id]: state.isApplyAllError
+            ? { ...state.snapshotUserAnswer }
+            : state.question.isCategoryQuestion
+              ? { ...state.userAnswers[state.question.id], [state.selectedCategoryId]: { ...state.snapshotUserAnswer } }
+              : { ...state.snapshotUserAnswer }
         },
-        errorTypeMsg: ''
+        errorTypeMsg: '',
+        isApplyAllError: null
       }
 
     case `${types.ON_CHANGE_PINCITE}_${name}`:
@@ -147,7 +152,9 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
               }
             }), {})
           }
-        }
+        },
+        snapshotUserAnswer: { ...state.userAnswers[state.question.id] },
+        errorTypeMsg: errorTypes[1]
       }
 
     case `${types.ON_CLEAR_ANSWER}_${name}`:

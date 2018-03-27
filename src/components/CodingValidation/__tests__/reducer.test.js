@@ -928,14 +928,21 @@ describe('CodingValidation reducer', () => {
             10: {
               answers: { schemeAnswerId: 42, pincite: '' },
               comment: '',
-              categoryId: 10
+              categoryId: 10,
+              id: undefined
             },
             20: {
               answers: { schemeAnswerId: 42, pincite: '' },
               comment: '',
-              categoryId: 20
+              categoryId: 20,
+              id: undefined
             }
           }
+        },
+        errorTypeMsg: 'We couldn\'t save the answer for this question. Your answer will be reset to the previous state.',
+        snapshotUserAnswer: {
+          10: { answers: { schemeAnswerId: 42, pincite: '' }, comment: '', categoryId: 10 },
+          20: { answers: {}, comment: '', categoryId: 20 }
         },
         showNextButton: false
       }))
