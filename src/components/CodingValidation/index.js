@@ -204,8 +204,12 @@ const withCodingValidation = (WrappedComponent, actions) => {
           flex style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}>
           <Alert
             open={this.state.applyAllAlertOpen}
-            text="You are applying your answer to ALL categories. Previously answered questions will be changed."
-            actions={this.modalActions} />
+            text=""
+            actions={this.modalActions}>
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+              You are applying your answer to ALL categories. Previously answered questions will be changed.
+            </Typography>
+          </Alert>
           <ApiErrorAlert
             open={this.props.updateAnswerError !== null}
             content={this.props.answerErrorContent}

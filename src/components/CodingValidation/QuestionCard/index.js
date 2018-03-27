@@ -14,6 +14,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getInitials } from 'utils/normalize'
 import Alert from 'components/Alert'
+import Typography from 'material-ui/Typography'
 
 const TabContainer = props => {
   return (
@@ -95,11 +96,11 @@ export class QuestionCard extends Component {
 
     return (
       <Row displayFlex style={{ flex: '1 0 50%' }}>
-        <Alert
-          text="Unselecting a category will remove any answers associated to this category. Do you wish to continue?"
-          actions={alertActions}
-          open={this.state.confirmCategoryUncheckOpen}
-        />
+        <Alert actions={alertActions} open={this.state.confirmCategoryUncheckOpen}>
+          <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+            Unselecting a category will remove any answers associated to this category. Do you wish to continue?
+          </Typography>
+        </Alert>
         <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
           <Row displayFlex style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
             {this.props.question.questionType !== questionTypes.CATEGORY &&
