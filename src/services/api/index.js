@@ -181,11 +181,7 @@ export default {
 
   updateUserImage(userId, operation) {
     return api.patch(`/users/${userId}`, operation).then(res => {
-      return res.data.avatar
-      // return fetch(res.data.avatar)
-      //   .then(res => res.blob())
-      //   .then(blob => window.URL.createObjectURL(blob))
-      //   .then(imageUrl => imageUrl)
+      return operation[0].value
     }).catch(error => {
       return error
     })
@@ -194,9 +190,6 @@ export default {
 
   getUserImage(userId) {
     return api.get(`/users/${userId}/avatar`).then(res => res.data)
-    // return api.get(`/users/${userId}/avatar`).then(res => {
-    //   return res.data ? res.data : null
-    // }).catch(error => false)
   },
   // Get all coded questions for a specific question
   getAllCodedQuestionsForQuestion(projectId, jurisdictionId, questionId) {
