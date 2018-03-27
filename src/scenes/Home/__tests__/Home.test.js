@@ -63,7 +63,8 @@ describe('Home scene', () => {
     const wrapper = setup()
     wrapper.find(PageHeader).find('Button').at(0).simulate('click')
     wrapper.update()
-    expect(wrapper.find('Modal')).toHaveLength(1)
+    // 3 modals. One for the form, one for the export dialog, one for the form alert
+    expect(wrapper.find('Modal')).toHaveLength(3)
   })
 
   describe('Error handling', () => {
