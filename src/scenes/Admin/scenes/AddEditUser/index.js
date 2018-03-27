@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -48,7 +48,8 @@ export class AddEditUser extends Component {
     super(props, context)
     this.state = {
       file: null,
-      selectedUser: null
+      selectedUser: null,
+      open: false
     }
   }
 
@@ -98,6 +99,7 @@ export class AddEditUser extends Component {
 
     if (files.fileList[0].size > maxSize) {
       console.log('file too big')
+      this.setState({ open: true })
     } else {
       compressImage(files.fileList[0], 0.2).then(({ shrunkBase64, compressedFile }) => {
 
@@ -133,7 +135,20 @@ export class AddEditUser extends Component {
     this.props.history.goBack()
   }
 
+  onAlertClose = () => {
+    this.setState({ open: false })
+  }
+
   render() {
+
+    const alertActions = [
+      {
+        value: 'Close',
+        type: 'button',
+        onClick: this.onAlertClose
+      }
+    ]
+
     const actions = [
       {
         value: 'Cancel',
@@ -156,91 +171,98 @@ export class AddEditUser extends Component {
     ]
 
     return (
-      <ModalForm
-        open={true}
-        title={this.state.selectedUser ? 'Edit User' : 'Add New User'}
-        actions={actions}
-        form="addEditUser"
-        handleSubmit={this.handleSubmit}
-        asyncValidate={this.validateEmail}
-        initialValues={this.state.selectedUser || {}}
-        asyncBlurFields={['email']}
-        onClose={this.props.onCloseModal}
-        width="600px"
-        height="400px">
-        <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
-          <Row displayFlex style={{ ...rowStyles, justifyContent: 'space-between' }}>
-            {this.state.selectedUser ? <Column style={{ paddingRight: 30 }}>
-              {(this.props.avatar) ? <Tooltip text="Edit photo" placement="top" aria-label="Edit picture" id="edit-picture">
-                <TextLink
-                  to={{
-                    pathname: `/admin/edit/user/${this.state.selectedUser.id}/avatar`,
-                    state: { isEdit: true, userId: this.state.selectedUser.id, avatar: this.state.selectedUser.avatar }
-                  }}>
-                  <Avatar
-                    cardAvatar
-                    style={{ width: '65px', height: '65px' }}
-                    avatar={this.props.avatar} /></TextLink>
-              </Tooltip>
-                : <ReactFileReader base64={true} fileTypes={['.jpg', 'png']} handleFiles={this.openAvatarForm}>
-                  <IconButton
-                    color={'#757575'}
-                    iconSize={50}
-                    tooltipText="Add a photo"
-                    id="add-user-photo">add_a_photo</IconButton></ReactFileReader>
-              }
-            </Column> : null}
-            <Column flex style={{ paddingRight: 10 }}>
+      <Fragment>
+        <Alert
+          text="Maximum image file size is 500KB. Please try another image."
+          actions={alertActions}
+          open={this.state.open}
+        />
+        <ModalForm
+          open={true}
+          title={this.state.selectedUser ? 'Edit User' : 'Add New User'}
+          actions={actions}
+          form="addEditUser"
+          handleSubmit={this.handleSubmit}
+          asyncValidate={this.validateEmail}
+          initialValues={this.state.selectedUser || {}}
+          asyncBlurFields={['email']}
+          onClose={this.props.onCloseModal}
+          width="600px"
+          height="400px">
+          <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
+            <Row displayFlex style={{ ...rowStyles, justifyContent: 'space-between' }}>
+              {this.state.selectedUser ? <Column style={{ paddingRight: 30 }}>
+                {(this.props.avatar) ? <Tooltip text="Edit photo" placement="top" aria-label="Edit picture" id="edit-picture">
+                  <TextLink
+                    to={{
+                      pathname: `/admin/edit/user/${this.state.selectedUser.id}/avatar`,
+                      state: { isEdit: true, userId: this.state.selectedUser.id, avatar: this.state.selectedUser.avatar }
+                    }}>
+                    <Avatar
+                      cardAvatar
+                      style={{ width: '65px', height: '65px' }}
+                      avatar={this.props.avatar} /></TextLink>
+                </Tooltip>
+                  : <ReactFileReader base64={true} fileTypes={['.jpg', 'png']} handleFiles={this.openAvatarForm}>
+                    <IconButton
+                      color={'#757575'}
+                      iconSize={50}
+                      tooltipText="Add a photo"
+                      id="add-user-photo">add_a_photo</IconButton></ReactFileReader>
+                }
+              </Column> : null}
+              <Column flex style={{ paddingRight: 10 }}>
+                <Field
+                  name="firstName"
+                  component={TextInput}
+                  label="First Name"
+                  placeholder="Enter First Name"
+                  validate={this.required}
+                  fullWidth={true} />
+              </Column>
+              <Column flex style={{ paddingLeft: 10 }}>
+                <Field
+                  name="lastName"
+                  component={TextInput}
+                  label="Last Name"
+                  placeholder="Enter Last Name"
+                  validate={this.required}
+                  fullWidth={true} />
+              </Column>
+            </Row>
+            <Row style={rowStyles}>
               <Field
-                name="firstName"
+                name="email"
                 component={TextInput}
-                label="First Name"
-                placeholder="Enter First Name"
+                label="Email"
+                placeholder="Enter Email"
                 validate={this.required}
                 fullWidth={true} />
-            </Column>
-            <Column flex style={{ paddingLeft: 10 }}>
+            </Row>
+            <Row style={{ paddingBottom: 25 }}>
               <Field
-                name="lastName"
+                name="password"
                 component={TextInput}
-                label="Last Name"
-                placeholder="Enter Last Name"
+                label="Password"
+                placeholder="Enter Password"
                 validate={this.required}
                 fullWidth={true} />
-            </Column>
-          </Row>
-          <Row style={rowStyles}>
-            <Field
-              name="email"
-              component={TextInput}
-              label="Email"
-              placeholder="Enter Email"
-              validate={this.required}
-              fullWidth={true} />
-          </Row>
-          <Row style={{ paddingBottom: 25 }}>
-            <Field
-              name="password"
-              component={TextInput}
-              label="Password"
-              placeholder="Enter Password"
-              validate={this.required}
-              fullWidth={true} />
-          </Row>
-          <Row>
-            <Field
-              name="role"
-              component={Dropdown}
-              label="Role"
-              options={roles}
-              defaultValue=""
-              id="role"
-              style={{ display: 'flex' }} />
-          </Row>
-        </Container>
-        <Route path="/admin/edit/user/:id/avatar" component={AvatarForm} />
+            </Row>
+            <Row>
+              <Field
+                name="role"
+                component={Dropdown}
+                label="Role"
+                options={roles}
+                defaultValue=""
+                id="role"
+                style={{ display: 'flex' }} />
+            </Row>
+          </Container>
+          <Route path="/admin/edit/user/:id/avatar" component={AvatarForm} />
 
-      </ModalForm>
+        </ModalForm>
+      </Fragment>
     )
   }
 }
