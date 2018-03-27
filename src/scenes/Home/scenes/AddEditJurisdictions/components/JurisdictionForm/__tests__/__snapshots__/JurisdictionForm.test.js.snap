@@ -146,7 +146,6 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
         },
       ]
     }
-    edit={true}
   />
 </FormModal>
 `;

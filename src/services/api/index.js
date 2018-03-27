@@ -137,7 +137,7 @@ export default {
 
   // Answer a question for a user (creates a coded question), jurisdiction and project, called in Coding/logic
   answerQuestion(projectId, jurisdictionId, userId, questionId, updatedQuestion) {
-    return api.put(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, updatedQuestion)
+    return api.put(`/user/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, updatedQuestion)
       .then(res => res.data)
   },
 

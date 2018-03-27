@@ -243,20 +243,31 @@ export const validateQuestionLogic = createLogic({
     types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER,
     types.ON_APPLY_ANSWER_TO_ALL, types.ON_CHANGE_COMMENT
   ],
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.UPDATE_USER_ANSWER_SUCCESS,
-    failType: types.UPDATE_USER_ANSWER_FAIL
-  },
   latest: true,
-  async process({ getState, action, api }) {
+  async process({ getState, action, api }, dispatch, done) {
     const validationState = getState().scenes.validation
     const validatorId = getState().data.user.currentUser.id
     const answerObject = getFinalCodedObject(validationState, action, action.type === types.ON_APPLY_ANSWER_TO_ALL)
-    return await api.validateQuestion(action.projectId, action.jurisdictionId, action.questionId, {
-      ...answerObject,
-      validatedBy: validatorId
-    })
+    try {
+      const validatedQuestion = await api.validateQuestion(action.projectId, action.jurisdictionId, action.questionId, {
+        ...answerObject,
+        validatedBy: validatorId
+      })
+      dispatch({
+        type: types.UPDATE_USER_ANSWER_SUCCESS,
+        payload: { ...validatedQuestion }
+      })
+      dispatch({
+        type: types.UPDATE_EDITED_FIELDS,
+        projectId: action.projectId
+      })
+    } catch (error) {
+      dispatch({
+        type: types.UPDATE_USER_ANSWER_FAIL,
+        payload: 'Couldn\'t update answer'
+      })
+    }
+    done()
   }
 })
 
@@ -343,6 +354,7 @@ export const clearFlagLogic = createLogic({
           ...out, flagId: action.flagId, type: action.type === types.CLEAR_RED_FLAG ? 1 : 2
         }
       })
+      dispatch({ type: types.UPDATE_EDITED_FIELDS, projectId: action.projectId })
     } catch (error) {
       dispatch({
         type: types.CLEAR_FLAG_FAIL,

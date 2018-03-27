@@ -119,17 +119,28 @@ export const answerQuestionLogic = createLogic({
     types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER,
     types.ON_APPLY_ANSWER_TO_ALL, types.ON_SAVE_FLAG
   ],
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.UPDATE_USER_ANSWER_SUCCESS,
-    failType: types.UPDATE_USER_ANSWER_FAIL
-  },
   latest: true,
-  async process({ getState, action, api }) {
+  async process({ getState, action, api }, dispatch, done) {
     const userId = getState().data.user.currentUser.id
     const codingState = getState().scenes.coding
     const answerObject = getFinalCodedObject(codingState, action, action.type === types.ON_APPLY_ANSWER_TO_ALL)
-    return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, answerObject)
+    try {
+      const codedQuestion = await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, answerObject)
+      dispatch({
+        type: types.UPDATE_USER_ANSWER_SUCCESS,
+        payload: { ...codedQuestion }
+      })
+      dispatch({
+        type: types.UPDATE_EDITED_FIELDS,
+        projectId: action.projectId
+      })
+    } catch (error) {
+      dispatch({
+        type: types.UPDATE_USER_ANSWER_FAIL,
+        payload: 'Could not update answer'
+      })
+    }
+    done()
   }
 })
 
@@ -197,14 +208,25 @@ export const getUserCodedQuestionsLogic = createLogic({
 // Save red flag logic
 export const saveRedFlagLogic = createLogic({
   type: types.ON_SAVE_RED_FLAG_REQUEST,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.ON_SAVE_RED_FLAG_SUCCESS,
-    failType: types.ON_SAVE_RED_FLAG_FAIL
-  },
-  async process({ action, api }) {
-    const flag = { ...action.flagInfo, raisedBy: action.flagInfo.raisedBy.userId }
-    return await api.saveRedFlag(action.questionId, flag)
+  async process({ action, api }, dispatch, done) {
+    try {
+      const flag = { ...action.flagInfo, raisedBy: action.flagInfo.raisedBy.userId }
+      const resp = await api.saveRedFlag(action.questionId, flag)
+      dispatch({
+        type: types.ON_SAVE_RED_FLAG_SUCCESS,
+        payload: { ...resp }
+      })
+      dispatch({
+        type: types.UPDATE_EDITED_FIELDS,
+        projectId: action.projectId
+      })
+    } catch (error) {
+      dispatch({
+        type: types.ON_SAVE_RED_FLAG_FAIL,
+        payload: 'Failed to save red flag.'
+      })
+    }
+    done()
   }
 })
 

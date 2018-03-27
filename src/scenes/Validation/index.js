@@ -41,7 +41,7 @@ export class Validation extends Component {
 
   onClearFlag = () => {
     if (this.state.flagToDelete.type === 3) {
-      this.props.actions.clearRedFlag(this.state.flagToDelete.id, this.props.question.id)
+      this.props.actions.clearRedFlag(this.state.flagToDelete.id, this.props.question.id, this.props.projectId)
     } else {
       this.props.actions.clearFlag(this.state.flagToDelete.id, this.props.projectId, this.props.jurisdictionId, this.props.question.id)
     }
