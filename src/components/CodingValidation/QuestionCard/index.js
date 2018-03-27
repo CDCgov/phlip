@@ -76,7 +76,8 @@ export class QuestionCard extends Component {
       comment: this.props.userAnswers.comment,
       isValidation: this.props.isValidation,
       mergedUserQuestions: this.props.mergedUserQuestions,
-      disableAll: this.props.disableAll
+      disableAll: this.props.disableAll,
+      userImages: this.props.userImages
     }
 
     const alertActions = [
@@ -157,7 +158,8 @@ const mapStateToProps = (state, ownProps) => {
         ? pageState.mergedUserQuestions[pageState.question.id][pageState.selectedCategoryId]
         : pageState.mergedUserQuestions[pageState.question.id]
       : null,
-    disableAll: pageState.codedQuestionsError !== null || false
+    disableAll: pageState.codedQuestionsError !== null || false,
+    userImages: pageState.userImages
   }
 }
 

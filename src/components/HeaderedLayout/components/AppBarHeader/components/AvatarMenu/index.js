@@ -10,13 +10,13 @@ import Paper from 'material-ui/Paper'
 import { Manager, Target, Popper } from 'react-popper'
 import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
 
-export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, onOpenAdminPage, onToggleMenu, avatarUrl }) => {
+export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, onOpenAdminPage, onToggleMenu, avatar }) => {
   return (
     <ClickAwayListener onClickAway={open ? onCloseMenu : () => { }}>
       <Grid item style={{ zIndex: 2 }}>
         <Manager>
           <Target>
-            <Avatar onClick={onToggleMenu} avatarUrl={avatarUrl} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />
+            <Avatar onClick={onToggleMenu} avatar={avatar} initials={initials ? initials : ''} style={{ cursor: 'pointer' }} />
           </Target>
           {open &&
             <Popper placement="bottom-end" eventsEnabled={open}>

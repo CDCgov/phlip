@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { login, logout } from '../authToken'
+import { scheme, outline } from 'data/mockCodingScheme'
+import { isUndefined } from 'util';
 
 export const api = axios.create({
   baseURL: '/api'
@@ -176,21 +178,37 @@ export default {
       .then(res => res.data)
   },
 
+
+  updateUserImage(userId, operation) {
+    return api.patch(`/users/${userId}`, operation).then(res => {
+      return operation[0].value
+    }).catch(error => {
+      return error
+    })
+
+  },
+
+  getUserImage(userId) {
+    return api.get(`/users/${userId}/avatar`).then(res => res.data)
+  },
   // Get all coded questions for a specific question
   getAllCodedQuestionsForQuestion(projectId, jurisdictionId, questionId) {
     return api.get(`/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`).then(res => res.data)
   },
 
   // Gets a picture for user, called in Admin/scenes/AddEditUser/logic, Validation/logic
-  getUserPicture(userId) {
-    return api.get(`/users/${userId}/avatar`).then(res => {
-      return res.status !== 204
-    }).catch(error => {
-      return false
-    })
+  // getUserPicture(userId) {
+  //   return api.get(`/users/${userId}/avatar`).then(res => {
+  //     return res.status !== 204
+  //   }).catch(error => {
+  //     return false
+  //   })
+  // },
+
+  deleteUserImage(userId, operation) {
+    return api.patch(`/users/${userId}`, operation).then(res => res.data)
   },
 
-  // Gets the protocol for a project, called in Protocol/logic
   getProtocol(projectId) {
     return api.get(`/projects/${projectId}/protocol`).then(res => res.data.text)
   },
@@ -198,5 +216,10 @@ export default {
   // Saves the protocol for a project, called in Protocol/logic
   saveProtocol(projectId, userId, protocol) {
     return api.put(`/projects/${projectId}/protocol`, { userId, text: protocol }).then(res => res.data)
+  },
+
+  getCodersForProject(projectId) {
+    return api.get(`/projects/${projectId}/coders`).then(res => res.data)
   }
+
 }

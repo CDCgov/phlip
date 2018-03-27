@@ -16,7 +16,7 @@ import ValidationTable from '../ValidationTable'
 export const QuestionContent = props => {
   const {
     question, currentUserInitials, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
-    onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert
+    onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages
   } = props
 
   const questionAnswerPadding = {
@@ -54,6 +54,7 @@ export const QuestionContent = props => {
             mergedUserQuestions={mergedUserQuestions}
             currentUserInitials={currentUserInitials}
             disableAll={disableAll}
+            userImages={userImages}
           />
         </Row>}
 
@@ -70,6 +71,7 @@ export const QuestionContent = props => {
             mergedUserQuestions={mergedUserQuestions}
             currentUserInitials={currentUserInitials}
             disableAll={disableAll}
+            userImages={userImages}
           />
         </Row>}
 
@@ -89,6 +91,7 @@ export const QuestionContent = props => {
           validatorAnswer={userAnswers.answers[question.possibleAnswers[0].id]}
           validator={userAnswers.validatedBy}
           onChange={onChangeTextAnswer}
+          userImages={userImages}
           answerId={question.possibleAnswers[0].id}
           currentUserInitials={currentUserInitials}
           disabled={disableAll}
@@ -113,34 +116,35 @@ export const QuestionContent = props => {
       </Column>
 
       {question.hint &&
-      <Row displayFlex style={{ padding: '0px 35px 50px 35px' }}>
-        <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
-        <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
-      </Row>
+        <Row displayFlex style={{ padding: '0px 35px 50px 35px' }}>
+          <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
+          <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
+        </Row>
       }
 
       {isValidation && <ValidationTable
         onOpenAlert={onOpenFlagConfirmAlert}
         mergedUserQuestions={mergedUserQuestions}
         questionFlags={question.flags}
+        userImages={userImages}
       />}
 
       {question.isCategoryQuestion &&
-      <Fragment>
-        <Divider />
-        <Row
-          displayFlex
-          style={{
-            ...answerPadding,
-            paddingBottom: 20,
-            paddingTop: 20,
-            paddingRight: 0,
-            justifyContent: 'flex-end'
-          }}
-        >
-          <Button onClick={onOpenAlert} color="accent" value="Apply Answer to all categories" />
-        </Row>
-      </Fragment>}
+        <Fragment>
+          <Divider />
+          <Row
+            displayFlex
+            style={{
+              ...answerPadding,
+              paddingBottom: 20,
+              paddingTop: 20,
+              paddingRight: 0,
+              justifyContent: 'flex-end'
+            }}
+          >
+            <Button onClick={onOpenAlert} color="accent" value="Apply Answer to all categories" />
+          </Row>
+        </Fragment>}
     </Container>
   )
 }

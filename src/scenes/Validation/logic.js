@@ -12,7 +12,6 @@ import * as types from './actionTypes'
 
 const addCoderToAnswers = (existingQuestion, question, coder) => {
   let flagComment = {}
-
   if (question.flag !== null) {
     flagComment = { ...question.flag, raisedBy: { ...coder } }
   }
@@ -59,21 +58,6 @@ const mergeInUserCodedQuestions = (codedQuestions, codeQuestionsPerUser, coder) 
 const getCoderInformation = async ({ api, action, questionId }) => {
   let codedQuestionObj = {}, allCodedQuestions = [], coderErrors = {}
 
-  /*try {
-    for (let question of codedQuestions) {
-      try {
-        let hasAvatarImage = await api.getUserPicture(question.validatedBy.userId)
-        let avatarUrl = hasAvatarImage ? createAvatarUrl(question.validatedBy.userId) : null
-        let validatedBy = { ...question.validatedBy, avatarUrl }
-        updatedCodedQuestions = [...updatedCodedQuestions, { ...question, validatedBy }]
-      } catch (e) {
-        throw { error: 'failed to get avatar image for validator' }
-      }
-    }
-  } catch (e) {
-    throw { error: 'failed to get codedQuestions' }
-  }*/
-
   try {
     allCodedQuestions = await api.getAllCodedQuestionsForQuestion(action.projectId, action.jurisdictionId, questionId)
   } catch (e) {
@@ -83,16 +67,7 @@ const getCoderInformation = async ({ api, action, questionId }) => {
   if (allCodedQuestions.length === 0) {
     codedQuestionObj = { [questionId]: { answers: [], flagsComments: [] } }
   }
-
   for (let coderUser of allCodedQuestions) {
-    try {
-      let hasAvatarImage = await api.getUserPicture(coderUser.coder.userId)
-      let avatarUrl = hasAvatarImage ? createAvatarUrl(coderUser.coder.userId) : null
-      coderUser.coder = { ...coderUser.coder, avatarUrl }
-    } catch (e) {
-      throw { error: 'failed to get avatar image' }
-    }
-
     if (coderUser.codedQuestions.length > 0) {
       codedQuestionObj = { ...mergeInUserCodedQuestions(codedQuestionObj, coderUser.codedQuestions, coderUser.coder) }
     }
@@ -100,6 +75,8 @@ const getCoderInformation = async ({ api, action, questionId }) => {
 
   return { codedQuestionObj, coderErrors }
 }
+
+//TODO: const getAvatarForValidatedBy = async ({}) 
 
 /*
   Some of the reusable functions need to know whether we're on the validation screen or not, so that's what this is for
@@ -136,7 +113,10 @@ export const getValidationOutlineLogic = createLogic({
           try {
             validatedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
           } catch (e) {
-            errors = { ...errors, codedQuestions: 'We couldn\'t get the validated questions for this project, so you won\'t be able to validate questions.' }
+            errors = {
+              ...errors,
+              codedQuestions: 'We couldn\'t get the validated questions for this project, so you won\'t be able to validate questions.'
+            }
           }
           // Create one array with the outline information in the question information
           const merge = scheme.schemeQuestions.reduce((arr, q) => {
@@ -154,7 +134,53 @@ export const getValidationOutlineLogic = createLogic({
           )
 
           // Get all the coded questions for this question
-          const { codedQuestionObj, coderErrors } = await getCoderInformation({ api, action, questionId: firstQuestion.id })
+          const { codedQuestionObj, coderErrors } = await getCoderInformation({
+            api,
+            action,
+            questionId: firstQuestion.id
+          })
+
+          let codersForProject = []
+          //Get validatedByImages
+          try {
+            codersForProject = await api.getCodersForProject(action.projectId)
+          } catch (e) {
+            throw { error: 'failed to load coders for project' }
+          }
+
+          const uniqueUserIds = codersForProject.map((coders) => {
+            return coders.userId
+          })
+
+          const uniqueValidatedUsersIds = validatedQuestions.map((validatedQuestion) => {
+            // console.log(validatedQuestion)
+            return validatedQuestion.validatedBy.userId
+          }).filter((elem, pos, arr) => {
+            return arr.indexOf(elem) == pos
+          })
+
+          const combinedUsersOnProject = [...uniqueUserIds, ...uniqueValidatedUsersIds]
+
+          let uniqueUsersWithAvatar = []
+          // console.log(uniqueValidatedUsersIds)
+          // console.log(uniqueUserIds)
+          // console.log(combinedUsersOnProject)
+
+          const combinedUniqueUsersOnProject = combinedUsersOnProject.filter((elem, pos, arr) => {
+            return arr.indexOf(elem) == pos
+          })
+
+          for (let userId of combinedUniqueUsersOnProject) {
+            try {
+              const avatar = await api.getUserImage(userId)
+              let userWithId = { id: userId, avatar }
+              uniqueUsersWithAvatar = [...uniqueUsersWithAvatar, { ...userWithId }]
+
+            } catch (e) {
+              throw { error: 'failed to get validatedBy avatar image' }
+            }
+          }
+          const userImages = normalize.arrayToObject(uniqueUsersWithAvatar)
 
           payload = {
             outline: scheme.outline,
@@ -166,6 +192,7 @@ export const getValidationOutlineLogic = createLogic({
             areJurisdictionsEmpty: false,
             userId,
             mergedUserQuestions: codedQuestionObj,
+            userImages,
             errors: { ...errors, ...initializeErrors, ...coderErrors }
           }
         }
@@ -306,7 +333,10 @@ export const getUserValidatedQuestionsLogic = createLogic({
       updatedSchemeQuestion = await api.getSchemeQuestion(question.id, action.projectId)
     } catch (error) {
       updatedSchemeQuestion = { ...question }
-      errors = { ...errors, updatedSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.' }
+      errors = {
+        ...errors,
+        updatedSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
+      }
     }
 
     // Update scheme with new scheme question
@@ -322,14 +352,64 @@ export const getUserValidatedQuestionsLogic = createLogic({
       updatedSchemeQuestion, validatedQuestions, updatedScheme.byId, userId, action, api.createEmptyValidatedQuestion
     )
 
-    const { codedQuestionObj, coderErrors } = await getCoderInformation({ api, action, questionId: updatedSchemeQuestion.id })
+    const { codedQuestionObj, coderErrors } = await getCoderInformation({
+      api,
+      action,
+      questionId: updatedSchemeQuestion.id
+    })
+
+    let codersForProject = []
+    //Get validatedByImages
+    try {
+      codersForProject = await api.getCodersForProject(action.projectId)
+    } catch (e) {
+      throw { error: 'failed to load coders for project' }
+    }
+
+    const uniqueUserIds = codersForProject.map((coders) => {
+      return coders.userId
+    })
+
+    const uniqueValidatedUsersIds = validatedQuestions.map((validatedQuestion) => {
+      // console.log(validatedQuestion)
+      return validatedQuestion.validatedBy.userId
+    }).filter((elem, pos, arr) => {
+      return arr.indexOf(elem) == pos
+    })
+
+    const combinedUsersOnProject = [...uniqueUserIds, ...uniqueValidatedUsersIds]
+
+    let uniqueUsersWithAvatar = []
+    // console.log(uniqueValidatedUsersIds)
+    // console.log(uniqueUserIds)
+    // console.log(combinedUsersOnProject)
+
+    const combinedUniqueUsersOnProject = combinedUsersOnProject.filter((elem, pos, arr) => {
+      return arr.indexOf(elem) == pos
+    })
+
+    // console.log(combinedUniqueUsersOnProject)
+
+    for (let userId of combinedUniqueUsersOnProject) {
+      try {
+        const avatar = await api.getUserImage(userId)
+        let userWithId = { id: userId, avatar }
+        uniqueUsersWithAvatar = [...uniqueUsersWithAvatar, { ...userWithId }]
+
+      } catch (e) {
+        throw { error: 'failed to get validatedBy avatar image' }
+      }
+    }
+    const userImages = normalize.arrayToObject(uniqueUsersWithAvatar)
+
     payload = {
       userAnswers,
       question: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion },
       scheme: updatedScheme,
       otherUpdates,
       mergedUserQuestions: codedQuestionObj,
-      errors: { ...errors, ...initializeErrors, ...coderErrors }
+      errors: { ...errors, ...initializeErrors, ...coderErrors },
+      userImages
     }
 
     dispatch({

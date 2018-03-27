@@ -16,7 +16,7 @@ const styles = {
 
 export const CheckboxGroupValidation = props => {
   const {
-    choices, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions, disableAll
+    choices, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions, disableAll, userImages
   } = props
 
   return (
@@ -35,13 +35,13 @@ export const CheckboxGroupValidation = props => {
             />
             {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
               answer.schemeAnswerId === choice.id &&
-              <ValidationAvatar key={`user-answer-${index}`} answer={answer} />
+              <ValidationAvatar key={`user-answer-${index}`} avatar={userImages[answer.userId].avatar} answer={answer} />
             ))}
             {userAnswers.answers.hasOwnProperty(choice.id)
               && mergedUserQuestions !== null
               && <Avatar
                 cardAvatar
-                avatarUrl={userAnswers.validatedBy.avatarUrl}
+                avatar={userAnswers.validatedBy.userId ? userImages[userAnswers.validatedBy.userId].avatar : userAnswers.validatedBy.avatar}
                 key={mergedUserQuestions.answers.length + 1}
                 style={{ backgroundColor: 'white', color: '#35ac74', borderColor: '#35ac74' }}
                 initials={userAnswers.validatedBy === null

@@ -2,7 +2,7 @@ import React from 'react'
 import { default as MuiAvatar } from 'material-ui/Avatar'
 import PropTypes from 'prop-types'
 
-const Avatar = ({ big, avatarUrl, initials, style, cardAvatar, ...otherProps }) => {
+const Avatar = ({ big, avatar, initials, style, cardAvatar, ...otherProps }) => {
   const styles = {
     color: 'white',
     backgroundColor: 'teal',
@@ -23,13 +23,13 @@ const Avatar = ({ big, avatarUrl, initials, style, cardAvatar, ...otherProps }) 
     ...style
   }
 
-  return avatarUrl ? <MuiAvatar style={cardAvatar ? cardAvatarStyles : styles} {...otherProps} src={avatarUrl}></MuiAvatar>
+  return avatar ? <MuiAvatar style={cardAvatar ? cardAvatarStyles : styles} {...otherProps} src={avatar}></MuiAvatar>
     : <MuiAvatar style={cardAvatar ? cardAvatarStyles : styles} {...otherProps}>{initials ? initials : ''}</MuiAvatar>
 }
 
 Avatar.propTypes = {
   big: PropTypes.bool,
-  avatarUrl: PropTypes.any
+  avatar: PropTypes.any
 }
 
 Avatar.defaultProps = {

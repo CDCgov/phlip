@@ -10,7 +10,14 @@ export const getUserLogic = createLogic({
     successType: types.GET_USERS_SUCCESS
   },
   async process({ api }) {
-    return await api.getUsers()
+    let users = {}, userAvatar = '', updatedUsers = []
+    try {
+      users = await api.getUsers()
+    } catch (e) {
+      throw { error: 'failed to get users' }
+
+    }
+    return users
   }
 })
 

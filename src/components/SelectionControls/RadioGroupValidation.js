@@ -16,7 +16,7 @@ const styles = {
 
 export const RadioGroup = props => {
   const {
-    choices, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions, disableAll
+    choices, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions, disableAll, userImages
   } = props
 
   return (
@@ -35,13 +35,13 @@ export const RadioGroup = props => {
             />
             {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
               answer.schemeAnswerId === choice.id &&
-              <ValidationAvatar key={`user-answer-${index}`} answer={answer} choice={choice.id} />
+              <ValidationAvatar key={`user-answer-${index}`} answer={answer} avatar={userImages[answer.userId].avatar} choice={choice.id} />
             ))}
             {userAnswers.answers.hasOwnProperty(choice.id)
               && mergedUserQuestions !== null
               && <Avatar
                 cardAvatar
-                avatarUrl={userAnswers.validatedBy.avatarUrl}
+                avatar={userAnswers.validatedBy.userId ? userImages[userAnswers.validatedBy.userId].avatar : userAnswers.validatedBy.avatar} //this is not good
                 style={{ backgroundColor: 'white', color: '#35ac74', borderColor: '#35ac74' }}
                 key={mergedUserQuestions.answers.length + 1}
                 initials={userAnswers.validatedBy === null
