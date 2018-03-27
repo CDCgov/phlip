@@ -40,7 +40,7 @@ export class QuestionCard extends Component {
       comment: this.props.userAnswers.comment,
       isValidation: this.props.isValidation,
       mergedUserQuestions: this.props.mergedUserQuestions,
-      validatedByUserImagesById: this.props.validatedByUserImagesById
+      userImages: this.props.userImages
     }
 
     return (
@@ -95,7 +95,7 @@ const mapStateToProps = (state, ownProps) => {
         ? pageState.mergedUserQuestions[pageState.question.id][pageState.selectedCategoryId]
         : pageState.mergedUserQuestions[pageState.question.id]
       : null,
-    validatedByUserImagesById: pageState.validatedByUserImagesById
+    userImages: pageState.userImages
   }
 }
 

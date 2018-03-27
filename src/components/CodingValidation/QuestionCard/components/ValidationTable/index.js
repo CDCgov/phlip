@@ -32,7 +32,7 @@ const checkQuestionFlag = (questionFlag, flagsComments) => {
 }
 
 export const ValidationTable = props => {
-  const { mergedUserQuestions, questionFlags, onOpenAlert } = props
+  const { mergedUserQuestions, questionFlags, onOpenAlert, userImages } = props
   const hasFlagsComments = mergedUserQuestions.hasOwnProperty('flagsComments')
   const allFlags = hasFlagsComments
     ? questionFlags.length > 0
@@ -61,7 +61,7 @@ export const ValidationTable = props => {
                   cardAvatar
                   style={{ marginRight: 10 }}
                   initials={getInitials(item.raisedBy.firstName, item.raisedBy.lastName)}
-                  avatar={item.raisedBy.avatar} />
+                  avatar={userImages[item.raisedBy.userId].avatar} />
                 <Typography type="caption">{`${item.raisedBy.firstName} ${item.raisedBy.lastName}`}</Typography>
               </Row>
               <Row displayFlex flex style={{ flexBasis: '70%', overflow: 'hidden' }}>

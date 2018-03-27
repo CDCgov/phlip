@@ -12,7 +12,6 @@ import * as types from './actionTypes'
 
 const addCoderToAnswers = (existingQuestion, question, coder) => {
   let flagComment = {}
-
   if (question.flag !== null) {
     flagComment = { ...question.flag, raisedBy: { ...coder } }
   }
@@ -64,6 +63,7 @@ const getCoderInformation = async ({ api, action, questionId }) => {
   } catch (e) {
     throw { error: 'failed to get all coded questions' }
   }
+
   if (allCodedQuestions.length === 0) {
     codedQuestionObj = { [questionId]: { answers: [], flagsComments: [] } }
   }
@@ -73,6 +73,7 @@ const getCoderInformation = async ({ api, action, questionId }) => {
     }
   }
 
+  // console.log(codedQuestionObj)
   return { codedQuestionObj }
 }
 
@@ -150,15 +151,40 @@ export const getValidationOutlineLogic = createLogic({
       questionId: firstQuestion.id
     })
 
+
+    let codersForProject = []
+    //Get validatedByImages
+    try {
+      codersForProject = await api.getCodersForProject(action.projectId)
+    } catch (e) {
+      throw { error: 'failed to load coders for project' }
+    }
+
+
+    const uniqueUserIds = codersForProject.map((coders) => {
+      return coders.userId
+    })
+
     const uniqueValidatedUsersIds = validatedQuestions.map((validatedQuestion) => {
+      // console.log(validatedQuestion)
       return validatedQuestion.validatedBy.userId
     }).filter((elem, pos, arr) => {
       return arr.indexOf(elem) == pos;
     })
 
+    const combinedUsersOnProject = [...uniqueUserIds, ...uniqueValidatedUsersIds]
 
     let uniqueUsersWithAvatar = []
-    for (let userId of uniqueValidatedUsersIds) {
+    // console.log(uniqueValidatedUsersIds)
+    // console.log(uniqueUserIds)
+    // console.log(combinedUsersOnProject)
+
+    const combinedUniqueUsersOnProject = combinedUsersOnProject.filter((elem, pos, arr) => {
+      return arr.indexOf(elem) == pos;
+    })
+
+
+    for (let userId of combinedUniqueUsersOnProject) {
       try {
         const avatar = await api.getUserImage(userId)
         let userWithId = { id: userId, avatar }
@@ -168,7 +194,7 @@ export const getValidationOutlineLogic = createLogic({
         throw { error: 'failed to get validatedBy avatar image' }
       }
     }
-    const validatedByUserImagesById = normalize.arrayToObject(uniqueUsersWithAvatar)
+    const userImages = normalize.arrayToObject(uniqueUsersWithAvatar)
 
     return {
       outline: scheme.outline,
@@ -180,7 +206,7 @@ export const getValidationOutlineLogic = createLogic({
       areJurisdictionsEmpty: false,
       userId,
       mergedUserQuestions: codedQuestionObj,
-      validatedByUserImagesById
+      userImages
     }
   }
 })
@@ -307,15 +333,40 @@ export const getUserValidatedQuestionsLogic = createLogic({
 
     const { codedQuestionObj } = await getCoderInformation({ api, action, questionId: updatedSchemeQuestion.id })
 
+    let codersForProject = []
+    //Get validatedByImages
+    try {
+      codersForProject = await api.getCodersForProject(action.projectId)
+    } catch (e) {
+      throw { error: 'failed to load coders for project' }
+    }
+
+
+    const uniqueUserIds = codersForProject.map((coders) => {
+      return coders.userId
+    })
+
     const uniqueValidatedUsersIds = validatedQuestions.map((validatedQuestion) => {
+      // console.log(validatedQuestion)
       return validatedQuestion.validatedBy.userId
     }).filter((elem, pos, arr) => {
       return arr.indexOf(elem) == pos;
     })
 
+    const combinedUsersOnProject = [...uniqueUserIds, ...uniqueValidatedUsersIds]
 
     let uniqueUsersWithAvatar = []
-    for (let userId of uniqueValidatedUsersIds) {
+    // console.log(uniqueValidatedUsersIds)
+    // console.log(uniqueUserIds)
+    // console.log(combinedUsersOnProject)
+
+    const combinedUniqueUsersOnProject = combinedUsersOnProject.filter((elem, pos, arr) => {
+      return arr.indexOf(elem) == pos;
+    })
+
+    // console.log(combinedUniqueUsersOnProject)
+
+    for (let userId of combinedUniqueUsersOnProject) {
       try {
         const avatar = await api.getUserImage(userId)
         let userWithId = { id: userId, avatar }
@@ -325,15 +376,14 @@ export const getUserValidatedQuestionsLogic = createLogic({
         throw { error: 'failed to get validatedBy avatar image' }
       }
     }
-    const validatedByUserImagesById = normalize.arrayToObject(uniqueUsersWithAvatar)
-
+    const userImages = normalize.arrayToObject(uniqueUsersWithAvatar)
     return {
       userAnswers,
       question: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion },
       scheme: updatedScheme,
       otherUpdates,
       mergedUserQuestions: codedQuestionObj,
-      validatedByUserImagesById
+      userImages
     }
   }
 })

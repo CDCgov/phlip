@@ -25,7 +25,7 @@ const styles = theme => ({
   }
 })
 
-const InputBox = ({ value, onChange, name, rows, answerId, classes, validator, isValidation, validatedByUserImagesById, style, ...otherProps, }) => {
+const InputBox = ({ value, onChange, name, rows, answerId, classes, validator, isValidation, userImages, style, ...otherProps, }) => {
   const textValues = value === undefined ? { textAnswer: '', pincite: '' } : value
   return (
     <Column style={style}>
@@ -33,7 +33,7 @@ const InputBox = ({ value, onChange, name, rows, answerId, classes, validator, i
         {isValidation &&
           <Avatar
             cardAvatar
-            avatar={validator.userId ? validatedByUserImagesById[validator.userId].avatar : validator.avatar}
+            avatar={validator.userId ? userImages[validator.userId].avatar : validator.avatar}
             style={{ marginRight: 15, backgroundColor: 'white', color: '#35ac74', borderColor: '#35ac74' }}
             initials={getInitials(validator.firstName, validator.lastName)}
           />}

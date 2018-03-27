@@ -16,7 +16,7 @@ import ValidationTable from '../ValidationTable'
 export const QuestionContent = props => {
   const {
     question, currentUserInitials, comment, userAnswers, mergedUserQuestions, isValidation,
-    onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, validatedByUserImagesById
+    onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages
   } = props
 
   const questionAnswerPadding = {
@@ -50,7 +50,7 @@ export const QuestionContent = props => {
               question={question}
               onChange={onChange}
               userAnswers={userAnswers}
-              validatedByUserImagesById={validatedByUserImagesById}
+              userImages={userImages}
               onChangePincite={onChangeTextAnswer}
               mergedUserQuestions={mergedUserQuestions}
               currentUserInitials={currentUserInitials}
@@ -69,7 +69,7 @@ export const QuestionContent = props => {
               pincites={question.questionType !== questionTypes.CATEGORY}
               mergedUserQuestions={mergedUserQuestions}
               currentUserInitials={currentUserInitials}
-              validatedByUserImagesById={validatedByUserImagesById}
+              userImages={userImages}
             />
           </Row>}
 
@@ -86,7 +86,7 @@ export const QuestionContent = props => {
             style={{ ...answerPadding, paddingRight: 0 }}
             mergedUserQuestions={mergedUserQuestions}
             validatorAnswer={userAnswers.answers[question.possibleAnswers[0].id]}
-            validatedByUserImagesById={validatedByUserImagesById}
+            userImages={userImages}
             validator={userAnswers.validatedBy}
             onChange={onChangeTextAnswer}
             answerId={question.possibleAnswers[0].id}
@@ -121,6 +121,7 @@ export const QuestionContent = props => {
         onOpenAlert={onOpenFlagConfirmAlert}
         mergedUserQuestions={mergedUserQuestions}
         questionFlags={question.flags}
+        userImages={userImages}
       />}
 
       {question.isCategoryQuestion &&

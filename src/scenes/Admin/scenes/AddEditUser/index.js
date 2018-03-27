@@ -182,7 +182,7 @@ export class AddEditUser extends Component {
                     style={{ width: '65px', height: '65px' }}
                     avatar={this.props.avatar} /></TextLink>
               </Tooltip>
-                : <ReactFileReader base64={true} fileTypes={['.jpg']} handleFiles={this.openAvatarForm}>
+                : <ReactFileReader base64={true} fileTypes={['.jpg', 'png']} handleFiles={this.openAvatarForm}>
                   <IconButton
                     color={'#757575'}
                     iconSize={50}

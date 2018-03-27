@@ -21,7 +21,8 @@ const INITIAL_STATE = {
   mergedUserQuestions: [],
   selectedCategoryId: null,
   isSchemeEmpty: null,
-  areJurisdictionsEmpty: null
+  areJurisdictionsEmpty: null,
+  userImages: null
 }
 
 const validationReducer = (state = INITIAL_STATE, action) => {
@@ -47,7 +48,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           question: action.payload.question,
           userAnswers: action.payload.userAnswers,
           mergedUserQuestions: action.payload.mergedUserQuestions,
-          validatedByUserImagesById: action.payload.validatedByUserImagesById,
+          userImages: action.payload.userImages,
           categories: undefined,
           isSchemeEmpty: false,
           areJurisdictionsEmpty: false
@@ -121,7 +122,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         question: action.payload.question,
         scheme: action.payload.scheme,
         mergedUserQuestions: action.payload.mergedUserQuestions,
-        validatedByUserImagesById: action.payload.validatedByUserImagesById,
+        userImages: action.payload.userImages,
         ...action.payload.otherUpdates,
       }
 

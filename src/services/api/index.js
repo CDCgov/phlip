@@ -216,5 +216,10 @@ export default {
   // Saves the protocol for a project, called in Protocol/logic
   saveProtocol(projectId, userId, protocol) {
     return api.put(`/projects/${projectId}/protocol`, { userId, text: protocol }).then(res => res.data)
+  },
+
+  getCodersForProject(projectId) {
+    return api.get(`/projects/${projectId}/coders`).then(res => res.data)
   }
+
 }
