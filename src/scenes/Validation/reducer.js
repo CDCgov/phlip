@@ -23,7 +23,8 @@ const INITIAL_STATE = {
   isSchemeEmpty: null,
   areJurisdictionsEmpty: null,
   schemeError: null,
-  getQuestionErrors: null
+  getQuestionErrors: null,
+  codedQuestionsError: null
 }
 
 const validationReducer = (state = INITIAL_STATE, action) => {
@@ -55,7 +56,8 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           isSchemeEmpty: false,
           areJurisdictionsEmpty: false,
           schemeError: null,
-          getQuestionErrors: errors.length > 0 ? errors : null
+          getQuestionErrors: errors.length > 0 ? errors : null,
+          codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null
         }
       }
 
@@ -68,8 +70,8 @@ const validationReducer = (state = INITIAL_STATE, action) => {
             ...state.scheme,
             byId: {
               ...state.scheme.byId,
-              [action.questionId]: {
-                ...state.scheme.byId[action.questionId],
+              [state.question.id]: {
+                ...state.scheme.byId[state.question.id],
                 flags: []
               }
             }
@@ -83,10 +85,10 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           : state.mergedUserQuestions[state.question.id].flagsComments
 
         const { id, type, notes, raisedAt, ...flag } = flagComments.find((item, i) => {
-          if (item.id === action.flagId) {
+          if (item.id === action.payload.flagId) {
             flagIndex = i
           }
-          return item.id === action.flagId
+          return item.id === action.payload.flagId
         })
 
         if (Object.keys(flag).length === 1) {
@@ -127,12 +129,15 @@ const validationReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
+      const errors = generateError(action.payload.errors)
       return {
         ...state,
         userAnswers: action.payload.userAnswers,
         question: action.payload.question,
         scheme: action.payload.scheme,
         mergedUserQuestions: action.payload.mergedUserQuestions,
+        getQuestionErrors: errors.length > 0 ? errors : null,
+        codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
         ...action.payload.otherUpdates,
       }
 
@@ -142,10 +147,21 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         schemeError: action.payload
       }
 
+    case types.GET_USER_VALIDATED_QUESTIONS_REQUEST:
+      return {
+        ...state,
+        codedQuestionsError: null
+      }
+
+    case types.GET_USER_VALIDATED_QUESTIONS_FAIL:
+      return {
+        ...state,
+        getQuestionErrors: ''
+      }
+
     case types.CLEAR_RED_FLAG:
     case types.CLEAR_FLAG:
     case types.GET_VALIDATION_OUTLINE_REQUEST:
-    case types.GET_USER_VALIDATED_QUESTIONS_REQUEST:
     default:
       return state
   }
@@ -157,6 +173,7 @@ export const validationHandlers = [
   'GET_VALIDATION_OUTLINE_FAIL',
   'GET_USER_VALIDATED_QUESTIONS_REQUEST',
   'GET_USER_VALIDATED_QUESTIONS_SUCCESS',
+  'GET_USER_VALIDATED_QUESTIONS_FAIL',
   'CLEAR_FLAG',
   'CLEAR_RED_FLAG',
   'CLEAR_FLAG_SUCCESS',

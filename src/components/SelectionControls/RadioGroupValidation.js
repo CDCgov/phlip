@@ -16,7 +16,7 @@ const styles = {
 
 export const RadioGroup = props => {
   const {
-    choices, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions
+    choices, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions, disableAll
   } = props
 
   return (
@@ -30,6 +30,7 @@ export const RadioGroup = props => {
               control={
                 <Radio classes={{ checked: classes.checked }} />
               }
+              disabled={disableAll}
               label={choice.text}
             />
             {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
@@ -56,6 +57,7 @@ export const RadioGroup = props => {
                     ? '15px'
                     : '0px'
                 }}
+                disabled={disableAll}
                 placeholder="Enter pincite"
                 multiline={false}
                 value={userAnswers.answers[choice.id].pincite}

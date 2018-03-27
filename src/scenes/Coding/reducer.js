@@ -22,7 +22,8 @@ const INITIAL_STATE = {
   showNextButton: true,
   mergedUserQuestions: null,
   schemeError: null,
-  getQuestionErrors: null
+  getQuestionErrors: null,
+  codedQuestionsError: null
 }
 
 const codingReducer = (state = INITIAL_STATE, action) => {
@@ -57,7 +58,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           areJurisdictionsEmpty: false,
           isSchemeEmpty: false,
           schemeError: null,
-          getQuestionErrors: errors.length > 0 ? errors : null
+          getQuestionErrors: errors.length > 0 ? errors : null,
+          codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null
         }
       }
 
@@ -104,16 +106,30 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.GET_USER_CODED_QUESTIONS_SUCCESS:
+      const errors = generateError(action.payload.errors)
       return {
         ...state,
         userAnswers: action.payload.userAnswers,
         question: action.payload.question,
         scheme: action.payload.scheme,
+        getQuestionErrors: errors.length > 0 ? errors : null,
+        codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
         ...action.payload.otherUpdates,
       }
 
-    case types.ON_SAVE_RED_FLAG_REQUEST:
+    case types.GET_USER_CODED_QUESTIONS_FAIL:
+      return {
+        ...state,
+        getQuestionsError: ''
+      }
+
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
+      return {
+        ...state,
+        codedQuestionsError: null
+      }
+
+    case types.ON_SAVE_RED_FLAG_REQUEST:
     case types.GET_CODING_OUTLINE_REQUEST:
     default:
       return state

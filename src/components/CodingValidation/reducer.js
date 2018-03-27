@@ -34,7 +34,8 @@ const INITIAL_STATE = {
   errorTypeMsg: '',
   schemeError: null,
   saveFlagErrorContent: null,
-  getQuestionErrors: null
+  getQuestionErrors: null,
+  codedQuestionsError: null
 }
 
 const codingValidationReducer = (state = INITIAL_STATE, action, name) => {

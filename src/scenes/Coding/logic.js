@@ -30,7 +30,7 @@ export const getOutlineLogic = createLogic({
           try {
             codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
           } catch (e) {
-            errors = { codedQuestions: 'We couldn\'t get your coded questions for the project.' }
+            errors = { codedQuestions: 'We couldn\'t get your coded questions for this project and jurisdiction, so you won\'t be able to answer quetions.' }
           }
 
           // Create one array with the outline information in the question information
@@ -135,23 +135,18 @@ export const answerQuestionLogic = createLogic({
 
 export const getUserCodedQuestionsLogic = createLogic({
   type: types.GET_USER_CODED_QUESTIONS_REQUEST,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.GET_USER_CODED_QUESTIONS_SUCCESS,
-    failType: types.GET_USER_CODED_QUESTIONS_FAIL
-  },
-  async process({ action, api, getState }) {
+  async process({ action, api, getState }, dispatch, done) {
     let codedQuestions = []
     const userId = getState().data.user.currentUser.id
     const state = getState().scenes.coding
     let question = { ...state.question }
-    let otherUpdates = {}
+    let otherUpdates = {}, errors = {}, updatedSchemeQuestion = {}, payload = {}
 
     // Get user coded questions for a project and jurisdiction
     try {
       codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
     } catch (e) {
-      throw { error: 'failed to get codedQuestions' }
+      errors = { codedQuestions: 'We couldn\'t get your coded questions for this project and jurisdiction, so you won\'t be able to answer questions.' }
     }
 
     // If the current question is a category question, then change the current question to parent
@@ -166,7 +161,12 @@ export const getUserCodedQuestionsLogic = createLogic({
     }
 
     // Get scheme question in case there are changes
-    const updatedSchemeQuestion = await api.getSchemeQuestion(question.id, action.projectId)
+    try {
+      updatedSchemeQuestion = await api.getSchemeQuestion(question.id, action.projectId)
+    } catch (error) {
+      updatedSchemeQuestion = { ...question }
+      errors = { ...errors, updatedSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.' }
+    }
 
     // Update scheme with new scheme question
     const updatedScheme = {
@@ -177,14 +177,20 @@ export const getUserCodedQuestionsLogic = createLogic({
       }
     }
 
-    const { userAnswers } = await initializeAndCheckAnswered(updatedSchemeQuestion, codedQuestions, updatedScheme.byId, userId, action, api.createEmptyCodedQuestion)
-
-    return {
-      userAnswers,
+    const { userAnswers, initializeErrors } = await initializeAndCheckAnswered(updatedSchemeQuestion, codedQuestions, updatedScheme.byId, userId, action, api.createEmptyCodedQuestion)
+    payload = {
       question: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion },
+      userAnswers,
       scheme: updatedScheme,
-      otherUpdates
+      otherUpdates,
+      errors: { ...errors, ...initializeErrors }
     }
+
+    dispatch({
+      type: types.GET_USER_CODED_QUESTIONS_SUCCESS,
+      payload
+    })
+    done()
   }
 })
 

@@ -15,7 +15,7 @@ import ValidationTable from '../ValidationTable'
 
 export const QuestionContent = props => {
   const {
-    question, currentUserInitials, comment, userAnswers, mergedUserQuestions, isValidation,
+    question, currentUserInitials, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
     onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert
   } = props
 
@@ -53,6 +53,7 @@ export const QuestionContent = props => {
             onChangePincite={onChangeTextAnswer}
             mergedUserQuestions={mergedUserQuestions}
             currentUserInitials={currentUserInitials}
+            disableAll={disableAll}
           />
         </Row>}
 
@@ -68,6 +69,7 @@ export const QuestionContent = props => {
             pincites={question.questionType !== questionTypes.CATEGORY}
             mergedUserQuestions={mergedUserQuestions}
             currentUserInitials={currentUserInitials}
+            disableAll={disableAll}
           />
         </Row>}
 
@@ -76,6 +78,7 @@ export const QuestionContent = props => {
           <InputBox
             rows="7" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
             value={userAnswers.answers[question.possibleAnswers[0].id]} answerId={question.possibleAnswers[0].id}
+            disabled={disableAll}
           />
         </Column>}
 
@@ -88,6 +91,7 @@ export const QuestionContent = props => {
           onChange={onChangeTextAnswer}
           answerId={question.possibleAnswers[0].id}
           currentUserInitials={currentUserInitials}
+          disabled={disableAll}
         />
         }
         <Row style={{ ...answerPadding, paddingRight: 0, paddingTop: 20, paddingBottom: 0 }}>
@@ -102,6 +106,7 @@ export const QuestionContent = props => {
               value={comment}
               rowsMax={3}
               label="Comment"
+              disabled={disableAll}
             />
           </Row>}
         </Row>

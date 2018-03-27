@@ -75,7 +75,8 @@ export class QuestionCard extends Component {
       userAnswers: this.props.userAnswers,
       comment: this.props.userAnswers.comment,
       isValidation: this.props.isValidation,
-      mergedUserQuestions: this.props.mergedUserQuestions
+      mergedUserQuestions: this.props.mergedUserQuestions,
+      disableAll: this.props.disableAll
     }
 
     const alertActions = [
@@ -106,13 +107,14 @@ export class QuestionCard extends Component {
               aria-label="Clear answer"
               tooltipText="Clear answer"
               id="clear-answer">
-              <Broom className={styles.sweep} aria-labelledby="Clear answer" />
+              {!this.props.disableAll && <Broom className={styles.sweep} aria-labelledby="Clear answer" />}
             </IconButton>}
             {!this.props.isValidation && <FlagPopover
               userFlag={this.props.userAnswers.flag}
               onSaveFlag={this.props.onSaveFlag}
               questionFlags={this.props.question.flags}
-              user={this.props.user} />}
+              user={this.props.user}
+              disableAll={this.props.disableAll} />}
           </Row>
           <Divider />
           {this.props.categories !== undefined
@@ -154,7 +156,8 @@ const mapStateToProps = (state, ownProps) => {
       ? pageState.question.isCategoryQuestion
         ? pageState.mergedUserQuestions[pageState.question.id][pageState.selectedCategoryId]
         : pageState.mergedUserQuestions[pageState.question.id]
-      : null
+      : null,
+    disableAll: pageState.codedQuestionsError !== null || false
   }
 }
 

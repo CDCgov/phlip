@@ -16,7 +16,7 @@ const styles = {
 
 export const CheckboxGroupValidation = props => {
   const {
-    choices, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions
+    choices, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions, disableAll
   } = props
 
   return (
@@ -30,6 +30,7 @@ export const CheckboxGroupValidation = props => {
               control={
                 <Checkbox classes={{ checked: classes.checked }} />
               }
+              disabled={disableAll}
               label={choice.text}
             />
             {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
