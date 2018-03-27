@@ -9,23 +9,33 @@ import Typography from 'material-ui/Typography'
 import InputBox from 'components/InputBox'
 import ValidationAvatar from 'components/ValidationAvatar'
 
-const userRow = (answer, index) => (
-  <Fragment key={answer.id}>
-    <Row displayFlex style={{ alignItems: 'center', paddingTop: 20, paddingBottom: 20, paddingRight: 5 }}>
-      <ValidationAvatar answer={answer} key={`user-answer-${index}`} />
-      <Paper elevation={0} style={{ marginLeft: 20 }}>
-        <Typography style={{ whiteSpace: 'pre-wrap' }}>{answer.textAnswer}</Typography>
-      </Paper>
-    </Row>
-    <Divider />
-  </Fragment>
-)
+// const userRow = (answer, index) => (
+//   <Fragment key={answer.id}>
+//     <Row displayFlex style={{ alignItems: 'center', paddingTop: 20, paddingBottom: 20, paddingRight: 5 }}>
+//       <ValidationAvatar answer={answer} key={`user-answer-${index}`} />
+//       <Paper elevation={0} style={{ marginLeft: 20 }}>
+//         <Typography style={{ whiteSpace: 'pre-wrap' }}>{answer.textAnswer}</Typography>
+//       </Paper>
+//     </Row>
+//     <Divider />
+//   </Fragment>
+// )
 
 export const TextFieldQuestions = ({ mergedUserQuestions, validator, validatorAnswer, onChange, answerId, style, userImages }) => {
   return (
     <Fragment>
       <Column flex displayFlex style={{ overflow: 'auto', paddingLeft: style.paddingLeft }}>
-        {mergedUserQuestions.answers.map(userRow)}
+        {mergedUserQuestions.answers.map((answer, index) =>
+          <Fragment key={answer.id}>
+            <Row displayFlex style={{ alignItems: 'center', paddingTop: 20, paddingBottom: 20, paddingRight: 5 }}>
+              <ValidationAvatar answer={answer} avatar={userImages[answer.userId].avatar} key={`user-answer-${index}`} />
+              <Paper elevation={0} style={{ marginLeft: 20 }}>
+                <Typography style={{ whiteSpace: 'pre-wrap' }}>{answer.textAnswer}</Typography>
+              </Paper>
+            </Row>
+            <Divider />
+          </Fragment>
+        )}
       </Column>
       <InputBox
         rows="4"
