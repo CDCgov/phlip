@@ -212,6 +212,10 @@ const withCodingValidation = (WrappedComponent, actions) => {
             open={this.props.updateAnswerError !== null}
             content={this.props.answerErrorContent}
             onCloseAlert={this.onCloseAlert} />
+          <ApiErrorAlert
+            open={this.props.getQuestionErrors !== null}
+            content={this.props.getQuestionErrors}
+            onCloseAlert={() => this.props.actions.dismissApiAlert('getQuestionErrors')} />
           <Navigator
             open={this.state.navOpen}
             page={this.props.page}
@@ -291,7 +295,8 @@ const withCodingValidation = (WrappedComponent, actions) => {
       schemeError: pageState.schemeError || null,
       updateAnswerError: pageState.updateAnswerError || null,
       answerErrorContent: pageState.errorTypeMsg || '',
-      saveFlagErrorContent: pageState.saveFlagErrorContent || null
+      saveFlagErrorContent: pageState.saveFlagErrorContent || null,
+      getQuestionErrors: pageState.getQuestionErrors || null
     }
   }
 

@@ -110,6 +110,7 @@ export const getQuestionLogic = createLogic({
         questionInfo = getPreviousQuestion(state, action)
         break
     }
+
     return await getQuestionAndInitialize(state, action, userId, api, api.createEmptyCodedQuestion, questionInfo)
   }
 })

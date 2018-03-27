@@ -226,7 +226,7 @@ export const getQuestionLogicValidation = createLogic({
         break
     }
 
-    const { updatedState, question, currentIndex } = await getQuestionAndInitialize(
+    const { updatedState, question, currentIndex, errors } = await getQuestionAndInitialize(
       state, action, userId, api, api.createEmptyValidatedQuestion, questionInfo
     )
 
@@ -235,7 +235,8 @@ export const getQuestionLogicValidation = createLogic({
     return {
       updatedState: { ...updatedState, mergedUserQuestions: { ...state.mergedUserQuestions, ...codedQuestionObj } },
       question,
-      currentIndex
+      currentIndex,
+      errors
     }
   }
 })

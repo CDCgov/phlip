@@ -47,9 +47,4 @@ export const onSaveRedFlag = (projectId, questionId, flagInfo) => ({
   flagInfo
 })
 
-export const dismissApiAlert = alertType => ({
-  type: types.DISMISS_API_ALERT,
-  alertType
-})
-
 export default actions

@@ -39,9 +39,5 @@ export const clearRedFlag = (flagId, questionId) => ({
   questionId
 })
 
-export const dismissApiAlert = type => ({
-  type: types.DISMISS_API_ALERT,
-  alertType: type
-})
 
 export default actions

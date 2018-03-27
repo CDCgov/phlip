@@ -125,7 +125,6 @@ export const codingHandlers = [
   'ON_SAVE_RED_FLAG_REQUEST',
   'ON_SAVE_RED_FLAG_SUCCESS',
   'ON_SAVE_RED_FLAG_FAIL',
-  'DISMISS_API_ALERT',
   'ON_SAVE_FLAG'
 ]
 

@@ -33,7 +33,12 @@ const INITIAL_STATE = {
   updateAnswerError: null,
   errorTypeMsg: '',
   schemeError: null,
-  saveFlagErrorContent: null
+  saveFlagErrorContent: null,
+  getQuestionErrors: null
+}
+
+const generateError = errorsObj => {
+  return Object.values(errorsObj).join(' ')
 }
 
 const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
@@ -53,12 +58,6 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
           ? state.userAnswers[action.questionId][state.selectedCategoryId]
           : state.userAnswers[action.questionId],
         errorTypeMsg: errorTypes[1]
-      }
-
-    case types.DISMISS_API_ALERT:
-      return {
-        ...state,
-        [action.alertType]: null
       }
 
     case `${types.UPDATE_USER_ANSWER_SUCCESS}_${name}`:
@@ -124,13 +123,15 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
       }
 
     case `${types.GET_QUESTION_SUCCESS}_${name}`:
+      const errors = generateError(action.payload.errors)
       return {
         ...action.payload.updatedState,
         ...handleCheckCategories(
           action.payload.question,
           action.payload.currentIndex,
           action.payload.updatedState
-        )
+        ),
+        getQuestionErrors: errors.length > 0 ? errors : null
       }
 
     case `${types.ON_APPLY_ANSWER_TO_ALL}_${name}`:
@@ -160,6 +161,12 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
           ? state.userAnswers[action.questionId][state.selectedCategoryId]
           : state.userAnswers[action.questionId],
         errorTypeMsg: errorTypes[4]
+      }
+
+    case `${types.DISMISS_API_ALERT}_${name}`:
+      return {
+        ...state,
+        [action.errorType]: null
       }
 
     case `${types.ON_CLOSE_SCREEN}_${name}`:
