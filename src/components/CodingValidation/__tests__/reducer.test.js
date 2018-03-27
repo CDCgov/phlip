@@ -141,7 +141,13 @@ describe('CodingValidation reducer', () => {
             schemeQuestionId: 1,
             comment: ''
           }
-        }
+        },
+        snapshotUserAnswer: {
+          answers: {},
+          comment: '',
+          schemeQuestionId: 1
+        },
+        errorTypeMsg: 'We couldn\'t save the answer for this question. Your answer will be reset to the previous state.'
       }))
 
       expect(state).toHaveProperty('scheme.tree', [
@@ -244,7 +250,13 @@ describe('CodingValidation reducer', () => {
               90: { schemeAnswerId: 90, pincite: '' }
             }
           }
-        }
+        },
+        snapshotUserAnswer: {
+          answers: {},
+          comment: '',
+          schemeQuestionId: 2
+        },
+        errorTypeMsg: 'We couldn\'t save the answer for this question. Your answer will be reset to the previous state.'
       }))
     })
   })
@@ -281,7 +293,15 @@ describe('CodingValidation reducer', () => {
               comment: 'new comment'
             }
           },
-          showNextButton: false
+          showNextButton: false,
+          snapshotUserAnswer: {
+            answers: {
+              1: { schemeAnswerId: 1 }
+            },
+            comment: '',
+            schemeQuestionId: 2
+          },
+          errorTypeMsg: 'We couldn\'t save the comment for this question. Your comment will be reset to the previous state.',
         })
       )
 
@@ -311,7 +331,7 @@ describe('CodingValidation reducer', () => {
             2: {
               schemeQuestionId: 2,
               3: {
-                answers: { schemeAnswerId: 5 }, comment: 'comment for cat 1', flag: {}
+                answers: { 5: { schemeAnswerId: 5 }}, comment: 'comment for cat 1', flag: {}
               },
               2: {
                 answers: {}, comment: 'comment for cat 2', flag: {}
@@ -340,7 +360,7 @@ describe('CodingValidation reducer', () => {
             2: {
               schemeQuestionId: 2,
               3: {
-                answers: { schemeAnswerId: 5 }, comment: 'new comment for cat 1', flag: {}
+                answers: { 5: { schemeAnswerId: 5 } }, comment: 'new comment for cat 1', flag: {}
               },
               2: {
                 answers: {}, comment: 'comment for cat 2', flag: {}
@@ -350,7 +370,15 @@ describe('CodingValidation reducer', () => {
           showNextButton: false,
           selectedCategory: 0,
           selectedCategoryId: 3,
-          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
+          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }],
+          snapshotUserAnswer: {
+            answers: {
+              5: { schemeAnswerId: 5 }
+            },
+            comment: 'comment for cat 1',
+            flag: {}
+          },
+          errorTypeMsg: 'We couldn\'t save the comment for this question. Your comment will be reset to the previous state.',
         })
       )
     })
@@ -413,6 +441,15 @@ describe('CodingValidation reducer', () => {
               comment: ''
             }
           },
+          snapshotUserAnswer: {
+            answers: {
+              1: { pincite: '', schemeAnswerId: 1 },
+              4: { pincite: '', schemeAnswerId: 4 }
+            },
+            comment: '',
+            schemeQuestionId: 2
+          },
+          errorTypeMsg: 'We couldn\'t save the pincite for this answer choice. Your pincite will be reset to the previous state.',
           showNextButton: false
         })
       )
@@ -481,6 +518,13 @@ describe('CodingValidation reducer', () => {
               }
             }
           },
+          snapshotUserAnswer: {
+            answers: {
+              4: { pincite: '', schemeAnswerId: 4 }
+            },
+            comment: ''
+          },
+          errorTypeMsg: 'We couldn\'t save the pincite for this answer choice. Your pincite will be reset to the previous state.',
           selectedCategory: 1,
           showNextButton: false,
           selectedCategoryId: 2,
@@ -536,6 +580,15 @@ describe('CodingValidation reducer', () => {
               comment: ''
             }
           },
+          snapshotUserAnswer: {
+            answers: {
+              1: { pincite: '', schemeAnswerId: 1 },
+              4: { pincite: '', schemeAnswerId: 4 }
+            },
+            comment: '',
+            schemeQuestionId: 2
+          },
+          errorTypeMsg: 'We couldn\'t clear the answer for this question. Your answer will be reset to the previous state.',
           showNextButton: false
         })
       )
@@ -598,6 +651,13 @@ describe('CodingValidation reducer', () => {
                 comment: ''
               }
             }
+          },
+          errorTypeMsg: 'We couldn\'t clear the answer for this question. Your answer will be reset to the previous state.',
+          snapshotUserAnswer: {
+            answers: {
+              4: { pincite: 'pincite!', schemeAnswerId: 4 }
+            },
+            comment: ''
           },
           selectedCategory: 0,
           selectedCategoryId: 3,

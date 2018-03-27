@@ -28,11 +28,12 @@ describe('Protocol reducer', () => {
   })
 
   test('SAVE_PROTOCOL_SUCCESS', () => {
-    expect(reducer(initial, { type: types.SAVE_PROTOCOL_SUCCESS, payload: ''})).toEqual(initial)
+    expect(reducer(initial, { type: types.SAVE_PROTOCOL_SUCCESS, payload: '' })).toEqual(initial)
   })
 
   test('GET_PROTOCOL_SUCCESS', () => {
     expect(reducer(initial, { type: types.GET_PROTOCOL_SUCCESS, payload: 'this is protocol' })).toEqual({
+      ...initial,
       content: 'this is protocol',
       getProtocolError: null
     })
@@ -47,6 +48,7 @@ describe('Protocol reducer', () => {
 
   test('UPDATE_PROTOCOL', () => {
     expect(reducer(initial, { type: types.UPDATE_PROTOCOL, content: 'this is protocol' })).toEqual({
+      ...initial,
       content: 'this is protocol',
       submitting: false
     })
