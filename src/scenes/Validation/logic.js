@@ -76,6 +76,8 @@ const getCoderInformation = async ({ api, action, questionId }) => {
   return { codedQuestionObj }
 }
 
+//TODO: const getAvatarForValidatedBy = async ({}) 
+
 /*
   Some of the reusable functions need to know whether we're on the validation screen or not, so that's what this is for
  */
@@ -148,6 +150,26 @@ export const getValidationOutlineLogic = createLogic({
       questionId: firstQuestion.id
     })
 
+    const uniqueValidatedUsersIds = validatedQuestions.map((validatedQuestion) => {
+      return validatedQuestion.validatedBy.userId
+    }).filter((elem, pos, arr) => {
+      return arr.indexOf(elem) == pos;
+    })
+
+
+    let uniqueUsersWithAvatar = []
+    for (let userId of uniqueValidatedUsersIds) {
+      try {
+        const avatar = await api.getUserImage(userId)
+        let userWithId = { id: userId, avatar }
+        uniqueUsersWithAvatar = [...uniqueUsersWithAvatar, { ...userWithId }]
+
+      } catch (e) {
+        throw { error: 'failed to get validatedBy avatar image' }
+      }
+    }
+    const validatedByUserImagesById = normalize.arrayToObject(uniqueUsersWithAvatar)
+
     return {
       outline: scheme.outline,
       scheme: { byId: questionsById, tree, order },
@@ -157,7 +179,8 @@ export const getValidationOutlineLogic = createLogic({
       isSchemeEmpty: false,
       areJurisdictionsEmpty: false,
       userId,
-      mergedUserQuestions: codedQuestionObj
+      mergedUserQuestions: codedQuestionObj,
+      validatedByUserImagesById
     }
   }
 })
@@ -284,12 +307,33 @@ export const getUserValidatedQuestionsLogic = createLogic({
 
     const { codedQuestionObj } = await getCoderInformation({ api, action, questionId: updatedSchemeQuestion.id })
 
+    const uniqueValidatedUsersIds = validatedQuestions.map((validatedQuestion) => {
+      return validatedQuestion.validatedBy.userId
+    }).filter((elem, pos, arr) => {
+      return arr.indexOf(elem) == pos;
+    })
+
+
+    let uniqueUsersWithAvatar = []
+    for (let userId of uniqueValidatedUsersIds) {
+      try {
+        const avatar = await api.getUserImage(userId)
+        let userWithId = { id: userId, avatar }
+        uniqueUsersWithAvatar = [...uniqueUsersWithAvatar, { ...userWithId }]
+
+      } catch (e) {
+        throw { error: 'failed to get validatedBy avatar image' }
+      }
+    }
+    const validatedByUserImagesById = normalize.arrayToObject(uniqueUsersWithAvatar)
+
     return {
       userAnswers,
       question: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion },
       scheme: updatedScheme,
       otherUpdates,
-      mergedUserQuestions: codedQuestionObj
+      mergedUserQuestions: codedQuestionObj,
+      validatedByUserImagesById
     }
   }
 })

@@ -5,6 +5,7 @@ import SimpleInput from 'components/SimpleInput'
 import { withStyles } from 'material-ui/styles'
 import { Row, Column } from 'components/Layout'
 import Avatar from 'components/Avatar'
+import { getInitials } from 'utils/normalize'
 
 const styles = theme => ({
   container: {
@@ -24,12 +25,18 @@ const styles = theme => ({
   }
 })
 
-const InputBox = ({ value, onChange, name, rows, answerId, classes, currentUserInitials, validator, isValidation, style, ...otherProps }) => {
+const InputBox = ({ value, onChange, name, rows, answerId, classes, validator, isValidation, validatedByUserImagesById, style, ...otherProps, }) => {
   const textValues = value === undefined ? { textAnswer: '', pincite: '' } : value
   return (
     <Column style={style}>
       <Row displayFlex style={{ alignItems: 'center', padding: isValidation ? '10px 0 0 0' : '' }}>
-        {isValidation && <Avatar cardAvatar style={{ marginRight: 15, backgroundColor: 'white', color: '#35ac74', borderColor: '#35ac74' }} initials={validator} />}
+        {isValidation &&
+          <Avatar
+            cardAvatar
+            avatar={validator.userId ? validatedByUserImagesById[validator.userId].avatar : validator.avatar}
+            style={{ marginRight: 15, backgroundColor: 'white', color: '#35ac74', borderColor: '#35ac74' }}
+            initials={getInitials(validator.firstName, validator.lastName)}
+          />}
         <TextField
           value={textValues.textAnswer}
           onChange={onChange(answerId, 'textAnswer')}
@@ -48,18 +55,18 @@ const InputBox = ({ value, onChange, name, rows, answerId, classes, currentUserI
         />
       </Row>
       {textValues.textAnswer && textValues.textAnswer.length > 0 &&
-      <div style={{ paddingTop: 10, paddingBottom: 20 }}>
-        <SimpleInput
-          name="pincite"
-          value={textValues.pincite === null ? '' : textValues.pincite}
-          placeholder="Enter pincite"
-          label="Pincite"
-          onChange={onChange(answerId, 'pincite')}
-          multiline={false}
-          shrinkLabel
-          style={{ flex: 1 }}
-        />
-      </div>}
+        <div style={{ paddingTop: 10, paddingBottom: 20 }}>
+          <SimpleInput
+            name="pincite"
+            value={textValues.pincite === null ? '' : textValues.pincite}
+            placeholder="Enter pincite"
+            label="Pincite"
+            onChange={onChange(answerId, 'pincite')}
+            multiline={false}
+            shrinkLabel
+            style={{ flex: 1 }}
+          />
+        </div>}
     </Column>
   )
 }

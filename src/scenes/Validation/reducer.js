@@ -47,6 +47,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           question: action.payload.question,
           userAnswers: action.payload.userAnswers,
           mergedUserQuestions: action.payload.mergedUserQuestions,
+          validatedByUserImagesById: action.payload.validatedByUserImagesById,
           categories: undefined,
           isSchemeEmpty: false,
           areJurisdictionsEmpty: false
@@ -120,6 +121,7 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         question: action.payload.question,
         scheme: action.payload.scheme,
         mergedUserQuestions: action.payload.mergedUserQuestions,
+        validatedByUserImagesById: action.payload.validatedByUserImagesById,
         ...action.payload.otherUpdates,
       }
 

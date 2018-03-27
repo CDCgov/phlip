@@ -16,7 +16,7 @@ const styles = {
 
 export const RadioGroup = props => {
   const {
-    choices, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions
+    choices, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions, validatedByUserImagesById
   } = props
 
   return (
@@ -40,7 +40,7 @@ export const RadioGroup = props => {
               && mergedUserQuestions !== null
               && <Avatar
                 cardAvatar
-                avatar={userAnswers.validatedBy.avatar}
+                avatar={userAnswers.validatedBy.userId ? validatedByUserImagesById[userAnswers.validatedBy.userId].avatar : userAnswers.validatedBy.avatar} //this is not good
                 style={{ backgroundColor: 'white', color: '#35ac74', borderColor: '#35ac74' }}
                 key={mergedUserQuestions.answers.length + 1}
                 initials={userAnswers.validatedBy === null

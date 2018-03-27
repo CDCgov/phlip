@@ -21,7 +21,7 @@ const userRow = (answer, index) => (
   </Fragment>
 )
 
-export const TextFieldQuestions = ({ mergedUserQuestions, validator, validatorAnswer, onChange, answerId, currentUserInitials, style }) => {
+export const TextFieldQuestions = ({ mergedUserQuestions, validator, validatorAnswer, onChange, answerId, style, validatedByUserImagesById }) => {
   return (
     <Fragment>
       <Column flex displayFlex style={{ overflow: 'auto', paddingLeft: style.paddingLeft }}>
@@ -33,10 +33,10 @@ export const TextFieldQuestions = ({ mergedUserQuestions, validator, validatorAn
         onChange={onChange}
         placeholder="Enter answer"
         style={{ paddingLeft: style.paddingLeft }}
-        validator={validator === undefined ? currentUserInitials : getInitials(validator.firstName, validator.lastName)}
+        validator={validator}
         value={validatorAnswer}
+        validatedByUserImagesById={validatedByUserImagesById}
         answerId={answerId}
-        currentUserInitials={currentUserInitials}
         isValidation={true}
       />
     </Fragment>
