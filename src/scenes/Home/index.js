@@ -56,8 +56,9 @@ export class Home extends Component {
     })
   }
 
-  onChooseExport = () => {
+  onChooseExport = type => {
     //window.open(`/project/${this.state.projectToExport}/export`, '_blank')
+    //window.location.href = `/api/exports/project/${this.state.projectToExport}/data?type=${type}`
     window.location.href = `/api/exports/project/${this.state.projectToExport}/data`
     this.setState({
       exportDialogOpen: false,

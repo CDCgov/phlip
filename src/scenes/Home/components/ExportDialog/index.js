@@ -18,7 +18,7 @@ export const ExportDialog = ({ onClose, onChooseExport, open }) => {
           <ListItem button onClick={() => onChooseExport('statistical')} style={{ paddingLeft: 25, paddingRight: 25 }}>
             <ListItemText primary="Statistical Data" />
           </ListItem>
-          <ListItem button onClick={() => onChooseExport('non')} style={{ paddingLeft: 25, paddingRight: 25 }}>
+          <ListItem button onClick={() => onChooseExport('nonstatistical')} style={{ paddingLeft: 25, paddingRight: 25 }}>
             <ListItemText primary="Non-statistical Data" />
           </ListItem>
         </List>
