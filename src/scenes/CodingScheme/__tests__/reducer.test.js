@@ -5,7 +5,12 @@ const initial = {
   questions: [],
   outline: {},
   allowHover: true,
-  flatQuestions: []
+  flatQuestions: [],
+  formError: null,
+  previousOutline: {},
+  previousQuestions: [],
+  reorderError: null,
+  schemeError: null
 }
 
 const getState = other => ({ ...initial, ...other })
@@ -50,6 +55,7 @@ describe('Coding Scheme reducer', () => {
         },
         allowHover: true,
         empty: false,
+        error: null,
         flatQuestions: [
           { id: 1, text: 'fa la la la', type: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
           { id: 2, text: 'la la la', type: 2, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
@@ -255,7 +261,19 @@ describe('Coding Scheme reducer', () => {
           2: { parentId: 0, positionInParent: 0 }
         },
         allowHover: true,
-        flatQuestions: []
+        flatQuestions: [],
+        previousOutline: {},
+        previousQuestions: [
+          {
+            hovering: false,
+            questionBody: 'la la la',
+            type: 2,
+            id: 2,
+            children: [
+              { hovering: false, questionBody: 'fa la la la', type: 1, id: 1 }
+            ]
+          }
+        ]
       })
     })
   })

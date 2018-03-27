@@ -75,7 +75,7 @@ describe('Home scene', () => {
 
     test('should display the content of errorContent prop in error message', () => {
       const wrapper = setup({ error: true, errorContent: 'We could not get projects.' })
-      expect(wrapper.find('CardError').text()).toContain('Uh-oh, something went wrong. We could not get projects.')
+      expect(wrapper.find('CardError').text()).stringMatching('Uh-oh, something went wrong. We could not get projects.')
     })
   })
 

@@ -111,7 +111,7 @@ describe('Coding scene actions creators', () => {
 
   test('should create an action to handle to save red flag info', () => {
     const expectedAction = {
-      type: types.ON_SAVE_RED_FLAG,
+      type: types.ON_SAVE_RED_FLAG_REQUEST,
       projectId: 1,
       questionId: 1,
       flagInfo: { notes: 'lalala', type: 3 }
