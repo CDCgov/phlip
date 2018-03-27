@@ -99,7 +99,7 @@ export class AddEditUser extends Component {
     if (files.fileList[0].size > maxSize) {
       console.log('file too big')
     } else {
-      compressImage(files.fileList[0]).then(({ shrunkBase64, compressedFile }) => {
+      compressImage(files.fileList[0], 0.2).then(({ shrunkBase64, compressedFile }) => {
 
 
         files.file = compressedFile
