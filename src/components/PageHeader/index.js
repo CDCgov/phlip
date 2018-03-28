@@ -8,22 +8,22 @@ import CircleIcon from 'components/CircleIcon'
 import { withRouter } from 'react-router-dom'
 import TextLink from 'components/TextLink'
 
-export const PageHeader = ({ projectName, pageTitle, projectId, showButton, protocolButton, otherButton, children, history }) => (
+export const PageHeader = ({ projectName, pageTitle, projectId, showButton, protocolButton, otherButton, children, history, onBackButtonClick }) => (
   <Container alignItems="center" style={{ padding: '20px 0' }}>
     <Column style={{ paddingRight: 5 }}>
       {pageTitle !== 'Project List'
-        ? <IconButton iconSize={30} color="black" onClick={() => history.goBack()} aria-label="Go back">arrow_back</IconButton>
+        ? <IconButton iconSize={30} color="black" onClick={onBackButtonClick ? onBackButtonClick : () => history.goBack()} aria-label="Go back">arrow_back</IconButton>
         : <CircleIcon circleColor="error" iconColor="white" circleSize="30px" iconSize="19px">home</CircleIcon>
       }
     </Column>
     <Row displayFlex flex>
       <Typography type="title" style={{ alignSelf: 'center', paddingRight: 10 }}>{pageTitle}</Typography>
       {projectName !== '' &&
-      <Fragment>
-        <Typography type="title" style={{ alignSelf: 'center' }}>
-          <span style={{ color: '#0faee6' }}>{projectName}</span>
-        </Typography>
-      </Fragment>}
+        <Fragment>
+          <Typography type="title" style={{ alignSelf: 'center' }}>
+            <span style={{ color: '#0faee6' }}>{projectName}</span>
+          </Typography>
+        </Fragment>}
     </Row>
     <Row displayFlex>
       {children}
@@ -45,7 +45,8 @@ export const PageHeader = ({ projectName, pageTitle, projectId, showButton, prot
 PageHeader.propTypes = {
   projectName: PropTypes.string,
   showButton: PropTypes.bool,
-  projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onBackButtonClick: PropTypes.func
 }
 
 export default withRouter(PageHeader)

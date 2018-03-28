@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import Card from 'components/Card'
 import * as actions from './actions'
 import PageHeader from 'components/PageHeader'
+import Alert from 'components/Alert'
 
 import tinymce from 'tinymce/tinymce'
 import 'tinymce/themes/modern/theme'
@@ -33,7 +34,8 @@ export class Protocol extends Component {
     super(props, context)
 
     this.state = {
-      editMode: false
+      editMode: false,
+      open: false
     }
   }
 
@@ -68,15 +70,47 @@ export class Protocol extends Component {
     this.props.actions.updateEditedFields(this.props.projectId)
   }
 
+  onClose = () => {
+    this.setState({
+      open: false
+    })
+  }
+
+  onContinue = () => {
+    this.props.history.goBack()
+  }
+
+  onGoBack = () => {
+    this.state.editMode ? this.setState({ open: true }) : this.props.history.goBack()
+  }
+
   render() {
+    const alertActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.onClose
+      },
+      {
+        value: 'Continue',
+        type: 'button',
+        onClick: this.onContinue
+      }
+    ]
     return (
       <Container flex column style={{ paddingBottom: 20, flexWrap: 'nowrap' }}>
+        <Alert
+          open={this.state.open}
+          text="You have unsaved changes that will be lost if you decide to continue. Are you sure you want to continue?"
+          actions={alertActions}
+        />
         <PageHeader
           projectName={this.props.projectName}
           showButton
           projectId={this.props.projectId}
           pageTitle="Protocol"
           protocolButton={false}
+          onBackButtonClick={this.onGoBack}
           otherButton={{
             isLink: false,
             text: this.state.editMode ? 'Save' : 'Edit',
