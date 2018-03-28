@@ -98,7 +98,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
             component={[Function]}
             dateFormat="MM/DD/YYYY"
             invalidLabel="mm/dd/yyyy"
-            label="Start Date"
+            label="Segment start Date"
             name="startDate"
             validate={[Function]}
           />
@@ -117,7 +117,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
             component={[Function]}
             dateFormat="MM/DD/YYYY"
             invalidLabel="mm/dd/yyyy"
-            label="End Date"
+            label="Segment end Date"
             name="endDate"
             validate={[Function]}
           />

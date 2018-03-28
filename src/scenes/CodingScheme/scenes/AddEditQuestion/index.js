@@ -139,10 +139,10 @@ export class AddEditQuestion extends Component {
   render() {
     const options = [
       { value: questionTypes.BINARY, label: 'Binary' },
-      { value: questionTypes.CATEGORY, label: 'Category' },
       { value: questionTypes.CHECKBOXES, label: 'Checkboxes' },
-      { value: questionTypes.MULTIPLE_CHOICE, label: 'Multiple choice' },
-      { value: questionTypes.TEXT_FIELD, label: 'Text field' }
+      { value: questionTypes.MULTIPLE_CHOICE, label: 'Radio Button' },
+      { value: questionTypes.TEXT_FIELD, label: 'Text field' },
+      { value: questionTypes.CATEGORY, label: 'Tabbed' },
     ]
 
     const categoryChildOptions = options.filter(option => option.value !== questionTypes.CATEGORY)
@@ -187,7 +187,7 @@ export class AddEditQuestion extends Component {
                   <Field
                     name="questionType"
                     component={DropDown}
-                    label="Type"
+                    label="Answer Type"
                     options={this.parentDefined && (this.parentDefined.questionType === questionTypes.CATEGORY)
                       ? categoryChildOptions : options}
                     defaultValue={questionTypes.MULTIPLE_CHOICE}
@@ -202,8 +202,8 @@ export class AddEditQuestion extends Component {
                     name="hint"
                     component={TextInput}
                     shrinkLabel={true}
-                    label="Question Hint"
-                    placeholder="Enter hint"
+                    label="Coding directions"
+                    placeholder="Enter any special directions or considerations to display when coding this question"
                   />
                 </Row>
               </Container>

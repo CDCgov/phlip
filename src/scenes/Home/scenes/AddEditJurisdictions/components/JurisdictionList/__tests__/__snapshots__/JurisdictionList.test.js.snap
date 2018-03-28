@@ -9,7 +9,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionList should render corr
       <WithStyles
         key="segment-name"
       >
-        Segments
+        Jurisdictions
       </WithStyles>
       <WithStyles
         key="segment-start"

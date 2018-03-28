@@ -210,11 +210,11 @@ export class JurisdictionForm extends Component {
             </Row>
             <Container style={{ marginTop: 30 }}>
               <Column flex>
-                <Field component={DatePicker} name="startDate" invalidLabel="mm/dd/yyyy" label="Start Date"
+                <Field component={DatePicker} name="startDate" invalidLabel="mm/dd/yyyy" label="Segment start Date"
                        dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
               </Column>
               <Column>
-                <Field component={DatePicker} name="endDate" invalidLabel="mm/dd/yyyy" label="End Date"
+                <Field component={DatePicker} name="endDate" invalidLabel="mm/dd/yyyy" label="Segment end Date"
                        dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
               </Column>
             </Container>
