@@ -23,6 +23,7 @@ import Button from 'components/Button'
 import Tooltip from 'components/Tooltip'
 import compressImage from 'browser-compress-image'
 import Alert from 'components/Alert'
+import Typography from 'material-ui/Typography'
 
 
 const rowStyles = {
@@ -98,7 +99,7 @@ export class AddEditUser extends Component {
     const maxSize = 500000
 
     if (files.fileList[0].size > maxSize) {
-      console.log('file too big')
+      // console.log('file too big')
       this.setState({ open: true })
     } else {
       compressImage(files.fileList[0], 0.2).then(({ shrunkBase64, compressedFile }) => {
@@ -172,11 +173,11 @@ export class AddEditUser extends Component {
 
     return (
       <Fragment>
-        <Alert
-          text="Maximum image file size is 500KB. Please try another image."
-          actions={alertActions}
-          open={this.state.open}
-        />
+        <Alert actions={alertActions} open={this.state.open}>
+          <Typography variant="body1">
+            Maximum image file size is 500KB. Please try another image.
+          </Typography>
+        </Alert>
         <ModalForm
           open={true}
           title={this.state.selectedUser ? 'Edit User' : 'Add New User'}

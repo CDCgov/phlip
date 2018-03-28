@@ -114,12 +114,10 @@ export class Protocol extends Component {
     ]
     return (
       <Container flex column style={{ paddingBottom: 20, flexWrap: 'nowrap' }}>
-        <Alert
-          open={this.state.open}
-          actions={alertActions}
-        > <Typography variant="body1">
+        <Alert open={this.state.open} actions={alertActions}>
+          <Typography variant="body1">
             You have unsaved changes that will be lost if you decide to continue. Are you sure you want to continue?
-      </Typography>
+          </Typography>
         </Alert>
         <PageHeader
           projectName={this.props.projectName}
