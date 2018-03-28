@@ -56,7 +56,6 @@ export class AddEditJurisdictions extends Component {
             </Typography>
           }
           buttons={this.props.error === true ? [] : this.getButton()}
-          onCloseForm={this.onCloseModal}
           search
           SearchBarProps={{
             searchValue: this.props.searchValue,

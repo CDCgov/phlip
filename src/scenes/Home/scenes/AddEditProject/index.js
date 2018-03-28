@@ -142,7 +142,7 @@ export class AddEditProject extends Component {
         width="600px" height="400px"
       >
         <ModalTitle
-          title={this.getModalTitle()} edit={this.state.edit}
+          title={this.getModalTitle()}
           closeButton={!!this.projectDefined} onEditForm={this.onEditForm} onCloseForm={this.onCancel}
         />
         <Divider />

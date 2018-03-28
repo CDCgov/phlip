@@ -97,7 +97,8 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         suggestionValue: '',
         suggestions: [],
         jurisdiction: {},
-        searchValue: ''
+        searchValue: '',
+        goBack: false
       }
 
     case types.ADD_PROJECT_JURISDICTION_FAIL:
@@ -118,7 +119,8 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
     case types.RESET_FORM_ERROR:
       return {
         ...state,
-        formError: null
+        formError: null,
+        goBack: false
       }
 
     case types.SEARCH_JURISDICTION_LIST:
