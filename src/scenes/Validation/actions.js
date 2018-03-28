@@ -33,10 +33,12 @@ export const clearFlag = (flagId, projectId, jurisdictionId, questionId) => ({
   questionId
 })
 
-export const clearRedFlag = (flagId, questionId) => ({
+export const clearRedFlag = (flagId, questionId, projectId) => ({
   type: types.CLEAR_RED_FLAG,
   flagId,
-  questionId
+  questionId,
+  projectId
 })
+
 
 export default actions

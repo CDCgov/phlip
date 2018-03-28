@@ -41,8 +41,8 @@ const mergeInUserCodedQuestions = (codedQuestions, codeQuestionsPerUser, coder) 
             ...addCoderToAnswers(
               doesExist
                 ? checkIfExists(question, allCodedQuestions[question.schemeQuestionId], 'categoryId')
-                  ? allCodedQuestions[question.schemeQuestionId][question.categoryId]
-                  : baseQuestion
+                ? allCodedQuestions[question.schemeQuestionId][question.categoryId]
+                : baseQuestion
                 : baseQuestion, question, coder)
           }
         }
@@ -56,12 +56,12 @@ const mergeInUserCodedQuestions = (codedQuestions, codeQuestionsPerUser, coder) 
 }
 
 const getCoderInformation = async ({ api, action, questionId }) => {
-  let codedQuestionObj = {}, allCodedQuestions = []
+  let codedQuestionObj = {}, allCodedQuestions = [], coderErrors = {}
 
   try {
     allCodedQuestions = await api.getAllCodedQuestionsForQuestion(action.projectId, action.jurisdictionId, questionId)
   } catch (e) {
-    throw { error: 'failed to get all coded questions' }
+    coderErrors = { allCodedQuestions: 'Failed to get all the user coded answers for this question.' }
   }
 
   if (allCodedQuestions.length === 0) {
@@ -73,8 +73,7 @@ const getCoderInformation = async ({ api, action, questionId }) => {
     }
   }
 
-  // console.log(codedQuestionObj)
-  return { codedQuestionObj }
+  return { codedQuestionObj, coderErrors }
 }
 
 //TODO: const getAvatarForValidatedBy = async ({}) 
@@ -98,116 +97,124 @@ export const updateValidatorLogic = createLogic({
  */
 export const getValidationOutlineLogic = createLogic({
   type: types.GET_VALIDATION_OUTLINE_REQUEST,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.GET_VALIDATION_OUTLINE_SUCCESS,
-    failType: types.GET_VALIDATION_OUTLINE_FAIL
-  },
-  async process({ action, getState, api }) {
-    let scheme = {}, validatedQuestions = []
+  async process({ action, getState, api }, dispatch, done) {
+    let scheme = {}, validatedQuestions = [], errors = {}, payload = {}, codedQuestionObj = {}, coderErrors = {}
     const userId = getState().data.user.currentUser.id
 
-    // Try to get the project coding scheme
     try {
+      // Try to get the project coding scheme
       scheme = await api.getScheme(action.projectId)
+
+      // Get user coded questions for currently selected jurisdiction
+      if (action.jurisdictionId) {
+        if (scheme.schemeQuestions.length === 0) {
+          payload = { isSchemeEmpty: true, areJurisdictionsEmpty: false }
+        } else {
+          try {
+            validatedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
+          } catch (e) {
+            errors = {
+              ...errors,
+              codedQuestions: 'We couldn\'t get the validated questions for this project, so you won\'t be able to validate questions.'
+            }
+          }
+          // Create one array with the outline information in the question information
+          const merge = scheme.schemeQuestions.reduce((arr, q) => {
+            return [...arr, { ...q, ...scheme.outline[q.id] }]
+          }, [])
+
+          // Create a sorted question tree with sorted children with question numbering and order
+          const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
+          const questionsById = normalize.arrayToObject(questionsWithNumbers)
+          const firstQuestion = questionsWithNumbers[0]
+
+          // Check if the first question has answers, if it doesn't send a request to create an empty coded question
+          const { userAnswers, initializeErrors } = await initializeAndCheckAnswered(
+            firstQuestion, validatedQuestions, questionsById, userId, action, api.createEmptyValidatedQuestion
+          )
+
+          // Get all the coded questions for this question
+          const { codedQuestionObj, coderErrors } = await getCoderInformation({
+            api,
+            action,
+            questionId: firstQuestion.id
+          })
+
+          let codersForProject = []
+          //Get validatedByImages
+          try {
+            codersForProject = await api.getCodersForProject(action.projectId)
+          } catch (e) {
+            throw { error: 'failed to load coders for project' }
+          }
+
+          const uniqueUserIds = codersForProject.map((coders) => {
+            return coders.userId
+          })
+
+          const uniqueValidatedUsersIds = validatedQuestions.map((validatedQuestion) => {
+            // console.log(validatedQuestion)
+            return validatedQuestion.validatedBy.userId
+          }).filter((elem, pos, arr) => {
+            return arr.indexOf(elem) == pos
+          })
+
+          const combinedUsersOnProject = [...uniqueUserIds, ...uniqueValidatedUsersIds]
+
+          let uniqueUsersWithAvatar = []
+          // console.log(uniqueValidatedUsersIds)
+          // console.log(uniqueUserIds)
+          // console.log(combinedUsersOnProject)
+
+          const combinedUniqueUsersOnProject = combinedUsersOnProject.filter((elem, pos, arr) => {
+            return arr.indexOf(elem) == pos
+          })
+
+          for (let userId of combinedUniqueUsersOnProject) {
+            try {
+              const avatar = await api.getUserImage(userId)
+              let userWithId = { id: userId, avatar }
+              uniqueUsersWithAvatar = [...uniqueUsersWithAvatar, { ...userWithId }]
+
+            } catch (e) {
+              throw { error: 'failed to get validatedBy avatar image' }
+            }
+          }
+          const userImages = normalize.arrayToObject(uniqueUsersWithAvatar)
+
+          payload = {
+            outline: scheme.outline,
+            scheme: { byId: questionsById, tree, order },
+            userAnswers,
+            question: firstQuestion,
+            validatedQuestions,
+            isSchemeEmpty: false,
+            areJurisdictionsEmpty: false,
+            userId,
+            mergedUserQuestions: codedQuestionObj,
+            userImages,
+            errors: { ...errors, ...initializeErrors, ...coderErrors }
+          }
+        }
+      } else {
+        // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
+        if (scheme.schemeQuestions.length === 0) {
+          payload = { isSchemeEmpty: true, areJurisdictionsEmpty: true }
+        }
+        payload = { isSchemeEmpty: false, areJurisdictionsEmpty: true }
+      }
+      dispatch({
+        type: types.GET_VALIDATION_OUTLINE_SUCCESS,
+        payload
+      })
     } catch (e) {
-      throw { error: 'failed to get outline' }
+      dispatch({
+        type: types.GET_VALIDATION_OUTLINE_FAIL,
+        payload: 'Couldn\'t get outline',
+        error: true
+      })
     }
-
-    // Get user coded questions for currently selected jurisdiction
-    if (action.jurisdictionId) {
-      try {
-        validatedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
-      } catch (e) {
-        throw { error: 'failed to get validated questions' }
-      }
-    } else {
-      // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
-      if (scheme.schemeQuestions.length === 0) {
-        return { isSchemeEmpty: true, areJurisdictionsEmpty: true }
-      }
-      return { isSchemeEmpty: false, areJurisdictionsEmpty: true }
-    }
-
-    // Create one array with the outline information in the question information
-    const merge = scheme.schemeQuestions.reduce((arr, q) => {
-      return [...arr, { ...q, ...scheme.outline[q.id] }]
-    }, [])
-
-    // Create a sorted question tree with sorted children with question numbering and order
-    const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
-    const questionsById = normalize.arrayToObject(questionsWithNumbers)
-    const firstQuestion = questionsWithNumbers[0]
-
-    // Check if the first question has answers, if it doesn't send a request to create an empty coded question
-    const { userAnswers } = await initializeAndCheckAnswered(
-      firstQuestion, validatedQuestions, questionsById, userId, action, api.createEmptyValidatedQuestion
-    )
-
-    // Get all the coded questions for this question
-    const { codedQuestionObj } = await getCoderInformation({
-      api,
-      action,
-      questionId: firstQuestion.id
-    })
-
-
-    let codersForProject = []
-    //Get validatedByImages
-    try {
-      codersForProject = await api.getCodersForProject(action.projectId)
-    } catch (e) {
-      throw { error: 'failed to load coders for project' }
-    }
-
-
-    const uniqueUserIds = codersForProject.map((coders) => {
-      return coders.userId
-    })
-
-    const uniqueValidatedUsersIds = validatedQuestions.map((validatedQuestion) => {
-      // console.log(validatedQuestion)
-      return validatedQuestion.validatedBy.userId
-    }).filter((elem, pos, arr) => {
-      return arr.indexOf(elem) == pos;
-    })
-
-    const combinedUsersOnProject = [...uniqueUserIds, ...uniqueValidatedUsersIds]
-
-    let uniqueUsersWithAvatar = []
-    // console.log(uniqueValidatedUsersIds)
-    // console.log(uniqueUserIds)
-    // console.log(combinedUsersOnProject)
-
-    const combinedUniqueUsersOnProject = combinedUsersOnProject.filter((elem, pos, arr) => {
-      return arr.indexOf(elem) == pos;
-    })
-
-
-    for (let userId of combinedUniqueUsersOnProject) {
-      try {
-        const avatar = await api.getUserImage(userId)
-        let userWithId = { id: userId, avatar }
-        uniqueUsersWithAvatar = [...uniqueUsersWithAvatar, { ...userWithId }]
-
-      } catch (e) {
-        throw { error: 'failed to get validatedBy avatar image' }
-      }
-    }
-    const userImages = normalize.arrayToObject(uniqueUsersWithAvatar)
-
-    return {
-      outline: scheme.outline,
-      scheme: { byId: questionsById, tree, order },
-      userAnswers,
-      question: firstQuestion,
-      validatedQuestions,
-      isSchemeEmpty: false,
-      areJurisdictionsEmpty: false,
-      userId,
-      mergedUserQuestions: codedQuestionObj,
-      userImages
-    }
+    done()
   }
 })
 
@@ -240,17 +247,17 @@ export const getQuestionLogicValidation = createLogic({
         break
     }
 
-    const { updatedState, question, currentIndex } = await getQuestionAndInitialize(
+    const { updatedState, question, currentIndex, errors } = await getQuestionAndInitialize(
       state, action, userId, api, api.createEmptyValidatedQuestion, questionInfo
     )
 
-    const { codedQuestionObj } = await getCoderInformation({ api, action, questionId: question.id })
-
+    const { codedQuestionObj, coderErrors } = await getCoderInformation({ api, action, questionId: question.id })
 
     return {
       updatedState: { ...updatedState, mergedUserQuestions: { ...state.mergedUserQuestions, ...codedQuestionObj } },
       question,
-      currentIndex
+      currentIndex,
+      errors: { ...errors, ...coderErrors }
     }
   }
 })
@@ -263,20 +270,31 @@ export const validateQuestionLogic = createLogic({
     types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER,
     types.ON_APPLY_ANSWER_TO_ALL, types.ON_CHANGE_COMMENT
   ],
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.UPDATE_USER_ANSWER_SUCCESS,
-    failType: types.UPDATE_USER_ANSWER_FAIL
-  },
   latest: true,
-  async process({ getState, action, api }) {
+  async process({ getState, action, api }, dispatch, done) {
     const validationState = getState().scenes.validation
     const validatorId = getState().data.user.currentUser.id
     const answerObject = getFinalCodedObject(validationState, action, action.type === types.ON_APPLY_ANSWER_TO_ALL)
-    return await api.validateQuestion(action.projectId, action.jurisdictionId, action.questionId, {
-      ...answerObject,
-      validatedBy: validatorId
-    })
+    try {
+      const validatedQuestion = await api.validateQuestion(action.projectId, action.jurisdictionId, action.questionId, {
+        ...answerObject,
+        validatedBy: validatorId
+      })
+      dispatch({
+        type: types.UPDATE_USER_ANSWER_SUCCESS,
+        payload: { ...validatedQuestion }
+      })
+      dispatch({
+        type: types.UPDATE_EDITED_FIELDS,
+        projectId: action.projectId
+      })
+    } catch (error) {
+      dispatch({
+        type: types.UPDATE_USER_ANSWER_FAIL,
+        payload: { error: 'Couldnt update answer', isApplyAll: action.type === types.ON_APPLY_ANSWER_TO_ALL }
+      })
+    }
+    done()
   }
 })
 
@@ -285,23 +303,18 @@ export const validateQuestionLogic = createLogic({
  */
 export const getUserValidatedQuestionsLogic = createLogic({
   type: types.GET_USER_VALIDATED_QUESTIONS_REQUEST,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.GET_USER_VALIDATED_QUESTIONS_SUCCESS,
-    failType: types.GET_USER_VALIDATED_QUESTIONS_FAIL
-  },
-  async process({ action, api, getState }) {
+  async process({ action, api, getState }, dispatch, done) {
     let validatedQuestions = []
     const userId = getState().data.user.currentUser.id
     const state = getState().scenes.validation
     let question = { ...state.question }
-    let otherUpdates = {}
+    let otherUpdates = {}, errors = {}, payload = {}, updatedSchemeQuestion = {}
 
     // Get user coded questions for a project and jurisdiction
     try {
       validatedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
     } catch (e) {
-      throw { error: 'failed to get codedQuestions' }
+      errors = { codedQuestions: 'We couldn\'t get the validated questions for this project, so you won\'t be able to validate questions.' }
     }
 
     // If the current question is a category question, then change the current question to parent
@@ -316,7 +329,15 @@ export const getUserValidatedQuestionsLogic = createLogic({
     }
 
     // Get scheme question in case there are changes
-    const updatedSchemeQuestion = await api.getSchemeQuestion(question.id, action.projectId)
+    try {
+      updatedSchemeQuestion = await api.getSchemeQuestion(question.id, action.projectId)
+    } catch (error) {
+      updatedSchemeQuestion = { ...question }
+      errors = {
+        ...errors,
+        updatedSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
+      }
+    }
 
     // Update scheme with new scheme question
     const updatedScheme = {
@@ -327,11 +348,15 @@ export const getUserValidatedQuestionsLogic = createLogic({
       }
     }
 
-    const { userAnswers } = await initializeAndCheckAnswered(
+    const { userAnswers, initializeErrors } = await initializeAndCheckAnswered(
       updatedSchemeQuestion, validatedQuestions, updatedScheme.byId, userId, action, api.createEmptyValidatedQuestion
     )
 
-    const { codedQuestionObj } = await getCoderInformation({ api, action, questionId: updatedSchemeQuestion.id })
+    const { codedQuestionObj, coderErrors } = await getCoderInformation({
+      api,
+      action,
+      questionId: updatedSchemeQuestion.id
+    })
 
     let codersForProject = []
     //Get validatedByImages
@@ -341,7 +366,6 @@ export const getUserValidatedQuestionsLogic = createLogic({
       throw { error: 'failed to load coders for project' }
     }
 
-
     const uniqueUserIds = codersForProject.map((coders) => {
       return coders.userId
     })
@@ -350,7 +374,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
       // console.log(validatedQuestion)
       return validatedQuestion.validatedBy.userId
     }).filter((elem, pos, arr) => {
-      return arr.indexOf(elem) == pos;
+      return arr.indexOf(elem) == pos
     })
 
     const combinedUsersOnProject = [...uniqueUserIds, ...uniqueValidatedUsersIds]
@@ -361,7 +385,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
     // console.log(combinedUsersOnProject)
 
     const combinedUniqueUsersOnProject = combinedUsersOnProject.filter((elem, pos, arr) => {
-      return arr.indexOf(elem) == pos;
+      return arr.indexOf(elem) == pos
     })
 
     // console.log(combinedUniqueUsersOnProject)
@@ -377,24 +401,47 @@ export const getUserValidatedQuestionsLogic = createLogic({
       }
     }
     const userImages = normalize.arrayToObject(uniqueUsersWithAvatar)
-    return {
+
+    payload = {
       userAnswers,
       question: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion },
       scheme: updatedScheme,
       otherUpdates,
       mergedUserQuestions: codedQuestionObj,
+      errors: { ...errors, ...initializeErrors, ...coderErrors },
       userImages
     }
+
+    dispatch({
+      type: types.GET_USER_VALIDATED_QUESTIONS_SUCCESS,
+      payload
+    })
+    done()
   }
 })
 
 /*
-  Calls an api route to clear the flag based on the action.flagId
+  Calls an api route to clear the flag based on the action.flagId, type 1 === red, type 2 === other
  */
 export const clearFlagLogic = createLogic({
   type: [types.CLEAR_RED_FLAG, types.CLEAR_FLAG],
-  async process({ action, api }) {
-    return await api.clearFlag(action.flagId)
+  async process({ action, api }, dispatch, done) {
+    try {
+      const out = await api.clearFlag(action.flagId)
+      dispatch({
+        type: types.CLEAR_FLAG_SUCCESS,
+        payload: {
+          ...out, flagId: action.flagId, type: action.type === types.CLEAR_RED_FLAG ? 1 : 2
+        }
+      })
+      dispatch({ type: types.UPDATE_EDITED_FIELDS, projectId: action.projectId })
+    } catch (error) {
+      dispatch({
+        type: types.CLEAR_FLAG_FAIL,
+        payload: 'We couldn\'t clear this flag.'
+      })
+    }
+    done()
   }
 })
 

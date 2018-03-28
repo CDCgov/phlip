@@ -11,7 +11,7 @@ import Table from 'components/Table'
 import TableRow from 'components/TableRow'
 import TableCell from 'components/TableCell'
 import Popover from './components/Popover'
-import { updater } from 'utils'
+import { Flag, Report } from 'mdi-material-ui'
 
 const getFlagText = (color, text, disabled) => (
   <Row displayFlex style={{ alignItems: 'center' }}>
@@ -58,14 +58,14 @@ export class FlagPopover extends Component {
         color: '#2cad73',
         label: 'Flag for analysis',
         text: getFlagText('#2cad73', 'Flag for analysis', this.state.questionFlags.length > 0),
-        disabled: this.state.questionFlags.length > 0
+        disabled: this.state.questionFlags.length > 0 || this.props.disableAll
       },
       2: {
         type: 2,
         color: '#fca63a',
         label: 'Notify Coordinator',
         text: getFlagText('#fca63a', 'Notify coordinator', this.state.questionFlags.length > 0),
-        disabled: this.state.questionFlags.length > 0
+        disabled: this.state.questionFlags.length > 0 || this.props.disableAll
       }
     }
   }
@@ -83,7 +83,7 @@ export class FlagPopover extends Component {
         ...this.userFlagColors[type],
         text: getFlagText(this.userFlagColors[type].color, this.userFlagColors[type].label, nextProps.questionFlags.length >
           0),
-        disabled: nextProps.questionFlags.length > 0
+        disabled: nextProps.questionFlags.length > 0 || this.props.disableAll
       }
     }
   }
@@ -259,7 +259,7 @@ export class FlagPopover extends Component {
           title="Flags"
           open={this.state.otherFlagOpen}
           target={{
-            icon: 'flag',
+            icon: <Flag />,
             color: this.props.userFlag.type !== 0 ? this.userFlagColors[this.props.userFlag.type].color : '#d7e0e4',
             tooltip: 'Flag this question',
             id: 'flag-question'
@@ -282,7 +282,7 @@ export class FlagPopover extends Component {
                 shrinkLabel={true}
                 id="flag-notes"
                 label="Notes"
-                disabled={this.state.questionFlags.length > 0}
+                disabled={this.state.questionFlags.length > 0 || this.props.disableAll}
                 error={this.state.helperText !== ''}
                 onBlur={this.checkNotes}
                 helperText={this.state.helperText}

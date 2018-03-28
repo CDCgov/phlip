@@ -220,6 +220,11 @@ export default {
 
   getCodersForProject(projectId) {
     return api.get(`/projects/${projectId}/coders`).then(res => res.data)
+  },
+
+  // Export project data
+  exportData(projectId, type) {
+    window.location.href = `/api/exports/project/${projectId}/data`
   }
 
 }

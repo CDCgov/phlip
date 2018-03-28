@@ -7,7 +7,9 @@ const INITIAL_STATE = {
   searchValue: '',
   suggestions: [],
   suggestionValue: '',
-  jurisdiction: {}
+  jurisdiction: {},
+  formError: null,
+  goBack: false
 }
 
 describe('Home scene - AddEditJurisdictions reducer', () => {
@@ -28,7 +30,11 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
         },
         allIds: [1, 2]
       },
-      visibleJurisdictions: [1, 2]
+      visibleJurisdictions: [1, 2],
+      error: false,
+      errorContent: "",
+      formError: null,
+      goBack: false
     })
   })
 
@@ -52,7 +58,9 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
           1: { id: 1, name: 'Jurisdiction Name Updated' }
         },
         allIds: [1]
-      }
+      },
+      formError: null,
+      goBack: true
     })
   })
 
@@ -79,6 +87,7 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
         },
         allIds: [2, 1]
       },
+      goBack: true,
       visibleJurisdictions: [2, 1]
     })
   })

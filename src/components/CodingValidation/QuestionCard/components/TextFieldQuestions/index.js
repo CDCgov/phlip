@@ -21,7 +21,7 @@ import ValidationAvatar from 'components/ValidationAvatar'
 //   </Fragment>
 // )
 
-export const TextFieldQuestions = ({ mergedUserQuestions, validator, validatorAnswer, onChange, answerId, style, userImages }) => {
+export const TextFieldQuestions = ({ mergedUserQuestions, validator, validatorAnswer, onChange, answerId, style, userImages, disabled }) => {
   return (
     <Fragment>
       <Column flex displayFlex style={{ overflow: 'auto', paddingLeft: style.paddingLeft }}>
@@ -47,6 +47,7 @@ export const TextFieldQuestions = ({ mergedUserQuestions, validator, validatorAn
         value={validatorAnswer}
         userImages={userImages}
         answerId={answerId}
+        disabled={disabled}
         isValidation={true}
       />
     </Fragment>

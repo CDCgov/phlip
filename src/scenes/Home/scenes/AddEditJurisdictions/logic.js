@@ -5,7 +5,8 @@ export const getJurisdictionsLogic = createLogic({
   type: types.GET_PROJECT_JURISDICTIONS_REQUEST,
   processOptions: {
     dispatchReturn: true,
-    successType: types.GET_PROJECT_JURISDICTIONS_SUCCESS
+    successType: types.GET_PROJECT_JURISDICTIONS_SUCCESS,
+    failType: types.GET_PROJECT_JURISDICTION_FAIL
   },
   async process ({ action, api }) {
     return await api.getProjectJurisdictions(action.projectId)
@@ -14,23 +15,41 @@ export const getJurisdictionsLogic = createLogic({
 
 export const addJurisdictionLogic = createLogic({
   type: types.ADD_PROJECT_JURISDICTION_REQUEST,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.ADD_PROJECT_JURISDICTION_SUCCESS
-  },
-  async process ({ action, api }) {
-    return await api.addJurisdictionToProject(action.projectId, action.jurisdiction)
+  async process ({ action, api }, dispatch, done) {
+    try {
+      const jurisdiction = await api.addJurisdictionToProject(action.projectId, action.jurisdiction)
+      dispatch({
+        type: types.ADD_PROJECT_JURISDICTION_SUCCESS,
+        payload: { ...jurisdiction }
+      })
+    } catch (error) {
+      dispatch({
+        type: types.ADD_PROJECT_JURISDICTION_FAIL,
+        payload: 'We couldn\'t add the jurisdiction to project. Please try again later.',
+        error: true
+      })
+    }
+    done()
   }
 })
 
 export const updateJurisdictionLogic = createLogic({
   type: types.UPDATE_PROJECT_JURISDICTION_REQUEST,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.UPDATE_PROJECT_JURISDICTION_SUCCESS
-  },
-  async process ({ action, api }) {
-    return await api.updateJurisdictionInProject(action.projectId, action.jurisdiction)
+  async process ({ action, api }, dispatch, done) {
+    try {
+      const updatedJurisdiction = await api.updateJurisdictionInProject(action.projectId, action.jurisdiction)
+      dispatch({
+        type: types.UPDATE_PROJECT_JURISDICTION_SUCCESS,
+        payload: { ...updatedJurisdiction }
+      })
+    } catch (error) {
+      dispatch({
+        type: types.UPDATE_PROJECT_JURISDICTION_FAIL,
+        payload: 'We couldn\'t update this jurisdiction. Please try again later.',
+        error: true
+      })
+    }
+    done()
   }
 })
 

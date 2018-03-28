@@ -4,11 +4,11 @@ import { DialogTitle } from 'material-ui/Dialog'
 import Container, { Column, Row } from 'components/Layout'
 import SearchBar from 'components/SearchBar'
 
-const ModalTitle = ({ onCloseForm, title, search, buttons, SearchBarProps }) => {
+const ModalTitle = ({ onCloseForm, title, search, buttons, SearchBarProps, style }) => {
   return (
-    <DialogTitle>
+    <DialogTitle style={style}>
       <Container alignItems="center">
-        <Column flex>{title}</Column>
+        <Row flex displayFlex style={{ alignItems: 'center' }}>{title}</Row>
         {(buttons || search) &&
         <Row displayFlex style={{ alignItems: 'center' }}>
           {search &&

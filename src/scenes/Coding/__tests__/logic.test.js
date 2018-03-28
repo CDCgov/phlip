@@ -96,7 +96,8 @@ describe('Coding logic', () => {
                 tree: [{ id: 1, text: 'q1', indent: 0, number: '1', parentId: 0, positionInParent: 0 }]
               },
               codedQuestions,
-              userId: 1
+              userId: 1,
+              errors: {}
             }
           }
         ])
@@ -172,7 +173,8 @@ describe('Coding logic', () => {
                   comment: ''
                 }
               },
-              userId: 1
+              userId: 1,
+              errors: {}
             }
           })
         done()
@@ -248,7 +250,8 @@ describe('Coding logic', () => {
           schemeQuestionId: 3,
           answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
         }
-      }
+      },
+      errors: {}
     }
 
     describe('should GET_NEXT_QUESTION based on action and state information', () => {
