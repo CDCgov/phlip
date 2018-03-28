@@ -2,9 +2,9 @@ import memoize from 'lodash/memoize'
 
 const TOKEN_KEY = 'esquire_token'
 
-const getItem = key => () => window.localStorage.getItem(key)
-const setItem = key => value => window.localStorage.setItem(key, value)
-const removeItem = key => () => window.localStorage.removeItem(key)
+const getItem = key => () => window.sessionStorage.getItem(key)
+const setItem = key => value => window.sessionStorage.setItem(key, value)
+const removeItem = key => () => window.sessionStorage.removeItem(key)
 
 const getAuthToken = getItem(TOKEN_KEY)
 const setAuthToken = setItem(TOKEN_KEY)

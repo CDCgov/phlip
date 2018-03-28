@@ -3,7 +3,7 @@ import * as types from './actionTypes'
 const TOKEN_KEY = 'esquire_token'
 
 const INITIAL_STATE = {
-  session: !!localStorage.esquire_token
+  session: !!sessionStorage.esquire_token
 }
 
 const loginReducer = (state = INITIAL_STATE, action) => {
@@ -11,7 +11,7 @@ const loginReducer = (state = INITIAL_STATE, action) => {
     case types.LOGIN_USER_SUCCESS:
       return {
         ...state,
-        session: !!localStorage.esquire_token
+        session: !!sessionStorage.esquire_token
       }
     case types.LOGIN_USER_FAIL:
       return state

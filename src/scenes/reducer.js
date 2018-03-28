@@ -1,6 +1,6 @@
 import { persistReducer } from 'redux-persist'
 import { combineReducers } from 'redux'
-import storage from 'redux-persist/lib/storage'
+import storage from 'redux-persist/lib/storage/session'
 import home from './Home/reducer'
 import admin from './Admin/reducer'
 import login from './Login/reducer'
