@@ -11,7 +11,13 @@ const props = {
   suggestionValue: '',
   actions: {},
   formActions: {},
-  location: { state: undefined },
+  location: {
+    state: {
+      jurisdictionDefined: {
+        name: 'Jurisdiction Name'
+      }
+    }
+  },
   match: {},
   history: {},
   onCloseModal: () => {}

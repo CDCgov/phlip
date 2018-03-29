@@ -7,15 +7,13 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       "name",
     ]
   }
-  asyncValidate={[Function]}
+  asyncValidate={null}
   form="jurisdictionForm"
   handleSubmit={[Function]}
   height="400px"
   initialValues={
     Object {
-      "endDate": 2018-03-29T17:35:16.966Z,
-      "name": "",
-      "startDate": 2018-03-29T17:35:16.966Z,
+      "name": "Jurisdiction Name",
     }
   }
   onClose={[Function]}
@@ -28,7 +26,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
     edit={false}
     editButton={false}
     onCloseForm={[Function]}
-    title="Add Jurisdiction"
+    title="Edit Jurisdiction"
   />
   <WithStyles />
   <ModalContent>
@@ -65,13 +63,13 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
           handleSuggestionSelected={[Function]}
           inputProps={
             Object {
-              "disabled": false,
+              "disabled": true,
               "id": "jurisdiction-name",
               "label": "Name",
               "onChange": [Function],
               "placeholder": "Enter jurisdiction name",
               "shrinkLabel": true,
-              "value": "",
+              "value": "Jurisdiction Name",
             }
           }
           name="name"
@@ -146,7 +144,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
             "aria-label": "Save form",
           },
           "type": "submit",
-          "value": "Add",
+          "value": "Save",
         },
       ]
     }
