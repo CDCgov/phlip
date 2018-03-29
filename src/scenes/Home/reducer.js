@@ -47,7 +47,8 @@ const setProjectValues = updatedProjects => (updatedArr, page, rowsPerPage) => {
       allIds: normalize.mapArray(updatedProjects)
     },
     visibleProjects: normalize.mapArray(tableUtils.sliceTable(updatedArr, page, rows)),
-    projectCount: updatedArr.length
+    projectCount: updatedArr.length,
+    page
   }
 }
 
@@ -56,8 +57,11 @@ const getProjectArrays = state => {
   let matches = searchUtils.searchForMatches(Object.values(state.projects.byId), searchValue, [
     'name', 'dateLastEdited', 'lastEditedBy'
   ])
+  let curPage = page
   const updatedProjects = sortArray(Object.values(state.projects.byId), state)
   const setArrays = setProjectValues(updatedProjects)
+
+  if (rowsPerPage === 'All') curPage = 0
 
   if (projects.length === 0) return state
 
@@ -68,14 +72,14 @@ const getProjectArrays = state => {
       const updatedMatches = sortArray(matches, state)
       return {
         ...state,
-        ...setArrays(updatedMatches, page, rowsPerPage),
+        ...setArrays(updatedMatches, curPage, rowsPerPage),
         matches: [...normalize.mapArray(updatedMatches)],
       }
     }
   } else {
     return {
       ...state,
-      ...setArrays(updatedProjects, page, rowsPerPage),
+      ...setArrays(updatedProjects, curPage, rowsPerPage),
       matches: []
     }
   }

@@ -7,7 +7,7 @@ export const validateDate = value => {
 }
 
 export const validateDateRanges = values => {
-  let errors = { }
+  let errors = {}
   if (values.startDate) {
     if (moment(values.endDate) < moment(values.startDate)) {
       errors.endDate = 'End date must be later than start date'

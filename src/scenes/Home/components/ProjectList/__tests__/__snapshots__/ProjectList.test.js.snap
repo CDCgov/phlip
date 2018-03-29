@@ -12,7 +12,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
     flex={true}
     style={
       Object {
-        "overflowX": "auto",
+        "overflow": "auto",
       }
     }
   >
@@ -35,57 +35,69 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
         placeholder="Search"
       />
     </Row>
-    <Table
-      style={
-        Object {
-          "borderCollapse": "separate",
-          "overflow": "unset",
-        }
-      }
-    >
-      <WithStyles>
-        <ProjectTableHead
-          direction="asc"
-          onRequestSort={[Function]}
-          onSortBookmarked={[Function]}
-          role="Coordinator"
-          sortBy="name"
-        />
-      </WithStyles>
-      <WithStyles>
-        <Connect(ProjectRow)
-          id={1}
-          key="1"
-          onExport={[Function]}
-        />
-        <Connect(ProjectRow)
-          id={2}
-          key="2"
-          onExport={[Function]}
-        />
-      </WithStyles>
-    </Table>
     <div
       style={
         Object {
           "display": "flex",
           "flex": 1,
-          "paddingBottom": "50px",
+          "flexDirection": "column",
         }
       }
-    />
-    <Table>
-      <WithStyles>
+    >
+      <Table
+        style={
+          Object {
+            "borderCollapse": "separate",
+            "display": "block",
+            "overflow": "unset",
+            "tableLayout": "auto",
+          }
+        }
+      >
         <WithStyles>
-          <WithStyles
-            onChangePage={[Function]}
-            onChangeRowsPerPage={[Function]}
-            page={0}
-            rowsPerPage={10}
+          <ProjectTableHead
+            direction="asc"
+            onRequestSort={[Function]}
+            onSortBookmarked={[Function]}
+            role="Coordinator"
+            sortBy="name"
           />
         </WithStyles>
-      </WithStyles>
-    </Table>
+        <WithStyles>
+          <Connect(ProjectRow)
+            id={1}
+            key="1"
+            onExport={[Function]}
+          />
+          <Connect(ProjectRow)
+            id={2}
+            key="2"
+            onExport={[Function]}
+          />
+        </WithStyles>
+      </Table>
+      <div
+        style={
+          Object {
+            "display": "flex",
+            "flex": 1,
+            "paddingBottom": "50px",
+          }
+        }
+      />
+      <Table>
+        <WithStyles>
+          <WithStyles>
+            <WithStyles
+              onChangePage={[Function]}
+              onChangeRowsPerPage={[Function]}
+              page={0}
+              rowsPerPage={10}
+            />
+          </WithStyles>
+        </WithStyles>
+      </Table>
+    </div>
   </Column>
 </Container>
 `;

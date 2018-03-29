@@ -11,7 +11,13 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
   form="jurisdictionForm"
   handleSubmit={[Function]}
   height="400px"
-  initialValues={Object {}}
+  initialValues={
+    Object {
+      "endDate": 2018-03-29T17:35:16.966Z,
+      "name": "",
+      "startDate": 2018-03-29T17:35:16.966Z,
+    }
+  }
   onClose={[Function]}
   open={true}
   validate={[Function]}
@@ -97,8 +103,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
             autoOk={true}
             component={[Function]}
             dateFormat="MM/DD/YYYY"
-            invalidLabel="mm/dd/yyyy"
-            label="Segment start Date"
+            label="Segment Start Date"
             name="startDate"
             validate={[Function]}
           />
@@ -116,8 +121,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
             autoOk={true}
             component={[Function]}
             dateFormat="MM/DD/YYYY"
-            invalidLabel="mm/dd/yyyy"
-            label="Segment end Date"
+            label="Segment End Date"
             name="endDate"
             validate={[Function]}
           />

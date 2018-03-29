@@ -6,10 +6,10 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
 >
   <TableCell
     key="bookmarked"
-    padding="default"
+    padding="checkbox"
     style={
       Object {
-        "width": 48,
+        "width": 24,
       }
     }
   >
@@ -28,7 +28,12 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   <TableCell
     key="name"
     padding="default"
-    style={Object {}}
+    style={
+      Object {
+        "paddingRight": 24,
+        "width": "15%",
+      }
+    }
   >
     <WithStyles
       aria-label="Sort by Name"
@@ -52,7 +57,11 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   <TableCell
     key="dateLastEdited"
     padding="default"
-    style={Object {}}
+    style={
+      Object {
+        "paddingRight": 24,
+      }
+    }
   >
     <WithStyles
       aria-label="Sort by Date Last Edited"
@@ -76,7 +85,11 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   <TableCell
     key="lastEditedBy"
     padding="default"
-    style={Object {}}
+    style={
+      Object {
+        "paddingRight": 24,
+      }
+    }
   >
     <WithStyles
       aria-label="Sort by Last Edited By"
@@ -102,6 +115,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     padding="default"
     style={
       Object {
+        "paddingRight": 24,
         "textAlign": "center",
       }
     }
@@ -113,6 +127,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     padding="default"
     style={
       Object {
+        "paddingRight": 24,
         "textAlign": "center",
       }
     }
@@ -124,6 +139,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     padding="default"
     style={
       Object {
+        "paddingRight": 24,
         "textAlign": "center",
       }
     }
@@ -132,18 +148,37 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   </TableCell>
   <TableCell
     key="code"
-    padding="default"
-    style={Object {}}
+    padding="checkbox"
+    style={
+      Object {
+        "paddingRight": 6,
+        "width": 56,
+      }
+    }
   />
   <TableCell
     key="validate"
-    padding="default"
-    style={Object {}}
+    padding="checkbox"
+    style={
+      Object {
+        "paddingLeft": 6,
+        "width": 56,
+      }
+    }
   />
   <TableCell
     key="export"
     padding="default"
-    style={Object {}}
-  />
+    style={
+      Object {
+        "paddingLeft": 0,
+        "paddingRight": 24,
+        "textAlign": "center",
+        "width": "1%",
+      }
+    }
+  >
+    Export
+  </TableCell>
 </TableRow>
 `;

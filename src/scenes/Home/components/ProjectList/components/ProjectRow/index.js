@@ -14,7 +14,7 @@ const greyIcon = '#d4d4d4'
 export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => {
   return (
     <TableRow key={project.id}>
-      <TableCell key={`${project.id}-bookmarked`} style={{ width: 48 }}>
+      <TableCell key={`${project.id}-bookmarked`} padding="checkbox" style={{ width: 24 }}>
         <IconButton
           color={bookmarked ? '#fdc43b' : greyIcon}
           onClick={() => actions.toggleBookmark(project)}
@@ -24,7 +24,7 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => 
           {bookmarked ? 'bookmark' : 'bookmark_border'}
         </IconButton>
       </TableCell>
-      <TableCell key={`${project.id}-name`}>
+      <TableCell key={`${project.id}-name`} style={{ paddingRight: 24, width: '15%' }}>
         <TextLink
           aria-label="Edit project details" to={{
           pathname: `/project/edit/${project.id}`,
@@ -32,44 +32,43 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => 
         }}>{project.name}</TextLink>
       </TableCell>
       <TableCell
-        key={`${project.id}-dateLastEdited`} style={{ textAlign: 'unset' }}>
+        key={`${project.id}-dateLastEdited`} style={{ textAlign: 'unset', paddingRight: 24 }}>
         {new Date(project.dateLastEdited).toLocaleDateString()}
       </TableCell>
-      <TableCell key={`${project.id}-lastEditedBy`}>
+      <TableCell key={`${project.id}-lastEditedBy`} style={{ paddingRight: 24 }}>
         {project.lastEditedBy}
       </TableCell>
-
-      <TableCell key={`${project.id}-protocol`} style={{ textAlign: 'center' }}>
-        <TextLink aria-label="Add and edit project protocol" to={`/project/${project.id}/protocol`}>Add/Edit</TextLink>
+      <TableCell key={`${project.id}-protocol`} style={{ textAlign: 'center', paddingRight: 24 }}>
+        <TextLink aria-label="Add and edit project protocol" to={`/project/${project.id}/protocol`}>Edit</TextLink>
       </TableCell>
       {role !== 'Coder' &&
-      <TableCell key={`${project.id}-jurisdictions`} style={{ textAlign: 'center' }}>
+      <TableCell key={`${project.id}-jurisdictions`} style={{ textAlign: 'center', paddingRight: 24 }}>
         <TextLink
           aria-label="Add and edit project jurisdictions"
           to={`/project/${project.id}/jurisdictions`}
-          id={project.id}>Add/Edit</TextLink>
+          id={project.id}>Edit</TextLink>
       </TableCell>
       }
       {role !== 'Coder' &&
-      <TableCell key={`${project.id}-codingScheme`} style={{ textAlign: 'center' }}>
+      <TableCell key={`${project.id}-codingScheme`} style={{ textAlign: 'center', paddingRight: 24 }}>
         <TextLink
           aria-label="Add and edit project coding scheme"
           to={`/project/${project.id}/coding-scheme`}>Edit</TextLink>
       </TableCell>
       }
-      <TableCell key={`${project.id}-code`} style={{ textAlign: 'center' }}>
+      <TableCell key={`${project.id}-code`} padding="checkbox" style={{ width: 56, paddingRight: 6 }}>
         <TextLink to={{ pathname: `/project/${project.id}/code` }}>
           <Button raised={false} value="Code" listButton aria-label="Code project" />
         </TextLink>
       </TableCell>
       {role !== 'Coder' &&
-      <TableCell key={`${project.id}-validation`} style={{ textAlign: 'center' }}>
+      <TableCell key={`${project.id}-validation`} padding="checkbox" style={{ width: 56, paddingLeft: 6 }}>
         <TextLink to={{ pathname: `/project/${project.id}/validate` }}>
           <Button raised={false} value="Validate" listButton aria-label="Validate project" />
         </TextLink>
       </TableCell>
       }
-      {role !== 'Coder' && <TableCell key={`${project.id}-export`} style={{ textAlign: 'center' }}>
+      {role !== 'Coder' && <TableCell key={`${project.id}-export`} style={{ paddingRight: 24, width: 40, paddingLeft: 0, textAlign: 'center' }}>
         {/*<TextLink
           //target="_blank"
           to={{ pathname: `/project/${project.id}/export` }}

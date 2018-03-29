@@ -16,8 +16,8 @@ import 'tinymce/themes/modern/theme'
 import 'tinymce/plugins/paste'
 import 'tinymce/plugins/link'
 import 'tinymce/plugins/image'
-import 'tinymce/plugins/anchor'
-import 'tinymce/plugins/pagebreak'
+//import 'tinymce/plugins/anchor'
+//import 'tinymce/plugins/pagebreak'
 import 'tinymce/plugins/lists'
 import 'tinymce/plugins/advlist'
 import 'tinymce/plugins/table'
@@ -149,11 +149,10 @@ export class Protocol extends Component {
             <Editor
               init={{
                 statusbar: false,
-                plugins: ['paste', 'link', 'image', 'anchor', 'pagebreak', 'lists', 'advlist', 'table', 'paste'],
+                plugins: ['paste', 'link', 'image', 'lists', 'advlist', 'table', 'paste'],
                 toolbar: 'undo redo | \
                           styleselect | \
                           bold italic strikethrough underline | \
-                          anchor pagebreak | \
                           table | \
                           alignleft alignright aligncenter alignjustify | \
                           numlist bullist | \
@@ -162,7 +161,7 @@ export class Protocol extends Component {
                 skin_url: '/skins/custom',
                 branding: false,
                 resize: false,
-                menubar: 'insert',
+                menubar: false,
                 content_style: '* {font-family: Roboto }',
                 advlist_bullet_styles: 'default,circle,square,disc',
                 link_title: false,

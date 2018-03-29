@@ -128,19 +128,21 @@ export class JurisdictionForm extends Component {
   }
 
   validateJurisdiction = values => {
-    const updatedValues = { ...values, name: values.name.trim() }
-    const prom = new Promise(resolve => resolve(api.searchJurisdictionList(updatedValues.name)))
-    return prom.then(out => {
-      if (!this.state.edit) {
-        if (!this.props.jurisdiction) {
-          this.throwErrors(updatedValues, out)
-        } else if (this.props.jurisdiction && this.props.jurisdiction.name !== updatedValues.name) {
-          this.throwErrors(updatedValues, out)
-        } else {
-          this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
+    if (values.hasOwnProperty('name')) {
+      const updatedValues = { ...values, name: values.name.trim() }
+      const prom = new Promise(resolve => resolve(api.searchJurisdictionList(updatedValues.name)))
+      return prom.then(out => {
+        if (!this.state.edit) {
+          if (!this.props.jurisdiction) {
+            this.throwErrors(updatedValues, out)
+          } else if (this.props.jurisdiction && this.props.jurisdiction.name !== updatedValues.name) {
+            this.throwErrors(updatedValues, out)
+          } else {
+            this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
+          }
         }
-      }
-    })
+      })
+    }
   }
 
   onJurisdictionsFetchRequest = ({ value }) => {
@@ -174,7 +176,7 @@ export class JurisdictionForm extends Component {
       <FormModal
         form="jurisdictionForm"
         handleSubmit={this.onSubmitForm}
-        initialValues={this.jurisdictionDefined || {}}
+        initialValues={this.jurisdictionDefined || { name: '', startDate: new Date(), endDate: new Date() }}
         asyncValidate={this.state.edit ? null : this.validateJurisdiction}
         asyncBlurFields={['name']}
         width="600px" height="400px"
@@ -210,11 +212,11 @@ export class JurisdictionForm extends Component {
             </Row>
             <Container style={{ marginTop: 30 }}>
               <Column flex>
-                <Field component={DatePicker} name="startDate" invalidLabel="mm/dd/yyyy" label="Segment start Date"
+                <Field component={DatePicker} name="startDate" label="Segment start Date"
                        dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
               </Column>
               <Column>
-                <Field component={DatePicker} name="endDate" invalidLabel="mm/dd/yyyy" label="Segment end Date"
+                <Field component={DatePicker} name="endDate" label="Segment end Date"
                        dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
               </Column>
             </Container>
