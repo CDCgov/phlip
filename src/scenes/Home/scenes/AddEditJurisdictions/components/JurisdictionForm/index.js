@@ -167,7 +167,7 @@ export class JurisdictionForm extends Component {
           ? 'Save'
           : 'Add',
         type: 'submit',
-        disabled: Boolean(this.props.form.syncErrors || (this.props.form.asyncErrors ? this.props.form.asyncErrors.name : false)),
+        disabled: false, //Boolean(this.props.form.syncErrors || (this.props.form.asyncErrors ? this.props.form.asyncErrors.name : false)),
         otherProps: { 'aria-label': 'Save form' }
       }
     ]

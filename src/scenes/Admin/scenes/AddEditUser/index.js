@@ -160,7 +160,7 @@ export class AddEditUser extends Component {
       {
         value: 'Save',
         type: 'submit',
-        disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors),
+        disabled: false, //!!(this.props.form.asyncErrors || this.props.form.syncErrors),
         otherProps: { 'aria-label': 'Save form' }
       }
     ]

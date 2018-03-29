@@ -56,16 +56,12 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
         options={
           Array [
             Object {
-              "label": "Assessment",
+              "label": "Legal Scan",
               "value": 1,
             },
             Object {
               "label": "Policy Surveillance",
               "value": 2,
-            },
-            Object {
-              "label": "Environmental Scan",
-              "value": 3,
             },
           ]
         }

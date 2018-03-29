@@ -141,7 +141,7 @@ export class AddEditQuestion extends Component {
       { value: questionTypes.BINARY, label: 'Binary' },
       { value: questionTypes.CHECKBOXES, label: 'Checkboxes' },
       { value: questionTypes.MULTIPLE_CHOICE, label: 'Radio Button' },
-      { value: questionTypes.TEXT_FIELD, label: 'Text field' },
+      { value: questionTypes.TEXT_FIELD, label: 'Text Field' },
       { value: questionTypes.CATEGORY, label: 'Tabbed' },
     ]
 
@@ -154,7 +154,7 @@ export class AddEditQuestion extends Component {
           ? 'Save'
           : 'Add',
         type: 'submit',
-        disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors),
+        disabled: false, //!!(this.props.form.asyncErrors || this.props.form.syncErrors),
         otherProps: { 'aria-label': 'Save form' }
       }
     ]

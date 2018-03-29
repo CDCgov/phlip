@@ -102,7 +102,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
                     "value": 4,
                   },
                   Object {
-                    "label": "Text field",
+                    "label": "Text Field",
                     "value": 5,
                   },
                   Object {

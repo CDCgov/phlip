@@ -120,15 +120,15 @@ export class AddEditProject extends Component {
             ? 'Save'
             : 'Create',
           type: 'submit',
-          disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors),
+          disabled: false,//!!(this.props.form.asyncErrors || this.props.form.syncErrors),
           otherProps: { 'aria-label': 'Save form' }
         }
       ]
 
     const options = [
-      { value: 1, label: 'Assessment' },
-      { value: 2, label: 'Policy Surveillance' },
-      { value: 3, label: 'Environmental Scan' }
+      { value: 1, label: 'Legal Scan' },
+      { value: 2, label: 'Policy Surveillance' }
+      //{ value: 3, label: 'Environmental Scan' }
     ]
 
     return (
