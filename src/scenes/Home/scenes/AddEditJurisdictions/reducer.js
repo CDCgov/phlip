@@ -73,9 +73,7 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
     case types.SET_JURISDICTION_SUGGESTIONS:
       return {
         ...state,
-        suggestions: action.payload.filter(jurisdiction => {
-          return !normalize.mapArray(Object.values(state.jurisdictions.byId), 'name').includes(jurisdiction.name)
-        })
+        suggestions: action.payload
       }
 
     case types.ON_CLEAR_SUGGESTIONS:

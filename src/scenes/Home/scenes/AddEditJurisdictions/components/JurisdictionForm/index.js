@@ -82,6 +82,8 @@ export class JurisdictionForm extends Component {
         })
         this.props.onSubmitError(nextProps.formError)
       } else if (nextProps.goBack === true) {
+        this.props.actions.updateJurisdictionInProject(jurisdiction, this.props.project.id)
+        this.props.actions.addJurisdictionToProject(jurisdiction, this.props.project.id)
         this.props.history.goBack()
       }
     }
@@ -105,10 +107,8 @@ export class JurisdictionForm extends Component {
 
     if (this.state.edit) {
       this.props.actions.updateJurisdiction(jurisdiction, this.props.project.id)
-      this.props.actions.updateJurisdictionInProject(jurisdiction, this.props.project.id)
     } else {
       this.props.actions.addJurisdiction(jurisdiction, this.props.project.id)
-      this.props.actions.addJurisdictionToProject(jurisdiction, this.props.project.id)
     }
 
     this.props.actions.updateEditedFields(this.props.project.id)
@@ -117,8 +117,6 @@ export class JurisdictionForm extends Component {
   throwErrors = (values, out) => {
     if (out.length === 0) {
       throw { name: 'You must choose a pre-defined jurisdiction name.' }
-    } else if (this.props.jurisdictions.includes(values.name)) {
-      throw { name: 'This jurisdiction is already included in this project.' }
     } else if (out.length > 1) {
       throw { name: 'There are multiple jurisdictions that match this string. Please choose one from the list.' }
     } else {
@@ -167,7 +165,7 @@ export class JurisdictionForm extends Component {
           ? 'Save'
           : 'Add',
         type: 'submit',
-        disabled: false, //Boolean(this.props.form.syncErrors || (this.props.form.asyncErrors ? this.props.form.asyncErrors.name : false)),
+        disabled: false,
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
