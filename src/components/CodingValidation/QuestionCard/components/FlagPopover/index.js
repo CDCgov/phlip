@@ -87,8 +87,6 @@ export class FlagPopover extends Component {
         disabled: nextProps.questionFlags.length > 0 || this.props.disableAll
       }
     }
-
-    console.log(nextProps)
   }
 
   onOpenRedPopover = () => {
@@ -174,7 +172,7 @@ export class FlagPopover extends Component {
     if (this.state.updatedFlag.type === 0 || this.state.updatedFlag.notes === '') {
       this.setState({
         helperText: this.state.updatedFlag.notes === '' ? 'Required' : '',
-        choiceHelperText: this.state.updatedFlag.type === 0 ? 'Required' : '',
+        choiceHelperText: this.state.updatedFlag.type === 0 ? 'Required' : ''
       })
     } else {
       this.props.onSaveFlag(this.state.updatedFlag)
@@ -262,7 +260,10 @@ export class FlagPopover extends Component {
             </form>}
             <Row displayFlex style={{ alignSelf: 'flex-end', padding: 16 }}>
               <Button
-                onClick={this.onCloseRedPopover} raised={false} color="accent" value={this.state.inEditMode ? 'Cancel' : 'Close' } />
+                onClick={this.onCloseRedPopover}
+                raised={false}
+                color="accent"
+                value={this.state.inEditMode ? 'Cancel' : 'Close'} />
               {this.state.inEditMode &&
               <Button
                 type="submit"

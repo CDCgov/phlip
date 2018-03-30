@@ -7,10 +7,11 @@ import IconButton from 'components/IconButton'
 import CircleIcon from 'components/CircleIcon'
 import { withRouter } from 'react-router-dom'
 import TextLink from 'components/TextLink'
+import { withTheme } from 'material-ui/styles'
 
-export const PageHeader = ({ projectName, pageTitle, projectId, showButton, protocolButton, otherButton, children, history, onBackButtonClick }) => (
+export const PageHeader = ({ projectName, pageTitle, projectId, showButton, protocolButton, otherButton, children, history, onBackButtonClick, theme }) => (
   <Container alignItems="center" style={{ padding: '20px 0' }}>
-    <Column style={{ paddingRight: 5 }}>
+    <Column style={{ paddingRight: 5 }} displayFlex>
       {pageTitle !== 'Project List'
         ? <IconButton iconSize={30} color="black" onClick={onBackButtonClick ? onBackButtonClick : () => history.goBack()} aria-label="Go back">arrow_back</IconButton>
         : <CircleIcon circleColor="error" iconColor="white" circleSize="30px" iconSize="19px">home</CircleIcon>
@@ -21,7 +22,7 @@ export const PageHeader = ({ projectName, pageTitle, projectId, showButton, prot
       {projectName !== '' &&
         <Fragment>
           <Typography type="title" style={{ alignSelf: 'center' }}>
-            <span style={{ color: '#0faee6' }}>{projectName}</span>
+            <span style={{ color: theme.palette.secondary.main }}>{projectName}</span>
           </Typography>
         </Fragment>}
     </Row>
@@ -49,4 +50,4 @@ PageHeader.propTypes = {
   onBackButtonClick: PropTypes.func
 }
 
-export default withRouter(PageHeader)
+export default withRouter(withTheme()(PageHeader))

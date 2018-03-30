@@ -10,7 +10,7 @@ import { reduxForm } from 'redux-form'
 import validate from './validate'
 
 let LoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, children }) => {
-  const bgColor = theme.palette.primary['500']
+  const bgColor = theme.palette.primary.main
 
   const headerStyles = {
     backgroundColor: bgColor,
@@ -27,7 +27,7 @@ let LoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, chil
   return (
     <Paper style={formStyles}>
       <Container column alignItems="center" justify="center" style={headerStyles}>
-        <Logo fontSize="55px" />
+        <Logo height="auto" width={261} />
       </Container>
       <form onSubmit={handleSubmit}>
         {children}

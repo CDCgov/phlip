@@ -147,14 +147,24 @@ const withCodingValidation = (WrappedComponent, actions) => {
 
     onShowGetStartedView = (noScheme, noJurisdictions) => {
       let startedText = ''
-      if (this.props.userRole === 'Coder') {
-        startedText = 'The coordinator for this project has not created a coding scheme or added jurisdictions.'
-      } else if (noScheme && !noJurisdictions) {
-        startedText = 'You must add questions to the project coding scheme before coding.'
-      } else if (!noScheme && noJurisdictions) {
-        startedText = 'You must add jurisdictions to the project before coding.'
+      if (this.props.isValidation) {
+        if (noScheme && !noJurisdictions) {
+          startedText = 'This project doesn\'t have a coding scheme.'
+        } else if (!noScheme && noJurisdictions) {
+          startedText = 'This project doesn\'t have jurisdictions.'
+        } else {
+          startedText = 'This project doesn\'t have a coding scheme or jurisdictions.'
+        }
       } else {
-        startedText = 'You must add jurisdictions and questions to the project coding scheme before coding.'
+        if (this.props.userRole === 'Coder') {
+          startedText = 'The coordinator for this project has not created a coding scheme or added jurisdictions.'
+        } else if (noScheme && !noJurisdictions) {
+          startedText = 'You must add questions to the project coding scheme before coding.'
+        } else if (!noScheme && noJurisdictions) {
+          startedText = 'You must add jurisdictions to the project before coding.'
+        } else {
+          startedText = 'You must add jurisdictions and questions to the project coding scheme before coding.'
+        }
       }
 
       return (

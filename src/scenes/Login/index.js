@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Grid from 'material-ui/Grid'
 import Container, { Row, Column } from 'components/Layout'
 import LoginForm from './components/LoginForm'
 import { Field } from 'redux-form'

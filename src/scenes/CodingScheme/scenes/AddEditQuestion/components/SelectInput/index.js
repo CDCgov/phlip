@@ -40,24 +40,6 @@ const SelectInput = ({ name, label, answerType, type, input, classes, index, cur
           {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
         </FormControl>
       </Column>
-      <Column>
-        {(currentValue.isNew)
-          ? <IconButton
-            color="action"
-            onClick={handleDelete}
-            iconSize={20}
-            aria-label={`Delete ${index} answer`}
-            id={`delete-answer-${index}`}>delete</IconButton>
-          : (answerType === questionTypes.BINARY || isEdit)
-            ? null
-            : <IconButton
-              color="action"
-              onClick={handleDelete}
-              iconSize={20}
-              aria-label={`Delete ${index} answer`}
-              id={`delete-answer-${index}`}>delete</IconButton>
-        }
-      </Column>
       {answerType !== questionTypes.BINARY && <Column>
         <Row>
           <IconButton
@@ -80,6 +62,24 @@ const SelectInput = ({ name, label, answerType, type, input, classes, index, cur
             onClick={handleDown}>arrow_drop_down</IconButton>
         </Row>
       </Column>}
+      <Column>
+        {(currentValue.isNew)
+          ? <IconButton
+            color="action"
+            onClick={handleDelete}
+            iconSize={20}
+            aria-label={`Delete ${index} answer`}
+            id={`delete-answer-${index}`}>delete</IconButton>
+          : (answerType === questionTypes.BINARY || isEdit)
+            ? null
+            : <IconButton
+              color="action"
+              onClick={handleDelete}
+              iconSize={20}
+              aria-label={`Delete ${index} answer`}
+              id={`delete-answer-${index}`}>delete</IconButton>
+        }
+      </Column>
     </Container>
   )
 }

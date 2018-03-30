@@ -15,7 +15,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   >
     <IconButton
       aria-label="Bookmark this project"
-      color="#d4d4d4"
+      color="#b1b3b3"
       iconSize={24}
       id="bookmark-project"
       onClick={[Function]}
@@ -192,7 +192,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   >
     <IconButton
       aria-label="Export validated questions"
-      color="#d4d4d4"
+      color="#b1b3b3"
       iconSize={24}
       id="export-validated"
       onClick={[Function]}

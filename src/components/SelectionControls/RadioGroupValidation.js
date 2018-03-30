@@ -8,15 +8,15 @@ import { getInitials } from 'utils/normalize'
 import Avatar from 'components/Avatar'
 import ValidationAvatar from 'components/ValidationAvatar'
 
-const styles = {
+const styles = theme => ({
   checked: {
-    color: '#00a9e5'
+    color: theme.palette.secondary.main
   }
-}
+})
 
 export const RadioGroup = props => {
   const {
-    choices, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions, disableAll, userImages
+    choices, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions, disableAll, userImages, theme
   } = props
 
   return (
@@ -42,7 +42,7 @@ export const RadioGroup = props => {
               && <Avatar
                 cardAvatar
                 avatar={userAnswers.validatedBy.userId ? userImages[userAnswers.validatedBy.userId].avatar : userAnswers.validatedBy.avatar} //this is not good
-                style={{ backgroundColor: 'white', color: '#35ac74', borderColor: '#35ac74' }}
+                style={{ backgroundColor: 'white', color: theme.palette.secondary.main, borderColor: theme.palette.secondary.main }}
                 key={mergedUserQuestions.answers.length + 1}
                 initials={userAnswers.validatedBy === null
                   ? ''
@@ -72,4 +72,4 @@ export const RadioGroup = props => {
 
 RadioGroup.propTypes = {}
 
-export default withStyles(styles)(RadioGroup)
+export default withStyles(styles, { withTheme: true })(RadioGroup)

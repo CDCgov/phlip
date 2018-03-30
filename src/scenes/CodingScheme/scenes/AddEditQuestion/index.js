@@ -139,7 +139,7 @@ export class AddEditQuestion extends Component {
   render() {
     const options = [
       { value: questionTypes.BINARY, label: 'Binary' },
-      { value: questionTypes.CHECKBOXES, label: 'Checkboxes' },
+      { value: questionTypes.CHECKBOXES, label: 'Checkbox' },
       { value: questionTypes.MULTIPLE_CHOICE, label: 'Radio Button' },
       { value: questionTypes.TEXT_FIELD, label: 'Text Field' },
       { value: questionTypes.CATEGORY, label: 'Tabbed' },
@@ -214,13 +214,11 @@ export class AddEditQuestion extends Component {
                 component={AnswerList}
               />
               <Container>
-                <Row
-                  flex
+                <Row flex
                   style={{
                     paddingLeft: this.props.form.values ? (this.props.form.values.questionType !==
                       questionTypes.TEXT_FIELD && '47px') : '47px'
-                  }}
-                >
+                  }}>
                   <Field
                     name="includeComment"
                     label="Include comment box"

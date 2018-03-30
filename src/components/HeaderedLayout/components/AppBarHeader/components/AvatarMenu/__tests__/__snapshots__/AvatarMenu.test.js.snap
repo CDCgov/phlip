@@ -16,8 +16,7 @@ exports[`Header -- AvatarMenu should render correctly 1`] = `
       tag="div"
     >
       <Target>
-        <Avatar
-          big={false}
+        <WithTheme
           initials="TU"
           onClick={[Function]}
           style={

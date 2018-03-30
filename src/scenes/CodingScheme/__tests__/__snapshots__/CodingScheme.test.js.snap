@@ -40,7 +40,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
       We failed to save the reorder of the scheme. The question order has been reset. Please try again later.
     </WithStyles>
   </Alert>
-  <withRouter(PageHeader)
+  <withRouter(WithTheme)
     otherButton={
       Object {
         "isLink": true,

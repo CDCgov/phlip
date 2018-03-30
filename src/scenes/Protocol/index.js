@@ -126,7 +126,6 @@ export class Protocol extends Component {
           pageTitle="Protocol"
           protocolButton={false}
           onBackButtonClick={this.onGoBack}
-
           otherButton={this.props.getProtocolError ? {} : {
             isLink: false,
             text: this.state.editMode ? 'Save' : 'Edit',

@@ -14,6 +14,7 @@ import Divider from 'material-ui/Divider'
 import Typography from 'material-ui/Typography'
 import TextLink from 'components/TextLink'
 import ApiErrorView from 'components/ApiErrorView'
+import { withTheme } from 'material-ui/styles'
 
 export class AddEditJurisdictions extends Component {
   static propTypes = {
@@ -21,7 +22,8 @@ export class AddEditJurisdictions extends Component {
     visibleJurisdictions: PropTypes.array,
     searchValue: PropTypes.string,
     history: PropTypes.object,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    theme: PropTypes.object
   }
 
   constructor(props, context) {
@@ -52,7 +54,7 @@ export class AddEditJurisdictions extends Component {
           title={
             <Typography type="title">
               <span style={{ paddingRight: 10 }}>Jurisdictions</span>
-              <span style={{ color: '#0faee6' }}>{this.props.project.name}</span>
+              <span style={{ color: this.props.theme.palette.secondary.main }}>{this.props.project.name}</span>
             </Typography>
           }
           buttons={this.props.error === true ? [] : this.getButton()}
@@ -100,4 +102,4 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(actions, dispatch)
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEditJurisdictions))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withTheme()(AddEditJurisdictions)))

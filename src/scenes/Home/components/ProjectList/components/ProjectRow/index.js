@@ -9,7 +9,7 @@ import IconButton from 'components/IconButton'
 import TableCell from 'components/TableCell'
 import * as actions from 'scenes/Home/actions'
 
-const greyIcon = '#d4d4d4'
+const greyIcon = '#b1b3b3'
 
 export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => {
   return (

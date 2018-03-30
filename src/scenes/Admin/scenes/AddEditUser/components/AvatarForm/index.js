@@ -86,7 +86,7 @@ export class AvatarForm extends Component {
               <Avatar cardAvatar style={{ width: '200px', height: '200px' }} avatar={this.state.editFile.file.base64} />
             </Container>}
         </ModalContent>
-        <ModalActions edit={true} actions={this.state.isEdit ? formEditActions : formActions}></ModalActions>
+        <ModalActions actions={this.state.isEdit ? formEditActions : formActions}></ModalActions>
       </FormModal>
     )
   }

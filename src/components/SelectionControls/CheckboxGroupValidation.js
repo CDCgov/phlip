@@ -8,15 +8,15 @@ import { getInitials } from 'utils/normalize'
 import Avatar from 'components/Avatar'
 import ValidationAvatar from 'components/ValidationAvatar'
 
-const styles = {
+const styles = theme => ({
   checked: {
-    color: '#00a9e5'
+    color: theme.palette.secondary.main
   }
-}
+})
 
 export const CheckboxGroupValidation = props => {
   const {
-    choices, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions, disableAll, userImages
+    choices, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions, disableAll, userImages, theme
   } = props
 
   return (
@@ -43,7 +43,7 @@ export const CheckboxGroupValidation = props => {
                 cardAvatar
                 avatar={userAnswers.validatedBy.userId ? userImages[userAnswers.validatedBy.userId].avatar : userAnswers.validatedBy.avatar}
                 key={mergedUserQuestions.answers.length + 1}
-                style={{ backgroundColor: 'white', color: '#35ac74', borderColor: '#35ac74' }}
+                style={{ backgroundColor: 'white', color: theme.palette.secondary.main, borderColor: theme.palette.secondary.main }}
                 initials={userAnswers.validatedBy === null
                   ? ''
                   : getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
@@ -77,4 +77,4 @@ CheckboxGroupValidation.propTypes = {
   onChange: PropTypes.func
 }
 
-export default withStyles(styles)(CheckboxGroupValidation)
+export default withStyles(styles, { withTheme: true })(CheckboxGroupValidation)

@@ -8,7 +8,7 @@ export const JurisdictionList = ({ jurisdictions, projectId }) => (
   <Table>
     <TableHead>
       <TableRow key="jurisdiction-header">
-        <TableCell key="segment-name">Jurisdictions</TableCell>
+        <TableCell key="segment-name">Jurisdiction</TableCell>
         <TableCell key="segment-start">Segment Start Date</TableCell>
         <TableCell key="segment-end">Segment End Date</TableCell>
         <TableCell key="segment-edit">Edit</TableCell>

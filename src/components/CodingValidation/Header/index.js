@@ -4,30 +4,35 @@ import Typography from 'material-ui/Typography'
 import Button from 'components/Button'
 import styles from './header-styles.scss'
 import JurisdictionSelect from 'components/JurisdictionSelect'
-import Container, { Column } from 'components/Layout'
+import Container, { Column, Row } from 'components/Layout'
 import IconButton from 'components/IconButton'
 import { withRouter } from 'react-router-dom'
 import TextLink from 'components/TextLink'
+import { withTheme } from 'material-ui/styles'
 
 export const Header = props => {
   const {
     projectName, empty, projectId, jurisdictionsList, selectedJurisdiction, onJurisdictionChange,
-    currentJurisdiction, isValidation, history, pageTitle } = props
+    currentJurisdiction, isValidation, history, pageTitle, theme
+  } = props
 
   return (
     <Container alignItems="center" style={{ padding: '20px 27px' }}>
       <Column style={{ paddingRight: 5, display: 'flex' }}>
         <IconButton
-          iconSize={28}
+          iconSize={30}
           color="black"
-          onClick={() => history.push('/')}
+          onClick={() => history.goBack()}
           aria-label="Go back">arrow_back</IconButton>
       </Column>
-      <Typography type="title" color="inherit">
-        <span style={{ paddingRight: 10 }}>{pageTitle}</span>
-        <span style={{ color: '#0faee6' }}>{projectName}</span>
-      </Typography>
-      {!empty && <Fragment><span className={styles.header} />
+      <Row flex displayFlex>
+        <Typography type="title" style={{ alignSelf: 'center', paddingRight: 10 }}>{pageTitle}</Typography>
+        <Typography type="title" style={{ alignSelf: 'center' }}>
+          <span style={{ color: theme.palette.secondary.main }}>{projectName}</span>
+        </Typography>
+      </Row>
+      <Fragment>
+        {!empty && <Fragment><span className={styles.header} />
         <div style={{ flex: '1' }}>
           <JurisdictionSelect
             options={jurisdictionsList}
@@ -43,7 +48,7 @@ export const Header = props => {
             Segment
             end <span style={{ color: 'black' }}>{new Date(currentJurisdiction.endDate).toLocaleDateString()}</span>
           </Typography>
-        </Column>
+        </Column></Fragment>}
         <Column flex></Column>
         <TextLink to={`/project/${projectId}/protocol`}>
           <Button
@@ -51,7 +56,7 @@ export const Header = props => {
             style={{ backgroundColor: 'white', color: 'black' }}
             aria-label="View and edit protocol" />
         </TextLink>
-      </Fragment>}
+      </Fragment>
     </Container>
   )
 }
@@ -67,4 +72,4 @@ Header.propTypes = {
   isValidation: PropTypes.bool
 }
 
-export default withRouter(Header)
+export default withRouter(withTheme()(Header))

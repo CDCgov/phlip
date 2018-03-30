@@ -94,7 +94,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
                     "value": 1,
                   },
                   Object {
-                    "label": "Checkboxes",
+                    "label": "Checkbox",
                     "value": 3,
                   },
                   Object {

@@ -11,9 +11,7 @@ const ModalTitle = ({ onCloseForm, title, search, buttons, SearchBarProps, style
         <Row flex displayFlex style={{ alignItems: 'center' }}>{title}</Row>
         {(buttons || search) &&
         <Row displayFlex style={{ alignItems: 'center' }}>
-          {search &&
-          <Column style={{ paddingRight: 5 }}><SearchBar {...SearchBarProps} /></Column>
-          }
+          {search && <Column style={{ paddingRight: 5 }}><SearchBar {...SearchBarProps} /></Column>}
           {buttons &&
           <Column>
             <Container alignItems="center">

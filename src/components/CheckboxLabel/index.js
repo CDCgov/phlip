@@ -4,23 +4,17 @@ import { FormControlLabel } from 'material-ui/Form'
 import Checkbox from 'material-ui/Checkbox'
 import { withStyles } from 'material-ui/styles'
 
-const styles = {
+const styles = theme => ({
   checked: {
-    color: '#3E91B8'
-  },
-};
+    color: theme.palette.secondary.main
+  }
+})
 
 const CheckboxLabel = ({ input, label, onChange, classes }) => {
   return (
     <FormControlLabel
       control={
-        <Checkbox
-          checked={input.value ? true : false}
-          classes={{
-            checked: classes.checked,
-          }}
-          onChange={input.onChange}
-        />
+        <Checkbox checked={!!input.value} classes={{ checked: classes.checked }} onChange={input.onChange} />
       }
       label={label}
     />
