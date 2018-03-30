@@ -2,19 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Radio from 'material-ui/Radio'
 import Container, { Row, Column } from 'components/Layout'
-import TextInput from 'components/TextInput'
 import Checkbox from 'material-ui/Checkbox'
 import Input, { InputLabel } from 'material-ui/Input'
 import { FormControl, FormHelperText } from 'material-ui/Form'
 import IconButton from 'components/IconButton'
 import * as questionTypes from '../../constants'
-import Icon from 'components/Icon'
 import { MenuDown } from 'mdi-material-ui'
-
-const iconButtonStyles = {
-  height: 25,
-  width: 20
-}
 
 const SelectInput = ({ name, label, answerType, type, input, classes, index, currentValue, meta: { asyncValidating, active, touched, error, warning, dirty }, handleDelete, handleUp, handleDown, fields, isEdit, ...custom }) => {
   return (
@@ -47,13 +40,34 @@ const SelectInput = ({ name, label, answerType, type, input, classes, index, cur
           {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
         </FormControl>
       </Column>
+      {answerType !== questionTypes.BINARY && <Column>
+        <Row>
+          <IconButton
+            color="action"
+            iconSize={36}
+            disableRipple={false}
+            disabled={!index - 1 >= 0}
+            aria-label="Move answer choice up one position"
+            id={`move-answer-${index}-up`}
+            onClick={handleUp}>arrow_drop_up</IconButton>
+        </Row>
+        <Row style={{ marginTop: -20 }}>
+          <IconButton
+            color="action"
+            iconSize={36}
+            disableRipple={false}
+            disabled={index + 1 === fields.length}
+            aria-label="Move answer choice down one position"
+            id={`move-answer-${index}-down`}
+            onClick={handleDown}>arrow_drop_down</IconButton>
+        </Row>
+      </Column>}
       <Column>
         {(currentValue.isNew)
           ? <IconButton
             color="action"
             onClick={handleDelete}
             iconSize={20}
-            tooltipText="Delete answer"
             aria-label={`Delete ${index} answer`}
             id={`delete-answer-${index}`}>delete</IconButton>
           : (answerType === questionTypes.BINARY || isEdit)
@@ -63,36 +77,9 @@ const SelectInput = ({ name, label, answerType, type, input, classes, index, cur
               onClick={handleDelete}
               iconSize={20}
               aria-label={`Delete ${index} answer`}
-              tooltipText="Delete answer"
               id={`delete-answer-${index}`}>delete</IconButton>
         }
       </Column>
-      {answerType !== questionTypes.BINARY && <Column>
-        <Row>
-          <IconButton
-            color="action"
-            iconSize={36}
-            disableRipple={false}
-            disabled={!index - 1 >= 0}
-            tooltipText="Move answer choice up"
-            aria-label="Move answer choice up one position"
-            id={`move-answer-${index}-up`}
-            placement="top"
-            onClick={handleUp}>arrow_drop_up</IconButton>
-        </Row>
-        <Row style={{ marginTop: -20 }}>
-          <IconButton
-            color="action"
-            iconSize={36}
-            disableRipple={false}
-            disabled={index + 1 === fields.length}
-            placement="bottom"
-            tooltipText="Move answer choice down"
-            aria-label="Move answer choice down one position"
-            id={`move-answer-${index}-down`}
-            onClick={handleDown}>arrow_drop_down</IconButton>
-        </Row>
-      </Column>}
     </Container>
   )
 }

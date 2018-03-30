@@ -30,89 +30,105 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
     <IconButton
       aria-label="Go back"
       color="black"
-      iconSize={28}
+      iconSize={30}
       onClick={[Function]}
       tooltipText=""
     >
       arrow_back
     </IconButton>
   </Column>
-  <WithStyles
-    color="inherit"
-    type="title"
+  <Row
+    component={
+      <WithStyles
+        item={true}
+      />
+    }
+    displayFlex={true}
+    flex={true}
   >
-    <span
+    <WithStyles
       style={
         Object {
+          "alignSelf": "center",
           "paddingRight": 10,
         }
       }
-    >
-      Coding
-    </span>
-    <span
+      type="title"
+    />
+    <WithStyles
       style={
         Object {
-          "color": "#0faee6",
+          "alignSelf": "center",
         }
       }
+      type="title"
     >
-      Test Project
-    </span>
-  </WithStyles>
+      <span
+        style={
+          Object {
+            "color": "#38a48e",
+          }
+        }
+      >
+        Test Project
+      </span>
+    </WithStyles>
+  </Row>
   <React.Fragment>
-    <span />
-    <div
-      style={
-        Object {
-          "flex": "1",
+    <React.Fragment>
+      <span />
+      <div
+        style={
+          Object {
+            "flex": "1",
+          }
         }
-      }
-    >
-      <WithStyles />
-    </div>
-    <Column
-      component={
+      >
+        <WithStyles />
+      </div>
+      <Column
+        component={
+          <WithStyles
+            item={true}
+          />
+        }
+        displayFlex={false}
+        flex={true}
+      >
         <WithStyles
-          item={true}
-        />
-      }
-      displayFlex={false}
-      flex={true}
-    >
-      <WithStyles
-        align="right"
-        color="default"
-        type="caption"
-      >
-        Segment start 
-        <span
-          style={
-            Object {
-              "color": "black",
-            }
-          }
+          align="right"
+          color="default"
+          type="caption"
         >
-          2018-1-1
-        </span>
-      </WithStyles>
-      <WithStyles
-        align="right"
-        color="default"
-        type="caption"
-      >
-        Segment end 
-        <span
-          style={
-            Object {
-              "color": "black",
+          Segment start 
+          <span
+            style={
+              Object {
+                "color": "black",
+              }
             }
-          }
+          >
+            2018-1-1
+          </span>
+        </WithStyles>
+        <WithStyles
+          align="right"
+          color="default"
+          type="caption"
         >
-          2018-1-18
-        </span>
-      </WithStyles>
-    </Column>
+          Segment end 
+          <span
+            style={
+              Object {
+                "color": "black",
+              }
+            }
+          >
+            2018-1-18
+          </span>
+        </WithStyles>
+      </Column>
+    </React.Fragment>
     <Column
       component={
         <WithStyles

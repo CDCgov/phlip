@@ -1,20 +1,12 @@
-import * as types from './actionTypes'
-import { normalize, updater } from 'utils'
 import {
-  getNextQuestion,
-  getPreviousQuestion,
-  determineShowButton,
-  handleUpdateUserAnswers,
   handleUpdateUserCodedQuestion,
   handleUpdateUserCategoryChild,
-  handleClearAnswers,
-  initializeUserAnswers,
-  handleUserPinciteQuestion,
-  initializeNavigator,
-  getQuestionSelectedInNav
+  generateError
 } from 'utils/codingHelpers'
-
 import { sortList } from 'utils'
+import * as codingValidationTypes from 'scenes/Coding/actionTypes'
+import * as otherActionTypes from 'components/CodingValidation/actionTypes'
+const types = { ...codingValidationTypes, ...otherActionTypes }
 
 const INITIAL_STATE = {
   question: {},
@@ -27,9 +19,12 @@ const INITIAL_STATE = {
   selectedCategory: 0,
   selectedCategoryId: null,
   userAnswers: {},
-  showNextButton: true
+  showNextButton: true,
+  mergedUserQuestions: null,
+  schemeError: null,
+  getQuestionErrors: null,
+  codedQuestionsError: null
 }
-
 
 const codingReducer = (state = INITIAL_STATE, action) => {
   const questionUpdater = state.question.isCategoryQuestion
@@ -37,196 +32,120 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     : handleUpdateUserCodedQuestion(state, action)
 
   switch (action.type) {
-    case types.GET_NEXT_QUESTION:
-      return {
-        ...state,
-        ...getNextQuestion(state, action)
-      }
-
-    case types.GET_PREV_QUESTION:
-      return {
-        ...state,
-        ...getPreviousQuestion(state, action)
-      }
-
     case types.GET_CODING_OUTLINE_SUCCESS:
-      if (action.payload.isSchemeEmpty) {
+      if (action.payload.isSchemeEmpty || action.payload.areJurisdictionsEmpty) {
         return {
           ...state,
           scheme: { order: [], byId: {}, tree: [] },
           outline: {},
           question: {},
           userAnswers: {},
-          categories: undefined
+          categories: undefined,
+          areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty,
+          isSchemeEmpty: action.payload.isSchemeEmpty,
+          schemeError: null
         }
       } else {
-        const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
         sortList(action.payload.question.possibleAnswers, 'order', 'asc')
+        const errors = generateError(action.payload.errors)
         return {
           ...state,
           outline: action.payload.outline,
-          scheme: {
-            byId: normalizedQuestions,
-            order: action.payload.questionOrder,
-            tree: action.payload.tree
-          },
+          scheme: action.payload.scheme,
           question: action.payload.question,
-          userAnswers: initializeUserAnswers(
-            [
-              {
-                schemeQuestionId: action.payload.question.id,
-                comment: '',
-                codedAnswers: [],
-                flag: { notes: '', type: 0, raisedBy: {} }
-              },
-              ...action.payload.codedQuestions
-            ], normalizedQuestions, action.payload.userId
-          ),
-          categories: undefined
+          userAnswers: action.payload.userAnswers,
+          categories: undefined,
+          areJurisdictionsEmpty: false,
+          isSchemeEmpty: false,
+          schemeError: null,
+          getQuestionErrors: errors.length > 0 ? errors : null,
+          codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null
         }
       }
 
-    case types.UPDATE_USER_ANSWER_REQUEST:
-      return {
-        ...state,
-        userAnswers: {
-          ...state.userAnswers,
-          ...handleUpdateUserAnswers(state, action, state.selectedCategoryId)
-        }
-      }
-
-    case types.ON_CHANGE_COMMENT:
-      return {
-        ...state,
-        ...questionUpdater('comment', action.comment)
-      }
-
-    case types.ON_SAVE_RED_FLAG:
-      const curQuestion = { ...state.scheme.byId[action.questionId] }
+    case types.ON_SAVE_RED_FLAG_SUCCESS:
+      const curQuestion = { ...state.scheme.byId[state.question.id] }
       return {
         ...state,
         question: {
           ...state.question,
-          flags: [action.flagInfo]
+          flags: [action.payload]
         },
         scheme: {
           ...state.scheme,
           byId: {
             ...state.scheme.byId,
-            [action.questionId]: {
+            [state.question.id]: {
               ...curQuestion,
-              flags: [action.flagInfo]
+              flags: [action.payload]
             }
           }
         }
       }
 
+    case types.ON_SAVE_RED_FLAG_FAIL:
+      return {
+        ...state,
+       saveFlagErrorContent: 'We couldn\'t save the red flag for this question.'
+      }
+
     case types.ON_SAVE_FLAG:
       return {
         ...state,
-        ...questionUpdater('flag', action.flagInfo)
+        ...questionUpdater('flag', action.flagInfo),
+        errorTypeMsg: 'We couldn\'t save your flag for this question. Your flag will be reset to the previous state.',
+        snapshotUserAnswer: state.question.isCategoryQuestion
+          ? state.userAnswers[action.questionId][state.selectedCategoryId]
+          : state.userAnswers[action.questionId],
       }
 
-    case types.ON_CHANGE_PINCITE:
+    case types.GET_CODING_OUTLINE_FAIL:
       return {
         ...state,
-        ...questionUpdater('answers', handleUserPinciteQuestion)
-      }
-
-    case types.APPLY_ANSWER_TO_ALL:
-      const catQuestion = state.userAnswers[state.question.id][state.selectedCategoryId]
-      return {
-        ...state,
-        userAnswers: {
-          ...state.userAnswers,
-          [state.question.id]: {
-            ...state.categories.reduce((obj, category) => ({
-              ...obj,
-              [category.id]: { ...catQuestion, categoryId: category.id }
-            }), {})
-          }
-        }
-      }
-
-    case types.ON_CLEAR_ANSWER:
-      return {
-        ...state,
-        ...questionUpdater('answers', handleClearAnswers)
-      }
-
-    case types.ON_CHANGE_CATEGORY:
-      return {
-        ...state,
-        selectedCategory: action.selection,
-        selectedCategoryId: state.categories[action.selection].id
-      }
-
-    case types.ON_JURISDICTION_CHANGE:
-      return {
-        ...state,
-        jurisdictionId: action.event,
-        jurisdiction: action.jurisdictionsList.find(jurisdiction => jurisdiction.id === action.event)
+        schemeError: action.payload
       }
 
     case types.GET_USER_CODED_QUESTIONS_SUCCESS:
-      let userAnswers = {}, question = { ...state.question }, other = {}
-
-      if (state.question.isCategoryQuestion) {
-        question = state.scheme.byId[question.parentId]
-        other = {
-          currentIndex: state.scheme.order.findIndex(id => id === question.id)
-        }
-      }
-
-      userAnswers = initializeUserAnswers(
-        [
-          {
-            schemeQuestionId: question.id,
-            comment: '',
-            codedAnswers: []
-          }, ...action.payload.codedQuestions
-        ],
-        state.scheme.byId
-      )
-
+      const errors = generateError(action.payload.errors)
       return {
         ...state,
-        userAnswers,
-        question,
-        ...other,
-        selectedCategory: 0,
-        categories: undefined,
-        selectedCategoryId: null
+        userAnswers: action.payload.userAnswers,
+        question: action.payload.question,
+        scheme: action.payload.scheme,
+        getQuestionErrors: errors.length > 0 ? errors : null,
+        codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
+        ...action.payload.otherUpdates,
       }
 
-    case types.ON_QUESTION_SELECTED_IN_NAV:
-      return getQuestionSelectedInNav(state, action)
-
-    case types.ON_CLOSE_CODE_SCREEN:
-      return INITIAL_STATE
+    case types.GET_USER_CODED_QUESTIONS_FAIL:
+      return {
+        ...state,
+        getQuestionsError: ''
+      }
 
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
+      return {
+        ...state,
+        codedQuestionsError: null
+      }
+
+    case types.ON_SAVE_RED_FLAG_REQUEST:
     case types.GET_CODING_OUTLINE_REQUEST:
     default:
       return state
   }
 }
 
-const codingSceneReducer = (state = INITIAL_STATE, action) => {
-  if (Object.values(types).includes(action.type)) {
-    const intermediateState = codingReducer(state, action)
+export const codingHandlers = [
+  'GET_CODING_OUTLINE_REQUEST',
+  'GET_CODING_OUTLINE_SUCCESS',
+  'GET_CODING_OUTLINE_FAIL',
+  'GET_USER_CODED_QUESTIONS_REQUEST',
+  'GET_USER_CODED_QUESTIONS_SUCCESS',
+  'ON_SAVE_RED_FLAG_REQUEST',
+  'ON_SAVE_RED_FLAG_SUCCESS',
+  'ON_SAVE_RED_FLAG_FAIL',
+  'ON_SAVE_FLAG'
+]
 
-    return {
-      ...intermediateState,
-      showNextButton: intermediateState.scheme === null ? false : determineShowButton(intermediateState),
-      scheme: intermediateState.scheme === null ? null : {
-        ...intermediateState.scheme,
-        tree: initializeNavigator(intermediateState.scheme.tree, intermediateState.scheme.byId, intermediateState.userAnswers, intermediateState.question)
-      }
-    }
-  } else {
-    return state
-  }
-}
-
-export default codingSceneReducer
+export default codingReducer

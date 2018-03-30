@@ -4,11 +4,11 @@ import Radio from 'material-ui/Radio'
 import { FormControlLabel, FormControl, FormGroup, FormHelperText } from 'material-ui/Form'
 import { withStyles } from 'material-ui/styles'
 
-const styles = {
+const styles = theme => ({
   checked: {
-    color: '#00a9e5'
+    color: theme.palette.secondary.main
   }
-}
+})
 
 export const RadioGroup = ({ choices, selected, onChange, error, required, helperText, classes }) => {
   return (

@@ -3,7 +3,7 @@ import reducer from '../reducer'
 
 describe('Home scene - AddEditProject reducer', () => {
   test('should return the initial state', () => {
-    expect(reducer(undefined, {})).toEqual({})
+    expect(reducer(undefined, {})).toEqual({ goBack: false, formError: null })
   })
   
   test('should handle ADD_PROJECT_REQUEST', () => {
@@ -11,7 +11,7 @@ describe('Home scene - AddEditProject reducer', () => {
     expect(reducer({}, {
       type: types.ADD_PROJECT_REQUEST,
       project
-    })).toEqual({})
+    })).toEqual({ goBack: false })
   })
 
   test('should handle UPDATE_PROJECT_REQUEST', () => {
@@ -19,6 +19,6 @@ describe('Home scene - AddEditProject reducer', () => {
     expect(reducer({}, {
       type: types.ADD_PROJECT_REQUEST,
       project
-    })).toEqual({})
+    })).toEqual({ goBack: false })
   })
 })

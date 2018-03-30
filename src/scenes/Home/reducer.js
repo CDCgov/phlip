@@ -1,7 +1,7 @@
 import * as types from './actionTypes'
 import { combineReducers } from 'redux'
-import addEditProjectReducer from './scenes/AddEditProject/reducer'
 import addEditJurisdictions from './scenes/AddEditJurisdictions/reducer'
+import addEditProject from './scenes/AddEditProject/reducer'
 import { sortList, updater, tableUtils, searchUtils, normalize } from 'utils'
 
 const INITIAL_STATE = {
@@ -47,7 +47,8 @@ const setProjectValues = updatedProjects => (updatedArr, page, rowsPerPage) => {
       allIds: normalize.mapArray(updatedProjects)
     },
     visibleProjects: normalize.mapArray(tableUtils.sliceTable(updatedArr, page, rows)),
-    projectCount: updatedArr.length
+    projectCount: updatedArr.length,
+    page
   }
 }
 
@@ -56,8 +57,11 @@ const getProjectArrays = state => {
   let matches = searchUtils.searchForMatches(Object.values(state.projects.byId), searchValue, [
     'name', 'dateLastEdited', 'lastEditedBy'
   ])
+  let curPage = page
   const updatedProjects = sortArray(Object.values(state.projects.byId), state)
   const setArrays = setProjectValues(updatedProjects)
+
+  if (rowsPerPage === 'All') curPage = 0
 
   if (projects.length === 0) return state
 
@@ -68,14 +72,14 @@ const getProjectArrays = state => {
       const updatedMatches = sortArray(matches, state)
       return {
         ...state,
-        ...setArrays(updatedMatches, page, rowsPerPage),
+        ...setArrays(updatedMatches, curPage, rowsPerPage),
         matches: [...normalize.mapArray(updatedMatches)],
       }
     }
   } else {
     return {
       ...state,
-      ...setArrays(updatedProjects, page, rowsPerPage),
+      ...setArrays(updatedProjects, curPage, rowsPerPage),
       matches: []
     }
   }
@@ -191,8 +195,6 @@ const mainReducer = (state, action) => {
         }
       }
 
-
-    case types.UPDATE_PROJECT_FAIL:
     case types.GET_PROJECTS_REQUEST:
     default:
       return state
@@ -207,8 +209,8 @@ const homeReducer = (state = INITIAL_STATE, action) => {
 
 const homeRootReducer = combineReducers({
   main: homeReducer,
-  addEditProject: addEditProjectReducer,
-  addEditJurisdictions: addEditJurisdictions
+  addEditProject,
+  addEditJurisdictions
 })
 
 export default homeRootReducer

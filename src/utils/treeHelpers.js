@@ -1,6 +1,5 @@
 import { sortList } from 'utils'
 import { map, walk, getFlatDataFromTree } from 'react-sortable-tree'
-import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 export const getNodeKey = ({ node, treeIndex }) => {
   return treeIndex
@@ -27,8 +26,7 @@ const setChildren = (node, number, fullList, numbering, order) => {
   node.indent = getIndent(number)
   node.number = number
 
-  let fullNode = { ...node }
-  delete fullNode.children
+  const { children, ...fullNode } = { ...node }
 
   fullList.push({ ...fullNode })
   numbering[node.id] = { number }

@@ -39,7 +39,8 @@ export class AddEditQuestion extends Component {
     this.parentDefined = this.props.location.state.parentDefined ? this.props.location.state.parentDefined : null
 
     this.state = {
-      edit: this.questionDefined
+      edit: this.questionDefined,
+      submitting: false
     }
 
     this.defaultForm = {
@@ -61,7 +62,23 @@ export class AddEditQuestion extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.state.submitting === true) {
+      if (nextProps.formError !== null) {
+        this.props.onSubmitError(nextProps.formError)
+      } else {
+        this.props.history.goBack()
+      }
+      this.setState({
+        submitting: false
+      })
+    }
+  }
+
   handleSubmit = values => {
+    this.setState({
+      submitting: true
+    })
     let updatedValues = { ...values }
     for (let field of ['text', 'hint']) {
       if (updatedValues[field]) updatedValues[field] = trimWhitespace(values[field])
@@ -84,7 +101,6 @@ export class AddEditQuestion extends Component {
         ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.parentDefined, this.props.location.state.path)
         : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)
 
-    this.props.history.goBack()
   }
 
   onCancel = () => {
@@ -123,10 +139,10 @@ export class AddEditQuestion extends Component {
   render() {
     const options = [
       { value: questionTypes.BINARY, label: 'Binary' },
-      { value: questionTypes.CATEGORY, label: 'Category' },
-      { value: questionTypes.CHECKBOXES, label: 'Checkboxes' },
-      { value: questionTypes.MULTIPLE_CHOICE, label: 'Multiple choice' },
-      { value: questionTypes.TEXT_FIELD, label: 'Text field' }
+      { value: questionTypes.CHECKBOXES, label: 'Checkbox' },
+      { value: questionTypes.MULTIPLE_CHOICE, label: 'Radio Button' },
+      { value: questionTypes.TEXT_FIELD, label: 'Text Field' },
+      { value: questionTypes.CATEGORY, label: 'Tabbed' },
     ]
 
     const categoryChildOptions = options.filter(option => option.value !== questionTypes.CATEGORY)
@@ -138,7 +154,7 @@ export class AddEditQuestion extends Component {
           ? 'Save'
           : 'Add',
         type: 'submit',
-        disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors),
+        disabled: false, //!!(this.props.form.asyncErrors || this.props.form.syncErrors),
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
@@ -171,7 +187,7 @@ export class AddEditQuestion extends Component {
                   <Field
                     name="questionType"
                     component={DropDown}
-                    label="Type"
+                    label="Answer Type"
                     options={this.parentDefined && (this.parentDefined.questionType === questionTypes.CATEGORY)
                       ? categoryChildOptions : options}
                     defaultValue={questionTypes.MULTIPLE_CHOICE}
@@ -186,8 +202,8 @@ export class AddEditQuestion extends Component {
                     name="hint"
                     component={TextInput}
                     shrinkLabel={true}
-                    label="Question Hint"
-                    placeholder="Enter hint"
+                    label="Coding directions"
+                    placeholder="Enter any special directions or considerations to display when coding this question"
                   />
                 </Row>
               </Container>
@@ -198,13 +214,11 @@ export class AddEditQuestion extends Component {
                 component={AnswerList}
               />
               <Container>
-                <Row
-                  flex
+                <Row flex
                   style={{
                     paddingLeft: this.props.form.values ? (this.props.form.values.questionType !==
                       questionTypes.TEXT_FIELD && '47px') : '47px'
-                  }}
-                >
+                  }}>
                   <Field
                     name="includeComment"
                     label="Include comment box"
@@ -227,7 +241,8 @@ export class AddEditQuestion extends Component {
 const mapStateToProps = (state, ownProps) => ({
   form: state.form.questionForm || {},
   projectId: ownProps.match.params.projectId,
-  formName: 'questionForm'
+  formName: 'questionForm',
+  formError: state.scenes.codingScheme.formError || null
 })
 
 const mapDispatchToProps = (dispatch) => ({

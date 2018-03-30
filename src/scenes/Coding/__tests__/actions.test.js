@@ -1,5 +1,7 @@
-import * as actions from '../actions'
+import commonActions, * as otherActions from '../actions'
 import * as types from '../actionTypes'
+
+const actions = { ...commonActions, ...otherActions }
 
 describe('Coding scene actions creators', () => {
   test('should create an action to get outline', () => {
@@ -53,7 +55,7 @@ describe('Coding scene actions creators', () => {
       selection: 1
     }
 
-    expect(actions.onChangeCategory(null, 1)).toEqual(expectedAction)
+    expect(actions.onChangeCategory(1)).toEqual(expectedAction)
   })
 
   test('should create an action to handle clearing answers', () => {
@@ -69,10 +71,10 @@ describe('Coding scene actions creators', () => {
 
   test('should create an action to handle close code screen', () => {
     const expectedAction = {
-      type: types.ON_CLOSE_CODE_SCREEN
+      type: types.ON_CLOSE_SCREEN
     }
 
-    expect(actions.onCloseCodeScreen()).toEqual(expectedAction)
+    expect(actions.onCloseScreen()).toEqual(expectedAction)
   })
 
   test('should create an action to handle get next question', () => {
@@ -109,7 +111,7 @@ describe('Coding scene actions creators', () => {
 
   test('should create an action to handle to save red flag info', () => {
     const expectedAction = {
-      type: types.ON_SAVE_RED_FLAG,
+      type: types.ON_SAVE_RED_FLAG_REQUEST,
       projectId: 1,
       questionId: 1,
       flagInfo: { notes: 'lalala', type: 3 }

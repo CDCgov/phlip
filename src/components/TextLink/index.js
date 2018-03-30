@@ -5,7 +5,7 @@ import { withTheme } from 'material-ui/styles'
 
 const TextLink = ({ theme, children, ...otherProps }) => {
   const styles = {
-    color: theme.palette.primary['600'],
+    color: theme.palette.secondary.main,
     textDecoration: 'none'
   }
 

@@ -106,14 +106,14 @@ export class ValidationAvatar extends Component {
           onCopy={this.hasPincite(this.props.answer.pincite) && this.handlePinciteCopy}>
           <Avatar
             cardAvatar
-            avatarUrl={this.props.answer.avatarUrl}
+            avatar={this.props.avatar}
             initials={this.state.initials}
             onMouseOver={this.handleOpen}
             onMouseOut={this.handleClose}
           />
         </CopyToClipboard>
         <Popover
-          open={this.state.open && this.hasPincite(this.props.answer.pincite)}
+          open={this.state.open}
           anchorEl={this.state.anchorEl}
           onClose={this.handleClose}
           className={this.props.classes.popover}

@@ -15,13 +15,13 @@ import ValidationTable from '../ValidationTable'
 
 export const QuestionContent = props => {
   const {
-    question, currentUserInitials, comment, userAnswers, mergedUserQuestions, isValidation,
-    onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert
+    question, currentUserInitials, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
+    onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages
   } = props
 
   const questionAnswerPadding = {
     paddingTop: 0,
-    paddingRight: 65,
+    paddingRight: 25,
     paddingBottom: 30,
     paddingLeft: (question.number && (question.number.split('.').length * 3) + 40) || 40
   }
@@ -53,6 +53,8 @@ export const QuestionContent = props => {
             onChangePincite={onChangeTextAnswer}
             mergedUserQuestions={mergedUserQuestions}
             currentUserInitials={currentUserInitials}
+            disableAll={disableAll}
+            userImages={userImages}
           />
         </Row>}
 
@@ -68,6 +70,8 @@ export const QuestionContent = props => {
             pincites={question.questionType !== questionTypes.CATEGORY}
             mergedUserQuestions={mergedUserQuestions}
             currentUserInitials={currentUserInitials}
+            disableAll={disableAll}
+            userImages={userImages}
           />
         </Row>}
 
@@ -76,6 +80,7 @@ export const QuestionContent = props => {
           <InputBox
             rows="7" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
             value={userAnswers.answers[question.possibleAnswers[0].id]} answerId={question.possibleAnswers[0].id}
+            disabled={disableAll}
           />
         </Column>}
 
@@ -86,8 +91,10 @@ export const QuestionContent = props => {
           validatorAnswer={userAnswers.answers[question.possibleAnswers[0].id]}
           validator={userAnswers.validatedBy}
           onChange={onChangeTextAnswer}
+          userImages={userImages}
           answerId={question.possibleAnswers[0].id}
           currentUserInitials={currentUserInitials}
+          disabled={disableAll}
         />
         }
         <Row style={{ ...answerPadding, paddingRight: 0, paddingTop: 20, paddingBottom: 0 }}>
@@ -100,42 +107,44 @@ export const QuestionContent = props => {
               style={{ whiteSpace: 'pre-wrap' }}
               placeholder="Enter comment"
               value={comment}
-              rowsMax={6}
+              rowsMax={3}
               label="Comment"
+              disabled={disableAll}
             />
           </Row>}
         </Row>
       </Column>
 
       {question.hint &&
-      <Row displayFlex style={{ padding: '0px 35px 50px 35px' }}>
-        <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
-        <Typography type="body1" style={{ color: '#98b3be' }}><strong>Hint: </strong>{question.hint}</Typography>
-      </Row>
+        <Row displayFlex style={{ padding: '0px 35px 50px 35px' }}>
+          <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
+          <Typography type="body1" style={{ color: '#98b3be' }}><strong>Coding Directions: </strong>{question.hint}</Typography>
+        </Row>
       }
 
       {isValidation && <ValidationTable
         onOpenAlert={onOpenFlagConfirmAlert}
         mergedUserQuestions={mergedUserQuestions}
         questionFlags={question.flags}
+        userImages={userImages}
       />}
 
       {question.isCategoryQuestion &&
-      <Fragment>
-        <Divider />
-        <Row
-          displayFlex
-          style={{
-            ...answerPadding,
-            paddingBottom: 20,
-            paddingTop: 20,
-            paddingRight: 0,
-            justifyContent: 'flex-end'
-          }}
-        >
-          <Button onClick={onOpenAlert} color="accent" value="Apply Answer to all categories" />
-        </Row>
-      </Fragment>}
+        <Fragment>
+          <Divider />
+          <Row
+            displayFlex
+            style={{
+              ...answerPadding,
+              paddingBottom: 20,
+              paddingTop: 20,
+              paddingRight: 0,
+              justifyContent: 'flex-end'
+            }}
+          >
+            <Button onClick={onOpenAlert} color="accent" value="Apply Answer to all categories" />
+          </Row>
+        </Fragment>}
     </Container>
   )
 }

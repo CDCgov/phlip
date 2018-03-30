@@ -59,7 +59,9 @@ export class JurisdictionForm extends Component {
     location: PropTypes.object,
     match: PropTypes.object,
     history: PropTypes.object,
-    onCloseModal: PropTypes.func
+    onCloseModal: PropTypes.func,
+    formError: PropTypes.string,
+    goBack: PropTypes.bool
   }
 
 
@@ -67,7 +69,21 @@ export class JurisdictionForm extends Component {
     super(props, context)
     this.jurisdictionDefined = this.props.location.state !== undefined ? props.location.state.jurisdictionDefined : null
     this.state = {
-      edit: this.jurisdictionDefined !== null
+      edit: this.jurisdictionDefined !== null,
+      submitting: false
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.state.submitting === true) {
+      if (nextProps.formError !== null) {
+        this.setState({
+          submitting: false
+        })
+        this.props.onSubmitError(nextProps.formError)
+      } else if (nextProps.goBack === true) {
+        this.props.history.goBack()
+      }
     }
   }
 
@@ -76,6 +92,10 @@ export class JurisdictionForm extends Component {
   }
 
   onSubmitForm = values => {
+    this.setState({
+      submitting: true
+    })
+
     const jurisdiction = {
       ...values,
       startDate: moment(values.startDate).toISOString(),
@@ -92,8 +112,6 @@ export class JurisdictionForm extends Component {
     }
 
     this.props.actions.updateEditedFields(this.props.project.id)
-    this.props.actions.clearJurisdictions()
-    this.props.history.goBack()
   }
 
   throwErrors = (values, out) => {
@@ -110,19 +128,21 @@ export class JurisdictionForm extends Component {
   }
 
   validateJurisdiction = values => {
-    const updatedValues = { ...values, name: values.name.trim() }
-    const prom = new Promise(resolve => resolve(api.searchJurisdictionList(updatedValues.name)))
-    return prom.then(out => {
-      if (!this.state.edit) {
-        if (!this.props.jurisdiction) {
-          this.throwErrors(updatedValues, out)
-        } else if (this.props.jurisdiction && this.props.jurisdiction.name !== updatedValues.name) {
-          this.throwErrors(updatedValues, out)
-        } else {
-          this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
+    if (values.hasOwnProperty('name')) {
+      const updatedValues = { ...values, name: values.name.trim() }
+      const prom = new Promise(resolve => resolve(api.searchJurisdictionList(updatedValues.name)))
+      return prom.then(out => {
+        if (!this.state.edit) {
+          if (!this.props.jurisdiction) {
+            this.throwErrors(updatedValues, out)
+          } else if (this.props.jurisdiction && this.props.jurisdiction.name !== updatedValues.name) {
+            this.throwErrors(updatedValues, out)
+          } else {
+            this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
+          }
         }
-      }
-    })
+      })
+    }
   }
 
   onJurisdictionsFetchRequest = ({ value }) => {
@@ -147,7 +167,7 @@ export class JurisdictionForm extends Component {
           ? 'Save'
           : 'Add',
         type: 'submit',
-        disabled: Boolean(this.props.form.syncErrors || (this.props.form.asyncErrors ? this.props.form.asyncErrors.name : false)),
+        disabled: false, //Boolean(this.props.form.syncErrors || (this.props.form.asyncErrors ? this.props.form.asyncErrors.name : false)),
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
@@ -156,7 +176,7 @@ export class JurisdictionForm extends Component {
       <FormModal
         form="jurisdictionForm"
         handleSubmit={this.onSubmitForm}
-        initialValues={this.jurisdictionDefined || {}}
+        initialValues={this.jurisdictionDefined || { name: '', startDate: new Date(), endDate: new Date() }}
         asyncValidate={this.state.edit ? null : this.validateJurisdiction}
         asyncBlurFields={['name']}
         width="600px" height="400px"
@@ -192,17 +212,17 @@ export class JurisdictionForm extends Component {
             </Row>
             <Container style={{ marginTop: 30 }}>
               <Column flex>
-                <Field component={DatePicker} name="startDate" invalidLabel="mm/dd/yyyy" label="Start Date"
+                <Field component={DatePicker} name="startDate" label="Segment Start Date"
                        dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
               </Column>
               <Column>
-                <Field component={DatePicker} name="endDate" invalidLabel="mm/dd/yyyy" label="End Date"
+                <Field component={DatePicker} name="endDate" label="Segment End Date"
                        dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
               </Column>
             </Container>
           </Container>
         </ModalContent>
-        <ModalActions edit={true} actions={formActions}></ModalActions>
+        <ModalActions actions={formActions}></ModalActions>
       </FormModal>
     )
   }
@@ -215,7 +235,9 @@ const mapStateToProps = (state, ownProps) => ({
   suggestions: state.scenes.home.addEditJurisdictions.suggestions || [],
   suggestionValue: state.scenes.home.addEditJurisdictions.suggestionValue || '',
   jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || {},
-  jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') || []
+  jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') || [],
+  formError: state.scenes.home.addEditJurisdictions.formError || null,
+  goBack: state.scenes.home.addEditJurisdictions.goBack || false
 })
 
 const mapDispatchToProps = (dispatch) => ({

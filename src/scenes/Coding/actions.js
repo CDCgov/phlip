@@ -1,77 +1,36 @@
 import * as types from './actionTypes'
+import { makeActionCreator, actions as commonActions } from 'components/CodingValidation/actions'
 
-export const getNextQuestion = (id, newIndex) => ({ type: types.GET_NEXT_QUESTION, id, newIndex })
-export const getPrevQuestion = (id, newIndex) => ({ type: types.GET_PREV_QUESTION, id, newIndex })
+const scene = 'CODING'
+let actions = {}
 
-export const getCodingOutlineRequest = (projectId, jurisdictionId) => ({
+for (let action in commonActions) {
+  actions = { ...actions, [action]: makeActionCreator(commonActions[action].type, scene, ...commonActions[action].args) }
+}
+
+// Dispatched when a user navigates to any question
+export const getQuestionRequest = (questionId, projectId) => ({
+  type: types.GET_QUESTION_REQUEST,
+  questionId,
+  projectId
+})
+
+// Dispatched when coding component mounts to get coding scheme
+export const getCodingOutlineRequest = (projectId, jurisdictionId, reducerName) => ({
   type: types.GET_CODING_OUTLINE_REQUEST,
   projectId,
-  jurisdictionId
-})
-
-export const answerQuestionRequest = (projectId, jurisdictionId, questionId, answerId, answerValue) => ({
-  type: types.UPDATE_USER_ANSWER_REQUEST,
-  projectId,
   jurisdictionId,
-  questionId,
-  answerId,
-  answerValue
+  reducerName
 })
 
-export const onChangeComment = (projectId, jurisdictionId, questionId, comment) => ({
-  type: types.ON_CHANGE_COMMENT,
-  projectId,
-  jurisdictionId,
-  questionId,
-  comment
-})
-
-export const onChangePincite = (projectId, jurisdictionId, questionId, answerId, pincite) => ({
-  type: types.ON_CHANGE_PINCITE,
-  projectId,
-  jurisdictionId,
-  questionId,
-  answerId,
-  pincite
-})
-
-export const onChangeCategory = (event, selection) => ({
-  type: types.ON_CHANGE_CATEGORY,
-  selection
-})
-
-export const onClearAnswer = (projectId, jurisdictionId, questionId) => ({
-  type: types.ON_CLEAR_ANSWER,
-  questionId,
-  projectId,
-  jurisdictionId
-})
-
-export const onCloseCodeScreen = () => ({ type: types.ON_CLOSE_CODE_SCREEN })
-
-export const onJurisdictionChange = (event, jurisdictionsList) => ({
-  type: types.ON_JURISDICTION_CHANGE,
-  event,
-  jurisdictionsList
-})
-
+// Dispatched when the user selects a different jurisdiction in the jurisdiction dropdown
 export const getUserCodedQuestions = (projectId, jurisdictionId) => ({
   type: types.GET_USER_CODED_QUESTIONS_REQUEST,
   projectId,
   jurisdictionId
 })
 
-export const updateEditedFields = projectId => ({ type: types.UPDATE_EDITED_FIELDS, projectId })
-
-export const onQuestionSelectedInNav = question => ({ type: types.ON_QUESTION_SELECTED_IN_NAV, question })
-
-export const applyAnswerToAll = (projectId, jurisdictionId, questionId) => ({
-  type: types.APPLY_ANSWER_TO_ALL,
-  projectId,
-  jurisdictionId,
-  questionId
-})
-
+// Dispatched when a user saves a green or yellow flag for a question in the 'flag this question' flag popover
 export const onSaveFlag = (projectId, jurisdictionId, questionId, flagInfo) => ({
   type: types.ON_SAVE_FLAG,
   projectId,
@@ -80,9 +39,12 @@ export const onSaveFlag = (projectId, jurisdictionId, questionId, flagInfo) => (
   flagInfo
 })
 
+// Dispatched when a user saves a red flag for a question in the 'stop coding this question' popover
 export const onSaveRedFlag = (projectId, questionId, flagInfo) => ({
-  type: types.ON_SAVE_RED_FLAG,
+  type: types.ON_SAVE_RED_FLAG_REQUEST,
   projectId,
   questionId,
   flagInfo
 })
+
+export default actions

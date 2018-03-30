@@ -3,11 +3,17 @@ import PropTypes from 'prop-types'
 import TableRow from 'components/TableRow'
 import TableCell from 'components/TableCell'
 import TextLink from 'components/TextLink'
+import Avatar from 'components/Avatar'
+import { getInitials } from 'utils/normalize'
+
 
 const UserTableBody = ({ users }) => {
   return (
     users.map(user => (
       <TableRow key={user.id}>
+        <TableCell key={`${user.id}-avatar`} style={{ width: 1 }}>
+          <Avatar cardAvatar avatar={user.avatar} initials={getInitials(user.firstName, user.lastName)} style={{ cursor: 'pointer' }} />
+        </TableCell>
         <TableCell key={`${user.id}-name`} header="name" padding="default"><span>{user.firstName} {user.lastName}</span></TableCell>
         <TableCell key={`${user.id}-email`} header="email" padding="default">{user.email}</TableCell>
         <TableCell key={`${user.id}-role`} header="role" padding="default">

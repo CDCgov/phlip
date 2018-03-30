@@ -13,7 +13,12 @@ const INITIAL_STATE = {
   questions: [],
   outline: {},
   allowHover: true,
-  flatQuestions: []
+  flatQuestions: [],
+  schemeError: null,
+  formError: null,
+  reorderError: null,
+  previousQuestions: [],
+  previousOutline: {}
 }
 
 const questionsToOutline = questions => {
@@ -108,7 +113,46 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ),
         flatQuestions: action.payload.schemeQuestions,
         outline: action.payload.outline,
-        empty: action.payload.schemeQuestions <= 0
+        empty: action.payload.schemeQuestions <= 0,
+        error: null
+      }
+
+    case types.GET_SCHEME_FAIL:
+      return {
+        ...INITIAL_STATE,
+        schemeError: action.payload
+      }
+
+    case types.RESET_REORDER_ERROR:
+      return {
+        ...state,
+        reorderError: null
+      }
+
+    case types.REORDER_SCHEME_FAIL:
+      return {
+        ...state,
+        reorderError: action.payload,
+        questions: state.previousQuestions,
+        outline: state.previousOutline,
+        previousQuestions: [],
+        previousOutline: {}
+      }
+
+    case types.REORDER_SCHEME_SUCCESS:
+      return {
+        ...state,
+        reorderError: null,
+        previousQuestion: [],
+        previousOutline: {}
+      }
+
+    case types.ADD_QUESTION_FAIL:
+    case types.ADD_CHILD_QUESTION_FAIL:
+    case types.UPDATE_QUESTION_FAIL:
+      return {
+        ...state,
+        formError: action.payload
       }
 
     case types.SET_EMPTY_STATE:
@@ -120,6 +164,8 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
     case types.HANDLE_QUESTION_TREE_CHANGE:
       return {
         ...state,
+        previousQuestions: state.questions,
+        previousOutline: state.outline,
         questions: action.questions,
         outline: questionsToOutline(action.questions)
       }
@@ -161,7 +207,8 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         questions: [...state.questions, action.payload],
         outline: questionsToOutline([...state.questions, action.payload]),
         empty: false,
-        flatQuestions: [...state.flatQuestions, action.payload]
+        flatQuestions: [...state.flatQuestions, action.payload],
+        error: null
       }
 
     case types.ADD_CHILD_QUESTION_SUCCESS:
@@ -189,8 +236,6 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         newNode: { ...action.payload, hovering: false }
       })
 
-
-
       return {
         ...state,
         questions: updatedTree,
@@ -198,9 +243,18 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         empty: false
       }
 
+    case types.ADD_QUESTION_REQUEST:
+    case types.ADD_CHILD_QUESTION_REQUEST:
+    case types.UPDATE_QUESTION_REQUEST:
+      return {
+        ...state,
+        formError: null
+      }
+
     case types.CLEAR_STATE:
       return INITIAL_STATE
 
+    case types.REORDER_SCHEME_REQUEST:
     default:
       return state
   }

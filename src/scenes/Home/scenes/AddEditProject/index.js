@@ -31,7 +31,21 @@ export class AddEditProject extends Component {
     super(props, context)
     this.projectDefined = this.props.match.url === '/project/add' ? null : this.props.location.state.projectDefined
     this.state = {
-      edit: !this.projectDefined
+      edit: !this.projectDefined,
+      submitting: false
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.state.submitting === true) {
+      if (nextProps.formError !== null) {
+        this.setState({
+          submitting: false
+        })
+        this.props.onSubmitError(nextProps.formError)
+      } else if (nextProps.goBack === true) {
+        this.props.history.goBack()
+      }
     }
   }
 
@@ -45,11 +59,13 @@ export class AddEditProject extends Component {
   }
 
   handleSubmit = values => {
+    this.setState({
+      submitting: true
+    })
+
     this.projectDefined
       ? this.props.actions.updateProjectRequest({ ...values, name: this.capitalizeFirstLetter(values.name) })
       : this.props.actions.addProjectRequest({ type: 1, ...values, name: this.capitalizeFirstLetter(values.name) })
-
-    this.props.history.goBack()
   }
 
   capitalizeFirstLetter = text => text.trim()[0].toUpperCase() + text.trim().slice(1)
@@ -86,7 +102,13 @@ export class AddEditProject extends Component {
   render() {
     const editAction = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Close modal' } },
-      { value: 'Edit', onClick: this.onEditForm, type: 'button', otherProps: { 'aria-label': 'Edit this project' } }
+      {
+        value: 'Edit',
+        onClick: this.onEditForm,
+        disabled: this.props.userRole === 'Coder',
+        type: 'button',
+        otherProps: { 'aria-label': 'Edit this project' }
+      }
     ]
 
     const actions = this.projectDefined && !this.state.edit
@@ -98,15 +120,15 @@ export class AddEditProject extends Component {
             ? 'Save'
             : 'Create',
           type: 'submit',
-          disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors),
+          disabled: false,//!!(this.props.form.asyncErrors || this.props.form.syncErrors),
           otherProps: { 'aria-label': 'Save form' }
         }
       ]
 
     const options = [
-      { value: 1, label: 'Assessment' },
-      { value: 2, label: 'Policy Surveillance' },
-      { value: 3, label: 'Environmental Scan' }
+      { value: 1, label: 'Legal Scan' },
+      { value: 2, label: 'Policy Surveillance' }
+      //{ value: 3, label: 'Environmental Scan' }
     ]
 
     return (
@@ -120,7 +142,7 @@ export class AddEditProject extends Component {
         width="600px" height="400px"
       >
         <ModalTitle
-          title={this.getModalTitle()} edit={this.state.edit}
+          title={this.getModalTitle()}
           closeButton={!!this.projectDefined} onEditForm={this.onEditForm} onCloseForm={this.onCancel}
         />
         <Divider />
@@ -173,7 +195,10 @@ export class AddEditProject extends Component {
 const mapStateToProps = (state) => ({
   projects: Object.values(state.scenes.home.main.projects.byId) || [],
   form: state.form.projectForm || {},
-  formName: 'projectForm'
+  formName: 'projectForm',
+  userRole: state.data.user.currentUser.role || '',
+  formError: state.scenes.home.addEditProject.formError || null,
+  goBack: state.scenes.home.addEditProject.goBack || false
 })
 
 const mapDispatchToProps = (dispatch) => ({

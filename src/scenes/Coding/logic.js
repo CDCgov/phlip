@@ -1,112 +1,238 @@
 import { createLogic } from 'redux-logic'
-import * as types from './actionTypes'
 import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
-import { getFinalCodedObject } from 'utils/codingHelpers'
+import {
+  getFinalCodedObject,
+  initializeUserAnswers,
+  getQuestionSelectedInNav,
+  getNextQuestion,
+  getPreviousQuestion,
+  initializeAndCheckAnswered, getQuestionAndInitialize
+} from 'utils/codingHelpers'
+import { normalize } from 'utils'
+import * as types from './actionTypes'
 
 export const getOutlineLogic = createLogic({
   type: types.GET_CODING_OUTLINE_REQUEST,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.GET_CODING_OUTLINE_SUCCESS,
-    failType: types.GET_CODING_OUTLINE_FAIL
-  },
-  async process({ action, getState, api }) {
-    let scheme = {}
+  async process({ action, getState, api }, dispatch, done) {
+    let scheme = {}, errors = {}, payload = {}
     let codedQuestions = []
     const userId = getState().data.user.currentUser.id
 
+    // Try to get the project coding scheme
     try {
       scheme = await api.getScheme(action.projectId)
+      // Get user coded questions for currently selected jurisdiction
+      if (action.jurisdictionId) {
+        if (scheme.schemeQuestions.length === 0) {
+          payload = { isSchemeEmpty: true, areJurisdictionsEmpty: false }
+        } else {
+          try {
+            codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
+          } catch (e) {
+            errors = { codedQuestions: 'We couldn\'t get your coded questions for this project and jurisdiction, so you won\'t be able to answer quetions.' }
+          }
+
+          // Create one array with the outline information in the question information
+          const merge = scheme.schemeQuestions.reduce((arr, q) => {
+            return [...arr, { ...q, ...scheme.outline[q.id] }]
+          }, [])
+
+          // Create a sorted question tree with sorted children with question numbering and order
+          const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
+          const questionsById = normalize.arrayToObject(questionsWithNumbers)
+          const firstQuestion = questionsWithNumbers[0]
+
+          // Check if the first question has answers, if it doesn't send a request to create an empty coded question
+          const { userAnswers, initializeErrors } = await initializeAndCheckAnswered(firstQuestion, codedQuestions, questionsById, userId, action, api.createEmptyCodedQuestion)
+          payload = {
+            ...payload,
+            outline: scheme.outline,
+            scheme: { byId: questionsById, tree, order },
+            userAnswers,
+            question: firstQuestion,
+            codedQuestions,
+            isSchemeEmpty: false,
+            areJurisdictionsEmpty: false,
+            userId,
+            errors: { ...errors, ...initializeErrors }
+          }
+
+        }
+      } else {
+        // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
+        if (scheme.schemeQuestions.length === 0) {
+          payload = { isSchemeEmpty: true, areJurisdictionsEmpty: true }
+        }
+        payload = { isSchemeEmpty: false, areJurisdictionsEmpty: true }
+      }
+
+      dispatch({
+        type: types.GET_CODING_OUTLINE_SUCCESS,
+        payload
+      })
+      done()
     } catch (e) {
-      throw { error: 'failed to get outline' }
+      dispatch({
+        type: types.GET_CODING_OUTLINE_FAIL,
+        payload: 'Failed to get outline.',
+        error: true
+      })
     }
-
-    if (action.jurisdictionId) {
-      try {
-        codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
-      } catch (e) {
-        throw { error: 'failed to get codedQuestions' }
-      }
-    }
-
-    if (scheme.schemeQuestions.length === 0) {
-      return {
-        isSchemeEmpty: true
-      }
-    } else {
-      const merge = scheme.schemeQuestions.reduce((arr, q) => {
-        return [...arr, { ...q, ...scheme.outline[q.id] }]
-      }, [])
-
-      const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
-
-      return {
-        outline: scheme.outline,
-        scheme: questionsWithNumbers,
-        questionOrder: order,
-        tree,
-        question: questionsWithNumbers[0],
-        codedQuestions,
-        isSchemeEmpty: false,
-        userId
-      }
-    }
+    done()
   }
 })
 
-export const answerQuestionLogic = createLogic({
-  type: [
-    types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER,
-    types.APPLY_ANSWER_TO_ALL, types.ON_SAVE_FLAG
-  ],
+export const getQuestionLogic = createLogic({
+  type: [types.ON_QUESTION_SELECTED_IN_NAV, types.GET_NEXT_QUESTION, types.GET_PREV_QUESTION],
   processOptions: {
     dispatchReturn: true,
-    successType: types.UPDATE_USER_ANSWER_SUCCESS,
-    failType: types.UPDATE_USER_ANSWER_FAIL
+    successType: types.GET_QUESTION_SUCCESS,
+    failType: types.GET_QUESTION_FAIL
   },
   latest: true,
   async process({ getState, action, api }) {
+    const state = getState().scenes.coding
+    const userId = getState().data.user.currentUser.id
+    let questionInfo = {}
+
+    // How did the user navigate to the currently selected question
+    switch (action.type) {
+      case types.ON_QUESTION_SELECTED_IN_NAV:
+        questionInfo = getQuestionSelectedInNav(state, action)
+        break
+      case types.GET_NEXT_QUESTION:
+        questionInfo = getNextQuestion(state, action)
+        break
+      case types.GET_PREV_QUESTION:
+        questionInfo = getPreviousQuestion(state, action)
+        break
+    }
+
+    return await getQuestionAndInitialize(state, action, userId, api, api.createEmptyCodedQuestion, questionInfo)
+  }
+})
+
+// Logic for any time of action that happens on question
+export const answerQuestionLogic = createLogic({
+  type: [
+    types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER,
+    types.ON_APPLY_ANSWER_TO_ALL, types.ON_SAVE_FLAG
+  ],
+  latest: true,
+  async process({ getState, action, api }, dispatch, done) {
     const userId = getState().data.user.currentUser.id
     const codingState = getState().scenes.coding
-    const answerObject = getFinalCodedObject(codingState, action, action.type === types.APPLY_ANSWER_TO_ALL)
-    return await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, answerObject)
+    const answerObject = getFinalCodedObject(codingState, action, action.type === types.ON_APPLY_ANSWER_TO_ALL)
+    try {
+      const codedQuestion = await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, answerObject)
+      dispatch({
+        type: types.UPDATE_USER_ANSWER_SUCCESS,
+        payload: { ...codedQuestion }
+      })
+      dispatch({
+        type: types.UPDATE_EDITED_FIELDS,
+        projectId: action.projectId
+      })
+    } catch (error) {
+      dispatch({
+        type: types.UPDATE_USER_ANSWER_FAIL,
+        payload: { error: 'Could not update answer', isApplyAll: action.type === types.ON_APPLY_ANSWER_TO_ALL }
+      })
+    }
+    done()
   }
 })
 
 export const getUserCodedQuestionsLogic = createLogic({
   type: types.GET_USER_CODED_QUESTIONS_REQUEST,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.GET_USER_CODED_QUESTIONS_SUCCESS,
-    failType: types.GET_USER_CODED_QUESTIONS_FAIL
-  },
-  async process({ action, api, getState }) {
+  async process({ action, api, getState }, dispatch, done) {
     let codedQuestions = []
     const userId = getState().data.user.currentUser.id
+    const state = getState().scenes.coding
+    let question = { ...state.question }
+    let otherUpdates = {}, errors = {}, updatedSchemeQuestion = {}, payload = {}
 
+    // Get user coded questions for a project and jurisdiction
     try {
       codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
     } catch (e) {
-      throw { error: 'failed to get codedQuestions' }
+      errors = { codedQuestions: 'We couldn\'t get your coded questions for this project and jurisdiction, so you won\'t be able to answer questions.' }
     }
 
-    return {
-      codedQuestions
+    // If the current question is a category question, then change the current question to parent
+    if (state.question.isCategoryQuestion) {
+      question = state.scheme.byId[question.parentId]
+      otherUpdates = {
+        currentIndex: state.scheme.order.findIndex(id => id === question.id),
+        categories: undefined,
+        selectedCategory: 0,
+        selectedCategoryId: null
+      }
     }
+
+    // Get scheme question in case there are changes
+    try {
+      updatedSchemeQuestion = await api.getSchemeQuestion(question.id, action.projectId)
+    } catch (error) {
+      updatedSchemeQuestion = { ...question }
+      errors = { ...errors, updatedSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.' }
+    }
+
+    // Update scheme with new scheme question
+    const updatedScheme = {
+      ...state.scheme,
+      byId: {
+        ...state.scheme.byId,
+        [updatedSchemeQuestion.id]: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion }
+      }
+    }
+
+    const { userAnswers, initializeErrors } = await initializeAndCheckAnswered(updatedSchemeQuestion, codedQuestions, updatedScheme.byId, userId, action, api.createEmptyCodedQuestion)
+    payload = {
+      question: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion },
+      userAnswers,
+      scheme: updatedScheme,
+      otherUpdates,
+      errors: { ...errors, ...initializeErrors }
+    }
+
+    dispatch({
+      type: types.GET_USER_CODED_QUESTIONS_SUCCESS,
+      payload
+    })
+    done()
   }
 })
 
+// Save red flag logic
 export const saveRedFlagLogic = createLogic({
-  type: types.ON_SAVE_RED_FLAG,
-  async process({ action, api }) {
-    const flag = { ...action.flagInfo, raisedBy: action.flagInfo.raisedBy.userId }
-    return await api.saveRedFlag(action.questionId, flag)
+  type: types.ON_SAVE_RED_FLAG_REQUEST,
+  async process({ action, api }, dispatch, done) {
+    try {
+      const flag = { ...action.flagInfo, raisedBy: action.flagInfo.raisedBy.userId }
+      const resp = await api.saveRedFlag(action.questionId, flag)
+      dispatch({
+        type: types.ON_SAVE_RED_FLAG_SUCCESS,
+        payload: { ...resp }
+      })
+      dispatch({
+        type: types.UPDATE_EDITED_FIELDS,
+        projectId: action.projectId
+      })
+    } catch (error) {
+      dispatch({
+        type: types.ON_SAVE_RED_FLAG_FAIL,
+        payload: 'Failed to save red flag.'
+      })
+    }
+    done()
   }
 })
 
 export default [
   getOutlineLogic,
+  getQuestionLogic,
   getUserCodedQuestionsLogic,
   answerQuestionLogic,
   saveRedFlagLogic

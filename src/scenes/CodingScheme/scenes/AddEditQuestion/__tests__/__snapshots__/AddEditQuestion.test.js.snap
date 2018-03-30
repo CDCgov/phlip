@@ -84,7 +84,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
               component={[Function]}
               defaultValue={4}
               disabled={false}
-              label="Type"
+              label="Answer Type"
               name="questionType"
               onChange={[Function]}
               options={
@@ -94,20 +94,20 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
                     "value": 1,
                   },
                   Object {
-                    "label": "Category",
-                    "value": 2,
-                  },
-                  Object {
-                    "label": "Checkboxes",
+                    "label": "Checkbox",
                     "value": 3,
                   },
                   Object {
-                    "label": "Multiple choice",
+                    "label": "Radio Button",
                     "value": 4,
                   },
                   Object {
-                    "label": "Text field",
+                    "label": "Text Field",
                     "value": 5,
+                  },
+                  Object {
+                    "label": "Tabbed",
+                    "value": 2,
                   },
                 ]
               }
@@ -135,9 +135,9 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
           >
             <Field
               component={[Function]}
-              label="Question Hint"
+              label="Coding directions"
               name="hint"
-              placeholder="Enter hint"
+              placeholder="Enter any special directions or considerations to display when coding this question"
               shrinkLabel={true}
             />
           </Row>

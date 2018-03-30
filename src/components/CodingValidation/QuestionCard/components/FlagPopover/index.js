@@ -11,7 +11,7 @@ import Table from 'components/Table'
 import TableRow from 'components/TableRow'
 import TableCell from 'components/TableCell'
 import Popover from './components/Popover'
-import { updater } from 'utils'
+import { Flag, Report } from 'mdi-material-ui'
 
 const getFlagText = (color, text, disabled) => (
   <Row displayFlex style={{ alignItems: 'center' }}>
@@ -49,7 +49,8 @@ export class FlagPopover extends Component {
       questionFlags: [...props.questionFlags],
       userRedFlag: checkForRedFlag(props.questionFlags, props.user)[0] || { notes: '', type: 3 },
       inEditMode: props.questionFlags.length === 0,
-      helperText: ''
+      helperText: '',
+      choiceHelperText: ''
     }
 
     this.userFlagColors = {
@@ -58,14 +59,14 @@ export class FlagPopover extends Component {
         color: '#2cad73',
         label: 'Flag for analysis',
         text: getFlagText('#2cad73', 'Flag for analysis', this.state.questionFlags.length > 0),
-        disabled: this.state.questionFlags.length > 0
+        disabled: this.state.questionFlags.length > 0 || this.props.disableAll
       },
       2: {
         type: 2,
         color: '#fca63a',
         label: 'Notify Coordinator',
         text: getFlagText('#fca63a', 'Notify coordinator', this.state.questionFlags.length > 0),
-        disabled: this.state.questionFlags.length > 0
+        disabled: this.state.questionFlags.length > 0 || this.props.disableAll
       }
     }
   }
@@ -83,7 +84,7 @@ export class FlagPopover extends Component {
         ...this.userFlagColors[type],
         text: getFlagText(this.userFlagColors[type].color, this.userFlagColors[type].label, nextProps.questionFlags.length >
           0),
-        disabled: nextProps.questionFlags.length > 0
+        disabled: nextProps.questionFlags.length > 0 || this.props.disableAll
       }
     }
   }
@@ -93,7 +94,8 @@ export class FlagPopover extends Component {
       redFlagOpen: !this.state.redFlagOpen,
       otherFlagOpen: false,
       helperText: '',
-      inEditMode: this.state.questionFlags.length === 0
+      inEditMode: this.state.questionFlags.length === 0,
+      userRedFlag: checkForRedFlag(this.props.questionFlags, this.props.user)[0] || { notes: '', type: 3 }
     })
   }
 
@@ -106,11 +108,17 @@ export class FlagPopover extends Component {
 
   onSaveRedPopover = e => {
     e.preventDefault()
-    this.props.onSaveFlag(this.state.userRedFlag)
-    this.setState({
-      inEditMode: false,
-      helperText: ''
-    })
+    if (this.state.userRedFlag.notes.length === 0) {
+      this.setState({
+        helperText: 'Required'
+      })
+    } else {
+      this.props.onSaveFlag(this.state.userRedFlag)
+      this.setState({
+        inEditMode: false,
+        helperText: ''
+      })
+    }
   }
 
   checkNotes = e => {
@@ -154,17 +162,26 @@ export class FlagPopover extends Component {
     this.setState({
       otherFlagOpen: false,
       updatedFlag: this.props.userFlag,
-      helperText: ''
+      helperText: '',
+      choiceHelperText: ''
     })
   }
 
   onSaveOtherPopover = e => {
     e.preventDefault()
-    this.props.onSaveFlag(this.state.updatedFlag)
-    this.setState({
-      otherFlagOpen: false,
-      helperText: ''
-    })
+    if (this.state.updatedFlag.type === 0 || this.state.updatedFlag.notes === '') {
+      this.setState({
+        helperText: this.state.updatedFlag.notes === '' ? 'Required' : '',
+        choiceHelperText: this.state.updatedFlag.type === 0 ? 'Required' : ''
+      })
+    } else {
+      this.props.onSaveFlag(this.state.updatedFlag)
+      this.setState({
+        otherFlagOpen: false,
+        helperText: '',
+        choiceHelperText: ''
+      })
+    }
   }
 
   onChangeFlagType = type => value => {
@@ -243,15 +260,17 @@ export class FlagPopover extends Component {
             </form>}
             <Row displayFlex style={{ alignSelf: 'flex-end', padding: 16 }}>
               <Button
-                onClick={this.onCloseRedPopover} raised={false} color="accent" value={this.state.inEditMode ? 'Cancel' : 'Close' } />
+                onClick={this.onCloseRedPopover}
+                raised={false}
+                color="accent"
+                value={this.state.inEditMode ? 'Cancel' : 'Close'} />
               {this.state.inEditMode &&
               <Button
                 type="submit"
                 onClick={this.onSaveRedPopover}
                 raised={false}
                 color="accent"
-                value="Save"
-                disabled={this.state.userRedFlag.notes === ''} />}
+                value="Save" />}
             </Row>
           </Container>
         </Popover>
@@ -259,7 +278,7 @@ export class FlagPopover extends Component {
           title="Flags"
           open={this.state.otherFlagOpen}
           target={{
-            icon: 'flag',
+            icon: <Flag />,
             color: this.props.userFlag.type !== 0 ? this.userFlagColors[this.props.userFlag.type].color : '#d7e0e4',
             tooltip: 'Flag this question',
             id: 'flag-question'
@@ -272,8 +291,8 @@ export class FlagPopover extends Component {
                 selected={this.state.updatedFlag.type}
                 choices={Object.values(this.userFlagColors)}
                 onChange={this.onChangeFlagType}
-                error={this.state.touched && this.state.updatedFlag.type === 0}
-                helperText="Required" />
+                error={this.state.choiceHelperText !== ''}
+                helperText={this.state.choiceHelperText} />
             </Row>
             <Row style={{ padding: 16 }}>
               <SimpleInput
@@ -282,7 +301,7 @@ export class FlagPopover extends Component {
                 shrinkLabel={true}
                 id="flag-notes"
                 label="Notes"
-                disabled={this.state.questionFlags.length > 0}
+                disabled={this.state.questionFlags.length > 0 || this.props.disableAll}
                 error={this.state.helperText !== ''}
                 onBlur={this.checkNotes}
                 helperText={this.state.helperText}
@@ -297,8 +316,7 @@ export class FlagPopover extends Component {
                 onClick={this.onSaveOtherPopover}
                 raised={false}
                 color="accent"
-                value="Save"
-                disabled={this.state.updatedFlag.notes === '' || this.state.updatedFlag.type === 0} />
+                value="Save" />
             </Row>
           </form>
         </Popover>

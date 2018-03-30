@@ -20,7 +20,7 @@ const IconButton = ({ color, onClick, iconSize, style, iconStyle, tooltipText, i
   )
 
   return (tooltipText.length > 0 && !disabled)
-    ? <Tooltip id={id} text={tooltipText} placement={placement}>{Button}</Tooltip>
+    ? <Tooltip id={id} text={tooltipText} placement={placement} style={{ height: iconSize}}>{Button}</Tooltip>
     : Button
 }
 

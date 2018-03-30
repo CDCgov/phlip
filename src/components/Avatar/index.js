@@ -1,11 +1,12 @@
 import React from 'react'
 import { default as MuiAvatar } from 'material-ui/Avatar'
 import PropTypes from 'prop-types'
+import { withTheme } from 'material-ui/styles'
 
-const Avatar = ({ big, avatarUrl, initials, style, cardAvatar, ...otherProps }) => {
+const Avatar = ({ big, avatar, initials, style, theme, cardAvatar, ...otherProps }) => {
   const styles = {
     color: 'white',
-    backgroundColor: 'teal',
+    backgroundColor: theme.palette.secondary.main,
     width: big ? '45px' : '30px',
     height: big ? '45px' : '30px',
     fontSize: '1rem',
@@ -18,22 +19,22 @@ const Avatar = ({ big, avatarUrl, initials, style, cardAvatar, ...otherProps }) 
     boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.19)',
     width: '38px',
     height: '38px',
-    backgroundColor: '#35ac74',
+    backgroundColor: theme.palette.secondary.main,
     fontSize: '1rem',
     ...style
   }
 
-  return avatarUrl ? <MuiAvatar style={cardAvatar ? cardAvatarStyles : styles} {...otherProps} src={avatarUrl}></MuiAvatar>
+  return avatar ? <MuiAvatar style={cardAvatar ? cardAvatarStyles : styles} {...otherProps} src={avatar}></MuiAvatar>
     : <MuiAvatar style={cardAvatar ? cardAvatarStyles : styles} {...otherProps}>{initials ? initials : ''}</MuiAvatar>
 }
 
 Avatar.propTypes = {
   big: PropTypes.bool,
-  avatarUrl: PropTypes.any
+  avatar: PropTypes.any
 }
 
 Avatar.defaultProps = {
   big: false
 }
 
-export default Avatar
+export default withTheme()(Avatar)

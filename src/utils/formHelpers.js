@@ -7,7 +7,7 @@ export const validateDate = value => {
 }
 
 export const validateDateRanges = values => {
-  let errors = { }
+  let errors = {}
   if (values.startDate) {
     if (moment(values.endDate) < moment(values.startDate)) {
       errors.endDate = 'End date must be later than start date'
@@ -18,3 +18,5 @@ export const validateDateRanges = values => {
 }
 
 export const trimWhitespace = str => str.trim()
+
+export const capitalizeFirstLetter = text => text.trim()[0].toUpperCase() + text.trim().slice(1)

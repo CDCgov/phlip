@@ -8,15 +8,15 @@ import { getInitials } from 'utils/normalize'
 import Avatar from 'components/Avatar'
 import ValidationAvatar from 'components/ValidationAvatar'
 
-const styles = {
+const styles = theme => ({
   checked: {
-    color: '#00a9e5'
+    color: theme.palette.secondary.main
   }
-}
+})
 
 export const RadioGroup = props => {
   const {
-    choices, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions
+    choices, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions, disableAll, userImages, theme
   } = props
 
   return (
@@ -30,18 +30,19 @@ export const RadioGroup = props => {
               control={
                 <Radio classes={{ checked: classes.checked }} />
               }
+              disabled={disableAll}
               label={choice.text}
             />
             {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
               answer.schemeAnswerId === choice.id &&
-              <ValidationAvatar key={`user-answer-${index}`} answer={answer} choice={choice.id} />
+              <ValidationAvatar key={`user-answer-${index}`} answer={answer} avatar={userImages[answer.userId].avatar} choice={choice.id} />
             ))}
             {userAnswers.answers.hasOwnProperty(choice.id)
               && mergedUserQuestions !== null
               && <Avatar
                 cardAvatar
-                avatarUrl={userAnswers.validatedBy.avatarUrl}
-                style={{ backgroundColor: 'white', color: '#35ac74', borderColor: '#35ac74' }}
+                avatar={userAnswers.validatedBy.userId ? userImages[userAnswers.validatedBy.userId].avatar : userAnswers.validatedBy.avatar} //this is not good
+                style={{ backgroundColor: 'white', color: theme.palette.secondary.main, borderColor: theme.palette.secondary.main }}
                 key={mergedUserQuestions.answers.length + 1}
                 initials={userAnswers.validatedBy === null
                   ? ''
@@ -56,6 +57,7 @@ export const RadioGroup = props => {
                     ? '15px'
                     : '0px'
                 }}
+                disabled={disableAll}
                 placeholder="Enter pincite"
                 multiline={false}
                 value={userAnswers.answers[choice.id].pincite}
@@ -70,4 +72,4 @@ export const RadioGroup = props => {
 
 RadioGroup.propTypes = {}
 
-export default withStyles(styles)(RadioGroup)
+export default withStyles(styles, { withTheme: true })(RadioGroup)

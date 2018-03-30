@@ -7,7 +7,9 @@ const INITIAL_STATE = {
   searchValue: '',
   suggestions: [],
   suggestionValue: '',
-  jurisdiction: {}
+  jurisdiction: {},
+  goBack: false,
+  formError: null
 }
 
 const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
@@ -19,7 +21,11 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
           byId: normalize.arrayToObject(action.payload),
           allIds: normalize.mapArray(action.payload)
         },
-        visibleJurisdictions: normalize.mapArray(action.payload)
+        visibleJurisdictions: normalize.mapArray(action.payload),
+        formError: null,
+        error: false,
+        errorContent: '',
+        goBack: false
       }
 
     case types.UPDATE_PROJECT_JURISDICTION_SUCCESS:
@@ -28,7 +34,9 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         jurisdictions: {
           byId: { ...state.jurisdictions.byId, [action.payload.id]: action.payload },
           allIds: state.jurisdictions.allIds
-        }
+        },
+        formError: null,
+        goBack: true
       }
 
     case types.ADD_PROJECT_JURISDICTION_SUCCESS:
@@ -41,7 +49,8 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
           },
           allIds: [action.payload.id, ...state.jurisdictions.allIds]
         },
-        visibleJurisdictions: [action.payload.id, ...state.visibleJurisdictions]
+        visibleJurisdictions: [action.payload.id, ...state.visibleJurisdictions],
+        goBack: true
       }
 
     case types.UPDATE_JURISDICTION_SEARCH_VALUE:
@@ -88,7 +97,30 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         suggestionValue: '',
         suggestions: [],
         jurisdiction: {},
-        searchValue: ''
+        searchValue: '',
+        goBack: false
+      }
+
+    case types.ADD_PROJECT_JURISDICTION_FAIL:
+    case types.UPDATE_PROJECT_JURISDICTION_FAIL:
+      return {
+        ...state,
+        formError: action.payload,
+        goBack: false
+      }
+
+    case types.GET_PROJECT_JURISDICTION_FAIL:
+      return {
+        ...state,
+        error: true,
+        errorContent: 'We couldn\'t get the jurisdictions for this project.'
+      }
+
+    case types.RESET_FORM_ERROR:
+      return {
+        ...state,
+        formError: null,
+        goBack: false
       }
 
     case types.SEARCH_JURISDICTION_LIST:

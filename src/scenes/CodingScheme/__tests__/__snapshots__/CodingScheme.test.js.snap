@@ -6,7 +6,41 @@ exports[`CodingScheme scene should render correctly 1`] = `
   flex={true}
   spacing={0}
 >
-  <withRouter(PageHeader)
+  <Alert
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Dismiss",
+        },
+      ]
+    }
+    open={true}
+    title={
+      <UNDEFINED>
+        <WithTheme
+          color="red"
+          size={30}
+          style={
+            Object {
+              "paddingRight": 10,
+            }
+          }
+        >
+          sentiment_very_dissatisfied
+        </WithTheme>
+        Uh-oh! Something went wrong.
+      </UNDEFINED>
+    }
+  >
+    <WithStyles
+      variant="body1"
+    >
+      We failed to save the reorder of the scheme. The question order has been reset. Please try again later.
+    </WithStyles>
+  </Alert>
+  <withRouter(WithTheme)
     otherButton={
       Object {
         "isLink": true,
@@ -36,14 +70,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
       }
     }
   >
-    <Scheme
-      disableHover={[Function]}
-      enableHover={[Function]}
-      handleHoverOnQuestion={[Function]}
-      handleQuestionNodeMove={[Function]}
-      handleQuestionTreeChange={[Function]}
-      questions={Array []}
-    />
+    <ApiErrorView />
   </Container>
   <Route
     component={[Function]}

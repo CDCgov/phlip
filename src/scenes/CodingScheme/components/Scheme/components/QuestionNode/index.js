@@ -158,6 +158,7 @@ export const QuestionNode = props => {
           color="#aabdc6"
           style={{ backgroundColor: '#f5f5f5' }}
           iconSize={28}
+          tooltipText={node.expanded ? 'Collapse' : 'Expand'}
           onClick={() => toggleChildrenVisibility({
             node,
             path,

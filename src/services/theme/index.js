@@ -1,23 +1,25 @@
 import { createMuiTheme } from 'material-ui/styles'
-import { green, blue, pink } from 'material-ui/colors'
+import { pink, deepPurple, teal } from 'material-ui/colors'
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      ...green,
-      500: '#4aac72',
-      600: '#4aac72',
-      light: green[300],
-      main: '#4aac72',
-      dark: blue[700]
+      ...deepPurple,
+      main: '#3d316a',
+      light: '#6a5b98',
+      dark: '#100b3f',
+      500: '#3d316a'
     },
     secondary: {
-      ...blue,
-      500: '#00a9e5',
-      'A400': '#0093bc',
-      'A200': '#00a9e5',
-      light: '#00a9e5',
-      main: '#0093bc'
+      ...teal,
+      main: '#38a48e',
+      light: '#6ed6be',
+      dark: '#007561',
+      pageHeader: '#3ebda5',
+      'A100': '#38a48e',
+      'A200': '#38a48e', // MUI uses this color to determine color of buttons when set to 'secondary' (beta-25)
+      'A400': '#007561', // MUI uses this color to determine color of buttons on hover when set to 'secondary' (beta-25)
+      tabs: '#ecf7f6'
     },
     error: {
       ...pink,
@@ -26,7 +28,6 @@ const theme = createMuiTheme({
     }
   },
   buttons: {
-    listButtons: '#768f99',
     closeButton: '#ff3d70'
   },
   scenes: {
@@ -35,13 +36,13 @@ const theme = createMuiTheme({
   overrides: {
     MuiFormLabel: {
       focused: {
-        color: '#00a9e5'
+        color: '#38a48e'
       }
     },
     MuiInput: {
       inkbar: {
         '&:after': {
-          backgroundColor: '#00a9e5'
+          backgroundColor: '#38a48e'
         }
       }
     }

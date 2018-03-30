@@ -1,20 +1,11 @@
-import * as types from './actionTypes'
-import { normalize } from 'utils'
 import {
-  getNextQuestion,
-  getPreviousQuestion,
-  determineShowButton,
-  handleUpdateUserAnswers,
-  handleUpdateUserCodedQuestion,
-  handleUpdateUserCategoryChild,
-  handleClearAnswers,
   initializeUserAnswers,
-  handleUserPinciteQuestion,
-  initializeNavigator,
-  getQuestionSelectedInNav,
-  initializeCodedUsers
+  initializeCodedUsers, handleCheckCategories, generateError
 } from 'utils/codingHelpers'
 import { sortList } from 'utils'
+import * as codingValidationTypes from 'scenes/Validation/actionTypes'
+import * as otherActionTypes from 'components/CodingValidation/actionTypes'
+const types = { ...codingValidationTypes, ...otherActionTypes }
 
 const INITIAL_STATE = {
   question: {},
@@ -28,233 +19,168 @@ const INITIAL_STATE = {
   userAnswers: {},
   showNextButton: true,
   mergedUserQuestions: [],
-  selectedCategoryId: null
+  selectedCategoryId: null,
+  isSchemeEmpty: null,
+  areJurisdictionsEmpty: null,
+  schemeError: null,
+  getQuestionErrors: null,
+  codedQuestionsError: null,
+  userImages: null
 }
 
 const validationReducer = (state = INITIAL_STATE, action) => {
-  const questionUpdater = state.question.isCategoryQuestion
-    ? handleUpdateUserCategoryChild(state, action)
-    : handleUpdateUserCodedQuestion(state, action)
-
   switch (action.type) {
-    case types.GET_VALIDATION_NEXT_QUESTION:
-      return {
-        ...state,
-        ...getNextQuestion(state, action)
-      }
-
-    case types.GET_VALIDATION_PREV_QUESTIONS:
-      return {
-        ...state,
-        ...getPreviousQuestion(state, action)
-      }
-
     case types.GET_VALIDATION_OUTLINE_SUCCESS:
-      if (action.payload.isSchemeEmpty) {
+      if (action.payload.isSchemeEmpty || action.payload.areJurisdictionsEmpty) {
         return {
           ...state,
           scheme: { order: [], byId: {}, tree: [] },
           outline: {},
           question: {},
           userAnswers: {},
-          mergedUserQuestions: {}
+          mergedUserQuestions: {},
+          isSchemeEmpty: action.payload.isSchemeEmpty,
+          areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty,
+          schemeError: null
         }
       } else {
-        const normalizedQuestions = normalize.arrayToObject(action.payload.scheme)
         sortList(action.payload.question.possibleAnswers, 'order', 'asc')
+        const errors = generateError(action.payload.errors)
         return {
           ...state,
           outline: action.payload.outline,
-          scheme: {
-            byId: normalizedQuestions,
-            order: action.payload.questionOrder,
-            tree: action.payload.tree
-          },
+          scheme: action.payload.scheme,
           question: action.payload.question,
-          userAnswers: initializeUserAnswers(
-            [
-              { schemeQuestionId: action.payload.question.id, comment: '', codedAnswers: [] },
-              ...action.payload.codedQuestions
-            ], normalizedQuestions, action.payload.userId
-          ),
-          mergedUserQuestions: action.payload.mergedUserQuestions
+          userAnswers: action.payload.userAnswers,
+          mergedUserQuestions: action.payload.mergedUserQuestions,
+          userImages: action.payload.userImages,
+          categories: undefined,
+          isSchemeEmpty: false,
+          areJurisdictionsEmpty: false,
+          schemeError: null,
+          getQuestionErrors: errors.length > 0 ? errors : null,
+          codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null
         }
       }
 
-    case types.UPDATE_USER_VALIDATION_REQUEST:
-      return {
-        ...state,
-        userAnswers: {
-          ...state.userAnswers,
-          ...handleUpdateUserAnswers(state, action, state.selectedCategoryId, true)
-        }
-      }
-
-    case types.ON_CHANGE_VALIDATION_PINCITE:
-      return {
-        ...state,
-        ...questionUpdater('answers', handleUserPinciteQuestion)
-      }
-
-    case types.ON_CHANGE_VALIDATION_COMMENT:
-      return {
-        ...state,
-        ...questionUpdater('comment', action.comment)
-      }
-
-    case types.ON_CLEAR_VALIDATION_ANSWER:
-      return {
-        ...state,
-        ...questionUpdater('answers', handleClearAnswers)
-      }
-
-    case types.ON_CHANGE_VALIDATION_CATEGORY:
-      return {
-        ...state,
-        selectedCategory: action.selection,
-        selectedCategoryId: state.categories[action.selection].id
-      }
-
-    case types.ON_VALIDATION_JURISDICTION_CHANGE:
-      return {
-        ...state,
-        jurisdictionId: action.event,
-        jurisdiction: action.jurisdictionList.find(jurisdiction => jurisdiction.id === action.event)
-      }
-
-    case types.CLEAR_FLAG:
-      let flagIndex = null
-
-      const flagComments = state.question.isCategoryQuestion
-        ? state.mergedUserQuestions[action.questionId][state.selectedCategoryId].flagsComments
-        : state.mergedUserQuestions[action.questionId].flagsComments
-
-      const { id, type, notes, raisedAt, ...flag } = flagComments.find((item, i) => {
-        if (item.id === action.flagId) {
-          flagIndex = i
-        }
-        return item.id === action.flagId
-      })
-
-      if (Object.keys(flag).length === 1) {
-        flagComments.splice(flagIndex, 1)
-      } else {
-        if (flag.comment.length === 0) {
-          flagComments.splice(flagIndex, 1)
-        } else {
-          flagComments.splice(flagIndex, 1, flag)
-        }
-      }
-
-      return {
-        ...state,
-        mergedUserQuestions: {
-          ...state.mergedUserQuestions,
-          [action.questionId]: {
-            ...state.mergedUserQuestions[action.questionId],
-            ...state.question.isCategoryQuestion
-              ? {
-                [state.selectedCategoryId]: {
-                  ...state.mergedUserQuestions[action.questionId][state.selectedCategoryId],
-                  flagComments
-                }
+    case types.CLEAR_FLAG_SUCCESS:
+      if (action.payload.type === 1) {
+        return {
+          ...state,
+          question: { ...state.question, flags: [] },
+          scheme: {
+            ...state.scheme,
+            byId: {
+              ...state.scheme.byId,
+              [state.question.id]: {
+                ...state.scheme.byId[state.question.id],
+                flags: []
               }
-              : {
-                flagComments
-              }
+            }
           }
         }
-      }
+      } else {
+        let flagIndex = null
 
-    case types.CLEAR_RED_FLAG:
-      return {
-        ...state,
-        question: { ...state.question, flags: [] },
-        scheme: {
-          ...state.scheme,
-          byId: {
-            ...state.scheme.byId,
-            [action.questionId]: {
-              ...state.scheme.byId[action.questionId],
-              flags: []
+        const flagComments = state.question.isCategoryQuestion
+          ? state.mergedUserQuestions[state.question.id][state.selectedCategoryId].flagsComments
+          : state.mergedUserQuestions[state.question.id].flagsComments
+
+        const { id, type, notes, raisedAt, ...flag } = flagComments.find((item, i) => {
+          if (item.id === action.payload.flagId) {
+            flagIndex = i
+          }
+          return item.id === action.payload.flagId
+        })
+
+        if (Object.keys(flag).length === 1) {
+          flagComments.splice(flagIndex, 1)
+        } else {
+          if (flag.comment.length === 0) {
+            flagComments.splice(flagIndex, 1)
+          } else {
+            flagComments.splice(flagIndex, 1, flag)
+          }
+        }
+
+        return {
+          ...state,
+          mergedUserQuestions: {
+            ...state.mergedUserQuestions,
+            [state.question.id]: {
+              ...state.mergedUserQuestions[state.question.id],
+              ...state.question.isCategoryQuestion
+                ? {
+                  [state.selectedCategoryId]: {
+                    ...state.mergedUserQuestions[state.question.id][state.selectedCategoryId],
+                    flagComments
+                  }
+                }
+                : {
+                  flagComments
+                }
             }
           }
         }
       }
 
+    case types.CLEAR_FLAG_FAIL:
+      return {
+        ...state,
+        saveFlagErrorContent: 'We couldn\'t clear this flag.'
+      }
+
     case types.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
-      let userAnswers = {}, question = { ...state.question }, other = {}
-
-      if (state.question.isCategoryQuestion) {
-        question = state.scheme.byId[question.parentId]
-        other = {
-          currentIndex: state.scheme.order.findIndex(id => id === question.id)
-        }
-      }
-
-      userAnswers = initializeUserAnswers(
-        [
-          {
-            schemeQuestionId: question.id,
-            comment: '',
-            codedAnswers: []
-          }, ...action.payload.codedQuestions
-        ],
-        state.scheme.byId
-      )
-
+      const errors = generateError(action.payload.errors)
       return {
         ...state,
-        userAnswers,
+        userAnswers: action.payload.userAnswers,
+        question: action.payload.question,
+        scheme: action.payload.scheme,
         mergedUserQuestions: action.payload.mergedUserQuestions,
-        question,
-        ...other,
-        selectedCategory: 0,
-        categories: undefined,
-        selectedCategoryId: null
+        getQuestionErrors: errors.length > 0 ? errors : null,
+        codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
+        userImages: action.payload.userImages,
+        ...action.payload.otherUpdates,
       }
 
-    case types.ON_APPLY_VALIDATION_TO_ALL:
-      const catQuestion = state.userAnswers[state.question.id][state.selectedCategoryId]
+    case types.GET_VALIDATION_OUTLINE_FAIL:
       return {
         ...state,
-        userAnswers: {
-          ...state.userAnswers,
-          [state.question.id]: {
-            ...state.categories.reduce((obj, category) => ({
-              ...obj,
-              [category.id]: { ...catQuestion, categoryId: category.id }
-            }), {})
-          }
-        }
+        schemeError: action.payload
       }
 
-    case types.ON_QUESTION_SELECTED_IN_VAL_NAV:
-      return getQuestionSelectedInNav(state, action)
+    case types.GET_USER_VALIDATED_QUESTIONS_REQUEST:
+      return {
+        ...state,
+        codedQuestionsError: null
+      }
 
-    case types.ON_CLOSE_VALIDATION_SCREEN:
-      return INITIAL_STATE
+    case types.GET_USER_VALIDATED_QUESTIONS_FAIL:
+      return {
+        ...state,
+        getQuestionErrors: ''
+      }
 
+    case types.CLEAR_RED_FLAG:
+    case types.CLEAR_FLAG:
+    case types.GET_VALIDATION_OUTLINE_REQUEST:
     default:
       return state
   }
 }
 
-const validationSceneReducer = (state = INITIAL_STATE, action) => {
-  if (Object.values(types).includes(action.type)) {
-    const intermediateState = validationReducer(state, action)
+export const validationHandlers = [
+  'GET_VALIDATION_OUTLINE_REQUEST',
+  'GET_VALIDATION_OUTLINE_SUCCESS',
+  'GET_VALIDATION_OUTLINE_FAIL',
+  'GET_USER_VALIDATED_QUESTIONS_REQUEST',
+  'GET_USER_VALIDATED_QUESTIONS_SUCCESS',
+  'GET_USER_VALIDATED_QUESTIONS_FAIL',
+  'CLEAR_FLAG',
+  'CLEAR_RED_FLAG',
+  'CLEAR_FLAG_SUCCESS',
+  'CLEAR_FLAG_FAIL'
+]
 
-    return {
-      ...intermediateState,
-      showNextButton: intermediateState.scheme === null ? false : determineShowButton(intermediateState),
-      scheme: intermediateState.scheme === null ? null : {
-        ...intermediateState.scheme,
-        tree: initializeNavigator(intermediateState.scheme.tree, intermediateState.scheme.byId, intermediateState.userAnswers, intermediateState.question)
-      }
-    }
-  } else {
-    return state
-  }
-}
-
-export default validationSceneReducer
+export default validationReducer

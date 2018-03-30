@@ -3,13 +3,14 @@ import PropTypes from 'prop-types'
 import Typography from 'material-ui/Typography'
 import { Row } from 'components/Layout'
 import IconButton from 'components/IconButton'
+import { withTheme } from 'material-ui/styles'
 
-const styles = {
-  fontSize: 16,
-  color: '#4eab73'
-}
+export const FooterNavigate = ({ currentIndex, getNextQuestion, getPrevQuestion, showNextButton, theme }) => {
+  const styles = {
+    fontSize: 16,
+    color: theme.palette.primary.main
+  }
 
-export const FooterNavigate = ({ currentIndex, getNextQuestion, getPrevQuestion, showNextButton }) => {
   const rowStyles = {
     height: 50,
     alignItems: 'center',
@@ -35,4 +36,4 @@ export const FooterNavigate = ({ currentIndex, getNextQuestion, getPrevQuestion,
   )
 }
 
-export default FooterNavigate
+export default withTheme()(FooterNavigate)

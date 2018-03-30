@@ -44,7 +44,7 @@ export const Tooltip = ({ text, placement, children, classes, ...otherProps }) =
     <MuiTooltip
       placement={placement}
       title={text}
-      enterDelay={8}
+      enterDelay={700}
       classes={{ ...classes }}
       {...otherProps}
       PopperProps={{

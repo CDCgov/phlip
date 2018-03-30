@@ -17,10 +17,10 @@ const styles = theme => ({
   }
 })
 
-const Tabs = ({ tabs, selectedTab, onChangeTab, children, classes }) => {
+const Tabs = ({ tabs, selectedTab, onChangeTab, children, classes, theme }) => {
   return (
     <div className={classes.root}>
-      <AppBar position="static" style={{ backgroundColor: '#e8f9f8' }} elevation={0}>
+      <AppBar position="static" style={{ backgroundColor: theme.palette.secondary.tabs }} elevation={0}>
         <MuiTabs value={selectedTab} onChange={onChangeTab} indicatorColor="accent" textColor="accent" scrollable scrollButtons="on">
           {tabs.map(tab => (
             <Tab key={tab.id} label={tab.text} />
@@ -33,6 +33,11 @@ const Tabs = ({ tabs, selectedTab, onChangeTab, children, classes }) => {
 }
 
 Tabs.propTypes = {
+  tabs: PropTypes.array,
+  selectedTab: PropTypes.number,
+  onChangeTab: PropTypes.func,
+  classes: PropTypes.object,
+  theme: PropTypes.object
 }
 
-export default withStyles(styles)(Tabs)
+export default withStyles(styles, { withTheme: true })(Tabs)

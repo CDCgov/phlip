@@ -7,13 +7,24 @@ exports[`Header should render correctly 1`] = `
   spacing={0}
   style={
     Object {
-      "backgroundColor": "#4aac72",
-      "padding": "6px 30px",
+      "backgroundColor": "#3d316a",
+      "padding": "10px 30px 10px 15px",
     }
   }
 >
-  <WithStyles
-    item={true}
+  <Row
+    component={
+      <WithStyles
+        item={true}
+      />
+    }
+    displayFlex={false}
+    flex={false}
+    style={
+      Object {
+        "height": 35,
+      }
+    }
   >
     <Link
       replace={false}
@@ -25,10 +36,11 @@ exports[`Header should render correctly 1`] = `
       to="/"
     >
       <Logo
-        fontSize="30px"
+        height={35}
+        width="auto"
       />
     </Link>
-  </WithStyles>
+  </Row>
   <WithStyles
     item={true}
     xs={true}

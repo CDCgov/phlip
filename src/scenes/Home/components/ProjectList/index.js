@@ -11,10 +11,10 @@ import SearchBar from 'components/SearchBar'
 
 export const ProjectList = props => {
   const { projectIds, user, page, rowsPerPage, projectCount, sortBy, direction, sortBookmarked, searchValue } = props
-  const { handlePageChange, handleRowsChange, handleRequestSort, handleSortBookmarked, handleSearchValueChange } = props
+  const { handlePageChange, handleRowsChange, handleRequestSort, handleSortBookmarked, handleSearchValueChange, handleExport } = props
   return (
     <Container column flex>
-      <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card />}>
+      <Column flex displayFlex style={{ overflow: 'auto' }} component={<Card />}>
         <Row style={{ padding: 20, alignSelf: 'flex-end' }}>
           <SearchBar
             searchValue={searchValue}
@@ -22,23 +22,24 @@ export const ProjectList = props => {
             placeholder="Search"
           />
         </Row>
-        <Table style={{ borderCollapse: 'separate', overflow: 'unset' }}>
-          <TableHead>
-            <ProjectTableHead
-              role={user.role}
-              sortBy={sortBy}
-              direction={direction}
-              sortBookmarked={sortBookmarked}
-              onRequestSort={handleRequestSort}
-              onSortBookmarked={handleSortBookmarked}
-            />
-          </TableHead>
-          <TableBody>
-            {projectIds.map(id => (
-              <ProjectRow key={id} id={id} />
-            ))}
-          </TableBody>
-        </Table>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <Table style={{ borderCollapse: 'separate', display: 'block', tableLayout: 'auto', overflow: 'unset' }}>
+            <TableHead>
+              <ProjectTableHead
+                role={user.role}
+                sortBy={sortBy}
+                direction={direction}
+                sortBookmarked={sortBookmarked}
+                onRequestSort={handleRequestSort}
+                onSortBookmarked={handleSortBookmarked}
+              />
+            </TableHead>
+            <TableBody>
+              {projectIds.map(id => (
+                <ProjectRow key={id} id={id} onExport={handleExport} />
+              ))}
+            </TableBody>
+          </Table>
         <div style={{ display: 'flex', flex: 1, paddingBottom: '50px' }} />
         <Table>
           <TableFooter>
@@ -53,6 +54,7 @@ export const ProjectList = props => {
             </TableRow>
           </TableFooter>
         </Table>
+        </div>
       </Column>
     </Container>
   )
