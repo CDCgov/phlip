@@ -14,7 +14,7 @@ const greyIcon = '#b1b3b3'
 export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => {
   return (
     <TableRow key={project.id}>
-      <TableCell key={`${project.id}-bookmarked`} padding="checkbox" style={{ width: 24 }}>
+      <TableCell key={`${project.id}-bookmarked`} padding="checkbox" style={{ width: 24, paddingLeft: 24 }}>
         <IconButton
           color={bookmarked ? '#fdc43b' : greyIcon}
           onClick={() => actions.toggleBookmark(project)}

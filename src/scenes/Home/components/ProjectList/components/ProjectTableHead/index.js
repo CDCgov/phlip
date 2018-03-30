@@ -30,7 +30,7 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
 
   return (
     <TableRow key="headers">
-      <TableCell key="bookmarked" padding="checkbox" style={{ width: 24 }}>
+      <TableCell key="bookmarked" padding="checkbox" style={{ width: 24, paddingLeft: 24 }}>
         <IconButton
           id="sort-bookmarked"
           color="rbg(0,0,0,0.54)"

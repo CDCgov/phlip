@@ -9,6 +9,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     padding="checkbox"
     style={
       Object {
+        "paddingLeft": 24,
         "width": 24,
       }
     }
