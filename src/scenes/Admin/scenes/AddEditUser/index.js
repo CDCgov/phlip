@@ -113,7 +113,6 @@ export class AddEditUser extends Component {
           pathname: `/admin/edit/user/${this.state.selectedUser.id}/avatar`,
           state: {
             file: files,
-
             userId: this.state.selectedUser.id
           }
         })

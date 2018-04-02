@@ -29,7 +29,7 @@ export class AvatarForm extends Component {
     this.props.history.goBack()
   }
 
-  onSubmitForm = () => {
+  handleSubmit = () => {
     const base64Image = this.state.editFile.file.base64
     let patchOperation = [{ 'op': 'replace', 'path': '/avatar', 'value': base64Image }]
 
@@ -37,6 +37,7 @@ export class AvatarForm extends Component {
     if (this.state.userId === this.props.currentUser.id) {
       this.props.actions.updateCurrentUserAvatar(this.state.editFile.file.base64)
     }
+    this.props.history.goBack()
   }
 
   handleDeleteAvatar = () => {
@@ -49,6 +50,7 @@ export class AvatarForm extends Component {
   }
 
   render() {
+
     const formActions = [
       {
         value: 'Cancel',
@@ -59,22 +61,16 @@ export class AvatarForm extends Component {
       {
         value: 'Save',
         type: 'submit',
+        onClick: this.handleSubmit,
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
     const formEditActions = [
       { value: 'Cancel', onClick: this.onCloseModal, type: 'button' },
-      { value: 'Remove', onClick: this.handleDeleteAvatar, type: 'button', },
-      // { value: 'Save', type: 'submit' }
+      { value: 'Remove', onClick: this.handleDeleteAvatar, type: 'button', }
     ]
     return (
-      <FormModal
-        form="avatarForm"
-        handleSubmit={this.onSubmitForm}
-        onClose={this.onCloseModal}
-        open={true}
-        maxWidth="xs"
-        hideOverflow height="450px" width="315px">
+      <Modal onClose={this.onCloseModal} open={true} maxWidth="xs" height="450px" width="315px">
         <ModalTitle title={this.state.isEdit ? 'View image' : 'Preview image'} />
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
@@ -87,15 +83,15 @@ export class AvatarForm extends Component {
             </Container>}
         </ModalContent>
         <ModalActions actions={this.state.isEdit ? formEditActions : formActions}></ModalActions>
-      </FormModal>
+      </Modal>
     )
   }
 }
 const mapStateToProps = (state) => ({
   currentUser: state.data.user.currentUser || {},
-  users: state.scenes.admin.main.users || [],
-  form: state.form.avatarForm || {},
-  formName: 'avatarForm'
+  // users: state.scenes.admin.main.users || [],
+  // form: state.form.avatarForm || {},
+  // formName: 'avatarForm'
 })
 
 const mapDispatchToProps = (dispatch) => ({
