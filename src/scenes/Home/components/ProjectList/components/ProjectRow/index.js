@@ -12,9 +12,14 @@ import * as actions from 'scenes/Home/actions'
 const greyIcon = '#b1b3b3'
 
 export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => {
+  const isCoder = role === 'Coder'
+
   return (
     <TableRow key={project.id}>
-      <TableCell key={`${project.id}-bookmarked`} padding="checkbox" style={{ width: 24, paddingLeft: 24 }}>
+      <TableCell
+        key={`${project.id}-bookmarked`}
+        padding="checkbox"
+        style={{ width: isCoder ? '1%' : 24, paddingLeft: 24 }}>
         <IconButton
           color={bookmarked ? '#fdc43b' : greyIcon}
           onClick={() => actions.toggleBookmark(project)}
@@ -28,61 +33,69 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => 
         <TextLink
           aria-label="Edit project details" to={{
           pathname: `/project/edit/${project.id}`,
-          state: { projectDefined: { ...project } }
+          state: { projectDefined: { ...project }, modal: true }
         }}>{project.name}</TextLink>
       </TableCell>
       <TableCell
-        key={`${project.id}-dateLastEdited`} style={{ textAlign: 'unset', paddingRight: 24 }}>
+        key={`${project.id}-dateLastEdited`}
+        style={{ textAlign: 'unset', width: isCoder ? '15%' : 'unset', paddingRight: 24 }}>
         {new Date(project.dateLastEdited).toLocaleDateString()}
       </TableCell>
-      <TableCell key={`${project.id}-lastEditedBy`} style={{ paddingRight: 24 }}>
+      <TableCell key={`${project.id}-lastEditedBy`} style={{ width: isCoder ? '15%' : 'unset', paddingRight: 24 }}>
         {project.lastEditedBy}
       </TableCell>
-      <TableCell key={`${project.id}-protocol`} style={{ textAlign: 'center', paddingRight: 24 }}>
+      <TableCell
+        key={`${project.id}-protocol`}
+        style={{ width: isCoder ? '15%' : 'unset', textAlign: 'center', paddingRight: 24 }}>
         <TextLink aria-label="Add and edit project protocol" to={`/project/${project.id}/protocol`}>Edit</TextLink>
       </TableCell>
-      {role !== 'Coder' &&
+      {!isCoder &&
       <TableCell key={`${project.id}-jurisdictions`} style={{ textAlign: 'center', paddingRight: 24 }}>
         <TextLink
           aria-label="Add and edit project jurisdictions"
-          to={`/project/${project.id}/jurisdictions`}
+          to={{ pathname: `/project/${project.id}/jurisdictions`, state: { modal: true } }}
           id={project.id}>Edit</TextLink>
       </TableCell>
       }
-      {role !== 'Coder' &&
+      {!isCoder &&
       <TableCell key={`${project.id}-codingScheme`} style={{ textAlign: 'center', paddingRight: 24 }}>
         <TextLink
           aria-label="Add and edit project coding scheme"
           to={`/project/${project.id}/coding-scheme`}>Edit</TextLink>
       </TableCell>
       }
-      <TableCell key={`${project.id}-code`} padding="checkbox" style={{ width: 56, paddingRight: 6 }}>
+      <TableCell
+        key={`${project.id}-code`}
+        padding="checkbox"
+        style={{ width: isCoder ? '15%' : 56, paddingRight: 6, textAlign: isCoder ? 'center' : 'unset' }}>
         <TextLink to={{ pathname: `/project/${project.id}/code` }}>
           <Button raised={false} value="Code" listButton aria-label="Code project" />
         </TextLink>
       </TableCell>
-      {role !== 'Coder' &&
+      {!isCoder &&
       <TableCell key={`${project.id}-validation`} padding="checkbox" style={{ width: 56, paddingLeft: 6 }}>
         <TextLink to={{ pathname: `/project/${project.id}/validate` }}>
           <Button raised={false} value="Validate" listButton aria-label="Validate project" />
         </TextLink>
       </TableCell>
       }
-      {role !== 'Coder' && <TableCell key={`${project.id}-export`} style={{ paddingRight: 24, width: 40, paddingLeft: 0, textAlign: 'center' }}>
+      {!isCoder && <TableCell
+        key={`${project.id}-export`}
+        style={{ paddingRight: 24, width: 40, paddingLeft: 0, textAlign: 'center' }}>
         {/*<TextLink
           //target="_blank"
           to={{ pathname: `/project/${project.id}/export` }}
           //to={{ pathname: `/api/exports/project/${project.id}/data`}}
         >*/}
-          <IconButton
-            color={greyIcon}
-            tooltipText="Export validated questions"
-            placement="top-end"
-            aria-label="Export validated questions"
-            onClick={() => onExport(project.id)}
-            id="export-validated">
-            file_download
-          </IconButton>{/*</TextLink>*/}
+        <IconButton
+          color={greyIcon}
+          tooltipText="Export validated questions"
+          placement="top-end"
+          aria-label="Export validated questions"
+          onClick={() => onExport(project.id)}
+          id="export-validated">
+          file_download
+        </IconButton>{/*</TextLink>*/}
       </TableCell>}
     </TableRow>
   )

@@ -1,23 +1,66 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene should render correctly 1`] = `
-<React.Fragment>
-  <Route
-    exact={false}
-    path="/"
-    render={[Function]}
+<Container
+  column={true}
+  flex={true}
+  spacing={0}
+  style={
+    Object {
+      "paddingBottom": "25px",
+    }
+  }
+>
+  <withRouter(WithTheme)
+    otherButton={
+      Object {
+        "isLink": true,
+        "path": "/project/add",
+        "props": Object {
+          "aria-label": "Create New Project",
+        },
+        "state": Object {
+          "modal": true,
+          "userDefined": null,
+        },
+        "text": "+ Create New Project",
+      }
+    }
+    pageTitle="Project List"
+    projectName=""
+    protocolButton={false}
+    showButton={true}
   />
-  <Route
-    component={[Function]}
-    path="/project/edit/:id"
+  <WithStyles />
+  <ProjectList
+    direction="desc"
+    handleExport={[Function]}
+    handlePageChange={[Function]}
+    handleRequestSort={[Function]}
+    handleRowsChange={[Function]}
+    handleSearchValueChange={[Function]}
+    handleSortBookmarked={[Function]}
+    page={0}
+    projectIds={Array []}
+    rowsPerPage="10"
+    searchValue=""
+    sortBookmarked={false}
+    sortBy="dateLastEdited"
+    user={
+      Object {
+        "email": "kmuterspaw@cdc.gov",
+        "firstName": "Kristin",
+        "id": 2,
+        "lastName": "Muterspaw",
+        "password": "test",
+        "role": "Coordinator",
+      }
+    }
   />
-  <Route
-    component={[Function]}
-    path="/project/add"
+  <ExportDialog
+    onChooseExport={[Function]}
+    onClose={[Function]}
+    open={false}
   />
-  <Route
-    component={[Function]}
-    path="/project/:id/jurisdictions"
-  />
-</React.Fragment>
+</Container>
 `;

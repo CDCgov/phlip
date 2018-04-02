@@ -18,7 +18,12 @@ export const JurisdictionRow = ({ jurisdiction, id, projectId }) => {
       {new Date(jurisdiction.endDate).toLocaleDateString()}
     </TableCell>
     <TableCell>
-      <TextLink to={{ pathname: `/project/${projectId}/jurisdictions/${jurisdiction.id}/edit`, state: { jurisdictionDefined: { ...jurisdiction }}}}>
+      <TextLink
+        to={{
+          pathname: `/project/${projectId}/jurisdictions/${jurisdiction.id}/edit`,
+          modal: true,
+          state: { jurisdictionDefined: { ...jurisdiction } }
+        }}>
         <IconButton color="accent">mode_edit</IconButton>
       </TextLink>
     </TableCell>

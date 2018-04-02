@@ -84,7 +84,13 @@ export class CodingScheme extends Component {
             props: { 'aria-label': 'Add new question to  coding scheme' }
           }}
         />
-        <Container flex style={{ backgroundColor: '#f5f5f5', paddingTop: 25, marginLeft: (this.props.schemeError || this.props.empty) ? 0 : -30 }}>
+        <Container
+          flex
+          style={{
+            backgroundColor: '#f5f5f5',
+            paddingTop: 25,
+            marginLeft: (this.props.schemeError || this.props.empty) ? 0 : -30
+          }}>
           {this.props.schemeError !== null
             ? <ApiErrorView error={this.props.schemeError} />
             : this.props.empty

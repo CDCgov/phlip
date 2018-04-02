@@ -80,7 +80,7 @@ describe('Home scene', () => {
     })
   })
 
-  describe('Unauthorized routes', () => {
+  xdescribe('Unauthorized routes', () => {
     test('should display PageNotFound if the user role is Coder and they try to go to add project', () => {
       const wrapper = setup({ user: { role: 'Coder' }, location: { pathname: '/project/add' } }, ['/project/add'])
       expect(wrapper.find('PageNotFound')).toHaveLength(1)

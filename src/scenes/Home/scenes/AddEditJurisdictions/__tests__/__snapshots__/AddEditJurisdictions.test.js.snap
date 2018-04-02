@@ -20,8 +20,14 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
     }
     buttons={
       <WithTheme
-        state={Object {}}
-        to="/project/undefined/jurisdictions/add"
+        to={
+          Object {
+            "pathname": "/project/undefined/jurisdictions/add",
+            "state": Object {
+              "modal": true,
+            },
+          }
+        }
       >
         <WithTheme
           aria-label="Add jurisidiction to project"
@@ -107,14 +113,6 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
         },
       ]
     }
-  />
-  <Route
-    component={[Function]}
-    path="/project/:id/jurisdictions/add"
-  />
-  <Route
-    component={[Function]}
-    path="/project/:id/jurisdictions/:jid/edit"
   />
 </WithStyles>
 `;
