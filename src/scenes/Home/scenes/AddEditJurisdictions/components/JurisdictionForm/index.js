@@ -67,7 +67,7 @@ export class JurisdictionForm extends Component {
 
   constructor(props, context) {
     super(props, context)
-    this.jurisdictionDefined = this.props.location.state !== undefined ? props.location.state.jurisdictionDefined : null
+    this.jurisdictionDefined = this.props.location.state.jurisdictionDefined !== undefined ? props.location.state.jurisdictionDefined : null
     this.state = {
       edit: this.jurisdictionDefined !== null,
       submitting: false

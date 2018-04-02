@@ -22,6 +22,12 @@ function userReducer(state = INITIAL_STATE, action) {
         currentUser: { ...state.currentUser, avatar: action.payload }
       }
 
+    case types.REMOVE_CURRENT_USER_AVATAR:
+      return {
+        state,
+        currentUser: { ...state.currentUser, avatar: null }
+      }
+
     case types.TOGGLE_MENU:
       return {
         ...state,

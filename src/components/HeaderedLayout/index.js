@@ -20,7 +20,7 @@ export const HeaderedLayout = ({ user, open, actions, children, padding, history
       <AppBarHeader
         user={user}
         open={open}
-        handleLogoutUser={() => { history.push('/'); actions.logoutUser() }}
+        handleLogoutUser={() => { history.push('/login'); actions.logoutUser() }}
         handleToggleMenu={actions.toggleMenu}
         handleOpenAdminPage={() => { history.push('/admin'); actions.closeMenu() }}
         handleCloseMenu={actions.closeMenu}

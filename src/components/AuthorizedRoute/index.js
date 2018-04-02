@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import PageNotFound from 'components/PageNotFound'
-import { matchPath } from 'react-router'
+import { UnauthPage } from 'components/RoutePages'
 
 export const Authorization = allowedRoles => WrappedComponent => {
   class WithAuthorization extends Component {
@@ -14,7 +13,7 @@ export const Authorization = allowedRoles => WrappedComponent => {
       if (allowedRoles.includes(this.props.user.role)) {
         return <WrappedComponent {...this.props} />
       } else {
-        return <PageNotFound />
+        return <WrappedComponent {...this.props} location={{...this.props.location, state: { unauthorized: true }}} />
       }
     }
   }
