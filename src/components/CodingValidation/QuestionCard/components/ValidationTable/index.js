@@ -42,7 +42,7 @@ export const ValidationTable = props => {
 
   return (
     allFlags.length > 0 &&
-    <Container flex column style={{ padding: 25, flexBasis: '50%', flexWrap: 'nowrap' }}>
+    <Container flex column style={{ padding: 25, flexBasis: 'auto', flexWrap: 'nowrap' }}>
       <Row style={{ paddingBottom: 10 }}>
         <Typography type="subheading" style={{ color: '#a7bdc6' }}>Flags and Comments</Typography>
       </Row>
