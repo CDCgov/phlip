@@ -5,6 +5,7 @@ import Input, { InputLabel } from 'material-ui/Input'
 import { FormControl } from 'material-ui/Form'
 import { MenuItem } from 'material-ui/Menu'
 import { withStyles } from 'material-ui/styles'
+import Typography from 'material-ui/Typography'
 
 const styles = theme => ({
   icon: {
@@ -17,14 +18,22 @@ const styles = theme => ({
 })
 
 const JurisdictionSelect = ({ id, value, onChange, options, ...otherProps }) => {
-  let menuItems = options.map(option => (
-    <MenuItem key={option.id} value={option.id}>{option.name}</MenuItem>
-  ))
+  console.log(options)
+  let menuItems = options.map(option => {
+    return (
+      <MenuItem key={option.id} value={option.id}>
+        {option.name}
+        <Typography type="caption" style={{ paddingLeft: 10 }}>
+          ({new Date(option.startDate).toLocaleDateString()}-{new Date(option.endDate).toLocaleDateString()})
+        </Typography>
+      </MenuItem>
+    )
+  })
 
   return (
     <FormControl style={{ minWidth: '120px' }}>
       <Select
-        input={<Input id={id} name='jurisdiction' />}
+        input={<Input id={id} name="jurisdiction" />}
         value={value}
         onChange={onChange}
         children={menuItems}
