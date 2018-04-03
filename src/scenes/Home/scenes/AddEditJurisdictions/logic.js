@@ -22,6 +22,14 @@ export const addJurisdictionLogic = createLogic({
         type: types.ADD_PROJECT_JURISDICTION_SUCCESS,
         payload: { ...jurisdiction }
       })
+      dispatch({
+        type: types.ADD_JURISDICTION_TO_PROJECT,
+        payload: { jurisdiction: { ...jurisdiction }, projectId: action.projectId }
+      })
+      dispatch({
+        type: types.UPDATE_EDITED_FIELDS,
+        projectId: action.projectId
+      })
     } catch (error) {
       dispatch({
         type: types.ADD_PROJECT_JURISDICTION_FAIL,
@@ -41,6 +49,14 @@ export const updateJurisdictionLogic = createLogic({
       dispatch({
         type: types.UPDATE_PROJECT_JURISDICTION_SUCCESS,
         payload: { ...updatedJurisdiction }
+      })
+      dispatch({
+        type: types.UPDATE_JURISDICTION_IN_PROJECT,
+        payload: { jurisdiction: { ...updatedJurisdiction }, projectId: action.projectId }
+      })
+      dispatch({
+        type: types.UPDATE_EDITED_FIELDS,
+        projectId: action.projectId
       })
     } catch (error) {
       dispatch({

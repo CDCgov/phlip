@@ -28,14 +28,11 @@ export class AddEditJurisdictions extends Component {
 
   constructor(props, context) {
     super(props, context)
+    console.log(this.props)
   }
 
   componentWillMount() {
     this.props.actions.getProjectJurisdictions(this.props.project.id)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    //console.log(nextProps)
   }
 
   onCloseModal = () => {

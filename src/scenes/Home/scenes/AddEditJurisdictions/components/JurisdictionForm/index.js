@@ -70,7 +70,7 @@ export class JurisdictionForm extends Component {
     this.jurisdictionDefined = this.props.location.state.jurisdictionDefined !== undefined ? props.location.state.jurisdictionDefined : null
     this.state = {
       edit: this.jurisdictionDefined !== null,
-      submitting: false
+      submitting: false,
     }
   }
 
@@ -82,13 +82,7 @@ export class JurisdictionForm extends Component {
         })
         this.props.onSubmitError(nextProps.formError)
       } else if (nextProps.goBack === true) {
-        if (this.state.edit) {
-          this.props.actions.updateJurisdictionInProject(this.props.jurisdiction, this.props.project.id)
-        } else {
-          this.props.actions.addJurisdictionToProject(this.props.jurisdiction, this.props.project.id)
-        }
-        this.props.actions.updateEditedFields(this.props.project.id)
-        this.props.history.goBack()
+        this.props.history.push(`/project/${this.props.project.id}/jurisdictions`)
       }
     }
   }
@@ -98,16 +92,16 @@ export class JurisdictionForm extends Component {
   }
 
   onSubmitForm = values => {
-    this.setState({
-      submitting: true
-    })
-
     const jurisdiction = {
       ...values,
       startDate: moment(values.startDate).toISOString(),
       endDate: moment(values.endDate).toISOString(),
       ...this.props.jurisdiction
     }
+
+    this.setState({
+      submitting: true,
+    })
 
     if (this.state.edit) {
       this.props.actions.updateJurisdiction(jurisdiction, this.props.project.id)
