@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { login, logout } from '../authToken'
-import { scheme, outline } from 'data/mockCodingScheme'
 import { isUndefined } from 'util';
 
 export const api = axios.create({
@@ -178,19 +177,18 @@ export default {
       .then(res => res.data)
   },
 
-
   updateUserImage(userId, operation) {
     return api.patch(`/users/${userId}`, operation).then(res => {
       return operation[0].value
     }).catch(error => {
       return error
     })
-
   },
 
   getUserImage(userId) {
     return api.get(`/users/${userId}/avatar`).then(res => res.data)
   },
+
   // Get all coded questions for a specific question
   getAllCodedQuestionsForQuestion(projectId, jurisdictionId, questionId) {
     return api.get(`/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`).then(res => res.data)

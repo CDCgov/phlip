@@ -28,7 +28,6 @@ export class AddEditJurisdictions extends Component {
 
   constructor(props, context) {
     super(props, context)
-    console.log(this.props)
   }
 
   componentWillMount() {
@@ -37,12 +36,12 @@ export class AddEditJurisdictions extends Component {
 
   onCloseModal = () => {
     this.props.actions.clearJurisdictions()
-    this.props.history.push('/home')
+    this.props.history.goBack()
   }
 
   getButton = () => {
     return (
-      <TextLink to={{ pathname: `/project/${this.props.project.id}/jurisdictions/add`, state: { modal: true }}}>
+      <TextLink to={{ pathname: `/project/${this.props.project.id}/jurisdictions/add`, state: {}}}>
         <Button value="+ Add Jurisdiction" color="accent" aria-label="Add jurisidiction to project" />
       </TextLink>
     )
