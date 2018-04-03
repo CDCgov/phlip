@@ -96,7 +96,7 @@ export class JurisdictionForm extends Component {
       ...values,
       startDate: moment(values.startDate).toISOString(),
       endDate: moment(values.endDate).toISOString(),
-      ...this.props.jurisdiction
+      jurisdictionId: this.props.jurisdiction.id
     }
 
     this.setState({

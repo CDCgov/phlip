@@ -97,7 +97,7 @@ export default {
 
   // Add a jurisdiction to a project, called in Home/scenes/AddEditJurisdictions/logic
   addJurisdictionToProject(projectId, jurisdiction) {
-    return api.post(`/projects/${projectId}/jurisdictions/${jurisdiction.id}`, jurisdiction).then(res => res.data)
+    return api.post(`/projects/${projectId}/jurisdictions`, jurisdiction).then(res => res.data)
   },
 
   // Update a jurisdiction on a project, called in Home/scenes/AddEditJurisdictions/logic

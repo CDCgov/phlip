@@ -24,7 +24,7 @@ const JurisdictionSelect = ({ id, value, onChange, options, ...otherProps }) => 
       <MenuItem key={option.id} value={option.id}>
         {option.name}
         <Typography type="caption" style={{ paddingLeft: 10 }}>
-          ({new Date(option.startDate).toLocaleDateString()}-{new Date(option.endDate).toLocaleDateString()})
+          ({new Date(option.startDate).toLocaleDateString()} - {new Date(option.endDate).toLocaleDateString()})
         </Typography>
       </MenuItem>
     )

@@ -85,7 +85,7 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
     case types.ON_JURISDICTION_SELECTED:
       return {
         ...state,
-        jurisdiction: action.jurisdiction,
+        jurisdiction: { ...action.jurisdiction },
         suggestionValue: action.jurisdiction.name
       }
 
