@@ -22,7 +22,8 @@ export const updateUserLogic = createLogic({
     successType: types.UPDATE_USER_SUCCESS
   },
   async process({ action, api }) {
-    return await api.updateUser(action.user)
+    const updatedUser = await api.updateUser(action.user)
+    return { ...updatedUser, avatar: action.user.avatar }
   }
 })
 
@@ -34,7 +35,8 @@ export const patchUserImageLogic = createLogic({
     successType: types.ADD_USER_IMAGE_SUCCESS
   },
   async process({ action, api }) {
-    return await api.updateUserImage(action.userId, action.patchOperation)
+    const avatar = await api.updateUserImage(action.userId, action.patchOperation)
+    return { avatar, userId: action.userId }
   }
 })
 

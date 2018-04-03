@@ -15,8 +15,8 @@ export const getUserLogic = createLogic({
       users = await api.getUsers()
     } catch (e) {
       throw { error: 'failed to get users' }
-
     }
+
     return users
   }
 })
