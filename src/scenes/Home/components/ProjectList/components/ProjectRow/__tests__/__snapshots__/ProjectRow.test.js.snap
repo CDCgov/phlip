@@ -41,6 +41,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
         Object {
           "pathname": "/project/edit/1",
           "state": Object {
+            "modal": true,
             "projectDefined": Object {
               "dateLastEdited": 2017-10-11T00:00:00.000Z,
               "id": 1,
@@ -61,6 +62,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       Object {
         "paddingRight": 24,
         "textAlign": "unset",
+        "width": "unset",
       }
     }
   >
@@ -72,6 +74,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     style={
       Object {
         "paddingRight": 24,
+        "width": "unset",
       }
     }
   >
@@ -84,6 +87,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       Object {
         "paddingRight": 24,
         "textAlign": "center",
+        "width": "unset",
       }
     }
   >
@@ -107,7 +111,14 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     <WithTheme
       aria-label="Add and edit project jurisdictions"
       id={1}
-      to="/project/1/jurisdictions"
+      to={
+        Object {
+          "pathname": "/project/1/jurisdictions",
+          "state": Object {
+            "modal": true,
+          },
+        }
+      }
     >
       Edit
     </WithTheme>
@@ -135,6 +146,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     style={
       Object {
         "paddingRight": 6,
+        "textAlign": "unset",
         "width": 56,
       }
     }

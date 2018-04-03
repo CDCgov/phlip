@@ -7,13 +7,14 @@ import TextInput from 'components/TextInput'
 
 const classes = theme => ({
   suggestionsContainerOpen: {
-    width: 500,
+    width: 520,
     position: 'absolute',
     maxHeight: 500,
     overflow: 'auto',
     '& div:last-child': {
       borderBottom: 'none'
-    }
+    },
+    zIndex: '200000 !important'
   },
   suggestion: {
     display: 'block'
@@ -22,7 +23,8 @@ const classes = theme => ({
     margin: 0,
     padding: 0,
     listStyleType: 'none',
-    overflow: 'auto'
+    overflow: 'auto',
+    maxHeight: 250
   },
   sectionContainer: {
     margin: '0 10px',

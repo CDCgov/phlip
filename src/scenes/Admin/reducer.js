@@ -3,6 +3,7 @@ import { combineReducers } from 'redux'
 import addEditUserReducer from './scenes/AddEditUser/reducer'
 import { mockUsers } from '../../data/mockUsers'
 import { sortList, updater } from '../../utils'
+import { PageHeader } from 'components/PageHeader'
 
 const INITIAL_STATE = {
   users: [],
@@ -63,6 +64,14 @@ function adminReducer(state = INITIAL_STATE, action) {
         ...getAvailableUsers(
           state.users, action.sortBy, direction, state.page, state.rowsPerPage
         )
+      }
+
+    case types.ADD_USER_IMAGE_SUCCESS:
+      const user = state.users.find(user => user.id === action.payload.userId)
+      return {
+        ...state,
+        users: updater.updateByProperty({ ...user, avatar: action.payload.avatar }, [...state.users], 'id'),
+        visibleUsers: updater.updateByProperty({ ...user, avatar: action.payload.avatar }, [...state.visibleUsers], 'id')
       }
 
     case types.UPDATE_USER_ROWS:

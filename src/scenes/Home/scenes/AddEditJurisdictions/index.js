@@ -34,14 +34,18 @@ export class AddEditJurisdictions extends Component {
     this.props.actions.getProjectJurisdictions(this.props.project.id)
   }
 
+  componentWillReceiveProps(nextProps) {
+    //console.log(nextProps)
+  }
+
   onCloseModal = () => {
     this.props.actions.clearJurisdictions()
-    this.props.history.push('/')
+    this.props.history.push('/home')
   }
 
   getButton = () => {
     return (
-      <TextLink to={`/project/${this.props.project.id}/jurisdictions/add`} state={{}}>
+      <TextLink to={{ pathname: `/project/${this.props.project.id}/jurisdictions/add`, state: { modal: true }}}>
         <Button value="+ Add Jurisdiction" color="accent" aria-label="Add jurisidiction to project" />
       </TextLink>
     )
@@ -84,8 +88,6 @@ export class AddEditJurisdictions extends Component {
               otherProps: { 'aria-label': 'Close modal' }
             }
           ]} />
-        <Route path="/project/:id/jurisdictions/add" component={JurisdictionForm} />
-        <Route path="/project/:id/jurisdictions/:jid/edit" component={JurisdictionForm} />
       </Modal>
     )
   }

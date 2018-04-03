@@ -15,7 +15,7 @@ export class Login extends Component {
 
   componentDidUpdate() {
     if (this.props.session) {
-      this.props.history.push('/')
+      this.props.history.push('/home')
     }
   }
 

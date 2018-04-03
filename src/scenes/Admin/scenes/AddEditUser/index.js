@@ -60,10 +60,12 @@ export class AddEditUser extends Component {
       updatedValues[field] = trimWhitespace(values[field])
     }
 
+    console.log(updatedValues)
+
     if (this.props.match.params.id) {
-      this.props.actions.updateUserRequest({ role: 'Coordinator', ...updatedValues })
+      this.props.actions.updateUserRequest({ role: 'Coordinator', ...updatedValues, avatar: this.props.avatar })
       if (this.props.currentUser.id === updatedValues.id) {
-        this.props.actions.updateCurrentUser({ ...this.props.currentUser, ...updatedValues })
+        this.props.actions.updateCurrentUser({ ...this.props.currentUser, ...updatedValues, avatar: this.props.avatar })
       }
     } else {
       this.props.actions.addUserRequest({ role: 'Coordinator', ...updatedValues })
@@ -92,35 +94,26 @@ export class AddEditUser extends Component {
       this.props.actions.loadAddEditAvatar(this.state.selectedUser.avatar)
       // this.props.actions.getUserPictureRequest(id)
     }
-
   }
 
   openAvatarForm = files => {
     const maxSize = 500000
 
     if (files.fileList[0].size > maxSize) {
-      // console.log('file too big')
       this.setState({ open: true })
     } else {
       compressImage(files.fileList[0], 0.2).then(({ shrunkBase64, compressedFile }) => {
-
-
         files.file = compressedFile
         files.base64 = shrunkBase64
-
-
         this.props.history.push({
           pathname: `/admin/edit/user/${this.state.selectedUser.id}/avatar`,
           state: {
             file: files,
-
             userId: this.state.selectedUser.id
           }
         })
       })
     }
-
-
   }
 
   required = value => {
@@ -141,7 +134,6 @@ export class AddEditUser extends Component {
   }
 
   render() {
-
     const alertActions = [
       {
         value: 'Close',
