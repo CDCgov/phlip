@@ -82,8 +82,12 @@ export class JurisdictionForm extends Component {
         })
         this.props.onSubmitError(nextProps.formError)
       } else if (nextProps.goBack === true) {
-        this.props.actions.updateJurisdictionInProject(jurisdiction, this.props.project.id)
-        this.props.actions.addJurisdictionToProject(jurisdiction, this.props.project.id)
+        if (this.state.edit) {
+          this.props.actions.updateJurisdictionInProject(this.props.jurisdiction, this.props.project.id)
+        } else {
+          this.props.actions.addJurisdictionToProject(this.props.jurisdiction, this.props.project.id)
+        }
+        this.props.actions.updateEditedFields(this.props.project.id)
         this.props.history.goBack()
       }
     }
@@ -110,8 +114,6 @@ export class JurisdictionForm extends Component {
     } else {
       this.props.actions.addJurisdiction(jurisdiction, this.props.project.id)
     }
-
-    this.props.actions.updateEditedFields(this.props.project.id)
   }
 
   throwErrors = (values, out) => {
