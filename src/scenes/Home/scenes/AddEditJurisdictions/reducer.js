@@ -107,6 +107,7 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         suggestionValue: '',
         suggestions: [],
         jurisdiction: {},
+        visibleJurisdictions: [],
         searchValue: '',
         goBack: false
       }
