@@ -59,6 +59,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
         <Field
           component={[Function]}
           getSuggestionValue={[Function]}
+          handleClearSuggestions={[Function]}
           handleGetSuggestions={[Function]}
           handleSuggestionSelected={[Function]}
           inputProps={
@@ -68,7 +69,6 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
               "label": "Name",
               "onChange": [Function],
               "placeholder": "Enter jurisdiction name",
-              "shrinkLabel": true,
               "value": "Jurisdiction Name",
             }
           }
@@ -127,6 +127,15 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       </Container>
     </Container>
   </ModalContent>
+  <button
+    onClick={[Function]}
+    style={
+      Object {
+        "display": "none",
+      }
+    }
+    type="submit"
+  />
   <WithStyles
     actions={
       Array [

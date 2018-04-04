@@ -14,7 +14,7 @@ const classes = theme => ({
     '& div:last-child': {
       borderBottom: 'none'
     },
-    zIndex: '200000 !important'
+    display: 'block'
   },
   suggestion: {
     display: 'block'
@@ -23,7 +23,6 @@ const classes = theme => ({
     margin: 0,
     padding: 0,
     listStyleType: 'none',
-    overflow: 'auto',
     maxHeight: 250
   },
   sectionContainer: {
@@ -32,15 +31,21 @@ const classes = theme => ({
   }
 })
 
-const renderInput = ({ autoFocus, value, ref, ...other }) => (
-  <TextInput autoFocus={autoFocus} inputRef={ref} value={value} {...other} />
-)
-
-const renderSuggestionsContainer = (options) => {
-  const { containerProps, children } = options
-
+const renderInput = ({ value, onBlur, ref, meta, ...other }) => {
   return (
-    <Paper {...containerProps} style={{ zIndex: '10000' }} square>
+  <TextInput
+    shrinkLabel
+    inputRef={ref}
+    value={value}
+    meta={meta}
+    {...other}
+    inputProps={other}
+  />)
+}
+
+const renderSuggestionsContainer = ({ containerProps, children }) => {
+  return (
+    <Paper {...containerProps} style={{ zIndex: 20000000 }} square>
       {children}
     </Paper>
   )
@@ -51,23 +56,21 @@ const shouldRenderSuggestions = value => value.trim().length >= 3
 export const Autocomplete = props => {
   const {
     suggestions,
-    suggestionValue,
     classes,
-    inputProps,
     input,
     meta,
+    inputProps,
     handleGetSuggestions,
     handleClearSuggestions,
-    handleSuggestionValueChange,
     handleSuggestionSelected,
     renderSuggestion,
-    getSuggestionValue
+    getSuggestionValue,
+    ...custom
   } = props
-
+  
   return (
     <Autosuggest
       theme={{
-        container: classes.container,
         suggestionsContainerOpen: classes.suggestionsContainerOpen,
         suggestionsList: classes.suggestionsList,
         suggestion: classes.suggestion,
@@ -79,11 +82,11 @@ export const Autocomplete = props => {
       renderSuggestionsContainer={renderSuggestionsContainer}
       renderInputComponent={renderInput}
       inputProps={{
-        value: suggestionValue,
-        onChange: handleSuggestionValueChange,
         meta,
+        input,
         ...input,
-        ...inputProps
+        ...inputProps,
+        ...custom
       }}
       shouldRenderSuggestions={shouldRenderSuggestions}
       onSuggestionSelected={handleSuggestionSelected}
@@ -105,10 +108,9 @@ Autocomplete.propTypes = {
   handleSuggestionValueChange: PropTypes.func,
   handleSuggestionSelected: PropTypes.func,
   renderSuggestion: PropTypes.func,
-  getSuggestionValue: PropTypes.func,
+  getSuggestionValue: PropTypes.func
 }
 
-Autocomplete.defaultProps = {
-}
+Autocomplete.defaultProps = {}
 
 export default withStyles(classes)(Autocomplete)
