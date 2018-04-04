@@ -53,6 +53,18 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         goBack: true
       }
 
+    case types.ADD_PRESET_JURISDICTION_SUCCESS:
+      const newIds = normalize.mapArray(action.payload)
+      return {
+        ...state,
+        jurisdictions: {
+          byId: { ...normalize.arrayToObject(action.payload), ...state.jurisdictions.byId },
+          allIds: [...newIds, ...state.jurisdictions.allIds]
+        },
+        visibleJurisdictions: [...newIds, ...state.visibleJurisdictions],
+        goBack: true
+      }
+
     case types.UPDATE_JURISDICTION_SEARCH_VALUE:
       return {
         ...state,
@@ -125,6 +137,7 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
     case types.GET_PROJECT_JURISDICTIONS_REQUEST:
     case types.UPDATE_PROJECT_JURISDICTION_REQUEST:
     case types.ADD_PROJECT_JURISDICTION_REQUEST:
+    case types.ADD_PRESET_JURISDICTION_REQUEST:
     default:
       return state
   }

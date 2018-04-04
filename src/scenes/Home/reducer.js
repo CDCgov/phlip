@@ -181,6 +181,21 @@ const mainReducer = (state, action) => {
         }
       }
 
+    case types.ADD_PRESET_JURISDICTION_TO_PROJECT:
+      let updated = state.projects.byId[action.payload.projectId]
+      return {
+        ...state,
+        projects: {
+          byId: {
+            ...state.projects.byId,
+            [updated.id]: {
+              ...updated,
+              projectJurisdictions: [...updated.projectJurisdictions, ...action.payload.jurisdictions]
+            }
+          }
+        }
+      }
+
     case types.UPDATE_JURISDICTION_IN_PROJECT:
       return {
         ...state,

@@ -36,14 +36,23 @@ export class AddEditJurisdictions extends Component {
 
   onCloseModal = () => {
     this.props.actions.clearJurisdictions()
-    this.props.history.goBack()
+    this.props.history.push('/home')
   }
 
   getButton = () => {
     return (
-      <TextLink to={{ pathname: `/project/${this.props.project.id}/jurisdictions/add`, state: {}}}>
-        <Button value="+ Add Jurisdiction" color="accent" aria-label="Add jurisidiction to project" />
-      </TextLink>
+      <Fragment>
+        <div style={{ marginRight: 10 }}>
+          <TextLink to={{ pathname: `/project/${this.props.project.id}/jurisdictions/add`, state: { preset: true } }}>
+            <Button value="Load Preset" color="accent" aria-label="Load preset" />
+          </TextLink>
+        </div>
+        <div>
+          <TextLink to={{ pathname: `/project/${this.props.project.id}/jurisdictions/add`, state: { preset: false } }}>
+            <Button value="+ Add Jurisdiction" color="accent" aria-label="Add jurisidiction to project" />
+          </TextLink>
+        </div>
+      </Fragment>
     )
   }
 
@@ -70,8 +79,10 @@ export class AddEditJurisdictions extends Component {
           <Container flex style={{ marginTop: 20 }}>
             <Column flex displayFlex style={{ overflowX: 'auto' }}>
               {this.props.error === true
-                ? <ApiErrorView error={this.props.errorContent}/>
-                : <JurisdictionList jurisdictions={this.props.visibleJurisdictions} projectId={this.props.project.id} />}
+                ? <ApiErrorView error={this.props.errorContent} />
+                : <JurisdictionList
+                  jurisdictions={this.props.visibleJurisdictions}
+                  projectId={this.props.project.id} />}
             </Column>
           </Container>
         </ModalContent>

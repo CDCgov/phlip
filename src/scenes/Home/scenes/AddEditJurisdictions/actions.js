@@ -40,6 +40,12 @@ export const updateJurisdictionInProject = (jurisdiction, projectId) => ({
   projectId
 })
 
+export const addPresetJurisdictionRequest = (jurisdiction, projectId) => ({
+  type: types.ADD_PRESET_JURISDICTION_REQUEST,
+  jurisdiction,
+  projectId
+})
+
 export const resetFormError = () => ({
   type: types.RESET_FORM_ERROR
 })

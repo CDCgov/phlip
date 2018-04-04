@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Divider from 'material-ui/Divider'
 import { MenuItem } from 'material-ui/Menu'
@@ -20,6 +20,9 @@ import withFormAlert from 'components/withFormAlert'
 import moment from 'moment'
 import api from 'services/api'
 import { normalize } from 'utils'
+import Dropdown from 'components/Dropdown'
+import Checkbox from 'material-ui/Checkbox'
+import MultiSelectDropdown from 'components/MultiSelectDropdown'
 
 const getSuggestionValue = suggestion => suggestion
 
@@ -64,13 +67,16 @@ export class JurisdictionForm extends Component {
     goBack: PropTypes.bool
   }
 
-
   constructor(props, context) {
     super(props, context)
-    this.jurisdictionDefined = this.props.location.state.jurisdictionDefined !== undefined ? props.location.state.jurisdictionDefined : null
+    this.jurisdictionDefined = this.props.location.state.jurisdictionDefined !== undefined
+      ? props.location.state.jurisdictionDefined
+      : null
+
     this.state = {
       edit: this.jurisdictionDefined !== null,
       submitting: false,
+      selectedPresets: []
     }
   }
 
@@ -83,12 +89,29 @@ export class JurisdictionForm extends Component {
         this.props.onSubmitError(nextProps.formError)
       } else if (nextProps.goBack === true) {
         this.props.history.push(`/project/${this.props.project.id}/jurisdictions`)
+        //this.props.history.goBack()
       }
     }
   }
 
   componentWillUnmount() {
     this.props.actions.clearJurisdictions()
+  }
+
+  onSubmitPreset = values => {
+    const jurisdiction = {
+      startDate: moment(values.startDate).toISOString(),
+      endDate: moment(values.endDate).toISOString(),
+      tag: this.state.selectedPresets.join()
+    }
+
+    console.log(jurisdiction)
+
+    this.setState({
+      submitting: true
+    })
+
+    this.props.actions.addPresetJurisdictionRequest(jurisdiction, this.props.project.id)
   }
 
   onSubmitForm = values => {
@@ -100,7 +123,7 @@ export class JurisdictionForm extends Component {
     }
 
     this.setState({
-      submitting: true,
+      submitting: true
     })
 
     if (this.state.edit) {
@@ -161,6 +184,57 @@ export class JurisdictionForm extends Component {
     this.props.actions.onClearSuggestions()
   }
 
+  onSelectPreset = event => {
+    this.setState({
+      selectedPresets: event.target.value
+    })
+  }
+
+  getNameInputField = () => {
+    if (this.props.location.state.preset === true) {
+      const options = [
+        { value: 'US States', label: 'US States', checked: false }
+        //{ value: 'Counties', label: 'Counties', checked: false }
+      ]
+
+      return (
+        <Field
+          name="name"
+          component={MultiSelectDropdown}
+          validate={validateRequired}
+          defaultValue={[]}
+          label="Preset Type"
+          selected={this.state.selectedPresets}
+          onChange={this.onSelectPreset}
+          placeholder="Choose lists to load"
+          options={options}
+        />
+      )
+    } else {
+      return (
+        <Field
+          name="name"
+          component={Autocomplete}
+          validate={validateRequired}
+          suggestions={this.props.suggestions}
+          handleGetSuggestions={this.onJurisdictionsFetchRequest}
+          handleClearSuggestions={this.onClearSuggestions}
+          inputProps={{
+            value: this.state.edit ? this.jurisdictionDefined.name : this.props.suggestionValue,
+            onChange: this.onSuggestionChange,
+            id: 'jurisdiction-name',
+            disabled: this.state.edit,
+            label: 'Name',
+            placeholder: 'Enter jurisdiction name'
+          }}
+          handleSuggestionSelected={this.onJurisdictionSelected}
+          renderSuggestion={renderSuggestion}
+          getSuggestionValue={getSuggestionValue}
+        />
+      )
+    }
+  }
+
   render() {
     const formActions = [
       { value: 'Cancel', onClick: this.onCloseForm, type: 'button', otherProps: { 'aria-label': 'Close form' } },
@@ -177,48 +251,36 @@ export class JurisdictionForm extends Component {
     return (
       <FormModal
         form="jurisdictionForm"
-        handleSubmit={this.onSubmitForm}
-        initialValues={this.jurisdictionDefined || { name: '', startDate: new Date(), endDate: new Date() }}
-        asyncValidate={this.state.edit ? null : this.validateJurisdiction}
-        asyncBlurFields={['name']}
+        handleSubmit={this.props.location.state.preset === true ? this.onSubmitPreset : this.onSubmitForm}
+        initialValues={this.jurisdictionDefined ||
+        { name: this.props.location.state.preset === true ? [] : '', startDate: new Date(), endDate: new Date() }}
+        asyncValidate={(this.state.edit || this.props.location.state.preset === true) ? null : this.validateJurisdiction}
+        asyncBlurFields={this.props.location.state.preset === true ? [] : ['name']}
         width="600px" height="400px"
         validate={validateDateRanges}
         open={true}
         onClose={this.props.onCloseModal}
       >
-        <ModalTitle title={this.state.edit ? 'Edit Jurisdiction' : 'Add Jurisdiction'} closeButton onCloseForm={this.onCloseForm} />
+        <ModalTitle
+          title={this.state.edit ? 'Edit Jurisdiction' : this.props.location.state.preset === true
+            ? 'Load Preset Jurisdiction List'
+            : 'Add Jurisdiction'} closeButton onCloseForm={this.onCloseForm} />
         <Divider />
         <ModalContent>
           <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
             <Row style={{ paddingBottom: 20 }}>
-              <Field
-                name="name"
-                component={Autocomplete}
-                validate={validateRequired}
-                suggestions={this.props.suggestions}
-                handleGetSuggestions={this.onJurisdictionsFetchRequest}
-                handleClearSuggestions={this.onClearSuggestions}
-                inputProps={{
-                  value: this.state.edit ? this.jurisdictionDefined.name : this.props.suggestionValue,
-                  onChange: this.onSuggestionChange,
-                  id: 'jurisdiction-name',
-                  disabled: this.state.edit,
-                  label: 'Name',
-                  placeholder: 'Enter jurisdiction name'
-                }}
-                handleSuggestionSelected={this.onJurisdictionSelected}
-                renderSuggestion={renderSuggestion}
-                getSuggestionValue={getSuggestionValue}
-              />
+              {this.getNameInputField()}
             </Row>
             <Container style={{ marginTop: 30 }}>
               <Column flex>
-                <Field component={DatePicker} name="startDate" label="Segment Start Date"
-                       dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
+                <Field
+                  component={DatePicker} name="startDate" label="Segment Start Date"
+                  dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
               </Column>
               <Column>
-                <Field component={DatePicker} name="endDate" label="Segment End Date"
-                       dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
+                <Field
+                  component={DatePicker} name="endDate" label="Segment End Date"
+                  dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
               </Column>
             </Container>
           </Container>
@@ -237,7 +299,8 @@ const mapStateToProps = (state, ownProps) => ({
   suggestions: state.scenes.home.addEditJurisdictions.suggestions || [],
   suggestionValue: state.scenes.home.addEditJurisdictions.suggestionValue || '',
   jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || {},
-  jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') || [],
+  jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') ||
+  [],
   formError: state.scenes.home.addEditJurisdictions.formError || null,
   goBack: state.scenes.home.addEditJurisdictions.goBack || false
 })

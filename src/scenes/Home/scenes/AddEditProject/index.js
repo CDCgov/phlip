@@ -156,7 +156,7 @@ export class AddEditProject extends Component {
               placeholder="Enter Project Name"
               fullWidth
               disabled={!this.state.edit}
-            />
+            />  
             <DetailRow
               name="type"
               component={Dropdown}

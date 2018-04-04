@@ -105,6 +105,11 @@ export default {
     return api.put(`/projects/${projectId}/jurisdictions/${jurisdiction.id}`, jurisdiction).then(res => res.data)
   },
 
+  // Add a preset jurisdiction list (like US States), called in Home/scenes/AddEditJurisdiction/logic
+  addPresetJurisdictionList(projectId, jurisdiction) {
+    return api.post(`/projects/${projectId}/jurisdictions/preset`, jurisdiction).then(res => res.data)
+  },
+
   // Reorder a project's coding scheme, called in CodingScheme/logic
   reorderScheme(outline, projectId) {
     return api.put(`/projects/${projectId}/scheme`, outline).then(res => res.data)
