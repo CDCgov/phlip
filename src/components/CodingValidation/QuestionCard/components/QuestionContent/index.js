@@ -116,7 +116,7 @@ export const QuestionContent = props => {
       </Column>
 
       {question.hint &&
-        <Row displayFlex style={{ padding: '0px 35px 50px 35px' }}>
+        <Row displayFlex style={{ padding: '0px 35px 0px 35px' }}>
           <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
           <Typography type="body1" style={{ color: '#98b3be' }}><strong>Coding Directions: </strong>{question.hint}</Typography>
         </Row>

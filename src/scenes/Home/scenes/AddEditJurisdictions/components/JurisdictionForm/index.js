@@ -153,6 +153,14 @@ export class JurisdictionForm extends Component {
     this.props.actions.onJurisdictionSelected(suggestionValue)
   }
 
+  onSuggestionChange = event => {
+    this.props.actions.onSuggestionValueChanged(event.target.value)
+  }
+
+  onClearSuggestions = () => {
+    this.props.actions.onClearSuggestions()
+  }
+
   render() {
     const formActions = [
       { value: 'Cancel', onClick: this.onCloseForm, type: 'button', otherProps: { 'aria-label': 'Close form' } },
@@ -189,15 +197,14 @@ export class JurisdictionForm extends Component {
                 validate={validateRequired}
                 suggestions={this.props.suggestions}
                 handleGetSuggestions={this.onJurisdictionsFetchRequest}
-                handleClearSuggestions={this.props.actions.onClearSuggestions}
+                handleClearSuggestions={this.onClearSuggestions}
                 inputProps={{
                   value: this.state.edit ? this.jurisdictionDefined.name : this.props.suggestionValue,
-                  onChange: event => this.props.actions.onSuggestionValueChanged(event.target.value),
+                  onChange: this.onSuggestionChange,
                   id: 'jurisdiction-name',
                   disabled: this.state.edit,
                   label: 'Name',
-                  placeholder: 'Enter jurisdiction name',
-                  shrinkLabel: true
+                  placeholder: 'Enter jurisdiction name'
                 }}
                 handleSuggestionSelected={this.onJurisdictionSelected}
                 renderSuggestion={renderSuggestion}
@@ -216,6 +223,7 @@ export class JurisdictionForm extends Component {
             </Container>
           </Container>
         </ModalContent>
+        <button style={{ display: 'none' }} type="submit" onClick={event => event.preventDefault()}></button>
         <ModalActions actions={formActions}></ModalActions>
       </FormModal>
     )

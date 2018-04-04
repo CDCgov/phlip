@@ -109,7 +109,7 @@ export class AddEditQuestion extends Component {
   }
 
   handleTypeChange = (event, value) => {
-    value === questionTypes.BINARY ? this.props.formActions.initialize('questionForm', this.binaryForm, true)
+    value === questionTypes.BINARY ? this.props.formActions.initialize('questionForm', this.binaryForm, { options: { keepDirty: false, keepValues: false } })
       : value === questionTypes.TEXT_FIELD ? this.props.formActions.initialize('questionForm', this.textFieldForm, true)
         : this.props.formActions.initialize('questionForm', this.defaultForm, true)
   }
