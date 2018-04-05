@@ -175,7 +175,7 @@ const mainReducer = (state, action) => {
             ...state.projects.byId,
             [updatedProject.id]: {
               ...updatedProject,
-              projectJurisdictions: [...updatedProject.projectJurisdictions, action.payload.jurisdiction]
+              projectJurisdictions: sortList([...updatedProject.projectJurisdictions, action.payload.jurisdiction], 'name', 'asc')
             }
           }
         }
@@ -190,7 +190,7 @@ const mainReducer = (state, action) => {
             ...state.projects.byId,
             [updated.id]: {
               ...updated,
-              projectJurisdictions: [...updated.projectJurisdictions, ...action.payload.jurisdictions]
+              projectJurisdictions: sortList([...updated.projectJurisdictions, ...action.payload.jurisdictions], 'name', 'asc')
             }
           }
         }
