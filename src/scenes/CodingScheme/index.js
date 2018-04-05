@@ -127,10 +127,9 @@ export class CodingScheme extends Component {
             path: `/project/${this.props.projectId}/coding-scheme/add`,
             state: { questionDefined: null, canModify: true },
             props: {
-              'aria-label': 'Add new question to coding scheme',
-              disabled: !this.props.hasLock || !this.props.lockedByCurrentUser
+              'aria-label': 'Add new question to coding scheme'
             },
-            show: this.props.questions.length > 0
+            show: this.props.questions.length > 0 && (this.props.hasLock && this.props.lockedByCurrentUser)
           }}
         />
         <Container
