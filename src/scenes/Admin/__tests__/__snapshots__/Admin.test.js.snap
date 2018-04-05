@@ -14,6 +14,7 @@ exports[`Admin Scene it should render correctly 1`] = `
         "props": Object {
           "aria-label": "Add new user",
         },
+        "show": true,
         "state": Object {},
         "text": "+ Add New User",
       }
@@ -21,7 +22,6 @@ exports[`Admin Scene it should render correctly 1`] = `
     pageTitle="User Management"
     projectName=""
     protocolButton={false}
-    showButton={true}
   />
   <WithStyles />
   <UserList

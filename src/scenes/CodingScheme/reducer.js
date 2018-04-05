@@ -166,6 +166,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
     case types.LOCK_SCHEME_FAIL:
     case types.UNLOCK_SCHEME_FAIL:
       return {
+        ...state,
         alertError: action.payload
       }
 

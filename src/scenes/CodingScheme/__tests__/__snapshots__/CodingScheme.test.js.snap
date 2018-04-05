@@ -12,6 +12,33 @@ exports[`CodingScheme scene should render correctly 1`] = `
         Object {
           "onClick": [Function],
           "type": "button",
+          "value": "Cancel",
+        },
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Continue",
+        },
+      ]
+    }
+    open={false}
+  >
+    <WithStyles
+      variant="body1"
+    >
+      You have locked the coding scheme. If you exit now, no one else will be allowed to edit until you release the lock. Are you sure you want to continue?
+    </WithStyles>
+  </Alert>
+  <ApiErrorAlert
+    onCloseAlert={[Function]}
+    open={true}
+  />
+  <Alert
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
           "value": "Dismiss",
         },
       ]
@@ -20,7 +47,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
     title={
       <UNDEFINED>
         <WithTheme
-          color="red"
+          color="primary"
           size={30}
           style={
             Object {
@@ -28,27 +55,41 @@ exports[`CodingScheme scene should render correctly 1`] = `
             }
           }
         >
-          sentiment_very_dissatisfied
+          lock
         </WithTheme>
-        Uh-oh! Something went wrong.
+        The Coding Scheme is locked.
       </UNDEFINED>
     }
   >
     <WithStyles
       variant="body1"
     >
-      We failed to save the reorder of the scheme. The question order has been reset. Please try again later.
+      undefined undefined 
+       has locked the coding scheme. You will not be able to make changes until they have released the lock.
     </WithStyles>
   </Alert>
   <withRouter(WithTheme)
+    checkoutButton={
+      Object {
+        "isLink": false,
+        "props": Object {
+          "onClick": [Function],
+        },
+        "show": false,
+        "text": "Lock coding scheme for editing",
+      }
+    }
+    onBackButtonClick={[Function]}
     otherButton={
       Object {
         "isLink": true,
         "path": "/project/undefined/coding-scheme/add",
         "props": Object {
-          "aria-label": "Add new question to  coding scheme",
+          "aria-label": "Add new question to coding scheme",
         },
+        "show": false,
         "state": Object {
+          "canModify": true,
           "questionDefined": null,
         },
         "text": "+ Add New Question",
@@ -56,7 +97,6 @@ exports[`CodingScheme scene should render correctly 1`] = `
     }
     pageTitle="Coding Scheme"
     protocolButton={true}
-    showButton={false}
   />
   <Container
     column={false}

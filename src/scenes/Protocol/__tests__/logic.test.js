@@ -26,6 +26,7 @@ describe('Protocol logic', () => {
 
   test('should get the protocol for the project id in the action and dispatch GET_PROTOCOL_SUCCESS when done', done => {
     mock.onGet('/projects/1/protocol').reply(200, { text: 'protocol text!' })
+    mock.onGet('/locks/protocol/projects/1').reply(200, {})
 
     const store = setupStore()
 
@@ -36,7 +37,11 @@ describe('Protocol logic', () => {
         { type: types.GET_PROTOCOL_REQUEST, projectId: 1 },
         {
           type: types.GET_PROTOCOL_SUCCESS,
-          payload: 'protocol text!'
+          payload: {
+            protocol: 'protocol text!',
+            lockInfo: {},
+            lockedByCurrentUser: false
+          }
         }
       ])
       done()

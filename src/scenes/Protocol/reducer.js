@@ -49,6 +49,7 @@ const protocolReducer = (state = INITIAL_STATE, action) => {
     case types.UNLOCK_PROTOCOL_FAIL:
     case types.SAVE_PROTOCOL_FAIL:
       return {
+        ...state,
         alertError: action.payload,
         submitting: false
       }

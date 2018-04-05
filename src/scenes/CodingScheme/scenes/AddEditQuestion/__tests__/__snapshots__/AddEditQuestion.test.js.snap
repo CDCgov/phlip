@@ -64,6 +64,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
           >
             <Field
               component={[Function]}
+              disabled={true}
               label="Question"
               multiline={true}
               name="text"
@@ -83,7 +84,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
             <Field
               component={[Function]}
               defaultValue={4}
-              disabled={false}
+              disabled={true}
               label="Answer Type"
               name="questionType"
               onChange={[Function]}
@@ -135,6 +136,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
           >
             <Field
               component={[Function]}
+              disabled={true}
               label="Coding directions"
               name="hint"
               placeholder="Enter any special directions or considerations to display when coding this question"
@@ -169,6 +171,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
           >
             <Field
               component={[Function]}
+              disabled={true}
               label="Include comment box"
               name="includeComment"
             />

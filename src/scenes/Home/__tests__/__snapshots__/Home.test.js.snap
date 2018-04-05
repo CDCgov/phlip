@@ -19,6 +19,7 @@ exports[`Home scene should render correctly 1`] = `
         "props": Object {
           "aria-label": "Create New Project",
         },
+        "show": true,
         "state": Object {
           "modal": true,
           "userDefined": null,
