@@ -11,7 +11,7 @@ import { withTheme } from 'material-ui/styles'
 
 export const PageHeader = props => {
   const {
-    projectName, pageTitle, projectId, showButton, protocolButton,
+    projectName, pageTitle, projectId, protocolButton,
     otherButton, children, history, checkoutButton, onBackButtonClick, theme
   } = props
 
@@ -50,7 +50,7 @@ export const PageHeader = props => {
         <div style={{ marginRight: 15 }}>
           <Button value={checkoutButton.text} color="accent" {...checkoutButton.props} />
         </div>}
-        {showButton && (otherButton.isLink
+        {otherButton.show && (otherButton.isLink
           ? <TextLink to={{ pathname: `${otherButton.path}`, state: { ...otherButton.state } }}>
             <Button value={otherButton.text} color="accent" {...otherButton.props} />
           </TextLink>

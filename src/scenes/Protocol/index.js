@@ -121,7 +121,6 @@ export class Protocol extends Component {
         </Alert>
         <PageHeader
           projectName={this.props.projectName}
-          showButton={this.props.getProtocolError !== true}
           projectId={this.props.projectId}
           pageTitle="Protocol"
           protocolButton={false}
@@ -131,7 +130,8 @@ export class Protocol extends Component {
             text: this.state.editMode ? 'Save' : 'Edit',
             onClick: this.state.editMode ? this.onSaveProtocol : this.onEnableEdit,
             style: { color: 'black', backgroundColor: 'white' },
-            otherProps: { 'aria-label': this.state.editMode ? 'Edit protocol' : 'Save protocol' }
+            otherProps: { 'aria-label': this.state.editMode ? 'Edit protocol' : 'Save protocol' },
+            show: this.props.getProtocolError !== true
           }}
         />
         <Alert

@@ -96,7 +96,6 @@ export class CodingScheme extends Component {
         </Alert>
         <PageHeader
           projectName={this.props.projectName}
-          showButton={this.props.questions.length > 0}
           projectId={this.props.projectId}
           pageTitle="Coding Scheme"
           protocolButton
@@ -115,7 +114,8 @@ export class CodingScheme extends Component {
             text: '+ Add New Question',
             path: `/project/${this.props.projectId}/coding-scheme/add`,
             state: { questionDefined: null },
-            props: { 'aria-label': 'Add new question to  coding scheme' }
+            props: { 'aria-label': 'Add new question to  coding scheme' },
+            show: this.props.questions.length > 0
           }}
         />
         <Container
