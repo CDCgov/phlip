@@ -126,6 +126,19 @@ export default {
     return api.get(`/projects/${projectId}/scheme`).then(res => res.data)
   },
 
+  lockCodingScheme(projectId, userId) {
+    return api.post(`/locks/scheme/projects/${projectId}/users/${userId}`).then(res => res.data)
+  },
+
+  getCodingSchemeLockInfo(projectId) {
+    //return api.get(`/locks/scheme/projects/${projectId}`).then(res => res.data)
+    return { userId: 5, firstName: 'Kristin', lastName: 'Muterspaw' }
+  },
+
+  unlockCodingScheme(projectId, userId) {
+    return api.get(`/locks/scheme/projects/${projectId}/users/${userId}`).then(res => res.data)
+  },
+
   // Get a scheme question, called in Coding/logic, Validation/logic
   getSchemeQuestion(questionId, projectId) {
     return api.get(`/projects/${projectId}/scheme/${questionId}`).then(res => res.data)

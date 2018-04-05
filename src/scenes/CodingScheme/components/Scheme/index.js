@@ -24,7 +24,11 @@ const canDrop = (node, nextParent, prevParent, outline, questions) => {
   }
 }
 
-export const Scheme = ({ questions, flatQuestions, handleQuestionTreeChange, handleQuestionNodeMove, handleHoverOnQuestion, enableHover, disableHover, projectId, outline }) => {
+export const Scheme = props => {
+  const {
+    questions, flatQuestions, handleQuestionTreeChange, handleQuestionNodeMove,
+    handleHoverOnQuestion, enableHover, disableHover, projectId, outline, lockedByCurrentUser } = props
+
   return (
     <SortableTree
       theme={{
@@ -50,6 +54,7 @@ export const Scheme = ({ questions, flatQuestions, handleQuestionTreeChange, han
           projectId: projectId
         }
       }}
+      canDrag={!!lockedByCurrentUser}
       canDrop={({ node, nextParent, prevParent }) => canDrop(node, nextParent, prevParent, outline, flatQuestions)}
       isVirtualized={true}
     />

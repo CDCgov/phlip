@@ -31,7 +31,7 @@ export class CodingScheme extends Component {
   }
 
   onCloseAlert = () => {
-    this.props.actions.resetReorderError()
+    this.props.actions.resetAlertError()
   }
 
   handleQuestionTreeChange = questions => {
@@ -42,18 +42,18 @@ export class CodingScheme extends Component {
     this.props.actions.reorderSchemeRequest(this.props.projectId)
   }
 
-  handleCheckOutCodingScheme = () => {
-    this.props.actions.checkOutCodingSchemeRequest()
+  handleLockCodingScheme = () => {
+    this.props.actions.lockCodingSchemeRequest(this.props.projectId)
   }
 
-  handleCheckInCodingScheme = () => {
-    this.props.actions.checkInCodingScheme()
+  handleUnlockCodingScheme = () => {
+    this.props.actions.unlockCodingSchemeRequest(this.props.projectIc)
   }
 
   renderGetStarted = () => {
     return (
       <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
-        {this.props.checkedOutByCurrentUser &&
+        {this.props.lockedByCurrentUser &&
         <Fragment>
           <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
             The coding scheme is empty. To get started, add a question.
@@ -66,16 +66,16 @@ export class CodingScheme extends Component {
             aria-label="Add new question to coding scheme" /></TextLink>
         </Fragment>
         }
-        {!this.props.checkedOutByCurrentUser &&
+        {!this.props.lockedByCurrentUser &&
         <Fragment>
           <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
-            The coding scheme is empty. To get started, check out the coding scheme.
+            The coding scheme is empty. To get started, lock the coding scheme for editing.
           </Typography>
           <Button
-            value="Check out coding scheme"
+            value="Lock coding scheme for editing"
             color="accent"
-            aria-label="Check out coding scheme"
-            onClick={this.handleCheckOutCodingScheme} />
+            aria-label="Lock coding scheme"
+            onClick={this.handleLockCodingScheme} />
         </Fragment>
         }
       </Container>
@@ -87,11 +87,11 @@ export class CodingScheme extends Component {
       <Container column flex>
         <Alert
           actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseAlert }]}
-          open={this.props.reorderError !== null}
+          open={this.props.alertError !== null}
           title={<Fragment><Icon size={30} color="red" style={{ paddingRight: 10 }}>sentiment_very_dissatisfied</Icon>
             Uh-oh! Something went wrong.</Fragment>}>
           <Typography variant="body1">
-            We failed to save the reorder of the scheme. The question order has been reset. Please try again later.
+            {this.props.alertError}
           </Typography>
         </Alert>
         <PageHeader
@@ -101,13 +101,13 @@ export class CodingScheme extends Component {
           protocolButton
           checkoutButton={{
             isLink: false,
-            text: this.props.checkedOutByCurrentUser ? 'Check in Coding Scheme' : 'Check out coding scheme',
+            text: this.props.lockedByCurrentUser ? 'Release Coding Scheme Lock' : 'Lock coding scheme for editing',
             props: {
-              onClick: this.props.checkedOutByCurrentUser
-                ? this.handleCheckInCodingScheme
-                : this.handleCheckOutCodingScheme
+              onClick: this.props.lockedByCurrentUser
+                ? this.handleUnlockCodingScheme
+                : this.handleLockCodingScheme
             },
-            show: this.props.checkedOutByCurrentUser || Object.keys(this.props.checkedOutInfo).length > 0
+            show: this.props.lockedByCurrentUser || Object.keys(this.props.lockInfo).length > 0
           }}
           otherButton={{
             isLink: true,
@@ -139,6 +139,7 @@ export class CodingScheme extends Component {
                 projectId={this.props.projectId}
                 outline={this.props.outline}
                 flatQuestions={this.props.flatQuestions}
+                lockedByCurrentUser={this.props.lockedByCurrentUser}
               />}
         </Container>
         <Route
@@ -174,8 +175,9 @@ const mapStateToProps = (state, ownProps) => ({
   flatQuestions: state.scenes.codingScheme.flatQuestions || [],
   schemeError: state.scenes.codingScheme.schemeError || null,
   reorderError: state.scenes.codingScheme.reorderError || null,
-  checkedOutByCurrentUser: state.scenes.codingScheme.checkedOutByCurrentUser || false,
-  checkedOutInfo: state.scenes.codingScheme.checkedOutInfo || {}
+  lockedByCurrentUser: state.scenes.codingScheme.lockedByCurrentUser || false,
+  lockInfo: state.scenes.codingScheme.lockInfo || {},
+  alertError: state.scenes.codingScheme.alertError || null
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
