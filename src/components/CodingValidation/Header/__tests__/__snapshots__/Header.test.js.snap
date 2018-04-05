@@ -44,7 +44,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       />
     }
     displayFlex={true}
-    flex={true}
+    flex={false}
   >
     <WithStyles
       style={
@@ -81,6 +81,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
         style={
           Object {
             "flex": "1",
+            "paddingRight": 30,
           }
         }
       >
@@ -93,14 +94,13 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
           />
         }
         displayFlex={false}
-        flex={true}
+        flex={false}
       >
         <WithStyles
-          align="right"
           color="default"
           type="caption"
         >
-          Segment start 
+          Segment Start Date 
           <span
             style={
               Object {
@@ -112,11 +112,10 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
           </span>
         </WithStyles>
         <WithStyles
-          align="right"
           color="default"
           type="caption"
         >
-          Segment end 
+          Segment End Date 
           <span
             style={
               Object {

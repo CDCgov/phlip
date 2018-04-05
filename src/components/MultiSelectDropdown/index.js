@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Select from 'material-ui/Select'
-import { InputLabel } from 'material-ui/Input'
+import Input, { InputLabel } from 'material-ui/Input'
 import { FormControl, FormHelperText } from 'material-ui/Form'
 import { MenuItem } from 'material-ui/Menu'
 import { withStyles } from 'material-ui/styles'
@@ -11,11 +11,9 @@ const styles = theme => ({
   disabled: {
     color: 'black'
   },
-
   disabledIcon: {
     display: 'none'
   },
-
   icon: {
     position: 'absolute',
     right: 0,
@@ -25,25 +23,31 @@ const styles = theme => ({
   }
 })
 
-const MultiSelectDropdown = ({ input, selected, label, onChange, id, defaultValue, classes, shrinkLabel, disabled, meta: { touched, error, active, warning }, options, ...otherProps }) => {
-  let menuItems = options.map(option => (
+const MultiSelectDropdown = props => {
+  const {
+    input, selected, label, id,
+    classes, disabled, options, defaultValue,
+    meta: { touched, error, active, warning }, ...otherProps } = props
+
+  const menuItems = options.map(option => (
     <MenuItem key={option.value} value={option.value}>
       <Checkbox checked={selected.includes(option.value)} />{option.label}
     </MenuItem>
   ))
 
   return (
-    <FormControl style={{ minWidth: '120px' }} error={Boolean(touched && error && !active || warning)}>
-      <InputLabel htmlFor={id} shrink={true}>{label}</InputLabel>
+    <FormControl style={{ width: '100%' }} error={Boolean(touched && error && !active || warning)}>
+      <InputLabel htmlFor={id} shrink={input.value.length > 0}>{label}</InputLabel>
       <Select
         {...input}
         multiple
-        value={selected}
+        value={input.value || []}
         classes={{ disabled: classes.disabled, icon: disabled ? classes.disabledIcon : classes.icon }}
         disabled={disabled}
         children={menuItems}
+        input={<Input id={id} />}
+        onBlur={() => input.onBlur()}
         renderValue={selection => selection.join(', ')}
-        fullWidth
         {...otherProps}
       />
       {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
@@ -51,7 +55,9 @@ const MultiSelectDropdown = ({ input, selected, label, onChange, id, defaultValu
   )
 }
 
-MultiSelectDropdown.propTypes = {}
+MultiSelectDropdown.propTypes = {
+
+}
 
 MultiSelectDropdown.defaultProps = {}
 

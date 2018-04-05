@@ -12,7 +12,7 @@ import FormModal from 'components/FormModal'
 import { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import Container, { Row, Column } from 'components/Layout'
 import * as actions from '../../actions'
-import { validateRequired, validateDate, validateDateRanges } from 'utils/formHelpers'
+import { validateRequired, validateRequiredArray, validateDate, validateDateRanges } from 'utils/formHelpers'
 import DatePicker from 'components/DatePicker'
 import Autocomplete from 'components/Autocomplete'
 import { default as formActions } from 'redux-form/lib/actions'
@@ -20,8 +20,6 @@ import withFormAlert from 'components/withFormAlert'
 import moment from 'moment'
 import api from 'services/api'
 import { normalize } from 'utils'
-import Dropdown from 'components/Dropdown'
-import Checkbox from 'material-ui/Checkbox'
 import MultiSelectDropdown from 'components/MultiSelectDropdown'
 
 const getSuggestionValue = suggestion => suggestion
@@ -95,7 +93,7 @@ export class JurisdictionForm extends Component {
   }
 
   componentWillUnmount() {
-    this.props.actions.clearJurisdictions()
+    this.props.actions.onClearSuggestions()
   }
 
   onSubmitPreset = values => {
@@ -104,8 +102,6 @@ export class JurisdictionForm extends Component {
       endDate: moment(values.endDate).toISOString(),
       tag: this.state.selectedPresets.join()
     }
-
-    console.log(jurisdiction)
 
     this.setState({
       submitting: true
@@ -167,7 +163,7 @@ export class JurisdictionForm extends Component {
   }
 
   onCloseForm = () => {
-    this.props.actions.clearJurisdictions()
+    this.props.actions.onClearSuggestions()
     this.props.history.goBack()
   }
 
@@ -201,7 +197,7 @@ export class JurisdictionForm extends Component {
         <Field
           name="name"
           component={MultiSelectDropdown}
-          validate={validateRequired}
+          validate={validateRequiredArray}
           defaultValue={[]}
           label="Preset Type"
           selected={this.state.selectedPresets}

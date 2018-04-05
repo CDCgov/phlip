@@ -19,22 +19,50 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       }
     }
     buttons={
-      <WithTheme
-        to={
-          Object {
-            "pathname": "/project/undefined/jurisdictions/add",
-            "state": Object {
-              "modal": true,
-            },
+      <UNDEFINED>
+        <div
+          style={
+            Object {
+              "marginRight": 10,
+            }
           }
-        }
-      >
-        <WithTheme
-          aria-label="Add jurisidiction to project"
-          color="accent"
-          value="+ Add Jurisdiction"
-        />
-      </WithTheme>
+        >
+          <WithTheme
+            to={
+              Object {
+                "pathname": "/project/undefined/jurisdictions/add",
+                "state": Object {
+                  "preset": true,
+                },
+              }
+            }
+          >
+            <WithTheme
+              aria-label="Load preset"
+              color="accent"
+              value="Load Preset"
+            />
+          </WithTheme>
+        </div>
+        <div>
+          <WithTheme
+            to={
+              Object {
+                "pathname": "/project/undefined/jurisdictions/add",
+                "state": Object {
+                  "preset": false,
+                },
+              }
+            }
+          >
+            <WithTheme
+              aria-label="Add jurisidiction to project"
+              color="accent"
+              value="+ Add Jurisdiction"
+            />
+          </WithTheme>
+        </div>
+      </UNDEFINED>
     }
     closeButton={false}
     edit={false}

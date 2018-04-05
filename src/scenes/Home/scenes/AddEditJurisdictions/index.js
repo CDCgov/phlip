@@ -9,7 +9,6 @@ import Button from 'components/Button'
 import Container, { Column, Row } from 'components/Layout'
 import JurisdictionList from './components/JurisdictionList'
 import * as actions from './actions'
-import JurisdictionForm from './components/JurisdictionForm'
 import Divider from 'material-ui/Divider'
 import Typography from 'material-ui/Typography'
 import TextLink from 'components/TextLink'
@@ -35,8 +34,11 @@ export class AddEditJurisdictions extends Component {
   }
 
   onCloseModal = () => {
-    this.props.actions.clearJurisdictions()
     this.props.history.push('/home')
+  }
+
+  componentWillUnmount() {
+    this.props.actions.clearJurisdictions()
   }
 
   getButton = () => {
