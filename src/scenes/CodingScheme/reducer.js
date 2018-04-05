@@ -7,7 +7,7 @@ import {
   map,
   addNodeUnderParent
 } from 'react-sortable-tree'
-import { sortList, updater } from 'utils'
+import { sortList } from 'utils'
 
 const INITIAL_STATE = {
   questions: [],
@@ -18,7 +18,9 @@ const INITIAL_STATE = {
   formError: null,
   reorderError: null,
   previousQuestions: [],
-  previousOutline: {}
+  previousOutline: {},
+  checkedOutByCurrentUser: false,
+  checkedOutInfo: {}
 }
 
 const questionsToOutline = questions => {
@@ -253,6 +255,12 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
 
     case types.CLEAR_STATE:
       return INITIAL_STATE
+
+    case types.CHECK_OUT_SCHEME_REQUEST:
+      return {
+        ...state,
+        checkedOutByCurrentUser: true
+      }
 
     case types.REORDER_SCHEME_REQUEST:
     default:

@@ -42,21 +42,45 @@ export class CodingScheme extends Component {
     this.props.actions.reorderSchemeRequest(this.props.projectId)
   }
 
-  renderGetStarted = () => (
-    <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
-      <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
-        The coding scheme is empty. To get started, add a question.</Typography>
-      <TextLink
-        to={{
-          pathname: `/project/${this.props.projectId}/coding-scheme/add`,
-          state: { questionDefined: null }
-        }}
-        aria-label="Add new question"
-      >
-        <Button value="+ Add New Question" color="accent" aria-label="Add new question to coding scheme" />
-      </TextLink>
-    </Container>
-  )
+  handleCheckOutCodingScheme = () => {
+    this.props.actions.checkOutCodingSchemeRequest()
+  }
+
+  handleCheckInCodingScheme = () => {
+    this.props.actions.checkInCodingScheme()
+  }
+
+  renderGetStarted = () => {
+    return (
+      <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
+        {this.props.checkedOutByCurrentUser &&
+        <Fragment>
+          <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
+            The coding scheme is empty. To get started, add a question.
+          </Typography>
+          <TextLink
+            to={{ pathname: `/project/${this.props.projectId}/coding-scheme/add`, state: { questionDefined: null } }}
+            aria-label="Add new question"><Button
+            value="+ Add New Question"
+            color="accent"
+            aria-label="Add new question to coding scheme" /></TextLink>
+        </Fragment>
+        }
+        {!this.props.checkedOutByCurrentUser &&
+        <Fragment>
+          <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
+            The coding scheme is empty. To get started, check out the coding scheme.
+          </Typography>
+          <Button
+            value="Check out coding scheme"
+            color="accent"
+            aria-label="Check out coding scheme"
+            onClick={this.handleCheckOutCodingScheme} />
+        </Fragment>
+        }
+      </Container>
+    )
+  }
 
   render() {
     return (
@@ -76,6 +100,16 @@ export class CodingScheme extends Component {
           projectId={this.props.projectId}
           pageTitle="Coding Scheme"
           protocolButton
+          checkoutButton={{
+            isLink: false,
+            text: this.props.checkedOutByCurrentUser ? 'Check in Coding Scheme' : 'Check out coding scheme',
+            props: {
+              onClick: this.props.checkedOutByCurrentUser
+                ? this.handleCheckInCodingScheme
+                : this.handleCheckOutCodingScheme
+            },
+            show: this.props.checkedOutByCurrentUser || Object.keys(this.props.checkedOutInfo).length > 0
+          }}
           otherButton={{
             isLink: true,
             text: '+ Add New Question',
@@ -139,7 +173,9 @@ const mapStateToProps = (state, ownProps) => ({
   outline: state.scenes.codingScheme.outline || {},
   flatQuestions: state.scenes.codingScheme.flatQuestions || [],
   schemeError: state.scenes.codingScheme.schemeError || null,
-  reorderError: state.scenes.codingScheme.reorderError || null
+  reorderError: state.scenes.codingScheme.reorderError || null,
+  checkedOutByCurrentUser: state.scenes.codingScheme.checkedOutByCurrentUser || false,
+  checkedOutInfo: state.scenes.codingScheme.checkedOutInfo || {}
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
