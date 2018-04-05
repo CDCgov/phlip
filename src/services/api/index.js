@@ -141,7 +141,7 @@ export default {
   },
 
   unlockCodingScheme(projectId, userId) {
-    return api.get(`/locks/scheme/projects/${projectId}/users/${userId}`).then(res => res.data)
+    return api.delete(`/locks/scheme/projects/${projectId}/users/${userId}`).then(res => res.data)
   },
 
   // Get a scheme question, called in Coding/logic, Validation/logic
