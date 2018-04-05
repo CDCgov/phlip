@@ -14,3 +14,4 @@ export const reorderSchemeRequest = projectId => ({ type: types.REORDER_SCHEME_R
 export const clearState = () => ({ type: types.CLEAR_STATE })
 export const setEmptyState = () => ({ type: types.SET_EMPTY_STATE })
 export const resetAlertError = () => ({ type: types.RESET_ALERT_ERROR })
+export const closeLockedAlert = () => ({ type: types.CLOSE_CODING_SCHEME_LOCK_ALERT })

@@ -14,6 +14,7 @@ import PageHeader from 'components/PageHeader'
 import Alert from 'components/Alert'
 import Icon from 'components/Icon'
 import ApiErrorView from 'components/ApiErrorView'
+import ApiErrorAlert from 'components/ApiErrorAlert'
 
 export class CodingScheme extends Component {
   constructor(props, context) {
@@ -32,6 +33,10 @@ export class CodingScheme extends Component {
 
   onCloseAlert = () => {
     this.props.actions.resetAlertError()
+  }
+
+  onCloseLockedAlert = () => {
+    this.props.actions.closeLockedAlert()
   }
 
   handleQuestionTreeChange = questions => {
@@ -85,13 +90,18 @@ export class CodingScheme extends Component {
   render() {
     return (
       <Container column flex>
-        <Alert
-          actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseAlert }]}
+        <ApiErrorAlert
+          content={this.props.alertError}
           open={this.props.alertError !== null}
-          title={<Fragment><Icon size={30} color="red" style={{ paddingRight: 10 }}>sentiment_very_dissatisfied</Icon>
-            Uh-oh! Something went wrong.</Fragment>}>
+          onCloseAlert={this.onCloseAlert} />
+        <Alert
+          actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert }]}
+          open={this.props.lockedAlert !== null}
+          title={<Fragment><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
+            The Coding Scheme is locked.</Fragment>}>
           <Typography variant="body1">
-            {this.props.alertError}
+            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} has locked the coding scheme. You will
+            not be able to make changes until they have released the lock.
           </Typography>
         </Alert>
         <PageHeader
@@ -177,7 +187,8 @@ const mapStateToProps = (state, ownProps) => ({
   reorderError: state.scenes.codingScheme.reorderError || null,
   lockedByCurrentUser: state.scenes.codingScheme.lockedByCurrentUser || false,
   lockInfo: state.scenes.codingScheme.lockInfo || {},
-  alertError: state.scenes.codingScheme.alertError || null
+  alertError: state.scenes.codingScheme.alertError || null,
+  lockedAlert: state.scenes.codingScheme.lockedAlert || null
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

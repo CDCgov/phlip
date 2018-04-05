@@ -21,7 +21,8 @@ const INITIAL_STATE = {
   previousQuestions: [],
   previousOutline: {},
   lockedByCurrentUser: false,
-  lockInfo: {}
+  lockInfo: {},
+  lockedAlert: null
 }
 
 const questionsToOutline = questions => {
@@ -119,7 +120,8 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         empty: action.payload.scheme.schemeQuestions <= 0,
         error: null,
         lockInfo: action.payload.lockInfo,
-        lockedByCurrentUser: action.payload.lockedByCurrentUser
+        lockedByCurrentUser: action.payload.lockedByCurrentUser,
+        lockedAlert: action.payload.lockedByCurrentUser ? null : true
       }
 
     case types.GET_SCHEME_FAIL:
@@ -132,6 +134,12 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         alertError: null
+      }
+
+    case types.CLOSE_CODING_SCHEME_LOCK_ALERT:
+      return {
+        ...state,
+        lockedAlert: null
       }
 
     case types.REORDER_SCHEME_FAIL:
