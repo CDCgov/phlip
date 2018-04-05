@@ -155,7 +155,7 @@ export class Protocol extends Component {
                 ? this.handleUnlockProtocol
                 : this.handleLockProtocol
             },
-            show: this.props.getProtocolError !== true
+            show: this.props.getProtocolError !== true && !this.state.editMode
           }}
           otherButton={this.props.getProtocolError ? {} : {
             isLink: false,
