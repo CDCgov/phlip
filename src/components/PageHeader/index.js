@@ -8,6 +8,7 @@ import CircleIcon from 'components/CircleIcon'
 import { withRouter } from 'react-router-dom'
 import TextLink from 'components/TextLink'
 import { withTheme } from 'material-ui/styles'
+import { Link } from 'react-router-dom'
 
 export const PageHeader = props => {
   const {
@@ -51,14 +52,18 @@ export const PageHeader = props => {
           <Button value={checkoutButton.text} color="accent" {...checkoutButton.props} />
         </div>}
         {otherButton.show && (otherButton.isLink
-          ? <TextLink to={{ pathname: `${otherButton.path}`, state: { ...otherButton.state } }}>
-            <Button value={otherButton.text} color="accent" {...otherButton.props} />
-          </TextLink>
+          ? <Button
+            value={otherButton.text}
+            color="accent"
+            component={Link}
+            to={{ pathname: `${otherButton.path}`, state: { ...otherButton.state } }} {...otherButton.props}
+          />
           : <Button
             value={otherButton.text}
             color="accent"
             style={otherButton.style}
-            onClick={otherButton.onClick} {...otherButton.props} />)
+            onClick={otherButton.onClick} {...otherButton.props}
+          />)
         }
       </Row>
     </Container>
