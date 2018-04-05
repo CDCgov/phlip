@@ -1,6 +1,7 @@
 import moment from 'moment'
 
 export const validateRequired = value => value ? undefined : 'Required'
+export const validateRequiredArray = arr => arr.length > 0 ? undefined : 'Required'
 
 export const validateDate = value => {
   return value === 'mm/dd/yyyy' || value === undefined ? 'Required' : undefined

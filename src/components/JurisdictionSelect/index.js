@@ -5,6 +5,8 @@ import Input, { InputLabel } from 'material-ui/Input'
 import { FormControl } from 'material-ui/Form'
 import { MenuItem } from 'material-ui/Menu'
 import { withStyles } from 'material-ui/styles'
+import Typography from 'material-ui/Typography'
+import sortList from 'utils/sortList'
 
 const styles = theme => ({
   icon: {
@@ -17,17 +19,40 @@ const styles = theme => ({
 })
 
 const JurisdictionSelect = ({ id, value, onChange, options, ...otherProps }) => {
-  let menuItems = options.map(option => (
-    <MenuItem key={option.id} value={option.id}>{option.name}</MenuItem>
-  ))
+  const menuItems = sortList(options, 'name', 'asc').map(option => {
+    return (
+      <MenuItem key={option.id} value={option.id}>
+        {option.name}
+        <Typography type="caption" style={{ paddingLeft: 10 }}>
+          ({new Date(option.startDate).toLocaleDateString()} - {new Date(option.endDate).toLocaleDateString()})
+        </Typography>
+      </MenuItem>
+    )
+  })
+
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        zIndex: 10000
+      }
+    },
+    onEnter: () => {
+      setTimeout(() => {
+        if (document.activeElement) {
+          document.activeElement.blur()
+        }
+      }, 500)
+    }
+  }
 
   return (
     <FormControl style={{ minWidth: '120px' }}>
       <Select
-        input={<Input id={id} name='jurisdiction' />}
+        input={<Input id={id} name="jurisdiction" />}
         value={value}
         onChange={onChange}
         children={menuItems}
+        MenuProps={MenuProps}
         {...otherProps}
       />
     </FormControl>

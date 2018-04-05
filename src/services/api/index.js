@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { login, logout } from '../authToken'
-import { scheme, outline } from 'data/mockCodingScheme'
 import { isUndefined } from 'util';
 
 export const api = axios.create({
@@ -98,12 +97,17 @@ export default {
 
   // Add a jurisdiction to a project, called in Home/scenes/AddEditJurisdictions/logic
   addJurisdictionToProject(projectId, jurisdiction) {
-    return api.post(`/projects/${projectId}/jurisdictions/${jurisdiction.id}`, jurisdiction).then(res => res.data)
+    return api.post(`/projects/${projectId}/jurisdictions`, jurisdiction).then(res => res.data)
   },
 
   // Update a jurisdiction on a project, called in Home/scenes/AddEditJurisdictions/logic
   updateJurisdictionInProject(projectId, jurisdiction) {
     return api.put(`/projects/${projectId}/jurisdictions/${jurisdiction.id}`, jurisdiction).then(res => res.data)
+  },
+
+  // Add a preset jurisdiction list (like US States), called in Home/scenes/AddEditJurisdiction/logic
+  addPresetJurisdictionList(projectId, jurisdiction) {
+    return api.post(`/projects/${projectId}/jurisdictions/preset`, jurisdiction).then(res => res.data)
   },
 
   // Reorder a project's coding scheme, called in CodingScheme/logic
@@ -192,19 +196,18 @@ export default {
       .then(res => res.data)
   },
 
-
   updateUserImage(userId, operation) {
     return api.patch(`/users/${userId}`, operation).then(res => {
       return operation[0].value
     }).catch(error => {
       return error
     })
-
   },
 
   getUserImage(userId) {
     return api.get(`/users/${userId}/avatar`).then(res => res.data)
   },
+
   // Get all coded questions for a specific question
   getAllCodedQuestionsForQuestion(projectId, jurisdictionId, questionId) {
     return api.get(`/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`).then(res => res.data)

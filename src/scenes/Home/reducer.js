@@ -73,7 +73,7 @@ const getProjectArrays = state => {
       return {
         ...state,
         ...setArrays(updatedMatches, curPage, rowsPerPage),
-        matches: [...normalize.mapArray(updatedMatches)],
+        matches: [...normalize.mapArray(updatedMatches)]
       }
     }
   } else {
@@ -130,7 +130,7 @@ const mainReducer = (state, action) => {
         ...INITIAL_STATE,
         bookmarkList: state.bookmarkList,
         projects: {
-          byId: { [action.payload.id]: action.payload, ...state.projects.byId},
+          byId: { [action.payload.id]: action.payload, ...state.projects.byId },
           allIds: [action.payload.id, ...state.projects.allIds]
         }
       }
@@ -167,7 +167,7 @@ const mainReducer = (state, action) => {
       }
 
     case types.ADD_JURISDICTION_TO_PROJECT:
-      let updatedProject = state.projects.byId[action.projectId]
+      let updatedProject = state.projects.byId[action.payload.projectId]
       return {
         ...state,
         projects: {
@@ -175,7 +175,22 @@ const mainReducer = (state, action) => {
             ...state.projects.byId,
             [updatedProject.id]: {
               ...updatedProject,
-              projectJurisdictions: [ ...updatedProject.projectJurisdictions, action.jurisdiction ]
+              projectJurisdictions: [...updatedProject.projectJurisdictions, action.payload.jurisdiction]
+            }
+          }
+        }
+      }
+
+    case types.ADD_PRESET_JURISDICTION_TO_PROJECT:
+      let updated = state.projects.byId[action.payload.projectId]
+      return {
+        ...state,
+        projects: {
+          byId: {
+            ...state.projects.byId,
+            [updated.id]: {
+              ...updated,
+              projectJurisdictions: [...updated.projectJurisdictions, ...action.payload.jurisdictions]
             }
           }
         }
@@ -187,9 +202,9 @@ const mainReducer = (state, action) => {
         projects: {
           byId: {
             ...state.projects.byId,
-            [action.projectId]: {
-              ...state.projects.byId[action.projectId],
-              projectJurisdictions: updater.updateByProperty(action.jurisdiction, state.projects.byId[action.projectId].projectJurisdictions, 'id' )
+            [action.payload.projectId]: {
+              ...state.projects.byId[action.payload.projectId],
+              projectJurisdictions: updater.updateByProperty(action.payload.jurisdiction, state.projects.byId[action.payload.projectId].projectJurisdictions, 'id')
             }
           }
         }

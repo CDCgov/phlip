@@ -176,11 +176,11 @@ const withCodingValidation = (WrappedComponent, actions) => {
           <Typography type="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
           <Row displayFlex style={{ width: '100%', justifyContent: 'space-evenly' }}>
             {noScheme && this.props.userRole !== 'Coder' &&
-            <TextLink to={{ pathname: `/project/${this.props.projectId}/coding-scheme/` }}>
+            <TextLink to={{ pathname: `/project/${this.props.projectId}/coding-scheme` }}>
               <Button value="Create Coding Scheme" color="accent" />
             </TextLink>}
             {noJurisdictions && this.props.userRole !== 'Coder' &&
-            <TextLink to={{ pathname: `/project/${this.props.projectId}/jurisdictions/` }}>
+            <TextLink to={{ pathname: `/project/${this.props.projectId}/jurisdictions` }}>
               <Button value="Add Jurisdictions" color="accent" />
             </TextLink>}
           </Row>

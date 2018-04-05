@@ -25,7 +25,7 @@ export const Header = props => {
           onClick={() => history.goBack()}
           aria-label="Go back">arrow_back</IconButton>
       </Column>
-      <Row flex displayFlex>
+      <Row displayFlex>
         <Typography type="title" style={{ alignSelf: 'center', paddingRight: 10 }}>{pageTitle}</Typography>
         <Typography type="title" style={{ alignSelf: 'center' }}>
           <span style={{ color: theme.palette.secondary.main }}>{projectName}</span>
@@ -33,22 +33,20 @@ export const Header = props => {
       </Row>
       <Fragment>
         {!empty && <Fragment><span className={styles.header} />
-        <div style={{ flex: '1' }}>
-          <JurisdictionSelect
-            options={jurisdictionsList}
-            value={selectedJurisdiction}
-            onChange={onJurisdictionChange} />
-        </div>
-        <Column flex>
-          <Typography type="caption" color="default" align="right">
-            Segment
-            start <span style={{ color: 'black' }}>{new Date(currentJurisdiction.startDate).toLocaleDateString()}</span>
-          </Typography>
-          <Typography type="caption" color="default" align="right">
-            Segment
-            end <span style={{ color: 'black' }}>{new Date(currentJurisdiction.endDate).toLocaleDateString()}</span>
-          </Typography>
-        </Column></Fragment>}
+          <div style={{ flex: '1', paddingRight: 30 }}>
+            <JurisdictionSelect
+              options={jurisdictionsList}
+              value={selectedJurisdiction}
+              onChange={onJurisdictionChange} />
+          </div>
+          <Column>
+            <Typography type="caption" color="default">
+              Segment Start Date <span style={{ color: 'black' }}>{new Date(currentJurisdiction.startDate).toLocaleDateString()}</span>
+            </Typography>
+            <Typography type="caption" color="default">
+              Segment End Date <span style={{ color: 'black' }}>{new Date(currentJurisdiction.endDate).toLocaleDateString()}</span>
+            </Typography>
+          </Column></Fragment>}
         <Column flex></Column>
         <TextLink to={`/project/${projectId}/protocol`}>
           <Button

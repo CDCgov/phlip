@@ -200,8 +200,9 @@ export const getValidationOutlineLogic = createLogic({
         // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
         if (scheme.schemeQuestions.length === 0) {
           payload = { isSchemeEmpty: true, areJurisdictionsEmpty: true }
+        } else {
+          payload = { isSchemeEmpty: false, areJurisdictionsEmpty: true }
         }
-        payload = { isSchemeEmpty: false, areJurisdictionsEmpty: true }
       }
       dispatch({
         type: types.GET_VALIDATION_OUTLINE_SUCCESS,
