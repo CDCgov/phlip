@@ -32,15 +32,23 @@ export class AddEditQuestion extends Component {
 
   constructor(props, context) {
     super(props, context)
+
     this.questionDefined = this.props.match.url === `/project/${this.props.projectId}/coding-scheme/add`
       ? null
       : this.props.location.state.questionDefined
 
-    this.parentDefined = this.props.location.state.parentDefined ? this.props.location.state.parentDefined : null
+    this.parentDefined = this.props.location.state
+      ? this.props.location.state.parentDefined
+        ? this.props.location.state.parentDefined
+        : null
+      : null
 
     this.state = {
       edit: this.questionDefined,
-      submitting: false
+      submitting: false,
+      canModify: this.props.location.state
+        ? this.props.location.state.canModify
+        : this.props.lockedByCurrentUser
     }
 
     this.defaultForm = {
@@ -49,6 +57,7 @@ export class AddEditQuestion extends Component {
       includeComment: false,
       isCategoryQuestion: false
     }
+
     this.binaryForm = {
       questionType: questionTypes.BINARY,
       possibleAnswers: [{ text: 'Yes' }, { text: 'No' }],
@@ -98,8 +107,8 @@ export class AddEditQuestion extends Component {
     this.questionDefined
       ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.questionDefined.id, this.props.location.state.path)
       : this.parentDefined
-        ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.parentDefined, this.props.location.state.path)
-        : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)
+      ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.parentDefined, this.props.location.state.path)
+      : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)
 
   }
 
@@ -109,9 +118,15 @@ export class AddEditQuestion extends Component {
   }
 
   handleTypeChange = (event, value) => {
-    value === questionTypes.BINARY ? this.props.formActions.initialize('questionForm', this.binaryForm, { options: { keepDirty: false, keepValues: false } })
+    value === questionTypes.BINARY
+      ? this.props.formActions.initialize('questionForm', this.binaryForm, {
+        options: {
+          keepDirty: false,
+          keepValues: false
+        }
+      })
       : value === questionTypes.TEXT_FIELD ? this.props.formActions.initialize('questionForm', this.textFieldForm, true)
-        : this.props.formActions.initialize('questionForm', this.defaultForm, true)
+      : this.props.formActions.initialize('questionForm', this.defaultForm, true)
   }
 
   validate = values => {
@@ -142,13 +157,18 @@ export class AddEditQuestion extends Component {
       { value: questionTypes.CHECKBOXES, label: 'Checkbox' },
       { value: questionTypes.MULTIPLE_CHOICE, label: 'Radio Button' },
       { value: questionTypes.TEXT_FIELD, label: 'Text Field' },
-      { value: questionTypes.CATEGORY, label: 'Tabbed' },
+      { value: questionTypes.CATEGORY, label: 'Tabbed' }
     ]
 
     const categoryChildOptions = options.filter(option => option.value !== questionTypes.CATEGORY)
 
     const actions = [
-      { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Cancel and close form' } },
+      {
+        value: 'Cancel',
+        onClick: this.onCancel,
+        type: 'button',
+        otherProps: { 'aria-label': 'Cancel and close form' }
+      },
       {
         value: this.questionDefined
           ? 'Save'
@@ -180,6 +200,7 @@ export class AddEditQuestion extends Component {
                     label="Question"
                     shrinkLabel={true}
                     multiline={true}
+                    disabled={!this.state.canModify}
                     placeholder="Enter question"
                   />
                 </Column>
@@ -192,7 +213,7 @@ export class AddEditQuestion extends Component {
                       ? categoryChildOptions : options}
                     defaultValue={questionTypes.MULTIPLE_CHOICE}
                     onChange={this.handleTypeChange}
-                    disabled={!!this.state.edit}
+                    disabled={!!this.state.edit || !this.state.canModify}
                   />
                 </Column>
               </Container>
@@ -203,18 +224,23 @@ export class AddEditQuestion extends Component {
                     component={TextInput}
                     shrinkLabel={true}
                     label="Coding directions"
+                    disabled={!this.state.canModify}
                     placeholder="Enter any special directions or considerations to display when coding this question"
                   />
                 </Row>
               </Container>
               <FieldArray
                 name="possibleAnswers"
-                answerType={this.props.form.values ? this.props.form.values.questionType : questionTypes.MULTIPLE_CHOICE}
+                answerType={this.props.form.values
+                  ? this.props.form.values.questionType
+                  : questionTypes.MULTIPLE_CHOICE}
                 isEdit={!!this.state.edit}
                 component={AnswerList}
+                canModify={this.state.canModify}
               />
               <Container>
-                <Row flex
+                <Row
+                  flex
                   style={{
                     paddingLeft: this.props.form.values ? (this.props.form.values.questionType !==
                       questionTypes.TEXT_FIELD && '47px') : '47px'
@@ -223,6 +249,7 @@ export class AddEditQuestion extends Component {
                     name="includeComment"
                     label="Include comment box"
                     component={CheckboxLabel}
+                    disabled={!this.state.canModify}
                   />
                 </Row>
               </Container>
@@ -242,7 +269,9 @@ const mapStateToProps = (state, ownProps) => ({
   form: state.form.questionForm || {},
   projectId: ownProps.match.params.projectId,
   formName: 'questionForm',
-  formError: state.scenes.codingScheme.formError || null
+  formError: state.scenes.codingScheme.formError || null,
+  lockedByCurrentUser: state.scenes.codingScheme.lockedByCurrentUser || false,
+  hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false
 })
 
 const mapDispatchToProps = (dispatch) => ({

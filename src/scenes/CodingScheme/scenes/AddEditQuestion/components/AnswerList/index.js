@@ -8,7 +8,7 @@ import { Column, Row } from 'components/Layout'
 import styles from '../../add-edit-question.scss'
 import * as questionTypes from '../../constants'
 
-export const AnswerList = ({ fields, answerType, isEdit }) => {
+export const AnswerList = ({ fields, answerType, isEdit, canModify }) => {
   return (
     <Fragment>
       {answerType === questionTypes.TEXT_FIELD ? <div></div>
@@ -25,6 +25,7 @@ export const AnswerList = ({ fields, answerType, isEdit }) => {
                     handleDelete={() => fields.remove(index)}
                     component={SelectInput}
                     isEdit={isEdit}
+                    canModify={canModify}
                     index={index}
                     fields={fields}
                     handleDown={() => fields.swap(index, index + 1)}
@@ -37,7 +38,7 @@ export const AnswerList = ({ fields, answerType, isEdit }) => {
             )
           })}
 
-          {answerType === questionTypes.BINARY
+          {canModify && (answerType === questionTypes.BINARY
             ? null
             : <Button
               value="Add more"
@@ -46,7 +47,7 @@ export const AnswerList = ({ fields, answerType, isEdit }) => {
               raised={false}
               disableRipple={true}
               style={{ marginLeft: 32, fontWeight: 'normal' }}
-              onClick={() => fields.push({ isNew: true, order: fields.length })} />
+              onClick={() => fields.push({ isNew: true, order: fields.length })} />)
           }
         </Row>
       }

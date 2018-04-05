@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Typography from 'material-ui/Typography'
-import { Route } from 'react-router-dom'
+import { Route, Link } from 'react-router-dom'
 import * as actions from './actions'
 import Container from 'components/Layout'
 import Scheme from './components/Scheme'
@@ -63,14 +63,17 @@ export class CodingScheme extends Component {
           <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
             The coding scheme is empty. To get started, add a question.
           </Typography>
-          <TextLink
-            to={{ pathname: `/project/${this.props.projectId}/coding-scheme/add`, state: { questionDefined: null } }}
-            aria-label="Add new question"><Button
+          <Button
+            component={Link}
+            to={{
+              pathname: `/project/${this.props.projectId}/coding-scheme/add`,
+              state: { questionDefined: null, canModify: true }
+            }}
             value="+ Add New Question"
             color="accent"
-            aria-label="Add new question to coding scheme" /></TextLink>
-        </Fragment>
-        }
+            aria-label="Add new question to coding scheme"
+          />
+        </Fragment>}
         {!this.props.lockedByCurrentUser &&
         <Fragment>
           <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
@@ -123,8 +126,11 @@ export class CodingScheme extends Component {
             isLink: true,
             text: '+ Add New Question',
             path: `/project/${this.props.projectId}/coding-scheme/add`,
-            state: { questionDefined: null },
-            props: { 'aria-label': 'Add new question to coding scheme', disabled: !this.props.hasLock || !this.props.lockedByCurrentUser },
+            state: { questionDefined: null, canModify: true },
+            props: {
+              'aria-label': 'Add new question to coding scheme',
+              disabled: !this.props.hasLock || !this.props.lockedByCurrentUser
+            },
             show: this.props.questions.length > 0
           }}
         />

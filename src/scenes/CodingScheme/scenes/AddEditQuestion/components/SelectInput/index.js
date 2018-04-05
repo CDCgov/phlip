@@ -8,8 +8,21 @@ import { FormControl, FormHelperText } from 'material-ui/Form'
 import IconButton from 'components/IconButton'
 import * as questionTypes from '../../constants'
 import { MenuDown } from 'mdi-material-ui'
+import { withStyles } from 'material-ui/styles'
 
-const SelectInput = ({ name, label, answerType, type, input, classes, index, currentValue, meta: { asyncValidating, active, touched, error, warning, dirty }, handleDelete, handleUp, handleDown, fields, isEdit, ...custom }) => {
+const styles = {
+  disabled: {
+    color: 'black'
+  }
+}
+
+const SelectInput = props => {
+  const {
+    canModify, name, label, answerType, type, input, classes,
+    index, currentValue, meta: { asyncValidating, active, touched, error, warning, dirty },
+    handleDelete, handleUp, handleDown, fields, isEdit, ...custom
+  } = props
+
   return (
     <Container alignItems={'center'}>
       <Column style={{ marginTop: 8 }}>
@@ -18,11 +31,9 @@ const SelectInput = ({ name, label, answerType, type, input, classes, index, cur
             case questionTypes.BINARY:
             case questionTypes.MULTIPLE_CHOICE:
               return <Radio disabled />
-
             case questionTypes.CATEGORY:
             case questionTypes.CHECKBOXES:
               return <Checkbox disabled />
-
             default:
               break
           }
@@ -36,11 +47,16 @@ const SelectInput = ({ name, label, answerType, type, input, classes, index, cur
             {...input}
             type={type}
             {...custom}
+            disabled={!canModify}
+            classes={{
+              disabled: classes.disabled
+            }}
           />
           {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
         </FormControl>
       </Column>
-      {answerType !== questionTypes.BINARY && <Column>
+      {canModify &&
+      (answerType !== questionTypes.BINARY && <Column>
         <Row>
           <IconButton
             color="action"
@@ -61,8 +77,8 @@ const SelectInput = ({ name, label, answerType, type, input, classes, index, cur
             id={`move-answer-${index}-down`}
             onClick={handleDown}>arrow_drop_down</IconButton>
         </Row>
-      </Column>}
-      <Column>
+      </Column>)}
+      {canModify && <Column>
         {(currentValue.isNew)
           ? <IconButton
             color="action"
@@ -79,7 +95,7 @@ const SelectInput = ({ name, label, answerType, type, input, classes, index, cur
               aria-label={`Delete ${index} answer`}
               id={`delete-answer-${index}`}>delete</IconButton>
         }
-      </Column>
+      </Column>}
     </Container>
   )
 }
@@ -98,4 +114,4 @@ SelectInput.defaultProps = {
   meta: {}
 }
 
-export default SelectInput
+export default withStyles(styles)(SelectInput)

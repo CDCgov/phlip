@@ -8,7 +8,6 @@ import {
   addNodeUnderParent
 } from 'react-sortable-tree'
 import { sortList } from 'utils'
-import { PageHeader } from 'components/PageHeader'
 
 const INITIAL_STATE = {
   questions: [],
