@@ -117,14 +117,14 @@ export class CodingScheme extends Component {
                 ? this.handleUnlockCodingScheme
                 : this.handleLockCodingScheme
             },
-            show: this.props.lockedByCurrentUser || Object.keys(this.props.lockInfo).length > 0
+            show: this.props.questions.length > 0
           }}
           otherButton={{
             isLink: true,
             text: '+ Add New Question',
             path: `/project/${this.props.projectId}/coding-scheme/add`,
             state: { questionDefined: null },
-            props: { 'aria-label': 'Add new question to coding scheme', disabled: !this.props.lockedByCurrentUser },
+            props: { 'aria-label': 'Add new question to coding scheme', disabled: !this.props.hasLock || !this.props.lockedByCurrentUser },
             show: this.props.questions.length > 0
           }}
         />
@@ -150,6 +150,7 @@ export class CodingScheme extends Component {
                 outline={this.props.outline}
                 flatQuestions={this.props.flatQuestions}
                 lockedByCurrentUser={this.props.lockedByCurrentUser}
+                hasLock={this.props.hasLock}
               />}
         </Container>
         <Route
@@ -188,7 +189,8 @@ const mapStateToProps = (state, ownProps) => ({
   lockedByCurrentUser: state.scenes.codingScheme.lockedByCurrentUser || false,
   lockInfo: state.scenes.codingScheme.lockInfo || {},
   alertError: state.scenes.codingScheme.alertError || null,
-  lockedAlert: state.scenes.codingScheme.lockedAlert || null
+  lockedAlert: state.scenes.codingScheme.lockedAlert || null,
+  hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

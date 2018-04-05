@@ -127,12 +127,13 @@ export default {
   },
 
   lockCodingScheme(projectId, userId) {
-    return api.post(`/locks/scheme/projects/${projectId}/users/${userId}`).then(res => res.data)
+    //return api.post(`/locks/scheme/projects/${projectId}/users/${userId}`).then(res => res.data)
+    return { userId: 8, firstName: 'Admin', lastName: '' }
   },
 
   getCodingSchemeLockInfo(projectId) {
     //return api.get(`/locks/scheme/projects/${projectId}`).then(res => res.data)
-    return { userId: 5, firstName: 'Kristin', lastName: 'Muterspaw' }
+    return {}
   },
 
   unlockCodingScheme(projectId, userId) {

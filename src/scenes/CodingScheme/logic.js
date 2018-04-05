@@ -11,7 +11,7 @@ const getSchemeLogic = createLogic({
       const currentUserId = getState().data.user.currentUser.id
       dispatch({
         type: types.GET_SCHEME_SUCCESS,
-        payload: { scheme, lockInfo, lockedByCurrentUser: lockInfo.userId === currentUserId }
+        payload: { scheme, lockInfo, lockedByCurrentUser: Object.keys(lockInfo).length > 0 ? false : lockInfo.userId === currentUserId }
       })
     } catch (error) {
       dispatch({
@@ -24,7 +24,7 @@ const getSchemeLogic = createLogic({
   }
 })
 
-const lockSchemeRequest = createLogic({
+const lockSchemeLogic = createLogic({
   type: types.LOCK_SCHEME_REQUEST,
   async process({ api, action, getState }, dispatch, done) {
     const userId = getState().data.user.currentUser.id
@@ -45,7 +45,7 @@ const lockSchemeRequest = createLogic({
   }
 })
 
-const unlockSchemeRequest = createLogic({
+const unlockSchemeLogic = createLogic({
   type: types.UNLOCK_SCHEME_REQUEST,
   async process({ api, action, getState }, dispatch, done) {
     const userId = getState().data.user.currentUser.id
@@ -90,5 +90,7 @@ const reorderSchemeLogic = createLogic({
 export default [
   getSchemeLogic,
   reorderSchemeLogic,
+  lockSchemeLogic,
+  unlockSchemeLogic,
   ...addEditQuestionLogic
 ]
