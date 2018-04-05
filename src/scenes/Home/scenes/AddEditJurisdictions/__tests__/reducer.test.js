@@ -168,7 +168,7 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
         },
         allIds: [1, 2, 3, 4]
       },
-      suggestions: [{ id: 5, name: 'New York' }, {id: 6, name: 'Oklahoma'}]
+      suggestions: [{ id: 4, name: 'Boston' }, { id: 5, name: 'New York' }, {id: 6, name: 'Oklahoma'}, {id: 2, name: 'Oregon'}]
     })
   })
 
