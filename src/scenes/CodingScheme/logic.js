@@ -11,7 +11,8 @@ const getSchemeLogic = createLogic({
       const currentUserId = getState().data.user.currentUser.id
       dispatch({
         type: types.GET_SCHEME_SUCCESS,
-        payload: { scheme, lockInfo, lockedByCurrentUser: Object.keys(lockInfo).length > 0 ? false : lockInfo.userId === currentUserId }
+        payload: { scheme, lockInfo,
+          lockedByCurrentUser: Object.keys(lockInfo).length > 0 ? false : lockInfo.userId === currentUserId }
       })
     } catch (error) {
       dispatch({

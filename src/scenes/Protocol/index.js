@@ -77,7 +77,7 @@ export class Protocol extends Component {
   }
 
   onCloseAlert = () => {
-    this.props.actions.resetSaveError()
+    this.props.actions.resetAlertError()
   }
 
   onSaveProtocol = () => {
@@ -89,6 +89,18 @@ export class Protocol extends Component {
     this.setState({
       open: false
     })
+  }
+
+  onCloseLockedAlert = () => {
+    this.props.actions.resetLockAlert()
+  }
+
+  handleLockProtocol = () => {
+    this.props.actions.lockProtocolRequest(this.props.projectId)
+  }
+
+  handleUnlockProtocol = () => {
+    this.props.actions.unlockProtocolRequest(this.props.projectId)
   }
 
   onContinue = () => {
@@ -119,28 +131,48 @@ export class Protocol extends Component {
             You have unsaved changes that will be lost if you decide to continue. Are you sure you want to continue?
           </Typography>
         </Alert>
+        <Alert
+          actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert }]}
+          open={this.props.lockedAlert !== null}
+          title={<Fragment><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
+            The Protocol is locked.</Fragment>}>
+          <Typography variant="body1">
+            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} has locked the protocol for editing. You will
+            not be able to make changes until they have released the lock.
+          </Typography>
+        </Alert>
         <PageHeader
           projectName={this.props.projectName}
           projectId={this.props.projectId}
           pageTitle="Protocol"
           protocolButton={false}
           onBackButtonClick={this.onGoBack}
+          checkoutButton={{
+            isLink: false,
+            text: this.props.lockedByCurrentUser ? 'Release Protocol Lock' : 'Lock protocol for editing',
+            props: {
+              onClick: this.props.lockedByCurrentUser
+                ? this.handleUnlockProtocol
+                : this.handleLockProtocol
+            },
+            show: this.props.getProtocolError !== true
+          }}
           otherButton={this.props.getProtocolError ? {} : {
             isLink: false,
             text: this.state.editMode ? 'Save' : 'Edit',
             onClick: this.state.editMode ? this.onSaveProtocol : this.onEnableEdit,
             style: { color: 'black', backgroundColor: 'white' },
             otherProps: { 'aria-label': this.state.editMode ? 'Edit protocol' : 'Save protocol' },
-            show: this.props.getProtocolError !== true
+            show: this.props.getProtocolError !== true && (this.props.hasLock && this.props.lockedByCurrentUser)
           }}
         />
         <Alert
           actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseAlert }]}
-          open={this.props.saveError === true}
+          open={this.props.alertError !== null}
           title={<Fragment><Icon size={30} color="red" style={{ paddingRight: 10 }}>sentiment_very_dissatisfied</Icon>
             Uh-oh! Something went wrong.</Fragment>}>
           <Typography variant="body1">
-            We couldn't save the protocol. Please try again later.
+            {this.props.alertError}
           </Typography>
         </Alert>
         {this.state.editMode
@@ -188,8 +220,12 @@ const mapStateToProps = (state, ownProps) => ({
   projectId: ownProps.match.params.id,
   protocolContent: state.scenes.protocol.content || '',
   getProtocolError: state.scenes.protocol.getProtocolError || null,
-  saveError: state.scenes.protocol.saveError || null,
-  submitting: state.scenes.protocol.submitting || false
+  submitting: state.scenes.protocol.submitting || false,
+  lockedByCurrentUser: state.scenes.protocol.lockedByCurrentUser || false,
+  lockInfo: state.scenes.protocol.lockInfo || {},
+  lockedAlert: state.scenes.protocol.lockedAlert || null,
+  hasLock: Object.keys(state.scenes.protocol.lockInfo).length > 0 || false,
+  alertError: state.scenes.protocol.alertError || null
 })
 
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })

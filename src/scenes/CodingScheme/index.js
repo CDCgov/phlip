@@ -8,7 +8,6 @@ import * as actions from './actions'
 import Container from 'components/Layout'
 import Scheme from './components/Scheme'
 import Button from 'components/Button'
-import TextLink from 'components/TextLink'
 import AddEditQuestion from './scenes/AddEditQuestion'
 import PageHeader from 'components/PageHeader'
 import Alert from 'components/Alert'
@@ -52,7 +51,7 @@ export class CodingScheme extends Component {
   }
 
   handleUnlockCodingScheme = () => {
-    this.props.actions.unlockCodingSchemeRequest(this.props.projectIc)
+    this.props.actions.unlockCodingSchemeRequest(this.props.projectId)
   }
 
   renderGetStarted = () => {

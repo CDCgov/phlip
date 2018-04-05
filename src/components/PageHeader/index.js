@@ -39,19 +39,19 @@ export const PageHeader = props => {
       </Row>
       <Row displayFlex>
         {children}
-        {protocolButton && <div style={{ paddingRight: 15 }}>
-          <TextLink to={`/project/${projectId}/protocol`}>
-            <Button
-              value="View/Edit Protocol"
-              aria-label="View and Edit Protocol"
-              style={{ backgroundColor: 'white', color: 'black' }} />
-          </TextLink>
-        </div>}
+        {protocolButton &&
+        <Button
+          value="View/Edit Protocol"
+          component={Link}
+          to={`/project/${projectId}/protocol`}
+          aria-label="View and Edit Protocol"
+          style={{ backgroundColor: 'white', color: 'black' }}
+        />}
         {checkoutButton && checkoutButton.show === true &&
-        <div style={{ marginRight: 15 }}>
+        <div style={{ marginLeft: 15 }}>
           <Button value={checkoutButton.text} color="accent" {...checkoutButton.props} />
         </div>}
-        {otherButton.show && (otherButton.isLink
+        {otherButton.show && <div style={{ marginLeft: 15 }}>{otherButton.isLink
           ? <Button
             value={otherButton.text}
             color="accent"
@@ -63,7 +63,7 @@ export const PageHeader = props => {
             color="accent"
             style={otherButton.style}
             onClick={otherButton.onClick} {...otherButton.props}
-          />)
+          />}</div>
         }
       </Row>
     </Container>

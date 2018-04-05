@@ -3,29 +3,92 @@ import * as types from './actionTypes'
 
 const getProtocolLogic = createLogic({
   type: types.GET_PROTOCOL_REQUEST,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.GET_PROTOCOL_SUCCESS,
-    failType: types.GET_PROTOCOL_FAIL
-  },
-  async process({ getState, api, action }) {
-    return await api.getProtocol(action.projectId)
+  async process({ getState, api, action }, dispatch, done) {
+    const currentUserId = getState().data.user.currentUser.id
+    try {
+      const protocol = await api.getProtocol(action.projectId)
+      const lockInfo = await api.getProtocolLockInfo(action.projectId)
+      dispatch({
+        type: types.GET_PROTOCOL_SUCCESS,
+        payload: {
+          protocol,
+          lockInfo,
+          lockedByCurrentUser: Object.keys(lockInfo).length > 0 ? false : lockInfo.userId === currentUserId
+        }
+      })
+    } catch (error) {
+      dispatch({
+        type: types.GET_PROTOCOL_FAIL
+      })
+    }
+    done()
   }
 })
 
 const saveProtocolLogic = createLogic({
   type: types.SAVE_PROTOCOL_REQUEST,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.SAVE_PROTOCOL_SUCCESS,
-    failType: types.SAVE_PROTOCOL_FAIL
-  },
-  async process({ getState, api, action }) {
-    return await api.saveProtocol(action.projectId, getState().data.user.currentUser.id, action.protocol)
+  async process({ getState, api, action }, dispatch, done) {
+    try {
+      const resp = await api.saveProtocol(action.projectId, getState().data.user.currentUser.id, action.protocol)
+      dispatch({
+        type: types.SAVE_PROTOCOL_SUCCESS,
+        payload: { ...resp }
+      })
+    } catch (error) {
+      dispatch({
+        type: types.SAVE_PROTOCOL_FAIL,
+        payload: 'We couldn\'t save the protocol.'
+      })
+    }
+    done()
+  }
+})
+
+const lockProtocolLogic = createLogic({
+  type: types.LOCK_PROTOCOL_REQUEST,
+  async process({ api, action, getState }, dispatch, done) {
+    const userId = getState().data.user.currentUser.id
+    try {
+      const lockedInfo = await api.lockProtocol(action.id, userId)
+      dispatch({
+        type: types.LOCK_PROTOCOL_SUCCESS,
+        payload: { ...lockedInfo }
+      })
+    } catch (error) {
+      dispatch({
+        type: types.LOCK_PROTOCOL_FAIL,
+        error: true,
+        payload: 'We couldn\'t lock the protocol for editing.'
+      })
+    }
+    done()
+  }
+})
+
+const unlockProtocolLogic = createLogic({
+  type: types.UNLOCK_PROTOCOL_REQUEST,
+  async process({ api, action, getState }, dispatch, done) {
+    const userId = getState().data.user.currentUser.id
+    try {
+      const unlockInfo = await api.unlockProtocol(action.id, userId)
+      dispatch({
+        type: types.UNLOCK_PROTOCOL_SUCCESS,
+        payload: { ...unlockInfo }
+      })
+    } catch (error) {
+      dispatch({
+        type: types.UNLOCK_PROTOCOL_FAIL,
+        error: true,
+        payload: 'We couldn\'t releast the lock for the protocol.'
+      })
+    }
+    done()
   }
 })
 
 export default [
   getProtocolLogic,
-  saveProtocolLogic
+  saveProtocolLogic,
+  lockProtocolLogic,
+  unlockProtocolLogic
 ]
