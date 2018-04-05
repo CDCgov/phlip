@@ -27,7 +27,9 @@ const protocolReducer = (state = INITIAL_STATE, action) => {
         lockInfo: action.payload.lockInfo,
         lockedByCurrentUser: action.payload.lockedByCurrentUser,
         lockedAlert: Object.keys(action.payload.lockInfo).length > 0
-          ? action.payload.lockedByCurrentUser ? null : true
+          ? action.payload.lockedByCurrentUser
+            ? null
+            : true
           : null
       }
 
@@ -76,8 +78,13 @@ const protocolReducer = (state = INITIAL_STATE, action) => {
     case types.LOCK_PROTOCOL_SUCCESS:
       return {
         ...state,
-        lockInfo: action.payload,
-        lockedByCurrentUser: true
+        lockInfo: action.payload.lockInfo,
+        lockedByCurrentUser: action.payload.lockedByCurrentUser,
+        lockedAlert: Object.keys(action.payload.lockInfo).length > 0
+          ? action.payload.lockedByCurrentUser
+            ? null
+            : true
+          : null
       }
 
     case types.UNLOCK_PROTOCOL_SUCCESS:

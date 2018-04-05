@@ -13,7 +13,7 @@ const getProtocolLogic = createLogic({
         payload: {
           protocol,
           lockInfo,
-          lockedByCurrentUser: Object.keys(lockInfo).length > 0 ? false : lockInfo.userId === currentUserId
+          lockedByCurrentUser: Object.keys(lockInfo).length > 0 ? lockInfo.userId === currentUserId : false
         }
       })
     } catch (error) {
@@ -47,12 +47,15 @@ const saveProtocolLogic = createLogic({
 const lockProtocolLogic = createLogic({
   type: types.LOCK_PROTOCOL_REQUEST,
   async process({ api, action, getState }, dispatch, done) {
-    const userId = getState().data.user.currentUser.id
+    const currentUserId = getState().data.user.currentUser.id
     try {
-      const lockedInfo = await api.lockProtocol(action.id, userId)
+      const lockInfo = await api.lockProtocol(action.id, currentUserId)
       dispatch({
         type: types.LOCK_PROTOCOL_SUCCESS,
-        payload: { ...lockedInfo }
+        payload: {
+          lockInfo,
+          lockedByCurrentUser: Object.keys(lockInfo).length > 0 ? lockInfo.userId === currentUserId : false
+        }
       })
     } catch (error) {
       dispatch({

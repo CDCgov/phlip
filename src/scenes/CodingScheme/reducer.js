@@ -121,7 +121,9 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         lockInfo: action.payload.lockInfo,
         lockedByCurrentUser: action.payload.lockedByCurrentUser,
         lockedAlert: Object.keys(action.payload.lockInfo).length > 0
-          ? action.payload.lockedByCurrentUser ? null : true
+          ? action.payload.lockedByCurrentUser
+            ? null
+            : true
           : null
       }
 
@@ -274,8 +276,13 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
     case types.LOCK_SCHEME_SUCCESS:
       return {
         ...state,
-        lockedByCurrentUser: true,
-        lockInfo: action.payload
+        lockedByCurrentUser: action.payload.lockedByCurrentUser,
+        lockInfo: action.payload.lockInfo,
+        lockedAlert: Object.keys(action.payload.lockInfo).length > 0
+          ? action.payload.lockedByCurrentUser
+            ? null
+            : true
+          : null
       }
 
     case types.UNLOCK_SCHEME_SUCCESS:

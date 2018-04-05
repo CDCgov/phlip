@@ -137,7 +137,7 @@ export default {
 
   getCodingSchemeLockInfo(projectId) {
     //return api.get(`/locks/scheme/projects/${projectId}`).then(res => res.data)
-    return {}
+    return { userId: 8, firstName: 'Admin', lastName: '' }
   },
 
   unlockCodingScheme(projectId, userId) {
@@ -152,7 +152,7 @@ export default {
 
   getProtocolLockInfo(projectId) {
     //return api.get(`/locks/protocol/projects/${projectId}`).then(res => res.data)
-    return {}
+    return { userId: 8, firstName: 'Admin', lastName: '' }
   },
 
   unlockProtocol(projectId, userId) {
