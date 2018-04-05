@@ -18,6 +18,9 @@ import ApiErrorAlert from 'components/ApiErrorAlert'
 export class CodingScheme extends Component {
   constructor(props, context) {
     super(props, context)
+    this.state = {
+      goBackAlertOpen: false
+    }
   }
 
   componentWillMount() {
@@ -52,6 +55,26 @@ export class CodingScheme extends Component {
 
   handleUnlockCodingScheme = () => {
     this.props.actions.unlockCodingSchemeRequest(this.props.projectId)
+  }
+
+  onCloseGoBackAlert = () => {
+    this.setState({
+      goBackAlertOpen: false
+    })
+  }
+
+  onContinueGoBack = () => {
+    this.props.history.goBack()
+  }
+
+  onGoBack = () => {
+    if (this.props.lockedByCurrentUser) {
+      this.setState({
+        goBackAlertOpen: true
+      })
+    } else {
+      this.props.history.goBack()
+    }
   }
 
   renderGetStarted = () => {
@@ -90,8 +113,27 @@ export class CodingScheme extends Component {
   }
 
   render() {
+    const alertActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.onCloseGoBackAlert
+      },
+      {
+        value: 'Continue',
+        type: 'button',
+        onClick: this.onContinueGoBack
+      }
+    ]
+
     return (
       <Container column flex>
+        <Alert open={this.state.goBackAlertOpen} actions={alertActions}>
+          <Typography variant="body1">
+            You have locked the coding scheme. If you exit now, no one else will be allowed to edit until you release
+            the lock. Are you sure you want to continue?
+          </Typography>
+        </Alert>
         <ApiErrorAlert
           content={this.props.alertError}
           open={this.props.alertError !== null}
@@ -111,6 +153,7 @@ export class CodingScheme extends Component {
           projectId={this.props.projectId}
           pageTitle="Coding Scheme"
           protocolButton
+          onBackButtonClick={this.onGoBack}
           checkoutButton={{
             isLink: false,
             text: this.props.lockedByCurrentUser ? 'Release Coding Scheme Lock' : 'Lock coding scheme for editing',

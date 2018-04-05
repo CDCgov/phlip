@@ -40,7 +40,8 @@ export class Protocol extends Component {
 
     this.state = {
       editMode: false,
-      open: false
+      open: false,
+      alertText: ''
     }
   }
 
@@ -87,7 +88,8 @@ export class Protocol extends Component {
 
   onClose = () => {
     this.setState({
-      open: false
+      open: false,
+      alertText: ''
     })
   }
 
@@ -108,7 +110,18 @@ export class Protocol extends Component {
   }
 
   onGoBack = () => {
-    this.state.editMode ? this.setState({ open: true }) : this.props.history.goBack()
+    if (this.props.lockedByCurrentUser || this.state.editMode) {
+      this.setState({
+        open: true,
+        alertText: this.state.editMode
+          ? `You have unsaved changes that will be lost if you decide to continue. You have also locked the protocol. If
+             you exit now, no one else will be allowed to edit until you release the lock.`
+          : `You have locked the protocol. If you exit now, no one else will be allowed to 
+             edit until you release the lock.`
+      })
+    } else {
+     this.props.history.goBack()
+    }
   }
 
   render() {
@@ -128,7 +141,7 @@ export class Protocol extends Component {
       <Container flex column style={{ paddingBottom: 20, flexWrap: 'nowrap' }}>
         <Alert open={this.state.open} actions={alertActions}>
           <Typography variant="body1">
-            You have unsaved changes that will be lost if you decide to continue. Are you sure you want to continue?
+            {this.state.alertText} Are you sure you want to continue?
           </Typography>
         </Alert>
         <Alert
@@ -137,8 +150,8 @@ export class Protocol extends Component {
           title={<Fragment><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
             The Protocol is locked.</Fragment>}>
           <Typography variant="body1">
-            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} has locked the protocol for editing. You will
-            not be able to make changes until they have released the lock.
+            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} has locked the protocol for editing.
+            You will not be able to make changes until they have released the lock.
           </Typography>
         </Alert>
         <PageHeader
@@ -208,7 +221,9 @@ export class Protocol extends Component {
           </Card>
           : this.props.getProtocolError === true
             ? <CardError>We failed to get the protocol for this project. Please try again later.</CardError>
-            : <Card style={{ padding: 25, fontFamily: 'Roboto', overflow: 'auto' }} dangerouslySetInnerHTML={{ __html: this.props.protocolContent }} />
+            : <Card
+              style={{ padding: 25, fontFamily: 'Roboto', overflow: 'auto' }}
+              dangerouslySetInnerHTML={{ __html: this.props.protocolContent }} />
         }
       </Container>
     )
