@@ -6,7 +6,6 @@ import { FormControl } from 'material-ui/Form'
 import { MenuItem } from 'material-ui/Menu'
 import { withStyles } from 'material-ui/styles'
 import Typography from 'material-ui/Typography'
-import sortList from 'utils/sortList'
 
 const styles = theme => ({
   icon: {
@@ -19,7 +18,7 @@ const styles = theme => ({
 })
 
 const JurisdictionSelect = ({ id, value, onChange, options, ...otherProps }) => {
-  const menuItems = sortList(options, 'name', 'asc').map(option => {
+  const menuItems = options.map(option => {
     return (
       <MenuItem key={option.id} value={option.id}>
         {option.name}
