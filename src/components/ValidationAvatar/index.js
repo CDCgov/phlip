@@ -107,7 +107,7 @@ export class ValidationAvatar extends Component {
           <Avatar
             cardAvatar
             avatar={this.props.avatar}
-            initials={this.state.initials}
+            initials={getInitials(this.props.answer.firstName, this.props.answer.lastName)}
             onMouseOver={this.handleOpen}
             onMouseOut={this.handleClose}
           />

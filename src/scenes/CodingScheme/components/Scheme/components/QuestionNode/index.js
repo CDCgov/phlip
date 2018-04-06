@@ -106,7 +106,7 @@ export const QuestionNode = props => {
                 <TextLink
                   aria-label="Add child question" to={{
                   pathname: `/project/${projectId}/coding-scheme/add`,
-                  state: { parentDefined: { ...node }, path }
+                  state: { parentDefined: { ...node }, path, canModify: true }
                 }}>
                   <Button
                     aria-label="Add child question"
