@@ -74,7 +74,7 @@ const unlockSchemeLogic = createLogic({
       dispatch({
         type: types.UNLOCK_SCHEME_FAIL,
         error: true,
-        payload: 'We couldn\'t releast the lock for the project coding scheme.'
+        payload: 'We couldn\'t release the lock for the project coding scheme.'
       })
     }
     done()
@@ -94,7 +94,7 @@ const reorderSchemeLogic = createLogic({
     } catch (error) {
       dispatch({
         type: types.REORDER_SCHEME_FAIL,
-        payload: 'Uh-oh! We couldn\'t save the scheme reorder. Please try again later.',
+        payload: 'We couldn\'t save the scheme reorder. Please try again later.',
         error: true
       })
     }

@@ -91,7 +91,7 @@ const unlockProtocolLogic = createLogic({
       dispatch({
         type: types.UNLOCK_PROTOCOL_FAIL,
         error: true,
-        payload: 'We couldn\'t releast the lock for the protocol.'
+        payload: 'We couldn\'t release the lock for the protocol.'
       })
     }
     done()
