@@ -16,6 +16,8 @@ const props = {
   isDragging: false,
   isOver: false,
   didDrop: false,
+  canModify: true,
+  canDrag: true,
   connectDragPreview: (preview) => preview,
   connectDragSource: (handle) => handle,
   turnOnHover: () => {},

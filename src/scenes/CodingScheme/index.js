@@ -3,21 +3,24 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Typography from 'material-ui/Typography'
-import { Route } from 'react-router-dom'
+import { Route, Link } from 'react-router-dom'
 import * as actions from './actions'
 import Container from 'components/Layout'
 import Scheme from './components/Scheme'
 import Button from 'components/Button'
-import TextLink from 'components/TextLink'
 import AddEditQuestion from './scenes/AddEditQuestion'
 import PageHeader from 'components/PageHeader'
 import Alert from 'components/Alert'
 import Icon from 'components/Icon'
 import ApiErrorView from 'components/ApiErrorView'
+import ApiErrorAlert from 'components/ApiErrorAlert'
 
 export class CodingScheme extends Component {
   constructor(props, context) {
     super(props, context)
+    this.state = {
+      goBackAlertOpen: false
+    }
   }
 
   componentWillMount() {
@@ -31,7 +34,11 @@ export class CodingScheme extends Component {
   }
 
   onCloseAlert = () => {
-    this.props.actions.resetReorderError()
+    this.props.actions.resetAlertError()
+  }
+
+  onCloseLockedAlert = () => {
+    this.props.actions.closeLockedAlert()
   }
 
   handleQuestionTreeChange = questions => {
@@ -42,46 +49,130 @@ export class CodingScheme extends Component {
     this.props.actions.reorderSchemeRequest(this.props.projectId)
   }
 
-  renderGetStarted = () => (
-    <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
-      <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
-        The coding scheme is empty. To get started, add a question.</Typography>
-      <TextLink
-        to={{
-          pathname: `/project/${this.props.projectId}/coding-scheme/add`,
-          state: { questionDefined: null }
-        }}
-        aria-label="Add new question"
-      >
-        <Button value="+ Add New Question" color="accent" aria-label="Add new question to coding scheme" />
-      </TextLink>
-    </Container>
-  )
+  handleLockCodingScheme = () => {
+    this.props.actions.lockCodingSchemeRequest(this.props.projectId)
+  }
+
+  handleUnlockCodingScheme = () => {
+    this.props.actions.unlockCodingSchemeRequest(this.props.projectId)
+  }
+
+  onCloseGoBackAlert = () => {
+    this.setState({
+      goBackAlertOpen: false
+    })
+  }
+
+  onContinueGoBack = () => {
+    this.props.history.goBack()
+  }
+
+  onGoBack = () => {
+    if (this.props.lockedByCurrentUser) {
+      this.setState({
+        goBackAlertOpen: true
+      })
+    } else {
+      this.props.history.goBack()
+    }
+  }
+
+  renderGetStarted = () => {
+    return (
+      <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
+        {this.props.lockedByCurrentUser &&
+        <Fragment>
+          <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
+            The coding scheme is empty. To get started, add a question.
+          </Typography>
+          <Button
+            component={Link}
+            to={{
+              pathname: `/project/${this.props.projectId}/coding-scheme/add`,
+              state: { questionDefined: null, canModify: true }
+            }}
+            value="+ Add New Question"
+            color="accent"
+            aria-label="Add new question to coding scheme"
+          />
+        </Fragment>}
+        {!this.props.lockedByCurrentUser &&
+        <Fragment>
+          <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
+            The coding scheme is empty. To get started, lock the coding scheme for editing.
+          </Typography>
+          <Button
+            value="Lock coding scheme for editing"
+            color="accent"
+            aria-label="Lock coding scheme"
+            onClick={this.handleLockCodingScheme} />
+        </Fragment>
+        }
+      </Container>
+    )
+  }
 
   render() {
+    const alertActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.onCloseGoBackAlert
+      },
+      {
+        value: 'Continue',
+        type: 'button',
+        onClick: this.onContinueGoBack
+      }
+    ]
+
     return (
       <Container column flex>
-        <Alert
-          actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseAlert }]}
-          open={this.props.reorderError !== null}
-          title={<Fragment><Icon size={30} color="red" style={{ paddingRight: 10 }}>sentiment_very_dissatisfied</Icon>
-            Uh-oh! Something went wrong.</Fragment>}>
+        <Alert open={this.state.goBackAlertOpen} actions={alertActions}>
           <Typography variant="body1">
-            We failed to save the reorder of the scheme. The question order has been reset. Please try again later.
+            You have locked the coding scheme. If you exit now, no one else will be allowed to edit until you release
+            the lock. Are you sure you want to continue?
+          </Typography>
+        </Alert>
+        <ApiErrorAlert
+          content={this.props.alertError}
+          open={this.props.alertError !== null}
+          onCloseAlert={this.onCloseAlert} />
+        <Alert
+          actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert }]}
+          open={this.props.lockedAlert !== null}
+          title={<Fragment><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
+            The Coding Scheme is locked.</Fragment>}>
+          <Typography variant="body1">
+            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} has locked the coding scheme. You will
+            not be able to make changes until they have released the lock.
           </Typography>
         </Alert>
         <PageHeader
           projectName={this.props.projectName}
-          showButton={this.props.questions.length > 0}
           projectId={this.props.projectId}
           pageTitle="Coding Scheme"
           protocolButton
+          onBackButtonClick={this.onGoBack}
+          checkoutButton={{
+            isLink: false,
+            text: this.props.lockedByCurrentUser ? 'Release Coding Scheme Lock' : 'Lock coding scheme for editing',
+            props: {
+              onClick: this.props.lockedByCurrentUser
+                ? this.handleUnlockCodingScheme
+                : this.handleLockCodingScheme
+            },
+            show: this.props.questions.length > 0
+          }}
           otherButton={{
             isLink: true,
             text: '+ Add New Question',
             path: `/project/${this.props.projectId}/coding-scheme/add`,
-            state: { questionDefined: null },
-            props: { 'aria-label': 'Add new question to  coding scheme' }
+            state: { questionDefined: null, canModify: true },
+            props: {
+              'aria-label': 'Add new question to coding scheme'
+            },
+            show: this.props.questions.length > 0 && (this.props.hasLock && this.props.lockedByCurrentUser)
           }}
         />
         <Container
@@ -105,6 +196,8 @@ export class CodingScheme extends Component {
                 projectId={this.props.projectId}
                 outline={this.props.outline}
                 flatQuestions={this.props.flatQuestions}
+                lockedByCurrentUser={this.props.lockedByCurrentUser}
+                hasLock={this.props.hasLock}
               />}
         </Container>
         <Route
@@ -139,7 +232,12 @@ const mapStateToProps = (state, ownProps) => ({
   outline: state.scenes.codingScheme.outline || {},
   flatQuestions: state.scenes.codingScheme.flatQuestions || [],
   schemeError: state.scenes.codingScheme.schemeError || null,
-  reorderError: state.scenes.codingScheme.reorderError || null
+  reorderError: state.scenes.codingScheme.reorderError || null,
+  lockedByCurrentUser: state.scenes.codingScheme.lockedByCurrentUser || false,
+  lockInfo: state.scenes.codingScheme.lockInfo || {},
+  alertError: state.scenes.codingScheme.alertError || null,
+  lockedAlert: state.scenes.codingScheme.lockedAlert || null,
+  hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

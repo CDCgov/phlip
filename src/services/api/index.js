@@ -130,6 +130,30 @@ export default {
     return api.get(`/projects/${projectId}/scheme`).then(res => res.data)
   },
 
+  lockCodingScheme(projectId, userId) {
+    return api.post(`/locks/scheme/projects/${projectId}/users/${userId}`).then(res => res.data)
+  },
+
+  getCodingSchemeLockInfo(projectId) {
+    return api.get(`/locks/scheme/projects/${projectId}`).then(res => res.data)
+  },
+
+  unlockCodingScheme(projectId, userId) {
+    return api.delete(`/locks/scheme/projects/${projectId}/users/${userId}`).then(res => res.data)
+  },
+
+  lockProtocol(projectId, userId) {
+    return api.post(`/locks/protocol/projects/${projectId}/users/${userId}`).then(res => res.data)
+  },
+
+  getProtocolLockInfo(projectId) {
+    return api.get(`/locks/protocol/projects/${projectId}`).then(res => res.data)
+  },
+
+  unlockProtocol(projectId, userId) {
+    return api.delete(`/locks/protocol/projects/${projectId}/users/${userId}`).then(res => res.data)
+  },
+
   // Get a scheme question, called in Coding/logic, Validation/logic
   getSchemeQuestion(questionId, projectId) {
     return api.get(`/projects/${projectId}/scheme/${questionId}`).then(res => res.data)

@@ -10,11 +10,16 @@ const styles = theme => ({
   }
 })
 
-const CheckboxLabel = ({ input, label, onChange, classes }) => {
+const CheckboxLabel = ({ input, label, onChange, classes, disabled }) => {
   return (
     <FormControlLabel
       control={
-        <Checkbox checked={!!input.value} classes={{ checked: classes.checked }} onChange={input.onChange} />
+        <Checkbox
+          checked={!!input.value}
+          classes={{ checked: classes.checked }}
+          disabled={disabled}
+          onChange={input.onChange}
+        />
       }
       label={label}
     />

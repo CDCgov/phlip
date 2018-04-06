@@ -7,7 +7,7 @@ import {
   map,
   addNodeUnderParent
 } from 'react-sortable-tree'
-import { sortList, updater } from 'utils'
+import { sortList } from 'utils'
 
 const INITIAL_STATE = {
   questions: [],
@@ -16,9 +16,12 @@ const INITIAL_STATE = {
   flatQuestions: [],
   schemeError: null,
   formError: null,
-  reorderError: null,
+  alertError: null,
   previousQuestions: [],
-  previousOutline: {}
+  previousOutline: {},
+  lockedByCurrentUser: false,
+  lockInfo: {},
+  lockedAlert: null
 }
 
 const questionsToOutline = questions => {
@@ -103,18 +106,25 @@ const sortPossibleAnswers = questions => {
 const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_SCHEME_SUCCESS:
-      sortPossibleAnswers(action.payload.schemeQuestions)
+      sortPossibleAnswers(action.payload.scheme.schemeQuestions)
       return {
         ...state,
         questions: sortQuestions(
           getTreeFromFlatData({
-            flatData: getQuestionsFromOutline(action.payload.outline, action.payload.schemeQuestions)
+            flatData: getQuestionsFromOutline(action.payload.scheme.outline, action.payload.scheme.schemeQuestions)
           })
         ),
-        flatQuestions: action.payload.schemeQuestions,
-        outline: action.payload.outline,
-        empty: action.payload.schemeQuestions <= 0,
-        error: null
+        flatQuestions: action.payload.scheme.schemeQuestions,
+        outline: action.payload.scheme.outline,
+        empty: action.payload.scheme.schemeQuestions <= 0,
+        error: null,
+        lockInfo: action.payload.lockInfo,
+        lockedByCurrentUser: action.payload.lockedByCurrentUser,
+        lockedAlert: Object.keys(action.payload.lockInfo).length > 0
+          ? action.payload.lockedByCurrentUser
+            ? null
+            : true
+          : null
       }
 
     case types.GET_SCHEME_FAIL:
@@ -123,16 +133,22 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         schemeError: action.payload
       }
 
-    case types.RESET_REORDER_ERROR:
+    case types.RESET_ALERT_ERROR:
       return {
         ...state,
-        reorderError: null
+        alertError: null
+      }
+
+    case types.CLOSE_CODING_SCHEME_LOCK_ALERT:
+      return {
+        ...state,
+        lockedAlert: null
       }
 
     case types.REORDER_SCHEME_FAIL:
       return {
         ...state,
-        reorderError: action.payload,
+        alertError: action.payload,
         questions: state.previousQuestions,
         outline: state.previousOutline,
         previousQuestions: [],
@@ -142,9 +158,16 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
     case types.REORDER_SCHEME_SUCCESS:
       return {
         ...state,
-        reorderError: null,
+        alertError: null,
         previousQuestion: [],
         previousOutline: {}
+      }
+
+    case types.LOCK_SCHEME_FAIL:
+    case types.UNLOCK_SCHEME_FAIL:
+      return {
+        ...state,
+        alertError: action.payload
       }
 
     case types.ADD_QUESTION_FAIL:
@@ -251,9 +274,30 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         formError: null
       }
 
+    case types.LOCK_SCHEME_SUCCESS:
+      return {
+        ...state,
+        lockedByCurrentUser: action.payload.lockedByCurrentUser,
+        lockInfo: action.payload.lockInfo,
+        lockedAlert: Object.keys(action.payload.lockInfo).length > 0
+          ? action.payload.lockedByCurrentUser
+            ? null
+            : true
+          : null
+      }
+
+    case types.UNLOCK_SCHEME_SUCCESS:
+      return {
+        ...state,
+        lockedByCurrentUser: false,
+        lockInfo: {}
+      }
+
     case types.CLEAR_STATE:
       return INITIAL_STATE
 
+    case types.LOCK_SCHEME_REQUEST:
+    case types.UNLOCK_SCHEME_REQUEST:
     case types.REORDER_SCHEME_REQUEST:
     default:
       return state

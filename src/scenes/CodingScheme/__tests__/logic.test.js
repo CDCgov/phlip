@@ -15,7 +15,7 @@ describe('CodingScheme logic', () => {
 
   const setupStore = other => {
     return createMockStore({
-      initialState: { questions: [] },
+      initialState: { questions: [], data: { user: { currentUser: { id: 5 } } } },
       reducer: mockReducer,
       logic: logic,
       injectedDeps: {
@@ -30,6 +30,8 @@ describe('CodingScheme logic', () => {
       outline: { 1: { parentId: 0, positionInParent: 0 } }
     })
 
+    mock.onGet('/locks/scheme/projects/1').reply(200, {})
+
     const store = setupStore()
     store.dispatch({ type: types.GET_SCHEME_REQUEST, id: 1 })
 
@@ -39,8 +41,12 @@ describe('CodingScheme logic', () => {
         {
           type: types.GET_SCHEME_SUCCESS,
           payload: {
-            schemeQuestions: [{ id: 1, text: 'question 1' }],
-            outline: { 1: { parentId: 0, positionInParent: 0 } }
+            scheme: {
+              schemeQuestions: [{ id: 1, text: 'question 1' }],
+              outline: { 1: { parentId: 0, positionInParent: 0 } }
+            },
+            lockInfo: {},
+            lockedByCurrentUser: false
           }
         }
       ])

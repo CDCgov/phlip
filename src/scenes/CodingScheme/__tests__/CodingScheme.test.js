@@ -10,7 +10,10 @@ const props = {
     enableHover: () => {},
     disableHover: () => {}
   },
-  questions: []
+  questions: [],
+  lockInfo: {},
+  lockedByCurrentUser: false,
+  hasLock: false
 }
 
 describe('CodingScheme scene', () => {

@@ -8,11 +8,18 @@ import { FormControl, FormHelperText } from 'material-ui/Form'
 import IconButton from 'components/IconButton'
 import * as questionTypes from '../../constants'
 import { MenuDown } from 'mdi-material-ui'
+import { withStyles } from 'material-ui/styles'
+
+const styles = {
+  disabled: {
+    color: 'black'
+  }
+}
 
 const SelectInput = props => {
   const {
-    name, label, answerType, type, input, classes, index, required,
-    currentValue, meta: { asyncValidating, active, touched, error, warning, dirty },
+    canModify, name, label, answerType, type, input, classes, required,
+    index, currentValue, meta: { asyncValidating, active, touched, error, warning, dirty },
     handleDelete, handleUp, handleDown, fields, isEdit, ...custom
   } = props
 
@@ -24,11 +31,9 @@ const SelectInput = props => {
             case questionTypes.BINARY:
             case questionTypes.MULTIPLE_CHOICE:
               return <Radio disabled />
-
             case questionTypes.CATEGORY:
             case questionTypes.CHECKBOXES:
               return <Checkbox disabled />
-
             default:
               break
           }
@@ -42,12 +47,16 @@ const SelectInput = props => {
             {...input}
             type={type}
             {...custom}
+            disabled={!canModify}
+            classes={{
+              disabled: classes.disabled
+            }}
           />
           {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
         </FormControl>
       </Column>
       <Row displayFlex style={{ alignItems: 'center' }}>
-        {answerType !== questionTypes.BINARY &&
+        {canModify && (answerType !== questionTypes.BINARY &&
         <Column displayFlex>
           <IconButton
             color="action"
@@ -66,26 +75,31 @@ const SelectInput = props => {
             aria-label="Move answer choice down one position"
             id={`move-answer-${index}-down`}
             onClick={handleDown}>arrow_drop_down</IconButton>
-        </Column>}
-        <Column>
-          {(currentValue.isNew)
-            ? <IconButton
+        </Column>)}
+      {canModify &&
+      <Column>
+        {currentValue.isNew
+          ? <IconButton
+            color="action"
+            onClick={handleDelete}
+            iconSize={20}
+            aria-label={`Delete ${index} answer`}
+            id={`delete-answer-${index}`}>
+            delete
+          </IconButton>
+          : (answerType === questionTypes.BINARY || isEdit)
+            ? null
+            : <IconButton
               color="action"
               onClick={handleDelete}
               iconSize={23}
               style={{ height: '20px !important' }}
               aria-label={`Delete ${index} answer`}
-              id={`delete-answer-${index}`}>delete</IconButton>
-            : (answerType === questionTypes.BINARY || isEdit)
-              ? null
-              : <IconButton
-                color="action"
-                onClick={handleDelete}
-                iconSize={23}
-                aria-label={`Delete ${index} answer`}
-                id={`delete-answer-${index}`}>delete</IconButton>
+              id={`delete-answer-${index}`}>
+              delete
+            </IconButton>
           }
-        </Column>
+        </Column>}
       </Row>
     </Container>
   )
@@ -105,4 +119,4 @@ SelectInput.defaultProps = {
   meta: {}
 }
 
-export default SelectInput
+export default withStyles(styles)(SelectInput)

@@ -30,6 +30,7 @@ export const QuestionNode = props => {
     isDragging,
     canDrop,
     canDrag,
+    canModify,
     turnOnHover,
     turnOffHover,
     node,
@@ -85,7 +86,7 @@ export const QuestionNode = props => {
         width: 830
       }}>
         <div className={styles.rowContents + (!canDrag ? ` ${styles.rowContentsDragDisabled}` : '')}>
-          {handle}
+          {canDrag && handle}
           <CardContent
             className={styles.rowLabel}
             style={{ padding: 5, display: 'flex', flex: 1, alignItems: 'center' }}
@@ -96,7 +97,7 @@ export const QuestionNode = props => {
             </Typography>
             {node.hovering &&
             <div style={{ zIndex: 5 }}>
-              {(parentNode === null || parentNode.questionType !== questionTypes.CATEGORY) &&
+              {canModify && ((parentNode === null || parentNode.questionType !== questionTypes.CATEGORY) &&
               <Tooltip
                 text="Add child question"
                 id={`add-child-question-${listIndex}`}
@@ -112,7 +113,7 @@ export const QuestionNode = props => {
                     color="accent"
                     style={{ ...actionStyles, marginRight: 10 }}
                     value={<Icon color="white">subdirectory_arrow_right</Icon>} />
-                </TextLink></Tooltip>}
+                </TextLink></Tooltip>)}
               <Tooltip
                 text="Edit question"
                 id={`edit-question-${listIndex}`}
@@ -122,7 +123,7 @@ export const QuestionNode = props => {
                   aria-label="Edit question"
                   to={{
                     pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`,
-                    state: { questionDefined: { ...node }, path }
+                    state: { questionDefined: { ...node }, path, canModify }
                   }}>
                   <Button
                     color="accent"
