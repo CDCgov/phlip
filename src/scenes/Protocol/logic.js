@@ -7,7 +7,16 @@ const getProtocolLogic = createLogic({
     const currentUserId = getState().data.user.currentUser.id
     try {
       const protocol = await api.getProtocol(action.projectId)
-      const lockInfo = await api.getProtocolLockInfo(action.projectId)
+      let lockInfo = {}
+
+      try {
+        lockInfo = await api.getProtocolLockInfo(action.projectId)
+      } catch (error) {
+        if (error.response.status === 404) {
+          lockInfo = {}
+        }
+      }
+
       dispatch({
         type: types.GET_PROTOCOL_SUCCESS,
         payload: {
@@ -49,7 +58,7 @@ const lockProtocolLogic = createLogic({
   async process({ api, action, getState }, dispatch, done) {
     const currentUserId = getState().data.user.currentUser.id
     try {
-      const lockInfo = await api.lockProtocol(action.id, currentUserId)
+      const lockInfo = await api.lockProtocol(action.projectId, currentUserId)
       dispatch({
         type: types.LOCK_PROTOCOL_SUCCESS,
         payload: {
@@ -73,7 +82,7 @@ const unlockProtocolLogic = createLogic({
   async process({ api, action, getState }, dispatch, done) {
     const userId = getState().data.user.currentUser.id
     try {
-      const unlockInfo = await api.unlockProtocol(action.id, userId)
+      const unlockInfo = await api.unlockProtocol(action.projectId, userId)
       dispatch({
         type: types.UNLOCK_PROTOCOL_SUCCESS,
         payload: { ...unlockInfo }

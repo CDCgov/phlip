@@ -7,7 +7,15 @@ const getSchemeLogic = createLogic({
   async process({ api, action, getState }, dispatch, done) {
     try {
       const scheme = await api.getScheme(action.id)
-      const lockInfo = await api.getCodingSchemeLockInfo(action.id)
+      let lockInfo = {}
+
+      try {
+        lockInfo = await api.getCodingSchemeLockInfo(action.id)
+      } catch (error) {
+        if (error.response.status === 404) {
+          lockInfo = {}
+        }
+      }
       const currentUserId = getState().data.user.currentUser.id
       dispatch({
         type: types.GET_SCHEME_SUCCESS,

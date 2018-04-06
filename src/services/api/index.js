@@ -132,32 +132,26 @@ export default {
 
   lockCodingScheme(projectId, userId) {
     return api.post(`/locks/scheme/projects/${projectId}/users/${userId}`).then(res => res.data)
-    //return { userId: 8, firstName: 'Admin', lastName: '' }
   },
 
   getCodingSchemeLockInfo(projectId) {
     return api.get(`/locks/scheme/projects/${projectId}`).then(res => res.data)
-    //return {}
   },
 
   unlockCodingScheme(projectId, userId) {
     return api.delete(`/locks/scheme/projects/${projectId}/users/${userId}`).then(res => res.data)
-    //return {}
   },
 
   lockProtocol(projectId, userId) {
     return api.post(`/locks/protocol/projects/${projectId}/users/${userId}`).then(res => res.data)
-    //return { userId: 8, firstName: 'Admin', lastName: '' }
   },
 
   getProtocolLockInfo(projectId) {
     return api.get(`/locks/protocol/projects/${projectId}`).then(res => res.data)
-    //return {}
   },
 
   unlockProtocol(projectId, userId) {
     return api.delete(`/locks/protocol/projects/${projectId}/users/${userId}`).then(res => res.data)
-    //return {}
   },
 
   // Get a scheme question, called in Coding/logic, Validation/logic
