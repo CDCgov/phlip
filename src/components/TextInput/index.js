@@ -17,8 +17,6 @@ const TextInput = props => {
     ...custom
   } = props
 
-  console.log(props)
-
   return (
     <FormControl error={Boolean(touched && error && !active || warning)} fullWidth disabled={disabled}>
       <InputLabel htmlFor={name} shrink={shrinkLabel} required={required}>{label}</InputLabel>

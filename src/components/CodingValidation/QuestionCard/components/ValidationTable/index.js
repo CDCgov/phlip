@@ -42,11 +42,11 @@ export const ValidationTable = props => {
 
   return (
     allFlags.length > 0 &&
-    <Container flex column style={{ padding: 25, flexBasis: 'auto', flexWrap: 'nowrap' }}>
+    <Container column style={{ padding: '25px 25px 0 25px', flexBasis: 'auto', flexWrap: 'nowrap' }}>
       <Row style={{ paddingBottom: 10 }}>
         <Typography type="subheading" style={{ color: '#a7bdc6' }}>Flags and Comments</Typography>
       </Row>
-      <Column displayFlex flex style={{ backgroundColor: '#f1f7f8', padding: 12, overflow: 'auto' }}>
+      <Column displayFlex flex style={{ backgroundColor: '#f1f7f8', padding: 12 }}>
         {allFlags.map((item, i) => {
           return Object.keys(item).length > 0 &&
             <Row
