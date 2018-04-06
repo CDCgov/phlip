@@ -26,7 +26,7 @@ const styles = theme => ({
 const MultiSelectDropdown = props => {
   const {
     input, selected, label, id,
-    classes, disabled, options, defaultValue,
+    classes, disabled, options, defaultValue, required,
     meta: { touched, error, active, warning }, ...otherProps } = props
 
   const menuItems = options.map(option => (
@@ -37,7 +37,7 @@ const MultiSelectDropdown = props => {
 
   return (
     <FormControl style={{ width: '100%' }} error={Boolean(touched && error && !active || warning)}>
-      <InputLabel htmlFor={id} shrink={input.value.length > 0}>{label}</InputLabel>
+      <InputLabel htmlFor={id} shrink={input.value.length > 0} required={required}>{label}</InputLabel>
       <Select
         {...input}
         multiple

@@ -68,6 +68,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
               multiline={true}
               name="text"
               placeholder="Enter question"
+              required={true}
               shrinkLabel={true}
             />
           </Column>
@@ -111,6 +112,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
                   },
                 ]
               }
+              required={true}
             />
           </Column>
         </Container>

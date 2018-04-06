@@ -204,6 +204,7 @@ export class JurisdictionForm extends Component {
           onChange={this.onSelectPreset}
           placeholder="Choose lists to load"
           options={options}
+          required
         />
       )
     } else {
@@ -221,7 +222,8 @@ export class JurisdictionForm extends Component {
             id: 'jurisdiction-name',
             disabled: this.state.edit,
             label: 'Name',
-            placeholder: 'Enter jurisdiction name'
+            placeholder: 'Enter jurisdiction name',
+            required: true
           }}
           handleSuggestionSelected={this.onJurisdictionSelected}
           renderSuggestion={renderSuggestion}
@@ -270,12 +272,12 @@ export class JurisdictionForm extends Component {
             <Container style={{ marginTop: 30 }}>
               <Column flex>
                 <Field
-                  component={DatePicker} name="startDate" label="Segment Start Date"
+                  component={DatePicker} required name="startDate" label="Segment Start Date"
                   dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
               </Column>
               <Column>
                 <Field
-                  component={DatePicker} name="endDate" label="Segment End Date"
+                  component={DatePicker} required name="endDate" label="Segment End Date"
                   dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
               </Column>
             </Container>

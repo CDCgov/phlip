@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Radio from 'material-ui/Radio'
-import { FormControlLabel, FormControl, FormGroup, FormHelperText } from 'material-ui/Form'
+import { FormControlLabel, FormControl, FormGroup, FormLabel, FormHelperText } from 'material-ui/Form'
+import { InputLabel } from 'material-ui/Input'
 import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
@@ -10,10 +11,11 @@ const styles = theme => ({
   }
 })
 
-export const RadioGroup = ({ choices, selected, onChange, error, required, helperText, classes }) => {
+export const RadioGroup = ({ choices, selected, onChange, error, required, helperText, label, classes }) => {
   return (
     <FormControl component="fieldset" required={required} error={error}>
-      <FormGroup>
+      <InputLabel shrink={true} required={required} style={{ position: 'relative' }}>{label}</InputLabel>
+      <FormGroup >
         {choices.map(choice => (
           <div key={choice.type} style={{ display: 'flex', alignItems: 'center' }}>
             <FormControlLabel

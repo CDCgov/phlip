@@ -10,11 +10,9 @@ const styles = theme => ({
   disabled: {
     color: 'black'
   },
-
   disabledIcon: {
     display: 'none'
   },
-
   icon: {
     position: 'absolute',
     right: 0,
@@ -24,14 +22,19 @@ const styles = theme => ({
   }
 })
 
-const Dropdown = ({ input, label, id, defaultValue, classes, shrinkLabel, disabled, meta: { touched, error }, options, ...otherProps }) => {
-  let menuItems = options.map(option => (
+const Dropdown = props => {
+  const {
+    input, label, id, defaultValue, classes, shrinkLabel,
+    disabled, meta: { touched, error }, options, required, ...otherProps
+  } = props
+
+  const menuItems = options.map(option => (
     <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
   ))
 
   return (
     <FormControl style={{ minWidth: '120px' }}>
-      <InputLabel htmlFor={id} shrink={shrinkLabel}>{label}</InputLabel>
+      <InputLabel htmlFor={id} shrink={shrinkLabel} required={required}>{label}</InputLabel>
       <Select
         input={<Input id={id} />}
         value={(input.value ? input.value : defaultValue)}

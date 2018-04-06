@@ -178,8 +178,9 @@ export class AddEditQuestion extends Component {
                     name="text"
                     component={TextInput}
                     label="Question"
-                    shrinkLabel={true}
-                    multiline={true}
+                    shrinkLabel
+                    multiline
+                    required
                     placeholder="Enter question"
                   />
                 </Column>
@@ -188,6 +189,7 @@ export class AddEditQuestion extends Component {
                     name="questionType"
                     component={DropDown}
                     label="Answer Type"
+                    required
                     options={this.parentDefined && (this.parentDefined.questionType === questionTypes.CATEGORY)
                       ? categoryChildOptions : options}
                     defaultValue={questionTypes.MULTIPLE_CHOICE}
@@ -201,7 +203,7 @@ export class AddEditQuestion extends Component {
                   <Field
                     name="hint"
                     component={TextInput}
-                    shrinkLabel={true}
+                    shrinkLabel
                     label="Coding directions"
                     placeholder="Enter any special directions or considerations to display when coding this question"
                   />

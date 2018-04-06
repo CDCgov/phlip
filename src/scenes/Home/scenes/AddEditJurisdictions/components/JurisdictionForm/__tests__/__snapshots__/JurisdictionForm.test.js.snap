@@ -69,6 +69,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
               "label": "Name",
               "onChange": [Function],
               "placeholder": "Enter jurisdiction name",
+              "required": true,
               "value": "Jurisdiction Name",
             }
           }
@@ -103,6 +104,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
             dateFormat="MM/DD/YYYY"
             label="Segment Start Date"
             name="startDate"
+            required={true}
             validate={[Function]}
           />
         </Column>
@@ -121,6 +123,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
             dateFormat="MM/DD/YYYY"
             label="Segment End Date"
             name="endDate"
+            required={true}
             validate={[Function]}
           />
         </Column>
