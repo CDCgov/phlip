@@ -33,7 +33,12 @@ const InputBox = ({ value, onChange, name, rows, answerId, classes, validator, i
         {isValidation &&
           <Avatar
             cardAvatar
-            avatar={validator.userId ? userImages[validator.userId].avatar : validator.avatar}
+            avatar={validator.userId
+              ? userImages[validator.userId] !== undefined
+                ? userImages[validator.userId].avatar
+                : validator.avatar
+              : validator.avatar
+            }
             style={{ marginRight: 15, backgroundColor: 'white', color: '#35ac74', borderColor: '#35ac74' }}
             initials={getInitials(validator.firstName, validator.lastName)}
           />}

@@ -28,7 +28,11 @@ export const TextFieldQuestions = ({ mergedUserQuestions, validator, validatorAn
         {mergedUserQuestions.answers.map((answer, index) =>
           <Fragment key={answer.id}>
             <Row displayFlex style={{ alignItems: 'center', paddingTop: 20, paddingBottom: 20, paddingRight: 5 }}>
-              <ValidationAvatar answer={answer} avatar={userImages[answer.userId].avatar} key={`user-answer-${index}`} />
+              <ValidationAvatar answer={answer}
+                                avatar={userImages[answer.userId].avatar !== undefined
+                                  ? userImages[answer.userId].avatar
+                                  : ''}
+                                key={`user-answer-${index}`} />
               <Paper elevation={0} style={{ marginLeft: 20 }}>
                 <Typography style={{ whiteSpace: 'pre-wrap' }}>{answer.textAnswer}</Typography>
               </Paper>

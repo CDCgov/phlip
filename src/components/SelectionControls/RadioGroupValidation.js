@@ -35,34 +35,46 @@ export const RadioGroup = props => {
             />
             {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
               answer.schemeAnswerId === choice.id &&
-              <ValidationAvatar key={`user-answer-${index}`} answer={answer} avatar={userImages[answer.userId].avatar} choice={choice.id} />
+              <ValidationAvatar
+                key={`user-answer-${index}`}
+                answer={answer}
+                avatar={userImages[answer.userId] !== undefined ? userImages[answer.userId].avatar : ''}
+                choice={choice.id} />
             ))}
             {userAnswers.answers.hasOwnProperty(choice.id)
-              && mergedUserQuestions !== null
-              && <Avatar
-                cardAvatar
-                avatar={userAnswers.validatedBy.userId ? userImages[userAnswers.validatedBy.userId].avatar : userAnswers.validatedBy.avatar} //this is not good
-                style={{ backgroundColor: 'white', color: theme.palette.secondary.main, borderColor: theme.palette.secondary.main }}
-                key={mergedUserQuestions.answers.length + 1}
-                initials={userAnswers.validatedBy === null
-                  ? ''
-                  : getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
-              />}
+            && mergedUserQuestions !== null
+            && <Avatar
+              cardAvatar
+              avatar={userAnswers.validatedBy.userId
+                ? userImages[userAnswers.validatedBy.userId] !== undefined
+                  ? userImages[userAnswers.validatedBy.userId].avatar
+                  : userAnswers.validatedBy.avatar
+                : userAnswers.validatedBy.avatar} //this is not good
+              style={{
+                backgroundColor: 'white',
+                color: theme.palette.secondary.main,
+                borderColor: theme.palette.secondary.main
+              }}
+              key={mergedUserQuestions.answers.length + 1}
+              initials={userAnswers.validatedBy === null
+                ? ''
+                : getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
+            />}
             {userAnswers.answers.hasOwnProperty(choice.id) &&
-              <SimpleInput
-                key={`${choice.id}-pincite`}
-                style={{
-                  width: 300,
-                  marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
-                    ? '15px'
-                    : '0px'
-                }}
-                disabled={disableAll}
-                placeholder="Enter pincite"
-                multiline={false}
-                value={userAnswers.answers[choice.id].pincite}
-                onChange={onChangePincite(choice.id, 'pincite')}
-              />}
+            <SimpleInput
+              key={`${choice.id}-pincite`}
+              style={{
+                width: 300,
+                marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
+                  ? '15px'
+                  : '0px'
+              }}
+              disabled={disableAll}
+              placeholder="Enter pincite"
+              multiline={false}
+              value={userAnswers.answers[choice.id].pincite}
+              onChange={onChangePincite(choice.id, 'pincite')}
+            />}
           </div>
         ))}
       </FormGroup>
