@@ -103,7 +103,7 @@ export class QuestionCard extends Component {
           </Typography>
         </Alert>
         <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
-          {(this.props.isChangingQuestion === true || this.props.questionChangeLoader === true)
+          {this.props.questionChangeLoader === true
             ? <PageLoader
               message="We're retrieving the question information..."
               circularLoaderProps={{ color: 'primary', size: 50 }} />
