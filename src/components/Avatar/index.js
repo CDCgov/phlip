@@ -1,9 +1,9 @@
 import React from 'react'
-import { default as MuiAvatar } from 'material-ui/Avatar'
 import PropTypes from 'prop-types'
+import { default as MuiAvatar } from 'material-ui/Avatar'
 import { withTheme } from 'material-ui/styles'
 
-const Avatar = ({ big, avatar, initials, style, theme, cardAvatar, ...otherProps }) => {
+export const Avatar = ({ big, avatar, initials, style, theme, cardAvatar, ...otherProps }) => {
   const styles = {
     color: 'white',
     backgroundColor: theme.palette.secondary.main,
@@ -30,7 +30,11 @@ const Avatar = ({ big, avatar, initials, style, theme, cardAvatar, ...otherProps
 
 Avatar.propTypes = {
   big: PropTypes.bool,
-  avatar: PropTypes.any
+  avatar: PropTypes.any,
+  initials: PropTypes.string,
+  style: PropTypes.object,
+  theme: PropTypes.object,
+  cardAvatar: PropTypes.bool
 }
 
 Avatar.defaultProps = {

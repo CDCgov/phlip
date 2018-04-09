@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CodingValidation should render Coding component correctly 1`] = `
+<CodingValidation
+  actions={Object {}}
+  answerErrorContent={null}
+  areJurisdictionsEmpty={false}
+  classes={
+    Object {
+      "mainContent": "CodingValidation-mainContent-1",
+      "openNavShift": "CodingValidation-openNavShift-2",
+    }
+  }
+  currentIndex={0}
+  getQuestionErrors={null}
+  isSchemeEmpty={false}
+  isValidation={false}
+  jurisdiction={
+    Object {
+      "id": 11,
+    }
+  }
+  jurisdictionId={11}
+  jurisdictionsList={
+    Array [
+      Object {
+        "id": 11,
+      },
+    ]
+  }
+  match={
+    Object {
+      "params": Object {
+        "id": 1,
+      },
+      "url": "/project/1/code",
+    }
+  }
+  page="coding"
+  projectId={1}
+  projectName="Project Test"
+  question={
+    Object {
+      "id": 1,
+      "text": "question!",
+    }
+  }
+  questionOrder={
+    Array [
+      1,
+    ]
+  }
+  saveFlagErrorContent={null}
+  schemeError={null}
+  selectedCategory={null}
+  showNextButton={false}
+  updateAnswerError={null}
+  user={
+    Object {
+      "id": 11,
+      "role": "Admin",
+    }
+  }
+  userRole="Admin"
+/>
+`;

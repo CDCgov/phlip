@@ -2,11 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Paper from 'material-ui/Paper'
 
-const baseStyle = {
-  flex: '1'
-}
+const baseStyle = { flex: '1' }
 
-const Card = ({ children, style, ...otherProps }) => {
+export const Card = ({ children, style, ...otherProps }) => {
   return (
     <Paper style={{ ...baseStyle, ...style }} {...otherProps}>
       {children}

@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
 import Typography from 'material-ui/Typography'
 import Icon from 'components/Icon'
 import { Row } from 'components/Layout'
@@ -18,6 +19,10 @@ export const ApiErrorView = ({ error }) => {
       </Row>
     </div>
   )
+}
+
+ApiErrorView.propTypes = {
+  error: PropTypes.string
 }
 
 export default ApiErrorView

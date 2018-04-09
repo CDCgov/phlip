@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApiErrorAlert component should render correctly 1`] = `
+<Alert
+  actions={
+    Array [
+      Object {
+        "onClick": [Function],
+        "type": "button",
+        "value": "Dismiss",
+      },
+    ]
+  }
+  open={true}
+  title={
+    <UNDEFINED>
+      <WithTheme
+        color="red"
+        size={30}
+        style={
+          Object {
+            "paddingRight": 10,
+          }
+        }
+      >
+        sentiment_very_dissatisfied
+      </WithTheme>
+      Uh-oh! Something went wrong.
+    </UNDEFINED>
+  }
+>
+  <WithStyles
+    style={
+      Object {
+        "whiteSpace": "pre-wrap",
+      }
+    }
+    variant="body1"
+  >
+    <div>
+      This is the error alert content.
+    </div>
+     Please try again later.
+  </WithStyles>
+</Alert>
+`;

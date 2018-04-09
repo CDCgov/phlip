@@ -40,8 +40,34 @@ const iconStyle = {
 
 const styles = theme => bodyStyles(theme)
 
-const withCodingValidation = (WrappedComponent, actions) => {
+export const withCodingValidation = (WrappedComponent, actions) => {
   class CodingValidation extends WrappedComponent {
+
+    static propTypes = {
+      projectName: PropTypes.string,
+      page: PropTypes.string,
+      isValidation: PropTypes.bool,
+      projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      question: PropTypes.object,
+      currentIndex: PropTypes.number,
+      questionOrder: PropTypes.array,
+      showNextButton: PropTypes.bool,
+      jurisdictionsList: PropTypes.array,
+      jurisdictionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      jurisdiction: PropTypes.object,
+      isSchemeEmpty: PropTypes.bool,
+      areJurisdictionsEmpty: PropTypes.bool,
+      userRole: PropTypes.string,
+      user: PropTypes.object,
+      selectedCategory: PropTypes.number,
+      schemeError: PropTypes.string,
+      updateAnswerError: PropTypes.string,
+      answerErrorContent: PropTypes.any,
+      saveFlagErrorContent: PropTypes.string,
+      getQuestionErrors: PropTypes.string,
+      actions: PropTypes.object
+    }
+
     constructor(context, props) {
       super(context, props)
 
@@ -313,6 +339,7 @@ const withCodingValidation = (WrappedComponent, actions) => {
   }
 
   const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
+
   return connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CodingValidation))
 }
 
@@ -336,5 +363,10 @@ export const bodyStyles = theme => ({
     marginLeft: 0
   }
 })
+
+withCodingValidation.propTypes = {
+  WrappedComponent: PropTypes.component,
+  actions: PropTypes.object
+}
 
 export default withCodingValidation

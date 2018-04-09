@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApiErrorView component should render correctly 1`] = `
+<div
+  style={
+    Object {
+      "position": "relative",
+      "top": "20%",
+    }
+  }
+>
+  <Row
+    component={
+      <WithStyles
+        item={true}
+      />
+    }
+    displayFlex={true}
+    flex={false}
+    style={
+      Object {
+        "justifyContent": "center",
+      }
+    }
+  >
+    <WithTheme
+      color="#757575"
+      size={175}
+    >
+      sentiment_very_dissatisfied
+    </WithTheme>
+  </Row>
+  <Row
+    component={
+      <WithStyles
+        item={true}
+      />
+    }
+    displayFlex={true}
+    flex={false}
+    style={
+      Object {
+        "justifyContent": "center",
+      }
+    }
+  >
+    <WithStyles
+      style={
+        Object {
+          "textAlign": "center",
+        }
+      }
+      type="display2"
+    >
+      Uh-oh! Something went wrong. 
+      This is an error.
+       Please try again later.
+    </WithStyles>
+  </Row>
+</div>
+`;
