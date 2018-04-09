@@ -174,7 +174,7 @@ export class AddEditQuestion extends Component {
           ? 'Save'
           : 'Add',
         type: 'submit',
-        disabled: false, //!!(this.props.form.asyncErrors || this.props.form.syncErrors),
+        disabled: !this.state.canModify,
         otherProps: { 'aria-label': 'Save form' }
       }
     ]

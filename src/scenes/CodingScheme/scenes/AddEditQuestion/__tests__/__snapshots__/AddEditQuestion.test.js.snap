@@ -193,7 +193,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
             "value": "Cancel",
           },
           Object {
-            "disabled": false,
+            "disabled": true,
             "otherProps": Object {
               "aria-label": "Save form",
             },
