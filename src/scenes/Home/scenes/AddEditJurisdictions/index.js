@@ -50,7 +50,7 @@ export class AddEditJurisdictions extends Component {
       if (this.props.isLoadingJurisdictions) {
         this.props.actions.showJurisdictionLoader()
       }
-    }, 1)
+    }, 1000)
   }
 
   getButton = () => {
