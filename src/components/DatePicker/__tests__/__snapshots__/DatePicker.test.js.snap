@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DatePicker component should render correctly 1`] = `
+<WithStyles
+  disabled={false}
+  error={false}
+>
+  <DatePickerWrapper
+    InputLabelProps={
+      Object {
+        "required": false,
+        "shrink": true,
+      }
+    }
+    autoOk={false}
+    format="MM/DD/YYYY"
+    keyboard={true}
+    label="Date picker"
+    mask={
+      Array [
+        /\\^\\[\\\\d\\]\\*/,
+        /\\\\d/,
+        "/",
+        /\\\\d/,
+        /\\\\d/,
+        "/",
+        /\\\\d/,
+        /\\\\d/,
+        /\\\\d/,
+        /\\\\d/,
+      ]
+    }
+    name="date-picker"
+    onChange={[Function]}
+    returnMoment={true}
+    style={
+      Object {
+        "marginTop": 16,
+      }
+    }
+    utils={
+      Object {
+        "formatNumber": [Function],
+        "getCalendarHeaderText": [Function],
+        "getDatePickerHeaderText": [Function],
+        "getDateTimePickerHeaderText": [Function],
+        "getDayText": [Function],
+        "getHourText": [Function],
+        "getMeridiemText": [Function],
+        "getMinuteText": [Function],
+        "getMonthNumber": [Function],
+        "getNextMonth": [Function],
+        "getPreviousMonth": [Function],
+        "getStartOfMonth": [Function],
+        "getWeekArray": [Function],
+        "getWeekdays": [Function],
+        "getYear": [Function],
+        "getYearText": [Function],
+        "setYear": [Function],
+      }
+    }
+    value={2018-04-09T15:53:56.387Z}
+  />
+  <WithStyles />
+</WithStyles>
+`;

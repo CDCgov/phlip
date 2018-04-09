@@ -49,3 +49,7 @@ export const addPresetJurisdictionRequest = (jurisdiction, projectId) => ({
 export const resetFormError = () => ({
   type: types.RESET_FORM_ERROR
 })
+
+export const showJurisdictionLoader = () => ({
+  type: types.SHOW_JURISDICTION_LOADER
+})

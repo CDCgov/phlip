@@ -14,6 +14,7 @@ import Typography from 'material-ui/Typography'
 import TextLink from 'components/TextLink'
 import ApiErrorView from 'components/ApiErrorView'
 import { withTheme } from 'material-ui/styles'
+import PageLoader from 'components/PageLoader'
 
 export class AddEditJurisdictions extends Component {
   static propTypes = {
@@ -22,7 +23,9 @@ export class AddEditJurisdictions extends Component {
     searchValue: PropTypes.string,
     history: PropTypes.object,
     actions: PropTypes.object,
-    theme: PropTypes.object
+    theme: PropTypes.object,
+    showJurisdictionLoader: PropTypes.bool,
+    isLoadingJurisdictions: PropTypes.bool
   }
 
   constructor(props, context) {
@@ -31,6 +34,7 @@ export class AddEditJurisdictions extends Component {
 
   componentWillMount() {
     this.props.actions.getProjectJurisdictions(this.props.project.id)
+    this.showJurisdictionLoader()
   }
 
   onCloseModal = () => {
@@ -39,6 +43,14 @@ export class AddEditJurisdictions extends Component {
 
   componentWillUnmount() {
     this.props.actions.clearJurisdictions()
+  }
+
+  showJurisdictionLoader = () => {
+    setTimeout(() => {
+      if (this.props.isLoadingJurisdictions) {
+        this.props.actions.showJurisdictionLoader()
+      }
+    }, 1)
   }
 
   getButton = () => {
@@ -82,9 +94,9 @@ export class AddEditJurisdictions extends Component {
             <Column flex displayFlex style={{ overflowX: 'auto' }}>
               {this.props.error === true
                 ? <ApiErrorView error={this.props.errorContent} />
-                : <JurisdictionList
-                  jurisdictions={this.props.visibleJurisdictions}
-                  projectId={this.props.project.id} />}
+                : this.props.showJurisdictionLoader
+                  ? <PageLoader message="We're loading the jurisdictions..." />
+                  : <JurisdictionList jurisdictions={this.props.visibleJurisdictions} projectId={this.props.project.id} />}
             </Column>
           </Container>
         </ModalContent>
@@ -106,7 +118,9 @@ const mapStateToProps = (state, ownProps) => ({
   project: state.scenes.home.main.projects.byId[ownProps.match.params.id],
   visibleJurisdictions: state.scenes.home.addEditJurisdictions.visibleJurisdictions || [],
   error: state.scenes.home.addEditJurisdictions.error || false,
-  errorContent: state.scenes.home.addEditJurisdictions.errorContent || ''
+  errorContent: state.scenes.home.addEditJurisdictions.errorContent || '',
+  isLoadingJurisdictions: state.scenes.home.addEditJurisdictions.isLoadingJurisdictions || false,
+  showJurisdictionLoader: state.scenes.home.addEditJurisdictions.showJurisdictionLoader || false,
 })
 
 const mapDispatchToProps = (dispatch) => ({

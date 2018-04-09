@@ -9,7 +9,9 @@ const INITIAL_STATE = {
   suggestionValue: '',
   jurisdiction: {},
   goBack: false,
-  formError: null
+  formError: null,
+  isLoadingJurisdictions: false,
+  showJurisdictionLoader: false
 }
 
 const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
@@ -25,7 +27,9 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         formError: null,
         error: false,
         errorContent: '',
-        goBack: false
+        goBack: false,
+        showJurisdictionLoader: false,
+        isLoadingJurisdictions: false
       }
 
     case types.UPDATE_PROJECT_JURISDICTION_SUCCESS:
@@ -124,7 +128,9 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         error: true,
-        errorContent: 'We couldn\'t get the jurisdictions for this project.'
+        errorContent: 'We couldn\'t get the jurisdictions for this project.',
+        showJurisdictionLoader: false,
+        isLoadingJurisdictions: false
       }
 
     case types.RESET_FORM_ERROR:
@@ -134,8 +140,19 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         goBack: false
       }
 
-    case types.SEARCH_JURISDICTION_LIST:
     case types.GET_PROJECT_JURISDICTIONS_REQUEST:
+      return {
+        ...state,
+        isLoadingJurisdictions: true
+      }
+
+    case types.SHOW_JURISDICTION_LOADER:
+      return {
+        ...state,
+        showJurisdictionLoader: true
+      }
+
+    case types.SEARCH_JURISDICTION_LIST:
     case types.UPDATE_PROJECT_JURISDICTION_REQUEST:
     case types.ADD_PROJECT_JURISDICTION_REQUEST:
     case types.ADD_PRESET_JURISDICTION_REQUEST:

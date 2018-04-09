@@ -15,6 +15,10 @@ export const PageLoader = ({ circularLoaderType, circularLoaderProps, message })
 
 PageLoader.defaultProps = {
   circularLoaderType: 'indeterminate',
+  circularLoaderProps: {
+    color: 'primary',
+    size: 50
+  }
 }
 
 PageLoader.propTypes = {
