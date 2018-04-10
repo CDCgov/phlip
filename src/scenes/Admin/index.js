@@ -32,7 +32,6 @@ export class Admin extends Component {
     return (
       <Container column flex>
         <PageHeader
-          showButton={true}
           pageTitle="User Management"
           protocolButton={false}
           projectName=""
@@ -41,7 +40,8 @@ export class Admin extends Component {
             text: '+ Add New User',
             path: '/admin/new/user',
             state: {},
-            props: { 'aria-label': 'Add new user' }
+            props: { 'aria-label': 'Add new user' },
+            show: true
           }} />
         <Divider />
         <UserList

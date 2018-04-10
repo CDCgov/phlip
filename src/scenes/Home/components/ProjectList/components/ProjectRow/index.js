@@ -8,12 +8,14 @@ import TextLink from 'components/TextLink'
 import IconButton from 'components/IconButton'
 import TableCell from 'components/TableCell'
 import * as actions from 'scenes/Home/actions'
+import moment from 'moment'
 
 const greyIcon = '#b1b3b3'
 
 export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => {
   const isCoder = role === 'Coder'
 
+  const date = moment.parseZone(project.dateLastEdited).local().format('M/D/YYYY H:mm A')
   return (
     <TableRow key={project.id}>
       <TableCell
@@ -39,7 +41,7 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => 
       <TableCell
         key={`${project.id}-dateLastEdited`}
         style={{ textAlign: 'unset', width: isCoder ? '15%' : 'unset', paddingRight: 24 }}>
-        {new Date(project.dateLastEdited).toLocaleDateString()}
+        {date}
       </TableCell>
       <TableCell key={`${project.id}-lastEditedBy`} style={{ width: isCoder ? '15%' : 'unset', paddingRight: 24 }}>
         {project.lastEditedBy}

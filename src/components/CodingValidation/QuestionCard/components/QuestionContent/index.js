@@ -22,7 +22,7 @@ export const QuestionContent = props => {
   const questionAnswerPadding = {
     paddingTop: 0,
     paddingRight: 25,
-    paddingBottom: 30,
+    paddingBottom: 15,
     paddingLeft: (question.number && (question.number.split('.').length * 3) + 40) || 40
   }
 
@@ -32,7 +32,7 @@ export const QuestionContent = props => {
   }
 
   return (
-    <Container column flex style={{ flexWrap: 'nowrap' }}>
+    <Container column flex style={{ flexWrap: 'nowrap', paddingBottom: 15, overflow: 'auto' }}>
       <Row displayFlex style={{ padding: '20px 20px 10px 20px' }}>
         <Column>
           <Typography type="subheading">{question.number})</Typography>
@@ -41,7 +41,7 @@ export const QuestionContent = props => {
           <Typography type="subheading">{question.text}</Typography>
         </Column>
       </Row>
-      <Column displayFlex flex style={{ ...questionAnswerPadding, flexBasis: '60%' }}>
+      <Column flex style={{ ...questionAnswerPadding, flexBasis: '60%' }}>
         {(question.questionType === questionTypes.MULTIPLE_CHOICE ||
           question.questionType === questionTypes.BINARY) &&
         <Row flex displayFlex style={{ ...answerPadding, paddingRight: 0, overflow: 'auto' }}>
@@ -97,7 +97,7 @@ export const QuestionContent = props => {
           disabled={disableAll}
         />
         }
-        <Row style={{ ...answerPadding, paddingRight: 0, paddingTop: 20, paddingBottom: 0 }}>
+        <Row style={{ ...answerPadding, paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
           {question.includeComment &&
           <Row>
             <SimpleInput
@@ -116,7 +116,7 @@ export const QuestionContent = props => {
       </Column>
 
       {question.hint &&
-        <Row displayFlex style={{ padding: '0px 35px 0px 35px' }}>
+        <Row displayFlex style={{ padding: '20px 35px 0px 35px' }}>
           <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
           <Typography type="body1" style={{ color: '#98b3be' }}><strong>Coding Directions: </strong>{question.hint}</Typography>
         </Row>

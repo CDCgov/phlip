@@ -75,7 +75,8 @@ export class Home extends Component {
             state: { userDefined: null, modal: true },
             props: {
               'aria-label': 'Create New Project'
-            }
+            },
+            show: this.props.user.role !== 'Coder'
           }} />
         <Divider />
         {this.props.error

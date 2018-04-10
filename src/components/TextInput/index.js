@@ -10,10 +10,16 @@ const styles = {
   }
 }
 
-const TextInput = ({ name, label, type, input, disabled, multiline, shrinkLabel, classes, meta: { asyncValidating, active, touched, error, warning }, ...custom }) => {
+const TextInput = props => {
+  const {
+    name, label, type, input, disabled, multiline, shrinkLabel, required,
+    classes, meta: { asyncValidating, active, touched, error, warning },
+    ...custom
+  } = props
+
   return (
     <FormControl error={Boolean(touched && error && !active || warning)} fullWidth disabled={disabled}>
-      <InputLabel htmlFor={name} shrink={shrinkLabel}>{label}</InputLabel>
+      <InputLabel htmlFor={name} shrink={shrinkLabel} required={required}>{label}</InputLabel>
       <Input
         id={name}
         {...input}

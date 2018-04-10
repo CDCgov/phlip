@@ -22,6 +22,14 @@ export const addJurisdictionLogic = createLogic({
         type: types.ADD_PROJECT_JURISDICTION_SUCCESS,
         payload: { ...jurisdiction }
       })
+      dispatch({
+        type: types.ADD_JURISDICTION_TO_PROJECT,
+        payload: { jurisdiction: { ...jurisdiction }, projectId: action.projectId }
+      })
+      dispatch({
+        type: types.UPDATE_EDITED_FIELDS,
+        projectId: action.projectId
+      })
     } catch (error) {
       dispatch({
         type: types.ADD_PROJECT_JURISDICTION_FAIL,
@@ -42,10 +50,46 @@ export const updateJurisdictionLogic = createLogic({
         type: types.UPDATE_PROJECT_JURISDICTION_SUCCESS,
         payload: { ...updatedJurisdiction }
       })
+      dispatch({
+        type: types.UPDATE_JURISDICTION_IN_PROJECT,
+        payload: { jurisdiction: { ...updatedJurisdiction }, projectId: action.projectId }
+      })
+      dispatch({
+        type: types.UPDATE_EDITED_FIELDS,
+        projectId: action.projectId
+      })
     } catch (error) {
       dispatch({
         type: types.UPDATE_PROJECT_JURISDICTION_FAIL,
         payload: 'We couldn\'t update this jurisdiction. Please try again later.',
+        error: true
+      })
+    }
+    done()
+  }
+})
+
+export const addPresetJurisdictionLogic = createLogic({
+  type: types.ADD_PRESET_JURISDICTION_REQUEST,
+  async process ({ action, api }, dispatch, done) {
+    try {
+      const presetJurisdictions = await api.addPresetJurisdictionList(action.projectId, action.jurisdiction)
+      dispatch({
+        type: types.ADD_PRESET_JURISDICTION_SUCCESS,
+        payload: [ ...presetJurisdictions ]
+      })
+      dispatch({
+        type: types.ADD_PRESET_JURISDICTION_TO_PROJECT,
+        payload: { jurisdictions: [...presetJurisdictions ], projectId: action.projectId }
+      })
+      dispatch({
+        type: types.UPDATE_EDITED_FIELDS,
+        projectId: action.projectId
+      })
+    } catch (error) {
+      dispatch({
+        type: types.ADD_PRESET_JURISDICTION_FAIL,
+        payload: 'We couldn\'t add the preset jurisdiction list. Please try again later.',
         error: true
       })
     }
@@ -67,7 +111,7 @@ export const searchJurisdictionList = createLogic({
 // This is to add the current user to the action so that lastEditedBy field can be updated. The action is then sent to
 // the reducer for each type.
 export const updateFieldsLogic = createLogic({
-  type: [types.ADD_PROJECT_JURISDICTION_REQUEST, types.UPDATE_PROJECT_JURISDICTION_REQUEST],
+  type: [types.ADD_PROJECT_JURISDICTION_REQUEST, types.UPDATE_PROJECT_JURISDICTION_REQUEST, types.ADD_PRESET_JURISDICTION_REQUEST],
   transform ({ action, getState }, next) {
     const userId = getState().data.user.currentUser.id
     next({
@@ -82,5 +126,6 @@ export default [
   getJurisdictionsLogic,
   addJurisdictionLogic,
   updateJurisdictionLogic,
-  searchJurisdictionList
+  searchJurisdictionList,
+  addPresetJurisdictionLogic
 ]

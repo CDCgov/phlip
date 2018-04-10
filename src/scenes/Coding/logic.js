@@ -57,21 +57,20 @@ export const getOutlineLogic = createLogic({
             userId,
             errors: { ...errors, ...initializeErrors }
           }
-
         }
       } else {
         // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
         if (scheme.schemeQuestions.length === 0) {
           payload = { isSchemeEmpty: true, areJurisdictionsEmpty: true }
+        } else {
+          payload = { isSchemeEmpty: false, areJurisdictionsEmpty: true }
         }
-        payload = { isSchemeEmpty: false, areJurisdictionsEmpty: true }
       }
 
       dispatch({
         type: types.GET_CODING_OUTLINE_SUCCESS,
         payload
       })
-      done()
     } catch (e) {
       dispatch({
         type: types.GET_CODING_OUTLINE_FAIL,

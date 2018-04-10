@@ -9,8 +9,11 @@ const initial = {
   formError: null,
   previousOutline: {},
   previousQuestions: [],
-  reorderError: null,
-  schemeError: null
+  schemeError: null,
+  alertError: null,
+  lockInfo: {},
+  lockedAlert: null,
+  lockedByCurrentUser: false
 }
 
 const getState = other => ({ ...initial, ...other })
@@ -31,11 +34,15 @@ describe('Coding Scheme reducer', () => {
       const action = {
         type: types.GET_SCHEME_SUCCESS,
         payload: {
-          schemeQuestions: questions,
-          outline: {
-            1: { parentId: 0, positionInParent: 0 },
-            2: { parentId: 0, positionInParent: 1 }
-          }
+          scheme: {
+            schemeQuestions: questions,
+            outline: {
+              1: { parentId: 0, positionInParent: 0 },
+              2: { parentId: 0, positionInParent: 1 }
+            }
+          },
+          lockInfo: {},
+          lockedByCurrentUser: false
         }
       }
 

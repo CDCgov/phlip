@@ -10,15 +10,28 @@ const styles = theme => ({
   }
 })
 
-const CheckboxLabel = ({ input, label, onChange, classes }) => {
+export const CheckboxLabel = ({ input, label, onChange, classes, disabled }) => {
   return (
     <FormControlLabel
       control={
-        <Checkbox checked={!!input.value} classes={{ checked: classes.checked }} onChange={input.onChange} />
+        <Checkbox
+          checked={!!input.value}
+          classes={{ checked: classes.checked }}
+          disabled={disabled}
+          onChange={input.onChange}
+        />
       }
       label={label}
     />
   )
+}
+
+CheckboxLabel.propTypes = {
+  input: PropTypes.object,
+  label: PropTypes.any,
+  onChange: PropTypes.func,
+  classes: PropTypes.object,
+  disabled: PropTypes.bool
 }
 
 export default withStyles(styles)(CheckboxLabel)

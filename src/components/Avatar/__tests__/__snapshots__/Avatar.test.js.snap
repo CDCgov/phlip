@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Avatar component should render correctly 1`] = `
+<WithStyles
+  style={
+    Object {
+      "backgroundColor": "#38a48e",
+      "color": "white",
+      "fontSize": "1rem",
+      "height": "30px",
+      "width": "30px",
+    }
+  }
+>
+  AU
+</WithStyles>
+`;

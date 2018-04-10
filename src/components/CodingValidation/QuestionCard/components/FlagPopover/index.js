@@ -220,7 +220,8 @@ export class FlagPopover extends Component {
               <TableHead>
                 <TableRow>
                   <TableCell padding="checkbox" style={{ maxWidth: 150, width: 150 }}>Raised By</TableCell>
-                  <TableCell padding="checkbox">Notes</TableCell>
+                  <TableCell
+                    padding="checkbox">Notes</TableCell>
                   {this.state.questionFlags[0].raisedBy.userId === this.props.user.id &&
                   <TableCell padding="checkbox" style={{ width: 48, paddingRight: 12 }}>Edit</TableCell>}
                 </TableRow>
@@ -233,7 +234,11 @@ export class FlagPopover extends Component {
                       maxWidth: 150,
                       width: 150
                     }}>{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}</TableCell>
-                    <TableCell padding="checkbox" style={{ width: 'unset' }}>{flag.notes}</TableCell>
+                    <TableCell
+                      padding="checkbox"
+                      style={{ maxWidth: 300, wordWrap: 'break-word', whiteSpace: 'pre-wrap' }}>
+                      {flag.notes}
+                    </TableCell>
                     {flag.raisedBy.userId === this.props.user.id &&
                     <TableCell padding="checkbox" style={{ width: 48, paddingRight: 12 }}>
                       <IconButton onClick={this.toggleEditMode} color="#5f6060">edit</IconButton></TableCell>}
@@ -252,6 +257,7 @@ export class FlagPopover extends Component {
                   onBlur={this.checkNotes}
                   error={this.state.helperText !== ''}
                   label="Notes"
+                  required
                   helperText={this.state.helperText}
                   placeholder="Enter Notes"
                   multiline={false}
@@ -292,6 +298,8 @@ export class FlagPopover extends Component {
                 choices={Object.values(this.userFlagColors)}
                 onChange={this.onChangeFlagType}
                 error={this.state.choiceHelperText !== ''}
+                label="Flag Type"
+                required
                 helperText={this.state.choiceHelperText} />
             </Row>
             <Row style={{ padding: 16 }}>
@@ -307,6 +315,7 @@ export class FlagPopover extends Component {
                 helperText={this.state.helperText}
                 placeholder="Enter Notes"
                 multiline={false}
+                required
                 type="text" />
             </Row>
             <Row displayFlex style={{ justifyContent: 'flex-end', padding: 16 }}>

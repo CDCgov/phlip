@@ -9,7 +9,9 @@ const INITIAL_STATE = {
   suggestionValue: '',
   jurisdiction: {},
   goBack: false,
-  formError: null
+  formError: null,
+  isLoadingJurisdictions: false,
+  showJurisdictionLoader: false
 }
 
 const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
@@ -25,7 +27,9 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         formError: null,
         error: false,
         errorContent: '',
-        goBack: false
+        goBack: false,
+        showJurisdictionLoader: false,
+        isLoadingJurisdictions: false
       }
 
     case types.UPDATE_PROJECT_JURISDICTION_SUCCESS:
@@ -53,6 +57,18 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         goBack: true
       }
 
+    case types.ADD_PRESET_JURISDICTION_SUCCESS:
+      const newIds = normalize.mapArray(action.payload)
+      return {
+        ...state,
+        jurisdictions: {
+          byId: { ...normalize.arrayToObject(action.payload), ...state.jurisdictions.byId },
+          allIds: [...newIds, ...state.jurisdictions.allIds]
+        },
+        visibleJurisdictions: [...newIds, ...state.visibleJurisdictions],
+        goBack: true
+      }
+
     case types.UPDATE_JURISDICTION_SEARCH_VALUE:
       return {
         ...state,
@@ -73,9 +89,7 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
     case types.SET_JURISDICTION_SUGGESTIONS:
       return {
         ...state,
-        suggestions: action.payload.filter(jurisdiction => {
-          return !normalize.mapArray(Object.values(state.jurisdictions.byId), 'name').includes(jurisdiction.name)
-        })
+        suggestions: action.payload
       }
 
     case types.ON_CLEAR_SUGGESTIONS:
@@ -87,7 +101,7 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
     case types.ON_JURISDICTION_SELECTED:
       return {
         ...state,
-        jurisdiction: action.jurisdiction,
+        jurisdiction: { ...action.jurisdiction },
         suggestionValue: action.jurisdiction.name
       }
 
@@ -97,6 +111,7 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         suggestionValue: '',
         suggestions: [],
         jurisdiction: {},
+        visibleJurisdictions: [],
         searchValue: '',
         goBack: false
       }
@@ -113,7 +128,9 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         error: true,
-        errorContent: 'We couldn\'t get the jurisdictions for this project.'
+        errorContent: 'We couldn\'t get the jurisdictions for this project.',
+        showJurisdictionLoader: false,
+        isLoadingJurisdictions: false
       }
 
     case types.RESET_FORM_ERROR:
@@ -123,10 +140,22 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         goBack: false
       }
 
-    case types.SEARCH_JURISDICTION_LIST:
     case types.GET_PROJECT_JURISDICTIONS_REQUEST:
+      return {
+        ...state,
+        isLoadingJurisdictions: true
+      }
+
+    case types.SHOW_JURISDICTION_LOADER:
+      return {
+        ...state,
+        showJurisdictionLoader: true
+      }
+
+    case types.SEARCH_JURISDICTION_LIST:
     case types.UPDATE_PROJECT_JURISDICTION_REQUEST:
     case types.ADD_PROJECT_JURISDICTION_REQUEST:
+    case types.ADD_PRESET_JURISDICTION_REQUEST:
     default:
       return state
   }

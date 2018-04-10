@@ -36,7 +36,13 @@ const INITIAL_STATE = {
   saveFlagErrorContent: null,
   getQuestionErrors: null,
   codedQuestionsError: null,
-  isApplyAllError: null
+  isApplyAllError: null,
+  isLoadingPage: false,
+  pageLoaderMessage: '',
+  questionChangeLoader: false,
+  showPageLoader: false,
+  questionChangeLoader: false,
+  isChangingQuestion: false
 }
 
 const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
@@ -133,7 +139,9 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
           action.payload.currentIndex,
           action.payload.updatedState
         ),
-        getQuestionErrors: errors.length > 0 ? errors : null
+        getQuestionErrors: errors.length > 0 ? errors : null,
+        questionChangeLoader: false,
+        isChangingQuestion: false
       }
 
     case `${types.ON_APPLY_ANSWER_TO_ALL}_${name}`:
@@ -175,6 +183,26 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
 
     case `${types.ON_CLOSE_SCREEN}_${name}`:
       return INITIAL_STATE
+
+    case `${types.ON_SHOW_PAGE_LOADER}_${name}`:
+      return {
+        ...state,
+        showPageLoader: true
+      }
+
+    case `${types.ON_SHOW_QUESTION_LOADER}_${name}`:
+      return {
+        ...state,
+        questionChangeLoader: true
+      }
+
+    case `${types.GET_NEXT_QUESTION}_${name}`:
+    case `${types.GET_PREV_QUESTION}_${name}`:
+    case `${types.ON_QUESTION_SELECTED_IN_NAV}_${name}`:
+      return {
+        ...state,
+        isChangingQuestion: true
+      }
 
     default:
       return state

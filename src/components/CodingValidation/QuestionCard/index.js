@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Divider from 'material-ui/Divider'
 import Card from 'components/Card/index'
@@ -15,6 +15,7 @@ import { bindActionCreators } from 'redux'
 import { getInitials } from 'utils/normalize'
 import Alert from 'components/Alert'
 import Typography from 'material-ui/Typography'
+import PageLoader from 'components/PageLoader'
 
 const TabContainer = props => {
   return (
@@ -102,33 +103,40 @@ export class QuestionCard extends Component {
           </Typography>
         </Alert>
         <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
-          <Row displayFlex style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
-            {this.props.question.questionType !== questionTypes.CATEGORY &&
-            <IconButton
-              onClick={this.props.onClearAnswer}
-              aria-label="Clear answer"
-              tooltipText="Clear answer"
-              id="clear-answer"
-              style={{ height: 24 }}>
-              {!this.props.disableAll && <Broom className={styles.sweep} aria-labelledby="Clear answer" />}
-            </IconButton>}
-            {!this.props.isValidation && <FlagPopover
-              userFlag={this.props.userAnswers.flag}
-              onSaveFlag={this.props.onSaveFlag}
-              questionFlags={this.props.question.flags}
-              user={this.props.user}
-              disableAll={this.props.disableAll} />}
-          </Row>
-          <Divider />
-          {this.props.categories !== undefined
-            ? <TabContainer
-              tabs={this.props.categories}
-              selected={this.props.selectedCategory}
-              onChangeCategory={this.props.onChangeCategory}>
-              <QuestionContent {...questionContentProps} />
-            </TabContainer>
-            : <QuestionContent{...questionContentProps} />
-          }
+          {this.props.questionChangeLoader === true
+            ? <PageLoader
+              message="We're retrieving the question information..."
+              circularLoaderProps={{ color: 'primary', size: 50 }} />
+            : <Fragment>
+              <Row
+                displayFlex
+                style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
+                {this.props.question.questionType !== questionTypes.CATEGORY &&
+                <IconButton
+                  onClick={this.props.onClearAnswer}
+                  aria-label="Clear answer"
+                  tooltipText="Clear answer"
+                  id="clear-answer"
+                  style={{ height: 24 }}>
+                  {!this.props.disableAll && <Broom className={styles.sweep} aria-labelledby="Clear answer" />}
+                </IconButton>}
+                {!this.props.isValidation && <FlagPopover
+                  userFlag={this.props.userAnswers.flag}
+                  onSaveFlag={this.props.onSaveFlag}
+                  questionFlags={this.props.question.flags}
+                  user={this.props.user}
+                  disableAll={this.props.disableAll} />}
+              </Row>
+              <Divider />
+              {this.props.categories !== undefined
+                ? <TabContainer
+                  tabs={this.props.categories}
+                  selected={this.props.selectedCategory}
+                  onChangeCategory={this.props.onChangeCategory}>
+                  <QuestionContent {...questionContentProps} />
+                </TabContainer>
+                : <QuestionContent{...questionContentProps} />}
+            </Fragment>}
         </Column>
       </Row>
     )
@@ -161,7 +169,9 @@ const mapStateToProps = (state, ownProps) => {
         : pageState.mergedUserQuestions[pageState.question.id]
       : null,
     disableAll: pageState.codedQuestionsError !== null || false,
-    userImages: pageState.userImages
+    userImages: pageState.userImages,
+    questionChangeLoader: pageState.questionChangeLoader || false,
+    isChangingQuestion: pageState.isChangingQuestion || false
   }
 }
 

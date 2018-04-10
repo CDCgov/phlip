@@ -20,11 +20,6 @@ const getState = other => ({ ...initial, ...other })
 const getReducer = (state, action) => reducer(state, action)
 
 describe('Coding reducer', () => {
-  test('should return initial state', () => {
-    expect(reducer(undefined, {}))
-      .toEqual({ ...initial, codedQuestionsError: null, getQuestionErrors: null, schemeError: null })
-  })
-
   describe('GET_CODING_OUTLINE_SUCCESS', () => {
     test('should set outline, scheme, current question and userAnswers based on action.payload', () => {
       const questions = {

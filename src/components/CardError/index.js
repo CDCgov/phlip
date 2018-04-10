@@ -5,7 +5,7 @@ import Grid from 'material-ui/Grid'
 import Card from 'components/Card'
 import Icon from 'components/Icon'
 
-const CardError = ({ children }) => (
+export const CardError = ({ children }) => (
   <Card style={{ display: 'flex' }}>
     <Grid container spacing={0} justify="center" style={{ flex: '1' }} alignItems="center">
       <Grid container direction="column" alignItems="center" spacing={0}>
@@ -25,7 +25,7 @@ const CardError = ({ children }) => (
 )
 
 CardError.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.any
 }
 
 export default CardError

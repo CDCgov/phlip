@@ -20,6 +20,7 @@ import Tooltip from 'components/Tooltip'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
 import ApiErrorView from 'components/ApiErrorView'
 import ApiErrorAlert from 'components/ApiErrorAlert'
+import PageLoader from 'components/PageLoader'
 
 const navButtonStyles = {
   height: 90,
@@ -40,8 +41,37 @@ const iconStyle = {
 
 const styles = theme => bodyStyles(theme)
 
-const withCodingValidation = (WrappedComponent, actions) => {
+export const withCodingValidation = (WrappedComponent, actions) => {
   class CodingValidation extends WrappedComponent {
+
+    static propTypes = {
+      projectName: PropTypes.string,
+      page: PropTypes.string,
+      isValidation: PropTypes.bool,
+      projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      question: PropTypes.object,
+      currentIndex: PropTypes.number,
+      questionOrder: PropTypes.array,
+      showNextButton: PropTypes.bool,
+      jurisdictionsList: PropTypes.array,
+      jurisdictionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      jurisdiction: PropTypes.object,
+      isSchemeEmpty: PropTypes.bool,
+      areJurisdictionsEmpty: PropTypes.bool,
+      userRole: PropTypes.string,
+      user: PropTypes.object,
+      selectedCategory: PropTypes.number,
+      schemeError: PropTypes.string,
+      updateAnswerError: PropTypes.string,
+      answerErrorContent: PropTypes.any,
+      saveFlagErrorContent: PropTypes.string,
+      getQuestionErrors: PropTypes.string,
+      isLoadingPage: PropTypes.bool,
+      pageLoadingMessage: PropTypes.string,
+      showPageLoader: PropTypes.bool,
+      actions: PropTypes.object
+    }
+
     constructor(context, props) {
       super(context, props)
 
@@ -91,10 +121,25 @@ const withCodingValidation = (WrappedComponent, actions) => {
 
     getNextQuestion = index => {
       this.props.actions.getNextQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
+      this.onShowQuestionLoader()
     }
 
     getPrevQuestion = index => {
       this.props.actions.getPrevQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
+      this.onShowQuestionLoader()
+    }
+
+    onQuestionSelectedInNav = item => {
+      this.props.actions.onQuestionSelectedInNav(item, this.props.projectId, this.props.jurisdictionId)
+      this.onShowQuestionLoader()
+    }
+
+    onShowQuestionLoader = () => {
+      setTimeout(() => {
+        if (this.props.isChangingQuestion) {
+          this.props.actions.showQuestionLoader()
+        }
+      }, 1000)
     }
 
     onAnswer = id => (event, value) => {
@@ -125,9 +170,7 @@ const withCodingValidation = (WrappedComponent, actions) => {
     }
 
     onOpenApplyAllAlert = () => {
-      this.setState({
-        applyAllAlertOpen: true
-      })
+      this.setState({ applyAllAlertOpen: true })
     }
 
     onCloseAlert = () => {
@@ -135,9 +178,7 @@ const withCodingValidation = (WrappedComponent, actions) => {
     }
 
     onCloseApplyAllAlert = () => {
-      this.setState({
-        applyAllAlertOpen: false
-      })
+      this.setState({ applyAllAlertOpen: false })
     }
 
     onApplyToAll = () => {
@@ -176,11 +217,11 @@ const withCodingValidation = (WrappedComponent, actions) => {
           <Typography type="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
           <Row displayFlex style={{ width: '100%', justifyContent: 'space-evenly' }}>
             {noScheme && this.props.userRole !== 'Coder' &&
-            <TextLink to={{ pathname: `/project/${this.props.projectId}/coding-scheme/` }}>
+            <TextLink to={{ pathname: `/project/${this.props.projectId}/coding-scheme` }}>
               <Button value="Create Coding Scheme" color="accent" />
             </TextLink>}
             {noJurisdictions && this.props.userRole !== 'Coder' &&
-            <TextLink to={{ pathname: `/project/${this.props.projectId}/jurisdictions/` }}>
+            <TextLink to={{ pathname: `/project/${this.props.projectId}/jurisdictions` }}>
               <Button value="Add Jurisdictions" color="accent" />
             </TextLink>}
           </Row>
@@ -189,23 +230,27 @@ const withCodingValidation = (WrappedComponent, actions) => {
     }
 
     onShowCodeView = () => {
-      return (<Fragment>
-        <QuestionCard
-          page={this.props.page}
-          onChange={this.onAnswer}
-          onChangeTextAnswer={this.onChangeTextAnswer}
-          onChangeCategory={(event, selection) => this.props.actions.onChangeCategory(selection)}
-          onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
-          onOpenAlert={this.onOpenApplyAllAlert}
-          onSaveFlag={this.onSaveFlag}
-          onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert} />
-        <FooterNavigate
-          currentIndex={this.props.currentIndex}
-          getNextQuestion={this.getNextQuestion}
-          getPrevQuestion={this.getPrevQuestion}
-          totalLength={this.props.questionOrder.length}
-          showNextButton={this.props.showNextButton} />
-      </Fragment>)
+      return (
+        <Fragment>
+          <QuestionCard
+            page={this.props.page}
+            onChange={this.onAnswer}
+            onChangeTextAnswer={this.onChangeTextAnswer}
+            onChangeCategory={(event, selection) => this.props.actions.onChangeCategory(selection)}
+            onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
+            onOpenAlert={this.onOpenApplyAllAlert}
+            onSaveFlag={this.onSaveFlag}
+            onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
+          />
+          <FooterNavigate
+            currentIndex={this.props.currentIndex}
+            getNextQuestion={this.getNextQuestion}
+            getPrevQuestion={this.getPrevQuestion}
+            totalLength={this.props.questionOrder.length}
+            showNextButton={this.props.showNextButton}
+          />
+        </Fragment>
+      )
     }
 
     render() {
@@ -228,11 +273,13 @@ const withCodingValidation = (WrappedComponent, actions) => {
             open={this.props.getQuestionErrors !== null}
             content={this.props.getQuestionErrors}
             onCloseAlert={() => this.props.actions.dismissApiAlert('getQuestionErrors')} />
+          {!this.props.showPageLoader &&
           <Navigator
             open={this.state.navOpen}
             page={this.props.page}
             selectedCategory={this.props.selectedCategory}
-            handleQuestionSelected={(item) => this.props.actions.onQuestionSelectedInNav(item, this.props.projectId, this.props.jurisdictionId)} />
+            handleQuestionSelected={this.onQuestionSelectedInNav}
+          />}
           <HeaderedLayout
             padding={false}
             className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}>
@@ -249,7 +296,7 @@ const withCodingValidation = (WrappedComponent, actions) => {
                 this.props.questionOrder.length === 0} />
               <Container flex style={{ backgroundColor: '#f5f5f5' }}>
                 <Row displayFlex flex style={{ overflow: 'auto' }}>
-                  <Column>
+                  {!this.props.showPageLoader && <Column>
                     {this.state.showViews &&
                     (this.props.jurisdiction !== null && this.props.questionOrder.length !== 0) &&
                     <Tooltip
@@ -259,14 +306,18 @@ const withCodingValidation = (WrappedComponent, actions) => {
                       aria-label="Toggle Navigator">
                       <MuiButton style={navButtonStyles} aria-label="Toggle Navigator" onClick={this.onToggleNavigator}>
                         <Icon color="white" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
-                  </Column>
+                  </Column>}
                   <Column displayFlex flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
                     {this.state.showSchemeError &&
                     <ApiErrorView error="We couldn't get the coding scheme for this project." />}
-                    {this.state.showViews &&
-                    (this.props.areJurisdictionsEmpty === true || this.props.isSchemeEmpty === true
-                      ? this.onShowGetStartedView(this.props.isSchemeEmpty, this.props.areJurisdictionsEmpty)
-                      : this.onShowCodeView())}
+                    {this.props.showPageLoader === true
+                      ? <PageLoader
+                        message={this.props.pageLoaderMessage}
+                        circularLoaderProps={{ color: 'primary', size: 50 }} />
+                      : this.state.showViews &&
+                      (this.props.areJurisdictionsEmpty === true || this.props.isSchemeEmpty === true
+                        ? this.onShowGetStartedView(this.props.isSchemeEmpty, this.props.areJurisdictionsEmpty)
+                        : this.onShowCodeView())}
                   </Column>
                 </Row>
               </Container>
@@ -308,11 +359,16 @@ const withCodingValidation = (WrappedComponent, actions) => {
       updateAnswerError: pageState.updateAnswerError || null,
       answerErrorContent: pageState.errorTypeMsg || '',
       saveFlagErrorContent: pageState.saveFlagErrorContent || null,
-      getQuestionErrors: pageState.getQuestionErrors || null
+      getQuestionErrors: pageState.getQuestionErrors || null,
+      isLoadingPage: pageState.isLoadingPage || false,
+      pageLoaderMessage: pageState.pageLoaderMessage,
+      showPageLoader: pageState.showPageLoader || false,
+      isChangingQuestion: pageState.isChangingQuestion || false
     }
   }
 
   const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
+
   return connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CodingValidation))
 }
 
@@ -336,5 +392,10 @@ export const bodyStyles = theme => ({
     marginLeft: 0
   }
 })
+
+withCodingValidation.propTypes = {
+  WrappedComponent: PropTypes.component,
+  actions: PropTypes.object
+}
 
 export default withCodingValidation

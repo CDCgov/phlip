@@ -60,8 +60,6 @@ export class AddEditUser extends Component {
       updatedValues[field] = trimWhitespace(values[field])
     }
 
-    console.log(updatedValues)
-
     if (this.props.match.params.id) {
       this.props.actions.updateUserRequest({ role: 'Coordinator', ...updatedValues, avatar: this.props.avatar })
       if (this.props.currentUser.id === updatedValues.id) {
@@ -209,18 +207,24 @@ export class AddEditUser extends Component {
                   name="firstName"
                   component={TextInput}
                   label="First Name"
-                  placeholder="Enter First Name"
+                  placeholder="Enter first name"
                   validate={this.required}
-                  fullWidth={true} />
+                  required
+                  shrinkLabel
+                  fullWidth
+                />
               </Column>
               <Column flex style={{ paddingLeft: 10 }}>
                 <Field
                   name="lastName"
                   component={TextInput}
                   label="Last Name"
-                  placeholder="Enter Last Name"
+                  required
+                  shrinkLabel
+                  placeholder="Enter last name"
                   validate={this.required}
-                  fullWidth={true} />
+                  fullWidth
+                />
               </Column>
             </Row>
             <Row style={rowStyles}>
@@ -228,18 +232,24 @@ export class AddEditUser extends Component {
                 name="email"
                 component={TextInput}
                 label="Email"
-                placeholder="Enter Email"
+                shrinkLabel
+                required
+                placeholder="Enter email"
                 validate={this.required}
-                fullWidth={true} />
+                fullWidth
+              />
             </Row>
             <Row style={{ paddingBottom: 25 }}>
               <Field
                 name="password"
                 component={TextInput}
                 label="Password"
-                placeholder="Enter Password"
+                required
+                placeholder="Enter password"
                 validate={this.required}
-                fullWidth={true} />
+                fullWidth
+                shrinkLabel
+              />
             </Row>
             <Row>
               <Field
@@ -249,7 +259,8 @@ export class AddEditUser extends Component {
                 options={roles}
                 defaultValue=""
                 id="role"
-                style={{ display: 'flex' }} />
+                style={{ display: 'flex' }}
+              />
             </Row>
           </Container>
           <Route path="/admin/edit/user/:id/avatar" component={AvatarForm} />

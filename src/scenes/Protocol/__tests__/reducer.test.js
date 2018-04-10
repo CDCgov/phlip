@@ -5,7 +5,10 @@ const initial = {
   content: '',
   getProtocolError: null,
   submitting: false,
-  saveError: null
+  alertError: null,
+  lockInfo: {},
+  lockedAlert: null,
+  lockedByCurrentUser: false
 }
 
 describe('Protocol reducer', () => {
@@ -21,9 +24,9 @@ describe('Protocol reducer', () => {
   })
 
   test('SAVE_PROTOCOL_FAIL', () => {
-    expect(reducer(initial, { type: types.SAVE_PROTOCOL_FAIL, payload: '' })).toEqual({
+    expect(reducer(initial, { type: types.SAVE_PROTOCOL_FAIL, payload: 'could not save protocol' })).toEqual({
       ...initial,
-      saveError: true
+      alertError: 'could not save protocol'
     })
   })
 
@@ -32,7 +35,10 @@ describe('Protocol reducer', () => {
   })
 
   test('GET_PROTOCOL_SUCCESS', () => {
-    expect(reducer(initial, { type: types.GET_PROTOCOL_SUCCESS, payload: 'this is protocol' })).toEqual({
+    expect(reducer(initial, {
+      type: types.GET_PROTOCOL_SUCCESS,
+      payload: { protocol: 'this is protocol', lockInfo: {}, lockedByCurrentUser: false }
+    })).toEqual({
       ...initial,
       content: 'this is protocol',
       getProtocolError: null
@@ -56,6 +62,14 @@ describe('Protocol reducer', () => {
 
   test('CLEAR_STATE', () => {
     expect(reducer({ content: 'protocol content' }, { type: types.CLEAR_STATE }))
-      .toEqual({ content: '', saveError: null, getProtocolError: null, submitting: false })
+      .toEqual({
+        content: '',
+        alertError: null,
+        getProtocolError: null,
+        submitting: false,
+        lockInfo: {},
+        lockedByCurrentUser: false,
+        lockedAlert: null
+      })
   })
 })

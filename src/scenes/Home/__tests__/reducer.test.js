@@ -48,7 +48,9 @@ const initial = {
     suggestionValue: '',
     jurisdiction: {},
     formError: null,
-    goBack: false
+    goBack: false,
+    isLoadingJurisdictions: false,
+    showJurisdictionLoader: false
   }
 }
 

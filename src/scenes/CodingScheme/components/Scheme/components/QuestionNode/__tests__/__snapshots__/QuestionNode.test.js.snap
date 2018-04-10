@@ -9,7 +9,7 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
   }
 >
   <div
-    className="undefined undefined"
+    className="undefined"
   >
     <div
       onDragEnd={[Function]}
@@ -27,7 +27,7 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
         }
       >
         <div
-          className="undefined undefined"
+          className="undefined"
         >
           <div>
             <WithStyles

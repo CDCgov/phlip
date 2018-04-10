@@ -8,25 +8,7 @@ import * as codingValidationTypes from 'scenes/Coding/actionTypes'
 import * as otherActionTypes from 'components/CodingValidation/actionTypes'
 const types = { ...codingValidationTypes, ...otherActionTypes }
 
-const INITIAL_STATE = {
-  question: {},
-  scheme: null,
-  outline: {},
-  jurisdiction: undefined,
-  jurisdictionId: undefined,
-  currentIndex: 0,
-  categories: undefined,
-  selectedCategory: 0,
-  selectedCategoryId: null,
-  userAnswers: {},
-  showNextButton: true,
-  mergedUserQuestions: null,
-  schemeError: null,
-  getQuestionErrors: null,
-  codedQuestionsError: null
-}
-
-const codingReducer = (state = INITIAL_STATE, action) => {
+const codingReducer = (state, action) => {
   const questionUpdater = state.question.isCategoryQuestion
     ? handleUpdateUserCategoryChild(state, action)
     : handleUpdateUserCodedQuestion(state, action)
@@ -43,7 +25,10 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           categories: undefined,
           areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty,
           isSchemeEmpty: action.payload.isSchemeEmpty,
-          schemeError: null
+          schemeError: null,
+          isLoadingPage: false,
+          pageLoaderMessage: '',
+          showPageLoader: false
         }
       } else {
         sortList(action.payload.question.possibleAnswers, 'order', 'asc')
@@ -59,8 +44,27 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           isSchemeEmpty: false,
           schemeError: null,
           getQuestionErrors: errors.length > 0 ? errors : null,
-          codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null
+          codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
+          isLoadingPage: false,
+          pageLoaderMessage: '',
+          showPageLoader: false
         }
+      }
+
+    case types.GET_CODING_OUTLINE_REQUEST:
+      return {
+        ...state,
+        isLoadingPage: true,
+        pageLoaderMessage: 'We\'re retrieving the data...'
+      }
+
+    case types.GET_CODING_OUTLINE_FAIL:
+      return {
+        ...state,
+        schemeError: action.payload,
+        isLoadingPage: false,
+        pageLoaderMessage: '',
+        showPageLoader: false
       }
 
     case types.ON_SAVE_RED_FLAG_SUCCESS:
@@ -99,12 +103,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
           : state.userAnswers[action.questionId],
       }
 
-    case types.GET_CODING_OUTLINE_FAIL:
-      return {
-        ...state,
-        schemeError: action.payload
-      }
-
     case types.GET_USER_CODED_QUESTIONS_SUCCESS:
       const errors = generateError(action.payload.errors)
       return {
@@ -114,23 +112,30 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         scheme: action.payload.scheme,
         getQuestionErrors: errors.length > 0 ? errors : null,
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
+        isLoadingPage: false,
+        pageLoaderMessage: '',
+        showPageLoader: false,
         ...action.payload.otherUpdates,
       }
 
     case types.GET_USER_CODED_QUESTIONS_FAIL:
       return {
         ...state,
-        getQuestionsError: ''
+        getQuestionsError: '',
+        isLoadingPage: false,
+        pageLoaderMessage: '',
+        showPageLoader: false
       }
 
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
       return {
         ...state,
-        codedQuestionsError: null
+        codedQuestionsError: null,
+        isLoadingPage: true,
+        pageLoaderMessage: 'We\'re getting the data for this jurisdiction...'
       }
 
     case types.ON_SAVE_RED_FLAG_REQUEST:
-    case types.GET_CODING_OUTLINE_REQUEST:
     default:
       return state
   }

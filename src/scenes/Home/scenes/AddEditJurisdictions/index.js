@@ -9,12 +9,12 @@ import Button from 'components/Button'
 import Container, { Column, Row } from 'components/Layout'
 import JurisdictionList from './components/JurisdictionList'
 import * as actions from './actions'
-import JurisdictionForm from './components/JurisdictionForm'
 import Divider from 'material-ui/Divider'
 import Typography from 'material-ui/Typography'
 import TextLink from 'components/TextLink'
 import ApiErrorView from 'components/ApiErrorView'
 import { withTheme } from 'material-ui/styles'
+import PageLoader from 'components/PageLoader'
 
 export class AddEditJurisdictions extends Component {
   static propTypes = {
@@ -23,7 +23,9 @@ export class AddEditJurisdictions extends Component {
     searchValue: PropTypes.string,
     history: PropTypes.object,
     actions: PropTypes.object,
-    theme: PropTypes.object
+    theme: PropTypes.object,
+    showJurisdictionLoader: PropTypes.bool,
+    isLoadingJurisdictions: PropTypes.bool
   }
 
   constructor(props, context) {
@@ -32,22 +34,39 @@ export class AddEditJurisdictions extends Component {
 
   componentWillMount() {
     this.props.actions.getProjectJurisdictions(this.props.project.id)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    //console.log(nextProps)
+    this.showJurisdictionLoader()
   }
 
   onCloseModal = () => {
-    this.props.actions.clearJurisdictions()
     this.props.history.push('/home')
+  }
+
+  componentWillUnmount() {
+    this.props.actions.clearJurisdictions()
+  }
+
+  showJurisdictionLoader = () => {
+    setTimeout(() => {
+      if (this.props.isLoadingJurisdictions) {
+        this.props.actions.showJurisdictionLoader()
+      }
+    }, 1000)
   }
 
   getButton = () => {
     return (
-      <TextLink to={{ pathname: `/project/${this.props.project.id}/jurisdictions/add`, state: { modal: true }}}>
-        <Button value="+ Add Jurisdiction" color="accent" aria-label="Add jurisidiction to project" />
-      </TextLink>
+      <Fragment>
+        <div style={{ marginRight: 10 }}>
+          <TextLink to={{ pathname: `/project/${this.props.project.id}/jurisdictions/add`, state: { preset: true } }}>
+            <Button value="Load Preset" color="accent" aria-label="Load preset" />
+          </TextLink>
+        </div>
+        <div>
+          <TextLink to={{ pathname: `/project/${this.props.project.id}/jurisdictions/add`, state: { preset: false } }}>
+            <Button value="+ Add Jurisdiction" color="accent" aria-label="Add jurisidiction to project" />
+          </TextLink>
+        </div>
+      </Fragment>
     )
   }
 
@@ -74,8 +93,10 @@ export class AddEditJurisdictions extends Component {
           <Container flex style={{ marginTop: 20 }}>
             <Column flex displayFlex style={{ overflowX: 'auto' }}>
               {this.props.error === true
-                ? <ApiErrorView error={this.props.errorContent}/>
-                : <JurisdictionList jurisdictions={this.props.visibleJurisdictions} projectId={this.props.project.id} />}
+                ? <ApiErrorView error={this.props.errorContent} />
+                : this.props.showJurisdictionLoader
+                  ? <PageLoader message="We're loading the jurisdictions..." />
+                  : <JurisdictionList jurisdictions={this.props.visibleJurisdictions} projectId={this.props.project.id} />}
             </Column>
           </Container>
         </ModalContent>
@@ -97,7 +118,9 @@ const mapStateToProps = (state, ownProps) => ({
   project: state.scenes.home.main.projects.byId[ownProps.match.params.id],
   visibleJurisdictions: state.scenes.home.addEditJurisdictions.visibleJurisdictions || [],
   error: state.scenes.home.addEditJurisdictions.error || false,
-  errorContent: state.scenes.home.addEditJurisdictions.errorContent || ''
+  errorContent: state.scenes.home.addEditJurisdictions.errorContent || '',
+  isLoadingJurisdictions: state.scenes.home.addEditJurisdictions.isLoadingJurisdictions || false,
+  showJurisdictionLoader: state.scenes.home.addEditJurisdictions.showJurisdictionLoader || false,
 })
 
 const mapDispatchToProps = (dispatch) => ({

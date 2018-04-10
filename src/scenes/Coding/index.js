@@ -11,12 +11,22 @@ export class Coding extends Component {
 
   componentWillMount() {
     this.props.actions.getCodingOutlineRequest(this.props.projectId, this.props.jurisdictionId, 'coding')
+    this.onShowPageLoader()
+  }
+
+  onShowPageLoader = () => {
+    setTimeout(() => {
+      if (this.props.isLoadingPage) {
+        this.props.actions.showPageLoader()
+      }
+    }, 1000)
   }
 
   onJurisdictionChange = (event) => {
     this.setState({ selectedJurisdiction: event.target.value })
     this.props.actions.onChangeJurisdiction(event.target.value, this.props.jurisdictionsList)
     this.props.actions.getUserCodedQuestions(this.props.projectId, event.target.value)
+    this.onShowPageLoader()
   }
 
   onSaveFlag = flagInfo => {

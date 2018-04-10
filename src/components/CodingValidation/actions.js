@@ -70,6 +70,14 @@ export const actions = {
   onChangeJurisdiction: {
     type: types.ON_CHANGE_JURISDICTION,
     args: ['event', 'jurisdictionsList']
+  },
+  showQuestionLoader: {
+    type: types.ON_SHOW_QUESTION_LOADER,
+    args: []
+  },
+  showPageLoader: {
+    type: types.ON_SHOW_PAGE_LOADER,
+    args: []
   }
 }
 

@@ -7,28 +7,7 @@ import * as codingValidationTypes from 'scenes/Validation/actionTypes'
 import * as otherActionTypes from 'components/CodingValidation/actionTypes'
 const types = { ...codingValidationTypes, ...otherActionTypes }
 
-const INITIAL_STATE = {
-  question: {},
-  scheme: null,
-  outline: {},
-  jurisdiction: undefined,
-  jurisdictionId: undefined,
-  currentIndex: 0,
-  categories: undefined,
-  selectedCategory: 0,
-  userAnswers: {},
-  showNextButton: true,
-  mergedUserQuestions: [],
-  selectedCategoryId: null,
-  isSchemeEmpty: null,
-  areJurisdictionsEmpty: null,
-  schemeError: null,
-  getQuestionErrors: null,
-  codedQuestionsError: null,
-  userImages: null
-}
-
-const validationReducer = (state = INITIAL_STATE, action) => {
+const validationReducer = (state, action) => {
   switch (action.type) {
     case types.GET_VALIDATION_OUTLINE_SUCCESS:
       if (action.payload.isSchemeEmpty || action.payload.areJurisdictionsEmpty) {
@@ -41,7 +20,10 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           mergedUserQuestions: {},
           isSchemeEmpty: action.payload.isSchemeEmpty,
           areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty,
-          schemeError: null
+          schemeError: null,
+          isLoadingPage: false,
+          pageLoaderMessage: '',
+          showPageLoader: false
         }
       } else {
         sortList(action.payload.question.possibleAnswers, 'order', 'asc')
@@ -59,8 +41,27 @@ const validationReducer = (state = INITIAL_STATE, action) => {
           areJurisdictionsEmpty: false,
           schemeError: null,
           getQuestionErrors: errors.length > 0 ? errors : null,
-          codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null
+          codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
+          isLoadingPage: false,
+          pageLoaderMessage: '',
+          showPageLoader: false
         }
+      }
+
+    case types.GET_VALIDATION_OUTLINE_REQUEST:
+      return {
+        ...state,
+        isLoadingPage: true,
+        pageLoaderMessage: 'We\'re retrieving the data...'
+      }
+
+    case types.GET_VALIDATION_OUTLINE_FAIL:
+      return {
+        ...state,
+        schemeError: action.payload,
+        isLoadingPage: false,
+        pageLoaderMessage: '',
+        showPageLoader: false
       }
 
     case types.CLEAR_FLAG_SUCCESS:
@@ -141,30 +142,31 @@ const validationReducer = (state = INITIAL_STATE, action) => {
         getQuestionErrors: errors.length > 0 ? errors : null,
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
         userImages: action.payload.userImages,
+        isLoadingPage: false,
+        pageLoaderMessage: '',
+        showPageLoader: false,
         ...action.payload.otherUpdates,
-      }
-
-    case types.GET_VALIDATION_OUTLINE_FAIL:
-      return {
-        ...state,
-        schemeError: action.payload
       }
 
     case types.GET_USER_VALIDATED_QUESTIONS_REQUEST:
       return {
         ...state,
-        codedQuestionsError: null
+        codedQuestionsError: null,
+        isLoadingPage: true,
+        pageLoaderMessage: 'We\'re getting the data for this jurisdiction...'
       }
 
     case types.GET_USER_VALIDATED_QUESTIONS_FAIL:
       return {
         ...state,
-        getQuestionErrors: ''
+        getQuestionErrors: '',
+        isLoadingPage: false,
+        pageLoaderMessage: '',
+        showPageLoader: false
       }
 
     case types.CLEAR_RED_FLAG:
     case types.CLEAR_FLAG:
-    case types.GET_VALIDATION_OUTLINE_REQUEST:
     default:
       return state
   }

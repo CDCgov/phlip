@@ -155,8 +155,9 @@ export class AddEditProject extends Component {
               validate={this.required}
               placeholder="Enter Project Name"
               fullWidth
+              required={this.projectDefined ? this.state.edit : true}
               disabled={!this.state.edit}
-            />
+            />  
             <DetailRow
               name="type"
               component={Dropdown}
@@ -164,6 +165,7 @@ export class AddEditProject extends Component {
               defaultValue={1}
               options={options}
               id="type"
+              required={this.projectDefined ? this.state.edit : true}
               style={{ display: 'flex' }}
               disabled={!this.state.edit}
             />

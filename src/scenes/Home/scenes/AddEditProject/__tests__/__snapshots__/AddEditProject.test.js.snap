@@ -44,6 +44,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
         label="Project Name"
         name="name"
         placeholder="Enter Project Name"
+        required={true}
         validate={[Function]}
       />
       <DetailRow
@@ -65,6 +66,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
             },
           ]
         }
+        required={true}
         style={
           Object {
             "display": "flex",

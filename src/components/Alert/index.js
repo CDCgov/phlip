@@ -16,7 +16,8 @@ export const Alert = ({ actions, open, title, children }) => {
 
 Alert.propTypes = {
   open: PropTypes.bool.isRequired,
-  actions: PropTypes.array.isRequired
+  actions: PropTypes.array.isRequired,
+  title: PropTypes.any
 }
 
 Alert.defaultProps = {

@@ -12,7 +12,7 @@ export const DetailRow = ({ component, type, name, disabled, label, ...otherProp
         name={name}
         label={label}
         disabled={disabled}
-        shrinkLabel={true}
+        shrinkLabel
         disableUnderline={disabled}
         {...otherProps} />
     </Row>

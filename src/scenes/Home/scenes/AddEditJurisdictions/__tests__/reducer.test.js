@@ -9,7 +9,9 @@ const INITIAL_STATE = {
   suggestionValue: '',
   jurisdiction: {},
   formError: null,
-  goBack: false
+  goBack: false,
+  isLoadingJurisdictions: false,
+  showJurisdictionLoader: false
 }
 
 describe('Home scene - AddEditJurisdictions reducer', () => {
@@ -32,7 +34,7 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
       },
       visibleJurisdictions: [1, 2],
       error: false,
-      errorContent: "",
+      errorContent: '',
       formError: null,
       goBack: false
     })
@@ -154,7 +156,10 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
           suggestions: []
         }, {
           type: types.SET_JURISDICTION_SUGGESTIONS,
-          payload: [{ id: 4, name: 'Boston' }, { id: 5, name: 'New York' }, {id: 6, name: 'Oklahoma'}, {id: 2, name: 'Oregon'}]
+          payload: [
+            { id: 4, name: 'Boston' }, { id: 5, name: 'New York' }, { id: 6, name: 'Oklahoma' },
+            { id: 2, name: 'Oregon' }
+          ]
         }
       )
     ).toEqual({
@@ -168,7 +173,9 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
         },
         allIds: [1, 2, 3, 4]
       },
-      suggestions: [{ id: 5, name: 'New York' }, {id: 6, name: 'Oklahoma'}]
+      suggestions: [
+        { id: 4, name: 'Boston' }, { id: 5, name: 'New York' }, { id: 6, name: 'Oklahoma' }, { id: 2, name: 'Oregon' }
+      ]
     })
   })
 
@@ -177,7 +184,7 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
       reducer(
         {
           ...INITIAL_STATE,
-          suggestions: [{ id: 5, name: 'New York' }, {id: 6, name: 'Oklahoma'}]
+          suggestions: [{ id: 5, name: 'New York' }, { id: 6, name: 'Oklahoma' }]
         }, { type: types.ON_CLEAR_SUGGESTIONS }
       )
     ).toEqual({
@@ -193,7 +200,7 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
           ...INITIAL_STATE,
           suggestionValue: '',
           jurisdiction: {}
-        }, { type: types.ON_JURISDICTION_SELECTED, jurisdiction: { name: 'Atlanta', id: 1 }}
+        }, { type: types.ON_JURISDICTION_SELECTED, jurisdiction: { name: 'Atlanta', id: 1 } }
       )
     ).toEqual({
       ...INITIAL_STATE,
@@ -207,7 +214,7 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
       reducer(
         {
           ...INITIAL_STATE,
-          suggestions: [{ id: 5, name: 'New York' }, {id: 6, name: 'Oklahoma'}],
+          suggestions: [{ id: 5, name: 'New York' }, { id: 6, name: 'Oklahoma' }],
           jurisdiction: { id: 1, name: 'Atlanta' },
           suggestionValue: 'Atlanta'
         }, { type: types.CLEAR_JURISDICTIONS }
@@ -225,7 +232,8 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
   })
 
   test('should handle GET_PROJECT_JURISDICTIONS_REQUEST', () => {
-    expect(reducer(INITIAL_STATE, { type: types.GET_PROJECT_JURISDICTIONS_REQUEST })).toEqual(INITIAL_STATE)
+    expect(reducer(INITIAL_STATE, { type: types.GET_PROJECT_JURISDICTIONS_REQUEST }))
+      .toEqual({ ...INITIAL_STATE, isLoadingJurisdictions: true })
   })
 
   test('should handle UPDATE_PROJECT_JURISDICTION_REQUEST', () => {
