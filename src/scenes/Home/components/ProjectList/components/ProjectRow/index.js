@@ -27,16 +27,16 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => 
           onClick={() => actions.toggleBookmark(project)}
           tooltipText="Bookmark project"
           aria-label="Bookmark this project"
-          id="bookmark-project">
+          id={`bookmark-project-${project.id}`}>
           {bookmarked ? 'bookmark' : 'bookmark_border'}
         </IconButton>
       </TableCell>
       <TableCell key={`${project.id}-name`} style={{ paddingRight: 24, width: '15%' }}>
         <TextLink
-          aria-label="Edit project details" to={{
-          pathname: `/project/edit/${project.id}`,
-          state: { projectDefined: { ...project }, modal: true }
-        }}>{project.name}</TextLink>
+          aria-label="Edit project details"
+          to={{ pathname: `/project/edit/${project.id}`, state: { projectDefined: { ...project }, modal: true } }}>
+          {project.name}
+        </TextLink>
       </TableCell>
       <TableCell
         key={`${project.id}-dateLastEdited`}
@@ -95,7 +95,7 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => 
           placement="top-end"
           aria-label="Export validated questions"
           onClick={() => onExport(project.id)}
-          id="export-validated">
+          id={`export-validated-${project.id}`}>
           file_download
         </IconButton>{/*</TextLink>*/}
       </TableCell>}

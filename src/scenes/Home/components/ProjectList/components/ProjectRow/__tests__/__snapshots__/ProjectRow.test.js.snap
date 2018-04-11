@@ -18,7 +18,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       aria-label="Bookmark this project"
       color="#b1b3b3"
       iconSize={24}
-      id="bookmark-project"
+      id="bookmark-project-1"
       onClick={[Function]}
       tooltipText="Bookmark project"
     >
@@ -207,7 +207,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       aria-label="Export validated questions"
       color="#b1b3b3"
       iconSize={24}
-      id="export-validated"
+      id="export-validated-1"
       onClick={[Function]}
       placement="top-end"
       tooltipText="Export validated questions"

@@ -18,17 +18,19 @@ const TextInput = props => {
   } = props
 
   return (
-    <FormControl error={Boolean(touched && error && !active || warning)} fullWidth disabled={disabled}>
-      <InputLabel htmlFor={name} shrink={shrinkLabel} required={required}>{label}</InputLabel>
+    <FormControl
+      error={Boolean(touched && error && !active || warning)}
+      fullWidth
+      disabled={disabled}>
+      <InputLabel htmlFor={input.name} shrink={shrinkLabel} required={required}>{label}</InputLabel>
       <Input
-        id={name}
         {...input}
-        type={type}
         {...custom}
-        classes={{
-          disabled: classes.disabled
-        }}
+        type={type}
+        id={input.name}
+        classes={{ disabled: classes.disabled }}
         multiline={multiline}
+        inputProps={{ 'aria-label': label }}
       />
       {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
     </FormControl>
