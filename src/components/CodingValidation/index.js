@@ -282,7 +282,11 @@ export const withCodingValidation = (WrappedComponent, actions) => {
           />}
           <HeaderedLayout
             padding={false}
-            className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}>
+            className={
+              classNames(this.props.classes.mainContent, {
+                [this.props.classes.openNavShift]: this.state.navOpen && !this.props.showPageLoader,
+                [this.props.classes.pageLoading]: this.props.showPageLoader
+              })}>
             <Column flex displayFlex style={{ width: '100%', flexWrap: 'nowrap' }}>
               <Header
                 projectName={this.props.projectName}
@@ -389,6 +393,9 @@ export const bodyStyles = theme => ({
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),
+    marginLeft: 0
+  },
+  pageLoading: {
     marginLeft: 0
   }
 })

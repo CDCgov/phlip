@@ -9,6 +9,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
     Object {
       "mainContent": "CodingValidation-mainContent-1",
       "openNavShift": "CodingValidation-openNavShift-2",
+      "pageLoading": "CodingValidation-pageLoading-3",
     }
   }
   currentIndex={0}

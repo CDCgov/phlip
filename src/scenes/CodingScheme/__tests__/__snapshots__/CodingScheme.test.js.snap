@@ -26,7 +26,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
     <WithStyles
       variant="body1"
     >
-      You have locked the coding scheme. If you exit now, no one else will be allowed to edit until you release the lock. Are you sure you want to continue?
+      You have checked out the coding scheme. If you exit now, no one else will be allowed to edit until you check in. Are you sure you want to continue?
     </WithStyles>
   </Alert>
   <ApiErrorAlert
@@ -57,7 +57,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
         >
           lock
         </WithTheme>
-        The Coding Scheme is locked.
+        The Coding Scheme is checked out.
       </UNDEFINED>
     }
   >
@@ -65,7 +65,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
       variant="body1"
     >
       undefined undefined 
-       has locked the coding scheme. You will not be able to make changes until they have released the lock.
+       has checked out the coding scheme. You will not be able to make changes until they have checked in.
     </WithStyles>
   </Alert>
   <withRouter(WithTheme)
@@ -76,7 +76,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
           "onClick": [Function],
         },
         "show": false,
-        "text": "Lock coding scheme for editing",
+        "text": "Check out",
       }
     }
     onBackButtonClick={[Function]}

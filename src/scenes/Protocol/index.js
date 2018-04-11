@@ -53,6 +53,12 @@ export class Protocol extends Component {
         })
       }
     }
+
+    if (this.props.lockedByCurrentInfo !== true && nextProps.lockedByCurrentUser === true) {
+      this.setState({
+        editMode: true
+      })
+    }
   }
 
   componentWillMount() {
@@ -72,9 +78,7 @@ export class Protocol extends Component {
   }
 
   onEnableEdit = () => {
-    this.setState({
-      editMode: true
-    })
+    this.props.actions.lockProtocolRequest(this.props.projectId)
   }
 
   onCloseAlert = () => {
@@ -83,6 +87,7 @@ export class Protocol extends Component {
 
   onSaveProtocol = () => {
     this.props.actions.saveProtocolRequest(this.props.protocolContent, this.props.projectId)
+    this.props.actions.unlockProtocolRequest(this.props.projectId)
     this.props.actions.updateEditedFields(this.props.projectId)
   }
 
@@ -95,14 +100,6 @@ export class Protocol extends Component {
 
   onCloseLockedAlert = () => {
     this.props.actions.resetLockAlert()
-  }
-
-  handleLockProtocol = () => {
-    this.props.actions.lockProtocolRequest(this.props.projectId)
-  }
-
-  handleUnlockProtocol = () => {
-    this.props.actions.unlockProtocolRequest(this.props.projectId)
   }
 
   onContinue = () => {
@@ -160,23 +157,13 @@ export class Protocol extends Component {
           pageTitle="Protocol"
           protocolButton={false}
           onBackButtonClick={this.onGoBack}
-          checkoutButton={{
-            isLink: false,
-            text: this.props.lockedByCurrentUser ? 'Release Protocol Lock' : 'Lock protocol for editing',
-            props: {
-              onClick: this.props.lockedByCurrentUser
-                ? this.handleUnlockProtocol
-                : this.handleLockProtocol
-            },
-            show: this.props.getProtocolError !== true && !this.state.editMode
-          }}
           otherButton={this.props.getProtocolError ? {} : {
             isLink: false,
             text: this.state.editMode ? 'Save' : 'Edit',
             onClick: this.state.editMode ? this.onSaveProtocol : this.onEnableEdit,
             style: { color: 'black', backgroundColor: 'white' },
             otherProps: { 'aria-label': this.state.editMode ? 'Edit protocol' : 'Save protocol' },
-            show: this.props.getProtocolError !== true && (this.props.hasLock && this.props.lockedByCurrentUser)
+            show: this.props.getProtocolError !== true
           }}
         />
         <Alert

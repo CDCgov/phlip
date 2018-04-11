@@ -41,7 +41,7 @@ export const PageHeader = props => {
         {children}
         {protocolButton &&
         <Button
-          value="View/Edit Protocol"
+          value="Protocol"
           component={Link}
           to={`/project/${projectId}/protocol`}
           aria-label="View and Edit Protocol"

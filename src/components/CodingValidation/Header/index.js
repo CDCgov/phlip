@@ -50,7 +50,7 @@ export const Header = props => {
         <Column flex></Column>
         <TextLink to={`/project/${projectId}/protocol`}>
           <Button
-            value="View/Edit Protocol"
+            value="Protocol"
             style={{ backgroundColor: 'white', color: 'black' }}
             aria-label="View and edit protocol" />
         </TextLink>

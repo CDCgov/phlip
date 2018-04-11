@@ -99,12 +99,12 @@ export class CodingScheme extends Component {
         {!this.props.lockedByCurrentUser &&
         <Fragment>
           <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
-            The coding scheme is empty. To get started, lock the coding scheme for editing.
+            The coding scheme is empty. To get started, check out the coding scheme for editing.
           </Typography>
           <Button
-            value="Lock coding scheme for editing"
+            value="Check out"
             color="accent"
-            aria-label="Lock coding scheme"
+            aria-label="check out coding scheme"
             onClick={this.handleLockCodingScheme} />
         </Fragment>
         }
@@ -130,8 +130,8 @@ export class CodingScheme extends Component {
       <Container column flex>
         <Alert open={this.state.goBackAlertOpen} actions={alertActions}>
           <Typography variant="body1">
-            You have locked the coding scheme. If you exit now, no one else will be allowed to edit until you release
-            the lock. Are you sure you want to continue?
+            You have checked out the coding scheme. If you exit now, no one else will be allowed to edit until you check
+            in. Are you sure you want to continue?
           </Typography>
         </Alert>
         <ApiErrorAlert
@@ -142,10 +142,10 @@ export class CodingScheme extends Component {
           actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert }]}
           open={this.props.lockedAlert !== null}
           title={<Fragment><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
-            The Coding Scheme is locked.</Fragment>}>
+            The Coding Scheme is checked out.</Fragment>}>
           <Typography variant="body1">
-            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} has locked the coding scheme. You will
-            not be able to make changes until they have released the lock.
+            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} has checked out the coding scheme. You will
+            not be able to make changes until they have checked in.
           </Typography>
         </Alert>
         <PageHeader
@@ -156,7 +156,7 @@ export class CodingScheme extends Component {
           onBackButtonClick={this.onGoBack}
           checkoutButton={{
             isLink: false,
-            text: this.props.lockedByCurrentUser ? 'Release Coding Scheme Lock' : 'Lock coding scheme for editing',
+            text: this.props.lockedByCurrentUser ? 'Check in' : 'Check out',
             props: {
               onClick: this.props.lockedByCurrentUser
                 ? this.handleUnlockCodingScheme

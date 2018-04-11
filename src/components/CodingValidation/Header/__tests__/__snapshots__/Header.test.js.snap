@@ -148,7 +148,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
             "color": "black",
           }
         }
-        value="View/Edit Protocol"
+        value="Protocol"
       />
     </WithTheme>
   </React.Fragment>

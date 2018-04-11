@@ -7,7 +7,7 @@ import CircularLoader from 'components/CircularLoader'
 export const PageLoader = ({ circularLoaderType, circularLoaderProps, message }) => {
   return (
     <Container flex alignItems="center" style={{ justifyContent: 'center' }}>
-      {message && <Typography type="display2">{message}</Typography>}
+      {message && <Typography type="display2">Loading...</Typography>}
       <CircularLoader type={circularLoaderType} {...circularLoaderProps} />
     </Container>
   )
