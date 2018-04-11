@@ -233,6 +233,9 @@ export class JurisdictionForm extends Component {
     }
   }
 
+  validateMinDate = value => moment(value).year() < '1850' ? 'Minimum year for start date is 1850' : undefined
+  validateMaxDate = value => moment(value).year() > '2050' ? 'Maximum year for end date is 2050' : undefined
+
   render() {
     const formActions = [
       { value: 'Cancel', onClick: this.onCloseForm, type: 'button', otherProps: { 'aria-label': 'Close form' } },
@@ -252,7 +255,9 @@ export class JurisdictionForm extends Component {
         handleSubmit={this.props.location.state.preset === true ? this.onSubmitPreset : this.onSubmitForm}
         initialValues={this.jurisdictionDefined ||
         { name: this.props.location.state.preset === true ? [] : '', startDate: new Date(), endDate: new Date() }}
-        asyncValidate={(this.state.edit || this.props.location.state.preset === true) ? null : this.validateJurisdiction}
+        asyncValidate={(this.state.edit || this.props.location.state.preset === true)
+          ? null
+          : this.validateJurisdiction}
         asyncBlurFields={this.props.location.state.preset === true ? [] : ['name']}
         width="600px" height="400px"
         validate={validateDateRanges}
@@ -272,13 +277,29 @@ export class JurisdictionForm extends Component {
             <Container style={{ marginTop: 30 }}>
               <Column flex>
                 <Field
-                  component={DatePicker} required name="startDate" label="Segment Start Date"
-                  dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
+                  component={DatePicker}
+                  required
+                  name="startDate"
+                  label="Segment Start Date"
+                  dateFormat="MM/DD/YYYY"
+                  validate={this.validateMinDate}
+                  minDate={new Date(1850, 1, 1)}
+                  maxDate={new Date(2050, 1, 1)}
+                  autoOk={true}
+                />
               </Column>
               <Column>
                 <Field
-                  component={DatePicker} required name="endDate" label="Segment End Date"
-                  dateFormat="MM/DD/YYYY" validate={validateDate} autoOk={true} />
+                  component={DatePicker}
+                  required
+                  name="endDate"
+                  label="Segment End Date"
+                  dateFormat="MM/DD/YYYY"
+                  validate={this.validateMaxDate}
+                  minDate={new Date(1850, 1, 1)}
+                  maxDate={new Date(2050, 1, 1)}
+                  autoOk={true}
+                />
               </Column>
             </Container>
           </Container>
