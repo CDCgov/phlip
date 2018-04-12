@@ -145,10 +145,10 @@ export class Protocol extends Component {
           actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert }]}
           open={this.props.lockedAlert !== null}
           title={<Fragment><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
-            The Protocol is locked.</Fragment>}>
+            The Protocol is unavailable to edit.</Fragment>}>
           <Typography variant="body1">
-            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} has locked the protocol for editing.
-            You will not be able to make changes until they have released the lock.
+            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} is currently editing the protocol.
+            You will not be able to edit until they are done editing and have saved their changes.
           </Typography>
         </Alert>
         <PageHeader

@@ -12,6 +12,7 @@ module.exports = function makeConfig(env) {
   return {
     devtool: 'source-map',
     entry: {
+      arrayIncludes: `${paths.config}/array-includes.polyfill.js`,
       app: paths.appIndexJs
     },
 
@@ -155,6 +156,10 @@ module.exports = function makeConfig(env) {
           minifyCSS: true,
           minifyURLs: true,
         },
+        chunksSortMode: (a, b) => {
+          const order = ['arrayIncludes', 'app']
+          return order.indexOf(a.names[0]) - order.indexOf(b.names[0])
+        }
       }),
 
       new webpack.DefinePlugin(env),

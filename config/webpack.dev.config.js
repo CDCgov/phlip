@@ -10,12 +10,13 @@ module.exports = function makeConfig(env) {
   return {
     devtool: 'cheap-module-source-map',
     entry: {
+      arrayIncludes: `${paths.config}/array-includes.polyfill.js`,
       app: paths.appIndexJs
     },
 
     output: {
       path: paths.appBuild,
-      filename: 'bundle.js',
+      filename: '[name].bundle.js',
       chunkFilename: '[name].chunk.js',
       publicPath: paths.publicPath
     },
@@ -56,8 +57,8 @@ module.exports = function makeConfig(env) {
               loader: 'url-loader',
               options: {
                 limit: 10000,
-                name: 'dist/media/[name].[hash:8].[ext]',
-              },
+                name: 'dist/media/[name].[hash:8].[ext]'
+              }
             },
             {
               test: /\.jsx?$/,
@@ -74,7 +75,8 @@ module.exports = function makeConfig(env) {
                     plugins: [
                       require('babel-plugin-transform-runtime'),
                       require('babel-plugin-transform-object-assign'),
-                      require('babel-plugin-transform-object-rest-spread')]
+                      require('babel-plugin-transform-object-rest-spread')
+                    ]
                   }
                 }
               ],
@@ -89,8 +91,8 @@ module.exports = function makeConfig(env) {
                   options: {
                     modules: true,
                     '-autoprefixer': true,
-                    importLoaders: true,
-                  },
+                    importLoaders: true
+                  }
                 },
                 {
                   loader: 'postcss-loader',
@@ -100,63 +102,69 @@ module.exports = function makeConfig(env) {
                       autoprefixer({
                         browsers: [
                           'last 2 versions'
-                        ],
-                      }),
-                    ],
-                  },
-                },
-              ],
+                        ]
+                      })
+                    ]
+                  }
+                }
+              ]
             },
             {
               test: /\.scss$/,
-              use: [{
-                loader: "style-loader"
-              }, {
-                loader: "css-loader",
-                options: {
-                  modules: true,
-                  '-autoprefixer': true,
-                  importLoaders: true,
-                },
-              }, {
-                loader: 'postcss-loader',
-                options: {
-                  ident: 'postcss',
-                  plugins: () => [
-                    autoprefixer({
-                      browsers: [
-                        'last 2 versions'
-                      ],
-                    }),
-                  ],
-                },
-              }, {
-                loader: "sass-loader"
-              }]
+              use: [
+                {
+                  loader: 'style-loader'
+                }, {
+                  loader: 'css-loader',
+                  options: {
+                    modules: true,
+                    '-autoprefixer': true,
+                    importLoaders: true
+                  }
+                }, {
+                  loader: 'postcss-loader',
+                  options: {
+                    ident: 'postcss',
+                    plugins: () => [
+                      autoprefixer({
+                        browsers: [
+                          'last 2 versions'
+                        ]
+                      })
+                    ]
+                  }
+                }, {
+                  loader: 'sass-loader'
+                }
+              ]
             },
             {
               exclude: [/\.js$/, /\.html$/, /\.json$/],
               loader: 'file-loader',
               options: {
-                name: 'dist/media/[name].[hash:8].[ext]',
-              },
-            },
-          ],
-        },
-      ],
+                name: 'dist/media/[name].[hash:8].[ext]'
+              }
+            }
+          ]
+        }
+      ]
     },
 
     plugins: [
       new HtmlWebpackPlugin({
         inject: true,
         template: paths.appHtml,
+        chunksSortMode: (a, b) => {
+          const order = ['arrayIncludes', 'app']
+          return order.indexOf(a.names[0]) - order.indexOf(b.names[0])
+        }
       }),
 
       new webpack.ProvidePlugin({
         $: 'jquery',
         'window.jQuery': 'jquery',
         jQuery: 'jquery',
-        jquery: 'jquery',
+        jquery: 'jquery'
       }),
 
       new webpack.NamedModulesPlugin(),
@@ -164,9 +172,11 @@ module.exports = function makeConfig(env) {
 
       new webpack.DefinePlugin(env),
 
-      new CopyWebpackPlugin([{
-        from: paths.appPublic
-      }])
+      new CopyWebpackPlugin([
+        {
+          from: paths.appPublic
+        }
+      ])
     ]
   }
 }
