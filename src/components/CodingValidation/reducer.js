@@ -5,6 +5,10 @@ import {
   handleUpdateUserAnswers, handleUpdateUserCategoryChild, handleUpdateUserCodedQuestion,
   handleUserPinciteQuestion, initializeNavigator, generateError
 } from 'utils/codingHelpers'
+import { combineReducers } from 'redux'
+import questionCardReducer from './QuestionCard/reducer'
+import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
+import { checkIfExists } from 'utils/codingSchemeHelpers'
 
 const errorTypes = {
   1: 'We couldn\'t save the answer for this question. Your answer will be reset to the previous state.',
@@ -43,6 +47,64 @@ const INITIAL_STATE = {
   showPageLoader: false,
   questionChangeLoader: false,
   isChangingQuestion: false
+}
+
+const updateAnswers = (state, action) => {
+  let currentUserAnswers = { ...state.answers }
+  switch (state.question.questionType) {
+    case questionTypes.BINARY:
+    case questionTypes.MULTIPLE_CHOICE:
+      currentUserAnswers = { [action.answerId]: { schemeAnswerId: action.answerId, pincite: '' } }
+      break
+
+    case questionTypes.TEXT_FIELD:
+      if (action.answerValue === '') currentUserAnswers = {}
+      else {
+        currentUserAnswers = {
+          [action.answerId]: {
+            ...currentUserAnswers[action.answerId],
+            schemeAnswerId: action.answerId,
+            textAnswer: action.answerValue,
+            pincite: currentUserAnswers[action.answerId] ? currentUserAnswers[action.answerId].pincite || '' : ''
+          }
+        }
+      }
+      break
+
+    case questionTypes.CATEGORY:
+      // If they uncheck a category, then delete all other answers that have been associated with that category
+      if (checkIfExists(action, currentUserAnswers, 'answerId')) {
+        delete currentUserAnswers[action.answerId]
+      } else {
+        currentUserAnswers = {
+          ...currentUserAnswers,
+          [action.answerId]: { schemeAnswerId: action.answerId, pincite: '' }
+        }
+      }
+      break
+
+    case questionTypes.CHECKBOXES:
+      if (currentUserAnswers.hasOwnProperty(action.answerId)) delete currentUserAnswers[action.answerId]
+      else currentUserAnswers = {
+        ...currentUserAnswers,
+        [action.answerId]: { schemeAnswerId: action.answerId, pincite: '' }
+      }
+
+      return currentUserAnswers
+  }
+}
+
+const currentQuestionReducer = (state = {}, action, name) => {
+  switch (action.type) {
+    case `${types.UPDATE_USER_ANSWER_REQUEST}_${name}`:
+      return {
+        ...state,
+        answers: updateAnswers(state, action)
+      }
+
+    default:
+      return state
+  }
 }
 
 const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
@@ -215,17 +277,31 @@ const treeAndButton = intermediateState => {
     showNextButton: intermediateState.scheme === null ? false : determineShowButton(intermediateState),
     scheme: intermediateState.scheme === null ? null : {
       ...intermediateState.scheme,
-      tree: initializeNavigator(intermediateState.scheme.tree, intermediateState.scheme.byId, intermediateState.userAnswers, intermediateState.question)
+      tree: initializeNavigator(
+        intermediateState.scheme.tree, intermediateState.scheme.byId, intermediateState.userAnswers, intermediateState.question
+      )
     }
   }
 }
 
 export const createCodingValidationReducer = (uniqueReducer, handlers, name) => {
-  return function reducer(state = INITIAL_STATE, action) {
+  return function reducer (state = INITIAL_STATE, action) {
     if (handlers.includes(action.type)) {
       return treeAndButton(uniqueReducer(state, action))
     } else {
       return treeAndButton(codingValidationReducer(state, action, name))
     }
   }
+  /*const main = (state = INITIAL_STATE, action) => {
+    if (handlers.includes(action.type)) {
+      return treeAndButton(uniqueReducer(state, action))
+    } else {
+      return treeAndButton(codingValidationReducer(state, action, name))
+    }
+  }
+
+  return combineReducers({
+    main,
+    current: questionCardReducer
+  })*/
 }

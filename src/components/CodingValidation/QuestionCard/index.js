@@ -154,7 +154,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     isValidation: ownProps.page === 'validation',
     user: state.data.user.currentUser || {},
-    question: pageState.question,
+    question: pageState.scheme === null ? {} : pageState.scheme.byId[pageState.scheme.order[pageState.currentIndex]],
     categories: pageState.categories || undefined,
     selectedCategory: pageState.selectedCategory || 0,
     userAnswers: pageState.userAnswers

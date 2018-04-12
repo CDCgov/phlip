@@ -148,6 +148,10 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       )
     }
 
+    onSave = () => {
+
+    }
+
     onChangeTextAnswer = (id, field) => event => {
       switch (field) {
         case 'textAnswer':
@@ -343,7 +347,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       page,
       isValidation: page === 'validation',
       projectId: ownProps.match.params.id,
-      question: pageState.question || {},
+      question: pageState.scheme === null ? {} : pageState.scheme.byId[pageState.scheme.order[pageState.currentIndex]],
       currentIndex: pageState.currentIndex || 0,
       questionOrder: pageState.scheme === null ? null : pageState.scheme.order,
       showNextButton: pageState.showNextButton,
