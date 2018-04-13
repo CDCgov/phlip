@@ -114,10 +114,7 @@ export const getQuestionLogic = createLogic({
 
 // Logic for any time of action that happens on question
 export const answerQuestionLogic = createLogic({
-  type: [
-    types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER,
-    types.ON_APPLY_ANSWER_TO_ALL, types.ON_SAVE_FLAG
-  ],
+  type: [types.SAVE_USER_ANSWER_REQUEST, types.ON_APPLY_ANSWER_TO_ALL, types.ON_SAVE_FLAG],
   latest: true,
   async process({ getState, action, api }, dispatch, done) {
     const userId = getState().data.user.currentUser.id
@@ -126,7 +123,7 @@ export const answerQuestionLogic = createLogic({
     try {
       const codedQuestion = await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, answerObject)
       dispatch({
-        type: types.UPDATE_USER_ANSWER_SUCCESS,
+        type: types.SAVE_USER_ANSWER_SUCCESS,
         payload: { ...codedQuestion }
       })
       dispatch({
@@ -135,7 +132,7 @@ export const answerQuestionLogic = createLogic({
       })
     } catch (error) {
       dispatch({
-        type: types.UPDATE_USER_ANSWER_FAIL,
+        type: types.SAVE_USER_ANSWER_FAIL,
         payload: { error: 'Could not update answer', isApplyAll: action.type === types.ON_APPLY_ANSWER_TO_ALL }
       })
     }

@@ -31,8 +31,8 @@ export const actions = {
     type: types.ON_APPLY_ANSWER_TO_ALL,
     args: ['projectId', 'jurisdictionId', 'questionId']
   },
-  answerQuestionRequest: {
-    type: types.UPDATE_USER_ANSWER_REQUEST,
+  updateUserAnswer: {
+    type: types.UPDATE_USER_ANSWER,
     args: ['projectId', 'jurisdictionId', 'questionId', 'answerId', 'answerValue' ]
   },
   onChangeComment: {
@@ -78,6 +78,10 @@ export const actions = {
   showPageLoader: {
     type: types.ON_SHOW_PAGE_LOADER,
     args: []
+  },
+  saveUserAnswerRequest: {
+    type: types.SAVE_USER_ANSWER_REQUEST,
+    args: ['projectId', 'jurisdictionId', 'questionId']
   }
 }
 

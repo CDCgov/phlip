@@ -6,7 +6,7 @@ import { Row, Column } from 'components/Layout'
 import IconButton from 'components/IconButton'
 import QuestionContent from './components/QuestionContent'
 import Tabs from 'components/Tabs'
-import { Broom } from 'mdi-material-ui'
+import { Broom, ContentSave } from 'mdi-material-ui'
 import styles from './card-styles.scss'
 import * as questionTypes from '../constants'
 import FlagPopover from './components/FlagPopover'
@@ -65,6 +65,10 @@ export class QuestionCard extends Component {
     })
   }
 
+  onSave = () => {
+    this.props.onSave()
+  }
+
   render() {
     const questionContentProps = {
       onChange: this.onChangeAnswer,
@@ -111,6 +115,14 @@ export class QuestionCard extends Component {
               <Row
                 displayFlex
                 style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
+                <IconButton
+                  onClick={this.onSave}
+                  aria-label="Save answer"
+                  tooltipText="Save answer"
+                  id="save-answer"
+                  style={{ height: 24 }}>
+                  <ContentSave style={{ height: 24, width: 24, color:  '#38a48e' }} />
+                </IconButton>
                 {this.props.question.questionType !== questionTypes.CATEGORY &&
                 <IconButton
                   onClick={this.props.onClearAnswer}

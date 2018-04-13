@@ -143,7 +143,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
     }
 
     onAnswer = id => (event, value) => {
-      this.props.actions.answerQuestionRequest(
+      this.props.actions.updateUserAnswer(
         this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, value
       )
     }
@@ -155,7 +155,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
     onChangeTextAnswer = (id, field) => event => {
       switch (field) {
         case 'textAnswer':
-          this.props.actions.answerQuestionRequest(
+          this.props.actions.updateUserAnswer(
             this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
           )
           break
@@ -243,6 +243,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
             onChangeCategory={(event, selection) => this.props.actions.onChangeCategory(selection)}
             onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
             onOpenAlert={this.onOpenApplyAllAlert}
+            onSave={() => this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
             onSaveFlag={this.onSaveFlag}
             onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
           />

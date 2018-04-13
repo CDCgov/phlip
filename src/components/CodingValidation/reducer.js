@@ -5,10 +5,6 @@ import {
   handleUpdateUserAnswers, handleUpdateUserCategoryChild, handleUpdateUserCodedQuestion,
   handleUserPinciteQuestion, initializeNavigator, generateError
 } from 'utils/codingHelpers'
-import { combineReducers } from 'redux'
-import questionCardReducer from './QuestionCard/reducer'
-import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
-import { checkIfExists } from 'utils/codingSchemeHelpers'
 
 const errorTypes = {
   1: 'We couldn\'t save the answer for this question. Your answer will be reset to the previous state.',
@@ -49,134 +45,40 @@ const INITIAL_STATE = {
   isChangingQuestion: false
 }
 
-const updateAnswers = (state, action) => {
-  let currentUserAnswers = { ...state.answers }
-  switch (state.question.questionType) {
-    case questionTypes.BINARY:
-    case questionTypes.MULTIPLE_CHOICE:
-      currentUserAnswers = { [action.answerId]: { schemeAnswerId: action.answerId, pincite: '' } }
-      break
-
-    case questionTypes.TEXT_FIELD:
-      if (action.answerValue === '') currentUserAnswers = {}
-      else {
-        currentUserAnswers = {
-          [action.answerId]: {
-            ...currentUserAnswers[action.answerId],
-            schemeAnswerId: action.answerId,
-            textAnswer: action.answerValue,
-            pincite: currentUserAnswers[action.answerId] ? currentUserAnswers[action.answerId].pincite || '' : ''
-          }
-        }
-      }
-      break
-
-    case questionTypes.CATEGORY:
-      // If they uncheck a category, then delete all other answers that have been associated with that category
-      if (checkIfExists(action, currentUserAnswers, 'answerId')) {
-        delete currentUserAnswers[action.answerId]
-      } else {
-        currentUserAnswers = {
-          ...currentUserAnswers,
-          [action.answerId]: { schemeAnswerId: action.answerId, pincite: '' }
-        }
-      }
-      break
-
-    case questionTypes.CHECKBOXES:
-      if (currentUserAnswers.hasOwnProperty(action.answerId)) delete currentUserAnswers[action.answerId]
-      else currentUserAnswers = {
-        ...currentUserAnswers,
-        [action.answerId]: { schemeAnswerId: action.answerId, pincite: '' }
-      }
-
-      return currentUserAnswers
-  }
-}
-
-const currentQuestionReducer = (state = {}, action, name) => {
-  switch (action.type) {
-    case `${types.UPDATE_USER_ANSWER_REQUEST}_${name}`:
-      return {
-        ...state,
-        answers: updateAnswers(state, action)
-      }
-
-    default:
-      return state
-  }
-}
-
 const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
   const questionUpdater = state.question.isCategoryQuestion
     ? handleUpdateUserCategoryChild(state, action)
     : handleUpdateUserCodedQuestion(state, action)
 
   switch (action.type) {
-    case `${types.UPDATE_USER_ANSWER_REQUEST}_${name}`:
+    case `${types.UPDATE_USER_ANSWER}_${name}`:
       return {
         ...state,
         userAnswers: {
           ...state.userAnswers,
           ...handleUpdateUserAnswers(state, action, state.selectedCategoryId)
-        },
-        snapshotUserAnswer: state.question.isCategoryQuestion
-          ? state.userAnswers[action.questionId][state.selectedCategoryId]
-          : state.userAnswers[action.questionId],
-        errorTypeMsg: errorTypes[1]
+        }
       }
 
-    case `${types.UPDATE_USER_ANSWER_SUCCESS}_${name}`:
+    case `${types.SAVE_USER_ANSWER_SUCCESS}_${name}`:
       return {
         ...state,
-        snapshotUserAnswer: {},
         updateAnswerError: null,
         errorTypeMsg: ''
       }
 
-    case `${types.UPDATE_USER_ANSWER_FAIL}_${name}`:
+    case `${types.SAVE_USER_ANSWER_FAIL}_${name}`:
       return {
         ...state,
         updateAnswerError: true,
-        isApplyAllError: action.payload.isApplyAll
-      }
-
-    case `${types.CLEAR_ANSWER_ERROR}_${name}`:
-      return {
-        ...state,
-        updateAnswerError: null,
-        snapshotUserAnswer: {},
-        userAnswers: {
-          ...state.userAnswers,
-          [state.question.id]: state.isApplyAllError
-            ? { ...state.snapshotUserAnswer }
-            : state.question.isCategoryQuestion
-              ? { ...state.userAnswers[state.question.id], [state.selectedCategoryId]: { ...state.snapshotUserAnswer } }
-              : { ...state.snapshotUserAnswer }
-        },
-        errorTypeMsg: '',
-        isApplyAllError: null
+        errorTypeMsg: 'We couldn\'t save the answer for this question. Your answer will be reset to the previous state.'
       }
 
     case `${types.ON_CHANGE_PINCITE}_${name}`:
-      return {
-        ...state,
-        ...questionUpdater('answers', handleUserPinciteQuestion),
-        snapshotUserAnswer: state.question.isCategoryQuestion
-          ? state.userAnswers[action.questionId][state.selectedCategoryId]
-          : state.userAnswers[action.questionId],
-        errorTypeMsg: errorTypes[3]
-      }
+      return { ...state, ...questionUpdater('answers', handleUserPinciteQuestion) }
 
     case `${types.ON_CHANGE_COMMENT}_${name}`:
-      return {
-        ...state,
-        ...questionUpdater('comment', action.comment),
-        snapshotUserAnswer: state.question.isCategoryQuestion
-          ? state.userAnswers[action.questionId][state.selectedCategoryId]
-          : state.userAnswers[action.questionId],
-        errorTypeMsg: errorTypes[2]
-      }
+      return { ...state, ...questionUpdater('comment', action.comment) }
 
     case `${types.ON_CHANGE_CATEGORY}_${name}`:
       return {
@@ -228,35 +130,19 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
       }
 
     case `${types.ON_CLEAR_ANSWER}_${name}`:
-      return {
-        ...state,
-        ...questionUpdater('answers', handleClearAnswers),
-        snapshotUserAnswer: state.question.isCategoryQuestion
-          ? state.userAnswers[action.questionId][state.selectedCategoryId]
-          : state.userAnswers[action.questionId],
-        errorTypeMsg: errorTypes[4]
-      }
+      return { ...state, ...questionUpdater('answers', handleClearAnswers) }
 
     case `${types.DISMISS_API_ALERT}_${name}`:
-      return {
-        ...state,
-        [action.errorType]: null
-      }
+      return { ...state, [action.errorType]: null }
 
     case `${types.ON_CLOSE_SCREEN}_${name}`:
       return INITIAL_STATE
 
     case `${types.ON_SHOW_PAGE_LOADER}_${name}`:
-      return {
-        ...state,
-        showPageLoader: true
-      }
+      return { ...state, showPageLoader: true }
 
     case `${types.ON_SHOW_QUESTION_LOADER}_${name}`:
-      return {
-        ...state,
-        questionChangeLoader: true
-      }
+      return { ...state, questionChangeLoader: true }
 
     case `${types.GET_NEXT_QUESTION}_${name}`:
     case `${types.GET_PREV_QUESTION}_${name}`:
@@ -292,16 +178,4 @@ export const createCodingValidationReducer = (uniqueReducer, handlers, name) => 
       return treeAndButton(codingValidationReducer(state, action, name))
     }
   }
-  /*const main = (state = INITIAL_STATE, action) => {
-    if (handlers.includes(action.type)) {
-      return treeAndButton(uniqueReducer(state, action))
-    } else {
-      return treeAndButton(codingValidationReducer(state, action, name))
-    }
-  }
-
-  return combineReducers({
-    main,
-    current: questionCardReducer
-  })*/
 }
