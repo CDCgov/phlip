@@ -8,17 +8,20 @@ exports[`DatePicker component should render correctly 1`] = `
   <DatePickerWrapper
     InputLabelProps={
       Object {
+        "error": false,
         "required": false,
         "shrink": true,
       }
     }
     autoOk={false}
     format="MM/DD/YYYY"
+    invalidDateMessage=""
+    invalidLabel=""
     keyboard={true}
     label="Date picker"
     mask={
       Array [
-        /\\^\\[\\\\d\\]\\*/,
+        /\\\\d/,
         /\\\\d/,
         "/",
         /\\\\d/,
