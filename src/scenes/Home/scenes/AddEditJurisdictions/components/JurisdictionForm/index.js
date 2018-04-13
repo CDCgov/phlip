@@ -74,7 +74,10 @@ export class JurisdictionForm extends Component {
     this.state = {
       edit: this.jurisdictionDefined !== null,
       submitting: false,
-      selectedPresets: []
+      selectedPresets: [],
+      endDate: this.jurisdictionDefined ? this.jurisdictionDefined.endDate : new Date(),
+      startDate: this.jurisdictionDefined ? this.jurisdictionDefined.startDate : new Date(),
+      errors: {}
     }
   }
 
@@ -87,7 +90,6 @@ export class JurisdictionForm extends Component {
         this.props.onSubmitError(nextProps.formError)
       } else if (nextProps.goBack === true) {
         this.props.history.push(`/project/${this.props.project.id}/jurisdictions`)
-        //this.props.history.goBack()
       }
     }
   }
@@ -111,21 +113,23 @@ export class JurisdictionForm extends Component {
   }
 
   onSubmitForm = values => {
-    const jurisdiction = {
-      ...values,
-      startDate: moment(values.startDate).toISOString(),
-      endDate: moment(values.endDate).toISOString(),
-      jurisdictionId: this.props.jurisdiction.id
-    }
+    if (Object.values(this.state.errors).length === 0) {
+      const jurisdiction = {
+        ...values,
+        startDate: moment(this.state.startDate).toISOString(),
+        endDate: moment(this.state.endDate).toISOString(),
+        jurisdictionId: this.props.jurisdiction.id
+      }
 
-    this.setState({
-      submitting: true
-    })
+      this.setState({
+        submitting: true
+      })
 
-    if (this.state.edit) {
-      this.props.actions.updateJurisdiction(jurisdiction, this.props.project.id)
-    } else {
-      this.props.actions.addJurisdiction(jurisdiction, this.props.project.id)
+      if (this.state.edit) {
+        this.props.actions.updateJurisdiction(jurisdiction, this.props.project.id)
+      } else {
+        this.props.actions.addJurisdiction(jurisdiction, this.props.project.id)
+      }
     }
   }
 
@@ -233,8 +237,51 @@ export class JurisdictionForm extends Component {
     }
   }
 
-  validateMinDate = value => moment(value).year() < '1850' ? 'Minimum year for start date is 1850' : undefined
-  validateMaxDate = value => moment(value).year() > '2050' ? 'Maximum year for end date is 2050' : undefined
+  validateMinDate = value => {
+    let errors = { ...this.state.errors }
+
+    if (value === undefined || value === '' || value === null) {
+      errors['startDate'] = 'Required'
+    } else if (new Date(value).getFullYear() < '1850') {
+      errors['startDate'] = 'Minimum year for start date is 1850'
+    } else {
+      const rangeErrors = validateDateRanges({ ...this.state, startDate: value })
+      errors = { ...rangeErrors }
+    }
+
+    this.setState({
+      errors
+    })
+  }
+
+  validateMaxDate = value => {
+    let errors = { ...this.state.errors }
+
+    if (value === undefined || value === '' || value === null) {
+      errors['endDate'] = 'Required'
+    } else if (new Date(value).getFullYear() > '2050') {
+      errors['endDate'] = 'Maximum year for end date is 2050'
+    } else {
+      const rangeErrors = validateDateRanges({ ...this.state, endDate: value })
+      errors = { ...rangeErrors }
+    }
+
+    this.setState({
+      errors
+    })
+  }
+
+  onChangeDate = dateField => event => {
+    if (event.format() === 'Invalid date') {
+      this.setState({ [dateField]: '' })
+      if (dateField === 'startDate') this.validateMinDate('')
+      else this.validateMaxDate('')
+    } else {
+      this.setState({ [dateField]: new Date(event) })
+      if (dateField === 'startDate') this.validateMinDate(event)
+      else this.validateMaxDate(event)
+    }
+  }
 
   render() {
     const formActions = [
@@ -258,11 +305,12 @@ export class JurisdictionForm extends Component {
         asyncValidate={(this.state.edit || this.props.location.state.preset === true)
           ? null
           : this.validateJurisdiction}
-        asyncBlurFields={this.props.location.state.preset === true ? [] : ['name']}
-        width="600px" height="400px"
+        asyncBlurFields={this.props.location.state.preset === true ? [] : ['endDate', 'startDate']}
+        width="600px"
+        height="400px"
         validate={validateDateRanges}
         open={true}
-        onClose={this.props.onCloseModal}
+        onClose={() => this.props.onCloseModal({ endDate: this.state.endDate, startDate: this.state.startDate })}
       >
         <ModalTitle
           title={this.state.edit ? 'Edit Jurisdiction' : this.props.location.state.preset === true
@@ -276,29 +324,31 @@ export class JurisdictionForm extends Component {
             </Row>
             <Container style={{ marginTop: 30 }}>
               <Column flex>
-                <Field
-                  component={DatePicker}
+                <DatePicker
                   required
                   name="startDate"
                   label="Segment Start Date"
                   dateFormat="MM/DD/YYYY"
-                  validate={this.validateMinDate}
-                  minDate={new Date(1850, 1, 1)}
-                  maxDate={new Date(2050, 1, 1)}
+                  minDate="01/01/1850"
+                  maxDate="01/01/2050"
+                  onChange={this.onChangeDate('startDate')}
+                  value={this.state.startDate}
                   autoOk={true}
+                  error={this.state.errors.startDate}
                 />
               </Column>
               <Column>
-                <Field
-                  component={DatePicker}
+                <DatePicker
                   required
                   name="endDate"
                   label="Segment End Date"
                   dateFormat="MM/DD/YYYY"
-                  validate={this.validateMaxDate}
-                  minDate={new Date(1850, 1, 1)}
-                  maxDate={new Date(2050, 1, 1)}
+                  minDate="01/01/1850"
+                  maxDate="01/01/2050"
+                  value={this.state.endDate}
+                  onChange={this.onChangeDate('endDate')}
                   autoOk={true}
+                  error={this.state.errors.endDate}
                 />
               </Column>
             </Container>
