@@ -62,7 +62,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       user: PropTypes.object,
       selectedCategory: PropTypes.number,
       schemeError: PropTypes.string,
-      updateAnswerError: PropTypes.string,
+      updateAnswerError: PropTypes.bool,
       answerErrorContent: PropTypes.any,
       saveFlagErrorContent: PropTypes.string,
       getQuestionErrors: PropTypes.string,

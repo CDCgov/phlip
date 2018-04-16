@@ -160,14 +160,14 @@ export default {
   },
 
   // Create an empty coded question object, called in Coding/logic, Validation/logic
-  createEmptyCodedQuestion({ questionId, projectId, jurisdictionId, userId, questionObj }) {
-    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, { ...questionObj })
+  answerCodedQuestion({ questionId, projectId, jurisdictionId, userId, questionObj }) {
+    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, questionObj)
       .then(res => res.data)
   },
 
   // Answer a question for a user (creates a coded question), jurisdiction and project, called in Coding/logic
-  answerQuestion(projectId, jurisdictionId, userId, questionId, updatedQuestion) {
-    return api.put(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, updatedQuestion)
+  updateCodedQuestion({ questionId, projectId, jurisdictionId, userId, questionObj }) {
+    return api.put(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, questionObj)
       .then(res => res.data)
   },
 

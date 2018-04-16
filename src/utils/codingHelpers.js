@@ -5,8 +5,9 @@ import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/const
 import * as types from 'scenes/Validation/actionTypes'
 
 const initializeValues = question => {
+  console.log('initialize', question)
   const { codedAnswers, ...initlaizedQuestion } = {
-    ... question.id ? { id: question.id } : {},
+    ...question.id ? { id: question.id } : {},
     ...question,
     comment: question.comment || '',
     flag: question.flag || { notes: '', type: 0 },
@@ -448,8 +449,12 @@ export const getFinalCodedObject = (state, action, applyAll = false) => {
     ...questionObject,
     codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds),
     ...state.question.isCategoryQuestion
-      ? { categories: applyAll ? [...Object.values(state.userAnswers[action.questionId]).map(cat => cat.id)] : [id] }
-      : { id }
+      ? {
+        categories: applyAll
+          ? [...Object.values(state.userAnswers[action.questionId]).map(cat => cat.categoryId)]
+          : [questionObject.categoryId]
+      }
+      : id !== undefined ? { id } : {}
   }
 
   return answerObject
@@ -461,8 +466,7 @@ export const getFinalCodedObject = (state, action, applyAll = false) => {
 export const initializeAndCheckAnswered = async (question, codedQuestions, schemeById, userId, action, createEmptyQuestion) => {
   // Initialize object for holding user answers, if question already exists in user answers, then the initialized object
   // will get overwritten (which is what we want, if it exists)
-  const coded = [initializeNextQuestion(question), ...codedQuestions]
-  const userAnswers = initializeUserAnswers([...coded], schemeById, userId)
+
   let initializeErrors = {}
 
   // Check if the first question is answered, if it's not, then send a request to create an empty coded question
@@ -493,11 +497,18 @@ export const initializeAndCheckAnswered = async (question, codedQuestions, schem
   Gets a specific scheme question, checks if it's answered and initializes it by sending a post if it's not. Sends back
   the updated user answers object. Called in Validation/logic and Coding/logic
  */
-export const getQuestionAndInitialize = async (state, action, userId, api, createEmptyQuestion, questionInfo) => {
-  let unanswered = [], answered = false, updatedAnswers = { ...state.userAnswers },
-    errors = {}, newSchemeQuestion = {},
+export const getQuestionAndInitialize = async (state, action, userId, api, questionInfo) => {
+  let errors = {}, newSchemeQuestion = {},
     combinedQuestion = { ...state.scheme.byId[questionInfo.question.id] },
     updatedScheme = { ...state.scheme }
+
+  /*const questionObj = {
+    categories: questionInfo.selectedCategoryId === null ? [] : [...unanswered.map(cat => cat.id)],
+    flag: { notes: '', type: 0 },
+    codedAnswers: [],
+    comment: '',
+    schemeQuestionId: combinedQuestion.id
+  }*/
 
   // Get the scheme question from the db in case it has changed
   try {
@@ -514,59 +525,50 @@ export const getQuestionAndInitialize = async (state, action, userId, api, creat
   } catch (error) {
     // Couldn't get the updated scheme question so use the old one
     errors = {
-      newSchemeQuestion:
-        'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
+      newSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
     }
   }
 
   // Check if question is answered
-  if (combinedQuestion.isCategoryQuestion) {
-    unanswered = questionInfo.categories.filter(category => {
-      return checkIfExists(combinedQuestion, state.userAnswers)
-        ? !checkIfExists(category, state.userAnswers[combinedQuestion.id])
-        : true
-    })
-    answered = unanswered.length === 0
-  } else {
-    answered = checkIfExists(state.scheme.byId[combinedQuestion.id], state.userAnswers)
-    if (answered) {
-      answered = state.userAnswers[combinedQuestion.id].hasOwnProperty('id')
-    }
-  }
+  /* if (combinedQuestion.isCategoryQuestion) {
+     unanswered = questionInfo.categories.filter(category => {
+       return checkIfExists(combinedQuestion, state.userAnswers)
+         ? !checkIfExists(category, state.userAnswers[combinedQuestion.id])
+         : true
+     })
+     answered = unanswered.length === 0
+   } else {
+     answered = checkIfExists(state.scheme.byId[combinedQuestion.id], state.userAnswers)
+     if (answered) {
+       answered = state.userAnswers[combinedQuestion.id].hasOwnProperty('id')
+     }
+   }
 
-  const questionObj = {
-    categories: questionInfo.selectedCategoryId === null ? [] : [...unanswered.map(cat => cat.id)],
-    flag: { notes: '', type: 0 },
-    codedAnswers: [],
-    comment: '',
-    schemeQuestionId: combinedQuestion.id
-  }
-
-  // If it's not answered create an empty coded question object
-  if (!answered) {
-    try {
-      const question = await createEmptyQuestion({
-        questionId: combinedQuestion.id,
-        projectId: action.projectId,
-        jurisdictionId: action.jurisdictionId,
-        userId,
-        questionObj
-      })
-      updatedAnswers = initializeUserAnswers(combinedQuestion.isCategoryQuestion
-        ? [...question] : [question], updatedScheme, userId, updatedAnswers)
-    } catch (error) {
-      errors = {
-        ...errors,
-        emptyQuestion: 'We couldn\'t initialize this question. Unfortunately, you will not be able to answer it at this time.'
-      }
-      updatedAnswers = initializeUserAnswers(combinedQuestion.isCategoryQuestion
-        ? [...questionObj] : [questionObj], updatedScheme, userId, updatedAnswers)
-    }
-  }
+   // If it's not answered create an empty coded question object
+   if (!answered) {
+     try {
+       const question = await createEmptyQuestion({
+         questionId: combinedQuestion.id,
+         projectId: action.projectId,
+         jurisdictionId: action.jurisdictionId,
+         userId,
+         questionObj
+       })
+       updatedAnswers = initializeUserAnswers(combinedQuestion.isCategoryQuestion
+         ? [...question] : [question], updatedScheme, userId, updatedAnswers)
+     } catch (error) {
+       errors = {
+         ...errors,
+         emptyQuestion: 'We couldn\'t initialize this question. Unfortunately, you will not be able to answer it at this time.'
+       }
+       updatedAnswers = initializeUserAnswers(combinedQuestion.isCategoryQuestion
+         ? [...questionObj] : [questionObj], updatedScheme, userId, updatedAnswers)
+     }
+   }*/
 
   const updatedState = {
     ...state,
-    userAnswers: updatedAnswers,
+    //userAnswers: updatedAnswers,
     scheme: updatedScheme,
     selectedCategory: questionInfo.selectedCategory,
     selectedCategoryId: questionInfo.selectedCategoryId,

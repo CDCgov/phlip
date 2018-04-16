@@ -7,7 +7,9 @@ import {
   getQuestionSelectedInNav,
   getNextQuestion,
   getPreviousQuestion,
-  initializeAndCheckAnswered, getQuestionAndInitialize
+  initializeAndCheckAnswered,
+  getQuestionAndInitialize,
+  initializeNextQuestion
 } from 'utils/codingHelpers'
 import { normalize } from 'utils'
 import * as types from './actionTypes'
@@ -30,7 +32,10 @@ export const getOutlineLogic = createLogic({
           try {
             codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
           } catch (e) {
-            errors = { codedQuestions: 'We couldn\'t get your coded questions for this project and jurisdiction, so you won\'t be able to answer quetions.' }
+            errors = {
+              codedQuestions: `We couldn\'t get your coded questions for this project and jurisdiction, 
+                               so you won\'t be able to answer quetions.`
+            }
           }
 
           // Create one array with the outline information in the question information
@@ -43,8 +48,13 @@ export const getOutlineLogic = createLogic({
           const questionsById = normalize.arrayToObject(questionsWithNumbers)
           const firstQuestion = questionsWithNumbers[0]
 
-          // Check if the first question has answers, if it doesn't send a request to create an empty coded question
-          const { userAnswers, initializeErrors } = await initializeAndCheckAnswered(firstQuestion, codedQuestions, questionsById, userId, action, api.createEmptyCodedQuestion)
+          // Initialize the user answers object
+          const userAnswers = initializeUserAnswers([
+            initializeNextQuestion(firstQuestion), ...codedQuestions
+          ], questionsById, userId)
+
+          console.log('userAnswers', userAnswers)
+
           payload = {
             ...payload,
             outline: scheme.outline,
@@ -55,7 +65,7 @@ export const getOutlineLogic = createLogic({
             isSchemeEmpty: false,
             areJurisdictionsEmpty: false,
             userId,
-            errors: { ...errors, ...initializeErrors }
+            errors: { ...errors }
           }
         }
       } else {
@@ -108,7 +118,7 @@ export const getQuestionLogic = createLogic({
         break
     }
 
-    return await getQuestionAndInitialize(state, action, userId, api, api.createEmptyCodedQuestion, questionInfo)
+    return await getQuestionAndInitialize(state, action, userId, api, questionInfo)
   }
 })
 
@@ -119,12 +129,27 @@ export const answerQuestionLogic = createLogic({
   async process({ getState, action, api }, dispatch, done) {
     const userId = getState().data.user.currentUser.id
     const codingState = getState().scenes.coding
-    const answerObject = getFinalCodedObject(codingState, action, action.type === types.ON_APPLY_ANSWER_TO_ALL)
+    const questionObj = getFinalCodedObject(codingState, action, action.type === types.ON_APPLY_ANSWER_TO_ALL)
+    const answerObject = {
+      questionId: action.questionId,
+      jurisdictionId: action.jurisdictionId,
+      userId,
+      projectId: action.projectId,
+      questionObj
+    }
+    console.log('questionObject', questionObj)
+
+    let respCodedQuestion = {}
+
     try {
-      const codedQuestion = await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, answerObject)
+      if (questionObj.hasOwnProperty('id')) {
+        respCodedQuestion = await api.updateCodedQuestion({ ...answerObject })
+      } else {
+        respCodedQuestion = await api.answerCodedQuestion({ ...answerObject })
+      }
       dispatch({
         type: types.SAVE_USER_ANSWER_SUCCESS,
-        payload: { ...codedQuestion }
+        payload: { ...respCodedQuestion }
       })
       dispatch({
         type: types.UPDATE_EDITED_FIELDS,
@@ -172,7 +197,10 @@ export const getUserCodedQuestionsLogic = createLogic({
       updatedSchemeQuestion = await api.getSchemeQuestion(question.id, action.projectId)
     } catch (error) {
       updatedSchemeQuestion = { ...question }
-      errors = { ...errors, updatedSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.' }
+      errors = {
+        ...errors,
+        updatedSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
+      }
     }
 
     // Update scheme with new scheme question

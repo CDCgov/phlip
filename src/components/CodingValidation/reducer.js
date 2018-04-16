@@ -64,7 +64,17 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
       return {
         ...state,
         updateAnswerError: null,
-        errorTypeMsg: ''
+        errorTypeMsg: '',
+        userAnswers: {
+          ...state.userAnswers,
+          [state.question.id]: state.question.isCategoryQuestion
+            ? {
+              [state.selectedCategoryId]: {
+                ...state.userAnswers[state.question.id][state.selectedCategoryId],
+                id: action.payload.id
+              }
+            } : { ...state.userAnswers[state.question.id], id: action.payload.id }
+        }
       }
 
     case `${types.SAVE_USER_ANSWER_FAIL}_${name}`:
@@ -171,7 +181,7 @@ const treeAndButton = intermediateState => {
 }
 
 export const createCodingValidationReducer = (uniqueReducer, handlers, name) => {
-  return function reducer (state = INITIAL_STATE, action) {
+  return function reducer(state = INITIAL_STATE, action) {
     if (handlers.includes(action.type)) {
       return treeAndButton(uniqueReducer(state, action))
     } else {
