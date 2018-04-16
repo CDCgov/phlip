@@ -40,7 +40,8 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
           allIds: state.jurisdictions.allIds
         },
         formError: null,
-        goBack: true
+        goBack: true,
+        suggestionValue: ''
       }
 
     case types.ADD_PROJECT_JURISDICTION_SUCCESS:
@@ -54,7 +55,8 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
           allIds: [action.payload.id, ...state.jurisdictions.allIds]
         },
         visibleJurisdictions: [action.payload.id, ...state.visibleJurisdictions],
-        goBack: true
+        goBack: true,
+        suggestionValue: ''
       }
 
     case types.ADD_PRESET_JURISDICTION_SUCCESS:

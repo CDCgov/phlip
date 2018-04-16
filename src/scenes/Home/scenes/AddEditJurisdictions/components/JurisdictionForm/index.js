@@ -168,6 +168,7 @@ export class JurisdictionForm extends Component {
 
   onCloseForm = () => {
     this.props.actions.onClearSuggestions()
+    this.props.actions.onSuggestionValueChanged('')
     this.props.history.goBack()
   }
 
