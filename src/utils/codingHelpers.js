@@ -468,6 +468,8 @@ export const initializeAndCheckAnswered = async (question, codedQuestions, schem
   // will get overwritten (which is what we want, if it exists)
 
   let initializeErrors = {}
+  const coded = [initializeNextQuestion(question), ...codedQuestions]
+  const userAnswers = initializeUserAnswers([...coded], schemeById, userId)
 
   // Check if the first question is answered, if it's not, then send a request to create an empty coded question
   // on the backend. This fixes issues with duplication of text fields answer props
