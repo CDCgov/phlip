@@ -2,10 +2,8 @@ import { normalize } from 'utils'
 import { checkIfAnswered, checkIfExists, checkIfCategoryAnswered } from 'utils/codingSchemeHelpers'
 import sortList from 'utils/sortList'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
-import * as types from 'scenes/Validation/actionTypes'
 
 const initializeValues = question => {
-  console.log('initialize', question)
   const { codedAnswers, ...initlaizedQuestion } = {
     ...question.id ? { id: question.id } : {},
     ...question,
@@ -441,22 +439,16 @@ const deleteAnswerIds = (answer) => {
  Used to retrieve the request object body for updating a question answer, pincite, comment, flag, etc.
  */
 export const getFinalCodedObject = (state, action, applyAll = false) => {
-  const { id, ...questionObject } = state.question.isCategoryQuestion
+  const { ...questionObject } = state.question.isCategoryQuestion
     ? state.userAnswers[action.questionId][state.selectedCategoryId]
     : state.userAnswers[action.questionId]
 
-  const { answers, categoryId, schemeQuestionId, ...answerObject } = {
+  const { answers, schemeQuestionId, ...answerObject } = {
     ...questionObject,
-    codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds),
-    ...state.question.isCategoryQuestion
-      ? {
-        categories: applyAll
-          ? [...Object.values(state.userAnswers[action.questionId]).map(cat => cat.categoryId)]
-          : [questionObject.categoryId]
-      }
-      : id !== undefined ? { id } : {}
+    codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds)
   }
 
+  console.log(answerObject)
   return answerObject
 }
 

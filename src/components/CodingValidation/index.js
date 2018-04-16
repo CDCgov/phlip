@@ -35,9 +35,7 @@ const navButtonStyles = {
   color: 'white'
 }
 
-const iconStyle = {
-  transform: 'rotate(90deg)'
-}
+const iconStyle = { transform: 'rotate(90deg)' }
 
 const styles = theme => bodyStyles(theme)
 
@@ -111,9 +109,18 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       }
     }
 
+    /*componentDidMount() {
+      window.addEventListener('beforeunload', this.onUnload)
+    }
+
     componentWillUnmount() {
       this.props.actions.onCloseScreen()
+      window.removeEventListener('beforeunload', this.onUnload)
     }
+
+    onUnload = () => {
+      this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+    }*/
 
     onToggleNavigator = () => {
       this.setState({ navOpen: !this.state.navOpen })

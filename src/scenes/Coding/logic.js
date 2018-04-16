@@ -49,11 +49,9 @@ export const getOutlineLogic = createLogic({
           const firstQuestion = questionsWithNumbers[0]
 
           // Initialize the user answers object
-          const userAnswers = initializeUserAnswers([
-            initializeNextQuestion(firstQuestion), ...codedQuestions
-          ], questionsById, userId)
-
-          console.log('userAnswers', userAnswers)
+          const userAnswers = initializeUserAnswers(
+            [initializeNextQuestion(firstQuestion), ...codedQuestions], questionsById, userId
+          )
 
           payload = {
             ...payload,
@@ -137,8 +135,6 @@ export const answerQuestionLogic = createLogic({
       projectId: action.projectId,
       questionObj
     }
-    console.log('questionObject', questionObj)
-
     let respCodedQuestion = {}
 
     try {
@@ -212,13 +208,17 @@ export const getUserCodedQuestionsLogic = createLogic({
       }
     }
 
-    const { userAnswers, initializeErrors } = await initializeAndCheckAnswered(updatedSchemeQuestion, codedQuestions, updatedScheme.byId, userId, action, api.createEmptyCodedQuestion)
+    // Update the user answers object
+    const userAnswers = initializeUserAnswers(
+      [initializeNextQuestion(updatedSchemeQuestion), ...codedQuestions], updatedScheme.byId, userId
+    )
+
     payload = {
       question: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion },
       userAnswers,
       scheme: updatedScheme,
       otherUpdates,
-      errors: { ...errors, ...initializeErrors }
+      errors: { ...errors }
     }
 
     dispatch({
