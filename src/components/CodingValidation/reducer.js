@@ -30,8 +30,7 @@ const INITIAL_STATE = {
   isSchemeEmpty: null,
   areJurisdictionsEmpty: null,
   snapshotUserAnswer: {},
-  updateAnswerError: null,
-  errorTypeMsg: '',
+  answerErrorContent: null,
   schemeError: null,
   saveFlagErrorContent: null,
   getQuestionErrors: null,
@@ -63,8 +62,6 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
     case `${types.SAVE_USER_ANSWER_SUCCESS}_${name}`:
       return {
         ...state,
-        updateAnswerError: null,
-        errorTypeMsg: '',
         userAnswers: {
           ...state.userAnswers,
           [state.question.id]: state.question.isCategoryQuestion
@@ -74,21 +71,29 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
                 id: action.payload.id
               }
             } : { ...state.userAnswers[state.question.id], id: action.payload.id }
-        }
+        },
+        answerErrorContent: null
       }
 
     case `${types.SAVE_USER_ANSWER_FAIL}_${name}`:
       return {
         ...state,
-        updateAnswerError: true,
-        errorTypeMsg: 'We couldn\'t save the answer for this question. Your answer will be reset to the previous state.'
+        answerErrorContent: 'We couldn\'t save the answer for this question. Your answer will be reset to the previous state.'
       }
 
     case `${types.ON_CHANGE_PINCITE}_${name}`:
-      return { ...state, ...questionUpdater('answers', handleUserPinciteQuestion) }
+      return {
+        ...state,
+        ...questionUpdater('answers', handleUserPinciteQuestion),
+        answerErrorContent: errorTypes[3]
+      }
 
     case `${types.ON_CHANGE_COMMENT}_${name}`:
-      return { ...state, ...questionUpdater('comment', action.comment) }
+      return {
+        ...state,
+        ...questionUpdater('comment', action.comment),
+        answerErrorContent: errorTypes[2]
+      }
 
     case `${types.ON_CHANGE_CATEGORY}_${name}`:
       return {
@@ -108,11 +113,7 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
       const errors = generateError(action.payload.errors)
       return {
         ...action.payload.updatedState,
-        ...handleCheckCategories(
-          action.payload.question,
-          action.payload.currentIndex,
-          action.payload.updatedState
-        ),
+        ...handleCheckCategories(action.payload.question, action.payload.currentIndex, action.payload.updatedState),
         getQuestionErrors: errors.length > 0 ? errors : null,
         questionChangeLoader: false,
         isChangingQuestion: false
@@ -136,7 +137,7 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
           }
         },
         snapshotUserAnswer: { ...state.userAnswers[state.question.id] },
-        errorTypeMsg: errorTypes[1]
+        answerErrorContent: errorTypes[1]
       }
 
     case `${types.ON_CLEAR_ANSWER}_${name}`:

@@ -153,10 +153,12 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       this.props.actions.updateUserAnswer(
         this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, value
       )
+
+      this.onSaveCodedQuestion()
     }
 
-    onSave = () => {
-
+    onSaveCodedQuestion = () => {
+      this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
     }
 
     onChangeTextAnswer = (id, field) => event => {
@@ -180,17 +182,15 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       }
     }
 
-    onOpenApplyAllAlert = () => {
-      this.setState({ applyAllAlertOpen: true })
-    }
+    onOpenApplyAllAlert = () => this.setState({ applyAllAlertOpen: true })
 
-    onCloseAlert = () => {
-      this.props.actions.clearAnswerError()
-    }
+    onCloseAlert = () => this.props.actions.dismissApiAlert('answerErrorContent')
 
-    onCloseApplyAllAlert = () => {
-      this.setState({ applyAllAlertOpen: false })
-    }
+    onChangeCategory = (event, selection) => this.props.actions.onChangeCategory(selection)
+
+    onClearAnswer = () => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+
+    onCloseApplyAllAlert = () => this.setState({ applyAllAlertOpen: false })
 
     onApplyToAll = () => {
       this.onCloseApplyAllAlert()
@@ -247,10 +247,10 @@ export const withCodingValidation = (WrappedComponent, actions) => {
             page={this.props.page}
             onChange={this.onAnswer}
             onChangeTextAnswer={this.onChangeTextAnswer}
-            onChangeCategory={(event, selection) => this.props.actions.onChangeCategory(selection)}
-            onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
+            onChangeCategory={this.onChangeCategory}
+            onAnswer={this.onAnswer}
+            onClearAnswer={this.onClearAnswer}
             onOpenAlert={this.onOpenApplyAllAlert}
-            onSave={() => this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
             onSaveFlag={this.onSaveFlag}
             onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
           />
@@ -278,7 +278,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
             </Typography>
           </Alert>
           <ApiErrorAlert
-            open={this.props.updateAnswerError !== null}
+            open={this.props.answerErrorContent !== null}
             content={this.props.answerErrorContent}
             onCloseAlert={this.onCloseAlert} />
           <ApiErrorAlert
@@ -309,7 +309,8 @@ export const withCodingValidation = (WrappedComponent, actions) => {
                 pageTitle={capitalizeFirstLetter(this.props.page)}
                 currentJurisdiction={this.props.jurisdiction}
                 empty={this.props.jurisdiction === null || this.props.questionOrder === null ||
-                this.props.questionOrder.length === 0} />
+                this.props.questionOrder.length === 0}
+              />
               <Container flex style={{ backgroundColor: '#f5f5f5' }}>
                 <Row displayFlex flex style={{ overflow: 'auto' }}>
                   {!this.props.showPageLoader && <Column>
@@ -372,8 +373,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       user: state.data.user.currentUser,
       selectedCategory: pageState.selectedCategory,
       schemeError: pageState.schemeError || null,
-      updateAnswerError: pageState.updateAnswerError || null,
-      answerErrorContent: pageState.errorTypeMsg || '',
+      answerErrorContent: pageState.answerErrorContent || null,
       saveFlagErrorContent: pageState.saveFlagErrorContent || null,
       getQuestionErrors: pageState.getQuestionErrors || null,
       isLoadingPage: pageState.isLoadingPage || false,

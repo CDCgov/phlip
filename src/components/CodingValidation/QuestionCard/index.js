@@ -115,14 +115,6 @@ export class QuestionCard extends Component {
               <Row
                 displayFlex
                 style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
-                <IconButton
-                  onClick={this.onSave}
-                  aria-label="Save answer"
-                  tooltipText="Save answer"
-                  id="save-answer"
-                  style={{ height: 24 }}>
-                  <ContentSave style={{ height: 24, width: 24, color:  '#38a48e' }} />
-                </IconButton>
                 {this.props.question.questionType !== questionTypes.CATEGORY &&
                 <IconButton
                   onClick={this.props.onClearAnswer}
