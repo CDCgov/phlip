@@ -84,15 +84,13 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
     case `${types.ON_CHANGE_PINCITE}_${name}`:
       return {
         ...state,
-        ...questionUpdater('answers', handleUserPinciteQuestion),
-        answerErrorContent: errorTypes[3]
+        ...questionUpdater('answers', handleUserPinciteQuestion)
       }
 
     case `${types.ON_CHANGE_COMMENT}_${name}`:
       return {
         ...state,
-        ...questionUpdater('comment', action.comment),
-        answerErrorContent: errorTypes[2]
+        ...questionUpdater('comment', action.comment)
       }
 
     case `${types.ON_CHANGE_CATEGORY}_${name}`:

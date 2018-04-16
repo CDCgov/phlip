@@ -16,7 +16,8 @@ const styles = theme => ({
 
 export const RadioGroup = props => {
   const {
-    choices, userAnswers, onChange, onChangePincite, classes, mergedUserQuestions, disableAll, userImages, theme
+    choices, userAnswers, onChange, onChangePincite, classes,
+    mergedUserQuestions, disableAll, userImages, theme, onBlurText
   } = props
 
   return (
@@ -72,6 +73,7 @@ export const RadioGroup = props => {
               disabled={disableAll}
               placeholder="Enter pincite"
               multiline={false}
+              onBlur={onBlurText}
               value={userAnswers.answers[choice.id].pincite}
               onChange={onChangePincite(choice.id, 'pincite')}
             />}

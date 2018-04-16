@@ -8,9 +8,7 @@ const SimpleInput = ({ value, onChange, name, multiline, shrinkLabel, placeholde
       value={value}
       onChange={onChange}
       multiline={multiline}
-      InputLabelProps={{
-        shrink: shrinkLabel
-      }}
+      InputLabelProps={{ shrink: shrinkLabel }}
       placeholder={placeholder}
       label={label}
       name={name}

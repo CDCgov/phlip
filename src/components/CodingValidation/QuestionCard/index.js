@@ -83,7 +83,8 @@ export class QuestionCard extends Component {
       isValidation: this.props.isValidation,
       mergedUserQuestions: this.props.mergedUserQuestions,
       disableAll: this.props.disableAll,
-      userImages: this.props.userImages
+      userImages: this.props.userImages,
+      onBlurText: this.props.onSave
     }
 
     const alertActions = [

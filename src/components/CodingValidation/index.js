@@ -109,18 +109,14 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       }
     }
 
-    /*componentDidMount() {
-      window.addEventListener('beforeunload', this.onUnload)
+    componentDidMount() {
+      window.addEventListener('beforeunload', this.onSaveCodedQuestion)
     }
 
     componentWillUnmount() {
       this.props.actions.onCloseScreen()
-      window.removeEventListener('beforeunload', this.onUnload)
+      window.removeEventListener('beforeunload', this.onSaveCodedQuestion)
     }
-
-    onUnload = () => {
-      this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
-    }*/
 
     onToggleNavigator = () => {
       this.setState({ navOpen: !this.state.navOpen })
@@ -158,6 +154,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
     }
 
     onSaveCodedQuestion = () => {
+      console.log('here')
       this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
     }
 
@@ -252,6 +249,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
             onClearAnswer={this.onClearAnswer}
             onOpenAlert={this.onOpenApplyAllAlert}
             onSaveFlag={this.onSaveFlag}
+            onSave={this.onSaveCodedQuestion}
             onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
           />
           <FooterNavigate

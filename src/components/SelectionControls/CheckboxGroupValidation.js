@@ -16,7 +16,8 @@ const styles = theme => ({
 
 export const CheckboxGroupValidation = props => {
   const {
-    choices, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions, disableAll, userImages, theme
+    choices, userAnswers, onChange, onChangePincite, pincites,
+    classes, mergedUserQuestions, disableAll, userImages, theme, onBlurText
   } = props
 
   return (
@@ -64,6 +65,7 @@ export const CheckboxGroupValidation = props => {
               key={`${choice.id}-pincite`} placeholder="Enter pincite"
               value={userAnswers.answers[choice.id].pincite}
               multiline={false}
+              onBlur={onBlurText}
               style={{
                 width: 300,
                 marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
