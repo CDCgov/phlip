@@ -124,8 +124,7 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
               }
             }), {})
           }
-        },
-        answerErrorContent: errorTypes[1]
+        }
       }
 
     case `${types.ON_CLEAR_ANSWER}_${name}`:
