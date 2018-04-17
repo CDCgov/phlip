@@ -120,7 +120,7 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
               [category.id]: {
                 ...catQuestion,
                 categoryId: category.id,
-                id: state.userAnswers[state.question.id][category.id].id
+                id: state.userAnswers[state.question.id][category.id].id || undefined
               }
             }), {})
           }

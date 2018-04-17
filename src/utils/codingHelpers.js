@@ -433,9 +433,9 @@ const deleteAnswerIds = (answer) => {
 /*
  Used to retrieve the request object body for updating a question answer, pincite, comment, flag, etc.
  */
-export const getFinalCodedObject = (state, action, applyAll = false) => {
+export const getFinalCodedObject = (state, action, selectedCategoryId = state.selectedCategoryId) => {
   const { ...questionObject } = state.question.isCategoryQuestion
-    ? state.userAnswers[action.questionId][state.selectedCategoryId]
+    ? state.userAnswers[action.questionId][selectedCategoryId]
     : state.userAnswers[action.questionId]
 
   const { answers, schemeQuestionId, ...answerObject } = {
@@ -443,7 +443,6 @@ export const getFinalCodedObject = (state, action, applyAll = false) => {
     codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds)
   }
 
-  console.log(answerObject)
   return answerObject
 }
 

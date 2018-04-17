@@ -1,13 +1,12 @@
 import { createLogic } from 'redux-logic'
 import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
-import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
+import { getTreeFromFlatData } from 'react-sortable-tree'
 import {
   getFinalCodedObject,
   initializeUserAnswers,
   getQuestionSelectedInNav,
   getNextQuestion,
   getPreviousQuestion,
-  initializeAndCheckAnswered,
   getQuestionAndInitialize,
   initializeNextQuestion
 } from 'utils/codingHelpers'
@@ -120,14 +119,59 @@ export const getQuestionLogic = createLogic({
   }
 })
 
+export const applyAllAnswers = createLogic({
+  type: types.ON_APPLY_ANSWER_TO_ALL,
+  async process({ getState, action, api }, dispatch, done) {
+    const userId = getState().data.user.currentUser.id
+    const codingState = getState().scenes.coding
+    const allCategoryObjects = Object.values(codingState.userAnswers[action.questionId])
+
+    const answerObject = {
+      questionId: action.questionId,
+      jurisdictionId: action.jurisdictionId,
+      userId,
+      projectId: action.projectId
+    }
+
+    try {
+      for (let category of allCategoryObjects) {
+        let respCodedQuestion = {}
+        const question = getFinalCodedObject(codingState, action, category.categoryId)
+        if (category.id !== undefined) {
+          respCodedQuestion = await api.updateCodedQuestion({ ...answerObject, questionObj: question })
+        } else {
+          const { id, ...questionObj } = question
+          respCodedQuestion = await api.answerCodedQuestion({ ...answerObject, questionObj })
+        }
+
+        dispatch({
+          type: types.SAVE_USER_ANSWER_SUCCESS,
+          payload: { ...respCodedQuestion }
+        })
+      }
+      dispatch({
+        type: types.UPDATE_EDITED_FIELDS,
+        projectId: action.projectId
+      })
+    } catch (erro) {
+      dispatch({
+        type: types.SAVE_USER_ANSWER_FAIL,
+        payload: { error: 'Could not update answer', isApplyAll: true }
+      })
+    }
+    done()
+  }
+})
+
+
 // Logic for any time of action that happens on question
 export const answerQuestionLogic = createLogic({
-  type: [types.SAVE_USER_ANSWER_REQUEST, types.ON_APPLY_ANSWER_TO_ALL, types.ON_SAVE_FLAG],
+  type: [types.SAVE_USER_ANSWER_REQUEST, types.ON_SAVE_FLAG],
   latest: true,
   async process({ getState, action, api }, dispatch, done) {
     const userId = getState().data.user.currentUser.id
     const codingState = getState().scenes.coding
-    const questionObj = getFinalCodedObject(codingState, action, action.type === types.ON_APPLY_ANSWER_TO_ALL)
+    const questionObj = getFinalCodedObject(codingState, action)
     const answerObject = {
       questionId: action.questionId,
       jurisdictionId: action.jurisdictionId,
@@ -136,8 +180,6 @@ export const answerQuestionLogic = createLogic({
       questionObj
     }
     let respCodedQuestion = {}
-
-    console.log(questionObj)
 
     try {
       if (questionObj.hasOwnProperty('id')) {
@@ -156,7 +198,7 @@ export const answerQuestionLogic = createLogic({
     } catch (error) {
       dispatch({
         type: types.SAVE_USER_ANSWER_FAIL,
-        payload: { error: 'Could not update answer', isApplyAll: action.type === types.ON_APPLY_ANSWER_TO_ALL }
+        payload: { error: 'Could not update answer', isApplyAll: false }
       })
     }
     done()
@@ -261,5 +303,6 @@ export default [
   getQuestionLogic,
   getUserCodedQuestionsLogic,
   answerQuestionLogic,
+  applyAllAnswers,
   saveRedFlagLogic
 ]
