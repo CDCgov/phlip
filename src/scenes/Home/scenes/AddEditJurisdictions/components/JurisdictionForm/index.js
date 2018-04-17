@@ -331,7 +331,7 @@ export class JurisdictionForm extends Component {
                   label="Segment Start Date"
                   dateFormat="MM/DD/YYYY"
                   minDate="01/01/1850"
-                  maxDate="01/01/2050"
+                  maxDate="12/31/2050"
                   onChange={this.onChangeDate('startDate')}
                   value={this.state.startDate}
                   autoOk={true}
@@ -345,7 +345,7 @@ export class JurisdictionForm extends Component {
                   label="Segment End Date"
                   dateFormat="MM/DD/YYYY"
                   minDate="01/01/1850"
-                  maxDate="01/01/2050"
+                  maxDate="12/31/2050"
                   value={this.state.endDate}
                   onChange={this.onChangeDate('endDate')}
                   autoOk={true}
