@@ -297,7 +297,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       return (
         <Container
           flex style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}>
-          <Alert open={this.state.applyAllAlertOpen} text="" actions={this.modalActions}>
+          <Alert open={this.state.applyAllAlertOpen} actions={this.modalActions}>
             <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
               You are applying your answer to ALL categories. Previously answered questions will be changed.
             </Typography>

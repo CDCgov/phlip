@@ -4,6 +4,7 @@ import Typography from 'material-ui/Typography'
 import navStyles from './nav-styles.scss'
 import Icon from 'components/Icon'
 import Progress from 'components/Progress'
+import { FlagOutline } from 'mdi-material-ui'
 
 export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) => {
   let scaffold = []
@@ -91,11 +92,21 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
           aria-label="Question is of type cateogry"
           color={questionTextStyles.color}
           style={{ paddingRight: 5 }}>filter_none</Icon>}
+        {item.hasOwnProperty('flags') && item.flags.length > 0 && <Icon
+          aria-label="Question has a red flag"
+          role="gridcell"
+          tabIndex={-1}
+          color="#e27c74"
+          style={{ userSelect: 'none' }}
+          size={17}>{/*<FlagOutline style={{ height: 19, width: 19 }} />*/}
+          flag
+          </Icon>}
         {item.isAnswered && <Icon
           aria-label="Question has been answered"
           role="gridcell"
           tabIndex={-1}
           color="#45ad70"
+          style={{ userSelect: 'none' }}
           size={19}>check</Icon>}
         {item.hasOwnProperty('completedProgress') &&
         ((item.completedProgress < 100 && <Progress
