@@ -26,7 +26,6 @@ exports[`Coding scene - QuestionRow should render correctly 1`] = `
         "position": "relative",
       }
     }
-    tabIndex={0}
   >
     <span
       style={
@@ -46,7 +45,7 @@ exports[`Coding scene - QuestionRow should render correctly 1`] = `
       style={
         Object {
           "color": "white",
-          "fontSize": "13px",
+          "fontSize": 13,
           "fontWeight": 300,
           "outline": 0,
           "paddingLeft": 10,
@@ -54,7 +53,6 @@ exports[`Coding scene - QuestionRow should render correctly 1`] = `
         }
       }
       tabIndex={-1}
-      type="body1"
     >
       <span>
         3. 

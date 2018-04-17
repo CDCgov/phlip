@@ -4,7 +4,7 @@ const trackStyles = {
   height: 5,
   overflow: 'hidden',
   position: 'relative',
-  backgroundColor: '#969a9b',
+  backgroundColor: '#B5BCBE',
   minWidth: 30,
   maxWidth: 30
 }
