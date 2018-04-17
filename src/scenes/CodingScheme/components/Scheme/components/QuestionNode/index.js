@@ -138,12 +138,13 @@ export const QuestionNode = props => {
                   id={`delete-question-${listIndex}`}
                   aria-label="Delete question"
                   placement="right">
-                  <IconButton
+
+                  <Button
                     color="accent"
                     aria-label="Delete question"
-                    style={{ ...actionStyles }}
-                    onClick={() => handleDeleteQuestion(projectId, node.id, path)}>delete</IconButton>
-
+                    style={{ ...actionStyles, marginRight: 10 }}
+                    value={<Icon color="white">delete</Icon>}
+                    onClick={() => handleDeleteQuestion(projectId, node.id, path)} />
                 </Tooltip>
               </div>}
             {!node.hovering && node.questionType === questionTypes.CATEGORY
