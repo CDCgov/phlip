@@ -57,6 +57,10 @@ export class CodingScheme extends Component {
     this.props.actions.unlockCodingSchemeRequest(this.props.projectId)
   }
 
+  handleDeleteQuestion = (projectId, questionId, path) => {
+    this.props.actions.deleteQuestionRequest(projectId, questionId, path)
+  }
+
   onCloseGoBackAlert = () => {
     this.setState({
       goBackAlertOpen: false
@@ -81,32 +85,32 @@ export class CodingScheme extends Component {
     return (
       <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
         {this.props.lockedByCurrentUser &&
-        <Fragment>
-          <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
-            The coding scheme is empty. To get started, add a question.
+          <Fragment>
+            <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
+              The coding scheme is empty. To get started, add a question.
           </Typography>
-          <Button
-            component={Link}
-            to={{
-              pathname: `/project/${this.props.projectId}/coding-scheme/add`,
-              state: { questionDefined: null, canModify: true }
-            }}
-            value="+ Add New Question"
-            color="accent"
-            aria-label="Add new question to coding scheme"
-          />
-        </Fragment>}
+            <Button
+              component={Link}
+              to={{
+                pathname: `/project/${this.props.projectId}/coding-scheme/add`,
+                state: { questionDefined: null, canModify: true }
+              }}
+              value="+ Add New Question"
+              color="accent"
+              aria-label="Add new question to coding scheme"
+            />
+          </Fragment>}
         {!this.props.lockedByCurrentUser &&
-        <Fragment>
-          <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
-            The coding scheme is empty. To get started, check out the coding scheme for editing.
+          <Fragment>
+            <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
+              The coding scheme is empty. To get started, check out the coding scheme for editing.
           </Typography>
-          <Button
-            value="Check out"
-            color="accent"
-            aria-label="check out coding scheme"
-            onClick={this.handleLockCodingScheme} />
-        </Fragment>
+            <Button
+              value="Check out"
+              color="accent"
+              aria-label="check out coding scheme"
+              onClick={this.handleLockCodingScheme} />
+          </Fragment>
         }
       </Container>
     )
@@ -191,6 +195,7 @@ export class CodingScheme extends Component {
                 handleQuestionTreeChange={this.handleQuestionTreeChange}
                 handleQuestionNodeMove={this.handleQuestionNodeMove}
                 handleHoverOnQuestion={this.props.actions.toggleHover}
+                handleDeleteQuestion={this.handleDeleteQuestion}
                 disableHover={this.props.actions.disableHover}
                 enableHover={this.props.actions.enableHover}
                 projectId={this.props.projectId}

@@ -15,3 +15,5 @@ export const clearState = () => ({ type: types.CLEAR_STATE })
 export const setEmptyState = () => ({ type: types.SET_EMPTY_STATE })
 export const resetAlertError = () => ({ type: types.RESET_ALERT_ERROR })
 export const closeLockedAlert = () => ({ type: types.CLOSE_CODING_SCHEME_LOCK_ALERT })
+
+export const deleteQuestionRequest = (projectId, questionId, path) => ({ type: types.DELETE_QUESTION_REQUEST, projectId, questionId, path })

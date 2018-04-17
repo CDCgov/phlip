@@ -5,7 +5,8 @@ import {
   getTreeFromFlatData,
   walk,
   map,
-  addNodeUnderParent
+  addNodeUnderParent,
+  removeNodeAtPath
 } from 'react-sortable-tree'
 import { sortList } from 'utils'
 
@@ -263,6 +264,19 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         questions: updatedTree,
         outline: questionsToOutline(updatedTree),
+        empty: false
+      }
+
+    case types.DELETE_QUESITON_SUCCESS:
+      const updatedTreeAfterDeletion = removeNodeAtPath({
+        treeData: state.questions,
+        path: action.payload.path,
+        getNodeKey
+      })
+      return {
+        ...state,
+        questions: updatedTreeAfterDeletion,
+        outline: questionsToOutline(updatedTreeAfterDeletion),
         empty: false
       }
 

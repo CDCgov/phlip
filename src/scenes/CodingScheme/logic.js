@@ -102,10 +102,36 @@ const reorderSchemeLogic = createLogic({
   }
 })
 
+const deleteQuestionLogic = createLogic({
+  type: types.DELETE_QUESTION_REQUEST,
+  latest: true,
+  async process({ api, action }, dispatch, done) {
+    try {
+      const response = await api.deleteQuestion(action.projectId, action.questionId)
+      dispatch({
+        type: types.DELETE_QUESITON_SUCCESS,
+        payload: {
+          deletededQuestion: action.questionId,
+          path: action.path,
+          response
+        }
+      })
+    } catch (error) {
+      dispatch({
+        type: types.DELETE_QUESTION_FAIL,
+        error: true,
+        payload: 'We could\'t delete the question. Please try again later.'
+      })
+    }
+    done()
+  }
+})
+
 export default [
   getSchemeLogic,
   reorderSchemeLogic,
   lockSchemeLogic,
   unlockSchemeLogic,
+  deleteQuestionLogic,
   ...addEditQuestionLogic
 ]
