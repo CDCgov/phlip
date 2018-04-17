@@ -68,6 +68,7 @@ export class CodingScheme extends Component {
   }
 
   onContinueGoBack = () => {
+    this.handleUnlockCodingScheme()
     this.props.history.goBack()
   }
 
@@ -124,7 +125,7 @@ export class CodingScheme extends Component {
         onClick: this.onCloseGoBackAlert
       },
       {
-        value: 'Continue',
+        value: 'Check in',
         type: 'button',
         onClick: this.onContinueGoBack
       }
@@ -134,8 +135,7 @@ export class CodingScheme extends Component {
       <Container column flex>
         <Alert open={this.state.goBackAlertOpen} actions={alertActions}>
           <Typography variant="body1">
-            You have checked out the coding scheme. If you exit now, no one else will be allowed to edit until you check
-            in. Are you sure you want to continue?
+            You have checked out the coding scheme. No one else can edit until you check in.
           </Typography>
         </Alert>
         <ApiErrorAlert

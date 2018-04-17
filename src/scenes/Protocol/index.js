@@ -103,6 +103,7 @@ export class Protocol extends Component {
   }
 
   onContinue = () => {
+    this.onSaveProtocol()
     this.props.history.goBack()
   }
 
@@ -110,11 +111,7 @@ export class Protocol extends Component {
     if (this.props.lockedByCurrentUser || this.state.editMode) {
       this.setState({
         open: true,
-        alertText: this.state.editMode
-          ? `You have unsaved changes that will be lost if you decide to continue. You have also locked the protocol. If
-             you exit now, no one else will be allowed to edit until you release the lock.`
-          : `You have locked the protocol. If you exit now, no one else will be allowed to 
-             edit until you release the lock.`
+        alertText: 'Your unsaved changes will be lost.'
       })
     } else {
      this.props.history.goBack()
@@ -129,7 +126,7 @@ export class Protocol extends Component {
         onClick: this.onClose
       },
       {
-        value: 'Continue',
+        value: 'Save',
         type: 'button',
         onClick: this.onContinue
       }
@@ -138,7 +135,7 @@ export class Protocol extends Component {
       <Container flex column style={{ paddingBottom: 20, flexWrap: 'nowrap' }}>
         <Alert open={this.state.open} actions={alertActions}>
           <Typography variant="body1">
-            {this.state.alertText} Are you sure you want to continue?
+            {this.state.alertText}
           </Typography>
         </Alert>
         <Alert

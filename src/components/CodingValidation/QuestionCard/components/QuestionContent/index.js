@@ -67,7 +67,6 @@ export const QuestionContent = props => {
             question={question}
             userAnswers={userAnswers}
             onChangePincite={onChangeTextAnswer}
-            pincites={question.questionType !== questionTypes.CATEGORY}
             mergedUserQuestions={mergedUserQuestions}
             currentUserInitials={currentUserInitials}
             disableAll={disableAll}
@@ -78,8 +77,12 @@ export const QuestionContent = props => {
         {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions === null &&
         <Column displayFlex style={{ ...answerPadding, paddingRight: 0 }}>
           <InputBox
-            rows="7" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
-            value={userAnswers.answers[question.possibleAnswers[0].id]} answerId={question.possibleAnswers[0].id}
+            rows="7"
+            name="text-answer"
+            onChange={onChangeTextAnswer}
+            placeholder="Enter answer"
+            value={userAnswers.answers[question.possibleAnswers[0].id]}
+            answerId={question.possibleAnswers[0].id}
             disabled={disableAll}
           />
         </Column>}
