@@ -37,7 +37,29 @@ const navButtonStyles = {
 
 const iconStyle = { transform: 'rotate(90deg)' }
 
-const styles = theme => bodyStyles(theme)
+const styles = theme => ({
+  mainContent: {
+    height: '100vh',
+    width: '100%',
+    flex: '1 !important',
+    overflow: 'auto',
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    }),
+    marginLeft: -330
+  },
+  openNavShift: {
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    }),
+    marginLeft: 0
+  },
+  pageLoading: {
+    marginLeft: 0
+  }
+})
 
 export const withCodingValidation = (WrappedComponent, actions) => {
   class CodingValidation extends WrappedComponent {
@@ -60,7 +82,6 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       user: PropTypes.object,
       selectedCategory: PropTypes.number,
       schemeError: PropTypes.string,
-      updateAnswerError: PropTypes.bool,
       answerErrorContent: PropTypes.any,
       saveFlagErrorContent: PropTypes.string,
       getQuestionErrors: PropTypes.string,
@@ -114,8 +135,8 @@ export const withCodingValidation = (WrappedComponent, actions) => {
     }
 
     componentWillUnmount() {
-      this.props.actions.onCloseScreen()
       window.removeEventListener('beforeunload', this.onSaveCodedQuestion)
+      this.props.actions.onCloseScreen()
     }
 
     onToggleNavigator = () => {
@@ -228,7 +249,11 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       }
 
       return (
-        <Container column flex alignItems="center" style={{ justifyContent: 'center', padding: 30, textAlign: 'center' }}>
+        <Container
+          column
+          flex
+          alignItems="center"
+          style={{ justifyContent: 'center', padding: 30, textAlign: 'center' }}>
           <Typography type="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
           <Row displayFlex style={{ width: '100%', justifyContent: 'space-evenly' }}>
             {noScheme && this.props.userRole !== 'Coder' &&
@@ -244,31 +269,29 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       )
     }
 
-    onShowCodeView = () => {
-      return (
-        <Fragment>
-          <QuestionCard
-            page={this.props.page}
-            onChange={this.onAnswer}
-            onChangeTextAnswer={this.onChangeTextAnswer}
-            onChangeCategory={this.onChangeCategory}
-            onAnswer={this.onAnswer}
-            onClearAnswer={this.onClearAnswer}
-            onOpenAlert={this.onOpenApplyAllAlert}
-            onSaveFlag={this.onSaveFlag}
-            onSave={this.onSaveCodedQuestion}
-            onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
-          />
-          <FooterNavigate
-            currentIndex={this.props.currentIndex}
-            getNextQuestion={this.getNextQuestion}
-            getPrevQuestion={this.getPrevQuestion}
-            totalLength={this.props.questionOrder.length}
-            showNextButton={this.props.showNextButton}
-          />
-        </Fragment>
-      )
-    }
+    onShowCodeView = () => (
+      <Fragment>
+        <QuestionCard
+          page={this.props.page}
+          onChange={this.onAnswer}
+          onChangeTextAnswer={this.onChangeTextAnswer}
+          onChangeCategory={this.onChangeCategory}
+          onAnswer={this.onAnswer}
+          onClearAnswer={this.onClearAnswer}
+          onOpenAlert={this.onOpenApplyAllAlert}
+          onSaveFlag={this.onSaveFlag}
+          onSave={this.onSaveCodedQuestion}
+          onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
+        />
+        <FooterNavigate
+          currentIndex={this.props.currentIndex}
+          getNextQuestion={this.getNextQuestion}
+          getPrevQuestion={this.getPrevQuestion}
+          totalLength={this.props.questionOrder.length}
+          showNextButton={this.props.showNextButton}
+        />
+      </Fragment>
+    )
 
     render() {
       return (
@@ -389,30 +412,6 @@ export const withCodingValidation = (WrappedComponent, actions) => {
 
   return connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CodingValidation))
 }
-
-export const bodyStyles = theme => ({
-  mainContent: {
-    height: '100vh',
-    width: '100%',
-    flex: '1 !important',
-    overflow: 'auto',
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    marginLeft: -330
-  },
-  openNavShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginLeft: 0
-  },
-  pageLoading: {
-    marginLeft: 0
-  }
-})
 
 withCodingValidation.propTypes = {
   WrappedComponent: PropTypes.component,

@@ -55,7 +55,7 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         ...state,
         userAnswers: {
           ...state.userAnswers,
-          ...handleUpdateUserAnswers(state, action, state.selectedCategoryId)
+          ...handleUpdateUserAnswers(state, action)
         }
       }
 
@@ -69,7 +69,7 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
     case `${types.SAVE_USER_ANSWER_FAIL}_${name}`:
       return {
         ...state,
-        answerErrorContent: 'We couldn\'t save the answer for this question. Your answer will be reset to the previous state.'
+        answerErrorContent: 'We couldn\'t save the answer for this question.'
       }
 
     case `${types.ON_CHANGE_PINCITE}_${name}`:
