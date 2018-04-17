@@ -288,8 +288,8 @@ export const handleUserPinciteQuestion = (state, action) => {
 export const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, getFieldValues) => ({
   userAnswers: {
     ...state.userAnswers,
-    [action.questionId]: {
-      ...state.userAnswers[action.questionId],
+    [state.question.id]: {
+      ...state.userAnswers[state.question.id],
       [fieldValue]: typeof getFieldValues === 'function' ? getFieldValues(state, action) : getFieldValues
     }
   }
@@ -301,20 +301,15 @@ export const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, get
 export const handleUpdateUserCategoryChild = (state, action) => (fieldValue, getFieldValues) => ({
   userAnswers: {
     ...state.userAnswers,
-    [action.questionId]: {
-      ...state.userAnswers[action.questionId],
+    [state.question.id]: {
+      ...state.userAnswers[state.question.id],
       [state.selectedCategoryId]: {
-        ...state.userAnswers[action.questionId][state.selectedCategoryId],
+        ...state.userAnswers[state.question.id][state.selectedCategoryId],
         [fieldValue]: typeof getFieldValues === 'function' ? getFieldValues(state, action) : getFieldValues
       }
     }
   }
 })
-
-/*
-  Clears answers when user clicks sweep button
- */
-export const handleClearAnswers = () => ({})
 
 /*
  Sends back an initialized object for a question in userAnswers

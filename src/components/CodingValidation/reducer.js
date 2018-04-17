@@ -62,17 +62,7 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
     case `${types.SAVE_USER_ANSWER_SUCCESS}_${name}`:
       return {
         ...state,
-        userAnswers: {
-          ...state.userAnswers,
-          [state.question.id]: state.question.isCategoryQuestion
-            ? {
-              ...state.userAnswers[state.question.id],
-              [state.selectedCategoryId]: {
-                ...state.userAnswers[state.question.id][state.selectedCategoryId],
-                id: action.payload.id
-              }
-            } : { ...state.userAnswers[state.question.id], id: action.payload.id }
-        },
+        ...questionUpdater('id', action.payload.id),
         answerErrorContent: null
       }
 
@@ -140,19 +130,19 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
       }
 
     case `${types.ON_CLEAR_ANSWER}_${name}`:
-      return { ...state, ...questionUpdater('answers', handleClearAnswers) }
+      return { ...state, ...questionUpdater('answers', {}) }
 
     case `${types.DISMISS_API_ALERT}_${name}`:
       return { ...state, [action.errorType]: null }
-
-    case `${types.ON_CLOSE_SCREEN}_${name}`:
-      return INITIAL_STATE
 
     case `${types.ON_SHOW_PAGE_LOADER}_${name}`:
       return { ...state, showPageLoader: true }
 
     case `${types.ON_SHOW_QUESTION_LOADER}_${name}`:
       return { ...state, questionChangeLoader: true }
+
+    case `${types.ON_CLOSE_SCREEN}_${name}`:
+      return INITIAL_STATE
 
     case `${types.GET_NEXT_QUESTION}_${name}`:
     case `${types.GET_PREV_QUESTION}_${name}`:

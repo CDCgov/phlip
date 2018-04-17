@@ -160,7 +160,6 @@ export const withCodingValidation = (WrappedComponent, actions) => {
      * This actually dispatches the redux action that calls the api to save the question data
      */
     onSaveCodedQuestion = () => {
-      console.log('here')
       this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
     }
 
@@ -194,7 +193,10 @@ export const withCodingValidation = (WrappedComponent, actions) => {
 
     onChangeCategory = (event, selection) => this.props.actions.onChangeCategory(selection)
 
-    onClearAnswer = () => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+    onClearAnswer = () => {
+      this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+      this.onSaveCodedQuestion()
+    }
 
     onCloseApplyAllAlert = () => this.setState({ applyAllAlertOpen: false })
 
