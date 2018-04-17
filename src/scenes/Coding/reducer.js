@@ -96,11 +96,7 @@ const codingReducer = (state, action) => {
     case types.ON_SAVE_FLAG:
       return {
         ...state,
-        ...questionUpdater('flag', action.flagInfo),
-        errorTypeMsg: 'We couldn\'t save your flag for this question. Your flag will be reset to the previous state.',
-        snapshotUserAnswer: state.question.isCategoryQuestion
-          ? state.userAnswers[action.questionId][state.selectedCategoryId]
-          : state.userAnswers[action.questionId],
+        ...questionUpdater('flag', action.flagInfo)
       }
 
     case types.GET_USER_CODED_QUESTIONS_SUCCESS:

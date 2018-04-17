@@ -7,11 +7,11 @@ import {
 } from 'utils/codingHelpers'
 
 const errorTypes = {
-  1: 'We couldn\'t save the answer for this question. Your answer will be reset to the previous state.',
-  2: 'We couldn\'t save the comment for this question. Your comment will be reset to the previous state.',
-  3: 'We couldn\'t save the pincite for this answer choice. Your pincite will be reset to the previous state.',
-  4: 'We couldn\'t clear the answer for this question. Your answer will be reset to the previous state.',
-  5: 'We couldn\'t save your flag for this question. Your flag will be reset to the previous state.'
+  1: 'We couldn\'t save the answer for this question.',
+  2: 'We couldn\'t save the comment for this question.',
+  3: 'We couldn\'t save the pincite for this answer choice.',
+  4: 'We couldn\'t clear the answer for this question.',
+  5: 'We couldn\'t save your flag for this question.'
 }
 
 const INITIAL_STATE = {
@@ -69,7 +69,7 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
     case `${types.SAVE_USER_ANSWER_FAIL}_${name}`:
       return {
         ...state,
-        answerErrorContent: 'We couldn\'t save the answer for this question.'
+        answerErrorContent: 'We couldn\'t save your answer for this question.'
       }
 
     case `${types.ON_CHANGE_PINCITE}_${name}`:
@@ -125,7 +125,6 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
             }), {})
           }
         },
-        snapshotUserAnswer: { ...state.userAnswers[state.question.id] },
         answerErrorContent: errorTypes[1]
       }
 

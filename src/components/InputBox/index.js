@@ -27,7 +27,7 @@ const styles = theme => ({
 
 const InputBox = props => {
   const {
-    value, onChange, name, rows, answerId, classes, validator,
+    value, onChange, name, rows, answerId, classes, validator, theme,
     isValidation, userImages, style, onBlur, ...otherProps
   } = props
 
@@ -44,7 +44,12 @@ const InputBox = props => {
               : validator.avatar
             : validator.avatar
           }
-          style={{ marginRight: 15, backgroundColor: 'white', color: '#35ac74', borderColor: '#35ac74' }}
+          style={{
+            marginRight: 15,
+            backgroundColor: 'white',
+            color: theme.palette.secondary.main,
+            borderColor: theme.palette.secondary.main
+          }}
           initials={getInitials(validator.firstName, validator.lastName)}
         />}
         <TextField
@@ -88,4 +93,4 @@ InputBox.propTypes = {
   name: PropTypes.string
 }
 
-export default withStyles(styles)(InputBox)
+export default withStyles(styles, { withTheme: true })(InputBox)

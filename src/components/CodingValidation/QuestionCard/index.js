@@ -6,7 +6,7 @@ import { Row, Column } from 'components/Layout'
 import IconButton from 'components/IconButton'
 import QuestionContent from './components/QuestionContent'
 import Tabs from 'components/Tabs'
-import { Broom, ContentSave } from 'mdi-material-ui'
+import { Broom } from 'mdi-material-ui'
 import styles from './card-styles.scss'
 import * as questionTypes from '../constants'
 import FlagPopover from './components/FlagPopover'
@@ -78,7 +78,7 @@ export class QuestionCard extends Component {
       user: this.props.user,
       question: this.props.question,
       onOpenAlert: this.props.onOpenAlert,
-      userAnswers: this.props.userAnswers,
+      userAnswers: { validatedBy: { ...this.props.user }, ...this.props.userAnswers },
       comment: this.props.userAnswers.comment,
       isValidation: this.props.isValidation,
       mergedUserQuestions: this.props.mergedUserQuestions,

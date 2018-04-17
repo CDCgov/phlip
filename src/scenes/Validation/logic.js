@@ -243,10 +243,7 @@ export const getQuestionLogicValidation = createLogic({
     }
 
     const { updatedState, question, currentIndex, errors } = await getQuestionAndInitialize(state, action, userId, api, questionInfo)
-
     const { codedQuestionObj, coderErrors } = await getCoderInformation({ api, action, questionId: question.id })
-
-    console.log(updatedState)
 
     return {
       updatedState: { ...updatedState, mergedUserQuestions: { ...state.mergedUserQuestions, ...codedQuestionObj } },
@@ -260,21 +257,24 @@ export const getQuestionLogicValidation = createLogic({
 export const applyAllAnswers = createLogic({
   type: types.ON_APPLY_ANSWER_TO_ALL,
   async process({ getState, action, api }, dispatch, done) {
-    const userId = getState().data.user.currentUser.id
+    const validatorId = getState().data.user.currentUser.id
     const validationState = getState().scenes.validation
     const allCategoryObjects = Object.values(validationState.userAnswers[action.questionId])
 
     const answerObject = {
       questionId: action.questionId,
       jurisdictionId: action.jurisdictionId,
-      userId,
       projectId: action.projectId
     }
 
     try {
       for (let category of allCategoryObjects) {
         let respCodedQuestion = {}
-        const question = getFinalCodedObject(validationState, action, category.categoryId)
+        const question = {
+          ...getFinalCodedObject(validationState, action, category.categoryId),
+          validatedBy: validatorId
+        }
+
         if (category.id !== undefined) {
           respCodedQuestion = await api.updateValidatedQuestion({ ...answerObject, questionObj: question })
         } else {
