@@ -17,7 +17,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
         Object {
           "onClick": [Function],
           "type": "button",
-          "value": "Continue",
+          "value": "Check in",
         },
       ]
     }
@@ -26,7 +26,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
     <WithStyles
       variant="body1"
     >
-      You have checked out the coding scheme. If you exit now, no one else will be allowed to edit until you check in. Are you sure you want to continue?
+      You have checked out the coding scheme. No one else can edit until you check in.
     </WithStyles>
   </Alert>
   <ApiErrorAlert
