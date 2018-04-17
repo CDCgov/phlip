@@ -66,6 +66,7 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
           ...state.userAnswers,
           [state.question.id]: state.question.isCategoryQuestion
             ? {
+              ...state.userAnswers[state.question.id],
               [state.selectedCategoryId]: {
                 ...state.userAnswers[state.question.id][state.selectedCategoryId],
                 id: action.payload.id

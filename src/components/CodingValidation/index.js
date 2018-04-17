@@ -145,6 +145,9 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       }, 1000)
     }
 
+    /**
+     * Updates the redux state with new user data
+     */
     onAnswer = id => (event, value) => {
       this.props.actions.updateUserAnswer(
         this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, value
@@ -153,11 +156,17 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       this.onSaveCodedQuestion()
     }
 
+    /**
+     * This actually dispatches the redux action that calls the api to save the question data
+     */
     onSaveCodedQuestion = () => {
       console.log('here')
       this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
     }
 
+    /**
+     * Updates redux state with new user data for text input fields
+     */
     onChangeTextAnswer = (id, field) => event => {
       switch (field) {
         case 'textAnswer':
@@ -217,11 +226,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       }
 
       return (
-        <Container
-          column
-          flex
-          alignItems="center"
-          style={{ justifyContent: 'center', padding: 30, textAlign: 'center' }}>
+        <Container column flex alignItems="center" style={{ justifyContent: 'center', padding: 30, textAlign: 'center' }}>
           <Typography type="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
           <Row displayFlex style={{ width: '100%', justifyContent: 'space-evenly' }}>
             {noScheme && this.props.userRole !== 'Coder' &&
@@ -267,10 +272,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       return (
         <Container
           flex style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}>
-          <Alert
-            open={this.state.applyAllAlertOpen}
-            text=""
-            actions={this.modalActions}>
+          <Alert open={this.state.applyAllAlertOpen} text="" actions={this.modalActions}>
             <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
               You are applying your answer to ALL categories. Previously answered questions will be changed.
             </Typography>

@@ -137,6 +137,8 @@ export const answerQuestionLogic = createLogic({
     }
     let respCodedQuestion = {}
 
+    console.log(questionObj)
+
     try {
       if (questionObj.hasOwnProperty('id')) {
         respCodedQuestion = await api.updateCodedQuestion({ ...answerObject })
