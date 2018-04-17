@@ -1,11 +1,10 @@
 import { createLogic } from 'redux-logic'
 import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
-import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
+import { getTreeFromFlatData } from 'react-sortable-tree'
 import {
-  getFinalCodedObject, initializeAndCheckAnswered, getQuestionAndInitialize,
-  getPreviousQuestion, getQuestionSelectedInNav, getNextQuestion
+  getFinalCodedObject, initializeUserAnswers, getQuestionAndInitialize,
+  getPreviousQuestion, getQuestionSelectedInNav, getNextQuestion, initializeNextQuestion
 } from 'utils/codingHelpers'
-import { createAvatarUrl } from 'utils/urlHelper'
 import { checkIfExists } from 'utils/codingSchemeHelpers'
 import { normalize } from 'utils'
 import * as types from './actionTypes'
@@ -82,7 +81,7 @@ const getCoderInformation = async ({ api, action, questionId }) => {
   Some of the reusable functions need to know whether we're on the validation screen or not, so that's what this is for
  */
 export const updateValidatorLogic = createLogic({
-  type: [types.UPDATE_USER_ANSWER_REQUEST, types.ON_APPLY_ANSWER_TO_ALL],
+  type: [types.UPDATE_USER_ANSWER, types.ON_APPLY_ANSWER_TO_ALL],
   transform({ action, getState }, next) {
     next({
       ...action,
@@ -98,7 +97,7 @@ export const updateValidatorLogic = createLogic({
 export const getValidationOutlineLogic = createLogic({
   type: types.GET_VALIDATION_OUTLINE_REQUEST,
   async process({ action, getState, api }, dispatch, done) {
-    let scheme = {}, validatedQuestions = [], errors = {}, payload = {}, codedQuestionObj = {}, coderErrors = {}
+    let scheme = {}, validatedQuestions = [], errors = {}, payload = {}
     const userId = getState().data.user.currentUser.id
 
     try {
@@ -128,9 +127,8 @@ export const getValidationOutlineLogic = createLogic({
           const questionsById = normalize.arrayToObject(questionsWithNumbers)
           const firstQuestion = questionsWithNumbers[0]
 
-          // Check if the first question has answers, if it doesn't send a request to create an empty coded question
-          const { userAnswers, initializeErrors } = await initializeAndCheckAnswered(
-            firstQuestion, validatedQuestions, questionsById, userId, action, api.createEmptyValidatedQuestion
+          const userAnswers = initializeUserAnswers(
+            [initializeNextQuestion(firstQuestion), ...validatedQuestions], questionsById, userId
           )
 
           // Get all the coded questions for this question
@@ -153,7 +151,6 @@ export const getValidationOutlineLogic = createLogic({
           })
 
           const uniqueValidatedUsersIds = validatedQuestions.map((validatedQuestion) => {
-            // console.log(validatedQuestion)
             return validatedQuestion.validatedBy.userId
           }).filter((elem, pos, arr) => {
             return arr.indexOf(elem) == pos
@@ -162,9 +159,6 @@ export const getValidationOutlineLogic = createLogic({
           const combinedUsersOnProject = [...uniqueUserIds, ...uniqueValidatedUsersIds]
 
           let uniqueUsersWithAvatar = []
-          // console.log(uniqueValidatedUsersIds)
-          // console.log(uniqueUserIds)
-          // console.log(combinedUsersOnProject)
 
           const combinedUniqueUsersOnProject = combinedUsersOnProject.filter((elem, pos, arr) => {
             return arr.indexOf(elem) == pos
@@ -193,7 +187,7 @@ export const getValidationOutlineLogic = createLogic({
             userId,
             mergedUserQuestions: codedQuestionObj,
             userImages,
-            errors: { ...errors, ...initializeErrors, ...coderErrors }
+            errors: { ...errors, ...coderErrors }
           }
         }
       } else {
@@ -248,11 +242,11 @@ export const getQuestionLogicValidation = createLogic({
         break
     }
 
-    const { updatedState, question, currentIndex, errors } = await getQuestionAndInitialize(
-      state, action, userId, api, api.createEmptyValidatedQuestion, questionInfo
-    )
+    const { updatedState, question, currentIndex, errors } = await getQuestionAndInitialize(state, action, userId, api, questionInfo)
 
     const { codedQuestionObj, coderErrors } = await getCoderInformation({ api, action, questionId: question.id })
+
+    console.log(updatedState)
 
     return {
       updatedState: { ...updatedState, mergedUserQuestions: { ...state.mergedUserQuestions, ...codedQuestionObj } },
@@ -263,27 +257,79 @@ export const getQuestionLogicValidation = createLogic({
   }
 })
 
+export const applyAllAnswers = createLogic({
+  type: types.ON_APPLY_ANSWER_TO_ALL,
+  async process({ getState, action, api }, dispatch, done) {
+    const userId = getState().data.user.currentUser.id
+    const validationState = getState().scenes.validation
+    const allCategoryObjects = Object.values(validationState.userAnswers[action.questionId])
+
+    const answerObject = {
+      questionId: action.questionId,
+      jurisdictionId: action.jurisdictionId,
+      userId,
+      projectId: action.projectId
+    }
+
+    try {
+      for (let category of allCategoryObjects) {
+        let respCodedQuestion = {}
+        const question = getFinalCodedObject(validationState, action, category.categoryId)
+        if (category.id !== undefined) {
+          respCodedQuestion = await api.updateValidatedQuestion({ ...answerObject, questionObj: question })
+        } else {
+          const { id, ...questionObj } = question
+          respCodedQuestion = await api.answerValidatedQuestion({ ...answerObject, questionObj })
+        }
+
+        dispatch({
+          type: types.SAVE_USER_ANSWER_SUCCESS,
+          payload: { ...respCodedQuestion }
+        })
+      }
+      dispatch({
+        type: types.UPDATE_EDITED_FIELDS,
+        projectId: action.projectId
+      })
+    } catch (error) {
+      dispatch({
+        type: types.SAVE_USER_ANSWER_FAIL,
+        payload: { error: 'Could not update answer', isApplyAll: true }
+      })
+    }
+    done()
+  }
+})
+
 /*
   Logic for when a validator does anything to a validation question
  */
 export const validateQuestionLogic = createLogic({
-  type: [
-    types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER,
-    types.ON_APPLY_ANSWER_TO_ALL, types.ON_CHANGE_COMMENT
-  ],
+  type: types.SAVE_USER_ANSWER_REQUEST,
   latest: true,
   async process({ getState, action, api }, dispatch, done) {
     const validationState = getState().scenes.validation
     const validatorId = getState().data.user.currentUser.id
-    const answerObject = getFinalCodedObject(validationState, action, action.type === types.ON_APPLY_ANSWER_TO_ALL)
+    const questionObj = getFinalCodedObject(validationState, action)
+
+    const answerObject = {
+      questionId: action.questionId,
+      jurisdictionId: action.jurisdictionId,
+      projectId: action.projectId,
+      questionObj: { ...questionObj, validatedBy: validatorId }
+    }
+
+    let respCodedQuestion = {}
     try {
-      const validatedQuestion = await api.validateQuestion(action.projectId, action.jurisdictionId, action.questionId, {
-        ...answerObject,
-        validatedBy: validatorId
-      })
+      if (questionObj.hasOwnProperty('id')) {
+        respCodedQuestion = await api.updateValidatedQuestion({ ...answerObject })
+      } else {
+        respCodedQuestion = await api.answerValidatedQuestion({ ...answerObject })
+      }
+
       dispatch({
-        type: types.UPDATE_USER_ANSWER_SUCCESS,
-        payload: { ...validatedQuestion }
+        type: types.SAVE_USER_ANSWER_SUCCESS,
+        payload: { ...respCodedQuestion }
       })
       dispatch({
         type: types.UPDATE_EDITED_FIELDS,
@@ -291,8 +337,8 @@ export const validateQuestionLogic = createLogic({
       })
     } catch (error) {
       dispatch({
-        type: types.UPDATE_USER_ANSWER_FAIL,
-        payload: { error: 'Couldnt update answer', isApplyAll: action.type === types.ON_APPLY_ANSWER_TO_ALL }
+        type: types.SAVE_USER_ANSWER_FAIL,
+        payload: { error: 'Could not update answer', isApplyAll: false }
       })
     }
     done()
@@ -349,8 +395,8 @@ export const getUserValidatedQuestionsLogic = createLogic({
       }
     }
 
-    const { userAnswers, initializeErrors } = await initializeAndCheckAnswered(
-      updatedSchemeQuestion, validatedQuestions, updatedScheme.byId, userId, action, api.createEmptyValidatedQuestion
+    const userAnswers = initializeUserAnswers(
+      [initializeNextQuestion(updatedSchemeQuestion), ...validatedQuestions], updatedScheme.byId, userId
     )
 
     const { codedQuestionObj, coderErrors } = await getCoderInformation({
@@ -372,7 +418,6 @@ export const getUserValidatedQuestionsLogic = createLogic({
     })
 
     const uniqueValidatedUsersIds = validatedQuestions.map((validatedQuestion) => {
-      // console.log(validatedQuestion)
       return validatedQuestion.validatedBy.userId
     }).filter((elem, pos, arr) => {
       return arr.indexOf(elem) == pos
@@ -381,15 +426,9 @@ export const getUserValidatedQuestionsLogic = createLogic({
     const combinedUsersOnProject = [...uniqueUserIds, ...uniqueValidatedUsersIds]
 
     let uniqueUsersWithAvatar = []
-    // console.log(uniqueValidatedUsersIds)
-    // console.log(uniqueUserIds)
-    // console.log(combinedUsersOnProject)
-
     const combinedUniqueUsersOnProject = combinedUsersOnProject.filter((elem, pos, arr) => {
       return arr.indexOf(elem) == pos
     })
-
-    // console.log(combinedUniqueUsersOnProject)
 
     for (let userId of combinedUniqueUsersOnProject) {
       try {
@@ -409,7 +448,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
       scheme: updatedScheme,
       otherUpdates,
       mergedUserQuestions: codedQuestionObj,
-      errors: { ...errors, ...initializeErrors, ...coderErrors },
+      errors: { ...errors, ...coderErrors },
       userImages
     }
 
@@ -452,5 +491,6 @@ export default [
   validateQuestionLogic,
   getQuestionLogicValidation,
   getValidationOutlineLogic,
+  applyAllAnswers,
   clearFlagLogic
 ]

@@ -153,7 +153,7 @@ export const applyAllAnswers = createLogic({
         type: types.UPDATE_EDITED_FIELDS,
         projectId: action.projectId
       })
-    } catch (erro) {
+    } catch (error) {
       dispatch({
         type: types.SAVE_USER_ANSWER_FAIL,
         payload: { error: 'Could not update answer', isApplyAll: true }

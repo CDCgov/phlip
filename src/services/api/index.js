@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { login, logout } from '../authToken'
-import { isUndefined } from 'util';
+import { isUndefined } from 'util'
 
 export const api = axios.create({
   baseURL: '/api'
@@ -193,16 +193,14 @@ export default {
   },
 
   // Create an empty validated question, called in Validation/logic
-  createEmptyValidatedQuestion({ projectId, jurisdictionId, questionId, userId, questionObj }) {
-    return api.post(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`, {
-      ...questionObj,
-      validatedBy: userId
-    }).then(res => res.data)
+  answerValidatedQuestion({ projectId, jurisdictionId, questionId, questionObj }) {
+    return api.post(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`, questionObj)
+      .then(res => res.data)
   },
 
   // Validates a question for a jurisdiction and project, called in Validation/logic
-  validateQuestion(projectId, jurisdictionId, questionId, updatedQuestion) {
-    return api.put(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`, updatedQuestion)
+  updateValidatedQuestion({ projectId, jurisdictionId, questionId, questionObj }) {
+    return api.put(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`, questionObj)
       .then(res => res.data)
   },
 
@@ -220,7 +218,8 @@ export default {
 
   // Get all coded questions for a specific question
   getAllCodedQuestionsForQuestion(projectId, jurisdictionId, questionId) {
-    return api.get(`/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`).then(res => res.data)
+    return api.get(`/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`)
+      .then(res => res.data)
   },
 
   // Gets a picture for user, called in Admin/scenes/AddEditUser/logic, Validation/logic

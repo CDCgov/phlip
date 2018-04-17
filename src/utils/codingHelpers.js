@@ -4,7 +4,7 @@ import sortList from 'utils/sortList'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 
 const initializeValues = question => {
-  const { codedAnswers, ...initlaizedQuestion } = {
+  const { codedAnswers, ...initializedQuestion } = {
     ...question.id ? { id: question.id } : {},
     ...question,
     comment: question.comment || '',
@@ -12,7 +12,7 @@ const initializeValues = question => {
     answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId'),
     schemeQuestionId: question.schemeQuestionId
   }
-  return initlaizedQuestion
+  return initializedQuestion
 }
 
 /*
@@ -40,6 +40,9 @@ export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions,
   }, initialObj)
 }
 
+/**
+ * Finds the next question that is a parent question in case of category questions having not been answered
+ */
 export const findNextParentSibling = (scheme, question, currentIndex) => {
   const subArr = [...scheme.order].slice(currentIndex + 1)
   return subArr.find(id => scheme.byId[id].parentId !== question.id)
@@ -65,6 +68,9 @@ export const determineShowButton = state => {
 export const getSelectedCategories = (parentQuestion, userAnswers) =>
   parentQuestion.possibleAnswers.filter(category => checkIfExists(category, userAnswers[parentQuestion.id].answers))
 
+/*
+  Initializes an object to be used for creating entry in user answers
+ */
 export const initializeNextQuestion = question => ({
   comment: '',
   flag: { notes: '', type: 0, raisedBy: {} },
@@ -444,41 +450,6 @@ export const getFinalCodedObject = (state, action, selectedCategoryId = state.se
   }
 
   return answerObject
-}
-
-/*
-  Check answered status and send response to create empty validated/coded question
- */
-export const initializeAndCheckAnswered = async (question, codedQuestions, schemeById, userId, action, createEmptyQuestion) => {
-  // Initialize object for holding user answers, if question already exists in user answers, then the initialized object
-  // will get overwritten (which is what we want, if it exists)
-
-  let initializeErrors = {}
-  const coded = [initializeNextQuestion(question), ...codedQuestions]
-  const userAnswers = initializeUserAnswers([...coded], schemeById, userId)
-
-  // Check if the first question is answered, if it's not, then send a request to create an empty coded question
-  // on the backend. This fixes issues with duplication of text fields answer props
-  const answered = userAnswers[question.id].hasOwnProperty('id')
-
-  if (!answered) {
-    try {
-      const { answers, ...questionObj } = userAnswers[question.id]
-      const { codedAnswers, ...q } = await createEmptyQuestion({
-        questionId: question.id,
-        projectId: action.projectId,
-        jurisdictionId: action.jurisdictionId,
-        userId: userId,
-        questionObj: { ...questionObj, codedAnswers: [] }
-      })
-      userAnswers[question.id] = { ...q, ...userAnswers[question.id] }
-    } catch (error) {
-      initializeErrors = { 'initializeEmpty': 'We couldn\'t initialize this question. Unfortunately, you will not be able to answer it at this time.' }
-    }
-  }
-
-  // Return initialized user answers object
-  return { userAnswers, initializeErrors }
 }
 
 /*
