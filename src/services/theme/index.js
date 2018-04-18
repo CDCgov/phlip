@@ -38,13 +38,13 @@ const theme = createMuiTheme({
   overrides: {
     MuiFormLabel: {
       focused: {
-        color: '#38a48e'
+        color: mainColor
       }
     },
     MuiInput: {
       inkbar: {
         '&:after': {
-          backgroundColor: '#38a48e'
+          backgroundColor: mainColor
         }
       }
     }
