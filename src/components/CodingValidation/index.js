@@ -21,6 +21,8 @@ import { capitalizeFirstLetter } from 'utils/formHelpers'
 import ApiErrorView from 'components/ApiErrorView'
 import ApiErrorAlert from 'components/ApiErrorAlert'
 import PageLoader from 'components/PageLoader'
+import { getFinalCodedObject } from 'utils/codingHelpers'
+import api from 'services/api'
 
 const navButtonStyles = {
   height: 90,
@@ -114,6 +116,9 @@ export const withCodingValidation = (WrappedComponent, actions) => {
           onClick: this.onApplyToAll
         }
       ]
+
+      this.onBeforeUnload = this.onBeforeUnload.bind(this)
+      this.unload = this.unload.bind(this)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -130,12 +135,52 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       }
     }
 
+    unload(e) {
+      const questionObj = getFinalCodedObject(this.props, { questionId: this.props.question.id })
+      const answerObject = {
+        questionId: this.props.question.id,
+        jurisdictionId: this.props.jurisdictionId,
+        userId: this.props.user.id,
+        projectId: this.props.projectId,
+        questionObj
+      }
+
+      if (questionObj.hasOwnProperty('id')) {
+        api.updateCodedQuestion({ ...answerObject })
+      } else {
+        api.answerCodedQuestion({ ...answerObject })
+      }
+
+      window.onunload = null
+    }
+
+    onBeforeUnload(e) {
+      const questionObj = getFinalCodedObject(this.props, { questionId: this.props.question.id })
+      const answerObject = {
+        questionId: this.props.question.id,
+        jurisdictionId: this.props.jurisdictionId,
+        userId: this.props.user.id,
+        projectId: this.props.projectId,
+        questionObj
+      }
+
+      if (questionObj.hasOwnProperty('id')) {
+        api.updateCodedQuestion({ ...answerObject })
+      } else {
+        api.answerCodedQuestion({ ...answerObject })
+      }
+
+      window.onbeforeunload = null
+    }
+
     componentDidMount() {
-      window.addEventListener('beforeunload', this.onSaveCodedQuestion)
+      window.onbeforeunload = this.onBeforeUnload
+      window.onunload = this.unload
     }
 
     componentWillUnmount() {
-      window.removeEventListener('beforeunload', this.onSaveCodedQuestion)
+      window.onbeforeunload = null
+      window.onunload = null
       this.props.actions.onCloseScreen()
     }
 
@@ -404,7 +449,9 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       isLoadingPage: pageState.isLoadingPage || false,
       pageLoaderMessage: pageState.pageLoaderMessage,
       showPageLoader: pageState.showPageLoader || false,
-      isChangingQuestion: pageState.isChangingQuestion || false
+      isChangingQuestion: pageState.isChangingQuestion || false,
+      selectedCategoryId: pageState.selectedCategoryId || null,
+      userAnswers: pageState.userAnswers || {}
     }
   }
 

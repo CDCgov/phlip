@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { login, logout } from '../authToken'
-import { isUndefined } from 'util'
 
 export const api = axios.create({
   baseURL: '/api'
