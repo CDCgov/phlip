@@ -19,8 +19,24 @@ export class CodingScheme extends Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      goBackAlertOpen: false
+      goBackAlertOpen: false,
+      deleteQuestionAlertOpen: false,
+      questionIdToDelete: null,
+      path: null
     }
+
+    this.deleteAlertActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.onCloseDeleteQuestionAlert
+      },
+      {
+        value: 'Delete',
+        type: 'button',
+        onClick: this.handleDeleteQuestion
+      }
+    ]
   }
 
   componentWillMount() {
@@ -57,6 +73,27 @@ export class CodingScheme extends Component {
     this.props.actions.unlockCodingSchemeRequest(this.props.projectId)
   }
 
+  handleDeleteQuestion = () => {
+    this.props.actions.deleteQuestionRequest(this.props.projectId, this.state.questionIdToDelete, this.state.path)
+    this.onCloseDeleteQuestionAlert()
+  }
+
+  onOpenDeleteQuestionAlert = (projectId, questionId, path) => {
+    this.setState({
+      deleteQuestionAlertOpen: true,
+      questionIdToDelete: questionId,
+      path: path
+    })
+  }
+
+  onCloseDeleteQuestionAlert = () => {
+    this.setState({
+      deleteQuestionAlertOpen: false,
+      questionIdToDelete: null,
+      path: null
+    })
+  }
+
   onCloseGoBackAlert = () => {
     this.setState({
       goBackAlertOpen: false
@@ -82,32 +119,32 @@ export class CodingScheme extends Component {
     return (
       <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
         {this.props.lockedByCurrentUser &&
-        <Fragment>
-          <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
-            The coding scheme is empty. To get started, add a question.
+          <Fragment>
+            <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
+              The coding scheme is empty. To get started, add a question.
           </Typography>
-          <Button
-            component={Link}
-            to={{
-              pathname: `/project/${this.props.projectId}/coding-scheme/add`,
-              state: { questionDefined: null, canModify: true }
-            }}
-            value="+ Add New Question"
-            color="accent"
-            aria-label="Add new question to coding scheme"
-          />
-        </Fragment>}
+            <Button
+              component={Link}
+              to={{
+                pathname: `/project/${this.props.projectId}/coding-scheme/add`,
+                state: { questionDefined: null, canModify: true }
+              }}
+              value="+ Add New Question"
+              color="accent"
+              aria-label="Add new question to coding scheme"
+            />
+          </Fragment>}
         {!this.props.lockedByCurrentUser &&
-        <Fragment>
-          <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
-            The coding scheme is empty. To get started, check out the coding scheme for editing.
+          <Fragment>
+            <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
+              The coding scheme is empty. To get started, check out the coding scheme for editing.
           </Typography>
-          <Button
-            value="Check out"
-            color="accent"
-            aria-label="check out coding scheme"
-            onClick={this.handleLockCodingScheme} />
-        </Fragment>
+            <Button
+              value="Check out"
+              color="accent"
+              aria-label="check out coding scheme"
+              onClick={this.handleLockCodingScheme} />
+          </Fragment>
         }
       </Container>
     )
@@ -133,6 +170,11 @@ export class CodingScheme extends Component {
           <Typography variant="body1">
             You have checked out the coding scheme. No one else can edit until you check in.
           </Typography>
+        </Alert>
+        <Alert open={this.state.deleteQuestionAlertOpen} actions={this.deleteAlertActions}>
+          <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+            You are about to delete a question from the coding scheme.  This will permanantly delete all related child questions and coded answers.
+            </Typography>
         </Alert>
         <ApiErrorAlert
           content={this.props.alertError}
@@ -191,6 +233,7 @@ export class CodingScheme extends Component {
                 handleQuestionTreeChange={this.handleQuestionTreeChange}
                 handleQuestionNodeMove={this.handleQuestionNodeMove}
                 handleHoverOnQuestion={this.props.actions.toggleHover}
+                handleDeleteQuestion={this.onOpenDeleteQuestionAlert}
                 disableHover={this.props.actions.disableHover}
                 enableHover={this.props.actions.enableHover}
                 projectId={this.props.projectId}

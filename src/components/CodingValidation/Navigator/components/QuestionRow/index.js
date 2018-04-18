@@ -93,7 +93,7 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
         {item.hasOwnProperty('flags') && item.flags.length > 0 && <Icon
           aria-label="Question has a red flag"
           role="gridcell"
-          color="#ea7e87"
+          color="#FB8B8B"
           style={{ userSelect: 'none' }}
           size={17}>
           flag

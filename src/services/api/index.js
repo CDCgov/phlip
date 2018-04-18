@@ -125,6 +125,10 @@ export default {
     return api.put(`/projects/${projectId}/scheme/${questionId}`, question).then(res => res.data)
   },
 
+  deleteQuestion(projectId, questionId) {
+    return api.delete(`/projects/${projectId}/scheme/${questionId}`).then(res => res.data)
+  },
+
   // Get a project's coding scheme, called in CodingScheme/logic, Coding/Logic, Validation/logic
   getScheme(projectId) {
     return api.get(`/projects/${projectId}/scheme`).then(res => res.data)

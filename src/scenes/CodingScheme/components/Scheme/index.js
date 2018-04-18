@@ -27,7 +27,7 @@ const canDrop = (node, nextParent, prevParent, outline, questions) => {
 export const Scheme = props => {
   const {
     questions, flatQuestions, handleQuestionTreeChange, handleQuestionNodeMove,
-    handleHoverOnQuestion, enableHover, disableHover, projectId, outline, lockedByCurrentUser, hasLock
+    handleHoverOnQuestion, enableHover, disableHover, projectId, outline, lockedByCurrentUser, hasLock, handleDeleteQuestion
   } = props
 
   return (
@@ -53,7 +53,8 @@ export const Scheme = props => {
           enableHover: () => enableHover(),
           disableHover: () => disableHover(),
           projectId: projectId,
-          canModify: hasLock && lockedByCurrentUser === true
+          canModify: hasLock && lockedByCurrentUser === true,
+          handleDeleteQuestion: handleDeleteQuestion
         }
       }}
       canDrag={hasLock && lockedByCurrentUser === true}

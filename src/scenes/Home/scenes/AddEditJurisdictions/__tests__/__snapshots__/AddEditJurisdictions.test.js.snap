@@ -84,7 +84,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
         <span
           style={
             Object {
-              "color": "#38a48e",
+              "color": "#048484",
             }
           }
         />

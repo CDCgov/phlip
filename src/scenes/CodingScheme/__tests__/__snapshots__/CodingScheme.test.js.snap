@@ -29,6 +29,34 @@ exports[`CodingScheme scene should render correctly 1`] = `
       You have checked out the coding scheme. No one else can edit until you check in.
     </WithStyles>
   </Alert>
+  <Alert
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Cancel",
+        },
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Delete",
+        },
+      ]
+    }
+    open={false}
+  >
+    <WithStyles
+      style={
+        Object {
+          "whiteSpace": "pre-wrap",
+        }
+      }
+      variant="body1"
+    >
+      You are about to delete a question from the coding scheme.  This will permanantly delete all related child questions and coded answers.
+    </WithStyles>
+  </Alert>
   <ApiErrorAlert
     onCloseAlert={[Function]}
     open={true}

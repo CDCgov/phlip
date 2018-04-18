@@ -100,8 +100,8 @@ export class JurisdictionForm extends Component {
 
   onSubmitPreset = values => {
     const jurisdiction = {
-      startDate: moment(values.startDate).toISOString(),
-      endDate: moment(values.endDate).toISOString(),
+      startDate: moment(this.state.startDate).toISOString(),
+      endDate: moment(this.state.endDate).toISOString(),
       tag: values.name
     }
 
@@ -188,7 +188,7 @@ export class JurisdictionForm extends Component {
   getNameInputField = () => {
     if (this.props.location.state.preset === true) {
       const options = [
-        { value: 'US States', label: 'US States' },
+        { value: 'US States', label: 'US States' }
         //{ value: 'Counties', label: 'Counties' }
       ]
 
@@ -293,7 +293,8 @@ export class JurisdictionForm extends Component {
       <FormModal
         form="jurisdictionForm"
         handleSubmit={this.props.location.state.preset === true ? this.onSubmitPreset : this.onSubmitForm}
-        initialValues={this.jurisdictionDefined || { name: '', startDate: new Date(), endDate: new Date() }}
+        initialValues={this.jurisdictionDefined ||
+        { name: this.props.location.state.preset ? 'US States' : '', startDate: new Date(), endDate: new Date() }}
         asyncValidate={(this.state.edit || this.props.location.state.preset === true)
           ? null
           : this.validateJurisdiction}
@@ -302,12 +303,15 @@ export class JurisdictionForm extends Component {
         height="400px"
         validate={validateDateRanges}
         open={true}
-        onClose={() => this.props.onCloseModal({ endDate: this.state.endDate, startDate: this.state.startDate })}
-      >
+        onClose={() => this.props.onCloseModal({ endDate: this.state.endDate, startDate: this.state.startDate })}>
         <ModalTitle
-          title={this.state.edit ? 'Edit Jurisdiction' : this.props.location.state.preset === true
-            ? 'Load Preset Jurisdiction List'
-            : 'Add Jurisdiction'} closeButton onCloseForm={this.onCloseForm} />
+          title={this.state.edit
+            ? 'Edit Jurisdiction' : this.props.location.state.preset === true
+              ? 'Load Preset Jurisdiction List'
+              : 'Add Jurisdiction'
+          }
+          onCloseForm={this.onCloseForm}
+        />
         <Divider />
         <ModalContent>
           <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
