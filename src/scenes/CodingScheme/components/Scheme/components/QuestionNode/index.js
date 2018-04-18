@@ -133,7 +133,7 @@ export const QuestionNode = props => {
                       value={<Icon color="white">mode_edit</Icon>} />
                   </TextLink>
                 </Tooltip>
-                <Tooltip
+                {canModify && ((parentNode === null || parentNode.questionType !== questionTypes.CATEGORY) && <Tooltip
                   text="Delete question"
                   id={`delete-question-${listIndex}`}
                   aria-label="Delete question"
@@ -145,7 +145,7 @@ export const QuestionNode = props => {
                     style={{ ...actionStyles, marginRight: 10 }}
                     value={<Icon color="white">delete</Icon>}
                     onClick={() => handleDeleteQuestion(projectId, node.id, path)} />
-                </Tooltip>
+                </Tooltip>)}
               </div>}
             {!node.hovering && node.questionType === questionTypes.CATEGORY
               ? <Icon aria-label="This question is a category question" color="grey">filter_none</Icon>

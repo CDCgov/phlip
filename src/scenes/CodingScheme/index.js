@@ -19,8 +19,24 @@ export class CodingScheme extends Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      goBackAlertOpen: false
+      goBackAlertOpen: false,
+      deleteQuestionAlertOpen: false,
+      questionIdToDelete: null,
+      path: null
     }
+
+    this.deleteAlertActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.onCloseDeleteQuestionAlert
+      },
+      {
+        value: 'Delete',
+        type: 'button',
+        onClick: this.handleDeleteQuestion
+      }
+    ]
   }
 
   componentWillMount() {
@@ -57,8 +73,25 @@ export class CodingScheme extends Component {
     this.props.actions.unlockCodingSchemeRequest(this.props.projectId)
   }
 
-  handleDeleteQuestion = (projectId, questionId, path) => {
-    this.props.actions.deleteQuestionRequest(projectId, questionId, path)
+  handleDeleteQuestion = () => {
+    this.props.actions.deleteQuestionRequest(this.props.projectId, this.state.questionIdToDelete, this.state.path)
+    this.onCloseDeleteQuestionAlert()
+  }
+
+  onOpenDeleteQuestionAlert = (projectId, questionId, path) => {
+    this.setState({
+      deleteQuestionAlertOpen: true,
+      questionIdToDelete: questionId,
+      path: path
+    })
+  }
+
+  onCloseDeleteQuestionAlert = () => {
+    this.setState({
+      deleteQuestionAlertOpen: false,
+      questionIdToDelete: null,
+      path: null
+    })
   }
 
   onCloseGoBackAlert = () => {
@@ -138,6 +171,11 @@ export class CodingScheme extends Component {
             You have checked out the coding scheme. No one else can edit until you check in.
           </Typography>
         </Alert>
+        <Alert open={this.state.deleteQuestionAlertOpen} actions={this.deleteAlertActions}>
+          <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+            (Placeholder text) You are about to delete question from the coding scheme.  This will delete all related child questions or coded answers.
+            </Typography>
+        </Alert>
         <ApiErrorAlert
           content={this.props.alertError}
           open={this.props.alertError !== null}
@@ -195,7 +233,7 @@ export class CodingScheme extends Component {
                 handleQuestionTreeChange={this.handleQuestionTreeChange}
                 handleQuestionNodeMove={this.handleQuestionNodeMove}
                 handleHoverOnQuestion={this.props.actions.toggleHover}
-                handleDeleteQuestion={this.handleDeleteQuestion}
+                handleDeleteQuestion={this.onOpenDeleteQuestionAlert}
                 disableHover={this.props.actions.disableHover}
                 enableHover={this.props.actions.enableHover}
                 projectId={this.props.projectId}
