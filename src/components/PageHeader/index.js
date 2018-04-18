@@ -6,7 +6,6 @@ import Container, { Column, Row } from 'components/Layout'
 import IconButton from 'components/IconButton'
 import CircleIcon from 'components/CircleIcon'
 import { withRouter } from 'react-router-dom'
-import TextLink from 'components/TextLink'
 import { withTheme } from 'material-ui/styles'
 import { Link } from 'react-router-dom'
 
@@ -33,7 +32,7 @@ export const PageHeader = props => {
         {projectName !== '' &&
         <Fragment>
           <Typography type="title" style={{ alignSelf: 'center' }}>
-            <span style={{ color: theme.palette.secondary.main }}>{projectName}</span>
+            <span style={{ color: theme.palette.secondary.pageHeader }}>{projectName}</span>
           </Typography>
         </Fragment>}
       </Row>

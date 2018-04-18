@@ -28,7 +28,7 @@ export const Header = props => {
       <Row displayFlex>
         <Typography type="title" style={{ alignSelf: 'center', paddingRight: 10 }}>{pageTitle}</Typography>
         <Typography type="title" style={{ alignSelf: 'center' }}>
-          <span style={{ color: theme.palette.secondary.main }}>{projectName}</span>
+          <span style={{ color: theme.palette.secondary.pageHeader }}>{projectName}</span>
         </Typography>
       </Row>
       <Fragment>
