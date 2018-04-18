@@ -37,8 +37,8 @@ const Dropdown = props => {
       <InputLabel htmlFor={id} shrink={shrinkLabel} required={required}>{label}</InputLabel>
       <Select
         input={<Input id={id} />}
-        value={(input.value ? input.value : defaultValue)}
-        onChange={(event) => (input.onChange(event.target.value))}
+        value={input.value ? input.value : defaultValue}
+        onChange={event => input.onChange(event.target.value)}
         classes={{
           disabled: classes.disabled,
           icon: disabled ? classes.disabledIcon : classes.icon
