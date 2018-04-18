@@ -173,7 +173,7 @@ export class CodingScheme extends Component {
         </Alert>
         <Alert open={this.state.deleteQuestionAlertOpen} actions={this.deleteAlertActions}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            (Placeholder text) You are about to delete question from the coding scheme.  This will delete all related child questions or coded answers.
+            You are about to delete a question from the coding scheme.  This will permanantly delete all related child questions and coded answers.
             </Typography>
         </Alert>
         <ApiErrorAlert
