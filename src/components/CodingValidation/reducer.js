@@ -1,18 +1,9 @@
 import * as types from './actionTypes'
 import {
   determineShowButton, handleCheckCategories,
-  handleClearAnswers,
   handleUpdateUserAnswers, handleUpdateUserCategoryChild, handleUpdateUserCodedQuestion,
   handleUserPinciteQuestion, initializeNavigator, generateError
 } from 'utils/codingHelpers'
-
-const errorTypes = {
-  1: 'We couldn\'t save the answer for this question.',
-  2: 'We couldn\'t save the comment for this question.',
-  3: 'We couldn\'t save the pincite for this answer choice.',
-  4: 'We couldn\'t clear the answer for this question.',
-  5: 'We couldn\'t save your flag for this question.'
-}
 
 const INITIAL_STATE = {
   question: {},
@@ -72,7 +63,8 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
     case `${types.SAVE_USER_ANSWER_FAIL}_${name}`:
       return {
         ...state,
-        answerErrorContent: 'We couldn\'t save your answer for this question.'
+        answerErrorContent: 'We couldn\'t save your answer for this question.',
+        unsavedChanges: false
       }
 
     case `${types.ON_CHANGE_PINCITE}_${name}`:

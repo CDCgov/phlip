@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import Radio from 'material-ui/Radio'
 import { FormControlLabel, FormControl, FormGroup } from 'material-ui/Form'
@@ -73,7 +73,7 @@ export const RadioGroup = props => {
               disabled={disableAll}
               placeholder="Enter pincite"
               multiline={false}
-              onBlur={onBlurText}
+              //onBlur={onBlurText}
               value={userAnswers.answers[choice.id].pincite}
               onChange={onChangePincite(choice.id, 'pincite')}
             />}

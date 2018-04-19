@@ -53,7 +53,7 @@ export const TextFieldQuestions = props => {
         value={validatorAnswer}
         userImages={userImages}
         answerId={answerId}
-        onBlur={onBlurText}
+        //onBlur={onBlurText}
         disabled={disabled}
         isValidation={true}
       />

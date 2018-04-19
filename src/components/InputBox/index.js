@@ -66,7 +66,7 @@ const InputBox = props => {
               input: classes.textFieldInput
             }
           }}
-          onBlur={onBlur}
+          //onBlur={onBlur}
           {...otherProps}
         />
       </Row>
@@ -80,7 +80,7 @@ const InputBox = props => {
           onChange={onChange(answerId, 'pincite')}
           multiline={false}
           shrinkLabel
-          onBlur={onBlur}
+          //onBlur={onBlur}
           style={{ flex: 1 }}
         />
       </div>}

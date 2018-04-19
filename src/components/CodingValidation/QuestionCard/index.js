@@ -11,7 +11,6 @@ import styles from './card-styles.scss'
 import * as questionTypes from '../constants'
 import FlagPopover from './components/FlagPopover'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import { getInitials } from 'utils/normalize'
 import Alert from 'components/Alert'
 import Typography from 'material-ui/Typography'
@@ -31,17 +30,26 @@ export class QuestionCard extends Component {
     this.state = {
       categoryToUncheck: {},
       confirmCategoryUncheckOpen: false,
-      isSaving: false
+      isSaving: false,
+      saveFailed: false
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.unsavedChanges === true) {
       this.setState({
-        isSaving: true
+        isSaving: true,
+        saveFailed: false
       })
       clearTimeout()
     }
+
+    if (nextProps.answerErrorContent !== null) {
+      this.setState({
+        saveFailed: true
+      })
+    }
+
     if (this.props.unsavedChanges === true && nextProps.unsavedChanges === false) {
       setTimeout(() => {
         this.setState({
@@ -122,13 +130,11 @@ export class QuestionCard extends Component {
         </Alert>
         <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
           {this.props.questionChangeLoader === true
-            ? <PageLoader
-              message="We're retrieving the question information..."
-              circularLoaderProps={{ color: 'primary', size: 50 }} />
+            ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
             : <Fragment>
               <Row displayFlex style={{ alignItems: 'center', height: 42, paddingRight: 15 }}>
                 <Typography type="caption" style={{ paddingLeft: 10, color: '#757575' }}>
-                  {this.state.isSaving ? 'Saving...' : 'All changes saved'}
+                  {this.state.saveFailed ? 'Save failed!' : this.state.isSaving ? 'Saving...' : 'All changes saved'}
                 </Typography>
                 <Row displayFlex flex style={{ justifyContent: 'flex-end' }}>
                   {this.props.question.questionType !== questionTypes.CATEGORY &&
@@ -193,7 +199,8 @@ const mapStateToProps = (state, ownProps) => {
     userImages: pageState.userImages,
     questionChangeLoader: pageState.questionChangeLoader || false,
     isChangingQuestion: pageState.isChangingQuestion || false,
-    unsavedChanges: pageState.unsavedChanges || false
+    unsavedChanges: pageState.unsavedChanges || false,
+    answerErrorContent: pageState.answerErrorContent || null
   }
 }
 

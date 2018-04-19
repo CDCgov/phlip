@@ -65,7 +65,7 @@ export const CheckboxGroupValidation = props => {
               key={`${choice.id}-pincite`} placeholder="Enter pincite"
               value={userAnswers.answers[choice.id].pincite}
               multiline={false}
-              onBlur={onBlurText}
+              //onBlur={onBlurText}
               style={{
                 width: 300,
                 marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
