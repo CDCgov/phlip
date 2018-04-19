@@ -93,24 +93,21 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
         {item.hasOwnProperty('flags') && item.flags.length > 0 && <Icon
           aria-label="Question has a red flag"
           role="gridcell"
-          color="#FB8B8B"
-          style={{ userSelect: 'none' }}
+          color={questionTextStyles.color}
           size={17}>
-          flag
-          </Icon>}
-        {item.isAnswered && <Icon
+          report
+        </Icon>}
+        {item.hasOwnProperty('completedProgress') && item.completedProgress < 100 &&
+        <Progress
+          aria-label={`Question is ${item.completedProgress} percent answered`}
+          containerStyles={{ marginLeft: item.hasOwnProperty('flags') && item.flags.length > 0 ? 5 : 0 }}
+          progress={item.completedProgress}
+        />}
+        {(item.isAnswered || (item.hasOwnProperty('completedProgress') && item.completedProgess === 100)) && <Icon
           aria-label="Question has been answered"
           role="gridcell"
           color="#38E37F"
-          style={{ userSelect: 'none' }}
           size={19}>check</Icon>}
-        {item.hasOwnProperty('completedProgress') &&
-        ((item.completedProgress < 100 && <Progress
-          aria-label={`This question is ${item.completedProgress} percent answered`}
-          progress={item.completedProgress} />) || (item.completedProgress === 100 && <Icon
-          role="gridcell"
-          color="#38E37F"
-          size={19}>check</Icon>))}
       </div>
     </Fragment>
   )
