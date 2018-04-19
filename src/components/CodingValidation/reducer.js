@@ -129,11 +129,16 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
               }
             }), {})
           }
-        }
+        },
+        unsavedChanges: true
       }
 
     case `${types.ON_CLEAR_ANSWER}_${name}`:
-      return { ...state, ...questionUpdater('answers', {}) }
+      return {
+        ...state,
+        ...questionUpdater('answers', {}),
+        unsavedChanges: true
+      }
 
     case `${types.DISMISS_API_ALERT}_${name}`:
       return { ...state, [action.errorType]: null }

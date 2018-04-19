@@ -36,11 +36,13 @@ export class QuestionCard extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.unsavedChanges === false && nextProps.unsavedChanges === true) {
+    if (nextProps.unsavedChanges === true) {
       this.setState({
         isSaving: true
       })
-    } else if (this.props.unsavedChanges === true && nextProps.unsavedChanges === false) {
+      clearTimeout()
+    }
+    if (this.props.unsavedChanges === true && nextProps.unsavedChanges === false) {
       setTimeout(() => {
         this.setState({
           isSaving: false
@@ -78,10 +80,6 @@ export class QuestionCard extends Component {
       confirmCategoryUncheckOpen: false,
       categoryToUncheck: {}
     })
-  }
-
-  onSave = () => {
-    this.props.onSave()
   }
 
   render() {

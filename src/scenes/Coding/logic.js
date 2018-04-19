@@ -165,6 +165,9 @@ export const applyAllAnswers = createLogic({
 
 
 export const answerQuestionLogic = createLogic({
+  type: types.SAVE_USER_ANSWER_REQUEST,
+  latest: true,
+  debounce: 500,
   validate({ getState, action }, allow, reject) {
     if (getState().scenes.coding.unsavedChanges === true) {
       allow(action)
@@ -172,8 +175,6 @@ export const answerQuestionLogic = createLogic({
       reject()
     }
   },
-  type: [types.SAVE_USER_ANSWER_REQUEST, types.ON_SAVE_FLAG],
-  latest: true,
   async process({ getState, action, api }, dispatch, done) {
     const userId = getState().data.user.currentUser.id
     const codingState = getState().scenes.coding

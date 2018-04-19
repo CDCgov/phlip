@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import actions, * as otherActions from './actions'
 import withCodingValidation from 'components/CodingValidation'
@@ -48,6 +48,7 @@ export class Coding extends Component {
         },
         ...flagInfo
       })
+      this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
     }
   }
 

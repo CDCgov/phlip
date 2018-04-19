@@ -307,6 +307,14 @@ export const applyAllAnswers = createLogic({
 export const validateQuestionLogic = createLogic({
   type: types.SAVE_USER_ANSWER_REQUEST,
   latest: true,
+  debounce: 500,
+  validate({ getState, action }, allow, reject) {
+    if (getState().scenes.validation.unsavedChanges === true) {
+      allow(action)
+    } else {
+      reject()
+    }
+  },
   async process({ getState, action, api }, dispatch, done) {
     const validationState = getState().scenes.validation
     const validatorId = getState().data.user.currentUser.id

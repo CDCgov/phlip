@@ -251,6 +251,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
             this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
           )
       }
+      this.onSaveCodedQuestion()
     }
 
     onOpenApplyAllAlert = () => this.setState({ applyAllAlertOpen: true })
