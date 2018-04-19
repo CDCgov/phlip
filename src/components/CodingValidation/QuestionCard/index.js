@@ -30,7 +30,22 @@ export class QuestionCard extends Component {
     super(props, context)
     this.state = {
       categoryToUncheck: {},
-      confirmCategoryUncheckOpen: false
+      confirmCategoryUncheckOpen: false,
+      isSaving: false
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.unsavedChanges === false && nextProps.unsavedChanges === true) {
+      this.setState({
+        isSaving: true
+      })
+    } else if (this.props.unsavedChanges === true && nextProps.unsavedChanges === false) {
+      setTimeout(() => {
+        this.setState({
+          isSaving: false
+        })
+      }, 800)
     }
   }
 
@@ -113,24 +128,27 @@ export class QuestionCard extends Component {
               message="We're retrieving the question information..."
               circularLoaderProps={{ color: 'primary', size: 50 }} />
             : <Fragment>
-              <Row
-                displayFlex
-                style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
-                {this.props.question.questionType !== questionTypes.CATEGORY &&
-                <IconButton
-                  onClick={this.props.onClearAnswer}
-                  aria-label="Clear answer"
-                  tooltipText="Clear answer"
-                  id="clear-answer"
-                  style={{ height: 24 }}>
-                  {!this.props.disableAll && <Broom className={styles.sweep} aria-labelledby="Clear answer" />}
-                </IconButton>}
-                {!this.props.isValidation && <FlagPopover
-                  userFlag={this.props.userAnswers.flag}
-                  onSaveFlag={this.props.onSaveFlag}
-                  questionFlags={this.props.question.flags}
-                  user={this.props.user}
-                  disableAll={this.props.disableAll} />}
+              <Row displayFlex style={{ alignItems: 'center', height: 42, paddingRight: 15 }}>
+                <Typography type="caption" style={{ paddingLeft: 10, color: '#757575' }}>
+                  {this.state.isSaving ? 'Saving...' : 'All changes saved'}
+                </Typography>
+                <Row displayFlex flex style={{ justifyContent: 'flex-end' }}>
+                  {this.props.question.questionType !== questionTypes.CATEGORY &&
+                  <IconButton
+                    onClick={this.props.onClearAnswer}
+                    aria-label="Clear answer"
+                    tooltipText="Clear answer"
+                    id="clear-answer"
+                    style={{ height: 24 }}>
+                    {!this.props.disableAll && <Broom className={styles.sweep} aria-labelledby="Clear answer" />}
+                  </IconButton>}
+                  {!this.props.isValidation && <FlagPopover
+                    userFlag={this.props.userAnswers.flag}
+                    onSaveFlag={this.props.onSaveFlag}
+                    questionFlags={this.props.question.flags}
+                    user={this.props.user}
+                    disableAll={this.props.disableAll} />}
+                </Row>
               </Row>
               <Divider />
               {this.props.categories !== undefined
@@ -176,7 +194,8 @@ const mapStateToProps = (state, ownProps) => {
     disableAll: pageState.codedQuestionsError !== null || false,
     userImages: pageState.userImages,
     questionChangeLoader: pageState.questionChangeLoader || false,
-    isChangingQuestion: pageState.isChangingQuestion || false
+    isChangingQuestion: pageState.isChangingQuestion || false,
+    unsavedChanges: pageState.unsavedChanges || false
   }
 }
 

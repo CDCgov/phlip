@@ -41,7 +41,8 @@ const INITIAL_STATE = {
   questionChangeLoader: false,
   showPageLoader: false,
   questionChangeLoader: false,
-  isChangingQuestion: false
+  isChangingQuestion: false,
+  unsavedChanges: false
 }
 
 const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
@@ -56,14 +57,16 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         userAnswers: {
           ...state.userAnswers,
           ...handleUpdateUserAnswers(state, action)
-        }
+        },
+        unsavedChanges: true
       }
 
     case `${types.SAVE_USER_ANSWER_SUCCESS}_${name}`:
       return {
         ...state,
         ...questionUpdater('id', action.payload.id),
-        answerErrorContent: null
+        answerErrorContent: null,
+        unsavedChanges: false
       }
 
     case `${types.SAVE_USER_ANSWER_FAIL}_${name}`:
@@ -75,13 +78,15 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
     case `${types.ON_CHANGE_PINCITE}_${name}`:
       return {
         ...state,
-        ...questionUpdater('answers', handleUserPinciteQuestion)
+        ...questionUpdater('answers', handleUserPinciteQuestion),
+        unsavedChanges: true
       }
 
     case `${types.ON_CHANGE_COMMENT}_${name}`:
       return {
         ...state,
-        ...questionUpdater('comment', action.comment)
+        ...questionUpdater('comment', action.comment),
+        unsavedChanges: true
       }
 
     case `${types.ON_CHANGE_CATEGORY}_${name}`:

@@ -164,8 +164,14 @@ export const applyAllAnswers = createLogic({
 })
 
 
-// Logic for any time of action that happens on question
 export const answerQuestionLogic = createLogic({
+  validate({ getState, action }, allow, reject) {
+    if (getState().scenes.coding.unsavedChanges === true) {
+      allow(action)
+    } else {
+      reject()
+    }
+  },
   type: [types.SAVE_USER_ANSWER_REQUEST, types.ON_SAVE_FLAG],
   latest: true,
   async process({ getState, action, api }, dispatch, done) {

@@ -84,7 +84,8 @@ const codingReducer = (state, action) => {
               flags: [action.payload]
             }
           }
-        }
+        },
+        unsavedChanges: false
       }
 
     case types.ON_SAVE_RED_FLAG_FAIL:
@@ -96,7 +97,8 @@ const codingReducer = (state, action) => {
     case types.ON_SAVE_FLAG:
       return {
         ...state,
-        ...questionUpdater('flag', action.flagInfo)
+        ...questionUpdater('flag', action.flagInfo),
+        unsavedChanges: true
       }
 
     case types.GET_USER_CODED_QUESTIONS_SUCCESS:
@@ -132,6 +134,11 @@ const codingReducer = (state, action) => {
       }
 
     case types.ON_SAVE_RED_FLAG_REQUEST:
+      return {
+        ...state,
+        unsavedChanges: true
+      }
+
     default:
       return state
   }
