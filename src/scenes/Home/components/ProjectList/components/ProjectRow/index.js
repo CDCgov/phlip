@@ -15,7 +15,8 @@ const greyIcon = '#b1b3b3'
 export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => {
   const isCoder = role === 'Coder'
 
-  const date = moment.parseZone(project.dateLastEdited).local().format('M/D/YYYY, h:mm A')
+  //const date = moment.parseZone(project.dateLastEdited).local().format('M/D/YYYY, h:mm A')
+  const date = moment.utc(project.dateLastEdited).local().format('M/D/YYYY, h:mm A')
   return (
     <TableRow key={project.id}>
       <TableCell
