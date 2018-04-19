@@ -55,7 +55,20 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
     case `${types.SAVE_USER_ANSWER_SUCCESS}_${name}`:
       return {
         ...state,
-        ...questionUpdater('id', action.payload.id),
+        userAnswers: {
+          ...state.userAnswers,
+          [action.payload.questionId]: state.scheme.byId[action.payload.questionId].isCategoryQuestion
+            ? {
+              ...state.userAnswers[action.payload.questionId],
+              [action.payload.selectedCategoryId]: {
+                ...state.userAnswers[action.payload.questionId][action.payload.selectedCategoryId],
+                id: action.payload.id
+              }
+            } : {
+              ...state.userAnswers[action.payload.questionId],
+              id: action.payload.id
+            }
+        },
         answerErrorContent: null,
         unsavedChanges: false
       }

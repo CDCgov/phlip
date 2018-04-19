@@ -189,16 +189,19 @@ export const withCodingValidation = (WrappedComponent, actions) => {
     }
 
     getNextQuestion = index => {
+      this.onSaveCodedQuestion()
       this.props.actions.getNextQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
       this.onShowQuestionLoader()
     }
 
     getPrevQuestion = index => {
+      this.onSaveCodedQuestion()
       this.props.actions.getPrevQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
       this.onShowQuestionLoader()
     }
 
     onQuestionSelectedInNav = item => {
+      this.onSaveCodedQuestion()
       this.props.actions.onQuestionSelectedInNav(item, this.props.projectId, this.props.jurisdictionId)
       this.onShowQuestionLoader()
     }
@@ -226,7 +229,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
      * This actually dispatches the redux action that calls the api to save the question data
      */
     onSaveCodedQuestion = () => {
-      this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+      this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.selectedCategoryId)
     }
 
     /**
@@ -258,7 +261,10 @@ export const withCodingValidation = (WrappedComponent, actions) => {
 
     onCloseAlert = () => this.props.actions.dismissApiAlert('answerErrorContent')
 
-    onChangeCategory = (event, selection) => this.props.actions.onChangeCategory(selection)
+    onChangeCategory = (event, selection) => {
+      this.onSaveCodedQuestion()
+      this.props.actions.onChangeCategory(selection)
+    }
 
     onClearAnswer = () => {
       this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)

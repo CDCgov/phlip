@@ -81,7 +81,7 @@ export const actions = {
   },
   saveUserAnswerRequest: {
     type: types.SAVE_USER_ANSWER_REQUEST,
-    args: ['projectId', 'jurisdictionId', 'questionId']
+    args: ['projectId', 'jurisdictionId', 'questionId', 'selectedCategoryId']
   }
 }
 

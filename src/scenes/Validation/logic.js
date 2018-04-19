@@ -318,7 +318,7 @@ export const validateQuestionLogic = createLogic({
   async process({ getState, action, api }, dispatch, done) {
     const validationState = getState().scenes.validation
     const validatorId = getState().data.user.currentUser.id
-    const questionObj = getFinalCodedObject(validationState, action)
+    const questionObj = getFinalCodedObject(validationState, action, action.selectedCategoryId)
 
     const answerObject = {
       questionId: action.questionId,
@@ -337,7 +337,7 @@ export const validateQuestionLogic = createLogic({
 
       dispatch({
         type: types.SAVE_USER_ANSWER_SUCCESS,
-        payload: { ...respCodedQuestion }
+        payload: { ...respCodedQuestion, questionId: action.questionId, selectedCategoryId: action.selectedCategoryId }
       })
       dispatch({
         type: types.UPDATE_EDITED_FIELDS,

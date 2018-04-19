@@ -441,7 +441,7 @@ const deleteAnswerIds = (answer) => {
  Used to retrieve the request object body for updating a question answer, pincite, comment, flag, etc.
  */
 export const getFinalCodedObject = (state, action, selectedCategoryId = state.selectedCategoryId) => {
-  const { ...questionObject } = state.question.isCategoryQuestion
+  const { ...questionObject } = state.scheme.byId[action.questionId].isCategoryQuestion
     ? state.userAnswers[action.questionId][selectedCategoryId]
     : state.userAnswers[action.questionId]
 

@@ -178,7 +178,7 @@ export const answerQuestionLogic = createLogic({
   async process({ getState, action, api }, dispatch, done) {
     const userId = getState().data.user.currentUser.id
     const codingState = getState().scenes.coding
-    const questionObj = getFinalCodedObject(codingState, action)
+    const questionObj = getFinalCodedObject(codingState, action, action.selectedCategoryId)
     const answerObject = {
       questionId: action.questionId,
       jurisdictionId: action.jurisdictionId,
@@ -196,7 +196,7 @@ export const answerQuestionLogic = createLogic({
       }
       dispatch({
         type: types.SAVE_USER_ANSWER_SUCCESS,
-        payload: { ...respCodedQuestion }
+        payload: { ...respCodedQuestion, selectedCategoryId: action.selectedCategoryId, questionId: action.questionId }
       })
       dispatch({
         type: types.UPDATE_EDITED_FIELDS,
