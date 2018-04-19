@@ -133,10 +133,12 @@ export class QuestionCard extends Component {
             ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
             : <Fragment>
               <Row displayFlex style={{ alignItems: 'center', height: 42, paddingRight: 15 }}>
-                <Typography type="caption" style={{ paddingLeft: 10, color: '#757575' }}>
-                  {this.state.saveFailed ? 'Save failed!' : this.state.isSaving ? 'Saving...' : 'All changes saved'}
-                </Typography>
-                <Row displayFlex flex style={{ justifyContent: 'flex-end' }}>
+                <Row style={{ width: '100%' }}>
+                  <Typography type="caption" style={{ paddingLeft: 10, textAlign: 'center', color: '#757575' }}>
+                    {this.state.saveFailed ? 'Save failed!' : this.state.isSaving ? 'Saving...' : 'All changes saved'}
+                  </Typography>
+                </Row>
+                <Row displayFlex style={{ marginLeft: -70 }}>
                   {this.props.question.questionType !== questionTypes.CATEGORY &&
                   <IconButton
                     onClick={this.props.onClearAnswer}
