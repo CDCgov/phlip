@@ -55,7 +55,7 @@ export class QuestionCard extends Component {
         this.setState({
           isSaving: false
         })
-      }, 800)
+      }, 600)
     }
   }
 
