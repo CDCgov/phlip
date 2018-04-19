@@ -118,15 +118,24 @@ export class AddEditQuestion extends Component {
   }
 
   handleTypeChange = (event, value) => {
-    value === questionTypes.BINARY
-      ? this.props.formActions.initialize('questionForm', this.binaryForm, {
+    if (value === questionTypes.BINARY) {
+      const currentValues = this.props.form.values
+      this.props.formActions.initialize('questionForm', this.binaryForm, {
         options: {
           keepDirty: false,
           keepValues: false
         }
       })
-      : value === questionTypes.TEXT_FIELD ? this.props.formActions.initialize('questionForm', this.textFieldForm, true)
-      : this.props.formActions.initialize('questionForm', this.defaultForm, true)
+      Object.keys(currentValues).map(key => {
+        if (key !== 'possibleAnswers') {
+          this.props.formActions.change('questionForm', key, currentValues[key])
+        }
+      })
+    } else if (value === questionTypes.TEXT_FIELD) {
+      this.props.formActions.initialize('questionForm', this.textFieldForm, true)
+    } else {
+      this.props.formActions.initialize('questionForm', this.defaultForm, true)
+    }
   }
 
   validate = values => {

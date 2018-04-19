@@ -336,6 +336,7 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
       item.text = scheme[item.id].text
       item.hint = scheme[item.id].hint
       item.possibleAnswers = scheme[item.id].possibleAnswers
+      item.flags = scheme[item.id].flags
     }
 
     item.isAnswered = item.isCategoryQuestion ? false : checkIfAnswered(item, codedQuestions)

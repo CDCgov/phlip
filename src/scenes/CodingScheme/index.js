@@ -204,7 +204,7 @@ export class CodingScheme extends Component {
                 ? this.handleUnlockCodingScheme
                 : this.handleLockCodingScheme
             },
-            show: this.props.questions.length > 0
+            show: this.props.questions.length > 0 || (this.props.questions.length === 0 && this.props.lockedByCurrentUser)
           }}
           otherButton={{
             isLink: true,
