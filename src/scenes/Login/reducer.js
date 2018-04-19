@@ -13,6 +13,11 @@ const loginReducer = (state = INITIAL_STATE, action) => {
         ...state,
         session: !!sessionStorage.esquire_token
       }
+    case types.CHECK_PIV_USER_SUCCESS:
+      return {
+        ...state,
+        session: !!sessionStorage.esquire_token
+      }
     case types.LOGIN_USER_FAIL:
       return state
     case types.LOGIN_USER_REQUEST:

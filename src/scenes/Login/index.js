@@ -7,6 +7,8 @@ import { Field } from 'redux-form'
 import TextInput from 'components/TextInput'
 import * as actions from './actions'
 import { withRouter } from 'react-router-dom'
+import { matchPath } from 'react-router'
+import jwtDecode from 'jwt-decode'
 
 export class Login extends Component {
   constructor(props, context) {
@@ -19,9 +21,25 @@ export class Login extends Component {
     }
   }
 
+  componentDidMount() {
+    const match = matchPath(this.props.location.pathname, { path: '/login/verify-user' })
+    if (match) {
+      const rawToken = this.props.location.search
+      const parsedToken = rawToken.substring(rawToken.indexOf('=') + 1)
+      const decodedToken = jwtDecode(parsedToken)
+      const tokenObject = { decodedToken, token: parsedToken }
+      this.props.actions.checkPivUserRequest(tokenObject)
+    }
+  }
+
   handleSubmit = (values) => {
     this.props.actions.loginUserRequest(values)
   }
+
+  handlePivLogin = () => {
+    this.props.history.push('/auth/sams-login')
+  }
+
 
   render() {
     return (

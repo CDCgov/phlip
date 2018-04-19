@@ -3,7 +3,7 @@ import { login, logout } from '../authToken'
 import { isUndefined } from 'util';
 
 export const api = axios.create({
-  baseURL: '/api'
+  baseURL: process.env.API_HOST || '/api'
 })
 
 export default {
@@ -37,12 +37,12 @@ export default {
 
   // Get all users, called in Admin/logic
   getUsers() {
-    return api.get('/users').then(res => res.data.users)
+    return api.get('/users').then(res => res.data)
   },
 
   // Add a user, called in Admin/scenes/AddEditUser/logic
   addUser(user) {
-    return api.post('/users', user).then(res => res.data.newUser)
+    return api.post('/users', user).then(res => res.data)
   },
 
   // Update a user, called in Admin/scenes/AddEditUser/logic
@@ -67,8 +67,12 @@ export default {
   },
 
   // Get project bookmarks for a user, called in Login/logic
-  getUserBookmarks(id) {
-    return api.get(`/users/${id}/bookmarkedprojects`).then(res => res.data)
+  getUserBookmarks(id, token) {
+    return api.get(`/users/${id}/bookmarkedprojects`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }).then(res => res.data)
   },
 
   // Add a user bookmark, called in Home/logic

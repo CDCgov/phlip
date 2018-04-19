@@ -8,6 +8,7 @@ import Button from 'components/Button'
 import { Paper } from 'material-ui'
 import { reduxForm } from 'redux-form'
 import validate from './validate'
+import Divider from 'material-ui/Divider'
 
 let LoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, children }) => {
   const bgColor = theme.palette.primary.main
@@ -37,6 +38,12 @@ let LoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, chil
         <Row displayFlex flex style={{ justifyContent: 'center' }}>
           <Column style={{ padding: 16 }}>
             <Button type="submit" color="accent" value="Login" disabled={pristine || submitting} />
+          </Column>
+        </Row>
+        <Divider />
+        <Row displayFlex flex style={{ justifyContent: 'center' }}>
+          <Column style={{ padding: 16 }}>
+            <Button href={process.env.APP_SAML_REQUEST_URL} type="button" color="accent" value="PIV Login" />
           </Column>
         </Row>
       </form>
