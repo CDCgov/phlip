@@ -12,6 +12,7 @@ const http = require('http')
 const bodyParser = require('body-parser')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
+const passport = require('passport')
 
 dotenv.config({ path: paths.appDotEnv })
 
