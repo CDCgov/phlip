@@ -15,6 +15,20 @@ export default {
     })
   },
 
+  // Check for user after SAML login
+  checkPivUser(tokenObj) {
+    return api.get(`/users?email=${tokenObj.decodedToken.userEmail}`, {
+      headers: {
+        'Authorization': `Bearer ${tokenObj.token}`
+      }
+    }).then(res => {
+      if (res.data) {
+        login(res.data.token.value)
+      }
+      return res.data
+    })
+  },
+
   // Logout a user, called in src/logic
   logoutUser() {
     return new Promise(resolve => resolve(logout()))
