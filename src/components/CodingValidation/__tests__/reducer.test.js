@@ -17,8 +17,8 @@ const initial = {
 }
 
 const getState = other => ({ ...initial, ...other })
-const getReducer = (state, action) => createCodingValidationReducer(() => {}, [], 'CODING')(state, action)
-
+const getReducer = (state, action) => createCodingValidationReducer(() => {
+}, [], 'CODING')(state, action)
 
 describe('CodingValidation reducer', () => {
   describe('UPDATE_USER_ANSWER_REQUEST', () => {
@@ -39,8 +39,24 @@ describe('CodingValidation reducer', () => {
       },
       scheme: {
         byId: {
-          1: { text: 'fa la la la', hint: '', questionType: 1, id: 1, parentId: 0, positionInParent: 0, possibleAnswers: [] },
-          2: { text: 'la la la', hint: '', questionType: 3, id: 2, parentId: 0, positionInParent: 1, possibleAnswers: [] },
+          1: {
+            text: 'fa la la la',
+            hint: '',
+            questionType: 1,
+            id: 1,
+            parentId: 0,
+            positionInParent: 0,
+            possibleAnswers: []
+          },
+          2: {
+            text: 'la la la',
+            hint: '',
+            questionType: 3,
+            id: 2,
+            parentId: 0,
+            positionInParent: 1,
+            possibleAnswers: []
+          },
           3: {
             text: 'cat question',
             questionType: 2,
@@ -125,7 +141,7 @@ describe('CodingValidation reducer', () => {
 
     test('should handle binary / multiple choice type questions', () => {
       const action = {
-        type: `${types.UPDATE_USER_ANSWER_REQUEST}_CODING`,
+        type: `${types.UPDATE_USER_ANSWER}_CODING`,
         answerId: 123,
         questionId: 1
       }
@@ -142,17 +158,30 @@ describe('CodingValidation reducer', () => {
             comment: ''
           }
         },
-        snapshotUserAnswer: {
-          answers: {},
-          comment: '',
-          schemeQuestionId: 1
-        },
-        errorTypeMsg: 'We couldn\'t save the answer for this question. Your answer will be reset to the previous state.'
+        unsavedChanges: true
       }))
 
       expect(state).toHaveProperty('scheme.tree', [
-        { text: 'fa la la la', hint: '', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: true, possibleAnswers: [] },
-        { text: 'la la la', hint: '', questionType: 3, id: 2, parentId: 0, positionInParent: 1, isAnswered: false, possibleAnswers: [] },
+        {
+          text: 'fa la la la',
+          hint: '',
+          questionType: 1,
+          id: 1,
+          parentId: 0,
+          positionInParent: 0,
+          isAnswered: true,
+          possibleAnswers: []
+        },
+        {
+          text: 'la la la',
+          hint: '',
+          questionType: 3,
+          id: 2,
+          parentId: 0,
+          positionInParent: 1,
+          isAnswered: false,
+          possibleAnswers: []
+        },
         {
           text: 'cat question',
           questionType: 2,
@@ -211,7 +240,7 @@ describe('CodingValidation reducer', () => {
 
     test('should handle checkbox / category choice type questions', () => {
       const action = {
-        type: `${types.UPDATE_USER_ANSWER_REQUEST}_CODING`,
+        type: `${types.UPDATE_USER_ANSWER}_CODING`,
         answerId: 90,
         questionId: 2
       }
@@ -251,12 +280,7 @@ describe('CodingValidation reducer', () => {
             }
           }
         },
-        snapshotUserAnswer: {
-          answers: {},
-          comment: '',
-          schemeQuestionId: 2
-        },
-        errorTypeMsg: 'We couldn\'t save the answer for this question. Your answer will be reset to the previous state.'
+        unsavedChanges: true
       }))
     })
   })
@@ -279,13 +303,15 @@ describe('CodingValidation reducer', () => {
               answers: { 1: { schemeAnswerId: 1 } },
               comment: ''
             }
-          }
+          },
+          question: { id: 2 }
         }),
         action
       )
 
       expect(state).toEqual(
         getState({
+          question: { id: 2 },
           userAnswers: {
             2: {
               schemeQuestionId: 2,
@@ -294,14 +320,7 @@ describe('CodingValidation reducer', () => {
             }
           },
           showNextButton: false,
-          snapshotUserAnswer: {
-            answers: {
-              1: { schemeAnswerId: 1 }
-            },
-            comment: '',
-            schemeQuestionId: 2
-          },
-          errorTypeMsg: 'We couldn\'t save the comment for this question. Your comment will be reset to the previous state.',
+          unsavedChanges: true
         })
       )
 
@@ -331,7 +350,7 @@ describe('CodingValidation reducer', () => {
             2: {
               schemeQuestionId: 2,
               3: {
-                answers: { 5: { schemeAnswerId: 5 }}, comment: 'comment for cat 1', flag: {}
+                answers: { 5: { schemeAnswerId: 5 } }, comment: 'comment for cat 1', flag: {}
               },
               2: {
                 answers: {}, comment: 'comment for cat 2', flag: {}
@@ -371,14 +390,7 @@ describe('CodingValidation reducer', () => {
           selectedCategory: 0,
           selectedCategoryId: 3,
           categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }],
-          snapshotUserAnswer: {
-            answers: {
-              5: { schemeAnswerId: 5 }
-            },
-            comment: 'comment for cat 1',
-            flag: {}
-          },
-          errorTypeMsg: 'We couldn\'t save the comment for this question. Your comment will be reset to the previous state.',
+          unsavedChanges: true
         })
       )
     })
@@ -398,7 +410,8 @@ describe('CodingValidation reducer', () => {
       const state = getReducer(
         getState({
           question: {
-            questionType: 3
+            questionType: 3,
+            id: 2
           },
           userAnswers: {
             2: {
@@ -423,7 +436,8 @@ describe('CodingValidation reducer', () => {
       expect(state).toEqual(
         getState({
           question: {
-            questionType: 3
+            questionType: 3,
+            id: 2
           },
           userAnswers: {
             2: {
@@ -441,16 +455,8 @@ describe('CodingValidation reducer', () => {
               comment: ''
             }
           },
-          snapshotUserAnswer: {
-            answers: {
-              1: { pincite: '', schemeAnswerId: 1 },
-              4: { pincite: '', schemeAnswerId: 4 }
-            },
-            comment: '',
-            schemeQuestionId: 2
-          },
-          errorTypeMsg: 'We couldn\'t save the pincite for this answer choice. Your pincite will be reset to the previous state.',
-          showNextButton: false
+          showNextButton: false,
+          unsavedChanges: true
         })
       )
     })
@@ -469,7 +475,8 @@ describe('CodingValidation reducer', () => {
         getState({
           question: {
             questionType: 3,
-            isCategoryQuestion: true
+            isCategoryQuestion: true,
+            id: 2
           },
           userAnswers: {
             2: {
@@ -498,6 +505,7 @@ describe('CodingValidation reducer', () => {
       expect(state).toEqual(
         getState({
           question: {
+            id: 2,
             questionType: 3,
             isCategoryQuestion: true
           },
@@ -518,13 +526,7 @@ describe('CodingValidation reducer', () => {
               }
             }
           },
-          snapshotUserAnswer: {
-            answers: {
-              4: { pincite: '', schemeAnswerId: 4 }
-            },
-            comment: ''
-          },
-          errorTypeMsg: 'We couldn\'t save the pincite for this answer choice. Your pincite will be reset to the previous state.',
+          unsavedChanges: true,
           selectedCategory: 1,
           showNextButton: false,
           selectedCategoryId: 2,
@@ -546,7 +548,8 @@ describe('CodingValidation reducer', () => {
       const state = getReducer(
         getState({
           question: {
-            questionType: 3
+            questionType: 3,
+            id: 2
           },
           userAnswers: {
             2: {
@@ -571,6 +574,7 @@ describe('CodingValidation reducer', () => {
       expect(state).toEqual(
         getState({
           question: {
+            id: 2,
             questionType: 3
           },
           userAnswers: {
@@ -580,16 +584,8 @@ describe('CodingValidation reducer', () => {
               comment: ''
             }
           },
-          snapshotUserAnswer: {
-            answers: {
-              1: { pincite: '', schemeAnswerId: 1 },
-              4: { pincite: '', schemeAnswerId: 4 }
-            },
-            comment: '',
-            schemeQuestionId: 2
-          },
-          errorTypeMsg: 'We couldn\'t clear the answer for this question. Your answer will be reset to the previous state.',
-          showNextButton: false
+          showNextButton: false,
+          unsavedChanges: true
         })
       )
     })
@@ -605,6 +601,7 @@ describe('CodingValidation reducer', () => {
       const state = getReducer(
         getState({
           question: {
+            id: 2,
             questionType: 4,
             isCategoryQuestion: true
           },
@@ -635,6 +632,7 @@ describe('CodingValidation reducer', () => {
       expect(state).toEqual(
         getState({
           question: {
+            id: 2,
             questionType: 4,
             isCategoryQuestion: true
           },
@@ -652,17 +650,11 @@ describe('CodingValidation reducer', () => {
               }
             }
           },
-          errorTypeMsg: 'We couldn\'t clear the answer for this question. Your answer will be reset to the previous state.',
-          snapshotUserAnswer: {
-            answers: {
-              4: { pincite: 'pincite!', schemeAnswerId: 4 }
-            },
-            comment: ''
-          },
           selectedCategory: 0,
           selectedCategoryId: 3,
           categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }],
-          showNextButton: false
+          showNextButton: false,
+          unsavedChanges: true
         })
       )
     })
@@ -670,12 +662,55 @@ describe('CodingValidation reducer', () => {
     test('should update scheme.tree for category questions', () => {
       const currentState = {
         question: {
-          text: 'fa la la la',
-          questionType: 1,
-          id: 1,
+          text: 'cat question',
+          questionType: 2,
+          id: 3,
           parentId: 0,
-          positionInParent: 0,
-          possibleAnswers: [{ id: 123, text: 'answer 1', id: 234, text: 'answer 2' }]
+          hint: '',
+          flags: [],
+          expanded: true,
+          positionInParent: 2,
+          isAnswered: true,
+          indent: 1,
+          possibleAnswers: [
+            { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
+          ],
+          children: [
+            {
+              text: 'cat question child',
+              questionType: 3,
+              isCategoryQuestion: true,
+              id: 4,
+              parentId: 3,
+              positionInParent: 0,
+              isAnswered: false,
+              indent: 2,
+              possibleAnswers: [
+                { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
+              ],
+              children: [
+                {
+                  schemeAnswerId: 10,
+                  schemeQuestionId: 4,
+                  indent: 3,
+                  isCategory: true,
+                  positionInParent: 0,
+                  text: 'category 2',
+                  isAnswered: false
+                },
+                {
+                  schemeAnswerId: 20,
+                  schemeQuestionId: 4,
+                  indent: 3,
+                  isCategory: true,
+                  positionInParent: 1,
+                  text: 'category 3',
+                  isAnswered: false
+                }
+              ],
+              completedProgress: 0
+            }
+          ]
         },
         outline: {
           1: { parentId: 0, positionInParent: 0 },
@@ -685,14 +720,34 @@ describe('CodingValidation reducer', () => {
         },
         scheme: {
           byId: {
-            1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
-            2: { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1 },
+            1: {
+              text: 'fa la la la',
+              questionType: 1,
+              id: 1,
+              parentId: 0,
+              positionInParent: 0,
+              flags: [],
+              hint: '',
+              possibleAnswers: []
+            },
+            2: {
+              text: 'la la la',
+              questionType: 3,
+              id: 2,
+              parentId: 0,
+              positionInParent: 1,
+              flags: [],
+              hint: '',
+              possibleAnswers: []
+            },
             3: {
               text: 'cat question',
               questionType: 2,
               id: 3,
               parentId: 0,
               positionInParent: 2,
+              flags: [],
+              hint: '',
               possibleAnswers: [
                 { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
               ]
@@ -796,8 +851,28 @@ describe('CodingValidation reducer', () => {
 
       const state = getReducer(currentState, action)
       expect(state).toHaveProperty('scheme.tree', [
-        { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: true },
-        { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, isAnswered: false },
+        {
+          text: 'fa la la la',
+          questionType: 1,
+          id: 1,
+          parentId: 0,
+          positionInParent: 0,
+          isAnswered: true,
+          flags: [],
+          hint: '',
+          possibleAnswers: []
+        },
+        {
+          text: 'la la la',
+          questionType: 3,
+          id: 2,
+          parentId: 0,
+          positionInParent: 1,
+          isAnswered: false,
+          flags: [],
+          hint: '',
+          possibleAnswers: []
+        },
         {
           text: 'cat question',
           questionType: 2,
@@ -806,6 +881,7 @@ describe('CodingValidation reducer', () => {
           positionInParent: 2,
           isAnswered: false,
           indent: 1,
+          flags: [], hint: '', expanded: true,
           possibleAnswers: [
             { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
           ],
@@ -939,12 +1015,8 @@ describe('CodingValidation reducer', () => {
             }
           }
         },
-        errorTypeMsg: 'We couldn\'t save the answer for this question. Your answer will be reset to the previous state.',
-        snapshotUserAnswer: {
-          10: { answers: { schemeAnswerId: 42, pincite: '' }, comment: '', categoryId: 10 },
-          20: { answers: {}, comment: '', categoryId: 20 }
-        },
-        showNextButton: false
+        showNextButton: false,
+        unsavedChanges: true
       }))
     })
   })

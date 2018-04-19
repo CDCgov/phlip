@@ -167,7 +167,6 @@ describe('Coding logic', () => {
               userAnswers: {
                 1: {
                   schemeQuestionId: 1,
-                  id: 100,
                   answers: {},
                   flag: { notes: '', type: 0, raisedBy: {} },
                   comment: ''
@@ -282,26 +281,6 @@ describe('Coding logic', () => {
             positionInParent: 1,
             possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
           })
-
-          // Should add the new unanswered question to user answers
-          expect(store.actions[1].payload).toHaveProperty('updatedState.userAnswers', {
-            1: {
-              answers: {},
-              schemeQuestionId: 1,
-              comment: ''
-            },
-            2: {
-              answers: {},
-              id: 200,
-              schemeQuestionId: 2,
-              comment: '',
-              flag: { notes: '', type: 0 }
-            },
-            3: {
-              schemeQuestionId: 3,
-              answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
-            }
-          })
           done()
         })
       })
@@ -338,37 +317,6 @@ describe('Coding logic', () => {
             positionInParent: 0,
             isCategoryQuestion: true,
             possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
-          })
-
-          // Should add the new unanswered question to user answers
-          expect(store.actions[1].payload).toHaveProperty('updatedState.userAnswers', {
-            1: {
-              answers: {},
-              schemeQuestionId: 1,
-              comment: ''
-            },
-            3: {
-              schemeQuestionId: 3,
-              answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
-            },
-            4: {
-              10: {
-                id: 1000,
-                answers: {},
-                comment: '',
-                flag: { notes: '', type: 0 },
-                schemeQuestionId: 4,
-                categoryId: 10
-              },
-              20: {
-                id: 2000,
-                answers: {},
-                comment: '',
-                flag: { notes: '', type: 0 },
-                schemeQuestionId: 4,
-                categoryId: 20
-              }
-            }
           })
 
           expect(store.actions[1]).toHaveProperty('payload.updatedState.categories', [

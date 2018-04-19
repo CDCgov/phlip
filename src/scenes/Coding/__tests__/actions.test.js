@@ -13,16 +13,26 @@ describe('Coding scene actions creators', () => {
     expect(actions.getCodingOutlineRequest(1, 1)).toEqual(expectedAction)
   })
 
-  test('should create an action to answer question', () => {
+  test('should create an action to update the answer data', () => {
     const expectedAction = {
-      type: types.UPDATE_USER_ANSWER_REQUEST,
+      type: types.UPDATE_USER_ANSWER,
       projectId: 1,
       jurisdictionId: 1,
       questionId: 1,
       answerId: 1,
       answerValue: 1
     }
-    expect(actions.answerQuestionRequest(1,1,1,1,1)).toEqual(expectedAction)
+    expect(actions.updateUserAnswer(1,1,1,1,1)).toEqual(expectedAction)
+  })
+
+  test('should create an action to save the answer data', () => {
+    const expectedAction = {
+      type: types.SAVE_USER_ANSWER_REQUEST,
+      projectId: 1,
+      jurisdictionId: 1,
+      questionId: 1
+    }
+    expect(actions.saveUserAnswerRequest(1,1,1)).toEqual(expectedAction)
   })
 
   test('should create an action to handle comment change', () => {
