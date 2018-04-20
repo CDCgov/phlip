@@ -12,6 +12,7 @@ import {
 } from 'utils/codingHelpers'
 import { normalize, sortList } from 'utils'
 import * as types from './actionTypes'
+//import debounce from 'lodash.debounce'
 
 export const getOutlineLogic = createLogic({
   type: types.GET_CODING_OUTLINE_REQUEST,
@@ -178,7 +179,13 @@ export const sendMessageInQueue = createLogic({
   type: types.SEND_QUEUE_REQUESTS,
   validate({ getState, action }, allow, reject) {
     const messageQueue = getState().scenes.coding.messageQueue
-    const messageToSend = messageQueue.find(message => message.questionId === action.payload.questionId)
+    const messageToSend = messageQueue.find(message => {
+      if (message.hasOwnProperty('categoryId')) {
+        return message.questionId === action.payload.questionId && action.payload.selectedCategoryId === message.categoryId
+      } else {
+        return message.questionId === action.payload.questionId
+      }
+    })
     if (messageQueue.length > 0 && messageToSend !== undefined) {
       allow({ ...action, message: messageToSend })
     } else {
@@ -218,7 +225,6 @@ export const sendMessageInQueue = createLogic({
 export const answerQuestionLogic = createLogic({
   type: types.SAVE_USER_ANSWER_REQUEST,
   debounce: 200,
-  //latest: true,
   validate({ getState, action }, allow, reject) {
     const state = getState().scenes.coding
     const userId = getState().data.user.currentUser.id
