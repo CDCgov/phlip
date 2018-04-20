@@ -82,6 +82,10 @@ export const actions = {
   saveUserAnswerRequest: {
     type: types.SAVE_USER_ANSWER_REQUEST,
     args: ['projectId', 'jurisdictionId', 'questionId', 'selectedCategoryId']
+  },
+  addRequestToQueue: {
+    type: types.ADD_REQUEST_TO_QUEUE,
+    args: ['payload']
   }
 }
 

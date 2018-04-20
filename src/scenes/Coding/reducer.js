@@ -3,51 +3,34 @@ import {
   handleUpdateUserCategoryChild,
   generateError
 } from 'utils/codingHelpers'
-import { sortList } from 'utils'
 import * as codingValidationTypes from 'scenes/Coding/actionTypes'
 import * as otherActionTypes from 'components/CodingValidation/actionTypes'
+import { INITIAL_STATE } from 'components/CodingValidation/reducer'
 
 const types = { ...codingValidationTypes, ...otherActionTypes }
 
-const codingReducer = (state, action) => {
+const codingReducer = (state = INITIAL_STATE, action) => {
   const questionUpdater = state.question.isCategoryQuestion
     ? handleUpdateUserCategoryChild(state, action)
     : handleUpdateUserCodedQuestion(state, action)
 
   switch (action.type) {
     case types.GET_CODING_OUTLINE_SUCCESS:
-      if (action.payload.isSchemeEmpty || action.payload.areJurisdictionsEmpty) {
-        return {
-          ...state,
-          scheme: { order: [], byId: {}, tree: [] },
-          outline: {},
-          question: {},
-          userAnswers: {},
-          categories: undefined,
-          areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty,
-          isSchemeEmpty: action.payload.isSchemeEmpty,
-          schemeError: null,
-          isLoadingPage: false,
-          showPageLoader: false
-        }
-      } else {
-        sortList(action.payload.question.possibleAnswers, 'order', 'asc')
-        const errors = generateError(action.payload.errors)
-        return {
-          ...state,
-          outline: action.payload.outline,
-          scheme: action.payload.scheme,
-          question: action.payload.question,
-          userAnswers: action.payload.userAnswers,
-          categories: undefined,
-          areJurisdictionsEmpty: false,
-          isSchemeEmpty: false,
-          schemeError: null,
-          getQuestionErrors: errors.length > 0 ? errors : null,
-          codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
-          isLoadingPage: false,
-          showPageLoader: false
-        }
+      const error = generateError(action.payload.errors)
+      return {
+        ...state,
+        outline: action.payload.outline,
+        scheme: action.payload.scheme,
+        question: action.payload.question,
+        userAnswers: action.payload.userAnswers,
+        categories: undefined,
+        areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty,
+        isSchemeEmpty: action.payload.isSchemeEmpty,
+        schemeError: null,
+        getQuestionErrors: error.length > 0 ? error : null,
+        codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
+        isLoadingPage: false,
+        showPageLoader: false
       }
 
     case types.GET_CODING_OUTLINE_REQUEST:
@@ -88,7 +71,7 @@ const codingReducer = (state, action) => {
     case types.ON_SAVE_RED_FLAG_FAIL:
       return {
         ...state,
-       saveFlagErrorContent: 'We couldn\'t save the red flag for this question.'
+        saveFlagErrorContent: 'We couldn\'t save the red flag for this question.'
       }
 
     case types.ON_SAVE_FLAG:
@@ -109,7 +92,7 @@ const codingReducer = (state, action) => {
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
-        ...action.payload.otherUpdates,
+        ...action.payload.otherUpdates
       }
 
     case types.GET_USER_CODED_QUESTIONS_FAIL:
@@ -124,7 +107,7 @@ const codingReducer = (state, action) => {
       return {
         ...state,
         codedQuestionsError: null,
-        isLoadingPage: true,
+        isLoadingPage: true
       }
 
     case types.ON_SAVE_RED_FLAG_REQUEST:

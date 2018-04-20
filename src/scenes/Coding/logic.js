@@ -10,7 +10,7 @@ import {
   getQuestionAndInitialize,
   initializeNextQuestion
 } from 'utils/codingHelpers'
-import { normalize } from 'utils'
+import { normalize, sortList } from 'utils'
 import * as types from './actionTypes'
 
 export const getOutlineLogic = createLogic({
@@ -19,6 +19,18 @@ export const getOutlineLogic = createLogic({
     let scheme = {}, errors = {}, payload = {}
     let codedQuestions = []
     const userId = getState().data.user.currentUser.id
+    payload = {
+      scheme: { order: [], byId: {}, tree: [] },
+      outline: {},
+      question: {},
+      userAnswers: {},
+      categories: undefined,
+      areJurisdictionsEmpty: false,
+      isSchemeEmpty: false,
+      schemeError: null,
+      isLoadingPage: false,
+      showPageLoader: false
+    }
 
     // Try to get the project coding scheme
     try {
@@ -52,6 +64,7 @@ export const getOutlineLogic = createLogic({
             [initializeNextQuestion(firstQuestion), ...codedQuestions], questionsById, userId
           )
 
+          sortList(firstQuestion.possibleAnswers, 'order', 'asc')
           payload = {
             ...payload,
             outline: scheme.outline,
@@ -59,8 +72,6 @@ export const getOutlineLogic = createLogic({
             userAnswers,
             question: firstQuestion,
             codedQuestions,
-            isSchemeEmpty: false,
-            areJurisdictionsEmpty: false,
             userId,
             errors: { ...errors }
           }
@@ -68,9 +79,9 @@ export const getOutlineLogic = createLogic({
       } else {
         // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
         if (scheme.schemeQuestions.length === 0) {
-          payload = { isSchemeEmpty: true, areJurisdictionsEmpty: true }
+          payload = { ...payload, isSchemeEmpty: true, areJurisdictionsEmpty: true }
         } else {
-          payload = { isSchemeEmpty: false, areJurisdictionsEmpty: true }
+          payload = { ...payload, isSchemeEmpty: false, areJurisdictionsEmpty: true }
         }
       }
 
@@ -163,22 +174,51 @@ export const applyAllAnswers = createLogic({
   }
 })
 
-
-export const answerQuestionLogic = createLogic({
-  type: types.SAVE_USER_ANSWER_REQUEST,
-  latest: true,
-  debounce: 500,
+export const sendMessageInQueue = createLogic({
+  type: types.SEND_QUEUE_REQUESTS,
   validate({ getState, action }, allow, reject) {
-    if (getState().scenes.coding.unsavedChanges === true) {
-      allow(action)
+    const messageQueue = getState().scenes.coding.messageQueue
+    const messageToSend = messageQueue.find(message => message.questionId === action.payload.questionId)
+    if (messageQueue.length > 0 && messageToSend !== undefined) {
+      allow({ ...action, message: messageToSend })
     } else {
       reject()
     }
   },
-  async process({ getState, action, api }, dispatch, done) {
+  async process({ getState, action }, dispatch, done) {
+    try {
+      const respCodedQuestion = await api.updateCodedQuestion({
+        ...action.message,
+        questionObj: { ...action.message.questionObj, id: action.payload.id }
+      })
+
+      dispatch({
+        type: types.SAVE_USER_ANSWER_SUCCESS,
+        payload: { ...respCodedQuestion }
+      })
+
+      dispatch({
+        type: types.REMOVE_REQUEST_FROM_QUEUE,
+        payload: { questionId: action.payload.questionId, selectedCategoryId: action.payload.selectedCategoryId }
+      })
+    } catch (e) {
+      dispatch({
+        type: types.SAVE_USER_ANSWER_FAIL,
+        payload: { error: 'Could not update answer', isApplyAll: false }
+      })
+    }
+    done()
+  }
+})
+
+export const answerQuestionLogic = createLogic({
+  type: types.SAVE_USER_ANSWER_REQUEST,
+  debounce: 200,
+  //latest: true,
+  validate({ getState, action }, allow, reject) {
+    const state = getState().scenes.coding
     const userId = getState().data.user.currentUser.id
-    const codingState = getState().scenes.coding
-    const questionObj = getFinalCodedObject(codingState, action, action.selectedCategoryId)
+    const questionObj = getFinalCodedObject(state, action, action.selectedCategoryId)
     const answerObject = {
       questionId: action.questionId,
       jurisdictionId: action.jurisdictionId,
@@ -186,29 +226,63 @@ export const answerQuestionLogic = createLogic({
       projectId: action.projectId,
       questionObj
     }
+
+    if (state.unsavedChanges === true) {
+      if (questionObj.isNewCodedQuestion === true && questionObj.hasMadePost === true && !questionObj.hasOwnProperty('id')) {
+        reject({ type: types.ADD_REQUEST_TO_QUEUE, payload: answerObject })
+      } else {
+        allow({ ...action, payload: answerObject })
+      }
+    } else {
+      reject()
+    }
+  },
+  async process({ getState, action, api }, dispatch, done) {
     let respCodedQuestion = {}
 
     try {
-      if (questionObj.hasOwnProperty('id')) {
-        respCodedQuestion = await api.updateCodedQuestion({ ...answerObject })
+      if (action.payload.questionObj.hasOwnProperty('id')) {
+        respCodedQuestion = await api.updateCodedQuestion({ ...action.payload })
+
+        // Remove any pending requests from the queue because this is the latest one and has an id
+        dispatch({
+          type: types.REMOVE_REQUEST_FROM_QUEUE,
+          payload: { questionId: action.questionId, categoryId: action.selectedCategoryId }
+        })
       } else {
-        respCodedQuestion = await api.answerCodedQuestion({ ...answerObject })
+        respCodedQuestion = await api.answerCodedQuestion({ ...action.payload })
       }
+
       dispatch({
         type: types.SAVE_USER_ANSWER_SUCCESS,
-        payload: { ...respCodedQuestion, selectedCategoryId: action.selectedCategoryId, questionId: action.questionId }
+        payload: {
+          ...respCodedQuestion,
+          selectedCategoryId: action.selectedCategoryId,
+          questionId: action.questionId
+        }
       })
+
+      dispatch({
+        type: types.SEND_QUEUE_REQUESTS,
+        payload: {
+          selectedCategoryId: action.selectedCategoryId,
+          questionId: action.questionId,
+          id: respCodedQuestion.id
+        }
+      })
+
       dispatch({
         type: types.UPDATE_EDITED_FIELDS,
         projectId: action.projectId
       })
+      done()
     } catch (error) {
       dispatch({
         type: types.SAVE_USER_ANSWER_FAIL,
         payload: { error: 'Could not update answer', isApplyAll: false }
       })
+      done()
     }
-    done()
   }
 })
 
@@ -311,5 +385,6 @@ export default [
   getUserCodedQuestionsLogic,
   answerQuestionLogic,
   applyAllAnswers,
+  sendMessageInQueue,
   saveRedFlagLogic
 ]

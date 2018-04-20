@@ -10,7 +10,9 @@ const initializeValues = question => {
     comment: question.comment || '',
     flag: question.flag || { notes: '', type: 0 },
     answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId'),
-    schemeQuestionId: question.schemeQuestionId
+    schemeQuestionId: question.schemeQuestionId,
+    isNewCodedQuestion: !question.hasOwnProperty('id'),
+    hasMadePost: false
   }
   return initializedQuestion
 }
@@ -85,7 +87,9 @@ export const initializeRegularQuestion = id => ({
   schemeQuestionId: id,
   answers: {},
   comment: '',
-  flag: { notes: '', type: 0, raisedBy: {} }
+  flag: { notes: '', type: 0, raisedBy: {} },
+  hasMadePost: false,
+  isNewCodedQuestion: true
 })
 
 /*
@@ -103,6 +107,7 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
           ...state.userAnswers,
           [newQuestion.id]: initializeRegularQuestion(newQuestion.id)
         }
+
   }
 
   if (newQuestion.parentId === 0) {
@@ -307,6 +312,29 @@ export const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, get
     [state.question.id]: {
       ...state.userAnswers[state.question.id],
       [fieldValue]: typeof getFieldValues === 'function' ? getFieldValues(state, action) : getFieldValues
+    }
+  }
+})
+
+export const updateCodedQuestion = (state, questionId, updatedQuestion)  => ({
+  userAnswers: {
+    ...state.userAnswers,
+    [questionId]: {
+      ...state.userAnswers[questionId],
+      ...updatedQuestion
+    }
+  }
+})
+
+export const updateCategoryCodedQuestion = (state, questionId, categoryId, updatedQuestion) => ({
+  userAnswers: {
+    ...state.userAnswers,
+    [questionId]: {
+      ...state.userAnswers[questionId],
+      [categoryId]: {
+        ...state.userAnswers[questionId][categoryId],
+        ...updatedQuestion
+      }
     }
   }
 })

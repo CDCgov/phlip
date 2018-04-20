@@ -2,10 +2,10 @@ import * as types from './actionTypes'
 import {
   determineShowButton, handleCheckCategories,
   handleUpdateUserAnswers, handleUpdateUserCategoryChild, handleUpdateUserCodedQuestion,
-  handleUserPinciteQuestion, initializeNavigator, generateError
+  handleUserPinciteQuestion, initializeNavigator, generateError, updateCategoryCodedQuestion, updateCodedQuestion
 } from 'utils/codingHelpers'
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   question: {},
   scheme: null,
   outline: {},
@@ -32,7 +32,18 @@ const INITIAL_STATE = {
   showPageLoader: false,
   questionChangeLoader: false,
   isChangingQuestion: false,
-  unsavedChanges: false
+  unsavedChanges: false,
+  messageQueue: []
+}
+
+const removeRequestsInQueue = (questionId, categoryId, currentQueue) => {
+  return currentQueue.filter(message => {
+    if (message.questionId !== questionId) {
+      return true
+    } else if (message.questionId === questionId) {
+      return categoryId !== message.categoryId
+    }
+  })
 }
 
 const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
@@ -54,22 +65,32 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
     case `${types.SAVE_USER_ANSWER_SUCCESS}_${name}`:
       return {
         ...state,
-        userAnswers: {
-          ...state.userAnswers,
-          [action.payload.questionId]: state.scheme.byId[action.payload.questionId].isCategoryQuestion
-            ? {
-              ...state.userAnswers[action.payload.questionId],
-              [action.payload.selectedCategoryId]: {
-                ...state.userAnswers[action.payload.questionId][action.payload.selectedCategoryId],
-                id: action.payload.id
-              }
-            } : {
-              ...state.userAnswers[action.payload.questionId],
-              id: action.payload.id
-            }
-        },
+        ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
+          ? updateCategoryCodedQuestion(state, action.payload.questionId, action.payload.selectedCategoryId, { id: action.payload.id })
+          : updateCodedQuestion(state, action.payload.questionId, { id: action.payload.id }),
         answerErrorContent: null,
         unsavedChanges: false
+      }
+
+    case `${types.SAVE_USER_ANSWER_REQUEST}_${name}`:
+      return {
+        ...state,
+        ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
+          ? updateCategoryCodedQuestion(state, action.payload.questionId, action.payload.selectedCategoryId, { hasMadePost: true })
+          : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: true })
+      }
+
+    case `${types.ADD_REQUEST_TO_QUEUE}_${name}`:
+      const currentQueue = removeRequestsInQueue(action.payload.questionId, action.payload.categoryId, [...state.messageQueue])
+      return {
+        ...state,
+        messageQueue: [...currentQueue, action.payload]
+      }
+
+    case `${types.REMOVE_REQUEST_FROM_QUEUE}_${name}`:
+      return {
+        ...state,
+        messageQueue: removeRequestsInQueue(action.payload.questionId, action.payload.categoryId, [...state.messageQueue])
       }
 
     case `${types.SAVE_USER_ANSWER_FAIL}_${name}`:

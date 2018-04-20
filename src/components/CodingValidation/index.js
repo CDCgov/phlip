@@ -189,19 +189,19 @@ export const withCodingValidation = (WrappedComponent, actions) => {
     }
 
     getNextQuestion = index => {
-      this.onSaveCodedQuestion()
+      //this.onSaveCodedQuestion()
       this.props.actions.getNextQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
       this.onShowQuestionLoader()
     }
 
     getPrevQuestion = index => {
-      this.onSaveCodedQuestion()
+      //this.onSaveCodedQuestion()
       this.props.actions.getPrevQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
       this.onShowQuestionLoader()
     }
 
     onQuestionSelectedInNav = item => {
-      this.onSaveCodedQuestion()
+      //this.onSaveCodedQuestion()
       this.props.actions.onQuestionSelectedInNav(item, this.props.projectId, this.props.jurisdictionId)
       this.onShowQuestionLoader()
     }
@@ -452,7 +452,6 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       saveFlagErrorContent: pageState.saveFlagErrorContent || null,
       getQuestionErrors: pageState.getQuestionErrors || null,
       isLoadingPage: pageState.isLoadingPage || false,
-      pageLoaderMessage: pageState.pageLoaderMessage,
       showPageLoader: pageState.showPageLoader || false,
       isChangingQuestion: pageState.isChangingQuestion || false,
       selectedCategoryId: pageState.selectedCategoryId || null,
