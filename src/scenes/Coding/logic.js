@@ -185,7 +185,7 @@ export const sendMessageInQueue = createLogic({
       reject()
     }
   },
-  async process({ getState, action }, dispatch, done) {
+  async process({ getState, action, api }, dispatch, done) {
     try {
       const respCodedQuestion = await api.updateCodedQuestion({
         ...action.message,
@@ -194,12 +194,12 @@ export const sendMessageInQueue = createLogic({
 
       dispatch({
         type: types.SAVE_USER_ANSWER_SUCCESS,
-        payload: { ...respCodedQuestion }
+        payload: { ...respCodedQuestion, questionId: action.payload.questionId, selectedCategoryId: action.payload.selectedCategoryId }
       })
 
       dispatch({
         type: types.REMOVE_REQUEST_FROM_QUEUE,
-        payload: { questionId: action.payload.questionId, selectedCategoryId: action.payload.selectedCategoryId }
+        payload: { questionId: action.payload.questionId, categoryId: action.payload.selectedCategoryId }
       })
     } catch (e) {
       dispatch({
