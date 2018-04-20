@@ -247,7 +247,7 @@ export const answerQuestionLogic = createLogic({
         // Remove any pending requests from the queue because this is the latest one and has an id
         dispatch({
           type: types.REMOVE_REQUEST_FROM_QUEUE,
-          payload: { questionId: action.questionId, categoryId: action.selectedCategoryId }
+          payload: { questionId: action.payload.questionId, categoryId: action.payload.selectedCategoryId }
         })
       } else {
         respCodedQuestion = await api.answerCodedQuestion({ ...action.payload })
@@ -257,23 +257,23 @@ export const answerQuestionLogic = createLogic({
         type: types.SAVE_USER_ANSWER_SUCCESS,
         payload: {
           ...respCodedQuestion,
-          selectedCategoryId: action.selectedCategoryId,
-          questionId: action.questionId
+          selectedCategoryId: action.payload.selectedCategoryId,
+          questionId: action.payload.questionId
         }
       })
 
       dispatch({
         type: types.SEND_QUEUE_REQUESTS,
         payload: {
-          selectedCategoryId: action.selectedCategoryId,
-          questionId: action.questionId,
+          selectedCategoryId: action.payload.selectedCategoryId,
+          questionId: action.payload.questionId,
           id: respCodedQuestion.id
         }
       })
 
       dispatch({
         type: types.UPDATE_EDITED_FIELDS,
-        projectId: action.projectId
+        projectId: action.payload.projectId
       })
       done()
     } catch (error) {
