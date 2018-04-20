@@ -157,7 +157,7 @@ export const applyAllAnswers = createLogic({
 
         dispatch({
           type: types.SAVE_USER_ANSWER_SUCCESS,
-          payload: { ...respCodedQuestion }
+          payload: { ...respCodedQuestion, questionId: action.questionId, selectedCategoryId: category.categoryId }
         })
       }
       dispatch({
@@ -194,7 +194,11 @@ export const sendMessageInQueue = createLogic({
 
       dispatch({
         type: types.SAVE_USER_ANSWER_SUCCESS,
-        payload: { ...respCodedQuestion, questionId: action.payload.questionId, selectedCategoryId: action.payload.selectedCategoryId }
+        payload: {
+          ...respCodedQuestion,
+          questionId: action.payload.questionId,
+          selectedCategoryId: action.payload.selectedCategoryId
+        }
       })
 
       dispatch({
@@ -227,9 +231,9 @@ export const answerQuestionLogic = createLogic({
       questionObj
     }
 
-
     if (state.unsavedChanges === true) {
-      if (questionObj.isNewCodedQuestion === true && questionObj.hasMadePost === true && !questionObj.hasOwnProperty('id')) {
+      if (questionObj.isNewCodedQuestion === true && questionObj.hasMadePost === true &&
+        !questionObj.hasOwnProperty('id')) {
         reject({ type: types.ADD_REQUEST_TO_QUEUE, payload: answerObject })
       } else {
         allow({ ...action, payload: { ...answerObject, selectedCategoryId: action.selectedCategoryId } })
