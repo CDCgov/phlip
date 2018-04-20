@@ -405,9 +405,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
                     {this.state.showSchemeError &&
                     <ApiErrorView error="We couldn't get the coding scheme for this project." />}
                     {this.props.showPageLoader === true
-                      ? <PageLoader
-                        message={this.props.pageLoaderMessage}
-                        circularLoaderProps={{ color: 'primary', size: 50 }} />
+                      ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
                       : this.state.showViews &&
                       (this.props.areJurisdictionsEmpty === true || this.props.isSchemeEmpty === true
                         ? this.onShowGetStartedView(this.props.isSchemeEmpty, this.props.areJurisdictionsEmpty)

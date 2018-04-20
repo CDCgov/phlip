@@ -6,6 +6,7 @@ import {
 import { sortList } from 'utils'
 import * as codingValidationTypes from 'scenes/Coding/actionTypes'
 import * as otherActionTypes from 'components/CodingValidation/actionTypes'
+
 const types = { ...codingValidationTypes, ...otherActionTypes }
 
 const codingReducer = (state, action) => {
@@ -27,7 +28,6 @@ const codingReducer = (state, action) => {
           isSchemeEmpty: action.payload.isSchemeEmpty,
           schemeError: null,
           isLoadingPage: false,
-          pageLoaderMessage: '',
           showPageLoader: false
         }
       } else {
@@ -46,7 +46,6 @@ const codingReducer = (state, action) => {
           getQuestionErrors: errors.length > 0 ? errors : null,
           codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
           isLoadingPage: false,
-          pageLoaderMessage: '',
           showPageLoader: false
         }
       }
@@ -54,8 +53,7 @@ const codingReducer = (state, action) => {
     case types.GET_CODING_OUTLINE_REQUEST:
       return {
         ...state,
-        isLoadingPage: true,
-        pageLoaderMessage: 'We\'re retrieving the data...'
+        isLoadingPage: true
       }
 
     case types.GET_CODING_OUTLINE_FAIL:
@@ -63,7 +61,6 @@ const codingReducer = (state, action) => {
         ...state,
         schemeError: action.payload,
         isLoadingPage: false,
-        pageLoaderMessage: '',
         showPageLoader: false
       }
 
@@ -111,7 +108,6 @@ const codingReducer = (state, action) => {
         getQuestionErrors: errors.length > 0 ? errors : null,
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
         isLoadingPage: false,
-        pageLoaderMessage: '',
         showPageLoader: false,
         ...action.payload.otherUpdates,
       }
@@ -121,7 +117,6 @@ const codingReducer = (state, action) => {
         ...state,
         getQuestionsError: '',
         isLoadingPage: false,
-        pageLoaderMessage: '',
         showPageLoader: false
       }
 
@@ -130,7 +125,6 @@ const codingReducer = (state, action) => {
         ...state,
         codedQuestionsError: null,
         isLoadingPage: true,
-        pageLoaderMessage: 'We\'re getting the data for this jurisdiction...'
       }
 
     case types.ON_SAVE_RED_FLAG_REQUEST:

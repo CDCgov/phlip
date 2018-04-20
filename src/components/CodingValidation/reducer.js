@@ -28,7 +28,6 @@ const INITIAL_STATE = {
   codedQuestionsError: null,
   isApplyAllError: null,
   isLoadingPage: false,
-  pageLoaderMessage: '',
   questionChangeLoader: false,
   showPageLoader: false,
   questionChangeLoader: false,

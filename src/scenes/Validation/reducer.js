@@ -22,7 +22,6 @@ const validationReducer = (state, action) => {
           areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty,
           schemeError: null,
           isLoadingPage: false,
-          pageLoaderMessage: '',
           showPageLoader: false
         }
       } else {
@@ -43,7 +42,6 @@ const validationReducer = (state, action) => {
           getQuestionErrors: errors.length > 0 ? errors : null,
           codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
           isLoadingPage: false,
-          pageLoaderMessage: '',
           showPageLoader: false
         }
       }
@@ -52,7 +50,6 @@ const validationReducer = (state, action) => {
       return {
         ...state,
         isLoadingPage: true,
-        pageLoaderMessage: 'We\'re retrieving the data...'
       }
 
     case types.GET_VALIDATION_OUTLINE_FAIL:
@@ -60,7 +57,6 @@ const validationReducer = (state, action) => {
         ...state,
         schemeError: action.payload,
         isLoadingPage: false,
-        pageLoaderMessage: '',
         showPageLoader: false
       }
 
@@ -143,7 +139,6 @@ const validationReducer = (state, action) => {
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
         userImages: action.payload.userImages,
         isLoadingPage: false,
-        pageLoaderMessage: '',
         showPageLoader: false,
         ...action.payload.otherUpdates,
       }
@@ -153,7 +148,6 @@ const validationReducer = (state, action) => {
         ...state,
         codedQuestionsError: null,
         isLoadingPage: true,
-        pageLoaderMessage: 'We\'re getting the data for this jurisdiction...'
       }
 
     case types.GET_USER_VALIDATED_QUESTIONS_FAIL:
@@ -161,7 +155,6 @@ const validationReducer = (state, action) => {
         ...state,
         getQuestionErrors: '',
         isLoadingPage: false,
-        pageLoaderMessage: '',
         showPageLoader: false
       }
 

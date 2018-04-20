@@ -4,10 +4,10 @@ import Typography from 'material-ui/Typography'
 import Container from 'components/Layout'
 import CircularLoader from 'components/CircularLoader'
 
-export const PageLoader = ({ circularLoaderType, circularLoaderProps, message }) => {
+export const PageLoader = ({ circularLoaderType, circularLoaderProps, message, messageText }) => {
   return (
     <Container flex alignItems="center" style={{ justifyContent: 'center' }}>
-      {message && <Typography type="display2">Loading...</Typography>}
+      {message && <Typography type="display2">{messageText}</Typography>}
       <CircularLoader type={circularLoaderType} {...circularLoaderProps} />
     </Container>
   )
@@ -18,13 +18,16 @@ PageLoader.defaultProps = {
   circularLoaderProps: {
     color: 'primary',
     size: 50
-  }
+  },
+  message: true,
+  messageText: 'Loading...'
 }
 
 PageLoader.propTypes = {
   circularLoaderType: PropTypes.string,
   circularLoaderProps: PropTypes.object,
-  message: PropTypes.string
+  message: PropTypes.bool,
+  messageText: PropTypes.string
 }
 
 export default PageLoader
