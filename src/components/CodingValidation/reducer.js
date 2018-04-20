@@ -41,7 +41,11 @@ const removeRequestsInQueue = (questionId, categoryId, currentQueue) => {
     if (message.questionId !== questionId) {
       return true
     } else if (message.questionId === questionId) {
-      return categoryId !== message.categoryId
+      if (message.hasOwnProperty('categoryId')) {
+        return message.categoryId !== categoryId
+      } else {
+        return false
+      }
     }
   })
 }
