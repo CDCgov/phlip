@@ -92,6 +92,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
+        unsavedChanges: false,
         ...action.payload.otherUpdates
       }
 
