@@ -10,6 +10,9 @@ const styles = theme => ({
   disabled: {
     color: 'black'
   },
+  disabledLabel: {
+    color: 'rgba(0,0,0,.42)'
+  },
   disabledIcon: {
     display: 'none'
   },
@@ -34,7 +37,11 @@ const Dropdown = props => {
 
   return (
     <FormControl style={{ minWidth: '120px' }}>
-      <InputLabel htmlFor={id} shrink={shrinkLabel} required={required}>{label}</InputLabel>
+      <InputLabel
+        htmlFor={id}
+        shrink={shrinkLabel}
+        required={required}
+        classes={{ disabled: classes.disabledLabel }}>{label}</InputLabel>
       <Select
         input={<Input id={id} />}
         value={input.value ? input.value : defaultValue}

@@ -40,11 +40,13 @@ export const Header = props => {
               onChange={onJurisdictionChange} />
           </div>
           <Column>
-            <Typography type="caption" color="default">
-              Segment Start Date <span style={{ color: 'black' }}>{new Date(currentJurisdiction.startDate).toLocaleDateString()}</span>
+            <Typography type="caption">
+              <span style={{ color: '#707070' }}>Segment Start Date </span>
+              <span style={{ color: 'black' }}>{new Date(currentJurisdiction.startDate).toLocaleDateString()}</span>
             </Typography>
-            <Typography type="caption" color="default">
-              Segment End Date <span style={{ color: 'black' }}>{new Date(currentJurisdiction.endDate).toLocaleDateString()}</span>
+            <Typography type="caption">
+              <span style={{ color: '#707070' }}>Segment End Date </span>
+              <span style={{ color: 'black' }}>{new Date(currentJurisdiction.endDate).toLocaleDateString()}</span>
             </Typography>
           </Column></Fragment>}
         <Column flex></Column>

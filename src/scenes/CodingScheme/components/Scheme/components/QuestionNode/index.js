@@ -148,7 +148,7 @@ export const QuestionNode = props => {
                 </Tooltip>)}
               </div>}
             {!node.hovering && node.questionType === questionTypes.CATEGORY
-              ? <Icon aria-label="This question is a category question" color="grey">filter_none</Icon>
+              ? <Icon aria-label="This question is a category question" color="#757575">filter_none</Icon>
               : ''
             }
           </CardContent>
@@ -170,7 +170,7 @@ export const QuestionNode = props => {
               ? 'Collapse'
               : 'Expand'}
             className={styles.expandCollapseButton}
-            color="#aabdc6"
+            color="#707070"
             style={{ backgroundColor: '#f5f5f5' }}
             iconSize={28}
             tooltipText={node.expanded ? 'Collapse' : 'Expand'}
