@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Container, { Column, Row } from 'components/Layout'
+import Container, {  Row } from 'components/Layout'
 import RadioGroup from 'components/SelectionControls/RadioGroup'
 import SimpleInput from 'components/SimpleInput'
 import Button from 'components/Button'
@@ -22,7 +22,7 @@ const getFlagText = (color, text, disabled) => (
 
 const checkForRedFlag = (questionFlags, user) => questionFlags.filter(flag => flag.raisedBy.userId === user.id)
 
-const redFlagColor = '#d90525'
+const redFlagColor = '#D50000'
 
 export class FlagPopover extends Component {
   static defaultProps = {
@@ -56,16 +56,16 @@ export class FlagPopover extends Component {
     this.userFlagColors = {
       1: {
         type: 1,
-        color: '#2cad73',
+        color: '#2E7D32',
         label: 'Flag for analysis',
-        text: getFlagText('#2cad73', 'Flag for analysis', this.state.questionFlags.length > 0),
+        text: getFlagText('#2E7D32', 'Flag for analysis', this.state.questionFlags.length > 0),
         disabled: this.state.questionFlags.length > 0 || this.props.disableAll
       },
       2: {
         type: 2,
-        color: '#fca63a',
+        color: '#CE4A00',
         label: 'Notify Coordinator',
-        text: getFlagText('#fca63a', 'Notify coordinator', this.state.questionFlags.length > 0),
+        text: getFlagText('#CE4A00', 'Notify coordinator', this.state.questionFlags.length > 0),
         disabled: this.state.questionFlags.length > 0 || this.props.disableAll
       }
     }
@@ -209,7 +209,7 @@ export class FlagPopover extends Component {
         <Popover
           title="Stop Coding This Question" open={this.state.redFlagOpen} target={{
           icon: 'report',
-          color: this.props.questionFlags.length > 0 ? redFlagColor : '#d7e0e4',
+          color: this.props.questionFlags.length > 0 ? redFlagColor : '#757575',
           style: { paddingRight: 15, paddingLeft: 15 },
           tooltip: 'Stop coding this question',
           id: 'stop-coding-question'
@@ -285,7 +285,7 @@ export class FlagPopover extends Component {
           open={this.state.otherFlagOpen}
           target={{
             icon: <Flag />,
-            color: this.props.userFlag.type !== 0 ? this.userFlagColors[this.props.userFlag.type].color : '#d7e0e4',
+            color: this.props.userFlag.type !== 0 ? this.userFlagColors[this.props.userFlag.type].color : '#757575',
             tooltip: 'Flag this question',
             id: 'flag-question'
           }}
@@ -325,6 +325,7 @@ export class FlagPopover extends Component {
                 onClick={this.onSaveOtherPopover}
                 raised={false}
                 color="accent"
+                disabled={this.state.questionFlags.length > 0 || this.props.disableAll}
                 value="Save" />
             </Row>
           </form>

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Select from 'material-ui/Select'
-import Input, { InputLabel } from 'material-ui/Input'
+import Input from 'material-ui/Input'
 import { FormControl } from 'material-ui/Form'
 import { MenuItem } from 'material-ui/Menu'
 import { withStyles } from 'material-ui/styles'
@@ -17,12 +17,12 @@ const styles = theme => ({
   }
 })
 
-const JurisdictionSelect = ({ id, value, onChange, options, ...otherProps }) => {
+const JurisdictionSelect = ({ id, value, onChange, options, theme, ...otherProps }) => {
   const menuItems = options.map(option => {
     return (
       <MenuItem key={option.id} value={option.id}>
         {option.name}
-        <Typography type="caption" style={{ paddingLeft: 10 }}>
+        <Typography type="caption" style={{ paddingLeft: 10, color: theme.palette.greyText }}>
           ({new Date(option.startDate).toLocaleDateString()} - {new Date(option.endDate).toLocaleDateString()})
         </Typography>
       </MenuItem>
@@ -52,6 +52,10 @@ const JurisdictionSelect = ({ id, value, onChange, options, ...otherProps }) => 
         onChange={onChange}
         children={menuItems}
         MenuProps={MenuProps}
+        renderValue={(value) => {
+          const option = options.find(option => option.id === value)
+          return option.name
+        }}
         {...otherProps}
       />
     </FormControl>
@@ -65,4 +69,4 @@ JurisdictionSelect.propTypes = {
   options: PropTypes.arrayOf(PropTypes.object)
 }
 
-export default withStyles(styles)(JurisdictionSelect)
+export default withStyles(styles, { withTheme: true })(JurisdictionSelect)

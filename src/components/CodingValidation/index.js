@@ -27,12 +27,12 @@ const navButtonStyles = {
   width: 20,
   minWidth: 'unset',
   minHeight: 'unset',
-  backgroundColor: '#a7bdc6',
+  backgroundColor: '#bdbdbd',
   padding: 0,
   top: '35%',
   borderRadius: '0 5px 5px 0',
   boxShadow: '0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)',
-  color: 'white'
+  color: '#424242'
 }
 
 const iconStyle = {
@@ -306,7 +306,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
                       id="toggle-navigator"
                       aria-label="Toggle Navigator">
                       <MuiButton style={navButtonStyles} aria-label="Toggle Navigator" onClick={this.onToggleNavigator}>
-                        <Icon color="white" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
+                        <Icon color="#424242" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
                   </Column>}
                   <Column displayFlex flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
                     {this.state.showSchemeError &&

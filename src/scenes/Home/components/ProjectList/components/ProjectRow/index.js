@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { withTheme } from 'material-ui/styles'
 import TableRow from 'components/TableRow'
 import Button from 'components/Button'
 import TextLink from 'components/TextLink'
@@ -10,10 +11,9 @@ import TableCell from 'components/TableCell'
 import * as actions from 'scenes/Home/actions'
 import moment from 'moment'
 
-const greyIcon = '#b1b3b3'
-
-export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => {
+export const ProjectRow = ({ project, role, bookmarked, actions, onExport, theme }) => {
   const isCoder = role === 'Coder'
+  const greyIcon = theme.palette.greyText
 
   const date = moment.parseZone(project.dateLastEdited).local().format('M/D/YYYY, h:mm A')
   return (
@@ -113,4 +113,4 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectRow)
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme()(ProjectRow))

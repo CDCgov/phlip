@@ -107,11 +107,6 @@ $scaffold-block: 100px;
   padding-right: 20px;
   white-space: nowrap;
   overflow: hidden;
-
-  /*&:hover {
-    border: 2px dashed #1caae5;
-    border-radius: 5px;
-  }*/
 }
 
 .rowLabelHovering {
@@ -142,7 +137,7 @@ $scaffold-block: 100px;
   &::after {
     content: '';
     position: absolute;
-    background-color: rgb(198, 197, 196);
+    background-color: #707070;
     width: 2px;
     left: 50%;
     bottom: 50%;

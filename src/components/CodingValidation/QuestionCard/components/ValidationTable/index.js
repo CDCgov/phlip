@@ -1,18 +1,16 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import Container, { Column, Row } from 'components/Layout'
-import { TableBody, TableHead } from 'material-ui/Table'
 import IconButton from 'components/IconButton'
 import Avatar from 'components/Avatar'
 import { getInitials } from 'utils/normalize'
 import Typography from 'material-ui/Typography'
-import { checkIfExists } from 'utils/codingSchemeHelpers'
 import ExpansionTextPanel from 'components/ExpansionTextPanel'
 
 const flagColors = {
-  1: '#2cad73',
-  2: '#fca63a',
-  3: '#d90525'
+  1: '#2E7D32',
+  2: '#CE4A00',
+  3: '#D50000'
 }
 
 const checkQuestionFlag = (questionFlag, flagsComments) => {
