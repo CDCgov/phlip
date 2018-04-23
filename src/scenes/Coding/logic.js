@@ -7,12 +7,11 @@ import {
   getQuestionSelectedInNav,
   getNextQuestion,
   getPreviousQuestion,
-  getQuestionAndInitialize,
+  getSelectedQuestion,
   initializeNextQuestion
 } from 'utils/codingHelpers'
 import { normalize, sortList } from 'utils'
 import * as types from './actionTypes'
-//import debounce from 'lodash.debounce'
 
 export const getOutlineLogic = createLogic({
   type: types.GET_CODING_OUTLINE_REQUEST,
@@ -111,7 +110,6 @@ export const getQuestionLogic = createLogic({
   latest: true,
   async process({ getState, action, api }) {
     const state = getState().scenes.coding
-    const userId = getState().data.user.currentUser.id
     let questionInfo = {}
 
     // How did the user navigate to the currently selected question
@@ -127,7 +125,7 @@ export const getQuestionLogic = createLogic({
         break
     }
 
-    return await getQuestionAndInitialize(state, action, userId, api, questionInfo)
+    return await getSelectedQuestion(state, action, api, questionInfo)
   }
 })
 
@@ -224,7 +222,7 @@ export const sendMessageInQueue = createLogic({
 
 export const answerQuestionLogic = createLogic({
   type: types.SAVE_USER_ANSWER_REQUEST,
-  debounce: 200,
+  debounce: 450,
   validate({ getState, action }, allow, reject) {
     const state = getState().scenes.coding
     const userId = getState().data.user.currentUser.id

@@ -485,7 +485,7 @@ export const getFinalCodedObject = (state, action, selectedCategoryId = state.se
   Gets a specific scheme question, checks if it's answered and initializes it by sending a post if it's not. Sends back
   the updated user answers object. Called in Validation/logic and Coding/logic
  */
-export const getQuestionAndInitialize = async (state, action, userId, api, questionInfo) => {
+export const getSelectedQuestion = async (state, action, api, questionInfo) => {
   let errors = {}, newSchemeQuestion = {},
     combinedQuestion = { ...state.scheme.byId[questionInfo.question.id] },
     updatedScheme = { ...state.scheme }

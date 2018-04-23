@@ -2,7 +2,7 @@ import { createLogic } from 'redux-logic'
 import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData } from 'react-sortable-tree'
 import {
-  getFinalCodedObject, initializeUserAnswers, getQuestionAndInitialize,
+  getFinalCodedObject, initializeUserAnswers, getSelectedQuestion,
   getPreviousQuestion, getQuestionSelectedInNav, getNextQuestion, initializeNextQuestion
 } from 'utils/codingHelpers'
 import { checkIfExists } from 'utils/codingSchemeHelpers'
@@ -238,7 +238,6 @@ export const getQuestionLogicValidation = createLogic({
   latest: true,
   async process({ getState, action, api }) {
     const state = getState().scenes.validation
-    const userId = getState().data.user.currentUser.id
     let questionInfo = {}
 
     // How did the user navigate to the currently selected question
@@ -254,7 +253,7 @@ export const getQuestionLogicValidation = createLogic({
         break
     }
 
-    const { updatedState, question, currentIndex, errors } = await getQuestionAndInitialize(state, action, userId, api, questionInfo)
+    const { updatedState, question, currentIndex, errors } = await getSelectedQuestion(state, action, api, questionInfo)
     const { codedQuestionObj, coderErrors } = await getCoderInformation({ api, action, questionId: question.id })
 
     return {
@@ -296,7 +295,7 @@ export const applyAllAnswers = createLogic({
 
         dispatch({
           type: types.SAVE_USER_ANSWER_SUCCESS,
-          payload: { ...respCodedQuestion }
+          payload: { ...respCodedQuestion, questionId: action.questionId, selectedCategoryId: category.categoryId }
         })
       }
       dispatch({
@@ -318,43 +317,67 @@ export const applyAllAnswers = createLogic({
  */
 export const validateQuestionLogic = createLogic({
   type: types.SAVE_USER_ANSWER_REQUEST,
-  latest: true,
-  debounce: 500,
+  debounce: 450,
   validate({ getState, action }, allow, reject) {
-    if (getState().scenes.validation.unsavedChanges === true) {
-      allow(action)
+    const state = getState().scenes.validation
+    const questionObj = getFinalCodedObject(state, action, action.selectedCategoryId)
+    const answerObject = {
+      questionId: action.questionId,
+      jurisdictionId: action.jurisdictionId,
+      projectId: action.projectId,
+      questionObj: { ...questionObj, validatedBy: getState().data.user.currentUser.id }
+    }
+
+    if (state.unsavedChanges === true) {
+      if (questionObj.isNewCodedQuestion === true && questionObj.hasMadePost === true &&
+        !questionObj.hasOwnProperty('id')) {
+        reject({ type: types.ADD_REQUEST_TO_QUEUE, payload: answerObject })
+      } else {
+        allow({ ...action, payload: { ...answerObject, selectedCategoryId: action.selectedCategoryId } })
+      }
     } else {
       reject()
     }
   },
   async process({ getState, action, api }, dispatch, done) {
-    const validationState = getState().scenes.validation
-    const validatorId = getState().data.user.currentUser.id
-    const questionObj = getFinalCodedObject(validationState, action, action.selectedCategoryId)
-
-    const answerObject = {
-      questionId: action.questionId,
-      jurisdictionId: action.jurisdictionId,
-      projectId: action.projectId,
-      questionObj: { ...questionObj, validatedBy: validatorId }
-    }
-
     let respCodedQuestion = {}
+
     try {
-      if (questionObj.hasOwnProperty('id')) {
-        respCodedQuestion = await api.updateValidatedQuestion({ ...answerObject })
+      if (action.payload.questionObj.hasOwnProperty('id')) {
+        respCodedQuestion = await api.updateValidatedQuestion({ ...action.payload })
+
+        // Remove any pending requests from the queue because this is the latest one and has an id
+        dispatch({
+          type: types.REMOVE_REQUEST_FROM_QUEUE,
+          payload: { questionId: action.payload.questionId, categoryId: action.payload.selectedCategoryId }
+        })
       } else {
-        respCodedQuestion = await api.answerValidatedQuestion({ ...answerObject })
+        respCodedQuestion = await api.answerValidatedQuestion({ ...action.payload })
       }
 
       dispatch({
         type: types.SAVE_USER_ANSWER_SUCCESS,
-        payload: { ...respCodedQuestion, questionId: action.questionId, selectedCategoryId: action.selectedCategoryId }
+        payload: {
+          ...respCodedQuestion,
+          questionId: action.questionId,
+          selectedCategoryId: action.selectedCategoryId
+        }
       })
+
+      dispatch({
+        type: types.SEND_QUEUE_REQUESTS,
+        payload: {
+          selectedCategoryId: action.payload.selectedCategoryId,
+          questionId: action.payload.questionId,
+          id: respCodedQuestion.id
+        }
+      })
+
       dispatch({
         type: types.UPDATE_EDITED_FIELDS,
         projectId: action.projectId
       })
+
     } catch (error) {
       dispatch({
         type: types.SAVE_USER_ANSWER_FAIL,

@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 import { createLogicMiddleware } from 'redux-logic'
 import { persistStore } from 'redux-persist'
 import rootLogic from 'logic'
