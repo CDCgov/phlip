@@ -26,7 +26,7 @@ const IS_PRODUCTION = process.env.API_HOST || false
 app.use(compression())
 app.use(express.static('./dist/'))
 
-app.use('/api', proxy(APP_API_URL))
+app.use('/api', proxy({ target: APP_API_URL }))
 app.use('/', express.static('./dist/index.html'))
 app.use('*', express.static('./dist/index.html'))
 
