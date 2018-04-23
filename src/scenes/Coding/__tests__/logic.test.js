@@ -80,6 +80,7 @@ describe('Coding logic', () => {
       store.dispatch({ type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1 })
 
       store.whenComplete(() => {
+        console.log(store)
         expect(store.actions).toEqual([
           { type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1 },
           {
@@ -95,87 +96,11 @@ describe('Coding logic', () => {
                 order: [1],
                 tree: [{ id: 1, text: 'q1', indent: 0, number: '1', parentId: 0, positionInParent: 0 }]
               },
-              codedQuestions,
               userId: 1,
               errors: {}
             }
           }
         ])
-        done()
-      })
-    })
-
-    test('should call the api to create an empty coded question if the question is not coded', (done) => {
-      mock.onGet('/projects/1/scheme').reply(200, {
-        schemeQuestions: [
-          { id: 1, text: 'question 1' },
-          { id: 2, text: 'question 3' },
-          { id: 3, text: 'question 4' },
-          { id: 4, text: 'question 2' }
-        ],
-        outline: {
-          1: { parentId: 0, positionInParent: 0 },
-          2: { parentId: 0, positionInParent: 2 },
-          4: { parentId: 0, positionInParent: 1 },
-          3: { parentId: 2, positionInParent: 0 }
-        }
-      })
-
-      mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions').reply(200, [])
-      mock.onPost('/users/1/projects/1/jurisdictions/1/codedquestions/1')
-        .reply(200, { schemeQuestionId: 1, id: 100, codedAnswers: [] })
-
-      const store = setupStore()
-      store.dispatch({ type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1 })
-
-      store.whenComplete(() => {
-        expect(store.actions[0]).toEqual({ type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1 })
-        expect(store.actions[1]).toEqual(
-          {
-            type: types.GET_CODING_OUTLINE_SUCCESS,
-            payload: {
-              outline: {
-                1: { parentId: 0, positionInParent: 0 },
-                2: { parentId: 0, positionInParent: 2 },
-                4: { parentId: 0, positionInParent: 1 },
-                3: { parentId: 2, positionInParent: 0 }
-              },
-              codedQuestions: [],
-              question: { id: 1, text: 'question 1', indent: 0, number: '1', parentId: 0, positionInParent: 0 },
-              isSchemeEmpty: false,
-              areJurisdictionsEmpty: false,
-              scheme: {
-                byId: {
-                  1: { id: 1, text: 'question 1', indent: 0, number: '1', parentId: 0, positionInParent: 0 },
-                  4: { id: 4, text: 'question 2', indent: 0, number: '2', parentId: 0, positionInParent: 1 },
-                  2: { id: 2, text: 'question 3', indent: 0, number: '3', parentId: 0, positionInParent: 2 },
-                  3: { id: 3, text: 'question 4', indent: 1, number: '3.1', parentId: 2, positionInParent: 0 }
-                },
-                order: [1, 4, 2, 3],
-                tree: [
-                  { id: 1, text: 'question 1', indent: 0, number: '1', parentId: 0, positionInParent: 0 },
-                  { id: 4, text: 'question 2', indent: 0, number: '2', parentId: 0, positionInParent: 1 },
-                  {
-                    id: 2, text: 'question 3', indent: 0, number: '3', parentId: 0, positionInParent: 2,
-                    expanded: true,
-                    children: [
-                      { id: 3, text: 'question 4', indent: 1, number: '3.1', parentId: 2, positionInParent: 0 }
-                    ]
-                  }
-                ]
-              },
-              userAnswers: {
-                1: {
-                  schemeQuestionId: 1,
-                  answers: {},
-                  flag: { notes: '', type: 0, raisedBy: {} },
-                  comment: ''
-                }
-              },
-              userId: 1,
-              errors: {}
-            }
-          })
         done()
       })
     })
@@ -255,8 +180,8 @@ describe('Coding logic', () => {
 
     describe('should GET_NEXT_QUESTION based on action and state information', () => {
       test('should handle regular questions', (done) => {
-        mock.onPost('/users/1/projects/1/jurisdictions/1/codedquestions/2')
-          .reply(200, { schemeQuestionId: 2, id: 200, codedAnswers: [] })
+        mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions/2')
+          .reply(200, { schemeQuestionId: 2, id: 200, codedAnswers: [], flag: null, comment: '' })
 
         mock.onGet('/projects/1/scheme/2').reply(200, {
           id: 2, text: 'la la la updated',
@@ -267,10 +192,10 @@ describe('Coding logic', () => {
         })
 
         const store = setupStore(currentState)
-        store.dispatch({ type: types.GET_NEXT_QUESTION, id: 2, newIndex: 1, projectId: 1, jurisdictionId: 1 })
+        store.dispatch({ type: types.GET_NEXT_QUESTION, questionId: 2, newIndex: 1, projectId: 1, jurisdictionId: 1})
         store.whenComplete(() => {
           expect(store.actions[0])
-            .toEqual({ type: types.GET_NEXT_QUESTION, id: 2, newIndex: 1, projectId: 1, jurisdictionId: 1 })
+            .toEqual({ type: types.GET_NEXT_QUESTION, questionId: 2, newIndex: 1, projectId: 1, jurisdictionId: 1 })
 
           // Should get the correct next question and should update from the api response
           expect(store.actions[1]).toHaveProperty('payload.question', {
@@ -286,7 +211,7 @@ describe('Coding logic', () => {
       })
 
       test('should handle category question children', (done) => {
-        mock.onPost('/users/1/projects/1/jurisdictions/1/codedquestions/4')
+        mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions/4')
           .reply(200, [
             { schemeQuestionId: 4, categoryId: 10, id: 1000, codedAnswers: [] },
             { schemeQuestionId: 4, categoryId: 20, id: 2000, codedAnswers: [] }
@@ -303,10 +228,10 @@ describe('Coding logic', () => {
         })
 
         const store = setupStore({ ...currentState, selectedCategory: 0 })
-        store.dispatch({ type: types.GET_NEXT_QUESTION, id: 4, newIndex: 3, projectId: 1, jurisdictionId: 1 })
+        store.dispatch({ type: types.GET_NEXT_QUESTION, questionId: 4, newIndex: 3, projectId: 1, jurisdictionId: 1 })
         store.whenComplete(() => {
           expect(store.actions[0])
-            .toEqual({ type: types.GET_NEXT_QUESTION, id: 4, newIndex: 3, projectId: 1, jurisdictionId: 1 })
+            .toEqual({ type: types.GET_NEXT_QUESTION, questionId: 4, newIndex: 3, projectId: 1, jurisdictionId: 1 })
 
           // Should get the correct next question and should update from the api response
           expect(store.actions[1]).toHaveProperty('payload.question', {

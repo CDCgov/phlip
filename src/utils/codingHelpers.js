@@ -516,7 +516,11 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
       questionId: questionInfo.question.id,
       jurisdictionId: action.jurisdictionId
     })
-
+    /*if (!codedQuestion.length) {
+      codedQuestion = combinedQuestion.isCategoryQuestion
+        ? [initializeNextQuestion(combinedQuestion)]
+        : initializeNextQuestion(combinedQuestion)
+    }*/
   } catch (error) {
     errors = {
       ...errors,
@@ -524,18 +528,20 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
     }
   }
 
-  if (combinedQuestion.isCategoryQuestion) {
-    for (let question of codedQuestion) {
-      const updatedAnswers = updateCategoryCodedQuestion(updatedState, combinedQuestion.id, question.categoryId, initializeValues(question))
+  if (codedQuestion.length) {
+    if (combinedQuestion.isCategoryQuestion) {
+      for (let question of codedQuestion) {
+        const updatedAnswers = updateCategoryCodedQuestion(updatedState, combinedQuestion.id, question.categoryId, initializeValues(question))
+        updatedState = {
+          ...updatedState,
+          ...updatedAnswers
+        }
+      }
+    } else {
       updatedState = {
         ...updatedState,
-        ...updatedAnswers
+        ...updateCodedQuestion(updatedState, combinedQuestion.id, initializeValues(codedQuestion))
       }
-    }
-  } else {
-    updatedState = {
-      ...updatedState,
-      ...updateCodedQuestion(updatedState, combinedQuestion.id, initializeValues(codedQuestion))
     }
   }
 
