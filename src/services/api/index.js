@@ -162,6 +162,18 @@ export default {
     return api.get(`/projects/${projectId}/scheme/${questionId}`).then(res => res.data)
   },
 
+  // Gets user coded questions for a project and jurisdiction, called in Coding/logic
+  getUserCodedQuestions(userId, projectId, jurisdictionId) {
+    return api.get(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions`)
+      .then(res => res.data)
+  },
+
+  // Get a single coded questions for a scheme question, called in Coding/logic
+  getCodedQuestion({ questionId, projectId, jurisdictionId, userId }) {
+    return api.get(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`)
+      .then(res => res.data)
+  },
+
   // Create an empty coded question object, called in Coding/logic, Validation/logic
   answerCodedQuestion({ questionId, projectId, jurisdictionId, userId, questionObj }) {
     return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, questionObj)
@@ -184,13 +196,13 @@ export default {
     return api.delete(`/flags/${flagId}`).then(res => res.data)
   },
 
-  // Gets user coded questions for a project and jurisdiction, called in Coding/logic
-  getUserCodedQuestions(userId, projectId, jurisdictionId) {
-    return api.get(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions`)
+  // Get a single validated question, called in Validation/logic
+  getUserValidatedQuestion({ projectId, jurisdictionId, questionId }) {
+    return api.get(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`)
       .then(res => res.data)
   },
 
-  // Gets all validates questions for a jurisdiction and project, called in Validation/logic
+  // Gets all validated questions for a jurisdiction and project, called in Validation/logic
   getValidatedQuestions(projectId, jurisdictionId) {
     return api.get(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions`).then(res => res.data)
   },

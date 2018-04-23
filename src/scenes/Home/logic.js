@@ -2,6 +2,7 @@ import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 import addEditProjectLogic from './scenes/AddEditProject/logic'
 import addEditJurisdictions from './scenes/AddEditJurisdictions/logic'
+import sortList from 'utils/sortList'
 
 export const getProjectLogic = createLogic({
   type: types.GET_PROJECTS_REQUEST,
@@ -14,7 +15,11 @@ export const getProjectLogic = createLogic({
   async process({ api, getState }) {
     const projects = await api.getProjects()
     return {
-      projects: projects.map(project => ({ ...project, lastEditedBy: project.lastEditedBy.trim() })),
+      projects: projects.map(project => ({
+        ...project,
+        lastEditedBy: project.lastEditedBy.trim(),
+        projectJurisdictions: sortList(project.projectJurisdictions, 'name', 'asc')
+      })),
       bookmarkList: [...getState().data.user.currentUser.bookmarks],
       error: false, errorContent: '', searchValue: ''
     }

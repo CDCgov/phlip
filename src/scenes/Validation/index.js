@@ -23,7 +23,7 @@ export class Validation extends Component {
 
   componentWillMount() {
     this.props.actions.getValidationOutlineRequest(this.props.projectId, this.props.jurisdictionId)
-    this.props.actions.getCodedUsersAnswers(this.props.projectId, this.props.jurisdictionId)
+    //this.props.actions.getCodedUsersAnswers(this.props.projectId, this.props.jurisdictionId)
     this.onShowPageLoader()
   }
 

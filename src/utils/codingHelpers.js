@@ -8,7 +8,7 @@ const initializeValues = question => {
     ...question.id ? { id: question.id } : {},
     ...question,
     comment: question.comment || '',
-    flag: question.flag || { notes: '', type: 0 },
+    flag: question.flag !== null ? question.flag : { notes: '', type: 0, raisedBy: {} },
     answers: normalize.arrayToObject(question.codedAnswers, 'schemeAnswerId'),
     schemeQuestionId: question.schemeQuestionId,
     isNewCodedQuestion: !question.hasOwnProperty('id'),
@@ -316,7 +316,7 @@ export const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, get
   }
 })
 
-export const updateCodedQuestion = (state, questionId, updatedQuestion)  => ({
+export const updateCodedQuestion = (state, questionId, updatedQuestion) => ({
   userAnswers: {
     ...state.userAnswers,
     [questionId]: {
@@ -485,10 +485,10 @@ export const getFinalCodedObject = (state, action, selectedCategoryId = state.se
   Gets a specific scheme question, checks if it's answered and initializes it by sending a post if it's not. Sends back
   the updated user answers object. Called in Validation/logic and Coding/logic
  */
-export const getSelectedQuestion = async (state, action, api, questionInfo) => {
+export const getSelectedQuestion = async (state, action, api, userId, questionInfo, apiGetMethod) => {
   let errors = {}, newSchemeQuestion = {},
     combinedQuestion = { ...state.scheme.byId[questionInfo.question.id] },
-    updatedScheme = { ...state.scheme }
+    updatedScheme = { ...state.scheme }, codedQuestion = {}, updatedState = { ...state }
 
   // Get the scheme question from the db in case it has changed
   try {
@@ -505,12 +505,42 @@ export const getSelectedQuestion = async (state, action, api, questionInfo) => {
   } catch (error) {
     // Couldn't get the updated scheme question so use the old one
     errors = {
-      newSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
+      newSchemeQuestion: 'We couldn\'t retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
     }
   }
 
-  const updatedState = {
-    ...state,
+  try {
+    codedQuestion = await apiGetMethod({
+      userId: userId,
+      projectId: action.projectId,
+      questionId: questionInfo.question.id,
+      jurisdictionId: action.jurisdictionId
+    })
+
+  } catch (error) {
+    errors = {
+      ...errors,
+      updatedCodedQuestion: 'We couldn\'t retrieve your updated answers. You still have access to the previous answers, but any changes that have been made since the time you started coding are not available.'
+    }
+  }
+
+  if (combinedQuestion.isCategoryQuestion) {
+    for (let question of codedQuestion) {
+      const updatedAnswers = updateCategoryCodedQuestion(updatedState, combinedQuestion.id, question.categoryId, initializeValues(question))
+      updatedState = {
+        ...updatedState,
+        ...updatedAnswers
+      }
+    }
+  } else {
+    updatedState = {
+      ...updatedState,
+      ...updateCodedQuestion(updatedState, combinedQuestion.id, initializeValues(codedQuestion))
+    }
+  }
+
+  updatedState = {
+    ...updatedState,
     scheme: updatedScheme,
     selectedCategory: questionInfo.selectedCategory,
     selectedCategoryId: questionInfo.selectedCategoryId,

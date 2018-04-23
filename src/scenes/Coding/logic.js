@@ -71,8 +71,6 @@ export const getOutlineLogic = createLogic({
             scheme: { byId: questionsById, tree, order },
             userAnswers,
             question: firstQuestion,
-            codedQuestions,
-            userId,
             errors: { ...errors }
           }
         }
@@ -110,6 +108,7 @@ export const getQuestionLogic = createLogic({
   latest: true,
   async process({ getState, action, api }) {
     const state = getState().scenes.coding
+    const userId = getState().data.user.currentUser.id
     let questionInfo = {}
 
     // How did the user navigate to the currently selected question
@@ -125,7 +124,7 @@ export const getQuestionLogic = createLogic({
         break
     }
 
-    return await getSelectedQuestion(state, action, api, questionInfo)
+    return await getSelectedQuestion(state, action, api, userId, questionInfo, api.getCodedQuestion)
   }
 })
 

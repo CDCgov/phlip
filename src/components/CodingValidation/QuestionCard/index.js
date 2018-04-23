@@ -90,6 +90,16 @@ export class QuestionCard extends Component {
     })
   }
 
+  getMargin = () => {
+    return !this.props.isValidation
+      ? this.props.question.questionType !== questionTypes.CATEGORY
+        ? -70
+        : -46
+      : this.props.question.questionType !== questionTypes.CATEGORY
+        ? -24
+        : 0
+  }
+
   render() {
     const questionContentProps = {
       onChange: this.onChangeAnswer,
@@ -138,7 +148,7 @@ export class QuestionCard extends Component {
                     {this.state.saveFailed ? 'Save failed!' : this.state.isSaving ? 'Saving...' : 'All changes saved'}
                   </Typography>
                 </Row>
-                <Row displayFlex style={{ marginLeft: -70 }}>
+                <Row displayFlex style={{ marginLeft: this.getMargin() }}>
                   {this.props.question.questionType !== questionTypes.CATEGORY &&
                   <IconButton
                     onClick={this.props.onClearAnswer}

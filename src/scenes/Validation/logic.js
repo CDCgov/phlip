@@ -123,7 +123,14 @@ export const getValidationOutlineLogic = createLogic({
           payload = { isSchemeEmpty: true, areJurisdictionsEmpty: false }
         } else {
           try {
-            validatedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
+            /* this is just here until the api routes are fixed*/
+            const valQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
+
+            validatedQuestions = valQuestions.map(val => ({
+              ...val,
+              validatedBy: { userId: 1, firstName: '', lastName: '' }
+            }))
+
           } catch (e) {
             errors = {
               ...errors,
@@ -153,50 +160,39 @@ export const getValidationOutlineLogic = createLogic({
           })
 
           let codersForProject = []
-          //Get validatedByImages
           try {
             codersForProject = await api.getCodersForProject(action.projectId)
           } catch (e) {
             throw { error: 'failed to load coders for project' }
           }
+          const uniqueUserIds = codersForProject.map(coders => coders.userId)
 
-          const uniqueUserIds = codersForProject.map((coders) => {
-            return coders.userId
-          })
-
-          const uniqueValidatedUsersIds = validatedQuestions.map((validatedQuestion) => {
-            return validatedQuestion.validatedBy.userId
-          }).filter((elem, pos, arr) => {
-            return arr.indexOf(elem) == pos
-          })
+          const uniqueValidatedUsersIds = validatedQuestions
+            .map((validatedQuestion) => validatedQuestion.validatedBy.userId)
+            .filter((elem, pos, arr) => arr.indexOf(elem) == pos)
 
           const combinedUsersOnProject = [...uniqueUserIds, ...uniqueValidatedUsersIds]
-
           let uniqueUsersWithAvatar = []
-
-          const combinedUniqueUsersOnProject = combinedUsersOnProject.filter((elem, pos, arr) => {
-            return arr.indexOf(elem) == pos
-          })
+          const combinedUniqueUsersOnProject = combinedUsersOnProject.filter((elem, pos, arr) => arr.indexOf(elem) ==
+            pos)
 
           for (let userId of combinedUniqueUsersOnProject) {
             try {
               const avatar = await api.getUserImage(userId)
               let userWithId = { id: userId, avatar }
               uniqueUsersWithAvatar = [...uniqueUsersWithAvatar, { ...userWithId }]
-
             } catch (e) {
               throw { error: 'failed to get validatedBy avatar image' }
             }
           }
-          const userImages = normalize.arrayToObject(uniqueUsersWithAvatar)
 
+          const userImages = normalize.arrayToObject(uniqueUsersWithAvatar)
           payload = {
             ...payload,
             outline: scheme.outline,
             scheme: { byId: questionsById, tree, order },
             userAnswers,
             question: firstQuestion,
-            validatedQuestions,
             mergedUserQuestions: codedQuestionObj,
             userImages,
             errors: { ...errors, ...coderErrors }
@@ -239,6 +235,7 @@ export const getQuestionLogicValidation = createLogic({
   async process({ getState, action, api }) {
     const state = getState().scenes.validation
     let questionInfo = {}
+    const userId = getState().data.user.currentUser.id
 
     // How did the user navigate to the currently selected question
     switch (action.type) {
@@ -253,7 +250,7 @@ export const getQuestionLogicValidation = createLogic({
         break
     }
 
-    const { updatedState, question, currentIndex, errors } = await getSelectedQuestion(state, action, api, questionInfo)
+    const { updatedState, question, currentIndex, errors } = await getSelectedQuestion(state, action, api, userId, questionInfo, api.getUserValidatedQuestion)
     const { codedQuestionObj, coderErrors } = await getCoderInformation({ api, action, questionId: question.id })
 
     return {

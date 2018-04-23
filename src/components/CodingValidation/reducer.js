@@ -139,7 +139,8 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         ...handleCheckCategories(action.payload.question, action.payload.currentIndex, action.payload.updatedState),
         getQuestionErrors: errors.length > 0 ? errors : null,
         questionChangeLoader: false,
-        isChangingQuestion: false
+        isChangingQuestion: false,
+        unsavedChanges: false
       }
 
     case `${types.ON_APPLY_ANSWER_TO_ALL}_${name}`:

@@ -189,19 +189,16 @@ export const withCodingValidation = (WrappedComponent, actions) => {
     }
 
     getNextQuestion = index => {
-      //this.onSaveCodedQuestion()
       this.props.actions.getNextQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
       this.onShowQuestionLoader()
     }
 
     getPrevQuestion = index => {
-      //this.onSaveCodedQuestion()
       this.props.actions.getPrevQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
       this.onShowQuestionLoader()
     }
 
     onQuestionSelectedInNav = item => {
-      //this.onSaveCodedQuestion()
       this.props.actions.onQuestionSelectedInNav(item, this.props.projectId, this.props.jurisdictionId)
       this.onShowQuestionLoader()
     }
