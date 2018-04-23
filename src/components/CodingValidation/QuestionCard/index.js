@@ -30,24 +30,16 @@ export class QuestionCard extends Component {
     this.state = {
       categoryToUncheck: {},
       confirmCategoryUncheckOpen: false,
-      isSaving: false,
-      saveFailed: false
+      isSaving: false
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.unsavedChanges === true) {
       this.setState({
-        isSaving: true,
-        saveFailed: false
+        isSaving: true
       })
       clearTimeout()
-    }
-
-    if (nextProps.answerErrorContent !== null) {
-      this.setState({
-        saveFailed: true
-      })
     }
 
     if (this.props.unsavedChanges === true && nextProps.unsavedChanges === false) {
@@ -145,7 +137,7 @@ export class QuestionCard extends Component {
               <Row displayFlex style={{ alignItems: 'center', height: 42, paddingRight: 15 }}>
                 <Row style={{ width: '100%' }}>
                   <Typography type="caption" style={{ paddingLeft: 10, textAlign: 'center', color: '#757575' }}>
-                    {this.state.saveFailed ? 'Save failed!' : this.state.isSaving ? 'Saving...' : 'All changes saved'}
+                    {this.props.saveFailed ? 'Save failed!' : this.state.isSaving ? 'Saving...' : 'All changes saved'}
                   </Typography>
                 </Row>
                 <Row displayFlex style={{ marginLeft: this.getMargin() }}>
@@ -212,7 +204,7 @@ const mapStateToProps = (state, ownProps) => {
     questionChangeLoader: pageState.questionChangeLoader || false,
     isChangingQuestion: pageState.isChangingQuestion || false,
     unsavedChanges: pageState.unsavedChanges || false,
-    answerErrorContent: pageState.answerErrorContent || null
+    saveFailed: pageState.saveFailed || false
   }
 }
 

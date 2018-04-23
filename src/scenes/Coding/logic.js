@@ -235,8 +235,7 @@ export const answerQuestionLogic = createLogic({
     }
 
     if (state.unsavedChanges === true) {
-      if (questionObj.isNewCodedQuestion === true && questionObj.hasMadePost === true &&
-        !questionObj.hasOwnProperty('id')) {
+      if (questionObj.isNewCodedQuestion === true && questionObj.hasMadePost === true && !questionObj.hasOwnProperty('id')) {
         reject({ type: types.ADD_REQUEST_TO_QUEUE, payload: answerObject })
       } else {
         allow({ ...action, payload: { ...answerObject, selectedCategoryId: action.selectedCategoryId } })

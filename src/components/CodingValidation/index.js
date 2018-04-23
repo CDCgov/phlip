@@ -117,6 +117,14 @@ export const withCodingValidation = (WrappedComponent, actions) => {
         }
       ]
 
+      this.saveFailedActions = [
+        {
+          value: 'Try Again',
+          type: 'button',
+          onClick: this.onTryAgain
+        }
+      ]
+
       this.onBeforeUnload = this.onBeforeUnload.bind(this)
       this.unload = this.unload.bind(this)
     }
@@ -263,6 +271,11 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       this.props.actions.onChangeCategory(selection)
     }
 
+    onTryAgain = () => {
+      this.onSaveCodedQuestion()
+      this.onCloseAlert()
+    }
+
     onClearAnswer = () => {
       this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
       this.onSaveCodedQuestion()
@@ -354,6 +367,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
           <ApiErrorAlert
             open={this.props.answerErrorContent !== null}
             content={this.props.answerErrorContent}
+            actions={this.saveFailedActions}
             onCloseAlert={this.onCloseAlert} />
           <ApiErrorAlert
             open={this.props.getQuestionErrors !== null}

@@ -33,7 +33,8 @@ export const INITIAL_STATE = {
   questionChangeLoader: false,
   isChangingQuestion: false,
   unsavedChanges: false,
-  messageQueue: []
+  messageQueue: [],
+  saveFailed: false
 }
 
 const removeRequestsInQueue = (questionId, categoryId, currentQueue) => {
@@ -73,7 +74,8 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
           ? updateCategoryCodedQuestion(state, action.payload.questionId, action.payload.selectedCategoryId, { id: action.payload.id })
           : updateCodedQuestion(state, action.payload.questionId, { id: action.payload.id }),
         answerErrorContent: null,
-        unsavedChanges: false
+        unsavedChanges: false,
+        saveFailed: false
       }
 
     case `${types.SAVE_USER_ANSWER_REQUEST}_${name}`:
@@ -81,7 +83,9 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         ...state,
         ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
           ? updateCategoryCodedQuestion(state, action.payload.questionId, action.payload.selectedCategoryId, { hasMadePost: true })
-          : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: true })
+          : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: true }),
+        unsavedChanges: true,
+        saveFailed: false
       }
 
     case `${types.ADD_REQUEST_TO_QUEUE}_${name}`:
@@ -101,7 +105,7 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
       return {
         ...state,
         answerErrorContent: 'We couldn\'t save your answer for this question.',
-        unsavedChanges: false
+        saveFailed: true
       }
 
     case `${types.ON_CHANGE_PINCITE}_${name}`:
@@ -140,7 +144,8 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         getQuestionErrors: errors.length > 0 ? errors : null,
         questionChangeLoader: false,
         isChangingQuestion: false,
-        unsavedChanges: false
+        unsavedChanges: false,
+        savedFailed: false
       }
 
     case `${types.ON_APPLY_ANSWER_TO_ALL}_${name}`:
