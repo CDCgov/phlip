@@ -103,7 +103,7 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
           containerStyles={{ marginLeft: item.hasOwnProperty('flags') && item.flags.length > 0 ? 5 : 0 }}
           progress={item.completedProgress}
         />}
-        {(item.isAnswered || (item.hasOwnProperty('completedProgress') && item.completedProgess === 100)) && <Icon
+        {(item.isAnswered || (item.hasOwnProperty('completedProgress') && item.completedProgress === 100)) && <Icon
           aria-label="Question has been answered"
           role="gridcell"
           color="#38E37F"
