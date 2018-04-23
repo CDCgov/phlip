@@ -6,7 +6,7 @@ import {
   getPreviousQuestion, getQuestionSelectedInNav, getNextQuestion, initializeNextQuestion
 } from 'utils/codingHelpers'
 import { checkIfExists } from 'utils/codingSchemeHelpers'
-import { normalize } from 'utils'
+import { normalize, sortList } from 'utils'
 import * as types from './actionTypes'
 
 const addCoderToAnswers = (existingQuestion, question, coder) => {
@@ -99,6 +99,19 @@ export const getValidationOutlineLogic = createLogic({
   async process({ action, getState, api }, dispatch, done) {
     let scheme = {}, validatedQuestions = [], errors = {}, payload = {}
     const userId = getState().data.user.currentUser.id
+    payload = {
+      scheme: { order: [], byId: {}, tree: [] },
+      outline: {},
+      question: {},
+      userAnswers: {},
+      mergedUserQuestions: {},
+      categories: undefined,
+      areJurisdictionsEmpty: false,
+      isSchemeEmpty: false,
+      schemeError: null,
+      isLoadingPage: false,
+      showPageLoader: false
+    }
 
     try {
       // Try to get the project coding scheme
@@ -130,6 +143,7 @@ export const getValidationOutlineLogic = createLogic({
           const userAnswers = initializeUserAnswers(
             [initializeNextQuestion(firstQuestion), ...validatedQuestions], questionsById, userId
           )
+          sortList(firstQuestion.possibleAnswers, 'order', 'asc')
 
           // Get all the coded questions for this question
           const { codedQuestionObj, coderErrors } = await getCoderInformation({
@@ -177,14 +191,12 @@ export const getValidationOutlineLogic = createLogic({
           const userImages = normalize.arrayToObject(uniqueUsersWithAvatar)
 
           payload = {
+            ...payload,
             outline: scheme.outline,
             scheme: { byId: questionsById, tree, order },
             userAnswers,
             question: firstQuestion,
             validatedQuestions,
-            isSchemeEmpty: false,
-            areJurisdictionsEmpty: false,
-            userId,
             mergedUserQuestions: codedQuestionObj,
             userImages,
             errors: { ...errors, ...coderErrors }
@@ -193,9 +205,9 @@ export const getValidationOutlineLogic = createLogic({
       } else {
         // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
         if (scheme.schemeQuestions.length === 0) {
-          payload = { isSchemeEmpty: true, areJurisdictionsEmpty: true }
+          payload = { ...payload, isSchemeEmpty: true, areJurisdictionsEmpty: true }
         } else {
-          payload = { isSchemeEmpty: false, areJurisdictionsEmpty: true }
+          payload = { ...payload, isSchemeEmpty: false, areJurisdictionsEmpty: true }
         }
       }
       dispatch({

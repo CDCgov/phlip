@@ -1,8 +1,4 @@
-import {
-  initializeUserAnswers,
-  initializeCodedUsers, handleCheckCategories, generateError
-} from 'utils/codingHelpers'
-import { sortList } from 'utils'
+import { generateError } from 'utils/codingHelpers'
 import * as codingValidationTypes from 'scenes/Validation/actionTypes'
 import * as otherActionTypes from 'components/CodingValidation/actionTypes'
 const types = { ...codingValidationTypes, ...otherActionTypes }
@@ -10,46 +6,29 @@ const types = { ...codingValidationTypes, ...otherActionTypes }
 const validationReducer = (state, action) => {
   switch (action.type) {
     case types.GET_VALIDATION_OUTLINE_SUCCESS:
-      if (action.payload.isSchemeEmpty || action.payload.areJurisdictionsEmpty) {
-        return {
-          ...state,
-          scheme: { order: [], byId: {}, tree: [] },
-          outline: {},
-          question: {},
-          userAnswers: {},
-          mergedUserQuestions: {},
-          isSchemeEmpty: action.payload.isSchemeEmpty,
-          areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty,
-          schemeError: null,
-          isLoadingPage: false,
-          showPageLoader: false
-        }
-      } else {
-        sortList(action.payload.question.possibleAnswers, 'order', 'asc')
-        const errors = generateError(action.payload.errors)
-        return {
-          ...state,
-          outline: action.payload.outline,
-          scheme: action.payload.scheme,
-          question: action.payload.question,
-          userAnswers: action.payload.userAnswers,
-          mergedUserQuestions: action.payload.mergedUserQuestions,
-          userImages: action.payload.userImages,
-          categories: undefined,
-          isSchemeEmpty: false,
-          areJurisdictionsEmpty: false,
-          schemeError: null,
-          getQuestionErrors: errors.length > 0 ? errors : null,
-          codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
-          isLoadingPage: false,
-          showPageLoader: false
-        }
+      const error = generateError(action.payload.errors)
+      return {
+        ...state,
+        outline: action.payload.outline,
+        scheme: action.payload.scheme,
+        question: action.payload.question,
+        userAnswers: action.payload.userAnswers,
+        mergedUserQuestions: action.payload.mergedUserQuestions,
+        userImages: action.payload.userImages,
+        categories: undefined,
+        isSchemeEmpty: action.payload.isSchemeEmpty,
+        areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty,
+        schemeError: null,
+        getQuestionErrors: error.length > 0 ? error : null,
+        codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
+        isLoadingPage: false,
+        showPageLoader: false
       }
 
     case types.GET_VALIDATION_OUTLINE_REQUEST:
       return {
         ...state,
-        isLoadingPage: true,
+        isLoadingPage: true
       }
 
     case types.GET_VALIDATION_OUTLINE_FAIL:
@@ -140,14 +119,14 @@ const validationReducer = (state, action) => {
         userImages: action.payload.userImages,
         isLoadingPage: false,
         showPageLoader: false,
-        ...action.payload.otherUpdates,
+        ...action.payload.otherUpdates
       }
 
     case types.GET_USER_VALIDATED_QUESTIONS_REQUEST:
       return {
         ...state,
         codedQuestionsError: null,
-        isLoadingPage: true,
+        isLoadingPage: true
       }
 
     case types.GET_USER_VALIDATED_QUESTIONS_FAIL:
