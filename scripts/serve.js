@@ -80,11 +80,6 @@ if (IS_PRODUCTION) {
     }
     console.log(chalk.cyan(`Starting the produciton server on ${APP_HOST}:${HTTP_APP_PORT}...`))
   })
-
-  http.createServer((req, res) => {
-    res.writeHead(301, { 'Location': 'https://' + req.headers['host'] + req.url })
-    res.end
-  }).listen(APP_PORT)
 } else {
   app.listen(APP_PORT, APP_HOST, err => {
     if (err) {
