@@ -26,9 +26,6 @@ const IS_PRODUCTION = process.env.API_HOST || false
 app.use(compression())
 app.use(express.static('./dist/'))
 
-app.use('/api', proxy({ target: APP_API_URL }))
-app.use('/', express.static('./dist/index.html'))
-app.use('*', express.static('./dist/index.html'))
 
 
 if (IS_PRODUCTION) {
@@ -74,6 +71,11 @@ if (IS_PRODUCTION) {
     rejectUnauthorized: false
   }
   const httpsHost = APP_HOST
+
+  app.use('/api', proxy({ target: APP_API_URL }))
+  app.use('/', express.static('./dist/index.html'))
+  app.use('*', express.static('./dist/index.html'))
+
   https.createServer(httpOptions, app).listen(HTTP_APP_PORT, httpsHost, err => {
     if (err) {
       return console.log(err)
@@ -81,6 +83,10 @@ if (IS_PRODUCTION) {
     console.log(chalk.cyan(`Starting the produciton server on ${APP_HOST}:${HTTP_APP_PORT}...`))
   })
 } else {
+  app.use('/api', proxy({ target: APP_API_URL }))
+  app.use('/', express.static('./dist/index.html'))
+  app.use('*', express.static('./dist/index.html'))
+
   app.listen(APP_PORT, APP_HOST, err => {
     if (err) {
       return console.log(err)

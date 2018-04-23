@@ -13,7 +13,7 @@ module.exports = function (passport, config) {
 
   passport.use(new SamlStrategy(
     {
-      callbackUrl: 'https://esquiresamstest.phiresearchlab.org/login/callback',
+      callbackUrl: 'https://phliptest.phiresearchlab.org/login/callback',
       entryPoint: 'https://trust-stg.cdc.gov/affwebservices/public/saml2sso?SPID=esquire-project',
       issuer: 'esquire-project',
       logoutUrl: 'https://trust-stg.cdc.gov/affwebservices/public/saml2slo',
