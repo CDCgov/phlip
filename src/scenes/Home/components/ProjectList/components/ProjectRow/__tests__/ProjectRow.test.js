@@ -15,6 +15,11 @@ const props = {
   actions: {
     toggleBookmark: () => {},
     onExport: () => {}
+  },
+  theme: {
+    palette: {
+      greyText: '#757575'
+    }
   }
 }
 
@@ -50,7 +55,7 @@ describe('Home scene - ProjectList - ProjectRow component', () => {
 
     test('should be grey if the project is not bookmarked', () => {
       const wrapper = setup().find('tr').find('td').at(0).find('Icon').at(0)
-      expect(wrapper.prop('color')).toEqual('#b1b3b3')
+      expect(wrapper.prop('color')).toEqual('#757575')
     })
 
     test('should be orange if the project is bookmarked', () => {

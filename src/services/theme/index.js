@@ -25,12 +25,10 @@ const theme = createMuiTheme({
     },
     error: {
       ...pink,
-      500: '#ff3d70',
-      main: '#ff3d70'
-    }
-  },
-  buttons: {
-    closeButton: '#ff3d70'
+      500: '#db036e',
+      main: '#db036e'
+    },
+    greyText: '#757575'
   },
   scenes: {
     background: '#f5f5f5'
@@ -39,6 +37,9 @@ const theme = createMuiTheme({
     MuiFormLabel: {
       focused: {
         color: mainColor
+      },
+      disabled: {
+        color: 'rgba(0, 0, 0, 0.54)'
       }
     },
     MuiInput: {

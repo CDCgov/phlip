@@ -97,10 +97,17 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
         flex={false}
       >
         <WithStyles
-          color="default"
           type="caption"
         >
-          Segment Start Date 
+          <span
+            style={
+              Object {
+                "color": "#707070",
+              }
+            }
+          >
+            Segment Start Date 
+          </span>
           <span
             style={
               Object {
@@ -112,10 +119,17 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
           </span>
         </WithStyles>
         <WithStyles
-          color="default"
           type="caption"
         >
-          Segment End Date 
+          <span
+            style={
+              Object {
+                "color": "#707070",
+              }
+            }
+          >
+            Segment End Date 
+          </span>
           <span
             style={
               Object {
