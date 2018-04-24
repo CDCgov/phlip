@@ -20,7 +20,6 @@ export class HeaderedLayout extends Component {
 
   openHelpPdf = () => {
     const data = api.getHelpPdf()
-    console.log(data)
     this.helpPdfRef.href = ''
   }
 

@@ -110,7 +110,8 @@ export const getValidationOutlineLogic = createLogic({
       isSchemeEmpty: false,
       schemeError: null,
       isLoadingPage: false,
-      showPageLoader: false
+      showPageLoader: false,
+      errors: {}
     }
 
     try {

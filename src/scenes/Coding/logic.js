@@ -30,7 +30,8 @@ export const getOutlineLogic = createLogic({
       isSchemeEmpty: false,
       schemeError: null,
       isLoadingPage: false,
-      showPageLoader: false
+      showPageLoader: false,
+      errors: {}
     }
 
     // Try to get the project coding scheme
