@@ -5,6 +5,7 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const paths = require('./paths')
+const Dotenv = require('dotenv-webpack')
 
 module.exports = function makeConfig(env) {
   return {
@@ -171,7 +172,9 @@ module.exports = function makeConfig(env) {
         {
           from: paths.appPublic
         }
-      ])
+      ]),
+
+      new Dotenv()
     ]
   }
 }

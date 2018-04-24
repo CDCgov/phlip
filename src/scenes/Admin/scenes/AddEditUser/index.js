@@ -24,6 +24,7 @@ import Tooltip from 'components/Tooltip'
 import compressImage from 'browser-compress-image'
 import Alert from 'components/Alert'
 import Typography from 'material-ui/Typography'
+import CheckboxLabel from 'components/CheckboxLabel'
 
 
 const rowStyles = {
@@ -251,17 +252,26 @@ export class AddEditUser extends Component {
                 shrinkLabel
               />
             </Row>
-            <Row>
-              <Field
-                name="role"
-                component={Dropdown}
-                label="Role"
-                options={roles}
-                defaultValue=""
-                id="role"
-                style={{ display: 'flex' }}
-              />
+            <Row displayFlex>
+              <Column flex style={{ paddingRight: 10 }}>
+                <Field
+                  name="role"
+                  component={Dropdown}
+                  label="Role"
+                  options={roles}
+                  defaultValue=""
+                  id="role"
+                  style={{ display: 'flex' }} />
+              </Column>
+              {this.state.selectedUser
+                ? <Column flex>
+                  <Field name="isActive" component={CheckboxLabel} label="Active" style={{ display: '10px' }} />
+                </Column>
+
+
+                : null}
             </Row>
+
           </Container>
           <Route path="/admin/edit/user/:id/avatar" component={AvatarForm} />
 
