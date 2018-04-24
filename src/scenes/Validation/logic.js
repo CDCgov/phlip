@@ -124,13 +124,7 @@ export const getValidationOutlineLogic = createLogic({
         } else {
           try {
             /* this is just here until the api routes are fixed*/
-            const valQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
-
-            validatedQuestions = valQuestions.map(val => ({
-              ...val,
-              validatedBy: { userId: 1, firstName: '', lastName: '' }
-            }))
-
+            validatedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
           } catch (e) {
             errors = {
               ...errors,
@@ -314,7 +308,7 @@ export const applyAllAnswers = createLogic({
  */
 export const validateQuestionLogic = createLogic({
   type: types.SAVE_USER_ANSWER_REQUEST,
-  debounce: 450,
+  debounce: 350,
   validate({ getState, action }, allow, reject) {
     const state = getState().scenes.validation
     const questionObj = getFinalCodedObject(state, action, action.selectedCategoryId)

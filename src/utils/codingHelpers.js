@@ -1,7 +1,7 @@
 import { normalize } from 'utils'
 import { checkIfAnswered, checkIfExists, checkIfCategoryAnswered } from 'utils/codingSchemeHelpers'
 import sortList from 'utils/sortList'
-import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
+import * as questionTypes from 'components/CodingValidation/constants'
 
 const initializeValues = question => {
   const { codedAnswers, ...initializedQuestion } = {
@@ -488,7 +488,7 @@ export const getFinalCodedObject = (state, action, selectedCategoryId = state.se
 export const getSelectedQuestion = async (state, action, api, userId, questionInfo, apiGetMethod) => {
   let errors = {}, newSchemeQuestion = {},
     combinedQuestion = { ...state.scheme.byId[questionInfo.question.id] },
-    updatedScheme = { ...state.scheme }, codedQuestion = {}, updatedState = { ...state }
+    updatedScheme = { ...state.scheme }, codedQuestion = {}, updatedState = { ...state }, initialize = true
 
   // Get the scheme question from the db in case it has changed
   try {
@@ -516,11 +516,15 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
       questionId: questionInfo.question.id,
       jurisdictionId: action.jurisdictionId
     })
-    /*if (!codedQuestion.length) {
-      codedQuestion = combinedQuestion.isCategoryQuestion
-        ? [initializeNextQuestion(combinedQuestion)]
-        : initializeNextQuestion(combinedQuestion)
-    }*/
+
+    if (Array.isArray(codedQuestion) && codedQuestion.length > 0) {
+      initialize = codedQuestion.length > 0
+    } else if (typeof codedQuestion === 'object') {
+      initialize = Object.keys(codedQuestion).length > 0
+    } else {
+      initialize = false
+    }
+
   } catch (error) {
     errors = {
       ...errors,
@@ -528,9 +532,14 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
     }
   }
 
-  if (codedQuestion.length) {
-    if (combinedQuestion.isCategoryQuestion) {
+  if (initialize === true) {
+    if (combinedQuestion.isCategoryQuestion === true) {
       for (let question of codedQuestion) {
+        if (combinedQuestion.questionType === questionTypes.TEXT_FIELD && question.codedAnswers.length > 0) {
+          question.codedAnswers[0].textAnswer = question.codedAnswers[0].textAnswer === null
+            ? ''
+            : question.codedAnswers[0].textAnswer
+        }
         const updatedAnswers = updateCategoryCodedQuestion(updatedState, combinedQuestion.id, question.categoryId, initializeValues(question))
         updatedState = {
           ...updatedState,
@@ -538,6 +547,11 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
         }
       }
     } else {
+      if (combinedQuestion.questionType === questionTypes.TEXT_FIELD && codedQuestion.codedAnswers.length > 0) {
+        codedQuestion.codedAnswers[0].textAnswer = codedQuestion.codedAnswers[0].textAnswer === null
+          ? ''
+          : codedQuestion.codedAnswers[0].textAnswer
+      }
       updatedState = {
         ...updatedState,
         ...updateCodedQuestion(updatedState, combinedQuestion.id, initializeValues(codedQuestion))

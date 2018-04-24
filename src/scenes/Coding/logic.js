@@ -221,7 +221,7 @@ export const sendMessageInQueue = createLogic({
 
 export const answerQuestionLogic = createLogic({
   type: types.SAVE_USER_ANSWER_REQUEST,
-  debounce: 450,
+  debounce: 350,
   validate({ getState, action }, allow, reject) {
     const state = getState().scenes.coding
     const userId = getState().data.user.currentUser.id
