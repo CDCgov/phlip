@@ -112,7 +112,10 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
       return {
         ...state,
         answerErrorContent: 'We couldn\'t save your answer for this question.',
-        saveFailed: true
+        saveFailed: true,
+        ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
+          ? updateCategoryCodedQuestion(state, action.payload.questionId, action.payload.selectedCategoryId, { hasMadePost: false })
+          : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: false })
       }
 
     case `${types.ON_CHANGE_PINCITE}_${name}`:

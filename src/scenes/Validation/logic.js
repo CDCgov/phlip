@@ -372,7 +372,12 @@ export const validateQuestionLogic = createLogic({
     } catch (error) {
       dispatch({
         type: types.SAVE_USER_ANSWER_FAIL,
-        payload: { error: 'Could not update answer', isApplyAll: false }
+        payload: {
+          error: 'Could not update answer',
+          isApplyAll: false,
+          selectedCategoryId: action.payload.selectedCategoryId,
+          questionId: action.payload.questionId
+        }
       })
     }
     done()

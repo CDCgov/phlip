@@ -178,7 +178,8 @@ export const sendMessageInQueue = createLogic({
     const messageQueue = getState().scenes.coding.messageQueue
     const messageToSend = messageQueue.find(message => {
       if (message.hasOwnProperty('categoryId')) {
-        return message.questionId === action.payload.questionId && action.payload.selectedCategoryId === message.categoryId
+        return message.questionId === action.payload.questionId && action.payload.selectedCategoryId ===
+          message.categoryId
       } else {
         return message.questionId === action.payload.questionId
       }
@@ -235,7 +236,8 @@ export const answerQuestionLogic = createLogic({
     }
 
     if (state.unsavedChanges === true) {
-      if (questionObj.isNewCodedQuestion === true && questionObj.hasMadePost === true && !questionObj.hasOwnProperty('id')) {
+      if (questionObj.isNewCodedQuestion === true && questionObj.hasMadePost === true &&
+        !questionObj.hasOwnProperty('id')) {
         reject({ type: types.ADD_REQUEST_TO_QUEUE, payload: answerObject })
       } else {
         allow({ ...action, payload: { ...answerObject, selectedCategoryId: action.selectedCategoryId } })
@@ -286,7 +288,12 @@ export const answerQuestionLogic = createLogic({
     } catch (error) {
       dispatch({
         type: types.SAVE_USER_ANSWER_FAIL,
-        payload: { error: 'Could not update answer', isApplyAll: false }
+        payload: {
+          error: 'Could not update answer',
+          isApplyAll: false,
+          selectedCategoryId: action.payload.selectedCategoryId,
+          questionId: action.payload.questionId
+        }
       })
       done()
     }
