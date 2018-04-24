@@ -50,6 +50,7 @@ export class Coding extends Component {
       })
       this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
     }
+    this.onChangeTouchedStatus()
   }
 
   render() {
