@@ -3,7 +3,7 @@ import { login, logout } from '../authToken'
 import { isUndefined } from 'util';
 
 export const api = axios.create({
-  baseURL: '/api'
+  baseURL: process.env.API_HOST || '/api'
 })
 
 export default {
@@ -11,6 +11,20 @@ export default {
   login(user) {
     return api.post('/users/authenticate', user).then(res => {
       login(res.data.token.value)
+      return res.data
+    })
+  },
+
+  // Check for user after SAML login
+  checkPivUser(tokenObj) {
+    return api.get(`/users?email=${tokenObj.decodedToken.userEmail}`, {
+      headers: {
+        'Authorization': `Bearer ${tokenObj.token}`
+      }
+    }).then(res => {
+      if (res.data) {
+        login(res.data.token.value)
+      }
       return res.data
     })
   },
@@ -37,12 +51,12 @@ export default {
 
   // Get all users, called in Admin/logic
   getUsers() {
-    return api.get('/users').then(res => res.data.users)
+    return api.get('/users').then(res => res.data)
   },
 
   // Add a user, called in Admin/scenes/AddEditUser/logic
   addUser(user) {
-    return api.post('/users', user).then(res => res.data.newUser)
+    return api.post('/users', user).then(res => res.data)
   },
 
   // Update a user, called in Admin/scenes/AddEditUser/logic
@@ -67,8 +81,12 @@ export default {
   },
 
   // Get project bookmarks for a user, called in Login/logic
-  getUserBookmarks(id) {
-    return api.get(`/users/${id}/bookmarkedprojects`).then(res => res.data)
+  getUserBookmarks(id, token) {
+    return api.get(`/users/${id}/bookmarkedprojects`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }).then(res => res.data)
   },
 
   // Add a user bookmark, called in Home/logic
@@ -255,7 +273,7 @@ export default {
 
   // Export project data
   exportData(projectId, type) {
-    window.location.href = `/api/exports/project/${projectId}/data`
+    window.location.href = `${process.env.API_HOST}/exports/project/${projectId}/data`
   }
 
 }

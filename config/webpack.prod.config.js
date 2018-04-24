@@ -7,6 +7,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
 const paths = require('./paths')
+const Dotenv = require('dotenv-webpack')
 
 module.exports = function makeConfig(env) {
   return {
@@ -104,9 +105,9 @@ module.exports = function makeConfig(env) {
             {
               test: /\.scss$/,
               use: [{
-                loader: "style-loader"
+                loader: 'style-loader'
               }, {
-                loader: "css-loader",
+                loader: 'css-loader',
                 options: {
                   modules: true,
                   '-autoprefixer': true,
@@ -125,7 +126,7 @@ module.exports = function makeConfig(env) {
                   ],
                 },
               }, {
-                loader: "sass-loader"
+                loader: 'sass-loader'
               }]
             },
             {
@@ -185,11 +186,13 @@ module.exports = function makeConfig(env) {
         jquery: 'jquery',
       }),
 
-      new ExtractTextPlugin({filename: 'css/[name].css', allChunks: true}),
+      new ExtractTextPlugin({ filename: 'css/[name].css', allChunks: true }),
 
       new CopyWebpackPlugin([{
         from: paths.appPublic
-      }])
+      }]),
+
+      new Dotenv()
     ]
   }
 }

@@ -9,6 +9,7 @@ function userReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
 
     case types.UPDATE_CURRENT_USER:
+    case types.CHECK_PIV_USER_SUCCESS:
     case types.LOGIN_USER_SUCCESS:
       // console.log(action.payload)
       return {
