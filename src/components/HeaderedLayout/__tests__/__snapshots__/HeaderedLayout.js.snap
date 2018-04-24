@@ -15,6 +15,7 @@ exports[`HeaderedLayout it should render correctly 1`] = `
     handleCloseMenu={[Function]}
     handleLogoutUser={[Function]}
     handleOpenAdminPage={[Function]}
+    handleOpenHelpPdf={[Function]}
     open={false}
   />
   <WithStyles
@@ -24,7 +25,14 @@ exports[`HeaderedLayout it should render correctly 1`] = `
       Object {
         "backgroundColor": "#f5f5f5",
         "flex": "1",
-        "padding": "0 27px 10px 27px",
+        "padding": "",
+      }
+    }
+  />
+  <a
+    style={
+      Object {
+        "display": "none",
       }
     }
   />

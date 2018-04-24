@@ -13,7 +13,7 @@ import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
 const apiHost = process.env.API_HOST !== undefined ? process.env.API_HOST : '/api'
 const pathToPdf = `${apiHost}/`
 
-export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, onOpenAdminPage, onToggleMenu, avatar }) => {
+export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, onOpenAdminPage, onToggleMenu, onOpenHelpPdf, avatar }) => {
   return (
     <ClickAwayListener
       onClickAway={open ? onCloseMenu : () => {
@@ -45,7 +45,7 @@ export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, on
                     </ListItemIcon>
                     <ListItemText style={{ color: '#5f6060' }} disableTypography primary="Logout" />
                   </MenuItem>
-                  <MenuItem onClick={() => window.open(pathToPdf, '_blank')} key="help-section-pdf">
+                  <MenuItem onClick={onOpenHelpPdf} key="help-section-pdf">
                     <ListItemIcon>
                       <Icon color="accent">help</Icon>
                     </ListItemIcon>

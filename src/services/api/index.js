@@ -288,6 +288,6 @@ export default {
 
   // Get help PDF
   getHelpPdf() {
-    return api.get('/help', { responseType: 'arraybuffer' }).then(res => res.data)
+    return api.get('/exports/helpfile', { responseType: 'arraybuffer' }).then(res => res.data)
   }
 }
