@@ -284,5 +284,10 @@ export default {
   // Export project data
   exportData(projectId, type) {
     return api.get(`/exports/project/${projectId}/data`, { params: { type } }).then(res => res.data)
+  },
+
+  // Get help PDF
+  getHelpPdf() {
+    return api.get('/help', { responseType: 'arraybuffer' }).then(res => res.data)
   }
 }

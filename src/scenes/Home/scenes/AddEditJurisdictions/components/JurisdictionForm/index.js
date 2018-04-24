@@ -21,7 +21,6 @@ import moment from 'moment'
 import api from 'services/api'
 import { normalize } from 'utils'
 import Dropdown from 'components/Dropdown'
-import MultiSelectDropdown from 'components/MultiSelectDropdown'
 
 const getSuggestionValue = suggestion => suggestion
 
@@ -235,16 +234,20 @@ export class JurisdictionForm extends Component {
 
     if (value === undefined || value === '' || value === null) {
       errors['startDate'] = 'Required'
-    } else if (new Date(value).getFullYear() < '1850') {
-      errors['startDate'] = 'Minimum year for start date is 1850'
     } else {
-      const rangeErrors = validateDateRanges({ ...this.state, startDate: value })
+      errors['startDate'] = ''
+    }
+
+    if (new Date(value).getFullYear() < '1850') {
+      errors['startDate'] = 'Minimum year for start date is 1850'
+    } else if (new Date(value).getFullYear() > '2050') {
+      errors['startDate'] = 'Maximum year for start date is 2050'
+    } else {
+      const rangeErrors = validateDateRanges({ ...this.state, startDate: value }, errors)
       errors = { ...rangeErrors }
     }
 
-    this.setState({
-      errors
-    })
+    this.setState({ errors })
   }
 
   validateMaxDate = value => {
@@ -252,16 +255,20 @@ export class JurisdictionForm extends Component {
 
     if (value === undefined || value === '' || value === null) {
       errors['endDate'] = 'Required'
-    } else if (new Date(value).getFullYear() > '2050') {
-      errors['endDate'] = 'Maximum year for end date is 2050'
     } else {
-      const rangeErrors = validateDateRanges({ ...this.state, endDate: value })
+      errors['endDate'] = ''
+    }
+
+    if (new Date(value).getFullYear() > '2050') {
+      errors['endDate'] = 'Maximum year for end date is 2050'
+    } else if (new Date(value).getFullYear() < '1850') {
+      errors['endDate'] = 'Minimum year for end date is 1850'
+    } else {
+      const rangeErrors = validateDateRanges({ ...this.state, endDate: value }, errors)
       errors = { ...rangeErrors }
     }
 
-    this.setState({
-      errors
-    })
+    this.setState({ errors })
   }
 
   onChangeDate = dateField => event => {

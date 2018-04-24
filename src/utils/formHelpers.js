@@ -7,8 +7,9 @@ export const validateDate = value => {
   return value === 'mm/dd/yyyy' || value === undefined ? 'Required' : undefined
 }
 
-export const validateDateRanges = values => {
-  let errors = {}
+export const validateDateRanges = (values, currentErrors) => {
+  let errors = { ...currentErrors }
+
   if (moment(values.endDate).isBefore(moment(values.startDate))) {
     errors.endDate = 'End date must be later than start date'
     errors.startDate = 'Start date must be earlier than end date'
