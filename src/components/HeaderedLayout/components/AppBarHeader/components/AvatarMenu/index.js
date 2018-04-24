@@ -10,7 +10,7 @@ import Paper from 'material-ui/Paper'
 import { Manager, Target, Popper } from 'react-popper'
 import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
 
-const pathToPdf = ''
+const pathToPdf = `${process.env.API_HOST}/`
 
 export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, onOpenAdminPage, onToggleMenu, avatar }) => {
   return (

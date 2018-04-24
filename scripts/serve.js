@@ -22,11 +22,8 @@ const HTTP_APP_PORT = process.env.HTTP_APP_PORT || 443
 const APP_API_URL = `${process.env.APP_API_URL}/api` || 'http://backend:80/api'
 const IS_PRODUCTION = process.env.API_HOST || false
 
-
 app.use(compression())
 app.use(express.static('./dist/'))
-
-
 
 if (IS_PRODUCTION) {
   app.use(session({ secret: process.env.APP_SESSION_SECRET || 'pleasedontusethisasasecret' }))
@@ -34,7 +31,6 @@ if (IS_PRODUCTION) {
   app.use(bodyParser.json({ type: 'application/json' }))
   app.use(bodyParser.urlencoded({ extended: true }))
   require('./passport')(passport)
-
 
   app.use(passport.initialize())
   app.use(passport.session())
