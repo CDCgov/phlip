@@ -392,7 +392,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
           <ApiErrorAlert
             open={this.props.answerErrorContent !== null}
             content={this.props.answerErrorContent}
-            actions={this.saveFailedActions}
+            actions={this.props.objectExists ? [] : this.saveFailedActions}
             onCloseAlert={this.onCloseAlert} />
           <ApiErrorAlert
             open={this.props.getQuestionErrors !== null}
@@ -494,7 +494,8 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       selectedCategoryId: pageState.selectedCategoryId || null,
       userAnswers: pageState.userAnswers || {},
       unsavedChanges: pageState.unsavedChanges || false,
-      hasTouchedQuestion: pageState.hasTouchedQuestion || false
+      hasTouchedQuestion: pageState.hasTouchedQuestion || false,
+      objectExists: pageState.objectExists || false
     }
   }
 

@@ -35,6 +35,7 @@ export const INITIAL_STATE = {
   unsavedChanges: false,
   messageQueue: [],
   saveFailed: false,
+  objectExists: false,
   hasTouchedQuestion: false
 }
 
@@ -121,8 +122,9 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
     case `${types.OBJECT_EXISTS}_${name}`:
       return {
         ...state,
-        answerErrorContent: 'Someone else has already validated this question.',
+        answerErrorContent: 'Something about this question has changed since you loaded the page. We couldn\'t save your answer.',
         saveFailed: true,
+        objectExists: true,
         ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
           ? updateCategoryCodedQuestion(state, action.payload.questionId, action.payload.selectedCategoryId, { hasMadePost: false, ...action.payload.object })
           : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: false, ...action.payload.object })
@@ -198,7 +200,7 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
       }
 
     case `${types.DISMISS_API_ALERT}_${name}`:
-      return { ...state, [action.errorType]: null }
+      return { ...state, [action.errorType]: null, objectExists: false }
 
     case `${types.ON_SHOW_PAGE_LOADER}_${name}`:
       return { ...state, showPageLoader: true }
