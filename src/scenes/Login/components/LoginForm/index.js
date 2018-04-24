@@ -20,7 +20,7 @@ let LoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, chil
 
   const formStyles = {
     width: 373,
-    height: 447,
+    //height: 447,
     display: 'flex',
     flexDirection: 'column'
   }
@@ -35,10 +35,8 @@ let LoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, chil
         <Row displayFlex style={{ justifyContent: 'center', alignItems: 'center' }}>
           {error && <Typography color="error" align="center">{error}</Typography>}
         </Row>
-        <Row displayFlex flex style={{ justifyContent: 'center' }}>
-          <Column style={{ padding: 16 }}>
-            <Button type="submit" color="accent" value="Login" disabled={pristine || submitting} />
-          </Column>
+        <Row displayFlex flex style={{ justifyContent: 'center', padding: 16 }}>
+          <Button type="submit" color="accent" value="Login" disabled={pristine || submitting} />
         </Row>
         <Divider />
         <Row displayFlex flex style={{ justifyContent: 'center' }}>

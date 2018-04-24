@@ -40,7 +40,6 @@ export class Login extends Component {
     this.props.history.push('/auth/sams-login')
   }
 
-
   render() {
     return (
       <Container column flex alignItems="center" justify="center" style={{ backgroundColor: '#f5f5f5' }}>
