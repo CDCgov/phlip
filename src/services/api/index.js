@@ -283,7 +283,6 @@ export default {
 
   // Export project data
   exportData(projectId, type) {
-    window.location.href = `${process.env.API_HOST}/exports/project/${projectId}/data`
+    return api.get(`/exports/project/${projectId}/data`, { params: { type } }).then(res => res.data)
   }
-
 }

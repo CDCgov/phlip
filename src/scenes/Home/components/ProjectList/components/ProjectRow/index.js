@@ -95,7 +95,7 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport, theme
           tooltipText="Export validated questions"
           placement="top-end"
           aria-label="Export validated questions"
-          onClick={() => onExport(project.id)}
+          onClick={() => onExport(project)}
           id={`export-validated-${project.id}`}>
           file_download
         </IconButton>{/*</TextLink>*/}
