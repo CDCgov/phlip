@@ -304,7 +304,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
 
     onApplyToAll = () => {
       this.onCloseApplyAllAlert()
-      this.props.actions.changeTouchedStatus()
+      this.onChangeTouchedStatus()
       this.props.actions.applyAnswerToAll(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
     }
 

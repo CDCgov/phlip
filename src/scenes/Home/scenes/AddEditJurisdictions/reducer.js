@@ -120,6 +120,7 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
 
     case types.ADD_PROJECT_JURISDICTION_FAIL:
     case types.UPDATE_PROJECT_JURISDICTION_FAIL:
+    case types.ADD_PRESET_JURISDICTION_FAIL:
       return {
         ...state,
         formError: action.payload,
