@@ -34,7 +34,8 @@ export const INITIAL_STATE = {
   isChangingQuestion: false,
   unsavedChanges: false,
   messageQueue: [],
-  saveFailed: false
+  saveFailed: false,
+  hasTouchedQuestion: false
 }
 
 const removeRequestsInQueue = (questionId, categoryId, currentQueue) => {
@@ -65,6 +66,12 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
           ...handleUpdateUserAnswers(state, action)
         },
         unsavedChanges: true
+      }
+
+    case `${types.CHANGE_TOUCHED_STATUS}_${name}`:
+      return {
+        ...state,
+        hasTouchedQuestion: !state.hasTouchedQuestion
       }
 
     case `${types.SAVE_USER_ANSWER_SUCCESS}_${name}`:
@@ -133,7 +140,8 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
       return {
         ...state,
         jurisdictionId: action.event,
-        jurisdiction: action.jurisdictionsList.find(jurisdiction => jurisdiction.id === action.event)
+        jurisdiction: action.jurisdictionsList.find(jurisdiction => jurisdiction.id === action.event),
+        hasTouchedQuestion: false
       }
 
     case `${types.GET_QUESTION_SUCCESS}_${name}`:
@@ -145,7 +153,8 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         questionChangeLoader: false,
         isChangingQuestion: false,
         unsavedChanges: false,
-        savedFailed: false
+        savedFailed: false,
+        hasTouchedQuestion: false
       }
 
     case `${types.ON_APPLY_ANSWER_TO_ALL}_${name}`:

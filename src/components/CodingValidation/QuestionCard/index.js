@@ -136,9 +136,10 @@ export class QuestionCard extends Component {
             : <Fragment>
               <Row displayFlex style={{ alignItems: 'center', height: 42, paddingRight: 15 }}>
                 <Row style={{ width: '100%' }}>
+                  {this.props.hasTouchedQuestion &&
                   <Typography type="caption" style={{ paddingLeft: 10, textAlign: 'center', color: '#757575' }}>
                     {this.props.saveFailed ? 'Save failed!' : this.state.isSaving ? 'Saving...' : 'All changes saved'}
-                  </Typography>
+                  </Typography>}
                 </Row>
                 <Row displayFlex style={{ marginLeft: this.getMargin() }}>
                   {this.props.question.questionType !== questionTypes.CATEGORY &&
@@ -204,7 +205,8 @@ const mapStateToProps = (state, ownProps) => {
     questionChangeLoader: pageState.questionChangeLoader || false,
     isChangingQuestion: pageState.isChangingQuestion || false,
     unsavedChanges: pageState.unsavedChanges || false,
-    saveFailed: pageState.saveFailed || false
+    saveFailed: pageState.saveFailed || false,
+    hasTouchedQuestion: pageState.hasTouchedQuestion || false
   }
 }
 

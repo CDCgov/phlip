@@ -86,6 +86,10 @@ export const actions = {
   addRequestToQueue: {
     type: types.ADD_REQUEST_TO_QUEUE,
     args: ['payload']
+  },
+  changeTouchedStatus: {
+    type: types.CHANGE_TOUCHED_STATUS,
+    args: []
   }
 }
 

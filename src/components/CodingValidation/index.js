@@ -199,6 +199,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
         this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, value
       )
 
+      this.onChangeTouchedStatus()
       this.onSaveCodedQuestion()
     }
 
@@ -231,6 +232,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
             this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
           )
       }
+      this.onChangeTouchedStatus()
       this.onSaveCodedQuestion()
     }
 
@@ -277,6 +279,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
 
     onClearAnswer = () => {
       this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+      this.onChangeTouchedStatus()
       this.onSaveCodedQuestion()
     }
 
@@ -291,10 +294,17 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       }
     }
 
+    onChangeTouchedStatus = () => {
+      if (!this.props.hasTouchedQuestion) {
+        this.props.actions.changeTouchedStatus()
+      }
+    }
+
     onCloseApplyAllAlert = () => this.setState({ applyAllAlertOpen: false })
 
     onApplyToAll = () => {
       this.onCloseApplyAllAlert()
+      this.props.actions.changeTouchedStatus()
       this.props.actions.applyAnswerToAll(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
     }
 
@@ -483,12 +493,12 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       isChangingQuestion: pageState.isChangingQuestion || false,
       selectedCategoryId: pageState.selectedCategoryId || null,
       userAnswers: pageState.userAnswers || {},
-      unsavedChanges: pageState.unsavedChanges || false
+      unsavedChanges: pageState.unsavedChanges || false,
+      hasTouchedQuestion: pageState.hasTouchedQuestion || false
     }
   }
 
   const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
-
   return connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CodingValidation))
 }
 
