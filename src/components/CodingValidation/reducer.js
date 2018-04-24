@@ -118,6 +118,16 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
           : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: false })
       }
 
+    case `${types.OBJECT_EXISTS}_${name}`:
+      return {
+        ...state,
+        answerErrorContent: 'Someone else has already validated this question.',
+        saveFailed: true,
+        ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
+          ? updateCategoryCodedQuestion(state, action.payload.questionId, action.payload.selectedCategoryId, { hasMadePost: false, ...action.payload.object })
+          : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: false, ...action.payload.object })
+      }
+
     case `${types.ON_CHANGE_PINCITE}_${name}`:
       return {
         ...state,

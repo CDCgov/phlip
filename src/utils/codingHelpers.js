@@ -3,7 +3,7 @@ import { checkIfAnswered, checkIfExists, checkIfCategoryAnswered } from 'utils/c
 import sortList from 'utils/sortList'
 import * as questionTypes from 'components/CodingValidation/constants'
 
-const initializeValues = question => {
+export const initializeValues = question => {
   const { codedAnswers, ...initializedQuestion } = {
     ...question.id ? { id: question.id } : {},
     ...question,

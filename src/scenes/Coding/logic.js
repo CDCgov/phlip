@@ -8,7 +8,8 @@ import {
   getNextQuestion,
   getPreviousQuestion,
   getSelectedQuestion,
-  initializeNextQuestion
+  initializeNextQuestion,
+  initializeValues
 } from 'utils/codingHelpers'
 import { normalize, sortList } from 'utils'
 import * as types from './actionTypes'
@@ -286,15 +287,26 @@ export const answerQuestionLogic = createLogic({
       })
       done()
     } catch (error) {
-      dispatch({
-        type: types.SAVE_USER_ANSWER_FAIL,
-        payload: {
-          error: 'Could not update answer',
-          isApplyAll: false,
-          selectedCategoryId: action.payload.selectedCategoryId,
-          questionId: action.payload.questionId
-        }
-      })
+      if (error.response.status === 303) {
+        dispatch({
+          type: types.OBJECT_EXISTS,
+          payload: {
+            selectedCategoryId: action.payload.selectedCategoryId,
+            questionId: action.payload.questionId,
+            object: initializeValues(error.response.data)
+          }
+        })
+      } else {
+        dispatch({
+          type: types.SAVE_USER_ANSWER_FAIL,
+          payload: {
+            error: 'Could not update answer',
+            isApplyAll: false,
+            selectedCategoryId: action.payload.selectedCategoryId,
+            questionId: action.payload.questionId
+          }
+        })
+      }
       done()
     }
   }

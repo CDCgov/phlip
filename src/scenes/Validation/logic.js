@@ -3,7 +3,7 @@ import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData } from 'react-sortable-tree'
 import {
   getFinalCodedObject, initializeUserAnswers, getSelectedQuestion,
-  getPreviousQuestion, getQuestionSelectedInNav, getNextQuestion, initializeNextQuestion
+  getPreviousQuestion, getQuestionSelectedInNav, getNextQuestion, initializeNextQuestion, initializeValues
 } from 'utils/codingHelpers'
 import { checkIfExists } from 'utils/codingSchemeHelpers'
 import { normalize, sortList } from 'utils'
@@ -370,15 +370,26 @@ export const validateQuestionLogic = createLogic({
       })
 
     } catch (error) {
-      dispatch({
-        type: types.SAVE_USER_ANSWER_FAIL,
-        payload: {
-          error: 'Could not update answer',
-          isApplyAll: false,
-          selectedCategoryId: action.payload.selectedCategoryId,
-          questionId: action.payload.questionId
-        }
-      })
+      if (error.response.status === 303) {
+        dispatch({
+          type: types.OBJECT_EXISTS,
+          payload: {
+            selectedCategoryId: action.payload.selectedCategoryId,
+            questionId: action.payload.questionId,
+            object: initializeValues(error.response.data)
+          }
+        })
+      } else {
+        dispatch({
+          type: types.SAVE_USER_ANSWER_FAIL,
+          payload: {
+            error: 'Could not update answer',
+            isApplyAll: false,
+            selectedCategoryId: action.payload.selectedCategoryId,
+            questionId: action.payload.questionId
+          }
+        })
+      }
     }
     done()
   }
