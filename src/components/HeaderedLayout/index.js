@@ -18,10 +18,14 @@ export class HeaderedLayout extends Component {
     this.helpPdfRef = element
   }
 
-  openHelpPdf = () => {
-    const data = api.getHelpPdf()
-    this.helpPdfRef.href = ''
-  }
+  openHelpPdf = async () => {
+    const data = await api.getHelpPdf()
+    const blob = new Blob([data], { type: 'application/pdf' })
+    const url = URL.createObjectURL(blob)
+    this.helpPdfRef.href = url
+    this.helpPdfRef.download = 'PHLIP-Help-Guide.pdf'
+    this.helpPdfRef.click()
+    window.URL.revokeObjectURL(url)  }
 
   render() {
     const { user, open, actions, children, padding, history, className } = this.props
