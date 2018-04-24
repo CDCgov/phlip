@@ -15,11 +15,14 @@ export const ExportDialog = ({ onClose, onChooseExport, open }) => {
       <Divider />
       <ModalContent style={{ minWidth: 400, padding: 0 }}>
         <List>
-          <ListItem button onClick={() => onChooseExport('stat')} style={{ paddingLeft: 25, paddingRight: 25 }}>
-            <ListItemText primary="Statistical Data" />
+          <ListItem button onClick={() => onChooseExport('numeric')} style={{ paddingLeft: 25, paddingRight: 25 }}>
+            <ListItemText primary="Coded Data - Numeric" />
           </ListItem>
-          <ListItem button onClick={() => onChooseExport('nonstat')} style={{ paddingLeft: 25, paddingRight: 25 }}>
-            <ListItemText primary="Non-statistical Data" />
+          <ListItem button onClick={() => onChooseExport('text')} style={{ paddingLeft: 25, paddingRight: 25 }}>
+            <ListItemText primary="Coded Data - Text" />
+          </ListItem>
+          <ListItem button onClick={() => onChooseExport('codebook')} style={{ paddingLeft: 25, paddingRight: 25 }}>
+            <ListItemText primary="Codebook" />
           </ListItem>
         </List>
       </ModalContent>
