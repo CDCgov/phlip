@@ -10,7 +10,8 @@ import Paper from 'material-ui/Paper'
 import { Manager, Target, Popper } from 'react-popper'
 import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
 
-const pathToPdf = `${process.env.API_HOST}/`
+const apiHost = process.env.API_HOST !== undefined ? process.env.API_HOST : '/api'
+const pathToPdf = `${apiHost}/`
 
 export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, onOpenAdminPage, onToggleMenu, avatar }) => {
   return (

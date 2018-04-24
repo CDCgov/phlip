@@ -169,9 +169,7 @@ module.exports = function makeConfig(env) {
       new webpack.DefinePlugin(env),
 
       new CopyWebpackPlugin([
-        {
-          from: paths.appPublic
-        }
+        { from: paths.appPublic }
       ]),
 
       new Dotenv()
