@@ -34,8 +34,8 @@ describe('Header -- AvatarMenu', () => {
 
   test('should hide `admin` option from menu if role is not admin', () => {
     const wrapper = setup({ role: 'Coordinator', open: true })
-    expect(wrapper.find('MenuList').find('MenuItem').length).toEqual(1)
-    expect(wrapper.find('MenuList').find('MenuItem').text()).toEqual('exit_to_appLogout')
+    expect(wrapper.find('MenuList').find('MenuItem').length).toEqual(2)
+    expect(wrapper.find('MenuList').find('MenuItem').at(0).text()).toEqual('exit_to_appLogout')
   })
 
   test('should open the menu when open is true', () => {
