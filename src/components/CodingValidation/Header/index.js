@@ -13,17 +13,13 @@ import { withTheme } from 'material-ui/styles'
 export const Header = props => {
   const {
     projectName, empty, projectId, jurisdictionsList, selectedJurisdiction, onJurisdictionChange,
-    currentJurisdiction, isValidation, history, pageTitle, theme
+    currentJurisdiction, onGoBack, pageTitle, theme
   } = props
 
   return (
     <Container alignItems="center" style={{ padding: '20px 27px' }}>
       <Column style={{ paddingRight: 5, display: 'flex' }}>
-        <IconButton
-          iconSize={30}
-          color="black"
-          onClick={() => history.goBack()}
-          aria-label="Go back">arrow_back</IconButton>
+        <IconButton iconSize={30} color="black" onClick={onGoBack} aria-label="Go back">arrow_back</IconButton>
       </Column>
       <Row displayFlex>
         <Typography type="title" style={{ alignSelf: 'center', paddingRight: 10 }}>{pageTitle}</Typography>

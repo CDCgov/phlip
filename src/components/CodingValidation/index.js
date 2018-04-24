@@ -101,7 +101,10 @@ export const withCodingValidation = (WrappedComponent, actions) => {
         showViews: false,
         navOpen: false,
         applyAllAlertOpen: false,
-        showSchemeError: false
+        showSchemeError: false,
+        nextQuestionProps: [],
+        stillSavingAlertOpen: false,
+        nextQuestionMethod: null
       }
 
       this.modalActions = [
@@ -117,6 +120,11 @@ export const withCodingValidation = (WrappedComponent, actions) => {
         }
       ]
 
+      this.stillSavingActions = [
+        { ...this.modalActions[0], onClick: this.onCancelStillSavingAlert },
+        { ...this.modalActions[1], onClick: this.onContinueStillSavingAlert }
+      ]
+
       this.saveFailedActions = [
         {
           value: 'Try Again',
@@ -124,9 +132,6 @@ export const withCodingValidation = (WrappedComponent, actions) => {
           onClick: this.onTryAgain
         }
       ]
-
-      this.onBeforeUnload = this.onBeforeUnload.bind(this)
-      this.unload = this.unload.bind(this)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -143,52 +148,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       }
     }
 
-    unload(e) {
-      const questionObj = getFinalCodedObject(this.props, { questionId: this.props.question.id })
-      const answerObject = {
-        questionId: this.props.question.id,
-        jurisdictionId: this.props.jurisdictionId,
-        userId: this.props.user.id,
-        projectId: this.props.projectId,
-        questionObj
-      }
-
-      if (questionObj.hasOwnProperty('id')) {
-        api.updateCodedQuestion({ ...answerObject })
-      } else {
-        api.answerCodedQuestion({ ...answerObject })
-      }
-
-      window.onunload = null
-    }
-
-    onBeforeUnload(e) {
-      const questionObj = getFinalCodedObject(this.props, { questionId: this.props.question.id })
-      const answerObject = {
-        questionId: this.props.question.id,
-        jurisdictionId: this.props.jurisdictionId,
-        userId: this.props.user.id,
-        projectId: this.props.projectId,
-        questionObj
-      }
-
-      if (questionObj.hasOwnProperty('id')) {
-        api.updateCodedQuestion({ ...answerObject })
-      } else {
-        api.answerCodedQuestion({ ...answerObject })
-      }
-
-      window.onbeforeunload = null
-    }
-
-    componentDidMount() {
-      window.onbeforeunload = this.onBeforeUnload
-      window.onunload = this.unload
-    }
-
     componentWillUnmount() {
-      window.onbeforeunload = null
-      window.onunload = null
       this.props.actions.onCloseScreen()
     }
 
@@ -197,18 +157,30 @@ export const withCodingValidation = (WrappedComponent, actions) => {
     }
 
     getNextQuestion = index => {
-      this.props.actions.getNextQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
-      this.onShowQuestionLoader()
+      if (this.props.unsavedChanges === true) {
+        this.onShowStillSavingAlert(index, this.props.actions.getNextQuestion)
+      } else {
+        this.props.actions.getNextQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
+        this.onShowQuestionLoader()
+      }
     }
 
     getPrevQuestion = index => {
-      this.props.actions.getPrevQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
-      this.onShowQuestionLoader()
+      if (this.props.unsavedChanges === true) {
+        this.onShowStillSavingAlert(index, this.props.actions.getPrevQuestion)
+      } else {
+        this.props.actions.getPrevQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
+        this.onShowQuestionLoader()
+      }
     }
 
     onQuestionSelectedInNav = item => {
-      this.props.actions.onQuestionSelectedInNav(item, this.props.projectId, this.props.jurisdictionId)
-      this.onShowQuestionLoader()
+      if (this.props.unsavedChanges === true) {
+        this.onShowStillSavingAlert(item, this.props.actions.onQuestionSelectedInNav)
+      } else {
+        this.props.actions.onQuestionSelectedInNav(item, this.props.projectId, this.props.jurisdictionId)
+        this.onShowQuestionLoader()
+      }
     }
 
     onShowQuestionLoader = () => {
@@ -276,9 +248,47 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       this.onCloseAlert()
     }
 
+    onShowStillSavingAlert = (question, method) => {
+      this.setState({
+        stillSavingAlertOpen: true,
+        nextQuestionProps: typeof question === 'object' ? [question] : [this.props.questionOrder[question], question],
+        nextQuestionMethod: { type: 'question', method: method }
+      })
+    }
+
+    onCancelStillSavingAlert = () => {
+      this.setState({
+        nextQuestionProps: [],
+        stillSavingAlertOpen: false,
+        nextQuestionMethod: {}
+      })
+    }
+
+    onContinueStillSavingAlert = () => {
+      if (this.state.nextQuestionMethod.type === 'question') {
+        this.state.nextQuestionMethod.method(...this.state.nextQuestionProps, this.props.projectId, this.props.jurisdictionId)
+        this.onShowQuestionLoader()
+      } else {
+        this.state.nextQuestionMethod.method()
+      }
+
+      this.onCancelStillSavingAlert()
+    }
+
     onClearAnswer = () => {
       this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
       this.onSaveCodedQuestion()
+    }
+
+    onGoBack = () => {
+      if (this.props.unsavedChanges === true) {
+        this.setState({
+          stillSavingAlertOpen: true,
+          nextQuestionMethod: { type: 'history', method: this.props.history.goBack }
+        })
+      } else {
+        this.props.history.goBack()
+      }
     }
 
     onCloseApplyAllAlert = () => this.setState({ applyAllAlertOpen: false })
@@ -364,6 +374,11 @@ export const withCodingValidation = (WrappedComponent, actions) => {
               You are applying your answer to ALL categories. Previously answered questions will be changed.
             </Typography>
           </Alert>
+          <Alert open={this.state.stillSavingAlertOpen} actions={this.stillSavingActions}>
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+              Your answer to this question is still being saved. If you continue, your changes might not be saved.
+            </Typography>
+          </Alert>
           <ApiErrorAlert
             open={this.props.answerErrorContent !== null}
             content={this.props.answerErrorContent}
@@ -396,6 +411,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
                 onJurisdictionChange={this.onJurisdictionChange}
                 pageTitle={capitalizeFirstLetter(this.props.page)}
                 currentJurisdiction={this.props.jurisdiction}
+                onGoBack={this.onGoBack}
                 empty={this.props.jurisdiction === null || this.props.questionOrder === null ||
                 this.props.questionOrder.length === 0}
               />
@@ -466,7 +482,8 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       showPageLoader: pageState.showPageLoader || false,
       isChangingQuestion: pageState.isChangingQuestion || false,
       selectedCategoryId: pageState.selectedCategoryId || null,
-      userAnswers: pageState.userAnswers || {}
+      userAnswers: pageState.userAnswers || {},
+      unsavedChanges: pageState.unsavedChanges || false
     }
   }
 

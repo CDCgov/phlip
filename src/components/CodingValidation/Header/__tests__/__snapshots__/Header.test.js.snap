@@ -31,7 +31,6 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       aria-label="Go back"
       color="black"
       iconSize={30}
-      onClick={[Function]}
       tooltipText=""
     >
       arrow_back

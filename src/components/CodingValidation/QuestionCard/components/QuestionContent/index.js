@@ -139,16 +139,14 @@ export const QuestionContent = props => {
       {question.isCategoryQuestion &&
         <Fragment>
           <Divider />
-          <Row
-            displayFlex
+          <Row displayFlex
             style={{
               ...answerPadding,
               paddingBottom: 20,
               paddingTop: 20,
-              paddingRight: 0,
+              paddingRight: 15,
               justifyContent: 'flex-end'
-            }}
-          >
+            }}>
             <Button onClick={onOpenAlert} color="accent" value="Apply Answer to all categories" />
           </Row>
         </Fragment>}
