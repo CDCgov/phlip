@@ -3,7 +3,7 @@ import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData } from 'react-sortable-tree'
 import {
   getFinalCodedObject, initializeUserAnswers, getSelectedQuestion, checkIfExists,
-  getPreviousQuestion, getQuestionSelectedInNav, getNextQuestion, initializeNextQuestion, initializeValues
+  initializeNextQuestion, initializeValues
 } from 'utils/codingHelpers'
 import { normalize, sortList } from 'utils'
 import * as types from './actionTypes'
@@ -228,53 +228,6 @@ export const getQuestionLogicValidation = createLogic({
       currentIndex,
       errors: { ...errors, ...coderErrors }
     }
-  }
-})
-
-export const applyAllAnswers = createLogic({
-  type: types.ON_APPLY_ANSWER_TO_ALL,
-  async process({ getState, action, api }, dispatch, done) {
-    const validatorId = getState().data.user.currentUser.id
-    const validationState = getState().scenes.validation
-    const allCategoryObjects = Object.values(validationState.userAnswers[action.questionId])
-
-    const answerObject = {
-      questionId: action.questionId,
-      jurisdictionId: action.jurisdictionId,
-      projectId: action.projectId
-    }
-
-    try {
-      for (let category of allCategoryObjects) {
-        let respCodedQuestion = {}
-        const question = {
-          ...getFinalCodedObject(validationState, action, category.categoryId),
-          validatedBy: validatorId
-        }
-
-        if (category.id !== undefined) {
-          respCodedQuestion = await api.updateValidatedQuestion({ ...answerObject, questionObj: question })
-        } else {
-          const { id, ...questionObj } = question
-          respCodedQuestion = await api.answerValidatedQuestion({ ...answerObject, questionObj })
-        }
-
-        dispatch({
-          type: types.SAVE_USER_ANSWER_SUCCESS,
-          payload: { ...respCodedQuestion, questionId: action.questionId, selectedCategoryId: category.categoryId }
-        })
-      }
-      dispatch({
-        type: types.UPDATE_EDITED_FIELDS,
-        projectId: action.projectId
-      })
-    } catch (error) {
-      dispatch({
-        type: types.SAVE_USER_ANSWER_FAIL,
-        payload: { error: 'Could not update answer', isApplyAll: true }
-      })
-    }
-    done()
   }
 })
 
@@ -516,6 +469,5 @@ export default [
   validateQuestionLogic,
   getQuestionLogicValidation,
   getValidationOutlineLogic,
-  applyAllAnswers,
   clearFlagLogic
 ]

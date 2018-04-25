@@ -29,7 +29,7 @@ export const actions = {
   },
   applyAnswerToAll: {
     type: types.ON_APPLY_ANSWER_TO_ALL,
-    args: ['projectId', 'jurisdictionId', 'questionId']
+    args: ['projectId', 'jurisdictionId', 'questionId', 'page']
   },
   updateUserAnswer: {
     type: types.UPDATE_USER_ANSWER,

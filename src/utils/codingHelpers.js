@@ -467,14 +467,15 @@ const deleteAnswerIds = (answer) => {
 /*
  Used to retrieve the request object body for updating a question answer, pincite, comment, flag, etc.
  */
-export const getFinalCodedObject = (state, action, selectedCategoryId = state.selectedCategoryId) => {
+export const getFinalCodedObject = (state, action, isValidation, selectedCategoryId = state.selectedCategoryId) => {
   const { ...questionObject } = state.scheme.byId[action.questionId].isCategoryQuestion
     ? state.userAnswers[action.questionId][selectedCategoryId]
     : state.userAnswers[action.questionId]
 
   const { answers, schemeQuestionId, ...answerObject } = {
     ...questionObject,
-    codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds)
+    codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds),
+    ...isValidation ? { validatedBy: action.userId } : {}
   }
 
   return answerObject
