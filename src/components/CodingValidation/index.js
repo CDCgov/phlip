@@ -160,7 +160,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       if (this.props.unsavedChanges === true) {
         this.onShowStillSavingAlert(index, this.props.actions.getNextQuestion)
       } else {
-        this.props.actions.getNextQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
+        this.props.actions.getNextQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId, this.props.page)
         this.onShowQuestionLoader()
       }
     }
@@ -169,7 +169,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       if (this.props.unsavedChanges === true) {
         this.onShowStillSavingAlert(index, this.props.actions.getPrevQuestion)
       } else {
-        this.props.actions.getPrevQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
+        this.props.actions.getPrevQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId, this.props.page)
         this.onShowQuestionLoader()
       }
     }
@@ -178,7 +178,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       if (this.props.unsavedChanges === true) {
         this.onShowStillSavingAlert(item, this.props.actions.onQuestionSelectedInNav)
       } else {
-        this.props.actions.onQuestionSelectedInNav(item, this.props.projectId, this.props.jurisdictionId)
+        this.props.actions.onQuestionSelectedInNav(item, this.props.projectId, this.props.jurisdictionId, this.props.page)
         this.onShowQuestionLoader()
       }
     }
@@ -268,7 +268,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
 
     onContinueStillSavingAlert = () => {
       if (this.state.nextQuestionMethod.type === 'question') {
-        this.state.nextQuestionMethod.method(...this.state.nextQuestionProps, this.props.projectId, this.props.jurisdictionId)
+        this.state.nextQuestionMethod.method(...this.state.nextQuestionProps, this.props.projectId, this.props.jurisdictionId, this.props.page)
         this.onShowQuestionLoader()
       } else {
         this.state.nextQuestionMethod.method()

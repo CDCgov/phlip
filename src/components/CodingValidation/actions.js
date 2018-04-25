@@ -17,15 +17,15 @@ const makeActionCreator = (type, scene, ...argNames) => {
 export const actions = {
   getNextQuestion: {
     type: types.GET_NEXT_QUESTION,
-    args: ['id', 'newIndex', 'projectId', 'jurisdictionId' ]
+    args: ['id', 'newIndex', 'projectId', 'jurisdictionId', 'page']
   },
   getPrevQuestion: {
     type: types.GET_PREV_QUESTION,
-    args: ['id', 'newIndex', 'projectId', 'jurisdictionId' ]
+    args: ['id', 'newIndex', 'projectId', 'jurisdictionId', 'page']
   },
   onQuestionSelectedInNav: {
     type: types.ON_QUESTION_SELECTED_IN_NAV,
-    args: ['question', 'projectId', 'jurisdictionId']
+    args: ['question', 'projectId', 'jurisdictionId', 'page']
   },
   applyAnswerToAll: {
     type: types.ON_APPLY_ANSWER_TO_ALL,

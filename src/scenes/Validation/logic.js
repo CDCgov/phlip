@@ -214,23 +214,12 @@ export const getQuestionLogicValidation = createLogic({
   latest: true,
   async process({ getState, action, api }) {
     const state = getState().scenes.validation
-    let questionInfo = {}
-    const userId = getState().data.user.currentUser.id
-
-    // How did the user navigate to the currently selected question
-    switch (action.type) {
-      case types.ON_QUESTION_SELECTED_IN_NAV:
-        questionInfo = getQuestionSelectedInNav(state, action)
-        break
-      case types.GET_NEXT_QUESTION:
-        questionInfo = getNextQuestion(state, action)
-        break
-      case types.GET_PREV_QUESTION:
-        questionInfo = getPreviousQuestion(state, action)
-        break
-    }
-
-    const { updatedState, question, currentIndex, errors } = await getSelectedQuestion(state, action, api, userId, questionInfo, api.getUserValidatedQuestion)
+    const {
+      updatedState,
+      question,
+      currentIndex,
+      errors
+    } = await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getUserValidatedQuestion)
     const { codedQuestionObj, coderErrors } = await getCoderInformation({ api, action, questionId: question.id })
 
     return {

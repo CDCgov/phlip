@@ -86,6 +86,7 @@ export const getOutlineLogic = createLogic({
   }
 })
 
+/* Process of getting the next question, calls api to get updated scheme question, and coded answer for that question */
 export const getQuestionLogic = createLogic({
   type: [types.ON_QUESTION_SELECTED_IN_NAV, types.GET_NEXT_QUESTION, types.GET_PREV_QUESTION],
   processOptions: {
@@ -96,23 +97,7 @@ export const getQuestionLogic = createLogic({
   latest: true,
   async process({ getState, action, api }) {
     const state = getState().scenes.coding
-    const userId = getState().data.user.currentUser.id
-    let questionInfo = {}
-
-    // How did the user navigate to the currently selected question
-    switch (action.type) {
-      case types.ON_QUESTION_SELECTED_IN_NAV:
-        questionInfo = getQuestionSelectedInNav(state, action)
-        break
-      case types.GET_NEXT_QUESTION:
-        questionInfo = getNextQuestion(state, action)
-        break
-      case types.GET_PREV_QUESTION:
-        questionInfo = getPreviousQuestion(state, action)
-        break
-    }
-
-    return await getSelectedQuestion(state, action, api, userId, questionInfo, api.getCodedQuestion)
+    return await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getCodedQuestion)
   }
 })
 
