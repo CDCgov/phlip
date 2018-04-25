@@ -1,5 +1,7 @@
 import { createLogic } from 'redux-logic'
 import addEditQuestionLogic from './scenes/AddEditQuestion/logic'
+import { removeNodeAtPath } from 'react-sortable-tree'
+import { questionsToOutline, getNodeKey } from 'scenes/CodingScheme/reducer'
 import * as types from './actionTypes'
 
 const getSchemeLogic = createLogic({
@@ -104,18 +106,29 @@ const reorderSchemeLogic = createLogic({
 
 const deleteQuestionLogic = createLogic({
   type: types.DELETE_QUESTION_REQUEST,
-  latest: true,
-  async process({ api, action }, dispatch, done) {
+  async process({ api, action, getState }, dispatch, done) {
     try {
       const response = await api.deleteQuestion(action.projectId, action.questionId)
+      const updatedQuestions = removeNodeAtPath({
+        treeData: getState().scenes.codingScheme.questions,
+        path: action.path,
+        getNodeKey
+      })
+      const updatedOutline = questionsToOutline(updatedQuestions)
+
       dispatch({
         type: types.DELETE_QUESITON_SUCCESS,
         payload: {
-          deletededQuestion: action.questionId,
-          path: action.path,
-          response
+          updatedQuestions,
+          updatedOutline
         }
       })
+
+      dispatch({
+        type: types.REORDER_SCHEME_REQUEST,
+        projectId: action.projectId
+      })
+
     } catch (error) {
       dispatch({
         type: types.DELETE_QUESTION_FAIL,
