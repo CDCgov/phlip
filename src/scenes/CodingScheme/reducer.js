@@ -25,7 +25,7 @@ const INITIAL_STATE = {
   lockedAlert: null
 }
 
-const questionsToOutline = questions => {
+export const questionsToOutline = questions => {
   const outline = {}
 
   // Get the root questions information
@@ -82,7 +82,7 @@ const sortQuestions = questions => {
   return sortList(sortedChildren, 'positionInParent', 'asc')
 }
 
-const getNodeKey = ({ node, treeIndex }) => {
+export const getNodeKey = ({ node, treeIndex }) => {
   return treeIndex
 }
 
@@ -268,15 +268,10 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.DELETE_QUESITON_SUCCESS:
-      const updatedTreeAfterDeletion = removeNodeAtPath({
-        treeData: state.questions,
-        path: action.payload.path,
-        getNodeKey
-      })
       return {
         ...state,
-        questions: updatedTreeAfterDeletion,
-        outline: questionsToOutline(updatedTreeAfterDeletion),
+        questions: action.payload.updatedQuestions,
+        outline: action.payload.updatedOutline,
         empty: false
       }
 
