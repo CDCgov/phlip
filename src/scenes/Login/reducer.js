@@ -27,7 +27,7 @@ const loginReducer = (state = INITIAL_STATE, action) => {
     case types.CHECK_PIV_USER_FAIL:
       return {
         ...state,
-        pivError: 'Login failed. Please contact administrator.'
+        pivError: 'Login failed. Please contact your administrator.'
       }
 
     case types.LOGIN_USER_REQUEST:
