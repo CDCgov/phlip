@@ -146,97 +146,6 @@ export const sendMessageInQueue = createLogic({
   }
 })
 
-export const answerQuestionLogic = createLogic({
-  type: types.SAVE_USER_ANSWER_REQUEST,
-  debounce: 350,
-  validate({ getState, action }, allow, reject) {
-    const state = getState().scenes.coding
-    const userId = getState().data.user.currentUser.id
-    const questionObj = getFinalCodedObject(state, action, action.selectedCategoryId)
-    const answerObject = {
-      questionId: action.questionId,
-      jurisdictionId: action.jurisdictionId,
-      userId,
-      projectId: action.projectId,
-      questionObj
-    }
-
-    if (state.unsavedChanges === true) {
-      if (questionObj.isNewCodedQuestion === true && questionObj.hasMadePost === true &&
-        !questionObj.hasOwnProperty('id')) {
-        reject({ type: types.ADD_REQUEST_TO_QUEUE, payload: answerObject })
-      } else {
-        allow({ ...action, payload: { ...answerObject, selectedCategoryId: action.selectedCategoryId } })
-      }
-    } else {
-      reject()
-    }
-  },
-  async process({ getState, action, api }, dispatch, done) {
-    let respCodedQuestion = {}
-
-    try {
-      if (action.payload.questionObj.hasOwnProperty('id')) {
-        respCodedQuestion = await api.updateCodedQuestion({ ...action.payload })
-
-        // Remove any pending requests from the queue because this is the latest one and has an id
-        dispatch({
-          type: types.REMOVE_REQUEST_FROM_QUEUE,
-          payload: { questionId: action.payload.questionId, categoryId: action.payload.selectedCategoryId }
-        })
-      } else {
-        respCodedQuestion = await api.answerCodedQuestion({ ...action.payload })
-      }
-
-      dispatch({
-        type: types.SAVE_USER_ANSWER_SUCCESS,
-        payload: {
-          ...respCodedQuestion,
-          selectedCategoryId: action.payload.selectedCategoryId,
-          questionId: action.payload.questionId
-        }
-      })
-
-      dispatch({
-        type: types.SEND_QUEUE_REQUESTS,
-        payload: {
-          selectedCategoryId: action.payload.selectedCategoryId,
-          questionId: action.payload.questionId,
-          id: respCodedQuestion.id
-        }
-      })
-
-      dispatch({
-        type: types.UPDATE_EDITED_FIELDS,
-        projectId: action.payload.projectId
-      })
-      done()
-    } catch (error) {
-      if (error.response.status === 303) {
-        dispatch({
-          type: types.OBJECT_EXISTS,
-          payload: {
-            selectedCategoryId: action.payload.selectedCategoryId,
-            questionId: action.payload.questionId,
-            object: initializeValues(error.response.data)
-          }
-        })
-      } else {
-        dispatch({
-          type: types.SAVE_USER_ANSWER_FAIL,
-          payload: {
-            error: 'Could not update answer',
-            isApplyAll: false,
-            selectedCategoryId: action.payload.selectedCategoryId,
-            questionId: action.payload.questionId
-          }
-        })
-      }
-      done()
-    }
-  }
-})
-
 export const getUserCodedQuestionsLogic = createLogic({
   type: types.GET_USER_CODED_QUESTIONS_REQUEST,
   async process({ action, api, getState }, dispatch, done) {
@@ -334,7 +243,6 @@ export default [
   getOutlineLogic,
   getQuestionLogic,
   getUserCodedQuestionsLogic,
-  answerQuestionLogic,
   sendMessageInQueue,
   saveRedFlagLogic
 ]

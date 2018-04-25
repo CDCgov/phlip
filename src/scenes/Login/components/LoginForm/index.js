@@ -30,7 +30,7 @@ let LoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, pivE
       <Container column alignItems="center" justify="center" style={headerStyles}>
         <Logo height="auto" width={261} />
       </Container>
-      {/*<form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         {children}
         <Row displayFlex style={{ justifyContent: 'center', alignItems: 'center' }}>
           {error && <Typography color="error" align="center">{error}</Typography>}
@@ -40,7 +40,7 @@ let LoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, pivE
           <Button type="submit" color="accent" value="Login" disabled={pristine || submitting} />
         </Row>
         <Divider />
-      </form>*/}
+      </form>
       <Container column style={{ padding: 30 }}>
         <Row displayFlex style={{ justifyContent: 'center', alignItems: 'center' }}>
           <Typography>

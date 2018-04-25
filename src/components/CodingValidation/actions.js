@@ -81,11 +81,11 @@ export const actions = {
   },
   saveUserAnswerRequest: {
     type: types.SAVE_USER_ANSWER_REQUEST,
-    args: ['projectId', 'jurisdictionId', 'questionId', 'selectedCategoryId']
+    args: ['projectId', 'jurisdictionId', 'questionId', 'selectedCategoryId', 'page']
   },
   addRequestToQueue: {
     type: types.ADD_REQUEST_TO_QUEUE,
-    args: ['payload']
+    args: ['payload', 'page']
   },
   changeTouchedStatus: {
     type: types.CHANGE_TOUCHED_STATUS,

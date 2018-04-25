@@ -205,7 +205,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
      * This actually dispatches the redux action that calls the api to save the question data
      */
     onSaveCodedQuestion = () => {
-      this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.selectedCategoryId)
+      this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.selectedCategoryId, this.props.page)
     }
 
     /**

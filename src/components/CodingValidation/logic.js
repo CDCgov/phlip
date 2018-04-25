@@ -67,6 +67,101 @@ const getQuestionLogic = createLogic({
   }
 })
 
+const answerQuestionLogic = createLogic({
+  type: [codingTypes.SAVE_USER_ANSWER_REQUEST, valTypes.SAVE_USER_ANSWER_REQUEST],
+  debounce: 350,
+  validate({ getState, action, api }, allow, reject) {
+    const state = getState().scenes[action.page]
+    const userId = getState().data.user.currentUser.id
+    const apiMethods = action.page === 'validation'
+      ? { create: api.answerValidatedQuestion, update: api.updateValidatedQuestion }
+      : { create: api.answerCodedQuestion, update: api.updateCodedQuestion }
+
+    const questionObj = getFinalCodedObject(state, { ...action, userId }, action.page === 'validation', action.selectedCategoryId)
+
+    const answerObject = {
+      questionId: action.questionId,
+      jurisdictionId: action.jurisdictionId,
+      projectId: action.projectId,
+      userId,
+      questionObj
+    }
+
+    if (state.unsavedChanges === true) {
+      if (questionObj.isNewCodedQuestion === true && questionObj.hasMadePost === true &&
+        !questionObj.hasOwnProperty('id')) {
+        reject({ type: `${commonTypes.ADD_REQUEST_TO_QUEUE}_${action.page.toUpperCase()}`, payload: answerObject })
+      } else {
+        allow({ ...action, payload: { ...answerObject, selectedCategoryId: action.selectedCategoryId }, apiMethods })
+      }
+    } else {
+      reject()
+    }
+  },
+  async process({ getState, action, api }, dispatch, done) {
+    let respCodedQuestion = {}
+
+    try {
+      if (action.payload.questionObj.hasOwnProperty('id')) {
+        respCodedQuestion = await action.apiMethods.update({ ...action.payload })
+
+        // Remove any pending requests from the queue because this is the latest one and has an id
+        dispatch({
+          type: `${commonTypes.REMOVE_REQUEST_FROM_QUEUE}_${action.page.toUpperCase()}`,
+          payload: { questionId: action.payload.questionId, categoryId: action.payload.selectedCategoryId }
+        })
+      } else {
+        respCodedQuestion = await action.apiMethods.create({ ...action.payload })
+      }
+
+      dispatch({
+        type: `${commonTypes.SAVE_USER_ANSWER_SUCCESS}_${action.page.toUpperCase()}`,
+        payload: {
+          ...respCodedQuestion,
+          selectedCategoryId: action.payload.selectedCategoryId,
+          questionId: action.payload.questionId
+        }
+      })
+
+      dispatch({
+        type: `${commonTypes.SEND_QUEUE_REQUESTS}_${action.page.toUpperCase()}`,
+        payload: {
+          selectedCategoryId: action.payload.selectedCategoryId,
+          questionId: action.payload.questionId,
+          id: respCodedQuestion.id
+        }
+      })
+
+      dispatch({
+        type: commonTypes.UPDATE_EDITED_FIELDS,
+        projectId: action.payload.projectId
+      })
+    } catch (error) {
+      if (error.response.status === 303) {
+        dispatch({
+          type: `${commonTypes.OBJECT_EXISTS}_${action.page.toUpperCase()}`,
+          payload: {
+            selectedCategoryId: action.payload.selectedCategoryId,
+            questionId: action.payload.questionId,
+            object: initializeValues(error.response.data)
+          }
+        })
+      } else {
+        dispatch({
+          type: `${commonTypes.SAVE_USER_ANSWER_FAIL}_${action.page.toUpperCase()}`,
+          payload: {
+            error: 'Could not update answer',
+            isApplyAll: false,
+            selectedCategoryId: action.payload.selectedCategoryId,
+            questionId: action.payload.questionId
+          }
+        })
+      }
+    }
+    done()
+  }
+})
+
 const applyAnswerToAllLogic = createLogic({
   type: [codingTypes.ON_APPLY_ANSWER_TO_ALL, valTypes.ON_APPLY_ANSWER_TO_ALL],
   transform({ getState, action, api }, next) {
@@ -124,4 +219,4 @@ const applyAnswerToAllLogic = createLogic({
   }
 })
 
-export default [outlineLogic, getQuestionLogic, applyAnswerToAllLogic]
+export default [outlineLogic, getQuestionLogic, answerQuestionLogic, applyAnswerToAllLogic]
