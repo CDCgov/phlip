@@ -53,6 +53,7 @@ let LoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, pivE
             <Button href={process.env.APP_SAML_REQUEST_URL} type="button" color="accent" value="PIV Login" />
           </Column>
         </Row>
+        {pivError && <Typography color="error" align="center">{pivError}</Typography>}
       </Container>
     </Paper>
   )
