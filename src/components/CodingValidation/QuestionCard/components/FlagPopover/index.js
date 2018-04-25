@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Container, {  Row } from 'components/Layout'
+import Container, { Row } from 'components/Layout'
 import RadioGroup from 'components/SelectionControls/RadioGroup'
 import SimpleInput from 'components/SimpleInput'
 import Button from 'components/Button'
@@ -11,7 +11,9 @@ import Table from 'components/Table'
 import TableRow from 'components/TableRow'
 import TableCell from 'components/TableCell'
 import Popover from './components/Popover'
-import { Flag, Report } from 'mdi-material-ui'
+import { Flag, AlertOctagon } from 'mdi-material-ui'
+import styles from '../../card-styles.scss'
+import classNames from 'classnames'
 
 const getFlagText = (color, text, disabled) => (
   <Row displayFlex style={{ alignItems: 'center' }}>
@@ -21,7 +23,6 @@ const getFlagText = (color, text, disabled) => (
 )
 
 const checkForRedFlag = (questionFlags, user) => questionFlags.filter(flag => flag.raisedBy.userId === user.id)
-
 const redFlagColor = '#D50000'
 
 export class FlagPopover extends Component {
@@ -207,13 +208,22 @@ export class FlagPopover extends Component {
     return (
       <Container style={{ width: 'unset', height: 24 }}>
         <Popover
-          title="Stop Coding This Question" open={this.state.redFlagOpen} target={{
-          icon: 'report',
-          color: this.props.questionFlags.length > 0 ? redFlagColor : '#757575',
-          style: { paddingRight: 15, paddingLeft: 15 },
-          tooltip: 'Stop coding this question',
-          id: 'stop-coding-question'
-        }} onOpen={this.onOpenRedPopover} onClose={this.onCloseRedPopover}>
+          title="Stop Coding This Question"
+          open={this.state.redFlagOpen}
+          target={{
+            icon: <AlertOctagon
+              className={
+                classNames({
+                  [styles.icon]: this.props.questionFlags.length === 0,
+                  [styles.stopIconFlag]: this.props.questionFlags.length > 0
+                })
+              } />,
+            style: { paddingRight: 15, paddingLeft: 15 },
+            tooltip: 'Stop coding this question',
+            id: 'stop-coding-question'
+          }}
+          onOpen={this.onOpenRedPopover}
+          onClose={this.onCloseRedPopover}>
           <Container column style={{ minWidth: 450, minHeight: 200, alignItems: 'center', paddingTop: 10 }}>
             {(this.props.questionFlags.length > 0 && !this.state.inEditMode) &&
             <Table style={{ width: '90%', width: 580, margin: '10px 16px' }}>
@@ -284,7 +294,12 @@ export class FlagPopover extends Component {
           title="Flags"
           open={this.state.otherFlagOpen}
           target={{
-            icon: <Flag />,
+            icon: <Flag
+              className={classNames({
+                [styles.icon]: this.props.userFlag.type === 0,
+                [styles.greenFlagIcon]: this.props.userFlag.type === 1,
+                [styles.yellowFlagIcon]: this.props.userFlag.type === 2
+              })} />,
             color: this.props.userFlag.type !== 0 ? this.userFlagColors[this.props.userFlag.type].color : '#757575',
             tooltip: 'Flag this question',
             id: 'flag-question'

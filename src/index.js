@@ -10,7 +10,7 @@ const isIE = () => {
 }
 
 if (isIE()) {
-  window.alert('This application will not work in Internet Explorer. Please use another web browser such as Google Chrome.')
+  window.alert('This application will not work in Internet Explorer. Please use Google Chrome.')
 } else {
   render(<App />, document.getElementById('root'))
 }

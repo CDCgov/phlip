@@ -20,7 +20,14 @@ const styles = theme => ({
 const Tabs = ({ tabs, selectedTab, onChangeTab, children, classes, theme }) => {
   return (
     <div className={classes.root}>
-      <AppBar position="static" style={{ backgroundColor: theme.palette.secondary.tabs, color: theme.palette.secondary.main }} elevation={0}>
+      <AppBar
+        position="static"
+        style={{
+          backgroundColor: theme.palette.secondary.tabs,
+          color: theme.palette.secondary.main,
+          zIndex: 'unset'
+        }}
+        elevation={0}>
         <MuiTabs
           value={selectedTab}
           onChange={onChangeTab}

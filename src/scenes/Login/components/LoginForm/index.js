@@ -10,7 +10,7 @@ import { reduxForm } from 'redux-form'
 import validate from './validate'
 import Divider from 'material-ui/Divider'
 
-let LoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, children }) => {
+let LoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, pivError, children }) => {
   const bgColor = theme.palette.primary.main
 
   const headerStyles = {
@@ -19,7 +19,7 @@ let LoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, chil
   }
 
   const formStyles = {
-    width: 373,
+    width: 350,
     //height: 447,
     display: 'flex',
     flexDirection: 'column'
@@ -30,21 +30,30 @@ let LoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, chil
       <Container column alignItems="center" justify="center" style={headerStyles}>
         <Logo height="auto" width={261} />
       </Container>
-      <form onSubmit={handleSubmit}>
+      {/*<form onSubmit={handleSubmit}>
         {children}
         <Row displayFlex style={{ justifyContent: 'center', alignItems: 'center' }}>
           {error && <Typography color="error" align="center">{error}</Typography>}
+          {pivError && <Typography color="error" align="center">{pivError}</Typography>}
         </Row>
         <Row displayFlex flex style={{ justifyContent: 'center', padding: 16 }}>
           <Button type="submit" color="accent" value="Login" disabled={pristine || submitting} />
         </Row>
         <Divider />
-        <Row displayFlex flex style={{ justifyContent: 'center' }}>
+      </form>*/}
+      <Container column style={{ padding: 30 }}>
+        <Row displayFlex style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <Typography>
+            You must be registered with SAMS and required to sign in with your CDC account below, otherwise
+            you will receive a sign in error.
+          </Typography>
+        </Row>
+        <Row displayFlex flex style={{ justifyContent: 'center', paddingTop: 20 }}>
           <Column style={{ padding: 16 }}>
             <Button href={process.env.APP_SAML_REQUEST_URL} type="button" color="accent" value="PIV Login" />
           </Column>
         </Row>
-      </form>
+      </Container>
     </Paper>
   )
 }
