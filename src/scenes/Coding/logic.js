@@ -83,7 +83,7 @@ export const getOutlineLogic = createLogic({
   }
 })
 
-/* Process of getting the next question, calls api to get updated scheme question, and coded answer for that question */
+/*/* Process of getting the next question, calls api to get updated scheme question, and coded answer for that question */
 export const getQuestionLogic = createLogic({
   type: [types.ON_QUESTION_SELECTED_IN_NAV, types.GET_NEXT_QUESTION, types.GET_PREV_QUESTION],
   processOptions: {
@@ -98,7 +98,7 @@ export const getQuestionLogic = createLogic({
   }
 })
 
-export const sendMessageInQueue = createLogic({
+/*export const sendMessageInQueue = createLogic({
   type: types.SEND_QUEUE_REQUESTS,
   validate({ getState, action }, allow, reject) {
     const messageQueue = getState().scenes.coding.messageQueue
@@ -144,7 +144,7 @@ export const sendMessageInQueue = createLogic({
     }
     done()
   }
-})
+})*/
 
 export const getUserCodedQuestionsLogic = createLogic({
   type: types.GET_USER_CODED_QUESTIONS_REQUEST,

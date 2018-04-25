@@ -129,7 +129,8 @@ const answerQuestionLogic = createLogic({
           selectedCategoryId: action.payload.selectedCategoryId,
           questionId: action.payload.questionId,
           id: respCodedQuestion.id
-        }
+        },
+        page: action.page
       })
 
       dispatch({
@@ -219,4 +220,52 @@ const applyAnswerToAllLogic = createLogic({
   }
 })
 
-export default [outlineLogic, getQuestionLogic, answerQuestionLogic, applyAnswerToAllLogic]
+const sendMessageLogic = createLogic({
+  type: [codingTypes.SEND_QUEUE_REQUESTS, valTypes.SEND_QUEUE_REQUESTS],
+  validate({ getState, action }, allow, reject) {
+    const messageQueue = getState().scenes[action.page].messageQueue
+    const messageToSend = messageQueue.find(message => {
+      if (message.hasOwnProperty('categoryId')) {
+        return message.questionId === action.payload.questionId && action.payload.selectedCategoryId ===
+          message.categoryId
+      } else {
+        return message.questionId === action.payload.questionId
+      }
+    })
+    if (messageQueue.length > 0 && messageToSend !== undefined) {
+      allow({ ...action, message: messageToSend })
+    } else {
+      reject()
+    }
+  },
+  async process({ getState, action, api }, dispatch, done) {
+    try {
+      const respCodedQuestion = await api.updateCodedQuestion({
+        ...action.message,
+        questionObj: { ...action.message.questionObj, id: action.payload.id }
+      })
+
+      dispatch({
+        type: `${commonTypes.SAVE_USER_ANSWER_SUCCESS}_${action.page.toUpperCase()}`,
+        payload: {
+          ...respCodedQuestion,
+          questionId: action.payload.questionId,
+          selectedCategoryId: action.payload.selectedCategoryId
+        }
+      })
+
+      dispatch({
+        type: `${commonTypes.REMOVE_REQUEST_FROM_QUEUE}_${action.page.toUpperCase()}`,
+        payload: { questionId: action.payload.questionId, categoryId: action.payload.selectedCategoryId }
+      })
+    } catch (e) {
+      dispatch({
+        type: `${commonTypes.SAVE_USER_ANSWER_FAIL}_${action.page.toUpperCase()}`,
+        payload: { error: 'Could not update answer', isApplyAll: false }
+      })
+    }
+    done()
+  }
+})
+
+export default [outlineLogic, getQuestionLogic, answerQuestionLogic, applyAnswerToAllLogic, sendMessageLogic]
