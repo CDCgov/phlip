@@ -23,7 +23,7 @@ export const Popover = props => {
             tooltipText={target.tooltip}
             aria-label={target.tooltip}
             id={target.id}
-            color={open ? 'secondary' : target.color}
+            color={target.color}
             style={target.style}
             onClick={onOpen}>
             {target.icon}

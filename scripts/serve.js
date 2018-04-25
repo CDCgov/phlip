@@ -78,6 +78,11 @@ if (IS_PRODUCTION) {
     }
     console.log(chalk.cyan(`Starting the produciton server on ${APP_HOST}:${HTTP_APP_PORT}...`))
   })
+
+  http.createServer(function (req, res) {
+    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url })
+    res.end()
+  }).listen(80)
 } else {
   app.use('/api', proxy({ target: APP_API_URL }))
   app.use('/', express.static('./dist/index.html'))

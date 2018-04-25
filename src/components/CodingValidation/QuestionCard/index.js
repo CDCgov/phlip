@@ -149,7 +149,7 @@ export class QuestionCard extends Component {
                     tooltipText="Clear answer"
                     id="clear-answer"
                     style={{ height: 24 }}>
-                    {!this.props.disableAll && <Broom className={styles.sweep} aria-labelledby="Clear answer" />}
+                    {!this.props.disableAll && <Broom className={styles.icon} aria-labelledby="Clear answer" />}
                   </IconButton>}
                   {!this.props.isValidation && <FlagPopover
                     userFlag={this.props.userAnswers.flag}

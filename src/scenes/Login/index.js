@@ -43,7 +43,7 @@ export class Login extends Component {
   render() {
     return (
       <Container column flex alignItems="center" justify="center" style={{ backgroundColor: '#f5f5f5' }}>
-        <LoginForm onSubmit={this.handleSubmit}>
+        <LoginForm onSubmit={this.handleSubmit} pivError={this.props.pivError}>
           <Column displayFlex style={{ justifyContent: 'space-around', alignItems: 'center' }}>
             <Row style={{ width: 280, padding: 16 }}>
               <Field name="email" label="Email" component={TextInput} />
@@ -60,7 +60,8 @@ export class Login extends Component {
 
 const mapStateToProps = (state) => ({
   user: state.data.user.currentUser || undefined,
-  session: state.scenes.login.session || false
+  session: state.scenes.login.session || false,
+  pivError: state.scenes.login.pivError || null
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

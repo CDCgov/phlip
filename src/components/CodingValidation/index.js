@@ -21,8 +21,6 @@ import { capitalizeFirstLetter } from 'utils/formHelpers'
 import ApiErrorView from 'components/ApiErrorView'
 import ApiErrorAlert from 'components/ApiErrorAlert'
 import PageLoader from 'components/PageLoader'
-import { getFinalCodedObject } from 'utils/codingHelpers'
-import api from 'services/api'
 
 const navButtonStyles = {
   height: 90,
