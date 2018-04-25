@@ -20,10 +20,10 @@ const props = {
   canDrag: true,
   connectDragPreview: (preview) => preview,
   connectDragSource: (handle) => handle,
-  turnOnHover: () => {},
-  turnOffHover: () => {},
-  enableHover: () => {},
-  disableHover: () => {}
+  turnOnHover: () => { },
+  turnOffHover: () => { },
+  enableHover: () => { },
+  disableHover: () => { }
 }
 
 const setup = otherProps => mount((
@@ -56,7 +56,7 @@ describe('CodingScheme -- Scheme -- QuestionNode', () => {
 
     test('should display actions if hovering = true', () => {
       const wrapper = setup({ node: { questionBody: 'la la la', hovering: true } })
-      expect(wrapper.find('CardContent').find('button')).toHaveLength(2)
+      expect(wrapper.find('CardContent').find('button')).toHaveLength(3)
     })
 
     test('should not display actions if hovering = false', () => {

@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { withTheme } from 'material-ui/styles'
 import TableRow from 'components/TableRow'
 import Button from 'components/Button'
 import TextLink from 'components/TextLink'
@@ -10,12 +11,12 @@ import TableCell from 'components/TableCell'
 import * as actions from 'scenes/Home/actions'
 import moment from 'moment'
 
-const greyIcon = '#b1b3b3'
-
-export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => {
+export const ProjectRow = ({ project, role, bookmarked, actions, onExport, theme }) => {
   const isCoder = role === 'Coder'
+  const greyIcon = theme.palette.greyText
 
-  const date = moment.parseZone(project.dateLastEdited).local().format('M/D/YYYY H:mm A')
+  //const date = moment.parseZone(project.dateLastEdited).local().format('M/D/YYYY, h:mm A')
+  const date = moment.utc(project.dateLastEdited).local().format('M/D/YYYY, h:mm A')
   return (
     <TableRow key={project.id}>
       <TableCell
@@ -27,16 +28,16 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => 
           onClick={() => actions.toggleBookmark(project)}
           tooltipText="Bookmark project"
           aria-label="Bookmark this project"
-          id="bookmark-project">
+          id={`bookmark-project-${project.id}`}>
           {bookmarked ? 'bookmark' : 'bookmark_border'}
         </IconButton>
       </TableCell>
       <TableCell key={`${project.id}-name`} style={{ paddingRight: 24, width: '15%' }}>
         <TextLink
-          aria-label="Edit project details" to={{
-          pathname: `/project/edit/${project.id}`,
-          state: { projectDefined: { ...project }, modal: true }
-        }}>{project.name}</TextLink>
+          aria-label="Edit project details"
+          to={{ pathname: `/project/edit/${project.id}`, state: { projectDefined: { ...project }, modal: true } }}>
+          {project.name}
+        </TextLink>
       </TableCell>
       <TableCell
         key={`${project.id}-dateLastEdited`}
@@ -94,8 +95,8 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport }) => 
           tooltipText="Export validated questions"
           placement="top-end"
           aria-label="Export validated questions"
-          onClick={() => onExport(project.id)}
-          id="export-validated">
+          onClick={() => onExport(project)}
+          id={`export-validated-${project.id}`}>
           file_download
         </IconButton>{/*</TextLink>*/}
       </TableCell>}
@@ -113,4 +114,4 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectRow)
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme()(ProjectRow))

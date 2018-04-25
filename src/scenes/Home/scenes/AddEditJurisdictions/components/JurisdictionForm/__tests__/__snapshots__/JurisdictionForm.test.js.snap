@@ -4,7 +4,8 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
 <FormModal
   asyncBlurFields={
     Array [
-      "name",
+      "endDate",
+      "startDate",
     ]
   }
   asyncValidate={null}
@@ -22,7 +23,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
   width="600px"
 >
   <ModalTitle
-    closeButton={true}
+    closeButton={false}
     edit={false}
     editButton={false}
     onCloseForm={[Function]}
@@ -98,14 +99,15 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
           displayFlex={false}
           flex={true}
         >
-          <Field
+          <DatePicker
             autoOk={true}
-            component={[Function]}
             dateFormat="MM/DD/YYYY"
             label="Segment Start Date"
+            maxDate="12/31/2050"
+            minDate="01/01/1850"
             name="startDate"
+            onChange={[Function]}
             required={true}
-            validate={[Function]}
           />
         </Column>
         <Column
@@ -117,14 +119,15 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
           displayFlex={false}
           flex={false}
         >
-          <Field
+          <DatePicker
             autoOk={true}
-            component={[Function]}
             dateFormat="MM/DD/YYYY"
             label="Segment End Date"
+            maxDate="12/31/2050"
+            minDate="01/01/1850"
             name="endDate"
+            onChange={[Function]}
             required={true}
-            validate={[Function]}
           />
         </Column>
       </Container>

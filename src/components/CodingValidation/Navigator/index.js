@@ -15,7 +15,7 @@ const muiNavStyles = {
   codeNav: {
     position: 'relative',
     width: 330,
-    backgroundColor: '#4d5456',
+    backgroundColor: '#3A4041',
     borderRight: 0
   }
 }
@@ -56,7 +56,7 @@ export class Navigator extends Component {
       onQuestionSelected: this.props.handleQuestionSelected
     }
 
-    const iconProps = { iconSize: 20, color: '#6f8b95', onClick }
+    const iconProps = { iconSize: 20, color: '#A6B6BB', onClick }
     let children = []
     let itemEl = null
 
@@ -142,13 +142,14 @@ export class Navigator extends Component {
       <Drawer classes={{ paper: this.props.classes.codeNav }} type="persistent" anchor="left" open={this.props.open}>
         <Container column flex>
           <Row
-            displayFlex style={{
-            backgroundColor: '#373f41',
-            height: 55,
-            alignItems: 'center',
-            justifyContent: 'center',
-            textTransform: 'uppercase'
-          }}>
+            displayFlex
+            style={{
+              backgroundColor: '#313638',
+              height: 55,
+              alignItems: 'center',
+              justifyContent: 'center',
+              textTransform: 'uppercase'
+            }}>
             <Typography type="headline"><span style={{ color: 'white' }}>Code Navigator</span></Typography>
           </Row>
           <div className={navStyles.navContainer}>

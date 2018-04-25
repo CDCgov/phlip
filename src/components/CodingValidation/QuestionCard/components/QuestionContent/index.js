@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, Component } from 'react'
 import PropTypes from 'prop-types'
 import InputBox from 'components/InputBox'
 import RadioGroupValidation from 'components/SelectionControls/RadioGroupValidation'
@@ -16,7 +16,7 @@ import ValidationTable from '../ValidationTable'
 export const QuestionContent = props => {
   const {
     question, currentUserInitials, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
-    onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages
+    onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages, onBlurText
   } = props
 
   const questionAnswerPadding = {
@@ -53,6 +53,7 @@ export const QuestionContent = props => {
             onChangePincite={onChangeTextAnswer}
             mergedUserQuestions={mergedUserQuestions}
             currentUserInitials={currentUserInitials}
+            onBlurText={onBlurText}
             disableAll={disableAll}
             userImages={userImages}
           />
@@ -67,10 +68,10 @@ export const QuestionContent = props => {
             question={question}
             userAnswers={userAnswers}
             onChangePincite={onChangeTextAnswer}
-            pincites={question.questionType !== questionTypes.CATEGORY}
             mergedUserQuestions={mergedUserQuestions}
             currentUserInitials={currentUserInitials}
             disableAll={disableAll}
+            onBlurText={onBlurText}
             userImages={userImages}
           />
         </Row>}
@@ -78,8 +79,12 @@ export const QuestionContent = props => {
         {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions === null &&
         <Column displayFlex style={{ ...answerPadding, paddingRight: 0 }}>
           <InputBox
-            rows="7" name="text-answer" onChange={onChangeTextAnswer} placeholder="Enter answer"
-            value={userAnswers.answers[question.possibleAnswers[0].id]} answerId={question.possibleAnswers[0].id}
+            rows="7"
+            name="text-answer"
+            onChange={onChangeTextAnswer}
+            placeholder="Enter answer"
+            value={userAnswers.answers[question.possibleAnswers[0].id]}
+            answerId={question.possibleAnswers[0].id}
             disabled={disableAll}
           />
         </Column>}
@@ -93,6 +98,7 @@ export const QuestionContent = props => {
           onChange={onChangeTextAnswer}
           userImages={userImages}
           answerId={question.possibleAnswers[0].id}
+          onBlurText={onBlurText}
           currentUserInitials={currentUserInitials}
           disabled={disableAll}
         />
@@ -108,6 +114,7 @@ export const QuestionContent = props => {
               placeholder="Enter comment"
               value={comment}
               rowsMax={3}
+              onBlur={onBlurText}
               label="Comment"
               disabled={disableAll}
             />
@@ -132,16 +139,14 @@ export const QuestionContent = props => {
       {question.isCategoryQuestion &&
         <Fragment>
           <Divider />
-          <Row
-            displayFlex
+          <Row displayFlex
             style={{
               ...answerPadding,
               paddingBottom: 20,
               paddingTop: 20,
-              paddingRight: 0,
+              paddingRight: 15,
               justifyContent: 'flex-end'
-            }}
-          >
+            }}>
             <Button onClick={onOpenAlert} color="accent" value="Apply Answer to all categories" />
           </Row>
         </Fragment>}

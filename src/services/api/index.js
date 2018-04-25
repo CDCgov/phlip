@@ -1,9 +1,8 @@
 import axios from 'axios'
 import { login, logout } from '../authToken'
-import { isUndefined } from 'util';
 
 export const api = axios.create({
-  baseURL: '/api'
+  baseURL: process.env.API_HOST || '/api'
 })
 
 export default {
@@ -11,6 +10,20 @@ export default {
   login(user) {
     return api.post('/users/authenticate', user).then(res => {
       login(res.data.token.value)
+      return res.data
+    })
+  },
+
+  // Check for user after SAML login
+  checkPivUser(tokenObj) {
+    return api.get(`/users?email=${tokenObj.decodedToken.userEmail}`, {
+      headers: {
+        'Authorization': `Bearer ${tokenObj.token}`
+      }
+    }).then(res => {
+      if (res.data) {
+        login(res.data.token.value)
+      }
       return res.data
     })
   },
@@ -37,12 +50,12 @@ export default {
 
   // Get all users, called in Admin/logic
   getUsers() {
-    return api.get('/users').then(res => res.data.users)
+    return api.get('/users').then(res => res.data)
   },
 
   // Add a user, called in Admin/scenes/AddEditUser/logic
   addUser(user) {
-    return api.post('/users', user).then(res => res.data.newUser)
+    return api.post('/users', user).then(res => res.data)
   },
 
   // Update a user, called in Admin/scenes/AddEditUser/logic
@@ -67,8 +80,12 @@ export default {
   },
 
   // Get project bookmarks for a user, called in Login/logic
-  getUserBookmarks(id) {
-    return api.get(`/users/${id}/bookmarkedprojects`).then(res => res.data)
+  getUserBookmarks(id, token) {
+    return api.get(`/users/${id}/bookmarkedprojects`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }).then(res => res.data)
   },
 
   // Add a user bookmark, called in Home/logic
@@ -125,6 +142,10 @@ export default {
     return api.put(`/projects/${projectId}/scheme/${questionId}`, question).then(res => res.data)
   },
 
+  deleteQuestion(projectId, questionId) {
+    return api.delete(`/projects/${projectId}/scheme/${questionId}`).then(res => res.data)
+  },
+
   // Get a project's coding scheme, called in CodingScheme/logic, Coding/Logic, Validation/logic
   getScheme(projectId) {
     return api.get(`/projects/${projectId}/scheme`).then(res => res.data)
@@ -159,15 +180,27 @@ export default {
     return api.get(`/projects/${projectId}/scheme/${questionId}`).then(res => res.data)
   },
 
+  // Gets user coded questions for a project and jurisdiction, called in Coding/logic
+  getUserCodedQuestions(userId, projectId, jurisdictionId) {
+    return api.get(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions`)
+      .then(res => res.data)
+  },
+
+  // Get a single coded questions for a scheme question, called in Coding/logic
+  getCodedQuestion({ questionId, projectId, jurisdictionId, userId }) {
+    return api.get(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`)
+      .then(res => res.data)
+  },
+
   // Create an empty coded question object, called in Coding/logic, Validation/logic
-  createEmptyCodedQuestion({ questionId, projectId, jurisdictionId, userId, questionObj }) {
-    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, { ...questionObj })
+  answerCodedQuestion({ questionId, projectId, jurisdictionId, userId, questionObj }) {
+    return api.post(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, questionObj)
       .then(res => res.data)
   },
 
   // Answer a question for a user (creates a coded question), jurisdiction and project, called in Coding/logic
-  answerQuestion(projectId, jurisdictionId, userId, questionId, updatedQuestion) {
-    return api.put(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, updatedQuestion)
+  updateCodedQuestion({ questionId, projectId, jurisdictionId, userId, questionObj }) {
+    return api.put(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`, questionObj)
       .then(res => res.data)
   },
 
@@ -181,28 +214,26 @@ export default {
     return api.delete(`/flags/${flagId}`).then(res => res.data)
   },
 
-  // Gets user coded questions for a project and jurisdiction, called in Coding/logic
-  getUserCodedQuestions(userId, projectId, jurisdictionId) {
-    return api.get(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions`)
+  // Get a single validated question, called in Validation/logic
+  getUserValidatedQuestion({ projectId, jurisdictionId, questionId }) {
+    return api.get(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`)
       .then(res => res.data)
   },
 
-  // Gets all validates questions for a jurisdiction and project, called in Validation/logic
+  // Gets all validated questions for a jurisdiction and project, called in Validation/logic
   getValidatedQuestions(projectId, jurisdictionId) {
     return api.get(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions`).then(res => res.data)
   },
 
   // Create an empty validated question, called in Validation/logic
-  createEmptyValidatedQuestion({ projectId, jurisdictionId, questionId, userId, questionObj }) {
-    return api.post(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`, {
-      ...questionObj,
-      validatedBy: userId
-    }).then(res => res.data)
+  answerValidatedQuestion({ projectId, jurisdictionId, questionId, questionObj }) {
+    return api.post(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`, questionObj)
+      .then(res => res.data)
   },
 
   // Validates a question for a jurisdiction and project, called in Validation/logic
-  validateQuestion(projectId, jurisdictionId, questionId, updatedQuestion) {
-    return api.put(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`, updatedQuestion)
+  updateValidatedQuestion({ projectId, jurisdictionId, questionId, questionObj }) {
+    return api.put(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions/${questionId}`, questionObj)
       .then(res => res.data)
   },
 
@@ -220,7 +251,8 @@ export default {
 
   // Get all coded questions for a specific question
   getAllCodedQuestionsForQuestion(projectId, jurisdictionId, questionId) {
-    return api.get(`/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`).then(res => res.data)
+    return api.get(`/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions/${questionId}`)
+      .then(res => res.data)
   },
 
   // Gets a picture for user, called in Admin/scenes/AddEditUser/logic, Validation/logic
@@ -251,7 +283,11 @@ export default {
 
   // Export project data
   exportData(projectId, type) {
-    window.location.href = `/api/exports/project/${projectId}/data`
-  }
+    return api.get(`/exports/project/${projectId}/data`, { params: { type } }).then(res => res.data)
+  },
 
+  // Get help PDF
+  getHelpPdf() {
+    return api.get('/exports/helpfile', { responseType: 'arraybuffer' }).then(res => res.data)
+  }
 }

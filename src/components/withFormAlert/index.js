@@ -37,12 +37,14 @@ export const withFormAlert = (WrappedComponent) => {
       this.props.history.goBack()
     }
 
-    onCloseModal = () => {
-      const fields = Object.keys(this.props.form.registeredFields)
+    onCloseModal = (otherValues = {}) => {
+      const fields = [...Object.keys(this.props.form.registeredFields), ...Object.keys(otherValues)]
       let shouldOpenAlert = false
       fields.forEach(field => {
-        if (this.props.form.values) {
-          if (this.props.form.initial[field] !== this.props.form.values[field]) {
+        if (this.props.form.initial[field] !== this.props.form.values[field]) {
+          shouldOpenAlert = true
+        } else if (otherValues.hasOwnProperty(field)) {
+          if (otherValues[field] !== this.props.form.initial[field]) {
             shouldOpenAlert = true
           }
         }
@@ -51,7 +53,7 @@ export const withFormAlert = (WrappedComponent) => {
       if (shouldOpenAlert) {
         this.setState({
           open: true,
-          text: 'You have unsaved changes that will be lost if you decide to continue. Are you sure you want to continue?',
+          text: 'Your unsaved changes will be lost.',
           actions: [
             {
               value: 'Cancel',
@@ -84,7 +86,8 @@ export const withFormAlert = (WrappedComponent) => {
           }
         ],
         title: <Fragment>
-          <Icon size={30} color="red" style={{ paddingRight: 10 }}>sentiment_very_dissatisfied</Icon>Uh-oh! Something went wrong.</Fragment>
+          <Icon size={30} color="red" style={{ paddingRight: 10 }}>sentiment_very_dissatisfied</Icon>Uh-oh! Something
+          went wrong.</Fragment>
       })
     }
 

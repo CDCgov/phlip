@@ -16,9 +16,9 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   >
     <IconButton
       aria-label="Bookmark this project"
-      color="#b1b3b3"
+      color="#757575"
       iconSize={24}
-      id="bookmark-project"
+      id="bookmark-project-1"
       onClick={[Function]}
       tooltipText="Bookmark project"
     >
@@ -66,7 +66,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    10/11/2017 0:00 AM
+    10/11/2017, 12:00 AM
   </TableCell>
   <TableCell
     key="1-lastEditedBy"
@@ -205,9 +205,9 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   >
     <IconButton
       aria-label="Export validated questions"
-      color="#b1b3b3"
+      color="#757575"
       iconSize={24}
-      id="export-validated"
+      id="export-validated-1"
       onClick={[Function]}
       placement="top-end"
       tooltipText="Export validated questions"

@@ -11,7 +11,6 @@ import styles from './card-styles.scss'
 import * as questionTypes from '../constants'
 import FlagPopover from './components/FlagPopover'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import { getInitials } from 'utils/normalize'
 import Alert from 'components/Alert'
 import Typography from 'material-ui/Typography'
@@ -30,7 +29,25 @@ export class QuestionCard extends Component {
     super(props, context)
     this.state = {
       categoryToUncheck: {},
-      confirmCategoryUncheckOpen: false
+      confirmCategoryUncheckOpen: false,
+      isSaving: false
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.unsavedChanges === true) {
+      this.setState({
+        isSaving: true
+      })
+      clearTimeout()
+    }
+
+    if (this.props.unsavedChanges === true && nextProps.unsavedChanges === false) {
+      setTimeout(() => {
+        this.setState({
+          isSaving: false
+        })
+      }, 600)
     }
   }
 
@@ -65,6 +82,16 @@ export class QuestionCard extends Component {
     })
   }
 
+  getMargin = () => {
+    return !this.props.isValidation
+      ? this.props.question.questionType !== questionTypes.CATEGORY
+        ? -70
+        : -46
+      : this.props.question.questionType !== questionTypes.CATEGORY
+        ? -24
+        : 0
+  }
+
   render() {
     const questionContentProps = {
       onChange: this.onChangeAnswer,
@@ -74,12 +101,13 @@ export class QuestionCard extends Component {
       user: this.props.user,
       question: this.props.question,
       onOpenAlert: this.props.onOpenAlert,
-      userAnswers: this.props.userAnswers,
+      userAnswers: { validatedBy: { ...this.props.user }, ...this.props.userAnswers },
       comment: this.props.userAnswers.comment,
       isValidation: this.props.isValidation,
       mergedUserQuestions: this.props.mergedUserQuestions,
       disableAll: this.props.disableAll,
-      userImages: this.props.userImages
+      userImages: this.props.userImages,
+      onBlurText: this.props.onSave
     }
 
     const alertActions = [
@@ -104,28 +132,32 @@ export class QuestionCard extends Component {
         </Alert>
         <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
           {this.props.questionChangeLoader === true
-            ? <PageLoader
-              message="We're retrieving the question information..."
-              circularLoaderProps={{ color: 'primary', size: 50 }} />
+            ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
             : <Fragment>
-              <Row
-                displayFlex
-                style={{ alignItems: 'center', justifyContent: 'flex-end', height: 42, paddingRight: 15 }}>
-                {this.props.question.questionType !== questionTypes.CATEGORY &&
-                <IconButton
-                  onClick={this.props.onClearAnswer}
-                  aria-label="Clear answer"
-                  tooltipText="Clear answer"
-                  id="clear-answer"
-                  style={{ height: 24 }}>
-                  {!this.props.disableAll && <Broom className={styles.sweep} aria-labelledby="Clear answer" />}
-                </IconButton>}
-                {!this.props.isValidation && <FlagPopover
-                  userFlag={this.props.userAnswers.flag}
-                  onSaveFlag={this.props.onSaveFlag}
-                  questionFlags={this.props.question.flags}
-                  user={this.props.user}
-                  disableAll={this.props.disableAll} />}
+              <Row displayFlex style={{ alignItems: 'center', height: 42, paddingRight: 15 }}>
+                <Row style={{ width: '100%' }}>
+                  {this.props.hasTouchedQuestion &&
+                  <Typography type="caption" style={{ paddingLeft: 10, textAlign: 'center', color: '#757575' }}>
+                    {this.props.saveFailed ? 'Save failed!' : this.state.isSaving ? 'Saving...' : 'All changes saved'}
+                  </Typography>}
+                </Row>
+                <Row displayFlex style={{ marginLeft: this.getMargin() }}>
+                  {this.props.question.questionType !== questionTypes.CATEGORY &&
+                  <IconButton
+                    onClick={this.props.onClearAnswer}
+                    aria-label="Clear answer"
+                    tooltipText="Clear answer"
+                    id="clear-answer"
+                    style={{ height: 24 }}>
+                    {!this.props.disableAll && <Broom className={styles.icon} aria-labelledby="Clear answer" />}
+                  </IconButton>}
+                  {!this.props.isValidation && <FlagPopover
+                    userFlag={this.props.userAnswers.flag}
+                    onSaveFlag={this.props.onSaveFlag}
+                    questionFlags={this.props.question.flags}
+                    user={this.props.user}
+                    disableAll={this.props.disableAll} />}
+                </Row>
               </Row>
               <Divider />
               {this.props.categories !== undefined
@@ -154,7 +186,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     isValidation: ownProps.page === 'validation',
     user: state.data.user.currentUser || {},
-    question: pageState.question,
+    question: pageState.scheme === null ? {} : pageState.scheme.byId[pageState.scheme.order[pageState.currentIndex]],
     categories: pageState.categories || undefined,
     selectedCategory: pageState.selectedCategory || 0,
     userAnswers: pageState.userAnswers
@@ -171,7 +203,10 @@ const mapStateToProps = (state, ownProps) => {
     disableAll: pageState.codedQuestionsError !== null || false,
     userImages: pageState.userImages,
     questionChangeLoader: pageState.questionChangeLoader || false,
-    isChangingQuestion: pageState.isChangingQuestion || false
+    isChangingQuestion: pageState.isChangingQuestion || false,
+    unsavedChanges: pageState.unsavedChanges || false,
+    saveFailed: pageState.saveFailed || false,
+    hasTouchedQuestion: pageState.hasTouchedQuestion || false
   }
 }
 

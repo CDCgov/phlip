@@ -1,15 +1,17 @@
 import { createLogic } from 'redux-logic'
 import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
-import { getTreeFromFlatData, getFlatDataFromTree, walk } from 'react-sortable-tree'
+import { getTreeFromFlatData } from 'react-sortable-tree'
 import {
   getFinalCodedObject,
   initializeUserAnswers,
   getQuestionSelectedInNav,
   getNextQuestion,
   getPreviousQuestion,
-  initializeAndCheckAnswered, getQuestionAndInitialize
+  getSelectedQuestion,
+  initializeNextQuestion,
+  initializeValues
 } from 'utils/codingHelpers'
-import { normalize } from 'utils'
+import { normalize, sortList } from 'utils'
 import * as types from './actionTypes'
 
 export const getOutlineLogic = createLogic({
@@ -18,6 +20,19 @@ export const getOutlineLogic = createLogic({
     let scheme = {}, errors = {}, payload = {}
     let codedQuestions = []
     const userId = getState().data.user.currentUser.id
+    payload = {
+      scheme: { order: [], byId: {}, tree: [] },
+      outline: {},
+      question: {},
+      userAnswers: {},
+      categories: undefined,
+      areJurisdictionsEmpty: false,
+      isSchemeEmpty: false,
+      schemeError: null,
+      isLoadingPage: false,
+      showPageLoader: false,
+      errors: {}
+    }
 
     // Try to get the project coding scheme
     try {
@@ -30,7 +45,10 @@ export const getOutlineLogic = createLogic({
           try {
             codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
           } catch (e) {
-            errors = { codedQuestions: 'We couldn\'t get your coded questions for this project and jurisdiction, so you won\'t be able to answer quetions.' }
+            errors = {
+              codedQuestions: `We couldn\'t get your coded questions for this project and jurisdiction, 
+                               so you won\'t be able to answer quetions.`
+            }
           }
 
           // Create one array with the outline information in the question information
@@ -43,27 +61,27 @@ export const getOutlineLogic = createLogic({
           const questionsById = normalize.arrayToObject(questionsWithNumbers)
           const firstQuestion = questionsWithNumbers[0]
 
-          // Check if the first question has answers, if it doesn't send a request to create an empty coded question
-          const { userAnswers, initializeErrors } = await initializeAndCheckAnswered(firstQuestion, codedQuestions, questionsById, userId, action, api.createEmptyCodedQuestion)
+          // Initialize the user answers object
+          const userAnswers = initializeUserAnswers(
+            [initializeNextQuestion(firstQuestion), ...codedQuestions], questionsById, userId
+          )
+
+          sortList(firstQuestion.possibleAnswers, 'order', 'asc')
           payload = {
             ...payload,
             outline: scheme.outline,
             scheme: { byId: questionsById, tree, order },
             userAnswers,
             question: firstQuestion,
-            codedQuestions,
-            isSchemeEmpty: false,
-            areJurisdictionsEmpty: false,
-            userId,
-            errors: { ...errors, ...initializeErrors }
+            errors: { ...errors }
           }
         }
       } else {
         // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
         if (scheme.schemeQuestions.length === 0) {
-          payload = { isSchemeEmpty: true, areJurisdictionsEmpty: true }
+          payload = { ...payload, isSchemeEmpty: true, areJurisdictionsEmpty: true }
         } else {
-          payload = { isSchemeEmpty: false, areJurisdictionsEmpty: true }
+          payload = { ...payload, isSchemeEmpty: false, areJurisdictionsEmpty: true }
         }
       }
 
@@ -108,38 +126,190 @@ export const getQuestionLogic = createLogic({
         break
     }
 
-    return await getQuestionAndInitialize(state, action, userId, api, api.createEmptyCodedQuestion, questionInfo)
+    return await getSelectedQuestion(state, action, api, userId, questionInfo, api.getCodedQuestion)
   }
 })
 
-// Logic for any time of action that happens on question
-export const answerQuestionLogic = createLogic({
-  type: [
-    types.UPDATE_USER_ANSWER_REQUEST, types.ON_CHANGE_COMMENT, types.ON_CHANGE_PINCITE, types.ON_CLEAR_ANSWER,
-    types.ON_APPLY_ANSWER_TO_ALL, types.ON_SAVE_FLAG
-  ],
-  latest: true,
+export const applyAllAnswers = createLogic({
+  type: types.ON_APPLY_ANSWER_TO_ALL,
   async process({ getState, action, api }, dispatch, done) {
     const userId = getState().data.user.currentUser.id
     const codingState = getState().scenes.coding
-    const answerObject = getFinalCodedObject(codingState, action, action.type === types.ON_APPLY_ANSWER_TO_ALL)
+    const allCategoryObjects = Object.values(codingState.userAnswers[action.questionId])
+
+    const answerObject = {
+      questionId: action.questionId,
+      jurisdictionId: action.jurisdictionId,
+      userId,
+      projectId: action.projectId
+    }
+
     try {
-      const codedQuestion = await api.answerQuestion(action.projectId, action.jurisdictionId, userId, action.questionId, answerObject)
-      dispatch({
-        type: types.UPDATE_USER_ANSWER_SUCCESS,
-        payload: { ...codedQuestion }
-      })
+      for (let category of allCategoryObjects) {
+        let respCodedQuestion = {}
+        const question = getFinalCodedObject(codingState, action, category.categoryId)
+        if (category.id !== undefined) {
+          respCodedQuestion = await api.updateCodedQuestion({ ...answerObject, questionObj: question })
+        } else {
+          const { id, ...questionObj } = question
+          respCodedQuestion = await api.answerCodedQuestion({ ...answerObject, questionObj })
+        }
+
+        dispatch({
+          type: types.SAVE_USER_ANSWER_SUCCESS,
+          payload: { ...respCodedQuestion, questionId: action.questionId, selectedCategoryId: category.categoryId }
+        })
+      }
       dispatch({
         type: types.UPDATE_EDITED_FIELDS,
         projectId: action.projectId
       })
     } catch (error) {
       dispatch({
-        type: types.UPDATE_USER_ANSWER_FAIL,
-        payload: { error: 'Could not update answer', isApplyAll: action.type === types.ON_APPLY_ANSWER_TO_ALL }
+        type: types.SAVE_USER_ANSWER_FAIL,
+        payload: { error: 'Could not update answer', isApplyAll: true }
       })
     }
     done()
+  }
+})
+
+export const sendMessageInQueue = createLogic({
+  type: types.SEND_QUEUE_REQUESTS,
+  validate({ getState, action }, allow, reject) {
+    const messageQueue = getState().scenes.coding.messageQueue
+    const messageToSend = messageQueue.find(message => {
+      if (message.hasOwnProperty('categoryId')) {
+        return message.questionId === action.payload.questionId && action.payload.selectedCategoryId ===
+          message.categoryId
+      } else {
+        return message.questionId === action.payload.questionId
+      }
+    })
+    if (messageQueue.length > 0 && messageToSend !== undefined) {
+      allow({ ...action, message: messageToSend })
+    } else {
+      reject()
+    }
+  },
+  async process({ getState, action, api }, dispatch, done) {
+    try {
+      const respCodedQuestion = await api.updateCodedQuestion({
+        ...action.message,
+        questionObj: { ...action.message.questionObj, id: action.payload.id }
+      })
+
+      dispatch({
+        type: types.SAVE_USER_ANSWER_SUCCESS,
+        payload: {
+          ...respCodedQuestion,
+          questionId: action.payload.questionId,
+          selectedCategoryId: action.payload.selectedCategoryId
+        }
+      })
+
+      dispatch({
+        type: types.REMOVE_REQUEST_FROM_QUEUE,
+        payload: { questionId: action.payload.questionId, categoryId: action.payload.selectedCategoryId }
+      })
+    } catch (e) {
+      dispatch({
+        type: types.SAVE_USER_ANSWER_FAIL,
+        payload: { error: 'Could not update answer', isApplyAll: false }
+      })
+    }
+    done()
+  }
+})
+
+export const answerQuestionLogic = createLogic({
+  type: types.SAVE_USER_ANSWER_REQUEST,
+  debounce: 350,
+  validate({ getState, action }, allow, reject) {
+    const state = getState().scenes.coding
+    const userId = getState().data.user.currentUser.id
+    const questionObj = getFinalCodedObject(state, action, action.selectedCategoryId)
+    const answerObject = {
+      questionId: action.questionId,
+      jurisdictionId: action.jurisdictionId,
+      userId,
+      projectId: action.projectId,
+      questionObj
+    }
+
+    if (state.unsavedChanges === true) {
+      if (questionObj.isNewCodedQuestion === true && questionObj.hasMadePost === true &&
+        !questionObj.hasOwnProperty('id')) {
+        reject({ type: types.ADD_REQUEST_TO_QUEUE, payload: answerObject })
+      } else {
+        allow({ ...action, payload: { ...answerObject, selectedCategoryId: action.selectedCategoryId } })
+      }
+    } else {
+      reject()
+    }
+  },
+  async process({ getState, action, api }, dispatch, done) {
+    let respCodedQuestion = {}
+
+    try {
+      if (action.payload.questionObj.hasOwnProperty('id')) {
+        respCodedQuestion = await api.updateCodedQuestion({ ...action.payload })
+
+        // Remove any pending requests from the queue because this is the latest one and has an id
+        dispatch({
+          type: types.REMOVE_REQUEST_FROM_QUEUE,
+          payload: { questionId: action.payload.questionId, categoryId: action.payload.selectedCategoryId }
+        })
+      } else {
+        respCodedQuestion = await api.answerCodedQuestion({ ...action.payload })
+      }
+
+      dispatch({
+        type: types.SAVE_USER_ANSWER_SUCCESS,
+        payload: {
+          ...respCodedQuestion,
+          selectedCategoryId: action.payload.selectedCategoryId,
+          questionId: action.payload.questionId
+        }
+      })
+
+      dispatch({
+        type: types.SEND_QUEUE_REQUESTS,
+        payload: {
+          selectedCategoryId: action.payload.selectedCategoryId,
+          questionId: action.payload.questionId,
+          id: respCodedQuestion.id
+        }
+      })
+
+      dispatch({
+        type: types.UPDATE_EDITED_FIELDS,
+        projectId: action.payload.projectId
+      })
+      done()
+    } catch (error) {
+      if (error.response.status === 303) {
+        dispatch({
+          type: types.OBJECT_EXISTS,
+          payload: {
+            selectedCategoryId: action.payload.selectedCategoryId,
+            questionId: action.payload.questionId,
+            object: initializeValues(error.response.data)
+          }
+        })
+      } else {
+        dispatch({
+          type: types.SAVE_USER_ANSWER_FAIL,
+          payload: {
+            error: 'Could not update answer',
+            isApplyAll: false,
+            selectedCategoryId: action.payload.selectedCategoryId,
+            questionId: action.payload.questionId
+          }
+        })
+      }
+      done()
+    }
   }
 })
 
@@ -175,7 +345,10 @@ export const getUserCodedQuestionsLogic = createLogic({
       updatedSchemeQuestion = await api.getSchemeQuestion(question.id, action.projectId)
     } catch (error) {
       updatedSchemeQuestion = { ...question }
-      errors = { ...errors, updatedSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.' }
+      errors = {
+        ...errors,
+        updatedSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
+      }
     }
 
     // Update scheme with new scheme question
@@ -187,13 +360,17 @@ export const getUserCodedQuestionsLogic = createLogic({
       }
     }
 
-    const { userAnswers, initializeErrors } = await initializeAndCheckAnswered(updatedSchemeQuestion, codedQuestions, updatedScheme.byId, userId, action, api.createEmptyCodedQuestion)
+    // Update the user answers object
+    const userAnswers = initializeUserAnswers(
+      [initializeNextQuestion(updatedSchemeQuestion), ...codedQuestions], updatedScheme.byId, userId
+    )
+
     payload = {
       question: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion },
       userAnswers,
       scheme: updatedScheme,
       otherUpdates,
-      errors: { ...errors, ...initializeErrors }
+      errors: { ...errors }
     }
 
     dispatch({
@@ -234,5 +411,7 @@ export default [
   getQuestionLogic,
   getUserCodedQuestionsLogic,
   answerQuestionLogic,
+  applyAllAnswers,
+  sendMessageInQueue,
   saveRedFlagLogic
 ]

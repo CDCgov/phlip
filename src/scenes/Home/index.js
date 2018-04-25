@@ -10,6 +10,7 @@ import PageHeader from 'components/PageHeader'
 import ProjectList from './components/ProjectList'
 import * as actions from './actions'
 import ExportDialog from './components/ExportDialog'
+import api from 'services/api'
 
 export class Home extends Component {
   static propTypes = {
@@ -31,23 +32,31 @@ export class Home extends Component {
       exportDialogOpen: false,
       projectToExport: null
     }
+
+    this.exportRef = null
+    this.setExportRef = element => this.exportRef = element
   }
 
   componentWillMount() {
     this.props.actions.getProjectsRequest()
   }
 
-  onToggleExportDialog = projectId => {
+  onToggleExportDialog = project => {
     this.setState({
       exportDialogOpen: !this.state.exportDialogOpen,
-      projectToExport: projectId
+      projectToExport: project
     })
   }
 
-  onChooseExport = type => {
-    //window.open(`/project/${this.state.projectToExport}/export`, '_blank')
-    window.location.href = `/api/exports/project/${this.state.projectToExport}/data?type=${type}`
-    //window.location.href = `/api/exports/project/${this.state.projectToExport}/data`
+  onChooseExport = async type => {
+    const resp = await api.exportData(this.state.projectToExport.id, type)
+    const csvBlob = new Blob([resp], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(csvBlob)
+    this.exportRef.href = url
+    this.exportRef.download = `${this.state.projectToExport.name}-${type}-export.csv`
+    this.exportRef.click()
+    window.URL.revokeObjectURL(url)
+    
     this.setState({
       exportDialogOpen: false,
       projectToExport: null
@@ -73,9 +82,7 @@ export class Home extends Component {
             text: '+ Create New Project',
             path: '/project/add',
             state: { userDefined: null, modal: true },
-            props: {
-              'aria-label': 'Create New Project'
-            },
+            props: { 'aria-label': 'Create New Project' },
             show: this.props.user.role !== 'Coder'
           }} />
         <Divider />
@@ -102,6 +109,8 @@ export class Home extends Component {
           open={this.state.exportDialogOpen}
           onChooseExport={this.onChooseExport}
           onClose={this.onToggleExportDialog} />
+
+        <a style={{ display: 'none' }} ref={this.setExportRef} />
       </Container>
     )
   }

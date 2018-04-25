@@ -25,23 +25,33 @@ const styles = theme => ({
   }
 })
 
-const InputBox = ({ value, onChange, name, rows, answerId, classes, validator, isValidation, userImages, style, ...otherProps, }) => {
+const InputBox = props => {
+  const {
+    value, onChange, name, rows, answerId, classes, validator, theme,
+    isValidation, userImages, style, onBlur, ...otherProps
+  } = props
+
   const textValues = value === undefined ? { textAnswer: '', pincite: '' } : value
   return (
     <Column style={style}>
       <Row displayFlex style={{ alignItems: 'center', padding: isValidation ? '10px 0 0 0' : '' }}>
         {isValidation &&
-          <Avatar
-            cardAvatar
-            avatar={validator.userId
-              ? userImages[validator.userId] !== undefined
-                ? userImages[validator.userId].avatar
-                : validator.avatar
+        <Avatar
+          cardAvatar
+          avatar={validator.userId
+            ? userImages[validator.userId] !== undefined
+              ? userImages[validator.userId].avatar
               : validator.avatar
-            }
-            style={{ marginRight: 15, backgroundColor: 'white', color: '#35ac74', borderColor: '#35ac74' }}
-            initials={getInitials(validator.firstName, validator.lastName)}
-          />}
+            : validator.avatar
+          }
+          style={{
+            marginRight: 15,
+            backgroundColor: 'white',
+            color: theme.palette.secondary.main,
+            borderColor: theme.palette.secondary.main
+          }}
+          initials={getInitials(validator.firstName, validator.lastName)}
+        />}
         <TextField
           value={textValues.textAnswer}
           onChange={onChange(answerId, 'textAnswer')}
@@ -56,22 +66,24 @@ const InputBox = ({ value, onChange, name, rows, answerId, classes, validator, i
               input: classes.textFieldInput
             }
           }}
+          //onBlur={onBlur}
           {...otherProps}
         />
       </Row>
       {textValues.textAnswer && textValues.textAnswer.length > 0 &&
-        <div style={{ paddingTop: 10, paddingBottom: 20 }}>
-          <SimpleInput
-            name="pincite"
-            value={textValues.pincite === null ? '' : textValues.pincite}
-            placeholder="Enter pincite"
-            label="Pincite"
-            onChange={onChange(answerId, 'pincite')}
-            multiline={false}
-            shrinkLabel
-            style={{ flex: 1 }}
-          />
-        </div>}
+      <div style={{ paddingTop: 10, paddingBottom: 20 }}>
+        <SimpleInput
+          name="pincite"
+          value={textValues.pincite === null ? '' : textValues.pincite}
+          placeholder="Enter pincite"
+          label="Pincite"
+          onChange={onChange(answerId, 'pincite')}
+          multiline={false}
+          shrinkLabel
+          //onBlur={onBlur}
+          style={{ flex: 1 }}
+        />
+      </div>}
     </Column>
   )
 }
@@ -81,4 +93,4 @@ InputBox.propTypes = {
   name: PropTypes.string
 }
 
-export default withStyles(styles)(InputBox)
+export default withStyles(styles, { withTheme: true })(InputBox)

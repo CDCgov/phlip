@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import Icon from 'components/Icon'
 import TextField from 'material-ui/TextField'
 import { InputAdornment } from 'material-ui/Input'
+import { withTheme } from 'material-ui/styles'
 
-const SearchBar = ({ searchValue, handleSearchValueChange, placeholder, ...otherProps }) => {
+const SearchBar = ({ searchValue, handleSearchValueChange, placeholder, theme, ...otherProps }) => {
   return (
     <TextField
       value={searchValue}
@@ -12,7 +13,13 @@ const SearchBar = ({ searchValue, handleSearchValueChange, placeholder, ...other
       placeholder={placeholder}
       InputProps={{
         style: { 'alignItems': 'center' },
-        endAdornment: <InputAdornment style={{ marginTop: 0, height: 24 }} position="end" disableTypography><Icon color="#c6d4da">search</Icon></InputAdornment>
+        endAdornment:
+          <InputAdornment
+            style={{ marginTop: 0, height: 24 }}
+            position="end"
+            disableTypography><Icon color={theme.palette.greyText}>search</Icon>
+          </InputAdornment>,
+        inputProps: { 'aria-label': 'Search' }
       }}
       type="search"
       id="search-bar"
@@ -29,4 +36,4 @@ SearchBar.propTypes = {
 
 SearchBar.defaultProps = {}
 
-export default SearchBar
+export default withTheme()(SearchBar)

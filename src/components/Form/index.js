@@ -2,10 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { reduxForm } from 'redux-form'
 
-let Form = ({ children, handleSubmit, form }) => {
+let Form = ({ children, handleSubmit, form, role, ariaLabelledBy }) => {
   return (
-    <form onSubmit={handleSubmit} form={form}>
-      { children }
+    <form onSubmit={handleSubmit} role={role} aria-labelledby={ariaLabelledBy}>
+      {children}
     </form>
   )
 }

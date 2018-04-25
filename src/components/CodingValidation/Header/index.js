@@ -13,22 +13,18 @@ import { withTheme } from 'material-ui/styles'
 export const Header = props => {
   const {
     projectName, empty, projectId, jurisdictionsList, selectedJurisdiction, onJurisdictionChange,
-    currentJurisdiction, isValidation, history, pageTitle, theme
+    currentJurisdiction, onGoBack, pageTitle, theme
   } = props
 
   return (
     <Container alignItems="center" style={{ padding: '20px 27px' }}>
       <Column style={{ paddingRight: 5, display: 'flex' }}>
-        <IconButton
-          iconSize={30}
-          color="black"
-          onClick={() => history.goBack()}
-          aria-label="Go back">arrow_back</IconButton>
+        <IconButton iconSize={30} color="black" onClick={onGoBack} aria-label="Go back">arrow_back</IconButton>
       </Column>
       <Row displayFlex>
         <Typography type="title" style={{ alignSelf: 'center', paddingRight: 10 }}>{pageTitle}</Typography>
         <Typography type="title" style={{ alignSelf: 'center' }}>
-          <span style={{ color: theme.palette.secondary.main }}>{projectName}</span>
+          <span style={{ color: theme.palette.secondary.pageHeader }}>{projectName}</span>
         </Typography>
       </Row>
       <Fragment>
@@ -40,17 +36,19 @@ export const Header = props => {
               onChange={onJurisdictionChange} />
           </div>
           <Column>
-            <Typography type="caption" color="default">
-              Segment Start Date <span style={{ color: 'black' }}>{new Date(currentJurisdiction.startDate).toLocaleDateString()}</span>
+            <Typography type="caption">
+              <span style={{ color: '#707070' }}>Segment Start Date </span>
+              <span style={{ color: 'black' }}>{new Date(currentJurisdiction.startDate).toLocaleDateString()}</span>
             </Typography>
-            <Typography type="caption" color="default">
-              Segment End Date <span style={{ color: 'black' }}>{new Date(currentJurisdiction.endDate).toLocaleDateString()}</span>
+            <Typography type="caption">
+              <span style={{ color: '#707070' }}>Segment End Date </span>
+              <span style={{ color: 'black' }}>{new Date(currentJurisdiction.endDate).toLocaleDateString()}</span>
             </Typography>
           </Column></Fragment>}
         <Column flex></Column>
         <TextLink to={`/project/${projectId}/protocol`}>
           <Button
-            value="View/Edit Protocol"
+            value="Protocol"
             style={{ backgroundColor: 'white', color: 'black' }}
             aria-label="View and edit protocol" />
         </TextLink>

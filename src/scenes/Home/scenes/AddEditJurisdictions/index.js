@@ -95,7 +95,7 @@ export class AddEditJurisdictions extends Component {
               {this.props.error === true
                 ? <ApiErrorView error={this.props.errorContent} />
                 : this.props.showJurisdictionLoader
-                  ? <PageLoader message="We're loading the jurisdictions..." />
+                  ? <PageLoader />
                   : <JurisdictionList jurisdictions={this.props.visibleJurisdictions} projectId={this.props.project.id} />}
             </Column>
           </Container>

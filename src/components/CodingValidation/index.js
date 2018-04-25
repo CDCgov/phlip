@@ -27,19 +27,39 @@ const navButtonStyles = {
   width: 20,
   minWidth: 'unset',
   minHeight: 'unset',
-  backgroundColor: '#a7bdc6',
+  backgroundColor: '#bdbdbd',
   padding: 0,
   top: '35%',
   borderRadius: '0 5px 5px 0',
   boxShadow: '0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)',
-  color: 'white'
+  color: '#424242'
 }
 
-const iconStyle = {
-  transform: 'rotate(90deg)'
-}
+const iconStyle = { transform: 'rotate(90deg)' }
 
-const styles = theme => bodyStyles(theme)
+const styles = theme => ({
+  mainContent: {
+    height: '100vh',
+    width: '100%',
+    flex: '1 !important',
+    overflow: 'auto',
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    }),
+    marginLeft: -330
+  },
+  openNavShift: {
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    }),
+    marginLeft: 0
+  },
+  pageLoading: {
+    marginLeft: 0
+  }
+})
 
 export const withCodingValidation = (WrappedComponent, actions) => {
   class CodingValidation extends WrappedComponent {
@@ -62,7 +82,6 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       user: PropTypes.object,
       selectedCategory: PropTypes.number,
       schemeError: PropTypes.string,
-      updateAnswerError: PropTypes.string,
       answerErrorContent: PropTypes.any,
       saveFlagErrorContent: PropTypes.string,
       getQuestionErrors: PropTypes.string,
@@ -80,7 +99,10 @@ export const withCodingValidation = (WrappedComponent, actions) => {
         showViews: false,
         navOpen: false,
         applyAllAlertOpen: false,
-        showSchemeError: false
+        showSchemeError: false,
+        nextQuestionProps: [],
+        stillSavingAlertOpen: false,
+        nextQuestionMethod: null
       }
 
       this.modalActions = [
@@ -93,6 +115,19 @@ export const withCodingValidation = (WrappedComponent, actions) => {
           value: 'Continue',
           type: 'button',
           onClick: this.onApplyToAll
+        }
+      ]
+
+      this.stillSavingActions = [
+        { ...this.modalActions[0], onClick: this.onCancelStillSavingAlert },
+        { ...this.modalActions[1], onClick: this.onContinueStillSavingAlert }
+      ]
+
+      this.saveFailedActions = [
+        {
+          value: 'Try Again',
+          type: 'button',
+          onClick: this.onTryAgain
         }
       ]
     }
@@ -120,18 +155,30 @@ export const withCodingValidation = (WrappedComponent, actions) => {
     }
 
     getNextQuestion = index => {
-      this.props.actions.getNextQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
-      this.onShowQuestionLoader()
+      if (this.props.unsavedChanges === true) {
+        this.onShowStillSavingAlert(index, this.props.actions.getNextQuestion)
+      } else {
+        this.props.actions.getNextQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
+        this.onShowQuestionLoader()
+      }
     }
 
     getPrevQuestion = index => {
-      this.props.actions.getPrevQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
-      this.onShowQuestionLoader()
+      if (this.props.unsavedChanges === true) {
+        this.onShowStillSavingAlert(index, this.props.actions.getPrevQuestion)
+      } else {
+        this.props.actions.getPrevQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId)
+        this.onShowQuestionLoader()
+      }
     }
 
     onQuestionSelectedInNav = item => {
-      this.props.actions.onQuestionSelectedInNav(item, this.props.projectId, this.props.jurisdictionId)
-      this.onShowQuestionLoader()
+      if (this.props.unsavedChanges === true) {
+        this.onShowStillSavingAlert(item, this.props.actions.onQuestionSelectedInNav)
+      } else {
+        this.props.actions.onQuestionSelectedInNav(item, this.props.projectId, this.props.jurisdictionId)
+        this.onShowQuestionLoader()
+      }
     }
 
     onShowQuestionLoader = () => {
@@ -142,16 +189,32 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       }, 1000)
     }
 
+    /**
+     * Updates the redux state with new user data
+     */
     onAnswer = id => (event, value) => {
-      this.props.actions.answerQuestionRequest(
+      this.props.actions.updateUserAnswer(
         this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, value
       )
+
+      this.onChangeTouchedStatus()
+      this.onSaveCodedQuestion()
     }
 
+    /**
+     * This actually dispatches the redux action that calls the api to save the question data
+     */
+    onSaveCodedQuestion = () => {
+      this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.selectedCategoryId)
+    }
+
+    /**
+     * Updates redux state with new user data for text input fields
+     */
     onChangeTextAnswer = (id, field) => event => {
       switch (field) {
         case 'textAnswer':
-          this.props.actions.answerQuestionRequest(
+          this.props.actions.updateUserAnswer(
             this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
           )
           break
@@ -167,22 +230,79 @@ export const withCodingValidation = (WrappedComponent, actions) => {
             this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
           )
       }
+      this.onChangeTouchedStatus()
+      this.onSaveCodedQuestion()
     }
 
-    onOpenApplyAllAlert = () => {
-      this.setState({ applyAllAlertOpen: true })
+    onOpenApplyAllAlert = () => this.setState({ applyAllAlertOpen: true })
+
+    onCloseAlert = () => this.props.actions.dismissApiAlert('answerErrorContent')
+
+    onChangeCategory = (event, selection) => {
+      this.onSaveCodedQuestion()
+      this.props.actions.onChangeCategory(selection)
     }
 
-    onCloseAlert = () => {
-      this.props.actions.clearAnswerError()
+    onTryAgain = () => {
+      this.onSaveCodedQuestion()
+      this.onCloseAlert()
     }
 
-    onCloseApplyAllAlert = () => {
-      this.setState({ applyAllAlertOpen: false })
+    onShowStillSavingAlert = (question, method) => {
+      this.setState({
+        stillSavingAlertOpen: true,
+        nextQuestionProps: typeof question === 'object' ? [question] : [this.props.questionOrder[question], question],
+        nextQuestionMethod: { type: 'question', method: method }
+      })
     }
+
+    onCancelStillSavingAlert = () => {
+      this.setState({
+        nextQuestionProps: [],
+        stillSavingAlertOpen: false,
+        nextQuestionMethod: {}
+      })
+    }
+
+    onContinueStillSavingAlert = () => {
+      if (this.state.nextQuestionMethod.type === 'question') {
+        this.state.nextQuestionMethod.method(...this.state.nextQuestionProps, this.props.projectId, this.props.jurisdictionId)
+        this.onShowQuestionLoader()
+      } else {
+        this.state.nextQuestionMethod.method()
+      }
+
+      this.onCancelStillSavingAlert()
+    }
+
+    onClearAnswer = () => {
+      this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+      this.onChangeTouchedStatus()
+      this.onSaveCodedQuestion()
+    }
+
+    onGoBack = () => {
+      if (this.props.unsavedChanges === true) {
+        this.setState({
+          stillSavingAlertOpen: true,
+          nextQuestionMethod: { type: 'history', method: this.props.history.goBack }
+        })
+      } else {
+        this.props.history.goBack()
+      }
+    }
+
+    onChangeTouchedStatus = () => {
+      if (!this.props.hasTouchedQuestion) {
+        this.props.actions.changeTouchedStatus()
+      }
+    }
+
+    onCloseApplyAllAlert = () => this.setState({ applyAllAlertOpen: false })
 
     onApplyToAll = () => {
       this.onCloseApplyAllAlert()
+      this.onChangeTouchedStatus()
       this.props.actions.applyAnswerToAll(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
     }
 
@@ -229,45 +349,48 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       )
     }
 
-    onShowCodeView = () => {
-      return (
-        <Fragment>
-          <QuestionCard
-            page={this.props.page}
-            onChange={this.onAnswer}
-            onChangeTextAnswer={this.onChangeTextAnswer}
-            onChangeCategory={(event, selection) => this.props.actions.onChangeCategory(selection)}
-            onClearAnswer={() => this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)}
-            onOpenAlert={this.onOpenApplyAllAlert}
-            onSaveFlag={this.onSaveFlag}
-            onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
-          />
-          <FooterNavigate
-            currentIndex={this.props.currentIndex}
-            getNextQuestion={this.getNextQuestion}
-            getPrevQuestion={this.getPrevQuestion}
-            totalLength={this.props.questionOrder.length}
-            showNextButton={this.props.showNextButton}
-          />
-        </Fragment>
-      )
-    }
+    onShowCodeView = () => (
+      <Fragment>
+        <QuestionCard
+          page={this.props.page}
+          onChange={this.onAnswer}
+          onChangeTextAnswer={this.onChangeTextAnswer}
+          onChangeCategory={this.onChangeCategory}
+          onAnswer={this.onAnswer}
+          onClearAnswer={this.onClearAnswer}
+          onOpenAlert={this.onOpenApplyAllAlert}
+          onSaveFlag={this.onSaveFlag}
+          onSave={this.onSaveCodedQuestion}
+          onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
+        />
+        <FooterNavigate
+          currentIndex={this.props.currentIndex}
+          getNextQuestion={this.getNextQuestion}
+          getPrevQuestion={this.getPrevQuestion}
+          totalLength={this.props.questionOrder.length}
+          showNextButton={this.props.showNextButton}
+        />
+      </Fragment>
+    )
 
     render() {
       return (
         <Container
           flex style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}>
-          <Alert
-            open={this.state.applyAllAlertOpen}
-            text=""
-            actions={this.modalActions}>
+          <Alert open={this.state.applyAllAlertOpen} actions={this.modalActions}>
             <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
               You are applying your answer to ALL categories. Previously answered questions will be changed.
             </Typography>
           </Alert>
+          <Alert open={this.state.stillSavingAlertOpen} actions={this.stillSavingActions}>
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+              Your answer to this question is still being saved. If you continue, your changes might not be saved.
+            </Typography>
+          </Alert>
           <ApiErrorAlert
-            open={this.props.updateAnswerError !== null}
+            open={this.props.answerErrorContent !== null}
             content={this.props.answerErrorContent}
+            actions={this.props.objectExists ? [] : this.saveFailedActions}
             onCloseAlert={this.onCloseAlert} />
           <ApiErrorAlert
             open={this.props.getQuestionErrors !== null}
@@ -282,7 +405,11 @@ export const withCodingValidation = (WrappedComponent, actions) => {
           />}
           <HeaderedLayout
             padding={false}
-            className={classNames(this.props.classes.mainContent, { [this.props.classes.openNavShift]: this.state.navOpen })}>
+            className={
+              classNames(this.props.classes.mainContent, {
+                [this.props.classes.openNavShift]: this.state.navOpen && !this.props.showPageLoader,
+                [this.props.classes.pageLoading]: this.props.showPageLoader
+              })}>
             <Column flex displayFlex style={{ width: '100%', flexWrap: 'nowrap' }}>
               <Header
                 projectName={this.props.projectName}
@@ -292,8 +419,10 @@ export const withCodingValidation = (WrappedComponent, actions) => {
                 onJurisdictionChange={this.onJurisdictionChange}
                 pageTitle={capitalizeFirstLetter(this.props.page)}
                 currentJurisdiction={this.props.jurisdiction}
+                onGoBack={this.onGoBack}
                 empty={this.props.jurisdiction === null || this.props.questionOrder === null ||
-                this.props.questionOrder.length === 0} />
+                this.props.questionOrder.length === 0}
+              />
               <Container flex style={{ backgroundColor: '#f5f5f5' }}>
                 <Row displayFlex flex style={{ overflow: 'auto' }}>
                   {!this.props.showPageLoader && <Column>
@@ -305,15 +434,13 @@ export const withCodingValidation = (WrappedComponent, actions) => {
                       id="toggle-navigator"
                       aria-label="Toggle Navigator">
                       <MuiButton style={navButtonStyles} aria-label="Toggle Navigator" onClick={this.onToggleNavigator}>
-                        <Icon color="white" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
+                        <Icon color="#424242" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
                   </Column>}
                   <Column displayFlex flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
                     {this.state.showSchemeError &&
                     <ApiErrorView error="We couldn't get the coding scheme for this project." />}
                     {this.props.showPageLoader === true
-                      ? <PageLoader
-                        message={this.props.pageLoaderMessage}
-                        circularLoaderProps={{ color: 'primary', size: 50 }} />
+                      ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
                       : this.state.showViews &&
                       (this.props.areJurisdictionsEmpty === true || this.props.isSchemeEmpty === true
                         ? this.onShowGetStartedView(this.props.isSchemeEmpty, this.props.areJurisdictionsEmpty)
@@ -339,7 +466,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       page,
       isValidation: page === 'validation',
       projectId: ownProps.match.params.id,
-      question: pageState.question || {},
+      question: pageState.scheme === null ? {} : pageState.scheme.byId[pageState.scheme.order[pageState.currentIndex]],
       currentIndex: pageState.currentIndex || 0,
       questionOrder: pageState.scheme === null ? null : pageState.scheme.order,
       showNextButton: pageState.showNextButton,
@@ -356,42 +483,23 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       user: state.data.user.currentUser,
       selectedCategory: pageState.selectedCategory,
       schemeError: pageState.schemeError || null,
-      updateAnswerError: pageState.updateAnswerError || null,
-      answerErrorContent: pageState.errorTypeMsg || '',
+      answerErrorContent: pageState.answerErrorContent || null,
       saveFlagErrorContent: pageState.saveFlagErrorContent || null,
       getQuestionErrors: pageState.getQuestionErrors || null,
       isLoadingPage: pageState.isLoadingPage || false,
-      pageLoaderMessage: pageState.pageLoaderMessage,
       showPageLoader: pageState.showPageLoader || false,
-      isChangingQuestion: pageState.isChangingQuestion || false
+      isChangingQuestion: pageState.isChangingQuestion || false,
+      selectedCategoryId: pageState.selectedCategoryId || null,
+      userAnswers: pageState.userAnswers || {},
+      unsavedChanges: pageState.unsavedChanges || false,
+      hasTouchedQuestion: pageState.hasTouchedQuestion || false,
+      objectExists: pageState.objectExists || false
     }
   }
 
   const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
-
   return connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CodingValidation))
 }
-
-export const bodyStyles = theme => ({
-  mainContent: {
-    height: '100vh',
-    width: '100%',
-    flex: '1 !important',
-    overflow: 'auto',
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    marginLeft: -330
-  },
-  openNavShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginLeft: 0
-  }
-})
 
 withCodingValidation.propTypes = {
   WrappedComponent: PropTypes.component,

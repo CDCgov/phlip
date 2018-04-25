@@ -69,8 +69,8 @@ deploy_test_esquire_frontend:
     name: Azure Test
     url: https://phliptest.phiresearchlab.org
   when: manual
-  only: 
-    - test
+  # only: 
+  #   - test
   tags:
     - azure-esquire
 

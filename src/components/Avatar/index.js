@@ -24,7 +24,12 @@ export const Avatar = ({ big, avatar, initials, style, theme, cardAvatar, ...oth
     ...style
   }
 
-  return avatar ? <MuiAvatar style={cardAvatar ? cardAvatarStyles : styles} {...otherProps} src={avatar}></MuiAvatar>
+  return avatar
+    ? <MuiAvatar
+      style={cardAvatar ? cardAvatarStyles : styles}
+      alt="user-avatar"
+      {...otherProps}
+      src={avatar} />
     : <MuiAvatar style={cardAvatar ? cardAvatarStyles : styles} {...otherProps}>{initials ? initials : ''}</MuiAvatar>
 }
 

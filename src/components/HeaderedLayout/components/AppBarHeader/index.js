@@ -8,7 +8,7 @@ import AvatarMenu from './components/AvatarMenu/index'
 import { Link } from 'react-router-dom'
 import Container, { Row, Column } from 'components/Layout'
 
-export const Header = ({ theme, user, open, handleLogoutUser, handleCloseMenu, handleOpenAdminPage, handleToggleMenu }) => {
+export const Header = ({ theme, user, open, handleLogoutUser, handleCloseMenu, handleOpenAdminPage, handleToggleMenu, handleOpenHelpPdf }) => {
   const bgColor = theme.palette.primary.main
 
   const styles = {
@@ -36,6 +36,7 @@ export const Header = ({ theme, user, open, handleLogoutUser, handleCloseMenu, h
             onCloseMenu={handleCloseMenu}
             onOpenAdminPage={handleOpenAdminPage}
             onLogoutUser={handleLogoutUser}
+            onOpenHelpPdf={handleOpenHelpPdf}
             avatar={user.avatar}
           />
         </Grid>

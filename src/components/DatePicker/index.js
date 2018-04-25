@@ -1,27 +1,27 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { InputLabel, InputAdornment } from 'material-ui/Input'
 import { FormControl, FormHelperText } from 'material-ui/Form'
 import { DatePicker as MuiDatePicker } from 'material-ui-pickers'
 
 export const DatePicker = props => {
   const {
-    input, label, name, meta: { touched, error, warning },
-    dateFormat, disabled, required, ...otherProps
+    label, name, error, dateFormat, disabled, required, value, onChange, ...otherProps
   } = props
 
   return (
-    <FormControl error={Boolean(error || warning)} disabled={disabled}>
+    <FormControl error={Boolean(error)} disabled={disabled}>
       <MuiDatePicker
         label={label}
         style={{ marginTop: 16 }}
         format={dateFormat}
         name={name}
-        onChange={input.onChange}
-        value={input.value}
         keyboard
-        mask={[/^[\d]*/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
-        InputLabelProps={{ shrink: true, required }}
+        invalidDateMessage=""
+        invalidLabel=""
+        mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
+        onChange={onChange}
+        value={value}
+        InputLabelProps={{ shrink: true, required, error: Boolean(error) }}
         {...otherProps}
       />
       <FormHelperText>{error}</FormHelperText>

@@ -53,6 +53,12 @@ export class Protocol extends Component {
         })
       }
     }
+
+    if (this.props.lockedByCurrentInfo !== true && nextProps.lockedByCurrentUser === true) {
+      this.setState({
+        editMode: true
+      })
+    }
   }
 
   componentWillMount() {
@@ -72,9 +78,7 @@ export class Protocol extends Component {
   }
 
   onEnableEdit = () => {
-    this.setState({
-      editMode: true
-    })
+    this.props.actions.lockProtocolRequest(this.props.projectId)
   }
 
   onCloseAlert = () => {
@@ -83,6 +87,7 @@ export class Protocol extends Component {
 
   onSaveProtocol = () => {
     this.props.actions.saveProtocolRequest(this.props.protocolContent, this.props.projectId)
+    this.props.actions.unlockProtocolRequest(this.props.projectId)
     this.props.actions.updateEditedFields(this.props.projectId)
   }
 
@@ -97,15 +102,8 @@ export class Protocol extends Component {
     this.props.actions.resetLockAlert()
   }
 
-  handleLockProtocol = () => {
-    this.props.actions.lockProtocolRequest(this.props.projectId)
-  }
-
-  handleUnlockProtocol = () => {
-    this.props.actions.unlockProtocolRequest(this.props.projectId)
-  }
-
   onContinue = () => {
+    this.onSaveProtocol()
     this.props.history.goBack()
   }
 
@@ -113,11 +111,7 @@ export class Protocol extends Component {
     if (this.props.lockedByCurrentUser || this.state.editMode) {
       this.setState({
         open: true,
-        alertText: this.state.editMode
-          ? `You have unsaved changes that will be lost if you decide to continue. You have also locked the protocol. If
-             you exit now, no one else will be allowed to edit until you release the lock.`
-          : `You have locked the protocol. If you exit now, no one else will be allowed to 
-             edit until you release the lock.`
+        alertText: 'Your unsaved changes will be lost.'
       })
     } else {
      this.props.history.goBack()
@@ -132,7 +126,7 @@ export class Protocol extends Component {
         onClick: this.onClose
       },
       {
-        value: 'Continue',
+        value: 'Save',
         type: 'button',
         onClick: this.onContinue
       }
@@ -141,17 +135,17 @@ export class Protocol extends Component {
       <Container flex column style={{ paddingBottom: 20, flexWrap: 'nowrap' }}>
         <Alert open={this.state.open} actions={alertActions}>
           <Typography variant="body1">
-            {this.state.alertText} Are you sure you want to continue?
+            {this.state.alertText}
           </Typography>
         </Alert>
         <Alert
           actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert }]}
           open={this.props.lockedAlert !== null}
           title={<Fragment><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
-            The Protocol is locked.</Fragment>}>
+            The Protocol is unavailable to edit.</Fragment>}>
           <Typography variant="body1">
-            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} has locked the protocol for editing.
-            You will not be able to make changes until they have released the lock.
+            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} is currently editing the protocol.
+            You will not be able to edit until they are done editing and have saved their changes.
           </Typography>
         </Alert>
         <PageHeader
@@ -160,23 +154,13 @@ export class Protocol extends Component {
           pageTitle="Protocol"
           protocolButton={false}
           onBackButtonClick={this.onGoBack}
-          checkoutButton={{
-            isLink: false,
-            text: this.props.lockedByCurrentUser ? 'Release Protocol Lock' : 'Lock protocol for editing',
-            props: {
-              onClick: this.props.lockedByCurrentUser
-                ? this.handleUnlockProtocol
-                : this.handleLockProtocol
-            },
-            show: this.props.getProtocolError !== true && !this.state.editMode
-          }}
           otherButton={this.props.getProtocolError ? {} : {
             isLink: false,
             text: this.state.editMode ? 'Save' : 'Edit',
             onClick: this.state.editMode ? this.onSaveProtocol : this.onEnableEdit,
             style: { color: 'black', backgroundColor: 'white' },
             otherProps: { 'aria-label': this.state.editMode ? 'Edit protocol' : 'Save protocol' },
-            show: this.props.getProtocolError !== true && (this.props.hasLock && this.props.lockedByCurrentUser)
+            show: this.props.getProtocolError !== true
           }}
         />
         <Alert

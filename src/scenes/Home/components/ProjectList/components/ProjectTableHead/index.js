@@ -33,7 +33,7 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
       <TableCell key="bookmarked" padding="checkbox" style={{ width: 24, paddingLeft: 24 }}>
         <IconButton
           id="sort-bookmarked"
-          color="rbg(0,0,0,0.54)"
+          color="#757575"
           onClick={() => onSortBookmarked()}
           aria-label="Sort bookmarked"
           placement="top-start"

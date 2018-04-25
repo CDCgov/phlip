@@ -31,7 +31,6 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       aria-label="Go back"
       color="black"
       iconSize={30}
-      onClick={[Function]}
       tooltipText=""
     >
       arrow_back
@@ -66,7 +65,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       <span
         style={
           Object {
-            "color": "#38a48e",
+            "color": "#005757",
           }
         }
       >
@@ -97,10 +96,17 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
         flex={false}
       >
         <WithStyles
-          color="default"
           type="caption"
         >
-          Segment Start Date 
+          <span
+            style={
+              Object {
+                "color": "#707070",
+              }
+            }
+          >
+            Segment Start Date 
+          </span>
           <span
             style={
               Object {
@@ -112,10 +118,17 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
           </span>
         </WithStyles>
         <WithStyles
-          color="default"
           type="caption"
         >
-          Segment End Date 
+          <span
+            style={
+              Object {
+                "color": "#707070",
+              }
+            }
+          >
+            Segment End Date 
+          </span>
           <span
             style={
               Object {
@@ -148,7 +161,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
             "color": "black",
           }
         }
-        value="View/Edit Protocol"
+        value="Protocol"
       />
     </WithTheme>
   </React.Fragment>

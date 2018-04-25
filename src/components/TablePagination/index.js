@@ -149,12 +149,13 @@ class TablePagination extends React.Component {
             })}
           </Typography>
           <div className={classes.actions}>
-            <IconButton onClick={this.handleBackButtonClick} disabled={page === 0}>
+            <IconButton onClick={this.handleBackButtonClick} disabled={page === 0} aria-label="Show previous page in table">
               {themeDirection === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
             </IconButton>
             <IconButton
               onClick={this.handleNextButtonClick}
               disabled={page >= Math.ceil(count / selected) - 1 || count === 0}
+              aria-label="Show next page in table"
             >
               {themeDirection === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
             </IconButton>

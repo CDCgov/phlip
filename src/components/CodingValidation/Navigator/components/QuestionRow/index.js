@@ -8,19 +8,20 @@ import Progress from 'components/Progress'
 export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) => {
   let scaffold = []
   let className = ''
+  const textColor = '#A6B6BB'
 
   const questionTextStyles = {
     color: item.isCurrent === true
-      ? '#68cff5'
+      ? '#72defd'
       : item.isAnswered
-        ? '#818789'
+        ? textColor
         : item.completedProgress === 100
-          ? '#818789'
+          ? textColor
           : 'white',
     fontWeight: 300,
     paddingLeft: 10,
     paddingRight: 10,
-    fontSize: '13px',
+    fontSize: 13,
     outline: 0
   }
 
@@ -76,36 +77,37 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
         style={{ ...rowStyles, marginLeft: 23 * item.indent, cursor: 'pointer', outline: 0 }}
         onClick={() => onQuestionSelected(item)}
         aria-label="Click to show this question"
-        tabIndex={0}
         aria-rowindex={item.treeIndex}>
         <span
           style={{ minWidth: 20, minHeight: 20, maxHeight: 20, maxWidth: 20, outline: 0 }}
           tabIndex={-1}>{children}</span>
-        <Typography tabIndex={-1} style={questionTextStyles} type="body1" noWrap aria-label="Question number and text">
+        <Typography tabIndex={-1} style={questionTextStyles} noWrap aria-label="Question number and text">
           {item.number && <span>{`${item.number}. `}</span>}
           {item.text}
         </Typography>
         {item.questionType === 2 && <Icon
           size={12}
-          tabIndex={-1}
           aria-label="Question is of type cateogry"
           color={questionTextStyles.color}
           style={{ paddingRight: 5 }}>filter_none</Icon>}
-        {item.isAnswered && <Icon
+        {item.hasOwnProperty('flags') && item.flags.length > 0 && <Icon
+          aria-label="Question has a red flag"
+          role="gridcell"
+          color={questionTextStyles.color}
+          size={17}>
+          report
+        </Icon>}
+        {item.hasOwnProperty('completedProgress') && item.completedProgress < 100 &&
+        <Progress
+          aria-label={`Question is ${item.completedProgress} percent answered`}
+          containerStyles={{ marginLeft: item.hasOwnProperty('flags') && item.flags.length > 0 ? 5 : 0 }}
+          progress={item.completedProgress}
+        />}
+        {(item.isAnswered || (item.hasOwnProperty('completedProgress') && item.completedProgress === 100)) && <Icon
           aria-label="Question has been answered"
           role="gridcell"
-          tabIndex={-1}
-          color="#45ad70"
+          color="#38E37F"
           size={19}>check</Icon>}
-        {item.hasOwnProperty('completedProgress') &&
-        ((item.completedProgress < 100 && <Progress
-          aria-label={`This question is ${item.completedProgress} percent answered`}
-          progress={item.completedProgress} />) || (item.completedProgress === 100 && <Icon
-          aria-label="Question has been answered"
-          role="gridcell"
-          tabIndex={-1}
-          color="#45ad70"
-          size={19}>check</Icon>))}
       </div>
     </Fragment>
   )

@@ -9,8 +9,7 @@ const Menu = ({ open, anchorEl, id, onRequestClose, items, ...otherProps }) => {
       anchorEl={anchorEl}
       id={id}
       onRequestClose={onRequestClose}
-      {...otherProps}
-    >
+      {...otherProps}>
       {items.map(item => (
         <MenuItem onClick={item.onClick} key={item.key}>
           {item.label}

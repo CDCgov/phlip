@@ -1,20 +1,11 @@
 import * as types from './actionTypes'
 import {
   determineShowButton, handleCheckCategories,
-  handleClearAnswers,
   handleUpdateUserAnswers, handleUpdateUserCategoryChild, handleUpdateUserCodedQuestion,
-  handleUserPinciteQuestion, initializeNavigator, generateError
+  handleUserPinciteQuestion, initializeNavigator, generateError, updateCategoryCodedQuestion, updateCodedQuestion
 } from 'utils/codingHelpers'
 
-const errorTypes = {
-  1: 'We couldn\'t save the answer for this question. Your answer will be reset to the previous state.',
-  2: 'We couldn\'t save the comment for this question. Your comment will be reset to the previous state.',
-  3: 'We couldn\'t save the pincite for this answer choice. Your pincite will be reset to the previous state.',
-  4: 'We couldn\'t clear the answer for this question. Your answer will be reset to the previous state.',
-  5: 'We couldn\'t save your flag for this question. Your flag will be reset to the previous state.'
-}
-
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   question: {},
   scheme: null,
   outline: {},
@@ -30,19 +21,36 @@ const INITIAL_STATE = {
   isSchemeEmpty: null,
   areJurisdictionsEmpty: null,
   snapshotUserAnswer: {},
-  updateAnswerError: null,
-  errorTypeMsg: '',
+  answerErrorContent: null,
   schemeError: null,
   saveFlagErrorContent: null,
   getQuestionErrors: null,
   codedQuestionsError: null,
   isApplyAllError: null,
   isLoadingPage: false,
-  pageLoaderMessage: '',
   questionChangeLoader: false,
   showPageLoader: false,
   questionChangeLoader: false,
-  isChangingQuestion: false
+  isChangingQuestion: false,
+  unsavedChanges: false,
+  messageQueue: [],
+  saveFailed: false,
+  objectExists: false,
+  hasTouchedQuestion: false
+}
+
+const removeRequestsInQueue = (questionId, categoryId, currentQueue) => {
+  return currentQueue.filter(message => {
+    if (message.questionId !== questionId) {
+      return true
+    } else if (message.questionId === questionId) {
+      if (message.hasOwnProperty('categoryId')) {
+        return message.categoryId !== categoryId
+      } else {
+        return false
+      }
+    }
+  })
 }
 
 const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
@@ -51,69 +59,89 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
     : handleUpdateUserCodedQuestion(state, action)
 
   switch (action.type) {
-    case `${types.UPDATE_USER_ANSWER_REQUEST}_${name}`:
+    case `${types.UPDATE_USER_ANSWER}_${name}`:
       return {
         ...state,
         userAnswers: {
           ...state.userAnswers,
-          ...handleUpdateUserAnswers(state, action, state.selectedCategoryId)
+          ...handleUpdateUserAnswers(state, action)
         },
-        snapshotUserAnswer: state.question.isCategoryQuestion
-          ? state.userAnswers[action.questionId][state.selectedCategoryId]
-          : state.userAnswers[action.questionId],
-        errorTypeMsg: errorTypes[1]
+        unsavedChanges: true
       }
 
-    case `${types.UPDATE_USER_ANSWER_SUCCESS}_${name}`:
+    case `${types.CHANGE_TOUCHED_STATUS}_${name}`:
       return {
         ...state,
-        snapshotUserAnswer: {},
-        updateAnswerError: null,
-        errorTypeMsg: ''
+        hasTouchedQuestion: !state.hasTouchedQuestion
       }
 
-    case `${types.UPDATE_USER_ANSWER_FAIL}_${name}`:
+    case `${types.SAVE_USER_ANSWER_SUCCESS}_${name}`:
       return {
         ...state,
-        updateAnswerError: true,
-        isApplyAllError: action.payload.isApplyAll
+        ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
+          ? updateCategoryCodedQuestion(state, action.payload.questionId, action.payload.selectedCategoryId, { id: action.payload.id })
+          : updateCodedQuestion(state, action.payload.questionId, { id: action.payload.id }),
+        answerErrorContent: null,
+        unsavedChanges: false,
+        saveFailed: false
       }
 
-    case `${types.CLEAR_ANSWER_ERROR}_${name}`:
+    case `${types.SAVE_USER_ANSWER_REQUEST}_${name}`:
       return {
         ...state,
-        updateAnswerError: null,
-        snapshotUserAnswer: {},
-        userAnswers: {
-          ...state.userAnswers,
-          [state.question.id]: state.isApplyAllError
-            ? { ...state.snapshotUserAnswer }
-            : state.question.isCategoryQuestion
-              ? { ...state.userAnswers[state.question.id], [state.selectedCategoryId]: { ...state.snapshotUserAnswer } }
-              : { ...state.snapshotUserAnswer }
-        },
-        errorTypeMsg: '',
-        isApplyAllError: null
+        ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
+          ? updateCategoryCodedQuestion(state, action.payload.questionId, action.payload.selectedCategoryId, { hasMadePost: true })
+          : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: true }),
+        unsavedChanges: true,
+        saveFailed: false
+      }
+
+    case `${types.ADD_REQUEST_TO_QUEUE}_${name}`:
+      const currentQueue = removeRequestsInQueue(action.payload.questionId, action.payload.categoryId, [...state.messageQueue])
+      return {
+        ...state,
+        messageQueue: [...currentQueue, action.payload]
+      }
+
+    case `${types.REMOVE_REQUEST_FROM_QUEUE}_${name}`:
+      return {
+        ...state,
+        messageQueue: removeRequestsInQueue(action.payload.questionId, action.payload.categoryId, [...state.messageQueue])
+      }
+
+    case `${types.SAVE_USER_ANSWER_FAIL}_${name}`:
+      return {
+        ...state,
+        answerErrorContent: 'We couldn\'t save your answer for this question.',
+        saveFailed: true,
+        ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
+          ? updateCategoryCodedQuestion(state, action.payload.questionId, action.payload.selectedCategoryId, { hasMadePost: false })
+          : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: false })
+      }
+
+    case `${types.OBJECT_EXISTS}_${name}`:
+      return {
+        ...state,
+        answerErrorContent: 'Something about this question has changed since you loaded the page. We couldn\'t save your answer.',
+        saveFailed: true,
+        objectExists: true,
+        ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
+          ? updateCategoryCodedQuestion(state, action.payload.questionId, action.payload.selectedCategoryId, { hasMadePost: false, ...action.payload.object })
+          : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: false, ...action.payload.object })
       }
 
     case `${types.ON_CHANGE_PINCITE}_${name}`:
       return {
         ...state,
         ...questionUpdater('answers', handleUserPinciteQuestion),
-        snapshotUserAnswer: state.question.isCategoryQuestion
-          ? state.userAnswers[action.questionId][state.selectedCategoryId]
-          : state.userAnswers[action.questionId],
-        errorTypeMsg: errorTypes[3]
+        unsavedChanges: true
       }
 
     case `${types.ON_CHANGE_COMMENT}_${name}`:
       return {
         ...state,
         ...questionUpdater('comment', action.comment),
-        snapshotUserAnswer: state.question.isCategoryQuestion
-          ? state.userAnswers[action.questionId][state.selectedCategoryId]
-          : state.userAnswers[action.questionId],
-        errorTypeMsg: errorTypes[2]
+        unsavedChanges: true
       }
 
     case `${types.ON_CHANGE_CATEGORY}_${name}`:
@@ -127,21 +155,21 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
       return {
         ...state,
         jurisdictionId: action.event,
-        jurisdiction: action.jurisdictionsList.find(jurisdiction => jurisdiction.id === action.event)
+        jurisdiction: action.jurisdictionsList.find(jurisdiction => jurisdiction.id === action.event),
+        hasTouchedQuestion: false
       }
 
     case `${types.GET_QUESTION_SUCCESS}_${name}`:
       const errors = generateError(action.payload.errors)
       return {
         ...action.payload.updatedState,
-        ...handleCheckCategories(
-          action.payload.question,
-          action.payload.currentIndex,
-          action.payload.updatedState
-        ),
+        ...handleCheckCategories(action.payload.question, action.payload.currentIndex, action.payload.updatedState),
         getQuestionErrors: errors.length > 0 ? errors : null,
         questionChangeLoader: false,
-        isChangingQuestion: false
+        isChangingQuestion: false,
+        unsavedChanges: false,
+        savedFailed: false,
+        hasTouchedQuestion: false
       }
 
     case `${types.ON_APPLY_ANSWER_TO_ALL}_${name}`:
@@ -156,45 +184,32 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
               [category.id]: {
                 ...catQuestion,
                 categoryId: category.id,
-                id: state.userAnswers[state.question.id][category.id].id
+                id: state.userAnswers[state.question.id][category.id].id || undefined
               }
             }), {})
           }
         },
-        snapshotUserAnswer: { ...state.userAnswers[state.question.id] },
-        errorTypeMsg: errorTypes[1]
+        unsavedChanges: true
       }
 
     case `${types.ON_CLEAR_ANSWER}_${name}`:
       return {
         ...state,
-        ...questionUpdater('answers', handleClearAnswers),
-        snapshotUserAnswer: state.question.isCategoryQuestion
-          ? state.userAnswers[action.questionId][state.selectedCategoryId]
-          : state.userAnswers[action.questionId],
-        errorTypeMsg: errorTypes[4]
+        ...questionUpdater('answers', {}),
+        unsavedChanges: true
       }
 
     case `${types.DISMISS_API_ALERT}_${name}`:
-      return {
-        ...state,
-        [action.errorType]: null
-      }
+      return { ...state, [action.errorType]: null, objectExists: false }
+
+    case `${types.ON_SHOW_PAGE_LOADER}_${name}`:
+      return { ...state, showPageLoader: true }
+
+    case `${types.ON_SHOW_QUESTION_LOADER}_${name}`:
+      return { ...state, questionChangeLoader: true }
 
     case `${types.ON_CLOSE_SCREEN}_${name}`:
       return INITIAL_STATE
-
-    case `${types.ON_SHOW_PAGE_LOADER}_${name}`:
-      return {
-        ...state,
-        showPageLoader: true
-      }
-
-    case `${types.ON_SHOW_QUESTION_LOADER}_${name}`:
-      return {
-        ...state,
-        questionChangeLoader: true
-      }
 
     case `${types.GET_NEXT_QUESTION}_${name}`:
     case `${types.GET_PREV_QUESTION}_${name}`:
@@ -215,7 +230,9 @@ const treeAndButton = intermediateState => {
     showNextButton: intermediateState.scheme === null ? false : determineShowButton(intermediateState),
     scheme: intermediateState.scheme === null ? null : {
       ...intermediateState.scheme,
-      tree: initializeNavigator(intermediateState.scheme.tree, intermediateState.scheme.byId, intermediateState.userAnswers, intermediateState.question)
+      tree: initializeNavigator(
+        intermediateState.scheme.tree, intermediateState.scheme.byId, intermediateState.userAnswers, intermediateState.question
+      )
     }
   }
 }

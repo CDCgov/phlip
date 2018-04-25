@@ -63,5 +63,12 @@ exports[`Home scene should render correctly 1`] = `
     onClose={[Function]}
     open={false}
   />
+  <a
+    style={
+      Object {
+        "display": "none",
+      }
+    }
+  />
 </Container>
 `;

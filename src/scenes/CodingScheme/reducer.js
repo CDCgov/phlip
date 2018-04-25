@@ -5,7 +5,8 @@ import {
   getTreeFromFlatData,
   walk,
   map,
-  addNodeUnderParent
+  addNodeUnderParent,
+  removeNodeAtPath
 } from 'react-sortable-tree'
 import { sortList } from 'utils'
 
@@ -24,7 +25,7 @@ const INITIAL_STATE = {
   lockedAlert: null
 }
 
-const questionsToOutline = questions => {
+export const questionsToOutline = questions => {
   const outline = {}
 
   // Get the root questions information
@@ -81,7 +82,7 @@ const sortQuestions = questions => {
   return sortList(sortedChildren, 'positionInParent', 'asc')
 }
 
-const getNodeKey = ({ node, treeIndex }) => {
+export const getNodeKey = ({ node, treeIndex }) => {
   return treeIndex
 }
 
@@ -263,6 +264,14 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         questions: updatedTree,
         outline: questionsToOutline(updatedTree),
+        empty: false
+      }
+
+    case types.DELETE_QUESITON_SUCCESS:
+      return {
+        ...state,
+        questions: action.payload.updatedQuestions,
+        outline: action.payload.updatedOutline,
         empty: false
       }
 

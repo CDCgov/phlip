@@ -18,7 +18,7 @@ const paper = {
 const classes = theme => ({
   paperNormal: {
     ...paper,
-    margin: theme.spacing.unit * 4,
+    margin: theme.spacing.unit * 4
   },
   hideOverflow: {
     ...paper,
@@ -30,8 +30,10 @@ const classes = theme => ({
 })
 
 const Modal = ({ open, onClose, children, classes, hideOverflow, ...otherProps }) => (
-  <Dialog open={open} onClose={onClose} {...otherProps}
-          classes={{ paper: hideOverflow ? classes.hideOverflow : classes.paperNormal }}>
+  <Dialog
+    open={open}
+    onClose={onClose}{...otherProps}
+    classes={{ paper: hideOverflow ? classes.hideOverflow : classes.paperNormal }}>
     {children}
   </Dialog>
 )
