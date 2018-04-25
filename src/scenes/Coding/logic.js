@@ -17,22 +17,8 @@ import * as types from './actionTypes'
 export const getOutlineLogic = createLogic({
   type: types.GET_CODING_OUTLINE_REQUEST,
   async process({ action, getState, api }, dispatch, done) {
-    let scheme = {}, errors = {}, payload = {}
-    let codedQuestions = []
-    const userId = getState().data.user.currentUser.id
-    payload = {
-      scheme: { order: [], byId: {}, tree: [] },
-      outline: {},
-      question: {},
-      userAnswers: {},
-      categories: undefined,
-      areJurisdictionsEmpty: false,
-      isSchemeEmpty: false,
-      schemeError: null,
-      isLoadingPage: false,
-      showPageLoader: false,
-      errors: {}
-    }
+    let scheme = {}, errors = {}, codedQuestions = [], payload = action.payload
+    const userId = action.userId
 
     // Try to get the project coding scheme
     try {

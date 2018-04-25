@@ -1,5 +1,4 @@
 import { normalize } from 'utils'
-import { checkIfAnswered, checkIfExists, checkIfCategoryAnswered } from 'utils/codingSchemeHelpers'
 import sortList from 'utils/sortList'
 import * as questionTypes from 'components/CodingValidation/constants'
 
@@ -577,4 +576,13 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
 
 export const generateError = errorsObj => {
   return Object.values(errorsObj).join('\n\n')
+}
+
+export const checkIfAnswered = (item, userAnswers, id = 'id') => {
+  return userAnswers.hasOwnProperty(item[id]) &&
+    Object.keys(userAnswers[item[id]].answers).length > 0
+}
+
+export const checkIfExists = (item, obj, id = 'id') => {
+  return obj.hasOwnProperty(item[id])
 }

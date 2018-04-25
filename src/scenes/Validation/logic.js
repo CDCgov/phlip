@@ -2,10 +2,9 @@ import { createLogic } from 'redux-logic'
 import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData } from 'react-sortable-tree'
 import {
-  getFinalCodedObject, initializeUserAnswers, getSelectedQuestion,
+  getFinalCodedObject, initializeUserAnswers, getSelectedQuestion, checkIfExists,
   getPreviousQuestion, getQuestionSelectedInNav, getNextQuestion, initializeNextQuestion, initializeValues
 } from 'utils/codingHelpers'
-import { checkIfExists } from 'utils/codingSchemeHelpers'
 import { normalize, sortList } from 'utils'
 import * as types from './actionTypes'
 
@@ -97,22 +96,8 @@ export const updateValidatorLogic = createLogic({
 export const getValidationOutlineLogic = createLogic({
   type: types.GET_VALIDATION_OUTLINE_REQUEST,
   async process({ action, getState, api }, dispatch, done) {
-    let scheme = {}, validatedQuestions = [], errors = {}, payload = {}
-    const userId = getState().data.user.currentUser.id
-    payload = {
-      scheme: { order: [], byId: {}, tree: [] },
-      outline: {},
-      question: {},
-      userAnswers: {},
-      mergedUserQuestions: {},
-      categories: undefined,
-      areJurisdictionsEmpty: false,
-      isSchemeEmpty: false,
-      schemeError: null,
-      isLoadingPage: false,
-      showPageLoader: false,
-      errors: {}
-    }
+    let scheme = {}, validatedQuestions = [], errors = {}, payload = action.payload
+    const userId = action.userId
 
     try {
       // Try to get the project coding scheme
