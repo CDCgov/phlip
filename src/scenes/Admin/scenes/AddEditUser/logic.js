@@ -1,6 +1,5 @@
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
-import { createAvatarUrl } from 'utils/urlHelper'
 
 export const addUserLogic = createLogic({
   type: types.ADD_USER_REQUEST,

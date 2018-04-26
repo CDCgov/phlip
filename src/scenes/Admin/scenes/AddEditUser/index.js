@@ -26,7 +26,6 @@ import Alert from 'components/Alert'
 import Typography from 'material-ui/Typography'
 import CheckboxLabel from 'components/CheckboxLabel'
 
-
 const rowStyles = {
   paddingBottom: 20
 }
@@ -176,7 +175,7 @@ export class AddEditUser extends Component {
           form="addEditUser"
           handleSubmit={this.handleSubmit}
           asyncValidate={this.validateEmail}
-          initialValues={this.state.selectedUser || {}}
+          initialValues={this.state.selectedUser || { isActive: true }}
           asyncBlurFields={['email']}
           onClose={this.props.onCloseModal}
           width="600px"
@@ -184,17 +183,25 @@ export class AddEditUser extends Component {
           <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
             <Row displayFlex style={{ ...rowStyles, justifyContent: 'space-between' }}>
               {this.state.selectedUser ? <Column style={{ paddingRight: 30 }}>
-                {(this.props.avatar) ? <Tooltip text="Edit photo" placement="top" aria-label="Edit picture" id="edit-picture">
-                  <TextLink
-                    to={{
-                      pathname: `/admin/edit/user/${this.state.selectedUser.id}/avatar`,
-                      state: { isEdit: true, userId: this.state.selectedUser.id, avatar: this.state.selectedUser.avatar }
-                    }}>
-                    <Avatar
-                      cardAvatar
-                      style={{ width: '65px', height: '65px' }}
-                      avatar={this.props.avatar} /></TextLink>
-                </Tooltip>
+                {(this.props.avatar) ? <Tooltip
+                    text="Edit photo"
+                    placement="top"
+                    aria-label="Edit picture"
+                    id="edit-picture">
+                    <TextLink
+                      to={{
+                        pathname: `/admin/edit/user/${this.state.selectedUser.id}/avatar`,
+                        state: {
+                          isEdit: true,
+                          userId: this.state.selectedUser.id,
+                          avatar: this.state.selectedUser.avatar
+                        }
+                      }}>
+                      <Avatar
+                        cardAvatar
+                        style={{ width: '65px', height: '65px' }}
+                        avatar={this.props.avatar} /></TextLink>
+                  </Tooltip>
                   : <ReactFileReader base64={true} fileTypes={['.jpg', 'png']} handleFiles={this.openAvatarForm}>
                     <IconButton
                       color={'#757575'}
@@ -252,7 +259,7 @@ export class AddEditUser extends Component {
                 shrinkLabel
               />
             </Row>
-            <Row displayFlex>
+            <Row displayFlex flex>
               <Column flex style={{ paddingRight: 10 }}>
                 <Field
                   name="role"
@@ -263,18 +270,13 @@ export class AddEditUser extends Component {
                   id="role"
                   style={{ display: 'flex' }} />
               </Column>
-              {this.state.selectedUser
-                ? <Column flex>
-                  <Field name="isActive" component={CheckboxLabel} label="Active" style={{ display: '10px' }} />
-                </Column>
-
-
-                : null}
+              <Column flex>
+                <Field name="isActive" component={CheckboxLabel} label="Active" style={{ display: '10px' }} />
+              </Column>
             </Row>
 
           </Container>
           <Route path="/admin/edit/user/:id/avatar" component={AvatarForm} />
-
         </ModalForm>
       </Fragment>
     )
