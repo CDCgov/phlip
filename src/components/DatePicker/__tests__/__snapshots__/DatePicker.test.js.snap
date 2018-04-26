@@ -13,10 +13,14 @@ exports[`DatePicker component should render correctly 1`] = `
         "shrink": true,
       }
     }
+    InputProps={
+      Object {
+        "onChange": undefined,
+        "value": "10/11/2017",
+      }
+    }
     autoOk={false}
     format="MM/DD/YYYY"
-    invalidDateMessage=""
-    invalidLabel=""
     keyboard={true}
     label="Date picker"
     mask={

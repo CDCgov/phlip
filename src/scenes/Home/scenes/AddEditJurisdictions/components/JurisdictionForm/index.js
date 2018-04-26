@@ -112,7 +112,8 @@ export class JurisdictionForm extends Component {
   }
 
   onSubmitForm = values => {
-    if (Object.values(this.state.errors).length === 0) {
+    const hasErrors = Object.values(this.state.errors).filter(error => error.length > 0).length > 0
+    if (!hasErrors) {
       const jurisdiction = {
         ...values,
         startDate: moment(this.state.startDate).toISOString(),
@@ -234,17 +235,17 @@ export class JurisdictionForm extends Component {
 
     if (value === undefined || value === '' || value === null) {
       errors['startDate'] = 'Required'
-    } else {
-      errors['startDate'] = ''
-    }
-
-    if (new Date(value).getFullYear() < '1850') {
+    } else if (new Date(value).getFullYear() < '1850') {
       errors['startDate'] = 'Minimum year for start date is 1850'
     } else if (new Date(value).getFullYear() > '2050') {
       errors['startDate'] = 'Maximum year for start date is 2050'
+    } else if (new Date(value) > new Date(this.state.endDate)) {
+      errors = {
+        endDate: 'End date must be later than start date',
+        startDate: 'Start date must but earlier than end date'
+      }
     } else {
-      const rangeErrors = validateDateRanges({ ...this.state, startDate: value }, errors)
-      errors = { ...rangeErrors }
+      errors = {}
     }
 
     this.setState({ errors })
@@ -255,29 +256,42 @@ export class JurisdictionForm extends Component {
 
     if (value === undefined || value === '' || value === null) {
       errors['endDate'] = 'Required'
-    } else {
-      errors['endDate'] = ''
-    }
-
-    if (new Date(value).getFullYear() > '2050') {
+    } else if (new Date(value).getFullYear() > '2050') {
       errors['endDate'] = 'Maximum year for end date is 2050'
     } else if (new Date(value).getFullYear() < '1850') {
       errors['endDate'] = 'Minimum year for end date is 1850'
+    } else if (new Date(this.state.startDate) > new Date(value)) {
+      errors = {
+        endDate: 'End date must be later than start date',
+        startDate: 'Start date must but earlier than end date'
+      }
     } else {
-      const rangeErrors = validateDateRanges({ ...this.state, endDate: value }, errors)
-      errors = { ...rangeErrors }
+      errors = {}
     }
 
     this.setState({ errors })
   }
 
+  onInputChange = dateField => event => {
+    this.setState({ [dateField]: event.target.value })
+    if (moment(event.target.value).format() === 'Invalid date' && event.target.value !== '') {
+      this.setState({
+        errors: { ...this.state.errors, [dateField]: 'Invalid date' }
+      })
+    } else {
+      dateField === 'startDate'
+        ? this.validateMinDate(event.target.value)
+        : this.validateMaxDate(event.target.value)
+    }
+  }
+
   onChangeDate = dateField => event => {
     if (event.format() === 'Invalid date') {
-      this.setState({ [dateField]: '' })
+      this.setState({ [dateField]: event })
       if (dateField === 'startDate') this.validateMinDate('')
       else this.validateMaxDate('')
     } else {
-      this.setState({ [dateField]: new Date(event) })
+      this.setState({ [dateField]: event })
       if (dateField === 'startDate') this.validateMinDate(event)
       else this.validateMaxDate(event)
     }
@@ -338,6 +352,7 @@ export class JurisdictionForm extends Component {
                   value={this.state.startDate}
                   autoOk={true}
                   error={this.state.errors.startDate}
+                  onInputChange={this.onInputChange('startDate')}
                 />
               </Column>
               <Column>
@@ -352,6 +367,7 @@ export class JurisdictionForm extends Component {
                   onChange={this.onChangeDate('endDate')}
                   autoOk={true}
                   error={this.state.errors.endDate}
+                  onInputChange={this.onInputChange('endDate')}
                 />
               </Column>
             </Container>
