@@ -169,7 +169,8 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         isChangingQuestion: false,
         unsavedChanges: false,
         savedFailed: false,
-        hasTouchedQuestion: false
+        hasTouchedQuestion: false,
+        userImages: action.payload.userImages ? action.payload.userImages : null
       }
 
     case `${types.ON_APPLY_ANSWER_TO_ALL}_${name}`:

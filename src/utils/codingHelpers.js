@@ -487,10 +487,11 @@ export const getFinalCodedObject = (state, action, isValidation, selectedCategor
   Gets a specific scheme question, checks if it's answered and initializes it by sending a post if it's not. Sends back
   the updated user answers object. Called in Validation/logic and Coding/logic
  */
-export const getSelectedQuestion = async (state, action, api, userId, questionInfo, apiGetMethod) => {
+export const getSelectedQuestion = async (state, action, api, userId, questionInfo, apiGetMethod, userImages) => {
   let errors = {}, newSchemeQuestion = {},
     combinedQuestion = { ...state.scheme.byId[questionInfo.question.id] },
-    updatedScheme = { ...state.scheme }, codedQuestion = {}, updatedState = { ...state }, initialize = true
+    updatedScheme = { ...state.scheme }, codedQuestion = {}, updatedState = { ...state }, initialize = true,
+    newImages = {}
 
   // Get the scheme question from the db in case it has changed
   try {
@@ -502,6 +503,14 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
       byId: {
         ...state.scheme.byId,
         [combinedQuestion.id]: { ...state.scheme.byId[combinedQuestion.id], ...combinedQuestion }
+      }
+    }
+
+    if (action.page === 'validation') {
+      if (newSchemeQuestion.flags.length > 0) {
+        if (!checkIfExists(newSchemeQuestion.flags[0].raisedBy, userImages, 'userId')) {
+          newImages = { ...newImages, [newSchemeQuestion.flags[0].raisedBy.userId]: { ...newSchemeQuestion.flags[0].raisedBy } }
+        }
       }
     }
   } catch (error) {
@@ -537,6 +546,11 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
   if (initialize === true) {
     if (combinedQuestion.isCategoryQuestion === true) {
       for (let question of codedQuestion) {
+        if (question.hasOwnProperty('validatedBy')) {
+          if (!checkIfExists(question.validatedBy, userImages, 'userId') && !checkIfExists(question.validatedBy, newImages, 'userId')) {
+            newImages = { ...newImages, [question.validatedBy.userId]: { ...question.validatedBy } }
+          }
+        }
         if (combinedQuestion.questionType === questionTypes.TEXT_FIELD && question.codedAnswers.length > 0) {
           question.codedAnswers[0].textAnswer = question.codedAnswers[0].textAnswer === null
             ? ''
@@ -554,6 +568,11 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
           ? ''
           : codedQuestion.codedAnswers[0].textAnswer
       }
+      if (codedQuestion.hasOwnProperty('validatedBy')) {
+        if (!checkIfExists(codedQuestion.validatedBy, userImages, 'userId') && !checkIfExists(codedQuestion.validatedBy, newImages, 'userId')) {
+          newImages = { ...newImages, [codedQuestion.validatedBy.userId]: { ...codedQuestion.validatedBy } }
+        }
+      }
       updatedState = {
         ...updatedState,
         ...updateCodedQuestion(updatedState, combinedQuestion.id, initializeValues(codedQuestion))
@@ -566,7 +585,8 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
     scheme: updatedScheme,
     selectedCategory: questionInfo.selectedCategory,
     selectedCategoryId: questionInfo.selectedCategoryId,
-    categories: questionInfo.categories
+    categories: questionInfo.categories,
+    newImages
   }
 
   return {

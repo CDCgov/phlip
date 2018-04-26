@@ -48,7 +48,7 @@ export class Coding extends Component {
         },
         ...flagInfo
       })
-      this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+      this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.selectedCategoryId, this.props.page)
     }
     this.onChangeTouchedStatus()
   }
