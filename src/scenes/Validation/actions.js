@@ -13,16 +13,11 @@ export const getValidationOutlineRequest = (projectId, jurisdictionId) => ({
   jurisdictionId
 })
 
-export const getUserValidatedQuestionsRequest = (projectId, jurisdictionId) => ({
+export const getUserValidatedQuestionsRequest = (projectId, jurisdictionId, page) => ({
   type: types.GET_USER_VALIDATED_QUESTIONS_REQUEST,
   projectId,
-  jurisdictionId
-})
-
-export const getCodedUsersAnswers = (projectId, jurisdictionId) => ({
-  type: types.GET_CODED_USERS_LIST_REQUEST,
-  projectId,
-  jurisdictionId
+  jurisdictionId,
+  page
 })
 
 export const clearFlag = (flagId, projectId, jurisdictionId, questionId) => ({

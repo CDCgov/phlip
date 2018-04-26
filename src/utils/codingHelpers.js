@@ -612,10 +612,35 @@ export const getCodedValidatedQuestions = async (projectId, jurisdictionId, user
   } catch (e) {
     return {
       codedValErrors: {
-        codedValQuestions: 'We couldn\'t get your coded questions for this project and jurisdiction, so you won\'t be able to answer quetions.'
+        codedValQuestions: 'We couldn\'t get your answered questions for this project and jurisdiction, so you won\'t be able to answer questions.'
       }
     }
   }
+}
+
+export const getSchemeQuestionAndUpdate = async (projectId, state, question, api) => {
+  let updatedSchemeQuestion = {}, schemeErrors = {}
+
+  // Get scheme question in case there are changes
+  try {
+    updatedSchemeQuestion = await api.getSchemeQuestion(question.id, projectId)
+  } catch (error) {
+    updatedSchemeQuestion = { ...question }
+    schemeErrors = {
+      updatedSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
+    }
+  }
+
+  // Update scheme with new scheme question
+  const updatedScheme = {
+    ...state.scheme,
+    byId: {
+      ...state.scheme.byId,
+      [updatedSchemeQuestion.id]: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion }
+    }
+  }
+
+  return { updatedScheme, schemeErrors, updatedSchemeQuestion }
 }
 
 export const generateError = errorsObj => {

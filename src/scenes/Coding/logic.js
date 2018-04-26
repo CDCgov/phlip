@@ -1,6 +1,11 @@
 import { createLogic } from 'redux-logic'
 import {
-  initializeUserAnswers, getSelectedQuestion, initializeNextQuestion, getSchemeAndInitialize, getCodedValidatedQuestions
+  initializeUserAnswers,
+  getSelectedQuestion,
+  initializeNextQuestion,
+  getSchemeAndInitialize,
+  getCodedValidatedQuestions,
+  getSchemeQuestionAndUpdate
 } from 'utils/codingHelpers'
 import * as types from './actionTypes'
 
@@ -69,53 +74,20 @@ export const getQuestionLogic = createLogic({
 export const getUserCodedQuestionsLogic = createLogic({
   type: types.GET_USER_CODED_QUESTIONS_REQUEST,
   async process({ action, api, getState }, dispatch, done) {
-    let codedQuestions = []
     const userId = getState().data.user.currentUser.id
     const state = getState().scenes.coding
-    let question = { ...state.question }
-    let otherUpdates = {}, errors = {}, updatedSchemeQuestion = {}, payload = {}
+    const question = action.question, otherUpdates = action.otherUpdates
+    let errors = {}, payload = {}
 
-    // Get user coded questions for a project and jurisdiction
-    try {
-      codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
-    } catch (e) {
-      errors = { codedQuestions: 'We couldn\'t get your coded questions for this project and jurisdiction, so you won\'t be able to answer questions.' }
-    }
+    const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(
+      action.projectId, action.jurisdictionId, userId, api.getUserCodedQuestions
+    )
 
-    // If the current question is a category question, then change the current question to parent
-    if (state.question.isCategoryQuestion) {
-      question = state.scheme.byId[question.parentId]
-      otherUpdates = {
-        currentIndex: state.scheme.order.findIndex(id => id === question.id),
-        categories: undefined,
-        selectedCategory: 0,
-        selectedCategoryId: null
-      }
-    }
-
-    // Get scheme question in case there are changes
-    try {
-      updatedSchemeQuestion = await api.getSchemeQuestion(question.id, action.projectId)
-    } catch (error) {
-      updatedSchemeQuestion = { ...question }
-      errors = {
-        ...errors,
-        updatedSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
-      }
-    }
-
-    // Update scheme with new scheme question
-    const updatedScheme = {
-      ...state.scheme,
-      byId: {
-        ...state.scheme.byId,
-        [updatedSchemeQuestion.id]: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion }
-      }
-    }
+    const { updatedScheme, schemeErrors, updatedSchemeQuestion } = await getSchemeQuestionAndUpdate(action.projectId, state, question, api)
 
     // Update the user answers object
     const userAnswers = initializeUserAnswers(
-      [initializeNextQuestion(updatedSchemeQuestion), ...codedQuestions], updatedScheme.byId, userId
+      [initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions], updatedScheme.byId, userId
     )
 
     payload = {
@@ -123,7 +95,7 @@ export const getUserCodedQuestionsLogic = createLogic({
       userAnswers,
       scheme: updatedScheme,
       otherUpdates,
-      errors: { ...errors }
+      errors: { ...errors, ...codedValErrors, ...schemeErrors }
     }
 
     dispatch({

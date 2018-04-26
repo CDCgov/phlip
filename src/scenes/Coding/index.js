@@ -10,7 +10,7 @@ export class Coding extends Component {
   }
 
   componentWillMount() {
-    this.props.actions.getCodingOutlineRequest(this.props.projectId, this.props.jurisdictionId, 'coding')
+    this.props.actions.getCodingOutlineRequest(this.props.projectId, this.props.jurisdictionId, this.props.page)
     this.onShowPageLoader()
   }
 
@@ -25,7 +25,7 @@ export class Coding extends Component {
   onJurisdictionChange = (event) => {
     this.setState({ selectedJurisdiction: event.target.value })
     this.props.actions.onChangeJurisdiction(event.target.value, this.props.jurisdictionsList)
-    this.props.actions.getUserCodedQuestions(this.props.projectId, event.target.value)
+    this.props.actions.getUserCodedQuestions(this.props.projectId, event.target.value, this.props.page)
     this.onShowPageLoader()
   }
 

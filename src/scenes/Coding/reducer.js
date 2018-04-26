@@ -28,7 +28,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         isSchemeEmpty: action.payload.isSchemeEmpty,
         schemeError: null,
         getQuestionErrors: error.length > 0 ? error : null,
-        codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
+        codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false
       }
@@ -89,7 +89,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         question: action.payload.question,
         scheme: action.payload.scheme,
         getQuestionErrors: errors.length > 0 ? errors : null,
-        codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
+        codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
         unsavedChanges: false,

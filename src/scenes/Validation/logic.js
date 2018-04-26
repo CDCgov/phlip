@@ -2,8 +2,15 @@ import { createLogic } from 'redux-logic'
 import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData } from 'react-sortable-tree'
 import {
-  getFinalCodedObject, initializeUserAnswers, getSelectedQuestion, checkIfExists,
-  initializeNextQuestion, initializeValues, getSchemeAndInitialize, getCodedValidatedQuestions
+  getFinalCodedObject,
+  initializeUserAnswers,
+  getSelectedQuestion,
+  checkIfExists,
+  initializeNextQuestion,
+  initializeValues,
+  getSchemeAndInitialize,
+  getCodedValidatedQuestions,
+  getSchemeQuestionAndUpdate
 } from 'utils/codingHelpers'
 import { normalize, sortList } from 'utils'
 import * as types from './actionTypes'
@@ -211,52 +218,19 @@ export const getQuestionLogicValidation = createLogic({
 export const getUserValidatedQuestionsLogic = createLogic({
   type: types.GET_USER_VALIDATED_QUESTIONS_REQUEST,
   async process({ action, api, getState }, dispatch, done) {
-    let validatedQuestions = []
     const userId = getState().data.user.currentUser.id
     const state = getState().scenes.validation
-    let question = { ...state.question }
-    let otherUpdates = {}, errors = {}, payload = {}, updatedSchemeQuestion = {}
+    const question = action.question, otherUpdates = action.otherUpdates
+    let errors = {}, payload = {}, codersForProject = [], uniqueUsersWithAvatar = []
 
-    // Get user coded questions for a project and jurisdiction
-    try {
-      validatedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
-    } catch (e) {
-      errors = { codedQuestions: 'We couldn\'t get the validated questions for this project, so you won\'t be able to validate questions.' }
-    }
+    const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(
+      action.projectId, action.jurisdictionId, userId, api.getValidatedQuestions
+    )
 
-    // If the current question is a category question, then change the current question to parent
-    if (state.question.isCategoryQuestion) {
-      question = state.scheme.byId[question.parentId]
-      otherUpdates = {
-        currentIndex: state.scheme.order.findIndex(id => id === question.id),
-        categories: undefined,
-        selectedCategory: 0,
-        selectedCategoryId: null
-      }
-    }
-
-    // Get scheme question in case there are changes
-    try {
-      updatedSchemeQuestion = await api.getSchemeQuestion(question.id, action.projectId)
-    } catch (error) {
-      updatedSchemeQuestion = { ...question }
-      errors = {
-        ...errors,
-        updatedSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
-      }
-    }
-
-    // Update scheme with new scheme question
-    const updatedScheme = {
-      ...state.scheme,
-      byId: {
-        ...state.scheme.byId,
-        [updatedSchemeQuestion.id]: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion }
-      }
-    }
+    const { updatedScheme, schemeErrors, updatedSchemeQuestion } = await getSchemeQuestionAndUpdate(action.projectId, state, question, api)
 
     const userAnswers = initializeUserAnswers(
-      [initializeNextQuestion(updatedSchemeQuestion), ...validatedQuestions], updatedScheme.byId, userId
+      [initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions], updatedScheme.byId, userId
     )
 
     const { codedQuestionObj, coderErrors } = await getCoderInformation({
@@ -265,39 +239,27 @@ export const getUserValidatedQuestionsLogic = createLogic({
       questionId: updatedSchemeQuestion.id
     })
 
-    let codersForProject = []
-    //Get validatedByImages
     try {
       codersForProject = await api.getCodersForProject(action.projectId)
     } catch (e) {
-      throw { error: 'failed to load coders for project' }
+      errors = { ...errors, getCoder: 'failed to load coders for project' }
     }
 
-    const uniqueUserIds = codersForProject.map((coders) => {
-      return coders.userId
-    })
-
-    const uniqueValidatedUsersIds = validatedQuestions.map((validatedQuestion) => {
-      return validatedQuestion.validatedBy.userId
-    }).filter((elem, pos, arr) => {
-      return arr.indexOf(elem) == pos
-    })
+    const uniqueUserIds = codersForProject.map((coders) => coders.userId)
+    const uniqueValidatedUsersIds = codedValQuestions
+      .map((validatedQuestion) => validatedQuestion.validatedBy.userId)
+      .filter((elem, pos, arr) => arr.indexOf(elem) == pos)
 
     const combinedUsersOnProject = [...uniqueUserIds, ...uniqueValidatedUsersIds]
-
-    let uniqueUsersWithAvatar = []
-    const combinedUniqueUsersOnProject = combinedUsersOnProject.filter((elem, pos, arr) => {
-      return arr.indexOf(elem) == pos
-    })
+    const combinedUniqueUsersOnProject = combinedUsersOnProject.filter((elem, pos, arr) => arr.indexOf(elem) == pos)
 
     for (let userId of combinedUniqueUsersOnProject) {
       try {
         const avatar = await api.getUserImage(userId)
         let userWithId = { id: userId, avatar }
         uniqueUsersWithAvatar = [...uniqueUsersWithAvatar, { ...userWithId }]
-
       } catch (e) {
-        throw { error: 'failed to get validatedBy avatar image' }
+        errors = { ...errors, valImage: 'failed to get validatedBy avatar image' }
       }
     }
     const userImages = normalize.arrayToObject(uniqueUsersWithAvatar)
@@ -308,7 +270,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
       scheme: updatedScheme,
       otherUpdates,
       mergedUserQuestions: codedQuestionObj,
-      errors: { ...errors, ...coderErrors },
+      errors: { ...errors, ...coderErrors, ...schemeErrors, ...codedValErrors },
       userImages
     }
 

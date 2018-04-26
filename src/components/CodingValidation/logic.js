@@ -77,7 +77,8 @@ const answerQuestionLogic = createLogic({
       ? { create: api.answerValidatedQuestion, update: api.updateValidatedQuestion }
       : { create: api.answerCodedQuestion, update: api.updateCodedQuestion }
 
-    const questionObj = getFinalCodedObject(state, { ...action, userId }, action.page === 'validation', action.selectedCategoryId)
+    const questionObj = getFinalCodedObject(state, { ...action, userId }, action.page ===
+      'validation', action.selectedCategoryId)
 
     const answerObject = {
       questionId: action.questionId,
@@ -268,4 +269,36 @@ const sendMessageLogic = createLogic({
   }
 })
 
-export default [outlineLogic, getQuestionLogic, answerQuestionLogic, applyAnswerToAllLogic, sendMessageLogic]
+const getCodedValQuestionsLogic = createLogic({
+  type: [codingTypes.GET_USER_CODED_QUESTIONS_REQUEST, valTypes.GET_USER_VALIDATED_QUESTIONS_REQUEST],
+  transform({ getState, action }, next) {
+    const state = getState().scenes[action.page]
+    let question = { ...state.question }, otherUpdates = {}
+
+    // If the current question is a category question, then change the current question to parent
+    if (state.question.isCategoryQuestion) {
+      question = state.scheme.byId[question.parentId]
+      otherUpdates = {
+        currentIndex: state.scheme.order.findIndex(id => id === question.id),
+        categories: undefined,
+        selectedCategory: 0,
+        selectedCategoryId: null
+      }
+    }
+
+    next({
+      ...action,
+      question,
+      otherUpdates
+    })
+  }
+})
+
+export default [
+  outlineLogic,
+  getQuestionLogic,
+  answerQuestionLogic,
+  applyAnswerToAllLogic,
+  sendMessageLogic,
+  getCodedValQuestionsLogic
+]
