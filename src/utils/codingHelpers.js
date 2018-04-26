@@ -1,6 +1,8 @@
 import { normalize } from 'utils'
 import sortList from 'utils/sortList'
 import * as questionTypes from 'components/CodingValidation/constants'
+import { getTreeFromFlatData } from 'react-sortable-tree'
+import { getQuestionNumbers, sortQuestions } from 'utils/treeHelpers'
 
 export const initializeValues = question => {
   const { codedAnswers, ...initializedQuestion } = {
@@ -572,6 +574,47 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
     currentIndex: questionInfo.index,
     updatedState,
     errors
+  }
+}
+
+export const getSchemeAndInitialize = async (projectId, api) => {
+  let scheme = {}, payload = { firstQuestion: {}, tree: [], order: [], questionsById: {} }
+  try {
+    scheme = await api.getScheme(projectId)
+
+    if (scheme.schemeQuestions.length === 0) {
+      return { isSchemeEmpty: true, ...payload }
+    }
+
+    // Create one array with the outline information in the question information
+    const merge = scheme.schemeQuestions.reduce((arr, q) => {
+      return [...arr, { ...q, ...scheme.outline[q.id] }]
+    }, [])
+
+    // Create a sorted question tree with sorted children with question numbering and order
+    const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
+    const questionsById = normalize.arrayToObject(questionsWithNumbers)
+    const firstQuestion = questionsWithNumbers[0]
+    sortList(firstQuestion.possibleAnswers, 'order', 'asc')
+
+    return { order, tree, questionsById, firstQuestion, outline: scheme.outline, isSchemeEmpty: false }
+
+  } catch (error) {
+    throw { error: 'Failed to get coding scheme.' }
+  }
+}
+
+export const getCodedValidatedQuestions = async (projectId, jurisdictionId, userId, apiMethod) => {
+  let codedValQuestions = [], codedValErrors = {}
+  try {
+    codedValQuestions = await apiMethod({ userId, projectId, jurisdictionId })
+    return { codedValQuestions, codedValErrors }
+  } catch (e) {
+    return {
+      codedValErrors: {
+        codedValQuestions: 'We couldn\'t get your coded questions for this project and jurisdiction, so you won\'t be able to answer quetions.'
+      }
+    }
   }
 }
 

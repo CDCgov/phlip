@@ -21,7 +21,7 @@ const outlineLogic = createLogic({
         userAnswers: {},
         mergedUserQuestions: {},
         categories: undefined,
-        areJurisdictionsEmpty: false,
+        areJurisdictionsEmpty: !action.jurisdictionId,
         isSchemeEmpty: false,
         schemeError: null,
         isLoadingPage: false,

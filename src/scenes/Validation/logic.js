@@ -3,7 +3,7 @@ import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
 import { getTreeFromFlatData } from 'react-sortable-tree'
 import {
   getFinalCodedObject, initializeUserAnswers, getSelectedQuestion, checkIfExists,
-  initializeNextQuestion, initializeValues
+  initializeNextQuestion, initializeValues, getSchemeAndInitialize, getCodedValidatedQuestions
 } from 'utils/codingHelpers'
 import { normalize, sortList } from 'utils'
 import * as types from './actionTypes'
@@ -74,8 +74,6 @@ const getCoderInformation = async ({ api, action, questionId }) => {
   return { codedQuestionObj, coderErrors }
 }
 
-//TODO: const getAvatarForValidatedBy = async ({}) 
-
 /*
   Some of the reusable functions need to know whether we're on the validation screen or not, so that's what this is for
  */
@@ -96,96 +94,72 @@ export const updateValidatorLogic = createLogic({
 export const getValidationOutlineLogic = createLogic({
   type: types.GET_VALIDATION_OUTLINE_REQUEST,
   async process({ action, getState, api }, dispatch, done) {
-    let scheme = {}, validatedQuestions = [], errors = {}, payload = action.payload
+    let errors = {}, payload = action.payload, uniqueUsersWithAvatar = [], codersForProject = []
     const userId = action.userId
 
     try {
       // Try to get the project coding scheme
-      scheme = await api.getScheme(action.projectId)
+      const { firstQuestion, tree, order, questionsById, outline, isSchemeEmpty } = await getSchemeAndInitialize(action.projectId, api)
 
       // Get user coded questions for currently selected jurisdiction
-      if (action.jurisdictionId) {
-        if (scheme.schemeQuestions.length === 0) {
-          payload = { isSchemeEmpty: true, areJurisdictionsEmpty: false }
-        } else {
+      if (action.payload.areJurisdictionsEmpty || isSchemeEmpty) {
+        payload = { ...payload, isSchemeEmpty }
+      } else {
+        const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(
+          action.projectId, action.jurisdictionId, userId, api.getValidatedQuestions
+        )
+
+        // Initialize the user answers object
+        const userAnswers = initializeUserAnswers(
+          [initializeNextQuestion(firstQuestion), ...codedValQuestions], questionsById, userId
+        )
+        // Get all the coded questions for this question
+        const { codedQuestionObj, coderErrors } = await getCoderInformation({
+          api,
+          action,
+          questionId: firstQuestion.id
+        })
+
+        try {
+          codersForProject = await api.getCodersForProject(action.projectId)
+        } catch (e) {
+          errors = { ...errors, getCoders: 'failed to load coders for project' }
+        }
+        const uniqueUserIds = codersForProject.map(coders => coders.userId)
+
+        const uniqueValidatedUsersIds = codedValQuestions
+          .map((validatedQuestion) => validatedQuestion.validatedBy.userId)
+          .filter((elem, pos, arr) => arr.indexOf(elem) == pos)
+
+        const combinedUsersOnProject = [...uniqueUserIds, ...uniqueValidatedUsersIds]
+
+        const combinedUniqueUsersOnProject = combinedUsersOnProject
+          .filter((elem, pos, arr) => arr.indexOf(elem) == pos)
+
+        for (let userId of combinedUniqueUsersOnProject) {
           try {
-            /* this is just here until the api routes are fixed*/
-            validatedQuestions = await api.getValidatedQuestions(action.projectId, action.jurisdictionId)
+            const avatar = await api.getUserImage(userId)
+            let userWithId = { id: userId, avatar }
+            uniqueUsersWithAvatar = [...uniqueUsersWithAvatar, { ...userWithId }]
           } catch (e) {
-            errors = {
-              ...errors,
-              codedQuestions: 'We couldn\'t get the validated questions for this project, so you won\'t be able to validate questions.'
-            }
-          }
-          // Create one array with the outline information in the question information
-          const merge = scheme.schemeQuestions.reduce((arr, q) => {
-            return [...arr, { ...q, ...scheme.outline[q.id] }]
-          }, [])
-
-          // Create a sorted question tree with sorted children with question numbering and order
-          const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
-          const questionsById = normalize.arrayToObject(questionsWithNumbers)
-          const firstQuestion = questionsWithNumbers[0]
-
-          const userAnswers = initializeUserAnswers(
-            [initializeNextQuestion(firstQuestion), ...validatedQuestions], questionsById, userId
-          )
-          sortList(firstQuestion.possibleAnswers, 'order', 'asc')
-
-          // Get all the coded questions for this question
-          const { codedQuestionObj, coderErrors } = await getCoderInformation({
-            api,
-            action,
-            questionId: firstQuestion.id
-          })
-
-          let codersForProject = []
-          try {
-            codersForProject = await api.getCodersForProject(action.projectId)
-          } catch (e) {
-            throw { error: 'failed to load coders for project' }
-          }
-          const uniqueUserIds = codersForProject.map(coders => coders.userId)
-
-          const uniqueValidatedUsersIds = validatedQuestions
-            .map((validatedQuestion) => validatedQuestion.validatedBy.userId)
-            .filter((elem, pos, arr) => arr.indexOf(elem) == pos)
-
-          const combinedUsersOnProject = [...uniqueUserIds, ...uniqueValidatedUsersIds]
-          let uniqueUsersWithAvatar = []
-          const combinedUniqueUsersOnProject = combinedUsersOnProject.filter((elem, pos, arr) => arr.indexOf(elem) ==
-            pos)
-
-          for (let userId of combinedUniqueUsersOnProject) {
-            try {
-              const avatar = await api.getUserImage(userId)
-              let userWithId = { id: userId, avatar }
-              uniqueUsersWithAvatar = [...uniqueUsersWithAvatar, { ...userWithId }]
-            } catch (e) {
-              throw { error: 'failed to get validatedBy avatar image' }
-            }
-          }
-
-          const userImages = normalize.arrayToObject(uniqueUsersWithAvatar)
-          payload = {
-            ...payload,
-            outline: scheme.outline,
-            scheme: { byId: questionsById, tree, order },
-            userAnswers,
-            question: firstQuestion,
-            mergedUserQuestions: codedQuestionObj,
-            userImages,
-            errors: { ...errors, ...coderErrors }
+            errors = { ...errors, valImage: 'failed to get validatedBy avatar image' }
           }
         }
-      } else {
-        // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
-        if (scheme.schemeQuestions.length === 0) {
-          payload = { ...payload, isSchemeEmpty: true, areJurisdictionsEmpty: true }
-        } else {
-          payload = { ...payload, isSchemeEmpty: false, areJurisdictionsEmpty: true }
+
+        const userImages = normalize.arrayToObject(uniqueUsersWithAvatar)
+
+        payload = {
+          ...payload,
+          outline,
+          scheme: { byId: questionsById, tree, order },
+          userAnswers,
+          mergedUserQuestions: codedQuestionObj,
+          userImages,
+          question: firstQuestion,
+          errors: { ...errors, ...codedValErrors, ...coderErrors }
         }
       }
+
       dispatch({
         type: types.GET_VALIDATION_OUTLINE_SUCCESS,
         payload

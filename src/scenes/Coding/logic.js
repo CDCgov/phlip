@@ -1,73 +1,41 @@
 import { createLogic } from 'redux-logic'
-import { sortQuestions, getQuestionNumbers } from 'utils/treeHelpers'
-import { getTreeFromFlatData } from 'react-sortable-tree'
 import {
-  getFinalCodedObject,
-  initializeUserAnswers,
-  getSelectedQuestion,
-  initializeNextQuestion,
-  initializeValues
+  initializeUserAnswers, getSelectedQuestion, initializeNextQuestion, getSchemeAndInitialize, getCodedValidatedQuestions
 } from 'utils/codingHelpers'
-import { normalize, sortList } from 'utils'
 import * as types from './actionTypes'
 
 export const getOutlineLogic = createLogic({
   type: types.GET_CODING_OUTLINE_REQUEST,
   async process({ action, getState, api }, dispatch, done) {
-    let scheme = {}, errors = {}, codedQuestions = [], payload = action.payload
+    let payload = action.payload
     const userId = action.userId
 
     // Try to get the project coding scheme
     try {
-      scheme = await api.getScheme(action.projectId)
+      const { firstQuestion, tree, order, outline, questionsById, isSchemeEmpty } = await getSchemeAndInitialize(action.projectId, api)
+
       // Get user coded questions for currently selected jurisdiction
-      if (action.jurisdictionId) {
-        if (scheme.schemeQuestions.length === 0) {
-          payload = { isSchemeEmpty: true, areJurisdictionsEmpty: false }
-        } else {
-          try {
-            codedQuestions = await api.getUserCodedQuestions(userId, action.projectId, action.jurisdictionId)
-          } catch (e) {
-            errors = {
-              codedQuestions: `We couldn\'t get your coded questions for this project and jurisdiction, 
-                               so you won\'t be able to answer quetions.`
-            }
-          }
-
-          // Create one array with the outline information in the question information
-          const merge = scheme.schemeQuestions.reduce((arr, q) => {
-            return [...arr, { ...q, ...scheme.outline[q.id] }]
-          }, [])
-
-          // Create a sorted question tree with sorted children with question numbering and order
-          const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
-          const questionsById = normalize.arrayToObject(questionsWithNumbers)
-          const firstQuestion = questionsWithNumbers[0]
-
-          // Initialize the user answers object
-          const userAnswers = initializeUserAnswers(
-            [initializeNextQuestion(firstQuestion), ...codedQuestions], questionsById, userId
-          )
-
-          sortList(firstQuestion.possibleAnswers, 'order', 'asc')
-          payload = {
-            ...payload,
-            outline: scheme.outline,
-            scheme: { byId: questionsById, tree, order },
-            userAnswers,
-            question: firstQuestion,
-            errors: { ...errors }
-          }
-        }
+      if (action.payload.areJurisdictionsEmpty || isSchemeEmpty) {
+        payload = { ...payload, isSchemeEmpty }
       } else {
-        // Check if the scheme is empty, if it is, there's nothing to do so send back empty status
-        if (scheme.schemeQuestions.length === 0) {
-          payload = { ...payload, isSchemeEmpty: true, areJurisdictionsEmpty: true }
-        } else {
-          payload = { ...payload, isSchemeEmpty: false, areJurisdictionsEmpty: true }
+        const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(
+          action.projectId, action.jurisdictionId, userId, api.getUserCodedQuestions
+        )
+
+        // Initialize the user answers object
+        const userAnswers = initializeUserAnswers(
+          [initializeNextQuestion(firstQuestion), ...codedValQuestions], questionsById, userId
+        )
+
+        payload = {
+          ...payload,
+          outline: outline,
+          scheme: { byId: questionsById, tree, order },
+          userAnswers,
+          question: firstQuestion,
+          errors: { ...codedValErrors }
         }
       }
-
       dispatch({
         type: types.GET_CODING_OUTLINE_SUCCESS,
         payload
@@ -97,54 +65,6 @@ export const getQuestionLogic = createLogic({
     return await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getCodedQuestion)
   }
 })
-
-/*export const sendMessageInQueue = createLogic({
-  type: types.SEND_QUEUE_REQUESTS,
-  validate({ getState, action }, allow, reject) {
-    const messageQueue = getState().scenes.coding.messageQueue
-    const messageToSend = messageQueue.find(message => {
-      if (message.hasOwnProperty('categoryId')) {
-        return message.questionId === action.payload.questionId && action.payload.selectedCategoryId ===
-          message.categoryId
-      } else {
-        return message.questionId === action.payload.questionId
-      }
-    })
-    if (messageQueue.length > 0 && messageToSend !== undefined) {
-      allow({ ...action, message: messageToSend })
-    } else {
-      reject()
-    }
-  },
-  async process({ getState, action, api }, dispatch, done) {
-    try {
-      const respCodedQuestion = await api.updateCodedQuestion({
-        ...action.message,
-        questionObj: { ...action.message.questionObj, id: action.payload.id }
-      })
-
-      dispatch({
-        type: types.SAVE_USER_ANSWER_SUCCESS,
-        payload: {
-          ...respCodedQuestion,
-          questionId: action.payload.questionId,
-          selectedCategoryId: action.payload.selectedCategoryId
-        }
-      })
-
-      dispatch({
-        type: types.REMOVE_REQUEST_FROM_QUEUE,
-        payload: { questionId: action.payload.questionId, categoryId: action.payload.selectedCategoryId }
-      })
-    } catch (e) {
-      dispatch({
-        type: types.SAVE_USER_ANSWER_FAIL,
-        payload: { error: 'Could not update answer', isApplyAll: false }
-      })
-    }
-    done()
-  }
-})*/
 
 export const getUserCodedQuestionsLogic = createLogic({
   type: types.GET_USER_CODED_QUESTIONS_REQUEST,
@@ -243,6 +163,5 @@ export default [
   getOutlineLogic,
   getQuestionLogic,
   getUserCodedQuestionsLogic,
-  sendMessageInQueue,
   saveRedFlagLogic
 ]

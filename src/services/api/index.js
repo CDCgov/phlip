@@ -181,7 +181,7 @@ export default {
   },
 
   // Gets user coded questions for a project and jurisdiction, called in Coding/logic
-  getUserCodedQuestions(userId, projectId, jurisdictionId) {
+  getUserCodedQuestions({ userId, projectId, jurisdictionId }) {
     return api.get(`/users/${userId}/projects/${projectId}/jurisdictions/${jurisdictionId}/codedquestions`)
       .then(res => res.data)
   },
@@ -221,7 +221,7 @@ export default {
   },
 
   // Gets all validated questions for a jurisdiction and project, called in Validation/logic
-  getValidatedQuestions(projectId, jurisdictionId) {
+  getValidatedQuestions({ projectId, jurisdictionId }) {
     return api.get(`/projects/${projectId}/jurisdictions/${jurisdictionId}/validatedquestions`).then(res => res.data)
   },
 
