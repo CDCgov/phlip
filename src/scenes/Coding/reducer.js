@@ -71,7 +71,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.ON_SAVE_RED_FLAG_FAIL:
       return {
         ...state,
-        saveFlagErrorContent: 'We couldn\'t save the red flag for this question.'
+        saveFlagErrorContent: 'We couldn\'t save the red flag for this question.',
+        saveFailed: true
       }
 
     case types.ON_SAVE_FLAG:
@@ -114,7 +115,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.ON_SAVE_RED_FLAG_REQUEST:
       return {
         ...state,
-        unsavedChanges: true
+        unsavedChanges: true,
+        saveFailed: false
       }
 
     default:

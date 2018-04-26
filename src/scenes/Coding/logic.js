@@ -107,7 +107,7 @@ export const getUserCodedQuestionsLogic = createLogic({
 })
 
 // Save red flag logic
-export const saveRedFlagLogic = createLogic({
+const saveRedFlagLogic = createLogic({
   type: types.ON_SAVE_RED_FLAG_REQUEST,
   async process({ action, api }, dispatch, done) {
     try {
