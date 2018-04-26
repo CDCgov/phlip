@@ -107,6 +107,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
             minDate="01/01/1850"
             name="startDate"
             onChange={[Function]}
+            onInputChange={[Function]}
             required={true}
           />
         </Column>
@@ -127,6 +128,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
             minDate="01/01/1850"
             name="endDate"
             onChange={[Function]}
+            onInputChange={[Function]}
             required={true}
           />
         </Column>
