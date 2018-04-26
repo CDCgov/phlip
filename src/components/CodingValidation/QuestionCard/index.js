@@ -30,7 +30,8 @@ export class QuestionCard extends Component {
     this.state = {
       categoryToUncheck: {},
       confirmCategoryUncheckOpen: false,
-      isSaving: false
+      isSaving: false,
+      clearAnswerAlertOpen: false
     }
   }
 
@@ -70,7 +71,8 @@ export class QuestionCard extends Component {
   onCancel = () => {
     this.setState({
       confirmCategoryUncheckOpen: false,
-      categoryToUncheck: {}
+      categoryToUncheck: {},
+      clearAnswerAlertOpen: false
     })
   }
 
@@ -92,6 +94,12 @@ export class QuestionCard extends Component {
         : 0
   }
 
+  onClearAnswer = () => {
+    this.setState({
+      clearAnswerAlertOpen: true
+    })
+  }
+
   render() {
     const questionContentProps = {
       onChange: this.onChangeAnswer,
@@ -106,8 +114,7 @@ export class QuestionCard extends Component {
       isValidation: this.props.isValidation,
       mergedUserQuestions: this.props.mergedUserQuestions,
       disableAll: this.props.disableAll,
-      userImages: this.props.userImages,
-      onBlurText: this.props.onSave
+      userImages: this.props.userImages
     }
 
     const alertActions = [
@@ -123,11 +130,29 @@ export class QuestionCard extends Component {
       }
     ]
 
+    const clearAnswerActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.onCancel
+      },
+      {
+        value: 'Clear answer',
+        type: 'button',
+        onClick: () => { this.onCancel(); this.props.onClearAnswer() }
+      }
+    ]
+
     return (
       <Row displayFlex style={{ flex: '1 0 50%' }}>
         <Alert actions={alertActions} open={this.state.confirmCategoryUncheckOpen}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             Unselecting a category will remove any answers associated to this category. Do you wish to continue?
+          </Typography>
+        </Alert>
+        <Alert actions={clearAnswerActions} open={this.state.clearAnswerAlertOpen}>
+          <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+            Are you sure you want to clear your answer to this question?
           </Typography>
         </Alert>
         <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
@@ -144,7 +169,7 @@ export class QuestionCard extends Component {
                 <Row displayFlex style={{ marginLeft: this.getMargin() }}>
                   {this.props.question.questionType !== questionTypes.CATEGORY &&
                   <IconButton
-                    onClick={this.props.onClearAnswer}
+                    onClick={this.onClearAnswer}
                     aria-label="Clear answer"
                     tooltipText="Clear answer"
                     id="clear-answer"
