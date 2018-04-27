@@ -48,7 +48,7 @@ export class Home extends Component {
     })
   }
 
-  onChooseExport = async type => {
+  getExport = async type => {
     const resp = await api.exportData(this.state.projectToExport.id, type)
     const csvBlob = new Blob([resp], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(csvBlob)
@@ -56,9 +56,15 @@ export class Home extends Component {
     this.exportRef.download = `${this.state.projectToExport.name}-${type}-export.csv`
     this.exportRef.click()
     window.URL.revokeObjectURL(url)
-    
+    this.clearProjectExport()
+  }
+
+  onChooseExport = type => {
+    this.setState({ exportDialogOpen: false }, () => this.getExport(type))
+  }
+
+  clearProjectExport = () => {
     this.setState({
-      exportDialogOpen: false,
       projectToExport: null
     })
   }
