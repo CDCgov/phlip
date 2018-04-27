@@ -100,9 +100,9 @@ export const withCodingValidation = (WrappedComponent, actions) => {
         navOpen: false,
         applyAllAlertOpen: false,
         showSchemeError: false,
-        nextQuestionProps: [],
+        changeProps: [],
         stillSavingAlertOpen: false,
-        nextQuestionMethod: null
+        changeMethod: null
       }
 
       this.modalActions = [
@@ -251,25 +251,33 @@ export const withCodingValidation = (WrappedComponent, actions) => {
     onShowStillSavingAlert = (question, method) => {
       this.setState({
         stillSavingAlertOpen: true,
-        nextQuestionProps: typeof question === 'object' ? [question] : [this.props.questionOrder[question], question],
-        nextQuestionMethod: { type: 'question', method: method }
+        changeProps: typeof question === 'object' ? [question] : [this.props.questionOrder[question], question],
+        changeMethod: { type: 0, method: method }
       })
     }
 
     onCancelStillSavingAlert = () => {
       this.setState({
-        nextQuestionProps: [],
+        changeProps: [],
         stillSavingAlertOpen: false,
-        nextQuestionMethod: {}
+        changeMethod: {}
       })
     }
 
     onContinueStillSavingAlert = () => {
-      if (this.state.nextQuestionMethod.type === 'question') {
-        this.state.nextQuestionMethod.method(...this.state.nextQuestionProps, this.props.projectId, this.props.jurisdictionId, this.props.page)
+      // question changing
+      if (this.state.changeMethod.type === 0) {
+        this.state.changeMethod.method(...this.state.changeProps, this.props.projectId, this.props.jurisdictionId, this.props.page)
+        this.onShowQuestionLoader()
+        // jurisdiction changing
+      } else if (this.state.changeMethod.type === 1) {
+        this.setState({ selectedJurisdiction: this.state.changeProps[1] })
+        this.props.actions.onChangeJurisdiction(this.state.changeProps[1], this.props.jurisdictionsList)
+        this.state.changeMethod.method(...this.state.changeProps)
         this.onShowQuestionLoader()
       } else {
-        this.state.nextQuestionMethod.method()
+        // clicked the back button
+        this.state.changeMethod.method()
       }
 
       this.onCancelStillSavingAlert()
@@ -285,7 +293,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
       if (this.props.unsavedChanges === true) {
         this.setState({
           stillSavingAlertOpen: true,
-          nextQuestionMethod: { type: 'history', method: this.props.history.goBack }
+          changeMethod: { type: 2, method: this.props.history.goBack }
         })
       } else {
         this.props.history.goBack()
