@@ -11,6 +11,14 @@ $scaffold-block: 100px;
   }
 }
 
+.questionButtonsRow {
+  display: none;
+}
+
+.questionButtonsRowDisplayed {
+  display: block;
+}
+
 .nodeContent {
   position: absolute;
   top: 0;
@@ -100,6 +108,10 @@ $scaffold-block: 100px;
   display: flex;
   height: 52px;
   justify-content: space-between;
+
+  &:focus-within {
+    display: flex;
+  }
 }
 
 .rowLabel {
