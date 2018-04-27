@@ -1,7 +1,8 @@
 import { normalize } from 'utils'
-import { checkIfAnswered, checkIfExists, checkIfCategoryAnswered } from 'utils/codingSchemeHelpers'
 import sortList from 'utils/sortList'
 import * as questionTypes from 'components/CodingValidation/constants'
+import { getTreeFromFlatData } from 'react-sortable-tree'
+import { getQuestionNumbers, sortQuestions } from 'utils/treeHelpers'
 
 export const initializeValues = question => {
   const { codedAnswers, ...initializedQuestion } = {
@@ -468,14 +469,15 @@ const deleteAnswerIds = (answer) => {
 /*
  Used to retrieve the request object body for updating a question answer, pincite, comment, flag, etc.
  */
-export const getFinalCodedObject = (state, action, selectedCategoryId = state.selectedCategoryId) => {
+export const getFinalCodedObject = (state, action, isValidation, selectedCategoryId = state.selectedCategoryId) => {
   const { ...questionObject } = state.scheme.byId[action.questionId].isCategoryQuestion
     ? state.userAnswers[action.questionId][selectedCategoryId]
     : state.userAnswers[action.questionId]
 
   const { answers, schemeQuestionId, ...answerObject } = {
     ...questionObject,
-    codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds)
+    codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds),
+    ...isValidation ? { validatedBy: action.userId } : {}
   }
 
   return answerObject
@@ -485,10 +487,11 @@ export const getFinalCodedObject = (state, action, selectedCategoryId = state.se
   Gets a specific scheme question, checks if it's answered and initializes it by sending a post if it's not. Sends back
   the updated user answers object. Called in Validation/logic and Coding/logic
  */
-export const getSelectedQuestion = async (state, action, api, userId, questionInfo, apiGetMethod) => {
+export const getSelectedQuestion = async (state, action, api, userId, questionInfo, apiGetMethod, userImages) => {
   let errors = {}, newSchemeQuestion = {},
     combinedQuestion = { ...state.scheme.byId[questionInfo.question.id] },
-    updatedScheme = { ...state.scheme }, codedQuestion = {}, updatedState = { ...state }, initialize = true
+    updatedScheme = { ...state.scheme }, codedQuestion = {}, updatedState = { ...state }, initialize = true,
+    newImages = {}
 
   // Get the scheme question from the db in case it has changed
   try {
@@ -500,6 +503,14 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
       byId: {
         ...state.scheme.byId,
         [combinedQuestion.id]: { ...state.scheme.byId[combinedQuestion.id], ...combinedQuestion }
+      }
+    }
+
+    if (action.page === 'validation') {
+      if (newSchemeQuestion.flags.length > 0) {
+        if (!checkIfExists(newSchemeQuestion.flags[0].raisedBy, userImages, 'userId')) {
+          newImages = { ...newImages, [newSchemeQuestion.flags[0].raisedBy.userId]: { ...newSchemeQuestion.flags[0].raisedBy } }
+        }
       }
     }
   } catch (error) {
@@ -535,6 +546,11 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
   if (initialize === true) {
     if (combinedQuestion.isCategoryQuestion === true) {
       for (let question of codedQuestion) {
+        if (question.hasOwnProperty('validatedBy')) {
+          if (!checkIfExists(question.validatedBy, userImages, 'userId') && !checkIfExists(question.validatedBy, newImages, 'userId')) {
+            newImages = { ...newImages, [question.validatedBy.userId]: { ...question.validatedBy } }
+          }
+        }
         if (combinedQuestion.questionType === questionTypes.TEXT_FIELD && question.codedAnswers.length > 0) {
           question.codedAnswers[0].textAnswer = question.codedAnswers[0].textAnswer === null
             ? ''
@@ -552,6 +568,11 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
           ? ''
           : codedQuestion.codedAnswers[0].textAnswer
       }
+      if (codedQuestion.hasOwnProperty('validatedBy')) {
+        if (!checkIfExists(codedQuestion.validatedBy, userImages, 'userId') && !checkIfExists(codedQuestion.validatedBy, newImages, 'userId')) {
+          newImages = { ...newImages, [codedQuestion.validatedBy.userId]: { ...codedQuestion.validatedBy } }
+        }
+      }
       updatedState = {
         ...updatedState,
         ...updateCodedQuestion(updatedState, combinedQuestion.id, initializeValues(codedQuestion))
@@ -564,7 +585,8 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
     scheme: updatedScheme,
     selectedCategory: questionInfo.selectedCategory,
     selectedCategoryId: questionInfo.selectedCategoryId,
-    categories: questionInfo.categories
+    categories: questionInfo.categories,
+    newImages
   }
 
   return {
@@ -575,6 +597,81 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
   }
 }
 
+export const getSchemeAndInitialize = async (projectId, api) => {
+  let scheme = {}, payload = { firstQuestion: {}, tree: [], order: [], questionsById: {} }
+  try {
+    scheme = await api.getScheme(projectId)
+
+    if (scheme.schemeQuestions.length === 0) {
+      return { isSchemeEmpty: true, ...payload }
+    }
+
+    // Create one array with the outline information in the question information
+    const merge = scheme.schemeQuestions.reduce((arr, q) => {
+      return [...arr, { ...q, ...scheme.outline[q.id] }]
+    }, [])
+
+    // Create a sorted question tree with sorted children with question numbering and order
+    const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
+    const questionsById = normalize.arrayToObject(questionsWithNumbers)
+    const firstQuestion = questionsWithNumbers[0]
+    sortList(firstQuestion.possibleAnswers, 'order', 'asc')
+
+    return { order, tree, questionsById, firstQuestion, outline: scheme.outline, isSchemeEmpty: false }
+
+  } catch (error) {
+    throw { error: 'Failed to get coding scheme.' }
+  }
+}
+
+export const getCodedValidatedQuestions = async (projectId, jurisdictionId, userId, apiMethod) => {
+  let codedValQuestions = [], codedValErrors = {}
+  try {
+    codedValQuestions = await apiMethod({ userId, projectId, jurisdictionId })
+    return { codedValQuestions, codedValErrors }
+  } catch (e) {
+    return {
+      codedValErrors: {
+        codedValQuestions: 'We couldn\'t get your answered questions for this project and jurisdiction, so you won\'t be able to answer questions.'
+      }
+    }
+  }
+}
+
+export const getSchemeQuestionAndUpdate = async (projectId, state, question, api) => {
+  let updatedSchemeQuestion = {}, schemeErrors = {}
+
+  // Get scheme question in case there are changes
+  try {
+    updatedSchemeQuestion = await api.getSchemeQuestion(question.id, projectId)
+  } catch (error) {
+    updatedSchemeQuestion = { ...question }
+    schemeErrors = {
+      updatedSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
+    }
+  }
+
+  // Update scheme with new scheme question
+  const updatedScheme = {
+    ...state.scheme,
+    byId: {
+      ...state.scheme.byId,
+      [updatedSchemeQuestion.id]: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion }
+    }
+  }
+
+  return { updatedScheme, schemeErrors, updatedSchemeQuestion }
+}
+
 export const generateError = errorsObj => {
   return Object.values(errorsObj).join('\n\n')
+}
+
+export const checkIfAnswered = (item, userAnswers, id = 'id') => {
+  return userAnswers.hasOwnProperty(item[id]) &&
+    Object.keys(userAnswers[item[id]].answers).length > 0
+}
+
+export const checkIfExists = (item, obj, id = 'id') => {
+  return obj.hasOwnProperty(item[id])
 }

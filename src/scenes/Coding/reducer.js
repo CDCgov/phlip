@@ -28,7 +28,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         isSchemeEmpty: action.payload.isSchemeEmpty,
         schemeError: null,
         getQuestionErrors: error.length > 0 ? error : null,
-        codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
+        codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false
       }
@@ -71,7 +71,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.ON_SAVE_RED_FLAG_FAIL:
       return {
         ...state,
-        saveFlagErrorContent: 'We couldn\'t save the red flag for this question.'
+        saveFlagErrorContent: 'We couldn\'t save the red flag for this question.',
+        saveFailed: true
       }
 
     case types.ON_SAVE_FLAG:
@@ -89,7 +90,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         question: action.payload.question,
         scheme: action.payload.scheme,
         getQuestionErrors: errors.length > 0 ? errors : null,
-        codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
+        codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
         unsavedChanges: false,
@@ -114,7 +115,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.ON_SAVE_RED_FLAG_REQUEST:
       return {
         ...state,
-        unsavedChanges: true
+        unsavedChanges: true,
+        saveFailed: false
       }
 
     default:

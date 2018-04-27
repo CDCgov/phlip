@@ -58,14 +58,12 @@ export const Header = props => {
 }
 
 Header.defaultProps = {
-  isValidation: false
 }
 
 Header.propTypes = {
   projectName: PropTypes.string,
   projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  jurisdictionsList: PropTypes.arrayOf(PropTypes.object),
-  isValidation: PropTypes.bool
+  jurisdictionsList: PropTypes.arrayOf(PropTypes.object)
 }
 
 export default withRouter(withTheme()(Header))

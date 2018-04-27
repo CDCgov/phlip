@@ -20,7 +20,7 @@ const validationReducer = (state, action) => {
         areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty,
         schemeError: null,
         getQuestionErrors: error.length > 0 ? error : null,
-        codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
+        codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false
       }
@@ -115,7 +115,7 @@ const validationReducer = (state, action) => {
         scheme: action.payload.scheme,
         mergedUserQuestions: action.payload.mergedUserQuestions,
         getQuestionErrors: errors.length > 0 ? errors : null,
-        codedQuestionsError: action.payload.errors.hasOwnProperty('codedQuestions') ? true : null,
+        codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         userImages: action.payload.userImages,
         isLoadingPage: false,
         showPageLoader: false,

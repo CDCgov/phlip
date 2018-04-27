@@ -22,8 +22,7 @@ export class Validation extends Component {
   }
 
   componentWillMount() {
-    this.props.actions.getValidationOutlineRequest(this.props.projectId, this.props.jurisdictionId)
-    //this.props.actions.getCodedUsersAnswers(this.props.projectId, this.props.jurisdictionId)
+    this.props.actions.getValidationOutlineRequest(this.props.projectId, this.props.jurisdictionId, this.props.page)
     this.onShowPageLoader()
   }
 
@@ -37,10 +36,18 @@ export class Validation extends Component {
 
 
   onJurisdictionChange = event => {
-    this.setState({ selectedJurisdiction: event.target.value })
-    this.props.actions.onChangeJurisdiction(event.target.value, this.props.jurisdictionsList)
-    this.props.actions.getUserValidatedQuestionsRequest(this.props.projectId, event.target.value)
-    this.onShowPageLoader()
+    if (this.props.unsavedChanges === true) {
+      this.setState({
+        stillSavingAlertOpen: true,
+        changeMethod: { type: 1, method: this.props.actions.getUserValidatedQuestionsRequest },
+        changeProps: [this.props.projectId, event.target.value, this.props.page]
+      })
+    } else {
+      this.setState({ selectedJurisdiction: event.target.value })
+      this.props.actions.onChangeJurisdiction(event.target.value, this.props.jurisdictionsList)
+      this.props.actions.getUserValidatedQuestionsRequest(this.props.projectId, event.target.value, this.props.page)
+      this.onShowPageLoader()
+    }
   }
 
   onOpenFlagConfirmAlert = (flagId, type) => {

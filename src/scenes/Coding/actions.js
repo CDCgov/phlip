@@ -24,10 +24,11 @@ export const getCodingOutlineRequest = (projectId, jurisdictionId, reducerName) 
 })
 
 // Dispatched when the user selects a different jurisdiction in the jurisdiction dropdown
-export const getUserCodedQuestions = (projectId, jurisdictionId) => ({
+export const getUserCodedQuestions = (projectId, jurisdictionId, page) => ({
   type: types.GET_USER_CODED_QUESTIONS_REQUEST,
   projectId,
-  jurisdictionId
+  jurisdictionId,
+  page
 })
 
 // Dispatched when a user saves a green or yellow flag for a question in the 'flag this question' flag popover

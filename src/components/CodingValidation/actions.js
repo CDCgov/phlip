@@ -17,19 +17,19 @@ const makeActionCreator = (type, scene, ...argNames) => {
 export const actions = {
   getNextQuestion: {
     type: types.GET_NEXT_QUESTION,
-    args: ['id', 'newIndex', 'projectId', 'jurisdictionId' ]
+    args: ['id', 'newIndex', 'projectId', 'jurisdictionId', 'page']
   },
   getPrevQuestion: {
     type: types.GET_PREV_QUESTION,
-    args: ['id', 'newIndex', 'projectId', 'jurisdictionId' ]
+    args: ['id', 'newIndex', 'projectId', 'jurisdictionId', 'page']
   },
   onQuestionSelectedInNav: {
     type: types.ON_QUESTION_SELECTED_IN_NAV,
-    args: ['question', 'projectId', 'jurisdictionId']
+    args: ['question', 'projectId', 'jurisdictionId', 'page']
   },
   applyAnswerToAll: {
     type: types.ON_APPLY_ANSWER_TO_ALL,
-    args: ['projectId', 'jurisdictionId', 'questionId']
+    args: ['projectId', 'jurisdictionId', 'questionId', 'page']
   },
   updateUserAnswer: {
     type: types.UPDATE_USER_ANSWER,
@@ -81,11 +81,11 @@ export const actions = {
   },
   saveUserAnswerRequest: {
     type: types.SAVE_USER_ANSWER_REQUEST,
-    args: ['projectId', 'jurisdictionId', 'questionId', 'selectedCategoryId']
+    args: ['projectId', 'jurisdictionId', 'questionId', 'selectedCategoryId', 'page']
   },
   addRequestToQueue: {
     type: types.ADD_REQUEST_TO_QUEUE,
-    args: ['payload']
+    args: ['payload', 'page']
   },
   changeTouchedStatus: {
     type: types.CHANGE_TOUCHED_STATUS,

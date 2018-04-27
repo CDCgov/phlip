@@ -10,7 +10,7 @@ export class Coding extends Component {
   }
 
   componentWillMount() {
-    this.props.actions.getCodingOutlineRequest(this.props.projectId, this.props.jurisdictionId, 'coding')
+    this.props.actions.getCodingOutlineRequest(this.props.projectId, this.props.jurisdictionId, this.props.page)
     this.onShowPageLoader()
   }
 
@@ -22,11 +22,19 @@ export class Coding extends Component {
     }, 1000)
   }
 
-  onJurisdictionChange = (event) => {
-    this.setState({ selectedJurisdiction: event.target.value })
-    this.props.actions.onChangeJurisdiction(event.target.value, this.props.jurisdictionsList)
-    this.props.actions.getUserCodedQuestions(this.props.projectId, event.target.value)
-    this.onShowPageLoader()
+  onJurisdictionChange = event => {
+    if (this.props.unsavedChanges === true) {
+      this.setState({
+        stillSavingAlertOpen: true,
+        changeMethod: { type: 1, method: this.props.actions.getUserCodedQuestions },
+        changeProps: [this.props.projectId, event.target.value, this.props.page]
+      })
+    } else {
+      this.setState({ selectedJurisdiction: event.target.value })
+      this.props.actions.onChangeJurisdiction(event.target.value, this.props.jurisdictionsList)
+      this.props.actions.getUserCodedQuestions(this.props.projectId, event.target.value, this.props.page)
+      this.onShowPageLoader()
+    }
   }
 
   onSaveFlag = flagInfo => {
@@ -48,7 +56,7 @@ export class Coding extends Component {
         },
         ...flagInfo
       })
-      this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+      this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.selectedCategoryId, this.props.page)
     }
     this.onChangeTouchedStatus()
   }
