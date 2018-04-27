@@ -10,7 +10,6 @@ import Typography from 'material-ui/Typography'
 import * as questionTypes from '../../../../scenes/AddEditQuestion/constants'
 import Tooltip from 'components/Tooltip'
 import { Link } from 'react-router-dom'
-import classNames from 'classnames'
 
 const isDescendant = (older, younger) => {
   return (
@@ -101,8 +100,7 @@ export const QuestionNode = props => {
             <Typography noWrap type="subheading" component="h4" style={{ flex: 1 }}>
               {questionBody}
             </Typography>
-            {node.hovering &&
-            <div style={{ zIndex: 5 }} tabIndex={0}>
+            <div className={styles.questionButtons}>
               {canModify && ((parentNode === null || parentNode.questionType !== questionTypes.CATEGORY) &&
                 <Tooltip
                   text="Add child question"
@@ -148,7 +146,7 @@ export const QuestionNode = props => {
                   value={<Icon color="white">delete</Icon>}
                   onClick={() => handleDeleteQuestion(projectId, node.id, path)} />
               </Tooltip>)}
-            </div>}
+            </div>
             {!node.hovering && node.questionType === questionTypes.CATEGORY
               ? <Icon aria-label="This question is a category question" color="#757575">filter_none</Icon>
               : ''

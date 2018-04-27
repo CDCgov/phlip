@@ -11,14 +11,6 @@ $scaffold-block: 100px;
   }
 }
 
-.questionButtonsRow {
-  display: none;
-}
-
-.questionButtonsRowDisplayed {
-  display: block;
-}
-
 .nodeContent {
   position: absolute;
   top: 0;
@@ -100,6 +92,11 @@ $scaffold-block: 100px;
   display: inline-block;
 }
 
+.questionButtons {
+  display: none;
+  z-index: 5;
+}
+
 .rowContents {
   @extend %rowItem;
   position: relative;
@@ -109,8 +106,16 @@ $scaffold-block: 100px;
   height: 52px;
   justify-content: space-between;
 
-  &:focus-within {
-    display: flex;
+  &:hover .questionButtons {
+    display: block;
+  }
+
+  &:focus .questionButtons {
+    display: block;
+  }
+
+  &:focus-within .questionButtons {
+    display: block;
   }
 }
 
