@@ -6,7 +6,8 @@ import {
   getFinalCodedObject,
   getNextQuestion,
   getPreviousQuestion,
-  getQuestionSelectedInNav
+  getQuestionSelectedInNav,
+  initializeValues
 } from 'utils/codingHelpers'
 
 const outlineLogic = createLogic({

@@ -71,7 +71,7 @@ export const ValidationTable = props => {
                         tooltipText="Clear this flag"
                         id="clear-flag"
                         aria-label="Clear this flag"
-                        color={flagColors[item.type]}>flag</IconButton>
+                        color={flagColors[item.type]}>{item.type === 3 ? 'report' : 'flag'}</IconButton>
                     </Column>
                     <Row displayFlex flex style={{ alignItems: 'center', overflow: 'hidden' }}>
                       <Typography type="caption" style={{ fontWeight: 'bold' }}>
