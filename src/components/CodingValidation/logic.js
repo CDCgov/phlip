@@ -131,7 +131,8 @@ const answerQuestionLogic = createLogic({
           questionId: action.payload.questionId,
           id: respCodedQuestion.id
         },
-        page: action.page
+        page: action.page,
+        apiUpdateMethod: action.apiMethods.update
       })
 
       dispatch({
@@ -241,7 +242,7 @@ const sendMessageLogic = createLogic({
   },
   async process({ getState, action, api }, dispatch, done) {
     try {
-      const respCodedQuestion = await api.updateCodedQuestion({
+      const respCodedQuestion = await action.apiUpdateMethod({
         ...action.message,
         questionObj: { ...action.message.questionObj, id: action.payload.id }
       })
