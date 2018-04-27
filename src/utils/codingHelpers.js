@@ -651,6 +651,8 @@ export const getSchemeQuestionAndUpdate = async (projectId, state, question, api
     }
   }
 
+  sortList(updatedSchemeQuestion.possibleAnswers, 'order', 'asc')
+
   // Update scheme with new scheme question
   const updatedScheme = {
     ...state.scheme,
