@@ -209,7 +209,7 @@ export const getQuestionLogicValidation = createLogic({
       api,
       action,
       questionId: question.id,
-      userImages: state.userImages
+      userImages: { ...state.userImages, ...newImages }
     })
 
     const newCoderImages = { ...newImages, ...coders }

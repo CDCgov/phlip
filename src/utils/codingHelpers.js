@@ -327,18 +327,30 @@ export const updateCodedQuestion = (state, questionId, updatedQuestion) => ({
   }
 })
 
-export const updateCategoryCodedQuestion = (state, questionId, categoryId, updatedQuestion) => ({
-  userAnswers: {
-    ...state.userAnswers,
-    [questionId]: {
-      ...state.userAnswers[questionId],
-      [categoryId]: {
-        ...state.userAnswers[questionId][categoryId],
-        ...updatedQuestion
+export const updateCategoryCodedQuestion = (state, questionId, categoryId, updatedQuestion) => {
+  let update = { [categoryId]: { ...updatedQuestion } }
+
+  if (state.userAnswers.hasOwnProperty(questionId)) {
+    if (state.userAnswers[questionId].hasOwnProperty(categoryId)) {
+      update = {
+        [categoryId]: {
+          ...state.userAnswers[questionId][categoryId],
+          ...updatedQuestion
+        }
       }
     }
   }
-})
+
+  return {
+    userAnswers: {
+      ...state.userAnswers,
+      [questionId]: {
+        ...state.userAnswers[questionId],
+        ...update
+      }
+    }
+  }
+}
 
 /*
   Handles any updates for 'fieldValue' in state.userAnswers that are for category child questions
@@ -507,9 +519,12 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
     }
 
     if (action.page === 'validation') {
-      if (newSchemeQuestion.flags.length > 0) {
+      if (combinedQuestion.flags.length > 0) {
         if (!checkIfExists(newSchemeQuestion.flags[0].raisedBy, userImages, 'userId')) {
-          newImages = { ...newImages, [newSchemeQuestion.flags[0].raisedBy.userId]: { ...newSchemeQuestion.flags[0].raisedBy } }
+          newImages = {
+            ...newImages,
+            [newSchemeQuestion.flags[0].raisedBy.userId]: { ...newSchemeQuestion.flags[0].raisedBy }
+          }
         }
       }
     }
@@ -569,7 +584,8 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
           : codedQuestion.codedAnswers[0].textAnswer
       }
       if (codedQuestion.hasOwnProperty('validatedBy')) {
-        if (!checkIfExists(codedQuestion.validatedBy, userImages, 'userId') && !checkIfExists(codedQuestion.validatedBy, newImages, 'userId')) {
+        if (!checkIfExists(codedQuestion.validatedBy, userImages, 'userId') &&
+          !checkIfExists(codedQuestion.validatedBy, newImages, 'userId')) {
           newImages = { ...newImages, [codedQuestion.validatedBy.userId]: { ...codedQuestion.validatedBy } }
         }
       }
@@ -585,15 +601,15 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
     scheme: updatedScheme,
     selectedCategory: questionInfo.selectedCategory,
     selectedCategoryId: questionInfo.selectedCategoryId,
-    categories: questionInfo.categories,
-    newImages
+    categories: questionInfo.categories
   }
 
   return {
     question: combinedQuestion,
     currentIndex: questionInfo.index,
     updatedState,
-    errors
+    errors,
+    newImages
   }
 }
 
