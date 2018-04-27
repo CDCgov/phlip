@@ -584,8 +584,7 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
           : codedQuestion.codedAnswers[0].textAnswer
       }
       if (codedQuestion.hasOwnProperty('validatedBy')) {
-        if (!checkIfExists(codedQuestion.validatedBy, userImages, 'userId') &&
-          !checkIfExists(codedQuestion.validatedBy, newImages, 'userId')) {
+        if (!checkIfExists(codedQuestion.validatedBy, userImages, 'userId') && !checkIfExists(codedQuestion.validatedBy, newImages, 'userId')) {
           newImages = { ...newImages, [codedQuestion.validatedBy.userId]: { ...codedQuestion.validatedBy } }
         }
       }

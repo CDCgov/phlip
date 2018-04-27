@@ -156,7 +156,8 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         ...state,
         jurisdictionId: action.event,
         jurisdiction: action.jurisdictionsList.find(jurisdiction => jurisdiction.id === action.event),
-        hasTouchedQuestion: false
+        hasTouchedQuestion: false,
+        questionChangeLoader: false
       }
 
     case `${types.GET_QUESTION_SUCCESS}_${name}`:
