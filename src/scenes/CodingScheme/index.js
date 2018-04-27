@@ -102,6 +102,7 @@ export class CodingScheme extends Component {
 
   onContinueGoBack = () => {
     this.handleUnlockCodingScheme()
+    this.props.actions.clearState()
     this.props.history.goBack()
   }
 
@@ -111,6 +112,7 @@ export class CodingScheme extends Component {
         goBackAlertOpen: true
       })
     } else {
+      this.props.actions.clearState()
       this.props.history.goBack()
     }
   }
