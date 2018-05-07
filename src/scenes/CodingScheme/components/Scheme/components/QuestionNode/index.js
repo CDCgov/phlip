@@ -8,8 +8,9 @@ import Card from 'components/Card'
 import { CardContent, CardActions } from 'material-ui/Card'
 import Typography from 'material-ui/Typography'
 import TextLink from 'components/TextLink/index'
-import * as questionTypes from '../../../../scenes/AddEditQuestion/constants'
+import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 import Tooltip from 'components/Tooltip'
+import Link from 'components/Link'
 
 const isDescendant = (older, younger) => {
   return (
@@ -80,13 +81,13 @@ export const QuestionNode = props => {
     <div onDragStart={disableHover} onDragEnd={enableHover}>
       <Card
         className={styles.nodeCard} style={{
-          backgroundColor: isLandingPadActive ? (canDrop ? 'lightblue' : '#e6a8ad') : 'white',
-          border: isLandingPadActive ? (canDrop ? '3px dotted navy' : '3px dotted black') : 'none',
-          opacity: isDraggedDescendant ? 0.5 : 1,
-          padding: '5px 10px',
-          width: 830
-        }}>
-        <div className={styles.rowContents + (!canDrag ? ` ${styles.rowContentsDragDisabled}` : '')}>
+        backgroundColor: isLandingPadActive ? (canDrop ? 'lightblue' : '#e6a8ad') : 'white',
+        border: isLandingPadActive ? (canDrop ? '3px dotted navy' : '3px dotted black') : 'none',
+        opacity: isDraggedDescendant ? 0.5 : 1,
+        padding: '5px 10px',
+        width: 830
+      }}>
+        <div className={styles.rowContents}>
           {canDrag && handle}
           <CardContent
             className={styles.rowLabel}
@@ -97,56 +98,53 @@ export const QuestionNode = props => {
               {questionBody}
             </Typography>
             {node.hovering &&
-              <div style={{ zIndex: 5 }}>
-                {canModify && ((parentNode === null || parentNode.questionType !== questionTypes.CATEGORY) &&
-                  <Tooltip
-                    text="Add child question"
-                    id={`add-child-question-${listIndex}`}
-                    aria-label="Add child question"
-                    placement="left">
-                    <TextLink
-                      aria-label="Add child question" to={{
-                        pathname: `/project/${projectId}/coding-scheme/add`,
-                        state: { parentDefined: { ...node }, path, canModify: true }
-                      }}>
-                      <Button
-                        aria-label="Add child question"
-                        color="accent"
-                        style={{ ...actionStyles, marginRight: 10 }}
-                        value={<Icon color="white">subdirectory_arrow_right</Icon>} />
-                    </TextLink></Tooltip>)}
+            <div style={{ zIndex: 5 }}>
+              {canModify && ((parentNode === null || parentNode.questionType !== questionTypes.CATEGORY) &&
                 <Tooltip
-                  text="Edit question"
-                  id={`edit-question-${listIndex}`}
-                  aria-label="View and edit question"
-                  placement="right">
-                  <TextLink
-                    aria-label="Edit question"
-                    to={{
-                      pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`,
-                      state: { questionDefined: { ...node }, path, canModify }
-                    }}>
-                    <Button
-                      color="accent"
-                      aria-label="Edit question"
-                      style={{ ...actionStyles, marginRight: 10 }}
-                      value={<Icon color="white">mode_edit</Icon>} />
-                  </TextLink>
-                </Tooltip>
-                {canModify && ((parentNode === null || parentNode.questionType !== questionTypes.CATEGORY) && <Tooltip
-                  text="Delete question"
-                  id={`delete-question-${listIndex}`}
-                  aria-label="Delete question"
-                  placement="right">
-
+                  text="Add child question"
+                  id={`add-child-question-${listIndex}`}
+                  aria-label="Add child question"
+                  placement="left">
                   <Button
+                    aria-label="Add child question"
                     color="accent"
-                    aria-label="Delete question"
+                    component={Link}
+                    to={{
+                      pathname: `/project/${projectId}/coding-scheme/add`,
+                      state: { parentDefined: { ...node }, path, canModify: true }
+                    }}
                     style={{ ...actionStyles, marginRight: 10 }}
-                    value={<Icon color="white">delete</Icon>}
-                    onClick={() => handleDeleteQuestion(projectId, node.id, path)} />
+                    value={<Icon color="white">subdirectory_arrow_right</Icon>} />
                 </Tooltip>)}
-              </div>}
+              <Tooltip
+                text="Edit question"
+                id={`edit-question-${listIndex}`}
+                aria-label="View and edit question"
+                placement="right">
+                <Button
+                  color="accent"
+                  component={Link}
+                  to={{
+                    pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`,
+                    state: { questionDefined: { ...node }, path, canModify }
+                  }}
+                  aria-label="Edit question"
+                  style={{ ...actionStyles, marginRight: 10 }}
+                  value={<Icon color="white">mode_edit</Icon>} />
+              </Tooltip>
+              {canModify && <Tooltip
+                text="Delete question"
+                id={`delete-question-${listIndex}`}
+                aria-label="Delete question"
+                placement="right">
+                <Button
+                  color="accent"
+                  aria-label="Delete question"
+                  style={{ ...actionStyles, marginRight: 10 }}
+                  value={<Icon color="white">delete</Icon>}
+                  onClick={() => handleDeleteQuestion(projectId, node.id, path)} />
+              </Tooltip>}
+            </div>}
             {!node.hovering && node.questionType === questionTypes.CATEGORY
               ? <Icon aria-label="This question is a category question" color="#757575">filter_none</Icon>
               : ''
@@ -163,28 +161,28 @@ export const QuestionNode = props => {
   return (
     <div className={styles.nodeContent} style={{ left: scaffoldBlockCount * scaffoldBlockPxWidth }}>
       {toggleChildrenVisibility && node.children && node.children.length > 0 &&
-        <div>
-          <IconButton
-            type="button"
-            aria-label={node.expanded
-              ? 'Collapse'
-              : 'Expand'}
-            className={styles.expandCollapseButton}
-            color="#707070"
-            style={{ backgroundColor: '#f5f5f5' }}
-            iconSize={28}
-            tooltipText={node.expanded ? 'Collapse' : 'Expand'}
-            onClick={() => toggleChildrenVisibility({
-              node,
-              path,
-              treeIndex
-            })}>
-            {node.expanded ? 'remove_circle' : 'add_circle'}
-          </IconButton> {node.expanded && !isDragging && (
-            <div style={{ width: scaffoldBlockPxWidth }} className={styles.lineChildren} />
-          )}
-        </div>}
-      <div className={styles.rowWrapper + (!canDrag ? ` ${styles.rowWrapperDisabled}` : '')}>
+      <div>
+        <IconButton
+          type="button"
+          aria-label={node.expanded
+            ? 'Collapse'
+            : 'Expand'}
+          className={styles.expandCollapseButton}
+          color="#707070"
+          style={{ backgroundColor: '#f5f5f5' }}
+          iconSize={28}
+          tooltipText={node.expanded ? 'Collapse' : 'Expand'}
+          onClick={() => toggleChildrenVisibility({
+            node,
+            path,
+            treeIndex
+          })}>
+          {node.expanded ? 'remove_circle' : 'add_circle'}
+        </IconButton> {node.expanded && !isDragging && (
+        <div style={{ width: scaffoldBlockPxWidth }} className={styles.lineChildren} />
+      )}
+      </div>}
+      <div className={styles.rowWrapper}>
         {dragPreview}
       </div>
     </div>

@@ -6,7 +6,7 @@ import { QuestionNode } from '../index'
 const props = {
   listIndex: 0,
   node: {
-    questionBody: 'la la la',
+    text: 'la la la',
     hovering: false
   },
   lowerSiblingCounts: [0],
@@ -18,19 +18,19 @@ const props = {
   didDrop: false,
   canModify: true,
   canDrag: true,
-  connectDragPreview: (preview) => preview,
-  connectDragSource: (handle) => handle,
+  connectDragPreview: preview => preview,
+  connectDragSource: handle => handle,
   turnOnHover: () => { },
   turnOffHover: () => { },
   enableHover: () => { },
   disableHover: () => { }
 }
 
-const setup = otherProps => mount((
+const setup = otherProps => mount(
   <MemoryRouter>
     <QuestionNode {...props} {...otherProps} />
   </MemoryRouter>
-))
+)
 
 describe('CodingScheme -- Scheme -- QuestionNode', () => {
   test('should render correctly', () => {
@@ -54,14 +54,19 @@ describe('CodingScheme -- Scheme -- QuestionNode', () => {
       expect(spy).toHaveBeenCalled()
     })
 
-    test('should display actions if hovering = true', () => {
-      const wrapper = setup({ node: { questionBody: 'la la la', hovering: true } })
-      expect(wrapper.find('CardContent').find('button')).toHaveLength(3)
+    test('should display actions if hovering = true and canModify = true', () => {
+      const wrapper = setup({ node: { text: 'la la la', hovering: true }, canModify: true })
+      expect(wrapper.find('CardContent').find('ButtonBase')).toHaveLength(3)
+    })
+
+    test('should only display edit action if canModify = false and hovering = true', () => {
+      const wrapper = setup({ node: { text: 'la la la', hovering: true }, canModify: false })
+      expect(wrapper.find('CardContent').find('ButtonBase')).toHaveLength(1)
     })
 
     test('should not display actions if hovering = false', () => {
       const wrapper = setup()
-      expect(wrapper.find('CardContent').find('button')).toHaveLength(0)
+      expect(wrapper.find('CardContent').find('ButtonBase')).toHaveLength(0)
     })
   })
 

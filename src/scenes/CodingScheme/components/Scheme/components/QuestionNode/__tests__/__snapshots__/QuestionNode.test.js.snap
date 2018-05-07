@@ -8,9 +8,7 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
     }
   }
 >
-  <div
-    className="undefined"
-  >
+  <div>
     <div
       onDragEnd={[Function]}
       onDragStart={[Function]}
@@ -26,9 +24,7 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
           }
         }
       >
-        <div
-          className="undefined"
-        >
+        <div>
           <div>
             <WithStyles
               placement="bottom"
@@ -63,7 +59,9 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
                 }
               }
               type="subheading"
-            />
+            >
+              la la la
+            </WithStyles>
           </WithStyles>
           <WithStyles
             disableActionSpacing={true}

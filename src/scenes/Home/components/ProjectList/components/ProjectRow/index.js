@@ -85,11 +85,6 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport, theme
       {!isCoder && <TableCell
         key={`${project.id}-export`}
         style={{ paddingRight: 24, width: 40, paddingLeft: 0, textAlign: 'center' }}>
-        {/*<TextLink
-          //target="_blank"
-          to={{ pathname: `/project/${project.id}/export` }}
-          //to={{ pathname: `/api/exports/project/${project.id}/data`}}
-        >*/}
         <IconButton
           color={greyIcon}
           tooltipText="Export validated questions"
