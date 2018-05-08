@@ -20,7 +20,6 @@ let LoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, pivE
 
   const formStyles = {
     width: 350,
-    //height: 447,
     display: 'flex',
     flexDirection: 'column'
   }
