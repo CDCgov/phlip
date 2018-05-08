@@ -43,30 +43,6 @@ const updatePositionInParentLogic = createLogic({
   }
 })
 
-const updateChildPositionInParentLogic = createLogic({
-  type: types.ADD_CHILD_QUESTION_REQUEST,
-  transform({ getState, action }, next) {
-    let parent = getState().scenes.codingScheme.questions.find(question => question.id === action.parentId)
-    let positionInParent = 0
-    if (parent) {
-      if (parent.children) {
-        positionInParent = parent.children.length
-      } else {
-        positionInParent = 0
-      }
-    } else {
-      positionInParent = 0
-    }
-    next({
-      ...action,
-      question: {
-        ...action.question,
-        positionInParent: positionInParent
-      }
-    })
-  }
-})
-
 const updateIsCategoryQuestionLogic = createLogic({
   type: types.ADD_CHILD_QUESTION_REQUEST,
   transform({ getState, action }, next) {
@@ -74,7 +50,8 @@ const updateIsCategoryQuestionLogic = createLogic({
       ...action,
       question: {
         ...action.question,
-        isCategoryQuestion: action.parentNode.questionType === questionTypes.CATEGORY
+        isCategoryQuestion: action.parentNode.questionType === questionTypes.CATEGORY,
+        positionInParent: action.parentNode.children.length
       }
     })
   }
@@ -121,16 +98,14 @@ const addChildQuestionLogic = createLogic({
     })
 
     action.question.possibleAnswers = orderedAnswers
+
     try {
       const question = await api.addQuestion(action.question, {}, { projectId: action.projectId })
       dispatch({
         type: types.ADD_CHILD_QUESTION_SUCCESS,
         payload: {
-          ...question,
-          possibleAnswers: sortList(action.question.possibleAnswers),
-          parentId: action.question.parentId,
-          positionInParent: action.parentNode.children ? action.parentNode.children.length : 0,
-          isCategoryQuestion: action.question.isCategoryQuestion,
+          ...action.question,
+          id: question.id,
           path: action.path,
           hovering: false
         }
@@ -180,7 +155,6 @@ const addQuestionLogic = createLogic({
 
 export default [
   updatePositionInParentLogic,
-  updateChildPositionInParentLogic,
   updateUserIdLogic,
   updateOutlineLogic,
   updateQuestionLogic,
