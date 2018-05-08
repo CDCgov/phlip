@@ -92,6 +92,11 @@ $scaffold-block: 100px;
   display: inline-block;
 }
 
+.questionButtons {
+  display: none;
+  z-index: 5;
+}
+
 .rowContents {
   @extend %rowItem;
   position: relative;
@@ -100,6 +105,18 @@ $scaffold-block: 100px;
   display: flex;
   height: 52px;
   justify-content: space-between;
+
+  &:hover .questionButtons {
+    display: block;
+  }
+
+  &:focus .questionButtons {
+    display: block;
+  }
+
+  &:focus-within .questionButtons {
+    display: block;
+  }
 }
 
 .rowLabel {

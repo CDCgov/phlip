@@ -63,11 +63,6 @@ describe('CodingScheme -- Scheme -- QuestionNode', () => {
       const wrapper = setup({ node: { text: 'la la la', hovering: true }, canModify: false })
       expect(wrapper.find('CardContent').find('ButtonBase')).toHaveLength(1)
     })
-
-    test('should not display actions if hovering = false', () => {
-      const wrapper = setup()
-      expect(wrapper.find('CardContent').find('ButtonBase')).toHaveLength(0)
-    })
   })
 
   describe('Hovering disable', () => {

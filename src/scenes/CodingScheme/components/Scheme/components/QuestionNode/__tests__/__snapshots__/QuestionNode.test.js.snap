@@ -7,11 +7,13 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
       "left": 50,
     }
   }
+  tabIndex={-1}
 >
   <div>
     <div
       onDragEnd={[Function]}
       onDragStart={[Function]}
+      tabIndex={-1}
     >
       <Card
         style={
@@ -23,9 +25,19 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
             "width": 830,
           }
         }
+        tabIndex={-1}
       >
-        <div>
-          <div>
+        <div
+          draggable={true}
+          role="listitem"
+          tabIndex={0}
+        >
+          <div
+            aria-grabbed={false}
+            draggable={true}
+            role="button"
+            tabIndex={0}
+          >
             <WithStyles
               placement="bottom"
               text="Drag to reorder"
@@ -62,6 +74,125 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
             >
               la la la
             </WithStyles>
+            <div>
+              <WithStyles
+                aria-label="Add child question"
+                id="add-child-question-0"
+                placement="left"
+                text="Add child question"
+              >
+                <WithTheme
+                  aria-label="Add child question"
+                  color="accent"
+                  component={[Function]}
+                  style={
+                    Object {
+                      "height": 40,
+                      "marginRight": 10,
+                      "minHeight": "unset",
+                      "minWidth": "unset",
+                      "padding": 0,
+                      "width": 40,
+                    }
+                  }
+                  to={
+                    Object {
+                      "pathname": "/project/undefined/coding-scheme/add",
+                      "state": Object {
+                        "canModify": true,
+                        "parentDefined": Object {
+                          "hovering": false,
+                          "text": "la la la",
+                        },
+                        "path": Array [
+                          0,
+                        ],
+                      },
+                    }
+                  }
+                  value={
+                    <WithTheme
+                      color="white"
+                    >
+                      subdirectory_arrow_right
+                    </WithTheme>
+                  }
+                />
+              </WithStyles>
+              <WithStyles
+                aria-label="View and edit question"
+                id="edit-question-0"
+                placement="right"
+                text="Edit question"
+              >
+                <WithTheme
+                  aria-label="Edit question"
+                  color="accent"
+                  component={[Function]}
+                  style={
+                    Object {
+                      "height": 40,
+                      "marginRight": 10,
+                      "minHeight": "unset",
+                      "minWidth": "unset",
+                      "padding": 0,
+                      "width": 40,
+                    }
+                  }
+                  to={
+                    Object {
+                      "pathname": "/project/undefined/coding-scheme/edit/undefined",
+                      "state": Object {
+                        "canModify": true,
+                        "path": Array [
+                          0,
+                        ],
+                        "questionDefined": Object {
+                          "hovering": false,
+                          "text": "la la la",
+                        },
+                      },
+                    }
+                  }
+                  value={
+                    <WithTheme
+                      color="white"
+                    >
+                      mode_edit
+                    </WithTheme>
+                  }
+                />
+              </WithStyles>
+              <WithStyles
+                aria-label="Delete question"
+                id="delete-question-0"
+                placement="right"
+                text="Delete question"
+              >
+                <WithTheme
+                  aria-label="Delete question"
+                  color="accent"
+                  onClick={[Function]}
+                  style={
+                    Object {
+                      "height": 40,
+                      "marginRight": 10,
+                      "minHeight": "unset",
+                      "minWidth": "unset",
+                      "padding": 0,
+                      "width": 40,
+                    }
+                  }
+                  value={
+                    <WithTheme
+                      color="white"
+                    >
+                      delete
+                    </WithTheme>
+                  }
+                />
+              </WithStyles>
+            </div>
           </WithStyles>
           <WithStyles
             disableActionSpacing={true}

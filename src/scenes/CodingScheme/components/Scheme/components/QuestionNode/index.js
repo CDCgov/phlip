@@ -7,7 +7,6 @@ import Button from 'components/Button'
 import Card from 'components/Card'
 import { CardContent, CardActions } from 'material-ui/Card'
 import Typography from 'material-ui/Typography'
-import TextLink from 'components/TextLink/index'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 import Tooltip from 'components/Tooltip'
 import Link from 'components/Link'
@@ -61,7 +60,7 @@ export const QuestionNode = props => {
   const scaffoldBlockCount = lowerSiblingCounts.length
 
   const handle = connectDragSource(
-    <div className={styles.handle}>
+    <div className={styles.handle} tabIndex={0} role="button" draggable={canDrag} aria-grabbed={false}>
       <Tooltip text="Drag to reorder" placement="bottom">
         <Icon size="24" color="black">reorder</Icon>
       </Tooltip>
@@ -78,16 +77,18 @@ export const QuestionNode = props => {
   }
 
   const dragPreview = connectDragPreview(
-    <div onDragStart={disableHover} onDragEnd={enableHover}>
+    <div tabIndex={-1} onDragStart={disableHover} onDragEnd={enableHover} className={styles.rowWrapper}>
       <Card
-        className={styles.nodeCard} style={{
-        backgroundColor: isLandingPadActive ? (canDrop ? 'lightblue' : '#e6a8ad') : 'white',
-        border: isLandingPadActive ? (canDrop ? '3px dotted navy' : '3px dotted black') : 'none',
-        opacity: isDraggedDescendant ? 0.5 : 1,
-        padding: '5px 10px',
-        width: 830
-      }}>
-        <div className={styles.rowContents}>
+        tabIndex={-1}
+        className={styles.nodeCard}
+        style={{
+          backgroundColor: isLandingPadActive ? (canDrop ? 'lightblue' : '#e6a8ad') : 'white',
+          border: isLandingPadActive ? (canDrop ? '3px dotted navy' : '3px dotted black') : 'none',
+          opacity: isDraggedDescendant ? 0.5 : 1,
+          padding: '5px 10px',
+          width: 830
+        }}>
+        <div className={styles.rowContents} tabIndex={0} role="listitem" draggable={canDrag}>
           {canDrag && handle}
           <CardContent
             className={styles.rowLabel}
@@ -97,8 +98,7 @@ export const QuestionNode = props => {
             <Typography noWrap type="subheading" component="h4" style={{ flex: 1 }}>
               {questionBody}
             </Typography>
-            {node.hovering &&
-            <div style={{ zIndex: 5 }}>
+            <div className={styles.questionButtons}>
               {canModify && ((parentNode === null || parentNode.questionType !== questionTypes.CATEGORY) &&
                 <Tooltip
                   text="Add child question"
@@ -107,12 +107,12 @@ export const QuestionNode = props => {
                   placement="left">
                   <Button
                     aria-label="Add child question"
-                    color="accent"
                     component={Link}
                     to={{
                       pathname: `/project/${projectId}/coding-scheme/add`,
                       state: { parentDefined: { ...node }, path, canModify: true }
                     }}
+                    color="accent"
                     style={{ ...actionStyles, marginRight: 10 }}
                     value={<Icon color="white">subdirectory_arrow_right</Icon>} />
                 </Tooltip>)}
@@ -144,7 +144,7 @@ export const QuestionNode = props => {
                   value={<Icon color="white">delete</Icon>}
                   onClick={() => handleDeleteQuestion(projectId, node.id, path)} />
               </Tooltip>}
-            </div>}
+            </div>
             {!node.hovering && node.questionType === questionTypes.CATEGORY
               ? <Icon aria-label="This question is a category question" color="#757575">filter_none</Icon>
               : ''
@@ -159,14 +159,15 @@ export const QuestionNode = props => {
   )
 
   return (
-    <div className={styles.nodeContent} style={{ left: scaffoldBlockCount * scaffoldBlockPxWidth }}>
+    <div
+      tabIndex={-1}
+      className={styles.nodeContent}
+      style={{ left: scaffoldBlockCount * scaffoldBlockPxWidth }}>
       {toggleChildrenVisibility && node.children && node.children.length > 0 &&
       <div>
         <IconButton
           type="button"
-          aria-label={node.expanded
-            ? 'Collapse'
-            : 'Expand'}
+          aria-label={node.expanded ? 'Collapse' : 'Expand'}
           className={styles.expandCollapseButton}
           color="#707070"
           style={{ backgroundColor: '#f5f5f5' }}

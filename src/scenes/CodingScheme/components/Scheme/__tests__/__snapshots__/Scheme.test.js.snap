@@ -6,6 +6,12 @@ exports[`CodingScheme scene -- Scheme component should render correctly 1`] = `
   generateNodeProps={[Function]}
   isVirtualized={true}
   onChange={[Function]}
+  reactVirtualizedListProps={
+    Object {
+      "containerRole": "list",
+      "overscanRowCount": 10,
+    }
+  }
   style={
     Object {
       "flex": "1 0 50%",
@@ -14,9 +20,6 @@ exports[`CodingScheme scene -- Scheme component should render correctly 1`] = `
   theme={
     Object {
       "nodeContentRenderer": [Function],
-      "reactVirtualizedListProps": Object {
-        "overscanRowCount": 10,
-      },
       "rowHeight": 75,
       "scaffoldBlockPxWidth": 100,
       "slideRegionSize": 50,
