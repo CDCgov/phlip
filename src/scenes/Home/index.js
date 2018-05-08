@@ -10,7 +10,6 @@ import PageHeader from 'components/PageHeader'
 import ProjectList from './components/ProjectList'
 import * as actions from './actions'
 import ExportDialog from './components/ExportDialog'
-import api from 'services/api'
 
 export class Home extends Component {
   static propTypes = {
@@ -41,32 +40,46 @@ export class Home extends Component {
     this.props.actions.getProjectsRequest()
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.projectToExport.text !== '' && this.state.projectToExport !== null) {
+      this.prepareExport()
+    }
+  }
+
   onToggleExportDialog = project => {
     this.setState({
       exportDialogOpen: !this.state.exportDialogOpen,
-      projectToExport: project
+      projectToExport: { ...project }
     })
   }
 
-  getExport = async type => {
-    const resp = await api.exportData(this.state.projectToExport.id, type)
-    const csvBlob = new Blob([resp], { type: 'text/csv;charset=utf-8;' })
+  prepareExport = () => {
+    console.log(this.state.projectToExport)
+    const csvBlob = new Blob([this.props.projectToExport.text], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(csvBlob)
     this.exportRef.href = url
-    this.exportRef.download = `${this.state.projectToExport.name}-${type}-export.csv`
+    this.exportRef.download = `${this.state.projectToExport.name}-${this.state.projectToExport.exportType}-export.csv`
     this.exportRef.click()
     window.URL.revokeObjectURL(url)
     this.clearProjectExport()
   }
 
+  getExport = type => {
+    this.props.actions.exportDataRequest(this.state.projectToExport, type)
+  }
+
   onChooseExport = type => {
-    this.setState({ exportDialogOpen: false }, () => this.getExport(type))
+    this.setState({
+      exportDialogOpen: false,
+      projectToExport: { ...this.state.projectToExport, exportType: type }
+    }, () => this.getExport(type))
   }
 
   clearProjectExport = () => {
     this.setState({
       projectToExport: null
     })
+    this.props.actions.clearProjectToExport()
   }
 
   renderErrorMessage = () => (
@@ -133,7 +146,8 @@ const mapStateToProps = (state) => ({
   sortBookmarked: state.scenes.home.main.sortBookmarked,
   error: state.scenes.home.main.error,
   errorContent: state.scenes.home.main.errorContent,
-  projectCount: state.scenes.home.main.projectCount || 0
+  projectCount: state.scenes.home.main.projectCount || 0,
+  projectToExport: state.scenes.home.main.projectToExport || {}
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

@@ -8,16 +8,16 @@ export const getJurisdictionsLogic = createLogic({
     successType: types.GET_PROJECT_JURISDICTIONS_SUCCESS,
     failType: types.GET_PROJECT_JURISDICTION_FAIL
   },
-  async process ({ action, api }) {
-    return await api.getProjectJurisdictions(action.projectId)
+  async process({ action, api }) {
+    return await api.getProjectJurisdictions({}, {}, { projectId: action.projectId })
   }
 })
 
 export const addJurisdictionLogic = createLogic({
   type: types.ADD_PROJECT_JURISDICTION_REQUEST,
-  async process ({ action, api }, dispatch, done) {
+  async process({ action, api }, dispatch, done) {
     try {
-      const jurisdiction = await api.addJurisdictionToProject(action.projectId, action.jurisdiction)
+      const jurisdiction = await api.addJurisdictionToProject(action.jurisdiction, {}, { projectId: action.projectId })
       dispatch({
         type: types.ADD_PROJECT_JURISDICTION_SUCCESS,
         payload: { ...jurisdiction }
@@ -43,9 +43,12 @@ export const addJurisdictionLogic = createLogic({
 
 export const updateJurisdictionLogic = createLogic({
   type: types.UPDATE_PROJECT_JURISDICTION_REQUEST,
-  async process ({ action, api }, dispatch, done) {
+  async process({ action, api }, dispatch, done) {
     try {
-      const updatedJurisdiction = await api.updateJurisdictionInProject(action.projectId, action.jurisdiction)
+      const updatedJurisdiction = await api.updateJurisdictionInProject(action.jurisdiction, {}, {
+        projectId: action.projectId,
+        jurisdictionId: action.jurisdiction.id
+      })
       dispatch({
         type: types.UPDATE_PROJECT_JURISDICTION_SUCCESS,
         payload: { ...updatedJurisdiction }
@@ -71,16 +74,16 @@ export const updateJurisdictionLogic = createLogic({
 
 export const addPresetJurisdictionLogic = createLogic({
   type: types.ADD_PRESET_JURISDICTION_REQUEST,
-  async process ({ action, api }, dispatch, done) {
+  async process({ action, api }, dispatch, done) {
     try {
-      const presetJurisdictions = await api.addPresetJurisdictionList(action.projectId, action.jurisdiction)
+      const presetJurisdictions = await api.addPresetJurisdictionList(action.jurisdiction, {}, { projectId: action.projectId })
       dispatch({
         type: types.ADD_PRESET_JURISDICTION_SUCCESS,
-        payload: [ ...presetJurisdictions ]
+        payload: [...presetJurisdictions]
       })
       dispatch({
         type: types.ADD_PRESET_JURISDICTION_TO_PROJECT,
-        payload: { jurisdictions: [...presetJurisdictions ], projectId: action.projectId }
+        payload: { jurisdictions: [...presetJurisdictions], projectId: action.projectId }
       })
       dispatch({
         type: types.UPDATE_EDITED_FIELDS,
@@ -103,16 +106,23 @@ export const searchJurisdictionList = createLogic({
     dispatchReturn: true,
     successType: types.SET_JURISDICTION_SUGGESTIONS
   },
-  async process ({ action, api }) {
-    return await api.searchJurisdictionList(action.searchString)
+  async process({ action, api }) {
+    return await api.searchJurisdictionList({}, {
+      params: {
+        name: action.searchString
+      }
+    }, {})
   }
 })
 
 // This is to add the current user to the action so that lastEditedBy field can be updated. The action is then sent to
 // the reducer for each type.
 export const updateFieldsLogic = createLogic({
-  type: [types.ADD_PROJECT_JURISDICTION_REQUEST, types.UPDATE_PROJECT_JURISDICTION_REQUEST, types.ADD_PRESET_JURISDICTION_REQUEST],
-  transform ({ action, getState }, next) {
+  type: [
+    types.ADD_PROJECT_JURISDICTION_REQUEST, types.UPDATE_PROJECT_JURISDICTION_REQUEST,
+    types.ADD_PRESET_JURISDICTION_REQUEST
+  ],
+  transform({ action, getState }, next) {
     const userId = getState().data.user.currentUser.id
     next({
       ...action,

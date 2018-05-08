@@ -90,7 +90,7 @@ const updateQuestionLogic = createLogic({
 
     action.question.possibleAnswers = orderedAnswers
     try {
-      const updatedQuestion = await api.updateQuestion(action.question, action.projectId, action.questionId)
+      const updatedQuestion = await api.updateQuestion(action.question, {}, { projectId: action.projectId, questionId: action.questionId })
       dispatch({
         type: types.UPDATE_QUESTION_SUCCESS,
         payload: {
@@ -122,7 +122,7 @@ const addChildQuestionLogic = createLogic({
 
     action.question.possibleAnswers = orderedAnswers
     try {
-      const question = await api.addQuestion(action.question, action.projectId)
+      const question = await api.addQuestion(action.question, {}, { projectId: action.projectId })
       dispatch({
         type: types.ADD_CHILD_QUESTION_SUCCESS,
         payload: {
@@ -156,7 +156,7 @@ const addQuestionLogic = createLogic({
 
     action.question.possibleAnswers = orderedAnswers
     try {
-      const question = await api.addQuestion(action.question, action.projectId)
+      const question = await api.addQuestion(action.question, {}, { projectId: action.projectId })
       dispatch({
         type: types.ADD_QUESTION_SUCCESS,
         payload: {

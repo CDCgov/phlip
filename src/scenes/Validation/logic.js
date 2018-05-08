@@ -60,7 +60,11 @@ const getCoderInformation = async ({ api, action, questionId, userImages }) => {
   let codedQuestionObj = {}, allCodedQuestions = [], coderErrors = {}, coders = {}
 
   try {
-    allCodedQuestions = await api.getAllCodedQuestionsForQuestion(action.projectId, action.jurisdictionId, questionId)
+    allCodedQuestions = await api.getAllCodedQuestionsForQuestion({}, {}, {
+      projectId: action.projectId,
+      jurisdictionId: action.jurisdictionId,
+      questionId: questionId
+    })
   } catch (e) {
     coderErrors = { allCodedQuestions: 'Failed to get all the user coded answers for this question.' }
   }
@@ -149,7 +153,7 @@ export const getValidationOutlineLogic = createLogic({
         // Get all the avatars I need
         for (let userId of Object.keys(coders)) {
           try {
-            const avatar = await api.getUserImage(userId)
+            const avatar = await api.getUserImage({}, {}, { userId })
             coders[userId] = { ...coders[userId], avatar }
           } catch (error) {
             errors = { ...errors, userImages: 'Failed to get images' }
@@ -215,7 +219,7 @@ export const getQuestionLogicValidation = createLogic({
     const newCoderImages = { ...newImages, ...coders }
     for (let userId of Object.keys(newCoderImages)) {
       try {
-        const avatar = await api.getUserImage(userId)
+        const avatar = await api.getUserImage({}, {}, { userId })
         newCoderImages[userId] = { ...newCoderImages[userId], avatar }
       } catch (error) {
         otherErrors = { ...otherErrors, userImages: 'Failed to get images' }
@@ -275,7 +279,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
     coders = { ...coders, ...coderInfo.coders }
     for (let userId of Object.keys(coders)) {
       try {
-        const avatar = await api.getUserImage(userId)
+        const avatar = await api.getUserImage({}, {}, { userId })
         coders[userId] = { ...coders[userId], avatar }
       } catch (error) {
         errors = { ...errors, userImages: 'Failed to get images' }
@@ -307,7 +311,7 @@ export const clearFlagLogic = createLogic({
   type: [types.CLEAR_RED_FLAG, types.CLEAR_FLAG],
   async process({ action, api }, dispatch, done) {
     try {
-      const out = await api.clearFlag(action.flagId)
+      const out = await api.clearFlag({}, {}, { flagId: action.flagId })
       dispatch({
         type: types.CLEAR_FLAG_SUCCESS,
         payload: {

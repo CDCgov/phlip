@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React from 'react'
 import { PersistGate } from 'redux-persist/es/integration/react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import { matchPath } from 'react-router'
@@ -8,14 +8,10 @@ import Admin from './Admin'
 import AuthenticatedRoute from 'components/AuthenticatedRoute'
 import HeaderedLayout from 'components/HeaderedLayout'
 import { persistor } from 'services/store'
-import axios from 'axios'
-import { isLoggedInTokenExists, getToken } from '../services/authToken'
 import CodingScheme from './CodingScheme'
 import Coding from './Coding'
 import Validation from './Validation'
 import Protocol from './Protocol'
-import { Authorization } from 'components/AuthorizedRoute'
-import DownloadPage from 'components/DownloadPage'
 import AddEditProject from 'scenes/Home/scenes/AddEditProject'
 import AddEditJurisdictions from 'scenes/Home/scenes/AddEditJurisdictions'
 import JurisdictionForm from 'scenes/Home/scenes/AddEditJurisdictions/components/JurisdictionForm'
@@ -57,7 +53,6 @@ const AuthenticatedScenes = ({ match, location, role, ...otherProps }) => {
           <Route path="/admin" component={Admin} />
           <Route strict path="/project/:id/coding-scheme" component={CodingScheme} />
           <Route strict path="/project/:id/protocol" component={Protocol} />
-          <Route path="/project/:id/export" component={DownloadPage} />
           <Route path="/home" component={Home} />
           <Route exact path="/" render={() => <Redirect to={{ pathname: 'home' }} />} />
         </Switch>
@@ -71,11 +66,7 @@ const AuthenticatedScenes = ({ match, location, role, ...otherProps }) => {
   )
 }
 
-const Scenes = () => {
-  if (isLoggedInTokenExists()) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${getToken()}`
-  }
-
+const Scenes = props => {
   return (
     <Switch>
       <Route path="/login" component={Login} />

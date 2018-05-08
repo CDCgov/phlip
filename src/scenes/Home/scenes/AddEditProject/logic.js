@@ -5,7 +5,7 @@ export const addProjectLogic = createLogic({
   type: types.ADD_PROJECT_REQUEST,
   async process({ action, api }, dispatch, done) {
     try {
-      const project = await api.addProject(action.project)
+      const project = await api.addProject(action.project, {}, {})
       dispatch({
         type: types.ADD_PROJECT_SUCCESS,
         payload: {
@@ -27,7 +27,7 @@ export const updateProjectLogic = createLogic({
   type: types.UPDATE_PROJECT_REQUEST,
   async process({ action, api }, dispatch, done) {
     try {
-      const updatedProject = await api.updateProject(action.project)
+      const updatedProject = await api.updateProject(action.project, {}, { projectId: action.project.id })
       dispatch({
         type: types.UPDATE_PROJECT_SUCCESS,
         payload: {

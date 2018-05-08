@@ -1,10 +1,9 @@
 import * as types from './actionTypes'
 
-const TOKEN_KEY = 'esquire_token'
-
 const INITIAL_STATE = {
   session: !!sessionStorage.esquire_token,
-  pivError: null
+  pivError: null,
+  formMessage: null
 }
 
 const loginReducer = (state = INITIAL_STATE, action) => {
@@ -12,7 +11,8 @@ const loginReducer = (state = INITIAL_STATE, action) => {
     case types.LOGIN_USER_SUCCESS:
       return {
         ...state,
-        session: !!sessionStorage.esquire_token
+        session: !!sessionStorage.esquire_token,
+        formMessage: null
       }
 
     case types.CHECK_PIV_USER_SUCCESS:
@@ -27,14 +27,27 @@ const loginReducer = (state = INITIAL_STATE, action) => {
     case types.CHECK_PIV_USER_FAIL:
       return {
         ...state,
-        pivError: 'Login failed. Please contact your administrator.'
+        formMessage: 'Login failed. Please contact your administrator.'
       }
 
     case types.LOGIN_USER_REQUEST:
       return state
 
-    case 'FLUSH_STATE':
-      return INITIAL_STATE
+    case types.LOGOUT_USER:
+      if (action.sessionExpired === true) {
+        return {
+          ...state,
+          formMessage: 'Your session expired. Please login again.'
+        }
+      } else {
+        return state
+      }
+
+    case types.FLUSH_STATE:
+      return {
+        ...INITIAL_STATE,
+        formMessage: state.formMessage
+      }
 
     default: return { ...state }
   }

@@ -19,7 +19,6 @@ import withFormAlert from 'components/withFormAlert'
 import { default as formActions } from 'redux-form/lib/actions'
 import AvatarForm from './components/AvatarForm'
 import TextLink from 'components/TextLink'
-import Button from 'components/Button'
 import Tooltip from 'components/Tooltip'
 import compressImage from 'browser-compress-image'
 import Alert from 'components/Alert'
@@ -90,7 +89,6 @@ export class AddEditUser extends Component {
     if (id && this.props.users.length > 0) {
       this.state.selectedUser = getUserById(this.props.users, id)
       this.props.actions.loadAddEditAvatar(this.state.selectedUser.avatar)
-      // this.props.actions.getUserPictureRequest(id)
     }
   }
 

@@ -20,7 +20,8 @@ const INITIAL_STATE = {
   sortBookmarked: false,
   errorContent: '',
   error: false,
-  projectCount: 0
+  projectCount: 0,
+  projectToExport: {}
 }
 
 const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => {
@@ -208,6 +209,31 @@ const mainReducer = (state, action) => {
             }
           }
         }
+      }
+
+    case types.EXPORT_DATA_REQUEST:
+      return {
+        ...state,
+        projectToExport: {
+          ...action.project,
+          exportType: action.exportType
+        }
+      }
+
+    case types.EXPORT_DATA_SUCCESS:
+      console.log(state.projectToExport)
+      return {
+        ...state,
+        projectToExport: {
+          ...state.projectToExport,
+          text: action.payload
+        }
+      }
+
+    case types.CLEAR_PROJECT_TO_EXPORT:
+      return {
+        ...state,
+        projectToExport: {}
       }
 
     case types.GET_PROJECTS_REQUEST:

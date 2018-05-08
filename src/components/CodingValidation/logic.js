@@ -105,7 +105,7 @@ const answerQuestionLogic = createLogic({
 
     try {
       if (action.payload.questionObj.hasOwnProperty('id')) {
-        respCodedQuestion = await action.apiMethods.update({ ...action.payload })
+        respCodedQuestion = await action.apiMethods.update(action.payload.questionObj, {}, { ...action.payload })
 
         // Remove any pending requests from the queue because this is the latest one and has an id
         dispatch({
@@ -113,7 +113,7 @@ const answerQuestionLogic = createLogic({
           payload: { questionId: action.payload.questionId, categoryId: action.payload.selectedCategoryId }
         })
       } else {
-        respCodedQuestion = await action.apiMethods.create({ ...action.payload })
+        respCodedQuestion = await action.apiMethods.create(action.payload.questionObj, {}, { ...action.payload })
       }
 
       dispatch({
@@ -198,10 +198,10 @@ const applyAnswerToAllLogic = createLogic({
         const question = getFinalCodedObject(state, action, action.page === 'validation', category.categoryId)
 
         if (category.id !== undefined) {
-          respCodedQuestion = await action.apiMethods.update({ ...action.answerObject, userId, questionObj: question })
+          respCodedQuestion = await action.apiMethods.update(question, {}, { ...action.answerObject, userId })
         } else {
           const { id, ...questionObj } = question
-          respCodedQuestion = await action.apiMethods.create({ ...action.answerObject, userId, questionObj })
+          respCodedQuestion = await action.apiMethods.create(questionObj, {}, { ...action.answerObject, userId })
         }
 
         dispatch({
@@ -244,9 +244,9 @@ const sendMessageLogic = createLogic({
   async process({ getState, action, api }, dispatch, done) {
     try {
       const respCodedQuestion = await action.apiUpdateMethod({
-        ...action.message,
-        questionObj: { ...action.message.questionObj, id: action.payload.id }
-      })
+        ...action.message.questionObj,
+        id: action.payload.id
+      }, {}, { ...action.message })
 
       dispatch({
         type: `${commonTypes.SAVE_USER_ANSWER_SUCCESS}_${action.page.toUpperCase()}`,

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Route, Redirect, withRouter } from 'react-router-dom'
 import { matchPath } from 'react-router'
-import { isLoggedInTokenExists } from 'services/authToken'
+import { isLoggedInTokenExists, isTokenExpired } from 'services/authToken'
 import { connect } from 'react-redux'
 import { UnauthPage, PageNotFound } from 'components/RoutePages'
 
@@ -50,7 +50,7 @@ const AuthenticatedRoute = ({ component: Component, user, location, ...rest }) =
         ? isAllowed(user, location.pathname)
           ? <Route {...rest} render={props => <Component {...props} location={location} role={user.role} />} />
           : <UnauthPage />
-        : <Route {...rest} render={() => <Redirect to="/login" />} />
+        : <Route {...rest} render={() => <Redirect to="/login" {...rest} />} />
       : <PageNotFound />
   )
 }

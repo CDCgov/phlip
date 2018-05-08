@@ -37,7 +37,8 @@ const initial = {
     sortBookmarked: false,
     error: false,
     errorContent: '',
-    searchValue: ''
+    searchValue: '',
+    projectToExport: {}
   },
   addEditProject: { formError: null, goBack: false },
   addEditJurisdictions: {

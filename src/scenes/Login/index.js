@@ -8,7 +8,8 @@ import TextInput from 'components/TextInput'
 import * as actions from './actions'
 import { withRouter } from 'react-router-dom'
 import { matchPath } from 'react-router'
-import jwtDecode from 'jwt-decode'
+import { decodeToken } from 'services/authToken'
+import * as userActions from 'data/user/actions'
 
 export class Login extends Component {
   constructor(props, context) {
@@ -22,28 +23,30 @@ export class Login extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props.location.state)
     const match = matchPath(this.props.location.pathname, { path: '/login/verify-user' })
     if (match) {
       const rawToken = this.props.location.search
       const parsedToken = rawToken.substring(rawToken.indexOf('=') + 1)
-      const decodedToken = jwtDecode(parsedToken)
-      const tokenObject = { decodedToken, token: parsedToken }
+      const tokenObject = { decodedToken: decodeToken(parsedToken), token: parsedToken }
       this.props.actions.checkPivUserRequest(tokenObject)
+    }
+
+    if (this.props.location.state !== undefined) {
+      if (this.props.location.state.sessionExpired === true) {
+        this.props.actions.logoutUser(true)
+      }
     }
   }
 
-  handleSubmit = (values) => {
+  handleSubmit = values => {
     this.props.actions.loginUserRequest(values)
-  }
-
-  handlePivLogin = () => {
-    this.props.history.push('/auth/sams-login')
   }
 
   render() {
     return (
       <Container column flex alignItems="center" justify="center" style={{ backgroundColor: '#f5f5f5' }}>
-        <LoginForm onSubmit={this.handleSubmit} pivError={this.props.pivError}>
+        <LoginForm onSubmit={this.handleSubmit} pivError={this.props.formMessage}>
           <Column displayFlex style={{ justifyContent: 'space-around', alignItems: 'center' }}>
             <Row style={{ width: 280, padding: 16 }}>
               <Field name="email" label="Email" component={TextInput} />
@@ -58,12 +61,15 @@ export class Login extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  user: state.data.user.currentUser || undefined,
-  session: state.scenes.login.session || false,
-  pivError: state.scenes.login.pivError || null
-})
+const mapStateToProps = (state, ownProps) => {
+  console.log(ownProps)
+  return {
+    user: state.data.user.currentUser || undefined,
+    session: state.scenes.login.session || false,
+    formMessage: state.scenes.login.formMessage || null
+  }
+}
 
-const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
+const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators({ ...actions, ...userActions }, dispatch) })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login))

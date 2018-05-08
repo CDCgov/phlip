@@ -36,7 +36,8 @@ const props = {
   direction: 'desc',
   page: 0,
   rowsPerPage: '10',
-  searchValue: ''
+  searchValue: '',
+  projectToExport: {}
 }
 
 const setup = (otherProps = {}, initialEntries = ['/']) => {

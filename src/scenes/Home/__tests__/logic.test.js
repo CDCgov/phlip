@@ -2,24 +2,26 @@ import { createMockStore } from 'redux-logic-test'
 import MockAdapter from 'axios-mock-adapter'
 import logic from '../logic'
 import * as types from '../actionTypes'
-import apiCalls, { api } from 'services/api'
+import createApiHandler, { instance } from 'services/api'
 
 describe('Home logic', () => {
   let mock
 
   const mockReducer = (state, action) => state
+  const history = {}
+  const api = createApiHandler({ history })
 
   beforeEach(() => {
-    mock = new MockAdapter(api)
+    mock = new MockAdapter(instance)
   })
 
   const setupStore = initialBookmarks => {
     return createMockStore({
       initialState: { data: { user: { currentUser: { id: 5, bookmarks: initialBookmarks } } } },
       reducer: mockReducer,
-      logic: logic,
+      logic,
       injectedDeps: {
-        api: { ...apiCalls }
+        api
       }
     })
   }

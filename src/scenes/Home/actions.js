@@ -24,3 +24,6 @@ export const updateRows = rowsPerPage => ({ type: types.UPDATE_ROWS, payload: { 
 export const updateSearchValue = searchValue => ({ type: types.UPDATE_SEARCH_VALUE, payload: { searchValue } })
 
 export const updateEditedFields = projectId => ({ type: types.UPDATE_EDITED_FIELDS, projectId })
+
+export const exportDataRequest = (project, exportType) => ({ type: types.EXPORT_DATA_REQUEST, project, exportType })
+export const clearProjectToExport = () => ({ type: types.CLEAR_PROJECT_TO_EXPORT })

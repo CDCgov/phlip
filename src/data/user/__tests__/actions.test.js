@@ -18,7 +18,8 @@ describe('User action creators', () => {
 
   test('should create an action to logout user', () => {
     const expectedAction = {
-      type: types.LOGOUT_USER
+      type: types.LOGOUT_USER,
+      sessionExpired: false
     }
     expect(actions.logoutUser()).toEqual(expectedAction)
   })

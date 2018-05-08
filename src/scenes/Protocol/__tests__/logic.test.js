@@ -2,15 +2,18 @@ import { createMockStore } from 'redux-logic-test'
 import MockAdapter from 'axios-mock-adapter'
 import logic from '../logic'
 import * as types from '../actionTypes'
-import apiCalls, { api } from 'services/api'
+import createApiHandler, { instance } from 'services/api'
 
 describe('Protocol logic', () => {
   let mock
 
+  const history = {}
+  const api = createApiHandler({ history })
+
   const mockReducer = (state, action) => state
 
   beforeEach(() => {
-    mock = new MockAdapter(api)
+    mock = new MockAdapter(instance)
   })
 
   const setupStore = () => {
@@ -19,7 +22,7 @@ describe('Protocol logic', () => {
       reducer: mockReducer,
       logic,
       injectedDeps: {
-        api: { ...apiCalls }
+        api
       }
     })
   }
