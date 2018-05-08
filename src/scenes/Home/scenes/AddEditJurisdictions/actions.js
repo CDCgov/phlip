@@ -46,6 +46,12 @@ export const addPresetJurisdictionRequest = (jurisdiction, projectId) => ({
   projectId
 })
 
+export const deleteJurisdictionRequest = (jurisdictionId, projectId) => ({
+  type: types.DELETE_JURISDICTION_REQUEST,
+  jurisdictionId,
+  projectId
+})
+
 export const resetFormError = () => ({
   type: types.RESET_FORM_ERROR
 })

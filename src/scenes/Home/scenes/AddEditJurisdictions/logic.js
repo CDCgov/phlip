@@ -115,6 +115,39 @@ export const searchJurisdictionList = createLogic({
   }
 })
 
+export const deleteJurisdictionLogic = createLogic({
+  type: types.DELETE_JURISDICTION_REQUEST,
+  async process({ getState, action, api }, dispatch, done) {
+    try {
+      const out = api.deleteProjectJurisdiction({}, {}, {
+        projectId: action.projectId,
+        jurisdictionId: action.jurisdictionId
+      })
+      dispatch({
+        type: types.DELETE_JURISDICTION_SUCCESS,
+        jurisdictionId: action.jurisdictionId
+      })
+      dispatch({
+        type: types.DELETE_JURISDICTION_FROM_PROJECT,
+        payload: {
+          jurisdictionId: action.jurisdictionId,
+          projectId: action.projectId
+        }
+      })
+      dispatch({
+        type: types.UPDATE_EDITED_FIELDS,
+        projectId: action.projectId
+      })
+    } catch (e) {
+      dispatch({
+        type: types.DELETE_JURISDICTION_FAIL,
+        payload: 'We couldn\'t delete the jurisdiction from this project. Please try again later.'
+      })
+    }
+    done()
+  }
+})
+
 // This is to add the current user to the action so that lastEditedBy field can be updated. The action is then sent to
 // the reducer for each type.
 export const updateFieldsLogic = createLogic({
@@ -137,5 +170,6 @@ export default [
   addJurisdictionLogic,
   updateJurisdictionLogic,
   searchJurisdictionList,
-  addPresetJurisdictionLogic
+  addPresetJurisdictionLogic,
+  deleteJurisdictionLogic
 ]

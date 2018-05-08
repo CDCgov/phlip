@@ -211,6 +211,23 @@ const mainReducer = (state, action) => {
         }
       }
 
+    case types.DELETE_JURISDICTION_FROM_PROJECT:
+      const currentJurisdictions = [ ...state.projects.byId[action.payload.projectId].projectJurisdictions ]
+      const updatedJurisdictions = currentJurisdictions.filter(value => value.id !== action.payload.jurisdictionId)
+
+      return {
+        ...state,
+        projects: {
+          byId: {
+            ...state.projects.byId,
+            [action.payload.projectId]: {
+              ...state.projects.byId[action.payload.projectId],
+              projectJurisdictions: updatedJurisdictions
+            }
+          }
+        }
+      }
+
     case types.EXPORT_DATA_REQUEST:
       return {
         ...state,

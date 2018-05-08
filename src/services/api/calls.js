@@ -96,6 +96,11 @@ export default [
     path: ({ projectId }) => `/projects/${projectId}/jurisdictions/preset`
   },
   {
+    name: 'deleteProjectJurisdiction',
+    method: 'delete',
+    path: ({ projectId, jurisdictionId }) => `/projects/${projectId}/jurisdictions/${jurisdictionId}`
+  },
+  {
     name: 'getScheme',
     method: 'get',
     path: ({ projectId }) => `/projects/${projectId}/scheme`

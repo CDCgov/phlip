@@ -100,6 +100,35 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       }
     }
   >
+    <Alert
+      actions={
+        Array [
+          Object {
+            "onClick": [Function],
+            "type": "button",
+            "value": "Cancel",
+          },
+          Object {
+            "onClick": [Function],
+            "type": "button",
+            "value": "Continue",
+          },
+        ]
+      }
+      open={false}
+    >
+      <WithStyles
+        style={
+          Object {
+            "whiteSpace": "pre-wrap",
+          }
+        }
+        variant="body1"
+      >
+        Are you sure you want to delete the jurisdiction, 
+        , from the project? All coded questions related to this jurisdiction will be deleted.
+      </WithStyles>
+    </Alert>
     <Container
       column={false}
       flex={true}
@@ -124,7 +153,9 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
           }
         }
       >
-        <JurisdictionList />
+        <JurisdictionList
+          onDelete={[Function]}
+        />
       </Column>
     </Container>
   </ModalContent>

@@ -26,6 +26,11 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionList should render corr
       >
         Edit
       </WithStyles>
+      <WithStyles
+        key="segment-delete"
+      >
+        Delete
+      </WithStyles>
     </WithStyles>
   </WithStyles>
   <WithStyles />

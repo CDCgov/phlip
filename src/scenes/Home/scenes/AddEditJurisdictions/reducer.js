@@ -71,6 +71,27 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         goBack: true
       }
 
+    case types.DELETE_JURISDICTION_SUCCESS:
+      const currentIds = { ...state.jurisdictions.byId }
+      delete currentIds[action.jurisdictionId]
+
+      const indexOfId = state.jurisdictions.allIds.findIndex(value => value === action.jurisdictionId)
+      const allIds = [ ...state.jurisdictions.allIds ]
+      allIds.splice(indexOfId, 1)
+
+      const visible = [ ...state.visibleJurisdictions ]
+      visible.splice(indexOfId, 1)
+
+      return {
+        ...state,
+        jurisdictions: {
+          byId: { ...currentIds },
+          allIds: [ ...allIds ]
+        },
+        visibleJurisdictions: [ ...visible ],
+        goBack: true
+      }
+
     case types.UPDATE_JURISDICTION_SEARCH_VALUE:
       return {
         ...state,
@@ -121,6 +142,7 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
     case types.ADD_PROJECT_JURISDICTION_FAIL:
     case types.UPDATE_PROJECT_JURISDICTION_FAIL:
     case types.ADD_PRESET_JURISDICTION_FAIL:
+    case types.DELETE_JURISDICTION_FAIL:
       return {
         ...state,
         formError: action.payload,
@@ -156,6 +178,7 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.SEARCH_JURISDICTION_LIST:
+    case types.DELETE_JURISDICTION_REQUEST:
     case types.UPDATE_PROJECT_JURISDICTION_REQUEST:
     case types.ADD_PROJECT_JURISDICTION_REQUEST:
     case types.ADD_PRESET_JURISDICTION_REQUEST:

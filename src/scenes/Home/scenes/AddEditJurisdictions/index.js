@@ -3,10 +3,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { withRouter } from 'react-router'
-import { Route } from 'react-router-dom'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import Button from 'components/Button'
-import Container, { Column, Row } from 'components/Layout'
+import Container, { Column } from 'components/Layout'
 import JurisdictionList from './components/JurisdictionList'
 import * as actions from './actions'
 import Divider from 'material-ui/Divider'
@@ -15,6 +14,7 @@ import TextLink from 'components/TextLink'
 import ApiErrorView from 'components/ApiErrorView'
 import { withTheme } from 'material-ui/styles'
 import PageLoader from 'components/PageLoader'
+import Alert from 'components/Alert'
 
 export class AddEditJurisdictions extends Component {
   static propTypes = {
@@ -26,6 +26,11 @@ export class AddEditJurisdictions extends Component {
     theme: PropTypes.object,
     showJurisdictionLoader: PropTypes.bool,
     isLoadingJurisdictions: PropTypes.bool
+  }
+
+  state = {
+    confirmDeleteAlertOpen: false,
+    jurisdictionToDelete: {}
   }
 
   constructor(props, context) {
@@ -53,6 +58,25 @@ export class AddEditJurisdictions extends Component {
     }, 1000)
   }
 
+  confirmDelete = (id, name) => {
+    this.setState({
+      confirmDeleteAlertOpen: true,
+      jurisdictionToDelete: { id, name }
+    })
+  }
+
+  continueDelete = () => {
+    this.props.actions.deleteJurisdictionRequest(this.state.jurisdictionToDelete.id, this.props.project.id)
+    this.cancelDelete()
+  }
+
+  cancelDelete = () => {
+    this.setState({
+      confirmDeleteAlertOpen: false,
+      jurisdictionToDelete: {}
+    })
+  }
+
   getButton = () => {
     return (
       <Fragment>
@@ -71,6 +95,19 @@ export class AddEditJurisdictions extends Component {
   }
 
   render() {
+    const alertActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.cancelDelete
+      },
+      {
+        value: 'Continue',
+        type: 'button',
+        onClick: this.continueDelete
+      }
+    ]
+
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="md" hideOverflow>
         <ModalTitle
@@ -90,13 +127,22 @@ export class AddEditJurisdictions extends Component {
           }} />
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
+          <Alert actions={alertActions} open={this.state.confirmDeleteAlertOpen}>
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+              Are you sure you want to delete the jurisdiction, {this.state.jurisdictionToDelete.name}, from the
+              project? All coded questions related to this jurisdiction will be deleted.
+            </Typography>
+          </Alert>
           <Container flex style={{ marginTop: 20 }}>
             <Column flex displayFlex style={{ overflowX: 'auto' }}>
               {this.props.error === true
                 ? <ApiErrorView error={this.props.errorContent} />
                 : this.props.showJurisdictionLoader
                   ? <PageLoader />
-                  : <JurisdictionList jurisdictions={this.props.visibleJurisdictions} projectId={this.props.project.id} />}
+                  : <JurisdictionList
+                    jurisdictions={this.props.visibleJurisdictions}
+                    projectId={this.props.project.id}
+                    onDelete={this.confirmDelete} />}
             </Column>
           </Container>
         </ModalContent>
@@ -120,7 +166,7 @@ const mapStateToProps = (state, ownProps) => ({
   error: state.scenes.home.addEditJurisdictions.error || false,
   errorContent: state.scenes.home.addEditJurisdictions.errorContent || '',
   isLoadingJurisdictions: state.scenes.home.addEditJurisdictions.isLoadingJurisdictions || false,
-  showJurisdictionLoader: state.scenes.home.addEditJurisdictions.showJurisdictionLoader || false,
+  showJurisdictionLoader: state.scenes.home.addEditJurisdictions.showJurisdictionLoader || false
 })
 
 const mapDispatchToProps = (dispatch) => ({
