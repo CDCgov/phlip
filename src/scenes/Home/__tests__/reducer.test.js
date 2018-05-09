@@ -51,7 +51,10 @@ const initial = {
     formError: null,
     goBack: false,
     isLoadingJurisdictions: false,
-    showJurisdictionLoader: false
+    showJurisdictionLoader: false,
+    form: {
+      values: { name: '' }
+    }
   }
 }
 

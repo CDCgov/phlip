@@ -11,7 +11,12 @@ const INITIAL_STATE = {
   formError: null,
   goBack: false,
   isLoadingJurisdictions: false,
-  showJurisdictionLoader: false
+  showJurisdictionLoader: false,
+  form: {
+    values: {
+      name: ''
+    }
+  }
 }
 
 describe('Home scene - AddEditJurisdictions reducer', () => {
@@ -135,7 +140,12 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
       )
     ).toEqual({
       ...INITIAL_STATE,
-      suggestionValue: 'O'
+      suggestionValue: 'O',
+      form: {
+        values: {
+          name: 'O'
+        }
+      }
     })
   })
 
@@ -205,7 +215,12 @@ describe('Home scene - AddEditJurisdictions reducer', () => {
     ).toEqual({
       ...INITIAL_STATE,
       suggestionValue: 'Atlanta',
-      jurisdiction: { name: 'Atlanta', id: 1 }
+      jurisdiction: { name: 'Atlanta', id: 1 },
+      form: {
+        values: {
+          name: 'Atlanta'
+        }
+      }
     })
   })
 

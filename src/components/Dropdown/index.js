@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Select from 'material-ui/Select'
 import Input, { InputLabel } from 'material-ui/Input'
-import { FormControl } from 'material-ui/Form'
+import { FormControl, FormHelperText } from 'material-ui/Form'
 import { MenuItem } from 'material-ui/Menu'
 import { withStyles } from 'material-ui/styles'
 

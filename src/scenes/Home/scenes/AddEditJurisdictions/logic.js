@@ -47,7 +47,7 @@ export const updateJurisdictionLogic = createLogic({
     try {
       const updatedJurisdiction = await api.updateJurisdictionInProject(action.jurisdiction, {}, {
         projectId: action.projectId,
-        jurisdictionId: action.jurisdiction.id
+        jurisdictionId: action.projectJurisdictionId
       })
       dispatch({
         type: types.UPDATE_PROJECT_JURISDICTION_SUCCESS,

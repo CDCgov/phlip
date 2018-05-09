@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Autosuggest from 'react-autosuggest'
 import Paper from 'material-ui/Paper'
 import { withStyles } from 'material-ui/styles'
-import TextInput from 'components/TextInput'
+import SimpleInput from 'components/SimpleInput'
 
 const classes = theme => ({
   suggestionsContainerOpen: {
@@ -31,14 +31,14 @@ const classes = theme => ({
   }
 })
 
-const renderInput = ({ value, onBlur, ref, meta, ...other }) => {
+const renderInput = ({ value, onBlur, ref, TextFieldProps, ...other }) => {
   return (
-  <TextInput
+  <SimpleInput
     shrinkLabel
     inputRef={ref}
     value={value}
-    meta={meta}
-    {...other}
+    {...TextFieldProps}
+    multiline={false}
     inputProps={other}
   />)
 }
@@ -57,17 +57,15 @@ export const Autocomplete = props => {
   const {
     suggestions,
     classes,
-    input,
-    meta,
+    InputProps,
     inputProps,
     handleGetSuggestions,
     handleClearSuggestions,
     handleSuggestionSelected,
     renderSuggestion,
-    getSuggestionValue,
-    ...custom
+    getSuggestionValue
   } = props
-  
+
   return (
     <Autosuggest
       theme={{
@@ -82,11 +80,8 @@ export const Autocomplete = props => {
       renderSuggestionsContainer={renderSuggestionsContainer}
       renderInputComponent={renderInput}
       inputProps={{
-        meta,
-        input,
-        ...input,
-        ...inputProps,
-        ...custom
+        TextFieldProps: InputProps,
+        ...inputProps
       }}
       shouldRenderSuggestions={shouldRenderSuggestions}
       onSuggestionSelected={handleSuggestionSelected}

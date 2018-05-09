@@ -1,24 +1,19 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Divider from 'material-ui/Divider'
 import { MenuItem } from 'material-ui/Menu'
 import { withRouter } from 'react-router'
 import parse from 'autosuggest-highlight/parse'
 import match from 'autosuggest-highlight/match'
-import { Field } from 'redux-form'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import FormModal from 'components/FormModal'
-import { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
+import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import Container, { Row, Column } from 'components/Layout'
 import * as actions from '../../actions'
-import { validateRequired, validateRequiredArray, validateDate, validateDateRanges } from 'utils/formHelpers'
 import DatePicker from 'components/DatePicker'
 import Autocomplete from 'components/Autocomplete'
-import { default as formActions } from 'redux-form/lib/actions'
 import withFormAlert from 'components/withFormAlert'
 import moment from 'moment'
-import api from 'services/api'
 import { normalize } from 'utils'
 import Dropdown from 'components/Dropdown'
 
@@ -74,9 +69,11 @@ export class JurisdictionForm extends Component {
     this.state = {
       edit: this.jurisdictionDefined !== null,
       submitting: false,
-      endDate: this.jurisdictionDefined ? this.jurisdictionDefined.endDate : new Date(),
-      startDate: this.jurisdictionDefined ? this.jurisdictionDefined.startDate : new Date(),
-      errors: {}
+      errors: {
+        name: '',
+        endDate: '',
+        startDate: ''
+      }
     }
   }
 
@@ -97,11 +94,21 @@ export class JurisdictionForm extends Component {
     this.props.actions.onClearSuggestions()
   }
 
-  onSubmitPreset = values => {
+  componentWillMount() {
+    this.props.actions.initializeFormValues({
+      endDate: this.jurisdictionDefined ? this.jurisdictionDefined.endDate : new Date(),
+      startDate: this.jurisdictionDefined ? this.jurisdictionDefined.startDate : new Date(),
+      name: this.jurisdictionDefined ? this.jurisdictionDefined.name : this.props.location.state.preset === true
+        ? 'US States'
+        : ''
+    })
+  }
+
+  onSubmitPreset = () => {
     const jurisdiction = {
-      startDate: moment(this.state.startDate).toISOString(),
-      endDate: moment(this.state.endDate).toISOString(),
-      tag: values.name
+      startDate: moment(this.props.form.values.startDate).toISOString(),
+      endDate: moment(this.props.form.values.endDate).toISOString(),
+      tag: this.props.form.values.name
     }
 
     this.setState({
@@ -111,13 +118,13 @@ export class JurisdictionForm extends Component {
     this.props.actions.addPresetJurisdictionRequest(jurisdiction, this.props.project.id)
   }
 
-  onSubmitForm = values => {
+  onSubmitForm = () => {
     const hasErrors = Object.values(this.state.errors).filter(error => error.length > 0).length > 0
     if (!hasErrors) {
       const jurisdiction = {
-        ...values,
-        startDate: moment(this.state.startDate).toISOString(),
-        endDate: moment(this.state.endDate).toISOString(),
+        name: this.props.form.values.name,
+        startDate: moment(this.props.form.values.startDate).toISOString(),
+        endDate: moment(this.props.form.values.endDate).toISOString(),
         jurisdictionId: this.props.jurisdiction.id
       }
 
@@ -126,39 +133,40 @@ export class JurisdictionForm extends Component {
       })
 
       if (this.state.edit) {
-        this.props.actions.updateJurisdiction(jurisdiction, this.props.project.id)
+        this.props.actions.updateJurisdiction(jurisdiction, this.props.project.id, this.jurisdictionDefined.id)
       } else {
         this.props.actions.addJurisdiction(jurisdiction, this.props.project.id)
       }
     }
   }
 
-  throwErrors = (values, out) => {
-    if (out.length === 0) {
-      throw { name: 'You must choose a pre-defined jurisdiction name.' }
-    } else if (out.length > 1) {
-      throw { name: 'There are multiple jurisdictions that match this string. Please choose one from the list.' }
-    } else {
-      this.props.actions.onJurisdictionSelected(out[0])
-      this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
-    }
-  }
-
-  validateJurisdiction = values => {
-    if (values.hasOwnProperty('name')) {
-      const updatedValues = { ...values, name: values.name.trim() }
-      const prom = new Promise(resolve => resolve(api.searchJurisdictionList(updatedValues.name)))
-      return prom.then(out => {
-        if (!this.state.edit) {
-          if (!this.props.jurisdiction) {
-            this.throwErrors(updatedValues, out)
-          } else if (this.props.jurisdiction && this.props.jurisdiction.name !== updatedValues.name) {
-            this.throwErrors(updatedValues, out)
-          } else {
-            this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
-          }
+  validateJurisdiction = () => {
+    const jurisdictionName = this.props.form.values.name
+    if (!this.state.edit) {
+      if (jurisdictionName.length > 0) {
+        if (Object.keys(this.props.jurisdiction).length === 0) {
+          this.setState({
+            errors: {
+              ...this.state.errors,
+              name: 'You must choose a pre-defined jurisdiction name.'
+            }
+          })
+        } else {
+          this.setState({
+            errors: {
+              ...this.state.errors,
+              name: ''
+            }
+          })
         }
-      })
+      } else {
+        this.setState({
+          errors: {
+            ...this.state.errors,
+            name: 'Required'
+          }
+        })
+      }
     }
   }
 
@@ -173,128 +181,99 @@ export class JurisdictionForm extends Component {
   }
 
   onJurisdictionSelected = (event, { suggestionValue }) => {
-    this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
     this.props.actions.onJurisdictionSelected(suggestionValue)
   }
 
   onSuggestionChange = event => {
     this.props.actions.onSuggestionValueChanged(event.target.value)
+    this.setState({
+      errors: {
+        ...this.state.errors,
+        name: event.target.value !== undefined ? event.target.value.length > 0 ? '' : 'Required' : ''
+      }
+    })
   }
 
   onClearSuggestions = () => {
     this.props.actions.onClearSuggestions()
   }
 
-  getNameInputField = () => {
-    if (this.props.location.state.preset === true) {
-      const options = [
-        { value: 'US States', label: 'US States' }
-        //{ value: 'Counties', label: 'Counties' }
-      ]
-
-      return (
-        <Field
-          name="name"
-          component={Dropdown}
-          id="preset-type"
-          defaultValue="US States"
-          validate={validateRequired}
-          label="Preset Type"
-          options={options}
-          required
-        />
-      )
-    } else {
-      return (
-        <Field
-          name="name"
-          component={Autocomplete}
-          validate={validateRequired}
-          suggestions={this.props.suggestions}
-          handleGetSuggestions={this.onJurisdictionsFetchRequest}
-          handleClearSuggestions={this.onClearSuggestions}
-          inputProps={{
-            value: this.state.edit ? this.jurisdictionDefined.name : this.props.suggestionValue,
-            onChange: this.onSuggestionChange,
-            id: 'jurisdiction-name',
-            disabled: this.state.edit,
-            label: 'Name',
-            placeholder: 'Enter jurisdiction name',
-            required: true
-          }}
-          handleSuggestionSelected={this.onJurisdictionSelected}
-          renderSuggestion={renderSuggestion}
-          getSuggestionValue={getSuggestionValue}
-        />
-      )
-    }
+  onChangeNameField = value => {
+    this.props.actions.setFormValues('name', value)
   }
 
-  validateMinDate = value => {
-    let errors = { ...this.state.errors }
+  validateMinDate = (value, endDate) => {
+    let dateErrors = ''
 
     if (value === undefined || value === '' || value === null) {
-      errors['startDate'] = 'Required'
+      dateErrors = 'Required'
     } else if (new Date(value).getFullYear() < '1850') {
-      errors['startDate'] = 'Minimum year for start date is 1850'
+      dateErrors = 'Minimum year for start date is 1850'
     } else if (new Date(value).getFullYear() > '2050') {
-      errors['startDate'] = 'Maximum year for start date is 2050'
-    } else if (new Date(value) > new Date(this.state.endDate)) {
-      errors = {
-        endDate: 'End date must be later than start date',
-        startDate: 'Start date must but earlier than end date'
-      }
-    } else {
-      errors = {}
+      dateErrors = 'Maximum year for start date is 2050'
+    } else if (new Date(value) > new Date(endDate)) {
+      dateErrors = 'Start date must but earlier than end date'
     }
 
-    this.setState({ errors })
+    return dateErrors
   }
 
-  validateMaxDate = value => {
-    let errors = { ...this.state.errors }
+  validateMaxDate = (value, startDate) => {
+    let dateErrors = ''
 
     if (value === undefined || value === '' || value === null) {
-      errors['endDate'] = 'Required'
+      dateErrors = 'Required'
     } else if (new Date(value).getFullYear() > '2050') {
-      errors['endDate'] = 'Maximum year for end date is 2050'
+      dateErrors = 'Maximum year for end date is 2050'
     } else if (new Date(value).getFullYear() < '1850') {
-      errors['endDate'] = 'Minimum year for end date is 1850'
-    } else if (new Date(this.state.startDate) > new Date(value)) {
-      errors = {
-        endDate: 'End date must be later than start date',
-        startDate: 'Start date must but earlier than end date'
-      }
-    } else {
-      errors = {}
+      dateErrors = 'Minimum year for end date is 1850'
+    } else if (new Date(startDate) > new Date(value)) {
+      dateErrors = 'End date must be later than start date'
     }
 
-    this.setState({ errors })
+    return dateErrors
   }
 
-  onInputChange = dateField => event => {
-    this.setState({ [dateField]: event.target.value })
+  onInputChange = (dateField, event) => {
+    this.props.actions.setFormValues(dateField, event.target.value)
     if (moment(event.target.value).format() === 'Invalid date' && event.target.value !== '') {
       this.setState({
         errors: { ...this.state.errors, [dateField]: 'Invalid date' }
       })
     } else {
-      dateField === 'startDate'
-        ? this.validateMinDate(event.target.value)
-        : this.validateMaxDate(event.target.value)
+      this.onChangeDate(dateField, event.target.value)
     }
   }
 
-  onChangeDate = dateField => event => {
-    if (event.format() === 'Invalid date') {
-      this.setState({ [dateField]: event })
-      if (dateField === 'startDate') this.validateMinDate('')
-      else this.validateMaxDate('')
+  onChangeDate = (dateField, event) => {
+    let endDateErrors, startDateErrors
+    if (moment(event).format() === 'Invalid date') {
+      this.props.actions.setFormValues(dateField, event)
+      if (dateField === 'startDate') {
+        startDateErrors = this.validateMinDate('', this.props.form.values.endDate)
+        endDateErrors = this.validateMaxDate(this.props.form.values.endDate, '')
+      } else {
+        endDateErrors = this.validateMaxDate('', this.props.form.values.startDate)
+        startDateErrors = this.validateMinDate(this.props.form.values.startDate, '')
+      }
     } else {
-      this.setState({ [dateField]: event })
-      if (dateField === 'startDate') this.validateMinDate(event)
-      else this.validateMaxDate(event)
+      this.props.actions.setFormValues(dateField, event)
+      if (dateField === 'startDate') {
+        startDateErrors = this.validateMinDate(event, this.props.form.values.endDate)
+        endDateErrors = this.validateMaxDate(this.props.form.values.endDate, event)
+      } else {
+        endDateErrors = this.validateMaxDate(event, this.props.form.values.startDate)
+        startDateErrors = this.validateMinDate(this.props.form.values.startDate, event)
+      }
     }
+
+    this.setState({
+      errors: {
+        name: this.state.errors.name,
+        startDate: startDateErrors,
+        endDate: endDateErrors
+      }
+    })
   }
 
   render() {
@@ -304,98 +283,129 @@ export class JurisdictionForm extends Component {
         value: this.state.edit
           ? 'Save'
           : 'Add',
-        type: 'submit',
+        onClick: this.props.location.state.preset === true ? this.onSubmitPreset : this.onSubmitForm,
         disabled: false,
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
 
+    const options = [
+      { value: 'US States', label: 'US States' }
+    ]
+
+    const nameInputField = this.props.location.state.preset === true
+      ? <Dropdown
+        name="name"
+        id="preset-type"
+        defaultValue="US States"
+        label="Preset Type"
+        options={options}
+        required
+        input={{
+          value: this.props.form.values.name,
+          onChange: this.onChangeNameField
+        }}
+        meta={{}}
+      />
+      : <Autocomplete
+        name="name"
+        suggestions={this.props.suggestions}
+        handleGetSuggestions={this.onJurisdictionsFetchRequest}
+        handleClearSuggestions={this.onClearSuggestions}
+        InputProps={{
+          disabled: this.state.edit,
+          label: 'Name',
+          placeholder: 'Enter jurisdiction name',
+          required: true,
+          error: this.state.errors.name.length > 0,
+          helperText: this.state.errors.name,
+          onBlur: this.validateJurisdiction
+        }}
+        inputProps={{
+          value: this.props.form.values.name,
+          onChange: this.onSuggestionChange,
+          id: 'jurisdiction-name'
+        }}
+        handleSuggestionSelected={this.onJurisdictionSelected}
+        renderSuggestion={renderSuggestion}
+        getSuggestionValue={getSuggestionValue}
+      />
+
     return (
-      <FormModal
-        form="jurisdictionForm"
-        handleSubmit={this.props.location.state.preset === true ? this.onSubmitPreset : this.onSubmitForm}
-        initialValues={this.jurisdictionDefined ||
-        { name: this.props.location.state.preset ? 'US States' : '', startDate: new Date(), endDate: new Date() }}
-        asyncValidate={(this.state.edit || this.props.location.state.preset === true)
-          ? null
-          : this.validateJurisdiction}
-        asyncBlurFields={this.props.location.state.preset === true ? [] : ['endDate', 'startDate']}
-        width="600px"
-        height="400px"
-        validate={validateDateRanges}
+      <Modal
         open={true}
-        onClose={() => this.props.onCloseModal({ endDate: this.state.endDate, startDate: this.state.startDate })}>
+        onClose={this.props.onCloseModal}>
         <ModalTitle
           title={this.state.edit
             ? 'Edit Jurisdiction' : this.props.location.state.preset === true
               ? 'Load Preset Jurisdiction List'
-              : 'Add Jurisdiction'
-          }
+              : 'Add Jurisdiction'}
           onCloseForm={this.onCloseForm}
         />
         <Divider />
         <ModalContent>
-          <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
-            <Row style={{ paddingBottom: 20 }}>
-              {this.getNameInputField()}
-            </Row>
-            <Container style={{ marginTop: 30 }}>
-              <Column flex>
-                <DatePicker
-                  required
-                  name="startDate"
-                  label="Segment Start Date"
-                  dateFormat="MM/DD/YYYY"
-                  minDate="01/01/1850"
-                  maxDate="12/31/2050"
-                  onChange={this.onChangeDate('startDate')}
-                  value={this.state.startDate}
-                  autoOk={true}
-                  error={this.state.errors.startDate}
-                  onInputChange={this.onInputChange('startDate')}
-                />
-              </Column>
-              <Column>
-                <DatePicker
-                  required
-                  name="endDate"
-                  label="Segment End Date"
-                  dateFormat="MM/DD/YYYY"
-                  minDate="01/01/1850"
-                  maxDate="12/31/2050"
-                  value={this.state.endDate}
-                  onChange={this.onChangeDate('endDate')}
-                  autoOk={true}
-                  error={this.state.errors.endDate}
-                  onInputChange={this.onInputChange('endDate')}
-                />
-              </Column>
+          <form>
+            <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
+              <Row style={{ paddingBottom: 20 }}>
+                {nameInputField}
+              </Row>
+              <Container style={{ marginTop: 30 }}>
+                <Column flex>
+                  <DatePicker
+                    required
+                    name="startDate"
+                    label="Segment Start Date"
+                    dateFormat="MM/DD/YYYY"
+                    minDate="01/01/1850"
+                    maxDate="12/31/2050"
+                    onChange={(e) => this.onChangeDate('startDate', e)}
+                    value={this.props.form.values.startDate}
+                    autoOk={true}
+                    error={this.state.errors.startDate}
+                    onInputChange={(e) => this.onInputChange('startDate', e)}
+                  />
+                </Column>
+                <Column>
+                  <DatePicker
+                    required
+                    name="endDate"
+                    label="Segment End Date"
+                    dateFormat="MM/DD/YYYY"
+                    minDate="01/01/1850"
+                    maxDate="12/31/2050"
+                    value={this.props.form.values.endDate}
+                    onChange={(e) => this.onChangeDate('endDate', e)}
+                    autoOk={true}
+                    error={this.state.errors.endDate}
+                    onInputChange={(e) => this.onInputChange('endDate', e)}
+                  />
+                </Column>
+              </Container>
             </Container>
-          </Container>
+          </form>
         </ModalContent>
         <button style={{ display: 'none' }} type="submit" onClick={event => event.preventDefault()}></button>
         <ModalActions actions={formActions}></ModalActions>
-      </FormModal>
+      </Modal>
     )
   }
 }
 
 const mapStateToProps = (state, ownProps) => ({
   project: state.scenes.home.main.projects.byId[ownProps.match.params.id],
-  form: state.form.jurisdictionForm || {},
-  formName: 'jurisdictionForm',
   suggestions: state.scenes.home.addEditJurisdictions.suggestions || [],
   suggestionValue: state.scenes.home.addEditJurisdictions.suggestionValue || '',
   jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || {},
   jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') ||
   [],
   formError: state.scenes.home.addEditJurisdictions.formError || null,
-  goBack: state.scenes.home.addEditJurisdictions.goBack || false
+  goBack: state.scenes.home.addEditJurisdictions.goBack || false,
+  form: state.scenes.home.addEditJurisdictions.form || {},
+  isReduxForm: false
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(actions, dispatch),
-  formActions: bindActionCreators(formActions, dispatch)
+  actions: bindActionCreators(actions, dispatch)
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withFormAlert(JurisdictionForm)))

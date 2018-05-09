@@ -3,14 +3,17 @@ import { shallow } from 'enzyme'
 import { JurisdictionForm } from '../index'
 
 const props = {
-  form: {},
+  form: {
+    values: { name: '' }
+  },
   formName: 'jurisdictionForm',
   jurisdiction: {},
   jurisdictions: [],
   suggestions: [],
   suggestionValue: '',
-  actions: {},
-  formActions: {},
+  actions: {
+    initializeFormValues: () => {}
+  },
   location: {
     state: {
       jurisdictionDefined: {
