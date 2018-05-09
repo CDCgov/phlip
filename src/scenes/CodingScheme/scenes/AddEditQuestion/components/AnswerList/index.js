@@ -53,7 +53,7 @@ export const AnswerList = ({ fields, answerType, isEdit, canModify }) => {
 }
 
 AnswerList.propTypes = {
-  fields: PropTypes.array,
+  fields: PropTypes.object,
   answerType: PropTypes.number,
   isEdit: PropTypes.bool,
   canModify: PropTypes.bool

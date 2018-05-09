@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import styles from './question-node.scss'
 import Icon from 'components/Icon'
@@ -164,7 +164,7 @@ export const QuestionNode = props => {
       className={styles.nodeContent}
       style={{ left: scaffoldBlockCount * scaffoldBlockPxWidth }}>
       {toggleChildrenVisibility && node.children && node.children.length > 0 &&
-      <div>
+      <Fragment>
         <IconButton
           type="button"
           aria-label={node.expanded ? 'Collapse' : 'Expand'}
@@ -179,10 +179,10 @@ export const QuestionNode = props => {
             treeIndex
           })}>
           {node.expanded ? 'remove_circle' : 'add_circle'}
-        </IconButton> {node.expanded && !isDragging && (
-        <div style={{ width: scaffoldBlockPxWidth }} className={styles.lineChildren} />
-      )}
-      </div>}
+        </IconButton>
+        {node.expanded && !isDragging &&
+        <div style={{ width: scaffoldBlockPxWidth }} className={styles.lineChildren} />}
+      </Fragment>}
       <div className={styles.rowWrapper}>
         {dragPreview}
       </div>

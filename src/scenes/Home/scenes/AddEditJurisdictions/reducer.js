@@ -11,7 +11,12 @@ const INITIAL_STATE = {
   goBack: false,
   formError: null,
   isLoadingJurisdictions: false,
-  showJurisdictionLoader: false
+  showJurisdictionLoader: false,
+  form: {
+    values: {
+      name: ''
+    }
+  }
 }
 
 const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
@@ -106,7 +111,15 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
     case types.UPDATE_SUGGESTION_VALUE:
       return {
         ...state,
-        suggestionValue: action.suggestionValue
+        suggestionValue: action.suggestionValue,
+        form: {
+          ...state.form,
+          values: {
+            ...state.form.values,
+            name: action.suggestionValue
+          }
+        },
+        jurisdiction: Object.keys(state.jurisdiction).length > 0 ? {} : { ...state.jurisdiction }
       }
 
     case types.SET_JURISDICTION_SUGGESTIONS:
@@ -125,7 +138,14 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         jurisdiction: { ...action.jurisdiction },
-        suggestionValue: action.jurisdiction.name
+        suggestionValue: action.jurisdiction.name,
+        form: {
+          ...state.form,
+          values: {
+            ...state.form.values,
+            name: action.jurisdiction.name
+          }
+        }
       }
 
     case types.CLEAR_JURISDICTIONS:
@@ -169,6 +189,37 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isLoadingJurisdictions: true
+      }
+
+    case types.INITIALIZE_FORM:
+      return {
+        ...state,
+        form: {
+          initial: action.values,
+          registeredFields: action.values,
+          values: action.values
+        }
+      }
+
+    case types.SET_FORM_VALUES:
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          values: {
+            ...state.form.values,
+            [action.prop]: action.value
+          }
+        }
+      }
+
+    case types.RESET_FORM_VALUES:
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          values: state.form.initial
+        }
       }
 
     case types.SHOW_JURISDICTION_LOADER:

@@ -16,8 +16,7 @@ const config = {
   overlay: false,
   historyApiFallback: true,
   proxy: {
-    '/api': JSON.parse(env.APP_API_URL),
-    //'/export': 'http://docker.for.mac.host.internal:3000'
+    '/api': JSON.parse(env.APP_API_URL)
   }
 }
 

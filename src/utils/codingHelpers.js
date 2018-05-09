@@ -507,7 +507,10 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
 
   // Get the scheme question from the db in case it has changed
   try {
-    newSchemeQuestion = await api.getSchemeQuestion({}, {}, { questionId: questionInfo.question.id, projectId: action.projectId })
+    newSchemeQuestion = await api.getSchemeQuestion({}, {}, {
+      questionId: questionInfo.question.id,
+      projectId: action.projectId
+    })
     sortList(newSchemeQuestion.possibleAnswers, 'order', 'asc')
     combinedQuestion = { ...state.scheme.byId[questionInfo.question.id], ...newSchemeQuestion }
     updatedScheme = {
@@ -550,19 +553,20 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
     } else {
       initialize = false
     }
-
   } catch (error) {
     errors = {
       ...errors,
       updatedCodedQuestion: 'We couldn\'t retrieve your updated answers. You still have access to the previous answers, but any changes that have been made since the time you started coding are not available.'
     }
+    initialize = false
   }
 
   if (initialize === true) {
     if (combinedQuestion.isCategoryQuestion === true) {
       for (let question of codedQuestion) {
         if (question.hasOwnProperty('validatedBy')) {
-          if (!checkIfExists(question.validatedBy, userImages, 'userId') && !checkIfExists(question.validatedBy, newImages, 'userId')) {
+          if (!checkIfExists(question.validatedBy, userImages, 'userId') &&
+            !checkIfExists(question.validatedBy, newImages, 'userId')) {
             newImages = { ...newImages, [question.validatedBy.userId]: { ...question.validatedBy } }
           }
         }

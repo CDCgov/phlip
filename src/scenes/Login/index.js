@@ -10,6 +10,7 @@ import { withRouter } from 'react-router-dom'
 import { matchPath } from 'react-router'
 import { decodeToken } from 'services/authToken'
 import * as userActions from 'data/user/actions'
+import Typography from 'material-ui/Typography'
 
 export class Login extends Component {
   constructor(props, context) {
@@ -23,7 +24,6 @@ export class Login extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.location.state)
     const match = matchPath(this.props.location.pathname, { path: '/login/verify-user' })
     if (match) {
       const rawToken = this.props.location.search
@@ -56,13 +56,28 @@ export class Login extends Component {
             </Row>
           </Column>
         </LoginForm>
+        <Row style={{ textAlign: 'center', width: 600, paddingTop: 30, paddingBottom: 10 }}>
+          <Typography type="caption" style={{ color: 'black' }}>You are accessing an information system that may contain U.S. Government data. System usage may
+            be monitored, recorded, and subject to audit. Unauthorized use of the system is prohibited and may be
+            subject to criminal and civil penalties. Use of the system indicates consent to monitoring and recording.
+            Administrative personnel remotely accessing the Azure environment: <br/><br/>
+          </Typography>
+          <Typography type="caption" style={{ color: 'black' }}>
+            (1) shall maintain their remote computer in a secure manner, in accordance with organizational security
+            policies and procedures as defined in Microsoft Remote Connectivity Security Policies; <br/>
+            (2) shall only access the Azure environment in execution of operational, deployment, and support
+            responsibilities using only administrative applications or tools directly related to performing these
+            responsibilities; and <br/>
+            (3) shall not knowingly store, transfer into, or process in the Azure environment data exceeding a FIPS 199
+            Low security categorization</Typography><br/>
+          <img src="/cdc-hhs-logo.png" style={{ height: 55 }} alt="Center for Disease Control and Health and Human Services Logo" />
+        </Row>
       </Container>
     )
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  console.log(ownProps)
   return {
     user: state.data.user.currentUser || undefined,
     session: state.scenes.login.session || false,
