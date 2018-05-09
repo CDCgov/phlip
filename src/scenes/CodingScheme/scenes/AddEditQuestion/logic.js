@@ -51,7 +51,7 @@ const updateIsCategoryQuestionLogic = createLogic({
       question: {
         ...action.question,
         isCategoryQuestion: action.parentNode.questionType === questionTypes.CATEGORY,
-        positionInParent: action.parentNode.children.length
+        positionInParent: action.parentNode.hasOwnProperty('children') ? action.parentNode.children.length : 0
       }
     })
   }
@@ -96,9 +96,7 @@ const addChildQuestionLogic = createLogic({
     const orderedAnswers = action.question.possibleAnswers.map((answer, index) => {
       return { ...answer, order: index + 1 }
     })
-
     action.question.possibleAnswers = orderedAnswers
-
     try {
       const question = await api.addQuestion(action.question, {}, { projectId: action.projectId })
       dispatch({
