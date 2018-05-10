@@ -140,9 +140,7 @@ export class ValidationAvatar extends Component {
           transformOrigin={{
             vertical: 'bottom',
             horizontal: 'center'
-          }}
-          disableRestoreFocus
-        >
+          }}>
           <Typography align="center" style={{ color: '#adac9f', fontWeight: '400', paddingBottom: 8 }}>
             {`${this.props.answer.firstName} ${this.props.answer.lastName}`}
           </Typography>

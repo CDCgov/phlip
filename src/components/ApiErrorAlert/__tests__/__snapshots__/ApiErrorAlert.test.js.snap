@@ -14,7 +14,7 @@ exports[`ApiErrorAlert component should render correctly 1`] = `
   open={true}
   title={
     <UNDEFINED>
-      <WithTheme
+      <withTheme(Icon)
         color="red"
         size={30}
         style={
@@ -24,12 +24,12 @@ exports[`ApiErrorAlert component should render correctly 1`] = `
         }
       >
         sentiment_very_dissatisfied
-      </WithTheme>
+      </withTheme(Icon)>
       Uh-oh! Something went wrong.
     </UNDEFINED>
   }
 >
-  <WithStyles
+  <withStyles(Typography)
     style={
       Object {
         "whiteSpace": "pre-wrap",
@@ -41,6 +41,6 @@ exports[`ApiErrorAlert component should render correctly 1`] = `
       This is the error alert content.
     </div>
      Please try again later.
-  </WithStyles>
+  </withStyles(Typography)>
 </Alert>
 `;

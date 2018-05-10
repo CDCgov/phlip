@@ -13,7 +13,7 @@ exports[`CircleIcon component should render correctly 1`] = `
     }
   }
 >
-  <WithTheme
+  <withTheme(Icon)
     color="#fff"
     size={18}
     style={
@@ -24,6 +24,6 @@ exports[`CircleIcon component should render correctly 1`] = `
     }
   >
     home
-  </WithTheme>
+  </withTheme(Icon)>
 </div>
 `;

@@ -13,7 +13,8 @@ export default [
   {
     name: 'getUserBookmarks',
     method: 'get',
-    path: ({ userId }) => `/users/${userId}/bookmarkedprojects`
+    path: ({ userId }) => `/users/${userId}/bookmarkedprojects`,
+    headers: ({ token }) => ({ Authorization: `Bearer ${token}` })
   },
   {
     name: 'addUserBookmark',

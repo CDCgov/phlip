@@ -651,6 +651,7 @@ export const getCodedValidatedQuestions = async (projectId, jurisdictionId, user
     return { codedValQuestions, codedValErrors }
   } catch (e) {
     return {
+      codedValQuestions: [],
       codedValErrors: {
         codedValQuestions: 'We couldn\'t get your answered questions for this project and jurisdiction, so you won\'t be able to answer questions.'
       }

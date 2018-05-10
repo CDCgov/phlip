@@ -23,11 +23,11 @@ exports[`CodingScheme scene should render correctly 1`] = `
     }
     open={false}
   >
-    <WithStyles
+    <withStyles(Typography)
       variant="body1"
     >
       You have checked out the coding scheme. No one else can edit until you check in.
-    </WithStyles>
+    </withStyles(Typography)>
   </Alert>
   <Alert
     actions={
@@ -46,7 +46,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
     }
     open={false}
   >
-    <WithStyles
+    <withStyles(Typography)
       style={
         Object {
           "whiteSpace": "pre-wrap",
@@ -55,7 +55,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
       variant="body1"
     >
       You are about to delete a question from the coding scheme.  This will permanantly delete all related child questions and coded answers.
-    </WithStyles>
+    </withStyles(Typography)>
   </Alert>
   <ApiErrorAlert
     actions={Array []}
@@ -75,7 +75,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
     open={true}
     title={
       <UNDEFINED>
-        <WithTheme
+        <withTheme(Icon)
           color="primary"
           size={30}
           style={
@@ -85,19 +85,19 @@ exports[`CodingScheme scene should render correctly 1`] = `
           }
         >
           lock
-        </WithTheme>
+        </withTheme(Icon)>
         The Coding Scheme is checked out.
       </UNDEFINED>
     }
   >
-    <WithStyles
+    <withStyles(Typography)
       variant="body1"
     >
       undefined undefined 
        has checked out the coding scheme. You will not be able to make changes until they have checked in.
-    </WithStyles>
+    </withStyles(Typography)>
   </Alert>
-  <withRouter(WithTheme)
+  <withRouter(withTheme(PageHeader))
     checkoutButton={
       Object {
         "isLink": false,

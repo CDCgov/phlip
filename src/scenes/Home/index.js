@@ -48,13 +48,19 @@ export class Home extends Component {
 
   onToggleExportDialog = project => {
     this.setState({
-      exportDialogOpen: !this.state.exportDialogOpen,
+      exportDialogOpen: true,
       projectToExport: { ...project }
     })
   }
 
+  onCloseExportDialog = () => {
+    this.setState({
+      projectToExport: null,
+      exportDialogOpen: false
+    })
+  }
+
   prepareExport = () => {
-    console.log(this.state.projectToExport)
     const csvBlob = new Blob([this.props.projectToExport.text], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(csvBlob)
     this.exportRef.href = url
@@ -127,8 +133,7 @@ export class Home extends Component {
         <ExportDialog
           open={this.state.exportDialogOpen}
           onChooseExport={this.onChooseExport}
-          onClose={this.onToggleExportDialog} />
-
+          onClose={this.onCloseExportDialog} />
         <a style={{ display: 'none' }} ref={this.setExportRef} />
       </Container>
     )

@@ -11,20 +11,20 @@ export const withFormAlert = (WrappedComponent) => {
 
       this.state = {
         open: false,
-        text: null,
+        text: '',
         actions: [],
         title: null,
-        isReduxForm: props.isReduxForm !== false
+        isReduxForm: this.props.isReduxForm !== false
       }
     }
 
     onClose = () => {
       this.setState({
         open: false,
-        text: null,
+        text: '',
         actions: [],
         title: null,
-        isReduxForm: true
+        isReduxForm: this.props.isReduxForm !== false
       })
     }
 
@@ -39,7 +39,7 @@ export const withFormAlert = (WrappedComponent) => {
       } else {
         this.props.actions.resetToInitial()
       }
-      this.setState({ open: false, text: null, actions: [], title: null })
+      this.setState({ open: false, text: '', actions: [], title: null })
       this.props.history.goBack()
     }
 

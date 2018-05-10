@@ -18,7 +18,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
   >
     <Row
       component={
-        <WithStyles
+        <withStyles(GridWrapper)
           item={true}
         />
       }
@@ -31,7 +31,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
         }
       }
     >
-      <WithTheme
+      <withTheme(SearchBar)
         placeholder="Search"
       />
     </Row>
@@ -54,7 +54,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
           }
         }
       >
-        <WithStyles>
+        <withStyles(TableHead)>
           <ProjectTableHead
             direction="asc"
             onRequestSort={[Function]}
@@ -62,19 +62,19 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
             role="Coordinator"
             sortBy="name"
           />
-        </WithStyles>
-        <WithStyles>
-          <Connect(WithTheme)
+        </withStyles(TableHead)>
+        <withStyles(TableBody)>
+          <Connect(withTheme(ProjectRow))
             id={1}
             key="1"
             onExport={[Function]}
           />
-          <Connect(WithTheme)
+          <Connect(withTheme(ProjectRow))
             id={2}
             key="2"
             onExport={[Function]}
           />
-        </WithStyles>
+        </withStyles(TableBody)>
       </Table>
       <div
         style={
@@ -86,16 +86,16 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
         }
       />
       <Table>
-        <WithStyles>
-          <WithStyles>
-            <WithStyles
+        <withStyles(TableFooter)>
+          <withStyles(TableRow)>
+            <withStyles(TablePagination)
               onChangePage={[Function]}
               onChangeRowsPerPage={[Function]}
               page={0}
               rowsPerPage={10}
             />
-          </WithStyles>
-        </WithStyles>
+          </withStyles(TableRow)>
+        </withStyles(TableFooter)>
       </Table>
     </div>
   </Column>

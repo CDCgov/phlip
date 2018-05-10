@@ -14,7 +14,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
 >
   <Column
     component={
-      <WithStyles
+      <withStyles(GridWrapper)
         item={true}
       />
     }
@@ -38,14 +38,14 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
   </Column>
   <Row
     component={
-      <WithStyles
+      <withStyles(GridWrapper)
         item={true}
       />
     }
     displayFlex={true}
     flex={false}
   >
-    <WithStyles
+    <withStyles(Typography)
       style={
         Object {
           "alignSelf": "center",
@@ -54,7 +54,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       }
       type="title"
     />
-    <WithStyles
+    <withStyles(Typography)
       style={
         Object {
           "alignSelf": "center",
@@ -71,7 +71,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       >
         Test Project
       </span>
-    </WithStyles>
+    </withStyles(Typography)>
   </Row>
   <React.Fragment>
     <React.Fragment>
@@ -84,18 +84,18 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
           }
         }
       >
-        <WithStyles />
+        <withStyles(JurisdictionSelect) />
       </div>
       <Column
         component={
-          <WithStyles
+          <withStyles(GridWrapper)
             item={true}
           />
         }
         displayFlex={false}
         flex={false}
       >
-        <WithStyles
+        <withStyles(Typography)
           type="caption"
         >
           <span
@@ -116,8 +116,8 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
           >
             2018-1-1
           </span>
-        </WithStyles>
-        <WithStyles
+        </withStyles(Typography)>
+        <withStyles(Typography)
           type="caption"
         >
           <span
@@ -138,22 +138,22 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
           >
             2018-1-18
           </span>
-        </WithStyles>
+        </withStyles(Typography)>
       </Column>
     </React.Fragment>
     <Column
       component={
-        <WithStyles
+        <withStyles(GridWrapper)
           item={true}
         />
       }
       displayFlex={false}
       flex={true}
     />
-    <WithTheme
+    <withTheme(TextLink)
       to="/project/1/protocol"
     >
-      <WithTheme
+      <withTheme(Button)
         aria-label="View and edit protocol"
         style={
           Object {
@@ -163,7 +163,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
         }
         value="Protocol"
       />
-    </WithTheme>
+    </withTheme(TextLink)>
   </React.Fragment>
 </Container>
 `;

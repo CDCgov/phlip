@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
-<WithStyles
+<withStyles(Modal)
   hideOverflow={true}
   maxWidth="md"
   onClose={[Function]}
@@ -27,7 +27,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
             }
           }
         >
-          <WithTheme
+          <withTheme(TextLink)
             to={
               Object {
                 "pathname": "/project/undefined/jurisdictions/add",
@@ -37,15 +37,15 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
               }
             }
           >
-            <WithTheme
+            <withTheme(Button)
               aria-label="Load preset"
               color="accent"
               value="Load Preset"
             />
-          </WithTheme>
+          </withTheme(TextLink)>
         </div>
         <div>
-          <WithTheme
+          <withTheme(TextLink)
             to={
               Object {
                 "pathname": "/project/undefined/jurisdictions/add",
@@ -55,12 +55,12 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
               }
             }
           >
-            <WithTheme
+            <withTheme(Button)
               aria-label="Add jurisidiction to project"
               color="accent"
               value="+ Add Jurisdiction"
             />
-          </WithTheme>
+          </withTheme(TextLink)>
         </div>
       </UNDEFINED>
     }
@@ -69,7 +69,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
     editButton={false}
     search={true}
     title={
-      <WithStyles
+      <withStyles(Typography)
         type="title"
       >
         <span
@@ -88,10 +88,10 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
             }
           }
         />
-      </WithStyles>
+      </withStyles(Typography)>
     }
   />
-  <WithStyles />
+  <withStyles(Divider) />
   <ModalContent
     style={
       Object {
@@ -112,7 +112,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
     >
       <Column
         component={
-          <WithStyles
+          <withStyles(GridWrapper)
             item={true}
           />
         }
@@ -128,7 +128,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       </Column>
     </Container>
   </ModalContent>
-  <WithStyles
+  <withStyles(ModalActions)
     actions={
       Array [
         Object {
@@ -142,5 +142,5 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       ]
     }
   />
-</WithStyles>
+</withStyles(Modal)>
 `;

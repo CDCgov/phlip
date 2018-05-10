@@ -20,7 +20,7 @@ export const loginLogic = createLogic({ //Will remove/comment out when we go to 
     }
 
     try {
-      bookmarks = await api.getUserBookmarks({}, {}, { userId: user.id })
+      bookmarks = await api.getUserBookmarks({}, {}, { userId: user.id, token: user.token.value })
     } catch (e) {
       error = 'could not get bookmarks'
     }
@@ -53,7 +53,7 @@ export const checkPivUserLogic = createLogic({
     }
 
     try {
-      bookmarks = await api.getUserBookmarks({}, {}, { userId: user.id })
+      bookmarks = await api.getUserBookmarks({}, {}, { userId: user.id, token: user.token.value })
     } catch (e) {
       error = 'could not get bookmarks'
     }
