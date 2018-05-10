@@ -15,6 +15,7 @@ import ApiErrorView from 'components/ApiErrorView'
 import { withTheme } from 'material-ui/styles'
 import PageLoader from 'components/PageLoader'
 import Alert from 'components/Alert'
+import ApiErrorAlert from 'components/ApiErrorAlert'
 
 export class AddEditJurisdictions extends Component {
   static propTypes = {
@@ -30,7 +31,8 @@ export class AddEditJurisdictions extends Component {
 
   state = {
     confirmDeleteAlertOpen: false,
-    jurisdictionToDelete: {}
+    jurisdictionToDelete: {},
+    deleteErrorAlertOpen: false
   }
 
   constructor(props, context) {
@@ -42,13 +44,22 @@ export class AddEditJurisdictions extends Component {
     this.showJurisdictionLoader()
   }
 
+  componentWillUnmount() {
+    this.props.actions.clearJurisdictions()
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.deleteError === null && nextProps.deleteError !== null) {
+      this.setState({
+        deleteErrorAlertOpen: true
+      })
+    }
+  }
+
   onCloseModal = () => {
     this.props.history.push('/home')
   }
 
-  componentWillUnmount() {
-    this.props.actions.clearJurisdictions()
-  }
 
   showJurisdictionLoader = () => {
     setTimeout(() => {
@@ -75,6 +86,14 @@ export class AddEditJurisdictions extends Component {
       confirmDeleteAlertOpen: false,
       jurisdictionToDelete: {}
     })
+  }
+
+  dismissDeleteErrorAlert = () => {
+    this.setState({
+      deleteErrorAlertOpen: false
+    })
+
+    this.props.actions.dismissDeleteErrorAlert()
   }
 
   getButton = () => {
@@ -133,6 +152,10 @@ export class AddEditJurisdictions extends Component {
               project? All coded questions related to this jurisdiction will be deleted.
             </Typography>
           </Alert>
+          <ApiErrorAlert
+            open={this.state.deleteErrorAlertOpen === true}
+            content={this.props.deleteError}
+            onCloseAlert={this.dismissDeleteErrorAlert} />
           <Container flex style={{ marginTop: 20 }}>
             <Column flex displayFlex style={{ overflowX: 'auto' }}>
               {this.props.error === true
@@ -166,7 +189,8 @@ const mapStateToProps = (state, ownProps) => ({
   error: state.scenes.home.addEditJurisdictions.error || false,
   errorContent: state.scenes.home.addEditJurisdictions.errorContent || '',
   isLoadingJurisdictions: state.scenes.home.addEditJurisdictions.isLoadingJurisdictions || false,
-  showJurisdictionLoader: state.scenes.home.addEditJurisdictions.showJurisdictionLoader || false
+  showJurisdictionLoader: state.scenes.home.addEditJurisdictions.showJurisdictionLoader || false,
+  deleteError: state.scenes.home.addEditJurisdictions.deleteError || null
 })
 
 const mapDispatchToProps = (dispatch) => ({

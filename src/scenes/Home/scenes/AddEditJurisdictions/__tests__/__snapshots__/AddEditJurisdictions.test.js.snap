@@ -129,6 +129,11 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
         , from the project? All coded questions related to this jurisdiction will be deleted.
       </WithStyles>
     </Alert>
+    <ApiErrorAlert
+      actions={Array []}
+      onCloseAlert={[Function]}
+      open={false}
+    />
     <Container
       column={false}
       flex={true}

@@ -9,6 +9,7 @@ const INITIAL_STATE = {
   suggestionValue: '',
   jurisdiction: {},
   formError: null,
+  deleteError: null,
   goBack: false,
   isLoadingJurisdictions: false,
   showJurisdictionLoader: false,

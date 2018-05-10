@@ -9,7 +9,6 @@ import Typography from 'material-ui/Typography'
 import Container, { Row, Column } from 'components/Layout'
 import * as questionTypes from 'components/CodingValidation/constants'
 import TextFieldQuestions from '../TextFieldQuestions'
-import Divider from 'material-ui/Divider'
 import Button from 'components/Button'
 import ValidationTable from '../ValidationTable'
 

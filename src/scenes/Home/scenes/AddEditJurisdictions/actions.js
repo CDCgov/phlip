@@ -75,3 +75,7 @@ export const setFormValues = (prop, value) => ({
   prop,
   value
 })
+
+export const dismissDeleteErrorAlert = () => ({
+  type: types.DISMISS_DELETE_ERROR_ALERT
+})

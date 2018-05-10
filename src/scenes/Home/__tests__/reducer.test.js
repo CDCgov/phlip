@@ -50,6 +50,7 @@ const initial = {
     jurisdiction: {},
     formError: null,
     goBack: false,
+    deleteError: null,
     isLoadingJurisdictions: false,
     showJurisdictionLoader: false,
     form: {

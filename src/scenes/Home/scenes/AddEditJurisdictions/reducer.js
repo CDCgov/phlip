@@ -10,6 +10,7 @@ const INITIAL_STATE = {
   jurisdiction: {},
   goBack: false,
   formError: null,
+  deleteError: null,
   isLoadingJurisdictions: false,
   showJurisdictionLoader: false,
   form: {
@@ -162,11 +163,22 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
     case types.ADD_PROJECT_JURISDICTION_FAIL:
     case types.UPDATE_PROJECT_JURISDICTION_FAIL:
     case types.ADD_PRESET_JURISDICTION_FAIL:
-    case types.DELETE_JURISDICTION_FAIL:
       return {
         ...state,
         formError: action.payload,
         goBack: false
+      }
+
+    case types.DELETE_JURISDICTION_FAIL:
+      return {
+        ...state,
+        deleteError: action.payload
+      }
+
+    case types.DISMISS_DELETE_ERROR_ALERT:
+      return {
+        ...state,
+        deleteError: null
       }
 
     case types.GET_PROJECT_JURISDICTION_FAIL:

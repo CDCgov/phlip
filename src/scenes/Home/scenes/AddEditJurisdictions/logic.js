@@ -119,7 +119,7 @@ export const deleteJurisdictionLogic = createLogic({
   type: types.DELETE_JURISDICTION_REQUEST,
   async process({ getState, action, api }, dispatch, done) {
     try {
-      const out = api.deleteProjectJurisdiction({}, {}, {
+      await api.deleteProjectJurisdiction({}, {}, {
         projectId: action.projectId,
         jurisdictionId: action.jurisdictionId
       })
