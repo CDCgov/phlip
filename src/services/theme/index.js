@@ -48,6 +48,14 @@ const theme = createMuiTheme({
           backgroundColor: mainColor
         }
       }
+    },
+    MuiAvatar: {
+      img: {
+        width: '100%',
+        height: '100%',
+        textAlign: 'center',
+        maxWidth: '100%'
+      }
     }
   }
 })
