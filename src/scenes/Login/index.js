@@ -11,6 +11,7 @@ import { matchPath } from 'react-router'
 import { decodeToken } from 'services/authToken'
 import * as userActions from 'data/user/actions'
 import Typography from 'material-ui/Typography'
+import withTracking from 'components/withTracking'
 
 export class Login extends Component {
   constructor(props, context) {
@@ -87,4 +88,4 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators({ ...actions, ...userActions }, dispatch) })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withTracking(Login, 'Login')))

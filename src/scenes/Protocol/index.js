@@ -10,6 +10,7 @@ import Alert from 'components/Alert'
 import Icon from 'components/Icon'
 import CardError from 'components/CardError'
 import Typography from 'material-ui/Typography'
+import withTracking from 'components/withTracking'
 
 import tinymce from 'tinymce/tinymce'
 import 'tinymce/themes/modern/theme'
@@ -229,4 +230,4 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Protocol)
+export default connect(mapStateToProps, mapDispatchToProps)(withTracking(Protocol, 'Protocol'))

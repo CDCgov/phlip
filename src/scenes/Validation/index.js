@@ -5,6 +5,7 @@ import actions, * as otherActions from './actions'
 import withCodingValidation from 'components/CodingValidation'
 import ApiErrorAlert from 'components/ApiErrorAlert'
 import Typography from 'material-ui/Typography'
+import withTracking from 'components/withTracking'
 
 export class Validation extends Component {
   constructor(props, context) {
@@ -103,4 +104,4 @@ Validation.propTypes = {
   categories: PropTypes.array
 }
 
-export default withCodingValidation(Validation, { ...actions, ...otherActions })
+export default withCodingValidation(withTracking(Validation, 'Validation'), { ...actions, ...otherActions })

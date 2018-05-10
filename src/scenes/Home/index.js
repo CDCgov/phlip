@@ -10,6 +10,7 @@ import PageHeader from 'components/PageHeader'
 import ProjectList from './components/ProjectList'
 import * as actions from './actions'
 import ExportDialog from './components/ExportDialog'
+import withTracking from 'components/withTracking'
 
 export class Home extends Component {
   static propTypes = {
@@ -157,4 +158,4 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(Home))
+export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(withTracking(Home, 'Home / Project List')))

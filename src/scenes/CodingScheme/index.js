@@ -14,6 +14,7 @@ import Alert from 'components/Alert'
 import Icon from 'components/Icon'
 import ApiErrorView from 'components/ApiErrorView'
 import ApiErrorAlert from 'components/ApiErrorAlert'
+import withTracking from 'components/withTracking'
 
 export class CodingScheme extends Component {
   constructor(props, context) {
@@ -287,4 +288,4 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(CodingScheme)
+export default connect(mapStateToProps, mapDispatchToProps)(withTracking(CodingScheme, 'Coding Scheme'))

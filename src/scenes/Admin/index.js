@@ -10,6 +10,7 @@ import { bindActionCreators } from 'redux'
 import AddEditUser from './scenes/AddEditUser'
 import { Route } from 'react-router-dom'
 import Container from 'components/Layout'
+import withTracking from 'components/withTracking'
 
 export class Admin extends Component {
   static propTypes = {
@@ -73,4 +74,4 @@ const mapStateToProps = (state) => ({
 })
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(Admin))
+export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(withTracking(Admin, 'User Management')))
