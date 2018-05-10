@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render correctly 1`] = `
-<WithStyles
+<withStyles(Modal)
   onClose={[Function]}
   open={true}
 >
@@ -12,7 +12,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
     onCloseForm={[Function]}
     title="Edit Jurisdiction"
   />
-  <WithStyles />
+  <withStyles(Divider) />
   <ModalContent>
     <form>
       <Container
@@ -29,7 +29,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       >
         <Row
           component={
-            <WithStyles
+            <withStyles(GridWrapper)
               item={true}
             />
           }
@@ -41,7 +41,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
             }
           }
         >
-          <WithStyles
+          <withStyles(Autocomplete)
             InputProps={
               Object {
                 "disabled": true,
@@ -81,7 +81,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
         >
           <Column
             component={
-              <WithStyles
+              <withStyles(GridWrapper)
                 item={true}
               />
             }
@@ -103,7 +103,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
           </Column>
           <Column
             component={
-              <WithStyles
+              <withStyles(GridWrapper)
                 item={true}
               />
             }
@@ -136,7 +136,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
     }
     type="submit"
   />
-  <WithStyles
+  <withStyles(ModalActions)
     actions={
       Array [
         Object {
@@ -158,5 +158,5 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       ]
     }
   />
-</WithStyles>
+</withStyles(Modal)>
 `;

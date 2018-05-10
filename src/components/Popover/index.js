@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { findDOMNode } from 'react-dom'
 import PropTypes from 'prop-types'
 import { Manager, Popper, Target } from 'react-popper'
-import { Row } from 'components/Layout'
 
 export class Popover extends Component {
   state = {

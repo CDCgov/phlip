@@ -11,7 +11,7 @@ exports[`ApiErrorView component should render correctly 1`] = `
 >
   <Row
     component={
-      <WithStyles
+      <withStyles(GridWrapper)
         item={true}
       />
     }
@@ -23,16 +23,16 @@ exports[`ApiErrorView component should render correctly 1`] = `
       }
     }
   >
-    <WithTheme
+    <withTheme(Icon)
       color="#757575"
       size={175}
     >
       sentiment_very_dissatisfied
-    </WithTheme>
+    </withTheme(Icon)>
   </Row>
   <Row
     component={
-      <WithStyles
+      <withStyles(GridWrapper)
         item={true}
       />
     }
@@ -44,7 +44,7 @@ exports[`ApiErrorView component should render correctly 1`] = `
       }
     }
   >
-    <WithStyles
+    <withStyles(Typography)
       style={
         Object {
           "textAlign": "center",
@@ -55,7 +55,7 @@ exports[`ApiErrorView component should render correctly 1`] = `
       Uh-oh! Something went wrong. 
       This is an error.
        Please try again later.
-    </WithStyles>
+    </withStyles(Typography)>
   </Row>
 </div>
 `;

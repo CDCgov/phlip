@@ -38,19 +38,19 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
             role="button"
             tabIndex={0}
           >
-            <WithStyles
+            <withStyles(Tooltip)
               placement="bottom"
               text="Drag to reorder"
             >
-              <WithTheme
+              <withTheme(Icon)
                 color="black"
                 size="24"
               >
                 reorder
-              </WithTheme>
-            </WithStyles>
+              </withTheme(Icon)>
+            </withStyles(Tooltip)>
           </div>
-          <WithStyles
+          <withStyles(CardContent)
             onMouseEnter={[Function]}
             onMouseLeave={[Function]}
             style={
@@ -62,7 +62,7 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
               }
             }
           >
-            <WithStyles
+            <withStyles(Typography)
               component="h4"
               noWrap={true}
               style={
@@ -73,15 +73,15 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
               type="subheading"
             >
               la la la
-            </WithStyles>
+            </withStyles(Typography)>
             <div>
-              <WithStyles
+              <withStyles(Tooltip)
                 aria-label="Add child question"
                 id="add-child-question-0"
                 placement="left"
                 text="Add child question"
               >
-                <WithTheme
+                <withTheme(Button)
                   aria-label="Add child question"
                   color="accent"
                   component={[Function]}
@@ -111,21 +111,21 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
                     }
                   }
                   value={
-                    <WithTheme
+                    <withTheme(Icon)
                       color="white"
                     >
                       subdirectory_arrow_right
-                    </WithTheme>
+                    </withTheme(Icon)>
                   }
                 />
-              </WithStyles>
-              <WithStyles
+              </withStyles(Tooltip)>
+              <withStyles(Tooltip)
                 aria-label="View and edit question"
                 id="edit-question-0"
                 placement="right"
                 text="Edit question"
               >
-                <WithTheme
+                <withTheme(Button)
                   aria-label="Edit question"
                   color="accent"
                   component={[Function]}
@@ -155,21 +155,21 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
                     }
                   }
                   value={
-                    <WithTheme
+                    <withTheme(Icon)
                       color="white"
                     >
                       mode_edit
-                    </WithTheme>
+                    </withTheme(Icon)>
                   }
                 />
-              </WithStyles>
-              <WithStyles
+              </withStyles(Tooltip)>
+              <withStyles(Tooltip)
                 aria-label="Delete question"
                 id="delete-question-0"
                 placement="right"
                 text="Delete question"
               >
-                <WithTheme
+                <withTheme(Button)
                   aria-label="Delete question"
                   color="accent"
                   onClick={[Function]}
@@ -184,17 +184,17 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
                     }
                   }
                   value={
-                    <WithTheme
+                    <withTheme(Icon)
                       color="white"
                     >
                       delete
-                    </WithTheme>
+                    </withTheme(Icon)>
                   }
                 />
-              </WithStyles>
+              </withStyles(Tooltip)>
             </div>
-          </WithStyles>
-          <WithStyles
+          </withStyles(CardContent)>
+          <withStyles(CardActions)
             disableActionSpacing={true}
             style={
               Object {
@@ -209,7 +209,7 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
                 }
               }
             />
-          </WithStyles>
+          </withStyles(CardActions)>
         </div>
       </Card>
     </div>

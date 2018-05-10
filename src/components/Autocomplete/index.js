@@ -39,7 +39,9 @@ const renderInput = ({ value, onBlur, ref, TextFieldProps, ...other }) => {
     value={value}
     {...TextFieldProps}
     multiline={false}
-    inputProps={other}
+    InputProps={{
+      inputProps: other
+    }}
   />)
 }
 

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`HeaderedLayout it should render correctly 1`] = `
-<WithStyles
+<withStyles(GridWrapper)
   container={true}
   direction="column"
   spacing={0}
@@ -11,14 +11,14 @@ exports[`HeaderedLayout it should render correctly 1`] = `
     }
   }
 >
-  <WithTheme
+  <withTheme(Header)
     handleCloseMenu={[Function]}
     handleLogoutUser={[Function]}
     handleOpenAdminPage={[Function]}
     handleOpenHelpPdf={[Function]}
     open={false}
   />
-  <WithStyles
+  <withStyles(GridWrapper)
     container={true}
     spacing={0}
     style={
@@ -36,5 +36,5 @@ exports[`HeaderedLayout it should render correctly 1`] = `
       }
     }
   />
-</WithStyles>
+</withStyles(GridWrapper)>
 `;

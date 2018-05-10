@@ -50,7 +50,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
         >
           <Column
             component={
-              <WithStyles
+              <withStyles(GridWrapper)
                 item={true}
               />
             }
@@ -75,7 +75,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
           </Column>
           <Column
             component={
-              <WithStyles
+              <withStyles(GridWrapper)
                 item={true}
               />
             }
@@ -124,7 +124,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
         >
           <Row
             component={
-              <WithStyles
+              <withStyles(GridWrapper)
                 item={true}
               />
             }
@@ -159,7 +159,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
         >
           <Row
             component={
-              <WithStyles
+              <withStyles(GridWrapper)
                 item={true}
               />
             }
@@ -181,7 +181,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
         </Container>
       </ModalContent>
     </Container>
-    <WithStyles
+    <withStyles(ModalActions)
       actions={
         Array [
           Object {
