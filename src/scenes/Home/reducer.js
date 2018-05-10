@@ -233,12 +233,12 @@ const mainReducer = (state, action) => {
         ...state,
         projectToExport: {
           ...action.project,
-          exportType: action.exportType
+          exportType: action.exportType,
+          text: ''
         }
       }
 
     case types.EXPORT_DATA_SUCCESS:
-      console.log(state.projectToExport)
       return {
         ...state,
         projectToExport: {

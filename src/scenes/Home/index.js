@@ -42,7 +42,7 @@ export class Home extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.projectToExport.text !== '' && this.state.projectToExport !== null) {
-      this.prepareExport()
+      this.prepareExport(nextProps.projectToExport.text)
     }
   }
 
@@ -60,8 +60,8 @@ export class Home extends Component {
     })
   }
 
-  prepareExport = () => {
-    const csvBlob = new Blob([this.props.projectToExport.text], { type: 'text/csv;charset=utf-8;' })
+  prepareExport = text => {
+    const csvBlob = new Blob([text], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(csvBlob)
     this.exportRef.href = url
     this.exportRef.download = `${this.state.projectToExport.name}-${this.state.projectToExport.exportType}-export.csv`
