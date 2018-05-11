@@ -11,6 +11,7 @@ import ProjectList from './components/ProjectList'
 import * as actions from './actions'
 import ExportDialog from './components/ExportDialog'
 import withTracking from 'components/withTracking'
+import ApiErrorAlert from 'components/ApiErrorAlert'
 
 export class Home extends Component {
   static propTypes = {
@@ -67,7 +68,7 @@ export class Home extends Component {
     this.exportRef.href = url
     this.exportRef.download = `${this.state.projectToExport.name}-${this.state.projectToExport.exportType}-export.csv`
     this.exportRef.click()
-    window.URL.revokeObjectURL(url)
+    //window.URL.revokeObjectURL(url)
     this.clearProjectExport()
   }
 
@@ -95,9 +96,18 @@ export class Home extends Component {
     </CardError>
   )
 
+  onCloseExportError = () => {
+    this.props.actions.dismissApiError('exportError')
+    this.clearProjectExport()
+  }
+
   render() {
     return (
       <Container column flex style={{ paddingBottom: '25px' }}>
+        <ApiErrorAlert
+          content={this.props.exportError}
+          open={this.props.exportError !== ''}
+          onCloseAlert={this.onCloseExportError} />
         <PageHeader
           showButton={this.props.user.role !== 'Coder'}
           pageTitle="Project List"
@@ -153,7 +163,8 @@ const mapStateToProps = (state) => ({
   error: state.scenes.home.main.error,
   errorContent: state.scenes.home.main.errorContent,
   projectCount: state.scenes.home.main.projectCount || 0,
-  projectToExport: state.scenes.home.main.projectToExport || {}
+  projectToExport: state.scenes.home.main.projectToExport || { text: '' },
+  exportError: state.scenes.home.main.exportError || ''
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })

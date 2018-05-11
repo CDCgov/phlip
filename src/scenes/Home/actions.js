@@ -27,3 +27,4 @@ export const updateEditedFields = projectId => ({ type: types.UPDATE_EDITED_FIEL
 
 export const exportDataRequest = (project, exportType) => ({ type: types.EXPORT_DATA_REQUEST, project, exportType })
 export const clearProjectToExport = () => ({ type: types.CLEAR_PROJECT_TO_EXPORT })
+export const dismissApiError = errorName => ({ type: types.DISMISS_API_ERROR, errorName })
