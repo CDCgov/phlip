@@ -1,4 +1,4 @@
-export default [
+let apiCalls = [
   {
     name: 'login',
     method: 'post',
@@ -6,15 +6,14 @@ export default [
   },
   {
     name: 'checkPivUser',
-    method: 'get',
-    path: ({ tokenObj }) => `/users?email=${tokenObj.decodedToken.userEmail}`,
+    method: 'post',
+    path: () => `/users/authenticate`,
     headers: ({ tokenObj }) => ({ Authorization: `Bearer ${tokenObj.token}` })
   },
   {
     name: 'getUserBookmarks',
     method: 'get',
-    path: ({ userId }) => `/users/${userId}/bookmarkedprojects`,
-    headers: ({ token }) => ({ Authorization: `Bearer ${token}` })
+    path: ({ userId }) => `/users/${userId}/bookmarkedprojects`
   },
   {
     name: 'addUserBookmark',
@@ -237,3 +236,14 @@ export default [
     path: () => '/exports/helpfile'
   }
 ]
+
+// If development, then include the basic auth api call
+if (!process.env.API_HOST) {
+  apiCalls = [...apiCalls,   {
+    name: 'login',
+    method: 'post',
+    path: () => '/users/authenticate'
+  }]
+}
+
+export default apiCalls

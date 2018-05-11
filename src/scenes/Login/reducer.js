@@ -9,29 +9,19 @@ const INITIAL_STATE = {
 const loginReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.LOGIN_USER_SUCCESS:
+    case types.CHECK_PIV_USER_SUCCESS:
       return {
         ...state,
         session: !!sessionStorage.esquire_token,
         formMessage: null
       }
 
-    case types.CHECK_PIV_USER_SUCCESS:
-      return {
-        ...state,
-        session: !!sessionStorage.esquire_token
-      }
-
     case types.LOGIN_USER_FAIL:
-      return state
-
     case types.CHECK_PIV_USER_FAIL:
       return {
         ...state,
-        formMessage: 'Login failed. Please contact your administrator.'
+        formMessage: action.payload
       }
-
-    case types.LOGIN_USER_REQUEST:
-      return state
 
     case types.LOGOUT_USER:
       if (action.sessionExpired === true) {
@@ -49,7 +39,10 @@ const loginReducer = (state = INITIAL_STATE, action) => {
         formMessage: state.formMessage
       }
 
-    default: return { ...state }
+    case types.LOGIN_USER_REQUEST:
+    case types.CHECK_PIV_USER_REQUEST:
+    default:
+      return state
   }
 }
 

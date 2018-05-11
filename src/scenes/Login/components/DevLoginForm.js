@@ -8,7 +8,7 @@ import Divider from 'material-ui/Divider'
 import TextInput from 'components/TextInput/index'
 import Container, { Column, Row } from 'components/Layout/index'
 
-let DevLoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, pivError, children }) => (
+let DevLoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, pivError }) => (
   <Fragment>
     <form onSubmit={handleSubmit}>
       <Column displayFlex style={{ justifyContent: 'space-around', alignItems: 'center' }}>

@@ -88,7 +88,7 @@ export class Login extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
   return {
     user: state.data.user.currentUser || undefined,
     session: state.scenes.login.session || false,
