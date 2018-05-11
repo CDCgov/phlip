@@ -7,7 +7,7 @@ let apiCalls = [
   {
     name: 'checkPivUser',
     method: 'post',
-    path: () => `/users/authenticate`,
+    path: () => '/users/authenticate',
     headers: ({ tokenObj }) => ({ Authorization: `Bearer ${tokenObj.token}` })
   },
   {
