@@ -9,14 +9,15 @@ const getSchemeLogic = createLogic({
   async process({ api, action, getState }, dispatch, done) {
     try {
       const scheme = await api.getScheme({}, {}, { projectId: action.id })
-      let lockInfo = {}
+      let lockInfo = {}, error = {}
 
       try {
         lockInfo = await api.getCodingSchemeLockInfo({}, {}, { projectId: action.id })
-      } catch (error) {
-        if (error.response.status === 404) {
+        if (lockInfo === undefined) {
           lockInfo = {}
         }
+      } catch (e) {
+        error.lockInfo = 'We couldn\'t determine if the coding scheme is checked out at this time.'
       }
       const currentUserId = getState().data.user.currentUser.id
       dispatch({
@@ -24,7 +25,8 @@ const getSchemeLogic = createLogic({
         payload: {
           scheme,
           lockInfo,
-          lockedByCurrentUser: Object.keys(lockInfo).length > 0 ? lockInfo.userId === currentUserId : false
+          lockedByCurrentUser: Object.keys(lockInfo).length > 0 ? lockInfo.userId === currentUserId : false,
+          error
         }
       })
     } catch (error) {
@@ -108,7 +110,7 @@ const deleteQuestionLogic = createLogic({
   type: types.DELETE_QUESTION_REQUEST,
   async process({ api, action, getState }, dispatch, done) {
     try {
-      const response = await api.deleteQuestion({}, {}, { projectId: action.projectId, questionId: action.questionId })
+      await api.deleteQuestion({}, {}, { projectId: action.projectId, questionId: action.questionId })
       const updatedQuestions = removeNodeAtPath({
         treeData: getState().scenes.codingScheme.questions,
         path: action.path,

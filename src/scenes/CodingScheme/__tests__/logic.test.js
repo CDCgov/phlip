@@ -49,7 +49,8 @@ describe('CodingScheme logic', () => {
               outline: { 1: { parentId: 0, positionInParent: 0 } }
             },
             lockInfo: {},
-            lockedByCurrentUser: false
+            lockedByCurrentUser: false,
+            error: {}
           }
         }
       ])

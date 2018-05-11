@@ -1,12 +1,10 @@
 import * as types from './actionTypes'
 import {
   changeNodeAtPath,
-  getFlatDataFromTree,
   getTreeFromFlatData,
   walk,
   map,
   addNodeUnderParent,
-  removeNodeAtPath
 } from 'react-sortable-tree'
 import { sortList } from 'utils'
 
@@ -17,7 +15,7 @@ const INITIAL_STATE = {
   flatQuestions: [],
   schemeError: null,
   formError: null,
-  alertError: null,
+  alertError: '',
   previousQuestions: [],
   previousOutline: {},
   lockedByCurrentUser: false,
@@ -118,7 +116,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         flatQuestions: action.payload.scheme.schemeQuestions,
         outline: action.payload.scheme.outline,
         empty: action.payload.scheme.schemeQuestions <= 0,
-        error: null,
+        alertError: action.payload.error.lockInfo ? action.payload.error.lockInfo : '',
         lockInfo: action.payload.lockInfo,
         lockedByCurrentUser: action.payload.lockedByCurrentUser,
         lockedAlert: Object.keys(action.payload.lockInfo).length > 0
@@ -137,7 +135,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
     case types.RESET_ALERT_ERROR:
       return {
         ...state,
-        alertError: null
+        alertError: ''
       }
 
     case types.CLOSE_CODING_SCHEME_LOCK_ALERT:

@@ -7,14 +7,15 @@ const getProtocolLogic = createLogic({
     const currentUserId = getState().data.user.currentUser.id
     try {
       const protocol = await api.getProtocol({}, {}, { projectId: action.projectId })
-      let lockInfo = {}
+      let lockInfo = {}, error = {}
 
       try {
         lockInfo = await api.getProtocolLockInfo({}, {}, { projectId: action.projectId })
-      } catch (error) {
-        if (error.response.status === 404) {
+        if (lockInfo === undefined) {
           lockInfo = {}
         }
+      } catch (e) {
+        error.lockInfo =  'We couldn\'t determine if the protocol is checked out at this time.'
       }
 
       dispatch({
@@ -22,7 +23,8 @@ const getProtocolLogic = createLogic({
         payload: {
           protocol: protocol.text,
           lockInfo,
-          lockedByCurrentUser: Object.keys(lockInfo).length > 0 ? lockInfo.userId === currentUserId : false
+          lockedByCurrentUser: Object.keys(lockInfo).length > 0 ? lockInfo.userId === currentUserId : false,
+          error
         }
       })
     } catch (error) {

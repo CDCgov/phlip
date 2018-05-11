@@ -43,7 +43,8 @@ describe('Protocol logic', () => {
           payload: {
             protocol: 'protocol text!',
             lockInfo: {},
-            lockedByCurrentUser: false
+            lockedByCurrentUser: false,
+            error: {}
           }
         }
       ])

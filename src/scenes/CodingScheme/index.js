@@ -122,32 +122,32 @@ export class CodingScheme extends Component {
     return (
       <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
         {this.props.lockedByCurrentUser &&
-          <Fragment>
-            <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
-              The coding scheme is empty. To get started, add a question.
+        <Fragment>
+          <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
+            The coding scheme is empty. To get started, add a question.
           </Typography>
-            <Button
-              component={Link}
-              to={{
-                pathname: `/project/${this.props.projectId}/coding-scheme/add`,
-                state: { questionDefined: null, canModify: true }
-              }}
-              value="+ Add New Question"
-              color="accent"
-              aria-label="Add new question to coding scheme"
-            />
-          </Fragment>}
+          <Button
+            component={Link}
+            to={{
+              pathname: `/project/${this.props.projectId}/coding-scheme/add`,
+              state: { questionDefined: null, canModify: true }
+            }}
+            value="+ Add New Question"
+            color="accent"
+            aria-label="Add new question to coding scheme"
+          />
+        </Fragment>}
         {!this.props.lockedByCurrentUser &&
-          <Fragment>
-            <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
-              The coding scheme is empty. To get started, check out the coding scheme for editing.
+        <Fragment>
+          <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
+            The coding scheme is empty. To get started, check out the coding scheme for editing.
           </Typography>
-            <Button
-              value="Check out"
-              color="accent"
-              aria-label="check out coding scheme"
-              onClick={this.handleLockCodingScheme} />
-          </Fragment>
+          <Button
+            value="Check out"
+            color="accent"
+            aria-label="check out coding scheme"
+            onClick={this.handleLockCodingScheme} />
+        </Fragment>
         }
       </Container>
     )
@@ -176,12 +176,13 @@ export class CodingScheme extends Component {
         </Alert>
         <Alert open={this.state.deleteQuestionAlertOpen} actions={this.deleteAlertActions}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            You are about to delete a question from the coding scheme.  This will permanantly delete all related child questions and coded answers.
-            </Typography>
+            You are about to delete a question from the coding scheme. This will permanantly delete all related child
+            questions and coded answers.
+          </Typography>
         </Alert>
         <ApiErrorAlert
           content={this.props.alertError}
-          open={this.props.alertError !== null}
+          open={this.props.alertError !== ''}
           onCloseAlert={this.onCloseAlert} />
         <Alert
           actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert }]}
@@ -189,8 +190,8 @@ export class CodingScheme extends Component {
           title={<Fragment><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
             The Coding Scheme is checked out.</Fragment>}>
           <Typography variant="body1">
-            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} has checked out the coding scheme. You will
-            not be able to make changes until they have checked in.
+            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} has checked out the coding scheme. You
+            will not be able to make changes until they have checked in.
           </Typography>
         </Alert>
         <PageHeader
@@ -207,7 +208,8 @@ export class CodingScheme extends Component {
                 ? this.handleUnlockCodingScheme
                 : this.handleLockCodingScheme
             },
-            show: this.props.questions.length > 0 || (this.props.questions.length === 0 && this.props.lockedByCurrentUser)
+            show: this.props.questions.length > 0 ||
+            (this.props.questions.length === 0 && this.props.lockedByCurrentUser)
           }}
           otherButton={{
             isLink: true,
@@ -281,7 +283,7 @@ const mapStateToProps = (state, ownProps) => ({
   reorderError: state.scenes.codingScheme.reorderError || null,
   lockedByCurrentUser: state.scenes.codingScheme.lockedByCurrentUser || false,
   lockInfo: state.scenes.codingScheme.lockInfo || {},
-  alertError: state.scenes.codingScheme.alertError || null,
+  alertError: state.scenes.codingScheme.alertError || '',
   lockedAlert: state.scenes.codingScheme.lockedAlert || null,
   hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false
 })

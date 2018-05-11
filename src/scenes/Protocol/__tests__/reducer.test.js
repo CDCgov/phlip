@@ -5,7 +5,7 @@ const initial = {
   content: '',
   getProtocolError: null,
   submitting: false,
-  alertError: null,
+  alertError: '',
   lockInfo: {},
   lockedAlert: null,
   lockedByCurrentUser: false
@@ -37,7 +37,7 @@ describe('Protocol reducer', () => {
   test('GET_PROTOCOL_SUCCESS', () => {
     expect(reducer(initial, {
       type: types.GET_PROTOCOL_SUCCESS,
-      payload: { protocol: 'this is protocol', lockInfo: {}, lockedByCurrentUser: false }
+      payload: { protocol: 'this is protocol', lockInfo: {}, lockedByCurrentUser: false, error: {} }
     })).toEqual({
       ...initial,
       content: 'this is protocol',
@@ -64,7 +64,7 @@ describe('Protocol reducer', () => {
     expect(reducer({ content: 'protocol content' }, { type: types.CLEAR_STATE }))
       .toEqual({
         content: '',
-        alertError: null,
+        alertError: '',
         getProtocolError: null,
         submitting: false,
         lockInfo: {},

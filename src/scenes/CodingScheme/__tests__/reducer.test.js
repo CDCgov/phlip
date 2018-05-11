@@ -10,7 +10,7 @@ const initial = {
   previousOutline: {},
   previousQuestions: [],
   schemeError: null,
-  alertError: null,
+  alertError: '',
   lockInfo: {},
   lockedAlert: null,
   lockedByCurrentUser: false
@@ -42,7 +42,8 @@ describe('Coding Scheme reducer', () => {
             }
           },
           lockInfo: {},
-          lockedByCurrentUser: false
+          lockedByCurrentUser: false,
+          error: {}
         }
       }
 
@@ -63,7 +64,7 @@ describe('Coding Scheme reducer', () => {
         },
         allowHover: true,
         empty: false,
-        error: null,
+        alertError: '',
         flatQuestions: [
           { id: 1, text: 'fa la la la', type: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
           { id: 2, text: 'la la la', type: 2, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }

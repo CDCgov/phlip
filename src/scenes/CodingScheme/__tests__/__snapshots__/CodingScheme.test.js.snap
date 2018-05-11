@@ -54,7 +54,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
       }
       variant="body1"
     >
-      You are about to delete a question from the coding scheme.  This will permanantly delete all related child questions and coded answers.
+      You are about to delete a question from the coding scheme. This will permanantly delete all related child questions and coded answers.
     </withStyles(Typography)>
   </Alert>
   <ApiErrorAlert
