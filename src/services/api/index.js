@@ -6,8 +6,8 @@ export const instance = axios.create({
   baseURL: process.env.API_HOST || '/api'
 })
 
-export const redirectIfTokenExpired = ({ history }) => error => {
-  if (error.response.status === 401) {
+export const redirectIfTokenExpired = ({ history }, call) => error => {
+  if (error.response.status === 401 && (call.name !== 'login' && call.name !== 'checkPivUser')) {
     logout()
     history.push({
       pathname: '/login' , state: { sessionExpired: true }
@@ -29,7 +29,7 @@ const prepare = ({ history }) => call => (data, options, urlParams = {}) => {
     headers
   })
     .then(res => call.hasOwnProperty('returnObj') ? call.returnObj({ ...urlParams }, res) : res.data)
-    .catch(redirectIfTokenExpired({ history }))
+    .catch(redirectIfTokenExpired({ history }, call))
 }
 
 const createApiHandler = dependencies => {
