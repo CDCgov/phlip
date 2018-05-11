@@ -19,11 +19,14 @@ exports[`Header -- AvatarMenu should render correctly 1`] = `
         <withTheme(Avatar)
           initials="TU"
           onClick={[Function]}
+          onKeyPress={[Function]}
+          role="menubutton"
           style={
             Object {
               "cursor": "pointer",
             }
           }
+          tabIndex={0}
         />
       </Target>
     </Manager>

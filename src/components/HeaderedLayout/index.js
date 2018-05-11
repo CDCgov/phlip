@@ -26,7 +26,7 @@ export class HeaderedLayout extends Component {
     this.helpPdfRef.href = url
     this.helpPdfRef.download = 'PHLIP-Help-Guide.pdf'
     this.helpPdfRef.click()
-    window.URL.revokeObjectURL(url)
+    //window.URL.revokeObjectURL(url)
   }
 
   render() {
