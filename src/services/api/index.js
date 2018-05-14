@@ -7,11 +7,17 @@ export const instance = axios.create({
 })
 
 export const redirectIfTokenExpired = ({ history }, call) => error => {
-  if (error.response.status === 401 && (call.name !== 'login' && call.name !== 'checkPivUser')) {
-    logout()
-    history.push({
-      pathname: '/login' , state: { sessionExpired: true }
-    })
+  if (error.response.status === 401) {
+    if (call.name === 'login' || call.name === 'checkPivUser') {
+      history.push({
+        pathname: '/login'
+      })
+    } else {
+      logout()
+      history.push({
+        pathname: '/login', state: { sessionExpired: true }
+      })
+    }
   }
   throw error
 }

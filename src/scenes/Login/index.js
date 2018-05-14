@@ -34,7 +34,7 @@ export class Login extends Component {
       const tokenObject = { decodedToken: decodeToken(parsedToken), token: parsedToken }
       this.props.actions.checkPivUserRequest(tokenObject)
     }
-
+    
     if (this.props.location.state !== undefined) {
       if (this.props.location.state.sessionExpired === true) {
         this.props.actions.logoutUser(true)
