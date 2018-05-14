@@ -10,20 +10,23 @@ import Paper from 'material-ui/Paper'
 import { Manager, Target, Popper } from 'react-popper'
 import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
 
-const apiHost = process.env.API_HOST !== undefined ? process.env.API_HOST : '/api'
-const pathToPdf = `${apiHost}/`
-
 export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, onOpenAdminPage, onToggleMenu, onOpenHelpPdf, avatar }) => {
   return (
-    <ClickAwayListener
-      onClickAway={open ? onCloseMenu : () => {
-      }}>
+    <ClickAwayListener onClickAway={open ? onCloseMenu : () => {}}>
       <Grid item style={{ zIndex: 2 }}>
         <Manager>
           <Target>
             <Avatar
               onClick={onToggleMenu}
+              onKeyPress={(e) => {
+                if (e.key === ' ' || e.key === 'Enter') {
+                  e.preventDefault()
+                  onToggleMenu()
+                }
+              }}
               avatar={avatar}
+              role="menubutton"
+              tabIndex={0}
               initials={initials ? initials : ''}
               style={{ cursor: 'pointer' }} />
           </Target>
@@ -31,7 +34,7 @@ export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, on
           <Popper placement="bottom-end" eventsEnabled={open}>
             <Grow in={open} id="avatar-menu">
               <Paper style={{ marginTop: 5 }}>
-                <MenuList role="menu">
+                <MenuList role="menu" aria-expanded={open}>
                   {role === 'Admin' &&
                   <MenuItem onClick={onOpenAdminPage} selected={false} key="admin-menu">
                     <ListItemIcon>
@@ -39,13 +42,13 @@ export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, on
                     </ListItemIcon>
                     <ListItemText style={{ color: '#5f6060' }} disableTypography primary="User Management" />
                   </MenuItem>}
-                  <MenuItem onClick={onLogoutUser} key="logout-menu">
+                  <MenuItem onClick={onLogoutUser} tabIndex={0} key="logout-menu">
                     <ListItemIcon>
                       <Icon color="accent">exit_to_app</Icon>
                     </ListItemIcon>
                     <ListItemText style={{ color: '#5f6060' }} disableTypography primary="Logout" />
                   </MenuItem>
-                  <MenuItem onClick={onOpenHelpPdf} key="help-section-pdf">
+                  <MenuItem onClick={onOpenHelpPdf} tabIndex={0} key="help-section-pdf">
                     <ListItemIcon>
                       <Icon color="accent">help</Icon>
                     </ListItemIcon>

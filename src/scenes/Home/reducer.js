@@ -21,7 +21,8 @@ const INITIAL_STATE = {
   errorContent: '',
   error: false,
   projectCount: 0,
-  projectToExport: {}
+  projectToExport: { text: '' },
+  exportError: ''
 }
 
 const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => {
@@ -247,10 +248,24 @@ const mainReducer = (state, action) => {
         }
       }
 
+    case types.EXPORT_DATA_FAIL:
+      return {
+        ...state,
+        exportError: 'We couldn\'t export this project.'
+      }
+
+    case types.DISMISS_API_ERROR:
+      return {
+        ...state,
+        [action.errorName]: ''
+      }
+
     case types.CLEAR_PROJECT_TO_EXPORT:
       return {
         ...state,
-        projectToExport: {}
+        projectToExport: {
+          text: ''
+        }
       }
 
     case types.GET_PROJECTS_REQUEST:
