@@ -1,9 +1,12 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import Typography from 'material-ui/Typography'
 import Icon from 'components/Icon'
 import { Row } from 'components/Layout'
 
+/**
+ * Alert that is not a popup specifically for API errors
+ */
 export const ApiErrorView = ({ error }) => {
   return (
     <div style={{ position: 'relative', top: '20%' }}>
@@ -22,7 +25,14 @@ export const ApiErrorView = ({ error }) => {
 }
 
 ApiErrorView.propTypes = {
+  /**
+   * Content what you want the view to show
+   */
   error: PropTypes.string
+}
+
+ApiErrorView.defaultProps = {
+  error: ''
 }
 
 export default ApiErrorView
