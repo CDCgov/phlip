@@ -17,6 +17,9 @@ exports[`Header -- AvatarMenu should render correctly 1`] = `
     >
       <Target>
         <withTheme(Avatar)
+          aria-controls="avatar-user-menu"
+          aria-haspopup={true}
+          id="avatar-menu-button"
           initials="TU"
           onClick={[Function]}
           onKeyPress={[Function]}

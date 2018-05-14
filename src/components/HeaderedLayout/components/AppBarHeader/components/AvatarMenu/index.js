@@ -26,7 +26,10 @@ export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, on
               }}
               avatar={avatar}
               role="menubutton"
+              aria-controls="avatar-user-menu"
+              aria-haspopup={true}
               tabIndex={0}
+              id="avatar-menu-button"
               initials={initials ? initials : ''}
               style={{ cursor: 'pointer' }} />
           </Target>
@@ -34,7 +37,7 @@ export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, on
           <Popper placement="bottom-end" eventsEnabled={open}>
             <Grow in={open} id="avatar-menu">
               <Paper style={{ marginTop: 5 }}>
-                <MenuList role="menu" aria-expanded={open}>
+                <MenuList role="menu" aria-expanded={open} id="avatar-user-menu" aria-labelledby="avatar-menu-button">
                   {role === 'Admin' &&
                   <MenuItem onClick={onOpenAdminPage} selected={false} key="admin-menu">
                     <ListItemIcon>
@@ -42,13 +45,13 @@ export const AvatarMenu = ({ role, initials, open, onCloseMenu, onLogoutUser, on
                     </ListItemIcon>
                     <ListItemText style={{ color: '#5f6060' }} disableTypography primary="User Management" />
                   </MenuItem>}
-                  <MenuItem onClick={onLogoutUser} tabIndex={0} key="logout-menu">
+                  <MenuItem onClick={onLogoutUser} key="logout-menu">
                     <ListItemIcon>
                       <Icon color="accent">exit_to_app</Icon>
                     </ListItemIcon>
                     <ListItemText style={{ color: '#5f6060' }} disableTypography primary="Logout" />
                   </MenuItem>
-                  <MenuItem onClick={onOpenHelpPdf} tabIndex={0} key="help-section-pdf">
+                  <MenuItem onClick={onOpenHelpPdf} key="help-section-pdf">
                     <ListItemIcon>
                       <Icon color="accent">help</Icon>
                     </ListItemIcon>
