@@ -61,6 +61,9 @@ const styles = theme => ({
   }
 })
 
+/**
+ * @component
+ */
 export const withCodingValidation = (WrappedComponent, actions) => {
   class CodingValidation extends WrappedComponent {
 

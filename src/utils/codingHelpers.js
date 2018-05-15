@@ -4,6 +4,11 @@ import * as questionTypes from 'components/CodingValidation/constants'
 import { getTreeFromFlatData } from 'react-sortable-tree'
 import { getQuestionNumbers, sortQuestions } from 'utils/treeHelpers'
 
+/**
+ *
+ * @param question
+ * @returns {{comment: *|string, flag: {notes: string, type: number, raisedBy: {}}, answers: {}, schemeQuestionId: *, isNewCodedQuestion: boolean, hasMadePost: boolean}}
+ */
 export const initializeValues = question => {
   const { codedAnswers, ...initializedQuestion } = {
     ...question.id ? { id: question.id } : {},
@@ -18,7 +23,7 @@ export const initializeValues = question => {
   return initializedQuestion
 }
 
-/*
+/**
  This function basically takes an array of user coded question answers: { answers: [{ answerId: 1, pincite: '' }] },
  and converts it to an object like: { answers: { 1: { answerId: 1, pincite: '' }}}.
 
@@ -51,7 +56,7 @@ export const findNextParentSibling = (scheme, question, currentIndex) => {
   return subArr.find(id => scheme.byId[id].parentId !== question.id)
 }
 
-/*
+/**
   Handles determining whether or not to show the 'next question' button at the bottom of the screen. If the question is
   a category question and no categories have been selected, check if there are any remaining questions in the list that
   aren't a child of the category questions. If there are none, don't show button, if there are do.
@@ -71,7 +76,7 @@ export const determineShowButton = state => {
 export const getSelectedCategories = (parentQuestion, userAnswers) =>
   parentQuestion.possibleAnswers.filter(category => checkIfExists(category, userAnswers[parentQuestion.id].answers))
 
-/*
+/**
   Initializes an object to be used for creating entry in user answers
  */
 export const initializeNextQuestion = question => ({
@@ -81,7 +86,7 @@ export const initializeNextQuestion = question => ({
   schemeQuestionId: question.id
 })
 
-/*
+/**
  Sends back an initialized object for a question in userAnswers
  */
 export const initializeRegularQuestion = id => ({
@@ -93,8 +98,12 @@ export const initializeRegularQuestion = id => ({
   isNewCodedQuestion: true
 })
 
-/*
-  Handles determining what the next question is, and updating state.userAnswers with question information
+/**
+ * Handles determining what the next question is, and updating state.userAnswers with question information
+ * @param newQuestion
+ * @param newIndex
+ * @param state
+ * @returns {*}
  */
 export const handleCheckCategories = (newQuestion, newIndex, state) => {
   const base = {

@@ -1,3 +1,10 @@
+/**
+ * Sorts a list
+ * @param list
+ * @param sortBy
+ * @param direction
+ * @returns {*}
+ */
 const sortList = (list, sortBy, direction) => {
   return (
     direction === 'asc'

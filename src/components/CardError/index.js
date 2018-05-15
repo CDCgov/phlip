@@ -5,6 +5,9 @@ import Grid from 'material-ui/Grid'
 import Card from 'components/Card'
 import Icon from 'components/Icon'
 
+/**
+ * Used to display errors that should be shown as a part of the page, instead of popup alert
+ */
 export const CardError = ({ children }) => (
   <Card style={{ display: 'flex' }}>
     <Grid container spacing={0} justify="center" style={{ flex: '1' }} alignItems="center">
@@ -25,6 +28,9 @@ export const CardError = ({ children }) => (
 )
 
 CardError.propTypes = {
+  /**
+   * Contents of CardError
+   */
   children: PropTypes.any
 }
 
