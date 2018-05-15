@@ -22,6 +22,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
       ]
     }
     open={false}
+    title={null}
   >
     <withStyles(Typography)
       variant="body1"
@@ -45,6 +46,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
       ]
     }
     open={false}
+    title={null}
   >
     <withStyles(Typography)
       style={
@@ -139,7 +141,9 @@ exports[`CodingScheme scene should render correctly 1`] = `
       }
     }
   >
-    <ApiErrorView />
+    <ApiErrorView
+      error=""
+    />
   </Container>
   <Route
     component={[Function]}
