@@ -10,6 +10,7 @@ export const Avatar = ({ big, avatar, initials, style, theme, cardAvatar, ...oth
     width: big ? '45px' : '30px',
     height: big ? '45px' : '30px',
     fontSize: '1rem',
+    borderColor: theme.palette.secondary.main,
     ...style
   }
 

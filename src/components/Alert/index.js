@@ -2,6 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Modal, { ModalContent, ModalActions, ModalTitle } from 'components/Modal'
 
+/**
+ * Popup modal alert
+ */
 export const Alert = ({ actions, open, title, children }) => {
   return (
     <Modal open={open}>
@@ -15,13 +18,30 @@ export const Alert = ({ actions, open, title, children }) => {
 }
 
 Alert.propTypes = {
+  /**
+   * Whether the alert should be open (visible)
+   */
   open: PropTypes.bool.isRequired,
+
+  /**
+   * Array of objects which are the Alert actions
+   */
   actions: PropTypes.array.isRequired,
-  title: PropTypes.any
+
+  /**
+   * Title of the alert
+   */
+  title: PropTypes.any,
+
+  /**
+   * The body of the alert
+   */
+  children: PropTypes.any
 }
 
 Alert.defaultProps = {
-  open: false
+  open: false,
+  title: null
 }
 
 export default Alert

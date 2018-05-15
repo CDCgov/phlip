@@ -11,6 +11,12 @@ exports[`Home scene should render correctly 1`] = `
     }
   }
 >
+  <ApiErrorAlert
+    actions={Array []}
+    content=""
+    onCloseAlert={[Function]}
+    open={false}
+  />
   <withRouter(withTheme(PageHeader))
     otherButton={
       Object {

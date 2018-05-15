@@ -35,6 +35,7 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
           <div
             aria-grabbed={false}
             draggable={true}
+            onKeyDown={[Function]}
             role="button"
             tabIndex={0}
           >

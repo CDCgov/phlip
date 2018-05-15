@@ -26,7 +26,7 @@ import Typography from 'material-ui/Typography'
 import CheckboxLabel from 'components/CheckboxLabel'
 
 const rowStyles = {
-  paddingBottom: 20
+  paddingBottom: 30
 }
 
 export class AddEditUser extends Component {
@@ -243,18 +243,6 @@ export class AddEditUser extends Component {
                 placeholder="Enter email"
                 validate={this.required}
                 fullWidth
-              />
-            </Row>
-            <Row style={{ paddingBottom: 25 }}>
-              <Field
-                name="password"
-                component={TextInput}
-                label="Password"
-                required
-                placeholder="Enter password"
-                validate={this.required}
-                fullWidth
-                shrinkLabel
               />
             </Row>
             <Row displayFlex flex>

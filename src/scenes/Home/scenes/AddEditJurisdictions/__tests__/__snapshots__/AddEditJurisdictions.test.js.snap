@@ -116,6 +116,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
         ]
       }
       open={false}
+      title={null}
     >
       <withStyles(Typography)
         style={

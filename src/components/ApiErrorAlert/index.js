@@ -4,6 +4,9 @@ import Alert from 'components/Alert'
 import Icon from 'components/Icon'
 import Typography from 'material-ui/Typography'
 
+/**
+ * Popup alert specifically used when there's an API Error to show
+ */
 export const ApiErrorAlert = ({ content, onCloseAlert, open, actions }) => {
   const title = (
     <Fragment><Icon size={30} color="red" style={{ paddingRight: 10 }}>sentiment_very_dissatisfied</Icon>
@@ -28,9 +31,24 @@ ApiErrorAlert.defaultProps = {
 }
 
 ApiErrorAlert.propTypes = {
+  /**
+   * The function you want to call when the user closes the alert
+   */
   onCloseAlert: PropTypes.func,
+
+  /**
+   * Content of the alert
+   */
   content: PropTypes.any,
+
+  /**
+   * Whether or not the alert is open (visible)
+   */
   open: PropTypes.bool,
+
+  /**
+   * Array of actions for the alert
+   */
   actions: PropTypes.array
 }
 

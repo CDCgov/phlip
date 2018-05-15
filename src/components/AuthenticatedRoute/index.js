@@ -43,7 +43,12 @@ const isPath = path => {
   return isPath
 }
 
-const AuthenticatedRoute = ({ component: Component, user, location, ...rest }) => {
+/**
+ * A wrapper around all other routes that handles whether or not the user can view the page. If they are allowed then it
+ * renders the component, if not, then renders UnauthPage. If page isn't found, it renders PageNotFound. If the user isn't
+ * logged in, renders the Login page.
+ */
+export const AuthenticatedRoute = ({ component: Component, user, location, ...rest }) => {
   return (
     isPath(location.pathname)
       ? isLoggedInTokenExists()

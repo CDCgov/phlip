@@ -38,7 +38,8 @@ const initial = {
     error: false,
     errorContent: '',
     searchValue: '',
-    projectToExport: {}
+    exportError: '',
+    projectToExport: { text: '' }
   },
   addEditProject: { formError: null, goBack: false },
   addEditJurisdictions: {
