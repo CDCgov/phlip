@@ -11,7 +11,13 @@ exports[`Home scene should render correctly 1`] = `
     }
   }
 >
-  <withRouter(WithTheme)
+  <ApiErrorAlert
+    actions={Array []}
+    content=""
+    onCloseAlert={[Function]}
+    open={false}
+  />
+  <withRouter(withTheme(PageHeader))
     otherButton={
       Object {
         "isLink": true,
@@ -22,7 +28,7 @@ exports[`Home scene should render correctly 1`] = `
         "show": true,
         "state": Object {
           "modal": true,
-          "userDefined": null,
+          "projectDefined": null,
         },
         "text": "+ Create New Project",
       }
@@ -32,7 +38,7 @@ exports[`Home scene should render correctly 1`] = `
     protocolButton={false}
     showButton={true}
   />
-  <WithStyles />
+  <withStyles(Divider) />
   <ProjectList
     direction="desc"
     handleExport={[Function]}

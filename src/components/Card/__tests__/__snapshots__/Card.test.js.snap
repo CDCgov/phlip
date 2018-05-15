@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Card component should render correctly 1`] = `
-<WithStyles
+<withStyles(Paper)
   style={
     Object {
       "flex": "1",
@@ -11,5 +11,5 @@ exports[`Card component should render correctly 1`] = `
   <div>
     I am card children.
   </div>
-</WithStyles>
+</withStyles(Paper)>
 `;

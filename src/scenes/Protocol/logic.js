@@ -6,23 +6,25 @@ const getProtocolLogic = createLogic({
   async process({ getState, api, action }, dispatch, done) {
     const currentUserId = getState().data.user.currentUser.id
     try {
-      const protocol = await api.getProtocol(action.projectId)
-      let lockInfo = {}
+      const protocol = await api.getProtocol({}, {}, { projectId: action.projectId })
+      let lockInfo = {}, error = {}
 
       try {
-        lockInfo = await api.getProtocolLockInfo(action.projectId)
-      } catch (error) {
-        if (error.response.status === 404) {
+        lockInfo = await api.getProtocolLockInfo({}, {}, { projectId: action.projectId })
+        if (lockInfo === '') {
           lockInfo = {}
         }
+      } catch (e) {
+        error.lockInfo =  'We couldn\'t determine if the protocol is checked out at this time.'
       }
 
       dispatch({
         type: types.GET_PROTOCOL_SUCCESS,
         payload: {
-          protocol,
+          protocol: protocol.text,
           lockInfo,
-          lockedByCurrentUser: Object.keys(lockInfo).length > 0 ? lockInfo.userId === currentUserId : false
+          lockedByCurrentUser: Object.keys(lockInfo).length > 0 ? lockInfo.userId === currentUserId : false,
+          error
         }
       })
     } catch (error) {
@@ -37,8 +39,12 @@ const getProtocolLogic = createLogic({
 const saveProtocolLogic = createLogic({
   type: types.SAVE_PROTOCOL_REQUEST,
   async process({ getState, api, action }, dispatch, done) {
+    const userId = getState().data.user.currentUser.id
     try {
-      const resp = await api.saveProtocol(action.projectId, getState().data.user.currentUser.id, action.protocol)
+      const resp = await api.saveProtocol({ text: action.protocol, userId }, {}, {
+        projectId: action.projectId,
+        userId
+      })
       dispatch({
         type: types.SAVE_PROTOCOL_SUCCESS,
         payload: { ...resp }
@@ -58,7 +64,7 @@ const lockProtocolLogic = createLogic({
   async process({ api, action, getState }, dispatch, done) {
     const currentUserId = getState().data.user.currentUser.id
     try {
-      const lockInfo = await api.lockProtocol(action.projectId, currentUserId)
+      const lockInfo = await api.lockProtocol({}, {}, { projectId: action.projectId, userId: currentUserId })
       dispatch({
         type: types.LOCK_PROTOCOL_SUCCESS,
         payload: {
@@ -82,7 +88,7 @@ const unlockProtocolLogic = createLogic({
   async process({ api, action, getState }, dispatch, done) {
     const userId = getState().data.user.currentUser.id
     try {
-      const unlockInfo = await api.unlockProtocol(action.projectId, userId)
+      const unlockInfo = await api.unlockProtocol({}, {}, { projectId: action.projectId, userId })
       dispatch({
         type: types.UNLOCK_PROTOCOL_SUCCESS,
         payload: { ...unlockInfo }

@@ -37,7 +37,9 @@ const initial = {
     sortBookmarked: false,
     error: false,
     errorContent: '',
-    searchValue: ''
+    searchValue: '',
+    exportError: '',
+    projectToExport: { text: '' }
   },
   addEditProject: { formError: null, goBack: false },
   addEditJurisdictions: {
@@ -49,8 +51,12 @@ const initial = {
     jurisdiction: {},
     formError: null,
     goBack: false,
+    deleteError: null,
     isLoadingJurisdictions: false,
-    showJurisdictionLoader: false
+    showJurisdictionLoader: false,
+    form: {
+      values: { name: '' }
+    }
   }
 }
 

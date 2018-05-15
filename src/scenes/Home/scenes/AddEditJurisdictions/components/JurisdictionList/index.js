@@ -4,7 +4,7 @@ import Table from 'components/Table'
 import { TableBody, TableHead, TableRow, TableCell } from 'material-ui/Table'
 import JurisdictionRow from './components/JurisdictionRow'
 
-export const JurisdictionList = ({ jurisdictions, projectId }) => (
+export const JurisdictionList = ({ jurisdictions, projectId, onDelete }) => (
   <Table>
     <TableHead>
       <TableRow key="jurisdiction-header">
@@ -12,11 +12,12 @@ export const JurisdictionList = ({ jurisdictions, projectId }) => (
         <TableCell key="segment-start">Segment Start Date</TableCell>
         <TableCell key="segment-end">Segment End Date</TableCell>
         <TableCell key="segment-edit">Edit</TableCell>
+        <TableCell key="segment-delete">Delete</TableCell>
       </TableRow>
     </TableHead>
     <TableBody>
       {jurisdictions.map(id => (
-        <JurisdictionRow projectId={projectId} id={id} key={`jurisdictions-${id}`} />
+        <JurisdictionRow projectId={projectId} id={id} onDelete={onDelete} key={`jurisdictions-${id}`} />
       ))}
       </TableBody>
   </Table>

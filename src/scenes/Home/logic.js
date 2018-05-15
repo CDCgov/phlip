@@ -13,7 +13,7 @@ export const getProjectLogic = createLogic({
     failType: types.GET_PROJECTS_FAIL
   },
   async process({ api, getState }) {
-    const projects = await api.getProjects()
+    const projects = await api.getProjects({}, {}, {})
     return {
       projects: projects.map(project => ({
         ...project,
@@ -44,11 +44,16 @@ export const toggleBookmarkLogic = createLogic({
       bookmarkList.push(action.project.id)
     }
 
+    const apiObj = {
+      userId: currentUser.id,
+      projectId: action.project.id
+    }
+
     let out
     if (add) {
-      out = await api.addUserBookmark(currentUser.id, action.project.id)
+      out = await api.addUserBookmark({}, {}, apiObj)
     } else {
-      out = await api.removeUserBookmark(currentUser.id, action.project.id)
+      out = await api.removeUserBookmark({}, {}, apiObj)
     }
 
     return { bookmarkList, user: { ...currentUser, bookmarks: bookmarkList } }
@@ -68,10 +73,23 @@ export const updateFieldsLogic = createLogic({
   }
 })
 
+export const exportDataLogic = createLogic({
+  type: types.EXPORT_DATA_REQUEST,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.EXPORT_DATA_SUCCESS,
+    failType: types.EXPORT_DATA_FAIL
+  },
+  async process({ action, getState, api }) {
+    return await api.exportData({}, { params: { type: action.exportType } }, { projectId: action.project.id })
+  }
+})
+
 export default [
   getProjectLogic,
   toggleBookmarkLogic,
   updateFieldsLogic,
+  exportDataLogic,
   ...addEditProjectLogic,
   ...addEditJurisdictions
 ]

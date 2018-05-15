@@ -6,23 +6,25 @@ import Icon from 'components/Icon'
 
 export const withFormAlert = (WrappedComponent) => {
   class FormAlert extends Component {
-    state = {
-      open: false,
-      text: null,
-      actions: [],
-      title: null
-    }
-
     constructor(props, context) {
       super(props, context)
+
+      this.state = {
+        open: false,
+        text: '',
+        actions: [],
+        title: null,
+        isReduxForm: this.props.isReduxForm !== false
+      }
     }
 
     onClose = () => {
       this.setState({
         open: false,
-        text: null,
+        text: '',
         actions: [],
-        title: null
+        title: null,
+        isReduxForm: this.props.isReduxForm !== false
       })
     }
 
@@ -32,8 +34,12 @@ export const withFormAlert = (WrappedComponent) => {
     }
 
     onContinue = () => {
-      this.props.formActions.reset(this.props.formName)
-      this.setState({ open: false, text: null, actions: [], title: null })
+      if (this.state.isReduxForm) {
+        this.props.formActions.reset(this.props.formName)
+      } else {
+        this.props.actions.resetToInitial()
+      }
+      this.setState({ open: false, text: '', actions: [], title: null })
       this.props.history.goBack()
     }
 
@@ -74,7 +80,10 @@ export const withFormAlert = (WrappedComponent) => {
     }
 
     onSubmitError = error => {
-      this.props.formActions.setSubmitFailed(this.props.formName)
+      if (this.state.isReduxForm) {
+        this.props.formActions.setSubmitFailed(this.props.formName)
+      }
+
       this.setState({
         open: true,
         text: error,

@@ -1,32 +1,133 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Header -- AvatarMenu should render correctly 1`] = `
-<ClickAwayListener
-  onClickAway={[Function]}
->
-  <WithStyles
-    item={true}
-    style={
-      Object {
-        "zIndex": 2,
-      }
+<withStyles(GridWrapper)
+  item={true}
+  style={
+    Object {
+      "zIndex": 2,
     }
+  }
+>
+  <Manager
+    tag="div"
   >
-    <Manager
-      tag="div"
-    >
-      <Target>
-        <WithTheme
-          initials="TU"
-          onClick={[Function]}
-          style={
-            Object {
-              "cursor": "pointer",
-            }
+    <Target>
+      <withTheme(Avatar)
+        aria-controls="avatar-menu"
+        aria-haspopup={true}
+        aria-owns={null}
+        id="avatar-menu-button"
+        initials="TU"
+        onClick={[Function]}
+        onKeyPress={[Function]}
+        role="menubutton"
+        style={
+          Object {
+            "cursor": "pointer",
           }
-        />
-      </Target>
-    </Manager>
-  </WithStyles>
-</ClickAwayListener>
+        }
+        tabIndex={0}
+      />
+    </Target>
+    <Popper
+      component="div"
+      eventsEnabled={false}
+      modifiers={Object {}}
+      placement="bottom-end"
+      style={
+        Object {
+          "pointerEvents": "none",
+        }
+      }
+    >
+      <ClickAwayListener
+        onClickAway={[Function]}
+      >
+        <withTheme(Grow)
+          id="avatar-menu"
+          in={false}
+        >
+          <withStyles(Paper)
+            style={
+              Object {
+                "marginTop": 5,
+              }
+            }
+          >
+            <MenuList
+              aria-expanded={false}
+              aria-labelledby="avatar-menu-button"
+              id="avatar-user-menu"
+              role="menu"
+            >
+              <withStyles(MenuItem)
+                key="admin-menu"
+                selected={false}
+              >
+                <withStyles(ListItemIcon)>
+                  <withTheme(Icon)
+                    color="accent"
+                  >
+                    person
+                  </withTheme(Icon)>
+                </withStyles(ListItemIcon)>
+                <withStyles(ListItemText)
+                  disableTypography={true}
+                  primary="User Management"
+                  style={
+                    Object {
+                      "color": "#5f6060",
+                    }
+                  }
+                />
+              </withStyles(MenuItem)>
+              <withStyles(MenuItem)
+                key="logout-menu"
+                onClick={[Function]}
+              >
+                <withStyles(ListItemIcon)>
+                  <withTheme(Icon)
+                    color="accent"
+                  >
+                    exit_to_app
+                  </withTheme(Icon)>
+                </withStyles(ListItemIcon)>
+                <withStyles(ListItemText)
+                  disableTypography={true}
+                  primary="Logout"
+                  style={
+                    Object {
+                      "color": "#5f6060",
+                    }
+                  }
+                />
+              </withStyles(MenuItem)>
+              <withStyles(MenuItem)
+                key="help-section-pdf"
+              >
+                <withStyles(ListItemIcon)>
+                  <withTheme(Icon)
+                    color="accent"
+                  >
+                    help
+                  </withTheme(Icon)>
+                </withStyles(ListItemIcon)>
+                <withStyles(ListItemText)
+                  disableTypography={true}
+                  primary="Help"
+                  style={
+                    Object {
+                      "color": "#5f6060",
+                    }
+                  }
+                />
+              </withStyles(MenuItem)>
+            </MenuList>
+          </withStyles(Paper)>
+        </withTheme(Grow)>
+      </ClickAwayListener>
+    </Popper>
+  </Manager>
+</withStyles(GridWrapper)>
 `;

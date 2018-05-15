@@ -112,7 +112,7 @@ const saveRedFlagLogic = createLogic({
   async process({ action, api }, dispatch, done) {
     try {
       const flag = { ...action.flagInfo, raisedBy: action.flagInfo.raisedBy.userId }
-      const resp = await api.saveRedFlag(action.questionId, flag)
+      const resp = await api.saveRedFlag(flag, {}, { questionId: action.questionId })
       dispatch({
         type: types.ON_SAVE_RED_FLAG_SUCCESS,
         payload: { ...resp }

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import actions, * as otherActions from './actions'
 import withCodingValidation from 'components/CodingValidation'
 import ApiErrorAlert from 'components/ApiErrorAlert'
+import withTracking from 'components/withTracking'
 
 export class Coding extends Component {
   constructor(props, context) {
@@ -81,4 +82,4 @@ Coding.propTypes = {
   categories: PropTypes.array
 }
 
-export default withCodingValidation(Coding, { ...actions, ...otherActions })
+export default withCodingValidation(withTracking(Coding, 'Code'), { ...actions, ...otherActions })

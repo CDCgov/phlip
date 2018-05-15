@@ -1,10 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Avatar component should render correctly 1`] = `
-<WithStyles
+<withStyles(Avatar)
   style={
     Object {
       "backgroundColor": "#38a48e",
+      "borderColor": "#38a48e",
       "color": "white",
       "fontSize": "1rem",
       "height": "30px",
@@ -13,5 +14,5 @@ exports[`Avatar component should render correctly 1`] = `
   }
 >
   AU
-</WithStyles>
+</withStyles(Avatar)>
 `;

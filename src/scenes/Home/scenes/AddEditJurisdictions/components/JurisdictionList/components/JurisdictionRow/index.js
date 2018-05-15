@@ -3,10 +3,9 @@ import PropTypes from 'prop-types'
 import { TableRow, TableCell } from 'material-ui/Table'
 import IconButton from 'components/IconButton'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import TextLink from 'components/TextLink'
 
-export const JurisdictionRow = ({ jurisdiction, id, projectId }) => {
+export const JurisdictionRow = ({ jurisdiction, id, onDelete, projectId }) => {
   return (<TableRow key={`jurisdiction-${id}`}>
     <TableCell key={`${id}-segment-name`}>
       {jurisdiction.name}
@@ -26,6 +25,9 @@ export const JurisdictionRow = ({ jurisdiction, id, projectId }) => {
         }}>
         <IconButton color="accent">mode_edit</IconButton>
       </TextLink>
+    </TableCell>
+    <TableCell>
+      <IconButton onClick={() => onDelete(id, jurisdiction.name)} color="accent">delete</IconButton>
     </TableCell>
   </TableRow>)
 }

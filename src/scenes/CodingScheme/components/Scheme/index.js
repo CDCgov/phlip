@@ -38,14 +38,15 @@ export const Scheme = props => {
         scaffoldBlockPxWidth: 100,
         slideRegionSize: 50,
         rowHeight: 75,
-        reactVirtualizedListProps: {
-          overscanRowCount: 10
-        }
       }}
       treeData={questions}
       onChange={handleQuestionTreeChange}
       onMoveNode={handleQuestionNodeMove}
       style={{ flex: '1 0 50%' }}
+      reactVirtualizedListProps={{
+        overscanRowCount: 10,
+        containerRole: 'list'
+      }}
       generateNodeProps={({ node, path }) => {
         return {
           turnOffHover: () => handleHoverOnQuestion(node, path, false),

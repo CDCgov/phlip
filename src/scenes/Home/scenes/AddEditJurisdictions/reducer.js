@@ -10,8 +10,14 @@ const INITIAL_STATE = {
   jurisdiction: {},
   goBack: false,
   formError: null,
+  deleteError: null,
   isLoadingJurisdictions: false,
-  showJurisdictionLoader: false
+  showJurisdictionLoader: false,
+  form: {
+    values: {
+      name: ''
+    }
+  }
 }
 
 const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
@@ -71,6 +77,27 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         goBack: true
       }
 
+    case types.DELETE_JURISDICTION_SUCCESS:
+      const currentIds = { ...state.jurisdictions.byId }
+      delete currentIds[action.jurisdictionId]
+
+      const indexOfId = state.jurisdictions.allIds.findIndex(value => value === action.jurisdictionId)
+      const allIds = [ ...state.jurisdictions.allIds ]
+      allIds.splice(indexOfId, 1)
+
+      const visible = [ ...state.visibleJurisdictions ]
+      visible.splice(indexOfId, 1)
+
+      return {
+        ...state,
+        jurisdictions: {
+          byId: { ...currentIds },
+          allIds: [ ...allIds ]
+        },
+        visibleJurisdictions: [ ...visible ],
+        goBack: true
+      }
+
     case types.UPDATE_JURISDICTION_SEARCH_VALUE:
       return {
         ...state,
@@ -85,7 +112,15 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
     case types.UPDATE_SUGGESTION_VALUE:
       return {
         ...state,
-        suggestionValue: action.suggestionValue
+        suggestionValue: action.suggestionValue,
+        form: {
+          ...state.form,
+          values: {
+            ...state.form.values,
+            name: action.suggestionValue
+          }
+        },
+        jurisdiction: Object.keys(state.jurisdiction).length > 0 ? {} : { ...state.jurisdiction }
       }
 
     case types.SET_JURISDICTION_SUGGESTIONS:
@@ -104,7 +139,14 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         jurisdiction: { ...action.jurisdiction },
-        suggestionValue: action.jurisdiction.name
+        suggestionValue: action.jurisdiction.name,
+        form: {
+          ...state.form,
+          values: {
+            ...state.form.values,
+            name: action.jurisdiction.name
+          }
+        }
       }
 
     case types.CLEAR_JURISDICTIONS:
@@ -125,6 +167,18 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         ...state,
         formError: action.payload,
         goBack: false
+      }
+
+    case types.DELETE_JURISDICTION_FAIL:
+      return {
+        ...state,
+        deleteError: action.payload
+      }
+
+    case types.DISMISS_DELETE_ERROR_ALERT:
+      return {
+        ...state,
+        deleteError: null
       }
 
     case types.GET_PROJECT_JURISDICTION_FAIL:
@@ -149,6 +203,37 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
         isLoadingJurisdictions: true
       }
 
+    case types.INITIALIZE_FORM:
+      return {
+        ...state,
+        form: {
+          initial: action.values,
+          registeredFields: action.values,
+          values: action.values
+        }
+      }
+
+    case types.SET_FORM_VALUES:
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          values: {
+            ...state.form.values,
+            [action.prop]: action.value
+          }
+        }
+      }
+
+    case types.RESET_FORM_VALUES:
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          values: state.form.initial
+        }
+      }
+
     case types.SHOW_JURISDICTION_LOADER:
       return {
         ...state,
@@ -156,6 +241,7 @@ const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.SEARCH_JURISDICTION_LIST:
+    case types.DELETE_JURISDICTION_REQUEST:
     case types.UPDATE_PROJECT_JURISDICTION_REQUEST:
     case types.ADD_PROJECT_JURISDICTION_REQUEST:
     case types.ADD_PRESET_JURISDICTION_REQUEST:

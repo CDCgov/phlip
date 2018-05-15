@@ -2,7 +2,6 @@ import React from 'react'
 import raf from './tempPolyfills'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-
 const rrd = require('react-router-dom')
 
 Enzyme.configure({ adapter: new Adapter() })

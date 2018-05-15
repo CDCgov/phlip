@@ -10,7 +10,8 @@ import PageHeader from 'components/PageHeader'
 import ProjectList from './components/ProjectList'
 import * as actions from './actions'
 import ExportDialog from './components/ExportDialog'
-import api from 'services/api'
+import withTracking from 'components/withTracking'
+import ApiErrorAlert from 'components/ApiErrorAlert'
 
 export class Home extends Component {
   static propTypes = {
@@ -41,32 +42,52 @@ export class Home extends Component {
     this.props.actions.getProjectsRequest()
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.projectToExport.text !== '' && this.state.projectToExport !== null) {
+      this.prepareExport(nextProps.projectToExport.text)
+    }
+  }
+
   onToggleExportDialog = project => {
     this.setState({
-      exportDialogOpen: !this.state.exportDialogOpen,
-      projectToExport: project
+      exportDialogOpen: true,
+      projectToExport: { ...project }
     })
   }
 
-  getExport = async type => {
-    const resp = await api.exportData(this.state.projectToExport.id, type)
-    const csvBlob = new Blob([resp], { type: 'text/csv;charset=utf-8;' })
+  onCloseExportDialog = () => {
+    this.setState({
+      projectToExport: null,
+      exportDialogOpen: false
+    })
+  }
+
+  prepareExport = text => {
+    const csvBlob = new Blob([text], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(csvBlob)
     this.exportRef.href = url
-    this.exportRef.download = `${this.state.projectToExport.name}-${type}-export.csv`
+    this.exportRef.download = `${this.state.projectToExport.name}-${this.state.projectToExport.exportType}-export.csv`
     this.exportRef.click()
-    window.URL.revokeObjectURL(url)
+    //window.URL.revokeObjectURL(url)
     this.clearProjectExport()
   }
 
+  getExport = type => {
+    this.props.actions.exportDataRequest(this.state.projectToExport, type)
+  }
+
   onChooseExport = type => {
-    this.setState({ exportDialogOpen: false }, () => this.getExport(type))
+    this.setState({
+      exportDialogOpen: false,
+      projectToExport: { ...this.state.projectToExport, exportType: type }
+    }, () => this.getExport(type))
   }
 
   clearProjectExport = () => {
     this.setState({
       projectToExport: null
     })
+    this.props.actions.clearProjectToExport()
   }
 
   renderErrorMessage = () => (
@@ -75,9 +96,18 @@ export class Home extends Component {
     </CardError>
   )
 
+  onCloseExportError = () => {
+    this.props.actions.dismissApiError('exportError')
+    this.clearProjectExport()
+  }
+
   render() {
     return (
       <Container column flex style={{ paddingBottom: '25px' }}>
+        <ApiErrorAlert
+          content={this.props.exportError}
+          open={this.props.exportError !== ''}
+          onCloseAlert={this.onCloseExportError} />
         <PageHeader
           showButton={this.props.user.role !== 'Coder'}
           pageTitle="Project List"
@@ -87,7 +117,7 @@ export class Home extends Component {
             isLink: true,
             text: '+ Create New Project',
             path: '/project/add',
-            state: { userDefined: null, modal: true },
+            state: { projectDefined: null, modal: true },
             props: { 'aria-label': 'Create New Project' },
             show: this.props.user.role !== 'Coder'
           }} />
@@ -114,8 +144,7 @@ export class Home extends Component {
         <ExportDialog
           open={this.state.exportDialogOpen}
           onChooseExport={this.onChooseExport}
-          onClose={this.onToggleExportDialog} />
-
+          onClose={this.onCloseExportDialog} />
         <a style={{ display: 'none' }} ref={this.setExportRef} />
       </Container>
     )
@@ -133,9 +162,11 @@ const mapStateToProps = (state) => ({
   sortBookmarked: state.scenes.home.main.sortBookmarked,
   error: state.scenes.home.main.error,
   errorContent: state.scenes.home.main.errorContent,
-  projectCount: state.scenes.home.main.projectCount || 0
+  projectCount: state.scenes.home.main.projectCount || 0,
+  projectToExport: state.scenes.home.main.projectToExport || { text: '' },
+  exportError: state.scenes.home.main.exportError || ''
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(Home))
+export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(withTracking(Home, 'Home')))

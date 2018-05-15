@@ -507,7 +507,10 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
 
   // Get the scheme question from the db in case it has changed
   try {
-    newSchemeQuestion = await api.getSchemeQuestion(questionInfo.question.id, action.projectId)
+    newSchemeQuestion = await api.getSchemeQuestion({}, {}, {
+      questionId: questionInfo.question.id,
+      projectId: action.projectId
+    })
     sortList(newSchemeQuestion.possibleAnswers, 'order', 'asc')
     combinedQuestion = { ...state.scheme.byId[questionInfo.question.id], ...newSchemeQuestion }
     updatedScheme = {
@@ -536,7 +539,7 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
   }
 
   try {
-    codedQuestion = await apiGetMethod({
+    codedQuestion = await apiGetMethod({}, {}, {
       userId: userId,
       projectId: action.projectId,
       questionId: questionInfo.question.id,
@@ -550,19 +553,20 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
     } else {
       initialize = false
     }
-
   } catch (error) {
     errors = {
       ...errors,
       updatedCodedQuestion: 'We couldn\'t retrieve your updated answers. You still have access to the previous answers, but any changes that have been made since the time you started coding are not available.'
     }
+    initialize = false
   }
 
   if (initialize === true) {
     if (combinedQuestion.isCategoryQuestion === true) {
       for (let question of codedQuestion) {
         if (question.hasOwnProperty('validatedBy')) {
-          if (!checkIfExists(question.validatedBy, userImages, 'userId') && !checkIfExists(question.validatedBy, newImages, 'userId')) {
+          if (!checkIfExists(question.validatedBy, userImages, 'userId') &&
+            !checkIfExists(question.validatedBy, newImages, 'userId')) {
             newImages = { ...newImages, [question.validatedBy.userId]: { ...question.validatedBy } }
           }
         }
@@ -615,7 +619,7 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
 export const getSchemeAndInitialize = async (projectId, api) => {
   let scheme = {}, payload = { firstQuestion: {}, tree: [], order: [], questionsById: {} }
   try {
-    scheme = await api.getScheme(projectId)
+    scheme = await api.getScheme({}, {}, { projectId })
 
     if (scheme.schemeQuestions.length === 0) {
       return { isSchemeEmpty: true, ...payload }
@@ -642,10 +646,11 @@ export const getSchemeAndInitialize = async (projectId, api) => {
 export const getCodedValidatedQuestions = async (projectId, jurisdictionId, userId, apiMethod) => {
   let codedValQuestions = [], codedValErrors = {}
   try {
-    codedValQuestions = await apiMethod({ userId, projectId, jurisdictionId })
+    codedValQuestions = await apiMethod({}, {}, { userId, projectId, jurisdictionId })
     return { codedValQuestions, codedValErrors }
   } catch (e) {
     return {
+      codedValQuestions: [],
       codedValErrors: {
         codedValQuestions: 'We couldn\'t get your answered questions for this project and jurisdiction, so you won\'t be able to answer questions.'
       }
@@ -658,7 +663,7 @@ export const getSchemeQuestionAndUpdate = async (projectId, state, question, api
 
   // Get scheme question in case there are changes
   try {
-    updatedSchemeQuestion = await api.getSchemeQuestion(question.id, projectId)
+    updatedSchemeQuestion = await api.getSchemeQuestion({}, {}, { questionId: question.id, projectId })
   } catch (error) {
     updatedSchemeQuestion = { ...question }
     schemeErrors = {

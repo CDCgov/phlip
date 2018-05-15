@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { UnauthPage } from 'components/RoutePages'
 
 export const Authorization = allowedRoles => WrappedComponent => {
   class WithAuthorization extends Component {

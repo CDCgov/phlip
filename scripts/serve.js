@@ -15,12 +15,13 @@ const jwt = require('jsonwebtoken')
 const passport = require('passport')
 
 dotenv.config({ path: paths.appDotEnv })
+const DEFAULT_API_URL = 'http://backend:80'
 
 const APP_HOST = process.env.APP_HOST || '0.0.0.0'
 const APP_PORT = process.env.APP_PORT || 5200
 const HTTP_APP_PORT = process.env.HTTP_APP_PORT || 443
-const APP_API_URL = `${process.env.APP_API_URL}/api` || 'http://backend:80/api'
 const IS_PRODUCTION = process.env.API_HOST || false
+const APP_API_URL = IS_PRODUCTION ? (`${process.env.APP_API_URL}/api` || `${DEFAULT_API_URL}/api`) : (process.env.APP_API_URL || DEFAULT_API_URL)
 
 app.use(compression())
 app.use(express.static('./dist/'))

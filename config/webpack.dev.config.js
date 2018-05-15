@@ -11,7 +11,7 @@ module.exports = function makeConfig(env) {
   return {
     devtool: 'cheap-module-source-map',
     entry: {
-      app: paths.appIndexJs
+      app: ['react-hot-loader/patch', paths.appIndexJs]
     },
 
     output: {

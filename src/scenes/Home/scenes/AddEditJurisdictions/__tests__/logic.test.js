@@ -2,31 +2,33 @@ import { createMockStore } from 'redux-logic-test'
 import MockAdapter from 'axios-mock-adapter'
 import logic from '../logic'
 import * as types from '../actionTypes'
-import apiCalls, { api } from 'services/api'
+import createApiHanlder, { instance } from 'services/api'
 
 describe('AddEditJurisdiction logic', () => {
   let mock
 
   const mockReducer = (state, action) => state
+  const history = {}
+  const api = createApiHanlder({ history })
 
   beforeEach(() => {
-    mock = new MockAdapter(api)
+    mock = new MockAdapter(instance)
   })
 
   const setupStore = () => {
     return createMockStore({
       reducer: mockReducer,
-      logic: logic,
+      logic,
       injectedDeps: {
-        api: { ...apiCalls }
+        api
       }
     })
   }
 
   test('should call the get jurisdictions api and return the list of jurisdictions', (done) => {
     mock.onGet('/projects/1/jurisdictions').reply(200, [
-      { id: 1, name: 'Jurisdiction 1', startDate: new Date(2017, 1, 2), endDate: new Date(2017, 1, 3) },
-      { id: 2, name: 'Jurisdiction 2', startDate: new Date(2017, 1, 2), endDate: new Date(2017, 1, 3) }
+      { id: 1, name: 'Jurisdiction 1', startDate: "1/1/2000", endDate: "1/1/2000" },
+      { id: 2, name: 'Jurisdiction 2', startDate: "1/1/2000", endDate: "1/1/2000" }
     ])
 
     const store = setupStore()
@@ -37,8 +39,8 @@ describe('AddEditJurisdiction logic', () => {
         { type: types.GET_PROJECT_JURISDICTIONS_REQUEST, projectId: 1 },
         {
           type: types.GET_PROJECT_JURISDICTIONS_SUCCESS, payload: [
-            { id: 1, name: 'Jurisdiction 1', startDate: new Date(2017, 1, 2), endDate: new Date(2017, 1, 3) },
-            { id: 2, name: 'Jurisdiction 2', startDate: new Date(2017, 1, 2), endDate: new Date(2017, 1, 3) }
+            { id: 1, name: 'Jurisdiction 1', startDate: "1/1/2000", endDate: "1/1/2000" },
+            { id: 2, name: 'Jurisdiction 2', startDate: "1/1/2000", endDate: "1/1/2000" }
           ]
         }
       ])

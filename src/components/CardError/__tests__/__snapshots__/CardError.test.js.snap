@@ -8,7 +8,7 @@ exports[`CardError component should render correctly 1`] = `
     }
   }
 >
-  <WithStyles
+  <withStyles(GridWrapper)
     alignItems="center"
     container={true}
     justify="center"
@@ -19,26 +19,26 @@ exports[`CardError component should render correctly 1`] = `
       }
     }
   >
-    <WithStyles
+    <withStyles(GridWrapper)
       alignItems="center"
       container={true}
       direction="column"
       spacing={0}
     >
-      <WithStyles
+      <withStyles(GridWrapper)
         item={true}
       >
-        <WithTheme
+        <withTheme(Icon)
           color="#757575"
           size={175}
         >
           sentiment_very_dissatisfied
-        </WithTheme>
-      </WithStyles>
-      <WithStyles
+        </withTheme(Icon)>
+      </withStyles(GridWrapper)>
+      <withStyles(GridWrapper)
         item={true}
       >
-        <WithStyles
+        <withStyles(Typography)
           style={
             Object {
               "height": 300,
@@ -51,9 +51,9 @@ exports[`CardError component should render correctly 1`] = `
           <div>
             I am a card error.
           </div>
-        </WithStyles>
-      </WithStyles>
-    </WithStyles>
-  </WithStyles>
+        </withStyles(Typography)>
+      </withStyles(GridWrapper)>
+    </withStyles(GridWrapper)>
+  </withStyles(GridWrapper)>
 </Card>
 `;

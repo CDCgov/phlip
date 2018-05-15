@@ -20,7 +20,9 @@ const INITIAL_STATE = {
   sortBookmarked: false,
   errorContent: '',
   error: false,
-  projectCount: 0
+  projectCount: 0,
+  projectToExport: { text: '' },
+  exportError: ''
 }
 
 const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => {
@@ -207,6 +209,62 @@ const mainReducer = (state, action) => {
               projectJurisdictions: updater.updateByProperty(action.payload.jurisdiction, state.projects.byId[action.payload.projectId].projectJurisdictions, 'id')
             }
           }
+        }
+      }
+
+    case types.DELETE_JURISDICTION_FROM_PROJECT:
+      const currentJurisdictions = [ ...state.projects.byId[action.payload.projectId].projectJurisdictions ]
+      const updatedJurisdictions = currentJurisdictions.filter(value => value.id !== action.payload.jurisdictionId)
+
+      return {
+        ...state,
+        projects: {
+          byId: {
+            ...state.projects.byId,
+            [action.payload.projectId]: {
+              ...state.projects.byId[action.payload.projectId],
+              projectJurisdictions: updatedJurisdictions
+            }
+          }
+        }
+      }
+
+    case types.EXPORT_DATA_REQUEST:
+      return {
+        ...state,
+        projectToExport: {
+          ...action.project,
+          exportType: action.exportType,
+          text: ''
+        }
+      }
+
+    case types.EXPORT_DATA_SUCCESS:
+      return {
+        ...state,
+        projectToExport: {
+          ...state.projectToExport,
+          text: action.payload
+        }
+      }
+
+    case types.EXPORT_DATA_FAIL:
+      return {
+        ...state,
+        exportError: 'We couldn\'t export this project.'
+      }
+
+    case types.DISMISS_API_ERROR:
+      return {
+        ...state,
+        [action.errorName]: ''
+      }
+
+    case types.CLEAR_PROJECT_TO_EXPORT:
+      return {
+        ...state,
+        projectToExport: {
+          text: ''
         }
       }
 

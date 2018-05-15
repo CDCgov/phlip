@@ -3,10 +3,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { withRouter } from 'react-router'
-import { Route } from 'react-router-dom'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import Button from 'components/Button'
-import Container, { Column, Row } from 'components/Layout'
+import Container, { Column } from 'components/Layout'
 import JurisdictionList from './components/JurisdictionList'
 import * as actions from './actions'
 import Divider from 'material-ui/Divider'
@@ -15,6 +14,9 @@ import TextLink from 'components/TextLink'
 import ApiErrorView from 'components/ApiErrorView'
 import { withTheme } from 'material-ui/styles'
 import PageLoader from 'components/PageLoader'
+import Alert from 'components/Alert'
+import ApiErrorAlert from 'components/ApiErrorAlert'
+import withTracking from 'components/withTracking'
 
 export class AddEditJurisdictions extends Component {
   static propTypes = {
@@ -28,6 +30,12 @@ export class AddEditJurisdictions extends Component {
     isLoadingJurisdictions: PropTypes.bool
   }
 
+  state = {
+    confirmDeleteAlertOpen: false,
+    jurisdictionToDelete: {},
+    deleteErrorAlertOpen: false
+  }
+
   constructor(props, context) {
     super(props, context)
   }
@@ -37,13 +45,22 @@ export class AddEditJurisdictions extends Component {
     this.showJurisdictionLoader()
   }
 
+  componentWillUnmount() {
+    this.props.actions.clearJurisdictions()
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.deleteError === null && nextProps.deleteError !== null) {
+      this.setState({
+        deleteErrorAlertOpen: true
+      })
+    }
+  }
+
   onCloseModal = () => {
     this.props.history.push('/home')
   }
 
-  componentWillUnmount() {
-    this.props.actions.clearJurisdictions()
-  }
 
   showJurisdictionLoader = () => {
     setTimeout(() => {
@@ -51,6 +68,33 @@ export class AddEditJurisdictions extends Component {
         this.props.actions.showJurisdictionLoader()
       }
     }, 1000)
+  }
+
+  confirmDelete = (id, name) => {
+    this.setState({
+      confirmDeleteAlertOpen: true,
+      jurisdictionToDelete: { id, name }
+    })
+  }
+
+  continueDelete = () => {
+    this.props.actions.deleteJurisdictionRequest(this.state.jurisdictionToDelete.id, this.props.project.id)
+    this.cancelDelete()
+  }
+
+  cancelDelete = () => {
+    this.setState({
+      confirmDeleteAlertOpen: false,
+      jurisdictionToDelete: {}
+    })
+  }
+
+  dismissDeleteErrorAlert = () => {
+    this.setState({
+      deleteErrorAlertOpen: false
+    })
+
+    this.props.actions.dismissDeleteErrorAlert()
   }
 
   getButton = () => {
@@ -71,6 +115,19 @@ export class AddEditJurisdictions extends Component {
   }
 
   render() {
+    const alertActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.cancelDelete
+      },
+      {
+        value: 'Continue',
+        type: 'button',
+        onClick: this.continueDelete
+      }
+    ]
+
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="md" hideOverflow>
         <ModalTitle
@@ -90,13 +147,26 @@ export class AddEditJurisdictions extends Component {
           }} />
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
+          <Alert actions={alertActions} open={this.state.confirmDeleteAlertOpen}>
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+              Are you sure you want to delete the jurisdiction, {this.state.jurisdictionToDelete.name}, from the
+              project? All coded questions related to this jurisdiction will be deleted.
+            </Typography>
+          </Alert>
+          <ApiErrorAlert
+            open={this.state.deleteErrorAlertOpen === true}
+            content={this.props.deleteError}
+            onCloseAlert={this.dismissDeleteErrorAlert} />
           <Container flex style={{ marginTop: 20 }}>
             <Column flex displayFlex style={{ overflowX: 'auto' }}>
               {this.props.error === true
                 ? <ApiErrorView error={this.props.errorContent} />
                 : this.props.showJurisdictionLoader
                   ? <PageLoader />
-                  : <JurisdictionList jurisdictions={this.props.visibleJurisdictions} projectId={this.props.project.id} />}
+                  : <JurisdictionList
+                    jurisdictions={this.props.visibleJurisdictions}
+                    projectId={this.props.project.id}
+                    onDelete={this.confirmDelete} />}
             </Column>
           </Container>
         </ModalContent>
@@ -121,10 +191,11 @@ const mapStateToProps = (state, ownProps) => ({
   errorContent: state.scenes.home.addEditJurisdictions.errorContent || '',
   isLoadingJurisdictions: state.scenes.home.addEditJurisdictions.isLoadingJurisdictions || false,
   showJurisdictionLoader: state.scenes.home.addEditJurisdictions.showJurisdictionLoader || false,
+  deleteError: state.scenes.home.addEditJurisdictions.deleteError || null
 })
 
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(actions, dispatch)
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withTheme()(AddEditJurisdictions)))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withTheme()(withTracking(AddEditJurisdictions, 'Jurisdictions'))))

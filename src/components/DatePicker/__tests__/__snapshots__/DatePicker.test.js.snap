@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DatePicker component should render correctly 1`] = `
-<WithStyles
+<withStyles(FormControl)
   disabled={false}
   error={false}
 >
@@ -68,6 +68,6 @@ exports[`DatePicker component should render correctly 1`] = `
     }
     value={2017-10-11T00:00:00.000Z}
   />
-  <WithStyles />
-</WithStyles>
+  <withStyles(FormHelperText) />
+</withStyles(FormControl)>
 `;

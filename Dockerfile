@@ -1,6 +1,6 @@
 FROM node:8.7.0
 
-ENV NPM_CONFIG_LOGLEVEL warn
+ENV NPM_CONFIG_LOGLEVEL error
 SHELL ["/bin/bash", "-c"]
 
 RUN mkdir -p /usr/src/app

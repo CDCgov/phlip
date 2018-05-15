@@ -9,7 +9,7 @@ export const addUserLogic = createLogic({
     successType: types.ADD_USER_SUCCESS
   },
   async process({ action, api }) {
-    return await api.addUser(action.user)
+    return await api.addUser(action.user, {}, {})
   }
 })
 
@@ -21,7 +21,7 @@ export const updateUserLogic = createLogic({
     successType: types.UPDATE_USER_SUCCESS
   },
   async process({ action, api }) {
-    const updatedUser = await api.updateUser(action.user)
+    const updatedUser = await api.updateUser(action.user, {}, { userId: action.user.id })
     return { ...updatedUser, avatar: action.user.avatar }
   }
 })
@@ -34,8 +34,8 @@ export const patchUserImageLogic = createLogic({
     successType: types.ADD_USER_IMAGE_SUCCESS
   },
   async process({ action, api }) {
-    const avatar = await api.updateUserImage(action.userId, action.patchOperation)
-    return { avatar, userId: action.userId }
+    const avatar = await api.updateUserImage(action.patchOperation, {}, { userId: action.userId })
+    return { avatar: action.patchOperation[0].value, userId: action.userId }
   }
 })
 
@@ -47,7 +47,7 @@ export const getUserImageLogic = createLogic({
     successType: types.GET_USER_IMAGE_SUCCESS
   },
   async process({ action, api }) {
-    return await api.getUserImage(action.userId)
+    return await api.getUserImage({}, {}, { userId: action.userId })
   }
 })
 
@@ -59,7 +59,7 @@ export const deleteUserImageLogic = createLogic({
     successType: types.DELETE_USER_IMAGE_SUCCESS,
   },
   async process({ action, api }) {
-    return await api.deleteUserImage(action.userId, action.operation)
+    return await api.deleteUserImage(action.operation, {}, { userId: action.userId })
   }
 })
 

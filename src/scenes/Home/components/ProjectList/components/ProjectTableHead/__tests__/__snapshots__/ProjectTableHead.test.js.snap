@@ -36,12 +36,12 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
       }
     }
   >
-    <WithStyles
+    <withStyles(Tooltip)
       aria-label="Sort by Name"
       id="sort-by-name"
       text="Sort by Name"
     >
-      <WithStyles
+      <withStyles(TableSortLabel)
         active={false}
         direction="desc"
         onClick={[Function]}
@@ -52,8 +52,8 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
         }
       >
         Name
-      </WithStyles>
-    </WithStyles>
+      </withStyles(TableSortLabel)>
+    </withStyles(Tooltip)>
   </TableCell>
   <TableCell
     key="dateLastEdited"
@@ -64,12 +64,12 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
       }
     }
   >
-    <WithStyles
+    <withStyles(Tooltip)
       aria-label="Sort by Date Last Edited"
       id="sort-by-dateLastEdited"
       text="Sort by Date Last Edited"
     >
-      <WithStyles
+      <withStyles(TableSortLabel)
         active={true}
         direction="desc"
         onClick={[Function]}
@@ -80,8 +80,8 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
         }
       >
         Date Last Edited
-      </WithStyles>
-    </WithStyles>
+      </withStyles(TableSortLabel)>
+    </withStyles(Tooltip)>
   </TableCell>
   <TableCell
     key="lastEditedBy"
@@ -92,12 +92,12 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
       }
     }
   >
-    <WithStyles
+    <withStyles(Tooltip)
       aria-label="Sort by Last Edited By"
       id="sort-by-lastEditedBy"
       text="Sort by Last Edited By"
     >
-      <WithStyles
+      <withStyles(TableSortLabel)
         active={false}
         direction="desc"
         onClick={[Function]}
@@ -108,8 +108,8 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
         }
       >
         Last Edited By
-      </WithStyles>
-    </WithStyles>
+      </withStyles(TableSortLabel)>
+    </withStyles(Tooltip)>
   </TableCell>
   <TableCell
     key="protocol"

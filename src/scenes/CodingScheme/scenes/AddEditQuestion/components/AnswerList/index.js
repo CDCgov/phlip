@@ -3,9 +3,7 @@ import PropTypes from 'prop-types'
 import SelectInput from '../SelectInput'
 import { Field } from 'redux-form'
 import Button from 'components/Button'
-import IconButton from 'components/IconButton'
-import { Column, Row } from 'components/Layout'
-import styles from '../../add-edit-question.scss'
+import { Row } from 'components/Layout'
 import * as questionTypes from '../../constants'
 
 export const AnswerList = ({ fields, answerType, isEdit, canModify }) => {
@@ -45,7 +43,6 @@ export const AnswerList = ({ fields, answerType, isEdit, canModify }) => {
               type="button"
               color="accent"
               raised={false}
-              disableRipple={true}
               style={{ marginLeft: 32, fontWeight: 'normal' }}
               onClick={() => fields.push({ isNew: true, order: fields.length })} />)
           }
@@ -53,6 +50,13 @@ export const AnswerList = ({ fields, answerType, isEdit, canModify }) => {
       }
     </Fragment>
   )
+}
+
+AnswerList.propTypes = {
+  fields: PropTypes.object,
+  answerType: PropTypes.number,
+  isEdit: PropTypes.bool,
+  canModify: PropTypes.bool
 }
 
 export default AnswerList

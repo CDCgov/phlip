@@ -2,7 +2,10 @@ import { createMockStore } from 'redux-logic-test'
 import MockAdapter from 'axios-mock-adapter'
 import logic from '../logic'
 import * as types from '../actionTypes'
-import apiCalls, { api } from 'services/api'
+import createApiHandler, { instance } from 'services/api'
+
+const history = {}
+const api = createApiHandler({ history })
 
 describe('CodingScheme logic', () => {
   let mock
@@ -10,16 +13,16 @@ describe('CodingScheme logic', () => {
   const mockReducer = (state, action) => state
 
   beforeEach(() => {
-    mock = new MockAdapter(api)
+    mock = new MockAdapter(instance)
   })
 
   const setupStore = other => {
     return createMockStore({
       initialState: { questions: [], data: { user: { currentUser: { id: 5 } } } },
       reducer: mockReducer,
-      logic: logic,
+      logic,
       injectedDeps: {
-        api: { ...apiCalls }
+        api
       }
     })
   }
@@ -46,7 +49,8 @@ describe('CodingScheme logic', () => {
               outline: { 1: { parentId: 0, positionInParent: 0 } }
             },
             lockInfo: {},
-            lockedByCurrentUser: false
+            lockedByCurrentUser: false,
+            error: {}
           }
         }
       ])

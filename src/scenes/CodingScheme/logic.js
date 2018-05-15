@@ -8,15 +8,16 @@ const getSchemeLogic = createLogic({
   type: types.GET_SCHEME_REQUEST,
   async process({ api, action, getState }, dispatch, done) {
     try {
-      const scheme = await api.getScheme(action.id)
-      let lockInfo = {}
+      const scheme = await api.getScheme({}, {}, { projectId: action.id })
+      let lockInfo = {}, error = {}
 
       try {
-        lockInfo = await api.getCodingSchemeLockInfo(action.id)
-      } catch (error) {
-        if (error.response.status === 404) {
+        lockInfo = await api.getCodingSchemeLockInfo({}, {}, { projectId: action.id })
+        if (lockInfo === '') {
           lockInfo = {}
         }
+      } catch (e) {
+        error.lockInfo = 'We couldn\'t determine if the coding scheme is checked out at this time.'
       }
       const currentUserId = getState().data.user.currentUser.id
       dispatch({
@@ -24,7 +25,8 @@ const getSchemeLogic = createLogic({
         payload: {
           scheme,
           lockInfo,
-          lockedByCurrentUser: Object.keys(lockInfo).length > 0 ? lockInfo.userId === currentUserId : false
+          lockedByCurrentUser: Object.keys(lockInfo).length > 0 ? lockInfo.userId === currentUserId : false,
+          error
         }
       })
     } catch (error) {
@@ -43,7 +45,7 @@ const lockSchemeLogic = createLogic({
   async process({ api, action, getState }, dispatch, done) {
     const currentUserId = getState().data.user.currentUser.id
     try {
-      const lockInfo = await api.lockCodingScheme(action.id, currentUserId)
+      const lockInfo = await api.lockCodingScheme({}, {}, { userId: currentUserId, projectId: action.id })
       dispatch({
         type: types.LOCK_SCHEME_SUCCESS,
         payload: {
@@ -67,7 +69,7 @@ const unlockSchemeLogic = createLogic({
   async process({ api, action, getState }, dispatch, done) {
     const userId = getState().data.user.currentUser.id
     try {
-      const unlockInfo = await api.unlockCodingScheme(action.id, userId)
+      const unlockInfo = await api.unlockCodingScheme({}, {}, { projectId: action.id, userId })
       dispatch({
         type: types.UNLOCK_SCHEME_SUCCESS,
         payload: { ...unlockInfo }
@@ -89,7 +91,7 @@ const reorderSchemeLogic = createLogic({
   async process({ api, action, getState }, dispatch, done) {
     const outline = { userid: getState().data.user.currentUser.id, outline: getState().scenes.codingScheme.outline }
     try {
-      await api.reorderScheme(outline, action.projectId)
+      await api.reorderScheme(outline, {}, { projectId: action.projectId })
       dispatch({
         type: types.REORDER_SCHEME_SUCCESS
       })
@@ -108,7 +110,7 @@ const deleteQuestionLogic = createLogic({
   type: types.DELETE_QUESTION_REQUEST,
   async process({ api, action, getState }, dispatch, done) {
     try {
-      const response = await api.deleteQuestion(action.projectId, action.questionId)
+      await api.deleteQuestion({}, {}, { projectId: action.projectId, questionId: action.questionId })
       const updatedQuestions = removeNodeAtPath({
         treeData: getState().scenes.codingScheme.questions,
         path: action.path,

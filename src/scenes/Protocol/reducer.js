@@ -7,7 +7,7 @@ const INITIAL_STATE = {
   lockedAlert: null,
   lockedByCurrentUser: false,
   lockInfo: {},
-  alertError: null
+  alertError: ''
 }
 
 const protocolReducer = (state = INITIAL_STATE, action) => {
@@ -26,6 +26,7 @@ const protocolReducer = (state = INITIAL_STATE, action) => {
         getProtocolError: null,
         lockInfo: action.payload.lockInfo,
         lockedByCurrentUser: action.payload.lockedByCurrentUser,
+        alertError: action.payload.error.lockInfo ? action.payload.error.lockInfo : '',
         lockedAlert: Object.keys(action.payload.lockInfo).length > 0
           ? action.payload.lockedByCurrentUser
             ? null
@@ -42,7 +43,7 @@ const protocolReducer = (state = INITIAL_STATE, action) => {
     case types.RESET_ALERT_ERROR:
       return {
         ...state,
-        alertError: null
+        alertError: ''
       }
 
     case types.LOCK_PROTOCOL_FAIL:
@@ -66,7 +67,7 @@ const protocolReducer = (state = INITIAL_STATE, action) => {
     case types.SAVE_PROTOCOL_SUCCESS:
       return {
         ...state,
-        alertError: null,
+        alertError: '',
         submitting: false
       }
 

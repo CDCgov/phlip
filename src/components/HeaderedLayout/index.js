@@ -6,7 +6,7 @@ import Grid from 'material-ui/Grid'
 import AppBarHeader from './components/AppBarHeader'
 import * as actions from 'data/user/actions'
 import { withRouter } from 'react-router-dom'
-import api from 'services/api'
+import { api } from 'services/store'
 
 export class HeaderedLayout extends Component {
   constructor(props, context) {
@@ -20,13 +20,13 @@ export class HeaderedLayout extends Component {
 
   openHelpPdf = async () => {
     this.props.actions.closeMenu()
-    const data = await api.getHelpPdf()
+    const data = await api.getHelpPdf({}, { responseType: 'arraybuffer' }, {})
     const blob = new Blob([data], { type: 'application/pdf' })
     const url = URL.createObjectURL(blob)
     this.helpPdfRef.href = url
     this.helpPdfRef.download = 'PHLIP-Help-Guide.pdf'
     this.helpPdfRef.click()
-    window.URL.revokeObjectURL(url)
+    //window.URL.revokeObjectURL(url)
   }
 
   render() {

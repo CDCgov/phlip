@@ -36,7 +36,9 @@ const props = {
   direction: 'desc',
   page: 0,
   rowsPerPage: '10',
-  searchValue: ''
+  searchValue: '',
+  projectToExport: { text: '' },
+  exportError: ''
 }
 
 const setup = (otherProps = {}, initialEntries = ['/']) => {
@@ -63,8 +65,8 @@ describe('Home scene', () => {
     const wrapper = setup()
     wrapper.find(PageHeader).find('Button').at(0).simulate('click')
     wrapper.update()
-    // 3 modals. One for the form, one for the export dialog, one for the form alert
-    expect(wrapper.find('Modal')).toHaveLength(3)
+    // 3 modals. One for the form, one for the export dialog, one for the form alert, one for export fail alert
+    expect(wrapper.find('Modal')).toHaveLength(5)
   })
 
   describe('Error handling', () => {

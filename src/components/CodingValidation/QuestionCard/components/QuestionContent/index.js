@@ -9,7 +9,6 @@ import Typography from 'material-ui/Typography'
 import Container, { Row, Column } from 'components/Layout'
 import * as questionTypes from 'components/CodingValidation/constants'
 import TextFieldQuestions from '../TextFieldQuestions'
-import Divider from 'material-ui/Divider'
 import Button from 'components/Button'
 import ValidationTable from '../ValidationTable'
 
@@ -119,14 +118,23 @@ export const QuestionContent = props => {
               disabled={disableAll}
             />
           </Row>}
+          {question.isCategoryQuestion &&
+          <Row displayFlex style={{ justifyContent: 'flex-start', paddingTop: 20 }}>
+            <Button
+              onClick={onOpenAlert}
+              style={{ backgroundColor: 'white', color: 'black' }}
+              value="Apply to all tabs"
+            />
+          </Row>}
         </Row>
       </Column>
 
       {question.hint &&
-        <Row displayFlex style={{ padding: '20px 35px 0px 35px' }}>
-          <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
-          <Typography type="body1" style={{ color: '#98b3be' }}><strong>Coding Directions: </strong>{question.hint}</Typography>
-        </Row>
+      <Row displayFlex style={{ padding: '20px 35px 0px 35px' }}>
+        <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
+        <Typography type="body1" style={{ color: '#98b3be' }}><strong>Coding Directions: </strong>{question.hint}
+        </Typography>
+      </Row>
       }
 
       {isValidation && <ValidationTable
@@ -135,21 +143,6 @@ export const QuestionContent = props => {
         questionFlags={question.flags}
         userImages={userImages}
       />}
-
-      {question.isCategoryQuestion &&
-        <Fragment>
-          <Divider />
-          <Row displayFlex
-            style={{
-              ...answerPadding,
-              paddingBottom: 20,
-              paddingTop: 20,
-              paddingRight: 15,
-              justifyContent: 'flex-end'
-            }}>
-            <Button onClick={onOpenAlert} color="accent" value="Apply Answer to all categories" />
-          </Row>
-        </Fragment>}
     </Container>
   )
 }

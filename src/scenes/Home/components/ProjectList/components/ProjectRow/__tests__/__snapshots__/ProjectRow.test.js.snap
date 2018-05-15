@@ -35,7 +35,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <WithTheme
+    <withTheme(TextLink)
       aria-label="Edit project details"
       to={
         Object {
@@ -53,7 +53,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     >
       Project 1
-    </WithTheme>
+    </withTheme(TextLink)>
   </TableCell>
   <TableCell
     key="1-dateLastEdited"
@@ -91,12 +91,12 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <WithTheme
+    <withTheme(TextLink)
       aria-label="Add and edit project protocol"
       to="/project/1/protocol"
     >
       Edit
-    </WithTheme>
+    </withTheme(TextLink)>
   </TableCell>
   <TableCell
     key="1-jurisdictions"
@@ -108,7 +108,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <WithTheme
+    <withTheme(TextLink)
       aria-label="Add and edit project jurisdictions"
       id={1}
       to={
@@ -121,7 +121,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     >
       Edit
-    </WithTheme>
+    </withTheme(TextLink)>
   </TableCell>
   <TableCell
     key="1-codingScheme"
@@ -133,12 +133,12 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <WithTheme
+    <withTheme(TextLink)
       aria-label="Add and edit project coding scheme"
       to="/project/1/coding-scheme"
     >
       Edit
-    </WithTheme>
+    </withTheme(TextLink)>
   </TableCell>
   <TableCell
     key="1-code"
@@ -151,20 +151,20 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <WithTheme
+    <withTheme(TextLink)
       to={
         Object {
           "pathname": "/project/1/code",
         }
       }
     >
-      <WithTheme
+      <withTheme(Button)
         aria-label="Code project"
         listButton={true}
         raised={false}
         value="Code"
       />
-    </WithTheme>
+    </withTheme(TextLink)>
   </TableCell>
   <TableCell
     key="1-validation"
@@ -176,20 +176,20 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <WithTheme
+    <withTheme(TextLink)
       to={
         Object {
           "pathname": "/project/1/validate",
         }
       }
     >
-      <WithTheme
+      <withTheme(Button)
         aria-label="Validate project"
         listButton={true}
         raised={false}
         value="Validate"
       />
-    </WithTheme>
+    </withTheme(TextLink)>
   </TableCell>
   <TableCell
     key="1-export"

@@ -8,10 +8,11 @@ export const addJurisdiction = (jurisdiction, projectId) => ({
   projectId
 })
 
-export const updateJurisdiction = (jurisdiction, projectId) => ({
+export const updateJurisdiction = (jurisdiction, projectId, projectJurisdictionId) => ({
   type: types.UPDATE_PROJECT_JURISDICTION_REQUEST,
   jurisdiction,
-  projectId
+  projectId,
+  projectJurisdictionId
 })
 
 export const getProjectJurisdictions = projectId => ({ type: types.GET_PROJECT_JURISDICTIONS_REQUEST, projectId })
@@ -46,10 +47,35 @@ export const addPresetJurisdictionRequest = (jurisdiction, projectId) => ({
   projectId
 })
 
+export const deleteJurisdictionRequest = (jurisdictionId, projectId) => ({
+  type: types.DELETE_JURISDICTION_REQUEST,
+  jurisdictionId,
+  projectId
+})
+
 export const resetFormError = () => ({
   type: types.RESET_FORM_ERROR
 })
 
 export const showJurisdictionLoader = () => ({
   type: types.SHOW_JURISDICTION_LOADER
+})
+
+export const initializeFormValues = values => ({
+  type: types.INITIALIZE_FORM,
+  values
+})
+
+export const resetToInitial = () => ({
+  type: types.RESET_FORM_VALUES
+})
+
+export const setFormValues = (prop, value) => ({
+  type: types.SET_FORM_VALUES,
+  prop,
+  value
+})
+
+export const dismissDeleteErrorAlert = () => ({
+  type: types.DISMISS_DELETE_ERROR_ALERT
 })

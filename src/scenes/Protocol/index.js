@@ -10,6 +10,7 @@ import Alert from 'components/Alert'
 import Icon from 'components/Icon'
 import CardError from 'components/CardError'
 import Typography from 'material-ui/Typography'
+import withTracking from 'components/withTracking'
 
 import tinymce from 'tinymce/tinymce'
 import 'tinymce/themes/modern/theme'
@@ -165,7 +166,7 @@ export class Protocol extends Component {
         />
         <Alert
           actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseAlert }]}
-          open={this.props.alertError !== null}
+          open={this.props.alertError !== ''}
           title={<Fragment><Icon size={30} color="red" style={{ paddingRight: 10 }}>sentiment_very_dissatisfied</Icon>
             Uh-oh! Something went wrong.</Fragment>}>
           <Typography variant="body1">
@@ -224,9 +225,9 @@ const mapStateToProps = (state, ownProps) => ({
   lockInfo: state.scenes.protocol.lockInfo || {},
   lockedAlert: state.scenes.protocol.lockedAlert || null,
   hasLock: Object.keys(state.scenes.protocol.lockInfo).length > 0 || false,
-  alertError: state.scenes.protocol.alertError || null
+  alertError: state.scenes.protocol.alertError || ''
 })
 
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Protocol)
+export default connect(mapStateToProps, mapDispatchToProps)(withTracking(Protocol, 'Protocol'))
