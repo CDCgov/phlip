@@ -16,6 +16,7 @@ import { withTheme } from 'material-ui/styles'
 import PageLoader from 'components/PageLoader'
 import Alert from 'components/Alert'
 import ApiErrorAlert from 'components/ApiErrorAlert'
+import withTracking from 'components/withTracking'
 
 export class AddEditJurisdictions extends Component {
   static propTypes = {
@@ -197,4 +198,4 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(actions, dispatch)
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withTheme()(AddEditJurisdictions)))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withTheme()(withTracking(AddEditJurisdictions, 'Jurisdictions'))))

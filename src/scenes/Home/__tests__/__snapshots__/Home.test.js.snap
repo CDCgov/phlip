@@ -28,7 +28,7 @@ exports[`Home scene should render correctly 1`] = `
         "show": true,
         "state": Object {
           "modal": true,
-          "userDefined": null,
+          "projectDefined": null,
         },
         "text": "+ Create New Project",
       }

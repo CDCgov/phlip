@@ -82,4 +82,4 @@ Coding.propTypes = {
   categories: PropTypes.array
 }
 
-export default withCodingValidation(withTracking(Coding, 'Coding'), { ...actions, ...otherActions })
+export default withCodingValidation(withTracking(Coding, 'Code'), { ...actions, ...otherActions })

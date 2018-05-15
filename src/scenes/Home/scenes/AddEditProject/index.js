@@ -13,6 +13,7 @@ import Dropdown from 'components/Dropdown'
 import Container, { Row } from 'components/Layout'
 import DetailRow from './components/DetailRow'
 import withFormAlert from 'components/withFormAlert'
+import withTracking from 'components/withTracking'
 
 export class AddEditProject extends Component {
   static propTypes = {
@@ -208,4 +209,10 @@ const mapDispatchToProps = (dispatch) => ({
   formActions: bindActionCreators(formActions, dispatch)
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withFormAlert(AddEditProject)))
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(
+    withFormAlert(
+      withTracking(AddEditProject, 'Project Form')
+    )
+  )
+)

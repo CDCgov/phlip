@@ -117,7 +117,7 @@ export class Home extends Component {
             isLink: true,
             text: '+ Create New Project',
             path: '/project/add',
-            state: { userDefined: null, modal: true },
+            state: { projectDefined: null, modal: true },
             props: { 'aria-label': 'Create New Project' },
             show: this.props.user.role !== 'Coder'
           }} />
@@ -169,4 +169,4 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(withTracking(Home, 'Home / Project List')))
+export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(withTracking(Home, 'Home')))
