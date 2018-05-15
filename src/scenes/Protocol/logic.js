@@ -11,7 +11,7 @@ const getProtocolLogic = createLogic({
 
       try {
         lockInfo = await api.getProtocolLockInfo({}, {}, { projectId: action.projectId })
-        if (lockInfo === undefined) {
+        if (lockInfo === '') {
           lockInfo = {}
         }
       } catch (e) {

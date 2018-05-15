@@ -13,7 +13,7 @@ const getSchemeLogic = createLogic({
 
       try {
         lockInfo = await api.getCodingSchemeLockInfo({}, {}, { projectId: action.id })
-        if (lockInfo === undefined) {
+        if (lockInfo === '') {
           lockInfo = {}
         }
       } catch (e) {
