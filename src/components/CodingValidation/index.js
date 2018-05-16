@@ -21,6 +21,7 @@ import { capitalizeFirstLetter } from 'utils/formHelpers'
 import ApiErrorView from 'components/ApiErrorView'
 import ApiErrorAlert from 'components/ApiErrorAlert'
 import PageLoader from 'components/PageLoader'
+import withTracking from 'components/withTracking'
 
 const navButtonStyles = {
   height: 90,
@@ -61,7 +62,10 @@ const styles = theme => ({
   }
 })
 
-export const withCodingValidation = (WrappedComponent, actions) => {
+/**
+ * @component
+ */
+export const withCodingValidation = (WrappedComponent, actions, pageName) => {
   class CodingValidation extends WrappedComponent {
 
     static propTypes = {
@@ -506,7 +510,7 @@ export const withCodingValidation = (WrappedComponent, actions) => {
   }
 
   const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
-  return connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CodingValidation))
+  return connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withTracking(CodingValidation, pageName)))
 }
 
 withCodingValidation.propTypes = {

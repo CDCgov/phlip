@@ -6,6 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const paths = require('./paths')
 const Dotenv = require('dotenv-webpack')
+const path = require('path')
 
 module.exports = function makeConfig(env) {
   return {
@@ -62,7 +63,7 @@ module.exports = function makeConfig(env) {
             },
             {
               test: /\.jsx?$/,
-              include: /src/,
+              include: [/src/, path.join(paths.config, 'styleguide')],
               use: [
                 {
                   loader: 'babel-loader',

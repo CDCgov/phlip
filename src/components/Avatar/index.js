@@ -3,6 +3,10 @@ import PropTypes from 'prop-types'
 import { default as MuiAvatar } from 'material-ui/Avatar'
 import { withTheme } from 'material-ui/styles'
 
+/**
+ * @component
+ * Shows an circular avatar with initials or img
+ */
 export const Avatar = ({ big, avatar, initials, style, theme, cardAvatar, ...otherProps }) => {
   const styles = {
     color: 'white',
@@ -35,16 +39,43 @@ export const Avatar = ({ big, avatar, initials, style, theme, cardAvatar, ...oth
 }
 
 Avatar.propTypes = {
+  /**
+   * If true, the avatar is 45x45 px. If false, the avatar is 30x30
+   */
   big: PropTypes.bool,
+
+  /**
+   * Image src of the avatar
+   */
   avatar: PropTypes.any,
+
+  /**
+   * Initials of user, if avatar img src is undefined
+   */
   initials: PropTypes.string,
+
+  /**
+   * Can override any default style
+   */
   style: PropTypes.object,
+
+  /**
+   * Theme of project provided by material-ui
+   */
   theme: PropTypes.object,
+
+  /**
+   * If true, avatar will have a white border around it with box shadow (similar to Card)
+   */
   cardAvatar: PropTypes.bool
 }
 
 Avatar.defaultProps = {
-  big: false
+  big: false,
+  cardAvatar: false,
+  initials: '',
+  style: {},
+  theme: {}
 }
 
 export default withTheme()(Avatar)

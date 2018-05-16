@@ -5,6 +5,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   key="1"
 >
   <TableCell
+    id="1-bookmarked"
     key="1-bookmarked"
     padding="checkbox"
     style={
@@ -26,6 +27,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     </IconButton>
   </TableCell>
   <TableCell
+    id="1-name"
     key="1-name"
     padding="default"
     style={
@@ -56,6 +58,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     </withTheme(TextLink)>
   </TableCell>
   <TableCell
+    id="1-dateLastEdited"
     key="1-dateLastEdited"
     padding="default"
     style={
@@ -69,6 +72,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     10/11/2017, 12:00 AM
   </TableCell>
   <TableCell
+    id="1-lastEditedBy"
     key="1-lastEditedBy"
     padding="default"
     style={
@@ -81,6 +85,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     Kristin
   </TableCell>
   <TableCell
+    id="1-protocol"
     key="1-protocol"
     padding="default"
     style={
@@ -99,6 +104,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     </withTheme(TextLink)>
   </TableCell>
   <TableCell
+    id="1-jurisdictions"
     key="1-jurisdictions"
     padding="default"
     style={
@@ -110,7 +116,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   >
     <withTheme(TextLink)
       aria-label="Add and edit project jurisdictions"
-      id={1}
+      id="1-edit-jurisdictions"
       to={
         Object {
           "pathname": "/project/1/jurisdictions",
@@ -124,7 +130,8 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     </withTheme(TextLink)>
   </TableCell>
   <TableCell
-    key="1-codingScheme"
+    id="1-coding-scheme"
+    key="1-coding-scheme"
     padding="default"
     style={
       Object {
@@ -141,6 +148,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     </withTheme(TextLink)>
   </TableCell>
   <TableCell
+    id="1-code"
     key="1-code"
     padding="checkbox"
     style={
@@ -151,23 +159,22 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <withTheme(TextLink)
+    <withTheme(Button)
+      aria-label="Code project"
+      component={[Function]}
+      listButton={true}
+      raised={false}
       to={
         Object {
           "pathname": "/project/1/code",
         }
       }
-    >
-      <withTheme(Button)
-        aria-label="Code project"
-        listButton={true}
-        raised={false}
-        value="Code"
-      />
-    </withTheme(TextLink)>
+      value="Code"
+    />
   </TableCell>
   <TableCell
-    key="1-validation"
+    id="1-validate"
+    key="1-validate"
     padding="checkbox"
     style={
       Object {
@@ -176,22 +183,21 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <withTheme(TextLink)
+    <withTheme(Button)
+      aria-label="Validate project"
+      component={[Function]}
+      listButton={true}
+      raised={false}
       to={
         Object {
           "pathname": "/project/1/validate",
         }
       }
-    >
-      <withTheme(Button)
-        aria-label="Validate project"
-        listButton={true}
-        raised={false}
-        value="Validate"
-      />
-    </withTheme(TextLink)>
+      value="Validate"
+    />
   </TableCell>
   <TableCell
+    id="1-export"
     key="1-export"
     padding="default"
     style={

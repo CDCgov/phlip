@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CodingValidation should render Coding component correctly 1`] = `
-<CodingValidation
+<AdobeAnalyticsTracking
   actions={Object {}}
   answerErrorContent={null}
   areJurisdictionsEmpty={false}
   classes={
     Object {
-      "mainContent": "CodingValidation-mainContent-1",
-      "openNavShift": "CodingValidation-openNavShift-2",
-      "pageLoading": "CodingValidation-pageLoading-3",
+      "mainContent": "AdobeAnalyticsTracking-mainContent-1",
+      "openNavShift": "AdobeAnalyticsTracking-openNavShift-2",
+      "pageLoading": "AdobeAnalyticsTracking-pageLoading-3",
     }
   }
   currentIndex={0}

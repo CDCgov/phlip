@@ -1,7 +1,7 @@
 import { createLogic } from 'redux-logic'
 import * as types from '../../actionTypes'
 import * as questionTypes from './constants'
-import { sortList } from 'utils'
+import { commonHelpers } from 'utils'
 
 const updateUserIdLogic = createLogic({
   type: [types.ADD_QUESTION_REQUEST, types.UPDATE_QUESTION_REQUEST, types.ADD_CHILD_QUESTION_REQUEST],
@@ -72,7 +72,7 @@ const updateQuestionLogic = createLogic({
         type: types.UPDATE_QUESTION_SUCCESS,
         payload: {
           ...updatedQuestion,
-          possibleAnswers: sortList(action.question.possibleAnswers),
+          possibleAnswers: commonHelpers.sortListOfObjects(action.question.possibleAnswers),
           children: action.question.children,
           expanded: true,
           hovering: false,
@@ -134,7 +134,7 @@ const addQuestionLogic = createLogic({
         type: types.ADD_QUESTION_SUCCESS,
         payload: {
           ...question,
-          possibleAnswers: sortList(action.question.possibleAnswers),
+          possibleAnswers: commonHelpers.sortListOfObjects(action.question.possibleAnswers),
           parentId: action.question.parentId,
           positionInParent: action.question.positionInParent,
           hovering: false

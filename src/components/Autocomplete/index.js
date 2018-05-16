@@ -45,6 +45,13 @@ const renderInput = ({ value, onBlur, ref, TextFieldProps, ...other }) => {
   />)
 }
 
+/**
+ * Renders the list container for all of the suggestions
+ *
+ * @param containerProps
+ * @param children
+ * @returns {*}
+ */
 const renderSuggestionsContainer = ({ containerProps, children }) => {
   return (
     <Paper {...containerProps} style={{ zIndex: 20000000 }} square>
@@ -53,8 +60,16 @@ const renderSuggestionsContainer = ({ containerProps, children }) => {
   )
 }
 
+/**
+ * Determines if the suggestions should be rendered. Only renders if the input length >= 3
+ * @param value
+ * @returns {boolean}
+ */
 const shouldRenderSuggestions = value => value.trim().length >= 3
 
+/**
+ * Autosuggest / Autocomplete input field, renders a list of suggestions based on the input
+ */
 export const Autocomplete = props => {
   const {
     suggestions,
@@ -94,17 +109,59 @@ export const Autocomplete = props => {
 }
 
 Autocomplete.propTypes = {
+  /**
+   * List of suggestions to render
+   */
   suggestions: PropTypes.array,
+
+  /**
+   * Suggestion value (what the user has typed in)
+   */
   suggestionValue: PropTypes.string,
+
+  /**
+   * List of classes from material-ui theme provider
+   */
   classes: PropTypes.object,
+
+  /**
+   * Any props you to want to pass to the TextField component
+   */
+  InputProps: PropTypes.object,
+
+  /**
+   * Props to send to the actual input or InputProps component
+   */
   inputProps: PropTypes.object,
-  input: PropTypes.object,
-  meta: PropTypes.object,
+
+  /**
+   * Handles retrieving suggestions
+   */
   handleGetSuggestions: PropTypes.func,
+
+  /**
+   * Handles clearing the suggestions array
+   */
   handleClearSuggestions: PropTypes.func,
+
+  /**
+   * Handles when the user changes their input (suggestion value)
+   */
   handleSuggestionValueChange: PropTypes.func,
+
+  /**
+   * Handles when a user clicks on a suggestion
+   */
   handleSuggestionSelected: PropTypes.func,
+
+  /**
+   * Render each suggestion in the list
+   */
   renderSuggestion: PropTypes.func,
+
+  /**
+   * Returns the suggestion value
+   */
   getSuggestionValue: PropTypes.func
 }
 

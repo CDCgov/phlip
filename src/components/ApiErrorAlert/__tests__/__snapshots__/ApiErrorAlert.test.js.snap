@@ -23,7 +23,14 @@ exports[`ApiErrorAlert component should render correctly 1`] = `
           }
         }
       >
-        sentiment_very_dissatisfied
+        <Unknown
+          style={
+            Object {
+              "height": 30,
+              "width": 30,
+            }
+          }
+        />
       </withTheme(Icon)>
       Uh-oh! Something went wrong.
     </UNDEFINED>

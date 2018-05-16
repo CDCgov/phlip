@@ -3,3 +3,4 @@ export const createAvatarUrl = userId => {
   return constructedUrl
 }
 
+export default createAvatarUrl

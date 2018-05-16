@@ -2,7 +2,7 @@ import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import addEditJurisdictions from './scenes/AddEditJurisdictions/reducer'
 import addEditProject from './scenes/AddEditProject/reducer'
-import { sortList, updater, tableUtils, searchUtils, normalize } from 'utils'
+import { updater, commonHelpers, searchUtils, normalize } from 'utils'
 
 const INITIAL_STATE = {
   projects: {
@@ -26,8 +26,8 @@ const INITIAL_STATE = {
 }
 
 const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => {
-  const bookmarked = sortList(projects.filter(project => bookmarkList.includes(project.id)), sortBy, direction)
-  const nonBookmarked = sortList(projects.filter(project => !bookmarkList.includes(project.id)), sortBy, direction)
+  const bookmarked = commonHelpers.sortListOfObjects(projects.filter(project => bookmarkList.includes(project.id)), sortBy, direction)
+  const nonBookmarked = commonHelpers.sortListOfObjects(projects.filter(project => !bookmarkList.includes(project.id)), sortBy, direction)
   return [...bookmarked, ...nonBookmarked]
 }
 
@@ -37,8 +37,8 @@ const sortArray = (arr, state) => {
   return sortBookmarked
     ? arr.some(x => bookmarkList.includes(x.id))
       ? sortProjectsByBookmarked(arr, bookmarkList, sortBy, direction)
-      : sortList(arr, sortBy, direction)
-    : sortList(arr, sortBy, direction)
+      : commonHelpers.sortListOfObjects(arr, sortBy, direction)
+    : commonHelpers.sortListOfObjects(arr, sortBy, direction)
 }
 
 const setProjectValues = updatedProjects => (updatedArr, page, rowsPerPage) => {
@@ -48,7 +48,7 @@ const setProjectValues = updatedProjects => (updatedArr, page, rowsPerPage) => {
       byId: normalize.arrayToObject(updatedProjects),
       allIds: normalize.mapArray(updatedProjects)
     },
-    visibleProjects: normalize.mapArray(tableUtils.sliceTable(updatedArr, page, rows)),
+    visibleProjects: normalize.mapArray(commonHelpers.sliceTable(updatedArr, page, rows)),
     projectCount: updatedArr.length,
     page
   }
@@ -177,7 +177,7 @@ const mainReducer = (state, action) => {
             ...state.projects.byId,
             [updatedProject.id]: {
               ...updatedProject,
-              projectJurisdictions: sortList([...updatedProject.projectJurisdictions, action.payload.jurisdiction], 'name', 'asc')
+              projectJurisdictions: commonHelpers.sortListOfObjects([...updatedProject.projectJurisdictions, action.payload.jurisdiction], 'name', 'asc')
             }
           }
         }
@@ -192,7 +192,7 @@ const mainReducer = (state, action) => {
             ...state.projects.byId,
             [updated.id]: {
               ...updated,
-              projectJurisdictions: sortList([...updated.projectJurisdictions, ...action.payload.jurisdictions], 'name', 'asc')
+              projectJurisdictions: commonHelpers.sortListOfObjects([...updated.projectJurisdictions, ...action.payload.jurisdictions], 'name', 'asc')
             }
           }
         }
