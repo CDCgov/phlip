@@ -6,7 +6,7 @@ import {
   map,
   addNodeUnderParent,
 } from 'react-sortable-tree'
-import { sortList } from 'utils'
+import { commonHelpers } from 'utils'
 
 const INITIAL_STATE = {
   questions: [],
@@ -63,7 +63,7 @@ const getQuestionsFromOutline = (outline, questions) => {
 
 const sortQuestions = questions => {
   const sortedPossibleAnswerQuestion = questions.map(question => {
-    return { ...question, possibleAnswers: sortList(question.possibleAnswers, 'order', 'asc') }
+    return { ...question, possibleAnswers: commonHelpers.sortListOfObjects(question.possibleAnswers, 'order', 'asc') }
   })
 
   const sortedChildren = map({
@@ -71,13 +71,13 @@ const sortQuestions = questions => {
     getNodeKey,
     callback: ({ node }) => {
       if (node.children) {
-        node.children = sortList(node.children, 'positionInParent', 'asc')
+        node.children = commonHelpers.sortListOfObjects(node.children, 'positionInParent', 'asc')
       }
       return node
     },
     ignoreCollapsed: false
   })
-  return sortList(sortedChildren, 'positionInParent', 'asc')
+  return commonHelpers.sortListOfObjects(sortedChildren, 'positionInParent', 'asc')
 }
 
 export const getNodeKey = ({ node, treeIndex }) => {
@@ -98,7 +98,7 @@ const setHovering = (node, hovering) => {
 
 const sortPossibleAnswers = questions => {
   return questions.map((question) => {
-    return sortList(question.possibleAnswers, 'order', 'asc')
+    return commonHelpers.sortListOfObjects(question.possibleAnswers, 'order', 'asc')
   })
 }
 

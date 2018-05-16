@@ -1,9 +1,7 @@
 import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import addEditUserReducer from './scenes/AddEditUser/reducer'
-import { mockUsers } from '../../data/mockUsers'
-import { sortList, updater } from '../../utils'
-import { PageHeader } from 'components/PageHeader'
+import { commonHelpers, updater } from 'utils'
 
 const INITIAL_STATE = {
   users: [],
@@ -14,12 +12,8 @@ const INITIAL_STATE = {
   visibleUsers: []
 }
 
-
-const sliceUsers = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-
 const getAvailableUsers = (users, sortBy, direction, page, rowsPerPage) => {
-  const sortedUsers = sortList(users, sortBy, direction)
-  // const result = { users: sortedUsers, visibleUsers: sliceUsers(sortedUsers, page, rowsPerPage) }  //TODO: Need to change after figure out state pagination issue
+  const sortedUsers = commonHelpers.sortListOfObjects(users, sortBy, direction)
   return { users: sortedUsers, visibleUsers: sortedUsers }
 }
 
@@ -78,14 +72,14 @@ function adminReducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         rowsPerPage: action.rowsPerPage,
-        visibleUsers: sliceUsers(state.users, state.page, action.rowsPerPage)
+        visibleUsers: commonHelpers.sliceTable(state.users, state.page, action.rowsPerPage)
       }
 
     case types.UPDATE_USER_PAGE:
       return {
         ...state,
         page: action.page,
-        visibleUsers: sliceUsers(state.users, action.page, state.rowsPerPage)
+        visibleUsers: commonHelpers.sliceTable(state.users, action.page, state.rowsPerPage)
       }
 
     case 'FLUSH_STATE':

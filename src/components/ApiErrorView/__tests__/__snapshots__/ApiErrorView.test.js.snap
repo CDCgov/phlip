@@ -27,7 +27,14 @@ exports[`ApiErrorView component should render correctly 1`] = `
       color="#757575"
       size={175}
     >
-      sentiment_very_dissatisfied
+      <Component
+        style={
+          Object {
+            "height": 175,
+            "width": 175,
+          }
+        }
+      />
     </withTheme(Icon)>
   </Row>
   <Row

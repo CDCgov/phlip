@@ -1,5 +1,4 @@
-import { normalize } from 'utils'
-import sortList from 'utils/sortList'
+import { normalize, commonHelpers } from 'utils'
 import * as questionTypes from 'components/CodingValidation/constants'
 import { getTreeFromFlatData } from 'react-sortable-tree'
 import { getQuestionNumbers, sortQuestions } from 'utils/treeHelpers'
@@ -131,7 +130,7 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
 
   if (newQuestion.isCategoryQuestion) {
     const parentQuestion = state.scheme.byId[newQuestion.parentId]
-    const selectedCategories = sortList(getSelectedCategories(parentQuestion, state.userAnswers), 'order', 'asc')
+    const selectedCategories = commonHelpers.sortListOfObjects(getSelectedCategories(parentQuestion, state.userAnswers), 'order', 'asc')
     const baseQuestion = base.userAnswers[newQuestion.id]
 
     const answers = selectedCategories.reduce((answerObj, cat) => {
@@ -393,7 +392,7 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
     if (item.children) {
       item.children = item.questionType === questionTypes.CATEGORY
         ? item.isAnswered
-          ? initializeNavigator(sortList(Object.values(scheme)
+          ? initializeNavigator(commonHelpers.sortListOfObjects(Object.values(scheme)
               .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
             { ...scheme },
             codedQuestions,
@@ -434,7 +433,7 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
         item.children = []
       }
 
-      item.children = sortList([...item.children], 'order', 'asc')
+      item.children = commonHelpers.sortListOfObjects([...item.children], 'order', 'asc')
 
       if (item.children.length > 0) {
         item.completedProgress = (countAnswered / item.children.length) * 100
@@ -468,7 +467,7 @@ export const getQuestionSelectedInNav = (state, action) => {
   } else {
     q = state.scheme.byId[action.question.id]
   }
-  sortList(q.possibleAnswers, 'order', 'asc')
+  commonHelpers.sortListOfObjects(q.possibleAnswers, 'order', 'asc')
   return {
     question: q,
     index: state.scheme.order.findIndex(id => q.id === id),
@@ -520,7 +519,7 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
       questionId: questionInfo.question.id,
       projectId: action.projectId
     })
-    sortList(newSchemeQuestion.possibleAnswers, 'order', 'asc')
+    commonHelpers.sortListOfObjects(newSchemeQuestion.possibleAnswers, 'order', 'asc')
     combinedQuestion = { ...state.scheme.byId[questionInfo.question.id], ...newSchemeQuestion }
     updatedScheme = {
       ...state.scheme,
@@ -644,7 +643,7 @@ export const getSchemeAndInitialize = async (projectId, api) => {
     const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
     const questionsById = normalize.arrayToObject(questionsWithNumbers)
     const firstQuestion = questionsWithNumbers[0]
-    sortList(firstQuestion.possibleAnswers, 'order', 'asc')
+    commonHelpers.sortListOfObjects(firstQuestion.possibleAnswers, 'order', 'asc')
 
     return { order, tree, questionsById, firstQuestion, outline: scheme.outline, isSchemeEmpty: false }
 
@@ -681,7 +680,7 @@ export const getSchemeQuestionAndUpdate = async (projectId, state, question, api
     }
   }
 
-  sortList(updatedSchemeQuestion.possibleAnswers, 'order', 'asc')
+  commonHelpers.sortListOfObjects(updatedSchemeQuestion.possibleAnswers, 'order', 'asc')
 
   // Update scheme with new scheme question
   const updatedScheme = {
