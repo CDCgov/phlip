@@ -57,7 +57,7 @@ export class AvatarMenu extends PureComponent {
               style={{ cursor: 'pointer' }} />
           </Target>
           <Popper placement="bottom-end" eventsEnabled={open} style={{ pointerEvents: open ? 'auto' : 'none' }}>
-            <ClickAwayListener onClickAway={onCloseMenu}>
+            <ClickAwayListener onClickAway={open ? onCloseMenu : () => {}}>
               <Grow in={open} id="avatar-menu">
                 <Paper style={{ marginTop: 5 }}>
                   <MenuList role="menu" aria-expanded={open} id="avatar-user-menu" aria-labelledby="avatar-menu-button">
