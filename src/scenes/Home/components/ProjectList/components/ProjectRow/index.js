@@ -5,22 +5,25 @@ import { bindActionCreators } from 'redux'
 import { withTheme } from 'material-ui/styles'
 import TableRow from 'components/TableRow'
 import Button from 'components/Button'
+import Link from 'components/Link'
 import TextLink from 'components/TextLink'
 import IconButton from 'components/IconButton'
 import TableCell from 'components/TableCell'
 import * as actions from 'scenes/Home/actions'
 import moment from 'moment'
+import { commonHelpers } from 'utils'
 
 export const ProjectRow = ({ project, role, bookmarked, actions, onExport, theme }) => {
   const isCoder = role === 'Coder'
   const greyIcon = theme.palette.greyText
+  const generateKeyAndId = commonHelpers.generateUniqueProps(project.id)
 
   //const date = moment.parseZone(project.dateLastEdited).local().format('M/D/YYYY, h:mm A')
   const date = moment.utc(project.dateLastEdited).local().format('M/D/YYYY, h:mm A')
   return (
     <TableRow key={project.id}>
       <TableCell
-        key={`${project.id}-bookmarked`}
+        {...generateKeyAndId('bookmarked')}
         padding="checkbox"
         style={{ width: isCoder ? '1%' : 24, paddingLeft: 24 }}>
         <IconButton
@@ -32,7 +35,7 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport, theme
           {bookmarked ? 'bookmark' : 'bookmark_border'}
         </IconButton>
       </TableCell>
-      <TableCell key={`${project.id}-name`} style={{ paddingRight: 24, width: '15%' }}>
+      <TableCell {...generateKeyAndId('name')} style={{ paddingRight: 24, width: '15%' }}>
         <TextLink
           aria-label="Edit project details"
           to={{ pathname: `/project/edit/${project.id}`, state: { projectDefined: { ...project }, modal: true } }}>
@@ -40,50 +43,58 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport, theme
         </TextLink>
       </TableCell>
       <TableCell
-        key={`${project.id}-dateLastEdited`}
+        {...generateKeyAndId('dateLastEdited')}
         style={{ textAlign: 'unset', width: isCoder ? '15%' : 'unset', paddingRight: 24 }}>
         {date}
       </TableCell>
-      <TableCell key={`${project.id}-lastEditedBy`} style={{ width: isCoder ? '15%' : 'unset', paddingRight: 24 }}>
+      <TableCell {...generateKeyAndId('lastEditedBy')} style={{ width: isCoder ? '15%' : 'unset', paddingRight: 24 }}>
         {project.lastEditedBy}
       </TableCell>
       <TableCell
-        key={`${project.id}-protocol`}
+        {...generateKeyAndId('protocol')}
         style={{ width: isCoder ? '15%' : 'unset', textAlign: 'center', paddingRight: 24 }}>
         <TextLink aria-label="Add and edit project protocol" to={`/project/${project.id}/protocol`}>Edit</TextLink>
       </TableCell>
       {!isCoder &&
-      <TableCell key={`${project.id}-jurisdictions`} style={{ textAlign: 'center', paddingRight: 24 }}>
+      <TableCell {...generateKeyAndId('jurisdictions')} style={{ textAlign: 'center', paddingRight: 24 }}>
         <TextLink
           aria-label="Add and edit project jurisdictions"
           to={{ pathname: `/project/${project.id}/jurisdictions`, state: { modal: true } }}
-          id={project.id}>Edit</TextLink>
+          id={`${project.id}-edit-jurisdictions`}>Edit</TextLink>
       </TableCell>
       }
       {!isCoder &&
-      <TableCell key={`${project.id}-codingScheme`} style={{ textAlign: 'center', paddingRight: 24 }}>
+      <TableCell {...generateKeyAndId('coding-scheme')} style={{ textAlign: 'center', paddingRight: 24 }}>
         <TextLink
           aria-label="Add and edit project coding scheme"
           to={`/project/${project.id}/coding-scheme`}>Edit</TextLink>
       </TableCell>
       }
       <TableCell
-        key={`${project.id}-code`}
+        {...generateKeyAndId('code')}
         padding="checkbox"
         style={{ width: isCoder ? '15%' : 56, paddingRight: 6, textAlign: isCoder ? 'center' : 'unset' }}>
-        <TextLink to={{ pathname: `/project/${project.id}/code` }}>
-          <Button raised={false} value="Code" listButton aria-label="Code project" />
-        </TextLink>
+        <Button
+          raised={false}
+          value="Code"
+          listButton
+          aria-label="Code project"
+          component={Link}
+          to={{ pathname: `/project/${project.id}/code` }} />
       </TableCell>
       {!isCoder &&
-      <TableCell key={`${project.id}-validation`} padding="checkbox" style={{ width: 56, paddingLeft: 6 }}>
-        <TextLink to={{ pathname: `/project/${project.id}/validate` }}>
-          <Button raised={false} value="Validate" listButton aria-label="Validate project" />
-        </TextLink>
+      <TableCell {...generateKeyAndId('validate')} padding="checkbox" style={{ width: 56, paddingLeft: 6 }}>
+        <Button
+          raised={false}
+          value="Validate"
+          listButton
+          aria-label="Validate project"
+          component={Link}
+          to={{ pathname: `/project/${project.id}/validate` }} />
       </TableCell>
       }
       {!isCoder && <TableCell
-        key={`${project.id}-export`}
+        {...generateKeyAndId('export')}
         style={{ paddingRight: 24, width: 40, paddingLeft: 0, textAlign: 'center' }}>
         <IconButton
           color={greyIcon}
@@ -93,7 +104,7 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport, theme
           onClick={() => onExport(project)}
           id={`export-validated-${project.id}`}>
           file_download
-        </IconButton>{/*</TextLink>*/}
+        </IconButton>
       </TableCell>}
     </TableRow>
   )

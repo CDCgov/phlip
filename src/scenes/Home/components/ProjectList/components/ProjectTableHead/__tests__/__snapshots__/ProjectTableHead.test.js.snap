@@ -5,6 +5,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   key="headers"
 >
   <TableCell
+    id="bookmarked"
     key="bookmarked"
     padding="checkbox"
     style={
@@ -27,6 +28,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     </IconButton>
   </TableCell>
   <TableCell
+    id="name"
     key="name"
     padding="default"
     style={
@@ -56,6 +58,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     </withStyles(Tooltip)>
   </TableCell>
   <TableCell
+    id="dateLastEdited"
     key="dateLastEdited"
     padding="default"
     style={
@@ -84,6 +87,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     </withStyles(Tooltip)>
   </TableCell>
   <TableCell
+    id="lastEditedBy"
     key="lastEditedBy"
     padding="default"
     style={
@@ -112,6 +116,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     </withStyles(Tooltip)>
   </TableCell>
   <TableCell
+    id="protocol"
     key="protocol"
     padding="default"
     style={
@@ -124,6 +129,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     Protocol
   </TableCell>
   <TableCell
+    id="jurisdictions"
     key="jurisdictions"
     padding="default"
     style={
@@ -136,6 +142,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     Jurisdictions
   </TableCell>
   <TableCell
+    id="codingScheme"
     key="codingScheme"
     padding="default"
     style={
@@ -148,6 +155,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     Coding Scheme
   </TableCell>
   <TableCell
+    id="code"
     key="code"
     padding="checkbox"
     style={
@@ -158,6 +166,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     }
   />
   <TableCell
+    id="validate"
     key="validate"
     padding="checkbox"
     style={
@@ -168,6 +177,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     }
   />
   <TableCell
+    id="export"
     key="export"
     padding="default"
     style={

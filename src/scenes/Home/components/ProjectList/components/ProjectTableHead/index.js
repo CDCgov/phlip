@@ -8,14 +8,19 @@ import Tooltip from 'components/Tooltip'
 
 const columns = [
   { key: 'name', label: 'Name', hasSort: true, style: { paddingRight: 24, width: '15%' } },
-  { key: 'dateLastEdited', label: 'Date Last Edited', hasSort: true, style: { paddingRight: 24 }},
-  { key: 'lastEditedBy', label: 'Last Edited By', hasSort: true, style: { paddingRight: 24 }},
+  { key: 'dateLastEdited', label: 'Date Last Edited', hasSort: true, style: { paddingRight: 24 } },
+  { key: 'lastEditedBy', label: 'Last Edited By', hasSort: true, style: { paddingRight: 24 } },
   { key: 'protocol', label: 'Protocol', hasSort: false, style: { textAlign: 'center', paddingRight: 24 } },
   { key: 'jurisdictions', label: 'Jurisdictions', hasSort: false, style: { textAlign: 'center', paddingRight: 24 } },
   { key: 'codingScheme', label: 'Coding Scheme', hasSort: false, style: { textAlign: 'center', paddingRight: 24 } },
   { key: 'code', label: '', hasSort: false, padding: 'checkbox', style: { width: 56, paddingRight: 6 } },
   { key: 'validate', label: '', hasSort: false, padding: 'checkbox', style: { width: 56, paddingLeft: 6 } },
-  { key: 'export', label: 'Export', hasSort: false, style: { paddingRight: 24, paddingLeft: 0, textAlign: 'center', width: 40, width: '1%' } }
+  {
+    key: 'export',
+    label: 'Export',
+    hasSort: false,
+    style: { paddingRight: 24, paddingLeft: 0, textAlign: 'center', width: 40, width: '1%' }
+  }
 ]
 
 const hiddenCols = [
@@ -30,7 +35,7 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
 
   return (
     <TableRow key="headers">
-      <TableCell key="bookmarked" padding="checkbox" style={{ width: 24, paddingLeft: 24 }}>
+      <TableCell key="bookmarked" padding="checkbox" id="bookmarked" style={{ width: 24, paddingLeft: 24 }}>
         <IconButton
           id="sort-bookmarked"
           color="#757575"
@@ -43,7 +48,7 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
       </TableCell>
 
       {visible.map(c => (
-        <TableCell key={c.key} padding={c.padding || 'default'} style={{ ...c.style }}>
+        <TableCell key={c.key} id={c.key} padding={c.padding || 'default'} style={{ ...c.style }}>
           {c.hasSort ? (
             <Tooltip
               text={`Sort by ${c.label}`}

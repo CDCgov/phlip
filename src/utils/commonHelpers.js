@@ -22,4 +22,14 @@ export const sortListOfObjects = (list, sortBy, direction) => {
   )
 }
 
-export default { sliceTable, sortListOfObjects }
+/**
+ * Generates a key and ID as props for a table
+ * @param id
+ * @returns {function(*): {id: string, key: string}}
+ */
+const generateUniqueProps = id => header => ({
+  id: `${id}-${header}`,
+  key: `${id}-${header}`
+})
+
+export default { sliceTable, sortListOfObjects, generateUniqueProps }
