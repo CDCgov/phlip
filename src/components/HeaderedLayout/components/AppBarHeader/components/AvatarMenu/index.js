@@ -16,27 +16,43 @@ export class AvatarMenu extends PureComponent {
     super(props, context)
     this.firstMenuItem = null
     this.secondMenuItem = null
+    this.avatarRef = null
   }
 
   setFirstMenuItem = element => {
     this.firstMenuItem = findDOMNode(element)
+    if (this.props.role === 'Admin' && this.props.open) {
+      this.firstMenuItem.focus()
+    }
   }
 
   setSecondMenuItem = element => {
     this.secondMenuItem = findDOMNode(element)
+    if (this.props.role !== 'Admin' && this.props.open) {
+      this.secondMenuItem.focus()
+    }
   }
 
   onKeyPressMenu = e => {
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault()
       this.props.onToggleMenu()
-      this.props.role === 'Admin' ? this.firstMenuItem.focus() : this.secondMenuItem.focus()
     }
+  }
+
+  handleClose = event => {
+    if (!this.avatarRef.contains(event.target)) {
+      this.props.onCloseMenu()
+    }
+  }
+
+  setAvatarRef = element => {
+    this.avatarRef = findDOMNode(element)
   }
 
   render() {
     const {
-      role, initials, userName, open, onCloseMenu, onLogoutUser, onOpenAdminPage, onToggleMenu, onOpenHelpPdf, avatar
+      role, initials, userName, open, onLogoutUser, onOpenAdminPage, onToggleMenu, onOpenHelpPdf, avatar
     } = this.props
 
     return (
@@ -53,17 +69,18 @@ export class AvatarMenu extends PureComponent {
               aria-haspopup={true}
               aria-owns={open ? 'avatar-user-menu' : null}
               avatar={avatar}
+              ref={this.setAvatarRef}
               userName={userName}
               initials={initials ? initials : ''}
               style={{ cursor: 'pointer' }} />
           </Target>
           <Popper placement="bottom-end" eventsEnabled={open} style={{ pointerEvents: open ? 'auto' : 'none' }}>
-            <ClickAwayListener onClickAway={open ? onCloseMenu : () => {}}>
+            {open && <ClickAwayListener onClickAway={this.handleClose}>
               <Grow in={open} id="avatar-menu">
                 <Paper style={{ marginTop: 5 }}>
                   <MenuList role="menu" aria-expanded={open} id="avatar-user-menu" aria-labelledby="avatar-menu-button">
                     {role === 'Admin' &&
-                    <MenuItem onClick={onOpenAdminPage} selected={false} key="admin-menu" ref={this.setFirstMenuItem}>
+                    <MenuItem onClick={onOpenAdminPage} key="admin-menu" ref={this.setFirstMenuItem}>
                       <ListItemIcon>
                         <Icon color="accent">person</Icon>
                       </ListItemIcon>
@@ -84,7 +101,7 @@ export class AvatarMenu extends PureComponent {
                   </MenuList>
                 </Paper>
               </Grow>
-            </ClickAwayListener>
+            </ClickAwayListener>}
           </Popper>
         </Manager>
       </Grid>
