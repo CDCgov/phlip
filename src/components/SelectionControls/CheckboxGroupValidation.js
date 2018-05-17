@@ -17,8 +17,12 @@ const styles = theme => ({
 export const CheckboxGroupValidation = props => {
   const {
     choices, userAnswers, onChange, onChangePincite, pincites,
-    classes, mergedUserQuestions, disableAll, userImages, theme, onBlurText
+    classes, mergedUserQuestions, disableAll, userImages, theme
   } = props
+
+  const userImageObj = userImages[userAnswers.validatedBy.userId] !== undefined
+    ? userImages[userAnswers.validatedBy.userId]
+    : userAnswers.validatedBy
 
   return (
     <FormControl component="fieldset">
@@ -28,9 +32,7 @@ export const CheckboxGroupValidation = props => {
             <FormControlLabel
               checked={userAnswers.answers.hasOwnProperty(choice.id)}
               onChange={onChange(choice.id)}
-              control={
-                <Checkbox classes={{ checked: classes.checked }} />
-              }
+              control={<Checkbox classes={{ checked: classes.checked }} />}
               disabled={disableAll}
               label={choice.text}
             />
@@ -38,6 +40,7 @@ export const CheckboxGroupValidation = props => {
               answer.schemeAnswerId === choice.id &&
               <ValidationAvatar
                 key={`user-answer-${index}`}
+                userName={`${userImages[answer.userId].firstName} ${userImages[answer.userId].lastName}`}
                 avatar={userImages[answer.userId] !== undefined ? userImages[answer.userId].avatar : ''}
                 answer={answer} />
             ))}
@@ -45,27 +48,21 @@ export const CheckboxGroupValidation = props => {
             && mergedUserQuestions !== null
             && <Avatar
               cardAvatar
-              avatar={userAnswers.validatedBy.userId
-                ? userImages[userAnswers.validatedBy.userId] !== undefined
-                  ? userImages[userAnswers.validatedBy.userId].avatar
-                  : userAnswers.validatedBy.avatar
-                : userAnswers.validatedBy.avatar}
+              avatar={userImageObj.avatar}
+              userName={`${userImageObj.firstName} ${userImageObj.lastName}`}
               key={mergedUserQuestions.answers.length + 1}
               style={{
                 backgroundColor: 'white',
                 color: theme.palette.secondary.main,
                 borderColor: theme.palette.secondary.main
               }}
-              initials={userAnswers.validatedBy === null
-                ? ''
-                : getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
+              initials={getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
             />}
             {userAnswers.answers.hasOwnProperty(choice.id) && pincites &&
             <SimpleInput
               key={`${choice.id}-pincite`} placeholder="Enter pincite"
               value={userAnswers.answers[choice.id].pincite}
               multiline={false}
-              //onBlur={onBlurText}
               style={{
                 width: 300,
                 marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))

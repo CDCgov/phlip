@@ -7,7 +7,7 @@ import { withTheme } from 'material-ui/styles'
  * @component
  * Shows an circular avatar with initials or img
  */
-export const Avatar = ({ big, avatar, initials, style, theme, cardAvatar, ...otherProps }) => {
+export const Avatar = ({ big, avatar, initials, style, theme, cardAvatar, userName, ...otherProps }) => {
   const styles = {
     color: 'white',
     backgroundColor: theme.palette.secondary.main,
@@ -32,7 +32,7 @@ export const Avatar = ({ big, avatar, initials, style, theme, cardAvatar, ...oth
   return avatar
     ? <MuiAvatar
       style={cardAvatar ? cardAvatarStyles : styles}
-      alt="user-avatar"
+      alt={`${userName} avatar`}
       {...otherProps}
       src={avatar} />
     : <MuiAvatar style={cardAvatar ? cardAvatarStyles : styles} {...otherProps}>{initials ? initials : ''}</MuiAvatar>

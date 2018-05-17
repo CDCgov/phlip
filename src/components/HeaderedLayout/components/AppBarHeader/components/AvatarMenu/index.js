@@ -36,7 +36,7 @@ export class AvatarMenu extends PureComponent {
 
   render() {
     const {
-      role, initials, open, onCloseMenu, onLogoutUser, onOpenAdminPage, onToggleMenu, onOpenHelpPdf, avatar
+      role, initials, userName, open, onCloseMenu, onLogoutUser, onOpenAdminPage, onToggleMenu, onOpenHelpPdf, avatar
     } = this.props
 
     return (
@@ -53,6 +53,7 @@ export class AvatarMenu extends PureComponent {
               aria-haspopup={true}
               aria-owns={open ? 'avatar-user-menu' : null}
               avatar={avatar}
+              userName={userName}
               initials={initials ? initials : ''}
               style={{ cursor: 'pointer' }} />
           </Target>

@@ -25,7 +25,7 @@ exports[`Admin Scene it should render correctly 1`] = `
   />
   <withStyles(Divider) />
   <UserList
-    count={6}
+    count={0}
     direction="asc"
     handlePagechange={[Function]}
     handleRequestSort={[Function]}

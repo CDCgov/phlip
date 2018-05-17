@@ -6,10 +6,9 @@ import theme from 'services/theme'
 import { Admin } from '../'
 import { UserList } from '../components/UserList'
 import { PageHeader } from 'components/PageHeader'
-import { mockUsers } from 'data/mockUsers'
 
 const props = {
-  users: mockUsers,
+  users: [],
   actions: {
     getUsersRequest: jest.fn()
   },
@@ -39,12 +38,4 @@ describe('Admin Scene', () => {
     expect(wrapper.find(UserList)).toHaveLength(1)
     expect(wrapper.find(PageHeader)).toHaveLength(1)
   })
-
-  // test('should open the Add/Edit user modal when Add New User is clicked', () => {
-  //   let wrapper = setup()
-  //   wrapper.find(PageHeader).find('Button').at(0).simulate('click')
-  //   wrapper.update()
-  //   expect(wrapper.find('Modal')).toHaveLength(1)
-  // })
-
 })

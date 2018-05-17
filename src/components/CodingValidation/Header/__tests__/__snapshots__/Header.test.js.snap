@@ -150,20 +150,18 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       displayFlex={false}
       flex={true}
     />
-    <withTheme(TextLink)
-      to="/project/1/protocol"
-    >
-      <withTheme(Button)
-        aria-label="View and edit protocol"
-        style={
-          Object {
-            "backgroundColor": "white",
-            "color": "black",
-          }
+    <withTheme(Button)
+      aria-label="View and edit protocol"
+      component={[Function]}
+      style={
+        Object {
+          "backgroundColor": "white",
+          "color": "black",
         }
-        value="Protocol"
-      />
-    </withTheme(TextLink)>
+      }
+      to="/project/1/protocol"
+      value="Protocol"
+    />
   </React.Fragment>
 </Container>
 `;

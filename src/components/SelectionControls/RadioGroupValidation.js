@@ -17,8 +17,12 @@ const styles = theme => ({
 export const RadioGroup = props => {
   const {
     choices, userAnswers, onChange, onChangePincite, classes,
-    mergedUserQuestions, disableAll, userImages, theme, onBlurText
+    mergedUserQuestions, disableAll, userImages, theme
   } = props
+
+  const userImageObj = userImages[userAnswers.validatedBy.userId] !== undefined
+    ? userImages[userAnswers.validatedBy.userId]
+    : userAnswers.validatedBy
 
   return (
     <FormControl component="fieldset">
@@ -28,9 +32,7 @@ export const RadioGroup = props => {
             <FormControlLabel
               onChange={onChange(choice.id)}
               checked={userAnswers.answers.hasOwnProperty(choice.id)}
-              control={
-                <Radio classes={{ checked: classes.checked }} />
-              }
+              control={<Radio classes={{ checked: classes.checked }} />}
               disabled={disableAll}
               label={choice.text}
             />
@@ -46,20 +48,15 @@ export const RadioGroup = props => {
             && mergedUserQuestions !== null
             && <Avatar
               cardAvatar
-              avatar={userAnswers.validatedBy.userId
-                ? userImages[userAnswers.validatedBy.userId] !== undefined
-                  ? userImages[userAnswers.validatedBy.userId].avatar
-                  : userAnswers.validatedBy.avatar
-                : userAnswers.validatedBy.avatar} //this is not good
+              avatar={userImageObj.avatar}
+              userName={`${userImageObj.firstName} ${userImageObj.lastName}`}
               style={{
                 backgroundColor: 'white',
                 color: theme.palette.secondary.main,
                 borderColor: theme.palette.secondary.main
               }}
               key={mergedUserQuestions.answers.length + 1}
-              initials={userAnswers.validatedBy === null
-                ? ''
-                : getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
+              initials={getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
             />}
             {userAnswers.answers.hasOwnProperty(choice.id) &&
             <SimpleInput
@@ -73,7 +70,6 @@ export const RadioGroup = props => {
               disabled={disableAll}
               placeholder="Enter pincite"
               multiline={false}
-              //onBlur={onBlurText}
               value={userAnswers.answers[choice.id].pincite}
               onChange={onChangePincite(choice.id, 'pincite')}
             />}

@@ -96,7 +96,7 @@ export class ValidationAvatar extends Component {
             action={
               <Button
                 key="close-snackbar"
-                color="accent"
+                style={{ color: 'white' }}
                 size="small"
                 onClick={this.handleCloseSnackbar}>OK</Button>
             }
@@ -110,6 +110,7 @@ export class ValidationAvatar extends Component {
             initials={getInitials(this.props.answer.firstName, this.props.answer.lastName)}
             onMouseOver={this.handleOpen}
             onMouseOut={this.handleClose}
+            userName={`${this.props.answer.firstName} ${this.props.answer.lastName}`}
           />
         </CopyToClipboard>
         <Popover

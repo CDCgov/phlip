@@ -198,6 +198,7 @@ export class AddEditUser extends Component {
                       <Avatar
                         cardAvatar
                         style={{ width: '65px', height: '65px' }}
+                        userName={`${this.state.selectedUser.firstName} ${this.state.selectedUser.lastName}`}
                         avatar={this.props.avatar} /></TextLink>
                   </Tooltip>
                   : <ReactFileReader base64={true} fileTypes={['.jpg', 'png']} handleFiles={this.openAvatarForm}>

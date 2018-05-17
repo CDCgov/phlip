@@ -28,8 +28,12 @@ const styles = theme => ({
 const InputBox = props => {
   const {
     value, onChange, name, rows, answerId, classes, validator, theme,
-    isValidation, userImages, style, onBlur, ...otherProps
+    isValidation, userImages, style, ...otherProps
   } = props
+
+  const userImageObj = userImages[validator.userId] !== undefined
+    ? userImages[validator.userId]
+    : validator
 
   const textValues = value === undefined ? { textAnswer: '', pincite: '' } : value
   return (
@@ -38,12 +42,8 @@ const InputBox = props => {
         {isValidation &&
         <Avatar
           cardAvatar
-          avatar={validator.userId
-            ? userImages[validator.userId] !== undefined
-              ? userImages[validator.userId].avatar
-              : validator.avatar
-            : validator.avatar
-          }
+          avatar={userImageObj.avatar}
+          userName={`${userImageObj.firstName} ${userImageObj.lastName}`}
           style={{
             marginRight: 15,
             backgroundColor: 'white',
@@ -66,7 +66,6 @@ const InputBox = props => {
               input: classes.textFieldInput
             }
           }}
-          //onBlur={onBlur}
           {...otherProps}
         />
       </Row>
@@ -80,7 +79,6 @@ const InputBox = props => {
           onChange={onChange(answerId, 'pincite')}
           multiline={false}
           shrinkLabel
-          //onBlur={onBlur}
           style={{ flex: 1 }}
         />
       </div>}

@@ -51,8 +51,6 @@ export const QuestionContent = props => {
             userAnswers={userAnswers}
             onChangePincite={onChangeTextAnswer}
             mergedUserQuestions={mergedUserQuestions}
-            currentUserInitials={currentUserInitials}
-            onBlurText={onBlurText}
             disableAll={disableAll}
             userImages={userImages}
           />
@@ -68,9 +66,7 @@ export const QuestionContent = props => {
             userAnswers={userAnswers}
             onChangePincite={onChangeTextAnswer}
             mergedUserQuestions={mergedUserQuestions}
-            currentUserInitials={currentUserInitials}
             disableAll={disableAll}
-            onBlurText={onBlurText}
             userImages={userImages}
           />
         </Row>}
@@ -97,8 +93,6 @@ export const QuestionContent = props => {
           onChange={onChangeTextAnswer}
           userImages={userImages}
           answerId={question.possibleAnswers[0].id}
-          onBlurText={onBlurText}
-          currentUserInitials={currentUserInitials}
           disabled={disableAll}
         />
         }
@@ -113,7 +107,6 @@ export const QuestionContent = props => {
               placeholder="Enter comment"
               value={comment}
               rowsMax={3}
-              onBlur={onBlurText}
               label="Comment"
               disabled={disableAll}
             />

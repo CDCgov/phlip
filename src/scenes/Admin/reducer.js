@@ -19,7 +19,6 @@ const getAvailableUsers = (users, sortBy, direction, page, rowsPerPage) => {
 
 function adminReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
-
     case types.GET_USERS_SUCCESS:
       return {
         ...state,

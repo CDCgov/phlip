@@ -6,7 +6,7 @@ import Grid from 'material-ui/Grid'
 import AppBarHeader from './components/AppBarHeader'
 import * as actions from 'data/user/actions'
 import { withRouter } from 'react-router-dom'
-import { api } from 'services/store'
+import ApiErrorAlert from 'components/ApiErrorAlert'
 
 export class HeaderedLayout extends Component {
   constructor(props, context) {
@@ -14,19 +14,30 @@ export class HeaderedLayout extends Component {
     this.helpPdfRef = null
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.pdfFile === null && nextProps.pdfFile !== null) {
+      this.openHelpPdf(nextProps.pdfFile)
+    }
+  }
+
   handleSetPdfRef = element => {
     this.helpPdfRef = element
   }
 
-  openHelpPdf = async () => {
-    this.props.actions.closeMenu()
-    const data = await api.getHelpPdf({}, { responseType: 'arraybuffer' }, {})
-    const blob = new Blob([data], { type: 'application/pdf' })
-    const url = URL.createObjectURL(blob)
+  handleDownloadPdf = () => {
+    this.props.actions.downloadPdfRequest()
+  }
+
+  openHelpPdf = pdfFile => {
+    const url = URL.createObjectURL(pdfFile)
     this.helpPdfRef.href = url
     this.helpPdfRef.download = 'PHLIP-Help-Guide.pdf'
     this.helpPdfRef.click()
-    //window.URL.revokeObjectURL(url)
+    this.props.actions.clearPdfFile()
+  }
+
+  closeDownloadErrorAlert = () => {
+    this.props.actions.resetDownloadError()
   }
 
   render() {
@@ -46,9 +57,14 @@ export class HeaderedLayout extends Component {
           handleToggleMenu={actions.toggleMenu}
           handleOpenAdminPage={() => { history.push('/admin'); actions.closeMenu() }}
           handleCloseMenu={actions.closeMenu}
-          handleOpenHelpPdf={this.openHelpPdf}
+          handleOpenHelpPdf={this.handleDownloadPdf}
         />
         <Grid container spacing={0} style={mainStyles}>
+          <ApiErrorAlert
+            content={this.props.pdfError}
+            open={this.props.pdfError !== ''}
+            onCloseAlert={this.closeDownloadErrorAlert}
+          />
           {children}
         </Grid>
         <a style={{ display: 'none' }} ref={this.handleSetPdfRef} />
@@ -68,9 +84,11 @@ HeaderedLayout.defaultProps = {
   padding: true
 }
 
-const mapStateToProps = (state, props) => ({
+const mapStateToProps = state => ({
   user: state.data.user.currentUser || { firstName: '', lastName: '', role: '' },
-  open: state.data.user.menuOpen || false
+  open: state.data.user.menuOpen || false,
+  pdfError: state.data.user.pdfError || '',
+  pdfFile: state.data.user.pdfFile || null
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
