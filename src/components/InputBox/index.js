@@ -31,9 +31,11 @@ const InputBox = props => {
     isValidation, userImages, style, ...otherProps
   } = props
 
-  const userImageObj = userImages[validator.userId] !== undefined
-    ? userImages[validator.userId]
-    : validator
+  const userImageObj = userImages
+    ? userImages[validator.userId] !== undefined
+      ? userImages[validator.userId]
+      : validator
+    : {}
 
   const textValues = value === undefined ? { textAnswer: '', pincite: '' } : value
   return (
@@ -89,6 +91,10 @@ const InputBox = props => {
 InputBox.propTypes = {
   onChange: PropTypes.func,
   name: PropTypes.string
+}
+
+InputBox.defaultProps = {
+  userImages: undefined
 }
 
 export default withStyles(styles, { withTheme: true })(InputBox)

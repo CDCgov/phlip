@@ -20,6 +20,10 @@ const muiNavStyles = {
   }
 }
 
+/**
+ * @component
+ * Navigator
+ */
 export class Navigator extends Component {
   constructor(props, context) {
     super(props, context)
@@ -98,9 +102,8 @@ export class Navigator extends Component {
       && tree[params.index] !== undefined
       && (
         <div
-          style={params.style}
+          style={{ ...params.style, outline: 'none' }}
           key={`tree-${params.index}`}
-          tabIndex={0}
           role="row"
           aria-rowindex={params.index}
           aria-rowcount={tree.length}>

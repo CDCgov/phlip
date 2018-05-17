@@ -20,6 +20,7 @@ exports[`HeaderedLayout it should render correctly 1`] = `
   />
   <withStyles(GridWrapper)
     container={true}
+    role="main"
     spacing={0}
     style={
       Object {

@@ -20,9 +20,11 @@ export const CheckboxGroupValidation = props => {
     classes, mergedUserQuestions, disableAll, userImages, theme
   } = props
 
-  const userImageObj = userImages[userAnswers.validatedBy.userId] !== undefined
-    ? userImages[userAnswers.validatedBy.userId]
-    : userAnswers.validatedBy
+  const userImageObj = userImages
+    ? userImages[userAnswers.validatedBy.userId] !== undefined
+      ? userImages[userAnswers.validatedBy.userId]
+      : userAnswers.validatedBy
+    : {}
 
   return (
     <FormControl component="fieldset">
@@ -79,7 +81,8 @@ export const CheckboxGroupValidation = props => {
 }
 
 CheckboxGroupValidation.defaultProps = {
-  pincites: true
+  pincites: true,
+  userImages: undefined
 }
 
 CheckboxGroupValidation.propTypes = {

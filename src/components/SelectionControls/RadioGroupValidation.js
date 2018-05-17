@@ -20,9 +20,11 @@ export const RadioGroup = props => {
     mergedUserQuestions, disableAll, userImages, theme
   } = props
 
-  const userImageObj = userImages[userAnswers.validatedBy.userId] !== undefined
-    ? userImages[userAnswers.validatedBy.userId]
-    : userAnswers.validatedBy
+  const userImageObj = userImages
+    ? userImages[userAnswers.validatedBy.userId] !== undefined
+      ? userImages[userAnswers.validatedBy.userId]
+      : userAnswers.validatedBy
+    : {}
 
   return (
     <FormControl component="fieldset">
@@ -81,5 +83,9 @@ export const RadioGroup = props => {
 }
 
 RadioGroup.propTypes = {}
+
+RadioGroup.defaultProps = {
+  userImages: undefined
+}
 
 export default withStyles(styles, { withTheme: true })(RadioGroup)

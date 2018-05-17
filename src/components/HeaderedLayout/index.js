@@ -59,7 +59,7 @@ export class HeaderedLayout extends Component {
           handleCloseMenu={actions.closeMenu}
           handleOpenHelpPdf={this.handleDownloadPdf}
         />
-        <Grid container spacing={0} style={mainStyles}>
+        <Grid container spacing={0} style={mainStyles} role="main">
           <ApiErrorAlert
             content={this.props.pdfError}
             open={this.props.pdfError !== ''}
