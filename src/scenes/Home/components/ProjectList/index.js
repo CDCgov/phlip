@@ -23,7 +23,9 @@ export const ProjectList = props => {
           />
         </Row>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <Table style={{ borderCollapse: 'separate', display: 'block', tableLayout: 'auto', overflow: 'unset' }}>
+          <Table
+            style={{ borderCollapse: 'separate', display: 'block', tableLayout: 'auto', overflow: 'unset' }}
+            summary="List of projects">
             <TableHead>
               <ProjectTableHead
                 role={user.role}
@@ -35,25 +37,23 @@ export const ProjectList = props => {
               />
             </TableHead>
             <TableBody>
-              {projectIds.map(id => (
-                <ProjectRow key={id} id={id} onExport={handleExport} />
-              ))}
+              {projectIds.map(id => (<ProjectRow key={id} id={id} onExport={handleExport} />))}
             </TableBody>
           </Table>
-        <div style={{ display: 'flex', flex: 1, paddingBottom: '50px' }} />
-        <Table>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                count={projectCount}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={(event, page) => handlePageChange(page)}
-                onChangeRowsPerPage={(event) => handleRowsChange(event.target.value)}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
+          <div style={{ display: 'flex', flex: 1, paddingBottom: '50px' }} />
+          <Table>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  count={projectCount}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onChangePage={(event, page) => handlePageChange(page)}
+                  onChangeRowsPerPage={(event) => handleRowsChange(event.target.value)}
+                />
+              </TableRow>
+            </TableFooter>
+          </Table>
         </div>
       </Column>
     </Container>
