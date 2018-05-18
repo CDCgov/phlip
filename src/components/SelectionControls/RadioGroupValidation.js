@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Radio from 'material-ui/Radio'
-import { FormControlLabel, FormControl, FormGroup } from 'material-ui/Form'
+import { FormControlLabel, FormControl, FormGroup, FormLabel } from 'material-ui/Form'
 import { withStyles } from 'material-ui/styles'
 import SimpleInput from 'components/SimpleInput'
 import { getInitials } from 'utils/normalize'
@@ -17,7 +17,7 @@ const styles = theme => ({
 export const RadioGroup = props => {
   const {
     choices, userAnswers, onChange, onChangePincite, classes,
-    mergedUserQuestions, disableAll, userImages, theme
+    mergedUserQuestions, disableAll, userImages, theme, question
   } = props
 
   const userImageObj = userImages
@@ -28,15 +28,18 @@ export const RadioGroup = props => {
 
   return (
     <FormControl component="fieldset">
+      <FormLabel component="legend" style={{ display: 'none' }} id="question_text">{question.text}</FormLabel>
       <FormGroup>
         {choices.map(choice => (
           <div key={choice.id} style={{ display: 'flex', alignItems: 'center' }}>
             <FormControlLabel
               onChange={onChange(choice.id)}
               checked={userAnswers.answers.hasOwnProperty(choice.id)}
-              control={<Radio classes={{ checked: classes.checked }} />}
+              htmlFor={choice.id}
+              control={<Radio classes={{ checked: classes.checked }} inputProps={{ id: choice.id, 'aria-describedby': 'question_text' }} />}
               disabled={disableAll}
               label={choice.text}
+              aria-label={choice.text}
             />
             {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
               answer.schemeAnswerId === choice.id &&
@@ -69,6 +72,7 @@ export const RadioGroup = props => {
                   ? '15px'
                   : '0px'
               }}
+              aria-label="pincite"
               disabled={disableAll}
               placeholder="Enter pincite"
               multiline={false}
@@ -82,7 +86,9 @@ export const RadioGroup = props => {
   )
 }
 
-RadioGroup.propTypes = {}
+RadioGroup.propTypes = {
+
+}
 
 RadioGroup.defaultProps = {
   userImages: undefined

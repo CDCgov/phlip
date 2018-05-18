@@ -10,7 +10,7 @@ import ValidationAvatar from 'components/ValidationAvatar'
 export const TextFieldQuestions = props => {
   const {
     mergedUserQuestions, validator, validatorAnswer,
-    onChange, answerId, style, userImages, disabled
+    onChange, answerId, style, userImages, disabled, question
   } = props
 
   return (
@@ -38,6 +38,7 @@ export const TextFieldQuestions = props => {
         name="text-answer"
         onChange={onChange}
         placeholder="Enter answer"
+        question={question}
         style={{ paddingLeft: style.paddingLeft }}
         validator={validator}
         value={validatorAnswer}

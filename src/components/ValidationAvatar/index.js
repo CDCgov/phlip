@@ -7,6 +7,7 @@ import { getInitials } from 'utils/normalize'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import Snackbar from 'components/Snackbar'
 import Button from 'material-ui/Button'
+import { findDOMNode } from 'react-dom'
 
 const styles = theme => ({
   paper: {
@@ -55,10 +56,7 @@ export class ValidationAvatar extends Component {
   }
 
   handleOpen = event => {
-    this.setState({
-      anchorEl: event.target,
-      open: true
-    })
+    this.setState({ anchorEl: event.target, open: true, event })
   }
 
   handleClose = () => {
@@ -69,22 +67,20 @@ export class ValidationAvatar extends Component {
   }
 
   handlePinciteCopy = () => {
-    this.setState({
-      copied: true
-    })
+    this.setState({ copied: true })
     setTimeout(this.handleCloseSnackbar, 3500)
   }
 
   handleCloseSnackbar = () => {
-    this.setState({
-      copied: false
-    })
+    this.setState({ copied: false })
     clearTimeout()
   }
 
   hasPincite = pincite => pincite !== null ? pincite.length > 0 : false
 
   render() {
+    const userName = `${this.props.answer.firstName} ${this.props.answer.lastName}`
+
     return (
       <Fragment>
         {this.hasPincite(this.props.answer.pincite)
@@ -111,7 +107,9 @@ export class ValidationAvatar extends Component {
             initials={getInitials(this.props.answer.firstName, this.props.answer.lastName)}
             onMouseOver={this.handleOpen}
             onMouseOut={this.handleClose}
-            userName={`${this.props.answer.firstName} ${this.props.answer.lastName}`}
+            aria-label={`${userName}'s pincite: ${this.props.answer.pincite}`}
+            aria-haspopup={true}
+            userName={userName}
           />
         </CopyToClipboard>
         <Popover
@@ -130,11 +128,10 @@ export class ValidationAvatar extends Component {
               maxHeight: 400,
               maxWidth: '60%'
             },
+            tabIndex: -1,
             elevation: 0
           }}
-          classes={{
-            paper: this.props.classes.paper
-          }}
+          classes={{ paper: this.props.classes.paper }}
           anchorOrigin={{
             vertical: 'top',
             horizontal: 'center'
@@ -144,7 +141,7 @@ export class ValidationAvatar extends Component {
             horizontal: 'center'
           }}>
           <Typography align="center" style={{ color: '#adac9f', fontWeight: '400', paddingBottom: 8 }}>
-            {`${this.props.answer.firstName} ${this.props.answer.lastName}`}
+            {userName}
           </Typography>
           <Typography align="center" style={{ wordBreak: 'break-word' }}>{this.props.answer.pincite}</Typography>
         </Popover>

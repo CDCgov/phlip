@@ -27,7 +27,7 @@ const styles = theme => ({
 
 const InputBox = props => {
   const {
-    value, onChange, name, rows, answerId, classes, validator, theme,
+    value, onChange, name, rows, answerId, classes, validator, theme, question,
     isValidation, userImages, style, ...otherProps
   } = props
 
@@ -54,6 +54,7 @@ const InputBox = props => {
           }}
           initials={getInitials(validator.firstName, validator.lastName)}
         />}
+        <label style={{ display: 'none' }} id="question_text">{question.text}</label>
         <TextField
           value={textValues.textAnswer}
           onChange={onChange(answerId, 'textAnswer')}
@@ -66,6 +67,9 @@ const InputBox = props => {
             disableUnderline: true,
             classes: {
               input: classes.textFieldInput
+            },
+            inputProps: {
+              'aria-describedby': 'question_text'
             }
           }}
           {...otherProps}
@@ -78,6 +82,7 @@ const InputBox = props => {
           value={textValues.pincite === null ? '' : textValues.pincite}
           placeholder="Enter pincite"
           label="Pincite"
+          aria-label="pincite"
           onChange={onChange(answerId, 'pincite')}
           multiline={false}
           shrinkLabel

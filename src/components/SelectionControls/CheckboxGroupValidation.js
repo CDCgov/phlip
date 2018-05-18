@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import Checkbox from 'material-ui/Checkbox'
-import { FormGroup, FormControlLabel, FormControl } from 'material-ui/Form'
+import { FormGroup, FormControlLabel, FormControl, FormLabel } from 'material-ui/Form'
 import { withStyles } from 'material-ui/styles'
 import SimpleInput from 'components/SimpleInput'
 import { getInitials } from 'utils/normalize'
@@ -17,7 +17,7 @@ const styles = theme => ({
 export const CheckboxGroupValidation = props => {
   const {
     choices, userAnswers, onChange, onChangePincite, pincites,
-    classes, mergedUserQuestions, disableAll, userImages, theme
+    classes, mergedUserQuestions, disableAll, userImages, theme, question
   } = props
 
   const userImageObj = userImages
@@ -28,15 +28,19 @@ export const CheckboxGroupValidation = props => {
 
   return (
     <FormControl component="fieldset">
+      <FormLabel component="legend" style={{ display: 'none' }} id="question_text">{question.text}</FormLabel>
       <FormGroup>
         {choices.map(choice => {
           return (<div key={choice.id} style={{ display: 'flex', alignItems: 'center' }}>
             <FormControlLabel
               checked={userAnswers.answers.hasOwnProperty(choice.id)}
+              aria-checked={userAnswers.answers.hasOwnProperty(choice.id)}
               onChange={onChange(choice.id)}
-              control={<Checkbox classes={{ checked: classes.checked }} />}
+              htmlFor={choice.id}
+              control={<Checkbox classes={{ checked: classes.checked }} inputProps={{ id: choice.id, 'aria-describedby': 'question_text' }} />}
               disabled={disableAll}
               label={choice.text}
+              aria-label={choice.text}
             />
             {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
               answer.schemeAnswerId === choice.id &&
@@ -65,6 +69,7 @@ export const CheckboxGroupValidation = props => {
               key={`${choice.id}-pincite`} placeholder="Enter pincite"
               value={userAnswers.answers[choice.id].pincite}
               multiline={false}
+              aria-label="pincite"
               style={{
                 width: 300,
                 marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
