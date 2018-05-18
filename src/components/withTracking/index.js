@@ -8,39 +8,43 @@ export const withTracking = (WrappedComponent, pageName) => {
     }
 
     componentDidMount() {
-      this.updateSiteCatalystVariables()
       this.pageName = pageName === 'Project Form'
         ? this.props.location.state.projectDefined === null ? 'Create New Project' : 'Project Details'
         : pageName
+      this.updateSiteCatalystVariables()
     }
 
     updateSiteCatalystVariables = () => {
-      s.pageName = this.pageName
-      s.channel = 'Public Health Law'
+      window.s.pageName = this.pageName
+      window.s.channel = 'Public Health Law'
 
       //* Center Name *
-      siteCatalyst.setLevel1('OSTLTS')
+      window.siteCatalyst.setLevel1('OSTLTS')
       //* Division, Office or Program Name *
-      siteCatalyst.setLevel2('Office of the Director')
+      window.siteCatalyst.setLevel2('Office of the Director')
       //* CDC Topic Name *
-      siteCatalyst.setLevel3('Public Health Law')
-      siteCatalyst.setLevel4('Public Health Law Investigation Platform')
+      window.siteCatalyst.setLevel3('Public Health Law')
+      window.siteCatalyst.setLevel4('Public Health Law Investigation Platform')
 
       //siteCatalyst.setAzEntry('ENTER RELEVENT A-Z TERM (IF NEEDED)')
-      s.prop2 = window.location.href
-      s.prop26 = this.pageName
-      s.prop30 = this.pageName
-      s.prop31 = window.location.href
-      s.prop46 = window.location.href
-      s.server = window.location.hostname
+      window.s.prop2 = window.location.href
+      window.s.prop26 = this.pageName
+      window.s.prop30 = this.pageName
+      window.s.prop31 = window.location.href
+      window.s.prop46 = window.location.href
+      window.s.server = window.location.hostname
+
+      // Simplified URL
+      window.s.prop73 = window.location.href.split('?')[0].split('#')[0].toLowerCase();
+      window.s.eVar73 = window.location.href.split('?')[0].split('#')[0].toLowerCase();
 
       // Update the level variables here.
-      updateVariables(window.s)
+      window.updateVariables(window.s)
 
       /************* DO NOT ALTER ANYTHING BELOW THIS LINE ! **************/
-      var s_code = s.t()
+      var s_code = window.s.t()
       if (s_code) {
-        document.write(s_code)
+        window.document.write(s_code)
       }
     }
 
