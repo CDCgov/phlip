@@ -161,6 +161,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       >
         <JurisdictionList
           onDelete={[Function]}
+          project={Object {}}
         />
       </Column>
     </Container>
