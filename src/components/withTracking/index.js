@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import hoistNonReactStatic from 'hoist-non-react-statics'
 
+/**
+ * @component
+ */
 export const withTracking = (WrappedComponent, pageName) => {
   class AdobeAnalyticsTracking extends Component {
     constructor(props, context) {

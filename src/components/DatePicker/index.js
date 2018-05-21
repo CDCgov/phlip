@@ -4,6 +4,9 @@ import { FormControl, FormHelperText } from 'material-ui/Form'
 import { DatePicker as MuiDatePicker } from 'material-ui-pickers'
 import moment from 'moment'
 
+/**
+ * GUI DatePicker Input wrapper for material-ui-picker's date picker
+ */
 export const DatePicker = props => {
   const {
     label, name, error, dateFormat, disabled, required, value, onChange, onInputChange, ...otherProps
@@ -32,13 +35,50 @@ export const DatePicker = props => {
 }
 
 DatePicker.propTypes = {
-  input: PropTypes.object,
+  /**
+   * Label for date picker input
+   */
   label: PropTypes.string,
+
+  /**
+   * name attribute for input
+   */
   name: PropTypes.string,
-  meta: PropTypes.object,
+
+  /**
+   * Error displayed in helper text
+   */
+  error: PropTypes.string,
+
+  /**
+   * Format the dates should be in
+   */
   dateFormat: PropTypes.string,
+
+  /**
+   * Whether or not the input is disabled
+   */
   disabled: PropTypes.bool,
-  required: PropTypes.bool
+
+  /**
+   * Whether or not the input is required
+   */
+  required: PropTypes.bool,
+
+  /**
+   * Value of the date picker input. Can be string or date type
+   */
+  value: PropTypes.any,
+
+  /**
+   * Function called when the user changes the input and the new value is valid
+   */
+  onChange: PropTypes.func,
+
+  /**
+   * Function that is called when the value changes, regardless of validity
+   */
+  onInputChange: PropTypes.func
 }
 
 export default DatePicker

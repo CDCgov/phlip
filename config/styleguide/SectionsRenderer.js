@@ -17,10 +17,6 @@ const styles = ({ fontFamily, color, space }) => ({
 export function SectionsRenderer({ classes, children }) {
   return (
     <div>
-      <div className={classes.headingSpacer}>
-        <Heading level={1}>Example Components</Heading>
-        <p className={classes.descriptionText}>These are the greatest components</p>
-      </div>
       <DefaultSections>{children}</DefaultSections>
     </div>
   )

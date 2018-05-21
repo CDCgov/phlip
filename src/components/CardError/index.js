@@ -4,6 +4,7 @@ import Typography from 'material-ui/Typography'
 import Grid from 'material-ui/Grid'
 import Card from 'components/Card'
 import Icon from 'components/Icon'
+import EmoticonSad from 'mdi-material-ui/EmoticonSad'
 
 /**
  * Used to display errors that should be shown as a part of the page, instead of popup alert
@@ -14,7 +15,7 @@ export const CardError = ({ children }) => (
       <Grid container direction="column" alignItems="center" spacing={0}>
         <Grid item>
           <Icon size={175} color="#757575">
-            sentiment_very_dissatisfied
+            <EmoticonSad style={{ width: 175, height: 175 }} />
           </Icon>
         </Grid>
         <Grid item>

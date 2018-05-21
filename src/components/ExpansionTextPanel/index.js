@@ -1,14 +1,13 @@
-import React, { Fragment, Component } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import IconButton from 'components/IconButton'
 import Typography from 'material-ui/Typography'
-import Container, { Row, Column } from 'components/Layout'
+import { Row } from 'components/Layout'
 import { withStyles } from 'material-ui/styles'
 import Grow from 'material-ui/transitions/Grow'
 import Paper from 'material-ui/Paper'
 import { Manager, Target, Popper } from 'react-popper'
 import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
-import ExpansionPanel, { ExpansionPanelSummary, ExpansionPanelDetails } from 'material-ui/ExpansionPanel'
 
 const styles = {
   root: {
@@ -19,6 +18,11 @@ const styles = {
   }
 }
 
+/**
+ * Block of text that is kind of like an Accordion. Displays beginning or all of text depending on length and size
+ * available for component. On click of arrow button, all text is displayed in a popover atop of where the dropdown
+ * button icon is.
+ */
 export class ExpansionTextPanel extends Component {
   constructor(props, context) {
     super(props, context)
@@ -28,12 +32,20 @@ export class ExpansionTextPanel extends Component {
     }
   }
 
+  /**
+   * Closes the popover
+   * @public
+   */
   onClosePopper = () => {
     this.setState({
       open: false
     })
   }
 
+  /**
+   * Opens the popover
+   * @public
+   */
   onOpenPopper = () => {
     this.setState({
       open: !this.state.open
@@ -71,6 +83,23 @@ export class ExpansionTextPanel extends Component {
       </ClickAwayListener>
     )
   }
+}
+
+ExpansionTextPanel.propTypes = {
+  /**
+   * Text content of the popover
+   */
+  text: PropTypes.string,
+
+  /**
+   * Props for the Typography component
+   */
+  textProps: PropTypes.object,
+
+  /**
+   * Props for the IconButton component for the dropdown arrow
+   */
+  dropdownIconProps: PropTypes.object
 }
 
 export default withStyles(styles)(ExpansionTextPanel)

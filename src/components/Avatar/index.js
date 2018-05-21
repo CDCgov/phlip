@@ -67,7 +67,12 @@ Avatar.propTypes = {
   /**
    * If true, avatar will have a white border around it with box shadow (similar to Card)
    */
-  cardAvatar: PropTypes.bool
+  cardAvatar: PropTypes.bool,
+
+  /**
+   * The first and last name of the user for which the avatar was created (needed for aria-label attribute)
+   */
+  userName: PropTypes.string
 }
 
 Avatar.defaultProps = {
@@ -75,7 +80,8 @@ Avatar.defaultProps = {
   cardAvatar: false,
   initials: '',
   style: {},
-  theme: {}
+  theme: {},
+  userName: ''
 }
 
 export default withTheme()(Avatar)

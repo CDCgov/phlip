@@ -8,6 +8,10 @@ import * as actions from 'data/user/actions'
 import { withRouter } from 'react-router-dom'
 import ApiErrorAlert from 'components/ApiErrorAlert'
 
+/**
+ * This component is the main wrapper for all other components, it includes the logo header at the top of the
+ * application which includes the avatar menu. The contents of the other components are render inside this container.
+ */
 export class HeaderedLayout extends Component {
   constructor(props, context) {
     super(props, context)
@@ -20,14 +24,28 @@ export class HeaderedLayout extends Component {
     }
   }
 
+  /**
+   * Sets the ref for the hidden `<a>` element for downloading the Help Guide
+   * @param element
+   * @public
+   */
   handleSetPdfRef = element => {
     this.helpPdfRef = element
   }
 
+  /**
+   * Handles when the user click 'Help Guide' in the avatar menu
+   * @public
+   */
   handleDownloadPdf = () => {
     this.props.actions.downloadPdfRequest()
   }
 
+  /**
+   * Creates an object url from the pdfFile and attaches the hidden `<a>` element to it
+   * @public
+   * @param pdfFile
+   */
   openHelpPdf = pdfFile => {
     const url = URL.createObjectURL(pdfFile)
     this.helpPdfRef.href = url
@@ -36,6 +54,10 @@ export class HeaderedLayout extends Component {
     this.props.actions.clearPdfFile()
   }
 
+  /**
+   * Closes the error alert when the user clicks 'dismiss'
+   * @public
+   */
   closeDownloadErrorAlert = () => {
     this.props.actions.resetDownloadError()
   }
@@ -74,10 +96,40 @@ export class HeaderedLayout extends Component {
 }
 
 HeaderedLayout.propTypes = {
+  /**
+   * Current user object (supplied from redux state)
+   */
   user: PropTypes.object,
+
+  /**
+   * Whether or not the avatar menu is open
+   */
   open: PropTypes.bool,
+
+  /**
+   * Whether to include padding around the main content body
+   */
+  padding: PropTypes.any,
+
+  /**
+   * Redux actions
+   */
   actions: PropTypes.object,
-  children: PropTypes.node
+
+  /**
+   * Main body content
+   */
+  children: PropTypes.node,
+
+  /**
+   * Error, if any, that occurred while trying to download help guide pdf
+   */
+  pdfError: PropTypes.string,
+
+  /**
+   * Contents of the pdf file from the API
+   */
+  pdfFile: PropTypes.any
 }
 
 HeaderedLayout.defaultProps = {

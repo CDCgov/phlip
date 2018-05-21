@@ -63,6 +63,8 @@ const styles = theme => ({
 })
 
 /**
+ * This is a higher order component function that scenes/Coding and scenes/Validation call. This component extends the
+ * Coding or Validation component. It was created since most of the component between the two components were identical.
  * @component
  */
 export const withCodingValidation = (WrappedComponent, actions, pageName) => {
@@ -136,6 +138,10 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       ]
     }
 
+    /**
+     * @public
+     * @param nextProps
+     */
     componentWillReceiveProps(nextProps) {
       if (this.props.isSchemeEmpty === null) {
         if (nextProps.isSchemeEmpty !== null) {
@@ -154,10 +160,17 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       this.props.actions.onCloseScreen()
     }
 
+    /**
+     * @public
+     */
     onToggleNavigator = () => {
       this.setState({ navOpen: !this.state.navOpen })
     }
 
+    /**
+     *
+     * @param index
+     */
     getNextQuestion = index => {
       if (this.props.unsavedChanges === true) {
         this.onShowStillSavingAlert(index, this.props.actions.getNextQuestion)
@@ -167,6 +180,10 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       }
     }
 
+    /**
+     *
+     * @param index
+     */
     getPrevQuestion = index => {
       if (this.props.unsavedChanges === true) {
         this.onShowStillSavingAlert(index, this.props.actions.getPrevQuestion)
@@ -176,6 +193,10 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       }
     }
 
+    /**
+     *
+     * @param item
+     */
     onQuestionSelectedInNav = item => {
       if (this.props.unsavedChanges === true) {
         this.onShowStillSavingAlert(item, this.props.actions.onQuestionSelectedInNav)
@@ -185,6 +206,9 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       }
     }
 
+    /**
+     *
+     */
     onShowQuestionLoader = () => {
       setTimeout(() => {
         if (this.props.isChangingQuestion) {
@@ -238,20 +262,41 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       this.onSaveCodedQuestion()
     }
 
+    /**
+     *
+     * @returns {*}
+     */
     onOpenApplyAllAlert = () => this.setState({ applyAllAlertOpen: true })
 
+    /**
+     *
+     * @returns {*|{type, args}}
+     */
     onCloseAlert = () => this.props.actions.dismissApiAlert('answerErrorContent')
 
+    /**
+     *
+     * @param event
+     * @param selection
+     */
     onChangeCategory = (event, selection) => {
       this.onSaveCodedQuestion()
       this.props.actions.onChangeCategory(selection)
     }
 
+    /**
+     *
+     */
     onTryAgain = () => {
       this.onSaveCodedQuestion()
       this.onCloseAlert()
     }
 
+    /**
+     *
+     * @param question
+     * @param method
+     */
     onShowStillSavingAlert = (question, method) => {
       this.setState({
         stillSavingAlertOpen: true,
@@ -260,6 +305,9 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       })
     }
 
+    /**
+     *
+     */
     onCancelStillSavingAlert = () => {
       this.setState({
         changeProps: [],
@@ -268,6 +316,9 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       })
     }
 
+    /**
+     *
+     */
     onContinueStillSavingAlert = () => {
       // question changing
       if (this.state.changeMethod.type === 0) {
@@ -287,12 +338,18 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       this.onCancelStillSavingAlert()
     }
 
+    /**
+     *
+     */
     onClearAnswer = () => {
       this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
       this.onChangeTouchedStatus()
       this.onSaveCodedQuestion()
     }
 
+    /**
+     *
+     */
     onGoBack = () => {
       if (this.props.unsavedChanges === true) {
         this.setState({
@@ -304,20 +361,36 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       }
     }
 
+    /***
+     *
+     */
     onChangeTouchedStatus = () => {
       if (!this.props.hasTouchedQuestion) {
         this.props.actions.changeTouchedStatus()
       }
     }
 
+    /**
+     *
+     * @returns {*}
+     */
     onCloseApplyAllAlert = () => this.setState({ applyAllAlertOpen: false })
 
+    /**
+     *
+     */
     onApplyToAll = () => {
       this.onCloseApplyAllAlert()
       this.onChangeTouchedStatus()
       this.props.actions.applyAnswerToAll(this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.page)
     }
 
+    /**
+     *
+     * @param noScheme
+     * @param noJurisdictions
+     * @returns {*}
+     */
     onShowGetStartedView = (noScheme, noJurisdictions) => {
       let startedText = ''
       if (this.props.isValidation) {
@@ -361,6 +434,10 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       )
     }
 
+    /**
+     * @public
+     * @returns {*}
+     */
     onShowCodeView = () => (
       <Fragment>
         <QuestionCard

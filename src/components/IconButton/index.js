@@ -4,7 +4,10 @@ import { default as MuiIconButton } from 'material-ui/IconButton'
 import Icon from 'components/Icon'
 import Tooltip from 'components/Tooltip'
 
-const IconButton = ({ color, onClick, iconSize, style, iconStyle, tooltipText, id, placement, children, disabled, ...otherProps }) => {
+/**
+ * @component
+ */
+export const IconButton = ({ color, onClick, iconSize, style, iconStyle, tooltipText, id, placement, children, disabled, ...otherProps }) => {
   const styles = {
     width: iconSize,
     height: iconSize,

@@ -10,7 +10,11 @@ module.exports = {
     },
     {
       name: 'UI Components',
-      components: 'src/components/*/index.js'
+      components: 'src/components/!(withFormAlert|CodingValidation|withTracking)/@(index|Column|Row|Container).js'
+    },
+    {
+      name: 'Higher Order Components',
+      components: ['src/components/withFormAlert/index.js', 'src/components/CodingValidation/index.js', 'src/components/withTracking/index.js']
     },
     {
       name: 'Utility',
@@ -47,6 +51,7 @@ module.exports = {
   showUsage: true,
   styleguideComponents: {
     Wrapper: path.join(__dirname, 'config/styleguide/ThemeWrapper'),
+    SectionsRenderer: path.join(__dirname, 'config/styleguide/SectionsRenderer'),
     StyleGuideRenderer: path.join(__dirname, 'config/styleguide/StyleGuideRenderer')
   }
 }

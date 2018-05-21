@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Select from 'material-ui/Select'
 import Input, { InputLabel } from 'material-ui/Input'
-import { FormControl, FormHelperText } from 'material-ui/Form'
+import { FormControl } from 'material-ui/Form'
 import { MenuItem } from 'material-ui/Menu'
 import { withStyles } from 'material-ui/styles'
 
@@ -25,7 +25,10 @@ const styles = theme => ({
   }
 })
 
-const Dropdown = props => {
+/**
+ * Basic dropdown component, can be used with ReduxForm `<Field />` component
+ */
+export const Dropdown = props => {
   const {
     input, label, id, defaultValue, classes, shrinkLabel,
     disabled, meta: { touched, error }, options, required, ...otherProps
@@ -59,17 +62,61 @@ const Dropdown = props => {
 }
 
 Dropdown.propTypes = {
+  /**
+   * Input object, has property 'value' and 'onChange'
+   */
   input: PropTypes.object,
+
+  /**
+   * Input label for dropdown
+   */
   label: PropTypes.string,
+
+  /**
+   * ID of dropdown input
+   */
   id: PropTypes.any,
-  onChange: PropTypes.func,
+
+  /**
+   * Default value for the dropdown
+   */
   defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
+  /**
+   * Style classes object from material-ui
+   */
+  classes: PropTypes.object,
+
+  /**
+   * Whether or not to shrink the input label
+   */
+  shrinkLabel: PropTypes.bool,
+
+  /**
+   * Whether or not the dropdown input is disabled
+   */
+  disabled: PropTypes.bool,
+
+  /**
+   * @ignore
+   */
   meta: PropTypes.object,
-  options: PropTypes.arrayOf(PropTypes.object)
+
+  /**
+   * List of options for the dropdown
+   */
+  options: PropTypes.arrayOf(PropTypes.object),
+
+  /**
+   * Is the input dropdown required
+   */
+  required: PropTypes.bool
 }
 
 Dropdown.defaultProps = {
-  shrinkLabel: true
+  shrinkLabel: true,
+  required: false,
+  options: []
 }
 
 export default withStyles(styles)(Dropdown)

@@ -3,6 +3,9 @@ import PropTypes from 'prop-types'
 import { default as MuiIcon } from 'material-ui/Icon'
 import { withTheme } from 'material-ui/styles'
 
+/**
+ * Basic material-ui icon component
+ */
 const Icon = ({ color, size, style, children, theme, ...otherProps }) => {
   const styles = {
     fontSize: size, 

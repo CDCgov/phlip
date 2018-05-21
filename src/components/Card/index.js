@@ -5,7 +5,7 @@ import Paper from 'material-ui/Paper'
 const baseStyle = { flex: '1' }
 
 /**
- * Card based on material-ui
+ * Card based on material-ui's Card (raised paper)
  */
 export const Card = ({ children, style, ...otherProps }) => {
   return (

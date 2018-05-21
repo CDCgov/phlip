@@ -2,6 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { CircularProgress } from 'material-ui/Progress'
 
+/**
+ * Spinning loader, based on material-ui's CircularProgress
+ */
 export const CircularLoader = ({ type, color, ...otherProps }) => {
   return <CircularProgress type={type} color={color} {...otherProps} />
 }
@@ -12,7 +15,14 @@ CircularLoader.defaultProps = {
 }
 
 CircularLoader.propTypes = {
+  /**
+   * Type of loader: determinate, indeterminate
+   */
   type: PropTypes.string,
+
+  /**
+   * Color of the spinning loader ring
+   */
   color: PropTypes.string
 }
 
