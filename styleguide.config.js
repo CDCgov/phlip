@@ -16,7 +16,7 @@ module.exports = {
     },
     {
       name: 'UI Components',
-      components: 'src/components/!(withFormAlert|CodingValidation|withTracking)/@(index|Column|Row|Container).js',
+      components: 'src/components/!(withFormAlert|CodingValidation|withTracking)/*.js',
       ignore: '**/src/components/Layout/index.js'
     },
     {
@@ -62,6 +62,7 @@ module.exports = {
   styleguideComponents: {
     Wrapper: path.join(__dirname, 'config/styleguide/ThemeWrapper'),
     SectionsRenderer: path.join(__dirname, 'config/styleguide/SectionsRenderer'),
-    StyleGuideRenderer: path.join(__dirname, 'config/styleguide/StyleGuideRenderer')
+    StyleGuideRenderer: path.join(__dirname, 'config/styleguide/StyleGuideRenderer'),
+    ExamplePlaceholderRenderer: path.join(__dirname, 'config/styleguide/ExamplePlaceholderRenderer')
   }
 }
