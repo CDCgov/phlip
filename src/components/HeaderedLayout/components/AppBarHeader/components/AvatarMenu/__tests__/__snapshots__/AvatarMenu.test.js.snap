@@ -21,7 +21,7 @@ exports[`Header -- AvatarMenu should render correctly 1`] = `
         initials="TU"
         onClick={[Function]}
         onKeyPress={[Function]}
-        role="menubutton"
+        role="button"
         style={
           Object {
             "cursor": "pointer",

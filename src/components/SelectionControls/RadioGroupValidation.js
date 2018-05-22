@@ -36,7 +36,9 @@ export const RadioGroup = props => {
               onChange={onChange(choice.id)}
               checked={userAnswers.answers.hasOwnProperty(choice.id)}
               htmlFor={choice.id}
-              control={<Radio classes={{ checked: classes.checked }} inputProps={{ id: choice.id, 'aria-describedby': 'question_text' }} />}
+              control={<Radio
+                classes={{ checked: classes.checked }}
+                inputProps={{ id: choice.id, 'aria-describedby': 'question_text' }} />}
               disabled={disableAll}
               label={choice.text}
               aria-label={choice.text}
@@ -72,7 +74,7 @@ export const RadioGroup = props => {
                   ? '15px'
                   : '0px'
               }}
-              aria-label="pincite"
+              InputProps={{ inputProps: { 'aria-label': 'Pincite' } }}
               disabled={disableAll}
               placeholder="Enter pincite"
               multiline={false}
@@ -86,9 +88,7 @@ export const RadioGroup = props => {
   )
 }
 
-RadioGroup.propTypes = {
-
-}
+RadioGroup.propTypes = {}
 
 RadioGroup.defaultProps = {
   userImages: undefined
