@@ -164,6 +164,7 @@ export class AddEditJurisdictions extends Component {
                 : this.props.showJurisdictionLoader
                   ? <PageLoader />
                   : <JurisdictionList
+                    project={this.props.project}
                     jurisdictions={this.props.visibleJurisdictions}
                     projectId={this.props.project.id}
                     onDelete={this.confirmDelete} />}

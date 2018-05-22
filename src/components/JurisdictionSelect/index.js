@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { findDOMNode } from 'react-dom'
 import PropTypes from 'prop-types'
 import Select from 'material-ui/Select'
 import Input from 'material-ui/Input'
-import { FormControl } from 'material-ui/Form'
 import { MenuItem } from 'material-ui/Menu'
 import { withStyles } from 'material-ui/styles'
 import Typography from 'material-ui/Typography'
@@ -17,49 +17,62 @@ const styles = theme => ({
   }
 })
 
-const JurisdictionSelect = ({ id, value, onChange, options, theme, ...otherProps }) => {
-  const menuItems = options.map(option => {
-    return (
-      <MenuItem key={option.id} value={option.id}>
-        {option.name}
-        <Typography type="caption" style={{ paddingLeft: 10, color: theme.palette.greyText }}>
-          ({new Date(option.startDate).toLocaleDateString()} - {new Date(option.endDate).toLocaleDateString()})
-        </Typography>
-      </MenuItem>
-    )
-  })
+export class JurisdictionSelect extends Component {
+  constructor(props, context) {
+    super(props, context)
+    this.jurisdictionRef = undefined
+  }
 
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        zIndex: 10000
-      }
-    },
-    onEnter: () => {
-      setTimeout(() => {
-        if (document.activeElement) {
-          document.activeElement.blur()
-        }
-      }, 500)
+  componentDidMount() {
+    this.jurisdictionRef.focus()
+  }
+
+  setJurisdictionRef = node => {
+    if (node) {
+      this.jurisdictionRef = findDOMNode(node).childNodes[0].childNodes[0]
     }
   }
 
-  return (
-    <FormControl style={{ minWidth: '120px' }}>
+  render() {
+    const { value, onChange, options, theme, ...otherProps } = this.props
+
+    const menuItems = options.map(option => {
+      return (
+        <MenuItem key={option.id} value={option.id}>
+          {option.name}
+          <Typography type="caption" style={{ paddingLeft: 10, color: theme.palette.greyText }}>
+            ({new Date(option.startDate).toLocaleDateString()} - {new Date(option.endDate).toLocaleDateString()})
+          </Typography>
+        </MenuItem>
+      )
+    })
+
+    const MenuProps = {
+      PaperProps: {
+        style: {
+          zIndex: 10000,
+          transform: 'translate3d(0, 0, 0)'
+        }
+      }
+    }
+
+    return (
       <Select
-        input={<Input id={id} name="jurisdiction" />}
+        input={<Input id="jurisdiction-select-list" name="jurisdiction" autoFocus />}
         value={value}
+        autoFocus={true}
         onChange={onChange}
         children={menuItems}
         MenuProps={MenuProps}
-        renderValue={(value) => {
+        ref={this.setJurisdictionRef}
+        renderValue={value => {
           const option = options.find(option => option.id === value)
           return option.name
         }}
         {...otherProps}
       />
-    </FormControl>
-  )
+    )
+  }
 }
 
 JurisdictionSelect.propTypes = {

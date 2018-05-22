@@ -1,4 +1,4 @@
-import React, { Fragment, Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import InputBox from 'components/InputBox'
 import RadioGroupValidation from 'components/SelectionControls/RadioGroupValidation'
@@ -14,8 +14,8 @@ import ValidationTable from '../ValidationTable'
 
 export const QuestionContent = props => {
   const {
-    question, currentUserInitials, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
-    onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages, onBlurText
+    question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
+    onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages
   } = props
 
   const questionAnswerPadding = {
@@ -51,8 +51,6 @@ export const QuestionContent = props => {
             userAnswers={userAnswers}
             onChangePincite={onChangeTextAnswer}
             mergedUserQuestions={mergedUserQuestions}
-            currentUserInitials={currentUserInitials}
-            onBlurText={onBlurText}
             disableAll={disableAll}
             userImages={userImages}
           />
@@ -68,9 +66,7 @@ export const QuestionContent = props => {
             userAnswers={userAnswers}
             onChangePincite={onChangeTextAnswer}
             mergedUserQuestions={mergedUserQuestions}
-            currentUserInitials={currentUserInitials}
             disableAll={disableAll}
-            onBlurText={onBlurText}
             userImages={userImages}
           />
         </Row>}
@@ -82,6 +78,7 @@ export const QuestionContent = props => {
             name="text-answer"
             onChange={onChangeTextAnswer}
             placeholder="Enter answer"
+            question={question}
             value={userAnswers.answers[question.possibleAnswers[0].id]}
             answerId={question.possibleAnswers[0].id}
             disabled={disableAll}
@@ -96,9 +93,8 @@ export const QuestionContent = props => {
           validator={userAnswers.validatedBy}
           onChange={onChangeTextAnswer}
           userImages={userImages}
+          question={question}
           answerId={question.possibleAnswers[0].id}
-          onBlurText={onBlurText}
-          currentUserInitials={currentUserInitials}
           disabled={disableAll}
         />
         }
@@ -113,7 +109,7 @@ export const QuestionContent = props => {
               placeholder="Enter comment"
               value={comment}
               rowsMax={3}
-              onBlur={onBlurText}
+              aria-label="Comment"
               label="Comment"
               disabled={disableAll}
             />

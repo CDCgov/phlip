@@ -8,6 +8,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     id="bookmarked"
     key="bookmarked"
     padding="checkbox"
+    scope="col"
     style={
       Object {
         "paddingLeft": 24,
@@ -31,6 +32,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     id="name"
     key="name"
     padding="default"
+    scope="col"
     style={
       Object {
         "paddingRight": 24,
@@ -61,6 +63,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     id="dateLastEdited"
     key="dateLastEdited"
     padding="default"
+    scope="col"
     style={
       Object {
         "paddingRight": 24,
@@ -90,6 +93,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     id="lastEditedBy"
     key="lastEditedBy"
     padding="default"
+    scope="col"
     style={
       Object {
         "paddingRight": 24,
@@ -119,6 +123,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     id="protocol"
     key="protocol"
     padding="default"
+    scope="col"
     style={
       Object {
         "paddingRight": 24,
@@ -132,6 +137,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     id="jurisdictions"
     key="jurisdictions"
     padding="default"
+    scope="col"
     style={
       Object {
         "paddingRight": 24,
@@ -145,6 +151,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     id="codingScheme"
     key="codingScheme"
     padding="default"
+    scope="col"
     style={
       Object {
         "paddingRight": 24,
@@ -158,6 +165,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     id="code"
     key="code"
     padding="checkbox"
+    scope="col"
     style={
       Object {
         "paddingRight": 6,
@@ -169,6 +177,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     id="validate"
     key="validate"
     padding="checkbox"
+    scope="col"
     style={
       Object {
         "paddingLeft": 6,
@@ -180,6 +189,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     id="export"
     key="export"
     padding="default"
+    scope="col"
     style={
       Object {
         "paddingLeft": 0,

@@ -5,8 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>PHLIP</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+      body {
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+
+      html, body, #root {
+        font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" style="display: flex; flex: 1;"></div>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+      crossorigin="anonymous"></script>
+
+    <!-- Begin Google DAP inclusion -->
+    <script
+      type="text/javascript"
+      id="_fed_an_ua_tag"
+      src="https://www.cdc.gov/JScript/metrics/google/Universal-Federated-Analytics-Min.js?agency=HHS&amp;subagency=CDC"></script>
+    <!-- End Google DAP inclusion -->
+
+    <!-- Begin Template Package Custom Interactions -->
+    <script type="text/javascript" src="https://www.cdc.gov/JScript/metrics/rd_custom_interactions.js"></script>
+    <!-- End Template Package Custom Interactions -->
+
+    <!-- SiteCatalyst code version: H.21. -->
     <script src="https://www.cdc.gov/JScript/metrics/topic_levels.js"></script>
+    <!-- <script src="/JScript/metrics/s_code_v21_cdcgov.js"></script> -->
     <script src="https://www.cdc.gov/JScript/metrics/adobe/analytics_cdcgov.js"></script>
+    <script>
+      if (typeof enquire !== 'undefined') {
+        enquire.register(CDC.Global.selectors.vp1, function() {
+          s.prop49 = 1;
+        });
+        enquire.register(CDC.Global.selectors.vp2, function() {
+          s.prop49 = 2;
+        });
+        enquire.register(CDC.Global.selectors.vp3, function() {
+          s.prop49 = 3;
+        });
+        enquire.register(CDC.Global.selectors.vp4, function() {
+          s.prop49 = 4;
+        });
+      }
+    </script>
     <script type="text/javascript">
       if (navigator.appVersion.indexOf('MSIE') >= 0) {
         document.write(unescape('%3C') + '\!-' + '-')
@@ -20,24 +73,5 @@
         alt="Web Analytics" /></a>
     </noscript><!--/DO NOT REMOVE/-->
     <!-- End SiteCatalyst code version: H.21. -->
-
-    <style>
-      body {
-        display: flex;
-        min-height: 100vh;
-        flex-direction: column;
-      }
-
-      html, body, #root {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        width: 100vw;
-        overflow: hidden;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root" role="main" style="display: flex; flex: 1;"></div>
   </body>
 </html>

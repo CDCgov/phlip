@@ -4,7 +4,8 @@ import { JurisdictionList } from '../index'
 
 const props = {
   jurisdictions: [],
-  onOpenForm: () => {}
+  onOpenForm: () => {},
+  project: {}
 }
 
 describe('Home scene - AddEditJurisdictions - JurisdictionList', () => {

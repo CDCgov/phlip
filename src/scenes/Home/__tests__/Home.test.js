@@ -5,7 +5,6 @@ import { MuiThemeProvider } from 'material-ui/styles'
 import theme from 'services/theme'
 import { Home } from '../index'
 import { ProjectList } from '../components/ProjectList'
-import { mockProjects } from 'data/mockProjects'
 import { PageHeader } from 'components/PageHeader'
 
 const props = {
@@ -28,7 +27,7 @@ const props = {
   },
   error: false,
   errorContent: '',
-  projects: mockProjects,
+  projects: [],
   visibleProjects: [],
   bookmarkList: [],
   sortBookmarked: false,

@@ -59,6 +59,7 @@ export const ValidationTable = props => {
                   cardAvatar
                   style={{ marginRight: 10 }}
                   initials={getInitials(item.raisedBy.firstName, item.raisedBy.lastName)}
+                  userName={`${item.raisedBy.firstName} ${item.raisedBy.lastName}`}
                   avatar={userImages[item.raisedBy.userId].avatar} />
                 <Typography type="caption">{`${item.raisedBy.firstName} ${item.raisedBy.lastName}`}</Typography>
               </Row>

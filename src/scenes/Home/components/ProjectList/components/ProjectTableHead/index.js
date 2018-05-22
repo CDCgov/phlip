@@ -35,7 +35,7 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
 
   return (
     <TableRow key="headers">
-      <TableCell key="bookmarked" padding="checkbox" id="bookmarked" style={{ width: 24, paddingLeft: 24 }}>
+      <TableCell key="bookmarked" padding="checkbox" id="bookmarked" scope="col" style={{ width: 24, paddingLeft: 24 }}>
         <IconButton
           id="sort-bookmarked"
           color="#757575"
@@ -48,7 +48,7 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
       </TableCell>
 
       {visible.map(c => (
-        <TableCell key={c.key} id={c.key} padding={c.padding || 'default'} style={{ ...c.style }}>
+        <TableCell key={c.key} id={c.key} padding={c.padding || 'default'} scope="col" style={{ ...c.style }}>
           {c.hasSort ? (
             <Tooltip
               text={`Sort by ${c.label}`}

@@ -7,7 +7,7 @@ import JurisdictionSelect from 'components/JurisdictionSelect'
 import Container, { Column, Row } from 'components/Layout'
 import IconButton from 'components/IconButton'
 import { withRouter } from 'react-router-dom'
-import TextLink from 'components/TextLink'
+import Link from 'components/Link'
 import { withTheme } from 'material-ui/styles'
 
 export const Header = props => {
@@ -46,12 +46,12 @@ export const Header = props => {
             </Typography>
           </Column></Fragment>}
         <Column flex></Column>
-        <TextLink to={`/project/${projectId}/protocol`}>
           <Button
             value="Protocol"
             style={{ backgroundColor: 'white', color: 'black' }}
+            component={Link}
+            to={`/project/${projectId}/protocol`}
             aria-label="View and edit protocol" />
-        </TextLink>
       </Fragment>
     </Container>
   )

@@ -30,6 +30,7 @@ export const Header = ({ theme, user, open, handleLogoutUser, handleCloseMenu, h
           </Grid>
           <AvatarMenu
             initials={initials}
+            userName={`${user.firstName} ${user.lastName}`}
             role={user.role}
             open={open}
             onToggleMenu={handleToggleMenu}

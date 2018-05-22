@@ -13,7 +13,11 @@ const UserTableBody = ({ users }) => {
       return (
         <TableRow key={user.id}>
           <TableCell {...generateKeyAndId('avatar')} style={{ width: 1 }}>
-            <Avatar cardAvatar avatar={user.avatar} initials={normalize.getInitials(user.firstName, user.lastName)} />
+            <Avatar
+              cardAvatar
+              avatar={user.avatar}
+              userName={`${user.firstName} ${user.lastName}`}
+              initials={normalize.getInitials(user.firstName, user.lastName)} />
           </TableCell>
           <TableCell {...generateKeyAndId('name')} header="name" padding="default">
             <span>{user.firstName} {user.lastName}</span>

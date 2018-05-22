@@ -7,16 +7,16 @@ import TextLink from 'components/TextLink'
 
 export const JurisdictionRow = ({ jurisdiction, id, onDelete, projectId }) => {
   return (<TableRow key={`jurisdiction-${id}`}>
-    <TableCell key={`${id}-segment-name`}>
+    <TableCell key={`${id}-segment-name`} id={`${id}-segment-name`}>
       {jurisdiction.name}
     </TableCell>
-    <TableCell key={`${id}-segment-start`}>
+    <TableCell key={`${id}-segment-start-date`} id={`${id}-segment-start-date`}>
       {new Date(jurisdiction.startDate).toLocaleDateString()}
     </TableCell>
-    <TableCell key={`${id}-segment-end`}>
+    <TableCell key={`${id}-segment-end-date`} id={`${id}-segment-end-date`}>
       {new Date(jurisdiction.endDate).toLocaleDateString()}
     </TableCell>
-    <TableCell>
+    <TableCell key={`${id}-edit`} id={`${id}-edit`}>
       <TextLink
         to={{
           pathname: `/project/${projectId}/jurisdictions/${jurisdiction.id}/edit`,
@@ -26,7 +26,7 @@ export const JurisdictionRow = ({ jurisdiction, id, onDelete, projectId }) => {
         <IconButton color="accent">mode_edit</IconButton>
       </TextLink>
     </TableCell>
-    <TableCell>
+    <TableCell key={`${id}-delete`} id={`${id}-delete`}>
       <IconButton onClick={() => onDelete(id, jurisdiction.name)} color="accent">delete</IconButton>
     </TableCell>
   </TableRow>)

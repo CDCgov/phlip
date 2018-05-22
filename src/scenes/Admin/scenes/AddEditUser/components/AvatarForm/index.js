@@ -10,9 +10,7 @@ import Container from 'components/Layout'
 import * as actions from '../../actions'
 import { default as formActions } from 'redux-form/lib/actions'
 
-
 export class AvatarForm extends Component {
-
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -47,7 +45,6 @@ export class AvatarForm extends Component {
   }
 
   render() {
-
     const formActions = [
       {
         value: 'Cancel',
@@ -64,7 +61,7 @@ export class AvatarForm extends Component {
     ]
     const formEditActions = [
       { value: 'Cancel', onClick: this.onCloseModal, type: 'button' },
-      { value: 'Remove', onClick: this.handleDeleteAvatar, type: 'button', }
+      { value: 'Remove', onClick: this.handleDeleteAvatar, type: 'button' }
     ]
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="xs" height="450px" width="315px">
@@ -73,7 +70,12 @@ export class AvatarForm extends Component {
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
           {this.state.isEdit
             ? <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
-              <Avatar cardAvatar style={{ width: '200px', height: '200px' }} avatar={this.props.location.state.avatar} />
+              <Avatar
+                cardAvatar
+                style={{ width: '200px', height: '200px' }}
+                avatar={this.props.location.state.avatar}
+                userName={`${this.props.selectedUser.firstName} ${this.props.selectedUser.lastName}`}
+              />
             </Container>
             : <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
               <Avatar cardAvatar style={{ width: '200px', height: '200px' }} avatar={this.state.editFile.file.base64} />
@@ -84,11 +86,10 @@ export class AvatarForm extends Component {
     )
   }
 }
-const mapStateToProps = (state) => ({
+
+const mapStateToProps = (state, ownProps) => ({
   currentUser: state.data.user.currentUser || {},
-  // users: state.scenes.admin.main.users || [],
-  // form: state.form.avatarForm || {},
-  // formName: 'avatarForm'
+  selectedUser: state.scenes.admin.main.users.find(user => user.id === ownProps.location.state.userId)
 })
 
 const mapDispatchToProps = (dispatch) => ({

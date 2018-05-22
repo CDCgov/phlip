@@ -53,6 +53,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
             "tableLayout": "auto",
           }
         }
+        summary="List of projects"
       >
         <withStyles(TableHead)>
           <ProjectTableHead

@@ -27,9 +27,15 @@ const styles = theme => ({
 
 const InputBox = props => {
   const {
-    value, onChange, name, rows, answerId, classes, validator, theme,
-    isValidation, userImages, style, onBlur, ...otherProps
+    value, onChange, name, rows, answerId, classes, validator, theme, question,
+    isValidation, userImages, style, ...otherProps
   } = props
+
+  const userImageObj = userImages
+    ? userImages[validator.userId] !== undefined
+      ? userImages[validator.userId]
+      : validator
+    : {}
 
   const textValues = value === undefined ? { textAnswer: '', pincite: '' } : value
   return (
@@ -38,12 +44,8 @@ const InputBox = props => {
         {isValidation &&
         <Avatar
           cardAvatar
-          avatar={validator.userId
-            ? userImages[validator.userId] !== undefined
-              ? userImages[validator.userId].avatar
-              : validator.avatar
-            : validator.avatar
-          }
+          avatar={userImageObj.avatar}
+          userName={`${userImageObj.firstName} ${userImageObj.lastName}`}
           style={{
             marginRight: 15,
             backgroundColor: 'white',
@@ -52,6 +54,7 @@ const InputBox = props => {
           }}
           initials={getInitials(validator.firstName, validator.lastName)}
         />}
+        <label style={{ display: 'none' }} id="question_text">{question.text}</label>
         <TextField
           value={textValues.textAnswer}
           onChange={onChange(answerId, 'textAnswer')}
@@ -64,9 +67,11 @@ const InputBox = props => {
             disableUnderline: true,
             classes: {
               input: classes.textFieldInput
+            },
+            inputProps: {
+              'aria-describedby': 'question_text'
             }
           }}
-          //onBlur={onBlur}
           {...otherProps}
         />
       </Row>
@@ -77,10 +82,10 @@ const InputBox = props => {
           value={textValues.pincite === null ? '' : textValues.pincite}
           placeholder="Enter pincite"
           label="Pincite"
+          aria-label="pincite"
           onChange={onChange(answerId, 'pincite')}
           multiline={false}
           shrinkLabel
-          //onBlur={onBlur}
           style={{ flex: 1 }}
         />
       </div>}
@@ -91,6 +96,10 @@ const InputBox = props => {
 InputBox.propTypes = {
   onChange: PropTypes.func,
   name: PropTypes.string
+}
+
+InputBox.defaultProps = {
+  userImages: undefined
 }
 
 export default withStyles(styles, { withTheme: true })(InputBox)

@@ -71,6 +71,7 @@ exports[`Header should render correctly 1`] = `
         onToggleMenu={[Function]}
         open={false}
         role="Coordinator"
+        userName="Test User"
       />
     </withStyles(GridWrapper)>
   </withStyles(GridWrapper)>

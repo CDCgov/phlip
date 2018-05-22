@@ -1,9 +1,12 @@
+import React from 'react'
 import reducer from '../reducer'
 import * as types from '../actionTypes'
 
 const initial = {
   currentUser: {},
-  menuOpen: false
+  menuOpen: false,
+  pdfFile: null,
+  pdfError: ''
 }
 
 describe('User reducer', () => {
@@ -19,6 +22,7 @@ describe('User reducer', () => {
           { type: types.TOGGLE_MENU }
         )
       ).toEqual({
+        ...initial,
         currentUser: {},
         menuOpen: true
       })
@@ -33,6 +37,7 @@ describe('User reducer', () => {
           { type: types.LOGIN_USER_SUCCESS, payload: { firstName: 'user' } }
         )
       ).toEqual({
+        ...initial,
         currentUser: { firstName: 'user' },
         menuOpen: false,
       })
@@ -43,7 +48,7 @@ describe('User reducer', () => {
     test('should set state back to initial state', () => {
       expect(
         reducer(
-          { currentUser: { firstName: 'user' }, menuOpen: true, menuAnchor: '<div></div>' },
+          { currentUser: { firstName: 'user' }, menuOpen: true },
           { type: types.FLUSH_STATE }
         )
       ).toEqual(initial)
@@ -54,10 +59,11 @@ describe('User reducer', () => {
     test('should set currentUser to user object in action', () => {
       expect(
         reducer(
-          { currentUser: { firstName: 'user', bookmarks: [5,6] }, menuOpen: false },
+          { ...initial, currentUser: { firstName: 'user', bookmarks: [5,6] }, menuOpen: false },
           { type: types.TOGGLE_BOOKMARK_SUCCESS, payload: { user: { firstName: 'user', bookmarks: [5,6,7] } }}
         )
       ).toEqual({
+        ...initial,
         currentUser: { firstName: 'user', bookmarks: [5,6,7] },
         menuOpen: false
       })

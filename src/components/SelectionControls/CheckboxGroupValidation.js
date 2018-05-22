@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import Checkbox from 'material-ui/Checkbox'
-import { FormGroup, FormControlLabel, FormControl } from 'material-ui/Form'
+import { FormGroup, FormControlLabel, FormControl, FormLabel } from 'material-ui/Form'
 import { withStyles } from 'material-ui/styles'
 import SimpleInput from 'components/SimpleInput'
 import { getInitials } from 'utils/normalize'
@@ -17,27 +17,36 @@ const styles = theme => ({
 export const CheckboxGroupValidation = props => {
   const {
     choices, userAnswers, onChange, onChangePincite, pincites,
-    classes, mergedUserQuestions, disableAll, userImages, theme, onBlurText
+    classes, mergedUserQuestions, disableAll, userImages, theme, question
   } = props
+
+  const userImageObj = userImages
+    ? userImages[userAnswers.validatedBy.userId] !== undefined
+      ? userImages[userAnswers.validatedBy.userId]
+      : userAnswers.validatedBy
+    : {}
 
   return (
     <FormControl component="fieldset">
+      <FormLabel component="legend" style={{ display: 'none' }} id="question_text">{question.text}</FormLabel>
       <FormGroup>
         {choices.map(choice => {
           return (<div key={choice.id} style={{ display: 'flex', alignItems: 'center' }}>
             <FormControlLabel
               checked={userAnswers.answers.hasOwnProperty(choice.id)}
+              aria-checked={userAnswers.answers.hasOwnProperty(choice.id)}
               onChange={onChange(choice.id)}
-              control={
-                <Checkbox classes={{ checked: classes.checked }} />
-              }
+              htmlFor={choice.id}
+              control={<Checkbox classes={{ checked: classes.checked }} inputProps={{ id: choice.id, 'aria-describedby': 'question_text' }} />}
               disabled={disableAll}
               label={choice.text}
+              aria-label={choice.text}
             />
             {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
               answer.schemeAnswerId === choice.id &&
               <ValidationAvatar
                 key={`user-answer-${index}`}
+                userName={`${userImages[answer.userId].firstName} ${userImages[answer.userId].lastName}`}
                 avatar={userImages[answer.userId] !== undefined ? userImages[answer.userId].avatar : ''}
                 answer={answer} />
             ))}
@@ -45,27 +54,22 @@ export const CheckboxGroupValidation = props => {
             && mergedUserQuestions !== null
             && <Avatar
               cardAvatar
-              avatar={userAnswers.validatedBy.userId
-                ? userImages[userAnswers.validatedBy.userId] !== undefined
-                  ? userImages[userAnswers.validatedBy.userId].avatar
-                  : userAnswers.validatedBy.avatar
-                : userAnswers.validatedBy.avatar}
+              avatar={userImageObj.avatar}
+              userName={`${userImageObj.firstName} ${userImageObj.lastName}`}
               key={mergedUserQuestions.answers.length + 1}
               style={{
                 backgroundColor: 'white',
                 color: theme.palette.secondary.main,
                 borderColor: theme.palette.secondary.main
               }}
-              initials={userAnswers.validatedBy === null
-                ? ''
-                : getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
+              initials={getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
             />}
             {userAnswers.answers.hasOwnProperty(choice.id) && pincites &&
             <SimpleInput
               key={`${choice.id}-pincite`} placeholder="Enter pincite"
               value={userAnswers.answers[choice.id].pincite}
               multiline={false}
-              //onBlur={onBlurText}
+              aria-label="pincite"
               style={{
                 width: 300,
                 marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
@@ -82,7 +86,8 @@ export const CheckboxGroupValidation = props => {
 }
 
 CheckboxGroupValidation.defaultProps = {
-  pincites: true
+  pincites: true,
+  userImages: undefined
 }
 
 CheckboxGroupValidation.propTypes = {

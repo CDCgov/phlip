@@ -1,33 +1,45 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - AddEditJurisdictions - JurisdictionList should render correctly 1`] = `
-<Table>
+<Table
+  summary="jurisdictions in undefined"
+>
   <withStyles(TableHead)>
     <withStyles(TableRow)
       key="jurisdiction-header"
     >
       <withStyles(TableCell)
+        id="segment-name"
         key="segment-name"
+        scope="col"
       >
         Jurisdiction
       </withStyles(TableCell)>
       <withStyles(TableCell)
+        id="segment-start-date"
         key="segment-start"
+        scope="col"
       >
         Segment Start Date
       </withStyles(TableCell)>
       <withStyles(TableCell)
+        id="segment-end-date"
         key="segment-end"
+        scope="col"
       >
         Segment End Date
       </withStyles(TableCell)>
       <withStyles(TableCell)
+        id="edit-segment"
         key="segment-edit"
+        scope="col"
       >
         Edit
       </withStyles(TableCell)>
       <withStyles(TableCell)
+        id="delete-segment"
         key="segment-delete"
+        scope="col"
       >
         Delete
       </withStyles(TableCell)>

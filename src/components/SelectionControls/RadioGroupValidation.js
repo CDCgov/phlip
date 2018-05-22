@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Radio from 'material-ui/Radio'
-import { FormControlLabel, FormControl, FormGroup } from 'material-ui/Form'
+import { FormControlLabel, FormControl, FormGroup, FormLabel } from 'material-ui/Form'
 import { withStyles } from 'material-ui/styles'
 import SimpleInput from 'components/SimpleInput'
 import { getInitials } from 'utils/normalize'
@@ -17,22 +17,29 @@ const styles = theme => ({
 export const RadioGroup = props => {
   const {
     choices, userAnswers, onChange, onChangePincite, classes,
-    mergedUserQuestions, disableAll, userImages, theme, onBlurText
+    mergedUserQuestions, disableAll, userImages, theme, question
   } = props
+
+  const userImageObj = userImages
+    ? userImages[userAnswers.validatedBy.userId] !== undefined
+      ? userImages[userAnswers.validatedBy.userId]
+      : userAnswers.validatedBy
+    : {}
 
   return (
     <FormControl component="fieldset">
+      <FormLabel component="legend" style={{ display: 'none' }} id="question_text">{question.text}</FormLabel>
       <FormGroup>
         {choices.map(choice => (
           <div key={choice.id} style={{ display: 'flex', alignItems: 'center' }}>
             <FormControlLabel
               onChange={onChange(choice.id)}
               checked={userAnswers.answers.hasOwnProperty(choice.id)}
-              control={
-                <Radio classes={{ checked: classes.checked }} />
-              }
+              htmlFor={choice.id}
+              control={<Radio classes={{ checked: classes.checked }} inputProps={{ id: choice.id, 'aria-describedby': 'question_text' }} />}
               disabled={disableAll}
               label={choice.text}
+              aria-label={choice.text}
             />
             {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
               answer.schemeAnswerId === choice.id &&
@@ -46,20 +53,15 @@ export const RadioGroup = props => {
             && mergedUserQuestions !== null
             && <Avatar
               cardAvatar
-              avatar={userAnswers.validatedBy.userId
-                ? userImages[userAnswers.validatedBy.userId] !== undefined
-                  ? userImages[userAnswers.validatedBy.userId].avatar
-                  : userAnswers.validatedBy.avatar
-                : userAnswers.validatedBy.avatar} //this is not good
+              avatar={userImageObj.avatar}
+              userName={`${userImageObj.firstName} ${userImageObj.lastName}`}
               style={{
                 backgroundColor: 'white',
                 color: theme.palette.secondary.main,
                 borderColor: theme.palette.secondary.main
               }}
               key={mergedUserQuestions.answers.length + 1}
-              initials={userAnswers.validatedBy === null
-                ? ''
-                : getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
+              initials={getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
             />}
             {userAnswers.answers.hasOwnProperty(choice.id) &&
             <SimpleInput
@@ -70,10 +72,10 @@ export const RadioGroup = props => {
                   ? '15px'
                   : '0px'
               }}
+              aria-label="pincite"
               disabled={disableAll}
               placeholder="Enter pincite"
               multiline={false}
-              //onBlur={onBlurText}
               value={userAnswers.answers[choice.id].pincite}
               onChange={onChangePincite(choice.id, 'pincite')}
             />}
@@ -84,6 +86,12 @@ export const RadioGroup = props => {
   )
 }
 
-RadioGroup.propTypes = {}
+RadioGroup.propTypes = {
+
+}
+
+RadioGroup.defaultProps = {
+  userImages: undefined
+}
 
 export default withStyles(styles, { withTheme: true })(RadioGroup)

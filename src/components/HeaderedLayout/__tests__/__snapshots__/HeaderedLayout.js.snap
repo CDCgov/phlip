@@ -20,6 +20,7 @@ exports[`HeaderedLayout it should render correctly 1`] = `
   />
   <withStyles(GridWrapper)
     container={true}
+    role="main"
     spacing={0}
     style={
       Object {
@@ -28,7 +29,13 @@ exports[`HeaderedLayout it should render correctly 1`] = `
         "padding": "0 27px 10px 27px",
       }
     }
-  />
+  >
+    <ApiErrorAlert
+      actions={Array []}
+      onCloseAlert={[Function]}
+      open={true}
+    />
+  </withStyles(GridWrapper)>
   <a
     style={
       Object {
