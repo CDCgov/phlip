@@ -25,7 +25,10 @@ const styles = theme => ({
   }
 })
 
-const InputBox = props => {
+/**
+ * A textarea input different from typically material-ui inputs, in that it is a box. Used in Coding / Validation scenes
+ */
+export const InputBox = props => {
   const {
     value, onChange, name, rows, answerId, classes, validator, theme, question,
     isValidation, userImages, style, ...otherProps
@@ -94,11 +97,62 @@ const InputBox = props => {
 }
 
 InputBox.propTypes = {
+  /**
+   * Value of the input field
+   */
+  value: PropTypes.any,
+  /**
+   * Function to call when the input changes
+   */
   onChange: PropTypes.func,
-  name: PropTypes.string
+  /**
+   * Name of the input
+   */
+  name: PropTypes.string,
+  /**
+   * Number of rows the textarea should be
+   */
+  rows: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  /**
+   * schemeAnswerId of the Coding / Validation question
+   */
+  answerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * Style classes from material-ui
+   */
+  classes: PropTypes.object,
+  /**
+   * Who is validated this question
+   */
+  validator: PropTypes.object,
+  /**
+   * Theme object from material-ui
+   */
+  theme: PropTypes.object,
+  /**
+   * Coding / Validation question object
+   */
+  question: PropTypes.object,
+  /**
+   * Whether or not this is being rendered on Validation scene
+   */
+  isValidation: PropTypes.bool,
+  /**
+   * Collection of user images for ValidationAvatar
+   */
+  userImages: PropTypes.object,
+  /**
+   * Outer container style
+   */
+  style: PropTypes.object
 }
 
 InputBox.defaultProps = {
+  classes: {},
+  isValidation: false,
+  question: {},
+  rows: 4,
+  theme: {},
   userImages: undefined
 }
 

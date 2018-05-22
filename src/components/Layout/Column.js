@@ -2,6 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Grid from 'material-ui/Grid'
 
+/**
+ * CSS flexbox Column based on material-ui's Grid component
+ */
 const Column = ({ flex, displayFlex, children, component, style, ...otherProps }) => {
   const styles = {
     flex: flex ? '1' : '0 0 auto',
@@ -23,10 +26,25 @@ const Column = ({ flex, displayFlex, children, component, style, ...otherProps }
 }
 
 Column.propTypes = {
+  /**
+   * Whether or not to set flex: 1 for the column
+   */
   flex: PropTypes.bool,
+  /**
+   * Whether or not to set display: flex for the column
+   */
   displayFlex: PropTypes.bool,
-  children: PropTypes.node,
+  /**
+   * Contents of the column
+   */
+  children: PropTypes.any,
+  /**
+   * Override add additional style
+   */
   style: PropTypes.object,
+  /**
+   * Component to turn into a flex column
+   */
   component: PropTypes.element
 }
 

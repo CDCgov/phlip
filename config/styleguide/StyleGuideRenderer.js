@@ -6,6 +6,7 @@ import Styled from 'react-styleguidist/lib/rsg-components/Styled'
 import cx from 'classnames'
 import Logo from 'components/Logo'
 import theme from 'services/theme'
+import Typography from 'material-ui/Typography'
 
 const styles = ({ color, fontFamily, fontSize, sidebarWidth, mq, space, maxWidth }) => ({
   root: {
@@ -69,7 +70,7 @@ export function StyleGuideRenderer({ classes, title, homepageUrl, children, toc,
       {hasSidebar && (
         <div className={classes.sidebar}>
           <div className={classes.logo}>
-            <Logo width={200} />
+            <Typography style={{ color: 'white', fontWeight: 100 }} type="title">PHLIP Docs & Styleguide</Typography>
           </div>
           {toc}
         </div>

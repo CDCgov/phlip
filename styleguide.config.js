@@ -2,6 +2,12 @@ const path = require('path')
 
 module.exports = {
   webpackConfig: require('./config/webpack.dev.config')({}),
+  styleguideDir: path.join(__dirname, 'docs'),
+  logger: {
+    warn: console.warn,
+    info: console.info,
+    debug: console.log
+  },
   sections: [
     {
       name: 'Scenes',
@@ -10,11 +16,15 @@ module.exports = {
     },
     {
       name: 'UI Components',
-      components: 'src/components/!(withFormAlert|CodingValidation|withTracking)/@(index|Column|Row|Container).js'
+      components: 'src/components/!(withFormAlert|CodingValidation|withTracking)/@(index|Column|Row|Container).js',
+      ignore: '**/src/components/Layout/index.js'
     },
     {
       name: 'Higher Order Components',
-      components: ['src/components/withFormAlert/index.js', 'src/components/CodingValidation/index.js', 'src/components/withTracking/index.js']
+      components: [
+        'src/components/withFormAlert/index.js', 'src/components/CodingValidation/index.js',
+        'src/components/withTracking/index.js'
+      ]
     },
     {
       name: 'Utility',

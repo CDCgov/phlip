@@ -8,7 +8,7 @@ const styleguidist = require('react-styleguidist')(require('../styleguide.config
 const utilFiles = fs.readdirSync(path.join(paths.appSrc, 'utils'))
 const docsDir = path.resolve('docs')
 let promises = []
-
+const IS_BUILD = process.argv[2] === 'build'
 
 const generateDocumentation = (utilFile, utilFileName) => {
   return new Promise((resolve, reject) => {
@@ -34,12 +34,25 @@ for (let i = 0; i < utilFiles.length; i++) {
 }
 
 Promise.all(promises).then(data => {
-  styleguidist.server((err, config) => {
-    if (err) {
-      console.log(err)
-    } else {
-      const url = `http://${config.serverHost}:${config.serverPort}`
-      console.log(`Listening at ${url}`)
-    }
-  })
+  if (IS_BUILD) {
+    console.log('here')
+    styleguidist.build((err, config) => {
+      if (err) {
+        console.log(`Error: ${err} building docs`)
+        process.exit(1)
+      } else {
+        console.log(`Docs published to ${config.styleguideDir}`)
+        process.exit(0)
+      }
+    })
+  } else {
+    styleguidist.server((err, config) => {
+      if (err) {
+        console.log(err)
+      } else {
+        const url = `http://${config.serverHost}:${config.serverPort}`
+        console.log(`Listening at ${url}`)
+      }
+    })
+  }
 })
