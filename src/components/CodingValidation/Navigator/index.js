@@ -105,8 +105,7 @@ export class Navigator extends Component {
           style={{ ...params.style, outline: 'none' }}
           key={`tree-${params.index}`}
           role="row"
-          aria-rowindex={params.index}
-          aria-rowcount={tree.length}>
+          aria-rowindex={params.index}>
           {this.questionRenderer({
             item: tree[params.index],
             key: params.index,

@@ -63,7 +63,7 @@ export class AvatarMenu extends PureComponent {
               id="avatar-menu-button"
               onClick={onToggleMenu}
               onKeyPress={this.onKeyPressMenu}
-              role="menubutton"
+              role="button"
               tabIndex={0}
               aria-controls="avatar-menu"
               aria-haspopup={true}
