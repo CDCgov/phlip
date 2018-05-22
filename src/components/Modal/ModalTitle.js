@@ -52,12 +52,6 @@ ModalTitle.propTypes = {
   style: PropTypes.object
 }
 
-ModalTitle.defaultProps = {
-  title: '',
-  search: false,
-  SearchBarProps: {},
-  buttons: {},
-  style: {}
-}
+ModalTitle.defaultProps = {}
 
 export default ModalTitle
