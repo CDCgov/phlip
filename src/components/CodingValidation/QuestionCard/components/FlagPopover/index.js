@@ -218,44 +218,54 @@ export class FlagPopover extends Component {
                   [styles.stopIconFlag]: this.props.questionFlags.length > 0
                 })
               } />,
-            style: { paddingRight: 15, paddingLeft: 15 },
+            style: { paddingRight: 15, paddingLeft: 15, maxHeight: 500 },
             tooltip: 'Stop coding this question',
             id: 'stop-coding-question'
           }}
           onOpen={this.onOpenRedPopover}
           onClose={this.onCloseRedPopover}>
-          <Container column style={{ minWidth: 450, minHeight: 200, alignItems: 'center', paddingTop: 10 }}>
+          <Container
+            column
+            style={{
+              minWidth: 450,
+              minHeight: 200,
+              maxHeight: 500,
+              alignItems: 'center',
+              flexWrap: 'nowrap',
+              paddingTop: 10,
+            }}>
             {(this.props.questionFlags.length > 0 && !this.state.inEditMode) &&
-            <Table style={{ width: '90%', width: 580, margin: '10px 16px' }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell padding="checkbox" style={{ maxWidth: 150, width: 150 }}>Raised By</TableCell>
-                  <TableCell
-                    padding="checkbox">Notes</TableCell>
-                  {this.state.questionFlags[0].raisedBy.userId === this.props.user.id &&
-                  <TableCell padding="checkbox" style={{ width: 48, paddingRight: 12 }}>Edit</TableCell>}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {this.state.questionFlags.map((flag, index) => (
-                  <TableRow key={`red-flag-${index}`}>
+            <div style={{ overflow: 'auto' }}>
+              <Table style={{ width: '90%', width: 580, margin: '10px 16px' }}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell padding="checkbox" style={{ maxWidth: 150, width: 150 }}>Raised By</TableCell>
                     <TableCell
-                      padding="checkbox" style={{
-                      maxWidth: 150,
-                      width: 150
-                    }}>{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}</TableCell>
-                    <TableCell
-                      padding="checkbox"
-                      style={{ maxWidth: 300, wordWrap: 'break-word', whiteSpace: 'pre-wrap' }}>
-                      {flag.notes}
-                    </TableCell>
-                    {flag.raisedBy.userId === this.props.user.id &&
-                    <TableCell padding="checkbox" style={{ width: 48, paddingRight: 12 }}>
-                      <IconButton onClick={this.toggleEditMode} color="#5f6060">edit</IconButton></TableCell>}
+                      padding="checkbox">Notes</TableCell>
+                    {this.state.questionFlags[0].raisedBy.userId === this.props.user.id &&
+                    <TableCell padding="checkbox" style={{ width: 48, paddingRight: 12 }}>Edit</TableCell>}
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>}
+                </TableHead>
+                <TableBody>
+                  {this.state.questionFlags.map((flag, index) => (
+                    <TableRow key={`red-flag-${index}`}>
+                      <TableCell
+                        padding="checkbox" style={{
+                        maxWidth: 150,
+                        width: 150
+                      }}>{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}</TableCell>
+                      <TableCell
+                        padding="checkbox"
+                        style={{ maxWidth: 300, wordWrap: 'break-word', whiteSpace: 'pre-wrap' }}>
+                        {flag.notes}
+                      </TableCell>
+                      {flag.raisedBy.userId === this.props.user.id &&
+                      <TableCell padding="checkbox" style={{ width: 48, paddingRight: 12 }}>
+                        <IconButton onClick={this.toggleEditMode} color="#5f6060">edit</IconButton></TableCell>}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table></div>}
             {this.state.inEditMode &&
             <form onSubmit={this.onSaveRedPopover} style={{ alignSelf: 'stretch', flex: 1, width: 580 }}>
               <Row style={{ padding: 16 }}>
