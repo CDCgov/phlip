@@ -82,7 +82,7 @@ const InputBox = props => {
           value={textValues.pincite === null ? '' : textValues.pincite}
           placeholder="Enter pincite"
           label="Pincite"
-          aria-label="pincite"
+          InputProps={{ inputProps: { 'aria-label': 'Pincite' } }}
           onChange={onChange(answerId, 'pincite')}
           multiline={false}
           shrinkLabel
