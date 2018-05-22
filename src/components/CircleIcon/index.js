@@ -48,9 +48,10 @@ CircleIcon.propTypes = {
   circleSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
   /**
-   * String name of the icon from https://material.io/tools/icons/?style=baseline to display.
+   * String name of the icon from https://material.io/tools/icons/?style=baseline to display, or Icon component from an
+   * icon library like mdi-material-ui.
    */
-  children: PropTypes.string,
+  children: PropTypes.any,
 
   /**
    * Material-ui theme object

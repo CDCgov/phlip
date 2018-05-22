@@ -16,7 +16,7 @@ module.exports = {
     },
     {
       name: 'UI Components',
-      components: 'src/components/!(withFormAlert|CodingValidation|withTracking)/*.js',
+      components: 'src/components/!(withFormAlert|CodingValidation|withTracking|MultiSelectDropdown)/*.js',
       ignore: '**/src/components/Layout/index.js'
     },
     {
