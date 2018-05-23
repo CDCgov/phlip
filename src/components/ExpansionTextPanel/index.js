@@ -69,11 +69,11 @@ export class ExpansionTextPanel extends Component {
               style={{
                 width: 450,
                 zIndex: this.state.open ? 2 : '',
-                display: this.state.open ? 'block' : 'none'
-              }}
-            >
+                display: this.state.open ? 'block' : 'none',
+                maxHeight: 500
+              }}>
               <Grow in={this.state.open}>
-                <Paper elevation={8} style={{ padding: 25, whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
+                <Paper elevation={8} style={{ padding: 25, whiteSpace: 'pre-wrap', wordWrap: 'break-word', maxHeight: 500, overflow: 'auto' }}>
                   <Typography {...this.props.textProps}>{this.props.text}</Typography>
                 </Paper>
               </Grow>
