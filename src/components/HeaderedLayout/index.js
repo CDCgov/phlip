@@ -77,7 +77,7 @@ export class HeaderedLayout extends Component {
           open={open}
           handleLogoutUser={() => { history.push('/login'); actions.logoutUser() }}
           handleToggleMenu={actions.toggleMenu}
-          handleOpenAdminPage={() => { history.push('/admin'); actions.closeMenu() }}
+          handleOpenAdminPage={() => { actions.closeMenu(); history.push('/admin') }}
           handleCloseMenu={actions.closeMenu}
           handleOpenHelpPdf={this.handleDownloadPdf}
         />

@@ -39,6 +39,9 @@ const styles = theme => {
   }
 }
 
+/**
+ * Wrapper for material-ui's Tooltip component, displays a small popover with text on hover
+ */
 export const Tooltip = ({ text, placement, children, classes, ...otherProps }) => {
   return (
     <MuiTooltip
@@ -63,8 +66,22 @@ Tooltip.defaultProps = {
 }
 
 Tooltip.propTypes = {
+  /**
+   * Tooltip text
+   */
   text: PropTypes.string,
-  placement: PropTypes.string
+  /**
+   * Where to place the tooltip, relative to the components children
+   */
+  placement: PropTypes.string,
+  /**
+   * Tooltip will show on hover of the children
+   */
+  children: PropTypes.any,
+  /**
+   * Style classes object from material-ui
+   */
+  classes: PropTypes.object
 }
 
 export default withStyles(styles)(Tooltip)
