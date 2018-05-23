@@ -235,7 +235,7 @@ export class FlagPopover extends Component {
               paddingTop: 10,
             }}>
             {(this.props.questionFlags.length > 0 && !this.state.inEditMode) &&
-            <div style={{ overflow: 'auto' }}>
+            <div style={{ overflow: 'auto', width: '100%' }}>
               <Table style={{ width: '90%', maxWidth: 500, margin: '10px 16px' }}>
                 <TableHead>
                   <TableRow>
