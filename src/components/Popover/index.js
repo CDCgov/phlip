@@ -3,6 +3,9 @@ import { findDOMNode } from 'react-dom'
 import PropTypes from 'prop-types'
 import { Manager, Popper, Target } from 'react-popper'
 
+/**
+ * Popover component that displays a
+ */
 export class Popover extends Component {
   state = {
     open: true

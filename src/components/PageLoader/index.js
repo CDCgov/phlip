@@ -4,6 +4,9 @@ import Typography from 'material-ui/Typography'
 import Container from 'components/Layout'
 import CircularLoader from 'components/CircularLoader'
 
+/**
+ * Displays a circular loader in a container with a message
+ */
 export const PageLoader = ({ circularLoaderType, circularLoaderProps, message, messageText }) => {
   return (
     <Container flex alignItems="center" style={{ justifyContent: 'center' }}>
@@ -24,9 +27,21 @@ PageLoader.defaultProps = {
 }
 
 PageLoader.propTypes = {
+  /**
+   * Type of loader, based on Material-UI's CircularProgress component
+   */
   circularLoaderType: PropTypes.string,
+  /**
+   * Any props to pass to CircularLoader
+   */
   circularLoaderProps: PropTypes.object,
+  /**
+   * Whether or not to display a message
+   */
   message: PropTypes.bool,
+  /**
+   * Contents of message to display
+   */
   messageText: PropTypes.string
 }
 

@@ -16,8 +16,8 @@ module.exports = {
     },
     {
       name: 'UI Components',
-      components: 'src/components/!(withFormAlert|CodingValidation|withTracking|MultiSelectDropdown)/*.js',
-      ignore: '**/src/components/Layout/index.js'
+      components: 'src/components/!(withFormAlert|CodingValidation|withTracking|MultiSelectDropdown|Popover)/*.js',
+      ignore: '**/src/components/@(Layout|RoutePages)/index.js'
     },
     {
       name: 'Higher Order Components',

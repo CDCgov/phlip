@@ -14,6 +14,9 @@ const styles = theme => ({
   }
 })
 
+/**
+ * Checkbox form group for Coding / Validation screens
+ */
 export const CheckboxGroupValidation = props => {
   const {
     choices, userAnswers, onChange, onChangePincite, pincites,
@@ -91,8 +94,50 @@ CheckboxGroupValidation.defaultProps = {
 }
 
 CheckboxGroupValidation.propTypes = {
+  /**
+   * Array of answer choices to display as checkbox inputs
+   */
   choices: PropTypes.array,
-  onChange: PropTypes.func
+  /**
+   * The user's answer object for this question
+   */
+  userAnswers: PropTypes.object,
+  /**
+   * Function to call when a user clicks a checkbox input
+   */
+  onChange: PropTypes.func,
+  /**
+   * Function to call when the user changes the pincite text field
+   */
+  onChangePincite: PropTypes.func,
+  /**
+   * Whether or not to show pincite text field
+   */
+  pincites: PropTypes.bool,
+  /**
+   * Object of coded questions (used on validation for displaying who answered each answer choice)
+   */
+  mergedUserQuestions: PropTypes.object,
+  /**
+   * Whether or not to disabled all inputs
+   */
+  disableAll: PropTypes.bool,
+  /**
+   * User images array for getting the avatars (used in validation)
+   */
+  userImages: PropTypes.object,
+  /**
+   * Current question
+   */
+  question: PropTypes.object,
+  /**
+   * Material-UI theme object
+   */
+  theme: PropTypes.object,
+  /**
+   * Style classes object from material-ui
+   */
+  classes: PropTypes.object
 }
 
 export default withStyles(styles, { withTheme: true })(CheckboxGroupValidation)
