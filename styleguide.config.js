@@ -23,10 +23,10 @@ module.exports = {
     },
     {
       name: 'Higher Order Components',
+      components: 'src/components/CodingValidation/rsgCodingValidation.js',
       sections: [
         { name: 'withFormAlert', content: 'src/components/withFormAlert/Readme.md' },
-        { name: 'withTracking', content: 'src/components/withTracking/Readme.md' },
-        { name: 'withCodingValidation', content: 'src/components/CodingValidation/Readme.md' }
+        { name: 'withTracking', content: 'src/components/withTracking/Readme.md' }
       ]
     },
     {
@@ -71,5 +71,17 @@ module.exports = {
     SectionHeadingRenderer: path.join(__dirname, 'config/styleguide/SectionHeadingRenderer')
   },
   theme,
-  styles
+  styles,
+  getComponentPathLine: componentPath => {
+    let name = path.basename(componentPath, '.js')
+    const dir = path.dirname(componentPath)
+
+    if (name === 'rsgCodingValidation') {
+      name = 'withCodingValidation'
+    } else if (name === 'index') {
+      name = dir.split('/')[dir.split('/').length - 1]
+    }
+
+    return `import ${name} from '${dir}'`
+  }
 }

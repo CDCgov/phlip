@@ -67,9 +67,9 @@ const styles = theme => ({
  * Coding or Validation component. It was created since most of the component between the two components were identical.
  * @component
  */
-export const withCodingValidation = (WrappedComponent, actions, pageName) => {
-  class CodingValidation extends WrappedComponent {
+const withCodingValidation = (WrappedComponent, actions, pageName) => {
 
+  class CodingValidation extends WrappedComponent {
     static propTypes = {
       projectName: PropTypes.string,
       page: PropTypes.string,
