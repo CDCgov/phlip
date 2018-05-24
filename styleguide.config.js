@@ -1,4 +1,6 @@
 const path = require('path')
+const styles = require('./config/styleguide').stylguideStyles
+const theme = require('./config/styleguide').styleguideTheme
 
 module.exports = {
   webpackConfig: require('./config/webpack.dev.config')({}),
@@ -23,8 +25,8 @@ module.exports = {
       name: 'Higher Order Components',
       sections: [
         { name: 'withFormAlert', content: 'src/components/withFormAlert/Readme.md' },
-        { name: 'withCodingValidation', content: 'src/components/withTracking/Readme.md' },
-        { name: 'withTracking', content: '' }
+        { name: 'withTracking', content: 'src/components/withTracking/Readme.md' },
+        { name: 'withCodingValidation', content: 'src/components/CodingValidation/Readme.md' }
       ]
     },
     {
@@ -58,32 +60,16 @@ module.exports = {
       ]
     }
   ],
-  showCode: true,
+  showCode: false,
   showUsage: true,
   styleguideComponents: {
     Wrapper: path.join(__dirname, 'config/styleguide/ThemeWrapper'),
     SectionsRenderer: path.join(__dirname, 'config/styleguide/SectionsRenderer'),
     StyleGuideRenderer: path.join(__dirname, 'config/styleguide/StyleGuideRenderer'),
-    ExamplePlaceholderRenderer: path.join(__dirname, 'config/styleguide/ExamplePlaceholderRenderer')
+    ExamplePlaceholderRenderer: path.join(__dirname, 'config/styleguide/ExamplePlaceholderRenderer'),
+    HeadingRenderer: path.join(__dirname, 'config/styleguide/HeadingRenderer'),
+    SectionHeadingRenderer: path.join(__dirname, 'config/styleguide/SectionHeadingRenderer')
   },
-  theme: {
-    fontFamily: {
-      base: [
-        'Roboto',
-        'sans-serif'
-      ]
-    }
-  },
-  styles: {
-    ComponentsList: {
-      heading: {
-        fontWeight: '600 !important',
-        fontSize: 16
-      },
-      isChild: {
-        fontSize: 13,
-        fontWeight: 'lighter'
-      }
-    }
-  }
+  theme,
+  styles
 }

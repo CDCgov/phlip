@@ -6,7 +6,6 @@ import cx from 'classnames'
 import theme from 'services/theme'
 import Typography from 'material-ui/Typography'
 
-const backgroundColor = theme.palette.secondary.dark
 const background = '#3A4041'
 
 const styles = ({ color, fontFamily, fontSize, sidebarWidth, mq, space, maxWidth }) => ({
