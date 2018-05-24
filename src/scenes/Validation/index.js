@@ -116,7 +116,8 @@ export class Validation extends Component {
         <ApiErrorAlert
           content={this.props.saveFlagErrorContent}
           open={this.props.saveFlagErrorContent !== null}
-          onCloseAlert={() => this.props.actions.dismissApiAlert('saveFlagErrorContent')} />
+          onCloseAlert={() => this.props.actions.dismissApiAlert('saveFlagErrorContent')}
+        />
       </Fragment>
     )
   }

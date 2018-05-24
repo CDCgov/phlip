@@ -4,9 +4,6 @@ import Alert from 'components/Alert'
 import Typography from 'material-ui/Typography'
 import Icon from 'components/Icon'
 
-/**
- * @component
- */
 export const withFormAlert = (WrappedComponent) => {
   class FormAlert extends Component {
     constructor(props, context) {

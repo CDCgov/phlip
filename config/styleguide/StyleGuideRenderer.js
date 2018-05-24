@@ -1,54 +1,51 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-//import Logo from 'react-styleguidist/lib/rsg-components/Logo'
 import Markdown from 'react-styleguidist/lib/rsg-components/Markdown'
 import Styled from 'react-styleguidist/lib/rsg-components/Styled'
 import cx from 'classnames'
-import Logo from 'components/Logo'
 import theme from 'services/theme'
 import Typography from 'material-ui/Typography'
 
+const backgroundColor = theme.palette.secondary.dark
+const background = '#3A4041'
+
 const styles = ({ color, fontFamily, fontSize, sidebarWidth, mq, space, maxWidth }) => ({
   root: {
-    backgroundColor: color.baseBackground
-  },
-  hasSidebar: {
-    paddingLeft: sidebarWidth,
-    [mq.small]: {
-      paddingLeft: 0
-    }
+    backgroundColor: color.baseBackground,
+    display: 'flex',
+    flexDirection: 'row',
+    height: '100vh'
   },
   content: {
-    maxWidth,
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
     padding: [[space[2], space[4]]],
-    margin: [[0, 'auto']],
     [mq.small]: {
       padding: space[2]
     },
-    display: 'block'
+    overflow: 'auto'
   },
   sidebar: {
-    backgroundColor: color.sidebarBackground,
+    backgroundColor: background,
     border: [[color.border, 'solid']],
     borderWidth: [[0, 1, 0, 0]],
-    position: 'fixed',
+    position: 'relative',
     top: 0,
     left: 0,
     bottom: 0,
-    width: 250,
+    width: 275,
+    display: 'flex',
+    flexDirection: 'column',
     overflow: 'auto',
-    '-webkit-overflow-scrolling': 'touch',
-    [mq.small]: {
-      position: 'static',
-      width: 'auto',
-      borderWidth: [[1, 0, 0, 0]],
-      paddingBottom: space[0]
-    }
+    color: 'white',
+    '& li > a': {
+      color: 'white !important'
+    },
   },
   logo: {
     padding: space[2],
-    backgroundColor: theme.palette.primary.main,
-    borderBottom: [[1, color.border, 'solid']]
+    backgroundColor: background
   },
   footer: {
     display: 'block',
@@ -61,20 +58,20 @@ const styles = ({ color, fontFamily, fontSize, sidebarWidth, mq, space, maxWidth
 export function StyleGuideRenderer({ classes, title, homepageUrl, children, toc, hasSidebar }) {
   return (
     <div className={cx(classes.root, hasSidebar && classes.hasSidebar)}>
-      <main className={classes.content}>
-        {children}
-        <footer className={classes.footer}>
-          <Markdown text={`Generated with [React Styleguidist](${homepageUrl})`} />
-        </footer>
-      </main>
-      {hasSidebar && (
+      <div style={{ overflow: 'auto' }}>
         <div className={classes.sidebar}>
           <div className={classes.logo}>
             <Typography style={{ color: 'white', fontWeight: 100 }} type="title">PHLIP Docs & Styleguide</Typography>
           </div>
           {toc}
         </div>
-      )}
+      </div>
+      <main className={classes.content}>
+        {children}
+        <footer className={classes.footer}>
+          <Markdown text={`Generated with [React Styleguidist](${homepageUrl})`} />
+        </footer>
+      </main>
     </div>
   )
 }

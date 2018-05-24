@@ -21,9 +21,10 @@ module.exports = {
     },
     {
       name: 'Higher Order Components',
-      components: [
-        'src/components/withFormAlert/index.js', 'src/components/CodingValidation/index.js',
-        'src/components/withTracking/index.js'
+      sections: [
+        { name: 'withFormAlert', content: 'src/components/withFormAlert/Readme.md' },
+        { name: 'withCodingValidation', content: 'src/components/withTracking/Readme.md' },
+        { name: 'withTracking', content: '' }
       ]
     },
     {
@@ -64,5 +65,25 @@ module.exports = {
     SectionsRenderer: path.join(__dirname, 'config/styleguide/SectionsRenderer'),
     StyleGuideRenderer: path.join(__dirname, 'config/styleguide/StyleGuideRenderer'),
     ExamplePlaceholderRenderer: path.join(__dirname, 'config/styleguide/ExamplePlaceholderRenderer')
+  },
+  theme: {
+    fontFamily: {
+      base: [
+        'Roboto',
+        'sans-serif'
+      ]
+    }
+  },
+  styles: {
+    ComponentsList: {
+      heading: {
+        fontWeight: '600 !important',
+        fontSize: 16
+      },
+      isChild: {
+        fontSize: 13,
+        fontWeight: 'lighter'
+      }
+    }
   }
 }
