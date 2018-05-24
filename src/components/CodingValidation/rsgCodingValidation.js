@@ -125,7 +125,7 @@ export class withCodingValidation extends Component {
   }
 
   /**
-   *
+   * @public
    * @param index
    */
   getNextQuestion = index => {
@@ -138,7 +138,7 @@ export class withCodingValidation extends Component {
   }
 
   /**
-   *
+   * @public
    * @param index
    */
   getPrevQuestion = index => {
@@ -151,7 +151,7 @@ export class withCodingValidation extends Component {
   }
 
   /**
-   *
+   * @public
    * @param item
    */
   onQuestionSelectedInNav = item => {
@@ -164,7 +164,7 @@ export class withCodingValidation extends Component {
   }
 
   /**
-   *
+   * @public
    */
   onShowQuestionLoader = () => {
     setTimeout(() => {
@@ -175,7 +175,9 @@ export class withCodingValidation extends Component {
   }
 
   /**
-   * Updates the redux state with new user data
+   * @public
+   * @param id
+   * @returns {Function}
    */
   onAnswer = id => (event, value) => {
     this.props.actions.updateUserAnswer(
@@ -188,13 +190,17 @@ export class withCodingValidation extends Component {
 
   /**
    * This actually dispatches the redux action that calls the api to save the question data
+   * @public
    */
   onSaveCodedQuestion = () => {
     this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.selectedCategoryId, this.props.page)
   }
 
   /**
-   * Updates redux state with new user data for text input fields
+   * @public
+   * @param id
+   * @param field
+   * @returns {Function}
    */
   onChangeTextAnswer = (id, field) => event => {
     switch (field) {
@@ -220,19 +226,19 @@ export class withCodingValidation extends Component {
   }
 
   /**
-   *
+   * @public
    * @returns {*}
    */
   onOpenApplyAllAlert = () => this.setState({ applyAllAlertOpen: true })
 
   /**
-   *
+   * @public
    * @returns {*|{type, args}}
    */
   onCloseAlert = () => this.props.actions.dismissApiAlert('answerErrorContent')
 
   /**
-   *
+   * @public
    * @param event
    * @param selection
    */
@@ -242,7 +248,7 @@ export class withCodingValidation extends Component {
   }
 
   /**
-   *
+   * @public
    */
   onTryAgain = () => {
     this.onSaveCodedQuestion()
@@ -250,7 +256,7 @@ export class withCodingValidation extends Component {
   }
 
   /**
-   *
+   * @public
    * @param question
    * @param method
    */
@@ -263,7 +269,7 @@ export class withCodingValidation extends Component {
   }
 
   /**
-   *
+   * @public
    */
   onCancelStillSavingAlert = () => {
     this.setState({
@@ -274,7 +280,7 @@ export class withCodingValidation extends Component {
   }
 
   /**
-   *
+   * @public
    */
   onContinueStillSavingAlert = () => {
     // question changing
@@ -296,7 +302,7 @@ export class withCodingValidation extends Component {
   }
 
   /**
-   *
+   * @public
    */
   onClearAnswer = () => {
     this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
@@ -305,7 +311,7 @@ export class withCodingValidation extends Component {
   }
 
   /**
-   *
+   * @public
    */
   onGoBack = () => {
     if (this.props.unsavedChanges === true) {
@@ -319,7 +325,7 @@ export class withCodingValidation extends Component {
   }
 
   /***
-   *
+   * @public
    */
   onChangeTouchedStatus = () => {
     if (!this.props.hasTouchedQuestion) {
@@ -328,13 +334,13 @@ export class withCodingValidation extends Component {
   }
 
   /**
-   *
+   * @public
    * @returns {*}
    */
   onCloseApplyAllAlert = () => this.setState({ applyAllAlertOpen: false })
 
   /**
-   *
+   * @public
    */
   onApplyToAll = () => {
     this.onCloseApplyAllAlert()
@@ -343,7 +349,7 @@ export class withCodingValidation extends Component {
   }
 
   /**
-   *
+   * @public
    * @param noScheme
    * @param noJurisdictions
    * @returns {*}
