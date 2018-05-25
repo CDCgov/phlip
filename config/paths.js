@@ -17,5 +17,6 @@ module.exports = {
   yarnLockFile: resolveApp('yarn.lock'),
   appNodeModules: resolveApp('node_modules'),
   appDotEnv: resolveApp('.env'),
-  publicPath: '/'
+  publicPath: '/',
+  styleguideComponents: fileName => resolveApp(`config/styleguide/${fileName}`)
 }

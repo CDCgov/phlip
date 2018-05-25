@@ -5,7 +5,7 @@ import DefaultSections from 'react-styleguidist/lib/rsg-components/Sections/Sect
 
 const styles = ({ fontFamily, color, space }) => ({
   headingSpacer: {
-    marginBottom: space[2]
+    marginBottom: 10
   },
   descriptionText: {
     marginTop: space[0],

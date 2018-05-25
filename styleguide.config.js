@@ -1,6 +1,7 @@
 const path = require('path')
 const styles = require('./config/styleguide').stylguideStyles
 const theme = require('./config/styleguide').styleguideTheme
+const comps = require('./config/paths').styleguideComponents
 
 module.exports = {
   webpackConfig: require('./config/webpack.dev.config')({}),
@@ -63,12 +64,12 @@ module.exports = {
   showCode: false,
   showUsage: true,
   styleguideComponents: {
-    Wrapper: path.join(__dirname, 'config/styleguide/ThemeWrapper'),
-    SectionsRenderer: path.join(__dirname, 'config/styleguide/SectionsRenderer'),
-    StyleGuideRenderer: path.join(__dirname, 'config/styleguide/StyleGuideRenderer'),
-    ExamplePlaceholderRenderer: path.join(__dirname, 'config/styleguide/ExamplePlaceholderRenderer'),
-    HeadingRenderer: path.join(__dirname, 'config/styleguide/HeadingRenderer'),
-    SectionHeadingRenderer: path.join(__dirname, 'config/styleguide/SectionHeadingRenderer')
+    Wrapper: comps('ThemeWrapper'),
+    SectionsRenderer: comps('SectionsRenderer'),
+    StyleGuideRenderer: comps('StyleGuideRenderer'),
+    ExamplePlaceholderRenderer: comps('ExamplePlaceholderRenderer'),
+    HeadingRenderer: comps('HeadingRenderer'),
+    SectionHeadingRenderer: comps('SectionHeadingRenderer')
   },
   theme,
   styles,

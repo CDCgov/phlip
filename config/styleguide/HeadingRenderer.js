@@ -19,8 +19,8 @@ const styles = ({ color, fontFamily, fontSize }) => ({
     display: 'block',
     position: 'relative',
     color: colors.sidebar,
-    marginBottom: 20,
-    paddingBottom: 13,
+    marginBottom: 10,
+    paddingBottom: 5,
     fontSize: fontSize.h1,
     fontWeight: 700,
     '&:before': {

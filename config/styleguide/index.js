@@ -10,7 +10,7 @@ const styleguideTheme = {
     text: 16,
     small: 13,
     h1: 38,
-    h2: 24,
+    h2: 22,
     h3: 20,
     h4: 18,
     h5: 16,
@@ -20,6 +20,20 @@ const styleguideTheme = {
 }
 
 const stylguideStyles = {
+  MarkdownHeading: {
+    spacing: {
+      marginBottom: 10,
+      marginTop: 32
+    }
+  },
+  /**
+   * This is for each parent section like Scenes, Utility, UI Component, and HOC
+   */
+  Section: {
+    root: {
+      marginBottom: 60
+    }
+  },
   ComponentsList: {
     heading: {
       fontWeight: '600 !important',
@@ -31,6 +45,9 @@ const stylguideStyles = {
     }
   },
   ReactComponent: {
+    header: {
+      marginBottom: 10
+    },
     tabs: {
       backgroundColor: '#ebf1f3',
       padding: 10,
