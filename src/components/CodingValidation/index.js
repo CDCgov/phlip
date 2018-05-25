@@ -585,7 +585,6 @@ const withCodingValidation = (WrappedComponent, actions, pageName) => {
       showPageLoader: pageState.showPageLoader || false,
       isChangingQuestion: pageState.isChangingQuestion || false,
       selectedCategoryId: pageState.selectedCategoryId || null,
-      userAnswers: pageState.userAnswers || {},
       unsavedChanges: pageState.unsavedChanges || false,
       hasTouchedQuestion: pageState.hasTouchedQuestion || false,
       objectExists: pageState.objectExists || false

@@ -20,38 +20,132 @@ import ApiErrorAlert from 'components/ApiErrorAlert'
 import PageLoader from 'components/PageLoader'
 
 /**
- * __withCodingValidation__ is a higher order component that is only used in
- * the scenes/Coding and scenes/Validation components. Most of interactions,
- * view, events on Coding and Validation are the same. withCodingValidation
- * prevents duplicate code by putting everything that is used in both components
- * into one.
+ * __withCodingValidation__ is a higher order component that is only used in the scenes/Coding and scenes/Validation
+ * components. Most of interactions, views, events, etc. on Coding and Validation are the same, with the exception of a
+ * few items. withCodingValidation prevents duplicate code by putting everything that is used in both components into
+ * one.
+ *
+ * withCodingValidation extends the abilities of either Coding or Validation screen with the new class CodingValidation.
+ * Below are all of the props and methods that are availble in whatever component uses the withCodingValidation HOC.
  */
 export class withCodingValidation extends Component {
   static propTypes = {
+    /**
+     * Name of project for which the code / validation screens were open
+     */
     projectName: PropTypes.string,
+    /**
+     * Either 'coding' or 'validation', used for redux to know which reducer to use
+     */
     page: PropTypes.string,
+    /**
+     * Whether or not this is validation screen
+     */
     isValidation: PropTypes.bool,
+    /**
+     * Project ID for which the code / validation screens were open
+     */
     projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    /**
+     * Current question object
+     */
     question: PropTypes.object,
+    /**
+     * Current index --- represents the current question in the questionOrder array
+     */
     currentIndex: PropTypes.number,
+    /**
+     * Array of question IDs in coding scheme order
+     */
     questionOrder: PropTypes.array,
+    /**
+     * Whether or not the 'next question' button should be shown (for ex. if it's the last question in the scheme, then
+     * it won't be shown)
+     */
     showNextButton: PropTypes.bool,
+    /**
+     * List of jurisdictions for the project
+     */
     jurisdictionsList: PropTypes.array,
+    /**
+     * ID of currently selected jurisdiction
+     */
     jurisdictionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    /**
+     * Currently selected jurisdiction from the jurisdiction list
+     */
     jurisdiction: PropTypes.object,
+    /**
+     * Whether or not the coding scheme for the project is empty, used in determining which view to show
+     */
     isSchemeEmpty: PropTypes.bool,
+    /**
+     * Whether or not the project has added jurisdictions, used in determining which view to show
+     */
     areJurisdictionsEmpty: PropTypes.bool,
+    /**
+     * Role of the user currently logged in
+     */
     userRole: PropTypes.string,
+    /**
+     * User currently logged in
+     */
     user: PropTypes.object,
+    /**
+     * Currently selected category if the current question is a category question, this is the index in the array of
+     * categories given to the tabs component
+     */
     selectedCategory: PropTypes.number,
+    /**
+     * ID of the currently selected category
+     */
+    selectedCategoryId: PropTypes.any,
+    /**
+     * Any error that occurred while trying to get the coding scheme
+     */
     schemeError: PropTypes.string,
+    /**
+     * Any error that occurred while trying to answer (code or validate) a question
+     */
     answerErrorContent: PropTypes.any,
+    /**
+     * Any error that occurred while trying to save a flag
+     */
     saveFlagErrorContent: PropTypes.string,
+    /**
+     * Any error that occurred while trying to get the initial questions
+     */
     getQuestionErrors: PropTypes.string,
-    isLoadingPage: PropTypes.bool,
+    /**
+     * Message to put in the page loader view
+     */
     pageLoadingMessage: PropTypes.string,
+    /**
+     * Whether or not to show the page loader view
+     */
     showPageLoader: PropTypes.bool,
-    actions: PropTypes.object
+    /**
+     * Redux action creators
+     */
+    actions: PropTypes.object,
+    /**
+     * Whether or not there are currently unsaved changes to this question
+     */
+    unsavedChanges: PropTypes.bool,
+    /**
+     * Whether or not the user has tried to navigate to another question, so the app is in the process of changing questions
+     */
+    isChangingQuestion: PropTypes.bool,
+    /**
+     * Whether or not the user has 'touched' the question, this determines if the 'Saved Status' should be shown in the
+     * question ard
+     */
+    hasTouchedQuestion: PropTypes.bool,
+    /**
+     * Whether or not an error occurred while trying to save an answer to the question that says there is already an
+     * object that exists (this determines what type of actions will be displayed in the alert error)
+     */
+    objectExists: PropTypes.bool
   }
 
   constructor(context, props) {
@@ -118,6 +212,8 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * Opens or closes the Code Navigator
+   *
    * @public
    */
   onToggleNavigator = () => {
@@ -125,8 +221,11 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * If there are unsaved changes, then shows a alert saying so, otherwise calls a redux action to load the next question
+   * whose index is the index parameter. Shows question loader.
+   *
    * @public
-   * @param index
+   * @param {number} index
    */
   getNextQuestion = index => {
     if (this.props.unsavedChanges === true) {
@@ -138,8 +237,11 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * If there are unsaved changes, then shows a alert saying so, otherwise calls a redux action to load the previous question
+   * whose index is the index parameter. Shows question loader.
+   *
    * @public
-   * @param index
+   * @param {number} index
    */
   getPrevQuestion = index => {
     if (this.props.unsavedChanges === true) {
@@ -151,8 +253,11 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * If there are unsaved changes, then shows a alert saying so, otherwise calls a redux action to load the question that
+   * was selected in the code navigator. Shows question loader.
+   *
    * @public
-   * @param item
+   * @param {object} item
    */
   onQuestionSelectedInNav = item => {
     if (this.props.unsavedChanges === true) {
@@ -164,6 +269,9 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * Sets a timeout, after 1 sec if the application is still in the process of changing questions, calls a redux action
+   * to show the loading spinner.
+   *
    * @public
    */
   onShowQuestionLoader = () => {
@@ -175,15 +283,15 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * The user has answered the question in some way. The ID is the schemeAnswerId that was changed.
+   *
    * @public
-   * @param id
-   * @returns {Function}
+   * @param {string|number} id
+   * @returns {function} (event, value) a function that accepts and onChange event and then calls a redux action to update
+   * the redux state with the new value.
    */
   onAnswer = id => (event, value) => {
-    this.props.actions.updateUserAnswer(
-      this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, value
-    )
-
+    this.props.actions.updateUserAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, value)
     this.onChangeTouchedStatus()
     this.onSaveCodedQuestion()
   }
@@ -197,10 +305,12 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * Called when the user has updated any text input field on the question (pincite, text field answer or comment)
    * @public
-   * @param id
-   * @param field
-   * @returns {Function}
+   * @param {string|number} id
+   * @param {string} field
+   * @returns {function} (event) that accepts and onChange event and calls a different redux action to update the answer
+   * depending on the field parameter string.
    */
   onChangeTextAnswer = (id, field) => event => {
     switch (field) {
@@ -226,20 +336,21 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * Opens an alert to ask the user to confirm to apply answer to all tabs
    * @public
-   * @returns {*}
    */
   onOpenApplyAllAlert = () => this.setState({ applyAllAlertOpen: true })
 
   /**
+   * Closes the alert that is shown when there's an error with answering a question
    * @public
-   * @returns {*|{type, args}}
    */
   onCloseAlert = () => this.props.actions.dismissApiAlert('answerErrorContent')
 
   /**
+   * Calls a redux action to change the selected tab
    * @public
-   * @param event
+   * @param {object} event
    * @param selection
    */
   onChangeCategory = (event, selection) => {
@@ -248,6 +359,8 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * One of the alert actions for the alert appears when the database gives an 'Object Exists' error when answering a
+   * question. Tries to save the question again and closes the alert.
    * @public
    */
   onTryAgain = () => {
@@ -256,9 +369,12 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * Opens an alert to notify the user the application is still in the process of saving their answer. This is invoked
+   * when the user tried to change question while the application was still saving. Saves the question to navigate to and
+   * the method the user used in case they decided to continue changing questions.
    * @public
-   * @param question
-   * @param method
+   * @param {object|number} question
+   * @param {function} method
    */
   onShowStillSavingAlert = (question, method) => {
     this.setState({
@@ -269,6 +385,7 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * User clicks cancel in the alert that shows when the application is still saving answers, closes the alert
    * @public
    */
   onCancelStillSavingAlert = () => {
@@ -280,6 +397,9 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * The user clicked 'continue' in the 'still saving' alert to continue changing questions. Calls redux action to change
+   * questions, based on the method the user used when trying to change questions -- changing jurisdictions, clicking
+   * next, previous or navigator question, or clicking the back arrow in the page header. Closes still saving alert
    * @public
    */
   onContinueStillSavingAlert = () => {
@@ -302,6 +422,8 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * Invoked when the user confirms they want to clear their answer, calls a redux action to clear answer and save that
+   * to the database. Changes touched status of question
    * @public
    */
   onClearAnswer = () => {
@@ -311,6 +433,8 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * If there are unsaved changes, then shows an alert notifying so, else goes back one in browser history. Invoked when
+   * the user clicks the 'back arrow' icon button in the page header.
    * @public
    */
   onGoBack = () => {
@@ -324,7 +448,8 @@ export class withCodingValidation extends Component {
     }
   }
 
-  /***
+  /**
+   * Calls a redux action to change the touched status of the question IFF it was previously untouched.
    * @public
    */
   onChangeTouchedStatus = () => {
@@ -334,12 +459,14 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * Closes alert that is shown when the user clicks 'apply to all tabs' button
    * @public
-   * @returns {*}
    */
   onCloseApplyAllAlert = () => this.setState({ applyAllAlertOpen: false })
 
   /**
+   * The user confirmed they want to apply answer to all tabs, calls redux action to apply to all tabs, and closes the
+   * alert
    * @public
    */
   onApplyToAll = () => {
@@ -349,10 +476,10 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * This view is shown if there are either no jurisdiction or a coding scheme for the project
    * @public
-   * @param noScheme
-   * @param noJurisdictions
-   * @returns {*}
+   * @param {boolean} noScheme
+   * @param {boolean} noJurisdictions
    */
   onShowGetStartedView = (noScheme, noJurisdictions) => {
     let startedText = ''
@@ -398,8 +525,8 @@ export class withCodingValidation extends Component {
   }
 
   /**
+   * View that is shown when there are jurisdictions and coding scheme for the project. The question card view.
    * @public
-   * @returns {*}
    */
   onShowCodeView = () => (
     <Fragment>
