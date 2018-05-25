@@ -4,9 +4,41 @@ import { getTreeFromFlatData } from 'react-sortable-tree'
 import { getQuestionNumbers, sortQuestions } from 'utils/treeHelpers'
 
 /**
+ * @typedef {Object} UserCodedQuestion
+ * @type {Object}
+ * @property {Array} codedAnswers
+ * @property {?Object} flag
+ * @property {Number} [id]
+ * @property {Number} schemeQuestionId
+ * @property {String} comment
+ * @property {Number} [categoryId]
+ */
+
+/**
+ * @typedef {Object} UserAnswerObject
+ * @type {Object}
+ * @property {String} comment
+ * @property {Object} flag
+ * @property {String} flag.notes
+ * @property {Number} flag.type
+ * @property {Object} flag.raisedBy
+ * @property {Object} answers
+ * @property {Number} answers.schemeAnswerId
+ * @property {String} answers.pincite
+ * @property {?String} answers.textAnswer
+ * @property {Number} schemeQuestionId
+ * @property {Boolean} isNewCodedQuestion
+ * @property {Boolean} hasMadePost
+ */
+
+/**
+ * Initializes the UserAnswerObject for each property from UserQuestionObject in the way that is needed by the application.
+ * This newly initialized question is what will be in state: `{ userAnswers: { schemeQuestionId: [UserAnswerObject] } }`.
+ * The parameter question is what comes back for a codedQuestion in the database. This will convert the codedAnswers
+ * array to an object where keys are the schemeAnswerIds in for each codedAnswer.
  *
- * @param question
- * @returns {{comment: *|string, flag: {notes: string, type: number, raisedBy: {}}, answers: {}, schemeQuestionId: *, isNewCodedQuestion: boolean, hasMadePost: boolean}}
+ * @param {UserCodedQuestion} question
+ * @returns {UserAnswerObject}
  */
 export const initializeValues = question => {
   const { codedAnswers, ...initializedQuestion } = {
@@ -23,23 +55,17 @@ export const initializeValues = question => {
 }
 
 /**
- This function basically takes an array of user coded question answers: { answers: [{ answerId: 1, pincite: '' }] },
- and converts it to an object like: { answers: { 1: { answerId: 1, pincite: '' }}}.
-
- It accounts for category children. If the question object has a categoryId, then the final answers object, looks like
- this: { [categoryId]: { answers: { 1 : { answerId: 1, pincite: '' } } }}. Comments are handled the same way
- for category question children.
-
- Text field type questions are handled different since there will only be one answer instead of multiple and doesn't have
- an ID. It looks like this: { answers: { value: '', pincite: '' } }
- */
-/**
+ * This function takes an array of {@link UserCodedQuestion} and creates an object where each schemeQuestionId is a key
+ * in the object. `{ [schemeQuestionId]: [UserAnswerObject] }`
  *
- * @param userCodedQuestions
- * @param codingSchemeQuestions
- * @param userId
- * @param initialObj
- * @returns {object}
+ * It accounts for category question as well. If the question object has a categoryId, then the final answers object,
+ * looks like this: `{ [schemeQuestionId]: { [categoryId]: [UserAnswerObject] } }`.
+ *
+ * @param {UserCodedQuestion[]} userCodedQuestions
+ * @param {Array} codingSchemeQuestions
+ * @param {(String|Number)} userId
+ * @param {Object} initialObj
+ * @returns {Object}
  */
 export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions, userId, initialObj = {}) => {
   return userCodedQuestions.reduce((codedQuestionObj, question) => {
@@ -57,10 +83,10 @@ export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions,
 
 /**
  * Finds the next question that is a parent question in case of category questions having not been answered
- * @param scheme
- * @param question
- * @param currentIndex
- * @returns {object}
+ * @param {Object} scheme
+ * @param {Object} question
+ * @param {Number} currentIndex
+ * @returns {Number} The ID of the question
  */
 export const findNextParentSibling = (scheme, question, currentIndex) => {
   const subArr = [...scheme.order].slice(currentIndex + 1)
@@ -71,8 +97,8 @@ export const findNextParentSibling = (scheme, question, currentIndex) => {
  * Handles determining whether or not to show the 'next question' button at the bottom of the screen. If the question is
  * a category question and no categories have been selected, check if there are any remaining questions in the list that
  * aren't a child of the category questions. If there are none, don't show button, if there are do.
- * @param {object} state
- * @returns {*}
+ * @param {Object} state Redux state
+ * @returns {Boolean} Whether or not to show button
  */
 export const determineShowButton = state => {
   if (state.question.questionType === questionTypes.CATEGORY) {
@@ -87,18 +113,18 @@ export const determineShowButton = state => {
 }
 
 /**
- *
- * @param parentQuestion
- * @param userAnswers
- * @returns {*}
+ * Retrieves all of the selected categories for that parentQuestion object
+ * @param {Object} parentQuestion
+ * @param {Object} userAnswers
+ * @returns {Array} selected categories
  */
 export const getSelectedCategories = (parentQuestion, userAnswers) =>
   parentQuestion.possibleAnswers.filter(category => checkIfExists(category, userAnswers[parentQuestion.id].answers))
 
 /**
  * Initializes an object to be used for creating entry in user answers
- * @param question
- * @returns {{comment: string, flag: {notes: string, type: number, raisedBy: {}}, codedAnswers: Array, schemeQuestionId: number}}
+ * @param {Object} question
+ * @returns {UserCodedQuestion}
  */
 export const initializeNextQuestion = question => ({
   comment: '',
@@ -109,8 +135,8 @@ export const initializeNextQuestion = question => ({
 
 /**
  * Sends back an initialized object for a question in userAnswers
- * @param id
- * @returns {{schemeQuestionId: *, answers: {}, comment: string, flag: {notes: string, type: number, raisedBy: {}}, hasMadePost: boolean, isNewCodedQuestion: boolean}}
+ * @param {Number} id
+ * @returns {UserCodedQuestion}
  */
 export const initializeRegularQuestion = id => ({
   schemeQuestionId: id,
@@ -122,11 +148,19 @@ export const initializeRegularQuestion = id => ({
 })
 
 /**
- * Handles determining what the next question is, and updating state.userAnswers with question information
- * @param newQuestion
- * @param newIndex
- * @param state
- * @returns {*}
+ * Handles updating state.userAnswers, state.selectedCategoryId, state.categories, and state.selectedCategory with
+ * correct information and structure. Each time a question is navigated to, it goes through this function. If the question
+ * already exists in state.userAnswers, that object is used.
+ * @param {Object} newQuestion
+ * @param {Number} newIndex
+ * @param {Object} state
+ * @returns {{
+ * question: Object,
+ * categories: Array,
+ * selectedCategory: Number,
+ * userAnswers: Object,
+ * selectedCategoryId: Number
+ * }}
  */
 export const handleCheckCategories = (newQuestion, newIndex, state) => {
   const base = {
@@ -187,10 +221,13 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
 }
 
 /**
+ * Determines what the next question will be. Check to make sure newQuestion is correct. If the newQuestion is a
+ * category child, but the user hasn't selected any categories, then find the next parent question in the coding scheme.
+ * Category children whose parent hasn't been answered are not shown.
  *
- * @param state
- * @param action
- * @returns {{index: number, question: *, categories: *, selectedCategoryId: *, selectedCategory: *}}
+ * @param {Object} state - Redux state
+ * @param {Object} action - return value from redux action creator
+ * @returns {{ index: Number, question: Object, categories: Array, selectedCategoryId: Number, selectedCategory: Number}}
  */
 export const getNextQuestion = (state, action) => {
   let newQuestion = state.scheme.byId[action.id]
@@ -198,8 +235,6 @@ export const getNextQuestion = (state, action) => {
   let categories = state.categories, selectedCategoryId = state.selectedCategoryId,
     selectedCategory = state.selectedCategory
 
-  // Check to make sure newQuestion is correct. If the newQuestion is a category child, but the user hasn't selected
-  // any categories, then find the next parent question
   if (newQuestion.isCategoryQuestion) {
     if (!checkIfAnswered(state.scheme.byId[newQuestion.parentId], state.userAnswers)) {
       const p = findNextParentSibling(state.scheme, state.question, state.currentIndex)

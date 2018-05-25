@@ -56,7 +56,7 @@ export const getOutlineLogic = createLogic({
   }
 })
 
-/*/* Process of getting the next question, calls api to get updated scheme question, and coded answer for that question */
+/** Process of getting the next question, calls api to get updated scheme question, and coded answer for that question */
 export const getQuestionLogic = createLogic({
   type: [types.ON_QUESTION_SELECTED_IN_NAV, types.GET_NEXT_QUESTION, types.GET_PREV_QUESTION],
   processOptions: {

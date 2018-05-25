@@ -3,7 +3,8 @@ const styleguideTheme = {
     base: [
       'Roboto',
       'sans-serif'
-    ]
+    ],
+    monospace: 'Consolas, "Liberation Mono", Menlo, monospace'
   },
   fontSize: {
     base: 15,
@@ -29,7 +30,45 @@ const stylguideStyles = {
   Para: {
     para: {
       marginBottom: 0,
-      marginTop: 10
+      marginTop: 10,
+      fontSize: 14,
+      '& > code': {
+        fontSize: 13,
+        fontFamily: styleguideTheme.fontFamily.monospace,
+        color: 'inherit',
+        background: 'transparent',
+        whiteSpace: 'inherit',
+      }
+    }
+  },
+  List: {
+    li: {
+      '& > code': {
+        fontSize: 14
+      }
+    }
+  },
+  Table: {
+    cell: {
+      color: 'black',
+      paddingRight: 16,
+      paddingTop: 8,
+      paddingBottom: 8,
+      verticalAlign: 'top',
+      fontFamily: styleguideTheme.fontFamily.base,
+      fontSize: styleguideTheme.fontSize.small,
+      '&:last-child': {
+        isolate: false,
+        width: '99%',
+        paddingRight: 0
+      },
+      '& p:first-child': {
+        marginTop: 0
+      },
+      '& p:last-child': {
+        isolate: false,
+        marginBottom: 0
+      }
     }
   },
   /**

@@ -39,7 +39,8 @@ const styles = ({ color, fontFamily, fontSize }) => ({
     }
   },
   heading2: {
-    fontSize: fontSize.h2
+    fontSize: fontSize.h2,
+    fontWeight: 700
   },
   heading3: {
     textTransform: 'uppercase',
@@ -59,7 +60,10 @@ const styles = ({ color, fontFamily, fontSize }) => ({
     fontSize: fontSize.h6
   },
   headingSection: {
-    fontSize: fontSize.sectionName
+    fontSize: fontSize.sectionName,
+    '& > a': {
+      fontWeight: '100 !important'
+    }
   }
 })
 
