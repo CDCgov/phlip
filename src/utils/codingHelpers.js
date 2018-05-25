@@ -86,7 +86,7 @@ export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions,
  * @param {Object} scheme
  * @param {Object} question
  * @param {Number} currentIndex
- * @returns {Number} The ID of the question
+ * @returns {Number} -- The ID of the question
  */
 export const findNextParentSibling = (scheme, question, currentIndex) => {
   const subArr = [...scheme.order].slice(currentIndex + 1)
@@ -97,8 +97,8 @@ export const findNextParentSibling = (scheme, question, currentIndex) => {
  * Handles determining whether or not to show the 'next question' button at the bottom of the screen. If the question is
  * a category question and no categories have been selected, check if there are any remaining questions in the list that
  * aren't a child of the category questions. If there are none, don't show button, if there are do.
- * @param {Object} state Redux state
- * @returns {Boolean} Whether or not to show button
+ * @param {Object} state -- Redux state
+ * @returns {Boolean} -- Whether or not to show button
  */
 export const determineShowButton = state => {
   if (state.question.questionType === questionTypes.CATEGORY) {
@@ -255,10 +255,13 @@ export const getNextQuestion = (state, action) => {
 }
 
 /**
+ * Determines what the previous question is. Check to make sure newQuestion is correct. If the newQuestion is a
+ * category child, but the user hasn't selected any categories for that question's parent, then find the previous is
+ * the category question's parent.
  *
- * @param state
- * @param action
- * @returns {{index: number, question: *, categories: *, selectedCategoryId: *, selectedCategory: *}}
+ * @param {Object} state
+ * @param {Object} action
+ * @returns {{index: Number, question: Object, categories: Array, selectedCategoryId: Number, selectedCategory: Number}}
  */
 export const getPreviousQuestion = (state, action) => {
   let newQuestion = state.scheme.byId[action.id]
@@ -284,9 +287,9 @@ export const getPreviousQuestion = (state, action) => {
 
 /**
  * Handles updating state.userAnswers with the user's new answer
- * @param state
- * @param action
- * @returns {{}}
+ * @param {Object} state
+ * @param {Object} action
+ * @returns {{ ...state.userAnswers, action.questionId: UserAnswerObject }}
  */
 export const handleUpdateUserAnswers = (state, action) => {
   let currentUserAnswers = state.question.isCategoryQuestion
@@ -366,8 +369,8 @@ export const handleUpdateUserAnswers = (state, action) => {
 
 /**
  * Handles if a user updates the pincite of a question
- * @param state
- * @param action
+ * @param {Object} state
+ * @param {Object} action
  * @returns {{[p: string]: *, [p: number]: *}}
  */
 export const handleUserPinciteQuestion = (state, action) => {
@@ -391,8 +394,8 @@ export const handleUserPinciteQuestion = (state, action) => {
 
 /**
  * Handles any updates for 'fieldValue' in state.userAnswers that are for regular questions
- * @param state
- * @param action
+ * @param {Object} state
+ * @param {Object} action
  * @returns {function(*, *=): {userAnswers: {}}}
  */
 export const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, getFieldValues) => ({
@@ -407,9 +410,9 @@ export const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, get
 
 /**
  *
- * @param state
- * @param questionId
- * @param updatedQuestion
+ * @param {Object} state
+ * @param {Number} questionId
+ * @param {Object} updatedQuestion
  * @returns {{userAnswers: {}}}
  */
 export const updateCodedQuestion = (state, questionId, updatedQuestion) => ({
@@ -424,10 +427,10 @@ export const updateCodedQuestion = (state, questionId, updatedQuestion) => ({
 
 /**
  *
- * @param state
- * @param questionId
- * @param categoryId
- * @param updatedQuestion
+ * @param {Object} state
+ * @param {Object} questionId
+ * @param {Object} categoryId
+ * @param {Object} updatedQuestion
  * @returns {{userAnswers: {}}}
  */
 export const updateCategoryCodedQuestion = (state, questionId, categoryId, updatedQuestion) => {
@@ -455,8 +458,11 @@ export const updateCategoryCodedQuestion = (state, questionId, categoryId, updat
   }
 }
 
-/*
-  Handles any updates for 'fieldValue' in state.userAnswers that are for category child questions
+/**
+ * Handles any updates for 'fieldValue' in state.userAnswers that are for category child questions
+ * @param {Object} state
+ * @param {Object} action
+ * @returns {function(*, *=): {userAnswers: {}}}
  */
 export const handleUpdateUserCategoryChild = (state, action) => (fieldValue, getFieldValues) => ({
   userAnswers: {
@@ -473,11 +479,11 @@ export const handleUpdateUserCategoryChild = (state, action) => (fieldValue, get
 
 /**
  * Initializes and updates the navigator
- * @param tree
- * @param scheme
- * @param codedQuestions
- * @param currentQuestion
- * @returns {*}
+ * @param {Array} tree
+ * @param {Object} scheme
+ * @param {Array} codedQuestions
+ * @param {Object} currentQuestion
+ * @returns {Array}
  */
 export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestion) => {
   return tree.map(item => {
@@ -552,8 +558,8 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
 
 /**
  * Determines what question was selected in the navigator, and updates the state accordingly, even if the user selects a category
- * @param state
- * @param action
+ * @param {Object} state
+ * @param {Object} action
  * @returns {{question: *, index: *, categories: undefined, selectedCategoryId: *, selectedCategory: number}}
  */
 export const getQuestionSelectedInNav = (state, action) => {
@@ -581,8 +587,8 @@ export const getQuestionSelectedInNav = (state, action) => {
 
 /**
  * Delete any 'ids' in answer objects in userAnswers because it fails on the backend with them
- * @param answer
- * @returns {{}}
+ * @param {Object} answer
+ * @returns {Object}}
  */
 const deleteAnswerIds = (answer) => {
   let ans = { ...answer }
@@ -591,12 +597,12 @@ const deleteAnswerIds = (answer) => {
 }
 
 /**
- * Used to retrieve the request object body for updating a question answer, pincite, comment, flag, etc.
- * @param state
- * @param action
- * @param isValidation
- * @param selectedCategoryId
- * @returns {{codedAnswers: {}[]}}
+ * Used to create the request body for updating a UserCodedQuestion or UserValidationQuestion.
+ * @param {Object} state
+ * @param {Object} action
+ * @param {Boolean} isValidation
+ * @param {Number} selectedCategoryId
+ * @returns {UserCodedQuestion}
  */
 export const getFinalCodedObject = (state, action, isValidation, selectedCategoryId = state.selectedCategoryId) => {
   const { ...questionObject } = state.scheme.byId[action.questionId].isCategoryQuestion
@@ -615,13 +621,13 @@ export const getFinalCodedObject = (state, action, isValidation, selectedCategor
 /**
  * Gets a specific scheme question, checks if it's answered and initializes it by sending a post if it's not. Sends back
  * the updated user answers object. Called in Validation/logic and Coding/logic
- * @param state
- * @param action
- * @param api
- * @param userId
- * @param questionInfo
- * @param apiGetMethod
- * @param userImages
+ * @param {Object} state
+ * @param {Object} action
+ * @param {Object} api
+ * @param {Number} userId
+ * @param {Object} questionInfo
+ * @param {Function} apiGetMethod
+ * @param {Object} userImages
  * @returns {Promise<{question: {}, currentIndex: *, updatedState: ({scheme: {}, selectedCategory: *, selectedCategoryId: *, categories: *}|{}), errors, newImages}>}
  */
 export const getSelectedQuestion = async (state, action, api, userId, questionInfo, apiGetMethod, userImages) => {
@@ -844,10 +850,10 @@ export const generateError = errorsObj => {
 
 /**
  *
- * @param item
- * @param userAnswers
- * @param id
- * @returns {boolean}
+ * @param {Object} item
+ * @param {Object} userAnswers
+ * @param {String} id
+ * @returns {Boolean}
  */
 export const checkIfAnswered = (item, userAnswers, id = 'id') => {
   return userAnswers.hasOwnProperty(item[id]) &&
@@ -856,10 +862,10 @@ export const checkIfAnswered = (item, userAnswers, id = 'id') => {
 
 /**
  *
- * @param item
- * @param obj
- * @param id
- * @returns {boolean}
+ * @param {Object} item
+ * @param {Object} obj
+ * @param {String} id
+ * @returns {Boolean}
  */
 export const checkIfExists = (item, obj, id = 'id') => {
   return obj.hasOwnProperty(item[id])
