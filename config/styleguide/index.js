@@ -22,8 +22,14 @@ const styleguideTheme = {
 const stylguideStyles = {
   MarkdownHeading: {
     spacing: {
-      marginBottom: 10,
+      marginBottom: 15,
       marginTop: 32
+    }
+  },
+  Para: {
+    para: {
+      marginBottom: 0,
+      marginTop: 10
     }
   },
   /**
@@ -50,11 +56,12 @@ const stylguideStyles = {
     },
     tabs: {
       backgroundColor: '#ebf1f3',
+      marginTop: 20,
       padding: 10,
       overflow: 'auto'
     },
     tabButtons: {
-      marginBottom: 10
+      marginBottom: 0
     }
   },
   TabButton: {

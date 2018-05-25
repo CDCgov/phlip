@@ -22,7 +22,7 @@ be called when there's a submit error.
 There are required keys that the __form__ prop on the form component needs
 to have in order for the withFormAlert HOC to work properly. If the form
 is controlled in redux-form then these properties are exist by default.
-
+<br/><br/>
 ``` javascript static
 form = {
   registeredFields: [],
@@ -33,7 +33,7 @@ form = {
 ### Example usage
 Assume that FormModalComponent is a component that renders a form inside
 of a modal.
-
+<br/><br/>
 ``` javascript static
 withFormAlert(FormModalComponent)
 ```

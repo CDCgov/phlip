@@ -8,6 +8,7 @@ variables (like pageName) based on a parameter when the HOC component is used.
 ### Example usage
 The 'My Component' string is what you want to show up as the pageName in
 Adobe Analytics.
+<br/><br/>
 ``` javascript static
 withTracking(MyComponent, 'My Component')
 ```

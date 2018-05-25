@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Markdown from 'react-styleguidist/lib/rsg-components/Markdown'
 import Styled from 'react-styleguidist/lib/rsg-components/Styled'
 import cx from 'classnames'
-import theme from 'services/theme'
 import Typography from 'material-ui/Typography'
 
 const background = '#3A4041'

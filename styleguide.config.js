@@ -76,11 +76,14 @@ module.exports = {
   getComponentPathLine: componentPath => {
     let name = path.basename(componentPath, '.js')
     const dir = path.dirname(componentPath)
+    const baseDir = dir.split('/')[dir.split('/').length - 1]
 
     if (name === 'rsgCodingValidation') {
       name = 'withCodingValidation'
     } else if (name === 'index') {
-      name = dir.split('/')[dir.split('/').length - 1]
+      name = baseDir
+    } else if (name !== dir) {
+      name = `{ ${name} }`
     }
 
     return `import ${name} from '${dir}'`
