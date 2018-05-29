@@ -13,15 +13,17 @@ let promises = []
 const IS_BUILD = process.argv[2] === 'build'
 
 const generateDocumentation = (utilFile, utilFileName) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
+    const outputFile = path.join(docsDir, `${utilFileName}.md`)
     documentation.build([utilFile], {})
       .then(comments => documentation.formats.md(comments, {}))
       .then(output => {
-        if (utilFileName === 'api.md') {
-          fs.copyFileSync('src/services/api/Readme.md', 'docs/api.md')
-          fs.appendFileSync('docs/api.md', output)
+        const readmeFile = path.join(path.dirname(utilFile), utilFileName, 'Readme.md')
+        if (fs.existsSync(readmeFile)) {
+          fs.copyFileSync(readmeFile, outputFile)
+          fs.appendFileSync(outputFile, output)
         } else {
-          fs.writeFileSync(path.join(docsDir, utilFileName), output)
+          fs.writeFileSync(outputFile, output)
         }
         resolve()
       })
@@ -36,13 +38,13 @@ fs.mkdirSync(docsDir)
 
 for (let i = 0; i < utilFiles.length; i++) {
   const utilFile = path.resolve('src/utils', utilFiles[i])
-  const utilFileName = `${utilFiles[i].split('.')[0]}.md`
+  const utilFileName = utilFiles[i].split('.')[0]
   promises.push(generateDocumentation(utilFile, utilFileName))
 }
 
 for (let i = 0; i < serviceFiles.length; i++) {
   const serviceFile = path.resolve('src/services', serviceFiles[i])
-  const serviceFileName = `${serviceFiles[i].split('.')[0]}.md`
+  const serviceFileName = serviceFiles[i].split('.')[0]
   promises.push(generateDocumentation(serviceFile, serviceFileName))
 }
 

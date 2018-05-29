@@ -23,5 +23,3 @@ HTTP call.
 The final object that is created from api.js contains a function for each
 value that is the apiCalls array. This object is passed through to
 redux-logic to make accessing the API easier.
-
-
