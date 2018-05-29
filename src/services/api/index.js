@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { isLoggedInTokenExists, getToken, logout } from 'services/authToken'
 import calls from './calls'
+import util from 'util'
 
 export const instance = axios.create({
   baseURL: process.env.API_HOST || '/api'
@@ -27,6 +28,11 @@ const prepare = ({ history }) => call => (data, options, urlParams = {}) => {
   const callHeaders = call.hasOwnProperty('headers') ? { ...call.headers(urlParams) } : {}
   const headers = { ...baseHeaders, ...callHeaders }
 
+  if (JSON.parse(process.env.APP_LOG_REQUESTS) ===  true) {
+    console.log(`Sending ${call.method.toUpperCase()} request: ${call.path(urlParams)} at ${new Date().toLocaleString()}`)
+    console.log(`Data in ${call.method.toUpperCase()} request: ${util.inspect(data)}`)
+  }
+
   return instance({
     ...options,
     data,
@@ -34,7 +40,12 @@ const prepare = ({ history }) => call => (data, options, urlParams = {}) => {
     url: call.path(urlParams),
     headers
   })
-    .then(res => call.hasOwnProperty('returnObj') ? call.returnObj({ ...urlParams }, res) : res.data)
+    .then(res => {
+      if (JSON.parse(process.env.APP_LOG_REQUESTS) === true) {
+        console.log(`Received response from: ${call.path(urlParams)} at ${new Date().toLocaleString()}`)
+      }
+      return call.hasOwnProperty('returnObj') ? call.returnObj({ ...urlParams }, res) : res.data
+    })
     .catch(redirectIfTokenExpired({ history }, call))
 }
 
