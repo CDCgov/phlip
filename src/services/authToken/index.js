@@ -17,9 +17,12 @@ const memoizedGetAuthToken = memoize(getAuthToken)
  *
  * @param {String} token
  */
-export const login = token => {
-  memoizedGetAuthToken.cache.clear()
-  setAuthToken(token)
+export const login = async token => {
+  return new Promise(resolve => {
+    memoizedGetAuthToken.cache.clear()
+    setAuthToken(token)
+    resolve()
+  })
 }
 
 /**

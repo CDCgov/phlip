@@ -17,6 +17,7 @@ exports[`ApiErrorView component should render correctly 1`] = `
     }
     displayFlex={true}
     flex={false}
+    reverse={false}
     style={
       Object {
         "justifyContent": "center",
@@ -45,6 +46,7 @@ exports[`ApiErrorView component should render correctly 1`] = `
     }
     displayFlex={true}
     flex={false}
+    reverse={false}
     style={
       Object {
         "justifyContent": "center",

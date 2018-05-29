@@ -9,6 +9,7 @@ exports[`Coding -- FooterNavigate component should render correctly 1`] = `
   }
   displayFlex={true}
   flex={false}
+  reverse={false}
   style={
     Object {
       "alignItems": "center",

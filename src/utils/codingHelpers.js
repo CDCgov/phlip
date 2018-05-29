@@ -614,13 +614,19 @@ const deleteAnswerIds = (answer) => {
  * @returns {UserCodedQuestion}
  */
 export const getFinalCodedObject = (state, action, isValidation, selectedCategoryId = state.selectedCategoryId) => {
-  const { ...questionObject } = state.scheme.byId[action.questionId].isCategoryQuestion
+  let flagObj = null
+  const { flag, ...questionObject } = state.scheme.byId[action.questionId].isCategoryQuestion
     ? state.userAnswers[action.questionId][selectedCategoryId]
     : state.userAnswers[action.questionId]
+
+  if (flag.type !== 0) {
+    flagObj = flag
+  }
 
   const { answers, schemeQuestionId, ...answerObject } = {
     ...questionObject,
     codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds),
+    flag: flagObj,
     ...isValidation ? { validatedBy: action.userId } : {}
   }
 

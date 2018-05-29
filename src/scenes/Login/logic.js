@@ -9,7 +9,7 @@ export const basicLoginLogic = createLogic({
 
     try {
       user = await api.login(action.credentials, {}, {})
-      login(user.token.value)
+      await login(user.token.value)
 
       try {
         bookmarks = await getBookmarks(api, user.id)
@@ -42,7 +42,7 @@ export const checkPivUserLogic = createLogic({
     let user = {}, bookmarks = [], error = ''
     try {
       user = await api.checkPivUser({ email: action.tokenObj.decodedToken.userEmail }, {}, { tokenObj: action.tokenObj })
-      login(user.token.value)
+      await login(user.token.value)
 
       try {
         bookmarks = await getBookmarks(api, user.id)

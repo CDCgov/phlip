@@ -19,6 +19,7 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     <IconButton
       aria-label="Sort bookmarked"
       color="#757575"
+      disabled={false}
       iconSize={24}
       id="sort-bookmarked"
       onClick={[Function]}

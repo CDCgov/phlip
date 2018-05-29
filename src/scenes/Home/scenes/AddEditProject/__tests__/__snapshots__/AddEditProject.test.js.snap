@@ -17,8 +17,6 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
 >
   <ModalTitle
     closeButton={false}
-    edit={false}
-    editButton={false}
     onCloseForm={[Function]}
     onEditForm={[Function]}
     title="Create New Project"

@@ -21,14 +21,14 @@ export class AvatarMenu extends PureComponent {
 
   setFirstMenuItem = element => {
     this.firstMenuItem = findDOMNode(element)
-    if (this.props.role === 'Admin' && this.props.open) {
+    if (this.props.role === 'Admin' && this.props.open && this.firstMenuItem !== null) {
       this.firstMenuItem.focus()
     }
   }
 
   setSecondMenuItem = element => {
     this.secondMenuItem = findDOMNode(element)
-    if (this.props.role !== 'Admin' && this.props.open) {
+    if (this.props.role !== 'Admin' && this.props.open && this.secondMenuItem !== null) {
       this.secondMenuItem.focus()
     }
   }
