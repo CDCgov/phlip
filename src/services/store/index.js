@@ -10,6 +10,9 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const history = createBrowserHistory()
 const api = createApiHandler({ history })
 
+/**
+ * Redux store initialization
+ */
 const store = createStore(
   appReducer,
   composeEnhancers(

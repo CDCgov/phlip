@@ -40,13 +40,11 @@ module.exports = {
         },
         {
           name: 'authToken',
-          content: 'docs/authToken.md',
-          description: 'Functions for logging the user in and out and handling the authToken in sessionStorage. When a user'
+          content: 'docs/authToken.md'
         },
         {
           name: 'store',
-          content: 'docs/store.md',
-          description: 'Setting up and initializing the Redux store'
+          content: 'src/services/store/Readme.md'
         },
         {
           name: 'theme',

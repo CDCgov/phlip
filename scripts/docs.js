@@ -14,11 +14,11 @@ const IS_BUILD = process.argv[2] === 'build'
 
 const generateDocumentation = (utilFile, utilFileName) => {
   return new Promise(resolve => {
-    const outputFile = path.join(docsDir, `${utilFileName}.md`)
     documentation.build([utilFile], {})
       .then(comments => documentation.formats.md(comments, {}))
       .then(output => {
-        const readmeFile = path.join(path.dirname(utilFile), utilFileName, 'Readme.md')
+        const readmeFile = path.join(path.dirname(utilFile), 'Readme.md')
+        const outputFile = path.join(docsDir, `${utilFileName}.md`)
         if (fs.existsSync(readmeFile)) {
           fs.copyFileSync(readmeFile, outputFile)
           fs.appendFileSync(outputFile, output)
@@ -43,7 +43,7 @@ for (let i = 0; i < utilFiles.length; i++) {
 }
 
 for (let i = 0; i < serviceFiles.length; i++) {
-  const serviceFile = path.resolve('src/services', serviceFiles[i])
+  const serviceFile = path.resolve('src/services', serviceFiles[i], 'index.js')
   const serviceFileName = serviceFiles[i].split('.')[0]
   promises.push(generateDocumentation(serviceFile, serviceFileName))
 }
