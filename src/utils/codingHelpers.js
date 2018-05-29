@@ -368,10 +368,10 @@ export const handleUpdateUserAnswers = (state, action) => {
 }
 
 /**
- * Handles if a user updates the pincite of a question
+ * Handles if a user updates the pincite of an answer choice
  * @param {Object} state
  * @param {Object} action
- * @returns {{[p: string]: *, [p: number]: *}}
+ * @returns {Object} UserAnswerObject for action.questionId
  */
 export const handleUserPinciteQuestion = (state, action) => {
   let currentUserAnswers = state.question.isCategoryQuestion
@@ -396,7 +396,7 @@ export const handleUserPinciteQuestion = (state, action) => {
  * Handles any updates for 'fieldValue' in state.userAnswers that are for regular questions
  * @param {Object} state
  * @param {Object} action
- * @returns {function(*, *=): {userAnswers: {}}}
+ * @returns {function(fieldValue: String, getFieldValue:*): { userAnswers: {} } } - UserAnswers with updated field value for state.question.id
  */
 export const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, getFieldValues) => ({
   userAnswers: {
@@ -409,11 +409,12 @@ export const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, get
 })
 
 /**
+ * Handles when anything in a question in state.userAnswers needs to be updated, not just the answers Object
  *
  * @param {Object} state
  * @param {Number} questionId
  * @param {Object} updatedQuestion
- * @returns {{userAnswers: {}}}
+ * @returns Object {{ userAnswers: {} } } The updated userAnswers object with the updated questionId
  */
 export const updateCodedQuestion = (state, questionId, updatedQuestion) => ({
   userAnswers: {
@@ -426,12 +427,12 @@ export const updateCodedQuestion = (state, questionId, updatedQuestion) => ({
 })
 
 /**
- *
+ * Handles when any property of a category question needs to be updated in state.userAnswers
  * @param {Object} state
  * @param {Object} questionId
  * @param {Object} categoryId
  * @param {Object} updatedQuestion
- * @returns {{userAnswers: {}}}
+ * @returns {Object} {{userAnswers: {}}} - Updated userAnswers object with updated category question
  */
 export const updateCategoryCodedQuestion = (state, questionId, categoryId, updatedQuestion) => {
   let update = { [categoryId]: { ...updatedQuestion } }
@@ -459,10 +460,13 @@ export const updateCategoryCodedQuestion = (state, questionId, categoryId, updat
 }
 
 /**
- * Handles any updates for 'fieldValue' in state.userAnswers that are for category child questions
+ * Handles any updates for 'fieldValue' in state.userAnswers that are for category child questions. If getFieldValues is
+ * a function, then it calls the function to get the value to set, otherwise just sets the value to whatever getFieldValues
+ * is.
+ *
  * @param {Object} state
  * @param {Object} action
- * @returns {function(*, *=): {userAnswers: {}}}
+ * @returns {function(fieldValue: String, getFieldValue:*): {userAnswers: {}}} - UserAnswers with updated field value for state.question.id
  */
 export const handleUpdateUserCategoryChild = (state, action) => (fieldValue, getFieldValues) => ({
   userAnswers: {
@@ -479,11 +483,12 @@ export const handleUpdateUserCategoryChild = (state, action) => (fieldValue, get
 
 /**
  * Initializes and updates the navigator
+ *
  * @param {Array} tree
  * @param {Object} scheme
  * @param {Array} codedQuestions
  * @param {Object} currentQuestion
- * @returns {Array}
+ * @returns {Array} Navigator tree with nested questions and children
  */
 export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestion) => {
   return tree.map(item => {
@@ -557,10 +562,12 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
 }
 
 /**
- * Determines what question was selected in the navigator, and updates the state accordingly, even if the user selects a category
+ * Determines what question was selected in the navigator, and updates the state accordingly, even if the user selects
+ * a category. If the user selects a category in the navigator, it finds the actual question that belongs to.
+ *
  * @param {Object} state
  * @param {Object} action
- * @returns {{question: *, index: *, categories: undefined, selectedCategoryId: *, selectedCategory: number}}
+ * @returns {Object} {{ question: Object, index: Number, categories: ?Array, selectedCategoryId: Number, selectedCategory: Number }}
  */
 export const getQuestionSelectedInNav = (state, action) => {
   let q = {}, categories = undefined, selectedCategory = 0, selectedCategoryId = null
@@ -587,8 +594,9 @@ export const getQuestionSelectedInNav = (state, action) => {
 
 /**
  * Delete any 'ids' in answer objects in userAnswers because it fails on the backend with them
- * @param {Object} answer
- * @returns {Object}}
+ *
+ * @param {Object} Answer
+ * @returns {Object} - Answer object without the property 'id'
  */
 const deleteAnswerIds = (answer) => {
   let ans = { ...answer }
@@ -598,6 +606,7 @@ const deleteAnswerIds = (answer) => {
 
 /**
  * Used to create the request body for updating a UserCodedQuestion or UserValidationQuestion.
+ *
  * @param {Object} state
  * @param {Object} action
  * @param {Boolean} isValidation
@@ -621,6 +630,7 @@ export const getFinalCodedObject = (state, action, isValidation, selectedCategor
 /**
  * Gets a specific scheme question, checks if it's answered and initializes it by sending a post if it's not. Sends back
  * the updated user answers object. Called in Validation/logic and Coding/logic
+ *
  * @param {Object} state
  * @param {Object} action
  * @param {Object} api
@@ -628,7 +638,13 @@ export const getFinalCodedObject = (state, action, isValidation, selectedCategor
  * @param {Object} questionInfo
  * @param {Function} apiGetMethod
  * @param {Object} userImages
- * @returns {Promise<{question: {}, currentIndex: *, updatedState: ({scheme: {}, selectedCategory: *, selectedCategoryId: *, categories: *}|{}), errors, newImages}>}
+ * @returns {Object} {{
+ *   question: Object,
+ *   currentIndex: Number,
+ *   updatedState: ({ scheme: Object, selectedCategory: Number, selectedCategoryId: Number, categories: Array }| {} ),
+ *   errors: Object,
+ *   newImages: Object
+ * }}
  */
 export const getSelectedQuestion = async (state, action, api, userId, questionInfo, apiGetMethod, userImages) => {
   let errors = {}, newSchemeQuestion = {},
@@ -749,10 +765,13 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
 }
 
 /**
+ * Gets the scheme from the API, normalizes it into an object, creates the tree and gets the first question
  *
- * @param projectId
- * @param api
- * @returns {Promise<*>}
+ * @param {(Number|String)} projectId
+ * @param {Object} api
+ * @returns {Object} {{
+ *   firstQuestion: Object, tree: Array, order: Array, questionsById: Object, outline: Object, isSchemeEmpty: Boolean
+ * }}
  */
 export const getSchemeAndInitialize = async (projectId, api) => {
   let scheme = {}, payload = { firstQuestion: {}, tree: [], order: [], questionsById: {} }
@@ -782,12 +801,14 @@ export const getSchemeAndInitialize = async (projectId, api) => {
 }
 
 /**
+ * Gets either the Validation question or Coded questions for a project / user depending on the page in which it is called
+ * (Coding or Validation)
  *
- * @param projectId
- * @param jurisdictionId
- * @param userId
- * @param apiMethod
- * @returns {Promise<*>}
+ * @param {(String|Number)} projectId
+ * @param {(String|Number)} jurisdictionId
+ * @param {(String|Number)} userId
+ * @param {Function} apiMethod
+ * @returns {Object} {{ codedValQuestions: Array, codedValError: Object }}
  */
 export const getCodedValidatedQuestions = async (projectId, jurisdictionId, userId, apiMethod) => {
   let codedValQuestions = [], codedValErrors = {}
@@ -805,12 +826,14 @@ export const getCodedValidatedQuestions = async (projectId, jurisdictionId, user
 }
 
 /**
+ * Gets the schemeQuestion from the API based on the id from question parameter. Updates the state.scheme variable with
+ * the new object from the API.
  *
- * @param projectId
- * @param state
- * @param question
- * @param api
- * @returns {Promise<{updatedScheme: {byId: {}}, schemeErrors, updatedSchemeQuestion: *}>}
+ * @param {(String|Number)} projectId
+ * @param {Object} state
+ * @param {Object} question
+ * @param {Object} api
+ * @returns {Object} {{ updatedScheme: { byId: Object, tree: Array, order: Array }, schemeErrors: Object, updatedSchemeQuestion: Object }}
  */
 export const getSchemeQuestionAndUpdate = async (projectId, state, question, api) => {
   let updatedSchemeQuestion = {}, schemeErrors = {}
@@ -840,15 +863,18 @@ export const getSchemeQuestionAndUpdate = async (projectId, state, question, api
 }
 
 /**
+ * Generates a string error from the values in an object
  *
- * @param errorsObj
- * @returns {string}
+ * @param {Object} errorsObj
+ * @returns {String}
  */
 export const generateError = errorsObj => {
   return Object.values(errorsObj).join('\n\n')
 }
 
 /**
+ * Checks the user answers object parameter if it has the value from item[id] as a key. If so, checks to see if it has
+ * an answers object that is populates
  *
  * @param {Object} item
  * @param {Object} userAnswers
@@ -861,6 +887,7 @@ export const checkIfAnswered = (item, userAnswers, id = 'id') => {
 }
 
 /**
+ * Checks to see if the obj parameter has the value from item[id] as a property
  *
  * @param {Object} item
  * @param {Object} obj

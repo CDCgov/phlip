@@ -14,11 +14,12 @@ module.exports = {
   sections: [
     {
       name: 'Scenes',
-      content: 'src/scenes/scenes.md',
+      content: 'src/scenes/Readme.md',
       components: 'src/scenes/*/index.js'
     },
     {
       name: 'UI Components',
+      content: 'src/components/Readme.md',
       components: 'src/components/!(withFormAlert|CodingValidation|withTracking|MultiSelectDropdown|Popover)/*.js',
       ignore: '**/src/components/@(Layout|RoutePages)/index.js'
     },
@@ -31,12 +32,41 @@ module.exports = {
       ]
     },
     {
+      name: 'Services',
+      sections: [
+        {
+          name: 'api',
+          content: 'docs/api.md'
+        },
+        {
+          name: 'authToken',
+          content: 'docs/authToken.md',
+          description: 'Functions for logging the user in and out and handling the authToken in sessionStorage. When a user'
+        },
+        {
+          name: 'store',
+          content: 'docs/store.md',
+          description: 'Setting up and initializing the Redux store'
+        },
+        {
+          name: 'theme',
+          content: 'docs/theme.md',
+          description: 'Setting up and initializing the Material UI Project Theme'
+        }
+      ]
+    },
+    {
       name: 'Utility',
       sections: [
         {
           name: 'codingHelpers',
           content: 'docs/codingHelpers.md',
           description: 'Functions that are primarily used in components/CodingValidation, scenes/Coding and scenes/Validation.'
+        },
+        {
+          name: 'commonHelpers',
+          content: 'docs/commonHelpers.md',
+          description: 'Generic helpers used throughout the application'
         },
         {
           name: 'formHelpers',
@@ -54,9 +84,14 @@ module.exports = {
           description: 'Generic methods to make searching for values easier'
         },
         {
-          name: 'commonHelpers',
-          content: 'docs/commonHelpers.md',
-          description: 'Generic helpers used throughout the application'
+          name: 'treeHelpers',
+          content: 'docs/treeHelpers.md',
+          description: 'Methods used when dealing with nested arrays (tree, ex. Code Navigator)'
+        },
+        {
+          name: 'updater',
+          content: 'docs/updater.md',
+          description: 'Generic functions for updating items in objects and arrays'
         }
       ]
     }

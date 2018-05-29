@@ -16,6 +16,7 @@ const store = createStore(
     applyMiddleware(createLogicMiddleware(rootLogic, { api, history }))
   )
 )
+
 const persistor = persistStore(store, null, () => store.getState())
 
 export {

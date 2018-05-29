@@ -1,18 +1,20 @@
 /**
- * Slices a table for pagination
- * @param data
- * @param page
- * @param rowsPerPage
- * @returns {*}
+ * Slices a table (data) for pagination
+ *
+ * @param {Array} data
+ * @param {Number} page
+ * @param {Number} rowsPerPage
+ * @returns {Array}
  */
 export const sliceTable = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
 /**
- * Sorts a list
- * @param list
- * @param sortBy
- * @param direction
- * @returns {*}
+ * Sorts a list of objects based on the parameter sortBy
+ *
+ * @param {Array} list
+ * @param {*} sortBy
+ * @param {String} direction
+ * @returns {Array}
  */
 export const sortListOfObjects = (list, sortBy, direction) => {
   return (
@@ -24,8 +26,9 @@ export const sortListOfObjects = (list, sortBy, direction) => {
 
 /**
  * Generates a key and ID as props for a table
- * @param id
- * @returns {function(*): {id: string, key: string}}
+ *
+ * @param {*} id
+ * @returns {function(id: String): {id: *, key: String}}
  */
 const generateUniqueProps = id => header => ({
   id: `${id}-${header}`,

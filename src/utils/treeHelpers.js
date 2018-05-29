@@ -3,9 +3,10 @@ import { map } from 'react-sortable-tree'
 
 /**
  * Get node key for the tree (this is used by react-sortable-tree lib)
- * @param node
- * @param treeIndex
- * @returns {*}
+ *
+ * @param {Object} node
+ * @param {Number} treeIndex
+ * @returns {Number}
  */
 export const getNodeKey = ({ node, treeIndex }) => {
   return treeIndex
@@ -13,8 +14,9 @@ export const getNodeKey = ({ node, treeIndex }) => {
 
 /**
  * Sorts questions based on position in parent
- * @param questions
- * @returns {*}
+ *
+ * @param {Array} questions
+ * @returns {Array}
  */
 export const sortQuestions = questions => {
   const sortedChildren = map({
@@ -33,19 +35,21 @@ export const sortQuestions = questions => {
 
 /**
  * This determines how deep in the tree a question is
- * @param numberString
- * @returns {number}
+ *
+ * @param {String} numberString
+ * @returns {Number}
  */
 const getIndent = numberString => numberString.split('.').length > 1 ? numberString.split('.').length - 1 : 0
 
 /**
+ * Sets the children of all nodes in a tree, while keeping a full list of all nodes
  *
- * @param node
- * @param number
- * @param fullList
- * @param numbering
- * @param order
- * @returns {{fullList: *, node: *, numbering: *, order: *}}
+ * @param {Object} node
+ * @param {Number} number
+ * @param {Array} fullList
+ * @param {Object} numbering
+ * @param {Array} order
+ * @returns {Object} {{ fullList: Array, node: Object, numbering: Object, order: Array }}
  */
 const setChildren = (node, number, fullList, numbering, order) => {
   node.indent = getIndent(number)
@@ -69,8 +73,9 @@ const setChildren = (node, number, fullList, numbering, order) => {
 
 /**
  * Takes questions an creates a tree with question numbering (1, 1.1, 2, etc.) as well gets the order of the questions
- * @param questions
- * @returns {{questionsWithNumbers: Array, order: Array, tree: Array}}
+ *
+ * @param {Array} questions
+ * @returns {{ questionsWithNumbers: Array, order: Array, tree: Array }}
  */
 export const getQuestionNumbers = questions => {
   let order = [], numbering = {}, tree = [], fullList = []
