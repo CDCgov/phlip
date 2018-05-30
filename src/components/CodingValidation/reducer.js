@@ -5,6 +5,9 @@ import {
   handleUserPinciteQuestion, initializeNavigator, generateError, updateCategoryCodedQuestion, updateCodedQuestion
 } from 'utils/codingHelpers'
 
+/**
+ * Initial state for codingValidation reducer
+ */
 export const INITIAL_STATE = {
   question: {},
   scheme: null,
@@ -39,6 +42,14 @@ export const INITIAL_STATE = {
   hasTouchedQuestion: false
 }
 
+/**
+ * Removes any pending requests that are for the questionId and/or categoryId + questionId in the update question queue
+ *
+ * @param {(String|Number)} questionId
+ * @param {(String|Number)} categoryId
+ * @param {Array} currentQueue
+ * @returns {Array}
+ */
 const removeRequestsInQueue = (questionId, categoryId, currentQueue) => {
   return currentQueue.filter(message => {
     if (message.questionId !== questionId) {
@@ -53,6 +64,13 @@ const removeRequestsInQueue = (questionId, categoryId, currentQueue) => {
   })
 }
 
+/**
+ * Main reducer for the Coding and Validation scenes --- withCodingValidation HOC
+ * @param {Object} state
+ * @param {Object} action
+ * @param {String} name -- either CODING or VALIDATION
+ * @returns {Object}
+ */
 const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
   const questionUpdater = state.question.isCategoryQuestion
     ? handleUpdateUserCategoryChild(state, action)
@@ -226,6 +244,14 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
   }
 }
 
+/**
+ * Updates the Code Navigator by updating scheme.tree and sets whether or not to show the 'next button.' All redux
+ * actions passed to the codingValidation reducer go through the function since almost every action affects the navigator
+ * and whether or not to show the next button. Returns the updated state.
+ *
+ * @param {Object} intermediateState
+ * @returns {Object}
+ */
 const treeAndButton = intermediateState => {
   return {
     ...intermediateState,
@@ -239,6 +265,16 @@ const treeAndButton = intermediateState => {
   }
 }
 
+/**
+ * Creates a reducer for Coding and Validation scenes and determines which functions to send them to. If it's a common
+ * actionType, that is controlled by the reducer in the file, then it's sent to it. If it's a unique actionType then it's
+ * sent to the uniqueReducer function that was passed in by Coding or Validation.
+ *
+ * @param {Function} uniqueReducer
+ * @param {Array} handlers
+ * @param {String} name
+ * @returns {reducer}
+ */
 export const createCodingValidationReducer = (uniqueReducer, handlers, name) => {
   return function reducer(state = INITIAL_STATE, action) {
     if (handlers.includes(action.type)) {

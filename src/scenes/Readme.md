@@ -6,7 +6,7 @@ has these files for redux:
 | -------- | ----------- |
 | logic.js | Redux logic, mostly handling API calls, for the scene |
 | reducer.js | Redux reducer for the scene |
-| actionTypes.js | Redux action types for the scene |
+| actionTypes.js | Redux action types for the scene. Actions types follow this pattern: `ACTION_REQUEST`, `ACTION_SUCCESS`, and `ACTION_FAIL` |
 | actions.js | Redux action creator functions for the scene |
 
 The index.js file in each scene directory is where the redux state is connceted

@@ -1,9 +1,16 @@
+/**
+ * This is all of the redux-logic for the Home ("Project List") scene.
+ */
+
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 import addEditProjectLogic from './scenes/AddEditProject/logic'
 import addEditJurisdictions from './scenes/AddEditJurisdictions/logic'
 import { commonHelpers } from 'utils'
 
+/**
+ * Sends a request to the API to get all of the projects
+ */
 export const getProjectLogic = createLogic({
   type: types.GET_PROJECTS_REQUEST,
   latest: true,
@@ -26,6 +33,9 @@ export const getProjectLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to bookmark or un-bookmark a project for a user
+ */
 export const toggleBookmarkLogic = createLogic({
   type: types.TOGGLE_BOOKMARK,
   processOptions: {
@@ -60,6 +70,9 @@ export const toggleBookmarkLogic = createLogic({
   }
 })
 
+/**
+ * Updates the dateLastEdited and lastEditedBy fields for a project, based on the action.projectId
+ */
 export const updateFieldsLogic = createLogic({
   type: types.UPDATE_EDITED_FIELDS,
   transform({ action, getState }, next) {
@@ -73,6 +86,9 @@ export const updateFieldsLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to get the export data for a project
+ */
 export const exportDataLogic = createLogic({
   type: types.EXPORT_DATA_REQUEST,
   processOptions: {

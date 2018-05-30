@@ -25,12 +25,29 @@ const INITIAL_STATE = {
   exportError: ''
 }
 
+/**
+ * Sorts the list of projects by bookmarked. Bookmarked projects are sorted first, and then non-bookmark projects are
+ * sorted second.
+ *
+ * @param {Array} projects
+ * @param {Array} bookmarkList
+ * @param {String} sortBy
+ * @param {String} direction
+ * @returns {Array}
+ */
 const sortProjectsByBookmarked = (projects, bookmarkList, sortBy, direction) => {
   const bookmarked = commonHelpers.sortListOfObjects(projects.filter(project => bookmarkList.includes(project.id)), sortBy, direction)
   const nonBookmarked = commonHelpers.sortListOfObjects(projects.filter(project => !bookmarkList.includes(project.id)), sortBy, direction)
   return [...bookmarked, ...nonBookmarked]
 }
 
+/**
+ * Determines how the list of project should be sorted, by bookmarked, or just by sortBy and direction
+ *
+ * @param {Array} arr
+ * @param {Object} state
+ * @returns {Array}
+ */
 const sortArray = (arr, state) => {
   const { bookmarkList, sortBy, direction, sortBookmarked } = state
 
@@ -41,6 +58,12 @@ const sortArray = (arr, state) => {
     : commonHelpers.sortListOfObjects(arr, sortBy, direction)
 }
 
+/**
+ * Updates the projects object in state and determines the how to slice the project array
+ *
+ * @param {Array} updatedProjects
+ * @returns {function(updatedArr: Array, page: Number, rowsPerPage: String): {projects: {byId: {}, allIds: Array}, visibleProjects: Array, projectCount: Number, page: Number}}
+ */
 const setProjectValues = updatedProjects => (updatedArr, page, rowsPerPage) => {
   const rows = rowsPerPage === 'All' ? updatedArr.length : parseInt(rowsPerPage)
   return {
@@ -54,6 +77,13 @@ const setProjectValues = updatedProjects => (updatedArr, page, rowsPerPage) => {
   }
 }
 
+/**
+ * After every redux action, the state is passed to this function. It makes sure the visibleProject state property is
+ * sorted correctly, as well as the rowsPerPage and page.
+ *
+ * @param {Object} state
+ * @returns {Object}
+ */
 const getProjectArrays = state => {
   const { projects, searchValue, page, rowsPerPage } = state
   let matches = searchUtils.searchForMatches(Object.values(state.projects.byId), searchValue, [
@@ -87,6 +117,13 @@ const getProjectArrays = state => {
   }
 }
 
+/**
+ * This is the main reducer for the Home scene
+ *
+ * @param {Object} state
+ * @param {Object} action
+ * @returns {Object}
+ */
 const mainReducer = (state, action) => {
   const updateHomeState = updater.updateItemsInState(state, action)
 
@@ -274,12 +311,22 @@ const mainReducer = (state, action) => {
   }
 }
 
+/**
+ * Wrapper for the main reducer, after every action, the setProjectArrays function
+ *
+ * @param {Object} state
+ * @param {Object} action
+ * @returns {Object} - Updated state
+ */
 const homeReducer = (state = INITIAL_STATE, action) => {
   return Object.values(types).includes(action.type)
     ? { ...state, ...getProjectArrays({ ...mainReducer(state, action) }) }
     : state
 }
 
+/**
+ * Combines the reducers from ./scenes/AddEditProject and ./scenes/AddEditJurisdiction
+ */
 const homeRootReducer = combineReducers({
   main: homeReducer,
   addEditProject,

@@ -1,3 +1,7 @@
+/**
+ * The unique logic for Coding scene
+ */
+
 import { createLogic } from 'redux-logic'
 import {
   initializeUserAnswers,
@@ -9,6 +13,9 @@ import {
 } from 'utils/codingHelpers'
 import * as types from './actionTypes'
 
+/**
+ * Sends a request to get the coding scheme outline and the coded questions for the current user
+ */
 export const getOutlineLogic = createLogic({
   type: types.GET_CODING_OUTLINE_REQUEST,
   async process({ action, getState, api }, dispatch, done) {
@@ -56,7 +63,10 @@ export const getOutlineLogic = createLogic({
   }
 })
 
-/** Process of getting the next question, calls api to get updated scheme question, and coded answer for that question */
+/**
+ * Process of getting the next question, sends a request to the API to get updated scheme question, and coded answer for
+ * that question
+ */
 export const getQuestionLogic = createLogic({
   type: [types.ON_QUESTION_SELECTED_IN_NAV, types.GET_NEXT_QUESTION, types.GET_PREV_QUESTION],
   processOptions: {
@@ -71,6 +81,11 @@ export const getQuestionLogic = createLogic({
   }
 })
 
+/**
+ * Sends requests for: getting updated scheme question information, getting the coded question for current user. Initializes
+ * the userAnswers object that will be in the redux state with the codedQuestions information.
+ *
+ */
 export const getUserCodedQuestionsLogic = createLogic({
   type: types.GET_USER_CODED_QUESTIONS_REQUEST,
   async process({ action, api, getState }, dispatch, done) {
@@ -106,7 +121,9 @@ export const getUserCodedQuestionsLogic = createLogic({
   }
 })
 
-// Save red flag logic
+/**
+ * Sends a request to save a red flag for a question
+ */
 const saveRedFlagLogic = createLogic({
   type: types.ON_SAVE_RED_FLAG_REQUEST,
   async process({ action, api }, dispatch, done) {

@@ -8,6 +8,9 @@ import {
 } from 'react-sortable-tree'
 import { commonHelpers } from 'utils'
 
+/**
+ * Initial state for coding scheme reducer
+ */
 const INITIAL_STATE = {
   questions: [],
   outline: {},
@@ -23,6 +26,11 @@ const INITIAL_STATE = {
   lockedAlert: null
 }
 
+/**
+ * Turns the tree of questions into a flat object outline that is used by the backend.
+ *
+ * @param {Array} questions
+ */
 export const questionsToOutline = questions => {
   const outline = {}
 
@@ -47,6 +55,13 @@ export const questionsToOutline = questions => {
   return outline
 }
 
+/**
+ * Takes an object oultine and turns it into an array of questions
+ *
+ * @param {Object} outline
+ * @param {Array} questions
+ * @returns {Array}
+ */
 const getQuestionsFromOutline = (outline, questions) => {
   return questions.reduce((arr, q) => {
     return [
@@ -61,6 +76,13 @@ const getQuestionsFromOutline = (outline, questions) => {
   }, [])
 }
 
+/**
+ * Sorts the array of questions based on position in parent, sorts the answer choices in each question by 'order'
+ * property and sorts the children of each question.
+ *
+ * @param {Array} questions
+ * @returns {Array}
+ */
 const sortQuestions = questions => {
   const sortedPossibleAnswerQuestion = questions.map(question => {
     return { ...question, possibleAnswers: commonHelpers.sortListOfObjects(question.possibleAnswers, 'order', 'asc') }
@@ -80,10 +102,24 @@ const sortQuestions = questions => {
   return commonHelpers.sortListOfObjects(sortedChildren, 'positionInParent', 'asc')
 }
 
+/**
+ * Used by react-sortable-tree for getting a node in a tree
+ *
+ * @param {Object} node
+ * @param {Number} treeIndex
+ * @returns {Number}
+ */
 export const getNodeKey = ({ node, treeIndex }) => {
   return treeIndex
 }
 
+/**
+ * Sets the hovering state to hovering parameter for the node and sets hovering to false for all its children
+ *
+ * @param {Object} node
+ * @param {Boolean} hovering
+ * @returns {Object}
+ */
 const setHovering = (node, hovering) => {
   node.hovering = hovering
 
@@ -96,12 +132,25 @@ const setHovering = (node, hovering) => {
   return node
 }
 
+/**
+ * Sorts the possibleAnswers property for all questions in questions parameter
+ *
+ * @param {Array} questions
+ * @returns {Array}
+ */
 const sortPossibleAnswers = questions => {
   return questions.map((question) => {
     return commonHelpers.sortListOfObjects(question.possibleAnswers, 'order', 'asc')
   })
 }
 
+/**
+ * Main reducer function for coding scheme scene
+ *
+ * @param {Object} state
+ * @param {Object} action
+ * @returns {Object}
+ */
 const codingSchemeReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_SCHEME_SUCCESS:

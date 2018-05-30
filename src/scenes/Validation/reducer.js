@@ -3,6 +3,14 @@ import * as codingValidationTypes from 'scenes/Validation/actionTypes'
 import * as otherActionTypes from 'components/CodingValidation/actionTypes'
 const types = { ...codingValidationTypes, ...otherActionTypes }
 
+/**
+ * Main validation reducer, that is the 'uniqueReducer' that is used when handling actions that are not common to both Coding
+ * and Validation
+ *
+ * @param {Object} state
+ * @param {Object} action
+ * @returns {Object}
+ */
 const validationReducer = (state, action) => {
   switch (action.type) {
     case types.GET_VALIDATION_OUTLINE_SUCCESS:
@@ -144,6 +152,9 @@ const validationReducer = (state, action) => {
   }
 }
 
+/**
+ * All of these actions will be handled by this reducer and not the reducer in `components/CodingValidation/reducer`
+ */
 export const validationHandlers = [
   'GET_VALIDATION_OUTLINE_REQUEST',
   'GET_VALIDATION_OUTLINE_SUCCESS',
