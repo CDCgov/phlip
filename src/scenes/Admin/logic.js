@@ -2,6 +2,9 @@ import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 import addEditUserLogic from './scenes/AddEditUser/logic'
 
+/**
+ * Logic for getting all the users in the system, invoked when the component is mounted
+ */
 export const getUserLogic = createLogic({
   type: types.GET_USERS_REQUEST,
   latest: true,
