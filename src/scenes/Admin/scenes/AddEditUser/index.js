@@ -24,6 +24,7 @@ import compressImage from 'browser-compress-image'
 import Alert from 'components/Alert'
 import Typography from 'material-ui/Typography'
 import CheckboxLabel from 'components/CheckboxLabel'
+import CircularLoader from 'components/CircularLoader'
 
 const rowStyles = {
   paddingBottom: 30
@@ -49,11 +50,16 @@ export class AddEditUser extends Component {
     this.state = {
       file: null,
       selectedUser: null,
-      open: false
+      open: false,
+      submitting: false
     }
   }
 
   handleSubmit = (values) => {
+    this.setState({
+      submitting: true
+    })
+
     let updatedValues = { ...values }
     for (let field of ['firstName', 'lastName']) {
       updatedValues[field] = trimWhitespace(values[field])
@@ -120,6 +126,19 @@ export class AddEditUser extends Component {
     }
   }
 
+  getButtonText = text => {
+    if (this.state.submitting) {
+      return (
+        <Fragment>
+          {text}
+          <CircularLoader size={18} style={{ paddingLeft: 10 }} />
+        </Fragment>
+      )
+    } else {
+      return <Fragment>{text}</Fragment>
+    }
+  }
+
   onCancel = () => {
     this.props.actions.onCloseAddEditUser()
     this.props.history.goBack()
@@ -146,9 +165,9 @@ export class AddEditUser extends Component {
         otherProps: { 'aria-label': 'Cancel and close form' }
       },
       {
-        value: 'Save',
+        value: this.getButtonText('Save'),
         type: 'submit',
-        disabled: false, //!!(this.props.form.asyncErrors || this.props.form.syncErrors),
+        disabled: this.state.submitting === true,
         otherProps: { 'aria-label': 'Save form' }
       }
     ]

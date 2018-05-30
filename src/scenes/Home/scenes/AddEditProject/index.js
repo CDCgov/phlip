@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -14,6 +14,7 @@ import Container, { Row } from 'components/Layout'
 import DetailRow from './components/DetailRow'
 import withFormAlert from 'components/withFormAlert'
 import withTracking from 'components/withTracking'
+import CircularLoader from 'components/CircularLoader'
 
 export class AddEditProject extends Component {
   static propTypes = {
@@ -100,6 +101,19 @@ export class AddEditProject extends Component {
 
   formatDate = (value, name) => new Date(value).toLocaleDateString()
 
+  getButtonText = text => {
+    if (this.state.submitting) {
+      return (
+        <Fragment>
+          {text}
+          <CircularLoader size={18} style={{ paddingLeft: 10 }} />
+        </Fragment>
+      )
+    } else {
+      return <Fragment>{text}</Fragment>
+    }
+  }
+
   render() {
     const editAction = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Close modal' } },
@@ -118,10 +132,10 @@ export class AddEditProject extends Component {
         { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Cancel edit view' } },
         {
           value: this.projectDefined
-            ? 'Save'
-            : 'Create',
+            ? this.getButtonText('Save')
+            : this.getButtonText('Create'),
           type: 'submit',
-          disabled: false,//!!(this.props.form.asyncErrors || this.props.form.syncErrors),
+          disabled: this.state.submitting === true,
           otherProps: { 'aria-label': 'Save form' }
         }
       ]
@@ -158,7 +172,7 @@ export class AddEditProject extends Component {
               fullWidth
               required={this.projectDefined ? this.state.edit : true}
               disabled={!this.state.edit}
-            />  
+            />
             <DetailRow
               name="type"
               component={Dropdown}

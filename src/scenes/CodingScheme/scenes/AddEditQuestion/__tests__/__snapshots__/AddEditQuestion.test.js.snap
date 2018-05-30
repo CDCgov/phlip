@@ -198,7 +198,9 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
               "aria-label": "Save form",
             },
             "type": "submit",
-            "value": "Add",
+            "value": <UNDEFINED>
+              Add
+            </UNDEFINED>,
           },
         ]
       }
