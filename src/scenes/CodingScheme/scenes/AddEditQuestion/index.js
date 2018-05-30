@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -17,6 +17,7 @@ import styles from './add-edit-question.scss'
 import { trimWhitespace } from 'utils/formHelpers'
 import * as questionTypes from './constants'
 import withFormAlert from 'components/withFormAlert'
+import CircularLoader from 'components/CircularLoader'
 
 /**
  * Main / entry component for all things related to adding and editing a question for the coding scheme. This component
@@ -131,6 +132,20 @@ export class AddEditQuestion extends Component {
     }
   }
 
+
+  getButtonText = text => {
+    if (this.state.submitting) {
+      return (
+        <Fragment>
+          {text}
+          <CircularLoader size={18} style={{ paddingLeft: 10 }} />
+        </Fragment>
+      )
+    } else {
+      return <Fragment>{text}</Fragment>
+    }
+  }
+  
   /**
    * Function called when the form is submitted, dispatches a redux action for updating or adding depending on state and
    * whether or not the request if for a child question. Trims whitespace from all of the question form fields.
@@ -142,6 +157,7 @@ export class AddEditQuestion extends Component {
     this.setState({
       submitting: true
     })
+
     let updatedValues = { ...values }
     for (let field of ['text', 'hint']) {
       if (updatedValues[field]) updatedValues[field] = trimWhitespace(values[field])
@@ -257,10 +273,10 @@ export class AddEditQuestion extends Component {
       },
       {
         value: this.questionDefined
-          ? 'Save'
-          : 'Add',
+          ? this.getButtonText('Save')
+          : this.getButtonText('Add'),
         type: 'submit',
-        disabled: !this.state.canModify,
+        disabled: !this.state.canModify || this.state.submitting === true,
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
@@ -272,8 +288,7 @@ export class AddEditQuestion extends Component {
         initialValues={this.questionDefined || this.defaultForm}
         maxWidth="md"
         validate={this.validate}
-        onClose={this.props.onCloseModal}
-      >
+        onClose={this.props.onCloseModal}>
         <Container column style={{ minWidth: 890, padding: '20px 20px 0 20px' }}>
           <Container column className={styles.dashed}>
             <ModalTitle title={this.state.edit ? 'Edit Question' : 'Add New Question'} />

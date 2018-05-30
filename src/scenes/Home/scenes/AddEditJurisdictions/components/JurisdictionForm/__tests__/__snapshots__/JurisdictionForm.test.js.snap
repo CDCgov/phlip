@@ -151,7 +151,9 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
           "otherProps": Object {
             "aria-label": "Save form",
           },
-          "value": "Save",
+          "value": <UNDEFINED>
+            Save
+          </UNDEFINED>,
         },
       ]
     }
