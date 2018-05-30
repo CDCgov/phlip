@@ -92,7 +92,9 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
             "aria-label": "Save form",
           },
           "type": "submit",
-          "value": "Create",
+          "value": <UNDEFINED>
+            Create
+          </UNDEFINED>,
         },
       ]
     }

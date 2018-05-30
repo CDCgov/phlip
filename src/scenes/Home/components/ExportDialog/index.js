@@ -35,4 +35,19 @@ export const ExportDialog = ({ onClose, onChooseExport, open }) => {
   )
 }
 
+ExportDialog.propTypes = {
+  /**
+   * Function to call when the modal is closed
+   */
+  onClose: PropTypes.func,
+  /**
+   * Function to call when the user chooses an export type
+   */
+  onChooseExport: PropTypes.func,
+  /**
+   * Whether or not the modal is open
+   */
+  open: PropTypes.bool
+}
+
 export default ExportDialog

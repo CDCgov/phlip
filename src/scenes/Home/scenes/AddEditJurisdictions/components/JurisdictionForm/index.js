@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Divider from 'material-ui/Divider'
 import { MenuItem } from 'material-ui/Menu'
@@ -16,6 +16,7 @@ import withFormAlert from 'components/withFormAlert'
 import moment from 'moment'
 import { normalize } from 'utils'
 import Dropdown from 'components/Dropdown'
+import CircularLoader from 'components/CircularLoader'
 
 const getSuggestionValue = suggestion => suggestion
 
@@ -102,6 +103,19 @@ export class JurisdictionForm extends Component {
         ? 'US States'
         : ''
     })
+  }
+
+  getButtonText = text => {
+    if (this.state.submitting) {
+      return (
+        <Fragment>
+          {text}
+          <CircularLoader size={18} style={{ paddingLeft: 10 }} />
+        </Fragment>
+      )
+    } else {
+      return <Fragment>{text}</Fragment>
+    }
   }
 
   onSubmitPreset = () => {
@@ -281,10 +295,10 @@ export class JurisdictionForm extends Component {
       { value: 'Cancel', onClick: this.onCloseForm, type: 'button', otherProps: { 'aria-label': 'Close form' } },
       {
         value: this.state.edit
-          ? 'Save'
-          : 'Add',
+          ? this.getButtonText('Save')
+          : this.getButtonText('Add'),
         onClick: this.props.location.state.preset === true ? this.onSubmitPreset : this.onSubmitForm,
-        disabled: false,
+        disabled: this.state.submitting === true,
         otherProps: { 'aria-label': 'Save form' }
       }
     ]

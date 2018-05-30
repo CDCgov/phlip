@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -17,6 +17,7 @@ import styles from './add-edit-question.scss'
 import { trimWhitespace } from 'utils/formHelpers'
 import * as questionTypes from './constants'
 import withFormAlert from 'components/withFormAlert'
+import CircularLoader from 'components/CircularLoader'
 
 export class AddEditQuestion extends Component {
   static propTypes = {
@@ -84,10 +85,24 @@ export class AddEditQuestion extends Component {
     }
   }
 
+  getButtonText = text => {
+    if (this.state.submitting) {
+      return (
+        <Fragment>
+          {text}
+          <CircularLoader size={18} style={{ paddingLeft: 10 }} />
+        </Fragment>
+      )
+    } else {
+      return <Fragment>{text}</Fragment>
+    }
+  }
+
   handleSubmit = values => {
     this.setState({
       submitting: true
     })
+
     let updatedValues = { ...values }
     for (let field of ['text', 'hint']) {
       if (updatedValues[field]) updatedValues[field] = trimWhitespace(values[field])
@@ -180,10 +195,10 @@ export class AddEditQuestion extends Component {
       },
       {
         value: this.questionDefined
-          ? 'Save'
-          : 'Add',
+          ? this.getButtonText('Save')
+          : this.getButtonText('Add'),
         type: 'submit',
-        disabled: !this.state.canModify,
+        disabled: !this.state.canModify || this.state.submitting === true,
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
@@ -195,8 +210,7 @@ export class AddEditQuestion extends Component {
         initialValues={this.questionDefined || this.defaultForm}
         maxWidth="md"
         validate={this.validate}
-        onClose={this.props.onCloseModal}
-      >
+        onClose={this.props.onCloseModal}>
         <Container column style={{ minWidth: 890, padding: '20px 20px 0 20px' }}>
           <Container column className={styles.dashed}>
             <ModalTitle title={this.state.edit ? 'Edit Question' : 'Add New Question'} />
