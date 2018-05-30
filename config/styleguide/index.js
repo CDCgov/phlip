@@ -38,12 +38,27 @@ const stylguideStyles = {
         color: 'inherit',
         background: 'transparent',
         whiteSpace: 'inherit',
+      },
+      '& + ul > li': {
+        fontSize: 14,
+        fontFamily: styleguideTheme.fontFamily.base,
+        lineHeight: 1.5
+      },
+      '& + ul > li > code': {
+        fontSize: 14,
+        fontFamily: styleguideTheme.fontFamily.monospace,
+        color: 'inherit',
+        background: 'transparent',
+        whiteSpace: 'inherit'
       }
     }
   },
   List: {
     li: {
       '& > code': {
+        fontSize: 14
+      },
+      '& > strong': {
         fontSize: 14
       }
     }

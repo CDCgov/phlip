@@ -48,8 +48,7 @@ module.exports = {
         },
         {
           name: 'theme',
-          content: 'docs/theme.md',
-          description: 'Setting up and initializing the Material UI Project Theme'
+          content: 'docs/theme.md'
         }
       ]
     },

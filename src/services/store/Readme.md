@@ -1,7 +1,7 @@
 This is the main file for setting up the redux store, redux-persist, and
 redux-logic.
 
-This file exports: api, store, persistor, history
+This file exports: `api`, `store`, `persistor`, `history`
 
 ### redux store
 The redux store that is passed through to the `<Provider>` component in
@@ -30,3 +30,14 @@ redux-logic. For the app, the dependencies are `api` and `history`.
 
 `history` is a standard browser history object that is passed as a
 dependecy to the `api` for handling unauthorized requests.
+
+### redux-persist
+redux-persist library is used to persist date upon refresh. redux-persist
+needs to know the store information in order to do this. The `persistor`
+variable in this file is for redux-persist. This persistor variable is
+passed to the `<PersistGate>` component in `scenes/index.js`.
+
+We pass certain reducers we want to be persisted to redux-persist, as
+seen in `scenes/reducer.js`. All persisted data is stored in session
+storage and cleared when the user logs out. The only state variable that
+is persisted upon logout is the `rowsPerPage` in the Home reducer. 
