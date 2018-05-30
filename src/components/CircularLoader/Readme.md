@@ -1,4 +1,4 @@
-Indeterminate CirclularLoader example
+#### Indeterminate CirclularLoader example:
 ```jsx
 <CircularLoader />
 ```

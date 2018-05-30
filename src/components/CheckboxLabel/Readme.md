@@ -1,4 +1,4 @@
-CheckboxLabel example
+#### CheckboxLabel example
 
 ```jsx
 initialState = { checked: false };
@@ -12,7 +12,7 @@ initialState = { checked: false };
 />
 ```
 
-Disabled CheckboxLabel example
+#### Disabled CheckboxLabel example
 ```jsx
 initialState = { checked: true };
 

@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { FormControl, FormHelperText } from 'material-ui/Form'
 import { DatePicker as MuiDatePicker } from 'material-ui-pickers'
+import { ChevronRight, ChevronLeft, Calendar } from 'mdi-material-ui'
 import moment from 'moment'
 
 /**
@@ -21,6 +22,9 @@ export const DatePicker = props => {
         style={{ marginTop: 16 }}
         format={dateFormat}
         name={name}
+        keyboardIcon={<Calendar />}
+        rightArrowIcon={<ChevronRight />}
+        leftArrowIcon={<ChevronLeft />}
         keyboard
         mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
         onChange={onChange}

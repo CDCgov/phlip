@@ -1,4 +1,4 @@
-Autocomplete / autosuggest example.
+#### Autocomplete / autosuggest example.
 
 ```jsx
 suggestionList = ['Florida', 'California', 'Ohio'];

@@ -51,7 +51,8 @@ const styles = ({ color, fontFamily, fontSize }) => ({
     borderBottom: 'thin solid #b3b7b9'
   },
   heading4: {
-    fontSize: fontSize.h4
+    fontSize: fontSize.h4,
+    marginBottom: 0
   },
   heading5: {
     fontSize: fontSize.h5

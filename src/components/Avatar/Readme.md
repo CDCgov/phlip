@@ -1,4 +1,4 @@
-Avatar example with initials
+#### Avatar example with initials
 ```jsx
 <Avatar
   userName="Spongebob Squarepants"
@@ -6,7 +6,7 @@ Avatar example with initials
 />
 ```
 
-Card avatar example with initials and custom style
+#### Card avatar example with initials and custom style
 ```jsx
 <Avatar
   cardAvatar
