@@ -6,6 +6,10 @@ import { store, history } from 'services/store'
 import theme from 'services/theme'
 import Scenes from 'scenes'
 
+/**
+ * Main App component. Sets up the BrowserRouter for react-router, the theme for material-ui and the provider / store
+ * for redux
+ */
 const App = () => {
   return (
     <Provider store={store}>
@@ -15,10 +19,7 @@ const App = () => {
         </MuiThemeProvider>
       </Router>
     </Provider>
-
   )
 }
-
-App.propTypes = {}
 
 export default App

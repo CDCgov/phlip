@@ -10,6 +10,12 @@ const INITIAL_STATE = {
   alertError: ''
 }
 
+/**
+ * Main reducer for protocol scene
+ * @param {Object} state
+ * @param {Object} action
+ * @returns {Object}
+ */
 const protocolReducer = (state = INITIAL_STATE, action) => {
   switch(action.type) {
     case types.UPDATE_PROTOCOL:

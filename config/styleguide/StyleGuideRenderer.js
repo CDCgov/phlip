@@ -56,7 +56,7 @@ const styles = ({ color, fontFamily, fontSize, sidebarWidth, mq, space, maxWidth
 export function StyleGuideRenderer({ classes, title, homepageUrl, children, toc, hasSidebar }) {
   return (
     <div className={cx(classes.root, hasSidebar && classes.hasSidebar)}>
-      <div style={{ overflow: 'auto' }}>
+      <div style={{ overflow: 'auto', backgroundColor: background }}>
         <div className={classes.sidebar}>
           <div className={classes.logo}>
             <Typography style={{ color: 'white', fontWeight: 100 }} type="title">PHLIP Docs & Styleguide</Typography>
