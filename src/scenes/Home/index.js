@@ -16,6 +16,7 @@ import ApiErrorAlert from 'components/ApiErrorAlert'
 /**
  * Project List ("Home") screen main component. The first component that is rendered when the user logs in. This is parent
  * component for all things related to the project list -- adding / editing a project, viewing all projects in the system.
+ * This component also has two scenes: AddEditJurisdiction and AddEditProject under scenes directory.
  */
 export class Home extends Component {
   static propTypes = {

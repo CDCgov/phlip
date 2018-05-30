@@ -13,7 +13,9 @@ import Container from 'components/Layout'
 import withTracking from 'components/withTracking'
 
 /**
- * Represents the parent User Management component, that displays a list of users in the system
+ * Represents the parent User Management component, that displays a list of users in the system. This component is
+ * mounted and rendered when the user navigates to the 'User Management' option in the avatar menu. This component has
+ * one scene: AddEditUser under ./scenes/AddEditUser
  */
 export class Admin extends Component {
   static propTypes = {

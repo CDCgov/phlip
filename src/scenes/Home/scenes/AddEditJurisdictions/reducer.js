@@ -20,6 +20,13 @@ const INITIAL_STATE = {
   }
 }
 
+/**
+ * Reducer for the AddEditJurisdictions scene
+ *
+ * @param {Object} state
+ * @param {Object} action
+ * @returns {Object}
+ */
 const addEditJurisdictionsReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_PROJECT_JURISDICTIONS_SUCCESS:

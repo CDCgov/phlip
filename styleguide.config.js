@@ -15,7 +15,14 @@ module.exports = {
     {
       name: 'Scenes',
       content: 'src/scenes/Readme.md',
-      components: 'src/scenes/*/index.js'
+      components: 'src/**/scenes/*/index.js'
+    },
+    {
+      name: 'Data',
+      content: 'src/data/Readme.md',
+      sections: [
+        { name: 'User', content: 'src/data/user/Readme.md' }
+      ]
     },
     {
       name: 'UI Components',
@@ -107,7 +114,7 @@ module.exports = {
   styles,
   getComponentPathLine: componentPath => {
     let name = path.basename(componentPath, '.js')
-    const dir = path.dirname(componentPath)
+    const dir = path.dirname(componentPath).split('/').slice(1).join('/')
     const baseDir = dir.split('/')[dir.split('/').length - 1]
 
     if (name === 'rsgCodingValidation') {

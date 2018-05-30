@@ -18,16 +18,63 @@ import { trimWhitespace } from 'utils/formHelpers'
 import * as questionTypes from './constants'
 import withFormAlert from 'components/withFormAlert'
 
+/**
+ * Main / entry component for all things related to adding and editing a question for the coding scheme. This component
+ * is a modal and is rendered and mounted when the user clicks the 'Add New Question' button or the pencil icon on a
+ * question node in the scheme. The Edit or Add view is determined by the location and location.state props variables.
+ * If a question is passed along, then it's edit, otherwise it's Add. This component is wrapped by the withFormAlert,
+ * and react-redux's connect HOCs.
+ */
 export class AddEditQuestion extends Component {
   static propTypes = {
+    /**
+     * ID of project for which this view was opened
+     */
     projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    /**
+     * Redux actions
+     */
     actions: PropTypes.object,
+    /**
+     * Redux-form actions
+     */
     formActions: PropTypes.object,
+    /**
+     * Redux-form
+     */
     form: PropTypes.object,
+    /**
+     * Name of form
+     */
+    formName: PropTypes.string,
+    /**
+     * react-router location match object
+     */
     match: PropTypes.object,
-    location: PropTypes.object,
+    /**
+     * Browser history object
+     */
     history: PropTypes.object,
-    onCloseModal: PropTypes.func
+    /**
+     * react-router location object
+     */
+    location: PropTypes.object,
+    /**
+     * Function passed in from withFormAlert HOC
+     */
+    onCloseModal: PropTypes.func,
+    /**
+     * Form error if any that occurred when manipulating the form
+     */
+    formError: PropTypes.string,
+    /**
+     * Whether or not the protocol is currently checked out
+     */
+    hasLock: PropTypes.bool,
+    /**
+     * Whether or not the protocol is checked out by the current user logged in
+     */
+    lockedByCurrentUser: PropTypes.bool
   }
 
   constructor(props, context) {
@@ -84,6 +131,13 @@ export class AddEditQuestion extends Component {
     }
   }
 
+  /**
+   * Function called when the form is submitted, dispatches a redux action for updating or adding depending on state and
+   * whether or not the request if for a child question. Trims whitespace from all of the question form fields.
+   *
+   * @public
+   * @param {Object} values
+   */
   handleSubmit = values => {
     this.setState({
       submitting: true
@@ -112,11 +166,27 @@ export class AddEditQuestion extends Component {
 
   }
 
+  /**
+   * In edit mode, the user clicks the cancel button. Resets to form values to whatever they were before editing.
+   *
+   * @public
+   */
   onCancel = () => {
     this.props.formActions.reset('questionForm')
     this.props.history.goBack()
   }
 
+  /**
+   * Handles updating the form fields when the user changes the question type in the form. Dispatches a redux-form action
+   * to change form fields and values. Values are kept for questionText and questionHint. If the type of question is
+   * changed another other than TextField or Binary, then the possibleAnswers text is kept. If the question type is
+   * changed to Binary then the possibleAnswers are changed to True and False. If the question type is changed to TextField,
+   * the possibleAnswers are removed.
+   *
+   * @public
+   * @param {Object} event
+   * @param {Number} value
+   */
   handleTypeChange = (event, value) => {
     if (value === questionTypes.BINARY) {
       const currentValues = this.props.form.values
@@ -138,6 +208,13 @@ export class AddEditQuestion extends Component {
     }
   }
 
+  /**
+   * Validates that all required fields are filled out. This included every available possibleAnswer text field on the
+   * form.
+   *
+   * @public
+   * @param {Object} values
+   */
   validate = values => {
     const errors = {}
     if (!values.text) {
@@ -285,7 +362,7 @@ const mapStateToProps = (state, ownProps) => ({
   hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false
 })
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(actions, dispatch),
   formActions: bindActionCreators(formActions, dispatch)
 })

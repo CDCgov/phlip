@@ -32,7 +32,7 @@ const getAvailableUsers = (users, sortBy, direction) => {
  * @param {Object} action
  * @returns {{users: Array, rowsPerPage: number, page: number, sortBy: string, direction: string, visibleUsers: Array}}
  */
-function adminReducer(state = INITIAL_STATE, action) {
+const adminReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_USERS_SUCCESS:
       return {

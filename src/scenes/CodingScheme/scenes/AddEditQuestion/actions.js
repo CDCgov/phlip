@@ -1,5 +1,6 @@
 import * as types from '../../actionTypes'
 
+/** Adding questions */
 export const addQuestionRequest = (question, projectId, parentId) => ({
   type: types.ADD_QUESTION_REQUEST,
   question,
@@ -21,6 +22,7 @@ export const addChildQuestionFailure = (payload) => ({
   payload: { errorContent: payload, error: true }
 })
 
+/** Updating questions */
 export const updateQuestionRequest = (question, projectId, questionId, path) => ({
   type: types.UPDATE_QUESTION_REQUEST,
   question,

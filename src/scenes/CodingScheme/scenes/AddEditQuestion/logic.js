@@ -3,6 +3,9 @@ import * as types from '../../actionTypes'
 import * as questionTypes from './constants'
 import { commonHelpers } from 'utils'
 
+/**
+ * Adds a userID to every action so as to not repeat the code in every logic block
+ */
 const updateUserIdLogic = createLogic({
   type: [types.ADD_QUESTION_REQUEST, types.UPDATE_QUESTION_REQUEST, types.ADD_CHILD_QUESTION_REQUEST],
   transform({ getState, action }, next) {
@@ -13,6 +16,9 @@ const updateUserIdLogic = createLogic({
   }
 })
 
+/**
+ * Updates the question object in the action creators with outline information and possibleAnswers
+ */
 const updateOutlineLogic = createLogic({
   type: [types.ADD_QUESTION_REQUEST, types.ADD_CHILD_QUESTION_REQUEST],
   transform({ getState, action }, next) {
@@ -30,6 +36,9 @@ const updateOutlineLogic = createLogic({
   }
 })
 
+/**
+ * Updates the question object in the action creator values with the position in parent number
+ */
 const updatePositionInParentLogic = createLogic({
   type: types.ADD_QUESTION_REQUEST,
   transform({ getState, action }, next) {
@@ -43,6 +52,9 @@ const updatePositionInParentLogic = createLogic({
   }
 })
 
+/**
+ * Updates question object in action creator with category question status and position in parent
+ */
 const updateIsCategoryQuestionLogic = createLogic({
   type: types.ADD_CHILD_QUESTION_REQUEST,
   transform({ getState, action }, next) {
@@ -57,6 +69,9 @@ const updateIsCategoryQuestionLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to update the question in the coding scheme whose questionId = action.question.id
+ */
 const updateQuestionLogic = createLogic({
   type: types.UPDATE_QUESTION_REQUEST,
   async process({ api, action }, dispatch, done) {
@@ -90,6 +105,9 @@ const updateQuestionLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to add a child question to the coding scheme
+ */
 const addChildQuestionLogic = createLogic({
   type: types.ADD_CHILD_QUESTION_REQUEST,
   async process({ api, action }, dispatch, done) {
@@ -119,6 +137,9 @@ const addChildQuestionLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to add a parent question to the coding scheme
+ */
 const addQuestionLogic = createLogic({
   type: types.ADD_QUESTION_REQUEST,
   async process({ api, action }, dispatch, done) {

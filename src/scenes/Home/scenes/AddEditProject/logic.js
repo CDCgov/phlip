@@ -1,6 +1,9 @@
 import { createLogic } from 'redux-logic'
 import * as types from '../../actionTypes'
 
+/**
+ * Sends a request to add a project
+ */
 export const addProjectLogic = createLogic({
   type: types.ADD_PROJECT_REQUEST,
   async process({ action, api }, dispatch, done) {
@@ -23,6 +26,9 @@ export const addProjectLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to update a project
+ */
 export const updateProjectLogic = createLogic({
   type: types.UPDATE_PROJECT_REQUEST,
   async process({ action, api }, dispatch, done) {
@@ -45,6 +51,10 @@ export const updateProjectLogic = createLogic({
   }
 })
 
+/**
+ * Transforms the actions for creating and updating to include the userId of the user currently logged in so the code
+ * doesn't have to be repeated in both logic.
+ */
 export const updateUserId = createLogic({
   type: [types.ADD_PROJECT_REQUEST, types.UPDATE_PROJECT_REQUEST],
   transform({ getState, action }, next) {
