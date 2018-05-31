@@ -10,13 +10,17 @@ const styles = {
   }
 }
 
-const ModalActions = ({ actions, raised, classes, ...otherProps }) => {
+/**
+ * Wrapper for material-ui's DialogActions component. These actions will be displayed as buttons at the bottom of the modal
+ */
+export const ModalActions = ({ actions, raised, classes, ...otherProps }) => {
   return (
     <DialogActions classes={{ root: classes.root }} {...otherProps} >
       {actions.map(action => (
         <Button
           key={action.value}
-          raised={raised} value={action.value}
+          raised={raised}
+          value={action.value}
           type={action.type}
           color="accent"
           disabled={action.disabled || false}
@@ -29,8 +33,23 @@ const ModalActions = ({ actions, raised, classes, ...otherProps }) => {
 }
 
 ModalActions.propTypes = {
+  /**
+   * Should the action buttons be raised
+   */
   raised: PropTypes.bool,
-  actions: PropTypes.array.isRequired,
+  /**
+   * The list of actions to render
+   */
+  actions: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.any,
+    disabled: PropTypes.bool,
+    type: PropTypes.string,
+    onClick: PropTypes.func,
+    otherProps: PropTypes.object
+  })),
+  /**
+   * Style classes object supplied by material-ui
+   */
   classes: PropTypes.object
 }
 

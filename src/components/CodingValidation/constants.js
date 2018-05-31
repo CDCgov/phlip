@@ -1,3 +1,6 @@
+/**
+ * Question types
+ */
 export const BINARY = 1
 export const CATEGORY = 2
 export const CHECKBOXES = 3

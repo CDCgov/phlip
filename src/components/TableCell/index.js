@@ -2,7 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { TableCell as MuiTableCell } from 'material-ui/Table'
 
-const TableCell = ({ style, padding, children, ...otherProps }) => {
+/**
+ * Wrapper for material-ui's TableCell component
+ */
+export const TableCell = ({ style, padding, children, ...otherProps }) => {
   return (
     <MuiTableCell padding={padding} style={{ ...style, minWidth: '1%' }} {...otherProps}>
       {children}
@@ -11,9 +14,17 @@ const TableCell = ({ style, padding, children, ...otherProps }) => {
 }
 
 TableCell.propTypes = {
+  /**
+   * Override style of table cell
+   */
   style: PropTypes.object,
-  light: PropTypes.bool,
+  /**
+   * Contents of table cell
+   */
   children: PropTypes.node,
+  /**
+   * How much padding to add to table cell, based on material-ui's options
+   */
   padding: PropTypes.string
 }
 

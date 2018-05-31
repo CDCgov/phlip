@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Styled from 'react-styleguidist/lib/rsg-components/Styled'
-import Heading from 'react-styleguidist/lib/rsg-components/Heading'
 import DefaultSections from 'react-styleguidist/lib/rsg-components/Sections/SectionsRenderer'
 
 const styles = ({ fontFamily, color, space }) => ({
   headingSpacer: {
-    marginBottom: space[2]
+    marginBottom: 10
   },
   descriptionText: {
     marginTop: space[0],
@@ -17,10 +16,6 @@ const styles = ({ fontFamily, color, space }) => ({
 export function SectionsRenderer({ classes, children }) {
   return (
     <div>
-      <div className={classes.headingSpacer}>
-        <Heading level={1}>Example Components</Heading>
-        <p className={classes.descriptionText}>These are the greatest components</p>
-      </div>
       <DefaultSections>{children}</DefaultSections>
     </div>
   )

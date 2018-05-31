@@ -5,9 +5,6 @@ exports[`Alert component should render correctly 1`] = `
   open={true}
 >
   <ModalTitle
-    closeButton={false}
-    edit={false}
-    editButton={false}
     style={
       Object {
         "alignItems": "center",

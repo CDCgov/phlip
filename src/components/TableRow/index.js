@@ -2,7 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { TableRow as MuiTableRow } from 'material-ui/Table'
 
-const TableRow = ({ children, ...otherProps }) => {
+/**
+ * Simple wrapper for material-ui's TableRow component
+ */
+export const TableRow = ({ children, ...otherProps }) => {
   return (
     <MuiTableRow {...otherProps}>
       {children}
@@ -11,6 +14,9 @@ const TableRow = ({ children, ...otherProps }) => {
 }
 
 TableRow.propTypes = {
+  /**
+   * Contents of table row, most likely TableCell components
+   */
   children: PropTypes.node
 }
 

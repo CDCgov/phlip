@@ -6,7 +6,7 @@ import { Route } from 'react-router-dom'
 import * as actions from './actions'
 import Dropdown from 'components/Dropdown'
 import { withRouter } from 'react-router-dom'
-import { Field, reduxForm } from 'redux-form'
+import { Field } from 'redux-form'
 import ModalForm from 'components/ModalForm'
 import TextInput from 'components/TextInput'
 import isEmail from 'sane-email-validation'
@@ -30,20 +30,71 @@ const rowStyles = {
   paddingBottom: 30
 }
 
+/**
+ * Main / entry component for all things related to adding and editing a user. This component is a modal and is
+ * rendered and mounted when the user clicks the 'Add New User' button or the 'Edit' link under the 'Edit' table header
+ * in the User Management scene. The Edit or Add view is determined by the location and location.state props variables.
+ * If a user is passed along, then it's edit, otherwise it's Add. This component is wrapped by the withFormAlert,
+ * withTracking and react-redux's connect HOCs.
+ */
 export class AddEditUser extends Component {
   static propTypes = {
+    /**
+     * redux-form objet
+     */
     form: PropTypes.object,
+    /**
+     * Name of redux-form
+     */
     formName: PropTypes.string,
+    /**
+     * All users in system
+     */
     users: PropTypes.array,
+    /**
+     * Avatar of current user being edited
+     */
     avatar: PropTypes.string,
+    /**
+     * Current user being edited
+     */
     currentUser: PropTypes.object,
+    /**
+     * Redux actions
+     */
     actions: PropTypes.object,
+    /**
+     * redux-form actions
+     */
     formActions: PropTypes.object,
+    /**
+     * react-router location object
+     */
     location: PropTypes.object,
+    /**
+     * react-router match object
+     */
     match: PropTypes.object,
+    /**
+     * browser history object
+     */
     history: PropTypes.object,
+    /**
+     * Function passed in from withFormAlert HOC
+     */
     onCloseModal: PropTypes.func,
-    formError: PropTypes.string
+    /**
+     * Any error that occurred during updating or adding a user
+     */
+    formError: PropTypes.string,
+    /**
+     * Whether or not a response has been received from the backend
+     */
+    isDoneSubmitting: PropTypes.bool,
+    /**
+     * Function passed in from withFormAlert HOC
+     */
+    onSubmitError: PropTypes.func
   }
 
   constructor(props, context) {
@@ -53,6 +104,15 @@ export class AddEditUser extends Component {
       selectedUser: null,
       open: false,
       submitting: false
+    }
+  }
+
+  componentWillMount() {
+    const id = this.props.match.params.id
+
+    if (id && this.props.users.length > 0) {
+      this.state.selectedUser = getUserById(this.props.users, id)
+      this.props.actions.loadAddEditAvatar(this.state.selectedUser.avatar)
     }
   }
 
@@ -68,7 +128,14 @@ export class AddEditUser extends Component {
     }
   }
 
-  handleSubmit = (values) => {
+  /**
+   * Function called when the form is submitted. Dispatches redux actions to update or create a user depending on view.
+   * Dispatches another action if the user being edited is the current user logged in.
+   *
+   * @public
+   * @param {Object} values
+   */
+  handleSubmit = values => {
     this.setState({ submitting: true })
 
     let updatedValues = { ...values }
@@ -86,6 +153,13 @@ export class AddEditUser extends Component {
     }
   }
 
+  /**
+   * Validates that an email in the form is not already used in another account. Throws an error if needed which is
+   * caught by redux-form
+   *
+   * @public
+   * @param {Object} values
+   */
   validateEmail = values => {
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
     const emails = this.props.users.map(user => user.email)
@@ -99,15 +173,13 @@ export class AddEditUser extends Component {
     })
   }
 
-  componentWillMount() {
-    const id = this.props.match.params.id
-
-    if (id && this.props.users.length > 0) {
-      this.state.selectedUser = getUserById(this.props.users, id)
-      this.props.actions.loadAddEditAvatar(this.state.selectedUser.avatar)
-    }
-  }
-
+  /**
+   * Opens another modal for removing / updating an avatar for the user. Opens the components/AvatarForm
+   * component. Takes the first image in the list, compresses it and passes it to the form.
+   *
+   * @public
+   * @param {Array} files
+   */
   openAvatarForm = files => {
     const maxSize = 500000
 
@@ -128,6 +200,13 @@ export class AddEditUser extends Component {
     }
   }
 
+  /**
+   * Checks to make sure a value is defined, other returns 'Required' for displaying as a form error
+   *
+   * @public
+   * @param value
+   * @returns {*}
+   */
   required = value => {
     if (!value && !this.props.match.params.id) {
       return 'Required'
@@ -149,11 +228,19 @@ export class AddEditUser extends Component {
     }
   }
 
+  /**
+   * Cancels any edits and closes this modal
+   * @public
+   */
   onCancel = () => {
     this.props.actions.onCloseAddEditUser()
     this.props.history.goBack()
   }
 
+  /**
+   * Closes alert that displays when the user tries to upload an image that is too large
+   * @public
+   */
   onAlertClose = () => {
     this.setState({ open: false })
   }
@@ -305,7 +392,7 @@ const getUserById = (users, id) => {
   return null
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   currentUser: state.data.user.currentUser || {},
   users: state.scenes.admin.main.users || [],
   form: state.form.addEditUser || {},
@@ -315,7 +402,7 @@ const mapStateToProps = (state) => ({
   isDoneSubmitting: state.scenes.admin.addEditUser.isDoneSubmitting || false
 })
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(actions, dispatch),
   formActions: bindActionCreators(formActions, dispatch)
 })

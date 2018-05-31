@@ -4,7 +4,10 @@ import { DialogTitle } from 'material-ui/Dialog'
 import Container, { Column, Row } from 'components/Layout'
 import SearchBar from 'components/SearchBar'
 
-const ModalTitle = ({ onCloseForm, title, search, buttons, SearchBarProps, style }) => {
+/**
+ * Wrapper for material-ui's DialogTitle component. Will render at the top of the modal
+ */
+export const ModalTitle = ({ title, search, buttons, SearchBarProps, style }) => {
   return (
     <DialogTitle style={style}>
       <Container alignItems="center">
@@ -26,12 +29,29 @@ const ModalTitle = ({ onCloseForm, title, search, buttons, SearchBarProps, style
   )
 }
 
-ModalTitle.propTypes = {}
-
-ModalTitle.defaultProps = {
-  edit: false,
-  editButton: false,
-  closeButton: false
+ModalTitle.propTypes = {
+  /**
+   * What the actual title should be
+   */
+  title: PropTypes.any,
+  /**
+   * Whether or not to include a search bar in the title
+   */
+  search: PropTypes.bool,
+  /**
+   * Props to be applied to the SearchBar component, if applicable
+   */
+  SearchBarProps: PropTypes.object,
+  /**
+   * Buttons to put in the title
+   */
+  buttons: PropTypes.any,
+  /**
+   * Override any default style of modal title
+   */
+  style: PropTypes.object
 }
+
+ModalTitle.defaultProps = {}
 
 export default ModalTitle

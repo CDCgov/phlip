@@ -24,6 +24,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
       }
       displayFlex={false}
       flex={false}
+      reverse={false}
       style={
         Object {
           "alignSelf": "flex-end",

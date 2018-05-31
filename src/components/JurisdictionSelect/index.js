@@ -17,6 +17,9 @@ const styles = theme => ({
   }
 })
 
+/**
+ * Select input used in Coding / Validation for selecting current jurisdiction
+ */
 export class JurisdictionSelect extends Component {
   constructor(props, context) {
     super(props, context)
@@ -27,6 +30,11 @@ export class JurisdictionSelect extends Component {
     this.jurisdictionRef.focus()
   }
 
+  /**
+   * This sets the ref for the selectable div. It is used to automatically set the focus to the input.
+   * @public
+   * @param node
+   */
   setJurisdictionRef = node => {
     if (node) {
       this.jurisdictionRef = findDOMNode(node).childNodes[0].childNodes[0]
@@ -76,10 +84,31 @@ export class JurisdictionSelect extends Component {
 }
 
 JurisdictionSelect.propTypes = {
+  /**
+   * ID of the input
+   */
   id: PropTypes.any,
+  /**
+   * Function to change when the selection changes
+   */
   onChange: PropTypes.func,
+  /**
+   * Value selected
+   */
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  options: PropTypes.arrayOf(PropTypes.object)
+  /**
+   * Array of options to populate the list
+   */
+  options: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    startDate: PropTypes.any,
+    endDate: PropTypes.any,
+    id: PropTypes.any
+  })).isRequired,
+  /**
+   * Theme object supplied by material-ui
+   */
+  theme: PropTypes.object
 }
 
 export default withStyles(styles, { withTheme: true })(JurisdictionSelect)

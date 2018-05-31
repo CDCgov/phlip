@@ -1,4 +1,5 @@
-ApiErrorAlert example. Click the button to see what the alert would look like.
+#### ApiErrorAlert example.
+Click the button to see what the alert would look like.
 
 ```jsx
 initialState = { open: false };

@@ -64,9 +64,6 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
         </div>
       </UNDEFINED>
     }
-    closeButton={false}
-    edit={false}
-    editButton={false}
     search={true}
     title={
       <withStyles(Typography)

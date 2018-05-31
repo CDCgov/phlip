@@ -1,8 +1,11 @@
+/**
+ * Setting up passport.js to use SAML stragety
+ */
+
 const SamlStrategy = require('passport-saml').Strategy
 const fs = require('fs')
 
 module.exports = function (passport, config) {
-
   passport.serializeUser(function (user, done) {
     done(null, user)
   })

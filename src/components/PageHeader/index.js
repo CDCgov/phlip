@@ -9,6 +9,9 @@ import { withRouter } from 'react-router-dom'
 import { withTheme } from 'material-ui/styles'
 import { Link } from 'react-router-dom'
 
+/**
+ * This is the header at the top of every page with the back button and page title
+ */
 export const PageHeader = props => {
   const {
     projectName, pageTitle, projectId, protocolButton,
@@ -70,10 +73,46 @@ export const PageHeader = props => {
 }
 
 PageHeader.propTypes = {
+  /**
+   * Name of the project
+   */
   projectName: PropTypes.string,
-  showButton: PropTypes.bool,
-  projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  onBackButtonClick: PropTypes.func
+  /**
+   * Title of the page to be displayed next to projectName
+   */
+  pageTitle: PropTypes.string,
+  /**
+   * ID of project for this page
+   */
+  projectId:  PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * Whether or not to show the Protocol button
+   */
+  protocolButton: PropTypes.bool,
+  /**
+   * Any other button to show
+   */
+  otherButton: PropTypes.object,
+  /**
+   * This should be anything that you want to display between the protocol button and project name / page title
+   */
+  children: PropTypes.any,
+  /**
+   * Browser history object
+   */
+  history: PropTypes.object,
+  /**
+   * For coding scheme and 'checkout' button will be shown
+   */
+  checkoutButton: PropTypes.object,
+  /**
+   * If defined, when clicking the back button this function will be called instead of just history.goBack()
+   */
+  onBackButtonClick: PropTypes.func,
+  /**
+   * Theme object provided by material-ui
+   */
+  theme: PropTypes.object
 }
 
 export default withRouter(withTheme()(PageHeader))

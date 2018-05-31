@@ -5,6 +5,13 @@ const INITIAL_STATE = {
   goBack: false
 }
 
+/**
+ * Reducer for the AddEditProject scene
+ *
+ * @param {Object} state
+ * @param {Object} action
+ * @returns {{formError: null, goBack: boolean}}
+ */
 const addEditProjectReducer = (state = INITIAL_STATE, action) => {
   switch(action.type) {
     case types.ADD_PROJECT_FAIL:

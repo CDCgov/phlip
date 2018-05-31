@@ -3,7 +3,11 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { withTheme } from 'material-ui/styles'
 
-const TextLink = ({ theme, children, ...otherProps }) => {
+/**
+ * Wrapper around react-router-dom's Link component, all Link props are passed through.
+ * Text color is the apps secondary theme color
+ */
+export const TextLink = ({ theme, children, ...otherProps }) => {
   const styles = {
     color: theme.palette.secondary.main,
     textDecoration: 'none'
@@ -15,7 +19,13 @@ const TextLink = ({ theme, children, ...otherProps }) => {
 }
 
 TextLink.propTypes = {
-  theme: PropTypes.object, 
+  /**
+   * Material-UI theme object
+   */
+  theme: PropTypes.object,
+  /**
+   * Link contents
+   */
   children: PropTypes.any
 }
 

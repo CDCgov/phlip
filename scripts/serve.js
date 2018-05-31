@@ -1,3 +1,6 @@
+/**
+ * Starts the node.js and express server for production mode
+ */
 const express = require('express')
 const session = require('express-session')
 const chalk = require('chalk')
@@ -21,7 +24,11 @@ const APP_HOST = process.env.APP_HOST || '0.0.0.0'
 const APP_PORT = process.env.APP_PORT || 5200
 const HTTP_APP_PORT = process.env.HTTP_APP_PORT || 443
 const IS_PRODUCTION = process.env.API_HOST || false
-const APP_API_URL = IS_PRODUCTION ? (`${process.env.APP_API_URL}/api` || `${DEFAULT_API_URL}/api`) : (process.env.APP_API_URL || DEFAULT_API_URL)
+
+// Determine if this should be considered production (will setup SAML Auth, and not basic)
+const APP_API_URL = IS_PRODUCTION
+  ? (`${process.env.APP_API_URL}/api` || `${DEFAULT_API_URL}/api`)
+  : (process.env.APP_API_URL || DEFAULT_API_URL)
 
 app.use(compression())
 app.use(express.static('./dist/'))
@@ -36,7 +43,7 @@ if (IS_PRODUCTION) {
   app.use(passport.initialize())
   app.use(passport.session())
 
-  //Test direct GET call to backend
+  // Test direct GET call to backend
   app.get('/auth/sams-login',
     passport.authenticate('saml', { failureRedirect: '/login', failureFlash: true }),
     (req, res) => {
@@ -44,6 +51,7 @@ if (IS_PRODUCTION) {
     }
   )
 
+  // SAML login callback URL. Redirects the frontend to /login/verify-user
   app.post('/login/callback',
     passport.authenticate('saml', { failureRedirect: '/login', failureFlash: true }),
     (req, res) => {
@@ -69,10 +77,14 @@ if (IS_PRODUCTION) {
   }
   const httpsHost = APP_HOST
 
+  // Proxy all requests to /api to the backend API URL
   app.use('/api', proxy({ target: APP_API_URL }))
+
+  // Send all requests to the react code
   app.use('/', express.static('./dist/index.html'))
   app.use('*', express.static('./dist/index.html'))
 
+  // Start and HTTPS server
   https.createServer(httpOptions, app).listen(HTTP_APP_PORT, httpsHost, err => {
     if (err) {
       return console.log(err)
@@ -80,15 +92,22 @@ if (IS_PRODUCTION) {
     console.log(chalk.cyan(`Starting the produciton server on ${APP_HOST}:${HTTP_APP_PORT}...`))
   })
 
+  // Start an HTTP server and redirect all requests to HTTPS
   http.createServer(function (req, res) {
     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url })
     res.end()
   }).listen(80)
+
 } else {
+
+  // Proxy all requests to /api to the backend URL
   app.use('/api', proxy({ target: APP_API_URL }))
+
+  // Send all requests to the react code
   app.use('/', express.static('./dist/index.html'))
   app.use('*', express.static('./dist/index.html'))
 
+  // Start a server on APP_HOST and APP_PORT
   app.listen(APP_PORT, APP_HOST, err => {
     if (err) {
       return console.log(err)

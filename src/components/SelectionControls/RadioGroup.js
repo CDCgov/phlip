@@ -11,11 +11,14 @@ const styles = theme => ({
   }
 })
 
+/**
+ * Basic radio button form group
+ */
 export const RadioGroup = ({ choices, selected, onChange, error, required, helperText, label, classes }) => {
   return (
     <FormControl component="fieldset" required={required} error={error}>
       <InputLabel shrink={true} required={required} style={{ position: 'relative' }}>{label}</InputLabel>
-      <FormGroup >
+      <FormGroup>
         {choices.map(choice => (
           <div key={choice.type} style={{ display: 'flex', alignItems: 'center' }}>
             <FormControlLabel
@@ -34,6 +37,38 @@ export const RadioGroup = ({ choices, selected, onChange, error, required, helpe
 }
 
 RadioGroup.propTypes = {
+  /**
+   * Array of choices to render as radio button inputs
+   */
+  choices: PropTypes.array,
+  /**
+   * Type of the currently selected radio button
+   */
+  selected: PropTypes.any,
+  /**
+   * Function to call when a radio button is selected
+   */
+  onChange: PropTypes.func,
+  /**
+   * Whether or not there's a form error (renders helpText and labels are made red)
+   */
+  error: PropTypes.bool,
+  /**
+   * Whether or not input is required
+   */
+  required: PropTypes.bool,
+  /**
+   * Helper text to display if there's an error
+   */
+  helperText: PropTypes.string,
+  /**
+   * Label for the form group
+   */
+  label: PropTypes.string,
+  /**
+   * Style classes from material-ui
+   */
+  classes: PropTypes.object
 }
 
 export default withStyles(styles)(RadioGroup)

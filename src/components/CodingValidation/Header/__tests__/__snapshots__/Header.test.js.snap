@@ -30,6 +30,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
     <IconButton
       aria-label="Go back"
       color="black"
+      disabled={false}
       iconSize={30}
       tooltipText=""
     >
@@ -44,6 +45,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
     }
     displayFlex={true}
     flex={false}
+    reverse={false}
   >
     <withStyles(Typography)
       style={

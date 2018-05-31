@@ -10,6 +10,9 @@ const styles = theme => ({
   }
 })
 
+/**
+ * Simple checkbox input type and label
+ */
 export const CheckboxLabel = ({ input, label, onChange, classes, disabled }) => {
   return (
     <FormControlLabel
@@ -27,10 +30,21 @@ export const CheckboxLabel = ({ input, label, onChange, classes, disabled }) => 
 }
 
 CheckboxLabel.propTypes = {
+  /**
+   * Input object, contains value and onChange
+   */
   input: PropTypes.object,
+  /**
+   * Input label for checkbox
+   */
   label: PropTypes.any,
-  onChange: PropTypes.func,
+  /**
+   * Style classes (comes from material-ui)
+   */
   classes: PropTypes.object,
+  /**
+   * Whether or not the checkbox should be disabled
+   */
   disabled: PropTypes.bool
 }
 

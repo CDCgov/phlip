@@ -1,9 +1,17 @@
+/**
+ * This is all of the redux-logic for the CodingScheme scene.
+ */
+
 import { createLogic } from 'redux-logic'
 import addEditQuestionLogic from './scenes/AddEditQuestion/logic'
 import { removeNodeAtPath } from 'react-sortable-tree'
 import { questionsToOutline, getNodeKey } from 'scenes/CodingScheme/reducer'
 import * as types from './actionTypes'
 
+/**
+ * Sends a request to the API to get the coding scheme for project ID: action.id. Also gets the lock information if any
+ * on the coding scheme.
+ */
 const getSchemeLogic = createLogic({
   type: types.GET_SCHEME_REQUEST,
   async process({ api, action, getState }, dispatch, done) {
@@ -40,6 +48,9 @@ const getSchemeLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to check out / lock the coding scheme for project ID: action.id and userId
+ */
 const lockSchemeLogic = createLogic({
   type: types.LOCK_SCHEME_REQUEST,
   async process({ api, action, getState }, dispatch, done) {
@@ -64,6 +75,9 @@ const lockSchemeLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to unlock / check in the coding scheme
+ */
 const unlockSchemeLogic = createLogic({
   type: types.UNLOCK_SCHEME_REQUEST,
   async process({ api, action, getState }, dispatch, done) {
@@ -85,6 +99,9 @@ const unlockSchemeLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to reorder the coding scheme, new order is in state.scenes.codingScheme.outline
+ */
 const reorderSchemeLogic = createLogic({
   type: types.REORDER_SCHEME_REQUEST,
   latest: true,
@@ -106,6 +123,9 @@ const reorderSchemeLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to delete the question with questionId = aciton.questionId
+ */
 const deleteQuestionLogic = createLogic({
   type: types.DELETE_QUESTION_REQUEST,
   async process({ api, action, getState }, dispatch, done) {

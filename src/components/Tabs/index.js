@@ -17,7 +17,10 @@ const styles = theme => ({
   }
 })
 
-const Tabs = ({ tabs, selectedTab, onChangeTab, children, classes, theme }) => {
+/**
+ * Renders a collection of selectable material design tabs around content
+ */
+export const Tabs = ({ tabs, selectedTab, onChangeTab, children, classes, theme }) => {
   return (
     <div className={classes.root}>
       <AppBar
@@ -46,11 +49,33 @@ const Tabs = ({ tabs, selectedTab, onChangeTab, children, classes, theme }) => {
 }
 
 Tabs.propTypes = {
-  tabs: PropTypes.array,
+  /**
+   * The tabs to be displayed
+   */
+  tabs: PropTypes.arrayOf(PropTypes.shape({
+    text: PropTypes.string,
+    id: PropTypes.any
+  })),
+  /**
+   * Currently selected tab which is the index of the tab in the tabs array
+   */
   selectedTab: PropTypes.number,
+  /**
+   * Function to call when the user changes tabs
+   */
   onChangeTab: PropTypes.func,
+  /**
+   * Style classes object from material-ui
+   */
   classes: PropTypes.object,
-  theme: PropTypes.object
+  /**
+   * Theme from material-ui
+   */
+  theme: PropTypes.object,
+  /**
+   * Content that that tabs should wrap
+   */
+  children: PropTypes.any
 }
 
 export default withStyles(styles, { withTheme: true })(Tabs)

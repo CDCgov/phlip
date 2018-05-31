@@ -2,7 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { reduxForm } from 'redux-form'
 
-let Form = ({ children, handleSubmit, form, role, ariaLabelledBy }) => {
+/**
+ * Basic form wrapper to be used with redux-form
+ * @component
+ */
+export let Form = ({ children, handleSubmit, form, role, ariaLabelledBy }) => {
   return (
     <form onSubmit={handleSubmit} role={role} aria-labelledby={ariaLabelledBy}>
       {children}
@@ -11,7 +15,14 @@ let Form = ({ children, handleSubmit, form, role, ariaLabelledBy }) => {
 }
 
 Form.propTypes = {
+  /**
+   * Function to call when the user submits the form
+   */
   handleSubmit: PropTypes.func,
+
+  /**
+   * Contents of the form
+   */
   children: PropTypes.any
 }
 

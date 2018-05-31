@@ -26,14 +26,56 @@ import 'tinymce/plugins/paste'
 
 import { Editor } from '@tinymce/tinymce-react'
 
+/**
+ * Protocol viewer and editor component. Rendered when the user clicks 'Edit' under the Protocol table header in the
+ * project list or one of the Protocol buttons in the page header on various pages.
+ */
 export class Protocol extends Component {
   static propTypes = {
+    /**
+     * Name of project for which the protocol was opened
+     */
     projectName: PropTypes.string,
+    /**
+     * ID of project for which the protocol was opened
+     */
     projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    /**
+     * Contents to render in the protoocl editor and view
+     */
     protocolContent: PropTypes.string,
-    actions: PropTypes.object,
+    /**
+     * Whether or not an error occurred while trying to get the protocol
+     */
     getProtocolError: PropTypes.bool,
-    saveError: PropTypes.bool
+    /**
+     * Whether or not an API request is executing for saving the protocol
+     */
+    submitting: PropTypes.bool,
+    /**
+     * Whether or not the protocol is checked out by the current user logged in
+     */
+    lockedByCurrentUser: PropTypes.bool,
+    /**
+     * Locked / checked out information for the protocol
+     */
+    lockInfo: PropTypes.object,
+    /**
+     * Anything that should be shown inside an alert related to the checking out of the protocol
+     */
+    lockedAlert: PropTypes.string,
+    /**
+     * Whether or not the protocol is currently checked out
+     */
+    hasLock: PropTypes.bool,
+    /**
+     * Any error that should be displayed in an alert
+     */
+    alertError: PropTypes.string,
+    /**
+     * Redux actions object
+     */
+    actions: PropTypes.object
   }
 
   constructor(props, context) {
@@ -78,20 +120,37 @@ export class Protocol extends Component {
     )
   }
 
+  /**
+   * Calls a redux action to request to checkout the protocol. Invoked when the user clicks the 'Edit' button
+   * @public
+   */
   onEnableEdit = () => {
     this.props.actions.lockProtocolRequest(this.props.projectId)
   }
 
+  /**
+   * Closes any alert erorr that might be open
+   * @public
+   */
   onCloseAlert = () => {
     this.props.actions.resetAlertError()
   }
 
+  /**
+   * Calls redux actions to save and unlock protocol. Invoked when the user clicks the 'Save' button
+   * @public
+   */
   onSaveProtocol = () => {
     this.props.actions.saveProtocolRequest(this.props.protocolContent, this.props.projectId)
     this.props.actions.unlockProtocolRequest(this.props.projectId)
     this.props.actions.updateEditedFields(this.props.projectId)
   }
 
+  /**
+   * Closes the alert that shows when the user clicks the 'back' arrow while still in edit mode, and then hit 'Cancel'
+   * in the alert
+   * @public
+   */
   onClose = () => {
     this.setState({
       open: false,
@@ -99,15 +158,29 @@ export class Protocol extends Component {
     })
   }
 
+  /**
+   * Closes any alert related to locking / checking out of the protocol
+   * @public
+   */
   onCloseLockedAlert = () => {
     this.props.actions.resetLockAlert()
   }
 
+  /**
+   * Invoked when the user hits 'Save' in the alert that shows when the user clicks the 'back' arrow while still in edit
+   * mode. Sends a request to save the protocol, and goes back one in browser history.
+   * @public
+   */
   onContinue = () => {
     this.onSaveProtocol()
     this.props.history.goBack()
   }
 
+  /**
+   * If in edit mode, opens an alert to let the user know they are still in edit mode. Invoked when the user clicks the 'back' arrow while
+   * still in edit mode. If not in edit mode, goes back once in browser history.
+   * @public
+   */
   onGoBack = () => {
     if (this.props.lockedByCurrentUser || this.state.editMode) {
       this.setState({

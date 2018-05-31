@@ -1,9 +1,9 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import Checkbox from 'material-ui/Checkbox'
-import { FormGroup, FormControlLabel, FormControl } from 'material-ui/Form'
+import { FormGroup, FormControlLabel, FormControl, FormHelperText } from 'material-ui/Form'
+import { InputLabel } from 'material-ui/Input'
 import { withStyles } from 'material-ui/styles'
-import SimpleInput from 'components/SimpleInput'
 
 const styles = theme => ({
   checked: {
@@ -11,40 +11,59 @@ const styles = theme => ({
   }
 })
 
-export const CheckboxGroup = ({ choices, userAnswers, onChange, onChangePincite, pincites, classes, mergedUserQuestions }) => {
+/**
+ * Basic checkbox form group
+ */
+export const CheckboxGroup = ({ choices, onChange, error, required, helperText, label, classes }) => {
   return (
-    <FormControl component="fieldset">
+    <FormControl component="fieldset" required={required} error={error}>
+      <InputLabel shrink={true} required={required} style={{ position: 'relative' }}>{label}</InputLabel>
       <FormGroup>
         {choices.map(choice => {
           return (<div key={choice.id} style={{ display: 'flex', alignItems: 'center' }}>
             <FormControlLabel
-              checked={userAnswers.answers.hasOwnProperty(choice.id)}
+              checked={choice.selected === true}
               onChange={onChange(choice.id)}
-              control={
-                <Checkbox classes={{ checked: classes.checked }} />
-              }
+              control={<Checkbox classes={{ checked: classes.checked }} />}
               label={choice.text}
             />
-            {userAnswers.answers.hasOwnProperty(choice.id) && pincites &&
-              <SimpleInput
-                key={`${choice.id}-pincite`} style={{ width: 300 }} placeholder="Enter pincite"
-                value={userAnswers.answers[choice.id].pincite}
-                onChange={onChangePincite(choice.id, 'pincite')}
-              />}
           </div>)
         })}
+        <FormHelperText>{error && helperText}</FormHelperText>
       </FormGroup>
     </FormControl>
   )
 }
 
-CheckboxGroup.defaultProps = {
-  pincites: true
-}
-
 CheckboxGroup.propTypes = {
+  /**
+   * Array of choices to render as checkbox inputs
+   */
   choices: PropTypes.array,
-  onChange: PropTypes.func
+  /**
+   * Function to call when a checkbox is clicked
+   */
+  onChange: PropTypes.func,
+  /**
+   * Whether or not there's a form error (renders helpText and labels are made red)
+   */
+  error: PropTypes.bool,
+  /**
+   * Whether or not input is required
+   */
+  required: PropTypes.bool,
+  /**
+   * Helper text to display if there's an error
+   */
+  helperText: PropTypes.string,
+  /**
+   * Label for the form group
+   */
+  label: PropTypes.string,
+  /**
+   * Style classes from material-ui
+   */
+  classes: PropTypes.object
 }
 
 export default withStyles(styles)(CheckboxGroup)

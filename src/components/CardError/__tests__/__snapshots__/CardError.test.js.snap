@@ -1,59 +1,64 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CardError component should render correctly 1`] = `
-<Card
+<Column
+  component={<Card />}
+  displayFlex={true}
+  flex={true}
   style={
     Object {
-      "display": "flex",
+      "alignItems": "center",
+      "justifyContent": "center",
+      "padding": 20,
     }
   }
 >
-  <withStyles(GridWrapper)
-    alignItems="center"
-    container={true}
-    justify="center"
-    spacing={0}
-    style={
-      Object {
-        "flex": "1",
-      }
+  <Row
+    component={
+      <withStyles(GridWrapper)
+        item={true}
+      />
     }
+    displayFlex={false}
+    flex={false}
+    reverse={false}
   >
-    <withStyles(GridWrapper)
-      alignItems="center"
-      container={true}
-      direction="column"
-      spacing={0}
+    <withTheme(Icon)
+      color="#757575"
+      size={175}
     >
-      <withStyles(GridWrapper)
-        item={true}
-      >
-        <withTheme(Icon)
-          color="#757575"
-          size={175}
-        >
-          sentiment_very_dissatisfied
-        </withTheme(Icon)>
-      </withStyles(GridWrapper)>
-      <withStyles(GridWrapper)
-        item={true}
-      >
-        <withStyles(Typography)
-          style={
-            Object {
-              "height": 300,
-              "textAlign": "center",
-              "width": 800,
-            }
+      <Component
+        style={
+          Object {
+            "height": 175,
+            "width": 175,
           }
-          type="display2"
-        >
-          <div>
-            I am a card error.
-          </div>
-        </withStyles(Typography)>
-      </withStyles(GridWrapper)>
-    </withStyles(GridWrapper)>
-  </withStyles(GridWrapper)>
-</Card>
+        }
+      />
+    </withTheme(Icon)>
+  </Row>
+  <Row
+    component={
+      <withStyles(GridWrapper)
+        item={true}
+      />
+    }
+    displayFlex={false}
+    flex={false}
+    reverse={false}
+  >
+    <withStyles(Typography)
+      style={
+        Object {
+          "textAlign": "center",
+        }
+      }
+      type="display2"
+    >
+      <div>
+        I am a card error.
+      </div>
+    </withStyles(Typography)>
+  </Row>
+</Column>
 `;

@@ -1,11 +1,13 @@
-'use strict'
-
+/**
+ * Create and start the webpack-dev-server for development
+ */
 const chalk = require('chalk')
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
 const paths = require('../config/paths')
 const env = require('../config/env')('development')
 
+// Webpack-dev-server configuration options
 const config = {
   compress: true,
   contentBase: paths.appBuild,

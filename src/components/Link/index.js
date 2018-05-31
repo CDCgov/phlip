@@ -1,7 +1,10 @@
 import React from 'react'
 import { Link as RrdLink } from 'react-router-dom'
 
-const Link = props => (
+/**
+ * Simple wrapper around react-router-dom's Link component. Passes through all props
+ */
+export const Link = props => (
   <RrdLink {...props} />
 )
 

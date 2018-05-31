@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import withStyles from 'material-ui/styles/withStyles'
 import IconButton from 'material-ui/IconButton'
@@ -56,7 +56,11 @@ export const styles = theme => ({
   }
 })
 
-class TablePagination extends React.Component {
+/**
+ * Custom TablePagination component based on Material-UI's component, render back and forth icon buttons for changing
+ * pages, and dropdown to select # of rows per page
+ */
+class TablePagination extends Component {
   componentWillReceiveProps(nextProps) {
     const { count, onChangePage, rowsPerPage } = nextProps
     const newLastPage = Math.max(0, Math.ceil(count / rowsPerPage) - 1)
@@ -65,14 +69,30 @@ class TablePagination extends React.Component {
     }
   }
 
+  /**
+   * Handles when the 'back' button is clicked, goes back one page
+   * @public
+   * @param event
+   */
   handleBackButtonClick = event => {
     this.props.onChangePage(event, this.props.page - 1)
   }
 
+  /**
+   * Handles when the 'next' button is clicked, goes forward a page
+   * @public
+   * @param event
+   */
   handleNextButtonClick = event => {
     this.props.onChangePage(event, this.props.page + 1)
   }
 
+  /**
+   * Renders the value selected in the dropdown for number of rows per page
+   * @public
+   * @param selected
+   * @returns {*}
+   */
   renderSelectedNumber = selected => selected
 
   render() {
@@ -128,8 +148,7 @@ class TablePagination extends React.Component {
               }
               value={rowsPerPage}
               renderValue={this.renderSelectedNumber}
-              onChange={onChangeRowsPerPage}
-            >
+              onChange={onChangeRowsPerPage}>
               {Object.keys(rowsPerPageOptions).map(rowsPerPageOption => (
                 <MenuItem key={rowsPerPageOption} value={rowsPerPageOption}>
                   {rowsPerPageOptions[rowsPerPageOption].label}
@@ -155,8 +174,7 @@ class TablePagination extends React.Component {
             <IconButton
               onClick={this.handleNextButtonClick}
               disabled={page >= Math.ceil(count / selected) - 1 || count === 0}
-              aria-label="Show next page in table"
-            >
+              aria-label="Show next page in table">
               {themeDirection === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
             </IconButton>
           </div>
@@ -167,16 +185,49 @@ class TablePagination extends React.Component {
 }
 
 TablePagination.propTypes = {
+  /**
+   * Style classes object from material-ui
+   */
   classes: PropTypes.object.isRequired,
+  /**
+   * Sets colspan for component
+   */
   colSpan: PropTypes.number,
+  /**
+   * Component to use to wrap the table pagination in
+   */
   component: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  /**
+   * Total row count
+   */
   count: PropTypes.number.isRequired,
+  /**
+   * How should the rows be rendered
+   */
   labelDisplayedRows: PropTypes.func,
+  /**
+   * Function or string to determine how to label the number of rows per page dropdown
+   */
   labelRowsPerPage: PropTypes.node,
+  /**
+   * Function called when the used clicks the 'back' or 'next' arrows to change pages
+   */
   onChangePage: PropTypes.func.isRequired,
+  /**
+   * Function called when the user selects a different option for rows per page to show
+   */
   onChangeRowsPerPage: PropTypes.func.isRequired,
+  /**
+   * Current page to render
+   */
   page: PropTypes.number.isRequired,
+  /**
+   * Options to show in the rows per page dropdown
+   */
   rowsPerPageOptions: PropTypes.object,
+  /**
+   * Theme object from material-ui
+   */
   theme: PropTypes.object.isRequired
 }
 

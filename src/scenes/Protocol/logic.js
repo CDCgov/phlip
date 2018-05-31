@@ -1,6 +1,12 @@
+/**
+ * All protocol related logic is defined here
+ */
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 
+/**
+ * Logic for getting the protocol from the API. Also gets the lock information, if any, about the protocol.
+ */
 const getProtocolLogic = createLogic({
   type: types.GET_PROTOCOL_REQUEST,
   async process({ getState, api, action }, dispatch, done) {
@@ -36,6 +42,9 @@ const getProtocolLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to the API to save the protocol content and release the lock on the protocol.
+ */
 const saveProtocolLogic = createLogic({
   type: types.SAVE_PROTOCOL_REQUEST,
   async process({ getState, api, action }, dispatch, done) {
@@ -59,6 +68,9 @@ const saveProtocolLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to the API to lock / check out the protocol for the current user
+ */
 const lockProtocolLogic = createLogic({
   type: types.LOCK_PROTOCOL_REQUEST,
   async process({ api, action, getState }, dispatch, done) {
@@ -83,6 +95,9 @@ const lockProtocolLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to unlock / check in the protocol for the current user.
+ */
 const unlockProtocolLogic = createLogic({
   type: types.UNLOCK_PROTOCOL_REQUEST,
   async process({ api, action, getState }, dispatch, done) {

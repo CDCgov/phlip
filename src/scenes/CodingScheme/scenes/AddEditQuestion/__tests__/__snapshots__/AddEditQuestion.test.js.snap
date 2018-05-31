@@ -37,9 +37,6 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
       spacing={0}
     >
       <ModalTitle
-        closeButton={false}
-        edit={false}
-        editButton={false}
         title="Add New Question"
       />
       <ModalContent>
@@ -130,6 +127,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
             }
             displayFlex={false}
             flex={true}
+            reverse={false}
             style={
               Object {
                 "padding": "0 10px 20px 0",
@@ -165,6 +163,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
             }
             displayFlex={false}
             flex={true}
+            reverse={false}
             style={
               Object {
                 "paddingLeft": "47px",

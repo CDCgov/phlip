@@ -2,6 +2,10 @@ import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 import { login } from 'services/authToken'
 
+/**
+ * Logic for basic authentication (the email form) -- only used in development mode. Gets the bookmarks for the user if
+ * the login is successful
+ */
 export const basicLoginLogic = createLogic({
   type: types.LOGIN_USER_REQUEST,
   async process({ action, api }, dispatch, done) {
@@ -36,6 +40,11 @@ export const basicLoginLogic = createLogic({
   }
 })
 
+/**
+ * Logic for PIV card authentication. This logic is invoked after the user is returned from the SAMS login page. A request
+ * is sent to the backend to check the status of the user then log them in. Gets the bookmarks for the user if login is
+ * successful
+ */
 export const checkPivUserLogic = createLogic({
   type: types.CHECK_PIV_USER_REQUEST,
   async process({ action, api }, dispatch, done) {
@@ -68,6 +77,13 @@ export const checkPivUserLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to the API to get the project bookmarks for the user with id : userID
+ *
+ * @param {Object} api
+ * @param {Number} userId
+ * @returns {Array}
+ */
 const getBookmarks = async (api, userId) => {
   let bookmarks = await api.getUserBookmarks({}, {}, { userId })
   bookmarks = bookmarks.reduce((arr, project) => {
@@ -80,6 +96,9 @@ const getBookmarks = async (api, userId) => {
 
 let loginLogic = [checkPivUserLogic]
 
+/**
+ * If the environment is not prduction, then basicLoginLogic is used
+ */
 if (!process.env.API_HOST) {
   loginLogic = [...loginLogic, basicLoginLogic]
 }

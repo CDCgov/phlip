@@ -2,7 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Grid from 'material-ui/Grid'
 
-const Row = ({ flex, displayFlex, children, reverse, component, style, ...otherProps }) => {
+/**
+ * CSS Flexbox row wrapper for material-ui's Grid component
+ */
+export const Row = ({ flex, displayFlex, children, reverse, component, style, ...otherProps }) => {
   const styles = {
     flex: flex ? '1' : '0 0 auto',
     display: displayFlex ? 'flex' : 'block',
@@ -22,17 +25,37 @@ const Row = ({ flex, displayFlex, children, reverse, component, style, ...otherP
 }
 
 Row.propTypes = {
+  /**
+   * Whether or not to set flex: 1 for the row
+   */
   flex: PropTypes.bool,
+  /**
+   * Whether or not to set display: flex for the row
+   */
   displayFlex: PropTypes.bool,
-  children: PropTypes.node,
+  /**
+   * Contents of the row
+   */
+  children: PropTypes.any,
+  /**
+   * Override add additional style
+   */
   style: PropTypes.object,
-  component: PropTypes.element
+  /**
+   * Component to turn into a flex row
+   */
+  component: PropTypes.element,
+  /**
+   * Whether or not flex-direction should be set to 'row-reverse'
+   */
+  reverse: PropTypes.bool
 }
 
 Row.defaultProps = {
   flex: false,
   displayFlex: false,
-  component: <Grid item />
+  component: <Grid item />,
+  reverse: false
 }
 
 export default Row

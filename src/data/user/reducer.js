@@ -7,7 +7,14 @@ const INITIAL_STATE = {
   pdfFile: null
 }
 
-function userReducer(state = INITIAL_STATE, action) {
+/**
+ * Reducer for handling user related actions, mostly coming from the actions in the avatar menu
+ *
+ * @param {Object} state
+ * @param {Object} action
+ * @returns {{currentUser: {}, menuOpen: boolean, pdfError: string, pdfFile: null}}
+ */
+const userReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.UPDATE_CURRENT_USER:
     case types.CHECK_PIV_USER_SUCCESS:

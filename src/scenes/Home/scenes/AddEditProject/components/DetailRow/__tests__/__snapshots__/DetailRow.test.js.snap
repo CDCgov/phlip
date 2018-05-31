@@ -9,6 +9,7 @@ exports[`AddEditProject -- DetailRow component should render correctly 1`] = `
   }
   displayFlex={false}
   flex={false}
+  reverse={false}
   style={
     Object {
       "paddingBottom": 25,

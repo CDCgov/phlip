@@ -63,11 +63,13 @@ const styles = theme => ({
 })
 
 /**
+ * This is a higher order component function that scenes/Coding and scenes/Validation call. This component extends the
+ * Coding or Validation component. It was created since most of the component between the two components were identical.
  * @component
  */
 export const withCodingValidation = (WrappedComponent, actions, pageName) => {
-  class CodingValidation extends WrappedComponent {
 
+  class CodingValidation extends WrappedComponent {
     static propTypes = {
       projectName: PropTypes.string,
       page: PropTypes.string,
@@ -136,6 +138,10 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       ]
     }
 
+    /**
+     * @public
+     * @param nextProps
+     */
     componentWillReceiveProps(nextProps) {
       if (this.props.isSchemeEmpty === null) {
         if (nextProps.isSchemeEmpty !== null) {
@@ -154,10 +160,17 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       this.props.actions.onCloseScreen()
     }
 
+    /**
+     * @public
+     */
     onToggleNavigator = () => {
       this.setState({ navOpen: !this.state.navOpen })
     }
 
+    /**
+     * @public
+     * @param index
+     */
     getNextQuestion = index => {
       if (this.props.unsavedChanges === true) {
         this.onShowStillSavingAlert(index, this.props.actions.getNextQuestion)
@@ -167,6 +180,10 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       }
     }
 
+    /**
+     * @public
+     * @param index
+     */
     getPrevQuestion = index => {
       if (this.props.unsavedChanges === true) {
         this.onShowStillSavingAlert(index, this.props.actions.getPrevQuestion)
@@ -176,6 +193,10 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       }
     }
 
+    /**
+     * @public
+     * @param item
+     */
     onQuestionSelectedInNav = item => {
       if (this.props.unsavedChanges === true) {
         this.onShowStillSavingAlert(item, this.props.actions.onQuestionSelectedInNav)
@@ -185,6 +206,9 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       }
     }
 
+    /**
+     * @public
+     */
     onShowQuestionLoader = () => {
       setTimeout(() => {
         if (this.props.isChangingQuestion) {
@@ -194,7 +218,9 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
     }
 
     /**
-     * Updates the redux state with new user data
+     * @public
+     * @param id
+     * @returns {Function}
      */
     onAnswer = id => (event, value) => {
       this.props.actions.updateUserAnswer(
@@ -207,13 +233,17 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
 
     /**
      * This actually dispatches the redux action that calls the api to save the question data
+     * @public
      */
     onSaveCodedQuestion = () => {
       this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.selectedCategoryId, this.props.page)
     }
 
     /**
-     * Updates redux state with new user data for text input fields
+     * @public
+     * @param id
+     * @param field
+     * @returns {Function}
      */
     onChangeTextAnswer = (id, field) => event => {
       switch (field) {
@@ -238,20 +268,41 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       this.onSaveCodedQuestion()
     }
 
+    /**
+     * @public
+     * @returns {*}
+     */
     onOpenApplyAllAlert = () => this.setState({ applyAllAlertOpen: true })
 
+    /**
+     * @public
+     * @returns {*|{type, args}}
+     */
     onCloseAlert = () => this.props.actions.dismissApiAlert('answerErrorContent')
 
+    /**
+     * @public
+     * @param event
+     * @param selection
+     */
     onChangeCategory = (event, selection) => {
       this.onSaveCodedQuestion()
       this.props.actions.onChangeCategory(selection)
     }
 
+    /**
+     * @public
+     */
     onTryAgain = () => {
       this.onSaveCodedQuestion()
       this.onCloseAlert()
     }
 
+    /**
+     * @public
+     * @param question
+     * @param method
+     */
     onShowStillSavingAlert = (question, method) => {
       this.setState({
         stillSavingAlertOpen: true,
@@ -260,6 +311,9 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       })
     }
 
+    /**
+     * @public
+     */
     onCancelStillSavingAlert = () => {
       this.setState({
         changeProps: [],
@@ -268,6 +322,9 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       })
     }
 
+    /**
+     * @public
+     */
     onContinueStillSavingAlert = () => {
       // question changing
       if (this.state.changeMethod.type === 0) {
@@ -287,12 +344,18 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       this.onCancelStillSavingAlert()
     }
 
+    /**
+     * @public
+     */
     onClearAnswer = () => {
       this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
       this.onChangeTouchedStatus()
       this.onSaveCodedQuestion()
     }
 
+    /**
+     * @public
+     */
     onGoBack = () => {
       if (this.props.unsavedChanges === true) {
         this.setState({
@@ -304,20 +367,36 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       }
     }
 
+    /***
+     * @public
+     */
     onChangeTouchedStatus = () => {
       if (!this.props.hasTouchedQuestion) {
         this.props.actions.changeTouchedStatus()
       }
     }
 
+    /**
+     * @public
+     * @returns {*}
+     */
     onCloseApplyAllAlert = () => this.setState({ applyAllAlertOpen: false })
 
+    /**
+     * @public
+     */
     onApplyToAll = () => {
       this.onCloseApplyAllAlert()
       this.onChangeTouchedStatus()
       this.props.actions.applyAnswerToAll(this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.page)
     }
 
+    /**
+     * @public
+     * @param noScheme
+     * @param noJurisdictions
+     * @returns {*}
+     */
     onShowGetStartedView = (noScheme, noJurisdictions) => {
       let startedText = ''
       if (this.props.isValidation) {
@@ -361,6 +440,10 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       )
     }
 
+    /**
+     * @public
+     * @returns {*}
+     */
     onShowCodeView = () => (
       <Fragment>
         <QuestionCard
@@ -502,7 +585,6 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       showPageLoader: pageState.showPageLoader || false,
       isChangingQuestion: pageState.isChangingQuestion || false,
       selectedCategoryId: pageState.selectedCategoryId || null,
-      userAnswers: pageState.userAnswers || {},
       unsavedChanges: pageState.unsavedChanges || false,
       hasTouchedQuestion: pageState.hasTouchedQuestion || false,
       objectExists: pageState.objectExists || false

@@ -4,7 +4,11 @@ import { default as MuiIconButton } from 'material-ui/IconButton'
 import Icon from 'components/Icon'
 import Tooltip from 'components/Tooltip'
 
-const IconButton = ({ color, onClick, iconSize, style, iconStyle, tooltipText, id, placement, children, disabled, ...otherProps }) => {
+/**
+ * @component
+ * Component that is an Icon but functions as a button
+ */
+export const IconButton = ({ color, onClick, iconSize, style, iconStyle, tooltipText, id, placement, children, disabled, ...otherProps }) => {
   const styles = {
     width: iconSize,
     height: iconSize,
@@ -25,21 +29,53 @@ const IconButton = ({ color, onClick, iconSize, style, iconStyle, tooltipText, i
 }
 
 IconButton.propTypes = {
+  /**
+   * Color of icon
+   */
   color: PropTypes.string,
+  /**
+   * Function to call when the component is clicked
+   */
   onClick: PropTypes.func,
+  /**
+   * Size of icon
+   */
   iconSize: PropTypes.number,
+  /**
+   * Style of button wrapper for icon
+   */
   style: PropTypes.object,
+  /**
+   * Override style of icon
+   */
   iconStyle: PropTypes.object,
+  /**
+   * Text shown when hovering over icon button
+   */
   tooltipText: PropTypes.string,
+  /**
+   * Tooltip ID
+   */
   id: PropTypes.string,
+  /**
+   * Tooltip placement
+   */
   placement: PropTypes.string,
-  children: PropTypes.node
+  /**
+   * String of icon name from https://material.io/icons or icon component (for ex. from mdi-material-ui component)
+   */
+  children: PropTypes.any,
+  /**
+   * Whether or not the button is disabled
+   */
+  disabled: PropTypes.bool
 }
 
 IconButton.defaultProps = {
   color: 'white',
   iconSize: 24,
-  tooltipText: ''
+  tooltipText: '',
+  disabled: false
 }
 
 export default IconButton

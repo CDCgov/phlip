@@ -10,12 +10,16 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const history = createBrowserHistory()
 const api = createApiHandler({ history })
 
+/**
+ * Redux store initialization
+ */
 const store = createStore(
   appReducer,
   composeEnhancers(
     applyMiddleware(createLogicMiddleware(rootLogic, { api, history }))
   )
 )
+
 const persistor = persistStore(store, null, () => store.getState())
 
 export {

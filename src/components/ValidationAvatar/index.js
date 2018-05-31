@@ -1,4 +1,5 @@
 import React, { Fragment, Component } from 'react'
+import PropTypes from 'prop-types'
 import Avatar from 'components/Avatar'
 import Popover from 'material-ui/Popover'
 import Typography from 'material-ui/Typography'
@@ -7,7 +8,6 @@ import { getInitials } from 'utils/normalize'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import Snackbar from 'components/Snackbar'
 import Button from 'material-ui/Button'
-import { findDOMNode } from 'react-dom'
 
 const styles = theme => ({
   paper: {
@@ -43,6 +43,9 @@ const styles = theme => ({
   }
 })
 
+/**
+ * Avatar's that are used on the Validation screen, on hover the pincite is displayed
+ */
 export class ValidationAvatar extends Component {
   constructor(context, props) {
     super(context, props)
@@ -55,10 +58,19 @@ export class ValidationAvatar extends Component {
     }
   }
 
+  /**
+   * Opens popover with event.target asthe anchor element
+   * @public
+   * @param event
+   */
   handleOpen = event => {
     this.setState({ anchorEl: event.target, open: true, event })
   }
 
+  /**
+   * Close the popover and clears the anchor element
+   * @public
+   */
   handleClose = () => {
     this.setState({
       anchorEl: null,
@@ -66,16 +78,30 @@ export class ValidationAvatar extends Component {
     })
   }
 
+  /**
+   * Opens a snackbar to indicate the popover pincite has been copied
+   * @public
+   */
   handlePinciteCopy = () => {
     this.setState({ copied: true })
     setTimeout(this.handleCloseSnackbar, 3500)
   }
 
+  /**
+   * Clears pincite copied snackbar
+   * @public
+   */
   handleCloseSnackbar = () => {
     this.setState({ copied: false })
     clearTimeout()
   }
 
+  /**
+   * Checks if pincite is valid
+   * @public
+   * @param pincite
+   * @returns {boolean}
+   */
   hasPincite = pincite => pincite !== null ? pincite.length > 0 : false
 
   render() {
@@ -148,6 +174,23 @@ export class ValidationAvatar extends Component {
       </Fragment>
     )
   }
+}
+
+ValidationAvatar.propTypes = {
+  /**
+   * Answer object for the answer associated with the validation avatar
+   */
+  answer: PropTypes.object,
+
+  /**
+   * base64 string for the image to use in the avatar
+   */
+  avatar: PropTypes.string,
+
+  /**
+   * Classes object from material-ui
+   */
+  classes: PropTypes.object
 }
 
 export default withStyles(styles)(ValidationAvatar)

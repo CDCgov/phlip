@@ -1,8 +1,11 @@
-/*
+/**
   This file is all of the action creators that are used by both Coding and Validation
  */
 import * as types from './actionTypes'
 
+/**
+ * Makes an action creator function with action.type = type, scene = Coding or Validation and arguments from argNames.
+ */
 const makeActionCreator = (type, scene, ...argNames) => {
   return function (...args) {
     let action = { type: `${type}_${scene}` }
@@ -13,7 +16,9 @@ const makeActionCreator = (type, scene, ...argNames) => {
   }
 }
 
-// Dispatched when a user clicks the 'next question' button at the bottom of the page
+/**
+ * All of the reusable actions for Coding and Validation
+ */
 export const actions = {
   getNextQuestion: {
     type: types.GET_NEXT_QUESTION,

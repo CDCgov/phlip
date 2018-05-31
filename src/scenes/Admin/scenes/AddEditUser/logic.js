@@ -1,6 +1,9 @@
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 
+/**
+ * Sends a request to add a user
+ */
 export const addUserLogic = createLogic({
   type: types.ADD_USER_REQUEST,
   latest: true,
@@ -14,6 +17,9 @@ export const addUserLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to update the user with userId: action.user.id
+ */
 export const updateUserLogic = createLogic({
   type: types.UPDATE_USER_REQUEST,
   latest: true,
@@ -34,6 +40,9 @@ export const updateUserLogic = createLogic({
   }
 })
 
+/**
+ * Sends a PATCH request to update the avatar for the user with userId = action.userId
+ */
 export const patchUserImageLogic = createLogic({
   type: types.ADD_USER_IMAGE_REQUEST,
   latest: true,
@@ -47,6 +56,9 @@ export const patchUserImageLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to get the avatar for a user with userId = action.userId
+ */
 export const getUserImageLogic = createLogic({
   type: types.GET_USER_IMAGE_REQUEST,
   latest: true,
@@ -59,6 +71,9 @@ export const getUserImageLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to delete the avatar image for a user with userId = action.userId
+ */
 export const deleteUserImageLogic = createLogic({
   type: types.DELETE_USER_IMAGE_REQUEST,
   latest: true,

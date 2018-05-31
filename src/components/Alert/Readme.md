@@ -1,4 +1,5 @@
-Alert example. Click the button to see what the alert would look like.
+#### Alert example.
+Click the button to see what the alert would look like.
 
 ```jsx
 initialState = { open: false }

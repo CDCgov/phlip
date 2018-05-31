@@ -16,6 +16,11 @@ import ApiErrorView from 'components/ApiErrorView'
 import ApiErrorAlert from 'components/ApiErrorAlert'
 import withTracking from 'components/withTracking'
 
+/**
+ * Coding Scheme screen main component, rendered when the user clicks 'Edit' under the Coding Scheme table header. This
+ * is the parent component for all coding scheme related actions -- adding a question, deleting, reordering, etc. This
+ * component has one scene: AddEditQuestion at ./scenes/AddEditQuestion.
+ */
 export class CodingScheme extends Component {
   constructor(props, context) {
     super(props, context)
@@ -50,35 +55,71 @@ export class CodingScheme extends Component {
     }, 1000)
   }
 
+  /**
+   * Calls a redux action to close any ApiErrorAlert that is open
+   * @public
+   */
   onCloseAlert = () => {
     this.props.actions.resetAlertError()
   }
 
+  /**
+   * Calls a redux action to close any alert that is associated to the locking on the coding scheme
+   * @public
+   */
   onCloseLockedAlert = () => {
     this.props.actions.closeLockedAlert()
   }
 
+  /**
+   * Invoked when the user reorders the coding scheme or makes any edits to the scheme. Calls a redux action to update
+   * the question tree with the questions parameter
+   * @param questions
+   */
   handleQuestionTreeChange = questions => {
     this.props.actions.updateQuestionTree(questions)
   }
 
+  /**
+   * Invoked after a question is move, calls a redux action to send API request
+   * @public
+   */
   handleQuestionNodeMove = () => {
     this.props.actions.reorderSchemeRequest(this.props.projectId)
   }
 
+  /**
+   * Invoked when the user clicks 'Checkout' button, calls a redux action to send API request to checkout scheme
+   * @public
+   */
   handleLockCodingScheme = () => {
     this.props.actions.lockCodingSchemeRequest(this.props.projectId)
   }
 
+  /**
+   * Invoked when the user clicks 'Check In' button, calls a redux action to send API request to check in the scheme
+   * @public
+   */
   handleUnlockCodingScheme = () => {
     this.props.actions.unlockCodingSchemeRequest(this.props.projectId)
   }
 
+  /**
+   * Invoked when the user confirms delete of coding scheme question, closes confirm delete alert
+   * @public
+   */
   handleDeleteQuestion = () => {
     this.props.actions.deleteQuestionRequest(this.props.projectId, this.state.questionIdToDelete, this.state.path)
     this.onCloseDeleteQuestionAlert()
   }
 
+  /**
+   * Opens an alert to ask the user to confirm deleting a coding scheme question
+   * @public
+   * @param projectId
+   * @param questionId
+   * @param path
+   */
   onOpenDeleteQuestionAlert = (projectId, questionId, path) => {
     this.setState({
       deleteQuestionAlertOpen: true,
@@ -87,6 +128,10 @@ export class CodingScheme extends Component {
     })
   }
 
+  /**
+   * Closes the confirm delete alert
+   * @public
+   */
   onCloseDeleteQuestionAlert = () => {
     this.setState({
       deleteQuestionAlertOpen: false,
@@ -95,18 +140,33 @@ export class CodingScheme extends Component {
     })
   }
 
+  /**
+   * Invoked when the user clicks 'cancel' in the alert displayed when they hit the go back arrow. Closes alert
+   * @public
+   */
   onCloseGoBackAlert = () => {
     this.setState({
       goBackAlertOpen: false
     })
   }
 
+  /**
+   * Invoked when the user clicks 'check in' on the alert displayed when they hit go back. Calls redux action to call
+   * API to check in coding scheme, clears the redux state and goes back one in browser history
+   * @public
+   */
   onContinueGoBack = () => {
     this.handleUnlockCodingScheme()
     this.props.actions.clearState()
     this.props.history.goBack()
   }
 
+  /**
+   * Invoked when the user clicks the 'back arrow' button in the page header. If the coding scheme is checked out by the
+   * current user, it opens an alert to tell the user to check in the scheme. Otherwise, it clears redux state and goes
+   * back one in the browser history
+   * @public
+   */
   onGoBack = () => {
     if (this.props.lockedByCurrentUser) {
       this.setState({
@@ -118,6 +178,11 @@ export class CodingScheme extends Component {
     }
   }
 
+  /**
+   * Renders a 'Get started' view. Only called when the coding scheme is empty
+   * @public
+   * @returns {*}
+   */
   renderGetStarted = () => {
     return (
       <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
@@ -154,6 +219,10 @@ export class CodingScheme extends Component {
   }
 
   render() {
+    /**
+     * Actions for the 'Go Back' alert modal
+     * @type {*[]}
+     */
     const alertActions = [
       {
         value: 'Cancel',
@@ -262,14 +331,62 @@ export class CodingScheme extends Component {
 }
 
 CodingScheme.propTypes = {
+  /**
+   * Name of project for which the coding scheme is open
+   */
   projectName: PropTypes.string,
+  /**
+   * ID of project
+   */
   projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * Array of question tree to render as the coding scheme
+   */
   questions: PropTypes.array,
+  /**
+   * Whether or not the coding scheme is empty
+   */
+  empty: PropTypes.bool,
+  /**
+   * Redux action creators
+   */
   actions: PropTypes.object,
+  /**
+   * Outline of the coding scheme
+   */
   outline: PropTypes.object,
+  /**
+   * Flat list of questions (not a tree)
+   */
   flatQuestions: PropTypes.array,
+  /**
+   * Any scheme error to render, will be rendered as a part of the page, not alert
+   */
   schemeError: PropTypes.string,
-  reorderError: PropTypes.string
+  /**
+   * Error that occured while trying to save reorder, displayed as an alert
+   */
+  reorderError: PropTypes.string,
+  /**
+   * Whether or not the coding scheme is currently locked by the user
+   */
+  lockedByCurrentUser: PropTypes.bool,
+  /**
+   * Information on lock of coding scheme, if any
+   */
+  lockInfo: PropTypes.object,
+  /**
+   * Any error to display as an alert
+   */
+  alertError: PropTypes.string,
+  /**
+   * Displays an alert notifying the user the coding scheme is currently locked
+   */
+  lockedAlert: PropTypes.string,
+  /**
+   * Whether or not the coding scheme is currently locked
+   */
+  hasLock: PropTypes.bool
 }
 
 const mapStateToProps = (state, ownProps) => ({

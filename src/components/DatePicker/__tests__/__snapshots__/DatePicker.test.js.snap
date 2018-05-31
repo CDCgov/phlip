@@ -22,7 +22,9 @@ exports[`DatePicker component should render correctly 1`] = `
     autoOk={false}
     format="MM/DD/YYYY"
     keyboard={true}
+    keyboardIcon={<Unknown />}
     label="Date picker"
+    leftArrowIcon={<Unknown />}
     mask={
       Array [
         /\\\\d/,
@@ -40,6 +42,7 @@ exports[`DatePicker component should render correctly 1`] = `
     name="date-picker"
     onChange={[Function]}
     returnMoment={true}
+    rightArrowIcon={<Unknown />}
     style={
       Object {
         "marginTop": 16,

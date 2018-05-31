@@ -1,3 +1,5 @@
+/** Unique logic for Validation scene */
+
 import { createLogic } from 'redux-logic'
 import {
   initializeUserAnswers,
@@ -8,9 +10,17 @@ import {
   getCodedValidatedQuestions,
   getSchemeQuestionAndUpdate
 } from 'utils/codingHelpers'
-import { normalize } from 'utils'
 import * as types from './actionTypes'
 
+/**
+ * Updates the existing question object that is present in mergedUserQuestions. Adds answer objects and flagsComments
+ * objects
+ *
+ * @param {Object} existingQuestion
+ * @param {Object} question
+ * @param {Object} coder
+ * @returns {{answers: *[], flagsComments: *[]}}
+ */
 const addCoderToAnswers = (existingQuestion, question, coder) => {
   let flagComment = {}
   if (question.flag !== null) {
@@ -29,6 +39,14 @@ const addCoderToAnswers = (existingQuestion, question, coder) => {
   }
 }
 
+/**
+ * Updates the codedQuestions object with any answers, flags, comments for each question in the codedQuestionsPerUser
+ *
+ * @param {Object} codedQuestions
+ * @param {Array} codeQuestionsPerUser
+ * @param {Object} coder
+ * @returns {Object}
+ */
 const mergeInUserCodedQuestions = (codedQuestions, codeQuestionsPerUser, coder) => {
   const baseQuestion = { flagsComments: [], answers: [] }
   return codeQuestionsPerUser.reduce((allCodedQuestions, question) => {
@@ -56,6 +74,18 @@ const mergeInUserCodedQuestions = (codedQuestions, codeQuestionsPerUser, coder) 
   }, codedQuestions)
 }
 
+/**
+ * Gets all of the coded questions for the schemeQuestionId (questionId) parameter. This is every user
+ * that has answered or flagged or commneted on the question. It creates a coders object with coder information
+ * that will be used to retrieve avatars. The coder is only added in if it doesn't already exist so as to not retrieve
+ * the avatar multiple times.
+ *
+ * @param {Object} api
+ * @param {Object} action
+ * @param {Number} questionId
+ * @param {Object} userImages
+ * @returns {{ codedQuestionObj: Object, coders: Object, coderError: Object }}
+ */
 const getCoderInformation = async ({ api, action, questionId, userImages }) => {
   let codedQuestionObj = {}, allCodedQuestions = [], coderErrors = {}, coders = {}
 
@@ -87,7 +117,7 @@ const getCoderInformation = async ({ api, action, questionId, userImages }) => {
   return { codedQuestionObj, coderErrors, coders }
 }
 
-/*
+/**
   Some of the reusable functions need to know whether we're on the validation screen or not, so that's what this is for
  */
 export const updateValidatorLogic = createLogic({
@@ -101,8 +131,8 @@ export const updateValidatorLogic = createLogic({
   }
 })
 
-/*
-  Logic for when the user first opens the validation screen
+/**
+ * Logic for when the user first opens the validation screen
  */
 export const getValidationOutlineLogic = createLogic({
   type: types.GET_VALIDATION_OUTLINE_REQUEST,
@@ -187,8 +217,10 @@ export const getValidationOutlineLogic = createLogic({
   }
 })
 
-/*
-  Logic for when the user navigates to a question
+/**
+ * Logic for when the user navigates to a question. It gets the updated scheme question information as well as the coded
+ * and validated questions for the new question. It updates the mergedUserQuestions state property and gets any avatars
+ * based on the coded / validation questions that it needs to.
  */
 export const getQuestionLogicValidation = createLogic({
   type: [types.ON_QUESTION_SELECTED_IN_NAV, types.GET_NEXT_QUESTION, types.GET_PREV_QUESTION],
@@ -236,8 +268,10 @@ export const getQuestionLogicValidation = createLogic({
   }
 })
 
-/*
-  Logic for when the validator changes jurisdictions on the validation screen
+/**
+ * Logic for when the validator changes jurisdictions on the validation screen. Gets the coded and validation questions
+ * for the question current visible as well as the updated scheme question information. It updates the mergedUserQuestions
+ * state property like the logic above, with avatar and user information.
  */
 export const getUserValidatedQuestionsLogic = createLogic({
   type: types.GET_USER_VALIDATED_QUESTIONS_REQUEST,
@@ -304,8 +338,8 @@ export const getUserValidatedQuestionsLogic = createLogic({
   }
 })
 
-/*
-  Calls an api route to clear the flag based on the action.flagId, type 1 === red, type 2 === other
+/**
+ * Sends a request to the API to clear the flag based on the action.flagId, type 1 === red, type 2 === other
  */
 export const clearFlagLogic = createLogic({
   type: [types.CLEAR_RED_FLAG, types.CLEAR_FLAG],

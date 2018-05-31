@@ -1,5 +1,4 @@
 import * as types from './actionTypes'
-import { createAvatarUrl } from 'utils/urlHelper'
 
 const INITIAL_STATE = {
   avatar: null,
@@ -7,7 +6,14 @@ const INITIAL_STATE = {
   isDoneSubmitting: false
 }
 
-export default function addEditUserReducer(state = INITIAL_STATE, action) {
+/**
+ * Reducer for the AddEditUser scene. Accessible at state.scenes.admin.addEditUser
+ *
+ * @param {Object} state
+ * @param {Object} action
+ * @returns {Object}
+ */
+const addEditUserReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
 
     case types.GET_USER_IMAGE_SUCCESS:
@@ -78,3 +84,5 @@ export default function addEditUserReducer(state = INITIAL_STATE, action) {
       return state
   }
 }
+
+export default addEditUserReducer

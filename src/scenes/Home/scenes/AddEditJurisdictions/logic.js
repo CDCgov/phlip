@@ -1,6 +1,9 @@
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 
+/**
+ * Logic for getting the jursidictions for a project
+ */
 export const getJurisdictionsLogic = createLogic({
   type: types.GET_PROJECT_JURISDICTIONS_REQUEST,
   processOptions: {
@@ -13,6 +16,10 @@ export const getJurisdictionsLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to add a jurisdiction to the project, adds the jurisdiction to state.scenes.home reducer for the project
+ * and updates the edited fields for that project as well, upon success
+ */
 export const addJurisdictionLogic = createLogic({
   type: types.ADD_PROJECT_JURISDICTION_REQUEST,
   async process({ action, api }, dispatch, done) {
@@ -41,6 +48,10 @@ export const addJurisdictionLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to update a jurisdiction for a project. Updates the project in state.scenes.home reducer, updates the
+ * edited fields for the project upon success
+ */
 export const updateJurisdictionLogic = createLogic({
   type: types.UPDATE_PROJECT_JURISDICTION_REQUEST,
   async process({ action, api }, dispatch, done) {
@@ -72,6 +83,10 @@ export const updateJurisdictionLogic = createLogic({
   }
 })
 
+/**
+ * Sends a request to add a preset list of jurisdictions to a project. Adds the new jurisdictions to the project in the
+ * state.scenes.home reducer, updates edited fields for project upon success
+ */
 export const addPresetJurisdictionLogic = createLogic({
   type: types.ADD_PRESET_JURISDICTION_REQUEST,
   async process({ action, api }, dispatch, done) {
@@ -100,6 +115,10 @@ export const addPresetJurisdictionLogic = createLogic({
   }
 })
 
+/**
+ * Searches the master jurisdiction list at the API to find matching jurisdictions. This is for the autocomplete text
+ * field for the jurisdiction name.
+ */
 export const searchJurisdictionList = createLogic({
   type: types.SEARCH_JURISDICTION_LIST,
   processOptions: {
@@ -115,6 +134,10 @@ export const searchJurisdictionList = createLogic({
   }
 })
 
+/**
+ * Sends a request to delete a jurisdiction from the project, upon successful deletion -- removes the jurisdiction from
+ * the project in the state.scenes.home reducer, updates edited fields for project
+ */
 export const deleteJurisdictionLogic = createLogic({
   type: types.DELETE_JURISDICTION_REQUEST,
   async process({ getState, action, api }, dispatch, done) {
@@ -148,8 +171,10 @@ export const deleteJurisdictionLogic = createLogic({
   }
 })
 
-// This is to add the current user to the action so that lastEditedBy field can be updated. The action is then sent to
-// the reducer for each type.
+/**
+ * This is to add the current user to the action so that lastEditedBy field can be updated. The action is then sent to
+ * the reducer for each type.
+ */
 export const updateFieldsLogic = createLogic({
   type: [
     types.ADD_PROJECT_JURISDICTION_REQUEST, types.UPDATE_PROJECT_JURISDICTION_REQUEST,

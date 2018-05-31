@@ -12,12 +12,27 @@ const INITIAL_STATE = {
   visibleUsers: []
 }
 
-const getAvailableUsers = (users, sortBy, direction, page, rowsPerPage) => {
+/**
+ * Determines the list of user that are visible based on sort by and direction
+ *
+ * @param {Array} users
+ * @param {String} sortBy
+ * @param {String} direction
+ * @returns {{users: Array, visibleUsers: Array}}
+ */
+const getAvailableUsers = (users, sortBy, direction) => {
   const sortedUsers = commonHelpers.sortListOfObjects(users, sortBy, direction)
   return { users: sortedUsers, visibleUsers: sortedUsers }
 }
 
-function adminReducer(state = INITIAL_STATE, action) {
+/**
+ * Main reducer for User Management ('Admin') scene
+ *
+ * @param {Object} state
+ * @param {Object} action
+ * @returns {{users: Array, rowsPerPage: number, page: number, sortBy: string, direction: string, visibleUsers: Array}}
+ */
+const adminReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_USERS_SUCCESS:
       return {
@@ -90,6 +105,9 @@ function adminReducer(state = INITIAL_STATE, action) {
   }
 }
 
+/**
+ * Combining this reducer and reducer for AddEditUser component in ./scenes/AddEditUser/reducer.js
+ */
 const adminRootReducer = combineReducers({
   main: adminReducer,
   addEditUser: addEditUserReducer

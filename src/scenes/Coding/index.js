@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import actions, * as otherActions from './actions'
 import withCodingValidation from 'components/CodingValidation'
 import ApiErrorAlert from 'components/ApiErrorAlert'
-import withTracking from 'components/withTracking'
 
+/**
+ * Coding scene component that is displayed when the user clicks the 'Code' button. Most of the interactions are handled
+ * by the HOC withCodingValidation, only events or alerts that are specific to Coding or needs to be handled by Coding are implemented
+ * here. For props and propTypes of Coding, see the withCodingValidation HOC.
+ */
 export class Coding extends Component {
   constructor(props, context) {
     super(props, context)
@@ -15,6 +18,10 @@ export class Coding extends Component {
     this.onShowPageLoader()
   }
 
+  /**
+   * Waits 1 sec, then displays a circular loader if API is still loading
+   * @public
+   */
   onShowPageLoader = () => {
     setTimeout(() => {
       if (this.props.isLoadingPage) {
@@ -23,6 +30,13 @@ export class Coding extends Component {
     }, 1000)
   }
 
+  /**
+   * Invoked when the user changes jurisdictions by selecting a jurisdiction in the dropdown. If there are unsaved changes,
+   * a popup is shown alerting the user so, otherwise calls redux actions to change questions and shows the question
+   * loader
+   * @public
+   * @param event
+   */
   onJurisdictionChange = event => {
     if (this.props.unsavedChanges === true) {
       this.setState({
@@ -38,6 +52,11 @@ export class Coding extends Component {
     }
   }
 
+  /**
+   * The user has clicked 'save' in either of the flag popover forms
+   * @public
+   * @param flagInfo
+   */
   onSaveFlag = flagInfo => {
     if (flagInfo.type === 3) {
       this.props.actions.onSaveRedFlag(this.props.projectId, this.props.question.id, {
@@ -70,16 +89,6 @@ export class Coding extends Component {
         onCloseAlert={() => this.props.actions.dismissApiAlert('saveFlagErrorContent')} />
     )
   }
-}
-
-Coding.propTypes = {
-  projectName: PropTypes.string,
-  projectId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  question: PropTypes.object,
-  currentIndex: PropTypes.number,
-  questionOrder: PropTypes.array,
-  actions: PropTypes.object,
-  categories: PropTypes.array
 }
 
 export default withCodingValidation(Coding, { ...actions, ...otherActions }, 'Code')

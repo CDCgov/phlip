@@ -1,7 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const Logo = props => {
+/**
+ * PHLIP logo component
+ */
+export const Logo = props => {
   const { height, width } = props
   return (
    <img src="/phlip-logo.png" style={{ height, width }} alt="Public Health Law Investigation Platform"/>
@@ -13,7 +16,13 @@ Logo.defaultProps = {
 }
 
 Logo.propTypes = {
+  /**
+   * Height of image
+   */
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * Width of image
+   */
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 }
 

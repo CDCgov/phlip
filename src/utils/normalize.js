@@ -1,16 +1,18 @@
 /**
  * Makes an array the items in the array are a property from items in the array
- * @param arr
- * @param key
- * @returns {*}
+ *
+ * @param {Array} arr
+ * @param {String} key
+ * @returns {Array}
  */
 export const mapArray = (arr, key = 'id') => arr.map(p => p[key])
 
 /**
  * Makes an object from an array of objects where the keys of the object are a property of the object in the array
- * @param arr
- * @param key
- * @returns {{}}
+ *
+ * @param {Array} arr
+ * @param {String} key
+ * @returns {Object}
  */
 export const arrayToObject = (arr, key = 'id') => ({
   ...arr.reduce((obj, item) => ({
@@ -21,9 +23,10 @@ export const arrayToObject = (arr, key = 'id') => ({
 
 /**
  * Gets the initials (first character of first name, first character of lastName)
- * @param firstName
- * @param lastName
- * @returns {string}
+ *
+ * @param {String} firstName
+ * @param {String} lastName
+ * @returns {String}
  */
 export const getInitials = (firstName, lastName) => {
   return lastName.length

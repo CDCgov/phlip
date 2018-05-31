@@ -2,22 +2,25 @@ import moment from 'moment'
 
 /**
  * Validates that a field is required
- * @param value
- * @returns {*}
+ *
+ * @param {*} value
+ * @returns {?String}
  */
 export const validateRequired = value => value ? undefined : 'Required'
 
 /**
  * Validates that an input of type array has values
- * @param arr
- * @returns {*}
+ *
+ * @param {Array} arr
+ * @returns {?String}
  */
 export const validateRequiredArray = arr => arr.length > 0 ? undefined : 'Required'
 
 /**
  * Validates that a date is required
- * @param value
- * @returns {*}
+ *
+ * @param {*} value
+ * @returns {?String}
  */
 export const validateDate = value => {
   return value === 'mm/dd/yyyy' || value === undefined ? 'Required' : undefined
@@ -25,9 +28,10 @@ export const validateDate = value => {
 
 /**
  * Validates the range of two dates
- * @param values
- * @param currentErrors
- * @returns {{}}
+ *
+ * @param {Object} values
+ * @param {Object} currentErrors
+ * @returns {Object}
  */
 export const validateDateRanges = (values, currentErrors) => {
   let errors = { ...currentErrors }
@@ -42,14 +46,16 @@ export const validateDateRanges = (values, currentErrors) => {
 
 /**
  * Trims the whitespace from a string
- * @param str
- * @returns {*}
+ *
+ * @param {String} str
+ * @returns {String}
  */
 export const trimWhitespace = str => str.trim()
 
 /**
  * Capitalizes the frist letter of a sentence
- * @param text
- * @returns {string}
+ *
+ * @param {String} text
+ * @returns {String}
  */
 export const capitalizeFirstLetter = text => text.trim()[0].toUpperCase() + text.trim().slice(1)

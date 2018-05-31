@@ -9,6 +9,14 @@ import { INITIAL_STATE } from 'components/CodingValidation/reducer'
 
 const types = { ...codingValidationTypes, ...otherActionTypes }
 
+/**
+ * Main coding reducer, that is the 'uniqueReducer' that is used when handling actions that are not common to both Coding
+ * and Validation
+ *
+ * @param {Object} state
+ * @param {Object} action
+ * @returns {Object}
+ */
 const codingReducer = (state = INITIAL_STATE, action) => {
   const questionUpdater = state.question.isCategoryQuestion
     ? handleUpdateUserCategoryChild(state, action)
@@ -124,6 +132,9 @@ const codingReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
+/**
+ * All of these actions will be handled by this reducer and not the reducer in `components/CodingValidation/reducer`
+ */
 export const codingHandlers = [
   'GET_CODING_OUTLINE_REQUEST',
   'GET_CODING_OUTLINE_SUCCESS',

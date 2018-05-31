@@ -69,6 +69,7 @@ const shouldRenderSuggestions = value => value.trim().length >= 3
 
 /**
  * Autosuggest / Autocomplete input field, renders a list of suggestions based on the input
+ * @component
  */
 export const Autocomplete = props => {
   const {

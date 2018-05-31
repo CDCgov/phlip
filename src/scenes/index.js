@@ -16,6 +16,7 @@ import AddEditProject from 'scenes/Home/scenes/AddEditProject'
 import AddEditJurisdictions from 'scenes/Home/scenes/AddEditJurisdictions'
 import JurisdictionForm from 'scenes/Home/scenes/AddEditJurisdictions/components/JurisdictionForm'
 
+/** Paths that aren't accessible by users with 'Coder' role */
 const nonCoderPaths = [
   '/project/add',
   '/project/:id/jurisdictions',
@@ -25,6 +26,13 @@ const nonCoderPaths = [
 
 const modalPath = '/project/edit/:id'
 
+/**
+ * Checks if the route path is a modal view.
+ *
+ * @param pathname
+ * @param role
+ * @returns {Object}
+ */
 const checkForModalMatch = (pathname, role) => {
   let location = pathname
   if (matchPath(pathname, { path: modalPath }) !== null) {
@@ -39,8 +47,19 @@ const checkForModalMatch = (pathname, role) => {
   return location
 }
 
+/**
+ * Main scenes component for views that require a login (i.e. everything but the Login view). All of the react-router
+ * routes are set here.
+ *
+ * @param match
+ * @param location
+ * @param role
+ * @param otherProps
+ * @returns {*}
+ * @constructor
+ */
 const AuthenticatedScenes = ({ match, location, role, ...otherProps }) => {
-  // this is for jurisdictions / add/edit project modals. We want the modals to be displayed on top of the home screen,
+  // This is for jurisdictions / add/edit project modals. We want the modals to be displayed on top of the home screen,
   // so we check if it's one of those routes and if it is set the location to /home
   const currentLocation = { ...location, pathname: checkForModalMatch(location.pathname, role) }
 
@@ -66,6 +85,11 @@ const AuthenticatedScenes = ({ match, location, role, ...otherProps }) => {
   )
 }
 
+/**
+ * Main scenes component, where all of the page views are set. It sets the /login route and any other path be sent to
+ * the AuthenticatedRoutes with the component AuthenticatedScenes. redux-persist `<PersistGate>` component is set up here.
+ * @param props
+ */
 const Scenes = props => {
   return (
     <Switch>

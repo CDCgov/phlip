@@ -6,6 +6,13 @@ const INITIAL_STATE = {
   formMessage: null
 }
 
+/**
+ * Main reducer for handling logging in and logging out
+ *
+ * @param {Object} state
+ * @param {Object} action
+ * @returns {{session: boolean, pivError: null, formMessage: null}}
+ */
 const loginReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.LOGIN_USER_SUCCESS:

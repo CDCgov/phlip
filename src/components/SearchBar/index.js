@@ -5,7 +5,10 @@ import TextField from 'material-ui/TextField'
 import { InputAdornment } from 'material-ui/Input'
 import { withTheme } from 'material-ui/styles'
 
-const SearchBar = ({ searchValue, handleSearchValueChange, placeholder, theme, ...otherProps }) => {
+/**
+ * Search input field
+ */
+export const SearchBar = ({ searchValue, handleSearchValueChange, placeholder, theme, ...otherProps }) => {
   return (
     <TextField
       value={searchValue}
@@ -29,11 +32,26 @@ const SearchBar = ({ searchValue, handleSearchValueChange, placeholder, theme, .
 }
 
 SearchBar.propTypes = {
+  /**
+   * Value of the text input field
+   */
   searchValue: PropTypes.string,
+  /**
+   * Function to call when the user changes their input
+   */
   handleSearchValueChange: PropTypes.func,
-  placeholder: PropTypes.string
+  /**
+   * Placeholder for the search text field
+   */
+  placeholder: PropTypes.string,
+  /**
+   * Theme provided by material-ui
+   */
+  theme: PropTypes.object
 }
 
-SearchBar.defaultProps = {}
+SearchBar.defaultProps = {
+  placeholder: 'Search'
+}
 
 export default withTheme()(SearchBar)
