@@ -16,3 +16,5 @@ export const getUserPictureRequest = userId => ({ type: types.GET_USER_IMAGE_REQ
 export const deleteUserPictureRequest = (userId, operation) => ({ type: types.DELETE_USER_IMAGE_REQUEST, userId, operation })
 
 export const loadAddEditAvatar = (avatar) => ({ type: types.LOAD_ADD_EDIT_AVATAR, avatar })
+export const resetFormError = () => ({ type: types.RESET_USER_FORM_ERROR })
+export const resetSubmittingStatus = () => ({ type: types.RESET_SUBMITTING_STATUS })

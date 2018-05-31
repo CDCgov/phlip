@@ -6,7 +6,8 @@ export const addUserLogic = createLogic({
   latest: true,
   processOptions: {
     dispatchReturn: true,
-    successType: types.ADD_USER_SUCCESS
+    successType: types.ADD_USER_SUCCESS,
+    failType: types.ADD_USER_FAIL
   },
   async process({ action, api }) {
     return await api.addUser(action.user, {}, {})
@@ -16,13 +17,20 @@ export const addUserLogic = createLogic({
 export const updateUserLogic = createLogic({
   type: types.UPDATE_USER_REQUEST,
   latest: true,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.UPDATE_USER_SUCCESS
-  },
-  async process({ action, api }) {
-    const updatedUser = await api.updateUser(action.user, {}, { userId: action.user.id })
-    return { ...updatedUser, avatar: action.user.avatar }
+  async process({ action, api }, dispatch, done) {
+    let updatedUser = {}
+    try {
+      updatedUser = await api.updateUser(action.user, {}, { userId: action.user.id })
+      dispatch({ type: types.UPDATE_USER_SUCCESS, payload: { ...updatedUser, avatar: action.user.avatar }})
+    } catch (e) {
+      if (e.response.status === 304) {
+        updatedUser = { ...action.user, avatar: action.user.avatar }
+        dispatch({ type: types.UPDATE_USER_SUCCESS, payload: { ...updatedUser, avatar: action.user.avatar }})
+      } else {
+        dispatch({ type: types.UPDATE_USER_FAIL })
+      }
+    }
+    done()
   }
 })
 
