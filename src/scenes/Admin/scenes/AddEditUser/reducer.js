@@ -1,7 +1,9 @@
 import * as types from './actionTypes'
 
 const INITIAL_STATE = {
-  avatar: null
+  avatar: null,
+  formError: '',
+  isDoneSubmitting: false
 }
 
 /**
@@ -32,6 +34,40 @@ const addEditUserReducer = (state = INITIAL_STATE, action) => {
         avatar: action.avatar
       }
 
+    case types.ADD_USER_FAIL:
+      return {
+        ...state,
+        formError: 'We failed to add this user.',
+        isDoneSubmitting: true
+      }
+
+    case types.UPDATE_USER_FAIL:
+      return {
+        ...state,
+        formError: 'We failed to updated this user.',
+        isDoneSubmitting: true
+      }
+
+    case types.RESET_USER_FORM_ERROR:
+      return {
+        ...state,
+        formError: ''
+      }
+
+    case types.RESET_SUBMITTING_STATUS:
+      return {
+        ...state,
+        isDoneSubmitting: false
+      }
+
+    case types.UPDATE_USER_SUCCESS:
+    case types.ADD_USER_SUCCESS:
+      return {
+        ...state,
+        isDoneSubmitting: true
+      }
+
+
     case types.DELETE_USER_IMAGE_SUCCESS:
     case types.ON_CLOSE_ADD_EDIT_USER:
     case types.ADD_USER_IMAGE_REQUEST:
@@ -39,6 +75,10 @@ const addEditUserReducer = (state = INITIAL_STATE, action) => {
 
     case types.ADD_USER_REQUEST:
     case types.UPDATE_USER_REQUEST:
+      return {
+        ...state,
+        isDoneSubmitting: false
+      }
 
     default:
       return state

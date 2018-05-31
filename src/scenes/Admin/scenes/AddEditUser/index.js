@@ -82,7 +82,19 @@ export class AddEditUser extends Component {
     /**
      * Function passed in from withFormAlert HOC
      */
-    onCloseModal: PropTypes.func
+    onCloseModal: PropTypes.func,
+    /**
+     * Any error that occurred during updating or adding a user
+     */
+    formError: PropTypes.string,
+    /**
+     * Whether or not a response has been received from the backend
+     */
+    isDoneSubmitting: PropTypes.bool,
+    /**
+     * Function passed in from withFormAlert HOC
+     */
+    onSubmitError: PropTypes.func
   }
 
   constructor(props, context) {
@@ -104,6 +116,18 @@ export class AddEditUser extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.state.submitting === true && nextProps.isDoneSubmitting === true) {
+      this.props.actions.resetSubmittingStatus()
+      if (nextProps.formError !== '') {
+        this.props.onSubmitError(nextProps.formError)
+      } else {
+        this.props.history.goBack()
+      }
+      this.setState({ submitting: false })
+    }
+  }
+
   /**
    * Function called when the form is submitted. Dispatches redux actions to update or create a user depending on view.
    * Dispatches another action if the user being edited is the current user logged in.
@@ -112,9 +136,7 @@ export class AddEditUser extends Component {
    * @param {Object} values
    */
   handleSubmit = values => {
-    this.setState({
-      submitting: true
-    })
+    this.setState({ submitting: true })
 
     let updatedValues = { ...values }
     for (let field of ['firstName', 'lastName']) {
@@ -129,7 +151,6 @@ export class AddEditUser extends Component {
     } else {
       this.props.actions.addUserRequest({ role: 'Coordinator', ...updatedValues })
     }
-    this.props.history.goBack()
   }
 
   /**
@@ -376,7 +397,9 @@ const mapStateToProps = state => ({
   users: state.scenes.admin.main.users || [],
   form: state.form.addEditUser || {},
   avatar: state.scenes.admin.addEditUser.avatar || null,
-  formName: 'addEditUser'
+  formName: 'addEditUser',
+  formError: state.scenes.admin.addEditUser.formError || '',
+  isDoneSubmitting: state.scenes.admin.addEditUser.isDoneSubmitting || false
 })
 
 const mapDispatchToProps = dispatch => ({
