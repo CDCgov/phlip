@@ -5,13 +5,13 @@ import { default as MuiMenu, MenuItem } from 'material-ui/Menu'
 /**
  * Displays a menu of menuitems as a popover - wrapper for material-ui's Menu component
  */
-export const Menu = ({ open, anchorEl, id, onRequestClose, items, ...otherProps }) => {
+export const Menu = ({ open, anchorEl, id, onClose, items, ...otherProps }) => {
   return (
     <MuiMenu
       open={open}
       anchorEl={anchorEl}
       id={id}
-      onRequestClose={onRequestClose}
+      onClose={onClose}
       {...otherProps}>
       {items.map(item => (
         <MenuItem onClick={item.onClick} key={item.key}>
@@ -38,7 +38,7 @@ Menu.propTypes = {
   /**
    * Function to call when the menu is closed
    */
-  onRequestClose: PropTypes.func,
+  onClose: PropTypes.func,
   /**
    * The items to display in the menu
    */

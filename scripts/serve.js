@@ -1,3 +1,6 @@
+/**
+ * Starts the node.js and express server for production mode
+ */
 const express = require('express')
 const session = require('express-session')
 const chalk = require('chalk')

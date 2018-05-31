@@ -1,9 +1,11 @@
 const path = require('path')
+const paths = require('./config/paths')
 const styles = require('./config/styleguide').stylguideStyles
 const theme = require('./config/styleguide').styleguideTheme
 const comps = require('./config/paths').styleguideComponents
 
 module.exports = {
+  assetsDir: paths.appPublic,
   webpackConfig: require('./config/webpack.dev.config')({}),
   styleguideDir: path.join(__dirname, 'docs'),
   logger: {

@@ -1,5 +1,6 @@
-'use strict'
-
+/**
+ * Create and start the webpack-dev-server for development
+ */
 const chalk = require('chalk')
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')

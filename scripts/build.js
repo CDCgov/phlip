@@ -1,5 +1,6 @@
-'use strict'
-
+/**
+ * This build the production webpack bundle
+ */
 const chalk = require('chalk')
 const webpack = require('webpack')
 const Spinner = require('cli-spinner').Spinner

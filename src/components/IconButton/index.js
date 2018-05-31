@@ -62,7 +62,7 @@ IconButton.propTypes = {
    */
   placement: PropTypes.string,
   /**
-   * String of icon name from https://material.io/iconsor icon component (for ex. from mdi-material-ui component)
+   * String of icon name from https://material.io/icons or icon component (for ex. from mdi-material-ui component)
    */
   children: PropTypes.any,
   /**

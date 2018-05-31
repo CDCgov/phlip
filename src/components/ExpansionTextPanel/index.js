@@ -8,6 +8,7 @@ import Grow from 'material-ui/transitions/Grow'
 import Paper from 'material-ui/Paper'
 import { Manager, Target, Popper } from 'react-popper'
 import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
+import MenuDown from 'mdi-material-ui/MenuDown'
 
 const styles = {
   root: {
@@ -61,7 +62,7 @@ export class ExpansionTextPanel extends Component {
           </Typography>
           <Manager style={{ height: 24 }}>
             <Target style={{ height: 24 }}>
-              <IconButton onClick={this.onOpenPopper} color="#768f99" {...this.props.dropdownIconProps}>arrow_drop_down</IconButton>
+              <IconButton onClick={this.onOpenPopper} color="#768f99" {...this.props.dropdownIconProps}><MenuDown /></IconButton>
             </Target>
             <Popper
               placement="top-end"

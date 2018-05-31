@@ -116,7 +116,8 @@ Dropdown.propTypes = {
 Dropdown.defaultProps = {
   shrinkLabel: true,
   required: false,
-  options: []
+  options: [],
+  meta: { touched: false, error: undefined }
 }
 
 export default withStyles(styles)(Dropdown)
