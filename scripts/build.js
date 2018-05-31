@@ -17,6 +17,7 @@ let spinner = new Spinner(chalk.cyan('%s Webpack is bundling the files...'))
 spinner.setSpinnerString(18)
 spinner.start()
 
+// Compile the webpack bundle
 const compiler = webpack(webpackConfig)
 compiler.run((err, stats) => {
   spinner.stop()
