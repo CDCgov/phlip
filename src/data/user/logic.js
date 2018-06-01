@@ -22,7 +22,7 @@ export const refreshJwt = createLogic({
     const interval = setInterval(async () => {
       if (isLoggedInTokenExists()) {
         const currentToken = getToken()
-        const newToken = await api.checkPivUser({ email: decodeToken(currentToken).Email }, {}, { tokenObj: currentToken })
+        const newToken = await api.checkPivUser({ email: decodeToken(currentToken).Email }, {}, { tokenObj: { token: currentToken }})
         await login(newToken.token.value)
       }
     }, 900000)
