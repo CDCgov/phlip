@@ -14,7 +14,8 @@ const updateUserIdLogic = createLogic({
       question: {
         ...action.question,
         userId: getState().data.user.currentUser.id,
-        possibleAnswers: action.question.possibleAnswers.map(answer => {
+        possibleAnswers: action.question.questionType !== questionTypes.TEXT_FIELD &&
+        action.question.possibleAnswers.map(answer => {
           const { isNew, ...answerOptions } = answer
           return answerOptions
         })
