@@ -29,7 +29,6 @@ export const basicLoginLogic = createLogic({
           error
         }
       })
-
     } catch (e) {
       dispatch({
         type: types.LOGIN_USER_FAIL,

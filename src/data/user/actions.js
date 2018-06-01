@@ -12,3 +12,6 @@ export const toggleMenu = () => ({ type: types.TOGGLE_MENU })
 export const downloadPdfRequest = () => ({ type: types.DOWNLOAD_PDF_REQUEST })
 export const resetDownloadError = () => ({ type: types.RESET_DOWNLOAD_PDF_ERROR })
 export const clearPdfFile = () => ({ type: types.CLEAR_PDF_FILE })
+
+export const startRefreshJwt = () => ({ type: types.REFRESH_JWT })
+export const cancelRefreshToken = () => ({ type: types.CANCEL_REFRESH_JWT })

@@ -6,7 +6,8 @@ const initial = {
   currentUser: {},
   menuOpen: false,
   pdfFile: null,
-  pdfError: ''
+  pdfError: '',
+  isRefreshing: false
 }
 
 describe('User reducer', () => {
