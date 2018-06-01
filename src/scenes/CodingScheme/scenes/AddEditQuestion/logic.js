@@ -11,7 +11,14 @@ const updateUserIdLogic = createLogic({
   transform({ getState, action }, next) {
     next({
       ...action,
-      question: { ...action.question, userId: getState().data.user.currentUser.id }
+      question: {
+        ...action.question,
+        userId: getState().data.user.currentUser.id,
+        possibleAnswers: action.question.possibleAnswers.map(answer => {
+          const { isNew, ...answerOptions } = answer
+          return answerOptions
+        })
+      }
     })
   }
 })
@@ -82,7 +89,10 @@ const updateQuestionLogic = createLogic({
 
     action.question.possibleAnswers = orderedAnswers
     try {
-      const updatedQuestion = await api.updateQuestion(action.question, {}, { projectId: action.projectId, questionId: action.questionId })
+      const updatedQuestion = await api.updateQuestion(action.question, {}, {
+        projectId: action.projectId,
+        questionId: action.questionId
+      })
       dispatch({
         type: types.UPDATE_QUESTION_SUCCESS,
         payload: {
@@ -98,7 +108,7 @@ const updateQuestionLogic = createLogic({
       dispatch({
         type: types.UPDATE_QUESTION_FAIL,
         error: true,
-        payload: 'We couldn\'t update this question. Please try again later.',
+        payload: 'We couldn\'t update this question. Please try again later.'
       })
     }
     done()
