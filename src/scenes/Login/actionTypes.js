@@ -8,3 +8,4 @@ export const CHECK_PIV_USER_FAIL = 'CHECK_PIV_USER_FAIL'
 
 export const LOGOUT_USER = 'LOGOUT_USER'
 export const FLUSH_STATE = 'FLUSH_STATE'
+export const REFRESH_JWT = 'REFRESH_JWT'

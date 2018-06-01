@@ -5,6 +5,8 @@ import { matchPath } from 'react-router'
 import { isLoggedInTokenExists } from 'services/authToken'
 import { connect } from 'react-redux'
 import { UnauthPage, PageNotFound } from 'components/RoutePages'
+import { bindActionCreators } from 'redux'
+import * as actions from 'data/user/actions'
 
 /**
  * These are all of the routes that exist in the application, split up by who is allowed to view them
@@ -63,14 +65,23 @@ const isPath = path => {
  * renders the component, if not, then renders UnauthPage. If page isn't found, it renders PageNotFound. If the user isn't
  * logged in, renders the Login page.
  */
-export const AuthenticatedRoute = ({ component: Component, user, location, ...rest }) => {
+export const AuthenticatedRoute = ({ component: Component, user, location, actions, isRefreshing, ...rest }) => {
   return (
     isPath(location.pathname)
       ? isLoggedInTokenExists()
-        ? isAllowed(user, location.pathname)
-          ? <Route {...rest} render={props => <Component {...props} location={location} role={user.role} />} />
-          : <UnauthPage />
-        : <Route {...rest} render={() => <Redirect to="/login" {...rest} />} />
+      ? isAllowed(user, location.pathname)
+        ? <Route {...rest} render={props =>
+          <Component
+            location={location}
+            actions={actions}
+            isRefreshing={isRefreshing}
+            role={user.role}
+            isLoggedIn={isLoggedInTokenExists()}
+            {...props}
+          />}
+        />
+        : <UnauthPage />
+      : <Route {...rest} render={() => <Redirect to="/login" {...rest} />} />
       : <PageNotFound />
   )
 }
@@ -92,4 +103,11 @@ AuthenticatedRoute.propTypes = {
   location: PropTypes.object
 }
 
-export default withRouter(connect(state => ({ user: state.data.user.currentUser }))(AuthenticatedRoute))
+const mapStateToProps = state => ({
+  user: state.data.user.currentUser,
+  isRefreshing: state.data.user.isRefreshing
+})
+
+export default withRouter(
+  connect(mapStateToProps, dispatch => ({ actions: bindActionCreators(actions, dispatch) }))(AuthenticatedRoute)
+)

@@ -93,6 +93,7 @@
     "react-dom": "16.2.0",
     "react-dropzone": "4.2.8",
     "react-file-reader": "1.1.4",
+    "react-idle-timer": "3.0.0",
     "react-image-compressor": "1.0.1",
     "react-popper": "0.8.3",
     "react-redux": "5.0.6",

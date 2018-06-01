@@ -1,10 +1,5 @@
 let apiCalls = [
   {
-    name: 'login',
-    method: 'post',
-    path: () => '/users/authenticate'
-  },
-  {
     name: 'checkPivUser',
     method: 'post',
     path: () => '/users/authenticate',

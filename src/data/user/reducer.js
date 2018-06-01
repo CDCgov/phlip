@@ -4,7 +4,8 @@ const INITIAL_STATE = {
   currentUser: {},
   menuOpen: false,
   pdfError: '',
-  pdfFile: null
+  pdfFile: null,
+  isRefreshing: false
 }
 
 /**
@@ -83,6 +84,12 @@ const userReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         pdfError: ''
+      }
+
+    case types.REFRESH_JWT:
+      return {
+        ...state,
+        isRefreshing: true
       }
 
     case types.FLUSH_STATE:

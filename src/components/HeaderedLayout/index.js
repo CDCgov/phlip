@@ -75,7 +75,7 @@ export class HeaderedLayout extends Component {
         <AppBarHeader
           user={user}
           open={open}
-          handleLogoutUser={() => { actions.closeMenu(); actions.logoutUser(); history.push('/login') }}
+          handleLogoutUser={() => { actions.closeMenu(); actions.logoutUser(); actions.cancelRefreshToken(); history.push('/login') }}
           handleToggleMenu={actions.toggleMenu}
           handleOpenAdminPage={() => { actions.closeMenu(); history.push('/admin') }}
           handleCloseMenu={actions.closeMenu}
