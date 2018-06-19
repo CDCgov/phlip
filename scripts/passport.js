@@ -15,7 +15,7 @@ module.exports = function (passport, config) {
     done(null, user)
   })
 
-  passport.use(new SamlStrategy(
+  const saml_strategy = new SamlStrategy(
     {
       //TODO: Create process.env variables
       callbackUrl: 'https://phlipdev.cdc.gov/login/callback',
@@ -34,6 +34,9 @@ module.exports = function (passport, config) {
           lastName: profile.lastname
         })
     })
-  )
+
+  console.log('SAML METADATA: ', saml_strategy.generateServiceProviderMetadata())
+
+  passport.use(saml_strategy)
 
 }
