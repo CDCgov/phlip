@@ -20,7 +20,7 @@ module.exports = function (passport, config) {
       //TODO: Create process.env variables
       callbackUrl: 'https://phlipdev.cdc.gov/login/callback',
       entryPoint: 'https://trust-stg.cdc.gov/affwebservices/public/saml2sso?SPID=phlipdev-project',
-      issuer: 'phlip-dev',
+      issuer: 'phlipdev-project',
       logoutUrl: 'https://trust-stg.cdc.gov/affwebservices/public/saml2slo',
       // cert: fs.readFileSync('/sec/certs/cert.pem'),
       identifierFormat: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
