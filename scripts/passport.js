@@ -4,6 +4,9 @@
 
 const SamlStrategy = require('passport-saml').Strategy
 const fs = require('fs')
+const dotenv = require('dotenv')
+
+dotenv.config({ path: paths.appDotEnv })
 
 module.exports = function (passport, config) {
   passport.serializeUser(function (user, done) {
@@ -16,9 +19,10 @@ module.exports = function (passport, config) {
 
   passport.use(new SamlStrategy(
     {
-      callbackUrl: 'https://phliptest.phiresearchlab.org/login/callback',
-      entryPoint: 'https://trust-stg.cdc.gov/affwebservices/public/saml2sso?SPID=esquire-project',
-      issuer: 'esquire-project',
+      //TODO: Create process.env variables
+      callbackUrl: 'https://phlipdev.cdc.gov/login/callback',
+      entryPoint: 'https://trust-stg.cdc.gov/affwebservices/public/saml2sso?SPID=phlipdev-project',
+      issuer: 'phlip-dev',
       logoutUrl: 'https://trust-stg.cdc.gov/affwebservices/public/saml2slo',
       // cert: fs.readFileSync('/sec/certs/cert.pem'),
       identifierFormat: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
