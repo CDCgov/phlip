@@ -4,9 +4,7 @@
 
 const SamlStrategy = require('passport-saml').Strategy
 const fs = require('fs')
-const dotenv = require('dotenv')
 
-dotenv.config({ path: paths.appDotEnv })
 
 module.exports = function (passport, config) {
   passport.serializeUser(function (user, done) {
