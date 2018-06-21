@@ -4,6 +4,10 @@
 
 const SamlStrategy = require('passport-saml').Strategy
 const fs = require('fs')
+const dotenv = require('dotenv')
+const paths = require('../config/paths')
+
+dotenv.config({ path: paths.appDotEnv })
 
 module.exports = function (passport, config) {
   passport.serializeUser(function (user, done) {
@@ -14,14 +18,14 @@ module.exports = function (passport, config) {
     done(null, user)
   })
 
-  passport.use(new SamlStrategy(
+  const saml_strategy = new SamlStrategy(
     {
-      callbackUrl: 'https://phliptest.phiresearchlab.org/login/callback',
-      entryPoint: 'https://trust-stg.cdc.gov/affwebservices/public/saml2sso?SPID=esquire-project',
-      issuer: 'esquire-project',
-      logoutUrl: 'https://trust-stg.cdc.gov/affwebservices/public/saml2slo',
-      // cert: fs.readFileSync('/sec/certs/cert.pem'),
-      identifierFormat: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+      //TODO: Create process.env variables
+      callbackUrl: process.env.SAML_CALLBACK_URL,
+      entryPoint: process.env.SAML_ENTRY_POINT_URL,
+      issuer: process.env.SAML_ISSUER,
+      logoutUrl: process.env.SAML_LOGOUT_URL,
+      identifierFormat: process.env.SAML_IDENTIFIER_FORMAT
     },
     (profile, done) => {
       return done(null,
@@ -32,6 +36,9 @@ module.exports = function (passport, config) {
           lastName: profile.lastname
         })
     })
-  )
+
+  console.log('SAML METADATA: ', saml_strategy.generateServiceProviderMetadata())
+
+  passport.use(saml_strategy)
 
 }
