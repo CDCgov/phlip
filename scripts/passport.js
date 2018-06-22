@@ -20,7 +20,6 @@ module.exports = function (passport, config) {
 
   const saml_strategy = new SamlStrategy(
     {
-      //TODO: Create process.env variables
       callbackUrl: process.env.SAML_CALLBACK_URL,
       entryPoint: process.env.SAML_ENTRY_POINT_URL,
       issuer: process.env.SAML_ISSUER,
