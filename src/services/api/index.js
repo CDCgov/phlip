@@ -8,7 +8,7 @@ import util from 'util'
  * @type {AxiosInstance}
  */
 export const instance = axios.create({
-  baseURL: process.env.API_HOST || '/api'
+  baseURL: process.env.API_HOST || process.env.IS_HTTPS === '1' ? process.env.APP_API_URL : '/api'
 })
 
 /**

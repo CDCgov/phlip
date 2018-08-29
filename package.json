@@ -74,6 +74,7 @@
     "express": "4.16.2",
     "express-session": "1.15.6",
     "global": "4.3.2",
+    "helmet": "^3.12.1",
     "history": "4.7.2",
     "http-proxy-middleware": "0.17.4",
     "image-compressor": "1.2.0",
