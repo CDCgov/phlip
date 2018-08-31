@@ -24,7 +24,8 @@ module.exports = function (passport, config) {
       entryPoint: process.env.SAML_ENTRY_POINT_URL,
       issuer: process.env.SAML_ISSUER,
       logoutUrl: process.env.SAML_LOGOUT_URL,
-      identifierFormat: process.env.SAML_IDENTIFIER_FORMAT
+      identifierFormat: process.env.SAML_IDENTIFIER_FORMAT,
+      disableRequestedAuthnContext: true
     },
     (profile, done) => {
       return done(null,
