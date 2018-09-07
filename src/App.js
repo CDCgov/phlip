@@ -5,6 +5,7 @@ import { Router } from 'react-router-dom'
 import { store, history } from 'services/store'
 import theme from 'services/theme'
 import Scenes from 'scenes'
+import { hot } from 'react-hot-loader'
 
 /**
  * Main App component. Sets up the BrowserRouter for react-router, the theme for material-ui and the provider / store
@@ -22,4 +23,4 @@ const App = () => {
   )
 }
 
-export default App
+export default hot(module)(App)

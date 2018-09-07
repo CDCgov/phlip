@@ -903,3 +903,15 @@ export const checkIfAnswered = (item, userAnswers, id = 'id') => {
 export const checkIfExists = (item, obj, id = 'id') => {
   return obj.hasOwnProperty(item[id])
 }
+
+export default {
+  checkIfAnswered,
+  checkIfExists,
+  generateError,
+  getSchemeQuestionAndUpdate,
+  getCodedValidatedQuestions,
+  getFinalCodedObject,
+  getNextQuestion,
+  getPreviousQuestion,
+  getQuestionNumbers
+}
