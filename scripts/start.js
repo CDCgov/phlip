@@ -34,6 +34,8 @@ const compiler = webpack(webpackConfig)
 // Since we're using the Node API, we have to set devServer options here
 const devServer = new WebpackDevServer(compiler, config)
 
+console.log(env)
+
 // Launch WebpackDevServer
 devServer.listen(APP_PORT, APP_HOST, err => {
   if (err) {

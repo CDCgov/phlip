@@ -75,95 +75,91 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       </span>
     </withStyles(Typography)>
   </Row>
-  <React.Fragment>
-    <React.Fragment>
-      <span />
-      <div
+  <span />
+  <div
+    style={
+      Object {
+        "flex": "1",
+        "paddingRight": 30,
+      }
+    }
+  >
+    <withStyles(JurisdictionSelect) />
+  </div>
+  <Column
+    component={
+      <withStyles(GridWrapper)
+        item={true}
+      />
+    }
+    displayFlex={false}
+    flex={false}
+  >
+    <withStyles(Typography)
+      type="caption"
+    >
+      <span
         style={
           Object {
-            "flex": "1",
-            "paddingRight": 30,
+            "color": "#707070",
           }
         }
       >
-        <withStyles(JurisdictionSelect) />
-      </div>
-      <Column
-        component={
-          <withStyles(GridWrapper)
-            item={true}
-          />
+        Segment Start Date 
+      </span>
+      <span
+        style={
+          Object {
+            "color": "black",
+          }
         }
-        displayFlex={false}
-        flex={false}
       >
-        <withStyles(Typography)
-          type="caption"
-        >
-          <span
-            style={
-              Object {
-                "color": "#707070",
-              }
-            }
-          >
-            Segment Start Date 
-          </span>
-          <span
-            style={
-              Object {
-                "color": "black",
-              }
-            }
-          >
-            2018-1-1
-          </span>
-        </withStyles(Typography)>
-        <withStyles(Typography)
-          type="caption"
-        >
-          <span
-            style={
-              Object {
-                "color": "#707070",
-              }
-            }
-          >
-            Segment End Date 
-          </span>
-          <span
-            style={
-              Object {
-                "color": "black",
-              }
-            }
-          >
-            2018-1-18
-          </span>
-        </withStyles(Typography)>
-      </Column>
-    </React.Fragment>
-    <Column
-      component={
-        <withStyles(GridWrapper)
-          item={true}
-        />
-      }
-      displayFlex={false}
-      flex={true}
-    />
-    <withTheme(Button)
-      aria-label="View and edit protocol"
-      component={[Function]}
-      style={
-        Object {
-          "backgroundColor": "white",
-          "color": "black",
+        2018-1-1
+      </span>
+    </withStyles(Typography)>
+    <withStyles(Typography)
+      type="caption"
+    >
+      <span
+        style={
+          Object {
+            "color": "#707070",
+          }
         }
+      >
+        Segment End Date 
+      </span>
+      <span
+        style={
+          Object {
+            "color": "black",
+          }
+        }
+      >
+        2018-1-18
+      </span>
+    </withStyles(Typography)>
+  </Column>
+  <Column
+    component={
+      <withStyles(GridWrapper)
+        item={true}
+      />
+    }
+    displayFlex={false}
+    flex={true}
+  />
+  <withTheme(Button)
+    aria-label="View and edit protocol"
+    component={[Function]}
+    style={
+      Object {
+        "backgroundColor": "white",
+        "color": "black",
       }
-      to="/project/1/protocol"
-      value="Protocol"
-    />
-  </React.Fragment>
+    }
+    to="/project/1/protocol"
+    value="Protocol"
+  />
 </Container>
 `;

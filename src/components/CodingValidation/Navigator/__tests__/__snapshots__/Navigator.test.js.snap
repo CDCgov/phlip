@@ -62,7 +62,9 @@ exports[`Coding scene - Navigator should render correctly 1`] = `
           disableWidth={false}
           onResize={[Function]}
           style={Object {}}
-        />
+        >
+          <Component />
+        </AutoSizer>
       </div>
     </div>
   </Container>
