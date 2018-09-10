@@ -1,7 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Table from 'components/Table'
-import { TableBody, TableHead, TableRow, TableCell } from 'material-ui/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableHead from '@material-ui/core/TableHead'
+import TableFooter from '@material-ui/core/TableFooter'
+import TableRow from '@material-ui/core/TableRow'
+import TableCell from '@material-ui/core/TableCell'
 import JurisdictionRow from './components/JurisdictionRow'
 
 export const JurisdictionList = ({ jurisdictions, projectId, project, onDelete }) => (

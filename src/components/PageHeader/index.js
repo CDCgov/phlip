@@ -1,12 +1,12 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import Button from 'components/Button'
 import Container, { Column, Row } from 'components/Layout'
 import IconButton from 'components/IconButton'
 import CircleIcon from 'components/CircleIcon'
 import { withRouter } from 'react-router-dom'
-import { withTheme } from 'material-ui/styles'
+import { withTheme } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
 
 /**
@@ -31,10 +31,10 @@ export const PageHeader = props => {
         }
       </Column>
       <Row displayFlex flex>
-        <Typography type="title" style={{ alignSelf: 'center', paddingRight: 10 }}>{pageTitle}</Typography>
+        <Typography variant="title" style={{ alignSelf: 'center', paddingRight: 10 }}>{pageTitle}</Typography>
         {projectName !== '' &&
         <Fragment>
-          <Typography type="title" style={{ alignSelf: 'center' }}>
+          <Typography variant="title" style={{ alignSelf: 'center' }}>
             <span style={{ color: theme.palette.secondary.pageHeader }}>{projectName}</span>
           </Typography>
         </Fragment>}
@@ -110,7 +110,7 @@ PageHeader.propTypes = {
    */
   onBackButtonClick: PropTypes.func,
   /**
-   * Theme object provided by material-ui
+   * Theme object provided by @material-ui/core
    */
   theme: PropTypes.object
 }

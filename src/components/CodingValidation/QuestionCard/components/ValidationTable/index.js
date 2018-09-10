@@ -4,7 +4,7 @@ import Container, { Column, Row } from 'components/Layout'
 import IconButton from 'components/IconButton'
 import Avatar from 'components/Avatar'
 import { getInitials } from 'utils/normalize'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import ExpansionTextPanel from 'components/ExpansionTextPanel'
 
 const flagColors = {
@@ -42,7 +42,7 @@ export const ValidationTable = props => {
     allFlags.length > 0 &&
     <Container column style={{ padding: '25px 25px 0 25px', flexBasis: 'auto', flexWrap: 'nowrap' }}>
       <Row style={{ paddingBottom: 10 }}>
-        <Typography type="subheading" style={{ color: '#a7bdc6' }}>Flags and Comments</Typography>
+        <Typography variant="subheading" style={{ color: '#a7bdc6' }}>Flags and Comments</Typography>
       </Row>
       <Column displayFlex flex style={{ backgroundColor: '#f1f7f8', padding: 12 }}>
         {allFlags.map((item, i) => {
@@ -61,7 +61,7 @@ export const ValidationTable = props => {
                   initials={getInitials(item.raisedBy.firstName, item.raisedBy.lastName)}
                   userName={`${item.raisedBy.firstName} ${item.raisedBy.lastName}`}
                   avatar={userImages[item.raisedBy.userId].avatar} />
-                <Typography type="caption">{`${item.raisedBy.firstName} ${item.raisedBy.lastName}`}</Typography>
+                <Typography variant="caption">{`${item.raisedBy.firstName} ${item.raisedBy.lastName}`}</Typography>
               </Row>
               <Row displayFlex flex style={{ flexBasis: '70%', overflow: 'hidden' }}>
                 {item.type &&
@@ -75,7 +75,7 @@ export const ValidationTable = props => {
                         color={flagColors[item.type]}>{item.type === 3 ? 'report' : 'flag'}</IconButton>
                     </Column>
                     <Row displayFlex flex style={{ alignItems: 'center', overflow: 'hidden' }}>
-                      <Typography type="caption" style={{ fontWeight: 'bold' }}>
+                      <Typography variant="caption" style={{ fontWeight: 'bold' }}>
                         Reason for flag -<span>&nbsp;</span>
                       </Typography>
                       <ExpansionTextPanel
@@ -89,7 +89,7 @@ export const ValidationTable = props => {
                 {item.comment && item.type && <span style={{ paddingLeft: 30 }}></span>}
                 {item.comment &&
                   <Row displayFlex flex style={{ alignItems: 'center', overflow: 'hidden' }}>
-                    <Typography type="caption" style={{ fontWeight: 'bold' }}>
+                    <Typography variant="caption" style={{ fontWeight: 'bold' }}>
                       Comment -<span>&nbsp;</span>
                     </Typography>
                     <ExpansionTextPanel

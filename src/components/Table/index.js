@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { default as MuiTable } from 'material-ui/Table'
+import { default as MuiTable } from '@material-ui/core/Table'
 
 /**
- * Wrapper for material-ui's Table component
+ * Wrapper for @material-ui/core's Table component
  */
 export const Table = ({ children, ...otherProps }) => {
   return (

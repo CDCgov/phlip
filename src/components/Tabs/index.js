@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withStyles } from 'material-ui/styles'
-import AppBar from 'material-ui/AppBar'
-import { default as MuiTabs, Tab } from 'material-ui/Tabs'
+import { withStyles } from '@material-ui/core/styles'
+import AppBar from '@material-ui/core/AppBar'
+import { default as MuiTabs } from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
 
 const styles = theme => ({
   root: {
@@ -65,11 +66,11 @@ Tabs.propTypes = {
    */
   onChangeTab: PropTypes.func,
   /**
-   * Style classes object from material-ui
+   * Style classes object from @material-ui/core
    */
   classes: PropTypes.object,
   /**
-   * Theme from material-ui
+   * Theme from @material-ui/core
    */
   theme: PropTypes.object,
   /**

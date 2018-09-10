@@ -1,8 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Radio from 'material-ui/Radio'
-import { FormControlLabel, FormControl, FormGroup, FormLabel } from 'material-ui/Form'
-import { withStyles } from 'material-ui/styles'
+import Radio from '@material-ui/core/Radio'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormGroup from '@material-ui/core/FormGroup'
+import FormLabel from '@material-ui/core/FormLabel'
+import FormHelperText from '@material-ui/core/FormHelperText'
+import { withStyles } from '@material-ui/core/styles'
 import SimpleInput from 'components/SimpleInput'
 import { getInitials } from 'utils/normalize'
 import Avatar from 'components/Avatar'
@@ -129,11 +133,11 @@ RadioGroupValidation.propTypes = {
    */
   question: PropTypes.object,
   /**
-   * Material-UI theme object
+   * @material-ui/core theme object
    */
   theme: PropTypes.object,
   /**
-   * Style classes object from material-ui
+   * Style classes object from @material-ui/core
    */
   classes: PropTypes.object
 }

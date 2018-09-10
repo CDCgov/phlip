@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { withTheme } from 'material-ui/styles'
-import Divider from 'material-ui/Divider'
+import { withTheme } from '@material-ui/core/styles'
+import Divider from '@material-ui/core/Divider'
 import CardError from 'components/CardError'
 import Container from 'components/Layout'
 import PageHeader from 'components/PageHeader'
@@ -261,4 +261,4 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(withTracking(Home, 'Home')))
+export default connect(mapStateToProps, mapDispatchToProps)(withTracking(Home, 'Home'))

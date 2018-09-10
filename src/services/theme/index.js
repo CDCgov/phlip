@@ -1,5 +1,5 @@
-import { createMuiTheme } from 'material-ui/styles'
-import { pink, deepPurple, teal } from 'material-ui/colors'
+import { createMuiTheme } from '@material-ui/core/styles'
+import { pink, deepPurple, teal } from '@material-ui/core/colors'
 
 const mainColor = '#048484'
 
@@ -35,17 +35,19 @@ const theme = createMuiTheme({
   },
   overrides: {
     MuiFormLabel: {
-      focused: {
-        color: mainColor
+      root: {
+        '&$focused': {
+          color: mainColor
+        },
+        '&$disabled': {
+          color: 'black'
+        }
       },
-      disabled: {
-        color: 'rgba(0, 0, 0, 0.54)'
-      }
     },
     MuiInput: {
-      inkbar: {
+      underline: {
         '&:after': {
-          backgroundColor: mainColor
+          borderBottom: `2px solid ${mainColor}`
         }
       }
     },

@@ -1,15 +1,17 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { findDOMNode } from 'react-dom'
-import Grid from 'material-ui/Grid'
-import { ListItemIcon, ListItemText } from 'material-ui/List'
+import Grid from '@material-ui/core/Grid'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
 import Icon from 'components/Icon'
 import Avatar from 'components/Avatar'
-import { MenuItem, MenuList } from 'material-ui/Menu'
-import Grow from 'material-ui/transitions/Grow'
-import Paper from 'material-ui/Paper'
+import MenuItem from '@material-ui/core/MenuItem'
+import MenuList from '@material-ui/core/MenuList'
+import Grow from '@material-ui/core/Grow'
+import Paper from '@material-ui/core/Paper'
 import { Manager, Target, Popper } from 'react-popper'
-import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 
 export class AvatarMenu extends PureComponent {
   constructor(props, context) {

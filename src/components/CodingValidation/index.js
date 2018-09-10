@@ -7,13 +7,13 @@ import QuestionCard from './QuestionCard'
 import FooterNavigate from './FooterNavigate'
 import Navigator from './Navigator'
 import Container, { Row, Column } from 'components/Layout'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import TextLink from 'components/TextLink'
 import Icon from 'components/Icon'
 import Button from 'components/Button'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
-import { default as MuiButton } from 'material-ui/Button'
+import { default as MuiButton } from '@material-ui/core/Button'
 import HeaderedLayout from 'components/HeaderedLayout'
 import Alert from 'components/Alert'
 import Tooltip from 'components/Tooltip'
@@ -417,7 +417,7 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
           flex
           alignItems="center"
           style={{ justifyContent: 'center', padding: 30, textAlign: 'center' }}>
-          <Typography type="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
+          <Typography variant="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
           <Row displayFlex style={{ width: '100%', justifyContent: 'space-evenly' }}>
             {noScheme && this.props.userRole !== 'Coder' &&
             <TextLink to={{ pathname: `/project/${this.props.projectId}/coding-scheme` }}>

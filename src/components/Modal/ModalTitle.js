@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { DialogTitle } from 'material-ui/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
 import Container, { Column, Row } from 'components/Layout'
 import SearchBar from 'components/SearchBar'
 
 /**
- * Wrapper for material-ui's DialogTitle component. Will render at the top of the modal
+ * Wrapper for @material-ui/core's DialogTitle component. Will render at the top of the modal
  */
 export const ModalTitle = ({ title, search, buttons, SearchBarProps, style }) => {
   return (

@@ -1,14 +1,15 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import Radio from 'material-ui/Radio'
+import Radio from '@material-ui/core/Radio'
 import Container, { Row, Column } from 'components/Layout'
-import Checkbox from 'material-ui/Checkbox'
-import Input, { InputLabel } from 'material-ui/Input'
-import { FormControl, FormHelperText } from 'material-ui/Form'
+import Checkbox from '@material-ui/core/Checkbox'
+import Input from '@material-ui/core/Input'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormHelperText from '@material-ui/core/FormHelperText'
 import IconButton from 'components/IconButton'
 import * as questionTypes from '../../constants'
-import { MenuDown } from 'mdi-material-ui'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = {
   disabled: {

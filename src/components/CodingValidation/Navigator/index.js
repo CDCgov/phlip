@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { withStyles } from 'material-ui/styles'
-import Typography from 'material-ui/Typography'
-import Drawer from 'material-ui/Drawer'
+import { withStyles } from '@material-ui/core/styles'
+import Typography from '@material-ui/core/Typography'
+import Drawer from '@material-ui/core/Drawer'
 import Container, { Row } from 'components/Layout'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import List from 'react-virtualized/dist/commonjs/List'
@@ -27,26 +27,24 @@ const muiNavStyles = {
 export class Navigator extends Component {
   constructor(props, context) {
     super(props, context)
-    this.QuestionList = null
+    this.QuestionList = React.createRef()
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps !== this.props) {
-      this.QuestionList.recomputeRowHeights()
-      this.QuestionList.forceUpdate()
+  componentDidUpdate(prevProps) {
+    if (this.props !== prevProps && this.QuestionList.current !== null) {
+      this.QuestionList.current.recomputeRowHeights()
+      this.QuestionList.current.forceUpdate()
     }
-  }
-
-  setRef = ref => {
-    this.QuestionList = ref
   }
 
   questionRenderer = ({ item, key, treeIndex, treeLength, ancestorSiblings = [] }) => {
     const onClick = event => {
       event.stopPropagation()
       item.expanded = !item.expanded
-      this.QuestionList.recomputeRowHeights()
-      this.QuestionList.forceUpdate()
+      if (this.QuestionList.current !== null) {
+        this.QuestionList.current.recomputeRowHeights()
+        this.QuestionList.current.forceUpdate()
+      }
     }
 
     let props = {
@@ -141,7 +139,7 @@ export class Navigator extends Component {
   render() {
     const questionTree = this.props.tree
     return (
-      <Drawer classes={{ paper: this.props.classes.codeNav }} type="persistent" anchor="left" open={this.props.open}>
+      <Drawer classes={{ paper: this.props.classes.codeNav }} variant="persistent" anchor="left" open={this.props.open}>
         <Container column flex>
           <Row
             displayFlex
@@ -152,7 +150,7 @@ export class Navigator extends Component {
               justifyContent: 'center',
               textTransform: 'uppercase'
             }}>
-            <Typography type="headline"><span style={{ color: 'white' }}>Code Navigator</span></Typography>
+            <Typography variant="headline"><span style={{ color: 'white' }}>Code Navigator</span></Typography>
           </Row>
           <div className={navStyles.navContainer}>
             <div style={{ flex: 1, display: 'flex' }}>
@@ -167,7 +165,7 @@ export class Navigator extends Component {
                     rowRenderer={this.rowRenderer}
                     height={height}
                     overscanRowCount={0}
-                    ref={this.setRef} />
+                    ref={this.QuestionList} />
                 )}
               </AutoSizer>
             </div>

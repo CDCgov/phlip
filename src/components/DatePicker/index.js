@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FormControl, FormHelperText } from 'material-ui/Form'
+import FormControl from '@material-ui/core/FormControl'
+import FormHelperText from '@material-ui/core/FormHelperText'
 import { DatePicker as MuiDatePicker } from 'material-ui-pickers'
 import { ChevronRight, ChevronLeft, Calendar } from 'mdi-material-ui'
 import moment from 'moment'
 
 /**
- * GUI DatePicker Input wrapper for material-ui-picker's date picker
+ * GUI DatePicker Input wrapper for @material-ui/core-picker's date picker
  */
 export const DatePicker = props => {
   const {

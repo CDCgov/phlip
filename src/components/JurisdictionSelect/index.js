@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { findDOMNode } from 'react-dom'
 import PropTypes from 'prop-types'
-import Select from 'material-ui/Select'
-import Input from 'material-ui/Input'
-import { MenuItem } from 'material-ui/Menu'
-import { withStyles } from 'material-ui/styles'
-import Typography from 'material-ui/Typography'
+import Select from '@material-ui/core/Select'
+import Input from '@material-ui/core/Input'
+import MenuItem from '@material-ui/core/MenuItem'
+import { withStyles } from '@material-ui/core/styles'
+import Typography from '@material-ui/core/Typography'
 
 const styles = theme => ({
   icon: {
@@ -48,7 +48,7 @@ export class JurisdictionSelect extends Component {
       return (
         <MenuItem key={option.id} value={option.id}>
           {option.name}
-          <Typography type="caption" style={{ paddingLeft: 10, color: theme.palette.greyText }}>
+          <Typography variant="caption" style={{ paddingLeft: 10, color: theme.palette.greyText }}>
             ({new Date(option.startDate).toLocaleDateString()} - {new Date(option.endDate).toLocaleDateString()})
           </Typography>
         </MenuItem>
@@ -106,7 +106,7 @@ JurisdictionSelect.propTypes = {
     id: PropTypes.any
   })).isRequired,
   /**
-   * Theme object supplied by material-ui
+   * Theme object supplied by @material-ui/core
    */
   theme: PropTypes.object
 }

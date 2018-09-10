@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import hoistNonReactStatic from 'hoist-non-react-statics'
 import Alert from 'components/Alert'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import Icon from 'components/Icon'
 
 export const withFormAlert = (WrappedComponent) => {

@@ -1,10 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Select from 'material-ui/Select'
-import Input, { InputLabel } from 'material-ui/Input'
-import { FormControl } from 'material-ui/Form'
-import { MenuItem } from 'material-ui/Menu'
-import { withStyles } from 'material-ui/styles'
+import Select from '@material-ui/core/Select'
+import Input from '@material-ui/core/Input'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
+import MenuItem from '@material-ui/core/MenuItem'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
   disabled: {
@@ -43,8 +44,7 @@ export const Dropdown = props => {
       <InputLabel
         htmlFor={id}
         shrink={shrinkLabel}
-        required={required}
-        classes={{ disabled: classes.disabledLabel }}>{label}</InputLabel>
+        required={required}>{label}</InputLabel>
       <Select
         input={<Input id={id} />}
         value={input.value ? input.value : defaultValue}
@@ -83,7 +83,7 @@ Dropdown.propTypes = {
   defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
   /**
-   * Style classes object from material-ui
+   * Style classes object from @material-ui/core
    */
   classes: PropTypes.object,
 

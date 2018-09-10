@@ -1,9 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Checkbox from 'material-ui/Checkbox'
-import { FormGroup, FormControlLabel, FormControl, FormHelperText } from 'material-ui/Form'
-import { InputLabel } from 'material-ui/Input'
-import { withStyles } from 'material-ui/styles'
+import Checkbox from '@material-ui/core/Checkbox'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormGroup from '@material-ui/core/FormGroup'
+import FormLabel from '@material-ui/core/FormLabel'
+import FormHelperText from '@material-ui/core/FormHelperText'
+import InputLabel from '@material-ui/core/InputLabel'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
   checked: {
@@ -61,7 +65,7 @@ CheckboxGroup.propTypes = {
    */
   label: PropTypes.string,
   /**
-   * Style classes from material-ui
+   * Style classes from @material-ui/core
    */
   classes: PropTypes.object
 }

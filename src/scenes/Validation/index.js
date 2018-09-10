@@ -3,7 +3,7 @@ import Alert from 'components/Alert'
 import actions, * as otherActions from './actions'
 import withCodingValidation from 'components/CodingValidation'
 import ApiErrorAlert from 'components/ApiErrorAlert'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 
 /**
  * Validation scene component that is displayed when the user clicks the 'Validate' button. Most of the interactions are handled

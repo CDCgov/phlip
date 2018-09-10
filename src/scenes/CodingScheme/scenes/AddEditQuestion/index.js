@@ -126,7 +126,7 @@ export class AddEditQuestion extends Component {
           submitting: false
         })
         this.props.onSubmitError(this.props.formError)
-      } else if (this.props.goBack === true) {
+      } else {
         this.props.history.goBack()
       }
     }

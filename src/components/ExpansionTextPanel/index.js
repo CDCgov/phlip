@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import IconButton from 'components/IconButton'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import { Row } from 'components/Layout'
-import { withStyles } from 'material-ui/styles'
-import Grow from 'material-ui/transitions/Grow'
-import Paper from 'material-ui/Paper'
+import { withStyles } from '@material-ui/core/styles'
+import Grow from '@material-ui/core/Grow'
+import Paper from '@material-ui/core/Paper'
 import { Manager, Target, Popper } from 'react-popper'
-import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import MenuDown from 'mdi-material-ui/MenuDown'
 
 const styles = {

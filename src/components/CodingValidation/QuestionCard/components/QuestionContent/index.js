@@ -5,7 +5,7 @@ import RadioGroupValidation from 'components/SelectionControls/RadioGroupValidat
 import CheckboxGroupValidation from 'components/SelectionControls/CheckboxGroupValidation'
 import Icon from 'components/Icon'
 import SimpleInput from 'components/SimpleInput'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import Container, { Row, Column } from 'components/Layout'
 import * as questionTypes from 'components/CodingValidation/constants'
 import TextFieldQuestions from '../TextFieldQuestions'
@@ -34,10 +34,10 @@ export const QuestionContent = props => {
     <Container column flex style={{ flexWrap: 'nowrap', paddingBottom: 15, overflow: 'auto' }}>
       <Row displayFlex style={{ padding: '20px 20px 10px 20px' }}>
         <Column>
-          <Typography type="subheading">{question.number})</Typography>
+          <Typography variant="subheading">{question.number})</Typography>
         </Column>
         <Column flex style={{ paddingLeft: 10 }}>
-          <Typography type="subheading">{question.text}</Typography>
+          <Typography variant="subheading">{question.text}</Typography>
         </Column>
       </Row>
       <Column flex style={{ ...questionAnswerPadding, flexBasis: '60%' }}>
@@ -128,7 +128,7 @@ export const QuestionContent = props => {
       {question.hint &&
       <Row displayFlex style={{ padding: '20px 35px 0px 35px' }}>
         <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
-        <Typography type="body1" style={{ color: '#98b3be' }}><strong>Coding Directions: </strong>{question.hint}
+        <Typography variant="body1" style={{ color: '#98b3be' }}><strong>Coding Directions: </strong>{question.hint}
         </Typography>
       </Row>
       }

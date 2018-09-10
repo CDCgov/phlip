@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow, mount } from 'enzyme'
 import { ProjectList } from '../index'
 import { MemoryRouter } from 'react-router-dom'
-import { MuiThemeProvider } from 'material-ui/styles'
+import { MuiThemeProvider } from '@material-ui/core/styles'
 import theme from 'services/theme'
 
 const props = {

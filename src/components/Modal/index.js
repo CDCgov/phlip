@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Dialog from 'material-ui/Dialog'
-import { withStyles } from 'material-ui/styles'
+import Dialog from '@material-ui/core/Dialog'
+import { withStyles } from '@material-ui/core/styles'
 
 const paper = {
   display: 'flex',
@@ -30,7 +30,7 @@ const classes = theme => ({
 })
 
 /**
- * A dialog component wrapper for material-ui's Dialog component
+ * A dialog component wrapper for @material-ui/core's Dialog component
  */
 const Modal = ({ open, onClose, children, classes, hideOverflow, ...otherProps }) => (
   <Dialog
@@ -55,7 +55,7 @@ Modal.propTypes = {
    */
   children: PropTypes.node,
   /**
-   * Classes object supplied by material-ui
+   * Classes object supplied by @material-ui/core
    */
   classes: PropTypes.object,
   /**

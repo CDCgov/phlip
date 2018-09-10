@@ -1,5 +1,5 @@
 import React from 'react'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import { Ghost } from 'mdi-material-ui'
 import Container from 'components/Layout'
 import styles from './no-page.scss'
@@ -12,7 +12,7 @@ export const PageNotFound = () => (
     <div className={styles.ghost}>
       <Ghost style={{ width: 200, height: 200 }} />
     </div>
-    <Typography type="display3" align="center">
+    <Typography variant="display3" align="center">
       Uh-oh! We can't find the page you're looking for.
     </Typography>
   </Container>

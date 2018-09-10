@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import TextField from 'material-ui/TextField'
+import TextField from '@material-ui/core/TextField'
 import SimpleInput from 'components/SimpleInput'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 import { Row, Column } from 'components/Layout'
 import Avatar from 'components/Avatar'
 import { getInitials } from 'utils/normalize'
@@ -26,7 +26,7 @@ const styles = theme => ({
 })
 
 /**
- * A textarea input different from typically material-ui inputs, in that it is a box. Used in Coding / Validation scenes
+ * A textarea input different from typically @material-ui/core inputs, in that it is a box. Used in Coding / Validation scenes
  */
 export const InputBox = props => {
   const {
@@ -118,7 +118,7 @@ InputBox.propTypes = {
    */
   answerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   /**
-   * Style classes from material-ui
+   * Style classes from @material-ui/core
    */
   classes: PropTypes.object,
   /**
@@ -126,7 +126,7 @@ InputBox.propTypes = {
    */
   validator: PropTypes.object,
   /**
-   * Theme object from material-ui
+   * Theme object from @material-ui/core
    */
   theme: PropTypes.object,
   /**

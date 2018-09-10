@@ -9,7 +9,7 @@ import PageHeader from 'components/PageHeader'
 import Alert from 'components/Alert'
 import Icon from 'components/Icon'
 import CardError from 'components/CardError'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import withTracking from 'components/withTracking'
 
 import tinymce from 'tinymce/tinymce'

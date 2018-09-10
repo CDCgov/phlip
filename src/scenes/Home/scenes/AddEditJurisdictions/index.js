@@ -8,11 +8,11 @@ import Button from 'components/Button'
 import Container, { Column } from 'components/Layout'
 import JurisdictionList from './components/JurisdictionList'
 import * as actions from './actions'
-import Divider from 'material-ui/Divider'
-import Typography from 'material-ui/Typography'
+import Divider from '@material-ui/core/Divider'
+import Typography from '@material-ui/core/Typography'
 import TextLink from 'components/TextLink'
 import ApiErrorView from 'components/ApiErrorView'
-import { withTheme } from 'material-ui/styles'
+import { withTheme } from '@material-ui/core/styles'
 import PageLoader from 'components/PageLoader'
 import Alert from 'components/Alert'
 import ApiErrorAlert from 'components/ApiErrorAlert'
@@ -46,7 +46,7 @@ export class AddEditJurisdictions extends Component {
      */
     actions: PropTypes.object,
     /**
-     * material-ui styles theme
+     * @material-ui/core styles theme
      */
     theme: PropTypes.object,
     /**
@@ -204,7 +204,7 @@ export class AddEditJurisdictions extends Component {
       <Modal onClose={this.onCloseModal} open={true} maxWidth="md" hideOverflow>
         <ModalTitle
           title={
-            <Typography type="title">
+            <Typography variant="title">
               <span style={{ paddingRight: 10 }}>Jurisdictions</span>
               <span style={{ color: this.props.theme.palette.secondary.main }}>{this.props.project.name}</span>
             </Typography>

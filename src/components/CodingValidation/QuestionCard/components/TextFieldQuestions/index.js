@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { Row, Column } from 'components/Layout'
-import Divider from 'material-ui/Divider'
-import Paper from 'material-ui/Paper'
-import Typography from 'material-ui/Typography'
+import Divider from '@material-ui/core/Divider'
+import Paper from '@material-ui/core/Paper'
+import Typography from '@material-ui/core/Typography'
 import InputBox from 'components/InputBox'
 import ValidationAvatar from 'components/ValidationAvatar'
 

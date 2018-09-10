@@ -8,10 +8,10 @@ import { withRouter } from 'react-router-dom'
 import { matchPath } from 'react-router'
 import { decodeToken } from 'services/authToken'
 import * as userActions from 'data/user/actions'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import withTracking from 'components/withTracking'
-import Paper from 'material-ui/Paper'
-import { withTheme } from 'material-ui/styles'
+import Paper from '@material-ui/core/Paper'
+import { withTheme } from '@material-ui/core/styles'
 import Logo from 'components/Logo'
 import DevLoginForm from './components/DevLoginForm'
 import ProdLoginForm from './components/ProdLoginForm'
@@ -38,7 +38,7 @@ export class Login extends Component {
      */
     actions: PropTypes.object,
     /**
-     * Theme object from material-ui
+     * Theme object from @material-ui/core
      */
     theme: PropTypes.object,
     /**
@@ -109,13 +109,13 @@ export class Login extends Component {
           {LoginView && <LoginView onSubmit={this.handleSubmit} pivError={this.props.formMessage} />}
         </Paper>
         <Row style={{ textAlign: 'center', width: 600, paddingTop: 30, paddingBottom: 10 }}>
-          <Typography type="caption" style={{ color: 'black' }}>You are accessing an information system that may contain
+          <Typography variant="caption" style={{ color: 'black' }}>You are accessing an information system that may contain
             U.S. Government data. System usage may
             be monitored, recorded, and subject to audit. Unauthorized use of the system is prohibited and may be
             subject to criminal and civil penalties. Use of the system indicates consent to monitoring and recording.
             Administrative personnel remotely accessing the Azure environment: <br /><br />
           </Typography>
-          <Typography type="caption" style={{ color: 'black' }}>
+          <Typography variant="caption" style={{ color: 'black' }}>
             (1) shall maintain their remote computer in a secure manner, in accordance with organizational security
             policies and procedures as defined in Microsoft Remote Connectivity Security Policies; <br />
             (2) shall only access the Azure environment in execution of operational, deployment, and support

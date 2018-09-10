@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { DialogActions } from 'material-ui/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
 import Button from 'components/Button'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = {
   root: {
@@ -11,7 +11,7 @@ const styles = {
 }
 
 /**
- * Wrapper for material-ui's DialogActions component. These actions will be displayed as buttons at the bottom of the modal
+ * Wrapper for @material-ui/core's DialogActions component. These actions will be displayed as buttons at the bottom of the modal
  */
 export const ModalActions = ({ actions, raised, classes, ...otherProps }) => {
   return (
@@ -48,7 +48,7 @@ ModalActions.propTypes = {
     otherProps: PropTypes.object
   })),
   /**
-   * Style classes object supplied by material-ui
+   * Style classes object supplied by @material-ui/core
    */
   classes: PropTypes.object
 }

@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Icon from 'components/Icon'
-import TextField from 'material-ui/TextField'
-import { InputAdornment } from 'material-ui/Input'
-import { withTheme } from 'material-ui/styles'
+import TextField from '@material-ui/core/TextField'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import { withTheme } from '@material-ui/core/styles'
 
 /**
  * Search input field
@@ -45,7 +45,7 @@ SearchBar.propTypes = {
    */
   placeholder: PropTypes.string,
   /**
-   * Theme provided by material-ui
+   * Theme provided by @material-ui/core
    */
   theme: PropTypes.object
 }

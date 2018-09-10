@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import Icon from 'components/Icon'
 import { Row } from 'components/Layout'
 import EmoticonSad from 'mdi-material-ui/EmoticonSad'
@@ -17,7 +17,7 @@ export const ApiErrorView = ({ error }) => {
         </Icon>
       </Row>
       <Row displayFlex style={{ justifyContent: 'center' }}>
-        <Typography type="display2" style={{ textAlign: 'center' }}>
+        <Typography variant="display2" style={{ textAlign: 'center' }}>
           Uh-oh! Something went wrong. {error} Please try again later.
         </Typography>
       </Row>

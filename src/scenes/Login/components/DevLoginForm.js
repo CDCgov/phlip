@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import Button from 'components/Button/index'
 import { reduxForm, Field } from 'redux-form'
 import validate from './validate'
-import Divider from 'material-ui/Divider'
+import Divider from '@material-ui/core/Divider'
 import TextInput from 'components/TextInput/index'
 import Container, { Column, Row } from 'components/Layout/index'
 

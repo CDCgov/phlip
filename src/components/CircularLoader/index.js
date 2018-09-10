@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CircularProgress } from 'material-ui/Progress'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 /**
- * Spinning loader, based on material-ui's CircularProgress
+ * Spinning loader, based on @material-ui/core's CircularProgress
  */
 export const CircularLoader = ({ type, color, ...otherProps }) => {
   return <CircularProgress type={type} color={color} {...otherProps} />

@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { TableRow as MuiTableRow } from 'material-ui/Table'
+import { default as MuiTableRow } from '@material-ui/core/TableRow'
 
 /**
- * Simple wrapper for material-ui's TableRow component
+ * Simple wrapper for @material-ui/core's TableRow component
  */
 export const TableRow = ({ children, ...otherProps }) => {
   return (

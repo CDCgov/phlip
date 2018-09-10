@@ -1,5 +1,5 @@
 import React from 'react'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import Container, { Row, Column } from 'components/Layout/index'
 import Button from 'components/Button/index'
 

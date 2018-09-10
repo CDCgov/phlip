@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Select from 'material-ui/Select'
-import Input, { InputLabel } from 'material-ui/Input'
-import { FormControl, FormHelperText } from 'material-ui/Form'
-import { MenuItem } from 'material-ui/Menu'
-import { withStyles } from 'material-ui/styles'
-import Checkbox from 'material-ui/Checkbox'
+import Select from '@material-ui/core/Select'
+import Input from '@material-ui/core/Input'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormHelperText from '@material-ui/core/FormHelperText'
+import MenuItem from '@material-ui/core/MenuItem'
+import { withStyles } from '@material-ui/core/styles'
+import Checkbox from '@material-ui/core/Checkbox'
 
 const styles = theme => ({
   disabled: {

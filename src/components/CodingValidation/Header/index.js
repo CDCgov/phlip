@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import Button from 'components/Button'
 import styles from './header-styles.scss'
 import JurisdictionSelect from 'components/JurisdictionSelect'
@@ -8,7 +8,7 @@ import Container, { Column, Row } from 'components/Layout'
 import IconButton from 'components/IconButton'
 import { withRouter } from 'react-router-dom'
 import Link from 'components/Link'
-import { withTheme } from 'material-ui/styles'
+import { withTheme } from '@material-ui/core/styles'
 
 export const Header = props => {
   const {
@@ -22,8 +22,8 @@ export const Header = props => {
         <IconButton iconSize={30} color="black" onClick={onGoBack} aria-label="Go back">arrow_back</IconButton>
       </Column>
       <Row displayFlex>
-        <Typography type="title" style={{ alignSelf: 'center', paddingRight: 10 }}>{pageTitle}</Typography>
-        <Typography type="title" style={{ alignSelf: 'center' }}>
+        <Typography variant="title" style={{ alignSelf: 'center', paddingRight: 10 }}>{pageTitle}</Typography>
+        <Typography variant="title" style={{ alignSelf: 'center' }}>
           <span style={{ color: theme.palette.secondary.pageHeader }}>{projectName}</span>
         </Typography>
       </Row>
@@ -36,11 +36,11 @@ export const Header = props => {
               onChange={onJurisdictionChange} />
           </div>
           <Column>
-            <Typography type="caption">
+            <Typography variant="caption">
               <span style={{ color: '#707070' }}>Segment Start Date </span>
               <span style={{ color: 'black' }}>{new Date(currentJurisdiction.startDate).toLocaleDateString()}</span>
             </Typography>
-            <Typography type="caption">
+            <Typography variant="caption">
               <span style={{ color: '#707070' }}>Segment End Date </span>
               <span style={{ color: 'black' }}>{new Date(currentJurisdiction.endDate).toLocaleDateString()}</span>
             </Typography>

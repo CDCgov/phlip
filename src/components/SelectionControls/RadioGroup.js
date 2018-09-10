@@ -1,9 +1,13 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import Radio from 'material-ui/Radio'
-import { FormControlLabel, FormControl, FormGroup, FormLabel, FormHelperText } from 'material-ui/Form'
-import { InputLabel } from 'material-ui/Input'
-import { withStyles } from 'material-ui/styles'
+import Radio from '@material-ui/core/Radio'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormGroup from '@material-ui/core/FormGroup'
+import FormLabel from '@material-ui/core/FormLabel'
+import FormHelperText from '@material-ui/core/FormHelperText'
+import InputLabel from '@material-ui/core/InputLabel'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
   checked: {
@@ -66,7 +70,7 @@ RadioGroup.propTypes = {
    */
   label: PropTypes.string,
   /**
-   * Style classes from material-ui
+   * Style classes from @material-ui/core
    */
   classes: PropTypes.object
 }

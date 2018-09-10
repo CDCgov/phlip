@@ -22,7 +22,7 @@ import TextLink from 'components/TextLink'
 import Tooltip from 'components/Tooltip'
 import compressImage from 'browser-compress-image'
 import Alert from 'components/Alert'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import CheckboxLabel from 'components/CheckboxLabel'
 import CircularLoader from 'components/CircularLoader'
 

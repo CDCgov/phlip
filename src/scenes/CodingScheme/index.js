@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import { Route, Link } from 'react-router-dom'
 import * as actions from './actions'
 import Container from 'components/Layout'
@@ -188,7 +188,7 @@ export class CodingScheme extends Component {
       <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
         {this.props.lockedByCurrentUser &&
         <Fragment>
-          <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
+          <Typography variant="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
             The coding scheme is empty. To get started, add a question.
           </Typography>
           <Button
@@ -204,7 +204,7 @@ export class CodingScheme extends Component {
         </Fragment>}
         {!this.props.lockedByCurrentUser &&
         <Fragment>
-          <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
+          <Typography variant="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
             The coding scheme is empty. To get started, check out the coding scheme for editing.
           </Typography>
           <Button

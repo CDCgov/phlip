@@ -1,13 +1,13 @@
 import React, { Fragment, Component } from 'react'
 import PropTypes from 'prop-types'
 import Avatar from 'components/Avatar'
-import Popover from 'material-ui/Popover'
-import Typography from 'material-ui/Typography'
-import { withStyles } from 'material-ui/styles'
+import Popover from '@material-ui/core/Popover'
+import Typography from '@material-ui/core/Typography'
+import { withStyles } from '@material-ui/core/styles'
 import { getInitials } from 'utils/normalize'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import Snackbar from 'components/Snackbar'
-import Button from 'material-ui/Button'
+import Button from '@material-ui/core/Button'
 
 const styles = theme => ({
   paper: {
@@ -188,7 +188,7 @@ ValidationAvatar.propTypes = {
   avatar: PropTypes.string,
 
   /**
-   * Classes object from material-ui
+   * Classes object from @material-ui/core
    */
   classes: PropTypes.object
 }

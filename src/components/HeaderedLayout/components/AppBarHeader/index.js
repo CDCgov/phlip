@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Grid from 'material-ui/Grid'
-import { withTheme } from 'material-ui/styles'
+import Grid from '@material-ui/core/Grid'
+import { withTheme } from '@material-ui/core/styles'
 import Logo from 'components/Logo'
 import Greeting from './components/Greeting/index'
 import AvatarMenu from './components/AvatarMenu/index'
 import { Link } from 'react-router-dom'
-import Container, { Row, Column } from 'components/Layout'
+import { Row } from 'components/Layout'
 
 export const Header = ({ theme, user, open, handleLogoutUser, handleCloseMenu, handleOpenAdminPage, handleToggleMenu, handleOpenHelpPdf }) => {
   const bgColor = theme.palette.primary.main

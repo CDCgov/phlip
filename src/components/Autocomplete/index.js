@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Autosuggest from 'react-autosuggest'
-import Paper from 'material-ui/Paper'
-import { withStyles } from 'material-ui/styles'
+import Paper from '@material-ui/core/Paper'
+import { withStyles } from '@material-ui/core/styles'
 import SimpleInput from 'components/SimpleInput'
 
 const classes = theme => ({
@@ -121,7 +121,7 @@ Autocomplete.propTypes = {
   suggestionValue: PropTypes.string,
 
   /**
-   * List of classes from material-ui theme provider
+   * List of classes from @material-ui/core theme provider
    */
   classes: PropTypes.object,
 

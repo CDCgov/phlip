@@ -2,8 +2,8 @@ import React from 'react'
 import { shallow, mount } from 'enzyme'
 import { ProjectRow } from '../../ProjectRow/index'
 import { MemoryRouter } from 'react-router-dom'
-import { MuiThemeProvider } from 'material-ui/styles'
-import Table, { TableBody } from 'material-ui/Table'
+import { MuiThemeProvider } from '@material-ui/core/styles'
+import Table, { TableBody } from '@material-ui/core/Table'
 import theme from 'services/theme'
 
 let date = new Date('10/11/2017')

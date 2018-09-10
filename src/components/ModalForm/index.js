@@ -1,14 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogTitle
-} from 'material-ui/Dialog'
-import Divider from 'material-ui/Divider'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import Divider from '@material-ui/core/Divider'
 import Button from 'components/Button'
 import Form from 'components/Form'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = {
   actions: {
@@ -110,7 +109,7 @@ ModalForm.propTypes = {
    */
   edit: PropTypes.bool,
   /**
-   * Style classes object supplied by material-ui
+   * Style classes object supplied by @material-ui/core
    */
   classes: PropTypes.object
 }

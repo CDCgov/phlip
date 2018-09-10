@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import Divider from 'material-ui/Divider'
+import Divider from '@material-ui/core/Divider'
 import Card from 'components/Card/index'
 import { Row, Column } from 'components/Layout'
 import IconButton from 'components/IconButton'
@@ -13,7 +13,7 @@ import FlagPopover from './components/FlagPopover'
 import { connect } from 'react-redux'
 import { getInitials } from 'utils/normalize'
 import Alert from 'components/Alert'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import PageLoader from 'components/PageLoader'
 
 const TabContainer = props => {
@@ -162,7 +162,7 @@ export class QuestionCard extends Component {
               <Row displayFlex style={{ alignItems: 'center', height: 42, paddingRight: 15 }}>
                 <Row style={{ width: '100%' }}>
                   {this.props.hasTouchedQuestion &&
-                  <Typography type="caption" style={{ paddingLeft: 10, textAlign: 'center', color: '#757575' }}>
+                  <Typography variant="caption" style={{ paddingLeft: 10, textAlign: 'center', color: '#757575' }}>
                     {this.props.saveFailed ? 'Save failed!' : this.state.isSaving ? 'Saving...' : 'All changes saved'}
                   </Typography>}
                 </Row>

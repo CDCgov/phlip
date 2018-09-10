@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Manager, Popper, Target } from 'react-popper'
-import Typography from 'material-ui/Typography'
-import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
-import Grow from 'material-ui/transitions/Grow'
-import Divider from 'material-ui/Divider'
+import Typography from '@material-ui/core/Typography'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
+import Grow from '@material-ui/core/Grow'
+import Divider from '@material-ui/core/Divider'
 import IconButton from 'components/IconButton'
 import Card from 'components/Card'
 import { Row } from 'components/Layout'
@@ -36,7 +36,7 @@ export const Popover = props => {
           <Grow in={open}>
             <Card style={{ display: 'flex', flexDirection: 'column', zIndex: open ? 1200 : 0 }}>
               <Row style={{ padding: 16 }}>
-                <Typography type="body2">{title}</Typography>
+                <Typography variant="body2">{title}</Typography>
               </Row>
               <Divider />
               {children}

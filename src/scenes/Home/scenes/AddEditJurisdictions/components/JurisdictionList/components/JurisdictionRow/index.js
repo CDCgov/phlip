@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { TableRow, TableCell } from 'material-ui/Table'
+import TableRow from '@material-ui/core/TableRow'
+import TableCell from '@material-ui/core/TableCell'
 import IconButton from 'components/IconButton'
 import { connect } from 'react-redux'
 import TextLink from 'components/TextLink'
