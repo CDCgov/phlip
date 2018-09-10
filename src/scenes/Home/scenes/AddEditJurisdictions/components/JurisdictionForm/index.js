@@ -78,14 +78,14 @@ export class JurisdictionForm extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.state.submitting === true) {
-      if (nextProps.formError !== null) {
+      if (this.props.formError !== null) {
         this.setState({
           submitting: false
         })
-        this.props.onSubmitError(nextProps.formError)
-      } else if (nextProps.goBack === true) {
+        this.props.onSubmitError(this.props.formError)
+      } else if (this.props.goBack === true) {
         this.props.history.push(`/project/${this.props.project.id}/jurisdictions`)
       }
     }

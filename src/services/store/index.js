@@ -7,23 +7,37 @@ import createApiHandler from '../api'
 import createBrowserHistory from 'history/createBrowserHistory'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-const history = createBrowserHistory()
-const api = createApiHandler({ history })
+let persistor, history, api
 
 /**
  * Redux store initialization
  */
-const store = createStore(
-  appReducer,
-  composeEnhancers(
-    applyMiddleware(createLogicMiddleware(rootLogic, { api, history }))
-  )
-)
+const configureStore = () => {
+  history = createBrowserHistory()
+  api = createApiHandler({ history })
 
-const persistor = persistStore(store, null, () => store.getState())
+  const store = createStore(
+    appReducer,
+    composeEnhancers(
+      applyMiddleware(createLogicMiddleware(rootLogic, { api, history }))
+    )
+  )
+
+  if (module.hot) {
+    // Enable Webpack hot module replacement for reducers
+    module.hot.accept('../../reducer', () => {
+      store.replaceReducer(appReducer)
+      persistor = persistStore(store, null, () => store.getState())
+    })
+  }
+
+  persistor = persistStore(store, null, () => store.getState())
+
+  return { store }
+}
 
 export {
-  store,
+  configureStore,
   persistor,
   history,
   api

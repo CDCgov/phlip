@@ -138,20 +138,12 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       ]
     }
 
-    /**
-     * @public
-     * @param nextProps
-     */
-    componentWillReceiveProps(nextProps) {
-      if (this.props.isSchemeEmpty === null) {
-        if (nextProps.isSchemeEmpty !== null) {
-          this.setState({ showViews: true })
-        }
-        if (nextProps.schemeError !== null) {
-          this.setState({ showSchemeError: true })
-        }
-        if (nextProps.isSchemeEmpty === false && nextProps.areJurisdictionsEmpty === false) {
-          this.setState({ navOpen: true })
+    componentDidUpdate(prevProps) {
+      if (this.props.isSchemeEmpty === false && prevProps.isSchemeEmpty === null) {
+        if (this.props.areJurisdictionsEmpty === false) {
+          this.setState({
+            navOpen: true
+          })
         }
       }
     }
@@ -521,7 +513,7 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
               <Container flex style={{ backgroundColor: '#f5f5f5' }}>
                 <Row displayFlex flex style={{ overflow: 'auto' }}>
                   {!this.props.showPageLoader && <Column>
-                    {this.state.showViews &&
+                    {this.props.isSchemeEmpty !== null &&
                     (this.props.jurisdiction !== null && this.props.questionOrder.length !== 0) &&
                     <Tooltip
                       placement="right"
@@ -532,11 +524,11 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
                         <Icon color="#424242" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
                   </Column>}
                   <Column displayFlex flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
-                    {this.state.showSchemeError &&
+                    {this.props.schemeError !== null &&
                     <ApiErrorView error="We couldn't get the coding scheme for this project." />}
                     {this.props.showPageLoader === true
                       ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
-                      : this.state.showViews &&
+                      : this.props.isSchemeEmpty !== null &&
                       (this.props.areJurisdictionsEmpty === true || this.props.isSchemeEmpty === true
                         ? this.onShowGetStartedView(this.props.isSchemeEmpty, this.props.areJurisdictionsEmpty)
                         : this.onShowCodeView())}

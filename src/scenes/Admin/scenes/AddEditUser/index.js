@@ -116,15 +116,17 @@ export class AddEditUser extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.state.submitting === true && nextProps.isDoneSubmitting === true) {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.submitting === true && this.props.isDoneSubmitting === true) {
       this.props.actions.resetSubmittingStatus()
-      if (nextProps.formError !== '') {
-        this.props.onSubmitError(nextProps.formError)
-      } else {
+      if (this.props.formError !== null) {
+        this.props.onSubmitError(this.props.formError)
+      } else if (this.props.goBack === true) {
         this.props.history.goBack()
       }
-      this.setState({ submitting: false })
+      this.setState({
+        submitting: false
+      })
     }
   }
 

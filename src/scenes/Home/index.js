@@ -94,9 +94,11 @@ export class Home extends Component {
     this.props.actions.getProjectsRequest()
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.projectToExport.text !== '' && this.state.projectToExport !== null) {
-      this.prepareExport(nextProps.projectToExport.text)
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.projectToExport.text !== this.props.projectToExport.text) {
+      if (this.state.projectToExport !== null) {
+        this.prepareExport(this.props.projectToExport.text)
+      }
     }
   }
 

@@ -90,8 +90,8 @@ export class AddEditJurisdictions extends Component {
     this.props.actions.clearJurisdictions()
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.deleteError === null && nextProps.deleteError !== null) {
+  componentDidUpdate(prevProps) {
+    if (this.props.deleteError !== null && prevProps.deleteError === null) {
       this.setState({
         deleteErrorAlertOpen: true
       })

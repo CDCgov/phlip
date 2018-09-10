@@ -119,16 +119,16 @@ export class AddEditQuestion extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.state.submitting === true) {
-      if (nextProps.formError !== null) {
-        this.props.onSubmitError(nextProps.formError)
-      } else {
+      if (this.props.formError !== null) {
+        this.setState({
+          submitting: false
+        })
+        this.props.onSubmitError(this.props.formError)
+      } else if (this.props.goBack === true) {
         this.props.history.goBack()
       }
-      this.setState({
-        submitting: false
-      })
     }
   }
 

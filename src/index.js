@@ -1,6 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from 'App'
+import { configureStore } from 'services/store'
+import { Provider } from 'react-redux'
+
+const { store } = configureStore()
 
 /**
  * Check if the browser is IE
@@ -12,11 +16,26 @@ const isIE = () => {
   return (msie > 0 || trident > 0)
 }
 
+const renderApp = () => {
+  ReactDOM.render(
+    <Provider store={store}>
+      <App />
+    </Provider>,
+    document.getElementById('root')
+  )
+}
+
 /**
  * If the browser is IE, then display and error, otherwise render the app.
  */
 if (isIE()) {
   window.alert('This application will not work in Internet Explorer. Please use Google Chrome.')
 } else {
-  ReactDOM.render(<App />, document.getElementById('root'))
+  if (process.env.NODE_ENV !== 'production' && module.hot) {
+    module.hot.accept('App', () => {
+      renderApp()
+    })
+  }
+
+  renderApp()
 }
