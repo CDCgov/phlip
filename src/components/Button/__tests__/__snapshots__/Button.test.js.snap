@@ -1,11 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Button component should render correctly 1`] = `
-<withStyles(Button)
+<WithStyles(Button)
   color="primary"
   disabled={false}
   onClick={[Function]}
-  raised={true}
   style={
     Object {
       "backgroundColor": "",
@@ -13,7 +12,8 @@ exports[`Button component should render correctly 1`] = `
       "fontWeight": 400,
     }
   }
+  variant="raised"
 >
   I am a button
-</withStyles(Button)>
+</WithStyles(Button)>
 `;

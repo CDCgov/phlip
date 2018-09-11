@@ -128,7 +128,7 @@ export class QuestionNode extends Component {
                   <Tooltip
                     text="Add child question"
                     id={`add-child-question-${listIndex}`}
-                    aria-label="Add child question"
+                    //aria-label="Add child question"
                     placement="left">
                     <Button
                       aria-label="Add child question"
@@ -144,7 +144,7 @@ export class QuestionNode extends Component {
                 <Tooltip
                   text="Edit question"
                   id={`edit-question-${listIndex}`}
-                  aria-label="View and edit question"
+                  //aria-label="View and edit question"
                   placement="right">
                   <Button
                     color="accent"
@@ -160,7 +160,7 @@ export class QuestionNode extends Component {
                 {canModify && <Tooltip
                   text="Delete question"
                   id={`delete-question-${listIndex}`}
-                  aria-label="Delete question"
+                  //aria-label="Delete question"
                   placement="right">
                   <Button
                     color="accent"

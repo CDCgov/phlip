@@ -7,9 +7,9 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
   areJurisdictionsEmpty={false}
   classes={
     Object {
-      "mainContent": "AdobeAnalyticsTracking-mainContent-1",
-      "openNavShift": "AdobeAnalyticsTracking-openNavShift-2",
-      "pageLoading": "AdobeAnalyticsTracking-pageLoading-3",
+      "mainContent": "AdobeAnalyticsTracking-mainContent-01",
+      "openNavShift": "AdobeAnalyticsTracking-openNavShift-02",
+      "pageLoading": "AdobeAnalyticsTracking-pageLoading-03",
     }
   }
   currentIndex={0}

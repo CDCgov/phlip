@@ -17,7 +17,7 @@ exports[`Home scene should render correctly 1`] = `
     onCloseAlert={[Function]}
     open={false}
   />
-  <withRouter(withTheme(PageHeader))
+  <withRouter(WithTheme(PageHeader))
     otherButton={
       Object {
         "isLink": true,
@@ -38,13 +38,13 @@ exports[`Home scene should render correctly 1`] = `
     protocolButton={false}
     showButton={true}
   />
-  <withStyles(Divider) />
+  <WithStyles(Divider) />
   <ProjectList
     direction="desc"
     handleExport={[Function]}
-    handlePageChange={[Function]}
-    handleRequestSort={[Function]}
-    handleRowsChange={[Function]}
+    handlePageChange={[MockFunction]}
+    handleRequestSort={[MockFunction]}
+    handleRowsChange={[MockFunction]}
     handleSearchValueChange={[Function]}
     handleSortBookmarked={[Function]}
     page={0}

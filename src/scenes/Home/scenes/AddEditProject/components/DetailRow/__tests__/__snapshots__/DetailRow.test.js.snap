@@ -3,7 +3,7 @@
 exports[`AddEditProject -- DetailRow component should render correctly 1`] = `
 <Row
   component={
-    <withStyles(GridWrapper)
+    <WithStyles(Grid)
       item={true}
     />
   }

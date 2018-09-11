@@ -21,7 +21,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
     onEditForm={[Function]}
     title="Create New Project"
   />
-  <withStyles(Divider) />
+  <WithStyles(Divider) />
   <ModalContent>
     <Container
       column={true}
@@ -73,7 +73,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
       />
     </Container>
   </ModalContent>
-  <withStyles(ModalActions)
+  <WithStyles(ModalActions)
     actions={
       Array [
         Object {
@@ -90,9 +90,9 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
             "aria-label": "Save form",
           },
           "type": "submit",
-          "value": <UNDEFINED>
+          "value": <React.Fragment>
             Create
-          </UNDEFINED>,
+          </React.Fragment>,
         },
       ]
     }

@@ -47,7 +47,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
         >
           <Column
             component={
-              <withStyles(GridWrapper)
+              <WithStyles(Grid)
                 item={true}
               />
             }
@@ -72,7 +72,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
           </Column>
           <Column
             component={
-              <withStyles(GridWrapper)
+              <WithStyles(Grid)
                 item={true}
               />
             }
@@ -121,7 +121,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
         >
           <Row
             component={
-              <withStyles(GridWrapper)
+              <WithStyles(Grid)
                 item={true}
               />
             }
@@ -157,7 +157,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
         >
           <Row
             component={
-              <withStyles(GridWrapper)
+              <WithStyles(Grid)
                 item={true}
               />
             }
@@ -180,7 +180,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
         </Container>
       </ModalContent>
     </Container>
-    <withStyles(ModalActions)
+    <WithStyles(ModalActions)
       actions={
         Array [
           Object {
@@ -197,9 +197,9 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
               "aria-label": "Save form",
             },
             "type": "submit",
-            "value": <UNDEFINED>
+            "value": <React.Fragment>
               Add
-            </UNDEFINED>,
+            </React.Fragment>,
           },
         ]
       }

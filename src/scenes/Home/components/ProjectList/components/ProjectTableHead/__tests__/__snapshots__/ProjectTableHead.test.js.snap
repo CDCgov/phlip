@@ -17,7 +17,6 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     }
   >
     <IconButton
-      aria-label="Sort bookmarked"
       color="#757575"
       disabled={false}
       iconSize={24}
@@ -41,12 +40,11 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
       }
     }
   >
-    <withStyles(Tooltip)
-      aria-label="Sort by Name"
+    <WithStyles(Tooltip)
       id="sort-by-name"
       text="Sort by Name"
     >
-      <withStyles(TableSortLabel)
+      <WithStyles(TableSortLabel)
         active={false}
         direction="desc"
         onClick={[Function]}
@@ -57,8 +55,8 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
         }
       >
         Name
-      </withStyles(TableSortLabel)>
-    </withStyles(Tooltip)>
+      </WithStyles(TableSortLabel)>
+    </WithStyles(Tooltip)>
   </TableCell>
   <TableCell
     id="dateLastEdited"
@@ -71,12 +69,11 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
       }
     }
   >
-    <withStyles(Tooltip)
-      aria-label="Sort by Date Last Edited"
+    <WithStyles(Tooltip)
       id="sort-by-dateLastEdited"
       text="Sort by Date Last Edited"
     >
-      <withStyles(TableSortLabel)
+      <WithStyles(TableSortLabel)
         active={true}
         direction="desc"
         onClick={[Function]}
@@ -87,8 +84,8 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
         }
       >
         Date Last Edited
-      </withStyles(TableSortLabel)>
-    </withStyles(Tooltip)>
+      </WithStyles(TableSortLabel)>
+    </WithStyles(Tooltip)>
   </TableCell>
   <TableCell
     id="lastEditedBy"
@@ -101,12 +98,11 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
       }
     }
   >
-    <withStyles(Tooltip)
-      aria-label="Sort by Last Edited By"
+    <WithStyles(Tooltip)
       id="sort-by-lastEditedBy"
       text="Sort by Last Edited By"
     >
-      <withStyles(TableSortLabel)
+      <WithStyles(TableSortLabel)
         active={false}
         direction="desc"
         onClick={[Function]}
@@ -117,8 +113,8 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
         }
       >
         Last Edited By
-      </withStyles(TableSortLabel)>
-    </withStyles(Tooltip)>
+      </WithStyles(TableSortLabel)>
+    </WithStyles(Tooltip)>
   </TableCell>
   <TableCell
     id="protocol"

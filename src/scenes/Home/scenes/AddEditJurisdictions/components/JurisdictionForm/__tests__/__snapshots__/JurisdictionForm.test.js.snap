@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render correctly 1`] = `
-<withStyles(Modal)
+<WithStyles(Modal)
   onClose={[Function]}
   open={true}
 >
@@ -9,7 +9,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
     onCloseForm={[Function]}
     title="Edit Jurisdiction"
   />
-  <withStyles(Divider) />
+  <WithStyles(Divider) />
   <ModalContent>
     <form>
       <Container
@@ -26,7 +26,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       >
         <Row
           component={
-            <withStyles(GridWrapper)
+            <WithStyles(Grid)
               item={true}
             />
           }
@@ -39,7 +39,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
             }
           }
         >
-          <withStyles(Autocomplete)
+          <WithStyles(Autocomplete)
             InputProps={
               Object {
                 "disabled": true,
@@ -79,7 +79,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
         >
           <Column
             component={
-              <withStyles(GridWrapper)
+              <WithStyles(Grid)
                 item={true}
               />
             }
@@ -101,7 +101,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
           </Column>
           <Column
             component={
-              <withStyles(GridWrapper)
+              <WithStyles(Grid)
                 item={true}
               />
             }
@@ -134,7 +134,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
     }
     type="submit"
   />
-  <withStyles(ModalActions)
+  <WithStyles(ModalActions)
     actions={
       Array [
         Object {
@@ -151,12 +151,12 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
           "otherProps": Object {
             "aria-label": "Save form",
           },
-          "value": <UNDEFINED>
+          "value": <React.Fragment>
             Save
-          </UNDEFINED>,
+          </React.Fragment>,
         },
       ]
     }
   />
-</withStyles(Modal)>
+</WithStyles(Modal)>
 `;

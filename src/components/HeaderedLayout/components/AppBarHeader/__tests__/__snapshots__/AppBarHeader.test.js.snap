@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Header should render correctly 1`] = `
-<withStyles(GridWrapper)
+<WithStyles(Grid)
   alignItems="center"
   container={true}
   spacing={0}
@@ -14,7 +14,7 @@ exports[`Header should render correctly 1`] = `
 >
   <Row
     component={
-      <withStyles(GridWrapper)
+      <WithStyles(Grid)
         item={true}
       />
     }
@@ -42,11 +42,11 @@ exports[`Header should render correctly 1`] = `
       />
     </Link>
   </Row>
-  <withStyles(GridWrapper)
+  <WithStyles(Grid)
     item={true}
     xs={true}
   >
-    <withStyles(GridWrapper)
+    <WithStyles(Grid)
       alignItems="center"
       container={true}
       spacing={8}
@@ -56,7 +56,7 @@ exports[`Header should render correctly 1`] = `
         }
       }
     >
-      <withStyles(GridWrapper)
+      <WithStyles(Grid)
         item={true}
       >
         <Greeting
@@ -64,17 +64,17 @@ exports[`Header should render correctly 1`] = `
           lastName="User"
           role="Coordinator"
         />
-      </withStyles(GridWrapper)>
+      </WithStyles(Grid)>
       <AvatarMenu
         initials="TU"
-        onCloseMenu={[Function]}
-        onLogoutUser={[Function]}
-        onToggleMenu={[Function]}
+        onCloseMenu={[MockFunction]}
+        onLogoutUser={[MockFunction]}
+        onToggleMenu={[MockFunction]}
         open={false}
         role="Coordinator"
         userName="Test User"
       />
-    </withStyles(GridWrapper)>
-  </withStyles(GridWrapper)>
-</withStyles(GridWrapper)>
+    </WithStyles(Grid)>
+  </WithStyles(Grid)>
+</WithStyles(Grid)>
 `;

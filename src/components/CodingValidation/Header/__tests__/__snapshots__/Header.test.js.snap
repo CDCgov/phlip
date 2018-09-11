@@ -14,7 +14,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
 >
   <Column
     component={
-      <withStyles(GridWrapper)
+      <WithStyles(Grid)
         item={true}
       />
     }
@@ -39,7 +39,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
   </Column>
   <Row
     component={
-      <withStyles(GridWrapper)
+      <WithStyles(Grid)
         item={true}
       />
     }
@@ -47,22 +47,22 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
     flex={false}
     reverse={false}
   >
-    <withStyles(Typography)
+    <WithStyles(Typography)
       style={
         Object {
           "alignSelf": "center",
           "paddingRight": 10,
         }
       }
-      type="title"
+      variant="title"
     />
-    <withStyles(Typography)
+    <WithStyles(Typography)
       style={
         Object {
           "alignSelf": "center",
         }
       }
-      type="title"
+      variant="title"
     >
       <span
         style={
@@ -73,7 +73,7 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       >
         Test Project
       </span>
-    </withStyles(Typography)>
+    </WithStyles(Typography)>
   </Row>
   <span />
   <div
@@ -84,19 +84,19 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       }
     }
   >
-    <withStyles(JurisdictionSelect) />
+    <WithStyles(JurisdictionSelect) />
   </div>
   <Column
     component={
-      <withStyles(GridWrapper)
+      <WithStyles(Grid)
         item={true}
       />
     }
     displayFlex={false}
     flex={false}
   >
-    <withStyles(Typography)
-      type="caption"
+    <WithStyles(Typography)
+      variant="caption"
     >
       <span
         style={
@@ -116,9 +116,9 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       >
         2018-1-1
       </span>
-    </withStyles(Typography)>
-    <withStyles(Typography)
-      type="caption"
+    </WithStyles(Typography)>
+    <WithStyles(Typography)
+      variant="caption"
     >
       <span
         style={
@@ -138,18 +138,18 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       >
         2018-1-18
       </span>
-    </withStyles(Typography)>
+    </WithStyles(Typography)>
   </Column>
   <Column
     component={
-      <withStyles(GridWrapper)
+      <WithStyles(Grid)
         item={true}
       />
     }
     displayFlex={false}
     flex={true}
   />
-  <withTheme(Button)
+  <WithTheme(Button)
     aria-label="View and edit protocol"
     component={[Function]}
     style={

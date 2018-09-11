@@ -38,7 +38,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <withTheme(TextLink)
+    <WithTheme(TextLink)
       aria-label="Edit project details"
       to={
         Object {
@@ -56,7 +56,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     >
       Project 1
-    </withTheme(TextLink)>
+    </WithTheme(TextLink)>
   </TableCell>
   <TableCell
     id="1-dateLastEdited"
@@ -97,12 +97,12 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <withTheme(TextLink)
+    <WithTheme(TextLink)
       aria-label="Add and edit project protocol"
       to="/project/1/protocol"
     >
       Edit
-    </withTheme(TextLink)>
+    </WithTheme(TextLink)>
   </TableCell>
   <TableCell
     id="1-jurisdictions"
@@ -115,7 +115,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <withTheme(TextLink)
+    <WithTheme(TextLink)
       aria-label="Add and edit project jurisdictions"
       id="1-edit-jurisdictions"
       to={
@@ -128,7 +128,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     >
       Edit
-    </withTheme(TextLink)>
+    </WithTheme(TextLink)>
   </TableCell>
   <TableCell
     id="1-coding-scheme"
@@ -141,12 +141,12 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <withTheme(TextLink)
+    <WithTheme(TextLink)
       aria-label="Add and edit project coding scheme"
       to="/project/1/coding-scheme"
     >
       Edit
-    </withTheme(TextLink)>
+    </WithTheme(TextLink)>
   </TableCell>
   <TableCell
     id="1-code"
@@ -160,7 +160,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <withTheme(Button)
+    <WithTheme(Button)
       aria-label="Code project"
       component={[Function]}
       listButton={true}
@@ -184,7 +184,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    <withTheme(Button)
+    <WithTheme(Button)
       aria-label="Validate project"
       component={[Function]}
       listButton={true}

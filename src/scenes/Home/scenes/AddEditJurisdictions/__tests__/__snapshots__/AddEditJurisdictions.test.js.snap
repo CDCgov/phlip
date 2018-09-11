@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
-<withStyles(Modal)
+<WithStyles(Modal)
   hideOverflow={true}
   maxWidth="md"
   onClose={[Function]}
@@ -19,7 +19,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       }
     }
     buttons={
-      <UNDEFINED>
+      <React.Fragment>
         <div
           style={
             Object {
@@ -27,7 +27,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
             }
           }
         >
-          <withTheme(TextLink)
+          <WithTheme(TextLink)
             to={
               Object {
                 "pathname": "/project/undefined/jurisdictions/add",
@@ -37,15 +37,15 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
               }
             }
           >
-            <withTheme(Button)
+            <WithTheme(Button)
               aria-label="Load preset"
               color="accent"
               value="Load Preset"
             />
-          </withTheme(TextLink)>
+          </WithTheme(TextLink)>
         </div>
         <div>
-          <withTheme(TextLink)
+          <WithTheme(TextLink)
             to={
               Object {
                 "pathname": "/project/undefined/jurisdictions/add",
@@ -55,19 +55,19 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
               }
             }
           >
-            <withTheme(Button)
+            <WithTheme(Button)
               aria-label="Add jurisidiction to project"
               color="accent"
               value="+ Add Jurisdiction"
             />
-          </withTheme(TextLink)>
+          </WithTheme(TextLink)>
         </div>
-      </UNDEFINED>
+      </React.Fragment>
     }
     search={true}
     title={
-      <withStyles(Typography)
-        type="title"
+      <WithStyles(Typography)
+        variant="title"
       >
         <span
           style={
@@ -85,10 +85,10 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
             }
           }
         />
-      </withStyles(Typography)>
+      </WithStyles(Typography)>
     }
   />
-  <withStyles(Divider) />
+  <WithStyles(Divider) />
   <ModalContent
     style={
       Object {
@@ -115,7 +115,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       open={false}
       title={null}
     >
-      <withStyles(Typography)
+      <WithStyles(Typography)
         style={
           Object {
             "whiteSpace": "pre-wrap",
@@ -125,7 +125,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       >
         Are you sure you want to delete the jurisdiction, 
         , from the project? All coded questions related to this jurisdiction will be deleted.
-      </withStyles(Typography)>
+      </WithStyles(Typography)>
     </Alert>
     <ApiErrorAlert
       actions={Array []}
@@ -144,7 +144,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
     >
       <Column
         component={
-          <withStyles(GridWrapper)
+          <WithStyles(Grid)
             item={true}
           />
         }
@@ -163,7 +163,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       </Column>
     </Container>
   </ModalContent>
-  <withStyles(ModalActions)
+  <WithStyles(ModalActions)
     actions={
       Array [
         Object {
@@ -177,5 +177,5 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       ]
     }
   />
-</withStyles(Modal)>
+</WithStyles(Modal)>
 `;

@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Coding scene - Navigator should render correctly 1`] = `
-<withStyles(Drawer)
+<WithStyles(Drawer)
   anchor="left"
   classes={
     Object {
       "paper": "",
     }
   }
-  type="persistent"
+  variant="persistent"
 >
   <Container
     column={true}
@@ -17,7 +17,7 @@ exports[`Coding scene - Navigator should render correctly 1`] = `
   >
     <Row
       component={
-        <withStyles(GridWrapper)
+        <WithStyles(Grid)
           item={true}
         />
       }
@@ -34,8 +34,8 @@ exports[`Coding scene - Navigator should render correctly 1`] = `
         }
       }
     >
-      <withStyles(Typography)
-        type="headline"
+      <WithStyles(Typography)
+        variant="headline"
       >
         <span
           style={
@@ -46,7 +46,7 @@ exports[`Coding scene - Navigator should render correctly 1`] = `
         >
           Code Navigator
         </span>
-      </withStyles(Typography)>
+      </WithStyles(Typography)>
     </Row>
     <div>
       <div
@@ -68,5 +68,5 @@ exports[`Coding scene - Navigator should render correctly 1`] = `
       </div>
     </div>
   </Container>
-</withStyles(Drawer)>
+</WithStyles(Drawer)>
 `;

@@ -3,7 +3,8 @@ import { shallow, mount } from 'enzyme'
 import { ProjectRow } from '../../ProjectRow/index'
 import { MemoryRouter } from 'react-router-dom'
 import { MuiThemeProvider } from '@material-ui/core/styles'
-import Table, { TableBody } from '@material-ui/core/Table'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
 import theme from 'services/theme'
 
 let date = new Date('10/11/2017')
@@ -24,7 +25,7 @@ const props = {
 }
 
 const setup = otherProps => {
-  return mount((
+  return mount(
     <MemoryRouter>
       <MuiThemeProvider theme={theme}>
         <Table>
@@ -34,7 +35,7 @@ const setup = otherProps => {
         </Table>
       </MuiThemeProvider>
     </MemoryRouter>
-  ))
+  )
 }
 
 describe('Home scene - ProjectList - ProjectRow component', () => {

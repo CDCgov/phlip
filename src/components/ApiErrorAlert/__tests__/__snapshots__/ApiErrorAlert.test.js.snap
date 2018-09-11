@@ -13,8 +13,8 @@ exports[`ApiErrorAlert component should render correctly 1`] = `
   }
   open={true}
   title={
-    <UNDEFINED>
-      <withTheme(Icon)
+    <React.Fragment>
+      <WithTheme(Icon)
         color="red"
         size={30}
         style={
@@ -23,7 +23,7 @@ exports[`ApiErrorAlert component should render correctly 1`] = `
           }
         }
       >
-        <Unknown
+        <Icon
           style={
             Object {
               "height": 30,
@@ -31,12 +31,12 @@ exports[`ApiErrorAlert component should render correctly 1`] = `
             }
           }
         />
-      </withTheme(Icon)>
+      </WithTheme(Icon)>
       Uh-oh! Something went wrong.
-    </UNDEFINED>
+    </React.Fragment>
   }
 >
-  <withStyles(Typography)
+  <WithStyles(Typography)
     style={
       Object {
         "whiteSpace": "pre-wrap",
@@ -48,6 +48,6 @@ exports[`ApiErrorAlert component should render correctly 1`] = `
       This is the error alert content.
     </div>
      Please try again later.
-  </withStyles(Typography)>
+  </WithStyles(Typography)>
 </Alert>
 `;
