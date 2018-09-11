@@ -516,10 +516,10 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
                     {this.props.isSchemeEmpty !== null &&
                     (this.props.jurisdiction !== null && this.props.questionOrder.length !== 0) &&
                     <Tooltip
+                      //aria-label="Toggle Navigator"
                       placement="right"
                       text="Toggle Navigator"
-                      id="toggle-navigator"
-                      aria-label="Toggle Navigator">
+                      id="toggle-navigator">
                       <MuiButton style={navButtonStyles} aria-label="Toggle Navigator" onClick={this.onToggleNavigator}>
                         <Icon color="#424242" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
                   </Column>}

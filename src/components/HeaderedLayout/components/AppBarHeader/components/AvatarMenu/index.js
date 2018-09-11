@@ -10,7 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
 import Grow from '@material-ui/core/Grow'
 import Paper from '@material-ui/core/Paper'
-import { Manager, Target, Popper } from 'react-popper'
+import { Manager, Reference, Popper } from 'react-popper'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 
 export class AvatarMenu extends PureComponent {
@@ -48,10 +48,6 @@ export class AvatarMenu extends PureComponent {
     }
   }
 
-  setAvatarRef = element => {
-    this.avatarRef = findDOMNode(element)
-  }
-
   render() {
     const {
       role, initials, userName, open, onLogoutUser, onOpenAdminPage, onToggleMenu, onOpenHelpPdf, avatar
@@ -60,50 +56,68 @@ export class AvatarMenu extends PureComponent {
     return (
       <Grid item style={{ zIndex: 2 }}>
         <Manager>
-          <Target>
-            <Avatar
-              id="avatar-menu-button"
-              onClick={onToggleMenu}
-              onKeyPress={this.onKeyPressMenu}
-              role="button"
-              tabIndex={0}
-              aria-controls="avatar-menu"
-              aria-haspopup={true}
-              aria-owns={open ? 'avatar-user-menu' : null}
-              avatar={avatar}
-              ref={this.setAvatarRef}
-              userName={userName}
-              initials={initials ? initials : ''}
-              style={{ cursor: 'pointer' }} />
-          </Target>
-          <Popper placement="bottom-end" eventsEnabled={open} style={{ pointerEvents: open ? 'auto' : 'none' }}>
-            {open && <ClickAwayListener onClickAway={this.handleClose}>
-              <Grow in={open} id="avatar-menu">
-                <Paper style={{ marginTop: 5 }}>
-                  <MenuList role="menu" aria-expanded={open} id="avatar-user-menu" aria-labelledby="avatar-menu-button">
-                    {role === 'Admin' &&
-                    <MenuItem onClick={onOpenAdminPage} key="admin-menu" ref={this.setFirstMenuItem}>
-                      <ListItemIcon>
-                        <Icon color="accent">person</Icon>
-                      </ListItemIcon>
-                      <ListItemText style={{ color: '#5f6060' }} disableTypography primary="User Management" />
-                    </MenuItem>}
-                    <MenuItem onClick={onLogoutUser} key="logout-menu" ref={this.setSecondMenuItem}>
-                      <ListItemIcon>
-                        <Icon color="accent">exit_to_app</Icon>
-                      </ListItemIcon>
-                      <ListItemText style={{ color: '#5f6060' }} disableTypography primary="Logout" />
-                    </MenuItem>
-                    <MenuItem onClick={onOpenHelpPdf} key="help-section-pdf">
-                      <ListItemIcon>
-                        <Icon color="accent">help</Icon>
-                      </ListItemIcon>
-                      <ListItemText style={{ color: '#5f6060' }} disableTypography primary="Help" />
-                    </MenuItem>
-                  </MenuList>
-                </Paper>
-              </Grow>
-            </ClickAwayListener>}
+          <Reference innerRef={node => this.avatarRef = findDOMNode(node)}>
+            {({ ref }) => {
+              return (
+                <div ref={ref}>
+                  <Avatar
+                    id="avatar-menu-button"
+                    onClick={onToggleMenu}
+                    onKeyPress={this.onKeyPressMenu}
+                    role="button"
+                    tabIndex={0}
+                    aria-controls="avatar-menu"
+                    aria-haspopup={true}
+                    aria-owns={open ? 'avatar-user-menu' : null}
+                    avatar={avatar}
+                    ref={ref}
+                    userName={userName}
+                    initials={initials ? initials : ''}
+                    style={{ cursor: 'pointer' }}
+                  />
+                </div>
+              )
+            }}
+          </Reference>
+          <Popper
+            placement="bottom-end"
+            eventsEnabled={open}
+            style={{ pointerEvents: open ? 'auto' : 'none' }}>
+            {({ placement, ref, style })  => {
+              return (
+                open && <ClickAwayListener onClickAway={this.handleClose}>
+                  <div data-placement={placement} style={{ marginTop: 5, ...style }} ref={ref}>
+                    <Paper>
+                      <MenuList
+                        role="menu"
+                        aria-expanded={open}
+                        id="avatar-user-menu"
+                        aria-labelledby="avatar-menu-button">
+                        {role === 'Admin' &&
+                        <MenuItem onClick={onOpenAdminPage} key="admin-menu" ref={this.setFirstMenuItem}>
+                          <ListItemIcon>
+                            <Icon color="accent">person</Icon>
+                          </ListItemIcon>
+                          <ListItemText style={{ color: '#5f6060' }} disableTypography primary="User Management" />
+                        </MenuItem>}
+                        <MenuItem onClick={onLogoutUser} key="logout-menu" ref={this.setSecondMenuItem}>
+                          <ListItemIcon>
+                            <Icon color="accent">exit_to_app</Icon>
+                          </ListItemIcon>
+                          <ListItemText style={{ color: '#5f6060' }} disableTypography primary="Logout" />
+                        </MenuItem>
+                        <MenuItem onClick={onOpenHelpPdf} key="help-section-pdf">
+                          <ListItemIcon>
+                            <Icon color="accent">help</Icon>
+                          </ListItemIcon>
+                          <ListItemText style={{ color: '#5f6060' }} disableTypography primary="Help" />
+                        </MenuItem>
+                      </MenuList>
+                    </Paper>
+                  </div>
+                </ClickAwayListener>
+              )
+            }}
           </Popper>
         </Manager>
       </Grid>

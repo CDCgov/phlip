@@ -40,7 +40,7 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
           id="sort-bookmarked"
           color="#757575"
           onClick={() => onSortBookmarked()}
-          aria-label="Sort bookmarked"
+          //aria-label="Sort bookmarked"
           placement="top-start"
           tooltipText="Sort bookmarked">
           {sortBookmarked ? 'bookmark' : 'bookmark_border'}
@@ -52,8 +52,8 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
           {c.hasSort ? (
             <Tooltip
               text={`Sort by ${c.label}`}
-              id={`sort-by-${c.key}`}
-              aria-label={`Sort by ${c.label}`}>
+              //aria-label={`Sort by ${c.label}`}
+              id={`sort-by-${c.key}`}>
               <TableSortLabel
                 active={sortBy === c.key}
                 style={{ color: 'inherit' }}
