@@ -42,7 +42,7 @@ export class QuestionNode extends Component {
   }
 
   setHoveredStatus = hovered => {
-    if (!this.props.isDragging && this.props.isHoveringAllowed) {
+    if (!this.props.isDragging) {
       this.setState({
         hovered
       })
@@ -74,8 +74,8 @@ export class QuestionNode extends Component {
       isOver,
       parentNode,
       projectId,
-      isHoveringAllowed,
       handleDeleteQuestion,
+      rowDirection,
       ...otherProps
     } = this.props
 
