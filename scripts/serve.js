@@ -17,6 +17,7 @@ const router = express.Router()
 const jwt = require('jsonwebtoken')
 const passport = require('passport')
 const helmet = require('helmet')
+const constants = require('constants')
 
 dotenv.config({ path: paths.appDotEnv })
 const DEFAULT_API_URL = 'http://backend:80'
@@ -40,7 +41,8 @@ if (IS_PRODUCTION || IS_HTTPS) {
     cert: fs.readFileSync(process.env.APP_CERT_PATH),
     ca: fs.readFileSync(process.env.APP_CERT_AUTH_PATH),
     requestCert: false,
-    rejectUnauthorized: false
+    rejectUnauthorized: false,
+    secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_TLSv1,
   }
 
   let connectSrc = IS_PRODUCTION ? process.env.API_HOST : process.env.APP_API_URL
