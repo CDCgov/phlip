@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import SortableTree from 'react-sortable-tree'
 import TreeNode from './components/TreeNode'
@@ -24,46 +24,47 @@ const canDrop = (node, nextParent, prevParent, outline, questions) => {
   }
 }
 
-export const Scheme = props => {
-  const {
-    questions, flatQuestions, handleQuestionTreeChange, handleQuestionNodeMove,
-    handleHoverOnQuestion, enableHover, disableHover, projectId, outline, lockedByCurrentUser, hasLock, handleDeleteQuestion
-  } = props
+export class Scheme extends Component {
+  render() {
+    const {
+      questions, flatQuestions, handleQuestionTreeChange, handleQuestionNodeMove,
+      projectId, outline, lockedByCurrentUser, hasLock, handleDeleteQuestion
+    } = this.props
 
-  return (
-    <SortableTree
-      theme={{
-        nodeContentRenderer: QuestionNode,
-        treeNodeRenderer: TreeNode,
-        scaffoldBlockPxWidth: 100,
-        slideRegionSize: 50,
-        rowHeight: 75,
-      }}
-      treeData={questions}
-      onChange={handleQuestionTreeChange}
-      onMoveNode={handleQuestionNodeMove}
-      style={{ flex: '1 0 50%' }}
-      reactVirtualizedListProps={{
-        overscanRowCount: 10,
-        containerRole: 'list'
-      }}
-      generateNodeProps={({ node, path }) => {
-        return {
-          turnOffHover: () => handleHoverOnQuestion(node, path, false),
-          turnOnHover: () => handleHoverOnQuestion(node, path, true),
-          enableHover: () => enableHover(),
-          disableHover: () => disableHover(),
-          projectId: projectId,
-          canModify: hasLock && lockedByCurrentUser === true,
-          handleDeleteQuestion: handleDeleteQuestion
-        }
-      }}
-      canDrag={hasLock && lockedByCurrentUser === true}
-      canDrop={({ node, nextParent, prevParent }) => canDrop(node, nextParent, prevParent, outline, flatQuestions)}
-      isVirtualized={true}
-    />
-  )
+    return (
+      <SortableTree
+        theme={{
+          nodeContentRenderer: QuestionNode,
+          treeNodeRenderer: TreeNode,
+          scaffoldBlockPxWidth: 100,
+          slideRegionSize: 50,
+          rowHeight: 75,
+        }}
+        treeData={questions}
+        onChange={handleQuestionTreeChange}
+        onMoveNode={handleQuestionNodeMove}
+        style={{ flex: '1 0 50%' }}
+        reactVirtualizedListProps={{
+          overscanRowCount: 10,
+          containerRole: 'list'
+        }}
+        generateNodeProps={({ node, path }) => {
+          return {
+            projectId: projectId,
+            canModify: hasLock && lockedByCurrentUser === true,
+            handleDeleteQuestion: handleDeleteQuestion
+          }
+        }}
+        canDrag={hasLock && lockedByCurrentUser === true}
+        canDrop={({ node, nextParent, prevParent }) => canDrop(node, nextParent, prevParent, outline, flatQuestions)}
+        isVirtualized={true}
+      />
+    )
+  }
 }
+
+//export const Scheme = props => {
+//}
 
 Scheme.propTypes = {
   questions: PropTypes.array,

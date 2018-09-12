@@ -46,8 +46,8 @@ export const TreeNode = props => {
         key={`pre_${1 + i}`}
         tabIndex={-1}
         style={{width: scaffoldBlockPxWidth}}
-        className={`${styles.lineBlock} ${lineClass}`}>
-      </div>
+        className={`${styles.lineBlock} ${lineClass}`}
+      />
     )
 
     if (treeIndex !== listIndex && i === swapDepth) {
