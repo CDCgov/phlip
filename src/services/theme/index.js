@@ -33,6 +33,9 @@ const theme = createMuiTheme({
   scenes: {
     background: '#f5f5f5'
   },
+  shape: {
+    borderRadius: 2
+  },
   overrides: {
     MuiFormLabel: {
       root: {
