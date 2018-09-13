@@ -20,7 +20,7 @@ const HeaderTabs = props => {
   }
 
   return (
-    <Grid container align="center" type="row">
+    <Grid container align="stretch" type="row" style={{ height: '100%' }}>
       {tabs.map((tab, i) => {
         return (
           <Grid
@@ -28,7 +28,7 @@ const HeaderTabs = props => {
             key={`tab-${i}`}
             container
             type="row"
-            padding="15px 15px 11px 15px"
+            padding="12px 20px 12px 20px"
             style={tab.active ? activeStyle : allStyle}
             onClick={() => onTabChange(i)}>
             {tab.icon && <Icon style={{ marginRight: 8 }} color="#b1adc2">{tab.icon}</Icon>}

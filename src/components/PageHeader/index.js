@@ -14,23 +14,25 @@ import { Link } from 'react-router-dom'
  */
 export const PageHeader = props => {
   const {
-    projectName, pageTitle, projectId, protocolButton,
-    otherButton, children, history, checkoutButton, onBackButtonClick, theme
+    projectName, pageTitle, projectId, protocolButton, entryScene,
+    otherButton, children, history, checkoutButton, onBackButtonClick, theme, icon
   } = props
+
+  console.log(theme)
 
   return (
     <Container alignItems="center" style={{ padding: '0 0 20px 0' }}>
       <Column style={{ paddingRight: 5 }} displayFlex>
-        {pageTitle !== 'Project List'
+        {!entryScene
           ? <IconButton
             iconSize={30}
             color="black"
             onClick={onBackButtonClick ? onBackButtonClick : () => history.goBack()}
             aria-label="Go back">arrow_back</IconButton>
-          : <CircleIcon circleColor="error" iconColor="white" circleSize="30px" iconSize="19px">home</CircleIcon>
+          : <CircleIcon circleColor="error" iconColor="white" circleSize="30px" iconSize="19px">{icon}</CircleIcon>
         }
       </Column>
-      <Row displayFlex flex>
+      <Row displayFlex>
         <Typography variant="title" style={{ alignSelf: 'center', paddingRight: 10 }}>{pageTitle}</Typography>
         {projectName !== '' &&
         <Fragment>
@@ -53,19 +55,27 @@ export const PageHeader = props => {
         <div style={{ marginLeft: 15 }}>
           <Button value={checkoutButton.text} color="accent" {...checkoutButton.props} />
         </div>}
-        {otherButton.show && <div style={{ marginLeft: 15 }}>{otherButton.isLink
-          ? <Button
-            value={otherButton.text}
-            color="accent"
-            component={Link}
-            to={{ pathname: `${otherButton.path}`, state: { ...otherButton.state } }} {...otherButton.props}
-          />
-          : <Button
-            value={otherButton.text}
-            color="accent"
-            style={otherButton.style}
-            onClick={otherButton.onClick} {...otherButton.props}
-          />}</div>
+        {otherButton.show &&
+        <div style={{ marginLeft: 15 }}>
+          {otherButton.isLink
+            ? <Button
+              value={otherButton.text}
+              color="white"
+              style={{ fontWeight: 800 }}
+              textColor={theme.palette.secondary.text}
+              component={Link}
+              to={{ pathname: `${otherButton.path}`, state: { ...otherButton.state } }}
+              {...otherButton.props}
+            />
+            : <Button
+              value={otherButton.text}
+              color="white"
+              style={otherButton.style}
+              textColor={theme.palette.secondary.text}
+              onClick={otherButton.onClick}
+              {...otherButton.props}
+            />}
+        </div>
         }
       </Row>
     </Container>
@@ -84,7 +94,7 @@ PageHeader.propTypes = {
   /**
    * ID of project for this page
    */
-  projectId:  PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   /**
    * Whether or not to show the Protocol button
    */

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Grid from 'components/Grid'
+import PageHeader from 'components/PageHeader'
 
 export class DocumentManagement extends Component {
   constructor(props, context) {
@@ -9,8 +10,23 @@ export class DocumentManagement extends Component {
 
   render() {
     return (
-      <Grid flex padding="0 0 25px 0">
-        <div>document management</div>
+      <Grid flex padding="20px 30px">
+        <PageHeader
+          showButton={true}
+          pageTitle="Document Management"
+          protocolButton={false}
+          projectName=""
+          entryScene={true}
+          icon="description"
+          otherButton={{
+            isLink: true,
+            text: '+ Upload New',
+            path: '/docs/upload',
+            state: { modal: true },
+            props: { 'aria-label': 'Upload New Documents' },
+            show: true
+          }}
+        />
       </Grid>
     )
   }

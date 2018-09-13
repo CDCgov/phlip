@@ -6,16 +6,18 @@ import { withTheme } from '@material-ui/core/styles'
 /**
  * Basic button based on @material-ui/core
  */
-export const Button = ({ value, color, onClick, raised, theme, listButton, style, ...otherProps }) => {
-  const buttonColor = color === 'accent' ? 'secondary' : color
+export const Button = ({ value, color, onClick, raised, theme, textColor, listButton, style, ...otherProps }) => {
+  const buttonColor = color === 'accent' ? 'secondary' : theme[color] ? theme[color] : 'default'
 
   const styles = {
     color: (raised || listButton)
-      ? 'white'
+      ? textColor
+        ? textColor
+        : 'white'
       : color || '',
     fontWeight: 400,
     backgroundColor: raised
-      ? ''
+      ? color
       : listButton
         ? theme.palette.primary.light
         : '',
@@ -25,7 +27,11 @@ export const Button = ({ value, color, onClick, raised, theme, listButton, style
   const variant = raised ? 'raised' : 'text'
 
   return (
-    <MuiButton variant={variant} color={buttonColor} onClick={onClick} style={styles} {...otherProps}>{value}</MuiButton>
+    <MuiButton
+      variant={variant}
+      color={buttonColor}
+      onClick={onClick}
+      style={styles} {...otherProps}>{value}</MuiButton>
   )
 }
 

@@ -195,7 +195,7 @@ export class Home extends Component {
 
   render() {
     return (
-      <Container column flex style={{ padding: 30 }}>
+      <Container column flex style={{ padding: '20px 30px' }}>
         <ApiErrorAlert
           content={this.props.exportError}
           open={this.props.exportError !== ''}
@@ -203,6 +203,8 @@ export class Home extends Component {
         <PageHeader
           showButton={this.props.user.role !== 'Coder'}
           pageTitle="Project List"
+          entryScene={true}
+          icon="dvr"
           protocolButton={false}
           projectName=""
           otherButton={{
@@ -212,8 +214,8 @@ export class Home extends Component {
             state: { projectDefined: null, modal: true },
             props: { 'aria-label': 'Create New Project' },
             show: this.props.user.role !== 'Coder'
-          }} />
-        <Divider />
+          }}
+        />
         {this.props.error
           ? this.renderErrorMessage()
           : <ProjectList
