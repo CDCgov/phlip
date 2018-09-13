@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Grid from 'components/Grid'
 import PageHeader from 'components/PageHeader'
+import DocList from './components/DocList'
 
 export class DocumentManagement extends Component {
   constructor(props, context) {
@@ -10,7 +11,7 @@ export class DocumentManagement extends Component {
 
   render() {
     return (
-      <Grid flex padding="20px 30px">
+      <Grid container flex padding="20px 30px">
         <PageHeader
           showButton={true}
           pageTitle="Document Management"
@@ -27,6 +28,7 @@ export class DocumentManagement extends Component {
             show: true
           }}
         />
+        <DocList />
       </Grid>
     )
   }

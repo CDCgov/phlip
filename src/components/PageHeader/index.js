@@ -18,8 +18,6 @@ export const PageHeader = props => {
     otherButton, children, history, checkoutButton, onBackButtonClick, theme, icon
   } = props
 
-  console.log(theme)
-
   return (
     <Container alignItems="center" style={{ padding: '0 0 20px 0' }}>
       <Column style={{ paddingRight: 5 }} displayFlex>

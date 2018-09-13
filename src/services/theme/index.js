@@ -52,7 +52,10 @@ const theme = createMuiTheme({
       underline: {
         '&:after': {
           borderBottom: `2px solid ${mainColor}`
-        }
+        },
+        '&:hover:not($disabled):not($focused):not($error):before': {
+          borderBottom: `2px solid ${mainColor}`,
+        },
       }
     },
     MuiAvatar: {
