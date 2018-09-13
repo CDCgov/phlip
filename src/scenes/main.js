@@ -188,7 +188,7 @@ class Main extends Component {
             onTabChange={this.handleTabChange}
             onOpenAdminPage={this.handleOpenAdminPage}
           />
-          <Grid container type="row" padding={30} flex style={{ backgroundColor: '#f5f5f5' }}>
+          <Grid container type="row" flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
             <Switch location={currentLocation}>
               <Route path="/docs" exact component={DocumentManagement} />
               <Route path="/project/:id/code" component={Coding} />

@@ -14,7 +14,6 @@ import Button from 'components/Button'
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
 import { default as MuiButton } from '@material-ui/core/Button'
-import HeaderedLayout from 'components/HeaderedLayout'
 import Alert from 'components/Alert'
 import Tooltip from 'components/Tooltip'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
@@ -463,6 +462,11 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
     render() {
       return (
         <Container
+          className={
+            classNames(this.props.classes.mainContent, {
+              [this.props.classes.openNavShift]: this.state.navOpen && !this.props.showPageLoader,
+              [this.props.classes.pageLoading]: this.props.showPageLoader
+            })}
           flex style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }}>
           <Alert open={this.state.applyAllAlertOpen} actions={this.modalActions}>
             <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
@@ -490,53 +494,45 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
             selectedCategory={this.props.selectedCategory}
             handleQuestionSelected={this.onQuestionSelectedInNav}
           />}
-          <HeaderedLayout
-            padding={false}
-            className={
-              classNames(this.props.classes.mainContent, {
-                [this.props.classes.openNavShift]: this.state.navOpen && !this.props.showPageLoader,
-                [this.props.classes.pageLoading]: this.props.showPageLoader
-              })}>
-            <Column flex displayFlex style={{ width: '100%', flexWrap: 'nowrap' }}>
-              <Header
-                projectName={this.props.projectName}
-                projectId={this.props.projectId}
-                jurisdictionsList={this.props.jurisdictionsList}
-                selectedJurisdiction={this.state.selectedJurisdiction}
-                onJurisdictionChange={this.onJurisdictionChange}
-                pageTitle={capitalizeFirstLetter(this.props.page)}
-                currentJurisdiction={this.props.jurisdiction}
-                onGoBack={this.onGoBack}
-                empty={this.props.jurisdiction === null || this.props.questionOrder === null ||
-                this.props.questionOrder.length === 0}
-              />
-              <Container flex style={{ backgroundColor: '#f5f5f5' }}>
-                <Row displayFlex flex style={{ overflow: 'auto' }}>
-                  {!this.props.showPageLoader && <Column>
-                    {this.props.isSchemeEmpty !== null &&
-                    (this.props.jurisdiction !== null && this.props.questionOrder.length !== 0) &&
-                    <Tooltip
-                      //aria-label="Toggle Navigator"
-                      placement="right"
-                      text="Toggle Navigator"
-                      id="toggle-navigator">
-                      <MuiButton style={navButtonStyles} aria-label="Toggle Navigator" onClick={this.onToggleNavigator}>
-                        <Icon color="#424242" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
-                  </Column>}
-                  <Column displayFlex flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
-                    {this.props.schemeError !== null &&
-                    <ApiErrorView error="We couldn't get the coding scheme for this project." />}
-                    {this.props.showPageLoader === true
-                      ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
-                      : this.props.isSchemeEmpty !== null &&
-                      (this.props.areJurisdictionsEmpty === true || this.props.isSchemeEmpty === true
-                        ? this.onShowGetStartedView(this.props.isSchemeEmpty, this.props.areJurisdictionsEmpty)
-                        : this.onShowCodeView())}
-                  </Column>
-                </Row>
-              </Container>
-            </Column>
-          </HeaderedLayout>
+          <Column flex displayFlex style={{ width: '100%', flexWrap: 'nowrap' }}>
+            <Header
+              projectName={this.props.projectName}
+              projectId={this.props.projectId}
+              jurisdictionsList={this.props.jurisdictionsList}
+              selectedJurisdiction={this.state.selectedJurisdiction}
+              onJurisdictionChange={this.onJurisdictionChange}
+              pageTitle={capitalizeFirstLetter(this.props.page)}
+              currentJurisdiction={this.props.jurisdiction}
+              onGoBack={this.onGoBack}
+              empty={this.props.jurisdiction === null || this.props.questionOrder === null ||
+              this.props.questionOrder.length === 0}
+            />
+            <Container flex style={{ backgroundColor: '#f5f5f5' }}>
+              <Row displayFlex flex style={{ overflow: 'auto' }}>
+                {!this.props.showPageLoader && <Column>
+                  {this.props.isSchemeEmpty !== null &&
+                  (this.props.jurisdiction !== null && this.props.questionOrder.length !== 0) &&
+                  <Tooltip
+                    //aria-label="Toggle Navigator"
+                    placement="right"
+                    text="Toggle Navigator"
+                    id="toggle-navigator">
+                    <MuiButton style={navButtonStyles} aria-label="Toggle Navigator" onClick={this.onToggleNavigator}>
+                      <Icon color="#424242" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
+                </Column>}
+                <Column displayFlex flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
+                  {this.props.schemeError !== null &&
+                  <ApiErrorView error="We couldn't get the coding scheme for this project." />}
+                  {this.props.showPageLoader === true
+                    ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
+                    : this.props.isSchemeEmpty !== null &&
+                    (this.props.areJurisdictionsEmpty === true || this.props.isSchemeEmpty === true
+                      ? this.onShowGetStartedView(this.props.isSchemeEmpty, this.props.areJurisdictionsEmpty)
+                      : this.onShowCodeView())}
+                </Column>
+              </Row>
+            </Container>
+          </Column>
           {super.render()}
         </Container>
       )

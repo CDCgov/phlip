@@ -19,7 +19,7 @@ export const PageHeader = props => {
   } = props
 
   return (
-    <Container alignItems="center" style={{ padding: '20px 0' }}>
+    <Container alignItems="center" style={{ padding: '0 0 20px 0' }}>
       <Column style={{ paddingRight: 5 }} displayFlex>
         {pageTitle !== 'Project List'
           ? <IconButton

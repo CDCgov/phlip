@@ -195,7 +195,7 @@ export class Home extends Component {
 
   render() {
     return (
-      <Container column flex style={{ paddingBottom: '25px' }}>
+      <Container column flex style={{ padding: 30 }}>
         <ApiErrorAlert
           content={this.props.exportError}
           open={this.props.exportError !== ''}
