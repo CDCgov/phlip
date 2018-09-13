@@ -10,7 +10,7 @@ export class DocumentManagement extends Component {
     return (
       <div>document management</div>
     )
-  }
+}
 }
 
 DocumentManagement.propTypes = {

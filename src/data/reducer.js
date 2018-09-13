@@ -6,7 +6,6 @@ import user from './user/reducer'
 /**
  * Root reducer for the data directory. Combines any reducer from the subdirectories.
  */
-
 const dataPersistConfig = {
   key: 'user',
   storage,

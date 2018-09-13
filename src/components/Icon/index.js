@@ -14,7 +14,7 @@ const Icon = ({ color, size, style, children, theme, ...otherProps }) => {
   }
 
   return (
-    <MuiIcon style={styles}{...otherProps}>
+    <MuiIcon style={styles} {...otherProps}>
       {children}
     </MuiIcon>
   )
