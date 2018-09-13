@@ -1,6 +1,7 @@
 FROM node:8.11.4
 
 ENV NPM_CONFIG_LOGLEVEL error
+ENV NODE_ENV development
 SHELL ["/bin/bash", "-c"]
 
 RUN mkdir -p /usr/src/app

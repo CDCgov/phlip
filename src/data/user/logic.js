@@ -1,6 +1,6 @@
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
-import { getToken, decodeToken, login, isLoggedInTokenExists } from 'services/authToken'
+import { getToken, decodeToken, login, isLoggedIn } from 'services/authToken'
 
 export const downloadPdfLogic = createLogic({
   type: types.DOWNLOAD_PDF_REQUEST,
@@ -20,7 +20,7 @@ export const refreshJwt = createLogic({
   cancelType: [types.CANCEL_REFRESH_JWT, types.LOGOUT_USER],
   process({ cancelled$, api}) {
     const interval = setInterval(async () => {
-      if (isLoggedInTokenExists()) {
+      if (isLoggedIn()) {
         const currentToken = getToken()
         const newToken = await api.checkPivUser({ email: decodeToken(currentToken).Email }, {}, { tokenObj: { token: currentToken }})
         await login(newToken.token.value)

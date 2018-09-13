@@ -30,7 +30,7 @@ export const login = async token => {
  *
  * @returns {Boolean}
  */
-export const isLoggedInTokenExists = () => {
+export const isLoggedIn = () => {
   return !!memoizedGetAuthToken(TOKEN_KEY)
 }
 

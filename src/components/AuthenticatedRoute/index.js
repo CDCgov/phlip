@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Route, Redirect, withRouter } from 'react-router-dom'
 import { matchPath } from 'react-router'
-import { isLoggedInTokenExists } from 'services/authToken'
+import { isLoggedIn } from 'services/authToken'
 import { connect } from 'react-redux'
 import { UnauthPage, PageNotFound } from 'components/RoutePages'
 import { bindActionCreators } from 'redux'
@@ -66,22 +66,31 @@ const isPath = path => {
  * logged in, renders the Login page.
  */
 export const AuthenticatedRoute = ({ component: Component, user, location, actions, isRefreshing, ...rest }) => {
+  const loggedIn = isLoggedIn()
   return (
     isPath(location.pathname)
-      ? isLoggedInTokenExists()
+      ? loggedIn
       ? isAllowed(user, location.pathname)
-        ? <Route {...rest} render={props =>
-          <Component
-            location={location}
-            actions={actions}
-            isRefreshing={isRefreshing}
-            role={user.role}
-            isLoggedIn={isLoggedInTokenExists()}
-            {...props}
-          />}
+        ? <Route
+          {...rest}
+          render={props =>
+            <Component
+              location={location}
+              actions={actions}
+              isRefreshing={isRefreshing}
+              role={user.role}
+              isLoggedIn={loggedIn}
+              {...props}
+            />}
         />
         : <UnauthPage />
-      : <Route {...rest} render={() => <Redirect to="/login" {...rest} />} />
+      : <Redirect
+        {...rest}
+        to={{
+          pathname: '/login',
+          state: { from: props.location.pathname === '/' ? '/home' : props.location }
+        }}
+      />
       : <PageNotFound />
   )
 }

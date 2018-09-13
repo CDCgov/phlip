@@ -6,8 +6,8 @@
   "scripts": {
     "build:image:dev": "docker build -t esquire-frontend:dev .",
     "build:image:prod": "docker build -t esquire-frontend:prod -f Dockerfile-prod .",
-    "start": "docker-compose -f docker-compose.dev.yml up --build dev",
-    "serve": "docker-compose up --build -d prod",
+    "start": "docker-compose -f docker-compose.dev.yml up --build",
+    "serve": "docker-compose up --build -d",
     "test": "docker-compose -f docker-compose.dev.yml run dev npm run test:local",
     "test:watch": "docker-compose -f docker-compose.dev.yml run dev npm run test:watch:local",
     "start:local": "node scripts/start.js",

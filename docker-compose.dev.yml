@@ -7,9 +7,7 @@ services:
       dockerfile: Dockerfile
     image: esquire-frontend:dev
     ports:
-      - 5200:5200
+      - ${APP_PORT:-5200}:${APP_PORT:-5200}
     volumes:
       - /usr/src/app/node_modules/
       - .:/usr/src/app
-    environment:
-      - NODE_ENV=development
