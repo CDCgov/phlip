@@ -81,7 +81,7 @@ export const AuthenticatedRoute = ({ component: Component, user, location, actio
           {...rest}
           to={{
             pathname: '/login',
-            state: { from: props.location.pathname === '/' ? '/home' : props.location }
+            state: { from: location.pathname === '/' ? '/home' : location }
           }}
         />
       : <PageNotFound />

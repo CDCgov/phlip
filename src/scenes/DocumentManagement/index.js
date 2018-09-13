@@ -3,6 +3,9 @@ import PropTypes from 'prop-types'
 import Grid from 'components/Grid'
 import PageHeader from 'components/PageHeader'
 import DocList from './components/DocList'
+import * as actions from './actions'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 export class DocumentManagement extends Component {
   constructor(props, context) {
@@ -36,4 +39,12 @@ export class DocumentManagement extends Component {
 
 DocumentManagement.propTypes = {}
 
-export default DocumentManagement
+const mapStateToProps = (state, ownProps) => {
+  return {
+    documents: state.scenes.docManage.documents.visible
+  }
+}
+
+const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch )})
+
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentManagement)

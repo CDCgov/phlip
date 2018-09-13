@@ -174,7 +174,7 @@ class Main extends Component {
     // so we check if it's one of those routes and if it is set the location to /home
     const currentLocation = { ...location, pathname: this.checkForModalMatch(location.pathname, role) }
     if (!isRefreshing && isLoggedIn) actions.startRefreshJwt()
-
+    
     return (
       <IdleTimer idleAction={() => actions.logoutUser(true)} timeout={900000}>
         <Grid container type="column" flex>
@@ -197,13 +197,13 @@ class Main extends Component {
               <Route strict path="/project/:id/coding-scheme" component={CodingScheme} />
               <Route strict path="/project/:id/protocol" component={Protocol} />
               <Route path="/home" component={Home} />
-              <Route path="/project/edit/:id" component={AddEditProject} />
-              <Route path="/project/add" component={AddEditProject} />
-              <Route path="/project/:id/jurisdictions" component={AddEditJurisdictions} />
-              <Route path="/project/:id/jurisdictions/:jid/edit" component={JurisdictionForm} />
-              <Route path="/project/:id/jurisdictions/add" component={JurisdictionForm} />
               <Route path="/" exact render={() => <Redirect to={{ pathname: '/home' }} />} />
             </Switch>
+            <Route path="/project/edit/:id" component={AddEditProject} />
+            <Route path="/project/add" component={AddEditProject} />
+            <Route path="/project/:id/jurisdictions" component={AddEditJurisdictions} />
+            <Route path="/project/:id/jurisdictions/:jid/edit" component={JurisdictionForm} />
+            <Route path="/project/:id/jurisdictions/add" component={JurisdictionForm} />
             <ApiErrorAlert
               content={this.props.pdfError}
               open={this.props.pdfError !== ''}

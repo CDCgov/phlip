@@ -5,6 +5,7 @@ import home from './Home/reducer'
 import admin from './Admin/reducer'
 import login from './Login/reducer'
 import codingScheme from './CodingScheme/reducer'
+import docManage from './DocumentManagement/reducer'
 import coding, { codingHandlers } from './Coding/reducer'
 import validation, { validationHandlers } from './Validation/reducer'
 import protocol from './Protocol/reducer'
@@ -79,10 +80,11 @@ const scenesReducer = combineReducers({
   main: persistReducer({ ...config, key: 'main' }, mainReducer),
   home: persistReducer({ ...config, key: 'home', blacklist: ['addEditJurisdictions'] }, home),
   admin: persistReducer({ ...config, key: 'admin' }, admin),
-  codingScheme,
-  login,
+  docManage: persistReducer({ ...config, key: 'docManage'}, docManage),
   coding: createCodingValidationReducer(coding, codingHandlers, 'CODING' ),
   validation: createCodingValidationReducer(validation, validationHandlers, 'VALIDATION'),
+  codingScheme,
+  login,
   protocol
 })
 
