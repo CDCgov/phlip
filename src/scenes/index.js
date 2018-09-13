@@ -1,10 +1,10 @@
 import React from 'react'
-import { PersistGate } from 'redux-persist/es/integration/react'
 import { Route, Switch } from 'react-router-dom'
+import { PersistGate } from 'redux-persist/es/integration/react'
 import Login from './Login'
 import AuthenticatedRoute from 'components/AuthenticatedRoute'
-import { persistor } from 'services/store'
 import Main from './main'
+import { persistor } from 'services/store'
 
 /**
  * Main scenes component, where all of the page views are set. It sets the /login route and any other path be sent to
@@ -12,12 +12,12 @@ import Main from './main'
  */
 const Scenes = () => {
   return (
-    <Switch>
-      <Route path="/login" component={Login} />
-      <PersistGate persistor={persistor}>
+    <PersistGate persistor={persistor}>
+      <Switch>
+        <Route path="/login" component={Login} />
         <AuthenticatedRoute component={Main} />
-      </PersistGate>
-    </Switch>
+      </Switch>
+    </PersistGate>
   )
 }
 

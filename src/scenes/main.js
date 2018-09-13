@@ -18,6 +18,7 @@ import AddEditJurisdictions from './Home/scenes/AddEditJurisdictions'
 import JurisdictionForm from './Home/scenes/AddEditJurisdictions/components/JurisdictionForm'
 import ApiErrorAlert from 'components/ApiErrorAlert'
 import * as actions from './actions'
+import { persistor } from 'services/store'
 
 /** Paths that aren't accessible by users with 'Coder' role */
 const nonCoderPaths = [
@@ -151,7 +152,7 @@ class Main extends Component {
   }
 
   handleOpenAdminPage = () => {
-    const tabs = { ...this.state.menuTabs }
+    const tabs = [...this.state.menuTabs]
 
     if (this.state.menuTabs[1].active) {
       tabs[1].active = false
@@ -176,7 +177,7 @@ class Main extends Component {
 
     return (
       <IdleTimer idleAction={() => actions.logoutUser(true)} timeout={900000}>
-        <Grid container type="column">
+        <Grid container type="column" flex>
           <HeaderedLayout
             user={this.props.user}
             tabs={this.state.menuTabs}

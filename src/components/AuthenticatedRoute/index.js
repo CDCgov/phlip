@@ -15,7 +15,11 @@ const coderPaths = ['/home', '/project/:id/protocol', '/project/:id/code', '/pro
 const coordinatorPaths = [
   ...coderPaths, '/project/add', '/project/:id/jurisdictions', '/project/:id/coding-scheme', '/project/:id/validate'
 ]
-const adminPaths = [...coderPaths, ...coordinatorPaths, '/admin']
+
+const docPaths = [
+  '/docs'
+]
+const adminPaths = [...coderPaths, ...coordinatorPaths, ...docPaths, '/admin']
 
 const paths = {
   Coder: coderPaths,
@@ -70,27 +74,16 @@ export const AuthenticatedRoute = ({ component: Component, user, location, actio
   return (
     isPath(location.pathname)
       ? loggedIn
-      ? isAllowed(user, location.pathname)
-        ? <Route
+        ? isAllowed(user, location.pathname)
+          ? <Route {...rest} render={props => <Component {...props} />} />
+          : <UnauthPage />
+        : <Redirect
           {...rest}
-          render={props =>
-            <Component
-              location={location}
-              actions={actions}
-              isRefreshing={isRefreshing}
-              role={user.role}
-              isLoggedIn={loggedIn}
-              {...props}
-            />}
+          to={{
+            pathname: '/login',
+            state: { from: props.location.pathname === '/' ? '/home' : props.location }
+          }}
         />
-        : <UnauthPage />
-      : <Redirect
-        {...rest}
-        to={{
-          pathname: '/login',
-          state: { from: props.location.pathname === '/' ? '/home' : props.location }
-        }}
-      />
       : <PageNotFound />
   )
 }

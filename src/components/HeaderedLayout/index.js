@@ -15,7 +15,10 @@ export const AppHeader = props => {
     position: 'relative',
     boxShadow: '0 1px 2px 0 rgba(34,36,38,.15)',
     backgroundColor: theme.palette.primary.main,
-    padding: '0 30px 0 0'
+    padding: '0 30px 0 0',
+    height: 55,
+    maxHeight: 55,
+    minHeight: 55
   }
 
   return (

@@ -28,7 +28,7 @@ const HeaderTabs = props => {
             key={`tab-${i}`}
             container
             type="row"
-            padding={15}
+            padding="15px 15px 11px 15px"
             style={tab.active ? activeStyle : allStyle}
             onClick={() => onTabChange(i)}>
             {tab.icon && <Icon style={{ marginRight: 8 }} color="#b1adc2">{tab.icon}</Icon>}
