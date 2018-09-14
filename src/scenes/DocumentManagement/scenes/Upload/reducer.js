@@ -8,7 +8,7 @@ const INITIAL_STATE = {
 }
 
 const uploadReducer = (state = INITIAL_STATE, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case types.UPLOAD_DOCUMENTS_REQUEST:
       return {
         ...state,
@@ -28,6 +28,15 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         ...state,
         uploadError: action.payload.error,
         uploading: false
+      }
+
+    case types.ADD_SELECTED_DOCS:
+      return {
+        ...state,
+        selectedDocs: [
+          ...state.selectedDocs,
+          ...action.selectedDocs
+        ]
       }
 
     default:

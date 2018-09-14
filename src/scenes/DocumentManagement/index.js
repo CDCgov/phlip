@@ -11,7 +11,6 @@ import Upload from './scenes/Upload'
 
 export class DocumentManagement extends Component {
   static propTypes = {
-
   }
 
   constructor(props, context) {
@@ -46,7 +45,7 @@ export class DocumentManagement extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    documents: state.scenes.docManage.documents.visible
+    documents: state.scenes.docManage.main.documents.visible
   }
 }
 

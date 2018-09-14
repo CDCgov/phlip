@@ -112,6 +112,7 @@ export class AddEditQuestion extends Component {
       includeComment: false,
       isCategoryQuestion: false
     }
+    
     this.textFieldForm = {
       questionType: questionTypes.TEXT_FIELD,
       includeComment: false,

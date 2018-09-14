@@ -6,7 +6,7 @@ import { withTheme } from '@material-ui/core/styles'
 /**
  * Basic button based on @material-ui/core
  */
-export const Button = ({ value, color, onClick, raised, theme, textColor, listButton, style, ...otherProps }) => {
+export const Button = ({ value, color, onClick, raised, theme, textColor, listButton, style, children, ...otherProps }) => {
   const buttonColor = color === 'accent' ? 'secondary' : theme[color] ? theme[color] : 'default'
 
   const styles = {
@@ -26,13 +26,23 @@ export const Button = ({ value, color, onClick, raised, theme, textColor, listBu
 
   const variant = raised ? 'raised' : 'text'
 
-  return (
-    <MuiButton
-      variant={variant}
-      color={buttonColor}
-      onClick={onClick}
-      style={styles} {...otherProps}>{value}</MuiButton>
-  )
+  if (value) {
+    return (
+      <MuiButton
+        variant={variant}
+        color={buttonColor}
+        onClick={onClick}
+        style={styles} {...otherProps}>{value}</MuiButton>
+    )
+  } else {
+    return (
+      <MuiButton
+        variant={variant}
+        color={buttonColor}
+        onClick={onClick}
+        style={styles} {...otherProps}>{children}</MuiButton>
+    )
+  }
 }
 
 Button.propTypes = {
