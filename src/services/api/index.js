@@ -15,7 +15,7 @@ export const projectApiInstance = axios.create({
 })
 
 export const docApiInstance = axios.create({
-  baseURL: process.env.APP_DOC_MANAGE_API || '/api/docs'
+  baseURL: process.env.APP_DOC_MANAGE_API
 })
 
 /**
@@ -80,6 +80,7 @@ const prepare = ({ history }, instance) => call => (data, options, urlParams = {
  *
  * @param {Object} dependencies
  * @param {Function} instance
+ * @param {Array} calls
  * @returns {Object} - API object with an axios instance for each call from ./call.js
  */
 const createApiHandler = (dependencies, instance, calls) => {

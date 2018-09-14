@@ -10,7 +10,8 @@ import SearchBar from 'components/SearchBar'
 import DocListTableHead from './components/DocListTableHead'
 
 const DocList = props => {
-  const { handleSearchDocs, handleSelectAll } = props
+  const { handleSearchDocs, handleSelectAll, documents } = props
+  console.log(documents)
 
   return (
     <Grid container flex raised>
@@ -20,6 +21,9 @@ const DocList = props => {
           <SearchBar placeholder="Search" />
         </Grid>
       </Grid>
+      {documents.map(doc => {
+        return //<div>{doc.name}</div>
+      })}
       <Grid container flex>
         <Table
           style={{ borderCollapse: 'separate', tableLayout: 'auto', overflow: 'unset' }}

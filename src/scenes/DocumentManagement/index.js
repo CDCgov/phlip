@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Grid from 'components/Grid'
 import PageHeader from 'components/PageHeader'
 import DocList from './components/DocList'
-import * as actions from './actions'
+import actions from './actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Route } from 'react-router-dom'
@@ -15,6 +15,10 @@ export class DocumentManagement extends Component {
 
   constructor(props, context) {
     super(props, context)
+  }
+
+  componentDidMount() {
+    this.props.actions.getDocumentsRequest()
   }
 
   render() {
@@ -36,7 +40,7 @@ export class DocumentManagement extends Component {
             show: true
           }}
         />
-        <DocList />
+        <DocList documents={this.props.documents} />
         <Route path="/docs/upload" component={Upload} />
       </Grid>
     )
@@ -45,7 +49,7 @@ export class DocumentManagement extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    documents: state.scenes.docManage.main.documents.visible
+    documents: state.scenes.docManage.main.documents
   }
 }
 

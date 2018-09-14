@@ -10,6 +10,10 @@ import { bindActionCreators } from 'redux'
 import actions from './actions'
 
 export class Upload extends Component {
+  state = {
+    selectedDocs: []
+  }
+
   constructor(props, context) {
     super(props, context)
 
@@ -33,11 +37,32 @@ export class Upload extends Component {
   addFilesToList = (e) => {
     e.preventDefault()
     let files = []
+
     Array.from(Array(e.target.files.length).keys()).map(x => {
       const i = e.target.files.item(x)
-      files.push({ name: i.name, lastModifiedDate: i.lastModifiedDate, tags: [] })
+      files.push({ name: i.name, lastModifiedDate: i.lastModifiedDate, tags: [], file: i })
     })
+
     this.props.actions.addSelectedDocs(files)
+  }
+
+  onUploadFiles = () => {
+    console.log(this.props.user)
+    let md = [], fd = { files: [] }, md2 = {}
+    const formData = new FormData()
+    formData.append('userId', this.props.user.id)
+    formData.append('userFirstName', this.props.user.firstName)
+    formData.append('userLastName', this.props.user.lastName)
+
+    this.props.selectedDocs.map((doc, i) => {
+      const { file, ...otherProps } = doc
+      formData.append('files', file, doc.name)
+      md2[doc.name] = otherProps
+      fd.files = [...fd.files, file]
+    })
+
+    formData.append('metadata', JSON.stringify(md2))
+    this.props.actions.uploadDocumentsRequest(formData)
   }
 
   render() {
@@ -49,7 +74,10 @@ export class Upload extends Component {
     }
 
     const modalActions = this.props.selectedDocs.length > 0
-      ? [closeButton, { value: 'Upload', type: 'button', otherProps: { 'aria-label': 'Upload' } }]
+      ? [
+        closeButton,
+        { value: 'Upload', type: 'button', otherProps: { 'aria-label': 'Upload' }, onClick: this.onUploadFiles }
+      ]
       : [closeButton]
 
     return (
@@ -63,7 +91,7 @@ export class Upload extends Component {
         />
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          <form style={{ margin: '20px 0' }}>
+          <form encType="multipart/form-data" style={{ margin: '20px 0' }}>
             <Grid
               container
               type="row"
@@ -122,7 +150,8 @@ const mapStateToProps = state => ({
   selectedDocs: state.scenes.docManage.upload.selectedDocs,
   uploadError: state.scenes.docManage.upload.uploadError,
   uploadedDocs: state.scenes.docManage.upload.uploadedDocs,
-  uploading: state.scenes.docManage.upload.uploading
+  uploading: state.scenes.docManage.upload.uploading,
+  user: state.data.user.currentUser
 })
 
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })

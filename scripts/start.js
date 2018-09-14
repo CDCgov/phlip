@@ -20,7 +20,8 @@ const config = {
   overlay: false,
   historyApiFallback: true,
   proxy: {
-    '/api': JSON.parse(env.APP_API_URL)
+    '/api': JSON.parse(env.APP_API_URL),
+    '/api/docs': JSON.parse(env.APP_DOC_MANAGE_API)
   }
 }
 

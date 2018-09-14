@@ -33,6 +33,8 @@ const APP_API_URL = IS_PRODUCTION
   ? (`${process.env.APP_API_URL}/api` || `${DEFAULT_API_URL}/api`)
   : (process.env.APP_API_URL || DEFAULT_API_URL)
 
+const APP_DOC_MANAGE_API = process.env.APP_DOC_MANAGE_API || '/api/docs'
+
 app.use(compression())
 
 if (IS_PRODUCTION || IS_HTTPS) {
@@ -142,6 +144,7 @@ if (IS_PRODUCTION || IS_HTTPS) {
   // Proxy all requests to /api to the backend API URL
   app.use(express.static('./dist/'))
   app.use('/api', proxy({ target: APP_API_URL }))
+  app.use('/api/docs', proxy({ target: APP_DOC_MANAGE_API }))
 
   // Send all requests to the react code
   app.use('/', express.static('./dist/index.html'))
