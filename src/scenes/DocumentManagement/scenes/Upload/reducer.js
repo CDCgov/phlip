@@ -39,6 +39,15 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         ]
       }
 
+    case types.REMOVE_DOC:
+      let docs = [...state.selectedDocs]
+      docs.splice(action.index, 1)
+
+      return {
+        ...state,
+        selectedDocs: docs
+      }
+
     case types.CLEAR_SELECTED_FILES:
       return INITIAL_STATE
 

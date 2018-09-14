@@ -17,8 +17,6 @@ export class Upload extends Component {
     this.selectButtonRef = React.createRef()
   }
 
-  componentDidUpdate(prevProps, prevState) {}
-
   /**
    * Closes main modal, and pushes '/docs' onto browser history
    * @public
@@ -94,7 +92,9 @@ export class Upload extends Component {
                   onChange={this.addFilesToList}
                   style={{ opacity: 0, height: '100%', width: '100%', position: 'absolute' }}
                 />
-                <Typography variant="body2" style={{ color: '#646465', fontWeight: 700, marginLeft: 10, alignSelf: 'center' }}>
+                <Typography
+                  variant="body2"
+                  style={{ color: '#646465', fontWeight: 700, marginLeft: 10, alignSelf: 'center' }}>
                   or drag and drop files here
                 </Typography>
               </Grid>
@@ -102,7 +102,13 @@ export class Upload extends Component {
           </form>
           <Grid flex style={{ overflow: 'auto' }}>
             {this.props.selectedDocs.map((doc, i) => {
-              return <FileRow key={`selectedDoc-${i}`} index={i} name={doc.name} tags={doc.tags} />
+              return <FileRow
+                key={`selectedDoc-${i}`}
+                index={i}
+                name={doc.name}
+                tags={doc.tags}
+                onRemoveDoc={this.props.actions.removeDoc}
+              />
             })}
           </Grid>
         </ModalContent>
