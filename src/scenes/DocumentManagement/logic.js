@@ -1,11 +1,5 @@
-import { createLogic } from 'redux-logic'
-import { types } from './actions'
+import uploadLogic from './scenes/Upload/logic'
 
-const uploadRequestLogic = createLogic({
-  type: types.UPLOAD_DOCUMENTS_REQUEST,
-  async process({ docApi }) {
-
-  }
-})
-
-export default [uploadRequestLogic]
+export default [
+  ...uploadLogic
+]

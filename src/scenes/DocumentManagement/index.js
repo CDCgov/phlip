@@ -6,8 +6,14 @@ import DocList from './components/DocList'
 import * as actions from './actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { Route } from 'react-router-dom'
+import Upload from './scenes/Upload'
 
 export class DocumentManagement extends Component {
+  static propTypes = {
+
+  }
+
   constructor(props, context) {
     super(props, context)
   }
@@ -32,12 +38,11 @@ export class DocumentManagement extends Component {
           }}
         />
         <DocList />
+        <Route path="/docs/upload" component={Upload} />
       </Grid>
     )
   }
 }
-
-DocumentManagement.propTypes = {}
 
 const mapStateToProps = (state, ownProps) => {
   return {

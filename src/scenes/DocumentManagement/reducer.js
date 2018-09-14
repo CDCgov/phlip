@@ -1,3 +1,6 @@
+import { combineReducers } from 'redux'
+import upload from './scenes/Upload/reducer'
+
 const INITIAL_STATE = {
   documents: {
     byId: {},
@@ -14,4 +17,9 @@ const docManagementReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
-export default docManagementReducer
+const docManageReducer = combineReducers({
+  upload,
+  main: docManagementReducer
+})
+
+export default docManageReducer

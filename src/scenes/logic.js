@@ -6,6 +6,7 @@ import codingLogic from './Coding/logic'
 import validationLogic from './Validation/logic'
 import protocolLogic from './Protocol/logic'
 import codingValidationLogic from 'components/CodingValidation/logic'
+import docManageLogic from './DocumentManagement/logic'
 
 /**
  * Collects all of the logic from scenes into one array
@@ -18,5 +19,6 @@ export default [
   ...codingValidationLogic,
   ...codingLogic,
   ...validationLogic,
-  ...protocolLogic
+  ...protocolLogic,
+  ...docManageLogic
 ]

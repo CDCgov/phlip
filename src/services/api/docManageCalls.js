@@ -2,8 +2,12 @@ const docManageCalls = [
   {
     name: 'upload',
     method: 'post',
-    path: () => '/doc/upload',
-    headers: ({ tokenObj }) => ({ Authorization: `Bearer ${tokenObj.token}` })
+    path: () => '/docs/upload'
+  },
+  {
+    name: 'getDocs',
+    method: 'get',
+    path: () => '/docs'
   }
 ]
 

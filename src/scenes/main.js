@@ -174,7 +174,7 @@ class Main extends Component {
     // so we check if it's one of those routes and if it is set the location to /home
     const currentLocation = { ...location, pathname: this.checkForModalMatch(location.pathname, role) }
     if (!isRefreshing && isLoggedIn) actions.startRefreshJwt()
-    
+
     return (
       <IdleTimer idleAction={() => actions.logoutUser(true)} timeout={900000}>
         <Grid container type="column" flex>
@@ -190,7 +190,7 @@ class Main extends Component {
           />
           <Grid container type="row" flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
             <Switch location={currentLocation}>
-              <Route path="/docs" exact component={DocumentManagement} />
+              <Route path="/docs" component={DocumentManagement} />
               <Route path="/project/:id/code" component={Coding} />
               <Route path="/project/:id/validate" component={Validation} />
               <Route path="/admin" component={Admin} />
