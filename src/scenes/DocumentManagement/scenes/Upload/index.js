@@ -4,15 +4,10 @@ import Grid from 'components/Grid'
 import Typography from '@material-ui/core/Typography/Typography'
 import Divider from '@material-ui/core/Divider/Divider'
 import Button from 'components/Button'
+import FileRow from './components/FileRow'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
-
-const fileTypeIcons = {
-  'pdf': 'picture_as_pdf',
-  'doc.*|rtf': 'library_books',
-  'png|jpe?g|tiff': 'insert_photo'
-}
 
 export class Upload extends Component {
   constructor(props, context) {
@@ -30,6 +25,7 @@ export class Upload extends Component {
    */
   onCloseModal = () => {
     this.props.history.push('/docs')
+    this.props.actions.clearSelectedFiles()
   }
 
   initiateFileSelecter = () => {
@@ -41,7 +37,7 @@ export class Upload extends Component {
     let files = []
     Array.from(Array(e.target.files.length).keys()).map(x => {
       const i = e.target.files.item(x)
-      files.push({ name: i.name, lastModifiedDate: i.lastModifiedDate })
+      files.push({ name: i.name, lastModifiedDate: i.lastModifiedDate, tags: [] })
     })
     this.props.actions.addSelectedDocs(files)
   }
@@ -59,7 +55,7 @@ export class Upload extends Component {
       : [closeButton]
 
     return (
-      <Modal onClose={this.onCloseModal} open={true} maxWidth="md" hideOverflow>
+      <Modal onClose={this.onCloseModal} open={true} maxWidth="lg" hideOverflow>
         <ModalTitle
           title={
             <Typography variant="title">
@@ -68,7 +64,7 @@ export class Upload extends Component {
           }
         />
         <Divider />
-        <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
+        <ModalContent style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           <form style={{ margin: '20px 0' }}>
             <Grid
               container
@@ -104,9 +100,9 @@ export class Upload extends Component {
               </Grid>
             </Grid>
           </form>
-          <Grid flex>
+          <Grid flex style={{ overflow: 'auto' }}>
             {this.props.selectedDocs.map((doc, i) => {
-              return <div key={`selectedDoc-${i}`}>{doc.name}</div>
+              return <FileRow key={`selectedDoc-${i}`} index={i} name={doc.name} tags={doc.tags} />
             })}
           </Grid>
         </ModalContent>

@@ -39,6 +39,9 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         ]
       }
 
+    case types.CLEAR_SELECTED_FILES:
+      return INITIAL_STATE
+
     default:
       return state
   }
