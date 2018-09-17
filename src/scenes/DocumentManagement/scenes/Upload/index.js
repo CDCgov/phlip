@@ -47,7 +47,6 @@ export class Upload extends Component {
   }
 
   onUploadFiles = () => {
-    console.log(this.props.user)
     let md = [], fd = { files: [] }, md2 = {}
     const formData = new FormData()
     formData.append('userId', this.props.user.id)

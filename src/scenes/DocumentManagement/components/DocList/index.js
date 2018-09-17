@@ -8,6 +8,7 @@ import TableFooter from '@material-ui/core/TableFooter'
 import TableRow from '@material-ui/core/TableRow'
 import SearchBar from 'components/SearchBar'
 import DocListTableHead from './components/DocListTableHead'
+import DocListTableRow from './components/DocListTableRow'
 
 const DocList = props => {
   const { handleSearchDocs, handleSelectAll, documents } = props
@@ -30,6 +31,9 @@ const DocList = props => {
           summary="List of documents">
           <TableHead style={{ width: '100%' }}>
             <DocListTableHead onSelectAll={handleSelectAll} />
+            {documents.map(doc => {
+              return <DocListTableRow key={`doc-${doc._id}`} {...doc} />
+            })}
           </TableHead>
         </Table>
       </Grid>
