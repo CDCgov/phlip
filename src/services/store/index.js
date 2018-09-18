@@ -20,7 +20,7 @@ const configureStore = () => {
   history = createBrowserHistory()
   api = createApiHandler({ history }, projectApiInstance, calls)
   docApi = createApiHandler({ history }, docApiInstance, docCalls)
-  
+
   const store = createStore(
     appReducer,
     composeEnhancers(

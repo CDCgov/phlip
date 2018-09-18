@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import Grid from 'components/Grid'
 import Typography from '@material-ui/core/Typography/Typography'
@@ -9,12 +9,9 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
 import CircularLoader from 'components/CircularLoader'
+import withFormAlert from 'components/withFormAlert'
 
 export class Upload extends Component {
-  state = {
-    selectedDocs: []
-  }
-
   constructor(props, context) {
     super(props, context)
 
@@ -22,7 +19,17 @@ export class Upload extends Component {
     this.selectButtonRef = React.createRef()
   }
 
-  /**
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.uploading === true && this.props.uploading === false) {
+      if (this.props.uploadError !== null) {
+        this.props.onSubmitError(this.props.uploadError)
+      } else if (this.props.goBack === true) {
+        this.props.history.push('/docs')
+      }
+    }
+  }
+
+    /**
    * Closes main modal, and pushes '/docs' onto browser history
    * @public
    */
@@ -63,14 +70,17 @@ export class Upload extends Component {
 
     formData.append('metadata', JSON.stringify(md))
     this.props.actions.uploadDocumentsRequest(formData)
+    this.setState({
+      submitting: true
+    })
   }
 
   getButtonText = text => {
-    if (this.props.uploading === true) {
+    if (this.props.uploading) {
       return (
         <>
-          {text}
-          <CircularLoader size={18} style={{ paddingLeft: 10 }} />
+          <span style={{ marginRight: 5 }}>{text}</span>
+          <CircularLoader thickness={5} style={{ height: 15, width: 15 }} />
         </>
       )
     } else {
@@ -173,9 +183,10 @@ const mapStateToProps = state => ({
   uploadError: state.scenes.docManage.upload.uploadError,
   uploadedDocs: state.scenes.docManage.upload.uploadedDocs,
   uploading: state.scenes.docManage.upload.uploading,
-  user: state.data.user.currentUser
+  user: state.data.user.currentUser,
+  isReduxForm: false
 })
 
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Upload)
+export default connect(mapStateToProps, mapDispatchToProps)(withFormAlert(Upload))

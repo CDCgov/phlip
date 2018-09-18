@@ -83,7 +83,7 @@ const scenesReducer = combineReducers({
   main: persistReducer({ ...config, key: 'main' }, mainReducer),
   home: persistReducer({ ...config, key: 'home', blacklist: ['addEditJurisdictions'] }, home),
   admin: persistReducer({ ...config, key: 'admin' }, admin),
-  docManage: persistReducer({ ...config, key: 'docManage'}, docManage),
+  docManage: persistReducer({ ...config, key: 'docManage', blacklist: ['upload'] }, docManage),
   coding: createCodingValidationReducer(coding, codingHandlers, 'CODING' ),
   validation: createCodingValidationReducer(validation, validationHandlers, 'VALIDATION'),
   codingScheme,

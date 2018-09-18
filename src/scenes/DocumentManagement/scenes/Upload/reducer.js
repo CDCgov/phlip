@@ -3,9 +3,10 @@ import { updateItemAtIndex } from 'utils/normalize'
 
 const INITIAL_STATE = {
   selectedDocs: [],
-  uploadError: {},
+  uploadError: null,
   uploadedDocs: [],
-  uploading: false
+  uploading: false,
+  goBack: false
 }
 
 const uploadReducer = (state = INITIAL_STATE, action) => {
@@ -13,7 +14,8 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
     case types.UPLOAD_DOCUMENTS_REQUEST:
       return {
         ...state,
-        uploading: true
+        uploading: true,
+        goBack: false
       }
 
     case types.UPLOAD_DOCUMENTS_SUCCESS:
@@ -21,7 +23,8 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         ...state,
         selectedDocs: [],
         uploadedDocs: action.payload.docs,
-        uploading: false
+        uploading: false,
+        goBack: true
       }
 
     case types.UPLOAD_DOCUMENTS_FAIL:
