@@ -10,8 +10,7 @@ import { Route } from 'react-router-dom'
 import Upload from './scenes/Upload'
 
 export class DocumentManagement extends Component {
-  static propTypes = {
-  }
+  static propTypes = {}
 
   constructor(props, context) {
     super(props, context)
@@ -40,19 +39,33 @@ export class DocumentManagement extends Component {
             show: true
           }}
         />
-        <DocList documents={this.props.documents} />
+        <DocList
+          documents={this.props.documents}
+          docCount={this.props.docCount}
+          onChangePage={this.props.actions.handlePageChange}
+          onChangeRows={this.props.actions.handleRowsChange}
+          onSelectAllFiles={this.props.actions.handleSelectAll}
+          onSelectOneFile={this.props.actions.handleSelectOneFile}
+          allSelected={this.props.allSelected}
+          page={this.props.page}
+          rowsPerPage={this.props.rowsPerPage}
+        />
         <Route path="/docs/upload" component={Upload} />
       </Grid>
     )
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
   return {
-    documents: state.scenes.docManage.main.documents
+    documents: state.scenes.docManage.main.documents.visible,
+    docCount: state.scenes.docManage.main.documents.allIds.length,
+    page: state.scenes.docManage.main.page,
+    rowsPerPage: state.scenes.docManage.main.rowsPerPage,
+    allSelected: state.scenes.docManage.main.allSelected
   }
 }
 
-const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch )})
+const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DocumentManagement)

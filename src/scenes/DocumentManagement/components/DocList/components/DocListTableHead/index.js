@@ -5,12 +5,12 @@ import TableCell from 'components/TableCell'
 import CheckboxLabel from 'components/CheckboxLabel'
 
 const DocListTableHead = props => {
-  const { onSelectAll, selectAllInput } = props
+  const { onSelectAll, allSelected } = props
 
   const columns = [
     {
       key: 'select-all',
-      label: <CheckboxLabel onChange={onSelectAll} input={selectAllInput} />,
+      label: <CheckboxLabel input={{ value: allSelected, onChange: onSelectAll }} />,
       style: { paddingLeft: 24, paddingRight: 0 },
       width: '1%'
     },
@@ -39,11 +39,11 @@ const DocListTableHead = props => {
 
 DocListTableHead.propTypes = {
   onSelectAll: PropTypes.func,
-  selectAllInput: PropTypes.object
+  allSelected: PropTypes.bool
 }
 
 DocListTableHead.defaultProps = {
-  selectAllInput: { value: false }
+  allSelected: false
 }
 
 export default DocListTableHead

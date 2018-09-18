@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
+import { PersistGate } from 'redux-persist/es/integration/react'
 import { connect } from 'react-redux'
 import { matchPath } from 'react-router'
 import IdleTimer from 'react-idle-timer'

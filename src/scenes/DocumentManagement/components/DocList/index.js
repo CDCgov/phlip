@@ -9,9 +9,13 @@ import TableRow from '@material-ui/core/TableRow'
 import SearchBar from 'components/SearchBar'
 import DocListTableHead from './components/DocListTableHead'
 import DocListTableRow from './components/DocListTableRow'
+import TablePagination from 'components/TablePagination'
 
 const DocList = props => {
-  const { handleSearchDocs, handleSelectAll, documents } = props
+  const {
+    onSearchDocs, onSelectAllFiles, onSelectOneFile, rowsPerPage, page,
+    onChangePage, onChangeRows, documents, docCount, allSelected
+  } = props
 
   return (
     <Grid container flex raised>
@@ -26,17 +30,44 @@ const DocList = props => {
           style={{ borderCollapse: 'separate', tableLayout: 'auto', display: 'block', overflow: 'auto' }}
           summary="List of documents">
           <TableHead style={{ width: '100%' }}>
-            <DocListTableHead onSelectAll={handleSelectAll} />
+            <DocListTableHead onSelectAll={() => onSelectAllFiles()} allSelected={allSelected} />
           </TableHead>
           <TableBody>
-            {documents.map(doc => <DocListTableRow key={`doc-${doc._id}`} {...doc} />)}
+            {documents.map(docId => <DocListTableRow
+              key={`doc-${docId}`}
+              id={docId}
+              onSelectFile={() => onSelectOneFile(docId)}
+            />)}
           </TableBody>
+        </Table>
+        <Grid flex />
+        <Table>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                count={docCount}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={(event, page) => onChangePage(page)}
+                onChangeRowsPerPage={(event) => onChangeRows(event.target.value)}
+              />
+            </TableRow>
+          </TableFooter>
         </Table>
       </Grid>
     </Grid>
   )
 }
 
-DocList.propTypes = {}
+DocList.propTypes = {
+  page: PropTypes.number,
+  rowsPerPage: PropTypes.string,
+  onSelectAllFiles: PropTypes.func,
+  onSelectOneFile: PropTypes.func,
+  docCount: PropTypes.number,
+  onChangePage: PropTypes.func,
+  onChangeRows: PropTypes.func,
+  allSelected: PropTypes.bool
+}
 
 export default DocList
