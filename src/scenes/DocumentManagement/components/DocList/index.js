@@ -12,7 +12,6 @@ import DocListTableRow from './components/DocListTableRow'
 
 const DocList = props => {
   const { handleSearchDocs, handleSelectAll, documents } = props
-  console.log(documents)
 
   return (
     <Grid container flex raised>
@@ -22,17 +21,15 @@ const DocList = props => {
           <SearchBar placeholder="Search" />
         </Grid>
       </Grid>
-      <Grid container flex>
+      <Grid container flex style={{ overflow: 'hidden' }}>
         <Table
-          style={{ borderCollapse: 'separate', tableLayout: 'auto', overflow: 'unset' }}
+          style={{ borderCollapse: 'separate', tableLayout: 'auto', display: 'block', overflow: 'auto' }}
           summary="List of documents">
           <TableHead style={{ width: '100%' }}>
             <DocListTableHead onSelectAll={handleSelectAll} />
           </TableHead>
           <TableBody>
-            {documents.map(doc => {
-              return <DocListTableRow key={`doc-${doc._id}`} {...doc} />
-            })}
+            {documents.map(doc => <DocListTableRow key={`doc-${doc._id}`} {...doc} />)}
           </TableBody>
         </Table>
       </Grid>
