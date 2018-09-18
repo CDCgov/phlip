@@ -3,6 +3,7 @@
 exports[`CircularLoader component should render correctly 1`] = `
 <WithStyles(CircularProgress)
   color="primary"
+  thickness={5}
   type="indeterminate"
 />
 `;

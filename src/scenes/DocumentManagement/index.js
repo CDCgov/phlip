@@ -10,7 +10,14 @@ import { Route } from 'react-router-dom'
 import Upload from './scenes/Upload'
 
 export class DocumentManagement extends Component {
-  static propTypes = {}
+  static propTypes = {
+    documents: PropTypes.array,
+    docCount: PropTypes.number,
+    rowsPerPage: PropTypes.string,
+    page: PropTypes.number,
+    actions: PropTypes.object,
+    allSelected: PropTypes.bool
+  }
 
   constructor(props, context) {
     super(props, context)
