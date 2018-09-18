@@ -1,0 +1,97 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HeaderTabs should render correctly 1`] = `
+<Grid
+  align="stretch"
+  circular={false}
+  container={true}
+  flex={false}
+  justify="stretch"
+  padding={0}
+  raised={false}
+  style={
+    Object {
+      "height": "100%",
+    }
+  }
+  type="row"
+>
+  <Grid
+    align="center"
+    circular={false}
+    container={true}
+    flex={false}
+    justify="stretch"
+    key="tab-0"
+    onClick={[Function]}
+    padding="12px 20px 12px 20px"
+    raised={false}
+    style={
+      Object {
+        "borderBottom": "4px solid #048484",
+        "color": "#048484",
+        "cursor": "pointer",
+      }
+    }
+    type="row"
+  >
+    <WithTheme(Icon)
+      color="#b1adc2"
+      style={
+        Object {
+          "marginRight": 8,
+        }
+      }
+    >
+      dvr
+    </WithTheme(Icon)>
+    <WithStyles(Typography)
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      Project List
+    </WithStyles(Typography)>
+  </Grid>
+  <Grid
+    align="center"
+    circular={false}
+    container={true}
+    flex={false}
+    justify="stretch"
+    key="tab-1"
+    onClick={[Function]}
+    padding="12px 20px 12px 20px"
+    raised={false}
+    style={
+      Object {
+        "borderBottom": "4px solid transparent",
+        "cursor": "pointer",
+      }
+    }
+    type="row"
+  >
+    <WithTheme(Icon)
+      color="#b1adc2"
+      style={
+        Object {
+          "marginRight": 8,
+        }
+      }
+    >
+      description
+    </WithTheme(Icon)>
+    <WithStyles(Typography)
+      style={
+        Object {
+          "color": "white",
+        }
+      }
+    >
+      Document Management
+    </WithStyles(Typography)>
+  </Grid>
+</Grid>
+`;

@@ -2,18 +2,19 @@ import { createMockStore } from 'redux-logic-test'
 import MockAdapter from 'axios-mock-adapter'
 import logic from '../logic'
 import * as types from '../actionTypes'
-import createApiHandler, { instance } from 'services/api'
+import createApiHandler, { projectApiInstance } from 'services/api'
+import calls from 'services/api/calls'
 
 describe('Protocol logic', () => {
   let mock
 
   const history = {}
-  const api = createApiHandler({ history })
+  const api = createApiHandler({ history }, projectApiInstance, calls)
 
   const mockReducer = (state, action) => state
 
   beforeEach(() => {
-    mock = new MockAdapter(instance)
+    mock = new MockAdapter(projectApiInstance)
   })
 
   const setupStore = () => {

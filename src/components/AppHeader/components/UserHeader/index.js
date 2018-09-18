@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Grid from 'components/Grid'
 import Greeting from './components/Greeting'
 import AvatarMenu from './components/AvatarMenu'
-import theme from 'services/theme'
 
 export const UserHeader = props => {
   const {
@@ -38,7 +37,9 @@ UserHeader.propTypes = {
   open: PropTypes.bool,
   handleLogoutUser: PropTypes.func,
   handleCloseMenu: PropTypes.func,
-  handleOpenMenu: PropTypes.func
+  handleOpenAdminPage: PropTypes.func,
+  handleOpenHelpPdf: PropTypes.func,
+  handleToggleMenu: PropTypes.func
 }
 
 UserHeader.defaultProps = {

@@ -2,17 +2,18 @@ import { createMockStore } from 'redux-logic-test'
 import MockAdapter from 'axios-mock-adapter'
 import logic from '../logic'
 import * as types from '../actionTypes'
-import createApiHanlder, { instance } from 'services/api'
+import createApiHandler, { projectApiInstance } from 'services/api'
+import calls from 'services/api/calls'
 
 describe('AddEditJurisdiction logic', () => {
   let mock
 
   const mockReducer = (state, action) => state
   const history = {}
-  const api = createApiHanlder({ history })
+  const api = createApiHandler({ history }, projectApiInstance, calls)
 
   beforeEach(() => {
-    mock = new MockAdapter(instance)
+    mock = new MockAdapter(projectApiInstance)
   })
 
   const setupStore = () => {

@@ -7,7 +7,7 @@ import IdleTimer from 'react-idle-timer'
 import { bindActionCreators } from 'redux'
 import Home from './Home'
 import DocumentManagement from './DocumentManagement'
-import HeaderedLayout from 'components/HeaderedLayout'
+import AppHeader from 'components/AppHeader'
 import Grid from 'components/Grid'
 import Coding from './Coding'
 import Validation from './Validation'
@@ -179,7 +179,7 @@ class Main extends Component {
     return (
       <IdleTimer idleAction={() => actions.logoutUser(true)} timeout={900000}>
         <Grid container type="column" flex>
-          <HeaderedLayout
+          <AppHeader
             user={this.props.user}
             tabs={this.state.menuTabs}
             open={this.state.menuOpen}

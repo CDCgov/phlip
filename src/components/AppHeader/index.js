@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import Grid from 'components/Grid'
 import Logo from 'components/Logo'
@@ -41,23 +41,15 @@ export const AppHeader = props => {
   )
 }
 
-AppHeader.propTypes = {}
+AppHeader.propTypes = {
+  tabs: PropTypes.array,
+  open: PropTypes.bool,
+  user: PropTypes.object,
+  onDownloadPdf: PropTypes.func,
+  onLogoutUser: PropTypes.func,
+  onOpenAdminPage: PropTypes.func,
+  onToggleMenu: PropTypes.func,
+  onTabChange: PropTypes.func
+}
 
 export default AppHeader
-
-/**
- * This component is the main wrapper for all other components, it includes the logo header at the top of the
- * application which includes the avatar menu. The contents of the other components are render inside this container.
- */
-export class HeaderedLayout extends Component {
-  constructor(props, context) {
-    super(props, context)
-    this.helpPdfRef = null
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.pdfFile === null && nextProps.pdfFile !== null) {
-      this.openHelpPdf(nextProps.pdfFile)
-    }
-  }
-}

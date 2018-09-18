@@ -3,11 +3,7 @@ import reducer from '../reducer'
 import * as types from '../actionTypes'
 
 const initial = {
-  currentUser: {},
-  menuOpen: false,
-  pdfFile: null,
-  pdfError: '',
-  isRefreshing: false
+  currentUser: {}
 }
 
 describe('User reducer', () => {
@@ -15,7 +11,7 @@ describe('User reducer', () => {
     expect(reducer(undefined, {})).toEqual(initial)
   })
 
-  describe('TOGGLE_MENU', () => {
+  xdescribe('TOGGLE_MENU', () => {
     test('should switch menuOpen to true and menuAnchor to anchor action key', () => {
       expect(
         reducer(
@@ -39,17 +35,16 @@ describe('User reducer', () => {
         )
       ).toEqual({
         ...initial,
-        currentUser: { firstName: 'user' },
-        menuOpen: false,
+        currentUser: { firstName: 'user' }
       })
     })
   })
 
-  describe('FLUSH_STATE', () => {
+  xdescribe('FLUSH_STATE', () => {
     test('should set state back to initial state', () => {
       expect(
         reducer(
-          { currentUser: { firstName: 'user' }, menuOpen: true },
+          { currentUser: { firstName: 'user' } },
           { type: types.FLUSH_STATE }
         )
       ).toEqual(initial)
@@ -60,13 +55,12 @@ describe('User reducer', () => {
     test('should set currentUser to user object in action', () => {
       expect(
         reducer(
-          { ...initial, currentUser: { firstName: 'user', bookmarks: [5,6] }, menuOpen: false },
+          { ...initial, currentUser: { firstName: 'user', bookmarks: [5,6] } },
           { type: types.TOGGLE_BOOKMARK_SUCCESS, payload: { user: { firstName: 'user', bookmarks: [5,6,7] } }}
         )
       ).toEqual({
         ...initial,
-        currentUser: { firstName: 'user', bookmarks: [5,6,7] },
-        menuOpen: false
+        currentUser: { firstName: 'user', bookmarks: [5,6,7] }
       })
     })
   })

@@ -11,11 +11,9 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
 >
   <div>
     <div
-      onDragEnd={[Function]}
-      onDragStart={[Function]}
       tabIndex={-1}
     >
-      <Card
+      <div
         style={
           Object {
             "backgroundColor": "white",
@@ -28,14 +26,10 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
         tabIndex={-1}
       >
         <div
-          draggable={true}
           role="listitem"
           tabIndex={0}
         >
           <div
-            aria-grabbed={false}
-            draggable={true}
-            onKeyDown={[Function]}
             role="button"
             tabIndex={0}
           >
@@ -71,145 +65,12 @@ exports[`CodingScheme -- Scheme -- QuestionNode should render correctly 1`] = `
                   "flex": 1,
                 }
               }
-              type="subheading"
             >
               la la la
             </WithStyles(Typography)>
-            <div>
-              <WithStyles(Tooltip)
-                id="add-child-question-0"
-                placement="left"
-                text="Add child question"
-              >
-                <WithTheme(Button)
-                  aria-label="Add child question"
-                  color="accent"
-                  component={[Function]}
-                  style={
-                    Object {
-                      "height": 40,
-                      "marginRight": 10,
-                      "minHeight": "unset",
-                      "minWidth": "unset",
-                      "padding": 0,
-                      "width": 40,
-                    }
-                  }
-                  to={
-                    Object {
-                      "pathname": "/project/undefined/coding-scheme/add",
-                      "state": Object {
-                        "canModify": true,
-                        "parentDefined": Object {
-                          "hovering": false,
-                          "text": "la la la",
-                        },
-                        "path": Array [
-                          0,
-                        ],
-                      },
-                    }
-                  }
-                  value={
-                    <WithTheme(Icon)
-                      color="white"
-                    >
-                      subdirectory_arrow_right
-                    </WithTheme(Icon)>
-                  }
-                />
-              </WithStyles(Tooltip)>
-              <WithStyles(Tooltip)
-                id="edit-question-0"
-                placement="right"
-                text="Edit question"
-              >
-                <WithTheme(Button)
-                  aria-label="Edit question"
-                  color="accent"
-                  component={[Function]}
-                  style={
-                    Object {
-                      "height": 40,
-                      "marginRight": 10,
-                      "minHeight": "unset",
-                      "minWidth": "unset",
-                      "padding": 0,
-                      "width": 40,
-                    }
-                  }
-                  to={
-                    Object {
-                      "pathname": "/project/undefined/coding-scheme/edit/undefined",
-                      "state": Object {
-                        "canModify": true,
-                        "path": Array [
-                          0,
-                        ],
-                        "questionDefined": Object {
-                          "hovering": false,
-                          "text": "la la la",
-                        },
-                      },
-                    }
-                  }
-                  value={
-                    <WithTheme(Icon)
-                      color="white"
-                    >
-                      mode_edit
-                    </WithTheme(Icon)>
-                  }
-                />
-              </WithStyles(Tooltip)>
-              <WithStyles(Tooltip)
-                id="delete-question-0"
-                placement="right"
-                text="Delete question"
-              >
-                <WithTheme(Button)
-                  aria-label="Delete question"
-                  color="accent"
-                  onClick={[Function]}
-                  style={
-                    Object {
-                      "height": 40,
-                      "marginRight": 10,
-                      "minHeight": "unset",
-                      "minWidth": "unset",
-                      "padding": 0,
-                      "width": 40,
-                    }
-                  }
-                  value={
-                    <WithTheme(Icon)
-                      color="white"
-                    >
-                      delete
-                    </WithTheme(Icon)>
-                  }
-                />
-              </WithStyles(Tooltip)>
-            </div>
           </WithStyles(CardContent)>
-          <WithStyles(CardActions)
-            disableActionSpacing={true}
-            style={
-              Object {
-                "padding": 0,
-              }
-            }
-          >
-            <div
-              style={
-                Object {
-                  "flex": "1 1 auto",
-                }
-              }
-            />
-          </WithStyles(CardActions)>
         </div>
-      </Card>
+      </div>
     </div>
   </div>
 </div>

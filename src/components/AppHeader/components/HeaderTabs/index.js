@@ -5,7 +5,7 @@ import Icon from 'components/Icon'
 import theme from 'services/theme'
 import Typography from '@material-ui/core/Typography'
 
-const HeaderTabs = props => {
+export const HeaderTabs = props => {
   const { tabs, onTabChange } = props
 
   const allStyle = {

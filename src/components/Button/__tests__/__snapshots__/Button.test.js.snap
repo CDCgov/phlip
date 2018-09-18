@@ -2,12 +2,12 @@
 
 exports[`Button component should render correctly 1`] = `
 <WithStyles(Button)
-  color="primary"
+  color="default"
   disabled={false}
   onClick={[Function]}
   style={
     Object {
-      "backgroundColor": "",
+      "backgroundColor": "primary",
       "color": "white",
       "fontWeight": 400,
     }
