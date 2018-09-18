@@ -34,4 +34,16 @@ export const getInitials = (firstName, lastName) => {
     : firstName[0] + ''
 }
 
-export default { mapArray, arrayToObject, getInitials }
+/**
+ *
+ * @param arr
+ * @param index
+ * @param updatedItem
+ * @returns {...*[]}
+ */
+export const updateItemAtIndex = (arr, index, updatedItem) => {
+  arr.splice(index, 1, updatedItem)
+  return [...arr]
+}
+
+export default { mapArray, arrayToObject, getInitials, updateItemAtIndex }

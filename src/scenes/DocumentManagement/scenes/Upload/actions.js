@@ -7,6 +7,8 @@ export const types = {
   ADD_SELECTED_DOCS: 'ADD_SELECTED_DOCS',
   UPDATE_DOC_PROPERTY: 'UPDATE_DOC_PROPERTY',
   CLEAR_SELECTED_FILES: 'CLEAR_SELECTED_FILES',
+  REMOVE_TAG: 'REMOVE_TAG',
+  ADD_TAG: 'ADD_TAG',
   REMOVE_DOC: 'REMOVE_DOC'
 }
 
@@ -15,5 +17,7 @@ export default {
   updateDocumentProperty: makeActionCreator(types.UPDATE_DOC_PROPERTY, 'index', 'property', 'value'),
   addSelectedDocs: makeActionCreator(types.ADD_SELECTED_DOCS, 'selectedDocs'),
   clearSelectedFiles: makeActionCreator(types.CLEAR_SELECTED_FILES),
-  removeDoc: makeActionCreator(types.REMOVE_DOC, 'index')
+  removeDoc: makeActionCreator(types.REMOVE_DOC, 'index'),
+  removeTag: makeActionCreator(types.REMOVE_TAG, 'index', 'tag', 'tagIndex'),
+  addTag: makeActionCreator(types.ADD_TAG, 'index', 'tag')
 }

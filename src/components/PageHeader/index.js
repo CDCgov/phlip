@@ -59,7 +59,6 @@ export const PageHeader = props => {
             ? <Button
               value={otherButton.text}
               color="white"
-              style={{ fontWeight: 800 }}
               textColor={theme.palette.secondary.text}
               component={Link}
               to={{ pathname: `${otherButton.path}`, state: { ...otherButton.state } }}

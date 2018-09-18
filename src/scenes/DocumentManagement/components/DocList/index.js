@@ -22,19 +22,18 @@ const DocList = props => {
           <SearchBar placeholder="Search" />
         </Grid>
       </Grid>
-      {documents.map(doc => {
-        return //<div>{doc.name}</div>
-      })}
       <Grid container flex>
         <Table
           style={{ borderCollapse: 'separate', tableLayout: 'auto', overflow: 'unset' }}
           summary="List of documents">
           <TableHead style={{ width: '100%' }}>
             <DocListTableHead onSelectAll={handleSelectAll} />
+          </TableHead>
+          <TableBody>
             {documents.map(doc => {
               return <DocListTableRow key={`doc-${doc._id}`} {...doc} />
             })}
-          </TableHead>
+          </TableBody>
         </Table>
       </Grid>
     </Grid>

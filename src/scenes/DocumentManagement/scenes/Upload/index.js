@@ -54,6 +54,7 @@ export class Upload extends Component {
     formData.append('userLastName', this.props.user.lastName)
 
     this.props.selectedDocs.map((doc, i) => {
+      console.log(doc)
       const { file, ...otherProps } = doc
       formData.append('files', file, doc.name)
       md2[doc.name] = otherProps
@@ -121,7 +122,7 @@ export class Upload extends Component {
                 />
                 <Typography
                   variant="body2"
-                  style={{ color: '#646465', fontWeight: 700, marginLeft: 10, alignSelf: 'center' }}>
+                  style={{ color: '#646465', marginLeft: 10, alignSelf: 'center' }}>
                   or drag and drop files here
                 </Typography>
               </Grid>
@@ -134,6 +135,9 @@ export class Upload extends Component {
                 index={i}
                 name={doc.name}
                 tags={doc.tags}
+                onAddTag={this.props.actions.addTag}
+                onRemoveTag={this.props.actions.removeTag}
+                onChangeProperty={this.props.actions.updateDocumentProperty}
                 onRemoveDoc={this.props.actions.removeDoc}
               />
             })}

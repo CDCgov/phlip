@@ -1,4 +1,5 @@
 import { types } from './actions'
+import { updateItemAtIndex } from 'utils/normalize'
 
 const INITIAL_STATE = {
   selectedDocs: [],
@@ -30,6 +31,21 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         uploading: false
       }
 
+    case types.UPDATE_DOC_PROPERTY:
+      let selectedDoc = { ...state.selectedDocs[action.index] }
+      let value = action.value
+
+      if (action.property === 'tags') {
+        value = action.value.split(',')
+      }
+
+      selectedDoc[action.property] = value
+
+      return {
+        ...state,
+        selectedDocs: updateItemAtIndex([...state.selectedDocs], action.index, selectedDoc)
+      }
+
     case types.ADD_SELECTED_DOCS:
       return {
         ...state,
@@ -37,6 +53,24 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
           ...state.selectedDocs,
           ...action.selectedDocs
         ]
+      }
+
+    case types.ADD_TAG:
+      selectedDoc = { ...state.selectedDocs[action.index] }
+      selectedDoc.tags = [...selectedDoc.tags, action.tag]
+
+      return {
+        ...state,
+        selectedDocs: updateItemAtIndex([...state.selectedDocs], action.index, selectedDoc)
+      }
+
+    case types.REMOVE_TAG:
+      selectedDoc = { ...state.selectedDocs[action.index] }
+      selectedDoc.tags.splice(action.tagIndex, 1)
+
+      return {
+        ...state,
+        selectedDocs: updateItemAtIndex([...state.selectedDocs], action.index, selectedDoc)
       }
 
     case types.REMOVE_DOC:

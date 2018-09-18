@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import Icon from 'components/Icon'
 import Grid from 'components/Grid'
 import Typography from '@material-ui/core/Typography'
-import SimpleInput from 'components/SimpleInput'
 import IconButton from 'components/IconButton'
+import ChipInput from 'material-ui-chip-input'
+import Chip from 'components/Chip'
 
 const fileTypeIcons = {
   'pdf': 'picture_as_pdf',
@@ -25,7 +26,7 @@ const getIconType = extension => {
 }
 
 const FileRow = props => {
-  const { name, tags, onChangeProperty, onRemoveDoc, index } = props
+  const { name, tags, onAddTag, onRemoveTag, onRemoveDoc, index } = props
   const pieces = name.split('.')
   const extension = pieces[pieces.length - 1]
   const iconName = getIconType(extension)
@@ -43,13 +44,14 @@ const FileRow = props => {
       </Grid>
       <Grid flex container type="row" align="flex-end" style={{ margin: '0 0 0 20px' }}>
         <Icon color="#949494" style={{ marginRight: 5, marginBottom: 3 }}>local_offer</Icon>
-        <SimpleInput
-          label="Tags"
-          value=""
-          multiline={false}
-          shrinkLabel
+        <ChipInput
+          value={tags}
+          fullWidth
+          onAdd={chip => onAddTag(index, chip)}
+          onDelete={(chip, tagIndex) => onRemoveTag(index, chip, tagIndex)}
           placeholder="Enter tags"
-          onChange={value => onChangeProperty(index, 'tags', value)}
+          chipRenderer={Chip}
+          color="secondary"
         />
       </Grid>
       <IconButton style={{ margin: '0 20px' }} onClick={() => onRemoveDoc(index)} iconSize={24} color="primary">
