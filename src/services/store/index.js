@@ -20,11 +20,9 @@ const configureStore = () => {
   history = createBrowserHistory()
   api = createApiHandler({ history }, projectApiInstance, calls)
   docApi = createApiHandler({ history }, docApiInstance, docCalls)
-
-  persistRootReducer = persistReducer({ storage, key: 'root' }, appReducer)
-
+  
   const store = createStore(
-    persistRootReducer,
+    appReducer,
     composeEnhancers(
       applyMiddleware(createLogicMiddleware(rootLogic, { api, docApi, history }))
     )
@@ -33,7 +31,7 @@ const configureStore = () => {
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
     module.hot.accept('../../reducer', () => {
-      store.replaceReducer(persistRootReducer)
+      store.replaceReducer(appReducer)
     })
   }
 

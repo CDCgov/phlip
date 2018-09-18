@@ -61,7 +61,7 @@ const FileRow = props => {
         <Typography>{name}</Typography>
       </Grid>
       <Grid flex container type="row" align="flex-end" style={{ margin: '0 0 0 20px' }}>
-        <Icon color="#949494" size={32} style={{ marginRight: 5 }}>local_offer</Icon>
+        <Icon color="#949494" size={28} style={{ marginRight: 5 }}>local_offer</Icon>
         <Grid flex container style={{ display: 'inline-flex', position: 'relative' }}>
           <Typography variant="caption" style={{ fontSize: '.65rem', color: '#9e9e9e', marginBottom: 2 }}>
             Tags

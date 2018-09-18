@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import Grid from 'components/Grid'
 import Typography from '@material-ui/core/Typography/Typography'
@@ -8,6 +8,7 @@ import FileRow from './components/FileRow'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
+import CircularLoader from 'components/CircularLoader'
 
 export class Upload extends Component {
   state = {
@@ -47,22 +48,34 @@ export class Upload extends Component {
   }
 
   onUploadFiles = () => {
-    let md = [], fd = { files: [] }, md2 = {}
+    let fd = { files: [] }, md = {}
     const formData = new FormData()
     formData.append('userId', this.props.user.id)
     formData.append('userFirstName', this.props.user.firstName)
     formData.append('userLastName', this.props.user.lastName)
 
     this.props.selectedDocs.map((doc, i) => {
-      console.log(doc)
       const { file, ...otherProps } = doc
       formData.append('files', file, doc.name)
-      md2[doc.name] = otherProps
+      md[doc.name] = otherProps
       fd.files = [...fd.files, file]
     })
 
-    formData.append('metadata', JSON.stringify(md2))
+    formData.append('metadata', JSON.stringify(md))
     this.props.actions.uploadDocumentsRequest(formData)
+  }
+
+  getButtonText = text => {
+    if (this.props.uploading === true) {
+      return (
+        <>
+          {text}
+          <CircularLoader size={18} style={{ paddingLeft: 10 }} />
+        </>
+      )
+    } else {
+      return <>{text}</>
+    }
   }
 
   render() {
@@ -76,7 +89,13 @@ export class Upload extends Component {
     const modalActions = this.props.selectedDocs.length > 0
       ? [
         closeButton,
-        { value: 'Upload', type: 'button', otherProps: { 'aria-label': 'Upload' }, onClick: this.onUploadFiles }
+        {
+          value: this.getButtonText('Upload'),
+          type: 'button',
+          otherProps: { 'aria-label': 'Upload' },
+          onClick: this.onUploadFiles,
+          disabled: this.props.uploading
+        }
       ]
       : [closeButton]
 
