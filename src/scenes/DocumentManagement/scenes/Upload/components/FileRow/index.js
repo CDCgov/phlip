@@ -6,6 +6,21 @@ import Typography from '@material-ui/core/Typography'
 import IconButton from 'components/IconButton'
 import ChipInput from 'material-ui-chip-input'
 import Chip from 'components/Chip'
+import { withStyles } from '@material-ui/core/styles'
+
+const styles = {
+  chipContainer: {
+    marginBottom: 0,
+    display: 'inline-flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    minHeight: 'unset',
+    paddingBottom: 2
+  },
+  chip: {
+    margin: '0 8px 2px 0'
+  }
+}
 
 const fileTypeIcons = {
   'pdf': 'picture_as_pdf',
@@ -36,23 +51,35 @@ const FileRow = props => {
   return (
     <Grid container type="row" align="center" padding="10px 0" style={{ backgroundColor: bgColor }}>
       <Icon size={32} style={{ padding: '0 20px' }}>{iconName}</Icon>
-      <Grid flex container style={{ display: 'inline-flex', position: 'relative', width: '30%' }}>
+      <Grid
+        flex
+        container
+        style={{ display: 'inline-flex', position: 'relative', minWidth: '40%', maxWidth: '40%' }}>
         <Typography variant="caption" style={{ fontSize: '.65rem', color: '#9e9e9e', marginBottom: 2 }}>
           File Name
         </Typography>
         <Typography>{name}</Typography>
       </Grid>
       <Grid flex container type="row" align="flex-end" style={{ margin: '0 0 0 20px' }}>
-        <Icon color="#949494" style={{ marginRight: 5, marginBottom: 3 }}>local_offer</Icon>
-        <ChipInput
-          value={tags}
-          fullWidth
-          onAdd={chip => onAddTag(index, chip)}
-          onDelete={(chip, tagIndex) => onRemoveTag(index, chip, tagIndex)}
-          placeholder="Enter tags"
-          chipRenderer={Chip}
-          color="secondary"
-        />
+        <Icon color="#949494" size={32} style={{ marginRight: 5 }}>local_offer</Icon>
+        <Grid flex container style={{ display: 'inline-flex', position: 'relative' }}>
+          <Typography variant="caption" style={{ fontSize: '.65rem', color: '#9e9e9e', marginBottom: 2 }}>
+            Tags
+          </Typography>
+          <ChipInput
+            value={tags}
+            fullWidth
+            onAdd={chip => onAddTag(index, chip)}
+            onDelete={(chip, tagIndex) => onRemoveTag(index, chip, tagIndex)}
+            placeholder="Enter tags"
+            chipRenderer={Chip}
+            classes={{
+              chipContainer: props.classes.chipContainer,
+              chip: props.classes.chip
+            }}
+            color="secondary"
+          />
+        </Grid>
       </Grid>
       <IconButton style={{ margin: '0 20px' }} onClick={() => onRemoveDoc(index)} iconSize={24} color="primary">
         cancel
@@ -94,4 +121,4 @@ FileRow.defaultProps = {
   tags: []
 }
 
-export default FileRow
+export default withStyles(styles)(FileRow)
