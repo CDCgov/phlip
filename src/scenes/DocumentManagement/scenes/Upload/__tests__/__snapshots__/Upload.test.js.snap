@@ -1,0 +1,102 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Document Management - Upload scene should render correctly 1`] = `
+<WithStyles(Modal)
+  hideOverflow={true}
+  maxWidth="lg"
+  onClose={[Function]}
+  open={true}
+>
+  <Alert
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "otherProps": Object {
+            "aria-label": "Close",
+          },
+          "type": "button",
+          "value": "Close",
+        },
+      ]
+    }
+    open={false}
+    title={null}
+  >
+    . Duplicates are indicated by a 
+    <WithTheme(Icon)
+      color="#fc515a"
+      size={20}
+    >
+      error
+    </WithTheme(Icon)>
+     icon next to their name.
+  </Alert>
+  <ModalTitle
+    title={
+      <WithStyles(Typography)
+        variant="title"
+      >
+        <span
+          style={
+            Object {
+              "paddingRight": 10,
+            }
+          }
+        >
+          Upload Documents
+        </span>
+      </WithStyles(Typography)>
+    }
+  />
+  <WithStyles(Divider) />
+  <ModalContent
+    style={
+      Object {
+        "display": "flex",
+        "flexDirection": "column",
+        "overflow": "hidden",
+      }
+    }
+  >
+    <InputFileContainer
+      handleAddFilesToList={[Function]}
+      handleInitiateFileSelecter={[Function]}
+      inputRef={
+        Object {
+          "current": null,
+        }
+      }
+    />
+    <Grid
+      align="stretch"
+      circular={false}
+      container={false}
+      flex={true}
+      justify="stretch"
+      padding={0}
+      raised={false}
+      style={
+        Object {
+          "overflow": "auto",
+        }
+      }
+      type="column"
+    />
+  </ModalContent>
+  <WithStyles(ModalActions)
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "otherProps": Object {
+            "aria-label": "Close modal",
+          },
+          "type": "button",
+          "value": "Close",
+        },
+      ]
+    }
+  />
+</WithStyles(Modal)>
+`;
