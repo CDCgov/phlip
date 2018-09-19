@@ -6,8 +6,11 @@ import CheckboxLabel from 'components/CheckboxLabel'
 import moment from 'moment'
 import { connect } from 'react-redux'
 
+/**
+ * Represents one row in the document management table
+ */
 const DocListTableRow = props => {
-  const { id, doc, onSelectFile, isChecked } = props
+  const { doc, onSelectFile, isChecked } = props
   const date = moment.utc(doc.uploadedDate).local().format('M/D/YYYY, h:mm A')
 
   return (
@@ -23,9 +26,24 @@ const DocListTableRow = props => {
 }
 
 DocListTableRow.propTypes = {
+  /**
+   * Specific document from redux - documents[id]
+   */
   doc: PropTypes.object,
+
+  /**
+   * ID of document used to retrieve specific document from redux
+   */
   id: PropTypes.string,
+
+  /**
+   * Is the document currently selected (the checkbox cell selected)
+   */
   isChecked: PropTypes.bool,
+
+  /**
+   * Handles when a user clicks the checkbox cell for this document
+   */
   onSelectFile: PropTypes.func
 }
 

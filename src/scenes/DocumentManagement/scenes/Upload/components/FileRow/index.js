@@ -40,6 +40,9 @@ const getIconType = extension => {
   return icon
 }
 
+/**
+ * Represents one row in the list of selected documents to upload
+ */
 const FileRow = props => {
   const { name, tags, onAddTag, onRemoveTag, onRemoveDoc, index } = props
   const pieces = name.split('.')
@@ -95,11 +98,6 @@ FileRow.propTypes = {
   name: PropTypes.string,
 
   /**
-   * Function when the user wants to change a property of the file
-   */
-  onChangeProperty: PropTypes.func,
-
-  /**
    * Function called when a user wants to remove the file
    */
   onRemoveDoc: PropTypes.func,
@@ -112,7 +110,22 @@ FileRow.propTypes = {
   /**
    * Tags added to the file
    */
-  tags: PropTypes.array
+  tags: PropTypes.array,
+
+  /**
+   * Handles when a user removes a tag from a document
+   */
+  onRemoveTag: PropTypes.func,
+
+  /**
+   * Handles when a user adds a tag to a document
+   */
+  onAddTag: PropTypes.func,
+
+  /**
+   * Classes object from withStyles material-ui HOC
+   */
+  classes: PropTypes.object
 }
 
 FileRow.defaultProps = {

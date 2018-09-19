@@ -4,6 +4,9 @@ import Grid from 'components/Grid'
 import Button from 'components/Button'
 import Typography from '@material-ui/core/Typography/Typography'
 
+/**
+ * The blue container where files can be uploaded
+ */
 const InputFileContainer = props => {
   const { handleInitiateFileSelecter, handleAddFilesToList, inputRef } = props
 

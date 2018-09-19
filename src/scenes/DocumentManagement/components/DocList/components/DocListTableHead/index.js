@@ -4,6 +4,9 @@ import TableRow from 'components/TableRow'
 import TableCell from 'components/TableCell'
 import CheckboxLabel from 'components/CheckboxLabel'
 
+/**
+ * Table header for the document list
+ */
 const DocListTableHead = props => {
   const { onSelectAll, allSelected } = props
 
@@ -38,7 +41,14 @@ const DocListTableHead = props => {
 }
 
 DocListTableHead.propTypes = {
+  /**
+   * Handles when the user clicks the checkbox table header
+   */
   onSelectAll: PropTypes.func,
+
+  /**
+   * Whether or not all files are currently selected
+   */
   allSelected: PropTypes.bool
 }
 

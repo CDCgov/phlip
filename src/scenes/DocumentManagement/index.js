@@ -9,13 +9,40 @@ import { bindActionCreators } from 'redux'
 import { Route } from 'react-router-dom'
 import Upload from './scenes/Upload'
 
+/**
+ * DocumentManagement main scene component. This is the first view the user sees when they switch over to the
+ * document management global menu item
+ */
 export class DocumentManagement extends Component {
   static propTypes = {
+    /**
+     * An array of document Ids
+     */
     documents: PropTypes.array,
+
+    /**
+     * Total number of documents
+     */
     docCount: PropTypes.number,
+
+    /**
+     * Currently selected number of rows to show per page
+     */
     rowsPerPage: PropTypes.string,
+
+    /**
+     * Current page in table
+     */
     page: PropTypes.number,
+
+    /**
+     * Redux actions
+     */
     actions: PropTypes.object,
+
+    /**
+     * Whether or not the checkbox table header has been clicked, selecting all files
+     */
     allSelected: PropTypes.bool
   }
 

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import Grid from 'components/Grid'
 import Typography from '@material-ui/core/Typography/Typography'
@@ -12,9 +13,71 @@ import withFormAlert from 'components/withFormAlert'
 import InputFileContainer from './components/InputFileContainer'
 import Alert from 'components/Alert'
 
+/**
+ * Upload documents modal component. In this modal the user can upload documents to the document management system
+ */
 export class Upload extends Component {
-  state = {
-    alertActions: []
+
+  static propTypes = {
+    /**
+     * Documents that the user has selected from the file selecter input modal
+     */
+    selectedDocs: PropTypes.array,
+
+    /**
+     * Any error that happened during a request, opens an alert with error
+     */
+    requestError: PropTypes.string,
+
+    /**
+     * Documents the user has actually uploaded
+     */
+    uploadedDocs: PropTypes.array,
+
+    /**
+     * Any files that came back from the verify upload request, meaning they already exist in the db
+     */
+    duplicateFiles: PropTypes.array,
+
+    /**
+     * If the uploading request is in progress
+     */
+    uploading: PropTypes.bool,
+
+    /**
+     * If the verifying request is in progress
+     */
+    verifying: PropTypes.bool,
+
+    /**
+     * Text to be shown in an alert modal
+     */
+    alertText: PropTypes.string,
+
+    /**
+     * Whether or not the alert modal should be open
+     */
+    alertOpen: PropTypes.bool,
+
+    /**
+     * Title of the alert modal
+     */
+    alertTitle: PropTypes.string,
+
+    /**
+     * Whoever is currently logged in
+     */
+    user: PropTypes.object,
+
+    /**
+     * Whether or not this form is using redux-form, needed for the withFormAlert HOC
+     */
+    isReduxForm: PropTypes.bool,
+
+    /**
+     * Redux actions
+     */
+    actions: PropTypes.object
   }
 
   constructor(props, context) {
@@ -26,7 +89,13 @@ export class Upload extends Component {
       value: 'Close',
       type: 'button',
       otherProps: { 'aria-label': 'Close' },
-      onClick: this.props.actions.closeAlert
+      onClick: this.closeAlert
+    }
+
+    this.state = {
+      alertActions: [
+        this.dismissAlertAction
+      ]
     }
   }
 
@@ -41,12 +110,23 @@ export class Upload extends Component {
   }
 
   /**
+   * Resets the alert actions and calls redux action to close alert
+   */
+  closeAlert = () => {
+    this.setState({
+      alertActions: [
+        this.dismissAlertAction
+      ]
+    })
+    this.props.actions.closeAlert()
+  }
+
+  /**
    * Closes main modal, and pushes '/docs' onto browser history
    * @public
    */
   onCloseModal = () => {
     if (this.props.selectedDocs.length > 0) {
-
       this.setState({
         alertActions: [
           this.dismissAlertAction,
@@ -63,16 +143,26 @@ export class Upload extends Component {
     }
   }
 
+  /**
+   * Closes modal and goes back to main doc list
+   */
   goBack = () => {
     this.props.history.push('/docs')
     this.props.actions.clearSelectedFiles()
     this.props.actions.closeAlert()
   }
 
+  /**
+   * Opens the file selecter input modal
+   */
   initiateFileSelecter = () => {
     this.inputDropRef.current.click()
   }
 
+  /**
+   * Adds selected files to redux, sends a request to verify the documents can be uploaded
+   * @param e
+   */
   addFilesToList = (e) => {
     e.preventDefault()
     let files = []
@@ -86,6 +176,9 @@ export class Upload extends Component {
     this.props.actions.verifyUploadRequest(files)
   }
 
+  /**
+   * Creates a formData object to send to api to upload documents
+   */
   onUploadFiles = () => {
     let fd = { files: [] }, md = {}
     const formData = new FormData()
@@ -104,6 +197,11 @@ export class Upload extends Component {
     this.props.actions.uploadDocumentsRequest(formData)
   }
 
+  /**
+   * Determines the text for the modal button at the bottom
+   * @param text
+   * @returns {*}
+   */
   getButtonText = text => {
     return this.props.uploading
       ? (
