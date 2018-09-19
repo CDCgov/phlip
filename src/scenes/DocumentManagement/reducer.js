@@ -17,7 +17,7 @@ const INITIAL_STATE = {
   allSelected: false
 }
 
-const docManagementReducer = (state = INITIAL_STATE, action) => {
+export const docManagementReducer = (state = INITIAL_STATE, action) => {
   switch(action.type) {
     case types.GET_DOCUMENTS_SUCCESS:
       rows = parseInt(action.rowsPerPage)

@@ -9,7 +9,7 @@ const getDocLogic = createLogic({
       const documents = await docApi.getDocs()
       dispatch({ type: types.GET_DOCUMENTS_SUCCESS, payload: documents })
     } catch (e) {
-      dispatch({ types: types.GET_DOCUMENTS_FAIL })
+      dispatch({ type: types.GET_DOCUMENTS_FAIL, payload: 'Failed to get documents' })
     }
     done()
   }
