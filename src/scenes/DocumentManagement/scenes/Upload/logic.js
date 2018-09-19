@@ -25,7 +25,7 @@ const uploadRequestLogic = createLogic({
       const docs = await docApi.upload(action.selectedDocs)
       dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs } })
     } catch (err) {
-      dispatch({ type: types.UPLOAD_DOCUMENTS_FAIL, payload: { error: `Failed to upload docs, ${err}` } })
+      dispatch({ type: types.UPLOAD_DOCUMENTS_FAIL, payload: { error: 'Failed to upload documents, please try again.' } })
     }
     done()
   }
