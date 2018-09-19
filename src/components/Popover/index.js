@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { findDOMNode } from 'react-dom'
 import PropTypes from 'prop-types'
-import { Manager, Popper, Target } from 'react-popper'
+import { Manager, Popper, Reference } from 'react-popper'
 
 /**
  * Popover component that displays a
@@ -43,7 +43,7 @@ export class Popover extends Component {
 
     return (
       <Manager>
-        <Target>
+        <Reference>
           {({ targetProps }) => (
             React.cloneElement(this.props.children, {
               ...this.props.children.props,
@@ -55,7 +55,7 @@ export class Popover extends Component {
               }
             })
           )}
-        </Target>
+        </Reference>
         <Popper
           placement="top"
           eventsEnabled={this.state.open}
