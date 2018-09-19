@@ -8,7 +8,6 @@ import Icon from 'components/Icon'
 import Avatar from 'components/Avatar'
 import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
-import Grow from '@material-ui/core/Grow'
 import Paper from '@material-ui/core/Paper'
 import { Manager, Reference, Popper } from 'react-popper'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
@@ -44,7 +43,7 @@ export class AvatarMenu extends PureComponent {
 
   handleClose = event => {
     if (!this.avatarRef.contains(event.target)) {
-      this.props.onCloseMenu()
+      this.props.onToggleMenu()
     }
   }
 
@@ -62,7 +61,7 @@ export class AvatarMenu extends PureComponent {
                 <div ref={ref}>
                   <Avatar
                     id="avatar-menu-button"
-                    onClick={onToggleMenu}
+                    onClick={this.props.onToggleMenu}
                     onKeyPress={this.onKeyPressMenu}
                     role="button"
                     tabIndex={0}
@@ -85,7 +84,7 @@ export class AvatarMenu extends PureComponent {
             style={{ pointerEvents: open ? 'auto' : 'none' }}>
             {({ placement, ref, style })  => {
               return (
-                open && <ClickAwayListener onClickAway={this.handleClose}>
+                open && <ClickAwayListener onClickAway={onToggleMenu}>
                   <div data-placement={placement} style={{ marginTop: 5, ...style }} ref={ref}>
                     <Paper>
                       <MenuList

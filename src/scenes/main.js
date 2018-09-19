@@ -146,9 +146,9 @@ class Main extends Component {
     this.props.actions.resetDownloadError()
   }
 
-  handleToggleMenu = open => {
+  handleToggleMenu = () => {
     this.setState({
-      menuOpen: open
+      menuOpen: !this.state.menuOpen
     })
   }
 

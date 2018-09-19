@@ -31,7 +31,6 @@ exports[`UserHeader should render correctly 1`] = `
   </Grid>
   <AvatarMenu
     initials="TU"
-    onCloseMenu={[MockFunction]}
     onLogoutUser={[MockFunction]}
     onOpenAdminPage={[MockFunction]}
     onOpenHelpPdf={[MockFunction]}

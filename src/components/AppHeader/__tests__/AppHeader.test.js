@@ -1,5 +1,5 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 import { AppHeader } from '../index'
 
 const props = {
@@ -29,5 +29,9 @@ const props = {
 describe('AppHeader', () => {
   test('it should render correctly', () => {
     expect(shallow(<AppHeader {...props} />)).toMatchSnapshot()
+  })
+
+  test('it should call onToggleMenu', () => {
+
   })
 })

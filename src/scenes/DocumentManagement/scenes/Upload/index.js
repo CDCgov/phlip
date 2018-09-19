@@ -110,12 +110,14 @@ export class Upload extends Component {
    * Resets the alert actions and calls redux action to close alert
    */
   closeAlert = () => {
-    this.setState({
-      alertActions: [
-        this.dismissAlertAction
-      ]
-    })
     this.props.actions.closeAlert()
+    setTimeout(() => {
+      this.setState({
+        alertActions: [
+          this.dismissAlertAction
+        ]
+      })
+    }, 1000)
   }
 
   /**

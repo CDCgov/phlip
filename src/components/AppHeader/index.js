@@ -31,9 +31,8 @@ export const AppHeader = props => {
         user={user}
         open={open}
         handleLogoutUser={onLogoutUser}
-        handleToggleMenu={() => onToggleMenu(!open)}
+        handleToggleMenu={onToggleMenu}
         handleOpenAdminPage={onOpenAdminPage}
-        handleCloseMenu={() => onToggleMenu(false)}
         handleOpenHelpPdf={onDownloadPdf}
         handleTabChange={onTabChange}
       />
@@ -42,13 +41,44 @@ export const AppHeader = props => {
 }
 
 AppHeader.propTypes = {
+  /**
+   * List of tabs for the global navigation menu
+   */
   tabs: PropTypes.array,
+
+  /**
+   * Whether or not the avatar menu is open
+   */
   open: PropTypes.bool,
+
+  /**
+   * User currently logged in
+   */
   user: PropTypes.object,
+
+  /**
+   * Handles when the user click the help pdf menu item
+   */
   onDownloadPdf: PropTypes.func,
+
+  /**
+   * Handles when the user clicks the logout menu item
+   */
   onLogoutUser: PropTypes.func,
+
+  /**
+   * Handles when the user clicks the open admin page icon
+   */
   onOpenAdminPage: PropTypes.func,
+
+  /**
+   * Toggles whether the menu is open or closed
+   */
   onToggleMenu: PropTypes.func,
+
+  /**
+   * Handles navigation via the global menu
+   */
   onTabChange: PropTypes.func
 }
 

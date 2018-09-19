@@ -22,7 +22,6 @@ export const UserHeader = props => {
         role={user.role}
         open={open}
         onToggleMenu={handleToggleMenu}
-        onCloseMenu={handleCloseMenu}
         onOpenAdminPage={handleOpenAdminPage}
         onLogoutUser={handleLogoutUser}
         onOpenHelpPdf={handleOpenHelpPdf}
@@ -36,7 +35,6 @@ UserHeader.propTypes = {
   user: PropTypes.object,
   open: PropTypes.bool,
   handleLogoutUser: PropTypes.func,
-  handleCloseMenu: PropTypes.func,
   handleOpenAdminPage: PropTypes.func,
   handleOpenHelpPdf: PropTypes.func,
   handleToggleMenu: PropTypes.func

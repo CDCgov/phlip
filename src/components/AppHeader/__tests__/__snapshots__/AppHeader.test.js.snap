@@ -59,12 +59,11 @@ exports[`AppHeader it should render correctly 1`] = `
     />
   </Grid>
   <UserHeader
-    handleCloseMenu={[Function]}
     handleLogoutUser={[MockFunction]}
     handleOpenAdminPage={[MockFunction]}
     handleOpenHelpPdf={[MockFunction]}
     handleTabChange={[MockFunction]}
-    handleToggleMenu={[Function]}
+    handleToggleMenu={[MockFunction]}
     open={false}
     user={
       Object {
