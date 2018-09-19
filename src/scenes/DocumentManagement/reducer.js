@@ -20,7 +20,7 @@ const INITIAL_STATE = {
 export const docManagementReducer = (state = INITIAL_STATE, action) => {
   switch(action.type) {
     case types.GET_DOCUMENTS_SUCCESS:
-      rows = parseInt(action.rowsPerPage)
+      rows = parseInt(state.rowsPerPage)
       if (state.rowsPerPage === 'All')
         rows = state.documents.allIds.length
 
