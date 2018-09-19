@@ -20,6 +20,10 @@ const INITIAL_STATE = {
 const docManagementReducer = (state = INITIAL_STATE, action) => {
   switch(action.type) {
     case types.GET_DOCUMENTS_SUCCESS:
+      rows = parseInt(action.rowsPerPage)
+      if (state.rowsPerPage === 'All')
+        rows = state.documents.allIds.length
+
       let obj = arrayToObject(action.payload, '_id')
       let allIds = Object.keys(obj)
 
@@ -28,7 +32,7 @@ const docManagementReducer = (state = INITIAL_STATE, action) => {
         documents: {
           byId: obj,
           allIds,
-          visible: sliceTable(allIds, 0, 10),
+          visible: sliceTable(allIds, 0, rows),
           checked: state.documents.checked
         }
       }
