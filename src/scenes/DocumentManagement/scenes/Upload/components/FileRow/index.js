@@ -44,26 +44,29 @@ const getIconType = extension => {
  * Represents one row in the list of selected documents to upload
  */
 const FileRow = props => {
-  const { name, tags, onAddTag, onRemoveTag, onRemoveDoc, index } = props
+  const { name, tags, onAddTag, onRemoveTag, onRemoveDoc, index, isDuplicate } = props
   const pieces = name.split('.')
   const extension = pieces[pieces.length - 1]
   const iconName = getIconType(extension)
 
-  const bgColor = index % 2 === 0 ? '#f9f9f9' : '#fff'
+  const bgColor = index % 2 === 0
+      ? '#f9f9f9'
+      : '#fff'
 
   return (
     <Grid container type="row" align="center" padding="10px 0" style={{ backgroundColor: bgColor }}>
-      <Icon size={32} style={{ padding: '0 20px' }}>{iconName}</Icon>
+      {isDuplicate && <Icon size={32} style={{ padding: '0 20px' }} color="#fc515a">error</Icon> }
+      {!isDuplicate && <Icon size={32} style={{ padding: '0 20px' }}>{iconName}</Icon>}
       <Grid
         flex
         container
-        style={{ display: 'inline-flex', position: 'relative', minWidth: '40%', maxWidth: '40%' }}>
+        style={{ display: 'inline-flex', position: 'relative' }}>
         <Typography variant="caption" style={{ fontSize: '.65rem', color: '#9e9e9e', marginBottom: 2 }}>
           File Name
         </Typography>
         <Typography>{name}</Typography>
       </Grid>
-      <Grid flex container type="row" align="flex-end" style={{ margin: '0 0 0 20px' }}>
+      {!isDuplicate && <Grid flex container type="row" align="flex-end" style={{ margin: '0 0 0 20px', minWidth: '40%', maxWidth: '40%' }}>
         <Icon color="#949494" size={28} style={{ marginRight: 5 }}>local_offer</Icon>
         <Grid flex container style={{ display: 'inline-flex', position: 'relative' }}>
           <Typography variant="caption" style={{ fontSize: '.65rem', color: '#9e9e9e', marginBottom: 2 }}>
@@ -83,7 +86,7 @@ const FileRow = props => {
             color="secondary"
           />
         </Grid>
-      </Grid>
+      </Grid>}
       <IconButton style={{ margin: '0 20px' }} onClick={() => onRemoveDoc(index)} iconSize={24} color="primary">
         cancel
       </IconButton>

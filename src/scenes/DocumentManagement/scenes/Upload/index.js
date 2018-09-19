@@ -1,17 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
-import Grid from 'components/Grid'
-import Typography from '@material-ui/core/Typography/Typography'
-import Divider from '@material-ui/core/Divider/Divider'
-import FileRow from './components/FileRow'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import Typography from '@material-ui/core/Typography/Typography'
+import Divider from '@material-ui/core/Divider/Divider'
 import actions from './actions'
-import CircularLoader from 'components/CircularLoader'
-import withFormAlert from 'components/withFormAlert'
+import { Icon, Alert, withFormAlert, CircularLoader, Grid } from 'components'
+import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import InputFileContainer from './components/InputFileContainer'
-import Alert from 'components/Alert'
+import FileRow from './components/FileRow'
 
 /**
  * Upload documents modal component. In this modal the user can upload documents to the document management system
@@ -237,7 +234,11 @@ export class Upload extends Component {
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="lg" hideOverflow>
         <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle}>
-          {this.props.alertText}
+          {this.state.alertActions.length === 1
+            ? <>{this.props.alertText}. Duplicates are indicated by a <Icon color="#fc515a" size={20}>error</Icon> icon
+            next to their name.</>
+            : this.props.alertText
+          }
         </Alert>
         <ModalTitle
           title={
@@ -264,6 +265,7 @@ export class Upload extends Component {
                 onRemoveTag={this.props.actions.removeTag}
                 onChangeProperty={this.props.actions.updateDocumentProperty}
                 onRemoveDoc={this.props.actions.removeDoc}
+                isDuplicate={this.props.duplicateFiles.find(file => file.name === doc.name) !== undefined}
               />
             })}
           </Grid>
