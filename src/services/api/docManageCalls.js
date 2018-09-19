@@ -1,5 +1,10 @@
 const docManageCalls = [
   {
+    name: 'verifyUpload',
+    method: 'post',
+    path: () => '/docs/verifyUpload'
+  },
+  {
     name: 'upload',
     method: 'post',
     path: () => '/docs/upload',

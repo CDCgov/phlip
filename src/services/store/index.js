@@ -21,6 +21,8 @@ const configureStore = () => {
   api = createApiHandler({ history }, projectApiInstance, calls)
   docApi = createApiHandler({ history }, docApiInstance, docCalls)
 
+  persistRootReducer = persistReducer({ storage, key: 'root' }, appReducer)
+
   const store = createStore(
     appReducer,
     composeEnhancers(

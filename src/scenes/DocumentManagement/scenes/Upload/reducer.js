@@ -3,10 +3,15 @@ import { updateItemAtIndex } from 'utils/normalize'
 
 const INITIAL_STATE = {
   selectedDocs: [],
-  uploadError: null,
+  requestError: null,
   uploadedDocs: [],
   uploading: false,
-  goBack: false
+  goBack: false,
+  verifying: true,
+  duplicateFiles: [],
+  alertTitle: '',
+  alertOpen: false,
+  alertText: ''
 }
 
 const uploadReducer = (state = INITIAL_STATE, action) => {
@@ -30,8 +35,37 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
     case types.UPLOAD_DOCUMENTS_FAIL:
       return {
         ...state,
-        uploadError: action.payload.error,
+        requestError: action.payload.error,
         uploading: false
+      }
+
+    case types.VERIFY_UPLOAD_REQUEST:
+      return {
+        ...state,
+        verifying: true
+      }
+
+    case types.VERIFY_UPLOAD_FAIL:
+      return {
+        ...state,
+        requestError: action.payload.error,
+        verifying: false
+      }
+
+    case types.VERIFY_RETURN_NO_DUPLICATES:
+      return {
+        ...state,
+        verifying: false
+      }
+
+    case types.VERIFY_RETURN_DUPLICATE_FILES:
+      return {
+        ...state,
+        verifying: false,
+        duplicateFiles: action.payload.duplicates,
+        alertOpen: true,
+        alertText: 'There are already documents that exist for some of the files you selected.',
+        alertTitle: 'Duplicates Found'
       }
 
     case types.UPDATE_DOC_PROPERTY:
@@ -83,6 +117,22 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         selectedDocs: docs
+      }
+
+    case types.CLOSE_ALERT:
+      return {
+        ...state,
+        alertOpen: false,
+        alertText: '',
+        alertTitle: ''
+      }
+
+    case types.OPEN_ALERT:
+      return {
+        ...state,
+        alertOpen: true,
+        alertText: action.text,
+        alertTitle: ''
       }
 
     case types.CLEAR_SELECTED_FILES:

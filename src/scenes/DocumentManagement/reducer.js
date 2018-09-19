@@ -89,6 +89,22 @@ const docManagementReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
+    case types.UPLOAD_DOCUMENTS_SUCCESS:
+      obj = arrayToObject(action.payload.docs, '_id')
+      allIds = Object.keys(obj)
+
+      return {
+        ...state,
+        documents: {
+          ...state.documents,
+          byId: {
+            ...state.documents.byId,
+            ...obj
+          },
+          allIds: [...state.documents.allIds, ...allIds]
+        }
+      }
+
     default:
       return state
   }

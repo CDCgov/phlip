@@ -3,39 +3,70 @@ import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import Grid from 'components/Grid'
 import Typography from '@material-ui/core/Typography/Typography'
 import Divider from '@material-ui/core/Divider/Divider'
-import Button from 'components/Button'
 import FileRow from './components/FileRow'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
 import CircularLoader from 'components/CircularLoader'
 import withFormAlert from 'components/withFormAlert'
+import InputFileContainer from './components/InputFileContainer'
+import Alert from 'components/Alert'
 
 export class Upload extends Component {
+  state = {
+    alertActions: []
+  }
+
   constructor(props, context) {
     super(props, context)
 
     this.inputDropRef = React.createRef()
-    this.selectButtonRef = React.createRef()
+
+    this.dismissAlertAction = {
+      value: 'Close',
+      type: 'button',
+      otherProps: { 'aria-label': 'Close' },
+      onClick: this.props.actions.closeAlert
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.uploading === true && this.props.uploading === false) {
-      if (this.props.uploadError !== null) {
-        this.props.onSubmitError(this.props.uploadError)
+      if (this.props.requestError !== null) {
+        this.props.onSubmitError(this.props.requestError)
       } else if (this.props.goBack === true) {
         this.props.history.push('/docs')
       }
     }
   }
 
-    /**
+  /**
    * Closes main modal, and pushes '/docs' onto browser history
    * @public
    */
   onCloseModal = () => {
+    if (this.props.selectedDocs.length > 0) {
+
+      this.setState({
+        alertActions: [
+          this.dismissAlertAction,
+          {
+            value: 'Continue',
+            type: 'button',
+            otherProps: { 'aria-label': 'Continue' },
+            onClick: this.goBack
+          }
+        ]
+      }, () => this.props.actions.openAlert('Your unsaved changes will be lost.'))
+    } else {
+      this.goBack()
+    }
+  }
+
+  goBack = () => {
     this.props.history.push('/docs')
     this.props.actions.clearSelectedFiles()
+    this.props.actions.closeAlert()
   }
 
   initiateFileSelecter = () => {
@@ -52,6 +83,7 @@ export class Upload extends Component {
     })
 
     this.props.actions.addSelectedDocs(files)
+    this.props.actions.verifyUploadRequest(files)
   }
 
   onUploadFiles = () => {
@@ -70,22 +102,17 @@ export class Upload extends Component {
 
     formData.append('metadata', JSON.stringify(md))
     this.props.actions.uploadDocumentsRequest(formData)
-    this.setState({
-      submitting: true
-    })
   }
 
   getButtonText = text => {
-    if (this.props.uploading) {
-      return (
+    return this.props.uploading
+      ? (
         <>
           <span style={{ marginRight: 5 }}>{text}</span>
           <CircularLoader thickness={5} style={{ height: 15, width: 15 }} />
         </>
       )
-    } else {
-      return <>{text}</>
-    }
+      : <>{text}</>
   }
 
   render() {
@@ -111,6 +138,9 @@ export class Upload extends Component {
 
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="lg" hideOverflow>
+        <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle}>
+          {this.props.alertText}
+        </Alert>
         <ModalTitle
           title={
             <Typography variant="title">
@@ -120,43 +150,11 @@ export class Upload extends Component {
         />
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          <form encType="multipart/form-data" style={{ margin: '20px 0' }}>
-            <Grid
-              container
-              type="row"
-              align="center"
-              justify="flex-start"
-              style={{
-                border: '3px dashed #99D0E9',
-                borderRadius: 4,
-                height: 64,
-                backgroundColor: '#f5fafa',
-                paddingLeft: 10
-              }}>
-              <Button
-                raised
-                color="white"
-                textColor="black"
-                onClick={this.initiateFileSelecter}
-                ref={this.selectButtonRef}
-                value="Select files"
-              />
-              <Grid flex container type="row" style={{ position: 'relative', height: '100%' }}>
-                <input
-                  ref={this.inputDropRef}
-                  multiple
-                  type="file"
-                  onChange={this.addFilesToList}
-                  style={{ opacity: 0, height: '100%', width: '100%', position: 'absolute' }}
-                />
-                <Typography
-                  variant="body2"
-                  style={{ color: '#646465', marginLeft: 10, alignSelf: 'center' }}>
-                  or drag and drop files here
-                </Typography>
-              </Grid>
-            </Grid>
-          </form>
+          <InputFileContainer
+            handleAddFilesToList={this.addFilesToList}
+            handleInitiateFileSelecter={this.initiateFileSelecter}
+            inputRef={this.inputDropRef}
+          />
           <Grid flex style={{ overflow: 'auto' }}>
             {this.props.selectedDocs.map((doc, i) => {
               return <FileRow
@@ -180,9 +178,14 @@ export class Upload extends Component {
 
 const mapStateToProps = state => ({
   selectedDocs: state.scenes.docManage.upload.selectedDocs,
-  uploadError: state.scenes.docManage.upload.uploadError,
+  requestError: state.scenes.docManage.upload.requestError,
   uploadedDocs: state.scenes.docManage.upload.uploadedDocs,
+  duplicateFiles: state.scenes.docManage.upload.duplicateFiles,
   uploading: state.scenes.docManage.upload.uploading,
+  verifying: state.scenes.docManage.upload.verifying,
+  alertText: state.scenes.docManage.upload.alertText,
+  alertOpen: state.scenes.docManage.upload.alertOpen,
+  alertTitle: state.scenes.docManage.upload.alertTitle,
   user: state.data.user.currentUser,
   isReduxForm: false
 })
