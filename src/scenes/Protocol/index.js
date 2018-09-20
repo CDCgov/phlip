@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import Container, { Row } from 'components/Layout'
+import Container from 'components/Layout'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Card from 'components/Card'
@@ -17,12 +17,12 @@ import 'tinymce/themes/modern/theme'
 import 'tinymce/plugins/paste'
 import 'tinymce/plugins/link'
 import 'tinymce/plugins/image'
-//import 'tinymce/plugins/anchor'
-//import 'tinymce/plugins/pagebreak'
 import 'tinymce/plugins/lists'
 import 'tinymce/plugins/advlist'
 import 'tinymce/plugins/table'
 import 'tinymce/plugins/paste'
+//import 'tinymce/plugins/anchor'
+//import 'tinymce/plugins/pagebreak'
 
 import { Editor } from '@tinymce/tinymce-react'
 
@@ -112,13 +112,7 @@ export class Protocol extends Component {
     this.props.actions.clearState()
   }
 
-  componentDidMount() {
-    require.context(
-      '!file-loader?name=[path][name].[ext]&context=node_modules/tinymce!tinymce/skins',
-      true,
-      /.*/
-    )
-  }
+  componentDidMount() {}
 
   /**
    * Calls a redux action to request to checkout the protocol. Invoked when the user clicks the 'Edit' button
@@ -206,7 +200,7 @@ export class Protocol extends Component {
       }
     ]
     return (
-      <Container flex column style={{ paddingBottom: 20, flexWrap: 'nowrap' }}>
+      <Container flex column style={{ flexWrap: 'nowrap', padding: '20px 30px' }}>
         <Alert open={this.state.open} actions={alertActions}>
           <Typography variant="body1">
             {this.state.alertText}

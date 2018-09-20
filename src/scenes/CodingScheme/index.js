@@ -237,7 +237,7 @@ export class CodingScheme extends Component {
     ]
 
     return (
-      <Container column flex>
+      <Container column flex style={{ padding: '20px 30px' }}>
         <Alert open={this.state.goBackAlertOpen} actions={alertActions}>
           <Typography variant="body1">
             You have checked out the coding scheme. No one else can edit until you check in.
