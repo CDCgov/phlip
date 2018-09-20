@@ -90,6 +90,7 @@ export class DocumentManagement extends Component {
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = state => {
   return {
     documents: state.scenes.docManage.main.documents.visible,
@@ -100,6 +101,7 @@ const mapStateToProps = state => {
   }
 }
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DocumentManagement)

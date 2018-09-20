@@ -160,7 +160,7 @@ describe('Document Management - Upload reducer tests', () => {
     test('should set the proper alert state properties', () => {
       expect(updatedState.alertOpen).toEqual(true)
       expect(updatedState.alertText)
-        .toEqual('There are already documents that exist for some of the files you selected.')
+        .toEqual('There are already documents that exist for some of the files you selected. Please remove them from the list below')
       expect(updatedState.alertTitle).toEqual('Duplicates Found')
     })
   })

@@ -394,6 +394,7 @@ const getUserById = (users, id) => {
   return null
 }
 
+/* istanbul ignore next */
 const mapStateToProps = state => ({
   currentUser: state.data.user.currentUser || {},
   users: state.scenes.admin.main.users || [],
@@ -404,6 +405,7 @@ const mapStateToProps = state => ({
   isDoneSubmitting: state.scenes.admin.addEditUser.isDoneSubmitting || false
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(actions, dispatch),
   formActions: bindActionCreators(formActions, dispatch)

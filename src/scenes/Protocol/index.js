@@ -282,6 +282,7 @@ export class Protocol extends Component {
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => ({
   projectName: state.scenes.home.main.projects.byId[ownProps.match.params.id].name,
   projectId: ownProps.match.params.id,
@@ -295,6 +296,7 @@ const mapStateToProps = (state, ownProps) => ({
   alertError: state.scenes.protocol.alertError || ''
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTracking(Protocol, 'Protocol'))

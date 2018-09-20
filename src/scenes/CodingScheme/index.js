@@ -22,6 +22,66 @@ import withTracking from 'components/withTracking'
  * component has one scene: AddEditQuestion at ./scenes/AddEditQuestion.
  */
 export class CodingScheme extends Component {
+  static propTypes = {
+    /**
+     * Name of project for which the coding scheme is open
+     */
+    projectName: PropTypes.string,
+    /**
+     * ID of project
+     */
+    projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    /**
+     * Array of question tree to render as the coding scheme
+     */
+    questions: PropTypes.array,
+    /**
+     * Whether or not the coding scheme is empty
+     */
+    empty: PropTypes.bool,
+    /**
+     * Redux action creators
+     */
+    actions: PropTypes.object,
+    /**
+     * Outline of the coding scheme
+     */
+    outline: PropTypes.object,
+    /**
+     * Flat list of questions (not a tree)
+     */
+    flatQuestions: PropTypes.array,
+    /**
+     * Any scheme error to render, will be rendered as a part of the page, not alert
+     */
+    schemeError: PropTypes.string,
+    /**
+     * Error that occured while trying to save reorder, displayed as an alert
+     */
+    reorderError: PropTypes.string,
+    /**
+     * Whether or not the coding scheme is currently locked by the user
+     */
+    lockedByCurrentUser: PropTypes.bool,
+    /**
+     * Information on lock of coding scheme, if any
+     */
+    lockInfo: PropTypes.object,
+    /**
+     * Any error to display as an alert
+     */
+    alertError: PropTypes.string,
+    /**
+     * Displays an alert notifying the user the coding scheme is currently locked
+     */
+    lockedAlert: PropTypes.string,
+    /**
+     * Whether or not the coding scheme is currently locked
+     */
+    hasLock: PropTypes.bool
+  }
+
+
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -330,65 +390,7 @@ export class CodingScheme extends Component {
   }
 }
 
-CodingScheme.propTypes = {
-  /**
-   * Name of project for which the coding scheme is open
-   */
-  projectName: PropTypes.string,
-  /**
-   * ID of project
-   */
-  projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  /**
-   * Array of question tree to render as the coding scheme
-   */
-  questions: PropTypes.array,
-  /**
-   * Whether or not the coding scheme is empty
-   */
-  empty: PropTypes.bool,
-  /**
-   * Redux action creators
-   */
-  actions: PropTypes.object,
-  /**
-   * Outline of the coding scheme
-   */
-  outline: PropTypes.object,
-  /**
-   * Flat list of questions (not a tree)
-   */
-  flatQuestions: PropTypes.array,
-  /**
-   * Any scheme error to render, will be rendered as a part of the page, not alert
-   */
-  schemeError: PropTypes.string,
-  /**
-   * Error that occured while trying to save reorder, displayed as an alert
-   */
-  reorderError: PropTypes.string,
-  /**
-   * Whether or not the coding scheme is currently locked by the user
-   */
-  lockedByCurrentUser: PropTypes.bool,
-  /**
-   * Information on lock of coding scheme, if any
-   */
-  lockInfo: PropTypes.object,
-  /**
-   * Any error to display as an alert
-   */
-  alertError: PropTypes.string,
-  /**
-   * Displays an alert notifying the user the coding scheme is currently locked
-   */
-  lockedAlert: PropTypes.string,
-  /**
-   * Whether or not the coding scheme is currently locked
-   */
-  hasLock: PropTypes.bool
-}
-
+/* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => ({
   projectName: state.scenes.home.main.projects.byId[ownProps.match.params.id].name,
   projectId: ownProps.match.params.id,
@@ -405,6 +407,7 @@ const mapStateToProps = (state, ownProps) => ({
   hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTracking(CodingScheme, 'Coding Scheme'))

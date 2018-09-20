@@ -106,13 +106,11 @@ export class Upload extends Component {
    */
   closeAlert = () => {
     this.props.actions.closeAlert()
-    setTimeout(() => {
-      this.setState({
-        alertActions: [
-          this.dismissAlertAction
-        ]
-      })
-    }, 1000)
+    this.setState({
+      alertActions: [
+        this.dismissAlertAction
+      ]
+    })
   }
 
   /**
@@ -131,7 +129,7 @@ export class Upload extends Component {
             onClick: this.goBack
           }
         ]
-      }, () => this.props.actions.openAlert('Your unsaved changes will be lost.'))
+      }, () => this.props.actions.openAlert('Your unsaved changes will be lost'))
     } else {
       this.goBack()
     }
@@ -174,21 +172,28 @@ export class Upload extends Component {
    * Creates a formData object to send to api to upload documents
    */
   onUploadFiles = () => {
-    let fd = { files: [] }, md = {}
-    const formData = new FormData()
-    formData.append('userId', this.props.user.id)
-    formData.append('userFirstName', this.props.user.firstName)
-    formData.append('userLastName', this.props.user.lastName)
+    if (this.props.duplicateFiles.length > 0) {
+      this.props.actions.openAlert(
+        'There are still duplicate files selected. Please remove them from the list',
+        'Remove duplicates'
+      )
+    } else {
+      let fd = { files: [] }, md = {}
+      const formData = new FormData()
+      formData.append('userId', this.props.user.id)
+      formData.append('userFirstName', this.props.user.firstName)
+      formData.append('userLastName', this.props.user.lastName)
 
-    this.props.selectedDocs.map((doc, i) => {
-      const { file, ...otherProps } = doc
-      formData.append('files', file, doc.name)
-      md[doc.name] = otherProps
-      fd.files = [...fd.files, file]
-    })
+      this.props.selectedDocs.map((doc, i) => {
+        const { file, ...otherProps } = doc
+        formData.append('files', file, doc.name)
+        md[doc.name] = otherProps
+        fd.files = [...fd.files, file]
+      })
 
-    formData.append('metadata', JSON.stringify(md))
-    this.props.actions.uploadDocumentsRequest(formData)
+      formData.append('metadata', JSON.stringify(md))
+      this.props.actions.uploadDocumentsRequest(formData)
+    }
   }
 
   /**
@@ -230,13 +235,15 @@ export class Upload extends Component {
 
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="lg" hideOverflow>
+        {this.props.alertOpen &&
         <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle}>
           {this.state.alertActions.length === 1
-            ? <>{this.props.alertText}. Duplicates are indicated by a <Icon color="#fc515a" size={20}>error</Icon> icon
-            next to their name.</>
+            ? <>
+              {this.props.alertText}. Duplicates are indicated by: <Icon color="#fc515a" size={20}>error</Icon>
+            </>
             : this.props.alertText
           }
-        </Alert>
+        </Alert>}
         <ModalTitle
           title={
             <Typography variant="title">
@@ -274,6 +281,7 @@ export class Upload extends Component {
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = state => ({
   selectedDocs: state.scenes.docManage.upload.selectedDocs,
   requestError: state.scenes.docManage.upload.requestError,
@@ -287,6 +295,7 @@ const mapStateToProps = state => ({
   isReduxForm: false
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withFormAlert(Upload))

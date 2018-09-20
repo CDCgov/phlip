@@ -66,7 +66,7 @@ export const FileRow = props => {
         </Typography>
         <Typography>{name}</Typography>
       </Grid>
-      {!isDuplicate && <Grid
+      {/*!isDuplicate && <Grid
         flex
         container
         type="row"
@@ -91,7 +91,7 @@ export const FileRow = props => {
             color="secondary"
           />
         </Grid>
-      </Grid>}
+      </Grid>*/}
       <IconButton
         style={{ margin: '0 20px' }}
         onClick={isDuplicate ? () => onRemoveDuplicate(index, name) : () => onRemoveDoc(index)}

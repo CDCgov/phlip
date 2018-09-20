@@ -245,6 +245,7 @@ export class Home extends Component {
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = state => ({
   user: state.data.user.currentUser,
   visibleProjects: state.scenes.home.main.visibleProjects,
@@ -261,6 +262,7 @@ const mapStateToProps = state => ({
   exportError: state.scenes.home.main.exportError || ''
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTracking(Home, 'Home'))

@@ -220,4 +220,17 @@ describe('Document Management reducer', () => {
       expect(updatedState.documents.allIds).toEqual([...mockDocuments.allIds, '24', '42'])
     })
   })
+
+  describe('FLUSH_STATE', () => {
+    test('should reset state to initial', () => {
+      const action = {
+        type: types.FLUSH_STATE
+      }
+
+      const currentState = getState({ documents: mockDocuments })
+      const updatedState = reducer(currentState, action)
+
+      expect(updatedState).toEqual(initial)
+    })
+  })
 })

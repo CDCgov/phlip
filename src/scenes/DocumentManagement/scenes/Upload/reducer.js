@@ -62,7 +62,7 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         verifying: false,
         duplicateFiles: action.payload.duplicates,
         alertOpen: true,
-        alertText: 'There are already documents that exist for some of the files you selected.',
+        alertText: 'There are already documents that exist for some of the files you selected. Please remove them from the list below',
         alertTitle: 'Duplicates Found'
       }
 

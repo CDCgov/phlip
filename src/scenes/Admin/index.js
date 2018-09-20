@@ -74,12 +74,14 @@ export class Admin extends Component {
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = (state) => ({
   users: state.scenes.admin.main.users,
   sortBy: state.scenes.admin.main.sortBy,
   direction: state.scenes.admin.main.direction
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
 export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(withTracking(Admin, 'User Management')))

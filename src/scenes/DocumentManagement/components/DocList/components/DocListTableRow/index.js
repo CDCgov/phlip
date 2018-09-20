@@ -47,9 +47,12 @@ DocListTableRow.propTypes = {
   onSelectFile: PropTypes.func
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  doc: state.scenes.docManage.main.documents.byId[ownProps.id],
-  isChecked: state.scenes.docManage.main.documents.checked.includes(ownProps.id)
-})
+/* istanbul ignore next */
+const mapStateToProps = (state, ownProps) => {
+  return {
+    doc: state.scenes.docManage.main.documents.byId[ownProps.id],
+    isChecked: state.scenes.docManage.main.documents.checked.includes(ownProps.id)
+  }
+}
 
 export default connect(mapStateToProps)(DocListTableRow)

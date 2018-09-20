@@ -369,6 +369,7 @@ export class AddEditQuestion extends Component {
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => ({
   form: state.form.questionForm || {},
   projectId: ownProps.match.params.projectId,
@@ -378,6 +379,7 @@ const mapStateToProps = (state, ownProps) => ({
   hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(actions, dispatch),
   formActions: bindActionCreators(formActions, dispatch)
