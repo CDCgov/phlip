@@ -28,5 +28,5 @@ export default {
   removeTag: makeActionCreator(types.REMOVE_TAG, 'index', 'tag', 'tagIndex'),
   addTag: makeActionCreator(types.ADD_TAG, 'index', 'tag'),
   closeAlert: makeActionCreator(types.CLOSE_ALERT),
-  openAlert: makeActionCreator(types.OPEN_ALERT, 'text')
+  openAlert: makeActionCreator(types.OPEN_ALERT, 'text', 'title')
 }

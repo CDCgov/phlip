@@ -69,11 +69,6 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
     case types.UPDATE_DOC_PROPERTY:
       let selectedDoc = { ...state.selectedDocs[action.index] }
       let value = action.value
-
-      if (action.property === 'tags') {
-        value = action.value.split(',')
-      }
-
       selectedDoc[action.property] = value
 
       return {
@@ -130,7 +125,7 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         ...state,
         alertOpen: true,
         alertText: action.text,
-        alertTitle: ''
+        alertTitle: action.title || ''
       }
 
     case types.CLEAR_SELECTED_FILES:
