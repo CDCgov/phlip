@@ -27,11 +27,6 @@ export class Upload extends Component {
     requestError: PropTypes.string,
 
     /**
-     * Documents the user has actually uploaded
-     */
-    uploadedDocs: PropTypes.array,
-
-    /**
      * Any files that came back from the verify upload request, meaning they already exist in the db
      */
     duplicateFiles: PropTypes.array,
@@ -281,7 +276,6 @@ export class Upload extends Component {
 const mapStateToProps = state => ({
   selectedDocs: state.scenes.docManage.upload.selectedDocs,
   requestError: state.scenes.docManage.upload.requestError,
-  uploadedDocs: state.scenes.docManage.upload.uploadedDocs,
   duplicateFiles: state.scenes.docManage.upload.duplicateFiles,
   uploading: state.scenes.docManage.upload.uploading,
   verifying: state.scenes.docManage.upload.verifying,

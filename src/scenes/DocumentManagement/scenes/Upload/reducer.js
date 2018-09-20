@@ -4,7 +4,6 @@ import { updateItemAtIndex } from 'utils/normalize'
 const INITIAL_STATE = {
   selectedDocs: [],
   requestError: null,
-  uploadedDocs: [],
   uploading: false,
   goBack: false,
   verifying: true,
@@ -27,7 +26,6 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         selectedDocs: [],
-        uploadedDocs: action.payload.docs,
         uploading: false,
         goBack: true
       }

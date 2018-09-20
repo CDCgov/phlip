@@ -21,7 +21,7 @@ exports[`Document Management - Upload scene should render correctly 1`] = `
       ]
     }
     open={false}
-    title={null}
+    title=""
   >
     . Duplicates are indicated by a 
     <WithTheme(Icon)
