@@ -316,4 +316,28 @@ describe('Document Management - Upload reducer tests', () => {
       expect(updatedState).toEqual(initial)
     })
   })
+
+  describe('REMOVE_DUPLICATE', () => {
+    const action = { type: types.REMOVE_DUPLICATE, index: 1, fileName: 'filename.pdf' }
+    const currentState = getState({
+      selectedDocs: [
+        { name: 'filename1.pdf' },
+        { name: 'filename.pdf' }
+      ],
+      duplicateFiles: [
+        { name: 'filename.pdf' }
+      ]
+    })
+
+    const updatedState = reducer(currentState, action)
+    test('should remove file from state.duplicateFiles', () => {
+      expect(updatedState.duplicateFiles).toEqual([])
+    })
+
+    test('should remove file from state.selectedDocs', () => {
+      expect(updatedState.selectedDocs).toEqual([
+        { name: 'filename1.pdf' }
+      ])
+    })
+  })
 })

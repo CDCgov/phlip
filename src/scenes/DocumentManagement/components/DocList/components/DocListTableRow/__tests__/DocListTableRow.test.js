@@ -8,4 +8,8 @@ const props = {
   isChecked: false
 }
 
-
+describe('DocumentManagement - DocList - DocListTableRow', () => {
+  test('should render correctly', () => {
+    expect(shallow(<DocListTableRow {...props} />)).toMatchSnapshot()
+  })
+})

@@ -128,6 +128,19 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         alertTitle: action.title || ''
       }
 
+    case types.REMOVE_DUPLICATE:
+      docs = [...state.selectedDocs]
+      docs.splice(action.index, 1)
+      let duplicates = [...state.duplicateFiles]
+      let index = duplicates.findIndex(dup => dup.name === action.fileName)
+      duplicates.splice(index, 1)
+
+      return {
+        ...state,
+        selectedDocs: docs,
+        duplicateFiles: duplicates
+      }
+
     case types.CLEAR_SELECTED_FILES:
       return INITIAL_STATE
 

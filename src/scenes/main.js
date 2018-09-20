@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
-import { PersistGate } from 'redux-persist/es/integration/react'
 import { connect } from 'react-redux'
 import { matchPath } from 'react-router'
 import IdleTimer from 'react-idle-timer'
@@ -18,8 +17,7 @@ import AddEditProject from './Home/scenes/AddEditProject'
 import AddEditJurisdictions from './Home/scenes/AddEditJurisdictions'
 import JurisdictionForm from './Home/scenes/AddEditJurisdictions/components/JurisdictionForm'
 import ApiErrorAlert from 'components/ApiErrorAlert'
-import * as actions from './actions'
-import { persistor } from 'services/store'
+import actions from './actions'
 
 /** Paths that aren't accessible by users with 'Coder' role */
 const nonCoderPaths = [

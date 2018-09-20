@@ -10,6 +10,7 @@ const props = {
   onRemoveDoc: () => {},
   onRemoveTag: () => {},
   onAddTag: () => {},
+  onRemoveDuplicate: () => {},
   classes: {
     chipContainer: {},
     chip: {}

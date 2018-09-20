@@ -84,10 +84,12 @@ describe('Document Management - Upload logic', () => {
         { name: 'doc2' }
       ]
 
-      mock.onPost('/docs/upload').reply(200, [
-        { name: 'doc1', _id: '1' },
-        { name: 'doc2', _id: '2' }
-      ])
+      mock.onPost('/docs/upload').reply(200, {
+        files: [
+          { name: 'doc1', _id: '1' },
+          { name: 'doc2', _id: '2' }
+        ]
+      })
 
       const store = setupStore()
 

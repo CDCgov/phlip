@@ -14,6 +14,7 @@ export const types = {
   REMOVE_TAG: 'REMOVE_TAG',
   ADD_TAG: 'ADD_TAG',
   REMOVE_DOC: 'REMOVE_DOC',
+  REMOVE_DUPLICATE: 'REMOVE_DUPLICATE',
   CLOSE_ALERT: 'CLOSE_ALERT',
   OPEN_ALERT: 'OPEN_ALERT'
 }
@@ -28,5 +29,6 @@ export default {
   removeTag: makeActionCreator(types.REMOVE_TAG, 'index', 'tag', 'tagIndex'),
   addTag: makeActionCreator(types.ADD_TAG, 'index', 'tag'),
   closeAlert: makeActionCreator(types.CLOSE_ALERT),
-  openAlert: makeActionCreator(types.OPEN_ALERT, 'text', 'title')
+  openAlert: makeActionCreator(types.OPEN_ALERT, 'text', 'title'),
+  removeDuplicate: makeActionCreator(types.REMOVE_DUPLICATE, 'index', 'fileName')
 }

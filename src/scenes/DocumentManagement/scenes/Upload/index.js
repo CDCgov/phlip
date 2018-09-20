@@ -262,6 +262,7 @@ export class Upload extends Component {
                 onRemoveTag={this.props.actions.removeTag}
                 onChangeProperty={this.props.actions.updateDocumentProperty}
                 onRemoveDoc={this.props.actions.removeDoc}
+                onRemoveDuplicate={this.props.actions.removeDuplicate}
                 isDuplicate={this.props.duplicateFiles.find(file => file.name === doc.name) !== undefined}
               />
             })}
