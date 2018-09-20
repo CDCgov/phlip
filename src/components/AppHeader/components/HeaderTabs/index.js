@@ -30,7 +30,7 @@ export const HeaderTabs = props => {
             type="row"
             padding="12px 20px 12px 20px"
             style={tab.active ? activeStyle : allStyle}
-            onClick={() => onTabChange(i)}>
+            onClick={onTabChange(i)}>
             {tab.icon && <Icon style={{ marginRight: 8 }} color="#b1adc2">{tab.icon}</Icon>}
             <Typography style={{ color: 'white' }}>{tab.label}</Typography>
           </Grid>

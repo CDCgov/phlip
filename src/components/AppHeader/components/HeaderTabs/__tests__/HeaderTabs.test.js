@@ -17,7 +17,8 @@ const props = {
       location: '/docs',
       icon: 'description'
     }
-  ]
+  ],
+  onTabChange: (i) => {}
 }
 
 const setup = otherProps => {
