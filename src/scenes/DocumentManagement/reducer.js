@@ -20,12 +20,12 @@ const INITIAL_STATE = {
 export const docManagementReducer = (state = INITIAL_STATE, action) => {
   switch(action.type) {
     case types.GET_DOCUMENTS_SUCCESS:
-      rows = parseInt(state.rowsPerPage)
-      if (state.rowsPerPage === 'All')
-        rows = state.documents.allIds.length
-
       let obj = arrayToObject(action.payload, '_id')
       let allIds = Object.keys(obj)
+
+      let rows = parseInt(state.rowsPerPage)
+      if (state.rowsPerPage === 'All')
+        rows = allIds.length
 
       return {
         ...state,
@@ -38,15 +38,11 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ON_PAGE_CHANGE:
-      let rows = parseInt(state.rowsPerPage)
-      if (state.rowsPerPage === 'All')
-        rows = state.documents.allIds.length
-
       return {
         ...state,
         documents: {
           ...state.documents,
-          visible: sliceTable(state.documents.allIds, action.page, rows)
+          visible: sliceTable(state.documents.allIds, action.page, parseInt(state.rowsPerPage))
         },
         page: action.page
       }

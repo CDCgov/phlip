@@ -78,6 +78,20 @@ describe('Document Management reducer', () => {
       const updatedState = reducer(currentState, action)
       expect(updatedState.documents.checked).toEqual(['09876'])
     })
+
+    test('should handle if state.rowsPerPage === All', () => {
+      const action = {
+        type: types.GET_DOCUMENTS_SUCCESS,
+        payload: [{ name: 'Doc 1', _id: '12345' }, { name: 'Doc 2', _id: '54321' }]
+      }
+
+      const currentState = getState({
+        rowsPerPage: 'All'
+      })
+
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.documents.visible.length).toEqual(2)
+    })
   })
 
   describe('ON_PAGE_CHANGE', () => {

@@ -43,7 +43,7 @@ const getIconType = extension => {
 /**
  * Represents one row in the list of selected documents to upload
  */
-const FileRow = props => {
+export const FileRow = props => {
   const { name, tags, onAddTag, onRemoveTag, onRemoveDoc, index, isDuplicate } = props
   const pieces = name.split('.')
   const extension = pieces[pieces.length - 1]
@@ -126,6 +126,11 @@ FileRow.propTypes = {
   onAddTag: PropTypes.func,
 
   /**
+   * Whether or not this is a duplicate file
+   */
+  isDuplicate: PropTypes.bool,
+
+  /**
    * Classes object from withStyles material-ui HOC
    */
   classes: PropTypes.object
@@ -134,7 +139,8 @@ FileRow.propTypes = {
 FileRow.defaultProps = {
   name: '',
   index: 0,
-  tags: []
+  tags: [],
+  isDuplicate: false
 }
 
 export default withStyles(styles)(FileRow)

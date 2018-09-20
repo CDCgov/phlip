@@ -12,7 +12,7 @@
     "test:watch": "docker-compose -f docker-compose.dev.yml run dev npm run test:watch:local",
     "start:local": "node scripts/start.js",
     "serve:local": "node scripts/serve.js",
-    "test:local": "jest --coverage -u --onlyChanged --verbose",
+    "test:local": "jest --coverage -u --verbose",
     "test:watch:local": "jest --coverage --watch -u",
     "prebuild": "npm run clean",
     "build": "node scripts/build.js",
