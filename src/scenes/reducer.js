@@ -11,7 +11,6 @@ import validation, { validationHandlers } from './Validation/reducer'
 import protocol from './Protocol/reducer'
 import { createCodingValidationReducer } from 'components/CodingValidation/reducer'
 import * as types from 'data/user/actionTypes'
-import autoMergeLevel1 from 'redux-persist/lib/stateReconciler/autoMergeLevel1'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 
 const INITIAL_STATE = {

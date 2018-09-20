@@ -39,6 +39,9 @@ const userReducer = (state = INITIAL_STATE, action) => {
         currentUser: action.payload.user
       }
 
+    case types.FLUSH_STATE:
+      return INITIAL_STATE
+
     default:
       return state
   }

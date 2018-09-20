@@ -8,8 +8,7 @@ import user from './user/reducer'
  */
 const dataPersistConfig = {
   key: 'user',
-  storage,
-  blacklist: ['menuAnchor', 'menuOpen']
+  storage
 }
 
 const dataReducer = combineReducers({

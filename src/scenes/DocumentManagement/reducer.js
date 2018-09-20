@@ -105,6 +105,9 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
+    case types.FLUSH_STATE:
+      return INITIAL_STATE
+
     default:
       return state
   }
