@@ -7,7 +7,7 @@ import CheckboxLabel from 'components/CheckboxLabel'
 /**
  * Table header for the document list
  */
-const DocListTableHead = props => {
+export const DocListTableHead = props => {
   const { onSelectAll, allSelected } = props
 
   const columns = [

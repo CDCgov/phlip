@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DocumentManagement - DocList - DocListTableRow should render correctly 1`] = `
+<WithStyles(TableRow)>
+  <WithStyles(TableCell)
+    padding="checkbox"
+    style={
+      Object {
+        "paddingLeft": 24,
+        "paddingRight": 0,
+        "width": "1%",
+      }
+    }
+  >
+    <WithStyles(CheckboxLabel)
+      input={
+        Object {
+          "onChange": [Function],
+          "value": false,
+        }
+      }
+    />
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
+    padding="checkbox"
+  >
+    doc1
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
+    padding="checkbox"
+  >
+    Test
+     
+    User
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
+    padding="checkbox"
+  >
+    1/1/2000, 12:00 AM
+  </WithStyles(TableCell)>
+</WithStyles(TableRow)>
+`;

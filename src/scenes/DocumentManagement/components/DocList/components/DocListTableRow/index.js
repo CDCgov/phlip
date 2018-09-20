@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 /**
  * Represents one row in the document management table
  */
-const DocListTableRow = props => {
+export const DocListTableRow = props => {
   const { doc, onSelectFile, isChecked } = props
   const date = moment.utc(doc.uploadedDate).local().format('M/D/YYYY, h:mm A')
 

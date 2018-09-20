@@ -11,7 +11,7 @@ import DocListTableHead from './components/DocListTableHead'
 import DocListTableRow from './components/DocListTableRow'
 import TablePagination from 'components/TablePagination'
 
-const DocList = props => {
+export const DocList = props => {
   const {
     onSearchDocs, onSelectAllFiles, onSelectOneFile, rowsPerPage, page,
     onChangePage, onChangeRows, documents, docCount, allSelected

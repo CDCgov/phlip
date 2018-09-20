@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DocumentManagement - DocList - DocListTableHead should render correctly 1`] = `
+<TableRow
+  key="docTableHeaders"
+  style={
+    Object {
+      "width": "100%",
+    }
+  }
+>
+  <TableCell
+    id="select-all"
+    key="select-all"
+    padding="default"
+    scope="col"
+    style={
+      Object {
+        "paddingLeft": 24,
+        "paddingRight": 0,
+        "width": "1%",
+      }
+    }
+  >
+    <WithStyles(CheckboxLabel)
+      input={
+        Object {
+          "onChange": [Function],
+          "value": false,
+        }
+      }
+    />
+  </TableCell>
+  <TableCell
+    id="file-name"
+    key="file-name"
+    padding="checkbox"
+    scope="col"
+    style={
+      Object {
+        "width": undefined,
+      }
+    }
+  >
+    File Name
+  </TableCell>
+  <TableCell
+    id="uploaded-by"
+    key="uploaded-by"
+    padding="checkbox"
+    scope="col"
+    style={
+      Object {
+        "width": undefined,
+      }
+    }
+  >
+    Uploaded By
+  </TableCell>
+  <TableCell
+    id="uploaded-data"
+    key="uploaded-data"
+    padding="checkbox"
+    scope="col"
+    style={
+      Object {
+        "width": undefined,
+      }
+    }
+  >
+    Uploaded Date
+  </TableCell>
+</TableRow>
+`;
