@@ -27,10 +27,12 @@ export const HeaderTabs = props => {
             align="center"
             key={`tab-${i}`}
             container
+            tabIndex={0}
             type="row"
             padding="12px 20px 12px 20px"
+            onKeyPress={(e) => e.key === 'Enter' ? onTabChange(i) : null}
             style={tab.active ? activeStyle : allStyle}
-            onClick={onTabChange(i)}>
+            onClick={() => onTabChange(i)}>
             {tab.icon && <Icon style={{ marginRight: 8 }} color="#b1adc2">{tab.icon}</Icon>}
             <Typography style={{ color: 'white' }}>{tab.label}</Typography>
           </Grid>

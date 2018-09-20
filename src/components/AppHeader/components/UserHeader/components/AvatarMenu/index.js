@@ -16,7 +16,6 @@ export class AvatarMenu extends PureComponent {
   constructor(props, context) {
     super(props, context)
     this.firstMenuItem = null
-    this.secondMenuItem = null
     this.avatarRef = null
   }
 
@@ -24,13 +23,6 @@ export class AvatarMenu extends PureComponent {
     this.firstMenuItem = findDOMNode(element)
     if (this.props.role === 'Admin' && this.props.open && this.firstMenuItem !== null) {
       this.firstMenuItem.focus()
-    }
-  }
-
-  setSecondMenuItem = element => {
-    this.secondMenuItem = findDOMNode(element)
-    if (this.props.role !== 'Admin' && this.props.open && this.secondMenuItem !== null) {
-      this.secondMenuItem.focus()
     }
   }
 
@@ -99,7 +91,7 @@ export class AvatarMenu extends PureComponent {
                           </ListItemIcon>
                           <ListItemText style={{ color: '#5f6060' }} disableTypography primary="User Management" />
                         </MenuItem>}
-                        <MenuItem onClick={onLogoutUser} key="logout-menu" ref={this.setSecondMenuItem}>
+                        <MenuItem onClick={onLogoutUser} key="logout-menu" ref={role === 'Admin' ? null : this.setFirstMenuItem}>
                           <ListItemIcon>
                             <Icon color="accent">exit_to_app</Icon>
                           </ListItemIcon>

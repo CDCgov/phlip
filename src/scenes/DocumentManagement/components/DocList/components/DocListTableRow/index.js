@@ -47,8 +47,9 @@ DocListTableRow.propTypes = {
   onSelectFile: PropTypes.func
 }
 
-/* istanbul ignore next */
+// istanbul ignore next
 const mapStateToProps = (state, ownProps) => {
+  // istanbul ignore next
   return {
     doc: state.scenes.docManage.main.documents.byId[ownProps.id],
     isChecked: state.scenes.docManage.main.documents.checked.includes(ownProps.id)

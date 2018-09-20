@@ -23,6 +23,8 @@ exports[`HeaderTabs should render correctly 1`] = `
     flex={false}
     justify="stretch"
     key="tab-0"
+    onClick={[Function]}
+    onKeyPress={[Function]}
     padding="12px 20px 12px 20px"
     raised={false}
     style={
@@ -32,6 +34,7 @@ exports[`HeaderTabs should render correctly 1`] = `
         "cursor": "pointer",
       }
     }
+    tabIndex={0}
     type="row"
   >
     <WithTheme(Icon)
@@ -61,6 +64,8 @@ exports[`HeaderTabs should render correctly 1`] = `
     flex={false}
     justify="stretch"
     key="tab-1"
+    onClick={[Function]}
+    onKeyPress={[Function]}
     padding="12px 20px 12px 20px"
     raised={false}
     style={
@@ -69,6 +74,7 @@ exports[`HeaderTabs should render correctly 1`] = `
         "cursor": "pointer",
       }
     }
+    tabIndex={0}
     type="row"
   >
     <WithTheme(Icon)
