@@ -71,6 +71,12 @@ class Main extends Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.pdfFile === null && this.props.pdfFile !== null) {
+      this.openHelpPdf(this.props.pdfFile)
+    }
+  }
+
   /**
    * Checks if the route path is a modal view.
    *
@@ -120,6 +126,7 @@ class Main extends Component {
    * @public
    */
   handleDownloadPdf = () => {
+    this.handleToggleMenu()
     this.props.actions.downloadPdfRequest()
   }
 
@@ -130,9 +137,9 @@ class Main extends Component {
    */
   openHelpPdf = pdfFile => {
     const url = URL.createObjectURL(pdfFile)
-    this.helpPdfRef.href = url
-    this.helpPdfRef.download = 'PHLIP-Help-Guide.pdf'
-    this.helpPdfRef.click()
+    this.helpPdfRef.current.href = url
+    this.helpPdfRef.current.download = 'PHLIP-Help-Guide.pdf'
+    this.helpPdfRef.current.click()
     this.props.actions.clearPdfFile()
   }
 
@@ -216,12 +223,11 @@ class Main extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  return ({
-    user: state.data.user.currentUser,
-    pdfError: state.scenes.main.pdfError
-  })
-}
+const mapStateToProps = state => ({
+  user: state.data.user.currentUser,
+  pdfError: state.scenes.main.pdfError,
+  pdfFile: state.scenes.main.pdfFile
+})
 
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 

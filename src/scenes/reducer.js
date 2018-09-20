@@ -24,7 +24,7 @@ const mainReducer = (state = INITIAL_STATE, action) => {
     case types.DOWNLOAD_PDF_REQUEST:
       return {
         ...state,
-        menuOpen: false
+        pdfFile: null
       }
 
     case types.DOWNLOAD_PDF_FAIL:
