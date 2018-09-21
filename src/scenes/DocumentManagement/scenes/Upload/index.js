@@ -96,7 +96,7 @@ export class Upload extends Component {
       if (this.props.requestError !== null) {
         this.props.onSubmitError(this.props.requestError)
       } else if (this.props.goBack === true) {
-        this.props.history.push('/docs')
+        this.goBack()
       }
     }
   }
@@ -292,6 +292,7 @@ const mapStateToProps = state => ({
   alertOpen: state.scenes.docManage.upload.alertOpen,
   alertTitle: state.scenes.docManage.upload.alertTitle,
   user: state.data.user.currentUser,
+  goBack: state.scenes.docManage.upload.goBack,
   isReduxForm: false
 })
 

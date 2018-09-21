@@ -26,7 +26,7 @@ test_esquire_frontend_image:
   tags:
     - iiu
   script:
-    - docker-compose -f docker-compose.dev.yml run --user=988 dev npm run test:local
+    - docker-compose -f docker-compose.dev.yml run --user=988 app npm run test:local
     - docker-compose -f docker-compose.dev.yml down
 
 push_esquire_frontend_image:
