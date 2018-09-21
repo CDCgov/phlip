@@ -32,7 +32,7 @@ const APP_HOST = process.env.APP_HOST || '0.0.0.0'
 const APP_PORT = process.env.APP_PORT || 5200
 
 WebpackDevServer.addDevServerEntrypoints(webpackDevConfig, config)
-const compiler = webpack(webpackConfig)
+const compiler = webpack(webpackDevConfig)
 
 // Since we're using the Node API, we have to set devServer options here
 const devServer = new WebpackDevServer(compiler, config)
