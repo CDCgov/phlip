@@ -7,15 +7,11 @@ import util from 'util'
  * @type {AxiosInstance}
  */
 export const projectApiInstance = axios.create({
-  baseURL: process.env.API_HOST
-    ? process.env.API_HOST
-    : process.env.IS_HTTPS === '1'
-      ? process.env.APP_API_URL
-      : '/api'
+  baseURL: APP_IS_SAML_ENABLED === '1' ? APP_API_URL : '/api'
 })
 
 export const docApiInstance = axios.create({
-  baseURL: process.env.APP_DOC_MANAGE_API
+  baseURL: APP_IS_SAML_ENABLED === '1' ? APP_DOC_MANAGE_API : '/docsApi'
 })
 
 /**
@@ -56,7 +52,7 @@ const prepare = ({ history }, instance) => call => (data, options, urlParams = {
   const callHeaders = call.hasOwnProperty('headers') ? { ...call.headers(urlParams) } : {}
   const headers = { ...baseHeaders, ...callHeaders }
 
-  if (process.env.APP_LOG_REQUESTS && process.env.APP_LOG_REQUESTS === '1') {
+  if (APP_LOG_REQUESTS && APP_LOG_REQUESTS === '1') {
     console.log(`Sending ${call.method.toUpperCase()} request: ${call.path(urlParams)} at ${new Date().toLocaleString()}`)
     console.log(`Data in ${call.method.toUpperCase()} request: ${util.inspect(data)}`)
   }
@@ -68,7 +64,7 @@ const prepare = ({ history }, instance) => call => (data, options, urlParams = {
     url: call.path(urlParams),
     headers
   }).then(res => {
-    if (process.env.APP_LOG_REQUESTS && process.env.APP_LOG_REQUESTS === '1') {
+    if (APP_LOG_REQUESTS && APP_LOG_REQUESTS === '1') {
       console.log(`Received response from: ${call.path(urlParams)} at ${new Date().toLocaleString()}`)
     }
     return call.hasOwnProperty('returnObj') ? call.returnObj({ ...urlParams }, res) : res.data

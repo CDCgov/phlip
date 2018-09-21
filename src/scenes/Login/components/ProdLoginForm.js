@@ -13,7 +13,7 @@ const ProdLoginForm = ({ pivError }) => (
     </Row>
     <Row displayFlex flex style={{ justifyContent: 'center', paddingTop: 20 }}>
       <Column style={{ padding: 16 }}>
-        <Button href={process.env.APP_SAML_REQUEST_URL} type="button" color="accent" value="PIV Login" />
+        <Button href={APP_SAML_REQUEST_URL} type="button" color="accent" value="PIV Login" />
       </Column>
     </Row>
     {pivError && <Typography color="error" align="center">{pivError}</Typography>}

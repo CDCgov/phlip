@@ -6,8 +6,6 @@ const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
 const paths = require('../config/paths')
 const env = require('../config/env')('development')
-const util = require('util')
-
 
 // Webpack-dev-server configuration options
 const config = {
@@ -20,24 +18,20 @@ const config = {
   overlay: false,
   historyApiFallback: true,
   proxy: {
-    '/api': JSON.parse(env.APP_API_URL),
-    '/api/docs': JSON.parse(env.APP_DOC_MANAGE_API)
+    '/api': process.env.APP_API_URL,
+    '/docsApi': {
+      target: process.env.APP_DOC_MANAGE_API,
+      pathRewrite: { '^/docsApi': '/api' }
+    }
   }
 }
 
 // Webpack configuration
-const webpackCommonConfig = require('../config/webpack.common.config')(env)
-const webpackDevConfig = require('../config/webpack.dev.config')
+const webpackDevConfig = require('../config/webpack.dev.config')(env)
+const APP_HOST = process.env.APP_HOST || '0.0.0.0'
+const APP_PORT = process.env.APP_PORT || 5200
 
-
-const webpackConfig = { ...webpackCommonConfig, plugins: webpackCommonConfig.plugins.concat(webpackDevConfig.plugins) }
-
-//console.log(util.inspect(webpackConfig, { depth: 10 }))
-
-const APP_HOST = JSON.parse(env.APP_HOST) || '0.0.0.0'
-const APP_PORT = JSON.parse(env.APP_PORT) || 5200
-
-WebpackDevServer.addDevServerEntrypoints(webpackConfig, config)
+WebpackDevServer.addDevServerEntrypoints(webpackDevConfig, config)
 const compiler = webpack(webpackConfig)
 
 // Since we're using the Node API, we have to set devServer options here

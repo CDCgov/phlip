@@ -1,7 +1,6 @@
 /**
  * Setting up passport.js to use SAML stragety
  */
-
 const SamlStrategy = require('passport-saml').Strategy
 const fs = require('fs')
 const dotenv = require('dotenv')
@@ -37,8 +36,5 @@ module.exports = function (passport, config) {
         })
     })
 
-  console.log('SAML METADATA: ', saml_strategy.generateServiceProviderMetadata())
-
   passport.use(saml_strategy)
-
 }

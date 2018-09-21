@@ -98,7 +98,7 @@ export class Login extends Component {
       display: 'flex',
       flexDirection: 'column'
     }
-    const LoginView = process.env.API_HOST ? ProdLoginForm : DevLoginForm
+    const LoginView = APP_IS_SAML_ENABLED === '1' ? ProdLoginForm : DevLoginForm
 
     return (
       <Container column flex alignItems="center" justify="center" style={{ backgroundColor: '#f5f5f5' }}>

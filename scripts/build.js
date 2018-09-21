@@ -7,10 +7,7 @@ const Spinner = require('cli-spinner').Spinner
 const paths = require('../config/paths')
 
 const env = require('../config/env')('production')
-const webpackProdConfig = require('../config/webpack.prod.config')
-const webpackCommonConfig = require('../config/webpack.common.config')(env)
-
-const webpackConfig = { ...webpackCommonConfig, plugins: webpackCommonConfig.plugins.concat(webpackProdConfig.plugins) }
+const webpackProdConfig = require('../config/webpack.prod.config')(env)
 
 console.log(chalk.cyan(
   `\nThis command will build the webpack bundle/s. \
@@ -21,7 +18,7 @@ spinner.setSpinnerString(18)
 spinner.start()
 
 // Compile the webpack bundle
-const compiler = webpack(webpackConfig)
+const compiler = webpack(webpackProdConfig)
 compiler.run((err, stats) => {
   spinner.stop()
   console.log('\n')

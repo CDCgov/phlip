@@ -233,7 +233,7 @@ let apiCalls = [
 ]
 
 // If development, then include the basic auth api call
-if (!process.env.API_HOST) {
+if (APP_IS_SAML_ENABLED !== '1') {
   apiCalls = [...apiCalls,   {
     name: 'login',
     method: 'post',
