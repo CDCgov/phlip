@@ -15,7 +15,7 @@ describe('Home logic', () => {
   beforeEach(() => {
     mock = new MockAdapter(projectApiInstance)
   })
-  
+
   const setupStore = initialBookmarks => {
     return createMockStore({
       initialState: { data: { user: { currentUser: { id: 5, bookmarks: initialBookmarks } } } },

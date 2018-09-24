@@ -297,6 +297,11 @@ const mapStateToProps = state => ({
 })
 
 /* istanbul ignore next */
-const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
+const mapDispatchToProps = dispatch => ({
+  actions: {
+    ...bindActionCreators(actions, dispatch),
+    resetFormError: bindActionCreators(actions.closeAlert, dispatch)
+  }
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(withFormAlert(Upload))

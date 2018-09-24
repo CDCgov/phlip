@@ -90,18 +90,20 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.UPLOAD_DOCUMENTS_SUCCESS:
-      obj = arrayToObject(action.payload.docs, '_id')
+      obj = { ...state.documents.byId, ...arrayToObject(action.payload.docs, '_id') }
       allIds = Object.keys(obj)
+
+      rows = parseInt(state.rowsPerPage)
+      if (state.rowsPerPage === 'All')
+        rows = allIds.length
 
       return {
         ...state,
         documents: {
           ...state.documents,
-          byId: {
-            ...state.documents.byId,
-            ...obj
-          },
-          allIds: [...state.documents.allIds, ...allIds]
+          byId: obj,
+          allIds: allIds,
+          visible: sliceTable(allIds, state.page, rows)
         }
       }
 
