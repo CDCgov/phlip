@@ -47,7 +47,7 @@ export const PageHeader = props => {
           component={Link}
           to={`/project/${projectId}/protocol`}
           aria-label="View and Edit Protocol"
-          style={{ backgroundColor: 'white', color: 'black' }}
+          style={{ backgroundColor: 'white', color: 'black', marginLeft: 15 }}
         />}
         {checkoutButton && checkoutButton.show === true &&
         <div style={{ marginLeft: 15 }}>
