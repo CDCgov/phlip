@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography/Typography'
  * The blue container where files can be uploaded
  */
 export const InputFileContainer = props => {
-  const { handleInitiateFileSelecter, handleAddFilesToList, inputRef } = props
+  const { handleInitiateFileSelecter, handleAddFilesToList, handleDropFilesToList, inputRef } = props
 
   return (
     <form encType="multipart/form-data" style={{ margin: '20px 0' }}>
@@ -37,6 +37,7 @@ export const InputFileContainer = props => {
             multiple
             type="file"
             onChange={handleAddFilesToList}
+            onDrop={handleDropFilesToList}
             style={{ opacity: 0, height: '100%', width: '100%', position: 'absolute' }}
           />
           <Typography

@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 import upload from './scenes/Upload/reducer'
 import { types } from './actions'
 import { arrayToObject } from 'utils/normalize'
-import { sliceTable } from 'utils/commonHelpers'
+import { sliceTable, sortListOfObjects } from 'utils/commonHelpers'
 
 const INITIAL_STATE = {
   documents: {
@@ -21,7 +21,8 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
   switch(action.type) {
     case types.GET_DOCUMENTS_SUCCESS:
       let obj = arrayToObject(action.payload, '_id')
-      let allIds = Object.keys(obj)
+      let sorted = sortListOfObjects(Object.values(obj), 'uploadedDate', 'desc')
+      let allIds = sorted.map(d => d._id)
 
       let rows = parseInt(state.rowsPerPage)
       if (state.rowsPerPage === 'All')
@@ -91,7 +92,8 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
 
     case types.UPLOAD_DOCUMENTS_SUCCESS:
       obj = { ...state.documents.byId, ...arrayToObject(action.payload.docs, '_id') }
-      allIds = Object.keys(obj)
+      sorted = sortListOfObjects(Object.values(obj), 'uploadedDate', 'desc')
+      allIds = sorted.map(d => d._id)
 
       rows = parseInt(state.rowsPerPage)
       if (state.rowsPerPage === 'All')
