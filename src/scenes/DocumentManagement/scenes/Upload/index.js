@@ -151,24 +151,20 @@ export class Upload extends Component {
     this.inputDropRef.current.click()
   }
 
-  addFiles = selectedFiles => {
-    let files = []
-
-    Array.from(Array(selectedFiles).keys()).map(x => {
-      const i = selectedFiles.item(x)
-      files.push({ name: i.name, lastModifiedDate: i.lastModifiedDate, tags: [], file: i })
-    })
-
-    this.props.actions.addSelectedDocs(files)
-    this.props.actions.verifyUploadRequest(files)
-  }
-
   /**
    * Adds selected files to redux, sends a request to verify the documents can be uploaded
    * @param e
    */
   addFilesToList = (e) => {
-    this.addFiles(e.target.files)
+    let files = []
+
+    Array.from(Array(e.target.files.length).keys()).map(x => {
+      const i = e.target.files.item(x)
+      files.push({ name: i.name, lastModifiedDate: i.lastModifiedDate, tags: [], file: i })
+    })
+
+    this.props.actions.addSelectedDocs(files)
+    this.props.actions.verifyUploadRequest(files)
   }
 
   /**
@@ -197,10 +193,6 @@ export class Upload extends Component {
       formData.append('metadata', JSON.stringify(md))
       this.props.actions.uploadDocumentsRequest(formData)
     }
-  }
-
-  handleDropFiles = e => {
-    this.addFiles(e.originalEvent.dataTransfer.files)
   }
 
   /**
@@ -263,7 +255,6 @@ export class Upload extends Component {
           <InputFileContainer
             handleAddFilesToList={this.addFilesToList}
             handleInitiateFileSelecter={this.initiateFileSelecter}
-            handleDropFilesToList={this.handleDropFiles}
             inputRef={this.inputDropRef}
           />
           <Grid flex style={{ overflow: 'auto' }}>
