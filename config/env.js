@@ -25,5 +25,9 @@ module.exports = getEnvVariables = nodeEnv => {
     env.APP_LOG_REQUESTS = JSON.stringify(0)
   }
 
+  if (!env.APP_IS_SAML_ENABLED) {
+    env.APP_IS_SAML_ENABLED = JSON.stringify(0)
+  }
+
   return env
 }

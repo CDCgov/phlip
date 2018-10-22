@@ -5,6 +5,9 @@ const chalk = require('chalk')
 const webpack = require('webpack')
 const Spinner = require('cli-spinner').Spinner
 const paths = require('../config/paths')
+const dotenv = require('dotenv')
+
+dotenv.config()
 
 const env = require('../config/env')('production')
 const webpackProdConfig = require('../config/webpack.prod.config')(env)
