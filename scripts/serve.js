@@ -19,6 +19,8 @@ const passport = require('passport')
 const helmet = require('helmet')
 const constants = require('constants')
 
+dotenv.config({ path: paths.appDotEnv })
+
 const APP_HOST = process.env.APP_HOST || '0.0.0.0'
 const APP_PORT = process.env.APP_PORT || 5200
 const HTTPS_APP_PORT = process.env.HTTPS_APP_PORT || 443

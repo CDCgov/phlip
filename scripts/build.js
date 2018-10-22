@@ -7,7 +7,7 @@ const Spinner = require('cli-spinner').Spinner
 const paths = require('../config/paths')
 const dotenv = require('dotenv')
 
-dotenv.config()
+dotenv.config({ path: paths.appDotEnv })
 
 const env = require('../config/env')('production')
 const webpackProdConfig = require('../config/webpack.prod.config')(env)
