@@ -76,6 +76,7 @@ export class Upload extends Component {
     super(props, context)
 
     this.inputDropRef = React.createRef()
+    this.excelInputRef = React.createRef()
 
     this.dismissAlertAction = {
       value: 'Close',
@@ -149,6 +150,21 @@ export class Upload extends Component {
    */
   initiateFileSelecter = () => {
     this.inputDropRef.current.click()
+  }
+
+  /**
+   * Opens the file selector for excel file
+   */
+  initiateExcelFileSelecter = () => {
+    this.excelInputRef.current.click()
+  }
+
+  /**
+   * Adds an excel file to redux
+   */
+  addExcelFile = (e) => {
+    const excelFile = e.target.files[0]
+    console.log(excelFile)
   }
 
   /**
@@ -252,11 +268,31 @@ export class Upload extends Component {
         />
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          <InputFileContainer
-            handleAddFilesToList={this.addFilesToList}
-            handleInitiateFileSelecter={this.initiateFileSelecter}
-            inputRef={this.inputDropRef}
-          />
+          <Grid container type="row" align="center" justify="space-between">
+            <InputFileContainer
+              handleAddFilesToList={this.addFilesToList}
+              handleInitiateFileSelecter={this.initiateFileSelecter}
+              inputRef={this.inputDropRef}
+              buttonText="Select files"
+              containerStyle={{
+                border: '3px dashed #99D0E9',
+                backgroundColor: '#f5fafa'
+              }}
+              fileTypes=".doc,.docx,.pdf,.rtf,.txt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            />
+            <Grid padding={10} />
+            <InputFileContainer
+              handleAddFilesToList={this.addExcelFile}
+              handleInitiateFileSelecter={this.initiateExcelFileSelecter}
+              inputRef={this.excelInputRef}
+              buttonText="Select excel file"
+              containerStyle={{
+                border: '3px dashed #c2e3b6',
+                backgroundColor: '#f4f9ef'
+              }}
+              fileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,application/vnd.ms-excel"
+            />
+          </Grid>
           <Grid flex style={{ overflow: 'auto' }}>
             {this.props.selectedDocs.map((doc, i) => {
               return <FileRow

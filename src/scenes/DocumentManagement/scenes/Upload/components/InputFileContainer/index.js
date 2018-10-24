@@ -8,41 +8,43 @@ import Typography from '@material-ui/core/Typography/Typography'
  * The blue container where files can be uploaded
  */
 export const InputFileContainer = props => {
-  const { handleInitiateFileSelecter, handleAddFilesToList, inputRef } = props
+  const {
+    handleInitiateFileSelecter, handleAddFilesToList, inputRef, buttonText, containerStyle, multiple, fileTypes
+  } = props
 
   return (
-    <form encType="multipart/form-data" style={{ margin: '20px 0' }}>
+    <form encType="multipart/form-data" style={{ margin: '20px 0', flex: 1 }}>
       <Grid
         container
         type="row"
         align="center"
         justify="flex-start"
         style={{
-          border: '3px dashed #99D0E9',
           borderRadius: 4,
           height: 64,
-          backgroundColor: '#f5fafa',
-          paddingLeft: 10
+          paddingLeft: 10,
+          ...containerStyle
         }}>
         <Button
           raised
           color="white"
           textColor="black"
           onClick={handleInitiateFileSelecter}
-          value="Select files"
+          value={buttonText}
         />
         <Grid flex container type="row" style={{ position: 'relative', height: '100%' }}>
           <input
             ref={inputRef}
-            multiple
+            multiple={multiple}
             type="file"
             onChange={handleAddFilesToList}
             style={{ opacity: 0, height: '100%', width: '100%', position: 'absolute' }}
+            accept={fileTypes}
           />
           <Typography
             variant="body2"
             style={{ color: '#646465', marginLeft: 10, alignSelf: 'center' }}>
-            or drag and drop files here
+            or drag and drop here
           </Typography>
         </Grid>
       </Grid>
