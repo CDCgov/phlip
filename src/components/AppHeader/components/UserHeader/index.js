@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Grid from 'components/Grid'
+import Grid from 'components/FlexGrid'
 import Greeting from './components/Greeting'
 import AvatarMenu from './components/AvatarMenu'
 

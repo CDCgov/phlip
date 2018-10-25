@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Grid from 'components/Grid'
+import Grid from 'components/FlexGrid'
 import PageHeader from 'components/PageHeader'
 import DocList from './components/DocList'
 import actions from './actions'

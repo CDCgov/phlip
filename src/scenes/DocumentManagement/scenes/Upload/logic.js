@@ -18,6 +18,13 @@ const verifyUploadLogic = createLogic({
   }
 })
 
+const extractInfoLogic = createLogic({
+  type: types.EXTRACT_INFO_REQUEST,
+  process({ action, getState }, dispatch, done) {
+
+  }
+})
+
 const uploadRequestLogic = createLogic({
   type: types.UPLOAD_DOCUMENTS_REQUEST,
   async process({ docApi, action }, dispatch, done) {
@@ -35,4 +42,4 @@ const uploadRequestLogic = createLogic({
   }
 })
 
-export default [verifyUploadLogic, uploadRequestLogic]
+export default [verifyUploadLogic, uploadRequestLogic, extractInfoLogic]

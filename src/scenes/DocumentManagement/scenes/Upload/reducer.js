@@ -10,7 +10,8 @@ const INITIAL_STATE = {
   duplicateFiles: [],
   alertTitle: '',
   alertOpen: false,
-  alertText: ''
+  alertText: '',
+  execelFile: ''
 }
 
 const uploadReducer = (state = INITIAL_STATE, action) => {
@@ -64,6 +65,12 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         alertOpen: true,
         alertText: 'There are already documents that exist for some of the files you selected. Please remove them from the list below',
         alertTitle: 'Duplicates Found'
+      }
+
+    case types.EXTRACT_INFO_REQUEST:
+      return {
+        ...state,
+        excelFile: action.excelFile
       }
 
     case types.UPDATE_DOC_PROPERTY:

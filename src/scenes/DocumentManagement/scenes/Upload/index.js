@@ -9,6 +9,7 @@ import { Icon, Alert, withFormAlert, CircularLoader, Grid } from 'components'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import FileRow from './components/FileRow'
 import FileUpload from 'components/FileUpload'
+import FileList from './components/FileList'
 
 /**
  * Upload documents modal component. In this modal the user can upload documents to the document management system
@@ -146,8 +147,13 @@ export class Upload extends Component {
    * Adds an excel file to redux
    */
   addExcelFile = (e) => {
-    const excelFile = e.target.files[0]
-    console.log(excelFile)
+    const fr = new FileReader()
+    fr.onload = (e) => {
+      const text = fr.result
+    }
+    const excelFile = e.target.files.item(0)
+    fr.readAsText(excelFile, excelFile.type)
+    //this.props.actions.extractInfoRequest(excelFile)
   }
 
   /**
@@ -159,7 +165,15 @@ export class Upload extends Component {
 
     Array.from(Array(e.target.files.length).keys()).map(x => {
       const i = e.target.files.item(x)
-      files.push({ name: i.name, lastModifiedDate: i.lastModifiedDate, tags: [], file: i })
+      files.push({
+        name: i.name,
+        lastModifiedDate: i.lastModifiedDate,
+        tags: [],
+        file: i,
+        effectiveDate: '',
+        citation: '',
+        jurisdictions: []
+      })
     })
 
     this.props.actions.addSelectedDocs(files)
@@ -267,7 +281,8 @@ export class Upload extends Component {
             />
           </Grid>
           <Grid flex style={{ overflow: 'auto' }}>
-            {this.props.selectedDocs.map((doc, i) => {
+            {this.props.selectedDocs.length > 0 && <FileList selectedDocs={this.props.selectedDocs}></FileList>}
+            {/*this.props.selectedDocs.map((doc, i) => {
               return <FileRow
                 key={`selectedDoc-${i}`}
                 index={i}
@@ -280,7 +295,7 @@ export class Upload extends Component {
                 onRemoveDuplicate={this.props.actions.removeDuplicate}
                 isDuplicate={this.props.duplicateFiles.find(file => file.name === doc.name) !== undefined}
               />
-            })}
+            })*/}
           </Grid>
         </ModalContent>
         <ModalActions actions={modalActions} />

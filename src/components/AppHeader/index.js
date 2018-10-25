@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Grid from 'components/Grid'
+import Grid from 'components/FlexGrid'
 import Logo from 'components/Logo'
 import HeaderTabs from './components/HeaderTabs'
 import UserHeader from './components/UserHeader'

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Grid from 'components/Grid'
+import Grid from 'components/FlexGrid'
 import Icon from 'components/Icon'
 import theme from 'services/theme'
 import Typography from '@material-ui/core/Typography'

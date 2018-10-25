@@ -1,10 +1,60 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Grid from 'components/Grid'
+import Grid from 'components/FlexGrid'
 import Button from 'components/Button'
 import Typography from '@material-ui/core/Typography/Typography'
 
 class FileUpload extends Component {
+  static propTypes = {
+    /**
+     * Color of the dashed border for the container
+     */
+    containerBorderColor: PropTypes.string,
+
+    /**
+     * Color of the background of the container
+     */
+    containerBgColor: PropTypes.string,
+
+    /**
+     * Any additional style to be applied to the container
+     */
+    containerStyle: PropTypes.object,
+
+    /**
+     * 'Select files...' button content or text
+     */
+    buttonText: PropTypes.any,
+
+    /**
+     * Whether or not to allow multiple
+     */
+    allowMultiple: PropTypes.bool,
+
+    /**
+     * Container text
+     */
+    containerText: PropTypes.any,
+
+    /**
+     * Allowed file types
+     */
+    allowedFileTypes: PropTypes.string,
+
+    /**
+     * Callback for when files are added
+     */
+    handleAddFiles: PropTypes.func.isRequired
+  }
+
+  static defaultProps = {
+    containerBorderColor: '#99D0E9',
+    containerBgColor: '#f5fafa',
+    containerText: 'or drag and drop here',
+    buttonText: 'Select Files',
+    allowMultiple: false
+  }
+
   constructor(props, context) {
     super(props, context)
     this.inputRef = React.createRef()
@@ -67,56 +117,6 @@ class FileUpload extends Component {
       </form>
     )
   }
-}
-
-FileUpload.propTypes = {
-  /**
-   * Color of the dashed border for the container
-   */
-  containerBorderColor: PropTypes.string,
-
-  /**
-   * Color of the background of the container
-   */
-  containerBgColor: PropTypes.string,
-
-  /**
-   * Any additional style to be applied to the container
-   */
-  containerStyle: PropTypes.object,
-
-  /**
-   * 'Select files...' button content or text
-   */
-  buttonText: PropTypes.any,
-
-  /**
-   * Whether or not to allow multiple
-   */
-  allowMultiple: PropTypes.bool,
-
-  /**
-   * Container text
-   */
-  containerText: PropTypes.any,
-
-  /**
-   * Allowed file types
-   */
-  allowedFileTypes: PropTypes.string,
-
-  /**
-   * Callback for when files are added
-   */
-  handleAddFiles: PropTypes.func.isRequired
-}
-
-FileUpload.defaultProps = {
-  containerBorderColor: '#99D0E9',
-  containerByColor: '#f5fafa',
-  containerText: 'or drag and drop here',
-  buttonText: 'Select Files',
-  allowMultiple: false
 }
 
 export default FileUpload

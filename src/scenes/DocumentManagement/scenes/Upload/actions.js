@@ -16,7 +16,9 @@ export const types = {
   REMOVE_DOC: 'REMOVE_DOC',
   REMOVE_DUPLICATE: 'REMOVE_DUPLICATE',
   CLOSE_ALERT: 'CLOSE_ALERT',
-  OPEN_ALERT: 'OPEN_ALERT'
+  OPEN_ALERT: 'OPEN_ALERT',
+  EXTRACT_INFO_REQUEST: 'EXTRACT_INFO_REQUEST',
+  EXTRACT_INFO_SUCCESS: 'EXTRACT_INFO_SUCCESS'
 }
 
 export default {
@@ -30,5 +32,6 @@ export default {
   addTag: makeActionCreator(types.ADD_TAG, 'index', 'tag'),
   closeAlert: makeActionCreator(types.CLOSE_ALERT),
   openAlert: makeActionCreator(types.OPEN_ALERT, 'text', 'title'),
-  removeDuplicate: makeActionCreator(types.REMOVE_DUPLICATE, 'index', 'fileName')
+  removeDuplicate: makeActionCreator(types.REMOVE_DUPLICATE, 'index', 'fileName'),
+  extractInfoRequest: makeActionCreator(types.EXTRACT_INFO_REQUEST, 'excelFile')
 }
