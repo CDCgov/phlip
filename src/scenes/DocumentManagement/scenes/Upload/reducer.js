@@ -76,7 +76,7 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
     case types.UPDATE_DOC_PROPERTY:
       let selectedDoc = { ...state.selectedDocs[action.index] }
       let value = action.value
-      selectedDoc[action.property] = value
+      selectedDoc[action.property] = { ...selectedDoc[action.property], value }
 
       return {
         ...state,
@@ -88,7 +88,13 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         ...state,
         selectedDocs: [
           ...state.selectedDocs,
-          ...action.selectedDocs
+          ...action.selectedDocs.map(doc => {
+            let d = {}
+            Object.keys(doc).forEach(prop => {
+              d[prop] = { editable: true, value: doc[prop], error: '' }
+            })
+            return d
+          })
         ]
       }
 

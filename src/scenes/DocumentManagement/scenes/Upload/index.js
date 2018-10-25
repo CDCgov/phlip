@@ -198,14 +198,23 @@ export class Upload extends Component {
 
       this.props.selectedDocs.map((doc, i) => {
         const { file, ...otherProps } = doc
-        formData.append('files', file, doc.name)
-        md[doc.name] = otherProps
+        formData.append('files', file.value, doc.name.value)
+        md[doc.name.value] = Object.keys(otherProps).reduce((obj, prop) => {
+          return {
+            ...obj,
+            [prop]: otherProps[prop].value
+          }
+        }, {})
         fd.files = [...fd.files, file]
       })
 
       formData.append('metadata', JSON.stringify(md))
       this.props.actions.uploadDocumentsRequest(formData)
     }
+  }
+
+  handleDocPropertyChange = (index, propName, value) => {
+    this.props.actions.updateDocumentProperty(index, propName, value)
   }
 
   /**
@@ -281,7 +290,13 @@ export class Upload extends Component {
             />
           </Grid>
           <Grid flex style={{ overflow: 'auto' }}>
-            {this.props.selectedDocs.length > 0 && <FileList selectedDocs={this.props.selectedDocs}></FileList>}
+            {this.props.selectedDocs.length > 0 &&
+            <FileList
+              selectedDocs={this.props.selectedDocs}
+              handleDocPropertyChange={this.handleDocPropertyChange}
+              handleRemoveDoc={this.props.actions.removeDoc}
+            />
+            }
             {/*this.props.selectedDocs.map((doc, i) => {
               return <FileRow
                 key={`selectedDoc-${i}`}

@@ -1,9 +1,10 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, Component } from 'react'
 import PropTypes from 'prop-types'
 import Grid from 'components/Grid'
 import SimpleInput from 'components/SimpleInput'
-import FlexGrid from 'components/FlexGrid'
+import DatePicker from 'components/DatePicker'
 import Icon from 'components/Icon'
+import IconButton from 'components/IconButton'
 
 const fileTypeIcons = {
   'pdf': 'picture_as_pdf',
@@ -23,32 +24,34 @@ const getIconType = extension => {
   return icon
 }
 
-const FileList = props => {
-  const columns = [
-    'File Name',
-    'Jurisdictions',
-    'Citation',
-    'Effective Date'
-  ]
+export class FileList extends Component {
+  constructor(props, context) {
+    super(props, context)
+  }
 
-  const docProps = [
-    'name',
-    'jurisdictions',
-    'citation',
-    'effectiveDate'
-  ]
+  onDocPropertyChange = (index, propName, value) => {
+    this.props.handleDocPropertyChange(index, propName, value)
+  }
 
-  const columnSizing = `minmax(${400}px, 1fr) 210px 210px 210px`
-  const wrapperRowSizing = '1fr'
+  render() {
+    const columns = [
+      'File Name',
+      'Jurisdictions',
+      'Citation',
+      'Effective Date'
+    ]
 
-  const {
-    selectedDocs,
-    handleChangeDocProperty
-  } = props
+    const columnSizing = `minmax(${350}px, 1fr) 210px 210px 230px 50px`
+    const wrapperRowSizing = '1fr'
 
-  return (
-    <>
-      <Grid columnSizing={columnSizing} rowSizing={wrapperRowSizing} style={{ padding: '10px 20px' }}>
+    const {
+      selectedDocs,
+      handleRemoveDoc
+    } = this.props
+
+    return (
+      <>
+        <Grid columnSizing={columnSizing} rowSizing={wrapperRowSizing} style={{ padding: '10px 20px' }}>
         {columns.map((column, i) => {
           return <div style={{ fontSize: '18px', margin: '0 5px' }} key={`file-list-col-${i}`}>{column}</div>
         })}
@@ -56,13 +59,15 @@ const FileList = props => {
       <div style={{ borderTop: '1px solid black' }} />
       <Grid columnSizing="1fr" autoRowSizing="50px" style={{ overflow: 'auto' }}>
         {selectedDocs.map((doc, i) => {
-          const pieces = doc.name.split('.')
+          const pieces = doc.name.value.split('.')
           const extension = pieces[pieces.length - 1]
           const iconName = getIconType(extension)
 
           const bgColor = i % 2 === 0
             ? '#f9f9f9'
             : '#fff'
+
+          const colStyle = { fontSize: 13, alignSelf: 'center', margin: '0 5px' }
 
           return (
             <Grid
@@ -71,24 +76,50 @@ const FileList = props => {
               rowSizing="1fr"
               style={{ backgroundColor: bgColor, padding: '10px 20px' }}>
               <Icon size={20} style={{ alignSelf: 'center' }}>{iconName}</Icon>
-              {docProps.map((prop, x) => {
-                return (
-                  <Fragment key={`file-list-row-${i}-col-${x}`}>
-                  {doc[prop].length === 0
-                    ? <SimpleInput fullWidth={false} multiline={false} style={{ margin: '0 5px' }}></SimpleInput>
-                    : <div style={{ fontSize: 13, alignSelf: 'center', margin: '0 5px' }}>
-                      {doc[prop]}
-                    </div>}
-                  </Fragment>
-                )
-              })}
+              <div style={colStyle}>{doc.name.value}</div>
+              {doc.jurisdictions.editable === true
+                ? <SimpleInput
+                  fullWidth={false}
+                  multiline={false}
+                  style={colStyle}
+                  value={doc.jurisdictions.value}
+                  onChange={e => this.onDocPropertyChange(i, 'jurisdictions', e.target.value)}
+                />
+                : <div style={colStyle}>{doc.jurisdictions.value}</div>
+              }
+              {doc.citation.editable === true
+                ? <SimpleInput
+                  fullWidth={false}
+                  multiline={false}
+                  style={colStyle}
+                  value={doc.citation.value}
+                  onChange={e => this.onDocPropertyChange(i, 'citation', e.target.value)}
+                />
+                : <div style={colStyle}>{doc.citation.value}</div>
+              }
+              {doc.effectiveDate.editable === true
+                ? <div style={colStyle}>
+                  <DatePicker
+                    name="effectiveDate"
+                    dateFormat="MM/DD/YYYY"
+                    onChange={date => this.onDocPropertyChange(i, 'effectiveDate', date)}
+                    value={doc.effectiveDate.value}
+                    autoOk={true}
+                    style={{ marginTop: 0 }}
+                  />
+                </div>
+                : <div style={colStyle}>{doc.effectiveDate.valie}</div>
+              }
+              <IconButton style={{ justifySelf: 'flex-end', ...colStyle }} onClick={() => handleRemoveDoc(i)} iconSize={24} color="primary">
+                cancel
+              </IconButton>
             </Grid>
           )
         })}
       </Grid>
-    </>
-  )
-
+      </>
+    )
+  }
 }
 
 export default FileList

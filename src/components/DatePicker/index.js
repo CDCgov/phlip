@@ -34,7 +34,7 @@ export const DatePicker = props => {
         InputProps={{ onChange: onInputChange, value: displayValue }}
         {...otherProps}
       />
-      <FormHelperText>{error}</FormHelperText>
+      {error && <FormHelperText>{error}</FormHelperText>}
     </FormControl>
   )
 }
