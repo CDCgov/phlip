@@ -7,8 +7,8 @@ import Divider from '@material-ui/core/Divider/Divider'
 import actions from './actions'
 import { Icon, Alert, withFormAlert, CircularLoader, Grid } from 'components'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
-import InputFileContainer from './components/InputFileContainer'
 import FileRow from './components/FileRow'
+import FileUpload from 'components/FileUpload'
 
 /**
  * Upload documents modal component. In this modal the user can upload documents to the document management system
@@ -74,9 +74,6 @@ export class Upload extends Component {
 
   constructor(props, context) {
     super(props, context)
-
-    this.inputDropRef = React.createRef()
-    this.excelInputRef = React.createRef()
 
     this.dismissAlertAction = {
       value: 'Close',
@@ -146,20 +143,6 @@ export class Upload extends Component {
   }
 
   /**
-   * Opens the file selecter input modal
-   */
-  initiateFileSelecter = () => {
-    this.inputDropRef.current.click()
-  }
-
-  /**
-   * Opens the file selector for excel file
-   */
-  initiateExcelFileSelecter = () => {
-    this.excelInputRef.current.click()
-  }
-
-  /**
    * Adds an excel file to redux
    */
   addExcelFile = (e) => {
@@ -171,7 +154,7 @@ export class Upload extends Component {
    * Adds selected files to redux, sends a request to verify the documents can be uploaded
    * @param e
    */
-  addFilesToList = (e) => {
+  addFilesToList = e => {
     let files = []
 
     Array.from(Array(e.target.files.length).keys()).map(x => {
@@ -269,28 +252,18 @@ export class Upload extends Component {
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           <Grid container type="row" align="center" justify="space-between">
-            <InputFileContainer
-              handleAddFilesToList={this.addFilesToList}
-              handleInitiateFileSelecter={this.initiateFileSelecter}
-              inputRef={this.inputDropRef}
-              buttonText="Select files"
-              containerStyle={{
-                border: '3px dashed #99D0E9',
-                backgroundColor: '#f5fafa'
-              }}
-              fileTypes=".doc,.docx,.pdf,.rtf,.txt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            <FileUpload
+              handleAddFiles={this.addFilesToList}
+              allowedFileTypes=".doc,.docx,.pdf,.rtf,.txt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              allowMultiple
             />
             <Grid padding={10} />
-            <InputFileContainer
-              handleAddFilesToList={this.addExcelFile}
-              handleInitiateFileSelecter={this.initiateExcelFileSelecter}
-              inputRef={this.excelInputRef}
+            <FileUpload
+              handleAddFiles={this.addExcelFile}
               buttonText="Select excel file"
-              containerStyle={{
-                border: '3px dashed #c2e3b6',
-                backgroundColor: '#f4f9ef'
-              }}
-              fileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,application/vnd.ms-excel"
+              containerBgColor="#f4f9ef"
+              containerBorderColor="#c2e3b6"
+              allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,application/vnd.ms-excel"
             />
           </Grid>
           <Grid flex style={{ overflow: 'auto' }}>
