@@ -41,83 +41,95 @@ export class FileList extends Component {
       'Effective Date'
     ]
 
-    const columnSizing = `minmax(${350}px, 1fr) 210px 210px 230px 50px`
+    const columnSizing = `20px minmax(${350}px, 1fr) 210px 210px 230px 45px`
     const wrapperRowSizing = '1fr'
 
     const {
       selectedDocs,
-      handleRemoveDoc
+      handleRemoveDoc,
+      suggestions
     } = this.props
 
     return (
-      <>
-        <Grid columnSizing={columnSizing} rowSizing={wrapperRowSizing} style={{ padding: '10px 20px' }}>
-        {columns.map((column, i) => {
-          return <div style={{ fontSize: '18px', margin: '0 5px' }} key={`file-list-col-${i}`}>{column}</div>
-        })}
-      </Grid>
-      <div style={{ borderTop: '1px solid black' }} />
-      <Grid columnSizing="1fr" autoRowSizing="50px" style={{ overflow: 'auto' }}>
-        {selectedDocs.map((doc, i) => {
-          const pieces = doc.name.value.split('.')
-          const extension = pieces[pieces.length - 1]
-          const iconName = getIconType(extension)
+      <Grid rowSizing="55px 1fr" columnSizing="1fr" style={{ overflow: 'auto', flex: 1 }}>
+        <Grid columnSizing={columnSizing} rowSizing={wrapperRowSizing} style={{ padding: '10px 0 0 0' }}>
+          <div style={{ borderBottom: '1px solid black' }} />
+          {columns.map((column, i) => {
+            return <div
+              style={{ fontSize: '18px', borderBottom: '1px solid black', padding: '10px 5px' }}
+              key={`file-list-col-${i}`}>{column}</div>
+          })}
+          <div style={{ borderBottom: '1px solid black' }} />
+        </Grid>
+        <Grid columnSizing="1fr" autoRowSizing="60px" style={{ flex: 1 }}>
+          {selectedDocs.map((doc, i) => {
+            const pieces = doc.name.value.split('.')
+            const extension = pieces[pieces.length - 1]
+            const iconName = getIconType(extension)
 
-          const bgColor = i % 2 === 0
-            ? '#f9f9f9'
-            : '#fff'
+            const bgColor = i % 2 === 0
+              ? '#f9f9f9'
+              : '#fff'
 
-          const colStyle = { fontSize: 13, alignSelf: 'center', margin: '0 5px' }
+            const colStyle = { fontSize: 13, alignSelf: 'center', margin: '0 5px' }
 
-          return (
-            <Grid
-              key={`file-list-row-${i}`}
-              columnSizing={`30px ${columnSizing}`}
-              rowSizing="1fr"
-              style={{ backgroundColor: bgColor, padding: '10px 20px' }}>
-              <Icon size={20} style={{ alignSelf: 'center' }}>{iconName}</Icon>
-              <div style={colStyle}>{doc.name.value}</div>
-              {doc.jurisdictions.editable === true
-                ? <SimpleInput
-                  fullWidth={false}
-                  multiline={false}
-                  style={colStyle}
-                  value={doc.jurisdictions.value}
-                  onChange={e => this.onDocPropertyChange(i, 'jurisdictions', e.target.value)}
-                />
-                : <div style={colStyle}>{doc.jurisdictions.value}</div>
-              }
-              {doc.citation.editable === true
-                ? <SimpleInput
-                  fullWidth={false}
-                  multiline={false}
-                  style={colStyle}
-                  value={doc.citation.value}
-                  onChange={e => this.onDocPropertyChange(i, 'citation', e.target.value)}
-                />
-                : <div style={colStyle}>{doc.citation.value}</div>
-              }
-              {doc.effectiveDate.editable === true
-                ? <div style={colStyle}>
-                  <DatePicker
-                    name="effectiveDate"
-                    dateFormat="MM/DD/YYYY"
-                    onChange={date => this.onDocPropertyChange(i, 'effectiveDate', date)}
-                    value={doc.effectiveDate.value}
-                    autoOk={true}
-                    style={{ marginTop: 0 }}
-                  />
+            return (
+              <Grid
+                key={`file-list-row-${i}`}
+                columnSizing={columnSizing}
+                rowSizing="1fr"
+                style={{ backgroundColor: bgColor, padding: '8px 0' }}>
+                <div />
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Icon size={20} style={{ alignSelf: 'center', marginRight: 5 }}>{iconName}</Icon>
+                  <div style={colStyle}>{doc.name.value}</div>
                 </div>
-                : <div style={colStyle}>{doc.effectiveDate.valie}</div>
-              }
-              <IconButton style={{ justifySelf: 'flex-end', ...colStyle }} onClick={() => handleRemoveDoc(i)} iconSize={24} color="primary">
-                cancel
-              </IconButton>
-            </Grid>
-          )
-        })}
+                {doc.jurisdictions.editable === true
+                  ? <SimpleInput
+                    fullWidth={false}
+                    multiline={false}
+                    style={colStyle}
+                    value={doc.jurisdictions.value}
+                    onChange={e => this.onDocPropertyChange(i, 'jurisdictions', e.target.value)}
+                  />
+                  : <div style={colStyle}>{doc.jurisdictions.value}</div>
+                }
+                {doc.citation.editable === true
+                  ? <SimpleInput
+                    fullWidth={false}
+                    multiline={false}
+                    style={colStyle}
+                    value={doc.citation.value}
+                    onChange={e => this.onDocPropertyChange(i, 'citation', e.target.value)}
+                  />
+                  : <div style={colStyle}>{doc.citation.value}</div>
+                }
+                {doc.effectiveDate.editable === true
+                  ? <div style={colStyle}>
+                    <DatePicker
+                      name="effectiveDate"
+                      dateFormat="MM/DD/YYYY"
+                      onChange={date => this.onDocPropertyChange(i, 'effectiveDate', date)}
+                      onInputChange={e => this.onDocPropertyChange(i, 'effectiveDate', e.target.value)}
+                      value={doc.effectiveDate.value}
+                      autoOk={true}
+                      style={{ marginTop: 0 }}
+                    />
+                  </div>
+                  : <div style={colStyle}>{doc.effectiveDate.valie}</div>
+                }
+                <IconButton
+                  style={{ justifySelf: 'flex-end', ...colStyle, paddingRight: 20 }}
+                  onClick={() => handleRemoveDoc(i)}
+                  iconSize={24}
+                  color="primary">
+                  cancel
+                </IconButton>
+              </Grid>
+            )
+          })}
+        </Grid>
       </Grid>
-      </>
     )
   }
 }

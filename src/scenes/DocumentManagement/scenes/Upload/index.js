@@ -177,7 +177,7 @@ export class Upload extends Component {
     })
 
     this.props.actions.addSelectedDocs(files)
-    this.props.actions.verifyUploadRequest(files)
+    //this.props.actions.verifyUploadRequest(files)
   }
 
   /**
@@ -273,8 +273,8 @@ export class Upload extends Component {
           }
         />
         <Divider />
-        <ModalContent style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          <Grid container type="row" align="center" justify="space-between">
+        <ModalContent style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <Grid container type="row" align="center" justify="space-between" padding={10}>
             <FileUpload
               handleAddFiles={this.addFilesToList}
               allowedFileTypes=".doc,.docx,.pdf,.rtf,.txt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -289,15 +289,16 @@ export class Upload extends Component {
               allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,application/vnd.ms-excel"
             />
           </Grid>
-          <Grid flex style={{ overflow: 'auto' }}>
-            {this.props.selectedDocs.length > 0 &&
-            <FileList
-              selectedDocs={this.props.selectedDocs}
-              handleDocPropertyChange={this.handleDocPropertyChange}
-              handleRemoveDoc={this.props.actions.removeDoc}
-            />
-            }
-            {/*this.props.selectedDocs.map((doc, i) => {
+          {this.props.selectedDocs.length > 0 &&
+          <FileList
+            selectedDocs={this.props.selectedDocs}
+            handleDocPropertyChange={this.handleDocPropertyChange}
+            handleRemoveDoc={this.props.actions.removeDoc}
+            handleJurisdictionFetchRequest={this.props.actions.searchJurisdicationList}
+            suggestions={this.props.suggestions}
+          />
+          }
+          {/*this.props.selectedDocs.map((doc, i) => {
               return <FileRow
                 key={`selectedDoc-${i}`}
                 index={i}
@@ -311,7 +312,6 @@ export class Upload extends Component {
                 isDuplicate={this.props.duplicateFiles.find(file => file.name === doc.name) !== undefined}
               />
             })*/}
-          </Grid>
         </ModalContent>
         <ModalActions actions={modalActions} />
       </Modal>
@@ -331,7 +331,8 @@ const mapStateToProps = state => ({
   alertTitle: state.scenes.docManage.upload.alertTitle,
   user: state.data.user.currentUser,
   goBack: state.scenes.docManage.upload.goBack,
-  isReduxForm: false
+  isReduxForm: false,
+  suggestions: state.scenes.docManage.upload.suggestions
 })
 
 /* istanbul ignore next */

@@ -18,7 +18,9 @@ export const types = {
   CLOSE_ALERT: 'CLOSE_ALERT',
   OPEN_ALERT: 'OPEN_ALERT',
   EXTRACT_INFO_REQUEST: 'EXTRACT_INFO_REQUEST',
-  EXTRACT_INFO_SUCCESS: 'EXTRACT_INFO_SUCCESS'
+  EXTRACT_INFO_SUCCESS: 'EXTRACT_INFO_SUCCESS',
+  SEARCH_JURISDICTION_LIST: 'SEARCH_JURISDICTION_LIST',
+  SET_JURISDICTION_SUGGESTIONS: 'SET_JURISDICTION_SUGGESTIONS'
 }
 
 export default {
@@ -33,5 +35,6 @@ export default {
   closeAlert: makeActionCreator(types.CLOSE_ALERT),
   openAlert: makeActionCreator(types.OPEN_ALERT, 'text', 'title'),
   removeDuplicate: makeActionCreator(types.REMOVE_DUPLICATE, 'index', 'fileName'),
-  extractInfoRequest: makeActionCreator(types.EXTRACT_INFO_REQUEST, 'excelFile')
+  extractInfoRequest: makeActionCreator(types.EXTRACT_INFO_REQUEST, 'excelFile'),
+  searchJurisdicationList: makeActionCreator(types.SEARCH_JURISDICTION_LIST, 'searchString')
 }

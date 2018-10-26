@@ -11,7 +11,8 @@ const INITIAL_STATE = {
   alertTitle: '',
   alertOpen: false,
   alertText: '',
-  execelFile: ''
+  execelFile: '',
+  suggestions: []
 }
 
 const uploadReducer = (state = INITIAL_STATE, action) => {
