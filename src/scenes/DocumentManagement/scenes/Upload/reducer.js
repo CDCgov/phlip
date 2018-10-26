@@ -166,6 +166,12 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         projectSuggestions: action.payload
       }
 
+    case types.SEARCH_JURISDICTION_LIST_SUCCESS:
+      return {
+        ...state,
+        jurisdictionSuggestions: action.payload
+      }
+
     case types.CLEAR_SUGGESTIONS:
       return {
         ...state,

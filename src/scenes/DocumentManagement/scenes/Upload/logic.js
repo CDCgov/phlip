@@ -36,7 +36,10 @@ const uploadRequestLogic = createLogic({
       })
       dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: docs.files } })
     } catch (err) {
-      dispatch({ type: types.UPLOAD_DOCUMENTS_FAIL, payload: { error: 'Failed to upload documents, please try again.' } })
+      dispatch({
+        type: types.UPLOAD_DOCUMENTS_FAIL,
+        payload: { error: 'Failed to upload documents, please try again.' }
+      })
     }
     done()
   }
@@ -44,6 +47,18 @@ const uploadRequestLogic = createLogic({
 
 const searchProjectListLogic = createLogic({
   type: types.SEARCH_PROJECT_LIST_REQUEST,
+  validate({ getState, action }, allow, reject) {
+    const selectedProject = getState().scenes.docManage.upload.selectedProject
+    if (Object.keys(selectedProject).length === 0) {
+      allow(action)
+    } else {
+      if (selectedProject.name !== action.searchString) {
+        allow(action)
+      } else {
+        reject()
+      }
+    }
+  },
   async process({ api, action }, dispatch, done) {
     try {
       let projects = await api.getProjects({}, {}, {})
@@ -59,4 +74,35 @@ const searchProjectListLogic = createLogic({
   }
 })
 
-export default [verifyUploadLogic, uploadRequestLogic, extractInfoLogic, searchProjectListLogic]
+const searchJurisdictionListLogic = createLogic({
+  type: types.SEARCH_JURISDICTION_LIST_REQUEST,
+  validate({ getState, action }, allow, reject) {
+    const selectedJurisdiction = getState().scenes.docManage.upload.selectedJurisdiction
+    if (Object.keys(selectedJurisdiction).length === 0) {
+      allow(action)
+    } else {
+      if (selectedJurisdiction.name !== action.searchString) {
+        allow(action)
+      } else {
+        reject()
+      }
+    }
+  },
+  async process({ action, api }, dispatch, done) {
+    try {
+      const jurisdictions = await api.searchJurisdictionList({}, {
+        params: {
+          name: action.searchString
+        }
+      }, {})
+      dispatch({ type: types.SEARCH_JURISDICTION_LIST_SUCCESS, payload: jurisdictions })
+    } catch (err) {
+      dispatch({ type: types.SEARCH_JURISDICTION_LIST_FAIL })
+    }
+    done()
+  }
+})
+
+export default [
+  verifyUploadLogic, uploadRequestLogic, extractInfoLogic, searchProjectListLogic, searchJurisdictionListLogic
+]

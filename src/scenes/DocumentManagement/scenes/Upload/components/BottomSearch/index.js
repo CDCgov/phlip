@@ -19,7 +19,7 @@ const BottomSearch = props => {
 
   return (
     <FlexGrid container type="row" align="center" justify="center" style={{ marginTop: 20 }}>
-      <FlexGrid container type="row" align="flex-end" style={{ marginRight: 10, minWidth: 250 }}>
+      <FlexGrid container type="row" align="flex-end" style={{ marginRight: 20, minWidth: 250 }}>
         <Icon style={{ paddingRight: 8, paddingBottom: 5 }}>dvr</Icon>
         <Autocomplete
           suggestions={projectSuggestions}
@@ -40,7 +40,7 @@ const BottomSearch = props => {
           handleSuggestionSelected={onProjectSelected}
         />
       </FlexGrid>
-      <FlexGrid container type="row" align="flex-end" style={{ marginLeft: 10, minWidth: 250 }}>
+      <FlexGrid container type="row" align="flex-end" style={{ marginLeft: 20, minWidth: 250 }}>
         <Icon style={{ paddingRight: 8, paddingBottom: 5 }}>account_balance</Icon>
         <Autocomplete
           suggestions={jurisdictionSuggestions}
