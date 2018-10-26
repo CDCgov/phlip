@@ -4,6 +4,9 @@ import Autosuggest from 'react-autosuggest'
 import Paper from '@material-ui/core/Paper'
 import { withStyles } from '@material-ui/core/styles'
 import SimpleInput from 'components/SimpleInput'
+import match from 'autosuggest-highlight/match'
+import parse from 'autosuggest-highlight/parse'
+import MenuItem from '@material-ui/core/MenuItem/MenuItem'
 
 const classes = theme => ({
   suggestionsContainerOpen: {
@@ -28,6 +31,9 @@ const classes = theme => ({
   sectionContainer: {
     margin: '0 10px',
     borderBottom: `1px dashed ${theme.palette.primary['600']}`
+  },
+  container: {
+    width: '100%'
   }
 })
 
@@ -61,11 +67,48 @@ const renderSuggestionsContainer = ({ containerProps, children }) => {
 }
 
 /**
+ * Default function for getting suggestion value
+ * @param suggestion
+ * @returns {*}
+ */
+const getSuggestionValue = suggestion => suggestion
+
+/**
  * Determines if the suggestions should be rendered. Only renders if the input length >= 3
  * @param value
  * @returns {boolean}
  */
 const shouldRenderSuggestions = value => value.trim().length >= 3
+
+/**
+ * Default function for rendering suggestions
+ * @param suggestion
+ * @param query
+ * @param isHighlighted
+ * @returns {*}
+ */
+const renderSuggestion = (suggestion, { query, isHighlighted }) => {
+  const matches = match(suggestion.name, query)
+  const parts = parse(suggestion.name, matches)
+
+  return (
+    <MenuItem selected={isHighlighted} component="div">
+      <div>
+        {parts.map((part, index) => {
+          return part.highlight ? (
+            <span key={String(index)} style={{ fontWeight: 300 }}>
+              {part.text}
+            </span>
+          ) : (
+            <strong key={String(index)} style={{ fontWeight: 500 }}>
+              {part.text}
+            </strong>
+          )
+        })}
+      </div>
+    </MenuItem>
+  )
+}
 
 /**
  * Autosuggest / Autocomplete input field, renders a list of suggestions based on the input
@@ -87,6 +130,7 @@ export const Autocomplete = props => {
   return (
     <Autosuggest
       theme={{
+        container: classes.container,
         suggestionsContainerOpen: classes.suggestionsContainerOpen,
         suggestionsList: classes.suggestionsList,
         suggestion: classes.suggestion,
@@ -166,6 +210,9 @@ Autocomplete.propTypes = {
   getSuggestionValue: PropTypes.func
 }
 
-Autocomplete.defaultProps = {}
+Autocomplete.defaultProps = {
+  renderSuggestion: renderSuggestion,
+  getSuggestionValue: getSuggestionValue
+}
 
 export default withStyles(classes)(Autocomplete)

@@ -12,7 +12,12 @@ const INITIAL_STATE = {
   alertOpen: false,
   alertText: '',
   execelFile: '',
-  suggestions: []
+  projectSuggestions: [],
+  jurisdictionSuggestions: [],
+  projectSearchValue: '',
+  jurisdictionSearchValue: '',
+  selectedProject: {},
+  selectedJurisdiction: {}
 }
 
 const uploadReducer = (state = INITIAL_STATE, action) => {
@@ -153,6 +158,40 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         ...state,
         selectedDocs: docs,
         duplicateFiles: duplicates
+      }
+
+    case types.SEARCH_PROJECT_LIST_SUCCESS:
+      return {
+        ...state,
+        projectSuggestions: action.payload
+      }
+
+    case types.CLEAR_SUGGESTIONS:
+      return {
+        ...state,
+        [action.suggestionType]: []
+      }
+
+    case types.ON_SEARCH_VALUE_CHANGE:
+      return {
+        ...state,
+        [`${action.searchType}SearchValue`]: action.value
+      }
+
+    case types.ON_PROJECT_SUGGESTION_SELECTED:
+      return {
+        ...state,
+        projectSearchValue: action.project.name,
+        selectedProject: action.project,
+        projectSuggestions: []
+      }
+
+    case types.ON_JURISDICTION_SUGGESTION_SELECTED:
+      return {
+        ...state,
+        jurisdictionSearchValue: action.jurisdiction.name,
+        selectedJurisdiction: action.jurisdiction,
+        jurisdictionSuggestions: []
       }
 
     case types.CLEAR_SELECTED_FILES:

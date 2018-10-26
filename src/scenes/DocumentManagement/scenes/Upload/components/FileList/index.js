@@ -1,10 +1,12 @@
-import React, { Fragment, Component } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Grid from 'components/Grid'
 import SimpleInput from 'components/SimpleInput'
 import DatePicker from 'components/DatePicker'
 import Icon from 'components/Icon'
 import IconButton from 'components/IconButton'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 const fileTypeIcons = {
   'pdf': 'picture_as_pdf',
@@ -47,7 +49,8 @@ export class FileList extends Component {
     const {
       selectedDocs,
       handleRemoveDoc,
-      suggestions
+      jurisdictionSuggestions,
+      projectSuggestions
     } = this.props
 
     return (

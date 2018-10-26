@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles'
 
 const styles = {
   root: {
-    margin: '24px'
+    margin: '20px'
   }
 }
 

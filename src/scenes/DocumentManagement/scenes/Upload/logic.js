@@ -42,4 +42,21 @@ const uploadRequestLogic = createLogic({
   }
 })
 
-export default [verifyUploadLogic, uploadRequestLogic, extractInfoLogic]
+const searchProjectListLogic = createLogic({
+  type: types.SEARCH_PROJECT_LIST_REQUEST,
+  async process({ api, action }, dispatch, done) {
+    try {
+      let projects = await api.getProjects({}, {}, {})
+      const searchString = action.searchString.toLowerCase()
+      projects = projects.filter(project => {
+        return project.name.toLowerCase().startsWith(searchString)
+      })
+      dispatch({ type: types.SEARCH_PROJECT_LIST_SUCCESS, payload: projects })
+    } catch (err) {
+      dispatch({ type: types.SEARCH_PROJECT_LIST_FAIL })
+    }
+    done()
+  }
+})
+
+export default [verifyUploadLogic, uploadRequestLogic, extractInfoLogic, searchProjectListLogic]

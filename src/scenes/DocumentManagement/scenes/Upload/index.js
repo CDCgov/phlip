@@ -7,9 +7,9 @@ import Divider from '@material-ui/core/Divider/Divider'
 import actions from './actions'
 import { Icon, Alert, withFormAlert, CircularLoader, Grid } from 'components'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
-import FileRow from './components/FileRow'
 import FileUpload from 'components/FileUpload'
 import FileList from './components/FileList'
+import BottomSearch from './components/BottomSearch'
 
 /**
  * Upload documents modal component. In this modal the user can upload documents to the document management system
@@ -217,6 +217,20 @@ export class Upload extends Component {
     this.props.actions.updateDocumentProperty(index, propName, value)
   }
 
+  handleGetSuggestions = (suggestionType, { value: searchString }) => {
+    suggestionType === 'project'
+      ? this.props.actions.searchProjectListRequest(searchString)
+      : this.props.actions.searchJurisdictionListRequest(searchString)
+  }
+
+  handleProjectSuggestionSelected = (event, { suggestionValue }) => {
+    this.props.actions.onProjectSuggestionSelected(suggestionValue)
+  }
+
+  handleJurisdictionSuggestionSelected = (event, { suggestionValue }) => {
+    this.props.actions.onJurisdictionSuggestionSelected(suggestionValue)
+  }
+
   /**
    * Determines the text for the modal button at the bottom
    * @param text
@@ -298,6 +312,19 @@ export class Upload extends Component {
             suggestions={this.props.suggestions}
           />
           }
+          {this.props.selectedDocs.length > 0 &&
+          <BottomSearch
+            jurisdictionSuggestions={this.props.jurisdictionSuggestions}
+            projectSuggestions={this.props.projectSuggestions}
+            onClearSuggestions={this.props.actions.clearSuggestions}
+            onGetSuggestions={this.handleGetSuggestions}
+            jurisdictionSearchValue={this.props.jurisdictionSearchValue}
+            projectSearchValue={this.props.projectSearchValue}
+            onSearchValueChange={this.props.actions.onSearchValueChange}
+            onJurisdictionSelected={this.handleJurisdictionSuggestionSelected}
+            onProjectSelected={this.handleProjectSuggestionSelected}
+          />
+          }
           {/*this.props.selectedDocs.map((doc, i) => {
               return <FileRow
                 key={`selectedDoc-${i}`}
@@ -313,6 +340,7 @@ export class Upload extends Component {
               />
             })*/}
         </ModalContent>
+        <Divider />
         <ModalActions actions={modalActions} />
       </Modal>
     )
@@ -332,7 +360,10 @@ const mapStateToProps = state => ({
   user: state.data.user.currentUser,
   goBack: state.scenes.docManage.upload.goBack,
   isReduxForm: false,
-  suggestions: state.scenes.docManage.upload.suggestions
+  projectSuggestions: state.scenes.docManage.upload.projectSuggestions,
+  jurisdictionSuggestions: state.scenes.docManage.upload.jurisdictionSuggestions,
+  projectSearchValue: state.scenes.docManage.upload.projectSearchValue,
+  jurisdictionSearchValue: state.scenes.docManage.upload.jurisdictionSearchValue,
 })
 
 /* istanbul ignore next */
