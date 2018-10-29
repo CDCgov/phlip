@@ -205,6 +205,11 @@ export class Upload extends Component {
             [prop]: otherProps[prop].value
           }
         }, {})
+        md[doc.name.value].jurisdictions = [
+          ...otherProps.jurisdictions.value.map(jur => jur.id),
+          this.props.selectedJurisdiction.id
+        ]
+        md[doc.name.value].projects = [this.props.selectedProject.id]
         fd.files = [...fd.files, file]
       })
 
@@ -364,6 +369,8 @@ const mapStateToProps = state => ({
   jurisdictionSuggestions: state.scenes.docManage.upload.jurisdictionSuggestions,
   projectSearchValue: state.scenes.docManage.upload.projectSearchValue,
   jurisdictionSearchValue: state.scenes.docManage.upload.jurisdictionSearchValue,
+  selectedJurisdiction: state.scenes.docManage.upload.selectedJurisdiction,
+  selectedProject: state.scenes.docManage.upload.selectedProject
 })
 
 /* istanbul ignore next */
