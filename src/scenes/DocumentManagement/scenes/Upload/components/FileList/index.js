@@ -102,12 +102,11 @@ export class FileList extends Component {
                         }),
                         id: `jurisdiction-name-row-${i}`
                       }}
-                      getSuggestionValue={suggestion => suggestion.name}
                       focusInputOnSuggestionClick={false}
-                      handleSuggestionSelected={(event, { suggestionValue, suggestion }) => {
+                      handleSuggestionSelected={(event, { suggestionValue }) => {
                         this.onDocPropertyChange(i, 'jurisdictions', {
-                          ...suggestion,
-                          searchValue: suggestionValue
+                          ...suggestionValue,
+                          searchValue: suggestionValue.name
                         })
                       }}
                       InputProps={{

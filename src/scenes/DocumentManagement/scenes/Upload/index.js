@@ -205,10 +205,9 @@ export class Upload extends Component {
             [prop]: otherProps[prop].value
           }
         }, {})
-        md[doc.name.value].jurisdictions = [
-          ...otherProps.jurisdictions.value.id,
-          this.props.selectedJurisdiction.id
-        ]
+        md[doc.name.value].jurisdictions = this.props.selectedJurisdiction.id
+          ? [this.props.selectedJurisdiction.id]
+          : [otherProps.jurisdictions.value.id]
         md[doc.name.value].projects = [this.props.selectedProject.id]
         fd.files = [...fd.files, file]
       })
