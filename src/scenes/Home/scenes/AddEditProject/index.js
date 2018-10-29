@@ -253,7 +253,9 @@ export class AddEditProject extends Component {
       >
         <ModalTitle
           title={this.getModalTitle()}
-          closeButton={!!this.projectDefined} onEditForm={this.onEditForm} onCloseForm={this.onCancel}
+          closeButton={!!this.projectDefined}
+          onEditForm={this.onEditForm}
+          onCloseForm={this.onCancel}
         />
         <Divider />
         <ModalContent>

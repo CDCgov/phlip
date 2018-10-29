@@ -4,7 +4,7 @@ import FlexGrid from 'components/FlexGrid'
 import Autocomplete from 'components/Autocomplete'
 import Icon from 'components/Icon'
 
-const BottomSearch = props => {
+const ProJurSearch = props => {
   const {
     projectSuggestions,
     jurisdictionSuggestions,
@@ -19,7 +19,7 @@ const BottomSearch = props => {
   } = props
 
   return (
-    <FlexGrid container type="row" align="center" justify="center" style={{ marginTop: 20 }}>
+    <FlexGrid container type="row" align="center" justify="center">
       <FlexGrid container type="row" align="flex-end" style={{ marginRight: 20, minWidth: 250 }}>
         <Icon style={{ paddingRight: 8, paddingBottom: 5 }}>dvr</Icon>
         <Autocomplete
@@ -65,7 +65,7 @@ const BottomSearch = props => {
   )
 }
 
-BottomSearch.propTypes = {
+ProJurSearch.propTypes = {
   projectSuggestions: PropTypes.array,
   jurisdictionSuggestions: PropTypes.array,
   projectSearchValue: PropTypes.string,
@@ -78,4 +78,4 @@ BottomSearch.propTypes = {
   showProjectError: PropTypes.bool
 }
 
-export default BottomSearch
+export default ProJurSearch

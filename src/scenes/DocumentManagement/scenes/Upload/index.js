@@ -5,11 +5,11 @@ import { bindActionCreators } from 'redux'
 import Typography from '@material-ui/core/Typography/Typography'
 import Divider from '@material-ui/core/Divider/Divider'
 import actions from './actions'
-import { Icon, Alert, withFormAlert, CircularLoader, Grid } from 'components'
+import { Alert, withFormAlert, CircularLoader, Grid } from 'components'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import FileUpload from 'components/FileUpload'
 import FileList from './components/FileList'
-import BottomSearch from './components/BottomSearch'
+import ProJurSearch from './components/ProJurSearch'
 
 /**
  * Upload documents modal component. In this modal the user can upload documents to the document management system
@@ -291,11 +291,21 @@ export class Upload extends Component {
           }
         </Alert>}
         <ModalTitle
-          title={
-            <Typography variant="title">
-              <span style={{ paddingRight: 10 }}>Upload Documents</span>
-            </Typography>
-          }
+          title="Upload Documents"
+          buttons={
+            this.props.selectedDocs.length > 0 &&
+            <ProJurSearch
+              jurisdictionSuggestions={this.props.jurisdictionSuggestions}
+              projectSuggestions={this.props.projectSuggestions}
+              onClearSuggestions={this.props.actions.clearSuggestions}
+              onGetSuggestions={this.handleGetSuggestions}
+              jurisdictionSearchValue={this.props.jurisdictionSearchValue}
+              projectSearchValue={this.props.projectSearchValue}
+              onSearchValueChange={this.props.actions.onSearchValueChange}
+              onJurisdictionSelected={this.handleJurisdictionSuggestionSelected}
+              onProjectSelected={this.handleProjectSuggestionSelected}
+              showProjectError={this.props.noProjectError === true}
+            />}
         />
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -323,20 +333,6 @@ export class Upload extends Component {
             jurisdictionSuggestions={this.props.jurisdictionSuggestions}
             toggleRowEditMode={this.handleToggleEditMode}
             onClearSuggestions={this.props.actions.clearRowJurisdictionSuggestions}
-          />
-          }
-          {this.props.selectedDocs.length > 0 &&
-          <BottomSearch
-            jurisdictionSuggestions={this.props.jurisdictionSuggestions}
-            projectSuggestions={this.props.projectSuggestions}
-            onClearSuggestions={this.props.actions.clearSuggestions}
-            onGetSuggestions={this.handleGetSuggestions}
-            jurisdictionSearchValue={this.props.jurisdictionSearchValue}
-            projectSearchValue={this.props.projectSearchValue}
-            onSearchValueChange={this.props.actions.onSearchValueChange}
-            onJurisdictionSelected={this.handleJurisdictionSuggestionSelected}
-            onProjectSelected={this.handleProjectSuggestionSelected}
-            showProjectError={this.props.noProjectError === true}
           />
           }
           {/*this.props.selectedDocs.map((doc, i) => {
