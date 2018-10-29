@@ -172,7 +172,7 @@ export class Upload extends Component {
         file: i,
         effectiveDate: '',
         citation: '',
-        jurisdictions: []
+        jurisdictions: {}
       })
     })
 
@@ -206,7 +206,7 @@ export class Upload extends Component {
           }
         }, {})
         md[doc.name.value].jurisdictions = [
-          ...otherProps.jurisdictions.value.map(jur => jur.id),
+          ...otherProps.jurisdictions.value.id,
           this.props.selectedJurisdiction.id
         ]
         md[doc.name.value].projects = [this.props.selectedProject.id]
@@ -234,6 +234,10 @@ export class Upload extends Component {
 
   handleJurisdictionSuggestionSelected = (event, { suggestionValue }) => {
     this.props.actions.onJurisdictionSuggestionSelected(suggestionValue)
+  }
+
+  handleToggleEditMode = (index, property) => {
+    this.props.actions.toggleRowEditMode(index, property)
   }
 
   /**
@@ -316,8 +320,9 @@ export class Upload extends Component {
             selectedDocs={this.props.selectedDocs}
             handleDocPropertyChange={this.handleDocPropertyChange}
             handleRemoveDoc={this.props.actions.removeDoc}
-            handleJurisdictionFetchRequest={this.props.actions.searchJurisdicationList}
-            suggestions={this.props.suggestions}
+            onGetSuggestions={this.handleGetSuggestions}
+            jurisdictionSuggestions={this.props.jurisdictionSuggestions}
+            toggleRowEditMode={this.handleToggleEditMode}
           />
           }
           {this.props.selectedDocs.length > 0 &&

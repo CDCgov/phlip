@@ -32,7 +32,8 @@ export const types = {
   CLEAR_SUGGESTIONS: 'CLEAR_SUGGESTIONS',
   REJECT_NO_PROJECT_SELECTED: 'REJECT_NO_PROJECT_SELECTED',
   RESET_FAILED_UPLOAD_VALIDATION: 'RESET_FAILED_UPLOAD_VALIDATION',
-  REJECT_EMPTY_JURISDICTIONS: 'REJECT_EMPTY_JURISDICTIONS'
+  REJECT_EMPTY_JURISDICTIONS: 'REJECT_EMPTY_JURISDICTIONS',
+  TOGGLE_ROW_EDIT_MODE: 'TOGGLE_ROW_EDIT_MODE'
 }
 
 export default {
@@ -54,5 +55,6 @@ export default {
   onJurisdictionSuggestionSelected: makeActionCreator(types.ON_JURISDICTION_SUGGESTION_SELECTED, 'jurisdiction'),
   onSearchValueChange: makeActionCreator(types.ON_SEARCH_VALUE_CHANGE, 'searchType', 'value'),
   clearSuggestions: makeActionCreator(types.CLEAR_SUGGESTIONS, 'suggestionType'),
-  resetFailedUploadValidation: makeActionCreator(types.RESET_FAILED_UPLOAD_VALIDATION)
+  resetFailedUploadValidation: makeActionCreator(types.RESET_FAILED_UPLOAD_VALIDATION),
+  toggleRowEditMode: makeActionCreator(types.TOGGLE_ROW_EDIT_MODE, 'index', 'property')
 }

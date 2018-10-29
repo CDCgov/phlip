@@ -98,7 +98,7 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
           ...action.selectedDocs.map(doc => {
             let d = {}
             Object.keys(doc).forEach(prop => {
-              d[prop] = { editable: true, value: doc[prop], error: '' }
+              d[prop] = { editable: true, value: doc[prop], error: '', inEditMode: false }
             })
             return d
           })
@@ -130,6 +130,15 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         selectedDocs: docs
+      }
+
+    case types.TOGGLE_ROW_EDIT_MODE:
+      selectedDoc = { ...state.selectedDocs[action.index] }
+      selectedDoc[action.property].inEditMode = true
+
+      return {
+        ...state,
+        selectedDocs: updateItemAtIndex([...state.selectedDocs], action.index, selectedDoc)
       }
 
     case types.CLOSE_ALERT:

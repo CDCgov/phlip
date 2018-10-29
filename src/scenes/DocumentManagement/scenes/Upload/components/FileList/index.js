@@ -38,7 +38,7 @@ export class FileList extends Component {
   render() {
     const columns = [
       'File Name',
-      'Jurisdictions',
+      'Jurisdiction',
       'Citation',
       'Effective Date'
     ]
@@ -50,7 +50,7 @@ export class FileList extends Component {
       selectedDocs,
       handleRemoveDoc,
       jurisdictionSuggestions,
-      projectSuggestions
+      toggleRowEditMode
     } = this.props
 
     return (
@@ -88,39 +88,60 @@ export class FileList extends Component {
                   <div style={colStyle}>{doc.name.value}</div>
                 </div>
                 {doc.jurisdictions.editable === true
-                  ? <SimpleInput
-                    fullWidth={false}
-                    multiline={false}
-                    style={colStyle}
-                    value={doc.jurisdictions.value}
-                    error={doc.jurisdictions.error.length !== 0}
-                    onChange={e => this.onDocPropertyChange(i, 'jurisdictions', e.target.value)}
-                  />
+                  ? doc.jurisdictions.inEditMode
+                    ? <SimpleInput
+                      fullWidth={false}
+                      multiline={false}
+                      style={colStyle}
+                      value={doc.jurisdictions.value.name}
+                      error={doc.jurisdictions.error.length !== 0}
+                      onChange={e => this.onDocPropertyChange(i, 'jurisdictions', e.target.value)}
+                    />
+                    : <IconButton
+                      onClick={() => toggleRowEditMode(i, 'jurisdictions')}
+                      color="primary"
+                      style={colStyle}>
+                      add
+                    </IconButton>
                   : <div style={colStyle}>{doc.jurisdictions.value}</div>
                 }
                 {doc.citation.editable === true
-                  ? <SimpleInput
-                    fullWidth={false}
-                    multiline={false}
-                    style={colStyle}
-                    value={doc.citation.value}
-                    onChange={e => this.onDocPropertyChange(i, 'citation', e.target.value)}
-                  />
+                  ? doc.citation.inEditMode
+                    ? <SimpleInput
+                      fullWidth={false}
+                      multiline={false}
+                      style={colStyle}
+                      value={doc.citation.value}
+                      onChange={e => this.onDocPropertyChange(i, 'citation', e.target.value)}
+                    />
+                    : <IconButton
+                      onClick={() => toggleRowEditMode(i, 'citation')}
+                      color="primary"
+                      style={colStyle}>
+                      add
+                    </IconButton>
                   : <div style={colStyle}>{doc.citation.value}</div>
                 }
                 {doc.effectiveDate.editable === true
-                  ? <div style={colStyle}>
-                    <DatePicker
-                      name="effectiveDate"
-                      dateFormat="MM/DD/YYYY"
-                      onChange={date => this.onDocPropertyChange(i, 'effectiveDate', date)}
-                      onInputChange={e => this.onDocPropertyChange(i, 'effectiveDate', e.target.value)}
-                      value={doc.effectiveDate.value}
-                      autoOk={true}
-                      style={{ marginTop: 0 }}
-                    />
-                  </div>
-                  : <div style={colStyle}>{doc.effectiveDate.valie}</div>
+                  ? doc.effectiveDate.inEditMode === true
+                    ? <div style={colStyle}>
+                      <DatePicker
+                        name="effectiveDate"
+                        dateFormat="MM/DD/YYYY"
+                        onChange={date => this.onDocPropertyChange(i, 'effectiveDate', date)}
+                        onInputChange={e => this.onDocPropertyChange(i, 'effectiveDate', e.target.value)}
+                        value={doc.effectiveDate.value}
+                        autoOk={true}
+                        style={{ marginTop: 0 }}
+                      />
+                    </div>
+                    : <IconButton
+                      onClick={() => toggleRowEditMode(i, 'effectiveDate')}
+                      color="primary"
+                      style={colStyle}>
+                      add
+                    </IconButton>
+                  : <div style={colStyle}>{doc.effectiveDate.value}</div>
                 }
                 <IconButton
                   style={{ justifySelf: 'flex-end', ...colStyle, paddingRight: 20 }}
