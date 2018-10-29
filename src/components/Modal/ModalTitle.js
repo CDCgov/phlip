@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import Container, { Column, Row } from 'components/Layout'
+import { Row } from 'components/Layout'
 import SearchBar from 'components/SearchBar'
 import FlexGrid from 'components/FlexGrid'
 

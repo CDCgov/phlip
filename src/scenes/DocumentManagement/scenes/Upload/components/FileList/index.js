@@ -48,7 +48,6 @@ export class FileList extends Component {
     const {
       selectedDocs,
       handleRemoveDoc,
-      jurisdictionSuggestions,
       toggleRowEditMode,
       onGetSuggestions,
       onClearSuggestions
@@ -173,6 +172,14 @@ export class FileList extends Component {
       </Grid>
     )
   }
+}
+
+FileList.propTypes = {
+  selectedDocs: PropTypes.array,
+  handleRemoveDoc: PropTypes.func,
+  toggleRowEditMode: PropTypes.func,
+  onGetSuggestions: PropTypes.func,
+  onClearSuggestions: PropTypes.func
 }
 
 export default FileList
