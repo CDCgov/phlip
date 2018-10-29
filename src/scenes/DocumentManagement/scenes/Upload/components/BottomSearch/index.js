@@ -14,7 +14,8 @@ const BottomSearch = props => {
     onGetSuggestions,
     onSearchValueChange,
     onJurisdictionSelected,
-    onProjectSelected
+    onProjectSelected,
+    showProjectError
   } = props
 
   return (
@@ -35,7 +36,8 @@ const BottomSearch = props => {
             label: 'Assign to Project',
             placeholder: 'Search projects',
             required: true,
-            fullWidth: true
+            fullWidth: true,
+            error: showProjectError
           }}
           handleSuggestionSelected={onProjectSelected}
         />
@@ -62,6 +64,19 @@ const BottomSearch = props => {
       </FlexGrid>
     </FlexGrid>
   )
+}
+
+BottomSearch.propTypes = {
+  projectSuggestions: PropTypes.array,
+  jurisdictionSuggestions: PropTypes.array,
+  projectSearchValue: PropTypes.string,
+  jurisdictionSearchValue: PropTypes.string,
+  onClearSuggestions: PropTypes.func,
+  onGetSuggestions: PropTypes.func,
+  onSearchValueChange: PropTypes.func,
+  onJurisdictionSelected: PropTypes.func,
+  onProjectSelected: PropTypes.func,
+  showProjectError: PropTypes.bool
 }
 
 export default BottomSearch

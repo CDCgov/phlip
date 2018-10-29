@@ -17,7 +17,8 @@ const INITIAL_STATE = {
   projectSearchValue: '',
   jurisdictionSearchValue: '',
   selectedProject: {},
-  selectedJurisdiction: {}
+  selectedJurisdiction: {},
+  noProjectError: false
 }
 
 const uploadReducer = (state = INITIAL_STATE, action) => {
@@ -198,6 +199,21 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         jurisdictionSearchValue: action.jurisdiction.name,
         selectedJurisdiction: action.jurisdiction,
         jurisdictionSuggestions: []
+      }
+
+    case types.REJECT_NO_PROJECT_SELECTED:
+      return {
+        ...state,
+        noProjectError: true,
+        alertOpen: true,
+        alertText: 'You must associate these documents with a project',
+        alertTitle: 'No Project Selected' || ''
+      }
+
+    case types.RESET_FAILED_UPLOAD_VALIDATION:
+      return {
+        ...state,
+        noProjectError: false
       }
 
     case types.CLEAR_SELECTED_FILES:

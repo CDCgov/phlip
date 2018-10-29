@@ -25,8 +25,19 @@ const extractInfoLogic = createLogic({
   }
 })
 
+/**
+ * Logic for handling when the user clicks 'upload' in the modal. Verifies that there are no errors on upload
+ */
 const uploadRequestLogic = createLogic({
   type: types.UPLOAD_DOCUMENTS_REQUEST,
+  validate({ getState, action }, allow, reject) {
+    const state = getState().scenes.docManage.upload
+    if (Object.keys(state.selectedProject).length === 0) {
+      reject({ type: types.REJECT_NO_PROJECT_SELECTED })
+    } else {
+      allow()
+    }
+  },
   async process({ docApi, action }, dispatch, done) {
     try {
       const docs = await docApi.upload(action.selectedDocs)

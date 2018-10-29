@@ -29,7 +29,9 @@ export const types = {
   ON_SEARCH_VALUE_CHANGE: 'ON_SEARCH_VALUE_CHANGE',
   ON_PROJECT_SUGGESTION_SELECTED: 'ON_PROJECT_SUGGESTION_SELECTED',
   ON_JURISDICTION_SUGGESTION_SELECTED: 'ON_JURISDICTION_SUGGESTION_SELECTED',
-  CLEAR_SUGGESTIONS: 'CLEAR_SUGGESTIONS'
+  CLEAR_SUGGESTIONS: 'CLEAR_SUGGESTIONS',
+  REJECT_NO_PROJECT_SELECTED: 'REJECT_NO_PROJECT_SELECTED',
+  RESET_FAILED_UPLOAD_VALIDATION: 'RESET_FAILED_UPLOAD_VALIDATION'
 }
 
 export default {
@@ -50,5 +52,6 @@ export default {
   onProjectSuggestionSelected: makeActionCreator(types.ON_PROJECT_SUGGESTION_SELECTED, 'project'),
   onJurisdictionSuggestionSelected: makeActionCreator(types.ON_JURISDICTION_SUGGESTION_SELECTED, 'jurisdiction'),
   onSearchValueChange: makeActionCreator(types.ON_SEARCH_VALUE_CHANGE, 'searchType', 'value'),
-  clearSuggestions: makeActionCreator(types.CLEAR_SUGGESTIONS, 'suggestionType')
+  clearSuggestions: makeActionCreator(types.CLEAR_SUGGESTIONS, 'suggestionType'),
+  resetFailedUploadValidation: makeActionCreator(types.RESET_FAILED_UPLOAD_VALIDATION)
 }

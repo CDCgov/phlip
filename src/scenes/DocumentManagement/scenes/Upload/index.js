@@ -128,7 +128,7 @@ export class Upload extends Component {
             onClick: this.goBack
           }
         ]
-      }, () => this.props.actions.openAlert('Your unsaved changes will be lost'))
+      }, () => this.props.actions.openAlert('Your unsaved changes will be lost.'))
     } else {
       this.goBack()
     }
@@ -278,9 +278,12 @@ export class Upload extends Component {
         {this.props.alertOpen &&
         <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle}>
           {this.state.alertActions.length === 1
-            ? <>
-              {this.props.alertText}. Duplicates are indicated by: <Icon color="#fc515a" size={20}>error</Icon>
-            </>
+            ? (
+              /*<>
+                {this.props.alertText}. Duplicates are indicated by: <Icon color="#fc515a" size={20}>error</Icon>
+              </>*/
+              this.props.alertText
+            )
             : this.props.alertText
           }
         </Alert>}
@@ -328,6 +331,7 @@ export class Upload extends Component {
             onSearchValueChange={this.props.actions.onSearchValueChange}
             onJurisdictionSelected={this.handleJurisdictionSuggestionSelected}
             onProjectSelected={this.handleProjectSuggestionSelected}
+            showProjectError={this.props.noProjectError === true}
           />
           }
           {/*this.props.selectedDocs.map((doc, i) => {
@@ -353,25 +357,29 @@ export class Upload extends Component {
 }
 
 /* istanbul ignore next */
-const mapStateToProps = state => ({
-  selectedDocs: state.scenes.docManage.upload.selectedDocs,
-  requestError: state.scenes.docManage.upload.requestError,
-  duplicateFiles: state.scenes.docManage.upload.duplicateFiles,
-  uploading: state.scenes.docManage.upload.uploading,
-  verifying: state.scenes.docManage.upload.verifying,
-  alertText: state.scenes.docManage.upload.alertText,
-  alertOpen: state.scenes.docManage.upload.alertOpen,
-  alertTitle: state.scenes.docManage.upload.alertTitle,
-  user: state.data.user.currentUser,
-  goBack: state.scenes.docManage.upload.goBack,
-  isReduxForm: false,
-  projectSuggestions: state.scenes.docManage.upload.projectSuggestions,
-  jurisdictionSuggestions: state.scenes.docManage.upload.jurisdictionSuggestions,
-  projectSearchValue: state.scenes.docManage.upload.projectSearchValue,
-  jurisdictionSearchValue: state.scenes.docManage.upload.jurisdictionSearchValue,
-  selectedJurisdiction: state.scenes.docManage.upload.selectedJurisdiction,
-  selectedProject: state.scenes.docManage.upload.selectedProject
-})
+const mapStateToProps = state => {
+  const uploadState = state.scenes.docManage.upload
+  return {
+    selectedDocs: uploadState.selectedDocs,
+    requestError: uploadState.requestError,
+    duplicateFiles: uploadState.duplicateFiles,
+    uploading: uploadState.uploading,
+    verifying: uploadState.verifying,
+    alertText: uploadState.alertText,
+    alertOpen: uploadState.alertOpen,
+    alertTitle: uploadState.alertTitle,
+    goBack: uploadState.goBack,
+    projectSuggestions: uploadState.projectSuggestions,
+    jurisdictionSuggestions: uploadState.jurisdictionSuggestions,
+    projectSearchValue: uploadState.projectSearchValue,
+    jurisdictionSearchValue: uploadState.jurisdictionSearchValue,
+    selectedJurisdiction: uploadState.selectedJurisdiction,
+    selectedProject: uploadState.selectedProject,
+    noProjectError: uploadState.noProjectError,
+    isReduxForm: false,
+    user: state.data.user.currentUser
+  }
+}
 
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({
