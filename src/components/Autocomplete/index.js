@@ -10,7 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem/MenuItem'
 
 const classes = theme => ({
   suggestionsContainerOpen: {
-    width: 520,
+    width: 400,
     position: 'absolute',
     maxHeight: 500,
     overflow: 'auto',
@@ -33,7 +33,8 @@ const classes = theme => ({
     borderBottom: `1px dashed ${theme.palette.primary['600']}`
   },
   container: {
-    width: '100%'
+    width: '100%',
+    alignSelf: 'center'
   }
 })
 

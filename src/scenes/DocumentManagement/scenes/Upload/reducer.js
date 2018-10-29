@@ -182,6 +182,24 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         jurisdictionSuggestions: action.payload
       }
 
+    case types.ROW_SEARCH_JURISDICTION_SUCCESS:
+      selectedDoc = { ...state.selectedDocs[action.payload.index] }
+      selectedDoc.jurisdictions.value.suggestions = action.payload.suggestions
+
+      return {
+        ...state,
+        selectedDocs: updateItemAtIndex([...state.selectedDocs], action.payload.index, selectedDoc)
+      }
+
+    case types.CLEAR_ROW_JURISDICTION_SUGGESTIONS:
+      selectedDoc = { ...state.selectedDocs[action.index] }
+      selectedDoc.jurisdictions.value.suggestions = []
+
+      return {
+        ...state,
+        selectedDocs: updateItemAtIndex([...state.selectedDocs], action.index, selectedDoc)
+      }
+
     case types.CLEAR_SUGGESTIONS:
       return {
         ...state,

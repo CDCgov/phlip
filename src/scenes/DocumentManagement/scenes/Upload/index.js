@@ -172,7 +172,7 @@ export class Upload extends Component {
         file: i,
         effectiveDate: '',
         citation: '',
-        jurisdictions: {}
+        jurisdictions: { searchValue: '', suggestions: [] }
       })
     })
 
@@ -222,10 +222,10 @@ export class Upload extends Component {
     this.props.actions.updateDocumentProperty(index, propName, value)
   }
 
-  handleGetSuggestions = (suggestionType, { value: searchString }) => {
+  handleGetSuggestions = (suggestionType, { value: searchString }, index = null) => {
     suggestionType === 'project'
       ? this.props.actions.searchProjectListRequest(searchString)
-      : this.props.actions.searchJurisdictionListRequest(searchString)
+      : this.props.actions.searchJurisdictionListRequest(searchString, index)
   }
 
   handleProjectSuggestionSelected = (event, { suggestionValue }) => {
@@ -323,6 +323,7 @@ export class Upload extends Component {
             onGetSuggestions={this.handleGetSuggestions}
             jurisdictionSuggestions={this.props.jurisdictionSuggestions}
             toggleRowEditMode={this.handleToggleEditMode}
+            onClearSuggestions={this.props.actions.clearRowJurisdictionSuggestions}
           />
           }
           {this.props.selectedDocs.length > 0 &&

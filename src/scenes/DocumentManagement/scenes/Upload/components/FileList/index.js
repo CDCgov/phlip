@@ -5,8 +5,7 @@ import SimpleInput from 'components/SimpleInput'
 import DatePicker from 'components/DatePicker'
 import Icon from 'components/Icon'
 import IconButton from 'components/IconButton'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import Autocomplete from 'components/Autocomplete'
 
 const fileTypeIcons = {
   'pdf': 'picture_as_pdf',
@@ -50,7 +49,9 @@ export class FileList extends Component {
       selectedDocs,
       handleRemoveDoc,
       jurisdictionSuggestions,
-      toggleRowEditMode
+      toggleRowEditMode,
+      onGetSuggestions,
+      onClearSuggestions
     } = this.props
 
     return (
@@ -89,13 +90,29 @@ export class FileList extends Component {
                 </div>
                 {doc.jurisdictions.editable === true
                   ? doc.jurisdictions.inEditMode
-                    ? <SimpleInput
-                      fullWidth={false}
-                      multiline={false}
-                      style={colStyle}
-                      value={doc.jurisdictions.value.name}
-                      error={doc.jurisdictions.error.length !== 0}
-                      onChange={e => this.onDocPropertyChange(i, 'jurisdictions', e.target.value)}
+                    ? <Autocomplete
+                      suggestions={doc.jurisdictions.value.suggestions}
+                      handleGetSuggestions={val => onGetSuggestions('jurisdiction', val, i)}
+                      handleClearSuggestions={() => onClearSuggestions(i)}
+                      inputProps={{
+                        value: doc.jurisdictions.value.searchValue,
+                        onChange: (e, { newValue, method }) => this.onDocPropertyChange(i, 'jurisdictions', {
+                          ...doc.jurisdictions.value,
+                          searchValue: newValue,
+                        }),
+                        id: `jurisdiction-name-row-${i}`
+                      }}
+                      getSuggestionValue={suggestion => suggestion.name}
+                      focusInputOnSuggestionClick={false}
+                      handleSuggestionSelected={(event, { suggestionValue, suggestion }) => {
+                        this.onDocPropertyChange(i, 'jurisdictions', {
+                          ...suggestion,
+                          searchValue: suggestionValue
+                        })
+                      }}
+                      InputProps={{
+                        placeholder: 'Search jurisdictions'
+                      }}
                     />
                     : <IconButton
                       onClick={() => toggleRowEditMode(i, 'jurisdictions')}

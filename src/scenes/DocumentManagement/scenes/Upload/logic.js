@@ -123,7 +123,14 @@ const searchJurisdictionListLogic = createLogic({
           name: action.searchString
         }
       }, {})
-      dispatch({ type: types.SEARCH_JURISDICTION_LIST_SUCCESS, payload: jurisdictions })
+      if (action.index !== null) {
+        dispatch({
+          type: types.ROW_SEARCH_JURISDICTION_SUCCESS,
+          payload: { suggestions: jurisdictions, index: action.index }
+        })
+      } else {
+        dispatch({ type: types.SEARCH_JURISDICTION_LIST_SUCCESS, payload: jurisdictions })
+      }
     } catch (err) {
       dispatch({ type: types.SEARCH_JURISDICTION_LIST_FAIL })
     }
