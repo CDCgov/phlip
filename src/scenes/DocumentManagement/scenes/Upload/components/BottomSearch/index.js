@@ -57,7 +57,6 @@ const BottomSearch = props => {
           InputProps={{
             label: 'Assign to Jurisdiction',
             placeholder: 'Search jurisdictions',
-            required: true,
             fullWidth: true
           }}
         />

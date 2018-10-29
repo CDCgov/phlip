@@ -34,8 +34,19 @@ const uploadRequestLogic = createLogic({
     const state = getState().scenes.docManage.upload
     if (Object.keys(state.selectedProject).length === 0) {
       reject({ type: types.REJECT_NO_PROJECT_SELECTED })
+    }
+
+    if (Object.keys(state.selectedJurisdiction).length === 0) {
+      const noJurs = state.selectedDocs.filter(doc => {
+        return doc.jurisdictions.value.length === 0
+      })
+      if (noJurs.length === 0) {
+        allow(action)
+      } else {
+        reject({ type: types.REJECT_EMPTY_JURISDICTIONS })
+      }
     } else {
-      allow()
+      allow(action)
     }
   },
   async process({ docApi, action }, dispatch, done) {
@@ -56,6 +67,9 @@ const uploadRequestLogic = createLogic({
   }
 })
 
+/**
+ * Logic for handling searching of thr project list
+ */
 const searchProjectListLogic = createLogic({
   type: types.SEARCH_PROJECT_LIST_REQUEST,
   validate({ getState, action }, allow, reject) {
@@ -85,6 +99,9 @@ const searchProjectListLogic = createLogic({
   }
 })
 
+/**
+ * Logic for handling searching of the jurisdiction list
+ */
 const searchJurisdictionListLogic = createLogic({
   type: types.SEARCH_JURISDICTION_LIST_REQUEST,
   validate({ getState, action }, allow, reject) {

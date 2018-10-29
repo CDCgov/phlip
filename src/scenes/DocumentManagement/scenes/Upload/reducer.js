@@ -216,6 +216,21 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         noProjectError: false
       }
 
+    case types.REJECT_EMPTY_JURISDICTIONS:
+      return {
+        ...state,
+        selectedDocs: state.selectedDocs.map(doc => {
+          if (doc.jurisdictions.value.length === 0) {
+            return { ...doc, jurisdictions: { ...doc.jurisdictions, error: 'Required' }}
+          } else {
+            return doc
+          }
+        }),
+        alertOpen: true,
+        alertText: 'One or more documents are missing a jurisdiction.',
+        alertTitle: 'Missing jurisdictions' || ''
+      }
+
     case types.CLEAR_SELECTED_FILES:
       return INITIAL_STATE
 

@@ -93,6 +93,7 @@ export class FileList extends Component {
                     multiline={false}
                     style={colStyle}
                     value={doc.jurisdictions.value}
+                    error={doc.jurisdictions.error.length !== 0}
                     onChange={e => this.onDocPropertyChange(i, 'jurisdictions', e.target.value)}
                   />
                   : <div style={colStyle}>{doc.jurisdictions.value}</div>
