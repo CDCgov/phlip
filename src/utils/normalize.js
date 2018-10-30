@@ -53,7 +53,7 @@ export const convertToLocalDateTime = dateTime => {
 }
 
 export const convertToLocalDate = date => {
-  return moment.utc(date).local().format('M/D/YYYY')
+  return moment(date).format('M/D/YYYY')
 }
 
 export default { mapArray, arrayToObject, getInitials, updateItemAtIndex, convertToLocalDateTime, convertToLocalDate }

@@ -24,7 +24,7 @@ const verifyUploadLogic = createLogic({
  */
 const extractInfoLogic = createLogic({
   type: types.EXTRACT_INFO_REQUEST,
-  async process({ action, getState, docApi }, dispatch, done) {
+  async process({ action, getState, docApi, api }, dispatch, done) {
     const state = getState().scenes.docManage.upload
     const docs = state.selectedDocs
     try {
@@ -32,19 +32,34 @@ const extractInfoLogic = createLogic({
       if (docs.length === 0) {
         dispatch({ type: types.EXTRACT_INFO_SUCCESS_NO_DOCS, payload: info })
       } else {
-        const merged = docs.map(doc => {
+        let merged = [], jurLookup = {}
+        await Promise.all(docs.map(async doc => {
           if (info.hasOwnProperty(doc.name.value)) {
+            let d = { ...doc }, jurs = []
             const docInfo = info[doc.name.value]
-            let d = { ...doc }
             Object.keys(docInfo).map(key => {
-              d[key] = { ...d, editable: false, inEditMode: false, value: docInfo[key], error: '' }
+              d[key] = { ...d[key], editable: false, inEditMode: false, value: docInfo[key], error: '' }
             })
-            return d
+
+            if (jurLookup.hasOwnProperty(docInfo.jurisdictions.name)) {
+              jurs = [jurLookup[docInfo.jurisdictions.name]]
+            } else {
+              jurs = await api.searchJurisdictionList({}, {
+                params: {
+                  name: docInfo.jurisdictions.name === 'District of Columbia'
+                    ? 'Washington, DC (federal district)'
+                    : docInfo.jurisdictions.name
+                }
+              }, {})
+              jurLookup[docInfo.jurisdictions.name] = jurs[0]
+            }
+            d.jurisdictions = { ...d.jurisdictions, value: { ...jurs[0] } }
+            merged = [...merged, d]
           } else {
-            return doc
+            merged = [...merged, doc]
           }
-        })
-        dispatch({ type: types.EXTRACT_INFO_SUCCESS, payload: { info, merged }})
+        }))
+        dispatch({ type: types.EXTRACT_INFO_SUCCESS, payload: { info, merged } })
       }
     } catch (err) {
       dispatch({ type: types.EXTRACT_INFO_FAIL })

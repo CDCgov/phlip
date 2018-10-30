@@ -197,7 +197,7 @@ export class FileList extends Component {
                     : <IconButton onClick={this.toggleEditMode(i, 'effectiveDate')} color="primary" style={colStyle}>
                       add
                     </IconButton>
-                  : <div style={colStyle}>{convertToLocalDate(doc.effectiveDate.value)}</div>
+                  : <div style={colStyle}>{convertToLocalDate(doc.effectiveDate.value.split('T')[0])}</div>
                 }
                 <IconButton
                   style={{ justifySelf: 'flex-end', ...colStyle, paddingRight: 20 }}
