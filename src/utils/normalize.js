@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 /**
  * Makes an array the items in the array are a property from items in the array
  *
@@ -46,4 +48,12 @@ export const updateItemAtIndex = (arr, index, updatedItem) => {
   return [...arr]
 }
 
-export default { mapArray, arrayToObject, getInitials, updateItemAtIndex }
+export const convertToLocalDateTime = dateTime => {
+  return moment.utc(dateTime).local().format('M/D/YYYY, h:mm A')
+}
+
+export const convertToLocalDate = date => {
+  return moment.utc(date).local().format('M/D/YYYY')
+}
+
+export default { mapArray, arrayToObject, getInitials, updateItemAtIndex, convertToLocalDateTime, convertToLocalDate }

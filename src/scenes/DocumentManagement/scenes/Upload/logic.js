@@ -1,5 +1,6 @@
 import { createLogic } from 'redux-logic'
 import { types } from './actions'
+import { updateItemAtIndex } from 'utils/normalize'
 
 const verifyUploadLogic = createLogic({
   type: types.VERIFY_UPLOAD_REQUEST,
@@ -24,9 +25,27 @@ const verifyUploadLogic = createLogic({
 const extractInfoLogic = createLogic({
   type: types.EXTRACT_INFO_REQUEST,
   async process({ action, getState, docApi }, dispatch, done) {
+    const state = getState().scenes.docManage.upload
+    const docs = state.selectedDocs
     try {
-      const json = await docApi.extractInfo(action.infoSheet)
-      dispatch({ type: types.EXTRACT_INFO_SUCCESS, payload: json })
+      const info = await docApi.extractInfo(action.infoSheet)
+      if (docs.length === 0) {
+        dispatch({ type: types.EXTRACT_INFO_SUCCESS_NO_DOCS, payload: info })
+      } else {
+        const merged = docs.map(doc => {
+          if (info.hasOwnProperty(doc.name.value)) {
+            const docInfo = info[doc.name.value]
+            let d = { ...doc }
+            Object.keys(docInfo).map(key => {
+              d[key] = { ...d, editable: false, inEditMode: false, value: docInfo[key], error: '' }
+            })
+            return d
+          } else {
+            return doc
+          }
+        })
+        dispatch({ type: types.EXTRACT_INFO_SUCCESS, payload: { info, merged }})
+      }
     } catch (err) {
       dispatch({ type: types.EXTRACT_INFO_FAIL })
     }

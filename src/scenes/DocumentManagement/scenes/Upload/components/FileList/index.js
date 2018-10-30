@@ -6,6 +6,7 @@ import DatePicker from 'components/DatePicker'
 import Icon from 'components/Icon'
 import IconButton from 'components/IconButton'
 import Autocomplete from 'components/Autocomplete'
+import { convertToLocalDate } from 'utils/normalize'
 
 const fileTypeIcons = {
   'pdf': 'picture_as_pdf',
@@ -98,6 +99,7 @@ export class FileList extends Component {
     const columnSizing = `20px minmax(${300}px, 1fr) 210px 210px 230px 45px`
     const wrapperRowSizing = '1fr'
     const headerStyle = { fontSize: '18px', borderBottom: '1px solid black', padding: '10px 10px' }
+    const colStyle = { fontSize: 13, alignSelf: 'center', margin: '0 10px' }
 
     const {
       selectedDocs,
@@ -120,13 +122,10 @@ export class FileList extends Component {
             const pieces = doc.name.value.split('.')
             const extension = pieces[pieces.length - 1]
             const iconName = getIconType(extension)
-
             const bgColor = i % 2 === 0
               ? '#f9f9f9'
               : '#fff'
-
-            const colStyle = { fontSize: 13, alignSelf: 'center', margin: '0 10px' }
-
+            
             return (
               <Grid
                 key={`file-list-row-${i}`}
@@ -198,7 +197,7 @@ export class FileList extends Component {
                     : <IconButton onClick={this.toggleEditMode(i, 'effectiveDate')} color="primary" style={colStyle}>
                       add
                     </IconButton>
-                  : <div style={colStyle}>{doc.effectiveDate.value}</div>
+                  : <div style={colStyle}>{convertToLocalDate(doc.effectiveDate.value)}</div>
                 }
                 <IconButton
                   style={{ justifySelf: 'flex-end', ...colStyle, paddingRight: 20 }}

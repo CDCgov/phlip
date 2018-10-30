@@ -12,6 +12,8 @@ const INITIAL_STATE = {
   alertOpen: false,
   alertText: '',
   infoSheet: '',
+  infoRequestInProgress: false,
+  extractedInfo: {},
   projectSuggestions: [],
   jurisdictionSuggestions: [],
   projectSearchValue: '',
@@ -77,7 +79,24 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
     case types.EXTRACT_INFO_REQUEST:
       return {
         ...state,
-        infoSheet: action.infoSheet
+        infoSheet: action.infoSheet,
+        infoRequestInProgress: true
+      }
+
+    case types.EXTRACT_INFO_SUCCESS:
+      return {
+        ...state,
+        infoRequestInProgress: false,
+        extractedInfo: action.payload.info,
+        selectedDocs: action.payload.merged
+      }
+
+    // If the user has selected an excel file but has not selected documents to upload
+    case types.EXTRACT_INFO_SUCCESS_NO_DOCS:
+      return {
+        ...state,
+        infoRequestInProgress: false,
+        extractedInfo: action.payload
       }
 
     case types.UPDATE_DOC_PROPERTY:
@@ -248,7 +267,7 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         ...state,
         selectedDocs: state.selectedDocs.map(doc => {
           if (doc.jurisdictions.value.length === 0) {
-            return { ...doc, jurisdictions: { ...doc.jurisdictions, error: 'Required' }}
+            return { ...doc, jurisdictions: { ...doc.jurisdictions, error: 'Required' } }
           } else {
             return doc
           }

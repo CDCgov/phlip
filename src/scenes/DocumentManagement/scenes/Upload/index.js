@@ -145,7 +145,7 @@ export class Upload extends Component {
   /**
    * Adds an excel file to redux
    */
-  addExcelFile = (e) => {
+  addExcelFile = e => {
     const excelFile = e.target.files.item(0)
     const formData = new FormData()
     formData.append('file', excelFile, excelFile.originalname)
@@ -238,7 +238,6 @@ export class Upload extends Component {
   /**
    * Determines the text for the modal button at the bottom
    * @param text
-   * @returns {*}
    */
   getButtonText = text => {
     return this.props.uploading
@@ -374,7 +373,8 @@ const mapStateToProps = state => {
     selectedProject: uploadState.selectedProject,
     noProjectError: uploadState.noProjectError,
     isReduxForm: false,
-    user: state.data.user.currentUser
+    user: state.data.user.currentUser,
+    infoRequestInProgress: uploadState.infoRequestInProgress
   }
 }
 
