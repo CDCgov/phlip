@@ -50,7 +50,7 @@ export default {
   closeAlert: makeActionCreator(types.CLOSE_ALERT),
   openAlert: makeActionCreator(types.OPEN_ALERT, 'text', 'title'),
   removeDuplicate: makeActionCreator(types.REMOVE_DUPLICATE, 'index', 'fileName'),
-  extractInfoRequest: makeActionCreator(types.EXTRACT_INFO_REQUEST, 'excelFile'),
+  extractInfoRequest: makeActionCreator(types.EXTRACT_INFO_REQUEST, 'infoSheet'),
   searchJurisdictionListRequest: makeActionCreator(types.SEARCH_JURISDICTION_LIST_REQUEST, 'searchString', 'index'),
   searchProjectListRequest: makeActionCreator(types.SEARCH_PROJECT_LIST_REQUEST, 'searchString'),
   onProjectSuggestionSelected: makeActionCreator(types.ON_PROJECT_SUGGESTION_SELECTED, 'project'),

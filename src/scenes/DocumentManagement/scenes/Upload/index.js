@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Typography from '@material-ui/core/Typography/Typography'
 import Divider from '@material-ui/core/Divider/Divider'
 import actions from './actions'
 import { Alert, withFormAlert, CircularLoader, Grid } from 'components'
@@ -147,13 +146,10 @@ export class Upload extends Component {
    * Adds an excel file to redux
    */
   addExcelFile = (e) => {
-    const fr = new FileReader()
-    fr.onload = (e) => {
-      const text = fr.result
-    }
     const excelFile = e.target.files.item(0)
-    fr.readAsText(excelFile, excelFile.type)
-    //this.props.actions.extractInfoRequest(excelFile)
+    const formData = new FormData()
+    formData.append('file', excelFile, excelFile.originalname)
+    this.props.actions.extractInfoRequest(formData)
   }
 
   /**

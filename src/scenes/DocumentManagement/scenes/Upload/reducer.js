@@ -11,7 +11,7 @@ const INITIAL_STATE = {
   alertTitle: '',
   alertOpen: false,
   alertText: '',
-  execelFile: '',
+  infoSheet: '',
   projectSuggestions: [],
   jurisdictionSuggestions: [],
   projectSearchValue: '',
@@ -77,7 +77,7 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
     case types.EXTRACT_INFO_REQUEST:
       return {
         ...state,
-        excelFile: action.excelFile
+        infoSheet: action.infoSheet
       }
 
     case types.UPDATE_DOC_PROPERTY:

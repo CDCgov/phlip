@@ -18,10 +18,19 @@ const verifyUploadLogic = createLogic({
   }
 })
 
+/**
+ * Handles extracting info from an excel spreadsheet
+ */
 const extractInfoLogic = createLogic({
   type: types.EXTRACT_INFO_REQUEST,
-  process({ action, getState }, dispatch, done) {
-
+  async process({ action, getState, docApi }, dispatch, done) {
+    try {
+      const json = await docApi.extractInfo(action.infoSheet)
+      dispatch({ type: types.EXTRACT_INFO_SUCCESS, payload: json })
+    } catch (err) {
+      dispatch({ type: types.EXTRACT_INFO_FAIL })
+    }
+    done()
   }
 })
 

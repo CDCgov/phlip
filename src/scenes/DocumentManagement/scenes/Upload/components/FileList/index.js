@@ -26,6 +26,33 @@ const getIconType = extension => {
 }
 
 export class FileList extends Component {
+  static propTypes = {
+    /**
+     * Array of documents the user has selected for upload
+     */
+    selectedDocs: PropTypes.array,
+
+    /**
+     * Removes document from selectedDocs array
+     */
+    handleRemoveDoc: PropTypes.func,
+
+    /**
+     * Enables editing on a column and row
+     */
+    toggleRowEditMode: PropTypes.func,
+
+    /**
+     * Gets the list of jurisdiction suggestions for a row
+     */
+    onGetSuggestions: PropTypes.func,
+
+    /**
+     * Clears the list of jurisdiction suggestions for a row
+     */
+    onClearSuggestions: PropTypes.func
+  }
+
   constructor(props, context) {
     super(props, context)
   }
@@ -187,14 +214,6 @@ export class FileList extends Component {
       </Grid>
     )
   }
-}
-
-FileList.propTypes = {
-  selectedDocs: PropTypes.array,
-  handleRemoveDoc: PropTypes.func,
-  toggleRowEditMode: PropTypes.func,
-  onGetSuggestions: PropTypes.func,
-  onClearSuggestions: PropTypes.func
 }
 
 export default FileList
