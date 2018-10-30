@@ -125,7 +125,7 @@ export class FileList extends Component {
             const bgColor = i % 2 === 0
               ? '#f9f9f9'
               : '#fff'
-            
+
             return (
               <Grid
                 key={`file-list-row-${i}`}
@@ -165,7 +165,7 @@ export class FileList extends Component {
                     : <IconButton onClick={this.toggleEditMode(i, 'jurisdictions')} color="primary" style={colStyle}>
                       add
                     </IconButton>
-                  : <div style={colStyle}>{doc.jurisdictions.value}</div>
+                  : <div style={colStyle}>{doc.jurisdictions.value.name}</div>
                 }
                 {doc.citation.editable === true
                   ? doc.citation.inEditMode
