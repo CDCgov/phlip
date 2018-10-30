@@ -34,6 +34,32 @@ export class FileList extends Component {
     this.props.handleDocPropertyChange(index, propName, value)
   }
 
+  /**
+   * For getting jurisdiction suggestions
+   * @param index
+   * @returns {Function}
+   */
+  getSuggestions = index => searchValue => {
+    this.props.onGetSuggestions('jurisdiction', searchValue, index)
+  }
+
+  /**
+   * For clearing jurisdiction suggestions
+   * @param index
+   * @returns {Function}
+   */
+  clearSuggestions = index => () => {
+    this.props.onClearSuggestions(index)
+  }
+
+  /**
+   * Toggle edit mode for a row
+   * @returns {*}
+   */
+  toggleEditMode = (index, property) => () => {
+    this.props.toggleRowEditMode(index, property)
+  }
+
   render() {
     const columns = [
       'File Name',
@@ -42,26 +68,24 @@ export class FileList extends Component {
       'Effective Date'
     ]
 
-    const columnSizing = `20px minmax(${350}px, 1fr) 210px 210px 230px 45px`
+    const columnSizing = `20px minmax(${300}px, 1fr) 210px 210px 230px 45px`
     const wrapperRowSizing = '1fr'
+    const headerStyle = { fontSize: '18px', borderBottom: '1px solid black', padding: '10px 10px' }
 
     const {
       selectedDocs,
-      handleRemoveDoc,
-      toggleRowEditMode,
-      onGetSuggestions,
-      onClearSuggestions
+      handleRemoveDoc
     } = this.props
 
     return (
       <Grid rowSizing="55px 1fr" columnSizing="1fr" style={{ overflow: 'auto', flex: 1 }}>
         <Grid columnSizing={columnSizing} rowSizing={wrapperRowSizing} style={{ padding: '10px 0 0 0' }}>
           <div style={{ borderBottom: '1px solid black' }} />
-          {columns.map((column, i) => {
-            return <div
-              style={{ fontSize: '18px', borderBottom: '1px solid black', padding: '10px 5px' }}
-              key={`file-list-col-${i}`}>{column}</div>
-          })}
+          {columns.map((column, i) => (
+            <div style={headerStyle} key={`file-list-col-${i}`}>
+              {column}
+            </div>
+          ))}
           <div style={{ borderBottom: '1px solid black' }} />
         </Grid>
         <Grid columnSizing="1fr" autoRowSizing="60px" style={{ flex: 1 }}>
@@ -74,7 +98,7 @@ export class FileList extends Component {
               ? '#f9f9f9'
               : '#fff'
 
-            const colStyle = { fontSize: 13, alignSelf: 'center', margin: '0 5px' }
+            const colStyle = { fontSize: 13, alignSelf: 'center', margin: '0 10px' }
 
             return (
               <Grid
@@ -89,33 +113,30 @@ export class FileList extends Component {
                 </div>
                 {doc.jurisdictions.editable === true
                   ? doc.jurisdictions.inEditMode
-                    ? <Autocomplete
-                      suggestions={doc.jurisdictions.value.suggestions}
-                      handleGetSuggestions={val => onGetSuggestions('jurisdiction', val, i)}
-                      handleClearSuggestions={() => onClearSuggestions(i)}
-                      inputProps={{
-                        value: doc.jurisdictions.value.searchValue,
-                        onChange: (e, { newValue, method }) => this.onDocPropertyChange(i, 'jurisdictions', {
-                          ...doc.jurisdictions.value,
-                          searchValue: newValue,
-                        }),
-                        id: `jurisdiction-name-row-${i}`
-                      }}
-                      focusInputOnSuggestionClick={false}
-                      handleSuggestionSelected={(event, { suggestionValue }) => {
-                        this.onDocPropertyChange(i, 'jurisdictions', {
-                          ...suggestionValue,
-                          searchValue: suggestionValue.name
-                        })
-                      }}
-                      InputProps={{
-                        placeholder: 'Search jurisdictions'
-                      }}
-                    />
-                    : <IconButton
-                      onClick={() => toggleRowEditMode(i, 'jurisdictions')}
-                      color="primary"
-                      style={colStyle}>
+                    ? (
+                      <div style={colStyle}>
+                        <Autocomplete
+                          suggestions={doc.jurisdictions.value.suggestions}
+                          handleGetSuggestions={this.getSuggestions(i)}
+                          handleClearSuggestions={this.clearSuggestions(i)}
+                          InputProps={{ placeholder: 'Search jurisdictions' }}
+                          focusInputOnSuggestionClick={false}
+                          inputProps={{
+                            value: doc.jurisdictions.value.searchValue,
+                            onChange: (e, { newValue, method }) => this.onDocPropertyChange(i, 'jurisdictions', {
+                              ...doc.jurisdictions.value,
+                              searchValue: newValue
+                            }),
+                            id: `jurisdiction-name-row-${i}`
+                          }}
+                          handleSuggestionSelected={(event, { suggestionValue }) => {
+                            this.onDocPropertyChange(i, 'jurisdictions', {
+                              ...suggestionValue,
+                              searchValue: suggestionValue.name
+                            })
+                          }}
+                        /></div>)
+                    : <IconButton onClick={this.toggleEditMode(i, 'jurisdictions')} color="primary" style={colStyle}>
                       add
                     </IconButton>
                   : <div style={colStyle}>{doc.jurisdictions.value}</div>
@@ -129,10 +150,7 @@ export class FileList extends Component {
                       value={doc.citation.value}
                       onChange={e => this.onDocPropertyChange(i, 'citation', e.target.value)}
                     />
-                    : <IconButton
-                      onClick={() => toggleRowEditMode(i, 'citation')}
-                      color="primary"
-                      style={colStyle}>
+                    : <IconButton onClick={this.toggleEditMode(i, 'citation')} color="primary" style={colStyle}>
                       add
                     </IconButton>
                   : <div style={colStyle}>{doc.citation.value}</div>
@@ -150,10 +168,7 @@ export class FileList extends Component {
                         style={{ marginTop: 0 }}
                       />
                     </div>
-                    : <IconButton
-                      onClick={() => toggleRowEditMode(i, 'effectiveDate')}
-                      color="primary"
-                      style={colStyle}>
+                    : <IconButton onClick={this.toggleEditMode(i, 'effectiveDate')} color="primary" style={colStyle}>
                       add
                     </IconButton>
                   : <div style={colStyle}>{doc.effectiveDate.value}</div>

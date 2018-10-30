@@ -8,6 +8,11 @@ import match from 'autosuggest-highlight/match'
 import parse from 'autosuggest-highlight/parse'
 import MenuItem from '@material-ui/core/MenuItem/MenuItem'
 
+/**
+ * Classes passed to Autosuggest
+ * @param theme
+ * @returns
+ */
 const classes = theme => ({
   suggestionsContainerOpen: {
     width: 400,
@@ -38,6 +43,14 @@ const classes = theme => ({
   }
 })
 
+/**
+ * Renders the actual input field
+ * @param value
+ * @param onBlur
+ * @param ref
+ * @param TextFieldProps
+ * @param other
+ */
 const renderInput = ({ value, onBlur, ref, TextFieldProps, ...other }) => {
   return (
   <SimpleInput
