@@ -168,7 +168,7 @@ export class Upload extends Component {
         file: i,
         effectiveDate: '',
         citation: '',
-        jurisdictions: { searchValue: '', suggestions: [] }
+        jurisdictions: { searchValue: '', suggestions: [], name: '' }
       })
     })
 

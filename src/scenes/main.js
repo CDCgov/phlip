@@ -181,8 +181,7 @@ class Main extends Component {
   }
 
   logoutUserOnIdle = () => {
-    console.log('idle')
-    //this.props.actions.logoutUser(true)
+    this.props.actions.logoutUser(true)
   }
 
   render() {

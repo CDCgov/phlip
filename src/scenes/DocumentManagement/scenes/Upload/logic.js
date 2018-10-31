@@ -9,22 +9,32 @@ const mergeInfoWithDocs = (info, docs, api) => {
         let d = { ...doc }, jurs = []
         const docInfo = info[doc.name.value]
         Object.keys(docInfo).map(key => {
-          d[key] = { ...d[key], editable: false, inEditMode: false, value: docInfo[key], error: '' }
+          d[key] = {
+            ...d[key],
+            editable: docInfo[key] === null,
+            inEditMode: false,
+            value: docInfo[key] === null ? d[key].value : docInfo[key],
+            error: ''
+          }
         })
 
-        if (jurLookup.hasOwnProperty(docInfo.jurisdictions.name)) {
-          jurs = [jurLookup[docInfo.jurisdictions.name]]
+        if (docInfo.jurisdictions.name !== null) {
+          if (jurLookup.hasOwnProperty(docInfo.jurisdictions.name)) {
+            jurs = [jurLookup[docInfo.jurisdictions.name]]
+          } else {
+            jurs = await api.searchJurisdictionList({}, {
+              params: {
+                name: docInfo.jurisdictions.name === 'District of Columbia'
+                  ? 'Washington, DC (federal district)'
+                  : docInfo.jurisdictions.name
+              }
+            }, {})
+            jurLookup[docInfo.jurisdictions.name] = jurs[0]
+          }
+          d.jurisdictions = { ...d.jurisdictions, value: { ...jurs[0] } }
         } else {
-          jurs = await api.searchJurisdictionList({}, {
-            params: {
-              name: docInfo.jurisdictions.name === 'District of Columbia'
-                ? 'Washington, DC (federal district)'
-                : docInfo.jurisdictions.name
-            }
-          }, {})
-          jurLookup[docInfo.jurisdictions.name] = jurs[0]
+          d.jurisdictions = { ...doc.jurisdictions, editable: true }
         }
-        d.jurisdictions = { ...d.jurisdictions, value: { ...jurs[0] } }
         merged = [...merged, d]
       } else {
         merged = [...merged, doc]
@@ -105,7 +115,7 @@ const uploadRequestLogic = createLogic({
 
     if (Object.keys(state.selectedJurisdiction).length === 0) {
       const noJurs = state.selectedDocs.filter(doc => {
-        return doc.jurisdictions.value.length === 0
+        return doc.jurisdictions.value.name.length === 0
       })
       if (noJurs.length === 0) {
         allow(action)
