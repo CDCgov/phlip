@@ -50,6 +50,7 @@ class Main extends Component {
   constructor(props, context) {
     super(props, context)
 
+    this.idleTimer = null
     this.helpPdfRef = React.createRef()
 
     this.state = {
@@ -151,12 +152,18 @@ class Main extends Component {
     this.props.actions.resetDownloadError()
   }
 
+  /**
+   * Opens user menu in header
+   */
   handleToggleMenu = () => {
     this.setState({
       menuOpen: !this.state.menuOpen
     })
   }
 
+  /**
+   * Navigates to the User Management page (clicked from the user menu)
+   */
   handleOpenAdminPage = () => {
     const tabs = [...this.state.menuTabs]
 
@@ -173,8 +180,13 @@ class Main extends Component {
     this.props.history.push('/admin')
   }
 
+  logoutUserOnIdle = () => {
+    console.log('idle')
+    //this.props.actions.logoutUser(true)
+  }
+
   render() {
-    const { match, location, role, actions, isRefreshing, isLoggedIn, ...otherProps } = this.props
+    const { match, location, role, actions, isLoggedIn, isRefreshing, ...otherProps } = this.props
 
     // This is for jurisdictions / add/edit project modals. We want the modals to be displayed on top of the home screen,
     // so we check if it's one of those routes and if it is set the location to /home
@@ -182,43 +194,42 @@ class Main extends Component {
     if (!isRefreshing && isLoggedIn) actions.startRefreshJwt()
 
     return (
-      <IdleTimer idleAction={() => actions.logoutUser(true)} timeout={900000}>
-        <Grid container type="column" flex>
-          <AppHeader
-            user={this.props.user}
-            tabs={this.state.menuTabs}
-            open={this.state.menuOpen}
-            onLogoutUser={this.handleLogoutUser}
-            onToggleMenu={this.handleToggleMenu}
-            onDownloadPdf={this.handleDownloadPdf}
-            onTabChange={this.handleTabChange}
-            onOpenAdminPage={this.handleOpenAdminPage}
+      <Grid container type="column" flex>
+        <IdleTimer onIdle={this.logoutUserOnIdle} ref={ref => this.idleTimer = ref} timeout={900000} />
+        <AppHeader
+          user={this.props.user}
+          tabs={this.state.menuTabs}
+          open={this.state.menuOpen}
+          onLogoutUser={this.handleLogoutUser}
+          onToggleMenu={this.handleToggleMenu}
+          onDownloadPdf={this.handleDownloadPdf}
+          onTabChange={this.handleTabChange}
+          onOpenAdminPage={this.handleOpenAdminPage}
+        />
+        <Grid container type="row" flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
+          <Switch location={currentLocation}>
+            <Route path="/docs" component={DocumentManagement} />
+            <Route path="/project/:id/code" component={Coding} />
+            <Route path="/project/:id/validate" component={Validation} />
+            <Route path="/admin" component={Admin} />
+            <Route strict path="/project/:id/coding-scheme" component={CodingScheme} />
+            <Route strict path="/project/:id/protocol" component={Protocol} />
+            <Route path="/home" component={Home} />
+            <Route path="/" exact render={() => <Redirect to={{ pathname: '/home' }} />} />
+          </Switch>
+          <Route path="/project/edit/:id" component={AddEditProject} />
+          <Route path="/project/add" component={AddEditProject} />
+          <Route path="/project/:id/jurisdictions" component={AddEditJurisdictions} />
+          <Route path="/project/:id/jurisdictions/:jid/edit" component={JurisdictionForm} />
+          <Route path="/project/:id/jurisdictions/add" component={JurisdictionForm} />
+          <ApiErrorAlert
+            content={this.props.pdfError}
+            open={this.props.pdfError !== ''}
+            onCloseAlert={this.closeDownloadErrorAlert}
           />
-          <Grid container type="row" flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
-            <Switch location={currentLocation}>
-              <Route path="/docs" component={DocumentManagement} />
-              <Route path="/project/:id/code" component={Coding} />
-              <Route path="/project/:id/validate" component={Validation} />
-              <Route path="/admin" component={Admin} />
-              <Route strict path="/project/:id/coding-scheme" component={CodingScheme} />
-              <Route strict path="/project/:id/protocol" component={Protocol} />
-              <Route path="/home" component={Home} />
-              <Route path="/" exact render={() => <Redirect to={{ pathname: '/home' }} />} />
-            </Switch>
-            <Route path="/project/edit/:id" component={AddEditProject} />
-            <Route path="/project/add" component={AddEditProject} />
-            <Route path="/project/:id/jurisdictions" component={AddEditJurisdictions} />
-            <Route path="/project/:id/jurisdictions/:jid/edit" component={JurisdictionForm} />
-            <Route path="/project/:id/jurisdictions/add" component={JurisdictionForm} />
-            <ApiErrorAlert
-              content={this.props.pdfError}
-              open={this.props.pdfError !== ''}
-              onCloseAlert={this.closeDownloadErrorAlert}
-            />
-            <a style={{ display: 'none' }} ref={this.helpPdfRef} />
-          </Grid>
+          <a style={{ display: 'none' }} ref={this.helpPdfRef} />
         </Grid>
-      </IdleTimer>
+      </Grid>
     )
   }
 }
@@ -226,7 +237,8 @@ class Main extends Component {
 const mapStateToProps = state => ({
   user: state.data.user.currentUser,
   pdfError: state.scenes.main.pdfError,
-  pdfFile: state.scenes.main.pdfFile
+  pdfFile: state.scenes.main.pdfFile,
+  isRefreshing: state.scenes.main.isRefreshing
 })
 
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })

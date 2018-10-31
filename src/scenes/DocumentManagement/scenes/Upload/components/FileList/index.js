@@ -14,6 +14,11 @@ const fileTypeIcons = {
   'png|jpe?g|tiff': 'insert_photo'
 }
 
+/**
+ * Determines the file icon to show next to name based on file type (extension)
+ * @param extension
+ * @returns {string}
+ */
 const getIconType = extension => {
   let icon = 'library_books'
 
@@ -26,6 +31,9 @@ const getIconType = extension => {
   return icon
 }
 
+/**
+ * @component
+ */
 export class FileList extends Component {
   static propTypes = {
     /**

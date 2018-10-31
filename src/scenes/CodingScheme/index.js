@@ -105,11 +105,8 @@ export class CodingScheme extends Component {
     ]
   }
 
-  componentWillMount() {
-    this.props.actions.getSchemeRequest(this.props.projectId)
-  }
-
   componentDidMount() {
+    this.props.actions.getSchemeRequest(this.props.projectId)
     setTimeout(() => {
       this.props.actions.setEmptyState()
     }, 1000)

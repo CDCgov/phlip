@@ -69,13 +69,13 @@ const isPath = path => {
  * renders the component, if not, then renders UnauthPage. If page isn't found, it renders PageNotFound. If the user isn't
  * logged in, renders the Login page.
  */
-export const AuthenticatedRoute = ({ component: Component, user, location, actions, isRefreshing, ...rest }) => {
+export const AuthenticatedRoute = ({ component: Component, user, location, ...rest }) => {
   const loggedIn = isLoggedIn()
   return (
     isPath(location.pathname)
       ? loggedIn
         ? isAllowed(user, location.pathname)
-          ? <Route {...rest} render={props => <Component {...props} />} />
+          ? <Route {...rest} render={props => <Component {...props} isLoggedIn={loggedIn} />} />
           : <UnauthPage />
         : <Redirect
           {...rest}
@@ -106,10 +106,7 @@ AuthenticatedRoute.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.data.user.currentUser,
-  isRefreshing: state.data.user.isRefreshing
+  user: state.data.user.currentUser
 })
 
-export default withRouter(
-  connect(mapStateToProps, dispatch => ({ actions: bindActionCreators(actions, dispatch) }))(AuthenticatedRoute)
-)
+export default withRouter(connect(mapStateToProps)(AuthenticatedRoute))
