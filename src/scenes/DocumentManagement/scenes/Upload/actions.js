@@ -36,7 +36,8 @@ export const types = {
   TOGGLE_ROW_EDIT_MODE: 'TOGGLE_ROW_EDIT_MODE',
   ROW_SEARCH_JURISDICTION_SUCCESS: 'ROW_SEARCH_JURISDICTION_SUCCESS',
   CLEAR_ROW_JURISDICTION_SUGGESTIONS: 'CLEAR_ROW_JURISDICTION_SUGGESTIONS',
-  EXTRACT_INFO_SUCCESS_NO_DOCS: 'EXTRACT_INFO_SUCCESS_NO_DOCS'
+  EXTRACT_INFO_SUCCESS_NO_DOCS: 'EXTRACT_INFO_SUCCESS_NO_DOCS',
+  MERGE_INFO_WITH_DOCS: 'MERGE_INFO_WITH_DOCS'
 }
 
 export default {
@@ -51,7 +52,7 @@ export default {
   closeAlert: makeActionCreator(types.CLOSE_ALERT),
   openAlert: makeActionCreator(types.OPEN_ALERT, 'text', 'title'),
   removeDuplicate: makeActionCreator(types.REMOVE_DUPLICATE, 'index', 'fileName'),
-  extractInfoRequest: makeActionCreator(types.EXTRACT_INFO_REQUEST, 'infoSheet'),
+  extractInfoRequest: makeActionCreator(types.EXTRACT_INFO_REQUEST, 'infoSheetFormData', 'infoSheet'),
   searchJurisdictionListRequest: makeActionCreator(types.SEARCH_JURISDICTION_LIST_REQUEST, 'searchString', 'index'),
   searchProjectListRequest: makeActionCreator(types.SEARCH_PROJECT_LIST_REQUEST, 'searchString'),
   onProjectSuggestionSelected: makeActionCreator(types.ON_PROJECT_SUGGESTION_SELECTED, 'project'),
@@ -60,5 +61,6 @@ export default {
   clearSuggestions: makeActionCreator(types.CLEAR_SUGGESTIONS, 'suggestionType'),
   resetFailedUploadValidation: makeActionCreator(types.RESET_FAILED_UPLOAD_VALIDATION),
   toggleRowEditMode: makeActionCreator(types.TOGGLE_ROW_EDIT_MODE, 'index', 'property'),
-  clearRowJurisdictionSuggestions: makeActionCreator(types.CLEAR_ROW_JURISDICTION_SUGGESTIONS, 'index')
+  clearRowJurisdictionSuggestions: makeActionCreator(types.CLEAR_ROW_JURISDICTION_SUGGESTIONS, 'index'),
+  mergeInfoWithDocs: makeActionCreator(types.MERGE_INFO_WITH_DOCS, 'docs')
 }

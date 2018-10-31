@@ -148,8 +148,8 @@ export class Upload extends Component {
   addExcelFile = e => {
     const excelFile = e.target.files.item(0)
     const formData = new FormData()
-    formData.append('file', excelFile, excelFile.originalname)
-    this.props.actions.extractInfoRequest(formData)
+    formData.append('file', excelFile, excelFile.name)
+    this.props.actions.extractInfoRequest(formData, excelFile)
   }
 
   /**
@@ -172,7 +172,9 @@ export class Upload extends Component {
       })
     })
 
-    this.props.actions.addSelectedDocs(files)
+    this.props.infoSheetSelected
+      ? this.props.actions.mergeInfoWithDocs(files)
+      : this.props.actions.addSelectedDocs(files)
     //this.props.actions.verifyUploadRequest(files)
   }
 
@@ -300,6 +302,7 @@ export class Upload extends Component {
               onJurisdictionSelected={this.handleJurisdictionSuggestionSelected}
               onProjectSelected={this.handleProjectSuggestionSelected}
               showProjectError={this.props.noProjectError === true}
+              showJurSearch={this.props.infoSheetSelected === false}
             />}
         />
         <Divider />
@@ -317,6 +320,9 @@ export class Upload extends Component {
               containerBgColor="#f4f9ef"
               containerBorderColor="#c2e3b6"
               allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,application/vnd.ms-excel"
+              containerText={this.props.infoSheetSelected
+                ? `Selected file: ${this.props.infoSheet.name}`
+                : 'or drag and drop here'}
             />
           </Grid>
           {this.props.selectedDocs.length > 0 &&
@@ -374,7 +380,9 @@ const mapStateToProps = state => {
     noProjectError: uploadState.noProjectError,
     isReduxForm: false,
     user: state.data.user.currentUser,
-    infoRequestInProgress: uploadState.infoRequestInProgress
+    infoRequestInProgress: uploadState.infoRequestInProgress,
+    infoSheet: uploadState.infoSheet,
+    infoSheetSelected: uploadState.infoSheetSelected
   }
 }
 

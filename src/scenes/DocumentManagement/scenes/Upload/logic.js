@@ -1,6 +1,38 @@
 import { createLogic } from 'redux-logic'
 import { types } from './actions'
-import { updateItemAtIndex } from 'utils/normalize'
+
+const mergeInfoWithDocs = (info, docs, api) => {
+  return new Promise(async (resolve, reject) => {
+    let merged = [], jurLookup = {}
+    await Promise.all(docs.map(async doc => {
+      if (info.hasOwnProperty(doc.name.value)) {
+        let d = { ...doc }, jurs = []
+        const docInfo = info[doc.name.value]
+        Object.keys(docInfo).map(key => {
+          d[key] = { ...d[key], editable: false, inEditMode: false, value: docInfo[key], error: '' }
+        })
+
+        if (jurLookup.hasOwnProperty(docInfo.jurisdictions.name)) {
+          jurs = [jurLookup[docInfo.jurisdictions.name]]
+        } else {
+          jurs = await api.searchJurisdictionList({}, {
+            params: {
+              name: docInfo.jurisdictions.name === 'District of Columbia'
+                ? 'Washington, DC (federal district)'
+                : docInfo.jurisdictions.name
+            }
+          }, {})
+          jurLookup[docInfo.jurisdictions.name] = jurs[0]
+        }
+        d.jurisdictions = { ...d.jurisdictions, value: { ...jurs[0] } }
+        merged = [...merged, d]
+      } else {
+        merged = [...merged, doc]
+      }
+    }))
+    resolve(merged)
+  })
+}
 
 const verifyUploadLogic = createLogic({
   type: types.VERIFY_UPLOAD_REQUEST,
@@ -20,7 +52,7 @@ const verifyUploadLogic = createLogic({
 })
 
 /**
- * Handles extracting info from an excel spreadsheet
+ * Handles extracting info from an excel spreadsheet and merging if with docs already selected
  */
 const extractInfoLogic = createLogic({
   type: types.EXTRACT_INFO_REQUEST,
@@ -28,43 +60,35 @@ const extractInfoLogic = createLogic({
     const state = getState().scenes.docManage.upload
     const docs = state.selectedDocs
     try {
-      const info = await docApi.extractInfo(action.infoSheet)
+      const info = await docApi.extractInfo(action.infoSheetFormData)
       if (docs.length === 0) {
         dispatch({ type: types.EXTRACT_INFO_SUCCESS_NO_DOCS, payload: info })
       } else {
-        let merged = [], jurLookup = {}
-        await Promise.all(docs.map(async doc => {
-          if (info.hasOwnProperty(doc.name.value)) {
-            let d = { ...doc }, jurs = []
-            const docInfo = info[doc.name.value]
-            Object.keys(docInfo).map(key => {
-              d[key] = { ...d[key], editable: false, inEditMode: false, value: docInfo[key], error: '' }
-            })
-
-            if (jurLookup.hasOwnProperty(docInfo.jurisdictions.name)) {
-              jurs = [jurLookup[docInfo.jurisdictions.name]]
-            } else {
-              jurs = await api.searchJurisdictionList({}, {
-                params: {
-                  name: docInfo.jurisdictions.name === 'District of Columbia'
-                    ? 'Washington, DC (federal district)'
-                    : docInfo.jurisdictions.name
-                }
-              }, {})
-              jurLookup[docInfo.jurisdictions.name] = jurs[0]
-            }
-            d.jurisdictions = { ...d.jurisdictions, value: { ...jurs[0] } }
-            merged = [...merged, d]
-          } else {
-            merged = [...merged, doc]
-          }
-        }))
+        const merged = await mergeInfoWithDocs(info, docs, api)
         dispatch({ type: types.EXTRACT_INFO_SUCCESS, payload: { info, merged } })
       }
     } catch (err) {
       dispatch({ type: types.EXTRACT_INFO_FAIL })
     }
     done()
+  }
+})
+
+/**
+ * Logic for when the user uploads an excel document before selecting docs
+ */
+const mergeInfoWithDocsLogic = createLogic({
+  type: types.MERGE_INFO_WITH_DOCS,
+  async transform({ action, getState, api }, next) {
+    const docs = action.docs.map(doc => {
+      let d = {}
+      Object.keys(doc).forEach(prop => {
+        d[prop] = { editable: true, value: doc[prop], error: '', inEditMode: false }
+      })
+      return d
+    })
+    const merged = await mergeInfoWithDocs(getState().scenes.docManage.upload.extractedInfo, docs, api)
+    next({ ...action, payload: merged })
   }
 })
 
@@ -182,5 +206,10 @@ const searchJurisdictionListLogic = createLogic({
 })
 
 export default [
-  verifyUploadLogic, uploadRequestLogic, extractInfoLogic, searchProjectListLogic, searchJurisdictionListLogic
+  verifyUploadLogic,
+  uploadRequestLogic,
+  extractInfoLogic,
+  searchProjectListLogic,
+  searchJurisdictionListLogic,
+  mergeInfoWithDocsLogic
 ]

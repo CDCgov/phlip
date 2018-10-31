@@ -11,8 +11,9 @@ const INITIAL_STATE = {
   alertTitle: '',
   alertOpen: false,
   alertText: '',
-  infoSheet: '',
+  infoSheet: {},
   infoRequestInProgress: false,
+  infoSheetSelected: false,
   extractedInfo: {},
   projectSuggestions: [],
   jurisdictionSuggestions: [],
@@ -80,7 +81,8 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         infoSheet: action.infoSheet,
-        infoRequestInProgress: true
+        infoRequestInProgress: true,
+        infoSheetSelected: true
       }
 
     case types.EXTRACT_INFO_SUCCESS:
@@ -89,6 +91,12 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         infoRequestInProgress: false,
         extractedInfo: action.payload.info,
         selectedDocs: action.payload.merged
+      }
+
+    case types.MERGE_INFO_WITH_DOCS:
+      return {
+        ...state,
+        selectedDocs: action.payload
       }
 
     // If the user has selected an excel file but has not selected documents to upload
