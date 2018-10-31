@@ -4,7 +4,7 @@ import { types } from './actions'
 const mergeInfoWithDocs = (info, docs, api) => {
   return new Promise(async (resolve, reject) => {
     let merged = [], jurLookup = {}
-    await Promise.all(docs.map(async doc => {
+    for (const doc of docs) {
       if (info.hasOwnProperty(doc.name.value)) {
         let d = { ...doc }, jurs = []
         const docInfo = info[doc.name.value]
@@ -39,7 +39,7 @@ const mergeInfoWithDocs = (info, docs, api) => {
       } else {
         merged = [...merged, doc]
       }
-    }))
+    }
     resolve(merged)
   })
 }
@@ -110,17 +110,26 @@ const uploadRequestLogic = createLogic({
   validate({ getState, action }, allow, reject) {
     const state = getState().scenes.docManage.upload
     if (Object.keys(state.selectedProject).length === 0) {
-      reject({ type: types.REJECT_NO_PROJECT_SELECTED })
+      reject({ type: types.REJECT_NO_PROJECT_SELECTED, error: 'You must associate these documents with a project.' })
+    } else if (!state.selectedProject.hasOwnProperty('id')) {
+      reject({
+        type: types.REJECT_NO_PROJECT_SELECTED,
+        error: 'You must select a valid project from the autocomplete list.'
+      })
     }
 
     if (Object.keys(state.selectedJurisdiction).length === 0) {
-      const noJurs = state.selectedDocs.filter(doc => {
-        return doc.jurisdictions.value.name.length === 0
-      })
-      if (noJurs.length === 0) {
+      const noJurs = state.selectedDocs.filter(doc => doc.jurisdictions.value.name.length === 0)
+      const noJurIds = state.selectedDocs.filter(doc => !doc.jurisdictions.value.hasOwnProperty('id'))
+      if (noJurs.length === 0 && noJurIds) {
         allow(action)
       } else {
-        reject({ type: types.REJECT_EMPTY_JURISDICTIONS })
+        reject({
+          type: types.REJECT_EMPTY_JURISDICTIONS,
+          error: noJurs.length > 0
+            ? 'One or more documents are missing a jurisdiction.'
+            : 'You must select a jurisdiction from the autocomplete list for each document.'
+        })
       }
     } else {
       allow(action)

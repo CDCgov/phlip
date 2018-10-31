@@ -36,6 +36,7 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
     case types.UPLOAD_DOCUMENTS_SUCCESS:
       return {
         ...state,
+        ...INITIAL_STATE,
         selectedDocs: [],
         uploading: false,
         goBack: true
@@ -234,9 +235,11 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ON_SEARCH_VALUE_CHANGE:
+      const fl = action.searchType.splice(1)
+      console.log(fl)
       return {
         ...state,
-        [`${action.searchType}SearchValue`]: action.value
+        [`${action.searchType}SearchValue`]: action.value,
       }
 
     case types.ON_PROJECT_SUGGESTION_SELECTED:
@@ -244,7 +247,8 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         ...state,
         projectSearchValue: action.project.name,
         selectedProject: action.project,
-        projectSuggestions: []
+        projectSuggestions: [],
+        noProjectError: false
       }
 
     case types.ON_JURISDICTION_SUGGESTION_SELECTED:
@@ -260,8 +264,8 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         ...state,
         noProjectError: true,
         alertOpen: true,
-        alertText: 'You must associate these documents with a project',
-        alertTitle: 'No Project Selected' || ''
+        alertText: action.error,
+        alertTitle: 'Invalid Project' || ''
       }
 
     case types.RESET_FAILED_UPLOAD_VALIDATION:
@@ -281,8 +285,8 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
           }
         }),
         alertOpen: true,
-        alertText: 'One or more documents are missing a jurisdiction.',
-        alertTitle: 'Missing jurisdictions' || ''
+        alertText: action.error,
+        alertTitle: 'Invalid Jurisdictions' || ''
       }
 
     case types.CLEAR_SELECTED_FILES:

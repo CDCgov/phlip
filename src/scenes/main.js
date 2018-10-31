@@ -18,6 +18,7 @@ import AddEditJurisdictions from './Home/scenes/AddEditJurisdictions'
 import JurisdictionForm from './Home/scenes/AddEditJurisdictions/components/JurisdictionForm'
 import ApiErrorAlert from 'components/ApiErrorAlert'
 import actions from './actions'
+import { hot } from 'react-hot-loader'
 
 /** Paths that aren't accessible by users with 'Coder' role */
 const nonCoderPaths = [
@@ -50,7 +51,6 @@ class Main extends Component {
   constructor(props, context) {
     super(props, context)
 
-    this.idleTimer = null
     this.helpPdfRef = React.createRef()
 
     this.state = {
@@ -185,7 +185,7 @@ class Main extends Component {
   }
 
   render() {
-    const { match, location, role, actions, isLoggedIn, isRefreshing, ...otherProps } = this.props
+    const { location, role, actions, isLoggedIn, isRefreshing, ...otherProps } = this.props
 
     // This is for jurisdictions / add/edit project modals. We want the modals to be displayed on top of the home screen,
     // so we check if it's one of those routes and if it is set the location to /home
@@ -194,7 +194,7 @@ class Main extends Component {
 
     return (
       <Grid container type="column" flex>
-        <IdleTimer onIdle={this.logoutUserOnIdle} ref={ref => this.idleTimer = ref} timeout={900000} />
+        <IdleTimer onIdle={this.logoutUserOnIdle} timeout={900000} />
         <AppHeader
           user={this.props.user}
           tabs={this.state.menuTabs}
@@ -242,4 +242,4 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main)
+export default connect(mapStateToProps, mapDispatchToProps)(hot(module)(Main))

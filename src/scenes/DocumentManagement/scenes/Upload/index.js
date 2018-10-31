@@ -9,6 +9,7 @@ import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import FileUpload from 'components/FileUpload'
 import FileList from './components/FileList'
 import ProJurSearch from './components/ProJurSearch'
+import { hot } from 'react-hot-loader'
 
 /**
  * Upload documents modal component. In this modal the user can upload documents to the document management system
@@ -85,7 +86,8 @@ export class Upload extends Component {
     this.state = {
       alertActions: [
         this.dismissAlertAction
-      ]
+      ],
+      showLoadingAlert: false
     }
   }
 
@@ -96,6 +98,24 @@ export class Upload extends Component {
       } else if (this.props.goBack === true) {
         this.goBack()
       }
+    }
+
+    if (prevProps.infoRequestInProgress !== this.props.infoRequestInProgress) {
+      this.showLoadingAlert()
+    }
+  }
+
+  showLoadingAlert = () => {
+    if (this.props.infoRequestInProgress) {
+      setTimeout(() => {
+        this.setState({
+          showLoadingAlert: true
+        })
+      }, 1000)
+    } else {
+      this.setState({
+        showLoadingAlert: false
+      })
     }
   }
 
@@ -287,6 +307,12 @@ export class Upload extends Component {
             : this.props.alertText
           }
         </Alert>}
+        {this.state.showLoadingAlert &&
+        <Alert actions={[]} open={this.state.showLoadingAlert}>
+          <CircularLoader type="indeterminate" />
+          Processing document... This could take a second...
+        </Alert>
+        }
         <ModalTitle
           title="Upload Documents"
           buttons={

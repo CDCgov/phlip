@@ -79,7 +79,7 @@ const config = {
  * sets up redux-persist for home and admin reducers.
  */
 const scenesReducer = combineReducers({
-  main: persistReducer({ ...config, key: 'main' }, mainReducer),
+  main: persistReducer({ ...config, key: 'main', blacklist: ['isRefreshing'] }, mainReducer),
   home: persistReducer({ ...config, key: 'home', blacklist: ['addEditJurisdictions'] }, home),
   admin: persistReducer({ ...config, key: 'admin' }, admin),
   docManage: persistReducer({ ...config, key: 'docManage', blacklist: ['upload'] }, docManage),
