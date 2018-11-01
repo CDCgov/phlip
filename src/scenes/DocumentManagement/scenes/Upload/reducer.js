@@ -49,32 +49,15 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         uploading: false
       }
 
-    case types.VERIFY_UPLOAD_REQUEST:
-      return {
-        ...state,
-        verifying: true
-      }
-
-    case types.VERIFY_UPLOAD_FAIL:
-      return {
-        ...state,
-        requestError: action.payload.error,
-        verifying: false
-      }
-
-    case types.VERIFY_RETURN_NO_DUPLICATES:
-      return {
-        ...state,
-        verifying: false
-      }
-
     case types.VERIFY_RETURN_DUPLICATE_FILES:
       return {
         ...state,
-        verifying: false,
-        duplicateFiles: action.payload.duplicates,
+        uploading: false,
+        duplicateFiles: action.payload,
         alertOpen: true,
-        alertText: 'There are already documents that exist for some of the files you selected.',
+        alertText: `The file name, project and jurisdiction properties for one or more of the documents selected for 
+        upload match a pre-existing document in the system. These documents have been indicated in the file list. You 
+        can choose to remove them or click the 'Upload' button again to proceed with saving them.`,
         alertTitle: 'Duplicates Found'
       }
 
@@ -291,6 +274,9 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.CLEAR_SELECTED_FILES:
+      return INITIAL_STATE
+
+    case 'FLUSH_STATE':
       return INITIAL_STATE
 
     default:

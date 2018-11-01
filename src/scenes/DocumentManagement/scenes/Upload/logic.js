@@ -44,23 +44,6 @@ const mergeInfoWithDocs = (info, docs, api) => {
   })
 }
 
-const verifyUploadLogic = createLogic({
-  type: types.VERIFY_UPLOAD_REQUEST,
-  async process({ docApi, action }, dispatch, done) {
-    try {
-      const response = await docApi.verifyUpload(action.selectedDocs)
-      if (response.duplicates.length > 0) {
-        dispatch({ type: types.VERIFY_RETURN_DUPLICATE_FILES, payload: { duplicates: response.duplicates } })
-      } else {
-        dispatch({ type: types.VERIFY_RETURN_NO_DUPLICATES })
-      }
-    } catch (error) {
-      dispatch({ type: types.VERIFY_UPLOAD_FAIL, payload: { error: 'Failed to verify upload, please try again.' } })
-    }
-    done()
-  }
-})
-
 /**
  * Handles extracting info from an excel spreadsheet and merging if with docs already selected
  */
@@ -136,22 +119,38 @@ const uploadRequestLogic = createLogic({
   },
   async process({ docApi, action, getState }, dispatch, done) {
     try {
-      const anyDuplicates = await docApi.verifyUpload(action.selectedDocs)
-      console.log('duplicates', anyDuplicates)
-      const docs = await docApi.upload(action.selectedDocsFormData)
-      docs.files.map(doc => {
-        const { content, ...otherDocProps } = doc
-        return otherDocProps
-      })
-      dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: docs.files } })
-      //dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: [] } })
+      if (getState().scenes.docManage.upload.duplicateFiles.length === 0) {
+        const anyDuplicates = await docApi.verifyUpload(action.selectedDocs)
+        if (anyDuplicates.length > 0) {
+          dispatch({
+            type: types.VERIFY_RETURN_DUPLICATE_FILES,
+            payload: anyDuplicates
+          })
+        } else {
+          const docs = await docApi.upload(action.selectedDocsFormData)
+          docs.files.map(doc => {
+            const { content, ...otherDocProps } = doc
+            return otherDocProps
+          })
+          dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: docs.files } })
+        }
+        done()
+      } else {
+        const docs = await docApi.upload(action.selectedDocsFormData)
+        docs.files.map(doc => {
+          const { content, ...otherDocProps } = doc
+          return otherDocProps
+        })
+        dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: docs.files } })
+        done()
+      }
     } catch (err) {
       dispatch({
         type: types.UPLOAD_DOCUMENTS_FAIL,
         payload: { error: 'Failed to upload documents, please try again.' }
       })
+      done()
     }
-    done()
   }
 })
 
@@ -227,7 +226,6 @@ const searchJurisdictionListLogic = createLogic({
 })
 
 export default [
-  verifyUploadLogic,
   uploadRequestLogic,
   extractInfoLogic,
   searchProjectListLogic,

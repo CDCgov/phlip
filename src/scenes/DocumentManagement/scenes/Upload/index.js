@@ -251,6 +251,13 @@ export class Upload extends Component {
     this.props.actions.toggleRowEditMode(index, property)
   }
 
+  removeDoc = (index, isDuplicate) => {
+    this.props.actions.removeDoc(index)
+    if (isDuplicate) {
+      this.props.actions.removeDuplicate(index)
+    }
+  }
+
   /**
    * Determines the text for the modal button at the bottom
    * @param text
@@ -291,15 +298,7 @@ export class Upload extends Component {
       <Modal onClose={this.onCloseModal} open={true} maxWidth="lg" hideOverflow>
         {this.props.alertOpen &&
         <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle}>
-          {this.state.alertActions.length === 1
-            ? (
-              /*<>
-                {this.props.alertText}. Duplicates are indicated by: <Icon color="#fc515a" size={20}>error</Icon>
-              </>*/
-              this.props.alertText
-            )
-            : this.props.alertText
-          }
+          {this.props.alertText}
         </Alert>}
         {this.state.showLoadingAlert &&
         <Alert actions={[]} open={this.state.showLoadingAlert}>
@@ -351,27 +350,14 @@ export class Upload extends Component {
           <FileList
             selectedDocs={this.props.selectedDocs}
             handleDocPropertyChange={this.handleDocPropertyChange}
-            handleRemoveDoc={this.props.actions.removeDoc}
+            handleRemoveDoc={this.removeDoc}
             onGetSuggestions={this.handleGetSuggestions}
             jurisdictionSuggestions={this.props.jurisdictionSuggestions}
             toggleRowEditMode={this.handleToggleEditMode}
             onClearSuggestions={this.props.actions.clearRowJurisdictionSuggestions}
+            duplicateFiles={this.props.duplicateFiles}
           />
           }
-          {/*this.props.selectedDocs.map((doc, i) => {
-              return <FileRow
-                key={`selectedDoc-${i}`}
-                index={i}
-                name={doc.name}
-                tags={doc.tags}
-                onAddTag={this.props.actions.addTag}
-                onRemoveTag={this.props.actions.removeTag}
-                onChangeProperty={this.props.actions.updateDocumentProperty}
-                onRemoveDoc={this.props.actions.removeDoc}
-                onRemoveDuplicate={this.props.actions.removeDuplicate}
-                isDuplicate={this.props.duplicateFiles.find(file => file.name === doc.name) !== undefined}
-              />
-            })*/}
         </ModalContent>
         <Divider />
         <ModalActions actions={modalActions} />
@@ -404,7 +390,8 @@ const mapStateToProps = state => {
     user: state.data.user.currentUser,
     infoRequestInProgress: uploadState.infoRequestInProgress,
     infoSheet: uploadState.infoSheet,
-    infoSheetSelected: uploadState.infoSheetSelected
+    infoSheetSelected: uploadState.infoSheetSelected,
+    duplicateFiles: uploadState.duplicateFiles
   }
 }
 

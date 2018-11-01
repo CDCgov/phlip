@@ -136,7 +136,7 @@ export class FileList extends Component {
     const wrapperRowSizing = '1fr'
     const headerStyle = { fontSize: '18px', borderBottom: '1px solid black', padding: '10px 10px' }
     const colStyle = { fontSize: 13, alignSelf: 'center', margin: '0 10px' }
-    const { selectedDocs } = this.props
+    const { selectedDocs, duplicateFiles } = this.props
 
     return (
       <Grid rowSizing="55px 1fr" columnSizing="1fr" style={{ overflow: 'auto', flex: 1 }}>
@@ -151,6 +151,8 @@ export class FileList extends Component {
         </Grid>
         <Grid columnSizing="1fr" autoRowSizing="60px" style={{ flex: 1 }}>
           {selectedDocs.map((doc, i) => {
+            const isDuplicate = duplicateFiles.find(file => file.name === doc.name.value) !== undefined
+            console.log(isDuplicate)
             const pieces = doc.name.value.split('.')
             const extension = pieces[pieces.length - 1]
             const iconName = getIconType(extension)
@@ -162,11 +164,13 @@ export class FileList extends Component {
               <Grid
                 key={`file-list-row-${i}`}
                 columnSizing={columnSizing}
-                autoRowSizing="55px"
+                rowSizing="44px"
                 style={{ backgroundColor: bgColor, padding: '8px 0' }}>
                 <div />
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Icon size={20} style={{ alignSelf: 'center', marginRight: 5 }}>{iconName}</Icon>
+                  {isDuplicate &&
+                  <Icon size={25} style={{ alignSelf: 'center', marginRight: 5 }} color="#fc515a">error</Icon>}
+                  {!isDuplicate && <Icon size={20} style={{ alignSelf: 'center', marginRight: 5 }}>{iconName}</Icon>}
                   <div style={colStyle}>{doc.name.value}</div>
                 </div>
                 {doc.jurisdictions.editable === true
