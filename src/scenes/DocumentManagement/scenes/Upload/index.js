@@ -10,6 +10,7 @@ import FileUpload from 'components/FileUpload'
 import FileList from './components/FileList'
 import ProJurSearch from './components/ProJurSearch'
 import { hot } from 'react-hot-loader'
+import FlexGrid from 'components/FlexGrid'
 
 /**
  * Upload documents modal component. In this modal the user can upload documents to the document management system
@@ -101,20 +102,19 @@ export class Upload extends Component {
     }
 
     if (prevProps.infoRequestInProgress !== this.props.infoRequestInProgress) {
-      this.showLoadingAlert()
+      this.loadingAlertTimeout = setTimeout(this.showLoadingAlert, 1000)
     }
   }
 
   showLoadingAlert = () => {
-    if (this.props.infoRequestInProgress) {
-      setTimeout(() => {
-        this.setState({
-          showLoadingAlert: true
-        })
-      }, 1000)
-    } else {
+    if (!this.props.infoRequestInProgress) {
+      clearTimeout(this.loadingAlertTimeout)
       this.setState({
         showLoadingAlert: false
+      })
+    } else {
+      this.setState({
+        showLoadingAlert: true
       })
     }
   }
@@ -309,8 +309,10 @@ export class Upload extends Component {
         </Alert>}
         {this.state.showLoadingAlert &&
         <Alert actions={[]} open={this.state.showLoadingAlert}>
-          <CircularLoader type="indeterminate" />
-          Processing document... This could take a second...
+          <FlexGrid container align="center">
+            <CircularLoader type="indeterminate" />
+            <span style={{ paddingTop: 20 }}>Processing document... This could take a second...</span>
+          </FlexGrid>
         </Alert>
         }
         <ModalTitle
