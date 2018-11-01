@@ -162,7 +162,7 @@ export class FileList extends Component {
               <Grid
                 key={`file-list-row-${i}`}
                 columnSizing={columnSizing}
-                rowSizing="1fr"
+                autoRowSizing="55px"
                 style={{ backgroundColor: bgColor, padding: '8px 0' }}>
                 <div />
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -172,7 +172,7 @@ export class FileList extends Component {
                 {doc.jurisdictions.editable === true
                   ? doc.jurisdictions.inEditMode
                     ? (
-                      <div style={colStyle}>
+                      <div style={{ ...colStyle, position: 'relative' }}>
                         <Autocomplete
                           suggestions={doc.jurisdictions.value.suggestions}
                           handleGetSuggestions={this.getSuggestions(i)}

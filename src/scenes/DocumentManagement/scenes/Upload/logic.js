@@ -116,9 +116,7 @@ const uploadRequestLogic = createLogic({
         type: types.REJECT_NO_PROJECT_SELECTED,
         error: 'You must select a valid project from the autocomplete list.'
       })
-    }
-
-    if (Object.keys(state.selectedJurisdiction).length === 0) {
+    } else if (Object.keys(state.selectedJurisdiction).length === 0) {
       const noJurs = state.selectedDocs.filter(doc => doc.jurisdictions.value.name.length === 0)
       const noJurIds = state.selectedDocs.filter(doc => !doc.jurisdictions.value.hasOwnProperty('id') || !doc.jurisdictions.value.id)
       if (noJurs.length === 0 && noJurIds) {
@@ -136,14 +134,17 @@ const uploadRequestLogic = createLogic({
       allow(action)
     }
   },
-  async process({ docApi, action }, dispatch, done) {
+  async process({ docApi, action, getState }, dispatch, done) {
     try {
-      const docs = await docApi.upload(action.selectedDocs)
+      const anyDuplicates = await docApi.verifyUpload(action.selectedDocs)
+      console.log('duplicates', anyDuplicates)
+      const docs = await docApi.upload(action.selectedDocsFormData)
       docs.files.map(doc => {
         const { content, ...otherDocProps } = doc
         return otherDocProps
       })
       dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: docs.files } })
+      //dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: [] } })
     } catch (err) {
       dispatch({
         type: types.UPLOAD_DOCUMENTS_FAIL,

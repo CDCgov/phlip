@@ -202,37 +202,31 @@ export class Upload extends Component {
    * Creates a formData object to send to api to upload documents
    */
   onUploadFiles = () => {
-    if (this.props.duplicateFiles.length > 0) {
-      this.props.actions.openAlert(
-        'There are still duplicate files selected. Please remove them from the list',
-        'Remove duplicates'
-      )
-    } else {
-      let fd = { files: [] }, md = {}
-      const formData = new FormData()
-      formData.append('userId', this.props.user.id)
-      formData.append('userFirstName', this.props.user.firstName)
-      formData.append('userLastName', this.props.user.lastName)
+    let fd = { files: [] }, md = {}, sd = []
+    const formData = new FormData()
+    formData.append('userId', this.props.user.id)
+    formData.append('userFirstName', this.props.user.firstName)
+    formData.append('userLastName', this.props.user.lastName)
 
-      this.props.selectedDocs.map((doc, i) => {
-        const { file, ...otherProps } = doc
-        formData.append('files', file.value, doc.name.value)
-        md[doc.name.value] = Object.keys(otherProps).reduce((obj, prop) => {
-          return {
-            ...obj,
-            [prop]: otherProps[prop].value
-          }
-        }, {})
-        md[doc.name.value].jurisdictions = this.props.selectedJurisdiction.id
-          ? [this.props.selectedJurisdiction.id]
-          : [otherProps.jurisdictions.value.id]
-        md[doc.name.value].projects = [this.props.selectedProject.id]
-        fd.files = [...fd.files, file]
-      })
+    this.props.selectedDocs.map((doc, i) => {
+      const { file, ...otherProps } = doc
+      formData.append('files', file.value, doc.name.value)
+      md[doc.name.value] = Object.keys(otherProps).reduce((obj, prop) => {
+        return {
+          ...obj,
+          [prop]: otherProps[prop].value
+        }
+      }, {})
+      md[doc.name.value].jurisdictions = this.props.selectedJurisdiction.id
+        ? [this.props.selectedJurisdiction.id]
+        : [otherProps.jurisdictions.value.id]
+      md[doc.name.value].projects = [this.props.selectedProject.id]
+      fd.files = [...fd.files, file]
+      sd = [...sd, md[doc.name.value]]
+    })
 
-      formData.append('metadata', JSON.stringify(md))
-      this.props.actions.uploadDocumentsRequest(formData)
-    }
+    formData.append('metadata', JSON.stringify(md))
+    this.props.actions.uploadDocumentsRequest(formData, sd)
   }
 
   handleDocPropertyChange = (index, propName, value) => {

@@ -38,8 +38,7 @@ const classes = theme => ({
     borderBottom: `1px dashed ${theme.palette.primary['600']}`
   },
   container: {
-    width: '100%',
-    alignSelf: 'center'
+    width: '100%'
   }
 })
 

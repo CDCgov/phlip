@@ -41,8 +41,8 @@ export const types = {
 }
 
 export default {
-  uploadDocumentsRequest: makeActionCreator(types.UPLOAD_DOCUMENTS_REQUEST, 'selectedDocs'),
-  verifyUploadRequest: makeActionCreator(types.VERIFY_UPLOAD_REQUEST, 'selectedDocs' ),
+  uploadDocumentsRequest: makeActionCreator(types.UPLOAD_DOCUMENTS_REQUEST, 'selectedDocsFormData', 'selectedDocs'),
+  verifyUploadRequest: makeActionCreator(types.VERIFY_UPLOAD_REQUEST, 'selectedDocs'),
   updateDocumentProperty: makeActionCreator(types.UPDATE_DOC_PROPERTY, 'index', 'property', 'value'),
   addSelectedDocs: makeActionCreator(types.ADD_SELECTED_DOCS, 'selectedDocs'),
   clearSelectedFiles: makeActionCreator(types.CLEAR_SELECTED_FILES),
