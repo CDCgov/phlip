@@ -120,15 +120,16 @@ const uploadRequestLogic = createLogic({
 
     if (Object.keys(state.selectedJurisdiction).length === 0) {
       const noJurs = state.selectedDocs.filter(doc => doc.jurisdictions.value.name.length === 0)
-      const noJurIds = state.selectedDocs.filter(doc => !doc.jurisdictions.value.hasOwnProperty('id'))
+      const noJurIds = state.selectedDocs.filter(doc => !doc.jurisdictions.value.hasOwnProperty('id') || !doc.jurisdictions.value.id)
       if (noJurs.length === 0 && noJurIds) {
         allow(action)
       } else {
         reject({
           type: types.REJECT_EMPTY_JURISDICTIONS,
           error: noJurs.length > 0
-            ? 'One or more documents are missing a jurisdiction.'
-            : 'You must select a jurisdiction from the autocomplete list for each document.'
+            ? 'One or more documents are missing a valid jurisdiction.'
+            : 'You must select a jurisdiction from the autocomplete list for each document.',
+          invalidDocs: noJurs.length > 0 ? noJurs : noJurIds
         })
       }
     } else {

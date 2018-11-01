@@ -18,7 +18,6 @@ import AddEditJurisdictions from './Home/scenes/AddEditJurisdictions'
 import JurisdictionForm from './Home/scenes/AddEditJurisdictions/components/JurisdictionForm'
 import ApiErrorAlert from 'components/ApiErrorAlert'
 import actions from './actions'
-import { hot } from 'react-hot-loader'
 
 /** Paths that aren't accessible by users with 'Coder' role */
 const nonCoderPaths = [
@@ -242,4 +241,4 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(hot(module)(Main))
+export default connect(mapStateToProps, mapDispatchToProps)(Main)

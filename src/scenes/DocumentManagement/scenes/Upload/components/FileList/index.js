@@ -66,6 +66,12 @@ export class FileList extends Component {
     super(props, context)
   }
 
+  /**
+   * For when a column property has changed in the file list
+   * @param index
+   * @param propName
+   * @param value
+   */
   onDocPropertyChange = (index, propName, value) => {
     this.props.handleDocPropertyChange(index, propName, value)
   }
@@ -96,6 +102,28 @@ export class FileList extends Component {
     this.props.toggleRowEditMode(index, property)
   }
 
+  /**
+   * When the search field for autocomplete changes
+   * @param index
+   * @param type
+   * @param currentPropValue
+   * @returns {Function}
+   */
+  onAutocompleteChange = (index, type, currentPropValue) => (e, { newValue }) => {
+    this.onDocPropertyChange(index, type, {
+      ...currentPropValue,
+      searchValue: newValue
+    })
+  }
+
+  /**
+   * Remove doc
+   * @returns {*}
+   */
+  handleRemoveDoc = index => () => {
+    this.props.handleRemoveDoc(index)
+  }
+
   render() {
     const columns = [
       'File Name',
@@ -108,11 +136,7 @@ export class FileList extends Component {
     const wrapperRowSizing = '1fr'
     const headerStyle = { fontSize: '18px', borderBottom: '1px solid black', padding: '10px 10px' }
     const colStyle = { fontSize: 13, alignSelf: 'center', margin: '0 10px' }
-
-    const {
-      selectedDocs,
-      handleRemoveDoc
-    } = this.props
+    const { selectedDocs } = this.props
 
     return (
       <Grid rowSizing="55px 1fr" columnSizing="1fr" style={{ overflow: 'auto', flex: 1 }}>
@@ -153,14 +177,11 @@ export class FileList extends Component {
                           suggestions={doc.jurisdictions.value.suggestions}
                           handleGetSuggestions={this.getSuggestions(i)}
                           handleClearSuggestions={this.clearSuggestions(i)}
-                          InputProps={{ placeholder: 'Search jurisdictions' }}
+                          InputProps={{ placeholder: 'Search jurisdictions', error: !!doc.jurisdictions.error }}
                           focusInputOnSuggestionClick={false}
                           inputProps={{
                             value: doc.jurisdictions.value.searchValue,
-                            onChange: (e, { newValue, method }) => this.onDocPropertyChange(i, 'jurisdictions', {
-                              ...doc.jurisdictions.value,
-                              searchValue: newValue
-                            }),
+                            onChange: this.onAutocompleteChange(i, 'jurisdictions', doc.jurisdictions.value),
                             id: `jurisdiction-name-row-${i}`
                           }}
                           handleSuggestionSelected={(event, { suggestionValue }) => {
@@ -169,7 +190,8 @@ export class FileList extends Component {
                               searchValue: suggestionValue.name
                             })
                           }}
-                        /></div>)
+                        />
+                      </div>)
                     : <IconButton onClick={this.toggleEditMode(i, 'jurisdictions')} color="primary" style={colStyle}>
                       add
                     </IconButton>
@@ -208,8 +230,8 @@ export class FileList extends Component {
                   : <div style={colStyle}>{convertToLocalDate(doc.effectiveDate.value.split('T')[0])}</div>
                 }
                 <IconButton
-                  style={{ justifySelf: 'flex-end', ...colStyle, paddingRight: 20 }}
-                  onClick={() => handleRemoveDoc(i)}
+                  style={{ justifySelf: 'flex-end', ...colStyle }}
+                  onClick={this.handleRemoveDoc(i)}
                   iconSize={24}
                   color="primary">
                   cancel

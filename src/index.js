@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import App from 'App'
 import { configureStore } from 'services/store'
 import { Provider } from 'react-redux'
-
+import { AppContainer } from 'react-hot-loader'
 const { store } = configureStore()
 
 /**
@@ -16,12 +16,13 @@ const isIE = () => {
   return (msie > 0 || trident > 0)
 }
 
-const renderApp = () => {
+const renderApp = Component => {
   ReactDOM.render(
-    <Provider store={store}>
-      <App />
-    </Provider>,
-    document.getElementById('root')
+    <AppContainer>
+      <Provider store={store}>
+        <Component />
+      </Provider>
+    </AppContainer>, document.getElementById('root')
   )
 }
 
@@ -31,11 +32,12 @@ const renderApp = () => {
 if (isIE()) {
   window.alert('This application will not work in Internet Explorer. Please use Google Chrome.')
 } else {
-  if (process.env.NODE_ENV !== 'production' && module.hot) {
-    module.hot.accept('App', () => {
-      renderApp()
-    })
-  }
+  renderApp(App)
+}
 
-  renderApp()
+if (module.hot) {
+  module.hot.accept('./App', () => {
+    renderApp(App)
+    renderApp(require('./App'))
+  })
 }

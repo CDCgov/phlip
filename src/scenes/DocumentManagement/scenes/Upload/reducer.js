@@ -111,7 +111,7 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
     case types.UPDATE_DOC_PROPERTY:
       let selectedDoc = { ...state.selectedDocs[action.index] }
       let value = action.value
-      selectedDoc[action.property] = { ...selectedDoc[action.property], value }
+      selectedDoc[action.property] = { ...selectedDoc[action.property], value, error: '' }
 
       return {
         ...state,
@@ -235,11 +235,11 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ON_SEARCH_VALUE_CHANGE:
-      const fl = action.searchType.splice(1)
-      console.log(fl)
+      const fl = `${action.searchType.slice(0, 1).toUpperCase()}${action.searchType.slice(1)}`
       return {
         ...state,
         [`${action.searchType}SearchValue`]: action.value,
+        [`${fl}Suggestions`]: []
       }
 
     case types.ON_PROJECT_SUGGESTION_SELECTED:
@@ -278,8 +278,9 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         selectedDocs: state.selectedDocs.map(doc => {
-          if (doc.jurisdictions.value.length === 0) {
-            return { ...doc, jurisdictions: { ...doc.jurisdictions, error: 'Required' } }
+          if (doc.jurisdictions.value.name.length === 0 ||
+            (!doc.jurisdictions.value.hasOwnProperty('id') || !doc.jurisdictions.value.id)) {
+            return { ...doc, jurisdictions: { ...doc.jurisdictions, error: true, inEditMode: true } }
           } else {
             return doc
           }
