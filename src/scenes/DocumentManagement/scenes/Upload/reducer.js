@@ -198,15 +198,14 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
     case types.CLEAR_SUGGESTIONS:
       return {
         ...state,
-        [action.suggestionType]: []
+        [`${action.suggestionType}Suggestions`]: []
       }
 
     case types.ON_SEARCH_VALUE_CHANGE:
-      const fl = `${action.searchType.slice(0, 1).toUpperCase()}${action.searchType.slice(1)}`
       return {
         ...state,
         [`${action.searchType}SearchValue`]: action.value,
-        [`${fl}Suggestions`]: []
+        [`${action.searchType}Suggestions`]: []
       }
 
     case types.ON_PROJECT_SUGGESTION_SELECTED:
@@ -232,7 +231,7 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         noProjectError: true,
         alertOpen: true,
         alertText: action.error,
-        alertTitle: 'Invalid Project' || ''
+        alertTitle: 'Invalid Project'
       }
 
     case types.RESET_FAILED_UPLOAD_VALIDATION:
@@ -245,8 +244,7 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         selectedDocs: state.selectedDocs.map(doc => {
-          if (doc.jurisdictions.value.name.length === 0 ||
-            (!doc.jurisdictions.value.hasOwnProperty('id') || !doc.jurisdictions.value.id)) {
+          if (doc.jurisdictions.value.name.length === 0 || !doc.jurisdictions.value.hasOwnProperty('id')) {
             return { ...doc, jurisdictions: { ...doc.jurisdictions, error: true, inEditMode: true } }
           } else {
             return doc
@@ -258,8 +256,6 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.CLEAR_SELECTED_FILES:
-      return INITIAL_STATE
-
     case 'FLUSH_STATE':
       return INITIAL_STATE
 

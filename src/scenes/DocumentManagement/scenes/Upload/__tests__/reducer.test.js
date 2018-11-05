@@ -313,6 +313,28 @@ describe('Document Management - Upload reducer tests', () => {
     })
   })
 
+  describe('TOGGLE_ROW_EDIT_MODE', () => {
+    test('should set inEditMode to true for the action.property of selectedDoc at action.index', () => {
+      const action = {
+        type: types.TOGGLE_ROW_EDIT_MODE,
+        index: 0,
+        property: 'citation'
+      }
+
+      const currentState = getState({
+        selectedDocs: [
+          { name: 'doc1', citation: { value: '', inEditMode: false } },
+          { name: 'doc2', citation: { value: '', inEditMode: false } },
+          { name: 'doc3', citation: { value: '', inEditMode: false } },
+          { name: 'doc4', citation: { value: '', inEditMode: false } }
+        ]
+      })
+
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.selectedDocs[0].citation.inEditMode).toEqual(true)
+    })
+  })
+
   describe('CLOSE_ALERT', () => {
     test('should reset state.alertOpen, state.alertText and state.alertTitle', () => {
       const action = {
@@ -386,6 +408,302 @@ describe('Document Management - Upload reducer tests', () => {
       expect(updatedState.selectedDocs).toEqual([
         { name: 'filename1.pdf' }
       ])
+    })
+  })
+
+  describe('SEARCH_PROJECT_LIST_SUCCESS', () => {
+    test('should set projectSuggestions to action.payload', () => {
+      const action = {
+        type: types.SEARCH_PROJECT_LIST_SUCCESS,
+        payload: [{ name: 'proj' }, { name: 'project' }]
+      }
+
+      const currentState = getState()
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.projectSuggestions).toEqual([{ name: 'proj' }, { name: 'project' }])
+    })
+  })
+
+  describe('SEARCH_JURISDICTION_LIST_SUCCESS', () => {
+    test('should set jurisdictionSuggestions to action.payload', () => {
+      const action = {
+        type: types.SEARCH_JURISDICTION_LIST_SUCCESS,
+        payload: [{ name: 'juri' }, { name: 'jurisdiction' }]
+      }
+
+      const currentState = getState()
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.jurisdictionSuggestions).toEqual([{ name: 'juri' }, { name: 'jurisdiction' }])
+    })
+  })
+
+  describe('ROW_SEARCH_JURISDICTION_LIST_SUCCESS', () => {
+    test('should set jurisdictions.value.suggestions to action.payload.suggestions for doc at action.payload.index', () => {
+      const action = {
+        type: types.ROW_SEARCH_JURISDICTION_SUCCESS,
+        payload: {
+          suggestions: [{ name: 'juris' }, { name: 'jurisdiction' }],
+          index: 1
+        }
+      }
+
+      const currentState = getState({
+        selectedDocs: [
+          { name: 'doc 1', jurisdictions: { value: { suggestions: [] } } },
+          { name: 'doc 2', jurisdictions: { value: { suggestions: [] } } }
+        ]
+      })
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.selectedDocs[1].jurisdictions.value.suggestions)
+        .toEqual([{ name: 'juris' }, { name: 'jurisdiction' }])
+    })
+  })
+
+  describe('CLEAR_ROW_JURISDICTION_SUGGESTIONS', () => {
+    test('should set jurisdictions.value.suggestions to [] for doc at action.index', () => {
+      const action = {
+        type: types.CLEAR_ROW_JURISDICTION_SUGGESTIONS,
+        index: 0
+      }
+
+      const currentState = getState({
+        selectedDocs: [
+          { name: 'doc 1', jurisdictions: { value: { suggestions: [{ name: 'juris' }, { name: 'jurisdictions' }] } } },
+          { name: 'doc 2', jurisdictions: { value: { suggestions: [] } } }
+        ]
+      })
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.selectedDocs[0].jurisdictions.value.suggestions).toEqual([])
+    })
+  })
+
+  describe('CLEAR_SUGGESTIONS', () => {
+    test('should clear project suggestions when action.suggestionType === project', () => {
+      const action = {
+        type: types.CLEAR_SUGGESTIONS,
+        suggestionType: 'project'
+      }
+
+      const currentState = getState({
+        projectSuggestions: [
+          { name: 'project' },
+          { name: 'project test' }
+        ]
+      })
+
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.projectSuggestions).toEqual([])
+    })
+
+    test('should clear jurisdiction suggestions when action.suggestionType === jurisdiction', () => {
+      const action = {
+        type: types.CLEAR_SUGGESTIONS,
+        suggestionType: 'jurisdiction'
+      }
+
+      const currentState = getState({
+        jurisdictionSuggestions: [
+          { name: 'juri' },
+          { name: 'jurisdiction test' }
+        ]
+      })
+
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.jurisdictionSuggestions).toEqual([])
+    })
+  })
+
+  describe('ON_SEARCH_VALUE_CHANGE', () => {
+    test('should set projectSearchValue and projectSuggestions if action.searchType === project', () => {
+      const action = {
+        type: types.ON_SEARCH_VALUE_CHANGE,
+        searchType: 'project',
+        value: 'new project search value'
+      }
+
+      const currentState = getState({
+        projectSuggestions: [
+          { name: 'project' },
+          { name: 'project test' }
+        ]
+      })
+
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.projectSuggestions).toEqual([])
+      expect(updatedState.projectSearchValue).toEqual('new project search value')
+    })
+
+    test('should set jurisdictionSearchValue and jurisdictionSuggestions if action.searchType === jurisdiction', () => {
+      const action = {
+        type: types.ON_SEARCH_VALUE_CHANGE,
+        searchType: 'jurisdiction',
+        value: 'new jurisdiction search value'
+      }
+
+      const currentState = getState({
+        jurisdictionSuggestions: [
+          { name: 'project' },
+          { name: 'project test' }
+        ]
+      })
+
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.jurisdictionSuggestions).toEqual([])
+      expect(updatedState.jurisdictionSearchValue).toEqual('new jurisdiction search value')
+    })
+  })
+
+  describe('ON_PROJECT_SUGGESTION_SELECTED', () => {
+    const action = {
+      type: types.ON_PROJECT_SUGGESTION_SELECTED,
+      project: { name: 'project overwatch' }
+    }
+
+    const currentState = getState()
+    const updatedState = reducer(currentState, action)
+
+    test('should set state.selectedProject to action.project', () => {
+      expect(updatedState.selectedProject).toEqual({ name: 'project overwatch' })
+    })
+
+    test('should set state.noProjectError to false', () => {
+      expect(updatedState.noProjectError).toEqual(false)
+    })
+
+    test('should set state.projectSearchValue to action.project.name', () => {
+      expect(updatedState.projectSearchValue).toEqual('project overwatch')
+    })
+
+    test('should clear state.projectSuggestions', () => {
+      expect(updatedState.projectSuggestions).toEqual([])
+    })
+  })
+
+  describe('ON_JURISDICTION_SUGGESTION_SELECTED', () => {
+    const action = {
+      type: types.ON_JURISDICTION_SUGGESTION_SELECTED,
+      jurisdiction: { name: 'jurisdiction overwatch' }
+    }
+
+    const currentState = getState()
+    const updatedState = reducer(currentState, action)
+
+    test('should set state.selectedJurisdiction to action.jurisdiction', () => {
+      expect(updatedState.selectedJurisdiction).toEqual({ name: 'jurisdiction overwatch' })
+    })
+
+    test('should set state.jurisdictionSearchValue to action.jurisdiction.name', () => {
+      expect(updatedState.jurisdictionSearchValue).toEqual('jurisdiction overwatch')
+    })
+
+    test('should reset state.jurisdictionSuggestions', () => {
+      expect(updatedState.jurisdictionSuggestions).toEqual([])
+    })
+  })
+
+  describe('REJECT_NO_PROJECT_SELECTED', () => {
+    const action = {
+      type: types.REJECT_NO_PROJECT_SELECTED,
+      error: 'no project error'
+    }
+
+    const currentState = getState()
+    const updatedState = reducer(currentState, action)
+
+    test('should set state.noProjectError to true', () => {
+      expect(updatedState.noProjectError).toEqual(true)
+    })
+
+    test('should set appropriate state alert properties', () => {
+      expect(updatedState.alertOpen).toEqual(true)
+      expect(updatedState.alertText).toEqual('no project error')
+      expect(updatedState.alertTitle).toEqual('Invalid Project')
+    })
+  })
+
+  describe('RESET_FAILED_UPLOAD_VALIDATION', () => {
+    const action = {
+      type: types.RESET_FAILED_UPLOAD_VALIDATION
+    }
+
+    const currentState = getState({ noProjectError: true })
+    const updatedState = reducer(currentState, action)
+
+    test('should set state.noProjectError to false', () => {
+      expect(updatedState.noProjectError).toEqual(false)
+    })
+  })
+
+  describe('REJECT_EMPTY_JURISDICTIONS', () => {
+    const action = {
+      type: types.REJECT_EMPTY_JURISDICTIONS,
+      invalidDocs: [],
+      error: 'invalid jurisdictions error'
+    }
+
+    const currentState = getState({
+      selectedDocs: [
+        { name: 'doc 1', jurisdictions: { value: { name: 'jur', id: 0 }, inEditMode: false, error: false } },
+        { name: 'doc 2', jurisdictions: { value: { name: '' } } },
+        { name: 'doc 3', jurisdictions: { value: { name: 'jur' } } }
+      ]
+    })
+    const updatedState = reducer(currentState, action)
+
+    test('should turn on edit mode and set an error for all docs in state.selectedDocs without a jurisdiction', () => {
+      expect(updatedState.selectedDocs[1].jurisdictions.inEditMode).toEqual(true)
+      expect(updatedState.selectedDocs[1].jurisdictions.error).toEqual(true)
+      expect(updatedState.selectedDocs[2].jurisdictions.inEditMode).toEqual(true)
+      expect(updatedState.selectedDocs[2].jurisdictions.error).toEqual(true)
+    })
+
+    test('should not change edit mode or error for docs with a jurisdiction', () => {
+      expect(updatedState.selectedDocs[0].jurisdictions.inEditMode).toEqual(false)
+      expect(updatedState.selectedDocs[0].jurisdictions.error).toEqual(false)
+    })
+
+    test('should set appropriate state alert properties', () => {
+      expect(updatedState.alertOpen).toEqual(true)
+      expect(updatedState.alertText).toEqual('invalid jurisdictions error')
+      expect(updatedState.alertTitle).toEqual('Invalid Jurisdictions')
+    })
+  })
+
+  describe('CLEAR_SELECTED_FILES', () => {
+    const action = {
+      type: types.CLEAR_SELECTED_FILES
+    }
+
+    const currentState = getState({
+      selectedDocs: [
+        { name: 'doc 1', jurisdictions: { value: { name: 'jur', id: 0 } } },
+        { name: 'doc 2', jurisdictions: { value: { name: '' } } },
+        { name: 'doc 3', jurisdictions: { value: { name: 'jur' } } }
+      ]
+    })
+    const updatedState = reducer(currentState, action)
+
+    test('should reset state to initial state', () => {
+      expect(updatedState).toEqual(INITIAL_STATE)
+    })
+  })
+
+  describe('FLUSH_STATE', () => {
+    const action = {
+      type: 'FLUSH_STATE'
+    }
+
+    const currentState = getState({
+      selectedDocs: [
+        { name: 'doc 1', jurisdictions: { value: { name: 'jur', id: 0 } } },
+        { name: 'doc 2', jurisdictions: { value: { name: '' } } },
+        { name: 'doc 3', jurisdictions: { value: { name: 'jur' } } }
+      ]
+    })
+    const updatedState = reducer(currentState, action)
+
+    test('should reset state to initial state', () => {
+      expect(updatedState).toEqual(INITIAL_STATE)
     })
   })
 

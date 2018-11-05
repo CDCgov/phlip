@@ -26,7 +26,7 @@ const ProJurSearch = props => {
         <Autocomplete
           suggestions={projectSuggestions}
           handleGetSuggestions={val => onGetSuggestions('project', val)}
-          handleClearSuggestions={() => onClearSuggestions('projectSuggestions')}
+          handleClearSuggestions={() => onClearSuggestions('project')}
           inputProps={{
             value: projectSearchValue,
             onChange: (e) => onSearchValueChange('project', e.target.value || ''),
@@ -48,7 +48,7 @@ const ProJurSearch = props => {
         <Autocomplete
           suggestions={jurisdictionSuggestions}
           handleGetSuggestions={val => onGetSuggestions('jurisdiction', val)}
-          handleClearSuggestions={() => onClearSuggestions('jurisdictionSuggestions')}
+          handleClearSuggestions={() => onClearSuggestions('jurisdiction')}
           inputProps={{
             value: jurisdictionSearchValue,
             onChange: (e) => onSearchValueChange('jurisdiction', e.target.value || ''),
