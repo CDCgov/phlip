@@ -119,7 +119,7 @@ const uploadRequestLogic = createLogic({
   },
   async process({ docApi, action, getState }, dispatch, done) {
     try {
-      if (getState().scenes.docManage.upload.duplicateFiles.length === 0) {
+      if (getState().scenes.docManage.upload.hasVerified === false) {
         const anyDuplicates = await docApi.verifyUpload(action.selectedDocs)
         if (anyDuplicates.length > 0) {
           dispatch({

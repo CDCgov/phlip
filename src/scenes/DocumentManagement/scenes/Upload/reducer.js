@@ -6,7 +6,6 @@ export const INITIAL_STATE = {
   requestError: null,
   uploading: false,
   goBack: false,
-  verifying: true,
   duplicateFiles: [],
   alertTitle: '',
   alertOpen: false,
@@ -21,7 +20,8 @@ export const INITIAL_STATE = {
   jurisdictionSearchValue: '',
   selectedProject: {},
   selectedJurisdiction: {},
-  noProjectError: false
+  noProjectError: false,
+  hasVerified: false
 }
 
 const uploadReducer = (state = INITIAL_STATE, action) => {
@@ -58,7 +58,8 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         alertText: `The file name, project and jurisdiction properties for one or more of the documents selected for 
         upload match a pre-existing document in the system. These documents have been indicated in the file list. You 
         can choose to remove them or click the 'Upload' button again to proceed with saving them.`,
-        alertTitle: 'Duplicates Found'
+        alertTitle: 'Duplicates Found',
+        hasVerified: true
       }
 
     case types.EXTRACT_INFO_REQUEST:
@@ -113,7 +114,8 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
             })
             return d
           })
-        ]
+        ],
+        hasVerified: false
       }
 
     case types.REMOVE_DOC:

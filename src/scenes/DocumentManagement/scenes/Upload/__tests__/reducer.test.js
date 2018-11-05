@@ -1,28 +1,7 @@
-import reducer from '../reducer'
-import actions, { types } from '../actions'
+import reducer, { INITIAL_STATE } from '../reducer'
+import { types } from '../actions'
 
-const initial = {
-  selectedDocs: [],
-  requestError: null,
-  uploading: false,
-  goBack: false,
-  verifying: true,
-  duplicateFiles: [],
-  alertTitle: '',
-  alertOpen: false,
-  alertText: '',
-  infoSheet: {},
-  infoRequestInProgress: false,
-  infoSheetSelected: false,
-  extractedInfo: {},
-  projectSuggestions: [],
-  jurisdictionSuggestions: [],
-  projectSearchValue: '',
-  jurisdictionSearchValue: '',
-  selectedProject: {},
-  selectedJurisdiction: {},
-  noProjectError: false
-}
+const initial = INITIAL_STATE
 
 const getState = (other = {}) => ({
   ...initial,

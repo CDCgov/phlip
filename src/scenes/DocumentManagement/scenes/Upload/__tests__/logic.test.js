@@ -37,56 +37,6 @@ describe('Document Management - Upload logic', () => {
     })
   }
 
-  /*describe('Verify Upload', () => {
-    test('should send a request to verify upload and dispatch VERIFY_RETURN_NO_DUPLICATES when no duplicates are found', (done) => {
-      mock.onPost('/docs/verifyUpload').reply(200, { duplicates: [] })
-
-      const store = setupStore()
-
-      store.dispatch({ type: types.VERIFY_UPLOAD_REQUEST, selectedDocs: [{ name: 'blah' }] })
-
-      store.whenComplete(() => {
-        expect(store.actions).toEqual([
-          { type: types.VERIFY_UPLOAD_REQUEST, selectedDocs: [{ name: 'blah' }] },
-          { type: types.VERIFY_RETURN_NO_DUPLICATES }
-        ])
-        done()
-      })
-    })
-
-    test('should send a request to verify upload and dispatch VERIFY_RETURN_DUPLICATE_FILES when duplicates are found', (done) => {
-      mock.onPost('/docs/verifyUpload').reply(200, { duplicates: [{ name: 'dup 1' }] })
-
-      const store = setupStore()
-
-      store.dispatch({ type: types.VERIFY_UPLOAD_REQUEST, selectedDocs: [{ name: 'dup 1' }] })
-
-      store.whenComplete(() => {
-        expect(store.actions).toEqual([
-          { type: types.VERIFY_UPLOAD_REQUEST, selectedDocs: [{ name: 'dup 1' }] },
-          { type: types.VERIFY_RETURN_DUPLICATE_FILES, payload: { duplicates: [{ name: 'dup 1' }] } }
-        ])
-        done()
-      })
-    })
-
-    test('should send a request to verify upload and dispatch VERIFY_UPLOAD_FAIL on failure', (done) => {
-      mock.onPost('/docs/verifyUpload').reply(500)
-
-      const store = setupStore()
-
-      store.dispatch({ type: types.VERIFY_UPLOAD_REQUEST, selectedDocs: [{ name: 'dup 1' }] })
-
-      store.whenComplete(() => {
-        expect(store.actions).toEqual([
-          { type: types.VERIFY_UPLOAD_REQUEST, selectedDocs: [{ name: 'dup 1' }] },
-          { type: types.VERIFY_UPLOAD_FAIL, payload: { error: 'Failed to verify upload, please try again.' } }
-        ])
-        done()
-      })
-    })
-  })*/
-
   describe('Upload Documents', () => {
     const selectedDocsFormData = [{ name: 'doc 1' }, { name: 'doc 2' }]
     const selectedDocs = [
@@ -144,7 +94,7 @@ describe('Document Management - Upload logic', () => {
       const store = setupStore({
         selectedProject: { name: 'project', id: 4 },
         selectedJurisdiction: { name: 'jurisdiction 10', id: 10 },
-        duplicateFiles: [{ name: 'doc1' }],
+        hasVerified: true,
         selectedDocs: [
           { name: 'doc1', jurisdictions: { value: { name: 'jur 1', id: 2 } } },
           { name: 'doc2', jurisdictions: { value: { name: 'jur 2', id: 3 } } }
@@ -188,4 +138,54 @@ describe('Document Management - Upload logic', () => {
       })
     })
   })
+
+  /*describe('Verify Upload', () => {
+  test('should send a request to verify upload and dispatch VERIFY_RETURN_NO_DUPLICATES when no duplicates are found', (done) => {
+    mock.onPost('/docs/verifyUpload').reply(200, { duplicates: [] })
+
+    const store = setupStore()
+
+    store.dispatch({ type: types.VERIFY_UPLOAD_REQUEST, selectedDocs: [{ name: 'blah' }] })
+
+    store.whenComplete(() => {
+      expect(store.actions).toEqual([
+        { type: types.VERIFY_UPLOAD_REQUEST, selectedDocs: [{ name: 'blah' }] },
+        { type: types.VERIFY_RETURN_NO_DUPLICATES }
+      ])
+      done()
+    })
+  })
+
+  test('should send a request to verify upload and dispatch VERIFY_RETURN_DUPLICATE_FILES when duplicates are found', (done) => {
+    mock.onPost('/docs/verifyUpload').reply(200, { duplicates: [{ name: 'dup 1' }] })
+
+    const store = setupStore()
+
+    store.dispatch({ type: types.VERIFY_UPLOAD_REQUEST, selectedDocs: [{ name: 'dup 1' }] })
+
+    store.whenComplete(() => {
+      expect(store.actions).toEqual([
+        { type: types.VERIFY_UPLOAD_REQUEST, selectedDocs: [{ name: 'dup 1' }] },
+        { type: types.VERIFY_RETURN_DUPLICATE_FILES, payload: { duplicates: [{ name: 'dup 1' }] } }
+      ])
+      done()
+    })
+  })
+
+  test('should send a request to verify upload and dispatch VERIFY_UPLOAD_FAIL on failure', (done) => {
+    mock.onPost('/docs/verifyUpload').reply(500)
+
+    const store = setupStore()
+
+    store.dispatch({ type: types.VERIFY_UPLOAD_REQUEST, selectedDocs: [{ name: 'dup 1' }] })
+
+    store.whenComplete(() => {
+      expect(store.actions).toEqual([
+        { type: types.VERIFY_UPLOAD_REQUEST, selectedDocs: [{ name: 'dup 1' }] },
+        { type: types.VERIFY_UPLOAD_FAIL, payload: { error: 'Failed to verify upload, please try again.' } }
+      ])
+      done()
+    })
+  })
+})*/
 })
