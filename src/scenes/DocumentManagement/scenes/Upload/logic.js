@@ -102,7 +102,7 @@ const uploadRequestLogic = createLogic({
     } else if (Object.keys(state.selectedJurisdiction).length === 0) {
       const noJurs = state.selectedDocs.filter(doc => doc.jurisdictions.value.name.length === 0)
       const noJurIds = state.selectedDocs.filter(doc => !doc.jurisdictions.value.hasOwnProperty('id') || !doc.jurisdictions.value.id)
-      if (noJurs.length === 0 && noJurIds) {
+      if (noJurs.length === 0 && noJurIds.length === 0) {
         allow(action)
       } else {
         reject({

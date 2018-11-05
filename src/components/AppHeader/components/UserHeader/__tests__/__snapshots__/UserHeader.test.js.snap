@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`UserHeader should render correctly 1`] = `
-<Grid
+<FlexGrid
   align="center"
   circular={false}
   container={true}
@@ -12,7 +12,7 @@ exports[`UserHeader should render correctly 1`] = `
   style={Object {}}
   type="row"
 >
-  <Grid
+  <FlexGrid
     align="stretch"
     circular={false}
     container={false}
@@ -28,7 +28,7 @@ exports[`UserHeader should render correctly 1`] = `
       lastName="User"
       role="Coordinator"
     />
-  </Grid>
+  </FlexGrid>
   <AvatarMenu
     initials="TU"
     onLogoutUser={[MockFunction]}
@@ -39,5 +39,5 @@ exports[`UserHeader should render correctly 1`] = `
     role="Coordinator"
     userName="Test User"
   />
-</Grid>
+</FlexGrid>
 `;

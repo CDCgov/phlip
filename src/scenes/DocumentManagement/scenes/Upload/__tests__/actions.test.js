@@ -2,20 +2,20 @@ import actions, { types } from '../actions'
 
 describe('Document management - Upload action creators', () => {
   test('should create an action to upload documents', () => {
+    const formData = new FormData()
+    formData.append('userId', 1)
+    formData.append('userFirstName', 'test')
+    formData.append('userLastName', 'user')
+    formData.append('files', [{ name: 'blah' }])
+
     const expectedAction = {
       type: types.UPLOAD_DOCUMENTS_REQUEST,
-      selectedDocs: [{ name: 'blah' }]
-    }
-    expect(actions.uploadDocumentsRequest([{ name: 'blah' }])).toEqual(expectedAction)
-  })
-
-  test('should create an action to verify selected documents to upload', () => {
-    const expectedAction = {
-      type: types.VERIFY_UPLOAD_REQUEST,
+      selectedDocsFormData: formData,
       selectedDocs: [{ name: 'blah' }]
     }
 
-    expect(actions.verifyUploadRequest([{ name: 'blah' }])).toEqual(expectedAction)
+
+    expect(actions.uploadDocumentsRequest(formData, [{ name: 'blah' }])).toEqual(expectedAction)
   })
 
   test('should create an action to update a document property', () => {
@@ -23,10 +23,10 @@ describe('Document management - Upload action creators', () => {
       type: types.UPDATE_DOC_PROPERTY,
       index: 1,
       property: 'name',
-      value: 'newName.doc'
+      value: 'newName'
     }
 
-    expect(actions.updateDocumentProperty(1, 'name', 'newName.doc')).toEqual(expectedAction)
+    expect(actions.updateDocumentProperty(1, 'name', 'newName')).toEqual(expectedAction)
   })
 
   test('should create an action to add documents to the selected list', () => {
@@ -55,27 +55,6 @@ describe('Document management - Upload action creators', () => {
     expect(actions.removeDoc(1)).toEqual(expectedAction)
   })
 
-  test('should create an action to remove a tag from a doc', () => {
-    const expectedAction = {
-      type: types.REMOVE_TAG,
-      index: 1,
-      tag: 'cool tag',
-      tagIndex: 4
-    }
-
-    expect(actions.removeTag(1, 'cool tag', 4)).toEqual(expectedAction)
-  })
-
-  test('should create an action to add a tag to a doc', () => {
-    const expectedAction = {
-      type: types.ADD_TAG,
-      index: 1,
-      tag: 'new cool tag'
-    }
-
-    expect(actions.addTag(1, 'new cool tag')).toEqual(expectedAction)
-  })
-
   test('should create an action to close the alert', () => {
     const expectedAction = {
       type: types.CLOSE_ALERT
@@ -87,9 +66,146 @@ describe('Document management - Upload action creators', () => {
   test('should create an action to open alert with text', () => {
     const expectedAction = {
       type: types.OPEN_ALERT,
-      text: 'alert text'
+      text: 'alert text',
+      title: 'alert title'
     }
 
-    expect(actions.openAlert('alert text')).toEqual(expectedAction)
+    expect(actions.openAlert('alert text', 'alert title')).toEqual(expectedAction)
   })
+
+  test('should create an action to remove a duplicate file', () => {
+    const expectedAction = {
+      type: types.REMOVE_DUPLICATE,
+      index: 1,
+      fileName: 'duplicate file name'
+    }
+
+    expect(actions.removeDuplicate(1, 'duplicate file name')).toEqual(expectedAction)
+  })
+
+  test('should create an action to extract info', () => {
+    const fd = new FormData()
+    fd.append('file', { name: 'infofile' })
+
+    const expectedAction = {
+      type: types.EXTRACT_INFO_REQUEST,
+      infoSheetFormData: fd,
+      infoSheet: { name: 'infofile' }
+    }
+
+    expect(actions.extractInfoRequest(fd, { name: 'infofile' })).toEqual(expectedAction)
+  })
+
+  test('should create an action to search jurisdiction list', () => {
+    const expectedAction = {
+      type: types.SEARCH_JURISDICTION_LIST_REQUEST,
+      searchString: 'ohi',
+      index: 1
+    }
+
+    expect(actions.searchJurisdictionListRequest('ohi', 1)).toEqual(expectedAction)
+  })
+
+  test('should create an action to search project list', () => {
+    const expectedAction = {
+      type: types.SEARCH_PROJECT_LIST_REQUEST,
+      searchString: 'proj'
+    }
+
+    expect(actions.searchProjectListRequest('proj')).toEqual(expectedAction)
+  })
+
+  test('should create an action to handle a project in project list being selected', () => {
+    const expectedAction = {
+      type: types.ON_PROJECT_SUGGESTION_SELECTED,
+      project: { name: 'project 1' }
+    }
+
+    expect(actions.onProjectSuggestionSelected({ name: 'project 1' })).toEqual(expectedAction)
+  })
+
+  test('should create an action to handle a jurisdiction in list being selected', () => {
+    const expectedAction = {
+      type: types.ON_JURISDICTION_SUGGESTION_SELECTED,
+      jurisdiction: { name: 'Ohio' }
+    }
+
+    expect(actions.onJurisdictionSuggestionSelected({ name: 'Ohio' })).toEqual(expectedAction)
+  })
+
+  test('should create an action to update project / jurisdiction search value', () => {
+    const expectedAction = {
+      type: types.ON_SEARCH_VALUE_CHANGE,
+      searchType: 'project',
+      value: 'new search value'
+    }
+
+    expect(actions.onSearchValueChange('project', 'new search value' )).toEqual(expectedAction)
+  })
+
+  test('should create an action to clear suggestions for project / jurisdiction', () => {
+    const expectedAction = {
+      type: types.CLEAR_SUGGESTIONS,
+      suggestionType: 'jurisdiction'
+    }
+
+    expect(actions.clearSuggestions('jurisdiction')).toEqual(expectedAction)
+  })
+
+  test('should create an action to reset no project error', () => {
+    const expectedAction = {
+      type: types.RESET_FAILED_UPLOAD_VALIDATION
+    }
+
+    expect(actions.resetFailedUploadValidation()).toEqual(expectedAction)
+  })
+
+  test('should create an action to toggle edit mode on a row and property', () => {
+    const expectedAction = {
+      type: types.TOGGLE_ROW_EDIT_MODE,
+      index: 1,
+      property: 'citation'
+    }
+
+    expect(actions.toggleRowEditMode(1, 'citation')).toEqual(expectedAction)
+  })
+
+  test('should create an action to clear jurisdiction suggestions from a row', () => {
+    const expectedAction = {
+      type: types.CLEAR_ROW_JURISDICTION_SUGGESTIONS,
+      index: 2
+    }
+
+    expect(actions.clearRowJurisdictionSuggestions(2)).toEqual(expectedAction)
+  })
+
+  test('should create an action to merge info sheet with selected docs', () => {
+    const expectedAction = {
+      type: types.MERGE_INFO_WITH_DOCS,
+      docs: [{ name: 'doc 1' }]
+    }
+
+    expect(actions.mergeInfoWithDocs([{ name: 'doc 1' }])).toEqual(expectedAction)
+  })
+
+  /*test('should create an action to remove a tag from a doc', () => {
+  const expectedAction = {
+    type: types.REMOVE_TAG,
+    index: 1,
+    tag: 'cool tag',
+    tagIndex: 4
+  }
+
+  expect(actions.removeTag(1, 'cool tag', 4)).toEqual(expectedAction)
+})
+
+test('should create an action to add a tag to a doc', () => {
+  const expectedAction = {
+    type: types.ADD_TAG,
+    index: 1,
+    tag: 'new cool tag'
+  }
+
+  expect(actions.addTag(1, 'new cool tag')).toEqual(expectedAction)
+})*/
 })

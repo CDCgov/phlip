@@ -1,7 +1,7 @@
 import { types } from './actions'
 import { updateItemAtIndex } from 'utils/normalize'
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   selectedDocs: [],
   requestError: null,
   uploading: false,
@@ -114,24 +114,6 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
             return d
           })
         ]
-      }
-
-    case types.ADD_TAG:
-      selectedDoc = { ...state.selectedDocs[action.index] }
-      selectedDoc.tags = [...selectedDoc.tags, action.tag]
-
-      return {
-        ...state,
-        selectedDocs: updateItemAtIndex([...state.selectedDocs], action.index, selectedDoc)
-      }
-
-    case types.REMOVE_TAG:
-      selectedDoc = { ...state.selectedDocs[action.index] }
-      selectedDoc.tags.splice(action.tagIndex, 1)
-
-      return {
-        ...state,
-        selectedDocs: updateItemAtIndex([...state.selectedDocs], action.index, selectedDoc)
       }
 
     case types.REMOVE_DOC:
@@ -278,6 +260,24 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
 
     case 'FLUSH_STATE':
       return INITIAL_STATE
+
+    /*case types.ADD_TAG:
+  selectedDoc = { ...state.selectedDocs[action.index] }
+  selectedDoc.tags = [...selectedDoc.tags, action.tag]
+
+  return {
+    ...state,
+    selectedDocs: updateItemAtIndex([...state.selectedDocs], action.index, selectedDoc)
+  }
+
+case types.REMOVE_TAG:
+  selectedDoc = { ...state.selectedDocs[action.index] }
+  selectedDoc.tags.splice(action.tagIndex, 1)
+
+  return {
+    ...state,
+    selectedDocs: updateItemAtIndex([...state.selectedDocs], action.index, selectedDoc)
+  }*/
 
     default:
       return state

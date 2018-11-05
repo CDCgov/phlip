@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`HeaderTabs should render correctly 1`] = `
-<Grid
+<FlexGrid
   align="stretch"
   circular={false}
   container={true}
@@ -16,7 +16,7 @@ exports[`HeaderTabs should render correctly 1`] = `
   }
   type="row"
 >
-  <Grid
+  <FlexGrid
     align="center"
     circular={false}
     container={true}
@@ -56,8 +56,8 @@ exports[`HeaderTabs should render correctly 1`] = `
     >
       Project List
     </WithStyles(Typography)>
-  </Grid>
-  <Grid
+  </FlexGrid>
+  <FlexGrid
     align="center"
     circular={false}
     container={true}
@@ -96,6 +96,6 @@ exports[`HeaderTabs should render correctly 1`] = `
     >
       Document Management
     </WithStyles(Typography)>
-  </Grid>
-</Grid>
+  </FlexGrid>
+</FlexGrid>
 `;

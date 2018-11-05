@@ -46,8 +46,7 @@ exports[`DatePicker component should render correctly 1`] = `
         "marginTop": 16,
       }
     }
-    value={2017-10-11T00:00:00.000Z}
+    value={2017-10-11T04:00:00.000Z}
   />
-  <WithStyles(FormHelperText) />
 </WithStyles(FormControl)>
 `;

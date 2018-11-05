@@ -9,7 +9,6 @@ import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import FileUpload from 'components/FileUpload'
 import FileList from './components/FileList'
 import ProJurSearch from './components/ProJurSearch'
-import { hot } from 'react-hot-loader'
 import FlexGrid from 'components/FlexGrid'
 
 /**
@@ -106,6 +105,9 @@ export class Upload extends Component {
     }
   }
 
+  /**
+   * Determines whether or not the 'processing' alert should be shown
+   */
   showLoadingAlert = () => {
     if (!this.props.infoRequestInProgress) {
       clearTimeout(this.loadingAlertTimeout)
@@ -195,7 +197,6 @@ export class Upload extends Component {
     this.props.infoSheetSelected
       ? this.props.actions.mergeInfoWithDocs(files)
       : this.props.actions.addSelectedDocs(files)
-    //this.props.actions.verifyUploadRequest(files)
   }
 
   /**
@@ -229,28 +230,60 @@ export class Upload extends Component {
     this.props.actions.uploadDocumentsRequest(formData, sd)
   }
 
+  /**
+   * Handles when a user has updated a document property in the file list
+   * @param index
+   * @param propName
+   * @param value
+   */
   handleDocPropertyChange = (index, propName, value) => {
     this.props.actions.updateDocumentProperty(index, propName, value)
   }
 
+  /**
+   * Get suggestions for some type of autocomplete search
+   * @param suggestionType
+   * @param searchString
+   * @param index
+   */
   handleGetSuggestions = (suggestionType, { value: searchString }, index = null) => {
     suggestionType === 'project'
       ? this.props.actions.searchProjectListRequest(searchString)
       : this.props.actions.searchJurisdictionListRequest(searchString, index)
   }
 
+  /**
+   * When a user has chosen a suggestion from the autocomplete project list
+   * @param event
+   * @param suggestionValue
+   */
   handleProjectSuggestionSelected = (event, { suggestionValue }) => {
     this.props.actions.onProjectSuggestionSelected(suggestionValue)
   }
 
+  /**
+   * When a user has chosen a suggestion from the autocomplete jurisdiction list
+   * @param event
+   * @param suggestionValue
+   */
   handleJurisdictionSuggestionSelected = (event, { suggestionValue }) => {
     this.props.actions.onJurisdictionSuggestionSelected(suggestionValue)
   }
 
+  /**
+   * Handles enabled or disabling edit mode on a row in the file list
+   * @param index
+   * @param property
+   */
   handleToggleEditMode = (index, property) => {
     this.props.actions.toggleRowEditMode(index, property)
   }
 
+  /**
+   * Handles when a user wants to remove a document from the file list
+   * @param index
+   * @param isDuplicate
+   */
   removeDoc = (index, isDuplicate) => {
     this.props.actions.removeDoc(index)
     if (isDuplicate) {

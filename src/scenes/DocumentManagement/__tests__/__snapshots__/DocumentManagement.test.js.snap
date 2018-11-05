@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Document Management scene should render correctly 1`] = `
-<Grid
+<FlexGrid
   align="stretch"
   circular={false}
   container={true}
@@ -49,5 +49,5 @@ exports[`Document Management scene should render correctly 1`] = `
     component={[Function]}
     path="/docs/upload"
   />
-</Grid>
+</FlexGrid>
 `;

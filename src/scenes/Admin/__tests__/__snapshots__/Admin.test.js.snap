@@ -5,6 +5,11 @@ exports[`Admin Scene it should render correctly 1`] = `
   column={true}
   flex={true}
   spacing={0}
+  style={
+    Object {
+      "padding": "20px 30px",
+    }
+  }
 >
   <withRouter(WithTheme(PageHeader))
     otherButton={

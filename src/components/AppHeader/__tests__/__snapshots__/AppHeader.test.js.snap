@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`AppHeader it should render correctly 1`] = `
-<Grid
+<FlexGrid
   align="center"
   circular={false}
   container={true}
@@ -42,7 +42,7 @@ exports[`AppHeader it should render correctly 1`] = `
       ]
     }
   />
-  <Grid
+  <FlexGrid
     align="stretch"
     circular={false}
     container={false}
@@ -57,7 +57,7 @@ exports[`AppHeader it should render correctly 1`] = `
       height={35}
       width="auto"
     />
-  </Grid>
+  </FlexGrid>
   <UserHeader
     handleLogoutUser={[MockFunction]}
     handleOpenAdminPage={[MockFunction]}
@@ -72,5 +72,5 @@ exports[`AppHeader it should render correctly 1`] = `
       }
     }
   />
-</Grid>
+</FlexGrid>
 `;

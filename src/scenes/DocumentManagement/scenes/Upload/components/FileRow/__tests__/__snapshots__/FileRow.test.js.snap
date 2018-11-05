@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Document Management - Upload - FileRow should render correctly 1`] = `
-<Grid
+<FlexGrid
   align="center"
   circular={false}
   container={true}
@@ -26,7 +26,7 @@ exports[`Document Management - Upload - FileRow should render correctly 1`] = `
   >
     library_books
   </WithTheme(Icon)>
-  <Grid
+  <FlexGrid
     align="stretch"
     circular={false}
     container={true}
@@ -57,7 +57,7 @@ exports[`Document Management - Upload - FileRow should render correctly 1`] = `
     <WithStyles(Typography)>
       filename
     </WithStyles(Typography)>
-  </Grid>
+  </FlexGrid>
   <IconButton
     color="primary"
     disabled={false}
@@ -72,5 +72,5 @@ exports[`Document Management - Upload - FileRow should render correctly 1`] = `
   >
     cancel
   </IconButton>
-</Grid>
+</FlexGrid>
 `;

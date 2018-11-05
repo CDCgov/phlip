@@ -8,21 +8,8 @@ exports[`Document Management - Upload scene should render correctly 1`] = `
   open={true}
 >
   <ModalTitle
-    title={
-      <WithStyles(Typography)
-        variant="title"
-      >
-        <span
-          style={
-            Object {
-              "paddingRight": 10,
-            }
-          }
-        >
-          Upload Documents
-        </span>
-      </WithStyles(Typography)>
-    }
+    buttons={false}
+    title="Upload Documents"
   />
   <WithStyles(Divider) />
   <ModalContent
@@ -30,35 +17,53 @@ exports[`Document Management - Upload scene should render correctly 1`] = `
       Object {
         "display": "flex",
         "flexDirection": "column",
-        "overflow": "hidden",
+        "height": "100%",
       }
     }
   >
-    <InputFileContainer
-      handleAddFilesToList={[Function]}
-      handleInitiateFileSelecter={[Function]}
-      inputRef={
-        Object {
-          "current": null,
-        }
-      }
-    />
-    <Grid
-      align="stretch"
+    <FlexGrid
+      align="center"
       circular={false}
-      container={false}
-      flex={true}
-      justify="stretch"
-      padding={0}
+      container={true}
+      flex={false}
+      justify="space-between"
+      padding={10}
       raised={false}
-      style={
-        Object {
-          "overflow": "auto",
-        }
-      }
-      type="column"
-    />
+      style={Object {}}
+      type="row"
+    >
+      <FileUpload
+        allowMultiple={true}
+        allowedFileTypes=".doc,.docx,.pdf,.rtf,.txt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        buttonText="Select Files"
+        containerBgColor="#f5fafa"
+        containerBorderColor="#99D0E9"
+        containerText="or drag and drop here"
+        handleAddFiles={[Function]}
+      />
+      <FlexGrid
+        align="stretch"
+        circular={false}
+        container={false}
+        flex={false}
+        justify="stretch"
+        padding={10}
+        raised={false}
+        style={Object {}}
+        type="column"
+      />
+      <FileUpload
+        allowMultiple={false}
+        allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,application/vnd.ms-excel"
+        buttonText="Select excel file"
+        containerBgColor="#f4f9ef"
+        containerBorderColor="#c2e3b6"
+        containerText="or drag and drop here"
+        handleAddFiles={[Function]}
+      />
+    </FlexGrid>
   </ModalContent>
+  <WithStyles(Divider) />
   <WithStyles(ModalActions)
     actions={
       Array [

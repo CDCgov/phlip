@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DocumentManagement - DocList should render correctly 1`] = `
-<Grid
+<FlexGrid
   align="stretch"
   circular={false}
   container={true}
@@ -12,7 +12,7 @@ exports[`DocumentManagement - DocList should render correctly 1`] = `
   style={Object {}}
   type="column"
 >
-  <Grid
+  <FlexGrid
     align="center"
     circular={false}
     container={true}
@@ -23,7 +23,7 @@ exports[`DocumentManagement - DocList should render correctly 1`] = `
     style={Object {}}
     type="row"
   >
-    <Grid
+    <FlexGrid
       align="stretch"
       circular={false}
       container={false}
@@ -34,7 +34,7 @@ exports[`DocumentManagement - DocList should render correctly 1`] = `
       style={Object {}}
       type="column"
     />
-    <Grid
+    <FlexGrid
       align="stretch"
       circular={false}
       container={false}
@@ -45,8 +45,8 @@ exports[`DocumentManagement - DocList should render correctly 1`] = `
       style={Object {}}
       type="column"
     />
-  </Grid>
-  <Grid
+  </FlexGrid>
+  <FlexGrid
     align="stretch"
     circular={false}
     container={true}
@@ -97,7 +97,7 @@ exports[`DocumentManagement - DocList should render correctly 1`] = `
         />
       </WithStyles(TableBody)>
     </Table>
-    <Grid
+    <FlexGrid
       align="stretch"
       circular={false}
       container={false}
@@ -121,6 +121,6 @@ exports[`DocumentManagement - DocList should render correctly 1`] = `
         </WithStyles(TableRow)>
       </WithStyles(TableFooter)>
     </Table>
-  </Grid>
-</Grid>
+  </FlexGrid>
+</FlexGrid>
 `;

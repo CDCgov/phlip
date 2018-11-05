@@ -8,8 +8,6 @@ export const types = {
   ADD_SELECTED_DOCS: 'ADD_SELECTED_DOCS',
   UPDATE_DOC_PROPERTY: 'UPDATE_DOC_PROPERTY',
   CLEAR_SELECTED_FILES: 'CLEAR_SELECTED_FILES',
-  REMOVE_TAG: 'REMOVE_TAG',
-  ADD_TAG: 'ADD_TAG',
   REMOVE_DOC: 'REMOVE_DOC',
   REMOVE_DUPLICATE: 'REMOVE_DUPLICATE',
   CLOSE_ALERT: 'CLOSE_ALERT',
@@ -34,18 +32,17 @@ export const types = {
   ROW_SEARCH_JURISDICTION_SUCCESS: 'ROW_SEARCH_JURISDICTION_SUCCESS',
   CLEAR_ROW_JURISDICTION_SUGGESTIONS: 'CLEAR_ROW_JURISDICTION_SUGGESTIONS',
   EXTRACT_INFO_SUCCESS_NO_DOCS: 'EXTRACT_INFO_SUCCESS_NO_DOCS',
-  MERGE_INFO_WITH_DOCS: 'MERGE_INFO_WITH_DOCS'
+  MERGE_INFO_WITH_DOCS: 'MERGE_INFO_WITH_DOCS',
+  //REMOVE_TAG: 'REMOVE_TAG',
+  //ADD_TAG: 'ADD_TAG',
 }
 
 export default {
   uploadDocumentsRequest: makeActionCreator(types.UPLOAD_DOCUMENTS_REQUEST, 'selectedDocsFormData', 'selectedDocs'),
-  verifyUploadRequest: makeActionCreator(types.VERIFY_UPLOAD_REQUEST, 'selectedDocs'),
   updateDocumentProperty: makeActionCreator(types.UPDATE_DOC_PROPERTY, 'index', 'property', 'value'),
   addSelectedDocs: makeActionCreator(types.ADD_SELECTED_DOCS, 'selectedDocs'),
   clearSelectedFiles: makeActionCreator(types.CLEAR_SELECTED_FILES),
   removeDoc: makeActionCreator(types.REMOVE_DOC, 'index'),
-  removeTag: makeActionCreator(types.REMOVE_TAG, 'index', 'tag', 'tagIndex'),
-  addTag: makeActionCreator(types.ADD_TAG, 'index', 'tag'),
   closeAlert: makeActionCreator(types.CLOSE_ALERT),
   openAlert: makeActionCreator(types.OPEN_ALERT, 'text', 'title'),
   removeDuplicate: makeActionCreator(types.REMOVE_DUPLICATE, 'index', 'fileName'),
@@ -59,5 +56,7 @@ export default {
   resetFailedUploadValidation: makeActionCreator(types.RESET_FAILED_UPLOAD_VALIDATION),
   toggleRowEditMode: makeActionCreator(types.TOGGLE_ROW_EDIT_MODE, 'index', 'property'),
   clearRowJurisdictionSuggestions: makeActionCreator(types.CLEAR_ROW_JURISDICTION_SUGGESTIONS, 'index'),
-  mergeInfoWithDocs: makeActionCreator(types.MERGE_INFO_WITH_DOCS, 'docs')
+  mergeInfoWithDocs: makeActionCreator(types.MERGE_INFO_WITH_DOCS, 'docs'),
+  //removeTag: makeActionCreator(types.REMOVE_TAG, 'index', 'tag', 'tagIndex'),
+  //addTag: makeActionCreator(types.ADD_TAG, 'index', 'tag'),
 }
