@@ -2,19 +2,22 @@ import { createMockStore } from 'redux-logic-test'
 import MockAdapter from 'axios-mock-adapter'
 import logic from '../logic'
 import { types } from '../actions'
-import createApiHandler, { docApiInstance } from 'services/api'
+import createApiHandler, { docApiInstance, projectApiInstance } from 'services/api'
 import calls from 'services/api/docManageCalls'
+import apiCalls from 'services/api/calls'
 import { INITIAL_STATE } from 'scenes/DocumentManagement/scenes/Upload/reducer'
 
 describe('Document Management - Upload logic', () => {
-  let mock
+  let mock, apiMock
 
   const mockReducer = (state, action) => state
   const history = {}
   const docApi = createApiHandler({ history }, docApiInstance, calls)
+  const api = createApiHandler({ history }, projectApiInstance, apiCalls)
 
   beforeEach(() => {
     mock = new MockAdapter(docApiInstance)
+    apiMock = new MockAdapter(projectApiInstance)
   })
 
   const setupStore = current => {
@@ -32,7 +35,8 @@ describe('Document Management - Upload logic', () => {
       reducer: mockReducer,
       logic,
       injectedDeps: {
-        docApi
+        docApi,
+        api
       }
     })
   }
@@ -139,6 +143,50 @@ describe('Document Management - Upload logic', () => {
     })
   })
 
+  describe('Search Project List Logic', () => {
+    test('should send a request to get projects and only return projects matching action.searchString', done => {
+      apiMock.onGet('/projects').reply(200, [
+        { name: 'project 1' },
+        { name: 'test project' },
+        { name: 'testing project' }
+      ])
+
+      const store = setupStore()
+
+      store.dispatch({ type: types.SEARCH_PROJECT_LIST_REQUEST, searchString: 'test' })
+
+      store.whenComplete(() => {
+        expect(store.actions).toEqual([
+          { type: types.SEARCH_PROJECT_LIST_REQUEST, searchString: 'test' },
+          { type: types.SEARCH_PROJECT_LIST_SUCCESS, payload: [{ name: 'test project' }, { name: 'testing project' }] }
+        ])
+        done()
+      })
+    })
+  })
+
+  describe('Search Jurisdiction List Logic', () => {
+    test('should send a request to search jurisdictions and dispatch SEARCH_JURISDICTION_LIST_SUCCESS when successful', done => {
+      apiMock.onGet('/jurisdictions', { params: { name: 'Al' } }).reply(200, [
+        { id: 1, name: 'Alaska' },
+        { id: 2, name: 'Alabama' }
+      ])
+
+      const store = setupStore()
+      store.dispatch({ type: types.SEARCH_JURISDICTION_LIST_REQUEST, searchString: 'Al' })
+
+      store.whenComplete(() => {
+        expect(store.actions).toEqual([
+          { type: types.SEARCH_JURISDICTION_LIST_REQUEST, searchString: 'Al' },
+          {
+            type: types.SEARCH_JURISDICTION_LIST_SUCCESS,
+            payload: [{ id: 1, name: 'Alaska' }, { id: 2, name: 'Alabama' }]
+          }
+        ])
+        done()
+      })
+    })
+  })
   /*describe('Verify Upload', () => {
   test('should send a request to verify upload and dispatch VERIFY_RETURN_NO_DUPLICATES when no duplicates are found', (done) => {
     mock.onPost('/docs/verifyUpload').reply(200, { duplicates: [] })

@@ -210,7 +210,7 @@ const searchJurisdictionListLogic = createLogic({
           name: action.searchString
         }
       }, {})
-      if (action.index !== null) {
+      if (action.index !== undefined && action.index !== null) {
         dispatch({
           type: types.ROW_SEARCH_JURISDICTION_SUCCESS,
           payload: { suggestions: jurisdictions, index: action.index }
