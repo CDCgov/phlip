@@ -6,87 +6,118 @@ variables:
   BRANCH: $CI_COMMIT_REF_NAME
 
 stages:
-  - build
   - test
+  - build
   - push
 
-build_esquire_frontend:
-  stage: build
-  tags:
-    - iiu
-  script:
-    - docker info
-    - yarn -version
-    - npm -version
-    - node -v
-    - yarn build:image:dev
-
-test_esquire_frontend_image:
+test_frontend:
   stage: test
-  tags:
-    - iiu
+  only:
+    - v2
   script:
-    - docker-compose -f docker-compose.dev.yml run --user=988 app npm run test:local
-    - docker-compose -f docker-compose.dev.yml down
-
-push_esquire_frontend_image:
-  stage: push
-  script:
-    - yarn build:image:prod
-    - curl -fsSL https://git.phiresearchlab.org/snippets/10/raw | bash
+    - npm run test:local
   environment:
-    name: DTR Frontend
-    url: https://dtr.phiresearchlab.org/repositories/iiu/esquire-frontend/tags
-  tags:
-    - iiu
+    name: Internal PHLIP2 Dev
+    url: http://lvscent7064.lab.local
 
-deploy_local_test_esquire_frontend:
-  stage: push
+build_frontend_dev_internal:
+  stage: build
   script:
     - npm install
     - npm run build
-    - echo "APP_API_URL=$TEST_APP_API_URL">.env
-    - pm2 stop serve
-    - pm2 start scripts/serve.js
+  only:
+    - v2
   environment:
-    name: IIU Esquire Test
-    url: https://esquiretest.phiresearchlab.org
-  when: manual
-  only: 
-    - test
-  tags:
-    - iiu
+    name: Internal PHLIP2 Dev
+    url: http://lvscent7064.lab.local
 
-deploy_test_esquire_frontend:
-  stage: push
+build_frontend_dev_azure:
+  stage: build
   script:
     - npm install
     - npm run build
-    - echo "APP_API_URL=$TEST_APP_API_URL">.env
-    - pm2 stop serve
-    - pm2 start scripts/serve.js
-  environment:
-    name: Azure Test
-    url: https://phliptest.phiresearchlab.org
+  only:
+    - v2
   when: manual
-  # only: 
-  #   - test
-  tags:
-    - azure-esquire
+  environment:
+    name: Azure PHLIP2 Dev
+    url: https://phlip2dev.phiresearchlab.org
 
-deploy_stage_esquire_frontend:
-  stage: push
-  script:
-    - npm install
-    - npm run build
-    - echo "APP_API_URL=$TEST_APP_API_URL">.env
-    - pm2 stop serve
-    - pm2 start scripts/serve.js
-  environment:
-    name: Azure Stage
-    url: https://phlipstage.phiresearchlab.org
-  when: manual
-  only: 
-    - stage
-  tags:
-    - azure-esquire
+#build_esquire_frontend:
+#  stage: build
+#  tags:
+#    - iiu
+#  script:
+#    - npm -version
+#    - node -v
+#    - yarn build:image:dev
+#
+#test_esquire_frontend_image:
+#  stage: test
+#  tags:
+#    - iiu
+#  script:
+#    - docker-compose -f docker-compose.dev.yml run --user=988 app npm run test:local
+#    - docker-compose -f docker-compose.dev.yml down
+#
+#push_esquire_frontend_image:
+#  stage: push
+#  script:
+#    - yarn build:image:prod
+#    - curl -fsSL https://git.phiresearchlab.org/snippets/10/raw | bash
+#  environment:
+#    name: DTR Frontend
+#    url: https://dtr.phiresearchlab.org/repositories/iiu/esquire-frontend/tags
+#  tags:
+#    - iiu
+
+#deploy_local_test_esquire_frontend:
+#  stage: push
+#  script:
+#    - npm install
+#    - npm run build
+#    - echo "APP_API_URL=$TEST_APP_API_URL">.env
+#    - pm2 stop serve
+#    - pm2 start scripts/serve.js
+#  environment:
+#    name: IIU Esquire Test
+#    url: https://esquiretest.phiresearchlab.org
+#  when: manual
+#  only:
+#    - test
+#  tags:
+#    - iiu
+#
+#deploy_test_esquire_frontend:
+#  stage: push
+#  script:
+#    - npm install
+#    - npm run build
+#    - echo "APP_API_URL=$TEST_APP_API_URL">.env
+#    - pm2 stop serve
+#    - pm2 start scripts/serve.js
+#  environment:
+#    name: Azure Test
+#    url: https://phliptest.phiresearchlab.org
+#  when: manual
+#  # only:
+#  #   - test
+#  tags:
+#    - azure-esquire
+#
+#deploy_stage_esquire_frontend:
+#  stage: push
+#  script:
+#    - npm install
+#    - npm run build
+#    - echo "APP_API_URL=$TEST_APP_API_URL">.env
+#    - pm2 stop serve
+#    - pm2 start scripts/serve.js
+#  environment:
+#    name: Azure Stage
+#    url: https://phlipstage.phiresearchlab.org
+#  when: manual
+#  only:
+#    - stage
+#  tags:
+#   - azure-esquire
