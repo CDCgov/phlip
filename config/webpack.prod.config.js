@@ -6,6 +6,7 @@ const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const paths = require('./paths')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = env => {
   return {
@@ -14,14 +15,6 @@ module.exports = env => {
     entry: {
       app: paths.appIndexJs,
       arrayIncludes: `${paths.config}/array-includes.polyfill.js`
-    },
-    optimization: {
-      minimizer: [
-        new UglifyJsPlugin({
-          extractComments: false,
-          sourceMap: true
-        })
-      ]
     },
     output: {
       path: paths.appBuild,
@@ -41,7 +34,7 @@ module.exports = env => {
         {
           test: /\.js$/,
           enforce: 'pre',
-          loader: 'eslint-loader',
+          loader: 'babel-loader',
           include: paths.appSrc
         },
         {
@@ -191,7 +184,9 @@ module.exports = env => {
 
       new MiniCssExtractPlugin({
         filename: 'css/[name].css'
-      })
+      }),
+
+      new BundleAnalyzerPlugin()
     ]
   }
 }
