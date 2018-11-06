@@ -15,6 +15,7 @@ test_frontend:
   only:
     - v2
   script:
+    - npm install
     - npm run test:local
   tags:
     - phlip2-fe
