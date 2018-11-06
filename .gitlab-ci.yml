@@ -16,6 +16,8 @@ test_frontend:
     - v2
   script:
     - npm run test:local
+  tags:
+    - phlip2-fe
   environment:
     name: Internal PHLIP2 Dev
     url: http://lvscent7064.lab.local
@@ -27,6 +29,8 @@ build_frontend_dev_internal:
     - npm run build
   only:
     - v2
+  tags:
+    - phlip2-fe
   environment:
     name: Internal PHLIP2 Dev
     url: http://lvscent7064.lab.local
@@ -38,6 +42,8 @@ build_frontend_dev_azure:
     - npm run build
   only:
     - v2
+  tags:
+    - phlip2-fe
   when: manual
   environment:
     name: Azure PHLIP2 Dev
