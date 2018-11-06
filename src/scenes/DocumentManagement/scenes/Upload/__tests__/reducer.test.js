@@ -529,7 +529,6 @@ describe('Document Management - Upload reducer tests', () => {
       })
 
       const updatedState = reducer(currentState, action)
-      expect(updatedState.projectSuggestions).toEqual([])
       expect(updatedState.projectSearchValue).toEqual('new project search value')
     })
 
@@ -548,7 +547,6 @@ describe('Document Management - Upload reducer tests', () => {
       })
 
       const updatedState = reducer(currentState, action)
-      expect(updatedState.jurisdictionSuggestions).toEqual([])
       expect(updatedState.jurisdictionSearchValue).toEqual('new jurisdiction search value')
     })
   })

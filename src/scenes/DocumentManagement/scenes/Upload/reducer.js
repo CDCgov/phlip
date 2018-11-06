@@ -204,8 +204,7 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
     case types.ON_SEARCH_VALUE_CHANGE:
       return {
         ...state,
-        [`${action.searchType}SearchValue`]: action.value,
-        [`${action.searchType}Suggestions`]: []
+        [`${action.searchType}SearchValue`]: action.value
       }
 
     case types.ON_PROJECT_SUGGESTION_SELECTED:
