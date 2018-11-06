@@ -7,15 +7,14 @@ import { commonHelpers } from 'utils'
  * Adds a userID to every action so as to not repeat the code in every logic block
  */
 const updateUserIdLogic = createLogic({
-  type: [types.ADD_QUESTION_REQUEST, types.UPDATE_QUESTION_REQUEST, types.ADD_CHILD_QUESTION_REQUEST],
+  type: [types.UPDATE_QUESTION_REQUEST],
   transform({ getState, action }, next) {
     next({
       ...action,
       question: {
         ...action.question,
         userId: getState().data.user.currentUser.id,
-        possibleAnswers: action.question.questionType !== questionTypes.TEXT_FIELD &&
-        action.question.possibleAnswers.map(answer => {
+        possibleAnswers: action.question.possibleAnswers.map(answer => {
           const { isNew, ...answerOptions } = answer
           return answerOptions
         })
@@ -34,6 +33,7 @@ const updateOutlineLogic = createLogic({
       ...action,
       question: {
         ...action.question,
+        userId: getState().data.user.currentUser.id,
         outline: getState().scenes.codingScheme.outline,
         parentId: action.parentId,
         possibleAnswers: action.question.questionType === questionTypes.TEXT_FIELD

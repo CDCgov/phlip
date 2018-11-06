@@ -6,10 +6,8 @@ import { MuiThemeProvider } from 'material-ui/styles'
 import Table, { TableBody } from 'material-ui/Table'
 import theme from 'services/theme'
 
-let date = new Date('10/11/2017')
-
 const props = {
-  project: { id: 1, name: 'Project 1', dateLastEdited: date, lastEditedBy: 'Kristin' },
+  project: { id: 1, name: 'Project 1', dateLastEdited: '10/10/2012', lastEditedBy: 'Kristin' },
   bookmarked: false,
   role: 'Coordinator',
   actions: {
