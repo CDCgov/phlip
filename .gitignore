@@ -8,3 +8,4 @@ npm-debug.log
 tests.xml
 .env
 docs
+.env.prod

@@ -69,7 +69,7 @@ exports[`DatePicker component should render correctly 1`] = `
         "setYear": [Function],
       }
     }
-    value={2017-10-11T00:00:00.000Z}
+    value="10/11/2017"
   />
   <withStyles(FormHelperText) />
 </withStyles(FormControl)>
