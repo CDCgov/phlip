@@ -46,7 +46,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
           "state": Object {
             "modal": true,
             "projectDefined": Object {
-              "dateLastEdited": 2017-10-11T04:00:00.000Z,
+              "dateLastEdited": "10/10/2012",
               "id": 1,
               "lastEditedBy": "Kristin",
               "name": "Project 1",
@@ -70,7 +70,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     }
   >
-    10/11/2017, 12:00 AM
+    10/9/2012, 8:00 PM
   </TableCell>
   <TableCell
     id="1-lastEditedBy"

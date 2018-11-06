@@ -7,10 +7,8 @@ import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import theme from 'services/theme'
 
-let date = new Date('10/11/2017')
-
 const props = {
-  project: { id: 1, name: 'Project 1', dateLastEdited: date, lastEditedBy: 'Kristin' },
+  project: { id: 1, name: 'Project 1', dateLastEdited: '10/10/2012', lastEditedBy: 'Kristin' },
   bookmarked: false,
   role: 'Coordinator',
   actions: {
