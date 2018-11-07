@@ -186,7 +186,10 @@ module.exports = env => {
         filename: 'css/[name].css'
       }),
 
-      new BundleAnalyzerPlugin()
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'disabled',
+        generateStatsFile: true
+      })
     ]
   }
 }
