@@ -6,29 +6,59 @@ variables:
   BRANCH: $CI_COMMIT_REF_NAME
 
 stages:
+  - init
   - test
   - build
-  - push
+  - deploy
+
+init_deps:
+  stage: init
+  script:
+    - rm -rf node_modules
+    - npm install
 
 test_frontend:
   stage: test
   only:
     - v2
   script:
-    - npm install
     - npm run test:local
+  tags:
+    - phlip2-fe
+    - azure-phlipdev-fe
+
+deploy_frontend_dev_internal:
+  stage: deploy
+  script:
+    - cp -r ./dist ~iiu-deploy/esquire-frontend/
+    - cp -r ./scripts ~iiu-deploy/esquire-frontend/
+    - cp ./package.json ~iiu-deploy/esquire-frontend
+  only:
+    - v2
   tags:
     - phlip2-fe
   environment:
     name: Internal PHLIP2 Dev
     url: http://lvscent7064.lab.local
 
+deploy_frontend_dev_azure:
+  stage: deploy
+  script:
+    - cp -r ./dist ~iiu-deploy/esquire-frontend/
+    - cp -r ./scripts ~iiu-deploy/esquire-frontend/
+    - cp ./package.json ~iiu-deploy/esquire-frontend
+  only:
+    - v2
+  when: manual
+  tags:
+    - azure-phlipdev-fe
+  environment:
+    name: Azure PHLIP2 Dev
+    url: https://phlip2dev.phiresearchlab.org
+
 build_frontend_dev_internal:
   stage: build
   script:
-    - sudo su - iiu-deploy
-    - cd ~/esquire-frontend
-    - npm install
     - npm run build
   only:
     - v2
@@ -41,12 +71,11 @@ build_frontend_dev_internal:
 build_frontend_dev_azure:
   stage: build
   script:
-    - npm install
     - npm run build
   only:
     - v2
   tags:
-    - phlip2-fe
+    - azure-phlipdev-fe
   when: manual
   environment:
     name: Azure PHLIP2 Dev
