@@ -26,6 +26,8 @@ test_frontend:
 build_frontend_dev_internal:
   stage: build
   script:
+    - sudo su - iiu-deploy
+    - cd ~/esquire-frontend
     - npm install
     - npm run build
   only:

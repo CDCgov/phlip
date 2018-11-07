@@ -15,7 +15,7 @@ import MenuItem from '@material-ui/core/MenuItem/MenuItem'
  */
 const classes = theme => ({
   suggestionsContainerOpen: {
-    width: 400,
+    width: '100%',
     position: 'absolute',
     maxHeight: 500,
     overflow: 'auto',
@@ -38,7 +38,8 @@ const classes = theme => ({
     borderBottom: `1px dashed ${theme.palette.primary['600']}`
   },
   container: {
-    width: '100%'
+    width: '100%',
+    position: 'relative'
   }
 })
 
@@ -105,7 +106,7 @@ const renderSuggestion = (suggestion, { query, isHighlighted }) => {
   const parts = parse(suggestion.name, matches)
 
   return (
-    <MenuItem selected={isHighlighted} component="div">
+    <MenuItem selected={isHighlighted} component="div" style={{ height: 'auto', whiteSpace: 'unset' }}>
       <div>
         {parts.map((part, index) => {
           return part.highlight ? (
