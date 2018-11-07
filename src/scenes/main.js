@@ -17,6 +17,7 @@ import AddEditProject from './Home/scenes/AddEditProject'
 import AddEditJurisdictions from './Home/scenes/AddEditJurisdictions'
 import JurisdictionForm from './Home/scenes/AddEditJurisdictions/components/JurisdictionForm'
 import ApiErrorAlert from 'components/ApiErrorAlert'
+import DocumentView from './DocumentView'
 import actions from './actions'
 
 /** Paths that aren't accessible by users with 'Coder' role */
@@ -206,6 +207,7 @@ class Main extends Component {
         />
         <Grid container type="row" flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
           <Switch location={currentLocation}>
+            <Route path="/docs/:id/view" component={DocumentView} />
             <Route path="/docs" component={DocumentManagement} />
             <Route path="/project/:id/code" component={Coding} />
             <Route path="/project/:id/validate" component={Validation} />

@@ -58,7 +58,6 @@ export class DocumentManagement extends Component {
     return (
       <Grid container flex padding="20px 30px">
         <PageHeader
-          showButton={true}
           pageTitle="Document Management"
           protocolButton={false}
           projectName=""

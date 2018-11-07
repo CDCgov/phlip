@@ -5,6 +5,7 @@ import TableCell from '@material-ui/core/TableCell'
 import CheckboxLabel from 'components/CheckboxLabel'
 import moment from 'moment'
 import { connect } from 'react-redux'
+import TextLink from 'components/TextLink'
 
 /**
  * Represents one row in the document management table
@@ -15,10 +16,14 @@ export const DocListTableRow = props => {
 
   return (
     <TableRow>
-      <TableCell padding="checkbox" style={{ paddingLeft: 24, paddingRight: 0, width: '1%'}}>
+      <TableCell padding="checkbox" style={{ paddingLeft: 24, paddingRight: 0, width: '1%' }}>
         <CheckboxLabel input={{ value: isChecked, onChange: onSelectFile }} />
       </TableCell>
-      <TableCell padding="checkbox">{doc.name}</TableCell>
+      <TableCell padding="checkbox">
+        <TextLink to={{ pathname: `/docs/${doc._id}/view`, state: { document: { ...doc } } }}>
+          {doc.name}
+        </TextLink>
+      </TableCell>
       <TableCell padding="checkbox">{doc.uploadedBy.firstName} {doc.uploadedBy.lastName}</TableCell>
       <TableCell padding="checkbox">{date}</TableCell>
     </TableRow>

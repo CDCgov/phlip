@@ -9,6 +9,7 @@ import docManage from './DocumentManagement/reducer'
 import coding, { codingHandlers } from './Coding/reducer'
 import validation, { validationHandlers } from './Validation/reducer'
 import protocol from './Protocol/reducer'
+import docView from './DocumentView/reducer'
 import { createCodingValidationReducer } from 'components/CodingValidation/reducer'
 import * as types from 'data/user/actionTypes'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
@@ -87,7 +88,8 @@ const scenesReducer = combineReducers({
   validation: createCodingValidationReducer(validation, validationHandlers, 'VALIDATION'),
   codingScheme,
   login,
-  protocol
+  protocol,
+  docView
 })
 
 export default scenesReducer

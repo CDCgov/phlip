@@ -122,4 +122,8 @@ PageHeader.propTypes = {
   theme: PropTypes.object
 }
 
+PageHeader.defaultProps = {
+  otherButton: {}
+}
+
 export default withRouter(withTheme()(PageHeader))
