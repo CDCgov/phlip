@@ -6,26 +6,19 @@ variables:
   BRANCH: $CI_COMMIT_REF_NAME
 
 stages:
-  - init
   - test
   - build
   - deploy
-
-init_deps:
-  stage: init
-  script:
-    - rm -rf node_modules
-    - npm install
 
 test_frontend:
   stage: test
   only:
     - v2
   script:
+    - npm install
     - npm run test:local
   tags:
     - phlip2-fe
-    - azure-phlipdev-fe
 
 deploy_frontend_dev_internal:
   stage: deploy
@@ -59,6 +52,7 @@ deploy_frontend_dev_azure:
 build_frontend_dev_internal:
   stage: build
   script:
+    - npm install
     - npm run build
   only:
     - v2
@@ -71,6 +65,7 @@ build_frontend_dev_internal:
 build_frontend_dev_azure:
   stage: build
   script:
+    - npm install
     - npm run build
   only:
     - v2
