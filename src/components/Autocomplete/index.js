@@ -92,7 +92,7 @@ const getSuggestionValue = suggestion => suggestion
  * @param value
  * @returns {boolean}
  */
-const shouldRenderSuggestions = value => value.trim().length >= 3
+const shouldRenderSuggestions = value => value !== undefined ? value.trim().length >= 3 : true
 
 /**
  * Default function for rendering suggestions

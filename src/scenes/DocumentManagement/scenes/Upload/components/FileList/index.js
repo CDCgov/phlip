@@ -112,7 +112,7 @@ export class FileList extends Component {
   onAutocompleteChange = (index, type, currentPropValue) => (e, { newValue }) => {
     this.onDocPropertyChange(index, type, {
       ...currentPropValue,
-      searchValue: newValue
+      searchValue: e.target.value
     })
   }
 
@@ -152,7 +152,6 @@ export class FileList extends Component {
         <Grid columnSizing="1fr" autoRowSizing="60px" style={{ flex: 1 }}>
           {selectedDocs.map((doc, i) => {
             const isDuplicate = duplicateFiles.find(file => file.name === doc.name.value) !== undefined
-            console.log(isDuplicate)
             const pieces = doc.name.value.split('.')
             const extension = pieces[pieces.length - 1]
             const iconName = getIconType(extension)
