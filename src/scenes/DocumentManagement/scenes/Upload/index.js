@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Divider from '@material-ui/core/Divider/Divider'
-import actions from './actions'
+import actions, { projectAutocomplete, jurisdictionAutocomplete } from './actions'
 import { Alert, withFormAlert, CircularLoader, Grid } from 'components'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import FileUpload from 'components/FileUpload'
@@ -160,7 +160,8 @@ export class Upload extends Component {
    */
   goBack = () => {
     this.props.history.push('/docs')
-    this.props.actions.clearSelectedFiles()
+    this.props.actions.projectAutocomplete.clearAll()
+    this.props.actions.jurisdictionAutocomplete.clearAll()
     this.props.actions.closeAlert()
   }
 
@@ -248,26 +249,29 @@ export class Upload extends Component {
    */
   handleGetSuggestions = (suggestionType, { value: searchString }, index = null) => {
     suggestionType === 'project'
-      ? this.props.actions.searchProjectListRequest(searchString)
-      : this.props.actions.searchJurisdictionListRequest(searchString, index)
+      ? this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString)
+      : this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, index)
   }
 
   /**
-   * When a user has chosen a suggestion from the autocomplete project list
-   * @param event
-   * @param suggestionValue
+   * When a user has chosen a suggestion from the autocomplete project or jurisdiction list
    */
-  handleProjectSuggestionSelected = (event, { suggestionValue }) => {
-    this.props.actions.onProjectSuggestionSelected(suggestionValue)
+  handleSuggestionSelected = (suggestionType) => (event, { suggestionValue }) => {
+    suggestionType === 'project'
+      ? this.props.actions.projectAutocomplete.onSuggestionSelected(suggestionValue)
+      : this.props.actions.jurisdictionAutocomplete.onSuggestionSelected(suggestionValue)
   }
 
-  /**
-   * When a user has chosen a suggestion from the autocomplete jurisdiction list
-   * @param event
-   * @param suggestionValue
-   */
-  handleJurisdictionSuggestionSelected = (event, { suggestionValue }) => {
-    this.props.actions.onJurisdictionSuggestionSelected(suggestionValue)
+  handleSearchValueChange = (suggestionType, value) => {
+    suggestionType === 'jurisdiction'
+      ? this.props.actions.jurisdictionAutocomplete.updateSearchValue(value)
+      : this.props.actions.projectAutocomplete.updateSearchValue(value)
+  }
+
+  handleClearSuggestions = suggestionType => {
+    suggestionType === 'jurisdiction'
+      ? this.props.actions.jurisdictionAutocomplete.clearSuggestions()
+      : this.props.actions.projectAutocomplete.clearSuggestions()
   }
 
   /**
@@ -348,13 +352,12 @@ export class Upload extends Component {
             <ProJurSearch
               jurisdictionSuggestions={this.props.jurisdictionSuggestions}
               projectSuggestions={this.props.projectSuggestions}
-              onClearSuggestions={this.props.actions.clearSuggestions}
+              onClearSuggestions={this.handleClearSuggestions}
               onGetSuggestions={this.handleGetSuggestions}
+              onSearchValueChange={this.handleSearchValueChange}
+              onSuggestionSelected={this.handleSuggestionSelected}
               jurisdictionSearchValue={this.props.jurisdictionSearchValue}
               projectSearchValue={this.props.projectSearchValue}
-              onSearchValueChange={this.props.actions.onSearchValueChange}
-              onJurisdictionSelected={this.handleJurisdictionSuggestionSelected}
-              onProjectSelected={this.handleProjectSuggestionSelected}
               showProjectError={this.props.noProjectError === true}
               showJurSearch={this.props.infoSheetSelected === false}
             />}
@@ -403,28 +406,27 @@ export class Upload extends Component {
 const mapStateToProps = state => {
   const uploadState = state.scenes.docManage.upload
   return {
-    selectedDocs: uploadState.selectedDocs,
-    requestError: uploadState.requestError,
-    duplicateFiles: uploadState.duplicateFiles,
-    uploading: uploadState.uploading,
-    verifying: uploadState.verifying,
-    alertText: uploadState.alertText,
-    alertOpen: uploadState.alertOpen,
-    alertTitle: uploadState.alertTitle,
-    goBack: uploadState.goBack,
-    projectSuggestions: uploadState.projectSuggestions,
-    jurisdictionSuggestions: uploadState.jurisdictionSuggestions,
-    projectSearchValue: uploadState.projectSearchValue,
-    jurisdictionSearchValue: uploadState.jurisdictionSearchValue,
-    selectedJurisdiction: uploadState.selectedJurisdiction,
-    selectedProject: uploadState.selectedProject,
-    noProjectError: uploadState.noProjectError,
+    selectedDocs: uploadState.list.selectedDocs,
+    requestError: uploadState.list.requestError,
+    uploading: uploadState.list.uploading,
+    verifying: uploadState.list.verifying,
+    alertText: uploadState.list.alertText,
+    alertOpen: uploadState.list.alertOpen,
+    alertTitle: uploadState.list.alertTitle,
+    goBack: uploadState.list.goBack,
+    projectSuggestions: uploadState.projectSuggestions.suggestions,
+    jurisdictionSuggestions: uploadState.jurisdictionSuggestions.suggestions,
+    projectSearchValue: uploadState.projectSuggestions.searchValue,
+    jurisdictionSearchValue: uploadState.jurisdictionSuggestions.searchValue,
+    selectedJurisdiction: uploadState.jurisdictionSuggestions.selectedSuggestion,
+    selectedProject: uploadState.projectSuggestions.selectedSuggestion,
+    noProjectError: uploadState.list.noProjectError,
     isReduxForm: false,
     user: state.data.user.currentUser,
-    infoRequestInProgress: uploadState.infoRequestInProgress,
-    infoSheet: uploadState.infoSheet,
-    infoSheetSelected: uploadState.infoSheetSelected,
-    duplicateFiles: uploadState.duplicateFiles
+    infoRequestInProgress: uploadState.list.infoRequestInProgress,
+    infoSheet: uploadState.list.infoSheet,
+    infoSheetSelected: uploadState.list.infoSheetSelected,
+    duplicateFiles: uploadState.list.duplicateFiles
   }
 }
 
@@ -432,7 +434,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   actions: {
     ...bindActionCreators(actions, dispatch),
-    resetFormError: bindActionCreators(actions.closeAlert, dispatch)
+    resetFormError: bindActionCreators(actions.closeAlert, dispatch),
+    projectAutocomplete: bindActionCreators(projectAutocomplete, dispatch),
+    jurisdictionAutocomplete: bindActionCreators(jurisdictionAutocomplete, dispatch)
   }
 })
 

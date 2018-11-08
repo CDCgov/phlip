@@ -13,8 +13,7 @@ const ProJurSearch = props => {
     onClearSuggestions,
     onGetSuggestions,
     onSearchValueChange,
-    onJurisdictionSelected,
-    onProjectSelected,
+    onSuggestionSelected,
     showProjectError,
     showJurSearch
   } = props
@@ -40,7 +39,7 @@ const ProJurSearch = props => {
             fullWidth: true,
             error: showProjectError
           }}
-          handleSuggestionSelected={onProjectSelected}
+          handleSuggestionSelected={onSuggestionSelected('project')}
         />
       </FlexGrid>
       {showJurSearch && <FlexGrid container type="row" align="flex-end" style={{ marginLeft: 20, minWidth: 250 }}>
@@ -54,7 +53,7 @@ const ProJurSearch = props => {
             onChange: (e) => onSearchValueChange('jurisdiction', e.target.value || ''),
             id: 'jurisdiction-name'
           }}
-          handleSuggestionSelected={onJurisdictionSelected}
+          handleSuggestionSelected={onSuggestionSelected('jurisdiction')}
           InputProps={{
             label: 'Assign to Jurisdiction',
             placeholder: 'Search jurisdictions',

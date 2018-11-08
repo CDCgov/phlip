@@ -1,10 +1,10 @@
 /**
  * This collects all of the logic through the application into one array that is passed to redux-logic middleware.
  */
-
 import { createLogic } from 'redux-logic'
 import * as types from 'data/user/actionTypes'
 import scenesLogic from 'scenes/logic'
+import dataLogic from 'data/logic'
 import { logout } from 'services/authToken'
 
 /**
@@ -23,6 +23,7 @@ const logoutLogic = createLogic({
 })
 
 export default [
+  ...dataLogic,
   ...scenesLogic,
   logoutLogic
 ]

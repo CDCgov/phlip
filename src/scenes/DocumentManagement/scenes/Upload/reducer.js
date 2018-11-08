@@ -1,5 +1,7 @@
 import { types } from './actions'
 import { updateItemAtIndex } from 'utils/normalize'
+import { combineReducers } from 'redux'
+import { createAutocompleteReducer } from 'data/autocomplete/reducer'
 
 export const INITIAL_STATE = {
   selectedDocs: [],
@@ -165,19 +167,7 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         duplicateFiles: duplicates
       }
 
-    case types.SEARCH_PROJECT_LIST_SUCCESS:
-      return {
-        ...state,
-        projectSuggestions: action.payload
-      }
-
-    case types.SEARCH_JURISDICTION_LIST_SUCCESS:
-      return {
-        ...state,
-        jurisdictionSuggestions: action.payload
-      }
-
-    case types.ROW_SEARCH_JURISDICTION_SUCCESS:
+    case types.SEARCH_ROW_SUGGESTIONS_SUCCESS_JURISDICTION:
       selectedDoc = { ...state.selectedDocs[action.payload.index] }
       selectedDoc.jurisdictions.value.suggestions = action.payload.suggestions
 
@@ -195,33 +185,10 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         selectedDocs: updateItemAtIndex([...state.selectedDocs], action.index, selectedDoc)
       }
 
-    case types.CLEAR_SUGGESTIONS:
+    case 'RESET_NO_PROJECT_ERROR':
       return {
         ...state,
-        [`${action.suggestionType}Suggestions`]: []
-      }
-
-    case types.ON_SEARCH_VALUE_CHANGE:
-      return {
-        ...state,
-        [`${action.searchType}SearchValue`]: action.value
-      }
-
-    case types.ON_PROJECT_SUGGESTION_SELECTED:
-      return {
-        ...state,
-        projectSearchValue: action.project.name,
-        selectedProject: action.project,
-        projectSuggestions: [],
         noProjectError: false
-      }
-
-    case types.ON_JURISDICTION_SUGGESTION_SELECTED:
-      return {
-        ...state,
-        jurisdictionSearchValue: action.jurisdiction.name,
-        selectedJurisdiction: action.jurisdiction,
-        jurisdictionSuggestions: []
       }
 
     case types.REJECT_NO_PROJECT_SELECTED:
@@ -258,27 +225,13 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
     case 'FLUSH_STATE':
       return INITIAL_STATE
 
-    /*case types.ADD_TAG:
-  selectedDoc = { ...state.selectedDocs[action.index] }
-  selectedDoc.tags = [...selectedDoc.tags, action.tag]
-
-  return {
-    ...state,
-    selectedDocs: updateItemAtIndex([...state.selectedDocs], action.index, selectedDoc)
-  }
-
-case types.REMOVE_TAG:
-  selectedDoc = { ...state.selectedDocs[action.index] }
-  selectedDoc.tags.splice(action.tagIndex, 1)
-
-  return {
-    ...state,
-    selectedDocs: updateItemAtIndex([...state.selectedDocs], action.index, selectedDoc)
-  }*/
-
     default:
       return state
   }
 }
 
-export default uploadReducer
+export default combineReducers({
+  list: uploadReducer,
+  projectSuggestions: createAutocompleteReducer('PROJECT'),
+  jurisdictionSuggestions: createAutocompleteReducer('JURISDICTION')
+})

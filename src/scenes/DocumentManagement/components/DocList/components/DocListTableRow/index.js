@@ -11,7 +11,7 @@ import TextLink from 'components/TextLink'
  * Represents one row in the document management table
  */
 export const DocListTableRow = props => {
-  const { doc, onSelectFile, isChecked } = props
+  const { doc, onSelectFile, isChecked, projectList, jurisdictionList } = props
   const date = moment.utc(doc.uploadedDate).local().format('M/D/YYYY, h:mm A')
 
   return (
@@ -26,6 +26,8 @@ export const DocListTableRow = props => {
       </TableCell>
       <TableCell padding="checkbox">{doc.uploadedBy.firstName} {doc.uploadedBy.lastName}</TableCell>
       <TableCell padding="checkbox">{date}</TableCell>
+      <TableCell padding="checkbox">{projectList.join(', ')}</TableCell>
+      <TableCell padding="checkbox">{jurisdictionList.join(', ')}</TableCell>
     </TableRow>
   )
 }
@@ -55,8 +57,15 @@ DocListTableRow.propTypes = {
 // istanbul ignore next
 const mapStateToProps = (state, ownProps) => {
   // istanbul ignore next
+  const doc = state.scenes.docManage.main.documents.byId[ownProps.id]
   return {
-    doc: state.scenes.docManage.main.documents.byId[ownProps.id],
+    doc,
+    projectList: doc.projects.map(proj => {
+      return state.data.projects.byId[proj] === undefined ? '' : state.data.projects.byId[proj].name
+    }),
+    jurisdictionList: doc.jurisdictions.map(jur => {
+      return state.data.jurisdictions.byId[jur] === undefined ? '' : state.data.jurisdictions.byId[jur].name
+    }),
     isChecked: state.scenes.docManage.main.documents.checked.includes(ownProps.id)
   }
 }

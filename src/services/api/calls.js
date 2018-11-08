@@ -26,6 +26,11 @@ let apiCalls = [
     path: () => '/projects'
   },
   {
+    name: 'getProject',
+    method: 'get',
+    path: ({ projectId }) => `/projects/${projectId}`
+  },
+  {
     name: 'addProject',
     method: 'post',
     path: () => '/projects'
@@ -64,6 +69,11 @@ let apiCalls = [
     name: 'deleteUserImage',
     method: 'patch',
     path: ({ userId }) => `/users/${userId}`
+  },
+  {
+    name: 'getJurisdiction',
+    method: 'get',
+    path: ({ jurisdictionId }) => `/jurisdictions/${jurisdictionId}`
   },
   {
     name: 'searchJurisdictionList',

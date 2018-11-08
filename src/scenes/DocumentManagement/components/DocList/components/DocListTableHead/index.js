@@ -14,12 +14,13 @@ export const DocListTableHead = props => {
     {
       key: 'select-all',
       label: <CheckboxLabel input={{ value: allSelected, onChange: onSelectAll }} />,
-      style: { paddingLeft: 24, paddingRight: 0 },
-      width: '1%'
+      style: { paddingLeft: 24, paddingRight: 0 }
     },
     { key: 'file-name', label: 'File Name', padding: 'checkbox' },
     { key: 'uploaded-by', label: 'Uploaded By', padding: 'checkbox' },
-    { key: 'uploaded-data', label: 'Uploaded Date', padding: 'checkbox' }
+    { key: 'uploaded-data', label: 'Uploaded Date', padding: 'checkbox' },
+    { key: 'doc-projects', label: 'Assigned to projects', padding: 'checkbox' },
+    { key: 'doc-jurisdictions', label: 'Assigned to jurisdictions', padding: 'checkbox' }
   ]
 
   return (

@@ -1,5 +1,8 @@
 import { createLogic } from 'redux-logic'
 import { types } from './actions'
+import { types as autocompleteTypes } from 'data/autocomplete/actions'
+import { types as projectTypes } from 'data/projects/actions'
+import { types as jurisdictionTypes } from 'data/jurisdictions/actions'
 
 const mergeInfoWithDocs = (info, docs, api) => {
   return new Promise(async (resolve, reject) => {
@@ -50,7 +53,7 @@ const mergeInfoWithDocs = (info, docs, api) => {
 const extractInfoLogic = createLogic({
   type: types.EXTRACT_INFO_REQUEST,
   async process({ action, getState, docApi, api }, dispatch, done) {
-    const state = getState().scenes.docManage.upload
+    const state = getState().scenes.docManage.upload.list
     const docs = state.selectedDocs
     try {
       const info = await docApi.extractInfo(action.infoSheetFormData)
@@ -80,7 +83,7 @@ const mergeInfoWithDocsLogic = createLogic({
       })
       return d
     })
-    const merged = await mergeInfoWithDocs(getState().scenes.docManage.upload.extractedInfo, docs, api)
+    const merged = await mergeInfoWithDocs(getState().scenes.docManage.upload.list.extractedInfo, docs, api)
     next({ ...action, payload: merged })
   }
 })
@@ -92,18 +95,28 @@ const uploadRequestLogic = createLogic({
   type: types.UPLOAD_DOCUMENTS_REQUEST,
   validate({ getState, action }, allow, reject) {
     const state = getState().scenes.docManage.upload
-    if (Object.keys(state.selectedProject).length === 0) {
+    const selectedProject = state.projectSuggestions.selectedSuggestion
+    const selectedJurisdiction = state.jurisdictionSuggestions.selectedSuggestion
+    let jurs = {}
+
+    if (Object.keys(selectedProject).length === 0) {
       reject({ type: types.REJECT_NO_PROJECT_SELECTED, error: 'You must associate these documents with a project.' })
-    } else if (!state.selectedProject.hasOwnProperty('id')) {
+    } else if (!selectedProject.hasOwnProperty('id')) {
       reject({
         type: types.REJECT_NO_PROJECT_SELECTED,
         error: 'You must select a valid project from the autocomplete list.'
       })
-    } else if (Object.keys(state.selectedJurisdiction).length === 0) {
-      const noJurs = state.selectedDocs.filter(doc => doc.jurisdictions.value.name.length === 0)
-      const noJurIds = state.selectedDocs.filter(doc => !doc.jurisdictions.value.hasOwnProperty('id') || !doc.jurisdictions.value.id)
+    } else if (Object.keys(selectedJurisdiction).length === 0) {
+      const noJurs = state.list.selectedDocs.filter(doc => {
+        if (!jurs.hasOwnProperty(doc.jurisdictions.value.id)) {
+          jurs[doc.jurisdictions.value.id] = doc.jurisdictions.value
+        }
+        return doc.jurisdictions.value.name.length === 0
+      })
+      const noJurIds = state.list.selectedDocs.filter(doc => !doc.jurisdictions.value.hasOwnProperty('id') ||
+        !doc.jurisdictions.value.id)
       if (noJurs.length === 0 && noJurIds.length === 0) {
-        allow(action)
+        allow({ ...action, jurisdictions: [jurs] })
       } else {
         reject({
           type: types.REJECT_EMPTY_JURISDICTIONS,
@@ -114,36 +127,35 @@ const uploadRequestLogic = createLogic({
         })
       }
     } else {
-      allow(action)
+      allow({ ...action, jurisdictions: [selectedJurisdiction] })
     }
   },
   async process({ docApi, action, getState }, dispatch, done) {
+    const state = getState().scenes.docManage.upload
+    let anyDuplicates = false
     try {
-      if (getState().scenes.docManage.upload.hasVerified === false) {
-        const anyDuplicates = await docApi.verifyUpload(action.selectedDocs)
+      if (getState().scenes.docManage.upload.list.hasVerified === false) {
+        anyDuplicates = await docApi.verifyUpload(action.selectedDocs)
         if (anyDuplicates.length > 0) {
           dispatch({
             type: types.VERIFY_RETURN_DUPLICATE_FILES,
             payload: anyDuplicates
           })
-        } else {
-          const docs = await docApi.upload(action.selectedDocsFormData)
-          docs.files.map(doc => {
-            const { content, ...otherDocProps } = doc
-            return otherDocProps
-          })
-          dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: docs.files } })
+          done()
         }
-        done()
-      } else {
-        const docs = await docApi.upload(action.selectedDocsFormData)
-        docs.files.map(doc => {
-          const { content, ...otherDocProps } = doc
-          return otherDocProps
-        })
-        dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: docs.files } })
-        done()
       }
+      const docs = await docApi.upload(action.selectedDocsFormData)
+      docs.files.map(doc => {
+        const { content, ...otherDocProps } = doc
+        return otherDocProps
+      })
+
+      action.jurisdictions.forEach(jur => {
+        dispatch({ type: jurisdictionTypes.ADD_JURISDICTION, payload: jur })
+      })
+      dispatch({ type: projectTypes.ADD_PROJECT, payload: { ...state.projectSuggestions.selectedSuggestion } })
+      dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: docs.files } })
+      done()
     } catch (err) {
       dispatch({
         type: types.UPLOAD_DOCUMENTS_FAIL,
@@ -158,9 +170,9 @@ const uploadRequestLogic = createLogic({
  * Logic for handling searching of thr project list
  */
 const searchProjectListLogic = createLogic({
-  type: types.SEARCH_PROJECT_LIST_REQUEST,
+  type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
   validate({ getState, action }, allow, reject) {
-    const selectedProject = getState().scenes.docManage.upload.selectedProject
+    const selectedProject = getState().scenes.docManage.upload.projectSuggestions.selectedSuggestion
     if (Object.keys(selectedProject).length === 0) {
       allow(action)
     } else {
@@ -170,19 +182,6 @@ const searchProjectListLogic = createLogic({
         reject()
       }
     }
-  },
-  async process({ api, action }, dispatch, done) {
-    try {
-      let projects = await api.getProjects({}, {}, {})
-      const searchString = action.searchString.toLowerCase()
-      projects = projects.filter(project => {
-        return project.name.toLowerCase().startsWith(searchString)
-      })
-      dispatch({ type: types.SEARCH_PROJECT_LIST_SUCCESS, payload: projects })
-    } catch (err) {
-      dispatch({ type: types.SEARCH_PROJECT_LIST_FAIL })
-    }
-    done()
   }
 })
 
@@ -190,9 +189,9 @@ const searchProjectListLogic = createLogic({
  * Logic for handling searching of the jurisdiction list
  */
 const searchJurisdictionListLogic = createLogic({
-  type: types.SEARCH_JURISDICTION_LIST_REQUEST,
+  type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`,
   validate({ getState, action }, allow, reject) {
-    const selectedJurisdiction = getState().scenes.docManage.upload.selectedJurisdiction
+    const selectedJurisdiction = getState().scenes.docManage.upload.jurisdictionSuggestions.selectedSuggestion
     if (Object.keys(selectedJurisdiction).length === 0) {
       allow(action)
     } else {
@@ -202,26 +201,6 @@ const searchJurisdictionListLogic = createLogic({
         reject()
       }
     }
-  },
-  async process({ action, api }, dispatch, done) {
-    try {
-      const jurisdictions = await api.searchJurisdictionList({}, {
-        params: {
-          name: action.searchString
-        }
-      }, {})
-      if (action.index !== undefined && action.index !== null) {
-        dispatch({
-          type: types.ROW_SEARCH_JURISDICTION_SUCCESS,
-          payload: { suggestions: jurisdictions, index: action.index }
-        })
-      } else {
-        dispatch({ type: types.SEARCH_JURISDICTION_LIST_SUCCESS, payload: jurisdictions })
-      }
-    } catch (err) {
-      dispatch({ type: types.SEARCH_JURISDICTION_LIST_FAIL })
-    }
-    done()
   }
 })
 
