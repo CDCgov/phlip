@@ -196,7 +196,7 @@ export class FileList extends Component {
                         />
                       </div>)
                     : <IconButton onClick={this.toggleEditMode(i, 'jurisdictions')} color="primary" style={colStyle}>
-                      add
+                      create
                     </IconButton>
                   : <div style={colStyle}>{doc.jurisdictions.value.name}</div>
                 }
@@ -210,7 +210,7 @@ export class FileList extends Component {
                       onChange={e => this.onDocPropertyChange(i, 'citation', e.target.value)}
                     />
                     : <IconButton onClick={this.toggleEditMode(i, 'citation')} color="primary" style={colStyle}>
-                      add
+                      create
                     </IconButton>
                   : <div style={colStyle}>{doc.citation.value}</div>
                 }
@@ -228,7 +228,7 @@ export class FileList extends Component {
                       />
                     </div>
                     : <IconButton onClick={this.toggleEditMode(i, 'effectiveDate')} color="primary" style={colStyle}>
-                      add
+                      create
                     </IconButton>
                   : <div style={colStyle}>{convertToLocalDate(doc.effectiveDate.value.split('T')[0])}</div>
                 }
