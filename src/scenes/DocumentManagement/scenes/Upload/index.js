@@ -162,6 +162,7 @@ export class Upload extends Component {
     this.props.history.push('/docs')
     this.props.actions.projectAutocomplete.clearAll()
     this.props.actions.jurisdictionAutocomplete.clearAll()
+    this.props.actions.clearSelectedFiles()
     this.props.actions.closeAlert()
   }
 
