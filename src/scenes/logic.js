@@ -7,6 +7,7 @@ import validationLogic from './Validation/logic'
 import protocolLogic from './Protocol/logic'
 import codingValidationLogic from 'components/CodingValidation/logic'
 import docManageLogic from './DocumentManagement/logic'
+import docViewLogic from './DocumentView/logic'
 
 import { createLogic } from 'redux-logic'
 import { types } from './actions'
@@ -58,5 +59,6 @@ export default [
   ...codingLogic,
   ...validationLogic,
   ...protocolLogic,
-  ...docManageLogic
+  ...docManageLogic,
+  ...docViewLogic
 ]

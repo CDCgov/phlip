@@ -15,7 +15,7 @@ export class DocumentView extends Component {
 
   componentDidMount() {
     this.props.actions.initState(this.props.location.state.document)
-    // will call API to get document from Mongo using action creator
+    this.props.actions.getDocumentContentsRequest(this.props.location.state.document._id)
   }
 
   onGoBack = () => {
@@ -49,6 +49,7 @@ export class DocumentView extends Component {
 const mapStateToProps = state => {
   return {
     document: state.scenes.docView.document,
+    documentRequestInProgress: state.scenes.docView.documentRequestInProgress
   }
 }
 

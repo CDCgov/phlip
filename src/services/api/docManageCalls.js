@@ -20,6 +20,11 @@ const docManageCalls = [
     method: 'post',
     path: () => '/docs/upload/extractInfo',
     headers: () => ({ 'Content-Type': 'multipart/form-data' })
+  },
+  {
+    name: 'getDocumentContents',
+    method: 'get',
+    path: ({ docId }) => `/docs/${docId}/contents`
   }
 ]
 
