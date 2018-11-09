@@ -5,6 +5,7 @@ import PageHeader from 'components/PageHeader'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
+import DocumentContents from './components/DocumentContents'
 
 export class DocumentView extends Component {
   static propTypes = {}
@@ -31,12 +32,8 @@ export class DocumentView extends Component {
           protocolButton={false}
           projectName=""
         />
-        <FlexGrid container type="row">
-          <FlexGrid raised flex>
-            {/**
-             * this is where the pdf will go
-             */}
-          </FlexGrid>
+        <FlexGrid container type="row" style={{ height: '100%' }}>
+          <DocumentContents loading={this.props.documentRequestInProgress} />
           <FlexGrid container type="column">
           </FlexGrid>
         </FlexGrid>

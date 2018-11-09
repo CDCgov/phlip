@@ -1,7 +1,7 @@
 import { types } from './actions'
 
 const INITIAL_STATE = {
-  document: {},
+  document: { content: {} },
   documentRequestInProgress: false
 }
 
@@ -10,7 +10,10 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
     case types.INIT_STATE_WITH_DOC:
       return {
         ...state,
-        document: action.doc
+        document: {
+          ...action.doc,
+          content: {}
+        }
       }
 
     case types.GET_DOCUMENT_CONTENTS_REQUEST:
@@ -24,7 +27,7 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         ...state,
         document: {
           ...state.document,
-          content: action.payload.data
+          content: action.payload
         },
         documentRequestInProgress: false
       }

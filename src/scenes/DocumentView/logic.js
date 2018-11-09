@@ -5,7 +5,7 @@ const getDocumentContentsLogic = createLogic({
   type: types.GET_DOCUMENT_CONTENTS_REQUEST,
   async process({ getState, docApi, action }, dispatch, done) {
     try {
-      const content = await docApi.getDocumentContents({}, {}, { docId: action.id })
+      const { content } = await docApi.getDocumentContents({}, {}, { docId: action.id })
       dispatch({ type: types.GET_DOCUMENT_CONTENTS_SUCCESS, payload: content })
     } catch (err) {
       dispatch({ type: types.GET_DOCUMENT_CONTENTS_FAIL })
