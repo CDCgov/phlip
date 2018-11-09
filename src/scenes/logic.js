@@ -34,6 +34,7 @@ export const refreshJwtLogic = createLogic({
         const currentToken = getToken()
         const newToken = await api.checkPivUser({ email: decodeToken(currentToken).Email }, {}, { tokenObj: { token: currentToken }})
         await login(newToken.token.value)
+        console.log('refreshing')
       }
     }, 900000)
 

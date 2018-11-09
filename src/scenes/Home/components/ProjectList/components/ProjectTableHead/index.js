@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import TableSortLabel from '@material-ui/core/TableSortLabel'
-import TableRow from 'components/TableRow'
-import TableCell from 'components/TableCell'
+import TableRow from '@material-ui/core/TableRow'
+import TableCell from '@material-ui/core/TableCell'
 import IconButton from 'components/IconButton'
 import Tooltip from 'components/Tooltip'
 
@@ -29,8 +29,12 @@ const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSo
   const visible = (role === 'Coder' ? columns.filter(c => !hiddenCols.includes(c.key)) : columns)
 
   return (
-    <TableRow key="headers">
-      <TableCell key="bookmarked" padding="checkbox" id="bookmarked" scope="col">
+    <TableRow key="headers" style={{ width: '100%' }}>
+      <TableCell
+        key="bookmarked"
+        id="bookmarked"
+        scope="col"
+        style={{ paddingLeft: 24, paddingRight: 0, width: '1%' }}>
         <IconButton
           id="sort-bookmarked"
           color="#757575"

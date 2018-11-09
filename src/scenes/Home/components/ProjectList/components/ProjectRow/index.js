@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { withTheme } from '@material-ui/core/styles'
-import TableRow from 'components/TableRow'
+import TableRow from '@material-ui/core/TableRow'
 import Button from 'components/Button'
 import Link from 'components/Link'
 import TextLink from 'components/TextLink'
 import IconButton from 'components/IconButton'
-import TableCell from 'components/TableCell'
+import TableCell from '@material-ui/core/TableCell'
 import * as actions from 'scenes/Home/actions'
 import moment from 'moment'
 import { commonHelpers } from 'utils'
@@ -22,7 +22,7 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport, theme
   const date = moment.utc(project.dateLastEdited).local().format('M/D/YYYY, h:mm A')
   return (
     <TableRow key={project.id}>
-      <TableCell {...generateKeyAndId('bookmarked')} padding="checkbox">
+      <TableCell {...generateKeyAndId('bookmarked')} style={{ paddingLeft: 24, paddingRight: 0, width: '1%' }}>
         <IconButton
           color={bookmarked ? '#fdc43b' : greyIcon}
           onClick={() => actions.toggleBookmark(project)}
