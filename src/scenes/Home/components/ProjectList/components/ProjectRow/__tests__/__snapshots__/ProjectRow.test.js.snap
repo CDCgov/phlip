@@ -8,12 +8,6 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     id="1-bookmarked"
     key="1-bookmarked"
     padding="checkbox"
-    style={
-      Object {
-        "paddingLeft": 24,
-        "width": 24,
-      }
-    }
   >
     <IconButton
       aria-label="Bookmark this project"
@@ -30,13 +24,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   <TableCell
     id="1-name"
     key="1-name"
-    padding="default"
-    style={
-      Object {
-        "paddingRight": 24,
-        "width": "15%",
-      }
-    }
+    padding="checkbox"
   >
     <WithTheme(TextLink)
       aria-label="Edit project details"
@@ -61,41 +49,21 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   <TableCell
     id="1-dateLastEdited"
     key="1-dateLastEdited"
-    padding="default"
-    style={
-      Object {
-        "paddingRight": 24,
-        "textAlign": "unset",
-        "width": "unset",
-      }
-    }
+    padding="checkbox"
   >
     10/9/2012, 8:00 PM
   </TableCell>
   <TableCell
     id="1-lastEditedBy"
     key="1-lastEditedBy"
-    padding="default"
-    style={
-      Object {
-        "paddingRight": 24,
-        "width": "unset",
-      }
-    }
+    padding="checkbox"
   >
     Kristin
   </TableCell>
   <TableCell
     id="1-protocol"
     key="1-protocol"
-    padding="default"
-    style={
-      Object {
-        "paddingRight": 24,
-        "textAlign": "center",
-        "width": "unset",
-      }
-    }
+    padding="checkbox"
   >
     <WithTheme(TextLink)
       aria-label="Add and edit project protocol"
@@ -107,13 +75,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   <TableCell
     id="1-jurisdictions"
     key="1-jurisdictions"
-    padding="default"
-    style={
-      Object {
-        "paddingRight": 24,
-        "textAlign": "center",
-      }
-    }
+    padding="checkbox"
   >
     <WithTheme(TextLink)
       aria-label="Add and edit project jurisdictions"
@@ -133,13 +95,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   <TableCell
     id="1-coding-scheme"
     key="1-coding-scheme"
-    padding="default"
-    style={
-      Object {
-        "paddingRight": 24,
-        "textAlign": "center",
-      }
-    }
+    padding="checkbox"
   >
     <WithTheme(TextLink)
       aria-label="Add and edit project coding scheme"
@@ -152,13 +108,6 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     id="1-code"
     key="1-code"
     padding="checkbox"
-    style={
-      Object {
-        "paddingRight": 6,
-        "textAlign": "unset",
-        "width": 56,
-      }
-    }
   >
     <WithTheme(Button)
       aria-label="Code project"
@@ -177,12 +126,6 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     id="1-validate"
     key="1-validate"
     padding="checkbox"
-    style={
-      Object {
-        "paddingLeft": 6,
-        "width": 56,
-      }
-    }
   >
     <WithTheme(Button)
       aria-label="Validate project"
@@ -200,15 +143,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   <TableCell
     id="1-export"
     key="1-export"
-    padding="default"
-    style={
-      Object {
-        "paddingLeft": 0,
-        "paddingRight": 24,
-        "textAlign": "center",
-        "width": 40,
-      }
-    }
+    padding="checkbox"
   >
     <IconButton
       aria-label="Export validated questions"

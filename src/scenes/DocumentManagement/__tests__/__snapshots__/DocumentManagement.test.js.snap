@@ -32,7 +32,6 @@ exports[`Document Management scene should render correctly 1`] = `
     pageTitle="Document Management"
     projectName=""
     protocolButton={false}
-    showButton={true}
   />
   <DocList
     allSelected={false}

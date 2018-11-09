@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Grid from 'components/FlexGrid'
+import FlexGrid from 'components/FlexGrid'
 import PageHeader from 'components/PageHeader'
 import DocList from './components/DocList'
 import actions from './actions'
@@ -56,7 +56,7 @@ export class DocumentManagement extends Component {
 
   render() {
     return (
-      <Grid container flex padding="20px 30px">
+      <FlexGrid container flex padding="20px 30px">
         <PageHeader
           pageTitle="Document Management"
           protocolButton={false}
@@ -84,7 +84,7 @@ export class DocumentManagement extends Component {
           rowsPerPage={this.props.rowsPerPage}
         />
         <Route path="/docs/upload" component={Upload} />
-      </Grid>
+      </FlexGrid>
     )
   }
 }

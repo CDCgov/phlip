@@ -1,105 +1,109 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - ProjectList component should render correctly 1`] = `
-<Container
-  column={true}
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={true}
   flex={true}
-  spacing={0}
+  justify="stretch"
+  padding={0}
+  raised={true}
+  style={Object {}}
+  type="column"
 >
-  <Column
-    component={<Card />}
-    displayFlex={true}
+  <FlexGrid
+    align="flex-end"
+    circular={false}
+    container={true}
+    flex={false}
+    justify="stretch"
+    padding={15}
+    raised={false}
+    style={Object {}}
+    type="row"
+  >
+    <WithTheme(SearchBar)
+      placeholder="Search"
+    />
+  </FlexGrid>
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={true}
     flex={true}
+    justify="stretch"
+    padding={0}
+    raised={false}
     style={
       Object {
-        "overflow": "auto",
+        "overflow": "hidden",
       }
     }
+    type="column"
   >
-    <Row
-      component={
-        <WithStyles(Grid)
-          item={true}
-        />
-      }
-      displayFlex={false}
-      flex={false}
-      reverse={false}
+    <Table
       style={
         Object {
-          "alignSelf": "flex-end",
-          "padding": 20,
+          "borderCollapse": "separate",
+          "display": "block",
+          "overflow": "auto",
+          "tableLayout": "auto",
         }
       }
+      summary="List of projects"
     >
-      <WithTheme(SearchBar)
-        placeholder="Search"
-      />
-    </Row>
-    <div
-      style={
-        Object {
-          "display": "flex",
-          "flex": 1,
-          "flexDirection": "column",
-        }
-      }
-    >
-      <Table
+      <WithStyles(TableHead)
         style={
           Object {
-            "borderCollapse": "separate",
-            "display": "block",
-            "overflow": "unset",
-            "tableLayout": "auto",
+            "width": "100%",
           }
         }
-        summary="List of projects"
       >
-        <WithStyles(TableHead)>
-          <ProjectTableHead
-            direction="asc"
-            onRequestSort={[MockFunction]}
-            onSortBookmarked={[MockFunction]}
-            role="Coordinator"
-            sortBy="name"
+        <ProjectTableHead
+          direction="asc"
+          onRequestSort={[MockFunction]}
+          onSortBookmarked={[MockFunction]}
+          role="Coordinator"
+          sortBy="name"
+        />
+      </WithStyles(TableHead)>
+      <WithStyles(TableBody)>
+        <Connect(WithTheme(ProjectRow))
+          id={1}
+          key="1"
+          onExport={[MockFunction]}
+        />
+        <Connect(WithTheme(ProjectRow))
+          id={2}
+          key="2"
+          onExport={[MockFunction]}
+        />
+      </WithStyles(TableBody)>
+    </Table>
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={false}
+      flex={true}
+      justify="stretch"
+      padding={0}
+      raised={false}
+      style={Object {}}
+      type="column"
+    />
+    <Table>
+      <WithStyles(TableFooter)>
+        <WithStyles(TableRow)>
+          <WithStyles(TablePagination)
+            onChangePage={[Function]}
+            onChangeRowsPerPage={[Function]}
+            page={0}
+            rowsPerPage={10}
           />
-        </WithStyles(TableHead)>
-        <WithStyles(TableBody)>
-          <Connect(WithTheme(ProjectRow))
-            id={1}
-            key="1"
-            onExport={[MockFunction]}
-          />
-          <Connect(WithTheme(ProjectRow))
-            id={2}
-            key="2"
-            onExport={[MockFunction]}
-          />
-        </WithStyles(TableBody)>
-      </Table>
-      <div
-        style={
-          Object {
-            "display": "flex",
-            "flex": 1,
-            "paddingBottom": "50px",
-          }
-        }
-      />
-      <Table>
-        <WithStyles(TableFooter)>
-          <WithStyles(TableRow)>
-            <WithStyles(TablePagination)
-              onChangePage={[Function]}
-              onChangeRowsPerPage={[Function]}
-              page={0}
-              rowsPerPage={10}
-            />
-          </WithStyles(TableRow)>
-        </WithStyles(TableFooter)>
-      </Table>
-    </div>
-  </Column>
-</Container>
+        </WithStyles(TableRow)>
+      </WithStyles(TableFooter)>
+    </Table>
+  </FlexGrid>
+</FlexGrid>
 `;

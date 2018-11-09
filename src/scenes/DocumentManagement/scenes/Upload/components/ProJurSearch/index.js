@@ -28,7 +28,13 @@ const ProJurSearch = props => {
           handleClearSuggestions={() => onClearSuggestions('project')}
           inputProps={{
             value: projectSearchValue,
-            onChange: (e) => onSearchValueChange('project', e.target.value || ''),
+            onChange: (e, { newValue }) => {
+              if (e.target.value === undefined) {
+                onSearchValueChange('project', newValue.name)
+              } else {
+                onSearchValueChange('project', e.target.value)
+              }
+            },
             id: 'project-name'
           }}
           style={{ width: '100%' }}
@@ -50,7 +56,13 @@ const ProJurSearch = props => {
           handleClearSuggestions={() => onClearSuggestions('jurisdiction')}
           inputProps={{
             value: jurisdictionSearchValue,
-            onChange: (e) => onSearchValueChange('jurisdiction', e.target.value || ''),
+            onChange: (e, { newValue }) => {
+              if (e.target.value === undefined) {
+                onSearchValueChange('jurisdiction', newValue.name)
+              } else {
+                onSearchValueChange('jurisdiction', e.target.value)
+              }
+            },
             id: 'jurisdiction-name'
           }}
           handleSuggestionSelected={onSuggestionSelected('jurisdiction')}

@@ -2,16 +2,14 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { withTheme } from '@material-ui/core/styles'
-import Divider from '@material-ui/core/Divider'
 import CardError from 'components/CardError'
-import Container from 'components/Layout'
 import PageHeader from 'components/PageHeader'
 import ProjectList from './components/ProjectList'
 import * as actions from './actions'
 import ExportDialog from './components/ExportDialog'
 import withTracking from 'components/withTracking'
 import ApiErrorAlert from 'components/ApiErrorAlert'
+import FlexGrid from 'components/FlexGrid'
 
 /**
  * Project List ("Home") screen main component. The first component that is rendered when the user logs in. This is parent
@@ -195,7 +193,7 @@ export class Home extends Component {
 
   render() {
     return (
-      <Container column flex style={{ padding: '20px 30px' }}>
+      <FlexGrid container flex padding="20px 30px">
         <ApiErrorAlert
           content={this.props.exportError}
           open={this.props.exportError !== ''}
@@ -238,9 +236,10 @@ export class Home extends Component {
         <ExportDialog
           open={this.state.exportDialogOpen}
           onChooseExport={this.onChooseExport}
-          onClose={this.onCloseExportDialog} />
+          onClose={this.onCloseExportDialog}
+        />
         <a style={{ display: 'none' }} ref={this.setExportRef} />
-      </Container>
+      </FlexGrid>
     )
   }
 }

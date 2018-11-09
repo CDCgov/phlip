@@ -13,7 +13,8 @@ export const createAutocompleteReducer = searchName => {
         return {
           ...state,
           searchValue: action.value,
-          suggestions: action.value === '' ? [] : state.suggestions
+          suggestions: action.value === '' ? [] : state.suggestions,
+          selectedSuggestion: action.value === '' ? {} : state.selectedSuggestion
         }
 
       case `${types.SEARCH_FOR_SUGGESTIONS_SUCCESS}_${searchName}`:

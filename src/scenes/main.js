@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux'
 import Home from './Home'
 import DocumentManagement from './DocumentManagement'
 import AppHeader from 'components/AppHeader'
-import Grid from 'components/FlexGrid'
+import FlexGrid from 'components/FlexGrid'
 import Coding from './Coding'
 import Validation from './Validation'
 import Admin from './Admin'
@@ -193,7 +193,7 @@ class Main extends Component {
     if (!isRefreshing && isLoggedIn) actions.startRefreshJwt()
 
     return (
-      <Grid container type="column" flex>
+      <FlexGrid container type="column" flex>
         <IdleTimer onIdle={this.logoutUserOnIdle} timeout={900000} />
         <AppHeader
           user={this.props.user}
@@ -205,7 +205,7 @@ class Main extends Component {
           onTabChange={this.handleTabChange}
           onOpenAdminPage={this.handleOpenAdminPage}
         />
-        <Grid container type="row" flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
+        <FlexGrid container type="row" flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
           <Switch location={currentLocation}>
             <Route path="/docs/:id/view" component={DocumentView} />
             <Route path="/docs" component={DocumentManagement} />
@@ -228,8 +228,8 @@ class Main extends Component {
             onCloseAlert={this.closeDownloadErrorAlert}
           />
           <a style={{ display: 'none' }} ref={this.helpPdfRef} />
-        </Grid>
-      </Grid>
+        </FlexGrid>
+      </FlexGrid>
     )
   }
 }

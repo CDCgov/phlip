@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Grid from 'components/FlexGrid'
+import FlexGrid from 'components/FlexGrid'
 import Table from 'components/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableHead from '@material-ui/core/TableHead'
@@ -18,14 +18,14 @@ export const DocList = props => {
   } = props
 
   return (
-    <Grid container flex raised>
-      <Grid type="row" container align="center" justify="space-between" padding="25px 20px 20px 20px">
-        <Grid></Grid>
-        <Grid>
+    <FlexGrid container flex raised>
+      <FlexGrid type="row" container align="center" justify="space-between" padding="25px 20px 20px 20px">
+        <FlexGrid></FlexGrid>
+        <FlexGrid>
           {/*<SearchBar placeholder="Search" />*/}
-        </Grid>
-      </Grid>
-      <Grid container flex style={{ overflow: 'hidden' }}>
+        </FlexGrid>
+      </FlexGrid>
+      <FlexGrid container flex style={{ overflow: 'hidden' }}>
         <Table
           style={{ borderCollapse: 'separate', tableLayout: 'auto', display: 'block', overflow: 'auto' }}
           summary="List of documents">
@@ -40,7 +40,7 @@ export const DocList = props => {
             />)}
           </TableBody>
         </Table>
-        <Grid flex />
+        <FlexGrid flex />
         <Table>
           <TableFooter>
             <TableRow>
@@ -54,8 +54,8 @@ export const DocList = props => {
             </TableRow>
           </TableFooter>
         </Table>
-      </Grid>
-    </Grid>
+      </FlexGrid>
+    </FlexGrid>
   )
 }
 

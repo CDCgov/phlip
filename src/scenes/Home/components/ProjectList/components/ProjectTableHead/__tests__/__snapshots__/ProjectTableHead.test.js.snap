@@ -9,12 +9,6 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     key="bookmarked"
     padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingLeft": 24,
-        "width": 24,
-      }
-    }
   >
     <IconButton
       color="#757575"
@@ -31,14 +25,8 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   <TableCell
     id="name"
     key="name"
-    padding="default"
+    padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingRight": 24,
-        "width": "15%",
-      }
-    }
   >
     <WithStyles(Tooltip)
       id="sort-by-name"
@@ -61,13 +49,8 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   <TableCell
     id="dateLastEdited"
     key="dateLastEdited"
-    padding="default"
+    padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingRight": 24,
-      }
-    }
   >
     <WithStyles(Tooltip)
       id="sort-by-dateLastEdited"
@@ -90,13 +73,8 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   <TableCell
     id="lastEditedBy"
     key="lastEditedBy"
-    padding="default"
+    padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingRight": 24,
-      }
-    }
   >
     <WithStyles(Tooltip)
       id="sort-by-lastEditedBy"
@@ -119,42 +97,24 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   <TableCell
     id="protocol"
     key="protocol"
-    padding="default"
+    padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingRight": 24,
-        "textAlign": "center",
-      }
-    }
   >
     Protocol
   </TableCell>
   <TableCell
     id="jurisdictions"
     key="jurisdictions"
-    padding="default"
+    padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingRight": 24,
-        "textAlign": "center",
-      }
-    }
   >
     Jurisdictions
   </TableCell>
   <TableCell
     id="codingScheme"
     key="codingScheme"
-    padding="default"
+    padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingRight": 24,
-        "textAlign": "center",
-      }
-    }
   >
     Coding Scheme
   </TableCell>
@@ -163,38 +123,18 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     key="code"
     padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingRight": 6,
-        "width": 56,
-      }
-    }
   />
   <TableCell
     id="validate"
     key="validate"
     padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingLeft": 6,
-        "width": 56,
-      }
-    }
   />
   <TableCell
     id="export"
     key="export"
-    padding="default"
+    padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingLeft": 0,
-        "paddingRight": 24,
-        "textAlign": "center",
-        "width": "1%",
-      }
-    }
   >
     Export
   </TableCell>

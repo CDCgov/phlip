@@ -18,7 +18,7 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
       Object {
         "paddingLeft": 24,
         "paddingRight": 0,
-        "width": "1%",
+        "width": undefined,
       }
     }
   >
@@ -69,6 +69,32 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
     }
   >
     Uploaded Date
+  </TableCell>
+  <TableCell
+    id="doc-projects"
+    key="doc-projects"
+    padding="checkbox"
+    scope="col"
+    style={
+      Object {
+        "width": undefined,
+      }
+    }
+  >
+    Assigned to projects
+  </TableCell>
+  <TableCell
+    id="doc-jurisdictions"
+    key="doc-jurisdictions"
+    padding="checkbox"
+    scope="col"
+    style={
+      Object {
+        "width": undefined,
+      }
+    }
+  >
+    Assigned to jurisdictions
   </TableCell>
 </TableRow>
 `;

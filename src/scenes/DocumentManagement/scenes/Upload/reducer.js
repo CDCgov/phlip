@@ -2,6 +2,7 @@ import { types } from './actions'
 import { updateItemAtIndex } from 'utils/normalize'
 import { combineReducers } from 'redux'
 import { createAutocompleteReducer } from 'data/autocomplete/reducer'
+import { types as autocompleteTypes } from 'data/autocomplete/actions'
 
 export const INITIAL_STATE = {
   selectedDocs: [],
@@ -219,6 +220,36 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         alertOpen: true,
         alertText: action.error,
         alertTitle: 'Invalid Jurisdictions' || ''
+      }
+
+    case `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION`:
+      return {
+        ...state,
+        selectedDocs: state.selectedDocs.map(doc => {
+          return {
+            ...doc,
+            jurisdictions: { ...doc.jurisdictions, editable: false, inEditMode: false, value: action.suggestion }
+          }
+        })
+      }
+
+    case `${autocompleteTypes.UPDATE_SEARCH_VALUE}_JURISDICTION`:
+      if (action.value !== '') {
+        return state
+      } else {
+        return {
+          ...state,
+          selectedDocs: state.selectedDocs.map(doc => {
+            return {
+              ...doc,
+              jurisdictions: {
+                ...doc.jurisdictions,
+                editable: true,
+                value: { suggestions: [], searchValue: '', name: '' }
+              }
+            }
+          })
+        }
       }
 
     case types.CLEAR_SELECTED_FILES:
