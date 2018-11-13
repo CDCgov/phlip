@@ -61,7 +61,7 @@ export class PDFViewer extends Component {
 
   render() {
     return (
-      <div id="viewContainer" style={{ overflow: 'auto', height: '100%' }}>
+      <div id="viewContainer" style={{ overflow: 'hidden', height: '100%' }}>
         <div id="viewer" ref={this.viewerRef} className={styles.pdfViewer}>
           {this.state.pages.length > 0
           && this.state.pages.map((page, i) => {
