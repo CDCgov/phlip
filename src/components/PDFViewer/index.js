@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Page from './Page'
 import PDFJS from 'pdfjs-dist/webpack'
 PDFJS.GlobalWorkerOptions.workerSrc = '/pdf.worker.bundle.js'
-import './pdf_viewer.css'
+import styles from './pdf_viewer.css'
 
 export class PDFViewer extends Component {
   static propTypes = {}
@@ -63,7 +63,7 @@ export class PDFViewer extends Component {
   render() {
     return (
       <div id="viewContainer" style={{ overflow: 'auto', height: '100%' }}>
-        <div id="viewer" ref={this.viewerRef} className="pdfViewer">
+        <div id="viewer" ref={this.viewerRef} className={styles.pdfViewer}>
           {this.state.pages.length > 0
           && this.state.pages.map((page, i) => {
               return (

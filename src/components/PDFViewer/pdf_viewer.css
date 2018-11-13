@@ -12,21 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-button {
-  user-select: none;
-}
-
 #viewContainer {
   overflow-x: hidden;
   overflow-y: auto;
   height: 100%;
   box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12);
   flex: 1;
-}
-
-#viewer {
-  background-color: #282c34;
 }
 
 .textLayer {
@@ -55,14 +46,6 @@ button {
   cursor: text;
   -webkit-transform-origin: 0 0;
   transform-origin: 0 0;
-}
-
-.on-hover {
-  user-select: text;
-}
-
-.no-hover {
-  user-select: none;
 }
 
 .textLayer .highlight {
@@ -302,6 +285,7 @@ button {
   /*overflow: hidden*/
   overflow: auto;
   height: 100%;
+  background-color: #282c34;
 }
 
 .pdfViewer .canvasWrapper {
@@ -317,7 +301,6 @@ button {
   overflow: hidden;
   margin-bottom: 5px;
   width: 100%;
-  padding: 15px;
 }
 
 .pdfViewer.removePageBorders .page {

@@ -11,7 +11,7 @@ export class DocumentContents extends Component {
 
   render() {
     return (
-      <FlexGrid raised flex style={{ height: '100%', overflow: 'hidden' }}>
+      <FlexGrid raised flex style={{ height: '100%', overflow: 'hidden', flexBasis: '70%' }}>
         <PDFViewer document={this.props.document} />
       </FlexGrid>
     )
