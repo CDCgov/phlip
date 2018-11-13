@@ -3,7 +3,7 @@ import { transformText } from './textTransformHelpers'
 import * as ui_utils from 'pdfjs-dist/lib/web/ui_utils'
 import { Util as dom_utils } from 'pdfjs-dist/lib/shared/util'
 import IconButton from 'components/IconButton'
-import styles from './pdf_viewer.css'
+import styles from './pdf_viewer.scss'
 
 class Page extends Component {
   static defaultProps = {

@@ -13,11 +13,11 @@ export class DocumentContents extends Component {
   render() {
     return (
       <FlexGrid raised flex style={{ height: '100%', overflow: 'hidden', flexBasis: '70%', padding: 30 }}>
-        <FlexGrid container flex style={{ display: 'inline-flex', position: 'relative' }}>
+        <FlexGrid container flex style={{ display: 'inline-flex', position: 'relative', marginBottom: 10 }}>
           <Typography variant="caption" style={{ fontSize: '.65rem', color: '#9e9e9e', marginBottom: 2 }}>
             Document Name
           </Typography>
-          <Typography variant="subheading">{this.props.document.name}</Typography>
+          <Typography variant="h5">{this.props.document.name}</Typography>
         </FlexGrid>
         <PDFViewer document={this.props.document} />
       </FlexGrid>

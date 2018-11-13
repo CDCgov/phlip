@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Page from './Page'
 import PDFJS from 'pdfjs-dist/webpack'
 PDFJS.GlobalWorkerOptions.workerSrc = '/pdf.worker.bundle.js'
-import styles from './pdf_viewer.css'
+import styles from './pdf_viewer.scss'
 
 export class PDFViewer extends Component {
   static propTypes = {}
