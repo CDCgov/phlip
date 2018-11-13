@@ -25,6 +25,10 @@ button {
   flex: 1;
 }
 
+#viewer {
+  background-color: #282c34;
+}
+
 .textLayer {
   position: absolute;
   left: 0;
@@ -313,6 +317,7 @@ button {
   overflow: hidden;
   margin-bottom: 5px;
   width: 100%;
+  padding: 15px;
 }
 
 .pdfViewer.removePageBorders .page {

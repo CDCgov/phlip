@@ -6,6 +6,7 @@ const webpack = require('webpack')
 const Spinner = require('cli-spinner').Spinner
 const paths = require('../config/paths')
 const dotenv = require('dotenv')
+const fs = require('fs')
 
 dotenv.config({ path: paths.appDotEnv })
 
@@ -36,6 +37,7 @@ compiler.run((err, stats) => {
   }
 
   const output = stats.toJson('normal')
+  fs.writeFileSync('stats.json', JSON.stringify(output, null, 2))
 
   if (stats.hasErrors()) {
     console.log(chalk.redBright('Webpack failed to compile. Try again.'))

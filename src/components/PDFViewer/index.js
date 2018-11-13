@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import './pdf_viewer.css'
-import PDFJS from 'pdfjs-dist'
 import Page from './Page'
+import PDFJS from 'pdfjs-dist/webpack'
+PDFJS.GlobalWorkerOptions.workerSrc = '/pdf.worker.bundle.js'
+import './pdf_viewer.css'
 
 export class PDFViewer extends Component {
   static propTypes = {}

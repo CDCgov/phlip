@@ -14,7 +14,8 @@ export const withTracking = (WrappedComponent, pageName) => {
       this.pageName = pageName === 'Project Form'
         ? this.props.location.state.projectDefined === null ? 'Create New Project' : 'Project Details'
         : pageName
-      this.updateSiteCatalystVariables()
+
+      process.env.NODE_ENV === 'production' && this.updateSiteCatalystVariables()
     }
 
     updateSiteCatalystVariables = () => {

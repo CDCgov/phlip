@@ -10,3 +10,4 @@ tests.xml
 .env.dev
 docs
 .env.prod
+stats.json

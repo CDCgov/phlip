@@ -17,7 +17,8 @@ module.exports = env => {
       path: paths.appBuild,
       filename: '[name].bundle.js',
       chunkFilename: '[name].chunk.js',
-      publicPath: paths.publicPath
+      publicPath: paths.publicPath,
+      globalObject: 'true'
     },
     resolve: {
       extensions: ['.js', '.jsx'],
@@ -105,14 +106,16 @@ module.exports = env => {
               use: [
                 {
                   loader: 'style-loader'
-                }, {
+                },
+                {
                   loader: 'css-loader',
                   options: {
                     modules: true,
                     '-autoprefixer': true,
                     importLoaders: true
                   }
-                }, {
+                },
+                {
                   loader: 'postcss-loader',
                   options: {
                     ident: 'postcss',
@@ -124,7 +127,8 @@ module.exports = env => {
                       })
                     ]
                   }
-                }, {
+                },
+                {
                   loader: 'sass-loader'
                 }
               ]
@@ -147,12 +151,17 @@ module.exports = env => {
         jQuery: 'jquery',
         jquery: 'jquery'
       }),
+
       new webpack.DefinePlugin(env),
+
       new CopyWebpackPlugin([{ from: paths.appPublic }]),
+
       new HtmlWebpackPlugin({
         inject: true,
-        template: paths.appHtml
+        template: paths.appDevHtml,
+        filename: 'index.html'
       }),
+
       new webpack.HotModuleReplacementPlugin()
     ]
   }

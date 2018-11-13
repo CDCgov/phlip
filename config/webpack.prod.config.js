@@ -20,7 +20,8 @@ module.exports = env => {
       path: paths.appBuild,
       filename: '[name].bundle.js',
       chunkFilename: '[name].chunk.js',
-      publicPath: paths.publicPath
+      publicPath: paths.publicPath,
+      globalObject: 'true'
     },
     resolve: {
       extensions: ['.js', '.jsx'],
