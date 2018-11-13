@@ -25,7 +25,6 @@ export class PDFViewer extends Component {
 
   createPdf = docContent => {
     const CMAP = 'pdfjs-dist/cmaps'
-    console.log(docContent)
     PDFJS.getDocument({ data: docContent.content.data, cMapUrl: CMAP }).then(pdf => {
       pdf.getMetadata().then(md => {
         this.setState({
