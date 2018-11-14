@@ -8,7 +8,7 @@ import { withTheme } from '@material-ui/core/styles'
 /**
  * Search input field
  */
-export const SearchBar = ({ searchValue, handleSearchValueChange, placeholder, theme, ...otherProps }) => {
+export const SearchBar = ({ searchValue, handleSearchValueChange, shrinkLabel, placeholder, theme, ...otherProps }) => {
   return (
     <TextField
       value={searchValue}
@@ -26,6 +26,9 @@ export const SearchBar = ({ searchValue, handleSearchValueChange, placeholder, t
       }}
       type="search"
       id="search-bar"
+      InputLabelProps={{
+        shrink: shrinkLabel || false
+      }}
       {...otherProps}
     />
   )

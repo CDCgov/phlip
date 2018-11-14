@@ -22,7 +22,9 @@ export const DocList = props => {
       <FlexGrid type="row" container align="center" justify="space-between" padding="25px 20px 20px 20px">
         <FlexGrid></FlexGrid>
         <FlexGrid>
-          {/*<SearchBar placeholder="Search" />*/}
+          <SearchBar placeholder="Search" style={{ marginRight: 15 }} />
+          <SearchBar placeholder="Projects" label="Filter by" shrinkLabel style={{ marginRight: 15 }} />
+          <SearchBar placeholder="Jurisdictions" label="Filter by" shrinkLabel />
         </FlexGrid>
       </FlexGrid>
       <FlexGrid container flex style={{ overflow: 'hidden' }}>
