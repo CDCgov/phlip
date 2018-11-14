@@ -22,9 +22,9 @@ const searchForMatches = (arr, searchValue, properties) => {
  * @param {String} p
  * @returns {String}
  */
-const convertValuesToString = (x,p) => {
-  return ['dateLastEdited', 'startDate', 'endDate'].includes(p)
-    ? new Date(x[p]).toLocaleDateString()
+const convertValuesToString = (x, p) => {
+  return ['dateLastEdited', 'startDate', 'endDate', 'uploadedDate'].includes(p)
+    ? new Date(x[p]).toLocaleString()
     : x[p]
 }
 

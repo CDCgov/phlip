@@ -19,7 +19,7 @@ export const DocList = props => {
   return (
     <FlexGrid container flex style={{ overflow: 'hidden' }}>
       <Table
-        style={{ borderCollapse: 'separate', tableLayout: 'auto', display: 'block', overflow: 'auto' }}
+        style={{ borderCollapse: 'separate', tableLayout: 'auto', display: documents.length > 0 ? 'block' : 'table', overflow: 'auto' }}
         summary="List of documents">
         <TableHead style={{ width: '100%' }}>
           <DocListTableHead onSelectAll={() => onSelectAllFiles()} allSelected={allSelected} />

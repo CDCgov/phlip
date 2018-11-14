@@ -214,7 +214,9 @@ const mainReducer = (state, action) => {
             ...state.projects.byId,
             [updatedProject.id]: {
               ...updatedProject,
-              projectJurisdictions: commonHelpers.sortListOfObjects([...updatedProject.projectJurisdictions, action.payload.jurisdiction], 'name', 'asc')
+              projectJurisdictions: commonHelpers.sortListOfObjects([
+                ...updatedProject.projectJurisdictions, action.payload.jurisdiction
+              ], 'name', 'asc')
             }
           }
         }
@@ -229,7 +231,9 @@ const mainReducer = (state, action) => {
             ...state.projects.byId,
             [updated.id]: {
               ...updated,
-              projectJurisdictions: commonHelpers.sortListOfObjects([...updated.projectJurisdictions, ...action.payload.jurisdictions], 'name', 'asc')
+              projectJurisdictions: commonHelpers.sortListOfObjects([
+                ...updated.projectJurisdictions, ...action.payload.jurisdictions
+              ], 'name', 'asc')
             }
           }
         }
@@ -250,7 +254,7 @@ const mainReducer = (state, action) => {
       }
 
     case types.DELETE_JURISDICTION_FROM_PROJECT:
-      const currentJurisdictions = [ ...state.projects.byId[action.payload.projectId].projectJurisdictions ]
+      const currentJurisdictions = [...state.projects.byId[action.payload.projectId].projectJurisdictions]
       const updatedJurisdictions = currentJurisdictions.filter(value => value.id !== action.payload.jurisdictionId)
 
       return {

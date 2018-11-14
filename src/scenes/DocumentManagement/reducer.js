@@ -5,6 +5,7 @@ import { arrayToObject } from 'utils/normalize'
 import { sliceTable, sortListOfObjects } from 'utils/commonHelpers'
 import { createAutocompleteReducer } from 'data/autocomplete/reducer'
 import { types as autocompleteTypes } from 'data/autocomplete/actions'
+import { searchUtils } from 'utils'
 
 const INITIAL_STATE = {
   documents: {
@@ -19,10 +20,16 @@ const INITIAL_STATE = {
   allSelected: false
 }
 
+const mergeName = docObj => ({
+  ...docObj,
+  uploadedByName: `${docObj.uploadedBy.firstName} ${docObj.uploadedBy.lastName}`
+})
+
 export const docManagementReducer = (state = INITIAL_STATE, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case types.GET_DOCUMENTS_SUCCESS:
-      let obj = arrayToObject(action.payload, '_id')
+      let docs = action.payload.map(mergeName)
+      let obj = arrayToObject(docs, '_id')
       let sorted = sortListOfObjects(Object.values(obj), 'uploadedDate', 'desc')
       let allIds = sorted.map(d => d._id)
 
@@ -52,15 +59,19 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
 
     case types.ON_ROWS_CHANGE:
       rows = parseInt(action.rowsPerPage)
-      if (action.rowsPerPage === 'All')
+      let page = state.page
+      if (action.rowsPerPage === 'All') {
         rows = state.documents.allIds.length
+        page = 0
+      }
 
       return {
         ...state,
         documents: {
           ...state.documents,
-          visible: sliceTable(state.documents.allIds, state.page, rows)
+          visible: sliceTable(state.documents.allIds, page, rows)
         },
+        page,
         rowsPerPage: action.rowsPerPage
       }
 
@@ -93,7 +104,8 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.UPLOAD_DOCUMENTS_SUCCESS:
-      obj = { ...state.documents.byId, ...arrayToObject(action.payload.docs, '_id') }
+      docs = action.payload.docs.map(mergeName)
+      obj = { ...state.documents.byId, ...arrayToObject(docs, '_id') }
       sorted = sortListOfObjects(Object.values(obj), 'uploadedDate', 'desc')
       allIds = sorted.map(d => d._id)
 
@@ -112,9 +124,27 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ON_SEARCH_FIELD_CHANGE:
+      rows = parseInt(state.rowsPerPage)
+
+      let matches = searchUtils.searchForMatches(Object.values(state.documents.byId), action.searchValue, [
+        'name', 'uploadedByName', 'uploadedDate'
+      ])
+
+      sorted = sortListOfObjects(matches, 'uploadedDate', 'desc')
+
+      matches = sorted.map(m => m._id)
+      if (state.rowsPerPage === 'All')
+        rows = matches.length
+
       return {
         ...state,
-        searchValue: action.searchValue
+        searchValue: action.searchValue,
+        documents: {
+          ...state.documents,
+          visible: matches.length === 0
+            ? []
+            : sliceTable(matches, state.page, rows)
+        }
       }
 
     case types.FLUSH_STATE:

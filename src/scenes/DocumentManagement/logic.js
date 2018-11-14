@@ -12,6 +12,7 @@ const getDocLogic = createLogic({
       let jurisdictions = [], projects = []
 
       documents.forEach((doc, i) => {
+        doc.uploadedByName = `${doc.uploadedBy.firstName} ${doc.uploadedBy.lastName}`
         doc.projects.forEach(projectId => {
           if (!projects.includes(projectId)) {
             dispatch({ type: projectTypes.GET_PROJECT_REQUEST, projectId })
