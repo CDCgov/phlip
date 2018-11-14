@@ -3,6 +3,8 @@ import upload from './scenes/Upload/reducer'
 import { types } from './actions'
 import { arrayToObject } from 'utils/normalize'
 import { sliceTable, sortListOfObjects } from 'utils/commonHelpers'
+import { createAutocompleteReducer } from 'data/autocomplete/reducer'
+import { types as autocompleteTypes } from 'data/autocomplete/actions'
 
 const INITIAL_STATE = {
   documents: {
@@ -109,6 +111,12 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
+    case types.ON_SEARCH_FIELD_CHANGE:
+      return {
+        ...state,
+        searchValue: action.searchValue
+      }
+
     case types.FLUSH_STATE:
       return INITIAL_STATE
 
@@ -119,7 +127,9 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
 
 const docManageReducer = combineReducers({
   upload,
-  main: docManagementReducer
+  main: docManagementReducer,
+  projectSuggestions: createAutocompleteReducer('PROJECT'),
+  jurisdictionSuggestions: createAutocompleteReducer('JURISDICTION')
 })
 
 export default docManageReducer
