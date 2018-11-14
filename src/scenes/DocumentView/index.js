@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
 import DocumentContents from './components/DocumentContents'
+import DocumentMeta from './components/DocumentsMeta'
 
 export class DocumentView extends Component {
   static propTypes = {}
@@ -36,6 +37,7 @@ export class DocumentView extends Component {
           <DocumentContents loading={this.props.documentRequestInProgress} />
           <FlexGrid style={{ flexBasis: '2%' }} />
           <FlexGrid container type="column" style={{ flexBasis: '20%' }}>
+              <DocumentMeta></DocumentMeta>
           </FlexGrid>
         </FlexGrid>
       </FlexGrid>
