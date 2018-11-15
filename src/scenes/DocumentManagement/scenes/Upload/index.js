@@ -109,6 +109,10 @@ export class Upload extends Component {
     }
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.loadingAlertTimeout)
+  }
+
   /**
    * Determines whether or not the 'processing' alert should be shown
    */

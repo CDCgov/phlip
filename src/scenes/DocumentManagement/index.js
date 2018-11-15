@@ -56,6 +56,11 @@ export class DocumentManagement extends Component {
     this.props.actions.getDocumentsRequest()
   }
 
+  componentWillUnmount() {
+    this.props.actions.projectAutocomplete.clearAll()
+    this.props.actions.jurisdictionAutocomplete.clearAll()
+  }
+
   /**
    * Get suggestions for some type of autocomplete search
    * @param suggestionType
@@ -157,7 +162,9 @@ const mapStateToProps = state => {
     projectSearchValue: docManage.projectSuggestions.searchValue,
     jurisdictionSearchValue: docManage.jurisdictionSuggestions.searchValue,
     selectedJurisdiction: docManage.jurisdictionSuggestions.selectedSuggestion,
-    selectedProject: docManage.projectSuggestions.selectedSuggestion
+    selectedProject: docManage.projectSuggestions.selectedSuggestion,
+    searchByProject: docManage.main.searchByProject,
+    searchByJurisdiction: docManage.main.searchByJurisdiction
   }
 }
 
