@@ -24,7 +24,27 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
   <WithStyles(TableCell)
     padding="checkbox"
   >
-    doc1
+    <WithTheme(TextLink)
+      to={
+        Object {
+          "pathname": "/docs/undefined/view",
+          "state": Object {
+            "document": Object {
+              "jurisdictions": Array [],
+              "name": "doc1",
+              "projects": Array [],
+              "uploadedBy": Object {
+                "firstName": "Test",
+                "lastName": "User",
+              },
+              "uploadedDate": "1/1/2000",
+            },
+          },
+        }
+      }
+    >
+      doc1
+    </WithTheme(TextLink)>
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"
@@ -37,6 +57,16 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
     padding="checkbox"
   >
     12/31/1999, 7:00 PM
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
+    padding="checkbox"
+  >
+    P1, P2
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
+    padding="checkbox"
+  >
+    J1, J2
   </WithStyles(TableCell)>
 </WithStyles(TableRow)>
 `;

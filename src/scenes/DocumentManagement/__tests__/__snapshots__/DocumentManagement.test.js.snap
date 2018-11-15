@@ -33,17 +33,36 @@ exports[`Document Management scene should render correctly 1`] = `
     projectName=""
     protocolButton={false}
   />
-  <DocList
-    allSelected={false}
-    docCount={0}
-    documents={Array []}
-    onChangePage={[MockFunction]}
-    onChangeRows={[MockFunction]}
-    onSelectAllFiles={[MockFunction]}
-    onSelectOneFile={[MockFunction]}
-    page={0}
-    rowsPerPage="10"
-  />
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={true}
+    flex={true}
+    justify="stretch"
+    padding={0}
+    raised={true}
+    style={Object {}}
+    type="column"
+  >
+    <Search
+      onClearSuggestions={[Function]}
+      onGetSuggestions={[Function]}
+      onSearchDocs={[Function]}
+      onSearchValueChange={[Function]}
+      onSuggestionSelected={[Function]}
+    />
+    <DocList
+      allSelected={false}
+      docCount={0}
+      documents={Array []}
+      onChangePage={[MockFunction]}
+      onChangeRows={[MockFunction]}
+      onSelectAllFiles={[MockFunction]}
+      onSelectOneFile={[MockFunction]}
+      page={0}
+      rowsPerPage="10"
+    />
+  </FlexGrid>
   <Route
     component={[Function]}
     path="/docs/upload"
