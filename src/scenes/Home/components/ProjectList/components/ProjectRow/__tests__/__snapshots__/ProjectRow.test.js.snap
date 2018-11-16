@@ -1,13 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - ProjectList - ProjectRow component should render correctly 1`] = `
-<TableRow
+<WithStyles(TableRow)
   key="1"
 >
-  <TableCell
+  <WithStyles(TableCell)
     id="1-bookmarked"
     key="1-bookmarked"
-    padding="checkbox"
+    style={
+      Object {
+        "paddingLeft": 24,
+        "paddingRight": 0,
+        "width": "1%",
+      }
+    }
   >
     <IconButton
       aria-label="Bookmark this project"
@@ -20,8 +26,8 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     >
       bookmark_border
     </IconButton>
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-name"
     key="1-name"
     padding="checkbox"
@@ -45,22 +51,22 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     >
       Project 1
     </WithTheme(TextLink)>
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-dateLastEdited"
     key="1-dateLastEdited"
     padding="checkbox"
   >
     10/9/2012, 8:00 PM
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-lastEditedBy"
     key="1-lastEditedBy"
     padding="checkbox"
   >
     Kristin
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-protocol"
     key="1-protocol"
     padding="checkbox"
@@ -71,8 +77,8 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     >
       Edit
     </WithTheme(TextLink)>
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-jurisdictions"
     key="1-jurisdictions"
     padding="checkbox"
@@ -91,8 +97,8 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     >
       Edit
     </WithTheme(TextLink)>
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-coding-scheme"
     key="1-coding-scheme"
     padding="checkbox"
@@ -103,8 +109,8 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     >
       Edit
     </WithTheme(TextLink)>
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-code"
     key="1-code"
     padding="checkbox"
@@ -121,8 +127,8 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
       value="Code"
     />
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-validate"
     key="1-validate"
     padding="checkbox"
@@ -139,8 +145,8 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
       value="Validate"
     />
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-export"
     key="1-export"
     padding="checkbox"
@@ -157,6 +163,6 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     >
       file_download
     </IconButton>
-  </TableCell>
-</TableRow>
+  </WithStyles(TableCell)>
+</WithStyles(TableRow)>
 `;

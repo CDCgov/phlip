@@ -101,15 +101,36 @@ export class Upload extends Component {
     }
 
     if (prevProps.infoRequestInProgress !== this.props.infoRequestInProgress) {
-      this.loadingAlertTimeout = setTimeout(this.showLoadingAlert, 1000)
+      this.loadingAlertTimeout = setTimeout(this.showInfoLoadingAlert, 1000)
     }
+
+    if (prevProps.uploading !== this.props.uploading) {
+      this.loadingAlertTimeout = setTimeout(this.showUploadLoadingAlert, 1000)
+    }
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.loadingAlertTimeout)
   }
 
   /**
    * Determines whether or not the 'processing' alert should be shown
    */
-  showLoadingAlert = () => {
+  showInfoLoadingAlert = () => {
     if (!this.props.infoRequestInProgress) {
+      clearTimeout(this.loadingAlertTimeout)
+      this.setState({
+        showLoadingAlert: false
+      })
+    } else {
+      this.setState({
+        showLoadingAlert: true
+      })
+    }
+  }
+
+  showUploadLoadingAlert = () => {
+    if (!this.props.uploading) {
       clearTimeout(this.loadingAlertTimeout)
       this.setState({
         showLoadingAlert: false
@@ -342,7 +363,9 @@ export class Upload extends Component {
         <Alert actions={[]} open={this.state.showLoadingAlert}>
           <FlexGrid container align="center">
             <CircularLoader type="indeterminate" />
-            <span style={{ paddingTop: 20 }}>Processing document... This could take a second...</span>
+            <span style={{ paddingTop: 20 }}>
+              {this.props.uploading ? 'Uploading documents' : 'Processing document'}... This could take a couple minutes...
+            </span>
           </FlexGrid>
         </Alert>
         }

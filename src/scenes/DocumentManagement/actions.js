@@ -1,4 +1,5 @@
 import makeActionCreator from 'utils/makeActionCreator'
+import { makeAutocompleteActionCreators } from 'data/autocomplete/actions'
 
 export const types = {
   GET_DOCUMENTS_REQUEST: 'GET_DOCUMENTS_REQUEST',
@@ -20,4 +21,12 @@ export default {
   handlePageChange: makeActionCreator(types.ON_PAGE_CHANGE, 'page'),
   handleRowsChange: makeActionCreator(types.ON_ROWS_CHANGE, 'rowsPerPage'),
   handleSelectOneFile: makeActionCreator(types.ON_SELECT_ONE_FILE, 'id')
+}
+
+export const projectAutocomplete = {
+  ...makeAutocompleteActionCreators('PROJECT')
+}
+
+export const jurisdictionAutocomplete = {
+  ...makeAutocompleteActionCreators('JURISDICTION')
 }

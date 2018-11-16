@@ -1,14 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - ProjectList - ProjectTableHead component should render correctly 1`] = `
-<TableRow
+<WithStyles(TableRow)
   key="headers"
+  style={
+    Object {
+      "width": "100%",
+    }
+  }
 >
-  <TableCell
+  <WithStyles(TableCell)
     id="bookmarked"
     key="bookmarked"
-    padding="checkbox"
     scope="col"
+    style={
+      Object {
+        "paddingLeft": 24,
+        "paddingRight": 0,
+        "width": "1%",
+      }
+    }
   >
     <IconButton
       color="#757575"
@@ -21,8 +32,8 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     >
       bookmark_border
     </IconButton>
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="name"
     key="name"
     padding="checkbox"
@@ -45,8 +56,8 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
         Name
       </WithStyles(TableSortLabel)>
     </WithStyles(Tooltip)>
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="dateLastEdited"
     key="dateLastEdited"
     padding="checkbox"
@@ -69,8 +80,8 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
         Date Last Edited
       </WithStyles(TableSortLabel)>
     </WithStyles(Tooltip)>
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="lastEditedBy"
     key="lastEditedBy"
     padding="checkbox"
@@ -93,50 +104,50 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
         Last Edited By
       </WithStyles(TableSortLabel)>
     </WithStyles(Tooltip)>
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="protocol"
     key="protocol"
     padding="checkbox"
     scope="col"
   >
     Protocol
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="jurisdictions"
     key="jurisdictions"
     padding="checkbox"
     scope="col"
   >
     Jurisdictions
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="codingScheme"
     key="codingScheme"
     padding="checkbox"
     scope="col"
   >
     Coding Scheme
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="code"
     key="code"
     padding="checkbox"
     scope="col"
   />
-  <TableCell
+  <WithStyles(TableCell)
     id="validate"
     key="validate"
     padding="checkbox"
     scope="col"
   />
-  <TableCell
+  <WithStyles(TableCell)
     id="export"
     key="export"
     padding="checkbox"
     scope="col"
   >
     Export
-  </TableCell>
-</TableRow>
+  </WithStyles(TableCell)>
+</WithStyles(TableRow)>
 `;

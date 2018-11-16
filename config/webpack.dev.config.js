@@ -158,7 +158,7 @@ module.exports = env => {
 
       new HtmlWebpackPlugin({
         inject: true,
-        template: paths.appDevHtml,
+        template: paths.appHtml,
         filename: 'index.html'
       }),
 

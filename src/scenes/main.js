@@ -193,7 +193,7 @@ class Main extends Component {
     if (!isRefreshing && isLoggedIn) actions.startRefreshJwt()
 
     return (
-      <FlexGrid container type="column" flex>
+      <FlexGrid container type="column" flex style={{ overflow: 'hidden' }}>
         <IdleTimer onIdle={this.logoutUserOnIdle} timeout={900000} />
         <AppHeader
           user={this.props.user}
@@ -205,7 +205,7 @@ class Main extends Component {
           onTabChange={this.handleTabChange}
           onOpenAdminPage={this.handleOpenAdminPage}
         />
-        <FlexGrid container type="row" flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
+        <FlexGrid container flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
           <Switch location={currentLocation}>
             <Route path="/docs/:id/view" component={DocumentView} />
             <Route path="/docs" component={DocumentManagement} />

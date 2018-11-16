@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Page from './Page'
 import PDFJS from 'pdfjs-dist/webpack'
 PDFJS.GlobalWorkerOptions.workerSrc = '/pdf.worker.bundle.js'
-import styles from './pdf_viewer.css'
+import styles from './pdf_viewer.scss'
 
 export class PDFViewer extends Component {
   static propTypes = {}
@@ -25,7 +25,6 @@ export class PDFViewer extends Component {
 
   createPdf = docContent => {
     const CMAP = 'pdfjs-dist/cmaps'
-    console.log(docContent)
     PDFJS.getDocument({ data: docContent.content.data, cMapUrl: CMAP }).then(pdf => {
       pdf.getMetadata().then(md => {
         this.setState({
@@ -62,7 +61,7 @@ export class PDFViewer extends Component {
 
   render() {
     return (
-      <div id="viewContainer" style={{ overflow: 'auto', height: '100%' }}>
+      <div id="viewContainer" style={{ overflow: 'hidden', height: '100%' }}>
         <div id="viewer" ref={this.viewerRef} className={styles.pdfViewer}>
           {this.state.pages.length > 0
           && this.state.pages.map((page, i) => {

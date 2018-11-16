@@ -116,7 +116,7 @@ const uploadRequestLogic = createLogic({
       const noJurIds = state.list.selectedDocs.filter(doc => !doc.jurisdictions.value.hasOwnProperty('id') ||
         !doc.jurisdictions.value.id)
       if (noJurs.length === 0 && noJurIds.length === 0) {
-        allow({ ...action, jurisdictions: [jurs] })
+      allow({ ...action, jurisdictions: Object.values(jurs) })
       } else {
         reject({
           type: types.REJECT_EMPTY_JURISDICTIONS,

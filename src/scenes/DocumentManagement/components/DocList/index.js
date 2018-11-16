@@ -6,55 +6,46 @@ import TableBody from '@material-ui/core/TableBody'
 import TableHead from '@material-ui/core/TableHead'
 import TableFooter from '@material-ui/core/TableFooter'
 import TableRow from '@material-ui/core/TableRow'
-import SearchBar from 'components/SearchBar'
 import DocListTableHead from './components/DocListTableHead'
 import DocListTableRow from './components/DocListTableRow'
 import TablePagination from 'components/TablePagination'
 
 export const DocList = props => {
   const {
-    onSearchDocs, onSelectAllFiles, onSelectOneFile, rowsPerPage, page,
+    onSelectAllFiles, onSelectOneFile, rowsPerPage, page,
     onChangePage, onChangeRows, documents, docCount, allSelected
   } = props
 
   return (
-    <FlexGrid container flex raised>
-      <FlexGrid type="row" container align="center" justify="space-between" padding="25px 20px 20px 20px">
-        <FlexGrid></FlexGrid>
-        <FlexGrid>
-          {/*<SearchBar placeholder="Search" />*/}
-        </FlexGrid>
-      </FlexGrid>
-      <FlexGrid container flex style={{ overflow: 'hidden' }}>
-        <Table
-          style={{ borderCollapse: 'separate', tableLayout: 'auto', display: 'block', overflow: 'auto' }}
-          summary="List of documents">
-          <TableHead style={{ width: '100%' }}>
-            <DocListTableHead onSelectAll={() => onSelectAllFiles()} allSelected={allSelected} />
-          </TableHead>
-          <TableBody>
-            {documents.map(docId => <DocListTableRow
-              key={`doc-${docId}`}
-              id={docId}
-              onSelectFile={() => onSelectOneFile(docId)}
-            />)}
-          </TableBody>
-        </Table>
-        <FlexGrid flex />
-        <Table>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                count={docCount}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={(event, page) => onChangePage(page)}
-                onChangeRowsPerPage={(event) => onChangeRows(event.target.value)}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </FlexGrid>
+    <FlexGrid container flex style={{ overflow: 'hidden' }}>
+      <Table
+        style={{ borderCollapse: 'separate', tableLayout: 'auto', display: documents.length > 0 ? 'block' : 'table', overflow: 'auto' }}
+        summary="List of documents">
+        <TableHead style={{ width: '100%' }}>
+          <DocListTableHead onSelectAll={() => onSelectAllFiles()} allSelected={allSelected} />
+        </TableHead>
+        <TableBody>
+          {documents.map(docId => <DocListTableRow
+            key={`doc-${docId}`}
+            id={docId}
+            onSelectFile={() => onSelectOneFile(docId)}
+          />)}
+        </TableBody>
+      </Table>
+      <FlexGrid flex />
+      <Table>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              count={docCount}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onChangePage={(event, page) => onChangePage(page)}
+              onChangeRowsPerPage={(event) => onChangeRows(event.target.value)}
+            />
+          </TableRow>
+        </TableFooter>
+      </Table>
     </FlexGrid>
   )
 }

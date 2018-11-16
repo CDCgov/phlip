@@ -25,7 +25,9 @@ const initial = {
   rowsPerPage: '10',
   page: 0,
   searchValue: '',
-  allSelected: false
+  allSelected: false,
+  searchByProject: null,
+  searchByJurisdiction: null
 }
 
 const getState = (other = {}) => ({

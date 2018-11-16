@@ -7,6 +7,8 @@ import SimpleInput from 'components/SimpleInput'
 import match from 'autosuggest-highlight/match'
 import parse from 'autosuggest-highlight/parse'
 import MenuItem from '@material-ui/core/MenuItem/MenuItem'
+import Icon from 'components/Icon'
+import InputAdornment from '@material-ui/core/InputAdornment'
 
 /**
  * Classes passed to Autosuggest
@@ -49,20 +51,22 @@ const classes = theme => ({
  * @param onBlur
  * @param ref
  * @param TextFieldProps
+ * @param InputProps
  * @param other
  */
-const renderInput = ({ value, onBlur, ref, TextFieldProps, ...other }) => {
+const renderInput = ({ value, onBlur, ref, TextFieldProps, InputProps, ...other }) => {
   return (
-  <SimpleInput
-    shrinkLabel
-    inputRef={ref}
-    value={value}
-    {...TextFieldProps}
-    multiline={false}
-    InputProps={{
-      inputProps: other
-    }}
-  />)
+    <SimpleInput
+      shrinkLabel
+      inputRef={ref}
+      value={value}
+      {...TextFieldProps}
+      multiline={false}
+      InputProps={{
+        inputProps: other,
+        ...InputProps
+      }}
+    />)
 }
 
 /**
@@ -138,7 +142,9 @@ export const Autocomplete = props => {
     handleClearSuggestions,
     handleSuggestionSelected,
     renderSuggestion,
-    getSuggestionValue
+    getSuggestionValue,
+    showSearchIcon,
+    theme
   } = props
 
   return (
@@ -157,6 +163,15 @@ export const Autocomplete = props => {
       renderInputComponent={renderInput}
       inputProps={{
         TextFieldProps: InputProps,
+        InputProps: showSearchIcon ? {
+          style: { 'alignItems': 'center' },
+          endAdornment:
+            <InputAdornment
+              style={{ marginTop: 0, height: 24 }}
+              position="end"
+              disableTypography><Icon color={theme.palette.greyText}>search</Icon>
+            </InputAdornment>
+        } : {},
         ...inputProps
       }}
       shouldRenderSuggestions={shouldRenderSuggestions}
@@ -221,12 +236,18 @@ Autocomplete.propTypes = {
   /**
    * Returns the suggestion value
    */
-  getSuggestionValue: PropTypes.func
+  getSuggestionValue: PropTypes.func,
+
+  /**
+   * Show search icon
+   */
+  showSearchIcon: PropTypes.bool
 }
 
 Autocomplete.defaultProps = {
   renderSuggestion: renderSuggestion,
-  getSuggestionValue: getSuggestionValue
+  getSuggestionValue: getSuggestionValue,
+  showSearchIcon: false
 }
 
-export default withStyles(classes)(Autocomplete)
+export default withStyles(classes, { withTheme: true })(Autocomplete)

@@ -13,11 +13,11 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
   type="column"
 >
   <FlexGrid
-    align="flex-end"
+    align="center"
     circular={false}
     container={true}
     flex={false}
-    justify="stretch"
+    justify="flex-end"
     padding={15}
     raised={false}
     style={Object {}}

@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import FlexGrid from 'components/FlexGrid'
 import PDFViewer from 'components/PDFViewer'
-import { connect } from 'react-redux'
+import Typography from '@material-ui/core/Typography'
 
 export class DocumentContents extends Component {
   constructor(props, context) {
@@ -11,7 +12,13 @@ export class DocumentContents extends Component {
 
   render() {
     return (
-      <FlexGrid raised flex style={{ height: '100%', overflow: 'hidden', flexBasis: '70%' }}>
+      <FlexGrid raised container flex style={{  overflow: 'hidden', flexBasis: '70%', padding: 30, minWidth: '70%' }}>
+        <FlexGrid container flex style={{ display: 'inline-flex', position: 'relative', marginBottom: 10 }}>
+          <Typography variant="caption" style={{ fontSize: '.65rem', color: '#9e9e9e', marginBottom: 2 }}>
+            Document Name
+          </Typography>
+          <Typography variant="subheading">{this.props.document.name}</Typography>
+        </FlexGrid>
         <PDFViewer document={this.props.document} />
       </FlexGrid>
     )
@@ -20,7 +27,7 @@ export class DocumentContents extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    document: state.scenes.docView.document
+    document: state.scenes.docView.document || {}
   }
 }
 
