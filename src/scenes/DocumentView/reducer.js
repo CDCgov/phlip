@@ -1,7 +1,7 @@
 import { types } from './actions'
 
 const INITIAL_STATE = {
-  document: { content: {} },
+  document: { content: {}, projects: [], jurisdictions: [] },
   documentRequestInProgress: false
 }
 

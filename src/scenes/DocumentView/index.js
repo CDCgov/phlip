@@ -37,7 +37,7 @@ export class DocumentView extends Component {
           <DocumentContents loading={this.props.documentRequestInProgress} />
           <FlexGrid style={{ flexBasis: '2%' }} />
           <FlexGrid container type="column" style={{ flexBasis: '25%' }}>
-              <DocumentMeta document={this.props.document} loading={this.props.documentRequestInProgress}/>
+            <DocumentMeta document={this.props.document} loading={this.props.documentRequestInProgress} />
           </FlexGrid>
         </FlexGrid>
       </FlexGrid>
