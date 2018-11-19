@@ -470,7 +470,8 @@ describe('Document Management - Upload reducer tests', () => {
         ]
       })
       const updatedState = reducer(currentState, action)
-      expect(updatedState.selectedDocs[1].jurisdictions.value.suggestions).toEqual([{ name: 'juris' }, { name: 'jurisdiction' }])
+      expect(updatedState.selectedDocs[1].jurisdictions.value.suggestions)
+        .toEqual([{ name: 'juris' }, { name: 'jurisdiction' }])
     })
   })
 
@@ -617,6 +618,88 @@ describe('Document Management - Upload reducer tests', () => {
 
     test('should reset state to initial state', () => {
       expect(updatedState).toEqual(INITIAL_STATE)
+    })
+  })
+
+  describe('ON_SUGGESTION_SELECTED_JURISDICTION', () => {
+    test('should populate the jurisdiction property for docs in state.selectedDocs with action.suggestion information', () => {
+      const action = {
+        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION`,
+        suggestion: { id: 123, name: 'Ohio (state)' }
+      }
+
+      const currentState = getState({
+        selectedDocs: [
+          { name: 'doc 1', jurisdictions: { value: {} } },
+          { name: 'doc 2', jurisdictions: { value: {} } },
+          { name: 'doc 3', jurisdictions: { value: {} } }
+        ]
+      })
+      const updatedState = reducer(currentState, action)
+
+      expect(updatedState.selectedDocs[0].jurisdictions.value).toEqual({ name: 'Ohio (state)', id: 123 })
+      expect(updatedState.selectedDocs[1].jurisdictions.value).toEqual({ name: 'Ohio (state)', id: 123 })
+      expect(updatedState.selectedDocs[2].jurisdictions.value).toEqual({ name: 'Ohio (state)', id: 123 })
+    })
+
+    test('should turn off editability for the jurisdiction property for docs in state.selectedDocs', () => {
+      const action = {
+        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION`,
+        suggestion: { id: 123, name: 'Ohio (state)' }
+      }
+
+      const currentState = getState({
+        selectedDocs: [
+          { name: 'doc 1', jurisdictions: { value: {} } },
+          { name: 'doc 2', jurisdictions: { value: {} } }
+        ]
+      })
+
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.selectedDocs[0].jurisdictions.editable).toEqual(false)
+      expect(updatedState.selectedDocs[1].jurisdictions.editable).toEqual(false)
+      expect(updatedState.selectedDocs[0].jurisdictions.inEditMode).toEqual(false)
+      expect(updatedState.selectedDocs[1].jurisdictions.inEditMode).toEqual(false)
+    })
+  })
+
+  describe('UPDATE_SEARCH_VALUE_JURISDICTION', () => {
+    test('should clear the jurisdiction property for docs in state.selectedDocs if searchValue changed to empty', () => {
+      const action = {
+        type: `${autocompleteTypes.UPDATE_SEARCH_VALUE}_JURISDICTION`,
+        value: ''
+      }
+
+      const currentState = getState({
+        selectedDocs: [
+          { name: 'doc 1', jurisdictions: { value: { name: 'Ohio (state)', id: 123 } } },
+          { name: 'doc 2', jurisdictions: { value: { name: 'Ohio (state)', id: 123 } } }
+        ]
+      })
+
+      const updatedState = reducer(currentState, action)
+
+      expect(updatedState.selectedDocs[0].jurisdictions.value).toEqual({ suggestions: [], searchValue: '', name: '' })
+      expect(updatedState.selectedDocs[1].jurisdictions.value).toEqual({ suggestions: [], searchValue: '', name: '' })
+    })
+
+    test('should enable editing on jurisdiction property for docs in state.selectedDocs if search value is empty', () => {
+      const action = {
+        type: `${autocompleteTypes.UPDATE_SEARCH_VALUE}_JURISDICTION`,
+        value: ''
+      }
+
+      const currentState = getState({
+        selectedDocs: [
+          { name: 'doc 1', jurisdictions: { value: { name: 'Ohio (state)', id: 123 } } },
+          { name: 'doc 2', jurisdictions: { value: { name: 'Ohio (state)', id: 123 } } }
+        ]
+      })
+
+      const updatedState = reducer(currentState, action)
+
+      expect(updatedState.selectedDocs[0].jurisdictions.editable).toEqual(true)
+      expect(updatedState.selectedDocs[1].jurisdictions.editable).toEqual(true)
     })
   })
 })
