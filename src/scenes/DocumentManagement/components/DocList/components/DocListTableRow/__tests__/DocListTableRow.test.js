@@ -7,8 +7,8 @@ const props = {
     name: 'doc1',
     uploadedBy: { firstName: 'Test', lastName: 'User' },
     uploadedDate: '1/1/2000',
-    projects: [],
-    jurisdictions: []
+    projects: ['Project 1', 'Project 2'],
+    jurisdictions: ['Ohio (state)', 'Georgia (state)']
   },
   projectList: ['P1', 'P2'],
   jurisdictionList: ['J1', 'J2'],
