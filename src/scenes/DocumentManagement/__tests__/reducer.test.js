@@ -380,7 +380,7 @@ describe('Document Management reducer', () => {
   describe('ON_SUGGESTION_SELECTED_PROJECT', () => {
     test('should set state.searchByProject to the id of the action.suggestion', () => {
       const action = {
-        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_PROJECT`,
+        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_PROJECT_MAIN`,
         suggestion: { id: 123, name: 'project' }
       }
 
@@ -392,7 +392,7 @@ describe('Document Management reducer', () => {
 
     test('should filter all documents to show only ones that are for the selected project', () => {
       const action = {
-        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_PROJECT`,
+        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_PROJECT_MAIN`,
         suggestion: { id: 123, name: 'project' }
       }
 
@@ -434,7 +434,7 @@ describe('Document Management reducer', () => {
   describe('ON_SUGGESTION_SELECTED_JURISDICTION', () => {
     test('should set state.searchByJurisdiction to the id of the action.suggestion', () => {
       const action = {
-        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION`,
+        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION_MAIN`,
         suggestion: { id: 321, name: 'ohio' }
       }
 
@@ -446,7 +446,7 @@ describe('Document Management reducer', () => {
 
     test('should filter all documents to show only ones that are for the selected jurisdiction', () => {
       const action = {
-        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION`,
+        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION_MAIN`,
         suggestion: { id: 321, name: 'ohio' }
       }
 

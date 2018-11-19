@@ -8,10 +8,11 @@ describe('Autocomplete action creators', () => {
     const expectedAction = {
       type: `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_${searchName}`,
       searchString: 'over',
+      suffix: '',
       index: 1
     }
 
-    expect(actions.searchForSuggestionsRequest('over', 1)).toEqual(
+    expect(actions.searchForSuggestionsRequest('over', '', 1)).toEqual(
       expectedAction
     )
   })

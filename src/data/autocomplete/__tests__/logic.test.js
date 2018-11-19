@@ -47,14 +47,16 @@ describe('Autocomplete logic', () => {
 
       store.dispatch({
         type: `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
-        searchString: 'test'
+        searchString: 'test',
+        suffix: ''
       })
 
       store.whenComplete(() => {
         expect(store.actions).toEqual([
           {
             type: `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
-            searchString: 'test'
+            searchString: 'test',
+            suffix: ''
           },
           {
             type: `${types.SEARCH_FOR_SUGGESTIONS_SUCCESS}_PROJECT`,
@@ -75,14 +77,16 @@ describe('Autocomplete logic', () => {
       const store = setupStore()
       store.dispatch({
         type: `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`,
-        searchString: 'Al'
+        searchString: 'Al',
+        suffix: ''
       })
 
       store.whenComplete(() => {
         expect(store.actions).toEqual([
           {
             type: `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`,
-            searchString: 'Al'
+            searchString: 'Al',
+            suffix: ''
           },
           {
             type: `${types.SEARCH_FOR_SUGGESTIONS_SUCCESS}_JURISDICTION`,
