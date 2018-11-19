@@ -24,12 +24,11 @@ describe('Home scene - ProjectList - ProjectTableHead component', () => {
   })
 
   describe('Sorting', () => {
-    test('should call onRequestSort with name when the Name header is clicked', () => {
+    xtest('should call onRequestSort with name when the Name header is clicked', () => {
       const wrapper = shallow(<ProjectTableHead {...props} />).dive().dive()
-      console.log(wrapper.debug())
-     //wrapper.simulate('click')
-      //wrapper.update()
-      //expect(props.onRequestSort).toHaveBeenCalledWith('name')
+      wrapper.simulate('click')
+      wrapper.update()
+      expect(props.onRequestSort).toHaveBeenCalledWith('name')
     })
 
     xtest('should call onRequestSort with dateLastEdited when the Date Last Edited header is clicked', () => {

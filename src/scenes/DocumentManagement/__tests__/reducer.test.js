@@ -9,13 +9,15 @@ const mockDocuments = {
       name: 'doc1',
       _id: '1',
       uploadedBy: { firstName: 'test', lastName: 'user' },
-      jurisdictions: [],
-      projects: []
+      uploadedByName: 'test user',
+      jurisdictions: [321],
+      projects: [123]
     },
     '2': {
       name: 'doc2',
       _id: '2',
       uploadedBy: { firstName: 'test', lastName: 'user' },
+      uploadedByName: 'test user',
       jurisdictions: [],
       projects: []
     },
@@ -23,13 +25,15 @@ const mockDocuments = {
       name: 'doc3',
       _id: '3',
       uploadedBy: { firstName: 'test', lastName: 'user' },
+      uploadedByName: 'test user',
       jurisdictions: [],
-      projects: []
+      projects: [123]
     },
     '4': {
       name: 'doc4',
       _id: '4',
       uploadedBy: { firstName: 'test', lastName: 'user' },
+      uploadedByName: 'test user',
       jurisdictions: [],
       projects: []
     },
@@ -37,21 +41,24 @@ const mockDocuments = {
       name: 'doc5',
       _id: '5',
       uploadedBy: { firstName: 'test', lastName: 'user' },
+      uploadedByName: 'test user',
       jurisdictions: [],
-      projects: []
+      projects: [123]
     },
     '6': {
       name: 'doc6',
       _id: '6',
       uploadedBy: { firstName: 'test', lastName: 'user' },
-      jurisdictions: [],
+      uploadedByName: 'test user',
+      jurisdictions: [321],
       projects: []
     },
     '7': {
       name: 'doc7',
       _id: '7',
       uploadedBy: { firstName: 'test', lastName: 'user' },
-      jurisdictions: [],
+      uploadedByName: 'test user',
+      jurisdictions: [321],
       projects: []
     }
   },
@@ -382,8 +389,75 @@ describe('Document Management reducer', () => {
 
       expect(updatedState.searchByProject).toEqual(123)
     })
+
+    test('should filter all documents to show only ones that are for the selected project', () => {
+      const action = {
+        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_PROJECT`,
+        suggestion: { id: 123, name: 'project' }
+      }
+
+      const currentState = getState({ documents: mockDocuments })
+      const updatedState = reducer(currentState, action)
+
+      expect(updatedState.documents.visible).toEqual([
+        '1', '3', '5'
+      ])
+    })
   })
 
+  describe('ON_SEARCH_FIELD_CHANGE', () => {
+    test('should set state.searchValue to action.searchValue', () => {
+      const action = {
+        type: types.ON_SEARCH_FIELD_CHANGE,
+        searchValue: 'this search'
+      }
+
+      const currentState = getState()
+      const updateState = reducer(currentState, action)
+
+      expect(updateState.searchValue).toEqual('this search')
+    })
+
+    test('should filter all documents to only show ones whose name, upload date or uploaded by match the search string', () => {
+      const action = {
+        type: types.ON_SEARCH_FIELD_CHANGE,
+        searchValue: 'doc7'
+      }
+
+      const currentState = getState({ documents: mockDocuments })
+      const updatedState = reducer(currentState, action)
+
+      expect(updatedState.documents.visible).toEqual(['7'])
+    })
+  })
+
+  describe('ON_SUGGESTION_SELECTED_JURISDICTION', () => {
+    test('should set state.searchByJurisdiction to the id of the action.suggestion', () => {
+      const action = {
+        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION`,
+        suggestion: { id: 321, name: 'ohio' }
+      }
+
+      const currentState = getState({ documents: mockDocuments })
+      const updatedState = reducer(currentState, action)
+
+      expect(updatedState.searchByJurisdiction).toEqual(321)
+    })
+
+    test('should filter all documents to show only ones that are for the selected jurisdiction', () => {
+      const action = {
+        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION`,
+        suggestion: { id: 321, name: 'ohio' }
+      }
+
+      const currentState = getState({ documents: mockDocuments })
+      const updatedState = reducer(currentState, action)
+
+      expect(updatedState.documents.visible).toEqual([
+        '1', '6', '7'
+      ])
+    })
+  })
 
   describe('FLUSH_STATE', () => {
     test('should reset state to initial', () => {
