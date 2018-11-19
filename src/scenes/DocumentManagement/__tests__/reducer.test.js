@@ -1,42 +1,58 @@
 import { types } from '../actions'
 import { docManagementReducer as reducer } from '../reducer'
+import { createAutocompleteReducer } from 'data/autocomplete/reducer'
+import { types as autocompleteTypes } from 'data/autocomplete/actions'
 
 const mockDocuments = {
   byId: {
     '1': {
       name: 'doc1',
       _id: '1',
-      uploadedBy: { firstName: 'test', lastName: 'user' }
+      uploadedBy: { firstName: 'test', lastName: 'user' },
+      jurisdictions: [],
+      projects: []
     },
     '2': {
       name: 'doc2',
       _id: '2',
-      uploadedBy: { firstName: 'test', lastName: 'user' }
+      uploadedBy: { firstName: 'test', lastName: 'user' },
+      jurisdictions: [],
+      projects: []
     },
     '3': {
       name: 'doc3',
       _id: '3',
-      uploadedBy: { firstName: 'test', lastName: 'user' }
+      uploadedBy: { firstName: 'test', lastName: 'user' },
+      jurisdictions: [],
+      projects: []
     },
     '4': {
       name: 'doc4',
       _id: '4',
-      uploadedBy: { firstName: 'test', lastName: 'user' }
+      uploadedBy: { firstName: 'test', lastName: 'user' },
+      jurisdictions: [],
+      projects: []
     },
     '5': {
       name: 'doc5',
       _id: '5',
-      uploadedBy: { firstName: 'test', lastName: 'user' }
+      uploadedBy: { firstName: 'test', lastName: 'user' },
+      jurisdictions: [],
+      projects: []
     },
     '6': {
       name: 'doc6',
       _id: '6',
-      uploadedBy: { firstName: 'test', lastName: 'user' }
+      uploadedBy: { firstName: 'test', lastName: 'user' },
+      jurisdictions: [],
+      projects: []
     },
     '7': {
       name: 'doc7',
       _id: '7',
-      uploadedBy: { firstName: 'test', lastName: 'user' }
+      uploadedBy: { firstName: 'test', lastName: 'user' },
+      jurisdictions: [],
+      projects: []
     }
   },
   allIds: ['1', '2', '3', '4', '5', '6', '7'],
@@ -353,6 +369,21 @@ describe('Document Management reducer', () => {
       ])
     })
   })
+
+  describe('ON_SUGGESTION_SELECTED_PROJECT', () => {
+    test('should set state.searchByProject to the id of the action.suggestion', () => {
+      const action = {
+        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_PROJECT`,
+        suggestion: { id: 123, name: 'project' }
+      }
+
+      const currentState = getState({ documents: mockDocuments })
+      const updatedState = reducer(currentState, action)
+
+      expect(updatedState.searchByProject).toEqual(123)
+    })
+  })
+
 
   describe('FLUSH_STATE', () => {
     test('should reset state to initial', () => {
