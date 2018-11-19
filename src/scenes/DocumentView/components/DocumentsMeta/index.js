@@ -7,6 +7,9 @@ import Divider from '@material-ui/core/Divider'
 import { connect } from 'react-redux'
 import Dropdown from 'components/Dropdown'
 import Container, { Row } from 'components/Layout'
+import ListItem from '@material-ui/core/ListItem'
+import Table from 'components/Table'
+import TableBody from '@material-ui/core/TableBody'
 import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
 import Grid from 'components/Grid'
@@ -119,33 +122,34 @@ export class DocumentMeta extends Component {
             </FlexGrid>
           </FlexGrid>
           <Divider />
-          {/*<FlexGrid>*/}
-          {/*<TableRow>*/}
-          {/*/!*<TableCell padding="checkbox">{this.jurisdictionList}</TableCell>*!/*/}
-          {/*</TableRow>*/}
-          {/*</FlexGrid>*/}
+            <FlexGrid type='row' style={{paddingTop:5}}>
+                {this.props.jurisdictionList.map((item, index) =>(
+                    <Typography>{item}</Typography>
+                ))}
+            </FlexGrid>
         </FlexGrid>
-        <FlexGrid style={{ padding: 10 }} />
+        <br />
         <FlexGrid raised container flex style={{ overflow: 'hidden', flexBasis: '30%', padding: 20, minWidth: '30%' }}>
-          <FlexGrid container flex type="row">
-            <FlexGrid flex type="row" style={{ flexBasis: '80%', position: 'relative' }}>
-              <Typography
-                variant="display1"
-                style={{ position: 'absolute', fontSize: '1.2em', color: '#000000', bottom: 5 }}>
-                Assigned Projects
-              </Typography>
+            <FlexGrid container flex type="row">
+                <FlexGrid flex type="row" style={{ flexBasis: '80%', position: 'relative' }}>
+                    <Typography
+                        variant="display1"
+                        style={{ position: 'absolute', fontSize: '1.2em', color: '#000000', bottom: 5 }}>
+                        Assigned Projects
+                    </Typography>
+                </FlexGrid>
+                <FlexGrid type='column'>
+                    <Button size="small" style={{ bottom: 10 }}>Add</Button>
+                </FlexGrid>
             </FlexGrid>
-            <FlexGrid>
-              <Button size="small" style={{ bottom: 10 }}>Add</Button>
+            <Divider/>
+            <Divider/>
+            <FlexGrid type='row' style={{paddingTop:5}}>
+                {this.props.projectList.map((item, index) =>(
+                    <Typography>{item}</Typography>
+                ))}
             </FlexGrid>
-          </FlexGrid>
-          <Divider />
-          {/*<TableRow>*/}
-          {/*/!*<TableCell padding="checkbox">{this.projectList}</TableCell>*!/*/}
-          {/*</TableRow>*/}
         </FlexGrid>
-
-
       </FlexGrid>
     )
   }
