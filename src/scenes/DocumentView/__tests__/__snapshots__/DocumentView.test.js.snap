@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Document Management scene should render correctly 1`] = `
+exports[`DocumentView scene should render correctly 1`] = `
 <FlexGrid
   align="stretch"
   circular={false}

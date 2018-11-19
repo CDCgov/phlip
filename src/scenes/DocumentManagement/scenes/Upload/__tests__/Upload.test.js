@@ -15,7 +15,7 @@ const props = {
   alertText: '',
   alertOpen: false,
   alertTitle: '',
-  verifying: false
+  uploading: false
 }
 
 const actions = {
@@ -41,5 +41,14 @@ const setup = (otherProps = {}) => {
 describe('Document Management - Upload scene', () => {
   test('should render correctly', () => {
     expect(shallow(<Upload {...props} />)).toMatchSnapshot()
+  })
+
+  test('should show an alert if uploading takes a long time', (done) => {
+    const wrapper = shallow(<Upload {...props} />)
+    wrapper.setProps({ uploading: true })
+    setTimeout(() => {
+      expect(wrapper.find('Alert')).toHaveLength(1)
+      done()
+    }, 1005)
   })
 })
