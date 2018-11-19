@@ -2,18 +2,21 @@ import { createMockStore } from 'redux-logic-test'
 import MockAdapter from 'axios-mock-adapter'
 import logic from '../logic'
 import { types } from '../actions'
-import createApiHandler, { docApiInstance } from 'services/api'
+import createApiHandler, { docApiInstance, projectApiInstance } from 'services/api'
 import calls from 'services/api/docManageCalls'
+import apiCalls from 'services/api/calls'
 
 describe('Document Management logic', () => {
-  let mock
+  let mock, apiMock
 
   const mockReducer = (state, action) => state
   const history = {}
   const docApi = createApiHandler({ history }, docApiInstance, calls)
+  const api = createApiHandler({ history }, projectApiInstance, apiCalls)
 
   beforeEach(() => {
     mock = new MockAdapter(docApiInstance)
+    apiMock = new MockAdapter(projectApiInstance)
   })
 
   const setupStore = () => {
@@ -22,16 +25,25 @@ describe('Document Management logic', () => {
       reducer: mockReducer,
       logic,
       injectedDeps: {
-        docApi
+        docApi,
+        api
       }
     })
   }
 
   test('should get document list and dispatch GET_DOCUMENTS_SUCCESS on success', (done) => {
     mock.onGet('/docs').reply(200, [
-      { name: 'Doc 1', uploadedBy: {} },
-      { name: 'Doc 2', uploadedBy: {} }
+      { name: 'Doc 1', uploadedBy: { firstName: 'test', lastName: 'user' }, projects: [1], jurisdictions: [1] },
+      { name: 'Doc 2', uploadedBy: { firstName: 'test', lastName: 'user' }, projects: [1], jurisdictions: [1] }
     ])
+
+    apiMock
+      .onGet('/projects/1')
+      .reply(200, { name: 'Test Project', id: 1 })
+
+    apiMock
+      .onGet('/jurisdictions/1')
+      .reply(200, { id: 1, name: 'Ohio' })
 
     const store = setupStore()
 
@@ -40,11 +52,25 @@ describe('Document Management logic', () => {
     store.whenComplete(() => {
       expect(store.actions).toEqual([
         { type: types.GET_DOCUMENTS_REQUEST },
+        { type: 'GET_PROJECT_REQUEST', projectId: 1 },
+        { type: 'GET_JURISDICTION_REQUEST', jurisdictionId: 1 },
         {
           type: types.GET_DOCUMENTS_SUCCESS,
           payload: [
-            { name: 'Doc 1', uploadedBy: {} },
-            { name: 'Doc 2', uploadedBy: {} }
+            {
+              name: 'Doc 1',
+              uploadedBy: { firstName: 'test', lastName: 'user' },
+              uploadedByName: 'test user',
+              projects: [1],
+              jurisdictions: [1]
+            },
+            {
+              name: 'Doc 2',
+              uploadedBy: { firstName: 'test', lastName: 'user' },
+              uploadedByName: 'test user',
+              projects: [1],
+              jurisdictions: [1]
+            }
           ]
         }
       ])

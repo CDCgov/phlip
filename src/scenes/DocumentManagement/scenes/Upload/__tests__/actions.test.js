@@ -14,8 +14,9 @@ describe('Document management - Upload action creators', () => {
       selectedDocs: [{ name: 'blah' }]
     }
 
-
-    expect(actions.uploadDocumentsRequest(formData, [{ name: 'blah' }])).toEqual(expectedAction)
+    expect(
+      actions.uploadDocumentsRequest(formData, [{ name: 'blah' }])
+    ).toEqual(expectedAction)
   })
 
   test('should create an action to update a document property', () => {
@@ -26,7 +27,9 @@ describe('Document management - Upload action creators', () => {
       value: 'newName'
     }
 
-    expect(actions.updateDocumentProperty(1, 'name', 'newName')).toEqual(expectedAction)
+    expect(actions.updateDocumentProperty(1, 'name', 'newName')).toEqual(
+      expectedAction
+    )
   })
 
   test('should create an action to add documents to the selected list', () => {
@@ -35,7 +38,9 @@ describe('Document management - Upload action creators', () => {
       selectedDocs: [{ name: 'doc1' }, { name: 'doc2' }]
     }
 
-    expect(actions.addSelectedDocs([{ name: 'doc1' }, { name: 'doc2' }])).toEqual(expectedAction)
+    expect(
+      actions.addSelectedDocs([{ name: 'doc1' }, { name: 'doc2' }])
+    ).toEqual(expectedAction)
   })
 
   test('should create an action to clear selected files list', () => {
@@ -70,7 +75,9 @@ describe('Document management - Upload action creators', () => {
       title: 'alert title'
     }
 
-    expect(actions.openAlert('alert text', 'alert title')).toEqual(expectedAction)
+    expect(actions.openAlert('alert text', 'alert title')).toEqual(
+      expectedAction
+    )
   })
 
   test('should create an action to remove a duplicate file', () => {
@@ -80,7 +87,9 @@ describe('Document management - Upload action creators', () => {
       fileName: 'duplicate file name'
     }
 
-    expect(actions.removeDuplicate(1, 'duplicate file name')).toEqual(expectedAction)
+    expect(actions.removeDuplicate(1, 'duplicate file name')).toEqual(
+      expectedAction
+    )
   })
 
   test('should create an action to extract info', () => {
@@ -93,63 +102,9 @@ describe('Document management - Upload action creators', () => {
       infoSheet: { name: 'infofile' }
     }
 
-    expect(actions.extractInfoRequest(fd, { name: 'infofile' })).toEqual(expectedAction)
-  })
-
-  test('should create an action to search jurisdiction list', () => {
-    const expectedAction = {
-      type: types.SEARCH_JURISDICTION_LIST_REQUEST,
-      searchString: 'ohi',
-      index: 1
-    }
-
-    expect(actions.searchJurisdictionListRequest('ohi', 1)).toEqual(expectedAction)
-  })
-
-  test('should create an action to search project list', () => {
-    const expectedAction = {
-      type: types.SEARCH_PROJECT_LIST_REQUEST,
-      searchString: 'proj'
-    }
-
-    expect(actions.searchProjectListRequest('proj')).toEqual(expectedAction)
-  })
-
-  test('should create an action to handle a project in project list being selected', () => {
-    const expectedAction = {
-      type: types.ON_PROJECT_SUGGESTION_SELECTED,
-      project: { name: 'project 1' }
-    }
-
-    expect(actions.onProjectSuggestionSelected({ name: 'project 1' })).toEqual(expectedAction)
-  })
-
-  test('should create an action to handle a jurisdiction in list being selected', () => {
-    const expectedAction = {
-      type: types.ON_JURISDICTION_SUGGESTION_SELECTED,
-      jurisdiction: { name: 'Ohio' }
-    }
-
-    expect(actions.onJurisdictionSuggestionSelected({ name: 'Ohio' })).toEqual(expectedAction)
-  })
-
-  test('should create an action to update project / jurisdiction search value', () => {
-    const expectedAction = {
-      type: types.ON_SEARCH_VALUE_CHANGE,
-      searchType: 'project',
-      value: 'new search value'
-    }
-
-    expect(actions.onSearchValueChange('project', 'new search value' )).toEqual(expectedAction)
-  })
-
-  test('should create an action to clear suggestions for project / jurisdiction', () => {
-    const expectedAction = {
-      type: types.CLEAR_SUGGESTIONS,
-      suggestionType: 'jurisdiction'
-    }
-
-    expect(actions.clearSuggestions('jurisdiction')).toEqual(expectedAction)
+    expect(actions.extractInfoRequest(fd, { name: 'infofile' })).toEqual(
+      expectedAction
+    )
   })
 
   test('should create an action to reset no project error', () => {
@@ -185,27 +140,8 @@ describe('Document management - Upload action creators', () => {
       docs: [{ name: 'doc 1' }]
     }
 
-    expect(actions.mergeInfoWithDocs([{ name: 'doc 1' }])).toEqual(expectedAction)
+    expect(actions.mergeInfoWithDocs([{ name: 'doc 1' }])).toEqual(
+      expectedAction
+    )
   })
-
-  /*test('should create an action to remove a tag from a doc', () => {
-  const expectedAction = {
-    type: types.REMOVE_TAG,
-    index: 1,
-    tag: 'cool tag',
-    tagIndex: 4
-  }
-
-  expect(actions.removeTag(1, 'cool tag', 4)).toEqual(expectedAction)
-})
-
-test('should create an action to add a tag to a doc', () => {
-  const expectedAction = {
-    type: types.ADD_TAG,
-    index: 1,
-    tag: 'new cool tag'
-  }
-
-  expect(actions.addTag(1, 'new cool tag')).toEqual(expectedAction)
-})*/
 })

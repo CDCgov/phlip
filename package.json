@@ -38,7 +38,8 @@
       "<rootDir>/src/"
     ],
     "moduleNameMapper": {
-      "^.+\\.(css|scss)$": "<rootDir>/config/tests/styleMock.js"
+      "^.+\\.(css|scss)$": "<rootDir>/config/tests/styleMock.js",
+      "\\.worker.js": "<rootDir>/config/tests/workerMock.js"
     },
     "snapshotSerializers": [
       "enzyme-to-json/serializer"

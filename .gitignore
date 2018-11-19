@@ -11,3 +11,4 @@ tests.xml
 docs
 .env.prod
 stats.json
+.prettierrc
