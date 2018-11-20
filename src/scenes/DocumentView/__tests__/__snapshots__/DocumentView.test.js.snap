@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DocumentView scene should render correctly 1`] = `
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={true}
+  flex={true}
+  justify="stretch"
+  padding="20px 30px"
+  raised={false}
+  style={Object {}}
+  type="column"
+>
+  <withRouter(WithTheme(PageHeader))
+    onBackButtonClick={[Function]}
+    pageTitle="Edit Document"
+    projectName=""
+    protocolButton={false}
+  />
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={true}
+    flex={false}
+    justify="stretch"
+    padding={0}
+    raised={false}
+    style={
+      Object {
+        "height": "100%",
+      }
+    }
+    type="row"
+  >
+    <Connect(DocumentContents)
+      loading={false}
+    />
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={false}
+      flex={false}
+      justify="stretch"
+      padding={0}
+      raised={false}
+      style={
+        Object {
+          "flexBasis": "2%",
+        }
+      }
+      type="column"
+    />
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={true}
+      flex={false}
+      justify="stretch"
+      padding={0}
+      raised={false}
+      style={
+        Object {
+          "flexBasis": "20%",
+        }
+      }
+      type="column"
+    />
+  </FlexGrid>
+</FlexGrid>
+`;

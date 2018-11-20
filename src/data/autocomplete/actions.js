@@ -11,12 +11,12 @@ export const types = {
   CLEAR_ALL: 'CLEAR_ALL'
 }
 
-export const makeAutocompleteActionCreators = searchName => {
+export const makeAutocompleteActionCreators = (searchName, suffix = '') => {
   return {
-    updateSearchValue: makeActionCreator(`${types.UPDATE_SEARCH_VALUE}_${searchName}`, 'value'),
-    searchForSuggestionsRequest: makeActionCreator(`${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_${searchName}`, 'searchString', 'index'),
-    clearSuggestions: makeActionCreator(`${types.CLEAR_SUGGESTIONS}_${searchName}`),
-    onSuggestionSelected: makeActionCreator(`${types.ON_SUGGESTION_SELECTED}_${searchName}`, 'suggestion'),
-    clearAll: makeActionCreator(`${types.CLEAR_ALL}_${searchName}`)
+    updateSearchValue: makeActionCreator(`${types.UPDATE_SEARCH_VALUE}_${searchName}${suffix}`, 'value'),
+    searchForSuggestionsRequest: makeActionCreator(`${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_${searchName}`, 'searchString', 'suffix', 'index'),
+    clearSuggestions: makeActionCreator(`${types.CLEAR_SUGGESTIONS}_${searchName}${suffix}`),
+    onSuggestionSelected: makeActionCreator(`${types.ON_SUGGESTION_SELECTED}_${searchName}${suffix}`, 'suggestion'),
+    clearAll: makeActionCreator(`${types.CLEAR_ALL}_${searchName}${suffix}`)
   }
 }

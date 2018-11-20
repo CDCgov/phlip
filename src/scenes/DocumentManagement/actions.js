@@ -24,9 +24,9 @@ export default {
 }
 
 export const projectAutocomplete = {
-  ...makeAutocompleteActionCreators('PROJECT')
+  ...makeAutocompleteActionCreators('PROJECT', '_MAIN')
 }
 
 export const jurisdictionAutocomplete = {
-  ...makeAutocompleteActionCreators('JURISDICTION')
+  ...makeAutocompleteActionCreators('JURISDICTION', '_MAIN')
 }

@@ -30,9 +30,15 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
           "pathname": "/docs/undefined/view",
           "state": Object {
             "document": Object {
-              "jurisdictions": Array [],
+              "jurisdictions": Array [
+                "Ohio (state)",
+                "Georgia (state)",
+              ],
               "name": "doc1",
-              "projects": Array [],
+              "projects": Array [
+                "Project 1",
+                "Project 2",
+              ],
               "uploadedBy": Object {
                 "firstName": "Test",
                 "lastName": "User",

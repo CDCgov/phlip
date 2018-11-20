@@ -1,15 +1,15 @@
 import { types } from './actions'
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   searchValue: '',
   suggestions: [],
   selectedSuggestion: {}
 }
 
-export const createAutocompleteReducer = searchName => {
+export const createAutocompleteReducer = (searchName, suffix = '') => {
   return function(state = INITIAL_STATE, action) {
     switch (action.type) {
-      case `${types.UPDATE_SEARCH_VALUE}_${searchName}`:
+      case `${types.UPDATE_SEARCH_VALUE}_${searchName}${suffix}`:
         return {
           ...state,
           searchValue: action.value,
@@ -17,13 +17,13 @@ export const createAutocompleteReducer = searchName => {
           selectedSuggestion: action.value === '' ? {} : state.selectedSuggestion
         }
 
-      case `${types.SEARCH_FOR_SUGGESTIONS_SUCCESS}_${searchName}`:
+      case `${types.SEARCH_FOR_SUGGESTIONS_SUCCESS}_${searchName}${suffix}`:
         return {
           ...state,
           suggestions: action.payload
         }
 
-      case `${types.ON_SUGGESTION_SELECTED}_${searchName}`:
+      case `${types.ON_SUGGESTION_SELECTED}_${searchName}${suffix}`:
         return {
           ...state,
           selectedSuggestion: action.suggestion,
@@ -31,13 +31,13 @@ export const createAutocompleteReducer = searchName => {
           suggestions: []
         }
 
-      case `${types.CLEAR_SUGGESTIONS}_${searchName}`:
+      case `${types.CLEAR_SUGGESTIONS}_${searchName}${suffix}`:
         return {
           ...state,
           suggestions: []
         }
 
-      case `${types.CLEAR_ALL}_${searchName}`:
+      case `${types.CLEAR_ALL}_${searchName}${suffix}`:
       case 'FLUSH_STATE':
         return INITIAL_STATE
 

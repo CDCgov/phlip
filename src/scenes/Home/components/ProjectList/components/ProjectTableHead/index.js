@@ -25,7 +25,7 @@ const hiddenCols = [
   'export'
 ]
 
-const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSort, onSortBookmarked }) => {
+export const ProjectTableHead = ({ role, sortBy, direction, sortBookmarked, onRequestSort, onSortBookmarked }) => {
   const visible = (role === 'Coder' ? columns.filter(c => !hiddenCols.includes(c.key)) : columns)
 
   return (

@@ -159,7 +159,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
-    case `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION`:
+    case `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION_MAIN`:
       docs = [...Object.values(state.documents.byId)]
       matches = resetFilter(docs, state.searchValue, state.searchByProject, action.suggestion.id)
 
@@ -172,7 +172,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         searchByJurisdiction: action.suggestion.id
       }
 
-    case `${autocompleteTypes.ON_SUGGESTION_SELECTED}_PROJECT`:
+    case `${autocompleteTypes.ON_SUGGESTION_SELECTED}_PROJECT_MAIN`:
       docs = [...Object.values(state.documents.byId)]
       matches = resetFilter(docs, state.searchValue, action.suggestion.id, state.searchByJurisdiction)
 
@@ -185,7 +185,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         searchByProject: action.suggestion.id
       }
 
-    case `${autocompleteTypes.UPDATE_SEARCH_VALUE}_JURISDICTION`:
+    case `${autocompleteTypes.UPDATE_SEARCH_VALUE}_JURISDICTION_MAIN`:
       if (state.searchByJurisdiction !== null) {
         docs = [...Object.values(state.documents.byId)]
         matches = resetFilter(docs, state.searchValue, state.searchByProject, null)
@@ -202,7 +202,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         return state
       }
 
-      case `${autocompleteTypes.UPDATE_SEARCH_VALUE}_PROJECT`:
+      case `${autocompleteTypes.UPDATE_SEARCH_VALUE}_PROJECT_MAIN`:
         if (state.searchByProject !== null) {
           docs = [...Object.values(state.documents.byId)]
           matches = resetFilter(docs, state.searchValue, null, state.searchByJurisdiction)
@@ -230,8 +230,8 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
 const docManageReducer = combineReducers({
   upload,
   main: docManagementReducer,
-  projectSuggestions: createAutocompleteReducer('PROJECT'),
-  jurisdictionSuggestions: createAutocompleteReducer('JURISDICTION')
+  projectSuggestions: createAutocompleteReducer('PROJECT', '_MAIN'),
+  jurisdictionSuggestions: createAutocompleteReducer('JURISDICTION', '_MAIN')
 })
 
 export default docManageReducer

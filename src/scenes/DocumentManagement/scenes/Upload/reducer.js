@@ -27,7 +27,7 @@ export const INITIAL_STATE = {
   hasVerified: false
 }
 
-const uploadReducer = (state = INITIAL_STATE, action) => {
+export const uploadReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.UPLOAD_DOCUMENTS_REQUEST:
       return {
@@ -58,8 +58,8 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         uploading: false,
         duplicateFiles: action.payload,
         alertOpen: true,
-        alertText: `The file name, project and jurisdiction properties for one or more of the documents selected for 
-        upload match a pre-existing document in the system. These documents have been indicated in the file list. You 
+        alertText: `The file name, project and jurisdiction properties for one or more of the documents selected for
+        upload match a pre-existing document in the system. These documents have been indicated in the file list. You
         can choose to remove them or click the 'Upload' button again to proceed with saving them.`,
         alertTitle: 'Duplicates Found',
         hasVerified: true
@@ -98,11 +98,19 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
     case types.UPDATE_DOC_PROPERTY:
       let selectedDoc = { ...state.selectedDocs[action.index] }
       let value = action.value
-      selectedDoc[action.property] = { ...selectedDoc[action.property], value, error: '' }
+      selectedDoc[action.property] = {
+        ...selectedDoc[action.property],
+        value,
+        error: ''
+      }
 
       return {
         ...state,
-        selectedDocs: updateItemAtIndex([...state.selectedDocs], action.index, selectedDoc)
+        selectedDocs: updateItemAtIndex(
+          [...state.selectedDocs],
+          action.index,
+          selectedDoc
+        )
       }
 
     case types.ADD_SELECTED_DOCS:
@@ -110,10 +118,15 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
         ...state,
         selectedDocs: [
           ...state.selectedDocs,
-          ...action.selectedDocs.map(doc => {
+          ...action.selectedDocs.map((doc) => {
             let d = {}
-            Object.keys(doc).forEach(prop => {
-              d[prop] = { editable: true, value: doc[prop], error: '', inEditMode: false }
+            Object.keys(doc).forEach((prop) => {
+              d[prop] = {
+                editable: true,
+                value: doc[prop],
+                error: '',
+                inEditMode: false
+              }
             })
             return d
           })
@@ -136,7 +149,11 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
 
       return {
         ...state,
-        selectedDocs: updateItemAtIndex([...state.selectedDocs], action.index, selectedDoc)
+        selectedDocs: updateItemAtIndex(
+          [...state.selectedDocs],
+          action.index,
+          selectedDoc
+        )
       }
 
     case types.CLOSE_ALERT:
@@ -159,7 +176,7 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
       docs = [...state.selectedDocs]
       docs.splice(action.index, 1)
       let duplicates = [...state.duplicateFiles]
-      let index = duplicates.findIndex(dup => dup.name === action.fileName)
+      let index = duplicates.findIndex((dup) => dup.name === action.fileName)
       duplicates.splice(index, 1)
 
       return {
@@ -174,7 +191,11 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
 
       return {
         ...state,
-        selectedDocs: updateItemAtIndex([...state.selectedDocs], action.payload.index, selectedDoc)
+        selectedDocs: updateItemAtIndex(
+          [...state.selectedDocs],
+          action.payload.index,
+          selectedDoc
+        )
       }
 
     case types.CLEAR_ROW_JURISDICTION_SUGGESTIONS:
@@ -183,7 +204,11 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
 
       return {
         ...state,
-        selectedDocs: updateItemAtIndex([...state.selectedDocs], action.index, selectedDoc)
+        selectedDocs: updateItemAtIndex(
+          [...state.selectedDocs],
+          action.index,
+          selectedDoc
+        )
       }
 
     case 'RESET_NO_PROJECT_ERROR':
@@ -210,9 +235,19 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
     case types.REJECT_EMPTY_JURISDICTIONS:
       return {
         ...state,
-        selectedDocs: state.selectedDocs.map(doc => {
-          if (doc.jurisdictions.value.name.length === 0 || !doc.jurisdictions.value.hasOwnProperty('id')) {
-            return { ...doc, jurisdictions: { ...doc.jurisdictions, error: true, inEditMode: true } }
+        selectedDocs: state.selectedDocs.map((doc) => {
+          if (
+            doc.jurisdictions.value.name.length === 0 ||
+            !doc.jurisdictions.value.hasOwnProperty('id')
+          ) {
+            return {
+              ...doc,
+              jurisdictions: {
+                ...doc.jurisdictions,
+                error: true,
+                inEditMode: true
+              }
+            }
           } else {
             return doc
           }
@@ -225,10 +260,15 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
     case `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION`:
       return {
         ...state,
-        selectedDocs: state.selectedDocs.map(doc => {
+        selectedDocs: state.selectedDocs.map((doc) => {
           return {
             ...doc,
-            jurisdictions: { ...doc.jurisdictions, editable: false, inEditMode: false, value: action.suggestion }
+            jurisdictions: {
+              ...doc.jurisdictions,
+              editable: false,
+              inEditMode: false,
+              value: action.suggestion
+            }
           }
         })
       }
@@ -239,7 +279,7 @@ const uploadReducer = (state = INITIAL_STATE, action) => {
       } else {
         return {
           ...state,
-          selectedDocs: state.selectedDocs.map(doc => {
+          selectedDocs: state.selectedDocs.map((doc) => {
             return {
               ...doc,
               jurisdictions: {

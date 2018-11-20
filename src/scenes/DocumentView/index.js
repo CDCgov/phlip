@@ -9,7 +9,10 @@ import DocumentContents from './components/DocumentContents'
 import DocumentMeta from './components/DocumentsMeta'
 
 export class DocumentView extends Component {
-  static propTypes = {}
+  static propTypes = {
+    document: PropTypes.object,
+    documentRequestInProgress: PropTypes.bool
+  }
 
   constructor(props, context) {
     super(props, context)
