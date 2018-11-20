@@ -6,7 +6,7 @@ import FlexGrid from 'components/FlexGrid'
 import Divider from '@material-ui/core/Divider'
 import { connect } from 'react-redux'
 import Dropdown from 'components/Dropdown'
-import { FileDocument, CalendarRange, Account } from 'mdi-material-ui'
+import { FileDocument, CalendarRange, Account, FormatSection } from 'mdi-material-ui'
 import Icon from 'components/Icon'
 
 export class DocumentMeta extends Component {
@@ -50,6 +50,12 @@ export class DocumentMeta extends Component {
                 formControlStyle={{ minWidth: 180 }}
                 meta={{}}
               />
+            </FlexGrid>
+            <FlexGrid container type="row" align="center" style={{ marginBottom: 15 }}>
+              <Icon color={iconColor}><FormatSection /></Icon>
+              <Typography variant="body1" style={{ padding: '0 5px' }}>
+                Citation: {this.props.document.citation}
+              </Typography>
             </FlexGrid>
             <FlexGrid container type="row" align="center" style={{ marginBottom: 15 }}>
               <Icon color={iconColor}><CalendarRange /></Icon>
