@@ -40,11 +40,12 @@ export class DocumentMeta extends Component {
               <Dropdown
                 name="docStatus"
                 id="docStatus"
-                defaultValue="Draft"
+                defaultValue={1}
                 options={options}
                 input={{
-                  value: this.props.document.status,
-                  onChange: this.onChangeStatusField
+                  value: this.props.document.status === 'Draft' ? 1 : 2,
+                  onChange: this.onChangeStatusField,
+                  id: 'docStatus'
                 }}
                 formControlStyle={{ minWidth: 180 }}
                 meta={{}}

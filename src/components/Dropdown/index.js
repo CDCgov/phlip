@@ -53,7 +53,7 @@ export const Dropdown = props => {
         disabled={disabled}
         {...otherProps}>
         {options.map((option, index) => {
-          return <MenuItem key={`menu-item-${index}`} value={option.label}>{option.label}</MenuItem>
+          return <MenuItem key={`menu-item-${index}`} value={option.value}>{option.label}</MenuItem>
         })}
       </Select>
     </FormControl>

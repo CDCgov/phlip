@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
 import DocumentContents from './components/DocumentContents'
-import DocumentMeta from './components/DocumentsMeta'
+import DocumentMeta from './components/DocumentMeta'
 
 export class DocumentView extends Component {
   static propTypes = {
