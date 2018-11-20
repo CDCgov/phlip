@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import Dropdown from 'components/Dropdown'
 import { FileDocument, CalendarRange, Account, FormatSection } from 'mdi-material-ui'
 import Icon from 'components/Icon'
+import moment from 'moment'
 
 export class DocumentMeta extends Component {
   constructor(props, context) {
@@ -25,6 +26,11 @@ export class DocumentMeta extends Component {
     ]
 
     const iconColor = '#949494'
+    const dateWithoutTime = this.props.document.hasOwnProperty('effectiveDate')
+      ? this.props.document.effectiveDate.split('T')[0]
+      : ''
+
+    const date = moment(dateWithoutTime).format('M/D/YYYY')
 
     return (
       <>
@@ -60,7 +66,7 @@ export class DocumentMeta extends Component {
             <FlexGrid container type="row" align="center" style={{ marginBottom: 15 }}>
               <Icon color={iconColor}><CalendarRange /></Icon>
               <Typography variant="body1" style={{ padding: '0 5px' }}>
-                Effective Date: {this.props.document.effectiveDate}
+                Effective Date: {date}
               </Typography>
             </FlexGrid>
             <FlexGrid container type="row" align="center" style={{ marginBottom: 30 }}>
