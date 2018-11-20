@@ -6,14 +6,8 @@ import FlexGrid from 'components/FlexGrid'
 import Divider from '@material-ui/core/Divider'
 import { connect } from 'react-redux'
 import Dropdown from 'components/Dropdown'
-import Container, { Row } from 'components/Layout'
-import ListItem from '@material-ui/core/ListItem'
-import Table from 'components/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableRow from '@material-ui/core/TableRow'
-import TableCell from '@material-ui/core/TableCell'
-import Grid from 'components/Grid'
-import * as actions from '../../actions'
+import { FileDocument, CalendarRange, Account } from 'mdi-material-ui'
+import Icon from 'components/Icon'
 
 export class DocumentMeta extends Component {
   constructor(props, context) {
@@ -30,127 +24,89 @@ export class DocumentMeta extends Component {
       { value: 2, label: 'Approved' }
     ]
 
-    console.log('from meta ', this.props)
-    //  this.document = this.props.document;
-    //  this.projects = this.props.document.projects || [];
-    //  this.jurisdictions = this.props.document.jurisdictions || [];
-    //
-    //  this.projectList =  this.projects.map(proj => {
-    //      return state.data.projects.byId[proj] === undefined ? '' : state.data.projects.byId[proj].name
-    //  });
-    //  this.jurisdictionList = this.jurisdictions.map(jur => {
-    //      return state.data.jurisdictions.byId[jur] === undefined ? '' : state.data.jurisdictions.byId[jur].name
-    //  });
-    // console.log(this.projects);
+    const iconColor = '#949494'
+
     return (
-      <FlexGrid>
-        <FlexGrid raised container style={{ overflow: 'hidden', padding: 20, minWidth: '30%' }}>
-          <Typography variant="display1" style={{ fontSize: '1.2em', color: '#000000', marginBottom: 2 }}>
+      <>
+        <FlexGrid raised container style={{ overflow: 'hidden', minWidth: '30%', marginBottom: 25, height: '33%' }}>
+          <Typography variant="body2" style={{ padding: 10, color: 'black' }}>
             Document Information
           </Typography>
           <Divider />
-          <Container>
-            <FlexGrid container type="row" style={{ flexBasis: '100%' }}>
-              <FlexGrid type="row" style={{ flexBasis: '45%', position: 'relative' }}>
-                <label style={{ position: 'absolute', bottom: '0' }}>Document Status:</label>
-              </FlexGrid>
-              <FlexGrid>
-                <Dropdown
-                  name="docStatus"
-                  id="docStatus"
-                  defaultValue="Draft"
-                  // label="Status"
-                  options={options}
-                  input={{
-                    value: this.props.docStatus,
-                    onChange: this.onChangeStatusField
-                  }}
-                  meta={{}}
-                />
-              </FlexGrid>
+          <FlexGrid container padding={15}>
+            <FlexGrid container type="row" align="center" style={{ marginBottom: 15 }}>
+              <Icon color={iconColor}><FileDocument /></Icon>
+              <Typography variant="body1" style={{ padding: '0 5px' }}>Status:</Typography>
+              <Dropdown
+                name="docStatus"
+                id="docStatus"
+                defaultValue="Draft"
+                options={options}
+                input={{
+                  value: this.props.document.status,
+                  onChange: this.onChangeStatusField
+                }}
+                formControlStyle={{ minWidth: 180 }}
+                meta={{}}
+              />
             </FlexGrid>
-            <FlexGrid style={{ padding: '5px' }} />
-            <FlexGrid container type="row" style={{ flexBasis: '100%' }}>
-              <FlexGrid type="column" style={{ flexBasis: '45%' }}>
-                <label>Effective Date:</label>
-              </FlexGrid>
-              <FlexGrid type="column" style={{ flexBasis: '25%' }}>
-                <Typography id="fromDate">Date 1</Typography>
-              </FlexGrid>
-              <FlexGrid type="column" style={{ flexBasis: '25%' }}>
-                <Typography id="toDate">Date 2</Typography>
-              </FlexGrid>
-              <FlexGrid>
-                <i />
-              </FlexGrid>
-              {/*<DatePicker id='fromDate' />*/}
-              {/*<DatePicker id='toDate'/>*/}
-            </FlexGrid>
-            <FlexGrid style={{ padding: '5px' }} />
-            <FlexGrid container type="row" style={{ flexBasis: '100%' }}>
-              <FlexGrid type="row" style={{ width: '45%' }}>
-                <label>Created By:</label>
-              </FlexGrid>
-              <FlexGrid type="column">
-                <Typography>{this.props.document.uploadedByName}</Typography>
-              </FlexGrid>
-            </FlexGrid>
-            <FlexGrid style={{ padding: '5px' }} />
-            <FlexGrid container type="row" style={{ flexBasis: '100%' }}>
-              <FlexGrid type="row" style={{ width: '75%' }}>
-                <Typography style={{ cursor: 'pointer' }}>Delete Document</Typography>
-              </FlexGrid>
-              <FlexGrid style={{ flexBasis: '2%' }} />
-              <FlexGrid type="row">
-                <Button size="small" color="green">Update</Button>
-              </FlexGrid>
-            </FlexGrid>
-          </Container>
-        </FlexGrid>
-        <br />
-        <FlexGrid raised container flex style={{ overflow: 'hidden', flexBasis: '30%', padding: 20, minWidth: '30%' }}>
-          <FlexGrid container flex type="row">
-            <FlexGrid flex type="row" style={{ flexBasis: '80%', position: 'relative' }}>
-              <Typography
-                variant="display1"
-                style={{ position: 'absolute', fontSize: '1.2em', color: '#000000', bottom: 5 }}>
-                Assigned Jurisdictions
+            <FlexGrid container type="row" align="center" style={{ marginBottom: 15 }}>
+              <Icon color={iconColor}><CalendarRange /></Icon>
+              <Typography variant="body1" style={{ padding: '0 5px' }}>
+                Effective Date: {this.props.document.effectiveDate}
               </Typography>
             </FlexGrid>
-            <FlexGrid>
-              <Button size="small" style={{ bottom: 10 }}>Add</Button>
+            <FlexGrid container type="row" align="center" style={{ marginBottom: 30 }}>
+              <Icon color={iconColor}><Account /></Icon>
+              <Typography variant="body1" style={{ padding: '0 5px' }}>
+                {this.props.document.uploadedByName}
+              </Typography>
+            </FlexGrid>
+            <FlexGrid container type="row" align="center" justify="space-between">
+              <Typography style={{ cursor: 'pointer' }} color="secondary">Delete Document</Typography>
+              <Button size="small" color="accent" style={{ padding: '0 15px' }}>Update</Button>
             </FlexGrid>
           </FlexGrid>
+        </FlexGrid>
+
+        <FlexGrid
+          raised
+          container
+          flex
+          style={{ overflow: 'hidden', minWidth: '30%', height: '33%', marginBottom: 25 }}>
+          <FlexGrid container type="row" align="center" justify="space-between" padding={10}>
+            <Typography variant="body2" style={{ color: 'black' }}>
+              Assigned Projects
+            </Typography>
+            <Button size="small" color="white" style={{ color: 'black' }}>Add</Button>
+          </FlexGrid>
           <Divider />
-            <FlexGrid type='row' style={{paddingTop:5}}>
-                {this.props.jurisdictionList.map((item, index) =>(
-                    <Typography>{item}</Typography>
-                ))}
+          <FlexGrid type="row" padding={10}>
+             {this.props.projectList.map((item, index) => (
+               <Typography
+                 style={{ padding: 8, backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white' }}
+                 key={`project-${index}`}>{item}</Typography>
+             ))}
             </FlexGrid>
         </FlexGrid>
-        <br />
-        <FlexGrid raised container flex style={{ overflow: 'hidden', flexBasis: '30%', padding: 20, minWidth: '30%' }}>
-            <FlexGrid container flex type="row">
-                <FlexGrid flex type="row" style={{ flexBasis: '80%', position: 'relative' }}>
-                    <Typography
-                        variant="display1"
-                        style={{ position: 'absolute', fontSize: '1.2em', color: '#000000', bottom: 5 }}>
-                        Assigned Projects
-                    </Typography>
-                </FlexGrid>
-                <FlexGrid type='column'>
-                    <Button size="small" style={{ bottom: 10 }}>Add</Button>
-                </FlexGrid>
-            </FlexGrid>
-            <Divider/>
-            <Divider/>
-            <FlexGrid type='row' style={{paddingTop:5}}>
-                {this.props.projectList.map((item, index) =>(
-                    <Typography>{item}</Typography>
-                ))}
+
+        <FlexGrid raised container flex style={{ overflow: 'hidden', minWidth: '30%', height: '33%' }}>
+          <FlexGrid container type="row" align="center" justify="space-between" padding={10}>
+            <Typography variant="body2" style={{ color: 'black' }}>
+              Assigned Jurisdictions
+            </Typography>
+            <Button size="small" color="white" style={{ color: 'black' }}>Add</Button>
+          </FlexGrid>
+          <Divider />
+          <FlexGrid type="row" padding={10}>
+            {this.props.jurisdictionList.map((item, index) => (
+              <Typography
+                style={{ padding: 8, backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white' }}
+                key={`jurisdiction-${index}`}>{item}</Typography>
+            ))}
             </FlexGrid>
         </FlexGrid>
-      </FlexGrid>
+      </>
     )
   }
 }

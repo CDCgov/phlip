@@ -31,20 +31,16 @@ const styles = theme => ({
  */
 export const Dropdown = props => {
   const {
-    input, label, id, defaultValue, classes, shrinkLabel,
-    disabled, meta: { touched, error }, options, required, ...otherProps
+    input, label, id, defaultValue, classes, shrinkLabel, formControlStyle,
+    disabled, meta: { touched, error }, options, required, displayEmpty, ...otherProps
   } = props
 
-  const menuItems = options.map(option => (
-    <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
-  ))
-
   return (
-    <FormControl style={{ minWidth: '120px' }}>
-      <InputLabel
+    <FormControl style={{ minWidth: 120, ...formControlStyle }}>
+      {label !== '' && <InputLabel
         htmlFor={id}
         shrink={shrinkLabel}
-        required={required}>{label}</InputLabel>
+        required={required}>{label}</InputLabel>}
       <Select
         input={<Input id={id} />}
         value={input.value ? input.value : defaultValue}
@@ -53,10 +49,13 @@ export const Dropdown = props => {
           disabled: classes.disabled,
           icon: disabled ? classes.disabledIcon : classes.icon
         }}
+        displayEmpty={displayEmpty}
         disabled={disabled}
-        children={menuItems}
-        {...otherProps}
-      />
+        {...otherProps}>
+        {options.map((option, index) => {
+          return <MenuItem key={`menu-item-${index}`} value={option.label}>{option.label}</MenuItem>
+        })}
+      </Select>
     </FormControl>
   )
 }
@@ -117,7 +116,9 @@ Dropdown.defaultProps = {
   shrinkLabel: true,
   required: false,
   options: [],
-  meta: { touched: false, error: undefined }
+  meta: { touched: false, error: undefined },
+  label: '',
+  displayEmpty: false
 }
 
 export default withStyles(styles)(Dropdown)

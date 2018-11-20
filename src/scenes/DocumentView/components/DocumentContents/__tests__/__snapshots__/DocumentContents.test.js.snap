@@ -12,7 +12,7 @@ exports[`DocumentView - DocumentContents should render correctly 1`] = `
   style={
     Object {
       "flexBasis": "70%",
-      "minWidth": "70%",
+      "minWidth": "65%",
       "overflow": "hidden",
       "padding": 30,
     }

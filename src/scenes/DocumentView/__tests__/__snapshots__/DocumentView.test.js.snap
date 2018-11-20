@@ -61,11 +61,22 @@ exports[`DocumentView scene should render correctly 1`] = `
       raised={false}
       style={
         Object {
-          "flexBasis": "20%",
+          "flex": "1 1 25%",
+          "flexBasis": "25%",
         }
       }
       type="column"
-    />
+    >
+      <Connect(DocumentMeta)
+        document={
+          Object {
+            "content": Object {},
+            "name": "Test file",
+          }
+        }
+        loading={false}
+      />
+    </FlexGrid>
   </FlexGrid>
 </FlexGrid>
 `;
