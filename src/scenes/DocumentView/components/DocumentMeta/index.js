@@ -34,13 +34,13 @@ export class DocumentMeta extends Component {
 
     return (
       <>
-        <FlexGrid raised container style={{ overflow: 'hidden', minWidth: '30%', marginBottom: 25, height: '33%' }}>
+        <FlexGrid raised container style={{ overflow: 'hidden', minWidth: '30%', marginBottom: 25 }}>
           <Typography variant="body2" style={{ padding: 10, color: 'black' }}>
             Document Information
           </Typography>
           <Divider />
           <FlexGrid container padding={15}>
-            <FlexGrid container type="row" align="center" style={{ marginBottom: 15 }}>
+            <FlexGrid container type="row" align="center" style={{ marginBottom: 25 }}>
               <Icon color={iconColor}><FileDocument /></Icon>
               <Typography variant="body1" style={{ padding: '0 5px' }}>Status:</Typography>
               <Dropdown
@@ -57,13 +57,13 @@ export class DocumentMeta extends Component {
                 meta={{}}
               />
             </FlexGrid>
-            <FlexGrid container type="row" align="center" style={{ marginBottom: 15 }}>
+            <FlexGrid container type="row" align="center" style={{ marginBottom: 25 }}>
               <Icon color={iconColor}><FormatSection /></Icon>
               <Typography variant="body1" style={{ padding: '0 5px' }}>
                 Citation: {this.props.document.citation}
               </Typography>
             </FlexGrid>
-            <FlexGrid container type="row" align="center" style={{ marginBottom: 15 }}>
+            <FlexGrid container type="row" align="center" style={{ marginBottom: 25 }}>
               <Icon color={iconColor}><CalendarRange /></Icon>
               <Typography variant="body1" style={{ padding: '0 5px' }}>
                 Effective Date: {date}
