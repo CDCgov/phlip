@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Route } from 'react-router-dom'
 import Upload from './scenes/Upload'
-import ProJurSearch from 'scenes/DocumentManagement/scenes/Upload/components/ProJurSearch'
 
 /**
  * DocumentManagement main scene component. This is the first view the user sees when they switch over to the
