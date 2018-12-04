@@ -9,5 +9,5 @@ export const types = {
 
 export default {
   getJurisdictionRequest: makeActionCreator(types.GET_JURISDICTION_REQUEST, 'jurisdictionId'),
-  addJurisdiction: makeActionCreator(types.ADD_JURISDICTION, 'jurisdiction')
+  addJurisdiction: makeActionCreator(types.ADD_JURISDICTION, 'payload')
 }
