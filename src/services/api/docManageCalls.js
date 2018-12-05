@@ -30,7 +30,6 @@ const docManageCalls = [
       name: 'updateDoc',
       method: 'post',
       path: () =>'/docs/update',
-      headers: () => ({ 'Content-Type': 'multipart/form-data' })
 
     }
 ]
