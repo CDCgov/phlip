@@ -148,6 +148,7 @@ export class DocumentManagement extends Component {
 
 /* istanbul ignore next */
 const mapStateToProps = state => {
+  console.log('doc manage state ', state.scenes.docManage )
   const docManage = state.scenes.docManage
   return {
     documents: docManage.main.documents.visible,

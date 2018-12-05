@@ -144,12 +144,12 @@ const uploadRequestLogic = createLogic({
           done()
         }
       }
+      console.log(action.selectedDocsFormData);
       const docs = await docApi.upload(action.selectedDocsFormData)
       docs.files.map(doc => {
         const { content, ...otherDocProps } = doc
         return otherDocProps
       })
-
       action.jurisdictions.forEach(jur => {
         dispatch({ type: jurisdictionTypes.ADD_JURISDICTION, payload: jur })
       })

@@ -11,11 +11,13 @@ import DocumentMeta from './components/DocumentMeta'
 export class DocumentView extends Component {
   static propTypes = {
     document: PropTypes.object,
-    documentRequestInProgress: PropTypes.bool
+    documentRequestInProgress: PropTypes.bool,
+    documentUpdateInProgress : PropTypes.bool
   }
 
   constructor(props, context) {
     super(props, context)
+      console.log(' props to docview ', props)
   }
 
   componentDidMount() {
@@ -40,7 +42,20 @@ export class DocumentView extends Component {
           <DocumentContents loading={this.props.documentRequestInProgress} />
           <FlexGrid style={{ flexBasis: '2%' }} />
           <FlexGrid container type="column" style={{ flexBasis: '25%', flex: '1 1 25%' }}>
-            <DocumentMeta document={this.props.document} loading={this.props.documentRequestInProgress} />
+            <DocumentMeta document={this.props.document}
+                          loading={this.props.documentRequestInProgress}
+                          updating = {this.props.documentUpdateInProgress}
+                          // jurisdictionSuggestions={this.props.jurisdictionSuggestions}
+                          // projectSuggestions={this.props.projectSuggestions}
+                          // onClearSuggestions={this.handleClearSuggestions}
+                          // onGetSuggestions={this.handleGetSuggestions}
+                          // onSearchValueChange={this.handleSearchValueChange}
+                          // onSuggestionSelected={this.handleSuggestionSelected}
+                          // jurisdictionSearchValue={this.props.jurisdictionSearchValue}
+                          // projectSearchValue={this.props.projectSearchValue}
+                          // showProjectError={this.props.noProjectError === true}
+                          // showJurSearch={this.props.infoSheetSelected === false}
+            />
           </FlexGrid>
         </FlexGrid>
       </FlexGrid>
@@ -52,7 +67,8 @@ export class DocumentView extends Component {
 const mapStateToProps = state => {
   return {
     document: state.scenes.docView.document,
-    documentRequestInProgress: state.scenes.docView.documentRequestInProgress
+    documentRequestInProgress: state.scenes.docView.documentRequestInProgress,
+    documentUpdatingInProgress: state.scenes.docView.documentUpdateInProgress,
   }
 }
 

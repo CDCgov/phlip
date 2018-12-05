@@ -1,5 +1,9 @@
 import { createLogic } from 'redux-logic'
+import PropTypes from 'prop-types'
 import { types } from './actions'
+import { types as projectTypes } from 'data/projects/actions'
+import { types as jurisdictionTypes } from 'data/jurisdictions/actions'
+
 
 const getDocumentContentsLogic = createLogic({
   type: types.GET_DOCUMENT_CONTENTS_REQUEST,
@@ -14,6 +18,46 @@ const getDocumentContentsLogic = createLogic({
   }
 })
 
+const updateDocLogic = createLogic({
+    type: types.UPDATE_DOC_REQUEST,
+    async process({ docApi, action, getState }, dispatch, done) {
+        let fd = { files: [] }, md = {}
+        const selectedDoc = getState().scenes.docView.document;
+        const formData = new FormData();
+        const {content,...otherProps } = selectedDoc;
+
+        md = Object.keys(otherProps).reduce((obj, prop) => {
+            return {
+                ...obj,
+                [prop]: otherProps[prop].value
+            }
+        }, {});
+        md.status = selectedDoc.status;
+        md.effectiveDate = selectedDoc.effectiveDate;
+        md.citation  = selectedDoc.citation;
+        md.jurisdictions = selectedDoc.jurisdictions;
+        md.projects = selectedDoc.projects;
+       // formData.append('metadata', JSON.stringify(md));
+            try {
+            const updatedDoc = await docApi.updateDoc(JSON.stringify(md));
+            action.jurisdictions.forEach(jur => {
+                dispatch({ type: jurisdictionTypes.ADD_JURISDICTION, payload: jur })
+            })
+            action.projects.forEach(prj => {
+                dispatch({ type: projectTypes.ADD_PROJECT, payload: prj })
+            })
+            done()
+        } catch (err) {
+            dispatch({
+                type: types.UPDATE_DOC_FAIL,
+                payload: { error: 'Failed to update documents, please try again.' }
+            })
+            done()
+        }
+    }
+})
+
 export default [
-  getDocumentContentsLogic
+  getDocumentContentsLogic,
+    updateDocLogic
 ]

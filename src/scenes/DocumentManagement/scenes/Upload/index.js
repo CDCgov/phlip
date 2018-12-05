@@ -89,6 +89,7 @@ export class Upload extends Component {
       ],
       showLoadingAlert: false
     }
+      console.log('props from upload ', props)
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -333,6 +334,7 @@ export class Upload extends Component {
   }
 
   render() {
+
     const closeButton = {
       value: 'Close',
       type: 'button',
@@ -429,6 +431,7 @@ export class Upload extends Component {
 /* istanbul ignore next */
 const mapStateToProps = state => {
   const uploadState = state.scenes.docManage.upload
+    console.log('upload state passed to upload index.js ', state);
   return {
     selectedDocs: uploadState.list.selectedDocs,
     requestError: uploadState.list.requestError,

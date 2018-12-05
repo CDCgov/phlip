@@ -25,7 +25,14 @@ const docManageCalls = [
     name: 'getDocumentContents',
     method: 'get',
     path: ({ docId }) => `/docs/${docId}/contents`
-  }
+  },
+    {
+      name: 'updateDoc',
+      method: 'post',
+      path: () =>'/docs/update',
+      headers: () => ({ 'Content-Type': 'multipart/form-data' })
+
+    }
 ]
 
 export default docManageCalls
