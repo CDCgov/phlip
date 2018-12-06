@@ -1,8 +1,4 @@
 import { types } from './actions'
-import { combineReducers } from 'redux'
-import { createAutocompleteReducer } from 'data/autocomplete/reducer'
-import { types as autocompleteTypes } from 'data/autocomplete/actions'
-import { updateItemAtIndex } from 'utils/normalize'
 
 export const INITIAL_STATE = {
   document: {
@@ -40,6 +36,7 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         },
         documentRequestInProgress: false
       }
+
     case types.UPDATE_DOC_PROPERTY:
       let selectedDoc = { ...state.document }
       let value = action.value

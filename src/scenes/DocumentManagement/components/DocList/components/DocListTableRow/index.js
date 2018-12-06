@@ -13,6 +13,7 @@ import TextLink from 'components/TextLink'
 export const DocListTableRow = props => {
   const { doc, onSelectFile, isChecked, projectList, jurisdictionList } = props
   const date = moment.utc(doc.uploadedDate).local().format('M/D/YYYY, h:mm A')
+  const listStyle = { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: 250, maxWidth: 250 }
 
   return (
     <TableRow>
@@ -26,8 +27,8 @@ export const DocListTableRow = props => {
       </TableCell>
       <TableCell padding="checkbox">{doc.uploadedBy.firstName} {doc.uploadedBy.lastName}</TableCell>
       <TableCell padding="checkbox">{date}</TableCell>
-      <TableCell padding="checkbox">{projectList.join(', ')}</TableCell>
-      <TableCell padding="checkbox">{jurisdictionList.join(', ')}</TableCell>
+      <TableCell padding="checkbox" style={listStyle}>{projectList.join(', ')}</TableCell>
+      <TableCell padding="checkbox" style={listStyle}>{jurisdictionList.join(', ')}</TableCell>
     </TableRow>
   )
 }

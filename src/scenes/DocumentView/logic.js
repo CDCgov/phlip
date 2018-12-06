@@ -30,13 +30,6 @@ const updateDocLogic = createLogic({
     const selectedDoc = getState().scenes.docView.document
     const { content, ...otherProps } = selectedDoc
 
-    // md = Object.keys(otherProps).reduce((obj, prop) => {
-    //     if (!otherProps)
-    //     return {
-    //         ...obj,
-    //             [prop]: otherProps[prop].value
-    //     }
-    // }, {});
     md.status = selectedDoc.status
     md.effectiveDate = selectedDoc.effectiveDate !== undefined
       ? selectedDoc.effectiveDate
@@ -51,26 +44,27 @@ const updateDocLogic = createLogic({
         'docId': selectedDoc._id
       }, {}, {})
 
-      action.jurisdictions.forEach(jur => {
+      if (action.property !== null && action.property === 'jurisdictions') {
         dispatch({
           type: jurisdictionTypes.ADD_JURISDICTION,
-          payload: jur
+          payload: action.value
         })
-      })
+      }
 
-      action.projects.forEach(prj => {
+      if (action.property !== null && action.property === 'projects') {
         dispatch({
           type: projectTypes.ADD_PROJECT,
-          payload: prj
+          payload: action.value
         })
-      })
+      }
 
       dispatch({
         type: types.UPDATE_DOC_SUCCESS,
-        payload: updatedDoc.id
+        payload: updatedDoc._id
       })
       done()
     } catch (err) {
+      console.log(err)
       dispatch({
         type: types.UPDATE_DOC_FAIL,
         payload: { error: 'Failed to update documents, please try again.' }

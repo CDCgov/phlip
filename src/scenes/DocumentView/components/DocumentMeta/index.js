@@ -29,10 +29,6 @@ export class DocumentMeta extends Component {
       projectSuggestions: [],
       jurisdictionSuggestions: []
     }
-    this.onChangeStatusField = this.onChangeStatusField.bind(this)
-    this.handleEditMode = this.handleEditMode.bind(this)
-    // this.onCitationPropertyChange = this.onCitationPropertyChange.bind(this)
-    // const savedProps = props
   }
 
   showAddProjModal = () => {
@@ -69,10 +65,10 @@ export class DocumentMeta extends Component {
     this.props.actions.updateDocumentProperty(this.props.document._id, 'status', selectedOption)
   }
 
-  handleEditMode() {
+  handleEditMode = () => {
     this.setState(function(prevState) {
       if (prevState.isEditMode == true) {
-        this.props.actions.updateDocRequest(this.props.document._id)
+        this.props.actions.updateDocRequest(this.props.document._id, null, null)
       }
       return { isEditMode: !prevState.isEditMode }
     })
@@ -106,9 +102,13 @@ export class DocumentMeta extends Component {
   handleSuggestionSelected = (suggestionType) => (event, { suggestionValue }) => {
     //  console.log('selected value ', suggestionValue)
     if (suggestionType === 'project') {
-      this.state.selectedProject = suggestionValue
+      this.setState({
+        selectedProject: suggestionValue
+      })
     } else {
-      this.state.selectedJurisdiction = suggestionValue
+      this.setState({
+        selectedJurisdiction: suggestionValue
+      })
     }
 
     this.handleClearSuggestions(suggestionType)
@@ -128,17 +128,21 @@ export class DocumentMeta extends Component {
   }
 
   updateDocument = () => {
-    if (this.state.selectedJurisdiction != null) {
+    if (this.state.selectedJurisdiction !== null) {
       this.props.actions.updateDocumentProperty(
         this.props.document._id, 'jurisdictions', this.state.selectedJurisdiction)
+      this.props.actions.updateDocRequest(this.props.document._id, 'jurisdictions', this.state.selectedJurisdiction)
       this.handleClearSuggestions('jurisdiction')
-    }
-    if (this.state.selectedProject != null) {
-      this.props.actions.updateDocumentProperty(this.props.document._id, 'projects', this.state.selectedProject)
-      this.handleClearSuggestions('project')
+      this.props.actions.jurisdictionAutocomplete.clearAll()
     }
 
-    this.props.actions.updateDocRequest(this.props.document._id)
+    if (this.state.selectedProject !== null) {
+      this.props.actions.updateDocumentProperty(this.props.document._id, 'projects', this.state.selectedProject)
+      this.props.actions.updateDocRequest(this.props.document._id, 'projects', this.state.selectedProject)
+      this.handleClearSuggestions('project')
+      this.props.actions.projectAutocomplete.clearAll()
+    }
+
     this.setState({
       showModal: false, selectedJurisdiction: null, selectedProject: null
     })
@@ -154,7 +158,7 @@ export class DocumentMeta extends Component {
           <span style={{ marginRight: 5 }}>{text}</span>
           <CircularLoader thickness={5} style={{ height: 15, width: 15 }} />
         </>)
-      : {text}
+      : text
   }
 
   render() {
@@ -274,8 +278,7 @@ export class DocumentMeta extends Component {
           raised
           container
           flex
-          style={{ overflow: 'hidden', minWidth: '30%', height: '33%', marginBottom: 25 }}
-        >
+          style={{ overflow: 'hidden', minWidth: '30%', height: '33%', marginBottom: 25 }}>
           <FlexGrid container type="row" align="center" justify="space-between" padding={10}>
             <Typography variant="body2" style={{ color: 'black' }}>
               Assigned Projects
@@ -288,7 +291,7 @@ export class DocumentMeta extends Component {
             />
           </FlexGrid>
           <Divider />
-          <FlexGrid type="row" padding={10}>
+          <FlexGrid type="row" padding={10} style={{ overflow: 'auto' }}>
             {this.props.projectList.map((item, index) => (<Typography
               style={{
                 padding: 8,
@@ -313,7 +316,7 @@ export class DocumentMeta extends Component {
             />
           </FlexGrid>
           <Divider />
-          <FlexGrid type="row" flex padding={10} style={{ overflowY: scroll, height: '100%' }}>
+          <FlexGrid type="row" flex padding={10} style={{ overflow: 'auto', height: '100%' }}>
             {this.props.jurisdictionList.map((item, index) => (<Typography
               style={{
                 padding: 8,
@@ -324,14 +327,14 @@ export class DocumentMeta extends Component {
               key={`jurisdiction-${index}`}
             >{item}</Typography>))}
             </FlexGrid>
-            <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="sm" hideOverflow>
+            <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="sm" hideOverflow={false}>
               {this.props.alertOpen &&
               <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle}>
                 {this.props.alertText}
               </Alert>}
               <ModalTitle title="Document Detail" />
                 <Divider />
-                <ModalContent style={{ display: 'flex', flexDirection: 'column', height: '30%' }}>
+                <ModalContent style={{ display: 'flex', flexDirection: 'column', paddingTop: 24, width: 500, height: 500 }}>
                   <Grid container type="row" align="center" justify="space-between" padding={10}>
                     <ProJurSearch
                       jurisdictionSuggestions={this.props.jurisdictionSuggestions}
@@ -356,7 +359,7 @@ export class DocumentMeta extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const document = ownProps.document || { jurisdictions: [], projects: [], status: 1, effectiveDate: '' }
+  const document = state.scenes.docView.document || { jurisdictions: [], projects: [], status: 1, effectiveDate: '' }
 
   return {
     projectList: document.projects.map(proj => {
