@@ -25,21 +25,26 @@ export class DocumentMeta extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-          selectedDocStatus : {value : 1},
           isEditMode : false,
           showAddJurisdiction: false,
           showAddProject : false,
-          showModal : false
+          showModal : false,
+          selectedJurisdiction : null,
+          selectedProject : null,
+          projectSuggestions :[],
+          jurisdictionSuggestions:[]
       };
     this.onChangeStatusField = this.onChangeStatusField.bind(this);
     this.handleEditMode = this.handleEditMode.bind(this);
     // this.onCitationPropertyChange = this.onCitationPropertyChange.bind(this);
-    console.log('props passed to docMeta ', props)
+  //  const savedProps = props;
+
   }
 
 
   showAddProjModal = () => {
     this.setState({
+        projectSuggestions: [],
         showAddJurisdiction:false,
         showModal: true
     })
@@ -47,6 +52,7 @@ export class DocumentMeta extends Component {
 
   showAddJurModal = () => {
         this.setState({
+            jurisdictionSuggestions : [],
             showAddJurisdiction:true,
             showModal: true
         })
@@ -67,27 +73,25 @@ export class DocumentMeta extends Component {
         //     }, () => this.props.actions.openAlert('Your unsaved changes will be lost.'))
         // } else {
 
-              this.setState({showModal: false})
+      this.setState({showModal: false});
+
 
         // }
     };
 
   onChangeStatusField = selectedOption => {
-    this.setState({selectedDocStatus:{value:selectedOption}})
+    //  console.log(' status field changed ', selectedOption);
+      this.props.actions.updateDocumentProperty(this.props.document._id,'status',selectedOption);
   };
-
-
-  onDocPropertyChange = (index, propName, value) => {
-        console.log(propName, value);
-        // this.props.handleDocPropertyChange(index, propName, value)
-  }
-
 
   handleEditMode() {
         this.setState(function(prevState) {
+            if (prevState.isEditMode == true){
+                this.props.actions.updateDocRequest(this.props.document._id);
+            }
             return {isEditMode: !prevState.isEditMode};
         });
-    }
+  }
 
     /**
      * Handles when a user has updated a document property in the file list
@@ -95,7 +99,9 @@ export class DocumentMeta extends Component {
      * @param propName
      * @param value
      */
+
     handleDocPropertyChange = (index, propName, value) => {
+        // console.log(propName, value);
         this.props.actions.updateDocumentProperty(index, propName, value)
     }
 
@@ -115,18 +121,16 @@ export class DocumentMeta extends Component {
      * When a user has chosen a suggestion from the autocomplete project or jurisdiction list
      */
     handleSuggestionSelected = (suggestionType) => (event, { suggestionValue }) => {
-        console.log('selected value ', suggestionValue);
+      //  console.log('selected value ', suggestionValue);
         if (suggestionType === 'project') {
-            this.props.actions.projectAutocomplete.onSuggestionSelected(suggestionValue);
-            dispatch({ type: projectTypes.ADD_PROJECT, payload: suggestionValue })
-            this.props.actions.updateDocumentProperty(this.props.document._id,'projects',suggestionValue)
+            this.state.selectedProject = suggestionValue;
         }
         else {
-            this.props.actions.jurisdictionAutocomplete.onSuggestionSelected(suggestionValue);
-            this.props.actions.updateDocumentProperty(this.props.document._id, 'jurisdictions', suggestionValue);
+            this.state.selectedJurisdiction = suggestionValue;
         }
-        this.props.actions.updateDocRequest(this.props.document._id);
+        this.handleClearSuggestions(suggestionType)
         this.onCloseModal;
+
     }
 
     handleSearchValueChange = (suggestionType, value) => {
@@ -141,10 +145,43 @@ export class DocumentMeta extends Component {
             : this.props.actions.projectAutocomplete.clearSuggestions()
     }
 
+    updateDocument = () => {
+        if (this.state.selectedJurisdiction != null) {
+            this.props.actions.updateDocumentProperty(this.props.document._id, 'jurisdictions', this.state.selectedJurisdiction);
+            this.handleClearSuggestions('jurisdiction');
+        }
+        if (this.state.selectedProject != null) {
+            this.props.actions.updateDocumentProperty(this.props.document._id,'projects',this.state.selectedProject);
+            this.handleClearSuggestions('project');
+        }
+
+        this.props.actions.updateDocRequest(this.props.document._id);
+        this.setState({
+            showModal: false,
+            selectedJurisdiction: null,
+            selectedProject: null
+        });
+    }
+
+    /**
+     * Determines the text for the modal button at the bottom
+     * @param text
+     */
+    getButtonText = text => {
+        return this.props.uploading
+            ? (
+                <>
+                    <span style={{ marginRight: 5 }}>{text}</span>
+                    <CircularLoader thickness={5} style={{ height: 15, width: 15 }} />
+                </>
+            )
+            : <>{text}</>
+    }
+
   render() {
     const options = [
-      { value: 1, label: 'Draft' },
-      { value: 2, label: 'Approved' }
+      { value: 'Draft', label: 'Draft' },
+      { value: 'Approved', label: 'Approved' }
     ];
 
       const closeButton = {
@@ -152,7 +189,26 @@ export class DocumentMeta extends Component {
           type: 'button',
           otherProps: { 'aria-label': 'Close modal' },
           onClick: this.onCloseModal
-      }
+      };
+
+      const cancelButton = {
+          value: 'Cancel',
+          type: 'button',
+          otherProps: { 'aria-label': 'Close modal' },
+          onClick: this.onCloseModal
+      };
+      const modalAction =
+          [
+              cancelButton,
+              {
+                  value: this.getButtonText('Update'),
+                  type: 'button',
+                  otherProps: { 'aria-label': 'Update' },
+                  onClick: this.updateDocument,
+                  disabled: this.props.updating
+              }
+          ]
+
 
       const alertActions = [
           {
@@ -171,7 +227,7 @@ export class DocumentMeta extends Component {
       const colStyle = { fontSize: 14, border:'none',
       borderBottom: '1px solid green' }
     const iconColor = '#949494';
-    const dateWithoutTime = this.props.document.hasOwnProperty('effectiveDate')
+    const dateWithoutTime = (this.props.document.hasOwnProperty('effectiveDate') && this.props.document.effectiveDate!=null)
       ? this.props.document.effectiveDate.split('T')[0]
       : ''
 
@@ -195,7 +251,7 @@ export class DocumentMeta extends Component {
                 id="selectedDocStatus"
                 options={options}
                 input={{
-                  value: this.state.selectedDocStatus.value,
+                  value: this.props.document.status || 'Draft',
                   onChange: this.onChangeStatusField
                 }}
                 formControlStyle={{ minWidth: 180 }}
@@ -211,7 +267,7 @@ export class DocumentMeta extends Component {
                     ? (<input
                         style={colStyle}
                         defaultValue={this.props.document.citation}
-                        onChange={e => this.onDocPropertyChange(i, 'citation', e.target.value)}
+                        onChange={e => this.handleDocPropertyChange(i, 'citation', e.target.value)}
                     />):
                     <Typography>{this.props.document.citation}</Typography>
                 }
@@ -226,8 +282,8 @@ export class DocumentMeta extends Component {
                         <DatePicker
                             name="effectiveDate"
                             dateFormat="MM/DD/YYYY"
-                            onChange={date => this.onDocPropertyChange(i, 'effectiveDate', date)}
-                            onInputChange={e => this.onDocPropertyChange(i, 'effectiveDate', e.target.value)}
+                            onChange={date => this.handleDocPropertyChange(i, 'effectiveDate', date)}
+                            onInputChange={e => this.handleDocPropertyChange(i, 'effectiveDate', e.target.value)}
                             value={this.props.document.effectiveDate}
                             autoOk={true}
                             style={{ marginTop: 0 }}
@@ -243,7 +299,7 @@ export class DocumentMeta extends Component {
               </Typography>
             </FlexGrid>
             <FlexGrid container type="row" align="center" justify="space-between">
-              <Typography style={{ cursor: 'pointer' }} color="secondary">Delete Document</Typography>
+              <Typography style={{ cursor: 'pointer' }} color="secondary" >Delete Document</Typography>
               <Button value={this.state.isEditMode ? 'Update' : 'Edit'} size="small" color="accent" style={{ padding: '0 15px' }} onClick={this.handleEditMode} />
             </FlexGrid>
           </FlexGrid>
@@ -279,7 +335,7 @@ export class DocumentMeta extends Component {
 
           </FlexGrid>
           <Divider />
-          <FlexGrid type="row" padding={10}>
+          <FlexGrid type="row" flex padding={10} style={{overflowY:scroll, height: '100%'}} >
             {this.props.jurisdictionList.map((item, index) => (
               <Typography
                 style={{ padding: 8, backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white' }}
@@ -295,7 +351,7 @@ export class DocumentMeta extends Component {
                     title="Document Detail"
                 />
                 <Divider />
-                <ModalContent style={{ display: 'flex', flexDirection: 'column', height: '50%' }}>
+                <ModalContent style={{ display: 'flex', flexDirection: 'column', height: '30%' }}>
                     <Grid container type="row" align="center" justify="space-between" padding={10}>
                         <ProJurSearch
                             jurisdictionSuggestions={this.props.jurisdictionSuggestions}
@@ -312,7 +368,7 @@ export class DocumentMeta extends Component {
                     </Grid>
                 </ModalContent>
                 <Divider />
-                <ModalActions actions={modalActions} />
+                <ModalActions actions={modalAction} />
             </Modal>
 
         </FlexGrid>
@@ -322,7 +378,7 @@ export class DocumentMeta extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const document = ownProps.document || { jurisdictions: [], projects: [], status: 1 }
+  const document = ownProps.document || { jurisdictions: [], projects: [], status: 1, effectiveDate:'' }
 
   return {
     projectList: document.projects.map(proj => {

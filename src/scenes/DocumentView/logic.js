@@ -23,7 +23,6 @@ const updateDocLogic = createLogic({
     async process({ docApi, action, getState }, dispatch, done) {
         let fd = { files: [] }, md = {}
         const selectedDoc = getState().scenes.docView.document;
-        const formData = new FormData();
         const {content,...otherProps } = selectedDoc;
 
         md = Object.keys(otherProps).reduce((obj, prop) => {
@@ -37,15 +36,15 @@ const updateDocLogic = createLogic({
         md.citation  = selectedDoc.citation;
         md.jurisdictions = selectedDoc.jurisdictions;
         md.projects = selectedDoc.projects;
-       // formData.append('metadata', JSON.stringify(md));
             try {
-            const updatedDoc = await docApi.updateDoc(JSON.stringify(md));
+            const updatedDoc = await docApi.updateDoc({'metadata':JSON.stringify(md),'docId':selectedDoc._id},{}, {});
             action.jurisdictions.forEach(jur => {
                 dispatch({ type: jurisdictionTypes.ADD_JURISDICTION, payload: jur })
             })
             action.projects.forEach(prj => {
                 dispatch({ type: projectTypes.ADD_PROJECT, payload: prj })
             })
+            dispatch({ type: types.UPDATE_DOC_SUCCESS, payload: updatedDoc.id })
             done()
         } catch (err) {
             dispatch({
