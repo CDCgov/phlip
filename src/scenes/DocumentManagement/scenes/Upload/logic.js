@@ -144,7 +144,6 @@ const uploadRequestLogic = createLogic({
           done()
         }
       }
-      console.log(action.selectedDocsFormData);
       const docs = await docApi.upload(action.selectedDocsFormData)
       docs.files.map(doc => {
         const { content, ...otherDocProps } = doc
