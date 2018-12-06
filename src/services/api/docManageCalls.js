@@ -26,12 +26,11 @@ const docManageCalls = [
     method: 'get',
     path: ({ docId }) => `/docs/${docId}/contents`
   },
-    {
-      name: 'updateDoc',
-      method: 'post',
-      path: () =>'/docs/update',
-
-    }
+  {
+    name: 'updateDoc',
+    method: 'post',
+    path: () =>'/docs/update'
+  }
 ]
 
 export default docManageCalls

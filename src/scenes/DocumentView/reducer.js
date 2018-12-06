@@ -4,12 +4,14 @@ import { createAutocompleteReducer } from 'data/autocomplete/reducer'
 import { types as autocompleteTypes } from 'data/autocomplete/actions'
 import { updateItemAtIndex } from 'utils/normalize'
 
-
 export const INITIAL_STATE = {
-  document: { content: {}, projects: [], jurisdictions: [] },
+  document: {
+    content: {},
+    projects: [],
+    jurisdictions: []
+  },
   documentRequestInProgress: false,
   documentUpdatingInProgress: false
-
 }
 
 const docViewReducer = (state = INITIAL_STATE, action) => {
@@ -39,40 +41,44 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         documentRequestInProgress: false
       }
     case types.UPDATE_DOC_PROPERTY:
-        //  console.log('action prop ', action)
-          let selectedDoc = { ...state.document }
-          let value = action.value
-          switch (action.property) {
-              case  'jurisdictions' :
-              case 'projects' :
-                  let foundIdx = selectedDoc[action.property].findIndex(el => el == value.id );
-                  if (foundIdx == -1) {
-                      selectedDoc[action.property] = [
-                          ...selectedDoc[action.property],
-                          value.id];
-                  }
-                  break;
-              case 'effectiveDate' :
-                  selectedDoc[action.property]= action.value.toISOString();
-                  break;
-              default:
-                  selectedDoc[action.property] = action.value;
+      let selectedDoc = { ...state.document }
+      let value = action.value
+      switch (action.property) {
+        case 'jurisdictions':
+        case 'projects':
+          let foundIdx = selectedDoc[action.property].findIndex(el => el == value.id)
+          if (foundIdx == -1) {
+            selectedDoc[action.property] = [
+              ...selectedDoc[action.property], value.id
+            ]
           }
-          return {
-              ...state, document: selectedDoc,
-          }
-    case types.UPDATE_DOC_REQUEST:
-          return {
-              ...state, documentUpdatingInProgress : true
-          }
-       //   console.log('update doc action ',action)
-          break;
-      case types.UPDATE_DOC_SUCCESS:
-          return {
-              ...state, documentUpdatingInProgress: false
-          }
+          break
+        case 'effectiveDate':
+          selectedDoc[action.property] = action.value.toISOString()
+          break
 
-      default:
+        default:
+          selectedDoc[action.property] = action.value
+          break
+      }
+      return {
+        ...state,
+        document: selectedDoc
+      }
+
+    case types.UPDATE_DOC_REQUEST:
+      return {
+        ...state,
+        documentUpdatingInProgress: true
+      }
+
+    case types.UPDATE_DOC_SUCCESS:
+      return {
+        ...state,
+        documentUpdatingInProgress: false
+      }
+
+    default:
       return state
   }
 }

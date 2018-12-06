@@ -12,12 +12,11 @@ export class DocumentView extends Component {
   static propTypes = {
     document: PropTypes.object,
     documentRequestInProgress: PropTypes.bool,
-    documentUpdateInProgress : PropTypes.bool
+    documentUpdateInProgress: PropTypes.bool
   }
 
   constructor(props, context) {
     super(props, context)
-   //   console.log(' props to docview ', props)
   }
 
   componentDidMount() {
@@ -41,10 +40,17 @@ export class DocumentView extends Component {
         <FlexGrid container type="row" flex style={{ height: '100%' }}>
           <DocumentContents loading={this.props.documentRequestInProgress} />
           <FlexGrid style={{ flexBasis: '2%' }} />
-          <FlexGrid container type="column" style={{ flexBasis: '25%', flex: '1 1 25%' }}>
-            <DocumentMeta document={this.props.document}
-                          loading={this.props.documentRequestInProgress}
-                          updating = {this.props.documentUpdateInProgress}
+          <FlexGrid
+            container
+            type="column"
+            style={{
+              flexBasis: '25%',
+              flex: '1 1 25%'
+            }}>
+            <DocumentMeta
+              document={this.props.document}
+              loading={this.props.documentRequestInProgress}
+              updating={this.props.documentUpdateInProgress}
             />
           </FlexGrid>
         </FlexGrid>
@@ -58,7 +64,7 @@ const mapStateToProps = state => {
   return {
     document: state.scenes.docView.document,
     documentRequestInProgress: state.scenes.docView.documentRequestInProgress,
-    documentUpdatingInProgress: state.scenes.docView.documentUpdateInProgress,
+    documentUpdatingInProgress: state.scenes.docView.documentUpdateInProgress
   }
 }
 
