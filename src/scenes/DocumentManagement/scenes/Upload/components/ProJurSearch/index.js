@@ -18,7 +18,6 @@ const ProJurSearch = props => {
     showJurSearch
   } = props
 
-    console.log(' projur search jurisdiction suggestions ', props)
   return (
     <FlexGrid container type="row" align="center" justify="center">
       <FlexGrid container type="row" align="flex-end" style={{ marginRight: 20, minWidth: 250 }}>

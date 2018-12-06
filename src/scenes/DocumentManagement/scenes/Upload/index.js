@@ -431,7 +431,6 @@ export class Upload extends Component {
 /* istanbul ignore next */
 const mapStateToProps = state => {
   const uploadState = state.scenes.docManage.upload
-    console.log('upload state passed to upload index.js ', state);
   return {
     selectedDocs: uploadState.list.selectedDocs,
     requestError: uploadState.list.requestError,
