@@ -191,6 +191,9 @@ class Main extends Component {
     // so we check if it's one of those routes and if it is set the location to /home
     const currentLocation = { ...location, pathname: this.checkForModalMatch(location.pathname, role) }
     if (!isRefreshing && isLoggedIn) actions.startRefreshJwt()
+    const containerType = location.pathname.endsWith('/code') || location.pathname.endsWith('/validate')
+      ? 'row'
+      : 'column'
 
     return (
       <FlexGrid container type="column" flex style={{ overflow: 'hidden' }}>
@@ -205,7 +208,7 @@ class Main extends Component {
           onTabChange={this.handleTabChange}
           onOpenAdminPage={this.handleOpenAdminPage}
         />
-        <FlexGrid container flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
+        <FlexGrid container type={containerType} flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
           <Switch location={currentLocation}>
             <Route path="/docs/:id/view" component={DocumentView} />
             <Route path="/docs" component={DocumentManagement} />

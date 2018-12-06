@@ -7,16 +7,16 @@ import { withTheme } from '@material-ui/core/styles'
 
 export const FooterNavigate = ({ currentIndex, getNextQuestion, getPrevQuestion, showNextButton, theme }) => {
   const styles = {
-    fontSize: 16,
+    fontSize: 14,
     color: theme.palette.primary.main
   }
 
   const rowStyles = {
-    height: 50,
+    height: 60,
     alignItems: 'center',
-    paddingTop: 10,
     justifyContent: 'space-between',
-    alignSelf: currentIndex === 0 ? 'flex-end' : ''
+    alignSelf: currentIndex === 0 ? 'flex-end' : '',
+    padding: '0 10px'
   }
 
   return (

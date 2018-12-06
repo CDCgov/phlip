@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Header from './Header'
 import QuestionCard from './QuestionCard'
-import FooterNavigate from './FooterNavigate'
 import Navigator from './Navigator'
 import Container, { Row, Column } from 'components/Layout'
 import Typography from '@material-ui/core/Typography'
@@ -21,6 +20,7 @@ import ApiErrorView from 'components/ApiErrorView'
 import ApiErrorAlert from 'components/ApiErrorAlert'
 import PageLoader from 'components/PageLoader'
 import withTracking from 'components/withTracking'
+import DocumentList from './DocumentList'
 
 const navButtonStyles = {
   height: 90,
@@ -67,7 +67,6 @@ const styles = theme => ({
  * @component
  */
 export const withCodingValidation = (WrappedComponent, actions, pageName) => {
-
   class CodingValidation extends WrappedComponent {
     static propTypes = {
       projectName: PropTypes.string,
@@ -448,8 +447,6 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
           onSaveFlag={this.onSaveFlag}
           onSave={this.onSaveCodedQuestion}
           onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
-        />
-        <FooterNavigate
           currentIndex={this.props.currentIndex}
           getNextQuestion={this.getNextQuestion}
           getPrevQuestion={this.getPrevQuestion}

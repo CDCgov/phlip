@@ -4,9 +4,10 @@ import withCodingValidation from 'components/CodingValidation'
 import ApiErrorAlert from 'components/ApiErrorAlert'
 
 /**
- * Coding scene component that is displayed when the user clicks the 'Code' button. Most of the interactions are handled
- * by the HOC withCodingValidation, only events or alerts that are specific to Coding or needs to be handled by Coding are implemented
- * here. For props and propTypes of Coding, see the withCodingValidation HOC.
+ * Coding scene component that is displayed when the user clicks the 'Code' button. Most of the interactions are
+ * handled
+ * by the HOC withCodingValidation, only events or alerts that are specific to Coding or needs to be handled by Coding
+ * are implemented here. For props and propTypes of Coding, see the withCodingValidation HOC.
  */
 export class Coding extends Component {
   constructor(props, context) {
@@ -31,9 +32,9 @@ export class Coding extends Component {
   }
 
   /**
-   * Invoked when the user changes jurisdictions by selecting a jurisdiction in the dropdown. If there are unsaved changes,
-   * a popup is shown alerting the user so, otherwise calls redux actions to change questions and shows the question
-   * loader
+   * Invoked when the user changes jurisdictions by selecting a jurisdiction in the dropdown. If there are unsaved
+   * changes, a popup is shown alerting the user so, otherwise calls redux actions to change questions and shows the
+   * question loader
    * @public
    * @param event
    */
@@ -76,7 +77,14 @@ export class Coding extends Component {
         },
         ...flagInfo
       })
-      this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.selectedCategoryId, this.props.page)
+
+      this.props.actions.saveUserAnswerRequest(
+        this.props.projectId,
+        this.props.jurisdictionId,
+        this.props.question.id,
+        this.props.selectedCategoryId,
+        this.props.page
+      )
     }
     this.onChangeTouchedStatus()
   }
@@ -86,7 +94,8 @@ export class Coding extends Component {
       <ApiErrorAlert
         content={this.props.saveFlagErrorContent}
         open={this.props.saveFlagErrorContent !== null}
-        onCloseAlert={() => this.props.actions.dismissApiAlert('saveFlagErrorContent')} />
+        onCloseAlert={() => this.props.actions.dismissApiAlert('saveFlagErrorContent')}
+      />
     )
   }
 }

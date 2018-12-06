@@ -15,6 +15,7 @@ import { getInitials } from 'utils/normalize'
 import Alert from 'components/Alert'
 import Typography from '@material-ui/core/Typography'
 import PageLoader from 'components/PageLoader'
+import FooterNavigate from './components/FooterNavigate'
 
 const TabContainer = props => {
   return (
@@ -77,7 +78,9 @@ export class QuestionCard extends Component {
   }
 
   onContinue = () => {
-    this.props.onChange(this.state.categoryToUncheck.id)(this.state.categoryToUncheck.event, this.state.categoryToUncheck.value)
+    this.props.onChange(this.state.categoryToUncheck.id)(
+      this.state.categoryToUncheck.event,
+      this.state.categoryToUncheck.value)
     this.setState({
       confirmCategoryUncheckOpen: false,
       categoryToUncheck: {}
@@ -139,7 +142,10 @@ export class QuestionCard extends Component {
       {
         value: 'Clear answer',
         type: 'button',
-        onClick: () => { this.onCancel(); this.props.onClearAnswer() }
+        onClick: () => {
+          this.onCancel()
+          this.props.onClearAnswer()
+        }
       }
     ]
 
@@ -193,6 +199,14 @@ export class QuestionCard extends Component {
                   <QuestionContent {...questionContentProps} />
                 </TabContainer>
                 : <QuestionContent{...questionContentProps} />}
+              <Divider />
+              <FooterNavigate
+                currentIndex={this.props.currentIndex}
+                getNextQuestion={this.props.getNextQuestion}
+                getPrevQuestion={this.props.getPrevQuestion}
+                totalLength={this.props.totalLength}
+                showNextButton={this.props.showNextButton}
+              />
             </Fragment>}
         </Column>
       </Row>
