@@ -164,8 +164,8 @@ export class QuestionCard extends Component {
         <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
           {this.props.questionChangeLoader === true
             ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
-            : <Fragment>
-              <Row displayFlex style={{ alignItems: 'center', height: 42, paddingRight: 15 }}>
+            : <>
+              <Row displayFlex style={{ alignItems: 'center', height: 55, paddingRight: 15 }}>
                 <Row style={{ width: '100%' }}>
                   {this.props.hasTouchedQuestion &&
                   <Typography variant="caption" style={{ paddingLeft: 10, textAlign: 'center', color: '#757575' }}>
@@ -207,7 +207,7 @@ export class QuestionCard extends Component {
                 totalLength={this.props.totalLength}
                 showNextButton={this.props.showNextButton}
               />
-            </Fragment>}
+            </>}
         </Column>
       </Row>
     )

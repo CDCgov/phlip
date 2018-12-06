@@ -117,9 +117,9 @@ export class Navigator extends Component {
   }
 
   /*
-  Rows are considered at the root level. so if a root item has children, to get the full height of the row, you have
-  to get the number of all children and multiply it by the row height, 40 px
- */
+   Rows are considered at the root level. so if a root item has children, to get the full height of the row, you have
+   to get the number of all children and multiply it by the row height, 40 px
+   */
   getExpandedItemCount = item => {
     let count = 1
 
@@ -141,17 +141,6 @@ export class Navigator extends Component {
     return (
       <Drawer classes={{ paper: this.props.classes.codeNav }} variant="persistent" anchor="left" open={this.props.open}>
         <Container column flex>
-          <Row
-            displayFlex
-            style={{
-              backgroundColor: '#313638',
-              height: 55,
-              alignItems: 'center',
-              justifyContent: 'center',
-              textTransform: 'uppercase'
-            }}>
-            <Typography variant="headline"><span style={{ color: 'white' }}>Code Navigator</span></Typography>
-          </Row>
           <div className={navStyles.navContainer}>
             <div style={{ flex: 1, display: 'flex' }}>
               <AutoSizer>
@@ -165,7 +154,8 @@ export class Navigator extends Component {
                     rowRenderer={this.rowRenderer}
                     height={height}
                     overscanRowCount={0}
-                    ref={this.QuestionList} />
+                    ref={this.QuestionList}
+                  />
                 )}
               </AutoSizer>
             </div>

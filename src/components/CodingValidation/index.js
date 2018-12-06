@@ -21,6 +21,7 @@ import ApiErrorAlert from 'components/ApiErrorAlert'
 import PageLoader from 'components/PageLoader'
 import withTracking from 'components/withTracking'
 import DocumentList from './DocumentList'
+import FlexGrid from 'components/FlexGrid'
 
 const navButtonStyles = {
   height: 90,
@@ -435,7 +436,7 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
      * @returns {*}
      */
     onShowCodeView = () => (
-      <Fragment>
+      <>
         <QuestionCard
           page={this.props.page}
           onChange={this.onAnswer}
@@ -453,7 +454,9 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
           totalLength={this.props.questionOrder.length}
           showNextButton={this.props.showNextButton}
         />
-      </Fragment>
+        <FlexGrid style={{ width: 25 }} />
+        <DocumentList />
+      </>
     )
 
     render() {
@@ -517,7 +520,7 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
                     <MuiButton style={navButtonStyles} aria-label="Toggle Navigator" onClick={this.onToggleNavigator}>
                       <Icon color="#424242" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
                 </Column>}
-                <Column displayFlex flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
+                <FlexGrid container type="row" flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
                   {this.props.schemeError !== null &&
                   <ApiErrorView error="We couldn't get the coding scheme for this project." />}
                   {this.props.showPageLoader === true
@@ -526,7 +529,7 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
                     (this.props.areJurisdictionsEmpty === true || this.props.isSchemeEmpty === true
                       ? this.onShowGetStartedView(this.props.isSchemeEmpty, this.props.areJurisdictionsEmpty)
                       : this.onShowCodeView())}
-                </Column>
+                </FlexGrid>
               </Row>
             </Container>
           </Column>
