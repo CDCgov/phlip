@@ -39,17 +39,24 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         documentRequestInProgress: false
       }
     case types.UPDATE_DOC_PROPERTY:
-          console.log('action prop ', action)
+        //  console.log('action prop ', action)
           let selectedDoc = { ...state.document }
           let value = action.value
           switch (action.property) {
               case  'jurisdictions' :
               case 'projects' :
-                  selectedDoc[action.property] = [
-                      ...selectedDoc[action.property],
-                      value.id];
+                  let foundIdx = selectedDoc[action.property].findIndex(el => el == value.id );
+                  if (foundIdx == -1) {
+                      selectedDoc[action.property] = [
+                          ...selectedDoc[action.property],
+                          value.id];
+                  }
+                  break;
+              case 'effectiveDate' :
+                  selectedDoc[action.property]= action.value.toISOString();
                   break;
               default:
+                  selectedDoc[action.property] = action.value;
           }
           return {
               ...state, document: selectedDoc,
@@ -58,9 +65,12 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
           return {
               ...state, documentUpdatingInProgress : true
           }
-          console.log('update doc action ',action)
+       //   console.log('update doc action ',action)
           break;
-
+      case types.UPDATE_DOC_SUCCESS:
+          return {
+              ...state, documentUpdatingInProgress: false
+          }
 
       default:
       return state
