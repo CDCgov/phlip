@@ -25,14 +25,15 @@ const updateDocLogic = createLogic({
         const selectedDoc = getState().scenes.docView.document;
         const {content,...otherProps } = selectedDoc;
 
-        md = Object.keys(otherProps).reduce((obj, prop) => {
-            return {
-                ...obj,
-                [prop]: otherProps[prop].value
-            }
-        }, {});
+        // md = Object.keys(otherProps).reduce((obj, prop) => {
+        //     if (!otherProps)
+        //     return {
+        //         ...obj,
+        //             [prop]: otherProps[prop].value
+        //     }
+        // }, {});
         md.status = selectedDoc.status;
-        md.effectiveDate = selectedDoc.effectiveDate;
+        md.effectiveDate = selectedDoc.effectiveDate !== undefined?selectedDoc.effectiveDate:'';
         md.citation  = selectedDoc.citation;
         md.jurisdictions = selectedDoc.jurisdictions;
         md.projects = selectedDoc.projects;
