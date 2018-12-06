@@ -17,7 +17,7 @@ export class DocumentView extends Component {
 
   constructor(props, context) {
     super(props, context)
-      console.log(' props to docview ', props)
+   //   console.log(' props to docview ', props)
   }
 
   componentDidMount() {
@@ -45,16 +45,6 @@ export class DocumentView extends Component {
             <DocumentMeta document={this.props.document}
                           loading={this.props.documentRequestInProgress}
                           updating = {this.props.documentUpdateInProgress}
-                          // jurisdictionSuggestions={this.props.jurisdictionSuggestions}
-                          // projectSuggestions={this.props.projectSuggestions}
-                          // onClearSuggestions={this.handleClearSuggestions}
-                          // onGetSuggestions={this.handleGetSuggestions}
-                          // onSearchValueChange={this.handleSearchValueChange}
-                          // onSuggestionSelected={this.handleSuggestionSelected}
-                          // jurisdictionSearchValue={this.props.jurisdictionSearchValue}
-                          // projectSearchValue={this.props.projectSearchValue}
-                          // showProjectError={this.props.noProjectError === true}
-                          // showJurSearch={this.props.infoSheetSelected === false}
             />
           </FlexGrid>
         </FlexGrid>
