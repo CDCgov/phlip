@@ -141,7 +141,7 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       if (this.props.isSchemeEmpty === false && prevProps.isSchemeEmpty === null) {
         if (this.props.areJurisdictionsEmpty === false) {
           this.setState({
-            navOpen: true
+            //navOpen: true
           })
         }
       }
@@ -571,7 +571,6 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
     const project = state.scenes.home.main.projects.byId[ownProps.match.params.id]
     const page = ownProps.match.url.split('/')[3] === 'code' ? 'coding' : 'validation'
     const pageState = state.scenes[page].coding
-    console.log(pageState)
 
     return {
       projectName: project.name,

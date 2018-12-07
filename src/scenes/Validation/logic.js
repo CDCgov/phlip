@@ -232,7 +232,7 @@ export const getQuestionLogicValidation = createLogic({
   latest: true,
   async process({ getState, action, api }) {
     let otherErrors = {}
-    const state = getState().scenes.validation
+    const state = getState().scenes.validation.coding
     const {
       updatedState,
       question,
@@ -277,7 +277,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
   type: types.GET_USER_VALIDATED_QUESTIONS_REQUEST,
   async process({ action, api, getState }, dispatch, done) {
     const userId = getState().data.user.currentUser.id
-    const state = getState().scenes.validation
+    const state = getState().scenes.validation.coding
     const question = action.question, otherUpdates = action.otherUpdates
     let errors = {}, payload = {}, coders = {}
 

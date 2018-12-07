@@ -76,7 +76,7 @@ export const getQuestionLogic = createLogic({
   },
   latest: true,
   async process({ getState, action, api }) {
-    const state = getState().scenes.coding
+    const state = getState().scenes.coding.coding
     return await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getCodedQuestion)
   }
 })
@@ -90,7 +90,7 @@ export const getUserCodedQuestionsLogic = createLogic({
   type: types.GET_USER_CODED_QUESTIONS_REQUEST,
   async process({ action, api, getState }, dispatch, done) {
     const userId = getState().data.user.currentUser.id
-    const state = getState().scenes.coding
+    const state = getState().scenes.coding.coding
     const question = action.question, otherUpdates = action.otherUpdates
     let errors = {}, payload = {}
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import FlexGrid from 'components/FlexGrid'
 import Divider from '@material-ui/core/Divider'
@@ -7,6 +7,13 @@ import SearchBar from 'components/SearchBar'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
+import theme from 'services/theme'
+
+const docNameStyle = {
+  color: theme.palette.secondary.main,
+  cursor: 'pointer',
+  paddingLeft: 5
+}
 
 export class DocumentList extends Component {
   constructor(props, context) {
@@ -25,9 +32,17 @@ export class DocumentList extends Component {
           <SearchBar></SearchBar>
         </FlexGrid>
         <Divider />
-        <FlexGrid container flex>
-          {this.props.documents.map(doc => {
-            return <p>{doc.name}</p>
+        <FlexGrid container flex padding={20}>
+          {this.props.documents.map((doc, i) => {
+            return (
+              <Fragment key={`${doc._id}`}>
+                <FlexGrid container type="row" padding={5}>
+                  <Typography>{i+1}.</Typography>
+                  <Typography style={docNameStyle}>{doc.name}</Typography>
+                </FlexGrid>
+                <Divider />
+              </Fragment>
+            )
           })}
         </FlexGrid>
       </FlexGrid>

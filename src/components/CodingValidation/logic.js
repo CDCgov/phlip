@@ -53,7 +53,7 @@ const getQuestionLogic = createLogic({
     valTypes.GET_PREV_QUESTION, valTypes.GET_NEXT_QUESTION, valTypes.ON_QUESTION_SELECTED_IN_NAV
   ],
   transform({ getState, action }, next) {
-    const state = getState().scenes[action.page]
+    const state = getState().scenes[action.page].coding
     const userId = getState().data.user.currentUser.id
     let questionInfo = {}
 
@@ -101,7 +101,7 @@ const answerQuestionLogic = createLogic({
    * that will be sent when the app gets a response.
    */
   validate({ getState, action, api }, allow, reject) {
-    const state = getState().scenes[action.page]
+    const state = getState().scenes[action.page].coding
     const userId = getState().data.user.currentUser.id
     const apiMethods = action.page === 'validation'
       ? { create: api.answerValidatedQuestion, update: api.updateValidatedQuestion }
@@ -235,7 +235,7 @@ const applyAnswerToAllLogic = createLogic({
    */
   async process({ getState, action }, dispatch, done) {
     const userId = action.userId
-    const state = getState().scenes[action.page]
+    const state = getState().scenes[action.page].coding
     const allCategoryObjects = Object.values(state.userAnswers[action.questionId])
 
     try {
@@ -279,7 +279,7 @@ const sendMessageLogic = createLogic({
    * messages that need to be sent, otherwise rejects the action.
    */
   validate({ getState, action }, allow, reject) {
-    const messageQueue = getState().scenes[action.page].messageQueue
+    const messageQueue = getState().scenes[action.page].coding.messageQueue
     const messageToSend = messageQueue.find(message => {
       if (message.hasOwnProperty('categoryId')) {
         return message.questionId === action.payload.questionId && action.payload.selectedCategoryId ===
@@ -334,7 +334,7 @@ const sendMessageLogic = createLogic({
 const getCodedValQuestionsLogic = createLogic({
   type: [codingTypes.GET_USER_CODED_QUESTIONS_REQUEST, valTypes.GET_USER_VALIDATED_QUESTIONS_REQUEST],
   transform({ getState, action }, next) {
-    const state = getState().scenes[action.page]
+    const state = getState().scenes[action.page].coding
     let question = { ...state.question }, otherUpdates = {}
 
     // If the current question is a category question, then change the current question to parent
