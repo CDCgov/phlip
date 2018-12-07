@@ -4,6 +4,9 @@ import FlexGrid from 'components/FlexGrid'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import SearchBar from 'components/SearchBar'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import actions from './actions'
 
 export class DocumentList extends Component {
   constructor(props, context) {
@@ -11,7 +14,7 @@ export class DocumentList extends Component {
   }
 
   componentDidMount() {
-
+    this.props.actions.getApprovedDocumentsRequest(this.props.projectId, this.props.jurisdictionId, this.props.page)
   }
 
   render() {
@@ -23,10 +26,30 @@ export class DocumentList extends Component {
         </FlexGrid>
         <Divider />
         <FlexGrid container flex>
+          {this.props.documents.map(doc => {
+            return <p>{doc.name}</p>
+          })}
         </FlexGrid>
       </FlexGrid>
     )
   }
 }
 
-export default DocumentList
+const mapStateToProps = (state, ownProps) => {
+  const pageState = state.scenes[ownProps.page].documentList
+
+  return {
+    documents: pageState.documents.ordered.map(id => pageState.documents.byId[id]),
+    jurisdictionId: ownProps.jurisdictionId,
+    isValidation: ownProps.page === 'validation',
+    projectId: ownProps.projectId
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    actions: { ...bindActionCreators(actions, dispatch) }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentList)

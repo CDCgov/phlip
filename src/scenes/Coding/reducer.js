@@ -4,7 +4,7 @@ import {
   generateError
 } from 'utils/codingHelpers'
 import * as codingValidationTypes from 'scenes/Coding/actionTypes'
-import * as otherActionTypes from 'components/CodingValidation/actionTypes'
+import { types as otherActionTypes } from 'components/CodingValidation/actions'
 import { INITIAL_STATE } from 'components/CodingValidation/reducer'
 
 const types = { ...codingValidationTypes, ...otherActionTypes }

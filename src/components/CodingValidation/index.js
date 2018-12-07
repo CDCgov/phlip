@@ -166,7 +166,11 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       if (this.props.unsavedChanges === true) {
         this.onShowStillSavingAlert(index, this.props.actions.getNextQuestion)
       } else {
-        this.props.actions.getNextQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId, this.props.page)
+        this.props.actions.getNextQuestion(this.props.questionOrder[index],
+          index,
+          this.props.projectId,
+          this.props.jurisdictionId,
+          this.props.page)
         this.onShowQuestionLoader()
       }
     }
@@ -179,7 +183,11 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       if (this.props.unsavedChanges === true) {
         this.onShowStillSavingAlert(index, this.props.actions.getPrevQuestion)
       } else {
-        this.props.actions.getPrevQuestion(this.props.questionOrder[index], index, this.props.projectId, this.props.jurisdictionId, this.props.page)
+        this.props.actions.getPrevQuestion(this.props.questionOrder[index],
+          index,
+          this.props.projectId,
+          this.props.jurisdictionId,
+          this.props.page)
         this.onShowQuestionLoader()
       }
     }
@@ -192,7 +200,10 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
       if (this.props.unsavedChanges === true) {
         this.onShowStillSavingAlert(item, this.props.actions.onQuestionSelectedInNav)
       } else {
-        this.props.actions.onQuestionSelectedInNav(item, this.props.projectId, this.props.jurisdictionId, this.props.page)
+        this.props.actions.onQuestionSelectedInNav(item,
+          this.props.projectId,
+          this.props.jurisdictionId,
+          this.props.page)
         this.onShowQuestionLoader()
       }
     }
@@ -227,7 +238,11 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
      * @public
      */
     onSaveCodedQuestion = () => {
-      this.props.actions.saveUserAnswerRequest(this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.selectedCategoryId, this.props.page)
+      this.props.actions.saveUserAnswerRequest(this.props.projectId,
+        this.props.jurisdictionId,
+        this.props.question.id,
+        this.props.selectedCategoryId,
+        this.props.page)
     }
 
     /**
@@ -238,22 +253,22 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
      */
     onChangeTextAnswer = (id, field) => event => {
       switch (field) {
-        case 'textAnswer':
-          this.props.actions.updateUserAnswer(
-            this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
-          )
-          break
+      case 'textAnswer':
+        this.props.actions.updateUserAnswer(
+          this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
+        )
+        break
 
-        case 'comment':
-          this.props.actions.onChangeComment(
-            this.props.projectId, this.props.jurisdictionId, this.props.question.id, event.target.value
-          )
-          break
+      case 'comment':
+        this.props.actions.onChangeComment(
+          this.props.projectId, this.props.jurisdictionId, this.props.question.id, event.target.value
+        )
+        break
 
-        case 'pincite':
-          this.props.actions.onChangePincite(
-            this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
-          )
+      case 'pincite':
+        this.props.actions.onChangePincite(
+          this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
+        )
       }
       this.onChangeTouchedStatus()
       this.onSaveCodedQuestion()
@@ -319,7 +334,10 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
     onContinueStillSavingAlert = () => {
       // question changing
       if (this.state.changeMethod.type === 0) {
-        this.state.changeMethod.method(...this.state.changeProps, this.props.projectId, this.props.jurisdictionId, this.props.page)
+        this.state.changeMethod.method(...this.state.changeProps,
+          this.props.projectId,
+          this.props.jurisdictionId,
+          this.props.page)
         this.onShowQuestionLoader()
         // jurisdiction changing
       } else if (this.state.changeMethod.type === 1) {
@@ -379,7 +397,10 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
     onApplyToAll = () => {
       this.onCloseApplyAllAlert()
       this.onChangeTouchedStatus()
-      this.props.actions.applyAnswerToAll(this.props.projectId, this.props.jurisdictionId, this.props.question.id, this.props.page)
+      this.props.actions.applyAnswerToAll(this.props.projectId,
+        this.props.jurisdictionId,
+        this.props.question.id,
+        this.props.page)
     }
 
     /**
@@ -438,8 +459,7 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
     onShowCodeView = () => (
       <>
         <QuestionCard
-          page={this.props.page}
-          onChange={this.onAnswer}
+          page={this.props.page} onChange={this.onAnswer}
           onChangeTextAnswer={this.onChangeTextAnswer}
           onChangeCategory={this.onChangeCategory}
           onAnswer={this.onAnswer}
@@ -455,7 +475,11 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
           showNextButton={this.props.showNextButton}
         />
         <FlexGrid style={{ width: 25 }} />
-        <DocumentList />
+        <DocumentList
+          projectId={this.props.projectId}
+          jurisdictionId={this.props.globalJurisdictionId}
+          page={this.props.page}
+        />
       </>
     )
 
@@ -482,11 +506,13 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
             open={this.props.answerErrorContent !== null}
             content={this.props.answerErrorContent}
             actions={this.props.objectExists ? [] : this.saveFailedActions}
-            onCloseAlert={this.onCloseAlert} />
+            onCloseAlert={this.onCloseAlert}
+          />
           <ApiErrorAlert
             open={this.props.getQuestionErrors !== null}
             content={this.props.getQuestionErrors}
-            onCloseAlert={() => this.props.actions.dismissApiAlert('getQuestionErrors')} />
+            onCloseAlert={() => this.props.actions.dismissApiAlert('getQuestionErrors')}
+          />
           {!this.props.showPageLoader &&
           <Navigator
             open={this.state.navOpen}
@@ -518,8 +544,10 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
                     text="Toggle Navigator"
                     id="toggle-navigator">
                     <MuiButton style={navButtonStyles} aria-label="Toggle Navigator" onClick={this.onToggleNavigator}>
-                      <Icon color="#424242" style={iconStyle}>menu</Icon></MuiButton></Tooltip>}
-                </Column>}
+                      <Icon color="#424242" style={iconStyle}>menu</Icon>
+                    </MuiButton>
+                  </Tooltip>}
+                                               </Column>}
                 <FlexGrid container type="row" flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
                   {this.props.schemeError !== null &&
                   <ApiErrorView error="We couldn't get the coding scheme for this project." />}
@@ -542,7 +570,8 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
   const mapStateToProps = (state, ownProps) => {
     const project = state.scenes.home.main.projects.byId[ownProps.match.params.id]
     const page = ownProps.match.url.split('/')[3] === 'code' ? 'coding' : 'validation'
-    const pageState = state.scenes[page]
+    const pageState = state.scenes[page].coding
+    console.log(pageState)
 
     return {
       projectName: project.name,
@@ -559,6 +588,9 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
         : null),
       jurisdiction: pageState.jurisdiction || (project.projectJurisdictions.length > 0
         ? project.projectJurisdictions[0]
+        : null),
+      globalJurisdictionId: pageState.jurisdiction || (project.projectJurisdictions.length > 0
+        ? project.projectJurisdictions[0].jurisdictionId
         : null),
       isSchemeEmpty: pageState.isSchemeEmpty,
       areJurisdictionsEmpty: pageState.areJurisdictionsEmpty,

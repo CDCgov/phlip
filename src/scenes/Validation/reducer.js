@@ -1,17 +1,18 @@
 import { generateError } from 'utils/codingHelpers'
 import * as codingValidationTypes from 'scenes/Validation/actionTypes'
-import * as otherActionTypes from 'components/CodingValidation/actionTypes'
+import { types as otherActionTypes } from 'components/CodingValidation/actions'
 const types = { ...codingValidationTypes, ...otherActionTypes }
+import { INITIAL_STATE } from 'components/CodingValidation/reducer'
 
 /**
- * Main validation reducer, that is the 'uniqueReducer' that is used when handling actions that are not common to both Coding
- * and Validation
+ * Main validation reducer, that is the 'uniqueReducer' that is used when handling actions that are not common to both
+ * Coding and Validation
  *
  * @param {Object} state
  * @param {Object} action
  * @returns {Object}
  */
-const validationReducer = (state, action) => {
+const validationReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_VALIDATION_OUTLINE_SUCCESS:
       const error = generateError(action.payload.errors)

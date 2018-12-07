@@ -18,7 +18,9 @@
     "build": "node scripts/build.js",
     "clean": "rm -rf ./dist/",
     "serve:docs": "node scripts/docs.js serve",
-    "build:docs": "node scripts/docs.js build"
+    "build:docs": "node scripts/docs.js build",
+    "lint": "./node_modules/eslint/bin/eslint.js --color src",
+    "lint:fix": "./node_modules/eslint/bin/eslint.js --fix src"
   },
   "jest": {
     "setupFiles": [

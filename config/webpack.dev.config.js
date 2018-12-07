@@ -29,12 +29,12 @@ module.exports = env => {
     },
     module: {
       rules: [
-        {
+        /*{
           test: /\.js$/,
           enforce: 'pre',
           loader: 'eslint-loader',
           include: paths.appSrc
-        },
+        },*/
         {
           test: require.resolve('tinymce/tinymce'),
           loaders: [

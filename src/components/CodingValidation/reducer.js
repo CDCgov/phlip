@@ -1,9 +1,10 @@
-import * as types from './actionTypes'
+import { types } from './actions'
 import {
   determineShowButton, handleCheckCategories,
   handleUpdateUserAnswers, handleUpdateUserCategoryChild, handleUpdateUserCodedQuestion,
   handleUserPinciteQuestion, initializeNavigator, generateError, updateCategoryCodedQuestion, updateCodedQuestion
 } from 'utils/codingHelpers'
+import documentListReducer, { INITIAL_STATE as docListInitialState } from './DocumentList/reducer'
 
 /**
  * Initial state for codingValidation reducer
@@ -71,7 +72,7 @@ const removeRequestsInQueue = (questionId, categoryId, currentQueue) => {
  * @param {String} name -- either CODING or VALIDATION
  * @returns {Object}
  */
-const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
+const codingReducer = (state = INITIAL_STATE, action, name) => {
   const questionUpdater = state.question.isCategoryQuestion
     ? handleUpdateUserCategoryChild(state, action)
     : handleUpdateUserCodedQuestion(state, action)
@@ -97,7 +98,10 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
       return {
         ...state,
         ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
-          ? updateCategoryCodedQuestion(state, action.payload.questionId, action.payload.selectedCategoryId, { id: action.payload.id })
+          ? updateCategoryCodedQuestion(state,
+            action.payload.questionId,
+            action.payload.selectedCategoryId,
+            { id: action.payload.id })
           : updateCodedQuestion(state, action.payload.questionId, { id: action.payload.id }),
         answerErrorContent: null,
         unsavedChanges: false,
@@ -108,14 +112,19 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
       return {
         ...state,
         ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
-          ? updateCategoryCodedQuestion(state, action.payload.questionId, action.payload.selectedCategoryId, { hasMadePost: true })
+          ? updateCategoryCodedQuestion(state,
+            action.payload.questionId,
+            action.payload.selectedCategoryId,
+            { hasMadePost: true })
           : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: true }),
         unsavedChanges: true,
         saveFailed: false
       }
 
     case `${types.ADD_REQUEST_TO_QUEUE}_${name}`:
-      const currentQueue = removeRequestsInQueue(action.payload.questionId, action.payload.categoryId, [...state.messageQueue])
+      const currentQueue = removeRequestsInQueue(action.payload.questionId,
+        action.payload.categoryId,
+        [...state.messageQueue])
       return {
         ...state,
         messageQueue: [...currentQueue, action.payload]
@@ -124,7 +133,9 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
     case `${types.REMOVE_REQUEST_FROM_QUEUE}_${name}`:
       return {
         ...state,
-        messageQueue: removeRequestsInQueue(action.payload.questionId, action.payload.categoryId, [...state.messageQueue])
+        messageQueue: removeRequestsInQueue(action.payload.questionId,
+          action.payload.categoryId,
+          [...state.messageQueue])
       }
 
     case `${types.SAVE_USER_ANSWER_FAIL}_${name}`:
@@ -133,7 +144,10 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         answerErrorContent: 'We couldn\'t save your answer for this question.',
         saveFailed: true,
         ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
-          ? updateCategoryCodedQuestion(state, action.payload.questionId, action.payload.selectedCategoryId, { hasMadePost: false })
+          ? updateCategoryCodedQuestion(state,
+            action.payload.questionId,
+            action.payload.selectedCategoryId,
+            { hasMadePost: false })
           : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: false })
       }
 
@@ -144,7 +158,10 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
         saveFailed: true,
         objectExists: true,
         ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
-          ? updateCategoryCodedQuestion(state, action.payload.questionId, action.payload.selectedCategoryId, { hasMadePost: false, ...action.payload.object })
+          ? updateCategoryCodedQuestion(state,
+            action.payload.questionId,
+            action.payload.selectedCategoryId,
+            { hasMadePost: false, ...action.payload.object })
           : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: false, ...action.payload.object })
       }
 
@@ -246,8 +263,8 @@ const codingValidationReducer = (state = INITIAL_STATE, action, name) => {
 
 /**
  * Updates the Code Navigator by updating scheme.tree and sets whether or not to show the 'next button.' All redux
- * actions passed to the codingValidation reducer go through the function since almost every action affects the navigator
- * and whether or not to show the next button. Returns the updated state.
+ * actions passed to the codingValidation reducer go through the function since almost every action affects the
+ * navigator and whether or not to show the next button. Returns the updated state.
  *
  * @param {Object} intermediateState
  * @returns {Object}
@@ -259,16 +276,38 @@ const treeAndButton = intermediateState => {
     scheme: intermediateState.scheme === null ? null : {
       ...intermediateState.scheme,
       tree: initializeNavigator(
-        intermediateState.scheme.tree, intermediateState.scheme.byId, intermediateState.userAnswers, intermediateState.question
+        intermediateState.scheme.tree,
+        intermediateState.scheme.byId,
+        intermediateState.userAnswers,
+        intermediateState.question
       )
     }
   }
 }
 
+const COMBINED_INITIAL_STATE = {
+  coding: INITIAL_STATE,
+  documentList: docListInitialState
+}
+
+/**
+ * The reducer is split because it's so large. So it sends the action to both pieces
+ * @param state
+ * @param action
+ * @param name
+ * @returns {{documentList: *}}
+ */
+const codingValidationReducer = (state = COMBINED_INITIAL_STATE, action, name) => {
+  return {
+    documentList: documentListReducer(state.documentList, action, name),
+    coding: treeAndButton(codingReducer(state.coding, action, name))
+  }
+}
+
 /**
  * Creates a reducer for Coding and Validation scenes and determines which functions to send them to. If it's a common
- * actionType, that is controlled by the reducer in the file, then it's sent to it. If it's a unique actionType then it's
- * sent to the uniqueReducer function that was passed in by Coding or Validation.
+ * actionType, that is controlled by the reducer in the file, then it's sent to it. If it's a unique actionType then
+ * it's sent to the uniqueReducer function that was passed in by Coding or Validation.
  *
  * @param {Function} uniqueReducer
  * @param {Array} handlers
@@ -276,11 +315,12 @@ const treeAndButton = intermediateState => {
  * @returns {reducer}
  */
 export const createCodingValidationReducer = (uniqueReducer, handlers, name) => {
-  return function reducer(state = INITIAL_STATE, action) {
-    if (handlers.includes(action.type)) {
-      return treeAndButton(uniqueReducer(state, action))
-    } else {
-      return treeAndButton(codingValidationReducer(state, action, name))
+  return function reducer(state = COMBINED_INITIAL_STATE, action) {
+    return {
+      documentList: documentListReducer(state.documentList, action, name),
+      coding: handlers.includes(action.type)
+        ? treeAndButton(uniqueReducer(state.coding, action))
+        : treeAndButton(codingReducer(state.coding, action, name))
     }
   }
 }

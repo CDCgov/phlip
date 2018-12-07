@@ -177,8 +177,8 @@ Navigator.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    tree: state.scenes[ownProps.page].scheme === null ? [] : state.scenes[ownProps.page].scheme.tree,
-    currentQuestion: state.scenes[ownProps.page].question || {}
+    tree: state.scenes[ownProps.page].coding.scheme === null ? [] : state.scenes[ownProps.page].coding.scheme.tree,
+    currentQuestion: state.scenes[ownProps.page].coding.question || {}
   }
 }
 

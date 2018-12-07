@@ -221,7 +221,7 @@ QuestionCard.propTypes = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const pageState = state.scenes[ownProps.page]
+  const pageState = state.scenes[ownProps.page].coding
   return {
     isValidation: ownProps.page === 'validation',
     user: state.data.user.currentUser || {},

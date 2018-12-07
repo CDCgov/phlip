@@ -5,7 +5,7 @@
 import { createLogic } from 'redux-logic'
 import * as codingTypes from 'scenes/Coding/actionTypes'
 import * as valTypes from 'scenes/Validation/actionTypes'
-import * as commonTypes from './actionTypes'
+import { types as commonTypes } from './actions'
 import {
   getFinalCodedObject,
   getNextQuestion,
@@ -13,6 +13,7 @@ import {
   getQuestionSelectedInNav,
   initializeValues
 } from 'utils/codingHelpers'
+import documentListLogic from './DocumentList/logic'
 
 /**
  * Updates the action creator values with the jurisdictionEmpty state and current userId before sending it to
@@ -58,18 +59,18 @@ const getQuestionLogic = createLogic({
 
     // How did the user navigate to the currently selected question
     switch (action.type) {
-      case codingTypes.ON_QUESTION_SELECTED_IN_NAV:
-      case valTypes.ON_QUESTION_SELECTED_IN_NAV:
-        questionInfo = getQuestionSelectedInNav(state, action)
-        break
-      case codingTypes.GET_NEXT_QUESTION:
-      case valTypes.GET_NEXT_QUESTION:
-        questionInfo = getNextQuestion(state, action)
-        break
-      case codingTypes.GET_PREV_QUESTION:
-      case valTypes.GET_PREV_QUESTION:
-        questionInfo = getPreviousQuestion(state, action)
-        break
+    case codingTypes.ON_QUESTION_SELECTED_IN_NAV:
+    case valTypes.ON_QUESTION_SELECTED_IN_NAV:
+      questionInfo = getQuestionSelectedInNav(state, action)
+      break
+    case codingTypes.GET_NEXT_QUESTION:
+    case valTypes.GET_NEXT_QUESTION:
+      questionInfo = getNextQuestion(state, action)
+      break
+    case codingTypes.GET_PREV_QUESTION:
+    case valTypes.GET_PREV_QUESTION:
+      questionInfo = getPreviousQuestion(state, action)
+      break
     }
 
     next({
@@ -86,10 +87,11 @@ const getQuestionLogic = createLogic({
 const answerQuestionLogic = createLogic({
   type: [codingTypes.SAVE_USER_ANSWER_REQUEST, valTypes.SAVE_USER_ANSWER_REQUEST],
   debounce: 350,
+
   /**
    * It updates the action creator values and validates
-   * that the action should follow through and be sent to the reducers. It updates the action creator values with the final
-   * object that should be sent in the request body, the api methods to use, state and userId.
+   * that the action should follow through and be sent to the reducers. It updates the action creator values with the
+   * final object that should be sent in the request body, the api methods to use, state and userId.
    *
    * It validates that the action should be sent to the reducers to send a request to the API to save the users answer.
    * It will reject the action for a couple different reasons: if there are not unsaved changes, then no need to allow
@@ -127,11 +129,12 @@ const answerQuestionLogic = createLogic({
       reject()
     }
   },
+
   /**
-   * Handles actually sending the requests to the API. If the final questionObj (that was created in the validate function
-   * above) has an ID a PUT request is sent, otherwise a POST request is sent. This will also send or clear out any
-   * messages hanging in the queue for the questionId. If there's an error with the request and the error code is OBJECT_EXISTS,
-   * then a message error action is dispatched.
+   * Handles actually sending the requests to the API. If the final questionObj (that was created in the validate
+   * function above) has an ID a PUT request is sent, otherwise a POST request is sent. This will also send or clear
+   * out any messages hanging in the queue for the questionId. If there's an error with the request and the error code
+   * is OBJECT_EXISTS, then a message error action is dispatched.
    */
   async process({ getState, action, api }, dispatch, done) {
     let respCodedQuestion = {}
@@ -359,5 +362,6 @@ export default [
   answerQuestionLogic,
   applyAnswerToAllLogic,
   sendMessageLogic,
-  getCodedValQuestionsLogic
+  getCodedValQuestionsLogic,
+  ...documentListLogic
 ]
