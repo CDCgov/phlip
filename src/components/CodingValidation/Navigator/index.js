@@ -14,7 +14,7 @@ import { connect } from 'react-redux'
 const muiNavStyles = {
   codeNav: {
     position: 'relative',
-    width: 330,
+    width: 250,
     backgroundColor: '#3A4041',
     borderRight: 0
   }

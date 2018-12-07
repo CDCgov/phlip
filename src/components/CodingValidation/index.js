@@ -48,7 +48,7 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    marginLeft: -330
+    marginLeft: -250
   },
   openNavShift: {
     transition: theme.transitions.create('margin', {
@@ -253,22 +253,22 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
      */
     onChangeTextAnswer = (id, field) => event => {
       switch (field) {
-      case 'textAnswer':
-        this.props.actions.updateUserAnswer(
-          this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
-        )
-        break
+        case 'textAnswer':
+          this.props.actions.updateUserAnswer(
+            this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
+          )
+          break
 
-      case 'comment':
-        this.props.actions.onChangeComment(
-          this.props.projectId, this.props.jurisdictionId, this.props.question.id, event.target.value
-        )
-        break
+        case 'comment':
+          this.props.actions.onChangeComment(
+            this.props.projectId, this.props.jurisdictionId, this.props.question.id, event.target.value
+          )
+          break
 
-      case 'pincite':
-        this.props.actions.onChangePincite(
-          this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
-        )
+        case 'pincite':
+          this.props.actions.onChangePincite(
+            this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
+          )
       }
       this.onChangeTouchedStatus()
       this.onSaveCodedQuestion()
@@ -547,8 +547,12 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
                       <Icon color="#424242" style={iconStyle}>menu</Icon>
                     </MuiButton>
                   </Tooltip>}
-                                               </Column>}
-                <FlexGrid container type="row" flex style={{ padding: '1px 27px 10px 27px', overflow: 'auto' }}>
+                </Column>}
+                <FlexGrid
+                  container
+                  type="row"
+                  flex
+                  style={{ padding: '1px 27px 10px 27px', overflow: 'auto', minHeight: 500 }}>
                   {this.props.schemeError !== null &&
                   <ApiErrorView error="We couldn't get the coding scheme for this project." />}
                   {this.props.showPageLoader === true

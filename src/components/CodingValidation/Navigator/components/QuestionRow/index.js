@@ -21,7 +21,7 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
     fontWeight: 300,
     paddingLeft: 10,
     paddingRight: 10,
-    fontSize: 13,
+    fontSize: 12,
     outline: 0
   }
 
