@@ -36,7 +36,7 @@ export class DocumentList extends Component {
           {this.props.documents.map((doc, i) => {
             return (
               <Fragment key={`${doc._id}`}>
-                <FlexGrid container type="row" padding={5}>
+                <FlexGrid container type="row" padding={10}>
                   <Typography>{i+1}.</Typography>
                   <Typography style={docNameStyle}>{doc.name}</Typography>
                 </FlexGrid>
