@@ -1,0 +1,40 @@
+{
+  "parser": "babel-eslint",
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "rules": {
+    "quotes": [
+      2,
+      "single",
+      {
+        "allowTemplateLiterals": true
+      }
+    ],
+    "semi": [
+      2,
+      "never"
+    ],
+    "eol-last": [
+      0
+    ],
+    "no-mixed-requires": [
+      0
+    ],
+    "no-underscore-dangle": [
+      0
+    ],
+    "no-multiple-empty-lines": [
+      2,
+      {"max":  1}
+    ]
+  },
+  "settings": {
+    "react": {
+      "createClass": "Component",
+      "pragma": "React",
+      "version": "16.5.0"
+    }
+  },
+  "env": {
+    "jest": true
+  }
+}
