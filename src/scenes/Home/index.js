@@ -193,7 +193,7 @@ export class Home extends Component {
 
   render() {
     return (
-      <FlexGrid container flex padding="20px 30px">
+      <FlexGrid container flex padding={20}>
         <ApiErrorAlert
           content={this.props.exportError}
           open={this.props.exportError !== ''}

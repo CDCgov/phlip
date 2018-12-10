@@ -19,8 +19,14 @@ export const Header = props => {
   } = props
 
   return (
-    <FlexGrid container type="row" align="center" justify="space-between" padding="20px 27px" style={{ minHeight: 40 }}>
-      <FlexGrid container type="row" padding="0 5 0 0">
+    <FlexGrid
+      container
+      type="row"
+      align="center"
+      justify="space-between"
+      padding={20}
+      style={{ minHeight: 36, height: 36 }}>
+      <FlexGrid container type="row" align="center" padding="0 5 0 0">
         <IconButton iconSize={30} color="black" onClick={onGoBack} aria-label="Go back">arrow_back</IconButton>
         <Typography variant="title" style={{ alignSelf: 'center', paddingRight: 10 }}>{pageTitle}</Typography>
         <Typography variant="title" style={{ alignSelf: 'center' }}>
@@ -45,13 +51,16 @@ export const Header = props => {
           </FlexGrid>
         </>}
       </FlexGrid>
-      <Button
-        style={{ backgroundColor: 'white', color: 'black' }}
-        component={Link}
-        to={`/project/${projectId}/protocol`}
-        aria-label="View and edit protocol">
-        <span style={{ paddingRight: 5 }}>Protocol</span><Icon color="black"><ClipboardCheckOutline /></Icon>
-      </Button>
+      <FlexGrid container type="row">
+        <Button
+          style={{ backgroundColor: 'white', color: 'black' }}
+          component={Link}
+          to={`/project/${projectId}/protocol`}
+          aria-label="View and edit protocol">
+          <span style={{ paddingRight: 5 }}>Protocol</span>
+          <Icon color="black"><ClipboardCheckOutline /></Icon>
+        </Button>
+      </FlexGrid>
     </FlexGrid>
   )
 }

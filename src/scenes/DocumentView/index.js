@@ -30,7 +30,7 @@ export class DocumentView extends Component {
 
   render() {
     return (
-      <FlexGrid container flex padding="20px 30px">
+      <FlexGrid container flex padding={20}>
         <PageHeader
           onBackButtonClick={this.onGoBack}
           pageTitle="Edit Document"

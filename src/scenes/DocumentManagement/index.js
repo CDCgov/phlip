@@ -99,7 +99,7 @@ export class DocumentManagement extends Component {
 
   render() {
     return (
-      <FlexGrid container flex padding="20px 30px">
+      <FlexGrid container flex padding={20}>
         <PageHeader
           pageTitle="Document Management"
           protocolButton={false}

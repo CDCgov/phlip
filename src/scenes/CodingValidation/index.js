@@ -676,7 +676,7 @@ export class CodingValidation extends Component {
                 container
                 type="row"
                 flex
-                style={{ padding: '1px 27px 10px 27px', overflow: 'auto', minHeight: 500 }}>
+                style={{ padding: '1px 15px 20px 15px', overflow: 'auto', minHeight: 500 }}>
                 {this.props.schemeError !== null &&
                 <ApiErrorView error="We couldn't get the coding scheme for this project." />}
                 {this.props.showPageLoader === true
