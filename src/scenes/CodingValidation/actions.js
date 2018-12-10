@@ -213,7 +213,7 @@ let actions = {
   },
   onChangeJurisdiction: {
     type: types.ON_CHANGE_JURISDICTION,
-    args: ['event', 'jurisdictionsList']
+    args: ['index']
   },
   showQuestionLoader: {
     type: types.ON_SHOW_QUESTION_LOADER,

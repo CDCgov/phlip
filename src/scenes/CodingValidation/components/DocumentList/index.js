@@ -1,13 +1,12 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import FlexGrid from 'components/FlexGrid'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
-import SearchBar from 'components/SearchBar'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
 import theme from 'services/theme'
+import { FlexGrid, SearchBar } from 'components'
 
 const docNameStyle = {
   color: theme.palette.secondary.main,
@@ -16,6 +15,14 @@ const docNameStyle = {
 }
 
 export class DocumentList extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    jurisdictionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    page: PropTypes.oneOf(['coding', 'validation']),
+    documents: PropTypes.array
+  }
+
   constructor(props, context) {
     super(props, context)
   }
@@ -56,7 +63,6 @@ const mapStateToProps = (state, ownProps) => {
   return {
     documents: pageState.documents.ordered.map(id => pageState.documents.byId[id]),
     jurisdictionId: ownProps.jurisdictionId,
-    isValidation: ownProps.page === 'validation',
     projectId: ownProps.projectId
   }
 }

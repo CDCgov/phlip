@@ -14,7 +14,7 @@ import FlexGrid from 'components/FlexGrid'
 
 export const Header = props => {
   const {
-    projectName, empty, projectId, jurisdictionsList, selectedJurisdiction, onJurisdictionChange,
+    projectName, empty, projectId, jurisdictionList, onJurisdictionChange,
     currentJurisdiction, onGoBack, pageTitle, theme
   } = props
 
@@ -29,8 +29,8 @@ export const Header = props => {
         {!empty && <>
           <span className={styles.header} />
           <JurisdictionSelect
-            options={jurisdictionsList}
-            value={selectedJurisdiction}
+            options={jurisdictionList}
+            value={currentJurisdiction.id}
             onChange={onJurisdictionChange}
           />
           <FlexGrid container padding="0 0 0 25px">
@@ -61,7 +61,7 @@ Header.defaultProps = {}
 Header.propTypes = {
   projectName: PropTypes.string,
   projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  jurisdictionsList: PropTypes.arrayOf(PropTypes.object)
+  jurisdictionList: PropTypes.arrayOf(PropTypes.object)
 }
 
 export default withRouter(withTheme()(Header))

@@ -14,8 +14,7 @@ export const INITIAL_STATE = {
   question: {},
   scheme: null,
   outline: {},
-  jurisdiction: undefined,
-  jurisdictionId: undefined,
+  jurisdictionIndex: 0,
   currentIndex: 0,
   categories: undefined,
   selectedCategory: 0,
@@ -194,8 +193,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.ON_CHANGE_JURISDICTION:
       return {
         ...state,
-        jurisdictionId: action.event,
-        jurisdiction: action.jurisdictionsList.find(jurisdiction => jurisdiction.id === action.event),
+        jurisdictionIndex: action.index,
         hasTouchedQuestion: false,
         questionChangeLoader: false
       }

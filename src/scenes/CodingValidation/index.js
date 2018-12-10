@@ -66,7 +66,7 @@ export class CodingValidation extends Component {
     currentIndex: PropTypes.number,
     questionOrder: PropTypes.array,
     showNextButton: PropTypes.bool,
-    jurisdictionsList: PropTypes.array,
+    jurisdictionList: PropTypes.array,
     jurisdictionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     jurisdiction: PropTypes.object,
     isSchemeEmpty: PropTypes.bool,
@@ -88,7 +88,7 @@ export class CodingValidation extends Component {
     super(props, context)
 
     this.state = {
-      selectedJurisdiction: this.props.jurisdictionId,
+      selectedJurisdiction: this.props.jurisdiction.id,
       showViews: false,
       navOpen: false,
       applyAllAlertOpen: false,
@@ -134,9 +134,9 @@ export class CodingValidation extends Component {
 
   componentDidMount() {
     if (this.props.page === 'coding') {
-      this.props.actions.getCodingOutlineRequest(this.props.projectId, this.props.jurisdictionId, this.props.page)
+      this.props.actions.getCodingOutlineRequest(this.props.projectId, this.props.jurisdiction.id, this.props.page)
     } else {
-      this.props.actions.getValidationOutlineRequest(this.props.projectId, this.props.jurisdictionId, this.props.page)
+      this.props.actions.getValidationOutlineRequest(this.props.projectId, this.props.jurisdiction.id, this.props.page)
     }
     this.onShowPageLoader()
   }
@@ -173,7 +173,7 @@ export class CodingValidation extends Component {
       this.props.actions.getNextQuestion(this.props.questionOrder[index],
         index,
         this.props.projectId,
-        this.props.jurisdictionId,
+        this.props.jurisdiction.id,
         this.props.page)
       this.onShowQuestionLoader()
     }
@@ -190,7 +190,7 @@ export class CodingValidation extends Component {
       this.props.actions.getPrevQuestion(this.props.questionOrder[index],
         index,
         this.props.projectId,
-        this.props.jurisdictionId,
+        this.props.jurisdiction.id,
         this.props.page)
       this.onShowQuestionLoader()
     }
@@ -206,7 +206,7 @@ export class CodingValidation extends Component {
     } else {
       this.props.actions.onQuestionSelectedInNav(item,
         this.props.projectId,
-        this.props.jurisdictionId,
+        this.props.jurisdiction.id,
         this.props.page)
       this.onShowQuestionLoader()
     }
@@ -230,7 +230,7 @@ export class CodingValidation extends Component {
    */
   onAnswer = id => (event, value) => {
     this.props.actions.updateUserAnswer(
-      this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, value
+      this.props.projectId, this.props.jurisdiction.id, this.props.question.id, id, value
     )
 
     this.onChangeTouchedStatus()
@@ -243,7 +243,7 @@ export class CodingValidation extends Component {
    */
   onSaveCodedQuestion = () => {
     this.props.actions.saveUserAnswerRequest(this.props.projectId,
-      this.props.jurisdictionId,
+      this.props.jurisdiction.id,
       this.props.question.id,
       this.props.selectedCategoryId,
       this.props.page)
@@ -259,19 +259,19 @@ export class CodingValidation extends Component {
     switch (field) {
       case 'textAnswer':
         this.props.actions.updateUserAnswer(
-          this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
+          this.props.projectId, this.props.jurisdiction.id, this.props.question.id, id, event.target.value
         )
         break
 
       case 'comment':
         this.props.actions.onChangeComment(
-          this.props.projectId, this.props.jurisdictionId, this.props.question.id, event.target.value
+          this.props.projectId, this.props.jurisdiction.id, this.props.question.id, event.target.value
         )
         break
 
       case 'pincite':
         this.props.actions.onChangePincite(
-          this.props.projectId, this.props.jurisdictionId, this.props.question.id, id, event.target.value
+          this.props.projectId, this.props.jurisdiction.id, this.props.question.id, id, event.target.value
         )
     }
     this.onChangeTouchedStatus()
@@ -340,13 +340,13 @@ export class CodingValidation extends Component {
     if (this.state.changeMethod.type === 0) {
       this.state.changeMethod.method(...this.state.changeProps,
         this.props.projectId,
-        this.props.jurisdictionId,
+        this.props.jurisdiction.id,
         this.props.page)
       this.onShowQuestionLoader()
       // jurisdiction changing
     } else if (this.state.changeMethod.type === 1) {
       this.setState({ selectedJurisdiction: this.state.changeProps[1] })
-      this.props.actions.onChangeJurisdiction(this.state.changeProps[1], this.props.jurisdictionsList)
+      this.props.actions.onChangeJurisdiction(this.state.changeProps[1], this.props.jurisdictionList)
       this.state.changeMethod.method(...this.state.changeProps)
       this.onShowQuestionLoader()
     } else {
@@ -361,7 +361,7 @@ export class CodingValidation extends Component {
    * @public
    */
   onClearAnswer = () => {
-    this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+    this.props.actions.onClearAnswer(this.props.projectId, this.props.jurisdiction.id, this.props.question.id)
     this.onChangeTouchedStatus()
     this.onSaveCodedQuestion()
   }
@@ -402,7 +402,7 @@ export class CodingValidation extends Component {
     this.onCloseApplyAllAlert()
     this.onChangeTouchedStatus()
     this.props.actions.applyAnswerToAll(this.props.projectId,
-      this.props.jurisdictionId,
+      this.props.jurisdiction.id,
       this.props.question.id,
       this.props.page)
   }
@@ -481,7 +481,7 @@ export class CodingValidation extends Component {
         <FlexGrid style={{ width: 25 }} />
         <DocumentList
           projectId={this.props.projectId}
-          jurisdictionId={this.props.globalJurisdictionId}
+          jurisdictionId={this.props.jurisdiction.jurisdictionId}
           page={this.props.page}
         />
       </>
@@ -520,15 +520,17 @@ export class CodingValidation extends Component {
       })
     } else {
       this.setState({ selectedJurisdiction: event.target.value })
-      this.props.actions.onChangeJurisdiction(event.target.value, this.props.jurisdictionsList)
+      const newIndex = this.props.jurisdictionList.findIndex(jur => jur.id === event.target.value)
+      this.props.actions.onChangeJurisdiction(newIndex)
+
       if (this.props.page === 'coding') {
         this.props.actions.getUserCodedQuestions(this.props.projectId, event.target.value, this.props.page)
       } else {
         this.props.actions.getUserValidatedQuestionsRequest(this.props.projectId, event.target.value, this.props.page)
       }
+
       this.onShowPageLoader()
-      const jurisdictionListItem = this.props.jurisdictionsList.find(jurisdiction => jurisdiction.id === event.target.value)
-      this.props.actions.getApprovedDocumentsRequest(this.props.projectId, jurisdictionListItem.jurisdictionId, this.props.page)
+      this.props.actions.getApprovedDocumentsRequest(this.props.projectId, this.props.jurisdictionList[newIndex].jurisdictionId, this.props.page)
     }
   }
 
@@ -548,7 +550,7 @@ export class CodingValidation extends Component {
         ...flagInfo
       })
     } else {
-      this.props.actions.onSaveFlag(this.props.projectId, this.props.jurisdictionId, this.props.question.id, {
+      this.props.actions.onSaveFlag(this.props.projectId, this.props.jurisdiction.id, this.props.question.id, {
         raisedBy: {
           userId: this.props.user.id,
           firstName: this.props.user.firstName,
@@ -559,7 +561,7 @@ export class CodingValidation extends Component {
 
       this.props.actions.saveUserAnswerRequest(
         this.props.projectId,
-        this.props.jurisdictionId,
+        this.props.jurisdiction.id,
         this.props.question.id,
         this.props.selectedCategoryId,
         this.props.page
@@ -590,7 +592,7 @@ export class CodingValidation extends Component {
     if (this.state.flagToDelete.type === 3) {
       this.props.actions.clearRedFlag(this.state.flagToDelete.id, this.props.question.id, this.props.projectId)
     } else {
-      this.props.actions.clearFlag(this.state.flagToDelete.id, this.props.projectId, this.props.jurisdictionId, this.props.question.id)
+      this.props.actions.clearFlag(this.state.flagToDelete.id, this.props.projectId, this.props.jurisdiction.id, this.props.question.id)
     }
 
     this.setState({
@@ -652,8 +654,7 @@ export class CodingValidation extends Component {
           <Header
             projectName={this.props.projectName}
             projectId={this.props.projectId}
-            jurisdictionsList={this.props.jurisdictionsList}
-            selectedJurisdiction={this.state.selectedJurisdiction}
+            jurisdictionList={this.props.jurisdictionList}
             onJurisdictionChange={this.onJurisdictionChange}
             pageTitle={capitalizeFirstLetter(this.props.page)}
             currentJurisdiction={this.props.jurisdiction}
@@ -716,16 +717,10 @@ const mapStateToProps = (state, ownProps) => {
     currentIndex: pageState.currentIndex || 0,
     questionOrder: pageState.scheme === null ? null : pageState.scheme.order,
     showNextButton: pageState.showNextButton,
-    jurisdictionsList: project.projectJurisdictions || [],
-    jurisdictionId: pageState.jurisdictionId || (project.projectJurisdictions.length > 0
-      ? project.projectJurisdictions[0].id
-      : null),
-    jurisdiction: pageState.jurisdiction || (project.projectJurisdictions.length > 0
-      ? project.projectJurisdictions[0]
-      : null),
-    globalJurisdictionId: pageState.jurisdiction || (project.projectJurisdictions.length > 0
-      ? project.projectJurisdictions[0].jurisdictionId
-      : null),
+    jurisdictionList: project.projectJurisdictions || [],
+    jurisdiction: project.projectJurisdictions.length > 0
+      ? project.projectJurisdictions[pageState.jurisdictionIndex]
+      : null,
     isSchemeEmpty: pageState.isSchemeEmpty,
     areJurisdictionsEmpty: pageState.areJurisdictionsEmpty,
     userRole: state.data.user.currentUser.role,
