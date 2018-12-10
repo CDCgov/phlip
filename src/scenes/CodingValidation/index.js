@@ -656,8 +656,7 @@ export class CodingValidation extends Component {
             pageTitle={capitalizeFirstLetter(this.props.page)}
             currentJurisdiction={this.props.jurisdiction}
             onGoBack={this.onGoBack}
-            empty={this.props.jurisdiction === null || this.props.questionOrder === null ||
-            this.props.questionOrder.length === 0}
+            empty={this.props.jurisdiction === null || this.props.questionOrder === null || this.props.questionOrder.length === 0}
           />
           <FlexGrid container type="row" flex style={{ backgroundColor: '#f5f5f5' }}>
             <FlexGrid container type="row" flex style={{ overflow: 'auto' }}>

@@ -1,7 +1,6 @@
 /**
  * Handles all of the common / reusable logic for the coding and validation scenes
  */
-
 import { createLogic } from 'redux-logic'
 import { types } from './actions'
 import {
@@ -45,50 +44,6 @@ const outlineLogic = createLogic({
       },
       userId: getState().data.user.currentUser.id
     })
-  }
-})
-
-/**
- * Transforms the action creator values with the current userId and information about the new question to show. It
- * determines the question to show based on the way the user navigated to it.
- */
-const getQuestionLogic = createLogic({
-  type: [
-    types.GET_PREV_QUESTION, types.GET_NEXT_QUESTION, types.ON_QUESTION_SELECTED_IN_NAV
-  ],
-  transform({ getState, action }, next) {
-    const state = getState().scenes.codingValidation.coding
-    const userId = getState().data.user.currentUser.id
-    let questionInfo = {}
-
-    // How did the user navigate to the currently selected question
-    switch (action.type) {
-    case types.ON_QUESTION_SELECTED_IN_NAV:
-      questionInfo = getQuestionSelectedInNav(state, action)
-      break
-    case types.GET_NEXT_QUESTION:
-      questionInfo = getNextQuestion(state, action)
-      break
-    case types.GET_PREV_QUESTION:
-      questionInfo = getPreviousQuestion(state, action)
-      break
-    }
-
-    next({
-      ...action,
-      questionInfo,
-      userId
-    })
-  },
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.GET_QUESTION_SUCCESS,
-    failType: types.GET_QUESTION_FAIL
-  },
-  latest: true,
-  async process({ getState, action, api }) {
-    const state = getState().scenes.codingValidation.coding
-    return await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getCodedQuestion)
   }
 })
 
@@ -687,6 +642,47 @@ export const getValidationOutlineLogic = createLogic({
 })
 
 /**
+ * Transforms the action creator values with the current userId and information about the new question to show. It
+ * determines the question to show based on the way the user navigated to it.
+ */
+const getQuestionLogic = createLogic({
+  type: [types.GET_PREV_QUESTION, types.GET_NEXT_QUESTION, types.ON_QUESTION_SELECTED_IN_NAV],
+  transform({ getState, action }, next) {
+    const state = getState().scenes.codingValidation.coding
+    const userId = getState().data.user.currentUser.id
+    let questionInfo = {}
+
+    // How did the user navigate to the currently selected question
+    switch (action.type) {
+      case types.ON_QUESTION_SELECTED_IN_NAV:
+        questionInfo = getQuestionSelectedInNav(state, action)
+        break
+      case types.GET_NEXT_QUESTION:
+        questionInfo = getNextQuestion(state, action)
+        break
+      case types.GET_PREV_QUESTION:
+        questionInfo = getPreviousQuestion(state, action)
+        break
+    }
+
+    next({
+      ...action,
+      questionInfo,
+      userId
+    })
+  },
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.GET_QUESTION_SUCCESS,
+    failType: types.GET_QUESTION_FAIL
+  },
+  latest: true,
+  async process({ getState, action, api }) {
+    const state = getState().scenes.codingValidation.coding
+  }
+})
+
+/**
  * Logic for when the user navigates to a question. It gets the updated scheme question information as well as the coded
  * and validated questions for the new question. It updates the mergedUserQuestions state property and gets any avatars
  * based on the coded / validation questions that it needs to.
@@ -702,37 +698,40 @@ export const getQuestionLogicValidation = createLogic({
   async process({ getState, action, api }) {
     let otherErrors = {}
     const state = getState().scenes.codingValidation.coding
-    const {
-      updatedState,
-      question,
-      currentIndex,
-      errors,
-      newImages
-    } = await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getUserValidatedQuestion, state.userImages)
+    if (action.page === 'coding') {
+      return await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getCodedQuestion)
+    } else {
+      const {
+        updatedState,
+        question,
+        currentIndex,
+        errors,
+        newImages
+      } = await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getUserValidatedQuestion, state.userImages)
+      const { codedQuestionObj, coderErrors, coders } = await getCoderInformation({
+        api,
+        action,
+        questionId: question.id,
+        userImages: { ...state.userImages, ...newImages }
+      })
 
-    const { codedQuestionObj, coderErrors, coders } = await getCoderInformation({
-      api,
-      action,
-      questionId: question.id,
-      userImages: { ...state.userImages, ...newImages }
-    })
-
-    const newCoderImages = { ...newImages, ...coders }
-    for (let userId of Object.keys(newCoderImages)) {
-      try {
-        const avatar = await api.getUserImage({}, {}, { userId })
-        newCoderImages[userId] = { ...newCoderImages[userId], avatar }
-      } catch (error) {
-        otherErrors = { ...otherErrors, userImages: 'Failed to get images' }
+      const newCoderImages = { ...newImages, ...coders }
+      for (let userId of Object.keys(newCoderImages)) {
+        try {
+          const avatar = await api.getUserImage({}, {}, { userId })
+          newCoderImages[userId] = { ...newCoderImages[userId], avatar }
+        } catch (error) {
+          otherErrors = { ...otherErrors, userImages: 'Failed to get images' }
+        }
       }
-    }
 
-    return {
-      updatedState: { ...updatedState, mergedUserQuestions: { ...state.mergedUserQuestions, ...codedQuestionObj } },
-      question,
-      currentIndex,
-      errors: { ...errors, ...coderErrors, ...otherErrors },
-      userImages: { ...state.userImages, ...newCoderImages }
+      return {
+        updatedState: { ...updatedState, mergedUserQuestions: { ...state.mergedUserQuestions, ...codedQuestionObj } },
+        question,
+        currentIndex,
+        errors: { ...errors, ...coderErrors, ...otherErrors },
+        userImages: { ...state.userImages, ...newCoderImages }
+      }
     }
   }
 })
