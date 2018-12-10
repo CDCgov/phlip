@@ -8,8 +8,8 @@ import Home from './Home'
 import DocumentManagement from './DocumentManagement'
 import AppHeader from 'components/AppHeader'
 import FlexGrid from 'components/FlexGrid'
-import Coding from './Coding'
-import Validation from './Validation'
+//import Coding from './Coding'
+//import Validation from './Validation'
 import Admin from './Admin'
 import CodingScheme from './CodingScheme'
 import Protocol from './Protocol'
@@ -19,6 +19,7 @@ import JurisdictionForm from './Home/scenes/AddEditJurisdictions/components/Juri
 import ApiErrorAlert from 'components/ApiErrorAlert'
 import DocumentView from './DocumentView'
 import actions from './actions'
+import CodingValidation from './CodingValidation'
 
 /** Paths that aren't accessible by users with 'Coder' role */
 const nonCoderPaths = [
@@ -212,8 +213,7 @@ class Main extends Component {
           <Switch location={currentLocation}>
             <Route path="/docs/:id/view" component={DocumentView} />
             <Route path="/docs" component={DocumentManagement} />
-            <Route path="/project/:id/code" component={Coding} />
-            <Route path="/project/:id/validate" component={Validation} />
+            <Route path="/project/:id/(code|validate)" component={CodingValidation} />
             <Route path="/admin" component={Admin} />
             <Route strict path="/project/:id/coding-scheme" component={CodingScheme} />
             <Route strict path="/project/:id/protocol" component={Protocol} />

@@ -1,12 +1,3 @@
-import { makeActionTypes } from 'components/CodingValidation/actions'
-
-const sceneTypes = makeActionTypes('CODING')
-
-const types = {
-  ...sceneTypes,
-  GET_QUESTION_REQUEST: 'GET_QUESTION_REQUEST_CODING'
-}
-
 export const GET_QUESTION_REQUEST = 'GET_QUESTION_REQUEST_CODING'
 export const GET_QUESTION_SUCCESS = 'GET_QUESTION_SUCCESS_CODING'
 export const GET_QUESTION_FAIL = 'GET_QUESTION_FAIL_CODING'

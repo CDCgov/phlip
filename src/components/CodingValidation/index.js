@@ -459,7 +459,8 @@ export const withCodingValidation = (WrappedComponent, actions, pageName) => {
     onShowCodeView = () => (
       <>
         <QuestionCard
-          page={this.props.page} onChange={this.onAnswer}
+          page={this.props.page}
+          onChange={this.onAnswer}
           onChangeTextAnswer={this.onChangeTextAnswer}
           onChangeCategory={this.onChangeCategory}
           onAnswer={this.onAnswer}

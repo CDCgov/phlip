@@ -2,10 +2,10 @@ import projectLogic from './Home/logic'
 import userLogic from './Admin/logic'
 import loginLogic from './Login/logic'
 import codingSchemeLogic from './CodingScheme/logic'
-import codingLogic from './Coding/logic'
-import validationLogic from './Validation/logic'
+//import codingLogic from './Coding/logic'
+//import validationLogic from './Validation/logic'
 import protocolLogic from './Protocol/logic'
-import codingValidationLogic from 'components/CodingValidation/logic'
+import codingValidationLogic from './CodingValidation/logic'
 import docManageLogic from './DocumentManagement/logic'
 import docViewLogic from './DocumentView/logic'
 
@@ -56,8 +56,8 @@ export default [
   ...loginLogic,
   ...codingSchemeLogic,
   ...codingValidationLogic,
-  ...codingLogic,
-  ...validationLogic,
+  //...codingLogic,
+  //...validationLogic,
   ...protocolLogic,
   ...docManageLogic,
   ...docViewLogic

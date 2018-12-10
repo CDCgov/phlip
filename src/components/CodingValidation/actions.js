@@ -1,9 +1,5 @@
-/**
- This file is all of the action creators and actions that are used by both Coding and Validation
- */
-/*
- This holds all of the action types that are used by both Coding and Validation
- */
+import { default as documentListActions } from './DocumentList/actions'
+
 export const types = {
   UPDATE_USER_ANSWER: 'UPDATE_USER_ANSWER',
 

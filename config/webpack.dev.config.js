@@ -61,6 +61,7 @@ module.exports = env => {
                       '@babel/preset-env',
                       '@babel/preset-react'
                     ],
+                    cacheDirectory: true,
                     plugins: [
                       'react-hot-loader/babel',
                       '@babel/plugin-transform-runtime',

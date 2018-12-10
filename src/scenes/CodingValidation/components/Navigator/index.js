@@ -14,7 +14,7 @@ import { connect } from 'react-redux'
 const muiNavStyles = {
   codeNav: {
     position: 'relative',
-    width: 330,
+    width: 250,
     backgroundColor: '#3A4041',
     borderRight: 0
   }
@@ -24,7 +24,7 @@ const muiNavStyles = {
  * @component
  * Navigator
  */
-export class CodeNavigator extends Component {
+export class Navigator extends Component {
   constructor(props, context) {
     super(props, context)
     this.QuestionList = React.createRef()
@@ -117,9 +117,9 @@ export class CodeNavigator extends Component {
   }
 
   /*
-  Rows are considered at the root level. so if a root item has children, to get the full height of the row, you have
-  to get the number of all children and multiply it by the row height, 40 px
- */
+   Rows are considered at the root level. so if a root item has children, to get the full height of the row, you have
+   to get the number of all children and multiply it by the row height, 40 px
+   */
   getExpandedItemCount = item => {
     let count = 1
 
@@ -141,17 +141,6 @@ export class CodeNavigator extends Component {
     return (
       <Drawer classes={{ paper: this.props.classes.codeNav }} variant="persistent" anchor="left" open={this.props.open}>
         <Container column flex>
-          <Row
-            displayFlex
-            style={{
-              backgroundColor: '#313638',
-              height: 55,
-              alignItems: 'center',
-              justifyContent: 'center',
-              textTransform: 'uppercase'
-            }}>
-            <Typography variant="headline"><span style={{ color: 'white' }}>Code Navigator</span></Typography>
-          </Row>
           <div className={navStyles.navContainer}>
             <div style={{ flex: 1, display: 'flex' }}>
               <AutoSizer>
@@ -165,7 +154,8 @@ export class CodeNavigator extends Component {
                     rowRenderer={this.rowRenderer}
                     height={height}
                     overscanRowCount={0}
-                    ref={this.QuestionList} />
+                    ref={this.QuestionList}
+                  />
                 )}
               </AutoSizer>
             </div>
@@ -176,7 +166,7 @@ export class CodeNavigator extends Component {
   }
 }
 
-CodeNavigator.propTypes = {
+Navigator.propTypes = {
   scheme: PropTypes.object,
   currentQuestion: PropTypes.object,
   handleQuestionSelected: PropTypes.func,
@@ -187,9 +177,9 @@ CodeNavigator.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    tree: state.scenes[ownProps.page].scheme === null ? [] : state.scenes[ownProps.page].scheme.tree,
-    currentQuestion: state.scenes[ownProps.page].question || {}
+    tree: state.scenes.codingValidation.coding.scheme === null ? [] : state.scenes.codingValidation.coding.scheme.tree,
+    currentQuestion: state.scenes.codingValidation.coding.question || {}
   }
 }
 
-export default connect(mapStateToProps, null)(withStyles(muiNavStyles)(CodeNavigator))
+export default connect(mapStateToProps, null)(withStyles(muiNavStyles)(Navigator))
