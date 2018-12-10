@@ -1,16 +1,12 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import Typography from '@material-ui/core/Typography'
-import Button from 'components/Button'
-import styles from './header-styles.scss'
-import JurisdictionSelect from 'components/JurisdictionSelect'
-import IconButton from 'components/IconButton'
+//import Typography from '@material-ui/core/Typography'
 import { withRouter } from 'react-router-dom'
-import Link from 'components/Link'
-import Icon from 'components/Icon'
 import { withTheme } from '@material-ui/core/styles'
 import { ClipboardCheckOutline } from 'mdi-material-ui'
-import FlexGrid from 'components/FlexGrid'
+import styles from './header-styles.scss'
+import JurisdictionSelect from 'components/JurisdictionSelect'
+import { Button, IconButton, Link, Icon, FlexGrid, Typography } from 'components'
 
 export const Header = props => {
   const {
@@ -24,12 +20,14 @@ export const Header = props => {
       type="row"
       align="center"
       justify="space-between"
-      padding={20}
+      padding="12px 20px"
       style={{ minHeight: 36, height: 36 }}>
       <FlexGrid container type="row" align="center" padding="0 5 0 0">
-        <IconButton iconSize={30} color="black" onClick={onGoBack} aria-label="Go back">arrow_back</IconButton>
-        <Typography variant="title" style={{ alignSelf: 'center', paddingRight: 10 }}>{pageTitle}</Typography>
-        <Typography variant="title" style={{ alignSelf: 'center' }}>
+        <IconButton iconSize={24} color="black" onClick={onGoBack} aria-label="Go back">arrow_back</IconButton>
+        <Typography variant="title2" style={{ fontWeight: 500, paddingRight: 10, paddingLeft: 8 }}>
+          {pageTitle}
+        </Typography>
+        <Typography variant="title2" style={{ fontWeight: 500 }}>
           <span style={{ color: theme.palette.secondary.pageHeader }}>{projectName}</span>
         </Typography>
         {!empty && <>

@@ -47,7 +47,7 @@ export class Admin extends Component {
 
   render() {
     return (
-      <Container column flex style={{ padding: '20px 20px' }}>
+      <Container column flex style={{ padding: '12px 20px 20px 20px' }}>
         <PageHeader
           pageTitle="User Management"
           protocolButton={false}

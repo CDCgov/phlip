@@ -200,7 +200,7 @@ export class Protocol extends Component {
       }
     ]
     return (
-      <Container flex column style={{ flexWrap: 'nowrap', padding: '20px 20px' }}>
+      <Container flex column style={{ flexWrap: 'nowrap', padding: '12px 20px 20px 20px' }}>
         <Alert open={this.state.open} actions={alertActions}>
           <Typography variant="body1">
             {this.state.alertText}
