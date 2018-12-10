@@ -527,6 +527,8 @@ export class CodingValidation extends Component {
         this.props.actions.getUserValidatedQuestionsRequest(this.props.projectId, event.target.value, this.props.page)
       }
       this.onShowPageLoader()
+      const jurisdictionListItem = this.props.jurisdictionsList.find(jurisdiction => jurisdiction.id === event.target.value)
+      this.props.actions.getApprovedDocumentsRequest(this.props.projectId, jurisdictionListItem.jurisdictionId, this.props.page)
     }
   }
 

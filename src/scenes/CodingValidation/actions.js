@@ -1,4 +1,5 @@
 import makeActionCreator from 'utils/makeActionCreator'
+import { default as docListActions } from './components/DocumentList/actions'
 
 export const types = {
   UPDATE_USER_ANSWER: 'UPDATE_USER_ANSWER',
@@ -251,7 +252,8 @@ actions = {
   getValidationOutlineRequest: makeActionCreator(types.GET_VALIDATION_OUTLINE_REQUEST, 'projectId', 'jurisdictionId'),
   getUserValidatedQuestionsRequest: makeActionCreator(types.GET_USER_VALIDATED_QUESTIONS_REQUEST, 'projectId', 'jurisdictionId', 'page'),
   clearFlag: makeActionCreator(types.CLEAR_FLAG, 'flagId', 'projectId', 'jurisdictionId', 'questionId'),
-  clearRedFlag: makeActionCreator(types.CLEAR_RED_FLAG, 'flagId', 'questionId', 'projectId')
+  clearRedFlag: makeActionCreator(types.CLEAR_RED_FLAG, 'flagId', 'questionId', 'projectId'),
+  ...docListActions
 }
 
 export default actions
