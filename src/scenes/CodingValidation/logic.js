@@ -370,8 +370,8 @@ export const getOutlineLogic = createLogic({
 })
 
 /**
- * Sends requests for: getting updated scheme question information, getting the coded question for current user. Initializes
- * the userAnswers object that will be in the redux state with the codedQuestions information.
+ * Sends requests for: getting updated scheme question information, getting the coded question for current user.
+ * Initializes the userAnswers object that will be in the redux state with the codedQuestions information.
  *
  */
 export const getUserCodedQuestionsLogic = createLogic({
@@ -550,7 +550,7 @@ export const updateValidatorLogic = createLogic({
     next({
       ...action,
       otherProps: { validatedBy: { ...getState().data.user.currentUser } },
-      isValidation: true
+      isValidation: action.page === 'validation'
     })
   }
 })
@@ -644,6 +644,10 @@ export const getValidationOutlineLogic = createLogic({
 /**
  * Transforms the action creator values with the current userId and information about the new question to show. It
  * determines the question to show based on the way the user navigated to it.
+ *
+ * Logic for when the user navigates to a question. It gets the updated scheme question information as well as the coded
+ * and validated questions for the new question. It updates the mergedUserQuestions state property and gets any avatars
+ * based on the coded / validation questions that it needs to.
  */
 const getQuestionLogic = createLogic({
   type: [types.GET_PREV_QUESTION, types.GET_NEXT_QUESTION, types.ON_QUESTION_SELECTED_IN_NAV],
@@ -678,28 +682,11 @@ const getQuestionLogic = createLogic({
   },
   latest: true,
   async process({ getState, action, api }) {
-    const state = getState().scenes.codingValidation.coding
-  }
-})
-
-/**
- * Logic for when the user navigates to a question. It gets the updated scheme question information as well as the coded
- * and validated questions for the new question. It updates the mergedUserQuestions state property and gets any avatars
- * based on the coded / validation questions that it needs to.
- */
-export const getQuestionLogicValidation = createLogic({
-  type: [types.ON_QUESTION_SELECTED_IN_NAV, types.GET_NEXT_QUESTION, types.GET_PREV_QUESTION],
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.GET_QUESTION_SUCCESS,
-    failType: types.GET_QUESTION_FAIL
-  },
-  latest: true,
-  async process({ getState, action, api }) {
     let otherErrors = {}
     const state = getState().scenes.codingValidation.coding
     if (action.page === 'coding') {
-      return await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getCodedQuestion)
+      const response = await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getCodedQuestion)
+      return response
     } else {
       const {
         updatedState,
@@ -738,8 +725,8 @@ export const getQuestionLogicValidation = createLogic({
 
 /**
  * Logic for when the validator changes jurisdictions on the validation screen. Gets the coded and validation questions
- * for the question current visible as well as the updated scheme question information. It updates the mergedUserQuestions
- * state property like the logic above, with avatar and user information.
+ * for the question current visible as well as the updated scheme question information. It updates the
+ * mergedUserQuestions state property like the logic above, with avatar and user information.
  */
 export const getUserValidatedQuestionsLogic = createLogic({
   type: types.GET_USER_VALIDATED_QUESTIONS_REQUEST,
@@ -843,7 +830,6 @@ export default [
   saveRedFlagLogic,
   updateValidatorLogic,
   getUserValidatedQuestionsLogic,
-  getQuestionLogicValidation,
   getValidationOutlineLogic,
   clearFlagLogic,
   ...documentListLogic

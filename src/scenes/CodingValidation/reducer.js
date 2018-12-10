@@ -126,9 +126,12 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ADD_REQUEST_TO_QUEUE:
-      const currentQueue = removeRequestsInQueue(action.payload.questionId,
+      const currentQueue = removeRequestsInQueue(
+        action.payload.questionId,
         action.payload.categoryId,
-        [...state.messageQueue])
+        [...state.messageQueue]
+      )
+
       return {
         ...state,
         messageQueue: [...currentQueue, action.payload]
@@ -248,9 +251,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
     case types.ON_SHOW_QUESTION_LOADER:
       return { ...state, questionChangeLoader: true }
 
-    case types.ON_CLOSE_SCREEN:
-      return INITIAL_STATE
-
     case types.GET_NEXT_QUESTION:
     case types.GET_PREV_QUESTION:
     case types.ON_QUESTION_SELECTED_IN_NAV:
@@ -278,12 +278,14 @@ const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.GET_CODING_OUTLINE_REQUEST:
+    case types.GET_VALIDATION_OUTLINE_REQUEST:
       return {
         ...state,
         isLoadingPage: true
       }
 
     case types.GET_CODING_OUTLINE_FAIL:
+    case types.GET_VALIDATION_OUTLINE_FAIL:
       return {
         ...state,
         schemeError: action.payload,
@@ -341,19 +343,21 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...action.payload.otherUpdates
       }
 
+    case types.GET_USER_CODED_QUESTIONS_REQUEST:
+    case types.GET_USER_VALIDATED_QUESTIONS_REQUEST:
+      return {
+        ...state,
+        codedQuestionsError: null,
+        isLoadingPage: true
+      }
+
     case types.GET_USER_CODED_QUESTIONS_FAIL:
+    case types.GET_USER_VALIDATED_QUESTIONS_FAIL:
       return {
         ...state,
         getQuestionsError: '',
         isLoadingPage: false,
         showPageLoader: false
-      }
-
-    case types.GET_USER_CODED_QUESTIONS_REQUEST:
-      return {
-        ...state,
-        codedQuestionsError: null,
-        isLoadingPage: true
       }
 
     case types.ON_SAVE_RED_FLAG_REQUEST:
@@ -379,20 +383,6 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         schemeError: null,
         getQuestionErrors: error.length > 0 ? error : null,
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
-        isLoadingPage: false,
-        showPageLoader: false
-      }
-
-    case types.GET_VALIDATION_OUTLINE_REQUEST:
-      return {
-        ...state,
-        isLoadingPage: true
-      }
-
-    case types.GET_VALIDATION_OUTLINE_FAIL:
-      return {
-        ...state,
-        schemeError: action.payload,
         isLoadingPage: false,
         showPageLoader: false
       }
@@ -480,24 +470,11 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         ...action.payload.otherUpdates
       }
 
-    case types.GET_USER_VALIDATED_QUESTIONS_REQUEST:
-      return {
-        ...state,
-        codedQuestionsError: null,
-        isLoadingPage: true
-      }
-
-    case types.GET_USER_VALIDATED_QUESTIONS_FAIL:
-      return {
-        ...state,
-        getQuestionErrors: '',
-        isLoadingPage: false,
-        showPageLoader: false
-      }
+    case types.ON_CLOSE_SCREEN:
+      return INITIAL_STATE
 
     case types.CLEAR_RED_FLAG:
     case types.CLEAR_FLAG:
-
     default:
       return state
   }

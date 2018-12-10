@@ -6,8 +6,6 @@ import admin from './Admin/reducer'
 import login from './Login/reducer'
 import codingScheme from './CodingScheme/reducer'
 import docManage from './DocumentManagement/reducer'
-import coding, { codingHandlers } from './Coding/reducer'
-import validation, { validationHandlers } from './Validation/reducer'
 import protocol from './Protocol/reducer'
 import docView from './DocumentView/reducer'
 import codingValidation from './CodingValidation/reducer'
@@ -88,8 +86,6 @@ const scenesReducer = combineReducers({
     key: 'docManage',
     blacklist: ['upload', 'projectSuggestions', 'jurisdictionSuggestions']
   }, docManage),
-  //coding: createCodingValidationReducer(coding, codingHandlers, 'CODING'),
-  //validation: createCodingValidationReducer(validation, validationHandlers, 'VALIDATION'),
   codingValidation,
   codingScheme,
   login,
