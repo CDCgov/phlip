@@ -281,7 +281,7 @@ export class DocumentMeta extends Component {
           style={{ overflow: 'hidden', minWidth: '30%', height: '33%', marginBottom: 25 }}>
           <FlexGrid container type="row" align="center" justify="space-between" padding={10}>
             <Typography variant="body2" style={{ color: 'black' }}>
-              Assigned Projects
+              Projects
             </Typography>
             <Button
               onClick={this.showAddProjModal}
@@ -306,7 +306,7 @@ export class DocumentMeta extends Component {
         <FlexGrid raised container flex style={{ overflow: 'hidden', minWidth: '30%', height: '33%' }}>
           <FlexGrid container type="row" align="center" justify="space-between" padding={10}>
             <Typography variant="body2" style={{ color: 'black' }}>
-              Assigned Jurisdictions
+              Jurisdictions
             </Typography>
             <Button
               onClick={this.showAddJurModal}

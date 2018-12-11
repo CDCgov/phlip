@@ -19,8 +19,8 @@ export const DocListTableHead = props => {
     { key: 'file-name', label: 'File Name', padding: 'checkbox' },
     { key: 'uploaded-by', label: 'Uploaded By', padding: 'checkbox' },
     { key: 'uploaded-data', label: 'Uploaded Date', padding: 'checkbox' },
-    { key: 'doc-projects', label: 'Assigned to projects', padding: 'checkbox' },
-    { key: 'doc-jurisdictions', label: 'Assigned to jurisdictions', padding: 'checkbox' }
+    { key: 'doc-projects', label: 'Projects', padding: 'checkbox' },
+    { key: 'doc-jurisdictions', label: 'Jurisdictions', padding: 'checkbox' }
   ]
 
   return (
