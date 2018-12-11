@@ -602,13 +602,14 @@ export const getQuestionSelectedInNav = (state, action) => {
 
 /**
  * Delete any 'ids' in answer objects in userAnswers because it fails on the backend with them
- *
- * @param {Object} Answer
+ * @param {Object} answer
  * @returns {Object} - Answer object without the property 'id'
  */
-const deleteAnswerIds = (answer) => {
+const deleteAnswerIds = answer => {
   let ans = { ...answer }
   if (ans.id) delete ans.id
+  ans.annotations = JSON.stringify(ans.annotations)
+
   return ans
 }
 

@@ -6,12 +6,14 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
 import theme from 'services/theme'
-import { FlexGrid, SearchBar } from 'components'
+import { FlexGrid, SearchBar, Icon } from 'components'
+import { FormatQuoteClose } from 'mdi-material-ui'
 
 const docNameStyle = {
   color: theme.palette.secondary.main,
   cursor: 'pointer',
-  paddingLeft: 5
+  paddingLeft: 5,
+  paddingRight: 5
 }
 
 export class DocumentList extends Component {
@@ -20,7 +22,14 @@ export class DocumentList extends Component {
     jurisdictionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     page: PropTypes.oneOf(['coding', 'validation']),
-    documents: PropTypes.array
+    documents: PropTypes.array,
+    annotated: PropTypes.array
+  }
+
+  static defaultProps = {
+    actions: {},
+    documents: [],
+    annotated: []
   }
 
   constructor(props, context) {
@@ -43,9 +52,10 @@ export class DocumentList extends Component {
           {this.props.documents.map((doc, i) => {
             return (
               <Fragment key={`${doc._id}`}>
-                <FlexGrid container type="row" padding={10}>
-                  <Typography>{i+1}.</Typography>
+                <FlexGrid container type="row" align="center" padding={10}>
+                  <Typography>{i + 1}.</Typography>
                   <Typography style={docNameStyle}>{doc.name}</Typography>
+                  {this.props.annotated.includes(doc._id) && <Icon color="error" size={24}><FormatQuoteClose /></Icon>}
                 </FlexGrid>
                 <Divider />
               </Fragment>
@@ -59,11 +69,16 @@ export class DocumentList extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.documentList
+  const codingState = state.scenes.codingValidation.coding
+  const answerSelected = codingState.selectedAnswerId || false
 
   return {
     documents: pageState.documents.ordered.map(id => pageState.documents.byId[id]),
     jurisdictionId: ownProps.jurisdictionId,
-    projectId: ownProps.projectId
+    projectId: ownProps.projectId,
+    annotated: answerSelected
+      ? pageState.documents.annotated[codingState.question.id].byAnswer[codingState.selectedAnswerId]
+      : pageState.documents.annotated[codingState.question.id].all
   }
 }
 

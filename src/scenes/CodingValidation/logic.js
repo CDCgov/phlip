@@ -372,7 +372,6 @@ export const getOutlineLogic = createLogic({
 /**
  * Sends requests for: getting updated scheme question information, getting the coded question for current user.
  * Initializes the userAnswers object that will be in the redux state with the codedQuestions information.
- *
  */
 export const getUserCodedQuestionsLogic = createLogic({
   type: types.GET_USER_CODED_QUESTIONS_REQUEST,
