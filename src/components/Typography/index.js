@@ -51,7 +51,7 @@ const fontSizeLookup = {
   'body2': {
     size: 14,
     weight: 400,
-    letterSpacing: .25
+    letterSpacing: 0
   },
   'caption': {
     size: 12,
@@ -68,8 +68,8 @@ const fontSizeLookup = {
 export const Typography = props => {
   const { variant, style, ...otherProps } = props
 
-  const fontVariant = variant === 'title2' ? 'title' : variant
-  const fontLookup = fontSizeLookup[fontVariant]
+  const fontVariant = variant === 'title2' ? 'title' : variant === 'subheading2' ? 'subheading' : variant
+  const fontLookup = fontSizeLookup[variant]
 
   const typeStyle = {
     fontSize: `${(fontLookup.size * .0625)}rem`,
@@ -87,8 +87,8 @@ Typography.defaultProps = {
 
 Typography.propTypes = {
   variant: PropTypes.oneOf([
-    'display1', 'display2', 'display3', 'display4', 'title2',
-    'headline', 'title', 'subheading', 'body1', 'body2', 'caption', 'button'
+    'display1', 'display2', 'display3', 'display4',
+    'headline', 'title', 'subheading', 'subheading2', 'body1', 'body2', 'caption', 'button'
   ])
 }
 

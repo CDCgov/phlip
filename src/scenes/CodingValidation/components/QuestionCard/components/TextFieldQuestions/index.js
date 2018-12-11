@@ -26,7 +26,7 @@ export const TextFieldQuestions = props => {
                   : ''}
                 key={`user-answer-${index}`} />
               <Paper elevation={0} style={{ marginLeft: 20 }}>
-                <Typography style={{ whiteSpace: 'pre-wrap' }}>{answer.textAnswer}</Typography>
+                <Typography style={{ whiteSpace: 'pre-wrap' }} variant="body2">{answer.textAnswer}</Typography>
               </Paper>
             </Row>
             <Divider />

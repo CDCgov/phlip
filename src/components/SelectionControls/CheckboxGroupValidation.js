@@ -44,7 +44,9 @@ export const CheckboxGroupValidation = props => {
               aria-checked={userAnswers.answers.hasOwnProperty(choice.id)}
               onChange={onChange(choice.id)}
               htmlFor={choice.id}
-              control={<Checkbox classes={{ checked: classes.checked }} inputProps={{ id: choice.id, 'aria-describedby': 'question_text' }} />}
+              control={<Checkbox
+                classes={{ checked: classes.checked }}
+                inputProps={{ id: choice.id, 'aria-describedby': 'question_text' }} />}
               disabled={disableAll}
               label={choice.text}
               aria-label={choice.text}

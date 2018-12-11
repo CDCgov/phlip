@@ -44,7 +44,9 @@ export class DocumentList extends Component {
     return (
       <FlexGrid container style={{ width: '50%' }} raised>
         <FlexGrid container type="row" align="center" justify="space-between" padding="0 15px" style={{ height: 55 }}>
-          <Typography variant="subheading" style={{ fontSize: 18 }}>Assigned Documents</Typography>
+          <Typography variant="subheading" style={{ fontSize: '1.125rem', letterSpacing: 0, fontWeight: 500 }}>
+            Assigned Documents
+          </Typography>
           <SearchBar></SearchBar>
         </FlexGrid>
         <Divider />

@@ -20,7 +20,7 @@ export const PageHeader = props => {
       type="row"
       align="center"
       justify="space-between"
-      padding="0 0 12px 0"
+      padding="0 0 15px 0"
       style={{ height: 36, minHeight: 36 }}>
       <FlexGrid container flex type="row" align="center">
         {!entryScene
@@ -31,10 +31,10 @@ export const PageHeader = props => {
             aria-label="Go back">arrow_back</IconButton>
           : <CircleIcon circleColor="error" iconColor="white" circleSize="24px" iconSize="16px">{icon}</CircleIcon>
         }
-        <Typography variant="title2" style={{ paddingRight: 10, paddingLeft: 5 }}>{pageTitle}</Typography>
+        <Typography variant="title" style={{ paddingRight: 10, paddingLeft: 5 }}>{pageTitle}</Typography>
         {projectName !== '' &&
         <>
-          <Typography variant="title2">
+          <Typography variant="title">
             <span style={{ color: theme.palette.secondary.pageHeader }}>{projectName}</span>
           </Typography>
         </>}
@@ -85,7 +85,7 @@ PageHeader.propTypes = {
    */
   projectName: PropTypes.string,
   /**
-   * Title of the page to be displayed next to projectName
+   * Title  of the page to be displayed next to projectName
    */
   pageTitle: PropTypes.string,
   /**

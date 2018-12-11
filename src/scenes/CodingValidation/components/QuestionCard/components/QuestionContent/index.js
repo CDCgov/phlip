@@ -5,12 +5,13 @@ import RadioGroupValidation from 'components/SelectionControls/RadioGroupValidat
 import CheckboxGroupValidation from 'components/SelectionControls/CheckboxGroupValidation'
 import Icon from 'components/Icon'
 import SimpleInput from 'components/SimpleInput'
-import Typography from '@material-ui/core/Typography'
+//import Typography from '@material-ui/core/Typography'
 import Container, { Row, Column } from 'components/Layout'
 import * as questionTypes from '../../../../constants'
 import TextFieldQuestions from '../TextFieldQuestions'
 import Button from 'components/Button'
 import ValidationTable from '../ValidationTable'
+import { FlexGrid, Typography } from 'components'
 
 export const QuestionContent = props => {
   const {
@@ -32,14 +33,12 @@ export const QuestionContent = props => {
 
   return (
     <Container column flex style={{ flexWrap: 'nowrap', paddingBottom: 15, overflow: 'auto' }}>
-      <Row displayFlex style={{ padding: '20px 20px 10px 20px' }}>
-        <Column>
-          <Typography variant="subheading">{question.number})</Typography>
-        </Column>
-        <Column flex style={{ paddingLeft: 10 }}>
-          <Typography variant="subheading">{question.text}</Typography>
-        </Column>
-      </Row>
+      <FlexGrid padding="20px 20px 10px 20px">
+        <FlexGrid align="baseline" container type="row">
+          <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
+          <Typography variant="body2" style={{ letterSpacing: 0 }}>{question.text}</Typography>
+        </FlexGrid>
+      </FlexGrid>
       <Column flex style={{ ...questionAnswerPadding, flexBasis: '60%' }}>
         {(question.questionType === questionTypes.MULTIPLE_CHOICE ||
           question.questionType === questionTypes.BINARY) &&
@@ -126,11 +125,12 @@ export const QuestionContent = props => {
       </Column>
 
       {question.hint &&
-      <Row displayFlex style={{ padding: '20px 35px 0px 35px' }}>
-        <Icon color="#98b3be" size="18px">lightbulb_outline</Icon>
-        <Typography variant="body1" style={{ color: '#98b3be' }}><strong>Coding Directions: </strong>{question.hint}
+      <FlexGrid container type="row" padding="20px 35px 0px 35px" align="center">
+        <Icon color="#98b3be" size="14px">lightbulb_outline</Icon>
+        <Typography variant="body2" style={{ color: '#98b3be' }}>
+          <strong>Coding Directions: </strong>{question.hint}
         </Typography>
-      </Row>
+      </FlexGrid>
       }
 
       {isValidation && <ValidationTable
