@@ -161,6 +161,14 @@ export class DocumentMeta extends Component {
       : text
   }
 
+  filterJurisdiction = (item) => {
+     return !this.props.document.jurisdictions.includes(item.id)
+  }
+
+    filterProject = (item) => {
+        return !this.props.document.projects.includes(item.id)
+    }
+
   render() {
     const options = [
       { value: 'Draft', label: 'Draft' }, { value: 'Approved', label: 'Approved' }
@@ -332,13 +340,13 @@ export class DocumentMeta extends Component {
               <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle}>
                 {this.props.alertText}
               </Alert>}
-              <ModalTitle title="Document Detail" />
+              <ModalTitle title={`Assign ${this.state.showAddJurisdiction?'Jurisdiction':'Project'}`} />
                 <Divider />
                 <ModalContent style={{ display: 'flex', flexDirection: 'column', paddingTop: 24, width: 500, height: 500 }}>
                   <Grid container type="row" align="center" justify="space-between" padding={10}>
                     <ProJurSearch
-                      jurisdictionSuggestions={this.props.jurisdictionSuggestions}
-                      projectSuggestions={this.props.projectSuggestions}
+                      jurisdictionSuggestions={this.props.jurisdictionSuggestions.filter(this.filterJurisdiction)}
+                      projectSuggestions={this.props.projectSuggestions.filter(this.filterProject)}
                       onClearSuggestions={this.handleClearSuggestions}
                       onGetSuggestions={this.handleGetSuggestions}
                       onSearchValueChange={this.handleSearchValueChange}
