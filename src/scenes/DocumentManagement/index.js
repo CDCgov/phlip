@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import FlexGrid from 'components/FlexGrid'
 import PageHeader from 'components/PageHeader'
 import DocList from './components/DocList'
-import Search from './components/Search'
+import SearchBox from './components/SearchBox'
 import actions, { projectAutocomplete, jurisdictionAutocomplete } from './actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -51,6 +51,16 @@ export class DocumentManagement extends Component {
     super(props, context)
   }
 
+  state = {
+      showSearchBox : false,
+      searchSubmit : false,
+      projectSuggestionsValue : {},
+      jurisdictionSuggestionValue : {},
+      docNameSearchValue : 'doc1',
+      uploadedBySearchValue : '',
+      uploadedDateSearchValue :'',
+
+    }
   componentDidMount() {
     this.props.actions.getDocumentsRequest()
   }
@@ -77,8 +87,10 @@ export class DocumentManagement extends Component {
    */
   handleSuggestionSelected = (suggestionType) => (event, { suggestionValue }) => {
     suggestionType === 'project'
-      ? this.props.actions.projectAutocomplete.onSuggestionSelected(suggestionValue)
-      : this.props.actions.jurisdictionAutocomplete.onSuggestionSelected(suggestionValue)
+      // ? this.props.actions.projectAutocomplete.onSuggestionSelected(suggestionValue)
+      // : this.props.actions.jurisdictionAutocomplete.onSuggestionSelected(suggestionValue)
+        ? this.setState({projectSuggestionValue:suggestionValue})
+        : this.setState({jurisdictionSuggestionValue:suggestionValue})
   }
 
   handleSearchValueChange = (suggestionType, value) => {
@@ -97,37 +109,94 @@ export class DocumentManagement extends Component {
     this.props.actions.handleSearchFieldChange(event.target.value)
   }
 
+    /**
+     * Function called when the form is submitted, dispatches a redux action for updating or adding depending on state.
+     *
+     * @public
+     * @param {Object} values
+     */
+    handleSearchSubmit = values => {
+        this.setState({
+            submitting: true
+        })
+    }
+
+    onDocNameSearchChange = (searchValue) => {
+        this.setState({docNameSearchValue:searchValue})
+    };
+
+    onUploadByChange = (searchValue) => {
+        this.setState({uploadedBySearchValue: searchValue})
+    }
+
+    onUploadedDateChange = (searchValue) =>{
+        this.setState({uploadedDateSearchValue: searchValue})
+    };
+    onShowSearchBox = () => {
+        this.setState({showSearchBox : true})
+    }
+
+    onSearchSubmit = () => {
+        this.setState({showSearchBox: false})
+        this.setState({searchSubmit: true})
+        console.log(this.state)
+    }
+
+    onSearchCancel = () => {
+        this.setState({showSearchBox: false})
+        this.props.actions.jurisdictionAutocomplete.clearAll()
+        this.props.actions.projectAutocomplete.clearAll()
+    }
+
   render() {
     return (
       <FlexGrid container flex padding="20px 30px">
-        <PageHeader
-          pageTitle="Document Management"
-          protocolButton={false}
-          projectName=""
-          entryScene={true}
-          icon="description"
-          otherButton={{
-            isLink: true,
-            text: '+ Upload New',
-            path: '/docs/upload',
-            state: { modal: true },
-            props: { 'aria-label': 'Upload New Documents' },
-            show: true
-          }}
-        />
+        <FlexGrid container type='row' justify="space-between">
+            <FlexGrid type='column' padding="20px">
+                <PageHeader
+                  pageTitle="Document Management"
+                  protocolButton={false}
+                  projectName=""
+                  entryScene={true}
+                  icon="description"
+                  otherButton={{
+                    isLink: true,
+                    text: '+ Upload New',
+                    path: '/docs/upload',
+                    state: { modal: true },
+                    props: { 'aria-label': 'Upload New Documents' },
+                    show: true
+                    }}
+                />
+            </FlexGrid>
+            <FlexGrid flex style={{textAlign:'center'}}/>
+            <FlexGrid flex style={{marginLeft:'auto',width:'30%'}} align="flex-end">
+                <SearchBox
+                      searchValue={this.props.searchValue}
+                      projectSearchValue={this.props.projectSearchValue}
+                      jurisdictionSearchValue={this.props.jurisdictionSearchValue}
+                      docNameSearchValue = {this.state.docNameSearchValue}
+                      uploadedBySearchValue = {this.state.uploadedBySearchValue}
+                      uploadedDateSearchValue = {this.state.uploadedDateSearchValue}
+                      projectSuggestions={this.props.projectSuggestions}
+                      jurisdictionSuggestions={this.props.jurisdictionSuggestions}
+                      onClearSuggestions={this.handleClearSuggestions}
+                      onGetSuggestions={this.handleGetSuggestions}
+                      onSearchValueChange={this.handleSearchValueChange}
+                      onSuggestionSelected={this.handleSuggestionSelected}
+                      onSearchDocs={this.handleSearchDocsChange}
+                      onSearchSubmit={this.onSearchSubmit}
+                      showSearchBox = {this.state.showSearchBox}
+                      onShowSearchBox = {this.onShowSearchBox}
+                      onSearchCancel = {this.onSearchCancel}
+                      onDocNameSearchChange = {this.onDocNameSearchChange}
+                      onUploadByChange = {this.onUploadByChange}
+                      onUploadedDateChange = {this.onUploadedDateChange}
+
+                  />
+            </FlexGrid>
+        </FlexGrid>
         <FlexGrid container flex raised>
-          <Search
-            searchValue={this.props.searchValue}
-            projectSearchValue={this.props.projectSearchValue}
-            jurisdictionSearchValue={this.props.jurisdictionSearchValue}
-            projectSuggestions={this.props.projectSuggestions}
-            jurisdictionSuggestions={this.props.jurisdictionSuggestions}
-            onClearSuggestions={this.handleClearSuggestions}
-            onGetSuggestions={this.handleGetSuggestions}
-            onSearchValueChange={this.handleSearchValueChange}
-            onSuggestionSelected={this.handleSuggestionSelected}
-            onSearchDocs={this.handleSearchDocsChange}
-          />
           <DocList
             documents={this.props.documents}
             docCount={this.props.docCount}
@@ -163,7 +232,8 @@ const mapStateToProps = state => {
     selectedJurisdiction: docManage.jurisdictionSuggestions.selectedSuggestion,
     selectedProject: docManage.projectSuggestions.selectedSuggestion,
     searchByProject: docManage.main.searchByProject,
-    searchByJurisdiction: docManage.main.searchByJurisdiction
+    searchByJurisdiction: docManage.main.searchByJurisdiction,
+    showSearchBox : false
   }
 }
 
