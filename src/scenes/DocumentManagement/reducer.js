@@ -31,7 +31,7 @@ const resetFilter = (docs, stringSearch, projectFilter, jurisdictionFilter) => {
   let matches = docs
 
   if (stringSearch !== '') {
-    matches = searchUtils.searchForMatches(docs, stringSearch, ['name', 'uploadedByName', 'uploadedDate'])
+    matches = searchUtils.searchForMatches(docs, stringSearch, ['name', 'uploadedByName', 'uploadedDate','projectList','jurisdictionList'])
   }
 
   if (projectFilter !== null) {

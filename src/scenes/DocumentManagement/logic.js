@@ -25,6 +25,16 @@ const getDocLogic = createLogic({
             jurisdictions.push(jurisdictionId)
           }
         })
+        doc.projectList = doc.projects.map(proj => {
+              return getState().data.projects.byId[proj] === undefined
+                  ? ''
+                  : getState().data.projects.byId[proj].name
+          }).join(', ')
+              doc.jurisdictionList = doc.jurisdictions.map(jur => {
+              return getState().data.jurisdictions.byId[jur] === undefined
+                  ? ''
+                  : getState().data.jurisdictions.byId[jur].name
+          }).join(', ')
       })
       dispatch({ type: types.GET_DOCUMENTS_SUCCESS, payload: documents })
     } catch (e) {
