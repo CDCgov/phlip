@@ -89,7 +89,6 @@ export class Upload extends Component {
       ],
       showLoadingAlert: false
     }
-      console.log('props from upload ', props)
   }
 
   componentDidUpdate(prevProps, prevState) {
