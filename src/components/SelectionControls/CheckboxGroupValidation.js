@@ -97,8 +97,9 @@ export const CheckboxGroupValidation = props => {
               <IconButton
                 style={{ alignSelf: 'center', marginLeft: 20 }}
                 onClick={onToggleAnswerForAnno(choice.id)}
-                color={enabledAnswerChoice === choice.id ? 'primary' : '#b9bbbb'}>
-                <Marker />
+                color={enabledAnswerChoice === choice.id ? 'primary' : '#b9bbbb'}
+                iconSize={20}>
+                <Marker style={{ fontSize: 20 }} />
               </IconButton>
             </FlexGrid>
           )
