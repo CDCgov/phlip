@@ -5,18 +5,18 @@ import RadioGroupValidation from 'components/SelectionControls/RadioGroupValidat
 import CheckboxGroupValidation from 'components/SelectionControls/CheckboxGroupValidation'
 import Icon from 'components/Icon'
 import SimpleInput from 'components/SimpleInput'
-//import Typography from '@material-ui/core/Typography'
 import Container, { Row, Column } from 'components/Layout'
 import * as questionTypes from '../../../../constants'
 import TextFieldQuestions from '../TextFieldQuestions'
 import Button from 'components/Button'
 import ValidationTable from '../ValidationTable'
-import { FlexGrid, Typography } from 'components'
+import { FlexGrid, Typography, IconButton } from 'components'
 
 export const QuestionContent = props => {
   const {
     question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
-    onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages
+    onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages,
+    onToggleAnswerForAnno, enabledAnswerChoice
   } = props
 
   const questionAnswerPadding = {
@@ -31,6 +31,19 @@ export const QuestionContent = props => {
     paddingLeft: 65 - questionAnswerPadding.paddingLeft
   }
 
+  const selectionFormProps = {
+    choices: question.possibleAnswers,
+    userImages,
+    question,
+    onChange,
+    userAnswers,
+    onChangePincite: onChangeTextAnswer,
+    mergedUserQuestions,
+    disableAll,
+    onToggleAnswerForAnno,
+    enabledAnswerChoice
+  }
+
   return (
     <Container column flex style={{ flexWrap: 'nowrap', paddingBottom: 15, overflow: 'auto' }}>
       <FlexGrid padding="20px 20px 10px 20px">
@@ -39,36 +52,13 @@ export const QuestionContent = props => {
           <Typography variant="body2" style={{ letterSpacing: 0 }}>{question.text}</Typography>
         </FlexGrid>
       </FlexGrid>
-      <Column flex style={{ ...questionAnswerPadding, flexBasis: '60%' }}>
-        {(question.questionType === questionTypes.MULTIPLE_CHOICE ||
-          question.questionType === questionTypes.BINARY) &&
-        <Row flex displayFlex style={{ ...answerPadding, paddingRight: 0, overflow: 'auto' }}>
-          <RadioGroupValidation
-            choices={question.possibleAnswers}
-            question={question}
-            onChange={onChange}
-            userAnswers={userAnswers}
-            onChangePincite={onChangeTextAnswer}
-            mergedUserQuestions={mergedUserQuestions}
-            disableAll={disableAll}
-            userImages={userImages}
-          />
-        </Row>}
-
-        {(question.questionType === questionTypes.CATEGORY ||
-          question.questionType === questionTypes.CHECKBOXES) &&
-        <Row flex displayFlex style={{ ...answerPadding, paddingRight: 0, overflow: 'auto' }}>
-          <CheckboxGroupValidation
-            choices={question.possibleAnswers}
-            onChange={onChange}
-            question={question}
-            userAnswers={userAnswers}
-            onChangePincite={onChangeTextAnswer}
-            mergedUserQuestions={mergedUserQuestions}
-            disableAll={disableAll}
-            userImages={userImages}
-          />
-        </Row>}
+      <FlexGrid container flex style={{ ...questionAnswerPadding, flexBasis: '60%' }}>
+        <FlexGrid container type="row" style={{ ...answerPadding, paddingRight: 0, overflow: 'auto' }}>
+          {(question.questionType === questionTypes.MULTIPLE_CHOICE || question.questionType === questionTypes.BINARY)
+          && <RadioGroupValidation {...selectionFormProps} />}
+          {(question.questionType === questionTypes.CATEGORY || question.questionType === questionTypes.CHECKBOXES)
+          && <CheckboxGroupValidation {...selectionFormProps} />}
+        </FlexGrid>
 
         {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions === null &&
         <Column displayFlex style={{ ...answerPadding, paddingRight: 0 }}>
@@ -122,13 +112,14 @@ export const QuestionContent = props => {
             />
           </Row>}
         </Row>
-      </Column>
+      </FlexGrid>
 
       {question.hint &&
       <FlexGrid container type="row" padding="20px 35px 0px 35px" align="center">
         <Icon color="#98b3be" size="14px">lightbulb_outline</Icon>
         <Typography variant="body2" style={{ color: '#98b3be' }}>
-          <strong>Coding Directions: </strong>{question.hint}
+          <strong>Coding Directions:</strong>
+          {question.hint}
         </Typography>
       </FlexGrid>
       }

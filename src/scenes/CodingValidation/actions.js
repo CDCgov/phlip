@@ -60,7 +60,9 @@ export const types = {
   CLEAR_FLAG: 'CLEAR_FLAG',
   CLEAR_RED_FLAG: 'CLEAR_RED_FLAG',
   CLEAR_FLAG_SUCCESS: 'CLEAR_FLAG_SUCCESS',
-  CLEAR_FLAG_FAIL: 'CLEAR_FLAG_FAIL'
+  CLEAR_FLAG_FAIL: 'CLEAR_FLAG_FAIL',
+
+  ON_TOGGLE_ANSWER_FOR_ANNO: 'ON_TOGGLE_ANSWER_FOR_ANNO'
 }
 
 /**
@@ -174,6 +176,7 @@ actions = {
   getUserValidatedQuestionsRequest: makeActionCreator(types.GET_USER_VALIDATED_QUESTIONS_REQUEST, 'projectId', 'jurisdictionId', 'page'),
   clearFlag: makeActionCreator(types.CLEAR_FLAG, 'flagId', 'projectId', 'jurisdictionId', 'questionId'),
   clearRedFlag: makeActionCreator(types.CLEAR_RED_FLAG, 'flagId', 'questionId', 'projectId'),
+  onToggleAnswerForAnno: makeActionCreator(types.ON_TOGGLE_ANSWER_FOR_ANNO, 'schemeAnswerId'),
   ...docListActions
 }
 

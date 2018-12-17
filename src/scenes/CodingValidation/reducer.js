@@ -40,7 +40,8 @@ export const INITIAL_STATE = {
   messageQueue: [],
   saveFailed: false,
   objectExists: false,
-  hasTouchedQuestion: false
+  hasTouchedQuestion: false,
+  enabledAnswerChoice: null
 }
 
 const COMBINED_INITIAL_STATE = {
@@ -468,6 +469,12 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         isLoadingPage: false,
         showPageLoader: false,
         ...action.payload.otherUpdates
+      }
+
+    case types.ON_TOGGLE_ANSWER_FOR_ANNO:
+      return {
+        ...state,
+        enabledAnswerChoice: action.schemeAnswerId === state.enabledAnswerChoice ? null : action.schemeAnswerId
       }
 
     case types.ON_CLOSE_SCREEN:

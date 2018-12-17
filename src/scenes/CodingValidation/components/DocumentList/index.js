@@ -79,7 +79,7 @@ const mapStateToProps = (state, ownProps) => {
     jurisdictionId: ownProps.jurisdictionId,
     projectId: ownProps.projectId,
     annotated: answerSelected
-      ? pageState.documents.annotated[codingState.question.id].byAnswer[codingState.selectedAnswerId]
+      ? pageState.documents.annotated[codingState.question.id].byAnswer[codingState.enabledAnswerChoice]
       : pageState.documents.annotated[codingState.question.id].all
   }
 }

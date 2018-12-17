@@ -409,6 +409,14 @@ export class CodingValidation extends Component {
 
   /**
    * @public
+   * @param id
+   */
+  onToggleAnswerForAnno = id => {
+    this.props.actions.onToggleAnswerForAnno(id)
+  }
+
+  /**
+   * @public
    * @param noScheme
    * @param noJurisdictions
    * @returns {*}
@@ -463,7 +471,8 @@ export class CodingValidation extends Component {
   onShowCodeView = () => (
     <>
         <QuestionCard
-          page={this.props.page} onChange={this.onAnswer}
+          page={this.props.page}
+          onChange={this.onAnswer}
           onChangeTextAnswer={this.onChangeTextAnswer}
           onChangeCategory={this.onChangeCategory}
           onAnswer={this.onAnswer}
@@ -472,6 +481,7 @@ export class CodingValidation extends Component {
           onSaveFlag={this.onSaveFlag}
           onSave={this.onSaveCodedQuestion}
           onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
+          onToggleAnswerForAnno={this.onToggleAnswerForAnno}
           currentIndex={this.props.currentIndex}
           getNextQuestion={this.getNextQuestion}
           getPrevQuestion={this.getPrevQuestion}

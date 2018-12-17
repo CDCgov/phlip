@@ -5,12 +5,11 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormControl from '@material-ui/core/FormControl'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormLabel from '@material-ui/core/FormLabel'
-import FormHelperText from '@material-ui/core/FormHelperText'
 import { withStyles } from '@material-ui/core/styles'
-import SimpleInput from 'components/SimpleInput'
 import { getInitials } from 'utils/normalize'
-import Avatar from 'components/Avatar'
 import ValidationAvatar from 'components/ValidationAvatar'
+import { FlexGrid, IconButton, Avatar, SimpleInput } from 'components'
+import { Marker } from 'mdi-material-ui'
 
 const styles = theme => ({
   checked: {
@@ -24,7 +23,8 @@ const styles = theme => ({
 export const RadioGroupValidation = props => {
   const {
     choices, userAnswers, onChange, onChangePincite, classes,
-    mergedUserQuestions, disableAll, userImages, theme, question
+    mergedUserQuestions, disableAll, userImages, theme, question,
+    enabledAnswerChoice, onToggleAnswerForAnno
   } = props
 
   const userImageObj = userImages
@@ -38,7 +38,13 @@ export const RadioGroupValidation = props => {
       <FormLabel component="legend" style={{ display: 'none' }} id="question_text">{question.text}</FormLabel>
       <FormGroup>
         {choices.map(choice => (
-          <div key={choice.id} style={{ display: 'flex', alignItems: 'center' }}>
+          <FlexGrid
+            key={choice.id}
+            container
+            type="row"
+            align="center"
+            padding="0 10px"
+            style={{ backgroundColor: enabledAnswerChoice === choice.id ? '#e6f8ff' : 'white' }}>
             <FormControlLabel
               onChange={onChange(choice.id)}
               checked={userAnswers.answers.hasOwnProperty(choice.id)}
@@ -56,7 +62,8 @@ export const RadioGroupValidation = props => {
                 key={`user-answer-${index}`}
                 answer={answer}
                 avatar={userImages[answer.userId] !== undefined ? userImages[answer.userId].avatar : ''}
-                choice={choice.id} />
+                choice={choice.id}
+              />
             ))}
             {userAnswers.answers.hasOwnProperty(choice.id)
             && mergedUserQuestions !== null
@@ -88,7 +95,13 @@ export const RadioGroupValidation = props => {
               value={userAnswers.answers[choice.id].pincite}
               onChange={onChangePincite(choice.id, 'pincite')}
             />}
-          </div>
+            <IconButton
+              style={{ alignSelf: 'center', marginLeft: 20 }}
+              onClick={onToggleAnswerForAnno(choice.id)}
+              color={enabledAnswerChoice === choice.id ? 'primary' : '#b9bbbb'}>
+              <Marker />
+            </IconButton>
+          </FlexGrid>
         ))}
       </FormGroup>
     </FormControl>

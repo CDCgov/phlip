@@ -99,6 +99,10 @@ export class QuestionCard extends Component {
     })
   }
 
+  onToggleAnswerForAnno = id => () => {
+    this.props.onToggleAnswerForAnno(id)
+  }
+
   render() {
     const questionContentProps = {
       onChange: this.onChangeAnswer,
@@ -113,7 +117,9 @@ export class QuestionCard extends Component {
       isValidation: this.props.isValidation,
       mergedUserQuestions: this.props.mergedUserQuestions,
       disableAll: this.props.disableAll,
-      userImages: this.props.userImages
+      userImages: this.props.userImages,
+      onToggleAnswerForAnno: this.onToggleAnswerForAnno,
+      enabledAnswerChoice: this.props.enabledAnswerChoice
     }
 
     const alertActions = [
@@ -241,7 +247,8 @@ const mapStateToProps = (state, ownProps) => {
     isChangingQuestion: pageState.isChangingQuestion || false,
     unsavedChanges: pageState.unsavedChanges || false,
     saveFailed: pageState.saveFailed || false,
-    hasTouchedQuestion: pageState.hasTouchedQuestion || false
+    hasTouchedQuestion: pageState.hasTouchedQuestion || false,
+    enabledAnswerChoice: pageState.enabledAnswerChoice || null
   }
 }
 
