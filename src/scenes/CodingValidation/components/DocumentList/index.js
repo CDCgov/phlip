@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
 import theme from 'services/theme'
-import { FlexGrid, SearchBar, Icon } from 'components'
+import { FlexGrid, SearchBar, Icon, PDFViewer } from 'components'
 import { FormatQuoteClose } from 'mdi-material-ui'
 
 const docNameStyle = {
@@ -40,23 +40,48 @@ export class DocumentList extends Component {
     this.props.actions.getApprovedDocumentsRequest(this.props.projectId, this.props.jurisdictionId, this.props.page)
   }
 
+  getContents = id => () => {
+    this.props.actions.getDocumentContentsRequest(id)
+  }
+
+  clearDocSelected = () => {
+    this.props.actions.clearDocSelected()
+  }
+
   render() {
     return (
       <FlexGrid container style={{ width: '50%' }} raised>
-        <FlexGrid container type="row" align="center" justify="space-between" padding="0 15px" style={{ height: 55 }}>
-          <Typography variant="subheading" style={{ fontSize: '1.125rem', letterSpacing: 0, fontWeight: 500 }}>
-            Assigned Documents
+        <FlexGrid
+          container
+          type="row"
+          align="center"
+          padding="0 15px"
+          justify="space-between"
+          style={{ height: 55, minHeight: 55, maxHeight: 55 }}>
+          <Typography
+            variant="subheading"
+            style={{ fontSize: '1.125rem', letterSpacing: 0, fontWeight: 500, alignItems: 'center', display: 'flex' }}>
+            {this.props.docSelected &&
+            <Icon color="black" style={{ cursor: 'pointer', paddingRight: 5 }} onClick={this.clearDocSelected}>
+              arrow_back
+            </Icon>}
+            {this.props.docSelected
+              ? this.props.openedDoc.name
+              : 'Assigned Documents'}
           </Typography>
-          <SearchBar></SearchBar>
+          {!this.props.docSelected && <SearchBar></SearchBar>}
         </FlexGrid>
         <Divider />
-        <FlexGrid container flex padding={20}>
-          {this.props.documents.map((doc, i) => {
+        <FlexGrid container flex padding={10} style={{ height: '100%' }}>
+          {this.props.docSelected === true && <PDFViewer document={this.props.openedDoc} />}
+          {this.props.docSelected === false && this.props.documents.map((doc, i) => {
             return (
               <Fragment key={`${doc._id}`}>
                 <FlexGrid container type="row" align="center" padding={10}>
                   <Typography>{i + 1}.</Typography>
-                  <Typography style={docNameStyle}>{doc.name}</Typography>
+                  <Typography style={docNameStyle}>
+                    <span onClick={this.getContents(doc._id)}>{doc.name}</span>
+                  </Typography>
                   {this.props.annotated.includes(doc._id) &&
                   <Icon color="error" size={20}>
                     <FormatQuoteClose style={{ fontSize: 20 }} />
@@ -83,7 +108,9 @@ const mapStateToProps = (state, ownProps) => {
     projectId: ownProps.projectId,
     annotated: answerSelected
       ? pageState.documents.annotated[codingState.question.id].byAnswer[codingState.enabledAnswerChoice]
-      : pageState.documents.annotated[codingState.question.id].all
+      : pageState.documents.annotated[codingState.question.id].all,
+    openedDoc: pageState.openedDoc || {},
+    docSelected: pageState.docSelected || false
   }
 }
 

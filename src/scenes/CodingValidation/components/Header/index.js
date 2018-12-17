@@ -39,11 +39,11 @@ export const Header = props => {
           />
           <FlexGrid container padding="0 0 0 25px">
             <Typography variant="caption">
-              <span style={{ color: '#707070' }}>Segment Start Date </span>
+              <span style={{ color: '#707070', letterSpacing: 0 }}>Segment Start Date </span>
               <span style={{ color: 'black' }}>{new Date(currentJurisdiction.startDate).toLocaleDateString()}</span>
             </Typography>
             <Typography variant="caption">
-              <span style={{ color: '#707070' }}>Segment End Date </span>
+              <span style={{ color: '#707070', letterSpacing: 0 }}>Segment End Date </span>
               <span style={{ color: 'black' }}>{new Date(currentJurisdiction.endDate).toLocaleDateString()}</span>
             </Typography>
           </FlexGrid>

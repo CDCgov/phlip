@@ -9,6 +9,11 @@ export const INITIAL_STATE = {
     allIds: [],
     ordered: [],
     annotated: {}
+  },
+  docSelected: false,
+  openedDoc: {
+    _id: '',
+    content: {}
   }
 }
 
@@ -86,6 +91,32 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           ...state.documents,
           annotated: byQuestion
         }
+      }
+
+    case types.GET_DOC_CONTENTS_REQUEST:
+      return {
+        ...state,
+        openedDoc: {
+          _id: action.id,
+          name: state.documents.byId[action.id].name
+        }
+      }
+
+    case types.GET_DOC_CONTENTS_SUCCESS:
+      return {
+        ...state,
+        docSelected: true,
+        openedDoc: {
+          ...state.openedDoc,
+          content: action.payload
+        }
+      }
+
+    case types.CLEAR_DOC_SELECTED:
+      return {
+        ...state,
+        docSelected: false,
+        openedDoc: {}
       }
 
     case types.GET_APPROVED_DOCUMENTS_REQUEST:

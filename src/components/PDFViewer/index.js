@@ -17,6 +17,12 @@ export class PDFViewer extends Component {
     this.viewerRef = React.createRef()
   }
 
+  componentDidMount() {
+    if (this.props.document.content.data) {
+      this.createPdf(this.props.document)
+    }
+  }
+
   componentDidUpdate(prevProps) {
     if (!prevProps.document.content.data && this.props.document.content.data) {
       this.createPdf(this.props.document)
