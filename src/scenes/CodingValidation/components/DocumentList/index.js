@@ -57,7 +57,10 @@ export class DocumentList extends Component {
                 <FlexGrid container type="row" align="center" padding={10}>
                   <Typography>{i + 1}.</Typography>
                   <Typography style={docNameStyle}>{doc.name}</Typography>
-                  {this.props.annotated.includes(doc._id) && <Icon color="error" size={24}><FormatQuoteClose /></Icon>}
+                  {this.props.annotated.includes(doc._id) &&
+                  <Icon color="error" size={20}>
+                    <FormatQuoteClose style={{ fontSize: 20 }} />
+                  </Icon>}
                 </FlexGrid>
                 <Divider />
               </Fragment>
@@ -72,7 +75,7 @@ export class DocumentList extends Component {
 const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.documentList
   const codingState = state.scenes.codingValidation.coding
-  const answerSelected = codingState.selectedAnswerId || false
+  const answerSelected = codingState.enabledAnswerChoice || false
 
   return {
     documents: pageState.documents.ordered.map(id => pageState.documents.byId[id]),

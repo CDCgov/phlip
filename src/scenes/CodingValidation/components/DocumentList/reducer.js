@@ -34,10 +34,11 @@ const sortAnnotations = (userAnswers, newQuestion = {}) => {
 
     answers.forEach(answer => {
       let annotations
+      byQuestion[question.schemeQuestionId].byAnswer[answer.schemeAnswerId] = []
       try {
         annotations = JSON.parse(answer.annotations)
         annotations.map(annotation => {
-          byQuestion[question.schemeQuestionId].byAnswer[answer.schemeAnswerId] = annotation.docId
+          byQuestion[question.schemeQuestionId].byAnswer[answer.schemeAnswerId].push(annotation.docId)
           if (!byQuestion[question.schemeQuestionId].all.includes(annotation.docId))
             byQuestion[question.schemeQuestionId].all.push(annotation.docId)
         })

@@ -213,7 +213,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         unsavedChanges: false,
         savedFailed: false,
         hasTouchedQuestion: false,
-        userImages: action.payload.userImages ? action.payload.userImages : null
+        userImages: action.payload.userImages ? action.payload.userImages : null,
+        enabledAnswerChoice: null
       }
 
     case types.ON_APPLY_ANSWER_TO_ALL:
@@ -275,7 +276,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         getQuestionErrors: error.length > 0 ? error : null,
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
-        showPageLoader: false
+        showPageLoader: false,
+        enabledAnswerChoice: null
       }
 
     case types.GET_CODING_OUTLINE_REQUEST:
@@ -341,6 +343,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         isLoadingPage: false,
         showPageLoader: false,
         unsavedChanges: false,
+        enabledAnswerChoice: null,
         ...action.payload.otherUpdates
       }
 
@@ -385,7 +388,8 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         getQuestionErrors: error.length > 0 ? error : null,
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
-        showPageLoader: false
+        showPageLoader: false,
+        enabledAnswerChoice: null
       }
 
     case types.CLEAR_FLAG_SUCCESS:
@@ -468,6 +472,7 @@ const codingReducer = (state = INITIAL_STATE, action) => {
         userImages: action.payload.userImages,
         isLoadingPage: false,
         showPageLoader: false,
+        enabledAnswerChoice: null,
         ...action.payload.otherUpdates
       }
 
