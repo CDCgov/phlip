@@ -66,8 +66,13 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           ...state.documents,
           byId: obj,
           allIds: Object.keys(obj),
-          ordered: sortListOfObjects(Object.values(obj), 'uploadedDate', 'asc').map(obj => obj._id)
-        }
+          ordered: sortListOfObjects(Object.values(obj), 'uploadedDate', 'desc').map(obj => obj._id)
+        },
+        ...state.docSelected
+          ? Object.keys(obj).includes(state.openedDoc._id)
+            ? {}
+            : { docSelected: false, openedDoc: {} }
+          : {}
       }
 
     case questionTypes.GET_VALIDATION_OUTLINE_SUCCESS:
