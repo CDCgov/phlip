@@ -1,7 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { withCodingValidation } from '../index'
-import Coding from 'scenes/Coding'
+import { CodingValidation } from '../index'
 
 const props = {
   projectName: 'Project Test',
@@ -26,13 +25,14 @@ const props = {
   saveFlagErrorContent: null,
   getQuestionErrors: null,
   match: { url: '/project/1/code', params: { id: 1 } },
-  actions: {}
+  actions: {
+    getCodingOutlineRequest: jest.fn()
+  },
+  classes: {}
 }
-
-const Component = withCodingValidation(Coding, {}).WrappedComponent
 
 describe('CodingValidation', () => {
   test('should render Coding component correctly', () => {
-    expect(shallow(<Component {...props} />)).toMatchSnapshot()
+    expect(shallow(<CodingValidation {...props} />)).toMatchSnapshot()
   })
 })

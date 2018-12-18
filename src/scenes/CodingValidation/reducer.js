@@ -44,7 +44,7 @@ export const INITIAL_STATE = {
   enabledAnswerChoice: null
 }
 
-const COMBINED_INITIAL_STATE = {
+export const COMBINED_INITIAL_STATE = {
   coding: INITIAL_STATE,
   documentList: docListInitialState
 }
@@ -77,7 +77,7 @@ const removeRequestsInQueue = (questionId, categoryId, currentQueue) => {
  * @param {Object} action
  * @returns {Object}
  */
-const codingReducer = (state = INITIAL_STATE, action) => {
+export const codingReducer = (state = INITIAL_STATE, action) => {
   const questionUpdater = state.question.isCategoryQuestion
     ? handleUpdateUserCategoryChild(state, action)
     : handleUpdateUserCodedQuestion(state, action)

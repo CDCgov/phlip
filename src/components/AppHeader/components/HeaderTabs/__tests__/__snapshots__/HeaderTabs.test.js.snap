@@ -53,6 +53,7 @@ exports[`HeaderTabs should render correctly 1`] = `
           "color": "white",
         }
       }
+      variant="caption"
     >
       Project List
     </WithStyles(Typography)>
@@ -93,6 +94,7 @@ exports[`HeaderTabs should render correctly 1`] = `
           "color": "white",
         }
       }
+      variant="caption"
     >
       Document Management
     </WithStyles(Typography)>

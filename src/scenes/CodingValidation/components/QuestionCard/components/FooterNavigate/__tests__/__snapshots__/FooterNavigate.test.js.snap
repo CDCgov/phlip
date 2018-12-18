@@ -14,9 +14,9 @@ exports[`Coding -- FooterNavigate component should render correctly 1`] = `
     Object {
       "alignItems": "center",
       "alignSelf": "flex-end",
-      "height": 50,
+      "height": 60,
       "justifyContent": "space-between",
-      "paddingTop": 10,
+      "padding": "0 10px",
     }
   }
 />

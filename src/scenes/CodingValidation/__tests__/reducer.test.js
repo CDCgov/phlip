@@ -1,24 +1,19 @@
-import * as types from '../actionTypes'
-import { createCodingValidationReducer } from '../reducer'
+import { types } from '../actions'
+import { INITIAL_STATE, COMBINED_INITIAL_STATE, default as codingValidationReducer } from '../reducer'
 
-const initial = {
-  question: {},
-  scheme: null,
-  outline: {},
-  jurisdiction: undefined,
-  jurisdictionId: undefined,
-  currentIndex: 0,
-  categories: undefined,
-  selectedCategory: 0,
-  selectedCategoryId: null,
-  userAnswers: {},
-  showNextButton: true,
-  mergedUserQuestions: null
+const initial = INITIAL_STATE
+
+const getState = (other = {}) => ({
+  ...COMBINED_INITIAL_STATE,
+  coding: {
+    ...initial,
+    ...other
+  }
+})
+
+const reducer = (state, action) => {
+  return codingValidationReducer(state, action)
 }
-
-const getState = other => ({ ...initial, ...other })
-const getReducer = (state, action) => createCodingValidationReducer(() => {
-}, [], 'CODING')(state, action)
 
 describe('CodingValidation reducer', () => {
   describe('UPDATE_USER_ANSWER_REQUEST', () => {
@@ -141,19 +136,19 @@ describe('CodingValidation reducer', () => {
 
     test('should handle binary / multiple choice type questions', () => {
       const action = {
-        type: `${types.UPDATE_USER_ANSWER}_CODING`,
+        type: types.UPDATE_USER_ANSWER,
         answerId: 123,
         questionId: 1
       }
 
-      const state = getReducer(getState(currentState), action)
+      const state = reducer(getState(currentState), action)
 
       expect(state).toEqual(getState({
         ...currentState,
         userAnswers: {
           ...currentState.userAnswers,
           1: {
-            answers: { 123: { schemeAnswerId: 123, pincite: '' } },
+            answers: { 123: { schemeAnswerId: 123, pincite: '', annotations: [] } },
             schemeQuestionId: 1,
             comment: ''
           }
@@ -161,7 +156,7 @@ describe('CodingValidation reducer', () => {
         unsavedChanges: true
       }))
 
-      expect(state).toHaveProperty('scheme.tree', [
+      expect(state).toHaveProperty('coding.scheme.tree', [
         {
           text: 'fa la la la',
           hint: '',
@@ -240,12 +235,12 @@ describe('CodingValidation reducer', () => {
 
     test('should handle checkbox / category choice type questions', () => {
       const action = {
-        type: `${types.UPDATE_USER_ANSWER}_CODING`,
+        type: types.UPDATE_USER_ANSWER,
         answerId: 90,
         questionId: 2
       }
 
-      const state = getReducer(
+      const state = reducer(
         getState({
           ...currentState,
           question: {
@@ -276,7 +271,7 @@ describe('CodingValidation reducer', () => {
             comment: '',
             schemeQuestionId: 2,
             answers: {
-              90: { schemeAnswerId: 90, pincite: '' }
+              90: { schemeAnswerId: 90, pincite: '', annotations: [] }
             }
           }
         },
@@ -288,14 +283,14 @@ describe('CodingValidation reducer', () => {
   describe('ON_CHANGE_COMMENT', () => {
     test('should handle regular questions', () => {
       const action = {
-        type: `${types.ON_CHANGE_COMMENT}_CODING`,
+        type: types.ON_CHANGE_COMMENT,
         questionId: 2,
         projectId: 1,
         jurisdictionId: 1,
         comment: 'new comment'
       }
 
-      const state = getReducer(
+      const state = reducer(
         getState({
           userAnswers: {
             2: {
@@ -328,14 +323,14 @@ describe('CodingValidation reducer', () => {
 
     test('should handle category questions', () => {
       const action = {
-        type: `${types.ON_CHANGE_COMMENT}_CODING`,
+        type: types.ON_CHANGE_COMMENT,
         questionId: 2,
         projectId: 1,
         jurisdictionId: 1,
         comment: 'new comment for cat 1'
       }
 
-      const state = getReducer(
+      const state = reducer(
         getState({
           question: {
             text: 'la la la',
@@ -399,7 +394,7 @@ describe('CodingValidation reducer', () => {
   describe('ON_CHANGE_PINCITE', () => {
     test('should handle regular questions', () => {
       const action = {
-        type: `${types.ON_CHANGE_PINCITE}_CODING`,
+        type: types.ON_CHANGE_PINCITE,
         questionId: 2,
         projectId: 1,
         jurisdictionId: 1,
@@ -407,7 +402,7 @@ describe('CodingValidation reducer', () => {
         pincite: 'this is a pincite'
       }
 
-      const state = getReducer(
+      const state = reducer(
         getState({
           question: {
             questionType: 3,
@@ -463,7 +458,7 @@ describe('CodingValidation reducer', () => {
 
     test('should handle category child questions', () => {
       const action = {
-        type: `${types.ON_CHANGE_PINCITE}_CODING`,
+        type: types.ON_CHANGE_PINCITE,
         questionId: 2,
         projectId: 1,
         jurisdictionId: 1,
@@ -471,7 +466,7 @@ describe('CodingValidation reducer', () => {
         pincite: 'this is a pincite'
       }
 
-      const state = getReducer(
+      const state = reducer(
         getState({
           question: {
             questionType: 3,
@@ -539,13 +534,13 @@ describe('CodingValidation reducer', () => {
   describe('ON_CLEAR_ANSWER', () => {
     test('should handle regular questions', () => {
       const action = {
-        type: `${types.ON_CLEAR_ANSWER}_CODING`,
+        type: types.ON_CLEAR_ANSWER,
         questionId: 2,
         projectId: 1,
         jurisdictionId: 1
       }
 
-      const state = getReducer(
+      const state = reducer(
         getState({
           question: {
             questionType: 3,
@@ -592,13 +587,13 @@ describe('CodingValidation reducer', () => {
 
     test('should handle category child questions', () => {
       const action = {
-        type: `${types.ON_CLEAR_ANSWER}_CODING`,
+        type: types.ON_CLEAR_ANSWER,
         questionId: 2,
         projectId: 1,
         jurisdictionId: 1
       }
 
-      const state = getReducer(
+      const state = reducer(
         getState({
           question: {
             id: 2,
@@ -609,15 +604,11 @@ describe('CodingValidation reducer', () => {
             2: {
               schemeQuestionId: 2,
               3: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: 'pincite!' }
-                },
+                answers: { 4: { schemeAnswerId: 4, pincite: 'pincite!' } },
                 comment: ''
               },
               2: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: '' }
-                },
+                answers: { 4: { schemeAnswerId: 4, pincite: '' } },
                 comment: ''
               }
             }
@@ -639,15 +630,8 @@ describe('CodingValidation reducer', () => {
           userAnswers: {
             2: {
               schemeQuestionId: 2,
-              3: {
-                answers: {}, comment: ''
-              },
-              2: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: '' }
-                },
-                comment: ''
-              }
+              3: { answers: {}, comment: '' },
+              2: { answers: { 4: { schemeAnswerId: 4, pincite: '' } }, comment: '' }
             }
           },
           selectedCategory: 0,
@@ -660,7 +644,7 @@ describe('CodingValidation reducer', () => {
     })
 
     test('should update scheme.tree for category questions', () => {
-      const currentState = {
+      const currentState = getState({
         question: {
           text: 'cat question',
           questionType: 2,
@@ -685,9 +669,7 @@ describe('CodingValidation reducer', () => {
               positionInParent: 0,
               isAnswered: false,
               indent: 2,
-              possibleAnswers: [
-                { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
-              ],
+              possibleAnswers: [{ id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }],
               children: [
                 {
                   schemeAnswerId: 10,
@@ -840,17 +822,17 @@ describe('CodingValidation reducer', () => {
             20: { answers: {}, comment: '' }
           }
         }
-      }
+      })
 
       const action = {
-        type: `${types.ON_CLEAR_ANSWER}_CODING`,
+        type: types.ON_CLEAR_ANSWER,
         questionId: 3,
         projectId: 1,
         jurisdictionId: 1
       }
 
-      const state = getReducer(currentState, action)
-      expect(state).toHaveProperty('scheme.tree', [
+      const state = reducer(currentState, action)
+      expect(state).toHaveProperty('coding.scheme.tree', [
         {
           text: 'fa la la la',
           questionType: 1,
@@ -988,13 +970,13 @@ describe('CodingValidation reducer', () => {
 
     test('should apply answers to all categories', () => {
       const action = {
-        type: `${types.ON_APPLY_ANSWER_TO_ALL}_CODING`,
+        type: types.ON_APPLY_ANSWER_TO_ALL,
         jurisdictionId: 1,
         projectId: 3,
         questionId: 4
       }
 
-      const state = getReducer(getState(currentState), action)
+      const state = reducer(getState(currentState), action)
 
       expect(state).toEqual(getState({
         ...currentState,
@@ -1020,5 +1002,4 @@ describe('CodingValidation reducer', () => {
       }))
     })
   })
-
 })

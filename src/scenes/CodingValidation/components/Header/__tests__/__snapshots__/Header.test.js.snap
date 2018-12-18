@@ -1,65 +1,56 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Coding scene --- Header component should render correctly 1`] = `
-<Container
-  alignItems="center"
-  column={false}
+<FlexGrid
+  align="center"
+  circular={false}
+  container={true}
   flex={false}
-  spacing={0}
+  justify="space-between"
+  padding="15px 20px"
+  raised={false}
   style={
     Object {
-      "padding": "20px 27px",
+      "height": 36,
+      "minHeight": 36,
     }
   }
+  type="row"
 >
-  <Column
-    component={
-      <WithStyles(Grid)
-        item={true}
-      />
-    }
-    displayFlex={false}
+  <FlexGrid
+    align="center"
+    circular={false}
+    container={true}
     flex={false}
-    style={
-      Object {
-        "display": "flex",
-        "paddingRight": 5,
-      }
-    }
+    justify="stretch"
+    padding="0 5 0 0"
+    raised={false}
+    style={Object {}}
+    type="row"
   >
     <IconButton
       aria-label="Go back"
       color="black"
       disabled={false}
-      iconSize={30}
+      iconSize={24}
       tooltipText=""
     >
       arrow_back
     </IconButton>
-  </Column>
-  <Row
-    component={
-      <WithStyles(Grid)
-        item={true}
-      />
-    }
-    displayFlex={true}
-    flex={false}
-    reverse={false}
-  >
-    <WithStyles(Typography)
+    <Typography
       style={
         Object {
-          "alignSelf": "center",
+          "fontWeight": 500,
+          "paddingLeft": 8,
           "paddingRight": 10,
         }
       }
       variant="title"
     />
-    <WithStyles(Typography)
+    <Typography
       style={
         Object {
-          "alignSelf": "center",
+          "fontWeight": 500,
         }
       }
       variant="title"
@@ -73,93 +64,105 @@ exports[`Coding scene --- Header component should render correctly 1`] = `
       >
         Test Project
       </span>
-    </WithStyles(Typography)>
-  </Row>
-  <span />
-  <div
-    style={
-      Object {
-        "flex": "1",
-        "paddingRight": 30,
-      }
-    }
-  >
+    </Typography>
+    <span />
     <WithStyles(JurisdictionSelect) />
-  </div>
-  <Column
-    component={
-      <WithStyles(Grid)
-        item={true}
-      />
-    }
-    displayFlex={false}
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={true}
+      flex={false}
+      justify="stretch"
+      padding="0 0 0 25px"
+      raised={false}
+      style={Object {}}
+      type="column"
+    >
+      <Typography
+        variant="caption"
+      >
+        <span
+          style={
+            Object {
+              "color": "#707070",
+              "letterSpacing": 0,
+            }
+          }
+        >
+          Segment Start Date 
+        </span>
+        <span
+          style={
+            Object {
+              "color": "black",
+            }
+          }
+        >
+          2018-1-1
+        </span>
+      </Typography>
+      <Typography
+        variant="caption"
+      >
+        <span
+          style={
+            Object {
+              "color": "#707070",
+              "letterSpacing": 0,
+            }
+          }
+        >
+          Segment End Date 
+        </span>
+        <span
+          style={
+            Object {
+              "color": "black",
+            }
+          }
+        >
+          2018-1-18
+        </span>
+      </Typography>
+    </FlexGrid>
+  </FlexGrid>
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={true}
     flex={false}
+    justify="stretch"
+    padding={0}
+    raised={false}
+    style={Object {}}
+    type="row"
   >
-    <WithStyles(Typography)
-      variant="caption"
-    >
-      <span
-        style={
-          Object {
-            "color": "#707070",
-          }
+    <WithTheme(Button)
+      aria-label="View and edit protocol"
+      component={[Function]}
+      style={
+        Object {
+          "backgroundColor": "white",
+          "color": "black",
         }
-      >
-        Segment Start Date 
-      </span>
-      <span
-        style={
-          Object {
-            "color": "black",
-          }
-        }
-      >
-        2018-1-1
-      </span>
-    </WithStyles(Typography)>
-    <WithStyles(Typography)
-      variant="caption"
-    >
-      <span
-        style={
-          Object {
-            "color": "#707070",
-          }
-        }
-      >
-        Segment End Date 
-      </span>
-      <span
-        style={
-          Object {
-            "color": "black",
-          }
-        }
-      >
-        2018-1-18
-      </span>
-    </WithStyles(Typography)>
-  </Column>
-  <Column
-    component={
-      <WithStyles(Grid)
-        item={true}
-      />
-    }
-    displayFlex={false}
-    flex={true}
-  />
-  <WithTheme(Button)
-    aria-label="View and edit protocol"
-    component={[Function]}
-    style={
-      Object {
-        "backgroundColor": "white",
-        "color": "black",
       }
-    }
-    to="/project/1/protocol"
-    value="Protocol"
-  />
-</Container>
+      to="/project/1/protocol"
+    >
+      <span
+        style={
+          Object {
+            "paddingRight": 5,
+          }
+        }
+      >
+        Protocol
+      </span>
+      <WithTheme(Icon)
+        color="black"
+      >
+        <Icon />
+      </WithTheme(Icon)>
+    </WithTheme(Button)>
+  </FlexGrid>
+</FlexGrid>
 `;

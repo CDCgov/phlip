@@ -15,39 +15,6 @@ exports[`Coding scene - Navigator should render correctly 1`] = `
     flex={true}
     spacing={0}
   >
-    <Row
-      component={
-        <WithStyles(Grid)
-          item={true}
-        />
-      }
-      displayFlex={true}
-      flex={false}
-      reverse={false}
-      style={
-        Object {
-          "alignItems": "center",
-          "backgroundColor": "#313638",
-          "height": 55,
-          "justifyContent": "center",
-          "textTransform": "uppercase",
-        }
-      }
-    >
-      <WithStyles(Typography)
-        variant="headline"
-      >
-        <span
-          style={
-            Object {
-              "color": "white",
-            }
-          }
-        >
-          Code Navigator
-        </span>
-      </WithStyles(Typography)>
-    </Row>
     <div>
       <div
         style={

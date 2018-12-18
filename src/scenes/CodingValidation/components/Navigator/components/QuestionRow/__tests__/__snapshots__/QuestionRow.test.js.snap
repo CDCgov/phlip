@@ -45,7 +45,7 @@ exports[`Coding scene - QuestionRow should render correctly 1`] = `
       style={
         Object {
           "color": "white",
-          "fontSize": 13,
+          "fontSize": 12,
           "fontWeight": 300,
           "outline": 0,
           "paddingLeft": 10,
