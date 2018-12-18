@@ -234,7 +234,8 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
 export const getNextQuestion = (state, action) => {
   let newQuestion = state.scheme.byId[action.id]
   let newIndex = action.newIndex
-  let categories = state.categories, selectedCategoryId = state.selectedCategoryId,
+  let categories = state.categories,
+    selectedCategoryId = state.selectedCategoryId,
     selectedCategory = state.selectedCategory
 
   if (newQuestion.isCategoryQuestion) {

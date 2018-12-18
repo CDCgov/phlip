@@ -65,108 +65,26 @@ export const types = {
   ON_TOGGLE_ANSWER_FOR_ANNO: 'ON_TOGGLE_ANSWER_FOR_ANNO'
 }
 
-/**
- * Makes an action creator function with action.type = type, scene = Coding or Validation and arguments from argNames.
- */
-export const makeOtherActionCreator = (type, ...argNames) => {
-  return function (...args) {
-    let action = { type }
-    argNames.forEach((arg, index) => {
-      action[argNames[index]] = args[index]
-    })
-    return action
-  }
-}
-
-/**
- * All of the reusable actions for Coding and Validation
- */
-let actions = {
-  getNextQuestion: {
-    type: types.GET_NEXT_QUESTION,
-    args: ['id', 'newIndex', 'projectId', 'jurisdictionId', 'page']
-  },
-  getPrevQuestion: {
-    type: types.GET_PREV_QUESTION,
-    args: ['id', 'newIndex', 'projectId', 'jurisdictionId', 'page']
-  },
-  onQuestionSelectedInNav: {
-    type: types.ON_QUESTION_SELECTED_IN_NAV,
-    args: ['question', 'projectId', 'jurisdictionId', 'page']
-  },
-  applyAnswerToAll: {
-    type: types.ON_APPLY_ANSWER_TO_ALL,
-    args: ['projectId', 'jurisdictionId', 'questionId', 'page']
-  },
-  updateUserAnswer: {
-    type: types.UPDATE_USER_ANSWER,
-    args: ['projectId', 'jurisdictionId', 'questionId', 'answerId', 'answerValue']
-  },
-  onChangeComment: {
-    type: types.ON_CHANGE_COMMENT,
-    args: ['projectId', 'jurisdictionId', 'questionId', 'comment']
-  },
-  onChangePincite: {
-    type: types.ON_CHANGE_PINCITE,
-    args: ['projectId', 'jurisdictionId', 'questionId', 'answerId', 'pincite']
-  },
-  onChangeCategory: {
-    type: types.ON_CHANGE_CATEGORY,
-    args: ['selection']
-  },
-  updateEditedFields: {
-    type: types.UPDATE_EDITED_FIELDS,
-    args: ['projectId']
-  },
-  onCloseScreen: {
-    type: types.ON_CLOSE_SCREEN,
-    args: []
-  },
-  clearAnswerError: {
-    type: types.CLEAR_ANSWER_ERROR,
-    args: []
-  },
-  dismissApiAlert: {
-    type: types.DISMISS_API_ALERT,
-    args: ['errorType']
-  },
-  onClearAnswer: {
-    type: types.ON_CLEAR_ANSWER,
-    args: ['projectId', 'jurisdictionId', 'questionId']
-  },
-  onChangeJurisdiction: {
-    type: types.ON_CHANGE_JURISDICTION,
-    args: ['index']
-  },
-  showQuestionLoader: {
-    type: types.ON_SHOW_QUESTION_LOADER,
-    args: []
-  },
-  showPageLoader: {
-    type: types.ON_SHOW_PAGE_LOADER,
-    args: []
-  },
-  saveUserAnswerRequest: {
-    type: types.SAVE_USER_ANSWER_REQUEST,
-    args: ['projectId', 'jurisdictionId', 'questionId', 'selectedCategoryId', 'page']
-  },
-  addRequestToQueue: {
-    type: types.ADD_REQUEST_TO_QUEUE,
-    args: ['payload', 'page']
-  },
-  changeTouchedStatus: {
-    type: types.CHANGE_TOUCHED_STATUS,
-    args: []
-  }
-}
-
-
-for (let action in actions) {
-  actions = { ...actions, [action]: makeOtherActionCreator(actions[action].type, ...actions[action].args) }
-}
-
-actions = {
-  ...actions,
+export default {
+  getNextQuestion: makeActionCreator(types.GET_NEXT_QUESTION, 'id', 'newIndex', 'projectId', 'jurisdictionId', 'page'),
+  getPrevQuestion: makeActionCreator(types.GET_PREV_QUESTION, 'id', 'newIndex', 'projectId', 'jurisdictionId', 'page'),
+  onQuestionSelectedInNav: makeActionCreator(types.ON_QUESTION_SELECTED_IN_NAV, 'question', 'projectId', 'jurisdictionId', 'page'),
+  applyAnswerToAll: makeActionCreator(types.ON_APPLY_ANSWER_TO_ALL, 'projectId', 'jurisdictionId', 'questionId', 'page'),
+  updateUserAnswer: makeActionCreator(types.UPDATE_USER_ANSWER, 'projectId', 'jurisdictionId', 'questionId', 'answerId', 'answerValue'),
+  onChangeComment: makeActionCreator(types.ON_CHANGE_COMMENT, 'projectId', 'jurisdictionId', 'questionId', 'comment'),
+  onChangePincite: makeActionCreator(types.ON_CHANGE_PINCITE, 'projectId', 'jurisdictionId', 'questionId', 'answerId', 'pincite'),
+  onChangeCategory: makeActionCreator(types.ON_CHANGE_CATEGORY, 'selection'),
+  updateEditedFields: makeActionCreator(types.UPDATE_EDITED_FIELDS, 'projectId'),
+  onCloseScreen: makeActionCreator(types.ON_CLOSE_SCREEN),
+  clearAnswerError: makeActionCreator(types.CLEAR_ANSWER_ERROR),
+  dismissApiAlert: makeActionCreator(types.DISMISS_API_ALERT, 'errorType'),
+  onClearAnswer: makeActionCreator(types.ON_CLEAR_ANSWER, 'projectId', 'jurisdictionId', 'questionId'),
+  onChangeJurisdiction: makeActionCreator(types.ON_CHANGE_JURISDICTION, 'index'),
+  showQuestionLoader: makeActionCreator(types.ON_SHOW_QUESTION_LOADER),
+  showPageLoader: makeActionCreator(types.ON_SHOW_PAGE_LOADER),
+  saveUserAnswerRequest: makeActionCreator(types.SAVE_USER_ANSWER_REQUEST, 'projectId', 'jurisdictionId', 'questionId', 'selectedCategoryId', 'page'),
+  addRequestToQueue: makeActionCreator(types.ADD_REQUEST_TO_QUEUE, 'payload', 'page'),
+  changeTouchedStatus: makeActionCreator(types.CHANGE_TOUCHED_STATUS),
   getQuestionRequest: makeActionCreator(types.GET_QUESTION_REQUEST, 'questionId', 'projectId'),
   getCodingOutlineRequest: makeActionCreator(types.GET_CODING_OUTLINE_REQUEST, 'projectId', 'jurisdictionId', 'reducerName'),
   getUserCodedQuestions: makeActionCreator(types.GET_USER_CODED_QUESTIONS_REQUEST, 'projectId', 'jurisdictionId', 'page'),
@@ -179,5 +97,3 @@ actions = {
   onToggleAnswerForAnno: makeActionCreator(types.ON_TOGGLE_ANSWER_FOR_ANNO, 'schemeAnswerId'),
   ...docListActions
 }
-
-export default actions
