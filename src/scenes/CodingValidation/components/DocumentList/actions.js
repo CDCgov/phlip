@@ -1,5 +1,4 @@
 import makeActionCreator from 'utils/makeActionCreator'
-import { default as docViewActions } from 'scenes/DocumentView/actions'
 
 export const types = {
   GET_APPROVED_DOCUMENTS_REQUEST: 'GET_APPROVED_DOCUMENTS_REQUEST',

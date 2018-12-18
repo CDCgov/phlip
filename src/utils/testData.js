@@ -312,3 +312,24 @@ export const userAnswersCoded = {
     isNewCodedQuestion: false
   }
 }
+
+export const docListPayload = [
+  {
+    name: 'document 1',
+    _id: '1234',
+    uploadedDate: new Date('12/10/2010'),
+    uploadedBy: { firstName: 'test', lastName: 'user' }
+  },
+  {
+    name: 'document 2',
+    _id: '5678',
+    uploadedDate: new Date('12/09/2010'),
+    uploadedBy: { firstName: 'test', lastName: 'user' }
+  },
+  {
+    name: 'document 3',
+    _id: '9101',
+    uploadedDate: new Date('02/10/2018'),
+    uploadedBy: { firstName: 'test', lastName: 'user' }
+  }
+]

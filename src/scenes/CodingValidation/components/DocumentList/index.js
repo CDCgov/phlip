@@ -97,6 +97,7 @@ export class DocumentList extends Component {
   }
 }
 
+/* istanbul-ignore-next */
 const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.documentList
   const codingState = state.scenes.codingValidation.coding
@@ -114,6 +115,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
+/* istanbul-ignore-next */
 const mapDispatchToProps = dispatch => {
   return {
     actions: { ...bindActionCreators(actions, dispatch) }

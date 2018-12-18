@@ -16,6 +16,11 @@ const reducer = (state, action) => {
 }
 
 describe('CodingValidation reducer', () => {
+  test('should return the initial state', () => {
+    expect(reducer(undefined, {}))
+      .toEqual({ ...COMBINED_INITIAL_STATE, coding: { ...COMBINED_INITIAL_STATE.coding, showNextButton: false } })
+  })
+
   describe('UPDATE_USER_ANSWER_REQUEST', () => {
     const currentState = {
       question: {
