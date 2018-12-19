@@ -74,6 +74,8 @@ const sortAnnotations = (userAnswers, newQuestion = {}, categories = [], scheme)
       byQuestion[questionId] = initializeAnnotationsByAnswer(Object.values(question.answers))
     }
   })
+
+
   return byQuestion
 }
 

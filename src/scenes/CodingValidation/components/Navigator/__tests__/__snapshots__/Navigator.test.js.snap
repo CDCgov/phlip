@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Coding scene - Navigator should render correctly 1`] = `
+exports[`CodingValidation scene - Navigator should render correctly 1`] = `
 <WithStyles(Drawer)
   anchor="left"
   classes={

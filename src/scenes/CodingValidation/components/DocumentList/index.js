@@ -8,6 +8,7 @@ import actions from './actions'
 import theme from 'services/theme'
 import { FlexGrid, SearchBar, Icon, PDFViewer } from 'components'
 import { FormatQuoteClose } from 'mdi-material-ui'
+import { sortListOfObjects } from 'utils/commonHelpers'
 
 const docNameStyle = {
   color: theme.palette.secondary.main,
@@ -105,19 +106,24 @@ const mapStateToProps = (state, ownProps) => {
   const codingState = state.scenes.codingValidation.coding
   const answerSelected = codingState.enabledAnswerChoice || false
   const isCategoryQuestion = !!codingState.selectedCategoryId
+  const annotatedToShow = answerSelected
+    ? isCategoryQuestion
+      ? pageState.documents.annotated[codingState.question.id][codingState.selectedCategoryId] !== undefined
+        ? pageState.documents.annotated[codingState.question.id][codingState.selectedCategoryId].byAnswer[codingState.enabledAnswerChoice]
+        : []
+      : pageState.documents.annotated[codingState.question.id].byAnswer[codingState.enabledAnswerChoice]
+    //: pageState.documents.annotated[codingState.question.id].all,
+    : []
+
+  const ordered = pageState.documents.ordered
+  const filteredOrder = ordered.filter(doc => !annotatedToShow.includes(doc))
+  const filteredAnnos = ordered.filter(doc => annotatedToShow.includes(doc))
 
   return {
-    documents: pageState.documents.ordered.map(id => pageState.documents.byId[id]),
+    documents: [...filteredAnnos, ...filteredOrder].map(id => pageState.documents.byId[id]),
     jurisdictionId: ownProps.jurisdictionId,
     projectId: ownProps.projectId,
-    annotated: answerSelected
-      ? isCategoryQuestion
-        ? pageState.documents.annotated[codingState.question.id][codingState.selectedCategoryId] !== undefined
-            ? pageState.documents.annotated[codingState.question.id][codingState.selectedCategoryId].byAnswer[codingState.enabledAnswerChoice]
-            : []
-        : pageState.documents.annotated[codingState.question.id].byAnswer[codingState.enabledAnswerChoice]
-      //: pageState.documents.annotated[codingState.question.id].all,
-      : [],
+    annotated: annotatedToShow,
     openedDoc: pageState.openedDoc || {},
     docSelected: pageState.docSelected || false
   }

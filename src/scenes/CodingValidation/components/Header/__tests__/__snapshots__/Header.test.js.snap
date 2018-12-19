@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Coding scene --- Header component should render correctly 1`] = `
+exports[`CodingValidation scene --- Header component should render correctly 1`] = `
 <FlexGrid
   align="center"
   circular={false}

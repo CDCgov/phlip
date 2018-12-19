@@ -103,6 +103,12 @@ describe('CodingValidation - DocumentList reducer', () => {
           }
         }
       },
+      scheme: {
+        byId: {
+          4: { isCategoryQuestion: false },
+          5: { isCategoryQuestion: false }
+        }
+      },
       question: {
         id: 1
       }
@@ -151,6 +157,12 @@ describe('CodingValidation - DocumentList reducer', () => {
                 annotations: JSON.stringify([{ docId: '1234' }])
               }
             }
+          }
+        },
+        scheme: {
+          byId: {
+            4: { isCategoryQuestion: false },
+            5: { isCategoryQuestion: false }
           }
         }
       },
