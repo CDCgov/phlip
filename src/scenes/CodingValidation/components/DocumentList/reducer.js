@@ -22,35 +22,57 @@ const mergeName = docObj => ({
   uploadedByName: `${docObj.uploadedBy.firstName} ${docObj.uploadedBy.lastName}`
 })
 
-const sortAnnotations = (userAnswers, newQuestion = {}) => {
-  let byQuestion = {
-    [newQuestion.id]: {
-      byAnswer: {},
-      all: []
-    }
+const handleCategories = categories => {
+  let obj = {}
+  categories.forEach(cat => {
+    obj[cat.id] = { byAnswer: {}, all: [] }
+  })
+  return obj
+}
+
+const initializeAnnotationsByAnswer = answers => {
+  let q = {
+    byAnswer: {},
+    all: []
   }
 
-  Object.values(userAnswers).map(question => {
-    let answers = Object.values(question.answers)
-    byQuestion[question.schemeQuestionId] = {
-      byAnswer: {},
-      all: []
+  answers.forEach(answer => {
+    let annotations
+    q.byAnswer[answer.schemeAnswerId] = []
+    try {
+      annotations = JSON.parse(answer.annotations)
+      annotations.map(annotation => {
+        q.byAnswer[answer.schemeAnswerId].push(annotation.docId)
+        if (!q.all.includes(annotation.docId))
+          q.all.push(annotation.docId)
+      })
+    } catch (err) {
+      console.log(err)
     }
+  })
 
-    answers.forEach(answer => {
-      let annotations
-      byQuestion[question.schemeQuestionId].byAnswer[answer.schemeAnswerId] = []
-      try {
-        annotations = JSON.parse(answer.annotations)
-        annotations.map(annotation => {
-          byQuestion[question.schemeQuestionId].byAnswer[answer.schemeAnswerId].push(annotation.docId)
-          if (!byQuestion[question.schemeQuestionId].all.includes(annotation.docId))
-            byQuestion[question.schemeQuestionId].all.push(annotation.docId)
-        })
-      } catch (err) {
-        console.log(err)
-      }
-    })
+  return q
+}
+
+const sortAnnotations = (userAnswers, newQuestion = {}, categories = [], scheme) => {
+  let byQuestion = {
+    [newQuestion.id]: newQuestion.isCategoryQuestion
+      ? handleCategories(categories)
+      : { byAnswer: {}, all: [] }
+  }
+
+  Object.keys(userAnswers).map(questionId => {
+    const question = userAnswers[questionId]
+    byQuestion[questionId] = {}
+
+    if (scheme[questionId].isCategoryQuestion) {
+      const cats = Object.keys(question)
+      cats.forEach(cat => {
+        byQuestion[questionId][cat] = initializeAnnotationsByAnswer(Object.values(question[cat].answers))
+      })
+    } else {
+      byQuestion[questionId] = initializeAnnotationsByAnswer(Object.values(question.answers))
+    }
   })
   return byQuestion
 }
@@ -79,7 +101,13 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
     case questionTypes.GET_CODING_OUTLINE_SUCCESS:
     case questionTypes.GET_USER_CODED_QUESTIONS_SUCCESS:
     case questionTypes.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
-      let byQuestion = sortAnnotations(action.payload.userAnswers, action.payload.question)
+      let byQuestion = sortAnnotations(
+        action.payload.userAnswers,
+        action.payload.question,
+        [],
+        action.payload.scheme.byId
+      )
+
       return {
         ...state,
         documents: {
@@ -89,7 +117,13 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       }
 
     case questionTypes.GET_QUESTION_SUCCESS:
-      byQuestion = sortAnnotations(action.payload.updatedState.userAnswers, action.payload.question)
+      byQuestion = sortAnnotations(
+        action.payload.updatedState.userAnswers,
+        action.payload.question,
+        action.payload.updatedState.categories,
+        action.payload.updatedState.scheme.byId
+      )
+
       return {
         ...state,
         documents: {
