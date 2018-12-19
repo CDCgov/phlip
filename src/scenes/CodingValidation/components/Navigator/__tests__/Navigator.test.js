@@ -23,7 +23,7 @@ const props = {
   classes: { codeNav: '' }
 }
 
-describe('Coding scene - Navigator', () => {
+describe('CodingValidation scene - Navigator', () => {
   test('should render correctly', () => {
     expect(shallow(<Navigator {...props} />)).toMatchSnapshot()
   })

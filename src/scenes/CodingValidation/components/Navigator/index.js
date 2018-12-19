@@ -15,7 +15,8 @@ const muiNavStyles = {
     position: 'relative',
     width: 250,
     backgroundColor: '#3A4041',
-    borderRight: 0
+    borderRight: 0,
+    outline: 'none'
   }
 }
 
@@ -140,12 +141,12 @@ export class Navigator extends Component {
       <Drawer classes={{ paper: this.props.classes.codeNav }} variant="persistent" anchor="left" open={this.props.open}>
         <Container column flex>
           <div className={navStyles.navContainer}>
-            <div style={{ flex: 1, display: 'flex' }}>
+            <div style={{ flex: 1, display: 'flex', outline: 'none' }}>
               <AutoSizer>
                 {({ height, width }) => (
                   <List
                     className={navStyles.navScroll}
-                    style={{ height: height, paddingLeft: 10, paddingRight: 20 }}
+                    style={{ height: height, paddingLeft: 10, paddingRight: 20, outline: 'none' }}
                     rowCount={questionTree.length}
                     rowHeight={this.rowHeight(questionTree)}
                     width={width}

@@ -179,7 +179,7 @@ export class QuestionCard extends Component {
     ]
 
     return (
-      <Row displayFlex style={{ flex: '1 0 50%' }}>
+      <Row displayFlex style={{ flex: 1, width: '50%' }}>
         <Alert actions={alertActions} open={this.state.confirmCategoryUncheckOpen}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             Unselecting a category will remove any answers associated to this category. Do you wish to continue?

@@ -11,7 +11,7 @@ const props = {
   theme
 }
 
-describe('Coding -- FooterNavigate component', () => {
+describe('CodingValidation -- FooterNavigate component', () => {
   test('should render correctly', () => {
     expect(shallow(<FooterNavigate {...props} />)).toMatchSnapshot()
   })

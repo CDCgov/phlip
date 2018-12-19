@@ -11,6 +11,7 @@ exports[`DocumentList should render DocumentList component correctly 1`] = `
   raised={true}
   style={
     Object {
+      "overflow": "hidden",
       "width": "50%",
     }
   }

@@ -21,6 +21,7 @@ exports[`Coding scene - Navigator should render correctly 1`] = `
           Object {
             "display": "flex",
             "flex": 1,
+            "outline": "none",
           }
         }
       >

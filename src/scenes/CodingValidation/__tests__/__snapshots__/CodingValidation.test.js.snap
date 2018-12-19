@@ -256,7 +256,9 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
             raised={false}
             style={
               Object {
-                "width": 25,
+                "maxWidth": 15,
+                "minWidth": 15,
+                "width": 15,
               }
             }
             type="column"

@@ -13,7 +13,7 @@ const props = {
   theme
 }
 
-describe('Coding scene --- Header component', () => {
+describe('CodingValidation scene --- Header component', () => {
   test('should render correctly', () => {
     expect(shallow(<Header {...props} />)).toMatchSnapshot()
   })

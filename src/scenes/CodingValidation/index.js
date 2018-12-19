@@ -152,7 +152,7 @@ export class CodingValidation extends Component {
     if (this.props.isSchemeEmpty === false && prevProps.isSchemeEmpty === null) {
       if (this.props.areJurisdictionsEmpty === false) {
         this.setState({
-          //navOpen: true
+          navOpen: true
         })
       }
     }
@@ -495,7 +495,7 @@ export class CodingValidation extends Component {
         totalLength={this.props.questionOrder.length}
         showNextButton={this.props.showNextButton}
       />
-      <FlexGrid style={{ width: 25 }} />
+      <FlexGrid style={{ minWidth: 15, maxWidth: 15, width: 15 }} />
       <DocumentList
         projectId={this.props.projectId}
         jurisdictionId={this.props.jurisdiction.jurisdictionId}
