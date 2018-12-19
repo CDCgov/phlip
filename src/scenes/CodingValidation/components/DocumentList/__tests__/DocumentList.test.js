@@ -26,4 +26,9 @@ describe('DocumentList', () => {
     const wrapper = shallow(<DocumentList {...props} docSelected={true} />)
     expect(wrapper.find('PDFViewer')).toHaveLength(1)
   })
+
+  test('should have quote icons when document is in annotated list', () => {
+    const wrapper = shallow(<DocumentList {...props} annotated={[12344]} />)
+    expect(wrapper.find('Icon')).toHaveLength(1)
+  })
 })
