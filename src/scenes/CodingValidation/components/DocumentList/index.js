@@ -104,14 +104,20 @@ const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.documentList
   const codingState = state.scenes.codingValidation.coding
   const answerSelected = codingState.enabledAnswerChoice || false
+  const isCategoryQuestion = !!codingState.selectedCategoryId
 
   return {
     documents: pageState.documents.ordered.map(id => pageState.documents.byId[id]),
     jurisdictionId: ownProps.jurisdictionId,
     projectId: ownProps.projectId,
     annotated: answerSelected
-      ? pageState.documents.annotated[codingState.question.id].byAnswer[codingState.enabledAnswerChoice]
-      : pageState.documents.annotated[codingState.question.id].all,
+      ? isCategoryQuestion
+        ? pageState.documents.annotated[codingState.question.id][codingState.selectedCategoryId] !== undefined
+            ? pageState.documents.annotated[codingState.question.id][codingState.selectedCategoryId].byAnswer[codingState.enabledAnswerChoice]
+            : []
+        : pageState.documents.annotated[codingState.question.id].byAnswer[codingState.enabledAnswerChoice]
+      //: pageState.documents.annotated[codingState.question.id].all,
+      : [],
     openedDoc: pageState.openedDoc || {},
     docSelected: pageState.docSelected || false
   }

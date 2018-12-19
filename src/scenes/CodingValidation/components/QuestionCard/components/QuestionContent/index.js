@@ -71,6 +71,8 @@ export const QuestionContent = props => {
             value={userAnswers.answers[question.possibleAnswers[0].id]}
             answerId={question.possibleAnswers[0].id}
             disabled={disableAll}
+            onToggleAnswerForAnno={onToggleAnswerForAnno}
+            enabledAnswerChoice={enabledAnswerChoice}
           />
         </Column>}
 

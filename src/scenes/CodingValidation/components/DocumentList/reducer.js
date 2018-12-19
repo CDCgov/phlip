@@ -63,7 +63,7 @@ const sortAnnotations = (userAnswers, newQuestion = {}, categories = [], scheme)
 
   Object.keys(userAnswers).map(questionId => {
     const question = userAnswers[questionId]
-    byQuestion[questionId] = {}
+    byQuestion[questionId] = questionId === newQuestion.id ? byQuestion[questionId] : {}
 
     if (scheme[questionId].isCategoryQuestion) {
       const cats = Object.keys(question)
