@@ -1,6 +1,5 @@
 import { types } from '../actions'
 import { docManagementReducer as reducer } from '../reducer'
-import { createAutocompleteReducer } from 'data/autocomplete/reducer'
 import { types as autocompleteTypes } from 'data/autocomplete/actions'
 
 const mockDocuments = {

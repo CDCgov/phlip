@@ -1,6 +1,5 @@
 import React from 'react'
-import { shallow, mount } from 'enzyme'
-import { MemoryRouter } from 'react-router-dom'
+import { shallow } from 'enzyme'
 import { UserHeader } from '../index'
 
 const props = {
@@ -11,14 +10,6 @@ const props = {
   handleCloseMenu: jest.fn(),
   handleOpenHelpPdf: jest.fn(),
   handleOpenAdminPage: jest.fn()
-}
-
-const setup = otherProps => {
-  return mount(
-    <MemoryRouter>
-      <UserHeader {...props} {...otherProps} />
-    </MemoryRouter>
-  )
 }
 
 describe('UserHeader', () => {

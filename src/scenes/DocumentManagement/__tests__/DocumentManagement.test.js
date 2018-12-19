@@ -1,9 +1,6 @@
 import React from 'react'
-import { shallow, mount } from 'enzyme'
+import { shallow } from 'enzyme'
 import { DocumentManagement } from '../index'
-import { MemoryRouter } from 'react-router-dom'
-import { MuiThemeProvider } from '@material-ui/core'
-import theme from 'services/theme'
 
 const props = {
   page: 0,
@@ -19,16 +16,6 @@ const props = {
     handleRowsChange: jest.fn(),
     handleSelectOneFile: jest.fn()
   }
-}
-
-const setup = (otherProps = {}) => {
-  return mount(
-    <MemoryRouter>
-      <MuiThemeProvider theme={theme}>
-        <DocumentManagement {...props} {...otherProps} />
-      </MuiThemeProvider>
-    </MemoryRouter>
-  )
 }
 
 describe('Document Management scene', () => {

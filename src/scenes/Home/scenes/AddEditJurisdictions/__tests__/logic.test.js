@@ -28,8 +28,8 @@ describe('AddEditJurisdiction logic', () => {
 
   test('should call the get jurisdictions api and return the list of jurisdictions', (done) => {
     mock.onGet('/projects/1/jurisdictions').reply(200, [
-      { id: 1, name: 'Jurisdiction 1', startDate: "1/1/2000", endDate: "1/1/2000" },
-      { id: 2, name: 'Jurisdiction 2', startDate: "1/1/2000", endDate: "1/1/2000" }
+      { id: 1, name: 'Jurisdiction 1', startDate: '1/1/2000', endDate: '1/1/2000' },
+      { id: 2, name: 'Jurisdiction 2', startDate: '1/1/2000', endDate: '1/1/2000' }
     ])
 
     const store = setupStore()
@@ -40,8 +40,8 @@ describe('AddEditJurisdiction logic', () => {
         { type: types.GET_PROJECT_JURISDICTIONS_REQUEST, projectId: 1 },
         {
           type: types.GET_PROJECT_JURISDICTIONS_SUCCESS, payload: [
-            { id: 1, name: 'Jurisdiction 1', startDate: "1/1/2000", endDate: "1/1/2000" },
-            { id: 2, name: 'Jurisdiction 2', startDate: "1/1/2000", endDate: "1/1/2000" }
+            { id: 1, name: 'Jurisdiction 1', startDate: '1/1/2000', endDate: '1/1/2000' },
+            { id: 2, name: 'Jurisdiction 2', startDate: '1/1/2000', endDate: '1/1/2000' }
           ]
         }
       ])

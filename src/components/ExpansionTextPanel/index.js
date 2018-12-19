@@ -5,7 +5,6 @@ import IconButton from 'components/IconButton'
 import Typography from '@material-ui/core/Typography'
 import { Row } from 'components/Layout'
 import { withStyles } from '@material-ui/core/styles'
-import Grow from '@material-ui/core/Grow'
 import Paper from '@material-ui/core/Paper'
 import { Manager, Reference, Popper } from 'react-popper'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
@@ -83,7 +82,8 @@ export class ExpansionTextPanel extends Component {
           <Popper placement="top-end" eventsEnabled={this.state.open === true}>
             {({ ref, placement, style }) => {
               return (
-                this.state.open === true && <ClickAwayListener onClickAway={this.onClosePopper}>
+                this.state.open === true &&
+                <ClickAwayListener onClickAway={this.onClosePopper}>
                   <div ref={ref} data-placement={placement} style={style}>
                     <Paper
                       elevation={8}

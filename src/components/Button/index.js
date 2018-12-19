@@ -32,7 +32,9 @@ export const Button = ({ value, color, onClick, raised, theme, textColor, listBu
         variant={variant}
         color={buttonColor}
         onClick={onClick}
-        style={styles} {...otherProps}>{value}</MuiButton>
+        style={styles}
+        {...otherProps}>{value}
+      </MuiButton>
     )
   } else {
     return (
@@ -40,7 +42,9 @@ export const Button = ({ value, color, onClick, raised, theme, textColor, listBu
         variant={variant}
         color={buttonColor}
         onClick={onClick}
-        style={styles} {...otherProps}>{children}</MuiButton>
+        style={styles}
+        {...otherProps}>{children}
+      </MuiButton>
     )
   }
 }

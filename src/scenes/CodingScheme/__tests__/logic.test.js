@@ -11,13 +11,13 @@ const api = createApiHandler({ history }, projectApiInstance, calls)
 describe('CodingScheme logic', () => {
   let mock
 
-  const mockReducer = (state, action) => state
+  const mockReducer = state => state
 
   beforeEach(() => {
     mock = new MockAdapter(projectApiInstance)
   })
 
-  const setupStore = other => {
+  const setupStore = () => {
     return createMockStore({
       initialState: { questions: [], data: { user: { currentUser: { id: 5 } } } },
       reducer: mockReducer,

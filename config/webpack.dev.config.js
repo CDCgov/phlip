@@ -29,12 +29,12 @@ module.exports = env => {
     },
     module: {
       rules: [
-        {
+        /*{
           test: /\.js$/,
           enforce: 'pre',
           loader: 'eslint-loader',
           include: paths.appSrc
-        },
+        },*/
         {
           test: require.resolve('tinymce/tinymce'),
           loaders: [
@@ -61,6 +61,7 @@ module.exports = env => {
                       '@babel/preset-env',
                       '@babel/preset-react'
                     ],
+                    cacheDirectory: true,
                     plugins: [
                       'react-hot-loader/babel',
                       '@babel/plugin-transform-runtime',

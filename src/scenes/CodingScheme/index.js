@@ -78,9 +78,12 @@ export class CodingScheme extends Component {
     /**
      * Whether or not the coding scheme is currently locked
      */
-    hasLock: PropTypes.bool
+    hasLock: PropTypes.bool,
+    /**
+     * Routing history
+     */
+    history: PropTypes.object
   }
-
 
   constructor(props, context) {
     super(props, context)
@@ -268,7 +271,8 @@ export class CodingScheme extends Component {
             value="Check out"
             color="accent"
             aria-label="check out coding scheme"
-            onClick={this.handleLockCodingScheme} />
+            onClick={this.handleLockCodingScheme}
+          />
         </Fragment>
         }
       </Container>
@@ -294,7 +298,7 @@ export class CodingScheme extends Component {
     ]
 
     return (
-      <Container column flex style={{ padding: '20px 30px' }}>
+      <Container column flex style={{ padding: '12px 20px 20px 20px' }}>
         <Alert open={this.state.goBackAlertOpen} actions={alertActions}>
           <Typography variant="body1">
             You have checked out the coding scheme. No one else can edit until you check in.
@@ -309,12 +313,16 @@ export class CodingScheme extends Component {
         <ApiErrorAlert
           content={this.props.alertError}
           open={this.props.alertError !== ''}
-          onCloseAlert={this.onCloseAlert} />
+          onCloseAlert={this.onCloseAlert}
+        />
         <Alert
           actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert }]}
           open={this.props.lockedAlert !== null}
-          title={<Fragment><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
-            The Coding Scheme is checked out.</Fragment>}>
+          title={
+            <><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
+              The Coding Scheme is checked out.
+            </>
+          }>
           <Typography variant="body1">
             {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} has checked out the coding scheme. You
             will not be able to make changes until they have checked in.
@@ -335,7 +343,7 @@ export class CodingScheme extends Component {
                 : this.handleLockCodingScheme
             },
             show: this.props.questions.length > 0 ||
-            (this.props.questions.length === 0 && this.props.lockedByCurrentUser)
+              (this.props.questions.length === 0 && this.props.lockedByCurrentUser)
           }}
           otherButton={{
             isLink: true,

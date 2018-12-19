@@ -7,6 +7,7 @@ exports[`App Header - User Header - Greeting should render correctly 1`] = `
       "color": "white",
     }
   }
+  variant="caption"
 >
   Welcome, 
   Test

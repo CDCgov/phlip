@@ -6,7 +6,7 @@ import AvatarMenu from './components/AvatarMenu'
 
 export const UserHeader = props => {
   const {
-    user, open, handleLogoutUser, handleCloseMenu, handleOpenAdminPage, handleToggleMenu, handleOpenHelpPdf
+    user, open, handleLogoutUser, handleOpenAdminPage, handleToggleMenu, handleOpenHelpPdf
   } = props
 
   const initials = user.firstName === 'Admin' ? 'A' : user.firstName[0] + user.lastName[0]

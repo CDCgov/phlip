@@ -5,8 +5,6 @@ import { matchPath } from 'react-router'
 import { isLoggedIn } from 'services/authToken'
 import { connect } from 'react-redux'
 import { UnauthPage, PageNotFound } from 'components/RoutePages'
-import { bindActionCreators } from 'redux'
-import * as actions from 'data/user/actions'
 
 /**
  * These are all of the routes that exist in the application, split up by who is allowed to view them

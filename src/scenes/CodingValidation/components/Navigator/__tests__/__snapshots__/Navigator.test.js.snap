@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CodingValidation scene - Navigator should render correctly 1`] = `
+<WithStyles(Drawer)
+  anchor="left"
+  classes={
+    Object {
+      "paper": "",
+    }
+  }
+  variant="persistent"
+>
+  <Container
+    column={true}
+    flex={true}
+    spacing={0}
+  >
+    <div>
+      <div
+        style={
+          Object {
+            "display": "flex",
+            "flex": 1,
+            "outline": "none",
+          }
+        }
+      >
+        <AutoSizer
+          disableHeight={false}
+          disableWidth={false}
+          onResize={[Function]}
+          style={Object {}}
+        >
+          <Component />
+        </AutoSizer>
+      </div>
+    </div>
+  </Container>
+</WithStyles(Drawer)>
+`;

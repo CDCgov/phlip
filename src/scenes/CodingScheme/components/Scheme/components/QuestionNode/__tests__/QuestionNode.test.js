@@ -1,6 +1,5 @@
 import React from 'react'
-import { shallow, mount } from 'enzyme'
-import { MemoryRouter } from 'react-router-dom'
+import { shallow } from 'enzyme'
 import { QuestionNode } from '../index'
 
 const props = {
@@ -21,12 +20,6 @@ const props = {
   connectDragPreview: preview => preview,
   connectDragSource: handle => handle
 }
-
-const setup = otherProps => mount(
-  <MemoryRouter>
-    <QuestionNode {...props} {...otherProps} />
-  </MemoryRouter>
-)
 
 describe('CodingScheme -- Scheme -- QuestionNode', () => {
   test('should render correctly', () => {

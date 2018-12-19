@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { matchPath } from 'react-router'
@@ -8,8 +9,6 @@ import Home from './Home'
 import DocumentManagement from './DocumentManagement'
 import AppHeader from 'components/AppHeader'
 import FlexGrid from 'components/FlexGrid'
-import Coding from './Coding'
-import Validation from './Validation'
 import Admin from './Admin'
 import CodingScheme from './CodingScheme'
 import Protocol from './Protocol'
@@ -19,6 +18,7 @@ import JurisdictionForm from './Home/scenes/AddEditJurisdictions/components/Juri
 import ApiErrorAlert from 'components/ApiErrorAlert'
 import DocumentView from './DocumentView'
 import actions from './actions'
+import CodingValidation from './CodingValidation'
 
 /** Paths that aren't accessible by users with 'Coder' role */
 const nonCoderPaths = [
@@ -29,10 +29,6 @@ const nonCoderPaths = [
 ]
 
 const modalPath = '/project/edit/:id'
-
-const isActive = (history, locations) => {
-  return locations.includes(history.location.pathname)
-}
 
 /**
  * Main scenes component for views that require a login (i.e. everything but the Login view). All of the react-router
@@ -48,6 +44,18 @@ const isActive = (history, locations) => {
  * @constructor
  */
 class Main extends Component {
+  static propTypes = {
+    history: PropTypes.object,
+    pdfFile: PropTypes.any,
+    actions: PropTypes.object,
+    location: PropTypes.object,
+    role: PropTypes.string,
+    isLoggedIn: PropTypes.bool,
+    isRefreshing: PropTypes.bool,
+    user: PropTypes.object,
+    pdfError: PropTypes.any
+  }
+
   constructor(props, context) {
     super(props, context)
 
@@ -185,12 +193,15 @@ class Main extends Component {
   }
 
   render() {
-    const { location, role, actions, isLoggedIn, isRefreshing, ...otherProps } = this.props
+    const { location, role, actions, isLoggedIn, isRefreshing } = this.props
 
     // This is for jurisdictions / add/edit project modals. We want the modals to be displayed on top of the home screen,
     // so we check if it's one of those routes and if it is set the location to /home
     const currentLocation = { ...location, pathname: this.checkForModalMatch(location.pathname, role) }
     if (!isRefreshing && isLoggedIn) actions.startRefreshJwt()
+    const containerType = location.pathname.endsWith('/code') || location.pathname.endsWith('/validate')
+      ? 'row'
+      : 'column'
 
     return (
       <FlexGrid container type="column" flex style={{ overflow: 'hidden' }}>
@@ -205,12 +216,11 @@ class Main extends Component {
           onTabChange={this.handleTabChange}
           onOpenAdminPage={this.handleOpenAdminPage}
         />
-        <FlexGrid container flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
+        <FlexGrid container type={containerType} flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
           <Switch location={currentLocation}>
             <Route path="/docs/:id/view" component={DocumentView} />
             <Route path="/docs" component={DocumentManagement} />
-            <Route path="/project/:id/code" component={Coding} />
-            <Route path="/project/:id/validate" component={Validation} />
+            <Route path="/project/:id/(code|validate)" component={CodingValidation} />
             <Route path="/admin" component={Admin} />
             <Route strict path="/project/:id/coding-scheme" component={CodingScheme} />
             <Route strict path="/project/:id/protocol" component={Protocol} />

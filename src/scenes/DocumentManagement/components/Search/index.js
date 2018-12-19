@@ -20,7 +20,7 @@ export const Search = props => {
 
   return (
     <FlexGrid type="row" container align="center" justify="space-between" padding="25px 20px 20px 20px">
-      <FlexGrid></FlexGrid>
+      <FlexGrid />
       <FlexGrid container type="row" align="flex-end">
         <SearchBar
           placeholder="Search"
@@ -79,6 +79,19 @@ export const Search = props => {
       </FlexGrid>
     </FlexGrid>
   )
+}
+
+Search.propTypes = {
+  onSearchDocs: PropTypes.func,
+  searchValue: PropTypes.string,
+  projectSuggestions: PropTypes.array,
+  jurisdictionSuggestions: PropTypes.array,
+  projectSearchValue: PropTypes.string,
+  jurisdictionSearchValue: PropTypes.string,
+  onClearSuggestions: PropTypes.func,
+  onGetSuggestions: PropTypes.func,
+  onSearchValueChange: PropTypes.func,
+  onSuggestionSelected: PropTypes.func
 }
 
 export default Search

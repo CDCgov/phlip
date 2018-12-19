@@ -22,4 +22,3 @@ export const jurisdictionAutocomplete = {
   ...makeAutocompleteActionCreators('JURISDICTION', '')
 }
 
-

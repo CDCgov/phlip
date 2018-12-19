@@ -5,12 +5,11 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormControl from '@material-ui/core/FormControl'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormLabel from '@material-ui/core/FormLabel'
-import FormHelperText from '@material-ui/core/FormHelperText'
 import { withStyles } from '@material-ui/core/styles'
-import SimpleInput from 'components/SimpleInput'
 import { getInitials } from 'utils/normalize'
-import Avatar from 'components/Avatar'
 import ValidationAvatar from 'components/ValidationAvatar'
+import { FlexGrid, IconButton, Avatar, SimpleInput } from 'components'
+import { Marker } from 'mdi-material-ui'
 
 const styles = theme => ({
   checked: {
@@ -24,7 +23,8 @@ const styles = theme => ({
 export const CheckboxGroupValidation = props => {
   const {
     choices, userAnswers, onChange, onChangePincite, pincites,
-    classes, mergedUserQuestions, disableAll, userImages, theme, question
+    classes, mergedUserQuestions, disableAll, userImages, theme, question,
+    enabledAnswerChoice, onToggleAnswerForAnno
   } = props
 
   const userImageObj = userImages
@@ -38,54 +38,74 @@ export const CheckboxGroupValidation = props => {
       <FormLabel component="legend" style={{ display: 'none' }} id="question_text">{question.text}</FormLabel>
       <FormGroup>
         {choices.map(choice => {
-          return (<div key={choice.id} style={{ display: 'flex', alignItems: 'center' }}>
-            <FormControlLabel
-              checked={userAnswers.answers.hasOwnProperty(choice.id)}
-              aria-checked={userAnswers.answers.hasOwnProperty(choice.id)}
-              onChange={onChange(choice.id)}
-              htmlFor={choice.id}
-              control={<Checkbox classes={{ checked: classes.checked }} inputProps={{ id: choice.id, 'aria-describedby': 'question_text' }} />}
-              disabled={disableAll}
-              label={choice.text}
-              aria-label={choice.text}
-            />
-            {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
-              answer.schemeAnswerId === choice.id &&
-              <ValidationAvatar
-                key={`user-answer-${index}`}
-                userName={`${userImages[answer.userId].firstName} ${userImages[answer.userId].lastName}`}
-                avatar={userImages[answer.userId] !== undefined ? userImages[answer.userId].avatar : ''}
-                answer={answer} />
-            ))}
-            {userAnswers.answers.hasOwnProperty(choice.id)
-            && mergedUserQuestions !== null
-            && <Avatar
-              cardAvatar
-              avatar={userImageObj.avatar}
-              userName={`${userImageObj.firstName} ${userImageObj.lastName}`}
-              key={mergedUserQuestions.answers.length + 1}
-              style={{
-                backgroundColor: 'white',
-                color: theme.palette.secondary.main,
-                borderColor: theme.palette.secondary.main
-              }}
-              initials={getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
-            />}
-            {userAnswers.answers.hasOwnProperty(choice.id) && pincites &&
-            <SimpleInput
-              key={`${choice.id}-pincite`} placeholder="Enter pincite"
-              value={userAnswers.answers[choice.id].pincite}
-              multiline={false}
-              InputProps={{ inputProps: { 'aria-label': 'Pincite' } }}
-              style={{
-                width: 300,
-                marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
-                  ? '15px'
-                  : '0px'
-              }}
-              onChange={onChangePincite(choice.id, 'pincite')}
-            />}
-          </div>)
+          return (
+            <FlexGrid
+              container
+              type="row"
+              align="center"
+              key={choice.id}
+              padding="0 10px"
+              style={{ backgroundColor: enabledAnswerChoice === choice.id ? '#e6f8ff' : 'white' }}>
+              <FormControlLabel
+                checked={userAnswers.answers.hasOwnProperty(choice.id)}
+                aria-checked={userAnswers.answers.hasOwnProperty(choice.id)}
+                onChange={onChange(choice.id)}
+                htmlFor={choice.id}
+                control={<Checkbox
+                  classes={{ checked: classes.checked }}
+                  inputProps={{ id: choice.id, 'aria-describedby': 'question_text' }}
+                />}
+                disabled={disableAll}
+                label={choice.text}
+                aria-label={choice.text}
+              />
+              {mergedUserQuestions !== null && mergedUserQuestions.answers.map((answer, index) => (
+                answer.schemeAnswerId === choice.id &&
+                <ValidationAvatar
+                  key={`user-answer-${index}`}
+                  userName={`${userImages[answer.userId].firstName} ${userImages[answer.userId].lastName}`}
+                  avatar={userImages[answer.userId] !== undefined ? userImages[answer.userId].avatar : ''}
+                  answer={answer}
+                />
+              ))}
+              {userAnswers.answers.hasOwnProperty(choice.id)
+              && mergedUserQuestions !== null
+              && <Avatar
+                cardAvatar
+                avatar={userImageObj.avatar}
+                userName={`${userImageObj.firstName} ${userImageObj.lastName}`}
+                key={mergedUserQuestions.answers.length + 1}
+                style={{
+                  backgroundColor: 'white',
+                  color: theme.palette.secondary.main,
+                  borderColor: theme.palette.secondary.main
+                }}
+                initials={getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
+              />}
+              {userAnswers.answers.hasOwnProperty(choice.id) && pincites &&
+              <SimpleInput
+                key={`${choice.id}-pincite`}
+                placeholder="Enter pincite"
+                value={userAnswers.answers[choice.id].pincite}
+                multiline={false}
+                InputProps={{ inputProps: { 'aria-label': 'Pincite' } }}
+                style={{
+                  width: 300,
+                  marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
+                    ? '15px'
+                    : '0px'
+                }}
+                onChange={onChangePincite(choice.id, 'pincite')}
+              />}
+              <IconButton
+                style={{ alignSelf: 'center', marginLeft: 20 }}
+                onClick={onToggleAnswerForAnno(choice.id)}
+                color={enabledAnswerChoice === choice.id ? 'primary' : '#b9bbbb'}
+                iconSize={20}>
+                <Marker style={{ fontSize: 20 }} />
+              </IconButton>
+            </FlexGrid>
+          )
         })}
       </FormGroup>
     </FormControl>
@@ -141,7 +161,15 @@ CheckboxGroupValidation.propTypes = {
   /**
    * Style classes object from @material-ui/core
    */
-  classes: PropTypes.object
+  classes: PropTypes.object,
+  /**
+   * answer choice id that has been selected for annotating
+   */
+  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * handles when a user enables / disables an answer choice for annotating
+   */
+  onToggleAnswerForAnno: PropTypes.func
 }
 
 export default withStyles(styles, { withTheme: true })(CheckboxGroupValidation)

@@ -4,7 +4,6 @@ import Checkbox from '@material-ui/core/Checkbox'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormControl from '@material-ui/core/FormControl'
 import FormGroup from '@material-ui/core/FormGroup'
-import FormLabel from '@material-ui/core/FormLabel'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import InputLabel from '@material-ui/core/InputLabel'
 import { withStyles } from '@material-ui/core/styles'
@@ -24,14 +23,15 @@ export const CheckboxGroup = ({ choices, onChange, error, required, helperText, 
       <InputLabel shrink={true} required={required} style={{ position: 'relative' }}>{label}</InputLabel>
       <FormGroup>
         {choices.map(choice => {
-          return (<div key={choice.id} style={{ display: 'flex', alignItems: 'center' }}>
-            <FormControlLabel
-              checked={choice.selected === true}
-              onChange={onChange(choice.id)}
-              control={<Checkbox classes={{ checked: classes.checked }} />}
-              label={choice.text}
-            />
-          </div>)
+          return (
+            <div key={choice.id} style={{ display: 'flex', alignItems: 'center' }}>
+              <FormControlLabel
+                checked={choice.selected === true}
+                onChange={onChange(choice.id)}
+                control={<Checkbox classes={{ checked: classes.checked }} />}
+                label={choice.text}
+              />
+            </div>)
         })}
         <FormHelperText>{error && helperText}</FormHelperText>
       </FormGroup>

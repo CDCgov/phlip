@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react'
+import PropTypes from 'prop-types'
 import { transformText } from './textTransformHelpers'
 import * as ui_utils from 'pdfjs-dist/lib/web/ui_utils'
 import { Util as dom_utils } from 'pdfjs-dist/lib/shared/util'
@@ -12,6 +13,12 @@ class Page extends Component {
     textContent: {
       items: []
     }
+  }
+
+  static propTypes = {
+    annotations: PropTypes.array,
+    allowSelection: PropTypes.bool,
+    textContent: PropTypes.object
   }
 
   constructor(props, context) {
@@ -76,8 +83,6 @@ class Page extends Component {
     this.mouseArea.y = e.pageY - this.mouseArea.pageOffsetY
 
     if (this.selectedArea !== null) {
-      console.log(this.mouseArea)
-
       this.setState({
         selectionStyle: {
           ...this.state.selectionStyle,
@@ -94,7 +99,7 @@ class Page extends Component {
     }
   }
 
-  onCanvasClick = e => {
+  onCanvasClick = () => {
     if (this.selectedArea === null) {
       this.mouseArea.startX = this.mouseArea.x
       this.mouseArea.startY = this.mouseArea.y
@@ -281,28 +286,32 @@ class Page extends Component {
             const left = startPoint[0], top = startPoint[1], height = endPoint[1] - startPoint[1],
               width = endPoint[0] - startPoint[0]
 
-            return <Fragment key={`highlight-area-${i}`}>
-              <div
-                key={`highlight-${i}`}
-                style={{ left, top, height, width, ...highlightStyle }}
-              />
-              <div
-                key={`highlight-${i}-cancel`}
-                style={{ ...iconNavStyles, left: endPoint[0] - 53, top: endPoint[1], marginTop: 1 }}>
-                <IconButton style={{ height: 25, width: 25 }}>
-                  clos
-                </IconButton>
-              </div>
-              <div
-                key={`highlight-${i}-confirm`}
-                style={{ ...iconNavStyles, left: endPoint[0] - 24, top: endPoint[1], marginTop: 1 }}>
-                <IconButton style={{ height: 25, width: 25 }}>done</IconButton>
-              </div>
-            </Fragment>
+            return (
+              <Fragment key={`highlight-area-${i}`}>
+                <div
+                  key={`highlight-${i}`}
+                  style={{ left, top, height, width, ...highlightStyle }}
+                />
+                <div
+                  key={`highlight-${i}-cancel`}
+                  style={{ ...iconNavStyles, left: endPoint[0] - 53, top: endPoint[1], marginTop: 1 }}>
+                  <IconButton style={{ height: 25, width: 25 }}>
+                    clos
+                  </IconButton>
+                </div>
+                <div
+                  key={`highlight-${i}-confirm`}
+                  style={{ ...iconNavStyles, left: endPoint[0] - 24, top: endPoint[1], marginTop: 1 }}>
+                  <IconButton style={{ height: 25, width: 25 }}>done</IconButton>
+                </div>
+              </Fragment>
+            )
           })}
-          {this.props.allowSelection && <div
+          {this.props.allowSelection &&
+          <div
             style={{ ...this.state.selectionStyle, ...baseSelectionStyles }}
-            onMouseMove={this.onHoverOverSelection} />}
+            onMouseMove={this.onHoverOverSelection}
+          />}
         </div>
       </div>
     )

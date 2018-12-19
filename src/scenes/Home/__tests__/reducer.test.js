@@ -426,8 +426,6 @@ describe('Home reducer', () => {
             allIds: [1, 3, 2, 4, 5]
           },
           visibleProjects: [1, 3, 2, 4, 5],
-          direction: 'asc',
-          sortBy: 'dateLastEdited',
           projectCount: 5
         })
       )

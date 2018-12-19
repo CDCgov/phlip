@@ -55,12 +55,6 @@ export class Login extends Component {
     super(props, context)
   }
 
-  componentDidUpdate() {
-    if (this.props.session) {
-      this.props.history.push('/home')
-    }
-  }
-
   componentDidMount() {
     const match = matchPath(this.props.location.pathname, { path: '/login/verify-user' })
     if (match) {
@@ -74,6 +68,12 @@ export class Login extends Component {
       if (this.props.location.state.sessionExpired === true) {
         this.props.actions.logoutUser(true)
       }
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.props.session) {
+      this.props.history.push('/home')
     }
   }
 
@@ -122,11 +122,13 @@ export class Login extends Component {
             responsibilities using only administrative applications or tools directly related to performing these
             responsibilities; and <br />
             (3) shall not knowingly store, transfer into, or process in the Azure environment data exceeding a FIPS 199
-            Low security categorization</Typography><br />
+            Low security categorization
+          </Typography><br />
           <img
             src="/cdc-hhs-logo.png"
             style={{ height: 55 }}
-            alt="Center for Disease Control and Health and Human Services Logo" />
+            alt="Center for Disease Control and Health and Human Services Logo"
+          />
         </Row>
       </Container>
     )

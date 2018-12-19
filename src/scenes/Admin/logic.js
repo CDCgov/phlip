@@ -13,7 +13,7 @@ export const getUserLogic = createLogic({
     successType: types.GET_USERS_SUCCESS
   },
   async process({ api }) {
-    let users = {}, userAvatar = '', updatedUsers = []
+    let users = {}
     try {
       users = await api.getUsers()
     } catch (e) {

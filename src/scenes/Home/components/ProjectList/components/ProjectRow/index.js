@@ -13,7 +13,8 @@ import * as actions from 'scenes/Home/actions'
 import moment from 'moment'
 import { commonHelpers } from 'utils'
 
-export const ProjectRow = ({ project, role, bookmarked, actions, onExport, theme }) => {
+export const ProjectRow = props => {
+  const { project, role, bookmarked, actions, onExport, theme } = props
   const isCoder = role === 'Coder'
   const greyIcon = theme.palette.greyText
   const generateKeyAndId = commonHelpers.generateUniqueProps(project.id)
@@ -61,17 +62,18 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport, theme
       <TableCell padding="checkbox" {...generateKeyAndId('coding-scheme')}>
         <TextLink
           aria-label="Add and edit project coding scheme"
-          to={`/project/${project.id}/coding-scheme`}>Edit</TextLink>
-      </TableCell>
-      }
-      <TableCell{...generateKeyAndId('code')} padding="checkbox">
+          to={`/project/${project.id}/coding-scheme`}>Edit
+        </TextLink>
+      </TableCell>}
+      <TableCell {...generateKeyAndId('code')} padding="checkbox">
         <Button
           raised={false}
           value="Code"
           listButton
           aria-label="Code project"
           component={Link}
-          to={{ pathname: `/project/${project.id}/code` }} />
+          to={{ pathname: `/project/${project.id}/code` }}
+        />
       </TableCell>
       {!isCoder &&
       <TableCell {...generateKeyAndId('validate')} padding="checkbox">
@@ -81,9 +83,11 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport, theme
           listButton
           aria-label="Validate project"
           component={Link}
-          to={{ pathname: `/project/${project.id}/validate` }} />
+          to={{ pathname: `/project/${project.id}/validate` }}
+        />
       </TableCell>}
-      {!isCoder && <TableCell padding="checkbox" {...generateKeyAndId('export')}>
+      {!isCoder &&
+      <TableCell padding="checkbox" {...generateKeyAndId('export')}>
         <IconButton
           color={greyIcon}
           tooltipText="Export validated questions"
@@ -98,7 +102,14 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport, theme
   )
 }
 
-ProjectRow.propTypes = {}
+ProjectRow.propTypes = {
+  project: PropTypes.object,
+  role: PropTypes.string,
+  bookmarked: PropTypes.bool,
+  actions: PropTypes.object,
+  onExport: PropTypes.func,
+  theme: PropTypes.object
+}
 
 const mapStateToProps = (state, ownProps) => ({
   project: state.scenes.home.main.projects.byId[ownProps.id],

@@ -16,7 +16,12 @@ export const ProjectList = props => {
   const { handlePageChange, handleRowsChange, handleRequestSort, handleSortBookmarked, handleSearchValueChange, handleExport } = props
   return (
     <FlexGrid container raised flex>
-      <FlexGrid type="row" container padding={15} align="center" justify="flex-end">
+      <FlexGrid
+        type="row"
+        container
+        padding={15}
+        align="center"
+        justify="flex-end">
         <SearchBar
           searchValue={searchValue}
           handleSearchValueChange={handleSearchValueChange}
@@ -25,7 +30,12 @@ export const ProjectList = props => {
       </FlexGrid>
       <FlexGrid container flex style={{ overflow: 'hidden' }}>
         <Table
-          style={{ borderCollapse: 'separate', display: 'block', tableLayout: 'auto', overflow: 'auto' }}
+          style={{
+            borderCollapse: 'separate',
+            display: 'block',
+            tableLayout: 'auto',
+            overflow: 'auto'
+          }}
           summary="List of projects">
           <TableHead style={{ width: '100%' }}>
             <ProjectTableHead
@@ -38,7 +48,8 @@ export const ProjectList = props => {
             />
           </TableHead>
           <TableBody>
-            {projectIds.map(id => (<ProjectRow key={id} id={id} onExport={handleExport} />))}
+            {projectIds.map(
+              id => (<ProjectRow key={id} id={id} onExport={handleExport} />))}
           </TableBody>
         </Table>
         <FlexGrid flex />
@@ -50,7 +61,8 @@ export const ProjectList = props => {
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={(event, page) => handlePageChange(page)}
-                onChangeRowsPerPage={(event) => handleRowsChange(event.target.value)}
+                onChangeRowsPerPage={(event) => handleRowsChange(
+                  event.target.value)}
               />
             </TableRow>
           </TableFooter>
@@ -58,6 +70,24 @@ export const ProjectList = props => {
       </FlexGrid>
     </FlexGrid>
   )
+}
+
+ProjectList.propTypes = {
+  projectIds: PropTypes.array,
+  user: PropTypes.object,
+  page: PropTypes.number,
+  rowsPerPage: PropTypes.string,
+  projectCount: PropTypes.number,
+  sortBy: PropTypes.string,
+  direction: PropTypes.string,
+  sortBookmarked: PropTypes.bool,
+  searchValue: PropTypes.string,
+  handlePageChange: PropTypes.func,
+  handleRowsChange: PropTypes.func,
+  handleRequestSort: PropTypes.func,
+  handleSortBookmarked: PropTypes.func,
+  handleSearchValueChange: PropTypes.func,
+  handleExport: PropTypes.func
 }
 
 export default ProjectList

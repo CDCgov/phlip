@@ -20,5 +20,4 @@ ModalContent.propTypes = {
   children: PropTypes.any
 }
 
-
 export default ModalContent

@@ -58,7 +58,9 @@ export class JurisdictionForm extends Component {
     history: PropTypes.object,
     onCloseModal: PropTypes.func,
     formError: PropTypes.string,
-    goBack: PropTypes.bool
+    goBack: PropTypes.bool,
+    onSubmitError: PropTypes.func,
+    project: PropTypes.object
   }
 
   constructor(props, context) {
@@ -78,6 +80,16 @@ export class JurisdictionForm extends Component {
     }
   }
 
+  UNSAFE_componentWillMount() {
+    this.props.actions.initializeFormValues({
+      endDate: this.jurisdictionDefined ? this.jurisdictionDefined.endDate : new Date(),
+      startDate: this.jurisdictionDefined ? this.jurisdictionDefined.startDate : new Date(),
+      name: this.jurisdictionDefined ? this.jurisdictionDefined.name : this.props.location.state.preset === true
+      ? 'US States'
+      : ''
+    })
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (this.state.submitting === true) {
       if (this.props.formError !== null) {
@@ -93,16 +105,6 @@ export class JurisdictionForm extends Component {
 
   componentWillUnmount() {
     this.props.actions.onClearSuggestions()
-  }
-
-  componentWillMount() {
-    this.props.actions.initializeFormValues({
-      endDate: this.jurisdictionDefined ? this.jurisdictionDefined.endDate : new Date(),
-      startDate: this.jurisdictionDefined ? this.jurisdictionDefined.startDate : new Date(),
-      name: this.jurisdictionDefined ? this.jurisdictionDefined.name : this.props.location.state.preset === true
-        ? 'US States'
-        : ''
-    })
   }
 
   getButtonText = text => {
@@ -398,8 +400,8 @@ export class JurisdictionForm extends Component {
             </Container>
           </form>
         </ModalContent>
-        <button style={{ display: 'none' }} type="submit" onClick={event => event.preventDefault()}></button>
-        <ModalActions actions={formActions}></ModalActions>
+        <button style={{ display: 'none' }} type="submit" onClick={event => event.preventDefault()} />
+        <ModalActions actions={formActions} />
       </Modal>
     )
   }

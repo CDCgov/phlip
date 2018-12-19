@@ -6,11 +6,9 @@ import admin from './Admin/reducer'
 import login from './Login/reducer'
 import codingScheme from './CodingScheme/reducer'
 import docManage from './DocumentManagement/reducer'
-import coding, { codingHandlers } from './Coding/reducer'
-import validation, { validationHandlers } from './Validation/reducer'
 import protocol from './Protocol/reducer'
 import docView from './DocumentView/reducer'
-import { createCodingValidationReducer } from 'components/CodingValidation/reducer'
+import codingValidation from './CodingValidation/reducer'
 import * as types from 'data/user/actionTypes'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 
@@ -88,8 +86,7 @@ const scenesReducer = combineReducers({
     key: 'docManage',
     blacklist: ['upload', 'projectSuggestions', 'jurisdictionSuggestions']
   }, docManage),
-  coding: createCodingValidationReducer(coding, codingHandlers, 'CODING'),
-  validation: createCodingValidationReducer(validation, validationHandlers, 'VALIDATION'),
+  codingValidation,
   codingScheme,
   login,
   protocol,

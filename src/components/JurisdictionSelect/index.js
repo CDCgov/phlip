@@ -70,15 +70,15 @@ export class JurisdictionSelect extends Component {
         value={value}
         autoFocus={true}
         onChange={onChange}
-        children={menuItems}
         MenuProps={MenuProps}
         ref={this.setJurisdictionRef}
         renderValue={value => {
           const option = options.find(option => option.id === value)
           return option.name
         }}
-        {...otherProps}
-      />
+        {...otherProps}>
+        {menuItems}
+      </Select>
     )
   }
 }

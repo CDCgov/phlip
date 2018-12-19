@@ -13,7 +13,7 @@ const styles = theme => ({
 /**
  * Simple checkbox input type and label
  */
-export const CheckboxLabel = ({ input, label, onChange, classes, disabled }) => {
+export const CheckboxLabel = ({ input, label, classes, disabled }) => {
   return (
     <FormControlLabel
       control={

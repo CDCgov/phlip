@@ -23,8 +23,7 @@ export const FormModal = props => {
         asyncBlurFields={asyncBlurFields}
         validate={validate}
         initialValues={initialValues}
-        style={{ width, height }}
-      >
+        style={{ width, height }}>
         {children}
       </Form>
     </Dialog>

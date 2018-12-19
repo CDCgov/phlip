@@ -6,6 +6,10 @@ import PDFViewer from 'components/PDFViewer'
 import Typography from '@material-ui/core/Typography'
 
 export class DocumentContents extends Component {
+  static propTypes = {
+    document: PropTypes.object
+  }
+
   constructor(props, context) {
     super(props, context)
   }
@@ -19,7 +23,7 @@ export class DocumentContents extends Component {
           </Typography>
           <Typography variant="subheading">{this.props.document.name}</Typography>
         </FlexGrid>
-        <PDFViewer document={this.props.document} />
+        {this.props.document.content.data && <PDFViewer document={this.props.document} />}
       </FlexGrid>
     )
   }

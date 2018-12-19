@@ -51,7 +51,7 @@ export const patchUserImageLogic = createLogic({
     successType: types.ADD_USER_IMAGE_SUCCESS
   },
   async process({ action, api }) {
-    const avatar = await api.updateUserImage(action.patchOperation, {}, { userId: action.userId })
+    await api.updateUserImage(action.patchOperation, {}, { userId: action.userId })
     return { avatar: action.patchOperation[0].value, userId: action.userId }
   }
 })

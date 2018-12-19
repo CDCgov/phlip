@@ -1,6 +1,5 @@
 import React from 'react'
-import { shallow, mount } from 'enzyme'
-import { MemoryRouter } from 'react-router-dom'
+import { shallow } from 'enzyme'
 import { HeaderTabs } from '../index'
 
 const props = {
@@ -18,15 +17,7 @@ const props = {
       icon: 'description'
     }
   ],
-  onTabChange: (i) => {}
-}
-
-const setup = otherProps => {
-  return mount(
-    <MemoryRouter>
-      <HeaderTabs {...props} {...otherProps} />
-    </MemoryRouter>
-  )
+  onTabChange: () => {}
 }
 
 describe('HeaderTabs', () => {

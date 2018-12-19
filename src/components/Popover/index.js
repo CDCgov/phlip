@@ -7,15 +7,15 @@ import { Manager, Popper, Reference } from 'react-popper'
  * Popover component that displays a
  */
 export class Popover extends Component {
+  constructor(props, context) {
+    super(props, context)
+  }
+
   state = {
     open: true
   }
 
   target = null
-
-  constructor(props, context) {
-    super(props, context)
-  }
 
   onOpenTooltip = () => {
     this.setState({

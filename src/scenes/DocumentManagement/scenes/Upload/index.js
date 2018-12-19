@@ -70,7 +70,20 @@ export class Upload extends Component {
     /**
      * Redux actions
      */
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    onSubmitError: PropTypes.func,
+    goBack: PropTypes.bool,
+    infoRequestInProgress: PropTypes.bool,
+    history: PropTypes.object,
+    infoSheetSelected: PropTypes.bool,
+    selectedJurisdiction: PropTypes.object,
+    selectedProject: PropTypes.object,
+    jurisdictionSuggestions: PropTypes.array,
+    projectSuggestions: PropTypes.array,
+    jurisdictionSearchValue: PropTypes.string,
+    projectSearchValue: PropTypes.string,
+    noProjectError: PropTypes.any,
+    infoSheet: PropTypes.object
   }
 
   constructor(props, context) {
@@ -101,11 +114,19 @@ export class Upload extends Component {
     }
 
     if (prevProps.infoRequestInProgress !== this.props.infoRequestInProgress) {
-      this.loadingAlertTimeout = setTimeout(this.showInfoLoadingAlert, 1000)
+      if (prevProps.infoRequestInProgress === false && this.props.infoRequestInProgress === true) {
+        this.loadingAlertTimeout = setTimeout(this.showInfoLoadingAlert, 1000)
+      } else {
+        clearTimeout(this.loadingAlertTimeout)
+      }
     }
 
     if (prevProps.uploading !== this.props.uploading) {
-      this.loadingAlertTimeout = setTimeout(this.showUploadLoadingAlert, 1000)
+      if (prevProps.uploading === false && this.props.uploading === true) {
+        this.loadingAlertTimeout = setTimeout(this.showUploadLoadingAlert, 1000)
+      } else {
+        clearTimeout(this.loadingAlertTimeout)
+      }
     }
   }
 
@@ -365,7 +386,9 @@ export class Upload extends Component {
           <FlexGrid container align="center">
             <CircularLoader type="indeterminate" />
             <span style={{ paddingTop: 20 }}>
-              {this.props.uploading ? 'Uploading documents' : 'Processing document'}... This could take a couple minutes...
+              {this.props.uploading
+                ? 'Uploading documents'
+                : 'Processing document'}... This could take a couple minutes...
             </span>
           </FlexGrid>
         </Alert>

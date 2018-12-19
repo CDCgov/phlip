@@ -35,8 +35,8 @@ export const Tabs = ({ tabs, selectedTab, onChangeTab, children, classes, theme 
         <MuiTabs
           value={selectedTab}
           onChange={onChangeTab}
-          indicatorColor="accent"
-          textColor="accent"
+          indicatorColor="primary"
+          textColor="primary"
           scrollable
           scrollButtons="on">
           {tabs.map(tab => (

@@ -15,7 +15,7 @@ const logoutLogic = createLogic({
   processOptions: {
     dispatchReturn: false
   },
-  process({ api }, dispatch, done) {
+  process({ action }, dispatch, done) {
     logout()
     dispatch({ type: types.FLUSH_STATE })
     done()

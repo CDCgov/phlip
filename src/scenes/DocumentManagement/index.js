@@ -44,7 +44,13 @@ export class DocumentManagement extends Component {
     /**
      * Whether or not the checkbox table header has been clicked, selecting all files
      */
-    allSelected: PropTypes.bool
+    allSelected: PropTypes.bool,
+    searchValue: PropTypes.string,
+    projectSearchValue: PropTypes.string,
+    jurisdictionSearchValue: PropTypes.string,
+    projectSuggestions: PropTypes.array,
+    jurisdictionSuggestions: PropTypes.array
+
   }
 
   constructor(props, context) {
@@ -99,7 +105,7 @@ export class DocumentManagement extends Component {
 
   render() {
     return (
-      <FlexGrid container flex padding="20px 30px">
+      <FlexGrid container flex padding="12px 20px 20px 20px">
         <PageHeader
           pageTitle="Document Management"
           protocolButton={false}

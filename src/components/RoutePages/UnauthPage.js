@@ -1,5 +1,8 @@
 import React from 'react'
 import Typography from '@material-ui/core/Typography'
+import { Ghost } from 'mdi-material-ui'
+import Container from 'components/Layout'
+import styles from './no-page.scss'
 
 /**
  * Page displayed when a user tries to access a page they are not authorized to.
