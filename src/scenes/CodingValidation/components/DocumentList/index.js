@@ -72,7 +72,7 @@ export class DocumentList extends Component {
               ? this.props.openedDoc.name
               : 'Assigned Documents'}
           </Typography>
-          {!this.props.docSelected && <SearchBar />}
+          {/*!this.props.docSelected && <SearchBar />*/}
         </FlexGrid>
         <Divider />
         <FlexGrid container flex padding={10} style={{ height: '100%' }}>
