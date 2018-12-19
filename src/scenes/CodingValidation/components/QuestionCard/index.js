@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Broom } from 'mdi-material-ui'
 import Divider from '@material-ui/core/Divider'
@@ -21,7 +21,34 @@ const TabContainer = props => {
   )
 }
 
+TabContainer.propTypes = {
+  tabs: PropTypes.array,
+  selected: PropTypes.number,
+  onChangeCategory: PropTypes.func,
+  children: PropTypes.any
+}
+
 export class QuestionCard extends Component {
+  static propTypes = {
+    question: PropTypes.object,
+    userAnswers: PropTypes.any,
+    onChange: PropTypes.func,
+    isValidation: PropTypes.bool,
+    user: PropTypes.object,
+    categories: PropTypes.array,
+    selectedCategory: PropTypes.number,
+    selectedCategoryId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    mergedUserQuestions: PropTypes.object,
+    disableAll: PropTypes.bool,
+    userImages: PropTypes.object,
+    questionChangeLoader: PropTypes.bool,
+    isChangingQuestion: PropTypes.bool,
+    unsavedChanges: PropTypes.bool,
+    saveFailed: PropTypes.bool,
+    hasTouchedQuestion: PropTypes.bool,
+    enabledAnswerChoice: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  }
+
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -32,7 +59,7 @@ export class QuestionCard extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.unsavedChanges === true) {
       this.setState({
         isSaving: true
@@ -189,18 +216,20 @@ export class QuestionCard extends Component {
                     onSaveFlag={this.props.onSaveFlag}
                     questionFlags={this.props.question.flags}
                     user={this.props.user}
-                    disableAll={this.props.disableAll} />}
+                    disableAll={this.props.disableAll}
+                  />}
                 </Row>
               </Row>
               <Divider />
               {this.props.categories !== undefined
-                ? <TabContainer
-                  tabs={this.props.categories}
-                  selected={this.props.selectedCategory}
-                  onChangeCategory={this.props.onChangeCategory}>
-                  <QuestionContent {...questionContentProps} />
-                </TabContainer>
-                : <QuestionContent{...questionContentProps} />}
+                ? (
+                  <TabContainer
+                    tabs={this.props.categories}
+                    selected={this.props.selectedCategory}
+                    onChangeCategory={this.props.onChangeCategory}>
+                    <QuestionContent {...questionContentProps} />
+                  </TabContainer>
+                ) : <QuestionContent {...questionContentProps} />}
               <Divider />
               <FooterNavigate
                 currentIndex={this.props.currentIndex}
@@ -214,12 +243,6 @@ export class QuestionCard extends Component {
       </Row>
     )
   }
-}
-
-QuestionCard.propTypes = {
-  question: PropTypes.object,
-  userAnswer: PropTypes.any,
-  onChange: PropTypes.func
 }
 
 const mapStateToProps = (state, ownProps) => {

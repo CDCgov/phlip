@@ -43,7 +43,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
                 "firstName": "Test",
                 "lastName": "User",
               },
-              "uploadedDate": "1/1/2000",
+              "uploadedDate": 2000-01-01T05:00:00.000Z,
             },
           },
         }
@@ -62,7 +62,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
   <WithStyles(TableCell)
     padding="checkbox"
   >
-    12/31/1999, 7:00 PM
+    1/1/2000, 12:00 AM
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"

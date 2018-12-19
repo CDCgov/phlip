@@ -17,6 +17,23 @@ import { bindActionCreators } from 'redux'
 import ProJurSearch from './components/ProJurSearch'
 
 export class DocumentMeta extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    document: PropTypes.object,
+    uploading: PropTypes.bool,
+    updating: PropTypes.bool,
+    projectList: PropTypes.array,
+    jurisdictionList: PropTypes.array,
+    alertOpen: PropTypes.bool,
+    alertTitle: PropTypes.string,
+    alertText: PropTypes.string,
+    projectSuggestions: PropTypes.array,
+    jurisdictionSuggestions: PropTypes.array,
+    projectSearchValue: PropTypes.string,
+    jurisdictionSearchValue: PropTypes.string,
+    noProjectError: PropTypes.any
+  }
+
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -44,20 +61,6 @@ export class DocumentMeta extends Component {
   }
 
   onCloseModal = () => {
-    // if (this.props.selectedDocs.length > 0) {
-    //     this.setState({
-    //         alertActions: [
-    //             this.dismissAlertAction,
-    //             {
-    //                 value: 'Continue',
-    //                 type: 'button',
-    //                 otherProps: { 'aria-label': 'Continue' },
-    //                 onClick: this.goBack
-    //             }
-    //         ]
-    //     }, () => this.props.actions.openAlert('Your unsaved changes will be lost.'))
-    // } else {
-
     this.setState({ showModal: false })
   }
 
@@ -66,7 +69,7 @@ export class DocumentMeta extends Component {
   }
 
   handleEditMode = () => {
-    this.setState(function(prevState) {
+    this.setState(prevState => {
       if (prevState.isEditMode == true) {
         this.props.actions.updateDocRequest(this.props.document._id, null, null)
       }
@@ -100,7 +103,6 @@ export class DocumentMeta extends Component {
    * When a user has chosen a suggestion from the autocomplete project or jurisdiction list
    */
   handleSuggestionSelected = (suggestionType) => (event, { suggestionValue }) => {
-    //  console.log('selected value ', suggestionValue)
     if (suggestionType === 'project') {
       this.setState({
         selectedProject: suggestionValue
@@ -155,8 +157,8 @@ export class DocumentMeta extends Component {
   getButtonText = text => {
     return this.props.uploading
       ? (<>
-          <span style={{ marginRight: 5 }}>{text}</span>
-          <CircularLoader thickness={5} style={{ height: 15, width: 15 }} />
+        <span style={{ marginRight: 5 }}>{text}</span>
+        <CircularLoader thickness={5} style={{ height: 15, width: 15 }} />
         </>)
       : text
   }
@@ -165,10 +167,6 @@ export class DocumentMeta extends Component {
     const options = [
       { value: 'Draft', label: 'Draft' }, { value: 'Approved', label: 'Approved' }
     ]
-
-    const closeButton = {
-      value: 'Close', type: 'button', otherProps: { 'aria-label': 'Close modal' }, onClick: this.onCloseModal
-    }
 
     const cancelButton = {
       value: 'Cancel', type: 'button', otherProps: { 'aria-label': 'Close modal' }, onClick: this.onCloseModal
@@ -184,11 +182,6 @@ export class DocumentMeta extends Component {
       }
     ]
 
-    const alertActions = [
-      { value: 'Cancel', type: 'button', onClick: this.cancelDelete },
-      { value: 'Continue', type: 'button', onClick: this.continueDelete }
-    ]
-
     const colStyle = {
       fontSize: 14, border: 'none', borderBottom: '1px solid green'
     }
@@ -200,12 +193,11 @@ export class DocumentMeta extends Component {
 
     const date = moment(dateWithoutTime).format('M/D/YYYY')
 
-    const modalActions = [closeButton]
-
-    return (<>
+    return (
+      <>
         <FlexGrid raised container style={{ overflow: 'hidden', minWidth: '30%', marginBottom: 25 }}>
           <Typography variant="body2" style={{ padding: 10, color: 'black' }}>
-            Document Information
+          Document Information
           </Typography>
           <Divider />
           <FlexGrid container padding={15}>
@@ -218,7 +210,8 @@ export class DocumentMeta extends Component {
                 id="selectedDocStatus"
                 options={options}
                 input={{
-                  value: this.props.document.status || 'Draft', onChange: this.onChangeStatusField
+                  value: this.props.document.status || 'Draft',
+                  onChange: this.onChangeStatusField
                 }}
                 formControlStyle={{ minWidth: 180 }}
                 meta={{}}
@@ -227,13 +220,13 @@ export class DocumentMeta extends Component {
             <FlexGrid container type="row" align="center" style={{ marginBottom: 25 }}>
               <Icon color={iconColor}><FormatSection /></Icon>
               <Typography variant="body1" style={{ padding: '0 5px' }}>
-                Citation:
+              Citation:
               </Typography>
               {this.state.isEditMode
                 ? (<input
                   style={colStyle}
                   defaultValue={this.props.document.citation}
-                  onChange={e => this.handleDocPropertyChange(i, 'citation', e.target.value)}
+                  onChange={e => this.handleDocPropertyChange(null, 'citation', e.target.value)}
                 />)
                 : <Typography>{this.props.document.citation}</Typography>}
             </FlexGrid>
@@ -246,8 +239,8 @@ export class DocumentMeta extends Component {
                 ? (<DatePicker
                   name="effectiveDate"
                   dateFormat="MM/DD/YYYY"
-                  onChange={date => this.handleDocPropertyChange(i, 'effectiveDate', date)}
-                  onInputChange={e => this.handleDocPropertyChange(i, 'effectiveDate', e.target.value)}
+                  onChange={date => this.handleDocPropertyChange(null, 'effectiveDate', date)}
+                  onInputChange={e => this.handleDocPropertyChange(null, 'effectiveDate', e.target.value)}
                   value={this.props.document.effectiveDate}
                   autoOk={true}
                   style={{ marginTop: 0 }}
@@ -281,7 +274,7 @@ export class DocumentMeta extends Component {
           style={{ overflow: 'hidden', minWidth: '30%', height: '33%', marginBottom: 25 }}>
           <FlexGrid container type="row" align="center" justify="space-between" padding={10}>
             <Typography variant="body2" style={{ color: 'black' }}>
-              Assigned Projects
+            Assigned Projects
             </Typography>
             <Button
               onClick={this.showAddProjModal}
@@ -292,21 +285,23 @@ export class DocumentMeta extends Component {
           </FlexGrid>
           <Divider />
           <FlexGrid type="row" padding={10} style={{ overflow: 'auto' }}>
-            {this.props.projectList.map((item, index) => (<Typography
-              style={{
-                padding: 8,
-                backgroundColor: index % 2 === 0
-                  ? '#f9f9f9'
-                  : 'white'
-              }}
-              key={`project-${index}`}
-            >{item}</Typography>))}
+            {this.props.projectList.map((item, index) => (
+              <Typography
+                style={{
+                  padding: 8,
+                  backgroundColor: index % 2 === 0
+                    ? '#f9f9f9'
+                    : 'white'
+                }}
+                key={`project-${index}`}>{item}
+              </Typography>)
+            )}
           </FlexGrid>
         </FlexGrid>
         <FlexGrid raised container flex style={{ overflow: 'hidden', minWidth: '30%', height: '33%' }}>
           <FlexGrid container type="row" align="center" justify="space-between" padding={10}>
             <Typography variant="body2" style={{ color: 'black' }}>
-              Assigned Jurisdictions
+            Assigned Jurisdictions
             </Typography>
             <Button
               onClick={this.showAddJurModal}
@@ -317,44 +312,47 @@ export class DocumentMeta extends Component {
           </FlexGrid>
           <Divider />
           <FlexGrid type="row" flex padding={10} style={{ overflow: 'auto', height: '100%' }}>
-            {this.props.jurisdictionList.map((item, index) => (<Typography
-              style={{
-                padding: 8,
-                backgroundColor: index % 2 === 0
-                  ? '#f9f9f9'
-                  : 'white'
-              }}
-              key={`jurisdiction-${index}`}
-            >{item}</Typography>))}
-            </FlexGrid>
-            <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="sm" hideOverflow={false}>
-              {this.props.alertOpen &&
-              <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle}>
-                {this.props.alertText}
-              </Alert>}
-              <ModalTitle title="Document Detail" />
-                <Divider />
-                <ModalContent style={{ display: 'flex', flexDirection: 'column', paddingTop: 24, width: 500, height: 500 }}>
-                  <Grid container type="row" align="center" justify="space-between" padding={10}>
-                    <ProJurSearch
-                      jurisdictionSuggestions={this.props.jurisdictionSuggestions}
-                      projectSuggestions={this.props.projectSuggestions}
-                      onClearSuggestions={this.handleClearSuggestions}
-                      onGetSuggestions={this.handleGetSuggestions}
-                      onSearchValueChange={this.handleSearchValueChange}
-                      onSuggestionSelected={this.handleSuggestionSelected}
-                      jurisdictionSearchValue={this.props.jurisdictionSearchValue}
-                      projectSearchValue={this.props.projectSearchValue}
-                      showProjectError={this.props.noProjectError === true}
-                      showJurSearch={this.state.showAddJurisdiction === true}
-                    />
-                  </Grid>
-                </ModalContent>
-                <Divider />
-              <ModalActions actions={modalAction} />
-            </Modal>
+            {this.props.jurisdictionList.map((item, index) => (
+              <Typography
+                style={{
+                  padding: 8,
+                  backgroundColor: index % 2 === 0
+                    ? '#f9f9f9'
+                    : 'white'
+                }}
+                key={`jurisdiction-${index}`}>{item}
+              </Typography>)
+            )}
+          </FlexGrid>
+          <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="sm" hideOverflow={false}>
+            {this.props.alertOpen &&
+            <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle}>
+              {this.props.alertText}
+            </Alert>}
+            <ModalTitle title="Document Detail" />
+            <Divider />
+            <ModalContent style={{ display: 'flex', flexDirection: 'column', paddingTop: 24, width: 500, height: 500 }}>
+              <Grid container type="row" align="center" justify="space-between" padding={10}>
+                <ProJurSearch
+                  jurisdictionSuggestions={this.props.jurisdictionSuggestions}
+                  projectSuggestions={this.props.projectSuggestions}
+                  onClearSuggestions={this.handleClearSuggestions}
+                  onGetSuggestions={this.handleGetSuggestions}
+                  onSearchValueChange={this.handleSearchValueChange}
+                  onSuggestionSelected={this.handleSuggestionSelected}
+                  jurisdictionSearchValue={this.props.jurisdictionSearchValue}
+                  projectSearchValue={this.props.projectSearchValue}
+                  showProjectError={this.props.noProjectError === true}
+                  showJurSearch={this.state.showAddJurisdiction === true}
+                />
+              </Grid>
+            </ModalContent>
+            <Divider />
+            <ModalActions actions={modalAction} />
+          </Modal>
         </FlexGrid>
-      </>)
+      </>
+    )
   }
 }
 
@@ -376,10 +374,6 @@ const mapStateToProps = (state, ownProps) => {
     jurisdictionSuggestions: state.scenes.docManage.upload.jurisdictionSuggestions.suggestions,
     projectSearchValue: state.scenes.docManage.upload.projectSuggestions.searchValue,
     jurisdictionSearchValue: state.scenes.docManage.upload.jurisdictionSuggestions.searchValue
-    // selectedJurisdiction: {},
-    // selectedProject: {},
-    // noProjectError: state.scenes.docManage.upload.list.noProjectError,
-
   }
 }
 
@@ -388,9 +382,7 @@ const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(actions, dispatch),
     projectAutocomplete: bindActionCreators(projectAutocomplete, dispatch),
     jurisdictionAutocomplete: bindActionCreators(jurisdictionAutocomplete, dispatch)
-    // addJurisdiction: bindActionCreators(addJurisdiction,dispatch)
   }
 })
 
-// const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 export default connect(mapStateToProps, mapDispatchToProps)(DocumentMeta)

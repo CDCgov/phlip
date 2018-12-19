@@ -32,15 +32,17 @@ const styles = theme => ({
 export const Dropdown = props => {
   const {
     input, label, id, defaultValue, classes, shrinkLabel, formControlStyle,
-    disabled, meta: { touched, error }, options, required, displayEmpty, ...otherProps
+    disabled, options, required, displayEmpty, ...otherProps
   } = props
 
   return (
     <FormControl style={{ minWidth: 120, ...formControlStyle }}>
-      {label !== '' && <InputLabel
+      {label !== '' &&
+      <InputLabel
         htmlFor={id}
         shrink={shrinkLabel}
-        required={required}>{label}</InputLabel>}
+        required={required}>{label}
+      </InputLabel>}
       <Select
         input={<Input id={id} />}
         value={input.value ? input.value : defaultValue}

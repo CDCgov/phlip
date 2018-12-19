@@ -27,7 +27,7 @@ export const refreshJwtLogic = createLogic({
   type: types.REFRESH_JWT,
   warnTimeout: 0,
   cancelType: [types.CANCEL_REFRESH_JWT, types.LOGOUT_USER],
-  process({ cancelled$, api}) {
+  process({ cancelled$, api }) {
     const interval = setInterval(async () => {
       if (isLoggedIn()) {
         const currentToken = getToken()

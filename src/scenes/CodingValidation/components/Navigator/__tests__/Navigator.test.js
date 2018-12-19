@@ -1,7 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { Navigator } from '../index'
-import { QuestionRow } from '../components/QuestionRow'
 
 const props = {
   handleQuestionSelected: () => {},

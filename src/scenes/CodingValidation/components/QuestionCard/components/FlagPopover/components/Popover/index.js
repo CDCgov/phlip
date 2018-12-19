@@ -36,7 +36,8 @@ export const Popover = props => {
         eventsEnabled={open}
         style={{ pointerEvents: open ? 'auto' : 'none' }}>
         {({ ref, style, placement }) => (
-          open && <ClickAwayListener onClickAway={open ? onClose : () => {}}>
+          open &&
+          <ClickAwayListener onClickAway={open ? onClose : () => {}}>
             <div ref={ref} data-placement={placement} style={{ marginTop: 5, ...style, zIndex: 20 }}>
               <FlexGrid raised container displayFlex>
                 <Row style={{ padding: 16 }}>
@@ -57,7 +58,9 @@ Popover.propTypes = {
   open: PropTypes.bool,
   title: PropTypes.string,
   onOpen: PropTypes.func,
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
+  target: PropTypes.any,
+  children: PropTypes.any
 }
 
 export default Popover

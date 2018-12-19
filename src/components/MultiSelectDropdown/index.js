@@ -28,7 +28,7 @@ const styles = theme => ({
 const MultiSelectDropdown = props => {
   const {
     input, selected, label, id,
-    classes, disabled, options, defaultValue, required,
+    classes, disabled, options, required,
     meta: { touched, error, active, warning }, ...otherProps } = props
 
   const menuItems = options.map(option => (
@@ -46,19 +46,26 @@ const MultiSelectDropdown = props => {
         value={input.value || []}
         classes={{ disabled: classes.disabled, icon: disabled ? classes.disabledIcon : classes.icon }}
         disabled={disabled}
-        children={menuItems}
         input={<Input id={id} />}
         onBlur={() => input.onBlur()}
         renderValue={selection => selection.join(', ')}
-        {...otherProps}
-      />
+        {...otherProps}>{menuItems}
+      </Select>
       {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
     </FormControl>
   )
 }
 
 MultiSelectDropdown.propTypes = {
-
+  input: PropTypes.object,
+  selected: PropTypes.any,
+  label: PropTypes.string,
+  id: PropTypes.string,
+  meta: PropTypes.object,
+  classes: PropTypes.object,
+  disabled: PropTypes.bool,
+  options: PropTypes.object,
+  required: PropTypes.bool
 }
 
 MultiSelectDropdown.defaultProps = {}

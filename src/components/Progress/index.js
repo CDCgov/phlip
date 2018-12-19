@@ -13,7 +13,7 @@ const trackStyles = {
 /**
  * Small linear progress bar
  */
-export const Progress = ({ progress, color, width, containerStyles, ...otherProps }) => {
+export const Progress = ({ progress, color, width, containerStyles }) => {
   const barStyles = {
     position: 'absolute',
     left: 0,

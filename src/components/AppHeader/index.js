@@ -10,7 +10,6 @@ export const AppHeader = props => {
   const { user, tabs, onLogoutUser, onDownloadPdf, onToggleMenu, onOpenAdminPage, onTabChange, open } = props
 
   const headerStyle = {
-    backgroundColor: 'white',
     borderRadius: 0,
     position: 'relative',
     boxShadow: '0 1px 2px 0 rgba(34,36,38,.15)',

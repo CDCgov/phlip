@@ -15,7 +15,7 @@ export const ExportDialog = ({ onClose, onChooseExport, open }) => {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <ModalTitle title="Choose export type"/>
+      <ModalTitle title="Choose export type" />
       <Divider />
       <ModalContent style={{ minWidth: 400, padding: 0 }}>
         <List>

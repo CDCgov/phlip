@@ -44,7 +44,13 @@ export class DocumentManagement extends Component {
     /**
      * Whether or not the checkbox table header has been clicked, selecting all files
      */
-    allSelected: PropTypes.bool
+    allSelected: PropTypes.bool,
+    searchValue: PropTypes.string,
+    projectSearchValue: PropTypes.string,
+    jurisdictionSearchValue: PropTypes.string,
+    projectSuggestions: PropTypes.array,
+    jurisdictionSuggestions: PropTypes.array
+
   }
 
   constructor(props, context) {

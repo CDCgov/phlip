@@ -1,8 +1,5 @@
 import React from 'react'
-import { shallow, mount } from 'enzyme'
-import { MemoryRouter } from 'react-router-dom'
-import { MuiThemeProvider } from '@material-ui/core/styles'
-import theme from 'services/theme'
+import { shallow } from 'enzyme'
 import { Admin } from '../'
 import { UserList } from '../components/UserList'
 import { PageHeader } from 'components/PageHeader'
@@ -16,16 +13,6 @@ const props = {
   direction: 'asc',
   page: 0,
   rowsPerPage: 10,
-}
-
-const setup = otherProps => {
-  return mount(
-    <MemoryRouter>
-      <MuiThemeProvider theme={theme}>
-        <Admin {...props} {...otherProps} />
-      </MuiThemeProvider>
-    </MemoryRouter>
-  )
 }
 
 describe('Admin Scene', () => {

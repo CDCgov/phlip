@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Container from 'components/Layout'
 import { bindActionCreators } from 'redux'
@@ -12,6 +12,7 @@ import CardError from 'components/CardError'
 import Typography from '@material-ui/core/Typography'
 import withTracking from 'components/withTracking'
 
+/* eslint-disable no-unused-vars */
 import tinymce from 'tinymce/tinymce'
 import 'tinymce/themes/modern/theme'
 import 'tinymce/plugins/paste'
@@ -21,9 +22,6 @@ import 'tinymce/plugins/lists'
 import 'tinymce/plugins/advlist'
 import 'tinymce/plugins/table'
 import 'tinymce/plugins/paste'
-//import 'tinymce/plugins/anchor'
-//import 'tinymce/plugins/pagebreak'
-
 import { Editor } from '@tinymce/tinymce-react'
 
 /**
@@ -75,7 +73,9 @@ export class Protocol extends Component {
     /**
      * Redux actions object
      */
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    saveError: PropTypes.any,
+    history: PropTypes.object
   }
 
   constructor(props, context) {
@@ -88,7 +88,11 @@ export class Protocol extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillMount() {
+    this.props.actions.getProtocolRequest(this.props.projectId)
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.submitting === true) {
       if (nextProps.saveError !== true) {
         this.setState({
@@ -97,22 +101,16 @@ export class Protocol extends Component {
       }
     }
 
-    if (this.props.lockedByCurrentInfo !== true && nextProps.lockedByCurrentUser === true) {
+    if (this.props.lockedByCurrentUser !== true && nextProps.lockedByCurrentUser === true) {
       this.setState({
         editMode: true
       })
     }
   }
 
-  componentWillMount() {
-    this.props.actions.getProtocolRequest(this.props.projectId)
-  }
-
   componentWillUnmount() {
     this.props.actions.clearState()
   }
-
-  componentDidMount() {}
 
   /**
    * Calls a redux action to request to checkout the protocol. Invoked when the user clicks the 'Edit' button
@@ -171,8 +169,8 @@ export class Protocol extends Component {
   }
 
   /**
-   * If in edit mode, opens an alert to let the user know they are still in edit mode. Invoked when the user clicks the 'back' arrow while
-   * still in edit mode. If not in edit mode, goes back once in browser history.
+   * If in edit mode, opens an alert to let the user know they are still in edit mode. Invoked when the user clicks the
+   * 'back' arrow while still in edit mode. If not in edit mode, goes back once in browser history.
    * @public
    */
   onGoBack = () => {
@@ -182,7 +180,7 @@ export class Protocol extends Component {
         alertText: 'Your unsaved changes will be lost.'
       })
     } else {
-     this.props.history.goBack()
+      this.props.history.goBack()
     }
   }
 
@@ -209,8 +207,12 @@ export class Protocol extends Component {
         <Alert
           actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert }]}
           open={this.props.lockedAlert !== null}
-          title={<Fragment><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
-            The Protocol is unavailable to edit.</Fragment>}>
+          title={
+            <>
+              <Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
+              The Protocol is unavailable to edit.
+            </>
+          }>
           <Typography variant="body1">
             {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} is currently editing the protocol.
             You will not be able to edit until they are done editing and have saved their changes.
@@ -234,48 +236,56 @@ export class Protocol extends Component {
         <Alert
           actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseAlert }]}
           open={this.props.alertError !== ''}
-          title={<Fragment><Icon size={30} color="red" style={{ paddingRight: 10 }}>sentiment_very_dissatisfied</Icon>
-            Uh-oh! Something went wrong.</Fragment>}>
+          title={
+            <>
+              <Icon size={30} color="red" style={{ paddingRight: 10 }}>sentiment_very_dissatisfied</Icon>
+              Uh-oh! Something went wrong.
+            </>
+          }>
           <Typography variant="body1">
             {this.props.alertError}
           </Typography>
         </Alert>
         {this.state.editMode
-          ? <Card id="tiny">
-            <Editor
-              init={{
-                statusbar: false,
-                plugins: ['paste', 'link', 'image', 'lists', 'advlist', 'table', 'paste'],
-                toolbar: 'undo redo | \
+          ? (
+            <Card id="tiny">
+              <Editor
+                init={{
+                  statusbar: false,
+                  plugins: ['paste', 'link', 'image', 'lists', 'advlist', 'table', 'paste'],
+                  toolbar: 'undo redo | \
                           styleselect | \
                           bold italic strikethrough underline | \
                           table | \
                           alignleft alignright aligncenter alignjustify | \
                           numlist bullist | \
                           link image',
-                theme: 'modern',
-                skin_url: '/skins/custom',
-                branding: false,
-                resize: false,
-                menubar: false,
-                content_style: '* {font-family: Roboto }',
-                advlist_bullet_styles: 'default,circle,square,disc',
-                link_title: false,
-                target_list: false,
-                link_assume_external_targets: true,
-                default_link_target: '_blank',
-                anchor_bottom: false,
-                anchor_top: false
-              }}
-              onChange={e => this.props.actions.updateProtocol(e.target.getContent())}
-              initialValue={this.props.protocolContent}
-            />
-          </Card>
-          : this.props.getProtocolError === true
-            ? <CardError>We failed to get the protocol for this project. Please try again later.</CardError>
-            : <Card
-              style={{ padding: 25, fontFamily: 'Roboto', overflow: 'auto' }}
-              dangerouslySetInnerHTML={{ __html: this.props.protocolContent }} />
+                  theme: 'modern',
+                  skin_url: '/skins/custom',
+                  branding: false,
+                  resize: false,
+                  menubar: false,
+                  content_style: '* {font-family: Roboto }',
+                  advlist_bullet_styles: 'default,circle,square,disc',
+                  link_title: false,
+                  target_list: false,
+                  link_assume_external_targets: true,
+                  default_link_target: '_blank',
+                  anchor_bottom: false,
+                  anchor_top: false
+                }}
+                onChange={e => this.props.actions.updateProtocol(e.target.getContent())}
+                initialValue={this.props.protocolContent}
+              />
+            </Card>
+          ) : (
+            this.props.getProtocolError === true
+              ? <CardError>We failed to get the protocol for this project. Please try again later.</CardError>
+              : <Card
+                style={{ padding: 25, fontFamily: 'Roboto', overflow: 'auto' }}
+                dangerouslySetInnerHTML={{ __html: this.props.protocolContent }}
+              />
+          )
         }
       </Container>
     )

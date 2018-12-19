@@ -19,7 +19,8 @@ export const IconButton = ({ color, onClick, iconSize, style, iconStyle, tooltip
     <MuiIconButton
       onClick={onClick}
       disableRipple
-      style={styles} {...otherProps}
+      style={styles}
+      {...otherProps}
       disabled={disabled}>
       <Icon color={color} size={iconSize} style={{ ...iconStyle }}>
         {children}

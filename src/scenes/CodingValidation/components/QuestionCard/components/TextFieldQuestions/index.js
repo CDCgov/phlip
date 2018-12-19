@@ -14,7 +14,7 @@ export const TextFieldQuestions = props => {
   } = props
 
   return (
-    <Fragment>
+    <>
       <Column flex displayFlex style={{ overflow: 'auto', paddingLeft: style.paddingLeft }}>
         {mergedUserQuestions.answers.map((answer, index) =>
           <Fragment key={answer.id}>
@@ -24,7 +24,8 @@ export const TextFieldQuestions = props => {
                 avatar={userImages[answer.userId].avatar !== undefined
                   ? userImages[answer.userId].avatar
                   : ''}
-                key={`user-answer-${index}`} />
+                key={`user-answer-${index}`}
+              />
               <Paper elevation={0} style={{ marginLeft: 20 }}>
                 <Typography style={{ whiteSpace: 'pre-wrap' }} variant="body2">{answer.textAnswer}</Typography>
               </Paper>
@@ -47,8 +48,20 @@ export const TextFieldQuestions = props => {
         disabled={disabled}
         isValidation={true}
       />
-    </Fragment>
+    </>
   )
+}
+
+TextFieldQuestions.propTypes = {
+  mergedUserQuestions: PropTypes.object,
+  validator: PropTypes.object,
+  validatorAnswer: PropTypes.string,
+  onChange: PropTypes.func,
+  answerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  style: PropTypes.object,
+  userImages: PropTypes.object,
+  disabled: PropTypes.bool,
+  question: PropTypes.object
 }
 
 export default TextFieldQuestions

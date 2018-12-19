@@ -12,7 +12,10 @@ export class DocumentView extends Component {
   static propTypes = {
     document: PropTypes.object,
     documentRequestInProgress: PropTypes.bool,
-    documentUpdateInProgress: PropTypes.bool
+    documentUpdateInProgress: PropTypes.bool,
+    actions: PropTypes.object,
+    location: PropTypes.object,
+    history: PropTypes.object
   }
 
   constructor(props, context) {
@@ -22,6 +25,10 @@ export class DocumentView extends Component {
   componentDidMount() {
     this.props.actions.initState(this.props.location.state.document)
     this.props.actions.getDocumentContentsRequest(this.props.location.state.document._id)
+  }
+
+  componentWillUnmount() {
+    this.props.actions.clearDocument()
   }
 
   onGoBack = () => {

@@ -10,7 +10,7 @@ import * as questionTypes from '../../../../constants'
 import TextFieldQuestions from '../TextFieldQuestions'
 import Button from 'components/Button'
 import ValidationTable from '../ValidationTable'
-import { FlexGrid, Typography, IconButton } from 'components'
+import { FlexGrid, Typography } from 'components'
 
 export const QuestionContent = props => {
   const {
@@ -140,7 +140,18 @@ QuestionContent.defaultProps = {
 
 QuestionContent.propTypes = {
   question: PropTypes.object,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  comment: PropTypes.string,
+  userAnswers: PropTypes.object,
+  mergedUserQuestions: PropTypes.object,
+  isValidation: PropTypes.bool,
+  disableAll: PropTypes.bool,
+  onChangeTextAnswer: PropTypes.func,
+  onOpenAlert: PropTypes.func,
+  onOpenFlagConfirmAlert: PropTypes.func,
+  userImages: PropTypes.object,
+  onToggleAnswerForAnno: PropTypes.func,
+  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 }
 
 export default QuestionContent

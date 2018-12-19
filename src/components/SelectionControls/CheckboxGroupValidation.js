@@ -53,7 +53,8 @@ export const CheckboxGroupValidation = props => {
                 htmlFor={choice.id}
                 control={<Checkbox
                   classes={{ checked: classes.checked }}
-                  inputProps={{ id: choice.id, 'aria-describedby': 'question_text' }} />}
+                  inputProps={{ id: choice.id, 'aria-describedby': 'question_text' }}
+                />}
                 disabled={disableAll}
                 label={choice.text}
                 aria-label={choice.text}
@@ -64,7 +65,8 @@ export const CheckboxGroupValidation = props => {
                   key={`user-answer-${index}`}
                   userName={`${userImages[answer.userId].firstName} ${userImages[answer.userId].lastName}`}
                   avatar={userImages[answer.userId] !== undefined ? userImages[answer.userId].avatar : ''}
-                  answer={answer} />
+                  answer={answer}
+                />
               ))}
               {userAnswers.answers.hasOwnProperty(choice.id)
               && mergedUserQuestions !== null
@@ -82,7 +84,8 @@ export const CheckboxGroupValidation = props => {
               />}
               {userAnswers.answers.hasOwnProperty(choice.id) && pincites &&
               <SimpleInput
-                key={`${choice.id}-pincite`} placeholder="Enter pincite"
+                key={`${choice.id}-pincite`}
+                placeholder="Enter pincite"
                 value={userAnswers.answers[choice.id].pincite}
                 multiline={false}
                 InputProps={{ inputProps: { 'aria-label': 'Pincite' } }}
@@ -158,7 +161,15 @@ CheckboxGroupValidation.propTypes = {
   /**
    * Style classes object from @material-ui/core
    */
-  classes: PropTypes.object
+  classes: PropTypes.object,
+  /**
+   * answer choice id that has been selected for annotating
+   */
+  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * handles when a user enables / disables an answer choice for annotating
+   */
+  onToggleAnswerForAnno: PropTypes.func
 }
 
 export default withStyles(styles, { withTheme: true })(CheckboxGroupValidation)

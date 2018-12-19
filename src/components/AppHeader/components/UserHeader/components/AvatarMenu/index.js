@@ -76,7 +76,8 @@ export class AvatarMenu extends PureComponent {
             style={{ pointerEvents: open ? 'auto' : 'none' }}>
             {({ placement, ref, style })  => {
               return (
-                open && <ClickAwayListener onClickAway={onToggleMenu}>
+                open &&
+                <ClickAwayListener onClickAway={onToggleMenu}>
                   <div data-placement={placement} style={{ marginTop: 5, ...style }} ref={ref}>
                     <Paper>
                       <MenuList
@@ -122,7 +123,12 @@ AvatarMenu.propTypes = {
   open: PropTypes.bool,
   onCloseMenu: PropTypes.func,
   onLogoutUser: PropTypes.func,
-  onOpenMenu: PropTypes.func
+  onOpenMenu: PropTypes.func,
+  onToggleMenu: PropTypes.func,
+  userName: PropTypes.string,
+  onOpenAdminPage: PropTypes.func,
+  onOpenHelpPdf: PropTypes.func,
+  avatar: PropTypes.any
 }
 
 AvatarMenu.defaultProps = {

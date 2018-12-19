@@ -29,7 +29,7 @@ describe('CodingValidation reducer', () => {
         id: 1,
         parentId: 0,
         positionInParent: 0,
-        possibleAnswers: [{ id: 123, text: 'answer 1', id: 234, text: 'answer 2' }]
+        possibleAnswers: [{ id: 123, text: 'answer 1' },{ id: 234, text: 'answer 2' }]
       },
       outline: {
         1: { parentId: 0, positionInParent: 0 },

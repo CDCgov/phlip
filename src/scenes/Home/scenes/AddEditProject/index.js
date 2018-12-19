@@ -10,7 +10,7 @@ import Divider from '@material-ui/core/Divider'
 import FormModal from 'components/FormModal'
 import TextInput from 'components/TextInput'
 import Dropdown from 'components/Dropdown'
-import Container, { Row } from 'components/Layout'
+import Container from 'components/Layout'
 import DetailRow from './components/DetailRow'
 import withFormAlert from 'components/withFormAlert'
 import withTracking from 'components/withTracking'
@@ -72,7 +72,9 @@ export class AddEditProject extends Component {
     /**
      * Whether or not to go back (after successfully saving, it will be true)
      */
-    goBack: PropTypes.bool
+    goBack: PropTypes.bool,
+
+    onSubmitError: PropTypes.func
   }
 
   constructor(props, context) {
@@ -84,7 +86,7 @@ export class AddEditProject extends Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
     if (this.state.submitting === true) {
       if (this.props.formError !== null) {
         this.setState({
@@ -249,8 +251,8 @@ export class AddEditProject extends Component {
         asyncBlurFields={['name']}
         onClose={this.props.onCloseModal}
         initialValues={this.props.location.state.projectDefined || {}}
-        width="600px" height="400px"
-      >
+        width="600px"
+        height="400px">
         <ModalTitle
           title={this.getModalTitle()}
           closeButton={!!this.projectDefined}

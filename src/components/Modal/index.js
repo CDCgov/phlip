@@ -35,7 +35,8 @@ const classes = theme => ({
 const Modal = ({ open, onClose, children, classes, hideOverflow, ...otherProps }) => (
   <Dialog
     open={open}
-    onClose={onClose}{...otherProps}
+    onClose={onClose}
+    {...otherProps}
     classes={{ paper: hideOverflow ? classes.hideOverflow : classes.paperNormal }}>
     {children}
   </Dialog>

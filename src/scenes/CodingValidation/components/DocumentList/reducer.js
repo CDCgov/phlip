@@ -48,7 +48,7 @@ const sortAnnotations = (userAnswers, newQuestion = {}) => {
             byQuestion[question.schemeQuestionId].all.push(annotation.docId)
         })
       } catch (err) {
-
+        console.log(err)
       }
     })
   })

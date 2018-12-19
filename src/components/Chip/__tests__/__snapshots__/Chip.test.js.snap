@@ -3,6 +3,7 @@
 exports[`Chip should render correctly 1`] = `
 <WithStyles(Chip)
   className=""
+  isFocused={false}
   key="[object Object]"
   label="Chip text"
   onClick={[Function]}

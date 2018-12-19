@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import MuiChip from '@material-ui/core/Chip'
 
 export const Chip = (props, key) => {
-  const { text, isFocused, isDisabled, handleClick, handleDelete, className, ...otherProps } = props
+  const { text, isDisabled, handleClick, handleDelete, className, ...otherProps } = props
   return (
     <MuiChip
       key={key}

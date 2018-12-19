@@ -2,6 +2,8 @@ import axios from 'axios'
 import { isLoggedIn, getToken, logout } from 'services/authToken'
 import util from 'util'
 
+/* global APP_IS_SAML_ENABLED, APP_API_URL, APP_DOC_MANAGE_API */
+
 /**
  * AxiosInstance with baseURL /api
  * @type {AxiosInstance}

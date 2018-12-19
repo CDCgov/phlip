@@ -54,7 +54,7 @@ const classes = theme => ({
  * @param InputProps
  * @param other
  */
-const renderInput = ({ value, onBlur, ref, TextFieldProps, InputProps, ...other }) => {
+const renderInput = ({ value, ref, TextFieldProps, InputProps, ...other }) => {
   return (
     <SimpleInput
       shrinkLabel
@@ -166,11 +166,11 @@ export const Autocomplete = props => {
         InputProps: showSearchIcon ? {
           style: { 'alignItems': 'center' },
           endAdornment:
-            <InputAdornment
-              style={{ marginTop: 0, height: 24 }}
-              position="end"
-              disableTypography><Icon color={theme.palette.greyText}>search</Icon>
-            </InputAdornment>
+          <InputAdornment
+            style={{ marginTop: 0, height: 24 }}
+            position="end"
+            disableTypography><Icon color={theme.palette.greyText}>search</Icon>
+          </InputAdornment>
         } : {},
         ...inputProps
       }}
@@ -241,7 +241,12 @@ Autocomplete.propTypes = {
   /**
    * Show search icon
    */
-  showSearchIcon: PropTypes.bool
+  showSearchIcon: PropTypes.bool,
+
+  /**
+   * App theme
+   */
+  theme: PropTypes.object
 }
 
 Autocomplete.defaultProps = {

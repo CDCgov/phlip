@@ -48,7 +48,9 @@ export const ValidationTable = props => {
         {allFlags.map((item, i) => {
           return Object.keys(item).length > 0 &&
             <Row
-              key={`flags-comments-${i}`} displayFlex style={{
+              key={`flags-comments-${i}`}
+              displayFlex
+              style={{
                 alignItems: 'center',
                 backgroundColor: 'white',
                 padding: 8,
@@ -60,7 +62,8 @@ export const ValidationTable = props => {
                   style={{ marginRight: 10 }}
                   initials={getInitials(item.raisedBy.firstName, item.raisedBy.lastName)}
                   userName={`${item.raisedBy.firstName} ${item.raisedBy.lastName}`}
-                  avatar={userImages[item.raisedBy.userId].avatar} />
+                  avatar={userImages[item.raisedBy.userId].avatar}
+                />
                 <Typography variant="caption">{`${item.raisedBy.firstName} ${item.raisedBy.lastName}`}</Typography>
               </Row>
               <Row displayFlex flex style={{ flexBasis: '70%', overflow: 'hidden' }}>
@@ -72,21 +75,25 @@ export const ValidationTable = props => {
                         tooltipText="Clear this flag"
                         id="clear-flag"
                         aria-label="Clear this flag"
-                        color={flagColors[item.type]}>{item.type === 3 ? 'report' : 'flag'}</IconButton>
+                        color={flagColors[item.type]}>{item.type === 3 ? 'report' : 'flag'}
+                      </IconButton>
                     </Column>
                     <Row displayFlex flex style={{ alignItems: 'center', overflow: 'hidden' }}>
                       <Typography variant="caption" style={{ fontWeight: 'bold' }}>
                         Reason for flag -<span>&nbsp;</span>
                       </Typography>
                       <ExpansionTextPanel
-                        textProps={{ type: 'caption' }} text={item.notes} dropdownIconProps={{
+                        textProps={{ type: 'caption' }}
+                        text={item.notes}
+                        dropdownIconProps={{
                           tooltipText: 'Expand notes',
                           id: 'expand-flag-notes',
                           'aria-label': 'Expand notes'
-                        }} />
+                        }}
+                      />
                     </Row>
                   </Row>}
-                {item.comment && item.type && <span style={{ paddingLeft: 30 }}></span>}
+                {item.comment && item.type && <span style={{ paddingLeft: 30 }} />}
                 {item.comment &&
                   <Row displayFlex flex style={{ alignItems: 'center', overflow: 'hidden' }}>
                     <Typography variant="caption" style={{ fontWeight: 'bold' }}>
@@ -109,6 +116,13 @@ export const ValidationTable = props => {
       </Column>
     </Container>
   )
+}
+
+ValidationTable.propTypes = {
+  mergedUserQuestions: PropTypes.object,
+  questionFlags: PropTypes.array,
+  onOpenAlert: PropTypes.func,
+  userImages: PropTypes.object
 }
 
 export default ValidationTable

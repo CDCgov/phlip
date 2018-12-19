@@ -26,7 +26,8 @@ export const FooterNavigate = ({ currentIndex, getNextQuestion, getPrevQuestion,
         <IconButton color="#767676" aria-label="Go to previous question">navigate_before</IconButton>
         <Typography variant="body2"><span style={{ ...styles, paddingLeft: 5, userSelect: 'none' }}>Previous question</span></Typography>
       </Row>}
-      {showNextButton && <Row displayFlex flex={currentIndex === 0} aria-label="Go to next question" style={{ cursor: 'pointer' }} onClick={() => getNextQuestion(currentIndex + 1)}>
+      {showNextButton &&
+      <Row displayFlex flex={currentIndex === 0} aria-label="Go to next question" style={{ cursor: 'pointer' }} onClick={() => getNextQuestion(currentIndex + 1)}>
         <Typography variant="body2">
           <span style={{ ...styles, paddingRight: 5, userSelect: 'none' }}>Next question</span>
         </Typography>
@@ -34,6 +35,14 @@ export const FooterNavigate = ({ currentIndex, getNextQuestion, getPrevQuestion,
       </Row>}
     </Row>
   )
+}
+
+FooterNavigate.propTypes = {
+  currentIndex: PropTypes.number,
+  getNextQuestion: PropTypes.func,
+  getPrevQuestion: PropTypes.func,
+  showNextButton: PropTypes.bool,
+  theme: PropTypes.object
 }
 
 export default withTheme()(FooterNavigate)

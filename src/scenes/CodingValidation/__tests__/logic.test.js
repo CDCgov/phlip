@@ -17,7 +17,7 @@ import {
 describe('CodingValidation logic', () => {
   let mock, history = {}
 
-  const mockReducer = (state, action) => state
+  const mockReducer = state => state
   const api = createApiHandler({ history }, projectApiInstance, apiCalls)
 
   beforeEach(() => {
@@ -89,7 +89,6 @@ describe('CodingValidation logic', () => {
               showPageLoader: false,
               mergedUserQuestions: {},
               schemeError: null,
-              mergedUserQuestions: {},
               scheme: {
                 byId: schemeById,
                 order: schemeOrder,

@@ -34,7 +34,6 @@ export const INITIAL_STATE = {
   isLoadingPage: false,
   questionChangeLoader: false,
   showPageLoader: false,
-  questionChangeLoader: false,
   isChangingQuestion: false,
   unsavedChanges: false,
   messageQueue: [],

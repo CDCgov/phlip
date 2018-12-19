@@ -24,11 +24,13 @@ export const PageHeader = props => {
       style={{ height: 36, minHeight: 36 }}>
       <FlexGrid container flex type="row" align="center">
         {!entryScene
-          ? <IconButton
-            iconSize={30}
-            color="black"
-            onClick={onBackButtonClick ? onBackButtonClick : () => history.goBack()}
-            aria-label="Go back">arrow_back</IconButton>
+          ?
+            <IconButton
+              iconSize={30}
+              color="black"
+              onClick={onBackButtonClick ? onBackButtonClick : () => history.goBack()}
+              aria-label="Go back">arrow_back
+            </IconButton>
           : <CircleIcon circleColor="error" iconColor="white" circleSize="24px" iconSize="16px">{icon}</CircleIcon>
         }
         <Typography variant="title" style={{ paddingRight: 10, paddingLeft: 5 }}>{pageTitle}</Typography>

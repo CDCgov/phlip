@@ -71,23 +71,19 @@ export class AddEditJurisdictions extends Component {
     errorContent: PropTypes.string
   }
 
+  constructor(props, context) {
+    super(props, context)
+  }
+
   state = {
     confirmDeleteAlertOpen: false,
     jurisdictionToDelete: {},
     deleteErrorAlertOpen: false
   }
 
-  constructor(props, context) {
-    super(props, context)
-  }
-
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.actions.getProjectJurisdictions(this.props.project.id)
     this.showJurisdictionLoader()
-  }
-
-  componentWillUnmount() {
-    this.props.actions.clearJurisdictions()
   }
 
   componentDidUpdate(prevProps) {
@@ -96,6 +92,10 @@ export class AddEditJurisdictions extends Component {
         deleteErrorAlertOpen: true
       })
     }
+  }
+
+  componentWillUnmount() {
+    this.props.actions.clearJurisdictions()
   }
 
   /**
@@ -216,7 +216,8 @@ export class AddEditJurisdictions extends Component {
             handleSearchValueChange: (event) => this.props.actions.updateSearchValue(event.target.value),
             placeholder: 'Search',
             style: { paddingRight: 10 }
-          }} />
+          }}
+        />
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
           <Alert actions={alertActions} open={this.state.confirmDeleteAlertOpen}>
@@ -228,7 +229,8 @@ export class AddEditJurisdictions extends Component {
           <ApiErrorAlert
             open={this.state.deleteErrorAlertOpen === true}
             content={this.props.deleteError}
-            onCloseAlert={this.dismissDeleteErrorAlert} />
+            onCloseAlert={this.dismissDeleteErrorAlert}
+          />
           <Container flex style={{ marginTop: 20 }}>
             <Column flex displayFlex style={{ overflowX: 'auto' }}>
               {this.props.error === true
@@ -239,7 +241,8 @@ export class AddEditJurisdictions extends Component {
                     project={this.props.project}
                     jurisdictions={this.props.visibleJurisdictions}
                     projectId={this.props.project.id}
-                    onDelete={this.confirmDelete} />}
+                    onDelete={this.confirmDelete}
+                  />}
             </Column>
           </Container>
         </ModalContent>
@@ -251,7 +254,8 @@ export class AddEditJurisdictions extends Component {
               type: 'button',
               otherProps: { 'aria-label': 'Close modal' }
             }
-          ]} />
+          ]}
+        />
       </Modal>
     )
   }

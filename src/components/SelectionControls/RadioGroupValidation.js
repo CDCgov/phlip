@@ -51,7 +51,8 @@ export const RadioGroupValidation = props => {
               htmlFor={choice.id}
               control={<Radio
                 classes={{ checked: classes.checked }}
-                inputProps={{ id: choice.id, 'aria-describedby': 'question_text' }} />}
+                inputProps={{ id: choice.id, 'aria-describedby': 'question_text' }}
+              />}
               disabled={disableAll}
               label={choice.text}
               aria-label={choice.text}
@@ -153,7 +154,15 @@ RadioGroupValidation.propTypes = {
   /**
    * Style classes object from @material-ui/core
    */
-  classes: PropTypes.object
+  classes: PropTypes.object,
+  /**
+   * answer choice id that has been selected for annotating
+   */
+  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * handles when a user enables / disables an answer choice for annotating
+   */
+  onToggleAnswerForAnno: PropTypes.func
 }
 
 RadioGroupValidation.defaultProps = {

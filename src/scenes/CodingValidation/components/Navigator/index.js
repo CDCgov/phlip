@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
 import Drawer from '@material-ui/core/Drawer'
-import Container, { Row } from 'components/Layout'
+import Container from 'components/Layout'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import List from 'react-virtualized/dist/commonjs/List'
 import navStyles from './nav-styles.scss'
@@ -48,7 +47,6 @@ export class Navigator extends Component {
     }
 
     let props = {
-      key: key,
       item: {
         ...item,
         ancestorSiblings,
@@ -89,7 +87,7 @@ export class Navigator extends Component {
       children = item.expanded ? children : []
     }
 
-    return [<QuestionRow {...props}>{itemEl}</QuestionRow>, ...children]
+    return [<QuestionRow key={key} {...props}>{itemEl}</QuestionRow>, ...children]
   }
 
   rowRenderer = params => {

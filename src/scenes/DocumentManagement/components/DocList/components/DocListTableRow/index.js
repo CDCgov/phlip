@@ -52,7 +52,15 @@ DocListTableRow.propTypes = {
   /**
    * Handles when a user clicks the checkbox cell for this document
    */
-  onSelectFile: PropTypes.func
+  onSelectFile: PropTypes.func,
+  /**
+   * project list
+   */
+  projectList: PropTypes.array,
+  /**
+   * jurisdiction list
+   */
+  jurisdictionList: PropTypes.array
 }
 
 // istanbul ignore next

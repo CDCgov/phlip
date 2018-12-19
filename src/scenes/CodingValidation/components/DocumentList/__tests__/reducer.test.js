@@ -179,10 +179,6 @@ describe('CodingValidation - DocumentList reducer', () => {
     }
 
     const currentState = getState({ documents })
-    const expectedState = {
-      _id: '1234',
-      name: 'document 1'
-    }
 
     test('should set state.openedDoc', () => {
       const state = reducer(currentState, action)

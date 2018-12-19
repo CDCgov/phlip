@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import navStyles from './nav-styles.scss'
@@ -70,7 +70,7 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
   })
 
   return (
-    <Fragment>
+    <>
       {scaffold}
       <div
         role="row"
@@ -80,17 +80,21 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
         aria-rowindex={item.treeIndex}>
         <span
           style={{ minWidth: 20, minHeight: 20, maxHeight: 20, maxWidth: 20, outline: 0 }}
-          tabIndex={-1}>{children}</span>
+          tabIndex={-1}>{children}
+        </span>
         <Typography tabIndex={-1} style={questionTextStyles} noWrap aria-label="Question number and text">
           {item.number && <span>{`${item.number}. `}</span>}
           {item.text}
         </Typography>
-        {item.questionType === 2 && <Icon
+        {item.questionType === 2 &&
+        <Icon
           size={12}
           aria-label="Question is of type cateogry"
           color={questionTextStyles.color}
-          style={{ paddingRight: 5 }}>filter_none</Icon>}
-        {item.hasOwnProperty('flags') && item.flags.length > 0 && <Icon
+          style={{ paddingRight: 5 }}>filter_none
+        </Icon>}
+        {item.hasOwnProperty('flags') && item.flags.length > 0 &&
+        <Icon
           aria-label="Question has a red flag"
           role="gridcell"
           color={questionTextStyles.color}
@@ -103,13 +107,15 @@ export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) 
           containerStyles={{ marginLeft: item.hasOwnProperty('flags') && item.flags.length > 0 ? 5 : 0 }}
           progress={item.completedProgress}
         />}
-        {(item.isAnswered || (item.hasOwnProperty('completedProgress') && item.completedProgress === 100)) && <Icon
+        {(item.isAnswered || (item.hasOwnProperty('completedProgress') && item.completedProgress === 100)) &&
+        <Icon
           aria-label="Question has been answered"
           role="gridcell"
           color="#38E37F"
-          size={19}>check</Icon>}
+          size={19}>check
+        </Icon>}
       </div>
-    </Fragment>
+    </>
   )
 }
 

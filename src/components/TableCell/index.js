@@ -32,5 +32,4 @@ TableCell.defaultProps = {
   padding: 'default'
 }
 
-
 export default TableCell

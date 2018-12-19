@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -13,7 +13,7 @@ import actions from './actions'
 import {
   TextLink, Icon, Button, Alert, Tooltip, ApiErrorView, ApiErrorAlert, PageLoader, withTracking, FlexGrid
 } from 'components'
-import Container, { Row, Column } from 'components/Layout'
+import Container, { Row } from 'components/Layout'
 import classNames from 'classnames'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
 
@@ -81,7 +81,14 @@ export class CodingValidation extends Component {
     isLoadingPage: PropTypes.bool,
     pageLoadingMessage: PropTypes.string,
     showPageLoader: PropTypes.bool,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    unsavedChanges: PropTypes.bool,
+    isChangingQuestion: PropTypes.bool,
+    selectedCategoryId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    history: PropTypes.object,
+    hasTouchedQuestion: PropTypes.bool,
+    classes: PropTypes.object,
+    objectExists: PropTypes.bool
   }
 
   constructor(props, context) {
@@ -470,30 +477,30 @@ export class CodingValidation extends Component {
    */
   onShowCodeView = () => (
     <>
-        <QuestionCard
-          page={this.props.page}
-          onChange={this.onAnswer}
-          onChangeTextAnswer={this.onChangeTextAnswer}
-          onChangeCategory={this.onChangeCategory}
-          onAnswer={this.onAnswer}
-          onClearAnswer={this.onClearAnswer}
-          onOpenAlert={this.onOpenApplyAllAlert}
-          onSaveFlag={this.onSaveFlag}
-          onSave={this.onSaveCodedQuestion}
-          onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
-          onToggleAnswerForAnno={this.onToggleAnswerForAnno}
-          currentIndex={this.props.currentIndex}
-          getNextQuestion={this.getNextQuestion}
-          getPrevQuestion={this.getPrevQuestion}
-          totalLength={this.props.questionOrder.length}
-          showNextButton={this.props.showNextButton}
-        />
-        <FlexGrid style={{ width: 25 }} />
-        <DocumentList
-          projectId={this.props.projectId}
-          jurisdictionId={this.props.jurisdiction.jurisdictionId}
-          page={this.props.page}
-        />
+      <QuestionCard
+        page={this.props.page}
+        onChange={this.onAnswer}
+        onChangeTextAnswer={this.onChangeTextAnswer}
+        onChangeCategory={this.onChangeCategory}
+        onAnswer={this.onAnswer}
+        onClearAnswer={this.onClearAnswer}
+        onOpenAlert={this.onOpenApplyAllAlert}
+        onSaveFlag={this.onSaveFlag}
+        onSave={this.onSaveCodedQuestion}
+        onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
+        onToggleAnswerForAnno={this.onToggleAnswerForAnno}
+        currentIndex={this.props.currentIndex}
+        getNextQuestion={this.getNextQuestion}
+        getPrevQuestion={this.getPrevQuestion}
+        totalLength={this.props.questionOrder.length}
+        showNextButton={this.props.showNextButton}
+      />
+      <FlexGrid style={{ width: 25 }} />
+      <DocumentList
+        projectId={this.props.projectId}
+        jurisdictionId={this.props.jurisdiction.jurisdictionId}
+        page={this.props.page}
+      />
       </>
   )
 
@@ -673,7 +680,8 @@ export class CodingValidation extends Component {
           />
           <FlexGrid container type="row" flex style={{ backgroundColor: '#f5f5f5' }}>
             <FlexGrid container type="row" flex style={{ overflow: 'auto' }}>
-              {!this.props.showPageLoader && <FlexGrid>
+              {!this.props.showPageLoader &&
+              <FlexGrid>
                 {this.props.isSchemeEmpty !== null &&
                 (this.props.jurisdiction !== null && this.props.questionOrder.length !== 0) &&
                 <Tooltip placement="right" text="Toggle Navigator" id="toggle-navigator">

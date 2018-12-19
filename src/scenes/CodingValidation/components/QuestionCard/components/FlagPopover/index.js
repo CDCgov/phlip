@@ -23,7 +23,6 @@ const getFlagText = (color, text, disabled) => (
 )
 
 const checkForRedFlag = (questionFlags, user) => questionFlags.filter(flag => flag.raisedBy.userId === user.id)
-const redFlagColor = '#D50000'
 
 export class FlagPopover extends Component {
   static defaultProps = {
@@ -37,7 +36,9 @@ export class FlagPopover extends Component {
   static propTypes = {
     userFlag: PropTypes.object,
     questionFlags: PropTypes.array,
-    onSaveFlag: PropTypes.func
+    onSaveFlag: PropTypes.func,
+    user: PropTypes.object,
+    disableAll: PropTypes.bool
   }
 
   constructor(props, context) {
@@ -72,7 +73,7 @@ export class FlagPopover extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       updatedFlag: { ...nextProps.userFlag },
       questionFlags: [...nextProps.questionFlags],
@@ -217,7 +218,8 @@ export class FlagPopover extends Component {
                   [styles.icon]: this.props.questionFlags.length === 0,
                   [styles.stopIconFlag]: this.props.questionFlags.length > 0
                 })
-              } />,
+              }
+            />,
             style: { paddingRight: 15, paddingLeft: 15, maxHeight: 500 },
             tooltip: 'Stop coding this question',
             id: 'stop-coding-question'
@@ -241,7 +243,8 @@ export class FlagPopover extends Component {
                   <TableRow>
                     <TableCell padding="checkbox" style={{ maxWidth: 150, width: 150 }}>Raised By</TableCell>
                     <TableCell
-                      padding="checkbox">Notes</TableCell>
+                      padding="checkbox">Notes
+                    </TableCell>
                     {this.state.questionFlags[0].raisedBy.userId === this.props.user.id &&
                     <TableCell padding="checkbox" style={{ width: 48, paddingRight: 12 }}>Edit</TableCell>}
                   </TableRow>
@@ -250,10 +253,12 @@ export class FlagPopover extends Component {
                   {this.state.questionFlags.map((flag, index) => (
                     <TableRow key={`red-flag-${index}`}>
                       <TableCell
-                        padding="checkbox" style={{
+                        padding="checkbox"
+                        style={{
                         maxWidth: 150,
                         width: 150
-                      }}>{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}</TableCell>
+                      }}>{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}
+                      </TableCell>
                       <TableCell
                         padding="checkbox"
                         style={{ maxWidth: 300, wordWrap: 'break-word', whiteSpace: 'pre-wrap' }}>
@@ -261,11 +266,13 @@ export class FlagPopover extends Component {
                       </TableCell>
                       {flag.raisedBy.userId === this.props.user.id &&
                       <TableCell padding="checkbox" style={{ width: 48, paddingRight: 12 }}>
-                        <IconButton onClick={this.toggleEditMode} color="#5f6060">edit</IconButton></TableCell>}
+                        <IconButton onClick={this.toggleEditMode} color="#5f6060">edit</IconButton>
+                      </TableCell>}
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table></div>}
+              </Table>
+            </div>}
             {this.state.inEditMode &&
             <form onSubmit={this.onSaveRedPopover} style={{ alignSelf: 'stretch', flex: 1, width: 580 }}>
               <Row style={{ padding: 16 }}>
@@ -281,7 +288,8 @@ export class FlagPopover extends Component {
                   helperText={this.state.helperText}
                   placeholder="Enter Notes"
                   multiline={false}
-                  type="text" />
+                  type="text"
+                />
               </Row>
             </form>}
             <Row displayFlex style={{ alignSelf: 'flex-end', padding: 16 }}>
@@ -289,14 +297,16 @@ export class FlagPopover extends Component {
                 onClick={this.onCloseRedPopover}
                 raised={false}
                 color="accent"
-                value={this.state.inEditMode ? 'Cancel' : 'Close'} />
+                value={this.state.inEditMode ? 'Cancel' : 'Close'}
+              />
               {this.state.inEditMode &&
               <Button
                 type="submit"
                 onClick={this.onSaveRedPopover}
                 raised={false}
                 color="accent"
-                value="Save" />}
+                value="Save"
+              />}
             </Row>
           </Container>
         </Popover>
@@ -309,7 +319,8 @@ export class FlagPopover extends Component {
                 [styles.icon]: this.props.userFlag.type === 0,
                 [styles.greenFlagIcon]: this.props.userFlag.type === 1,
                 [styles.yellowFlagIcon]: this.props.userFlag.type === 2
-              })} />,
+              })}
+            />,
             color: this.props.userFlag.type !== 0 ? this.userFlagColors[this.props.userFlag.type].color : '#757575',
             tooltip: 'Flag this question',
             id: 'flag-question'
@@ -325,7 +336,8 @@ export class FlagPopover extends Component {
                 error={this.state.choiceHelperText !== ''}
                 label="Flag Type"
                 required
-                helperText={this.state.choiceHelperText} />
+                helperText={this.state.choiceHelperText}
+              />
             </Row>
             <Row style={{ padding: 16 }}>
               <SimpleInput
@@ -341,7 +353,8 @@ export class FlagPopover extends Component {
                 placeholder="Enter Notes"
                 multiline={false}
                 required
-                type="text" />
+                type="text"
+              />
             </Row>
             <Row displayFlex style={{ justifyContent: 'flex-end', padding: 16 }}>
               <Button type="button" onClick={this.onCloseOtherPopover} raised={false} color="accent" value="Cancel" />
@@ -351,7 +364,8 @@ export class FlagPopover extends Component {
                 raised={false}
                 color="accent"
                 disabled={this.state.questionFlags.length > 0 || this.props.disableAll}
-                value="Save" />
+                value="Save"
+              />
             </Row>
           </form>
         </Popover>

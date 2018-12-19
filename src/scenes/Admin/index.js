@@ -41,7 +41,7 @@ export class Admin extends Component {
     super(props, context)
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.actions.getUsersRequest()
   }
 
@@ -59,13 +59,14 @@ export class Admin extends Component {
             state: {},
             props: { 'aria-label': 'Add new user' },
             show: true
-          }} />
+          }}
+        />
         <Divider />
         <UserList
           users={this.props.users}
           sortBy={this.props.sortBy}
           direction={this.props.direction}
-          handleRequestSort={property => event => this.props.actions.sortUsers(property)}
+          handleRequestSort={property => () => this.props.actions.sortUsers(property)}
         />
         <Route path="/admin/new/user" component={AddEditUser} />
         <Route path="/admin/edit/user/:id" component={AddEditUser} />

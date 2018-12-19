@@ -1,6 +1,5 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-//import Typography from '@material-ui/core/Typography'
 import { withRouter } from 'react-router-dom'
 import { withTheme } from '@material-ui/core/styles'
 import { ClipboardCheckOutline } from 'mdi-material-ui'
@@ -68,7 +67,13 @@ Header.defaultProps = {}
 Header.propTypes = {
   projectName: PropTypes.string,
   projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  jurisdictionList: PropTypes.arrayOf(PropTypes.object)
+  jurisdictionList: PropTypes.arrayOf(PropTypes.object),
+  empty: PropTypes.bool,
+  onJurisdictionChange: PropTypes.func,
+  currentJurisdiction: PropTypes.object,
+  onGoBack: PropTypes.func,
+  pageTitle: PropTypes.string,
+  theme: PropTypes.object
 }
 
 export default withRouter(withTheme()(Header))

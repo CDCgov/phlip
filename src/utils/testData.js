@@ -7,7 +7,7 @@ export const schemeFromApi = [
     parentId: 0,
     positionInParent: 0,
     isCategoryQuestion: false,
-    possibleAnswers: [{ id: 123, text: 'answer 1', id: 234, text: 'answer 2' }]
+    possibleAnswers: [{ id: 123, text: 'answer 1' }, { id: 234, text: 'answer 2' }]
   },
   {
     text: 'la la la',
@@ -68,7 +68,7 @@ export const schemeById = {
     isCategoryQuestion: false,
     number: '1',
     positionInParent: 0,
-    possibleAnswers: [{ id: 123, text: 'answer 1', id: 234, text: 'answer 2' }]
+    possibleAnswers: [{ id: 123, text: 'answer 1' }, { id: 234, text: 'answer 2' }]
   },
   2: {
     text: 'la la la',
@@ -140,7 +140,7 @@ export const schemeTree = [
     indent: 0,
     number: '1',
     hint: '',
-    possibleAnswers: [{ id: 123, text: 'answer 1', id: 234, text: 'answer 2' }]
+    possibleAnswers: [{ id: 123, text: 'answer 1' }, { id: 234, text: 'answer 2' }]
   },
   {
     text: 'la la la',

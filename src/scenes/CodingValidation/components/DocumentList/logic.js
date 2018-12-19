@@ -3,7 +3,7 @@ import { types } from './actions'
 
 const getApprovedDocumentsLogic = createLogic({
   type: [types.GET_APPROVED_DOCUMENTS_REQUEST],
-  async process({ getState, docApi, api, action }, dispatch, done) {
+  async process({ docApi, action }, dispatch, done) {
     try {
       const docs = await docApi.getDocumentsByProjectJurisdiction({},
         {},

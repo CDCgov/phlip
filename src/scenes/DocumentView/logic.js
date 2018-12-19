@@ -30,9 +30,8 @@ const getDocumentContentsLogic = createLogic({
 const updateDocLogic = createLogic({
   type: types.UPDATE_DOC_REQUEST,
   async process({ docApi, action, getState }, dispatch, done) {
-    let fd = { files: [] }, md = {}
+    let md = {}
     const selectedDoc = getState().scenes.docView.document
-    const { content, ...otherProps } = selectedDoc
 
     md.status = selectedDoc.status
     md.effectiveDate = selectedDoc.effectiveDate !== undefined

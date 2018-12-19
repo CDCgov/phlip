@@ -9,7 +9,7 @@ import { docListPayload } from 'utils/testData'
 describe('CodingValidation - DocumentList logic', () => {
   let mock
 
-  const mockReducer = (state, action) => state
+  const mockReducer = state => state
   const history = {}
   const docApi = createApiHandler({ history }, docApiInstance, calls)
 

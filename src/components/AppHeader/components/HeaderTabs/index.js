@@ -47,7 +47,8 @@ HeaderTabs.propTypes = {
     label: PropTypes.string,
     icon: PropTypes.string,
     active: PropTypes.bool
-  }))
+  })),
+  onTabChange: PropTypes.func
 }
 
 export default HeaderTabs

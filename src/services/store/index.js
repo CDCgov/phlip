@@ -7,11 +7,9 @@ import createApiHandler, { projectApiInstance, docApiInstance } from '../api'
 import calls from '../api/calls'
 import docCalls from '../api/docManageCalls'
 import createBrowserHistory from 'history/createBrowserHistory'
-import { persistReducer } from 'redux-persist'
-import storage from 'redux-persist/lib/storage/session'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-let persistor, history, api, docApi, persistRootReducer
+let persistor, history, api, docApi
 
 /**
  * Redux store initialization
@@ -20,8 +18,6 @@ const configureStore = () => {
   history = createBrowserHistory()
   api = createApiHandler({ history }, projectApiInstance, calls)
   docApi = createApiHandler({ history }, docApiInstance, docCalls)
-
-  persistRootReducer = persistReducer({ storage, key: 'root' }, appReducer)
 
   const store = createStore(
     appReducer,
