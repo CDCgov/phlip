@@ -12,17 +12,23 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       }
     }
   >
-    <WithStyles(CheckboxLabel)
-      input={
-        Object {
-          "onChange": [Function],
-          "value": false,
-        }
-      }
-    />
+    <WithTheme(Icon)
+      color="#949494"
+    >
+      <Icon />
+    </WithTheme(Icon)>
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"
+    style={
+      Object {
+        "maxWidth": 250,
+        "overflow": "hidden",
+        "textOverflow": "ellipsis",
+        "whiteSpace": "nowrap",
+        "width": 250,
+      }
+    }
   >
     <WithTheme(TextLink)
       to={
@@ -54,24 +60,100 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"
+    style={
+      Object {
+        "maxWidth": 250,
+        "overflow": "hidden",
+        "textOverflow": "ellipsis",
+        "whiteSpace": "nowrap",
+        "width": 250,
+      }
+    }
   >
+    <span
+      style={
+        Object {
+          "fontWeight": "bold",
+        }
+      }
+    >
+      Uploaded By:
+    </span>
+     
     Test
      
     User
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"
+    style={
+      Object {
+        "maxWidth": 250,
+        "overflow": "hidden",
+        "textOverflow": "ellipsis",
+        "whiteSpace": "nowrap",
+        "width": 250,
+      }
+    }
   >
-    12/31/1999, 7:00 PM
+    <span
+      style={
+        Object {
+          "fontWeight": "bold",
+        }
+      }
+    >
+      Uploaded Date:
+    </span>
+     
+    1/1/2000
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"
+    style={
+      Object {
+        "maxWidth": 250,
+        "overflow": "hidden",
+        "textOverflow": "ellipsis",
+        "whiteSpace": "nowrap",
+        "width": 250,
+      }
+    }
   >
+    <span
+      style={
+        Object {
+          "fontWeight": "bold",
+        }
+      }
+    >
+      Projects:
+    </span>
+     
     P1, P2
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"
+    style={
+      Object {
+        "maxWidth": 250,
+        "overflow": "hidden",
+        "textOverflow": "ellipsis",
+        "whiteSpace": "nowrap",
+        "width": 250,
+      }
+    }
   >
+    <span
+      style={
+        Object {
+          "fontWeight": "bold",
+        }
+      }
+    >
+      Jurisdictions:
+    </span>
+     
     J1, J2
   </WithStyles(TableCell)>
 </WithStyles(TableRow)>

@@ -1,0 +1,510 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
+<Fragment>
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={true}
+    flex={false}
+    justify="stretch"
+    padding={0}
+    raised={true}
+    style={
+      Object {
+        "marginBottom": 25,
+        "minWidth": "30%",
+        "overflow": "hidden",
+      }
+    }
+    type="column"
+  >
+    <WithStyles(Typography)
+      style={
+        Object {
+          "color": "black",
+          "padding": 10,
+        }
+      }
+      variant="body2"
+    >
+      Document Information
+    </WithStyles(Typography)>
+    <WithStyles(Divider) />
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={true}
+      flex={false}
+      justify="stretch"
+      padding={15}
+      raised={false}
+      style={Object {}}
+      type="column"
+    >
+      <FlexGrid
+        align="center"
+        circular={false}
+        container={true}
+        flex={false}
+        justify="stretch"
+        padding={0}
+        raised={false}
+        style={
+          Object {
+            "marginBottom": 25,
+          }
+        }
+        type="row"
+      >
+        <WithTheme(Icon)
+          color="#949494"
+        >
+          <Icon />
+        </WithTheme(Icon)>
+        <WithStyles(Typography)
+          style={
+            Object {
+              "padding": "0 5px",
+            }
+          }
+          variant="body1"
+        >
+          Status:
+        </WithStyles(Typography)>
+        <WithStyles(Dropdown)
+          disabled={true}
+          formControlStyle={
+            Object {
+              "minWidth": 180,
+            }
+          }
+          id="selectedDocStatus"
+          input={
+            Object {
+              "onChange": [Function],
+              "value": "Draft",
+            }
+          }
+          meta={Object {}}
+          name="selecteDocStatus"
+          options={
+            Array [
+              Object {
+                "label": "Draft",
+                "value": "Draft",
+              },
+              Object {
+                "label": "Approved",
+                "value": "Approved",
+              },
+            ]
+          }
+        />
+      </FlexGrid>
+      <FlexGrid
+        align="center"
+        circular={false}
+        container={true}
+        flex={false}
+        justify="stretch"
+        padding={0}
+        raised={false}
+        style={
+          Object {
+            "marginBottom": 25,
+          }
+        }
+        type="row"
+      >
+        <WithTheme(Icon)
+          color="#949494"
+        >
+          <Icon />
+        </WithTheme(Icon)>
+        <WithStyles(Typography)
+          style={
+            Object {
+              "padding": "0 5px",
+            }
+          }
+          variant="body1"
+        >
+          Citation:
+        </WithStyles(Typography)>
+        <WithStyles(Typography) />
+      </FlexGrid>
+      <FlexGrid
+        align="center"
+        circular={false}
+        container={true}
+        flex={false}
+        justify="stretch"
+        padding={0}
+        raised={false}
+        style={
+          Object {
+            "marginBottom": 25,
+          }
+        }
+        type="row"
+      >
+        <WithTheme(Icon)
+          color="#949494"
+        >
+          <Icon />
+        </WithTheme(Icon)>
+        <WithStyles(Typography)
+          style={
+            Object {
+              "padding": "0 5px",
+            }
+          }
+          variant="body1"
+        >
+          Effective Date:
+        </WithStyles(Typography)>
+        <WithStyles(Typography)>
+          Invalid date
+        </WithStyles(Typography)>
+      </FlexGrid>
+      <FlexGrid
+        align="center"
+        circular={false}
+        container={true}
+        flex={false}
+        justify="stretch"
+        padding={0}
+        raised={false}
+        style={
+          Object {
+            "marginBottom": 30,
+          }
+        }
+        type="row"
+      >
+        <WithTheme(Icon)
+          color="#949494"
+        >
+          <Icon />
+        </WithTheme(Icon)>
+        <WithStyles(Typography)
+          style={
+            Object {
+              "padding": "0 5px",
+            }
+          }
+          variant="body1"
+        >
+          Trung
+        </WithStyles(Typography)>
+      </FlexGrid>
+      <FlexGrid
+        align="center"
+        circular={false}
+        container={true}
+        flex={false}
+        justify="space-between"
+        padding={0}
+        raised={false}
+        style={Object {}}
+        type="row"
+      >
+        <WithStyles(Typography)
+          color="secondary"
+          style={
+            Object {
+              "cursor": "pointer",
+            }
+          }
+        >
+          Delete Document
+        </WithStyles(Typography)>
+        <WithTheme(Button)
+          color="accent"
+          onClick={[Function]}
+          size="small"
+          style={
+            Object {
+              "padding": "0 15px",
+            }
+          }
+          value="Edit"
+        />
+      </FlexGrid>
+    </FlexGrid>
+  </FlexGrid>
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={true}
+    flex={true}
+    justify="stretch"
+    padding={0}
+    raised={true}
+    style={
+      Object {
+        "height": "33%",
+        "marginBottom": 25,
+        "minWidth": "30%",
+        "overflow": "hidden",
+      }
+    }
+    type="column"
+  >
+    <FlexGrid
+      align="center"
+      circular={false}
+      container={true}
+      flex={false}
+      justify="space-between"
+      padding={10}
+      raised={false}
+      style={Object {}}
+      type="row"
+    >
+      <WithStyles(Typography)
+        style={
+          Object {
+            "color": "black",
+          }
+        }
+        variant="body2"
+      >
+        Projects
+      </WithStyles(Typography)>
+      <WithTheme(Button)
+        aria-label="Add jurisdiction to document"
+        onClick={[Function]}
+        style={
+          Object {
+            "backgroundColor": "white",
+            "color": "black",
+          }
+        }
+        value="Add"
+      />
+    </FlexGrid>
+    <WithStyles(Divider) />
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={false}
+      flex={false}
+      justify="stretch"
+      padding={10}
+      raised={false}
+      style={
+        Object {
+          "overflow": "auto",
+        }
+      }
+      type="row"
+    >
+      <WithStyles(Typography)
+        key="project-0"
+        style={
+          Object {
+            "backgroundColor": "#f9f9f9",
+            "padding": 8,
+          }
+        }
+      >
+        Project1
+      </WithStyles(Typography)>
+      <WithStyles(Typography)
+        key="project-1"
+        style={
+          Object {
+            "backgroundColor": "white",
+            "padding": 8,
+          }
+        }
+      >
+        Project2
+      </WithStyles(Typography)>
+    </FlexGrid>
+  </FlexGrid>
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={true}
+    flex={true}
+    justify="stretch"
+    padding={0}
+    raised={true}
+    style={
+      Object {
+        "height": "33%",
+        "minWidth": "30%",
+        "overflow": "hidden",
+      }
+    }
+    type="column"
+  >
+    <FlexGrid
+      align="center"
+      circular={false}
+      container={true}
+      flex={false}
+      justify="space-between"
+      padding={10}
+      raised={false}
+      style={Object {}}
+      type="row"
+    >
+      <WithStyles(Typography)
+        style={
+          Object {
+            "color": "black",
+          }
+        }
+        variant="body2"
+      >
+        Jurisdictions
+      </WithStyles(Typography)>
+      <WithTheme(Button)
+        aria-label="Add jurisdiction to document"
+        onClick={[Function]}
+        style={
+          Object {
+            "backgroundColor": "white",
+            "color": "black",
+          }
+        }
+        value="Add"
+      />
+    </FlexGrid>
+    <WithStyles(Divider) />
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={false}
+      flex={true}
+      justify="stretch"
+      padding={10}
+      raised={false}
+      style={
+        Object {
+          "height": "100%",
+          "overflow": "auto",
+        }
+      }
+      type="row"
+    >
+      <WithStyles(Typography)
+        key="jurisdiction-0"
+        style={
+          Object {
+            "backgroundColor": "#f9f9f9",
+            "padding": 8,
+          }
+        }
+      >
+        Georgia
+      </WithStyles(Typography)>
+      <WithStyles(Typography)
+        key="jurisdiction-1"
+        style={
+          Object {
+            "backgroundColor": "white",
+            "padding": 8,
+          }
+        }
+      >
+        Alabama
+      </WithStyles(Typography)>
+    </FlexGrid>
+    <WithStyles(Modal)
+      hideOverflow={false}
+      maxWidth="sm"
+      onClose={[Function]}
+      open={false}
+    >
+      <ModalTitle
+        title="Assign Project"
+      />
+      <WithStyles(Divider) />
+      <ModalContent
+        style={
+          Object {
+            "display": "flex",
+            "flexDirection": "column",
+            "height": 500,
+            "paddingTop": 24,
+            "width": 500,
+          }
+        }
+      >
+        <FlexGrid
+          align="center"
+          circular={false}
+          container={true}
+          flex={false}
+          justify="space-between"
+          padding={10}
+          raised={false}
+          style={Object {}}
+          type="row"
+        >
+          <ProJurSearch
+            jurisdictionSuggestions={
+              Array [
+                Object {
+                  "id": 1,
+                },
+                Object {
+                  "id": 2,
+                },
+                Object {
+                  "id": 3,
+                },
+              ]
+            }
+            onClearSuggestions={[Function]}
+            onGetSuggestions={[Function]}
+            onSearchValueChange={[Function]}
+            onSuggestionSelected={[Function]}
+            projectSuggestions={
+              Array [
+                Object {
+                  "id": 4,
+                },
+                Object {
+                  "id": 5,
+                },
+              ]
+            }
+            showJurSearch={false}
+            showProjectError={false}
+          />
+        </FlexGrid>
+      </ModalContent>
+      <WithStyles(Divider) />
+      <WithStyles(ModalActions)
+        actions={
+          Array [
+            Object {
+              "onClick": [Function],
+              "otherProps": Object {
+                "aria-label": "Close modal",
+              },
+              "type": "button",
+              "value": "Cancel",
+            },
+            Object {
+              "disabled": undefined,
+              "onClick": [Function],
+              "otherProps": Object {
+                "aria-label": "Update",
+              },
+              "type": "button",
+              "value": "Update",
+            },
+          ]
+        }
+      />
+    </WithStyles(Modal)>
+  </FlexGrid>
+</Fragment>
+`;

@@ -81,7 +81,7 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
       }
     }
   >
-    Assigned to projects
+    Projects
   </TableCell>
   <TableCell
     id="doc-jurisdictions"
@@ -94,7 +94,7 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
       }
     }
   >
-    Assigned to jurisdictions
+    Jurisdictions
   </TableCell>
 </TableRow>
 `;

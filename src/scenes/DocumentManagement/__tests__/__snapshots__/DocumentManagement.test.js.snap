@@ -12,27 +12,101 @@ exports[`Document Management scene should render correctly 1`] = `
   style={Object {}}
   type="column"
 >
-  <withRouter(WithTheme(PageHeader))
-    entryScene={true}
-    icon="description"
-    otherButton={
-      Object {
-        "isLink": true,
-        "path": "/docs/upload",
-        "props": Object {
-          "aria-label": "Upload New Documents",
-        },
-        "show": true,
-        "state": Object {
-          "modal": true,
-        },
-        "text": "+ Upload New",
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={true}
+    flex={false}
+    justify="space-between"
+    padding={0}
+    raised={false}
+    style={Object {}}
+    type="row"
+  >
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={false}
+      flex={false}
+      justify="stretch"
+      padding="20px"
+      raised={false}
+      style={Object {}}
+      type="column"
+    >
+      <withRouter(WithTheme(PageHeader))
+        entryScene={true}
+        icon="description"
+        otherButton={
+          Object {
+            "isLink": true,
+            "path": "/docs/upload",
+            "props": Object {
+              "aria-label": "Upload New Documents",
+            },
+            "show": true,
+            "state": Object {
+              "modal": true,
+            },
+            "text": "+ Upload New",
+          }
+        }
+        pageTitle="Document Management"
+        projectName=""
+        protocolButton={false}
+      />
+    </FlexGrid>
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={false}
+      flex={true}
+      justify="stretch"
+      padding={0}
+      raised={false}
+      style={
+        Object {
+          "textAlign": "center",
+        }
       }
-    }
-    pageTitle="Document Management"
-    projectName=""
-    protocolButton={false}
-  />
+      type="column"
+    />
+    <FlexGrid
+      align="flex-end"
+      circular={false}
+      container={false}
+      flex={true}
+      justify="stretch"
+      padding={0}
+      raised={false}
+      style={
+        Object {
+          "marginLeft": "auto",
+          "width": "30%",
+        }
+      }
+      type="column"
+    >
+      <SearchBox
+        docNameSearchValue=""
+        onClearSuggestions={[Function]}
+        onDocNameSearchChange={[Function]}
+        onGetSuggestions={[Function]}
+        onSearchCancel={[Function]}
+        onSearchDocs={[Function]}
+        onSearchReset={[Function]}
+        onSearchSubmit={[Function]}
+        onSearchValueChange={[Function]}
+        onShowSearchBox={[Function]}
+        onSuggestionSelected={[Function]}
+        onUploadByChange={[Function]}
+        onUploadedDateChange={[Function]}
+        showSearchBox={false}
+        uploadedBySearchValue=""
+        uploadedDateSearchValue=""
+      />
+    </FlexGrid>
+  </FlexGrid>
   <FlexGrid
     align="stretch"
     circular={false}
@@ -44,13 +118,6 @@ exports[`Document Management scene should render correctly 1`] = `
     style={Object {}}
     type="column"
   >
-    <Search
-      onClearSuggestions={[Function]}
-      onGetSuggestions={[Function]}
-      onSearchDocs={[Function]}
-      onSearchValueChange={[Function]}
-      onSuggestionSelected={[Function]}
-    />
     <DocList
       allSelected={false}
       docCount={0}

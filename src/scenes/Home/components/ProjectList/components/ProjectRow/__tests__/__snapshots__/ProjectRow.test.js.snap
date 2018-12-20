@@ -57,7 +57,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     key="1-dateLastEdited"
     padding="checkbox"
   >
-    10/9/2012, 8:00 PM
+    10/10/2012, 12:00 AM
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     id="1-lastEditedBy"

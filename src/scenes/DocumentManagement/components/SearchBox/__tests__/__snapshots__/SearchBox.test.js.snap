@@ -1,0 +1,84 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DocumentManagement - SearchBox should render correctly 1`] = `
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={true}
+  flex={false}
+  justify="stretch"
+  padding={0}
+  raised={true}
+  style={
+    Object {
+      "position": "absolute",
+      "width": "45%",
+    }
+  }
+  type="column"
+>
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={false}
+    flex={false}
+    justify="stretch"
+    padding={0}
+    raised={false}
+    style={
+      Object {
+        "border": "1px solid #949494",
+        "borderRadius": "5px",
+        "display": "flex",
+        "width": "100%",
+      }
+    }
+    type="column"
+  >
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={false}
+      flex={false}
+      justify="stretch"
+      padding={0}
+      raised={false}
+      style={
+        Object {
+          "lineHeight": "50px",
+          "width": "95%",
+        }
+      }
+      type="column"
+    >
+      <WithTheme(SearchBar)
+        fullWidth={true}
+        placeholder="Search"
+        searchIcon="search"
+        style={
+          Object {
+            "lineHeight": 30,
+            "marginRight": 15,
+            "verticalAlign": "middle",
+          }
+        }
+      />
+    </FlexGrid>
+    <WithStyles(IconButton)
+      style={
+        Object {
+          "alignment": "baseline",
+          "background": "transparent",
+          "border": "none",
+        }
+      }
+    >
+      <WithTheme(Icon)
+        size={30}
+      >
+        arrow_drop_down
+      </WithTheme(Icon)>
+    </WithStyles(IconButton)>
+  </FlexGrid>
+</FlexGrid>
+`;
