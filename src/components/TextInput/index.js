@@ -4,7 +4,6 @@ import Input from '@material-ui/core/Input'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormControl from '@material-ui/core/FormControl'
 import FormHelperText from '@material-ui/core/FormHelperText'
-import { withStyles } from '@material-ui/core/styles'
 
 /**
  * Text field input with form control wrapper, set up for use in redux-form
@@ -12,7 +11,7 @@ import { withStyles } from '@material-ui/core/styles'
 export const TextInput = props => {
   const {
     label, type, input, disabled, multiline, shrinkLabel, required,
-    classes, meta: { active, touched, error, warning },
+    meta: { active, touched, error, warning },
     ...custom
   } = props
 

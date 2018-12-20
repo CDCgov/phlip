@@ -25,6 +25,22 @@ const canDrop = (node, nextParent, prevParent, outline, questions) => {
 }
 
 export class Scheme extends Component {
+  static propTypes = {
+    questions: PropTypes.array,
+    handleQuestionTreeChange: PropTypes.func,
+    handleHoverOnQuestion: PropTypes.func,
+    handleQuestionNodeMoveRequest: PropTypes.func,
+    enableHover: PropTypes.func,
+    disableHover: PropTypes.func,
+    outline: PropTypes.object,
+    flatQuestions: PropTypes.array,
+    handleQuestionNodeMove: PropTypes.func,
+    projectId: PropTypes.string,
+    lockedByCurrentUser: PropTypes.bool,
+    hasLock: PropTypes.bool,
+    handleDeleteQuestion: PropTypes.func
+  }
+
   render() {
     const {
       questions, flatQuestions, handleQuestionTreeChange, handleQuestionNodeMove,
@@ -38,7 +54,7 @@ export class Scheme extends Component {
           treeNodeRenderer: TreeNode,
           scaffoldBlockPxWidth: 100,
           slideRegionSize: 50,
-          rowHeight: 75,
+          rowHeight: 75
         }}
         treeData={questions}
         onChange={handleQuestionTreeChange}
@@ -48,7 +64,7 @@ export class Scheme extends Component {
           overscanRowCount: 10,
           containerRole: 'list'
         }}
-        generateNodeProps={({ node, path }) => {
+        generateNodeProps={() => {
           return {
             projectId: projectId,
             canModify: hasLock && lockedByCurrentUser === true,
@@ -61,19 +77,6 @@ export class Scheme extends Component {
       />
     )
   }
-}
-
-//export const Scheme = props => {
-//}
-
-Scheme.propTypes = {
-  questions: PropTypes.array,
-  handleQuestionTreeChange: PropTypes.func,
-  handleHoverOnQuestion: PropTypes.func,
-  handleQuestionNodeMoveRequest: PropTypes.func,
-  enableHover: PropTypes.func,
-  disableHover: PropTypes.func,
-  outline: PropTypes.object
 }
 
 export default Scheme

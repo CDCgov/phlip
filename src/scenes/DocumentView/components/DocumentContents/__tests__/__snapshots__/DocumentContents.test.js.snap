@@ -54,13 +54,5 @@ exports[`DocumentView - DocumentContents should render correctly 1`] = `
       Test file
     </WithStyles(Typography)>
   </FlexGrid>
-  <PDFViewer
-    document={
-      Object {
-        "content": Object {},
-        "name": "Test file",
-      }
-    }
-  />
 </FlexGrid>
 `;

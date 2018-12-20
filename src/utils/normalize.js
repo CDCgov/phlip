@@ -14,12 +14,13 @@ export const mapArray = (arr, key = 'id') => arr.map(p => p[key])
  *
  * @param {Array} arr
  * @param {String} key
+ * @param {Object} otherProps
  * @returns {Object}
  */
-export const arrayToObject = (arr, key = 'id') => ({
+export const arrayToObject = (arr, key = 'id', otherProps = {}) => ({
   ...arr.reduce((obj, item) => ({
     ...obj,
-    [item[key]]: item
+    [item[key]]: { ...item, ...otherProps }
   }), {})
 })
 

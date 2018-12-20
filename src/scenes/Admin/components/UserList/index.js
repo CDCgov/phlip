@@ -35,6 +35,3 @@ UserList.propTypes = {
 
 export default UserList
 
-
-
-

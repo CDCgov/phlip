@@ -1,6 +1,5 @@
 import { createMockStore } from 'redux-logic-test'
 import MockAdapter from 'axios-mock-adapter'
-import axios from 'axios'
 import reducer from '../reducer'
 import logic from '../logic'
 import * as types from '../actionTypes'

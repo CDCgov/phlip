@@ -65,7 +65,7 @@ const updatePositionInParentLogic = createLogic({
  */
 const updateIsCategoryQuestionLogic = createLogic({
   type: types.ADD_CHILD_QUESTION_REQUEST,
-  transform({ getState, action }, next) {
+  transform({ action }, next) {
     next({
       ...action,
       question: {

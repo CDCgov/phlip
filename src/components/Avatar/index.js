@@ -34,7 +34,8 @@ export const Avatar = ({ big, avatar, initials, style, theme, cardAvatar, userNa
       style={cardAvatar ? cardAvatarStyles : styles}
       alt={`${userName} avatar`}
       {...otherProps}
-      src={avatar} />
+      src={avatar}
+    />
     : <MuiAvatar style={cardAvatar ? cardAvatarStyles : styles} {...otherProps}>{initials ? initials : ''}</MuiAvatar>
 }
 

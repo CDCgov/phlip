@@ -109,7 +109,7 @@ const sortQuestions = questions => {
  * @param {Number} treeIndex
  * @returns {Number}
  */
-export const getNodeKey = ({ node, treeIndex }) => {
+export const getNodeKey = ({ treeIndex }) => {
   return treeIndex
 }
 
@@ -124,7 +124,7 @@ const setHovering = (node, hovering) => {
   node.hovering = hovering
 
   if (node.children) {
-    node.children = node.children.map((child, i) => {
+    node.children = node.children.map((child) => {
       return setHovering(child, false)
     })
   }

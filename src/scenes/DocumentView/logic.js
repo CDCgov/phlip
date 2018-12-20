@@ -1,21 +1,25 @@
 import { createLogic } from 'redux-logic'
-import PropTypes from 'prop-types'
 import { types } from './actions'
 import { types as projectTypes } from 'data/projects/actions'
 import { types as jurisdictionTypes } from 'data/jurisdictions/actions'
+import { types as codingTypes } from 'scenes/CodingValidation/components/DocumentList/actions'
 
 const getDocumentContentsLogic = createLogic({
-  type: types.GET_DOCUMENT_CONTENTS_REQUEST,
+  type: [types.GET_DOCUMENT_CONTENTS_REQUEST, codingTypes.GET_DOC_CONTENTS_REQUEST],
   async process({ getState, docApi, action }, dispatch, done) {
     try {
       const { content } = await docApi.getDocumentContents({}, {}, { docId: action.id })
       dispatch({
-        type: types.GET_DOCUMENT_CONTENTS_SUCCESS,
+        type: action.type === types.GET_DOCUMENT_CONTENTS_REQUEST
+          ? types.GET_DOCUMENT_CONTENTS_SUCCESS
+          : codingTypes.GET_DOC_CONTENTS_SUCCESS,
         payload: content
       })
     } catch (err) {
       dispatch({
-        type: types.GET_DOCUMENT_CONTENTS_FAIL,
+        type: action.type === types.GET_DOCUMENT_CONTENTS_REQUEST
+          ? types.GET_DOCUMENT_CONTENTS_FAIL
+          : codingTypes.GET_DOC_CONTENTS_FAIL,
         payload: 'Failed to get doc contents'
       })
     }
@@ -26,9 +30,8 @@ const getDocumentContentsLogic = createLogic({
 const updateDocLogic = createLogic({
   type: types.UPDATE_DOC_REQUEST,
   async process({ docApi, action, getState }, dispatch, done) {
-    let fd = { files: [] }, md = {}
+    let md = {}
     const selectedDoc = getState().scenes.docView.document
-    const { content, ...otherProps } = selectedDoc
 
     md.status = selectedDoc.status
     md.effectiveDate = selectedDoc.effectiveDate !== undefined

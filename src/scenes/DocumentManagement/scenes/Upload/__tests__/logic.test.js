@@ -12,7 +12,7 @@ import { INITIAL_STATE } from '../reducer'
 import { INITIAL_STATE as AUTO_INITIAL_STATE } from 'data/autocomplete/reducer'
 
 describe('Document Management - Upload logic', () => {
-  let mock, apiMock
+  let mock
 
   const mockReducer = (state, action) => state
   const history = {}
@@ -21,7 +21,6 @@ describe('Document Management - Upload logic', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(docApiInstance)
-    apiMock = new MockAdapter(projectApiInstance)
   })
 
   const setupStore = (current = {}, projAuto = {}, jurAuto = {}) => {

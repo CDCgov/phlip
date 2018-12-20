@@ -12,7 +12,10 @@ export class DocumentView extends Component {
   static propTypes = {
     document: PropTypes.object,
     documentRequestInProgress: PropTypes.bool,
-    documentUpdateInProgress: PropTypes.bool
+    documentUpdateInProgress: PropTypes.bool,
+    actions: PropTypes.object,
+    location: PropTypes.object,
+    history: PropTypes.object
   }
 
   constructor(props, context) {
@@ -24,13 +27,17 @@ export class DocumentView extends Component {
     this.props.actions.getDocumentContentsRequest(this.props.location.state.document._id)
   }
 
+  componentWillUnmount() {
+    this.props.actions.clearDocument()
+  }
+
   onGoBack = () => {
     this.props.history.push('/docs')
   }
 
   render() {
     return (
-      <FlexGrid container flex padding="20px 30px">
+      <FlexGrid container flex padding="12px 20px 20px 20px">
         <PageHeader
           onBackButtonClick={this.onGoBack}
           pageTitle="Edit Document"

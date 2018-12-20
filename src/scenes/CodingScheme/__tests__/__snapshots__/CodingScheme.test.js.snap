@@ -7,7 +7,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
   spacing={0}
   style={
     Object {
-      "padding": "20px 30px",
+      "padding": "12px 20px 20px 20px",
     }
   }
 >

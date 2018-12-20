@@ -1,0 +1,24 @@
+.navContainer {
+  display: flex;
+  flex: 1;
+  padding-right: 10px;
+  outline: none;
+}
+
+.navScroll {
+  &::-webkit-scrollbar {
+    width: 9px;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #3A4041;
+    border-radius: 10px;
+    margin: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #A1ACB0;
+  }
+}

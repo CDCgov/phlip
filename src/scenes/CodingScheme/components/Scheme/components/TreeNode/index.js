@@ -16,11 +16,9 @@ export const TreeNode = props => {
     draggedNode,
     canDrop,
     treeIndex,
-    rowDirection,
-    getPrevRow,
-    node,
-    path,
     treeId,
+    getPrevRow,
+    rowDirection,
     ...otherProps
   } = props
 

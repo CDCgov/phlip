@@ -1,8 +1,10 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import Container, { Row, Column } from 'components/Layout/index'
 import Button from 'components/Button/index'
 
+/* global APP_SAML_REQUEST_URL */
 const ProdLoginForm = ({ pivError }) => (
   <Container column style={{ padding: 30 }}>
     <Row displayFlex style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -19,5 +21,9 @@ const ProdLoginForm = ({ pivError }) => (
     {pivError && <Typography color="error" align="center">{pivError}</Typography>}
   </Container>
 )
+
+ProdLoginForm.propTypes = {
+  pivError: PropTypes.string
+}
 
 export default ProdLoginForm

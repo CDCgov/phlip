@@ -8,12 +8,12 @@ export const types = {
   UPDATE_DOC_PROPERTY: 'UPDATE_DOC_VIEW_PROPERTY',
   UPDATE_DOC_FAIL: 'UPDATE_DOC_VIEW_FAIL',
   UPDATE_DOC_REQUEST: 'UPDATE_DOC_VIEW_REQUEST',
-  UPDATE_DOC_SUCCESS: 'UPDATE_DOC_VIEW_SUCCESS'
+  UPDATE_DOC_SUCCESS: 'UPDATE_DOC_VIEW_SUCCESS',
+  CLEAR_DOCUMENT: 'CLEAR_DOCUMENT'
 }
 
 export default {
   initState: makeActionCreator(types.INIT_STATE_WITH_DOC, 'doc'),
-  getDocumentContentsRequest: makeActionCreator(types.GET_DOCUMENT_CONTENTS_REQUEST, 'id')
-  //updateDocRequest : makeActionCreator(types.UPDATE_DOC_REQUEST,'doc'),
-  //updateDocumentProperty: makeActionCreator(types.UPDATE_DOC_PROPERTY, 'index', 'property', 'value'),
+  getDocumentContentsRequest: makeActionCreator(types.GET_DOCUMENT_CONTENTS_REQUEST, 'id'),
+  clearDocument: makeActionCreator(types.CLEAR_DOCUMENT)
 }

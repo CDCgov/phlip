@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import TextField from '@material-ui/core/TextField'
 import SimpleInput from 'components/SimpleInput'
@@ -6,6 +6,8 @@ import { withStyles } from '@material-ui/core/styles'
 import { Row, Column } from 'components/Layout'
 import Avatar from 'components/Avatar'
 import { getInitials } from 'utils/normalize'
+import { Marker } from 'mdi-material-ui'
+import { IconButton } from 'components/index'
 
 const styles = theme => ({
   container: {
@@ -31,7 +33,7 @@ const styles = theme => ({
 export const InputBox = props => {
   const {
     value, onChange, name, rows, answerId, classes, validator, theme, question,
-    isValidation, userImages, style, ...otherProps
+    isValidation, userImages, style, onToggleAnswerForAnno, enabledAnswerChoice, ...otherProps
   } = props
 
   const userImageObj = userImages
@@ -77,6 +79,13 @@ export const InputBox = props => {
           }}
           {...otherProps}
         />
+        <IconButton
+          style={{ alignSelf: 'center', marginLeft: 20 }}
+          onClick={onToggleAnswerForAnno(answerId)}
+          color={enabledAnswerChoice === answerId ? 'primary' : '#b9bbbb'}
+          iconSize={20}>
+          <Marker style={{ fontSize: 20 }} />
+        </IconButton>
       </Row>
       {textValues.textAnswer && textValues.textAnswer.length > 0 &&
       <div style={{ paddingTop: 10, paddingBottom: 20 }}>
@@ -144,7 +153,9 @@ InputBox.propTypes = {
   /**
    * Outer container style
    */
-  style: PropTypes.object
+  style: PropTypes.object,
+  onToggleAnswerForAnno: PropTypes.func,
+  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 }
 
 InputBox.defaultProps = {

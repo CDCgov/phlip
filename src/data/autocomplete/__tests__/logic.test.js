@@ -10,19 +10,17 @@ import calls from 'services/api/docManageCalls'
 import apiCalls from 'services/api/calls'
 
 describe('Autocomplete logic', () => {
-  let mock, apiMock
+  let apiMock
 
-  const mockReducer = (state, action) => state
   const history = {}
   const docApi = createApiHandler({ history }, docApiInstance, calls)
   const api = createApiHandler({ history }, projectApiInstance, apiCalls)
 
   beforeEach(() => {
-    mock = new MockAdapter(docApiInstance)
     apiMock = new MockAdapter(projectApiInstance)
   })
 
-  const setupStore = (current) => {
+  const setupStore = () => {
     return createMockStore({
       initialState: {},
       logic,

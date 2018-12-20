@@ -1,13 +1,9 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import Typography from '@material-ui/core/Typography'
-import Button from 'components/Button'
-import Container, { Column, Row } from 'components/Layout'
-import IconButton from 'components/IconButton'
-import CircleIcon from 'components/CircleIcon'
-import { withRouter } from 'react-router-dom'
+//import Typography from '@material-ui/core/Typography'
 import { withTheme } from '@material-ui/core/styles'
-import { Link } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
+import { FlexGrid, IconButton, CircleIcon, Button, Typography } from 'components'
 
 /**
  * This is the header at the top of every page with the back button and page title
@@ -19,27 +15,33 @@ export const PageHeader = props => {
   } = props
 
   return (
-    <Container alignItems="center" style={{ padding: '0 0 20px 0', minHeight: 56 }}>
-      <Column style={{ paddingRight: 5 }} displayFlex>
+    <FlexGrid
+      container
+      type="row"
+      align="center"
+      justify="space-between"
+      padding="0 0 15px 0"
+      style={{ height: 36, minHeight: 36 }}>
+      <FlexGrid container flex type="row" align="center">
         {!entryScene
-          ? <IconButton
-            iconSize={30}
-            color="black"
-            onClick={onBackButtonClick ? onBackButtonClick : () => history.goBack()}
-            aria-label="Go back">arrow_back</IconButton>
-          : <CircleIcon circleColor="error" iconColor="white" circleSize="30px" iconSize="19px">{icon}</CircleIcon>
+          ?
+            <IconButton
+              iconSize={30}
+              color="black"
+              onClick={onBackButtonClick ? onBackButtonClick : () => history.goBack()}
+              aria-label="Go back">arrow_back
+            </IconButton>
+          : <CircleIcon circleColor="error" iconColor="white" circleSize="24px" iconSize="16px">{icon}</CircleIcon>
         }
-      </Column>
-      <Row displayFlex>
-        <Typography variant="title" style={{ alignSelf: 'center', paddingRight: 10 }}>{pageTitle}</Typography>
+        <Typography variant="title" style={{ paddingRight: 10, paddingLeft: 5 }}>{pageTitle}</Typography>
         {projectName !== '' &&
-        <Fragment>
-          <Typography variant="title" style={{ alignSelf: 'center' }}>
+        <>
+          <Typography variant="title">
             <span style={{ color: theme.palette.secondary.pageHeader }}>{projectName}</span>
           </Typography>
-        </Fragment>}
-      </Row>
-      <Row displayFlex>
+        </>}
+      </FlexGrid>
+      <FlexGrid container type="row">
         {children}
         {protocolButton &&
         <Button
@@ -74,8 +76,8 @@ export const PageHeader = props => {
             />}
         </div>
         }
-      </Row>
-    </Container>
+      </FlexGrid>
+    </FlexGrid>
   )
 }
 
@@ -85,7 +87,7 @@ PageHeader.propTypes = {
    */
   projectName: PropTypes.string,
   /**
-   * Title of the page to be displayed next to projectName
+   * Title  of the page to be displayed next to projectName
    */
   pageTitle: PropTypes.string,
   /**

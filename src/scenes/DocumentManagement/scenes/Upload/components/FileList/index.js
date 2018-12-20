@@ -59,7 +59,9 @@ export class FileList extends Component {
     /**
      * Clears the list of jurisdiction suggestions for a row
      */
-    onClearSuggestions: PropTypes.func
+    onClearSuggestions: PropTypes.func,
+    handleDocPropertyChange: PropTypes.func,
+    duplicateFiles: PropTypes.array
   }
 
   constructor(props, context) {
@@ -195,9 +197,11 @@ export class FileList extends Component {
                           }}
                         />
                       </div>)
-                    : <IconButton onClick={this.toggleEditMode(i, 'jurisdictions')} color="primary" style={colStyle}>
-                      create
-                    </IconButton>
+                    : (
+                      <IconButton onClick={this.toggleEditMode(i, 'jurisdictions')} color="primary" style={colStyle}>
+                        create
+                      </IconButton>
+                    )
                   : <div style={colStyle}>{doc.jurisdictions.value.name}</div>
                 }
                 {doc.citation.editable === true
@@ -209,28 +213,32 @@ export class FileList extends Component {
                       value={doc.citation.value}
                       onChange={e => this.onDocPropertyChange(i, 'citation', e.target.value)}
                     />
-                    : <IconButton onClick={this.toggleEditMode(i, 'citation')} color="primary" style={colStyle}>
-                      create
-                    </IconButton>
+                    : (
+                      <IconButton onClick={this.toggleEditMode(i, 'citation')} color="primary" style={colStyle}>
+                        create
+                      </IconButton>
+                    )
                   : <div style={colStyle}>{doc.citation.value}</div>
                 }
                 {doc.effectiveDate.editable === true
                   ? doc.effectiveDate.inEditMode === true
-                    ? <div style={colStyle}>
-                      <DatePicker
-                        name="effectiveDate"
-                        dateFormat="MM/DD/YYYY"
-                        onChange={date => this.onDocPropertyChange(i, 'effectiveDate', date)}
-                        onInputChange={e => this.onDocPropertyChange(i, 'effectiveDate', e.target.value)}
-                        value={doc.effectiveDate.value}
-                        autoOk={true}
-                        style={{ marginTop: 0 }}
-                      />
-                    </div>
-                    : <IconButton onClick={this.toggleEditMode(i, 'effectiveDate')} color="primary" style={colStyle}>
-                      create
-                    </IconButton>
-                  : <div style={colStyle}>{convertToLocalDate(doc.effectiveDate.value.split('T')[0])}</div>
+                    ? (
+                      <div style={colStyle}>
+                        <DatePicker
+                          name="effectiveDate"
+                          dateFormat="MM/DD/YYYY"
+                          onChange={date => this.onDocPropertyChange(i, 'effectiveDate', date)}
+                          onInputChange={e => this.onDocPropertyChange(i, 'effectiveDate', e.target.value)}
+                          value={doc.effectiveDate.value}
+                          autoOk={true}
+                          style={{ marginTop: 0 }}
+                        />
+                      </div>
+                    ) : (
+                      <IconButton onClick={this.toggleEditMode(i, 'effectiveDate')} color="primary" style={colStyle}>
+                        create
+                      </IconButton>
+                    ) : <div style={colStyle}>{convertToLocalDate(doc.effectiveDate.value.split('T')[0])}</div>
                 }
                 <IconButton
                   style={{ justifySelf: 'flex-end', ...colStyle }}

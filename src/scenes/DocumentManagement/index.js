@@ -54,7 +54,13 @@ export class DocumentManagement extends Component {
     /**
      * Whether or not the checkbox table header has been clicked, selecting all files
      */
-    allSelected: PropTypes.bool
+    allSelected: PropTypes.bool,
+    searchValue: PropTypes.string,
+    projectSearchValue: PropTypes.string,
+    jurisdictionSearchValue: PropTypes.string,
+    projectSuggestions: PropTypes.array,
+    jurisdictionSuggestions: PropTypes.array
+
   }
 
   constructor(props, context) {
@@ -204,54 +210,48 @@ export class DocumentManagement extends Component {
 
   render() {
     return (
-      <FlexGrid container flex padding="20px 30px">
-        <FlexGrid container type='row' justify="space-between">
-            <FlexGrid type='column' padding="20px">
-                <PageHeader
-                  pageTitle="Document Management"
-                  protocolButton={false}
-                  projectName=""
-                  entryScene={true}
-                  icon="description"
-                  otherButton={{
-                    isLink: true,
-                    text: '+ Upload New',
-                    path: '/docs/upload',
-                    state: { modal: true },
-                    props: { 'aria-label': 'Upload New Documents' },
-                    show: true
-                    }}
-                />
+      <FlexGrid container flex padding="12px 20px 20px 20px">
+        <PageHeader
+          pageTitle="Document Management"
+          protocolButton={false}
+          projectName=""
+          entryScene={true}
+          icon="description"
+          otherButton={{
+            isLink: true,
+            text: '+ Upload New',
+            path: '/docs/upload',
+            state: { modal: true },
+            props: { 'aria-label': 'Upload New Documents' },
+            show: true
+          }}
+        />
+        <FlexGrid id="trung" container flex raised>
+            <FlexGrid padding="30px 20px 70px" align="flex-end" type="column">
+            <SearchBox
+                searchValue={this.props.searchValue}
+                projectSearchValue={this.props.projectSearchValue}
+                jurisdictionSearchValue={this.props.jurisdictionSearchValue}
+                projectSuggestions={this.props.projectSuggestions}
+                jurisdictionSuggestions={this.props.jurisdictionSuggestions}
+                uploadedDateSearchValue = {this.state.searchParams.uploadedDateSearchValue}
+                docNameSearchValue = {this.state.searchParams.docNameSearchValue}
+                uploadedBySearchValue = {this.state.searchParams.uploadedBySearchValue}
+                onClearSuggestions={this.handleClearSuggestions}
+                onGetSuggestions={this.handleGetSuggestions}
+                onSearchValueChange={this.handleSearchValueChange}
+                onSuggestionSelected={this.handleSuggestionSelected}
+                onSearchDocs={this.handleSearchDocsChange}
+                onSearchSubmit={this.onSearchSubmit}
+                showSearchBox = {this.state.showSearchBox}
+                onShowSearchBox = {this.onShowSearchBox}
+                onSearchCancel = {this.onSearchCancel}
+                onDocNameSearchChange = {this.onDocNameSearchChange}
+                onUploadByChange = {this.onUploadByChange}
+                onUploadedDateChange = {this.onUploadedDateChange}
+                onSearchReset = {this.onSearchReset}
+            />
             </FlexGrid>
-            <FlexGrid flex style={{textAlign:'center'}}/>
-            <FlexGrid flex style={{marginLeft:'auto',width:'30%'}} align="flex-end">
-                <SearchBox
-                      searchValue={this.props.searchValue}
-                      projectSearchValue={this.props.projectSearchValue}
-                      jurisdictionSearchValue={this.props.jurisdictionSearchValue}
-                      projectSuggestions={this.props.projectSuggestions}
-                      jurisdictionSuggestions={this.props.jurisdictionSuggestions}
-                      uploadedDateSearchValue = {this.state.searchParams.uploadedDateSearchValue}
-                      docNameSearchValue = {this.state.searchParams.docNameSearchValue}
-                      uploadedBySearchValue = {this.state.searchParams.uploadedBySearchValue}
-                      onClearSuggestions={this.handleClearSuggestions}
-                      onGetSuggestions={this.handleGetSuggestions}
-                      onSearchValueChange={this.handleSearchValueChange}
-                      onSuggestionSelected={this.handleSuggestionSelected}
-                      onSearchDocs={this.handleSearchDocsChange}
-                      onSearchSubmit={this.onSearchSubmit}
-                      showSearchBox = {this.state.showSearchBox}
-                      onShowSearchBox = {this.onShowSearchBox}
-                      onSearchCancel = {this.onSearchCancel}
-                      onDocNameSearchChange = {this.onDocNameSearchChange}
-                      onUploadByChange = {this.onUploadByChange}
-                      onUploadedDateChange = {this.onUploadedDateChange}
-                      onSearchReset = {this.onSearchReset}
-
-                  />
-            </FlexGrid>
-        </FlexGrid>
-        <FlexGrid container flex raised>
           <DocList
             documents={this.props.documents}
             docCount={this.props.docCount}

@@ -8,7 +8,7 @@ import TableBody from '@material-ui/core/TableBody'
 import theme from 'services/theme'
 
 const props = {
-  project: { id: 1, name: 'Project 1', dateLastEdited: '10/10/2012', lastEditedBy: 'Kristin' },
+  project: { id: 1, name: 'Project 1', dateLastEdited: new Date('10/10/2012'), lastEditedBy: 'Kristin' },
   bookmarked: false,
   role: 'Coordinator',
   actions: {

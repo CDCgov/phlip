@@ -120,7 +120,8 @@ export class ValidationAvatar extends Component {
                 key="close-snackbar"
                 style={{ color: 'white' }}
                 size="small"
-                onClick={this.handleCloseSnackbar}>OK</Button>
+                onClick={this.handleCloseSnackbar}>OK
+              </Button>
             }
           />}
         <CopyToClipboard

@@ -31,4 +31,4 @@ export const updateQuestionRequest = (question, projectId, questionId, path) => 
   path
 })
 
-export const updateType = type => ({ type: types.UPDATE_TYPE, type })
+export const updateType = () => ({ type: types.UPDATE_TYPE })

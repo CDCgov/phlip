@@ -5,7 +5,7 @@ import { types } from '../actions'
 import createApiHandler, { docApiInstance } from 'services/api'
 import calls from 'services/api/docManageCalls'
 
-describe('Document View logic', () => {
+describe('DocumentView logic', () => {
   let mock
 
   const mockReducer = (state, action) => state

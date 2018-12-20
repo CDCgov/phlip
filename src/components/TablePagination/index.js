@@ -61,7 +61,7 @@ export const styles = theme => ({
  * pages, and dropdown to select # of rows per page
  */
 class TablePagination extends Component {
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { count, onChangePage, rowsPerPage } = nextProps
     const newLastPage = Math.max(0, Math.ceil(count / rowsPerPage) - 1)
     if (this.props.page > newLastPage) {
@@ -103,12 +103,12 @@ class TablePagination extends Component {
       count,
       labelDisplayedRows,
       labelRowsPerPage,
-      onChangePage,
       onChangeRowsPerPage,
       page,
       rowsPerPage,
       rowsPerPageOptions,
       theme,
+      onChangePage,
       ...other
     } = this.props
 

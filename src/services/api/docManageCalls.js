@@ -30,6 +30,11 @@ const docManageCalls = [
     name: 'updateDoc',
     method: 'post',
     path: () =>'/docs/update'
+  },
+  {
+    name: 'getDocumentsByProjectJurisdiction',
+    method: 'get',
+    path: ({ projectId, jurisdictionId }) => `/docs/projects/${projectId}/jurisdictions/${jurisdictionId}`
   }
 ]
 

@@ -6,15 +6,25 @@ PDFJS.GlobalWorkerOptions.workerSrc = '/pdf.worker.bundle.js'
 import styles from './pdf_viewer.scss'
 
 export class PDFViewer extends Component {
-  static propTypes = {}
-  state = {
-    pdf: {},
-    pages: []
+  static propTypes = {
+    document: PropTypes.object,
+    allowSelection: PropTypes.bool,
+    captureArea: PropTypes.any
   }
 
   constructor(props, context) {
     super(props, context)
     this.viewerRef = React.createRef()
+    this.state = {
+      pdf: {},
+      pages: []
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.document.content.data) {
+      this.createPdf(this.props.document)
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -26,7 +36,7 @@ export class PDFViewer extends Component {
   createPdf = docContent => {
     const CMAP = 'pdfjs-dist/cmaps'
     PDFJS.getDocument({ data: docContent.content.data, cMapUrl: CMAP }).then(pdf => {
-      pdf.getMetadata().then(md => {
+      pdf.getMetadata().then(() => {
         this.setState({
           pdf
         }, () => this.gatherPagePromises())
@@ -48,7 +58,7 @@ export class PDFViewer extends Component {
   }
 
   getSpecificPage = pageNumber => {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       this.state.pdf.getPage(pageNumber + 1).then(page => {
         let pageToAdd = {}
         page.getTextContent({ normalizeWhitespace: true }).then(async textContent => {

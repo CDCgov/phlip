@@ -19,5 +19,6 @@ module.exports = {
   appNodeModules: resolveApp('node_modules'),
   appDotEnv: resolveApp('.env'),
   publicPath: '/',
+  eslint: resolveApp('.eslintrc.json'),
   styleguideComponents: fileName => resolveApp(`config/styleguide/${fileName}`)
 }

@@ -17,11 +17,11 @@ export const SearchBar = ({ searchValue, handleSearchValueChange, shrinkLabel, p
       InputProps={{
         style: { 'alignItems': 'center' },
         endAdornment:
-          <InputAdornment
-            style={{ marginTop: 0, height: 24 }}
-            position="end"
-            disableTypography><Icon color={theme.palette.greyText}>search</Icon>
-          </InputAdornment>,
+  <InputAdornment
+    style={{ marginTop: 0, height: 24 }}
+    position="end"
+    disableTypography><Icon color={theme.palette.greyText}>search</Icon>
+  </InputAdornment>,
         inputProps: { 'aria-label': 'Search' }
       }}
       type="search"

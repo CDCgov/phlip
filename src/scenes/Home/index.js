@@ -88,7 +88,7 @@ export class Home extends Component {
     this.setExportRef = element => this.exportRef = element
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.actions.getProjectsRequest()
   }
 
@@ -193,11 +193,12 @@ export class Home extends Component {
 
   render() {
     return (
-      <FlexGrid container flex padding="20px 30px">
+      <FlexGrid container flex padding="12px 20px 20px 20px">
         <ApiErrorAlert
           content={this.props.exportError}
           open={this.props.exportError !== ''}
-          onCloseAlert={this.onCloseExportError} />
+          onCloseAlert={this.onCloseExportError}
+        />
         <PageHeader
           showButton={this.props.user.role !== 'Coder'}
           pageTitle="Project List"
@@ -231,7 +232,8 @@ export class Home extends Component {
             handleRequestSort={this.props.actions.sortProjects}
             handlePageChange={this.props.actions.updatePage}
             handleRowsChange={this.props.actions.updateRows}
-            handleSortBookmarked={() => this.props.actions.sortBookmarked(!this.props.sortBookmarked)} />
+            handleSortBookmarked={() => this.props.actions.sortBookmarked(!this.props.sortBookmarked)}
+          />
         }
         <ExportDialog
           open={this.state.exportDialogOpen}

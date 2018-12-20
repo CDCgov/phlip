@@ -4,10 +4,11 @@ import hoistNonReactStatic from 'hoist-non-react-statics'
 /**
  * @component
  */
-export const withTracking = (WrappedComponent, pageName) => {
+export const withTracking = (WrappedComponent, pageName = null) => {
   class AdobeAnalyticsTracking extends Component {
     constructor(props, context) {
       super(props, context)
+      this.pageName = null
     }
 
     componentDidMount() {
@@ -15,7 +16,14 @@ export const withTracking = (WrappedComponent, pageName) => {
         ? this.props.location.state.projectDefined === null ? 'Create New Project' : 'Project Details'
         : pageName
 
-      process.env.NODE_ENV === 'production' && this.updateSiteCatalystVariables()
+      if (this.pageName !== null && process.env.NODE_ENV === 'production') {
+        this.updateSiteCatalystVariables()
+      }
+    }
+
+    setPageName = pageName => {
+      this.pageName = pageName
+      this.updateSiteCatalystVariables()
     }
 
     updateSiteCatalystVariables = () => {
@@ -39,8 +47,8 @@ export const withTracking = (WrappedComponent, pageName) => {
       window.s.server = window.location.hostname
 
       // Simplified URL
-      window.s.prop73 = window.location.href.split('?')[0].split('#')[0].toLowerCase();
-      window.s.eVar73 = window.location.href.split('?')[0].split('#')[0].toLowerCase();
+      window.s.prop73 = window.location.href.split('?')[0].split('#')[0].toLowerCase()
+      window.s.eVar73 = window.location.href.split('?')[0].split('#')[0].toLowerCase()
 
       // Update the level variables here.
       window.updateVariables(window.s)

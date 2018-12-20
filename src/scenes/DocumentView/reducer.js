@@ -75,15 +75,19 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         documentUpdatingInProgress: false
       }
 
+    case types.CLEAR_DOCUMENT:
+      return {
+        ...state,
+        document: {
+          content: {},
+          projects: [],
+          jurisdictions: []
+        }
+      }
+
     default:
       return state
   }
 }
 
 export default docViewReducer
-
-// export default combineReducers({
-//     docView: docViewReducer,
-//     projectSuggestions: createAutocompleteReducer('PROJECT'),
-//     jurisdictionSuggestions: createAutocompleteReducer('JURISDICTION')
-// })

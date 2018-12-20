@@ -55,7 +55,7 @@ export const SearchBox = props => {
     const iconColor = '#949494';
 
     return (
-            <FlexGrid container raised style={{position:'absolute', width:'45%'}}>
+            <FlexGrid container raised style={{position:'absolute', width:'40%'}}>
                     <FlexGrid style={{display:'flex',width:'100%',border:'1px solid #949494', borderRadius:'5px'}}>
                         <FlexGrid style={{width:'95%', lineHeight: '50px'}} >
                             <SearchBar

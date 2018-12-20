@@ -17,4 +17,13 @@ const Grid = props => {
   )
 }
 
+Grid.propTypes = {
+  rowSizing: PropTypes.any,
+  columnSizing: PropTypes.any,
+  autoRowSizing: PropTypes.any,
+  autoColumnSizing: PropTypes.any,
+  style: PropTypes.object,
+  children: PropTypes.any
+}
+
 export default Grid

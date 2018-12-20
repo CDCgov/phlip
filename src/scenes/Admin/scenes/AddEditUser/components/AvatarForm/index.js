@@ -11,6 +11,14 @@ import * as actions from '../../actions'
 import { default as formActions } from 'redux-form/lib/actions'
 
 export class AvatarForm extends Component {
+  static propTypes = {
+    location: PropTypes.object,
+    history: PropTypes.object,
+    currentUser: PropTypes.object,
+    actions: PropTypes.object,
+    selectedUser: PropTypes.object
+  }
+
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -69,19 +77,27 @@ export class AvatarForm extends Component {
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
           {this.state.isEdit
-            ? <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
-              <Avatar
-                cardAvatar
-                style={{ width: '200px', height: '200px' }}
-                avatar={this.props.location.state.avatar}
-                userName={`${this.props.selectedUser.firstName} ${this.props.selectedUser.lastName}`}
-              />
-            </Container>
-            : <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
-              <Avatar cardAvatar style={{ width: '200px', height: '200px' }} avatar={this.state.editFile.file.base64} />
-            </Container>}
+            ? (
+              <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
+                <Avatar
+                  cardAvatar
+                  style={{ width: '200px', height: '200px' }}
+                  avatar={this.props.location.state.avatar}
+                  userName={`${this.props.selectedUser.firstName} ${this.props.selectedUser.lastName}`}
+                />
+              </Container>
+            )
+            : (
+              <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
+                <Avatar
+                  cardAvatar
+                  style={{ width: '200px', height: '200px' }}
+                  avatar={this.state.editFile.file.base64}
+                />
+              </Container>
+            )}
         </ModalContent>
-        <ModalActions actions={this.state.isEdit ? formEditActions : formActions}></ModalActions>
+        <ModalActions actions={this.state.isEdit ? formEditActions : formActions} />
       </Modal>
     )
   }
