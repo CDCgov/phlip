@@ -6,9 +6,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
 import theme from 'services/theme'
-import { FlexGrid, SearchBar, Icon, PDFViewer } from 'components'
+import { FlexGrid, Icon, PDFViewer } from 'components'
 import { FormatQuoteClose } from 'mdi-material-ui'
-import { sortListOfObjects } from 'utils/commonHelpers'
 
 const docNameStyle = {
   color: theme.palette.secondary.main,
@@ -106,6 +105,7 @@ const mapStateToProps = (state, ownProps) => {
   const codingState = state.scenes.codingValidation.coding
   const answerSelected = codingState.enabledAnswerChoice || false
   const isCategoryQuestion = !!codingState.selectedCategoryId
+
   const annotatedToShow = answerSelected
     ? isCategoryQuestion
       ? pageState.documents.annotated[codingState.question.id][codingState.selectedCategoryId] !== undefined
@@ -121,6 +121,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     documents: [...filteredAnnos, ...filteredOrder].map(id => pageState.documents.byId[id]),
+    //document: ordered.map(id => pageState.documents.byId[id]),
     jurisdictionId: ownProps.jurisdictionId,
     projectId: ownProps.projectId,
     annotated: annotatedToShow,

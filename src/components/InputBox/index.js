@@ -79,13 +79,14 @@ export const InputBox = props => {
           }}
           {...otherProps}
         />
+        {textValues.textAnswer && textValues.textAnswer.length > 0 &&
         <IconButton
           style={{ alignSelf: 'center', marginLeft: 20 }}
           onClick={onToggleAnswerForAnno(answerId)}
           color={enabledAnswerChoice === answerId ? 'primary' : '#b9bbbb'}
           iconSize={20}>
           <Marker style={{ fontSize: 20 }} />
-        </IconButton>
+        </IconButton>}
       </Row>
       {textValues.textAnswer && textValues.textAnswer.length > 0 &&
       <div style={{ paddingTop: 10, paddingBottom: 20 }}>

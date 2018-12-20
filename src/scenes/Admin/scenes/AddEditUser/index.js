@@ -302,13 +302,13 @@ export class AddEditUser extends Component {
                 ? (
                   <Column style={{ paddingRight: 30 }}>
                     {(this.props.avatar) ? (
-                        <Tooltip
-                          text="Edit photo"
-                          placement="top"
+                      <Tooltip
+                        text="Edit photo"
+                        placement="top"
                           //aria-label="Edit picture"
-                          id="edit-picture">
-                          <TextLink
-                            to={{
+                        id="edit-picture">
+                        <TextLink
+                          to={{
                               pathname: `/admin/edit/user/${this.props.selectedUser.id}/avatar`,
                               state: {
                                 isEdit: true,
@@ -316,14 +316,14 @@ export class AddEditUser extends Component {
                                 avatar: this.props.selectedUser.avatar
                               }
                             }}>
-                            <Avatar
-                              cardAvatar
-                              style={{ width: '65px', height: '65px' }}
-                              userName={`${this.props.selectedUser.firstName} ${this.props.selectedUser.lastName}`}
-                              avatar={this.props.avatar}
-                            />
-                          </TextLink>
-                        </Tooltip>
+                          <Avatar
+                            cardAvatar
+                            style={{ width: '65px', height: '65px' }}
+                            userName={`${this.props.selectedUser.firstName} ${this.props.selectedUser.lastName}`}
+                            avatar={this.props.avatar}
+                          />
+                        </TextLink>
+                      </Tooltip>
                       )
                       : (
                         <ReactFileReader base64={true} fileTypes={['.jpg', 'png']} handleFiles={this.openAvatarForm}>
@@ -399,12 +399,6 @@ export class AddEditUser extends Component {
       </>
     )
   }
-}
-
-const getUserById = (users, id) => {
-  const user = users.filter(user => user.id == id)
-  if (user.length) return user[0]
-  return null
 }
 
 /* istanbul ignore next */

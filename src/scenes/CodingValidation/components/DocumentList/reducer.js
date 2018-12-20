@@ -22,10 +22,13 @@ const mergeName = docObj => ({
   uploadedByName: `${docObj.uploadedBy.firstName} ${docObj.uploadedBy.lastName}`
 })
 
-const handleCategories = categories => {
+const handleCategories = (categories, question) => {
   let obj = {}
   categories.forEach(cat => {
     obj[cat.id] = { byAnswer: {}, all: [] }
+    question.possibleAnswers.map(answer => {
+      obj[cat.id].byAnswer[answer.id] = []
+    })
   })
   return obj
 }
@@ -54,27 +57,55 @@ const initializeAnnotationsByAnswer = answers => {
   return q
 }
 
+const initializeNewQuestion = question => {
+  let q = { byAnswer: {}, all: [] }
+
+  question.possibleAnswers.map(answer => {
+    q.byAnswer[answer.id] = []
+  })
+
+  return q
+}
+
 const sortAnnotations = (userAnswers, newQuestion = {}, categories = [], scheme) => {
   let byQuestion = {
     [newQuestion.id]: newQuestion.isCategoryQuestion
-      ? handleCategories(categories)
-      : { byAnswer: {}, all: [] }
+      ? handleCategories(categories, newQuestion)
+      : initializeNewQuestion(newQuestion)
   }
-
+  
   Object.keys(userAnswers).map(questionId => {
     const question = userAnswers[questionId]
-    byQuestion[questionId] = questionId === newQuestion.id ? byQuestion[questionId] : {}
+    byQuestion[questionId] = parseInt(questionId) === parseInt(newQuestion.id)
+      ? byQuestion[questionId]
+      : scheme[questionId].isCategoryQuestion
+        ? handleCategories(Object.values(scheme)
+        .find(q => q.id === scheme[questionId].parentId).possibleAnswers, scheme[questionId])
+        : initializeNewQuestion(scheme[questionId])
 
     if (scheme[questionId].isCategoryQuestion) {
       const cats = Object.keys(question)
       cats.forEach(cat => {
-        byQuestion[questionId][cat] = initializeAnnotationsByAnswer(Object.values(question[cat].answers))
+        let annos = initializeAnnotationsByAnswer(Object.values(question[cat].answers))
+        byQuestion[questionId][cat] = {
+          byAnswer: {
+            ...byQuestion[questionId][cat] ? byQuestion[questionId][cat].byAnswer : {},
+            ...annos.byAnswer
+          },
+          all: annos.all
+        }
       })
     } else {
-      byQuestion[questionId] = initializeAnnotationsByAnswer(Object.values(question.answers))
+      let annos = initializeAnnotationsByAnswer(Object.values(question.answers))
+      byQuestion[questionId] = {
+        byAnswer: {
+          ...byQuestion[questionId].byAnswer,
+          ...annos.byAnswer
+        },
+        all: annos.all
+      }
     }
   })
-
 
   return byQuestion
 }
