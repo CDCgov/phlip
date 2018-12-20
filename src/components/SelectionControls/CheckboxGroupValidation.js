@@ -83,27 +83,29 @@ export const CheckboxGroupValidation = props => {
                 initials={getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
               />}
               {userAnswers.answers.hasOwnProperty(choice.id) && pincites &&
-              <SimpleInput
-                key={`${choice.id}-pincite`}
-                placeholder="Enter pincite"
-                value={userAnswers.answers[choice.id].pincite}
-                multiline={false}
-                InputProps={{ inputProps: { 'aria-label': 'Pincite' } }}
-                style={{
-                  width: 300,
-                  marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
-                    ? '15px'
-                    : '0px'
-                }}
-                onChange={onChangePincite(choice.id, 'pincite')}
-              />}
-              <IconButton
-                style={{ alignSelf: 'center', marginLeft: 20 }}
-                onClick={onToggleAnswerForAnno(choice.id)}
-                color={enabledAnswerChoice === choice.id ? 'primary' : '#b9bbbb'}
-                iconSize={20}>
-                <Marker style={{ fontSize: 20 }} />
-              </IconButton>
+              <>
+                <SimpleInput
+                  key={`${choice.id}-pincite`}
+                  placeholder="Enter pincite"
+                  value={userAnswers.answers[choice.id].pincite}
+                  multiline={false}
+                  InputProps={{ inputProps: { 'aria-label': 'Pincite' } }}
+                  style={{
+                    width: 300,
+                    marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
+                      ? '15px'
+                      : '0px'
+                  }}
+                  onChange={onChangePincite(choice.id, 'pincite')}
+                />
+                <IconButton
+                  style={{ alignSelf: 'center', marginLeft: 20 }}
+                  onClick={onToggleAnswerForAnno(choice.id)}
+                  color={enabledAnswerChoice === choice.id ? 'primary' : '#b9bbbb'}
+                  iconSize={20}>
+                  <Marker style={{ fontSize: 20 }} />
+                </IconButton>
+              </>}
             </FlexGrid>
           )
         })}

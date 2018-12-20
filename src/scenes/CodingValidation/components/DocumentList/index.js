@@ -6,9 +6,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
 import theme from 'services/theme'
-import { FlexGrid, SearchBar, Icon, PDFViewer } from 'components'
+import { FlexGrid, Icon, PDFViewer } from 'components'
 import { FormatQuoteClose } from 'mdi-material-ui'
-import { sortListOfObjects } from 'utils/commonHelpers'
 
 const docNameStyle = {
   color: theme.palette.secondary.main,
@@ -115,7 +114,6 @@ const mapStateToProps = (state, ownProps) => {
       : pageState.documents.annotated[codingState.question.id].byAnswer[codingState.enabledAnswerChoice]
     //: pageState.documents.annotated[codingState.question.id].all,
     : []
-
 
   const ordered = pageState.documents.ordered
   const filteredOrder = ordered.filter(doc => !annotatedToShow.includes(doc))

@@ -81,28 +81,30 @@ export const RadioGroupValidation = props => {
               initials={getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
             />}
             {userAnswers.answers.hasOwnProperty(choice.id) &&
-            <SimpleInput
-              key={`${choice.id}-pincite`}
-              style={{
-                width: 300,
-                marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
-                  ? '15px'
-                  : '0px'
-              }}
-              InputProps={{ inputProps: { 'aria-label': 'Pincite' } }}
-              disabled={disableAll}
-              placeholder="Enter pincite"
-              multiline={false}
-              value={userAnswers.answers[choice.id].pincite}
-              onChange={onChangePincite(choice.id, 'pincite')}
-            />}
-            <IconButton
-              style={{ alignSelf: 'center', marginLeft: 20 }}
-              onClick={onToggleAnswerForAnno(choice.id)}
-              color={enabledAnswerChoice === choice.id ? 'primary' : '#b9bbbb'}
-              iconSize={20}>
-              <Marker style={{ fontSize: 20 }} />
-            </IconButton>
+            <>
+              <SimpleInput
+                key={`${choice.id}-pincite`}
+                style={{
+                  width: 300,
+                  marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
+                    ? '15px'
+                    : '0px'
+                }}
+                InputProps={{ inputProps: { 'aria-label': 'Pincite' } }}
+                disabled={disableAll}
+                placeholder="Enter pincite"
+                multiline={false}
+                value={userAnswers.answers[choice.id].pincite}
+                onChange={onChangePincite(choice.id, 'pincite')}
+              />
+              <IconButton
+                style={{ alignSelf: 'center', marginLeft: 20 }}
+                onClick={onToggleAnswerForAnno(choice.id)}
+                color={enabledAnswerChoice === choice.id ? 'primary' : '#b9bbbb'}
+                iconSize={20}>
+                <Marker style={{ fontSize: 20 }} />
+              </IconButton>
+            </>}
           </FlexGrid>
         ))}
       </FormGroup>
