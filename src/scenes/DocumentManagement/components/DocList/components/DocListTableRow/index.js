@@ -24,7 +24,7 @@ export const DocListTableRow = props => {
         {/*<CheckboxLabel input={{ value: isChecked, onChange: onSelectFile }} />*/}
           <Icon color={iconColor}><FileDocument /></Icon>
       </TableCell>
-      <TableCell padding="checkbox">
+      <TableCell padding="checkbox" style={listStyle}>
         <TextLink to={{ pathname: `/docs/${doc._id}/view`, state: { document: { ...doc } } }}>
           {doc.name}
         </TextLink>
