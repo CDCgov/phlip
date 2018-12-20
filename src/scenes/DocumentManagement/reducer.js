@@ -66,44 +66,15 @@ const resetFilter = (docs, stringSearch, projectFilter, jurisdictionFilter) => {
   //   matches = searchUtils.searchForMatches(docs, stringSearch, ['name', 'uploadedByName', 'uploadedDate','projectList','jurisdictionList'])
   // }
 
-  // if (projectFilter !== null) {
-  //   matches = matches.filter(doc => doc.projects.includes(projectFilter))
-  // }
-  //
-  // if (jurisdictionFilter !== null) {
-  //   matches = matches.filter(doc => doc.jurisdictions.includes(jurisdictionFilter))
-  // }
+  if (projectFilter !== null) {
+    matches = matches.filter(doc => doc.projects.includes(projectFilter))
+  }
+
+  if (jurisdictionFilter !== null) {
+    matches = matches.filter(doc => doc.jurisdictions.includes(jurisdictionFilter))
+  }
 
   return matches
-}
-const andFilter = (docs, searchParams) => {
-    let andMatches = docs
-    let searchString = JSON.stringify(searchParams)
-
-    if (searchParams.docNameSearchValue !== '') {
-        andMatches = searchUtils.searchForMatches(docs, searchParams.docNameSearchValue, ['name'])
-    }
-
-    if (searchParams.uploadedBySearchValue !== '') {
-        andMatches = searchUtils.searchForMatches(andMatches, searchParams.uploadedBySearchValue, ['uploadedByName'])
-    }
-
-    if (searchParams.uploadedDateSearchValue !== '') {
-        andMatches = searchUtils.searchForMatches(andMatches, searchParams.uploadedDateSearchValue, ['uploadedDate'])
-    }
-
-    if (searchParams.projectSearchValue !== '') {
-     //   andMatches = andMatches.filter(doc => doc.projects.includes(searchParams.projectSearchValue.id))
-        andMatches = searchUtils.searchForMatches(andMatches, searchParams.projectSearchValue, ['projectList'])
-
-    }
-
-    if (searchParams.jurisdictionSearchValue !== '') {
-     //   andMatches = andMatches.filter(doc => doc.jurisdictions.includes(searchParams.jurisdictionSearchValue.id))
-        andMatches = searchUtils.searchForMatches(andMatches, searchParams.jurisdictionSearchValue, ['JurisdictionList'])
-
-    }
-    return andMatches
 }
 
 const sortAndSlice = (arr, page, rowsPerPage) => {
@@ -118,20 +89,10 @@ const sortAndSlice = (arr, page, rowsPerPage) => {
   return sliceTable(ids, page, rows)
 }
 
-const buildSearchString = (searchObject) => {
-  const searchFields = ['docName','UploadedBy','UploadedDate','Project','Jurisdiction']
-  Object.keys(searchObject).forEach(function(key,index){
-    if (searchObject[key] !== ''){
-      console.log(key,searchObject[key])
-    }
-  })
-}
-
 export const docManagementReducer = (state = INITIAL_STATE, action) => {
   let rows = parseInt(state.rowsPerPage)
   switch (action.type) {
     case types.GET_DOCUMENTS_SUCCESS:
-    //  console.log(action.payload)
       let docs = action.payload.map(mergeName)
       let obj = arrayToObject(docs, '_id')
 
@@ -229,20 +190,6 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           visible: sortAndSlice(matches, state.page, state.rowsPerPage)
         }
       }
-
-    case types.ON_SEARCH_SUBMIT:
-
-          docs = [...Object.values(state.documents.byId)]
-          let searchString = buildSearchString(action.searchValues)
-          let andMatches = andFilter(docs, action.searchValues)
-          return {
-              ...state,
-              searchValues: JSON.stringify(action.searchValues),
-              documents: {
-                  ...state.documents,
-                  visible: sortAndSlice(andMatches, state.page, state.rowsPerPage)
-              }
-          }
 
     case `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION_MAIN`:
       docs = [...Object.values(state.documents.byId)]

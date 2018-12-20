@@ -151,7 +151,7 @@ export class DocumentManagement extends Component {
             })
     };
     onShowSearchBox = (showBox) => {
-        console.log(showBox);
+        // console.log(showBox);
         if (showBox !== undefined) {
             this.setState({showSearchBox:showBox})
         }
@@ -163,14 +163,14 @@ export class DocumentManagement extends Component {
     }
 
     onSearchSubmit = () => {
-    //    console.log(this.state.searchParams)
         this.setState({showSearchBox: false})
         this.setState({searchSubmit: true})
-        this.props.actions.handleSearchSubmit(this.state.searchParams)
-  //      this.setState({searchParams:initialSearchValues})
+        let searchString = this.buildSearchFilter(this.state.searchParams)
+        this.props.actions.handleSearchFieldChange(searchString)
     }
 
     onSearchCancel = () => {
+        this.props.actions.handleSearchFieldChange('')
         this.setState({showSearchBox: false})
         this.props.actions.jurisdictionAutocomplete.clearAll()
         this.props.actions.projectAutocomplete.clearAll()
@@ -178,9 +178,28 @@ export class DocumentManagement extends Component {
     }
 
     onSearchReset = () => {
+        this.props.actions.handleSearchFieldChange('')
         this.props.actions.jurisdictionAutocomplete.clearAll()
         this.props.actions.projectAutocomplete.clearAll()
         this.setState({searchParams:initialSearchValues})
+    }
+
+    buildSearchFilter = (searchParams) => {
+        const fieldName = {
+            docNameSearchValue : 'name',
+            uploadedBySearchValue:'uploadedBy',
+            uploadedDateSearchValue : 'uploadedDate',
+            projectSearchValue : 'project',
+            jurisdictionSearchValue: 'jurisdiction'
+        }
+        let searchTerms = []
+        Object.keys(searchParams).forEach(function(key,index) {
+            if (searchParams[key] !== ''){
+                searchTerms.push(fieldName[key].concat(':',searchParams[key]))
+            }
+        })
+        return searchTerms.join(' | ')
+
     }
 
   render() {

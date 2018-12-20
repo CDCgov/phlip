@@ -53,20 +53,9 @@ const getDocLogic = createLogic({
         })
         doc.projectList = tmpProList.join('|')
         doc.jurisdictionList = tmpJurList.join('|')
-        // doc.projectList = doc.projects.map(proj => {
-        //       return getState().data.projects.byId[proj] === undefined
-        //           ? ''
-        //           : getState().data.projects.byId[proj].name
-        //   }).join(', ')
-        //       doc.jurisdictionList = doc.jurisdictions.map(jur => {
-        //       return getState().data.jurisdictions.byId[jur] === undefined
-        //           ? ''
-        //           : getState().data.jurisdictions.byId[jur].name
-        //   }).join(', ')
       })
       dispatch({ type: types.GET_DOCUMENTS_SUCCESS, payload: documents })
     } catch (e) {
-      console.log(e)
       dispatch({ type: types.GET_DOCUMENTS_FAIL, payload: 'Failed to get documents' })
     }
     done()
