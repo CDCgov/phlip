@@ -11,7 +11,9 @@ const mockDocuments = {
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
       jurisdictions: [321],
-      projects: [123]
+      projects: [123],
+        projectList: 'Project 1',
+        jurisdictionList: 'Ohio'
     },
     '2': {
       name: 'doc2',
@@ -19,7 +21,9 @@ const mockDocuments = {
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
       jurisdictions: [],
-      projects: []
+      projects: [],
+      projectList: '',
+      jurisdictionList: ''
     },
     '3': {
       name: 'doc3',
@@ -27,7 +31,9 @@ const mockDocuments = {
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
       jurisdictions: [],
-      projects: [123]
+      projects: [123],
+      projectList: 'Project 1',
+      jurisdictionList: ''
     },
     '4': {
       name: 'doc4',
@@ -35,7 +41,9 @@ const mockDocuments = {
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
       jurisdictions: [],
-      projects: []
+      projects: [],
+      projectList: '',
+      jurisdictionList: ''
     },
     '5': {
       name: 'doc5',
@@ -43,7 +51,9 @@ const mockDocuments = {
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
       jurisdictions: [],
-      projects: [123]
+      projects: [123],
+      projectList: 'Project 1',
+      jurisdictionList: ''
     },
     '6': {
       name: 'doc6',
@@ -51,7 +61,9 @@ const mockDocuments = {
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
       jurisdictions: [321],
-      projects: []
+      projects: [],
+      projectList: '',
+      jurisdictionList: 'Ohio'
     },
     '7': {
       name: 'doc7',
@@ -59,7 +71,9 @@ const mockDocuments = {
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
       jurisdictions: [321],
-      projects: []
+      projects: [],
+      projectList: '',
+      jurisdictionList: 'Ohio'
     }
   },
   allIds: ['1', '2', '3', '4', '5', '6', '7'],

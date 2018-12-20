@@ -50,4 +50,12 @@ describe('Document management actions creators', () => {
 
     expect(actions.handleSelectOneFile('134354324526')).toEqual(expectedAction)
   })
+
+  test('should create an action to submit advance search', () => {
+        const expectedAction = {
+            type: types.ON_SEARCH_SUBMIT,
+            searchValues: {docNameSearchValue:'hi'}
+        }
+        expect(actions.handleSearchSubmit({docNameSearchValue:'hi'})).toEqual(expectedAction)
+    })
 })
