@@ -106,6 +106,7 @@ const mapStateToProps = (state, ownProps) => {
   const codingState = state.scenes.codingValidation.coding
   const answerSelected = codingState.enabledAnswerChoice || false
   const isCategoryQuestion = !!codingState.selectedCategoryId
+
   const annotatedToShow = answerSelected
     ? isCategoryQuestion
       ? pageState.documents.annotated[codingState.question.id][codingState.selectedCategoryId] !== undefined
@@ -115,12 +116,14 @@ const mapStateToProps = (state, ownProps) => {
     //: pageState.documents.annotated[codingState.question.id].all,
     : []
 
+
   const ordered = pageState.documents.ordered
   const filteredOrder = ordered.filter(doc => !annotatedToShow.includes(doc))
   const filteredAnnos = ordered.filter(doc => annotatedToShow.includes(doc))
 
   return {
     documents: [...filteredAnnos, ...filteredOrder].map(id => pageState.documents.byId[id]),
+    //document: ordered.map(id => pageState.documents.byId[id]),
     jurisdictionId: ownProps.jurisdictionId,
     projectId: ownProps.projectId,
     annotated: annotatedToShow,
