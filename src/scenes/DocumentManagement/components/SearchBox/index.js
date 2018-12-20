@@ -24,22 +24,21 @@ export const SearchBox = props => {
         projectSearchValue,
         jurisdictionSearchValue,
         uploadedDateSearchValue,
+        uploadedBySearchValue,
+        docNameSearchValue,
         onClearSuggestions,
         onGetSuggestions,
         onSearchValueChange,
         onSuggestionSelected,
-        onChangeStatusField,
-        handleDocPropertyChange,
         currentUser,
-        handleDateChange,
         showSearchBox,
         onShowSearchBox,
         onDocNameSearchChange,
-        onSearchDateRangeChange,
         onUploadedDateChange,
         onUploadByChange,
         onSearchSubmit,
-        onSearchCancel
+        onSearchCancel,
+        onSearchReset
 
     } = props
 
@@ -56,7 +55,7 @@ export const SearchBox = props => {
     const iconColor = '#949494';
 
     return (
-            <FlexGrid container raised style={{position:'absolute'}}>
+            <FlexGrid container raised style={{position:'absolute', width:'45%'}}>
                     <FlexGrid style={{display:'flex',width:'100%',border:'1px solid #949494', borderRadius:'5px'}}>
                         <FlexGrid style={{width:'95%', lineHeight: '50px'}} >
                             <SearchBar
@@ -115,12 +114,6 @@ export const SearchBox = props => {
                             <Typography variant="body1" style={{padding: '0 5px'}}>
                                 Jurisdiction :
                             </Typography>
-                            {/*<input*/}
-                            {/*name="jurisdictionSearch"*/}
-                            {/*style={colStyle}*/}
-                            {/*defaultValue={''}*/}
-                            {/*// onChange={e => onUploadByChange(i, 'uploadedBy', e.target.value)}*/}
-                            {/*/>*/}
                             <FlexGrid container type="row" align="flex-end" style={{ marginLeft: 15 }}>
                                 <Autocomplete
                                     suggestions={jurisdictionSuggestions}
@@ -152,7 +145,7 @@ export const SearchBox = props => {
                             <input
                                 name = "docNameSearchValue"
                                 style={colStyle}
-                            //    value = {docNameSearchValue}
+                                value = {docNameSearchValue}
                                 onChange={e => onDocNameSearchChange(e.target.value)}
                             />
                         </FlexGrid>
@@ -189,13 +182,20 @@ export const SearchBox = props => {
                             <input
                                 name='uploadedbySearch'
                                 style={colStyle}
-                               // value = {uploadedBySearchValue}
+                                value = {uploadedBySearchValue}
                                 onChange={e => onUploadByChange(e.target.value)}
                             />
                         </FlexGrid>
                         <FlexGrid container type="row" align="flex-end" justify="space-between" style={{paddingTop:'15px'}}>
                             <Button
-                                value={'Cancel'}
+                            value={'Reset'}
+                            size="small"
+                            color="accent"
+                            style={{ padding: '0 15px' }}
+                            onClick={onSearchReset}
+                        />
+                            <Button
+                                value={'cancel'}
                                 size="small"
                                 color="accent"
                                 style={{ padding: '0 15px' }}
