@@ -117,6 +117,9 @@ export class Upload extends Component {
       if (prevProps.infoRequestInProgress === false && this.props.infoRequestInProgress === true) {
         this.loadingAlertTimeout = setTimeout(this.showInfoLoadingAlert, 1000)
       } else {
+        this.setState({
+          showLoadingAlert: false
+        })
         clearTimeout(this.loadingAlertTimeout)
       }
     }
@@ -125,6 +128,9 @@ export class Upload extends Component {
       if (prevProps.uploading === false && this.props.uploading === true) {
         this.loadingAlertTimeout = setTimeout(this.showUploadLoadingAlert, 1000)
       } else {
+        this.setState({
+          showLoadingAlert: false
+        })
         clearTimeout(this.loadingAlertTimeout)
       }
     }
