@@ -12,11 +12,26 @@ const getDocLogic = createLogic({
       let jurisdictions = [], projects = []
 
       documents.forEach((doc, i) => {
+        var tmpProList=[]
+        var tmpJurList=[]
+        doc.projectList = []
+        doc.jurisdictionList = []
         doc.uploadedByName = `${doc.uploadedBy.firstName} ${doc.uploadedBy.lastName}`
         doc.projects.forEach(projectId => {
           if (!projects.includes(projectId)) {
             dispatch({ type: projectTypes.GET_PROJECT_REQUEST, projectId })
             projects.push(projectId)
+          }
+          try {
+               if (getState().data.projects.byId[projectId] === undefined){
+                 tmpProList.push('project not found')
+               }
+               else {
+                 tmpProList.push(getState().data.projects.byId[projectId].name)
+               }
+          }
+          catch (e) {
+              tmpProList.push('project not found')
           }
         })
         doc.jurisdictions.forEach(jurisdictionId => {
@@ -24,20 +39,34 @@ const getDocLogic = createLogic({
             dispatch({ type: jurisdictionTypes.GET_JURISDICTION_REQUEST, jurisdictionId })
             jurisdictions.push(jurisdictionId)
           }
+          try {
+              if (getState().data.jurisdictions.byId[jurisdictionId] === undefined) {
+                  tmpJurList.push('jurisdiction not found')
+              }
+              else {
+                  tmpJurList.push(getState().data.jurisdictions.byId[jurisdictionId].name)
+              }
+          }
+          catch (e) {
+              tmpJurList.push('jurisdiction not found')
+          }
         })
-        doc.projectList = doc.projects.map(proj => {
-              return getState().data.projects.byId[proj] === undefined
-                  ? ''
-                  : getState().data.projects.byId[proj].name
-          }).join(', ')
-              doc.jurisdictionList = doc.jurisdictions.map(jur => {
-              return getState().data.jurisdictions.byId[jur] === undefined
-                  ? ''
-                  : getState().data.jurisdictions.byId[jur].name
-          }).join(', ')
+        doc.projectList = tmpProList.join('|')
+        doc.jurisdictionList = tmpJurList.join('|')
+        // doc.projectList = doc.projects.map(proj => {
+        //       return getState().data.projects.byId[proj] === undefined
+        //           ? ''
+        //           : getState().data.projects.byId[proj].name
+        //   }).join(', ')
+        //       doc.jurisdictionList = doc.jurisdictions.map(jur => {
+        //       return getState().data.jurisdictions.byId[jur] === undefined
+        //           ? ''
+        //           : getState().data.jurisdictions.byId[jur].name
+        //   }).join(', ')
       })
       dispatch({ type: types.GET_DOCUMENTS_SUCCESS, payload: documents })
     } catch (e) {
+      console.log(e)
       dispatch({ type: types.GET_DOCUMENTS_FAIL, payload: 'Failed to get documents' })
     }
     done()

@@ -11,7 +11,8 @@ export const types = {
   ON_PAGE_CHANGE: 'ON_PAGE_CHANGE',
   ON_ROWS_CHANGE: 'ON_ROWS_CHANGE',
   UPLOAD_DOCUMENTS_SUCCESS: 'UPLOAD_DOCUMENTS_SUCCESS',
-  FLUSH_STATE: 'FLUSH_STATE'
+  FLUSH_STATE: 'FLUSH_STATE',
+  ON_SEARCH_SUBMIT: 'ON_SEARCH_SUBMIT'
 }
 
 export default {
@@ -20,7 +21,8 @@ export default {
   handleSearchFieldChange: makeActionCreator(types.ON_SEARCH_FIELD_CHANGE, 'searchValue'),
   handlePageChange: makeActionCreator(types.ON_PAGE_CHANGE, 'page'),
   handleRowsChange: makeActionCreator(types.ON_ROWS_CHANGE, 'rowsPerPage'),
-  handleSelectOneFile: makeActionCreator(types.ON_SELECT_ONE_FILE, 'id')
+  handleSelectOneFile: makeActionCreator(types.ON_SELECT_ONE_FILE, 'id'),
+  handleSearchSubmit: makeActionCreator(types.ON_SEARCH_SUBMIT,'searchValues')
 }
 
 export const projectAutocomplete = {

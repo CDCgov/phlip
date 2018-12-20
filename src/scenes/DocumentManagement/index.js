@@ -14,6 +14,16 @@ import Upload from './scenes/Upload'
  * DocumentManagement main scene component. This is the first view the user sees when they switch over to the
  * document management global menu item
  */
+
+const initialSearchValues =
+    {
+        projectSearchValue : '',
+        jurisdictionSearchValue : '',
+        docNameSearchValue : '',
+        uploadedBySearchValue : '',
+        uploadedDateSearchValue :'',
+
+    }
 export class DocumentManagement extends Component {
   static propTypes = {
     /**
@@ -49,18 +59,13 @@ export class DocumentManagement extends Component {
 
   constructor(props, context) {
     super(props, context)
+      this.state = {
+          showSearchBox : false,
+          searchSubmit : false,
+          searchParams : initialSearchValues
+      }
   }
 
-  state = {
-      showSearchBox : false,
-      searchSubmit : false,
-      projectSuggestionsValue : {},
-      jurisdictionSuggestionValue : {},
-      docNameSearchValue : 'doc1',
-      uploadedBySearchValue : '',
-      uploadedDateSearchValue :'',
-
-    }
   componentDidMount() {
     this.props.actions.getDocumentsRequest()
   }
@@ -89,8 +94,8 @@ export class DocumentManagement extends Component {
     suggestionType === 'project'
       // ? this.props.actions.projectAutocomplete.onSuggestionSelected(suggestionValue)
       // : this.props.actions.jurisdictionAutocomplete.onSuggestionSelected(suggestionValue)
-        ? this.setState({projectSuggestionValue:suggestionValue})
-        : this.setState({jurisdictionSuggestionValue:suggestionValue})
+        ? this.setState({searchParams: {...this.state.searchParams,projectSearchValue:suggestionValue.name}})
+        : this.setState({searchParams: {...this.state.searchParams,jurisdictionSearchValue:suggestionValue.name}})
   }
 
   handleSearchValueChange = (suggestionType, value) => {
@@ -115,37 +120,67 @@ export class DocumentManagement extends Component {
      * @public
      * @param {Object} values
      */
-    handleSearchSubmit = values => {
-        this.setState({
-            submitting: true
-        })
-    }
 
     onDocNameSearchChange = (searchValue) => {
-        this.setState({docNameSearchValue:searchValue})
+        this.setState({
+            searchParams:
+                {
+                    ...this.state.searchParams,
+                    docNameSearchValue: searchValue
+                }
+            })
     };
 
     onUploadByChange = (searchValue) => {
-        this.setState({uploadedBySearchValue: searchValue})
-    }
+        this.setState({
+            searchParams:
+                {
+                    ...this.state.searchParams,
+                    uploadedBySearchValue: searchValue
+                }
+            })
+    };
 
     onUploadedDateChange = (searchValue) =>{
-        this.setState({uploadedDateSearchValue: searchValue})
+        this.setState({
+                searchParams:
+                    {...this.state.searchParams,
+                        uploadedDateSearchValue: searchValue.format('M/D/YYYY')
+
+                    }
+            })
     };
-    onShowSearchBox = () => {
-        this.setState({showSearchBox : true})
+    onShowSearchBox = (showBox) => {
+        console.log(showBox);
+        if (showBox !== undefined) {
+            this.setState({showSearchBox:showBox})
+        }
+        else {
+            this.setState(prevState => ({
+                showSearchBox: !prevState.showSearchBox
+            }));
+        }
     }
 
     onSearchSubmit = () => {
+    //    console.log(this.state.searchParams)
         this.setState({showSearchBox: false})
         this.setState({searchSubmit: true})
-        console.log(this.state)
+        this.props.actions.handleSearchSubmit(this.state.searchParams)
+  //      this.setState({searchParams:initialSearchValues})
     }
 
     onSearchCancel = () => {
         this.setState({showSearchBox: false})
         this.props.actions.jurisdictionAutocomplete.clearAll()
         this.props.actions.projectAutocomplete.clearAll()
+        this.setState({searchParams:initialSearchValues})
+    }
+
+    onSearchReset = () => {
+        this.props.actions.jurisdictionAutocomplete.clearAll()
+        this.props.actions.projectAutocomplete.clearAll()
+        this.setState({searchParams:initialSearchValues})
     }
 
   render() {
@@ -175,11 +210,11 @@ export class DocumentManagement extends Component {
                       searchValue={this.props.searchValue}
                       projectSearchValue={this.props.projectSearchValue}
                       jurisdictionSearchValue={this.props.jurisdictionSearchValue}
-                      docNameSearchValue = {this.state.docNameSearchValue}
-                      uploadedBySearchValue = {this.state.uploadedBySearchValue}
-                      uploadedDateSearchValue = {this.state.uploadedDateSearchValue}
                       projectSuggestions={this.props.projectSuggestions}
                       jurisdictionSuggestions={this.props.jurisdictionSuggestions}
+                      uploadedDateSearchValue = {this.state.searchParams.uploadedDateSearchValue}
+                      docNameSearchValue = {this.state.searchParams.docNameSearchValue}
+                      uploadedBySearchValue = {this.state.searchParams.uploadedBySearchValue}
                       onClearSuggestions={this.handleClearSuggestions}
                       onGetSuggestions={this.handleGetSuggestions}
                       onSearchValueChange={this.handleSearchValueChange}
@@ -192,6 +227,7 @@ export class DocumentManagement extends Component {
                       onDocNameSearchChange = {this.onDocNameSearchChange}
                       onUploadByChange = {this.onUploadByChange}
                       onUploadedDateChange = {this.onUploadedDateChange}
+                      onSearchReset = {this.onSearchReset}
 
                   />
             </FlexGrid>
@@ -233,6 +269,7 @@ const mapStateToProps = state => {
     selectedProject: docManage.projectSuggestions.selectedSuggestion,
     searchByProject: docManage.main.searchByProject,
     searchByJurisdiction: docManage.main.searchByJurisdiction,
+    searchValues : docManage.main.searchValues,
     showSearchBox : false
   }
 }
