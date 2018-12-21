@@ -50,6 +50,9 @@ const theme = createMuiTheme({
     },
     MuiInput: {
       underline: {
+        '&:before': {
+          borderBottom: `1px solid #d9d9d9!important`
+        },
         '&:after': {
           borderBottom: `2px solid ${mainColor}`
         },

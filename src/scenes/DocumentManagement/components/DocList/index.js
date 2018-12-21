@@ -3,26 +3,30 @@ import PropTypes from 'prop-types'
 import FlexGrid from 'components/FlexGrid'
 import Table from 'components/Table'
 import TableBody from '@material-ui/core/TableBody'
-import TableHead from '@material-ui/core/TableHead'
 import TableFooter from '@material-ui/core/TableFooter'
 import TableRow from '@material-ui/core/TableRow'
-import DocListTableHead from './components/DocListTableHead'
 import DocListTableRow from './components/DocListTableRow'
 import TablePagination from 'components/TablePagination'
 
 export const DocList = props => {
   const {
-    onSelectAllFiles, onSelectOneFile, rowsPerPage, page,
-    onChangePage, onChangeRows, documents, docCount, allSelected
+    onSelectOneFile, rowsPerPage, page,
+    onChangePage, onChangeRows, documents, docCount
+    /*onSelectAllFiles, allSelected*/
   } = props
 
   return (
     <FlexGrid container flex style={{ overflow: 'hidden' }}>
       <Table
-        style={{ borderCollapse: 'separate', tableLayout: 'auto', display: documents.length > 0 ? 'block' : 'table', overflow: 'auto' }}
+        style={{
+          borderCollapse: 'separate',
+          tableLayout: 'auto',
+          display: documents.length > 0 ? 'block' : 'table',
+          overflow: 'auto'
+        }}
         summary="List of documents">
         {/*<TableHead style={{ width: '100%' }}>*/}
-          {/*<DocListTableHead onSelectAll={() => onSelectAllFiles()} allSelected={allSelected} />*/}
+        {/*<DocListTableHead onSelectAll={() => onSelectAllFiles()} allSelected={allSelected} />*/}
         {/*</TableHead>*/}
         <TableBody>
           {documents.map(docId => <DocListTableRow

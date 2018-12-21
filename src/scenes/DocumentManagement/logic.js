@@ -12,8 +12,8 @@ const getDocLogic = createLogic({
       let jurisdictions = [], projects = []
 
       documents.forEach((doc, i) => {
-        var tmpProList=[]
-        var tmpJurList=[]
+        let tmpProList = []
+        let tmpJurList = []
         doc.projectList = []
         doc.jurisdictionList = []
         doc.uploadedByName = `${doc.uploadedBy.firstName} ${doc.uploadedBy.lastName}`
@@ -23,15 +23,13 @@ const getDocLogic = createLogic({
             projects.push(projectId)
           }
           try {
-               if (getState().data.projects.byId[projectId] === undefined){
-                 tmpProList.push('project not found')
-               }
-               else {
-                 tmpProList.push(getState().data.projects.byId[projectId].name)
-               }
-          }
-          catch (e) {
+            if (getState().data.projects.byId[projectId] === undefined) {
               tmpProList.push('project not found')
+            } else {
+              tmpProList.push(getState().data.projects.byId[projectId].name)
+            }
+          } catch (e) {
+            tmpProList.push('project not found')
           }
         })
         doc.jurisdictions.forEach(jurisdictionId => {
@@ -40,15 +38,13 @@ const getDocLogic = createLogic({
             jurisdictions.push(jurisdictionId)
           }
           try {
-              if (getState().data.jurisdictions.byId[jurisdictionId] === undefined) {
-                  tmpJurList.push('jurisdiction not found')
-              }
-              else {
-                  tmpJurList.push(getState().data.jurisdictions.byId[jurisdictionId].name)
-              }
-          }
-          catch (e) {
+            if (getState().data.jurisdictions.byId[jurisdictionId] === undefined) {
               tmpJurList.push('jurisdiction not found')
+            } else {
+              tmpJurList.push(getState().data.jurisdictions.byId[jurisdictionId].name)
+            }
+          } catch (e) {
+            tmpJurList.push('jurisdiction not found')
           }
         })
         doc.projectList = tmpProList.join('|')

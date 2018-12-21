@@ -8,7 +8,11 @@ import { withTheme } from '@material-ui/core/styles'
 /**
  * Search input field
  */
-export const SearchBar = ({ searchValue, handleSearchValueChange, shrinkLabel, placeholder, theme, searchIcon='search', ...otherProps }) => {
+export const SearchBar = props => {
+  const {
+    searchValue, handleSearchValueChange, shrinkLabel, placeholder, theme, searchIcon = 'search', InputProps, ...otherProps
+  } = props
+
   return (
     <TextField
       value={searchValue}
@@ -17,13 +21,12 @@ export const SearchBar = ({ searchValue, handleSearchValueChange, shrinkLabel, p
       InputProps={{
         style: { 'alignItems': 'center' },
         startAdornment:
-          <InputAdornment
-            style={{ marginTop: 0, height: 24 }}
-            position="end"
-            disableTypography><Icon color={theme.palette.greyText}>{searchIcon}</Icon>
+          <InputAdornment style={{ marginTop: 0, height: 24 }} position="start">
+            <Icon color={theme.palette.greyText}>{searchIcon}</Icon>
           </InputAdornment>,
         inputProps: { 'aria-label': 'Search' },
-        disableUnderline : true
+        disableUnderline: true,
+        ...InputProps
       }}
       type="search"
       id="search-bar"

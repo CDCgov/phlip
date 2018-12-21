@@ -1,11 +1,10 @@
-import { combineReducers } from 'redux'
-import upload from './scenes/Upload/reducer'
+import upload, { COMBINED_INITIAL_STATE as UPLOAD_INITIAL_STATE } from './scenes/Upload/reducer'
 import { types } from './actions'
 import { arrayToObject } from 'utils/normalize'
 import { sliceTable, sortListOfObjects } from 'utils/commonHelpers'
-import { createAutocompleteReducer } from 'data/autocomplete/reducer'
-import { types as autocompleteTypes } from 'data/autocomplete/actions'
 import { searchUtils } from 'utils'
+import searchReducer, { COMBINED_INITIAL_STATE as SEARCH_INITIAL_STATE } from './components/SearchBox/reducer'
+import { types as searchTypes } from './components/SearchBox/actions'
 
 const INITIAL_STATE = {
   documents: {
@@ -16,10 +15,7 @@ const INITIAL_STATE = {
   },
   rowsPerPage: '10',
   page: 0,
-  searchValue: '',
-  allSelected: false,
-  searchByProject: null,
-  searchByJurisdiction: null
+  allSelected: false
 }
 
 const mergeName = docObj => ({
@@ -28,51 +24,55 @@ const mergeName = docObj => ({
 })
 
 const resetFilter = (docs, stringSearch, projectFilter, jurisdictionFilter) => {
-    const searchFields = ['name','uploadedBy','uploadedDate','project','jurisdiction']
-    let regEnclose = RegExp("^\(.*.\)$")
-    let matches = docs
+  console.log(docs)
+  console.log(jurisdictionFilter, projectFilter)
+  let matches = docs
 
-  let searchParams = stringSearch.split(' | ')
-    searchParams.forEach(searchTerm => {
-       let searchField = searchTerm.split(':')
-        if (searchField.length > 1) {
-            //check if valid fieldname passed in
-            if (searchFields.includes(searchField[0])) {
-                switch (searchField[0]){
-                    case 'project' :
-                      searchField[0] = 'projectList'
-                      break
-                    case 'jurisdiction' :
-                      searchField[0] = 'jurisdictionList'
-                      break
-                    case 'uploadedBy' :
-                      searchField[0] = 'uploadedByName'
-                        break
-                }
-                if (regEnclose.test(searchField[1])) {
-                    searchField[1] = searchField[1].toString().replace('(', '').replace(')', '').trim()
-                }
-                matches = searchUtils.searchForMatches(matches, searchField[1], [searchField[0]])
-            }
-            else {
-                matches = searchUtils.searchForMatches(matches, searchTerm, ['name', 'uploadedByName', 'uploadedDate', 'projectList', 'jurisdictionList'])
-            }
+  const searchFields = ['name', 'uploadedBy', 'uploadedDate', 'project', 'jurisdiction']
+  const regEnclose = RegExp('^(.*.)$')
+
+  const searchParams = stringSearch.split(' | ')
+  searchParams.forEach(searchTerm => {
+    let searchTermPieces = searchTerm.split(':')
+    if (searchTermPieces.length > 1) {
+      let searchProperty = searchTermPieces[0]
+      let searchValue = searchTermPieces[1]
+
+      if (searchFields.includes(searchProperty)) {
+        if (searchProperty === 'project' && projectFilter !== null) {
+          matches = matches.filter(doc => doc.projects.includes(projectFilter))
+        } else if (searchProperty === 'jurisdiction' && jurisdictionFilter !== null) {
+          matches = matches.filter(doc => doc.jurisdictions.includes(jurisdictionFilter))
+        } else {
+          switch (searchProperty) {
+            case 'project':
+              searchProperty = 'projectList'
+              break
+            case 'jurisdiction':
+              searchProperty = 'jurisdictionList'
+              break
+            case 'uploadedBy':
+              searchProperty = 'uploadedByName'
+              break
+          }
+
+          if (regEnclose.test(searchValue)) {
+            searchValue = searchValue.toString().replace('(', '').replace(')', '').trim()
+          }
+
+          matches = searchUtils.searchForMatches(matches, searchValue, [searchProperty])
         }
-        else  {
-            matches = searchUtils.searchForMatches(matches, searchTerm, ['name', 'uploadedByName', 'uploadedDate', 'projectList', 'jurisdictionList'])
-        }
-    })
-  // if (stringSearch !== '') {
-  //   matches = searchUtils.searchForMatches(docs, stringSearch, ['name', 'uploadedByName', 'uploadedDate','projectList','jurisdictionList'])
-  // }
-
-  if (projectFilter !== null) {
-    matches = matches.filter(doc => doc.projects.includes(projectFilter))
-  }
-
-  if (jurisdictionFilter !== null) {
-    matches = matches.filter(doc => doc.jurisdictions.includes(jurisdictionFilter))
-  }
+      } else {
+        matches = searchUtils.searchForMatches(matches, searchTerm, [
+          'name', 'uploadedByName', 'uploadedDate', 'projectList', 'jurisdictionList'
+        ])
+      }
+    } else {
+      matches = searchUtils.searchForMatches(matches, searchTerm, [
+        'name', 'uploadedByName', 'uploadedDate', 'projectList', 'jurisdictionList'
+      ])
+    }
+  })
 
   return matches
 }
@@ -178,78 +178,17 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
-    case types.ON_SEARCH_FIELD_CHANGE:
+    case searchTypes.SEARCH_VALUE_CHANGE:
       docs = [...Object.values(state.documents.byId)]
-      let matches = resetFilter(docs, action.searchValue, state.searchByProject, state.searchByJurisdiction)
-
-      return {
-        ...state,
-        searchValue: action.searchValue,
-        documents: {
-          ...state.documents,
-          visible: sortAndSlice(matches, state.page, state.rowsPerPage)
-        }
-      }
-
-    case `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION_MAIN`:
-      docs = [...Object.values(state.documents.byId)]
-      matches = resetFilter(docs, state.searchValue, state.searchByProject, action.suggestion.id)
+      let matches = resetFilter(docs, action.value, action.form.project.id, action.form.jurisdiction.id)
 
       return {
         ...state,
         documents: {
           ...state.documents,
           visible: sortAndSlice(matches, state.page, state.rowsPerPage)
-        },
-        searchByJurisdiction: action.suggestion.id
-      }
-
-    case `${autocompleteTypes.ON_SUGGESTION_SELECTED}_PROJECT_MAIN`:
-      docs = [...Object.values(state.documents.byId)]
-      matches = resetFilter(docs, state.searchValue, action.suggestion.id, state.searchByJurisdiction)
-
-      return {
-        ...state,
-        documents: {
-          ...state.documents,
-          visible: sortAndSlice(matches, state.page, state.rowsPerPage)
-        },
-        searchByProject: action.suggestion.id
-      }
-
-    case `${autocompleteTypes.UPDATE_SEARCH_VALUE}_JURISDICTION_MAIN`:
-      if (state.searchByJurisdiction !== null) {
-        docs = [...Object.values(state.documents.byId)]
-        matches = resetFilter(docs, state.searchValue, state.searchByProject, null)
-
-        return {
-          ...state,
-          searchByJurisdiction: null,
-          documents: {
-            ...state.documents,
-            visible: sortAndSlice(matches, state.page, state.rowsPerPage)
-          }
         }
-      } else {
-        return state
       }
-
-      case `${autocompleteTypes.UPDATE_SEARCH_VALUE}_PROJECT_MAIN`:
-        if (state.searchByProject !== null) {
-          docs = [...Object.values(state.documents.byId)]
-          matches = resetFilter(docs, state.searchValue, null, state.searchByJurisdiction)
-
-          return {
-            ...state,
-            searchByProject: null,
-            documents: {
-              ...state.documents,
-              visible: sortAndSlice(matches, state.page, state.rowsPerPage)
-            }
-          }
-        } else {
-          return state
-        }
 
     case types.FLUSH_STATE:
       return INITIAL_STATE
@@ -259,11 +198,18 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
-const docManageReducer = combineReducers({
-  upload,
-  main: docManagementReducer,
-  projectSuggestions: createAutocompleteReducer('PROJECT', '_MAIN'),
-  jurisdictionSuggestions: createAutocompleteReducer('JURISDICTION', '_MAIN')
-})
+const COMBINED_INITIAL_STATE = {
+  upload: UPLOAD_INITIAL_STATE,
+  main: INITIAL_STATE,
+  search: SEARCH_INITIAL_STATE
+}
+
+const docManageReducer = (state = COMBINED_INITIAL_STATE, action) => {
+  return {
+    upload: upload(state.upload, action),
+    main: docManagementReducer(state.main, action),
+    search: searchReducer(state.search, action)
+  }
+}
 
 export default docManageReducer

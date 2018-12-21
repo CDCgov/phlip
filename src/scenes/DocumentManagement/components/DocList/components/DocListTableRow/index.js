@@ -2,37 +2,55 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
-// import CheckboxLabel from 'components/CheckboxLabel'
 import moment from 'moment'
 import { connect } from 'react-redux'
 import TextLink from 'components/TextLink'
 import Icon from 'components/Icon'
-import { FileDocument, Account, FormatSection } from 'mdi-material-ui'
+import { FileDocument } from 'mdi-material-ui'
+// import CheckboxLabel from 'components/CheckboxLabel'
 
 /**
  * Represents one row in the document management table
  */
 export const DocListTableRow = props => {
-  const { doc, onSelectFile, isChecked, projectList, jurisdictionList } = props
- // const date = moment.utc(doc.uploadedDate).local().format('M/D/YYYY, h:mm A')
-    const date = moment.utc(doc.uploadedDate).local().format('M/D/YYYY')
-  const listStyle = { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: 250, maxWidth: 250 }
+  const { doc, /*onSelectFile, isChecked,*/ projectList, jurisdictionList } = props
+  const date = moment.utc(doc.uploadedDate).local().format('M/D/YYYY')
+  const listStyle = {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    width: 250,
+    maxWidth: 250,
+    padding: 18
+  }
   const iconColor = '#949494'
   return (
     <TableRow>
       <TableCell padding="checkbox" style={{ paddingLeft: 24, paddingRight: 0, width: '1%' }}>
         {/*<CheckboxLabel input={{ value: isChecked, onChange: onSelectFile }} />*/}
-          <Icon color={iconColor}><FileDocument /></Icon>
+        <Icon color={iconColor}><FileDocument /></Icon>
       </TableCell>
       <TableCell padding="checkbox" style={listStyle}>
         <TextLink to={{ pathname: `/docs/${doc._id}/view`, state: { document: { ...doc } } }}>
           {doc.name}
         </TextLink>
       </TableCell>
-        <TableCell padding="checkbox" style={listStyle}><span style={{fontWeight:'bold'}}>Uploaded By:</span> {doc.uploadedBy.firstName} {doc.uploadedBy.lastName}</TableCell>
-        <TableCell padding="checkbox" style={listStyle}><span style={{fontWeight:'bold'}}>Uploaded Date:</span> {date}</TableCell>
-        <TableCell padding="checkbox" style={listStyle}><span style={{fontWeight:'bold'}}>Projects:</span> {projectList.join(', ')}</TableCell>
-        <TableCell padding="checkbox" style={listStyle}><span style={{fontWeight:'bold'}}>Jurisdictions:</span> {jurisdictionList.join(', ')}</TableCell>
+      <TableCell padding="checkbox" style={listStyle}>
+        <span style={{ fontWeight: 'bold' }}>Uploaded By:{' '}</span>
+        {doc.uploadedBy.firstName} {doc.uploadedBy.lastName}
+      </TableCell>
+      <TableCell padding="checkbox" style={listStyle}>
+        <span style={{ fontWeight: 'bold' }}>Uploaded Date:{' '}</span>
+        {date}
+      </TableCell>
+      <TableCell padding="checkbox" style={listStyle}>
+        <span style={{ fontWeight: 'bold' }}>Projects:{' '}</span>
+        {projectList.join(', ')}
+      </TableCell>
+      <TableCell padding="checkbox" style={listStyle}>
+        <span style={{ fontWeight: 'bold' }}>Jurisdictions:{' '}</span>
+        {jurisdictionList.join(', ')}
+      </TableCell>
     </TableRow>
   )
 }

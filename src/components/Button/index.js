@@ -6,7 +6,9 @@ import { withTheme } from '@material-ui/core/styles'
 /**
  * Basic button based on @material-ui/core
  */
-export const Button = ({ value, color, onClick, raised, theme, textColor, listButton, style, children, ...otherProps }) => {
+export const Button = props => {
+  const { value, color, onClick, raised, theme, textColor, listButton, style, children, ...otherProps } = props
+
   const buttonColor = color === 'accent' ? 'secondary' : theme[color] ? theme[color] : 'default'
 
   const styles = {
@@ -33,7 +35,8 @@ export const Button = ({ value, color, onClick, raised, theme, textColor, listBu
         color={buttonColor}
         onClick={onClick}
         style={styles}
-        {...otherProps}>{value}
+        {...otherProps}>
+        {value}
       </MuiButton>
     )
   } else {
@@ -43,7 +46,8 @@ export const Button = ({ value, color, onClick, raised, theme, textColor, listBu
         color={buttonColor}
         onClick={onClick}
         style={styles}
-        {...otherProps}>{children}
+        {...otherProps}>
+        {children}
       </MuiButton>
     )
   }

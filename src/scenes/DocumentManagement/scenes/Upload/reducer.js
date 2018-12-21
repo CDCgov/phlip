@@ -1,7 +1,7 @@
 import { types } from './actions'
 import { updateItemAtIndex } from 'utils/normalize'
 import { combineReducers } from 'redux'
-import { createAutocompleteReducer } from 'data/autocomplete/reducer'
+import { createAutocompleteReducer, INITIAL_STATE as AUTO_INITIAL_STATE } from 'data/autocomplete/reducer'
 import { types as autocompleteTypes } from 'data/autocomplete/actions'
 
 export const INITIAL_STATE = {
@@ -299,6 +299,12 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
     default:
       return state
   }
+}
+
+export const COMBINED_INITIAL_STATE = {
+  list: INITIAL_STATE,
+  projectSuggestions: AUTO_INITIAL_STATE,
+  jurisdictionSuggestions: AUTO_INITIAL_STATE
 }
 
 export default combineReducers({

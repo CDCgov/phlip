@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-//import Typography from '@material-ui/core/Typography'
 import { withTheme } from '@material-ui/core/styles'
 import { withRouter, Link } from 'react-router-dom'
 import { FlexGrid, IconButton, CircleIcon, Button, Typography } from 'components'
@@ -40,21 +39,6 @@ export const PageHeader = props => {
             <span style={{ color: theme.palette.secondary.pageHeader }}>{projectName}</span>
           </Typography>
         </>}
-      </FlexGrid>
-      <FlexGrid container type="row">
-        {children}
-        {protocolButton &&
-        <Button
-          value="Protocol"
-          component={Link}
-          to={`/project/${projectId}/protocol`}
-          aria-label="View and Edit Protocol"
-          style={{ backgroundColor: 'white', color: 'black', marginLeft: 15 }}
-        />}
-        {checkoutButton && checkoutButton.show === true &&
-        <div style={{ marginLeft: 15 }}>
-          <Button value={checkoutButton.text} color="accent" {...checkoutButton.props} />
-        </div>}
         {otherButton.show &&
         <div style={{ marginLeft: 15 }}>
           {otherButton.isLink
@@ -76,6 +60,21 @@ export const PageHeader = props => {
             />}
         </div>
         }
+      </FlexGrid>
+      <FlexGrid container type="row" flex align="flex-end" style={{ position: 'relative' }}>
+        {children}
+        {protocolButton &&
+        <Button
+          value="Protocol"
+          component={Link}
+          to={`/project/${projectId}/protocol`}
+          aria-label="View and Edit Protocol"
+          style={{ backgroundColor: 'white', color: 'black', marginLeft: 15 }}
+        />}
+        {checkoutButton && checkoutButton.show === true &&
+        <div style={{ marginLeft: 15 }}>
+          <Button value={checkoutButton.text} color="accent" {...checkoutButton.props} />
+        </div>}
       </FlexGrid>
     </FlexGrid>
   )
