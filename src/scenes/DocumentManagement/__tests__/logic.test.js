@@ -21,7 +21,20 @@ describe('Document Management logic', () => {
 
   const setupStore = () => {
     return createMockStore({
-      initialState: {},
+      initialState: {
+        data: {
+          jurisdictions: {
+            byId: {
+              1: { name: 'jur1' }
+            }
+          },
+          projects: {
+            byId: {
+              1: { name: 'project1' }
+            }
+          }
+        }
+      },
       reducer: mockReducer,
       logic,
       injectedDeps: {
@@ -62,14 +75,18 @@ describe('Document Management logic', () => {
               uploadedBy: { firstName: 'test', lastName: 'user' },
               uploadedByName: 'test user',
               projects: [1],
-              jurisdictions: [1]
+              jurisdictions: [1],
+              jurisdictionList: 'jur1',
+              projectList: 'project1'
             },
             {
               name: 'Doc 2',
               uploadedBy: { firstName: 'test', lastName: 'user' },
               uploadedByName: 'test user',
               projects: [1],
-              jurisdictions: [1]
+              jurisdictions: [1],
+              jurisdictionList: 'jur1',
+              projectList: 'project1'
             }
           ]
         }

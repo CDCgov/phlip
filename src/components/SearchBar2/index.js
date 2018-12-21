@@ -21,9 +21,9 @@ export const SearchBar = props => {
       InputProps={{
         style: { 'alignItems': 'center' },
         startAdornment:
-          <InputAdornment style={{ marginTop: 0, height: 24 }} position="start">
-            <Icon color={theme.palette.greyText}>{searchIcon}</Icon>
-          </InputAdornment>,
+  <InputAdornment style={{ marginTop: 0, height: 24 }} position="start">
+    <Icon color={theme.palette.greyText}>{searchIcon}</Icon>
+  </InputAdornment>,
         inputProps: { 'aria-label': 'Search' },
         disableUnderline: true,
         ...InputProps

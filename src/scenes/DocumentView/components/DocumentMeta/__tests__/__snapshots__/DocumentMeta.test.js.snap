@@ -417,7 +417,7 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
     </FlexGrid>
     <WithStyles(Modal)
       hideOverflow={false}
-      maxWidth="sm"
+      maxWidth="md"
       onClose={[Function]}
       open={false}
     >
@@ -430,55 +430,55 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
           Object {
             "display": "flex",
             "flexDirection": "column",
-            "height": 500,
+            "height": 275,
             "paddingTop": 24,
             "width": 500,
           }
         }
       >
-        <FlexGrid
-          align="center"
-          circular={false}
-          container={true}
-          flex={false}
-          justify="space-between"
-          padding={10}
-          raised={false}
-          style={Object {}}
-          type="row"
-        >
-          <ProJurSearch
-            jurisdictionSuggestions={
-              Array [
-                Object {
-                  "id": 1,
-                },
-                Object {
-                  "id": 2,
-                },
-                Object {
-                  "id": 3,
-                },
-              ]
-            }
-            onClearSuggestions={[Function]}
-            onGetSuggestions={[Function]}
-            onSearchValueChange={[Function]}
-            onSuggestionSelected={[Function]}
-            projectSuggestions={
-              Array [
-                Object {
-                  "id": 4,
-                },
-                Object {
-                  "id": 5,
-                },
-              ]
-            }
-            showJurSearch={false}
-            showProjectError={false}
-          />
-        </FlexGrid>
+        <ProJurSearch
+          jurisdictionSuggestions={
+            Array [
+              Object {
+                "id": 2932,
+              },
+              Object {
+                "id": 25332,
+              },
+              Object {
+                "id": 1,
+              },
+              Object {
+                "id": 2,
+              },
+              Object {
+                "id": 3,
+              },
+            ]
+          }
+          onClearSuggestions={[Function]}
+          onGetSuggestions={[Function]}
+          onSearchValueChange={[Function]}
+          onSuggestionSelected={[Function]}
+          projectSuggestions={
+            Array [
+              Object {
+                "id": 1,
+              },
+              Object {
+                "id": 2,
+              },
+              Object {
+                "id": 4,
+              },
+              Object {
+                "id": 5,
+              },
+            ]
+          }
+          showJurSearch={false}
+          showProjectError={false}
+        />
       </ModalContent>
       <WithStyles(Divider) />
       <WithStyles(ModalActions)

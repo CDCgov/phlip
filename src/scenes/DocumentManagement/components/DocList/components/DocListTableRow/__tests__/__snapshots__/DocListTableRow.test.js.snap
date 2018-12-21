@@ -24,6 +24,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       Object {
         "maxWidth": 250,
         "overflow": "hidden",
+        "padding": 18,
         "textOverflow": "ellipsis",
         "whiteSpace": "nowrap",
         "width": 250,
@@ -49,7 +50,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
                 "firstName": "Test",
                 "lastName": "User",
               },
-              "uploadedDate": "1/1/2000",
+              "uploadedDate": 2000-01-01T05:00:00.000Z,
             },
           },
         }
@@ -64,6 +65,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       Object {
         "maxWidth": 250,
         "overflow": "hidden",
+        "padding": 18,
         "textOverflow": "ellipsis",
         "whiteSpace": "nowrap",
         "width": 250,
@@ -78,8 +80,8 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       }
     >
       Uploaded By:
+       
     </span>
-     
     Test
      
     User
@@ -90,6 +92,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       Object {
         "maxWidth": 250,
         "overflow": "hidden",
+        "padding": 18,
         "textOverflow": "ellipsis",
         "whiteSpace": "nowrap",
         "width": 250,
@@ -104,8 +107,8 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       }
     >
       Uploaded Date:
+       
     </span>
-     
     1/1/2000
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
@@ -114,6 +117,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       Object {
         "maxWidth": 250,
         "overflow": "hidden",
+        "padding": 18,
         "textOverflow": "ellipsis",
         "whiteSpace": "nowrap",
         "width": 250,
@@ -128,8 +132,8 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       }
     >
       Projects:
+       
     </span>
-     
     P1, P2
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
@@ -138,6 +142,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       Object {
         "maxWidth": 250,
         "overflow": "hidden",
+        "padding": 18,
         "textOverflow": "ellipsis",
         "whiteSpace": "nowrap",
         "width": 250,
@@ -152,8 +157,8 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       }
     >
       Jurisdictions:
+       
     </span>
-     
     J1, J2
   </WithStyles(TableCell)>
 </WithStyles(TableRow)>

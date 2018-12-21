@@ -11,8 +11,8 @@ const mockDocuments = {
       uploadedByName: 'test user',
       jurisdictions: [321],
       projects: [123],
-        projectList: 'Project 1',
-        jurisdictionList: 'Ohio'
+      projectList: 'Project 1',
+      jurisdictionList: 'Ohio'
     },
     '2': {
       name: 'doc2',
@@ -88,10 +88,7 @@ const initial = {
   },
   rowsPerPage: '10',
   page: 0,
-  searchValue: '',
-  allSelected: false,
-  searchByProject: null,
-  searchByJurisdiction: null
+  allSelected: false
 }
 
 const getState = (other = {}) => ({
@@ -390,7 +387,7 @@ describe('Document Management reducer', () => {
     })
   })
 
-  describe('ON_SUGGESTION_SELECTED_PROJECT', () => {
+  xdescribe('ON_SUGGESTION_SELECTED_PROJECT', () => {
     test('should set state.searchByProject to the id of the action.suggestion', () => {
       const action = {
         type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_PROJECT_MAIN`,
@@ -418,7 +415,7 @@ describe('Document Management reducer', () => {
     })
   })
 
-  describe('ON_SEARCH_FIELD_CHANGE', () => {
+  xdescribe('ON_SEARCH_FIELD_CHANGE', () => {
     test('should set state.searchValue to action.searchValue', () => {
       const action = {
         type: types.ON_SEARCH_FIELD_CHANGE,
@@ -444,7 +441,7 @@ describe('Document Management reducer', () => {
     })
   })
 
-  describe('ON_SUGGESTION_SELECTED_JURISDICTION', () => {
+  xdescribe('ON_SUGGESTION_SELECTED_JURISDICTION', () => {
     test('should set state.searchByJurisdiction to the id of the action.suggestion', () => {
       const action = {
         type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION_MAIN`,

@@ -212,7 +212,8 @@ export class SearchBox extends Component {
                         fullWidth
                         inputProps={inputProps}
                         value={name}
-                        onChange={e => this.handleFormValueChange('name', e.target.value)} />
+                        onChange={e => this.handleFormValueChange('name', e.target.value)}
+                      />
                     </FlexGrid>
                     <FlexGrid container type="row" style={formRowStyles}>
                       <Typography variant="body2" htmlFor="uploaded-by" style={formRowFontStyles}>

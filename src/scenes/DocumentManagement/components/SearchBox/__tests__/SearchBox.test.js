@@ -3,13 +3,12 @@ import { shallow } from 'enzyme'
 import { SearchBox } from '../index'
 
 const props = {
-    searchTerms: {
-        docNameSearchValue: 'doc1',
-        uploadedBySearchValue: 'Tim',
-        uploadedDateSearchValue: '1/1/2000',
-        projectSearchValue: 'Project 1',
-        jurisdictionSearchValue: 'Ohio (state)',
-    }
+  form: {
+    uploadedBy: 'test',
+    uploadedDate: '10/10/2010',
+    name: 'document'
+  },
+  searchValue: ''
 }
 
 describe('DocumentManagement - SearchBox', () => {

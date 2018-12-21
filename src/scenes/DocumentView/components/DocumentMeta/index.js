@@ -10,7 +10,7 @@ import { FileDocument, CalendarRange, Account, FormatSection } from 'mdi-materia
 import Icon from 'components/Icon'
 import moment from 'moment'
 import DatePicker from 'components/DatePicker'
-import { Alert, CircularLoader, Grid } from 'components'
+import { Alert, CircularLoader } from 'components'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import actions, { projectAutocomplete, jurisdictionAutocomplete } from './actions'
 import { bindActionCreators } from 'redux'
