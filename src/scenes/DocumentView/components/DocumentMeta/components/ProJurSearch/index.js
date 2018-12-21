@@ -19,9 +19,9 @@ const ProJurSearch = props => {
   } = props
 
   return (
-    <FlexGrid container type="row" align="center" justify="center">
+    <FlexGrid container type="row" align="center">
       {!showJurSearch &&
-      <FlexGrid container type="row" align="flex-end" style={{ marginRight: 20 }}>
+      <FlexGrid container flex type="row" align="flex-end">
         <Icon style={{ paddingRight: 8, paddingBottom: 5 }}>dvr</Icon>
         <Autocomplete
           suggestions={projectSuggestions}
@@ -40,9 +40,7 @@ const ProJurSearch = props => {
           }}
           style={{ width: '100%' }}
           InputProps={{
-            label: 'Assign to Project',
             placeholder: 'Search projects',
-            required: true,
             fullWidth: true,
             error: showProjectError
           }}
@@ -50,7 +48,7 @@ const ProJurSearch = props => {
         />
       </FlexGrid>}
       {showJurSearch &&
-      <FlexGrid container type="row" align="flex-end" style={{ marginLeft: 20 }}>
+      <FlexGrid container flex type="row" align="flex-end">
         <Icon style={{ paddingRight: 8, paddingBottom: 5 }}>account_balance</Icon>
         <Autocomplete
           suggestions={jurisdictionSuggestions}
@@ -69,7 +67,6 @@ const ProJurSearch = props => {
           }}
           handleSuggestionSelected={onSuggestionSelected('jurisdiction')}
           InputProps={{
-            label: 'Assign to Jurisdiction',
             placeholder: 'Search jurisdictions',
             fullWidth: true
           }}

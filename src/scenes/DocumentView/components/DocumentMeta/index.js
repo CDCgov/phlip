@@ -274,7 +274,7 @@ export class DocumentMeta extends Component {
           style={{ overflow: 'hidden', minWidth: '30%', height: '33%', marginBottom: 25 }}>
           <FlexGrid container type="row" align="center" justify="space-between" padding={10}>
             <Typography variant="body2" style={{ color: 'black' }}>
-            Assigned Projects
+            Projects
             </Typography>
             <Button
               onClick={this.showAddProjModal}
@@ -301,7 +301,7 @@ export class DocumentMeta extends Component {
         <FlexGrid raised container flex style={{ overflow: 'hidden', minWidth: '30%', height: '33%' }}>
           <FlexGrid container type="row" align="center" justify="space-between" padding={10}>
             <Typography variant="body2" style={{ color: 'black' }}>
-            Assigned Jurisdictions
+            Jurisdictions
             </Typography>
             <Button
               onClick={this.showAddJurModal}
@@ -324,28 +324,26 @@ export class DocumentMeta extends Component {
               </Typography>)
             )}
           </FlexGrid>
-          <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="sm" hideOverflow={false}>
+          <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="md" hideOverflow={false}>
             {this.props.alertOpen &&
             <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle}>
               {this.props.alertText}
             </Alert>}
-            <ModalTitle title="Document Detail" />
+            <ModalTitle title={this.state.showAddJurisdiction ? 'Assign Jurisdiction' : 'Assign Project'} />
             <Divider />
-            <ModalContent style={{ display: 'flex', flexDirection: 'column', paddingTop: 24, width: 500, height: 500 }}>
-              <Grid container type="row" align="center" justify="space-between" padding={10}>
-                <ProJurSearch
-                  jurisdictionSuggestions={this.props.jurisdictionSuggestions}
-                  projectSuggestions={this.props.projectSuggestions}
-                  onClearSuggestions={this.handleClearSuggestions}
-                  onGetSuggestions={this.handleGetSuggestions}
-                  onSearchValueChange={this.handleSearchValueChange}
-                  onSuggestionSelected={this.handleSuggestionSelected}
-                  jurisdictionSearchValue={this.props.jurisdictionSearchValue}
-                  projectSearchValue={this.props.projectSearchValue}
-                  showProjectError={this.props.noProjectError === true}
-                  showJurSearch={this.state.showAddJurisdiction === true}
-                />
-              </Grid>
+            <ModalContent style={{ display: 'flex', flexDirection: 'column', paddingTop: 24, width: 500, height: 275 }}>
+              <ProJurSearch
+                jurisdictionSuggestions={this.props.jurisdictionSuggestions}
+                projectSuggestions={this.props.projectSuggestions}
+                onClearSuggestions={this.handleClearSuggestions}
+                onGetSuggestions={this.handleGetSuggestions}
+                onSearchValueChange={this.handleSearchValueChange}
+                onSuggestionSelected={this.handleSuggestionSelected}
+                jurisdictionSearchValue={this.props.jurisdictionSearchValue}
+                projectSearchValue={this.props.projectSearchValue}
+                showProjectError={this.props.noProjectError === true}
+                showJurSearch={this.state.showAddJurisdiction === true}
+              />
             </ModalContent>
             <Divider />
             <ModalActions actions={modalAction} />

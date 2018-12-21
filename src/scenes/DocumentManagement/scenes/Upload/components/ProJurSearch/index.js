@@ -39,7 +39,7 @@ const ProJurSearch = props => {
           }}
           style={{ width: '100%' }}
           InputProps={{
-            label: 'Assign to Project',
+            label: 'Project',
             placeholder: 'Search projects',
             required: true,
             fullWidth: true,
@@ -68,7 +68,7 @@ const ProJurSearch = props => {
           }}
           handleSuggestionSelected={onSuggestionSelected('jurisdiction')}
           InputProps={{
-            label: 'Assign to Jurisdiction',
+            label: 'Jurisdiction',
             placeholder: 'Search jurisdictions',
             fullWidth: true
           }}
