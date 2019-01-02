@@ -20,12 +20,29 @@ test_frontend:
   tags:
     - phlip2-fe
 
+build_frontend_dev_internal:
+  stage: build
+  script:
+    - npm install
+    - npm run build
+    - cp ~iiu-deploy/.env.fe ./
+    - cp -r ./dist ~iiu-deploy/esquire-frontend/
+    - cp -r ./scripts ~iiu-deploy/esquire-frontend/
+    - cp ./package.json ~iiu-deploy/esquire-frontend/
+  only:
+    - v2
+  tags:
+    - phlip2-fe
+  environment:
+    name: Internal PHLIP2 Dev
+    url: http://lvscent7064.lab.local
+
 deploy_frontend_dev_internal:
   stage: deploy
   script:
-    - cp -r ./dist ~iiu-deploy/esquire-frontend/
-    - cp -r ./scripts ~iiu-deploy/esquire-frontend/
-    - cp ./package.json ~iiu-deploy/esquire-frontend
+    - npm install --production
+    - sudo pm2 stop frontend
+    - sudo pm2 start scripts/serve.js --name frontend
   only:
     - v2
   tags:
@@ -48,19 +65,6 @@ deploy_frontend_dev_azure:
   environment:
     name: Azure PHLIP2 Dev
     url: https://phlip2dev.phiresearchlab.org
-
-build_frontend_dev_internal:
-  stage: build
-  script:
-    - npm install
-    - npm run build
-  only:
-    - v2
-  tags:
-    - phlip2-fe
-  environment:
-    name: Internal PHLIP2 Dev
-    url: http://lvscent7064.lab.local
 
 build_frontend_dev_azure:
   stage: build
