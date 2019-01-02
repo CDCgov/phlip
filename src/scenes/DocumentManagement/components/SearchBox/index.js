@@ -9,6 +9,7 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import actions, { jurisdictionAutocomplete, projectAutocomplete } from './actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import moment from 'moment'
 
 export class SearchBox extends Component {
   static propTypes = {
@@ -97,7 +98,11 @@ export class SearchBox extends Component {
     let searchTerms = []
     params.forEach((key, index) => {
       if (this.props.form[key] !== '') {
-        searchTerms.push(key.concat(':', this.props.form[key]))
+        let p = this.props.form[key]
+        if (key === 'uploadedDate') {
+          p = moment.utc(p).local().format('M/D/YYYY')
+        }
+        searchTerms.push(key.concat(':', p))
       }
     })
 
