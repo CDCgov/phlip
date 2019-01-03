@@ -33,8 +33,8 @@ export class AvatarMenu extends PureComponent {
     }
   }
 
-  handleClose = event => {
-    if (!this.avatarRef.contains(event.target)) {
+  handleClickAway = () => {
+    if (this.props.open) {
       this.props.onToggleMenu()
     }
   }
@@ -45,39 +45,39 @@ export class AvatarMenu extends PureComponent {
     } = this.props
 
     return (
-      <Grid item style={{ zIndex: 2 }}>
-        <Manager>
-          <Reference innerRef={node => this.avatarRef = findDOMNode(node)}>
-            {({ ref }) => {
-              return (
-                <div ref={ref}>
-                  <Avatar
-                    id="avatar-menu-button"
-                    onClick={this.props.onToggleMenu}
-                    onKeyPress={this.onKeyPressMenu}
-                    role="button"
-                    tabIndex={0}
-                    aria-controls="avatar-menu"
-                    aria-haspopup={true}
-                    aria-owns={open ? 'avatar-user-menu' : null}
-                    avatar={avatar}
-                    ref={ref}
-                    userName={userName}
-                    initials={initials ? initials : ''}
-                    style={{ cursor: 'pointer' }}
-                  />
-                </div>
-              )
-            }}
-          </Reference>
-          <Popper
-            placement="bottom-end"
-            eventsEnabled={open}
-            style={{ pointerEvents: open ? 'auto' : 'none' }}>
-            {({ placement, ref, style })  => {
-              return (
-                open &&
-                <ClickAwayListener onClickAway={onToggleMenu}>
+      <ClickAwayListener onClickAway={this.handleClickAway}>
+        <Grid item style={{ zIndex: 2 }}>
+          <Manager>
+            <Reference innerRef={node => this.avatarRef = findDOMNode(node)}>
+              {({ ref }) => {
+                return (
+                  <div ref={ref}>
+                    <Avatar
+                      id="avatar-menu-button"
+                      onClick={onToggleMenu}
+                      onKeyPress={this.onKeyPressMenu}
+                      role="button"
+                      tabIndex={0}
+                      aria-controls="avatar-menu"
+                      aria-haspopup={true}
+                      aria-owns={open ? 'avatar-user-menu' : null}
+                      avatar={avatar}
+                      ref={ref}
+                      userName={userName}
+                      initials={initials ? initials : ''}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </div>
+                )
+              }}
+            </Reference>
+            <Popper
+              placement="bottom-end"
+              eventsEnabled={open}
+              style={{ pointerEvents: open ? 'auto' : 'none' }}>
+              {({ placement, ref, style }) => {
+                return (
+                  open &&
                   <div data-placement={placement} style={{ marginTop: 5, ...style }} ref={ref}>
                     <Paper>
                       <MenuList
@@ -92,7 +92,10 @@ export class AvatarMenu extends PureComponent {
                           </ListItemIcon>
                           <ListItemText style={{ color: '#5f6060' }} disableTypography primary="User Management" />
                         </MenuItem>}
-                        <MenuItem onClick={onLogoutUser} key="logout-menu" ref={role === 'Admin' ? null : this.setFirstMenuItem}>
+                        <MenuItem
+                          onClick={onLogoutUser}
+                          key="logout-menu"
+                          ref={role === 'Admin' ? null : this.setFirstMenuItem}>
                           <ListItemIcon>
                             <Icon color="accent">exit_to_app</Icon>
                           </ListItemIcon>
@@ -107,12 +110,12 @@ export class AvatarMenu extends PureComponent {
                       </MenuList>
                     </Paper>
                   </div>
-                </ClickAwayListener>
-              )
-            }}
-          </Popper>
-        </Manager>
-      </Grid>
+                )
+              }}
+            </Popper>
+          </Manager>
+        </Grid>
+      </ClickAwayListener>
     )
   }
 }

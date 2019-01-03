@@ -36,19 +36,19 @@ export const DocListTableRow = props => {
         </TextLink>
       </TableCell>
       <TableCell padding="checkbox" style={listStyle}>
-        <span style={{ fontWeight: 'bold' }}>Uploaded By:{' '}</span>
+        <span style={{ fontWeight: 500 }}>Uploaded By:{' '}</span>
         {doc.uploadedBy.firstName} {doc.uploadedBy.lastName}
       </TableCell>
       <TableCell padding="checkbox" style={listStyle}>
-        <span style={{ fontWeight: 'bold' }}>Uploaded Date:{' '}</span>
+        <span style={{ fontWeight: 500 }}>Uploaded Date:{' '}</span>
         {date}
       </TableCell>
       <TableCell padding="checkbox" style={listStyle}>
-        <span style={{ fontWeight: 'bold' }}>Projects:{' '}</span>
+        <span style={{ fontWeight: 500 }}>Projects:{' '}</span>
         {projectList.join(', ')}
       </TableCell>
-      <TableCell padding="checkbox" style={listStyle}>
-        <span style={{ fontWeight: 'bold' }}>Jurisdictions:{' '}</span>
+      <TableCell padding="checkbox" style={{ ...listStyle, paddingRight: 24 }}>
+        <span style={{ fontWeight: 500 }}>Jurisdictions:{' '}</span>
         {jurisdictionList.join(', ')}
       </TableCell>
     </TableRow>

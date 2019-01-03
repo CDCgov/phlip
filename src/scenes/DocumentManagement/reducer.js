@@ -24,8 +24,6 @@ const mergeName = docObj => ({
 })
 
 const resetFilter = (docs, stringSearch, projectFilter, jurisdictionFilter) => {
-  console.log(docs)
-  console.log(jurisdictionFilter, projectFilter)
   let matches = docs
 
   const searchFields = ['name', 'uploadedBy', 'uploadedDate', 'project', 'jurisdiction']

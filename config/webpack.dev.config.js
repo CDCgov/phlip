@@ -10,6 +10,9 @@ module.exports = env => {
   return {
     mode: 'development',
     devtool: 'eval',
+    optimization: {
+      runtimeChunk: true
+    },
     entry: {
       app: paths.appIndexJs
     },

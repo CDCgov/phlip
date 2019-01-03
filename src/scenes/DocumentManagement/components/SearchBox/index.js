@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { FlexGrid, IconButton, Button, DatePicker, Typography } from 'components'
-import SearchBar from 'components/SearchBar2'
-import Autocomplete from 'components/Autocomplete'
+import { FlexGrid, Button, Icon, DatePicker, Typography, Autocomplete } from 'components'
+import SearchBar from 'components/SearchBox'
 import TextField from '@material-ui/core/TextField'
+import ButtonBase from '@material-ui/core/ButtonBase'
 import { Manager, Reference, Popper } from 'react-popper'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import actions, { jurisdictionAutocomplete, projectAutocomplete } from './actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import moment from 'moment'
+import { AccountBox, Alphabetical, City, Clipboard, CalendarBlank } from 'mdi-material-ui'
 
 export class SearchBox extends Component {
   static propTypes = {
@@ -24,6 +25,12 @@ export class SearchBox extends Component {
 
   constructor(props, context) {
     super(props, context)
+    this.buttonRef = null
+  }
+
+  componentWillUnmount() {
+    this.clearForm()
+    this.props.actions.clearSearchString()
   }
 
   state = {
@@ -34,7 +41,8 @@ export class SearchBox extends Component {
 
   handleFocusChange = focused => {
     this.setState({
-      isFocused: focused
+      isFocused: focused,
+      showFilterForm: false
     })
   }
 
@@ -43,6 +51,9 @@ export class SearchBox extends Component {
   }
 
   handleSearchFieldChange = e => {
+    if (e.target.value === '') {
+      this.clearForm()
+    }
     this.props.actions.updateSearchValue(e.target.value, this.props.form)
   }
 
@@ -70,26 +81,31 @@ export class SearchBox extends Component {
       : this.props.actions.projectAutocomplete.clearSuggestions()
   }
 
-  handleToggleFilterForm = shouldShow => {
-    this.setState({
-      showFilterForm: shouldShow
-    })
-  }
-
   handleSearchFormSubmit = () => {
     const searchString = this.buildSearchFilter()
     this.props.actions.updateSearchValue(searchString, this.props.form)
-    this.clearForm()
-    this.handleToggleFilterForm(false)
+    this.handleToggleForm()
+  }
+
+  handleClickAway = e => {
+    if (!this.state.datePickerOpen) {
+      this.clearForm()
+      if (e.path[1] !== this.buttonRef) {
+        this.handleToggleForm(e)
+      }
+    }
   }
 
   clearForm = () => {
-    if (!this.state.datePickerOpen) {
-      this.props.actions.clearForm()
-      this.props.actions.projectAutocomplete.clearAll()
-      this.props.actions.jurisdictionAutocomplete.clearAll()
-      this.handleToggleFilterForm(false)
-    }
+    this.props.actions.clearForm()
+    this.props.actions.projectAutocomplete.clearAll()
+    this.props.actions.jurisdictionAutocomplete.clearAll()
+  }
+
+  handleToggleForm = () => {
+    this.setState({
+      showFilterForm: !this.state.showFilterForm
+    })
   }
 
   buildSearchFilter = () => {
@@ -151,7 +167,7 @@ export class SearchBox extends Component {
       border: `1px solid rgba(${189}, ${189}, ${189}, ${.33}`,
       display: 'flex',
       alignItems: 'center',
-      padding: 6,
+      padding: 5,
       flex: 1,
       boxShadow: this.state.isFocused
         ? '0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)'
@@ -166,6 +182,8 @@ export class SearchBox extends Component {
       color: '#5f6368',
       letterSpacing: .2,
       fontWeight: 300,
+      paddingLeft: 5,
+      fontSize: 13,
       width: '25%',
       maxWidth: '25%'
     }
@@ -184,17 +202,19 @@ export class SearchBox extends Component {
               <div ref={ref} style={boxStyle}>
                 <SearchBar
                   placeholder="Search documents"
-                  style={{ lineHeight: 30, verticalAlign: 'middle' }}
                   fullWidth
                   searchValue={searchValue}
                   handleSearchValueChange={this.handleSearchFieldChange}
                   searchIcon="search"
                   InputProps={{
                     onFocus: () => this.handleFocusChange(true),
-                    onBlur: () => this.handleFocusChange(false)
+                    onBlur: () => this.handleFocusChange(false),
+                    inputProps: { style: { fontSize: 15, padding: 0 } }
                   }}
                 />
-                <IconButton color={iconColor} onClick={this.handleToggleFilterForm}>arrow_drop_down</IconButton>
+                <ButtonBase buttonRef={node => this.buttonRef = node} disableRipple onClick={this.handleToggleForm}>
+                  <Icon color={iconColor}>arrow_drop_down</Icon>
+                </ButtonBase>
               </div>
             )
           }}
@@ -206,12 +226,23 @@ export class SearchBox extends Component {
           {({ placement, ref, style }) => {
             return (
               this.state.showFilterForm &&
-              <ClickAwayListener onClickAway={this.clearForm}>
+              <ClickAwayListener onClickAway={this.handleClickAway}>
                 <div data-placement={placement} style={{ ...style, width: '100%', zIndex: 5 }} ref={ref}>
                   <FlexGrid container type="column" padding={24} raised>
                     <FlexGrid container type="row" style={formRowStyles}>
+                      <Alphabetical
+                        style={{
+                          color: 'white',
+                          backgroundColor: '#757575',
+                          fontSize: 15,
+                          borderRadius: 3,
+                          marginLeft: 2,
+                          marginRight: 2,
+                          marginTop: 1
+                        }}
+                      />
                       <Typography variant="body2" style={formRowFontStyles}>
-                        File Name
+                        Name
                       </Typography>
                       <TextField
                         fullWidth
@@ -221,6 +252,7 @@ export class SearchBox extends Component {
                       />
                     </FlexGrid>
                     <FlexGrid container type="row" style={formRowStyles}>
+                      <AccountBox style={{ fontSize: 18, color: '#757575' }} />
                       <Typography variant="body2" htmlFor="uploaded-by" style={formRowFontStyles}>
                         Uploaded By
                       </Typography>
@@ -233,6 +265,7 @@ export class SearchBox extends Component {
                       />
                     </FlexGrid>
                     <FlexGrid container type="row" style={formRowStyles}>
+                      <CalendarBlank style={{ fontSize: 18, color: '#757575' }} />
                       <Typography variant="body2" htmlFor="uploaded-date" style={formRowFontStyles}>
                         Uploaded On
                       </Typography>
@@ -260,6 +293,7 @@ export class SearchBox extends Component {
                       />
                     </FlexGrid>
                     <FlexGrid container type="row" style={formRowStyles}>
+                      <Clipboard style={{ fontSize: 18, color: '#757575' }} />
                       <Typography variant="body2" htmlFor="project" style={formRowFontStyles}>
                         Project
                       </Typography>
@@ -284,6 +318,7 @@ export class SearchBox extends Component {
                       />
                     </FlexGrid>
                     <FlexGrid container type="row" style={formRowStyles}>
+                      <City style={{ fontSize: 18, color: '#757575' }} />
                       <Typography variant="body2" htmlFor="jurisdiction" style={formRowFontStyles}>
                         Jurisdiction
                       </Typography>

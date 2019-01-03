@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles'
 import { Row, Column } from 'components/Layout'
 import Avatar from 'components/Avatar'
 import { getInitials } from 'utils/normalize'
-import { Marker } from 'mdi-material-ui'
+import { FormatQuoteClose } from 'mdi-material-ui'
 import { IconButton } from 'components/index'
 
 const styles = theme => ({
@@ -28,7 +28,8 @@ const styles = theme => ({
 })
 
 /**
- * A textarea input different from typically @material-ui/core inputs, in that it is a box. Used in Coding / Validation scenes
+ * A textarea input different from typically @material-ui/core inputs, in that it is a box. Used in Coding / Validation
+ * scenes
  */
 export const InputBox = props => {
   const {
@@ -83,9 +84,9 @@ export const InputBox = props => {
         <IconButton
           style={{ alignSelf: 'center', marginLeft: 20 }}
           onClick={onToggleAnswerForAnno(answerId)}
-          color={enabledAnswerChoice === answerId ? 'primary' : '#b9bbbb'}
+          color={enabledAnswerChoice === answerId ? 'primary' : '#757575'}
           iconSize={20}>
-          <Marker style={{ fontSize: 20 }} />
+          <FormatQuoteClose style={{ fontSize: 20 }} />
         </IconButton>}
       </Row>
       {textValues.textAnswer && textValues.textAnswer.length > 0 &&
