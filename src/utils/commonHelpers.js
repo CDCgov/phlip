@@ -35,4 +35,8 @@ const generateUniqueProps = id => header => ({
   key: `${id}-${header}`
 })
 
-export default { sliceTable, sortListOfObjects, generateUniqueProps }
+export const checkIfMultiWord = str => {
+  return str.split(' ').length > 1
+}
+
+export default { sliceTable, sortListOfObjects, generateUniqueProps, checkIfMultiWord }

@@ -25,50 +25,62 @@ const mergeName = docObj => ({
 
 const resetFilter = (docs, stringSearch, projectFilter, jurisdictionFilter) => {
   let matches = docs
+  let pieces = []
 
-  const searchFields = ['name', 'uploadedBy', 'uploadedDate', 'project', 'jurisdiction']
-  const regEnclose = RegExp('^(.*.)$')
+  const searchFields = {
+    name: 'name',
+    uploadedBy: 'uploadedByName',
+    uploadedDate: 'uploadedDate',
+    project: 'projectList',
+    jurisdiction: 'jurisdictionList'
+  }
+
+  const regEnd = /\)$/
+  const regBegin = /^\(/
 
   const searchParams = stringSearch.split(' | ')
   searchParams.forEach(searchTerm => {
-    let searchTermPieces = searchTerm.split(':')
+    const searchTermPieces = searchTerm.split(':')
     if (searchTermPieces.length > 1) {
-      let searchProperty = searchTermPieces[0]
-      let searchValue = searchTermPieces[1]
-
-      if (searchFields.includes(searchProperty)) {
-        if (searchProperty === 'project' && projectFilter !== null) {
+      let searchValue = searchTermPieces[1].trim()
+      if (Object.keys(searchFields).includes(searchTermPieces[0])) {
+        let searchProperty = searchFields[searchTermPieces[0]]
+        if (searchProperty === 'projectList' && projectFilter !== null) {
           matches = matches.filter(doc => doc.projects.includes(projectFilter))
-        } else if (searchProperty === 'jurisdiction' && jurisdictionFilter !== null) {
+        } else if (searchProperty === 'jurisdictionList' && jurisdictionFilter !== null) {
           matches = matches.filter(doc => doc.jurisdictions.includes(jurisdictionFilter))
         } else {
-          switch (searchProperty) {
-            case 'project':
-              searchProperty = 'projectList'
-              break
-            case 'jurisdiction':
-              searchProperty = 'jurisdictionList'
-              break
-            case 'uploadedBy':
-              searchProperty = 'uploadedByName'
-              break
+          // Checking if the search string if multi-worded
+          if (regBegin.test(searchValue)) {
+            if (regEnd.test(searchValue)) {
+              searchValue = searchValue.replace(regBegin, '')
+              searchValue = searchValue.replace(regEnd, '')
+            } else {
+              pieces = searchValue.split(' ')
+              if (pieces.length > 1) {
+                let foundEnd = false
+                for (let i = 1; i < pieces.length; i++) {
+                  if (foundEnd) break
+                  if (pieces[i].endsWith(')')) {
+                    pieces[0] = pieces[0].replace(regBegin, '')
+                    pieces[i] = pieces[i].replace(regEnd, '')
+                    const searchStringParams = pieces.splice(0, i + 1)
+                    searchValue = searchStringParams.join(' ')
+                    foundEnd = true
+                  }
+                }
+              }
+            }
           }
 
-          if (regEnclose.test(searchValue)) {
-            searchValue = searchValue.toString().replace('(', '').replace(')', '').trim()
-          }
-
+          pieces.forEach(piece => matches = searchUtils.searchForMatches(matches, piece, Object.values(searchFields)))
           matches = searchUtils.searchForMatches(matches, searchValue, [searchProperty])
         }
       } else {
-        matches = searchUtils.searchForMatches(matches, searchTerm, [
-          'name', 'uploadedByName', 'uploadedDate', 'projectList', 'jurisdictionList'
-        ])
+        matches = searchUtils.searchForMatches(matches, searchTerm, Object.values(searchFields))
       }
     } else {
-      matches = searchUtils.searchForMatches(matches, searchTerm, [
-        'name', 'uploadedByName', 'uploadedDate', 'projectList', 'jurisdictionList'
-      ])
+      matches = searchUtils.searchForMatches(matches, searchTerm, Object.values(searchFields))
     }
   })
 

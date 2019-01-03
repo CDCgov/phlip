@@ -10,6 +10,7 @@ import actions, { jurisdictionAutocomplete, projectAutocomplete } from './action
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import moment from 'moment'
+import { checkIfMultiWord } from 'utils/commonHelpers'
 import { AccountBox, Alphabetical, City, Clipboard, CalendarBlank } from 'mdi-material-ui'
 
 export class SearchBox extends Component {
@@ -28,15 +29,15 @@ export class SearchBox extends Component {
     this.buttonRef = null
   }
 
-  componentWillUnmount() {
-    this.clearForm()
-    this.props.actions.clearSearchString()
-  }
-
   state = {
     isFocused: false,
     showFilterForm: false,
     datePickerOpen: false
+  }
+
+  componentWillUnmount() {
+    this.clearForm()
+    this.props.actions.clearSearchString()
   }
 
   handleFocusChange = focused => {
@@ -117,17 +118,29 @@ export class SearchBox extends Component {
         let p = this.props.form[key]
         if (key === 'uploadedDate') {
           p = moment.utc(p).local().format('M/D/YYYY')
+        } else {
+          if (checkIfMultiWord(p)) {
+            p = `(${p})`
+          }
         }
         searchTerms.push(key.concat(':', p))
       }
     })
 
     if (this.props.form.project.id !== null) {
-      searchTerms.push(`project:${this.props.form.project.name}`)
+      let z = this.props.form.project.name
+      if (checkIfMultiWord(z)) {
+        z = `(${z})`
+      }
+      searchTerms.push(`project:${z}`)
     }
 
     if (this.props.form.jurisdiction.id !== null) {
-      searchTerms.push(`jurisdiction:${this.props.form.jurisdiction.name}`)
+      let z = this.props.form.jurisdiction.name
+      if (checkIfMultiWord(z)) {
+        z = `(${z})`
+      }
+      searchTerms.push(`jurisdiction:${z}`)
     }
 
     return searchTerms.join(' | ')
