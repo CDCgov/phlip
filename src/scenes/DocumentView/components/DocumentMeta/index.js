@@ -195,9 +195,9 @@ export class DocumentMeta extends Component {
 
     return (
       <>
-        <FlexGrid raised container style={{ overflow: 'hidden', minWidth: '30%', marginBottom: 25 }}>
+        <FlexGrid raised container style={{ overflow: 'hidden', minWidth: '30%', marginBottom: 25, height: '40%' }}>
           <Typography variant="body2" style={{ padding: 10, color: 'black' }}>
-          Document Information
+            Document Information
           </Typography>
           <Divider />
           <FlexGrid container padding={15}>
@@ -213,11 +213,12 @@ export class DocumentMeta extends Component {
                   value: this.props.document.status || 'Draft',
                   onChange: this.onChangeStatusField
                 }}
+                style={{ fontSize: 14 }}
                 formControlStyle={{ minWidth: 180 }}
                 meta={{}}
               />
             </FlexGrid>
-            <FlexGrid container type="row" align="center" style={{ marginBottom: 25 }}>
+            <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
               <Icon color={iconColor}><FormatSection /></Icon>
               <Typography variant="body1" style={{ padding: '0 5px' }}>
               Citation:
@@ -230,7 +231,7 @@ export class DocumentMeta extends Component {
                 />)
                 : <Typography>{this.props.document.citation}</Typography>}
             </FlexGrid>
-            <FlexGrid container type="row" align="center" style={{ marginBottom: 25 }}>
+            <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
               <Icon color={iconColor}><CalendarRange /></Icon>
               <Typography variant="body1" style={{ padding: '0 5px' }}>
                 Effective Date:
@@ -247,7 +248,7 @@ export class DocumentMeta extends Component {
                 />)
                 : <Typography>{date}</Typography>}
             </FlexGrid>
-            <FlexGrid container type="row" align="center" style={{ marginBottom: 30 }}>
+            <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
               <Icon color={iconColor}><Account /></Icon>
               <Typography variant="body1" style={{ padding: '0 5px' }}>
                 {this.props.document.uploadedByName}
@@ -271,14 +272,15 @@ export class DocumentMeta extends Component {
           raised
           container
           flex
-          style={{ overflow: 'hidden', minWidth: '30%', height: '33%', marginBottom: 25 }}>
-          <FlexGrid container type="row" align="center" justify="space-between" padding={10}>
+          style={{ overflow: 'hidden', minWidth: '30%', height: '30%', marginBottom: 20 }}>
+          <FlexGrid container type="row" align="center" justify="space-between" padding={10} style={{ minHeight: 32 }}>
             <Typography variant="body2" style={{ color: 'black' }}>
             Projects
             </Typography>
             <Button
               onClick={this.showAddProjModal}
               value="Add"
+              size="small"
               style={{ backgroundColor: 'white', color: 'black' }}
               aria-label="Add jurisdiction to document"
             />
@@ -298,20 +300,21 @@ export class DocumentMeta extends Component {
             )}
           </FlexGrid>
         </FlexGrid>
-        <FlexGrid raised container flex style={{ overflow: 'hidden', minWidth: '30%', height: '33%' }}>
-          <FlexGrid container type="row" align="center" justify="space-between" padding={10}>
+        <FlexGrid raised container flex style={{ overflow: 'hidden', minWidth: '30%', height: '30%' }}>
+          <FlexGrid container type="row" align="center" justify="space-between" padding={10} style={{ minHeight: 32 }}>
             <Typography variant="body2" style={{ color: 'black' }}>
             Jurisdictions
             </Typography>
             <Button
               onClick={this.showAddJurModal}
               value="Add"
+              size="small"
               style={{ backgroundColor: 'white', color: 'black' }}
               aria-label="Add jurisdiction to document"
             />
           </FlexGrid>
           <Divider />
-          <FlexGrid type="row" flex padding={10} style={{ overflow: 'auto', height: '100%' }}>
+          <FlexGrid type="row" flex padding={10} style={{ overflow: 'auto' }}>
             {this.props.jurisdictionList.map((item, index) => (
               <Typography
                 style={{
