@@ -172,7 +172,7 @@ module.exports = env => {
         },
         chunksSortMode: (a, b) => {
           const order = ['arrayIncludes', 'app']
-          return order.indexOf(a.names[0]) - order.indexOf(b.names[0])
+          return order.indexOf(a) - order.indexOf(b)
         }
       }),
 
