@@ -23,7 +23,7 @@ export class DatePicker extends PureComponent {
       <FormControl error={Boolean(error)} disabled={disabled} {...containerProps}>
         <MuiDatePicker
           label={label}
-          style={{ marginTop: 16 }}
+          style={{ marginTop: 16, ...otherProps.style }}
           format={dateFormat}
           name={name}
           keyboardIcon={<Calendar />}

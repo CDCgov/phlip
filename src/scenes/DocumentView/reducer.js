@@ -6,8 +6,10 @@ export const INITIAL_STATE = {
     projects: [],
     jurisdictions: []
   },
+  documentForm: {},
   documentRequestInProgress: false,
-  documentUpdatingInProgress: false
+  documentUpdatingInProgress: false,
+  inEditMode: false
 }
 
 const docViewReducer = (state = INITIAL_STATE, action) => {
@@ -27,6 +29,20 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         documentRequestInProgress: true
       }
 
+    case types.EDIT_DOCUMENT:
+      return {
+        ...state,
+        documentForm: state.document,
+        inEditMode: true
+      }
+
+    case types.CLOSE_EDIT:
+      return {
+        ...state,
+        documentForm: {},
+        inEditMode: false
+      }
+
     case types.GET_DOCUMENT_CONTENTS_SUCCESS:
       return {
         ...state,
@@ -37,30 +53,35 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         documentRequestInProgress: false
       }
 
-    case types.UPDATE_DOC_PROPERTY:
+    case types.ADD_PRO_JUR:
       let selectedDoc = { ...state.document }
-      let value = action.value
-      switch (action.property) {
-        case 'jurisdictions':
-        case 'projects':
-          let foundIdx = selectedDoc[action.property].findIndex(el => el == value.id)
-          if (foundIdx == -1) {
-            selectedDoc[action.property] = [
-              ...selectedDoc[action.property], value.id
-            ]
-          }
-          break
-        case 'effectiveDate':
-          selectedDoc[action.property] = action.value.toISOString()
-          break
-
-        default:
-          selectedDoc[action.property] = action.value
-          break
+      const foundIdx = selectedDoc[action.property].findIndex(el => el === action.value.id)
+      if (foundIdx === -1) {
+        selectedDoc[action.property] = [
+          ...selectedDoc[action.property], action.value.id
+        ]
       }
+
       return {
         ...state,
-        document: selectedDoc
+        documentForm: selectedDoc
+      }
+
+    case types.DELETE_PRO_JUR:
+      selectedDoc = { ...state.document }
+      const index = selectedDoc[action.property].findIndex(el => el === action.value.id)
+      selectedDoc[action.property].splice(index, 1)
+      return {
+        ...state,
+        documentForm: selectedDoc
+      }
+
+    case types.UPDATE_DOC_PROPERTY:
+      selectedDoc = { ...state.documentForm }
+      selectedDoc[action.property] = action.value
+      return {
+        ...state,
+        documentForm: selectedDoc
       }
 
     case types.UPDATE_DOC_REQUEST:
@@ -72,7 +93,10 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
     case types.UPDATE_DOC_SUCCESS:
       return {
         ...state,
-        documentUpdatingInProgress: false
+        documentUpdatingInProgress: false,
+        document: state.documentForm,
+        documentForm: {},
+        inEditMode: false
       }
 
     case types.CLEAR_DOCUMENT:
@@ -82,7 +106,9 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
           content: {},
           projects: [],
           jurisdictions: []
-        }
+        },
+        documentForm: {},
+        inEditMode: false
       }
 
     default:

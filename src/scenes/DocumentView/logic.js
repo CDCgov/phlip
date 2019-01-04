@@ -31,7 +31,7 @@ const updateDocLogic = createLogic({
   type: types.UPDATE_DOC_REQUEST,
   async process({ docApi, action, getState }, dispatch, done) {
     let md = {}
-    const selectedDoc = getState().scenes.docView.document
+    const selectedDoc = getState().scenes.docView.documentForm
 
     md.status = selectedDoc.status
     md.effectiveDate = selectedDoc.effectiveDate !== undefined
@@ -67,7 +67,6 @@ const updateDocLogic = createLogic({
       })
       done()
     } catch (err) {
-      console.log(err)
       dispatch({
         type: types.UPDATE_DOC_FAIL,
         payload: { error: 'Failed to update documents, please try again.' }

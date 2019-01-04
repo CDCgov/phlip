@@ -47,13 +47,7 @@ export class DocumentView extends Component {
         <FlexGrid container type="row" flex style={{ height: '100%' }}>
           <DocumentContents loading={this.props.documentRequestInProgress} />
           <FlexGrid style={{ flexBasis: '2%' }} />
-          <FlexGrid
-            container
-            type="column"
-            style={{
-              flexBasis: '25%',
-              flex: '1 1 25%'
-            }}>
+          <FlexGrid container type="column" style={{ flexBasis: '25%', flex: '1 1 25%' }}>
             <DocumentMeta
               document={this.props.document}
               loading={this.props.documentRequestInProgress}

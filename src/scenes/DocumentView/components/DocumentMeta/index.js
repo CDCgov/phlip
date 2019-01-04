@@ -1,20 +1,16 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
-import Button from 'components/Button'
-import FlexGrid from 'components/FlexGrid'
 import Divider from '@material-ui/core/Divider'
 import { connect } from 'react-redux'
-import Dropdown from 'components/Dropdown'
-import { FileDocument, CalendarRange, Account, FormatSection } from 'mdi-material-ui'
-import Icon from 'components/Icon'
-import moment from 'moment'
-import DatePicker from 'components/DatePicker'
-import { Alert, CircularLoader } from 'components'
-import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
-import actions, { projectAutocomplete, jurisdictionAutocomplete } from './actions'
 import { bindActionCreators } from 'redux'
+import { FileDocument, CalendarRange, Account, FormatSection } from 'mdi-material-ui'
+import moment from 'moment'
+import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
+import actions, { projectAutocomplete, jurisdictionAutocomplete } from '../../actions'
 import ProJurSearch from './components/ProJurSearch'
+import { convertToLocalDate } from 'utils/normalize'
+import { Button, FlexGrid, Dropdown, DatePicker, IconButton, Alert, CircularLoader } from 'components'
 
 export class DocumentMeta extends Component {
   static propTypes = {
@@ -31,32 +27,44 @@ export class DocumentMeta extends Component {
     jurisdictionSuggestions: PropTypes.array,
     projectSearchValue: PropTypes.string,
     jurisdictionSearchValue: PropTypes.string,
-    noProjectError: PropTypes.any
+    noProjectError: PropTypes.any,
+    inEditMode: PropTypes.bool
   }
 
   constructor(props, context) {
     super(props, context)
     this.state = {
-      isEditMode: false,
       showAddJurisdiction: false,
       showAddProject: false,
       showModal: false,
       selectedJurisdiction: null,
       selectedProject: null,
       projectSuggestions: [],
-      jurisdictionSuggestions: []
+      jurisdictionSuggestions: [],
+      typeToDelete: '',
+      projectToDelete: {},
+      jurisdictionToDelete: {},
+      alertOpen: false,
+      alertInfo: {
+        title: '',
+        text: ''
+      }
     }
   }
 
   showAddProjModal = () => {
     this.setState({
-      projectSuggestions: [], showAddJurisdiction: false, showModal: true
+      projectSuggestions: [],
+      showAddJurisdiction: false,
+      showModal: true
     })
   }
 
   showAddJurModal = () => {
     this.setState({
-      jurisdictionSuggestions: [], showAddJurisdiction: true, showModal: true
+      jurisdictionSuggestions: [],
+      showAddJurisdiction: true,
+      showModal: true
     })
   }
 
@@ -68,13 +76,12 @@ export class DocumentMeta extends Component {
     this.props.actions.updateDocumentProperty(this.props.document._id, 'status', selectedOption)
   }
 
-  handleEditMode = () => {
-    this.setState(prevState => {
-      if (prevState.isEditMode == true) {
-        this.props.actions.updateDocRequest(this.props.document._id, null, null)
-      }
-      return { isEditMode: !prevState.isEditMode }
-    })
+  handleEdit = () => {
+    this.props.actions.editDocument()
+  }
+
+  handleUpdate = () => {
+    this.props.actions.updateDocRequest(this.props.document._id, null, null)
   }
 
   /**
@@ -114,7 +121,6 @@ export class DocumentMeta extends Component {
     }
 
     this.handleClearSuggestions(suggestionType)
-    this.onCloseModal
   }
 
   handleSearchValueChange = (suggestionType, value) => {
@@ -129,17 +135,30 @@ export class DocumentMeta extends Component {
       : this.props.actions.projectAutocomplete.clearSuggestions()
   }
 
-  updateDocument = () => {
+  handleShowDeleteConfirm = (type, index) => {
+    const list = this.props[`${type}List`]
+
+    this.setState({
+      typeToDelete: type,
+      [`${type}ToDelete`]: list[index],
+      alertOpen: true,
+      alertInfo: {
+        title: `Delete ${type}`,
+        text: `Are you sure you want to delete ${type}: ${list[index].name} from this document?`
+      }
+    })
+  }
+
+  addProJur = () => {
     if (this.state.selectedJurisdiction !== null) {
-      this.props.actions.updateDocumentProperty(
-        this.props.document._id, 'jurisdictions', this.state.selectedJurisdiction)
+      this.props.actions.addProJur('jurisdictions', this.state.selectedJurisdiction)
       this.props.actions.updateDocRequest(this.props.document._id, 'jurisdictions', this.state.selectedJurisdiction)
       this.handleClearSuggestions('jurisdiction')
       this.props.actions.jurisdictionAutocomplete.clearAll()
     }
 
     if (this.state.selectedProject !== null) {
-      this.props.actions.updateDocumentProperty(this.props.document._id, 'projects', this.state.selectedProject)
+      this.props.actions.addProJur('projects', this.state.selectedProject)
       this.props.actions.updateDocRequest(this.props.document._id, 'projects', this.state.selectedProject)
       this.handleClearSuggestions('project')
       this.props.actions.projectAutocomplete.clearAll()
@@ -148,6 +167,26 @@ export class DocumentMeta extends Component {
     this.setState({
       showModal: false, selectedJurisdiction: null, selectedProject: null
     })
+  }
+
+  /**
+   * Handles when the user cancels out of deleting a jurisdiction or project
+   */
+  onCancelDelete = () => {
+    const { typeToDelete } = this.state
+
+    this.setState({
+      alertOpen: false,
+      alertInfo: {},
+      typeToDelete: '',
+      [`${typeToDelete}ToDelete`]: {}
+    })
+  }
+
+  onContinueDelete = () => {
+    this.props.actions.deleteProJur(`${this.state.typeToDelete}s`, this.state[`${this.state.typeToDelete}ToDelete`])
+    this.props.actions.updateDocRequest(this.props.document._id, null, null)
+    this.onCancelDelete()
   }
 
   /**
@@ -177,35 +216,44 @@ export class DocumentMeta extends Component {
         value: this.getButtonText('Update'),
         type: 'button',
         otherProps: { 'aria-label': 'Update' },
-        onClick: this.updateDocument,
+        onClick: this.addProJur,
         disabled: this.props.updating
       }
     ]
 
-    const colStyle = {
-      fontSize: 14, border: 'none', borderBottom: '1px solid green'
-    }
-    const iconColor = '#949494'
-    const dateWithoutTime = (this.props.document.hasOwnProperty('effectiveDate') && this.props.document.effectiveDate !=
-      null)
-      ? this.props.document.effectiveDate.split('T')[0]
-      : ''
+    const alertActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.onCancelDelete
+      },
+      {
+        value: 'Delete',
+        type: 'button',
+        onClick: this.onContinueDelete
+      }
+    ]
 
-    const date = moment(dateWithoutTime).format('M/D/YYYY')
+    const metaStyling = { fontSize: '.8125rem', padding: '0 5px' }
+    const iconStyle = { color: '#757575', fontSize: 18 }
+    const colStyle = { fontSize: 14, border: 'none', borderBottom: '1px solid green' }
 
     return (
       <>
+        <Alert open={this.state.alertOpen} actions={alertActions} title={this.state.alertTitle}>
+          {this.state.alertInfo.text}
+        </Alert>
         <FlexGrid raised container style={{ overflow: 'hidden', minWidth: '30%', marginBottom: 25, height: '40%' }}>
           <Typography variant="body2" style={{ padding: 10, color: 'black' }}>
             Document Information
           </Typography>
           <Divider />
           <FlexGrid container padding={15}>
-            <FlexGrid container type="row" align="center" style={{ marginBottom: 25 }}>
-              <Icon color={iconColor}><FileDocument /></Icon>
-              <Typography variant="body1" style={{ padding: '0 5px' }}>Status:</Typography>
+            <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
+              <FileDocument style={iconStyle} />
+              <Typography variant="body1" style={metaStyling}>Status:</Typography>
               <Dropdown
-                disabled={!this.state.isEditMode}
+                disabled={!this.props.inEditMode}
                 name="selecteDocStatus"
                 id="selectedDocStatus"
                 options={options}
@@ -213,57 +261,75 @@ export class DocumentMeta extends Component {
                   value: this.props.document.status || 'Draft',
                   onChange: this.onChangeStatusField
                 }}
-                style={{ fontSize: 14 }}
+                SelectDisplayProps={{ style: { paddingBottom: 3 } }}
+                style={{ fontSize: 13 }}
                 formControlStyle={{ minWidth: 180 }}
-                meta={{}}
               />
             </FlexGrid>
             <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
-              <Icon color={iconColor}><FormatSection /></Icon>
-              <Typography variant="body1" style={{ padding: '0 5px' }}>
-              Citation:
+              <FormatSection style={iconStyle} />
+              <Typography variant="body1" style={metaStyling}>
+                Citation:
               </Typography>
-              {this.state.isEditMode
+              {this.props.inEditMode
                 ? (<input
                   style={colStyle}
                   defaultValue={this.props.document.citation}
                   onChange={e => this.handleDocPropertyChange(null, 'citation', e.target.value)}
                 />)
-                : <Typography>{this.props.document.citation}</Typography>}
+                : <Typography style={metaStyling}>{this.props.document.citation}</Typography>}
             </FlexGrid>
             <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
-              <Icon color={iconColor}><CalendarRange /></Icon>
-              <Typography variant="body1" style={{ padding: '0 5px' }}>
+              <CalendarRange style={iconStyle} />
+              <Typography variant="body1" style={metaStyling}>
                 Effective Date:
               </Typography>
-              {this.state.isEditMode
+              {this.props.inEditMode
                 ? (<DatePicker
                   name="effectiveDate"
                   dateFormat="MM/DD/YYYY"
-                  onChange={date => this.handleDocPropertyChange(null, 'effectiveDate', date)}
-                  onInputChange={e => this.handleDocPropertyChange(null, 'effectiveDate', e.target.value)}
+                  onChange={date => this.handleDocPropertyChange(null, 'effectiveDate', date.toISOString())}
                   value={this.props.document.effectiveDate}
                   autoOk={true}
+                  InputAdornmentProps={{
+                    disableTypography: true,
+                    style: {
+                      height: 19,
+                      width: 19,
+                      margin: 0,
+                      marginRight: 15,
+                      fontSize: 18,
+                      alignItems: 'flex-end',
+                      marginBottom: -8
+                    }
+                  }}
                   style={{ marginTop: 0 }}
+                  inputProps={{ style: { fontSize: 13, padding: 0 } }}
                 />)
-                : <Typography>{date}</Typography>}
+                : (
+                  <Typography>
+                    {!this.props.document.effectiveDate
+                      ? ''
+                      : convertToLocalDate(this.props.document.effectiveDate.split('T')[0])}
+                  </Typography>
+                )}
             </FlexGrid>
             <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
-              <Icon color={iconColor}><Account /></Icon>
-              <Typography variant="body1" style={{ padding: '0 5px' }}>
+              <Account style={iconStyle} />
+              <Typography variant="body1" style={metaStyling}>
                 {this.props.document.uploadedByName}
               </Typography>
             </FlexGrid>
             <FlexGrid container type="row" align="center" justify="space-between">
               <Typography style={{ cursor: 'pointer' }} color="secondary">Delete Document</Typography>
               <Button
-                value={this.state.isEditMode
+                value={this.props.inEditMode
                   ? 'Update'
                   : 'Edit'}
                 size="small"
                 color="accent"
                 style={{ padding: '0 15px' }}
-                onClick={this.handleEditMode}
+                onClick={this.props.inEditMode ? this.handleUpdate : this.handleEdit}
               />
             </FlexGrid>
           </FlexGrid>
@@ -286,17 +352,29 @@ export class DocumentMeta extends Component {
             />
           </FlexGrid>
           <Divider />
-          <FlexGrid type="row" padding={10} style={{ overflow: 'auto' }}>
+          <FlexGrid type="row" padding={5} style={{ overflow: 'auto' }}>
             {this.props.projectList.map((item, index) => (
-              <Typography
+              <FlexGrid
+                container
+                type="row"
+                justify="space-between"
+                align="center"
+                key={`project-${index}`}
                 style={{
                   padding: 8,
                   backgroundColor: index % 2 === 0
                     ? '#f9f9f9'
                     : 'white'
-                }}
-                key={`project-${index}`}>{item}
-              </Typography>)
+                }}>
+                <Typography style={{ fontSize: '.8125rem' }}>
+                  {item.name}
+                </Typography>
+                <IconButton
+                  color="error"
+                  onClick={() => this.handleShowDeleteConfirm('project', index)}>
+                  delete_outline
+                </IconButton>
+              </FlexGrid>)
             )}
           </FlexGrid>
         </FlexGrid>
@@ -314,17 +392,29 @@ export class DocumentMeta extends Component {
             />
           </FlexGrid>
           <Divider />
-          <FlexGrid type="row" flex padding={10} style={{ overflow: 'auto' }}>
+          <FlexGrid flex padding={5} style={{ overflow: 'auto' }}>
             {this.props.jurisdictionList.map((item, index) => (
-              <Typography
+              <FlexGrid
+                container
+                type="row"
+                justify="space-between"
+                align="center"
+                key={`jurisdiction-${index}`}
                 style={{
                   padding: 8,
                   backgroundColor: index % 2 === 0
                     ? '#f9f9f9'
                     : 'white'
-                }}
-                key={`jurisdiction-${index}`}>{item}
-              </Typography>)
+                }}>
+                <Typography style={{ fontSize: '.8125rem' }}>
+                  {item.name}
+                </Typography>
+                <IconButton
+                  color="error"
+                  onClick={() => this.handleShowDeleteConfirm('jurisdiction', index)}>
+                  delete_outline
+                </IconButton>
+              </FlexGrid>)
             )}
           </FlexGrid>
           <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="md" hideOverflow={false}>
@@ -358,23 +448,27 @@ export class DocumentMeta extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const document = state.scenes.docView.document || { jurisdictions: [], projects: [], status: 1, effectiveDate: '' }
+  const document = state.scenes.docView.inEditMode
+    ? state.scenes.docView.documentForm
+    : state.scenes.docView.document || { jurisdictions: [], projects: [], status: 1, effectiveDate: '' }
 
   return {
+    document,
     projectList: document.projects.map(proj => {
       return state.data.projects.byId[proj] === undefined
         ? ''
-        : state.data.projects.byId[proj].name
+        : { name: state.data.projects.byId[proj].name, id: proj }
     }),
     jurisdictionList: document.jurisdictions.map(jur => {
       return state.data.jurisdictions.byId[jur] === undefined
         ? ''
-        : state.data.jurisdictions.byId[jur].name
+        : { name: state.data.jurisdictions.byId[jur].name, id: jur }
     }),
     projectSuggestions: state.scenes.docManage.upload.projectSuggestions.suggestions,
     jurisdictionSuggestions: state.scenes.docManage.upload.jurisdictionSuggestions.suggestions,
     projectSearchValue: state.scenes.docManage.upload.projectSuggestions.searchValue,
-    jurisdictionSearchValue: state.scenes.docManage.upload.jurisdictionSuggestions.searchValue
+    jurisdictionSearchValue: state.scenes.docManage.upload.jurisdictionSuggestions.searchValue,
+    inEditMode: state.scenes.docView.inEditMode
   }
 }
 
