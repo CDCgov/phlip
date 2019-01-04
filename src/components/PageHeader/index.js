@@ -61,7 +61,7 @@ export const PageHeader = props => {
         </div>
         }
       </FlexGrid>
-      <FlexGrid container type="row" flex align="flex-end" style={{ position: 'relative' }}>
+      <FlexGrid container type="row" flex align="center" justify="flex-end" style={{ position: 'relative' }}>
         {children}
         {protocolButton &&
         <Button

@@ -44,11 +44,16 @@ const theme = createMuiTheme({
           color: mainColor
         },
         '&$disabled': {
+          color: 'rgba(0,0,0,.54)'
+        }
+      }
+    },
+    MuiInput: {
+      root: {
+        '&$disabled': {
           color: 'black'
         }
       },
-    },
-    MuiInput: {
       underline: {
         '&:before': {
           borderBottom: `1px solid #d9d9d9!important`
@@ -57,8 +62,8 @@ const theme = createMuiTheme({
           borderBottom: `2px solid ${mainColor}`
         },
         '&:hover:not($disabled):not($focused):not($error):before': {
-          borderBottom: `2px solid ${mainColor}`,
-        },
+          borderBottom: `2px solid ${mainColor}`
+        }
       }
     },
     MuiAvatar: {
