@@ -18,7 +18,9 @@ const props = {
     { id: 2932 }, { id: 25332 },
     { id: 1 }, { id: 2 }, { id: 3 }
   ],
-  projectSuggestions: [{ id: 1 }, { id: 2 }, { id: 4 }, { id: 5 }]
+  projectSuggestions: [{ id: 1 }, { id: 2 }, { id: 4 }, { id: 5 }],
+  apiErrorInfo: { title: '', text: '' },
+  apiErrorOpen: false
 }
 
 describe('DocumentMeta - DocumentContents', () => {

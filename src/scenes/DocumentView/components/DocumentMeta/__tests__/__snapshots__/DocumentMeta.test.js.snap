@@ -2,6 +2,13 @@
 
 exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
 <Fragment>
+  <ApiErrorAlert
+    actions={Array []}
+    content=""
+    onCloseAlert={[Function]}
+    open={false}
+    title=""
+  />
   <Alert
     actions={
       Array [
