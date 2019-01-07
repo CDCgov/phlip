@@ -15,7 +15,10 @@ export class DocumentView extends Component {
     documentUpdateInProgress: PropTypes.bool,
     actions: PropTypes.object,
     location: PropTypes.object,
-    history: PropTypes.object
+    history: PropTypes.object,
+    documentDeleteInProgress: PropTypes.bool,
+    documentDeleteError: PropTypes.bool,
+    goBack : PropTypes.object
   }
 
   constructor(props, context) {
@@ -52,6 +55,9 @@ export class DocumentView extends Component {
               document={this.props.document}
               loading={this.props.documentRequestInProgress}
               updating={this.props.documentUpdateInProgress}
+              documentDeleteError = {this.props.documentDeleteError}
+              documentDeleteInProgress = {this.props.documentDeleteInProgress}
+              goBack = {this.onGoBack}
             />
           </FlexGrid>
         </FlexGrid>
@@ -65,7 +71,9 @@ const mapStateToProps = state => {
   return {
     document: state.scenes.docView.document,
     documentRequestInProgress: state.scenes.docView.documentRequestInProgress,
-    documentUpdatingInProgress: state.scenes.docView.documentUpdateInProgress
+    documentUpdatingInProgress: state.scenes.docView.documentUpdateInProgress,
+    documentDeleteInProgress: state.scenes.docView.documentDeleteInProgress,
+    documentDeleteError: state.scenes.docView.documentDeleteError
   }
 }
 

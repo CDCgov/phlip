@@ -16,7 +16,10 @@ export const types = {
   OPEN_ALERT: 'OPEN_ALERT',
   UPDATE_DOC_PROPERTY: 'UPDATE_DOC_VIEW_PROPERTY',
   UPDATE_DOC_FAIL: 'UPDATE_DOC_VIEW_FAIL',
-  UPDATE_DOC_REQUEST: 'UPDATE_DOC_VIEW_REQUEST'
+  UPDATE_DOC_REQUEST: 'UPDATE_DOC_VIEW_REQUEST',
+  DELETE_DOCUMENT_REQUEST: 'DELETE_DOCUMENT_REQUEST',
+  DELETE_DOCUMENT_SUCCESS: 'DELETE_DOCUMENT_SUCCESS',
+  DELETE_DOCUMENT_FAIL: 'DELETE_DOCUMENT_FAIL'
 }
 
 export default {
@@ -30,7 +33,8 @@ export default {
   updateDocumentProperty: makeActionCreator(types.UPDATE_DOC_PROPERTY, 'property', 'value'),
   updateDocRequest : makeActionCreator(types.UPDATE_DOC_REQUEST, 'property', 'value'),
   openAlert: makeActionCreator(types.OPEN_ALERT, 'text', 'title'),
-  closeAlert: makeActionCreator(types.CLOSE_ALERT)
+  closeAlert: makeActionCreator(types.CLOSE_ALERT),
+  deleteDocRequest : makeActionCreator(types.DELETE_DOCUMENT_REQUEST,'id')
 }
 
 export const projectAutocomplete = {

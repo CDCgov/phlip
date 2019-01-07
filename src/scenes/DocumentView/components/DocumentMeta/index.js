@@ -29,7 +29,12 @@ export class DocumentMeta extends Component {
     noProjectError: PropTypes.any,
     inEditMode: PropTypes.bool,
     documentUpdateError: PropTypes.any,
-    documentUpdatingInProgress: PropTypes.bool
+    documentUpdatingInProgress: PropTypes.bool,
+    documentDeleteInProgress: PropTypes.bool,
+    documentDeleteError: PropTypes.any,
+    goBack : PropTypes.object,
+    apiErrorOpen: PropTypes.bool,
+    apiErrorInfo: PropTypes.object
   }
 
   constructor(props, context) {
@@ -53,7 +58,14 @@ export class DocumentMeta extends Component {
     }
   }
 
-  showAddProjModal = () => {
+  componentDidUpdate(prevProps, prevState) {
+        if (prevProps.documentDeleteInProgress === true && this.props.documentDeleteInProgress === false) {
+            if (this.props.documentDeleteError === false) {
+                this.props.goBack()
+            }
+  }}
+
+    showAddProjModal = () => {
     this.setState({
       projectSuggestions: [],
       showAddJurisdiction: false,
@@ -153,6 +165,18 @@ export class DocumentMeta extends Component {
     })
   }
 
+  handleShowDocDeleteConfirm = (type, id) => {
+      this.setState({
+          typeToDelete: type,
+          [`${type}ToDelete`]: id,
+          alertOpen: true,
+          alertInfo: {
+              title: `Delete ${type}`,
+              text: `Are you sure you want to delete ${type}: ${this.props.document.name}?`
+          }
+      })
+  }
+
   addProJur = () => {
     if (this.state.selectedJurisdiction !== null) {
       this.props.actions.addProJur('jurisdictions', this.state.selectedJurisdiction)
@@ -188,8 +212,13 @@ export class DocumentMeta extends Component {
   }
 
   onContinueDelete = () => {
-    this.props.actions.deleteProJur(`${this.state.typeToDelete}s`, this.state[`${this.state.typeToDelete}ToDelete`])
-    this.props.actions.updateDocRequest(null, null)
+    if (this.state.typeToDelete === 'document'){
+      this.props.actions.deleteDocRequest(this.props.document._id)
+    }
+    else {
+        this.props.actions.deleteProJur(`${this.state.typeToDelete}s`, this.state[`${this.state.typeToDelete}ToDelete`])
+        this.props.actions.updateDocRequest(this.props.document._id, null, null)
+    }
     this.onCancelDelete()
   }
 
@@ -338,8 +367,15 @@ export class DocumentMeta extends Component {
                 {this.props.document.uploadedByName}
               </Typography>
             </FlexGrid>
-            <FlexGrid container flex type="row" align="flex-end" justify="space-between">
-              <Typography style={{ cursor: 'pointer' }} color="secondary">Delete Document</Typography>
+            <FlexGrid container type="row" align="center" justify="space-between">
+              <Button
+                value='Delete Document'
+                raised={false}
+                color='accent'
+                style={{paddingLeft:0, textTransform:'none', backgroundColor: 'transparent' }}
+                aria-label="Delete the current document"
+                onClick={() => this.handleShowDocDeleteConfirm('document',this.props.document._id)}
+              />
               <Button
                 value={this.props.inEditMode
                   ? 'Update'
