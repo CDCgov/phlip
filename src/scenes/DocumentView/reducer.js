@@ -17,7 +17,7 @@ export const INITIAL_STATE = {
   },
   inEditMode: false,
   documentDeleteInProgress: false,
-  documentDeleteError : null
+  documentDeleteError : false
 }
 
 const docViewReducer = (state = INITIAL_STATE, action) => {
