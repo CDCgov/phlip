@@ -2,6 +2,24 @@
 
 exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
 <Fragment>
+  <Alert
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Cancel",
+        },
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Delete",
+        },
+      ]
+    }
+    open={false}
+    title={null}
+  />
   <FlexGrid
     align="stretch"
     circular={false}
@@ -12,6 +30,7 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
     raised={true}
     style={
       Object {
+        "height": "40%",
         "marginBottom": 25,
         "minWidth": "30%",
         "overflow": "hidden",
@@ -35,7 +54,7 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
       align="stretch"
       circular={false}
       container={true}
-      flex={false}
+      flex={true}
       justify="stretch"
       padding={15}
       raised={false}
@@ -52,19 +71,23 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
         raised={false}
         style={
           Object {
-            "marginBottom": 25,
+            "marginBottom": 20,
           }
         }
         type="row"
       >
-        <WithTheme(Icon)
-          color="#949494"
-        >
-          <Icon />
-        </WithTheme(Icon)>
+        <Icon
+          style={
+            Object {
+              "color": "#757575",
+              "fontSize": 18,
+            }
+          }
+        />
         <WithStyles(Typography)
           style={
             Object {
+              "fontSize": ".8125rem",
               "padding": "0 5px",
             }
           }
@@ -73,6 +96,13 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
           Status:
         </WithStyles(Typography)>
         <WithStyles(Dropdown)
+          SelectDisplayProps={
+            Object {
+              "style": Object {
+                "paddingBottom": 3,
+              },
+            }
+          }
           disabled={true}
           formControlStyle={
             Object {
@@ -86,7 +116,6 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
               "value": "Draft",
             }
           }
-          meta={Object {}}
           name="selecteDocStatus"
           options={
             Array [
@@ -100,6 +129,11 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
               },
             ]
           }
+          style={
+            Object {
+              "fontSize": 13,
+            }
+          }
         />
       </FlexGrid>
       <FlexGrid
@@ -112,25 +146,72 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
         raised={false}
         style={
           Object {
-            "marginBottom": 25,
+            "marginBottom": 20,
           }
         }
         type="row"
       >
-        <WithTheme(Icon)
-          color="#949494"
-        >
-          <Icon />
-        </WithTheme(Icon)>
+        <Icon
+          style={
+            Object {
+              "color": "#757575",
+              "fontSize": 18,
+            }
+          }
+        />
         <WithStyles(Typography)
           style={
             Object {
+              "fontSize": ".8125rem",
               "padding": "0 5px",
             }
           }
           variant="body1"
         >
           Citation:
+        </WithStyles(Typography)>
+        <WithStyles(Typography)
+          style={
+            Object {
+              "fontSize": ".8125rem",
+              "padding": "0 5px",
+            }
+          }
+        />
+      </FlexGrid>
+      <FlexGrid
+        align="center"
+        circular={false}
+        container={true}
+        flex={false}
+        justify="stretch"
+        padding={0}
+        raised={false}
+        style={
+          Object {
+            "marginBottom": 20,
+          }
+        }
+        type="row"
+      >
+        <Icon
+          style={
+            Object {
+              "color": "#757575",
+              "fontSize": 18,
+            }
+          }
+        />
+        <WithStyles(Typography)
+          style={
+            Object {
+              "fontSize": ".8125rem",
+              "padding": "0 5px",
+            }
+          }
+          variant="body1"
+        >
+          Effective Date:
         </WithStyles(Typography)>
         <WithStyles(Typography) />
       </FlexGrid>
@@ -144,53 +225,23 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
         raised={false}
         style={
           Object {
-            "marginBottom": 25,
+            "marginBottom": 20,
           }
         }
         type="row"
       >
-        <WithTheme(Icon)
-          color="#949494"
-        >
-          <Icon />
-        </WithTheme(Icon)>
-        <WithStyles(Typography)
+        <Icon
           style={
             Object {
-              "padding": "0 5px",
+              "color": "#757575",
+              "fontSize": 18,
             }
           }
-          variant="body1"
-        >
-          Effective Date:
-        </WithStyles(Typography)>
-        <WithStyles(Typography)>
-          Invalid date
-        </WithStyles(Typography)>
-      </FlexGrid>
-      <FlexGrid
-        align="center"
-        circular={false}
-        container={true}
-        flex={false}
-        justify="stretch"
-        padding={0}
-        raised={false}
-        style={
-          Object {
-            "marginBottom": 30,
-          }
-        }
-        type="row"
-      >
-        <WithTheme(Icon)
-          color="#949494"
-        >
-          <Icon />
-        </WithTheme(Icon)>
+        />
         <WithStyles(Typography)
           style={
             Object {
+              "fontSize": ".8125rem",
               "padding": "0 5px",
             }
           }
@@ -200,10 +251,10 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
         </WithStyles(Typography)>
       </FlexGrid>
       <FlexGrid
-        align="center"
+        align="flex-end"
         circular={false}
         container={true}
-        flex={false}
+        flex={true}
         justify="space-between"
         padding={0}
         raised={false}
@@ -244,8 +295,8 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
     raised={true}
     style={
       Object {
-        "height": "33%",
-        "marginBottom": 25,
+        "height": "30%",
+        "marginBottom": 20,
         "minWidth": "30%",
         "overflow": "hidden",
       }
@@ -260,7 +311,11 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
       justify="space-between"
       padding={10}
       raised={false}
-      style={Object {}}
+      style={
+        Object {
+          "minHeight": 32,
+        }
+      }
       type="row"
     >
       <WithStyles(Typography)
@@ -276,6 +331,7 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
       <WithTheme(Button)
         aria-label="Add jurisdiction to document"
         onClick={[Function]}
+        size="small"
         style={
           Object {
             "backgroundColor": "white",
@@ -292,7 +348,7 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
       container={false}
       flex={false}
       justify="stretch"
-      padding={10}
+      padding={5}
       raised={false}
       style={
         Object {
@@ -301,28 +357,74 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
       }
       type="row"
     >
-      <WithStyles(Typography)
+      <FlexGrid
+        align="center"
+        circular={false}
+        container={true}
+        flex={false}
+        justify="space-between"
         key="project-0"
+        padding={0}
+        raised={false}
         style={
           Object {
             "backgroundColor": "#f9f9f9",
             "padding": 8,
           }
         }
+        type="row"
       >
-        Project1
-      </WithStyles(Typography)>
-      <WithStyles(Typography)
+        <WithStyles(Typography)
+          style={
+            Object {
+              "fontSize": ".8125rem",
+            }
+          }
+        />
+        <IconButton
+          color="error"
+          disabled={false}
+          iconSize={24}
+          onClick={[Function]}
+          tooltipText=""
+        >
+          delete_outline
+        </IconButton>
+      </FlexGrid>
+      <FlexGrid
+        align="center"
+        circular={false}
+        container={true}
+        flex={false}
+        justify="space-between"
         key="project-1"
+        padding={0}
+        raised={false}
         style={
           Object {
             "backgroundColor": "white",
             "padding": 8,
           }
         }
+        type="row"
       >
-        Project2
-      </WithStyles(Typography)>
+        <WithStyles(Typography)
+          style={
+            Object {
+              "fontSize": ".8125rem",
+            }
+          }
+        />
+        <IconButton
+          color="error"
+          disabled={false}
+          iconSize={24}
+          onClick={[Function]}
+          tooltipText=""
+        >
+          delete_outline
+        </IconButton>
+      </FlexGrid>
     </FlexGrid>
   </FlexGrid>
   <FlexGrid
@@ -335,7 +437,7 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
     raised={true}
     style={
       Object {
-        "height": "33%",
+        "height": "30%",
         "minWidth": "30%",
         "overflow": "hidden",
       }
@@ -350,7 +452,11 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
       justify="space-between"
       padding={10}
       raised={false}
-      style={Object {}}
+      style={
+        Object {
+          "minHeight": 32,
+        }
+      }
       type="row"
     >
       <WithStyles(Typography)
@@ -366,6 +472,7 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
       <WithTheme(Button)
         aria-label="Add jurisdiction to document"
         onClick={[Function]}
+        size="small"
         style={
           Object {
             "backgroundColor": "white",
@@ -382,38 +489,83 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
       container={false}
       flex={true}
       justify="stretch"
-      padding={10}
+      padding={5}
       raised={false}
       style={
         Object {
-          "height": "100%",
           "overflow": "auto",
         }
       }
-      type="row"
+      type="column"
     >
-      <WithStyles(Typography)
+      <FlexGrid
+        align="center"
+        circular={false}
+        container={true}
+        flex={false}
+        justify="space-between"
         key="jurisdiction-0"
+        padding={0}
+        raised={false}
         style={
           Object {
             "backgroundColor": "#f9f9f9",
             "padding": 8,
           }
         }
+        type="row"
       >
-        Georgia
-      </WithStyles(Typography)>
-      <WithStyles(Typography)
+        <WithStyles(Typography)
+          style={
+            Object {
+              "fontSize": ".8125rem",
+            }
+          }
+        />
+        <IconButton
+          color="error"
+          disabled={false}
+          iconSize={24}
+          onClick={[Function]}
+          tooltipText=""
+        >
+          delete_outline
+        </IconButton>
+      </FlexGrid>
+      <FlexGrid
+        align="center"
+        circular={false}
+        container={true}
+        flex={false}
+        justify="space-between"
         key="jurisdiction-1"
+        padding={0}
+        raised={false}
         style={
           Object {
             "backgroundColor": "white",
             "padding": 8,
           }
         }
+        type="row"
       >
-        Alabama
-      </WithStyles(Typography)>
+        <WithStyles(Typography)
+          style={
+            Object {
+              "fontSize": ".8125rem",
+            }
+          }
+        />
+        <IconButton
+          color="error"
+          disabled={false}
+          iconSize={24}
+          onClick={[Function]}
+          tooltipText=""
+        >
+          delete_outline
+        </IconButton>
+      </FlexGrid>
     </FlexGrid>
     <WithStyles(Modal)
       hideOverflow={false}

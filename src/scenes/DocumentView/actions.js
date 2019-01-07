@@ -27,8 +27,8 @@ export default {
   closeEdit: makeActionCreator(types.CLOSE_EDIT),
   addProJur: makeActionCreator(types.ADD_PRO_JUR, 'property', 'value'),
   deleteProJur: makeActionCreator(types.DELETE_PRO_JUR, 'property', 'value'),
-  updateDocumentProperty: makeActionCreator(types.UPDATE_DOC_PROPERTY, 'index', 'property', 'value'),
-  updateDocRequest : makeActionCreator(types.UPDATE_DOC_REQUEST, 'doc', 'property', 'value')
+  updateDocumentProperty: makeActionCreator(types.UPDATE_DOC_PROPERTY, 'property', 'value'),
+  updateDocRequest : makeActionCreator(types.UPDATE_DOC_REQUEST, 'property', 'value')
 }
 
 export const projectAutocomplete = {

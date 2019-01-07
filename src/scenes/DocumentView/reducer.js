@@ -32,7 +32,9 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
     case types.EDIT_DOCUMENT:
       return {
         ...state,
-        documentForm: state.document,
+        documentForm: {
+          ...state.document
+        },
         inEditMode: true
       }
 

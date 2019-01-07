@@ -69,7 +69,7 @@ const updateDocLogic = createLogic({
     } catch (err) {
       dispatch({
         type: types.UPDATE_DOC_FAIL,
-        payload: { error: 'Failed to update documents, please try again.' }
+        payload: { error: 'Failed to update document, please try again.' }
       })
       done()
     }

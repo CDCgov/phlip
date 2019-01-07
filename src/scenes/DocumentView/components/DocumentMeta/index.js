@@ -5,7 +5,6 @@ import Divider from '@material-ui/core/Divider'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { FileDocument, CalendarRange, Account, FormatSection } from 'mdi-material-ui'
-import moment from 'moment'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import actions, { projectAutocomplete, jurisdictionAutocomplete } from '../../actions'
 import ProJurSearch from './components/ProJurSearch'
@@ -73,7 +72,7 @@ export class DocumentMeta extends Component {
   }
 
   onChangeStatusField = selectedOption => {
-    this.props.actions.updateDocumentProperty(this.props.document._id, 'status', selectedOption)
+    this.props.actions.updateDocumentProperty('status', selectedOption)
   }
 
   handleEdit = () => {
@@ -81,17 +80,16 @@ export class DocumentMeta extends Component {
   }
 
   handleUpdate = () => {
-    this.props.actions.updateDocRequest(this.props.document._id, null, null)
+    this.props.actions.updateDocRequest(null, null)
   }
 
   /**
-   * Handles when a user has updated a document property in the file list
-   * @param index
+   * Handles when a user has updated a document property
    * @param propName
    * @param value
    */
-  handleDocPropertyChange = (index, propName, value) => {
-    this.props.actions.updateDocumentProperty(index, propName, value)
+  handleDocPropertyChange = (propName, value) => {
+    this.props.actions.updateDocumentProperty(propName, value)
   }
 
   /**
@@ -152,14 +150,14 @@ export class DocumentMeta extends Component {
   addProJur = () => {
     if (this.state.selectedJurisdiction !== null) {
       this.props.actions.addProJur('jurisdictions', this.state.selectedJurisdiction)
-      this.props.actions.updateDocRequest(this.props.document._id, 'jurisdictions', this.state.selectedJurisdiction)
+      this.props.actions.updateDocRequest('jurisdictions', this.state.selectedJurisdiction)
       this.handleClearSuggestions('jurisdiction')
       this.props.actions.jurisdictionAutocomplete.clearAll()
     }
 
     if (this.state.selectedProject !== null) {
       this.props.actions.addProJur('projects', this.state.selectedProject)
-      this.props.actions.updateDocRequest(this.props.document._id, 'projects', this.state.selectedProject)
+      this.props.actions.updateDocRequest('projects', this.state.selectedProject)
       this.handleClearSuggestions('project')
       this.props.actions.projectAutocomplete.clearAll()
     }
@@ -185,7 +183,7 @@ export class DocumentMeta extends Component {
 
   onContinueDelete = () => {
     this.props.actions.deleteProJur(`${this.state.typeToDelete}s`, this.state[`${this.state.typeToDelete}ToDelete`])
-    this.props.actions.updateDocRequest(this.props.document._id, null, null)
+    this.props.actions.updateDocRequest(null, null)
     this.onCancelDelete()
   }
 
@@ -248,7 +246,7 @@ export class DocumentMeta extends Component {
             Document Information
           </Typography>
           <Divider />
-          <FlexGrid container padding={15}>
+          <FlexGrid container flex padding={15}>
             <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
               <FileDocument style={iconStyle} />
               <Typography variant="body1" style={metaStyling}>Status:</Typography>
@@ -275,7 +273,7 @@ export class DocumentMeta extends Component {
                 ? (<input
                   style={colStyle}
                   defaultValue={this.props.document.citation}
-                  onChange={e => this.handleDocPropertyChange(null, 'citation', e.target.value)}
+                  onChange={e => this.handleDocPropertyChange('citation', e.target.value)}
                 />)
                 : <Typography style={metaStyling}>{this.props.document.citation}</Typography>}
             </FlexGrid>
@@ -288,7 +286,7 @@ export class DocumentMeta extends Component {
                 ? (<DatePicker
                   name="effectiveDate"
                   dateFormat="MM/DD/YYYY"
-                  onChange={date => this.handleDocPropertyChange(null, 'effectiveDate', date.toISOString())}
+                  onChange={date => this.handleDocPropertyChange('effectiveDate', date.toISOString())}
                   value={this.props.document.effectiveDate}
                   autoOk={true}
                   InputAdornmentProps={{
@@ -320,7 +318,7 @@ export class DocumentMeta extends Component {
                 {this.props.document.uploadedByName}
               </Typography>
             </FlexGrid>
-            <FlexGrid container type="row" align="center" justify="space-between">
+            <FlexGrid container flex type="row" align="flex-end" justify="space-between">
               <Typography style={{ cursor: 'pointer' }} color="secondary">Delete Document</Typography>
               <Button
                 value={this.props.inEditMode

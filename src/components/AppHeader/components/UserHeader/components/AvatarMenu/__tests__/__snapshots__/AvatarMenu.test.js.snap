@@ -1,31 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Header -- AvatarMenu should render correctly 1`] = `
-<WithStyles(Grid)
-  item={true}
-  style={
-    Object {
-      "zIndex": 2,
-    }
-  }
+<ClickAwayListener
+  mouseEvent="onMouseUp"
+  onClickAway={[Function]}
+  touchEvent="onTouchEnd"
 >
-  <Manager>
-    <Reference
-      innerRef={[Function]}
-    >
-      <Component />
-    </Reference>
-    <Popper
-      eventsEnabled={false}
-      placement="bottom-end"
-      style={
-        Object {
-          "pointerEvents": "none",
-        }
+  <WithStyles(Grid)
+    item={true}
+    style={
+      Object {
+        "zIndex": 2,
       }
-    >
-      <Component />
-    </Popper>
-  </Manager>
-</WithStyles(Grid)>
+    }
+  >
+    <Manager>
+      <Reference
+        innerRef={[Function]}
+      >
+        <Component />
+      </Reference>
+      <Popper
+        eventsEnabled={false}
+        placement="bottom-end"
+        style={
+          Object {
+            "pointerEvents": "none",
+          }
+        }
+      >
+        <Component />
+      </Popper>
+    </Manager>
+  </WithStyles(Grid)>
+</ClickAwayListener>
 `;

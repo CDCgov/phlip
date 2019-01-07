@@ -10,21 +10,6 @@ describe('User reducer', () => {
     expect(reducer(undefined, {})).toEqual(initial)
   })
 
-  xdescribe('TOGGLE_MENU', () => {
-    test('should switch menuOpen to true and menuAnchor to anchor action key', () => {
-      expect(
-        reducer(
-          { ...initial },
-          { type: types.TOGGLE_MENU }
-        )
-      ).toEqual({
-        ...initial,
-        currentUser: {},
-        menuOpen: true
-      })
-    })
-  })
-
   describe('LOGIN_USER_SUCCESS', () => {
     test('should set currentUser to payload object', () => {
       expect(
@@ -39,7 +24,7 @@ describe('User reducer', () => {
     })
   })
 
-  xdescribe('FLUSH_STATE', () => {
+  describe('FLUSH_STATE', () => {
     test('should set state back to initial state', () => {
       expect(
         reducer(
@@ -54,12 +39,12 @@ describe('User reducer', () => {
     test('should set currentUser to user object in action', () => {
       expect(
         reducer(
-          { ...initial, currentUser: { firstName: 'user', bookmarks: [5,6] } },
-          { type: types.TOGGLE_BOOKMARK_SUCCESS, payload: { user: { firstName: 'user', bookmarks: [5,6,7] } }}
+          { ...initial, currentUser: { firstName: 'user', bookmarks: [5, 6] } },
+          { type: types.TOGGLE_BOOKMARK_SUCCESS, payload: { user: { firstName: 'user', bookmarks: [5, 6, 7] } } }
         )
       ).toEqual({
         ...initial,
-        currentUser: { firstName: 'user', bookmarks: [5,6,7] }
+        currentUser: { firstName: 'user', bookmarks: [5, 6, 7] }
       })
     })
   })

@@ -75,7 +75,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
     <span
       style={
         Object {
-          "fontWeight": "bold",
+          "fontWeight": 500,
         }
       }
     >
@@ -102,7 +102,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
     <span
       style={
         Object {
-          "fontWeight": "bold",
+          "fontWeight": 500,
         }
       }
     >
@@ -127,7 +127,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
     <span
       style={
         Object {
-          "fontWeight": "bold",
+          "fontWeight": 500,
         }
       }
     >
@@ -143,6 +143,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
         "maxWidth": 250,
         "overflow": "hidden",
         "padding": 18,
+        "paddingRight": 24,
         "textOverflow": "ellipsis",
         "whiteSpace": "nowrap",
         "width": 250,
@@ -152,7 +153,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
     <span
       style={
         Object {
-          "fontWeight": "bold",
+          "fontWeight": 500,
         }
       }
     >
