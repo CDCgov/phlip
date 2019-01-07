@@ -32,6 +32,11 @@ const docManageCalls = [
     path: ({ docId }) => `/docs/${docId}`
   },
   {
+    name: 'deleteDoc',
+    method: 'delete',
+    path: ({docId}) => `/docs/${docId}`
+  },
+  {
     name: 'getDocumentsByProjectJurisdiction',
     method: 'get',
     path: ({ projectId, jurisdictionId }) => `/docs/projects/${projectId}/jurisdictions/${jurisdictionId}`
