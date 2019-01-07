@@ -9,7 +9,7 @@ import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import actions, { projectAutocomplete, jurisdictionAutocomplete } from '../../actions'
 import ProJurSearch from './components/ProJurSearch'
 import { convertToLocalDate } from 'utils/normalize'
-import { Button, FlexGrid, Dropdown, DatePicker, IconButton, Alert, CircularLoader } from 'components'
+import { Button, FlexGrid, Dropdown, DatePicker, IconButton, Alert, CircularLoader, ApiErrorAlert } from 'components'
 
 export class DocumentMeta extends Component {
   static propTypes = {
@@ -27,7 +27,9 @@ export class DocumentMeta extends Component {
     projectSearchValue: PropTypes.string,
     jurisdictionSearchValue: PropTypes.string,
     noProjectError: PropTypes.any,
-    inEditMode: PropTypes.bool
+    inEditMode: PropTypes.bool,
+    documentUpdateError: PropTypes.any,
+    documentUpdatingInProgress: PropTypes.bool
   }
 
   constructor(props, context) {
@@ -81,6 +83,10 @@ export class DocumentMeta extends Component {
 
   handleUpdate = () => {
     this.props.actions.updateDocRequest(null, null)
+  }
+
+  closeAlert = () => {
+    this.props.actions.closeAlert()
   }
 
   /**
@@ -219,6 +225,14 @@ export class DocumentMeta extends Component {
       }
     ]
 
+    const apiErrorActions = [
+      {
+        value: 'Close',
+        type: 'button',
+        onClick: this.closeAlert
+      }
+    ]
+
     const alertActions = [
       {
         value: 'Cancel',
@@ -238,6 +252,12 @@ export class DocumentMeta extends Component {
 
     return (
       <>
+        <ApiErrorAlert
+          open={this.props.apiErrorOpen}
+          actions={apiErrorActions}
+          title={this.props.apiErrorInfo.title}
+          content={this.props.apiErrorInfo.text}
+        />
         <Alert open={this.state.alertOpen} actions={alertActions} title={this.state.alertTitle}>
           {this.state.alertInfo.text}
         </Alert>
@@ -466,7 +486,9 @@ const mapStateToProps = (state, ownProps) => {
     jurisdictionSuggestions: state.scenes.docManage.upload.jurisdictionSuggestions.suggestions,
     projectSearchValue: state.scenes.docManage.upload.projectSuggestions.searchValue,
     jurisdictionSearchValue: state.scenes.docManage.upload.jurisdictionSuggestions.searchValue,
-    inEditMode: state.scenes.docView.inEditMode
+    inEditMode: state.scenes.docView.inEditMode,
+    apiErrorInfo: state.scenes.docView.apiErrorInfo,
+    apiErrorOpen: state.scenes.docView.apiErrorOpen || false
   }
 }
 

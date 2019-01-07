@@ -9,6 +9,12 @@ export const INITIAL_STATE = {
   documentForm: {},
   documentRequestInProgress: false,
   documentUpdatingInProgress: false,
+  documentUpdateError: null,
+  apiErrorOpen: false,
+  apiErrorInfo: {
+    title: '',
+    text: ''
+  },
   inEditMode: false
 }
 
@@ -111,6 +117,27 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         },
         documentForm: {},
         inEditMode: false
+      }
+
+    case types.UPDATE_DOC_FAIL:
+      return {
+        ...state,
+        apiErrorInfo: {
+          title: 'Update error',
+          text: 'Failed to update document. Please try again.'
+        },
+        apiErrorOpen: true,
+        documentUpdatingInProgress: false
+      }
+
+    case types.CLOSE_ALERT:
+      return {
+        ...state,
+        apiErrorInfo: {
+          title: '',
+          text: ''
+        },
+        apiErrorOpen: false
       }
 
     default:
