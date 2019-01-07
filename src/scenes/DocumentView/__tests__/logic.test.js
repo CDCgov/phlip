@@ -95,4 +95,55 @@ describe('DocumentView logic', () => {
       })
     })
   })
+
+  describe('delete document logic', () => {
+    test('should send a request to delete document and dispatch DELETE_DOCUMENT_SUCCESS on success', done => {
+            mock.onDelete('/docs/4').reply(200, { _id: 4 })
+
+            const store = setupStore({
+                documentForm: {
+                    name: 'document',
+                    projects: [1, 2],
+                    jurisdictions: [3, 4],
+                    _id: 4,
+                    effectiveDate: '',
+                    citation: '',
+                    status: 'Approved'
+                }
+            })
+            store.dispatch({ type: types.DELETE_DOCUMENT_REQUEST, id:4 })
+
+            store.whenComplete(() => {
+                expect(store.actions[1]).toEqual({ type: types.DELETE_DOCUMENT_SUCCESS, payload: 4 })
+                done()
+            })
+        })
+    test('should send a request to delete document and dispatch DELETE_DOCUMENT_FAIL on failed', done => {
+          mock.onDelete('/docs/5').reply(500)
+
+          const store = setupStore({
+              documentForm: {
+                  name: 'document',
+                  projects: [1, 2],
+                  jurisdictions: [3, 4],
+                  _id: 4,
+                  effectiveDate: '',
+                  citation: '',
+                  status: 'Approved'
+              }
+          })
+          store.dispatch({ type: types.DELETE_DOCUMENT_REQUEST, id: 5 })
+
+          store.whenComplete(() => {
+              expect(store.actions).toEqual([
+                  { type: types.DELETE_DOCUMENT_REQUEST, id: 5},
+                  {
+                      type: types.DELETE_DOCUMENT_FAIL,
+                      payload: { error: 'Failed to delete document, please try again.' }
+                  }
+              ])
+              done()
+          })
+      })
+    })
 })
