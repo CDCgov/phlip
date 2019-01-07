@@ -87,6 +87,11 @@ const resetFilter = (docs, stringSearch, projectFilter, jurisdictionFilter) => {
   return matches
 }
 
+const removeContent = (document, index) => {
+  const { content, ...doc } = document
+  return doc
+}
+
 const sortAndSlice = (arr, page, rowsPerPage) => {
   if (arr.length === 0) return []
 
@@ -95,7 +100,6 @@ const sortAndSlice = (arr, page, rowsPerPage) => {
   let rows = parseInt(rowsPerPage)
   if (rowsPerPage === 'All')
     rows = ids.length
-
   return sliceTable(ids, page, rows)
 }
 
@@ -113,9 +117,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           allIds: Object.keys(obj),
           visible: sortAndSlice(Object.values(obj), 0, state.rowsPerPage),
           checked: state.documents.checked
-        },
-        searchByProject: null,
-        searchByJurisdiction: null
+        }
       }
 
     case types.ON_PAGE_CHANGE:
@@ -123,7 +125,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documents: {
           ...state.documents,
-          visible: sliceTable(state.documents.allIds, action.page, parseInt(state.rowsPerPage))
+          visible: sortAndSlice(Object.values(state.documents.byId), action.page, state.rowsPerPage)
         },
         page: action.page
       }
@@ -140,7 +142,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documents: {
           ...state.documents,
-          visible: sliceTable(state.documents.allIds, page, rows)
+          visible: sortAndSlice(Object.values(state.documents.byId), page, rows)
         },
         page,
         rowsPerPage: action.rowsPerPage
@@ -175,7 +177,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.UPLOAD_DOCUMENTS_SUCCESS:
-      docs = action.payload.docs.map(mergeName)
+      docs = action.payload.docs.map(mergeName).map(removeContent)
       obj = { ...state.documents.byId, ...arrayToObject(docs, '_id') }
 
       return {

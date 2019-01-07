@@ -20,6 +20,14 @@ describe('Document management - Search Box - actions creators', () => {
     expect(actions.updateFormValue('name', 'new search value')).toEqual(expectedAction)
   })
 
+  test('should create an action to clear the search string', () => {
+    const expectedAction = {
+      type: types.CLEAR_SEARCH_STRING
+    }
+
+    expect(actions.clearSearchString()).toEqual(expectedAction)
+  })
+
   test('should create an action to clear form', () => {
     const expectedAction = {
       type: types.CLEAR_FORM

@@ -34,7 +34,7 @@ export class DocumentMeta extends Component {
     documentDeleteError: PropTypes.any,
     goBack : PropTypes.object,
     apiErrorOpen: PropTypes.bool,
-    apiErrorInfo: PropTypes.object
+    apiErrorInfo: PropTypes.shape({ title: PropTypes.string, text: PropTypes.string })
   }
 
   constructor(props, context) {
@@ -251,14 +251,6 @@ export class DocumentMeta extends Component {
         otherProps: { 'aria-label': 'Update' },
         onClick: this.addProJur,
         disabled: this.props.updating
-      }
-    ]
-
-    const apiErrorActions = [
-      {
-        value: 'Close',
-        type: 'button',
-        onClick: this.closeAlert
       }
     ]
 

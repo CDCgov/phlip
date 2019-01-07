@@ -1,83 +1,94 @@
 import { types } from '../actions'
 import { docManagementReducer as reducer } from '../reducer'
 import { types as autocompleteTypes } from 'data/autocomplete/actions'
+import { types as searchTypes } from '../components/SearchBox/actions'
+import moment from 'moment'
 
 const mockDocuments = {
   byId: {
-    '1': {
-      name: 'doc1',
+    1: {
+      name: 'the elder scrolls: skyrim',
       _id: '1',
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
       jurisdictions: [321],
       projects: [123],
       projectList: 'Project 1',
-      jurisdictionList: 'Ohio'
+      jurisdictionList: 'Ohio',
+      uploadedDate: new Date('12/20/2018')
     },
-    '2': {
-      name: 'doc2',
+    2: {
+      name: 'gardenscapes',
       _id: '2',
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
-      jurisdictions: [],
-      projects: [],
-      projectList: '',
-      jurisdictionList: ''
+      jurisdictions: [12],
+      projects: [333],
+      projectList: 'project 1|test project',
+      jurisdictionList: 'ohio|florida',
+      uploadedDate: new Date('10/10/2005')
     },
-    '3': {
-      name: 'doc3',
+    3: {
+      name: 'words with friends',
       _id: '3',
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
-      jurisdictions: [],
+      jurisdictions: [222, 444],
       projects: [123],
-      projectList: 'Project 1',
-      jurisdictionList: ''
+      projectList: 'Project 1|zero dawn',
+      jurisdictionList: 'georiga|florida',
+      uploadedDate: new Date('02/10/1993')
     },
-    '4': {
-      name: 'doc4',
+    4: {
+      name: 'legal text document',
       _id: '4',
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
-      jurisdictions: [],
-      projects: [],
-      projectList: '',
-      jurisdictionList: ''
+      jurisdictions: [1, 3],
+      projects: [4, 5],
+      projectList: 'zero dawn|overwatch',
+      jurisdictionList: '',
+      uploadedDate: new Date('01/7/2019')
     },
-    '5': {
-      name: 'doc5',
+    5: {
+      name: 'document about brooklyn nine nine',
       _id: '5',
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
-      jurisdictions: [],
+      jurisdictions: [222, 221, 233],
       projects: [123],
-      projectList: 'Project 1',
-      jurisdictionList: ''
+      projectList: 'Project 1|overwatch',
+      jurisdictionList: 'florida|puerto rico|ohio',
+      uploadedDate: new Date('06/07/1994')
     },
-    '6': {
-      name: 'doc6',
+    6: {
+      name: 'document about overwatch',
       _id: '6',
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
       jurisdictions: [321],
       projects: [],
       projectList: '',
-      jurisdictionList: 'Ohio'
+      jurisdictionList: 'Ohio',
+      uploadedDate: new Date('02/14/2015')
     },
-    '7': {
-      name: 'doc7',
+    7: {
+      name: 'document about bugs',
       _id: '7',
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
       jurisdictions: [321],
       projects: [],
       projectList: '',
-      jurisdictionList: 'Ohio'
+      jurisdictionList: 'georgia',
+      uploadedDate: new Date('10/10/2010')
     }
   },
   allIds: ['1', '2', '3', '4', '5', '6', '7'],
-  visible: ['1', '2']
+  visible: ['4', '1']
 }
+
+const orderedByDate = ['4', '1', '6', '7', '2', '5', '3']
 
 const initial = {
   documents: {
@@ -226,9 +237,9 @@ describe('Document Management reducer', () => {
         documents: mockDocuments,
         rowsPerPage: '2'
       })
-      const updatedState = reducer(currentState, action)
 
-      expect(updatedState.documents.visible).toEqual(['3', '4'])
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.documents.visible).toEqual(['6', '7'])
     })
   })
 
@@ -247,8 +258,7 @@ describe('Document Management reducer', () => {
 
       const currentState = getState({ documents: mockDocuments })
       const updatedState = reducer(currentState, action)
-
-      expect(updatedState.documents.visible).toEqual(['1', '2', '3', '4', '5'])
+      expect(updatedState.documents.visible).toEqual(['4', '1', '6', '7', '2'])
     })
 
     test('should handle All rowsPerPage option', () => {
@@ -257,15 +267,7 @@ describe('Document Management reducer', () => {
       const currentState = getState({ documents: mockDocuments })
       const updatedState = reducer(currentState, action)
 
-      expect(updatedState.documents.visible).toEqual([
-        '1',
-        '2',
-        '3',
-        '4',
-        '5',
-        '6',
-        '7'
-      ])
+      expect(updatedState.documents.visible).toEqual(orderedByDate)
     })
   })
 
@@ -415,23 +417,49 @@ describe('Document Management reducer', () => {
     })
   })
 
-  xdescribe('ON_SEARCH_FIELD_CHANGE', () => {
-    test('should set state.searchValue to action.searchValue', () => {
+  describe('SEARCH_VALUE_CHANGE', () => {
+    test('should handle a basic search string and set state.documents.visible to only matching document ids', () => {
       const action = {
-        type: types.ON_SEARCH_FIELD_CHANGE,
-        searchValue: 'this search'
+        type: searchTypes.SEARCH_VALUE_CHANGE,
+        value: 'ohio',
+        form: {
+          project: {},
+          jurisdiction: {}
+        }
       }
 
-      const currentState = getState()
-      const updateState = reducer(currentState, action)
+      const currentState = getState({ documents: mockDocuments })
+      const updatedState = reducer(currentState, action)
 
-      expect(updateState.searchValue).toEqual('this search')
+      expect(updatedState.documents.visible).toEqual(['1', '6', '2', '5'])
     })
 
-    test('should filter all documents to only show ones whose name, upload date or uploaded by match the search string', () => {
+    test('should handle a search string with one named filters', () => {
       const action = {
-        type: types.ON_SEARCH_FIELD_CHANGE,
-        searchValue: 'doc7'
+        type: searchTypes.SEARCH_VALUE_CHANGE,
+        value: 'name:(document about)',
+        form: {
+          project: {},
+          jurisdiction: {}
+        }
+      }
+
+      const currentState = getState({ documents: mockDocuments })
+      const updatedState = reducer(currentState, action)
+
+      expect(updatedState.documents.visible).toEqual(['6', '7', '5'])
+    })
+
+    xtest('should handle a search string with multiple named filters', () => {
+      const date = moment.utc('10/10').local().format('M/D/YYYY')
+
+      const action = {
+        type: searchTypes.SEARCH_VALUE_CHANGE,
+        value: `name: (document about) | uploadedDate: ${date}`,
+        form: {
+          project: {},
+          jurisdiction: {}
+        }
       }
 
       const currentState = getState({ documents: mockDocuments })
@@ -463,7 +491,7 @@ describe('Document Management reducer', () => {
       const currentState = getState({ documents: mockDocuments })
       const updatedState = reducer(currentState, action)
 
-      expect(updatedState.documents.visible).toEqual([
+      expect(updatedState.documents.visible).toContainEqual([
         '1', '6', '7'
       ])
     })
