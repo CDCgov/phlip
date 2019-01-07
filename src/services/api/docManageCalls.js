@@ -28,8 +28,8 @@ const docManageCalls = [
   },
   {
     name: 'updateDoc',
-    method: 'post',
-    path: () =>'/docs/update'
+    method: 'put',
+    path: ({ docId }) => `/docs/${docId}`
   },
   {
     name: 'getDocumentsByProjectJurisdiction',

@@ -42,10 +42,7 @@ const updateDocLogic = createLogic({
     md.projects = selectedDoc.projects
 
     try {
-      const updatedDoc = await docApi.updateDoc({
-        'metadata': JSON.stringify(md),
-        'docId': selectedDoc._id
-      }, {}, {})
+      const updatedDoc = await docApi.updateDoc({ ...md }, {}, { docId: selectedDoc._id })
 
       if (action.property !== null && action.property === 'jurisdictions') {
         dispatch({
@@ -77,5 +74,6 @@ const updateDocLogic = createLogic({
 })
 
 export default [
-  getDocumentContentsLogic, updateDocLogic
+  getDocumentContentsLogic,
+  updateDocLogic
 ]
