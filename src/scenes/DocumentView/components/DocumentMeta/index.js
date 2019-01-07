@@ -254,9 +254,9 @@ export class DocumentMeta extends Component {
       <>
         <ApiErrorAlert
           open={this.props.apiErrorOpen}
-          actions={apiErrorActions}
           title={this.props.apiErrorInfo.title}
           content={this.props.apiErrorInfo.text}
+          onCloseAlert={this.closeAlert}
         />
         <Alert open={this.state.alertOpen} actions={alertActions} title={this.state.alertTitle}>
           {this.state.alertInfo.text}

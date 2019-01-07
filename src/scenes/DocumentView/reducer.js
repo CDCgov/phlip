@@ -124,7 +124,7 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         ...state,
         apiErrorInfo: {
           title: 'Update error',
-          text: 'Failed to update document. Please try again.'
+          text: 'Failed to update document.'
         },
         apiErrorOpen: true,
         documentUpdatingInProgress: false
