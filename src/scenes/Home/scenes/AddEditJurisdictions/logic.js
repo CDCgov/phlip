@@ -177,7 +177,8 @@ export const deleteJurisdictionLogic = createLogic({
  */
 export const updateFieldsLogic = createLogic({
   type: [
-    types.ADD_PROJECT_JURISDICTION_REQUEST, types.UPDATE_PROJECT_JURISDICTION_REQUEST,
+    types.ADD_PROJECT_JURISDICTION_REQUEST,
+    types.UPDATE_PROJECT_JURISDICTION_REQUEST,
     types.ADD_PRESET_JURISDICTION_REQUEST
   ],
   transform({ action, getState }, next) {
