@@ -63,7 +63,7 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
       container={true}
       flex={true}
       justify="stretch"
-      padding={15}
+      padding={10}
       raised={false}
       style={Object {}}
       type="column"
@@ -258,10 +258,10 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
         </WithStyles(Typography)>
       </FlexGrid>
       <FlexGrid
-        align="center"
+        align="flex-end"
         circular={false}
         container={true}
-        flex={false}
+        flex={true}
         justify="space-between"
         padding={0}
         raised={false}

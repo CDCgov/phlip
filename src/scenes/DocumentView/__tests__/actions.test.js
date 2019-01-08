@@ -86,8 +86,8 @@ describe('DocumentView action creators', () => {
 
   test('should create an action to send a request to delete document', () => {
     const expectedAction = {
-        type: types.DELETE_DOCUMENT_REQUEST,
-        id: 4
+      type: types.DELETE_DOCUMENT_REQUEST,
+      id: 4
     }
 
     expect(actions.deleteDocRequest(4)).toEqual(expectedAction)

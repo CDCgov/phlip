@@ -32,7 +32,7 @@ export class DocumentMeta extends Component {
     documentUpdatingInProgress: PropTypes.bool,
     documentDeleteInProgress: PropTypes.bool,
     documentDeleteError: PropTypes.any,
-    goBack : PropTypes.object,
+    goBack: PropTypes.func,
     apiErrorOpen: PropTypes.bool,
     apiErrorInfo: PropTypes.shape({ title: PropTypes.string, text: PropTypes.string })
   }
@@ -59,13 +59,14 @@ export class DocumentMeta extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-        if (prevProps.documentDeleteInProgress === true && this.props.documentDeleteInProgress === false) {
-            if (this.props.documentDeleteError === false) {
-                this.props.goBack()
-            }
-  }}
+    if (prevProps.documentDeleteInProgress === true && this.props.documentDeleteInProgress === false) {
+      if (this.props.documentDeleteError === false) {
+        this.props.goBack()
+      }
+    }
+  }
 
-    showAddProjModal = () => {
+  showAddProjModal = () => {
     this.setState({
       projectSuggestions: [],
       showAddJurisdiction: false,
@@ -166,15 +167,15 @@ export class DocumentMeta extends Component {
   }
 
   handleShowDocDeleteConfirm = (type, id) => {
-      this.setState({
-          typeToDelete: type,
-          [`${type}ToDelete`]: id,
-          alertOpen: true,
-          alertInfo: {
-              title: `Delete ${type}`,
-              text: `Are you sure you want to delete ${type}: ${this.props.document.name}?`
-          }
-      })
+    this.setState({
+      typeToDelete: type,
+      [`${type}ToDelete`]: id,
+      alertOpen: true,
+      alertInfo: {
+        title: `Delete ${type}`,
+        text: `Are you sure you want to delete ${type}: ${this.props.document.name}?`
+      }
+    })
   }
 
   addProJur = () => {
@@ -212,12 +213,11 @@ export class DocumentMeta extends Component {
   }
 
   onContinueDelete = () => {
-    if (this.state.typeToDelete === 'document'){
+    if (this.state.typeToDelete === 'document') {
       this.props.actions.deleteDocRequest(this.props.document._id)
-    }
-    else {
-        this.props.actions.deleteProJur(`${this.state.typeToDelete}s`, this.state[`${this.state.typeToDelete}ToDelete`])
-        this.props.actions.updateDocRequest(this.props.document._id, null, null)
+    } else {
+      this.props.actions.deleteProJur(`${this.state.typeToDelete}s`, this.state[`${this.state.typeToDelete}ToDelete`])
+      this.props.actions.updateDocRequest(this.props.document._id, null, null)
     }
     this.onCancelDelete()
   }
@@ -287,7 +287,7 @@ export class DocumentMeta extends Component {
             Document Information
           </Typography>
           <Divider />
-          <FlexGrid container flex padding={15}>
+          <FlexGrid container flex padding={10}>
             <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
               <FileDocument style={iconStyle} />
               <Typography variant="body1" style={metaStyling}>Status:</Typography>
@@ -359,14 +359,14 @@ export class DocumentMeta extends Component {
                 {this.props.document.uploadedByName}
               </Typography>
             </FlexGrid>
-            <FlexGrid container type="row" align="center" justify="space-between">
+            <FlexGrid container type="row" flex align="flex-end" justify="space-between">
               <Button
-                value='Delete Document'
+                value="Delete Document"
                 raised={false}
-                color='accent'
-                style={{paddingLeft:0, textTransform:'none', backgroundColor: 'transparent' }}
+                color="accent"
+                style={{ paddingLeft: 0, textTransform: 'none', backgroundColor: 'transparent' }}
                 aria-label="Delete the current document"
-                onClick={() => this.handleShowDocDeleteConfirm('document',this.props.document._id)}
+                onClick={() => this.handleShowDocDeleteConfirm('document', this.props.document._id)}
               />
               <Button
                 value={this.props.inEditMode

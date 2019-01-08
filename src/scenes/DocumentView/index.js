@@ -18,7 +18,7 @@ export class DocumentView extends Component {
     history: PropTypes.object,
     documentDeleteInProgress: PropTypes.bool,
     documentDeleteError: PropTypes.bool,
-    goBack : PropTypes.object
+    goBack: PropTypes.object
   }
 
   constructor(props, context) {
@@ -55,9 +55,9 @@ export class DocumentView extends Component {
               document={this.props.document}
               loading={this.props.documentRequestInProgress}
               updating={this.props.documentUpdateInProgress}
-              documentDeleteError = {this.props.documentDeleteError}
-              documentDeleteInProgress = {this.props.documentDeleteInProgress}
-              goBack = {this.onGoBack}
+              documentDeleteError={this.props.documentDeleteError}
+              documentDeleteInProgress={this.props.documentDeleteInProgress}
+              goBack={this.onGoBack}
             />
           </FlexGrid>
         </FlexGrid>

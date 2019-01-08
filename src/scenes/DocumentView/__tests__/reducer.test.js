@@ -88,7 +88,7 @@ describe('DocumentView reducer', () => {
 
     const updatedState = reducer(currentState, action)
 
-    test('should set state.documentForm to an empty object', () =>{
+    test('should set state.documentForm to an empty object', () => {
       expect(updatedState.documentForm).toEqual({})
     })
 
@@ -331,45 +331,45 @@ describe('DocumentView reducer', () => {
   })
 
   describe('DELETE_DOCUMENT_REQUEST', () => {
-        const action = {
-            type: types.DELETE_DOCUMENT_REQUEST
-        }
+    const action = {
+      type: types.DELETE_DOCUMENT_REQUEST
+    }
 
-        const currentState = getState({
-            document: sampleDocument,
-            documentForm: sampleDocument
-        })
-
-        const updatedState = reducer(currentState, action)
-
-        test('should set state.documentDeleteInProgress to true', () => {
-            expect(updatedState.documentDeleteInProgress).toEqual(true)
-        })
+    const currentState = getState({
+      document: sampleDocument,
+      documentForm: sampleDocument
     })
 
+    const updatedState = reducer(currentState, action)
+
+    test('should set state.documentDeleteInProgress to true', () => {
+      expect(updatedState.documentDeleteInProgress).toEqual(true)
+    })
+  })
+
   describe('DELETE_DOCUMENT_SUCCESS', () => {
-        const action = {
-            type: types.DELETE_DOCUMENT_SUCCESS
-        }
+    const action = {
+      type: types.DELETE_DOCUMENT_SUCCESS
+    }
 
-        const currentState = getState({
-            document: sampleDocument,
-            documentForm: {
-                ...sampleDocument,
-                projects: [1, 2, 10],
-                jurisdictions: [3, 4, 7]
-            },
-            documentDeleteInProgress: true,
-            inEditMode: true
-        })
+    const currentState = getState({
+      document: sampleDocument,
+      documentForm: {
+        ...sampleDocument,
+        projects: [1, 2, 10],
+        jurisdictions: [3, 4, 7]
+      },
+      documentDeleteInProgress: true,
+      inEditMode: true
+    })
 
-        const updatedState = reducer(currentState, action)
-        test('should set state.documentDeleteInProgress to false', () => {
-            expect(updatedState.documentDeleteInProgress).toEqual(false)
-        })
-        test('should set state.documentDeleteError to false', () => {
-            expect(updatedState.documentDeleteError).toEqual(false)
-        })
+    const updatedState = reducer(currentState, action)
+    test('should set state.documentDeleteInProgress to false', () => {
+      expect(updatedState.documentDeleteInProgress).toEqual(false)
+    })
+    test('should set state.documentDeleteError to false', () => {
+      expect(updatedState.documentDeleteError).toEqual(false)
+    })
 
-    })  
+  })
 })

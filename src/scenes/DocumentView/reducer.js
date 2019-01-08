@@ -17,7 +17,7 @@ export const INITIAL_STATE = {
   },
   inEditMode: false,
   documentDeleteInProgress: false,
-  documentDeleteError : false
+  documentDeleteError: false
 }
 
 const docViewReducer = (state = INITIAL_STATE, action) => {
@@ -146,23 +146,23 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documentDeleteInProgress: true
       }
-      case types.DELETE_DOCUMENT_SUCCESS :
+    case types.DELETE_DOCUMENT_SUCCESS :
       return {
         ...state,
-        documentDeleteInProgress : false,
-        documentDeleteError : false
+        documentDeleteInProgress: false,
+        documentDeleteError: false
       }
-      case types.DELETE_DOCUMENT_FAIL :
-        return {
-            ...state,
-            apiErrorInfo: {
-              title: 'Document Delete Error',
-              text: 'Failed to delete document.  Please try again.'
-            },
-            apiErrorOpen: true,
-            documentDeleteInProgress: false,
-            documentDeleteError: true
-        }
+    case types.DELETE_DOCUMENT_FAIL :
+      return {
+        ...state,
+        apiErrorInfo: {
+          title: 'Document Delete Error',
+          text: 'Failed to delete document.  Please try again.'
+        },
+        apiErrorOpen: true,
+        documentDeleteInProgress: false,
+        documentDeleteError: true
+      }
 
     default:
       return state

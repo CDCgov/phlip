@@ -74,25 +74,23 @@ const updateDocLogic = createLogic({
 })
 
 const deleteDocLogic = createLogic({
-    type: types.DELETE_DOCUMENT_REQUEST,
-    async process({ docApi, action, getState }, dispatch, done) {
-        try {
-            await docApi.deleteDoc({
-
-            }, {}, {'docId': action.id})
-            dispatch({
-                type: types.DELETE_DOCUMENT_SUCCESS,
-                payload: action.id
-            })
-            done()
-        } catch (err) {
-            dispatch({
-                type: types.DELETE_DOCUMENT_FAIL,
-                payload: { error: 'Failed to delete document, please try again.' }
-            })
-            done()
-        }
+  type: types.DELETE_DOCUMENT_REQUEST,
+  async process({ docApi, action, getState }, dispatch, done) {
+    try {
+      await docApi.deleteDoc({}, {}, { 'docId': action.id })
+      dispatch({
+        type: types.DELETE_DOCUMENT_SUCCESS,
+        payload: action.id
+      })
+      done()
+    } catch (err) {
+      dispatch({
+        type: types.DELETE_DOCUMENT_FAIL,
+        payload: { error: 'Failed to delete document, please try again.' }
+      })
+      done()
     }
+  }
 })
 
 export default [
