@@ -375,11 +375,14 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
         flex={false}
         justify="space-between"
         key="project-0"
+        onMouseEnter={[Function]}
+        onMouseLeave={[Function]}
         padding={0}
         raised={false}
         style={
           Object {
             "backgroundColor": "#f9f9f9",
+            "minHeight": 24,
             "padding": 8,
           }
         }
@@ -392,15 +395,6 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
             }
           }
         />
-        <IconButton
-          color="error"
-          disabled={false}
-          iconSize={24}
-          onClick={[Function]}
-          tooltipText=""
-        >
-          delete_outline
-        </IconButton>
       </FlexGrid>
       <FlexGrid
         align="center"
@@ -409,11 +403,14 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
         flex={false}
         justify="space-between"
         key="project-1"
+        onMouseEnter={[Function]}
+        onMouseLeave={[Function]}
         padding={0}
         raised={false}
         style={
           Object {
             "backgroundColor": "white",
+            "minHeight": 24,
             "padding": 8,
           }
         }
@@ -426,15 +423,6 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
             }
           }
         />
-        <IconButton
-          color="error"
-          disabled={false}
-          iconSize={24}
-          onClick={[Function]}
-          tooltipText=""
-        >
-          delete_outline
-        </IconButton>
       </FlexGrid>
     </FlexGrid>
   </FlexGrid>
@@ -516,11 +504,14 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
         flex={false}
         justify="space-between"
         key="jurisdiction-0"
+        onMouseEnter={[Function]}
+        onMouseLeave={[Function]}
         padding={0}
         raised={false}
         style={
           Object {
             "backgroundColor": "#f9f9f9",
+            "minHeight": 24,
             "padding": 8,
           }
         }
@@ -533,15 +524,6 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
             }
           }
         />
-        <IconButton
-          color="error"
-          disabled={false}
-          iconSize={24}
-          onClick={[Function]}
-          tooltipText=""
-        >
-          delete_outline
-        </IconButton>
       </FlexGrid>
       <FlexGrid
         align="center"
@@ -550,11 +532,14 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
         flex={false}
         justify="space-between"
         key="jurisdiction-1"
+        onMouseEnter={[Function]}
+        onMouseLeave={[Function]}
         padding={0}
         raised={false}
         style={
           Object {
             "backgroundColor": "white",
+            "minHeight": 24,
             "padding": 8,
           }
         }
@@ -567,15 +552,6 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
             }
           }
         />
-        <IconButton
-          color="error"
-          disabled={false}
-          iconSize={24}
-          onClick={[Function]}
-          tooltipText=""
-        >
-          delete_outline
-        </IconButton>
       </FlexGrid>
     </FlexGrid>
     <WithStyles(Modal)

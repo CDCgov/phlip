@@ -49,6 +49,8 @@ export class DocumentMeta extends Component {
       typeToDelete: '',
       projectToDelete: {},
       jurisdictionToDelete: {},
+      hoveringOn: '',
+      hoverIndex: null,
       alertOpen: false,
       alertInfo: {
         title: '',
@@ -236,6 +238,25 @@ export class DocumentMeta extends Component {
   }
 
   /**
+   * Handles when a user hovers over a row in the jurisdiction or project card info
+   * @param card
+   * @param index
+   */
+  onToggleHover = (card, index) => () => {
+    if (this.state.hoveringOn === true) {
+      this.setState({
+        hoveringOn: '',
+        hoverIndex: null
+      })
+    } else {
+      this.setState({
+        hoveringOn: card,
+        hoverIndex: index
+      })
+    }
+  }
+
+  /**
    * Determines the text for the modal button at the bottom
    * @param text
    */
@@ -412,28 +433,35 @@ export class DocumentMeta extends Component {
           </FlexGrid>
           <Divider />
           <FlexGrid type="row" padding={5} style={{ overflow: 'auto' }}>
-            {this.props.projectList.map((item, index) => (
-              <FlexGrid
-                container
-                type="row"
-                justify="space-between"
-                align="center"
-                key={`project-${index}`}
-                style={{
-                  padding: 8,
-                  backgroundColor: index % 2 === 0
-                    ? '#f9f9f9'
-                    : 'white'
-                }}>
-                <Typography style={{ fontSize: '.8125rem' }}>
-                  {item.name}
-                </Typography>
-                <IconButton
-                  color="error"
-                  onClick={() => this.handleShowDeleteConfirm('project', index)}>
-                  delete_outline
-                </IconButton>
-              </FlexGrid>)
+            {this.props.projectList.map((item, index) => {
+              return (
+                <FlexGrid
+                  onMouseEnter={this.onToggleHover('project', index)}
+                  onMouseLeave={this.onToggleHover('', null)}
+                  container
+                  type="row"
+                  justify="space-between"
+                  align="center"
+                  key={`project-${index}`}
+                  style={{
+                    padding: 8,
+                    backgroundColor: index % 2 === 0
+                      ? '#f9f9f9'
+                      : 'white',
+                    minHeight: 24
+                  }}>
+                  <Typography style={{ fontSize: '.8125rem' }}>
+                    {item.name}
+                  </Typography>
+                  {(this.state.hoveringOn === 'project' && this.state.hoverIndex === index) &&
+                  <IconButton
+                    color="#757575"
+                    onClick={() => this.handleShowDeleteConfirm('project', index)}>
+                    delete
+                  </IconButton>}
+                </FlexGrid>
+              )
+              }
             )}
           </FlexGrid>
         </FlexGrid>
@@ -454,6 +482,8 @@ export class DocumentMeta extends Component {
           <FlexGrid flex padding={5} style={{ overflow: 'auto' }}>
             {this.props.jurisdictionList.map((item, index) => (
               <FlexGrid
+                onMouseEnter={this.onToggleHover('jurisdiction', index)}
+                onMouseLeave={this.onToggleHover('', null)}
                 container
                 type="row"
                 justify="space-between"
@@ -463,16 +493,18 @@ export class DocumentMeta extends Component {
                   padding: 8,
                   backgroundColor: index % 2 === 0
                     ? '#f9f9f9'
-                    : 'white'
+                    : 'white',
+                  minHeight: 24
                 }}>
                 <Typography style={{ fontSize: '.8125rem' }}>
                   {item.name}
                 </Typography>
+                {(this.state.hoveringOn === 'jurisdiction' && this.state.hoverIndex === index) &&
                 <IconButton
-                  color="error"
+                  color="#757575"
                   onClick={() => this.handleShowDeleteConfirm('jurisdiction', index)}>
-                  delete_outline
-                </IconButton>
+                  delete
+                </IconButton>}
               </FlexGrid>)
             )}
           </FlexGrid>
