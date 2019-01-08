@@ -1,6 +1,5 @@
 import { types } from '../actions'
 import { docManagementReducer as reducer } from '../reducer'
-import { types as autocompleteTypes } from 'data/autocomplete/actions'
 import { types as searchTypes } from '../components/SearchBox/actions'
 
 const mockDocuments = {
@@ -405,6 +404,38 @@ describe('Document Management reducer', () => {
       expect(updatedState.documents.visible).toEqual(['1', '6', '2', '5'])
     })
 
+    test('should handle a multi-worded string without named filter', () => {
+      const action = {
+        type: searchTypes.SEARCH_VALUE_CHANGE,
+        value: 'document: about',
+        form: {
+          project: {},
+          jurisdiction: {}
+        }
+      }
+
+      const currentState = getState({ documents: mockDocuments })
+      const updatedState = reducer(currentState, action)
+
+      expect(updatedState.documents.visible).toEqual([])
+    })
+
+    test('should handle multiple words inside parentheses in a named filter', () => {
+      const action = {
+        type: searchTypes.SEARCH_VALUE_CHANGE,
+        value: 'name:(document about bugs)',
+        form: {
+          project: {},
+          jurisdiction: {}
+        }
+      }
+
+      const currentState = getState({ documents: mockDocuments })
+      const updatedState = reducer(currentState, action)
+
+      expect(updatedState.documents.visible).toEqual(['7'])
+    })
+
     test('should handle a search string with one named filters', () => {
       const action = {
         type: searchTypes.SEARCH_VALUE_CHANGE,
@@ -437,6 +468,22 @@ describe('Document Management reducer', () => {
       const updatedState = reducer(currentState, action)
 
       expect(updatedState.documents.visible).toEqual(['7'])
+    })
+
+    test('should handle if named filter only has one parentheses', () => {
+      const action = {
+        type: searchTypes.SEARCH_VALUE_CHANGE,
+        value: 'name:(document about',
+        form: {
+          project: {},
+          jurisdiction: {}
+        }
+      }
+
+      const currentState = getState({ documents: mockDocuments })
+      const updatedState = reducer(currentState, action)
+
+      expect(updatedState.documents.visible).toEqual([])
     })
 
     test('should handle if one named filter followed by free text', () => {

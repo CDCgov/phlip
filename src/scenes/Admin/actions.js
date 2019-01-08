@@ -1,12 +1,24 @@
-import * as types from './actionTypes'
+import makeActionCreator from 'utils/makeActionCreator'
 
-/** Getting users */
-export const getUsersRequest = () => ({ type: types.GET_USERS_REQUEST })
-export const getUserSuccess = (users) => ({ type: types.GET_USERS_SUCCESS, users })
+export const types = {
+  GET_USERS_REQUEST: 'GET_USERS_REQUEST',
+  GET_USERS_SUCCESS: 'GET_USERS_SUCCESS',
+  GET_USERS_FAIL: 'GET_USERS_FAIL',
+  UPDATE_USER_REQUEST: 'UPDATE_USER_REQUEST',
+  UPDATE_USER_SUCCESS: 'UPDATE_USER_SUCCESS',
+  UPDATE_USER_FAIL: 'UPDATE_USER_FAIL',
+  ADD_USER_SUCCESS: 'ADD_USER_SUCCESS',
+  FLUSH_STATE: 'FLUSH_STATE',
+  SORT_USERS: 'SORT_USERS',
+  UPDATE_USER_PAGE: 'UPDATE_USER_PAGE',
+  UPDATE_USER_ROWS: 'UPDATE_USER_ROWS',
+  ADD_USER_IMAGE_SUCCESS: 'ADD_USER_IMAGE_SUCCESS'
+}
 
-/** Manipulating the sortBy and direction */
-export const sortUsers = (sortBy) => ({ type: types.SORT_USERS, sortBy })
-
-/** Not currently used */
-export const updateUserPage = (page) => ({ type: types.UPDATE_USER_PAGE, page })
-export const updateUserRows = (rowsPerPage) => ({ type: types.UPDATE_USER_ROWS, rowsPerPage })
+export default {
+  getUsersRequest: makeActionCreator(types.GET_USERS_REQUEST),
+  getUserSuccess: makeActionCreator(types.GET_USERS_SUCCESS, 'users'),
+  sortUsers: makeActionCreator(types.SORT_USERS, 'sortBy'),
+  //updateUserPage: makeActionCreator(types.UPDATE_USER_PAGE, 'page'),
+  //updateUserRows: makeActionCreator(types.UPDATE_USER_ROWS, 'rowsPerPage')
+}

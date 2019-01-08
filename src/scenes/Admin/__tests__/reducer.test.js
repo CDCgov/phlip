@@ -1,58 +1,90 @@
-import * as types from '../actionTypes'
-import reducer from '../reducer'
+import { types } from '../actions'
+import { adminReducer as reducer, INITIAL_STATE } from '../reducer'
 
-const initial = {
-  main: {
-    users: [],
-    rowsPerPage: 10,
-    page: 0,
-    sortBy: 'name',
-    direction: 'asc'
-  },
-  addEditUser: {}
+const mockUsers = [
+  { id: 1, name: 'user1' },
+  { id: 2, name: 'user2' }
+]
+
+const initial = INITIAL_STATE
+
+const getState = (other = {}) => {
+  return {
+    ...initial,
+    ...other
+  }
 }
 
-xdescribe('Admin reducer', () => {
+describe('Admin reducer', () => {
   test('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual(initial)
   })
 
-  xtest('should handle GET_USERS_SUCCESS', () => {
-    const payload = [{ name: 'user1' }, { name: 'user2' }]
-    expect(
-      reducer({}, {
-        type: types.GET_USERS_SUCCESS,
-        payload
-      })
-    ).toEqual({
-      main: { users: payload },
-      addEditUser: {}
+  describe('GET_USERS_SUCCESS', () => {
+    const action = {
+      type: types.GET_USERS_SUCCESS,
+      payload: mockUsers
+    }
+
+    const currentState = getState()
+    const updatedState = reducer(currentState, action)
+
+    test('should set state.users to action.payload', () => {
+      expect(updatedState.users).toEqual(mockUsers)
+    })
+
+    test('should set state.visibleUsers to action.payload', () => {
+      expect(updatedState.visibleUsers).toEqual(mockUsers)
     })
   })
 
-  xtest('should handle ADD_USER_SUCCESS', () => {
-    const users = [{ id: 93831, name: 'user1' }, { id: 32434, name: 'user2' }]
-    const payload = { name: 'New User' }
-    const expectedResult = [{ id: 93831, name: 'user1' }, { id: 32434, name: 'user2' }, { name: 'New User' }]
-    expect(
-      reducer({ ...initial, main: { ...initial.main, users } }, { type: types.ADD_USER_SUCCESS, payload })
-    ).toEqual(
-      { ...initial, main: { ...initial.main, users: expectedResult } }
-      )
+  describe('ADD_USER_SUCCESS', () => {
+    const action = {
+      type: types.ADD_USER_SUCCESS,
+      payload: { name: 'new user' }
+    }
+
+    const currentState = getState({
+      users: mockUsers,
+      visibleUsers: mockUsers
+    })
+    const updatedState = reducer(currentState, action)
+
+    test('should add user to state.users list', () => {
+      expect(updatedState.users).toEqual([
+        { name: 'new user' },
+        ...mockUsers
+      ])
+    })
+
+    test('should add user to state.visibleUsers', () => {
+      expect(updatedState.visibleUsers).toEqual([
+        { name: 'new user' },
+        ...mockUsers
+      ])
+    })
   })
 
-  test('should handle UPDATE_USER_SUCCESS', () => {
-    const users = [{ id: 93831, name: 'user1' }, { id: 32434, name: 'user2' }]
-    const updatedUser = { id: 93831, name: 'updated name' }
-    const expectedResult = [{ id: 93831, name: 'updated name' }, { id: 32434, name: 'user2' }]
-    expect(
-      reducer({ ...initial, main: { ...initial.main, users } }, {
-        type: types.UPDATE_USER_SUCCESS,
-        payload: updatedUser
-      })
-    ).toEqual(
-      { ...initial, main: { ...initial.main, users: expectedResult } }
-      )
-  })
+  describe('UPDATE_USER_SUCCESS', () => {
+    const updatedUser = { id: 2, name: 'update user name' }
 
+    const action = {
+      type: types.UPDATE_USER_SUCCESS,
+      payload: updatedUser
+    }
+
+    const currentState = getState({
+      users: mockUsers,
+      visibleUsers: mockUsers
+    })
+    const updatedState = reducer(currentState, action)
+
+    test('should update the user in state.users based on action.payload.id', () => {
+      expect(updatedState.users[1]).toEqual(updatedUser)
+    })
+
+    test('should update the user in state.visibleUsers based on action.payload.id', () => {
+      expect(updatedState.visibleUsers[1]).toEqual(updatedUser)
+    })
+  })
 })
