@@ -168,12 +168,16 @@ describe('Document Management - Upload logic', () => {
                 {
                   name: 'doc1',
                   _id: '1',
-                  uploadedBy: { firstName: 'test', lastName: 'user' }
+                  uploadedBy: { firstName: 'test', lastName: 'user' },
+                  projectList: 'project',
+                  jurisdictionList: '|jurisdiction 10'
                 },
                 {
                   name: 'doc2',
                   _id: '2',
-                  uploadedBy: { firstName: 'test', lastName: 'user' }
+                  uploadedBy: { firstName: 'test', lastName: 'user' },
+                  projectList: 'project',
+                  jurisdictionList: '|jurisdiction 10'
                 }
               ]
             }

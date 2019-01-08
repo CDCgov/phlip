@@ -116,7 +116,7 @@ const uploadRequestLogic = createLogic({
       const noJurIds = state.list.selectedDocs.filter(doc => !doc.jurisdictions.value.hasOwnProperty('id') ||
         !doc.jurisdictions.value.id)
       if (noJurs.length === 0 && noJurIds.length === 0) {
-      allow({ ...action, jurisdictions: Object.values(jurs) })
+        allow({ ...action, jurisdictions: Object.values(jurs) })
       } else {
         reject({
           type: types.REJECT_EMPTY_JURISDICTIONS,
@@ -145,15 +145,23 @@ const uploadRequestLogic = createLogic({
         }
       }
       const docs = await docApi.upload(action.selectedDocsFormData)
-      docs.files.map(doc => {
-        const { content, ...otherDocProps } = doc
-        return otherDocProps
-      })
+      let jurList = ''
       action.jurisdictions.forEach(jur => {
+        jurList = `${jurList}|${jur.name}`
         dispatch({ type: jurisdictionTypes.ADD_JURISDICTION, payload: jur })
       })
+
+      const documents = docs.files.map(doc => {
+        const { content, ...otherDocProps } = doc
+        return {
+          ...otherDocProps,
+          projectList: `${state.projectSuggestions.selectedSuggestion.name}`,
+          jurisdictionList: jurList
+        }
+      })
+
       dispatch({ type: projectTypes.ADD_PROJECT, payload: { ...state.projectSuggestions.selectedSuggestion } })
-      dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: docs.files } })
+      dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: documents } })
       done()
     } catch (err) {
       dispatch({
