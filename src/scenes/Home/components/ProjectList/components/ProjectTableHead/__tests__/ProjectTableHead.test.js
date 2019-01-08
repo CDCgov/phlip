@@ -24,23 +24,23 @@ describe('Home scene - ProjectList - ProjectTableHead component', () => {
   })
 
   describe('Sorting', () => {
-    xtest('should call onRequestSort with name when the Name header is clicked', () => {
-      const wrapper = shallow(<ProjectTableHead {...props} />).dive().dive()
+    test('should call onRequestSort with name when the Name header is clicked', () => {
+      const wrapper = shallow(<ProjectTableHead {...props} />).find('#sort-by-name').childAt(0).dive()
       wrapper.simulate('click')
       wrapper.update()
       expect(props.onRequestSort).toHaveBeenCalledWith('name')
     })
 
-    xtest('should call onRequestSort with dateLastEdited when the Date Last Edited header is clicked', () => {
-      const wrapper = shallow(<ProjectTableHead {...props} />).dive().dive()
-      wrapper.find('TableCell').at(2).childAt(0).childAt(0).simulate('click')
+    test('should call onRequestSort with dateLastEdited when the Date Last Edited header is clicked', () => {
+      const wrapper = shallow(<ProjectTableHead {...props} />).find('#sort-by-dateLastEdited').childAt(0).dive()
+      wrapper.simulate('click')
       wrapper.update()
       expect(props.onRequestSort).toHaveBeenCalledWith('dateLastEdited')
     })
 
-    xtest('should call onRequestSort with lastEditedBy when the Last Edited By header is clicked', () => {
-      const wrapper = shallow(<ProjectTableHead {...props} />).dive().dive()
-      wrapper.find('TableCell').at(3).childAt(0).childAt(0).simulate('click')
+    test('should call onRequestSort with lastEditedBy when the Last Edited By header is clicked', () => {
+      const wrapper = shallow(<ProjectTableHead {...props} />).find('#sort-by-lastEditedBy').childAt(0).dive()
+      wrapper.simulate('click')
       wrapper.update()
       expect(props.onRequestSort).toHaveBeenCalledWith('lastEditedBy')
     })
