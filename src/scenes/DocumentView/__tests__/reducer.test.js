@@ -251,8 +251,8 @@ describe('DocumentView reducer', () => {
 
     const updatedState = reducer(currentState, action)
 
-    test('should set state.documentUpdatingInProgress to true', () => {
-      expect(updatedState.documentUpdatingInProgress).toEqual(true)
+    test('should set state.documentUpdateInProgress to true', () => {
+      expect(updatedState.documentUpdateInProgress).toEqual(true)
     })
   })
 
@@ -268,15 +268,14 @@ describe('DocumentView reducer', () => {
         projects: [1, 2, 10],
         jurisdictions: [3, 4, 7]
       },
-      documentUpdatingInProgress: true,
+      documentUpdateInProgress: true,
       inEditMode: true
     })
 
     const updatedState = reducer(currentState, action)
-    console.log(updatedState)
 
-    test('should set state.documentUpdatingInProgress to false', () => {
-      expect(updatedState.documentUpdatingInProgress).toEqual(false)
+    test('should set state.documentUpdateInProgress to false', () => {
+      expect(updatedState.documentUpdateInProgress).toEqual(false)
     })
 
     test('should set state.document to state.documentForm', () => {

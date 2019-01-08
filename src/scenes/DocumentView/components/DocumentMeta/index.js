@@ -28,8 +28,7 @@ export class DocumentMeta extends Component {
     jurisdictionSearchValue: PropTypes.string,
     noProjectError: PropTypes.any,
     inEditMode: PropTypes.bool,
-    documentUpdateError: PropTypes.any,
-    documentUpdatingInProgress: PropTypes.bool,
+    documentUpdateInProgress: PropTypes.bool,
     documentDeleteInProgress: PropTypes.bool,
     documentDeleteError: PropTypes.any,
     goBack: PropTypes.func,
@@ -62,6 +61,12 @@ export class DocumentMeta extends Component {
     if (prevProps.documentDeleteInProgress === true && this.props.documentDeleteInProgress === false) {
       if (this.props.documentDeleteError === false) {
         this.props.goBack()
+      }
+    }
+
+    if (prevProps.documentUpdateInProgress === true && this.props.documentUpdateInProgress === false) {
+      if (this.props.apiErrorOpen === false) {
+        this.handleCloseProJurModal()
       }
     }
   }
@@ -178,17 +183,13 @@ export class DocumentMeta extends Component {
     })
   }
 
-  addProJur = () => {
+  handleCloseProJurModal = () => {
     if (this.state.selectedJurisdiction !== null) {
-      this.props.actions.addProJur('jurisdictions', this.state.selectedJurisdiction)
-      this.props.actions.updateDocRequest('jurisdictions', this.state.selectedJurisdiction)
       this.handleClearSuggestions('jurisdiction')
       this.props.actions.jurisdictionAutocomplete.clearAll()
     }
 
     if (this.state.selectedProject !== null) {
-      this.props.actions.addProJur('projects', this.state.selectedProject)
-      this.props.actions.updateDocRequest('projects', this.state.selectedProject)
       this.handleClearSuggestions('project')
       this.props.actions.projectAutocomplete.clearAll()
     }
@@ -196,6 +197,18 @@ export class DocumentMeta extends Component {
     this.setState({
       showModal: false, selectedJurisdiction: null, selectedProject: null
     })
+  }
+
+  addProJur = () => {
+    if (this.state.selectedJurisdiction !== null) {
+      this.props.actions.addProJur('jurisdictions', this.state.selectedJurisdiction)
+      this.props.actions.updateDocRequest('jurisdictions', this.state.selectedJurisdiction)
+    }
+
+    if (this.state.selectedProject !== null) {
+      this.props.actions.addProJur('projects', this.state.selectedProject)
+      this.props.actions.updateDocRequest('projects', this.state.selectedProject)
+    }
   }
 
   /**
@@ -227,7 +240,7 @@ export class DocumentMeta extends Component {
    * @param text
    */
   getButtonText = text => {
-    return this.props.uploading
+    return this.props.documentUpdateInProgress
       ? (<>
         <span style={{ marginRight: 5 }}>{text}</span>
         <CircularLoader thickness={5} style={{ height: 15, width: 15 }} />
@@ -250,7 +263,7 @@ export class DocumentMeta extends Component {
         type: 'button',
         otherProps: { 'aria-label': 'Update' },
         onClick: this.addProJur,
-        disabled: this.props.updating
+        disabled: this.props.documentUpdateInProgress
       }
     ]
 
@@ -516,7 +529,8 @@ const mapStateToProps = (state, ownProps) => {
     jurisdictionSearchValue: state.scenes.docManage.upload.jurisdictionSuggestions.searchValue,
     inEditMode: state.scenes.docView.inEditMode,
     apiErrorInfo: state.scenes.docView.apiErrorInfo,
-    apiErrorOpen: state.scenes.docView.apiErrorOpen || false
+    apiErrorOpen: state.scenes.docView.apiErrorOpen || false,
+    documentUpdateInProgress: state.scenes.docView.documentUpdateInProgress || false
   }
 }
 
