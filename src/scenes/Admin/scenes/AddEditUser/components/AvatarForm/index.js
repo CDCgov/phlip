@@ -7,7 +7,7 @@ import Avatar from 'components/Avatar'
 import Divider from '@material-ui/core/Divider'
 import { withRouter } from 'react-router'
 import Container from 'components/Layout'
-import * as actions from '../../actions'
+import actions from '../../actions'
 import { default as formActions } from 'redux-form/lib/actions'
 
 export class AvatarForm extends Component {

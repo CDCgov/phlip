@@ -1,13 +1,11 @@
 import { createMockStore } from 'redux-logic-test'
 import MockAdapter from 'axios-mock-adapter'
-import reducer from '../reducer'
 import logic from '../logic'
 import { types } from '../actions'
 import createApiHandler, { projectApiInstance } from 'services/api'
 import calls from 'services/api/calls'
 
 describe('Admin Logic', () => {
-  let store
   let mock
 
   const mockReducer = (state, action) => state

@@ -41,7 +41,7 @@ export class Admin extends Component {
     super(props, context)
   }
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     this.props.actions.getUsersRequest()
   }
 

@@ -2,29 +2,30 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Route } from 'react-router-dom'
-import * as actions from './actions'
-import Dropdown from 'components/Dropdown'
-import { withRouter } from 'react-router-dom'
+import { Route, withRouter } from 'react-router-dom'
 import { Field } from 'redux-form'
-import ModalForm from 'components/ModalForm'
-import TextInput from 'components/TextInput'
+import { default as formActions } from 'redux-form/lib/actions'
+import compressImage from 'browser-compress-image'
+import Typography from '@material-ui/core/Typography'
+import ReactFileReader from 'react-file-reader'
 import isEmail from 'sane-email-validation'
+import actions from './actions'
+import {
+  Dropdown,
+  ModalForm,
+  TextInput,
+  Avatar,
+  IconButton,
+  withFormAlert,
+  TextLink,
+  Tooltip,
+  Alert,
+  CheckboxLabel,
+  CircularLoader
+} from 'components'
 import Container, { Row, Column } from 'components/Layout'
 import { trimWhitespace } from 'utils/formHelpers'
-import Avatar from 'components/Avatar'
-import ReactFileReader from 'react-file-reader'
-import IconButton from 'components/IconButton'
-import withFormAlert from 'components/withFormAlert'
-import { default as formActions } from 'redux-form/lib/actions'
 import AvatarForm from './components/AvatarForm'
-import TextLink from 'components/TextLink'
-import Tooltip from 'components/Tooltip'
-import compressImage from 'browser-compress-image'
-import Alert from 'components/Alert'
-import Typography from '@material-ui/core/Typography'
-import CheckboxLabel from 'components/CheckboxLabel'
-import CircularLoader from 'components/CircularLoader'
 
 const rowStyles = {
   paddingBottom: 30
