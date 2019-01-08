@@ -50,7 +50,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
                 "firstName": "Test",
                 "lastName": "User",
               },
-              "uploadedDate": 2000-01-01T05:00:00.000Z,
+              "uploadedDate": 2000-01-01T00:00:00.000Z,
             },
           },
         }

@@ -258,26 +258,30 @@ exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
         </WithStyles(Typography)>
       </FlexGrid>
       <FlexGrid
-        align="flex-end"
+        align="center"
         circular={false}
         container={true}
-        flex={true}
+        flex={false}
         justify="space-between"
         padding={0}
         raised={false}
         style={Object {}}
         type="row"
       >
-        <WithStyles(Typography)
-          color="secondary"
+        <WithTheme(Button)
+          aria-label="Delete the current document"
+          color="accent"
+          onClick={[Function]}
+          raised={false}
           style={
             Object {
-              "cursor": "pointer",
+              "backgroundColor": "transparent",
+              "paddingLeft": 0,
+              "textTransform": "none",
             }
           }
-        >
-          Delete Document
-        </WithStyles(Typography)>
+          value="Delete Document"
+        />
         <WithTheme(Button)
           color="accent"
           onClick={[Function]}

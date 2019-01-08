@@ -74,6 +74,7 @@ exports[`DocumentView scene should render correctly 1`] = `
             "name": "Test file",
           }
         }
+        goBack={[Function]}
         loading={false}
       />
     </FlexGrid>
