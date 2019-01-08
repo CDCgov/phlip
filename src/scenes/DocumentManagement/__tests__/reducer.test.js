@@ -450,8 +450,8 @@ describe('Document Management reducer', () => {
       expect(updatedState.documents.visible).toEqual(['6', '7', '5'])
     })
 
-    xtest('should handle a search string with multiple named filters', () => {
-      const date = moment.utc('10/10').local().format('M/D/YYYY')
+    test('should handle a search string with multiple named filters', () => {
+      const date = '10/10/2010'
 
       const action = {
         type: searchTypes.SEARCH_VALUE_CHANGE,
@@ -466,6 +466,21 @@ describe('Document Management reducer', () => {
       const updatedState = reducer(currentState, action)
 
       expect(updatedState.documents.visible).toEqual(['7'])
+    })
+
+    test('should handle if one named filter followed by free text', () => {
+      const action = {
+        type: searchTypes.SEARCH_VALUE_CHANGE,
+        value: 'jurisdiction: florida project',
+        form: {
+          project: {},
+          jurisdiction: {}
+        }
+      }
+
+      const currentState = getState({ documents: mockDocuments })
+      const updatedState = reducer(currentState, action)
+      //expect(updatedState.documents.visible).toEqual(['2', '3', '5'])
     })
   })
 
