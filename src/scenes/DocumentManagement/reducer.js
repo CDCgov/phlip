@@ -37,17 +37,17 @@ const resetFilter = (docs, stringSearch, projectFilter, jurisdictionFilter) => {
 
   const regEnd = /\)$/
   const regBegin = /^\(/
-
+  
   const searchParams = stringSearch.split(' | ')
   searchParams.forEach(searchTerm => {
     const searchTermPieces = searchTerm.split(':')
     if (searchTermPieces.length > 1) {
       let searchValue = searchTermPieces[1].trim()
       if (Object.keys(searchFields).includes(searchTermPieces[0])) {
-        let searchProperty = searchFields[searchTermPieces[0]]
-        if (searchProperty === 'projectList' && projectFilter !== null) {
+        const searchProperty = searchFields[searchTermPieces[0]]
+        if (searchProperty === 'projectList' && projectFilter) {
           matches = matches.filter(doc => doc.projects.includes(projectFilter))
-        } else if (searchProperty === 'jurisdictionList' && jurisdictionFilter !== null) {
+        } else if (searchProperty === 'jurisdictionList' && jurisdictionFilter) {
           matches = matches.filter(doc => doc.jurisdictions.includes(jurisdictionFilter))
         } else {
           // Checking if the search string if multi-worded
@@ -71,8 +71,13 @@ const resetFilter = (docs, stringSearch, projectFilter, jurisdictionFilter) => {
                 }
               }
             }
+          } else {
+            if (searchValue.trim().split(' ').length > 1) {
+              pieces = searchValue.split(' ')
+              searchValue = pieces[0]
+              pieces = pieces.splice(1, 2)
+            }
           }
-
           pieces.forEach(piece => matches = searchUtils.searchForMatches(matches, piece, Object.values(searchFields)))
           matches = searchUtils.searchForMatches(matches, searchValue, [searchProperty])
         }

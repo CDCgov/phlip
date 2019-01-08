@@ -2,7 +2,6 @@ import { types } from '../actions'
 import { docManagementReducer as reducer } from '../reducer'
 import { types as autocompleteTypes } from 'data/autocomplete/actions'
 import { types as searchTypes } from '../components/SearchBox/actions'
-import moment from 'moment'
 
 const mockDocuments = {
   byId: {
@@ -11,7 +10,7 @@ const mockDocuments = {
       _id: '1',
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
-      jurisdictions: [321],
+      jurisdictions: [1],
       projects: [123],
       projectList: 'Project 1',
       jurisdictionList: 'Ohio',
@@ -22,7 +21,7 @@ const mockDocuments = {
       _id: '2',
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
-      jurisdictions: [12],
+      jurisdictions: [1, 33],
       projects: [333],
       projectList: 'project 1|test project',
       jurisdictionList: 'ohio|florida',
@@ -33,7 +32,7 @@ const mockDocuments = {
       _id: '3',
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
-      jurisdictions: [222, 444],
+      jurisdictions: [2, 33],
       projects: [123],
       projectList: 'Project 1|zero dawn',
       jurisdictionList: 'georiga|florida',
@@ -44,7 +43,7 @@ const mockDocuments = {
       _id: '4',
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
-      jurisdictions: [1, 3],
+      jurisdictions: [],
       projects: [4, 5],
       projectList: 'zero dawn|overwatch',
       jurisdictionList: '',
@@ -55,7 +54,7 @@ const mockDocuments = {
       _id: '5',
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
-      jurisdictions: [222, 221, 233],
+      jurisdictions: [33, 200, 1],
       projects: [123],
       projectList: 'Project 1|overwatch',
       jurisdictionList: 'florida|puerto rico|ohio',
@@ -66,7 +65,7 @@ const mockDocuments = {
       _id: '6',
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
-      jurisdictions: [321],
+      jurisdictions: [1],
       projects: [],
       projectList: '',
       jurisdictionList: 'Ohio',
@@ -77,7 +76,7 @@ const mockDocuments = {
       _id: '7',
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
-      jurisdictions: [321],
+      jurisdictions: [2],
       projects: [],
       projectList: '',
       jurisdictionList: 'georgia',
@@ -480,7 +479,24 @@ describe('Document Management reducer', () => {
 
       const currentState = getState({ documents: mockDocuments })
       const updatedState = reducer(currentState, action)
-      //expect(updatedState.documents.visible).toEqual(['2', '3', '5'])
+      expect(updatedState.documents.visible).toEqual(['2', '5', '3'])
+    })
+
+    test('should handle if jurisdiction filter is defined', () => {
+      const action = {
+        type: searchTypes.SEARCH_VALUE_CHANGE,
+        value: 'jurisdiction: georgia',
+        form: {
+          project: {},
+          jurisdiction: {
+            id: 2
+          }
+        }
+      }
+
+      const currentState = getState({ documents: mockDocuments })
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.documents.visible).toEqual(['7', '3'])
     })
   })
 

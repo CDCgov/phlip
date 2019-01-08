@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 /**
  * Search for matches for a number of properties of an object in an array
  *
@@ -24,7 +26,7 @@ const searchForMatches = (arr, searchValue, properties) => {
  */
 const convertValuesToString = (x, p) => {
   return ['dateLastEdited', 'startDate', 'endDate', 'uploadedDate'].includes(p)
-    ? new Date(x[p]).toLocaleString()
+    ? moment.utc(x[p]).local().format('M/D/YYYY')
     : x[p]
 }
 
