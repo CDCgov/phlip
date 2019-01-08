@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { transformText } from './textTransformHelpers'
 import * as ui_utils from 'pdfjs-dist/lib/web/ui_utils'
 import { Util as dom_utils } from 'pdfjs-dist/lib/shared/util'
-import IconButton from 'components/IconButton'
 import styles from './pdf_viewer.scss'
+import { CircularLoader, FlexGrid, IconButton } from 'components/index'
 
 class Page extends Component {
   static defaultProps = {
@@ -257,6 +257,10 @@ class Page extends Component {
 
     return (
       <div data-page-number={this.props.id} style={dims} ref={this.pageRef} className={styles.page}>
+        {this.state.readyToRenderText === false &&
+        <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
+          <CircularLoader />
+        </FlexGrid>}
         <div
           className="canvasWrapper"
           style={{ ...dims, position: 'relative' }}

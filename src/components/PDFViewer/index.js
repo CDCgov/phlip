@@ -2,8 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Page from './Page'
 import PDFJS from 'pdfjs-dist/webpack'
+
 PDFJS.GlobalWorkerOptions.workerSrc = '/pdf.worker.bundle.js'
 import styles from './pdf_viewer.scss'
+import { FlexGrid, CircularLoader } from 'components'
 
 export class PDFViewer extends Component {
   static propTypes = {
@@ -93,6 +95,10 @@ export class PDFViewer extends Component {
               )
             }
           )}
+          {this.state.pages.length === 0 &&
+          <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
+            <CircularLoader />
+          </FlexGrid>}
         </div>
       </div>
     )
