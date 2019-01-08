@@ -11,7 +11,7 @@ const mockDocuments = {
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
       jurisdictions: [1],
-      projects: [123],
+      projects: [12],
       projectList: 'Project 1',
       jurisdictionList: 'Ohio',
       uploadedDate: new Date('12/20/2018')
@@ -22,7 +22,7 @@ const mockDocuments = {
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
       jurisdictions: [1, 33],
-      projects: [333],
+      projects: [12, 11],
       projectList: 'project 1|test project',
       jurisdictionList: 'ohio|florida',
       uploadedDate: new Date('10/10/2005')
@@ -33,7 +33,7 @@ const mockDocuments = {
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
       jurisdictions: [2, 33],
-      projects: [123],
+      projects: [12, 44],
       projectList: 'Project 1|zero dawn',
       jurisdictionList: 'georiga|florida',
       uploadedDate: new Date('02/10/1993')
@@ -44,7 +44,7 @@ const mockDocuments = {
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
       jurisdictions: [],
-      projects: [4, 5],
+      projects: [44, 5],
       projectList: 'zero dawn|overwatch',
       jurisdictionList: '',
       uploadedDate: new Date('01/7/2019')
@@ -55,7 +55,7 @@ const mockDocuments = {
       uploadedBy: { firstName: 'test', lastName: 'user' },
       uploadedByName: 'test user',
       jurisdictions: [33, 200, 1],
-      projects: [123],
+      projects: [12, 5],
       projectList: 'Project 1|overwatch',
       jurisdictionList: 'florida|puerto rico|ohio',
       uploadedDate: new Date('06/07/1994')
@@ -388,34 +388,6 @@ describe('Document Management reducer', () => {
     })
   })
 
-  xdescribe('ON_SUGGESTION_SELECTED_PROJECT', () => {
-    test('should set state.searchByProject to the id of the action.suggestion', () => {
-      const action = {
-        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_PROJECT_MAIN`,
-        suggestion: { id: 123, name: 'project' }
-      }
-
-      const currentState = getState({ documents: mockDocuments })
-      const updatedState = reducer(currentState, action)
-
-      expect(updatedState.searchByProject).toEqual(123)
-    })
-
-    test('should filter all documents to show only ones that are for the selected project', () => {
-      const action = {
-        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_PROJECT_MAIN`,
-        suggestion: { id: 123, name: 'project' }
-      }
-
-      const currentState = getState({ documents: mockDocuments })
-      const updatedState = reducer(currentState, action)
-
-      expect(updatedState.documents.visible).toEqual([
-        '1', '3', '5'
-      ])
-    })
-  })
-
   describe('SEARCH_VALUE_CHANGE', () => {
     test('should handle a basic search string and set state.documents.visible to only matching document ids', () => {
       const action = {
@@ -498,33 +470,22 @@ describe('Document Management reducer', () => {
       const updatedState = reducer(currentState, action)
       expect(updatedState.documents.visible).toEqual(['7', '3'])
     })
-  })
 
-  xdescribe('ON_SUGGESTION_SELECTED_JURISDICTION', () => {
-    test('should set state.searchByJurisdiction to the id of the action.suggestion', () => {
+    test('should handle if project filter is defined', () => {
       const action = {
-        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION_MAIN`,
-        suggestion: { id: 321, name: 'ohio' }
+        type: searchTypes.SEARCH_VALUE_CHANGE,
+        value: 'project: overwatch',
+        form: {
+          project: {
+            id: 5
+          },
+          jurisdiction: {}
+        }
       }
 
       const currentState = getState({ documents: mockDocuments })
       const updatedState = reducer(currentState, action)
-
-      expect(updatedState.searchByJurisdiction).toEqual(321)
-    })
-
-    test('should filter all documents to show only ones that are for the selected jurisdiction', () => {
-      const action = {
-        type: `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION_MAIN`,
-        suggestion: { id: 321, name: 'ohio' }
-      }
-
-      const currentState = getState({ documents: mockDocuments })
-      const updatedState = reducer(currentState, action)
-
-      expect(updatedState.documents.visible).toContainEqual([
-        '1', '6', '7'
-      ])
+      expect(updatedState.documents.visible).toEqual(['4', '5'])
     })
   })
 

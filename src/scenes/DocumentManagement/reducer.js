@@ -37,7 +37,7 @@ const resetFilter = (docs, stringSearch, projectFilter, jurisdictionFilter) => {
 
   const regEnd = /\)$/
   const regBegin = /^\(/
-  
+
   const searchParams = stringSearch.split(' | ')
   searchParams.forEach(searchTerm => {
     const searchTermPieces = searchTerm.split(':')
