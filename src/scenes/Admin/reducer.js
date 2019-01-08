@@ -82,7 +82,7 @@ export const adminReducer = (state = INITIAL_STATE, action) => {
         visibleUsers: updater.updateByProperty({ ...user, avatar: action.payload.avatar }, [...state.visibleUsers], 'id')
       }
 
-    case types.UPDATE_USER_ROWS:
+    /*case types.UPDATE_USER_ROWS:
       return {
         ...state,
         rowsPerPage: action.rowsPerPage,
@@ -94,7 +94,7 @@ export const adminReducer = (state = INITIAL_STATE, action) => {
         ...state,
         page: action.page,
         visibleUsers: commonHelpers.sliceTable(state.users, action.page, state.rowsPerPage)
-      }
+      }*/
 
     case types.FLUSH_STATE:
       return INITIAL_STATE
