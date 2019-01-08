@@ -12,9 +12,9 @@ const props = {
   bookmarked: false,
   role: 'Coordinator',
   actions: {
-    toggleBookmark: () => {},
-    onExport: () => {}
+    toggleBookmark: jest.fn()
   },
+  onExport: jest.fn(),
   theme: {
     palette: {
       greyText: '#757575'
@@ -71,9 +71,9 @@ describe('Home scene - ProjectList - ProjectRow component', () => {
     expect(spy).toHaveBeenCalled()
   })
 
-  xtest('should call onExport', () => {
-    const spy = jest.spyOn(props.actions, 'onExport')
-    let wrapper = setup()
+  test('should call onExport', () => {
+    const spy = jest.spyOn(props, 'onExport')
+    const wrapper = setup()
     wrapper.find('tr').find('td').at(9).find('Tooltip').at(0).find('IconButton').at(0).simulate('click')
     wrapper.update()
     expect(spy).toHaveBeenCalled()

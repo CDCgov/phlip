@@ -23,37 +23,8 @@ const props = {
   apiErrorOpen: false
 }
 
-describe('DocumentMeta - DocumentContents', () => {
+describe('DocumentView - DocumentMeta', () => {
   test('should render correctly', () => {
     expect(shallow(<DocumentMeta {...props} />)).toMatchSnapshot()
-  })
-})
-
-xdescribe('DocumentMeta - Filtered Jurisditions search suggestions', () => {
-  test('should not include existing jurisdictions', () => {
-    const wrapper = shallow(<DocumentMeta {...props} />)
-    const instance = wrapper.instance()
-
-    expect(instance.props.jurisdictionSuggestions.filter(instance.filterJurisdiction)).toEqual(
-      [
-        { id: 1 },
-        { id: 2 },
-        { id: 3 }
-      ]
-    )
-  })
-})
-
-xdescribe('DocumentMeta - Filtered Projects search suggestions', () => {
-  test('should not include existing jurisdictions', () => {
-    const wrapper = shallow(<DocumentMeta {...props} />)
-    const instance = wrapper.instance()
-
-    expect(instance.props.projectSuggestions.filter(instance.filterProject)).toEqual(
-      [
-        { id: 4 },
-        { id: 5 }
-      ]
-    )
   })
 })

@@ -1,8 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { Admin } from '../'
-import { UserList } from '../components/UserList'
-import { PageHeader } from 'components/PageHeader'
+import { Admin } from '../index'
 
 const props = {
   users: [],
@@ -20,9 +18,8 @@ describe('Admin Scene', () => {
     expect(shallow(<Admin {...props} />)).toMatchSnapshot()
   })
 
-  xtest('should render UserList component', () => {
-    let wrapper = shallow(<Admin {...props} />)
-    expect(wrapper.find(UserList)).toHaveLength(1)
-    expect(wrapper.find(PageHeader)).toHaveLength(1)
+  test('should render UserList component', () => {
+    const wrapper = shallow(<Admin {...props} />)
+    expect(wrapper.find('UserList')).toHaveLength(1)
   })
 })

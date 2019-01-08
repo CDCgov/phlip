@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DocumentMeta - DocumentContents should render correctly 1`] = `
+exports[`DocumentView - DocumentMeta should render correctly 1`] = `
 <Fragment>
   <ApiErrorAlert
     actions={Array []}

@@ -75,24 +75,9 @@ describe('Home scene', () => {
       expect(wrapper.find('ProjectList')).toHaveLength(0)
     })
 
-    xtest('should display the content of errorContent prop in error message', () => {
+    test('should display the content of errorContent prop in error message', () => {
       const wrapper = setup({ error: true, errorContent: 'We could not get projects.' })
-      expect(wrapper.find('CardError').text()).toEqual(expect.stringMatching('Uh-oh, something went wrong. We could not get projects.'))
-    })
-  })
-
-  xdescribe('Unauthorized routes', () => {
-    test('should display PageNotFound if the user role is Coder and they try to go to add project', () => {
-      const wrapper = setup({ user: { role: 'Coder' }, location: { pathname: '/project/add' } }, ['/project/add'])
-      expect(wrapper.find('PageNotFound')).toHaveLength(1)
-    })
-
-    test('should display PageNotFound if the user role is Coder and they try to go to jurisdictions', () => {
-      const wrapper = setup({
-        user: { role: 'Coder' },
-        location: { pathname: '/project/1/jurisdictions' }
-      }, ['/project/1/jurisdictions'])
-      expect(wrapper.find('PageNotFound')).toHaveLength(1)
+      expect(wrapper.find('CardError').text()).toEqual('Uh-oh! Something went wrong. We could not get projects.')
     })
   })
 })
