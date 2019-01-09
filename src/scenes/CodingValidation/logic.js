@@ -165,6 +165,9 @@ export const getOutlineLogic = createLogic({
     try {
       const { firstQuestion, tree, order, outline, questionsById, isSchemeEmpty } = await getSchemeAndInitialize(action.projectId, api)
 
+      console.log('isSchemeEmpty', isSchemeEmpty)
+      console.log('areJurisdictionsEmpty', action.payload.areJurisdictionsEmpty)
+
       // Get user coded questions for currently selected jurisdiction
       if (action.payload.areJurisdictionsEmpty || isSchemeEmpty) {
         payload = { ...payload, isSchemeEmpty }

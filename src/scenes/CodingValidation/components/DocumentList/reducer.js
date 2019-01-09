@@ -134,19 +134,24 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
     case questionTypes.GET_CODING_OUTLINE_SUCCESS:
     case questionTypes.GET_USER_CODED_QUESTIONS_SUCCESS:
     case questionTypes.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
-      let byQuestion = sortAnnotations(
-        action.payload.userAnswers,
-        action.payload.question,
-        [],
-        action.payload.scheme.byId
-      )
+      let byQuestion = {}
+      if (!action.payload.isSchemeEmpty && !action.payload.areJurisdictionsEmpty) {
+        byQuestion = sortAnnotations(
+          action.payload.userAnswers,
+          action.payload.question,
+          [],
+          action.payload.scheme.byId
+        )
 
-      return {
-        ...state,
-        documents: {
-          ...state.documents,
-          annotated: byQuestion
+        return {
+          ...state,
+          documents: {
+            ...state.documents,
+            annotated: byQuestion
+          }
         }
+      } else {
+        return state
       }
 
     case questionTypes.GET_QUESTION_SUCCESS:

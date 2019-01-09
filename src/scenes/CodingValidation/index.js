@@ -95,7 +95,7 @@ export class CodingValidation extends Component {
     super(props, context)
 
     this.state = {
-      selectedJurisdiction: this.props.jurisdiction.id,
+      selectedJurisdiction: this.props.jurisdiction === null ? null : this.props.jurisdiction.id,
       showViews: false,
       navOpen: false,
       applyAllAlertOpen: false,
@@ -424,11 +424,13 @@ export class CodingValidation extends Component {
 
   /**
    * @public
-   * @param noScheme
-   * @param noJurisdictions
    * @returns {*}
    */
-  onShowGetStartedView = (noScheme, noJurisdictions) => {
+  onShowGetStartedView = () => {
+    const { isSchemeEmpty, areJurisdictionsEmpty } = this.props
+    const noScheme = isSchemeEmpty
+    const noJurisdictions = areJurisdictionsEmpty
+
     let startedText = ''
     if (this.props.isValidation) {
       if (noScheme && !noJurisdictions) {
@@ -475,34 +477,37 @@ export class CodingValidation extends Component {
    * @public
    * @returns {*}
    */
-  onShowCodeView = () => (
-    <>
-      <QuestionCard
-        page={this.props.page}
-        onChange={this.onAnswer}
-        onChangeTextAnswer={this.onChangeTextAnswer}
-        onChangeCategory={this.onChangeCategory}
-        onAnswer={this.onAnswer}
-        onClearAnswer={this.onClearAnswer}
-        onOpenAlert={this.onOpenApplyAllAlert}
-        onSaveFlag={this.onSaveFlag}
-        onSave={this.onSaveCodedQuestion}
-        onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
-        onToggleAnswerForAnno={this.onToggleAnswerForAnno}
-        currentIndex={this.props.currentIndex}
-        getNextQuestion={this.getNextQuestion}
-        getPrevQuestion={this.getPrevQuestion}
-        totalLength={this.props.questionOrder.length}
-        showNextButton={this.props.showNextButton}
-      />
-      <FlexGrid style={{ minWidth: 15, maxWidth: 15, width: 15 }} />
-      <DocumentList
-        projectId={this.props.projectId}
-        jurisdictionId={this.props.jurisdiction.jurisdictionId}
-        page={this.props.page}
-      />
+  onShowCodeView = () => {
+    console.log('here')
+    return (
+      <>
+        <QuestionCard
+          page={this.props.page}
+          onChange={this.onAnswer}
+          onChangeTextAnswer={this.onChangeTextAnswer}
+          onChangeCategory={this.onChangeCategory}
+          onAnswer={this.onAnswer}
+          onClearAnswer={this.onClearAnswer}
+          onOpenAlert={this.onOpenApplyAllAlert}
+          onSaveFlag={this.onSaveFlag}
+          onSave={this.onSaveCodedQuestion}
+          onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
+          onToggleAnswerForAnno={this.onToggleAnswerForAnno}
+          currentIndex={this.props.currentIndex}
+          getNextQuestion={this.getNextQuestion}
+          getPrevQuestion={this.getPrevQuestion}
+          totalLength={this.props.questionOrder.length}
+          showNextButton={this.props.showNextButton}
+        />
+        <FlexGrid style={{ minWidth: 15, maxWidth: 15, width: 15 }} />
+        <DocumentList
+          projectId={this.props.projectId}
+          jurisdictionId={this.props.jurisdiction.jurisdictionId}
+          page={this.props.page}
+        />
       </>
-  )
+    )
+  }
 
   /**
    * Waits 1 sec, then displays a circular loader if API is still loading
@@ -637,6 +642,10 @@ export class CodingValidation extends Component {
 
     const containerStyle = { width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }
 
+    console.log(this.props.areJurisdictionsEmpty)
+    console.log(this.props.isSchemeEmpty)
+    console.log(this.props.showPageLoader)
+    console.log(this.props.isLoadingPage)
     return (
       <FlexGrid container type="row" flex className={classes} style={containerStyle}>
         <Alert open={this.state.applyAllAlertOpen} actions={this.modalActions}>
@@ -676,14 +685,15 @@ export class CodingValidation extends Component {
             pageTitle={capitalizeFirstLetter(this.props.page)}
             currentJurisdiction={this.props.jurisdiction}
             onGoBack={this.onGoBack}
-            empty={this.props.jurisdiction === null || this.props.questionOrder === null || this.props.questionOrder.length === 0}
+            empty={this.props.jurisdiction.id === null || this.props.questionOrder === null ||
+            this.props.questionOrder.length === 0}
           />
           <FlexGrid container type="row" flex style={{ backgroundColor: '#f5f5f5' }}>
             <FlexGrid container type="row" flex style={{ overflow: 'auto' }}>
               {!this.props.showPageLoader &&
               <FlexGrid>
                 {this.props.isSchemeEmpty !== null &&
-                (this.props.jurisdiction !== null && this.props.questionOrder.length !== 0) &&
+                (this.props.jurisdiction.id !== null && this.props.questionOrder.length !== 0) &&
                 <Tooltip placement="right" text="Toggle Navigator" id="toggle-navigator">
                   <MuiButton style={navButtonStyles} aria-label="Toggle Navigator" onClick={this.onToggleNavigator}>
                     <Icon color="#424242" style={iconStyle}>menu</Icon>
@@ -697,12 +707,10 @@ export class CodingValidation extends Component {
                 style={{ padding: '1px 15px 20px 15px', overflow: 'auto', minHeight: 500 }}>
                 {this.props.schemeError !== null &&
                 <ApiErrorView error="We couldn't get the coding scheme for this project." />}
-                {this.props.showPageLoader === true
-                  ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
-                  : this.props.isSchemeEmpty !== null &&
-                  (this.props.areJurisdictionsEmpty === true || this.props.isSchemeEmpty === true
-                    ? this.onShowGetStartedView(this.props.isSchemeEmpty, this.props.areJurisdictionsEmpty)
-                    : this.onShowCodeView())}
+                {this.props.showPageLoader && <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />}
+                {(this.props.areJurisdictionsEmpty || this.props.isSchemeEmpty) && this.onShowGetStartedView()}
+                {(!this.props.showPageLoader && !this.props.isLoadingPage && this.props.isSchemeEmpty === false &&
+                this.props.areJurisdictionsEmpty === false) && this.onShowCodeView()}
               </FlexGrid>
             </FlexGrid>
           </FlexGrid>
@@ -738,7 +746,7 @@ const mapStateToProps = (state, ownProps) => {
     jurisdictionList: project.projectJurisdictions || [],
     jurisdiction: project.projectJurisdictions.length > 0
       ? project.projectJurisdictions[pageState.jurisdictionIndex]
-      : null,
+      : { id: null },
     isSchemeEmpty: pageState.isSchemeEmpty,
     areJurisdictionsEmpty: pageState.areJurisdictionsEmpty,
     userRole: state.data.user.currentUser.role,
@@ -748,8 +756,8 @@ const mapStateToProps = (state, ownProps) => {
     answerErrorContent: pageState.answerErrorContent || null,
     saveFlagErrorContent: pageState.saveFlagErrorContent || null,
     getQuestionErrors: pageState.getQuestionErrors || null,
-    isLoadingPage: pageState.isLoadingPage || false,
-    showPageLoader: pageState.showPageLoader || false,
+    isLoadingPage: pageState.isLoadingPage,
+    showPageLoader: pageState.showPageLoader,
     isChangingQuestion: pageState.isChangingQuestion || false,
     selectedCategoryId: pageState.selectedCategoryId || null,
     unsavedChanges: pageState.unsavedChanges || false,
