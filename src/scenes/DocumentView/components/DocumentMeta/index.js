@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { FileDocument, CalendarRange, Account, FormatSection } from 'mdi-material-ui'
+import { FileDocument, CalendarRange, Account, FormatSection, FileUpload } from 'mdi-material-ui'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import actions, { projectAutocomplete, jurisdictionAutocomplete } from '../../actions'
 import ProJurSearch from './components/ProJurSearch'
@@ -391,6 +391,12 @@ export class DocumentMeta extends Component {
               <Account style={iconStyle} />
               <Typography variant="body1" style={metaStyling}>
                 {this.props.document.uploadedByName}
+              </Typography>
+            </FlexGrid>
+            <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
+              <FileUpload style={iconStyle} />
+              <Typography variant="body1" style={metaStyling}>
+                Upload Date: {convertToLocalDate(this.props.document.uploadedDate)}
               </Typography>
             </FlexGrid>
             <FlexGrid container type="row" flex align="flex-end" justify="space-between">

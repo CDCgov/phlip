@@ -1,6 +1,7 @@
 import { createMockStore } from 'redux-logic-test'
 import MockAdapter from 'axios-mock-adapter'
 import logic from '../logic'
+import { selectedDocs, excelInfoFull, excelInfoWithMissing, fullMerged, mergedWithMissing } from 'utils/testData/upload'
 import { types } from '../actions'
 import createApiHandler, {
   docApiInstance,
@@ -12,7 +13,7 @@ import { INITIAL_STATE } from '../reducer'
 import { INITIAL_STATE as AUTO_INITIAL_STATE } from 'data/autocomplete/reducer'
 
 describe('Document Management - Upload logic', () => {
-  let mock
+  let mock, apiMock
 
   const mockReducer = (state, action) => state
   const history = {}
@@ -21,6 +22,7 @@ describe('Document Management - Upload logic', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(docApiInstance)
+    apiMock = new MockAdapter(projectApiInstance)
   })
 
   const setupStore = (current = {}, projAuto = {}, jurAuto = {}) => {
@@ -52,6 +54,8 @@ describe('Document Management - Upload logic', () => {
   }
 
   describe('Upload Documents', () => {
+    console.log(apiMock)
+
     const selectedDocsFormData = [{ name: 'doc 1' }, { name: 'doc 2' }]
     const selectedDocs = [
       { name: 'doc1', jurisdictions: { value: { name: '' } } },
@@ -213,6 +217,68 @@ describe('Document Management - Upload logic', () => {
             payload: { error: 'Failed to upload documents, please try again.' }
           }
         ])
+        done()
+      })
+    })
+  })
+
+  describe('Upload Excel -- merge info', () => {
+    test('should merge info with already selected docs for upload', done => {
+      apiMock.onGet('/jurisdictions', { params: { name: 'Washington' }}).reply(200, [
+        { name: 'Washington (state)' }
+      ])
+
+      apiMock.onGet('/jurisdictions', { params: { name: 'North Carolina' }}).reply(200, [
+        { name: 'North Carolina (state)' }
+      ])
+
+      apiMock.onGet('/jurisdictions', { params: { name: 'Washington, DC (federal district)' }}).reply(200, [
+        { name: 'Washington, DC (federal district)' }
+      ])
+
+      apiMock.onGet('/jurisdictions', { params: { name: 'Ohio' }}).reply(200, [{ name: 'Ohio (state)' }])
+
+      mock.onPost('/docs/upload/extractInfo').reply(200, excelInfoFull)
+
+      const store = setupStore({ selectedDocs })
+
+      store.dispatch({
+        type: types.EXTRACT_INFO_REQUEST,
+        infoSheetFormData: excelInfoFull
+      })
+
+      store.whenComplete(() => {
+        expect(store.actions[1].payload.merged).toEqual(fullMerged)
+        done()
+      })
+    })
+
+    test('should clear out info when there is already info in state', done => {
+      apiMock.onGet('/jurisdictions', { params: { name: 'Washington' }}).reply(200, [
+        { name: 'Washington (state)' }
+      ])
+
+      apiMock.onGet('/jurisdictions', { params: { name: 'North Carolina' }}).reply(200, [
+        { name: 'North Carolina (state)' }
+      ])
+
+      apiMock.onGet('/jurisdictions', { params: { name: 'Washington, DC (federal district)' }}).reply(200, [
+        { name: 'Washington, DC (federal district)' }
+      ])
+
+      apiMock.onGet('/jurisdictions', { params: { name: 'Ohio' }}).reply(200, [{ name: 'Ohio (state)' }])
+
+      mock.onPost('/docs/upload/extractInfo').reply(200, excelInfoWithMissing)
+
+      const store = setupStore({ selectedDocs, extractedInfo: excelInfoFull })
+
+      store.dispatch({
+        type: types.EXTRACT_INFO_REQUEST,
+        infoSheetFormData: excelInfoWithMissing
+      })
+
+      store.whenComplete(() => {
+        expect(store.actions[1].payload.merged).toEqual(mergedWithMissing)
         done()
       })
     })
