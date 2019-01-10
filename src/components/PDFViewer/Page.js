@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import { transformText } from './textTransformHelpers'
 import * as ui_utils from 'pdfjs-dist/lib/web/ui_utils'
 import { Util as dom_utils } from 'pdfjs-dist/lib/shared/util'
-import styles from './pdf_viewer.scss'
 import { CircularLoader, FlexGrid, IconButton } from 'components/index'
+import './pdf_viewer.css'
+import TextNode from './TextNode'
 
 class Page extends Component {
   static defaultProps = {
@@ -153,7 +154,8 @@ class Page extends Component {
   setCanvasSpecs = () => {
     const vp = this.props.page.getViewport(1)
     const scale = this.state.renderContext.viewport.width / vp.width
-    const viewport = this.props.page.getViewport(scale)
+    //const viewport = this.props.page.getViewport(scale)
+    const viewport = this.props.page.getViewport(1)
     const canvasContext = this.canvasRef.current.getContext('2d', { alpha: false })
 
     let outputScale = ui_utils.getOutputScale(canvasContext)
@@ -214,10 +216,30 @@ class Page extends Component {
     }
   }
 
+  updateHighlights = (text, i) => {
+    let el = <TextNode key={`textLine-${i}-page-${this.props.id}`} index={i} id={this.props.id} text={text} />
+    this.props.annotations.forEach(anno => {
+      if (anno.range.start.index === i || anno.range.end.index === i) {
+        el = (
+          <div key={`textLine-${i}-page-${this.props.id}`} style={text.style}>
+            {text.str}
+          </div>
+        )
+      } else {
+        el = (
+          <div key={`textLine-${i}-page-${this.props.id}`} style={text.style}>
+            {text.str}
+          </div>
+        )
+      }
+    })
+    return el
+  }
+
   scaleXText = textContent => {
     const ctx = this.state.renderContext.canvasContext
     const viewport = this.state.renderContext.viewport
-    ctx.font = `${textContent.style.fontSize}px sans-serif`
+    ctx.font = `${textContent.style.fontSize}px ${textContent.style.fontFamily}`
     const fontWidth = ctx.measureText(textContent.str).width
     const scale = (textContent.width * viewport.scale) / fontWidth
     return { ...textContent, style: { ...textContent.style, transform: `scaleX(${scale})` } }
@@ -256,7 +278,7 @@ class Page extends Component {
     }
 
     return (
-      <div data-page-number={this.props.id} style={dims} ref={this.pageRef} className={styles.page}>
+      <div data-page-number={this.props.id} style={dims} ref={this.pageRef} className="page">
         {this.state.readyToRenderText === false &&
         <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
           <CircularLoader />
@@ -300,7 +322,7 @@ class Page extends Component {
                   key={`highlight-${i}-cancel`}
                   style={{ ...iconNavStyles, left: endPoint[0] - 53, top: endPoint[1], marginTop: 1 }}>
                   <IconButton style={{ height: 25, width: 25 }}>
-                    clos
+                    close
                   </IconButton>
                 </div>
                 <div
@@ -316,6 +338,11 @@ class Page extends Component {
             style={{ ...this.state.selectionStyle, ...baseSelectionStyles }}
             onMouseMove={this.onHoverOverSelection}
           />}
+        </div>
+        <div className="textLayer" id={`text-layer-page-${this.props.id}`} style={dims}>
+          {this.state.readyToRenderText === true && this.allTextDivs.map((textLine, i) => {
+            return this.updateHighlights(textLine, i)
+          })}
         </div>
       </div>
     )

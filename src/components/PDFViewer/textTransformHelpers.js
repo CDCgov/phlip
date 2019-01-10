@@ -1,4 +1,4 @@
-import pdfjs from 'pdfjs-dist'
+import * as pdfjs from 'pdfjs-dist/lib/shared/util'
 
 /**
  * These helpers were taken from pdfjs with a few tweaks for what was needed
@@ -6,7 +6,7 @@ import pdfjs from 'pdfjs-dist'
 const NonWhitespaceRegexp = /\S/
 const isAllWhitespace = str => !NonWhitespaceRegexp.test(str)
 
-export const transformText = (canvasViewport, textLine, styles) => {
+export const transformText = (canvasViewport, textLine, styles, context) => {
   // Initialize all used properties to keep the caches monomorphic.
   let textDivProperties = {
     fontSize: 0,
@@ -51,8 +51,8 @@ export const transformText = (canvasViewport, textLine, styles) => {
     left = tx[4]
     top = tx[5] - fontAscent
   } else {
-    left = tx[4] + (fontAscent * Math.sin(angle))
-    top = tx[5] - (fontAscent * Math.cos(angle))
+    left = tx[4] + fontAscent * Math.sin(angle)
+    top = tx[5] - fontAscent * Math.cos(angle)
   }
 
   if (angle !== 0) {
@@ -90,6 +90,8 @@ export const transformText = (canvasViewport, textLine, styles) => {
     style: {
       left: b[0],
       top: b[1],
+      right: b[2],
+      bottom: b[3],
       fontSize: fontHeight,
       fontFamily: style.fontFamily,
       margin: 0

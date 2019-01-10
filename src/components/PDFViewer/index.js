@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Page from './Page'
 import PDFJS from 'pdfjs-dist/webpack'
-
-PDFJS.GlobalWorkerOptions.workerSrc = '/pdf.worker.bundle.js'
-import styles from './pdf_viewer.scss'
 import { FlexGrid, CircularLoader } from 'components'
+import * as pdfjs from 'pdfjs-dist/web/pdf_viewer.js'
+import './pdf_viewer.css'
+PDFJS.GlobalWorkerOptions.workerSrc = '/pdf.worker.bundle.js'
 
 export class PDFViewer extends Component {
   static propTypes = {
@@ -42,6 +42,7 @@ export class PDFViewer extends Component {
         this.setState({
           pdf
         }, () => this.gatherPagePromises())
+        //this.draw(pdf)
       })
     })
   }
@@ -71,10 +72,52 @@ export class PDFViewer extends Component {
     })
   }
 
+  draw = async pdf => {
+    let scale = 1
+    for (let i = 1; i <= pdf.numPages; i++) {
+      await new Promise((resolve) => {
+        pdf.getPage(i).then((page) => {
+          let pdfPageView = new pdfjs.PDFPageView({
+            container: this.viewerRef.current,
+            id: i,
+            scale,
+            defaultViewport: page.getViewport(scale),
+            enhanceTextSelection: true,
+            textLayerFactory: new pdfjs.DefaultTextLayerFactory,
+            annotationLayerFactory: new pdfjs.DefaultAnnotationLayerFactory
+          })
+          pdfPageView.setPdfPage(page)
+
+          let annotationsDiv = document.createElement('div')
+          annotationsDiv.setAttribute('class', 'annotationLayer')
+          pdfPageView.div.appendChild(annotationsDiv)
+          pdfPageView.annotationLayer = new pdfjs.AnnotationLayerBuilder({
+            pageDiv: pdfPageView.div,
+            pdfPage: page
+          })
+          annotationsDiv.width = pdfPageView.div.width
+          annotationsDiv.height = pdfPageView.div.height
+          pdfPageView.annotationLayer.div = annotationsDiv
+          this.pdfPageView = pdfPageView
+          pdfPageView.draw().then(() => {
+            document.addEventListener('textlayerrendered', (event) => {
+              if (event.detail.pageNumber === i) {
+                this.pdfProgress = (i / (pdf.numPages - 1)) * 100
+
+                resolve(i)
+              }
+            })
+          })
+        })
+      })
+    }
+    return 'done'
+  }
+
   render() {
     return (
       <div id="viewContainer" style={{ overflow: 'hidden', height: '100%' }}>
-        <div id="viewer" ref={this.viewerRef} className={styles.pdfViewer}>
+        <div id="viewer" className="pdfViewer" ref={this.viewerRef}>
           {this.state.pages.length > 0
           && this.state.pages.map((page, i) => {
               return (
