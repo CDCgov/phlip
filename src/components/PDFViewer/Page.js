@@ -172,7 +172,7 @@ class Page extends Component {
     const sfx = ui_utils.approximateFraction(outputScale.sx)
     const sfy = ui_utils.approximateFraction(outputScale.sy)
     let canvas = { style: {} }
-    
+
     canvas.width = ui_utils.roundToDivide(viewport.width * outputScale.sx, sfx[0])
     canvas.height = ui_utils.roundToDivide(viewport.height * outputScale.sy, sfy[0])
     canvas.style.width = ui_utils.roundToDivide(viewport.width, sfx[1]) + 'px'

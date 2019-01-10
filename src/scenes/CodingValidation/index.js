@@ -478,7 +478,6 @@ export class CodingValidation extends Component {
    * @returns {*}
    */
   onShowCodeView = () => {
-    console.log('here')
     return (
       <>
         <QuestionCard
@@ -640,12 +639,15 @@ export class CodingValidation extends Component {
       [this.props.classes.pageLoading]: this.props.showPageLoader
     })
 
-    const containerStyle = { width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }
+    const containerStyle = {
+      width: '100%',
+      height: '100%',
+      position: 'relative',
+      display: 'flex',
+      flexWrap: 'nowrap',
+      overflow: 'hidden'
+    }
 
-    console.log(this.props.areJurisdictionsEmpty)
-    console.log(this.props.isSchemeEmpty)
-    console.log(this.props.showPageLoader)
-    console.log(this.props.isLoadingPage)
     return (
       <FlexGrid container type="row" flex className={classes} style={containerStyle}>
         <Alert open={this.state.applyAllAlertOpen} actions={this.modalActions}>
@@ -676,7 +678,7 @@ export class CodingValidation extends Component {
           selectedCategory={this.props.selectedCategory}
           handleQuestionSelected={this.onQuestionSelectedInNav}
         />}
-        <FlexGrid container flex style={{ width: '100%', flexWrap: 'nowrap' }}>
+        <FlexGrid container flex style={{ width: '100%', flexWrap: 'nowrap', overflowX: 'hidden', overflowY: 'auto' }}>
           <Header
             projectName={this.props.projectName}
             projectId={this.props.projectId}
@@ -710,7 +712,7 @@ export class CodingValidation extends Component {
                 {this.props.showPageLoader && <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />}
                 {(this.props.areJurisdictionsEmpty || this.props.isSchemeEmpty) && this.onShowGetStartedView()}
                 {(!this.props.showPageLoader && !this.props.isLoadingPage && this.props.isSchemeEmpty === false &&
-                this.props.areJurisdictionsEmpty === false) && this.onShowCodeView()}
+                  this.props.areJurisdictionsEmpty === false) && this.onShowCodeView()}
               </FlexGrid>
             </FlexGrid>
           </FlexGrid>
