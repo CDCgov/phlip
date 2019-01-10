@@ -14,7 +14,8 @@ export const INITIAL_STATE = {
   openedDoc: {
     _id: '',
     content: {}
-  }
+  },
+  annotationModeEnabled: false
 }
 
 const mergeName = docObj => ({
@@ -194,6 +195,18 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         ...state,
         docSelected: false,
         openedDoc: {}
+      }
+
+    case types.ENABLE_ANNOTATION_MODE:
+      return {
+        ...state,
+        annotationModeEnabled: true
+      }
+
+    case types.DISABLE_ANNOTATION_MODE:
+      return {
+        ...state,
+        annotationModeEnabled: false
       }
 
     case types.GET_APPROVED_DOCUMENTS_REQUEST:

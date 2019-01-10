@@ -144,6 +144,9 @@ class Page extends Component {
     }
   }
 
+  /**
+   * Renders the PDF page
+   */
   renderPage = () => {
     if (this.shouldRerenderPdf === true) {
       this.props.page.destroyed === false && this.props.page.render(this.state.renderContext)
@@ -151,6 +154,9 @@ class Page extends Component {
     }
   }
 
+  /**
+   * Determines to what scale to render the PDF page based on the size of the screen
+   */
   setCanvasSpecs = () => {
     const vp = this.props.page.getViewport(1)
     let scale = this.state.renderContext.viewport.width / vp.width
