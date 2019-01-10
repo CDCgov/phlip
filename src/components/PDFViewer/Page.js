@@ -153,9 +153,11 @@ class Page extends Component {
 
   setCanvasSpecs = () => {
     const vp = this.props.page.getViewport(1)
-    const scale = this.state.renderContext.viewport.width / vp.width
-    //const viewport = this.props.page.getViewport(scale)
-    const viewport = this.props.page.getViewport(1)
+    let scale = this.state.renderContext.viewport.width / vp.width
+    if (scale < 1.4) {
+      scale = 1.4
+    }
+    const viewport = this.props.page.getViewport(scale)
     const canvasContext = this.canvasRef.current.getContext('2d', { alpha: false })
 
     let outputScale = ui_utils.getOutputScale(canvasContext)
@@ -170,7 +172,7 @@ class Page extends Component {
     const sfx = ui_utils.approximateFraction(outputScale.sx)
     const sfy = ui_utils.approximateFraction(outputScale.sy)
     let canvas = { style: {} }
-
+    
     canvas.width = ui_utils.roundToDivide(viewport.width * outputScale.sx, sfx[0])
     canvas.height = ui_utils.roundToDivide(viewport.height * outputScale.sy, sfy[0])
     canvas.style.width = ui_utils.roundToDivide(viewport.width, sfx[1]) + 'px'

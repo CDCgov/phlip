@@ -42,7 +42,6 @@ export class PDFViewer extends Component {
         this.setState({
           pdf
         }, () => this.gatherPagePromises())
-        //this.draw(pdf)
       })
     })
   }
@@ -116,7 +115,7 @@ export class PDFViewer extends Component {
 
   render() {
     return (
-      <div id="viewContainer" style={{ overflow: 'hidden', height: '100%' }}>
+      <div id="viewContainer">
         <div id="viewer" className="pdfViewer" ref={this.viewerRef}>
           {this.state.pages.length > 0
           && this.state.pages.map((page, i) => {

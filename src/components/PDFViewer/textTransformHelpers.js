@@ -90,8 +90,8 @@ export const transformText = (canvasViewport, textLine, styles, context) => {
     style: {
       left: b[0],
       top: b[1],
-      right: b[2],
-      bottom: b[3],
+      //right: b[2],
+      //bottom: b[3],
       fontSize: fontHeight,
       fontFamily: style.fontFamily,
       margin: 0

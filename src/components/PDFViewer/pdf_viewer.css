@@ -13,10 +13,8 @@
  * limitations under the License.
  */
 #viewContainer {
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   height: 100%;
-  flex: 1;
 }
 
 #viewer {
@@ -293,6 +291,7 @@
 
 .pdfViewer::-webkit-scrollbar {
   width: 9px;
+  height: 9px;
   border-radius: 10px;
 }
 
