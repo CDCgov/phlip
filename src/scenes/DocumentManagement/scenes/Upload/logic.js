@@ -4,19 +4,25 @@ import { types as autocompleteTypes } from 'data/autocomplete/actions'
 import { types as projectTypes } from 'data/projects/actions'
 import { types as jurisdictionTypes } from 'data/jurisdictions/actions'
 
-const mergeInfoWithDocs = (info, docs, api) => {
+const valueDefaults = {
+  jurisdictions: { searchValue: '', suggestions: [], name: '' },
+  citation: '',
+  effectiveDate: ''
+}
+
+export const mergeInfoWithDocs = (info, docs, api) => {
   return new Promise(async (resolve, reject) => {
     let merged = [], jurLookup = {}
     for (const doc of docs) {
       if (info.hasOwnProperty(doc.name.value)) {
         let d = { ...doc }, jurs = []
         const docInfo = info[doc.name.value]
-        Object.keys(docInfo).map(key => {
+        Object.keys(valueDefaults).map(key => {
           d[key] = {
             ...d[key],
             editable: docInfo[key] === null,
             inEditMode: false,
-            value: docInfo[key] === null ? d[key].value : docInfo[key],
+            value: docInfo[key] === null ? valueDefaults[key] : docInfo[key],
             error: ''
           }
         })
@@ -36,7 +42,7 @@ const mergeInfoWithDocs = (info, docs, api) => {
           }
           d.jurisdictions = { ...d.jurisdictions, value: { ...jurs[0] } }
         } else {
-          d.jurisdictions = { ...doc.jurisdictions, editable: true }
+          d.jurisdictions = { inEditMode: false, error: '', value: valueDefaults['jurisdictions'], editable: true }
         }
         merged = [...merged, d]
       } else {
@@ -79,7 +85,7 @@ const mergeInfoWithDocsLogic = createLogic({
     const docs = action.docs.map(doc => {
       let d = {}
       Object.keys(doc).forEach(prop => {
-        d[prop] = { editable: true, value: doc[prop], error: '', inEditMode: false }
+        d[prop] = { editable: prop !== 'name', value: doc[prop], error: '', inEditMode: false }
       })
       return d
     })
