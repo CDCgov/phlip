@@ -535,7 +535,7 @@ export class CodingValidation extends Component {
           type: 1,
           method: this.props.page === 'coding'
             ? this.props.actions.getUserCodedQuestions
-            : this.props.actions.getUserValidationQuestionsRequest
+            : this.props.actions.getUserValidatedQuestionsRequest
         },
         changeProps: [this.props.projectId, event.target.value, this.props.page]
       })
@@ -550,7 +550,7 @@ export class CodingValidation extends Component {
         this.props.actions.getUserValidatedQuestionsRequest(this.props.projectId, event.target.value, this.props.page)
       }
 
-      this.onShowPageLoader()
+      this.onShowQuestionLoader()
       this.props.actions.getApprovedDocumentsRequest(this.props.projectId, this.props.jurisdictionList[newIndex].jurisdictionId, this.props.page)
     }
   }
@@ -711,7 +711,7 @@ export class CodingValidation extends Component {
                 <ApiErrorView error="We couldn't get the coding scheme for this project." />}
                 {this.props.showPageLoader && <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />}
                 {(this.props.areJurisdictionsEmpty || this.props.isSchemeEmpty) && this.onShowGetStartedView()}
-                {(!this.props.showPageLoader && !this.props.isLoadingPage && this.props.isSchemeEmpty === false &&
+                {(!this.props.showPageLoader && this.props.isSchemeEmpty === false &&
                   this.props.areJurisdictionsEmpty === false) && this.onShowCodeView()}
               </FlexGrid>
             </FlexGrid>

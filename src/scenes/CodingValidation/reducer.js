@@ -89,7 +89,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
           ...state.userAnswers,
           ...handleUpdateUserAnswers(state, action)
         },
-        unsavedChanges: true
+        unsavedChanges: true,
+        enabledAnswerChoice: null
       }
 
     case types.CHANGE_TOUCHED_STATUS:
