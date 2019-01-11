@@ -152,7 +152,7 @@ export class CodingValidation extends Component {
     if (this.props.isSchemeEmpty === false && prevProps.isSchemeEmpty === null) {
       if (this.props.areJurisdictionsEmpty === false) {
         this.setState({
-          navOpen: true
+          navOpen: false
         })
       }
     }

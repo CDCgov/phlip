@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 class TextNode extends Component {
+  static propTypes = {
+    text: PropTypes.object
+  }
+
   constructor(props, context) {
     super(props, context)
     this.root = React.createRef()

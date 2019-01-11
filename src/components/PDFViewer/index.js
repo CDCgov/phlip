@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Page from './Page'
 import PDFJS from 'pdfjs-dist/webpack'
 import { FlexGrid, CircularLoader } from 'components'
-import * as pdfjs from 'pdfjs-dist/web/pdf_viewer.js'
 import './pdf_viewer.css'
 PDFJS.GlobalWorkerOptions.workerSrc = '/pdf.worker.bundle.js'
 
@@ -63,54 +62,15 @@ export class PDFViewer extends Component {
     return new Promise(resolve => {
       this.state.pdf.getPage(pageNumber + 1).then(page => {
         let pageToAdd = {}
-        page.getTextContent({ normalizeWhitespace: true }).then(async textContent => {
+        page.getTextContent({ normalizeWhitespace: true, enhanceTextSelection: true }).then(async textContent => {
           pageToAdd = { page, textContent }
           resolve(pageToAdd)
         })
-      })
-    })
-  }
-
-  draw = async pdf => {
-    let scale = 1
-    for (let i = 1; i <= pdf.numPages; i++) {
-      await new Promise((resolve) => {
-        pdf.getPage(i).then((page) => {
-          let pdfPageView = new pdfjs.PDFPageView({
-            container: this.viewerRef.current,
-            id: i,
-            scale,
-            defaultViewport: page.getViewport(scale),
-            enhanceTextSelection: true,
-            textLayerFactory: new pdfjs.DefaultTextLayerFactory,
-            annotationLayerFactory: new pdfjs.DefaultAnnotationLayerFactory
-          })
-          pdfPageView.setPdfPage(page)
-
-          let annotationsDiv = document.createElement('div')
-          annotationsDiv.setAttribute('class', 'annotationLayer')
-          pdfPageView.div.appendChild(annotationsDiv)
-          pdfPageView.annotationLayer = new pdfjs.AnnotationLayerBuilder({
-            pageDiv: pdfPageView.div,
-            pdfPage: page
-          })
-          annotationsDiv.width = pdfPageView.div.width
-          annotationsDiv.height = pdfPageView.div.height
-          pdfPageView.annotationLayer.div = annotationsDiv
-          this.pdfPageView = pdfPageView
-          pdfPageView.draw().then(() => {
-            document.addEventListener('textlayerrendered', (event) => {
-              if (event.detail.pageNumber === i) {
-                this.pdfProgress = (i / (pdf.numPages - 1)) * 100
-
-                resolve(i)
-              }
-            })
-          })
+        page.getAnnotations().then(annotations => {
+          console.log(annotations)
         })
       })
-    }
-    return 'done'
+    })
   }
 
   render() {

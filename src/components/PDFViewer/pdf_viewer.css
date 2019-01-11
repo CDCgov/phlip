@@ -283,12 +283,6 @@
   cursor: pointer;
 }
 
-/*.pdfViewer {
-  overflow: auto;
-  height: 100%;
-  background-color: #282c34;
-}*/
-
 .pdfViewer::-webkit-scrollbar {
   width: 9px;
   height: 9px;

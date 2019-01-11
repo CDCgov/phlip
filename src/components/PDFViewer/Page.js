@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { transformText } from './textTransformHelpers'
 import * as ui_utils from 'pdfjs-dist/lib/web/ui_utils'
 import { Util as dom_utils } from 'pdfjs-dist/lib/shared/util'
+import { AnnotationLayer } from 'pdfjs-dist/lib/display/annotation_layer'
 import { CircularLoader, FlexGrid, IconButton } from 'components/index'
 import './pdf_viewer.css'
 import TextNode from './TextNode'
@@ -28,6 +29,8 @@ class Page extends Component {
     this.shouldRerenderPdf = true
     this.canvasRef = React.createRef()
     this.pageRef = React.createRef()
+    this.textLayerRef = React.createRef()
+    this.annotationLayerRef = React.createRef()
     this.mouseArea = {
       x: 0,
       y: 0,
@@ -58,6 +61,9 @@ class Page extends Component {
 
   componentDidMount() {
     this.setCanvasSpecs()
+    this.annotationParameters = {
+      annotations: []
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -76,6 +82,69 @@ class Page extends Component {
       startY: 0,
       pageOffsetX: rects.x,
       pageOffsetY: rects.y
+    }
+  }
+
+  onMouseUp = e => {
+    const color = new Uint8ClampedArray()
+    color[0] = 251
+    color[1] = 237
+    color[2] = 158
+
+    if (this.props.allowSelection) {
+      const range = document.getSelection().getRangeAt(0)
+      const pageRect = this.textLayerRef.current.getClientRects()[0]
+      const selectionRects = range.getClientRects()
+      const viewport = this.state.renderContext.viewport
+      console.log(this.state.renderContext)
+
+      let selected = []
+      for (let i = 0; i < selectionRects.length; i++) {
+        const r = selectionRects[i]
+        selected[i] = viewport.convertToPdfPoint(r.left - pageRect.x, r.top - pageRect.y)
+        .concat(viewport.convertToPdfPoint(r.right - pageRect.x, r.bottom - pageRect.y))
+
+        console.log('selected[i]', selected[i])
+
+        const start = dom_utils.applyInverseTransform([
+          r.left - pageRect.left, r.top - pageRect.top
+        ], this.state.renderContext.viewport.transform)
+
+        const end = dom_utils.applyInverseTransform([
+          r.right - pageRect.left, r.bottom - pageRect.top
+        ], this.state.renderContext.viewport.transform)
+
+        console.log(start, end)
+
+        const annotation = {
+          annotationFlags: 4,
+          annotationType: 9,
+          subtype: 'Highlight',
+          color,
+          hasAppearance: true,
+          isRenderable: true,
+          hasPopup: true,
+          contents: 'contents',
+          title: 'title',
+          rect: selected[i],
+          id: i,
+          borderStyle: {
+            dashArray: [3],
+            horizontalCornerRadius: 0,
+            style: 1,
+            verticalCornerRadius: 0,
+            width: 0
+          }
+        }
+
+        this.annotationParameters.annotations.push(annotation)
+      }
+      AnnotationLayer.render({
+        ...this.annotationParameters,
+        div: this.annotationLayerRef.current,
+        page: this.props.page,
+        viewport: this.state.renderContext.viewport
+      })
     }
   }
 
@@ -199,6 +268,12 @@ class Page extends Component {
     }, () => this.generateTextElements())
   }
 
+  updateAnnotations = annotations => {
+    annotations.map(annotation => {
+      
+    })
+  }
+
   generateTextElements = () => {
     if (this.props.textContent.items.length === 0) {
       this.setState({
@@ -258,6 +333,12 @@ class Page extends Component {
     this.onMouseMove(e)
   }
 
+  onMouseDown = e => {
+    console.log(e)
+    this.mouseArea.startX = e.pageX - this.mouseArea.pageOffsetX
+    this.mouseArea.startY = e.pageY - this.mouseArea.pageOffsetY
+  }
+
   render() {
     const dims = {
       height: Math.floor(this.state.renderContext.viewport.height),
@@ -286,15 +367,19 @@ class Page extends Component {
     }
 
     return (
-      <div data-page-number={this.props.id} style={dims} ref={this.pageRef} className="page">
+      <div
+        data-page-number={this.props.id}
+        style={dims}
+        ref={this.pageRef}
+        className="page"
+        onMouseMove={this.props.allowSelection === true ? (e) => this.onMouseMove(e) : null}
+        onMouseDown={this.props.allowSelection === true ? e => this.onMouseDown(e) : null}
+        onMouseUp={this.onMouseUp}>
         {this.state.readyToRenderText === false &&
         <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
           <CircularLoader />
         </FlexGrid>}
-        <div
-          className="canvasWrapper"
-          style={{ ...dims, position: 'relative' }}
-          onClick={this.props.allowSelection === true ? (e) => this.onCanvasClick(e) : null}>
+        <div className="canvasWrapper" style={{ ...dims, position: 'relative' }}>
           <canvas
             {...this.state.canvasStyleSpecs}
             style={{
@@ -303,7 +388,6 @@ class Page extends Component {
                 : 'default',
               ...this.state.canvasStyleSpecs.style
             }}
-            onMouseMove={this.props.allowSelection === true ? (e) => this.onMouseMove(e) : null}
             id={`page-${this.props.id}-canvas`}
             ref={this.canvasRef}>
             {this.state.renderContext.canvasContext && this.state.readyToRenderText === true && this.renderPage()}
@@ -347,10 +431,16 @@ class Page extends Component {
             onMouseMove={this.onHoverOverSelection}
           />}
         </div>
-        <div className="textLayer" id={`text-layer-page-${this.props.id}`} style={dims}>
+        <div className="textLayer" id={`text-layer-page-${this.props.id}`} style={dims} ref={this.textLayerRef}>
           {this.state.readyToRenderText === true && this.allTextDivs.map((textLine, i) => {
             return this.updateHighlights(textLine, i)
           })}
+        </div>
+        <div
+          className="annotationLayer"
+          id={`annotation-layer-page-${this.props.id}`}
+          style={dims}
+          ref={this.annotationLayerRef}>
         </div>
       </div>
     )

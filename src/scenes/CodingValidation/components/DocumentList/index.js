@@ -60,9 +60,11 @@ export class DocumentList extends Component {
    * Enable annotation mode
    */
   onToggleAnnotationMode = () => {
-    this.props.annotationModeEnabled
-      ? this.props.actions.disableAnnotationMode()
-      : this.props.actions.enableAnnotationMode()
+    if (this.props.annotationModeEnabled) {
+      this.props.actions.disableAnnotationMode()
+    } else {
+      this.props.actions.enableAnnotationMode()
+    }
   }
 
   render() {
@@ -99,7 +101,7 @@ export class DocumentList extends Component {
         <Divider />
         <FlexGrid container flex padding={10} style={{ height: '100%' }}>
           {this.props.annotationModeEnabled &&
-          <FlexGrid padding={30} container align="center" flex style={{ backgroundColor: '#e6f8ff' }}>
+          <FlexGrid padding={20} container align="center" flex style={{ backgroundColor: '#e6f8ff' }}>
             <Typography>
               <i>
                 <span style={{ fontWeight: 500, color: theme.palette.secondary.pageHeader }}>Annotation Mode:</span>
@@ -109,7 +111,8 @@ export class DocumentList extends Component {
             </Typography>
           </FlexGrid>
           }
-          {this.props.docSelected === true && <PDFViewer document={this.props.openedDoc} />}
+          {this.props.docSelected === true &&
+          <PDFViewer allowSelection={this.props.annotationModeEnabled} document={this.props.openedDoc} />}
           {this.props.docSelected === false && this.props.documents.map((doc, i) => {
             return (
               <Fragment key={`${doc._id}`}>
