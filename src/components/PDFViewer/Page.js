@@ -270,7 +270,7 @@ class Page extends Component {
 
   updateAnnotations = annotations => {
     annotations.map(annotation => {
-      
+
     })
   }
 

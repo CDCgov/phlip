@@ -197,17 +197,8 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         openedDoc: {}
       }
 
-    case types.ENABLE_ANNOTATION_MODE:
-      return {
-        ...state,
-        annotationModeEnabled: true
-      }
-
-    case types.DISABLE_ANNOTATION_MODE:
-      return {
-        ...state,
-        annotationModeEnabled: false
-      }
+    case types.FLUSH_STATE:
+      return INITIAL_STATE
 
     case types.GET_APPROVED_DOCUMENTS_REQUEST:
     default:

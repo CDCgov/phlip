@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
 import theme from 'services/theme'
-import { FlexGrid, Icon, PDFViewer, Button } from 'components'
+import { FlexGrid, Icon, PDFViewer } from 'components'
 import { FormatQuoteClose } from 'mdi-material-ui'
 
 const docNameStyle = {
@@ -25,7 +25,8 @@ export class DocumentList extends Component {
     documents: PropTypes.array,
     annotated: PropTypes.array,
     docSelected: PropTypes.bool,
-    openedDoc: PropTypes.object
+    openedDoc: PropTypes.object,
+    answerSelected: PropTypes.bool
   }
 
   static defaultProps = {
@@ -56,23 +57,7 @@ export class DocumentList extends Component {
     this.props.actions.clearDocSelected()
   }
 
-  /**
-   * Enable annotation mode
-   */
-  onToggleAnnotationMode = () => {
-    if (this.props.annotationModeEnabled) {
-      this.props.actions.disableAnnotationMode()
-    } else {
-      this.props.actions.enableAnnotationMode()
-    }
-  }
-
   render() {
-    const annotateButtonProps = {
-      textColor: this.props.annotationModeEnabled ? 'white' : 'black',
-      color: this.props.annotationModeEnabled ? 'error' : 'white'
-    }
-
     return (
       <FlexGrid container style={{ width: '50%', overflow: 'hidden' }} raised>
         <FlexGrid
@@ -93,26 +78,22 @@ export class DocumentList extends Component {
               ? this.props.openedDoc.name
               : 'Assigned Documents'}
           </Typography>
-          {this.props.docSelected && this.props.answerSelected &&
-          <Button onClick={this.onToggleAnnotationMode} {...annotateButtonProps}>
-            {this.props.annotationModeEnabled ? 'Done' : 'Annotate'}
-          </Button>}
         </FlexGrid>
         <Divider />
-        <FlexGrid container flex padding={10} style={{ height: '100%' }}>
-          {this.props.annotationModeEnabled &&
-          <FlexGrid padding={20} container align="center" flex style={{ backgroundColor: '#e6f8ff' }}>
+        <FlexGrid container padding={10} flex style={{ height: '100%' }}>
+          {this.props.answerSelected &&
+          <FlexGrid padding={20} container align="center" style={{ backgroundColor: '#e6f8ff' }}>
             <Typography>
               <i>
                 <span style={{ fontWeight: 500, color: theme.palette.secondary.pageHeader }}>Annotation Mode:</span>
                 {' '}
-                <span style={{ color: '#757575' }}>Highlight the desired text and confirm. Click "DONE" to exit annotation mode.</span>
+                <span style={{ color: '#757575' }}>Highlight the desired text and confirm. </span>
               </i>
             </Typography>
           </FlexGrid>
           }
           {this.props.docSelected === true &&
-          <PDFViewer allowSelection={this.props.annotationModeEnabled} document={this.props.openedDoc} />}
+          <PDFViewer allowSelection={this.props.answerSelected} document={this.props.openedDoc} />}
           {this.props.docSelected === false && this.props.documents.map((doc, i) => {
             return (
               <Fragment key={`${doc._id}`}>
@@ -162,8 +143,7 @@ const mapStateToProps = (state, ownProps) => {
     annotated: annotatedToShow,
     openedDoc: pageState.openedDoc || {},
     docSelected: pageState.docSelected || false,
-    answerSelected,
-    annotationModeEnabled: pageState.annotationModeEnabled
+    answerSelected
   }
 }
 
