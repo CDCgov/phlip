@@ -26,7 +26,7 @@ export class DocumentList extends Component {
     annotated: PropTypes.array,
     docSelected: PropTypes.bool,
     openedDoc: PropTypes.object,
-    answerSelected: PropTypes.bool
+    answerSelected: PropTypes.oneOfType([PropTypes.number, PropTypes.bool])
   }
 
   static defaultProps = {
