@@ -43,6 +43,10 @@ export class DocumentList extends Component {
     this.props.actions.getApprovedDocumentsRequest(this.props.projectId, this.props.jurisdictionId, this.props.page)
   }
 
+  componentWillUnmount() {
+    this.clearDocSelected()
+  }
+
   /**
    * Gets the actual document contents when a document is clicked
    */
