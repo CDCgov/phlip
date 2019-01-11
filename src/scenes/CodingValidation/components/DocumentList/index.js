@@ -93,7 +93,7 @@ export class DocumentList extends Component {
           </FlexGrid>
           }
           {this.props.docSelected === true &&
-          <PDFViewer allowSelection={this.props.answerSelected} document={this.props.openedDoc} />}
+          <PDFViewer allowSelection={Boolean(this.props.answerSelected)} document={this.props.openedDoc} />}
           {this.props.docSelected === false && this.props.documents.map((doc, i) => {
             return (
               <Fragment key={`${doc._id}`}>
