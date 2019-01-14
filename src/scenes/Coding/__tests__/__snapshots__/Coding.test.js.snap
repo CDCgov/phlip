@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Coding scene should render correctly 1`] = `
+<Container
+  column={false}
+  flex={true}
+  spacing={0}
+  style={
+    Object {
+      "display": "flex",
+      "flexWrap": "nowrap",
+      "height": "100%",
+      "position": "relative",
+      "width": "100%",
+    }
+  }
+>
+  <WithStyles
+    currentQuestion={Object {}}
+    open={false}
+    selectedCategory={0}
+  />
+  <withRouter(Connect(HeaderedLayout))
+    className=""
+    padding={false}
+  >
+    <Column
+      component={
+        <WithStyles
+          item={true}
+        />
+      }
+      displayFlex={true}
+      flex={true}
+    >
+      <withRouter(Header)
+        empty={true}
+        onJurisdictionChange={[Function]}
+        projectId={1}
+        projectName="Test Project"
+        selectedJurisdiction={1}
+      />
+      <Container
+        column={false}
+        flex={true}
+        spacing={0}
+        style={
+          Object {
+            "backgroundColor": "#f5f5f5",
+          }
+        }
+      >
+        <Row
+          component={
+            <WithStyles
+              item={true}
+            />
+          }
+          displayFlex={true}
+          flex={true}
+          style={
+            Object {
+              "overflow": "auto",
+            }
+          }
+        >
+          <Column
+            component={
+              <WithStyles
+                item={true}
+              />
+            }
+            displayFlex={false}
+            flex={false}
+          />
+          <Column
+            component={
+              <WithStyles
+                item={true}
+              />
+            }
+            displayFlex={true}
+            flex={true}
+            style={
+              Object {
+                "overflow": "auto",
+                "padding": "1px 27px 10px 27px",
+              }
+            }
+          />
+        </Row>
+      </Container>
+    </Column>
+  </withRouter(Connect(HeaderedLayout))>
+</Container>
+`;

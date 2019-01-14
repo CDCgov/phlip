@@ -5,98 +5,129 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
   key="headers"
 >
   <TableCell
+    id="bookmarked"
     key="bookmarked"
     padding="checkbox"
+    scope="col"
     style={
       Object {
-        "width": 48,
+        "paddingLeft": 24,
+        "width": 24,
       }
     }
   >
     <IconButton
-      color="rbg(0,0,0,0.54)"
+      aria-label="Sort bookmarked"
+      color="#757575"
+      disabled={false}
       iconSize={24}
+      id="sort-bookmarked"
       onClick={[Function]}
+      placement="top-start"
+      tooltipText="Sort bookmarked"
     >
       bookmark_border
     </IconButton>
   </TableCell>
   <TableCell
+    id="name"
     key="name"
-    padding="checkbox"
+    padding="default"
+    scope="col"
     style={
       Object {
-        "maxWidth": "unset",
-        "textAlign": "left",
+        "paddingRight": 24,
+        "width": "15%",
       }
     }
   >
-    <WithStyles
-      active={false}
-      direction="desc"
-      onClick={[Function]}
-      style={
-        Object {
-          "color": "inherit",
-        }
-      }
+    <withStyles(Tooltip)
+      aria-label="Sort by Name"
+      id="sort-by-name"
+      text="Sort by Name"
     >
-      Name
-    </WithStyles>
+      <withStyles(TableSortLabel)
+        active={false}
+        direction="desc"
+        onClick={[Function]}
+        style={
+          Object {
+            "color": "inherit",
+          }
+        }
+      >
+        Name
+      </withStyles(TableSortLabel)>
+    </withStyles(Tooltip)>
   </TableCell>
   <TableCell
+    id="dateLastEdited"
     key="dateLastEdited"
-    padding="checkbox"
+    padding="default"
+    scope="col"
     style={
       Object {
-        "maxWidth": 150,
-        "textAlign": "unset",
-        "width": 150,
+        "paddingRight": 24,
       }
     }
   >
-    <WithStyles
-      active={true}
-      direction="desc"
-      onClick={[Function]}
-      style={
-        Object {
-          "color": "inherit",
-        }
-      }
+    <withStyles(Tooltip)
+      aria-label="Sort by Date Last Edited"
+      id="sort-by-dateLastEdited"
+      text="Sort by Date Last Edited"
     >
-      Date Last Edited
-    </WithStyles>
+      <withStyles(TableSortLabel)
+        active={true}
+        direction="desc"
+        onClick={[Function]}
+        style={
+          Object {
+            "color": "inherit",
+          }
+        }
+      >
+        Date Last Edited
+      </withStyles(TableSortLabel)>
+    </withStyles(Tooltip)>
   </TableCell>
   <TableCell
+    id="lastEditedBy"
     key="lastEditedBy"
-    padding="checkbox"
+    padding="default"
+    scope="col"
     style={
       Object {
-        "maxWidth": 150,
-        "textAlign": "unset",
-        "width": 150,
+        "paddingRight": 24,
       }
     }
   >
-    <WithStyles
-      active={false}
-      direction="desc"
-      onClick={[Function]}
-      style={
-        Object {
-          "color": "inherit",
-        }
-      }
+    <withStyles(Tooltip)
+      aria-label="Sort by Last Edited By"
+      id="sort-by-lastEditedBy"
+      text="Sort by Last Edited By"
     >
-      Last Edited By
-    </WithStyles>
+      <withStyles(TableSortLabel)
+        active={false}
+        direction="desc"
+        onClick={[Function]}
+        style={
+          Object {
+            "color": "inherit",
+          }
+        }
+      >
+        Last Edited By
+      </withStyles(TableSortLabel)>
+    </withStyles(Tooltip)>
   </TableCell>
   <TableCell
+    id="protocol"
     key="protocol"
-    padding="checkbox"
+    padding="default"
+    scope="col"
     style={
       Object {
+        "paddingRight": 24,
         "textAlign": "center",
       }
     }
@@ -104,10 +135,13 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     Protocol
   </TableCell>
   <TableCell
+    id="jurisdictions"
     key="jurisdictions"
-    padding="checkbox"
+    padding="default"
+    scope="col"
     style={
       Object {
+        "paddingRight": 24,
         "textAlign": "center",
       }
     }
@@ -115,10 +149,13 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     Jurisdictions
   </TableCell>
   <TableCell
+    id="codingScheme"
     key="codingScheme"
-    padding="checkbox"
+    padding="default"
+    scope="col"
     style={
       Object {
+        "paddingRight": 24,
         "textAlign": "center",
       }
     }
@@ -126,19 +163,44 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     Coding Scheme
   </TableCell>
   <TableCell
+    id="code"
     key="code"
     padding="checkbox"
-    style={Object {}}
+    scope="col"
+    style={
+      Object {
+        "paddingRight": 6,
+        "width": 56,
+      }
+    }
   />
   <TableCell
+    id="validate"
     key="validate"
     padding="checkbox"
-    style={Object {}}
+    scope="col"
+    style={
+      Object {
+        "paddingLeft": 6,
+        "width": 56,
+      }
+    }
   />
   <TableCell
+    id="export"
     key="export"
-    padding="checkbox"
-    style={Object {}}
-  />
+    padding="default"
+    scope="col"
+    style={
+      Object {
+        "paddingLeft": 0,
+        "paddingRight": 24,
+        "textAlign": "center",
+        "width": "1%",
+      }
+    }
+  >
+    Export
+  </TableCell>
 </TableRow>
 `;

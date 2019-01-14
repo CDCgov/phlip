@@ -1,5 +1,6 @@
-'use strict'
-
+/**
+ * This build the production webpack bundle
+ */
 const chalk = require('chalk')
 const webpack = require('webpack')
 const Spinner = require('cli-spinner').Spinner
@@ -16,6 +17,7 @@ let spinner = new Spinner(chalk.cyan('%s Webpack is bundling the files...'))
 spinner.setSpinnerString(18)
 spinner.start()
 
+// Compile the webpack bundle
 const compiler = webpack(webpackConfig)
 compiler.run((err, stats) => {
   spinner.stop()

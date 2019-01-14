@@ -3,17 +3,18 @@ import PropTypes from 'prop-types'
 import Autosuggest from 'react-autosuggest'
 import Paper from 'material-ui/Paper'
 import { withStyles } from 'material-ui/styles'
-import TextInput from 'components/TextInput'
+import SimpleInput from 'components/SimpleInput'
 
 const classes = theme => ({
   suggestionsContainerOpen: {
-    width: 500,
+    width: 520,
     position: 'absolute',
     maxHeight: 500,
     overflow: 'auto',
     '& div:last-child': {
       borderBottom: 'none'
-    }
+    },
+    display: 'block'
   },
   suggestion: {
     display: 'block'
@@ -22,7 +23,7 @@ const classes = theme => ({
     margin: 0,
     padding: 0,
     listStyleType: 'none',
-    overflow: 'auto'
+    maxHeight: 250
   },
   sectionContainer: {
     margin: '0 10px',
@@ -30,33 +31,54 @@ const classes = theme => ({
   }
 })
 
-const renderInput = ({ autoFocus, value, ref, ...other }) => (
-  <TextInput autoFocus={autoFocus} inputRef={ref} value={value} {...other} />
-)
-
-const renderSuggestionsContainer = (options) => {
-  const { containerProps, children } = options
-
+const renderInput = ({ value, onBlur, ref, TextFieldProps, ...other }) => {
   return (
-    <Paper {...containerProps} style={{ zIndex: '10000' }} square>
+  <SimpleInput
+    shrinkLabel
+    inputRef={ref}
+    value={value}
+    {...TextFieldProps}
+    multiline={false}
+    InputProps={{
+      inputProps: other
+    }}
+  />)
+}
+
+/**
+ * Renders the list container for all of the suggestions
+ *
+ * @param containerProps
+ * @param children
+ * @returns {*}
+ */
+const renderSuggestionsContainer = ({ containerProps, children }) => {
+  return (
+    <Paper {...containerProps} style={{ zIndex: 20000000 }} square>
       {children}
     </Paper>
   )
 }
 
-const shouldRenderSuggestions = value => value.trim().length >= 2
+/**
+ * Determines if the suggestions should be rendered. Only renders if the input length >= 3
+ * @param value
+ * @returns {boolean}
+ */
+const shouldRenderSuggestions = value => value.trim().length >= 3
 
+/**
+ * Autosuggest / Autocomplete input field, renders a list of suggestions based on the input
+ * @component
+ */
 export const Autocomplete = props => {
   const {
     suggestions,
-    suggestionValue,
     classes,
+    InputProps,
     inputProps,
-    input,
-    meta,
     handleGetSuggestions,
     handleClearSuggestions,
-    handleSuggestionValueChange,
     handleSuggestionSelected,
     renderSuggestion,
     getSuggestionValue
@@ -65,7 +87,6 @@ export const Autocomplete = props => {
   return (
     <Autosuggest
       theme={{
-        container: classes.container,
         suggestionsContainerOpen: classes.suggestionsContainerOpen,
         suggestionsList: classes.suggestionsList,
         suggestion: classes.suggestion,
@@ -77,10 +98,7 @@ export const Autocomplete = props => {
       renderSuggestionsContainer={renderSuggestionsContainer}
       renderInputComponent={renderInput}
       inputProps={{
-        value: suggestionValue,
-        onChange: handleSuggestionValueChange,
-        meta,
-        ...input,
+        TextFieldProps: InputProps,
         ...inputProps
       }}
       shouldRenderSuggestions={shouldRenderSuggestions}
@@ -92,21 +110,62 @@ export const Autocomplete = props => {
 }
 
 Autocomplete.propTypes = {
+  /**
+   * List of suggestions to render
+   */
   suggestions: PropTypes.array,
+
+  /**
+   * Suggestion value (what the user has typed in)
+   */
   suggestionValue: PropTypes.string,
+
+  /**
+   * List of classes from material-ui theme provider
+   */
   classes: PropTypes.object,
+
+  /**
+   * Any props you to want to pass to the TextField component
+   */
+  InputProps: PropTypes.object,
+
+  /**
+   * Props to send to the actual input or InputProps component
+   */
   inputProps: PropTypes.object,
-  input: PropTypes.object,
-  meta: PropTypes.object,
+
+  /**
+   * Handles retrieving suggestions
+   */
   handleGetSuggestions: PropTypes.func,
+
+  /**
+   * Handles clearing the suggestions array
+   */
   handleClearSuggestions: PropTypes.func,
+
+  /**
+   * Handles when the user changes their input (suggestion value)
+   */
   handleSuggestionValueChange: PropTypes.func,
+
+  /**
+   * Handles when a user clicks on a suggestion
+   */
   handleSuggestionSelected: PropTypes.func,
+
+  /**
+   * Render each suggestion in the list
+   */
   renderSuggestion: PropTypes.func,
-  getSuggestionValue: PropTypes.func,
+
+  /**
+   * Returns the suggestion value
+   */
+  getSuggestionValue: PropTypes.func
 }
 
-Autocomplete.defaultProps = {
-}
+Autocomplete.defaultProps = {}
 
 export default withStyles(classes)(Autocomplete)

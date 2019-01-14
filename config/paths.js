@@ -8,6 +8,7 @@ const resolveApp = relativePath => path.resolve(appDirectory, relativePath)
 
 module.exports = {
   appBuild: resolveApp('dist'),
+  config: resolveApp('config'),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
   appIndexJs: resolveApp('src/index.js'),
@@ -16,5 +17,6 @@ module.exports = {
   yarnLockFile: resolveApp('yarn.lock'),
   appNodeModules: resolveApp('node_modules'),
   appDotEnv: resolveApp('.env'),
-  publicPath: '/'
+  publicPath: '/',
+  styleguideComponents: fileName => resolveApp(`config/styleguide/${fileName}`)
 }

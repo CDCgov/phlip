@@ -12,19 +12,16 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
   handleSubmit={[Function]}
   height="400px"
   initialValues={Object {}}
-  onClose={[Function]}
   open={true}
   width="600px"
 >
   <ModalTitle
     closeButton={false}
-    edit={true}
-    editButton={false}
     onCloseForm={[Function]}
     onEditForm={[Function]}
     title="Create New Project"
   />
-  <WithStyles />
+  <withStyles(Divider) />
   <ModalContent>
     <Container
       column={true}
@@ -45,6 +42,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
         label="Project Name"
         name="name"
         placeholder="Enter Project Name"
+        required={true}
         validate={[Function]}
       />
       <DetailRow
@@ -57,19 +55,16 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
         options={
           Array [
             Object {
-              "label": "Assessment",
+              "label": "Legal Scan",
               "value": 1,
             },
             Object {
               "label": "Policy Surveillance",
               "value": 2,
             },
-            Object {
-              "label": "Environmental Scan",
-              "value": 3,
-            },
           ]
         }
+        required={true}
         style={
           Object {
             "display": "flex",
@@ -78,23 +73,29 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
       />
     </Container>
   </ModalContent>
-  <ModalActions
+  <withStyles(ModalActions)
     actions={
       Array [
         Object {
           "onClick": [Function],
+          "otherProps": Object {
+            "aria-label": "Cancel edit view",
+          },
           "type": "button",
           "value": "Cancel",
         },
         Object {
           "disabled": false,
+          "otherProps": Object {
+            "aria-label": "Save form",
+          },
           "type": "submit",
-          "value": "Create",
+          "value": <UNDEFINED>
+            Create
+          </UNDEFINED>,
         },
       ]
     }
-    edit={true}
-    raised={false}
   />
 </FormModal>
 `;

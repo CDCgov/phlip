@@ -26,7 +26,7 @@ const initial = {
       byId: { ...projects },
       allIds: defaultSorted
     },
-    rowsPerPage: "10",
+    rowsPerPage: '10',
     page: 0,
     projectCount: 0,
     matches: [],
@@ -37,27 +37,41 @@ const initial = {
     sortBookmarked: false,
     error: false,
     errorContent: '',
-    searchValue: ''
+    searchValue: '',
+    exportError: '',
+    projectToExport: { text: '' }
   },
-  addEditProject: {},
+  addEditProject: { formError: null, goBack: false },
   addEditJurisdictions: {
     jurisdictions: { byId: {}, allIds: [] },
     visibleJurisdictions: [],
     searchValue: '',
     suggestions: [],
     suggestionValue: '',
-    jurisdiction: {}
+    jurisdiction: {},
+    formError: null,
+    goBack: false,
+    deleteError: null,
+    isLoadingJurisdictions: false,
+    showJurisdictionLoader: false,
+    form: {
+      values: { name: '' }
+    }
   }
 }
 
-const getState = other => ({ ...initial, main: { ...initial.main, ...other } })
+const getState = (other, addEdit) => ({
+  ...initial,
+  main: { ...initial.main, ...other },
+  addEditProject: { ...initial.addEditProject, ...addEdit }
+})
 
 const getReducer = (state, action) => reducer(state, action)
 
 describe('Home reducer', () => {
   test('should return the initial state', () => {
     expect(reducer(undefined, {}))
-    .toEqual({ ...initial, main: { ...initial.main, projects: { byId: {}, allIds: [] } } })
+      .toEqual({ ...initial, main: { ...initial.main, projects: { byId: {}, allIds: [] } } })
   })
 
   describe('GET_PROJECTS_SUCCESS', () => {
@@ -206,7 +220,7 @@ describe('Home reducer', () => {
         },
         projectCount: 5,
         visibleProjects: [3, 5, 4, 2, 1]
-      })
+      }, { goBack: true })
     )
   })
 
@@ -234,7 +248,7 @@ describe('Home reducer', () => {
           },
           projectCount: 6,
           visibleProjects: [6, 5, 4, 2, 3, 1]
-        })
+        }, { goBack: true })
       )
     })
 
@@ -269,7 +283,7 @@ describe('Home reducer', () => {
           sortBookmarked: false,
           direction: 'desc',
           bookmarkList: [4, 3, 1]
-        })
+        }, { goBack: true })
       )
     })
   })
@@ -280,7 +294,7 @@ describe('Home reducer', () => {
       getState({
         projectCount: 5,
         visibleProjects: [5, 4, 2, 3, 1]
-      })
+      }, { formError: undefined })
     )
   })
 

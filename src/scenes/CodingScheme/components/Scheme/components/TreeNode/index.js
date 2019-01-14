@@ -44,6 +44,7 @@ export const TreeNode = props => {
     scaffold.push(
       <div
         key={`pre_${1 + i}`}
+        tabIndex={-1}
         style={{width: scaffoldBlockPxWidth}}
         className={`${styles.lineBlock} ${lineClass}`}>
       </div>
@@ -62,18 +63,16 @@ export const TreeNode = props => {
       scaffold.push(
         <div
           key={`highlight_${1 + i}`}
-          style={{
-            width: scaffoldBlockPxWidth,
-            left: scaffoldBlockPxWidth * i
-          }}
+          style={{ width: scaffoldBlockPxWidth, left: scaffoldBlockPxWidth * i }}
           className={`${styles.absoluteLineBlock} ${highlightLineClass}`}
+          tabIndex={-1}
         />
       )
     }
   })
 
   return connectDropTarget(
-    <div {...otherProps} className={styles.node}>
+    <div {...otherProps} className={styles.node} tabIndex={-1}>
       {scaffold}
       {Children.map(children, child =>
         cloneElement(child, {

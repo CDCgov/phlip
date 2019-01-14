@@ -2,11 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Paper from 'material-ui/Paper'
 
-const baseStyle = {
-  flex: '1'
-}
+const baseStyle = { flex: '1' }
 
-const Card = ({ children, style, ...otherProps }) => {
+/**
+ * Card based on material-ui's Card (raised paper)
+ */
+export const Card = ({ children, style, ...otherProps }) => {
   return (
     <Paper style={{ ...baseStyle, ...style }} {...otherProps}>
       {children}
@@ -15,7 +16,14 @@ const Card = ({ children, style, ...otherProps }) => {
 }
 
 Card.propTypes = {
+  /**
+   * Items to be rendered on the card
+   */
   children: PropTypes.node,
+
+  /**
+   * Style of the card
+   */
   style: PropTypes.object
 }
 

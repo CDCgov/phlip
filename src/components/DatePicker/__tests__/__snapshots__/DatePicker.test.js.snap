@@ -1,0 +1,76 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DatePicker component should render correctly 1`] = `
+<withStyles(FormControl)
+  disabled={false}
+  error={false}
+>
+  <DatePickerWrapper
+    InputLabelProps={
+      Object {
+        "error": false,
+        "required": false,
+        "shrink": true,
+      }
+    }
+    InputProps={
+      Object {
+        "onChange": undefined,
+        "value": "10/11/2017",
+      }
+    }
+    autoOk={false}
+    format="MM/DD/YYYY"
+    keyboard={true}
+    keyboardIcon={<Unknown />}
+    label="Date picker"
+    leftArrowIcon={<Unknown />}
+    mask={
+      Array [
+        /\\\\d/,
+        /\\\\d/,
+        "/",
+        /\\\\d/,
+        /\\\\d/,
+        "/",
+        /\\\\d/,
+        /\\\\d/,
+        /\\\\d/,
+        /\\\\d/,
+      ]
+    }
+    name="date-picker"
+    onChange={[Function]}
+    returnMoment={true}
+    rightArrowIcon={<Unknown />}
+    style={
+      Object {
+        "marginTop": 16,
+      }
+    }
+    utils={
+      Object {
+        "formatNumber": [Function],
+        "getCalendarHeaderText": [Function],
+        "getDatePickerHeaderText": [Function],
+        "getDateTimePickerHeaderText": [Function],
+        "getDayText": [Function],
+        "getHourText": [Function],
+        "getMeridiemText": [Function],
+        "getMinuteText": [Function],
+        "getMonthNumber": [Function],
+        "getNextMonth": [Function],
+        "getPreviousMonth": [Function],
+        "getStartOfMonth": [Function],
+        "getWeekArray": [Function],
+        "getWeekdays": [Function],
+        "getYear": [Function],
+        "getYearText": [Function],
+        "setYear": [Function],
+      }
+    }
+    value="10/11/2017"
+  />
+  <withStyles(FormHelperText) />
+</withStyles(FormControl)>
+`;

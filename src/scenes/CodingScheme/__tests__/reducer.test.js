@@ -4,7 +4,16 @@ import reducer from '../reducer'
 const initial = {
   questions: [],
   outline: {},
-  allowHover: true
+  allowHover: true,
+  flatQuestions: [],
+  formError: null,
+  previousOutline: {},
+  previousQuestions: [],
+  schemeError: null,
+  alertError: '',
+  lockInfo: {},
+  lockedAlert: null,
+  lockedByCurrentUser: false
 }
 
 const getState = other => ({ ...initial, ...other })
@@ -18,18 +27,23 @@ describe('Coding Scheme reducer', () => {
   describe('GET_SCHEME_SUCCESS', () => {
     test('should set state.questions to action.payload and set hovering to false on all questions', () => {
       const questions = [
-        { text: 'fa la la la', type: 1, id: 1 },
-        { text: 'la la la', type: 2, id: 2 }
+        { text: 'fa la la la', type: 1, id: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+        { text: 'la la la', type: 2, id: 2, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
       ]
 
       const action = {
         type: types.GET_SCHEME_SUCCESS,
         payload: {
-          codingSchemeQuestions: questions,
-          outline: {
+          scheme: {
+            schemeQuestions: questions,
+            outline: {
               1: { parentId: 0, positionInParent: 0 },
               2: { parentId: 0, positionInParent: 1 }
             }
+          },
+          lockInfo: {},
+          lockedByCurrentUser: false,
+          error: {}
         }
       }
 
@@ -39,16 +53,22 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [
-          { text: 'fa la la la', type: 1, hovering: false, id: 1, parentId: 0, positionInParent: 0 },
-          { text: 'la la la', type: 2, hovering: false, id: 2, parentId: 0, positionInParent: 1 }
+          { text: 'fa la la la', type: 1, hovering: false, id: 1, expanded: true, parentId: 0, positionInParent: 0, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+          { text: 'la la la', type: 2, hovering: false, id: 2, expanded: true, parentId: 0, positionInParent: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
         ],
         outline: {
           1: { parentId: 0, positionInParent: 0 },
           2: { parentId: 0, positionInParent: 1 }
         },
         allowHover: true,
-        empty: false
+        empty: false,
+        alertError: '',
+        flatQuestions: [
+          { id: 1, text: 'fa la la la', type: 1, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] },
+          { id: 2, text: 'la la la', type: 2, possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }] }
+        ]
       })
     })
   })
@@ -73,12 +93,14 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [
           { hovering: false, questionBody: 'fa la la la', type: 1 },
           { hovering: true, questionBody: 'la la la', type: 2 }
         ],
         outline: {},
-        allowHover: true
+        allowHover: true,
+        flatQuestions: []
       })
     })
 
@@ -101,12 +123,14 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [
           { hovering: false, questionBody: 'fa la la la', type: 1 },
           { hovering: false, questionBody: 'la la la', type: 2 }
         ],
         outline: {},
-        allowHover: true
+        allowHover: true,
+        flatQuestions: []
       })
     })
 
@@ -133,6 +157,7 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [
           {
             hovering: false, questionBody: 'fa la la la', type: 1, children: [
@@ -142,7 +167,8 @@ describe('Coding Scheme reducer', () => {
           { hovering: false, questionBody: 'la la la', type: 2 }
         ],
         outline: {},
-        allowHover: true
+        allowHover: true,
+        flatQuestions: []
       })
     })
 
@@ -165,12 +191,14 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [
           { hovering: false, questionBody: 'fa la la la', type: 1 },
           { hovering: false, questionBody: 'la la la', type: 2 }
         ],
         outline: {},
-        allowHover: true
+        allowHover: true,
+        flatQuestions: []
       })
     })
 
@@ -193,12 +221,14 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [
           { hovering: false, questionBody: 'fa la la la', type: 1 },
           { hovering: false, questionBody: 'la la la', type: 2 }
         ],
         outline: {},
-        allowHover: false
+        allowHover: false,
+        flatQuestions: []
       })
     })
   })
@@ -229,6 +259,7 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [
           {
             hovering: false,
@@ -244,7 +275,13 @@ describe('Coding Scheme reducer', () => {
           1: { parentId: 2, positionInParent: 0 },
           2: { parentId: 0, positionInParent: 0 }
         },
-        allowHover: true
+        allowHover: true,
+        flatQuestions: [],
+        previousOutline: {},
+        previousQuestions: [
+          { hovering: false, questionBody: 'la la la', type: 2, id: 1 },
+          { hovering: false, questionBody: 'fa la la la', type: 1, id: 2 }
+        ]
       })
     })
   })
@@ -260,9 +297,11 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [],
         outline: {},
-        allowHover: true
+        allowHover: true,
+        flatQuestions: []
       })
     })
   })
@@ -278,9 +317,11 @@ describe('Coding Scheme reducer', () => {
       )
 
       expect(state).toEqual({
+        ...initial,
         questions: [],
         outline: {},
-        allowHover: false
+        allowHover: false,
+        flatQuestions: []
       })
     })
   })

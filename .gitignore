@@ -7,3 +7,5 @@ npm-debug.log
 .yarnclean
 tests.xml
 .env
+docs
+.env.prod

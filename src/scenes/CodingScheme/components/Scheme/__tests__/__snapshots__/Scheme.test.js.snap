@@ -2,22 +2,24 @@
 
 exports[`CodingScheme scene -- Scheme component should render correctly 1`] = `
 <DragDropContext(ReactSortableTree)
+  canDrop={[Function]}
   generateNodeProps={[Function]}
   isVirtualized={true}
-  maxDepth={1}
   onChange={[Function]}
+  reactVirtualizedListProps={
+    Object {
+      "containerRole": "list",
+      "overscanRowCount": 10,
+    }
+  }
   style={
     Object {
       "flex": "1 0 50%",
-      "padding": "0 0 0 15px",
     }
   }
   theme={
     Object {
       "nodeContentRenderer": [Function],
-      "reactVirtualizedListProps": Object {
-        "overscanRowCount": 10,
-      },
       "rowHeight": 75,
       "scaffoldBlockPxWidth": 100,
       "slideRegionSize": 50,

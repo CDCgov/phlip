@@ -1,0 +1,216 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CodingScheme scene - AddEditQuestion Component should render correctly 1`] = `
+<FormModal
+  form="questionForm"
+  handleSubmit={[Function]}
+  initialValues={
+    Object {
+      "includeComment": false,
+      "isCategoryQuestion": false,
+      "possibleAnswers": Array [
+        Object {},
+        Object {},
+        Object {},
+      ],
+      "questionType": 4,
+    }
+  }
+  maxWidth="md"
+  open={true}
+  validate={[Function]}
+>
+  <Container
+    column={true}
+    flex={false}
+    spacing={0}
+    style={
+      Object {
+        "minWidth": 890,
+        "padding": "20px 20px 0 20px",
+      }
+    }
+  >
+    <Container
+      column={true}
+      flex={false}
+      spacing={0}
+    >
+      <ModalTitle
+        title="Add New Question"
+      />
+      <ModalContent>
+        <Container
+          column={false}
+          flex={false}
+          spacing={0}
+        >
+          <Column
+            component={
+              <withStyles(GridWrapper)
+                item={true}
+              />
+            }
+            displayFlex={false}
+            flex={true}
+            style={
+              Object {
+                "padding": "0 10px 20px 0",
+              }
+            }
+          >
+            <Field
+              component={[Function]}
+              disabled={true}
+              label="Question"
+              multiline={true}
+              name="text"
+              placeholder="Enter question"
+              required={true}
+              shrinkLabel={true}
+            />
+          </Column>
+          <Column
+            component={
+              <withStyles(GridWrapper)
+                item={true}
+              />
+            }
+            displayFlex={false}
+            flex={false}
+          >
+            <Field
+              component={[Function]}
+              defaultValue={4}
+              disabled={true}
+              label="Answer Type"
+              name="questionType"
+              onChange={[Function]}
+              options={
+                Array [
+                  Object {
+                    "label": "Binary",
+                    "value": 1,
+                  },
+                  Object {
+                    "label": "Checkbox",
+                    "value": 3,
+                  },
+                  Object {
+                    "label": "Radio Button",
+                    "value": 4,
+                  },
+                  Object {
+                    "label": "Text Field",
+                    "value": 5,
+                  },
+                  Object {
+                    "label": "Tabbed",
+                    "value": 2,
+                  },
+                ]
+              }
+              required={true}
+            />
+          </Column>
+        </Container>
+        <Container
+          column={false}
+          flex={false}
+          spacing={0}
+        >
+          <Row
+            component={
+              <withStyles(GridWrapper)
+                item={true}
+              />
+            }
+            displayFlex={false}
+            flex={true}
+            reverse={false}
+            style={
+              Object {
+                "padding": "0 10px 20px 0",
+              }
+            }
+          >
+            <Field
+              component={[Function]}
+              disabled={true}
+              label="Coding directions"
+              name="hint"
+              placeholder="Enter any special directions or considerations to display when coding this question"
+              shrinkLabel={true}
+            />
+          </Row>
+        </Container>
+        <FieldArray
+          answerType={4}
+          component={[Function]}
+          isEdit={false}
+          name="possibleAnswers"
+        />
+        <Container
+          column={false}
+          flex={false}
+          spacing={0}
+        >
+          <Row
+            component={
+              <withStyles(GridWrapper)
+                item={true}
+              />
+            }
+            displayFlex={false}
+            flex={true}
+            reverse={false}
+            style={
+              Object {
+                "paddingLeft": "47px",
+              }
+            }
+          >
+            <Field
+              component={[Function]}
+              disabled={true}
+              label="Include comment box"
+              name="includeComment"
+            />
+          </Row>
+        </Container>
+      </ModalContent>
+    </Container>
+    <withStyles(ModalActions)
+      actions={
+        Array [
+          Object {
+            "onClick": [Function],
+            "otherProps": Object {
+              "aria-label": "Cancel and close form",
+            },
+            "type": "button",
+            "value": "Cancel",
+          },
+          Object {
+            "disabled": true,
+            "otherProps": Object {
+              "aria-label": "Save form",
+            },
+            "type": "submit",
+            "value": <UNDEFINED>
+              Add
+            </UNDEFINED>,
+          },
+        ]
+      }
+      style={
+        Object {
+          "margin": 0,
+          "paddingBottom": 15,
+          "paddingTop": 15,
+        }
+      }
+    />
+  </Container>
+</FormModal>
+`;

@@ -1,145 +1,162 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render correctly 1`] = `
-<FormModal
-  asyncBlurFields={
-    Array [
-      "name",
-    ]
-  }
-  form="jurisdictionForm"
-  handleSubmit={[Function]}
-  height="400px"
-  initialValues={Object {}}
+<withStyles(Modal)
+  onClose={[Function]}
   open={true}
-  validate={[Function]}
-  width="600px"
 >
   <ModalTitle
-    closeButton={true}
-    edit={false}
-    editButton={false}
     onCloseForm={[Function]}
-    title="Add Jurisdiction"
+    title="Edit Jurisdiction"
   />
-  <WithStyles />
+  <withStyles(Divider) />
   <ModalContent>
-    <Container
-      column={true}
-      flex={false}
-      spacing={0}
-      style={
-        Object {
-          "minHeight": 230,
-          "minWidth": 550,
-          "padding": "30px 15px",
-        }
-      }
-    >
-      <Row
-        component={
-          <WithStyles
-            item={true}
-          />
-        }
-        displayFlex={false}
-        flex={false}
-        style={
-          Object {
-            "paddingBottom": 20,
-          }
-        }
-      >
-        <Field
-          component={[Function]}
-          getSuggestionValue={[Function]}
-          handleClearSuggestions={[Function]}
-          handleGetSuggestions={[Function]}
-          handleSuggestionSelected={[Function]}
-          inputProps={
-            Object {
-              "disabled": false,
-              "id": "jurisdiction-name",
-              "label": "Name",
-              "onChange": [Function],
-              "placeholder": "Enter jurisdiction name",
-              "value": "",
-            }
-          }
-          name="name"
-          renderSuggestion={[Function]}
-          suggestions={Array []}
-          validate={[Function]}
-        />
-      </Row>
+    <form>
       <Container
-        column={false}
+        column={true}
         flex={false}
         spacing={0}
         style={
           Object {
-            "marginTop": 30,
+            "minHeight": 230,
+            "minWidth": 550,
+            "padding": "30px 15px",
           }
         }
       >
-        <Column
+        <Row
           component={
-            <WithStyles
-              item={true}
-            />
-          }
-          displayFlex={false}
-          flex={true}
-        >
-          <Field
-            autoOk={true}
-            component={[Function]}
-            dateFormat="MM/DD/YYYY"
-            invalidLabel="mm/dd/yyyy"
-            label="Start Date"
-            name="startDate"
-            validate={[Function]}
-          />
-        </Column>
-        <Column
-          component={
-            <WithStyles
+            <withStyles(GridWrapper)
               item={true}
             />
           }
           displayFlex={false}
           flex={false}
+          reverse={false}
+          style={
+            Object {
+              "paddingBottom": 20,
+            }
+          }
         >
-          <Field
-            autoOk={true}
-            component={[Function]}
-            dateFormat="MM/DD/YYYY"
-            invalidLabel="mm/dd/yyyy"
-            label="End Date"
-            name="endDate"
-            validate={[Function]}
+          <withStyles(Autocomplete)
+            InputProps={
+              Object {
+                "disabled": true,
+                "error": false,
+                "helperText": "",
+                "label": "Name",
+                "onBlur": [Function],
+                "placeholder": "Enter jurisdiction name",
+                "required": true,
+              }
+            }
+            getSuggestionValue={[Function]}
+            handleClearSuggestions={[Function]}
+            handleGetSuggestions={[Function]}
+            handleSuggestionSelected={[Function]}
+            inputProps={
+              Object {
+                "id": "jurisdiction-name",
+                "onChange": [Function],
+                "value": "",
+              }
+            }
+            name="name"
+            renderSuggestion={[Function]}
+            suggestions={Array []}
           />
-        </Column>
+        </Row>
+        <Container
+          column={false}
+          flex={false}
+          spacing={0}
+          style={
+            Object {
+              "marginTop": 30,
+            }
+          }
+        >
+          <Column
+            component={
+              <withStyles(GridWrapper)
+                item={true}
+              />
+            }
+            displayFlex={false}
+            flex={true}
+          >
+            <DatePicker
+              autoOk={true}
+              dateFormat="MM/DD/YYYY"
+              error=""
+              label="Segment Start Date"
+              maxDate="12/31/2050"
+              minDate="01/01/1850"
+              name="startDate"
+              onChange={[Function]}
+              onInputChange={[Function]}
+              required={true}
+            />
+          </Column>
+          <Column
+            component={
+              <withStyles(GridWrapper)
+                item={true}
+              />
+            }
+            displayFlex={false}
+            flex={false}
+          >
+            <DatePicker
+              autoOk={true}
+              dateFormat="MM/DD/YYYY"
+              error=""
+              label="Segment End Date"
+              maxDate="12/31/2050"
+              minDate="01/01/1850"
+              name="endDate"
+              onChange={[Function]}
+              onInputChange={[Function]}
+              required={true}
+            />
+          </Column>
+        </Container>
       </Container>
-    </Container>
+    </form>
   </ModalContent>
-  <ModalActions
+  <button
+    onClick={[Function]}
+    style={
+      Object {
+        "display": "none",
+      }
+    }
+    type="submit"
+  />
+  <withStyles(ModalActions)
     actions={
       Array [
         Object {
           "onClick": [Function],
+          "otherProps": Object {
+            "aria-label": "Close form",
+          },
           "type": "button",
           "value": "Cancel",
         },
         Object {
           "disabled": false,
-          "type": "submit",
-          "value": "Add",
+          "onClick": [Function],
+          "otherProps": Object {
+            "aria-label": "Save form",
+          },
+          "value": <UNDEFINED>
+            Save
+          </UNDEFINED>,
         },
       ]
     }
-    edit={true}
-    raised={false}
   />
-</FormModal>
+</withStyles(Modal)>
 `;

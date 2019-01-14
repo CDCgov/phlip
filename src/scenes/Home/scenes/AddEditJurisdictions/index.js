@@ -1,184 +1,274 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { default as formActions } from 'redux-form/lib/actions'
 import { withRouter } from 'react-router'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
-import SearchBar from 'components/SearchBar'
 import Button from 'components/Button'
 import Container, { Column } from 'components/Layout'
-import Card from 'components/Card'
 import JurisdictionList from './components/JurisdictionList'
 import * as actions from './actions'
-import JurisdictionForm from './components/JurisdictionForm'
-import moment from 'moment'
-import api from 'services/api'
-import { normalize } from 'utils'
+import Divider from 'material-ui/Divider'
+import Typography from 'material-ui/Typography'
+import TextLink from 'components/TextLink'
+import ApiErrorView from 'components/ApiErrorView'
+import { withTheme } from 'material-ui/styles'
+import PageLoader from 'components/PageLoader'
+import Alert from 'components/Alert'
+import ApiErrorAlert from 'components/ApiErrorAlert'
+import withTracking from 'components/withTracking'
 
+/**
+ * Main / entry component for all things jurisdiction. It is a modal that shows a list of all jurisdictions for the
+ * project of which this was invoked. This component is mounted when the user clicks the 'Edit' under the 'Jurisdictions'
+ * table header on the project list page.
+ */
 export class AddEditJurisdictions extends Component {
-  constructor (props, context) {
+  static propTypes = {
+    /**
+     * Project for which this component was rendered
+     */
+    project: PropTypes.object,
+    /**
+     * Jurisdictions visible on the screen (changes when the user uses the search bar)
+     */
+    visibleJurisdictions: PropTypes.array,
+    /**
+     * Search value, if any, in the search bar text field
+     */
+    searchValue: PropTypes.string,
+    /**
+     * react-router history object
+     */
+    history: PropTypes.object,
+    /**
+     * Redux actions
+     */
+    actions: PropTypes.object,
+    /**
+     * material-ui styles theme
+     */
+    theme: PropTypes.object,
+    /**
+     * Whether or not to show the spinning loader when loading the list of jurisdictions
+     */
+    showJurisdictionLoader: PropTypes.bool,
+    /**
+     * Whether or not the app is in the process of loading the jurisdictions list
+     */
+    isLoadingJurisdictions: PropTypes.bool,
+    /**
+     * Error content that happened when trying to delete a jurisdiction
+     */
+    deleteError: PropTypes.string,
+    /**
+     * Whether or not there's currently an error that needs to be shown
+     */
+    error: PropTypes.bool,
+    /**
+     * Content of error that needs to be shown
+     */
+    errorContent: PropTypes.string
+  }
+
+  state = {
+    confirmDeleteAlertOpen: false,
+    jurisdictionToDelete: {},
+    deleteErrorAlertOpen: false
+  }
+
+  constructor(props, context) {
     super(props, context)
-    this.state = {
-      formOpen: false,
-      edit: false,
-      formJurisdiction: {}
-    }
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this.props.actions.getProjectJurisdictions(this.props.project.id)
+    this.showJurisdictionLoader()
   }
 
+  componentWillUnmount() {
+    this.props.actions.clearJurisdictions()
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.deleteError === null && nextProps.deleteError !== null) {
+      this.setState({
+        deleteErrorAlertOpen: true
+      })
+    }
+  }
+
+  /**
+   * Closes main modal, and pushes '/home' onto browser history
+   * @public
+   */
   onCloseModal = () => {
-    this.props.actions.clearJurisdictions()
-    this.props.history.goBack()
+    this.props.history.push('/home')
   }
 
-  getButton = () => <Button onClick={() => this.onOpenForm(false)} value="+ Add Jurisdiction" color="accent" />
-
-  onOpenForm = (edit, jurisdiction = {}) => {
-    this.setState({
-      formOpen: true,
-      edit: edit,
-      formJurisdiction: jurisdiction
-    })
-  }
-
-  onSubmitForm = values => {
-    const jurisdiction = {
-      ...values,
-      startDate: moment(values.startDate).toISOString(),
-      endDate: moment(values.endDate).toISOString(),
-      ...this.props.jurisdiction
-    }
-
-    if (this.state.edit) {
-      this.props.actions.updateJurisdiction(jurisdiction, this.props.project.id)
-    } else {
-      this.props.actions.addJurisdiction(jurisdiction, this.props.project.id)
-    }
-
-    this.props.actions.updateEditedFields(this.props.project.id)
-
-    this.setState({
-      formOpen: false,
-      edit: false,
-      formJurisdiction: {}
-    })
-
-    this.props.actions.clearJurisdictions()
-  }
-
-  throwErrors = (values, out) => {
-    if (out.length === 0) {
-      throw { name: 'You must choose a pre-defined jurisdiction name.' }
-    } else if (this.props.jurisdictions.includes(values.name)) {
-      throw { name: 'This jurisdiction is already included in this project.' }
-    } else if (out.length > 1) {
-      throw { name: 'There are multiple jurisdictions that match this string. Please choose one from the list.' }
-    } else {
-      this.props.actions.onJurisdictionSelected(out[0])
-      this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
-    }
-  }
-
-  validateJurisdiction = values => {
-    const updatedValues = { ...values, name: values.name.trim() }
-    const prom = new Promise(resolve => resolve(api.searchJurisdictionList(updatedValues.name)))
-    return prom.then(out => {
-      if (!this.state.edit) {
-        if (!this.props.jurisdiction) {
-          this.throwErrors(updatedValues, out)
-        } else if (this.props.jurisdiction && this.props.jurisdiction.name !== updatedValues.name) {
-          this.throwErrors(updatedValues, out)
-        } else {
-          this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
-        }
+  /**
+   * Sets a timeout and if the app is still loading the jurisdictions after 1 second, then it dispatches a redux action
+   * to show the loading spinner
+   * @public
+   */
+  showJurisdictionLoader = () => {
+    setTimeout(() => {
+      if (this.props.isLoadingJurisdictions) {
+        this.props.actions.showJurisdictionLoader()
       }
-    })
+    }, 1000)
   }
 
-  onJurisdictionsFetchRequest = ({ value }) => {
-    this.props.actions.searchJurisdictionList(value)
-  }
-
-  onCloseForm = () => {
+  /**
+   * Opens an alert to ask the user to confirm deleting a jurisdiction
+   *
+   * @public
+   * @param {String} id
+   * @param {String} name
+   */
+  confirmDelete = (id, name) => {
     this.setState({
-      formJurisdiction: {},
-      formOpen: false,
-      edit: false
+      confirmDeleteAlertOpen: true,
+      jurisdictionToDelete: { id, name }
     })
-    this.props.actions.clearJurisdictions()
   }
 
-  onJurisdictionSelected = (event, { suggestionValue }) => {
-    this.props.formActions.stopAsyncValidation('jurisdictionForm', { clear: true })
-    this.props.actions.onJurisdictionSelected(suggestionValue)
+  /**
+   * User confirms delete, dispatches a redux action to delete the jurisdiction, closes the alert modal
+   * @public
+   */
+  continueDelete = () => {
+    this.props.actions.deleteJurisdictionRequest(this.state.jurisdictionToDelete.id, this.props.project.id)
+    this.cancelDelete()
   }
 
-  render () {
+  /**
+   * User cancels delete, closes the alert modal
+   * @public
+   */
+  cancelDelete = () => {
+    this.setState({
+      confirmDeleteAlertOpen: false,
+      jurisdictionToDelete: {}
+    })
+  }
+
+  /**
+   * Closes the error alert shown when an error occurs during delete, dispatches an action to clear error content
+   * @public
+   */
+  dismissDeleteErrorAlert = () => {
+    this.setState({
+      deleteErrorAlertOpen: false
+    })
+
+    this.props.actions.dismissDeleteErrorAlert()
+  }
+
+  /**
+   * Gets the buttosn to show in the modal header
+   * @public
+   */
+  getButton = () => {
+    return (
+      <Fragment>
+        <div style={{ marginRight: 10 }}>
+          <TextLink to={{ pathname: `/project/${this.props.project.id}/jurisdictions/add`, state: { preset: true } }}>
+            <Button value="Load Preset" color="accent" aria-label="Load preset" />
+          </TextLink>
+        </div>
+        <div>
+          <TextLink to={{ pathname: `/project/${this.props.project.id}/jurisdictions/add`, state: { preset: false } }}>
+            <Button value="+ Add Jurisdiction" color="accent" aria-label="Add jurisidiction to project" />
+          </TextLink>
+        </div>
+      </Fragment>
+    )
+  }
+
+  render() {
+    const alertActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.cancelDelete
+      },
+      {
+        value: 'Continue',
+        type: 'button',
+        onClick: this.continueDelete
+      }
+    ]
+
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="md" hideOverflow>
         <ModalTitle
-          title="Jurisdictions"
-          buttons={this.getButton()}
-          editButton={false}
-          closeButton={false}
-          onCloseForm={this.onCloseModal}
+          title={
+            <Typography type="title">
+              <span style={{ paddingRight: 10 }}>Jurisdictions</span>
+              <span style={{ color: this.props.theme.palette.secondary.main }}>{this.props.project.name}</span>
+            </Typography>
+          }
+          buttons={this.props.error === true ? [] : this.getButton()}
           search
           SearchBarProps={{
             searchValue: this.props.searchValue,
             handleSearchValueChange: (event) => this.props.actions.updateSearchValue(event.target.value),
             placeholder: 'Search',
             style: { paddingRight: 10 }
-          }}
-        />
+          }} />
+        <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
+          <Alert actions={alertActions} open={this.state.confirmDeleteAlertOpen}>
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+              Are you sure you want to delete the jurisdiction, {this.state.jurisdictionToDelete.name}, from the
+              project? All coded questions related to this jurisdiction will be deleted.
+            </Typography>
+          </Alert>
+          <ApiErrorAlert
+            open={this.state.deleteErrorAlertOpen === true}
+            content={this.props.deleteError}
+            onCloseAlert={this.dismissDeleteErrorAlert} />
           <Container flex style={{ marginTop: 20 }}>
-            <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card />}>
-              <JurisdictionList jurisdictions={this.props.visibleJurisdictions} onOpenForm={this.onOpenForm} />
+            <Column flex displayFlex style={{ overflowX: 'auto' }}>
+              {this.props.error === true
+                ? <ApiErrorView error={this.props.errorContent} />
+                : this.props.showJurisdictionLoader
+                  ? <PageLoader />
+                  : <JurisdictionList
+                    project={this.props.project}
+                    jurisdictions={this.props.visibleJurisdictions}
+                    projectId={this.props.project.id}
+                    onDelete={this.confirmDelete} />}
             </Column>
           </Container>
         </ModalContent>
-        <JurisdictionForm
-          open={this.state.formOpen} edit={this.state.edit} jurisdiction={this.state.formJurisdiction}
-          onHandleSubmit={this.onSubmitForm} onCloseForm={this.onCloseForm}
-          onSearchList={this.onJurisdictionsFetchRequest} suggestions={this.props.suggestions}
-          suggestionValue={this.props.suggestionValue}
-          onClearSuggestions={this.props.actions.onClearSuggestions}
-          onSuggestionValueChanged={event => this.props.actions.onSuggestionValueChanged(event.target.value)}
-          onJurisdictionSelected={this.onJurisdictionSelected}
-          asyncValidate={this.validateJurisdiction}
-        />
+        <ModalActions
+          actions={[
+            {
+              value: 'Close',
+              onClick: this.onCloseModal,
+              type: 'button',
+              otherProps: { 'aria-label': 'Close modal' }
+            }
+          ]} />
       </Modal>
     )
   }
 }
 
-AddEditJurisdictions.propTypes = {
-  project: PropTypes.object,
-  visibleJurisdictions: PropTypes.array,
-  searchValue: PropTypes.string,
-  suggestions: PropTypes.array,
-  suggestionValue: PropTypes.string,
-  jurisdiction: PropTypes.object
-}
-
 const mapStateToProps = (state, ownProps) => ({
   project: state.scenes.home.main.projects.byId[ownProps.match.params.id],
   visibleJurisdictions: state.scenes.home.addEditJurisdictions.visibleJurisdictions || [],
-  searchValue: state.scenes.home.addEditJurisdictions.searchValue || '',
-  suggestions: state.scenes.home.addEditJurisdictions.suggestions || [],
-  suggestionValue: state.scenes.home.addEditJurisdictions.suggestionValue || '',
-  jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || {},
-  jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') ||
-  []
+  error: state.scenes.home.addEditJurisdictions.error || false,
+  errorContent: state.scenes.home.addEditJurisdictions.errorContent || '',
+  isLoadingJurisdictions: state.scenes.home.addEditJurisdictions.isLoadingJurisdictions || false,
+  showJurisdictionLoader: state.scenes.home.addEditJurisdictions.showJurisdictionLoader || false,
+  deleteError: state.scenes.home.addEditJurisdictions.deleteError || null
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(actions, dispatch),
-  formActions: bindActionCreators(formActions, dispatch)
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(actions, dispatch)
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEditJurisdictions))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withTheme()(withTracking(AddEditJurisdictions, 'Jurisdictions'))))

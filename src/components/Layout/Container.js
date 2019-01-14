@@ -2,7 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Grid from 'material-ui/Grid'
 
-const Container = ({ column, flex, spacing, children, style, ...otherProps }) => {
+/**
+ * CSS Flexbox container wrapper for material-ui's Grid container component, it always has display: true
+ */
+export const Container = ({ column, flex, spacing, children, style, ...otherProps }) => {
   const styles = {
     flex: flex ? '1' : '0 0 auto',
     ...style
@@ -16,10 +19,25 @@ const Container = ({ column, flex, spacing, children, style, ...otherProps }) =>
 }
 
 Container.propTypes = {
+  /**
+   * Whether or not to set flex-direction: column for the container
+   */
   column: PropTypes.bool,
+  /**
+   * Whether or not to set flex: 1 to container
+   */
   flex: PropTypes.bool,
+  /**
+   * Spacing in padding (from material-ui Grid component)
+   */
   spacing: PropTypes.number,
+  /**
+   * Contents of container
+   */
   children: PropTypes.node,
+  /**
+   * Override / set style of container
+   */
   style: PropTypes.object
 }
 

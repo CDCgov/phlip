@@ -1,0 +1,81 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+import { withStyles } from 'material-ui/styles'
+import AppBar from 'material-ui/AppBar'
+import { default as MuiTabs, Tab } from 'material-ui/Tabs'
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    marginTop: theme.spacing.unit * 3,
+    backgroundColor: theme.palette.background.paper,
+    paddingLeft: 20,
+    paddingRight: 20,
+    overflow: 'auto',
+    display: 'flex',
+    flexDirection: 'column'
+  }
+})
+
+/**
+ * Renders a collection of selectable material design tabs around content
+ */
+export const Tabs = ({ tabs, selectedTab, onChangeTab, children, classes, theme }) => {
+  return (
+    <div className={classes.root}>
+      <AppBar
+        position="static"
+        style={{
+          backgroundColor: theme.palette.secondary.tabs,
+          color: theme.palette.secondary.main,
+          zIndex: 'unset'
+        }}
+        elevation={0}>
+        <MuiTabs
+          value={selectedTab}
+          onChange={onChangeTab}
+          indicatorColor="accent"
+          textColor="accent"
+          scrollable
+          scrollButtons="on">
+          {tabs.map(tab => (
+            <Tab key={tab.id} label={tab.text} />
+          ))}
+        </MuiTabs>
+      </AppBar>
+      {children}
+    </div>
+  )
+}
+
+Tabs.propTypes = {
+  /**
+   * The tabs to be displayed
+   */
+  tabs: PropTypes.arrayOf(PropTypes.shape({
+    text: PropTypes.string,
+    id: PropTypes.any
+  })),
+  /**
+   * Currently selected tab which is the index of the tab in the tabs array
+   */
+  selectedTab: PropTypes.number,
+  /**
+   * Function to call when the user changes tabs
+   */
+  onChangeTab: PropTypes.func,
+  /**
+   * Style classes object from material-ui
+   */
+  classes: PropTypes.object,
+  /**
+   * Theme from material-ui
+   */
+  theme: PropTypes.object,
+  /**
+   * Content that that tabs should wrap
+   */
+  children: PropTypes.any
+}
+
+export default withStyles(styles, { withTheme: true })(Tabs)

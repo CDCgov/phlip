@@ -28,7 +28,10 @@ const props = {
   handleRowsChange: jest.fn(),
   handleRequestSort: jest.fn(),
   handleExport: jest.fn(),
-  handleSortBookmarked: jest.fn()
+  handleSortBookmarked: jest.fn(),
+  theme: {
+    palette: {}
+  }
 }
 
 describe('Home scene - ProjectList component', () => {

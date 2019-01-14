@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CircularLoader component should render correctly 1`] = `
+<withStyles(CircularProgress)
+  color="primary"
+  type="indeterminate"
+/>
+`;

@@ -7,11 +7,13 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
 const paths = require('./paths')
+const Dotenv = require('dotenv-webpack')
 
 module.exports = function makeConfig(env) {
   return {
     devtool: 'source-map',
     entry: {
+      arrayIncludes: `${paths.config}/array-includes.polyfill.js`,
       app: paths.appIndexJs
     },
 
@@ -34,6 +36,19 @@ module.exports = function makeConfig(env) {
       rules: [
         {
           oneOf: [
+            {
+              test: require.resolve('tinymce/tinymce'),
+              loaders: [
+                'imports-loader?this=>window',
+                'exports-loader?window.tinymce'
+              ]
+            },
+            {
+              test: /tinymce\/(themes|plugins)\//,
+              loaders: [
+                'imports-loader?this=>window'
+              ]
+            },
             {
               test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
               loader: 'url-loader',
@@ -90,9 +105,9 @@ module.exports = function makeConfig(env) {
             {
               test: /\.scss$/,
               use: [{
-                loader: "style-loader"
+                loader: 'style-loader'
               }, {
-                loader: "css-loader",
+                loader: 'css-loader',
                 options: {
                   modules: true,
                   '-autoprefixer': true,
@@ -111,7 +126,7 @@ module.exports = function makeConfig(env) {
                   ],
                 },
               }, {
-                loader: "sass-loader"
+                loader: 'sass-loader'
               }]
             },
             {
@@ -142,6 +157,10 @@ module.exports = function makeConfig(env) {
           minifyCSS: true,
           minifyURLs: true,
         },
+        chunksSortMode: (a, b) => {
+          const order = ['arrayIncludes', 'app']
+          return order.indexOf(a.names[0]) - order.indexOf(b.names[0])
+        }
       }),
 
       new webpack.DefinePlugin(env),
@@ -167,11 +186,13 @@ module.exports = function makeConfig(env) {
         jquery: 'jquery',
       }),
 
-      new ExtractTextPlugin({filename: 'css/[name].css', allChunks: true}),
+      new ExtractTextPlugin({ filename: 'css/[name].css', allChunks: true }),
 
       new CopyWebpackPlugin([{
         from: paths.appPublic
-      }])
+      }]),
+
+      new Dotenv()
     ]
   }
 }

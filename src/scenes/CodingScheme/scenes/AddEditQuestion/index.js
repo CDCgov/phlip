@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -9,50 +9,155 @@ import TextInput from 'components/TextInput'
 import DropDown from 'components/Dropdown'
 import { withRouter } from 'react-router'
 import * as actions from './actions'
-import Modal, { ModalTitle, ModalActions, ModalContent } from 'components/Modal'
+import { ModalTitle, ModalActions, ModalContent } from 'components/Modal'
 import { Field, FieldArray } from 'redux-form'
 import AnswerList from './components/AnswerList'
 import CheckboxLabel from 'components/CheckboxLabel'
 import styles from './add-edit-question.scss'
 import { trimWhitespace } from 'utils/formHelpers'
 import * as questionTypes from './constants'
+import withFormAlert from 'components/withFormAlert'
+import CircularLoader from 'components/CircularLoader'
 
-
+/**
+ * Main / entry component for all things related to adding and editing a question for the coding scheme. This component
+ * is a modal and is rendered and mounted when the user clicks the 'Add New Question' button or the pencil icon on a
+ * question node in the scheme. The Edit or Add view is determined by the location and location.state props variables.
+ * If a question is passed along, then it's edit, otherwise it's Add. This component is wrapped by the withFormAlert,
+ * and react-redux's connect HOCs.
+ */
 export class AddEditQuestion extends Component {
+  static propTypes = {
+    /**
+     * ID of project for which this view was opened
+     */
+    projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    /**
+     * Redux actions
+     */
+    actions: PropTypes.object,
+    /**
+     * Redux-form actions
+     */
+    formActions: PropTypes.object,
+    /**
+     * Redux-form
+     */
+    form: PropTypes.object,
+    /**
+     * Name of form
+     */
+    formName: PropTypes.string,
+    /**
+     * react-router location match object
+     */
+    match: PropTypes.object,
+    /**
+     * Browser history object
+     */
+    history: PropTypes.object,
+    /**
+     * react-router location object
+     */
+    location: PropTypes.object,
+    /**
+     * Function passed in from withFormAlert HOC
+     */
+    onCloseModal: PropTypes.func,
+    /**
+     * Form error if any that occurred when manipulating the form
+     */
+    formError: PropTypes.string,
+    /**
+     * Whether or not the protocol is currently checked out
+     */
+    hasLock: PropTypes.bool,
+    /**
+     * Whether or not the protocol is checked out by the current user logged in
+     */
+    lockedByCurrentUser: PropTypes.bool
+  }
+
   constructor(props, context) {
     super(props, context)
+
     this.questionDefined = this.props.match.url === `/project/${this.props.projectId}/coding-scheme/add`
       ? null
       : this.props.location.state.questionDefined
 
+    this.parentDefined = this.props.location.state
+      ? this.props.location.state.parentDefined
+        ? this.props.location.state.parentDefined
+        : null
+      : null
+
     this.state = {
-      edit: this.questionDefined
+      edit: this.questionDefined,
+      submitting: false,
+      canModify: this.props.location.state
+        ? this.props.location.state.canModify
+        : this.props.lockedByCurrentUser
     }
 
     this.defaultForm = {
       questionType: questionTypes.MULTIPLE_CHOICE,
       possibleAnswers: [{}, {}, {}],
-      includeComment: false
+      includeComment: false,
+      isCategoryQuestion: false
     }
+
     this.binaryForm = {
       questionType: questionTypes.BINARY,
       possibleAnswers: [{ text: 'Yes' }, { text: 'No' }],
-      includeComment: false
+      includeComment: false,
+      isCategoryQuestion: false
     }
     this.textFieldForm = {
       questionType: questionTypes.TEXT_FIELD,
-      includeComment: false
+      includeComment: false,
+      isCategoryQuestion: false
     }
-
-    this.onCancel = this.onCancel.bind(this)
   }
 
-  onCancel = () => {
-    this.props.formActions.reset('questionForm')
-    this.props.history.goBack()
+  componentWillReceiveProps(nextProps) {
+    if (this.state.submitting === true) {
+      if (nextProps.formError !== null) {
+        this.props.onSubmitError(nextProps.formError)
+      } else {
+        this.props.history.goBack()
+      }
+      this.setState({
+        submitting: false
+      })
+    }
   }
 
+
+  getButtonText = text => {
+    if (this.state.submitting) {
+      return (
+        <Fragment>
+          {text}
+          <CircularLoader size={18} style={{ paddingLeft: 10 }} />
+        </Fragment>
+      )
+    } else {
+      return <Fragment>{text}</Fragment>
+    }
+  }
+  
+  /**
+   * Function called when the form is submitted, dispatches a redux action for updating or adding depending on state and
+   * whether or not the request if for a child question. Trims whitespace from all of the question form fields.
+   *
+   * @public
+   * @param {Object} values
+   */
   handleSubmit = values => {
+    this.setState({
+      submitting: true
+    })
+
     let updatedValues = { ...values }
     for (let field of ['text', 'hint']) {
       if (updatedValues[field]) updatedValues[field] = trimWhitespace(values[field])
@@ -61,26 +166,71 @@ export class AddEditQuestion extends Component {
 
     if (values.possibleAnswers) {
       values.possibleAnswers.forEach((answer, i) => {
-        if (updatedValues.possibleAnswers[i].text) updatedValues.possibleAnswers[i] = { ...answer, text: answer.text.trim() }
+        if (updatedValues.possibleAnswers[i].text) updatedValues.possibleAnswers[i] = {
+          ...answer,
+          text: answer.text.trim()
+        }
         else updatedValues.possibleAnswers[i] = answer
       })
     }
 
     this.questionDefined
-      ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.questionDefined.id)
-      : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId)
+      ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.questionDefined.id, this.props.location.state.path)
+      : this.parentDefined
+      ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.parentDefined, this.props.location.state.path)
+      : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)
 
+  }
+
+  /**
+   * In edit mode, the user clicks the cancel button. Resets to form values to whatever they were before editing.
+   *
+   * @public
+   */
+  onCancel = () => {
+    this.props.formActions.reset('questionForm')
     this.props.history.goBack()
   }
 
+  /**
+   * Handles updating the form fields when the user changes the question type in the form. Dispatches a redux-form action
+   * to change form fields and values. Values are kept for questionText and questionHint. If the type of question is
+   * changed another other than TextField or Binary, then the possibleAnswers text is kept. If the question type is
+   * changed to Binary then the possibleAnswers are changed to True and False. If the question type is changed to TextField,
+   * the possibleAnswers are removed.
+   *
+   * @public
+   * @param {Object} event
+   * @param {Number} value
+   */
   handleTypeChange = (event, value) => {
-    value === questionTypes.BINARY ? this.props.formActions.initialize('questionForm', this.binaryForm, true)
-      : value === questionTypes.TEXT_FIELD ? this.props.formActions.initialize('questionForm', this.textFieldForm, true)
-        : this.props.formActions.initialize('questionForm', this.defaultForm, true)
+    if (value === questionTypes.BINARY) {
+      const currentValues = this.props.form.values
+      this.props.formActions.initialize('questionForm', this.binaryForm, {
+        options: {
+          keepDirty: false,
+          keepValues: false
+        }
+      })
+      Object.keys(currentValues).map(key => {
+        if (key !== 'possibleAnswers') {
+          this.props.formActions.change('questionForm', key, currentValues[key])
+        }
+      })
+    } else if (value === questionTypes.TEXT_FIELD) {
+      this.props.formActions.initialize('questionForm', this.textFieldForm, true)
+    } else {
+      this.props.formActions.initialize('questionForm', this.defaultForm, true)
+    }
   }
 
-
-
+  /**
+   * Validates that all required fields are filled out. This included every available possibleAnswer text field on the
+   * form.
+   *
+   * @public
+   * @param {Object} values
+   */
   validate = values => {
     const errors = {}
     if (!values.text) {
@@ -106,30 +256,39 @@ export class AddEditQuestion extends Component {
   render() {
     const options = [
       { value: questionTypes.BINARY, label: 'Binary' },
-      // { value: questionTypes.CATEGORY, label: 'Category' },  //TODO: Enable when we implement category questions
-      { value: questionTypes.CHECKBOXES, label: 'Checkboxes' },
-      { value: questionTypes.MULTIPLE_CHOICE, label: 'Multiple choice' },
-      { value: questionTypes.TEXT_FIELD, label: 'Text field' }
+      { value: questionTypes.CHECKBOXES, label: 'Checkbox' },
+      { value: questionTypes.MULTIPLE_CHOICE, label: 'Radio Button' },
+      { value: questionTypes.TEXT_FIELD, label: 'Text Field' },
+      { value: questionTypes.CATEGORY, label: 'Tabbed' }
     ]
+
+    const categoryChildOptions = options.filter(option => option.value !== questionTypes.CATEGORY)
+
     const actions = [
-      { value: 'Cancel', onClick: this.onCancel, type: 'button' },
+      {
+        value: 'Cancel',
+        onClick: this.onCancel,
+        type: 'button',
+        otherProps: { 'aria-label': 'Cancel and close form' }
+      },
       {
         value: this.questionDefined
-          ? 'Save'
-          : 'Add',
+          ? this.getButtonText('Save')
+          : this.getButtonText('Add'),
         type: 'submit',
-        disabled: !!(this.props.form.asyncErrors || this.props.form.syncErrors)
+        disabled: !this.state.canModify || this.state.submitting === true,
+        otherProps: { 'aria-label': 'Save form' }
       }
     ]
+
     return (
       <FormModal
         form="questionForm"
         handleSubmit={this.handleSubmit}
         initialValues={this.questionDefined || this.defaultForm}
-        maxWidth='md'
+        maxWidth="md"
         validate={this.validate}
-        onClose={this.onCancel}>
-
+        onClose={this.props.onCloseModal}>
         <Container column style={{ minWidth: 890, padding: '20px 20px 0 20px' }}>
           <Container column className={styles.dashed}>
             <ModalTitle title={this.state.edit ? 'Edit Question' : 'Add New Question'} />
@@ -139,8 +298,11 @@ export class AddEditQuestion extends Component {
                   <Field
                     name="text"
                     component={TextInput}
-                    label='Question'
-                    multiline={true}
+                    label="Question"
+                    shrinkLabel
+                    multiline
+                    required
+                    disabled={!this.state.canModify}
                     placeholder="Enter question"
                   />
                 </Column>
@@ -148,11 +310,13 @@ export class AddEditQuestion extends Component {
                   <Field
                     name="questionType"
                     component={DropDown}
-                    label="Type"
-                    options={options}
+                    label="Answer Type"
+                    required
+                    options={this.parentDefined && (this.parentDefined.questionType === questionTypes.CATEGORY)
+                      ? categoryChildOptions : options}
                     defaultValue={questionTypes.MULTIPLE_CHOICE}
                     onChange={this.handleTypeChange}
-                    disabled={this.state.edit ? true : false}
+                    disabled={!!this.state.edit || !this.state.canModify}
                   />
                 </Column>
               </Container>
@@ -161,27 +325,43 @@ export class AddEditQuestion extends Component {
                   <Field
                     name="hint"
                     component={TextInput}
-                    label="Question Hint"
-                    placeholder="Enter hint"
+                    shrinkLabel
+                    label="Coding directions"
+                    disabled={!this.state.canModify}
+                    placeholder="Enter any special directions or considerations to display when coding this question"
                   />
                 </Row>
               </Container>
-              <FieldArray name="possibleAnswers"
-                answerType={this.props.form.values ? this.props.form.values.questionType : 4}
+              <FieldArray
+                name="possibleAnswers"
+                answerType={this.props.form.values
+                  ? this.props.form.values.questionType
+                  : questionTypes.MULTIPLE_CHOICE}
+                isEdit={!!this.state.edit}
                 component={AnswerList}
+                canModify={this.state.canModify}
               />
               <Container>
-                <Row flex style={{ paddingLeft: '47px' }}>
+                <Row
+                  flex
+                  style={{
+                    paddingLeft: this.props.form.values ? (this.props.form.values.questionType !==
+                      questionTypes.TEXT_FIELD && '47px') : '47px'
+                  }}>
                   <Field
                     name="includeComment"
                     label="Include comment box"
                     component={CheckboxLabel}
+                    disabled={!this.state.canModify}
                   />
                 </Row>
               </Container>
             </ModalContent>
           </Container>
-          <ModalActions edit={this.state.edit} actions={actions} raised={true} style={{ paddingTop: 15, paddingBottom: 15, margin: 0 }}></ModalActions>
+          <ModalActions
+            actions={actions}
+            style={{ paddingTop: 15, paddingBottom: 15, margin: 0 }}
+          ></ModalActions>
         </Container>
       </FormModal>
     )
@@ -190,12 +370,16 @@ export class AddEditQuestion extends Component {
 
 const mapStateToProps = (state, ownProps) => ({
   form: state.form.questionForm || {},
-  projectId: ownProps.match.params.projectId
+  projectId: ownProps.match.params.projectId,
+  formName: 'questionForm',
+  formError: state.scenes.codingScheme.formError || null,
+  lockedByCurrentUser: state.scenes.codingScheme.lockedByCurrentUser || false,
+  hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false
 })
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(actions, dispatch),
   formActions: bindActionCreators(formActions, dispatch)
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AddEditQuestion))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withFormAlert(AddEditQuestion)))

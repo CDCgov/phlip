@@ -6,15 +6,18 @@ import { MuiThemeProvider } from 'material-ui/styles'
 import Table, { TableBody } from 'material-ui/Table'
 import theme from 'services/theme'
 
-let date = new Date('10/11/2017')
-
 const props = {
-  project: { id: 1, name: 'Project 1', dateLastEdited: date, lastEditedBy: 'Kristin' },
+  project: { id: 1, name: 'Project 1', dateLastEdited: '10/10/2012', lastEditedBy: 'Kristin' },
   bookmarked: false,
   role: 'Coordinator',
   actions: {
     toggleBookmark: () => {},
     onExport: () => {}
+  },
+  theme: {
+    palette: {
+      greyText: '#757575'
+    }
   }
 }
 
@@ -40,17 +43,17 @@ describe('Home scene - ProjectList - ProjectRow component', () => {
   describe('bookmark icon', () => {
     test('should be `bookmark` if the project is bookmarked', () => {
       const wrapper = setup({ bookmarked: true }).find('tr').find('td').at(0)
-      expect(wrapper.text()).toEqual('bookmark')
+      expect(wrapper.text()).toContain('bookmark')
     })
 
     test('should be `bookmark_border` if the project is not bookmarked', () => {
       const wrapper = setup().find('tr').find('td').at(0)
-      expect(wrapper.text()).toEqual('bookmark_border')
+      expect(wrapper.text()).toContain('bookmark_border')
     })
 
     test('should be grey if the project is not bookmarked', () => {
       const wrapper = setup().find('tr').find('td').at(0).find('Icon').at(0)
-      expect(wrapper.prop('color')).toEqual('#d4d4d4')
+      expect(wrapper.prop('color')).toEqual('#757575')
     })
 
     test('should be orange if the project is bookmarked', () => {
@@ -62,7 +65,7 @@ describe('Home scene - ProjectList - ProjectRow component', () => {
   test('should call actions.toggleBookmark', () => {
     const spy = jest.spyOn(props.actions, 'toggleBookmark')
     let wrapper = setup()
-    wrapper.find('tr').find('td').at(0).find('IconButton').at(0).simulate('click')
+    wrapper.find('tr').find('td').at(0).find('Tooltip').at(0).find('IconButton').at(0).simulate('click')
     wrapper.update()
     expect(spy).toHaveBeenCalled()
   })
@@ -70,7 +73,7 @@ describe('Home scene - ProjectList - ProjectRow component', () => {
   xtest('should call onExport', () => {
     const spy = jest.spyOn(props.actions, 'onExport')
     let wrapper = setup()
-    wrapper.find('tr').find('td').at(9).find('IconButton').at(0).simulate('click')
+    wrapper.find('tr').find('td').at(9).find('Tooltip').at(0).find('IconButton').at(0).simulate('click')
     wrapper.update()
     expect(spy).toHaveBeenCalled()
   })

@@ -18,7 +18,7 @@ const paper = {
 const classes = theme => ({
   paperNormal: {
     ...paper,
-    margin: theme.spacing.unit * 4,
+    margin: theme.spacing.unit * 4
   },
   hideOverflow: {
     ...paper,
@@ -29,17 +29,39 @@ const classes = theme => ({
   }
 })
 
+/**
+ * A dialog component wrapper for material-ui's Dialog component
+ */
 const Modal = ({ open, onClose, children, classes, hideOverflow, ...otherProps }) => (
-  <Dialog open={open} onClose={onClose} {...otherProps}
-          classes={{ paper: hideOverflow ? classes.hideOverflow : classes.paperNormal }}>
+  <Dialog
+    open={open}
+    onClose={onClose}{...otherProps}
+    classes={{ paper: hideOverflow ? classes.hideOverflow : classes.paperNormal }}>
     {children}
   </Dialog>
 )
 
 Modal.propTypes = {
+  /**
+   * Is the modal open
+   */
   open: PropTypes.bool,
+  /**
+   * Function to call when the modal is closed
+   */
   onClose: PropTypes.func,
-  children: PropTypes.node
+  /**
+   * Contents of modal
+   */
+  children: PropTypes.node,
+  /**
+   * Classes object supplied by material-ui
+   */
+  classes: PropTypes.object,
+  /**
+   * If true, overflowX: is set to 'hidden'
+   */
+  hideOverflow: PropTypes.bool
 }
 
 Modal.defaultProps = {

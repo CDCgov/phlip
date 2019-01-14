@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
-<WithStyles
+<withStyles(Modal)
   hideOverflow={true}
   maxWidth="md"
   onClose={[Function]}
@@ -19,19 +19,76 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       }
     }
     buttons={
-      <WithTheme
-        color="accent"
-        onClick={[Function]}
-        value="+ Add Jurisdiction"
-      />
+      <UNDEFINED>
+        <div
+          style={
+            Object {
+              "marginRight": 10,
+            }
+          }
+        >
+          <withTheme(TextLink)
+            to={
+              Object {
+                "pathname": "/project/undefined/jurisdictions/add",
+                "state": Object {
+                  "preset": true,
+                },
+              }
+            }
+          >
+            <withTheme(Button)
+              aria-label="Load preset"
+              color="accent"
+              value="Load Preset"
+            />
+          </withTheme(TextLink)>
+        </div>
+        <div>
+          <withTheme(TextLink)
+            to={
+              Object {
+                "pathname": "/project/undefined/jurisdictions/add",
+                "state": Object {
+                  "preset": false,
+                },
+              }
+            }
+          >
+            <withTheme(Button)
+              aria-label="Add jurisidiction to project"
+              color="accent"
+              value="+ Add Jurisdiction"
+            />
+          </withTheme(TextLink)>
+        </div>
+      </UNDEFINED>
     }
-    closeButton={false}
-    edit={false}
-    editButton={false}
-    onCloseForm={[Function]}
     search={true}
-    title="Jurisdictions"
+    title={
+      <withStyles(Typography)
+        type="title"
+      >
+        <span
+          style={
+            Object {
+              "paddingRight": 10,
+            }
+          }
+        >
+          Jurisdictions
+        </span>
+        <span
+          style={
+            Object {
+              "color": "#048484",
+            }
+          }
+        />
+      </withStyles(Typography)>
+    }
   />
+  <withStyles(Divider) />
   <ModalContent
     style={
       Object {
@@ -40,6 +97,41 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       }
     }
   >
+    <Alert
+      actions={
+        Array [
+          Object {
+            "onClick": [Function],
+            "type": "button",
+            "value": "Cancel",
+          },
+          Object {
+            "onClick": [Function],
+            "type": "button",
+            "value": "Continue",
+          },
+        ]
+      }
+      open={false}
+      title={null}
+    >
+      <withStyles(Typography)
+        style={
+          Object {
+            "whiteSpace": "pre-wrap",
+          }
+        }
+        variant="body1"
+      >
+        Are you sure you want to delete the jurisdiction, 
+        , from the project? All coded questions related to this jurisdiction will be deleted.
+      </withStyles(Typography)>
+    </Alert>
+    <ApiErrorAlert
+      actions={Array []}
+      onCloseAlert={[Function]}
+      open={false}
+    />
     <Container
       column={false}
       flex={true}
@@ -51,7 +143,11 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       }
     >
       <Column
-        component={<Card />}
+        component={
+          <withStyles(GridWrapper)
+            item={true}
+          />
+        }
         displayFlex={true}
         flex={true}
         style={
@@ -61,21 +157,25 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
         }
       >
         <JurisdictionList
-          onOpenForm={[Function]}
+          onDelete={[Function]}
+          project={Object {}}
         />
       </Column>
     </Container>
   </ModalContent>
-  <Connect(JurisdictionForm)
-    asyncValidate={[Function]}
-    edit={false}
-    jurisdiction={Object {}}
-    onCloseForm={[Function]}
-    onHandleSubmit={[Function]}
-    onJurisdictionSelected={[Function]}
-    onSearchList={[Function]}
-    onSuggestionValueChanged={[Function]}
-    open={false}
+  <withStyles(ModalActions)
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "otherProps": Object {
+            "aria-label": "Close modal",
+          },
+          "type": "button",
+          "value": "Close",
+        },
+      ]
+    }
   />
-</WithStyles>
+</withStyles(Modal)>
 `;

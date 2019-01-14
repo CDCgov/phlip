@@ -9,8 +9,8 @@ export const updateProjectRequest = project => ({ type: types.UPDATE_PROJECT_REQ
 export const updateProjectFail = payload => ({ type: types.UPDATE_PROJECT_FAIL, payload: { errorContent: payload, error: true } })
 
 /* Bookmarking */
-export const toggleBookmark = (project) => ({ type: types.TOGGLE_BOOKMARK, project })
-export const toggleBookmarkSuccess = (payload) => ({ type: types.TOGGLE_BOOKMARK_SUCCESS, payload })
+export const toggleBookmark = project => ({ type: types.TOGGLE_BOOKMARK, project })
+export const toggleBookmarkSuccess = payload => ({ type: types.TOGGLE_BOOKMARK_SUCCESS, payload })
 
 /* Sorting */
 export const sortBookmarked = sortBookmarked => ({ type: types.SORT_BOOKMARKED, payload: { sortBookmarked } })
@@ -23,4 +23,10 @@ export const updateRows = rowsPerPage => ({ type: types.UPDATE_ROWS, payload: { 
 /* Filtering */
 export const updateSearchValue = searchValue => ({ type: types.UPDATE_SEARCH_VALUE, payload: { searchValue } })
 
+/* Updating dateLastEdited and lastEditedBy fields */
 export const updateEditedFields = projectId => ({ type: types.UPDATE_EDITED_FIELDS, projectId })
+
+/* Exporting */
+export const exportDataRequest = (project, exportType) => ({ type: types.EXPORT_DATA_REQUEST, project, exportType })
+export const clearProjectToExport = () => ({ type: types.CLEAR_PROJECT_TO_EXPORT })
+export const dismissApiError = errorName => ({ type: types.DISMISS_API_ERROR, errorName })

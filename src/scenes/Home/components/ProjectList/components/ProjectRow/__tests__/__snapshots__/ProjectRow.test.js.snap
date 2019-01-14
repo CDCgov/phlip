@@ -5,40 +5,48 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
   key="1"
 >
   <TableCell
+    id="1-bookmarked"
     key="1-bookmarked"
     padding="checkbox"
     style={
       Object {
-        "width": 48,
+        "paddingLeft": 24,
+        "width": 24,
       }
     }
   >
     <IconButton
-      color="#d4d4d4"
+      aria-label="Bookmark this project"
+      color="#757575"
+      disabled={false}
       iconSize={24}
+      id="bookmark-project-1"
       onClick={[Function]}
+      tooltipText="Bookmark project"
     >
       bookmark_border
     </IconButton>
   </TableCell>
   <TableCell
+    id="1-name"
     key="1-name"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
-        "fontWeight": "normal",
-        "textAlign": "left",
-        "width": 350,
+        "paddingRight": 24,
+        "width": "15%",
       }
     }
   >
-    <WithTheme
+    <withTheme(TextLink)
+      aria-label="Edit project details"
       to={
         Object {
           "pathname": "/project/edit/1",
           "state": Object {
+            "modal": true,
             "projectDefined": Object {
-              "dateLastEdited": 2017-10-11T00:00:00.000Z,
+              "dateLastEdited": "10/10/2012",
               "id": 1,
               "lastEditedBy": "Kristin",
               "name": "Project 1",
@@ -48,109 +56,169 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     >
       Project 1
-    </WithTheme>
+    </withTheme(TextLink)>
   </TableCell>
   <TableCell
+    id="1-dateLastEdited"
     key="1-dateLastEdited"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
-        "maxWidth": 150,
+        "paddingRight": 24,
         "textAlign": "unset",
-        "width": 150,
+        "width": "unset",
       }
     }
   >
-    2017-10-11
+    10/9/2012, 8:00 PM
   </TableCell>
   <TableCell
+    id="1-lastEditedBy"
     key="1-lastEditedBy"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
-        "fontStyle": "italic",
-        "maxWidth": 150,
-        "textAlign": "unset",
-        "width": 150,
+        "paddingRight": 24,
+        "width": "unset",
       }
     }
   >
     Kristin
   </TableCell>
   <TableCell
+    id="1-protocol"
     key="1-protocol"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
+        "paddingRight": 24,
         "textAlign": "center",
+        "width": "unset",
       }
     }
   >
-    <WithTheme
-      to="/"
+    <withTheme(TextLink)
+      aria-label="Add and edit project protocol"
+      to="/project/1/protocol"
     >
-      Add/Edit
-    </WithTheme>
+      Edit
+    </withTheme(TextLink)>
   </TableCell>
   <TableCell
+    id="1-jurisdictions"
     key="1-jurisdictions"
-    padding="checkbox"
+    padding="default"
     style={
       Object {
+        "paddingRight": 24,
         "textAlign": "center",
       }
     }
   >
-    <WithTheme
-      id={1}
-      to="/project/1/jurisdictions"
+    <withTheme(TextLink)
+      aria-label="Add and edit project jurisdictions"
+      id="1-edit-jurisdictions"
+      to={
+        Object {
+          "pathname": "/project/1/jurisdictions",
+          "state": Object {
+            "modal": true,
+          },
+        }
+      }
     >
-      Add/Edit
-    </WithTheme>
+      Edit
+    </withTheme(TextLink)>
   </TableCell>
   <TableCell
-    key="1-codingScheme"
-    padding="checkbox"
+    id="1-coding-scheme"
+    key="1-coding-scheme"
+    padding="default"
     style={
       Object {
+        "paddingRight": 24,
         "textAlign": "center",
       }
     }
   >
-    <WithTheme
+    <withTheme(TextLink)
+      aria-label="Add and edit project coding scheme"
       to="/project/1/coding-scheme"
     >
       Edit
-    </WithTheme>
+    </withTheme(TextLink)>
   </TableCell>
   <TableCell
+    id="1-code"
     key="1-code"
     padding="checkbox"
+    style={
+      Object {
+        "paddingRight": 6,
+        "textAlign": "unset",
+        "width": 56,
+      }
+    }
   >
-    <WithTheme
+    <withTheme(Button)
+      aria-label="Code project"
+      component={[Function]}
       listButton={true}
       raised={false}
+      to={
+        Object {
+          "pathname": "/project/1/code",
+        }
+      }
       value="Code"
     />
   </TableCell>
   <TableCell
-    key="1-validation"
+    id="1-validate"
+    key="1-validate"
     padding="checkbox"
+    style={
+      Object {
+        "paddingLeft": 6,
+        "width": 56,
+      }
+    }
   >
-    <WithTheme
+    <withTheme(Button)
+      aria-label="Validate project"
+      component={[Function]}
       listButton={true}
       raised={false}
+      to={
+        Object {
+          "pathname": "/project/1/validate",
+        }
+      }
       value="Validate"
     />
   </TableCell>
   <TableCell
+    id="1-export"
     key="1-export"
-    padding="checkbox"
+    padding="default"
+    style={
+      Object {
+        "paddingLeft": 0,
+        "paddingRight": 24,
+        "textAlign": "center",
+        "width": 40,
+      }
+    }
   >
     <IconButton
-      color="#d4d4d4"
+      aria-label="Export validated questions"
+      color="#757575"
+      disabled={false}
       iconSize={24}
+      id="export-validated-1"
       onClick={[Function]}
+      placement="top-end"
+      tooltipText="Export validated questions"
     >
       file_download
     </IconButton>

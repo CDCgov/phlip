@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApiErrorView component should render correctly 1`] = `
+<div
+  style={
+    Object {
+      "position": "relative",
+      "top": "20%",
+    }
+  }
+>
+  <Row
+    component={
+      <withStyles(GridWrapper)
+        item={true}
+      />
+    }
+    displayFlex={true}
+    flex={false}
+    reverse={false}
+    style={
+      Object {
+        "justifyContent": "center",
+      }
+    }
+  >
+    <withTheme(Icon)
+      color="#757575"
+      size={175}
+    >
+      <Component
+        style={
+          Object {
+            "height": 175,
+            "width": 175,
+          }
+        }
+      />
+    </withTheme(Icon)>
+  </Row>
+  <Row
+    component={
+      <withStyles(GridWrapper)
+        item={true}
+      />
+    }
+    displayFlex={true}
+    flex={false}
+    reverse={false}
+    style={
+      Object {
+        "justifyContent": "center",
+      }
+    }
+  >
+    <withStyles(Typography)
+      style={
+        Object {
+          "textAlign": "center",
+        }
+      }
+      type="display2"
+    >
+      Uh-oh! Something went wrong. 
+      This is an error.
+       Please try again later.
+    </withStyles(Typography)>
+  </Row>
+</div>
+`;

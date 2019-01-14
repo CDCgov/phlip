@@ -3,29 +3,38 @@ import PropTypes from 'prop-types'
 import { TableRow, TableCell } from 'material-ui/Table'
 import IconButton from 'components/IconButton'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import TextLink from 'components/TextLink'
 
-export const JurisdictionRow = ({ jurisdiction, id, onOpenForm }) => (
-  <TableRow key={`jurisdiction-${id}`}>
-    <TableCell key={`${id}-segment-name`}>
+export const JurisdictionRow = ({ jurisdiction, id, onDelete, projectId }) => {
+  return (<TableRow key={`jurisdiction-${id}`}>
+    <TableCell key={`${id}-segment-name`} id={`${id}-segment-name`}>
       {jurisdiction.name}
-      </TableCell>
-    <TableCell key={`${id}-segment-start`}>
-      {new Date(jurisdiction.startDate).toLocaleDateString()}
-      </TableCell>
-    <TableCell key={`${id}-segment-end`}>
-      {new Date(jurisdiction.endDate).toLocaleDateString()}
-      </TableCell>
-    <TableCell>
-      <IconButton color="accent" onClick={() => onOpenForm(true, jurisdiction)}>mode_edit</IconButton>
     </TableCell>
-  </TableRow>
-)
+    <TableCell key={`${id}-segment-start-date`} id={`${id}-segment-start-date`}>
+      {new Date(jurisdiction.startDate).toLocaleDateString()}
+    </TableCell>
+    <TableCell key={`${id}-segment-end-date`} id={`${id}-segment-end-date`}>
+      {new Date(jurisdiction.endDate).toLocaleDateString()}
+    </TableCell>
+    <TableCell key={`${id}-edit`} id={`${id}-edit`}>
+      <TextLink
+        to={{
+          pathname: `/project/${projectId}/jurisdictions/${jurisdiction.id}/edit`,
+          modal: true,
+          state: { jurisdictionDefined: { ...jurisdiction } }
+        }}>
+        <IconButton color="accent">mode_edit</IconButton>
+      </TextLink>
+    </TableCell>
+    <TableCell key={`${id}-delete`} id={`${id}-delete`}>
+      <IconButton onClick={() => onDelete(id, jurisdiction.name)} color="accent">delete</IconButton>
+    </TableCell>
+  </TableRow>)
+}
 
 JurisdictionRow.propTypes = {
   jurisdiction: PropTypes.object,
-  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  onOpenForm: PropTypes.func
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 }
 
 const mapStateToProps = (state, ownProps) => ({

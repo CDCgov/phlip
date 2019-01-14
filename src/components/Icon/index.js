@@ -3,28 +3,43 @@ import PropTypes from 'prop-types'
 import { default as MuiIcon } from 'material-ui/Icon'
 import { withTheme } from 'material-ui/styles'
 
+/**
+ * Basic material-ui icon component
+ */
 const Icon = ({ color, size, style, children, theme, ...otherProps }) => {
   const styles = {
-    fontSize: size, 
+    fontSize: size,
     color: theme.palette[color] ? theme.palette[color][500] : color,
     ...style
   }
-  
+
   return (
-    <MuiIcon
-      style={styles}
-      {...otherProps}
-    >
+    <MuiIcon style={styles}{...otherProps}>
       {children}
     </MuiIcon>
   )
 }
 
 Icon.propTypes = {
+  /**
+   * Color of the icon, can be a color defined in material-ui theme or css accepted color
+   */
   color: PropTypes.string,
+  /**
+   * Size of the icon
+   */
   size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * Override any of the default style of the icon
+   */
   style: PropTypes.object,
-  children: PropTypes.node,
+  /**
+   * Can be string or icon component (like from mdi-material-ui package)
+   */
+  children: PropTypes.any,
+  /**
+   * Theme supplied from material-ui
+   */
   theme: PropTypes.object
 }
 

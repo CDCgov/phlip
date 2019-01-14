@@ -4,20 +4,37 @@ import { connect } from 'react-redux'
 import { withTheme } from 'material-ui/styles'
 import Divider from 'material-ui/Divider'
 import UserList from './components/UserList/index'
-import PageHeader from './components/PageHeader'
+import PageHeader from 'components/PageHeader'
 import * as actions from './actions'
-import { bindActionCreators } from 'redux';
+import { bindActionCreators } from 'redux'
 import AddEditUser from './scenes/AddEditUser'
 import { Route } from 'react-router-dom'
 import Container from 'components/Layout'
+import withTracking from 'components/withTracking'
 
+/**
+ * Represents the parent User Management component, that displays a list of users in the system. This component is
+ * mounted and rendered when the user navigates to the 'User Management' option in the avatar menu. This component has
+ * one scene: AddEditUser under ./scenes/AddEditUser
+ */
 export class Admin extends Component {
   static propTypes = {
+    /**
+     * List of users to displayed, supplied from redux
+     */
     users: PropTypes.array,
-    page: PropTypes.number,
-    rowsPerPage: PropTypes.number,
+    /**
+     * Which property of users by which to sort the list
+     */
     sortBy: PropTypes.string,
-    direction: PropTypes.string
+    /**
+     * Direction by which to sort list of users
+     */
+    direction: PropTypes.string,
+    /**
+     * Redux actions for this component
+     */
+    actions: PropTypes.object
   }
 
   constructor(props, context) {
@@ -31,24 +48,27 @@ export class Admin extends Component {
   render() {
     return (
       <Container column flex>
-        <PageHeader />
+        <PageHeader
+          pageTitle="User Management"
+          protocolButton={false}
+          projectName=""
+          otherButton={{
+            isLink: true,
+            text: '+ Add New User',
+            path: '/admin/new/user',
+            state: {},
+            props: { 'aria-label': 'Add new user' },
+            show: true
+          }} />
         <Divider />
         <UserList
-          users={this.props.visibleUsers}
-          page={this.props.page}
-          count={this.props.users.length}
-          rowsPerPage={this.props.rowsPerPage}
+          users={this.props.users}
           sortBy={this.props.sortBy}
           direction={this.props.direction}
           handleRequestSort={property => event => this.props.actions.sortUsers(property)}
-          handlePagechange={(event, page) => this.props.actions.updateUserPage(page)}
-          handleRowsChange={event => this.props.actions.updateUserRows(event.target.value)} />
-        <Route
-          path="/admin/new/user"
-          component={AddEditUser} />
-        <Route
-          path="/admin/edit/user/:id"
-          component={AddEditUser} />
+        />
+        <Route path="/admin/new/user" component={AddEditUser} />
+        <Route path="/admin/edit/user/:id" component={AddEditUser} />
       </Container>
     )
   }
@@ -56,13 +76,10 @@ export class Admin extends Component {
 
 const mapStateToProps = (state) => ({
   users: state.scenes.admin.main.users,
-  visibleUsers: state.scenes.admin.main.visibleUsers,
-  page: state.scenes.admin.main.page,
-  rowsPerPage: state.scenes.admin.main.rowsPerPage,
   sortBy: state.scenes.admin.main.sortBy,
   direction: state.scenes.admin.main.direction
 })
+
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-
-export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(Admin))
+export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(withTracking(Admin, 'User Management')))

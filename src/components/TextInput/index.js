@@ -10,19 +10,30 @@ const styles = {
   }
 }
 
-const TextInput = ({ name, label, type, input, disabled, multiline, classes, meta: { asyncValidating, active, touched, error, warning }, ...custom }) => {
+/**
+ * Text field input with form control wrapper, set up for use in redux-form
+ */
+export const TextInput = props => {
+  const {
+    label, type, input, disabled, multiline, shrinkLabel, required,
+    classes, meta: { active, touched, error, warning },
+    ...custom
+  } = props
+
   return (
-    <FormControl error={Boolean(touched && error && !active || warning)} fullWidth disabled={disabled}>
-      <InputLabel htmlFor={name} shrink>{label}</InputLabel>
+    <FormControl
+      error={Boolean(touched && error && !active || warning)}
+      fullWidth
+      disabled={disabled}>
+      <InputLabel htmlFor={input.name} shrink={shrinkLabel} required={required}>{label}</InputLabel>
       <Input
-        id={name}
         {...input}
-        type={type}
         {...custom}
-        classes={{
-          disabled: classes.disabled
-        }}
+        type={type}
+        id={input.name}
+        classes={{ disabled: classes.disabled }}
         multiline={multiline}
+        inputProps={{ 'aria-label': label }}
       />
       {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
     </FormControl>
@@ -30,12 +41,42 @@ const TextInput = ({ name, label, type, input, disabled, multiline, classes, met
 }
 
 TextInput.propTypes = {
-  name: PropTypes.string,
+  /**
+   * Label for input form element
+   */
   label: PropTypes.string,
+  /**
+   * Type of input
+   */
   type: PropTypes.string,
+  /**
+   * Object provided by redux-form, includes name, value and onChange
+   */
   input: PropTypes.any,
+  /**
+   * Whether or not the input should be disabled
+   */
+  disabled: PropTypes.bool,
+  /**
+   * Whether or not the shrink the input label
+   */
+  shrinkLabel: PropTypes.bool,
+  /**
+   * Whether or not the input is required
+   */
+  required: PropTypes.bool,
+  /**
+   * Meta information like error provided by redux-form
+   */
   meta: PropTypes.object,
-  multiline: PropTypes.bool
+  /**
+   * Whether or not the input should allow multiline
+   */
+  multiline: PropTypes.bool,
+  /**
+   * Style classes from material-ui
+   */
+  classes: PropTypes.object
 }
 
 TextInput.defaultProps = {

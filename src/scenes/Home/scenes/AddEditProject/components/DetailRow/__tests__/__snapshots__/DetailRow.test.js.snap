@@ -3,15 +3,16 @@
 exports[`AddEditProject -- DetailRow component should render correctly 1`] = `
 <Row
   component={
-    <WithStyles
+    <withStyles(GridWrapper)
       item={true}
     />
   }
   displayFlex={false}
   flex={false}
+  reverse={false}
   style={
     Object {
-      "paddingBottom": 20,
+      "paddingBottom": 25,
     }
   }
 >
@@ -21,6 +22,7 @@ exports[`AddEditProject -- DetailRow component should render correctly 1`] = `
     disabled={false}
     label="Type"
     name="type"
+    shrinkLabel={true}
     type="text"
   />
 </Row>

@@ -1,8 +1,7 @@
 import * as types from './actionTypes'
 import { combineReducers } from 'redux'
 import addEditUserReducer from './scenes/AddEditUser/reducer'
-import { mockUsers } from '../../data/mockUsers'
-import { sortList, updater } from '../../utils'
+import { commonHelpers, updater } from 'utils'
 
 const INITIAL_STATE = {
   users: [],
@@ -13,18 +12,28 @@ const INITIAL_STATE = {
   visibleUsers: []
 }
 
-
-const sliceUsers = (data, page, rowsPerPage) => data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-
-const getAvailableUsers = (users, sortBy, direction, page, rowsPerPage) => {
-  const sortedUsers = sortList(users, sortBy, direction)
-  // const result = { users: sortedUsers, visibleUsers: sliceUsers(sortedUsers, page, rowsPerPage) }  //TODO: Need to change after figure out state pagination issue
+/**
+ * Determines the list of user that are visible based on sort by and direction
+ *
+ * @param {Array} users
+ * @param {String} sortBy
+ * @param {String} direction
+ * @returns {{users: Array, visibleUsers: Array}}
+ */
+const getAvailableUsers = (users, sortBy, direction) => {
+  const sortedUsers = commonHelpers.sortListOfObjects(users, sortBy, direction)
   return { users: sortedUsers, visibleUsers: sortedUsers }
 }
 
-function adminReducer(state = INITIAL_STATE, action) {
+/**
+ * Main reducer for User Management ('Admin') scene
+ *
+ * @param {Object} state
+ * @param {Object} action
+ * @returns {{users: Array, rowsPerPage: number, page: number, sortBy: string, direction: string, visibleUsers: Array}}
+ */
+const adminReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-
     case types.GET_USERS_SUCCESS:
       return {
         ...state,
@@ -65,18 +74,26 @@ function adminReducer(state = INITIAL_STATE, action) {
         )
       }
 
+    case types.ADD_USER_IMAGE_SUCCESS:
+      const user = state.users.find(user => user.id === action.payload.userId)
+      return {
+        ...state,
+        users: updater.updateByProperty({ ...user, avatar: action.payload.avatar }, [...state.users], 'id'),
+        visibleUsers: updater.updateByProperty({ ...user, avatar: action.payload.avatar }, [...state.visibleUsers], 'id')
+      }
+
     case types.UPDATE_USER_ROWS:
       return {
         ...state,
         rowsPerPage: action.rowsPerPage,
-        visibleUsers: sliceUsers(state.users, state.page, action.rowsPerPage)
+        visibleUsers: commonHelpers.sliceTable(state.users, state.page, action.rowsPerPage)
       }
 
     case types.UPDATE_USER_PAGE:
       return {
         ...state,
         page: action.page,
-        visibleUsers: sliceUsers(state.users, action.page, state.rowsPerPage)
+        visibleUsers: commonHelpers.sliceTable(state.users, action.page, state.rowsPerPage)
       }
 
     case 'FLUSH_STATE':
@@ -88,6 +105,9 @@ function adminReducer(state = INITIAL_STATE, action) {
   }
 }
 
+/**
+ * Combining this reducer and reducer for AddEditUser component in ./scenes/AddEditUser/reducer.js
+ */
 const adminRootReducer = combineReducers({
   main: adminReducer,
   addEditUser: addEditUserReducer

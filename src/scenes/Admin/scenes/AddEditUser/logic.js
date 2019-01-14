@@ -1,31 +1,95 @@
 import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 
+/**
+ * Sends a request to add a user
+ */
 export const addUserLogic = createLogic({
   type: types.ADD_USER_REQUEST,
   latest: true,
   processOptions: {
     dispatchReturn: true,
-    successType: types.ADD_USER_SUCCESS
+    successType: types.ADD_USER_SUCCESS,
+    failType: types.ADD_USER_FAIL
   },
   async process({ action, api }) {
-    return await api.addUser(action.user)
+    return await api.addUser(action.user, {}, {})
   }
 })
 
+/**
+ * Sends a request to update the user with userId: action.user.id
+ */
 export const updateUserLogic = createLogic({
   type: types.UPDATE_USER_REQUEST,
   latest: true,
+  async process({ action, api }, dispatch, done) {
+    let updatedUser = {}
+    try {
+      updatedUser = await api.updateUser(action.user, {}, { userId: action.user.id })
+      dispatch({ type: types.UPDATE_USER_SUCCESS, payload: { ...updatedUser, avatar: action.user.avatar }})
+    } catch (e) {
+      if (e.response.status === 304) {
+        updatedUser = { ...action.user, avatar: action.user.avatar }
+        dispatch({ type: types.UPDATE_USER_SUCCESS, payload: { ...updatedUser, avatar: action.user.avatar }})
+      } else {
+        dispatch({ type: types.UPDATE_USER_FAIL })
+      }
+    }
+    done()
+  }
+})
+
+/**
+ * Sends a PATCH request to update the avatar for the user with userId = action.userId
+ */
+export const patchUserImageLogic = createLogic({
+  type: types.ADD_USER_IMAGE_REQUEST,
+  latest: true,
   processOptions: {
     dispatchReturn: true,
-    successType: types.UPDATE_USER_SUCCESS
+    successType: types.ADD_USER_IMAGE_SUCCESS
   },
   async process({ action, api }) {
-    return await api.updateUser(action.user)
+    const avatar = await api.updateUserImage(action.patchOperation, {}, { userId: action.userId })
+    return { avatar: action.patchOperation[0].value, userId: action.userId }
+  }
+})
+
+/**
+ * Sends a request to get the avatar for a user with userId = action.userId
+ */
+export const getUserImageLogic = createLogic({
+  type: types.GET_USER_IMAGE_REQUEST,
+  latest: true,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.GET_USER_IMAGE_SUCCESS
+  },
+  async process({ action, api }) {
+    return await api.getUserImage({}, {}, { userId: action.userId })
+  }
+})
+
+/**
+ * Sends a request to delete the avatar image for a user with userId = action.userId
+ */
+export const deleteUserImageLogic = createLogic({
+  type: types.DELETE_USER_IMAGE_REQUEST,
+  latest: true,
+  processOptions: {
+    dispatchReturn: true,
+    successType: types.DELETE_USER_IMAGE_SUCCESS,
+  },
+  async process({ action, api }) {
+    return await api.deleteUserImage(action.operation, {}, { userId: action.userId })
   }
 })
 
 export default [
+  deleteUserImageLogic,
+  getUserImageLogic,
+  patchUserImageLogic,
   updateUserLogic,
   addUserLogic
 ]

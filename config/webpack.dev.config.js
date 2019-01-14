@@ -3,18 +3,21 @@
 const autoprefixer = require('autoprefixer')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const paths = require('./paths')
+const Dotenv = require('dotenv-webpack')
+const path = require('path')
 
 module.exports = function makeConfig(env) {
   return {
     devtool: 'cheap-module-source-map',
     entry: {
-      app: paths.appIndexJs
+      app: ['react-hot-loader/patch', paths.appIndexJs]
     },
 
     output: {
       path: paths.appBuild,
-      filename: 'bundle.js',
+      filename: '[name].bundle.js',
       chunkFilename: '[name].chunk.js',
       publicPath: paths.publicPath
     },
@@ -36,18 +39,31 @@ module.exports = function makeConfig(env) {
           include: paths.appSrc
         },
         {
+          test: require.resolve('tinymce/tinymce'),
+          loaders: [
+            'imports-loader?this=>window',
+            'exports-loader?window.tinymce'
+          ]
+        },
+        {
+          test: /tinymce\/(themes|plugins)\//,
+          loaders: [
+            'imports-loader?this=>window'
+          ]
+        },
+        {
           oneOf: [
             {
               test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
               loader: 'url-loader',
               options: {
                 limit: 10000,
-                name: 'dist/media/[name].[hash:8].[ext]',
-              },
+                name: 'dist/media/[name].[hash:8].[ext]'
+              }
             },
             {
               test: /\.jsx?$/,
-              include: /src/,
+              include: [/src/, path.join(paths.config, 'styleguide')],
               use: [
                 {
                   loader: 'babel-loader',
@@ -60,7 +76,8 @@ module.exports = function makeConfig(env) {
                     plugins: [
                       require('babel-plugin-transform-runtime'),
                       require('babel-plugin-transform-object-assign'),
-                      require('babel-plugin-transform-object-rest-spread')]
+                      require('babel-plugin-transform-object-rest-spread')
+                    ]
                   }
                 }
               ],
@@ -75,8 +92,8 @@ module.exports = function makeConfig(env) {
                   options: {
                     modules: true,
                     '-autoprefixer': true,
-                    importLoaders: true,
-                  },
+                    importLoaders: true
+                  }
                 },
                 {
                   loader: 'postcss-loader',
@@ -86,69 +103,77 @@ module.exports = function makeConfig(env) {
                       autoprefixer({
                         browsers: [
                           'last 2 versions'
-                        ],
-                      }),
-                    ],
-                  },
-                },
-              ],
+                        ]
+                      })
+                    ]
+                  }
+                }
+              ]
             },
             {
               test: /\.scss$/,
-              use: [{
-                loader: "style-loader"
-              }, {
-                loader: "css-loader",
-                options: {
-                  modules: true,
-                  '-autoprefixer': true,
-                  importLoaders: true,
-                },
-              }, {
-                loader: 'postcss-loader',
-                options: {
-                  ident: 'postcss',
-                  plugins: () => [
-                    autoprefixer({
-                      browsers: [
-                        'last 2 versions'
-                      ],
-                    }),
-                  ],
-                },
-              }, {
-                loader: "sass-loader"
-              }]
+              use: [
+                {
+                  loader: 'style-loader'
+                }, {
+                  loader: 'css-loader',
+                  options: {
+                    modules: true,
+                    '-autoprefixer': true,
+                    importLoaders: true
+                  }
+                }, {
+                  loader: 'postcss-loader',
+                  options: {
+                    ident: 'postcss',
+                    plugins: () => [
+                      autoprefixer({
+                        browsers: [
+                          'last 2 versions'
+                        ]
+                      })
+                    ]
+                  }
+                }, {
+                  loader: 'sass-loader'
+                }
+              ]
             },
             {
               exclude: [/\.js$/, /\.html$/, /\.json$/],
               loader: 'file-loader',
               options: {
-                name: 'dist/media/[name].[hash:8].[ext]',
-              },
-            },
-          ],
-        },
-      ],
+                name: 'dist/media/[name].[hash:8].[ext]'
+              }
+            }
+          ]
+        }
+      ]
     },
 
     plugins: [
       new HtmlWebpackPlugin({
         inject: true,
-        template: paths.appHtml,
+        template: paths.appHtml
       }),
 
       new webpack.ProvidePlugin({
         $: 'jquery',
         'window.jQuery': 'jquery',
         jQuery: 'jquery',
-        jquery: 'jquery',
+        jquery: 'jquery'
       }),
 
       new webpack.NamedModulesPlugin(),
       new webpack.HotModuleReplacementPlugin(),
 
-      new webpack.DefinePlugin(env)
+      new webpack.DefinePlugin(env),
+
+      new CopyWebpackPlugin([
+        { from: paths.appPublic }
+      ]),
+
+      new Dotenv()
     ]
   }
 }

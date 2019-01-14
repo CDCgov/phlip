@@ -2,25 +2,61 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { DialogActions } from 'material-ui/Dialog'
 import Button from 'components/Button'
+import { withStyles } from 'material-ui/styles'
 
-const ModalActions = ({ edit, actions, raised, ...otherProps }) => {
+const styles = {
+  root: {
+    margin: '24px'
+  }
+}
+
+/**
+ * Wrapper for material-ui's DialogActions component. These actions will be displayed as buttons at the bottom of the modal
+ */
+export const ModalActions = ({ actions, raised, classes, ...otherProps }) => {
   return (
-    <DialogActions {...otherProps} >
+    <DialogActions classes={{ root: classes.root }} {...otherProps} >
       {actions.map(action => (
         <Button
           key={action.value}
-          raised={raised} value={action.value}
+          raised={raised}
+          value={action.value}
           type={action.type}
           color="accent"
           disabled={action.disabled || false}
-          onClick={action.onClick} />
+          onClick={action.onClick}
+          {...action.otherProps}
+        />
       ))}
     </DialogActions>
   )
 }
 
-ModalActions.defaultProps = {
-  raised: false
+ModalActions.propTypes = {
+  /**
+   * Should the action buttons be raised
+   */
+  raised: PropTypes.bool,
+  /**
+   * The list of actions to render
+   */
+  actions: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.any,
+    disabled: PropTypes.bool,
+    type: PropTypes.string,
+    onClick: PropTypes.func,
+    otherProps: PropTypes.object
+  })),
+  /**
+   * Style classes object supplied by material-ui
+   */
+  classes: PropTypes.object
 }
 
-export default ModalActions
+ModalActions.defaultProps = {
+  raised: false,
+  actions: [],
+  classes: {}
+}
+
+export default withStyles(styles)(ModalActions)

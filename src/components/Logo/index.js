@@ -1,20 +1,29 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const Logo = ({ fontSize }) => {
-  const styles = {
-    color: 'white',
-    fontSize: fontSize,
-    fontFamily: 'Satisfy, cursive'
-  }
-
+/**
+ * PHLIP logo component
+ */
+export const Logo = props => {
+  const { height, width } = props
   return (
-    <div style={styles}>Esquire</div>
+   <img src="/phlip-logo.png" style={{ height, width }} alt="Public Health Law Investigation Platform"/>
   )
 }
 
+Logo.defaultProps = {
+  width: 'auto'
+}
+
 Logo.propTypes = {
-  fontSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  /**
+   * Height of image
+   */
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * Width of image
+   */
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 }
 
 export default Logo

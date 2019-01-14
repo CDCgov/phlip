@@ -7,42 +7,48 @@ import Dialog, {
 } from 'material-ui/Dialog'
 import Divider from 'material-ui/Divider'
 import Button from 'components/Button'
-import IconButton from 'components/IconButton'
 import Form from 'components/Form'
-import Container, { Column } from 'components/Layout'
+import { withStyles } from 'material-ui/styles'
 
-const ModalForm = ({ handleSubmit, form, onClose, open, actions, title, width, height, children, asyncValidate, asyncBlurFields, initialValues, editForm, edit, editButton }) => {
+const styles = {
+  actions: {
+    margin: '24px'
+  }
+}
+
+/**
+ * Form inside of a modal connected to redux-form, similar to FormModal. Differences are that
+ * with this component all content for title, content, etc. are passed as props instead of children
+ */
+export const ModalForm = props => {
+  const {
+    handleSubmit, classes, form, onClose, open, actions, title,
+    width, height, children, asyncValidate, asyncBlurFields, initialValues, edit
+  } = props
+
   return (
     <Dialog open={open} onClose={onClose}>
-      <Form onSubmit={handleSubmit} form={form} asyncValidate={asyncValidate} asyncBlurFields={asyncBlurFields}
-            initialValues={initialValues} style={{ width, height }}>
-        <DialogTitle>
-          <Container alignItems="center">
-            <Column flex>
-              {title}
-            </Column>
-            <Column>
-              <Container alignItems="center">
-                {!edit && editButton && <IconButton onClick={editForm} color="secondary">mode_edit</IconButton>}
-                {!edit && <IconButton onClick={onClose} color="error" iconSize={25}
-                                      style={{ fontWeight: 'bold' }}>close</IconButton>}
-              </Container>
-            </Column>
-          </Container>
-        </DialogTitle>
+      <Form
+        onSubmit={handleSubmit}
+        form={form}
+        asyncValidate={asyncValidate}
+        asyncBlurFields={asyncBlurFields}
+        initialValues={initialValues}
+        style={{ width, height }}>
+        <DialogTitle>{title}</DialogTitle>
         <Divider />
-        <DialogContent>
-          {children}
-        </DialogContent>
-        <DialogActions>
+        <DialogContent>{children}</DialogContent>
+        <DialogActions classes={{ root: classes.actions }}>
           {edit && actions.map(action => (
             <Button
               key={action.value}
-              raised={false} value={action.value}
+              raised={false}
+              value={action.value}
               type={action.type}
               color="accent"
               disabled={action.disabled || false}
-              onClick={action.onClick} />
+              onClick={action.onClick}
+            />
           ))}
         </DialogActions>
       </Form>
@@ -51,25 +57,66 @@ const ModalForm = ({ handleSubmit, form, onClose, open, actions, title, width, h
 }
 
 ModalForm.propTypes = {
+  /**
+   * Function to call when the form is submitted
+   */
   handleSubmit: PropTypes.func.isRequired,
+  /**
+   * Name of form for redux-form
+   */
   form: PropTypes.string.isRequired,
+  /**
+   * Function to call when the modal is closed
+   */
   onClose: PropTypes.func,
+  /**
+   * Whether or not the modal is open
+   */
   open: PropTypes.bool,
+  /**
+   * Modal actions for the form
+   */
   actions: PropTypes.arrayOf(PropTypes.object).isRequired,
+  /**
+   * Title of the form
+   */
   title: PropTypes.string,
+  /**
+   * Width of the form / modal
+   */
   width: PropTypes.string,
+  /**
+   * Height of the form / modal
+   */
   height: PropTypes.string,
+  /**
+   * Contents of the form
+   */
   children: PropTypes.node,
+  /**
+   * Function to call to asynchronously validate the form (used by redux-form)
+   */
   asyncValidate: PropTypes.any,
+  /**
+   * Fields to handle asynchrounously on blur (used by redux-form)
+   */
   asyncBlurFields: PropTypes.arrayOf(PropTypes.string),
+  /**
+   * Initial values of form
+   */
   initialValues: PropTypes.object,
+  /**
+   * Is the form in edit mode
+   */
   edit: PropTypes.bool,
-  editButton: PropTypes.bool
+  /**
+   * Style classes object supplied by material-ui
+   */
+  classes: PropTypes.object
 }
 
 ModalForm.defaultProps = {
-  editButton: false,
   edit: true
 }
 
-export default ModalForm
+export default withStyles(styles)(ModalForm)

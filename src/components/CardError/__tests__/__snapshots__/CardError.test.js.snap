@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CardError component should render correctly 1`] = `
+<Column
+  component={<Card />}
+  displayFlex={true}
+  flex={true}
+  style={
+    Object {
+      "alignItems": "center",
+      "justifyContent": "center",
+      "padding": 20,
+    }
+  }
+>
+  <Row
+    component={
+      <withStyles(GridWrapper)
+        item={true}
+      />
+    }
+    displayFlex={false}
+    flex={false}
+    reverse={false}
+  >
+    <withTheme(Icon)
+      color="#757575"
+      size={175}
+    >
+      <Component
+        style={
+          Object {
+            "height": 175,
+            "width": 175,
+          }
+        }
+      />
+    </withTheme(Icon)>
+  </Row>
+  <Row
+    component={
+      <withStyles(GridWrapper)
+        item={true}
+      />
+    }
+    displayFlex={false}
+    flex={false}
+    reverse={false}
+  >
+    <withStyles(Typography)
+      style={
+        Object {
+          "textAlign": "center",
+        }
+      }
+      type="display2"
+    >
+      <div>
+        I am a card error.
+      </div>
+    </withStyles(Typography)>
+  </Row>
+</Column>
+`;

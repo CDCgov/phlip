@@ -5,13 +5,43 @@ exports[`Home scene should render correctly 1`] = `
   column={true}
   flex={true}
   spacing={0}
+  style={
+    Object {
+      "paddingBottom": "25px",
+    }
+  }
 >
-  <PageHeader
-    role="Coordinator"
+  <ApiErrorAlert
+    actions={Array []}
+    content=""
+    onCloseAlert={[Function]}
+    open={false}
   />
-  <WithStyles />
+  <withRouter(withTheme(PageHeader))
+    otherButton={
+      Object {
+        "isLink": true,
+        "path": "/project/add",
+        "props": Object {
+          "aria-label": "Create New Project",
+        },
+        "show": true,
+        "state": Object {
+          "modal": true,
+          "projectDefined": null,
+        },
+        "text": "+ Create New Project",
+      }
+    }
+    pageTitle="Project List"
+    projectName=""
+    protocolButton={false}
+    showButton={true}
+  />
+  <withStyles(Divider) />
   <ProjectList
     direction="desc"
+    handleExport={[Function]}
     handlePageChange={[Function]}
     handleRequestSort={[Function]}
     handleRowsChange={[Function]}
@@ -19,7 +49,7 @@ exports[`Home scene should render correctly 1`] = `
     handleSortBookmarked={[Function]}
     page={0}
     projectIds={Array []}
-    rowsPerPage={10}
+    rowsPerPage="10"
     searchValue=""
     sortBookmarked={false}
     sortBy="dateLastEdited"
@@ -34,17 +64,17 @@ exports[`Home scene should render correctly 1`] = `
       }
     }
   />
-  <Route
-    component={[Function]}
-    path="/project/add"
+  <ExportDialog
+    onChooseExport={[Function]}
+    onClose={[Function]}
+    open={false}
   />
-  <Route
-    component={[Function]}
-    path="/project/edit/:id"
-  />
-  <Route
-    component={[Function]}
-    path="/project/:id/jurisdictions"
+  <a
+    style={
+      Object {
+        "display": "none",
+      }
+    }
   />
 </Container>
 `;

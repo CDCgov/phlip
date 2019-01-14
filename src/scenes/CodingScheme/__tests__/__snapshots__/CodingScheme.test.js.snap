@@ -6,8 +6,128 @@ exports[`CodingScheme scene should render correctly 1`] = `
   flex={true}
   spacing={0}
 >
-  <Header
-    showButton={false}
+  <Alert
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Cancel",
+        },
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Check in",
+        },
+      ]
+    }
+    open={false}
+    title={null}
+  >
+    <withStyles(Typography)
+      variant="body1"
+    >
+      You have checked out the coding scheme. No one else can edit until you check in.
+    </withStyles(Typography)>
+  </Alert>
+  <Alert
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Cancel",
+        },
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Delete",
+        },
+      ]
+    }
+    open={false}
+    title={null}
+  >
+    <withStyles(Typography)
+      style={
+        Object {
+          "whiteSpace": "pre-wrap",
+        }
+      }
+      variant="body1"
+    >
+      You are about to delete a question from the coding scheme. This will permanantly delete all related child questions and coded answers.
+    </withStyles(Typography)>
+  </Alert>
+  <ApiErrorAlert
+    actions={Array []}
+    onCloseAlert={[Function]}
+    open={true}
+  />
+  <Alert
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Dismiss",
+        },
+      ]
+    }
+    open={true}
+    title={
+      <UNDEFINED>
+        <withTheme(Icon)
+          color="primary"
+          size={30}
+          style={
+            Object {
+              "paddingRight": 10,
+            }
+          }
+        >
+          lock
+        </withTheme(Icon)>
+        The Coding Scheme is checked out.
+      </UNDEFINED>
+    }
+  >
+    <withStyles(Typography)
+      variant="body1"
+    >
+      undefined undefined 
+       has checked out the coding scheme. You will not be able to make changes until they have checked in.
+    </withStyles(Typography)>
+  </Alert>
+  <withRouter(withTheme(PageHeader))
+    checkoutButton={
+      Object {
+        "isLink": false,
+        "props": Object {
+          "onClick": [Function],
+        },
+        "show": false,
+        "text": "Check out",
+      }
+    }
+    onBackButtonClick={[Function]}
+    otherButton={
+      Object {
+        "isLink": true,
+        "path": "/project/undefined/coding-scheme/add",
+        "props": Object {
+          "aria-label": "Add new question to coding scheme",
+        },
+        "show": false,
+        "state": Object {
+          "canModify": true,
+          "questionDefined": null,
+        },
+        "text": "+ Add New Question",
+      }
+    }
+    pageTitle="Coding Scheme"
+    protocolButton={true}
   />
   <Container
     column={false}
@@ -16,19 +136,15 @@ exports[`CodingScheme scene should render correctly 1`] = `
     style={
       Object {
         "backgroundColor": "#f5f5f5",
+        "marginLeft": -30,
         "paddingTop": 25,
       }
     }
   >
-    <Scheme
-      disableHover={[Function]}
-      enableHover={[Function]}
-      handleHoverOnQuestion={[Function]}
-      handleQuestionTreeChange={[Function]}
-      questions={Object {}}
+    <ApiErrorView
+      error=""
     />
   </Container>
-  <Footer />
   <Route
     component={[Function]}
     path="/project/:projectId/coding-scheme/add"

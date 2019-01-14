@@ -3,11 +3,20 @@ import PropTypes from 'prop-types'
 import { default as MuiButton } from 'material-ui/Button'
 import { withTheme } from 'material-ui/styles'
 
-const Button = ({ value, color, onClick, closeButton, raised, theme, listButton, style, ...otherProps }) => {
+/**
+ * Basic button based on material-ui
+ */
+export const Button = ({ value, color, onClick, raised, theme, listButton, style, ...otherProps }) => {
   const styles = {
-    color: raised || listButton ? 'white' : color || '',
-    fontWeight: 'lighter',
-    backgroundColor: raised ? closeButton ? theme.buttons.closeButton : '' : listButton ? theme.buttons.listButtons : '',
+    color: (raised || listButton)
+      ? 'white'
+      : color || '',
+    fontWeight: 400,
+    backgroundColor: raised
+      ? ''
+      : listButton
+        ? theme.palette.primary.light
+        : '',
     ...style
   }
 
@@ -17,12 +26,39 @@ const Button = ({ value, color, onClick, closeButton, raised, theme, listButton,
 }
 
 Button.propTypes = {
+  /**
+   * Content of the button
+   */
   value: PropTypes.any,
+
+  /**
+   * Color of the button
+   */
   color: PropTypes.string,
+
+  /**
+   * Handles when the button is clicked
+   */
   onClick: PropTypes.func,
+
+  /**
+   * Whether or not the button is a raised button
+   */
   raised: PropTypes.bool,
+
+  /**
+   * Project theme provided by material-ui
+   */
   theme: PropTypes.object,
+
+  /**
+   * Is the button displayed in a list? List buttons have a particular style
+   */
   listButton: PropTypes.bool,
+
+  /**
+   * Is the button disabled
+   */
   disabled: PropTypes.bool
 }
 

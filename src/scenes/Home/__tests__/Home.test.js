@@ -4,9 +4,8 @@ import { MemoryRouter } from 'react-router-dom'
 import { MuiThemeProvider } from 'material-ui/styles'
 import theme from 'services/theme'
 import { Home } from '../index'
-import { PageHeader } from '../components/PageHeader'
 import { ProjectList } from '../components/ProjectList'
-import { mockProjects } from 'data/mockProjects'
+import { PageHeader } from 'components/PageHeader'
 
 const props = {
   actions: {
@@ -16,7 +15,7 @@ const props = {
     updateRows: jest.fn(),
     toggleBookmark: jest.fn(),
     sortBookmarked: jest.fn(),
-    updateSearchValue: jest.fn(),
+    updateSearchValue: jest.fn()
   },
   user: {
     id: 2,
@@ -28,20 +27,22 @@ const props = {
   },
   error: false,
   errorContent: '',
-  projects: mockProjects,
+  projects: [],
   visibleProjects: [],
   bookmarkList: [],
   sortBookmarked: false,
   sortBy: 'dateLastEdited',
   direction: 'desc',
   page: 0,
-  rowsPerPage: 10,
-  searchValue: ''
+  rowsPerPage: '10',
+  searchValue: '',
+  projectToExport: { text: '' },
+  exportError: ''
 }
 
-const setup = otherProps => {
+const setup = (otherProps = {}, initialEntries = ['/']) => {
   return mount(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={initialEntries}>
       <MuiThemeProvider theme={theme}>
         <Home {...props} {...otherProps} />
       </MuiThemeProvider>
@@ -55,30 +56,43 @@ describe('Home scene', () => {
   })
 
   test('should render ProjectList and PageHeader components', () => {
-    let wrapper = shallow(<Home {...props} />)
+    const wrapper = setup()
     expect(wrapper.find(ProjectList)).toHaveLength(1)
-    expect(wrapper.find(PageHeader)).toHaveLength(1)
   })
 
   test('should open the New Project modal when Create New Project is clicked', () => {
-    let wrapper = setup()
+    const wrapper = setup()
     wrapper.find(PageHeader).find('Button').at(0).simulate('click')
     wrapper.update()
-    expect(wrapper.find('Modal')).toHaveLength(1)
+    // 3 modals. One for the form, one for the export dialog, one for the form alert, one for export fail alert
+    expect(wrapper.find('Modal')).toHaveLength(5)
   })
 
   describe('Error handling', () => {
     test('should display an error message if prop: error is true', () => {
-      let wrapper = shallow(<Home {...props} />)
-      expect(wrapper.find('ProjectList')).toHaveLength(1)
-      wrapper.setProps({ error: true, errorContent: 'We could not get list of projects.' })
+      const wrapper = setup({ error: true, errorContent: 'We could not get projects.' })
       expect(wrapper.find('CardError')).toHaveLength(1)
       expect(wrapper.find('ProjectList')).toHaveLength(0)
     })
 
-    test('should display the content of errorContent prop in error message', () => {
-      let wrapper = shallow(<Home {...props } error={true} errorContent="We could not get projects." />)
-      expect(wrapper.find('CardError').render().text()).toContain('Uh-oh, something went wrong. We could not get projects.')
+    xtest('should display the content of errorContent prop in error message', () => {
+      const wrapper = setup({ error: true, errorContent: 'We could not get projects.' })
+      expect(wrapper.find('CardError').text()).toEqual(expect.stringMatching('Uh-oh, something went wrong. We could not get projects.'))
+    })
+  })
+
+  xdescribe('Unauthorized routes', () => {
+    test('should display PageNotFound if the user role is Coder and they try to go to add project', () => {
+      const wrapper = setup({ user: { role: 'Coder' }, location: { pathname: '/project/add' } }, ['/project/add'])
+      expect(wrapper.find('PageNotFound')).toHaveLength(1)
+    })
+
+    test('should display PageNotFound if the user role is Coder and they try to go to jurisdictions', () => {
+      const wrapper = setup({
+        user: { role: 'Coder' },
+        location: { pathname: '/project/1/jurisdictions' }
+      }, ['/project/1/jurisdictions'])
+      expect(wrapper.find('PageNotFound')).toHaveLength(1)
     })
   })
 })
