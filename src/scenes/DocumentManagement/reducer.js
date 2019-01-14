@@ -15,7 +15,8 @@ const INITIAL_STATE = {
   },
   rowsPerPage: '10',
   page: 0,
-  allSelected: false
+  allSelected: false,
+  bulkOperationInProgress:false
 }
 
 const mergeName = docObj => ({
@@ -206,7 +207,33 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           visible: sortAndSlice(matches, state.page, state.rowsPerPage)
         }
       }
+    case types.BULK_DELETE_REQUEST:
+      console.log('bulk delete request activated')
+        return {
+            ...state,
+            bulkOperationInProgress: true
+        }
+      case types.BULK_DELETE_SUCCESS:
+        state.documents.checked.forEach(docId => {
+          delete state.documents.byId[docId]
+        })
+        obj = state.documents.byId
+        return {
+            ...state,
+            documents: {
+                ...state.documents,
+                byId: obj,
+                allIds: Object.keys(obj),
+                visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage),
+                checked: []
+            },
+            bulkOperationInProgress: false
+         }
 
+    case types.BULK_DELETE_FAIL:
+        return {
+          ...state,
+    }
     case types.FLUSH_STATE:
       return INITIAL_STATE
 

@@ -40,6 +40,11 @@ const docManageCalls = [
     name: 'getDocumentsByProjectJurisdiction',
     method: 'get',
     path: ({ projectId, jurisdictionId }) => `/docs/projects/${projectId}/jurisdictions/${jurisdictionId}`
+  },
+  {
+    name:'bulkDeleteDoc',
+    method: 'post',
+    path:  () => `/docs/bulkDelete`
   }
 ]
 

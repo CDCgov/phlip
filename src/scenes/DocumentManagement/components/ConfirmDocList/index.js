@@ -3,21 +3,23 @@ import PropTypes from 'prop-types'
 import FlexGrid from 'components/FlexGrid'
 import Table from 'components/Table'
 import TableBody from '@material-ui/core/TableBody'
-import TableHead from '@material-ui/core/TableHead'
-import TableFooter from '@material-ui/core/TableFooter'
-import TableRow from '@material-ui/core/TableRow'
 import DocListTableHead from './components/DocListTableHead'
+import TableHead from '@material-ui/core/TableHead'
 import DocListTableRow from './components/DocListTableRow'
-import TablePagination from 'components/TablePagination'
+import Typography from '@material-ui/core/Typography'
 
-export const DocList = props => {
+export const ConfirmDocList = props => {
   const {
-    onSelectAllFiles, onSelectOneFile, rowsPerPage, page,
-    onChangePage, onChangeRows, documents, docCount, allSelected, onBulkAction, allowDropdown
+    documents, docCount, onBulkActionConfirm
   } = props
 
   return (
     <FlexGrid container flex style={{ overflow: 'hidden' }}>
+      <FlexGrid>
+        <Typography >
+            Number of Documents Selected: {docCount}
+        </Typography>
+      </FlexGrid>
       <Table
         style={{
           borderCollapse: 'separate',
@@ -27,35 +29,20 @@ export const DocList = props => {
         }}
         summary="List of documents">
         <TableHead style={{ width: '100%' }}>
-          <DocListTableHead onSelectAll={() => onSelectAllFiles()} allSelected={allSelected} onActionSelected={(actionType) => onBulkAction(actionType)} allowedDropdown={allowDropdown} />
+          <DocListTableHead />
         </TableHead>
         <TableBody>
           {documents.map(docId => <DocListTableRow
             key={`doc-${docId}`}
             id={docId}
-            onSelectFile={() => onSelectOneFile(docId)}
           />)}
         </TableBody>
-      </Table>
-      <FlexGrid flex />
-      <Table>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              count={docCount}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onChangePage={(event, page) => onChangePage(page)}
-              onChangeRowsPerPage={(event) => onChangeRows(event.target.value)}
-            />
-          </TableRow>
-        </TableFooter>
       </Table>
     </FlexGrid>
   )
 }
 
-DocList.propTypes = {
+ConfirmDocList.propTypes = {
   /**
    * List of document ids
    */
@@ -101,15 +88,11 @@ DocList.propTypes = {
    */
   allSelected: PropTypes.bool,
 
-  /**
-   * Handles when the user requests to change pages in table
-   */
-  onBulkAction: PropTypes.func,
     /**
-     * flag to enabled dropdown when user selected at least on document
+     * Handles when the user confirm action
      */
-    allowDropdown : PropTypes.bool
+    onBulkActionConfirm: PropTypes.func,
 
 }
 
-export default DocList
+export default ConfirmDocList

@@ -13,7 +13,7 @@ import CheckboxLabel from 'components/CheckboxLabel'
  * Represents one row in the document management table
  */
 export const DocListTableRow = props => {
-  const { doc, onSelectFile, isChecked, projectList, jurisdictionList } = props
+  const { doc, projectList, jurisdictionList } = props
   const date = moment.utc(doc.uploadedDate).local().format('M/D/YYYY')
   const listStyle = {
     overflow: 'hidden',
@@ -26,31 +26,27 @@ export const DocListTableRow = props => {
  // const iconColor = '#949494'
   return (
     <TableRow>
-      <TableCell padding="checkbox" style={{ paddingLeft: 24, paddingRight: 0, width: '1%' }}>
-        <CheckboxLabel input={{ value: isChecked, onChange: onSelectFile }} />
-        {/*<Icon color={iconColor}><FileDocument /></Icon>*/}
-      </TableCell>
-      <TableCell padding="checkbox" style={listStyle}>
-        <TextLink to={{ pathname: `/docs/${doc._id}/view`, state: { document: { ...doc } } }}>
+      <TableCell padding="checkbox">
+        <span>
           {doc.name}
-        </TextLink>
+        </span>
+      </TableCell>
+      <TableCell padding="checkbox">
+        <span style={{ fontWeight: 500 }}>{doc.uploadedBy.firstName} {doc.uploadedBy.lastName}</span>
+
       </TableCell>
       <TableCell padding="checkbox" style={listStyle}>
-        <span style={{ fontWeight: 500 }}>Uploaded By:{' '}</span>
-        {doc.uploadedBy.firstName} {doc.uploadedBy.lastName}
+        <span style={{ fontWeight: 500 }}>{date}</span>
+
       </TableCell>
-      <TableCell padding="checkbox" style={listStyle}>
-        <span style={{ fontWeight: 500 }}>Uploaded Date:{' '}</span>
-        {date}
-      </TableCell>
-      <TableCell padding="checkbox" style={listStyle}>
-        <span style={{ fontWeight: 500 }}>Projects:{' '}</span>
-        {projectList.join(', ')}
-      </TableCell>
-      <TableCell padding="checkbox" style={{ ...listStyle, paddingRight: 24 }}>
-        <span style={{ fontWeight: 500 }}>Jurisdictions:{' '}</span>
-        {jurisdictionList.join(', ')}
-      </TableCell>
+      {/*<TableCell padding="checkbox" style={listStyle}>*/}
+      {/*<span style={{ fontWeight: 500 }}>{projectList.join(', ')}</span>*/}
+
+      {/*</TableCell>*/}
+      {/*<TableCell padding="checkbox" style={{ ...listStyle, paddingRight: 24 }}>*/}
+      {/*<span style={{ fontWeight: 500 }}>{jurisdictionList.join(', ')}</span>*/}
+
+      {/*</TableCell>*/}
     </TableRow>
   )
 }
