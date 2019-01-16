@@ -304,7 +304,7 @@ export const handleUpdateUserAnswers = (state, action) => {
   switch (state.question.questionType) {
     case questionTypes.BINARY:
     case questionTypes.MULTIPLE_CHOICE:
-      currentUserAnswers = { [action.answerId]: { schemeAnswerId: action.answerId, pincite: '', annotations: [] } }
+      currentUserAnswers = { [action.answerId]: { schemeAnswerId: action.answerId, pincite: '', annotations: '[]' } }
       break
 
     case questionTypes.TEXT_FIELD:
@@ -316,7 +316,7 @@ export const handleUpdateUserAnswers = (state, action) => {
             schemeAnswerId: action.answerId,
             textAnswer: action.answerValue,
             pincite: currentUserAnswers[action.answerId] ? currentUserAnswers[action.answerId].pincite || '' : '',
-            annotations: []
+            annotations: '[]'
           }
         }
       }
@@ -336,7 +336,7 @@ export const handleUpdateUserAnswers = (state, action) => {
       } else {
         currentUserAnswers = {
           ...currentUserAnswers,
-          [action.answerId]: { schemeAnswerId: action.answerId, pincite: '', annotations: [] }
+          [action.answerId]: { schemeAnswerId: action.answerId, pincite: '', annotations: '[]' }
         }
       }
       break
@@ -345,7 +345,7 @@ export const handleUpdateUserAnswers = (state, action) => {
       if (currentUserAnswers.hasOwnProperty(action.answerId)) delete currentUserAnswers[action.answerId]
       else currentUserAnswers = {
         ...currentUserAnswers,
-        [action.answerId]: { schemeAnswerId: action.answerId, pincite: '', annotations: [] }
+        [action.answerId]: { schemeAnswerId: action.answerId, pincite: '', annotations: '[]' }
       }
   }
 
@@ -623,7 +623,6 @@ export const getQuestionSelectedInNav = (state, action) => {
 const deleteAnswerIds = answer => {
   let ans = { ...answer }
   if (ans.id) delete ans.id
-  ans.annotations = JSON.stringify(ans.annotations)
 
   return ans
 }

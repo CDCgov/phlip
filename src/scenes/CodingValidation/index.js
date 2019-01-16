@@ -420,6 +420,7 @@ export class CodingValidation extends Component {
    */
   onToggleAnswerForAnno = id => {
     this.props.actions.onToggleAnswerForAnno(id)
+    this.onSaveCodedQuestion()
   }
 
   /**

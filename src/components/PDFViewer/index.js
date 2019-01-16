@@ -85,11 +85,11 @@ export class PDFViewer extends Component {
                     width: this.viewerRef.current.clientWidth,
                     height: this.viewerRef.current.clientHeight
                   }}
+                  docId={this.props.document._id}
                   key={`page-${i}`}
                   allowSelection={this.props.allowSelection}
                   ref={this[`page${i + 1}Ref`]}
                   annotations={this.props.annotations.filter(anno => anno.pages.includes(i))}
-                  captureArea={this.props.captureArea}
                   saveAnnotation={this.props.saveAnnotation}
                 />
               )

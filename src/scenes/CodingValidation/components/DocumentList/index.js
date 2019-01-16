@@ -48,7 +48,7 @@ export class DocumentList extends Component {
   }
 
   onSaveAnnotation = annotation => {
-    this.props.actions.saveAnnotation(annotation, this.props.questionId, this.props.answerSelected)
+    this.props.actions.saveAnnotation(annotation, this.props.answerSelected, this.props.questionId)
   }
 
   /**

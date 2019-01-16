@@ -88,6 +88,7 @@ class Page extends Component {
         const selectionRects = range.getClientRects()
 
         let fullAnnotation = {
+          docId: this.props.docId,
           pages: [this.props.id],
           rects: [],
           text: document.getSelection().toString(),
