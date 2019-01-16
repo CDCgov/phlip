@@ -260,8 +260,9 @@ class Page extends Component {
     }
 
     const highlightStyle = {
-      backgroundColor: `rgb(${251}, ${237}, ${158})`,
-      opacity: 0.3,
+      //backgroundColor: `rgb(${251}, ${237}, ${158})`,
+      backgroundColor: '#00e0ff',
+      opacity: 0.2,
       position: 'absolute'
     }
 

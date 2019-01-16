@@ -189,8 +189,6 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         q = { ...state.documents.annotated[action.questionId][action.selectedCategoryId] }
       }
 
-      console.log(q)
-
       return {
         ...state,
         documents: {
