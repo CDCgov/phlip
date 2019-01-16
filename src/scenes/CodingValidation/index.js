@@ -503,6 +503,8 @@ export class CodingValidation extends Component {
           projectId={this.props.projectId}
           jurisdictionId={this.props.jurisdiction.jurisdictionId}
           page={this.props.page}
+          onSave={this.onSaveCodedQuestion}
+          questionId={this.props.question.id}
         />
       </>
     )

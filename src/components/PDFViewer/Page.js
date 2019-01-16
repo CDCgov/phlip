@@ -57,7 +57,16 @@ class Page extends Component {
   }
 
   handleConfirmAnnotation = index => {
+    this.props.saveAnnotation(this.state.pendingAnnotations[index])
     this.setState({
+      pending: false,
+      pendingAnnotations: []
+    })
+  }
+
+  handleCancelAnnotation = index => {
+    this.setState({
+      pendingAnnotations: [],
       pending: false
     })
   }
@@ -72,43 +81,48 @@ class Page extends Component {
   }
 
   onMouseUp = () => {
-    const color = new Uint8ClampedArray()
-    color[0] = 251
-    color[1] = 237
-    color[2] = 158
-
     if (this.props.allowSelection && !this.state.pending) {
-      const range = document.getSelection().getRangeAt(0)
-      const pageRect = this.pageRef.current.getClientRects()[0]
-      const selectionRects = range.getClientRects()
+      if (document.getSelection().toString().length > 0) {
+        const range = document.getSelection().getRangeAt(0)
+        const pageRect = this.pageRef.current.getClientRects()[0]
+        const selectionRects = range.getClientRects()
 
-      let fullAnnotation = {
-        pages: [this.props.id],
-        rects: [],
-        text: document.getSelection().toString(),
-        length: selectionRects.length
-      }
-
-      for (let i = 0; i < selectionRects.length; i++) {
-        const r = selectionRects[i]
-        const start = dom_utils.applyInverseTransform([
-          r.left - pageRect.x, r.top - pageRect.y
-        ], this.state.renderContext.viewport.transform)
-
-        const end = dom_utils.applyInverseTransform([
-          r.right - pageRect.x, r.bottom - pageRect.y
-        ], this.state.renderContext.viewport.transform)
-
-        const points = {
-          x: start[0],
-          y: start[1],
-          endX: end[0],
-          endY: end[1]
+        let fullAnnotation = {
+          pages: [this.props.id],
+          rects: [],
+          text: document.getSelection().toString(),
+          length: selectionRects.length
         }
 
-        if (i > 0) {
-          const previous = fullAnnotation.rects[fullAnnotation.rects.length - 1]
-          if (!this.matchRects(previous.pdfPoints, points)) {
+        for (let i = 0; i < selectionRects.length; i++) {
+          const r = selectionRects[i]
+          const start = dom_utils.applyInverseTransform([
+            r.left - pageRect.x, r.top - pageRect.y
+          ], this.state.renderContext.viewport.transform)
+
+          const end = dom_utils.applyInverseTransform([
+            r.right - pageRect.x, r.bottom - pageRect.y
+          ], this.state.renderContext.viewport.transform)
+
+          const points = {
+            x: start[0],
+            y: start[1],
+            endX: end[0],
+            endY: end[1]
+          }
+
+          if (i > 0) {
+            const previous = fullAnnotation.rects[fullAnnotation.rects.length - 1]
+            if (!this.matchRects(previous.pdfPoints, points)) {
+              fullAnnotation.rects = [
+                ...fullAnnotation.rects,
+                {
+                  pageNumber: this.props.id,
+                  pdfPoints: points
+                }
+              ]
+            }
+          } else {
             fullAnnotation.rects = [
               ...fullAnnotation.rects,
               {
@@ -117,29 +131,20 @@ class Page extends Component {
               }
             ]
           }
-        } else {
-          fullAnnotation.rects = [
-            ...fullAnnotation.rects,
-            {
-              pageNumber: this.props.id,
-              pdfPoints: points
-            }
-          ]
         }
-      }
 
-      this.setState({
-        pendingAnnotations: [],
-        annotations: [
-          ...this.state.annotations,
-          {
-            ...fullAnnotation,
-            startRect: fullAnnotation.rects[0],
-            endRect: fullAnnotation.rects[fullAnnotation.rects.length]
-          }
-        ],
-        pending: true
-      })
+        this.setState({
+          pendingAnnotations: [
+            ...this.state.annotations,
+            {
+              ...fullAnnotation,
+              startRect: fullAnnotation.rects[0],
+              endRect: fullAnnotation.rects[fullAnnotation.rects.length]
+            }
+          ],
+          pending: true
+        })
+      }
     }
   }
 
@@ -223,26 +228,6 @@ class Page extends Component {
     }
   }
 
-  updateHighlights = (text, i) => {
-    let el = <TextNode key={`textLine-${i}-page-${this.props.id}`} index={i} id={this.props.id} text={text} />
-    this.props.annotations.forEach(anno => {
-      if (anno.range.start.index === i || anno.range.end.index === i) {
-        el = (
-          <div key={`textLine-${i}-page-${this.props.id}`} style={text.style}>
-            {text.str}
-          </div>
-        )
-      } else {
-        el = (
-          <div key={`textLine-${i}-page-${this.props.id}`} style={text.style}>
-            {text.str}
-          </div>
-        )
-      }
-    })
-    return el
-  }
-
   scaleXText = textContent => {
     const ctx = this.state.renderContext.canvasContext
     const viewport = this.state.renderContext.viewport
@@ -250,6 +235,25 @@ class Page extends Component {
     const fontWidth = ctx.measureText(textContent.str).width
     const scale = (textContent.width * viewport.scale) / fontWidth
     return { ...textContent, style: { ...textContent.style, transform: `scaleX(${scale})` } }
+  }
+
+  getBounds = points => {
+    const highlight = points
+    const startPoint = dom_utils.applyTransform([
+      highlight.x, highlight.y
+    ], this.state.renderContext.viewport.transform)
+    const endPoint = dom_utils.applyTransform([
+      highlight.endX, highlight.endY
+    ], this.state.renderContext.viewport.transform)
+
+    const bounds = [...startPoint, ...endPoint]
+
+    const left = Math.min(bounds[0], bounds[2]),
+      top = Math.min(bounds[1], bounds[3]),
+      width = Math.abs(bounds[0] - bounds[2]),
+      height = Math.abs(bounds[1] - bounds[3])
+
+    return { left, top, width, height, bounds }
   }
 
   render() {
@@ -288,44 +292,44 @@ class Page extends Component {
           <canvas {...this.state.canvasStyleSpecs} id={`page-${this.props.id}-canvas`} ref={this.canvasRef}>
             {this.state.renderContext.canvasContext && this.state.readyToRenderText && this.renderPage()}
           </canvas>
-          {this.state.renderContext.canvasContext &&
-          this.state.annotations.length > 0 &&
-          this.state.annotations.map((annotation, i) => {
+        </div>
+        <div className="annotationLayer">
+          {this.state.readyToRenderText && this.props.annotations.map((annotation, i) => {
             return annotation.rects.map((rect, j) => {
-              const highlight = rect.pdfPoints
-              const vp = this.state.renderContext.viewport.convertToViewportRectangle([
-                highlight.x, highlight.y, highlight.endX, highlight.endY
-              ])
-              const startPoint = dom_utils.applyTransform([
-                highlight.x, highlight.y
-              ], this.state.renderContext.viewport.transform)
-              const endPoint = dom_utils.applyTransform([
-                highlight.endX, highlight.endY
-              ], this.state.renderContext.viewport.transform)
-
-              const bounds = [...startPoint, ...endPoint]
-
-              const left = Math.min(bounds[0], bounds[2]),
-                top = Math.min(bounds[1], bounds[3]),
-                width = Math.abs(bounds[0] - bounds[2]),
-                height = Math.abs(bounds[1] - bounds[3])
-
+              const { left, top, height, width } = this.getBounds(rect.pdfPoints)
               return (
-                <Fragment key={`highlight-area-${i}-${j}`}>
+                <div
+                  key={`highlight-${i}-${j}`}
+                  style={{ left, top, height, width, ...highlightStyle }}
+                />
+              )
+            })
+          })}
+          {this.state.renderContext.canvasContext &&
+          this.state.pendingAnnotations.length > 0 &&
+          this.state.pendingAnnotations.map((annotation, i) => {
+            return annotation.rects.map((rect, j) => {
+              const { left, top, height, width, bounds } = this.getBounds(rect.pdfPoints)
+              return (
+                <Fragment key={`pending-highlight-area-${i}-${j}`}>
                   <div
-                    key={`highlight-${i}-${j}`}
+                    key={`pending-highlight-${i}-${j}`}
                     style={{ left, top, height, width, ...highlightStyle }}
                   />
                   {j === annotation.rects.length - 1 &&
                   <>
                     <div
-                      key={`highlight-${i}-${j}-cancel`}
-                      style={{ ...iconNavStyles, left: endPoint[0] - 53, top: endPoint[1], marginTop: 1 }}>
-                      <IconButton style={{ height: 25, width: 25 }}>close</IconButton>
+                      key={`pending-highlight-${i}-${j}-cancel`}
+                      style={{ ...iconNavStyles, left: bounds[2] - 53, top: bounds[3], marginTop: 1 }}>
+                      <IconButton
+                        style={{ height: 25, width: 25 }}
+                        onClick={() => this.handleCancelAnnotation(i)}>
+                        close
+                      </IconButton>
                     </div>
                     <div
-                      key={`highlight-${i}-${j}-confirm`}
-                      style={{ ...iconNavStyles, left: endPoint[0] - 24, top: endPoint[1], marginTop: 1 }}>
+                      key={`pending-highlight-${i}-${j}-confirm`}
+                      style={{ ...iconNavStyles, left: bounds[2] - 24, top: bounds[3], marginTop: 1 }}>
                       <IconButton
                         style={{ height: 25, width: 25 }}
                         onClick={() => this.handleConfirmAnnotation(i)}>
@@ -340,7 +344,7 @@ class Page extends Component {
         </div>
         <div className="textLayer" id={`text-layer-page-${this.props.id}`} style={dims} ref={this.textLayerRef}>
           {this.state.readyToRenderText === true && this.allTextDivs.map((textLine, i) => {
-            return this.updateHighlights(textLine, i)
+            return <TextNode key={`textLine-${i}-page-${this.props.id}`} index={i} id={this.props.id} text={textLine} />
           })}
         </div>
       </div>

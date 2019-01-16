@@ -47,6 +47,10 @@ export class DocumentList extends Component {
     this.clearDocSelected()
   }
 
+  onSaveAnnotation = annotation => {
+    this.props.actions.saveAnnotation(annotation, this.props.questionId, this.props.answerSelected)
+  }
+
   /**
    * Gets the actual document contents when a document is clicked
    */
@@ -91,13 +95,18 @@ export class DocumentList extends Component {
               <i>
                 <span style={{ fontWeight: 500, color: theme.palette.secondary.pageHeader }}>Annotation Mode:</span>
                 {' '}
-                <span style={{ color: '#757575' }}>Highlight the desired text and confirm. </span>
+                <span style={{ color: '#757575' }}>Highlight the desired text and confirm.</span>
               </i>
             </Typography>
           </FlexGrid>
           }
           {this.props.docSelected === true &&
-          <PDFViewer allowSelection={Boolean(this.props.answerSelected)} document={this.props.openedDoc} />}
+          <PDFViewer
+            allowSelection={Boolean(this.props.answerSelected)}
+            document={this.props.openedDoc}
+            saveAnnotation={this.onSaveAnnotation}
+            annotations={this.props.annotations}
+          />}
           {this.props.docSelected === false && this.props.documents.map((doc, i) => {
             return (
               <Fragment key={`${doc._id}`}>
@@ -147,7 +156,12 @@ const mapStateToProps = (state, ownProps) => {
     annotated: annotatedToShow,
     openedDoc: pageState.openedDoc || {},
     docSelected: pageState.docSelected || false,
-    answerSelected
+    answerSelected,
+    annotations: answerSelected
+      ? codingState.question.isCategoryQuestion
+        ? JSON.parse(codingState.userAnswers[ownProps.questionId][codingState.selectedCategoryId].answers[answerSelected].annotations)
+        : JSON.parse(codingState.userAnswers[ownProps.questionId].answers[answerSelected].annotations)
+      : []
   }
 }
 

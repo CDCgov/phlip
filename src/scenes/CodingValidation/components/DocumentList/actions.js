@@ -20,5 +20,5 @@ export default {
   ),
   clearDocSelected: makeActionCreator(types.CLEAR_DOC_SELECTED),
   getDocumentContentsRequest: makeActionCreator(types.GET_DOC_CONTENTS_REQUEST, 'id'),
-  saveAnnotation: makeActionCreator(types.ON_SAVE_ANNOTATION, 'annotation')
+  saveAnnotation: makeActionCreator(types.ON_SAVE_ANNOTATION, 'annotation', 'answerId', 'questionId')
 }

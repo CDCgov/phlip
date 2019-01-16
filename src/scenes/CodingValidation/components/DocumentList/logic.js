@@ -1,6 +1,17 @@
 import { createLogic } from 'redux-logic'
 import { types } from './actions'
 
+const saveAnnotationTransformLogic = createLogic({
+  type: types.ON_SAVE_ANNOTATION,
+  transform({ getState, action }, next) {
+    next({
+      ...action,
+      isCategoryQuestion: getState().scenes.codingValidation.coding.question.isCategoryQuestion,
+      selectedCategoryId: getState().scenes.codingValidation.coding.selectedCategoryId
+    })
+  }
+})
+
 const getApprovedDocumentsLogic = createLogic({
   type: [types.GET_APPROVED_DOCUMENTS_REQUEST],
   async process({ docApi, action }, dispatch, done) {
@@ -18,5 +29,6 @@ const getApprovedDocumentsLogic = createLogic({
 })
 
 export default [
-  getApprovedDocumentsLogic
+  getApprovedDocumentsLogic,
+  saveAnnotationTransformLogic
 ]

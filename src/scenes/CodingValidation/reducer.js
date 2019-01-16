@@ -1,7 +1,7 @@
 import { types } from './actions'
 import {
   determineShowButton, handleCheckCategories,
-  handleUpdateUserAnswers, handleUpdateUserCategoryChild, handleUpdateUserCodedQuestion,
+  handleUpdateUserAnswers, handleUpdateUserCategoryChild, handleUpdateUserCodedQuestion, handleUpdateAnnotations,
   handleUserPinciteQuestion, initializeNavigator, generateError, updateCategoryCodedQuestion, updateCodedQuestion
 } from 'utils/codingHelpers'
 
@@ -177,6 +177,13 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         ...questionUpdater('answers', handleUserPinciteQuestion),
+        unsavedChanges: true
+      }
+
+    case types.ON_SAVE_ANNOTATION:
+      return {
+        ...state,
+        ...questionUpdater('answers', handleUpdateAnnotations),
         unsavedChanges: true
       }
 

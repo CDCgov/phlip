@@ -74,7 +74,7 @@ const sortAnnotations = (userAnswers, newQuestion = {}, categories = [], scheme)
       ? handleCategories(categories, newQuestion)
       : initializeNewQuestion(newQuestion)
   }
-  
+
   Object.keys(userAnswers).map(questionId => {
     const question = userAnswers[questionId]
     byQuestion[questionId] = parseInt(questionId) === parseInt(newQuestion.id)
@@ -177,6 +177,43 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         openedDoc: {
           _id: action.id,
           name: state.documents.byId[action.id].name
+        }
+      }
+
+    case types.ON_SAVE_ANNOTATION:
+      let q = {
+        ...state.documents.annotated[action.questionId]
+      }
+
+      if (action.isCategoryQuestion) {
+        q = { ...state.documents.annotated[action.questionId][action.selectedCategoryId] }
+      }
+
+      console.log(q)
+
+      return {
+        ...state,
+        documents: {
+          ...state.documents,
+          annotated: {
+            ...state.documents.annotated,
+            [action.questionId]: action.isCategoryQuestion
+              ? {
+                [action.selectedCategoryId]: {
+                  byAnswer: {
+                    ...q.byAnswer,
+                    [action.answerId]: [...q.byAnswer[action.answerId]]
+                  },
+                  all: [...q.all, state.openedDoc._id]
+                }
+              } : {
+                byAnswer: {
+                  ...q.byAnswer,
+                  [action.answerId]: [...q.byAnswer[action.answerId], state.openedDoc._id],
+                },
+                all: [...q.all, state.openedDoc._id]
+              }
+          }
         }
       }
 

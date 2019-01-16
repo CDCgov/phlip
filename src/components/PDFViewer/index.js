@@ -66,9 +66,6 @@ export class PDFViewer extends Component {
           pageToAdd = { page, textContent }
           resolve(pageToAdd)
         })
-        page.getAnnotations().then(annotations => {
-          console.log(annotations)
-        })
       })
     })
   }
@@ -91,8 +88,9 @@ export class PDFViewer extends Component {
                   key={`page-${i}`}
                   allowSelection={this.props.allowSelection}
                   ref={this[`page${i + 1}Ref`]}
-                  annotations={page.annotations}
+                  annotations={this.props.annotations.filter(anno => anno.pages.includes(i))}
                   captureArea={this.props.captureArea}
+                  saveAnnotation={this.props.saveAnnotation}
                 />
               )
             }

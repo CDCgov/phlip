@@ -372,6 +372,20 @@ export const handleUpdateUserAnswers = (state, action) => {
   }
 }
 
+export const handleUpdateAnnotations = (state, action) => {
+  const currentUserAnswers = state.question.isCategoryQuestion
+    ? state.userAnswers[action.questionId][state.selectedCategoryId].answers
+    : state.userAnswers[action.questionId].answers
+
+  return {
+    ...currentUserAnswers,
+    [action.answerId]: {
+      ...currentUserAnswers[action.answerId],
+      annotations: JSON.stringify([...JSON.parse(currentUserAnswers[action.answerId].annotations), action.annotation])
+    }
+  }
+}
+
 /**
  * Handles if a user updates the pincite of an answer choice
  * @param {Object} state
@@ -512,7 +526,7 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
       item.children = item.questionType === questionTypes.CATEGORY
         ? item.isAnswered
           ? initializeNavigator(commonHelpers.sortListOfObjects(Object.values(scheme)
-            .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
+          .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
             { ...scheme },
             codedQuestions,
             currentQuestion
