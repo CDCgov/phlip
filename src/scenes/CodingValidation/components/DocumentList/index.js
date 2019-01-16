@@ -26,7 +26,10 @@ export class DocumentList extends Component {
     annotated: PropTypes.array,
     docSelected: PropTypes.bool,
     openedDoc: PropTypes.object,
-    answerSelected: PropTypes.oneOfType([PropTypes.number, PropTypes.bool])
+    answerSelected: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
+    annotations: PropTypes.array,
+    questionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    saveUserAnswer: PropTypes.func
   }
 
   static defaultProps = {
@@ -49,6 +52,7 @@ export class DocumentList extends Component {
 
   onSaveAnnotation = annotation => {
     this.props.actions.saveAnnotation(annotation, this.props.answerSelected, this.props.questionId)
+    this.props.saveUserAnswer()
   }
 
   /**
@@ -149,19 +153,24 @@ const mapStateToProps = (state, ownProps) => {
   const filteredOrder = ordered.filter(doc => !annotatedToShow.includes(doc))
   const filteredAnnos = ordered.filter(doc => annotatedToShow.includes(doc))
 
+  const annotations = answerSelected
+    ? codingState.question.isCategoryQuestion
+      ? JSON.parse(codingState.userAnswers[ownProps.questionId][codingState.selectedCategoryId].answers[answerSelected].annotations)
+      : JSON.parse(codingState.userAnswers[ownProps.questionId].answers[answerSelected].annotations)
+    : []
+
+  const annotated = annotations.map(annotation => annotation.docId)
+  const annotatedForDoc = annotations.filter(annotation => annotation.docId === pageState.openedDoc._id)
+
   return {
     documents: [...filteredAnnos, ...filteredOrder].map(id => pageState.documents.byId[id]),
     jurisdictionId: ownProps.jurisdictionId,
     projectId: ownProps.projectId,
-    annotated: annotatedToShow,
+    annotated,
     openedDoc: pageState.openedDoc || {},
     docSelected: pageState.docSelected || false,
     answerSelected,
-    annotations: answerSelected
-      ? codingState.question.isCategoryQuestion
-        ? JSON.parse(codingState.userAnswers[ownProps.questionId][codingState.selectedCategoryId].answers[answerSelected].annotations)
-        : JSON.parse(codingState.userAnswers[ownProps.questionId].answers[answerSelected].annotations)
-      : []
+    annotations: annotatedForDoc
   }
 }
 

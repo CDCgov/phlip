@@ -184,7 +184,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         ...questionUpdater('answers', handleUpdateAnnotations),
-        unsavedChanges: true
+        unsavedChanges: true,
+        hasTouchedQuestion: true
       }
 
     case types.ON_CHANGE_COMMENT:

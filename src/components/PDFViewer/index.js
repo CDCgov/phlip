@@ -10,7 +10,8 @@ export class PDFViewer extends Component {
   static propTypes = {
     document: PropTypes.object,
     allowSelection: PropTypes.bool,
-    captureArea: PropTypes.any
+    annotations: PropTypes.array,
+    saveAnnotation: PropTypes.func
   }
 
   constructor(props, context) {
@@ -61,9 +62,8 @@ export class PDFViewer extends Component {
   getSpecificPage = pageNumber => {
     return new Promise(resolve => {
       this.state.pdf.getPage(pageNumber + 1).then(page => {
-        let pageToAdd = {}
         page.getTextContent({ normalizeWhitespace: true, enhanceTextSelection: true }).then(async textContent => {
-          pageToAdd = { page, textContent }
+          const pageToAdd = { page, textContent }
           resolve(pageToAdd)
         })
       })

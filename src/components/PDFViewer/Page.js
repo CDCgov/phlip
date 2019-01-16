@@ -137,11 +137,7 @@ class Page extends Component {
         this.setState({
           pendingAnnotations: [
             ...this.state.annotations,
-            {
-              ...fullAnnotation,
-              startRect: fullAnnotation.rects[0],
-              endRect: fullAnnotation.rects[fullAnnotation.rects.length]
-            }
+            fullAnnotation
           ],
           pending: true
         })
