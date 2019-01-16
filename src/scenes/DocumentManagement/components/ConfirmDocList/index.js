@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography'
 
 export const ConfirmDocList = props => {
   const {
-    documents, docCount, onBulkActionConfirm
+    documents, docCount
   } = props
 
   return (

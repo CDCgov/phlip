@@ -114,4 +114,46 @@ describe('Document Management logic', () => {
     })
   })
 
+  test('should delete selected documents and dispatch BULK_DELETE_SUCCESS on success', done => {
+        mock.onPost('/docs/bulkDelete').reply(200, {n:2, ok:1})
+
+        const store = setupStore(
+                [
+                  { name: 'Doc 1',
+                  uploadedBy: { firstName: 'test', lastName: 'user' },
+                  projects: [1], jurisdictions: [1] },
+                  { name: 'Doc 2',uploadedBy: { firstName: 'test', lastName: 'user' },
+                  projects: [1], jurisdictions: [1]}
+          ]
+        )
+
+        store.dispatch({ type: types.BULK_DELETE_REQUEST })
+
+        store.whenComplete(() => {
+            expect(store.actions[1]).toEqual({ type: types.BULK_DELETE_SUCCESS, payload: {n:2, ok:1} })
+            done()
+        })
+    })
+
+  test('should update selected documents and dispatch BULK_UPDATE_SUCCESS on success', done => {
+        mock.onPost('/docs/bulkUpdate').reply(200, { n: 2, nModified: 2, ok: 1 })
+
+        const store = setupStore(
+            [
+                { name: 'Doc 1',
+                    uploadedBy: { firstName: 'test', lastName: 'user' },
+                    projects: [1], jurisdictions: [1] },
+                { name: 'Doc 2',uploadedBy: { firstName: 'test', lastName: 'user' },
+                    projects: [1], jurisdictions: [1]}
+            ]
+        )
+
+        store.dispatch({ type: types.BULK_UPDATE_REQUEST })
+
+        store.whenComplete(() => {
+            expect(store.actions[1]).toEqual({ type: types.BULK_UPDATE_SUCCESS, payload: { n: 2, nModified: 2, ok: 1 }} )
+            done()
+        })
+    })
+
 })

@@ -4,16 +4,12 @@ import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
 import moment from 'moment'
 import { connect } from 'react-redux'
-import TextLink from 'components/TextLink'
-// import Icon from 'components/Icon'
-// import { FileDocument } from 'mdi-material-ui'
-import CheckboxLabel from 'components/CheckboxLabel'
 
 /**
  * Represents one row in the document management table
  */
 export const DocListTableRow = props => {
-  const { doc, projectList, jurisdictionList } = props
+  const { doc } = props
   const date = moment.utc(doc.uploadedDate).local().format('M/D/YYYY')
   const listStyle = {
     overflow: 'hidden',
@@ -39,14 +35,6 @@ export const DocListTableRow = props => {
         <span style={{ fontWeight: 500 }}>{date}</span>
 
       </TableCell>
-      {/*<TableCell padding="checkbox" style={listStyle}>*/}
-      {/*<span style={{ fontWeight: 500 }}>{projectList.join(', ')}</span>*/}
-
-      {/*</TableCell>*/}
-      {/*<TableCell padding="checkbox" style={{ ...listStyle, paddingRight: 24 }}>*/}
-      {/*<span style={{ fontWeight: 500 }}>{jurisdictionList.join(', ')}</span>*/}
-
-      {/*</TableCell>*/}
     </TableRow>
   )
 }

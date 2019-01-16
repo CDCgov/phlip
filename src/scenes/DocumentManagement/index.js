@@ -10,7 +10,7 @@ import Upload from './scenes/Upload'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import Divider from '@material-ui/core/Divider'
 import ProJurSearch from './components/BulkProJurSearch'
-import { Button, FlexGrid, Dropdown, IconButton, Alert, CircularLoader, ApiErrorAlert } from 'components'
+import { FlexGrid, CircularLoader, ApiErrorAlert } from 'components'
 import actions, { projectAutocomplete, jurisdictionAutocomplete } from './actions'
 import ConfirmDocList from './components/ConfirmDocList'
 /**
@@ -59,7 +59,9 @@ export class DocumentManagement extends Component {
     bulkOperationInProgress: PropTypes.bool,
     bulkActionExec : PropTypes.func,
     handleBulkDelete: PropTypes.func,
-    handleBulkUpdate: PropTypes.func
+    handleBulkUpdate: PropTypes.func,
+    apiErrorOpen: PropTypes.bool,
+    apiErrorInfo: PropTypes.object
 
   }
 
@@ -90,7 +92,15 @@ export class DocumentManagement extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-
+        if (prevProps.bulkOperationInProgress === true && this.props.bulkOperationInProgress === false) {
+            if (this.props.apiErrorOpen){
+                console.log('error detected')
+            }
+            else {
+                console.log('no error')
+                this.setState({showModal:false})
+            }
+        }
     }
 
   getButtonText = text => {
@@ -132,9 +142,6 @@ export class DocumentManagement extends Component {
       }
   }
 
-  onCloseModal = () => {
-      this.setState({ showModal: false, bulkActionType:'' })
-  }
   handleSuggestionSelected = (suggestionType) => (event, { suggestionValue }) => {
       if (suggestionType === 'project') {
           this.setState({
@@ -196,11 +203,35 @@ export class DocumentManagement extends Component {
         }
         else {
             let updateData = {
-                updateType : this.state.showAddJurisdiction?'updateJurisdiction':'updateProject',
-                updateInfo : this.state.showAddJurisdiction?this.state.selectedJurisdiction:this.state.selectedProject
+                updateType : this.state.showAddJurisdiction?'jurisdictions':'projects',
+                updateProJur : this.state.showAddJurisdiction?this.state.selectedJurisdiction:this.state.selectedProject
             }
             this.props.actions.handleBulkUpdate(updateData,this.props.checkedDocs)
         }
+    }
+
+    closeAlert = () => {
+        this.props.actions.closeAlert()
+    }
+
+    onCloseModal = () => {
+        this.handleCloseProJurModal()
+    }
+
+    handleCloseProJurModal = () => {
+        if (this.state.selectedJurisdiction !== null) {
+            this.handleClearSuggestions('jurisdiction')
+            this.props.actions.jurisdictionAutocomplete.clearAll()
+        }
+
+        if (this.state.selectedProject !== null) {
+            this.handleClearSuggestions('project')
+            this.props.actions.projectAutocomplete.clearAll()
+        }
+
+        this.setState({
+            showModal: false, selectedJurisdiction: null, selectedProject: null
+        })
     }
 
     render() {
@@ -298,9 +329,9 @@ const mapStateToProps = state => {
     jurisdictionSuggestions: docManage.upload.jurisdictionSuggestions.suggestions,
     projectSearchValue: docManage.upload.projectSuggestions.searchValue,
     jurisdictionSearchValue: docManage.upload.jurisdictionSuggestions.searchValue,
-    apiErrorInfo: docManage.apiErrorInfo,
-    apiErrorOpen: docManage.apiErrorOpen || false,
-    bulkOperationInProgress: docManage.bulkOperationInProgress || false
+    apiErrorInfo: docManage.main.apiErrorInfo,
+    apiErrorOpen: docManage.main.apiErrorOpen || false,
+    bulkOperationInProgress: docManage.main.bulkOperationInProgress || false
   }
 }
 

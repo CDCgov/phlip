@@ -16,7 +16,8 @@ export const types = {
   BULK_UPDATE_FAIL: 'BULK_UPDATE_FAIL',
   BULK_DELETE_REQUEST: 'BULK_DELETE_REQUEST',
   BULK_DELETE_SUCCESS: 'BULK_DELETE_SUCCESS',
-  BULK_DELETE_FAIL: 'BULK_DELETE_FAIL'
+  BULK_DELETE_FAIL: 'BULK_DELETE_FAIL',
+  CLOSE_ALERT: 'CLOSE_ALERT'
 }
 
 export default {
@@ -26,7 +27,8 @@ export default {
   handleRowsChange: makeActionCreator(types.ON_ROWS_CHANGE, 'rowsPerPage'),
   handleSelectOneFile: makeActionCreator(types.ON_SELECT_ONE_FILE, 'id'),
   handleBulkUpdate: makeActionCreator(types.BULK_UPDATE_REQUEST, 'updateData','selectedDocs'),
-  handleBulkDelete: makeActionCreator(types.BULK_DELETE_REQUEST),
+  handleBulkDelete: makeActionCreator(types.BULK_DELETE_REQUEST,'selectedDocs'),
+  closeAlert : makeActionCreator(types.CLOSE_ALERT)
 }
 
 export const projectAutocomplete = {

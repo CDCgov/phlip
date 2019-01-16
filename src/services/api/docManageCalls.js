@@ -45,6 +45,11 @@ const docManageCalls = [
     name:'bulkDeleteDoc',
     method: 'post',
     path:  () => `/docs/bulkDelete`
+  },
+  {
+    name:'bulkUpdateDoc',
+    method: 'post',
+    path:  () => `/docs/bulkUpdate`
   }
 ]
 

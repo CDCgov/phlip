@@ -9,7 +9,7 @@ import {Dropdown, Button} from 'components'
  * Table header for the document list
  */
 export const DocListTableHead = props => {
-  const { onSelectAll, allSelected, onActionSelected, onActionApply, allowDropdown } = props
+  const { onSelectAll, allSelected, onActionSelected, onActionApply } = props
   const options = [
         { value: 'deleteDoc', label: 'Delete' }, { value: 'assignProject', label: 'Assign projects' },
         { value: 'assignJurisdiction', label: 'Assign Jurisdictions' }

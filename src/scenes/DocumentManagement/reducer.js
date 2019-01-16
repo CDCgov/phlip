@@ -16,7 +16,12 @@ const INITIAL_STATE = {
   rowsPerPage: '10',
   page: 0,
   allSelected: false,
-  bulkOperationInProgress:false
+  bulkOperationInProgress:false,
+  apiErrorOpen: false,
+  apiErrorInfo: {
+      title: '',
+      text: ''
+  }
 }
 
 const mergeName = docObj => ({
@@ -208,12 +213,12 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         }
       }
     case types.BULK_DELETE_REQUEST:
-      console.log('bulk delete request activated')
+    //  console.log('bulk delete request activated')
         return {
             ...state,
             bulkOperationInProgress: true
         }
-      case types.BULK_DELETE_SUCCESS:
+    case types.BULK_DELETE_SUCCESS:
         state.documents.checked.forEach(docId => {
           delete state.documents.byId[docId]
         })
@@ -233,7 +238,51 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
     case types.BULK_DELETE_FAIL:
         return {
           ...state,
+            bulkOperationInProgress: false,
+            apiErrorInfo: {
+                title: 'Bulk delete error',
+                text: 'Failed to delete documents.'
+            },
+            apiErrorOpen: true
     }
+      case types.BULK_UPDATE_REQUEST:
+          return {
+              ...state,
+              bulkOperationInProgress: true
+          }
+
+      case types.BULK_UPDATE_SUCCESS:
+          return {
+              ...state,
+              documents: {
+                  ...state.documents,
+                  checked: []
+              },
+              bulkOperationInProgress: false,
+              apiErrorOpen: false,
+              allSelected : false
+          }
+
+      case types.BULK_UPDATE_FAIL:
+          return {
+              ...state,
+              bulkOperationInProgress: false,
+              apiErrorInfo: {
+                  title: 'Bulk update error',
+                  text: 'Failed to update documents.'
+              },
+              apiErrorOpen: true
+          }
+
+      case types.CLOSE_ALERT:
+          return {
+              ...state,
+              apiErrorInfo: {
+                  title: '',
+                  text: ''
+              },
+              apiErrorOpen: false
+          }
     case types.FLUSH_STATE:
       return INITIAL_STATE
 
