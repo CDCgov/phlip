@@ -73,22 +73,12 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         openedDoc: {}
       }
 
-    case types.CLEAR_ALERT:
-      return {
-        ...state,
-        apiErrorInfo: {
-          text: '',
-          title: ''
-        },
-        apiErrorOpen: false
-      }
-
     case types.GET_APPROVED_DOCUMENTS_FAIL:
       return {
         ...state,
         apiErrorInfo: {
-          text: 'Failed to get a list of documents.',
-          title: 'Request failed.'
+          text: 'Failed to get the list of approved documents.',
+          title: 'Request failed'
         },
         apiErrorOpen: true
       }
