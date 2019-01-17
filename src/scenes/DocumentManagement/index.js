@@ -249,14 +249,21 @@ export class DocumentManagement extends Component {
         ]
 
         return (
-          <FlexGrid container flex padding="12px 20px 20px 20px">
-            <PageHeader
-              pageTitle="Document Management"
-              protocolButton={false}
-              projectName=""
-              entryScene={true}
-              icon="description"
-              otherButton={{
+            <>
+              <ApiErrorAlert
+                open={this.props.apiErrorOpen}
+                title={this.props.apiErrorInfo.title}
+                content={this.props.apiErrorInfo.text}
+                onCloseAlert={this.closeAlert}
+              />
+              <FlexGrid container flex padding="12px 20px 20px 20px">
+                <PageHeader
+                  pageTitle="Document Management"
+                  protocolButton={false}
+                  projectName=""
+                  entryScene={true}
+                  icon="description"
+                  otherButton={{
             isLink: true,
             text: '+ Upload New',
             path: '/docs/upload',
@@ -264,52 +271,53 @@ export class DocumentManagement extends Component {
             props: { 'aria-label': 'Upload New Documents' },
             show: true
           }}>
-              <SearchBox />
-            </PageHeader>
-            <FlexGrid container flex raised>
-              <DocList
-                documents={this.props.documents}
-                docCount={this.props.docCount}
-                onChangePage={this.props.actions.handlePageChange}
-                onChangeRows={this.props.actions.handleRowsChange}
-                onSelectAllFiles={this.props.actions.handleSelectAll}
-                onSelectOneFile={this.props.actions.handleSelectOneFile}
-                allSelected={this.props.allSelected}
-                page={this.props.page}
-                rowsPerPage={this.props.rowsPerPage}
-                onBulkAction= {this.handleBulkAction}
-                allowDropdown={this.props.checkedCount > 0}
-              />
-            </FlexGrid>
-            <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="lg" hideOverflow={false}>
-              <ModalTitle title={this.state.modalTitle}  />
-              <Divider />
-              <ModalContent style={{ display: 'flex', flexDirection: 'column', paddingTop: 24, width: 600, height: 275 }}>
-                {this.state.modalTitle !=='Bulk Delete'?(
-                  <React.Fragment>
-                    <ProJurSearch
-                      jurisdictionSuggestions={this.props.jurisdictionSuggestions}
-                      projectSuggestions={this.props.projectSuggestions}
-                      onClearSuggestions={this.handleClearSuggestions}
-                      onGetSuggestions={this.handleGetSuggestions}
-                      onSearchValueChange={this.handleSearchValueChange}
-                      onSuggestionSelected={this.handleSuggestionSelected}
-                      jurisdictionSearchValue={this.props.jurisdictionSearchValue}
-                      projectSearchValue={this.props.projectSearchValue}
-                      showJurSearch={this.state.showAddJurisdiction === true}
-                    />
-                    <br />
-                    <ConfirmDocList documents={this.props.checkedDocs} docCount={this.props.checkedCount} />
-                  </React.Fragment>)
+                  <SearchBox />
+                </PageHeader>
+                <FlexGrid container flex raised>
+                  <DocList
+                    documents={this.props.documents}
+                    docCount={this.props.docCount}
+                    onChangePage={this.props.actions.handlePageChange}
+                    onChangeRows={this.props.actions.handleRowsChange}
+                    onSelectAllFiles={this.props.actions.handleSelectAll}
+                    onSelectOneFile={this.props.actions.handleSelectOneFile}
+                    allSelected={this.props.allSelected}
+                    page={this.props.page}
+                    rowsPerPage={this.props.rowsPerPage}
+                    onBulkAction= {this.handleBulkAction}
+                    allowDropdown={this.props.checkedCount > 0}
+                  />
+                </FlexGrid>
+                <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="lg" hideOverflow={false}>
+                  <ModalTitle title={this.state.modalTitle}  />
+                  <Divider />
+                  <ModalContent style={{ display: 'flex', flexDirection: 'column', paddingTop: 24, width: 600, height: 275 }}>
+                    {this.state.modalTitle !=='Bulk Delete'?(
+                      <React.Fragment>
+                        <ProJurSearch
+                          jurisdictionSuggestions={this.props.jurisdictionSuggestions}
+                          projectSuggestions={this.props.projectSuggestions}
+                          onClearSuggestions={this.handleClearSuggestions}
+                          onGetSuggestions={this.handleGetSuggestions}
+                          onSearchValueChange={this.handleSearchValueChange}
+                          onSuggestionSelected={this.handleSuggestionSelected}
+                          jurisdictionSearchValue={this.props.jurisdictionSearchValue}
+                          projectSearchValue={this.props.projectSearchValue}
+                          showJurSearch={this.state.showAddJurisdiction === true}
+                        />
+                        <br />
+                        <ConfirmDocList documents={this.props.checkedDocs} docCount={this.props.checkedCount} />
+                      </React.Fragment>)
                 :(
                   <ConfirmDocList documents={this.props.checkedDocs} docCount={this.props.checkedCount} />
                 )}
-              </ModalContent>
-              <Divider />
-              <ModalActions actions={modalAction} />
-            </Modal>
-            <Route path="/docs/upload" component={Upload} />
-          </FlexGrid>
+                  </ModalContent>
+                  <Divider />
+                  <ModalActions actions={modalAction} />
+                </Modal>
+                <Route path="/docs/upload" component={Upload} />
+              </FlexGrid>
+                </>
     )
   }
 }
