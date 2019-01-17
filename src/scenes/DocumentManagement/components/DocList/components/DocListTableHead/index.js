@@ -11,8 +11,9 @@ import {Dropdown, Button} from 'components'
 export const DocListTableHead = props => {
   const { onSelectAll, allSelected, onActionSelected, onActionApply } = props
   const options = [
+        {value:'bulk', label:'Bulk Operation'},
         { value: 'deleteDoc', label: 'Delete' }, { value: 'assignProject', label: 'Assign projects' },
-        { value: 'assignJurisdiction', label: 'Assign Jurisdictions' }
+        { value: 'assignJurisdiction', label: 'Assign Jurisdictions' },
     ]
   const r1Columns = [
         {
@@ -20,7 +21,7 @@ export const DocListTableHead = props => {
             label: <Dropdown
               options={options}
               input={{
-                    value: '-**-Select an action -**-',
+                    value: 'bulk',
                     onChange: onActionSelected
                 }}
               SelectDisplayProps={{ style: { paddingBottom: 3 } }}
