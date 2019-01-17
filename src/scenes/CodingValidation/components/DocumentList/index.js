@@ -80,7 +80,6 @@ export class DocumentList extends Component {
   render() {
     return (
       <FlexGrid container style={{ width: '50%', overflow: 'hidden' }} raised>
-        {this.props.apiErrorOpen && <ApiErrorView error={this.props.apiErrorInfo.text} />}
         <FlexGrid
           container
           type="row"
@@ -100,6 +99,7 @@ export class DocumentList extends Component {
         </FlexGrid>
         <Divider />
         <FlexGrid container padding={10} flex style={{ height: '100%' }}>
+          {this.props.apiErrorOpen && <ApiErrorView error={this.props.apiErrorInfo.text} />}
           {this.props.showEmptyDocs &&
           <FlexGrid container align="center" justify="center" flex>
             <Typography variant="display1" style={{ textAlign: 'center' }}>
@@ -116,16 +116,15 @@ export class DocumentList extends Component {
                 <span style={{ color: '#757575' }}>Highlight the desired text and confirm.</span>
               </i>
             </Typography>
-          </FlexGrid>
-          }
-          {this.props.docSelected === true &&
+          </FlexGrid>}
+          {(this.props.docSelected && !this.props.apiErrorOpen) &&
           <PDFViewer
             allowSelection={Boolean(this.props.answerSelected)}
             document={this.props.openedDoc}
             saveAnnotation={this.onSaveAnnotation}
             annotations={this.props.annotations}
           />}
-          {this.props.docSelected === false && this.props.documents.map((doc, i) => {
+          {!this.props.docSelected && this.props.documents.map((doc, i) => {
             return (
               <Fragment key={`${doc._id}`}>
                 <FlexGrid container type="row" align="center" padding={10}>

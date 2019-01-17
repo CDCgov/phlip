@@ -146,9 +146,36 @@ describe('CodingValidation - DocumentList reducer', () => {
     })
   })
 
+  describe('GET_DOC_CONTENTS_FAIL', () => {
+    const action = {
+      type: types.GET_DOC_CONTENTS_FAIL
+    }
+
+    const currentState = getState({ documents, openedDoc: { _id: '1234', name: 'document 1' } })
+    const state = reducer(currentState, action)
+
+    test('should set state.docSelected to true', () => {
+      expect(state.docSelected).toEqual(true)
+    })
+
+    test('should set state.apiErrorInfo', () => {
+      expect(state.apiErrorInfo.title).toEqual('')
+      expect(state.apiErrorInfo.text).toEqual('Failed to retrieve document contents.')
+    })
+
+    test('should set state.apiErrorOpen to true', () => {
+      expect(state.apiErrorOpen).toEqual(true)
+    })
+  })
+
   describe('CLEAR_DOC_SELECTED', () => {
     const action = { type: types.CLEAR_DOC_SELECTED }
-    const currentState = getState({ documents, openedDoc: { _id: '1234', name: 'document 1' } })
+    const currentState = getState({
+      documents,
+      openedDoc: { _id: '1234', name: 'document 1' },
+      apiErrorInfo: { title: 'title', text: 'text' },
+      apiErrorOpen: true
+    })
     const state = reducer(currentState, action)
 
     test('should clear state.openedDoc', () => {
@@ -157,6 +184,25 @@ describe('CodingValidation - DocumentList reducer', () => {
 
     test('should set state.docSelected to false', () => {
       expect(state.docSelected).toEqual(false)
+    })
+
+    test('should clear state.apiErrorInfo', () => {
+      expect(state.apiErrorInfo.text).toEqual('')
+      expect(state.apiErrorInfo.title).toEqual('')
+    })
+
+    test('should set state.apiErrorOpen to false', () => {
+      expect(state.apiErrorOpen).toEqual(false)
+    })
+  })
+
+  describe('FLUSH_STATE', () => {
+    const action = { type: types.FLUSH_STATE }
+    const currentState = getState({ documents, openedDoc: { _id: '1234', name: 'document 1' } })
+    const state = reducer(currentState, action)
+
+    test('shdould set state to initial state', () => {
+      expect(state).toEqual(INITIAL_STATE)
     })
   })
 })

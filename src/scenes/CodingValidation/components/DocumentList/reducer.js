@@ -66,11 +66,27 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
+    case types.GET_DOC_CONTENTS_FAIL:
+      return {
+        ...state,
+        docSelected: true,
+        apiErrorInfo: {
+          title: '',
+          text: 'Failed to retrieve document contents.'
+        },
+        apiErrorOpen: true
+      }
+
     case types.CLEAR_DOC_SELECTED:
       return {
         ...state,
         docSelected: false,
-        openedDoc: {}
+        openedDoc: {},
+        apiErrorInfo: {
+          title: '',
+          text: ''
+        },
+        apiErrorOpen: false
       }
 
     case types.GET_APPROVED_DOCUMENTS_FAIL:
