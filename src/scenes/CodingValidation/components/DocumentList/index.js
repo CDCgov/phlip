@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
 import theme from 'services/theme'
-import { FlexGrid, Icon, PDFViewer } from 'components'
+import { FlexGrid, Icon, PDFViewer, ApiErrorView } from 'components'
 import { FormatQuoteClose } from 'mdi-material-ui'
 
 const docNameStyle = {
@@ -23,19 +23,27 @@ export class DocumentList extends Component {
     projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     page: PropTypes.oneOf(['coding', 'validation']),
     documents: PropTypes.array,
-    annotated: PropTypes.array,
+    annotatedDocs: PropTypes.array,
     docSelected: PropTypes.bool,
     openedDoc: PropTypes.object,
     answerSelected: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
     annotations: PropTypes.array,
     questionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    saveUserAnswer: PropTypes.func
+    saveUserAnswer: PropTypes.func,
+    apiErrorInfo: PropTypes.shape({
+      text: PropTypes.string,
+      title: PropTypes.string
+    }),
+    apiErrorOpen: PropTypes.bool,
+    showEmptyDocs: PropTypes.bool
   }
 
   static defaultProps = {
     actions: {},
     documents: [],
-    annotated: []
+    annotated: [],
+    showEmptyDocs: false,
+    apiErrorOpen: false
   }
 
   constructor(props, context) {
@@ -72,6 +80,7 @@ export class DocumentList extends Component {
   render() {
     return (
       <FlexGrid container style={{ width: '50%', overflow: 'hidden' }} raised>
+        {this.props.apiErrorOpen && <ApiErrorView error={this.props.apiErrorInfo.text} />}
         <FlexGrid
           container
           type="row"
@@ -86,13 +95,18 @@ export class DocumentList extends Component {
             <Icon color="black" style={{ cursor: 'pointer', paddingRight: 5 }} onClick={this.clearDocSelected}>
               arrow_back
             </Icon>}
-            {this.props.docSelected
-              ? this.props.openedDoc.name
-              : 'Assigned Documents'}
+            {this.props.docSelected ? this.props.openedDoc.name : 'Assigned Documents'}
           </Typography>
         </FlexGrid>
         <Divider />
         <FlexGrid container padding={10} flex style={{ height: '100%' }}>
+          {this.props.showEmptyDocs &&
+          <FlexGrid container align="center" justify="center" flex>
+            <Typography variant="display1" style={{ textAlign: 'center' }}>
+              There approved and/or assigned documents for this project and jurisdiction.
+            </Typography>
+          </FlexGrid>
+          }
           {this.props.answerSelected &&
           <FlexGrid padding={20} container align="center" style={{ backgroundColor: '#e6f8ff' }}>
             <Typography>
@@ -119,7 +133,7 @@ export class DocumentList extends Component {
                   <Typography style={docNameStyle}>
                     <span onClick={this.getContents(doc._id)}>{doc.name}</span>
                   </Typography>
-                  {this.props.annotated.includes(doc._id) &&
+                  {this.props.annotatedDocs.includes(doc._id) &&
                   <Icon color="error" size={20}>
                     <FormatQuoteClose style={{ fontSize: 20 }} />
                   </Icon>}
@@ -139,46 +153,40 @@ const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.documentList
   const codingState = state.scenes.codingValidation.coding
   const answerSelected = codingState.enabledAnswerChoice || false
-  const isCategoryQuestion = !!codingState.selectedCategoryId
 
-  const annotatedToShow = answerSelected
-    ? isCategoryQuestion
-      ? pageState.documents.annotated[codingState.question.id][codingState.selectedCategoryId] !== undefined
-        ? pageState.documents.annotated[codingState.question.id][codingState.selectedCategoryId].byAnswer[codingState.enabledAnswerChoice]
-        : []
-      : pageState.documents.annotated[codingState.question.id].byAnswer[codingState.enabledAnswerChoice]
-    : []
-
-  const ordered = pageState.documents.ordered
-  const filteredOrder = ordered.filter(doc => !annotatedToShow.includes(doc))
-  const filteredAnnos = ordered.filter(doc => annotatedToShow.includes(doc))
-
-  const annotations = answerSelected
+  const annotationsForAnswer = answerSelected
     ? codingState.question.isCategoryQuestion
       ? JSON.parse(codingState.userAnswers[ownProps.questionId][codingState.selectedCategoryId].answers[answerSelected].annotations)
       : JSON.parse(codingState.userAnswers[ownProps.questionId].answers[answerSelected].annotations)
     : []
 
-  const annotated = annotations.map(annotation => annotation.docId)
-  const annotatedForDoc = annotations.filter(annotation => annotation.docId === pageState.openedDoc._id)
+  const annotatedDocIdsForAnswer = annotationsForAnswer.map(annotation => annotation.docId)
+  const notAnnotatedDocIds = pageState.documents.ordered.filter(docId => !annotatedDocIdsForAnswer.includes(docId))
+  const annotatedDocIds = pageState.documents.ordered.filter(docId => annotatedDocIdsForAnswer.includes(docId))
+  const annotatedForOpenDoc = annotationsForAnswer.filter(annotation => annotation.docId === pageState.openedDoc._id)
+  const allDocIds = new Set([...annotatedDocIds, ...notAnnotatedDocIds])
+  const docArray = Array.from(allDocIds)
 
   return {
-    documents: [...filteredAnnos, ...filteredOrder].map(id => pageState.documents.byId[id]),
-    jurisdictionId: ownProps.jurisdictionId,
-    projectId: ownProps.projectId,
-    annotated,
+    documents: docArray.length === 0
+      ? []
+      : pageState.documents.allIds.length === 0
+        ? []
+        : docArray.map(id => pageState.documents.byId[id]),
+    annotatedDocs: annotatedDocIds,
+    annotations: annotatedForOpenDoc,
     openedDoc: pageState.openedDoc || {},
     docSelected: pageState.docSelected || false,
-    answerSelected,
-    annotations: annotatedForDoc
+    showEmptyDocs: pageState.showEmptyDocs,
+    apiErrorInfo: pageState.apiErrorInfo,
+    apiErrorOpen: pageState.apiErrorOpen,
+    answerSelected
   }
 }
 
 /* istanbul-ignore-next */
-const mapDispatchToProps = dispatch => {
-  return {
-    actions: { ...bindActionCreators(actions, dispatch) }
-  }
-}
+const mapDispatchToProps = dispatch => ({
+  actions: { ...bindActionCreators(actions, dispatch) }
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(DocumentList)

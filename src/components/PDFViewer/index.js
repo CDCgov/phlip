@@ -14,6 +14,12 @@ export class PDFViewer extends Component {
     saveAnnotation: PropTypes.func
   }
 
+  static defaultProps = {
+    annotations: [],
+    document: {},
+    allowSelection: false
+  }
+
   constructor(props, context) {
     super(props, context)
     this.viewerRef = React.createRef()

@@ -1,115 +1,31 @@
 import { types } from './actions'
 import { arrayToObject } from 'utils/normalize'
 import { sortListOfObjects } from 'utils/commonHelpers'
-import { types as questionTypes } from '../../actions'
 
 export const INITIAL_STATE = {
   documents: {
     byId: {},
     allIds: [],
-    ordered: [],
-    annotated: {}
+    ordered: []
   },
   docSelected: false,
   openedDoc: {
     _id: '',
     content: {}
   },
-  annotationModeEnabled: false
+  annotationModeEnabled: false,
+  showEmptyDocs: false,
+  apiErrorOpen: false,
+  apiErrorInfo: {
+    title: '',
+    text: ''
+  }
 }
 
 const mergeName = docObj => ({
   ...docObj,
   uploadedByName: `${docObj.uploadedBy.firstName} ${docObj.uploadedBy.lastName}`
 })
-
-const handleCategories = (categories, question) => {
-  let obj = {}
-  categories.forEach(cat => {
-    obj[cat.id] = { byAnswer: {}, all: [] }
-    question.possibleAnswers.map(answer => {
-      obj[cat.id].byAnswer[answer.id] = []
-    })
-  })
-  return obj
-}
-
-const initializeAnnotationsByAnswer = answers => {
-  let q = {
-    byAnswer: {},
-    all: []
-  }
-
-  answers.forEach(answer => {
-    let annotations
-    q.byAnswer[answer.schemeAnswerId] = []
-    try {
-      annotations = JSON.parse(answer.annotations)
-      annotations.map(annotation => {
-        q.byAnswer[answer.schemeAnswerId].push(annotation.docId)
-        if (!q.all.includes(annotation.docId))
-          q.all.push(annotation.docId)
-      })
-    } catch (err) {
-      console.log(err)
-    }
-  })
-
-  return q
-}
-
-const initializeNewQuestion = question => {
-  let q = { byAnswer: {}, all: [] }
-
-  question.possibleAnswers.map(answer => {
-    q.byAnswer[answer.id] = []
-  })
-
-  return q
-}
-
-const sortAnnotations = (userAnswers, newQuestion = {}, categories = [], scheme) => {
-  let byQuestion = {
-    [newQuestion.id]: newQuestion.isCategoryQuestion
-      ? handleCategories(categories, newQuestion)
-      : initializeNewQuestion(newQuestion)
-  }
-
-  Object.keys(userAnswers).map(questionId => {
-    const question = userAnswers[questionId]
-    byQuestion[questionId] = parseInt(questionId) === parseInt(newQuestion.id)
-      ? byQuestion[questionId]
-      : scheme[questionId].isCategoryQuestion
-        ? handleCategories(Object.values(scheme)
-        .find(q => q.id === scheme[questionId].parentId).possibleAnswers, scheme[questionId])
-        : initializeNewQuestion(scheme[questionId])
-
-    if (scheme[questionId].isCategoryQuestion) {
-      const cats = Object.keys(question)
-      cats.forEach(cat => {
-        let annos = initializeAnnotationsByAnswer(Object.values(question[cat].answers))
-        byQuestion[questionId][cat] = {
-          byAnswer: {
-            ...byQuestion[questionId][cat] ? byQuestion[questionId][cat].byAnswer : {},
-            ...annos.byAnswer
-          },
-          all: annos.all
-        }
-      })
-    } else {
-      let annos = initializeAnnotationsByAnswer(Object.values(question.answers))
-      byQuestion[questionId] = {
-        byAnswer: {
-          ...byQuestion[questionId].byAnswer,
-          ...annos.byAnswer
-        },
-        all: annos.all
-      }
-    }
-  })
-
-  return byQuestion
-}
 
 const documentListReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -119,56 +35,16 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         documents: {
-          ...state.documents,
           byId: obj,
           allIds: Object.keys(obj),
           ordered: sortListOfObjects(Object.values(obj), 'uploadedDate', 'desc').map(obj => obj._id)
         },
-        ...state.docSelected
+        showEmptyDocs: action.payload.length === 0,
+        ...state.openedDoc._id !== ''
           ? Object.keys(obj).includes(state.openedDoc._id)
-            ? {}
+            ? { docSelected: true }
             : { docSelected: false, openedDoc: {} }
           : {}
-      }
-
-    case questionTypes.GET_VALIDATION_OUTLINE_SUCCESS:
-    case questionTypes.GET_CODING_OUTLINE_SUCCESS:
-    case questionTypes.GET_USER_CODED_QUESTIONS_SUCCESS:
-    case questionTypes.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
-      let byQuestion = {}
-      if (!action.payload.isSchemeEmpty && !action.payload.areJurisdictionsEmpty) {
-        byQuestion = sortAnnotations(
-          action.payload.userAnswers,
-          action.payload.question,
-          [],
-          action.payload.scheme.byId
-        )
-
-        return {
-          ...state,
-          documents: {
-            ...state.documents,
-            annotated: byQuestion
-          }
-        }
-      } else {
-        return state
-      }
-
-    case questionTypes.GET_QUESTION_SUCCESS:
-      byQuestion = sortAnnotations(
-        action.payload.updatedState.userAnswers,
-        action.payload.question,
-        action.payload.updatedState.categories,
-        action.payload.updatedState.scheme.byId
-      )
-
-      return {
-        ...state,
-        documents: {
-          ...state.documents,
-          annotated: byQuestion
-        }
       }
 
     case types.GET_DOC_CONTENTS_REQUEST:
@@ -177,41 +53,6 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         openedDoc: {
           _id: action.id,
           name: state.documents.byId[action.id].name
-        }
-      }
-
-    case types.ON_SAVE_ANNOTATION:
-      let q = {
-        ...state.documents.annotated[action.questionId]
-      }
-
-      if (action.isCategoryQuestion) {
-        q = { ...state.documents.annotated[action.questionId][action.selectedCategoryId] }
-      }
-
-      return {
-        ...state,
-        documents: {
-          ...state.documents,
-          annotated: {
-            ...state.documents.annotated,
-            [action.questionId]: action.isCategoryQuestion
-              ? {
-                [action.selectedCategoryId]: {
-                  byAnswer: {
-                    ...q.byAnswer,
-                    [action.answerId]: [...q.byAnswer[action.answerId]]
-                  },
-                  all: [...q.all, state.openedDoc._id]
-                }
-              } : {
-                byAnswer: {
-                  ...q.byAnswer,
-                  [action.answerId]: [...q.byAnswer[action.answerId], state.openedDoc._id],
-                },
-                all: [...q.all, state.openedDoc._id]
-              }
-          }
         }
       }
 
@@ -232,10 +73,35 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         openedDoc: {}
       }
 
+    case types.CLEAR_ALERT:
+      return {
+        ...state,
+        apiErrorInfo: {
+          text: '',
+          title: ''
+        },
+        apiErrorOpen: false
+      }
+
+    case types.GET_APPROVED_DOCUMENTS_FAIL:
+      return {
+        ...state,
+        apiErrorInfo: {
+          text: 'Failed to get a list of documents.',
+          title: 'Request failed.'
+        },
+        apiErrorOpen: true
+      }
+
     case types.FLUSH_STATE:
       return INITIAL_STATE
 
     case types.GET_APPROVED_DOCUMENTS_REQUEST:
+      return {
+        ...state,
+        docSelected: false
+      }
+
     default:
       return state
   }
