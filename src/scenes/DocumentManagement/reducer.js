@@ -252,10 +252,14 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           }
 
       case types.BULK_UPDATE_SUCCESS:
+          obj = action.payload
           return {
               ...state,
               documents: {
                   ...state.documents,
+                  byId: obj,
+                  allIds: Object.keys(obj),
+                  visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage),
                   checked: []
               },
               bulkOperationInProgress: false,

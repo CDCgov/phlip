@@ -64,8 +64,7 @@ const bulkUpdateLogic = createLogic({
         try {
             await docApi.bulkUpdateDoc({meta:action.updateData,docIds: action.selectedDocs})
 
-         if (action.updateData.updateType !== null && action.updateData.updateType === 'jurisdictions') {
-
+            if (action.updateData.updateType !== null && action.updateData.updateType === 'jurisdictions') {
                 dispatch({
                     type: jurisdictionTypes.ADD_JURISDICTION,
                     payload: action.updateData.updateProJur
@@ -78,16 +77,25 @@ const bulkUpdateLogic = createLogic({
                     payload: action.updateData.updateProJur
                 })
             }
+            // update doc meta data
+
             let existingDocs =  getState().scenes.docManage.main.documents.byId
             action.selectedDocs.forEach(function(docToUpdate){
                if(action.updateData.updateType === 'projects') {
+                  if (existingDocs[docToUpdate].projects.indexOf(action.updateData.updateProJur.id) === -1){
                    existingDocs[docToUpdate].projects = [...existingDocs[docToUpdate].projects, action.updateData.updateProJur.id]
-           //        existingDocs[docToUpdate].projectList = [existingDocs[docToUpdate].projectList, action.updateData.updateProJur.name]
-
+                  }
+                  if(existingDocs[docToUpdate].projectList.indexOf(action.updateData.updateProJur.name) === -1) {
+                      existingDocs[docToUpdate].projectList = existingDocs[docToUpdate].projectList.concat('|', action.updateData.updateProJur.name)
+                  }
                }
                else {
-                   existingDocs[docToUpdate].jurisdictions = [...existingDocs[docToUpdate].jurisdictions, action.updateData.updateProJur.id]
-           //            existingDocs[docToUpdate].jurisdictionList = [existingDocs[docToUpdate].jurisdictionList, action.updateData.updateProJur.name]
+                   if(existingDocs[docToUpdate].jurisdictions.indexOf(action.updateData.updateProJur.id) ===-1) {
+                       existingDocs[docToUpdate].jurisdictions = [...existingDocs[docToUpdate].jurisdictions, action.updateData.updateProJur.id]
+                   }
+                   if (existingDocs[docToUpdate].jurisdictionList.indexOf(action.updateData.updateProJur.name) === -1) {
+                       existingDocs[docToUpdate].jurisdictionList = existingDocs[docToUpdate].jurisdictionList.concat('|', action.updateData.updateProJur.name)
+                   }
                }
             })
             //let updatedDocs = [...Object.values(getState().scenes.docManage.main.documents.byId).filter(doc => action.selectedDocs.includes(doc._id))]
