@@ -8,7 +8,7 @@ import TableCell from 'components/TableCell'
 export const DocListTableHead = () => {
 
   const r2Columns = [
-    { key: 'file-name', label: 'File Name', padding: 'checkbox' },
+    { key: 'file-name', label: 'File Name', padding: 'checkbox' , width:'100%'},
     { key: 'uploaded-by', label: 'Uploaded By', padding: 'checkbox' },
     { key: 'uploaded-data', label: 'Uploaded Date', padding: 'checkbox' },
   ]
