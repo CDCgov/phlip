@@ -98,7 +98,9 @@ export class DocumentManagement extends Component {
             }
             else {
                 console.log('no error')
-                this.setState({showModal:false})
+                this.setState({
+                    showModal: false, selectedJurisdiction: null, selectedProject: null, bulkActionType: ''
+                })
             }
         }
     }
@@ -113,19 +115,23 @@ export class DocumentManagement extends Component {
     }
 
   handleBulkAction = (actionType) => {
-    this.setState({showModal:true, bulkActionType: actionType})
-    switch (actionType) {
-        case 'deleteDoc' :
-          this.setState({
-              modalTitle : 'Bulk Delete'
-          })
-          break
-        case 'assignProject':
-          this.setState({modalTitle: 'Bulk Assign Project',showAddJurisdiction: false})
-            break
-        case 'assignJurisdiction':
-            this.setState({modalTitle: 'Bulk Assign Jurisdiction',showAddJurisdiction: true})
-            break
+    this.props.actions.jurisdictionAutocomplete.clearAll()
+    this.props.actions.projectAutocomplete.clearAll()
+    if (actionType !== 'bulk') {
+        this.setState({showModal: true, bulkActionType: actionType})
+        switch (actionType) {
+            case 'deleteDoc' :
+                this.setState({
+                    modalTitle: 'Bulk Delete'
+                })
+                break
+            case 'assignProject':
+                this.setState({modalTitle: 'Bulk Assign Project', showAddJurisdiction: false})
+                break
+            case 'assignJurisdiction':
+                this.setState({modalTitle: 'Bulk Assign Jurisdiction', showAddJurisdiction: true})
+                break
+        }
     }
   };
 
@@ -197,7 +203,6 @@ export class DocumentManagement extends Component {
     }
 
     handleBulkConfirm = () => {
-        console.log('confirmed')
         if (this.state.bulkActionType ==='deleteDoc'){
             this.props.actions.handleBulkDelete(this.props.checkedDocs)
         }
@@ -230,7 +235,7 @@ export class DocumentManagement extends Component {
         }
 
         this.setState({
-            showModal: false, selectedJurisdiction: null, selectedProject: null
+            showModal: false, selectedJurisdiction: null, selectedProject: null, bulkActionType: ''
         })
     }
 
