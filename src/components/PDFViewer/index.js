@@ -175,7 +175,7 @@ export class PDFViewer extends Component {
     }
 
     // the selection spans multiple pages
-    if (range.commonAncestorContainer.className !== 'textLayer') {
+    if (range.commonAncestorContainer.className === 'pdfViewer') {
       startPage = parseInt(range.startContainer.parentNode.parentNode.getAttribute('data-page-number'))
       endPage = parseInt(range.endContainer.parentNode.parentNode.getAttribute('data-page-number'))
 
