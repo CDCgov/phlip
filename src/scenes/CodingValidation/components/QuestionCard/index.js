@@ -52,10 +52,10 @@ export class QuestionCard extends Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      categoryToUncheck: {},
-      confirmCategoryUncheckOpen: false,
       isSaving: false,
-      clearAnswerAlertOpen: false
+      clearAnswerAlertOpen: false,
+      confirmAlertOpen: false,
+      confirmAnswerChange: {}
     }
   }
 
@@ -78,15 +78,35 @@ export class QuestionCard extends Component {
 
   // Need to check if the user is un-checking a category
   onChangeAnswer = id => (event, value) => {
-    if (this.props.question.questionType === questionTypes.CATEGORY) {
-      if (this.props.userAnswers.answers.hasOwnProperty(id)) {
-        this.setState({
-          confirmCategoryUncheckOpen: true,
-          categoryToUncheck: { id, event, value }
-        })
-      } else {
-        this.props.onChange(id)(event, value)
+    const { question, userAnswers } = this.props
+    let text = '', open = false
+
+    if (question.questionType === questionTypes.CATEGORY) {
+      if (userAnswers.answers.hasOwnProperty(id)) {
+        open = true
+        text = 'Unselecting a category will remove any answers associated to this category. Do you wish to continue?'
       }
+    } else {
+      text = 'Changing your answer will remove any pincites and annotations for the currently selected answer. Do you want to continue?'
+
+      if (question.questionType !== questionTypes.TEXT_FIELD) {
+        if (Object.keys(userAnswers.answers).length > 0) {
+          if (!userAnswers.answers.hasOwnProperty(id) &&
+            (question.questionType === questionTypes.MULTIPLE_CHOICE || question.questionType === questionTypes.BINARY)) {
+            open = true
+          } else if (userAnswers.answers.hasOwnProperty(id) && question.questionType === questionTypes.CHECKBOXES) {
+            open = true
+          }
+        }
+      }
+    }
+
+    if (open) {
+      this.setState({
+        confirmAlertOpen: true,
+        confirmAnswerChange: { id, event, value },
+        confirmAlertText: text
+      })
     } else {
       this.props.onChange(id)(event, value)
     }
@@ -94,19 +114,19 @@ export class QuestionCard extends Component {
 
   onCancel = () => {
     this.setState({
-      confirmCategoryUncheckOpen: false,
-      categoryToUncheck: {},
+      confirmAlertOpen: false,
+      confirmAnswerChange: {},
       clearAnswerAlertOpen: false
     })
   }
 
   onContinue = () => {
-    this.props.onChange(this.state.categoryToUncheck.id)(
-      this.state.categoryToUncheck.event,
-      this.state.categoryToUncheck.value)
+    this.props.onChange(this.state.confirmAnswerChange.id)(
+      this.state.confirmAnswerChange.event,
+      this.state.confirmAnswerChange.value)
     this.setState({
-      confirmCategoryUncheckOpen: false,
-      categoryToUncheck: {}
+      confirmAlertOpen: false,
+      confirmAnswerChange: {}
     })
   }
 
@@ -180,9 +200,9 @@ export class QuestionCard extends Component {
 
     return (
       <Row displayFlex style={{ flex: 1, width: '50%' }}>
-        <Alert actions={alertActions} open={this.state.confirmCategoryUncheckOpen}>
+        <Alert actions={alertActions} open={this.state.confirmAlertOpen}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            Unselecting a category will remove any answers associated to this category. Do you wish to continue?
+            {this.state.confirmAlertText}
           </Typography>
         </Alert>
         <Alert actions={clearAnswerActions} open={this.state.clearAnswerAlertOpen}>

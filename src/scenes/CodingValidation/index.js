@@ -13,7 +13,6 @@ import actions from './actions'
 import {
   TextLink, Icon, Button, Alert, Tooltip, ApiErrorView, ApiErrorAlert, PageLoader, withTracking, FlexGrid
 } from 'components'
-import Container, { Row } from 'components/Layout'
 import classNames from 'classnames'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
 
@@ -454,13 +453,9 @@ export class CodingValidation extends Component {
     }
 
     return (
-      <Container
-        column
-        flex
-        alignItems="center"
-        style={{ justifyContent: 'center', padding: 30, textAlign: 'center' }}>
+      <FlexGrid container flex align="center" justify="center" padding={30}>
         <Typography variant="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
-        <Row displayFlex style={{ width: '100%', justifyContent: 'space-evenly' }}>
+        <FlexGrid container type="row" style={{ width: '100%', justifyContent: 'space-evenly' }}>
           {noScheme && this.props.userRole !== 'Coder' &&
           <TextLink to={{ pathname: `/project/${this.props.projectId}/coding-scheme` }}>
             <Button value="Create Coding Scheme" color="accent" />
@@ -469,8 +464,8 @@ export class CodingValidation extends Component {
           <TextLink to={{ pathname: `/project/${this.props.projectId}/jurisdictions` }}>
             <Button value="Add Jurisdictions" color="accent" />
           </TextLink>}
-        </Row>
-      </Container>
+        </FlexGrid>
+      </FlexGrid>
     )
   }
 
