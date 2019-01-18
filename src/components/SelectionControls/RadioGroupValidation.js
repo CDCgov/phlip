@@ -97,7 +97,8 @@ export const RadioGroupValidation = props => {
                 value={userAnswers.answers[choice.id].pincite}
                 onChange={onChangePincite(choice.id, 'pincite')}
               />
-              {!areDocsEmpty && <IconButton
+              {!areDocsEmpty &&
+              <IconButton
                 style={{ alignSelf: 'center', marginLeft: 20 }}
                 onClick={onToggleAnswerForAnno(choice.id)}
                 color={enabledAnswerChoice === choice.id ? 'primary' : '#757575'}

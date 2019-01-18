@@ -98,7 +98,8 @@ export const CheckboxGroupValidation = props => {
                   }}
                   onChange={onChangePincite(choice.id, 'pincite')}
                 />
-                {!areDocsEmpty && <IconButton
+                {!areDocsEmpty &&
+                <IconButton
                   style={{ alignSelf: 'center', marginLeft: 20 }}
                   onClick={onToggleAnswerForAnno(choice.id)}
                   color={enabledAnswerChoice === choice.id ? 'primary' : '#757575'}
