@@ -103,11 +103,10 @@ export class DocumentList extends Component {
           {this.props.showEmptyDocs &&
           <FlexGrid container align="center" justify="center" flex>
             <Typography variant="display1" style={{ textAlign: 'center' }}>
-              There approved and/or assigned documents for this project and jurisdiction.
+              There no approved and/or assigned documents for this project and jurisdiction.
             </Typography>
-          </FlexGrid>
-          }
-          {this.props.answerSelected &&
+          </FlexGrid>}
+          {(!this.props.showEmptyDocs && this.props.answerSelected) &&
           <FlexGrid padding={20} container align="center" style={{ backgroundColor: '#e6f8ff' }}>
             <Typography>
               <i>
