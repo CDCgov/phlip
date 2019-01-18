@@ -13,12 +13,11 @@
  * limitations under the License.
  */
 #viewContainer {
-  overflow: hidden;
+  overflow: auto;
   height: 100%;
 }
 
 #viewer {
-  overflow: auto;
   height: 100%;
 }
 
@@ -283,24 +282,23 @@
   cursor: pointer;
 }
 
-.pdfViewer::-webkit-scrollbar {
+.viewer::-webkit-scrollbar, #viewContainer::-webkit-scrollbar {
   width: 9px;
   height: 9px;
   border-radius: 10px;
 }
 
-.pdfViewer::-webkit-scrollbar-track {
-  background-color: transparent;
+.viewer::-webkit-scrollbar-track, #viewContainer::-webkit-scrollbar-track {
+  background-color: white;
   border-radius: 10px;
-  margin: 10px;
 }
 
-.pdfViewer::-webkit-scrollbar-thumb {
+.viewer::-webkit-scrollbar-thumb, #viewContainer::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: #a8a8a8;
 }
 
-.pdfViewer .canvasWrapper {
+.viewer .canvasWrapper {
   overflow: hidden;
   width: 100%;
 }
@@ -310,8 +308,8 @@
   position: relative;
   background-clip: content-box;
   background-color: white;
+  border-bottom: 5px solid #3A3A3A;
   overflow: hidden;
-  margin-bottom: 5px;
   width: 100%;
 }
 

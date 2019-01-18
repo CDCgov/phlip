@@ -98,7 +98,7 @@ export class DocumentList extends Component {
           </Typography>
         </FlexGrid>
         <Divider />
-        <FlexGrid container padding={10} flex style={{ height: '100%' }}>
+        <FlexGrid container flex style={{ height: '100%', overflow: 'auto' }}>
           {this.props.apiErrorOpen && <ApiErrorView error={this.props.apiErrorInfo.text} />}
           {this.props.showEmptyDocs &&
           <FlexGrid container align="center" justify="center" flex>

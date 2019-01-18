@@ -196,22 +196,22 @@ export class PDFViewer extends Component {
       ranges.push({ pageNumber: startPage, range: startRange })
       ranges.push({ pageNumber: endPage, range: endRange })
 
-      if (startPage - endPage > 1) {
+      if ((endPage - startPage) > 1) {
+        const start = startPage + 1
+
         // create a range for start and end page
         // selection spans more than two pages
-        for (let x = startPage + 1; x < endPage - 1; x++) {
-          const page = this[`page${pageNumber}ref`].current
-          console.log('page', page)
-          let r = document.createRange()
-          r.setStart(page, 0)
-          r.setEnd()
+        for (let x = start; x < endPage; x++) {
+          const page = this[`page${x}ref`].current
+          const textLayer = page.childNodes[2]
+          const startNode = textLayer.childNodes[0].childNodes[0]
+          const endNode = textLayer.childNodes[textLayer.childNodes.length - 1].childNodes[0]
+          const r = document.createRange()
+          r.setStart(startNode, 0)
+          r.setEnd(endNode, endNode.length)
+          ranges.push({ pageNumber: x, range: r })
         }
       }
-
-      // add new ranges
-      selection.removeRange(range)
-      selection.addRange(startRange)
-      selection.addRange(endRange)
     } else {
       ranges.push({ pageNumber, range })
     }
@@ -225,7 +225,8 @@ export class PDFViewer extends Component {
     }
 
     selection.removeAllRanges()
-    selection.addRange(range)
+    //selection.addRange(range)
+    //selection.removeAllRanges()
 
     this.setState({
       ...this.state,
@@ -242,37 +243,35 @@ export class PDFViewer extends Component {
 
   render() {
     return (
-      <div id="viewContainer">
-        <div id="viewer" className="pdfViewer" ref={this.viewerRef}>
-          {this.state.pages.length > 0
-          && this.state.pages.map((page, i) => {
-              return (
-                <Page
-                  id={i}
-                  page={page.page}
-                  textContent={page.textContent}
-                  viewerDimensions={{
-                    width: this.viewerRef.current.clientWidth,
-                    height: this.viewerRef.current.clientHeight
-                  }}
-                  docId={this.props.document._id}
-                  key={`page-${i}`}
-                  allowSelection={this.props.allowSelection}
-                  ref={this[`page${i}ref`]}
-                  annotations={this.props.annotations.map(anno => this.filterByPage(anno, i))}
-                  pendingAnnotations={this.state.pendingAnnotations.map(anno => this.filterByPage(anno, i))}
-                  saveAnnotation={this.saveAnnotation}
-                  cancelAnnotation={this.cancelAnnotation}
-                  getSelection={this.getSelection}
-                />
-              )
-            }
-          )}
-          {this.state.pages.length === 0 &&
-          <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
-            <CircularLoader />
-          </FlexGrid>}
-        </div>
+      <div id="viewContainer" className="pdfViewer" ref={this.viewerRef}>
+        {this.state.pages.length > 0
+        && this.state.pages.map((page, i) => {
+            return (
+              <Page
+                id={i}
+                page={page.page}
+                textContent={page.textContent}
+                viewerDimensions={{
+                  width: this.viewerRef.current.clientWidth,
+                  height: this.viewerRef.current.clientHeight
+                }}
+                docId={this.props.document._id}
+                key={`page-${i}`}
+                allowSelection={this.props.allowSelection}
+                ref={this[`page${i}ref`]}
+                annotations={this.props.annotations.map(anno => this.filterByPage(anno, i))}
+                pendingAnnotations={this.state.pendingAnnotations.map(anno => this.filterByPage(anno, i))}
+                saveAnnotation={this.saveAnnotation}
+                cancelAnnotation={this.cancelAnnotation}
+                getSelection={this.getSelection}
+              />
+            )
+          }
+        )}
+        {this.state.pages.length === 0 &&
+        <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
+          <CircularLoader />
+        </FlexGrid>}
       </div>
     )
   }
