@@ -258,6 +258,42 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
         </WithStyles(Typography)>
       </FlexGrid>
       <FlexGrid
+        align="center"
+        circular={false}
+        container={true}
+        flex={false}
+        justify="stretch"
+        padding={0}
+        raised={false}
+        style={
+          Object {
+            "marginBottom": 20,
+          }
+        }
+        type="row"
+      >
+        <Icon
+          style={
+            Object {
+              "color": "#757575",
+              "fontSize": 18,
+            }
+          }
+        />
+        <WithStyles(Typography)
+          style={
+            Object {
+              "fontSize": ".8125rem",
+              "padding": "0 5px",
+            }
+          }
+          variant="body1"
+        >
+          Upload Date: 
+          1/10/2019
+        </WithStyles(Typography)>
+      </FlexGrid>
+      <FlexGrid
         align="flex-end"
         circular={false}
         container={true}
