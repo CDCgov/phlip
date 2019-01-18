@@ -199,7 +199,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         selectedCategory: action.selection,
-        selectedCategoryId: state.categories[action.selection].id
+        selectedCategoryId: state.categories[action.selection].id,
+        enabledAnswerChoice: null
       }
 
     case types.ON_CHANGE_JURISDICTION:
