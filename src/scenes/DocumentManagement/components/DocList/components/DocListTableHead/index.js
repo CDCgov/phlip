@@ -3,15 +3,19 @@ import PropTypes from 'prop-types'
 import TableRow from 'components/TableRow'
 import TableCell from 'components/TableCell'
 import CheckboxLabel from 'components/CheckboxLabel'
-import {Dropdown, Button} from 'components'
+import {Dropdown,
+    // Button
+} from 'components'
 
 /**
  * Table header for the document list
  */
 export const DocListTableHead = props => {
-  const { onSelectAll, allSelected, onActionSelected, onActionApply } = props
+  const { onSelectAll, allSelected, onActionSelected,
+      // onActionApply
+  } = props
   const options = [
-        {value:'bulk', label:'Bulk Operation'},
+        {value:'bulk', label:'Bulk Operation', disabled:true},
         { value: 'deleteDoc', label: 'Delete' }, { value: 'assignProject', label: 'Assign projects' },
         { value: 'assignJurisdiction', label: 'Assign Jurisdictions' },
     ]
@@ -31,18 +35,18 @@ export const DocListTableHead = props => {
             />,
             style: { paddingLeft: 20, paddingRight: 0 }
         },
-        {
-            key: 'apply',
-            label:
-  <Button
-    value='Apply'
-    raised={true}
-    size="small"
-    color="accent"
-    onClick = {onActionApply}
-  />,
-            style: { paddingLeft: 20, paddingRight: 0 }
-        },
+  //       {
+  //           key: 'apply',
+  //           label:
+  // <Button
+  //   value='Apply'
+  //   raised={true}
+  //   size="small"
+  //   color="accent"
+  //   onClick = {onActionApply}
+  // />,
+  //           style: { paddingLeft: 20, paddingRight: 0 }
+  //       },
     ]
   const r2Columns = [
     {
