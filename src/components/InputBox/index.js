@@ -34,7 +34,7 @@ const styles = theme => ({
 export const InputBox = props => {
   const {
     value, onChange, name, rows, answerId, classes, validator, theme, question,
-    isValidation, userImages, style, onToggleAnswerForAnno, enabledAnswerChoice, ...otherProps
+    isValidation, userImages, style, onToggleAnswerForAnno, enabledAnswerChoice, areDocsEmpty, ...otherProps
   } = props
 
   const userImageObj = userImages
@@ -80,7 +80,7 @@ export const InputBox = props => {
           }}
           {...otherProps}
         />
-        {textValues.textAnswer && textValues.textAnswer.length > 0 &&
+        {(textValues.textAnswer && textValues.textAnswer.length > 0 && !areDocsEmpty) &&
         <IconButton
           style={{ alignSelf: 'center', marginLeft: 20 }}
           onClick={onToggleAnswerForAnno(answerId)}
@@ -157,7 +157,8 @@ InputBox.propTypes = {
    */
   style: PropTypes.object,
   onToggleAnswerForAnno: PropTypes.func,
-  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  areDocsEmpty: PropTypes.bool
 }
 
 InputBox.defaultProps = {

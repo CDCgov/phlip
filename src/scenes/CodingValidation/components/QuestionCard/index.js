@@ -46,7 +46,8 @@ export class QuestionCard extends Component {
     unsavedChanges: PropTypes.bool,
     saveFailed: PropTypes.bool,
     hasTouchedQuestion: PropTypes.bool,
-    enabledAnswerChoice: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    enabledAnswerChoice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    areDocsEmpty: PropTypes.bool
   }
 
   constructor(props, context) {
@@ -166,7 +167,8 @@ export class QuestionCard extends Component {
       disableAll: this.props.disableAll,
       userImages: this.props.userImages,
       onToggleAnswerForAnno: this.onToggleAnswerForAnno,
-      enabledAnswerChoice: this.props.enabledAnswerChoice
+      enabledAnswerChoice: this.props.enabledAnswerChoice,
+      areDocsEmpty: this.props.areDocsEmpty
     }
 
     const alertActions = [
@@ -291,7 +293,8 @@ const mapStateToProps = (state, ownProps) => {
     unsavedChanges: pageState.unsavedChanges || false,
     saveFailed: pageState.saveFailed || false,
     hasTouchedQuestion: pageState.hasTouchedQuestion || false,
-    enabledAnswerChoice: pageState.enabledAnswerChoice || null
+    enabledAnswerChoice: pageState.enabledAnswerChoice || null,
+    areDocsEmpty: state.scenes.codingValidation.documentList.showEmptyDocs || false
   }
 }
 
