@@ -57,90 +57,23 @@ class Page extends Component {
   }
 
   handleConfirmAnnotation = index => {
-    this.props.saveAnnotation(this.state.pendingAnnotations[index])
+    this.props.saveAnnotation(index)
     this.setState({
-      pending: false,
-      pendingAnnotations: []
-    })
-  }
-
-  handleCancelAnnotation = index => {
-    this.setState({
-      pendingAnnotations: [],
       pending: false
     })
   }
 
-  matchRects = (rect1, rect2) => {
-    return (
-      (Math.round(rect1.x) === Math.round(rect2.x))
-      && (Math.round(rect1.y) === Math.round(rect2.y))
-      && (Math.round(rect1.endX) === Math.round(rect2.endX))
-      && (Math.round(rect1.endY) === Math.round(rect2.endY))
-    )
+  handleCancelAnnotation = index => {
+    this.props.cancelAnnotation(index)
+    this.setState({
+      pending: false
+    })
   }
 
   onMouseUp = () => {
     if (this.props.allowSelection && !this.state.pending) {
       if (document.getSelection().toString().length > 0) {
-        const range = document.getSelection().getRangeAt(0)
-        const pageRect = this.pageRef.current.getClientRects()[0]
-        const selectionRects = range.getClientRects()
-
-        let fullAnnotation = {
-          docId: this.props.docId,
-          pages: [this.props.id],
-          rects: [],
-          text: document.getSelection().toString(),
-          length: selectionRects.length
-        }
-
-        for (let i = 0; i < selectionRects.length; i++) {
-          const r = selectionRects[i]
-          const start = dom_utils.applyInverseTransform([
-            r.left - pageRect.x, r.top - pageRect.y
-          ], this.state.renderContext.viewport.transform)
-
-          const end = dom_utils.applyInverseTransform([
-            r.right - pageRect.x, r.bottom - pageRect.y
-          ], this.state.renderContext.viewport.transform)
-
-          const points = {
-            x: start[0],
-            y: start[1],
-            endX: end[0],
-            endY: end[1]
-          }
-
-          if (i > 0) {
-            const previous = fullAnnotation.rects[fullAnnotation.rects.length - 1]
-            if (!this.matchRects(previous.pdfPoints, points)) {
-              fullAnnotation.rects = [
-                ...fullAnnotation.rects,
-                {
-                  pageNumber: this.props.id,
-                  pdfPoints: points
-                }
-              ]
-            }
-          } else {
-            fullAnnotation.rects = [
-              ...fullAnnotation.rects,
-              {
-                pageNumber: this.props.id,
-                pdfPoints: points
-              }
-            ]
-          }
-        }
-
-        this.setState({
-          pendingAnnotations: [
-            ...this.state.annotations,
-            fullAnnotation
-          ],
-          pending: true
-        })
+        this.props.getSelection(this.state.renderContext, this.props.id)
       }
     }
   }
@@ -279,7 +212,7 @@ class Page extends Component {
       <div
         data-page-number={this.props.id}
         style={dims}
-        ref={this.pageRef}
+        ref={this.props.pageRef}
         className="page"
         onMouseUp={this.onMouseUp}>
         {!this.state.readyToRenderText &&
@@ -304,8 +237,8 @@ class Page extends Component {
             })
           })}
           {this.state.renderContext.canvasContext &&
-          this.state.pendingAnnotations.length > 0 &&
-          this.state.pendingAnnotations.map((annotation, i) => {
+          this.props.pendingAnnotations.length > 0 &&
+          this.props.pendingAnnotations.map((annotation, i) => {
             return annotation.rects.map((rect, j) => {
               const { left, top, height, width, bounds } = this.getBounds(rect.pdfPoints)
               return (
@@ -314,7 +247,7 @@ class Page extends Component {
                     key={`pending-highlight-${i}-${j}`}
                     style={{ left, top, height, width, ...highlightStyle }}
                   />
-                  {j === annotation.rects.length - 1 &&
+                  {((j === annotation.rects.length - 1) && annotation.endPage === this.props.id) &&
                   <>
                     <div
                       key={`pending-highlight-${i}-${j}-cancel`}
@@ -340,7 +273,12 @@ class Page extends Component {
             })
           })}
         </div>
-        <div className="textLayer" id={`text-layer-page-${this.props.id}`} style={dims} ref={this.textLayerRef}>
+        <div
+          data-page-number={this.props.id}
+          className="textLayer"
+          id={`text-layer-page-${this.props.id}`}
+          style={dims}
+          ref={this.textLayerRef}>
           {this.state.readyToRenderText === true && this.allTextDivs.map((textLine, i) => {
             return <TextNode key={`textLine-${i}-page-${this.props.id}`} index={i} id={this.props.id} text={textLine} />
           })}
@@ -350,5 +288,5 @@ class Page extends Component {
   }
 }
 
-const PageWithRef = React.forwardRef((props, ref) => <Page {...props} ref={ref} />)
+const PageWithRef = React.forwardRef((props, ref) => <Page {...props} pageRef={ref} />)
 export default PageWithRef
