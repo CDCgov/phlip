@@ -53,6 +53,42 @@ export const mergeInfoWithDocs = (info, docs, api) => {
   })
 }
 
+export const getFileType = (doc) => {
+  return new Promise(async (resolve, reject) => {
+      const validMimeTypes = [
+          {
+              mime: 'pdf',
+              pattern: '25504446'
+          },
+          {
+              mime: 'rtf',
+              pattern: '7b5c7274'
+          }
+      ]
+      let matchedOne = {}
+        const filereader = new FileReader()
+        filereader.onload= function (evt) {
+            if (evt.target.readyState === FileReader.DONE) {
+                const uint = new Uint8Array(evt.target.result)
+                let bytes = []
+                uint.forEach((byte) => {
+                    bytes.push(byte.toString(16))
+                })
+                const hex = bytes.join('').toUpperCase()
+                console.log('actual header for ',doc.name,' ',hex)
+                matchedOne = validMimeTypes.find(oneType => {
+                    return oneType.pattern === hex
+                })
+                return matchedOne
+            }
+        }
+
+        const blob = doc.file.slice(0, 4)
+        filereader.readAsArrayBuffer(blob)
+  })
+
+}
+
 /**
  * Handles extracting info from an excel spreadsheet and merging if with docs already selected
  */
@@ -217,10 +253,26 @@ const searchJurisdictionListLogic = createLogic({
   }
 })
 
+/**
+ * Logic for handling file type verification
+ */
+const verifyFileContentLogic = createLogic({
+    type: types.VERIFY_VALID_FILE_TYPE,
+    async validate({ getState, action }, allow, reject,done) {
+        const state = getState().scenes.docManage.upload
+        console.log('docs in verify in loic ',action.docs)
+        action.docs.map( async doc => {
+            const valid = await getFileType(doc)
+            console.log(valid)
+        })
+    }
+})
+
 export default [
   uploadRequestLogic,
   extractInfoLogic,
   searchProjectListLogic,
   searchJurisdictionListLogic,
-  mergeInfoWithDocsLogic
+  mergeInfoWithDocsLogic,
+  verifyFileContentLogic
 ]
