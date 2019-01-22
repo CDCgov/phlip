@@ -15,7 +15,12 @@ const props = {
     handlePageChange: jest.fn(),
     handleRowsChange: jest.fn(),
     handleSelectOneFile: jest.fn()
-  }
+  },
+  apiErrorOpen: false,
+  apiErrorInfo: {
+        title: '',
+        text: ''
+    },
 }
 
 describe('Document Management scene', () => {

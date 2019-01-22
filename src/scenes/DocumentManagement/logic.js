@@ -60,7 +60,7 @@ const getDocLogic = createLogic({
 const bulkUpdateLogic = createLogic({
     type: types.BULK_UPDATE_REQUEST,
     async process({ docApi, action, getState }, dispatch, done) {
-
+        console.log(action.selectedDocs)
         try {
             await docApi.bulkUpdateDoc({meta:action.updateData,docIds: action.selectedDocs})
 
