@@ -33,7 +33,7 @@ exports[`QuestionCard component should render correctly 1`] = `
       ]
     }
     open={false}
-    title={null}
+    title=""
   >
     <WithStyles(Typography)
       style={

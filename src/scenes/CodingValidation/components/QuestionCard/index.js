@@ -56,7 +56,11 @@ export class QuestionCard extends Component {
       isSaving: false,
       clearAnswerAlertOpen: false,
       confirmAlertOpen: false,
-      confirmAnswerChange: {}
+      confirmAnswerChange: {},
+      confirmAlertInfo: {
+        text: '',
+        title: ''
+      }
     }
   }
 
@@ -106,7 +110,10 @@ export class QuestionCard extends Component {
       this.setState({
         confirmAlertOpen: true,
         confirmAnswerChange: { id, event, value },
-        confirmAlertText: text
+        confirmAlertInfo: {
+          text,
+          title: 'Warning'
+        }
       })
     } else {
       this.props.onChange(id)(event, value)
@@ -117,7 +124,11 @@ export class QuestionCard extends Component {
     this.setState({
       confirmAlertOpen: false,
       confirmAnswerChange: {},
-      clearAnswerAlertOpen: false
+      clearAnswerAlertOpen: false,
+      confirmAlertInfo: {
+        text: '',
+        title: ''
+      }
     })
   }
 
@@ -127,7 +138,11 @@ export class QuestionCard extends Component {
       this.state.confirmAnswerChange.value)
     this.setState({
       confirmAlertOpen: false,
-      confirmAnswerChange: {}
+      confirmAnswerChange: {},
+      confirmAlertInfo: {
+        text: '',
+        title: ''
+      }
     })
   }
 
@@ -202,9 +217,9 @@ export class QuestionCard extends Component {
 
     return (
       <Row displayFlex style={{ flex: 1, width: '50%' }}>
-        <Alert actions={alertActions} open={this.state.confirmAlertOpen}>
+        <Alert actions={alertActions} title={this.state.confirmAlertInfo.title} open={this.state.confirmAlertOpen}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            {this.state.confirmAlertText}
+            {this.state.confirmAlertInfo.text}
           </Typography>
         </Alert>
         <Alert actions={clearAnswerActions} open={this.state.clearAnswerAlertOpen}>

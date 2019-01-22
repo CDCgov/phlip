@@ -9,7 +9,7 @@ import { withStyles } from '@material-ui/core/styles'
 import { getInitials } from 'utils/normalize'
 import ValidationAvatar from 'components/ValidationAvatar'
 import { FlexGrid, IconButton, Avatar, SimpleInput } from 'components'
-import { FormatQuoteClose } from 'mdi-material-ui'
+import { Marker } from 'mdi-material-ui'
 
 const styles = theme => ({
   checked: {
@@ -103,7 +103,7 @@ export const RadioGroupValidation = props => {
                 onClick={onToggleAnswerForAnno(choice.id)}
                 color={enabledAnswerChoice === choice.id ? 'primary' : '#757575'}
                 iconSize={20}>
-                <FormatQuoteClose style={{ fontSize: 20 }} />
+                <Marker style={{ fontSize: 20 }} />
               </IconButton>}
             </>}
           </FlexGrid>

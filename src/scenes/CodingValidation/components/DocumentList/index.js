@@ -112,7 +112,7 @@ export class DocumentList extends Component {
               <i>
                 <span style={{ fontWeight: 500, color: theme.palette.secondary.pageHeader }}>Annotation Mode:</span>
                 {' '}
-                <span style={{ color: '#757575' }}>Highlight the desired text and confirm.</span>
+                <span style={{ color: '#434343' }}>Highlight the desired text and confirm.</span>
               </i>
             </Typography>
           </FlexGrid>}
