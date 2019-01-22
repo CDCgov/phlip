@@ -1,0 +1,214 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`QuestionCard component should render correctly 1`] = `
+<Row
+  component={
+    <WithStyles(Grid)
+      item={true}
+    />
+  }
+  displayFlex={true}
+  flex={false}
+  reverse={false}
+  style={
+    Object {
+      "flex": 1,
+      "width": "50%",
+    }
+  }
+>
+  <Alert
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Cancel",
+        },
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Continue",
+        },
+      ]
+    }
+    open={false}
+    title={null}
+  >
+    <WithStyles(Typography)
+      style={
+        Object {
+          "whiteSpace": "pre-wrap",
+        }
+      }
+      variant="body1"
+    />
+  </Alert>
+  <Alert
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Cancel",
+        },
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Clear answer",
+        },
+      ]
+    }
+    open={false}
+    title={null}
+  >
+    <WithStyles(Typography)
+      style={
+        Object {
+          "whiteSpace": "pre-wrap",
+        }
+      }
+      variant="body1"
+    >
+      Are you sure you want to clear your answer to this question?
+    </WithStyles(Typography)>
+  </Alert>
+  <Column
+    component={<Card />}
+    displayFlex={true}
+    flex={true}
+    style={
+      Object {
+        "width": "100%",
+      }
+    }
+  >
+    <Row
+      component={
+        <WithStyles(Grid)
+          item={true}
+        />
+      }
+      displayFlex={true}
+      flex={false}
+      reverse={false}
+      style={
+        Object {
+          "alignItems": "center",
+          "height": 55,
+          "paddingRight": 15,
+        }
+      }
+    >
+      <Row
+        component={
+          <WithStyles(Grid)
+            item={true}
+          />
+        }
+        displayFlex={false}
+        flex={false}
+        reverse={false}
+        style={
+          Object {
+            "width": "100%",
+          }
+        }
+      />
+      <Row
+        component={
+          <WithStyles(Grid)
+            item={true}
+          />
+        }
+        displayFlex={true}
+        flex={false}
+        reverse={false}
+        style={
+          Object {
+            "marginLeft": -70,
+          }
+        }
+      >
+        <IconButton
+          aria-label="Clear answer"
+          color="white"
+          disabled={false}
+          iconSize={24}
+          id="clear-answer"
+          onClick={[Function]}
+          style={
+            Object {
+              "height": 24,
+            }
+          }
+          tooltipText="Clear answer"
+        >
+          <Icon
+            aria-labelledby="Clear answer"
+          />
+        </IconButton>
+        <FlagPopover
+          disableAll={false}
+          questionFlags={Array []}
+          user={
+            Object {
+              "firstName": "test",
+              "id": 5,
+              "lastName": "user",
+            }
+          }
+          userFlag={
+            Object {
+              "notes": "",
+              "type": 0,
+            }
+          }
+        />
+      </Row>
+    </Row>
+    <WithStyles(Divider) />
+    <TabContainer
+      selected={null}
+      tabs={Array []}
+    >
+      <QuestionContent
+        areDocsEmpty={false}
+        currentUserInitials="tu"
+        disableAll={false}
+        enabledAnswerChoice={null}
+        isValidation={false}
+        mergedUserQuestions={Object {}}
+        onChange={[Function]}
+        onToggleAnswerForAnno={[Function]}
+        question={
+          Object {
+            "answers": Array [],
+            "id": 1,
+            "questionType": 1,
+          }
+        }
+        user={
+          Object {
+            "firstName": "test",
+            "id": 5,
+            "lastName": "user",
+          }
+        }
+        userAnswers={
+          Object {
+            "validatedBy": Object {
+              "firstName": "test",
+              "id": 5,
+              "lastName": "user",
+            },
+          }
+        }
+        userImages={Object {}}
+      />
+    </TabContainer>
+    <WithStyles(Divider) />
+    <WithTheme(FooterNavigate) />
+  </Column>
+</Row>
+`;
