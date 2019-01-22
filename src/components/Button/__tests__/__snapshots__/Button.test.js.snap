@@ -7,7 +7,7 @@ exports[`Button component should render correctly 1`] = `
   onClick={[Function]}
   style={
     Object {
-      "backgroundColor": "primary",
+      "backgroundColor": "#3d316a",
       "color": "white",
       "fontWeight": 400,
     }

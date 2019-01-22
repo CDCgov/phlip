@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
 import theme from 'services/theme'
-import { FlexGrid, Icon, PDFViewer } from 'components'
+import { FlexGrid, Icon, PDFViewer, ApiErrorView } from 'components'
 import { FormatQuoteClose } from 'mdi-material-ui'
 
 const docNameStyle = {
@@ -23,15 +23,27 @@ export class DocumentList extends Component {
     projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     page: PropTypes.oneOf(['coding', 'validation']),
     documents: PropTypes.array,
-    annotated: PropTypes.array,
+    annotatedDocs: PropTypes.array,
     docSelected: PropTypes.bool,
-    openedDoc: PropTypes.object
+    openedDoc: PropTypes.object,
+    answerSelected: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
+    annotations: PropTypes.array,
+    questionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    saveUserAnswer: PropTypes.func,
+    apiErrorInfo: PropTypes.shape({
+      text: PropTypes.string,
+      title: PropTypes.string
+    }),
+    apiErrorOpen: PropTypes.bool,
+    showEmptyDocs: PropTypes.bool
   }
 
   static defaultProps = {
     actions: {},
     documents: [],
-    annotated: []
+    annotated: [],
+    showEmptyDocs: false,
+    apiErrorOpen: false
   }
 
   constructor(props, context) {
@@ -42,10 +54,25 @@ export class DocumentList extends Component {
     this.props.actions.getApprovedDocumentsRequest(this.props.projectId, this.props.jurisdictionId, this.props.page)
   }
 
+  componentWillUnmount() {
+    this.clearDocSelected()
+  }
+
+  onSaveAnnotation = annotation => {
+    this.props.actions.saveAnnotation(annotation, this.props.answerSelected, this.props.questionId)
+    this.props.saveUserAnswer()
+  }
+
+  /**
+   * Gets the actual document contents when a document is clicked
+   */
   getContents = id => () => {
     this.props.actions.getDocumentContentsRequest(id)
   }
 
+  /**
+   * Clears what document is selected
+   */
   clearDocSelected = () => {
     this.props.actions.clearDocSelected()
   }
@@ -67,16 +94,36 @@ export class DocumentList extends Component {
             <Icon color="black" style={{ cursor: 'pointer', paddingRight: 5 }} onClick={this.clearDocSelected}>
               arrow_back
             </Icon>}
-            {this.props.docSelected
-              ? this.props.openedDoc.name
-              : 'Assigned Documents'}
+            {this.props.docSelected ? this.props.openedDoc.name : 'Assigned Documents'}
           </Typography>
-          {/*!this.props.docSelected && <SearchBar />*/}
         </FlexGrid>
         <Divider />
-        <FlexGrid container flex padding={10} style={{ height: '100%' }}>
-          {this.props.docSelected === true && <PDFViewer document={this.props.openedDoc} />}
-          {this.props.docSelected === false && this.props.documents.map((doc, i) => {
+        <FlexGrid container flex style={{ height: '100%', overflow: 'auto' }}>
+          {this.props.apiErrorOpen && <ApiErrorView error={this.props.apiErrorInfo.text} />}
+          {this.props.showEmptyDocs &&
+          <FlexGrid container align="center" justify="center" flex>
+            <Typography variant="display1" style={{ textAlign: 'center' }}>
+              There no approved and/or assigned documents for this project and jurisdiction.
+            </Typography>
+          </FlexGrid>}
+          {(!this.props.showEmptyDocs && this.props.answerSelected) &&
+          <FlexGrid padding={20} container align="center" style={{ backgroundColor: '#e6f8ff' }}>
+            <Typography>
+              <i>
+                <span style={{ fontWeight: 500, color: theme.palette.secondary.pageHeader }}>Annotation Mode:</span>
+                {' '}
+                <span style={{ color: '#757575' }}>Highlight the desired text and confirm.</span>
+              </i>
+            </Typography>
+          </FlexGrid>}
+          {(this.props.docSelected && !this.props.apiErrorOpen) &&
+          <PDFViewer
+            allowSelection={Boolean(this.props.answerSelected)}
+            document={this.props.openedDoc}
+            saveAnnotation={this.onSaveAnnotation}
+            annotations={this.props.annotations}
+          />}
+          {!this.props.docSelected && this.props.documents.map((doc, i) => {
             return (
               <Fragment key={`${doc._id}`}>
                 <FlexGrid container type="row" align="center" padding={10}>
@@ -84,7 +131,7 @@ export class DocumentList extends Component {
                   <Typography style={docNameStyle}>
                     <span onClick={this.getContents(doc._id)}>{doc.name}</span>
                   </Typography>
-                  {this.props.annotated.includes(doc._id) &&
+                  {this.props.annotatedDocs.includes(doc._id) &&
                   <Icon color="error" size={20}>
                     <FormatQuoteClose style={{ fontSize: 20 }} />
                   </Icon>}
@@ -104,37 +151,40 @@ const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.documentList
   const codingState = state.scenes.codingValidation.coding
   const answerSelected = codingState.enabledAnswerChoice || false
-  const isCategoryQuestion = !!codingState.selectedCategoryId
 
-  const annotatedToShow = answerSelected
-    ? isCategoryQuestion
-      ? pageState.documents.annotated[codingState.question.id][codingState.selectedCategoryId] !== undefined
-        ? pageState.documents.annotated[codingState.question.id][codingState.selectedCategoryId].byAnswer[codingState.enabledAnswerChoice]
-        : []
-      : pageState.documents.annotated[codingState.question.id].byAnswer[codingState.enabledAnswerChoice]
-    //: pageState.documents.annotated[codingState.question.id].all,
+  const annotationsForAnswer = answerSelected
+    ? codingState.question.isCategoryQuestion
+      ? JSON.parse(codingState.userAnswers[ownProps.questionId][codingState.selectedCategoryId].answers[answerSelected].annotations)
+      : JSON.parse(codingState.userAnswers[ownProps.questionId].answers[answerSelected].annotations)
     : []
 
-  const ordered = pageState.documents.ordered
-  const filteredOrder = ordered.filter(doc => !annotatedToShow.includes(doc))
-  const filteredAnnos = ordered.filter(doc => annotatedToShow.includes(doc))
+  const annotatedDocIdsForAnswer = annotationsForAnswer.map(annotation => annotation.docId)
+  const notAnnotatedDocIds = pageState.documents.ordered.filter(docId => !annotatedDocIdsForAnswer.includes(docId))
+  const annotatedDocIds = pageState.documents.ordered.filter(docId => annotatedDocIdsForAnswer.includes(docId))
+  const annotatedForOpenDoc = annotationsForAnswer.filter(annotation => annotation.docId === pageState.openedDoc._id)
+  const allDocIds = new Set([...annotatedDocIds, ...notAnnotatedDocIds])
+  const docArray = Array.from(allDocIds)
 
   return {
-    documents: [...filteredAnnos, ...filteredOrder].map(id => pageState.documents.byId[id]),
-    //document: ordered.map(id => pageState.documents.byId[id]),
-    jurisdictionId: ownProps.jurisdictionId,
-    projectId: ownProps.projectId,
-    annotated: annotatedToShow,
+    documents: docArray.length === 0
+      ? []
+      : pageState.documents.allIds.length === 0
+        ? []
+        : docArray.map(id => pageState.documents.byId[id]),
+    annotatedDocs: annotatedDocIds,
+    annotations: annotatedForOpenDoc,
     openedDoc: pageState.openedDoc || {},
-    docSelected: pageState.docSelected || false
+    docSelected: pageState.docSelected || false,
+    showEmptyDocs: pageState.showEmptyDocs,
+    apiErrorInfo: pageState.apiErrorInfo,
+    apiErrorOpen: pageState.apiErrorOpen,
+    answerSelected
   }
 }
 
 /* istanbul-ignore-next */
-const mapDispatchToProps = dispatch => {
-  return {
-    actions: { ...bindActionCreators(actions, dispatch) }
-  }
-}
+const mapDispatchToProps = dispatch => ({
+  actions: { ...bindActionCreators(actions, dispatch) }
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(DocumentList)

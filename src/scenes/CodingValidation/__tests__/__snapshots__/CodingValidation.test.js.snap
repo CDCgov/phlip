@@ -15,6 +15,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       "display": "flex",
       "flexWrap": "nowrap",
       "height": "100%",
+      "overflow": "hidden",
       "position": "relative",
       "width": "100%",
     }
@@ -116,6 +117,8 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
     style={
       Object {
         "flexWrap": "nowrap",
+        "overflowX": "hidden",
+        "overflowY": "auto",
         "width": "100%",
       }
     }
@@ -266,6 +269,8 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
           <Connect(DocumentList)
             page="coding"
             projectId={1}
+            questionId={1}
+            saveUserAnswer={[Function]}
           />
         </FlexGrid>
       </FlexGrid>

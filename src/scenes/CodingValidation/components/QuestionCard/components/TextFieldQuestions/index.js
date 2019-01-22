@@ -9,7 +9,7 @@ import ValidationAvatar from 'components/ValidationAvatar'
 
 export const TextFieldQuestions = props => {
   const {
-    mergedUserQuestions, validator, validatorAnswer,
+    mergedUserQuestions, validator, validatorAnswer, areDocsEmpty,
     onChange, answerId, style, userImages, disabled, question
   } = props
 
@@ -47,6 +47,7 @@ export const TextFieldQuestions = props => {
         answerId={answerId}
         disabled={disabled}
         isValidation={true}
+        areDocsEmpty={areDocsEmpty}
       />
     </>
   )
@@ -61,7 +62,8 @@ TextFieldQuestions.propTypes = {
   style: PropTypes.object,
   userImages: PropTypes.object,
   disabled: PropTypes.bool,
-  question: PropTypes.object
+  question: PropTypes.object,
+  areDocsEmpty: PropTypes.bool
 }
 
 export default TextFieldQuestions

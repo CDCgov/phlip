@@ -24,7 +24,7 @@ export const CheckboxGroupValidation = props => {
   const {
     choices, userAnswers, onChange, onChangePincite, pincites,
     classes, mergedUserQuestions, disableAll, userImages, theme, question,
-    enabledAnswerChoice, onToggleAnswerForAnno
+    enabledAnswerChoice, onToggleAnswerForAnno, areDocsEmpty
   } = props
 
   const userImageObj = userImages
@@ -98,13 +98,14 @@ export const CheckboxGroupValidation = props => {
                   }}
                   onChange={onChangePincite(choice.id, 'pincite')}
                 />
+                {!areDocsEmpty &&
                 <IconButton
                   style={{ alignSelf: 'center', marginLeft: 20 }}
                   onClick={onToggleAnswerForAnno(choice.id)}
                   color={enabledAnswerChoice === choice.id ? 'primary' : '#757575'}
                   iconSize={20}>
                   <FormatQuoteClose style={{ fontSize: 20 }} />
-                </IconButton>
+                </IconButton>}
               </>}
             </FlexGrid>
           )
@@ -171,7 +172,8 @@ CheckboxGroupValidation.propTypes = {
   /**
    * handles when a user enables / disables an answer choice for annotating
    */
-  onToggleAnswerForAnno: PropTypes.func
+  onToggleAnswerForAnno: PropTypes.func,
+  areDocsEmpty: PropTypes.bool
 }
 
 export default withStyles(styles, { withTheme: true })(CheckboxGroupValidation)

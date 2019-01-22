@@ -16,7 +16,7 @@ export const QuestionContent = props => {
   const {
     question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
     onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages,
-    onToggleAnswerForAnno, enabledAnswerChoice
+    onToggleAnswerForAnno, enabledAnswerChoice, areDocsEmpty
   } = props
 
   const questionAnswerPadding = {
@@ -41,7 +41,8 @@ export const QuestionContent = props => {
     mergedUserQuestions,
     disableAll,
     onToggleAnswerForAnno,
-    enabledAnswerChoice
+    enabledAnswerChoice,
+    areDocsEmpty
   }
 
   return (
@@ -73,6 +74,7 @@ export const QuestionContent = props => {
             disabled={disableAll}
             onToggleAnswerForAnno={onToggleAnswerForAnno}
             enabledAnswerChoice={enabledAnswerChoice}
+            areDocsEmpty={areDocsEmpty}
           />
         </Column>}
 
@@ -87,6 +89,7 @@ export const QuestionContent = props => {
           question={question}
           answerId={question.possibleAnswers[0].id}
           disabled={disableAll}
+          areDocsEmpty={areDocsEmpty}
         />
         }
         <Row style={{ ...answerPadding, paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
@@ -153,7 +156,8 @@ QuestionContent.propTypes = {
   onOpenFlagConfirmAlert: PropTypes.func,
   userImages: PropTypes.object,
   onToggleAnswerForAnno: PropTypes.func,
-  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  areDocsEmpty: PropTypes.bool
 }
 
 export default QuestionContent

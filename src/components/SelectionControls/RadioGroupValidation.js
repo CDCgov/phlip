@@ -24,7 +24,7 @@ export const RadioGroupValidation = props => {
   const {
     choices, userAnswers, onChange, onChangePincite, classes,
     mergedUserQuestions, disableAll, userImages, theme, question,
-    enabledAnswerChoice, onToggleAnswerForAnno
+    enabledAnswerChoice, onToggleAnswerForAnno, areDocsEmpty
   } = props
 
   const userImageObj = userImages
@@ -97,13 +97,14 @@ export const RadioGroupValidation = props => {
                 value={userAnswers.answers[choice.id].pincite}
                 onChange={onChangePincite(choice.id, 'pincite')}
               />
+              {!areDocsEmpty &&
               <IconButton
                 style={{ alignSelf: 'center', marginLeft: 20 }}
                 onClick={onToggleAnswerForAnno(choice.id)}
                 color={enabledAnswerChoice === choice.id ? 'primary' : '#757575'}
                 iconSize={20}>
                 <FormatQuoteClose style={{ fontSize: 20 }} />
-              </IconButton>
+              </IconButton>}
             </>}
           </FlexGrid>
         ))}
@@ -164,7 +165,8 @@ RadioGroupValidation.propTypes = {
   /**
    * handles when a user enables / disables an answer choice for annotating
    */
-  onToggleAnswerForAnno: PropTypes.func
+  onToggleAnswerForAnno: PropTypes.func,
+  areDocsEmpty: PropTypes.bool
 }
 
 RadioGroupValidation.defaultProps = {
