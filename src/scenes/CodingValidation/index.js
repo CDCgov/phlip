@@ -13,7 +13,6 @@ import actions from './actions'
 import {
   TextLink, Icon, Button, Alert, Tooltip, ApiErrorView, ApiErrorAlert, PageLoader, withTracking, FlexGrid
 } from 'components'
-import Container, { Row } from 'components/Layout'
 import classNames from 'classnames'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
 
@@ -152,7 +151,7 @@ export class CodingValidation extends Component {
     if (this.props.isSchemeEmpty === false && prevProps.isSchemeEmpty === null) {
       if (this.props.areJurisdictionsEmpty === false) {
         this.setState({
-          navOpen: true
+          navOpen: false
         })
       }
     }
@@ -420,6 +419,7 @@ export class CodingValidation extends Component {
    */
   onToggleAnswerForAnno = id => {
     this.props.actions.onToggleAnswerForAnno(id)
+    this.onSaveCodedQuestion()
   }
 
   /**
@@ -453,13 +453,9 @@ export class CodingValidation extends Component {
     }
 
     return (
-      <Container
-        column
-        flex
-        alignItems="center"
-        style={{ justifyContent: 'center', padding: 30, textAlign: 'center' }}>
+      <FlexGrid container flex align="center" justify="center" padding={30}>
         <Typography variant="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
-        <Row displayFlex style={{ width: '100%', justifyContent: 'space-evenly' }}>
+        <FlexGrid container type="row" style={{ width: '100%', justifyContent: 'space-evenly' }}>
           {noScheme && this.props.userRole !== 'Coder' &&
           <TextLink to={{ pathname: `/project/${this.props.projectId}/coding-scheme` }}>
             <Button value="Create Coding Scheme" color="accent" />
@@ -468,8 +464,8 @@ export class CodingValidation extends Component {
           <TextLink to={{ pathname: `/project/${this.props.projectId}/jurisdictions` }}>
             <Button value="Add Jurisdictions" color="accent" />
           </TextLink>}
-        </Row>
-      </Container>
+        </FlexGrid>
+      </FlexGrid>
     )
   }
 
@@ -478,7 +474,6 @@ export class CodingValidation extends Component {
    * @returns {*}
    */
   onShowCodeView = () => {
-    console.log('here')
     return (
       <>
         <QuestionCard
@@ -504,6 +499,8 @@ export class CodingValidation extends Component {
           projectId={this.props.projectId}
           jurisdictionId={this.props.jurisdiction.jurisdictionId}
           page={this.props.page}
+          questionId={this.props.question.id}
+          saveUserAnswer={this.onSaveCodedQuestion}
         />
       </>
     )
@@ -536,7 +533,7 @@ export class CodingValidation extends Component {
           type: 1,
           method: this.props.page === 'coding'
             ? this.props.actions.getUserCodedQuestions
-            : this.props.actions.getUserValidationQuestionsRequest
+            : this.props.actions.getUserValidatedQuestionsRequest
         },
         changeProps: [this.props.projectId, event.target.value, this.props.page]
       })
@@ -551,7 +548,7 @@ export class CodingValidation extends Component {
         this.props.actions.getUserValidatedQuestionsRequest(this.props.projectId, event.target.value, this.props.page)
       }
 
-      this.onShowPageLoader()
+      this.onShowQuestionLoader()
       this.props.actions.getApprovedDocumentsRequest(this.props.projectId, this.props.jurisdictionList[newIndex].jurisdictionId, this.props.page)
     }
   }
@@ -640,12 +637,15 @@ export class CodingValidation extends Component {
       [this.props.classes.pageLoading]: this.props.showPageLoader
     })
 
-    const containerStyle = { width: '100%', height: '100%', position: 'relative', display: 'flex', flexWrap: 'nowrap' }
+    const containerStyle = {
+      width: '100%',
+      height: '100%',
+      position: 'relative',
+      display: 'flex',
+      flexWrap: 'nowrap',
+      overflow: 'hidden'
+    }
 
-    console.log(this.props.areJurisdictionsEmpty)
-    console.log(this.props.isSchemeEmpty)
-    console.log(this.props.showPageLoader)
-    console.log(this.props.isLoadingPage)
     return (
       <FlexGrid container type="row" flex className={classes} style={containerStyle}>
         <Alert open={this.state.applyAllAlertOpen} actions={this.modalActions}>
@@ -676,7 +676,7 @@ export class CodingValidation extends Component {
           selectedCategory={this.props.selectedCategory}
           handleQuestionSelected={this.onQuestionSelectedInNav}
         />}
-        <FlexGrid container flex style={{ width: '100%', flexWrap: 'nowrap' }}>
+        <FlexGrid container flex style={{ width: '100%', flexWrap: 'nowrap', overflowX: 'hidden', overflowY: 'auto' }}>
           <Header
             projectName={this.props.projectName}
             projectId={this.props.projectId}
@@ -709,8 +709,8 @@ export class CodingValidation extends Component {
                 <ApiErrorView error="We couldn't get the coding scheme for this project." />}
                 {this.props.showPageLoader && <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />}
                 {(this.props.areJurisdictionsEmpty || this.props.isSchemeEmpty) && this.onShowGetStartedView()}
-                {(!this.props.showPageLoader && !this.props.isLoadingPage && this.props.isSchemeEmpty === false &&
-                this.props.areJurisdictionsEmpty === false) && this.onShowCodeView()}
+                {(!this.props.showPageLoader && this.props.isSchemeEmpty === false &&
+                  this.props.areJurisdictionsEmpty === false) && this.onShowCodeView()}
               </FlexGrid>
             </FlexGrid>
           </FlexGrid>

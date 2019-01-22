@@ -9,7 +9,7 @@ import { withTheme } from '@material-ui/core/styles'
 export const Button = props => {
   const { value, color, onClick, raised, theme, textColor, listButton, style, children, ...otherProps } = props
 
-  const buttonColor = color === 'accent' ? 'secondary' : theme[color] ? theme[color] : 'default'
+  const buttonColor = color === 'accent' ? 'secondary' : 'default'
 
   const styles = {
     color: (raised || listButton)
@@ -19,7 +19,9 @@ export const Button = props => {
       : color || '',
     fontWeight: 400,
     backgroundColor: raised
-      ? color
+      ? theme.palette[color]
+        ? theme.palette[color].main
+        : color
       : listButton
         ? theme.palette.primary.light
         : '',

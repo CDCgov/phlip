@@ -153,7 +153,7 @@ describe('CodingValidation reducer', () => {
         userAnswers: {
           ...currentState.userAnswers,
           1: {
-            answers: { 123: { schemeAnswerId: 123, pincite: '', annotations: [] } },
+            answers: { 123: { schemeAnswerId: 123, pincite: '', annotations: '[]' } },
             schemeQuestionId: 1,
             comment: ''
           }
@@ -276,7 +276,7 @@ describe('CodingValidation reducer', () => {
             comment: '',
             schemeQuestionId: 2,
             answers: {
-              90: { schemeAnswerId: 90, pincite: '', annotations: [] }
+              90: { schemeAnswerId: 90, pincite: '', annotations: '[]' }
             }
           }
         },

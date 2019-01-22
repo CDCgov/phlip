@@ -28,4 +28,15 @@ describe('CodingValidation - DocumentList action creators', () => {
 
     expect(actions.getDocumentContentsRequest(123123)).toEqual(expectedAction)
   })
+
+  test('should create an action to save the annotation', () => {
+    const expectedAction = {
+      type: types.ON_SAVE_ANNOTATION,
+      annotation: { text: 'test annotation' },
+      answerId: 4,
+      questionId: 3
+    }
+
+    expect(actions.saveAnnotation({ text: 'test annotation' }, 4, 3)).toEqual(expectedAction)
+  })
 })

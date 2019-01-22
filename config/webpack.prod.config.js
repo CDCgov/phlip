@@ -74,7 +74,7 @@ module.exports = env => {
                   }
                 }
               ],
-              exclude: /node_modules/
+              exclude: /(node_modules|__tests__)/
             },
             {
               test: /\.css$/,
@@ -83,7 +83,6 @@ module.exports = env => {
                 {
                   loader: 'css-loader',
                   options: {
-                    modules: true,
                     '-autoprefixer': true,
                     importLoaders: true
                   }

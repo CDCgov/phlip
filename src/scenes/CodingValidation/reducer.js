@@ -1,7 +1,7 @@
 import { types } from './actions'
 import {
   determineShowButton, handleCheckCategories,
-  handleUpdateUserAnswers, handleUpdateUserCategoryChild, handleUpdateUserCodedQuestion,
+  handleUpdateUserAnswers, handleUpdateUserCategoryChild, handleUpdateUserCodedQuestion, handleUpdateAnnotations,
   handleUserPinciteQuestion, initializeNavigator, generateError, updateCategoryCodedQuestion, updateCodedQuestion
 } from 'utils/codingHelpers'
 
@@ -89,7 +89,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
           ...state.userAnswers,
           ...handleUpdateUserAnswers(state, action)
         },
-        unsavedChanges: true
+        unsavedChanges: true,
+        enabledAnswerChoice: null
       }
 
     case types.CHANGE_TOUCHED_STATUS:
@@ -179,6 +180,14 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         unsavedChanges: true
       }
 
+    case types.ON_SAVE_ANNOTATION:
+      return {
+        ...state,
+        ...questionUpdater('answers', handleUpdateAnnotations),
+        unsavedChanges: true,
+        hasTouchedQuestion: true
+      }
+
     case types.ON_CHANGE_COMMENT:
       return {
         ...state,
@@ -190,7 +199,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         selectedCategory: action.selection,
-        selectedCategoryId: state.categories[action.selection].id
+        selectedCategoryId: state.categories[action.selection].id,
+        enabledAnswerChoice: null
       }
 
     case types.ON_CHANGE_JURISDICTION:

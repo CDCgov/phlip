@@ -44,6 +44,17 @@ describe('CodingValidation - DocumentList reducer', () => {
     expect(reducer(undefined, {})).toEqual(INITIAL_STATE)
   })
 
+  describe('GET_APPROVED_DOCUMENTS_REQUEST', () => {
+    const action = {
+      type: types.GET_APPROVED_DOCUMENTS_REQUEST
+    }
+
+    const state = reducer(getState(), action)
+    test('should set state.docSelected to false', () => {
+      expect(state.docSelected).toEqual(false)
+    })
+  })
+
   describe('GET_APPROVED_DOCUMENTS_SUCCESS', () => {
     const action = {
       type: types.GET_APPROVED_DOCUMENTS_SUCCESS,
@@ -81,114 +92,18 @@ describe('CodingValidation - DocumentList reducer', () => {
     })
   })
 
-  describe('GET_QUESTION_SUCCESS / GET_USER_VALIDATED/CODED_QUESTIONS_SUCCESS', () => {
-    const payload = {
-      updatedState: {
-        userAnswers: {
-          4: {
-            schemeQuestionId: 4,
-            answers: {
-              300: {
-                schemeAnswerId: 300,
-                annotations: JSON.stringify([{ docId: '9101' }])
-              }
-            }
-          },
-          5: {
-            schemeQuestionId: 5,
-            answers: {
-              100: {
-                schemeAnswerId: 100,
-                annotations: JSON.stringify([{ docId: '1234' }])
-              }
-            }
-          },
-          7: {
-            201: {
-              categoryId: 201,
-              schemeQuestionId: 7,
-              answers: {
-                501: {
-                  schemeAnswerId: 501,
-                  annotations: JSON.stringify([{ docId: '333' }])
-                }
-              }
-            }
-          }
-        },
-        scheme: {
-          byId: {
-            4: { id: 4, isCategoryQuestion: false, possibleAnswers: [{ id: 300 }, { id: 301 }, { id: 302 }] },
-            5: { id: 5, isCategoryQuestion: false, possibleAnswers: [{ id: 100 }, { id: 101 }, { id: 102 }] },
-            1: { id: 1, isCategoryQuestion: false, possibleAnswers: [{ id: 400 }, { id: 401 }, { id: 402 }] },
-            6: { id: 6, isCategoryQuestion: false, possibleAnswers: [{ id: 200 }, { id: 201 }, { id: 202 }] },
-            7: { id: 7, parentId: 6, isCategoryQuestion: true, possibleAnswers: [{ id: 500 }, { id: 501 }, { id: 502 }] }
-          }
-        }
-      },
-      question: {
-        id: 1,
-        possibleAnswers: [{ id: 400 }, { id: 401 }, { id: 402 }]
-      }
-    }
+  describe('GET_APPROVED_DOCUMENTS_FAIL', () => {
+    const action = { type: types.GET_APPROVED_DOCUMENTS_FAIL }
+    const currentState = getState()
+    const state = reducer(currentState, action)
 
-    const expectedState = {
-      1: {
-        all: [],
-        byAnswer: {
-          400: [],
-          401: [],
-          402: []
-        }
-      },
-      4: { byAnswer: { 300: ['9101'], 301: [], 302: [] }, all: ['9101'] },
-      5: { byAnswer: { 100: ['1234'], 101: [], 102: [] }, all: ['1234'] },
-      7: {
-        200: {
-          byAnswer: {
-            500: [],
-            501: [],
-            502: []
-          },
-          all: []
-        },
-        201: {
-          byAnswer: {
-            500: [],
-            501: ['333'],
-            502: []
-          },
-          all: ['333']
-        },
-        202: {
-          byAnswer: {
-            500: [],
-            501: [],
-            502: []
-          },
-          all: []
-        }
-      }
-    }
-
-    const currentState = getState({ documents })
-    let state = reducer(currentState, { type: 'GET_QUESTION_SUCCESS', payload })
-
-    test('should create an entry for action.payload.question for each possible answer in documents.annotated', () => {
-      expect(state.documents.annotated).toHaveProperty('1')
-      expect(state.documents.annotated[1]).toEqual(expectedState[1])
+    test('should set state.apiErrorInfo object', () => {
+      expect(state.apiErrorInfo.text).toEqual('Failed to get the list of approved documents.')
+      expect(state.apiErrorInfo.title).toEqual('Request failed')
     })
 
-    test('should create an entry in documents.annotated for each value in payload.userAnswers', () => {
-      expect(state.documents.annotated).toHaveProperty('4')
-      expect(state.documents.annotated).toHaveProperty('5')
-      expect(state.documents.annotated[4]).toEqual(expectedState[4])
-      expect(state.documents.annotated[5]).toEqual(expectedState[5])
-    })
-
-    test('should be able to handle category questions', () => {
-      expect(state.documents.annotated).toHaveProperty('7')
-      expect(state.documents.annotated[7]).toEqual(expectedState[7])
+    test('should set state.apiErrorOpen to true', () => {
+      expect(state.apiErrorOpen).toEqual(true)
     })
   })
 
@@ -231,9 +146,36 @@ describe('CodingValidation - DocumentList reducer', () => {
     })
   })
 
+  describe('GET_DOC_CONTENTS_FAIL', () => {
+    const action = {
+      type: types.GET_DOC_CONTENTS_FAIL
+    }
+
+    const currentState = getState({ documents, openedDoc: { _id: '1234', name: 'document 1' } })
+    const state = reducer(currentState, action)
+
+    test('should set state.docSelected to true', () => {
+      expect(state.docSelected).toEqual(true)
+    })
+
+    test('should set state.apiErrorInfo', () => {
+      expect(state.apiErrorInfo.title).toEqual('')
+      expect(state.apiErrorInfo.text).toEqual('Failed to retrieve document contents.')
+    })
+
+    test('should set state.apiErrorOpen to true', () => {
+      expect(state.apiErrorOpen).toEqual(true)
+    })
+  })
+
   describe('CLEAR_DOC_SELECTED', () => {
     const action = { type: types.CLEAR_DOC_SELECTED }
-    const currentState = getState({ documents, openedDoc: { _id: '1234', name: 'document 1' } })
+    const currentState = getState({
+      documents,
+      openedDoc: { _id: '1234', name: 'document 1' },
+      apiErrorInfo: { title: 'title', text: 'text' },
+      apiErrorOpen: true
+    })
     const state = reducer(currentState, action)
 
     test('should clear state.openedDoc', () => {
@@ -242,6 +184,25 @@ describe('CodingValidation - DocumentList reducer', () => {
 
     test('should set state.docSelected to false', () => {
       expect(state.docSelected).toEqual(false)
+    })
+
+    test('should clear state.apiErrorInfo', () => {
+      expect(state.apiErrorInfo.text).toEqual('')
+      expect(state.apiErrorInfo.title).toEqual('')
+    })
+
+    test('should set state.apiErrorOpen to false', () => {
+      expect(state.apiErrorOpen).toEqual(false)
+    })
+  })
+
+  describe('FLUSH_STATE', () => {
+    const action = { type: types.FLUSH_STATE }
+    const currentState = getState({ documents, openedDoc: { _id: '1234', name: 'document 1' } })
+    const state = reducer(currentState, action)
+
+    test('shdould set state to initial state', () => {
+      expect(state).toEqual(INITIAL_STATE)
     })
   })
 })

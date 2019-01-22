@@ -12,7 +12,7 @@ const props = {
   documents: [
     { name: 'doc1', _id: 12344 }
   ],
-  annotated: [],
+  annotatedDocs: [],
   docSelected: false,
   openedDoc: {}
 }
@@ -28,7 +28,7 @@ describe('DocumentList', () => {
   })
 
   test('should have quote icons when document is in annotated list', () => {
-    const wrapper = shallow(<DocumentList {...props} annotated={[12344]} />)
+    const wrapper = shallow(<DocumentList {...props} annotatedDocs={[12344]} />)
     expect(wrapper.find('Icon')).toHaveLength(1)
   })
 })

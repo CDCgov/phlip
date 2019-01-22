@@ -3,10 +3,11 @@ import PropTypes from 'prop-types'
 import { transformText } from './textTransformHelpers'
 import * as ui_utils from 'pdfjs-dist/lib/web/ui_utils'
 import { Util as dom_utils } from 'pdfjs-dist/lib/shared/util'
-import styles from './pdf_viewer.scss'
 import { CircularLoader, FlexGrid, IconButton } from 'components/index'
+import './pdf_viewer.css'
+import TextNode from './TextNode'
 
-class Page extends Component {
+export class Page extends Component {
   static defaultProps = {
     annotations: [],
     allowSelection: false,
@@ -18,7 +19,16 @@ class Page extends Component {
   static propTypes = {
     annotations: PropTypes.array,
     allowSelection: PropTypes.bool,
-    textContent: PropTypes.object
+    textContent: PropTypes.object,
+    pendingAnnotations: PropTypes.array,
+    saveAnnotation: PropTypes.func,
+    cancelAnnotation: PropTypes.func,
+    getSelection: PropTypes.func,
+    id: PropTypes.number,
+    viewerDimensions: PropTypes.shape({
+      height: PropTypes.number,
+      width: PropTypes.number
+    })
   }
 
   constructor(props, context) {
@@ -27,14 +37,7 @@ class Page extends Component {
     this.shouldRerenderPdf = true
     this.canvasRef = React.createRef()
     this.pageRef = React.createRef()
-    this.mouseArea = {
-      x: 0,
-      y: 0,
-      startX: 0,
-      startY: 0
-    }
-
-    this.selectedArea = null
+    this.textLayerRef = React.createRef()
 
     this.state = {
       renderContext: {
@@ -49,7 +52,7 @@ class Page extends Component {
       textLineStyleSpecs: {},
       noText: false,
       selectionStyle: {},
-      highlights: []
+      pending: false
     }
 
     this.allTextDivs = []
@@ -59,90 +62,25 @@ class Page extends Component {
     this.setCanvasSpecs()
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.allowSelection === false && this.props.allowSelection === true) {
-      this.startCanvasListeners()
-    }
+  handleConfirmAnnotation = index => {
+    this.props.saveAnnotation(index)
   }
 
-  startCanvasListeners() {
-    this.selectedArea = null
-    const rects = this.pageRef.current.getClientRects()[0]
-    this.mouseArea = {
-      x: 0,
-      y: 0,
-      startX: 0,
-      startY: 0,
-      pageOffsetX: rects.x,
-      pageOffsetY: rects.y
-    }
+  handleCancelAnnotation = index => {
+    this.props.cancelAnnotation(index)
   }
 
-  onMouseMove = e => {
-    this.mouseArea.x = e.pageX - this.mouseArea.pageOffsetX
-    this.mouseArea.y = e.pageY - this.mouseArea.pageOffsetY
-
-    if (this.selectedArea !== null) {
-      this.setState({
-        selectionStyle: {
-          ...this.state.selectionStyle,
-          width: Math.abs(this.mouseArea.x - this.mouseArea.startX),
-          height: Math.abs(this.mouseArea.y - this.mouseArea.startY),
-          left: (this.mouseArea.x - this.mouseArea.startX < 0)
-            ? this.mouseArea.x
-            : this.mouseArea.startX,
-          top: (this.mouseArea.y - this.mouseArea.startY < 0)
-            ? this.mouseArea.y
-            : this.mouseArea.startY
-        }
-      })
-    }
-  }
-
-  onCanvasClick = () => {
-    if (this.selectedArea === null) {
-      this.mouseArea.startX = this.mouseArea.x
-      this.mouseArea.startY = this.mouseArea.y
-      this.selectedArea = true
-      this.setState({
-        selectionStyle: {
-          ...this.state.selectionStyle,
-          left: this.mouseArea.startX,
-          top: this.mouseArea.startY
-        }
-      })
-    } else {
-      this.selectedArea = null
-      let startCoords = [this.mouseArea.startX, this.mouseArea.startY], endCoords = [this.mouseArea.x, this.mouseArea.y]
-
-      if (this.mouseArea.startX > this.mouseArea.x) {
-        startCoords = [this.mouseArea.x, this.mouseArea.y]
-        endCoords = [this.mouseArea.startX, this.mouseArea.startY]
+  onMouseUp = () => {
+    if (this.props.allowSelection && this.props.pendingAnnotations.length === 0) {
+      if (document.getSelection().toString().length > 0 && document.getSelection().rangeCount > 0) {
+        this.props.getSelection(this.state.renderContext, this.props.id)
       }
-
-      const pdfPoint = dom_utils.applyInverseTransform(startCoords, this.state.renderContext.viewport.transform)
-      const endPdfPoint = dom_utils.applyInverseTransform(endCoords, this.state.renderContext.viewport.transform)
-
-      const captureArea = {
-        pageNumber: this.props.id,
-        x: pdfPoint[0],
-        y: pdfPoint[1],
-        endX: endPdfPoint[0],
-        endY: endPdfPoint[1]
-      }
-
-      this.setState({
-        highlights: [
-          ...this.state.highlights,
-          captureArea
-        ],
-        selectionStyle: {}
-      })
-
-      this.props.captureArea(captureArea)
     }
   }
 
+  /**
+   * Renders the PDF page
+   */
   renderPage = () => {
     if (this.shouldRerenderPdf === true) {
       this.props.page.destroyed === false && this.props.page.render(this.state.renderContext)
@@ -150,9 +88,15 @@ class Page extends Component {
     }
   }
 
+  /**
+   * Determines to what scale to render the PDF page based on the size of the screen
+   */
   setCanvasSpecs = () => {
     const vp = this.props.page.getViewport(1)
-    const scale = this.state.renderContext.viewport.width / vp.width
+    let scale = this.state.renderContext.viewport.width / vp.width
+    if (scale < 1.4) {
+      scale = 1.4
+    }
     const viewport = this.props.page.getViewport(scale)
     const canvasContext = this.canvasRef.current.getContext('2d', { alpha: false })
 
@@ -217,15 +161,29 @@ class Page extends Component {
   scaleXText = textContent => {
     const ctx = this.state.renderContext.canvasContext
     const viewport = this.state.renderContext.viewport
-    ctx.font = `${textContent.style.fontSize}px sans-serif`
+    ctx.font = `${textContent.style.fontSize}px ${textContent.style.fontFamily}`
     const fontWidth = ctx.measureText(textContent.str).width
     const scale = (textContent.width * viewport.scale) / fontWidth
     return { ...textContent, style: { ...textContent.style, transform: `scaleX(${scale})` } }
   }
 
-  onHoverOverSelection = (e) => {
-    e.preventDefault()
-    this.onMouseMove(e)
+  getBounds = points => {
+    const highlight = points
+    const startPoint = dom_utils.applyTransform([
+      highlight.x, highlight.y
+    ], this.state.renderContext.viewport.transform)
+    const endPoint = dom_utils.applyTransform([
+      highlight.endX, highlight.endY
+    ], this.state.renderContext.viewport.transform)
+
+    const bounds = [...startPoint, ...endPoint]
+
+    const left = Math.min(bounds[0], bounds[2]),
+      top = Math.min(bounds[1], bounds[3]),
+      width = Math.abs(bounds[0] - bounds[2]),
+      height = Math.abs(bounds[1] - bounds[3])
+
+    return { left, top, width, height, bounds }
   }
 
   render() {
@@ -234,93 +192,101 @@ class Page extends Component {
       width: Math.floor(this.state.renderContext.viewport.width)
     }
 
-    const baseSelectionStyles = {
-      borderRadius: 4,
-      position: 'absolute',
-      border: '2px dashed #c4ca3b'
-    }
-
     const highlightStyle = {
-      backgroundColor: '#f0fe3a',
-      opacity: 0.3,
-      borderRadius: 4,
-      position: 'absolute',
-      border: '1px solid #c4ca3b'
+      //backgroundColor: `rgb(${251}, ${237}, ${158})`,
+      backgroundColor: '#00e0ff',
+      opacity: 0.2,
+      position: 'absolute'
     }
 
     const iconNavStyles = {
       backgroundColor: '#fe567b',
       height: 25,
       width: 25,
-      position: 'absolute'
+      position: 'absolute',
+      cursor: 'pointer',
+      zIndex: 5
     }
 
     return (
-      <div data-page-number={this.props.id} style={dims} ref={this.pageRef} className={styles.page}>
-        {this.state.readyToRenderText === false &&
+      <div
+        data-page-number={this.props.id}
+        style={dims}
+        ref={this.props.pageRef}
+        className="page"
+        onMouseUp={this.onMouseUp}>
+        {!this.state.readyToRenderText &&
         <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
           <CircularLoader />
         </FlexGrid>}
-        <div
-          className="canvasWrapper"
-          style={{ ...dims, position: 'relative' }}
-          onClick={this.props.allowSelection === true ? (e) => this.onCanvasClick(e) : null}>
-          <canvas
-            {...this.state.canvasStyleSpecs}
-            style={{
-              cursor: this.props.allowSelection
-                ? 'crosshair'
-                : 'default',
-              ...this.state.canvasStyleSpecs.style
-            }}
-            onMouseMove={this.props.allowSelection === true ? (e) => this.onMouseMove(e) : null}
-            id={`page-${this.props.id}-canvas`}
-            ref={this.canvasRef}>
-            {this.state.renderContext.canvasContext && this.state.readyToRenderText === true && this.renderPage()}
+        <div className="canvasWrapper" style={{ ...dims, position: 'relative' }}>
+          <canvas {...this.state.canvasStyleSpecs} id={`page-${this.props.id}-canvas`} ref={this.canvasRef}>
+            {this.state.renderContext.canvasContext && this.state.readyToRenderText && this.renderPage()}
           </canvas>
-          {this.state.renderContext.canvasContext && this.props.annotations.length > 0 &&
-          this.props.annotations.map((annotation, i) => {
-            const highlight = annotation.pdfPoint
-            const startPoint = dom_utils.applyTransform([
-              highlight.x, highlight.y
-            ], this.state.renderContext.viewport.transform)
-            const endPoint = dom_utils.applyTransform([
-              highlight.endX, highlight.endY
-            ], this.state.renderContext.viewport.transform)
-            const left = startPoint[0], top = startPoint[1], height = endPoint[1] - startPoint[1],
-              width = endPoint[0] - startPoint[0]
-
-            return (
-              <Fragment key={`highlight-area-${i}`}>
+        </div>
+        <div className="annotationLayer" id={`page-${this.props.id}-annotations`}>
+          {this.state.readyToRenderText && this.props.annotations.map((annotation, i) => {
+            return annotation.rects.map((rect, j) => {
+              const { left, top, height, width } = this.getBounds(rect.pdfPoints)
+              return (
                 <div
-                  key={`highlight-${i}`}
+                  key={`highlight-${i}-${j}`}
                   style={{ left, top, height, width, ...highlightStyle }}
                 />
-                <div
-                  key={`highlight-${i}-cancel`}
-                  style={{ ...iconNavStyles, left: endPoint[0] - 53, top: endPoint[1], marginTop: 1 }}>
-                  <IconButton style={{ height: 25, width: 25 }}>
-                    clos
-                  </IconButton>
-                </div>
-                <div
-                  key={`highlight-${i}-confirm`}
-                  style={{ ...iconNavStyles, left: endPoint[0] - 24, top: endPoint[1], marginTop: 1 }}>
-                  <IconButton style={{ height: 25, width: 25 }}>done</IconButton>
-                </div>
-              </Fragment>
-            )
+              )
+            })
           })}
-          {this.props.allowSelection &&
-          <div
-            style={{ ...this.state.selectionStyle, ...baseSelectionStyles }}
-            onMouseMove={this.onHoverOverSelection}
-          />}
+          {this.state.renderContext.canvasContext &&
+          this.props.pendingAnnotations.length > 0 &&
+          this.props.pendingAnnotations.map((annotation, i) => {
+            return annotation.rects.map((rect, j) => {
+              const { left, top, height, width, bounds } = this.getBounds(rect.pdfPoints)
+              return (
+                <Fragment key={`pending-highlight-area-${i}-${j}`}>
+                  <div
+                    key={`pending-highlight-${i}-${j}`}
+                    style={{ left, top, height, width, ...highlightStyle }}
+                  />
+                  {((j === annotation.rects.length - 1) && annotation.endPage === this.props.id) &&
+                  <>
+                    <div
+                      key={`pending-highlight-${i}-${j}-cancel`}
+                      style={{ ...iconNavStyles, left: bounds[2] - 53, top: bounds[3], marginTop: 1 }}>
+                      <IconButton
+                        style={{ height: 25, width: 25 }}
+                        onClick={() => this.handleCancelAnnotation(i)}>
+                        close
+                      </IconButton>
+                    </div>
+                    <div
+                      key={`pending-highlight-${i}-${j}-confirm`}
+                      style={{ ...iconNavStyles, left: bounds[2] - 24, top: bounds[3], marginTop: 1 }}>
+                      <IconButton
+                        style={{ height: 25, width: 25 }}
+                        onClick={() => this.handleConfirmAnnotation(i)}>
+                        done
+                      </IconButton>
+                    </div>
+                  </>}
+                </Fragment>
+              )
+            })
+          })}
+        </div>
+        <div
+          data-page-number={this.props.id}
+          className="textLayer"
+          id={`text-layer-page-${this.props.id}`}
+          style={dims}
+          ref={this.textLayerRef}>
+          {this.state.readyToRenderText === true && this.allTextDivs.map((textLine, i) => {
+            return <TextNode key={`textLine-${i}-page-${this.props.id}`} index={i} id={this.props.id} text={textLine} />
+          })}
         </div>
       </div>
     )
   }
 }
 
-const PageWithRef = React.forwardRef((props, ref) => <Page {...props} ref={ref} />)
+const PageWithRef = React.forwardRef((props, ref) => <Page {...props} pageRef={ref} />)
 export default PageWithRef
