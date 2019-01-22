@@ -24,7 +24,9 @@ export const INITIAL_STATE = {
   selectedProject: {},
   selectedJurisdiction: {},
   noProjectError: false,
-  hasVerified: false
+  hasVerified: false,
+  invalidFiles : [],
+  verifyFilesInProgress: false
 }
 
 export const uploadReducer = (state = INITIAL_STATE, action) => {
@@ -114,6 +116,9 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ADD_SELECTED_DOCS:
+      console.log('add doc fires')
+      let invalidFiles = [...state.invalidFiles]
+          console.log(invalidFiles)
       return {
         ...state,
         selectedDocs: [
@@ -124,7 +129,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
               d[prop] = {
                 editable: true,
                 value: doc[prop],
-                error: '',
+                error: 'fsf',
                 inEditMode: false
               }
             })
@@ -256,6 +261,32 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         alertText: action.error,
         alertTitle: 'Invalid Jurisdictions' || ''
       }
+
+    case types.VERIFY_VALID_FILE_TYPE_REQUEST:
+      return {
+          ...state,
+          verifyFilesInProgress: true
+      }
+
+    case types.VERIFY_VALID_FILE_TYPE_FAIL:
+          return {
+              ...state,
+              verifyFilesInProgress: false
+          }
+
+    case types.REJECT_INVALID_FILE_TYPE:
+        console.log('reject invalid files fires')
+        return {
+            ...state,
+            uploading: false,
+            invalidFiles: action.invalidFiles,
+            alertOpen: true,
+            alertText: `One or more of the documents selected for upload do not have a valid allowed file type. These documents have been indicated in the file list. You
+        can choose to remove them.`,
+            alertTitle: 'Invalid Files Found',
+            hasVerified: false,
+            verifyFilesInProgress: false
+        }
 
     case `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION`:
       return {

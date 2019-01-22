@@ -83,8 +83,9 @@ export class Upload extends Component {
     jurisdictionSearchValue: PropTypes.string,
     projectSearchValue: PropTypes.string,
     noProjectError: PropTypes.any,
-    infoSheet: PropTypes.object
-  }
+    infoSheet: PropTypes.object,
+    invalidFiles : PropTypes.array
+  };
 
   constructor(props, context) {
     super(props, context)
@@ -100,7 +101,9 @@ export class Upload extends Component {
       alertActions: [
         this.dismissAlertAction
       ],
-      showLoadingAlert: false
+      showLoadingAlert: false,
+      validMime : false,
+      processingFiles : []
     }
   }
 
@@ -154,7 +157,7 @@ export class Upload extends Component {
         showLoadingAlert: true
       })
     }
-  }
+  };
 
   showUploadLoadingAlert = () => {
     if (!this.props.uploading) {
@@ -167,7 +170,7 @@ export class Upload extends Component {
         showLoadingAlert: true
       })
     }
-  }
+  };
 
   /**
    * Resets the alert actions and calls redux action to close alert
@@ -179,7 +182,7 @@ export class Upload extends Component {
         this.dismissAlertAction
       ]
     })
-  }
+  };
 
   /**
    * Closes main modal, and pushes '/docs' onto browser history
@@ -201,7 +204,7 @@ export class Upload extends Component {
     } else {
       this.goBack()
     }
-  }
+  };
 
   /**
    * Closes modal and goes back to main doc list
@@ -212,7 +215,7 @@ export class Upload extends Component {
     this.props.actions.jurisdictionAutocomplete.clearAll()
     this.props.actions.clearSelectedFiles()
     this.props.actions.closeAlert()
-  }
+  };
 
   /**
    * Adds an excel file to redux
@@ -222,33 +225,60 @@ export class Upload extends Component {
     const formData = new FormData()
     formData.append('file', excelFile, excelFile.name)
     this.props.actions.extractInfoRequest(formData, excelFile)
+  };
+
+  // /**
+  //  * Adds selected files to redux, sends a request to verify the documents can be uploaded
+  //  * @param e
+  //  */
+  // addFilesToList = e => {
+  //   let files = []
+  //
+  //     Array.from(Array(e.target.files.length).keys()).map(x => {
+  //     const i = e.target.files.item(x)
+  //
+  //                    files.push({
+  //                       name: i.name,
+  //                       lastModifiedDate: i.lastModifiedDate,
+  //                       tags: [],
+  //                       file: i,
+  //                       effectiveDate: '',
+  //                       citation: '',
+  //                       jurisdictions: {searchValue: '', suggestions: [], name: ''}
+  //                   })
+  //   })
+  //       this.props.infoSheetSelected
+  //           ? this.props.actions.mergeInfoWithDocs(files)
+  //           : this.props.actions.addSelectedDocs(files)
+  // }
+
+    /**
+     * Adds selected files to redux, sends a request to verify the documents can be uploaded
+     * @param e
+     */
+
+  addFilesToList = (e) => {
+        let files = []
+        Array.from(Array(e.target.files.length).keys()).map(x => {
+            const i = e.target.files.item(x)
+
+                        files.push({
+                            name: i.name,
+                            lastModifiedDate: i.lastModifiedDate,
+                            tags: [],
+                            file: i,
+                            effectiveDate: '',
+                            citation: '',
+                            jurisdictions: {searchValue: '', suggestions: [], name: ''},
+                        })
+
+        })
+        this.props.actions.verifyFileContent(files)
+        this.props.infoSheetSelected
+            ? this.props.actions.mergeInfoWithDocs(files)
+            : this.props.actions.addSelectedDocs(files)
   }
-
-  /**
-   * Adds selected files to redux, sends a request to verify the documents can be uploaded
-   * @param e
-   */
-  addFilesToList = e => {
-    let files = []
-
-    Array.from(Array(e.target.files.length).keys()).map(x => {
-      const i = e.target.files.item(x)
-      files.push({
-        name: i.name,
-        lastModifiedDate: i.lastModifiedDate,
-        tags: [],
-        file: i,
-        effectiveDate: '',
-        citation: '',
-        jurisdictions: { searchValue: '', suggestions: [], name: '' }
-      })
-    })
-
-    this.props.infoSheetSelected
-      ? this.props.actions.mergeInfoWithDocs(files)
-      : this.props.actions.addSelectedDocs(files)
-  }
-
+  
   /**
    * Creates a formData object to send to api to upload documents
    */
@@ -278,7 +308,7 @@ export class Upload extends Component {
 
     formData.append('metadata', JSON.stringify(md))
     this.props.actions.uploadDocumentsRequest(formData, sd)
-  }
+  };
 
   /**
    * Handles when a user has updated a document property in the file list
@@ -288,7 +318,7 @@ export class Upload extends Component {
    */
   handleDocPropertyChange = (index, propName, value) => {
     this.props.actions.updateDocumentProperty(index, propName, value)
-  }
+  };
 
   /**
    * Get suggestions for some type of autocomplete search
@@ -300,7 +330,7 @@ export class Upload extends Component {
     suggestionType === 'project'
       ? this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
       : this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
-  }
+  };
 
   /**
    * When a user has chosen a suggestion from the autocomplete project or jurisdiction list
@@ -309,19 +339,19 @@ export class Upload extends Component {
     suggestionType === 'project'
       ? this.props.actions.projectAutocomplete.onSuggestionSelected(suggestionValue)
       : this.props.actions.jurisdictionAutocomplete.onSuggestionSelected(suggestionValue)
-  }
+  };
 
   handleSearchValueChange = (suggestionType, value) => {
     suggestionType === 'jurisdiction'
       ? this.props.actions.jurisdictionAutocomplete.updateSearchValue(value)
       : this.props.actions.projectAutocomplete.updateSearchValue(value)
-  }
+  };
 
   handleClearSuggestions = suggestionType => {
     suggestionType === 'jurisdiction'
       ? this.props.actions.jurisdictionAutocomplete.clearSuggestions()
       : this.props.actions.projectAutocomplete.clearSuggestions()
-  }
+  };
 
   /**
    * Handles enabled or disabling edit mode on a row in the file list
@@ -330,7 +360,7 @@ export class Upload extends Component {
    */
   handleToggleEditMode = (index, property) => {
     this.props.actions.toggleRowEditMode(index, property)
-  }
+  };
 
   /**
    * Handles when a user wants to remove a document from the file list
@@ -342,7 +372,7 @@ export class Upload extends Component {
     if (isDuplicate) {
       this.props.actions.removeDuplicate(index)
     }
-  }
+  };
 
   /**
    * Determines the text for the modal button at the bottom
@@ -357,7 +387,7 @@ export class Upload extends Component {
         </>
       )
       : <>{text}</>
-  }
+  };
 
   render() {
 
@@ -446,6 +476,7 @@ export class Upload extends Component {
             toggleRowEditMode={this.handleToggleEditMode}
             onClearSuggestions={this.props.actions.clearRowJurisdictionSuggestions}
             duplicateFiles={this.props.duplicateFiles}
+            invalidFiles={this.props.invalidFiles}
           />
           }
         </ModalContent>
@@ -480,7 +511,8 @@ const mapStateToProps = state => {
     infoRequestInProgress: uploadState.list.infoRequestInProgress,
     infoSheet: uploadState.list.infoSheet,
     infoSheetSelected: uploadState.list.infoSheetSelected,
-    duplicateFiles: uploadState.list.duplicateFiles
+    duplicateFiles: uploadState.list.duplicateFiles,
+    invalidFiles : uploadState.list.invalidFiles
   }
 }
 

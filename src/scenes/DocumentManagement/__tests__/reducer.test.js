@@ -97,7 +97,13 @@ const initial = {
   },
   rowsPerPage: '10',
   page: 0,
-  allSelected: false
+  allSelected: false,
+  bulkOperationInProgress: false,
+  apiErrorOpen: false,
+  apiErrorInfo: {
+      title: '',
+      text: ''
+  }
 }
 
 const getState = (other = {}) => ({
