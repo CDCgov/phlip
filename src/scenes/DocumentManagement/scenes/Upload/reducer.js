@@ -129,7 +129,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
               d[prop] = {
                 editable: true,
                 value: doc[prop],
-                error: 'fsf',
+                error: '',
                 inEditMode: false
               }
             })
