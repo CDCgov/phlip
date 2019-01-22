@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PDFViewer component should render correctly 1`] = `
+<div
+  className="pdfViewer"
+  id="viewContainer"
+>
+  <FlexGrid
+    align="center"
+    circular={false}
+    container={true}
+    flex={true}
+    justify="center"
+    padding={0}
+    raised={false}
+    style={
+      Object {
+        "height": "100%",
+      }
+    }
+    type="column"
+  >
+    <CircularLoader
+      color="primary"
+      thickness={5}
+      type="indeterminate"
+    />
+  </FlexGrid>
+</div>
+`;

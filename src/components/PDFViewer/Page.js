@@ -7,7 +7,7 @@ import { CircularLoader, FlexGrid, IconButton } from 'components/index'
 import './pdf_viewer.css'
 import TextNode from './TextNode'
 
-class Page extends Component {
+export class Page extends Component {
   static defaultProps = {
     annotations: [],
     allowSelection: false,
@@ -19,7 +19,16 @@ class Page extends Component {
   static propTypes = {
     annotations: PropTypes.array,
     allowSelection: PropTypes.bool,
-    textContent: PropTypes.object
+    textContent: PropTypes.object,
+    pendingAnnotations: PropTypes.array,
+    saveAnnotation: PropTypes.func,
+    cancelAnnotation: PropTypes.func,
+    getSelection: PropTypes.func,
+    id: PropTypes.number,
+    viewerDimensions: PropTypes.shape({
+      height: PropTypes.number,
+      width: PropTypes.number
+    })
   }
 
   constructor(props, context) {
@@ -37,15 +46,12 @@ class Page extends Component {
           height: props.viewerDimensions.height
         }
       },
-      annotations: [],
-      pendingAnnotations: [],
       rendering: false,
       renderToRenderText: false,
       canvasStyleSpecs: {},
       textLineStyleSpecs: {},
       noText: false,
       selectionStyle: {},
-      highlights: [],
       pending: false
     }
 
@@ -58,21 +64,15 @@ class Page extends Component {
 
   handleConfirmAnnotation = index => {
     this.props.saveAnnotation(index)
-    this.setState({
-      pending: false
-    })
   }
 
   handleCancelAnnotation = index => {
     this.props.cancelAnnotation(index)
-    this.setState({
-      pending: false
-    })
   }
 
   onMouseUp = () => {
-    if (this.props.allowSelection && !this.state.pending) {
-      if (document.getSelection().toString().length > 0) {
+    if (this.props.allowSelection && this.props.pendingAnnotations.length === 0) {
+      if (document.getSelection().toString().length > 0 && document.getSelection().rangeCount > 0) {
         this.props.getSelection(this.state.renderContext, this.props.id)
       }
     }

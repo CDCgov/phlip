@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PDFViewer - Page component should render correctly 1`] = `
+<Page
+  allowSelection={false}
+  annotations={Array []}
+  cancelAnnotation={[MockFunction]}
+  id={0}
+  page={
+    Object {
+      "getViewport": [Function],
+    }
+  }
+  pendingAnnotations={Array []}
+  saveAnnotation={[MockFunction]}
+  textContent={
+    Object {
+      "items": Array [],
+    }
+  }
+  viewerDimensions={
+    Object {
+      "height": 0,
+      "width": 0,
+    }
+  }
+>
+  <div
+    className="page"
+    data-page-number={0}
+    onMouseUp={[Function]}
+    style={
+      Object {
+        "height": 100,
+        "width": 100,
+      }
+    }
+  >
+    <div
+      className="canvasWrapper"
+      style={
+        Object {
+          "height": 100,
+          "position": "relative",
+          "width": 100,
+        }
+      }
+    >
+      <canvas
+        height={100}
+        id="page-0-canvas"
+        style={
+          Object {
+            "height": "100px",
+            "width": "100px",
+          }
+        }
+        width={100}
+      />
+    </div>
+    <div
+      className="annotationLayer"
+    />
+    <div
+      className="textLayer"
+      data-page-number={0}
+      id="text-layer-page-0"
+      style={
+        Object {
+          "height": 100,
+          "width": 100,
+        }
+      }
+    />
+  </div>
+</Page>
+`;
