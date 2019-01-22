@@ -1,6 +1,6 @@
 import { types } from '../actions'
 import { INITIAL_STATE, COMBINED_INITIAL_STATE, default as codingValidationReducer } from '../reducer'
-import { schemeById, schemeOutline, userAnswersCoded } from 'utils/testData/coding'
+import { schemeById, userAnswersCoded } from 'utils/testData/coding'
 
 const initial = INITIAL_STATE
 
