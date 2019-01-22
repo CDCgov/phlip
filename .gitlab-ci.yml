@@ -36,6 +36,7 @@ build_frontend_dev_internal:
     - cp -r ./dist ~iiu-deploy/esquire-frontend/
     - cp -r ./scripts ~iiu-deploy/esquire-frontend/
     - cp ./package.json ~iiu-deploy/esquire-frontend/
+  when: manual
   tags:
     - phlip2-fe
   environment:
@@ -48,6 +49,7 @@ deploy_frontend_dev_internal:
     - npm install --production
     - sudo pm2 stop frontend
     - sudo pm2 start scripts/serve.js --name frontend
+  when: manual
   tags:
     - phlip2-fe
   environment:
@@ -58,11 +60,12 @@ build_frontend_dev_azure:
   stage: build
   script:
     - npm install
-    - sudo cp ~iiu-deploy/configs/.env ./
+    - cat ~iiu-deploy/config/.env.fe >> .env
     - npm run build
-    - sudo cp -r ./dist ~iiu-deploy/esquire-frontend/
-    - sudo cp -r ./scripts ~iiu-deploy/esquire-frontend/
-    - sudo cp ./package.json ~iiu-deploy/esquire-frontend/
+    - cp -r ./dist ~iiu-deploy/esquire-frontend-deploy/
+    - cp -r ./scripts ~iiu-deploy/esquire-frontend-deploy/
+    - cp -r ./config ~iiu-deploy/esquire-frontend-deploy/
+    - cp ./package.json ~iiu-deploy/esquire-frontend-deploy/
   tags:
     - azure-phlipdev-fe
   when: manual
@@ -73,9 +76,10 @@ build_frontend_dev_azure:
 deploy_frontend_dev_azure:
   stage: deploy
   script:
+    - cd ~iiu-deploy/esquire-frontend-deploy
     - npm install --production
-    - sudo pm2 stop frontend
-    - sudo pm2 start scripts/serve.js --name frontend
+    - pm2 stop frontend
+    - pm2 start scripts/serve.js --name frontend
   when: manual
   tags:
     - azure-phlipdev-fe
