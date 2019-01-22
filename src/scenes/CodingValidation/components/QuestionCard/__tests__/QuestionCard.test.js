@@ -31,11 +31,16 @@ describe('QuestionCard component', () => {
 
   describe('changing answer alert', () => {
     test('should show an alert if the user tries to change a binary answer', () => {
-      const wrapper = shallow(<QuestionCard {...props} userAnswers={{
-        answers: {
-          1: { schemeAnswerId: 1 }
-        }
-      }} />)
+      const wrapper = shallow(
+        <QuestionCard
+          {...props}
+          userAnswers={{
+            answers: {
+              1: { schemeAnswerId: 1 }
+            }
+          }}
+        />
+      )
       wrapper.instance().onChangeAnswer(2)({}, {})
       const alert = wrapper.find('Alert').at(0)
       expect(alert.props().open).toEqual(true)
