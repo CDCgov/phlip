@@ -13,16 +13,14 @@ stages:
 
 lint_frontend:
   stage: lint
-  only:
-    - v2
   script:
     - npm install
     - npm run lint
+  tags:
+    - phlip2-fe
 
 test_frontend:
   stage: test
-  only:
-    - v2
   script:
     - npm install
     - npm run test:local
@@ -38,8 +36,6 @@ build_frontend_dev_internal:
     - cp -r ./dist ~iiu-deploy/esquire-frontend/
     - cp -r ./scripts ~iiu-deploy/esquire-frontend/
     - cp ./package.json ~iiu-deploy/esquire-frontend/
-  only:
-    - v2
   tags:
     - phlip2-fe
   environment:
@@ -52,8 +48,6 @@ deploy_frontend_dev_internal:
     - npm install --production
     - sudo pm2 stop frontend
     - sudo pm2 start scripts/serve.js --name frontend
-  only:
-    - v2
   tags:
     - phlip2-fe
   environment:
@@ -69,8 +63,6 @@ build_frontend_dev_azure:
     - cp -r ./dist ~iiu-deploy/esquire-frontend/
     - cp -r ./scripts ~iiu-deploy/esquire-frontend/
     - cp ./package.json ~iiu-deploy/esquire-frontend/
-  only:
-    - v2
   tags:
     - azure-phlipdev-fe
   when: manual
@@ -84,8 +76,6 @@ deploy_frontend_dev_azure:
     - npm install --production
     - sudo pm2 stop frontend
     - sudo pm2 start scripts/serve.js --name frontend
-  only:
-    - v2
   when: manual
   tags:
     - azure-phlipdev-fe
