@@ -20,8 +20,8 @@ exports[`PDFViewer - Page component should render correctly 1`] = `
   }
   viewerDimensions={
     Object {
-      "height": 0,
-      "width": 0,
+      "height": 760,
+      "width": 732,
     }
   }
 >
@@ -31,8 +31,8 @@ exports[`PDFViewer - Page component should render correctly 1`] = `
     onMouseUp={[Function]}
     style={
       Object {
-        "height": 100,
-        "width": 100,
+        "height": 792,
+        "width": 612,
       }
     }
   >
@@ -40,22 +40,22 @@ exports[`PDFViewer - Page component should render correctly 1`] = `
       className="canvasWrapper"
       style={
         Object {
-          "height": 100,
+          "height": 792,
           "position": "relative",
-          "width": 100,
+          "width": 612,
         }
       }
     >
       <canvas
-        height={100}
+        height={792}
         id="page-0-canvas"
         style={
           Object {
-            "height": "100px",
-            "width": "100px",
+            "height": "792px",
+            "width": "612px",
           }
         }
-        width={100}
+        width={612}
       />
     </div>
     <div
@@ -67,8 +67,8 @@ exports[`PDFViewer - Page component should render correctly 1`] = `
       id="text-layer-page-0"
       style={
         Object {
-          "height": 100,
-          "width": 100,
+          "height": 792,
+          "width": 612,
         }
       }
     />
