@@ -26,7 +26,7 @@ export const DocListTableRow = props => {
  // const iconColor = '#949494'
   return (
     <TableRow>
-      <TableCell padding="checkbox" style={{ paddingLeft: 24, paddingRight: 0, width: '1%' }}>
+      <TableCell style={{ paddingLeft: 24, paddingRight: 0, width: '1%' }}>
         <CheckboxLabel input={{ value: isChecked, onChange: onSelectFile }} />
         {/*<Icon color={iconColor}><FileDocument /></Icon>*/}
       </TableCell>
@@ -35,20 +35,16 @@ export const DocListTableRow = props => {
           {doc.name}
         </TextLink>
       </TableCell>
-      <TableCell padding="checkbox" style={listStyle}>
-        <span style={{ fontWeight: 500 }}>Uploaded By:{' '}</span>
+      <TableCell padding="checkbox" style={listStyle && {width:90}}  >
         {doc.uploadedBy.firstName} {doc.uploadedBy.lastName}
       </TableCell>
-      <TableCell padding="checkbox" style={listStyle}>
-        <span style={{ fontWeight: 500 }}>Uploaded Date:{' '}</span>
+      <TableCell padding="checkbox" style={listStyle && {width:50}}>
         {date}
       </TableCell>
       <TableCell padding="checkbox" style={listStyle}>
-        <span style={{ fontWeight: 500 }}>Projects:{' '}</span>
         {projectList.join(', ')}
       </TableCell>
       <TableCell padding="checkbox" style={{ ...listStyle, paddingRight: 24 }}>
-        <span style={{ fontWeight: 500 }}>Jurisdictions:{' '}</span>
         {jurisdictionList.join(', ')}
       </TableCell>
     </TableRow>

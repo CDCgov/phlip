@@ -71,6 +71,7 @@ export const DocListTableHead = props => {
                 id={column.key}
                 padding={column.padding}
                 key={column.key}
+                colSpan={2}
                 style={{ borderBottom:'none', width: column.width, ...column.style }}>
                 {column.label}
               </TableCell>
