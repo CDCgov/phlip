@@ -60,6 +60,7 @@ exports[`PDFViewer - Page component should render correctly 1`] = `
     </div>
     <div
       className="annotationLayer"
+      id="page-0-annotations"
     />
     <div
       className="textLayer"

@@ -564,3 +564,108 @@ export const viewport = {
   rotation: 0,
   scale: 1
 }
+
+export const annotations = [
+  {
+    'docId': '5c3750fdbaaef70035b58df4',
+    'rects': [
+      {
+        'pageNumber': 0,
+        'pdfPoints': {
+          'x': 53.99553571428572,
+          'y': 414.1316964285715,
+          'endX': 557.9901994977679,
+          'endY': 402.70312500000006
+        }
+      },
+      {
+        'pageNumber': 0,
+        'pdfPoints': {
+          'x': 53.99553571428572,
+          'y': 400.38169642857144,
+          'endX': 557.9991803850446,
+          'endY': 388.95312500000006
+        }
+      },
+      {
+        'pageNumber': 0,
+        'pdfPoints': {
+          'x': 53.99553571428572,
+          'y': 386.6316964285715,
+          'endX': 228.90407017299108,
+          'endY': 375.203125
+        }
+      }
+    ],
+    'text': '(1) A person using a handheld electronic wireless communications device in that manner for emergency purposes,including an emergency contact with a law enforcement agency, hospital or health care provider, fire department, orother similar emergency agency or entity;',
+    'length': 3,
+    'startPage': 0,
+    'endPage': 0
+  },
+  {
+    'docId': '5c3750fdbaaef70035b58df4',
+    'rects': [
+      {
+        'pageNumber': 0,
+        'pdfPoints': {
+          'x': 53.99553571428572,
+          'y': 451.6316964285715,
+          'endX': 351.1516898018973,
+          'endY': 440.20312500000006
+        }
+      }
+    ],
+    'text': '(B) Division (A) of this section does not apply to any of the following:',
+    'length': 1,
+    'startPage': 0,
+    'endPage': 0
+  },
+  {
+    'docId': '5c3750fdbaaef70035b58df4',
+    'rects': [
+      {
+        'pageNumber': 0,
+        'pdfPoints': {
+          'x': 53.99553571428572,
+          'y': 106.63169642857147,
+          'endX': 274.69961983816967,
+          'endY': 95.203125
+        }
+      }
+    ],
+    'text': '(7) A person using a device for navigation purposes;\n4511.204 Texting while driving, OH ST § 4511.204 © 2018 Thomson Reuters. No claim to original U.S. Government Works.2(8) A person conducting wireless interpersonal communication with a device that does not require manually enteringletters, numbers, or symbols or reading text message',
+    'length': 8,
+    'startPage': 0,
+    'endPage': 1
+  },
+  {
+    'docId': '5c3750fdbaaef70035b58df4',
+    'rects': [
+      {
+        'pageNumber': 0,
+        'pdfPoints': {
+          'x': 104.4873046875,
+          'y': 246.63169642857142,
+          'endX': 557.9134695870536,
+          'endY': 235.20312500000006
+        }
+      },
+      {
+        'pageNumber': 0,
+        'pdfPoints': {
+          'x': 53.99553571428572,
+          'y': 232.88169642857153,
+          'endX': 191.82407924107144,
+          'endY': 221.45312500000006
+        }
+      }
+    ],
+    'text': ' reading, selecting, or entering a name or telephone number in a handheld electronic wireless communicationsdevice for the purpose of making ',
+    'length': 2,
+    'startPage': 0,
+    'endPage': 0
+  }
+]
+
+/// total number of rects
+export const totalAnnotationLenth = 7

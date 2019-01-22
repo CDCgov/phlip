@@ -224,7 +224,7 @@ export class Page extends Component {
             {this.state.renderContext.canvasContext && this.state.readyToRenderText && this.renderPage()}
           </canvas>
         </div>
-        <div className="annotationLayer">
+        <div className="annotationLayer" id={`page-${this.props.id}-annotations`}>
           {this.state.readyToRenderText && this.props.annotations.map((annotation, i) => {
             return annotation.rects.map((rect, j) => {
               const { left, top, height, width } = this.getBounds(rect.pdfPoints)

@@ -1,7 +1,7 @@
 import React from 'react'
 import { mount } from 'enzyme'
 import { Page } from '../Page'
-import { viewport, textContent } from 'utils/testData/pdfTest'
+import { viewport, textContent, annotations, totalAnnotationLenth } from 'utils/testData/pdfTest'
 
 const props = {
   page: {
@@ -36,5 +36,18 @@ describe('PDFViewer - Page component', () => {
     const length = textContent.items.length
     const textLayer = wrapper.find('#text-layer-page-0')
     expect(textLayer.children()).toHaveLength(length)
+  })
+
+  test('should render annotations', () => {
+    const wrapper = mount(
+      <Page
+        {...props}
+        textContent={textContent}
+        annotations={annotations}
+      />
+    )
+
+    const annotationLayer = wrapper.find('#page-0-annotations')
+    expect(annotationLayer.children()).toHaveLength(totalAnnotationLenth)
   })
 })
