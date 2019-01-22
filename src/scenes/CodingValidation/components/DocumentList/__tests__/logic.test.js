@@ -4,7 +4,7 @@ import logic from '../logic'
 import { types } from '../actions'
 import createApiHandler, { docApiInstance } from 'services/api'
 import calls from 'services/api/docManageCalls'
-import { docListPayload } from 'utils/testData'
+import { docListPayload } from 'utils/testData/coding'
 
 describe('CodingValidation - DocumentList logic', () => {
   let mock

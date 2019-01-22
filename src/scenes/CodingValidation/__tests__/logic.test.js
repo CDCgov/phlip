@@ -12,7 +12,7 @@ import {
   schemeOrder,
   userAnswersCoded,
   userCodedQuestions
-} from 'utils/testData'
+} from 'utils/testData/coding'
 
 describe('CodingValidation logic', () => {
   let mock, history = {}

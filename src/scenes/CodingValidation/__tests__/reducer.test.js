@@ -536,6 +536,147 @@ describe('CodingValidation reducer', () => {
     })
   })
 
+  xdescribe('ON_SAVE_ANNOTATION', () => {
+    test('should handle regular questions', () => {
+      const action = {
+        type: types.ON_SAVE_ANNOTATION,
+        questionId: 2,
+        answerId: 4,
+        annotation: {
+          text: 'text annotation',
+          rects: []
+        }
+      }
+
+      const state = reducer(
+        getState({
+          question: {
+            questionType: 3,
+            id: 2
+          },
+          userAnswers: {
+            2: {
+              schemeQuestionId: 2,
+              answers: {
+                1: {
+                  schemeAnswerId: 1,
+                  pincite: ''
+                },
+                4: {
+                  schemeAnswerId: 4,
+                  pincite: ''
+                }
+              },
+              comment: ''
+            }
+          }
+        }),
+        action
+      )
+
+      expect(state).toEqual(
+        getState({
+          question: {
+            questionType: 3,
+            id: 2
+          },
+          userAnswers: {
+            2: {
+              schemeQuestionId: 2,
+              answers: {
+                1: {
+                  schemeAnswerId: 1,
+                  pincite: ''
+                },
+                4: {
+                  schemeAnswerId: 4,
+                  pincite: 'this is a pincite'
+                }
+              },
+              comment: ''
+            }
+          },
+          showNextButton: false,
+          unsavedChanges: true
+        })
+      )
+    })
+
+    test('should handle category child questions', () => {
+      const action = {
+        type: types.ON_CHANGE_PINCITE,
+        questionId: 2,
+        projectId: 1,
+        jurisdictionId: 1,
+        answerId: 4,
+        pincite: 'this is a pincite'
+      }
+
+      const state = reducer(
+        getState({
+          question: {
+            questionType: 3,
+            isCategoryQuestion: true,
+            id: 2
+          },
+          userAnswers: {
+            2: {
+              schemeQuestionId: 2,
+              3: {
+                answers: {
+                  4: { schemeAnswerId: 4, pincite: 'pincite!' }
+                },
+                comment: ''
+              },
+              2: {
+                answers: {
+                  4: { schemeAnswerId: 4, pincite: '' }
+                },
+                comment: ''
+              }
+            }
+          },
+          selectedCategory: 1,
+          selectedCategoryId: 2,
+          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
+        }),
+        action
+      )
+
+      expect(state).toEqual(
+        getState({
+          question: {
+            id: 2,
+            questionType: 3,
+            isCategoryQuestion: true
+          },
+          userAnswers: {
+            2: {
+              schemeQuestionId: 2,
+              3: {
+                answers: {
+                  4: { schemeAnswerId: 4, pincite: 'pincite!' }
+                },
+                comment: ''
+              },
+              2: {
+                answers: {
+                  4: { schemeAnswerId: 4, pincite: 'this is a pincite' }
+                },
+                comment: ''
+              }
+            }
+          },
+          unsavedChanges: true,
+          selectedCategory: 1,
+          showNextButton: false,
+          selectedCategoryId: 2,
+          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
+        })
+      )
+    })
+  })
+
   describe('ON_CLEAR_ANSWER', () => {
     test('should handle regular questions', () => {
       const action = {

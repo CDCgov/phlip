@@ -4,7 +4,8 @@ import { DocumentList } from '../index'
 
 const props = {
   actions: {
-    getApprovedDocumentsRequest: jest.fn()
+    getApprovedDocumentsRequest: jest.fn(),
+    saveAnnotation: jest.fn()
   },
   jurisdictionId: 1,
   projectId: 1,
@@ -12,9 +13,12 @@ const props = {
   documents: [
     { name: 'doc1', _id: 12344 }
   ],
+  answerSelected: null,
+  questionId: 3,
   annotatedDocs: [],
   docSelected: false,
-  openedDoc: {}
+  openedDoc: {},
+  saveUserAnswer: jest.fn()
 }
 
 describe('DocumentList', () => {
@@ -30,5 +34,19 @@ describe('DocumentList', () => {
   test('should have quote icons when document is in annotated list', () => {
     const wrapper = shallow(<DocumentList {...props} annotatedDocs={[12344]} />)
     expect(wrapper.find('Icon')).toHaveLength(1)
+  })
+
+  test('should call this.props.saveAnnotation when this.onSaveAnnotation is called', () => {
+    const spy = jest.spyOn(props.actions, 'saveAnnotation')
+    const wrapper = shallow(<DocumentList {...props} answerSelected={4} />)
+    wrapper.instance().onSaveAnnotation({ text: 'test annotation' })
+    expect(spy).toHaveBeenCalledWith({ text: 'test annotation' }, 4, 3)
+  })
+
+  test('should call this.props.saveUserAnswer when this.onSaveAnnotation is called', () => {
+    const spy = jest.spyOn(props, 'saveUserAnswer')
+    const wrapper = shallow(<DocumentList {...props} answerSelected={4} />)
+    wrapper.instance().onSaveAnnotation({ text: 'test annotation' })
+    expect(spy).toHaveBeenCalled()
   })
 })
