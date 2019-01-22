@@ -83,7 +83,8 @@ export class Upload extends Component {
     jurisdictionSearchValue: PropTypes.string,
     projectSearchValue: PropTypes.string,
     noProjectError: PropTypes.any,
-    infoSheet: PropTypes.object
+    infoSheet: PropTypes.object,
+    invalidFiles : PropTypes.array
   };
 
   constructor(props, context) {
@@ -277,36 +278,7 @@ export class Upload extends Component {
             ? this.props.actions.mergeInfoWithDocs(files)
             : this.props.actions.addSelectedDocs(files)
   }
-
-   getFileHeader = (infile) => {
-       const validMimeTypes = [
-           {
-               mime: 'pdf',
-               pattern: '255044462d'
-           },
-           {
-               mime: 'rtf',
-               pattern: '7b5c727466'
-           }
-       ]
-       const start = 0
-       const stop = 4
-       return new Promise((resolve, reject) => {
-           const reader = new FileReader()
-           let header = ''
-           reader.onloadend = function (evt) {
-               if (evt.target.readyState === FileReader.DONE) { // DONE == 2
-                   let arr = new Uint8Array(evt.target.result)
-                   for (let i = 0; i < arr.length; i++) {
-                       header += arr[i].toString(16)
-                   }
-                   resolve(header)
-               }
-           }
-           let blob = infile.slice(start, stop + 1)
-           reader.readAsArrayBuffer(blob)
-       })
-   }
+  
   /**
    * Creates a formData object to send to api to upload documents
    */
