@@ -58,11 +58,11 @@ build_frontend_dev_azure:
   stage: build
   script:
     - npm install
-    - cp ~iiu-deploy/configs/.env ./
+    - sudo cp ~iiu-deploy/configs/.env ./
     - npm run build
-    - cp -r ./dist ~iiu-deploy/esquire-frontend/
-    - cp -r ./scripts ~iiu-deploy/esquire-frontend/
-    - cp ./package.json ~iiu-deploy/esquire-frontend/
+    - sudo cp -r ./dist ~iiu-deploy/esquire-frontend/
+    - sudo cp -r ./scripts ~iiu-deploy/esquire-frontend/
+    - sudo cp ./package.json ~iiu-deploy/esquire-frontend/
   tags:
     - azure-phlipdev-fe
   when: manual
