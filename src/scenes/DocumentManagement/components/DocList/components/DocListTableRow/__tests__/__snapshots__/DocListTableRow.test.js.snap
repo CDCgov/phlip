@@ -12,11 +12,14 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       }
     }
   >
-    <WithTheme(Icon)
-      color="#949494"
-    >
-      <Icon />
-    </WithTheme(Icon)>
+    <WithStyles(CheckboxLabel)
+      input={
+        Object {
+          "onChange": [Function],
+          "value": false,
+        }
+      }
+    />
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"

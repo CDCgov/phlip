@@ -247,7 +247,7 @@ export const userCodedQuestions = [
         schemeAnswerId: 123,
         pincite: 'dsfdfdsf',
         textAnswer: null,
-        annotations: []
+        annotations: '[]'
       }
     ]
   },
@@ -261,13 +261,28 @@ export const userCodedQuestions = [
         schemeAnswerId: 10,
         pincite: '',
         textAnswer: null,
-        annotations: []
+        annotations: '[]'
       },
       {
         schemeAnswerId: 20,
         pincite: '',
         textAnswer: null,
-        annotations: []
+        annotations: '[]'
+      }
+    ]
+  },
+  {
+    id: 42,
+    schemeQuestionId: 4,
+    flag: null,
+    comment: '',
+    categoryId: 10,
+    codedAnswers: [
+      {
+        schemeAnswerId: 432,
+        pincite: '',
+        textAnswer: null,
+        annotations: '[]'
       }
     ]
   }
@@ -280,7 +295,7 @@ export const userAnswersCoded = {
         id: 10010,
         schemeAnswerId: 123,
         pincite: 'dsfdfdsf',
-        annotations: [],
+        annotations: '[]',
         textAnswer: null
       }
     },
@@ -299,8 +314,8 @@ export const userAnswersCoded = {
     schemeQuestionId: 3,
     comment: '',
     answers: {
-      10: { schemeAnswerId: 10, pincite: '', annotations: [], textAnswer: null },
-      20: { schemeAnswerId: 20, pincite: '', annotations: [], textAnswer: null }
+      10: { schemeAnswerId: 10, pincite: '', annotations: '[]', textAnswer: null },
+      20: { schemeAnswerId: 20, pincite: '', annotations: '[]', textAnswer: null }
     },
     flag: {
       notes: '',
@@ -310,6 +325,22 @@ export const userAnswersCoded = {
     hasMadePost: false,
     id: 4443,
     isNewCodedQuestion: false
+  },
+  4: {
+    10: {
+      answers: { 432: { schemeAnswerId: 432, pincite: '', annotations: '[]', textAnswer: null } },
+      comment: '',
+      schemeQuestionId: 4,
+      flag: {
+        notes: '',
+        raisedBy: {},
+        type: 0
+      },
+      isNewCodedQuestion: false,
+      categoryId: 10,
+      hasMadePost: false,
+      id: 42
+    }
   }
 }
 

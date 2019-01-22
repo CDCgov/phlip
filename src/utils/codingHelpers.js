@@ -377,11 +377,14 @@ export const handleUpdateAnnotations = (state, action) => {
     ? state.userAnswers[action.questionId][state.selectedCategoryId].answers
     : state.userAnswers[action.questionId].answers
 
+  const parsedAnnotations = JSON.parse(currentUserAnswers[action.answerId].annotations)
+  const updatedAnnotations = [...parsedAnnotations, action.annotation]
+
   return {
     ...currentUserAnswers,
     [action.answerId]: {
       ...currentUserAnswers[action.answerId],
-      annotations: JSON.stringify([...JSON.parse(currentUserAnswers[action.answerId].annotations), action.annotation])
+      annotations: JSON.stringify(updatedAnnotations)
     }
   }
 }

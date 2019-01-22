@@ -27,6 +27,19 @@ exports[`DocumentManagement - DocList should render correctly 1`] = `
     }
     summary="List of documents"
   >
+    <WithStyles(TableHead)
+      style={
+        Object {
+          "width": "100%",
+        }
+      }
+    >
+      <DocListTableHead
+        allSelected={false}
+        onActionSelected={[Function]}
+        onSelectAll={[Function]}
+      />
+    </WithStyles(TableHead)>
     <WithStyles(TableBody)>
       <Connect(DocListTableRow)
         id={

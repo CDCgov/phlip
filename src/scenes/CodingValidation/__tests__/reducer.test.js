@@ -1,5 +1,6 @@
 import { types } from '../actions'
 import { INITIAL_STATE, COMBINED_INITIAL_STATE, default as codingValidationReducer } from '../reducer'
+import { schemeById, schemeOutline, userAnswersCoded } from 'utils/testData/coding'
 
 const initial = INITIAL_STATE
 
@@ -12,24 +13,23 @@ const getState = (other = {}) => ({
 })
 
 const reducer = (state, action) => {
-  return codingValidationReducer(state, action)
+  return codingValidationReducer(state, action).coding
 }
 
 describe('CodingValidation reducer', () => {
   test('should return the initial state', () => {
-    expect(reducer(undefined, {}))
-      .toEqual({ ...COMBINED_INITIAL_STATE, coding: { ...COMBINED_INITIAL_STATE.coding, showNextButton: false } })
+    expect(reducer(undefined, {})).toEqual({ ...COMBINED_INITIAL_STATE.coding, showNextButton: false })
   })
 
-  describe('UPDATE_USER_ANSWER_REQUEST', () => {
-    const currentState = {
+  describe('UPDATE_USER_ANSWER', () => {
+    const currentState = getState({
       question: {
         text: 'fa la la la',
         questionType: 1,
         id: 1,
         parentId: 0,
         positionInParent: 0,
-        possibleAnswers: [{ id: 123, text: 'answer 1' },{ id: 234, text: 'answer 2' }]
+        possibleAnswers: [{ id: 123, text: 'answer 1' }, { id: 234, text: 'answer 2' }]
       },
       outline: {
         1: { parentId: 0, positionInParent: 0 },
@@ -137,7 +137,7 @@ describe('CodingValidation reducer', () => {
           20: { answers: {}, comment: '', flag: {} }
         }
       }
-    }
+    })
 
     test('should handle binary / multiple choice type questions', () => {
       const action = {
@@ -146,22 +146,18 @@ describe('CodingValidation reducer', () => {
         questionId: 1
       }
 
-      const state = reducer(getState(currentState), action)
+      const state = reducer(currentState, action)
 
-      expect(state).toEqual(getState({
-        ...currentState,
-        userAnswers: {
-          ...currentState.userAnswers,
-          1: {
-            answers: { 123: { schemeAnswerId: 123, pincite: '', annotations: '[]' } },
-            schemeQuestionId: 1,
-            comment: ''
-          }
-        },
-        unsavedChanges: true
-      }))
+      expect(state.userAnswers).toEqual({
+        ...currentState.coding.userAnswers,
+        1: {
+          answers: { 123: { schemeAnswerId: 123, pincite: '', annotations: '[]' } },
+          schemeQuestionId: 1,
+          comment: ''
+        }
+      })
 
-      expect(state).toHaveProperty('coding.scheme.tree', [
+      expect(state).toHaveProperty('scheme.tree', [
         {
           text: 'fa la la la',
           hint: '',
@@ -246,42 +242,33 @@ describe('CodingValidation reducer', () => {
       }
 
       const state = reducer(
-        getState({
+        {
           ...currentState,
-          question: {
-            text: 'la la la',
-            questionType: 3,
-            id: 2,
-            parentId: 0,
-            positionInParent: 1,
-            possibleAnswers: [{ id: 90, text: 'check 1' }, { id: 91, text: 'check 2' }]
-          }
-        }),
-        action
-      )
-
-      expect(state).toEqual(getState({
-        ...currentState,
-        question: {
-          text: 'la la la',
-          questionType: 3,
-          id: 2,
-          parentId: 0,
-          positionInParent: 1,
-          possibleAnswers: [{ id: 90, text: 'check 1' }, { id: 91, text: 'check 2' }]
-        },
-        userAnswers: {
-          ...currentState.userAnswers,
-          2: {
-            comment: '',
-            schemeQuestionId: 2,
-            answers: {
-              90: { schemeAnswerId: 90, pincite: '', annotations: '[]' }
+          coding: {
+            ...currentState.coding,
+            question: {
+              text: 'la la la',
+              questionType: 3,
+              id: 2,
+              parentId: 0,
+              positionInParent: 1,
+              possibleAnswers: [{ id: 90, text: 'check 1' }, { id: 91, text: 'check 2' }]
             }
           }
         },
-        unsavedChanges: true
-      }))
+        action
+      )
+
+      expect(state.userAnswers).toEqual({
+        ...currentState.coding.userAnswers,
+        2: {
+          comment: '',
+          schemeQuestionId: 2,
+          answers: {
+            90: { schemeAnswerId: 90, pincite: '', annotations: '[]' }
+          }
+        }
+      })
     })
   })
 
@@ -295,35 +282,27 @@ describe('CodingValidation reducer', () => {
         comment: 'new comment'
       }
 
-      const state = reducer(
-        getState({
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              answers: { 1: { schemeAnswerId: 1 } },
-              comment: ''
-            }
-          },
-          question: { id: 2 }
-        }),
-        action
-      )
+      const currentState = getState({
+        userAnswers: {
+          2: {
+            schemeQuestionId: 2,
+            answers: { 1: { schemeAnswerId: 1 } },
+            comment: ''
+          }
+        },
+        question: { id: 2 }
+      })
 
-      expect(state).toEqual(
-        getState({
-          question: { id: 2 },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              answers: { 1: { schemeAnswerId: 1 } },
-              comment: 'new comment'
-            }
-          },
-          showNextButton: false,
-          unsavedChanges: true
-        })
-      )
+      const state = reducer(currentState, action)
 
+      expect(state.userAnswers).toEqual({
+        ...currentState.coding.userAnswers,
+        2: {
+          schemeQuestionId: 2,
+          answers: { 1: { schemeAnswerId: 1 } },
+          comment: 'new comment'
+        }
+      })
     })
 
     test('should handle category questions', () => {
@@ -335,64 +314,46 @@ describe('CodingValidation reducer', () => {
         comment: 'new comment for cat 1'
       }
 
-      const state = reducer(
-        getState({
-          question: {
-            text: 'la la la',
-            questionType: 2,
-            id: 2,
-            parentId: 0,
-            positionInParent: 1,
-            possibleAnswers: [{ id: 90, text: 'check 1' }, { id: 91, text: 'check 2' }],
-            isCategoryQuestion: true
-          },
-          userAnswers: {
+      const currentState = getState({
+        question: {
+          text: 'la la la',
+          questionType: 2,
+          id: 2,
+          parentId: 0,
+          positionInParent: 1,
+          possibleAnswers: [{ id: 90, text: 'check 1' }, { id: 91, text: 'check 2' }],
+          isCategoryQuestion: true
+        },
+        userAnswers: {
+          2: {
+            schemeQuestionId: 2,
+            3: {
+              answers: { 5: { schemeAnswerId: 5 } }, comment: 'comment for cat 1', flag: {}
+            },
             2: {
-              schemeQuestionId: 2,
-              3: {
-                answers: { 5: { schemeAnswerId: 5 } }, comment: 'comment for cat 1', flag: {}
-              },
-              2: {
-                answers: {}, comment: 'comment for cat 2', flag: {}
-              }
+              answers: {}, comment: 'comment for cat 2', flag: {}
             }
-          },
-          selectedCategory: 0,
-          selectedCategoryId: 3,
-          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
-        }),
-        action
-      )
+          }
+        },
+        selectedCategory: 0,
+        selectedCategoryId: 3,
+        categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
+      })
 
-      expect(state).toEqual(
-        getState({
-          question: {
-            text: 'la la la',
-            questionType: 2,
-            id: 2,
-            parentId: 0,
-            positionInParent: 1,
-            possibleAnswers: [{ id: 90, text: 'check 1' }, { id: 91, text: 'check 2' }],
-            isCategoryQuestion: true
+      const state = reducer(currentState, action)
+
+      expect(state.userAnswers).toEqual({
+        ...currentState.coding.userAnswers,
+        2: {
+          schemeQuestionId: 2,
+          3: {
+            answers: { 5: { schemeAnswerId: 5 } }, comment: 'new comment for cat 1', flag: {}
           },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              3: {
-                answers: { 5: { schemeAnswerId: 5 } }, comment: 'new comment for cat 1', flag: {}
-              },
-              2: {
-                answers: {}, comment: 'comment for cat 2', flag: {}
-              }
-            }
-          },
-          showNextButton: false,
-          selectedCategory: 0,
-          selectedCategoryId: 3,
-          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }],
-          unsavedChanges: true
-        })
-      )
+          2: {
+            answers: {}, comment: 'comment for cat 2', flag: {}
+          }
+        }
+      })
     })
   })
 
@@ -407,58 +368,47 @@ describe('CodingValidation reducer', () => {
         pincite: 'this is a pincite'
       }
 
-      const state = reducer(
-        getState({
-          question: {
-            questionType: 3,
-            id: 2
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              answers: {
-                1: {
-                  schemeAnswerId: 1,
-                  pincite: ''
-                },
-                4: {
-                  schemeAnswerId: 4,
-                  pincite: ''
-                }
+      const currentState = getState({
+        question: {
+          questionType: 3,
+          id: 2
+        },
+        userAnswers: {
+          2: {
+            schemeQuestionId: 2,
+            answers: {
+              1: {
+                schemeAnswerId: 1,
+                pincite: ''
               },
-              comment: ''
-            }
+              4: {
+                schemeAnswerId: 4,
+                pincite: ''
+              }
+            },
+            comment: ''
           }
-        }),
-        action
-      )
+        }
+      })
+      const state = reducer(currentState, action)
 
-      expect(state).toEqual(
-        getState({
-          question: {
-            questionType: 3,
-            id: 2
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              answers: {
-                1: {
-                  schemeAnswerId: 1,
-                  pincite: ''
-                },
-                4: {
-                  schemeAnswerId: 4,
-                  pincite: 'this is a pincite'
-                }
-              },
-              comment: ''
+      expect(state.userAnswers).toEqual({
+        ...currentState.coding.userAnswers,
+        2: {
+          schemeQuestionId: 2,
+          answers: {
+            1: {
+              schemeAnswerId: 1,
+              pincite: ''
+            },
+            4: {
+              schemeAnswerId: 4,
+              pincite: 'this is a pincite'
             }
           },
-          showNextButton: false,
-          unsavedChanges: true
-        })
-      )
+          comment: ''
+        }
+      })
     })
 
     test('should handle category child questions', () => {
@@ -471,209 +421,120 @@ describe('CodingValidation reducer', () => {
         pincite: 'this is a pincite'
       }
 
-      const state = reducer(
-        getState({
-          question: {
-            questionType: 3,
-            isCategoryQuestion: true,
-            id: 2
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              3: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: 'pincite!' }
-                },
-                comment: ''
+      const currentState = getState({
+        question: {
+          questionType: 3,
+          isCategoryQuestion: true,
+          id: 2
+        },
+        userAnswers: {
+          2: {
+            schemeQuestionId: 2,
+            3: {
+              answers: {
+                4: { schemeAnswerId: 4, pincite: 'pincite!' }
               },
-              2: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: '' }
-                },
-                comment: ''
-              }
+              comment: ''
+            },
+            2: {
+              answers: {
+                4: { schemeAnswerId: 4, pincite: '' }
+              },
+              comment: ''
             }
-          },
-          selectedCategory: 1,
-          selectedCategoryId: 2,
-          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
-        }),
-        action
-      )
+          }
+        },
+        selectedCategory: 1,
+        selectedCategoryId: 2,
+        categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
+      })
+      const state = reducer(currentState, action)
 
-      expect(state).toEqual(
-        getState({
-          question: {
-            id: 2,
-            questionType: 3,
-            isCategoryQuestion: true
+      expect(state.userAnswers).toEqual({
+        ...currentState.coding.userAnswers,
+        2: {
+          schemeQuestionId: 2,
+          3: {
+            answers: {
+              4: { schemeAnswerId: 4, pincite: 'pincite!' }
+            },
+            comment: ''
           },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              3: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: 'pincite!' }
-                },
-                comment: ''
-              },
-              2: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: 'this is a pincite' }
-                },
-                comment: ''
-              }
-            }
-          },
-          unsavedChanges: true,
-          selectedCategory: 1,
-          showNextButton: false,
-          selectedCategoryId: 2,
-          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
-        })
-      )
+          2: {
+            answers: {
+              4: { schemeAnswerId: 4, pincite: 'this is a pincite' }
+            },
+            comment: ''
+          }
+        }
+      })
     })
   })
 
-  xdescribe('ON_SAVE_ANNOTATION', () => {
+  describe('ON_SAVE_ANNOTATION', () => {
     test('should handle regular questions', () => {
       const action = {
         type: types.ON_SAVE_ANNOTATION,
-        questionId: 2,
-        answerId: 4,
+        questionId: 1,
+        answerId: 123,
         annotation: {
           text: 'text annotation',
           rects: []
         }
       }
 
-      const state = reducer(
-        getState({
-          question: {
-            questionType: 3,
-            id: 2
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              answers: {
-                1: {
-                  schemeAnswerId: 1,
-                  pincite: ''
-                },
-                4: {
-                  schemeAnswerId: 4,
-                  pincite: ''
-                }
-              },
-              comment: ''
+      const currentState = getState({ question: schemeById[1], userAnswers: userAnswersCoded })
+      const state = reducer(currentState, action)
+
+      expect(state.userAnswers).toEqual({
+        ...userAnswersCoded,
+        1: {
+          ...userAnswersCoded[1],
+          answers: {
+            ...userAnswersCoded[1].answers,
+            123: {
+              ...userAnswersCoded[1].answers[123],
+              annotations: '[{\"text\":\"text annotation\",\"rects\":[]}]'
             }
           }
-        }),
-        action
-      )
-
-      expect(state).toEqual(
-        getState({
-          question: {
-            questionType: 3,
-            id: 2
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              answers: {
-                1: {
-                  schemeAnswerId: 1,
-                  pincite: ''
-                },
-                4: {
-                  schemeAnswerId: 4,
-                  pincite: 'this is a pincite'
-                }
-              },
-              comment: ''
-            }
-          },
-          showNextButton: false,
-          unsavedChanges: true
-        })
-      )
+        }
+      })
     })
 
     test('should handle category child questions', () => {
       const action = {
-        type: types.ON_CHANGE_PINCITE,
-        questionId: 2,
-        projectId: 1,
-        jurisdictionId: 1,
-        answerId: 4,
-        pincite: 'this is a pincite'
+        type: types.ON_SAVE_ANNOTATION,
+        questionId: 4,
+        answerId: 432,
+        annotation: {
+          text: 'text annotation', rects: []
+        }
       }
 
-      const state = reducer(
-        getState({
-          question: {
-            questionType: 3,
-            isCategoryQuestion: true,
-            id: 2
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              3: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: 'pincite!' }
-                },
-                comment: ''
-              },
-              2: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: '' }
-                },
-                comment: ''
-              }
-            }
-          },
-          selectedCategory: 1,
-          selectedCategoryId: 2,
-          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
-        }),
-        action
-      )
+      const currentState = getState({
+        question: schemeById[4],
+        userAnswers: userAnswersCoded,
+        selectedCategory: 0,
+        selectedCategoryId: 10,
+        categories: [{ id: 10, text: 'cat 1' }, { id: 20, text: 'cat 2' }]
+      })
+      const state = reducer(currentState, action)
 
-      expect(state).toEqual(
-        getState({
-          question: {
-            id: 2,
-            questionType: 3,
-            isCategoryQuestion: true
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              3: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: 'pincite!' }
-                },
-                comment: ''
-              },
-              2: {
-                answers: {
-                  4: { schemeAnswerId: 4, pincite: 'this is a pincite' }
-                },
-                comment: ''
+      expect(state.userAnswers).toEqual({
+        ...currentState.coding.userAnswers,
+        4: {
+          ...currentState.coding.userAnswers[4],
+          10: {
+            ...currentState.coding.userAnswers[4][10],
+            answers: {
+              432: {
+                ...currentState.coding.userAnswers[4][10].answers[432],
+                annotations: '[{\"text\":\"text annotation\",\"rects\":[]}]'
               }
             }
-          },
-          unsavedChanges: true,
-          selectedCategory: 1,
-          showNextButton: false,
-          selectedCategoryId: 2,
-          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
-        })
-      )
+          }
+        }
+      })
     })
   })
 
@@ -686,49 +547,38 @@ describe('CodingValidation reducer', () => {
         jurisdictionId: 1
       }
 
-      const state = reducer(
-        getState({
-          question: {
-            questionType: 3,
-            id: 2
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              answers: {
-                1: {
-                  schemeAnswerId: 1,
-                  pincite: ''
-                },
-                4: {
-                  schemeAnswerId: 4,
-                  pincite: ''
-                }
+      const currentState = getState({
+        question: {
+          questionType: 3,
+          id: 2
+        },
+        userAnswers: {
+          2: {
+            schemeQuestionId: 2,
+            answers: {
+              1: {
+                schemeAnswerId: 1,
+                pincite: ''
               },
-              comment: ''
-            }
+              4: {
+                schemeAnswerId: 4,
+                pincite: ''
+              }
+            },
+            comment: ''
           }
-        }),
-        action
-      )
+        }
+      })
+      const state = reducer(currentState, action)
 
-      expect(state).toEqual(
-        getState({
-          question: {
-            id: 2,
-            questionType: 3
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              answers: {},
-              comment: ''
-            }
-          },
-          showNextButton: false,
-          unsavedChanges: true
-        })
-      )
+      expect(state.userAnswers).toEqual({
+        ...currentState.coding.userAnswers,
+        2: {
+          schemeQuestionId: 2,
+          answers: {},
+          comment: ''
+        }
+      })
     })
 
     test('should handle category child questions', () => {
@@ -739,54 +589,39 @@ describe('CodingValidation reducer', () => {
         jurisdictionId: 1
       }
 
-      const state = reducer(
-        getState({
-          question: {
-            id: 2,
-            questionType: 4,
-            isCategoryQuestion: true
-          },
-          userAnswers: {
+      const currentState = getState({
+        question: {
+          id: 2,
+          questionType: 4,
+          isCategoryQuestion: true
+        },
+        userAnswers: {
+          2: {
+            schemeQuestionId: 2,
+            3: {
+              answers: { 4: { schemeAnswerId: 4, pincite: 'pincite!' } },
+              comment: ''
+            },
             2: {
-              schemeQuestionId: 2,
-              3: {
-                answers: { 4: { schemeAnswerId: 4, pincite: 'pincite!' } },
-                comment: ''
-              },
-              2: {
-                answers: { 4: { schemeAnswerId: 4, pincite: '' } },
-                comment: ''
-              }
+              answers: { 4: { schemeAnswerId: 4, pincite: '' } },
+              comment: ''
             }
-          },
-          selectedCategory: 0,
-          selectedCategoryId: 3,
-          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
-        }),
-        action
-      )
+          }
+        },
+        selectedCategory: 0,
+        selectedCategoryId: 3,
+        categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
+      })
+      const state = reducer(currentState, action)
 
-      expect(state).toEqual(
-        getState({
-          question: {
-            id: 2,
-            questionType: 4,
-            isCategoryQuestion: true
-          },
-          userAnswers: {
-            2: {
-              schemeQuestionId: 2,
-              3: { answers: {}, comment: '' },
-              2: { answers: { 4: { schemeAnswerId: 4, pincite: '' } }, comment: '' }
-            }
-          },
-          selectedCategory: 0,
-          selectedCategoryId: 3,
-          categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }],
-          showNextButton: false,
-          unsavedChanges: true
-        })
-      )
+      expect(state.userAnswers).toEqual({
+        ...currentState.coding.userAnswers,
+        2: {
+          schemeQuestionId: 2,
+          3: { answers: {}, comment: '' },
+          2: { answers: { 4: { schemeAnswerId: 4, pincite: '' } }, comment: '' }
+        }
+      })
     })
 
     test('should update scheme.tree for category questions', () => {
@@ -978,7 +813,7 @@ describe('CodingValidation reducer', () => {
       }
 
       const state = reducer(currentState, action)
-      expect(state).toHaveProperty('coding.scheme.tree', [
+      expect(state).toHaveProperty('scheme.tree', [
         {
           text: 'fa la la la',
           questionType: 1,
@@ -1020,7 +855,7 @@ describe('CodingValidation reducer', () => {
   })
 
   describe('APPLY_ANSWER_TO_ALL', () => {
-    const currentState = {
+    const currentState = getState({
       question: {
         id: 4
       },
@@ -1112,7 +947,7 @@ describe('CodingValidation reducer', () => {
           20: { answers: {}, comment: '', categoryId: 20 }
         }
       }
-    }
+    })
 
     test('should apply answers to all categories', () => {
       const action = {
@@ -1122,30 +957,25 @@ describe('CodingValidation reducer', () => {
         questionId: 4
       }
 
-      const state = reducer(getState(currentState), action)
+      const state = reducer(currentState, action)
 
-      expect(state).toEqual(getState({
-        ...currentState,
-        userAnswers: {
-          ...currentState.userAnswers,
-          4: {
-            10: {
-              answers: { schemeAnswerId: 42, pincite: '' },
-              comment: '',
-              categoryId: 10,
-              id: undefined
-            },
-            20: {
-              answers: { schemeAnswerId: 42, pincite: '' },
-              comment: '',
-              categoryId: 20,
-              id: undefined
-            }
+      expect(state.userAnswers).toEqual({
+        ...currentState.coding.userAnswers,
+        4: {
+          10: {
+            answers: { schemeAnswerId: 42, pincite: '' },
+            comment: '',
+            categoryId: 10,
+            id: undefined
+          },
+          20: {
+            answers: { schemeAnswerId: 42, pincite: '' },
+            comment: '',
+            categoryId: 20,
+            id: undefined
           }
-        },
-        showNextButton: false,
-        unsavedChanges: true
-      }))
+        }
+      })
     })
   })
 })
