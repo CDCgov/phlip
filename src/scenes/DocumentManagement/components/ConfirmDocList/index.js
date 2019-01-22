@@ -10,34 +10,35 @@ import Typography from '@material-ui/core/Typography'
 
 export const ConfirmDocList = props => {
   const {
-    documents, docCount
+    // documents,
+      docCount
   } = props
 
   return (
     <FlexGrid container flex style={{ overflow: 'hidden' }}>
       <FlexGrid>
-        <Typography >
+        <Typography align='center' >
             Number of Documents Selected: {docCount}
         </Typography>
       </FlexGrid>
-      <Table
-        style={{
-          borderCollapse: 'separate',
-          tableLayout: 'auto',
-          display: documents.length > 0 ? 'block' : 'table',
-          overflow: 'auto'
-        }}
-        summary="List of documents">
-        <TableHead style={{ width: '100%' }}>
-          <DocListTableHead />
-        </TableHead>
-        <TableBody>
-          {documents.map(docId => <DocListTableRow
-            key={`doc-${docId}`}
-            id={docId}
-          />)}
-        </TableBody>
-      </Table>
+      {/*<Table*/}
+      {/*style={{*/}
+      {/*borderCollapse: 'separate',*/}
+      {/*tableLayout: 'auto',*/}
+      {/*display: documents.length > 0 ? 'block' : 'table',*/}
+      {/*overflow: 'auto'*/}
+      {/*}}*/}
+      {/*summary="List of documents">*/}
+      {/*<TableHead style={{ width: '100%' }}>*/}
+      {/*<DocListTableHead />*/}
+      {/*</TableHead>*/}
+      {/*<TableBody>*/}
+      {/*{documents.map(docId => <DocListTableRow*/}
+      {/*key={`doc-${docId}`}*/}
+      {/*id={docId}*/}
+      {/*/>)}*/}
+      {/*</TableBody>*/}
+      {/*</Table>*/}
     </FlexGrid>
   )
 }

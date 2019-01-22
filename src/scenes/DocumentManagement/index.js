@@ -293,10 +293,10 @@ export class DocumentManagement extends Component {
                     allowDropdown={this.props.checkedCount > 0}
                   />
                 </FlexGrid>
-                <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="lg" hideOverflow={false}>
+                <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="md" hideOverflow={false}>
                   <ModalTitle title={this.state.modalTitle}  />
                   <Divider />
-                  <ModalContent style={{ display: 'flex', flexDirection: 'column', paddingTop: 24, width: 600, height: 275 }}>
+                  <ModalContent style={{ display: 'flex', flexDirection: 'column', paddingTop: 24, width: 500, height: 100 }}>
                     {this.state.modalTitle !=='Bulk Delete'?(
                       <React.Fragment>
                         <ProJurSearch
@@ -311,7 +311,10 @@ export class DocumentManagement extends Component {
                           showJurSearch={this.state.showAddJurisdiction === true}
                         />
                         <br />
-                        <ConfirmDocList documents={this.props.checkedDocs} docCount={this.props.checkedCount} />
+                        <ConfirmDocList
+                            // documents={this.props.checkedDocs}
+                          docCount={this.props.checkedCount}
+                        />
                       </React.Fragment>)
                 :(
                   <ConfirmDocList documents={this.props.checkedDocs} docCount={this.props.checkedCount} />
