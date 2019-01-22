@@ -275,7 +275,6 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
           }
 
     case types.REJECT_INVALID_FILE_TYPE:
-        console.log('reject invalid files fires')
         return {
             ...state,
             uploading: false,
