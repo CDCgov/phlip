@@ -255,29 +255,12 @@ export class Upload extends Component {
      * Adds selected files to redux, sends a request to verify the documents can be uploaded
      * @param e
      */
-  // async someFunction () {
-  //       const myArray = [1, 2, 3];
-  //       let resolvedFinalArray = await Promise.all(Array.from(Array(e.target.files.length).keys()).map(x => {(async(x) => {
-  //           const result = await asyncFunction(connection, value);
-  //           finalValue.asyncFunctionValue = result.asyncFunctionValue;
-  //           return finalValue; // important to return the value
-  //       }))
-  //       return functionThatUsesResolvedValues(resolvedFinalArray);
-  //   }
+
   addFilesToList = (e) => {
         let files = []
         Array.from(Array(e.target.files.length).keys()).map(x => {
             const i = e.target.files.item(x)
-                // const filereader = new FileReader()
-                // filereader.onloadend = function (evt) {
-                //     if (evt.target.readyState === FileReader.DONE) {
-                //         const uint = new Uint8Array(evt.target.result)
-                //         let bytes = []
-                //         uint.forEach((byte) => {
-                //             bytes.push(byte.toString(16))
-                //         })
-                //         const hex = bytes.join('').toUpperCase()
-                //         console.log(hex)
+
                         files.push({
                             name: i.name,
                             lastModifiedDate: i.lastModifiedDate,
@@ -286,21 +269,14 @@ export class Upload extends Component {
                             effectiveDate: '',
                             citation: '',
                             jurisdictions: {searchValue: '', suggestions: [], name: ''},
-                            // hex: hex
                         })
 
-                    // }
-                // }
-                //
-                // const blob = i.slice(0, 4)
-                // filereader.readAsArrayBuffer(blob)
         })
         this.props.actions.verifyFileContent(files)
         this.props.infoSheetSelected
             ? this.props.actions.mergeInfoWithDocs(files)
             : this.props.actions.addSelectedDocs(files)
-
-    }
+  }
 
    getFileHeader = (infile) => {
        const validMimeTypes = [
@@ -528,6 +504,7 @@ export class Upload extends Component {
             toggleRowEditMode={this.handleToggleEditMode}
             onClearSuggestions={this.props.actions.clearRowJurisdictionSuggestions}
             duplicateFiles={this.props.duplicateFiles}
+            invalidFiles={this.props.invalidFiles}
           />
           }
         </ModalContent>
@@ -562,7 +539,8 @@ const mapStateToProps = state => {
     infoRequestInProgress: uploadState.list.infoRequestInProgress,
     infoSheet: uploadState.list.infoSheet,
     infoSheetSelected: uploadState.list.infoSheetSelected,
-    duplicateFiles: uploadState.list.duplicateFiles
+    duplicateFiles: uploadState.list.duplicateFiles,
+    invalidFiles : uploadState.list.invalidFiles
   }
 }
 

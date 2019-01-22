@@ -25,7 +25,10 @@ export const types = {
   EXTRACT_INFO_SUCCESS_NO_DOCS: 'EXTRACT_INFO_SUCCESS_NO_DOCS',
   MERGE_INFO_WITH_DOCS: 'MERGE_INFO_WITH_DOCS',
   REJECT_INVALID_FILE_TYPE: 'REJECT_INVALID_FILE_TYPE',
-  VERIFY_VALID_FILE_TYPE: 'VERIFY_VALID_FILE_TYPE'
+  VERIFY_VALID_FILE_TYPE_REQUEST: 'VERIFY_VALID_FILE_TYPE_REQUEST',
+  VERIFY_VALID_FILE_TYPE_SUCCESS: 'VERIFY_VALID_FILE_TYPE_SUCCESS',
+  VERIFY_VALID_FILE_TYPE_FAIL: 'VERIFY_VALID_FILE_TYPE_FAIL'
+
 }
 
 export default {
@@ -42,7 +45,7 @@ export default {
   toggleRowEditMode: makeActionCreator(types.TOGGLE_ROW_EDIT_MODE, 'index', 'property'),
   clearRowJurisdictionSuggestions: makeActionCreator(types.CLEAR_ROW_JURISDICTION_SUGGESTIONS, 'index'),
   mergeInfoWithDocs: makeActionCreator(types.MERGE_INFO_WITH_DOCS, 'docs'),
-  verifyFileContent: makeActionCreator(types.VERIFY_VALID_FILE_TYPE,'docs')
+  verifyFileContent: makeActionCreator(types.VERIFY_VALID_FILE_TYPE_REQUEST,'docs')
 
 }
 

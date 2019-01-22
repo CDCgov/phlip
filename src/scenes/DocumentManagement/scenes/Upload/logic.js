@@ -62,7 +62,7 @@ export const getFileType = (doc) => {
           },
           {
               mime: 'rtf',
-              pattern: '7b5c7274'
+              pattern: '7B5C7274'
           }
       ]
       let matchedOne = {}
@@ -75,11 +75,10 @@ export const getFileType = (doc) => {
                     bytes.push(byte.toString(16))
                 })
                 const hex = bytes.join('').toUpperCase()
-                console.log('actual header for ',doc.name,' ',hex)
                 matchedOne = validMimeTypes.find(oneType => {
                     return oneType.pattern === hex
                 })
-                return matchedOne
+                resolve({doc:doc, docHex: hex, docType: matchedOne || undefined})
             }
         }
 
@@ -257,14 +256,41 @@ const searchJurisdictionListLogic = createLogic({
  * Logic for handling file type verification
  */
 const verifyFileContentLogic = createLogic({
-    type: types.VERIFY_VALID_FILE_TYPE,
-    async validate({ getState, action }, allow, reject,done) {
-        const state = getState().scenes.docManage.upload
-        console.log('docs in verify in loic ',action.docs)
-        action.docs.map( async doc => {
-            const valid = await getFileType(doc)
-            console.log(valid)
+    type: types.VERIFY_VALID_FILE_TYPE_REQUEST,
+    async validate({ getState, action,done }, allow, reject,dispatch,) {
+   //     const state = getState().scenes.docManage.upload
+        let promises = []
+        let invalidFiles = []
+        action.docs.map(doc => {
+            promises.push(getFileType(doc))
         })
+        try {
+            Promise.all(promises).then((results) => {
+                console.log(results)
+                results.map(result=>{
+                    if (result.docType === undefined){
+                        invalidFiles.push(result)
+                    }
+                })
+                if (invalidFiles.length > 0) {
+                    console.log('invalid files ', invalidFiles)
+                    reject({
+                        type: types.REJECT_INVALID_FILE_TYPE,
+                        error: 'One or more documents do not have a valid file type',
+                        invalidFiles: invalidFiles
+                    })
+                //    done()
+                }
+            })
+        }
+        catch(e) {
+          console.log(e)
+            dispatch({ type: types.VERIFY_VALID_FILE_TYPE_FAIL})
+        }
+        finally {
+          // done()
+        }
+
     }
 })
 
