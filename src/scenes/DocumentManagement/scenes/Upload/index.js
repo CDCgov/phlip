@@ -10,6 +10,7 @@ import FileUpload from 'components/FileUpload'
 import FileList from './components/FileList'
 import ProJurSearch from './components/ProJurSearch'
 import FlexGrid from 'components/FlexGrid'
+import Typography from 'components/Typography'
 
 /**
  * Upload documents modal component. In this modal the user can upload documents to the document management system
@@ -416,6 +417,34 @@ export class Upload extends Component {
         {this.props.alertOpen &&
         <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle}>
           {this.props.alertText}
+        </Alert>}
+        {(this.props.alertOpen && this.props.invalidFiles.length > 0) &&
+        <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle}>
+            {this.props.alertText }
+          <FlexGrid type="row" padding={5} style={{ overflow: 'auto' }}>
+            {this.props.invalidFiles.map((item, index) => {
+                        return (
+                          <FlexGrid
+                            container
+                            type="row"
+                            justify="space-between"
+                            align="center"
+                            key={`doc-${index}`}
+                            style={{
+                                    padding: 8,
+                                    backgroundColor: index % 2 === 0
+                                        ? '#f9f9f9'
+                                        : 'white',
+                                    minHeight: 24
+                                }}>
+                            <Typography style={{ fontSize: '.9125rem' }}>
+                              {item.doc.name}
+                            </Typography>
+                          </FlexGrid>
+                        )
+                    }
+                )}
+          </FlexGrid>
         </Alert>}
         {this.state.showLoadingAlert &&
         <Alert actions={[]} open={this.state.showLoadingAlert}>

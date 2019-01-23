@@ -116,9 +116,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ADD_SELECTED_DOCS:
-      console.log('add doc fires')
-      let invalidFiles = [...state.invalidFiles]
-          console.log(invalidFiles)
+    //  let invalidFiles = [...state.invalidFiles]
       return {
         ...state,
         selectedDocs: [
@@ -161,9 +159,13 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         )
       }
 
-    case types.CLOSE_ALERT:
+      case types.CLOSE_ALERT:
+      let invalidFiles = [...state.invalidFiles]
+      let cleanedDocs = [...state.selectedDocs].filter( ( doc ) => !invalidFiles.find(badDoc => badDoc.doc.name === doc.name.value))
       return {
         ...state,
+        selectedDocs: cleanedDocs,
+        invalidFiles: [],
         alertOpen: false,
         alertText: '',
         alertTitle: ''
@@ -280,8 +282,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
             uploading: false,
             invalidFiles: action.invalidFiles,
             alertOpen: true,
-            alertText: `One or more of the documents selected for upload do not have a valid allowed file type. These documents have been indicated in the file list. You
-        can choose to remove them.`,
+            alertText: `One or more of the documents selected for upload do not have a valid allowed file type. These documents will be removed from the file list.`,
             alertTitle: 'Invalid Files Found',
             hasVerified: false,
             verifyFilesInProgress: false
