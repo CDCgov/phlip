@@ -66,6 +66,7 @@ build_frontend_dev_azure:
     - cp -r ./scripts ~iiu-deploy/esquire-frontend-deploy/
     - cp -r ./config ~iiu-deploy/esquire-frontend-deploy/
     - cp ./package.json ~iiu-deploy/esquire-frontend-deploy/
+    - cp .env ~iiu-deploy/esquire-frontend-deploy/
   tags:
     - azure-phlipdev-fe
   when: manual
@@ -78,8 +79,8 @@ deploy_frontend_dev_azure:
   script:
     - cd ~iiu-deploy/esquire-frontend-deploy
     - npm install --production
-    - pm2 stop frontend
-    - pm2 start scripts/serve.js --name frontend
+    - pm2 stop phlip-fe
+    - pm2 start scripts/serve.js --name phlip-fe
   when: manual
   tags:
     - azure-phlipdev-fe
