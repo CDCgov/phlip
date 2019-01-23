@@ -26,8 +26,6 @@ lint_frontend:
 test_frontend:
   stage: test
   script:
-    - ls
-    - npm install
     - npm run test:local
   tags:
     - phlip2-dev
@@ -37,7 +35,6 @@ test_frontend:
 build_dev_internal:
   stage: build
   script:
-    - npm install
     - cat ~iiu-deploy/config/.env.fe >> .env
     - npm run build
     - cp -r ./dist ~iiu-deploy/esquire-frontend-deploy/
@@ -51,6 +48,8 @@ build_dev_internal:
   environment:
     name: Internal PHLIP2 Dev
     url: http://lvscent7064.lab.local
+  dependencies:
+    - lint_frontend
 
 deploy_dev_internal:
   stage: deploy
@@ -83,11 +82,13 @@ build_dev_azure:
   environment:
     name: Azure PHLIP2 Dev
     url: https://phlip2dev.phiresearchlab.org
+  dependencies: []
 
 deploy_dev_azure:
   stage: deploy
   script:
     - whoami
+    - npm install
     - cd ~iiu-deploy/esquire-frontend-deploy
     - npm install --production
     - pm2 stop phlip-fe
@@ -97,6 +98,7 @@ deploy_dev_azure:
   environment:
     name: Azure PHLIP2 Dev
     url: https://phlip2dev.phiresearchlab.org
+  dependencies: []
 
 #build_test_azure:
 #  stage: build
