@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import FlexGrid from 'components/FlexGrid'
-import Table from 'components/Table'
-import TableBody from '@material-ui/core/TableBody'
-import DocListTableHead from './components/DocListTableHead'
-import TableHead from '@material-ui/core/TableHead'
-import DocListTableRow from './components/DocListTableRow'
+// import Table from 'components/Table'
+// import TableBody from '@material-ui/core/TableBody'
+// import DocListTableHead from './components/DocListTableHead'
+// import TableHead from '@material-ui/core/TableHead'
+// import DocListTableRow from './components/DocListTableRow'
 import Typography from '@material-ui/core/Typography'
 
 export const ConfirmDocList = props => {

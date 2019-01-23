@@ -266,14 +266,12 @@ const verifyFileContentLogic = createLogic({
         })
         try {
             Promise.all(promises).then((results) => {
-                console.log(results)
                 results.map(result=>{
                     if (result.docType === undefined){
                         invalidFiles.push(result)
                     }
                 })
                 if (invalidFiles.length > 0) {
-                    console.log('invalid files ', invalidFiles)
                     reject({
                         type: types.REJECT_INVALID_FILE_TYPE,
                         error: 'One or more documents do not have a valid file type',
