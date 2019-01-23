@@ -30,7 +30,7 @@ test:
   tags:
     - phlip2-dev
   dependencies:
-    - lint_frontend
+    - lint
 
 build_dev_azure:
   stage: build
