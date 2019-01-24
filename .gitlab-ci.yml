@@ -17,7 +17,7 @@ lint:
   tags:
     - phlip2-dev
   only:
-    - development, v2-test
+    - development, test
   artifacts:
     expire_in: 1 hour
     paths:
@@ -30,7 +30,7 @@ test:
   tags:
     - phlip2-dev
   only:
-    - development, v2-test
+    - development, test
   dependencies:
     - lint
 
@@ -88,7 +88,7 @@ build_test_azure:
   when: manual
   allow_failure: false
   only:
-    - v2-test
+    - test
   environment:
     name: Azure PHLIP2 Test
     url: https://phlip2test.phiresearchlab.org
@@ -103,7 +103,7 @@ deploy_test_azure:
   tags:
     - az-phlip2test-fe
   only:
-    - v2-test
+    - test
   environment:
     name: Azure PHLIP2 Test
     url: https://phlip2test.phiresearchlab.org
