@@ -1,5 +1,3 @@
-#before_script:
-
 variables:
   VERSION: 0.6.0
   SUB_BUILD: $CI_PIPELINE_ID
@@ -11,163 +9,129 @@ stages:
   - build
   - deploy
 
-lint_frontend:
+lint:
   stage: lint
-  only:
-    - v2
   script:
     - npm install
     - npm run lint
+  tags:
+    - phlip2-dev
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - node_modules/
 
-test_frontend:
+test:
   stage: test
-  only:
-    - v2
   script:
-    - npm install
     - npm run test:local
   tags:
-    - phlip2-fe
+    - phlip2-dev
+  dependencies:
+    - lint
 
-build_frontend_dev_internal:
+build_dev_azure:
   stage: build
   script:
     - npm install
-    - cp ~iiu-deploy/.env.fe ./
+    - cat ~iiu-deploy/config/.env.fe >> .env
     - npm run build
-    - cp -r ./dist ~iiu-deploy/esquire-frontend/
-    - cp -r ./scripts ~iiu-deploy/esquire-frontend/
-    - cp ./package.json ~iiu-deploy/esquire-frontend/
+    - cp -r ./dist ~iiu-deploy/esquire-frontend-deploy/
+    - cp -r ./scripts ~iiu-deploy/esquire-frontend-deploy/
+    - cp -r ./config ~iiu-deploy/esquire-frontend-deploy/
+    - cp ./package.json ~iiu-deploy/esquire-frontend-deploy/
+    - cp .env ~iiu-deploy/esquire-frontend-deploy/
+  tags:
+    - az-phlip2dev-fe
+  when: manual
+  allow_failure: false
   only:
     - v2
-  tags:
-    - phlip2-fe
   environment:
-    name: Internal PHLIP2 Dev
-    url: http://lvscent7064.lab.local
+    name: Azure PHLIP2 Dev
+    url: https://phlip2dev.phiresearchlab.org
+  dependencies: []
 
-deploy_frontend_dev_internal:
+deploy_dev_azure:
   stage: deploy
   script:
+    - cd ~iiu-deploy/esquire-frontend-deploy
     - npm install --production
-    - sudo pm2 stop frontend
-    - sudo pm2 start scripts/serve.js --name frontend
+    - if pm2 list | grep phlip-fe; then pm2 stop phlip-fe; else echo "no phlip-fe process running"; fi
+    - pm2 start scripts/serve.js --name phlip-fe
+  tags:
+    - az-phlip2dev-fe
+  environment:
+    name: Azure PHLIP2 Dev
+    url: https://phlip2dev.phiresearchlab.org
   only:
     - v2
-  tags:
-    - phlip2-fe
-  environment:
-    name: Internal PHLIP2 Dev
-    url: http://lvscent7064.lab.local
+  dependencies: []
 
-build_frontend_dev_azure:
+build_test_azure:
   stage: build
   script:
     - npm install
-    - cp ~iiu-deploy/configs/.env ./
+    - cat ~iiu-deploy/config/.env.fe >> .env
     - npm run build
-    - cp -r ./dist ~iiu-deploy/esquire-frontend/
-    - cp -r ./scripts ~iiu-deploy/esquire-frontend/
-    - cp ./package.json ~iiu-deploy/esquire-frontend/
-  only:
-    - v2
+    - cp -r ./dist ~iiu-deploy/esquire-frontend-deploy/
+    - cp -r ./scripts ~iiu-deploy/esquire-frontend-deploy/
+    - cp -r ./config ~iiu-deploy/esquire-frontend-deploy/
+    - cp ./package.json ~iiu-deploy/esquire-frontend-deploy/
+    - cp .env ~iiu-deploy/esquire-frontend-deploy/
   tags:
-    - azure-phlipdev-fe
+    - az-phlip2test-fe
   when: manual
+  allow_failure: false
+  only:
+    - v2-test
   environment:
-    name: Azure PHLIP2 Dev
-    url: https://phlip2dev.phiresearchlab.org
+    name: Azure PHLIP2 Test
+    url: https://phlip2test.phiresearchlab.org
 
-deploy_frontend_dev_azure:
+deploy_test_azure:
   stage: deploy
   script:
+    - cd ~iiu-deploy/esquire-frontend-deploy
     - npm install --production
-    - sudo pm2 stop frontend
-    - sudo pm2 start scripts/serve.js --name frontend
-  only:
-    - v2
-  when: manual
+    - if pm2 list | grep phlip-fe; then pm2 stop phlip-fe; else echo "no phlip-fe process running"; fi
+    - pm2 start scripts/serve --name phlip-fe
   tags:
-    - azure-phlipdev-fe
+    - az-phlip2test-fe
+  only:
+    - v2-test
   environment:
-    name: Azure PHLIP2 Dev
-    url: https://phlip2dev.phiresearchlab.org
+    name: Azure PHLIP2 Test
+    url: https://phlip2test.phiresearchlab.org
 
-#build_esquire_frontend:
+#build_dev_internal:
 #  stage: build
-#  tags:
-#    - iiu
 #  script:
-#    - npm -version
-#    - node -v
-#    - yarn build:image:dev
-#
-#test_esquire_frontend_image:
-#  stage: test
-#  tags:
-#    - iiu
-#  script:
-#    - docker-compose -f docker-compose.dev.yml run --user=988 app npm run test:local
-#    - docker-compose -f docker-compose.dev.yml down
-#
-#push_esquire_frontend_image:
-#  stage: push
-#  script:
-#    - yarn build:image:prod
-#    - curl -fsSL https://git.phiresearchlab.org/snippets/10/raw | bash
-#  environment:
-#    name: DTR Frontend
-#    url: https://dtr.phiresearchlab.org/repositories/iiu/esquire-frontend/tags
-#  tags:
-#    - iiu
-
-#deploy_local_test_esquire_frontend:
-#  stage: push
-#  script:
-#    - npm install
+#    - cat ~iiu-deploy/config/.env.fe >> .env
 #    - npm run build
-#    - echo "APP_API_URL=$TEST_APP_API_URL">.env
-#    - pm2 stop serve
-#    - pm2 start scripts/serve.js
-#  environment:
-#    name: IIU Esquire Test
-#    url: https://esquiretest.phiresearchlab.org
+#    - cp -r ./dist ~iiu-deploy/esquire-frontend-deploy/
+#    - cp -r ./scripts ~iiu-deploy/esquire-frontend-deploy/
+#    - cp -r ./config ~iiu-deploy/esquire-frontend-deploy/
+#    - cp ./package.json ~iiu-deploy/esquire-frontend-deploy/
+#    - cp .env ~iiu-deploy/esquire-frontend-deploy/
 #  when: manual
-#  only:
-#    - test
 #  tags:
-#    - iiu
+#    - phlip2-dev
+#  environment:
+#    name: Internal PHLIP2 Dev
+#    url: http://lvscent7064.lab.local
+#  dependencies:
+#    - lint_frontend
 #
-#deploy_test_esquire_frontend:
-#  stage: push
+#deploy_dev_internal:
+#  stage: deploy
 #  script:
-#    - npm install
-#    - npm run build
-#    - echo "APP_API_URL=$TEST_APP_API_URL">.env
-#    - pm2 stop serve
-#    - pm2 start scripts/serve.js
-#  environment:
-#    name: Azure Test
-#    url: https://phliptest.phiresearchlab.org
-#  when: manual
-#  # only:
-#  #   - test
+#    - cd ~iiu-deploy/esquire-frontend-deploy
+#    - npm install --production
+#    - pm2 stop phlip-fe
+#    - pm2 start scripts/serve.js --name phlip-fe
 #  tags:
-#    - azure-esquire
-#
-#deploy_stage_esquire_frontend:
-#  stage: push
-#  script:
-#    - npm install
-#    - npm run build
-#    - echo "APP_API_URL=$TEST_APP_API_URL">.env
-#    - pm2 stop serve
-#    - pm2 start scripts/serve.js
+#    - phlip2-dev
 #  environment:
-#    name: Azure Stage
-#    url: https://phlipstage.phiresearchlab.org
-#  when: manual
-#  only:
-#    - stage
-#  tags:
-#   - azure-esquire
+#    name: Internal PHLIP2 Dev
+#    url: http://lvscent7064.lab.local
