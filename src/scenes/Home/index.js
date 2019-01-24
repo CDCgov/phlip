@@ -2,16 +2,14 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { withTheme } from 'material-ui/styles'
-import Divider from 'material-ui/Divider'
 import CardError from 'components/CardError'
-import Container from 'components/Layout'
 import PageHeader from 'components/PageHeader'
 import ProjectList from './components/ProjectList'
 import * as actions from './actions'
 import ExportDialog from './components/ExportDialog'
 import withTracking from 'components/withTracking'
 import ApiErrorAlert from 'components/ApiErrorAlert'
+import FlexGrid from 'components/FlexGrid'
 
 /**
  * Project List ("Home") screen main component. The first component that is rendered when the user logs in. This is parent
@@ -90,13 +88,15 @@ export class Home extends Component {
     this.setExportRef = element => this.exportRef = element
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.actions.getProjectsRequest()
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.projectToExport.text !== '' && this.state.projectToExport !== null) {
-      this.prepareExport(nextProps.projectToExport.text)
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.projectToExport.text !== this.props.projectToExport.text) {
+      if (this.state.projectToExport !== null) {
+        this.prepareExport(this.props.projectToExport.text)
+      }
     }
   }
 
@@ -193,14 +193,17 @@ export class Home extends Component {
 
   render() {
     return (
-      <Container column flex style={{ paddingBottom: '25px' }}>
+      <FlexGrid container flex padding="12px 20px 20px 20px">
         <ApiErrorAlert
           content={this.props.exportError}
           open={this.props.exportError !== ''}
-          onCloseAlert={this.onCloseExportError} />
+          onCloseAlert={this.onCloseExportError}
+        />
         <PageHeader
           showButton={this.props.user.role !== 'Coder'}
           pageTitle="Project List"
+          entryScene={true}
+          icon="dvr"
           protocolButton={false}
           projectName=""
           otherButton={{
@@ -210,8 +213,8 @@ export class Home extends Component {
             state: { projectDefined: null, modal: true },
             props: { 'aria-label': 'Create New Project' },
             show: this.props.user.role !== 'Coder'
-          }} />
-        <Divider />
+          }}
+        />
         {this.props.error
           ? this.renderErrorMessage()
           : <ProjectList
@@ -229,18 +232,21 @@ export class Home extends Component {
             handleRequestSort={this.props.actions.sortProjects}
             handlePageChange={this.props.actions.updatePage}
             handleRowsChange={this.props.actions.updateRows}
-            handleSortBookmarked={() => this.props.actions.sortBookmarked(!this.props.sortBookmarked)} />
+            handleSortBookmarked={() => this.props.actions.sortBookmarked(!this.props.sortBookmarked)}
+          />
         }
         <ExportDialog
           open={this.state.exportDialogOpen}
           onChooseExport={this.onChooseExport}
-          onClose={this.onCloseExportDialog} />
+          onClose={this.onCloseExportDialog}
+        />
         <a style={{ display: 'none' }} ref={this.setExportRef} />
-      </Container>
+      </FlexGrid>
     )
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = state => ({
   user: state.data.user.currentUser,
   visibleProjects: state.scenes.home.main.visibleProjects,
@@ -257,6 +263,7 @@ const mapStateToProps = state => ({
   exportError: state.scenes.home.main.exportError || ''
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(withTracking(Home, 'Home')))
+export default connect(mapStateToProps, mapDispatchToProps)(withTracking(Home, 'Home'))

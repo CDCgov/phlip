@@ -1,17 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - ProjectList - ProjectRow component should render correctly 1`] = `
-<TableRow
+<WithStyles(TableRow)
   key="1"
 >
-  <TableCell
+  <WithStyles(TableCell)
     id="1-bookmarked"
     key="1-bookmarked"
-    padding="checkbox"
     style={
       Object {
         "paddingLeft": 24,
-        "width": 24,
+        "paddingRight": 0,
+        "width": "1%",
       }
     }
   >
@@ -26,19 +26,13 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     >
       bookmark_border
     </IconButton>
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-name"
     key="1-name"
-    padding="default"
-    style={
-      Object {
-        "paddingRight": 24,
-        "width": "15%",
-      }
-    }
+    padding="checkbox"
   >
-    <withTheme(TextLink)
+    <WithTheme(TextLink)
       aria-label="Edit project details"
       to={
         Object {
@@ -46,7 +40,7 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
           "state": Object {
             "modal": true,
             "projectDefined": Object {
-              "dateLastEdited": "10/10/2012",
+              "dateLastEdited": 2012-10-10T04:00:00.000Z,
               "id": 1,
               "lastEditedBy": "Kristin",
               "name": "Project 1",
@@ -56,66 +50,40 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     >
       Project 1
-    </withTheme(TextLink)>
-  </TableCell>
-  <TableCell
+    </WithTheme(TextLink)>
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-dateLastEdited"
     key="1-dateLastEdited"
-    padding="default"
-    style={
-      Object {
-        "paddingRight": 24,
-        "textAlign": "unset",
-        "width": "unset",
-      }
-    }
+    padding="checkbox"
   >
-    10/9/2012, 8:00 PM
-  </TableCell>
-  <TableCell
+    10/10/2012, 12:00 AM
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-lastEditedBy"
     key="1-lastEditedBy"
-    padding="default"
-    style={
-      Object {
-        "paddingRight": 24,
-        "width": "unset",
-      }
-    }
+    padding="checkbox"
   >
     Kristin
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-protocol"
     key="1-protocol"
-    padding="default"
-    style={
-      Object {
-        "paddingRight": 24,
-        "textAlign": "center",
-        "width": "unset",
-      }
-    }
+    padding="checkbox"
   >
-    <withTheme(TextLink)
+    <WithTheme(TextLink)
       aria-label="Add and edit project protocol"
       to="/project/1/protocol"
     >
       Edit
-    </withTheme(TextLink)>
-  </TableCell>
-  <TableCell
+    </WithTheme(TextLink)>
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-jurisdictions"
     key="1-jurisdictions"
-    padding="default"
-    style={
-      Object {
-        "paddingRight": 24,
-        "textAlign": "center",
-      }
-    }
+    padding="checkbox"
   >
-    <withTheme(TextLink)
+    <WithTheme(TextLink)
       aria-label="Add and edit project jurisdictions"
       id="1-edit-jurisdictions"
       to={
@@ -128,39 +96,26 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
     >
       Edit
-    </withTheme(TextLink)>
-  </TableCell>
-  <TableCell
+    </WithTheme(TextLink)>
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-coding-scheme"
     key="1-coding-scheme"
-    padding="default"
-    style={
-      Object {
-        "paddingRight": 24,
-        "textAlign": "center",
-      }
-    }
+    padding="checkbox"
   >
-    <withTheme(TextLink)
+    <WithTheme(TextLink)
       aria-label="Add and edit project coding scheme"
       to="/project/1/coding-scheme"
     >
       Edit
-    </withTheme(TextLink)>
-  </TableCell>
-  <TableCell
+    </WithTheme(TextLink)>
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-code"
     key="1-code"
     padding="checkbox"
-    style={
-      Object {
-        "paddingRight": 6,
-        "textAlign": "unset",
-        "width": 56,
-      }
-    }
   >
-    <withTheme(Button)
+    <WithTheme(Button)
       aria-label="Code project"
       component={[Function]}
       listButton={true}
@@ -172,19 +127,13 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
       value="Code"
     />
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-validate"
     key="1-validate"
     padding="checkbox"
-    style={
-      Object {
-        "paddingLeft": 6,
-        "width": 56,
-      }
-    }
   >
-    <withTheme(Button)
+    <WithTheme(Button)
       aria-label="Validate project"
       component={[Function]}
       listButton={true}
@@ -196,19 +145,11 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
       }
       value="Validate"
     />
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="1-export"
     key="1-export"
-    padding="default"
-    style={
-      Object {
-        "paddingLeft": 0,
-        "paddingRight": 24,
-        "textAlign": "center",
-        "width": 40,
-      }
-    }
+    padding="checkbox"
   >
     <IconButton
       aria-label="Export validated questions"
@@ -222,6 +163,6 @@ exports[`Home scene - ProjectList - ProjectRow component should render correctly
     >
       file_download
     </IconButton>
-  </TableCell>
-</TableRow>
+  </WithStyles(TableCell)>
+</WithStyles(TableRow)>
 `;

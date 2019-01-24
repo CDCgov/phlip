@@ -1,9 +1,9 @@
 import React from 'react'
-import { default as MuiSnackbar } from 'material-ui/Snackbar'
+import { default as MuiSnackbar } from '@material-ui/core/Snackbar'
 import PropTypes from 'prop-types'
 
 /**
- * Small rectangluar popover with single action button -- wrapper for material-ui's Snackbar component
+ * Small rectangluar popover with single action button -- wrapper for @material-ui/core's Snackbar component
  */
 export const Snackbar = ({ anchorOrigin, open, handleClose, content, ...other }) => {
   return (

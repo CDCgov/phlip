@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import { Row, Column } from 'components/Layout'
 import Card from 'components/Card'
 import Icon from 'components/Icon'
@@ -17,7 +17,7 @@ export const CardError = ({ children }) => (
       </Icon>
     </Row>
     <Row>
-      <Typography type="display2" style={{ textAlign: 'center' }}>
+      <Typography variant="display2" style={{ textAlign: 'center' }}>
         {children}
       </Typography>
     </Row>

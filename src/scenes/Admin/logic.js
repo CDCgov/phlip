@@ -1,5 +1,5 @@
 import { createLogic } from 'redux-logic'
-import * as types from './actionTypes'
+import { types } from './actions'
 import addEditUserLogic from './scenes/AddEditUser/logic'
 
 /**
@@ -10,10 +10,11 @@ export const getUserLogic = createLogic({
   latest: true,
   processOptions: {
     dispatchReturn: true,
-    successType: types.GET_USERS_SUCCESS
+    successType: types.GET_USERS_SUCCESS,
+    failType: types.GET_USERS_FAIL
   },
   async process({ api }) {
-    let users = {}, userAvatar = '', updatedUsers = []
+    let users = {}
     try {
       users = await api.getUsers()
     } catch (e) {

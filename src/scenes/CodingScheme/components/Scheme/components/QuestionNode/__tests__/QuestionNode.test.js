@@ -1,6 +1,5 @@
 import React from 'react'
-import { shallow, mount } from 'enzyme'
-import { MemoryRouter } from 'react-router-dom'
+import { shallow } from 'enzyme'
 import { QuestionNode } from '../index'
 
 const props = {
@@ -19,18 +18,8 @@ const props = {
   canModify: true,
   canDrag: true,
   connectDragPreview: preview => preview,
-  connectDragSource: handle => handle,
-  turnOnHover: () => { },
-  turnOffHover: () => { },
-  enableHover: () => { },
-  disableHover: () => { }
+  connectDragSource: handle => handle
 }
-
-const setup = otherProps => mount(
-  <MemoryRouter>
-    <QuestionNode {...props} {...otherProps} />
-  </MemoryRouter>
-)
 
 describe('CodingScheme -- Scheme -- QuestionNode', () => {
   test('should render correctly', () => {
@@ -38,48 +27,41 @@ describe('CodingScheme -- Scheme -- QuestionNode', () => {
   })
 
   describe('Question hovering', () => {
-    test('should call turnOnHover on mouse enter', () => {
-      const spy = jest.spyOn(props, 'turnOnHover')
-      const wrapper = setup()
-      wrapper.find('CardContent').simulate('mouseenter')
-      wrapper.update()
+    test('should call setHoveredStatus on mouse enter', () => {
+      const wrapper = shallow(<QuestionNode {...props} />)
+      const card = wrapper.find('WithStyles(CardContent)').dive()
+      const spy = jest.spyOn(wrapper.instance(), 'setHoveredStatus')
+      card.find('CardContent').simulate('mouseenter')
+      card.update()
       expect(spy).toHaveBeenCalled()
     })
 
     test('should call turnOffHover on mouse leave', () => {
-      const spy = jest.spyOn(props, 'turnOffHover')
-      const wrapper = setup()
-      wrapper.find('CardContent').simulate('mouseleave')
-      wrapper.update()
+      const wrapper = shallow(<QuestionNode {...props} />)
+      const card = wrapper.find('WithStyles(CardContent)').dive()
+      const spy = jest.spyOn(wrapper.instance(), 'setHoveredStatus')
+      card.find('CardContent').simulate('mouseleave')
+      card.update()
       expect(spy).toHaveBeenCalled()
     })
 
     test('should display actions if hovering = true and canModify = true', () => {
-      const wrapper = setup({ node: { text: 'la la la', hovering: true }, canModify: true })
-      expect(wrapper.find('CardContent').find('ButtonBase')).toHaveLength(3)
+      const wrapper = shallow(<QuestionNode {...props} node={{ text: 'la la la' }} canModify={true} />)
+
+      wrapper.setState({
+        hovered: true
+      })
+      const card = wrapper.find('WithStyles(CardContent)').dive()
+      expect(card.find('CardContent').find('WithTheme(Button)')).toHaveLength(3)
     })
 
     test('should only display edit action if canModify = false and hovering = true', () => {
-      const wrapper = setup({ node: { text: 'la la la', hovering: true }, canModify: false })
-      expect(wrapper.find('CardContent').find('ButtonBase')).toHaveLength(1)
-    })
-  })
-
-  describe('Hovering disable', () => {
-    test('should call disableHover when dragging starts', () => {
-      const spy = jest.spyOn(props, 'disableHover')
-      const wrapper = setup()
-      wrapper.find('div').at(3).simulate('dragstart')
-      wrapper.update()
-      expect(spy).toHaveBeenCalled()
-    })
-
-    test('should call enableHover when dragging stops', () => {
-      const spy = jest.spyOn(props, 'enableHover')
-      const wrapper = setup()
-      wrapper.find('div').at(3).simulate('dragend')
-      wrapper.update()
-      expect(spy).toHaveBeenCalled()
+      const wrapper = shallow(<QuestionNode {...props} node={{ text: 'la la la' }} canModify={false} />)
+      wrapper.setState({
+        hovered: true
+      })
+      const card = wrapper.find('WithStyles(CardContent)').dive()
+      expect(card.find('CardContent').find('WithTheme(Button)')).toHaveLength(1)
     })
   })
 })

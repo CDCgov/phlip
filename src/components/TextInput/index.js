@@ -1,14 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Input, { InputLabel } from 'material-ui/Input'
-import { FormControl, FormHelperText } from 'material-ui/Form'
-import { withStyles } from 'material-ui/styles'
-
-const styles = {
-  disabled: {
-    color: 'black'
-  }
-}
+import Input from '@material-ui/core/Input'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormHelperText from '@material-ui/core/FormHelperText'
 
 /**
  * Text field input with form control wrapper, set up for use in redux-form
@@ -16,7 +11,7 @@ const styles = {
 export const TextInput = props => {
   const {
     label, type, input, disabled, multiline, shrinkLabel, required,
-    classes, meta: { active, touched, error, warning },
+    meta: { active, touched, error, warning },
     ...custom
   } = props
 
@@ -31,7 +26,6 @@ export const TextInput = props => {
         {...custom}
         type={type}
         id={input.name}
-        classes={{ disabled: classes.disabled }}
         multiline={multiline}
         inputProps={{ 'aria-label': label }}
       />
@@ -74,7 +68,7 @@ TextInput.propTypes = {
    */
   multiline: PropTypes.bool,
   /**
-   * Style classes from material-ui
+   * Style classes from @material-ui/core
    */
   classes: PropTypes.object
 }
@@ -83,4 +77,4 @@ TextInput.defaultProps = {
   meta: {}
 }
 
-export default withStyles(styles)(TextInput)
+export default TextInput

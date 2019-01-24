@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { default as MuiMenu, MenuItem } from 'material-ui/Menu'
+import { default as MuiMenu } from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
 
 /**
- * Displays a menu of menuitems as a popover - wrapper for material-ui's Menu component
+ * Displays a menu of menuitems as a popover - wrapper for @material-ui/core's Menu component
  */
 export const Menu = ({ open, anchorEl, id, onClose, items, ...otherProps }) => {
   return (

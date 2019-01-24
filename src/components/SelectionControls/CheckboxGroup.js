@@ -1,9 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Checkbox from 'material-ui/Checkbox'
-import { FormGroup, FormControlLabel, FormControl, FormHelperText } from 'material-ui/Form'
-import { InputLabel } from 'material-ui/Input'
-import { withStyles } from 'material-ui/styles'
+import Checkbox from '@material-ui/core/Checkbox'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormGroup from '@material-ui/core/FormGroup'
+import FormHelperText from '@material-ui/core/FormHelperText'
+import InputLabel from '@material-ui/core/InputLabel'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
   checked: {
@@ -20,14 +23,15 @@ export const CheckboxGroup = ({ choices, onChange, error, required, helperText, 
       <InputLabel shrink={true} required={required} style={{ position: 'relative' }}>{label}</InputLabel>
       <FormGroup>
         {choices.map(choice => {
-          return (<div key={choice.id} style={{ display: 'flex', alignItems: 'center' }}>
-            <FormControlLabel
-              checked={choice.selected === true}
-              onChange={onChange(choice.id)}
-              control={<Checkbox classes={{ checked: classes.checked }} />}
-              label={choice.text}
-            />
-          </div>)
+          return (
+            <div key={choice.id} style={{ display: 'flex', alignItems: 'center' }}>
+              <FormControlLabel
+                checked={choice.selected === true}
+                onChange={onChange(choice.id)}
+                control={<Checkbox classes={{ checked: classes.checked }} />}
+                label={choice.text}
+              />
+            </div>)
         })}
         <FormHelperText>{error && helperText}</FormHelperText>
       </FormGroup>
@@ -61,7 +65,7 @@ CheckboxGroup.propTypes = {
    */
   label: PropTypes.string,
   /**
-   * Style classes from material-ui
+   * Style classes from @material-ui/core
    */
   classes: PropTypes.object
 }

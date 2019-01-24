@@ -23,7 +23,22 @@ Form.propTypes = {
   /**
    * Contents of the form
    */
-  children: PropTypes.any
+  children: PropTypes.any,
+
+  /**
+   * Form from redux-form
+   */
+  form: PropTypes.any,
+
+  /**
+   * form role
+   */
+  role: PropTypes.any,
+
+  /**
+   * aria-labelled-by
+   */
+  ariaLabelledBy: PropTypes.any
 }
 
 Form = reduxForm({

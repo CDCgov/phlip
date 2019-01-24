@@ -1,9 +1,9 @@
-import * as types from './actionTypes'
+import { types } from './actions'
 import { combineReducers } from 'redux'
 import addEditUserReducer from './scenes/AddEditUser/reducer'
 import { commonHelpers, updater } from 'utils'
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   users: [],
   rowsPerPage: 10,
   page: 0,
@@ -32,7 +32,7 @@ const getAvailableUsers = (users, sortBy, direction) => {
  * @param {Object} action
  * @returns {{users: Array, rowsPerPage: number, page: number, sortBy: string, direction: string, visibleUsers: Array}}
  */
-const adminReducer = (state = INITIAL_STATE, action) => {
+export const adminReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_USERS_SUCCESS:
       return {
@@ -82,7 +82,7 @@ const adminReducer = (state = INITIAL_STATE, action) => {
         visibleUsers: updater.updateByProperty({ ...user, avatar: action.payload.avatar }, [...state.visibleUsers], 'id')
       }
 
-    case types.UPDATE_USER_ROWS:
+    /*case types.UPDATE_USER_ROWS:
       return {
         ...state,
         rowsPerPage: action.rowsPerPage,
@@ -94,9 +94,9 @@ const adminReducer = (state = INITIAL_STATE, action) => {
         ...state,
         page: action.page,
         visibleUsers: commonHelpers.sliceTable(state.users, action.page, state.rowsPerPage)
-      }
+      }*/
 
-    case 'FLUSH_STATE':
+    case types.FLUSH_STATE:
       return INITIAL_STATE
 
     case types.GET_USERS_REQUEST:

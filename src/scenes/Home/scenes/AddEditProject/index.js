@@ -6,11 +6,11 @@ import * as actions from './actions'
 import { default as formActions } from 'redux-form/lib/actions'
 import { withRouter } from 'react-router'
 import { ModalTitle, ModalActions, ModalContent } from 'components/Modal'
-import Divider from 'material-ui/Divider'
+import Divider from '@material-ui/core/Divider'
 import FormModal from 'components/FormModal'
 import TextInput from 'components/TextInput'
 import Dropdown from 'components/Dropdown'
-import Container, { Row } from 'components/Layout'
+import Container from 'components/Layout'
 import DetailRow from './components/DetailRow'
 import withFormAlert from 'components/withFormAlert'
 import withTracking from 'components/withTracking'
@@ -72,7 +72,9 @@ export class AddEditProject extends Component {
     /**
      * Whether or not to go back (after successfully saving, it will be true)
      */
-    goBack: PropTypes.bool
+    goBack: PropTypes.bool,
+
+    onSubmitError: PropTypes.func
   }
 
   constructor(props, context) {
@@ -84,14 +86,14 @@ export class AddEditProject extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate() {
     if (this.state.submitting === true) {
-      if (nextProps.formError !== null) {
+      if (this.props.formError !== null) {
         this.setState({
           submitting: false
         })
-        this.props.onSubmitError(nextProps.formError)
-      } else if (nextProps.goBack === true) {
+        this.props.onSubmitError(this.props.formError)
+      } else if (this.props.goBack === true) {
         this.props.history.goBack()
       }
     }
@@ -249,11 +251,13 @@ export class AddEditProject extends Component {
         asyncBlurFields={['name']}
         onClose={this.props.onCloseModal}
         initialValues={this.props.location.state.projectDefined || {}}
-        width="600px" height="400px"
-      >
+        width="600px"
+        height="400px">
         <ModalTitle
           title={this.getModalTitle()}
-          closeButton={!!this.projectDefined} onEditForm={this.onEditForm} onCloseForm={this.onCancel}
+          closeButton={!!this.projectDefined}
+          onEditForm={this.onEditForm}
+          onCloseForm={this.onCancel}
         />
         <Divider />
         <ModalContent>

@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
+import { findDOMNode } from 'react-dom'
 import PropTypes from 'prop-types'
 import IconButton from 'components/IconButton'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import { Row } from 'components/Layout'
-import { withStyles } from 'material-ui/styles'
-import Grow from 'material-ui/transitions/Grow'
-import Paper from 'material-ui/Paper'
-import { Manager, Target, Popper } from 'react-popper'
-import ClickAwayListener from 'material-ui/utils/ClickAwayListener'
+import { withStyles } from '@material-ui/core/styles'
+import Paper from '@material-ui/core/Paper'
+import { Manager, Reference, Popper } from 'react-popper'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import MenuDown from 'mdi-material-ui/MenuDown'
 
 const styles = {
@@ -27,6 +27,8 @@ const styles = {
 export class ExpansionTextPanel extends Component {
   constructor(props, context) {
     super(props, context)
+
+    this.expandButtonRef = null
 
     this.state = {
       open: false
@@ -49,41 +51,59 @@ export class ExpansionTextPanel extends Component {
    */
   onOpenPopper = () => {
     this.setState({
-      open: !this.state.open
+      open: true
     })
   }
 
   render() {
-    // console.log(this.state)
+    const { tooltipText, ...other } = this.props.dropdownIconProps
 
     return (
-      <ClickAwayListener onClickAway={this.onClosePopper}>
-        <Row flex displayFlex style={{ alignItems: 'center', overflow: 'hidden' }}>
-          <Typography noWrap {...this.props.textProps} style={{ flex: 1, minWidth: 0, color: '#b2b4b4' }}>
-            {this.props.text}
-          </Typography>
-          <Manager style={{ height: 24 }}>
-            <Target style={{ height: 24 }}>
-              <IconButton onClick={this.onOpenPopper} color="#768f99" {...this.props.dropdownIconProps}><MenuDown /></IconButton>
-            </Target>
-            <Popper
-              placement="top-end"
-              id="text-popper"
-              style={{
-                width: 450,
-                zIndex: this.state.open ? 2 : '',
-                display: this.state.open ? 'block' : 'none',
-                maxHeight: 500
-              }}>
-              <Grow in={this.state.open}>
-                <Paper elevation={8} style={{ padding: 25, whiteSpace: 'pre-wrap', wordWrap: 'break-word', maxHeight: 500, overflow: 'auto' }}>
-                  <Typography {...this.props.textProps}>{this.props.text}</Typography>
-                </Paper>
-              </Grow>
-            </Popper>
-          </Manager>
-        </Row>
-      </ClickAwayListener>
+      <Row flex displayFlex style={{ alignItems: 'center', overflow: 'hidden' }}>
+        <Typography noWrap {...this.props.textProps} style={{ flex: 1, minWidth: 0, color: '#b2b4b4' }}>
+          {this.props.text}
+        </Typography>
+        <Manager>
+          <Reference innerRef={node => this.expandButtonRef = findDOMNode(node)}>
+            {({ ref }) => {
+              return (
+                <div ref={ref}>
+                  <IconButton
+                    onClick={this.state.open === true ? this.onClosePopper : this.onOpenPopper}
+                    color="#768f99"
+                    tooltipText={this.state.open === true ? '' : tooltipText}
+                    {...other}>
+                    <MenuDown />
+                  </IconButton>
+                </div>
+              )
+            }}
+          </Reference>
+          <Popper placement="top-end" eventsEnabled={this.state.open === true}>
+            {({ ref, placement, style }) => {
+              return (
+                this.state.open === true &&
+                <ClickAwayListener onClickAway={this.onClosePopper}>
+                  <div ref={ref} data-placement={placement} style={style}>
+                    <Paper
+                      elevation={8}
+                      style={{
+                        maxWidth: 450,
+                        padding: 25,
+                        whiteSpace: 'pre-wrap',
+                        wordWrap: 'break-word',
+                        maxHeight: 500,
+                        overflow: 'auto'
+                      }}>
+                      <Typography {...this.props.textProps}>{this.props.text}</Typography>
+                    </Paper>
+                  </div>
+                </ClickAwayListener>
+              )
+            }}
+          </Popper>
+        </Manager>
+      </Row>
     )
   }
 }

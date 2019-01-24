@@ -5,6 +5,11 @@ exports[`CodingScheme scene should render correctly 1`] = `
   column={true}
   flex={true}
   spacing={0}
+  style={
+    Object {
+      "padding": "12px 20px 20px 20px",
+    }
+  }
 >
   <Alert
     actions={
@@ -24,11 +29,11 @@ exports[`CodingScheme scene should render correctly 1`] = `
     open={false}
     title={null}
   >
-    <withStyles(Typography)
+    <WithStyles(Typography)
       variant="body1"
     >
       You have checked out the coding scheme. No one else can edit until you check in.
-    </withStyles(Typography)>
+    </WithStyles(Typography)>
   </Alert>
   <Alert
     actions={
@@ -48,7 +53,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
     open={false}
     title={null}
   >
-    <withStyles(Typography)
+    <WithStyles(Typography)
       style={
         Object {
           "whiteSpace": "pre-wrap",
@@ -57,7 +62,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
       variant="body1"
     >
       You are about to delete a question from the coding scheme. This will permanantly delete all related child questions and coded answers.
-    </withStyles(Typography)>
+    </WithStyles(Typography)>
   </Alert>
   <ApiErrorAlert
     actions={Array []}
@@ -76,8 +81,8 @@ exports[`CodingScheme scene should render correctly 1`] = `
     }
     open={true}
     title={
-      <UNDEFINED>
-        <withTheme(Icon)
+      <React.Fragment>
+        <WithTheme(Icon)
           color="primary"
           size={30}
           style={
@@ -87,19 +92,19 @@ exports[`CodingScheme scene should render correctly 1`] = `
           }
         >
           lock
-        </withTheme(Icon)>
+        </WithTheme(Icon)>
         The Coding Scheme is checked out.
-      </UNDEFINED>
+      </React.Fragment>
     }
   >
-    <withStyles(Typography)
+    <WithStyles(Typography)
       variant="body1"
     >
       undefined undefined 
        has checked out the coding scheme. You will not be able to make changes until they have checked in.
-    </withStyles(Typography)>
+    </WithStyles(Typography)>
   </Alert>
-  <withRouter(withTheme(PageHeader))
+  <withRouter(WithTheme(PageHeader))
     checkoutButton={
       Object {
         "isLink": false,

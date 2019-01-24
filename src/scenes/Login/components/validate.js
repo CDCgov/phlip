@@ -9,7 +9,7 @@ export default function (values) {
     ]
     requiredFields.forEach(field => {
         if (!values[field]) {
-            errors[field] = 'Required';
+            errors[field] = 'Required'
         }
     })
     if (values.email && !isEmail(values.email)) {

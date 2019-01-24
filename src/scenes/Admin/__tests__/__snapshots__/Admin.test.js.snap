@@ -5,8 +5,13 @@ exports[`Admin Scene it should render correctly 1`] = `
   column={true}
   flex={true}
   spacing={0}
+  style={
+    Object {
+      "padding": "12px 20px 20px 20px",
+    }
+  }
 >
-  <withRouter(withTheme(PageHeader))
+  <withRouter(WithTheme(PageHeader))
     otherButton={
       Object {
         "isLink": true,
@@ -23,7 +28,7 @@ exports[`Admin Scene it should render correctly 1`] = `
     projectName=""
     protocolButton={false}
   />
-  <withStyles(Divider) />
+  <WithStyles(Divider) />
   <UserList
     direction="asc"
     handleRequestSort={[Function]}

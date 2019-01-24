@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { default as MuiAvatar } from 'material-ui/Avatar'
-import { withTheme } from 'material-ui/styles'
+import { default as MuiAvatar } from '@material-ui/core/Avatar'
+import { withTheme } from '@material-ui/core/styles'
 
 /**
  * @component
@@ -34,7 +34,8 @@ export const Avatar = ({ big, avatar, initials, style, theme, cardAvatar, userNa
       style={cardAvatar ? cardAvatarStyles : styles}
       alt={`${userName} avatar`}
       {...otherProps}
-      src={avatar} />
+      src={avatar}
+    />
     : <MuiAvatar style={cardAvatar ? cardAvatarStyles : styles} {...otherProps}>{initials ? initials : ''}</MuiAvatar>
 }
 
@@ -60,7 +61,7 @@ Avatar.propTypes = {
   style: PropTypes.object,
 
   /**
-   * Theme of project provided by material-ui
+   * Theme of project provided by @material-ui/core
    */
   theme: PropTypes.object,
 

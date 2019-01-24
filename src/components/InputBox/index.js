@@ -1,11 +1,13 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import TextField from 'material-ui/TextField'
+import TextField from '@material-ui/core/TextField'
 import SimpleInput from 'components/SimpleInput'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 import { Row, Column } from 'components/Layout'
 import Avatar from 'components/Avatar'
 import { getInitials } from 'utils/normalize'
+import { Marker } from 'mdi-material-ui'
+import { IconButton } from 'components/index'
 
 const styles = theme => ({
   container: {
@@ -26,12 +28,13 @@ const styles = theme => ({
 })
 
 /**
- * A textarea input different from typically material-ui inputs, in that it is a box. Used in Coding / Validation scenes
+ * A textarea input different from typically @material-ui/core inputs, in that it is a box. Used in Coding / Validation
+ * scenes
  */
 export const InputBox = props => {
   const {
     value, onChange, name, rows, answerId, classes, validator, theme, question,
-    isValidation, userImages, style, ...otherProps
+    isValidation, userImages, style, onToggleAnswerForAnno, enabledAnswerChoice, areDocsEmpty, ...otherProps
   } = props
 
   const userImageObj = userImages
@@ -77,6 +80,14 @@ export const InputBox = props => {
           }}
           {...otherProps}
         />
+        {(textValues.textAnswer && textValues.textAnswer.length > 0 && !areDocsEmpty) &&
+        <IconButton
+          style={{ alignSelf: 'center', marginLeft: 20 }}
+          onClick={onToggleAnswerForAnno(answerId)}
+          color={enabledAnswerChoice === answerId ? 'primary' : '#757575'}
+          iconSize={20}>
+          <Marker style={{ fontSize: 20 }} />
+        </IconButton>}
       </Row>
       {textValues.textAnswer && textValues.textAnswer.length > 0 &&
       <div style={{ paddingTop: 10, paddingBottom: 20 }}>
@@ -118,7 +129,7 @@ InputBox.propTypes = {
    */
   answerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   /**
-   * Style classes from material-ui
+   * Style classes from @material-ui/core
    */
   classes: PropTypes.object,
   /**
@@ -126,7 +137,7 @@ InputBox.propTypes = {
    */
   validator: PropTypes.object,
   /**
-   * Theme object from material-ui
+   * Theme object from @material-ui/core
    */
   theme: PropTypes.object,
   /**
@@ -144,7 +155,10 @@ InputBox.propTypes = {
   /**
    * Outer container style
    */
-  style: PropTypes.object
+  style: PropTypes.object,
+  onToggleAnswerForAnno: PropTypes.func,
+  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  areDocsEmpty: PropTypes.bool
 }
 
 InputBox.defaultProps = {

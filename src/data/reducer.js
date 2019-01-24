@@ -2,19 +2,31 @@ import { persistReducer } from 'redux-persist'
 import { combineReducers } from 'redux'
 import storage from 'redux-persist/lib/storage/session'
 import user from './user/reducer'
+import projects from './projects/reducer'
+import jurisdictions from './jurisdictions/reducer'
 
 /**
  * Root reducer for the data directory. Combines any reducer from the subdirectories.
  */
-
 const dataPersistConfig = {
   key: 'user',
-  storage,
-  blacklist: ['menuAnchor', 'menuOpen']
+  storage
+}
+
+const projectPersistConfig = {
+  key: 'projects',
+  storage
+}
+
+const jurisdictionPersistConfig = {
+  key: 'jurisdictions',
+  storage
 }
 
 const dataReducer = combineReducers({
-  user: persistReducer(dataPersistConfig, user)
+  user: persistReducer(dataPersistConfig, user),
+  projects: persistReducer(projectPersistConfig, projects),
+  jurisdictions: persistReducer(jurisdictionPersistConfig, jurisdictions)
 })
 
 export default dataReducer

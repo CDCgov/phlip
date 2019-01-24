@@ -2,18 +2,19 @@ import React from 'react'
 import { shallow, mount } from 'enzyme'
 import { ProjectRow } from '../../ProjectRow/index'
 import { MemoryRouter } from 'react-router-dom'
-import { MuiThemeProvider } from 'material-ui/styles'
-import Table, { TableBody } from 'material-ui/Table'
+import { MuiThemeProvider } from '@material-ui/core/styles'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
 import theme from 'services/theme'
 
 const props = {
-  project: { id: 1, name: 'Project 1', dateLastEdited: '10/10/2012', lastEditedBy: 'Kristin' },
+  project: { id: 1, name: 'Project 1', dateLastEdited: new Date('10/10/2012'), lastEditedBy: 'Kristin' },
   bookmarked: false,
   role: 'Coordinator',
   actions: {
-    toggleBookmark: () => {},
-    onExport: () => {}
+    toggleBookmark: jest.fn()
   },
+  onExport: jest.fn(),
   theme: {
     palette: {
       greyText: '#757575'
@@ -22,7 +23,7 @@ const props = {
 }
 
 const setup = otherProps => {
-  return mount((
+  return mount(
     <MemoryRouter>
       <MuiThemeProvider theme={theme}>
         <Table>
@@ -32,7 +33,7 @@ const setup = otherProps => {
         </Table>
       </MuiThemeProvider>
     </MemoryRouter>
-  ))
+  )
 }
 
 describe('Home scene - ProjectList - ProjectRow component', () => {
@@ -70,9 +71,9 @@ describe('Home scene - ProjectList - ProjectRow component', () => {
     expect(spy).toHaveBeenCalled()
   })
 
-  xtest('should call onExport', () => {
-    const spy = jest.spyOn(props.actions, 'onExport')
-    let wrapper = setup()
+  test('should call onExport', () => {
+    const spy = jest.spyOn(props, 'onExport')
+    const wrapper = setup()
     wrapper.find('tr').find('td').at(9).find('Tooltip').at(0).find('IconButton').at(0).simulate('click')
     wrapper.update()
     expect(spy).toHaveBeenCalled()

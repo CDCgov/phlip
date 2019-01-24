@@ -1,31 +1,30 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { DialogTitle } from 'material-ui/Dialog'
-import Container, { Column, Row } from 'components/Layout'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import { Row } from 'components/Layout'
 import SearchBar from 'components/SearchBar'
+import FlexGrid from 'components/FlexGrid'
 
 /**
- * Wrapper for material-ui's DialogTitle component. Will render at the top of the modal
+ * Wrapper for @material-ui/core's DialogTitle component. Will render at the top of the modal
  */
 export const ModalTitle = ({ title, search, buttons, SearchBarProps, style }) => {
   return (
-    <DialogTitle style={style}>
-      <Container alignItems="center">
-        <Row flex displayFlex style={{ alignItems: 'center' }}>{title}</Row>
-        {(buttons || search) &&
-        <Row displayFlex style={{ alignItems: 'center' }}>
-          {search && <Column style={{ paddingRight: 5 }}><SearchBar {...SearchBarProps} /></Column>}
+    <FlexGrid padding="24px 24px 20px">
+      <FlexGrid type="row" container align="center">
+        <DialogTitle style={{ ...style, padding: 0, flex: 1 }}>
+          <Row flex displayFlex style={{ alignItems: 'center' }}>{title}</Row>
+        </DialogTitle>
+        <FlexGrid container type="row" align="center" justify="flex-end">
+          {search && <SearchBar {...SearchBarProps} />}
           {buttons &&
-          <Column>
-            <Container alignItems="center">
-              {buttons}
-            </Container>
-          </Column>
+          <FlexGrid container type="row" align="center">
+            {buttons}
+          </FlexGrid>
           }
-        </Row>
-        }
-      </Container>
-    </DialogTitle>
+        </FlexGrid>
+      </FlexGrid>
+    </FlexGrid>
   )
 }
 

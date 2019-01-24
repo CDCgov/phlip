@@ -8,11 +8,11 @@ import Button from 'components/Button'
 import Container, { Column } from 'components/Layout'
 import JurisdictionList from './components/JurisdictionList'
 import * as actions from './actions'
-import Divider from 'material-ui/Divider'
-import Typography from 'material-ui/Typography'
+import Divider from '@material-ui/core/Divider'
+import Typography from '@material-ui/core/Typography'
 import TextLink from 'components/TextLink'
 import ApiErrorView from 'components/ApiErrorView'
-import { withTheme } from 'material-ui/styles'
+import { withTheme } from '@material-ui/core/styles'
 import PageLoader from 'components/PageLoader'
 import Alert from 'components/Alert'
 import ApiErrorAlert from 'components/ApiErrorAlert'
@@ -46,7 +46,7 @@ export class AddEditJurisdictions extends Component {
      */
     actions: PropTypes.object,
     /**
-     * material-ui styles theme
+     * @material-ui/core styles theme
      */
     theme: PropTypes.object,
     /**
@@ -71,31 +71,31 @@ export class AddEditJurisdictions extends Component {
     errorContent: PropTypes.string
   }
 
+  constructor(props, context) {
+    super(props, context)
+  }
+
   state = {
     confirmDeleteAlertOpen: false,
     jurisdictionToDelete: {},
     deleteErrorAlertOpen: false
   }
 
-  constructor(props, context) {
-    super(props, context)
-  }
-
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.actions.getProjectJurisdictions(this.props.project.id)
     this.showJurisdictionLoader()
   }
 
-  componentWillUnmount() {
-    this.props.actions.clearJurisdictions()
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.deleteError === null && nextProps.deleteError !== null) {
+  componentDidUpdate(prevProps) {
+    if (this.props.deleteError !== null && prevProps.deleteError === null) {
       this.setState({
         deleteErrorAlertOpen: true
       })
     }
+  }
+
+  componentWillUnmount() {
+    this.props.actions.clearJurisdictions()
   }
 
   /**
@@ -204,7 +204,7 @@ export class AddEditJurisdictions extends Component {
       <Modal onClose={this.onCloseModal} open={true} maxWidth="md" hideOverflow>
         <ModalTitle
           title={
-            <Typography type="title">
+            <Typography variant="title">
               <span style={{ paddingRight: 10 }}>Jurisdictions</span>
               <span style={{ color: this.props.theme.palette.secondary.main }}>{this.props.project.name}</span>
             </Typography>
@@ -216,7 +216,8 @@ export class AddEditJurisdictions extends Component {
             handleSearchValueChange: (event) => this.props.actions.updateSearchValue(event.target.value),
             placeholder: 'Search',
             style: { paddingRight: 10 }
-          }} />
+          }}
+        />
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
           <Alert actions={alertActions} open={this.state.confirmDeleteAlertOpen}>
@@ -228,7 +229,8 @@ export class AddEditJurisdictions extends Component {
           <ApiErrorAlert
             open={this.state.deleteErrorAlertOpen === true}
             content={this.props.deleteError}
-            onCloseAlert={this.dismissDeleteErrorAlert} />
+            onCloseAlert={this.dismissDeleteErrorAlert}
+          />
           <Container flex style={{ marginTop: 20 }}>
             <Column flex displayFlex style={{ overflowX: 'auto' }}>
               {this.props.error === true
@@ -239,7 +241,8 @@ export class AddEditJurisdictions extends Component {
                     project={this.props.project}
                     jurisdictions={this.props.visibleJurisdictions}
                     projectId={this.props.project.id}
-                    onDelete={this.confirmDelete} />}
+                    onDelete={this.confirmDelete}
+                  />}
             </Column>
           </Container>
         </ModalContent>
@@ -251,7 +254,8 @@ export class AddEditJurisdictions extends Component {
               type: 'button',
               otherProps: { 'aria-label': 'Close modal' }
             }
-          ]} />
+          ]}
+        />
       </Modal>
     )
   }

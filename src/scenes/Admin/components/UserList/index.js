@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { TableBody, TableHead } from 'material-ui/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableHead from '@material-ui/core/TableHead'
 import Container, { Column } from 'components/Layout'
 import Card from 'components/Card'
 import Table from 'components/Table'
@@ -33,7 +34,4 @@ UserList.propTypes = {
 }
 
 export default UserList
-
-
-
 

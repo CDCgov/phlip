@@ -1,0 +1,172 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DocumentManagement - DocList - DocListTableHead should render correctly 1`] = `
+<Fragment>
+  <TableRow
+    key="bulkAction"
+    style={
+      Object {
+        "width": "100%",
+      }
+    }
+  >
+    <TableCell
+      id="action"
+      key="action"
+      padding="default"
+      scope="col"
+      style={
+        Object {
+          "borderBottom": "none",
+          "paddingLeft": 20,
+          "paddingRight": 0,
+          "width": undefined,
+        }
+      }
+    >
+      <WithStyles(Dropdown)
+        SelectDisplayProps={
+          Object {
+            "style": Object {
+              "paddingBottom": 3,
+            },
+          }
+        }
+        formControlStyle={
+          Object {
+            "minWidth": 140,
+          }
+        }
+        input={
+          Object {
+            "onChange": undefined,
+            "value": "bulk",
+          }
+        }
+        options={
+          Array [
+            Object {
+              "disabled": true,
+              "label": "Bulk Operation",
+              "value": "bulk",
+            },
+            Object {
+              "label": "Delete",
+              "value": "deleteDoc",
+            },
+            Object {
+              "label": "Assign projects",
+              "value": "assignProject",
+            },
+            Object {
+              "label": "Assign Jurisdictions",
+              "value": "assignJurisdiction",
+            },
+          ]
+        }
+        style={
+          Object {
+            "fontSize": 13,
+          }
+        }
+      />
+    </TableCell>
+  </TableRow>
+  <TableRow
+    key="docTableHeaders"
+    style={
+      Object {
+        "width": "100%",
+      }
+    }
+  >
+    <TableCell
+      id="select-all"
+      key="select-all"
+      padding="default"
+      scope="col"
+      style={
+        Object {
+          "paddingLeft": 24,
+          "paddingRight": 0,
+          "width": undefined,
+        }
+      }
+    >
+      <WithStyles(CheckboxLabel)
+        input={
+          Object {
+            "onChange": [Function],
+            "value": false,
+          }
+        }
+      />
+    </TableCell>
+    <TableCell
+      id="file-name"
+      key="file-name"
+      padding="checkbox"
+      scope="col"
+      style={
+        Object {
+          "width": undefined,
+        }
+      }
+    >
+      File Name
+    </TableCell>
+    <TableCell
+      id="uploaded-by"
+      key="uploaded-by"
+      padding="checkbox"
+      scope="col"
+      style={
+        Object {
+          "width": undefined,
+        }
+      }
+    >
+      Uploaded By
+    </TableCell>
+    <TableCell
+      id="uploaded-data"
+      key="uploaded-data"
+      padding="checkbox"
+      scope="col"
+      style={
+        Object {
+          "width": undefined,
+        }
+      }
+    >
+      Uploaded Date
+    </TableCell>
+    <TableCell
+      id="doc-projects"
+      key="doc-projects"
+      padding="checkbox"
+      scope="col"
+      style={
+        Object {
+          "width": undefined,
+        }
+      }
+    >
+      Projects
+    </TableCell>
+    <TableCell
+      id="doc-jurisdictions"
+      key="doc-jurisdictions"
+      padding="checkbox"
+      scope="col"
+      style={
+        Object {
+          "width": undefined,
+        }
+      }
+    >
+      Jurisdictions
+    </TableCell>
+  </TableRow>
+</Fragment>
+`;

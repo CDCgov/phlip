@@ -7,3 +7,4 @@ dist
 *.md
 Dockerfile-prod
 docker-compose.yml
+.env

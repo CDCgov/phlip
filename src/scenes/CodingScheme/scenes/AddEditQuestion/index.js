@@ -75,7 +75,9 @@ export class AddEditQuestion extends Component {
     /**
      * Whether or not the protocol is checked out by the current user logged in
      */
-    lockedByCurrentUser: PropTypes.bool
+    lockedByCurrentUser: PropTypes.bool,
+
+    onSubmitError: PropTypes.func
   }
 
   constructor(props, context) {
@@ -112,6 +114,7 @@ export class AddEditQuestion extends Component {
       includeComment: false,
       isCategoryQuestion: false
     }
+    
     this.textFieldForm = {
       questionType: questionTypes.TEXT_FIELD,
       includeComment: false,
@@ -119,19 +122,18 @@ export class AddEditQuestion extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate() {
     if (this.state.submitting === true) {
-      if (nextProps.formError !== null) {
-        this.props.onSubmitError(nextProps.formError)
+      if (this.props.formError !== null) {
+        this.setState({
+          submitting: false
+        })
+        this.props.onSubmitError(this.props.formError)
       } else {
         this.props.history.goBack()
       }
-      this.setState({
-        submitting: false
-      })
     }
   }
-
 
   getButtonText = text => {
     if (this.state.submitting) {
@@ -336,7 +338,8 @@ export class AddEditQuestion extends Component {
                 name="possibleAnswers"
                 answerType={this.props.form.values
                   ? this.props.form.values.questionType
-                  : questionTypes.MULTIPLE_CHOICE}
+                  : questionTypes.MULTIPLE_CHOICE
+                }
                 isEdit={!!this.state.edit}
                 component={AnswerList}
                 canModify={this.state.canModify}
@@ -345,8 +348,9 @@ export class AddEditQuestion extends Component {
                 <Row
                   flex
                   style={{
-                    paddingLeft: this.props.form.values ? (this.props.form.values.questionType !==
-                      questionTypes.TEXT_FIELD && '47px') : '47px'
+                    paddingLeft: this.props.form.values
+                      ? (this.props.form.values.questionType !== questionTypes.TEXT_FIELD && '47px')
+                      : '47px'
                   }}>
                   <Field
                     name="includeComment"
@@ -361,13 +365,14 @@ export class AddEditQuestion extends Component {
           <ModalActions
             actions={actions}
             style={{ paddingTop: 15, paddingBottom: 15, margin: 0 }}
-          ></ModalActions>
+          />
         </Container>
       </FormModal>
     )
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => ({
   form: state.form.questionForm || {},
   projectId: ownProps.match.params.projectId,
@@ -377,6 +382,7 @@ const mapStateToProps = (state, ownProps) => ({
   hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(actions, dispatch),
   formActions: bindActionCreators(formActions, dispatch)

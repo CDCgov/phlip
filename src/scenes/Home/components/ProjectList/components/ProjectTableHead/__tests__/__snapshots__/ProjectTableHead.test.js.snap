@@ -1,23 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - ProjectList - ProjectTableHead component should render correctly 1`] = `
-<TableRow
+<WithStyles(TableRow)
   key="headers"
+  style={
+    Object {
+      "width": "100%",
+    }
+  }
 >
-  <TableCell
+  <WithStyles(TableCell)
     id="bookmarked"
     key="bookmarked"
-    padding="checkbox"
     scope="col"
     style={
       Object {
         "paddingLeft": 24,
-        "width": 24,
+        "paddingRight": 0,
+        "width": "1%",
       }
     }
   >
     <IconButton
-      aria-label="Sort bookmarked"
       color="#757575"
       disabled={false}
       iconSize={24}
@@ -28,25 +32,18 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
     >
       bookmark_border
     </IconButton>
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="name"
     key="name"
-    padding="default"
+    padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingRight": 24,
-        "width": "15%",
-      }
-    }
   >
-    <withStyles(Tooltip)
-      aria-label="Sort by Name"
+    <WithStyles(Tooltip)
       id="sort-by-name"
       text="Sort by Name"
     >
-      <withStyles(TableSortLabel)
+      <WithStyles(TableSortLabel)
         active={false}
         direction="desc"
         onClick={[Function]}
@@ -57,26 +54,20 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
         }
       >
         Name
-      </withStyles(TableSortLabel)>
-    </withStyles(Tooltip)>
-  </TableCell>
-  <TableCell
+      </WithStyles(TableSortLabel)>
+    </WithStyles(Tooltip)>
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="dateLastEdited"
     key="dateLastEdited"
-    padding="default"
+    padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingRight": 24,
-      }
-    }
   >
-    <withStyles(Tooltip)
-      aria-label="Sort by Date Last Edited"
+    <WithStyles(Tooltip)
       id="sort-by-dateLastEdited"
       text="Sort by Date Last Edited"
     >
-      <withStyles(TableSortLabel)
+      <WithStyles(TableSortLabel)
         active={true}
         direction="desc"
         onClick={[Function]}
@@ -87,26 +78,20 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
         }
       >
         Date Last Edited
-      </withStyles(TableSortLabel)>
-    </withStyles(Tooltip)>
-  </TableCell>
-  <TableCell
+      </WithStyles(TableSortLabel)>
+    </WithStyles(Tooltip)>
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="lastEditedBy"
     key="lastEditedBy"
-    padding="default"
+    padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingRight": 24,
-      }
-    }
   >
-    <withStyles(Tooltip)
-      aria-label="Sort by Last Edited By"
+    <WithStyles(Tooltip)
       id="sort-by-lastEditedBy"
       text="Sort by Last Edited By"
     >
-      <withStyles(TableSortLabel)
+      <WithStyles(TableSortLabel)
         active={false}
         direction="desc"
         onClick={[Function]}
@@ -117,90 +102,52 @@ exports[`Home scene - ProjectList - ProjectTableHead component should render cor
         }
       >
         Last Edited By
-      </withStyles(TableSortLabel)>
-    </withStyles(Tooltip)>
-  </TableCell>
-  <TableCell
+      </WithStyles(TableSortLabel)>
+    </WithStyles(Tooltip)>
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="protocol"
     key="protocol"
-    padding="default"
+    padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingRight": 24,
-        "textAlign": "center",
-      }
-    }
   >
     Protocol
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="jurisdictions"
     key="jurisdictions"
-    padding="default"
+    padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingRight": 24,
-        "textAlign": "center",
-      }
-    }
   >
     Jurisdictions
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="codingScheme"
     key="codingScheme"
-    padding="default"
+    padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingRight": 24,
-        "textAlign": "center",
-      }
-    }
   >
     Coding Scheme
-  </TableCell>
-  <TableCell
+  </WithStyles(TableCell)>
+  <WithStyles(TableCell)
     id="code"
     key="code"
     padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingRight": 6,
-        "width": 56,
-      }
-    }
   />
-  <TableCell
+  <WithStyles(TableCell)
     id="validate"
     key="validate"
     padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingLeft": 6,
-        "width": 56,
-      }
-    }
   />
-  <TableCell
+  <WithStyles(TableCell)
     id="export"
     key="export"
-    padding="default"
+    padding="checkbox"
     scope="col"
-    style={
-      Object {
-        "paddingLeft": 0,
-        "paddingRight": 24,
-        "textAlign": "center",
-        "width": "1%",
-      }
-    }
   >
     Export
-  </TableCell>
-</TableRow>
+  </WithStyles(TableCell)>
+</WithStyles(TableRow)>
 `;

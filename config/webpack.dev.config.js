@@ -1,27 +1,25 @@
 'use strict'
 
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const autoprefixer = require('autoprefixer')
 const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const paths = require('./paths')
-const Dotenv = require('dotenv-webpack')
-const path = require('path')
 
-module.exports = function makeConfig(env) {
+module.exports = env => {
   return {
-    devtool: 'cheap-module-source-map',
+    mode: 'development',
+    devtool: 'eval',
     entry: {
-      app: ['react-hot-loader/patch', paths.appIndexJs]
+      app: paths.appIndexJs
     },
-
     output: {
       path: paths.appBuild,
       filename: '[name].bundle.js',
       chunkFilename: '[name].chunk.js',
-      publicPath: paths.publicPath
+      publicPath: paths.publicPath,
+      globalObject: 'true'
     },
-
     resolve: {
       extensions: ['.js', '.jsx'],
       modules: [
@@ -29,7 +27,6 @@ module.exports = function makeConfig(env) {
         'node_modules'
       ]
     },
-
     module: {
       rules: [
         {
@@ -54,29 +51,24 @@ module.exports = function makeConfig(env) {
         {
           oneOf: [
             {
-              test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
-              loader: 'url-loader',
-              options: {
-                limit: 10000,
-                name: 'dist/media/[name].[hash:8].[ext]'
-              }
-            },
-            {
               test: /\.jsx?$/,
-              include: [/src/, path.join(paths.config, 'styleguide')],
+              include: /src/,
               use: [
                 {
                   loader: 'babel-loader',
                   options: {
                     presets: [
-                      ['env', { modules: false }],
-                      'react',
-                      'stage-0'
+                      '@babel/preset-env',
+                      '@babel/preset-react'
                     ],
+                    cacheDirectory: true,
                     plugins: [
-                      require('babel-plugin-transform-runtime'),
-                      require('babel-plugin-transform-object-assign'),
-                      require('babel-plugin-transform-object-rest-spread')
+                      'react-hot-loader/babel',
+                      '@babel/plugin-transform-runtime',
+                      '@babel/plugin-transform-object-assign',
+                      '@babel/plugin-proposal-object-rest-spread',
+                      '@babel/plugin-transform-async-to-generator',
+                      '@babel/plugin-proposal-class-properties'
                     ]
                   }
                 }
@@ -86,7 +78,34 @@ module.exports = function makeConfig(env) {
             {
               test: /\.css$/,
               use: [
-                'style-loader',
+                { loader: 'style-loader' },
+                {
+                  loader: 'css-loader',
+                  options: {
+                    importLoaders: true
+                  }
+                },
+                {
+                  loader: 'postcss-loader',
+                  options: {
+                    ident: 'postcss',
+                    plugins: () => [
+                      autoprefixer({
+                        browsers: [
+                          'last 2 Chrome versions'
+                        ]
+                      })
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              test: /\.scss$/,
+              use: [
+                {
+                  loader: 'style-loader'
+                },
                 {
                   loader: 'css-loader',
                   options: {
@@ -102,61 +121,29 @@ module.exports = function makeConfig(env) {
                     plugins: () => [
                       autoprefixer({
                         browsers: [
-                          'last 2 versions'
+                          'last 2 Chrome versions'
                         ]
                       })
                     ]
                   }
-                }
-              ]
-            },
-            {
-              test: /\.scss$/,
-              use: [
+                },
                 {
-                  loader: 'style-loader'
-                }, {
-                  loader: 'css-loader',
-                  options: {
-                    modules: true,
-                    '-autoprefixer': true,
-                    importLoaders: true
-                  }
-                }, {
-                  loader: 'postcss-loader',
-                  options: {
-                    ident: 'postcss',
-                    plugins: () => [
-                      autoprefixer({
-                        browsers: [
-                          'last 2 versions'
-                        ]
-                      })
-                    ]
-                  }
-                }, {
                   loader: 'sass-loader'
                 }
               ]
             },
             {
               exclude: [/\.js$/, /\.html$/, /\.json$/],
-              loader: 'file-loader',
+              loader: require.resolve('file-loader'),
               options: {
-                name: 'dist/media/[name].[hash:8].[ext]'
+                name: 'media/[name].[hash:8].[ext]'
               }
             }
           ]
         }
       ]
     },
-
     plugins: [
-      new HtmlWebpackPlugin({
-        inject: true,
-        template: paths.appHtml
-      }),
-
       new webpack.ProvidePlugin({
         $: 'jquery',
         'window.jQuery': 'jquery',
@@ -164,16 +151,17 @@ module.exports = function makeConfig(env) {
         jquery: 'jquery'
       }),
 
-      new webpack.NamedModulesPlugin(),
-      new webpack.HotModuleReplacementPlugin(),
-
       new webpack.DefinePlugin(env),
 
-      new CopyWebpackPlugin([
-        { from: paths.appPublic }
-      ]),
+      new CopyWebpackPlugin([{ from: paths.appPublic }]),
 
-      new Dotenv()
+      new HtmlWebpackPlugin({
+        inject: true,
+        template: paths.appHtml,
+        filename: 'index.html'
+      }),
+
+      new webpack.HotModuleReplacementPlugin()
     ]
   }
 }

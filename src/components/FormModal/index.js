@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Dialog from 'material-ui/Dialog'
+import Dialog from '@material-ui/core/Dialog'
 import Form from 'components/Form'
 
 /**
@@ -23,8 +23,7 @@ export const FormModal = props => {
         asyncBlurFields={asyncBlurFields}
         validate={validate}
         initialValues={initialValues}
-        style={{ width, height }}
-      >
+        style={{ width, height }}>
         {children}
       </Form>
     </Dialog>

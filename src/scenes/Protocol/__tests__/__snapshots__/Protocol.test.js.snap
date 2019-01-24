@@ -1,0 +1,141 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Protocol scene should render correctly 1`] = `
+<Container
+  column={true}
+  flex={true}
+  spacing={0}
+  style={
+    Object {
+      "flexWrap": "nowrap",
+      "padding": "12px 20px 20px 20px",
+    }
+  }
+>
+  <Alert
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Cancel",
+        },
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Save",
+        },
+      ]
+    }
+    open={false}
+    title={null}
+  >
+    <WithStyles(Typography)
+      variant="body1"
+    />
+  </Alert>
+  <Alert
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Dismiss",
+        },
+      ]
+    }
+    open={true}
+    title={
+      <React.Fragment>
+        <WithTheme(Icon)
+          color="primary"
+          size={30}
+          style={
+            Object {
+              "paddingRight": 10,
+            }
+          }
+        >
+          lock
+        </WithTheme(Icon)>
+        The Protocol is unavailable to edit.
+      </React.Fragment>
+    }
+  >
+    <WithStyles(Typography)
+      variant="body1"
+    >
+      undefined undefined 
+       is currently editing the protocol. You will not be able to edit until they are done editing and have saved their changes.
+    </WithStyles(Typography)>
+  </Alert>
+  <withRouter(WithTheme(PageHeader))
+    onBackButtonClick={[Function]}
+    otherButton={
+      Object {
+        "isLink": false,
+        "onClick": [Function],
+        "otherProps": Object {
+          "aria-label": "Save protocol",
+        },
+        "show": true,
+        "style": Object {
+          "backgroundColor": "white",
+          "color": "black",
+        },
+        "text": "Edit",
+      }
+    }
+    pageTitle="Protocol"
+    projectId="12345"
+    projectName="Test Project"
+    protocolButton={false}
+  />
+  <Alert
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Dismiss",
+        },
+      ]
+    }
+    open={false}
+    title={
+      <React.Fragment>
+        <WithTheme(Icon)
+          color="red"
+          size={30}
+          style={
+            Object {
+              "paddingRight": 10,
+            }
+          }
+        >
+          sentiment_very_dissatisfied
+        </WithTheme(Icon)>
+        Uh-oh! Something went wrong.
+      </React.Fragment>
+    }
+  >
+    <WithStyles(Typography)
+      variant="body1"
+    />
+  </Alert>
+  <Card
+    dangerouslySetInnerHTML={
+      Object {
+        "__html": "this is the text of the protocol",
+      }
+    }
+    style={
+      Object {
+        "fontFamily": "Roboto",
+        "overflow": "auto",
+        "padding": 25,
+      }
+    }
+  />
+</Container>
+`;

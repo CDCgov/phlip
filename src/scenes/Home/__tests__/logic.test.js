@@ -2,17 +2,18 @@ import { createMockStore } from 'redux-logic-test'
 import MockAdapter from 'axios-mock-adapter'
 import logic from '../logic'
 import * as types from '../actionTypes'
-import createApiHandler, { instance } from 'services/api'
+import createApiHandler, { projectApiInstance } from 'services/api'
+import calls from 'services/api/calls'
 
 describe('Home logic', () => {
   let mock
 
   const mockReducer = (state, action) => state
   const history = {}
-  const api = createApiHandler({ history })
+  const api = createApiHandler({ history }, projectApiInstance, calls)
 
   beforeEach(() => {
-    mock = new MockAdapter(instance)
+    mock = new MockAdapter(projectApiInstance)
   })
 
   const setupStore = initialBookmarks => {
@@ -28,7 +29,7 @@ describe('Home logic', () => {
 
   test('should get project list and set bookmarkList and dispatch GET_PROJECTS_SUCCESS when done', (done) => {
     mock.onGet('/projects').reply(200, [
-      { name: 'Project 1', id: 1, lastEditedBy: 'Test User   ', dateLastEdited: "1/1/2000", projectJurisdictions: [] },
+      { name: 'Project 1', id: 1, lastEditedBy: 'Test User   ', dateLastEdited: '1/1/2000', projectJurisdictions: [] },
       { name: 'Project 2', id: 2, lastEditedBy: ' Test User    ', projectJurisdictions: [] }
     ])
 
@@ -43,7 +44,7 @@ describe('Home logic', () => {
           type: types.GET_PROJECTS_SUCCESS,
           payload: {
             projects: [
-              { name: 'Project 1', id: 1, lastEditedBy: 'Test User', dateLastEdited: "1/1/2000", projectJurisdictions: [] },
+              { name: 'Project 1', id: 1, lastEditedBy: 'Test User', dateLastEdited: '1/1/2000', projectJurisdictions: [] },
               { name: 'Project 2', id: 2, lastEditedBy: 'Test User', projectJurisdictions: [] }
             ],
             bookmarkList: [1],

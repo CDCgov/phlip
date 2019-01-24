@@ -5,22 +5,27 @@ const chalk = require('chalk')
 const webpack = require('webpack')
 const Spinner = require('cli-spinner').Spinner
 const paths = require('../config/paths')
+const dotenv = require('dotenv')
+const fs = require('fs')
+
+dotenv.config({ path: paths.appDotEnv })
 
 const env = require('../config/env')('production')
-const webpackConfig = require('../config/webpack.prod.config')(env)
+const webpackProdConfig = require('../config/webpack.prod.config')(env)
 
 console.log(chalk.cyan(
   `\nThis command will build the webpack bundle/s. \
 If you want to serve these files on a web server, then run yarn serve after the build has finished.`))
 
-let spinner = new Spinner(chalk.cyan('%s Webpack is bundling the files...'))
-spinner.setSpinnerString(18)
-spinner.start()
+console.log(chalk.cyan('Webpack is bundling files...'))
+//let spinner = new Spinner(chalk.cyan('%s Webpack is bundling the files...'))
+//spinner.setSpinnerString(18)
+//spinner.start()
 
 // Compile the webpack bundle
-const compiler = webpack(webpackConfig)
+const compiler = webpack(webpackProdConfig)
 compiler.run((err, stats) => {
-  spinner.stop()
+  //spinner.stop()
   console.log('\n')
   if (err) {
     console.log(chalk.red('Webpack failed to compile. Check your configuration.\n'))
@@ -32,15 +37,17 @@ compiler.run((err, stats) => {
   }
 
   const output = stats.toJson('normal')
+  fs.writeFileSync('stats.json', JSON.stringify(output, null, 2))
 
   if (stats.hasErrors()) {
-    console.log(chalk.redBright('Webpack failed to compile. Try again.\n'))
+    console.log(chalk.redBright('Webpack failed to compile. Try again.'))
     console.log(chalk.redBright(`Webpack found ${output.errors.length} errors.`))
     console.log(chalk.redBright('Errors:'))
     output.errors.forEach(error => {
       console.log(chalk.redBright(`${error}`))
     })
     console.log('\n')
+    process.exit(1)
   }
 
   if (stats.hasWarnings()) {
@@ -52,6 +59,8 @@ compiler.run((err, stats) => {
     console.log('\n')
   }
 
-  console.log(chalk.green('Webpack build completed successfully.'))
-  console.log(chalk.green(`Output is in ${paths.appBuild}`))
+  if (!stats.hasErrors()) {
+    console.log(chalk.green('Webpack build completed successfully.'))
+    console.log(chalk.green(`Output is in ${paths.appBuild}`))
+  }
 })

@@ -1,92 +1,143 @@
-#before_script:
-
 variables:
   VERSION: 0.6.0
   SUB_BUILD: $CI_PIPELINE_ID
   BRANCH: $CI_COMMIT_REF_NAME
 
 stages:
-  - build
+  - lint
   - test
-  - push
+  - build
+  - deploy
 
-build_esquire_frontend:
-  stage: build
-  tags:
-    - iiu
-  script:
-    - docker info
-    - yarn -version
-    - npm -version
-    - node -v
-    - yarn build:image:dev
-
-test_esquire_frontend_image:
-  stage: test
-  tags:
-    - iiu
-  script:
-    - docker-compose -f docker-compose.dev.yml run --user=988 dev npm run test:local
-    - docker-compose -f docker-compose.dev.yml down
-
-push_esquire_frontend_image:
-  stage: push
-  script:
-    - yarn build:image:prod
-    - curl -fsSL https://git.phiresearchlab.org/snippets/10/raw | bash
-  environment:
-    name: DTR Frontend
-    url: https://dtr.phiresearchlab.org/repositories/iiu/esquire-frontend/tags
-  tags:
-    - iiu
-
-deploy_local_test_esquire_frontend:
-  stage: push
+lint:
+  stage: lint
   script:
     - npm install
-    - npm run build
-    - echo "APP_API_URL=$TEST_APP_API_URL">.env
-    - pm2 stop serve
-    - pm2 start scripts/serve.js
-  environment:
-    name: IIU Esquire Test
-    url: https://esquiretest.phiresearchlab.org
-  when: manual
-  only: 
+    - npm run lint
+  tags:
+    - phlip2-dev
+  only:
+    - development
     - test
-  tags:
-    - iiu
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - node_modules/
 
-deploy_test_esquire_frontend:
-  stage: push
+test:
+  stage: test
+  script:
+    - npm run test:local
+  tags:
+    - phlip2-dev
+  only:
+    - development
+    - test
+  dependencies:
+    - lint
+
+build_dev_azure:
+  stage: build
   script:
     - npm install
+    - cat ~iiu-deploy/config/.env.fe >> .env
     - npm run build
-    - echo "APP_API_URL=http://10.0.0.5:5001">.env
-    - pm2 stop serve
-    - pm2 start scripts/serve.js
-  environment:
-    name: Azure Test
-    url: https://phliptest.phiresearchlab.org
-  when: manual
-  # only: 
-  #   - test
+    - cp -r ./dist ~iiu-deploy/esquire-frontend-deploy/
+    - cp -r ./scripts ~iiu-deploy/esquire-frontend-deploy/
+    - cp -r ./config ~iiu-deploy/esquire-frontend-deploy/
+    - cp ./package.json ~iiu-deploy/esquire-frontend-deploy/
+    - cp .env ~iiu-deploy/esquire-frontend-deploy/
   tags:
-    - azure-esquire
+    - az-phlip2dev-fe
+  when: manual
+  allow_failure: false
+  only:
+    - development
+  environment:
+    name: Azure PHLIP2 Dev
+    url: https://phlip2dev.phiresearchlab.org
+  dependencies: []
 
-deploy_stage_esquire_frontend:
-  stage: push
+deploy_dev_azure:
+  stage: deploy
+  script:
+    - cd ~iiu-deploy/esquire-frontend-deploy
+    - npm install --production
+    - if pm2 list | grep phlip-fe; then pm2 stop phlip-fe; else echo "no phlip-fe process running"; fi
+    - pm2 start scripts/serve.js --name phlip-fe
+  tags:
+    - az-phlip2dev-fe
+  environment:
+    name: Azure PHLIP2 Dev
+    url: https://phlip2dev.phiresearchlab.org
+  only:
+    - development
+  dependencies: []
+
+build_test_azure:
+  stage: build
   script:
     - npm install
+    - cat ~iiu-deploy/config/.env.fe >> .env
     - npm run build
-    - echo "APP_API_URL=$TEST_APP_API_URL">.env
-    - pm2 stop serve
-    - pm2 start scripts/serve.js
-  environment:
-    name: Azure Stage
-    url: https://phlipstage.phiresearchlab.org
-  when: manual
-  only: 
-    - stage
+    - cp -r ./dist ~iiu-deploy/esquire-frontend-deploy/
+    - cp -r ./scripts ~iiu-deploy/esquire-frontend-deploy/
+    - cp -r ./config ~iiu-deploy/esquire-frontend-deploy/
+    - cp ./package.json ~iiu-deploy/esquire-frontend-deploy/
+    - cp .env ~iiu-deploy/esquire-frontend-deploy/
   tags:
-    - azure-esquire
+    - az-phlip2test-fe
+  when: manual
+  allow_failure: false
+  only:
+    - test
+  environment:
+    name: Azure PHLIP2 Test
+    url: https://phlip2test.phiresearchlab.org
+
+deploy_test_azure:
+  stage: deploy
+  script:
+    - cd ~iiu-deploy/esquire-frontend-deploy
+    - npm install --production
+    - if pm2 list | grep phlip-fe; then pm2 stop phlip-fe; else echo "no phlip-fe process running"; fi
+    - pm2 start scripts/serve --name phlip-fe
+  tags:
+    - az-phlip2test-fe
+  only:
+    - test
+  environment:
+    name: Azure PHLIP2 Test
+    url: https://phlip2test.phiresearchlab.org
+
+#build_dev_internal:
+#  stage: build
+#  script:
+#    - cat ~iiu-deploy/config/.env.fe >> .env
+#    - npm run build
+#    - cp -r ./dist ~iiu-deploy/esquire-frontend-deploy/
+#    - cp -r ./scripts ~iiu-deploy/esquire-frontend-deploy/
+#    - cp -r ./config ~iiu-deploy/esquire-frontend-deploy/
+#    - cp ./package.json ~iiu-deploy/esquire-frontend-deploy/
+#    - cp .env ~iiu-deploy/esquire-frontend-deploy/
+#  when: manual
+#  tags:
+#    - phlip2-dev
+#  environment:
+#    name: Internal PHLIP2 Dev
+#    url: http://lvscent7064.lab.local
+#  dependencies:
+#    - lint_frontend
+#
+#deploy_dev_internal:
+#  stage: deploy
+#  script:
+#    - cd ~iiu-deploy/esquire-frontend-deploy
+#    - npm install --production
+#    - pm2 stop phlip-fe
+#    - pm2 start scripts/serve.js --name phlip-fe
+#  tags:
+#    - phlip2-dev
+#  environment:
+#    name: Internal PHLIP2 Dev
+#    url: http://lvscent7064.lab.local

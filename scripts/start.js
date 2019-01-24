@@ -18,18 +18,21 @@ const config = {
   overlay: false,
   historyApiFallback: true,
   proxy: {
-    '/api': JSON.parse(env.APP_API_URL)
+    '/api': process.env.APP_API_URL,
+    '/docsApi': {
+      target: process.env.APP_DOC_MANAGE_API,
+      pathRewrite: { '^/docsApi': '/api' }
+    }
   }
 }
 
 // Webpack configuration
-const webpackConfig = require('../config/webpack.dev.config')(env)
+const webpackDevConfig = require('../config/webpack.dev.config')(env)
+const APP_HOST = process.env.APP_HOST || '0.0.0.0'
+const APP_PORT = process.env.APP_PORT || 5200
 
-const APP_HOST = JSON.parse(env.APP_HOST) || '0.0.0.0'
-const APP_PORT = JSON.parse(env.APP_PORT) || 5200
-
-WebpackDevServer.addDevServerEntrypoints(webpackConfig, config)
-const compiler = webpack(webpackConfig)
+WebpackDevServer.addDevServerEntrypoints(webpackDevConfig, config)
+const compiler = webpack(webpackDevConfig)
 
 // Since we're using the Node API, we have to set devServer options here
 const devServer = new WebpackDevServer(compiler, config)

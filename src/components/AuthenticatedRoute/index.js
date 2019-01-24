@@ -2,11 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Route, Redirect, withRouter } from 'react-router-dom'
 import { matchPath } from 'react-router'
-import { isLoggedInTokenExists } from 'services/authToken'
+import { isLoggedIn } from 'services/authToken'
 import { connect } from 'react-redux'
 import { UnauthPage, PageNotFound } from 'components/RoutePages'
-import { bindActionCreators } from 'redux'
-import * as actions from 'data/user/actions'
 
 /**
  * These are all of the routes that exist in the application, split up by who is allowed to view them
@@ -15,7 +13,11 @@ const coderPaths = ['/home', '/project/:id/protocol', '/project/:id/code', '/pro
 const coordinatorPaths = [
   ...coderPaths, '/project/add', '/project/:id/jurisdictions', '/project/:id/coding-scheme', '/project/:id/validate'
 ]
-const adminPaths = [...coderPaths, ...coordinatorPaths, '/admin']
+
+const docPaths = [
+  '/docs'
+]
+const adminPaths = [...coderPaths, ...coordinatorPaths, ...docPaths, '/admin']
 
 const paths = {
   Coder: coderPaths,
@@ -65,23 +67,21 @@ const isPath = path => {
  * renders the component, if not, then renders UnauthPage. If page isn't found, it renders PageNotFound. If the user isn't
  * logged in, renders the Login page.
  */
-export const AuthenticatedRoute = ({ component: Component, user, location, actions, isRefreshing, ...rest }) => {
+export const AuthenticatedRoute = ({ component: Component, user, location, ...rest }) => {
+  const loggedIn = isLoggedIn()
   return (
     isPath(location.pathname)
-      ? isLoggedInTokenExists()
-      ? isAllowed(user, location.pathname)
-        ? <Route {...rest} render={props =>
-          <Component
-            location={location}
-            actions={actions}
-            isRefreshing={isRefreshing}
-            role={user.role}
-            isLoggedIn={isLoggedInTokenExists()}
-            {...props}
-          />}
+      ? loggedIn
+        ? isAllowed(user, location.pathname)
+          ? <Route {...rest} render={props => <Component {...props} isLoggedIn={loggedIn} />} />
+          : <UnauthPage />
+        : <Redirect
+          {...rest}
+          to={{
+            pathname: '/login',
+            state: { from: location.pathname === '/' ? '/home' : location }
+          }}
         />
-        : <UnauthPage />
-      : <Route {...rest} render={() => <Redirect to="/login" {...rest} />} />
       : <PageNotFound />
   )
 }
@@ -104,10 +104,7 @@ AuthenticatedRoute.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.data.user.currentUser,
-  isRefreshing: state.data.user.isRefreshing
+  user: state.data.user.currentUser
 })
 
-export default withRouter(
-  connect(mapStateToProps, dispatch => ({ actions: bindActionCreators(actions, dispatch) }))(AuthenticatedRoute)
-)
+export default withRouter(connect(mapStateToProps)(AuthenticatedRoute))

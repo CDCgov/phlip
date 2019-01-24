@@ -1,12 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Radio from 'material-ui/Radio'
-import { FormControlLabel, FormControl, FormGroup, FormLabel } from 'material-ui/Form'
-import { withStyles } from 'material-ui/styles'
-import SimpleInput from 'components/SimpleInput'
+import Radio from '@material-ui/core/Radio'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormGroup from '@material-ui/core/FormGroup'
+import FormLabel from '@material-ui/core/FormLabel'
+import { withStyles } from '@material-ui/core/styles'
 import { getInitials } from 'utils/normalize'
-import Avatar from 'components/Avatar'
 import ValidationAvatar from 'components/ValidationAvatar'
+import { FlexGrid, IconButton, Avatar, SimpleInput } from 'components'
+import { Marker } from 'mdi-material-ui'
 
 const styles = theme => ({
   checked: {
@@ -20,7 +23,8 @@ const styles = theme => ({
 export const RadioGroupValidation = props => {
   const {
     choices, userAnswers, onChange, onChangePincite, classes,
-    mergedUserQuestions, disableAll, userImages, theme, question
+    mergedUserQuestions, disableAll, userImages, theme, question,
+    enabledAnswerChoice, onToggleAnswerForAnno, areDocsEmpty
   } = props
 
   const userImageObj = userImages
@@ -34,14 +38,21 @@ export const RadioGroupValidation = props => {
       <FormLabel component="legend" style={{ display: 'none' }} id="question_text">{question.text}</FormLabel>
       <FormGroup>
         {choices.map(choice => (
-          <div key={choice.id} style={{ display: 'flex', alignItems: 'center' }}>
+          <FlexGrid
+            key={choice.id}
+            container
+            type="row"
+            align="center"
+            padding="0 10px"
+            style={{ backgroundColor: enabledAnswerChoice === choice.id ? '#e6f8ff' : 'white' }}>
             <FormControlLabel
               onChange={onChange(choice.id)}
               checked={userAnswers.answers.hasOwnProperty(choice.id)}
               htmlFor={choice.id}
               control={<Radio
                 classes={{ checked: classes.checked }}
-                inputProps={{ id: choice.id, 'aria-describedby': 'question_text' }} />}
+                inputProps={{ id: choice.id, 'aria-describedby': 'question_text' }}
+              />}
               disabled={disableAll}
               label={choice.text}
               aria-label={choice.text}
@@ -52,7 +63,8 @@ export const RadioGroupValidation = props => {
                 key={`user-answer-${index}`}
                 answer={answer}
                 avatar={userImages[answer.userId] !== undefined ? userImages[answer.userId].avatar : ''}
-                choice={choice.id} />
+                choice={choice.id}
+              />
             ))}
             {userAnswers.answers.hasOwnProperty(choice.id)
             && mergedUserQuestions !== null
@@ -69,22 +81,32 @@ export const RadioGroupValidation = props => {
               initials={getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
             />}
             {userAnswers.answers.hasOwnProperty(choice.id) &&
-            <SimpleInput
-              key={`${choice.id}-pincite`}
-              style={{
-                width: 300,
-                marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
-                  ? '15px'
-                  : '0px'
-              }}
-              InputProps={{ inputProps: { 'aria-label': 'Pincite' } }}
-              disabled={disableAll}
-              placeholder="Enter pincite"
-              multiline={false}
-              value={userAnswers.answers[choice.id].pincite}
-              onChange={onChangePincite(choice.id, 'pincite')}
-            />}
-          </div>
+            <>
+              <SimpleInput
+                key={`${choice.id}-pincite`}
+                style={{
+                  width: 300,
+                  marginLeft: (mergedUserQuestions !== null || userAnswers.answers.hasOwnProperty(choice.id))
+                    ? '15px'
+                    : '0px'
+                }}
+                InputProps={{ inputProps: { 'aria-label': 'Pincite' } }}
+                disabled={disableAll}
+                placeholder="Enter pincite"
+                multiline={false}
+                value={userAnswers.answers[choice.id].pincite}
+                onChange={onChangePincite(choice.id, 'pincite')}
+              />
+              {!areDocsEmpty &&
+              <IconButton
+                style={{ alignSelf: 'center', marginLeft: 20 }}
+                onClick={onToggleAnswerForAnno(choice.id)}
+                color={enabledAnswerChoice === choice.id ? 'primary' : '#757575'}
+                iconSize={20}>
+                <Marker style={{ fontSize: 20 }} />
+              </IconButton>}
+            </>}
+          </FlexGrid>
         ))}
       </FormGroup>
     </FormControl>
@@ -129,13 +151,22 @@ RadioGroupValidation.propTypes = {
    */
   question: PropTypes.object,
   /**
-   * Material-UI theme object
+   * @material-ui/core theme object
    */
   theme: PropTypes.object,
   /**
-   * Style classes object from material-ui
+   * Style classes object from @material-ui/core
    */
-  classes: PropTypes.object
+  classes: PropTypes.object,
+  /**
+   * answer choice id that has been selected for annotating
+   */
+  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * handles when a user enables / disables an answer choice for annotating
+   */
+  onToggleAnswerForAnno: PropTypes.func,
+  areDocsEmpty: PropTypes.bool
 }
 
 RadioGroupValidation.defaultProps = {

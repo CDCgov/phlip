@@ -15,7 +15,7 @@ exports[`CardError component should render correctly 1`] = `
 >
   <Row
     component={
-      <withStyles(GridWrapper)
+      <WithStyles(Grid)
         item={true}
       />
     }
@@ -23,11 +23,11 @@ exports[`CardError component should render correctly 1`] = `
     flex={false}
     reverse={false}
   >
-    <withTheme(Icon)
+    <WithTheme(Icon)
       color="#757575"
       size={175}
     >
-      <Component
+      <Icon
         style={
           Object {
             "height": 175,
@@ -35,11 +35,11 @@ exports[`CardError component should render correctly 1`] = `
           }
         }
       />
-    </withTheme(Icon)>
+    </WithTheme(Icon)>
   </Row>
   <Row
     component={
-      <withStyles(GridWrapper)
+      <WithStyles(Grid)
         item={true}
       />
     }
@@ -47,18 +47,18 @@ exports[`CardError component should render correctly 1`] = `
     flex={false}
     reverse={false}
   >
-    <withStyles(Typography)
+    <WithStyles(Typography)
       style={
         Object {
           "textAlign": "center",
         }
       }
-      type="display2"
+      variant="display2"
     >
       <div>
         I am a card error.
       </div>
-    </withStyles(Typography)>
+    </WithStyles(Typography)>
   </Row>
 </Column>
 `;

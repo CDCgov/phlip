@@ -1,30 +1,31 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Route } from 'react-router-dom'
-import * as actions from './actions'
-import Dropdown from 'components/Dropdown'
-import { withRouter } from 'react-router-dom'
+import { Route, withRouter } from 'react-router-dom'
 import { Field } from 'redux-form'
-import ModalForm from 'components/ModalForm'
-import TextInput from 'components/TextInput'
+import { default as formActions } from 'redux-form/lib/actions'
+import compressImage from 'browser-compress-image'
+import Typography from '@material-ui/core/Typography'
+import ReactFileReader from 'react-file-reader'
 import isEmail from 'sane-email-validation'
+import actions from './actions'
+import {
+  Dropdown,
+  ModalForm,
+  TextInput,
+  Avatar,
+  IconButton,
+  withFormAlert,
+  TextLink,
+  Tooltip,
+  Alert,
+  CheckboxLabel,
+  CircularLoader
+} from 'components'
 import Container, { Row, Column } from 'components/Layout'
 import { trimWhitespace } from 'utils/formHelpers'
-import Avatar from 'components/Avatar'
-import ReactFileReader from 'react-file-reader'
-import IconButton from 'components/IconButton'
-import withFormAlert from 'components/withFormAlert'
-import { default as formActions } from 'redux-form/lib/actions'
 import AvatarForm from './components/AvatarForm'
-import TextLink from 'components/TextLink'
-import Tooltip from 'components/Tooltip'
-import compressImage from 'browser-compress-image'
-import Alert from 'components/Alert'
-import Typography from 'material-ui/Typography'
-import CheckboxLabel from 'components/CheckboxLabel'
-import CircularLoader from 'components/CircularLoader'
 
 const rowStyles = {
   paddingBottom: 30
@@ -94,37 +95,39 @@ export class AddEditUser extends Component {
     /**
      * Function passed in from withFormAlert HOC
      */
-    onSubmitError: PropTypes.func
+    onSubmitError: PropTypes.func,
+    user: PropTypes.object,
+    selectedUser: PropTypes.object
   }
 
   constructor(props, context) {
     super(props, context)
     this.state = {
       file: null,
-      selectedUser: null,
       open: false,
       submitting: false
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const id = this.props.match.params.id
 
     if (id && this.props.users.length > 0) {
-      this.state.selectedUser = getUserById(this.props.users, id)
-      this.props.actions.loadAddEditAvatar(this.state.selectedUser.avatar)
+      this.props.actions.loadAddEditAvatar(this.props.selectedUser.avatar)
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.state.submitting === true && nextProps.isDoneSubmitting === true) {
+  componentDidUpdate() {
+    if (this.state.submitting === true && this.props.isDoneSubmitting === true) {
       this.props.actions.resetSubmittingStatus()
-      if (nextProps.formError !== '') {
-        this.props.onSubmitError(nextProps.formError)
+      if (this.props.formError !== '') {
+        this.props.onSubmitError(this.props.formError)
       } else {
         this.props.history.goBack()
       }
-      this.setState({ submitting: false })
+      this.setState({
+        submitting: false
+      })
     }
   }
 
@@ -190,10 +193,10 @@ export class AddEditUser extends Component {
         files.file = compressedFile
         files.base64 = shrunkBase64
         this.props.history.push({
-          pathname: `/admin/edit/user/${this.state.selectedUser.id}/avatar`,
+          pathname: `/admin/edit/user/${this.props.selectedUser.id}/avatar`,
           state: {
             file: files,
-            userId: this.state.selectedUser.id
+            userId: this.props.selectedUser.id
           }
         })
       })
@@ -218,13 +221,13 @@ export class AddEditUser extends Component {
   getButtonText = text => {
     if (this.state.submitting) {
       return (
-        <Fragment>
+        <>
           {text}
           <CircularLoader size={18} style={{ paddingLeft: 10 }} />
-        </Fragment>
+        </>
       )
     } else {
-      return <Fragment>{text}</Fragment>
+      return <>{text}</>
     }
   }
 
@@ -276,7 +279,7 @@ export class AddEditUser extends Component {
     ]
 
     return (
-      <Fragment>
+      <>
         <Alert actions={alertActions} open={this.state.open}>
           <Typography variant="body1">
             Maximum image file size is 500KB. Please try another image.
@@ -284,47 +287,60 @@ export class AddEditUser extends Component {
         </Alert>
         <ModalForm
           open={true}
-          title={this.state.selectedUser ? 'Edit User' : 'Add New User'}
+          title={this.props.selectedUser ? 'Edit User' : 'Add New User'}
           actions={actions}
           form="addEditUser"
           handleSubmit={this.handleSubmit}
           asyncValidate={this.validateEmail}
-          initialValues={this.state.selectedUser || { isActive: true }}
+          initialValues={this.props.selectedUser || { isActive: true }}
           asyncBlurFields={['email']}
           onClose={this.props.onCloseModal}
           width="600px"
           height="400px">
           <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
             <Row displayFlex style={{ ...rowStyles, justifyContent: 'space-between' }}>
-              {this.state.selectedUser ? <Column style={{ paddingRight: 30 }}>
-                {(this.props.avatar) ? <Tooltip
-                    text="Edit photo"
-                    placement="top"
-                    aria-label="Edit picture"
-                    id="edit-picture">
-                    <TextLink
-                      to={{
-                        pathname: `/admin/edit/user/${this.state.selectedUser.id}/avatar`,
-                        state: {
-                          isEdit: true,
-                          userId: this.state.selectedUser.id,
-                          avatar: this.state.selectedUser.avatar
-                        }
-                      }}>
-                      <Avatar
-                        cardAvatar
-                        style={{ width: '65px', height: '65px' }}
-                        userName={`${this.state.selectedUser.firstName} ${this.state.selectedUser.lastName}`}
-                        avatar={this.props.avatar} /></TextLink>
-                  </Tooltip>
-                  : <ReactFileReader base64={true} fileTypes={['.jpg', 'png']} handleFiles={this.openAvatarForm}>
-                    <IconButton
-                      color={'#757575'}
-                      iconSize={50}
-                      tooltipText="Add a photo"
-                      id="add-user-photo">add_a_photo</IconButton></ReactFileReader>
-                }
-              </Column> : null}
+              {this.props.selectedUser
+                ? (
+                  <Column style={{ paddingRight: 30 }}>
+                    {(this.props.avatar) ? (
+                      <Tooltip
+                        text="Edit photo"
+                        placement="top"
+                          //aria-label="Edit picture"
+                        id="edit-picture">
+                        <TextLink
+                          to={{
+                              pathname: `/admin/edit/user/${this.props.selectedUser.id}/avatar`,
+                              state: {
+                                isEdit: true,
+                                userId: this.props.selectedUser.id,
+                                avatar: this.props.selectedUser.avatar
+                              }
+                            }}>
+                          <Avatar
+                            cardAvatar
+                            style={{ width: '65px', height: '65px' }}
+                            userName={`${this.props.selectedUser.firstName} ${this.props.selectedUser.lastName}`}
+                            avatar={this.props.avatar}
+                          />
+                        </TextLink>
+                      </Tooltip>
+                      )
+                      : (
+                        <ReactFileReader base64={true} fileTypes={['.jpg', 'png']} handleFiles={this.openAvatarForm}>
+                          <IconButton
+                            color={'#757575'}
+                            iconSize={50}
+                            tooltipText="Add a photo"
+                            id="add-user-photo">
+                            add_a_photo
+                          </IconButton>
+                        </ReactFileReader>
+                      )
+                    }
+                  </Column>
+                ) : null
+              }
               <Column flex style={{ paddingRight: 10 }}>
                 <Field
                   name="firstName"
@@ -371,37 +387,38 @@ export class AddEditUser extends Component {
                   options={roles}
                   defaultValue=""
                   id="role"
-                  style={{ display: 'flex' }} />
+                  style={{ display: 'flex' }}
+                />
               </Column>
               <Column flex>
                 <Field name="isActive" component={CheckboxLabel} label="Active" style={{ display: '10px' }} />
               </Column>
             </Row>
-
           </Container>
           <Route path="/admin/edit/user/:id/avatar" component={AvatarForm} />
         </ModalForm>
-      </Fragment>
+      </>
     )
   }
 }
 
-const getUserById = (users, id) => {
-  const user = users.filter(user => user.id == id)
-  if (user.length) return user[0]
-  return null
+/* istanbul ignore next */
+const mapStateToProps = (state, ownProps) => {
+  return {
+    currentUser: state.data.user.currentUser || {},
+    users: state.scenes.admin.main.users || [],
+    form: state.form.addEditUser || {},
+    avatar: state.scenes.admin.addEditUser.avatar || null,
+    formName: 'addEditUser',
+    formError: state.scenes.admin.addEditUser.formError || '',
+    isDoneSubmitting: state.scenes.admin.addEditUser.isDoneSubmitting || false,
+    selectedUser: ownProps.match.params.id
+      ? state.scenes.admin.main.users.find(user => user.id === parseInt(ownProps.match.params.id))
+      : null
+  }
 }
 
-const mapStateToProps = state => ({
-  currentUser: state.data.user.currentUser || {},
-  users: state.scenes.admin.main.users || [],
-  form: state.form.addEditUser || {},
-  avatar: state.scenes.admin.addEditUser.avatar || null,
-  formName: 'addEditUser',
-  formError: state.scenes.admin.addEditUser.formError || '',
-  isDoneSubmitting: state.scenes.admin.addEditUser.isDoneSubmitting || false
-})
-
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(actions, dispatch),
   formActions: bindActionCreators(formActions, dispatch)

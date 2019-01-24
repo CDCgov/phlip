@@ -1,15 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene should render correctly 1`] = `
-<Container
-  column={true}
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={true}
   flex={true}
-  spacing={0}
-  style={
-    Object {
-      "paddingBottom": "25px",
-    }
-  }
+  justify="stretch"
+  padding="12px 20px 20px 20px"
+  raised={false}
+  style={Object {}}
+  type="column"
 >
   <ApiErrorAlert
     actions={Array []}
@@ -17,7 +18,9 @@ exports[`Home scene should render correctly 1`] = `
     onCloseAlert={[Function]}
     open={false}
   />
-  <withRouter(withTheme(PageHeader))
+  <withRouter(WithTheme(PageHeader))
+    entryScene={true}
+    icon="dvr"
     otherButton={
       Object {
         "isLink": true,
@@ -38,13 +41,12 @@ exports[`Home scene should render correctly 1`] = `
     protocolButton={false}
     showButton={true}
   />
-  <withStyles(Divider) />
   <ProjectList
     direction="desc"
     handleExport={[Function]}
-    handlePageChange={[Function]}
-    handleRequestSort={[Function]}
-    handleRowsChange={[Function]}
+    handlePageChange={[MockFunction]}
+    handleRequestSort={[MockFunction]}
+    handleRowsChange={[MockFunction]}
     handleSearchValueChange={[Function]}
     handleSortBookmarked={[Function]}
     page={0}
@@ -76,5 +78,5 @@ exports[`Home scene should render correctly 1`] = `
       }
     }
   />
-</Container>
+</FlexGrid>
 `;

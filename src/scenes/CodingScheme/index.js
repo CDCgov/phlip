@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import { Route, Link } from 'react-router-dom'
 import * as actions from './actions'
 import Container from 'components/Layout'
@@ -22,6 +22,69 @@ import withTracking from 'components/withTracking'
  * component has one scene: AddEditQuestion at ./scenes/AddEditQuestion.
  */
 export class CodingScheme extends Component {
+  static propTypes = {
+    /**
+     * Name of project for which the coding scheme is open
+     */
+    projectName: PropTypes.string,
+    /**
+     * ID of project
+     */
+    projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    /**
+     * Array of question tree to render as the coding scheme
+     */
+    questions: PropTypes.array,
+    /**
+     * Whether or not the coding scheme is empty
+     */
+    empty: PropTypes.bool,
+    /**
+     * Redux action creators
+     */
+    actions: PropTypes.object,
+    /**
+     * Outline of the coding scheme
+     */
+    outline: PropTypes.object,
+    /**
+     * Flat list of questions (not a tree)
+     */
+    flatQuestions: PropTypes.array,
+    /**
+     * Any scheme error to render, will be rendered as a part of the page, not alert
+     */
+    schemeError: PropTypes.string,
+    /**
+     * Error that occured while trying to save reorder, displayed as an alert
+     */
+    reorderError: PropTypes.string,
+    /**
+     * Whether or not the coding scheme is currently locked by the user
+     */
+    lockedByCurrentUser: PropTypes.bool,
+    /**
+     * Information on lock of coding scheme, if any
+     */
+    lockInfo: PropTypes.object,
+    /**
+     * Any error to display as an alert
+     */
+    alertError: PropTypes.string,
+    /**
+     * Displays an alert notifying the user the coding scheme is currently locked
+     */
+    lockedAlert: PropTypes.string,
+    /**
+     * Whether or not the coding scheme is currently locked
+     */
+    hasLock: PropTypes.bool,
+    /**
+     * Routing history
+     */
+    history: PropTypes.object
+  }
+
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -45,11 +108,8 @@ export class CodingScheme extends Component {
     ]
   }
 
-  componentWillMount() {
-    this.props.actions.getSchemeRequest(this.props.projectId)
-  }
-
   componentDidMount() {
+    this.props.actions.getSchemeRequest(this.props.projectId)
     setTimeout(() => {
       this.props.actions.setEmptyState()
     }, 1000)
@@ -188,7 +248,7 @@ export class CodingScheme extends Component {
       <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
         {this.props.lockedByCurrentUser &&
         <Fragment>
-          <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
+          <Typography variant="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
             The coding scheme is empty. To get started, add a question.
           </Typography>
           <Button
@@ -204,14 +264,15 @@ export class CodingScheme extends Component {
         </Fragment>}
         {!this.props.lockedByCurrentUser &&
         <Fragment>
-          <Typography type="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
+          <Typography variant="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
             The coding scheme is empty. To get started, check out the coding scheme for editing.
           </Typography>
           <Button
             value="Check out"
             color="accent"
             aria-label="check out coding scheme"
-            onClick={this.handleLockCodingScheme} />
+            onClick={this.handleLockCodingScheme}
+          />
         </Fragment>
         }
       </Container>
@@ -237,7 +298,7 @@ export class CodingScheme extends Component {
     ]
 
     return (
-      <Container column flex>
+      <Container column flex style={{ padding: '12px 20px 20px 20px' }}>
         <Alert open={this.state.goBackAlertOpen} actions={alertActions}>
           <Typography variant="body1">
             You have checked out the coding scheme. No one else can edit until you check in.
@@ -252,12 +313,16 @@ export class CodingScheme extends Component {
         <ApiErrorAlert
           content={this.props.alertError}
           open={this.props.alertError !== ''}
-          onCloseAlert={this.onCloseAlert} />
+          onCloseAlert={this.onCloseAlert}
+        />
         <Alert
           actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert }]}
           open={this.props.lockedAlert !== null}
-          title={<Fragment><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
-            The Coding Scheme is checked out.</Fragment>}>
+          title={
+            <><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
+              The Coding Scheme is checked out.
+            </>
+          }>
           <Typography variant="body1">
             {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} has checked out the coding scheme. You
             will not be able to make changes until they have checked in.
@@ -278,7 +343,7 @@ export class CodingScheme extends Component {
                 : this.handleLockCodingScheme
             },
             show: this.props.questions.length > 0 ||
-            (this.props.questions.length === 0 && this.props.lockedByCurrentUser)
+              (this.props.questions.length === 0 && this.props.lockedByCurrentUser)
           }}
           otherButton={{
             isLink: true,
@@ -330,65 +395,7 @@ export class CodingScheme extends Component {
   }
 }
 
-CodingScheme.propTypes = {
-  /**
-   * Name of project for which the coding scheme is open
-   */
-  projectName: PropTypes.string,
-  /**
-   * ID of project
-   */
-  projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  /**
-   * Array of question tree to render as the coding scheme
-   */
-  questions: PropTypes.array,
-  /**
-   * Whether or not the coding scheme is empty
-   */
-  empty: PropTypes.bool,
-  /**
-   * Redux action creators
-   */
-  actions: PropTypes.object,
-  /**
-   * Outline of the coding scheme
-   */
-  outline: PropTypes.object,
-  /**
-   * Flat list of questions (not a tree)
-   */
-  flatQuestions: PropTypes.array,
-  /**
-   * Any scheme error to render, will be rendered as a part of the page, not alert
-   */
-  schemeError: PropTypes.string,
-  /**
-   * Error that occured while trying to save reorder, displayed as an alert
-   */
-  reorderError: PropTypes.string,
-  /**
-   * Whether or not the coding scheme is currently locked by the user
-   */
-  lockedByCurrentUser: PropTypes.bool,
-  /**
-   * Information on lock of coding scheme, if any
-   */
-  lockInfo: PropTypes.object,
-  /**
-   * Any error to display as an alert
-   */
-  alertError: PropTypes.string,
-  /**
-   * Displays an alert notifying the user the coding scheme is currently locked
-   */
-  lockedAlert: PropTypes.string,
-  /**
-   * Whether or not the coding scheme is currently locked
-   */
-  hasLock: PropTypes.bool
-}
-
+/* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => ({
   projectName: state.scenes.home.main.projects.byId[ownProps.match.params.id].name,
   projectId: ownProps.match.params.id,
@@ -405,6 +412,7 @@ const mapStateToProps = (state, ownProps) => ({
   hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTracking(CodingScheme, 'Coding Scheme'))

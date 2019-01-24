@@ -26,6 +26,11 @@ let apiCalls = [
     path: () => '/projects'
   },
   {
+    name: 'getProject',
+    method: 'get',
+    path: ({ projectId }) => `/projects/${projectId}`
+  },
+  {
     name: 'addProject',
     method: 'post',
     path: () => '/projects'
@@ -64,6 +69,11 @@ let apiCalls = [
     name: 'deleteUserImage',
     method: 'patch',
     path: ({ userId }) => `/users/${userId}`
+  },
+  {
+    name: 'getJurisdiction',
+    method: 'get',
+    path: ({ jurisdictionId }) => `/jurisdictions/${jurisdictionId}`
   },
   {
     name: 'searchJurisdictionList',
@@ -233,7 +243,7 @@ let apiCalls = [
 ]
 
 // If development, then include the basic auth api call
-if (!process.env.API_HOST) {
+if (APP_IS_SAML_ENABLED !== '1') {
   apiCalls = [...apiCalls,   {
     name: 'login',
     method: 'post',

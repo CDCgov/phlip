@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { default as MuiIcon } from 'material-ui/Icon'
-import { withTheme } from 'material-ui/styles'
+import { default as MuiIcon } from '@material-ui/core/Icon'
+import { withTheme } from '@material-ui/core/styles'
 
 /**
- * Basic material-ui icon component
+ * Basic @material-ui/core icon component
  */
 const Icon = ({ color, size, style, children, theme, ...otherProps }) => {
   const styles = {
@@ -14,7 +14,7 @@ const Icon = ({ color, size, style, children, theme, ...otherProps }) => {
   }
 
   return (
-    <MuiIcon style={styles}{...otherProps}>
+    <MuiIcon style={styles} {...otherProps}>
       {children}
     </MuiIcon>
   )
@@ -22,7 +22,7 @@ const Icon = ({ color, size, style, children, theme, ...otherProps }) => {
 
 Icon.propTypes = {
   /**
-   * Color of the icon, can be a color defined in material-ui theme or css accepted color
+   * Color of the icon, can be a color defined in @material-ui/core theme or css accepted color
    */
   color: PropTypes.string,
   /**
@@ -38,7 +38,7 @@ Icon.propTypes = {
    */
   children: PropTypes.any,
   /**
-   * Theme supplied from material-ui
+   * Theme supplied from @material-ui/core
    */
   theme: PropTypes.object
 }

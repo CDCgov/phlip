@@ -1,28 +1,58 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { default as MuiButton } from 'material-ui/Button'
-import { withTheme } from 'material-ui/styles'
+import { default as MuiButton } from '@material-ui/core/Button'
+import { withTheme } from '@material-ui/core/styles'
 
 /**
- * Basic button based on material-ui
+ * Basic button based on @material-ui/core
  */
-export const Button = ({ value, color, onClick, raised, theme, listButton, style, ...otherProps }) => {
+export const Button = props => {
+  const { value, color, onClick, raised, theme, textColor, listButton, style, children, ...otherProps } = props
+
+  const buttonColor = color === 'accent' ? 'secondary' : 'default'
+
   const styles = {
     color: (raised || listButton)
-      ? 'white'
+      ? textColor
+        ? textColor
+        : 'white'
       : color || '',
     fontWeight: 400,
     backgroundColor: raised
-      ? ''
+      ? theme.palette[color]
+        ? theme.palette[color].main
+        : color
       : listButton
         ? theme.palette.primary.light
         : '',
     ...style
   }
 
-  return (
-    <MuiButton raised={raised} color={color} onClick={onClick} style={styles} {...otherProps}>{value}</MuiButton>
-  )
+  const variant = raised ? 'raised' : 'text'
+
+  if (value) {
+    return (
+      <MuiButton
+        variant={variant}
+        color={buttonColor}
+        onClick={onClick}
+        style={styles}
+        {...otherProps}>
+        {value}
+      </MuiButton>
+    )
+  } else {
+    return (
+      <MuiButton
+        variant={variant}
+        color={buttonColor}
+        onClick={onClick}
+        style={styles}
+        {...otherProps}>
+        {children}
+      </MuiButton>
+    )
+  }
 }
 
 Button.propTypes = {
@@ -47,7 +77,7 @@ Button.propTypes = {
   raised: PropTypes.bool,
 
   /**
-   * Project theme provided by material-ui
+   * Project theme provided by @material-ui/core
    */
   theme: PropTypes.object,
 

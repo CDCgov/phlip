@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Grid from 'material-ui/Grid'
+import Grid from '@material-ui/core/Grid'
 
 /**
- * CSS Flexbox container wrapper for material-ui's Grid container component, it always has display: true
+ * CSS Flexbox container wrapper for @material-ui/core's Grid container component, it always has display: true
  */
 export const Container = ({ column, flex, spacing, children, style, ...otherProps }) => {
   const styles = {
@@ -28,7 +28,7 @@ Container.propTypes = {
    */
   flex: PropTypes.bool,
   /**
-   * Spacing in padding (from material-ui Grid component)
+   * Spacing in padding (from @material-ui/core Grid component)
    */
   spacing: PropTypes.number,
   /**

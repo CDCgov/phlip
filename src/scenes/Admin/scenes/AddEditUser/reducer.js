@@ -1,4 +1,4 @@
-import * as types from './actionTypes'
+import { types } from './actions'
 
 const INITIAL_STATE = {
   avatar: null,
@@ -66,7 +66,6 @@ const addEditUserReducer = (state = INITIAL_STATE, action) => {
         ...state,
         isDoneSubmitting: true
       }
-
 
     case types.DELETE_USER_IMAGE_SUCCESS:
     case types.ON_CLOSE_ADD_EDIT_USER:

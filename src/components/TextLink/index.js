@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import { withTheme } from 'material-ui/styles'
+import { withTheme } from '@material-ui/core/styles'
 
 /**
  * Wrapper around react-router-dom's Link component, all Link props are passed through.
@@ -20,7 +20,7 @@ export const TextLink = ({ theme, children, ...otherProps }) => {
 
 TextLink.propTypes = {
   /**
-   * Material-UI theme object
+   * @material-ui/core theme object
    */
   theme: PropTypes.object,
   /**

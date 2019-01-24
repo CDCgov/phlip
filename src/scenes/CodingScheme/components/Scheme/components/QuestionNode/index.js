@@ -1,12 +1,11 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styles from './question-node.scss'
 import Icon from 'components/Icon'
 import IconButton from 'components/IconButton'
 import Button from 'components/Button'
-import Card from 'components/Card'
-import { CardContent, CardActions } from 'material-ui/Card'
-import Typography from 'material-ui/Typography'
+import CardContent from '@material-ui/core/CardContent'
+import Typography from '@material-ui/core/Typography'
 import * as questionTypes from 'scenes/CodingScheme/scenes/AddEditQuestion/constants'
 import Tooltip from 'components/Tooltip'
 import Link from 'components/Link'
@@ -22,11 +21,63 @@ const isDescendant = (older, younger) => {
 }
 
 export class QuestionNode extends Component {
+  static propTypes = {
+    buttons: PropTypes.arrayOf(PropTypes.node),
+    canDrag: PropTypes.bool,
+    className: PropTypes.string,
+    icons: PropTypes.arrayOf(PropTypes.node),
+    isSearchFocus: PropTypes.bool,
+    isSearchMatch: PropTypes.bool,
+    listIndex: PropTypes.number.isRequired,
+    lowerSiblingCounts: PropTypes.arrayOf(PropTypes.number).isRequired,
+    node: PropTypes.shape({}).isRequired,
+    path: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])).isRequired,
+    scaffoldBlockPxWidth: PropTypes.number.isRequired,
+    style: PropTypes.shape({}),
+    swapDepth: PropTypes.number,
+    swapFrom: PropTypes.number,
+    swapLength: PropTypes.number,
+    title: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
+    toggleChildrenVisibility: PropTypes.func,
+    treeIndex: PropTypes.number.isRequired,
+    connectDragPreview: PropTypes.func.isRequired,
+    connectDragSource: PropTypes.func.isRequired,
+    didDrop: PropTypes.bool.isRequired,
+    draggedNode: PropTypes.shape({}),
+    isDragging: PropTypes.bool.isRequired,
+    parentNode: PropTypes.shape({}),
+    canDrop: PropTypes.bool,
+    isOver: PropTypes.bool.isRequired,
+    canModify: PropTypes.bool,
+    projectId: PropTypes.string,
+    handleDeleteQuestion: PropTypes.func,
+    rowDirection: PropTypes.any
+  }
+
+  static defaultProps = {
+    buttons: [],
+    canDrag: false,
+    canDrop: false,
+    className: '',
+    draggedNode: null,
+    icons: [],
+    isSearchFocus: false,
+    isSearchMatch: false,
+    parentNode: null,
+    style: {},
+    swapDepth: null,
+    swapFrom: null,
+    swapLength: null,
+    title: null,
+    toggleChildrenVisibility: null
+  }
+
   constructor(props, context) {
     super(props, context)
 
     this.state = {
-      isGrabbed: false
+      isGrabbed: false,
+      hovered: false
     }
   }
 
@@ -35,6 +86,14 @@ export class QuestionNode extends Component {
       e.preventDefault()
       this.setState({
         isGrabbed: true
+      })
+    }
+  }
+
+  setHoveredStatus = hovered => {
+    if (!this.props.isDragging) {
+      this.setState({
+        hovered
       })
     }
   }
@@ -49,27 +108,16 @@ export class QuestionNode extends Component {
       canDrop,
       canDrag,
       canModify,
-      turnOnHover,
-      turnOffHover,
       node,
       draggedNode,
       path,
       treeIndex,
       didDrop,
       lowerSiblingCounts,
-      isSearchMatch,
-      isSearchFocus,
       listIndex,
-      swapFrom,
-      swapLength,
-      swapDepth,
-      isOver,
       parentNode,
-      enableHover,
-      disableHover,
       projectId,
-      handleDeleteQuestion,
-      ...otherProps
+      handleDeleteQuestion
     } = this.props
 
     const questionBody = node.text
@@ -78,14 +126,8 @@ export class QuestionNode extends Component {
     const scaffoldBlockCount = lowerSiblingCounts.length
 
     const handle = connectDragSource(
-      <div
-        className={styles.handle}
-        tabIndex={0}
-        role="button"
-        draggable={canDrag}
-        aria-grabbed={this.state.isGrabbed}
-        onKeyDown={this.handleGrabbed}>
-        <Tooltip text="Drag to reorder" placement="bottom">
+      <div className={styles.handle} tabIndex={0} role="button">
+        <Tooltip text={this.state.hovered ? '' : 'Drag to reorder'} placement="bottom">
           <Icon size="24" color="black">reorder</Icon>
         </Tooltip>
       </div>,
@@ -101,8 +143,8 @@ export class QuestionNode extends Component {
     }
 
     const dragPreview = connectDragPreview(
-      <div tabIndex={-1} onDragStart={disableHover} onDragEnd={enableHover} className={styles.rowWrapper}>
-        <Card
+      <div tabIndex={-1} className={styles.rowWrapper}>
+        <div
           tabIndex={-1}
           className={styles.nodeCard}
           style={{
@@ -112,22 +154,23 @@ export class QuestionNode extends Component {
             padding: '5px 10px',
             width: 830
           }}>
-          <div className={styles.rowContents} tabIndex={0} role="listitem" draggable={canDrag}>
+          <div className={styles.rowContents} tabIndex={0} role="listitem">
             {canDrag && handle}
             <CardContent
               className={styles.rowLabel}
               style={{ padding: 5, display: 'flex', flex: 1, alignItems: 'center' }}
-              onMouseEnter={!isDragging ? turnOnHover : null}
-              onMouseLeave={!isDragging ? turnOffHover : null}>
-              <Typography noWrap type="subheading" component="h4" style={{ flex: 1 }}>
+              onMouseEnter={() => this.setHoveredStatus(true)}
+              onMouseLeave={() => this.setHoveredStatus(false)}>
+              <Typography noWrap component="h4" style={{ flex: 1 }}>
                 {questionBody}
               </Typography>
+              {this.state.hovered && !isDraggedDescendant &&
               <div className={styles.questionButtons}>
                 {canModify && ((parentNode === null || parentNode.questionType !== questionTypes.CATEGORY) &&
                   <Tooltip
+                    //aria-label="Add child question"
                     text="Add child question"
                     id={`add-child-question-${listIndex}`}
-                    aria-label="Add child question"
                     placement="left">
                     <Button
                       aria-label="Add child question"
@@ -138,12 +181,13 @@ export class QuestionNode extends Component {
                       }}
                       color="accent"
                       style={{ ...actionStyles, marginRight: 10 }}
-                      value={<Icon color="white">subdirectory_arrow_right</Icon>} />
+                      value={<Icon color="white">subdirectory_arrow_right</Icon>}
+                    />
                   </Tooltip>)}
                 <Tooltip
                   text="Edit question"
                   id={`edit-question-${listIndex}`}
-                  aria-label="View and edit question"
+                  //aria-label="View and edit question"
                   placement="right">
                   <Button
                     color="accent"
@@ -154,29 +198,29 @@ export class QuestionNode extends Component {
                     }}
                     aria-label="Edit question"
                     style={{ ...actionStyles, marginRight: 10 }}
-                    value={<Icon color="white">mode_edit</Icon>} />
+                    value={<Icon color="white">mode_edit</Icon>}
+                  />
                 </Tooltip>
-                {canModify && <Tooltip
+                {canModify &&
+                <Tooltip
+                  //aria-label="Delete question"
                   text="Delete question"
                   id={`delete-question-${listIndex}`}
-                  aria-label="Delete question"
                   placement="right">
                   <Button
                     color="accent"
                     aria-label="Delete question"
                     style={{ ...actionStyles, marginRight: 10 }}
                     value={<Icon color="white">delete</Icon>}
-                    onClick={() => handleDeleteQuestion(projectId, node.id, path)} />
+                    onClick={() => handleDeleteQuestion(projectId, node.id, path)}
+                  />
                 </Tooltip>}
-              </div>
-              {!node.hovering && node.questionType === questionTypes.CATEGORY &&
+              </div>}
+              {!this.state.hovered && node.questionType === questionTypes.CATEGORY &&
               <Icon aria-label="This question is a category question" color="#757575">filter_none</Icon>}
             </CardContent>
-            <CardActions disableActionSpacing style={{ padding: 0 }}>
-              <div style={{ flex: '1 1 auto' }}></div>
-            </CardActions>
           </div>
-        </Card>
+        </div>
       </div>
     )
 
@@ -186,15 +230,15 @@ export class QuestionNode extends Component {
         className={styles.nodeContent}
         style={{ left: scaffoldBlockCount * scaffoldBlockPxWidth }}>
         {toggleChildrenVisibility && node.children && node.children.length > 0 &&
-        <Fragment>
+        <>
           <IconButton
             type="button"
-            aria-label={node.expanded ? 'Collapse' : 'Expand'}
+            aria-label={this.state.hovered ? '' : node.expanded ? 'Collapse' : 'Expand'}
             className={styles.expandCollapseButton}
             color="#707070"
             style={{ backgroundColor: '#f5f5f5' }}
             iconSize={28}
-            tooltipText={node.expanded ? 'Collapse' : 'Expand'}
+            tooltipText={this.state.hovered ? '' : node.expanded ? 'Collapse' : 'Expand'}
             onClick={() => toggleChildrenVisibility({
               node,
               path,
@@ -204,60 +248,13 @@ export class QuestionNode extends Component {
           </IconButton>
           {node.expanded && !isDragging &&
           <div style={{ width: scaffoldBlockPxWidth }} className={styles.lineChildren} />}
-        </Fragment>}
+        </>}
         <div className={styles.rowWrapper}>
           {dragPreview}
         </div>
       </div>
     )
   }
-}
-
-QuestionNode.defaultProps = {
-  buttons: [],
-  canDrag: false,
-  canDrop: false,
-  className: '',
-  draggedNode: null,
-  icons: [],
-  isSearchFocus: false,
-  isSearchMatch: false,
-  parentNode: null,
-  style: {},
-  swapDepth: null,
-  swapFrom: null,
-  swapLength: null,
-  title: null,
-  toggleChildrenVisibility: null
-}
-
-QuestionNode.propTypes = {
-  buttons: PropTypes.arrayOf(PropTypes.node),
-  canDrag: PropTypes.bool,
-  className: PropTypes.string,
-  icons: PropTypes.arrayOf(PropTypes.node),
-  isSearchFocus: PropTypes.bool,
-  isSearchMatch: PropTypes.bool,
-  listIndex: PropTypes.number.isRequired,
-  lowerSiblingCounts: PropTypes.arrayOf(PropTypes.number).isRequired,
-  node: PropTypes.shape({}).isRequired,
-  path: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])).isRequired,
-  scaffoldBlockPxWidth: PropTypes.number.isRequired,
-  style: PropTypes.shape({}),
-  swapDepth: PropTypes.number,
-  swapFrom: PropTypes.number,
-  swapLength: PropTypes.number,
-  title: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
-  toggleChildrenVisibility: PropTypes.func,
-  treeIndex: PropTypes.number.isRequired,
-  connectDragPreview: PropTypes.func.isRequired,
-  connectDragSource: PropTypes.func.isRequired,
-  didDrop: PropTypes.bool.isRequired,
-  draggedNode: PropTypes.shape({}),
-  isDragging: PropTypes.bool.isRequired,
-  parentNode: PropTypes.shape({}),
-  canDrop: PropTypes.bool,
-  isOver: PropTypes.bool.isRequired
 }
 
 export default QuestionNode
