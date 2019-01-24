@@ -55,7 +55,6 @@ build_dev_azure:
 deploy_dev_azure:
   stage: deploy
   script:
-    - npm install
     - cd ~iiu-deploy/esquire-frontend-deploy
     - npm install --production
     - if pm2 list | grep phlip-fe; then pm2 stop phlip-fe; else echo "no phlip-fe process running"; fi
@@ -95,7 +94,8 @@ deploy_test_azure:
   script:
     - cd ~iiu-deploy/esquire-frontend-deploy
     - npm install --production
-    - pm2 stop phlip-fe; pm2 start scripts/serve.js --name phlip-fe
+    - if pm2 list | grep phlip-fe; then pm2 stop phlip-fe; else echo "no phlip-fe process running"; fi
+    - pm2 start scripts/serve --name phlip-fe
   tags:
     - az-phlip2test-fe
   only:
