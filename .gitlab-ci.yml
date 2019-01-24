@@ -17,7 +17,7 @@ lint:
   tags:
     - phlip2-dev
   only:
-    - development, test
+    - development
   artifacts:
     expire_in: 1 hour
     paths:
@@ -30,7 +30,7 @@ test:
   tags:
     - phlip2-dev
   only:
-    - development, test
+    - development
   dependencies:
     - lint
 
