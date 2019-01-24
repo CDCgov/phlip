@@ -94,6 +94,7 @@ build_test_azure:
   environment:
     name: Azure PHLIP2 Test
     url: https://phlip2test.phiresearchlab.org
+  dependencies: []
 
 deploy_test_azure:
   stage: deploy
@@ -109,6 +110,7 @@ deploy_test_azure:
   environment:
     name: Azure PHLIP2 Test
     url: https://phlip2test.phiresearchlab.org
+  dependencies: []
 
 #build_dev_internal:
 #  stage: build
