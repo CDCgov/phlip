@@ -16,6 +16,8 @@ lint:
     - npm run lint
   tags:
     - phlip2-dev
+  only:
+    - v2, v2-test
   artifacts:
     expire_in: 1 hour
     paths:
@@ -27,6 +29,8 @@ test:
     - npm run test:local
   tags:
     - phlip2-dev
+  only:
+    - v2, v2-test
   dependencies:
     - lint
 
