@@ -58,7 +58,8 @@ deploy_dev_azure:
     - npm install
     - cd ~iiu-deploy/esquire-frontend-deploy
     - npm install --production
-    - pm2 stop phlip-fe; pm2 start scripts/serve.js --name phlip-fe
+    - if pm2 list | grep phlip-fe; then pm2 stop phlip-fe; else echo "no phlip-fe process running"; fi
+    - pm2 start scripts/serve.js --name phlip-fe
   tags:
     - az-phlip2dev-fe
   environment:
