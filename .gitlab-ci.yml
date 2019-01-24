@@ -18,6 +18,7 @@ lint:
     - phlip2-dev
   only:
     - development
+    - test
   artifacts:
     expire_in: 1 hour
     paths:
@@ -31,6 +32,7 @@ test:
     - phlip2-dev
   only:
     - development
+    - test
   dependencies:
     - lint
 
