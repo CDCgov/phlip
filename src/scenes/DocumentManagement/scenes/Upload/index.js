@@ -328,9 +328,16 @@ export class Upload extends Component {
    * @param index
    */
   handleGetSuggestions = (suggestionType, { value: searchString }, index = null) => {
-    suggestionType === 'project'
-      ? this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
-      : this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
+      clearTimeout(this.timeout)
+      this.timeout = setTimeout(() => {
+          if (suggestionType === 'project') {
+            this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
+          }
+          else {
+            this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
+          }
+          console.log('Input Value:',searchString)
+      }, 600)
   };
 
   /**
