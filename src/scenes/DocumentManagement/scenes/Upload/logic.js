@@ -257,7 +257,7 @@ const searchJurisdictionListLogic = createLogic({
  */
 const verifyFileContentLogic = createLogic({
   type: types.VERIFY_VALID_FILE_TYPE_REQUEST,
-  async validate({ getState, action,done }, allow, reject,dispatch,) {
+  async validate({ getState, action},done, allow, reject,dispatch,) {
     //     const state = getState().scenes.docManage.upload
     let promises = []
     let invalidFiles = []
@@ -277,14 +277,20 @@ const verifyFileContentLogic = createLogic({
             error: 'One or more documents do not have a valid file type',
             invalidFiles: invalidFiles
           })
-          //    done()
+          done()
+        } else{
+          allow({
+            type: types.VERIFY_VALID_FILE_TYPE_SUCCESS
+          })
+          done()
         }
       })
     } catch(e) {
       console.log(e)
       dispatch({ type: types.VERIFY_VALID_FILE_TYPE_FAIL})
+
     } finally {
-      // done()
+      done()
     }
 
   }
