@@ -135,7 +135,8 @@ export class QuestionCard extends Component {
   onContinue = () => {
     this.props.onChange(this.state.confirmAnswerChange.id)(
       this.state.confirmAnswerChange.event,
-      this.state.confirmAnswerChange.value)
+      this.state.confirmAnswerChange.value
+    )
     this.setState({
       confirmAlertOpen: false,
       confirmAnswerChange: {},

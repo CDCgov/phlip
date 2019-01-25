@@ -101,8 +101,8 @@ const initial = {
   bulkOperationInProgress: false,
   apiErrorOpen: false,
   apiErrorInfo: {
-      title: '',
-      text: ''
+    title: '',
+    text: ''
   }
 }
 

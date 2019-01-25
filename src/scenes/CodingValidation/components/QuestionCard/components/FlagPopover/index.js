@@ -234,7 +234,7 @@ export class FlagPopover extends Component {
               maxHeight: 500,
               alignItems: 'center',
               flexWrap: 'nowrap',
-              paddingTop: 10,
+              paddingTop: 10
             }}>
             {(this.props.questionFlags.length > 0 && !this.state.inEditMode) &&
             <div style={{ overflow: 'auto', width: '100%' }}>
@@ -255,9 +255,9 @@ export class FlagPopover extends Component {
                       <TableCell
                         padding="checkbox"
                         style={{
-                        maxWidth: 150,
-                        width: 150
-                      }}>{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}
+                          maxWidth: 150,
+                          width: 150
+                        }}>{`${flag.raisedBy.firstName} ${flag.raisedBy.lastName}`}
                       </TableCell>
                       <TableCell
                         padding="checkbox"

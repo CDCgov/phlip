@@ -11,7 +11,7 @@ import Button from '@material-ui/core/Button'
 
 const styles = theme => ({
   paper: {
-    padding: theme.spacing.unit,
+    padding: theme.spacing.unit
     /*'&:after': {
       content: '""',
       height: 0,

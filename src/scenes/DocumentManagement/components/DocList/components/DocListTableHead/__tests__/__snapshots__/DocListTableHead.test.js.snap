@@ -11,6 +11,7 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
     }
   >
     <TableCell
+      colSpan={2}
       id="action"
       key="action"
       padding="default"
@@ -113,7 +114,7 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
         }
       }
     >
-      File Name
+      Document Name
     </TableCell>
     <TableCell
       id="uploaded-by"

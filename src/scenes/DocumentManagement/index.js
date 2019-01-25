@@ -68,22 +68,22 @@ export class DocumentManagement extends Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-        showAddJurisdiction: false,
-        showAddProject: false,
-        showModal: false,
-        selectedJurisdiction: null,
-        selectedProject: null,
-        projectSuggestions: [],
-        jurisdictionSuggestions: [],
-        hoveringOn: '',
-        hoverIndex: null,
-        alertOpen: false,
-        alertInfo: {
-            title: '',
-            text: ''
-        },
-        modalTitle: '',
-        bulkActionType: '',
+      showAddJurisdiction: false,
+      showAddProject: false,
+      showModal: false,
+      selectedJurisdiction: null,
+      selectedProject: null,
+      projectSuggestions: [],
+      jurisdictionSuggestions: [],
+      hoveringOn: '',
+      hoverIndex: null,
+      alertOpen: false,
+      alertInfo: {
+        title: '',
+        text: ''
+      },
+      modalTitle: '',
+      bulkActionType: ''
     }
   }
 
@@ -92,74 +92,73 @@ export class DocumentManagement extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-        if (prevProps.bulkOperationInProgress === true && this.props.bulkOperationInProgress === false) {
-            if (this.props.apiErrorOpen){
-                console.log('error detected')
-            }
-            else {
-                console.log('no error')
-                this.setState({
-                    showModal: false, selectedJurisdiction: null, selectedProject: null, bulkActionType: ''
-                })
-            }
-        }
+    if (prevProps.bulkOperationInProgress === true && this.props.bulkOperationInProgress === false) {
+      if (this.props.apiErrorOpen){
+        console.log('error detected')
+      } else {
+        console.log('no error')
+        this.setState({
+          showModal: false, selectedJurisdiction: null, selectedProject: null, bulkActionType: ''
+        })
+      }
     }
+  }
 
   getButtonText = text => {
-      return this.props.documentUpdateInProgress
-        ? (<>
-          <span style={{ marginRight: 5 }}>{text}</span>
-          <CircularLoader thickness={5} style={{ height: 15, width: 15 }} />
+    return this.props.documentUpdateInProgress
+      ? (<>
+        <span style={{ marginRight: 5 }}>{text}</span>
+        <CircularLoader thickness={5} style={{ height: 15, width: 15 }} />
       </>)
-        : text
-    }
+      : text
+  }
 
   handleBulkAction = (actionType) => {
     this.props.actions.jurisdictionAutocomplete.clearAll()
     this.props.actions.projectAutocomplete.clearAll()
     if (actionType !== 'bulk') {
-        this.setState({showModal: true, bulkActionType: actionType})
-        switch (actionType) {
-            case 'deleteDoc' :
-                this.setState({
-                    modalTitle: 'Bulk Delete'
-                })
-                break
-            case 'assignProject':
-                this.setState({modalTitle: 'Bulk Assign Project', showAddJurisdiction: false})
-                break
-            case 'assignJurisdiction':
-                this.setState({modalTitle: 'Bulk Assign Jurisdiction', showAddJurisdiction: true})
-                break
-        }
+      this.setState({showModal: true, bulkActionType: actionType})
+      switch (actionType) {
+        case 'deleteDoc' :
+          this.setState({
+            modalTitle: 'Bulk Delete'
+          })
+          break
+        case 'assignProject':
+          this.setState({modalTitle: 'Bulk Assign Project', showAddJurisdiction: false})
+          break
+        case 'assignJurisdiction':
+          this.setState({modalTitle: 'Bulk Assign Jurisdiction', showAddJurisdiction: true})
+          break
+      }
     }
   };
 
   confirmValidation = (bulkActionType) => {
-      switch(bulkActionType) {
-          case 'deleteDoc':
-              return this.props.checkedCount > 0
-          case 'assignProject':
-              return (this.state.selectedProject !==null) && this.props.checkedCount > 0
-          case 'assignJurisdiction':
-              return (this.state.selectedJurisdiction !==null) && this.props.checkedCount > 0
-          default:
-              return false
-      }
+    switch(bulkActionType) {
+      case 'deleteDoc':
+        return this.props.checkedCount > 0
+      case 'assignProject':
+        return (this.state.selectedProject !==null) && this.props.checkedCount > 0
+      case 'assignJurisdiction':
+        return (this.state.selectedJurisdiction !==null) && this.props.checkedCount > 0
+      default:
+        return false
+    }
   }
 
   handleSuggestionSelected = (suggestionType) => (event, { suggestionValue }) => {
-      if (suggestionType === 'project') {
-          this.setState({
-              selectedProject: suggestionValue
-          })
-      } else {
-          this.setState({
-              selectedJurisdiction: suggestionValue
-          })
-      }
+    if (suggestionType === 'project') {
+      this.setState({
+        selectedProject: suggestionValue
+      })
+    } else {
+      this.setState({
+        selectedJurisdiction: suggestionValue
+      })
+    }
 
-      this.handleClearSuggestions(suggestionType)
+    this.handleClearSuggestions(suggestionType)
   }
     /**
      * Get suggestions for some type of autocomplete search
@@ -168,92 +167,91 @@ export class DocumentManagement extends Component {
      * @param index
      */
     handleGetSuggestions = (suggestionType, { value: searchString }, index = null) => {
-        suggestionType === 'project'
-            ? this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
-            : this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
+      suggestionType === 'project'
+        ? this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
+        : this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
     }
 
     /**
      * When a user has chosen a suggestion from the autocomplete project or jurisdiction list
      */
     handleSuggestionSelected = (suggestionType) => (event, { suggestionValue }) => {
-        if (suggestionType === 'project') {
-            this.setState({
-                selectedProject: suggestionValue
-            })
-        } else {
-            this.setState({
-                selectedJurisdiction: suggestionValue
-            })
-        }
+      if (suggestionType === 'project') {
+        this.setState({
+          selectedProject: suggestionValue
+        })
+      } else {
+        this.setState({
+          selectedJurisdiction: suggestionValue
+        })
+      }
 
-        this.handleClearSuggestions(suggestionType)
+      this.handleClearSuggestions(suggestionType)
     }
 
     handleSearchValueChange = (suggestionType, value) => {
-        suggestionType === 'jurisdiction'
-            ? this.props.actions.jurisdictionAutocomplete.updateSearchValue(value)
-            : this.props.actions.projectAutocomplete.updateSearchValue(value)
+      suggestionType === 'jurisdiction'
+        ? this.props.actions.jurisdictionAutocomplete.updateSearchValue(value)
+        : this.props.actions.projectAutocomplete.updateSearchValue(value)
     }
 
     handleClearSuggestions = suggestionType => {
-        suggestionType === 'jurisdiction'
-            ? this.props.actions.jurisdictionAutocomplete.clearSuggestions()
-            : this.props.actions.projectAutocomplete.clearSuggestions()
+      suggestionType === 'jurisdiction'
+        ? this.props.actions.jurisdictionAutocomplete.clearSuggestions()
+        : this.props.actions.projectAutocomplete.clearSuggestions()
     }
 
     handleBulkConfirm = () => {
-        if (this.state.bulkActionType ==='deleteDoc'){
-            this.props.actions.handleBulkDelete(this.props.checkedDocs)
+      if (this.state.bulkActionType ==='deleteDoc'){
+        this.props.actions.handleBulkDelete(this.props.checkedDocs)
+      } else {
+        let updateData = {
+          updateType : this.state.showAddJurisdiction?'jurisdictions':'projects',
+          updateProJur : this.state.showAddJurisdiction?this.state.selectedJurisdiction:this.state.selectedProject
         }
-        else {
-            let updateData = {
-                updateType : this.state.showAddJurisdiction?'jurisdictions':'projects',
-                updateProJur : this.state.showAddJurisdiction?this.state.selectedJurisdiction:this.state.selectedProject
-            }
-            this.props.actions.handleBulkUpdate(updateData,this.props.checkedDocs)
-        }
+        this.props.actions.handleBulkUpdate(updateData,this.props.checkedDocs)
+      }
     }
 
     closeAlert = () => {
-        this.props.actions.closeAlert()
+      this.props.actions.closeAlert()
     }
 
     onCloseModal = () => {
-        this.handleCloseProJurModal()
+      this.handleCloseProJurModal()
     }
 
     handleCloseProJurModal = () => {
-        if (this.state.selectedJurisdiction !== null) {
-            this.handleClearSuggestions('jurisdiction')
-            this.props.actions.jurisdictionAutocomplete.clearAll()
-        }
+      if (this.state.selectedJurisdiction !== null) {
+        this.handleClearSuggestions('jurisdiction')
+        this.props.actions.jurisdictionAutocomplete.clearAll()
+      }
 
-        if (this.state.selectedProject !== null) {
-            this.handleClearSuggestions('project')
-            this.props.actions.projectAutocomplete.clearAll()
-        }
+      if (this.state.selectedProject !== null) {
+        this.handleClearSuggestions('project')
+        this.props.actions.projectAutocomplete.clearAll()
+      }
 
-        this.setState({
-            showModal: false, selectedJurisdiction: null, selectedProject: null, bulkActionType: ''
-        })
+      this.setState({
+        showModal: false, selectedJurisdiction: null, selectedProject: null, bulkActionType: ''
+      })
     }
 
     render() {
-    const cancelButton = {
+      const cancelButton = {
         value: 'Cancel', type: 'button', otherProps: { 'aria-label': 'Close modal' }, onClick: this.onCloseModal
-    }
-    const modalAction = [
-            cancelButton, {
-                value: this.getButtonText('Confirm'),
-                type: 'button',
-                otherProps: { 'aria-label': 'Confirm' },
-                onClick: this.handleBulkConfirm,
-                disabled: this.props.bulkOperationInProgress || !this.confirmValidation(this.state.bulkActionType)
-            }
-        ]
+      }
+      const modalAction = [
+        cancelButton, {
+          value: this.getButtonText('Confirm'),
+          type: 'button',
+          otherProps: { 'aria-label': 'Confirm' },
+          onClick: this.handleBulkConfirm,
+          disabled: this.props.bulkOperationInProgress || !this.confirmValidation(this.state.bulkActionType)
+        }
+      ]
 
-        return (
+      return (
             <>
               <ApiErrorAlert
                 open={this.props.apiErrorOpen}
@@ -269,13 +267,13 @@ export class DocumentManagement extends Component {
                   entryScene={true}
                   icon="description"
                   otherButton={{
-            isLink: true,
-            text: '+ Upload New',
-            path: '/docs/upload',
-            state: { modal: true },
-            props: { 'aria-label': 'Upload New Documents' },
-            show: true
-          }}>
+                    isLink: true,
+                    text: '+ Upload New',
+                    path: '/docs/upload',
+                    state: { modal: true },
+                    props: { 'aria-label': 'Upload New Documents' },
+                    show: true
+                  }}>
                   <SearchBox />
                 </PageHeader>
                 <FlexGrid container flex raised>
@@ -294,7 +292,7 @@ export class DocumentManagement extends Component {
                   />
                 </FlexGrid>
                 <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="md" hideOverflow={false}>
-                  <ModalTitle title={this.state.modalTitle}  />
+                  <ModalTitle title={this.state.modalTitle} />
                   <Divider />
                   <ModalContent style={{ display: 'flex', flexDirection: 'column', paddingTop: 24, width: 500, height: 100 }}>
                     {this.state.modalTitle !=='Bulk Delete'?(
@@ -312,13 +310,13 @@ export class DocumentManagement extends Component {
                         />
                         <br />
                         <ConfirmDocList
-                            // documents={this.props.checkedDocs}
+                          // documents={this.props.checkedDocs}
                           docCount={this.props.checkedCount}
                         />
                       </React.Fragment>)
-                :(
-                  <ConfirmDocList documents={this.props.checkedDocs} docCount={this.props.checkedCount} />
-                )}
+                      :(
+                        <ConfirmDocList documents={this.props.checkedDocs} docCount={this.props.checkedCount} />
+                      )}
                   </ModalContent>
                   <Divider />
                   <ModalActions actions={modalAction} />
@@ -326,8 +324,8 @@ export class DocumentManagement extends Component {
                 <Route path="/docs/upload" component={Upload} />
               </FlexGrid>
                 </>
-    )
-  }
+      )
+    }
 }
 
 /* istanbul ignore next */

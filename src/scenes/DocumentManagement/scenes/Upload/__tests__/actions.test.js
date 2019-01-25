@@ -14,9 +14,7 @@ describe('Document management - Upload action creators', () => {
       selectedDocs: [{ name: 'blah' }]
     }
 
-    expect(
-      actions.uploadDocumentsRequest(formData, [{ name: 'blah' }])
-    ).toEqual(expectedAction)
+    expect(actions.uploadDocumentsRequest(formData, [{ name: 'blah' }])).toEqual(expectedAction)
   })
 
   test('should create an action to update a document property', () => {
@@ -27,9 +25,7 @@ describe('Document management - Upload action creators', () => {
       value: 'newName'
     }
 
-    expect(actions.updateDocumentProperty(1, 'name', 'newName')).toEqual(
-      expectedAction
-    )
+    expect(actions.updateDocumentProperty(1, 'name', 'newName')).toEqual(expectedAction)
   })
 
   test('should create an action to add documents to the selected list', () => {
@@ -38,9 +34,7 @@ describe('Document management - Upload action creators', () => {
       selectedDocs: [{ name: 'doc1' }, { name: 'doc2' }]
     }
 
-    expect(
-      actions.addSelectedDocs([{ name: 'doc1' }, { name: 'doc2' }])
-    ).toEqual(expectedAction)
+    expect(actions.addSelectedDocs([{ name: 'doc1' }, { name: 'doc2' }])).toEqual(expectedAction)
   })
 
   test('should create an action to clear selected files list', () => {
@@ -75,9 +69,7 @@ describe('Document management - Upload action creators', () => {
       title: 'alert title'
     }
 
-    expect(actions.openAlert('alert text', 'alert title')).toEqual(
-      expectedAction
-    )
+    expect(actions.openAlert('alert text', 'alert title')).toEqual(expectedAction)
   })
 
   test('should create an action to remove a duplicate file', () => {
@@ -87,9 +79,7 @@ describe('Document management - Upload action creators', () => {
       fileName: 'duplicate file name'
     }
 
-    expect(actions.removeDuplicate(1, 'duplicate file name')).toEqual(
-      expectedAction
-    )
+    expect(actions.removeDuplicate(1, 'duplicate file name')).toEqual(expectedAction)
   })
 
   test('should create an action to extract info', () => {
@@ -102,9 +92,7 @@ describe('Document management - Upload action creators', () => {
       infoSheet: { name: 'infofile' }
     }
 
-    expect(actions.extractInfoRequest(fd, { name: 'infofile' })).toEqual(
-      expectedAction
-    )
+    expect(actions.extractInfoRequest(fd, { name: 'infofile' })).toEqual(expectedAction)
   })
 
   test('should create an action to reset no project error', () => {
@@ -140,8 +128,6 @@ describe('Document management - Upload action creators', () => {
       docs: [{ name: 'doc 1' }]
     }
 
-    expect(actions.mergeInfoWithDocs([{ name: 'doc 1' }])).toEqual(
-      expectedAction
-    )
+    expect(actions.mergeInfoWithDocs([{ name: 'doc 1' }])).toEqual(expectedAction)
   })
 })

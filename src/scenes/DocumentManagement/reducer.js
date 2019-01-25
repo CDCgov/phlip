@@ -19,8 +19,8 @@ const INITIAL_STATE = {
   bulkOperationInProgress:false,
   apiErrorOpen: false,
   apiErrorInfo: {
-      title: '',
-      text: ''
+    title: '',
+    text: ''
   }
 }
 
@@ -214,79 +214,79 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
     case types.BULK_DELETE_REQUEST:
     //  console.log('bulk delete request activated')
-        return {
-            ...state,
-            bulkOperationInProgress: true
-        }
+      return {
+        ...state,
+        bulkOperationInProgress: true
+      }
     case types.BULK_DELETE_SUCCESS:
-        state.documents.checked.forEach(docId => {
-          delete state.documents.byId[docId]
-        })
-        obj = state.documents.byId
-        return {
-            ...state,
-            documents: {
-                ...state.documents,
-                byId: obj,
-                allIds: Object.keys(obj),
-                visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage),
-                checked: []
-            },
-            bulkOperationInProgress: false
-         }
+      state.documents.checked.forEach(docId => {
+        delete state.documents.byId[docId]
+      })
+      obj = state.documents.byId
+      return {
+        ...state,
+        documents: {
+          ...state.documents,
+          byId: obj,
+          allIds: Object.keys(obj),
+          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage),
+          checked: []
+        },
+        bulkOperationInProgress: false
+      }
 
     case types.BULK_DELETE_FAIL:
-        return {
-          ...state,
-            bulkOperationInProgress: false,
-            apiErrorInfo: {
-                title: 'Bulk delete error',
-                text: 'Failed to delete documents.'
-            },
-            apiErrorOpen: true
-    }
-      case types.BULK_UPDATE_REQUEST:
-          return {
-              ...state,
-              bulkOperationInProgress: true
-          }
+      return {
+        ...state,
+        bulkOperationInProgress: false,
+        apiErrorInfo: {
+          title: 'Bulk delete error',
+          text: 'Failed to delete documents.'
+        },
+        apiErrorOpen: true
+      }
+    case types.BULK_UPDATE_REQUEST:
+      return {
+        ...state,
+        bulkOperationInProgress: true
+      }
 
-      case types.BULK_UPDATE_SUCCESS:
-          obj = action.payload
-          return {
-              ...state,
-              documents: {
-                  ...state.documents,
-                  byId: obj,
-                  allIds: Object.keys(obj),
-                  visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage),
-                  checked: []
-              },
-              bulkOperationInProgress: false,
-              apiErrorOpen: false,
-              allSelected : false
-          }
+    case types.BULK_UPDATE_SUCCESS:
+      obj = action.payload
+      return {
+        ...state,
+        documents: {
+          ...state.documents,
+          byId: obj,
+          allIds: Object.keys(obj),
+          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage),
+          checked: []
+        },
+        bulkOperationInProgress: false,
+        apiErrorOpen: false,
+        allSelected : false
+      }
 
-      case types.BULK_UPDATE_FAIL:
-          return {
-              ...state,
-              bulkOperationInProgress: false,
-              apiErrorInfo: {
-                  title: 'Bulk update error',
-                  text: 'Failed to update documents.'
-              },
-              apiErrorOpen: true
-          }
+    case types.BULK_UPDATE_FAIL:
+      return {
+        ...state,
+        bulkOperationInProgress: false,
+        apiErrorInfo: {
+          title: 'Bulk update error',
+          text: 'Failed to update documents.'
+        },
+        apiErrorOpen: true
+      }
 
-      case types.CLOSE_ALERT:
-          return {
-              ...state,
-              apiErrorInfo: {
-                  title: '',
-                  text: ''
-              },
-              apiErrorOpen: false
-          }
+    case types.CLOSE_ALERT:
+      return {
+        ...state,
+        apiErrorInfo: {
+          title: '',
+          text: ''
+        },
+        apiErrorOpen: false
+      }
     case types.FLUSH_STATE:
       return INITIAL_STATE
 

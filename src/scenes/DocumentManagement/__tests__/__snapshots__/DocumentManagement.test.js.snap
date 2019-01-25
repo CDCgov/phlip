@@ -70,7 +70,7 @@ exports[`Document Management scene should render correctly 1`] = `
     </FlexGrid>
     <WithStyles(Modal)
       hideOverflow={false}
-      maxWidth="lg"
+      maxWidth="md"
       onClose={[Function]}
       open={false}
     >
@@ -83,9 +83,9 @@ exports[`Document Management scene should render correctly 1`] = `
           Object {
             "display": "flex",
             "flexDirection": "column",
-            "height": 275,
+            "height": 100,
             "paddingTop": 24,
-            "width": 600,
+            "width": 500,
           }
         }
       >

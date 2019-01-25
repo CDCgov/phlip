@@ -246,27 +246,26 @@ export class PDFViewer extends Component {
       <div id="viewContainer" className="pdfViewer" ref={this.viewerRef}>
         {this.state.pages.length > 0
         && this.state.pages.map((page, i) => {
-            return (
-              <Page
-                id={i}
-                page={page.page}
-                textContent={page.textContent}
-                viewerDimensions={{
-                  width: this.viewerRef.current.clientWidth,
-                  height: this.viewerRef.current.clientHeight
-                }}
-                key={`page-${i}`}
-                allowSelection={this.props.allowSelection}
-                ref={this[`page${i}ref`]}
-                annotations={this.props.annotations.map(anno => this.filterByPage(anno, i))}
-                pendingAnnotations={this.state.pendingAnnotations.map(anno => this.filterByPage(anno, i))}
-                saveAnnotation={this.saveAnnotation}
-                cancelAnnotation={this.cancelAnnotation}
-                getSelection={this.getSelection}
-              />
-            )
-          }
-        )}
+          return (
+            <Page
+              id={i}
+              page={page.page}
+              textContent={page.textContent}
+              viewerDimensions={{
+                width: this.viewerRef.current.clientWidth,
+                height: this.viewerRef.current.clientHeight
+              }}
+              key={`page-${i}`}
+              allowSelection={this.props.allowSelection}
+              ref={this[`page${i}ref`]}
+              annotations={this.props.annotations.map(anno => this.filterByPage(anno, i))}
+              pendingAnnotations={this.state.pendingAnnotations.map(anno => this.filterByPage(anno, i))}
+              saveAnnotation={this.saveAnnotation}
+              cancelAnnotation={this.cancelAnnotation}
+              getSelection={this.getSelection}
+            />
+          )
+        })}
         {this.state.pages.length === 0 &&
         <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
           <CircularLoader />

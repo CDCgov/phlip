@@ -10,7 +10,7 @@ import Icon from 'components/Icon'
 
 export const ExportDialog = ({ onClose, onChooseExport, open }) => {
   const actions = [
-    { value: 'Cancel', onClick: onClose, type: 'button', otherProps: { 'aria-label': 'Close modal' } },
+    { value: 'Cancel', onClick: onClose, type: 'button', otherProps: { 'aria-label': 'Close modal' } }
   ]
 
   return (

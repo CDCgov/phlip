@@ -155,7 +155,7 @@ export class FileList extends Component {
         <Grid columnSizing="1fr" autoRowSizing="60px" style={{ flex: 1 }}>
           {selectedDocs.map((doc, i) => {
             const isDuplicate = duplicateFiles.find(file => file.name === doc.name.value) !== undefined
-            const isInvalid   = invalidFiles.find(invalidDoc => invalidDoc.doc.name === doc.name.value) !== undefined
+            const isInvalid = invalidFiles.find(invalidDoc => invalidDoc.doc.name === doc.name.value) !== undefined
             const pieces = doc.name.value.split('.')
             const extension = pieces[pieces.length - 1]
             const iconName = getIconType(extension)

@@ -254,9 +254,7 @@ describe('Document Management - Upload reducer tests', () => {
     const updatedState = reducer(currentState, action)
 
     test('should set property for correct document at action.index', () => {
-      expect(updatedState.selectedDocs[1].citation.value).toEqual(
-        'New Citation'
-      )
+      expect(updatedState.selectedDocs[1].citation.value).toEqual('New Citation')
     })
 
     test('should reset any error for that action.property', () => {
@@ -496,9 +494,7 @@ describe('Document Management - Upload reducer tests', () => {
         ]
       })
       const updatedState = reducer(currentState, action)
-      expect(
-        updatedState.selectedDocs[0].jurisdictions.value.suggestions
-      ).toEqual([])
+      expect(updatedState.selectedDocs[0].jurisdictions.value.suggestions).toEqual([])
     })
   })
 
@@ -559,20 +555,14 @@ describe('Document Management - Upload reducer tests', () => {
     const updatedState = reducer(currentState, action)
 
     test('should turn on edit mode and set an error for all docs in state.selectedDocs without a jurisdiction', () => {
-      expect(updatedState.selectedDocs[1].jurisdictions.inEditMode).toEqual(
-        true
-      )
+      expect(updatedState.selectedDocs[1].jurisdictions.inEditMode).toEqual(true)
       expect(updatedState.selectedDocs[1].jurisdictions.error).toEqual(true)
-      expect(updatedState.selectedDocs[2].jurisdictions.inEditMode).toEqual(
-        true
-      )
+      expect(updatedState.selectedDocs[2].jurisdictions.inEditMode).toEqual(true)
       expect(updatedState.selectedDocs[2].jurisdictions.error).toEqual(true)
     })
 
     test('should not change edit mode or error for docs with a jurisdiction', () => {
-      expect(updatedState.selectedDocs[0].jurisdictions.inEditMode).toEqual(
-        false
-      )
+      expect(updatedState.selectedDocs[0].jurisdictions.inEditMode).toEqual(false)
       expect(updatedState.selectedDocs[0].jurisdictions.error).toEqual(false)
     })
 

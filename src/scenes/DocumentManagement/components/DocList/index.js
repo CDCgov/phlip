@@ -105,10 +105,10 @@ DocList.propTypes = {
    * Handles when the user requests to change pages in table
    */
   onBulkAction: PropTypes.func,
-    /**
+  /**
      * flag to enabled dropdown when user selected at least on document
      */
-    allowDropdown : PropTypes.bool
+  allowDropdown : PropTypes.bool
 
 }
 

@@ -19,7 +19,7 @@ export const DocListTableRow = props => {
     maxWidth: 250,
     padding: 18
   }
- // const iconColor = '#949494'
+  // const iconColor = '#949494'
   return (
     <TableRow>
       <TableCell padding="checkbox">

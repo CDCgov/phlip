@@ -4,7 +4,7 @@ import {
   getTreeFromFlatData,
   walk,
   map,
-  addNodeUnderParent,
+  addNodeUnderParent
 } from 'react-sortable-tree'
 import { commonHelpers } from 'utils'
 
@@ -157,11 +157,9 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
       sortPossibleAnswers(action.payload.scheme.schemeQuestions)
       return {
         ...state,
-        questions: sortQuestions(
-          getTreeFromFlatData({
-            flatData: getQuestionsFromOutline(action.payload.scheme.outline, action.payload.scheme.schemeQuestions)
-          })
-        ),
+        questions: sortQuestions(getTreeFromFlatData({
+          flatData: getQuestionsFromOutline(action.payload.scheme.outline, action.payload.scheme.schemeQuestions)
+        })),
         flatQuestions: action.payload.scheme.schemeQuestions,
         outline: action.payload.scheme.outline,
         empty: action.payload.scheme.schemeQuestions <= 0,

@@ -23,7 +23,7 @@ export const DocListTableRow = props => {
     maxWidth: 250,
     padding: 18
   }
- // const iconColor = '#949494'
+  // const iconColor = '#949494'
   return (
     <TableRow>
       <TableCell style={{ paddingLeft: 24, paddingRight: 0, width: '1%' }}>
@@ -35,7 +35,7 @@ export const DocListTableRow = props => {
           {doc.name}
         </TextLink>
       </TableCell>
-      <TableCell padding="checkbox" style={listStyle && {width:90}}  >
+      <TableCell padding="checkbox" style={listStyle && {width:90}} >
         {doc.uploadedBy.firstName} {doc.uploadedBy.lastName}
       </TableCell>
       <TableCell padding="checkbox" style={listStyle && {width:50}}>

@@ -176,11 +176,13 @@ export class CodingValidation extends Component {
     if (this.props.unsavedChanges === true) {
       this.onShowStillSavingAlert(index, this.props.actions.getNextQuestion)
     } else {
-      this.props.actions.getNextQuestion(this.props.questionOrder[index],
+      this.props.actions.getNextQuestion(
+        this.props.questionOrder[index],
         index,
         this.props.projectId,
         this.props.jurisdiction.id,
-        this.props.page)
+        this.props.page
+      )
       this.onShowQuestionLoader()
     }
   }
@@ -193,11 +195,13 @@ export class CodingValidation extends Component {
     if (this.props.unsavedChanges === true) {
       this.onShowStillSavingAlert(index, this.props.actions.getPrevQuestion)
     } else {
-      this.props.actions.getPrevQuestion(this.props.questionOrder[index],
+      this.props.actions.getPrevQuestion(
+        this.props.questionOrder[index],
         index,
         this.props.projectId,
         this.props.jurisdiction.id,
-        this.props.page)
+        this.props.page
+      )
       this.onShowQuestionLoader()
     }
   }
@@ -210,10 +214,12 @@ export class CodingValidation extends Component {
     if (this.props.unsavedChanges === true) {
       this.onShowStillSavingAlert(item, this.props.actions.onQuestionSelectedInNav)
     } else {
-      this.props.actions.onQuestionSelectedInNav(item,
+      this.props.actions.onQuestionSelectedInNav(
+        item,
         this.props.projectId,
         this.props.jurisdiction.id,
-        this.props.page)
+        this.props.page
+      )
       this.onShowQuestionLoader()
     }
   }
@@ -235,9 +241,7 @@ export class CodingValidation extends Component {
    * @returns {Function}
    */
   onAnswer = id => (event, value) => {
-    this.props.actions.updateUserAnswer(
-      this.props.projectId, this.props.jurisdiction.id, this.props.question.id, id, value
-    )
+    this.props.actions.updateUserAnswer(this.props.projectId, this.props.jurisdiction.id, this.props.question.id, id, value)
 
     this.onChangeTouchedStatus()
     this.onSaveCodedQuestion()
@@ -248,11 +252,13 @@ export class CodingValidation extends Component {
    * @public
    */
   onSaveCodedQuestion = () => {
-    this.props.actions.saveUserAnswerRequest(this.props.projectId,
+    this.props.actions.saveUserAnswerRequest(
+      this.props.projectId,
       this.props.jurisdiction.id,
       this.props.question.id,
       this.props.selectedCategoryId,
-      this.props.page)
+      this.props.page
+    )
   }
 
   /**
@@ -264,21 +270,15 @@ export class CodingValidation extends Component {
   onChangeTextAnswer = (id, field) => event => {
     switch (field) {
       case 'textAnswer':
-        this.props.actions.updateUserAnswer(
-          this.props.projectId, this.props.jurisdiction.id, this.props.question.id, id, event.target.value
-        )
+        this.props.actions.updateUserAnswer(this.props.projectId, this.props.jurisdiction.id, this.props.question.id, id, event.target.value)
         break
 
       case 'comment':
-        this.props.actions.onChangeComment(
-          this.props.projectId, this.props.jurisdiction.id, this.props.question.id, event.target.value
-        )
+        this.props.actions.onChangeComment(this.props.projectId, this.props.jurisdiction.id, this.props.question.id, event.target.value)
         break
 
       case 'pincite':
-        this.props.actions.onChangePincite(
-          this.props.projectId, this.props.jurisdiction.id, this.props.question.id, id, event.target.value
-        )
+        this.props.actions.onChangePincite(this.props.projectId, this.props.jurisdiction.id, this.props.question.id, id, event.target.value)
     }
     this.onChangeTouchedStatus()
     this.onSaveCodedQuestion()
@@ -344,10 +344,12 @@ export class CodingValidation extends Component {
   onContinueStillSavingAlert = () => {
     // question changing
     if (this.state.changeMethod.type === 0) {
-      this.state.changeMethod.method(...this.state.changeProps,
+      this.state.changeMethod.method(
+        ...this.state.changeProps,
         this.props.projectId,
         this.props.jurisdiction.id,
-        this.props.page)
+        this.props.page
+      )
       this.onShowQuestionLoader()
       // jurisdiction changing
     } else if (this.state.changeMethod.type === 1) {
@@ -407,10 +409,12 @@ export class CodingValidation extends Component {
   onApplyToAll = () => {
     this.onCloseApplyAllAlert()
     this.onChangeTouchedStatus()
-    this.props.actions.applyAnswerToAll(this.props.projectId,
+    this.props.actions.applyAnswerToAll(
+      this.props.projectId,
       this.props.jurisdiction.id,
       this.props.question.id,
-      this.props.page)
+      this.props.page
+    )
   }
 
   /**

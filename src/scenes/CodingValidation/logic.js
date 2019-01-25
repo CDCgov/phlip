@@ -64,12 +64,11 @@ const mergeInUserCodedQuestions = (codedQuestions, codeQuestionsPerUser, coder) 
         ? {
           ...allCodedQuestions[question.schemeQuestionId],
           [question.categoryId]: {
-            ...addCoderToAnswers(
-              doesExist
-                ? checkIfExists(question, allCodedQuestions[question.schemeQuestionId], 'categoryId')
+            ...addCoderToAnswers(doesExist
+              ? checkIfExists(question, allCodedQuestions[question.schemeQuestionId], 'categoryId')
                 ? allCodedQuestions[question.schemeQuestionId][question.categoryId]
                 : baseQuestion
-                : baseQuestion, question, coder)
+              : baseQuestion, question, coder)
           }
         }
         : {
@@ -169,14 +168,10 @@ export const getOutlineLogic = createLogic({
       if (action.payload.areJurisdictionsEmpty || isSchemeEmpty) {
         payload = { ...payload, isSchemeEmpty }
       } else {
-        const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(
-          action.projectId, action.jurisdictionId, userId, api.getUserCodedQuestions
-        )
+        const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(action.projectId, action.jurisdictionId, userId, api.getUserCodedQuestions)
 
         // Initialize the user answers object
-        const userAnswers = initializeUserAnswers(
-          [initializeNextQuestion(firstQuestion), ...codedValQuestions], questionsById, userId
-        )
+        const userAnswers = initializeUserAnswers([initializeNextQuestion(firstQuestion), ...codedValQuestions], questionsById, userId)
 
         payload = {
           ...payload,
@@ -224,14 +219,10 @@ export const getValidationOutlineLogic = createLogic({
       if (action.payload.areJurisdictionsEmpty || isSchemeEmpty) {
         payload = { ...payload, isSchemeEmpty }
       } else {
-        const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(
-          action.projectId, action.jurisdictionId, userId, api.getValidatedQuestions
-        )
+        const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(action.projectId, action.jurisdictionId, userId, api.getValidatedQuestions)
 
         // Initialize the user answers object
-        const userAnswers = initializeUserAnswers(
-          [initializeNextQuestion(firstQuestion), ...codedValQuestions], questionsById, userId
-        )
+        const userAnswers = initializeUserAnswers([initializeNextQuestion(firstQuestion), ...codedValQuestions], questionsById, userId)
 
         // Get all the coded questions for this question
         const coderInfo = await getCoderInformation({
@@ -575,16 +566,12 @@ export const getUserCodedQuestionsLogic = createLogic({
     const question = action.question, otherUpdates = action.otherUpdates
     let errors = {}, payload = {}
 
-    const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(
-      action.projectId, action.jurisdictionId, userId, api.getUserCodedQuestions
-    )
+    const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(action.projectId, action.jurisdictionId, userId, api.getUserCodedQuestions)
 
     const { updatedScheme, schemeErrors, updatedSchemeQuestion } = await getSchemeQuestionAndUpdate(action.projectId, state, question, api)
 
     // Update the user answers object
-    const userAnswers = initializeUserAnswers(
-      [initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions], updatedScheme.byId, userId
-    )
+    const userAnswers = initializeUserAnswers([initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions], updatedScheme.byId, userId)
 
     payload = {
       question: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion },
@@ -739,9 +726,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
     let errors = {}, payload = {}, coders = {}
 
     // Get validated questions for this jurisdiction
-    const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(
-      action.projectId, action.jurisdictionId, userId, api.getValidatedQuestions
-    )
+    const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(action.projectId, action.jurisdictionId, userId, api.getValidatedQuestions)
 
     // Get updated scheme question in case changes have been made
     const { updatedScheme, schemeErrors, updatedSchemeQuestion } = await getSchemeQuestionAndUpdate(action.projectId, state, question, api)
@@ -756,9 +741,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
       }
     }
 
-    const userAnswers = initializeUserAnswers(
-      [initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions], updatedScheme.byId, userId
-    )
+    const userAnswers = initializeUserAnswers([initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions], updatedScheme.byId, userId)
 
     const coderInfo = await getCoderInformation({
       api,

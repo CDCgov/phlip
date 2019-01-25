@@ -290,7 +290,7 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
           variant="body1"
         >
           Upload Date: 
-          1/22/2019
+          1/25/2019
         </WithStyles(Typography)>
       </FlexGrid>
       <FlexGrid

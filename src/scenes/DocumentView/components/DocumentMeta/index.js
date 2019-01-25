@@ -467,8 +467,7 @@ export class DocumentMeta extends Component {
                   </IconButton>}
                 </FlexGrid>
               )
-              }
-            )}
+            })}
           </FlexGrid>
         </FlexGrid>
         <FlexGrid raised container flex style={{ overflow: 'hidden', minWidth: '30%', height: '30%' }}>
@@ -511,8 +510,7 @@ export class DocumentMeta extends Component {
                   onClick={() => this.handleShowDeleteConfirm('jurisdiction', index)}>
                   delete
                 </IconButton>}
-              </FlexGrid>)
-            )}
+              </FlexGrid>))}
           </FlexGrid>
           <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="md" hideOverflow={false}>
             {this.props.alertOpen &&

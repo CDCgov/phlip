@@ -23,17 +23,15 @@ const props = {
 }
 
 const setup = otherProps => {
-  return mount(
-    <MemoryRouter>
-      <MuiThemeProvider theme={theme}>
-        <Table>
-          <TableBody>
-            <ProjectRow {...props} {...otherProps} />
-          </TableBody>
-        </Table>
-      </MuiThemeProvider>
-    </MemoryRouter>
-  )
+  return mount(<MemoryRouter>
+    <MuiThemeProvider theme={theme}>
+      <Table>
+        <TableBody>
+          <ProjectRow {...props} {...otherProps} />
+        </TableBody>
+      </Table>
+    </MuiThemeProvider>
+  </MemoryRouter>)
 }
 
 describe('Home scene - ProjectList - ProjectRow component', () => {

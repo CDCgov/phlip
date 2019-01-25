@@ -12,9 +12,7 @@ describe('Autocomplete action creators', () => {
       index: 1
     }
 
-    expect(actions.searchForSuggestionsRequest('over', '', 1)).toEqual(
-      expectedAction
-    )
+    expect(actions.searchForSuggestionsRequest('over', '', 1)).toEqual(expectedAction)
   })
 
   test('should create an action to handle a suggestion being selected', () => {
@@ -23,9 +21,7 @@ describe('Autocomplete action creators', () => {
       suggestion: { name: 'project 1' }
     }
 
-    expect(actions.onSuggestionSelected({ name: 'project 1' })).toEqual(
-      expectedAction
-    )
+    expect(actions.onSuggestionSelected({ name: 'project 1' })).toEqual(expectedAction)
   })
 
   test('should create an action to update search value', () => {
@@ -34,9 +30,7 @@ describe('Autocomplete action creators', () => {
       value: 'new search value'
     }
 
-    expect(actions.updateSearchValue('new search value')).toEqual(
-      expectedAction
-    )
+    expect(actions.updateSearchValue('new search value')).toEqual(expectedAction)
   })
 
   test('should create an action to clear suggestions', () => {

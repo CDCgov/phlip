@@ -5,9 +5,11 @@ const getApprovedDocumentsLogic = createLogic({
   type: [types.GET_APPROVED_DOCUMENTS_REQUEST],
   async process({ docApi, action }, dispatch, done) {
     try {
-      const docs = await docApi.getDocumentsByProjectJurisdiction({},
+      const docs = await docApi.getDocumentsByProjectJurisdiction(
         {},
-        { projectId: action.projectId, jurisdictionId: action.jurisdictionId })
+        {},
+        { projectId: action.projectId, jurisdictionId: action.jurisdictionId }
+      )
       dispatch({ type: types.GET_APPROVED_DOCUMENTS_SUCCESS, payload: docs })
       done()
     } catch (err) {

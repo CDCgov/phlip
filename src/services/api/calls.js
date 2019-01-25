@@ -244,7 +244,7 @@ let apiCalls = [
 
 // If development, then include the basic auth api call
 if (APP_IS_SAML_ENABLED !== '1') {
-  apiCalls = [...apiCalls,   {
+  apiCalls = [...apiCalls, {
     name: 'login',
     method: 'post',
     path: () => '/users/authenticate'

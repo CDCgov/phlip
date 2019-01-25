@@ -253,31 +253,31 @@ export class Upload extends Component {
   //           : this.props.actions.addSelectedDocs(files)
   // }
 
-    /**
+  /**
      * Adds selected files to redux, sends a request to verify the documents can be uploaded
      * @param e
      */
 
   addFilesToList = (e) => {
-        let files = []
-        Array.from(Array(e.target.files.length).keys()).map(x => {
-            const i = e.target.files.item(x)
+    let files = []
+    Array.from(Array(e.target.files.length).keys()).map(x => {
+      const i = e.target.files.item(x)
 
-                        files.push({
-                            name: i.name,
-                            lastModifiedDate: i.lastModifiedDate,
-                            tags: [],
-                            file: i,
-                            effectiveDate: '',
-                            citation: '',
-                            jurisdictions: {searchValue: '', suggestions: [], name: ''},
-                        })
+      files.push({
+        name: i.name,
+        lastModifiedDate: i.lastModifiedDate,
+        tags: [],
+        file: i,
+        effectiveDate: '',
+        citation: '',
+        jurisdictions: {searchValue: '', suggestions: [], name: ''}
+      })
 
-        })
-        this.props.actions.verifyFileContent(files)
-        this.props.infoSheetSelected
-            ? this.props.actions.mergeInfoWithDocs(files)
-            : this.props.actions.addSelectedDocs(files)
+    })
+    this.props.actions.verifyFileContent(files)
+    this.props.infoSheetSelected
+      ? this.props.actions.mergeInfoWithDocs(files)
+      : this.props.actions.addSelectedDocs(files)
   }
   
   /**
@@ -328,16 +328,15 @@ export class Upload extends Component {
    * @param index
    */
   handleGetSuggestions = (suggestionType, { value: searchString }, index = null) => {
-      clearTimeout(this.timeout)
-      this.timeout = setTimeout(() => {
-          if (suggestionType === 'project') {
-            this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
-          }
-          else {
-            this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
-          }
-          console.log('Input Value:',searchString)
-      }, 600)
+    clearTimeout(this.timeout)
+    this.timeout = setTimeout(() => {
+      if (suggestionType === 'project') {
+        this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
+      } else {
+        this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
+      }
+      console.log('Input Value:',searchString)
+    }, 600)
   };
 
   /**
@@ -427,30 +426,29 @@ export class Upload extends Component {
         </Alert>}
         {(this.props.alertOpen && this.props.invalidFiles.length > 0) &&
         <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle}>
-            {this.props.alertText }
+          {this.props.alertText }
           <FlexGrid type="row" padding={5} style={{ overflow: 'auto' }}>
             {this.props.invalidFiles.map((item, index) => {
-                        return (
-                          <FlexGrid
-                            container
-                            type="row"
-                            justify="space-between"
-                            align="center"
-                            key={`doc-${index}`}
-                            style={{
-                                    padding: 8,
-                                    backgroundColor: index % 2 === 0
-                                        ? '#f9f9f9'
-                                        : 'white',
-                                    minHeight: 24
-                                }}>
-                            <Typography style={{ fontSize: '.9125rem' }}>
-                              {item.doc.name}
-                            </Typography>
-                          </FlexGrid>
-                        )
-                    }
-                )}
+              return (
+                <FlexGrid
+                  container
+                  type="row"
+                  justify="space-between"
+                  align="center"
+                  key={`doc-${index}`}
+                  style={{
+                    padding: 8,
+                    backgroundColor: index % 2 === 0
+                      ? '#f9f9f9'
+                      : 'white',
+                    minHeight: 24
+                  }}>
+                  <Typography style={{ fontSize: '.9125rem' }}>
+                    {item.doc.name}
+                  </Typography>
+                </FlexGrid>
+              )
+            })}
           </FlexGrid>
         </Alert>}
         {this.state.showLoadingAlert &&

@@ -3,38 +3,38 @@ import PropTypes from 'prop-types'
 import TableRow from 'components/TableRow'
 import TableCell from 'components/TableCell'
 import CheckboxLabel from 'components/CheckboxLabel'
-import {Dropdown,
-    // Button
+import {Dropdown
+  // Button
 } from 'components'
 
 /**
  * Table header for the document list
  */
 export const DocListTableHead = props => {
-  const { onSelectAll, allSelected, onActionSelected,
-      // onActionApply
+  const { onSelectAll, allSelected, onActionSelected
+    // onActionApply
   } = props
   const options = [
-        {value:'bulk', label:'Bulk Operation', disabled:true},
-        { value: 'deleteDoc', label: 'Delete' }, { value: 'assignProject', label: 'Assign projects' },
-        { value: 'assignJurisdiction', label: 'Assign Jurisdictions' },
-    ]
+    {value:'bulk', label:'Bulk Operation', disabled:true},
+    { value: 'deleteDoc', label: 'Delete' }, { value: 'assignProject', label: 'Assign projects' },
+    { value: 'assignJurisdiction', label: 'Assign Jurisdictions' }
+  ]
   const r1Columns = [
-        {
-            key: 'action',
-            label: <Dropdown
-              options={options}
-              input={{
-                    value: 'bulk',
-                    onChange: onActionSelected
-                }}
-              SelectDisplayProps={{ style: { paddingBottom: 3 } }}
-              style={{ fontSize: 13 }}
-              formControlStyle={{ minWidth: 140 }}
-              // disabled= {!allowDropdown}
-            />,
-            style: { paddingLeft: 20, paddingRight: 0 }
-        },
+    {
+      key: 'action',
+      label: <Dropdown
+        options={options}
+        input={{
+          value: 'bulk',
+          onChange: onActionSelected
+        }}
+        SelectDisplayProps={{ style: { paddingBottom: 3 } }}
+        style={{ fontSize: 13 }}
+        formControlStyle={{ minWidth: 140 }}
+        // disabled= {!allowDropdown}
+      />,
+      style: { paddingLeft: 20, paddingRight: 0 }
+    }
   //       {
   //           key: 'apply',
   //           label:
@@ -47,7 +47,7 @@ export const DocListTableHead = props => {
   // />,
   //           style: { paddingLeft: 20, paddingRight: 0 }
   //       },
-    ]
+  ]
   const r2Columns = [
     {
       key: 'select-all',
@@ -65,31 +65,31 @@ export const DocListTableHead = props => {
     <React.Fragment>
       <TableRow key="bulkAction" style={{ width: '100%' }}>
         {r1Columns.map((column, i) => {
-            return (
-              <TableCell
-                scope="col"
-                id={column.key}
-                padding={column.padding}
-                key={column.key}
-                colSpan={2}
-                style={{ borderBottom:'none', width: column.width, ...column.style }}>
-                {column.label}
-              </TableCell>
-            )
+          return (
+            <TableCell
+              scope="col"
+              id={column.key}
+              padding={column.padding}
+              key={column.key}
+              colSpan={2}
+              style={{ borderBottom:'none', width: column.width, ...column.style }}>
+              {column.label}
+            </TableCell>
+          )
         })}
       </TableRow>
       <TableRow key="docTableHeaders" style={{ width: '100%' }}>
         {r2Columns.map((column, i) => {
-            return (
-              <TableCell
-                scope="col"
-                id={column.key}
-                padding={column.padding}
-                key={column.key}
-                style={{ width: column.width, ...column.style }}>
-                {column.label}
-              </TableCell>
-            )
+          return (
+            <TableCell
+              scope="col"
+              id={column.key}
+              padding={column.padding}
+              key={column.key}
+              style={{ width: column.width, ...column.style }}>
+              {column.label}
+            </TableCell>
+          )
         })}
       </TableRow>
     </React.Fragment>
@@ -110,14 +110,14 @@ DocListTableHead.propTypes = {
   /**
    * Handles when the user select an action from the dropdown
    */
-   onActionSelected: PropTypes.func,
+  onActionSelected: PropTypes.func,
 
   /**
    * Handles when the user click on apply button
    */
-   onActionApply: PropTypes.func,
+  onActionApply: PropTypes.func,
 
-   allowDropdown : PropTypes.bool
+  allowDropdown : PropTypes.bool
 }
 
 DocListTableHead.defaultProps = {

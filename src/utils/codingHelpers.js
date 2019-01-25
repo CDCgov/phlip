@@ -528,8 +528,9 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
     if (item.children) {
       item.children = item.questionType === questionTypes.CATEGORY
         ? item.isAnswered
-          ? initializeNavigator(commonHelpers.sortListOfObjects(Object.values(scheme)
-          .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
+          ? initializeNavigator(
+            commonHelpers.sortListOfObjects(Object.values(scheme)
+              .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
             { ...scheme },
             codedQuestions,
             currentQuestion

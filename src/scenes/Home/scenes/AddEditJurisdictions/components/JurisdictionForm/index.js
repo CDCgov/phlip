@@ -85,8 +85,8 @@ export class JurisdictionForm extends Component {
       endDate: this.jurisdictionDefined ? this.jurisdictionDefined.endDate : new Date(),
       startDate: this.jurisdictionDefined ? this.jurisdictionDefined.startDate : new Date(),
       name: this.jurisdictionDefined ? this.jurisdictionDefined.name : this.props.location.state.preset === true
-      ? 'US States'
-      : ''
+        ? 'US States'
+        : ''
     })
   }
 

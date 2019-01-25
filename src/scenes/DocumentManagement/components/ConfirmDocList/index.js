@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography'
 export const ConfirmDocList = props => {
   const {
     // documents,
-      docCount
+    docCount
   } = props
 
   return (
@@ -89,10 +89,10 @@ ConfirmDocList.propTypes = {
    */
   allSelected: PropTypes.bool,
 
-    /**
+  /**
      * Handles when the user confirm action
      */
-    onBulkActionConfirm: PropTypes.func,
+  onBulkActionConfirm: PropTypes.func
 
 }
 

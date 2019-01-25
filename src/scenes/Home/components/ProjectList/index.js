@@ -48,8 +48,7 @@ export const ProjectList = props => {
             />
           </TableHead>
           <TableBody>
-            {projectIds.map(
-              id => (<ProjectRow key={id} id={id} onExport={handleExport} />))}
+            {projectIds.map(id => (<ProjectRow key={id} id={id} onExport={handleExport} />))}
           </TableBody>
         </Table>
         <FlexGrid flex />
@@ -61,8 +60,7 @@ export const ProjectList = props => {
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={(event, page) => handlePageChange(page)}
-                onChangeRowsPerPage={(event) => handleRowsChange(
-                  event.target.value)}
+                onChangeRowsPerPage={(event) => handleRowsChange(event.target.value)}
               />
             </TableRow>
           </TableFooter>

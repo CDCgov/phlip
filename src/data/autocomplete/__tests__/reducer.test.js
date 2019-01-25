@@ -66,9 +66,7 @@ describe('Autocomplete reducer', () => {
       })
 
       const updatedState = reducer(currentState, action)
-      expect(updatedState.searchValue).toEqual(
-        'new project search value'
-      )
+      expect(updatedState.searchValue).toEqual('new project search value')
     })
   })
 
