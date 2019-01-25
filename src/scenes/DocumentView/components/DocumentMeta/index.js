@@ -125,9 +125,12 @@ export class DocumentMeta extends Component {
    * @param index
    */
   handleGetSuggestions = (suggestionType, { value: searchString }, index = null) => {
-    suggestionType === 'project'
-      ? this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
-      : this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
+    clearTimeout(this.timeout)
+    this.timeout = setTimeout(()=>{
+      suggestionType === 'project'
+        ? this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
+        : this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
+    },500)
   }
 
   /**
