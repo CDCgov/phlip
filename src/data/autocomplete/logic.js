@@ -29,11 +29,16 @@ const getProjectSuggestionsLogic = createLogic({
   type: `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
   async process({ api, action }, dispatch, done) {
     try {
-      let projects = await api.getProjects({}, {}, {})
-      const searchString = action.searchString.toLowerCase()
-      projects = projects.filter(project => {
-        return project.name.toLowerCase().startsWith(searchString)
-      })
+      // let projects = await api.getProjects({}, {
+      let projects = await api.searchProjectList({}, {
+        params: {
+          name: action.searchString
+        }
+      }, {})
+      // const searchString = action.searchString.toLowerCase()
+      // projects = projects.filter(project => {
+      //   return project.name.toLowerCase().startsWith(searchString)
+      // })
       dispatch({ type: `${types.SEARCH_FOR_SUGGESTIONS_SUCCESS}_PROJECT${action.suffix}`, payload: projects })
     } catch (err) {
       dispatch({ type: `${types.SEARCH_FOR_SUGGESTIONS_FAIL}_PROJECT${action.suffix}` })
