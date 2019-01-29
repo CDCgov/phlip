@@ -61,7 +61,12 @@ export class DocumentManagement extends Component {
     handleBulkDelete: PropTypes.func,
     handleBulkUpdate: PropTypes.func,
     apiErrorOpen: PropTypes.bool,
-    apiErrorInfo: PropTypes.object
+    apiErrorInfo: PropTypes.object,
+    /**
+    * Current field by which to sort the table
+    */
+    sortBy: PropTypes.string,
+    sortDirection: PropTypes.string
 
   }
 
@@ -289,6 +294,9 @@ export class DocumentManagement extends Component {
                     rowsPerPage={this.props.rowsPerPage}
                     onBulkAction= {this.handleBulkAction}
                     allowDropdown={this.props.checkedCount > 0}
+                    sortBy={this.props.sortBy}
+                    sortDirection={this.props.sortDirection}
+                    handleSortRequest={this.props.actions.handleSortRequest}
                   />
                 </FlexGrid>
                 <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="md" hideOverflow={false}>
@@ -345,7 +353,9 @@ const mapStateToProps = state => {
     jurisdictionSearchValue: docManage.upload.jurisdictionSuggestions.searchValue,
     apiErrorInfo: docManage.main.apiErrorInfo,
     apiErrorOpen: docManage.main.apiErrorOpen || false,
-    bulkOperationInProgress: docManage.main.bulkOperationInProgress || false
+    bulkOperationInProgress: docManage.main.bulkOperationInProgress || false,
+    sortBy: state.scenes.docManage.main.sortBy,
+    sortDirection: state.scenes.docManage.main.sortDirection
   }
 }
 

@@ -12,8 +12,8 @@ import TablePagination from 'components/TablePagination'
 
 export const DocList = props => {
   const {
-    onSelectAllFiles, onSelectOneFile, rowsPerPage, page,
-    onChangePage, onChangeRows, documents, docCount, allSelected, onBulkAction, allowDropdown
+    onSelectAllFiles, onSelectOneFile, rowsPerPage, page, sortBy, sortDirection,
+    onChangePage, onChangeRows, documents, docCount, allSelected, onBulkAction, handleSortRequest
   } = props
 
   return (
@@ -27,7 +27,14 @@ export const DocList = props => {
         }}
         summary="List of documents">
         <TableHead style={{ width: '100%' }}>
-          <DocListTableHead onSelectAll={() => onSelectAllFiles()} allSelected={allSelected} onActionSelected={(actionType) => onBulkAction(actionType)} allowedDropdown={allowDropdown} />
+          <DocListTableHead
+            onSelectAll={() => onSelectAllFiles()}
+            allSelected={allSelected}
+            onActionSelected={(actionType) => onBulkAction(actionType)}
+            onRequestSort={handleSortRequest}
+            sortBy={sortBy}
+            direction={sortDirection}
+          />
         </TableHead>
         <TableBody>
           {documents.map(docId => <DocListTableRow
@@ -105,10 +112,14 @@ DocList.propTypes = {
    * Handles when the user requests to change pages in table
    */
   onBulkAction: PropTypes.func,
+
   /**
-     * flag to enabled dropdown when user selected at least on document
-     */
-  allowDropdown : PropTypes.bool
+   * Handles when the user requests sorting
+   */
+  handleSortRequest: PropTypes.func,
+
+  sortBy: PropTypes.string,
+  sortDirection: PropTypes.string
 
 }
 
