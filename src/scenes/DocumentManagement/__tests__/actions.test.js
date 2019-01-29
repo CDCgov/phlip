@@ -42,4 +42,14 @@ describe('Document management actions creators', () => {
 
     expect(actions.handleSelectOneFile('134354324526')).toEqual(expectedAction)
   })
+
+  test('should create an action to sort the documents', () => {
+    const expectedAction = {
+      type: types.SORT_DOCUMENTS,
+      sortBy: 'name',
+      sortDirection: 'desc'
+    }
+
+    expect(actions.handleSortRequest('name','desc')).toEqual(expectedAction)
+  })
 })

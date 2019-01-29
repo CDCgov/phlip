@@ -67,6 +67,7 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
         }
         style={
           Object {
+            "color": "#757575",
             "fontSize": 13,
           }
         }
@@ -86,13 +87,6 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
       key="select-all"
       padding="default"
       scope="col"
-      style={
-        Object {
-          "paddingLeft": 24,
-          "paddingRight": 0,
-          "width": undefined,
-        }
-      }
     >
       <WithStyles(CheckboxLabel)
         input={
@@ -104,54 +98,79 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
       />
     </TableCell>
     <TableCell
-      id="file-name"
-      key="file-name"
+      id="name"
+      key="name"
       padding="checkbox"
       scope="col"
-      style={
-        Object {
-          "width": undefined,
-        }
-      }
     >
-      Document Name
+      <WithStyles(Tooltip)
+        id="sort-by-name"
+        text="Sort by Document Name"
+      >
+        <WithStyles(TableSortLabel)
+          active={false}
+          onClick={[Function]}
+          style={
+            Object {
+              "color": "inherit",
+            }
+          }
+        >
+          Document Name
+        </WithStyles(TableSortLabel)>
+      </WithStyles(Tooltip)>
     </TableCell>
     <TableCell
-      id="uploaded-by"
-      key="uploaded-by"
+      id="uploadedByName"
+      key="uploadedByName"
       padding="checkbox"
       scope="col"
-      style={
-        Object {
-          "width": undefined,
-        }
-      }
     >
-      Uploaded By
+      <WithStyles(Tooltip)
+        id="sort-by-uploadedByName"
+        text="Sort by Uploaded By"
+      >
+        <WithStyles(TableSortLabel)
+          active={false}
+          onClick={[Function]}
+          style={
+            Object {
+              "color": "inherit",
+            }
+          }
+        >
+          Uploaded By
+        </WithStyles(TableSortLabel)>
+      </WithStyles(Tooltip)>
     </TableCell>
     <TableCell
-      id="uploaded-data"
-      key="uploaded-data"
+      id="uploadedDate"
+      key="uploadedDate"
       padding="checkbox"
       scope="col"
-      style={
-        Object {
-          "width": undefined,
-        }
-      }
     >
-      Uploaded Date
+      <WithStyles(Tooltip)
+        id="sort-by-uploadedDate"
+        text="Sort by Uploaded Date"
+      >
+        <WithStyles(TableSortLabel)
+          active={false}
+          onClick={[Function]}
+          style={
+            Object {
+              "color": "inherit",
+            }
+          }
+        >
+          Uploaded Date
+        </WithStyles(TableSortLabel)>
+      </WithStyles(Tooltip)>
     </TableCell>
     <TableCell
       id="doc-projects"
       key="doc-projects"
       padding="checkbox"
       scope="col"
-      style={
-        Object {
-          "width": undefined,
-        }
-      }
     >
       Projects
     </TableCell>
@@ -160,11 +179,6 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
       key="doc-jurisdictions"
       padding="checkbox"
       scope="col"
-      style={
-        Object {
-          "width": undefined,
-        }
-      }
     >
       Jurisdictions
     </TableCell>

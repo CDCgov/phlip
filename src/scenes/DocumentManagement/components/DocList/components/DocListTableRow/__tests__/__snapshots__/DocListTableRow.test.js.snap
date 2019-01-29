@@ -81,7 +81,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       }
     }
   >
-    12/31/1999
+    1/1/2000
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"
