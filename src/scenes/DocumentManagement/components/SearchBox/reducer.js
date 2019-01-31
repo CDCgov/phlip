@@ -13,7 +13,8 @@ export const INITIAL_STATE = {
     },
     uploadedDate: '',
     uploadedBy: '',
-    name: ''
+    name: '',
+    uploadedDaysRange: '0'
   },
   searchValue: ''
 }
