@@ -336,7 +336,7 @@ export class Upload extends Component {
         this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
       }
       console.log('Input Value:',searchString)
-    }, 600)
+    }, 300)
   };
 
   /**
@@ -491,6 +491,7 @@ export class Upload extends Component {
             <Grid padding={10} />
             <FileUpload
               handleAddFiles={this.addExcelFile}
+              infoSheetSelected={this.props.infoSheetSelected}
               buttonText="Select excel file"
               containerBgColor="#f4f9ef"
               containerBorderColor="#c2e3b6"
