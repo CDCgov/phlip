@@ -21,7 +21,7 @@ export const DocListTableRow = props => {
     whiteSpace: 'nowrap',
     width: 250,
     maxWidth: 250,
-    padding: 18
+    padding: 12
   }
   // const iconColor = '#949494'
   return (
