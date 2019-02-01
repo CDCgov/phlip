@@ -466,7 +466,7 @@ describe('Document Management reducer', () => {
 
       const action = {
         type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: `name: (document about) | uploadedDate: ${date}`,
+        value: `name: (document about) | uploadedDate:["${date}","${date}"]`,
         form: {
           project: {},
           jurisdiction: {}
