@@ -118,7 +118,7 @@ export class SearchBox extends Component {
         let p = this.props.form[key]
         if (key === 'uploadedDate') {
           let days = parseInt(this.props.form['uploadedDaysRange'])
-          let dEnd= moment.utc(p).local().format('MM/DD/YYYY')
+          let dEnd= moment.utc(p).add(days,'days').local().format('MM/DD/YYYY')
           let dBegin = moment.utc(p).subtract(days,'days').local().format('MM/DD/YYYY')
           p= `["${dBegin}","${dEnd}"]`
         // p = moment.utc(p).local().format('M/D/YYYY')
