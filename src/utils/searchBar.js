@@ -23,7 +23,7 @@ const searchForMatches = (arr, searchValue, properties) => {
   }
   return arr.filter(x => {
     return properties.some(p => {
-      if (p === 'uploadedDate'){
+      if (p === 'uploadedDate' && (dateArray.length > 0)){
         return searchDateBetween(x,p,date1,date2)
       } else {
         return convertValuesToString(x, p).trim().toLowerCase().includes(search)
@@ -40,7 +40,7 @@ const searchForMatches = (arr, searchValue, properties) => {
  * @returns {String}
  */
 const convertValuesToString = (x, p) => {
-  return ['dateLastEdited', 'startDate', 'endDate'].includes(p)
+  return ['dateLastEdited', 'startDate', 'endDate','uploadedDate'].includes(p)
     ? moment.utc(x[p]).local().format('M/D/YYYY')
     : x[p]
 }
