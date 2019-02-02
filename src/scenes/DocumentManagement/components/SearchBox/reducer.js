@@ -14,7 +14,7 @@ export const INITIAL_STATE = {
     uploadedDate: '',
     uploadedBy: '',
     name: '',
-    uploadedDaysRange: '0'
+    uploadedDaysRange: '1'
   },
   searchValue: ''
 }
