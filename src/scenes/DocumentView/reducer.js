@@ -141,17 +141,20 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         },
         apiErrorOpen: false
       }
+
     case types.DELETE_DOCUMENT_REQUEST :
       return {
         ...state,
         documentDeleteInProgress: true
       }
+
     case types.DELETE_DOCUMENT_SUCCESS :
       return {
         ...state,
         documentDeleteInProgress: false,
         documentDeleteError: false
       }
+
     case types.DELETE_DOCUMENT_FAIL :
       return {
         ...state,
