@@ -23,17 +23,13 @@ export const DocListTableRow = props => {
   return (
     <TableRow>
       <TableCell padding="checkbox">
-        <span>
-          {doc.name}
-        </span>
+        <span>{doc.name}</span>
       </TableCell>
       <TableCell padding="checkbox">
         <span style={{ fontWeight: 500 }}>{doc.uploadedBy.firstName} {doc.uploadedBy.lastName}</span>
-
       </TableCell>
       <TableCell padding="checkbox" style={listStyle}>
         <span style={{ fontWeight: 500 }}>{date}</span>
-
       </TableCell>
     </TableRow>
   )

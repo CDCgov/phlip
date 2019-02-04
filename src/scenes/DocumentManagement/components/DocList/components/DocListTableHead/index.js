@@ -20,8 +20,9 @@ export const DocListTableHead = props => {
   } = props
   const options = [
     { value: 'bulk', label: 'Bulk Operation', disabled: true },
-    { value: 'deleteDoc', label: 'Delete' }, { value: 'assignProject', label: 'Assign projects' },
-    { value: 'assignJurisdiction', label: 'Assign Jurisdictions' }
+    { value: 'deleteDoc', label: 'Delete' },
+    { value: 'assignProject', label: 'Assign Project' },
+    { value: 'assignJurisdiction', label: 'Assign Jurisdiction' }
   ]
   const r1Columns = [
     {
@@ -33,7 +34,7 @@ export const DocListTableHead = props => {
           onChange: onActionSelected
         }}
         SelectDisplayProps={{ style: { paddingBottom: 3 } }}
-        style={{ fontSize: 13, color: '#757575' }}
+        style={{ fontSize: 13, color: '#757575', fontWeight: 400 }}
         formControlStyle={{ minWidth: 140 }}
         // disabled= {!allowDropdown}
       />,

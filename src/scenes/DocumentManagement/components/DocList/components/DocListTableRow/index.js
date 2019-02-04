@@ -5,8 +5,6 @@ import TableCell from '@material-ui/core/TableCell'
 import moment from 'moment'
 import { connect } from 'react-redux'
 import TextLink from 'components/TextLink'
-// import Icon from 'components/Icon'
-// import { FileDocument } from 'mdi-material-ui'
 import CheckboxLabel from 'components/CheckboxLabel'
 
 /**
@@ -32,7 +30,6 @@ export const DocListTableRow = props => {
           labelStyle={{ margin: 0 }}
           style={{ width: 24, height: 24 }}
         />
-        {/*<Icon color={iconColor}><FileDocument /></Icon>*/}
       </TableCell>
       <TableCell padding="checkbox" style={listStyle}>
         <TextLink to={{ pathname: `/docs/${doc._id}/view`, state: { document: { ...doc } } }}>

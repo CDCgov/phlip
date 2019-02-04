@@ -93,7 +93,6 @@ ConfirmDocList.propTypes = {
      * Handles when the user confirm action
      */
   onBulkActionConfirm: PropTypes.func
-
 }
 
 export default ConfirmDocList

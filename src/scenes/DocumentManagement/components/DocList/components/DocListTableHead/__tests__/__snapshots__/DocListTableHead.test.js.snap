@@ -56,11 +56,11 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
               "value": "deleteDoc",
             },
             Object {
-              "label": "Assign projects",
+              "label": "Assign Project",
               "value": "assignProject",
             },
             Object {
-              "label": "Assign Jurisdictions",
+              "label": "Assign Jurisdiction",
               "value": "assignJurisdiction",
             },
           ]
@@ -69,6 +69,7 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
           Object {
             "color": "#757575",
             "fontSize": 13,
+            "fontWeight": 400,
           }
         }
       />
