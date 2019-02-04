@@ -289,42 +289,14 @@ export class SearchBox extends Component {
                           onChange={e => this.handleFormValueChange('uploadedBy', e.target.value)}
                         />
                       </FlexGrid>
-                      <FlexGrid container type="row" style={formRowStyles} justify="space-between">
-                        <FlexGrid container type="row" flex align="flex-start">
-                          <CalendarBlank style={{ fontSize: 18, color: '#757575' }} />
-                          <Typography variant="body2" htmlFor="uploaded-date" style={formRowFontStyles}>
-                            Uploaded From
-                          </Typography>
-                          <DatePicker
-                            name="uploadedDateSearch"
-                            dateFormat="MM/DD/YYYY"
-                            onChange={date => this.handleFormValueChange('uploadedDate', date)}
-                            value={uploadedDate}
-                            style={{ marginTop: 0, alignItems:'flex-end', paddingLeft:'30'}}
-                            containerProps={{ fullWidth: false }}
-                            inputProps={inputProps}
-                            onOpen={this.handleOpenDatePicker}
-                            onClose={this.handleCloseDatePicker}
-                            InputAdornmentProps={{
-                              disableTypography: true,
-                              style: {
-                                height: 19,
-                                width: 19,
-                                margin: 0,
-                                marginRight: 15,
-                                alignItems: 'flex-end',
-                                marginBottom: -8
-                              }
-                            }}
-                          />
-                        </FlexGrid>
-                        <FlexGrid flex container type="row" justify="space-between" align="flex-end" width="30%">
-                          <Typography variant="body2" htmlFor="uploaded-within" style={formRowFontStyles}>
-                            Within
-                          </Typography>
+                      <FlexGrid container flex type="row" style={formRowStyles} justify="space-between" >
+                        <CalendarBlank style={{ fontSize: 18, color: '#757575' }} />
+                        <Typography variant="body2" htmlFor="uploaded-within" style={formRowFontStyles}>
+                        Date within
+                        </Typography>
+                        <FlexGrid container flex type="row" style={{width:'55%'}}>
                           <TextField
-                            fullWidth
-                            style={{marginLeft:10}}
+                            style={{width:'40%'}}
                             type='number'
                             name="uploaded-within"
                             inputProps={inputPropsNumeric}
@@ -332,9 +304,31 @@ export class SearchBox extends Component {
                             onChange={e => this.handleFormValueChange('uploadedDaysRange', e.target.value)}
                           />
                           <Typography variant="body2" style={formRowFontStyles}>
-                            days
+                        days of
                           </Typography>
                         </FlexGrid>
+                        <DatePicker
+                          name="uploadedDateSearch"
+                          dateFormat="MM/DD/YYYY"
+                          onChange={date => this.handleFormValueChange('uploadedDate', date)}
+                          value={uploadedDate}
+                          style={{ marginTop: 0, alignItems:'flex-end', paddingLeft:'30'}}
+                          containerProps={{ fullWidth: false }}
+                          inputProps={inputProps}
+                          onOpen={this.handleOpenDatePicker}
+                          onClose={this.handleCloseDatePicker}
+                          InputAdornmentProps={{
+                            disableTypography: true,
+                            style: {
+                              height: 19,
+                              width: 19,
+                              margin: 0,
+                              marginRight: 15,
+                              alignItems: 'flex-end',
+                              marginBottom: -8
+                            }
+                          }}
+                        />
                       </FlexGrid>
                       <FlexGrid container type="row" style={formRowStyles}>
                         <Clipboard style={{ fontSize: 18, color: '#757575' }} />
