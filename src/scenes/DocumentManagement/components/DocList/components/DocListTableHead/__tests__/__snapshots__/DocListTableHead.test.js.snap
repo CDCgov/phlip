@@ -87,6 +87,13 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
       key="select-all"
       padding="default"
       scope="col"
+      style={
+        Object {
+          "paddingLeft": 24,
+          "paddingRight": 0,
+          "width": "1%",
+        }
+      }
     >
       <WithStyles(CheckboxLabel)
         input={

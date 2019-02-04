@@ -18,6 +18,17 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
           "value": false,
         }
       }
+      labelStyle={
+        Object {
+          "margin": 0,
+        }
+      }
+      style={
+        Object {
+          "height": 24,
+          "width": 24,
+        }
+      }
     />
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
@@ -26,7 +37,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       Object {
         "maxWidth": 250,
         "overflow": "hidden",
-        "padding": 12,
+        "padding": "0 12px",
         "textOverflow": "ellipsis",
         "whiteSpace": "nowrap",
         "width": 250,
@@ -89,7 +100,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       Object {
         "maxWidth": 250,
         "overflow": "hidden",
-        "padding": 12,
+        "padding": "0 12px",
         "textOverflow": "ellipsis",
         "whiteSpace": "nowrap",
         "width": 250,
@@ -104,7 +115,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       Object {
         "maxWidth": 250,
         "overflow": "hidden",
-        "padding": 12,
+        "padding": "0 12px",
         "paddingRight": 24,
         "textOverflow": "ellipsis",
         "whiteSpace": "nowrap",

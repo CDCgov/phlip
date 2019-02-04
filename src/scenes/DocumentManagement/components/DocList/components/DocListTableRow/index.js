@@ -21,13 +21,17 @@ export const DocListTableRow = props => {
     whiteSpace: 'nowrap',
     width: 250,
     maxWidth: 250,
-    padding: 12
+    padding: '0 12px'
   }
   // const iconColor = '#949494'
   return (
     <TableRow>
       <TableCell style={{ paddingLeft: 24, paddingRight: 0, width: '1%' }}>
-        <CheckboxLabel input={{ value: isChecked, onChange: onSelectFile }} />
+        <CheckboxLabel
+          input={{ value: isChecked, onChange: onSelectFile }}
+          labelStyle={{ margin: 0 }}
+          style={{ width: 24, height: 24 }}
+        />
         {/*<Icon color={iconColor}><FileDocument /></Icon>*/}
       </TableCell>
       <TableCell padding="checkbox" style={listStyle}>
@@ -35,10 +39,10 @@ export const DocListTableRow = props => {
           {doc.name}
         </TextLink>
       </TableCell>
-      <TableCell padding="checkbox" style={listStyle && {width:90}} >
+      <TableCell padding="checkbox" style={listStyle && { width: 90 }}>
         {doc.uploadedBy.firstName} {doc.uploadedBy.lastName}
       </TableCell>
-      <TableCell padding="checkbox" style={listStyle && {width:50}}>
+      <TableCell padding="checkbox" style={listStyle && { width: 50 }}>
         {date}
       </TableCell>
       <TableCell padding="checkbox" style={listStyle}>

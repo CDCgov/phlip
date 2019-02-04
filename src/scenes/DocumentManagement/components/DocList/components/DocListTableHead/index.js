@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import TableRow from 'components/TableRow'
 import TableCell from 'components/TableCell'
 import CheckboxLabel from 'components/CheckboxLabel'
-import {Dropdown
+import {
+  Dropdown
   // Button
 } from 'components'
 import TableSortLabel from '@material-ui/core/TableSortLabel'
@@ -13,11 +14,12 @@ import Tooltip from 'components/Tooltip'
  * Table header for the document list
  */
 export const DocListTableHead = props => {
-  const { onSelectAll, allSelected, onActionSelected, sortBy, direction,onRequestSort
+  const {
+    onSelectAll, allSelected, onActionSelected, sortBy, direction, onRequestSort
     // onActionApply
   } = props
   const options = [
-    {value:'bulk', label:'Bulk Operation', disabled:true},
+    { value: 'bulk', label: 'Bulk Operation', disabled: true },
     { value: 'deleteDoc', label: 'Delete' }, { value: 'assignProject', label: 'Assign projects' },
     { value: 'assignJurisdiction', label: 'Assign Jurisdictions' }
   ]
@@ -31,7 +33,7 @@ export const DocListTableHead = props => {
           onChange: onActionSelected
         }}
         SelectDisplayProps={{ style: { paddingBottom: 3 } }}
-        style={{ fontSize: 13, color:'#757575' }}
+        style={{ fontSize: 13, color: '#757575' }}
         formControlStyle={{ minWidth: 140 }}
         // disabled= {!allowDropdown}
       />,
@@ -42,17 +44,17 @@ export const DocListTableHead = props => {
     {
       key: 'select-all',
       label: <CheckboxLabel input={{ value: allSelected, onChange: onSelectAll }} />,
-      style: { paddingLeft: 24, paddingRight: 0 }
+      style: { paddingLeft: 24, paddingRight: 0, width: '1%' }
     },
-    { key: 'name', label:'Document Name',padding: 'checkbox',hasSort: true},
-    { key: 'uploadedByName', label: 'Uploaded By', padding: 'checkbox',hasSort:true },
-    { key: 'uploadedDate', label: 'Uploaded Date', padding: 'checkbox',hasSort:true },
+    { key: 'name', label: 'Document Name', padding: 'checkbox', hasSort: true },
+    { key: 'uploadedByName', label: 'Uploaded By', padding: 'checkbox', hasSort: true },
+    { key: 'uploadedDate', label: 'Uploaded Date', padding: 'checkbox', hasSort: true },
     { key: 'doc-projects', label: 'Projects', padding: 'checkbox' },
     { key: 'doc-jurisdictions', label: 'Jurisdictions', padding: 'checkbox' }
   ]
 
   return (
-    <React.Fragment>
+    <>
       <TableRow key="bulkAction" style={{ width: '100%' }}>
         {r1Columns.map((column, i) => {
           return (
@@ -62,7 +64,7 @@ export const DocListTableHead = props => {
               padding={column.padding}
               key={column.key}
               colSpan={2}
-              style={{ borderBottom:'none', width: column.width, ...column.style }}>
+              style={{ borderBottom: 'none', width: column.width, ...column.style }}>
               {column.label}
             </TableCell>
           )
@@ -71,7 +73,12 @@ export const DocListTableHead = props => {
       <TableRow key="docTableHeaders" style={{ width: '100%' }}>
         {r2Columns.map((column, i) => {
           return (
-            <TableCell key={column.key} id={column.key} padding={column.padding || 'default'} scope="col">
+            <TableCell
+              key={column.key}
+              id={column.key}
+              padding={column.padding || 'default'}
+              scope="col"
+              style={column.style}>
               {column.hasSort ? (
                 <Tooltip
                   text={`Sort by ${column.label}`}
@@ -98,7 +105,7 @@ export const DocListTableHead = props => {
           )
         })}
       </TableRow>
-    </React.Fragment>
+    </>
   )
 }
 
@@ -127,8 +134,8 @@ DocListTableHead.propTypes = {
    */
   sortBy: PropTypes.string,
   /**
-  * Specify sort direction
-  */
+   * Specify sort direction
+   */
   direction: PropTypes.string,
   /**
    * Specify sort direction
