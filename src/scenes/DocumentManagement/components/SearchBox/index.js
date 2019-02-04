@@ -296,7 +296,7 @@ export class SearchBox extends Component {
                         </Typography>
                         <FlexGrid container flex type="row" style={{width:'70%'}}>
                           <TextField
-                            style={{width:'80%'}}
+                            style={{width:'60%'}}
                             type='number'
                             name="uploaded-within"
                             inputProps={inputPropsNumeric}
