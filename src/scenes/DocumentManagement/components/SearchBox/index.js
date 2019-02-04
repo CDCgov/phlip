@@ -294,9 +294,9 @@ export class SearchBox extends Component {
                         <Typography variant="body2" htmlFor="uploaded-within" style={formRowFontStyles}>
                         Date within
                         </Typography>
-                        <FlexGrid container flex type="row" style={{width:'55%'}}>
+                        <FlexGrid container flex type="row" style={{width:'70%'}}>
                           <TextField
-                            style={{width:'40%'}}
+                            style={{width:'80%'}}
                             type='number'
                             name="uploaded-within"
                             inputProps={inputPropsNumeric}
