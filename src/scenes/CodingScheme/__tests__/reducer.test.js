@@ -1,20 +1,5 @@
 import * as types from '../actionTypes'
-import reducer from '../reducer'
-
-const initial = {
-  questions: [],
-  outline: {},
-  allowHover: true,
-  flatQuestions: [],
-  formError: null,
-  previousOutline: {},
-  previousQuestions: [],
-  schemeError: null,
-  alertError: '',
-  lockInfo: {},
-  lockedAlert: null,
-  lockedByCurrentUser: false
-}
+import reducer, { INITIAL_STATE as initial } from '../reducer'
 
 const getState = other => ({ ...initial, ...other })
 const getReducer = (state, action) => reducer(state, action)

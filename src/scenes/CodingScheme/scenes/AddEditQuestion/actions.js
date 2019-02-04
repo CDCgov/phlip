@@ -31,4 +31,6 @@ export const updateQuestionRequest = (question, projectId, questionId, path) => 
   path
 })
 
+export const resetFormError = () => ({ type: types.RESET_ALERT_ERROR })
+
 export const updateType = () => ({ type: types.UPDATE_TYPE })

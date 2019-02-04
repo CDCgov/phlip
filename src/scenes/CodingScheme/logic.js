@@ -115,7 +115,7 @@ const reorderSchemeLogic = createLogic({
     } catch (error) {
       dispatch({
         type: types.REORDER_SCHEME_FAIL,
-        payload: 'We couldn\'t save the scheme reorder. Please try again later.',
+        payload: 'We couldn\'t save the scheme reorder.',
         error: true
       })
     }
@@ -139,7 +139,7 @@ const deleteQuestionLogic = createLogic({
       const updatedOutline = questionsToOutline(updatedQuestions)
 
       dispatch({
-        type: types.DELETE_QUESITON_SUCCESS,
+        type: types.DELETE_QUESTION_SUCCESS,
         payload: {
           updatedQuestions,
           updatedOutline
@@ -155,7 +155,7 @@ const deleteQuestionLogic = createLogic({
       dispatch({
         type: types.DELETE_QUESTION_FAIL,
         error: true,
-        payload: 'We could\'t delete the question. Please try again later.'
+        payload: 'We could\'t delete the question.'
       })
     }
     done()

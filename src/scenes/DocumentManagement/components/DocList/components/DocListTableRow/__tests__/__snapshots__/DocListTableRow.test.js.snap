@@ -26,7 +26,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       Object {
         "maxWidth": 250,
         "overflow": "hidden",
-        "padding": 18,
+        "padding": 12,
         "textOverflow": "ellipsis",
         "whiteSpace": "nowrap",
         "width": 250,
@@ -81,7 +81,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       }
     }
   >
-    1/1/2000
+    12/31/1999
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"
@@ -89,7 +89,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       Object {
         "maxWidth": 250,
         "overflow": "hidden",
-        "padding": 18,
+        "padding": 12,
         "textOverflow": "ellipsis",
         "whiteSpace": "nowrap",
         "width": 250,
@@ -104,7 +104,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       Object {
         "maxWidth": 250,
         "overflow": "hidden",
-        "padding": 18,
+        "padding": 12,
         "paddingRight": 24,
         "textOverflow": "ellipsis",
         "whiteSpace": "nowrap",
