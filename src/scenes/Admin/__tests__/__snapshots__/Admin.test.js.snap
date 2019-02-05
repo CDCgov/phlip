@@ -1,15 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Admin Scene it should render correctly 1`] = `
-<Container
-  column={true}
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={true}
   flex={true}
-  spacing={0}
-  style={
-    Object {
-      "padding": "12px 20px 20px 20px",
-    }
-  }
+  justify="stretch"
+  padding="12px 20px 20px 20px"
+  raised={false}
+  style={Object {}}
+  type="column"
 >
   <withRouter(WithTheme(PageHeader))
     otherButton={
@@ -43,5 +44,5 @@ exports[`Admin Scene it should render correctly 1`] = `
     component={[Function]}
     path="/admin/edit/user/:id"
   />
-</Container>
+</FlexGrid>
 `;

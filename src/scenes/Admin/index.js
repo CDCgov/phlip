@@ -4,13 +4,11 @@ import { connect } from 'react-redux'
 import { withTheme } from '@material-ui/core/styles'
 import Divider from '@material-ui/core/Divider'
 import UserList from './components/UserList/index'
-import PageHeader from 'components/PageHeader'
+import { FlexGrid, PageHeader, withTracking } from 'components'
 import actions from './actions'
 import { bindActionCreators } from 'redux'
 import AddEditUser from './scenes/AddEditUser'
 import { Route } from 'react-router-dom'
-import Container from 'components/Layout'
-import withTracking from 'components/withTracking'
 
 /**
  * Represents the parent User Management component, that displays a list of users in the system. This component is
@@ -47,7 +45,7 @@ export class Admin extends Component {
 
   render() {
     return (
-      <Container column flex style={{ padding: '12px 20px 20px 20px' }}>
+      <FlexGrid container flex padding="12px 20px 20px 20px">
         <PageHeader
           pageTitle="User Management"
           protocolButton={false}
@@ -70,7 +68,7 @@ export class Admin extends Component {
         />
         <Route path="/admin/new/user" component={AddEditUser} />
         <Route path="/admin/edit/user/:id" component={AddEditUser} />
-      </Container>
+      </FlexGrid>
     )
   }
 }

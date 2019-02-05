@@ -324,7 +324,7 @@ export class DocumentMeta extends Component {
             Document Information
           </Typography>
           <Divider />
-          <FlexGrid container flex padding={10}>
+          <FlexGrid container flex padding={10} style={{ overflow: 'auto' }}>
             <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
               <FileDocument style={iconStyle} />
               <Typography variant="body1" style={metaStyling}>Status:</Typography>
@@ -430,7 +430,7 @@ export class DocumentMeta extends Component {
           style={{ overflow: 'hidden', minWidth: '30%', height: '30%', marginBottom: 20 }}>
           <FlexGrid container type="row" align="center" justify="space-between" padding={10} style={{ minHeight: 32 }}>
             <Typography variant="body2" style={{ color: 'black' }}>
-            Projects
+              Projects
             </Typography>
             <Button
               onClick={this.showAddProjModal}
