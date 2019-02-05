@@ -41,13 +41,11 @@ const props = {
 }
 
 const setup = (otherProps = {}, initialEntries = ['/']) => {
-  return mount(
-    <MemoryRouter initialEntries={initialEntries}>
-      <MuiThemeProvider theme={theme}>
-        <Home {...props} {...otherProps} />
-      </MuiThemeProvider>
-    </MemoryRouter>
-  )
+  return mount(<MemoryRouter initialEntries={initialEntries}>
+    <MuiThemeProvider theme={theme}>
+      <Home {...props} {...otherProps} />
+    </MuiThemeProvider>
+  </MemoryRouter>)
 }
 
 describe('Home scene', () => {

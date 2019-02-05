@@ -31,8 +31,7 @@ export const TextFieldQuestions = props => {
               </Paper>
             </Row>
             <Divider />
-          </Fragment>
-        )}
+          </Fragment>)}
       </Column>
       <InputBox
         rows="4"

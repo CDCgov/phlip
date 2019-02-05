@@ -17,7 +17,7 @@ Table.propTypes = {
   /**
    * Contents of table, will be TableHead, TableBody, etc.
    */
-  children: PropTypes.node,
+  children: PropTypes.node
 }
 
 export default Table

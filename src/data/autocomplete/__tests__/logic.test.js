@@ -34,7 +34,7 @@ describe('Autocomplete logic', () => {
   describe('Search Project List Logic', () => {
     test('should send a request to get projects and only return projects matching action.searchString', (done) => {
       apiMock
-        .onGet('/projects')
+        .onGet('/projects/search')
         .reply(200, [
           { name: 'project 1' },
           { name: 'test project' },
@@ -45,7 +45,7 @@ describe('Autocomplete logic', () => {
 
       store.dispatch({
         type: `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
-        searchString: 'test',
+        searchString: 'project',
         suffix: ''
       })
 
@@ -53,12 +53,12 @@ describe('Autocomplete logic', () => {
         expect(store.actions).toEqual([
           {
             type: `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
-            searchString: 'test',
+            searchString: 'project',
             suffix: ''
           },
           {
             type: `${types.SEARCH_FOR_SUGGESTIONS_SUCCESS}_PROJECT`,
-            payload: [{ name: 'test project' }, { name: 'testing project' }]
+            payload: [{name: 'project 1'},{ name: 'test project' }, { name: 'testing project' }]
           }
         ])
         done()

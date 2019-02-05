@@ -75,7 +75,7 @@ export const Typography = props => {
     fontSize: `${(fontLookup.size * .0625)}rem`,
     fontWeight: fontLookup.weight,
     letterSpacing: fontLookup.letterSpacing,
-    ...style,
+    ...style
   }
 
   return <MuiTypography variant={fontVariant} style={typeStyle} {...otherProps} />

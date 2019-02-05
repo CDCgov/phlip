@@ -21,9 +21,7 @@ const configureStore = () => {
 
   const store = createStore(
     appReducer,
-    composeEnhancers(
-      applyMiddleware(createLogicMiddleware(rootLogic, { api, docApi, history }))
-    )
+    composeEnhancers(applyMiddleware(createLogicMiddleware(rootLogic, { api, docApi, history })))
   )
 
   if (module.hot) {

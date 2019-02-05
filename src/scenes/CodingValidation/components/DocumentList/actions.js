@@ -13,7 +13,8 @@ export const types = {
 }
 
 export default {
-  getApprovedDocumentsRequest: makeActionCreator(types.GET_APPROVED_DOCUMENTS_REQUEST,
+  getApprovedDocumentsRequest: makeActionCreator(
+    types.GET_APPROVED_DOCUMENTS_REQUEST,
     'projectId',
     'jurisdictionId',
     'page'

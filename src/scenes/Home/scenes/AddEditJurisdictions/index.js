@@ -227,7 +227,7 @@ export class AddEditJurisdictions extends Component {
             </Typography>
           </Alert>
           <ApiErrorAlert
-            open={this.state.deleteErrorAlertOpen === true}
+            open={this.state.deleteErrorAlertOpen}
             content={this.props.deleteError}
             onCloseAlert={this.dismissDeleteErrorAlert}
           />

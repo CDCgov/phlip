@@ -163,15 +163,17 @@ export const Autocomplete = props => {
       renderInputComponent={renderInput}
       inputProps={{
         TextFieldProps: InputProps,
-        InputProps: showSearchIcon ? {
-          style: { 'alignItems': 'center' },
-          endAdornment:
-          <InputAdornment
-            style={{ marginTop: 0, height: 24 }}
-            position="end"
-            disableTypography><Icon color={theme.palette.greyText}>search</Icon>
-          </InputAdornment>
-        } : {},
+        InputProps: showSearchIcon
+          ? {
+            style: { 'alignItems': 'center' },
+            endAdornment: (
+              <InputAdornment
+                style={{ marginTop: 0, height: 24 }}
+                position="end"
+                disableTypography><Icon color={theme.palette.greyText}>search</Icon>
+              </InputAdornment>
+            )
+          } : {},
         ...inputProps
       }}
       shouldRenderSuggestions={shouldRenderSuggestions}

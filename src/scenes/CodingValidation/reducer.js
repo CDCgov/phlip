@@ -103,10 +103,12 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
-          ? updateCategoryCodedQuestion(state,
+          ? updateCategoryCodedQuestion(
+            state,
             action.payload.questionId,
             action.payload.selectedCategoryId,
-            { id: action.payload.id })
+            { id: action.payload.id }
+          )
           : updateCodedQuestion(state, action.payload.questionId, { id: action.payload.id }),
         answerErrorContent: null,
         unsavedChanges: false,
@@ -117,10 +119,12 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
-          ? updateCategoryCodedQuestion(state,
+          ? updateCategoryCodedQuestion(
+            state,
             action.payload.questionId,
             action.payload.selectedCategoryId,
-            { hasMadePost: true })
+            { hasMadePost: true }
+          )
           : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: true }),
         unsavedChanges: true,
         saveFailed: false
@@ -141,9 +145,11 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
     case types.REMOVE_REQUEST_FROM_QUEUE:
       return {
         ...state,
-        messageQueue: removeRequestsInQueue(action.payload.questionId,
+        messageQueue: removeRequestsInQueue(
+          action.payload.questionId,
           action.payload.categoryId,
-          [...state.messageQueue])
+          [...state.messageQueue]
+        )
       }
 
     case types.SAVE_USER_ANSWER_FAIL:
@@ -152,10 +158,12 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         answerErrorContent: 'We couldn\'t save your answer for this question.',
         saveFailed: true,
         ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
-          ? updateCategoryCodedQuestion(state,
+          ? updateCategoryCodedQuestion(
+            state,
             action.payload.questionId,
             action.payload.selectedCategoryId,
-            { hasMadePost: false })
+            { hasMadePost: false }
+          )
           : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: false })
       }
 
@@ -166,10 +174,12 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         saveFailed: true,
         objectExists: true,
         ...state.scheme.byId[action.payload.questionId].isCategoryQuestion
-          ? updateCategoryCodedQuestion(state,
+          ? updateCategoryCodedQuestion(
+            state,
             action.payload.questionId,
             action.payload.selectedCategoryId,
-            { hasMadePost: false, ...action.payload.object })
+            { hasMadePost: false, ...action.payload.object }
+          )
           : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: false, ...action.payload.object })
       }
 

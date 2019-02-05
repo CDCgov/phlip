@@ -37,9 +37,7 @@ export const adminReducer = (state = INITIAL_STATE, action) => {
     case types.GET_USERS_SUCCESS:
       return {
         ...state,
-        ...getAvailableUsers(
-          action.payload, state.sortBy, state.direction, state.page, state.rowsPerPage
-        )
+        ...getAvailableUsers(action.payload, state.sortBy, state.direction, state.page, state.rowsPerPage)
       }
 
     case types.ADD_USER_SUCCESS:
@@ -69,9 +67,7 @@ export const adminReducer = (state = INITIAL_STATE, action) => {
         ...state,
         sortBy: action.sortBy,
         direction: direction,
-        ...getAvailableUsers(
-          state.users, action.sortBy, direction, state.page, state.rowsPerPage
-        )
+        ...getAvailableUsers(state.users, action.sortBy, direction, state.page, state.rowsPerPage)
       }
 
     case types.ADD_USER_IMAGE_SUCCESS:
@@ -82,7 +78,7 @@ export const adminReducer = (state = INITIAL_STATE, action) => {
         visibleUsers: updater.updateByProperty({ ...user, avatar: action.payload.avatar }, [...state.visibleUsers], 'id')
       }
 
-    /*case types.UPDATE_USER_ROWS:
+      /*case types.UPDATE_USER_ROWS:
       return {
         ...state,
         rowsPerPage: action.rowsPerPage,

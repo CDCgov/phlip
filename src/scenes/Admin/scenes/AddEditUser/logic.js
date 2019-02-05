@@ -79,7 +79,7 @@ export const deleteUserImageLogic = createLogic({
   latest: true,
   processOptions: {
     dispatchReturn: true,
-    successType: types.DELETE_USER_IMAGE_SUCCESS,
+    successType: types.DELETE_USER_IMAGE_SUCCESS
   },
   async process({ action, api }) {
     return await api.deleteUserImage(action.operation, {}, { userId: action.userId })

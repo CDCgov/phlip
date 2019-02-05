@@ -5,8 +5,6 @@ import TableCell from '@material-ui/core/TableCell'
 import moment from 'moment'
 import { connect } from 'react-redux'
 import TextLink from 'components/TextLink'
-// import Icon from 'components/Icon'
-// import { FileDocument } from 'mdi-material-ui'
 import CheckboxLabel from 'components/CheckboxLabel'
 
 /**
@@ -21,24 +19,27 @@ export const DocListTableRow = props => {
     whiteSpace: 'nowrap',
     width: 250,
     maxWidth: 250,
-    padding: 18
+    padding: '0 12px'
   }
- // const iconColor = '#949494'
+  // const iconColor = '#949494'
   return (
     <TableRow>
       <TableCell style={{ paddingLeft: 24, paddingRight: 0, width: '1%' }}>
-        <CheckboxLabel input={{ value: isChecked, onChange: onSelectFile }} />
-        {/*<Icon color={iconColor}><FileDocument /></Icon>*/}
+        <CheckboxLabel
+          input={{ value: isChecked, onChange: onSelectFile }}
+          labelStyle={{ margin: 0 }}
+          style={{ width: 24, height: 24 }}
+        />
       </TableCell>
       <TableCell padding="checkbox" style={listStyle}>
         <TextLink to={{ pathname: `/docs/${doc._id}/view`, state: { document: { ...doc } } }}>
           {doc.name}
         </TextLink>
       </TableCell>
-      <TableCell padding="checkbox" style={listStyle && {width:90}}  >
+      <TableCell padding="checkbox" style={listStyle && { width: 90 }}>
         {doc.uploadedBy.firstName} {doc.uploadedBy.lastName}
       </TableCell>
-      <TableCell padding="checkbox" style={listStyle && {width:50}}>
+      <TableCell padding="checkbox" style={listStyle && { width: 50 }}>
         {date}
       </TableCell>
       <TableCell padding="checkbox" style={listStyle}>

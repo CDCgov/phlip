@@ -25,7 +25,7 @@ describe('Home scene - AddEditJurisdiction actions creators', () => {
   test('should create an action to get project jurisdictions', () => {
     const expectedAction = {
       type: types.GET_PROJECT_JURISDICTIONS_REQUEST,
-      projectId: 1,
+      projectId: 1
     }
 
     expect(actions.getProjectJurisdictions(1)).toEqual(expectedAction)

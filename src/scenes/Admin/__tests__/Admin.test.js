@@ -10,7 +10,7 @@ const props = {
   sortBy: 'name',
   direction: 'asc',
   page: 0,
-  rowsPerPage: 10,
+  rowsPerPage: 10
 }
 
 describe('Admin Scene', () => {

@@ -19,9 +19,11 @@ const INITIAL_STATE = {
   bulkOperationInProgress:false,
   apiErrorOpen: false,
   apiErrorInfo: {
-      title: '',
-      text: ''
-  }
+    title: '',
+    text: ''
+  },
+  sortBy: 'uploadedDate',
+  sortDirection: 'desc'
 }
 
 const mergeName = docObj => ({
@@ -103,10 +105,9 @@ const removeContent = (document, index) => {
   return doc
 }
 
-const sortAndSlice = (arr, page, rowsPerPage) => {
+const sortAndSlice = (arr, page, rowsPerPage,sortBy,sortDirection) => {
   if (arr.length === 0) return []
-
-  const sorted = sortListOfObjects(arr, 'uploadedDate', 'desc')
+  const sorted = sortListOfObjects(arr, sortBy, sortDirection)
   const ids = sorted.map(m => m._id)
   let rows = parseInt(rowsPerPage)
   if (rowsPerPage === 'All')
@@ -126,7 +127,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         documents: {
           byId: obj,
           allIds: Object.keys(obj),
-          visible: sortAndSlice(Object.values(obj), 0, state.rowsPerPage),
+          visible: sortAndSlice(Object.values(obj), 0, state.rowsPerPage,state.sortBy,state.sortDirection),
           checked: state.documents.checked
         }
       }
@@ -136,7 +137,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(Object.values(state.documents.byId), action.page, state.rowsPerPage)
+          visible: sortAndSlice(Object.values(state.documents.byId), action.page, state.rowsPerPage,state.sortBy,state.sortDirection)
         },
         page: action.page
       }
@@ -153,7 +154,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(Object.values(state.documents.byId), page, rows)
+          visible: sortAndSlice(Object.values(state.documents.byId), page, rows,state.sortBy,state.sortDirection)
         },
         page,
         rowsPerPage: action.rowsPerPage
@@ -197,7 +198,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           ...state.documents,
           byId: obj,
           allIds: Object.keys(obj),
-          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage)
+          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage,state.sortBy,state.sortDirection)
         }
       }
 
@@ -209,84 +210,108 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(matches, state.page, state.rowsPerPage)
+          visible: sortAndSlice(matches, state.page, state.rowsPerPage,state.sortBy,state.sortDirection)
         }
       }
     case types.BULK_DELETE_REQUEST:
     //  console.log('bulk delete request activated')
-        return {
-            ...state,
-            bulkOperationInProgress: true
-        }
+      return {
+        ...state,
+        bulkOperationInProgress: true
+      }
     case types.BULK_DELETE_SUCCESS:
-        state.documents.checked.forEach(docId => {
-          delete state.documents.byId[docId]
-        })
-        obj = state.documents.byId
-        return {
-            ...state,
-            documents: {
-                ...state.documents,
-                byId: obj,
-                allIds: Object.keys(obj),
-                visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage),
-                checked: []
-            },
-            bulkOperationInProgress: false
-         }
+      state.documents.checked.forEach(docId => {
+        delete state.documents.byId[docId]
+      })
+      obj = state.documents.byId
+      return {
+        ...state,
+        documents: {
+          ...state.documents,
+          byId: obj,
+          allIds: Object.keys(obj),
+          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage,state.sortBy,state.sortDirection),
+          checked: []
+        },
+        bulkOperationInProgress: false
+      }
 
     case types.BULK_DELETE_FAIL:
-        return {
-          ...state,
-            bulkOperationInProgress: false,
-            apiErrorInfo: {
-                title: 'Bulk delete error',
-                text: 'Failed to delete documents.'
-            },
-            apiErrorOpen: true
-    }
-      case types.BULK_UPDATE_REQUEST:
-          return {
-              ...state,
-              bulkOperationInProgress: true
-          }
+      return {
+        ...state,
+        bulkOperationInProgress: false,
+        apiErrorInfo: {
+          title: 'Bulk delete error',
+          text: 'Failed to delete documents.'
+        },
+        apiErrorOpen: true
+      }
+    case types.BULK_UPDATE_REQUEST:
+      return {
+        ...state,
+        bulkOperationInProgress: true
+      }
 
-      case types.BULK_UPDATE_SUCCESS:
-          obj = action.payload
-          return {
-              ...state,
-              documents: {
-                  ...state.documents,
-                  byId: obj,
-                  allIds: Object.keys(obj),
-                  visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage),
-                  checked: []
-              },
-              bulkOperationInProgress: false,
-              apiErrorOpen: false,
-              allSelected : false
-          }
+    case types.BULK_UPDATE_SUCCESS:
+      obj = action.payload
+      return {
+        ...state,
+        documents: {
+          ...state.documents,
+          byId: obj,
+          allIds: Object.keys(obj),
+          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage,state.sortBy,state.sortDirection),
+          checked: []
+        },
+        bulkOperationInProgress: false,
+        apiErrorOpen: false,
+        allSelected : false
+      }
 
-      case types.BULK_UPDATE_FAIL:
-          return {
-              ...state,
-              bulkOperationInProgress: false,
-              apiErrorInfo: {
-                  title: 'Bulk update error',
-                  text: 'Failed to update documents.'
-              },
-              apiErrorOpen: true
-          }
+    case types.BULK_UPDATE_FAIL:
+      return {
+        ...state,
+        bulkOperationInProgress: false,
+        apiErrorInfo: {
+          title: 'Bulk update error',
+          text: 'Failed to update documents.'
+        },
+        apiErrorOpen: true
+      }
 
-      case types.CLOSE_ALERT:
-          return {
-              ...state,
-              apiErrorInfo: {
-                  title: '',
-                  text: ''
-              },
-              apiErrorOpen: false
-          }
+    case types.CLOSE_ALERT:
+      return {
+        ...state,
+        apiErrorInfo: {
+          title: '',
+          text: ''
+        },
+        apiErrorOpen: false
+      }
+    case types.SORT_DOCUMENTS:
+      const currentSortField = state.sortBy
+      const currentSortDirection = state.sortDirection
+      let sortDirection = 'desc'
+      if (action.sortDirection === undefined){
+        if (currentSortField !== action.sortBy) {
+          // if sort field changed,  set sort direct to asc
+          sortDirection = 'asc'
+        } else {
+          sortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc'
+        }
+      } else {
+        sortDirection = action.sortDirection
+      }
+
+      return {
+        ...state,
+        sortBy: action.sortBy,
+        sortDirection: sortDirection,
+        documents: {
+          ...state.documents,
+          visible: sortAndSlice(Object.values(state.documents.byId), state.page, state.rowsPerPage,action.sortBy,sortDirection)
+        }
+      }
     case types.FLUSH_STATE:
       return INITIAL_STATE
 

@@ -3,7 +3,6 @@
 exports[`DocumentManagement - DocList - DocListTableRow should render correctly 1`] = `
 <WithStyles(TableRow)>
   <WithStyles(TableCell)
-    padding="checkbox"
     style={
       Object {
         "paddingLeft": 24,
@@ -19,6 +18,17 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
           "value": false,
         }
       }
+      labelStyle={
+        Object {
+          "margin": 0,
+        }
+      }
+      style={
+        Object {
+          "height": 24,
+          "width": 24,
+        }
+      }
     />
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
@@ -27,7 +37,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       Object {
         "maxWidth": 250,
         "overflow": "hidden",
-        "padding": 18,
+        "padding": "0 12px",
         "textOverflow": "ellipsis",
         "whiteSpace": "nowrap",
         "width": 250,
@@ -66,25 +76,10 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
     padding="checkbox"
     style={
       Object {
-        "maxWidth": 250,
-        "overflow": "hidden",
-        "padding": 18,
-        "textOverflow": "ellipsis",
-        "whiteSpace": "nowrap",
-        "width": 250,
+        "width": 90,
       }
     }
   >
-    <span
-      style={
-        Object {
-          "fontWeight": 500,
-        }
-      }
-    >
-      Uploaded By:
-       
-    </span>
     Test
      
     User
@@ -93,25 +88,10 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
     padding="checkbox"
     style={
       Object {
-        "maxWidth": 250,
-        "overflow": "hidden",
-        "padding": 18,
-        "textOverflow": "ellipsis",
-        "whiteSpace": "nowrap",
-        "width": 250,
+        "width": 50,
       }
     }
   >
-    <span
-      style={
-        Object {
-          "fontWeight": 500,
-        }
-      }
-    >
-      Uploaded Date:
-       
-    </span>
     12/31/1999
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
@@ -120,23 +100,13 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       Object {
         "maxWidth": 250,
         "overflow": "hidden",
-        "padding": 18,
+        "padding": "0 12px",
         "textOverflow": "ellipsis",
         "whiteSpace": "nowrap",
         "width": 250,
       }
     }
   >
-    <span
-      style={
-        Object {
-          "fontWeight": 500,
-        }
-      }
-    >
-      Projects:
-       
-    </span>
     P1, P2
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
@@ -145,7 +115,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       Object {
         "maxWidth": 250,
         "overflow": "hidden",
-        "padding": 18,
+        "padding": "0 12px",
         "paddingRight": 24,
         "textOverflow": "ellipsis",
         "whiteSpace": "nowrap",
@@ -153,16 +123,6 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       }
     }
   >
-    <span
-      style={
-        Object {
-          "fontWeight": 500,
-        }
-      }
-    >
-      Jurisdictions:
-       
-    </span>
     J1, J2
   </WithStyles(TableCell)>
 </WithStyles(TableRow)>

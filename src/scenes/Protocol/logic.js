@@ -21,7 +21,7 @@ const getProtocolLogic = createLogic({
           lockInfo = {}
         }
       } catch (e) {
-        error.lockInfo =  'We couldn\'t determine if the protocol is checked out at this time.'
+        error.lockInfo = 'We couldn\'t determine if the protocol is checked out at this time.'
       }
 
       dispatch({

@@ -117,7 +117,11 @@ export class SearchBox extends Component {
       if (this.props.form[key] !== '') {
         let p = this.props.form[key]
         if (key === 'uploadedDate') {
-          p = moment.utc(p).local().format('M/D/YYYY')
+          let days = parseInt(this.props.form['uploadedDaysRange'])
+          let dEnd= moment.utc(p).add(days,'days').local().format('MM/DD/YYYY')
+          let dBegin = moment.utc(p).subtract(days,'days').local().format('MM/DD/YYYY')
+          p= `["${dBegin}","${dEnd}"]`
+        // p = moment.utc(p).local().format('M/D/YYYY')
         } else {
           if (checkIfMultiWord(p)) {
             p = `(${p})`
@@ -163,7 +167,8 @@ export class SearchBox extends Component {
       form: {
         uploadedDate,
         uploadedBy,
-        name
+        name,
+        uploadedDaysRange
       },
       searchValue,
       projectSuggestions,
@@ -206,6 +211,13 @@ export class SearchBox extends Component {
         padding: 0
       }
     }
+    const inputPropsNumeric = {
+      style: {
+        padding:0
+      },
+      max: 365,
+      min: 1
+    }
 
     return (
       <Manager>
@@ -239,135 +251,148 @@ export class SearchBox extends Component {
           {({ placement, ref, style }) => {
             return (
               this.state.showFilterForm &&
-              <ClickAwayListener onClickAway={this.handleClickAway}>
-                <div data-placement={placement} style={{ ...style, width: '100%', zIndex: 5 }} ref={ref}>
-                  <FlexGrid container type="column" padding={24} raised>
-                    <FlexGrid container type="row" style={formRowStyles}>
-                      <Alphabetical
-                        style={{
-                          color: 'white',
-                          backgroundColor: '#757575',
-                          fontSize: 15,
-                          borderRadius: 3,
-                          marginLeft: 2,
-                          marginRight: 2,
-                          marginTop: 1
-                        }}
-                      />
-                      <Typography variant="body2" style={formRowFontStyles}>
+                <ClickAwayListener onClickAway={this.handleClickAway}>
+                  <div data-placement={placement} style={{ ...style, width: '100%', zIndex: 5 }} ref={ref}>
+                    <FlexGrid container type="column" padding={24} raised>
+                      <FlexGrid container type="row" style={formRowStyles}>
+                        <Alphabetical
+                          style={{
+                            color: 'white',
+                            backgroundColor: '#757575',
+                            fontSize: 15,
+                            borderRadius: 3,
+                            marginLeft: 2,
+                            marginRight: 2,
+                            marginTop: 1
+                          }}
+                        />
+                        <Typography variant="body2" style={formRowFontStyles}>
                         Name
-                      </Typography>
-                      <TextField
-                        fullWidth
-                        inputProps={inputProps}
-                        value={name}
-                        onChange={e => this.handleFormValueChange('name', e.target.value)}
-                      />
-                    </FlexGrid>
-                    <FlexGrid container type="row" style={formRowStyles}>
-                      <AccountBox style={{ fontSize: 18, color: '#757575' }} />
-                      <Typography variant="body2" htmlFor="uploaded-by" style={formRowFontStyles}>
+                        </Typography>
+                        <TextField
+                          fullWidth
+                          inputProps={inputProps}
+                          value={name}
+                          onChange={e => this.handleFormValueChange('name', e.target.value)}
+                        />
+                      </FlexGrid>
+                      <FlexGrid container type="row" style={formRowStyles}>
+                        <AccountBox style={{ fontSize: 18, color: '#757575' }} />
+                        <Typography variant="body2" htmlFor="uploaded-by" style={formRowFontStyles}>
                         Uploaded By
-                      </Typography>
-                      <TextField
-                        fullWidth
-                        name="uploaded-by"
-                        inputProps={inputProps}
-                        value={uploadedBy}
-                        onChange={e => this.handleFormValueChange('uploadedBy', e.target.value)}
-                      />
-                    </FlexGrid>
-                    <FlexGrid container type="row" style={formRowStyles}>
-                      <CalendarBlank style={{ fontSize: 18, color: '#757575' }} />
-                      <Typography variant="body2" htmlFor="uploaded-date" style={formRowFontStyles}>
-                        Uploaded On
-                      </Typography>
-                      <DatePicker
-                        name="uploadedDateSearch"
-                        dateFormat="MM/DD/YYYY"
-                        onChange={date => this.handleFormValueChange('uploadedDate', date)}
-                        value={uploadedDate}
-                        style={{ marginTop: 0 }}
-                        containerProps={{ fullWidth: true }}
-                        inputProps={inputProps}
-                        onOpen={this.handleOpenDatePicker}
-                        onClose={this.handleCloseDatePicker}
-                        InputAdornmentProps={{
-                          disableTypography: true,
-                          style: {
-                            height: 19,
-                            width: 19,
-                            margin: 0,
-                            marginRight: 15,
-                            alignItems: 'flex-end',
-                            marginBottom: -8
-                          }
-                        }}
-                      />
-                    </FlexGrid>
-                    <FlexGrid container type="row" style={formRowStyles}>
-                      <Clipboard style={{ fontSize: 18, color: '#757575' }} />
-                      <Typography variant="body2" htmlFor="project" style={formRowFontStyles}>
+                        </Typography>
+                        <TextField
+                          fullWidth
+                          name="uploaded-by"
+                          inputProps={inputProps}
+                          value={uploadedBy}
+                          onChange={e => this.handleFormValueChange('uploadedBy', e.target.value)}
+                        />
+                      </FlexGrid>
+                      <FlexGrid container flex type="row" style={formRowStyles} justify="space-between" >
+                        <CalendarBlank style={{ fontSize: 18, color: '#757575' }} />
+                        <Typography variant="body2" htmlFor="uploaded-within" style={formRowFontStyles}>
+                        Date within
+                        </Typography>
+                        <FlexGrid container flex type="row" style={{width:'70%'}}>
+                          <TextField
+                            style={{width:'40%', alignSelf:'flex-start'}}
+                            type='number'
+                            name="uploaded-within"
+                            inputProps={inputPropsNumeric}
+                            value={uploadedDaysRange}
+                            onChange={e => this.handleFormValueChange('uploadedDaysRange', e.target.value)}
+                          />
+                          <Typography variant="body2" style={formRowFontStyles}>
+                        day(s) of
+                          </Typography>
+                        </FlexGrid>
+                        <DatePicker
+                          name="uploadedDateSearch"
+                          dateFormat="MM/DD/YYYY"
+                          onChange={date => this.handleFormValueChange('uploadedDate', date)}
+                          value={uploadedDate}
+                          style={{ marginTop: 0, alignItems:'flex-end', paddingLeft:'30'}}
+                          containerProps={{ fullWidth: false }}
+                          inputProps={inputProps}
+                          onOpen={this.handleOpenDatePicker}
+                          onClose={this.handleCloseDatePicker}
+                          InputAdornmentProps={{
+                            disableTypography: true,
+                            style: {
+                              height: 19,
+                              width: 19,
+                              margin: 0,
+                              marginRight: 15,
+                              alignItems: 'flex-end',
+                              marginBottom: -8
+                            }
+                          }}
+                        />
+                      </FlexGrid>
+                      <FlexGrid container type="row" style={formRowStyles}>
+                        <Clipboard style={{ fontSize: 18, color: '#757575' }} />
+                        <Typography variant="body2" htmlFor="project" style={formRowFontStyles}>
                         Project
-                      </Typography>
-                      <Autocomplete
-                        suggestions={projectSuggestions}
-                        handleGetSuggestions={this.handleGetSuggestions('project')}
-                        handleClearSuggestions={this.handleClearSuggestions('project')}
-                        showSearchIcon={false}
-                        inputProps={{
-                          value: projectSearchValue,
-                          onChange: (e, { newValue }) => {
-                            if (e.target.value === undefined) {
-                              this.handleAutocompleteSearchValueChange('project', newValue.name)
-                            } else {
-                              this.handleAutocompleteSearchValueChange('project', e.target.value)
-                            }
-                          },
-                          id: 'project-name',
-                          ...inputProps
-                        }}
-                        handleSuggestionSelected={this.handleSuggestionSelected('project')}
-                      />
-                    </FlexGrid>
-                    <FlexGrid container type="row" style={formRowStyles}>
-                      <City style={{ fontSize: 18, color: '#757575' }} />
-                      <Typography variant="body2" htmlFor="jurisdiction" style={formRowFontStyles}>
+                        </Typography>
+                        <Autocomplete
+                          suggestions={projectSuggestions}
+                          handleGetSuggestions={this.handleGetSuggestions('project')}
+                          handleClearSuggestions={this.handleClearSuggestions('project')}
+                          showSearchIcon={false}
+                          inputProps={{
+                            value: projectSearchValue,
+                            onChange: (e, { newValue }) => {
+                              if (e.target.value === undefined) {
+                                this.handleAutocompleteSearchValueChange('project', newValue.name)
+                              } else {
+                                this.handleAutocompleteSearchValueChange('project', e.target.value)
+                              }
+                            },
+                            id: 'project-name',
+                            ...inputProps
+                          }}
+                          handleSuggestionSelected={this.handleSuggestionSelected('project')}
+                        />
+                      </FlexGrid>
+                      <FlexGrid container type="row" style={formRowStyles}>
+                        <City style={{ fontSize: 18, color: '#757575' }} />
+                        <Typography variant="body2" htmlFor="jurisdiction" style={formRowFontStyles}>
                         Jurisdiction
-                      </Typography>
-                      <Autocomplete
-                        suggestions={jurisdictionSuggestions}
-                        handleGetSuggestions={this.handleGetSuggestions('jurisdiction')}
-                        handleClearSuggestions={this.handleClearSuggestions('jurisdiction')}
-                        showSearchIcon={false}
-                        inputProps={{
-                          value: jurisdictionSearchValue,
-                          onChange: (e, { newValue }) => {
-                            if (e.target.value === undefined) {
-                              this.handleAutocompleteSearchValueChange('jurisdiction', newValue.name)
-                            } else {
-                              this.handleAutocompleteSearchValueChange('jurisdiction', e.target.value)
-                            }
-                          },
-                          id: 'jurisdiction-name',
-                          ...inputProps
-                        }}
-                        handleSuggestionSelected={this.handleSuggestionSelected('jurisdiction')}
-                      />
-                    </FlexGrid>
-                    <FlexGrid container type="row" justify="flex-end">
-                      <Button
-                        raised={false}
-                        color="secondary"
-                        listButton
-                        onClick={this.handleSearchFormSubmit}
-                        style={{ letterSpacing: '.5px', textTransform: 'unset', borderRadius: 5 }}>
+                        </Typography>
+                        <Autocomplete
+                          suggestions={jurisdictionSuggestions}
+                          handleGetSuggestions={this.handleGetSuggestions('jurisdiction')}
+                          handleClearSuggestions={this.handleClearSuggestions('jurisdiction')}
+                          showSearchIcon={false}
+                          inputProps={{
+                            value: jurisdictionSearchValue,
+                            onChange: (e, { newValue }) => {
+                              if (e.target.value === undefined) {
+                                this.handleAutocompleteSearchValueChange('jurisdiction', newValue.name)
+                              } else {
+                                this.handleAutocompleteSearchValueChange('jurisdiction', e.target.value)
+                              }
+                            },
+                            id: 'jurisdiction-name',
+                            ...inputProps
+                          }}
+                          handleSuggestionSelected={this.handleSuggestionSelected('jurisdiction')}
+                        />
+                      </FlexGrid>
+                      <FlexGrid container type="row" justify="flex-end">
+                        <Button
+                          raised={false}
+                          color="secondary"
+                          listButton
+                          onClick={this.handleSearchFormSubmit}
+                          style={{ letterSpacing: '.5px', textTransform: 'unset', borderRadius: 5 }}>
                         Search
-                      </Button>
+                        </Button>
+                      </FlexGrid>
                     </FlexGrid>
-                  </FlexGrid>
-                </div>
-              </ClickAwayListener>
+                  </div>
+                </ClickAwayListener>
             )
           }}
         </Popper>

@@ -306,17 +306,17 @@ export class AddEditUser extends Component {
                       <Tooltip
                         text="Edit photo"
                         placement="top"
-                          //aria-label="Edit picture"
+                        //aria-label="Edit picture"
                         id="edit-picture">
                         <TextLink
                           to={{
-                              pathname: `/admin/edit/user/${this.props.selectedUser.id}/avatar`,
-                              state: {
-                                isEdit: true,
-                                userId: this.props.selectedUser.id,
-                                avatar: this.props.selectedUser.avatar
-                              }
-                            }}>
+                            pathname: `/admin/edit/user/${this.props.selectedUser.id}/avatar`,
+                            state: {
+                              isEdit: true,
+                              userId: this.props.selectedUser.id,
+                              avatar: this.props.selectedUser.avatar
+                            }
+                          }}>
                           <Avatar
                             cardAvatar
                             style={{ width: '65px', height: '65px' }}
@@ -325,7 +325,7 @@ export class AddEditUser extends Component {
                           />
                         </TextLink>
                       </Tooltip>
-                      )
+                    )
                       : (
                         <ReactFileReader base64={true} fileTypes={['.jpg', 'png']} handleFiles={this.openAvatarForm}>
                           <IconButton

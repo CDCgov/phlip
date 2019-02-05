@@ -125,9 +125,12 @@ export class DocumentMeta extends Component {
    * @param index
    */
   handleGetSuggestions = (suggestionType, { value: searchString }, index = null) => {
-    suggestionType === 'project'
-      ? this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
-      : this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
+    clearTimeout(this.timeout)
+    this.timeout = setTimeout(()=>{
+      suggestionType === 'project'
+        ? this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
+        : this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
+    },500)
   }
 
   /**
@@ -321,7 +324,7 @@ export class DocumentMeta extends Component {
             Document Information
           </Typography>
           <Divider />
-          <FlexGrid container flex padding={10}>
+          <FlexGrid container flex padding={10} style={{ overflow: 'auto' }}>
             <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
               <FileDocument style={iconStyle} />
               <Typography variant="body1" style={metaStyling}>Status:</Typography>
@@ -427,7 +430,7 @@ export class DocumentMeta extends Component {
           style={{ overflow: 'hidden', minWidth: '30%', height: '30%', marginBottom: 20 }}>
           <FlexGrid container type="row" align="center" justify="space-between" padding={10} style={{ minHeight: 32 }}>
             <Typography variant="body2" style={{ color: 'black' }}>
-            Projects
+              Projects
             </Typography>
             <Button
               onClick={this.showAddProjModal}
@@ -467,8 +470,7 @@ export class DocumentMeta extends Component {
                   </IconButton>}
                 </FlexGrid>
               )
-              }
-            )}
+            })}
           </FlexGrid>
         </FlexGrid>
         <FlexGrid raised container flex style={{ overflow: 'hidden', minWidth: '30%', height: '30%' }}>
@@ -511,8 +513,7 @@ export class DocumentMeta extends Component {
                   onClick={() => this.handleShowDeleteConfirm('jurisdiction', index)}>
                   delete
                 </IconButton>}
-              </FlexGrid>)
-            )}
+              </FlexGrid>))}
           </FlexGrid>
           <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="md" hideOverflow={false}>
             {this.props.alertOpen &&

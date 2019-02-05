@@ -58,8 +58,7 @@ if (IS_SAML_ENABLED) {
     passport.authenticate('saml', { failureRedirect: '/login', failureFlash: true }),
     (req, res) => {
       res.redirect('/')
-    }
-  )
+    })
 
   // SAML login callback URL. Redirects the frontend to /login/verify-user
   app.post('/login/callback',
@@ -110,21 +109,20 @@ if (IS_HTTPS) {
     preload: true
   }))
   app.use(helmet.contentSecurityPolicy({
-      directives: {
-        defaultSrc: ['\'self\'', 'https:'],
-        styleSrc: ['\'self\'', 'code.jquery.com', '\'unsafe-inline\'', 'fonts.googleapis.com'],
-        scriptSrc: [
-          '\'self\'', 'code.jquery.com', '\'unsafe-inline\'', 'www.cdc.gov', 'cdc.gov',
-          '\'unsafe-eval\'', 'www.google-analytics.com', 'search.usa.gov'
-        ],
-        objectSrc: ['\'self\''],
-        connectSrc: ['\'self\'', 'www.cdc.gov', 'cdc.gov', connectSrc, docConnectSrc],
-        imgSrc: ['\'self\'', 'data:', 'www.google-analytics.com', 'stats.search.usa.gov', 'cdc.112.2o7.net'],
-        fontSrc: ['\'self\'', 'fonts.google.com', 'fonts.gstatic.com']
-      },
-      setAllHeaders: true
-    })
-  )
+    directives: {
+      defaultSrc: ['\'self\'', 'https:'],
+      styleSrc: ['\'self\'', 'code.jquery.com', '\'unsafe-inline\'', 'fonts.googleapis.com'],
+      scriptSrc: [
+        '\'self\'', 'code.jquery.com', '\'unsafe-inline\'', 'www.cdc.gov', 'cdc.gov',
+        '\'unsafe-eval\'', 'www.google-analytics.com', 'search.usa.gov'
+      ],
+      objectSrc: ['\'self\''],
+      connectSrc: ['\'self\'', 'www.cdc.gov', 'cdc.gov', connectSrc, docConnectSrc],
+      imgSrc: ['\'self\'', 'data:', 'www.google-analytics.com', 'stats.search.usa.gov', 'cdc.112.2o7.net'],
+      fontSrc: ['\'self\'', 'fonts.google.com', 'fonts.gstatic.com']
+    },
+    setAllHeaders: true
+  }))
   app.use(helmet.noCache())
   app.use(express.static('./dist/'))
 

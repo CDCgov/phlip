@@ -18,9 +18,9 @@ const props = {
   },
   apiErrorOpen: false,
   apiErrorInfo: {
-        title: '',
-        text: ''
-    },
+    title: '',
+    text: ''
+  }
 }
 
 describe('Document Management scene', () => {

@@ -17,7 +17,8 @@ export const types = {
   BULK_DELETE_REQUEST: 'BULK_DELETE_REQUEST',
   BULK_DELETE_SUCCESS: 'BULK_DELETE_SUCCESS',
   BULK_DELETE_FAIL: 'BULK_DELETE_FAIL',
-  CLOSE_ALERT: 'CLOSE_ALERT'
+  CLOSE_ALERT: 'CLOSE_ALERT',
+  SORT_DOCUMENTS : 'SORT_DOCUMENTS'
 }
 
 export default {
@@ -28,13 +29,14 @@ export default {
   handleSelectOneFile: makeActionCreator(types.ON_SELECT_ONE_FILE, 'id'),
   handleBulkUpdate: makeActionCreator(types.BULK_UPDATE_REQUEST, 'updateData','selectedDocs'),
   handleBulkDelete: makeActionCreator(types.BULK_DELETE_REQUEST,'selectedDocs'),
-  closeAlert : makeActionCreator(types.CLOSE_ALERT)
+  closeAlert : makeActionCreator(types.CLOSE_ALERT),
+  handleSortRequest:  makeActionCreator(types.SORT_DOCUMENTS, 'sortBy','sortDirection')
 }
 
 export const projectAutocomplete = {
-    ...makeAutocompleteActionCreators('PROJECT', '')
+  ...makeAutocompleteActionCreators('PROJECT', '')
 }
 
 export const jurisdictionAutocomplete = {
-    ...makeAutocompleteActionCreators('JURISDICTION', '')
+  ...makeAutocompleteActionCreators('JURISDICTION', '')
 }

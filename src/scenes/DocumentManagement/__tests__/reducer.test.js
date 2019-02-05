@@ -87,7 +87,8 @@ const mockDocuments = {
 }
 
 const orderedByDate = ['4', '1', '6', '7', '2', '5', '3']
-
+const orderedByNameAsc = ['5', '7', '6', '2', '4', '1', '3']
+const orderedByNameDesc = ['3','1','4','2','6','7','5']
 const initial = {
   documents: {
     byId: {},
@@ -101,9 +102,11 @@ const initial = {
   bulkOperationInProgress: false,
   apiErrorOpen: false,
   apiErrorInfo: {
-      title: '',
-      text: ''
-  }
+    title: '',
+    text: ''
+  },
+  sortBy: 'uploadedDate',
+  sortDirection: 'desc'
 }
 
 const getState = (other = {}) => ({
@@ -121,8 +124,8 @@ describe('Document Management reducer', () => {
       const action = {
         type: types.GET_DOCUMENTS_SUCCESS,
         payload: [
-          { name: 'Doc 1', _id: '12345', uploadedBy: { firstName: 'test', lastName: 'user' } },
-          { name: 'Doc 2', _id: '54321', uploadedBy: { firstName: 'test', lastName: 'user' } }
+          {name: 'Doc 1', _id: '12345', uploadedBy: {firstName: 'test', lastName: 'user'}},
+          {name: 'Doc 2', _id: '54321', uploadedBy: {firstName: 'test', lastName: 'user'}}
         ]
       }
 
@@ -133,13 +136,13 @@ describe('Document Management reducer', () => {
         '12345': {
           name: 'Doc 1',
           _id: '12345',
-          uploadedBy: { firstName: 'test', lastName: 'user' },
+          uploadedBy: {firstName: 'test', lastName: 'user'},
           uploadedByName: 'test user'
         },
         '54321': {
           name: 'Doc 2',
           _id: '54321',
-          uploadedBy: { firstName: 'test', lastName: 'user' },
+          uploadedBy: {firstName: 'test', lastName: 'user'},
           uploadedByName: 'test user'
         }
       })
@@ -154,19 +157,19 @@ describe('Document Management reducer', () => {
           {
             name: 'Doc 1',
             _id: '12345',
-            uploadedBy: { firstName: 'test', lastName: 'user' },
+            uploadedBy: {firstName: 'test', lastName: 'user'},
             uploadedByName: 'test user'
           },
           {
             name: 'Doc 2',
             _id: '54321',
-            uploadedBy: { firstName: 'test', lastName: 'user' },
+            uploadedBy: {firstName: 'test', lastName: 'user'},
             uploadedByName: 'test user'
           }
         ]
       }
 
-      const currentState = getState({ rowsPerPage: '1' })
+      const currentState = getState({rowsPerPage: '1'})
       const updatedState = reducer(currentState, action)
 
       expect(updatedState.documents.visible).toEqual(['12345'])
@@ -179,19 +182,19 @@ describe('Document Management reducer', () => {
           {
             name: 'Doc 1',
             _id: '12345',
-            uploadedBy: { firstName: 'test', lastName: 'user' },
+            uploadedBy: {firstName: 'test', lastName: 'user'},
             uploadedByName: 'test user'
           },
           {
             name: 'Doc 2',
             _id: '54321',
-            uploadedBy: { firstName: 'test', lastName: 'user' },
+            uploadedBy: {firstName: 'test', lastName: 'user'},
             uploadedByName: 'test user'
           }
         ]
       }
 
-      const currentState = getState({ documents: { checked: ['09876'] } })
+      const currentState = getState({documents: {checked: ['09876']}})
       const updatedState = reducer(currentState, action)
       expect(updatedState.documents.checked).toEqual(['09876'])
     })
@@ -203,13 +206,13 @@ describe('Document Management reducer', () => {
           {
             name: 'Doc 1',
             _id: '12345',
-            uploadedBy: { firstName: 'test', lastName: 'user' },
+            uploadedBy: {firstName: 'test', lastName: 'user'},
             uploadedByName: 'test user'
           },
           {
             name: 'Doc 2',
             _id: '54321',
-            uploadedBy: { firstName: 'test', lastName: 'user' },
+            uploadedBy: {firstName: 'test', lastName: 'user'},
             uploadedByName: 'test user'
           }
         ]
@@ -226,7 +229,7 @@ describe('Document Management reducer', () => {
 
   describe('ON_PAGE_CHANGE', () => {
     test('should update page property in state', () => {
-      const action = { type: types.ON_PAGE_CHANGE, page: 1 }
+      const action = {type: types.ON_PAGE_CHANGE, page: 1}
 
       const currentState = getState()
       const updatedState = reducer(currentState, action)
@@ -235,7 +238,7 @@ describe('Document Management reducer', () => {
     })
 
     test('should update documents.visible to show selected page of documents', () => {
-      const action = { type: types.ON_PAGE_CHANGE, page: 1 }
+      const action = {type: types.ON_PAGE_CHANGE, page: 1}
 
       const currentState = getState({
         documents: mockDocuments,
@@ -249,7 +252,7 @@ describe('Document Management reducer', () => {
 
   describe('ON_ROWS_CHANGE', () => {
     test('should update rowsPerPage property in state', () => {
-      const action = { type: types.ON_ROWS_CHANGE, rowsPerPage: '4' }
+      const action = {type: types.ON_ROWS_CHANGE, rowsPerPage: '4'}
 
       const currentState = getState()
       const updatedState = reducer(currentState, action)
@@ -258,17 +261,17 @@ describe('Document Management reducer', () => {
     })
 
     test('should update documents.visible to show new # of rows per page', () => {
-      const action = { type: types.ON_ROWS_CHANGE, rowsPerPage: '5' }
+      const action = {type: types.ON_ROWS_CHANGE, rowsPerPage: '5'}
 
-      const currentState = getState({ documents: mockDocuments })
+      const currentState = getState({documents: mockDocuments})
       const updatedState = reducer(currentState, action)
       expect(updatedState.documents.visible).toEqual(['4', '1', '6', '7', '2'])
     })
 
     test('should handle All rowsPerPage option', () => {
-      const action = { type: types.ON_ROWS_CHANGE, rowsPerPage: 'All' }
+      const action = {type: types.ON_ROWS_CHANGE, rowsPerPage: 'All'}
 
-      const currentState = getState({ documents: mockDocuments })
+      const currentState = getState({documents: mockDocuments})
       const updatedState = reducer(currentState, action)
 
       expect(updatedState.documents.visible).toEqual(orderedByDate)
@@ -277,16 +280,16 @@ describe('Document Management reducer', () => {
 
   describe('ON_SELECT_ALL', () => {
     test('should update allSelect property to false if state.allSelected === true', () => {
-      const action = { type: types.ON_SELECT_ALL }
+      const action = {type: types.ON_SELECT_ALL}
 
-      const currentState = getState({ allSelected: true })
+      const currentState = getState({allSelected: true})
       const updatedState = reducer(currentState, action)
 
       expect(updatedState.allSelected).toEqual(false)
     })
 
     test('should update allSelect property to true if state.allSelected === false', () => {
-      const action = { type: types.ON_SELECT_ALL }
+      const action = {type: types.ON_SELECT_ALL}
 
       const currentState = getState()
       const updatedState = reducer(currentState, action)
@@ -295,9 +298,9 @@ describe('Document Management reducer', () => {
     })
 
     test('should add all document ids to the documents.checked if state.allSelected === false', () => {
-      const action = { type: types.ON_SELECT_ALL }
+      const action = {type: types.ON_SELECT_ALL}
 
-      const currentState = getState({ documents: mockDocuments })
+      const currentState = getState({documents: mockDocuments})
       const updatedState = reducer(currentState, action)
 
       expect(updatedState.documents.checked).toEqual([
@@ -312,11 +315,11 @@ describe('Document Management reducer', () => {
     })
 
     test('should remove all document ids from documents.checked if state.allSelected === true', () => {
-      const action = { type: types.ON_SELECT_ALL }
+      const action = {type: types.ON_SELECT_ALL}
 
       const currentState = getState({
         allSelected: true,
-        documents: { checked: ['1', '2', '3', '4', '5', '6', '7'] }
+        documents: {checked: ['1', '2', '3', '4', '5', '6', '7']}
       })
       const updatedState = reducer(currentState, action)
 
@@ -326,7 +329,7 @@ describe('Document Management reducer', () => {
 
   describe('ON_SELECT_ONE_FILE', () => {
     test('should add the action.id to documents.checked if it doesn\'t already exist', () => {
-      const action = { type: types.ON_SELECT_ONE_FILE, id: '5' }
+      const action = {type: types.ON_SELECT_ONE_FILE, id: '5'}
 
       const currentState = getState()
       const updatedState = reducer(currentState, action)
@@ -335,9 +338,9 @@ describe('Document Management reducer', () => {
     })
 
     test('should remove the id that matches action.id if documents.checked already contains action.id', () => {
-      const action = { type: types.ON_SELECT_ONE_FILE, id: '5' }
+      const action = {type: types.ON_SELECT_ONE_FILE, id: '5'}
 
-      const currentState = getState({ documents: { checked: ['4', '5', '6'] } })
+      const currentState = getState({documents: {checked: ['4', '5', '6']}})
       const updatedState = reducer(currentState, action)
 
       expect(updatedState.documents.checked).toEqual(['4', '6'])
@@ -353,20 +356,20 @@ describe('Document Management reducer', () => {
             {
               name: 'new doc 1',
               _id: '24',
-              uploadedBy: { firstName: 'test', lastName: 'user' },
+              uploadedBy: {firstName: 'test', lastName: 'user'},
               uploadedByName: 'test user'
             },
             {
               name: 'new doc 2',
               _id: '42',
-              uploadedBy: { firstName: 'test', lastName: 'user' },
+              uploadedBy: {firstName: 'test', lastName: 'user'},
               uploadedByName: 'test user'
             }
           ]
         }
       }
 
-      const currentState = getState({ documents: mockDocuments })
+      const currentState = getState({documents: mockDocuments})
       const updatedState = reducer(currentState, action)
 
       expect(updatedState.documents.byId).toEqual({
@@ -374,13 +377,13 @@ describe('Document Management reducer', () => {
         '24': {
           name: 'new doc 1',
           _id: '24',
-          uploadedBy: { firstName: 'test', lastName: 'user' },
+          uploadedBy: {firstName: 'test', lastName: 'user'},
           uploadedByName: 'test user'
         },
         '42': {
           name: 'new doc 2',
           _id: '42',
-          uploadedBy: { firstName: 'test', lastName: 'user' },
+          uploadedBy: {firstName: 'test', lastName: 'user'},
           uploadedByName: 'test user'
         }
       })
@@ -404,7 +407,7 @@ describe('Document Management reducer', () => {
         }
       }
 
-      const currentState = getState({ documents: mockDocuments })
+      const currentState = getState({documents: mockDocuments})
       const updatedState = reducer(currentState, action)
 
       expect(updatedState.documents.visible).toEqual(['1', '6', '2', '5'])
@@ -420,7 +423,7 @@ describe('Document Management reducer', () => {
         }
       }
 
-      const currentState = getState({ documents: mockDocuments })
+      const currentState = getState({documents: mockDocuments})
       const updatedState = reducer(currentState, action)
 
       expect(updatedState.documents.visible).toEqual([])
@@ -436,7 +439,7 @@ describe('Document Management reducer', () => {
         }
       }
 
-      const currentState = getState({ documents: mockDocuments })
+      const currentState = getState({documents: mockDocuments})
       const updatedState = reducer(currentState, action)
 
       expect(updatedState.documents.visible).toEqual(['7'])
@@ -452,7 +455,7 @@ describe('Document Management reducer', () => {
         }
       }
 
-      const currentState = getState({ documents: mockDocuments })
+      const currentState = getState({documents: mockDocuments})
       const updatedState = reducer(currentState, action)
 
       expect(updatedState.documents.visible).toEqual(['6', '7', '5'])
@@ -463,14 +466,14 @@ describe('Document Management reducer', () => {
 
       const action = {
         type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: `name: (document about) | uploadedDate: ${date}`,
+        value: `name: (document about) | uploadedDate:["${date}","${date}"]`,
         form: {
           project: {},
           jurisdiction: {}
         }
       }
 
-      const currentState = getState({ documents: mockDocuments })
+      const currentState = getState({documents: mockDocuments})
       const updatedState = reducer(currentState, action)
 
       expect(updatedState.documents.visible).toEqual(['7'])
@@ -486,7 +489,7 @@ describe('Document Management reducer', () => {
         }
       }
 
-      const currentState = getState({ documents: mockDocuments })
+      const currentState = getState({documents: mockDocuments})
       const updatedState = reducer(currentState, action)
 
       expect(updatedState.documents.visible).toEqual([])
@@ -502,7 +505,7 @@ describe('Document Management reducer', () => {
         }
       }
 
-      const currentState = getState({ documents: mockDocuments })
+      const currentState = getState({documents: mockDocuments})
       const updatedState = reducer(currentState, action)
       expect(updatedState.documents.visible).toEqual(['2', '5', '3'])
     })
@@ -519,7 +522,7 @@ describe('Document Management reducer', () => {
         }
       }
 
-      const currentState = getState({ documents: mockDocuments })
+      const currentState = getState({documents: mockDocuments})
       const updatedState = reducer(currentState, action)
       expect(updatedState.documents.visible).toEqual(['7', '3'])
     })
@@ -536,7 +539,7 @@ describe('Document Management reducer', () => {
         }
       }
 
-      const currentState = getState({ documents: mockDocuments })
+      const currentState = getState({documents: mockDocuments})
       const updatedState = reducer(currentState, action)
       expect(updatedState.documents.visible).toEqual(['4', '5'])
     })
@@ -548,10 +551,29 @@ describe('Document Management reducer', () => {
         type: types.FLUSH_STATE
       }
 
-      const currentState = getState({ documents: mockDocuments })
+      const currentState = getState({documents: mockDocuments})
       const updatedState = reducer(currentState, action)
 
       expect(updatedState).toEqual(initial)
+    })
+  })
+
+  describe('SORT_DOCUMENTS', () => {
+    test('should sort documents by name ascending', () => {
+      const action = {
+        type: types.SORT_DOCUMENTS, sortBy: 'name', sortDirection:'asc'
+      }
+      const currentState = getState({documents: mockDocuments})
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.documents.visible).toEqual(orderedByNameAsc)
+    })
+    test('should sort documents by name descending', () => {
+      const action = {
+        type: types.SORT_DOCUMENTS, sortBy: 'name', sortDirection:'desc'
+      }
+      const currentState = getState({documents: mockDocuments})
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.documents.visible).toEqual(orderedByNameDesc)
     })
   })
 })

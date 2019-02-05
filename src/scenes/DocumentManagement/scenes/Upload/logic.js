@@ -55,35 +55,35 @@ export const mergeInfoWithDocs = (info, docs, api) => {
 
 export const getFileType = (doc) => {
   return new Promise(async (resolve, reject) => {
-      const validMimeTypes = [
-          {
-              mime: 'pdf',
-              pattern: '25504446'
-          },
-          {
-              mime: 'rtf',
-              pattern: '7B5C7274'
-          }
-      ]
-      let matchedOne = {}
-        const filereader = new FileReader()
-        filereader.onload= function (evt) {
-            if (evt.target.readyState === FileReader.DONE) {
-                const uint = new Uint8Array(evt.target.result)
-                let bytes = []
-                uint.forEach((byte) => {
-                    bytes.push(byte.toString(16))
-                })
-                const hex = bytes.join('').toUpperCase()
-                matchedOne = validMimeTypes.find(oneType => {
-                    return oneType.pattern === hex
-                })
-                resolve({doc:doc, docHex: hex, docType: matchedOne || undefined})
-            }
-        }
+    const validMimeTypes = [
+      {
+        mime: 'pdf',
+        pattern: '25504446'
+      },
+      {
+        mime: 'rtf',
+        pattern: '7B5C7274'
+      }
+    ]
+    let matchedOne = {}
+    const filereader = new FileReader()
+    filereader.onload= function (evt) {
+      if (evt.target.readyState === FileReader.DONE) {
+        const uint = new Uint8Array(evt.target.result)
+        let bytes = []
+        uint.forEach((byte) => {
+          bytes.push(byte.toString(16))
+        })
+        const hex = bytes.join('').toUpperCase()
+        matchedOne = validMimeTypes.find(oneType => {
+          return oneType.pattern === hex
+        })
+        resolve({doc:doc, docHex: hex, docType: matchedOne || undefined})
+      }
+    }
 
-        const blob = doc.file.slice(0, 4)
-        filereader.readAsArrayBuffer(blob)
+    const blob = doc.file.slice(0, 4)
+    filereader.readAsArrayBuffer(blob)
   })
 
 }
@@ -256,40 +256,44 @@ const searchJurisdictionListLogic = createLogic({
  * Logic for handling file type verification
  */
 const verifyFileContentLogic = createLogic({
-    type: types.VERIFY_VALID_FILE_TYPE_REQUEST,
-    async validate({ getState, action,done }, allow, reject,dispatch,) {
-   //     const state = getState().scenes.docManage.upload
-        let promises = []
-        let invalidFiles = []
-        action.docs.map(doc => {
-            promises.push(getFileType(doc))
+  type: types.VERIFY_VALID_FILE_TYPE_REQUEST,
+  async validate({ getState, action},reject,allow,dispatch) {
+    //     const state = getState().scenes.docManage.upload
+    let promises = []
+    let invalidFiles = []
+    action.docs.map(doc => {
+      promises.push(getFileType(doc))
+    })
+    try {
+      Promise.all(promises).then((results) => {
+        results.map(result=>{
+          if (result.docType === undefined){
+            invalidFiles.push(result)
+          }
         })
-        try {
-            Promise.all(promises).then((results) => {
-                results.map(result=>{
-                    if (result.docType === undefined){
-                        invalidFiles.push(result)
-                    }
-                })
-                if (invalidFiles.length > 0) {
-                    reject({
-                        type: types.REJECT_INVALID_FILE_TYPE,
-                        error: 'One or more documents do not have a valid file type',
-                        invalidFiles: invalidFiles
-                    })
-                //    done()
-                }
-            })
+        if (invalidFiles.length > 0) {
+          reject({
+            type: types.REJECT_INVALID_FILE_TYPE,
+            error: 'One or more documents do not have a valid file type',
+            invalidFiles: invalidFiles
+          })
+          //     done()
+        } else{
+          allow({
+            type: types.VERIFY_VALID_FILE_TYPE_SUCCESS
+          })
+          //     done()
         }
-        catch(e) {
-          console.log(e)
-            dispatch({ type: types.VERIFY_VALID_FILE_TYPE_FAIL})
-        }
-        finally {
-          // done()
-        }
+      })
+    } catch(e) {
+      console.log(e)
+      dispatch({ type: types.VERIFY_VALID_FILE_TYPE_FAIL})
 
+    } finally {
+      //   done()
     }
+
+  }
 })
 
 export default [

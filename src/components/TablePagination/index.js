@@ -52,7 +52,7 @@ export const styles = theme => ({
     position: 'absolute',
     right: 0,
     color: theme.palette.text.secondary,
-    'pointer-events': 'none',
+    'pointer-events': 'none'
   }
 })
 
