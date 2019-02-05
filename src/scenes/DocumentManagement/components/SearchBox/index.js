@@ -296,7 +296,7 @@ export class SearchBox extends Component {
                         </Typography>
                         <FlexGrid container flex type="row" style={{width:'70%'}}>
                           <TextField
-                            style={{width:'60%'}}
+                            style={{width:'40%', alignSelf:'flex-start'}}
                             type='number'
                             name="uploaded-within"
                             inputProps={inputPropsNumeric}
@@ -304,7 +304,7 @@ export class SearchBox extends Component {
                             onChange={e => this.handleFormValueChange('uploadedDaysRange', e.target.value)}
                           />
                           <Typography variant="body2" style={formRowFontStyles}>
-                        days of
+                        day(s) of
                           </Typography>
                         </FlexGrid>
                         <DatePicker
