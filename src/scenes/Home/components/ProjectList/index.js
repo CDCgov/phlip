@@ -22,11 +22,11 @@ export const ProjectList = props => {
             placeholder="Search"
           />
         </Row>
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
           <Table
             style={{ borderCollapse: 'separate', display: 'block', tableLayout: 'auto', overflow: 'unset' }}
             summary="List of projects">
-            <TableHead>
+            <TableHead style={{ width: '100%' }}>
               <ProjectTableHead
                 role={user.role}
                 sortBy={sortBy}

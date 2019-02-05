@@ -67,11 +67,13 @@ export class HeaderedLayout extends Component {
     const mainStyles = {
       backgroundColor: '#f5f5f5',
       padding: padding ? '0 27px 10px 27px' : '',
-      flex: '1'
+      flex: '1',
+      minHeight: 0,
+      flexWrap: 'nowrap'
     }
 
     return (
-      <Grid container spacing={0} direction="column" style={{ flex: '1' }} className={className}>
+      <Grid container spacing={0} direction="column" style={{ flex: '1', flexWrap: 'nowrap', minHeight: 0 }} className={className}>
         <AppBarHeader
           user={user}
           open={open}
