@@ -5,7 +5,7 @@ import TableRow from 'components/TableRow'
 import TableCell from 'components/TableCell'
 
 const columns = [
-  { key: 'avatar', label: '' },
+  { key: 'avatar', label: '', style: { width: '1%' } },
   { key: 'lastName', label: 'Name', style: { maxWidth: 10 }, hasSort: true },
   { key: 'email', label: 'Email', style: { maxWidth: 10 }, hasSort: false },
   { key: 'role', label: 'Role', style: { maxWidth: 10 }, hasSort: true },

@@ -10,9 +10,11 @@ import UserTableHead from './components/UserTableHead'
 export const UserList = props => {
   const { users, sortBy, direction, handleRequestSort } = props
   return (
-    <Container flex>
-      <Column flex displayFlex style={{ overflowX: 'auto' }} component={<Card />}>
-        <Table style={{ borderCollapse: 'separate' }} summary="List of users">
+    <Container column flex>
+      <Column flex displayFlex style={{ overflow: 'auto' }} component={<Card />}>
+        <Table
+          style={{ borderCollapse: 'separate', display: 'block', tableLayout: 'auto', overflow: 'unset' }}
+          summary="List of users">
           <TableHead>
             <UserTableHead sortBy={sortBy} direction={direction} onRequestSort={handleRequestSort} />
           </TableHead>

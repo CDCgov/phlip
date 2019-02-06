@@ -8,6 +8,8 @@ import Grid from 'material-ui/Grid'
 export const Container = ({ column, flex, spacing, children, style, ...otherProps }) => {
   const styles = {
     flex: flex ? '1' : '0 0 auto',
+    minHeight: 0,
+    flexWrap: 'nowrap',
     ...style
   }
 

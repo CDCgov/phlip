@@ -10,6 +10,8 @@ const Column = ({ flex, displayFlex, children, component, style, ...otherProps }
     flex: flex ? '1' : '0 0 auto',
     display: displayFlex ? 'flex' : 'block',
     flexDirection: 'column',
+    minHeight: 0,
+    flexWrap: 'nowrap',
     ...style
   }
 
