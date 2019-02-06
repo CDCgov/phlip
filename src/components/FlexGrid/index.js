@@ -17,7 +17,7 @@ const FlexGrid = props => {
       backgroundColor: 'white'
     } : {},
     ...circular ? { borderRadius: '50%', padding: '2em' } : {},
-    ...flex ? { flex: '1 1 auto' } : {},
+    ...flex ? { flex: '1 1 auto', minHeight: 0 } : {},
     ...container ? { flexDirection: type } : {},
     ...style
   }

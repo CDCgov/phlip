@@ -1,16 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Protocol scene should render correctly 1`] = `
-<Container
-  column={true}
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={true}
   flex={true}
-  spacing={0}
-  style={
-    Object {
-      "flexWrap": "nowrap",
-      "padding": "12px 20px 20px 20px",
-    }
-  }
+  justify="stretch"
+  padding="12px 20px 20px 20px"
+  raised={false}
+  style={Object {}}
+  type="column"
 >
   <Alert
     actions={
@@ -123,19 +123,26 @@ exports[`Protocol scene should render correctly 1`] = `
       variant="body1"
     />
   </Alert>
-  <Card
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={false}
     dangerouslySetInnerHTML={
       Object {
         "__html": "this is the text of the protocol",
       }
     }
+    flex={false}
+    justify="stretch"
+    padding={25}
+    raised={true}
     style={
       Object {
         "fontFamily": "Roboto",
         "overflow": "auto",
-        "padding": 25,
       }
     }
+    type="column"
   />
-</Container>
+</FlexGrid>
 `;

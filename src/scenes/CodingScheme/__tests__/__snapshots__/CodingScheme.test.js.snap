@@ -1,15 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CodingScheme scene should render correctly 1`] = `
-<Container
-  column={true}
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={true}
   flex={true}
-  spacing={0}
-  style={
-    Object {
-      "padding": "12px 20px 20px 20px",
-    }
-  }
+  justify="stretch"
+  padding="12px 20px 20px 20px"
+  raised={false}
+  style={Object {}}
+  type="column"
 >
   <Alert
     actions={
@@ -134,10 +135,14 @@ exports[`CodingScheme scene should render correctly 1`] = `
     pageTitle="Coding Scheme"
     protocolButton={true}
   />
-  <Container
-    column={false}
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={true}
     flex={true}
-    spacing={0}
+    justify="stretch"
+    padding={0}
+    raised={false}
     style={
       Object {
         "backgroundColor": "#f5f5f5",
@@ -145,11 +150,12 @@ exports[`CodingScheme scene should render correctly 1`] = `
         "paddingTop": 25,
       }
     }
+    type="row"
   >
     <ApiErrorView
       error=""
     />
-  </Container>
+  </FlexGrid>
   <Route
     component={[Function]}
     path="/project/:projectId/coding-scheme/add"
@@ -158,5 +164,5 @@ exports[`CodingScheme scene should render correctly 1`] = `
     component={[Function]}
     path="/project/:projectId/coding-scheme/edit/:id"
   />
-</Container>
+</FlexGrid>
 `;
