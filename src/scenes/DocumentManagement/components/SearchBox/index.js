@@ -32,7 +32,8 @@ export class SearchBox extends Component {
   state = {
     isFocused: false,
     showFilterForm: false,
-    datePickerOpen: false
+    datePicker1Open: false,
+    datePicker2Open: false
   }
 
   componentWillUnmount() {
@@ -89,7 +90,7 @@ export class SearchBox extends Component {
   }
 
   handleClickAway = e => {
-    if (!this.state.datePickerOpen) {
+    if (!this.state.datePicker1Open && !this.state.datePicker2Open) {
       this.clearForm()
       if (e.path[1] !== this.buttonRef) {
         this.handleToggleForm(e)
@@ -110,26 +111,24 @@ export class SearchBox extends Component {
   }
 
   buildSearchFilter = () => {
-    const params = ['name', 'uploadedBy', 'uploadedDate']
+    const params = ['name', 'uploadedBy']
 
     let searchTerms = []
     params.forEach((key, index) => {
       if (this.props.form[key] !== '') {
         let p = this.props.form[key]
-        if (key === 'uploadedDate') {
-          let days = parseInt(this.props.form['uploadedDaysRange'])
-          let dEnd= moment.utc(p).add(days,'days').local().format('MM/DD/YYYY')
-          let dBegin = moment.utc(p).subtract(days,'days').local().format('MM/DD/YYYY')
-          p= `["${dBegin}","${dEnd}"]`
-        // p = moment.utc(p).local().format('M/D/YYYY')
-        } else {
-          if (checkIfMultiWord(p)) {
-            p = `(${p})`
-          }
+        if (checkIfMultiWord(p)) {
+          p = `(${p})`
         }
         searchTerms.push(key.concat(':', p))
       }
     })
+    if (this.props.form.uploadedDate1 !== null && this.props.form.uploadedDate2 !== null) {
+      let dBegin = moment.utc(this.props.form.uploadedDate1).local().format('MM/DD/YYYY')
+      let dEnd = moment.utc(this.props.form.uploadedDate2).local().format('MM/DD/YYYY')
+      let p= `["${dBegin}","${dEnd}"]`
+      searchTerms.push(`uploadedDate:${p}`)
+    }
 
     if (this.props.form.project.id !== null) {
       let z = this.props.form.project.name
@@ -150,107 +149,121 @@ export class SearchBox extends Component {
     return searchTerms.join(' | ')
   }
 
-  handleOpenDatePicker = () => {
+  handleOpenDatePicker2 = () => {
     this.setState({
-      datePickerOpen: true
+      datePicker2Open: true
     })
   }
 
-  handleCloseDatePicker = () => {
+  handleCloseDatePicker2 = () => {
     this.setState({
-      datePickerOpen: false
+      datePicker2Open: false
     })
   }
 
-  render() {
-    const {
-      form: {
-        uploadedDate,
-        uploadedBy,
-        name,
-        uploadedDaysRange
-      },
-      searchValue,
-      projectSuggestions,
-      jurisdictionSuggestions,
-      projectSearchValue,
-      jurisdictionSearchValue
-    } = this.props
-
-    const iconColor = '#949494'
-
-    const boxStyle = {
-      backgroundColor: 'white',
-      borderRadius: this.state.showFilterForm ? '5px 5px 0 0' : '5px',
-      border: `1px solid rgba(${189}, ${189}, ${189}, ${.33}`,
-      display: 'flex',
-      alignItems: 'center',
-      padding: 5,
-      flex: 1,
-      boxShadow: this.state.isFocused
-        ? '0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)'
-        : 'none'
+    handleOpenDatePicker1 = () => {
+      this.setState({
+        datePicker1Open: true
+      })
     }
 
-    const formRowStyles = {
-      marginBottom: 20
+    handleCloseDatePicker1 = () => {
+      this.setState({
+        datePicker1Open: false
+      })
     }
+    render() {
+      const {
+        form: {
+          uploadedDate1,
+          uploadedBy,
+          name,
+          uploadedDate2
+        },
+        searchValue,
+        projectSuggestions,
+        jurisdictionSuggestions,
+        projectSearchValue,
+        jurisdictionSearchValue
+      } = this.props
 
-    const formRowFontStyles = {
-      color: '#5f6368',
-      letterSpacing: .2,
-      fontWeight: 300,
-      paddingLeft: 5,
-      fontSize: 13,
-      width: '25%',
-      maxWidth: '25%'
-    }
+      const iconColor = '#949494'
 
-    const inputProps = {
-      style: {
-        padding: 0
+      const boxStyle = {
+        backgroundColor: 'white',
+        borderRadius: this.state.showFilterForm ? '5px 5px 0 0' : '5px',
+        border: `1px solid rgba(${189}, ${189}, ${189}, ${.33}`,
+        display: 'flex',
+        alignItems: 'center',
+        padding: 5,
+        flex: 1,
+        boxShadow: this.state.isFocused
+          ? '0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)'
+          : 'none'
       }
-    }
-    const inputPropsNumeric = {
-      style: {
-        padding:0
-      },
-      max: 365,
-      min: 1
-    }
 
-    return (
-      <Manager>
-        <Reference>
-          {({ ref }) => {
-            return (
-              <div ref={ref} style={boxStyle}>
-                <SearchBar
-                  placeholder="Search documents"
-                  fullWidth
-                  searchValue={searchValue}
-                  handleSearchValueChange={this.handleSearchFieldChange}
-                  searchIcon="search"
-                  InputProps={{
-                    onFocus: () => this.handleFocusChange(true),
-                    onBlur: () => this.handleFocusChange(false),
-                    inputProps: { style: { fontSize: 15, padding: 0 } }
-                  }}
-                />
-                <ButtonBase buttonRef={node => this.buttonRef = node} disableRipple onClick={this.handleToggleForm}>
-                  <Icon color={iconColor}>arrow_drop_down</Icon>
-                </ButtonBase>
-              </div>
-            )
-          }}
-        </Reference>
-        <Popper
-          placement="bottom-start"
-          eventsEnabled={this.state.showFilterForm}
-          style={{ pointerEvents: this.state.showFilterForm ? 'auto' : 'none' }}>
-          {({ placement, ref, style }) => {
-            return (
-              this.state.showFilterForm &&
+      const formRowStyles = {
+        marginBottom: 20
+      }
+
+      const formRowFontStyles = {
+        color: '#5f6368',
+        letterSpacing: .2,
+        fontWeight: 300,
+        paddingLeft: 5,
+        fontSize: 13,
+        width: '25%',
+        maxWidth: '25%'
+      }
+
+      const formRowFontStyles2 = {
+        color: '#5f6368',
+        letterSpacing: .2,
+        fontWeight: 300,
+        // paddingLeft: 5,
+        fontSize: 13,
+        width: '8%',
+        maxWidth: '8%',
+        textAlign:'center'
+      }
+
+      const inputProps = {
+        style: {
+          padding: 0
+        }
+      }
+      return (
+        <Manager>
+          <Reference>
+            {({ ref }) => {
+              return (
+                <div ref={ref} style={boxStyle}>
+                  <SearchBar
+                    placeholder="Search documents"
+                    fullWidth
+                    searchValue={searchValue}
+                    handleSearchValueChange={this.handleSearchFieldChange}
+                    searchIcon="search"
+                    InputProps={{
+                      onFocus: () => this.handleFocusChange(true),
+                      onBlur: () => this.handleFocusChange(false),
+                      inputProps: { style: { fontSize: 15, padding: 0 } }
+                    }}
+                  />
+                  <ButtonBase buttonRef={node => this.buttonRef = node} disableRipple onClick={this.handleToggleForm}>
+                    <Icon color={iconColor}>arrow_drop_down</Icon>
+                  </ButtonBase>
+                </div>
+              )
+            }}
+          </Reference>
+          <Popper
+            placement="bottom-start"
+            eventsEnabled={this.state.showFilterForm}
+            style={{ pointerEvents: this.state.showFilterForm ? 'auto' : 'none' }}>
+            {({ placement, ref, style }) => {
+              return (
+                this.state.showFilterForm &&
                 <ClickAwayListener onClickAway={this.handleClickAway}>
                   <div data-placement={placement} style={{ ...style, width: '100%', zIndex: 5 }} ref={ref}>
                     <FlexGrid container type="column" padding={24} raised>
@@ -292,43 +305,61 @@ export class SearchBox extends Component {
                       <FlexGrid container flex type="row" style={formRowStyles} justify="space-between" >
                         <CalendarBlank style={{ fontSize: 18, color: '#757575' }} />
                         <Typography variant="body2" htmlFor="uploaded-within" style={formRowFontStyles}>
-                        Date within
+                        Uploaded Date
                         </Typography>
-                        <FlexGrid container flex type="row" style={{width:'70%'}}>
-                          <TextField
-                            style={{width:'40%', alignSelf:'flex-start'}}
-                            type='number'
-                            name="uploaded-within"
-                            inputProps={inputPropsNumeric}
-                            value={uploadedDaysRange}
-                            onChange={e => this.handleFormValueChange('uploadedDaysRange', e.target.value)}
-                          />
-                          <Typography variant="body2" style={formRowFontStyles}>
-                        day(s) of
+                        <FlexGrid container flex type="row" style={{width:'100%'}} justify="space-between">
+                          <Typography variant="body2" htmlFor="uploadedDate1Search" style={formRowFontStyles2}>
+                            From
                           </Typography>
+                          <DatePicker
+                            name="uploadedDate1Search"
+                            dateFormat="MM/DD/YYYY"
+                            onChange={date => this.handleFormValueChange('uploadedDate1', date)}
+                            value={uploadedDate1}
+                            style={{ marginTop: 0, AlignSelf:'flex-start', paddingLeft:'0'}}
+                            containerProps={{ fullWidth: false }}
+                            inputProps={inputProps}
+                            onOpen={this.handleOpenDatePicker1}
+                            onClose={this.handleCloseDatePicker1}
+                            InputAdornmentProps={{
+                              disableTypography: true,
+                              style: {
+                                height: 19,
+                                width: 19,
+                                margin: 0,
+                                marginRight: 15,
+                                alignItems: 'flex-end',
+                                marginBottom: -8
+                              }
+                            }}
+                          />
+                          <FlexGrid style={{width:'10px'}} />
+                          <Typography variant="body2" htmlFor="uploadedDate2Search" style={formRowFontStyles2}>
+                                To
+                          </Typography>
+                          <DatePicker
+                            name="uploadedDate2Search"
+                            dateFormat="MM/DD/YYYY"
+                            onChange={date => this.handleFormValueChange('uploadedDate2', date)}
+                            value={uploadedDate2}
+                            style={{ marginTop: 0, alignSelf:'flex-end', paddingLeft:'30'}}
+                            containerProps={{ fullWidth: false }}
+                            inputProps={inputProps}
+                            onOpen={this.handleOpenDatePicker2}
+                            onClose={this.handleCloseDatePicker2}
+                            InputAdornmentProps={{
+                              disableTypography: true,
+                              style: {
+                                height: 19,
+                                width: 19,
+                                margin: 0,
+                                marginRight: 15,
+                                alignItems: 'flex-end',
+                                marginBottom: -8
+                              }
+                            }}
+                          />
                         </FlexGrid>
-                        <DatePicker
-                          name="uploadedDateSearch"
-                          dateFormat="MM/DD/YYYY"
-                          onChange={date => this.handleFormValueChange('uploadedDate', date)}
-                          value={uploadedDate}
-                          style={{ marginTop: 0, alignItems:'flex-end', paddingLeft:'30'}}
-                          containerProps={{ fullWidth: false }}
-                          inputProps={inputProps}
-                          onOpen={this.handleOpenDatePicker}
-                          onClose={this.handleCloseDatePicker}
-                          InputAdornmentProps={{
-                            disableTypography: true,
-                            style: {
-                              height: 19,
-                              width: 19,
-                              margin: 0,
-                              marginRight: 15,
-                              alignItems: 'flex-end',
-                              marginBottom: -8
-                            }
-                          }}
-                        />
                       </FlexGrid>
                       <FlexGrid container type="row" style={formRowStyles}>
                         <Clipboard style={{ fontSize: 18, color: '#757575' }} />
@@ -393,12 +424,12 @@ export class SearchBox extends Component {
                     </FlexGrid>
                   </div>
                 </ClickAwayListener>
-            )
-          }}
-        </Popper>
-      </Manager>
-    )
-  }
+              )
+            }}
+          </Popper>
+        </Manager>
+      )
+    }
 }
 
 /* istanbul ignore next */
