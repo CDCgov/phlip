@@ -11,10 +11,10 @@ export const INITIAL_STATE = {
       name: '',
       id: null
     },
-    uploadedDate: '',
+    uploadedDate1: '',
+    uploadedDate2: '',
     uploadedBy: '',
-    name: '',
-    uploadedDaysRange: '1'
+    name: ''
   },
   searchValue: ''
 }
