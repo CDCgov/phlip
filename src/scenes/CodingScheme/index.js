@@ -1,20 +1,13 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Typography from '@material-ui/core/Typography'
 import { Route, Link } from 'react-router-dom'
 import * as actions from './actions'
-import Container from 'components/Layout'
 import Scheme from './components/Scheme'
-import Button from 'components/Button'
 import AddEditQuestion from './scenes/AddEditQuestion'
-import PageHeader from 'components/PageHeader'
-import Alert from 'components/Alert'
-import Icon from 'components/Icon'
-import ApiErrorView from 'components/ApiErrorView'
-import ApiErrorAlert from 'components/ApiErrorAlert'
-import withTracking from 'components/withTracking'
+import { ApiErrorAlert, ApiErrorView, FlexGrid, Icon, Alert, withTracking, PageHeader, Button } from 'components'
 
 /**
  * Coding Scheme screen main component, rendered when the user clicks 'Edit' under the Coding Scheme table header. This
@@ -245,9 +238,9 @@ export class CodingScheme extends Component {
    */
   renderGetStarted = () => {
     return (
-      <Container column flex alignItems="center" style={{ justifyContent: 'center' }}>
+      <FlexGrid container flex align="center" justify="center">
         {this.props.lockedByCurrentUser &&
-        <Fragment>
+        <>
           <Typography variant="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
             The coding scheme is empty. To get started, add a question.
           </Typography>
@@ -261,9 +254,9 @@ export class CodingScheme extends Component {
             color="accent"
             aria-label="Add new question to coding scheme"
           />
-        </Fragment>}
+        </>}
         {!this.props.lockedByCurrentUser &&
-        <Fragment>
+        <>
           <Typography variant="display1" style={{ textAlign: 'center', marginBottom: '20px' }}>
             The coding scheme is empty. To get started, check out the coding scheme for editing.
           </Typography>
@@ -273,9 +266,9 @@ export class CodingScheme extends Component {
             aria-label="check out coding scheme"
             onClick={this.handleLockCodingScheme}
           />
-        </Fragment>
+        </>
         }
-      </Container>
+      </FlexGrid>
     )
   }
 
@@ -298,7 +291,7 @@ export class CodingScheme extends Component {
     ]
 
     return (
-      <Container column flex style={{ padding: '12px 20px 20px 20px' }}>
+      <FlexGrid container flex padding="12px 20px 20px 20px">
         <Alert open={this.state.goBackAlertOpen} actions={alertActions}>
           <Typography variant="body1">
             You have checked out the coding scheme. No one else can edit until you check in.
@@ -356,7 +349,9 @@ export class CodingScheme extends Component {
             show: this.props.questions.length > 0 && (this.props.hasLock && this.props.lockedByCurrentUser)
           }}
         />
-        <Container
+        <FlexGrid
+          container
+          type="row"
           flex
           style={{
             backgroundColor: '#f5f5f5',
@@ -381,7 +376,7 @@ export class CodingScheme extends Component {
                 lockedByCurrentUser={this.props.lockedByCurrentUser}
                 hasLock={this.props.hasLock}
               />}
-        </Container>
+        </FlexGrid>
         <Route
           path="/project/:projectId/coding-scheme/add"
           component={AddEditQuestion}
@@ -390,7 +385,7 @@ export class CodingScheme extends Component {
           path="/project/:projectId/coding-scheme/edit/:id"
           component={AddEditQuestion}
         />
-      </Container>
+      </FlexGrid>
     )
   }
 }

@@ -1,16 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Container from 'components/Layout'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import Card from 'components/Card'
 import * as actions from './actions'
-import PageHeader from 'components/PageHeader'
-import Alert from 'components/Alert'
-import Icon from 'components/Icon'
-import CardError from 'components/CardError'
 import Typography from '@material-ui/core/Typography'
-import withTracking from 'components/withTracking'
+import { FlexGrid, Icon, Alert, PageHeader, withTracking, CardError } from 'components'
 
 /* eslint-disable no-unused-vars */
 import tinymce from 'tinymce/tinymce'
@@ -198,7 +192,7 @@ export class Protocol extends Component {
       }
     ]
     return (
-      <Container flex column style={{ flexWrap: 'nowrap', padding: '12px 20px 20px 20px' }}>
+      <FlexGrid flex container padding="12px 20px 20px 20px">
         <Alert open={this.state.open} actions={alertActions}>
           <Typography variant="body1">
             {this.state.alertText}
@@ -248,7 +242,7 @@ export class Protocol extends Component {
         </Alert>
         {this.state.editMode
           ? (
-            <Card id="tiny">
+            <FlexGrid raised flex id="tiny">
               <Editor
                 init={{
                   statusbar: false,
@@ -277,17 +271,19 @@ export class Protocol extends Component {
                 onChange={e => this.props.actions.updateProtocol(e.target.getContent())}
                 initialValue={this.props.protocolContent}
               />
-            </Card>
+            </FlexGrid>
           ) : (
             this.props.getProtocolError === true
               ? <CardError>We failed to get the protocol for this project. Please try again later.</CardError>
-              : <Card
-                style={{ padding: 25, fontFamily: 'Roboto', overflow: 'auto' }}
+              : <FlexGrid
+                raised
+                padding={25}
+                style={{ fontFamily: 'Roboto', overflow: 'auto' }}
                 dangerouslySetInnerHTML={{ __html: this.props.protocolContent }}
               />
           )
         }
-      </Container>
+      </FlexGrid>
     )
   }
 }
