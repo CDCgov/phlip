@@ -123,7 +123,7 @@ export class SearchBox extends Component {
         searchTerms.push(key.concat(':', p))
       }
     })
-    if (this.props.form.uploadedDate1 !== null && this.props.form.uploadedDate2 !== null) {
+    if (this.props.form.uploadedDate1 && this.props.form.uploadedDate2) {
       let dBegin = moment.utc(this.props.form.uploadedDate1).local().format('MM/DD/YYYY')
       let dEnd = moment.utc(this.props.form.uploadedDate2).local().format('MM/DD/YYYY')
       let p= `["${dBegin}","${dEnd}"]`
@@ -171,6 +171,12 @@ export class SearchBox extends Component {
       this.setState({
         datePicker1Open: false
       })
+    }
+
+    onKeyPress = (e) => {
+      if(e.which === 13 && this.state.showFilterForm) {
+        this.handleSearchFormSubmit()
+      }
     }
     render() {
       const {
@@ -265,7 +271,7 @@ export class SearchBox extends Component {
               return (
                 this.state.showFilterForm &&
                 <ClickAwayListener onClickAway={this.handleClickAway}>
-                  <div data-placement={placement} style={{ ...style, width: '100%', zIndex: 5 }} ref={ref}>
+                  <div data-placement={placement} style={{ ...style, width: '100%', zIndex: 5 }} ref={ref} tabIndex="0" onKeyPress={this.onKeyPress}>
                     <FlexGrid container type="column" padding={24} raised>
                       <FlexGrid container type="row" style={formRowStyles}>
                         <Alphabetical
