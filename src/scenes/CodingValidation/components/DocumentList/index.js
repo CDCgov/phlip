@@ -154,8 +154,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const annotationsForAnswer = answerSelected
     ? codingState.question.isCategoryQuestion
-      ? JSON.parse(codingState.userAnswers[ownProps.questionId][codingState.selectedCategoryId].answers[answerSelected].annotations)
-      : JSON.parse(codingState.userAnswers[ownProps.questionId].answers[answerSelected].annotations)
+      ? codingState.userAnswers[ownProps.questionId][codingState.selectedCategoryId].answers[answerSelected].annotations
+      : codingState.userAnswers[ownProps.questionId].answers[answerSelected].annotations
     : []
 
   const annotatedDocIdsForAnswer = annotationsForAnswer.map(annotation => annotation.docId)

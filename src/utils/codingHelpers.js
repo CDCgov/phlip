@@ -304,7 +304,7 @@ export const handleUpdateUserAnswers = (state, action) => {
   switch (state.question.questionType) {
     case questionTypes.BINARY:
     case questionTypes.MULTIPLE_CHOICE:
-      currentUserAnswers = { [action.answerId]: { schemeAnswerId: action.answerId, pincite: '', annotations: '[]' } }
+      currentUserAnswers = { [action.answerId]: { schemeAnswerId: action.answerId, pincite: '', annotations: [] } }
       break
 
     case questionTypes.TEXT_FIELD:
@@ -316,7 +316,7 @@ export const handleUpdateUserAnswers = (state, action) => {
             schemeAnswerId: action.answerId,
             textAnswer: action.answerValue,
             pincite: currentUserAnswers[action.answerId] ? currentUserAnswers[action.answerId].pincite || '' : '',
-            annotations: '[]'
+            annotations: []
           }
         }
       }
@@ -336,7 +336,7 @@ export const handleUpdateUserAnswers = (state, action) => {
       } else {
         currentUserAnswers = {
           ...currentUserAnswers,
-          [action.answerId]: { schemeAnswerId: action.answerId, pincite: '', annotations: '[]' }
+          [action.answerId]: { schemeAnswerId: action.answerId, pincite: '', annotations: [] }
         }
       }
       break
@@ -345,7 +345,7 @@ export const handleUpdateUserAnswers = (state, action) => {
       if (currentUserAnswers.hasOwnProperty(action.answerId)) delete currentUserAnswers[action.answerId]
       else currentUserAnswers = {
         ...currentUserAnswers,
-        [action.answerId]: { schemeAnswerId: action.answerId, pincite: '', annotations: '[]' }
+        [action.answerId]: { schemeAnswerId: action.answerId, pincite: '', annotations: [] }
       }
   }
 
@@ -377,14 +377,14 @@ export const handleUpdateAnnotations = (state, action) => {
     ? state.userAnswers[action.questionId][state.selectedCategoryId].answers
     : state.userAnswers[action.questionId].answers
 
-  const parsedAnnotations = JSON.parse(currentUserAnswers[action.answerId].annotations)
+  const parsedAnnotations = currentUserAnswers[action.answerId].annotations
   const updatedAnnotations = [...parsedAnnotations, action.annotation]
 
   return {
     ...currentUserAnswers,
     [action.answerId]: {
       ...currentUserAnswers[action.answerId],
-      annotations: JSON.stringify(updatedAnnotations)
+      annotations: updatedAnnotations
     }
   }
 }
