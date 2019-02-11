@@ -10,7 +10,7 @@ const props = {
     projects: [1, 2],
     jurisdictions: [25332, 2932]
   },
-  effectiveDate: new Date().toLocaleDateString(),
+  effectiveDate: new Date('2/11/2019').toLocaleDateString(),
   projectList: ['Project1', 'Project2'],
   jurisdictionList: ['Georgia', 'Alabama'],
   loading: false,

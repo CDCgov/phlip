@@ -1,6 +1,6 @@
 import { types } from '../actions'
 import { INITIAL_STATE, COMBINED_INITIAL_STATE, default as codingValidationReducer } from '../reducer'
-import { schemeById, userAnswersCoded } from 'utils/testData/coding'
+import { schemeById, userAnswersCoded, schemeOutline, schemeUserAnswersEmpty, schemeOrder, schemeTree } from 'utils/testData/coding'
 
 const initial = INITIAL_STATE
 
@@ -13,7 +13,8 @@ const getState = (other = {}) => ({
 })
 
 const reducer = (state, action) => {
-  return codingValidationReducer(state, action).coding
+  const newState = codingValidationReducer(state, action)
+  return newState.coding
 }
 
 describe('CodingValidation reducer', () => {
@@ -22,252 +23,77 @@ describe('CodingValidation reducer', () => {
   })
 
   describe('UPDATE_USER_ANSWER', () => {
-    const currentState = getState({
-      question: {
-        text: 'fa la la la',
-        questionType: 1,
-        id: 1,
-        parentId: 0,
-        positionInParent: 0,
-        possibleAnswers: [{ id: 123, text: 'answer 1' }, { id: 234, text: 'answer 2' }]
-      },
-      outline: {
-        1: { parentId: 0, positionInParent: 0 },
-        2: { parentId: 0, positionInParent: 1 },
-        3: { parentId: 0, positionInParent: 2 },
-        4: { parentId: 3, positionInParent: 0 }
-      },
-      scheme: {
-        byId: {
-          1: {
-            text: 'fa la la la',
-            hint: '',
-            questionType: 1,
-            id: 1,
-            parentId: 0,
-            positionInParent: 0,
-            possibleAnswers: []
-          },
-          2: {
-            text: 'la la la',
-            hint: '',
-            questionType: 3,
-            id: 2,
-            parentId: 0,
-            positionInParent: 1,
-            possibleAnswers: []
-          },
-          3: {
-            text: 'cat question',
-            questionType: 2,
-            id: 3,
-            parentId: 0,
-            hint: '',
-            positionInParent: 2,
-            possibleAnswers: [
-              { id: 5, text: 'category 1', order: 1 }, { id: 10, text: 'category 2', order: 2 },
-              { id: 20, text: 'category 3', order: 3 }
-            ]
-          },
-          4: {
-            text: 'cat question child',
-            questionType: 3,
-            id: 4,
-            parentId: 3,
-            hint: '',
-            positionInParent: 0,
-            indent: 2,
-            isCategoryQuestion: true,
-            possibleAnswers: [
-              { id: 432, text: 'answer 1', order: 1 }, { id: 2124, text: 'answer 2', order: 2 }
-            ]
-          }
-        },
-        order: [1, 2, 3, 4],
-        tree: [
-          { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: false },
-          { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, isAnswered: false },
-          {
-            text: 'cat question',
-            questionType: 2,
-            id: 3,
-            parentId: 0,
-            positionInParent: 2,
-            isAnswered: true,
-            indent: 1,
-            possibleAnswers: [
-              { id: 5, text: 'category 1', order: 1 }, { id: 10, text: 'category 2', order: 2 },
-              { id: 20, text: 'category 3', order: 3 }
-            ],
-            children: [
-              {
-                text: 'cat question child',
-                questionType: 3,
-                isCategoryQuestion: true,
-                id: 4,
-                indent: 2,
-                parentId: 3,
-                positionInParent: 0,
-                isAnswered: false,
-                possibleAnswers: [
-                  { id: 432, text: 'answer 1', order: 1 }, { id: 2124, text: 'answer 2', order: 2 }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      userAnswers: {
-        1: {
-          answers: {},
-          schemeQuestionId: 1,
-          comment: ''
-        },
-        2: {
-          answers: {},
-          schemeQuestionId: 2,
-          comment: ''
-        },
-        3: {
-          schemeQuestionId: 3,
-          answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
-        },
-        4: {
-          10: { answers: {}, comment: '', flag: {} },
-          20: { answers: {}, comment: '', flag: {} }
-        }
-      }
-    })
-
-    test('should handle binary / multiple choice type questions', () => {
+    describe('binary / multiple choice type questions', () => {
       const action = {
         type: types.UPDATE_USER_ANSWER,
         answerId: 123,
         questionId: 1
       }
 
-      const state = reducer(currentState, action)
-
-      expect(state.userAnswers).toEqual({
-        ...currentState.coding.userAnswers,
-        1: {
-          answers: { 123: { schemeAnswerId: 123, pincite: '', annotations: '[]' } },
-          schemeQuestionId: 1,
-          comment: ''
-        }
+      const currentState = getState({
+        question: { ...schemeById[1] },
+        outline: { ...schemeOutline },
+        scheme: {
+          byId: { ...schemeById },
+          order: [...schemeOrder],
+          tree: schemeTree
+        },
+        userAnswers: schemeUserAnswersEmpty
       })
 
-      expect(state).toHaveProperty('scheme.tree', [
-        {
-          text: 'fa la la la',
-          hint: '',
-          questionType: 1,
-          id: 1,
-          parentId: 0,
-          positionInParent: 0,
-          isAnswered: true,
-          possibleAnswers: []
-        },
-        {
-          text: 'la la la',
-          hint: '',
-          questionType: 3,
-          id: 2,
-          parentId: 0,
-          positionInParent: 1,
-          isAnswered: false,
-          possibleAnswers: []
-        },
-        {
-          text: 'cat question',
-          questionType: 2,
-          id: 3,
-          hint: '',
-          parentId: 0,
-          positionInParent: 2,
-          isAnswered: true,
-          indent: 1,
-          possibleAnswers: [
-            { id: 5, text: 'category 1', order: 1 }, { id: 10, text: 'category 2', order: 2 },
-            { id: 20, text: 'category 3', order: 3 }
-          ],
-          children: [
-            {
-              text: 'cat question child',
-              questionType: 3,
-              isCategoryQuestion: true,
-              id: 4,
-              hint: '',
-              parentId: 3,
-              positionInParent: 0,
-              isAnswered: false,
-              indent: 2,
-              possibleAnswers: [
-                { id: 432, text: 'answer 1', order: 1 }, { id: 2124, text: 'answer 2', order: 2 }
-              ],
-              children: [
-                {
-                  schemeAnswerId: 10,
-                  schemeQuestionId: 4,
-                  indent: 3,
-                  isCategory: true,
-                  order: 2,
-                  positionInParent: 1,
-                  text: 'category 2',
-                  isAnswered: false
-                },
-                {
-                  schemeAnswerId: 20,
-                  schemeQuestionId: 4,
-                  indent: 3,
-                  isCategory: true,
-                  order: 3,
-                  positionInParent: 2,
-                  text: 'category 3',
-                  isAnswered: false
-                }
-              ],
-              completedProgress: 0
-            }
-          ]
-        }
-      ])
+      test('should update state.userAnswers[1]', () => {
+        const state = reducer(currentState, action)
+        expect(state.userAnswers).toEqual({
+          ...currentState.coding.userAnswers,
+          1: {
+            answers: { 123: { schemeAnswerId: 123, pincite: '', annotations: [] } },
+            schemeQuestionId: 1,
+            comment: ''
+          }
+        })
+      })
+
+      test('should update state.scheme.tree[0]', () => {
+        const state = reducer(currentState, action)
+        expect(state.scheme.tree[0]).toEqual({ ...currentState.coding.scheme.tree[0], isAnswered: true })
+      })
     })
 
-    test('should handle checkbox / category choice type questions', () => {
+    describe('checkbox / category choice type questions', () => {
+      const currentState = getState({
+        question: { ...schemeById[2] },
+        outline: { ...schemeOutline },
+        scheme: {
+          byId: { ...schemeById },
+          order: [...schemeOrder],
+          tree: [...schemeTree]
+        },
+        userAnswers: { ...schemeUserAnswersEmpty }
+      })
+
       const action = {
         type: types.UPDATE_USER_ANSWER,
         answerId: 90,
         questionId: 2
       }
 
-      const state = reducer(
-        {
-          ...currentState,
-          coding: {
-            ...currentState.coding,
-            question: {
-              text: 'la la la',
-              questionType: 3,
-              id: 2,
-              parentId: 0,
-              positionInParent: 1,
-              possibleAnswers: [{ id: 90, text: 'check 1' }, { id: 91, text: 'check 2' }]
+      test('should update state.userAnswers[2]', () => {
+        const state = reducer(currentState, action)
+        expect(state.userAnswers).toEqual({
+          ...currentState.coding.userAnswers,
+          2: {
+            comment: '',
+            schemeQuestionId: 2,
+            answers: {
+              90: { schemeAnswerId: 90, pincite: '', annotations: [] }
             }
           }
-        },
-        action
-      )
+        })
+      })
 
-      expect(state.userAnswers).toEqual({
-        ...currentState.coding.userAnswers,
-        2: {
-          comment: '',
-          schemeQuestionId: 2,
-          answers: {
-            90: { schemeAnswerId: 90, pincite: '', annotations: '[]' }
-          }
-        }
+      test('should update state.scheme.tree[1]', () => {
+        const state = reducer(currentState, action)
+        expect(state.scheme.tree[1]).toEqual({ ...currentState.coding.scheme.tree[1], isAnswered: true })
       })
     })
   })
@@ -494,7 +320,7 @@ describe('CodingValidation reducer', () => {
             ...userAnswersCoded[1].answers,
             123: {
               ...userAnswersCoded[1].answers[123],
-              annotations: '[{\"text\":\"text annotation\",\"rects\":[]}]'
+              annotations: [{ text: 'text annotation', rects:[] }]
             }
           }
         }
@@ -529,7 +355,7 @@ describe('CodingValidation reducer', () => {
             answers: {
               432: {
                 ...currentState.coding.userAnswers[4][10].answers[432],
-                annotations: '[{\"text\":\"text annotation\",\"rects\":[]}]'
+                annotations: [{ text: 'text annotation', rects:[] }]
               }
             }
           }
