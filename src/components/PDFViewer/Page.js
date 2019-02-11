@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { transformText } from './textTransformHelpers'
 import * as ui_utils from 'pdfjs-dist/lib/web/ui_utils'
 import { Util as dom_utils } from 'pdfjs-dist/lib/shared/util'
-import { CircularLoader, FlexGrid, IconButton } from 'components/index'
+import { CircularLoader, FlexGrid, IconButton, Alert } from 'components/index'
 import './pdf_viewer.css'
 import TextNode from './TextNode'
 
@@ -22,6 +22,7 @@ export class Page extends Component {
     textContent: PropTypes.object,
     pendingAnnotations: PropTypes.array,
     saveAnnotation: PropTypes.func,
+    removeAnnotation: PropTypes.func,
     cancelAnnotation: PropTypes.func,
     getSelection: PropTypes.func,
     id: PropTypes.number,
@@ -52,7 +53,10 @@ export class Page extends Component {
       textLineStyleSpecs: {},
       noText: false,
       selectionStyle: {},
-      pending: false
+      pending: false,
+      alertConfirmOpen: false,
+      deleteIndex: null,
+      hoverIndex: null
     }
 
     this.allTextDivs = []
@@ -68,6 +72,40 @@ export class Page extends Component {
 
   handleCancelAnnotation = index => {
     this.props.cancelAnnotation(index)
+  }
+
+  confirmRemoveAnnotation = index => {
+    this.setState({
+      alertConfirmOpen: true,
+      deleteIndex: index
+    })
+  }
+
+  onRemoveAnnotation = () => {
+    this.props.removeAnnotation(this.state.deleteIndex)
+    this.setState({
+      alertConfirmOpen: false,
+      deleteIndex: null
+    })
+  }
+
+  onCancelRemove = () => {
+    this.setState({
+      alertConfirmOpen: false,
+      deleteIndex: null
+    })
+  }
+
+  onHoverAnnotation = index => {
+    this.setState({
+      hoverIndex: index
+    })
+  }
+
+  onLeaveHoverAnnotation = (index, e) => {
+    this.setState({
+      hoverIndex: index === this.state.hoverIndex ? index : null
+    })
   }
 
   onMouseUp = () => {
@@ -192,21 +230,10 @@ export class Page extends Component {
       width: Math.floor(this.state.renderContext.viewport.width)
     }
 
-    const highlightStyle = {
-      //backgroundColor: `rgb(${251}, ${237}, ${158})`,
-      backgroundColor: '#00e0ff',
-      opacity: 0.2,
-      position: 'absolute'
-    }
-
-    const iconNavStyles = {
-      backgroundColor: '#fe567b',
-      height: 25,
-      width: 25,
-      position: 'absolute',
-      cursor: 'pointer',
-      zIndex: 5
-    }
+    const alertActions = [
+      { onClick: this.onCancelRemove, value: 'Cancel', type: 'button' },
+      { onClick: this.onRemoveAnnotation, value: 'Delete', type: 'button' }
+    ]
 
     return (
       <div
@@ -219,20 +246,38 @@ export class Page extends Component {
         <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
           <CircularLoader />
         </FlexGrid>}
+        <Alert actions={alertActions} open={this.state.alertConfirmOpen} title="Confirm deletion">
+          Are you sure you want to delete this annotation?
+        </Alert>
         <div className="canvasWrapper" style={{ ...dims, position: 'relative' }}>
           <canvas {...this.state.canvasStyleSpecs} id={`page-${this.props.id}-canvas`} ref={this.canvasRef}>
             {this.state.renderContext.canvasContext && this.state.readyToRenderText && this.renderPage()}
           </canvas>
         </div>
-        <div className="annotationLayer" id={`page-${this.props.id}-annotations`}>
+        <div className="annotationLayer" id={`page-${this.props.id}-annotations`} style={dims}>
           {this.state.readyToRenderText && this.props.annotations.map((annotation, i) => {
             return annotation.rects.map((rect, j) => {
-              const { left, top, height, width } = this.getBounds(rect.pdfPoints)
+              const { left, top, height, width, bounds } = this.getBounds(rect.pdfPoints)
               return (
-                <div
-                  key={`highlight-${i}-${j}`}
-                  style={{ left, top, height, width, ...highlightStyle }}
-                />
+                <Fragment key={`highlight-area-${i}-${j}`}>
+                  <div
+                    key={`highlight-${i}-${j}`}
+                    style={{ left, top, height, width }}
+                    onMouseEnter={(e) => this.onHoverAnnotation(i, e)}
+                    onMouseLeave={(e) => this.onLeaveHoverAnnotation(i, e)}
+                  />
+                  {(j === (annotation.rects.length - 1) && annotation.endPage === this.props.id &&
+                    this.state.hoverIndex === i)
+                  && (<div
+                    key={`highlight-${i}-${j}-remove`}
+                    className="iconActions"
+                    style={{ left: bounds[2] - 24, top: bounds[3], marginTop: 1 }}>
+                    <IconButton style={{ height: 25, width: 25 }} onClick={() => this.confirmRemoveAnnotation(i)}>
+                      close
+                    </IconButton>
+                  </div>)
+                  }
+                </Fragment>
               )
             })
           })}
@@ -245,25 +290,23 @@ export class Page extends Component {
                 <Fragment key={`pending-highlight-area-${i}-${j}`}>
                   <div
                     key={`pending-highlight-${i}-${j}`}
-                    style={{ left, top, height, width, ...highlightStyle }}
+                    style={{ left, top, height, width }}
                   />
                   {((j === annotation.rects.length - 1) && annotation.endPage === this.props.id) &&
                   <>
                     <div
                       key={`pending-highlight-${i}-${j}-cancel`}
-                      style={{ ...iconNavStyles, left: bounds[2] - 53, top: bounds[3], marginTop: 1 }}>
-                      <IconButton
-                        style={{ height: 25, width: 25 }}
-                        onClick={() => this.handleCancelAnnotation(i)}>
+                      className="iconActions"
+                      style={{ left: bounds[2] - 53, top: bounds[3], marginTop: 1 }}>
+                      <IconButton style={{ height: 25, width: 25 }} onClick={() => this.handleCancelAnnotation(i)}>
                         close
                       </IconButton>
                     </div>
                     <div
                       key={`pending-highlight-${i}-${j}-confirm`}
-                      style={{ ...iconNavStyles, left: bounds[2] - 24, top: bounds[3], marginTop: 1 }}>
-                      <IconButton
-                        style={{ height: 25, width: 25 }}
-                        onClick={() => this.handleConfirmAnnotation(i)}>
+                      className="iconActions"
+                      style={{ left: bounds[2] - 24, top: bounds[3], marginTop: 1 }}>
+                      <IconButton style={{ height: 25, width: 25 }} onClick={() => this.handleConfirmAnnotation(i)}>
                         done
                       </IconButton>
                     </div>

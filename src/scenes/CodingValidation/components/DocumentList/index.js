@@ -58,8 +58,20 @@ export class DocumentList extends Component {
     this.clearDocSelected()
   }
 
+  /*
+  * Called when user chooses to save an annotation
+  */
   onSaveAnnotation = annotation => {
     this.props.actions.saveAnnotation(annotation, this.props.answerSelected, this.props.questionId)
+    this.props.saveUserAnswer()
+  }
+
+  /**
+   * Remove annotation
+   * @param index
+   */
+  onRemoveAnnotation = index => {
+    this.props.actions.removeAnnotation(index, this.props.answerSelected, this.props.questionId)
     this.props.saveUserAnswer()
   }
 
@@ -122,6 +134,7 @@ export class DocumentList extends Component {
             document={this.props.openedDoc}
             saveAnnotation={this.onSaveAnnotation}
             annotations={this.props.annotations}
+            removeAnnotation={this.onRemoveAnnotation}
           />}
           {!this.props.docSelected && this.props.documents.map((doc, i) => {
             return (

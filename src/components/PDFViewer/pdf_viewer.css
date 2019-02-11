@@ -98,6 +98,33 @@
   top: 0;
 }
 
+.annotationLayer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.annotationLayer > div {
+  background-color: #00e0ff;
+  opacity: 0.2;
+  position: absolute;
+  z-index: 3;
+  cursor: pointer;
+}
+
+.annotationLayer .iconActions {
+  opacity: 1;
+  background-color: #fe567b;
+  height: 25px;
+  width: 25px;
+  position: absolute;
+  cursor: pointer;
+  z-index: 5;
+}
+
 .annotationLayer section {
   position: absolute;
 }

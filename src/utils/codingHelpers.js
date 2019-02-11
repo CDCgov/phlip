@@ -389,6 +389,23 @@ export const handleUpdateAnnotations = (state, action) => {
   }
 }
 
+export const handleRemoveAnnotation = (state, action) => {
+  const currentUserAnswers = state.question.isCategoryQuestion
+    ? state.userAnswers[action.questionId][state.selectedCategoryId].answers
+    : state.userAnswers[action.questionId].answers
+
+  const annotations = [...currentUserAnswers[action.answerId].annotations]
+  annotations.splice(action.index, 1)
+
+  return {
+    ...currentUserAnswers,
+    [action.answerId]: {
+      ...currentUserAnswers[action.answerId],
+      annotations
+    }
+  }
+}
+
 /**
  * Handles if a user updates the pincite of an answer choice
  * @param {Object} state
@@ -942,5 +959,6 @@ export default {
   getFinalCodedObject,
   getNextQuestion,
   getPreviousQuestion,
-  getQuestionNumbers
+  getQuestionNumbers,
+  handleRemoveAnnotation
 }

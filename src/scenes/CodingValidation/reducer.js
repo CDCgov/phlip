@@ -1,8 +1,17 @@
 import { types } from './actions'
 import {
-  determineShowButton, handleCheckCategories,
-  handleUpdateUserAnswers, handleUpdateUserCategoryChild, handleUpdateUserCodedQuestion, handleUpdateAnnotations,
-  handleUserPinciteQuestion, initializeNavigator, generateError, updateCategoryCodedQuestion, updateCodedQuestion
+  determineShowButton,
+  handleCheckCategories,
+  handleUpdateUserAnswers,
+  handleUpdateUserCategoryChild,
+  handleUpdateUserCodedQuestion,
+  handleUpdateAnnotations,
+  handleUserPinciteQuestion,
+  initializeNavigator,
+  generateError,
+  updateCategoryCodedQuestion,
+  updateCodedQuestion,
+  handleRemoveAnnotation
 } from 'utils/codingHelpers'
 
 import documentListReducer, { INITIAL_STATE as docListInitialState } from './components/DocumentList/reducer'
@@ -194,6 +203,14 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         ...questionUpdater('answers', handleUpdateAnnotations),
+        unsavedChanges: true,
+        hasTouchedQuestion: true
+      }
+
+    case types.ON_REMOVE_ANNOTATION:
+      return {
+        ...state,
+        ...questionUpdater('answers', handleRemoveAnnotation),
         unsavedChanges: true,
         hasTouchedQuestion: true
       }

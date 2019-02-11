@@ -13,7 +13,8 @@ export class PDFViewer extends Component {
     document: PropTypes.object,
     allowSelection: PropTypes.bool,
     annotations: PropTypes.array,
-    saveAnnotation: PropTypes.func
+    saveAnnotation: PropTypes.func,
+    removeAnnotation: PropTypes.func
   }
 
   static defaultProps = {
@@ -60,6 +61,10 @@ export class PDFViewer extends Component {
     this.setState({
       pendingAnnotations: []
     })
+  }
+
+  removeAnnotation = index => {
+    this.props.removeAnnotation(index)
   }
 
   cancelAnnotation = index => {
@@ -225,8 +230,6 @@ export class PDFViewer extends Component {
     }
 
     selection.removeAllRanges()
-    //selection.addRange(range)
-    //selection.removeAllRanges()
 
     this.setState({
       ...this.state,
@@ -261,6 +264,7 @@ export class PDFViewer extends Component {
               annotations={this.props.annotations.map(anno => this.filterByPage(anno, i))}
               pendingAnnotations={this.state.pendingAnnotations.map(anno => this.filterByPage(anno, i))}
               saveAnnotation={this.saveAnnotation}
+              removeAnnotation={this.removeAnnotation}
               cancelAnnotation={this.cancelAnnotation}
               getSelection={this.getSelection}
             />
