@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Page from './components/Page'
 import PDFJS from 'pdfjs-dist/webpack'
-import { FlexGrid, CircularLoader } from 'components'
+import { FlexGrid, CircularLoader, Alert } from 'components'
 import './pdf_viewer.css'
 import { Util as dom_utils } from 'pdfjs-dist/lib/shared/util'
 
@@ -30,7 +30,9 @@ export class PDFViewer extends Component {
       pdf: {},
       pages: [],
       pendingAnnotations: [],
-      deleteAnnotationIndexes: {}
+      deleteAnnotationIndexes: {},
+      alertConfirmOpen: false,
+      deleteIndex: null
     }
   }
 
@@ -46,6 +48,10 @@ export class PDFViewer extends Component {
     }
   }
 
+  /**
+   * Gets the PDF document using PDF.js
+   * @param docContent
+   */
   createPdf = docContent => {
     const CMAP = 'pdfjs-dist/cmaps'
     PDFJS.getDocument({ data: docContent.content.data, cMapUrl: CMAP }).then(pdf => {
@@ -57,32 +63,83 @@ export class PDFViewer extends Component {
     })
   }
 
+  /**
+   * User saves pending annotation
+   * @param index
+   */
   saveAnnotation = index => {
     this.props.saveAnnotation(this.state.pendingAnnotations[index])
     this.setState({ pendingAnnotations: [] })
   }
 
-  removeAnnotation = index => {
-    this.props.removeAnnotation(index)
-    this.setState({ deleteAnnotationIndexes: {} })
-  }
-
+  /**
+   * User discards pending annotation
+   */
   cancelAnnotation = () => {
     this.setState({ pendingAnnotations: [] })
   }
 
+  /**
+   * Opens an alert, asking the user to confirm deletion of annotation
+   * @param index
+   */
+  confirmRemoveAnnotation = index => {
+    this.setState({
+      alertConfirmOpen: true,
+      deleteIndex: index
+    })
+  }
+
+  /**
+   * User confirmed removing annotation
+   */
+  onRemoveAnnotation = () => {
+    this.props.removeAnnotation(this.state.deleteIndex)
+    this.setState({
+      alertConfirmOpen: false,
+      deleteIndex: null,
+      deleteAnnotationIndexes: {}
+    })
+  }
+
+  /**
+   * User decided not to remove annotation
+   */
+  onCancelRemove = () => {
+    this.setState({
+      alertConfirmOpen: false,
+      deleteIndex: null
+    })
+  }
+
+  /**
+   * For hiding the 'X' icon delete button for an annotation
+   */
   hideDeleteIcon = () => {
     this.setState({
       deleteAnnotationIndexes: {}
     })
   }
 
+  /**
+   * For showing the 'X' icon delete button for an annotation
+   * @param startPage
+   * @param endPage
+   * @param startPageIndex
+   */
   showDeleteIcon = (startPage, endPage, startPageIndex) => {
     this.setState({
-      deleteAnnotationIndexes: { [startPage]: startPageIndex, [endPage]: startPage === endPage ? startPageIndex : 0 }
+      deleteAnnotationIndexes: {
+        [startPage]: startPageIndex,
+        [endPage]: startPage === endPage ? startPageIndex : 0
+      }
     })
   }
 
+  /**
+   * Gets page specific attributes
+   * @returns {Promise<void>}
+   */
   gatherPagePromises = async () => {
     let pagePromises = []
     for (let i = 0; i < this.state.pdf.numPages; i++) {
@@ -96,6 +153,11 @@ export class PDFViewer extends Component {
     })
   }
 
+  /**
+   * Gets the actual PDF page
+   * @param pageNumber
+   * @returns {Promise<any>}
+   */
   getSpecificPage = pageNumber => {
     return new Promise(resolve => {
       this.state.pdf.getPage(pageNumber + 1).then(page => {
@@ -107,15 +169,26 @@ export class PDFViewer extends Component {
     })
   }
 
-  matchRects = (rect1, rect2) => {
+  /**
+   * Checks to see if rect1 and rect2 are basically the same
+   * @param rect1
+   * @param rect2
+   * @returns {boolean}
+   */
+  matchRect = (rect1, rect2) => {
     return (
-      (Math.round(rect1.x) === Math.round(rect2.x))
-      && (Math.round(rect1.y) === Math.round(rect2.y))
-      && (Math.round(rect1.endX) === Math.round(rect2.endX))
-      && (Math.round(rect1.endY) === Math.round(rect2.endY))
+      (Math.abs(rect1.x - rect2.x) < 1)
+      && (Math.abs(rect1.y - rect2.y) < 1)
+      && (Math.abs(rect1.endX - rect2.endX) < 1)
+      && (Math.abs(rect1.endY - rect2.endY) < 1)
     )
   }
 
+  /**
+   * Used to get the first text item on a page
+   * @param endNode
+   * @returns {*}
+   */
   getFirstSibling = endNode => {
     let node = endNode.nodeType === 3 ? endNode.parentNode : endNode
     let found = false
@@ -129,6 +202,11 @@ export class PDFViewer extends Component {
     return node
   }
 
+  /**
+   * Used to get the last text item on a page
+   * @param startNode
+   * @returns {*}
+   */
   getLastSibling = startNode => {
     let node = startNode.nodeType === 3 ? startNode.parentNode : startNode
     let found = false
@@ -142,6 +220,14 @@ export class PDFViewer extends Component {
     return node
   }
 
+  /**
+   * Determines the 'annotation' information for text selection at a specific Document.Range
+   * @param rangeNumber
+   * @param selection
+   * @param pageNumber
+   * @param renderContext
+   * @returns {Array}
+   */
   getSelectionForRange = (rangeNumber, selection, pageNumber, renderContext) => {
     const pageRect = this[`page${pageNumber}ref`].current.getClientRects()[0]
     const selectionRects = selection.getRangeAt(rangeNumber).getClientRects()
@@ -165,7 +251,7 @@ export class PDFViewer extends Component {
 
       if (i > 0) {
         const previous = rects[rects.length - 1]
-        if (!this.matchRects(previous.pdfPoints, points)) {
+        if (!this.matchRect(previous.pdfPoints, points)) {
           rects = [...rects, { pageNumber: pageNumber, pdfPoints: points }]
         }
       } else {
@@ -175,6 +261,11 @@ export class PDFViewer extends Component {
     return rects
   }
 
+  /**
+   * Gets the text selection of the screen. Splits it into various Ranges if it spans multiple pages.
+   * @param renderContext
+   * @param pageNumber
+   */
   getSelection = (renderContext, pageNumber) => {
     const selection = window.getSelection()
     const range = selection.getRangeAt(0)
@@ -247,21 +338,37 @@ export class PDFViewer extends Component {
     })
   }
 
-  filterByPage = (anno, pageNumber, listIndex) => {
-    return {
-      ...anno,
-      rects: anno.rects.filter(rect => rect.pageNumber === pageNumber),
-      mainListIndex: listIndex
-    }
+  /**
+   * Filters annotation rects and annotations by pageNumber
+   * @param annos
+   * @param pageNumber
+   * @returns {*}
+   */
+  filterAnnosByPage = (annos, pageNumber) => {
+    return annos
+      .map((anno, i) => ({
+        ...anno,
+        rects: anno.rects.filter(rect => rect.pageNumber === pageNumber),
+        mainListIndex: i
+      }))
+      .filter(anno => anno.startPage === pageNumber || anno.endPage === pageNumber)
   }
 
   render() {
-    const { pages, pendingAnnotations, deleteAnnotationIndexes } = this.state
+    const { pages, pendingAnnotations, deleteAnnotationIndexes, alertConfirmOpen } = this.state
     const { annotations, allowSelection } = this.props
+
+    const alertActions = [
+      { onClick: this.onCancelRemove, value: 'Cancel', type: 'button' },
+      { onClick: this.onRemoveAnnotation, value: 'Delete', type: 'button' }
+    ]
 
     return (
       <div id="viewContainer" className="pdfViewer" ref={this.viewerRef}>
         {pages.length > 0 && pages.map((page, i) => {
+          const annotationsByPage = this.filterAnnosByPage(annotations, i)
+          const pendingByPage = this.filterAnnosByPage(pendingAnnotations, i)
+
           return (
             <Page
               id={i}
@@ -274,14 +381,15 @@ export class PDFViewer extends Component {
               key={`page-${i}`}
               allowSelection={allowSelection}
               ref={this[`page${i}ref`]}
-              annotations={annotations.map((anno, j) => this.filterByPage(anno, i, j))}
-              pendingAnnotations={pendingAnnotations.map((anno, j) => this.filterByPage(anno, i, j))}
+              annotations={annotationsByPage}
+              pendingAnnotations={pendingByPage}
               saveAnnotation={this.saveAnnotation}
-              removeAnnotation={this.removeAnnotation}
               cancelAnnotation={this.cancelAnnotation}
               getSelection={this.getSelection}
+              showConfirmDelete={this.confirmDelete}
               showDeleteIcon={this.showDeleteIcon}
               hideDeleteIcon={this.hideDeleteIcon}
+              confirmRemoveAnnotation={this.confirmRemoveAnnotation}
               deleteAnnotationIndex={(Object.keys(deleteAnnotationIndexes).length > 0 &&
                 deleteAnnotationIndexes.hasOwnProperty(i))
                 ? deleteAnnotationIndexes[i]
@@ -290,6 +398,9 @@ export class PDFViewer extends Component {
             />
           )
         })}
+        <Alert actions={alertActions} open={alertConfirmOpen} title="Confirm deletion">
+          Are you sure you want to delete this annotation?
+        </Alert>
         {pages.length === 0 &&
         <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
           <CircularLoader />

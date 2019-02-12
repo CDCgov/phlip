@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import * as ui_utils from 'pdfjs-dist/lib/web/ui_utils'
-import { CircularLoader, FlexGrid, Alert } from 'components'
+import { CircularLoader, FlexGrid } from 'components'
 import '../../pdf_viewer.css'
 import TextNode from './components/TextNode'
 import Annotation from './components/Annotation'
@@ -23,7 +23,6 @@ export class Page extends Component {
     textContent: PropTypes.object,
     pendingAnnotations: PropTypes.array,
     saveAnnotation: PropTypes.func,
-    removeAnnotation: PropTypes.func,
     cancelAnnotation: PropTypes.func,
     getSelection: PropTypes.func,
     id: PropTypes.number,
@@ -33,7 +32,8 @@ export class Page extends Component {
     }),
     showDeleteIcon: PropTypes.func,
     hideDeleteIcon: PropTypes.func,
-    deleteAnnotationIndex: PropTypes.number
+    deleteAnnotationIndex: PropTypes.number,
+    confirmRemoveAnnotation: PropTypes.func
   }
 
   constructor(props, context) {
@@ -52,12 +52,9 @@ export class Page extends Component {
       rendering: false,
       renderToRenderText: false,
       canvasStyleSpecs: {},
-      textLineStyleSpecs: {},
       noText: false,
       selectionStyle: {},
-      pending: false,
-      alertConfirmOpen: false,
-      deleteIndex: null
+      pending: false
     }
   }
 
@@ -86,31 +83,7 @@ export class Page extends Component {
    * @param index
    */
   confirmRemoveAnnotation = index => {
-    this.setState({
-      alertConfirmOpen: true,
-      deleteIndex: index
-    })
-  }
-
-  /**
-   * User confirmed removing annotation
-   */
-  onRemoveAnnotation = () => {
-    this.props.removeAnnotation(this.props.annotations[this.state.deleteIndex].mainListIndex)
-    this.setState({
-      alertConfirmOpen: false,
-      deleteIndex: null
-    })
-  }
-
-  /**
-   * User decided not to remove annotation
-   */
-  onCancelRemove = () => {
-    this.setState({
-      alertConfirmOpen: false,
-      deleteIndex: null
-    })
+    this.props.confirmRemoveAnnotation(this.props.annotations[index].mainListIndex)
   }
 
   /**
@@ -126,7 +99,7 @@ export class Page extends Component {
   }
 
   /**
-   * Used to determine is the user has selected text
+   * Used to determine if the user has selected text
    */
   onMouseUp = () => {
     if (this.props.allowSelection && this.props.pendingAnnotations.length === 0) {
@@ -191,6 +164,9 @@ export class Page extends Component {
     }, () => this.generateTextElements())
   }
 
+  /**
+   * Indicates that the app can go ahead and start rendering text lines
+   */
   generateTextElements = () => {
     this.setState({
       noText: this.props.textContent.items.length === 0,
@@ -200,17 +176,12 @@ export class Page extends Component {
 
   render() {
     const { annotations, pendingAnnotations, pageRef, id, textContent, deleteAnnotationIndex } = this.props
-    const { readyToRenderText, alertConfirmOpen, canvasStyleSpecs, renderContext } = this.state
+    const { readyToRenderText, canvasStyleSpecs, renderContext } = this.state
 
     const dims = {
       height: Math.ceil(renderContext.viewport.height),
       width: Math.ceil(renderContext.viewport.width)
     }
-
-    const alertActions = [
-      { onClick: this.onCancelRemove, value: 'Cancel', type: 'button' },
-      { onClick: this.onRemoveAnnotation, value: 'Delete', type: 'button' }
-    ]
 
     return (
       <div
@@ -223,9 +194,6 @@ export class Page extends Component {
         <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
           <CircularLoader />
         </FlexGrid>}
-        <Alert actions={alertActions} open={alertConfirmOpen} title="Confirm deletion">
-          Are you sure you want to delete this annotation?
-        </Alert>
         <div className="canvasWrapper" style={{ ...dims, position: 'relative' }}>
           <canvas {...canvasStyleSpecs} id={`page-${id}-canvas`} ref={this.canvasRef}>
             {renderContext.canvasContext && readyToRenderText && this.renderPage()}
@@ -257,7 +225,7 @@ export class Page extends Component {
                 handleCancelAnnotation={this.onCancelAnnotation}
                 handleConfirmAnnotation={this.onConfirmAnnotation}
                 transform={renderContext.viewport.transform}
-                pending={true}
+                pending
               />
             )
           })}
