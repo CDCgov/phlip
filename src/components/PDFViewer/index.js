@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Page from './Page'
+import Page from './components/Page'
 import PDFJS from 'pdfjs-dist/webpack'
 import { FlexGrid, CircularLoader } from 'components'
 import './pdf_viewer.css'
