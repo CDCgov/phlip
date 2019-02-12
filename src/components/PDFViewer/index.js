@@ -29,7 +29,8 @@ export class PDFViewer extends Component {
     this.state = {
       pdf: {},
       pages: [],
-      pendingAnnotations: []
+      pendingAnnotations: [],
+      deleteAnnotationIndexes: {}
     }
   }
 
@@ -58,18 +59,27 @@ export class PDFViewer extends Component {
 
   saveAnnotation = index => {
     this.props.saveAnnotation(this.state.pendingAnnotations[index])
-    this.setState({
-      pendingAnnotations: []
-    })
+    this.setState({ pendingAnnotations: [] })
   }
 
   removeAnnotation = index => {
     this.props.removeAnnotation(index)
+    this.setState({ deleteAnnotationIndexes: {} })
   }
 
-  cancelAnnotation = index => {
+  cancelAnnotation = () => {
+    this.setState({ pendingAnnotations: [] })
+  }
+
+  hideDeleteIcon = () => {
     this.setState({
-      pendingAnnotations: []
+      deleteAnnotationIndexes: {}
+    })
+  }
+
+  showDeleteIcon = (startPage, endPage, startPageIndex) => {
+    this.setState({
+      deleteAnnotationIndexes: { [startPage]: startPageIndex, [endPage]: startPage === endPage ? startPageIndex : 0 }
     })
   }
 
@@ -237,18 +247,21 @@ export class PDFViewer extends Component {
     })
   }
 
-  filterByPage = (anno, pageNumber) => {
+  filterByPage = (anno, pageNumber, listIndex) => {
     return {
       ...anno,
-      rects: anno.rects.filter(rect => rect.pageNumber === pageNumber)
+      rects: anno.rects.filter(rect => rect.pageNumber === pageNumber),
+      mainListIndex: listIndex
     }
   }
 
   render() {
+    const { pages, pendingAnnotations, deleteAnnotationIndexes } = this.state
+    const { annotations, allowSelection } = this.props
+
     return (
       <div id="viewContainer" className="pdfViewer" ref={this.viewerRef}>
-        {this.state.pages.length > 0
-        && this.state.pages.map((page, i) => {
+        {pages.length > 0 && pages.map((page, i) => {
           return (
             <Page
               id={i}
@@ -259,18 +272,25 @@ export class PDFViewer extends Component {
                 height: this.viewerRef.current.clientHeight
               }}
               key={`page-${i}`}
-              allowSelection={this.props.allowSelection}
+              allowSelection={allowSelection}
               ref={this[`page${i}ref`]}
-              annotations={this.props.annotations.map(anno => this.filterByPage(anno, i))}
-              pendingAnnotations={this.state.pendingAnnotations.map(anno => this.filterByPage(anno, i))}
+              annotations={annotations.map((anno, j) => this.filterByPage(anno, i, j))}
+              pendingAnnotations={pendingAnnotations.map((anno, j) => this.filterByPage(anno, i, j))}
               saveAnnotation={this.saveAnnotation}
               removeAnnotation={this.removeAnnotation}
               cancelAnnotation={this.cancelAnnotation}
               getSelection={this.getSelection}
+              showDeleteIcon={this.showDeleteIcon}
+              hideDeleteIcon={this.hideDeleteIcon}
+              deleteAnnotationIndex={(Object.keys(deleteAnnotationIndexes).length > 0 &&
+                deleteAnnotationIndexes.hasOwnProperty(i))
+                ? deleteAnnotationIndexes[i]
+                : null
+              }
             />
           )
         })}
-        {this.state.pages.length === 0 &&
+        {pages.length === 0 &&
         <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
           <CircularLoader />
         </FlexGrid>}

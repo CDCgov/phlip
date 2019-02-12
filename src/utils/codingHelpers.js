@@ -959,6 +959,5 @@ export default {
   getFinalCodedObject,
   getNextQuestion,
   getPreviousQuestion,
-  getQuestionNumbers,
-  handleRemoveAnnotation
+  getQuestionNumbers
 }

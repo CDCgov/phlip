@@ -13,7 +13,8 @@ export class Page extends Component {
     allowSelection: false,
     textContent: {
       items: []
-    }
+    },
+    deleteAnnotationIndex: null
   }
 
   static propTypes = {
@@ -29,7 +30,10 @@ export class Page extends Component {
     viewerDimensions: PropTypes.shape({
       height: PropTypes.number,
       width: PropTypes.number
-    })
+    }),
+    showDeleteIcon: PropTypes.func,
+    hideDeleteIcon: PropTypes.func,
+    deleteAnnotationIndex: PropTypes.number
   }
 
   constructor(props, context) {
@@ -66,7 +70,7 @@ export class Page extends Component {
    * @param index
    */
   onConfirmAnnotation = index => {
-    this.props.saveAnnotation(index)
+    this.props.saveAnnotation(this.props.pendingAnnotations[index].mainListIndex)
   }
 
   /**
@@ -74,7 +78,7 @@ export class Page extends Component {
    * @param index
    */
   onCancelAnnotation = index => {
-    this.props.cancelAnnotation(index)
+    this.props.cancelAnnotation(this.props.pendingAnnotations[index].mainListIndex)
   }
 
   /**
@@ -92,7 +96,7 @@ export class Page extends Component {
    * User confirmed removing annotation
    */
   onRemoveAnnotation = () => {
-    this.props.removeAnnotation(this.state.deleteIndex)
+    this.props.removeAnnotation(this.props.annotations[this.state.deleteIndex].mainListIndex)
     this.setState({
       alertConfirmOpen: false,
       deleteIndex: null
@@ -114,11 +118,11 @@ export class Page extends Component {
    * @param index
    */
   onClickAnnotation = index => {
-    this.setState({
-      deleteIndex: this.state.deleteIndex === index
-        ? null // declick it
-        : index
-    })
+    if (this.props.deleteAnnotationIndex !== null) {
+      this.props.hideDeleteIcon()
+    } else {
+      this.props.showDeleteIcon(this.props.id, this.props.annotations[index].endPage, index)
+    }
   }
 
   /**
@@ -195,17 +199,18 @@ export class Page extends Component {
   }
 
   render() {
+    const { annotations, pendingAnnotations, pageRef, id, textContent, deleteAnnotationIndex } = this.props
+    const { readyToRenderText, alertConfirmOpen, canvasStyleSpecs, renderContext } = this.state
+
     const dims = {
-      height: Math.ceil(this.state.renderContext.viewport.height),
-      width: Math.ceil(this.state.renderContext.viewport.width)
+      height: Math.ceil(renderContext.viewport.height),
+      width: Math.ceil(renderContext.viewport.width)
     }
 
     const alertActions = [
       { onClick: this.onCancelRemove, value: 'Cancel', type: 'button' },
       { onClick: this.onRemoveAnnotation, value: 'Delete', type: 'button' }
     ]
-
-    const { annotations, pendingAnnotations, pageRef, id, textContent } = this.props
 
     return (
       <div
@@ -214,20 +219,20 @@ export class Page extends Component {
         ref={pageRef}
         className="page"
         onMouseUp={this.onMouseUp}>
-        {!this.state.readyToRenderText &&
+        {!readyToRenderText &&
         <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
           <CircularLoader />
         </FlexGrid>}
-        <Alert actions={alertActions} open={this.state.alertConfirmOpen} title="Confirm deletion">
+        <Alert actions={alertActions} open={alertConfirmOpen} title="Confirm deletion">
           Are you sure you want to delete this annotation?
         </Alert>
         <div className="canvasWrapper" style={{ ...dims, position: 'relative' }}>
-          <canvas {...this.state.canvasStyleSpecs} id={`page-${id}-canvas`} ref={this.canvasRef}>
-            {this.state.renderContext.canvasContext && this.state.readyToRenderText && this.renderPage()}
+          <canvas {...canvasStyleSpecs} id={`page-${id}-canvas`} ref={this.canvasRef}>
+            {renderContext.canvasContext && readyToRenderText && this.renderPage()}
           </canvas>
         </div>
         <div className="annotationLayer" data-page-number={id} id={`page-${id}-annotations`} style={dims}>
-          {this.state.readyToRenderText && annotations.map((annotation, i) => {
+          {readyToRenderText && annotations.map((annotation, i) => {
             return (
               <Annotation
                 key={`highlight-area-${i}`}
@@ -237,12 +242,12 @@ export class Page extends Component {
                 handleClickAnnotation={this.onClickAnnotation}
                 handleRemoveAnnotation={this.confirmRemoveAnnotation}
                 pending={false}
-                isClicked={this.state.deleteIndex === i}
-                transform={this.state.renderContext.viewport.transform}
+                isClicked={deleteAnnotationIndex === i}
+                transform={renderContext.viewport.transform}
               />
             )
           })}
-          {this.state.renderContext.canvasContext && pendingAnnotations.map((annotation, i) => {
+          {renderContext.canvasContext && pendingAnnotations.map((annotation, i) => {
             return (
               <Annotation
                 key={`pending-highlight-area-${i}`}
@@ -251,21 +256,21 @@ export class Page extends Component {
                 pageNumber={id}
                 handleCancelAnnotation={this.onCancelAnnotation}
                 handleConfirmAnnotation={this.onConfirmAnnotation}
-                transform={this.state.renderContext.viewport.transform}
+                transform={renderContext.viewport.transform}
                 pending={true}
               />
             )
           })}
         </div>
         <div data-page-number={id} className="textLayer" id={`text-layer-page-${id}`} style={dims}>
-          {this.state.readyToRenderText && textContent.items.map((textLine, i) => {
+          {readyToRenderText && textContent.items.map((textLine, i) => {
             return (
               <TextNode
                 key={`textLine-${i}-page-${id}`}
                 textItem={textLine}
                 allStyles={textContent.styles}
-                viewport={this.state.renderContext.viewport}
-                canvasContext={this.state.renderContext.canvasContext}
+                viewport={renderContext.viewport}
+                canvasContext={renderContext.canvasContext}
               />
             )
           })}
