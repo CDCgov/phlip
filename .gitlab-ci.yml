@@ -52,8 +52,8 @@ e2e:
   script:
     - npm run test:e2e
   after_script:
-    - docker stop esquire-backend_esquire-backend_1 mssqldev
-    - docker rm esquire-backend_esquire-backend_1 mssqldev
+    - sudo docker stop esquire-backend_esquire-backend_1 mssqldev
+    - sudo docker rm esquire-backend_esquire-backend_1 mssqldev
   tags:
     - phlip2-dev
   only:
