@@ -40,7 +40,7 @@ test:
 e2e:
   stage: e2e
   before_script:
-    - git clone https://git.phiresearchlab.org/IIU-Web-Team/esquire-backend.git
+    - git clone git@git.phiresearchlab.org:IIU-Web-Team/esquire-backend.git
     - cd esquire-backend
     - git checkout devV2
     - docker-compose up --build -d
