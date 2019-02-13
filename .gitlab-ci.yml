@@ -43,13 +43,13 @@ e2e:
     - git clone git@git.phiresearchlab.org:IIU-Web-Team/esquire-backend.git
     - cd esquire-backend
     - git checkout devV2
-    - sudo docker-compose up --build -d
-    - sleep 5
+    - sudo /usr/local/bin/docker-compose up --build -d
     - cd ..
     - echo "APP_API_URL=http://0.0.0.0:80" > .env
     - npm install
     - npm run serve:local &
     - npm run start:local &
+    - sleep 5
   script:
     - npm run test:e2e
   after_script:
