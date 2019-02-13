@@ -47,7 +47,6 @@ e2e:
     - cd ..
     - echo "APP_API_URL=http://0.0.0.0:80" > .env
     - npm install
-    - npm run serve:local &
     - npm run start:local &
     - sleep 5
   script:
