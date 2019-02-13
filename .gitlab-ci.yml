@@ -6,6 +6,7 @@ variables:
 stages:
   - lint
   - test
+  - e2e
   - build
   - deploy
 
@@ -35,6 +36,28 @@ test:
     - test
   dependencies:
     - lint
+
+e2e:
+  stage: e2e
+  before_script:
+    - git clone https://git.phiresearchlab.org/IIU-Web-Team/esquire-backend.git
+    - cd esquire-backend
+    - git checkout devV2
+    - docker-compose up --build -d
+    - sleep 5
+    - cd ..
+    - echo "APP_API_URL=http://0.0.0.0:80" > .env
+    - npm install
+    - npm run serve:local &
+    - npm run start:local &
+  script:
+    - npm run test:e2e
+  tags:
+    - phlip2-dev
+  only:
+    - e2e-cicd
+#  dependencies:
+#    - lint
 
 build_dev_azure:
   stage: build
