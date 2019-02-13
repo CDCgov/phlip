@@ -43,7 +43,7 @@ e2e:
     - git clone git@git.phiresearchlab.org:IIU-Web-Team/esquire-backend.git
     - cd esquire-backend
     - git checkout devV2
-    - docker-compose up --build -d
+    - sudo docker-compose up --build -d
     - sleep 5
     - cd ..
     - echo "APP_API_URL=http://0.0.0.0:80" > .env
@@ -52,6 +52,9 @@ e2e:
     - npm run start:local &
   script:
     - npm run test:e2e
+  after_script:
+    - docker stop esquire-backend_esquire-backend_1 mssqldev
+    - docker rm esquire-backend_esquire-backend_1 mssqldev
   tags:
     - phlip2-dev
   only:
