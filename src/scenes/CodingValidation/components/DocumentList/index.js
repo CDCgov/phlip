@@ -91,7 +91,7 @@ export class DocumentList extends Component {
 
   render() {
     return (
-      <FlexGrid container style={{ width: '50%', overflow: 'hidden' }} raised>
+      <FlexGrid container flex style={{ overflow: 'hidden' }} raised>
         <FlexGrid
           container
           type="row"

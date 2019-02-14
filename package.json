@@ -88,6 +88,7 @@
     "passport-saml": "0.35.0",
     "pdfjs-dist": "^2.0.943",
     "prop-types": "15.6.2",
+    "re-resizable": "^4.11.0",
     "react": "16.5.0",
     "react-autosuggest": "9.4.0",
     "react-copy-to-clipboard": "5.0.1",

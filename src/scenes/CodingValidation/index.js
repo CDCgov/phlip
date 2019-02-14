@@ -15,6 +15,7 @@ import {
 } from 'components'
 import classNames from 'classnames'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
+import Resizable from 're-resizable'
 
 const navButtonStyles = {
   height: 90,
@@ -499,13 +500,31 @@ export class CodingValidation extends Component {
           showNextButton={this.props.showNextButton}
         />
         <FlexGrid style={{ minWidth: 15, maxWidth: 15, width: 15 }} />
-        <DocumentList
-          projectId={this.props.projectId}
-          jurisdictionId={this.props.jurisdiction.jurisdictionId}
-          page={this.props.page}
-          questionId={this.props.question.id}
-          saveUserAnswer={this.onSaveCodedQuestion}
-        />
+        <Resizable
+          style={{ display: 'flex' }}
+          minWidth="10%"
+          enable={{
+            top: false,
+            right: false,
+            bottom: false,
+            left: true,
+            topRight: false,
+            bottomRight: false,
+            bottomLeft: false,
+            topLeft: false
+          }}
+          defaultSize={{
+            width: '50%',
+            height: '100%'
+          }}>
+          <DocumentList
+            projectId={this.props.projectId}
+            jurisdictionId={this.props.jurisdiction.jurisdictionId}
+            page={this.props.page}
+            questionId={this.props.question.id}
+            saveUserAnswer={this.onSaveCodedQuestion}
+          />
+        </Resizable>
       </>
     )
   }

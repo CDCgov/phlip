@@ -217,7 +217,7 @@ export class QuestionCard extends Component {
     ]
 
     return (
-      <Row displayFlex style={{ flex: 1, width: '50%' }}>
+      <Row displayFlex style={{ flex: 1, width: '50%', minWidth: '10%' }}>
         <Alert actions={alertActions} title={this.state.confirmAlertInfo.title} open={this.state.confirmAlertOpen}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             {this.state.confirmAlertInfo.text}
