@@ -73,7 +73,7 @@ e2e:
     - phlip2-dev
   only:
     - e2e-cicd
-   dependencies:
+  dependencies:
     - lint
 
 build_dev_azure:
