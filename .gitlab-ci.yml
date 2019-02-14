@@ -48,12 +48,13 @@ e2e:
     - git clone git@git.phiresearchlab.org:IIU-Web-Team/esquire-doc-management.git
     - cd esquire-doc-management
     - npm install
-    - echo "JWT_DEV_SECRET=$JWT_DEV_SECRET" > .env
-    - echo "NODE_ENV=development" >> .env
+    - echo JWT_SECRET=$JWT_DEV_SECRET > .env
+    - echo MONGO_HOST=mongo >> .env
+    - echo NODE_ENV=development >> .env
     - sudo /usr/local/bin/docker-compose up -d
     - cd ..
     - echo "APP_DOC_MANAGE_API=http://0.0.0.0:3000" > .env
-    - echo "APP_API_URL=http://0.0.0.0:80" >> .env
+    - echo "APP_API_URL=http://0.0.0.0:8000" >> .env
     - npm install
     - pm2 start scripts/start.js --name fe
     - sleep 60
