@@ -62,7 +62,7 @@ describe('PDFViewer - Page - Annotation components', () => {
       expect(wrapper.find('.iconActions')).toHaveLength(0)
     })
 
-    test('should only show the x button and not the check', () => {
+    test('should only show the x icon button and not the check icon button', () => {
       const wrapper = mount(<Annotation {...props} isClicked={true} />)
       expect(wrapper.find('.iconActions').children()).toHaveLength(1)
     })
