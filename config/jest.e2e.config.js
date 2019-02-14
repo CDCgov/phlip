@@ -6,5 +6,6 @@ module.exports = {
   testRegex: '\/__tests__\/.+\.e2e\.test\.js',
   modulePaths: [
     '<rootDir>/src/'
-  ]
+  ],
+  preset: 'jest-puppeteer'
 }
