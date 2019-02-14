@@ -667,5 +667,10 @@ export const annotations = [
   }
 ]
 
+export const canvasContext = {
+  measureText: f => 300,
+  font: 'monospace'
+}
+
 /// total number of rects
 export const totalAnnotationLenth = 4

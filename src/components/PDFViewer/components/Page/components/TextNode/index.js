@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { transformText } from './textTransformHelpers'
 
-class TextNode extends PureComponent {
+export class TextNode extends PureComponent {
   static propTypes = {
     textItem: PropTypes.object,
     allStyles: PropTypes.object,
@@ -16,7 +16,7 @@ class TextNode extends PureComponent {
 
   transform = item => {
     const { canvasContext, viewport, allStyles } = this.props
-    const textItem = transformText(viewport, item, allStyles, canvasContext)
+    const textItem = transformText(viewport, item, allStyles)
     canvasContext.font = `${textItem.style.fontSize}px ${textItem.style.fontFamily}`
     const fontWidth = canvasContext.measureText(textItem.str).width
     const scale = ((textItem.width + 1) * viewport.scale) / fontWidth

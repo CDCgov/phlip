@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { IconButton } from 'components'
 import { Util as dom_utils } from 'pdfjs-dist/lib/shared/util'
 
-class Annotation extends PureComponent {
+export class Annotation extends PureComponent {
   static propTypes = {
     annotation: PropTypes.object,
     index: PropTypes.number,
