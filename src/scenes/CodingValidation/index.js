@@ -56,6 +56,8 @@ const styles = theme => ({
   }
 })
 
+const ResizeHandle = () => <Icon>more_vert</Icon>
+
 export class CodingValidation extends Component {
   static propTypes = {
     projectName: PropTypes.string,
@@ -512,6 +514,17 @@ export class CodingValidation extends Component {
             bottomRight: false,
             bottomLeft: false,
             topLeft: false
+          }}
+          handleComponent={{
+            left: ResizeHandle
+          }}
+          handleStyles={{
+            left: {
+              left: -19,
+              height: 'fit-content',
+              width: 'fit-content',
+              top: '50%'
+            }
           }}
           defaultSize={{
             width: '50%',
