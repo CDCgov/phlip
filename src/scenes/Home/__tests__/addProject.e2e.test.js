@@ -28,7 +28,7 @@ describe('project creation', () => {
 
     const projectTxt = await findByLink(page, 'Project 1')
     expect(projectTxt).not.toBe(null)
-  }, 16000)
+  }, 50000)
 })
 
 function getText(linkText) {

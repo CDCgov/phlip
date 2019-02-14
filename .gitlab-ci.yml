@@ -55,16 +55,12 @@ e2e:
     - echo "APP_DOC_MANAGE_API=http://0.0.0.0:3000" > .env
     - echo "APP_API_URL=http://0.0.0.0:80" >> .env
     - npm install
-    - pm2 start scripts/start.js --name fe
-    - sleep 5
   script:
     - npm run test:e2e
   after_script:
     - sudo docker stop esquire-backend_esquire-backend_1 mssqldev doc-manage doc-manage-mongo
     - sudo docker rm esquire-backend_esquire-backend_1 mssqldev doc-manage doc-manage-mongo
-    - pm2 stop fe
-    - pm2 delete fe
-    - docker volume prune -f
+    - sudo docker volume prune -f
   tags:
     - phlip2-dev
   only:
