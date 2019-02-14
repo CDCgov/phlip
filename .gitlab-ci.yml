@@ -6,7 +6,6 @@ variables:
 stages:
   - lint
   - test
-  - e2e
   - build
   - deploy
 
@@ -21,14 +20,11 @@ lint:
     - e2e-cicd
     - development
     - test
-  artifacts:
-    expire_in: 1 hour
-    paths:
-      - node_modules/
 
 test:
   stage: test
   script:
+    - npm install
     - npm run test:local
   tags:
     - phlip2-dev
@@ -36,11 +32,9 @@ test:
     - e2e-cicd
     - development
     - test
-  dependencies:
-    - lint
 
 e2e:
-  stage: e2e
+  stage: test
   before_script:
     - git clone git@git.phiresearchlab.org:IIU-Web-Team/esquire-backend.git
     - cd esquire-backend
@@ -73,8 +67,6 @@ e2e:
     - phlip2-dev
   only:
     - e2e-cicd
-  dependencies:
-    - lint
 
 build_dev_azure:
   stage: build
