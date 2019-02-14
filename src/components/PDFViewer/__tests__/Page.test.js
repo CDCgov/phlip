@@ -1,6 +1,6 @@
 import React from 'react'
 import { mount } from 'enzyme'
-import { Page } from '../Page'
+import { Page } from '../components/Page'
 import { viewport, textContent, annotations, totalAnnotationLenth } from 'utils/testData/pdfTest'
 
 const props = {

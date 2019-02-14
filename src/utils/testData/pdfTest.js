@@ -668,4 +668,4 @@ export const annotations = [
 ]
 
 /// total number of rects
-export const totalAnnotationLenth = 7
+export const totalAnnotationLenth = 4

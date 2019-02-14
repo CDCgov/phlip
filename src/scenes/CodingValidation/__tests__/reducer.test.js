@@ -364,6 +364,96 @@ describe('CodingValidation reducer', () => {
     })
   })
 
+  describe('ON_REMOVE_ANNOTATION', () => {
+    test('should handle regular questions', () => {
+      const action = {
+        type: types.ON_REMOVE_ANNOTATION,
+        index: 1,
+        questionId: 1,
+        answerId: 123
+      }
+
+      const currentState = getState({
+        question: schemeById[1],
+        userAnswers: {
+          ...userAnswersCoded,
+          1: {
+            ...userAnswersCoded[1],
+            answers: {
+              123: {
+                ...userAnswersCoded[1].answers[123],
+                annotations: [{ text: 'text annotation', rects:[] }, { text: 'text annotation 2', rects: [] }]
+              }
+            }
+          }
+        }
+      })
+      const state = reducer(currentState, action)
+
+      expect(state.userAnswers).toEqual({
+        ...userAnswersCoded,
+        1: {
+          ...userAnswersCoded[1],
+          answers: {
+            ...userAnswersCoded[1].answers,
+            123: {
+              ...userAnswersCoded[1].answers[123],
+              annotations: [{ text: 'text annotation', rects:[] }]
+            }
+          }
+        }
+      })
+    })
+
+    test('should handle category child questions', () => {
+      const action = {
+        type: types.ON_REMOVE_ANNOTATION,
+        index: 0,
+        questionId: 4,
+        answerId: 432
+      }
+
+      const currentState = getState({
+        question: schemeById[4],
+        userAnswers: {
+          ...userAnswersCoded,
+          4: {
+            ...userAnswersCoded[4],
+            10: {
+              ...userAnswersCoded[4][10],
+              answers: {
+                432: {
+                  ...userAnswersCoded[4][10].answers[432],
+                  annotations: [{ text: 'text annotation', rects:[] }]
+                }
+              }
+            }
+          }
+        },
+        selectedCategory: 0,
+        selectedCategoryId: 10,
+        categories: [{ id: 10, text: 'cat 1' }, { id: 20, text: 'cat 2' }]
+      })
+
+      const state = reducer(currentState, action)
+      expect(state.userAnswers).toEqual({
+        ...currentState.coding.userAnswers,
+        4: {
+          ...currentState.coding.userAnswers[4],
+          10: {
+            ...currentState.coding.userAnswers[4][10],
+            answers: {
+              432: {
+                ...currentState.coding.userAnswers[4][10].answers[432],
+                annotations: []
+              }
+            }
+          }
+        }
+      })
+    })
+  })
+
   describe('ON_CLEAR_ANSWER', () => {
     test('should handle regular questions', () => {
       const action = {

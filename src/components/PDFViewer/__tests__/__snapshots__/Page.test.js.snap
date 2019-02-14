@@ -5,6 +5,7 @@ exports[`PDFViewer - Page component should render correctly 1`] = `
   allowSelection={false}
   annotations={Array []}
   cancelAnnotation={[MockFunction]}
+  deleteAnnotationIndex={null}
   id={0}
   page={
     Object {
@@ -60,7 +61,14 @@ exports[`PDFViewer - Page component should render correctly 1`] = `
     </div>
     <div
       className="annotationLayer"
+      data-page-number={0}
       id="page-0-annotations"
+      style={
+        Object {
+          "height": 792,
+          "width": 612,
+        }
+      }
     />
     <div
       className="textLayer"
