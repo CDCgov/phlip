@@ -46,7 +46,7 @@ exports[`PDFViewer - Page - Annotation components should render correctly 1`] = 
   handleRemoveAnnotation={[MockFunction]}
   index={0}
   isClicked={false}
-  pageNumber={1}
+  pageNumber={0}
   pending={false}
   transform={
     Array [
