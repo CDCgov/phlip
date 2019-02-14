@@ -1,6 +1,7 @@
 module.exports = {
-  lauch: {
+  launch: {
     dumpio: true,
-    headless: false
+    headless: true,
+    devtools: false
   }
 }
