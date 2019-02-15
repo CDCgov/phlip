@@ -71,7 +71,7 @@ build and deploy on staging:
     - echo "APP_DOC_MANAGE_API=http://0.0.0.0:3000" > .env
     - echo "APP_API_URL=http://0.0.0.0:8000" >> .env
     - echo "HEADLESS=1" >> .env
-    - npm install
+    - if pm2 list | grep fe; then pm2 stop fe; else echo "no fe process running"; fi
     - pm2 start scripts/start.js --name fe
   tags:
     - phlip2-dev
@@ -89,7 +89,6 @@ build and deploy on staging:
 run e2e tests staging:
   stage: e2e test
   script:
-    - npm install
     - npm run test:e2e
   tags:
     - phlip2-dev
