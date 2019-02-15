@@ -29,10 +29,6 @@ test:
     - npm run test:local
   tags:
     - phlip2-dev
-  cache:
-    key: node_modules
-    paths:
-      - node_modules/
   only:
     - development
     - test
@@ -68,6 +64,7 @@ test:
 build and deploy on staging:
   stage: staging
   script:
+    - npm install
     - echo "APP_DOC_MANAGE_API=http://0.0.0.0:3000" > .env
     - echo "APP_API_URL=http://0.0.0.0:8000" >> .env
     - echo "HEADLESS=1" >> .env
@@ -77,11 +74,6 @@ build and deploy on staging:
     - phlip2-dev
   only:
     - e2e-cicd
-  cache:
-    key: node_modules
-    paths:
-      - node_modules/
-    policy: pull
   environment:
     name: Internal PHLIP2 Dev
     url: http://lvscent7064.lab.local
@@ -89,16 +81,12 @@ build and deploy on staging:
 run e2e tests staging:
   stage: e2e test
   script:
+    - npm install
     - npm run test:e2e
   tags:
     - phlip2-dev
   only:
     - e2e-cicd
-  cache:
-    key: node_modules
-    paths:
-      - node_modules/
-    policy: pull
   environment:
     name: Internal PHLIP2 Dev
     url: http://lvscent7064.lab.local
