@@ -144,16 +144,6 @@ export const QuestionContent = props => {
         </Row>
       </FlexGrid>
 
-      {/*{question.hint &&*/}
-      {/*<FlexGrid container type="row" padding="20px 35px 0px 35px" align="center">*/}
-      {/*<Icon color="#98b3be" size="14px">lightbulb_outline</Icon>*/}
-      {/*<Typography variant="body2" style={{ color: '#98b3be' }}>*/}
-      {/*<strong>Coding Directions:</strong>*/}
-      {/*{question.hint}*/}
-      {/*</Typography>*/}
-      {/*</FlexGrid>*/}
-      {/*}*/}
-
       {isValidation && <ValidationTable
         onOpenAlert={onOpenFlagConfirmAlert}
         mergedUserQuestions={mergedUserQuestions}

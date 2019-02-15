@@ -6,7 +6,7 @@ import * as pdfjs from 'pdfjs-dist/lib/shared/util'
 const NonWhitespaceRegexp = /\S/
 const isAllWhitespace = str => !NonWhitespaceRegexp.test(str)
 
-export const transformText = (canvasViewport, textLine, styles, context) => {
+export const transformText = (canvasViewport, textLine, styles) => {
   // Initialize all used properties to keep the caches monomorphic.
   let textDivProperties = {
     fontSize: 0,
@@ -14,11 +14,7 @@ export const transformText = (canvasViewport, textLine, styles, context) => {
     angle: 0,
     canvasWidth: 0,
     isWhitespace: false,
-    originalTransform: null,
-    paddingBottom: 0,
-    paddingLeft: 0,
-    paddingRight: 0,
-    paddingTop: 0,
+    originalTransform: textLine.transform,
     scale: 1,
     margin: 0,
     textContent: textLine.str
@@ -89,12 +85,11 @@ export const transformText = (canvasViewport, textLine, styles, context) => {
     ...textDivProperties,
     style: {
       left: b[0],
-      top: b[1],
-      //right: b[2],
-      //bottom: b[3],
+      top: b[1] - 2,
       fontSize: fontHeight,
       fontFamily: style.fontFamily,
-      margin: 0
+      margin: 0,
+      height: Math.abs(b[1] - b[3]) + 2
     },
     size: [divWidth, divHeight],
     m
