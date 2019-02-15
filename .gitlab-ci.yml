@@ -1,11 +1,12 @@
 variables:
-  VERSION: 0.6.0
   SUB_BUILD: $CI_PIPELINE_ID
   BRANCH: $CI_COMMIT_REF_NAME
 
 stages:
   - lint
-  - test
+  - unit test
+  - staging
+  - e2e test
   - build
   - deploy
 
@@ -17,58 +18,78 @@ lint:
   tags:
     - phlip2-dev
   only:
-    - e2e-cicd
     - development
     - test
+    - e2e-cicd
 
 test:
-  stage: test
+  stage: unit test
   script:
     - npm install
     - npm run test:local
   tags:
     - phlip2-dev
   only:
-    - e2e-cicd
     - development
     - test
+    - e2e-cicd
 
-e2e:
-  stage: test
-  before_script:
-    - git clone git@git.phiresearchlab.org:IIU-Web-Team/esquire-backend.git
-    - cd esquire-backend
-    - git checkout devV2
-    - sudo /usr/local/bin/docker-compose up -d
-    - cd ..
-    - git clone git@git.phiresearchlab.org:IIU-Web-Team/esquire-doc-management.git
-    - cd esquire-doc-management
-    - npm install
-    - echo JWT_SECRET=$JWT_DEV_SECRET > .env
-    - echo MONGO_HOST=mongo >> .env
-    - echo NODE_ENV=development >> .env
-    - sudo /usr/local/bin/docker-compose up -d
-    - cd ..
+#e2e:
+#  stage: staging
+#  before_script:
+#    - git clone git@git.phiresearchlab.org:IIU-Web-Team/esquire-backend.git
+#    - cd esquire-backend
+#    - git checkout devV2
+#    - sudo /usr/local/bin/docker-compose up -d
+#    - cd ..
+#    - git clone git@git.phiresearchlab.org:IIU-Web-Team/esquire-doc-management.git
+#    - cd esquire-doc-management
+#    - npm install
+#
+#    - sudo /usr/local/bin/docker-compose up -d
+#    - cd ..
+#  script:
+#    - npm run test:e2e
+#  after_script:
+#    - sudo docker stop esquire-backend_esquire-backend_1 mssqldev doc-manage doc-manage-mongo
+#    - sudo docker rm esquire-backend_esquire-backend_1 mssqldev doc-manage doc-manage-mongo
+#    - sudo docker volume prune -f
+#    - pm2 stop fe
+#    - pm2 delete fe
+#  tags:
+#    - phlip2-dev
+#  only:
+#    - e2e-cicd
+
+build and deploy on staging:
+  stage: staging
+  script:
     - echo "APP_DOC_MANAGE_API=http://0.0.0.0:3000" > .env
     - echo "APP_API_URL=http://0.0.0.0:8000" >> .env
     - echo "HEADLESS=1" >> .env
     - npm install
     - pm2 start scripts/start.js --name fe
-    - sleep 60
-  script:
-    - npm run test:e2e
-  after_script:
-    - sudo docker stop esquire-backend_esquire-backend_1 mssqldev doc-manage doc-manage-mongo
-    - sudo docker rm esquire-backend_esquire-backend_1 mssqldev doc-manage doc-manage-mongo
-    - sudo docker volume prune -f
-    - pm2 stop fe
-    - pm2 delete fe
   tags:
     - phlip2-dev
   only:
     - e2e-cicd
+  environment:
+    name: Internal PHLIP2 Dev
+    url: http://lvscent7064.lab.local
 
-build_dev_azure:
+run e2e tests staging:
+  stage: e2e test
+  script:
+    - npm run test:e2e
+  tags:
+    - phlip2-dev
+  only:
+    - e2e-cicd
+  environment:
+    name: Internal PHLIP2 Dev
+    url: http://lvscent7064.lab.local
+
+build dev azure:
   stage: build
   script:
     - npm install
@@ -90,7 +111,7 @@ build_dev_azure:
     url: https://phlip2dev.phiresearchlab.org
   dependencies: []
 
-deploy_dev_azure:
+deploy dev azure:
   stage: deploy
   script:
     - cd ~iiu-deploy/esquire-frontend-deploy
@@ -106,7 +127,7 @@ deploy_dev_azure:
     - development
   dependencies: []
 
-build_test_azure:
+build test azure:
   stage: build
   script:
     - npm install
@@ -127,7 +148,7 @@ build_test_azure:
     name: Azure PHLIP2 Test
     url: https://phlip2test.phiresearchlab.org
 
-deploy_test_azure:
+deploy test azure:
   stage: deploy
   script:
     - cd ~iiu-deploy/esquire-frontend-deploy
