@@ -245,7 +245,7 @@ export class DocumentManagement extends Component {
       cancelButton, {
         value: this.getButtonText('Confirm'),
         type: 'button',
-        otherProps: { 'aria-label': 'Confirm' },
+        otherProps: { 'aria-label': 'Confirm', 'id':'bulkConfirmBtn' },
         onClick: this.handleBulkConfirm,
         disabled: this.props.bulkOperationInProgress || !this.confirmValidation(this.state.bulkActionType)
       }
@@ -271,7 +271,7 @@ export class DocumentManagement extends Component {
               text: '+ Upload New',
               path: '/docs/upload',
               state: { modal: true },
-              props: { 'aria-label': 'Upload New Documents' },
+              props: { 'aria-label': 'Upload New Documents', 'id':'uploadNewBtn' },
               show: true
             }}>
             <SearchBox />
@@ -294,7 +294,7 @@ export class DocumentManagement extends Component {
               handleSortRequest={this.props.actions.handleSortRequest}
             />
           </FlexGrid>
-          <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="md" hideOverflow={false}>
+          <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="md" hideOverflow={false} id="bulkConfirmBox" >
             <ModalTitle title={this.state.modalTitle} />
             <Divider />
             <ModalContent

@@ -197,7 +197,7 @@ export class Upload extends Component {
           {
             value: 'Continue',
             type: 'button',
-            otherProps: { 'aria-label': 'Continue' },
+            otherProps: { 'aria-label': 'Continue', 'id':'uploadCloseContBtn' },
             onClick: this.goBack
           }
         ]
@@ -401,7 +401,7 @@ export class Upload extends Component {
     const closeButton = {
       value: 'Close',
       type: 'button',
-      otherProps: { 'aria-label': 'Close modal' },
+      otherProps: { 'aria-label': 'Close modal', 'id':'uploadCloseBtn' },
       onClick: this.onCloseModal
     }
 
@@ -411,7 +411,7 @@ export class Upload extends Component {
         {
           value: this.getButtonText('Upload'),
           type: 'button',
-          otherProps: { 'aria-label': 'Upload' },
+          otherProps: { 'aria-label': 'Upload', 'id':'uploadFilesBtn' },
           onClick: this.onUploadFiles,
           disabled: this.props.uploading
         }
@@ -421,7 +421,7 @@ export class Upload extends Component {
     return (
       <Modal onClose={this.onCloseModal} open={true} maxWidth="lg" hideOverflow>
         {this.props.alertOpen &&
-        <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle}>
+        <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle} id="uploadAlert">
           {this.props.alertText}
         </Alert>}
         {(this.props.alertOpen && this.props.invalidFiles.length > 0) &&

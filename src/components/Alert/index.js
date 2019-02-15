@@ -5,9 +5,9 @@ import Modal, { ModalContent, ModalActions, ModalTitle } from 'components/Modal'
 /**
  * Popup modal alert
  */
-export const Alert = ({ actions, open, title, children }) => {
+export const Alert = ({ actions, open, title, children,id }) => {
   return (
-    <Modal open={open}>
+    <Modal open={open} id={id}>
       {title !== null && <ModalTitle style={{ display: 'flex', alignItems: 'center' }} title={title} />}
       <ModalContent style={{ minWidth: 350 }}>
         {children}
@@ -36,7 +36,11 @@ Alert.propTypes = {
   /**
    * The body of the alert
    */
-  children: PropTypes.any
+  children: PropTypes.any,
+  /**
+   * The id of the alert
+   */
+  id: PropTypes.string
 }
 
 Alert.defaultProps = {
