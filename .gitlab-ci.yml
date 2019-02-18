@@ -20,7 +20,6 @@ lint:
   only:
     - development
     - test
-    - e2e-cicd
   artifacts:
     paths:
       - node_modules/
@@ -38,7 +37,6 @@ test:
   only:
     - development
     - test
-    - e2e-cicd
   dependencies:
     - lint
   environment:
@@ -69,7 +67,8 @@ build and deploy on staging:
   tags:
     - phlip2-dev
   only:
-    - e2e-cicd
+    - development
+    - test
   artifacts:
     paths:
       - dist/
@@ -87,7 +86,8 @@ run e2e tests staging:
   tags:
     - phlip2-dev
   only:
-    - e2e-cicd
+    - development
+    - test
   dependencies:
     - lint
     - build and deploy on staging
