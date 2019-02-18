@@ -6,12 +6,13 @@ import { types as projectTypes } from 'data/projects/actions'
 
 const getDocLogic = createLogic({
   type: types.GET_DOCUMENTS_REQUEST,
-  async process({ getState, docApi }, dispatch, done) {
+  process: async function ({getState, docApi, api}, dispatch, done) {
     try {
       const documents = await docApi.getDocs()
       let jurisdictions = [], projects = []
 
       documents.forEach((doc, i) => {
+        let promises = []
         let tmpProList = []
         let tmpJurList = []
         doc.projectList = []
@@ -19,40 +20,73 @@ const getDocLogic = createLogic({
         doc.uploadedByName = `${doc.uploadedBy.firstName} ${doc.uploadedBy.lastName}`
         doc.projects.forEach(projectId => {
           if (!projects.includes(projectId)) {
-            dispatch({ type: projectTypes.GET_PROJECT_REQUEST, projectId })
-            projects.push(projectId)
-          }
-          try {
-            if (getState().data.projects.byId[projectId] === undefined) {
+            console.log('project not already in state ', projectId)
+            dispatch({type: projectTypes.GET_PROJECT_REQUEST, projectId})
+            try {
+              if (getState().data.projects.byId[projectId] === undefined) {
+                tmpProList.push('project not found')
+              } else {
+                console.log('project Id was not found')
+                tmpProList.push(getState().data.projects.byId[projectId].name)
+              }
+            } catch (e) {
+              console.log(e)
               tmpProList.push('project not found')
-            } else {
-              tmpProList.push(getState().data.projects.byId[projectId].name)
             }
-          } catch (e) {
-            tmpProList.push('project not found')
+            projects.push(projectId)
+          } else {
+            try {
+              if (getState().data.projects.byId[projectId] === undefined) {
+                tmpProList.push('project not found')
+              } else {
+                console.log('project Id was not found')
+                tmpProList.push(getState().data.projects.byId[projectId].name)
+              }
+            } catch (e) {
+              console.log(e)
+              tmpProList.push('project not found')
+            }
           }
         })
         doc.jurisdictions.forEach(jurisdictionId => {
           if (!jurisdictions.includes(jurisdictionId)) {
-            dispatch({ type: jurisdictionTypes.GET_JURISDICTION_REQUEST, jurisdictionId })
-            jurisdictions.push(jurisdictionId)
-          }
-          try {
-            if (getState().data.jurisdictions.byId[jurisdictionId] === undefined) {
+            dispatch({type: jurisdictionTypes.GET_JURISDICTION_REQUEST, jurisdictionId})
+            promises.push(api.getJurisdiction({}, {}, {jurisdictionId: jurisdictionId}))
+          } else {
+            try {
+              if (getState().data.jurisdictions.byId[jurisdictionId] === undefined) {
+                doc.jurisdictionList.push('jurisdiction not found|')
+              } else {
+                doc.jurisdictionList.push(getState().data.jurisdictions.byId[jurisdictionId].name+'|')
+              }
+            } catch (e) {
               tmpJurList.push('jurisdiction not found')
-            } else {
-              tmpJurList.push(getState().data.jurisdictions.byId[jurisdictionId].name)
             }
-          } catch (e) {
-            tmpJurList.push('jurisdiction not found')
           }
         })
+        // exited main loop,  collect promises
+        try {
+          Promise.all(promises).then((results) => {
+            results.map(result => {
+              console.log(result)
+              if (result.id) {
+                tmpJurList.push(result.name)
+                console.log(tmpJurList)
+                doc.jurisdictionList.push(result.name+'|')
+              } else {
+                tmpJurList.push('jurisdiction not found'+'|')
+              }
+            })
+          })
+        } catch (e) {
+          tmpJurList.push('jurisdiction not found')
+        }
         doc.projectList = tmpProList.join('|')
         doc.jurisdictionList = tmpJurList.join('|')
       })
-      dispatch({ type: types.GET_DOCUMENTS_SUCCESS, payload: documents })
+      dispatch({type: types.GET_DOCUMENTS_SUCCESS, payload: documents})
     } catch (e) {
-      dispatch({ type: types.GET_DOCUMENTS_FAIL, payload: 'Failed to get documents' })
+      dispatch({type: types.GET_DOCUMENTS_FAIL, payload: 'Failed to get documents'})
     }
     done()
   }
@@ -126,6 +160,19 @@ const bulkDeleteLogic = createLogic({
     done()
   }
 })
+
+// const getJurisdictionName = (getState,jurisdictionId) => {
+//     var promise = new Promise(function(resolve, reject) {
+//         window.setTimeout(function() {
+//             resolve('done!');
+//         });
+//     });
+//     return promise;
+//
+//     if (getState().data.jurisdictions.byId[jurisdictionId] !== undefined) {
+//         return getState().data.jurisdictions.byId[jurisdictionId].name
+//     }
+// }
 
 export default [
   getDocLogic, bulkUpdateLogic,bulkDeleteLogic,
