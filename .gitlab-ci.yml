@@ -78,6 +78,7 @@ build and deploy on staging:
     key: "$CI_BUILD_REF_NAME"
     paths:
       - node_modules/
+      - .env
   environment:
     name: Internal PHLIP2 Dev
     url: http://lvscent7064.lab.local
@@ -92,6 +93,9 @@ run e2e tests staging:
     - e2e-cicd
   cache:
     key: "$CI_BUILD_REF_NAME"
+    paths:
+      - node_modules/
+      - .env
   environment:
     name: Internal PHLIP2 Dev
     url: http://lvscent7064.lab.local
