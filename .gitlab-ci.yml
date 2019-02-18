@@ -56,6 +56,10 @@ build and deploy on staging:
     - echo "NODE_ENV=development" >> .env
     - npm run build
     - pm2 start scripts/serve.js --name fe
+    - if sudo docker ps -a | grep esquire-backend_esquire-backend_1; then sudo docker rm esquire-backend_esquire-backend_1; else echo "no BE container"; fi
+    - if sudo docker ps -a | grep mssqldev; then sudo docker rm mssqldev; else echo "no sql container"; fi
+    - cd ../esquire-backend
+    - sudo docker-compose up --build -d
   tags:
     - phlip2-dev
   only:
