@@ -201,13 +201,13 @@ export class AddEditProject extends Component {
   getButtonText = text => {
     if (this.state.submitting) {
       return (
-        <Fragment>
+        <>
           {text}
           <CircularLoader size={18} style={{ paddingLeft: 10 }} />
-        </Fragment>
+        </>
       )
     } else {
-      return <Fragment>{text}</Fragment>
+      return <>{text}</>
     }
   }
 

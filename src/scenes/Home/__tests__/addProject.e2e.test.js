@@ -21,7 +21,7 @@ describe('project creation', () => {
     const name = await page.$('input[name="name"]')
     await name.click()
     await page.type('input[name="name"]', 'Project 1')
-    const button = 'body > div.MuiModal-root-0243.MuiDialog-root-0231.MuiDialog-scrollPaper-0232 > div.MuiPaper-root-0317.MuiPaper-elevation24-0343.MuiPaper-rounded-0318.MuiDialog-paper-0234.MuiDialog-paperScrollPaper-0235.MuiDialog-paperWidthSm-0238 > form > div.MuiDialogActions-root-0367.ModalActions-root-0366 > button:nth-child(2)'
+    const button = '#modal-action-1'
     await page.waitForSelector(button)
     await page.click(button)
     await page.waitForNavigation()

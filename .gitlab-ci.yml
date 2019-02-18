@@ -21,12 +21,10 @@ lint:
     - development
     - test
     - e2e-cicd
-  cache:
-    key: "$CI_BUILD_REF_NAME"
-    untracked: true
+  artifacts:
     paths:
       - node_modules/
-      - .env
+    expire_in: 1 week
   environment:
     name: Internal PHLIP2 Dev
     url: http://lvscent7064.lab.local
@@ -41,12 +39,8 @@ test:
     - development
     - test
     - e2e-cicd
-  cache:
-    key: "$CI_BUILD_REF_NAME"
-    untracked: true
-    paths:
-      - node_modules/
-      - .env
+  dependencies:
+    - lint
   environment:
     name: Internal PHLIP2 Dev
     url: http://lvscent7064.lab.local
@@ -59,21 +53,15 @@ build and deploy on staging:
     - echo "APP_DOC_MANAGE_API=http://0.0.0.0:3000" > .env
     - echo "APP_API_URL=http://0.0.0.0:8000" >> .env
     - echo "HEADLESS=1" >> .env
-    - pm2 start scripts/start.js --name fe
+    - echo "NODE_ENV=development" >> .env
+    - npm run build
+    - npm start scripts/serve.js --name fe
   tags:
     - phlip2-dev
   only:
     - e2e-cicd
-  cache:
-    key: "$CI_BUILD_REF_NAME"
-    untracked: true
-    paths:
-      - node_modules/
-      - .env
-  artifacts:
-    paths:
-      - node_modules/
-    expire_in: 1 week
+  dependencies:
+    - lint
   environment:
     name: Internal PHLIP2 Dev
     url: http://lvscent7064.lab.local
@@ -86,17 +74,11 @@ run e2e tests staging:
     - phlip2-dev
   only:
     - e2e-cicd
-  cache:
-    key: "$CI_BUILD_REF_NAME"
-    untracked: true
-    paths:
-      - node_modules/
-      - .env
+  dependencies:
+    - lint
   environment:
     name: Internal PHLIP2 Dev
     url: http://lvscent7064.lab.local
-  dependencies:
-    - build and deploy on staging
 
 build dev azure:
   stage: build
