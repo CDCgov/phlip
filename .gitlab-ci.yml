@@ -55,7 +55,7 @@ build and deploy on staging:
     - echo "HEADLESS=1" >> .env
     - echo "NODE_ENV=development" >> .env
     - npm run build
-    - npm start scripts/serve.js --name fe
+    - pm2 start scripts/serve.js --name fe
   tags:
     - phlip2-dev
   only:
