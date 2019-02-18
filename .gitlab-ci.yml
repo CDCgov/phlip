@@ -173,35 +173,3 @@ deploy test azure:
   environment:
     name: Azure PHLIP2 Test
     url: https://phlip2test.phiresearchlab.org
-
-#build_dev_internal:
-#  stage: build
-#  script:
-#    - cat ~iiu-deploy/config/.env.fe >> .env
-#    - npm run build
-#    - cp -r ./dist ~iiu-deploy/esquire-frontend-deploy/
-#    - cp -r ./scripts ~iiu-deploy/esquire-frontend-deploy/
-#    - cp -r ./config ~iiu-deploy/esquire-frontend-deploy/
-#    - cp ./package.json ~iiu-deploy/esquire-frontend-deploy/
-#    - cp .env ~iiu-deploy/esquire-frontend-deploy/
-#  when: manual
-#  tags:
-#    - phlip2-dev
-#  environment:
-#    name: Internal PHLIP2 Dev
-#    url: http://lvscent7064.lab.local
-#  dependencies:
-#    - lint_frontend
-#
-#deploy_dev_internal:
-#  stage: deploy
-#  script:
-#    - cd ~iiu-deploy/esquire-frontend-deploy
-#    - npm install --production
-#    - pm2 stop phlip-fe
-#    - pm2 start scripts/serve.js --name phlip-fe
-#  tags:
-#    - phlip2-dev
-#  environment:
-#    name: Internal PHLIP2 Dev
-#    url: http://lvscent7064.lab.local

@@ -47,9 +47,6 @@ async function findByLink(page, linkString) {
     let linkText = await valueHandle.jsonValue()
     const text = getText(linkText)
     if (linkString === text) {
-      console.log(linkString)
-      console.log(text)
-      console.log('Found')
       return links[i]
     }
   }
