@@ -61,6 +61,11 @@ build and deploy on staging:
     - if sudo docker ps -a | grep esquire-backend_esquire-backend_1; then sudo docker rm esquire-backend_esquire-backend_1; else echo "no BE container"; fi
     - if sudo docker ps -a | grep mssqldev; then sudo docker rm mssqldev; else echo "no sql container"; fi
     - sudo /usr/local/bin/docker-compose up --build -d
+    - cd ../esquire-doc-management
+    - sudo /usr/local/bin/docker-compose down
+    - if sudo docker ps -a | grep doc-manage; then sudo docker rm doc-manage; else echo "no doc-manage container"; fi
+    - if sudo docker ps -a | grep doc-manage-mongo; then sudo docker rm doc-manage-mongo; else echo "no mongo container"; fi
+    - sudo /usr/local/bin/docker-compose up --build -d
   tags:
     - phlip2-dev
   only:
