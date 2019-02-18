@@ -21,11 +21,19 @@ lint:
     - development
     - test
     - e2e-cicd
+  cache:
+    key: "$CI_BUILD_REF_NAME"
+    untracked: true
+    paths:
+      - node_modules/
+      - .env
+  environment:
+    name: Internal PHLIP2 Dev
+    url: http://lvscent7064.lab.local
 
 test:
   stage: unit test
   script:
-    - npm install
     - npm run test:local
   tags:
     - phlip2-dev
@@ -33,38 +41,19 @@ test:
     - development
     - test
     - e2e-cicd
-
-#e2e:
-#  stage: staging
-#  before_script:
-#    - git clone git@git.phiresearchlab.org:IIU-Web-Team/esquire-backend.git
-#    - cd esquire-backend
-#    - git checkout devV2
-#    - sudo /usr/local/bin/docker-compose up -d
-#    - cd ..
-#    - git clone git@git.phiresearchlab.org:IIU-Web-Team/esquire-doc-management.git
-#    - cd esquire-doc-management
-#    - npm install
-#
-#    - sudo /usr/local/bin/docker-compose up -d
-#    - cd ..
-#  script:
-#    - npm run test:e2e
-#  after_script:
-#    - sudo docker stop esquire-backend_esquire-backend_1 mssqldev doc-manage doc-manage-mongo
-#    - sudo docker rm esquire-backend_esquire-backend_1 mssqldev doc-manage doc-manage-mongo
-#    - sudo docker volume prune -f
-#    - pm2 stop fe
-#    - pm2 delete fe
-#  tags:
-#    - phlip2-dev
-#  only:
-#    - e2e-cicd
+  cache:
+    key: "$CI_BUILD_REF_NAME"
+    untracked: true
+    paths:
+      - node_modules/
+      - .env
+  environment:
+    name: Internal PHLIP2 Dev
+    url: http://lvscent7064.lab.local
 
 build and deploy on staging:
   stage: staging
   script:
-    - npm install
     - echo "APP_DOC_MANAGE_API=http://0.0.0.0:3000" > .env
     - echo "APP_API_URL=http://0.0.0.0:8000" >> .env
     - echo "HEADLESS=1" >> .env
@@ -76,6 +65,7 @@ build and deploy on staging:
     - e2e-cicd
   cache:
     key: "$CI_BUILD_REF_NAME"
+    untracked: true
     paths:
       - node_modules/
       - .env
@@ -93,6 +83,7 @@ run e2e tests staging:
     - e2e-cicd
   cache:
     key: "$CI_BUILD_REF_NAME"
+    untracked: true
     paths:
       - node_modules/
       - .env
