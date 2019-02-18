@@ -266,12 +266,68 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
             }
             type="column"
           />
-          <Connect(DocumentList)
-            page="coding"
-            projectId={1}
-            questionId={1}
-            saveUserAnswer={[Function]}
-          />
+          <Resizable
+            defaultSize={
+              Object {
+                "height": "100%",
+                "width": "50%",
+              }
+            }
+            enable={
+              Object {
+                "bottom": false,
+                "bottomLeft": false,
+                "bottomRight": false,
+                "left": true,
+                "right": false,
+                "top": false,
+                "topLeft": false,
+                "topRight": false,
+              }
+            }
+            grid={
+              Array [
+                1,
+                1,
+              ]
+            }
+            handleComponent={
+              Object {
+                "left": [Function],
+              }
+            }
+            handleStyles={
+              Object {
+                "left": Object {
+                  "height": "fit-content",
+                  "left": -19,
+                  "top": "50%",
+                  "width": "fit-content",
+                },
+              }
+            }
+            lockAspectRatio={false}
+            lockAspectRatioExtraHeight={0}
+            lockAspectRatioExtraWidth={0}
+            minWidth="10%"
+            onResize={[Function]}
+            onResizeStart={[Function]}
+            onResizeStop={[Function]}
+            resizeRatio={1}
+            scale={1}
+            style={
+              Object {
+                "display": "flex",
+              }
+            }
+          >
+            <Connect(DocumentList)
+              page="coding"
+              projectId={1}
+              questionId={1}
+              saveUserAnswer={[Function]}
+            />
+          </Resizable>
         </FlexGrid>
       </FlexGrid>
     </FlexGrid>

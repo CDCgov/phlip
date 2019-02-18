@@ -58,8 +58,20 @@ export class DocumentList extends Component {
     this.clearDocSelected()
   }
 
+  /*
+  * Called when user chooses to save an annotation
+  */
   onSaveAnnotation = annotation => {
     this.props.actions.saveAnnotation(annotation, this.props.answerSelected, this.props.questionId)
+    this.props.saveUserAnswer()
+  }
+
+  /**
+   * Remove annotation
+   * @param index
+   */
+  onRemoveAnnotation = index => {
+    this.props.actions.removeAnnotation(index, this.props.answerSelected, this.props.questionId)
     this.props.saveUserAnswer()
   }
 
@@ -79,7 +91,7 @@ export class DocumentList extends Component {
 
   render() {
     return (
-      <FlexGrid container style={{ width: '50%', overflow: 'hidden' }} raised>
+      <FlexGrid container flex style={{ overflow: 'hidden' }} raised>
         <FlexGrid
           container
           type="row"
@@ -122,6 +134,7 @@ export class DocumentList extends Component {
             document={this.props.openedDoc}
             saveAnnotation={this.onSaveAnnotation}
             annotations={this.props.annotations}
+            removeAnnotation={this.onRemoveAnnotation}
           />}
           {!this.props.docSelected && this.props.documents.map((doc, i) => {
             return (

@@ -9,7 +9,7 @@ describe('CodingValidation - DocumentList action creators', () => {
       page: 'coding'
     }
 
-    expect(actions.getApprovedDocumentsRequest(1,32,'coding')).toEqual(expectedAction)
+    expect(actions.getApprovedDocumentsRequest(1, 32, 'coding')).toEqual(expectedAction)
   })
 
   test('should create an action to clear selected / enabled document', () => {
@@ -38,5 +38,16 @@ describe('CodingValidation - DocumentList action creators', () => {
     }
 
     expect(actions.saveAnnotation({ text: 'test annotation' }, 4, 3)).toEqual(expectedAction)
+  })
+
+  test('should create an action to remove the annotation', () => {
+    const expectedAction = {
+      type: types.ON_REMOVE_ANNOTATION,
+      index: 4,
+      answerId: 4,
+      questionId: 3
+    }
+
+    expect(actions.removeAnnotation(4, 4, 3)).toEqual(expectedAction)
   })
 })

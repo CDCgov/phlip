@@ -5,7 +5,9 @@ const chalk = require('chalk')
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
 const paths = require('../config/paths')
-const env = require('../config/env')('development')
+const dotenv = require('dotenv').config()
+const NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV : 'development'
+const env = require('../config/env')(NODE_ENV)
 
 // Webpack-dev-server configuration options
 const config = {

@@ -16,12 +16,13 @@ const styles = {
 export const ModalActions = ({ actions, raised, classes, ...otherProps }) => {
   return (
     <DialogActions classes={{ root: classes.root }} {...otherProps} >
-      {actions.map(action => (
+      {actions.map((action, i) => (
         <Button
           key={action.value}
           raised={raised}
           value={action.value}
           type={action.type}
+          id={`modal-action-${i}`}
           color="accent"
           disabled={action.disabled || false}
           onClick={action.onClick}

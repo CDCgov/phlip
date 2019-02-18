@@ -164,7 +164,11 @@
     "APP_IS_SAML_ENABLED": false,
     "APP_API_URL": false,
     "APP_DOC_ANAGE_API": false,
-    "APP_LOG_REQUESTS": false
+    "APP_LOG_REQUESTS": false,
+    "page": true,
+    "browser": true,
+    "context": true,
+    "jestPuppeteer": true
   },
   "env": {
     "jest": true,

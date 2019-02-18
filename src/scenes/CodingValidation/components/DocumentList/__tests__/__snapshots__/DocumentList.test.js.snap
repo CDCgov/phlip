@@ -5,14 +5,13 @@ exports[`DocumentList should render DocumentList component correctly 1`] = `
   align="stretch"
   circular={false}
   container={true}
-  flex={false}
+  flex={true}
   justify="stretch"
   padding={0}
   raised={true}
   style={
     Object {
       "overflow": "hidden",
-      "width": "50%",
     }
   }
   type="column"

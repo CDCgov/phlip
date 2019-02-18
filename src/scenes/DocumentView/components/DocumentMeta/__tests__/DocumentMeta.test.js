@@ -8,7 +8,8 @@ const props = {
     name: 'Test file',
     uploadedByName: 'Trung',
     projects: [1, 2],
-    jurisdictions: [25332, 2932]
+    jurisdictions: [25332, 2932],
+    uploadedDate: new Date('2/11/2019')
   },
   effectiveDate: new Date('2/11/2019'),
   projectList: ['Project1', 'Project2'],

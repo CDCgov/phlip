@@ -36,7 +36,7 @@ export const DocList = props => {
             direction={sortDirection}
           />
         </TableHead>
-        <TableBody>
+        <TableBody id="documentTable">
           {documents.map(docId => <DocListTableRow
             key={`doc-${docId}`}
             id={docId}
