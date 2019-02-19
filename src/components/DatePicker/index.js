@@ -33,6 +33,7 @@ export class DatePicker extends PureComponent {
           mask={mask}
           onChange={onChange}
           value={value}
+          autoOk
           InputLabelProps={{ shrink: true, required, error: Boolean(error) }}
           InputProps={{
             onChange: onInputChange,
