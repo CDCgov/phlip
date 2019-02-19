@@ -526,21 +526,6 @@ const getText = (linkText) => {
   var nbspPattern = new RegExp(String.fromCharCode(160), 'g')
   return linkText.replace(nbspPattern, ' ')
 }
-async function findByLink(page,linkString) {
-  const links = await page.$$('a')
-  for (var i=0; i < links.length; i++) {
-    let valueHandle = await links[i].getProperty('innerText')
-    let linkText = await valueHandle.jsonValue()
-    const text = getText(linkText)
-    if (linkString == text) {
-      console.log(linkString)
-      console.log(text)
-      console.log('Found')
-      return links[i]
-    }
-  }
-  return null
-}
 
 afterAll(() => {
   browser.close()
