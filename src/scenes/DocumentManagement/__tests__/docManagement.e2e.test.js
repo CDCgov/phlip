@@ -1,4 +1,4 @@
-const puppeteer = require("puppeteer")
+const puppeteer = require('puppeteer')
 //import { isDebugging } from "./src/testingInit"
 
 // const isDebugging = () => {
@@ -16,11 +16,11 @@ const puppeteer = require("puppeteer")
 const jasmineTimeout = 60000
 const admin = {
   email: 'admin@cdc.gov'
-};
-const email_selector = '#email';
-const login_button_selector = '#root > form > button';
+}
+const email_selector = '#email'
+const login_button_selector = '#root > form > button'
 //const host = 'https://phlip2dev.phiresearchlab.org';
-const host = 'http://localhost:5200';
+const host = 'http://localhost:5200'
 const uploadNewButton = '#uploadNewBtn'
 const uploadGoButton = '#uploadFilesBtn'
 const uploadAlertMessage = '#uploadAlert > div> div:nth-child(1) > div > div > h2 > div'
@@ -33,7 +33,7 @@ const bulkDropdown = '#action > div'
 const bulkDelete = '#menu- > div > ul > li:nth-child(2)'
 const bulkProject = '#menu- > div > ul > li:nth-child(3)'
 const bulkJurisdiction = '#menu- > div > ul > li:nth-child(4)'
-const testFiles = ['/Users/trungnguyen/Downloads/demo/file1.pdf','/Users/trungnguyen/Downloads/demo/file2.pdf','/Users/trungnguyen/Downloads/demo/file3.pdf',];
+const testFiles = ['/Users/trungnguyen/Downloads/demo/file1.pdf','/Users/trungnguyen/Downloads/demo/file2.pdf','/Users/trungnguyen/Downloads/demo/file3.pdf']
 const bulkProjectSearch = '#project-name'
 const bulkJurisdictionSearch = '#jurisdiction-name'
 const bulkConfirmBtn = '#bulkConfirmBtn'
@@ -44,7 +44,6 @@ const testProject3 = 'firstDoc'
 const testJurisdiction = 'Yauco Municipio, Puerto Rico'
 const testJurisdiction2 = 'Hapeville, Fulton County, Georgia (city)'
 
-
 let data=null
 let page
 let browser
@@ -54,22 +53,22 @@ beforeAll(async () => {
     // isDebugging().puppeteer
     {headless: true}
   )
-  page = await browser.newPage();
+  page = await browser.newPage()
 })
 
 describe('doc management', () => {
   test('login', async () =>{
-    jest.setTimeout(80000);
+    jest.setTimeout(80000)
     await page.goto(`${host}/login`)
     await page.screenshot({path: 'login.png'})
     await page.waitForSelector(email_selector)
     await page.click(email_selector)
     await page.keyboard.type(admin.email)
-    await page.click("button[type=submit]")
+    await page.click('button[type=submit]')
     await page.waitForNavigation()
   },jasmineTimeout)
   test('check upload with excel', async () => {
-    jest.setTimeout(80000);
+    jest.setTimeout(80000)
     await page.goto(`${host}/docs`)
     await page.waitFor(2000)
     // click on upload new
@@ -83,7 +82,7 @@ describe('doc management', () => {
     // wait for excel file
     await page.waitForSelector('form:nth-child(3) > div > div > input[type="file"]')
     const excelEle = await page.$('form:nth-child(3) > div > div > input[type="file"]')
-    const files = ['/Users/trungnguyen/Downloads/demo/OAC 3701-52-04 eff. 5-3-07.pdf','/Users/trungnguyen/Downloads/demo/YOUNGSTOWN MUNICIPAL COURTMAYORS COURTSTEXT MESSAGING.pdf','/Users/trungnguyen/Downloads/demo/CHILDREN AND MINORSMOTOR VEHICLESTELECOMMUNICATIONS.pdf',];
+    const files = ['/Users/trungnguyen/Downloads/demo/OAC 3701-52-04 eff. 5-3-07.pdf','/Users/trungnguyen/Downloads/demo/YOUNGSTOWN MUNICIPAL COURTMAYORS COURTSTEXT MESSAGING.pdf','/Users/trungnguyen/Downloads/demo/CHILDREN AND MINORSMOTOR VEHICLESTELECOMMUNICATIONS.pdf']
     await fileEle.uploadFile(...files)
     await page.waitFor(5000)
     await excelEle.uploadFile('/Users/trungnguyen/Downloads/demo/demo.xlsx')
@@ -92,17 +91,17 @@ describe('doc management', () => {
     const myFilesText = await page.evaluate(() => {
       //  debugger
       let allText = []
-      const fileList = Array.from(document.querySelectorAll('body > div > div > div > div:nth-child(2) > div:nth-child(2) > div'));
+      const fileList = Array.from(document.querySelectorAll('body > div > div > div > div:nth-child(2) > div:nth-child(2) > div'))
       fileList.forEach(function(row){
-        const cells = row.childNodes;
+        const cells = row.childNodes
         let textList = [];
         [...cells].forEach(function(cell){
-          textList.push(cell.textContent);
+          textList.push(cell.textContent)
         })
-        allText.push(textList.join('|'));
+        allText.push(textList.join('|'))
       })
-      return allText.join('^');
-    });
+      return allText.join('^')
+    })
     // debugger
     // console.log(myFilesText);
     try {
@@ -112,13 +111,11 @@ describe('doc management', () => {
       await page.click(uploadCloseButton)
       await page.waitForSelector(uploadCloseConfirm)
       await page.click(uploadCloseConfirm)
-    }
-    catch (e) {
+    } catch (e) {
       console.log(e)
       throw new Error('test failed')
-    }
-    finally {
-  //    browser.close()
+    } finally {
+      //    browser.close()
     }
   },jasmineTimeout)
   test('search jurisdiction column', async () => {
@@ -131,20 +128,20 @@ describe('doc management', () => {
 
     //    free format search
     const data = await page.evaluate((documentTable) => {
-   //   debugger
-      const rows = Array.from(document.querySelectorAll(documentTable +' tr'));
+      //   debugger
+      const rows = Array.from(document.querySelectorAll(documentTable +' tr'))
       const tds = Array.from(document.querySelectorAll(documentTable + ' tr td'))
       return { txtData:  tds.map(td => td.textContent.toLowerCase()), rowCount: rows.length
       }
-    },documentTable);
+    },documentTable)
     console.log(data)
     expect(data.txtData.join('|')).toEqual(expect.stringContaining('ohio'))
-    expect(data.rowCount >= 1).toBeTruthy();
+    expect(data.rowCount >= 1).toBeTruthy()
     await page.waitForSelector('#search-bar')
     await page.click('#search-bar')
     //  await page.keyboard.type(string.fromCharCode())
     await page.waitFor(5000)
-//    await browser.close()
+    //    await browser.close()
   },jasmineTimeout)
   test('check upload success', async () => {
     console.log('check upload success')
@@ -182,20 +179,20 @@ describe('doc management', () => {
     await page.waitFor(500)
     data = await page.evaluate((documentTable) => {
       //   debugger
-      const rows = Array.from(document.querySelectorAll(documentTable +' tr'));
+      const rows = Array.from(document.querySelectorAll(documentTable +' tr'))
       const tds = Array.from(document.querySelectorAll(documentTable + ' tr td'))
       return { txtData:  tds.map(td => td.textContent.toLowerCase()), rowCount: rows.length
       }
-    },documentTable);
+    },documentTable)
     expect(data.txtData.join('|')).toEqual(expect.stringContaining('firstdoc'))
-    expect(data.rowCount = 1).toBeTruthy();
+    expect(data.rowCount = 1).toBeTruthy()
     await page.waitFor(1000)
-  },jasmineTimeout);
+  },jasmineTimeout)
   test('check duplicate upload', async () => {
     console.log('check duplicate upload')
     await page.goto(`${host}/home`)
     await page.waitFor(500)
-   // await page.waitForNavigation()
+    // await page.waitForNavigation()
     // click on document management button
     await page.waitForSelector(documentManagementBtn)
     await page.click(documentManagementBtn)
@@ -225,19 +222,17 @@ describe('doc management', () => {
     await page.waitFor(1000)
     try {
       let dupMessageText = await page.$eval(uploadAlertMessage, el=>el.textContent)
-      console.log('actual message: '+dupMessageText);
-      expect(dupMessageText.toLowerCase()).toMatch('duplicates found');
+      console.log('actual message: '+dupMessageText)
+      expect(dupMessageText.toLowerCase()).toMatch('duplicates found')
       await page.waitForSelector(uploadAlertCloseButton)
       await page.click(uploadAlertCloseButton)
       await page.waitFor(1000)
+    } catch (e) {
+      //    await browser.close()
+    } finally {
+      //     await browser.close()
     }
-    catch (e) {
-  //    await browser.close()
-    }
-    finally {
- //     await browser.close()
-    }
-  },jasmineTimeout);
+  },jasmineTimeout)
   test('check missing project', async () => {
     await page.goto(`${host}/home`)
     await page.waitFor(1000)
@@ -258,19 +253,17 @@ describe('doc management', () => {
     await page.waitFor(1000)
     try {
       let missingProjectMsgText = await page.$eval(uploadAlertMessage, el=>el.textContent)
-      console.log('actual message: '+missingProjectMsgText);
-      expect(missingProjectMsgText.toLowerCase()).toMatch('invalid project');
+      console.log('actual message: '+missingProjectMsgText)
+      expect(missingProjectMsgText.toLowerCase()).toMatch('invalid project')
       await page.waitFor(500)
       await page.waitForSelector(uploadAlertCloseButton)
       await page.click(uploadAlertCloseButton)
+    } catch (e) {
+      //     await browser.close()
+    } finally {
+      //     await browser.close()
     }
-    catch (e) {
- //     await browser.close()
-    }
-    finally {
- //     await browser.close()
-    }
-  },jasmineTimeout);
+  },jasmineTimeout)
   test('check missing jurisdiction', async () => {
     await page.goto(`${host}/home`)
     // click on document management button
@@ -294,24 +287,22 @@ describe('doc management', () => {
     await page.waitForSelector(uploadAlertMessage)
     try {
       let missingJurisMsgText = await page.$eval(uploadAlertMessage, el=>el.textContent)
-      console.log('actual message: '+missingJurisMsgText);
+      console.log('actual message: '+missingJurisMsgText)
       expect(missingJurisMsgText.toLowerCase()).toMatch('invalid jurisdictions')
       await page.waitFor(2000)
       await page.waitForSelector(uploadAlertCloseButton)
       await page.click(uploadAlertCloseButton)
       console.log('close error and continue')
-    }
-    catch (e) {
+    } catch (e) {
       console.log(e)
       throw new Error('test failed')
-    }
-    finally {
- //     await browser.close()
+    } finally {
+      //     await browser.close()
     }
     await page.waitFor(2000)
-  },jasmineTimeout);
+  },jasmineTimeout)
   test('bulk operations', async () => {
-    jest.setTimeout(80000);
+    jest.setTimeout(80000)
     // await page.goto(`${host}/login`);
     // //  await page.goto('http://localhost:5200/login')
     // //  await page.waitForNavigation()
@@ -356,15 +347,13 @@ describe('doc management', () => {
     await page.keyboard.type('puerto')
     data = await page.evaluate((documentTable) => {
       //   debugger
-      const rows = Array.from(document.querySelectorAll(documentTable +' tr'));
+      const rows = Array.from(document.querySelectorAll(documentTable +' tr'))
       const tds = Array.from(document.querySelectorAll(documentTable + ' tr td'))
       return { txtData:  tds.map(td => td.textContent.toLowerCase()), rowCount: rows.length
       }
-    },documentTable);
+    },documentTable)
     expect(data.txtData.join('|')).toEqual(expect.stringContaining('puerto'))
-    expect(data.rowCount >= 3).toBeTruthy();
-
-
+    expect(data.rowCount >= 3).toBeTruthy()
 
     // checkbox the first 3 rows
     await page.evaluate((documentTable) => {
@@ -400,13 +389,13 @@ describe('doc management', () => {
     await page.keyboard.type('delete')
     data = await page.evaluate((documentTable) => {
       //   debugger
-      const rows = Array.from(document.querySelectorAll(documentTable +' tr'));
+      const rows = Array.from(document.querySelectorAll(documentTable +' tr'))
       const tds = Array.from(document.querySelectorAll(documentTable + ' tr td'))
       return { txtData:  tds.map(td => td.textContent.toLowerCase()), rowCount: rows.length
       }
-    },documentTable);
+    },documentTable)
     expect(data.txtData.join('|')).toEqual(expect.stringContaining('delete'))
-    expect(data.rowCount >= 3).toBeTruthy();
+    expect(data.rowCount >= 3).toBeTruthy()
 
     // bulk jurisdiction assign
     // clear search bar
@@ -448,13 +437,13 @@ describe('doc management', () => {
     data = null
     data = await page.evaluate((documentTable) => {
       //   debugger
-      const rows = Array.from(document.querySelectorAll(documentTable +' tr'));
+      const rows = Array.from(document.querySelectorAll(documentTable +' tr'))
       const tds = Array.from(document.querySelectorAll(documentTable + ' tr td'))
       return { txtData:  tds.map(td => td.textContent.toLowerCase()), rowCount: rows.length
       }
-    },documentTable);
+    },documentTable)
     expect(data.txtData.join('|')).toEqual(expect.stringContaining('hapeville'))
-    expect(data.rowCount >= 3).toBeTruthy();
+    expect(data.rowCount >= 3).toBeTruthy()
 
     await page.waitFor(1000)
 
@@ -497,11 +486,11 @@ describe('doc management', () => {
     data = null
     data = await page.evaluate((documentTable) => {
       //   debugger
-      const rows = Array.from(document.querySelectorAll(documentTable +' tr'));
+      const rows = Array.from(document.querySelectorAll(documentTable +' tr'))
       const tds = Array.from(document.querySelectorAll(documentTable + ' tr td'))
       return { txtData:  tds.map(td => td.textContent.toLowerCase()), rowCount: rows.length
       }
-    },documentTable);
+    },documentTable)
     expect(data.rowCount >= 3).toBeFalsy()
     // clear search bar
     await page.waitForSelector('#search-bar')
@@ -530,27 +519,27 @@ describe('doc management', () => {
 })
 
 const getText = (linkText) => {
-  linkText = linkText.replace(/\r\n|\r/g, "\n");
-  linkText = linkText.replace(/\ +/g, " ");
+  linkText = linkText.replace(/\r\n|\r/g, '\n')
+  linkText = linkText.replace(/\ +/g, ' ')
 
   // Replace &nbsp; with a space
-  var nbspPattern = new RegExp(String.fromCharCode(160), "g");
-  return linkText.replace(nbspPattern, " ");
+  var nbspPattern = new RegExp(String.fromCharCode(160), 'g')
+  return linkText.replace(nbspPattern, ' ')
 }
 async function findByLink(page,linkString) {
   const links = await page.$$('a')
   for (var i=0; i < links.length; i++) {
-    let valueHandle = await links[i].getProperty('innerText');
-    let linkText = await valueHandle.jsonValue();
-    const text = getText(linkText);
+    let valueHandle = await links[i].getProperty('innerText')
+    let linkText = await valueHandle.jsonValue()
+    const text = getText(linkText)
     if (linkString == text) {
-      console.log(linkString);
-      console.log(text);
-      console.log("Found");
-      return links[i];
+      console.log(linkString)
+      console.log(text)
+      console.log('Found')
+      return links[i]
     }
   }
-  return null;
+  return null
 }
 
 afterAll(() => {
