@@ -71,6 +71,7 @@ exports[`Document Management - Upload scene should render correctly 1`] = `
           "onClick": [Function],
           "otherProps": Object {
             "aria-label": "Close modal",
+            "id": "uploadCloseBtn",
           },
           "type": "button",
           "value": "Close",

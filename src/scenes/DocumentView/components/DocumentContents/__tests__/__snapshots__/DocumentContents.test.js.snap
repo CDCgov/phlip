@@ -49,6 +49,7 @@ exports[`DocumentView - DocumentContents should render correctly 1`] = `
       Document Name
     </WithStyles(Typography)>
     <WithStyles(Typography)
+      id="docName"
       variant="subheading"
     >
       Test file
