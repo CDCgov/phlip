@@ -7,7 +7,8 @@ import Typography from '@material-ui/core/Typography'
 
 export class DocumentContents extends Component {
   static propTypes = {
-    document: PropTypes.object
+    document: PropTypes.object,
+    id : PropTypes.string
   }
 
   constructor(props, context) {
@@ -16,12 +17,12 @@ export class DocumentContents extends Component {
 
   render() {
     return (
-      <FlexGrid raised container flex style={{ overflow: 'hidden', flexBasis: '70%', padding: 20, minWidth: '65%' }}>
+      <FlexGrid raised container flex style={{ overflow: 'hidden', flexBasis: '70%', padding: 20, minWidth: '65%' }} id={this.props.id}>
         <FlexGrid container style={{ display: 'inline-flex', position: 'relative', marginBottom: 10 }}>
           <Typography variant="caption" style={{ fontSize: '.65rem', color: '#9e9e9e', marginBottom: 2 }}>
             Document Name
           </Typography>
-          <Typography variant="subheading">{this.props.document.name}</Typography>
+          <Typography variant="subheading" id="docName">{this.props.document.name}</Typography>
         </FlexGrid>
         {this.props.document.content.data && <PDFViewer document={this.props.document} />}
       </FlexGrid>

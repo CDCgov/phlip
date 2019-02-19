@@ -33,7 +33,8 @@ export class DocumentMeta extends Component {
     documentDeleteError: PropTypes.any,
     goBack: PropTypes.func,
     apiErrorOpen: PropTypes.bool,
-    apiErrorInfo: PropTypes.shape({ title: PropTypes.string, text: PropTypes.string })
+    apiErrorInfo: PropTypes.shape({ title: PropTypes.string, text: PropTypes.string }),
+    id : PropTypes.string
   }
 
   constructor(props, context) {
