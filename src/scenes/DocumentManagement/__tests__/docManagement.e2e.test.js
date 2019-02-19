@@ -18,7 +18,7 @@ const admin = {
   email: 'admin@cdc.gov'
 }
 const email_selector = '#email'
-const login_button_selector = '#root > form > button'
+//const login_button_selector = '#root > form > button'
 const host = 'http://localhost:5200'
 const uploadNewButton = '#uploadNewBtn'
 const uploadGoButton = '#uploadFilesBtn'
@@ -113,7 +113,7 @@ xdescribe('doc management', () => {
     // console.log(myFilesText);
     try {
       expect(myFilesText.toLowerCase())
-      .toMatch('|picture_as_pdfOAC 3701-52-04 eff. 5-3-07.pdf|Washington, DC (federal district)|D.C. Code § 7-871.02|10/1/2002|cancel^|picture_as_pdfYOUNGSTOWN MUNICIPAL COURTMAYORS COURTSTEXT MESSAGING.pdf|Minnesota (state)|Minn. Stat. Ann. § 144.9501|7/1/2016|cancel^|picture_as_pdfCHILDREN AND MINORSMOTOR VEHICLESTELECOMMUNICATIONS.pdf|Arkansas (state)|Ark. Code R. § 016.06.18-219.000|12/12/2012|cancel'.toLowerCase())
+        .toMatch('|picture_as_pdfOAC 3701-52-04 eff. 5-3-07.pdf|Washington, DC (federal district)|D.C. Code § 7-871.02|10/1/2002|cancel^|picture_as_pdfYOUNGSTOWN MUNICIPAL COURTMAYORS COURTSTEXT MESSAGING.pdf|Minnesota (state)|Minn. Stat. Ann. § 144.9501|7/1/2016|cancel^|picture_as_pdfCHILDREN AND MINORSMOTOR VEHICLESTELECOMMUNICATIONS.pdf|Arkansas (state)|Ark. Code R. § 016.06.18-219.000|12/12/2012|cancel'.toLowerCase())
       //  expect(myFilesText.length).toBeLessThan(10)
       await page.waitForSelector(uploadCloseButton)
       await page.click(uploadCloseButton)
@@ -373,7 +373,7 @@ xdescribe('doc management', () => {
 
     // checkbox the first 3 rows
     await page.evaluate((documentTable) => {
-      const rows = Array.from(document.querySelectorAll(documentTable + ' tr'))
+      //const rows = Array.from(document.querySelectorAll(documentTable + ' tr'))
       const tds = Array.from(document.querySelectorAll(documentTable + ' tr td input[type="checkbox"]')).splice(0, 3)
       tds.forEach(chbox => chbox.click())
     }, documentTable)
@@ -422,7 +422,7 @@ xdescribe('doc management', () => {
 
     // check the first 3 rows
     await page.evaluate((documentTable) => {
-      const rows = Array.from(document.querySelectorAll(documentTable + ' tr'))
+      //const rows = Array.from(document.querySelectorAll(documentTable + ' tr'))
       const tds = Array.from(document.querySelectorAll(documentTable + ' tr td input[type="checkbox"]')).splice(0, 3)
       tds.forEach(chbox => chbox.click())
     }, documentTable)
@@ -476,7 +476,7 @@ xdescribe('doc management', () => {
     // check the first 3 rows
 
     await page.evaluate((documentTable) => {
-      const rows = Array.from(document.querySelectorAll(documentTable + ' tr'))
+      //const rows = Array.from(document.querySelectorAll(documentTable + ' tr'))
       const tds = Array.from(document.querySelectorAll(documentTable + ' tr td input[type="checkbox"]')).splice(0, 3)
       tds.forEach(chbox => chbox.click())
     }, documentTable)
@@ -518,7 +518,7 @@ xdescribe('doc management', () => {
     await page.keyboard.type('firstdoc')
     await page.waitFor(1000)
     await page.evaluate((documentTable) => {
-      const rows = Array.from(document.querySelectorAll(documentTable + ' tr'))
+      //const rows = Array.from(document.querySelectorAll(documentTable + ' tr'))
       const tds = Array.from(document.querySelectorAll(documentTable + ' tr td input[type="checkbox"]')).splice(0, 4)
       tds.forEach(chbox => chbox.click())
     }, documentTable)
@@ -572,14 +572,14 @@ xdescribe('doc management', () => {
   }, jasmineTimeout)
 })
 
-const getText = (linkText) => {
+/*const getText = (linkText) => {
   linkText = linkText.replace(/\r\n|\r/g, '\n')
   linkText = linkText.replace(/\ +/g, ' ')
 
   // Replace &nbsp; with a space
-  var nbspPattern = new RegExp(String.fromCharCode(160), 'g')
+  const nbspPattern = new RegExp(String.fromCharCode(160), 'g')
   return linkText.replace(nbspPattern, ' ')
-}
+}*/
 
 afterAll(() => {
   browser.close()

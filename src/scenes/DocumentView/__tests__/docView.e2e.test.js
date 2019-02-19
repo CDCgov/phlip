@@ -7,11 +7,11 @@ const admin = {
 const email_selector = '#email'
 const host = 'http://localhost:5200'
 const documentManagementBtn = '#root > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)'
-const testProject = 'zero dawn'
-const uploadNewButton = '#uploadNewBtn'
-const uploadGoButton = '#uploadFilesBtn'
+//const testProject = 'zero dawn'
+//const uploadNewButton = '#uploadNewBtn'
+//const uploadGoButton = '#uploadFilesBtn'
 const documentTable = '#documentTable'
-const testProject3 = 'firstDoc'
+//const testProject3 = 'firstDoc'
 const refDocMeta = {
   docName: 'YOUNGSTOWN MUNICIPAL COURTMAYORS COURTSTEXT MESSAGING.pdf',
   uploadedDate: '2/13/2019',
@@ -21,7 +21,7 @@ const refDocMeta = {
   status: 'Draft'
 }
 
-const docContainer = '#docContainer'
+//const docContainer = '#docContainer'
 const docName = '#docName'
 const docMeta = '#docMeta'
 
