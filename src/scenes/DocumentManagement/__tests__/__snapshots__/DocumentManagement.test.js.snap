@@ -29,6 +29,7 @@ exports[`Document Management scene should render correctly 1`] = `
           "path": "/docs/upload",
           "props": Object {
             "aria-label": "Upload New Documents",
+            "id": "uploadNewBtn",
           },
           "show": true,
           "state": Object {
@@ -70,6 +71,7 @@ exports[`Document Management scene should render correctly 1`] = `
     </FlexGrid>
     <WithStyles(Modal)
       hideOverflow={false}
+      id="bulkConfirmBox"
       maxWidth="md"
       onClose={[Function]}
       open={false}
@@ -116,6 +118,7 @@ exports[`Document Management scene should render correctly 1`] = `
               "onClick": [Function],
               "otherProps": Object {
                 "aria-label": "Confirm",
+                "id": "bulkConfirmBtn",
               },
               "type": "button",
               "value": "Confirm",

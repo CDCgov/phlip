@@ -5,6 +5,7 @@ const host = 'http://localhost:5200'
 // find the link, by going over all links on the page
 describe('project creation', () => {
   test('add new project', async () => {
+    const date = new Date().toLocaleTimeString()
     await page.goto(`${host}/login`)
     await page.click(email_selector)
     await page.keyboard.type(admin.email)
@@ -20,13 +21,13 @@ describe('project creation', () => {
     await page.waitForSelector('body > div.MuiModal-root-0243.MuiDialog-root-0231.MuiDialog-scrollPaper-0232 > div.MuiPaper-root-0317.MuiPaper-elevation24-0343.MuiPaper-rounded-0318.MuiDialog-paper-0234.MuiDialog-paperScrollPaper-0235.MuiDialog-paperWidthSm-0238 > form', { visible: true })
     const name = await page.$('input[name="name"]')
     await name.click()
-    await page.type('input[name="name"]', 'Project 1')
+    await page.type('input[name="name"]', `Project - ${date}`)
     const button = '#modal-action-1'
     await page.waitForSelector(button)
     await page.click(button)
     await page.waitForNavigation()
 
-    const projectTxt = await findByLink(page, 'Project 1')
+    const projectTxt = await findByLink(page, `Project - ${date}`)
     expect(projectTxt).not.toBe(null)
   }, 600000)
 })

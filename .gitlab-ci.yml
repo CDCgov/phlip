@@ -68,7 +68,6 @@ build and deploy on staging:
     - phlip2-dev
   only:
     - development
-    - test
   artifacts:
     paths:
       - dist/
@@ -87,7 +86,6 @@ run e2e tests staging:
     - phlip2-dev
   only:
     - development
-    - test
   dependencies:
     - lint
     - build and deploy on staging

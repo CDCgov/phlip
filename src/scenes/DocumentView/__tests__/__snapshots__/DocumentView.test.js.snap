@@ -34,6 +34,7 @@ exports[`DocumentView scene should render correctly 1`] = `
     type="row"
   >
     <Connect(DocumentContents)
+      id="docContainer"
       loading={false}
     />
     <FlexGrid
@@ -56,6 +57,7 @@ exports[`DocumentView scene should render correctly 1`] = `
       circular={false}
       container={true}
       flex={false}
+      id="docMeta"
       justify="stretch"
       padding={0}
       raised={false}

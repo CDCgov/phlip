@@ -40,7 +40,9 @@ exports[`DocumentManagement - DocList should render correctly 1`] = `
         onSelectAll={[Function]}
       />
     </WithStyles(TableHead)>
-    <WithStyles(TableBody)>
+    <WithStyles(TableBody)
+      id="documentTable"
+    >
       <Connect(DocListTableRow)
         id={
           Object {

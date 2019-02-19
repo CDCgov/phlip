@@ -1,55 +1,54 @@
-const puppeteer = require("puppeteer")
-//import { isDebugging } from "./src/testingInit"
+const puppeteer = require('puppeteer')
 
 const jasmineTimeout = 60000
 const admin = {
   email: 'admin@cdc.gov'
-};
-const email_selector = '#email';
-//const host = 'https://phlip2dev.phiresearchlab.org';
-const host = 'http://localhost:5200';
+}
+const email_selector = '#email'
+const host = 'http://localhost:5200'
 const documentManagementBtn = '#root > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)'
-const testProject = 'zero dawn'
-const uploadNewButton = '#uploadNewBtn'
-const uploadGoButton = '#uploadFilesBtn'
+//const testProject = 'zero dawn'
+//const uploadNewButton = '#uploadNewBtn'
+//const uploadGoButton = '#uploadFilesBtn'
 const documentTable = '#documentTable'
-const testProject3 = 'firstDoc'
+//const testProject3 = 'firstDoc'
 const refDocMeta = {
-  docName: "YOUNGSTOWN MUNICIPAL COURTMAYORS COURTSTEXT MESSAGING.pdf",
+  docName: 'YOUNGSTOWN MUNICIPAL COURTMAYORS COURTSTEXT MESSAGING.pdf',
   uploadedDate: '2/13/2019',
   uploadedBy: 'Admin',
-  citation : 'Minn. Stat. Ann. § 144.9501',
-  effDate : '7/1/2016',
+  citation: 'Minn. Stat. Ann. § 144.9501',
+  effDate: '7/1/2016',
   status: 'Draft'
 }
 
-const docContainer = '#docContainer'
+//const docContainer = '#docContainer'
 const docName = '#docName'
 const docMeta = '#docMeta'
 
-let page;
-let browser;
+let page
+let browser
 
-beforeAll(async () => {
+/*beforeAll(async () => {
   browser = await puppeteer.launch(
-  //  isDebugging().puppeteer
-    {headless: false}
+    //  isDebugging().puppeteer
+    { headless: false }
   )
-  page = await browser.newPage();
-})
+  page = await browser.newPage()
+})*/
 
-describe('doc view', () => {
+xdescribe('doc view', () => {
   // dummy test.  run login for the rest of the tests
-  test('login', async () =>{
-    jest.setTimeout(80000);
+  test('login', async () => {
+    jest.setTimeout(80000)
     await page.goto(`${host}/login`)
-    await page.screenshot({path: 'login.png'})
+    await page.screenshot({ path: 'login.png' })
     await page.waitForSelector(email_selector)
     await page.click(email_selector)
     await page.keyboard.type(admin.email)
-    await page.click("button[type=submit]")
+    await page.click('button[type=submit]')
     await page.waitForNavigation()
-  },jasmineTimeout)
+  }, jasmineTimeout)
+
   test('check if document open', async () => {
     await page.goto(`${host}/home`)
     // click on document management button
@@ -93,21 +92,21 @@ describe('doc view', () => {
     //  debugger
     // console.log(data);
     try {
-    //  expect(data.txtData.toLowerCase()).toEqual(expect.stringContaining('firstDoc'.toLowerCase()))
-        // click the first element
-        await page.evaluate((refDocMeta) => {
-        let docLinks = document.querySelectorAll('#documentTable a');
+      //  expect(data.txtData.toLowerCase()).toEqual(expect.stringContaining('firstDoc'.toLowerCase()))
+      // click the first element
+      await page.evaluate((refDocMeta) => {
+        let docLinks = document.querySelectorAll('#documentTable a')
         docLinks.forEach(link => {
-          let el = link.parentElement.querySelector('a');
+          let el = link.parentElement.querySelector('a')
           if (el.innerText === refDocMeta.docName) {
-             el.click()
+            el.click()
           }
         })
-      },refDocMeta)
-       //await page.waitForNavigation()
+      }, refDocMeta)
+      //await page.waitForNavigation()
       await page.waitFor(5000)
       await page.waitForSelector(docName)
-     // const actualDocName = page.evaluate(docName)
+      // const actualDocName = page.evaluate(docName)
       expect(await page.$eval(docName, (element) => {
         return element.innerText.toLowerCase()
       })).toMatch(refDocMeta.docName.toLowerCase())
@@ -116,22 +115,20 @@ describe('doc view', () => {
         return element.innerText.toLowerCase()
       })
       //  console.log(docMetaText)
-      Object.keys(refDocMeta).forEach((key)=>{
+      Object.keys(refDocMeta).forEach((key) => {
         if (key !== 'docName') {
           expect(docMetaText.toLowerCase()).toEqual(expect.stringContaining(refDocMeta[key].toLowerCase()))
         }
       })
-    }
-    catch (e) {
+    } catch (e) {
       console.log(e)
       throw new Error('test failed')
+    } finally {
+      //    browser.close()
     }
-    finally {
-  //    browser.close()
-    }
-  },jasmineTimeout)
+  }, jasmineTimeout)
 })
 
-afterAll(() => {
+/*afterAll(() => {
   browser.close()
-})
+})*/
