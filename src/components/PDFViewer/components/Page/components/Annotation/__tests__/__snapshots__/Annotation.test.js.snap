@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PDFViewer - Page - Annotation components should render correctly 1`] = `
+<Annotation
+  annotation={
+    Object {
+      "docId": "5c3750fdbaaef70035b58df4",
+      "endPage": 0,
+      "length": 3,
+      "rects": Array [
+        Object {
+          "pageNumber": 0,
+          "pdfPoints": Object {
+            "endX": 557.9901994977679,
+            "endY": 402.70312500000006,
+            "x": 53.99553571428572,
+            "y": 414.1316964285715,
+          },
+        },
+        Object {
+          "pageNumber": 0,
+          "pdfPoints": Object {
+            "endX": 557.9991803850446,
+            "endY": 388.95312500000006,
+            "x": 53.99553571428572,
+            "y": 400.38169642857144,
+          },
+        },
+        Object {
+          "pageNumber": 0,
+          "pdfPoints": Object {
+            "endX": 228.90407017299108,
+            "endY": 375.203125,
+            "x": 53.99553571428572,
+            "y": 386.6316964285715,
+          },
+        },
+      ],
+      "startPage": 0,
+      "text": "(1) A person using a handheld electronic wireless communications device in that manner for emergency purposes,including an emergency contact with a law enforcement agency, hospital or health care provider, fire department, orother similar emergency agency or entity;",
+    }
+  }
+  handleCancelAnnotation={[MockFunction]}
+  handleClickAnnotation={[MockFunction]}
+  handleConfirmAnnotation={[MockFunction]}
+  handleRemoveAnnotation={[MockFunction]}
+  index={0}
+  isClicked={false}
+  pageNumber={0}
+  pending={false}
+  transform={
+    Array [
+      1,
+      0,
+      0,
+      -1,
+      0,
+      792,
+    ]
+  }
+>
+  <div
+    onClick={[Function]}
+    style={
+      Object {
+        "height": 11.428571428571445,
+        "left": 53.99553571428572,
+        "top": 377.8683035714285,
+        "width": 503.99466378348217,
+      }
+    }
+  />
+  <div
+    onClick={[Function]}
+    style={
+      Object {
+        "height": 11.428571428571388,
+        "left": 53.99553571428572,
+        "top": 391.61830357142856,
+        "width": 504.0036446707589,
+      }
+    }
+  />
+  <div
+    onClick={[Function]}
+    style={
+      Object {
+        "height": 11.428571428571502,
+        "left": 53.99553571428572,
+        "top": 405.3683035714285,
+        "width": 174.90853445870536,
+      }
+    }
+  />
+</Annotation>
+`;

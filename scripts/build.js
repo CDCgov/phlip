@@ -9,8 +9,9 @@ const dotenv = require('dotenv')
 const fs = require('fs')
 
 dotenv.config({ path: paths.appDotEnv })
+const NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV : 'production'
 
-const env = require('../config/env')('production')
+const env = require('../config/env')(NODE_ENV)
 const webpackProdConfig = require('../config/webpack.prod.config')(env)
 
 console.log(chalk.cyan(

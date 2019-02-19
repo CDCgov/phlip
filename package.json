@@ -12,8 +12,9 @@
     "test:watch": "docker-compose -f docker-compose.dev.yml run app npm run test:watch:local",
     "start:local": "node scripts/start.js",
     "serve:local": "node scripts/serve.js",
-    "test:local": "jest --coverage -u --verbose",
+    "test:local": "jest --config config/jest.unit.config.js --coverage -u --verbose",
     "test:watch:local": "jest --coverage --watch -u",
+    "test:e2e": "jest --config config/jest.e2e.config.js --verbose",
     "prebuild": "npm run clean",
     "build": "node scripts/build.js",
     "clean": "rm -rf ./dist/",
@@ -21,38 +22,6 @@
     "build:docs": "node scripts/docs.js build",
     "lint": "./node_modules/eslint/bin/eslint.js --color src",
     "lint:fix": "./node_modules/eslint/bin/eslint.js --fix src"
-  },
-  "jest": {
-    "setupFiles": [
-      "raf/polyfill",
-      "<rootDir>/config/tests/setupFiles.js",
-      "<rootDir>/config/tests/sessionStorageMock.js",
-      "jest-canvas-mock"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx}"
-    ],
-    "coverageReporters": [
-      "cobertura",
-      "html",
-      "lcov"
-    ],
-    "modulePaths": [
-      "<rootDir>/src/"
-    ],
-    "moduleNameMapper": {
-      "^.+\\.(css|scss)$": "<rootDir>/config/tests/styleMock.js",
-      "\\.worker.js": "<rootDir>/config/tests/workerMock.js"
-    },
-    "snapshotSerializers": [
-      "enzyme-to-json/serializer"
-    ],
-    "globals": {
-      "APP_API_URL": "/api",
-      "APP_IS_SAML_ENABLED": "0",
-      "APP_DOC_MANAGE_API": "/docsApi",
-      "APP_LOG_REQUESTS": "0"
-    }
   },
   "repository": "git",
   "author": "Kristin Muterspaw",
@@ -88,6 +57,7 @@
     "passport-saml": "0.35.0",
     "pdfjs-dist": "^2.0.943",
     "prop-types": "15.6.2",
+    "re-resizable": "^4.11.0",
     "react": "16.5.0",
     "react-autosuggest": "9.4.0",
     "react-copy-to-clipboard": "5.0.1",
@@ -144,9 +114,11 @@
     "jest": "23.6.0",
     "jest-canvas-mock": "^1.1.1-beta.1",
     "jest-cli": "23.6.0",
+    "jest-puppeteer": "^4.0.0",
     "mini-css-extract-plugin": "0.4.2",
     "node-sass": "4.9.3",
     "postcss-loader": "3.0.0",
+    "puppeteer": "^1.12.2",
     "react-hot-loader": "4.3.6",
     "react-styleguidist": "8.0.6",
     "react-test-renderer": "16.5.0",

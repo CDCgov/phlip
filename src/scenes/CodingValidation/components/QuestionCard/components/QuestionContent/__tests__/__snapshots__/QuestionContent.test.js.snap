@@ -1,0 +1,116 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`QuestionCard - QuestionContent should render correctly 1`] = `
+<Container
+  column={true}
+  flex={true}
+  spacing={0}
+  style={
+    Object {
+      "flexWrap": "nowrap",
+      "overflow": "auto",
+      "paddingBottom": 15,
+    }
+  }
+>
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={false}
+    flex={false}
+    justify="stretch"
+    padding="20px 20px 10px 20px"
+    raised={false}
+    style={Object {}}
+    type="column"
+  >
+    <FlexGrid
+      align="baseline"
+      circular={false}
+      container={true}
+      flex={false}
+      justify="stretch"
+      padding={0}
+      raised={false}
+      style={Object {}}
+      type="row"
+    >
+      <Typography
+        style={
+          Object {
+            "paddingRight": 10,
+          }
+        }
+        variant="subheading2"
+      >
+        )
+      </Typography>
+      <Typography
+        style={
+          Object {
+            "letterSpacing": 0,
+          }
+        }
+        variant="body2"
+      />
+    </FlexGrid>
+  </FlexGrid>
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={true}
+    flex={true}
+    justify="stretch"
+    padding={0}
+    raised={false}
+    style={
+      Object {
+        "flexBasis": "60%",
+        "paddingBottom": 15,
+        "paddingLeft": 40,
+        "paddingRight": 25,
+        "paddingTop": 0,
+      }
+    }
+    type="column"
+  >
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={true}
+      flex={false}
+      justify="stretch"
+      padding={0}
+      raised={false}
+      style={
+        Object {
+          "overflow": "auto",
+          "paddingBottom": 15,
+          "paddingLeft": 25,
+          "paddingRight": 0,
+          "paddingTop": 0,
+        }
+      }
+      type="row"
+    />
+    <Row
+      component={
+        <WithStyles(Grid)
+          item={true}
+        />
+      }
+      displayFlex={false}
+      flex={false}
+      reverse={false}
+      style={
+        Object {
+          "paddingBottom": 0,
+          "paddingLeft": 25,
+          "paddingRight": 0,
+          "paddingTop": 0,
+        }
+      }
+    />
+  </FlexGrid>
+</Container>
+`;

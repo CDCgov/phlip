@@ -39,8 +39,24 @@ describe('Document Management logic', () => {
             main: {
               documents: {
                 byId: {
-                  1: { name: 'Doc 1', uploadedBy: { firstName: 'test', lastName: 'user' }, projects: [1], jurisdictions: [1],_id:1,jurisdictionList:'Ohio',projectList:'Project1' },
-                  2: { name: 'Doc 2', uploadedBy: { firstName: 'test', lastName: 'user' }, projects: [1], jurisdictions: [1],_id:2,jurisdictionList:'Ohio',projectList:'Project1' }
+                  1: {
+                    name: 'Doc 1',
+                    uploadedBy: { firstName: 'test', lastName: 'user' },
+                    projects: [1],
+                    jurisdictions: [1],
+                    _id: 1,
+                    jurisdictionList: 'Ohio',
+                    projectList: 'Project1'
+                  },
+                  2: {
+                    name: 'Doc 2',
+                    uploadedBy: { firstName: 'test', lastName: 'user' },
+                    projects: [1],
+                    jurisdictions: [1],
+                    _id: 2,
+                    jurisdictionList: 'Ohio',
+                    projectList: 'Project1'
+                  }
                 }
               }
             }
@@ -62,23 +78,16 @@ describe('Document Management logic', () => {
       { name: 'Doc 2', uploadedBy: { firstName: 'test', lastName: 'user' }, projects: [1], jurisdictions: [1] }
     ])
 
-    apiMock
-      .onGet('/projects/1')
-      .reply(200, { name: 'Test Project', id: 1 })
+    apiMock.onGet('/projects/1').reply(200, { name: 'Test Project', id: 1 })
 
-    apiMock
-      .onGet('/jurisdictions/1')
-      .reply(200, { id: 1, name: 'Ohio' })
+    apiMock.onGet('/jurisdictions/1').reply(200, { id: 1, name: 'Ohio' })
 
     const store = setupStore()
-
     store.dispatch({ type: types.GET_DOCUMENTS_REQUEST })
 
     store.whenComplete(() => {
       expect(store.actions).toEqual([
         { type: types.GET_DOCUMENTS_REQUEST },
-        { type: 'GET_PROJECT_REQUEST', projectId: 1 },
-        { type: 'GET_JURISDICTION_REQUEST', jurisdictionId: 1 },
         {
           type: types.GET_DOCUMENTS_SUCCESS,
           payload: [
@@ -127,20 +136,24 @@ describe('Document Management logic', () => {
   })
 
   test('should delete selected documents and dispatch BULK_DELETE_SUCCESS on success', done => {
-    mock.onPost('/docs/bulkDelete').reply(200, {n:2, ok:1})
+    mock.onPost('/docs/bulkDelete').reply(200, { n: 2, ok: 1 })
 
     const store = setupStore([
-      { name: 'Doc 1',
+      {
+        name: 'Doc 1',
         uploadedBy: { firstName: 'test', lastName: 'user' },
-        projects: [1], jurisdictions: [1] },
-      { name: 'Doc 2',uploadedBy: { firstName: 'test', lastName: 'user' },
-        projects: [1], jurisdictions: [1]}
+        projects: [1], jurisdictions: [1]
+      },
+      {
+        name: 'Doc 2', uploadedBy: { firstName: 'test', lastName: 'user' },
+        projects: [1], jurisdictions: [1]
+      }
     ])
 
     store.dispatch({ type: types.BULK_DELETE_REQUEST })
 
     store.whenComplete(() => {
-      expect(store.actions[1]).toEqual({ type: types.BULK_DELETE_SUCCESS, payload: {n:2, ok:1} })
+      expect(store.actions[1]).toEqual({ type: types.BULK_DELETE_SUCCESS, payload: { n: 2, ok: 1 } })
       done()
     })
   })
@@ -149,34 +162,63 @@ describe('Document Management logic', () => {
     mock.onPost('/docs/bulkUpdate').reply(
       200,
       [
-        { name: 'Doc 1',
+        {
+          name: 'Doc 1',
           uploadedBy: { firstName: 'test', lastName: 'user' },
-          projects: [1], jurisdictions: [1] },
-        { name: 'Doc 2',uploadedBy: { firstName: 'test', lastName: 'user' },
-          projects: [1], jurisdictions: [1]}
+          projects: [1], jurisdictions: [1]
+        },
+        {
+          name: 'Doc 2', uploadedBy: { firstName: 'test', lastName: 'user' },
+          projects: [1], jurisdictions: [1]
+        }
       ]
     )
 
     const store = setupStore([
-      { name: 'Doc 1',
+      {
+        name: 'Doc 1',
         uploadedBy: { firstName: 'test', lastName: 'user' },
-        projects: [1], jurisdictions: [1] },
-      { name: 'Doc 2',uploadedBy: { firstName: 'test', lastName: 'user' },
-        projects: [1], jurisdictions: [1]}
-    ],)
+        projects: [1], jurisdictions: [1]
+      },
+      {
+        name: 'Doc 2', uploadedBy: { firstName: 'test', lastName: 'user' },
+        projects: [1], jurisdictions: [1]
+      }
+    ])
 
     store.dispatch({
       type: types.BULK_UPDATE_REQUEST,
       updateData: {
         updateType: 'jurisdictions',
-        updateProJur: {id: 1, name: 'Ohio'}
+        updateProJur: { id: 1, name: 'Ohio' }
       },
       selectedDocs: [
-        '1', '2']
+        '1', '2'
+      ]
     })
     store.whenComplete(() => {
-      expect(store.actions[2]).toEqual({ type: types.BULK_UPDATE_SUCCESS,
-        payload: {'1': {'_id': 1, 'jurisdictionList': 'Ohio', 'jurisdictions': [1], 'name': 'Doc 1', 'projectList': 'Project1', 'projects': [1], 'uploadedBy': {'firstName': 'test', 'lastName': 'user'}}, '2': {'_id': 2, 'jurisdictionList': 'Ohio', 'jurisdictions': [1], 'name': 'Doc 2', 'projectList': 'Project1', 'projects': [1], 'uploadedBy': {'firstName': 'test', 'lastName': 'user'}}}
+      expect(store.actions[2]).toEqual({
+        type: types.BULK_UPDATE_SUCCESS,
+        payload: {
+          '1': {
+            '_id': 1,
+            'jurisdictionList': 'Ohio',
+            'jurisdictions': [1],
+            'name': 'Doc 1',
+            'projectList': 'Project1',
+            'projects': [1],
+            'uploadedBy': { 'firstName': 'test', 'lastName': 'user' }
+          },
+          '2': {
+            '_id': 2,
+            'jurisdictionList': 'Ohio',
+            'jurisdictions': [1],
+            'name': 'Doc 2',
+            'projectList': 'Project1',
+            'projects': [1],
+            'uploadedBy': { 'firstName': 'test', 'lastName': 'user' }
+          }
+        }
       })
       done()
     })

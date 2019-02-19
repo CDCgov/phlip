@@ -1,11 +1,12 @@
 variables:
-  VERSION: 0.6.0
   SUB_BUILD: $CI_PIPELINE_ID
   BRANCH: $CI_COMMIT_REF_NAME
 
 stages:
   - lint
-  - test
+  - unit test
+  - staging
+  - e2e test
   - build
   - deploy
 
@@ -20,12 +21,15 @@ lint:
     - development
     - test
   artifacts:
-    expire_in: 1 hour
     paths:
       - node_modules/
+    expire_in: 1 week
+  environment:
+    name: Internal PHLIP2 Dev
+    url: http://lvscent7064.lab.local
 
 test:
-  stage: test
+  stage: unit test
   script:
     - npm run test:local
   tags:
@@ -35,8 +39,63 @@ test:
     - test
   dependencies:
     - lint
+  environment:
+    name: Internal PHLIP2 Dev
+    url: http://lvscent7064.lab.local
 
-build_dev_azure:
+build and deploy on staging:
+  stage: staging
+  before_script:
+    - if pm2 list | grep fe; then pm2 stop fe; else echo "no fe process running"; fi
+  script:
+    - echo "APP_DOC_MANAGE_API=http://0.0.0.0:3000" > .env
+    - echo "APP_API_URL=http://0.0.0.0:8000" >> .env
+    - echo "HEADLESS=1" >> .env
+    - echo "NODE_ENV=development" >> .env
+    - npm run build
+    - pm2 start scripts/serve.js --name fe
+    - cd ../esquire-backend
+    - sudo /usr/local/bin/docker-compose down
+    - if sudo docker ps -a | grep esquire-backend_esquire-backend_1; then sudo docker rm esquire-backend_esquire-backend_1; else echo "no BE container"; fi
+    - if sudo docker ps -a | grep mssqldev; then sudo docker rm mssqldev; else echo "no sql container"; fi
+    - sudo /usr/local/bin/docker-compose up --build -d
+    - cd ../esquire-doc-management
+    - sudo /usr/local/bin/docker-compose down
+    - if sudo docker ps -a | grep doc-manage; then sudo docker rm doc-manage; else echo "no doc-manage container"; fi
+    - if sudo docker ps -a | grep doc-manage-mongo; then sudo docker rm doc-manage-mongo; else echo "no mongo container"; fi
+    - sudo /usr/local/bin/docker-compose up --build -d
+  tags:
+    - phlip2-dev
+  only:
+    - development
+    - test
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 hour
+  dependencies:
+    - lint
+  environment:
+    name: Internal PHLIP2 Dev
+    url: http://lvscent7064.lab.local
+
+run e2e tests staging:
+  stage: e2e test
+  script:
+    - npm run test:e2e
+  tags:
+    - phlip2-dev
+  only:
+    - development
+    - test
+  dependencies:
+    - lint
+    - build and deploy on staging
+  environment:
+    name: Internal PHLIP2 Dev
+    url: http://lvscent7064.lab.local
+
+build dev azure:
   stage: build
   script:
     - npm install
@@ -58,7 +117,7 @@ build_dev_azure:
     url: https://phlip2dev.phiresearchlab.org
   dependencies: []
 
-deploy_dev_azure:
+deploy dev azure:
   stage: deploy
   script:
     - cd ~iiu-deploy/esquire-frontend-deploy
@@ -74,7 +133,7 @@ deploy_dev_azure:
     - development
   dependencies: []
 
-build_test_azure:
+build test azure:
   stage: build
   script:
     - npm install
@@ -96,7 +155,7 @@ build_test_azure:
     url: https://phlip2test.phiresearchlab.org
   dependencies: []
 
-deploy_test_azure:
+deploy test azure:
   stage: deploy
   script:
     - cd ~iiu-deploy/esquire-frontend-deploy
@@ -111,35 +170,3 @@ deploy_test_azure:
     name: Azure PHLIP2 Test
     url: https://phlip2test.phiresearchlab.org
   dependencies: []
-
-#build_dev_internal:
-#  stage: build
-#  script:
-#    - cat ~iiu-deploy/config/.env.fe >> .env
-#    - npm run build
-#    - cp -r ./dist ~iiu-deploy/esquire-frontend-deploy/
-#    - cp -r ./scripts ~iiu-deploy/esquire-frontend-deploy/
-#    - cp -r ./config ~iiu-deploy/esquire-frontend-deploy/
-#    - cp ./package.json ~iiu-deploy/esquire-frontend-deploy/
-#    - cp .env ~iiu-deploy/esquire-frontend-deploy/
-#  when: manual
-#  tags:
-#    - phlip2-dev
-#  environment:
-#    name: Internal PHLIP2 Dev
-#    url: http://lvscent7064.lab.local
-#  dependencies:
-#    - lint_frontend
-#
-#deploy_dev_internal:
-#  stage: deploy
-#  script:
-#    - cd ~iiu-deploy/esquire-frontend-deploy
-#    - npm install --production
-#    - pm2 stop phlip-fe
-#    - pm2 start scripts/serve.js --name phlip-fe
-#  tags:
-#    - phlip2-dev
-#  environment:
-#    name: Internal PHLIP2 Dev
-#    url: http://lvscent7064.lab.local
