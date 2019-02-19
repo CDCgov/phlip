@@ -50,13 +50,13 @@ let data = null
 let page
 let browser
 
-beforeAll(async () => {
+/*beforeAll(async () => {
   browser = await puppeteer.launch(
     // isDebugging().puppeteer
     { headless: true }
   )
   page = await browser.newPage()
-})
+})*/
 
 xdescribe('doc management', () => {
   test('login', async () => {
@@ -581,6 +581,6 @@ xdescribe('doc management', () => {
   return linkText.replace(nbspPattern, ' ')
 }*/
 
-afterAll(() => {
+/*afterAll(() => {
   browser.close()
-})
+})*/

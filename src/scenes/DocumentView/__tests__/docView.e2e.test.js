@@ -28,13 +28,13 @@ const docMeta = '#docMeta'
 let page
 let browser
 
-beforeAll(async () => {
+/*beforeAll(async () => {
   browser = await puppeteer.launch(
     //  isDebugging().puppeteer
     { headless: false }
   )
   page = await browser.newPage()
-})
+})*/
 
 xdescribe('doc view', () => {
   // dummy test.  run login for the rest of the tests
@@ -129,6 +129,6 @@ xdescribe('doc view', () => {
   }, jasmineTimeout)
 })
 
-afterAll(() => {
+/*afterAll(() => {
   browser.close()
-})
+})*/
