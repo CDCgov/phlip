@@ -12,7 +12,7 @@
 //   };
 //   return process.env.NODE_ENV === "debug" ? debugging_mode : false;
 // };
-const filepath = '/home/gitlab-runner/sample-data-phlip'
+const filepath = 'home/gitlab-runner/sample-data-phlip'
 //const filepath = '/Users/kristinmuterspaw/Downloads/demo'
 const jasmineTimeout = 600000
 const admin = {
@@ -93,7 +93,9 @@ export const docManage = () => {
       await fileEle.uploadFile(...files)
       await page.waitFor(10000)
       await excelEle.uploadFile(`${filepath}/demo.xlsx`)
-      await page.waitFor(10000)
+      console.log(`${filepath}/demo.xlsx`)
+      await page.waitFor(15000)
+      await page.screenshot({path:'excelUPload.png'})
       // check files count
       const myFilesText = await page.evaluate(() => {
         let allText = []
@@ -114,16 +116,17 @@ export const docManage = () => {
         //   })
         //   allText.push(textList.join('|'))
         // })
+        console.log(allText.join('^'))
         return allText.join('^')
       })
       try {
         expect(myFilesText.toLowerCase())
           .toMatch('|picture_as_pdfOAC 3701-52-04 eff. 5-3-07.pdf|Washington, DC (federal district)|DC Code § 34.1452.1|10/1/2002|cancel^|picture_as_pdfYoungstown Municipal Courtmayors Court Text Messaging.pdf|Minnesota (state)|Minn. Stat. Ann. § 144.9501|7/1/2016|cancel^|picture_as_pdfChildren and Minors Motor Vehicles Communication.pdf|Arkansas (state)|Ark. Code R. § 016.06.18-219.000|12/12/2012|cancel'.toLowerCase())
         //  expect(myFilesText.length).toBeLessThan(10)
-        //  await page.waitForSelector(uploadCloseButton)
-        //  await page.click(uploadCloseButton)
-        //  await page.waitForSelector(uploadCloseConfirm)
-        //  await page.click(uploadCloseConfirm)
+        await page.waitForSelector(uploadCloseButton)
+        await page.click(uploadCloseButton)
+        await page.waitForSelector(uploadCloseConfirm)
+        await page.click(uploadCloseConfirm)
       } catch (e) {
         console.log(e)
         throw new Error('test failed')
