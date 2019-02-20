@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer')
+//const puppeteer = require('puppeteer')
 
 const jasmineTimeout = 60000
 const admin = {
@@ -14,19 +14,19 @@ const documentTable = '#documentTable'
 //const testProject3 = 'firstDoc'
 const refDocMeta = {
   docName: 'YOUNGSTOWN MUNICIPAL COURTMAYORS COURTSTEXT MESSAGING.pdf',
-  uploadedDate: '2/13/2019',
+  uploadedDate: new Date().toLocaleDateString('en-US'),
   uploadedBy: 'Admin',
   citation: 'Minn. Stat. Ann. § 144.9501',
-  effDate: '7/1/2016',
-  status: 'Draft'
+  effDate: '7/1/2016'
+  // status: 'Draft'
 }
 
 //const docContainer = '#docContainer'
 const docName = '#docName'
 const docMeta = '#docMeta'
 
-let page
-let browser
+// let page
+// let browser
 
 /*beforeAll(async () => {
   browser = await puppeteer.launch(
@@ -36,7 +36,7 @@ let browser
   page = await browser.newPage()
 })*/
 
-xdescribe('doc view', () => {
+describe('doc view', () => {
   // dummy test.  run login for the rest of the tests
   test('login', async () => {
     jest.setTimeout(80000)
