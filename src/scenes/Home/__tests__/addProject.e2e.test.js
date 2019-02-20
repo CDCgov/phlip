@@ -1,6 +1,7 @@
 const admin = { email: 'admin@cdc.gov' }
 const email_selector = '#email'
 const host = 'http://localhost:5200'
+const errorMsg = 'body > div > div > form > div > div > div:nth-child(1) > div > p'
 
 // find the link, by going over all links on the page
 describe('project creation', () => {
@@ -30,6 +31,67 @@ describe('project creation', () => {
     const projectTxt = await findByLink(page, `Project - ${date}`)
     expect(projectTxt).not.toBe(null)
   }, 600000)
+
+  test('add project firstDoc if needed', async () => {
+    await page.goto(`${host}/home`)
+    //    await page.waitForNavigation()
+    await page.waitForSelector('#root > div > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > a')
+    await page.click('#root > div > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > a')
+    await page.waitForNavigation()
+
+    await page.waitForSelector('body > div > div > form', { visible: true })
+    const name = await page.$('input[name="name"]')
+    await name.click()
+    await page.type('input[name="name"]', 'FirstDoc')
+    const button = '#modal-action-1'
+    await page.waitForSelector(button)
+    await page.click(button)
+    await page.waitForSelector(errorMsg)
+    try {
+      let errorMessageText = await page.$eval(errorMsg, el => el.textContent)
+      console.log('actual message: ' + errorMessageText)
+      if (errorMessageText === 'There is already a project with this name.') {
+        await page.waitForSelector('#modal-action-0')
+        await page.click('#modal-action-0')
+        await page.waitFor(1000)
+      }
+    } catch (e) {
+      //    await browser.close()
+    } finally {
+      //     await browser.close()
+    }
+  },60000)
+  test('add project zero dawn if eeded', async () => {
+    await page.goto(`${host}/home`)
+    //    await page.waitForNavigation()
+    //check if project already exists
+    await page.waitForSelector('#root > div > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > a')
+    await page.click('#root > div > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > a')
+    await page.waitForNavigation()
+
+    await page.waitForSelector('body > div > div > form', { visible: true })
+    const name = await page.$('input[name="name"]')
+    await name.click()
+    await page.type('input[name="name"]', 'Zero dawn')
+    const button = '#modal-action-1'
+    await page.waitForSelector(button)
+    await page.click(button)
+    await page.waitForSelector(errorMsg)
+    try {
+      let errorMessageText = await page.$eval(errorMsg, el => el.textContent)
+      console.log('actual message: ' + errorMessageText)
+      if (errorMessageText === 'There is already a project with this name.') {
+        await page.waitForSelector('#modal-action-0')
+        await page.click('#modal-action-0')
+        await page.waitFor(1000)
+      }
+    } catch (e) {
+      //    await browser.close()
+    } finally {
+      //     await browser.close()
+    }
+  },60000)
+
 })
 
 function getText(linkText) {
