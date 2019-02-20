@@ -94,6 +94,7 @@ export const docManage = () => {
       await page.waitFor(10000)
       await excelEle.uploadFile(`${filepath}/demo.xlsx`)
       await page.waitFor(10000)
+      await page.screenshot({path:'excelupload.png'})
       // check files count
       const myFilesText = await page.evaluate(() => {
         let allText = []
