@@ -118,7 +118,7 @@ export const docManage = () => {
       })
       try {
         expect(myFilesText.toLowerCase())
-        .toMatch('|picture_as_pdfOAC 3701-52-04 eff. 5-3-07.pdf|Washington, DC (federal district)|DC Code § 34.1452.1|10/1/2002|cancel^|picture_as_pdfYoungstown Municipal Courtmayors Court Text Messaging.pdf|Minnesota (state)|Minn. Stat. Ann. § 144.9501|7/1/2016|cancel^|picture_as_pdfChildren and Minors Motor Vehicles Communication.pdf|Arkansas (state)|Ark. Code R. § 016.06.18-219.000|12/12/2012|cancel'.toLowerCase())
+          .toMatch('|picture_as_pdfOAC 3701-52-04 eff. 5-3-07.pdf|Washington, DC (federal district)|DC Code § 34.1452.1|10/1/2002|cancel^|picture_as_pdfYoungstown Municipal Courtmayors Court Text Messaging.pdf|Minnesota (state)|Minn. Stat. Ann. § 144.9501|7/1/2016|cancel^|picture_as_pdfChildren and Minors Motor Vehicles Communication.pdf|Arkansas (state)|Ark. Code R. § 016.06.18-219.000|12/12/2012|cancel'.toLowerCase())
         //  expect(myFilesText.length).toBeLessThan(10)
         //  await page.waitForSelector(uploadCloseButton)
         //  await page.click(uploadCloseButton)
