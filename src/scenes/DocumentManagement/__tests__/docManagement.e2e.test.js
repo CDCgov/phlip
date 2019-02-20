@@ -91,9 +91,9 @@ export const docManage = () => {
         `${filepath}/Children and Minors Motor Vehicles Communication.pdf`
       ]
       await fileEle.uploadFile(...files)
-      await page.waitFor(5000)
+      await page.waitFor(10000)
       await excelEle.uploadFile(`${filepath}/demo.xlsx`)
-      await page.waitFor(7000)
+      await page.waitFor(10000)
       // check files count
       const myFilesText = await page.evaluate(() => {
         let allText = []
