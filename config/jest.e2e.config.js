@@ -3,7 +3,7 @@
  */
 module.exports = {
   rootDir: '../',
-  testRegex: '\/__tests__\/.+\.e2e\.test\.js$',
+  testRegex: 'all.e2e.test.js',
   modulePaths: [
     '<rootDir>/src/'
   ],
