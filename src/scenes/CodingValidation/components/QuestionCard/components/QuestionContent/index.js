@@ -71,9 +71,9 @@ export const QuestionContent = props => {
             <Tooltip
               placement='right'
               title={
-                <Typography variant="body2" style={{ color: '#98b3be' }}><strong>Coding Directions: </strong>{question.hint}</Typography>
+                <Typography variant="body2" style={{ color: '#3eafdd' }}><strong>Coding Directions: </strong>{question.hint}</Typography>
               }>
-              <Icon color="#98b3be" size="14px">lightbulb_outline</Icon>
+              <Icon color="#3eafdd" size="14px">lightbulb_outline</Icon>
             </Tooltip>
             </MuiThemeProvider>}
         </FlexGrid>
