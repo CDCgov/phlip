@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer')
+//const puppeteer = require('puppeteer')
 //import { isDebugging } from "./src/testingInit"
 
 // const isDebugging = () => {
@@ -12,7 +12,7 @@ const puppeteer = require('puppeteer')
 //   };
 //   return process.env.NODE_ENV === "debug" ? debugging_mode : false;
 // };
-
+const filepath = '/home/gitlab-runner/sample-data-phlip'
 const jasmineTimeout = 60000
 const admin = {
   email: 'admin@cdc.gov'
@@ -33,8 +33,8 @@ const bulkDelete = '#menu- > div > ul > li:nth-child(2)'
 const bulkProject = '#menu- > div > ul > li:nth-child(3)'
 const bulkJurisdiction = '#menu- > div > ul > li:nth-child(4)'
 const testFiles = [
-  '/Users/trungnguyen/Downloads/demo/file1.pdf', '/Users/trungnguyen/Downloads/demo/file2.pdf',
-  '/Users/trungnguyen/Downloads/demo/file3.pdf'
+  `${filepath}/file1.pdf`, `${filepath}/file2.pdf`,
+  `${filepath}/file3.pdf`
 ]
 const bulkProjectSearch = '#project-name'
 const bulkJurisdictionSearch = '#jurisdiction-name'
@@ -45,24 +45,25 @@ const testProject2 = 'Delete'
 const testProject3 = 'firstDoc'
 const testJurisdiction = 'Yauco Municipio, Puerto Rico'
 const testJurisdiction2 = 'Hapeville, Fulton County, Georgia (city)'
+const uploadFileList = '#uploadFileList > div'
 
 let data = null
-let page
-let browser
+// let fileList = []
+// let page
+// let browser
 
-/*beforeAll(async () => {
-  browser = await puppeteer.launch(
-    // isDebugging().puppeteer
-    { headless: true }
-  )
-  page = await browser.newPage()
-})*/
+// beforeAll(async () => {
+//   browser = await puppeteer.launch(
+//     // isDebugging().puppeteer
+//     { headless: false }
+//   )
+//   page = await browser.newPage()
+// })
 
-xdescribe('doc management', () => {
+describe('doc management', () => {
   test('login', async () => {
     jest.setTimeout(80000)
     await page.goto(`${host}/login`)
-    await page.screenshot({ path: 'login.png' })
     await page.waitForSelector(email_selector)
     await page.click(email_selector)
     await page.keyboard.type(admin.email)
@@ -86,39 +87,44 @@ xdescribe('doc management', () => {
     await page.waitForSelector('form:nth-child(3) > div > div > input[type="file"]')
     const excelEle = await page.$('form:nth-child(3) > div > div > input[type="file"]')
     const files = [
-      '/Users/trungnguyen/Downloads/demo/OAC 3701-52-04 eff. 5-3-07.pdf',
-      '/Users/trungnguyen/Downloads/demo/YOUNGSTOWN MUNICIPAL COURTMAYORS COURTSTEXT MESSAGING.pdf',
-      '/Users/trungnguyen/Downloads/demo/CHILDREN AND MINORSMOTOR VEHICLESTELECOMMUNICATIONS.pdf'
+      `${filepath}/OAC 3701-52-04 eff. 5-3-07.pdf`,
+      `${filepath}/YOUNGSTOWN MUNICIPAL COURTMAYORS COURTSTEXT MESSAGING.pdf`,
+      `${filepath}/CHILDREN AND MINORSMOTOR VEHICLESTELECOMMUNICATIONS.pdf`
     ]
     await fileEle.uploadFile(...files)
     await page.waitFor(5000)
-    await excelEle.uploadFile('/Users/trungnguyen/Downloads/demo/demo.xlsx')
+    await excelEle.uploadFile(`${filepath}/demo.xlsx`)
     await page.waitFor(7000)
     // check files count
-    const myFilesText = await page.evaluate(() => {
-      //  debugger
+    const myFilesText = await page.evaluate(()=> {
       let allText = []
-      const fileList = Array.from(document.querySelectorAll('body > div > div > div > div:nth-child(2) > div:nth-child(2) > div'))
-      fileList.forEach(function (row) {
+      let fileList = document.querySelectorAll('#uploadFileList > div')
+      fileList.forEach(function(row){
         const cells = row.childNodes
-        let textList = [];
-        [...cells].forEach(function (cell) {
+        let textList = []
+        cells.forEach(function (cell) {
           textList.push(cell.textContent)
         })
         allText.push(textList.join('|'))
       })
+      // fileList.forEach(function (row) {
+      //   const cells = row.childNodes
+      //   let textList = [];
+      //   [...cells].forEach(function (cell) {
+      //     textList.push(cell.textContent)
+      //   })
+      //   allText.push(textList.join('|'))
+      // })
       return allText.join('^')
     })
-    // debugger
-    // console.log(myFilesText);
     try {
       expect(myFilesText.toLowerCase())
         .toMatch('|picture_as_pdfOAC 3701-52-04 eff. 5-3-07.pdf|Washington, DC (federal district)|D.C. Code § 7-871.02|10/1/2002|cancel^|picture_as_pdfYOUNGSTOWN MUNICIPAL COURTMAYORS COURTSTEXT MESSAGING.pdf|Minnesota (state)|Minn. Stat. Ann. § 144.9501|7/1/2016|cancel^|picture_as_pdfCHILDREN AND MINORSMOTOR VEHICLESTELECOMMUNICATIONS.pdf|Arkansas (state)|Ark. Code R. § 016.06.18-219.000|12/12/2012|cancel'.toLowerCase())
-      //  expect(myFilesText.length).toBeLessThan(10)
-      await page.waitForSelector(uploadCloseButton)
-      await page.click(uploadCloseButton)
-      await page.waitForSelector(uploadCloseConfirm)
-      await page.click(uploadCloseConfirm)
+    //  expect(myFilesText.length).toBeLessThan(10)
+    //  await page.waitForSelector(uploadCloseButton)
+    //  await page.click(uploadCloseButton)
+    //  await page.waitForSelector(uploadCloseConfirm)
+    //  await page.click(uploadCloseConfirm)
     } catch (e) {
       console.log(e)
       throw new Error('test failed')
@@ -132,7 +138,7 @@ xdescribe('doc management', () => {
     await page.waitFor(2000)
     await page.waitForSelector('#search-bar')
     await page.click('#search-bar')
-    await page.keyboard.type('jurisdiction:ohio')
+    await page.keyboard.type('jurisdiction:minnesota')
 
     //    free format search
     const data = await page.evaluate((documentTable) => {
@@ -144,7 +150,7 @@ xdescribe('doc management', () => {
       }
     }, documentTable)
     console.log(data)
-    expect(data.txtData.join('|')).toEqual(expect.stringContaining('ohio'))
+    expect(data.txtData.join('|')).toEqual(expect.stringContaining('minnesota'))
     expect(data.rowCount >= 1).toBeTruthy()
     await page.waitForSelector('#search-bar')
     await page.click('#search-bar')
@@ -165,8 +171,7 @@ xdescribe('doc management', () => {
 
     await page.waitForSelector('form > div > div > input[type="file"]')
     const fileEle = await page.$('form > div > div > input[type="file"]')
-    //   await fileEle.uploadFile('/Users/trungnguyen/Downloads/pdf-sample.pdf')
-    await fileEle.uploadFile('/Users/trungnguyen/Downloads/demo/gre_research_validity_data.pdf')
+    await fileEle.uploadFile(`${filepath}/gre_research_validity_data.pdf`)
     await page.waitForSelector('#project-name')
     await page.click('#project-name')
     await page.keyboard.type(testProject3)
@@ -214,8 +219,7 @@ xdescribe('doc management', () => {
 
     await page.waitForSelector('form > div > div > input[type="file"]')
     const fileEle = await page.$('form > div > div > input[type="file"]')
-    //   await fileEle.uploadFile('/Users/trungnguyen/Downloads/pdf-sample.pdf')
-    await fileEle.uploadFile('/Users/trungnguyen/Downloads/demo/gre_research_validity_data.pdf')
+    await fileEle.uploadFile(`${filepath}/gre_research_validity_data.pdf`)
     await page.waitForSelector('#project-name')
     await page.click('#project-name')
     await page.keyboard.type(testProject3)
@@ -258,8 +262,7 @@ xdescribe('doc management', () => {
 
     await page.waitForSelector('form > div > div > input[type="file"]')
     const fileEle = await page.$('form > div > div > input[type="file"]')
-    //   await fileEle.uploadFile('/Users/trungnguyen/Downloads/pdf-sample.pdf')
-    await fileEle.uploadFile('/Users/trungnguyen/Downloads/demo/gre_research_validity_data.pdf')
+    await fileEle.uploadFile(`${filepath}/gre_research_validity_data.pdf`)
     await page.waitForSelector(uploadGoButton)
     await page.click(uploadGoButton)
     await page.waitForSelector(uploadAlertMessage)
@@ -289,8 +292,7 @@ xdescribe('doc management', () => {
 
     await page.waitForSelector('form > div > div > input[type="file"]')
     const fileEle = await page.$('form > div > div > input[type="file"]')
-    //   await fileEle.uploadFile('/Users/trungnguyen/Downloads/pdf-sample.pdf')
-    await fileEle.uploadFile('/Users/trungnguyen/Downloads/demo/gre_research_validity_data.pdf')
+    await fileEle.uploadFile(`${filepath}/gre_research_validity_data.pdf`)
     await page.waitForSelector('#project-name')
     await page.click('#project-name')
     await page.keyboard.type(testProject)
@@ -547,7 +549,7 @@ xdescribe('doc management', () => {
     await page.waitForSelector('#name > span')
     await page.click('#name > span')
     columnText = await page.evaluate(() => Array.from(document.querySelectorAll('#documentTable > tr:nth-child(1) > td:nth-child(2)'), element => element.textContent.trim()))
-    expect(columnText[0][0].toLowerCase()).toEqual('f')
+    expect(columnText[0][0].toLowerCase()).toEqual('y')
     await page.waitFor(1000)
     await page.waitForSelector('#uploadedByName > span')
     await page.click('#uploadedByName > span')
@@ -567,20 +569,33 @@ xdescribe('doc management', () => {
     await page.waitForSelector('#uploadedDate > span')
     await page.click('#uploadedDate > span')
     columnText = await page.evaluate(() => Array.from(document.querySelectorAll('#documentTable > tr:nth-child(1) > td:nth-child(4)'), element => element.textContent.trim()))
-    expect(columnText[0].toLowerCase()).toEqual('2/18/2019')
+    expect(columnText[0].toLowerCase()).toEqual('2/13/2019')
     await page.waitFor(1000)
   }, jasmineTimeout)
 })
 
-/*const getText = (linkText) => {
+function getText(linkText) {
   linkText = linkText.replace(/\r\n|\r/g, '\n')
-  linkText = linkText.replace(/\ +/g, ' ')
+  linkText = linkText.replace(/\+/g, ' ')
 
   // Replace &nbsp; with a space
   const nbspPattern = new RegExp(String.fromCharCode(160), 'g')
   return linkText.replace(nbspPattern, ' ')
-}*/
+}
 
-/*afterAll(() => {
-  browser.close()
-})*/
+async function findByLink(page, linkString) {
+  const links = await page.$$('a')
+  for (let i = 0; i < links.length; i++) {
+    let valueHandle = await links[i].getProperty('innerText')
+    let linkText = await valueHandle.jsonValue()
+    const text = getText(linkText)
+    if (linkString === text) {
+      return links[i]
+    }
+  }
+  return null
+}
+
+// afterAll(() => {
+//   browser.close()
+// })
