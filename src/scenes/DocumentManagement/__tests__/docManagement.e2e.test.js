@@ -71,32 +71,6 @@ export const docManage = () => {
       await page.waitForNavigation()
     }, jasmineTimeout)
 
-    test('search jurisdiction column', async () => {
-      await page.goto(`${host}/docs`)
-      await page.waitFor(2000)
-      await page.waitForSelector('#search-bar')
-      await page.click('#search-bar')
-      await page.keyboard.type('jurisdiction:minnesota')
-
-      //    free format search
-      const data = await page.evaluate((documentTable) => {
-        //   debugger
-        const rows = Array.from(document.querySelectorAll(documentTable + ' tr'))
-        const tds = Array.from(document.querySelectorAll(documentTable + ' tr td'))
-        return {
-          txtData: tds.map(td => td.textContent.toLowerCase()), rowCount: rows.length
-        }
-      }, documentTable)
-      console.log(data)
-      expect(data.txtData.join('|')).toEqual(expect.stringContaining('minnesota'))
-      expect(data.rowCount >= 1).toBeTruthy()
-      await page.waitForSelector('#search-bar')
-      await page.click('#search-bar')
-      //  await page.keyboard.type(string.fromCharCode())
-      await page.waitFor(5000)
-      //    await browser.close()
-    }, jasmineTimeout)
-
     test('check upload success', async () => {
       console.log('check upload success')
       await page.goto(`${host}/home`)
@@ -256,6 +230,31 @@ export const docManage = () => {
       await page.waitFor(2000)
     }, jasmineTimeout)
 
+    test('search jurisdiction column', async () => {
+      await page.goto(`${host}/docs`)
+      await page.waitFor(2000)
+      await page.waitForSelector('#search-bar')
+      await page.click('#search-bar')
+      await page.keyboard.type('jurisdiction:minnesota')
+
+      //    free format search
+      const data = await page.evaluate((documentTable) => {
+        //   debugger
+        const rows = Array.from(document.querySelectorAll(documentTable + ' tr'))
+        const tds = Array.from(document.querySelectorAll(documentTable + ' tr td'))
+        return {
+          txtData: tds.map(td => td.textContent.toLowerCase()), rowCount: rows.length
+        }
+      }, documentTable)
+      console.log(data)
+      expect(data.txtData.join('|')).toEqual(expect.stringContaining('minnesota'))
+      expect(data.rowCount >= 1).toBeTruthy()
+      await page.waitForSelector('#search-bar')
+      await page.click('#search-bar')
+      //  await page.keyboard.type(string.fromCharCode())
+      await page.waitFor(5000)
+      //    await browser.close()
+    }, jasmineTimeout)
     test('bulk operations', async () => {
       // await page.goto(`${host}/login`);
       // //  await page.goto('http://localhost:5200/login')
@@ -532,7 +531,7 @@ export const docManage = () => {
       await page.waitFor(7000)
       await excelEle.uploadFile(`${filepath}/demo.xlsx`)
       console.log('upload initated')
-      await page.waitFor(120000)
+      await page.waitFor(240000)
       console.log('upload should be completed')
       await page.screenshot({path:'excelupload.png'})
       // check files count
