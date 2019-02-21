@@ -71,68 +71,6 @@ export const docManage = () => {
       await page.waitForNavigation()
     }, jasmineTimeout)
 
-    test('check upload with excel', async () => {
-      await page.goto(`${host}/docs`)
-      await page.waitFor(2000)
-      // click on upload new
-      console.log('after click doc mng')
-      await page.waitForSelector(uploadNewButton)
-      await page.click(uploadNewButton)
-      console.log('after click upload')
-
-      await page.waitForSelector('form > div > div > input[type="file"]')
-      const fileEle = await page.$('form > div > div > input[type="file"]')
-      // wait for excel file
-      await page.waitForSelector('form:nth-child(3) > div > div > input[type="file"]')
-      const excelEle = await page.$('form:nth-child(3) > div > div > input[type="file"]')
-      const files = [
-        `${filepath}/OAC 3701-52-04 eff. 5-3-07.pdf`,
-        `${filepath}/Youngstown Municipal Courtmayors Court Text Messaging.pdf`,
-        `${filepath}/Children and Minors Motor Vehicles Communication.pdf`
-      ]
-      await fileEle.uploadFile(...files)
-      await page.waitFor(10000)
-      await excelEle.uploadFile(`${filepath}/demo.xlsx`)
-      await page.waitFor(10000)
-      await page.screenshot({path:'excelupload.png'})
-      // check files count
-      const myFilesText = await page.evaluate(() => {
-        let allText = []
-        let fileList = document.querySelectorAll('#uploadFileList > div')
-        fileList.forEach(function (row) {
-          const cells = row.childNodes
-          let textList = []
-          cells.forEach(function (cell) {
-            textList.push(cell.textContent)
-          })
-          allText.push(textList.join('|'))
-        })
-        // fileList.forEach(function (row) {
-        //   const cells = row.childNodes
-        //   let textList = [];
-        //   [...cells].forEach(function (cell) {
-        //     textList.push(cell.textContent)
-        //   })
-        //   allText.push(textList.join('|'))
-        // })
-        return allText.join('^')
-      })
-      try {
-        expect(myFilesText.toLowerCase())
-          .toMatch('|picture_as_pdfOAC 3701-52-04 eff. 5-3-07.pdf|Washington, DC (federal district)|DC Code § 34.1452.1|10/1/2002|cancel^|picture_as_pdfYoungstown Municipal Courtmayors Court Text Messaging.pdf|Minnesota (state)|Minn. Stat. Ann. § 144.9501|7/1/2016|cancel^|picture_as_pdfChildren and Minors Motor Vehicles Communication.pdf|Arkansas (state)|Ark. Code R. § 016.06.18-219.000|12/12/2012|cancel'.toLowerCase())
-        //  expect(myFilesText.length).toBeLessThan(10)
-        //  await page.waitForSelector(uploadCloseButton)
-        //  await page.click(uploadCloseButton)
-        //  await page.waitForSelector(uploadCloseConfirm)
-        //  await page.click(uploadCloseConfirm)
-      } catch (e) {
-        console.log(e)
-        throw new Error('test failed')
-      } finally {
-        //    browser.close()
-      }
-    }, jasmineTimeout)
-
     test('search jurisdiction column', async () => {
       await page.goto(`${host}/docs`)
       await page.waitFor(2000)
@@ -571,6 +509,70 @@ export const docManage = () => {
       expect(columnText[0].toLowerCase()).toEqual('2/13/2019')
       await page.waitFor(1000)
     }, jasmineTimeout)
+    test('check upload with excel', async () => {
+      await page.goto(`${host}/docs`)
+      await page.waitFor(2000)
+      // click on upload new
+      console.log('after click doc mng')
+      await page.waitForSelector(uploadNewButton)
+      await page.click(uploadNewButton)
+      console.log('after click upload')
+
+      await page.waitForSelector('form > div > div > input[type="file"]')
+      const fileEle = await page.$('form > div > div > input[type="file"]')
+      // wait for excel file
+      await page.waitForSelector('form:nth-child(3) > div > div > input[type="file"]')
+      const excelEle = await page.$('form:nth-child(3) > div > div > input[type="file"]')
+      const files = [
+        `${filepath}/OAC 3701-52-04 eff. 5-3-07.pdf`,
+        `${filepath}/Youngstown Municipal Courtmayors Court Text Messaging.pdf`,
+        `${filepath}/Children and Minors Motor Vehicles Communication.pdf`
+      ]
+      await fileEle.uploadFile(...files)
+      await page.waitFor(10000)
+      await excelEle.uploadFile(`${filepath}/demo.xlsx`)
+      console.log('upload initated')
+      await page.waitFor(10000)
+      console.log('upload should be completed')
+      await page.screenshot({path:'excelupload.png'})
+      // check files count
+      const myFilesText = await page.evaluate(() => {
+        let allText = []
+        let fileList = document.querySelectorAll('#uploadFileList > div')
+        fileList.forEach(function (row) {
+          const cells = row.childNodes
+          let textList = []
+          cells.forEach(function (cell) {
+            textList.push(cell.textContent)
+          })
+          allText.push(textList.join('|'))
+        })
+        // fileList.forEach(function (row) {
+        //   const cells = row.childNodes
+        //   let textList = [];
+        //   [...cells].forEach(function (cell) {
+        //     textList.push(cell.textContent)
+        //   })
+        //   allText.push(textList.join('|'))
+        // })
+        return allText.join('^')
+      })
+      try {
+        expect(myFilesText.toLowerCase())
+          .toMatch('|picture_as_pdfOAC 3701-52-04 eff. 5-3-07.pdf|Washington, DC (federal district)|DC Code § 34.1452.1|10/1/2002|cancel^|picture_as_pdfYoungstown Municipal Courtmayors Court Text Messaging.pdf|Minnesota (state)|Minn. Stat. Ann. § 144.9501|7/1/2016|cancel^|picture_as_pdfChildren and Minors Motor Vehicles Communication.pdf|Arkansas (state)|Ark. Code R. § 016.06.18-219.000|12/12/2012|cancel'.toLowerCase())
+        //  expect(myFilesText.length).toBeLessThan(10)
+        await page.waitForSelector(uploadCloseButton)
+        await page.click(uploadCloseButton)
+        await page.waitForSelector(uploadCloseConfirm)
+        await page.click(uploadCloseConfirm)
+      } catch (e) {
+        console.log(e)
+        throw new Error('test failed')
+      } finally {
+        //    browser.close()
+      }
+    }, jasmineTimeout)
+
   })
 }
 
