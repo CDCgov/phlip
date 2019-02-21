@@ -10,7 +10,7 @@ import Upload from './scenes/Upload'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import Divider from '@material-ui/core/Divider'
 import ProJurSearch from './components/BulkProJurSearch'
-import { FlexGrid, CircularLoader, ApiErrorAlert } from 'components'
+import { FlexGrid, CircularLoader, ApiErrorAlert, PageLoader } from 'components'
 import actions, { projectAutocomplete, jurisdictionAutocomplete } from './actions'
 import ConfirmDocList from './components/ConfirmDocList'
 
@@ -62,7 +62,8 @@ export class DocumentManagement extends Component {
      * Current field by which to sort the table
      */
     sortBy: PropTypes.string,
-    sortDirection: PropTypes.string
+    sortDirection: PropTypes.string,
+    getDocumentsInProgress: PropTypes.bool
   }
 
   constructor(props, context) {
@@ -276,24 +277,28 @@ export class DocumentManagement extends Component {
             }}>
             <SearchBox />
           </PageHeader>
-          <FlexGrid container flex raised>
-            <DocList
-              documents={this.props.documents}
-              docCount={this.props.docCount}
-              onChangePage={this.props.actions.handlePageChange}
-              onChangeRows={this.props.actions.handleRowsChange}
-              onSelectAllFiles={this.props.actions.handleSelectAll}
-              onSelectOneFile={this.props.actions.handleSelectOneFile}
-              allSelected={this.props.allSelected}
-              page={this.props.page}
-              rowsPerPage={this.props.rowsPerPage}
-              onBulkAction={this.handleBulkAction}
-              allowDropdown={this.props.checkedCount > 0}
-              sortBy={this.props.sortBy}
-              sortDirection={this.props.sortDirection}
-              handleSortRequest={this.props.actions.handleSortRequest}
-            />
-          </FlexGrid>
+          {this.props.getDocumentsInProgress === true?
+            <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
+            :<>
+              <FlexGrid container flex raised>
+                <DocList
+                  documents={this.props.documents}
+                  docCount={this.props.docCount}
+                  onChangePage={this.props.actions.handlePageChange}
+                  onChangeRows={this.props.actions.handleRowsChange}
+                  onSelectAllFiles={this.props.actions.handleSelectAll}
+                  onSelectOneFile={this.props.actions.handleSelectOneFile}
+                  allSelected={this.props.allSelected}
+                  page={this.props.page}
+                  rowsPerPage={this.props.rowsPerPage}
+                  onBulkAction={this.handleBulkAction}
+                  allowDropdown={this.props.checkedCount > 0}
+                  sortBy={this.props.sortBy}
+                  sortDirection={this.props.sortDirection}
+                  handleSortRequest={this.props.actions.handleSortRequest}
+                />
+              </FlexGrid>
+             </>}
           <Modal onClose={this.onCloseModal} open={this.state.showModal} maxWidth="md" hideOverflow={false} id="bulkConfirmBox" >
             <ModalTitle title={this.state.modalTitle} />
             <Divider />
@@ -356,7 +361,8 @@ const mapStateToProps = state => {
     apiErrorOpen: docManage.main.apiErrorOpen || false,
     bulkOperationInProgress: docManage.main.bulkOperationInProgress || false,
     sortBy: state.scenes.docManage.main.sortBy,
-    sortDirection: state.scenes.docManage.main.sortDirection
+    sortDirection: state.scenes.docManage.main.sortDirection,
+    getDocumentsInProgress: docManage.main.getDocumentsInProgress || false
   }
 }
 
