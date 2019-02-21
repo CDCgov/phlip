@@ -18,7 +18,6 @@ lint:
   tags:
     - phlip2-dev
   only:
-    - staging
     - development
     - test
   artifacts:
@@ -36,7 +35,6 @@ test:
   tags:
     - phlip2-dev
   only:
-    - staging
     - development
     - test
   dependencies:
