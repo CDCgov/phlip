@@ -50,6 +50,7 @@ build and deploy on staging:
   before_script:
     - if pm2 list | grep fe; then pm2 stop fe; else echo "no fe process running"; fi
   script:
+    - npm install
     - echo "APP_DOC_MANAGE_API=http://0.0.0.0:3000" > .env
     - echo "APP_API_URL=http://0.0.0.0:8000" >> .env
     - echo "HEADLESS=1" >> .env
@@ -75,9 +76,8 @@ build and deploy on staging:
   artifacts:
     paths:
       - dist/
+      - node_modules/
     expire_in: 1 hour
-  dependencies:
-    - lint
   environment:
     name: Internal PHLIP2 Dev
     url: http://lvscent7064.lab.local
@@ -91,7 +91,6 @@ run e2e tests staging:
   only:
     - staging
   dependencies:
-    - lint
     - build and deploy on staging
   environment:
     name: Internal PHLIP2 Dev
