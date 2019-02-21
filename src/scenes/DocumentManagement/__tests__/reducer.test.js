@@ -106,7 +106,8 @@ const initial = {
     text: ''
   },
   sortBy: 'uploadedDate',
-  sortDirection: 'desc'
+  sortDirection: 'desc',
+  getDocumentsInProgress: false
 }
 
 const getState = (other = {}) => ({
@@ -119,6 +120,16 @@ describe('Document Management reducer', () => {
     expect(reducer(undefined, {})).toEqual(initial)
   })
 
+  describe('GET_DOCUMENTS_REQUEST', () => {
+    test('should update getDocumentsInProgress flag', () =>{
+      const action = {
+        type: types.GET_DOCUMENTS_REQUEST
+      }
+      const currentState = getState()
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.getDocumentsInProgress).toBeTruthy()
+    })
+  })
   describe('GET_DOCUMENTS_SUCCESS', () => {
     test('should normalize action.payload into the documents object in state', () => {
       const action = {

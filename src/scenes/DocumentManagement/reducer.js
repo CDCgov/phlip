@@ -23,7 +23,8 @@ const INITIAL_STATE = {
     text: ''
   },
   sortBy: 'uploadedDate',
-  sortDirection: 'desc'
+  sortDirection: 'desc',
+  getDocumentsInProgress: false
 }
 
 const mergeName = docObj => ({
@@ -118,6 +119,12 @@ const sortAndSlice = (arr, page, rowsPerPage,sortBy,sortDirection) => {
 export const docManagementReducer = (state = INITIAL_STATE, action) => {
   let rows = parseInt(state.rowsPerPage)
   switch (action.type) {
+    case types.GET_DOCUMENTS_REQUEST:
+      return {
+        ...state,
+        getDocumentsInProgress: true
+      }
+
     case types.GET_DOCUMENTS_SUCCESS:
       let docs = action.payload.map(mergeName)
       let obj = arrayToObject(docs, '_id')
@@ -129,7 +136,8 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           allIds: Object.keys(obj),
           visible: sortAndSlice(Object.values(obj), 0, state.rowsPerPage,state.sortBy,state.sortDirection),
           checked: state.documents.checked
-        }
+        },
+        getDocumentsInProgress: false
       }
 
     case types.ON_PAGE_CHANGE:
