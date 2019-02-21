@@ -35,37 +35,23 @@ export const addProject = () => {
     }, 600000)
 
     test('add project firstDoc if needed', async () => {
-      await page.goto(`${host}/home`)
+      //await page.goto(`${host}/home`)
       //    await page.waitForNavigation()
       await page.waitForSelector(addProjectButton)
       await page.click(addProjectButton)
-      //  await page.waitForNavigation()
+      await page.waitForNavigation()
+      await page.waitFor(1000)
 
       await page.waitForSelector('body > div > div > form', { visible: true })
-      const name = await page.$('input[name="name"]')
-      await name.click()
-      await page.type('input[name="name"]', `FirstDoc`)
+      const name2 = await page.$('input[name="name"]')
+      await name2.click()
+      await name2.type(`FirstDoc`)
       const button = '#modal-action-1'
       await page.waitForSelector(button)
       await page.click(button)
-      await page.waitForSelector(errorMsg)
-      try {
-        let errorMessageText = await page.$eval(errorMsg, el => el.textContent)
-        console.log('actual message: ' + errorMessageText)
-        if (errorMessageText === 'There is already a project with this name.') {
-          await page.waitForSelector('#modal-action-0')
-          await page.click('#modal-action-0')
-          await page.waitFor(1000)
-        }
-      } catch (e) {
-        // await browser.close()
-      } finally {
-        // await browser.close()
-      }
     }, 600000)
 
     test('add project zero dawn if needed', async () => {
-      await page.goto(`${host}/home`)
       // await page.waitForNavigation()
       // check if project already exists
       await page.waitForSelector(addProjectButton)
@@ -73,26 +59,12 @@ export const addProject = () => {
       //  await page.waitForNavigation()
 
       await page.waitForSelector('body > div > div > form', { visible: true })
-      const name = await page.$('input[name="name"]')
-      await name.click()
-      await page.type('input[name="name"]', `Zero dawn`)
+      const name3 = await page.$('input[name="name"]')
+      await name3.click()
+      await name3.type(`Zero dawn`)
       const button = '#modal-action-1'
       await page.waitForSelector(button)
       await page.click(button)
-      await page.waitForSelector(errorMsg)
-      try {
-        let errorMessageText = await page.$eval(errorMsg, el => el.textContent)
-        console.log('actual message: ' + errorMessageText)
-        if (errorMessageText === 'There is already a project with this name.') {
-          await page.waitForSelector('#modal-action-0')
-          await page.click('#modal-action-0')
-          await page.waitFor(1000)
-        }
-      } catch (e) {
-        // await browser.close()
-      } finally {
-        // await browser.close()
-      }
     }, 600000)
   })
 }
