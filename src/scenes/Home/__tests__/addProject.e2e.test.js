@@ -39,12 +39,12 @@ export const addProject = () => {
       //    await page.waitForNavigation()
       await page.waitForSelector(addProjectButton)
       await page.click(addProjectButton)
-      await page.waitForNavigation()
+      //  await page.waitForNavigation()
 
       await page.waitForSelector('body > div > div > form', { visible: true })
       const name = await page.$('input[name="name"]')
       await name.click()
-      await page.type('input[name="name"]', `First Doc`)
+      await page.type('input[name="name"]', `FirstDoc`)
       const button = '#modal-action-1'
       await page.waitForSelector(button)
       await page.click(button)
@@ -64,13 +64,13 @@ export const addProject = () => {
       }
     }, 600000)
 
-    test('add project zero dawn if eeded', async () => {
+    test('add project zero dawn if needed', async () => {
       await page.goto(`${host}/home`)
       // await page.waitForNavigation()
       // check if project already exists
       await page.waitForSelector(addProjectButton)
       await page.click(addProjectButton)
-      await page.waitForNavigation()
+      //  await page.waitForNavigation()
 
       await page.waitForSelector('body > div > div > form', { visible: true })
       const name = await page.$('input[name="name"]')
