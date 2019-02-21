@@ -27,7 +27,7 @@ describe('DocumentList', () => {
   })
 
   test('should show PDFViewer when docSelected is true', () => {
-    const wrapper = shallow(<DocumentList {...props} docSelected={true} />)
+    const wrapper = shallow(<DocumentList {...props} docSelected />)
     expect(wrapper.find('PDFViewer')).toHaveLength(1)
   })
 
@@ -48,5 +48,45 @@ describe('DocumentList', () => {
     const wrapper = shallow(<DocumentList {...props} answerSelected={4} />)
     wrapper.instance().onSaveAnnotation({ text: 'test annotation' })
     expect(spy).toHaveBeenCalled()
+  })
+
+  describe('Annotation banner', () => {
+    test('text should be "Annotation Mode: Select a document to annotate." when no document is open', () => {
+      const wrapper = shallow(<DocumentList {...props} answerSelected={4} />)
+      const text = wrapper.childAt(2).childAt(0).childAt(0).childAt(0).text()
+      expect(text).toEqual('Annotation Mode: Select a document to annotate.')
+    })
+
+    test('text should be "Annotation Mode: Highlight the desired text and confirm." when a document with text selected is open', () => {
+      const wrapper = shallow(<DocumentList {...props} answerSelected={4} docSelected />)
+      const text = wrapper.childAt(2).childAt(0).childAt(0).childAt(0).text()
+      expect(text).toEqual('Annotation Mode: Highlight the desired text and confirm.')
+    })
+
+    test('text should be "NOTE: This document does not have text selection. You will not be able to annotate." when a document with no text selection is open', () => {
+      const wrapper = shallow(<DocumentList {...props} answerSelected={4} docSelected />)
+      wrapper.setState({ noTextContent: 0 })
+      const text = wrapper.childAt(2).childAt(0).childAt(0).childAt(0).text()
+      expect(text).toEqual('NOTE: This document does not have text selection. You will not be able to annotate.')
+    })
+
+    describe('document open with some text selection', () => {
+      const wrapper = shallow(<DocumentList {...props} answerSelected={4} docSelected />)
+      wrapper.setState({ noTextContent: 1 })
+
+      test('there should be two text children', () => {
+        expect(wrapper.childAt(2).childAt(0).children()).toHaveLength(2)
+      })
+
+      test('first text child should be "Annotation Mode: Highlight the desired text and confirm."', () => {
+        const text = wrapper.childAt(2).childAt(0).childAt(0).childAt(0).text()
+        expect(text).toEqual('Annotation Mode: Highlight the desired text and confirm.')
+      })
+
+      test('second text child should be "Some pages of this document do not have text selection. You will not be able to annotate those pages."', () => {
+        const text = wrapper.childAt(2).childAt(0).childAt(1).childAt(0).text()
+        expect(text).toEqual('NOTE: Some pages of this document do not have text selection. You will not be able to annotate those pages.')
+      })
+    })
   })
 })

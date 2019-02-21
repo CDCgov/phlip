@@ -21,6 +21,7 @@ lint:
     - staging
     - development
     - test
+    - staging
   artifacts:
     paths:
       - node_modules/
@@ -39,6 +40,7 @@ test:
     - staging
     - development
     - test
+    - staging
   dependencies:
     - lint
   environment:
