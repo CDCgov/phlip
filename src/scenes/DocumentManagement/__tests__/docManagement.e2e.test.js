@@ -72,7 +72,6 @@ export const docManage = () => {
     }, jasmineTimeout)
 
     test('check upload success', async () => {
-      console.log('check upload success')
       await page.goto(`${host}/home`)
       // click on document management button
       await page.waitForSelector(documentManagementBtn)
@@ -94,16 +93,17 @@ export const docManage = () => {
       await page.keyboard.type('georgia (state)')
       await page.waitForSelector('#react-autowhatever-1--item-0')
       await page.click('#react-autowhatever-1--item-0')
-
       await page.waitForSelector(uploadGoButton)
       await page.click(uploadGoButton)
       await page.waitFor(1000)
       // verify upload success
       // check if file uploaded
+      await page.screenshot({path:'uploaded confirmation'})
+      console.log('check upload success')
       await page.waitForSelector('#search-bar')
       await page.click('#search-bar')
       await page.keyboard.type('firstdoc')
-      await page.waitFor(500)
+      await page.waitFor(1000)
       data = await page.evaluate((documentTable) => {
         //   debugger
         const rows = Array.from(document.querySelectorAll(documentTable + ' tr'))
@@ -120,7 +120,7 @@ export const docManage = () => {
     test('check duplicate upload', async () => {
       console.log('check duplicate upload')
       await page.goto(`${host}/home`)
-      await page.waitFor(500)
+      await page.waitFor(1000)
       // await page.waitForNavigation()
       // click on document management button
       await page.waitForSelector(documentManagementBtn)
@@ -148,6 +148,7 @@ export const docManage = () => {
       await page.waitFor(1000)
       await page.waitForSelector(uploadAlertMessage)
       await page.waitFor(1000)
+      await page.screenshot({path:'duplicate confirm screen'})
       try {
         let dupMessageText = await page.$eval(uploadAlertMessage, el => el.textContent)
         console.log('actual message: ' + dupMessageText)
@@ -179,6 +180,7 @@ export const docManage = () => {
       await page.click(uploadGoButton)
       await page.waitForSelector(uploadAlertMessage)
       await page.waitFor(1000)
+      await page.screenshot({path:'invalid project confirm screen'})
       try {
         let missingProjectMsgText = await page.$eval(uploadAlertMessage, el => el.textContent)
         console.log('actual message: ' + missingProjectMsgText)
@@ -213,6 +215,8 @@ export const docManage = () => {
       await page.waitForSelector(uploadGoButton)
       await page.click(uploadGoButton)
       await page.waitForSelector(uploadAlertMessage)
+      await page.waitFor(1000)
+      await page.screenshot({path:'invalid jurisdiction confirm screen'})
       try {
         let missingJurisMsgText = await page.$eval(uploadAlertMessage, el => el.textContent)
         console.log('actual message: ' + missingJurisMsgText)
@@ -235,7 +239,7 @@ export const docManage = () => {
       await page.waitFor(2000)
       await page.waitForSelector('#search-bar')
       await page.click('#search-bar')
-      await page.keyboard.type('jurisdiction:minnesota')
+      await page.keyboard.type('jurisdiction:georgia')
 
       //    free format search
       const data = await page.evaluate((documentTable) => {
@@ -530,9 +534,9 @@ export const docManage = () => {
       await fileEle.uploadFile(...files)
       await page.waitFor(7000)
       await excelEle.uploadFile(`${filepath}/demo.xlsx`)
-      console.log('upload initated')
-      await page.waitFor(240000)
-      console.log('upload should be completed')
+      console.log('upload initated at:'+ new Date().toLocaleTimeString())
+      await page.waitFor(360000)
+      console.log('upload should be completed at:' + new Date().toLocaleTimeString())
       await page.screenshot({path:'excelupload.png'})
       // check files count
       const myFilesText = await page.evaluate(() => {
