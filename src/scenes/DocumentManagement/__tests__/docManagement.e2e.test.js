@@ -346,7 +346,7 @@ export const docManage = () => {
       await page.waitForSelector('#name > span')
       await page.click('#name > span')
       columnText = await page.evaluate(() => Array.from(document.querySelectorAll('#documentTable > tr:nth-child(1) > td:nth-child(2)'), element => element.textContent.trim()))
-      expect(columnText[0][0].toLowerCase()).toEqual('y')
+      expect(columnText[0][0].toLowerCase()).toEqual('g')
       await page.waitFor(1000)
       await page.waitForSelector('#uploadedByName > span')
       await page.click('#uploadedByName > span')
