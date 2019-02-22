@@ -1,7 +1,3 @@
-variables:
-  SUB_BUILD: $CI_PIPELINE_ID
-  BRANCH: $CI_COMMIT_REF_NAME
-
 stages:
   - lint
   - unit test
@@ -59,13 +55,16 @@ build and deploy on staging:
     - sudo /usr/local/bin/docker-compose down
     - if sudo docker ps -a | grep esquire-backend_esquire-backend_1; then sudo docker rm esquire-backend_esquire-backend_1; else echo "no BE container"; fi
     - if sudo docker ps -a | grep mssqldev; then sudo docker rm mssqldev; else echo "no sql container"; fi
-    - sudo /usr/local/bin/docker-compose up --build -d
+    - sudo /usr/local/bin/docker-compose up -d
     - sleep 60
     - cd ../esquire-doc-management
     - sudo /usr/local/bin/docker-compose down
     - if sudo docker ps -a | grep doc-manage; then sudo docker rm doc-manage; else echo "no doc-manage container"; fi
     - if sudo docker ps -a | grep doc-manage-mongo; then sudo docker rm doc-manage-mongo; else echo "no mongo container"; fi
-    - sudo /usr/local/bin/docker-compose up --build -d
+    - sudo /usr/local/bin/docker-compose up -d
+    - sudo mkdir tmp/
+    - sudo chmod 777 tmp/
+    - sudo chown gitlab-runner:gitlab-runner tmp/
     - /home/gitlab-runner/scripts-phlip/add_jurisdictions.sh
   tags:
     - phlip2-dev
@@ -83,7 +82,7 @@ build and deploy on staging:
 run e2e tests staging:
   stage: e2e test
   script:
-    - sudo npm run test:e2e
+    - npm run test:e2e
   tags:
     - phlip2-dev
   only:
