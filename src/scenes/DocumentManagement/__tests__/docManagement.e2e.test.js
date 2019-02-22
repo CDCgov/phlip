@@ -72,6 +72,7 @@ export const docManage = () => {
     }, jasmineTimeout)
 
     test('check upload with excel', async () => {
+      console.log('upload with excel started at: ', new Date().toLocaleTimeString())
       await page.goto(`${host}/docs`)
       await page.waitFor(2000)
       // click on upload new
@@ -145,6 +146,7 @@ export const docManage = () => {
       }
     }, jasmineTimeout)
     test('check upload success', async () => {
+      console.log('check upload success started at: ', new Date().toLocaleTimeString())
       await page.goto(`${host}/home`)
       // click on document management button
       await page.waitForSelector(documentManagementBtn)
@@ -191,7 +193,7 @@ export const docManage = () => {
     }, jasmineTimeout)
 
     test('check duplicate upload', async () => {
-      console.log('check duplicate upload')
+      console.log('check duplicate upload started at: ', new Date().toLocaleTimeString())
       await page.goto(`${host}/home`)
       await page.waitFor(1000)
       // await page.waitForNavigation()
@@ -334,6 +336,7 @@ export const docManage = () => {
       //    await browser.close()
     }, jasmineTimeout)
     test('bulk operations', async () => {
+      console.log('bulk operation started at:', new Date().toLocaleTimeString())
       // await page.goto(`${host}/login`);
       // //  await page.goto('http://localhost:5200/login')
       // //  await page.waitForNavigation()
