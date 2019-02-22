@@ -94,9 +94,16 @@ export const docManage = () => {
       await page.waitFor(7000)
       await excelEle.uploadFile(`${filepath}/demo.xlsx`)
       console.log('upload initated at:'+ new Date().toLocaleTimeString())
-      await page.waitFor(120000)
+      await page.waitFor(60000)
       console.log('upload should be completed at:' + new Date().toLocaleTimeString())
       await page.screenshot({path:'exceluploadinfo.png'})
+      // add a valid project before upload
+      await page.waitForSelector('#project-name')
+      await page.click('#project-name')
+      await page.keyboard.type(testProject)
+      await page.waitFor(1000)
+      await page.waitForSelector('#react-autowhatever-1--item-0')
+      await page.click('#react-autowhatever-1--item-0')
       // check files count
       const myFilesText = await page.evaluate(() => {
         let allText = []
@@ -339,7 +346,7 @@ export const docManage = () => {
       // click on document management button
       await page.waitForSelector(documentManagementBtn)
       await page.click(documentManagementBtn)
-
+      await page.screenshot({path:'current docs.png'})
       //upload 3 documents for testing
       //click on upload new
       await page.waitForSelector(uploadNewButton)
