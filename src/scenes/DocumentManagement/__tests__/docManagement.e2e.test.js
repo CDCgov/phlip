@@ -62,15 +62,7 @@ let data = null
 // })
 export const docManage = () => {
   describe('doc management', () => {
-    test('login', async () => {
-      await page.goto(`${host}/login`)
-      await page.waitForSelector(email_selector)
-      await page.click(email_selector)
-      await page.keyboard.type(admin.email)
-      await page.click('button[type=submit]')
-      await page.waitForNavigation()
-    }, jasmineTimeout)
-
+    
     test('check upload with excel', async () => {
       console.log('upload with excel started at: ', new Date().toLocaleTimeString())
       await page.goto(`${host}/docs`)
