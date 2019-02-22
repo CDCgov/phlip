@@ -67,6 +67,22 @@ export const addProject = () => {
       await page.waitForSelector(button)
       await page.click(button)
     }, 600000)
+
+    test('add project delete for bulk operation test', async () => {
+      // await page.waitForNavigation()
+      // check if project already exists
+      await page.waitForSelector(addProjectButton)
+      await page.click(addProjectButton)
+      //  await page.waitForNavigation()
+
+      await page.waitForSelector('body > div > div > form', { visible: true })
+      const name3 = await page.$('input[name="name"]')
+      await name3.click()
+      await name3.type('delete')
+      const button = '#modal-action-1'
+      await page.waitForSelector(button)
+      await page.click(button)
+    }, 600000)
   })
 }
 
