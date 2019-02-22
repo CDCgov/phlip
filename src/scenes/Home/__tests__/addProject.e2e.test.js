@@ -49,6 +49,7 @@ export const addProject = () => {
       const button = '#modal-action-1'
       await page.waitForSelector(button)
       await page.click(button)
+      await page.waitFor(2000)
     }, 600000)
 
     test('add project zero dawn if needed', async () => {
