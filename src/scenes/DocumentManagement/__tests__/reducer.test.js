@@ -554,6 +554,64 @@ describe('Document Management reducer', () => {
       const updatedState = reducer(currentState, action)
       expect(updatedState.documents.visible).toEqual(['4', '5'])
     })
+    test('should handle if only "from" date entered',() => {
+      const action = {
+        type: searchTypes.SEARCH_VALUE_CHANGE,
+        value: 'uploadedDate: ["GE*10/10/2010"]',
+        form: {
+          uploadedDate1: '10/10/2010',
+          project: {},
+          jurisdiction: {}
+        }
+      }
+      const currentState = getState({documents: mockDocuments})
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.documents.visible).toEqual(['4', '1', '6', '7'])
+    })
+    test('should handle if only to date entered', () => {
+      const action = {
+        type: searchTypes.SEARCH_VALUE_CHANGE,
+        value: 'uploadedDate: ["LE*10/10/2010"]',
+        form: {
+          uploadedDate2: '10/10/2010',
+          project: {},
+          jurisdiction: {}
+        }
+      }
+      const currentState = getState({documents: mockDocuments})
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.documents.visible).toEqual(['7', '2','5','3'])
+    })
+    test('should handle if both date entered', ()=> {
+      const action = {
+        type: searchTypes.SEARCH_VALUE_CHANGE,
+        value: 'uploadedDate: ["10/10/2010","10/10/2010"]',
+        form: {
+          uploadedDate1: '10/10/2010',
+          uploadedDate2: '10/10/2010',
+          project: {},
+          jurisdiction: {}
+        }
+      }
+      const currentState = getState({documents: mockDocuments})
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.documents.visible).toEqual(['7'])
+    })
+    test('should handle if "from" date greater than "to" date entered', ()=> {
+      const action = {
+        type: searchTypes.SEARCH_VALUE_CHANGE,
+        value: 'uploadedDate: ["10/10/2015","10/10/2010"]',
+        form: {
+          uploadedDate1: '10/10/2015',
+          uploadedDate2: '10/10/2010',
+          project: {},
+          jurisdiction: {}
+        }
+      }
+      const currentState = getState({documents: mockDocuments})
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.documents.visible).toEqual(['6','7'])
+    })
   })
 
   describe('FLUSH_STATE', () => {
