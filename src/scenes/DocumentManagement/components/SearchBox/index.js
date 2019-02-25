@@ -126,7 +126,22 @@ export class SearchBox extends Component {
     if (this.props.form.uploadedDate1 && this.props.form.uploadedDate2) {
       let dBegin = moment.utc(this.props.form.uploadedDate1).local().format('MM/DD/YYYY')
       let dEnd = moment.utc(this.props.form.uploadedDate2).local().format('MM/DD/YYYY')
+      // check if dates in valid order:  dBegin should be older than dEnd
+      if (dBegin > dEnd) {
+        const tmpDate = dBegin
+        dBegin = dEnd
+        dEnd = tmpDate
+      }
       let p= `["${dBegin}","${dEnd}"]`
+      searchTerms.push(`uploadedDate:${p}`)
+    } else if (this.props.form.uploadedDate1 && this.props.form.uploadedDate2 === '') { // user entered only date 1
+      let dBegin = moment.utc(this.props.form.uploadedDate1).local().format('MM/DD/YYYY')
+      let p= `["GE*${dBegin}"]`
+      searchTerms.push(`uploadedDate:${p}`)
+
+    } else if (this.props.form.uploadedDate1 === '' && this.props.form.uploadedDate2) { // user only entered date 2
+      let dEnd = moment.utc(this.props.form.uploadedDate2).local().format('MM/DD/YYYY')
+      let p= `["LE*${dEnd}"]`
       searchTerms.push(`uploadedDate:${p}`)
     }
 
