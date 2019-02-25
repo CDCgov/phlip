@@ -62,16 +62,9 @@ let data = null
 // })
 export const docManage = () => {
   describe('doc management', () => {
-    test('login', async () => {
-      await page.goto(`${host}/login`)
-      await page.waitForSelector(email_selector)
-      await page.click(email_selector)
-      await page.keyboard.type(admin.email)
-      await page.click('button[type=submit]')
-      await page.waitForNavigation()
-    }, jasmineTimeout)
 
     test('check upload with excel', async () => {
+      console.log('upload with excel started at: ', new Date().toLocaleTimeString())
       await page.goto(`${host}/docs`)
       await page.waitFor(2000)
       // click on upload new
@@ -91,11 +84,19 @@ export const docManage = () => {
         `${filepath}/Children and Minors Motor Vehicles Communication.pdf`
       ]
       await fileEle.uploadFile(...files)
-      await page.waitFor(10000)
+      await page.waitFor(7000)
       await excelEle.uploadFile(`${filepath}/demo.xlsx`)
-      console.log(`${filepath}/demo.xlsx`)
-      await page.waitFor(15000)
-      await page.screenshot({path:'excelUPload.png'})
+      console.log('upload initated at:'+ new Date().toLocaleTimeString())
+      await page.waitFor(60000)
+      console.log('upload should be completed at:' + new Date().toLocaleTimeString())
+      await page.screenshot({path:'exceluploadinfo.png'})
+      // add a valid project before upload
+      await page.waitForSelector('#project-name')
+      await page.click('#project-name')
+      await page.keyboard.type(testProject)
+      await page.waitFor(1000)
+      await page.waitForSelector('#react-autowhatever-1--item-0')
+      await page.click('#react-autowhatever-1--item-0')
       // check files count
       const myFilesText = await page.evaluate(() => {
         let allText = []
@@ -116,17 +117,19 @@ export const docManage = () => {
         //   })
         //   allText.push(textList.join('|'))
         // })
-        console.log(allText.join('^'))
         return allText.join('^')
       })
       try {
         expect(myFilesText.toLowerCase())
           .toMatch('|picture_as_pdfOAC 3701-52-04 eff. 5-3-07.pdf|Washington, DC (federal district)|DC Code § 34.1452.1|10/1/2002|cancel^|picture_as_pdfYoungstown Municipal Courtmayors Court Text Messaging.pdf|Minnesota (state)|Minn. Stat. Ann. § 144.9501|7/1/2016|cancel^|picture_as_pdfChildren and Minors Motor Vehicles Communication.pdf|Arkansas (state)|Ark. Code R. § 016.06.18-219.000|12/12/2012|cancel'.toLowerCase())
-        //  expect(myFilesText.length).toBeLessThan(10)
-        await page.waitForSelector(uploadCloseButton)
-        await page.click(uploadCloseButton)
-        await page.waitForSelector(uploadCloseConfirm)
-        await page.click(uploadCloseConfirm)
+        await page.waitForSelector(uploadGoButton)
+        await page.click(uploadGoButton)
+        await page.waitFor(60000)
+        // await page.waitForSelector(uploadCloseButton)
+        // await page.click(uploadCloseButton)
+        // await page.waitForSelector(uploadCloseConfirm)
+        // await page.click(uploadCloseConfirm)
+        await page.screenshot({path:'exceluploadsuccess.png'})
       } catch (e) {
         console.log(e)
         throw new Error('test failed')
@@ -134,35 +137,8 @@ export const docManage = () => {
         //    browser.close()
       }
     }, jasmineTimeout)
-
-    test('search jurisdiction column', async () => {
-      await page.goto(`${host}/docs`)
-      await page.waitFor(2000)
-      await page.waitForSelector('#search-bar')
-      await page.click('#search-bar')
-      await page.keyboard.type('jurisdiction:minnesota')
-
-      //    free format search
-      const data = await page.evaluate((documentTable) => {
-        //   debugger
-        const rows = Array.from(document.querySelectorAll(documentTable + ' tr'))
-        const tds = Array.from(document.querySelectorAll(documentTable + ' tr td'))
-        return {
-          txtData: tds.map(td => td.textContent.toLowerCase()), rowCount: rows.length
-        }
-      }, documentTable)
-      console.log(data)
-      expect(data.txtData.join('|')).toEqual(expect.stringContaining('minnesota'))
-      expect(data.rowCount >= 1).toBeTruthy()
-      await page.waitForSelector('#search-bar')
-      await page.click('#search-bar')
-      //  await page.keyboard.type(string.fromCharCode())
-      await page.waitFor(5000)
-      //    await browser.close()
-    }, jasmineTimeout)
-
     test('check upload success', async () => {
-      console.log('check upload success')
+      console.log('check upload success started at: ', new Date().toLocaleTimeString())
       await page.goto(`${host}/home`)
       // click on document management button
       await page.waitForSelector(documentManagementBtn)
@@ -184,16 +160,17 @@ export const docManage = () => {
       await page.keyboard.type('georgia (state)')
       await page.waitForSelector('#react-autowhatever-1--item-0')
       await page.click('#react-autowhatever-1--item-0')
-
       await page.waitForSelector(uploadGoButton)
       await page.click(uploadGoButton)
       await page.waitFor(1000)
       // verify upload success
       // check if file uploaded
+      await page.screenshot({path:'uploaded confirmation.png'})
+      console.log('check upload success')
       await page.waitForSelector('#search-bar')
       await page.click('#search-bar')
       await page.keyboard.type('firstdoc')
-      await page.waitFor(500)
+      await page.waitFor(1000)
       data = await page.evaluate((documentTable) => {
         //   debugger
         const rows = Array.from(document.querySelectorAll(documentTable + ' tr'))
@@ -208,9 +185,9 @@ export const docManage = () => {
     }, jasmineTimeout)
 
     test('check duplicate upload', async () => {
-      console.log('check duplicate upload')
+      console.log('check duplicate upload started at: ', new Date().toLocaleTimeString())
       await page.goto(`${host}/home`)
-      await page.waitFor(500)
+      await page.waitFor(1000)
       // await page.waitForNavigation()
       // click on document management button
       await page.waitForSelector(documentManagementBtn)
@@ -238,6 +215,7 @@ export const docManage = () => {
       await page.waitFor(1000)
       await page.waitForSelector(uploadAlertMessage)
       await page.waitFor(1000)
+      await page.screenshot({path:'duplicate confirm screen.png'})
       try {
         let dupMessageText = await page.$eval(uploadAlertMessage, el => el.textContent)
         console.log('actual message: ' + dupMessageText)
@@ -269,6 +247,7 @@ export const docManage = () => {
       await page.click(uploadGoButton)
       await page.waitForSelector(uploadAlertMessage)
       await page.waitFor(1000)
+      await page.screenshot({path:'invalid project confirm screen.png'})
       try {
         let missingProjectMsgText = await page.$eval(uploadAlertMessage, el => el.textContent)
         console.log('actual message: ' + missingProjectMsgText)
@@ -303,6 +282,8 @@ export const docManage = () => {
       await page.waitForSelector(uploadGoButton)
       await page.click(uploadGoButton)
       await page.waitForSelector(uploadAlertMessage)
+      await page.waitFor(1000)
+      await page.screenshot({path:'invalid jurisdiction confirm screen.png'})
       try {
         let missingJurisMsgText = await page.$eval(uploadAlertMessage, el => el.textContent)
         console.log('actual message: ' + missingJurisMsgText)
@@ -320,7 +301,68 @@ export const docManage = () => {
       await page.waitFor(2000)
     }, jasmineTimeout)
 
+    test('search jurisdiction column', async () => {
+      await page.goto(`${host}/docs`)
+      await page.waitFor(2000)
+      await page.waitForSelector('#search-bar')
+      await page.click('#search-bar')
+      await page.keyboard.type('jurisdiction:minnesota')
+
+      //    free format search
+      const data = await page.evaluate((documentTable) => {
+        //   debugger
+        const rows = Array.from(document.querySelectorAll(documentTable + ' tr'))
+        const tds = Array.from(document.querySelectorAll(documentTable + ' tr td'))
+        return {
+          txtData: tds.map(td => td.textContent.toLowerCase()), rowCount: rows.length
+        }
+      }, documentTable)
+      console.log(data)
+      expect(data.txtData.join('|')).toEqual(expect.stringContaining('minnesota'))
+      expect(data.rowCount >= 1).toBeTruthy()
+      await page.screenshot({path:'search result.png'})
+      await page.waitForSelector('#search-bar')
+      await page.click('#search-bar')
+      //  await page.keyboard.type(string.fromCharCode())
+      await page.waitFor(5000)
+      //    await browser.close()
+    }, jasmineTimeout)
+    test('test sort doc', async () => {
+      await page.goto(`${host}/docs`)
+      await page.waitFor(2000)
+      await page.waitForSelector('#name > span')
+      await page.click('#name > span')
+      let columnText = await page.evaluate(() => Array.from(document.querySelectorAll('#documentTable > tr:nth-child(1) > td:nth-child(2)'), element => element.textContent.trim()))
+      expect(columnText[0][0].toLowerCase()).toEqual('c')
+      await page.waitFor(1000)
+      await page.waitForSelector('#name > span')
+      await page.click('#name > span')
+      columnText = await page.evaluate(() => Array.from(document.querySelectorAll('#documentTable > tr:nth-child(1) > td:nth-child(2)'), element => element.textContent.trim()))
+      expect(columnText[0][0].toLowerCase()).toEqual('g')
+      await page.waitFor(1000)
+      await page.waitForSelector('#uploadedByName > span')
+      await page.click('#uploadedByName > span')
+      columnText = await page.evaluate(() => Array.from(document.querySelectorAll('#documentTable > tr:nth-child(1) > td:nth-child(3)'), element => element.textContent.trim()))
+      expect(columnText[0][0].toLowerCase()).toEqual('a')
+      await page.waitFor(1000)
+      await page.waitForSelector('#uploadedByName > span')
+      await page.click('#uploadedByName > span')
+      columnText = await page.evaluate(() => Array.from(document.querySelectorAll('#documentTable > tr:nth-child(1) > td:nth-child(3)'), element => element.textContent.trim()))
+      expect(columnText[0][0].toLowerCase()).toEqual('a')
+      await page.waitFor(1000)
+      await page.waitForSelector('#uploadedDate > span')
+      await page.click('#uploadedDate > span')
+      columnText = await page.evaluate(() => Array.from(document.querySelectorAll('#documentTable > tr:nth-child(1) > td:nth-child(4)'), element => element.textContent.trim()))
+      expect(columnText[0].toLowerCase()).toEqual(new Date().toLocaleDateString('en-US'))
+      await page.waitFor(1000)
+      await page.waitForSelector('#uploadedDate > span')
+      await page.click('#uploadedDate > span')
+      columnText = await page.evaluate(() => Array.from(document.querySelectorAll('#documentTable > tr:nth-child(1) > td:nth-child(4)'), element => element.textContent.trim()))
+      expect(columnText[0].toLowerCase()).toEqual(new Date().toLocaleDateString('en-US'))
+      await page.waitFor(1000)
+    }, jasmineTimeout)
     test('bulk operations', async () => {
+      console.log('bulk operation started at:', new Date().toLocaleTimeString())
       // await page.goto(`${host}/login`);
       // //  await page.goto('http://localhost:5200/login')
       // //  await page.waitForNavigation()
@@ -333,7 +375,7 @@ export const docManage = () => {
       // click on document management button
       await page.waitForSelector(documentManagementBtn)
       await page.click(documentManagementBtn)
-
+      await page.screenshot({path:'current docs.png'})
       //upload 3 documents for testing
       //click on upload new
       await page.waitForSelector(uploadNewButton)
@@ -343,21 +385,24 @@ export const docManage = () => {
       const fileEle = await page.$('form > div > div > input[type="file"]')
 
       await fileEle.uploadFile(...testFiles)
-      await page.waitFor(5000)
+      await page.waitFor(7000)
       await page.waitForSelector('#project-name')
       await page.click('#project-name')
       await page.keyboard.type(testProject)
+      await page.waitFor(5000)
       await page.waitForSelector('#react-autowhatever-1--item-0')
       await page.click('#react-autowhatever-1--item-0')
       await page.waitForSelector('#jurisdiction-name')
       await page.click('#jurisdiction-name')
       await page.keyboard.type(testJurisdiction)
+      await page.waitFor(5000)
       await page.waitForSelector('#react-autowhatever-1--item-0')
       await page.click('#react-autowhatever-1--item-0')
 
       await page.waitForSelector(uploadGoButton)
       await page.click(uploadGoButton)
       await page.waitFor(5000)
+      await page.screenshot('confirm upload for bulk operation.png',)
       // check if file uploaded
       const searchBar = await page.$('#search-bar')
       await page.waitForSelector('#search-bar')
@@ -380,7 +425,7 @@ export const docManage = () => {
         const tds = Array.from(document.querySelectorAll(documentTable + ' tr td input[type="checkbox"]')).splice(0, 3)
         tds.forEach(chbox => chbox.click())
       }, documentTable)
-      await page.waitFor(1000)
+      await page.waitFor(2000)
       await page.waitForSelector(bulkDropdown)
       await page.click(bulkDropdown)
       // bulk assign project
@@ -388,17 +433,18 @@ export const docManage = () => {
       await page.click(bulkProject)
 
       await page.waitForSelector(bulkConfirmBox)
-      await page.waitFor(1000)
+      await page.waitFor(2000)
       // await page.waitForSelector(bulkProjectSearch)
       await page.click(bulkProjectSearch)
-
+      await page.waitFor(2000)
       await page.keyboard.type(testProject2)
+      await page.waitFor(5000)
       await page.waitForSelector('#react-autowhatever-1--item-0')
       await page.click('#react-autowhatever-1--item-0')
-
+      await page.waitFor(2000)
       await page.waitForSelector(bulkConfirmBtn)
       await page.click(bulkConfirmBtn)
-      await page.waitFor(1000)
+      await page.waitFor(2000)
       // validate added project
       //    free format search
       await searchBar.click({ clickCount: 3 })
@@ -435,22 +481,23 @@ export const docManage = () => {
       // bulk assign project
       await page.waitForSelector(bulkJurisdiction)
       await page.click(bulkJurisdiction)
-
+      await page.waitFor(2000)
       await page.waitForSelector(bulkConfirmBox)
-      await page.waitFor(1000)
+      await page.waitFor(2000)
       // await page.waitForSelector(bulkProjectSearch)
       await page.click(bulkJurisdictionSearch)
 
       await page.keyboard.type(testJurisdiction2)
+      await page.waitFor(5000)
       await page.waitForSelector('#react-autowhatever-1--item-0')
       await page.click('#react-autowhatever-1--item-0')
-
+      await page.waitFor(2000)
       await page.waitForSelector(bulkConfirmBtn)
       await page.click(bulkConfirmBtn)
 
       // validate added jurisdiction
       //    free format search
-      await page.waitFor(1000)
+      await page.waitFor(2000)
       await page.waitForSelector('#search-bar')
       await page.click('#search-bar')
       await page.keyboard.type('hapeville')
@@ -466,7 +513,7 @@ export const docManage = () => {
       expect(data.txtData.join('|')).toEqual(expect.stringContaining('hapeville'))
       expect(data.rowCount >= 3).toBeTruthy()
 
-      await page.waitFor(1000)
+      await page.waitFor(2000)
 
       // bulk deletion
 
@@ -491,14 +538,14 @@ export const docManage = () => {
       await page.click(bulkDelete)
 
       await page.waitForSelector(bulkConfirmBox)
-      await page.waitFor(1000)
+      await page.waitFor(2000)
 
       await page.waitForSelector(bulkConfirmBtn)
       await page.click(bulkConfirmBtn)
 
       // validate delete docs
       //    free format search
-      await page.waitFor(1000)
+      await page.waitFor(2000)
       await searchBar.click({ clickCount: 3 })
       await page.keyboard.press('Backspace')
       await page.waitForSelector('#search-bar')
@@ -539,40 +586,6 @@ export const docManage = () => {
       await page.click(bulkConfirmBtn)
     }, jasmineTimeout)
 
-    test('test sort doc', async () => {
-      await page.goto(`${host}/docs`)
-      await page.waitFor(2000)
-      await page.waitForSelector('#name > span')
-      await page.click('#name > span')
-      let columnText = await page.evaluate(() => Array.from(document.querySelectorAll('#documentTable > tr:nth-child(1) > td:nth-child(2)'), element => element.textContent.trim()))
-      expect(columnText[0][0].toLowerCase()).toEqual('c')
-      await page.waitFor(1000)
-      await page.waitForSelector('#name > span')
-      await page.click('#name > span')
-      columnText = await page.evaluate(() => Array.from(document.querySelectorAll('#documentTable > tr:nth-child(1) > td:nth-child(2)'), element => element.textContent.trim()))
-      expect(columnText[0][0].toLowerCase()).toEqual('y')
-      await page.waitFor(1000)
-      await page.waitForSelector('#uploadedByName > span')
-      await page.click('#uploadedByName > span')
-      columnText = await page.evaluate(() => Array.from(document.querySelectorAll('#documentTable > tr:nth-child(1) > td:nth-child(3)'), element => element.textContent.trim()))
-      expect(columnText[0][0].toLowerCase()).toEqual('a')
-      await page.waitFor(1000)
-      await page.waitForSelector('#uploadedByName > span')
-      await page.click('#uploadedByName > span')
-      columnText = await page.evaluate(() => Array.from(document.querySelectorAll('#documentTable > tr:nth-child(1) > td:nth-child(3)'), element => element.textContent.trim()))
-      expect(columnText[0][0].toLowerCase()).toEqual('a')
-      await page.waitFor(1000)
-      await page.waitForSelector('#uploadedDate > span')
-      await page.click('#uploadedDate > span')
-      columnText = await page.evaluate(() => Array.from(document.querySelectorAll('#documentTable > tr:nth-child(1) > td:nth-child(4)'), element => element.textContent.trim()))
-      expect(columnText[0].toLowerCase()).toEqual('2/13/2019')
-      await page.waitFor(1000)
-      await page.waitForSelector('#uploadedDate > span')
-      await page.click('#uploadedDate > span')
-      columnText = await page.evaluate(() => Array.from(document.querySelectorAll('#documentTable > tr:nth-child(1) > td:nth-child(4)'), element => element.textContent.trim()))
-      expect(columnText[0].toLowerCase()).toEqual('2/13/2019')
-      await page.waitFor(1000)
-    }, jasmineTimeout)
   })
 }
 
