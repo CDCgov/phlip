@@ -81,7 +81,7 @@ if (IS_PRODUCTION || IS_HTTPS) {
 
   // Set up SAMS if it's production
   if (IS_PRODUCTION) {
-    app.use(session({ secret: process.env.APP_SESSION_SECRET || 'pleasedontusethisasasecret' }))
+    app.use(session({ secret: process.env.SESSION_SECRET || 'pleasedontusethisasasecret' }))
     app.use(bodyParser.json())
     app.use(bodyParser.json({ type: 'application/json' }))
     app.use(bodyParser.urlencoded({ extended: true }))
@@ -110,7 +110,7 @@ if (IS_PRODUCTION || IS_HTTPS) {
           Id: 8,
           iss: 'iiu.phiresearchlab.org',
           aud: 'iiu.phiresearchlab.Bearer'
-        }, process.env.APP_JWT_SECRET)
+        }, process.env.JWT_SECRET)
 
         res.redirect(`/login/verify-user?token=${token}`)
       })
