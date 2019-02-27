@@ -11,6 +11,7 @@ import ProjectTableHead from './components/ProjectTableHead'
 import TablePagination from 'components/TablePagination'
 import SearchBar from 'components/SearchBar'
 import FlexGrid from 'components/FlexGrid'
+import {ProjectPanel} from './components/ProjectPanel'
 
 export const ProjectList = props => {
   const { projectIds, user, page, rowsPerPage, projectCount, sortBy, direction, sortBookmarked, searchValue } = props
@@ -44,7 +45,7 @@ export const ProjectList = props => {
         {/*/>*/}
         {/*</TableHead>*/}
         <FlexGrid type='row' style={{overflow:'auto'}}>
-          {projectIds.map(id => (<ProjectCard key={id} id={id} onExport={handleExport} role={user.role} cardHeight={40} />))}
+          {projectIds.map(id => (<ProjectPanel key={id} id={id} onExport={handleExport} role={user.role} />))}
         </FlexGrid>
         {/*</Table>*/}
         <FlexGrid flex />
