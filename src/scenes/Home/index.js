@@ -8,8 +8,8 @@ import ProjectList from './components/ProjectList'
 import * as actions from './actions'
 import ExportDialog from './components/ExportDialog'
 import withTracking from 'components/withTracking'
-import ApiErrorAlert from 'components/ApiErrorAlert'
-import FlexGrid from 'components/FlexGrid'
+import SearchBar from 'components/SearchBar'
+import { Button, FlexGrid, Dropdown, DatePicker, IconButton, Alert, CircularLoader, ApiErrorAlert } from 'components'
 
 /**
  * Project List ("Home") screen main component. The first component that is rendered when the user logs in. This is parent
@@ -191,7 +191,17 @@ export class Home extends Component {
     this.clearProjectExport()
   }
 
+  handleSortParmChange = (selectedOption) =>{
+    console.log(selectedOption)
+    selectedOption !== 'sortBookmarked'? this.props.actions.sortProjects(selectedOption):this.props.actions.sortBookmarked(!this.props.sortBookmarked)
+  }
   render() {
+    const options = [
+      { value: 'dateLastEdited', label: 'Sort by: Date Last Edited' },
+      { value: 'name', label: 'Sort By: Name' },
+      { value: 'lastEditedBy', label: 'Sort By: Last Edited By'},
+      { value: 'sortBookmarked', label: 'Sort By: Bookmarked'}
+    ]
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">
         <ApiErrorAlert
@@ -213,8 +223,25 @@ export class Home extends Component {
             state: { projectDefined: null, modal: true },
             props: { 'aria-label': 'Create New Project' },
             show: this.props.user.role !== 'Coder'
-          }}
-        />
+          }}>
+          <Dropdown
+            name="projectSort"
+            id="projectSort"
+            options={options}
+            input={{
+              value: 'dateLastEdited',
+              onChange: this.handleSortParmChange
+            }}
+            style={{ fontSize: 14 }}
+            formControlStyle={{ minWidth: 180, paddingRight:20 }}
+          />
+          <SearchBar
+            searchValue={this.searchValue}
+            handleSearchValueChange={event => this.props.actions.updateSearchValue(event.target.value)}
+            placeholder="Search"
+          />
+        </PageHeader>
+
         {this.props.error
           ? this.renderErrorMessage()
           : <ProjectList
@@ -228,7 +255,6 @@ export class Home extends Component {
             sortBookmarked={this.props.sortBookmarked}
             searchValue={this.props.searchValue}
             handleExport={this.onToggleExportDialog}
-            handleSearchValueChange={event => this.props.actions.updateSearchValue(event.target.value)}
             handleRequestSort={this.props.actions.sortProjects}
             handlePageChange={this.props.actions.updatePage}
             handleRowsChange={this.props.actions.updateRows}
