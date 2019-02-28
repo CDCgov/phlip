@@ -6,12 +6,11 @@ import TableFooter from '@material-ui/core/TableFooter'
 import TableRow from '@material-ui/core/TableRow'
 import Table from 'components/Table'
 import ProjectRow from './components/ProjectRow'
-import ProjectCard from './components/ProjectCard'
 import ProjectTableHead from './components/ProjectTableHead'
 import TablePagination from 'components/TablePagination'
 import SearchBar from 'components/SearchBar'
 import FlexGrid from 'components/FlexGrid'
-import {ProjectPanel} from './components/ProjectPanel'
+import ProjectPanel from './components/ProjectPanel'
 
 export const ProjectList = props => {
   const { projectIds, user, page, rowsPerPage, projectCount, sortBy, direction, sortBookmarked, searchValue } = props
@@ -44,7 +43,7 @@ export const ProjectList = props => {
         {/*onSortBookmarked={handleSortBookmarked}*/}
         {/*/>*/}
         {/*</TableHead>*/}
-        <FlexGrid type='row' style={{overflow:'auto'}}>
+        <FlexGrid type='column' style={{overflow:'hidden', backgroundColor:'#f5f5f5', border:'none'}}>
           {projectIds.map(id => (<ProjectPanel key={id} id={id} onExport={handleExport} role={user.role} />))}
         </FlexGrid>
         {/*</Table>*/}
