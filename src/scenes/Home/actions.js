@@ -3,6 +3,8 @@ import * as types from './actionTypes'
 /* Getting projects */
 export const getProjectsRequest = () => ({ type: types.GET_PROJECTS_REQUEST })
 export const getProjectsFail = payload => ({ type: types.GET_PROJECTS_FAIL, payload: { errorContent: payload, error: true } })
+export const getProjectUsers = (projectId) =>({type: types.GET_PROJECT_USERS_REQUEST, projectId})
+export const getProjectUsersFail = payload => ({ type: types.GET_PROJECT_USERS_FAIL, payload: { errorContent: payload, error: true } })
 
 /* Updating a project */
 export const updateProjectRequest = project => ({ type: types.UPDATE_PROJECT_REQUEST, project })

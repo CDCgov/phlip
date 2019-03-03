@@ -3,6 +3,7 @@ import { combineReducers } from 'redux'
 import addEditJurisdictions from './scenes/AddEditJurisdictions/reducer'
 import addEditProject from './scenes/AddEditProject/reducer'
 import { updater, commonHelpers, searchUtils, normalize } from 'utils'
+import { arrayToObject } from 'utils/normalize'
 
 const INITIAL_STATE = {
   projects: {
@@ -22,7 +23,12 @@ const INITIAL_STATE = {
   error: false,
   projectCount: 0,
   projectToExport: { text: '' },
-  exportError: ''
+  exportError: '',
+  projectUsers: {
+    byId: {},
+    allIds: [],
+    byProject:{}
+  }
 }
 
 /**
@@ -308,7 +314,36 @@ const mainReducer = (state, action) => {
           text: ''
         }
       }
-
+    case types.GET_PROJECT_USERS_SUCCESS:
+      console.log(action.payload)
+      const projectId = action.payload.projectId
+      const iDs = Object.keys(normalize.arrayToObject(action.payload.users))
+      let obj = {}
+      let byProjecObj = {}
+      if (Object.keys(state.projectUsers.byId).length > 0) {
+        obj = {...state.projectUsers.byId, ...normalize.arrayToObject(action.payload.users, 'id')}
+      } else {
+        obj = normalize.arrayToObject(action.payload.users, 'id')
+      }
+      if (Object.keys(state.projectUsers.byProject).length > 0) { //check if object empty
+        if (state.projectUsers.byProject[projectId] !== null) { // project already exist, updating
+          state.projectUsers.byProject[projectId] = iDs
+          byProjecObj = state.projectUsers.byProject
+        } else {
+          byProjecObj = {...state.projectUsers.byProject,[projectId]:iDs}
+        }
+      } else {
+        byProjecObj = {[projectId]:iDs}
+      }
+      return {
+        ...state,
+        projectUsers: {
+          ...state.projectUsers,
+          byId: obj,
+          allIds: Object.keys(obj),
+          byProject: byProjecObj
+        }
+      }
     case types.GET_PROJECTS_REQUEST:
     default:
       return state

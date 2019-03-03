@@ -33,6 +33,66 @@ export const getProjectLogic = createLogic({
 })
 
 /**
+ * Sends a request to the API to get all users associated with a project
+ */
+export const getProjectUsersLogic = createLogic({
+  type: types.GET_PROJECT_USERS_REQUEST,
+  async process({ api, getState , action},dispatch, done) {
+    try {
+      const currentProjectUsers = getState().scenes.home.main.projectUsers.allIds
+      const usersFromDb = await api.getProjectUsers({}, {}, {projectId: action.projectId})
+      let newUsers = []
+      const users = usersFromDb.map(user => {
+        return new Promise(async resolve => {
+          let fullUser = user
+          if (!currentProjectUsers[user.id]) {
+            try {
+              fullUser = await api.getUsers({}, {
+                params: {
+                  email: user.email
+                }
+              }, {})
+            } catch (err) {
+              console.log('failed to get user')
+            }
+          }
+          newUsers.push(fullUser)
+          await Promise.all(newUsers)
+          resolve(user)
+        })
+      })
+      Promise.all(users).then(() => {
+        dispatch({type: types.GET_PROJECT_USERS_SUCCESS,payload:{
+          projectId: action.projectId,
+          users : newUsers
+        }})
+        done()
+      })
+
+      // usersFromDb.forEach(async (user) => {
+      //   if (!currentProjectUsers.includes(user.id)) {
+      //     try {
+      //       const fullUser = await api.getUsers({}, {
+      //         params: {
+      //           email: user.email
+      //         }
+      //       }, {})
+      //       users.push(
+      //         fullUser
+      //       )
+      //     } catch (e) {
+      //       console.log(e)
+      //     }
+      //   }
+      // })
+    } catch (e) {
+      dispatch({type: types.GET_PROJECT_USERS_FAIL, payload: 'Failed to get user profiles'})
+      done()
+    }
+  }
+})
+
+/**
  * Sends a request to bookmark or un-bookmark a project for a user
  */
 export const toggleBookmarkLogic = createLogic({
@@ -101,6 +161,7 @@ export const exportDataLogic = createLogic({
 
 export default [
   getProjectLogic,
+  getProjectUsersLogic,
   toggleBookmarkLogic,
   updateFieldsLogic,
   exportDataLogic,
