@@ -259,6 +259,7 @@ export class Home extends Component {
             handlePageChange={this.props.actions.updatePage}
             handleRowsChange={this.props.actions.updateRows}
             handleSortBookmarked={() => this.props.actions.sortBookmarked(!this.props.sortBookmarked)}
+            getProjectUsers={this.props.actions.getProjectUsers}
           />
         }
         <ExportDialog

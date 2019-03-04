@@ -27,7 +27,8 @@ const INITIAL_STATE = {
   projectUsers: {
     byId: {},
     allIds: [],
-    byProject:{}
+    curProjectUsers:[],
+    currentProject : null
   }
 }
 
@@ -317,31 +318,37 @@ const mainReducer = (state, action) => {
     case types.GET_PROJECT_USERS_SUCCESS:
       console.log(action.payload)
       const projectId = action.payload.projectId
-      const iDs = Object.keys(normalize.arrayToObject(action.payload.users))
+      const newUsers = normalize.arrayToObject(action.payload.newUsers,'id')
+      //const iDs = Object.keys(normalize.arrayToObject(action.payload.users))
       let obj = {}
-      let byProjecObj = {}
+      let projectUsers = []
+      // let byProjecObj = {}
       if (Object.keys(state.projectUsers.byId).length > 0) {
-        obj = {...state.projectUsers.byId, ...normalize.arrayToObject(action.payload.users, 'id')}
+        obj = {...state.projectUsers.byId, ...newUsers}
       } else {
-        obj = normalize.arrayToObject(action.payload.users, 'id')
+        obj = newUsers
       }
-      if (Object.keys(state.projectUsers.byProject).length > 0) { //check if object empty
-        if (state.projectUsers.byProject[projectId] !== null) { // project already exist, updating
-          state.projectUsers.byProject[projectId] = iDs
-          byProjecObj = state.projectUsers.byProject
-        } else {
-          byProjecObj = {...state.projectUsers.byProject,[projectId]:iDs}
-        }
-      } else {
-        byProjecObj = {[projectId]:iDs}
-      }
+      action.payload.users.forEach((user)=>{
+        projectUsers.push(obj[user.id])
+      })
+      // if (Object.keys(state.projectUsers.byProject).length > 0) { //check if object empty
+      //   if (state.projectUsers.byProject[projectId] !== null) { // project already exist, updating
+      //   //    state.projectUsers.byProject[projectId] = iDs
+      //     byProjecObj = user
+      //   } else {
+      //     byProjecObj = {...state.projectUsers.byProject,[projectId]:iDs}
+      //   }
+      // } else {
+      //   byProjecObj = {[projectId]:iDs}
+      // }
       return {
         ...state,
         projectUsers: {
           ...state.projectUsers,
           byId: obj,
           allIds: Object.keys(obj),
-          byProject: byProjecObj
+          curProjectUsers: projectUsers,
+          currentProject: projectId
         }
       }
     case types.GET_PROJECTS_REQUEST:

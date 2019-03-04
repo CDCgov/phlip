@@ -40,23 +40,25 @@ export const getProjectUsersLogic = createLogic({
   async process({ api, getState , action},dispatch, done) {
     try {
       const currentProjectUsers = getState().scenes.home.main.projectUsers.allIds
+      console.log('cur user list ',currentProjectUsers)
       const usersFromDb = await api.getProjectUsers({}, {}, {projectId: action.projectId})
+      console.log(usersFromDb)
       let newUsers = []
       const users = usersFromDb.map(user => {
         return new Promise(async resolve => {
-          let fullUser = user
-          if (!currentProjectUsers[user.id]) {
+          let fullUser = null
+          if (!currentProjectUsers.includes(user.id)) {
             try {
               fullUser = await api.getUsers({}, {
                 params: {
                   email: user.email
                 }
               }, {})
+              newUsers.push(fullUser)
             } catch (err) {
               console.log('failed to get user')
             }
           }
-          newUsers.push(fullUser)
           await Promise.all(newUsers)
           resolve(user)
         })
@@ -64,7 +66,8 @@ export const getProjectUsersLogic = createLogic({
       Promise.all(users).then(() => {
         dispatch({type: types.GET_PROJECT_USERS_SUCCESS,payload:{
           projectId: action.projectId,
-          users : newUsers
+          users: usersFromDb,
+          newUsers : newUsers
         }})
         done()
       })

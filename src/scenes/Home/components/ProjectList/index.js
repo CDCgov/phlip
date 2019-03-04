@@ -14,16 +14,17 @@ import ProjectPanel from './components/ProjectPanel'
 
 export const ProjectList = props => {
   const { projectIds, user, page, rowsPerPage, projectCount, sortBy, direction, sortBookmarked, searchValue } = props
-  const { handlePageChange, handleRowsChange, handleRequestSort, handleSortBookmarked, handleSearchValueChange, handleExport } = props
+  const { handlePageChange, handleRowsChange, handleRequestSort, handleSortBookmarked, handleSearchValueChange, handleExport, getProjectUsers } = props
+
   return (
     <FlexGrid container raised flex>
-      <FlexGrid
-        type="row"
-        container
-        padding={15}
-        align="center"
-        justify="flex-end"
-      />
+      {/*<FlexGrid*/}
+      {/*type="row"*/}
+      {/*container*/}
+      {/*padding={15}*/}
+      {/*align="center"*/}
+      {/*justify="flex-end"*/}
+      {/*/>*/}
       <FlexGrid container flex style={{ overflow: 'hidden' }}>
         {/*<Table*/}
         {/*style={{*/}
@@ -43,9 +44,11 @@ export const ProjectList = props => {
         {/*onSortBookmarked={handleSortBookmarked}*/}
         {/*/>*/}
         {/*</TableHead>*/}
-        <FlexGrid type='column' style={{overflow:'hidden', backgroundColor:'#f5f5f5', border:'none'}}>
-          {projectIds.map(id => (<ProjectPanel key={id} id={id} onExport={handleExport} role={user.role} />))}
+        {/*<div style={{overflow:'auto', backgroundColor:'#f5f5f5', border:'none'}}>*/}
+        <FlexGrid type='row' style={{overflow:'auto', backgroundColor:'#f5f5f5', border:'none'}}>
+          {projectIds.map(id => (<ProjectPanel key={id} id={id} onExport={handleExport} role={user.role} getProjectUsers = {getProjectUsers} />))}
         </FlexGrid>
+        {/*</div>*/}
         {/*</Table>*/}
         <FlexGrid flex />
         <Table>
@@ -81,7 +84,9 @@ ProjectList.propTypes = {
   handleRequestSort: PropTypes.func,
   handleSortBookmarked: PropTypes.func,
   handleSearchValueChange: PropTypes.func,
-  handleExport: PropTypes.func
+  handleExport: PropTypes.func,
+  getProjectUsers: PropTypes.func
+//  users: PropTypes.array
 }
 
 export default ProjectList
