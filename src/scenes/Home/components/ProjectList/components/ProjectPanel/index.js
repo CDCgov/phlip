@@ -16,7 +16,7 @@ import moment from 'moment'
 import { commonHelpers } from 'utils'
 // import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+//import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import GridList from '@material-ui/core/GridList'
 import GridListTile from '@material-ui/core/GridListTile'
@@ -24,6 +24,8 @@ import GridListTileBar from '@material-ui/core/GridListTileBar'
 import Typography from '@material-ui/core/Typography'
 import FlexGrid from 'components/FlexGrid'
 import { FileDocument, City, FormatListBulleted, ClipboardCheckOutline, FileExport } from 'mdi-material-ui'
+import { getInitials } from 'utils/normalize'
+import Avatar from 'components/Avatar'
 
 const styles = theme => ({
   root: {
@@ -75,23 +77,41 @@ class ProjectPanel extends Component {
 
       //const date = moment.parseZone(project.dateLastEdited).local().format('M/D/YYYY, h:mm A')
       const date = moment.utc(project.dateLastEdited).local().format('M/D/YYYY')
+      let userData = []
       let avatarCols = 1
       let avatarRows = 1
       let cellHeight = 130
+      userData = [...this.props.users]
+      if (this.props.users.length >= 7) {
+        avatarCols = 3
+        avatarRows = 3
+        cellHeight = 98
+        // for(let i=0;i<9-this.props.users.length;i++){
+        //
+        // }
+      } else if (this.props.users.length >= 5) {
+        avatarCols = 3
+        avatarRows = 3
+        cellHeight = 95
+        for(let i=0;i<(9-this.props.users.length);i++){
+          const blankAvatar = {id:Date.now()+i}
+          userData.push(blankAvatar)
+        }
 
-      if (this.props.users.length === 1) {
-        avatarCols = 1
-        avatarRows = 1
-        cellHeight = 290
-      } else if (this.props.users.length === 2) {
-        avatarCols = 2
-        avatarRows = 1
-        cellHeight = 290
-      } else if (this.props.users.length >= 3) {
+      } else if (this.props.users.length >= 2) {
         avatarCols = 2
         avatarRows = 2
-        cellHeight = 75.5
+        cellHeight = 150
+        for(let i=0;i<(4-this.props.users.length);i++){
+          const blankAvatar = {id:Date.now()+i}
+          userData.push(blankAvatar)
+        }
+      } else if (this.props.users.length === 1) {
+        avatarCols = 1
+        //avatarRows = 1
+        cellHeight = 290
       }
+
       const expanded = this.props.expanded === project.id
       return (
       //<div className={classes.root}>*/}
@@ -100,17 +120,39 @@ class ProjectPanel extends Component {
             {expanded?( <FlexGrid container type='row' justify='space-between' style={{width:'100%'}}>
               {this.props.users.length !== 0?(
                 <FlexGrid container type='column' style={{maxWidth: '25%'}}>
-                  <GridList style={{width: 300, height: 304}} cellHeight={cellHeight} cols={avatarCols}>
-                    {this.props.users.map(oneCoder => (
-                      <GridListTile key={oneCoder.id} rows={avatarRows}>
-                        <img
-                          src={oneCoder.avatar}
-                          alt={oneCoder.id}
-                        />
-                        <GridListTileBar
-                          style={{height: 15}}
-                          title={oneCoder.firstName + ' ' + oneCoder.lastName}
-                        />
+                  <GridList style={{width: 300, height: 304}} cellHeight={cellHeight} cols={avatarCols} rows={avatarRows}>
+                    {userData.map(oneCoder => (
+                      <GridListTile key={oneCoder.id}>
+                        {/*<Avatar*/}
+                        {/*cardAvatar*/}
+                        {/*style={{ marginRight: 10 }}*/}
+                        {/*initials={getInitials(oneCoder.firstName, oneCoder.lastName)}*/}
+                        {/*userName={`${oneCoder.firstName} ${oneCoder.lastName}`}*/}
+                        {/*avatar={oneCoder.avatar}*/}
+                        {/*/>*/}
+                        {oneCoder.avatar !== undefined?(oneCoder.avatar === ''?(
+                          <FlexGrid
+                            container
+                            type='row'
+                            justify='center'
+                            align='center'
+                            title={`${oneCoder.firstName} ${oneCoder.lastName}`}
+                            style={{backgroundColor: theme.palette.secondary.main, height:'100%'}} >
+                            <Typography style={{fontWeight:500, color:'white'}} >
+                              {getInitials(oneCoder.firstName, oneCoder.lastName)}
+                            </Typography>
+                          </FlexGrid>
+                        ):
+                          (<img
+                            src={oneCoder.avatar}
+                            title={`${oneCoder.firstName} ${oneCoder.lastName}`}
+                          />)):(
+                            <div style={{backgroundColor:'#f5f5f5', height:'100%'}} />
+                        )}
+                        {/*<GridListTileBar*/}
+                        {/*style={{height: 15}}*/}
+                        {/*title={oneCoder.firstName + ' ' + oneCoder.lastName}*/}
+                        {/*/>*/}
                       </GridListTile>
                     ))}
                   </GridList>
