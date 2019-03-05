@@ -12,12 +12,10 @@ export const ProjectList = props => {
   const { handlePageChange, handleRowsChange, handleExport, getProjectUsers } = props
 
   return (
-    <FlexGrid container raised flex>
-      <FlexGrid container flex style={{ overflow: 'hidden' }}>
-        <FlexGrid type='row' style={{overflow:'auto', backgroundColor:'#f5f5f5', border:'none'}}>
+      <>
+        <div style={{overflow:'auto'}}>
           {projectIds.map(id => (<ProjectPanel key={id} id={id} onExport={handleExport} role={user.role} getProjectUsers = {getProjectUsers} />))}
-        </FlexGrid>
-        <FlexGrid flex />
+        </div>
         <Table>
           <TableFooter>
             <TableRow>
@@ -31,8 +29,7 @@ export const ProjectList = props => {
             </TableRow>
           </TableFooter>
         </Table>
-      </FlexGrid>
-    </FlexGrid>
+</>
   )
 }
 
