@@ -92,7 +92,7 @@ class ProjectPanel extends Component {
       } else if (this.props.users.length >= 5) {
         avatarCols = 3
         avatarRows = 3
-        cellHeight = 95
+        cellHeight = 100
         for(let i=0;i<(9-this.props.users.length);i++){
           const blankAvatar = {id:Date.now()+i}
           userData.push(blankAvatar)
@@ -109,7 +109,7 @@ class ProjectPanel extends Component {
       } else if (this.props.users.length === 1) {
         avatarCols = 1
         //avatarRows = 1
-        cellHeight = 290
+        cellHeight = 300
       }
 
       const expanded = this.props.expanded === project.id
@@ -118,47 +118,38 @@ class ProjectPanel extends Component {
         <ExpansionPanel expanded={expanded} onChange={this.handleChange(project.id)} >
           <ExpansionPanelSummary>
             {expanded?( <FlexGrid container type='row' justify='space-between' style={{width:'100%'}}>
-              {this.props.users.length !== 0?(
-                <FlexGrid container type='column' style={{maxWidth: '25%'}}>
-                  <GridList style={{width: 300, height: 304}} cellHeight={cellHeight} cols={avatarCols} rows={avatarRows}>
-                    {userData.map(oneCoder => (
-                      <GridListTile key={oneCoder.id}>
-                        {/*<Avatar*/}
-                        {/*cardAvatar*/}
-                        {/*style={{ marginRight: 10 }}*/}
-                        {/*initials={getInitials(oneCoder.firstName, oneCoder.lastName)}*/}
-                        {/*userName={`${oneCoder.firstName} ${oneCoder.lastName}`}*/}
-                        {/*avatar={oneCoder.avatar}*/}
-                        {/*/>*/}
-                        {oneCoder.avatar !== undefined?(oneCoder.avatar === ''?(
-                          <FlexGrid
-                            container
-                            type='row'
-                            justify='center'
-                            align='center'
-                            title={`${oneCoder.firstName} ${oneCoder.lastName}`}
-                            style={{backgroundColor: theme.palette.secondary.main, height:'100%'}} >
-                            <Typography style={{fontWeight:500, color:'white'}} >
-                              {getInitials(oneCoder.firstName, oneCoder.lastName)}
-                            </Typography>
-                          </FlexGrid>
-                        ):
-                          (<img
-                            src={oneCoder.avatar}
-                            title={`${oneCoder.firstName} ${oneCoder.lastName}`}
-                          />)):(
-                            <div style={{backgroundColor:'#f5f5f5', height:'100%'}} />
-                        )}
-                        {/*<GridListTileBar*/}
-                        {/*style={{height: 15}}*/}
-                        {/*title={oneCoder.firstName + ' ' + oneCoder.lastName}*/}
-                        {/*/>*/}
-                      </GridListTile>
-                    ))}
-                  </GridList>
-                </FlexGrid>
-              ):(<FlexGrid container type='column' style={{maxWidth: '25%'}} />)}
-              <FlexGrid container type="column" style={{ flexBasis: '79%'}}>
+              <FlexGrid container type='column' style={{maxWidth: '20%', width:'20%'}}>
+                <GridList style={{width: 300, height: 315}} cellHeight={cellHeight} cols={avatarCols} rows={avatarRows}>
+                  {userData.map(oneCoder => (
+                    <GridListTile key={oneCoder.id}>
+                      {oneCoder.avatar !== undefined?(oneCoder.avatar === ''?(
+                        <FlexGrid
+                          container
+                          type='row'
+                          justify='center'
+                          align='center'
+                          title={`${oneCoder.firstName} ${oneCoder.lastName}`}
+                          style={{backgroundColor: theme.palette.secondary.main, height:'100%'}} >
+                          <Typography style={{fontWeight:500, fontSize:45, color:'white'}} >
+                            {getInitials(oneCoder.firstName, oneCoder.lastName)}
+                          </Typography>
+                        </FlexGrid>
+                      ):
+                        (<img
+                          src={oneCoder.avatar}
+                          title={`${oneCoder.firstName} ${oneCoder.lastName}`}
+                        />)):(
+                          <div style={{backgroundColor:'#686968', height:'100%'}} />
+                      )}
+                      {/*<GridListTileBar*/}
+                      {/*style={{height: 15}}*/}
+                      {/*title={oneCoder.firstName + ' ' + oneCoder.lastName}*/}
+                      {/*/>*/}
+                    </GridListTile>
+                  ))}
+                </GridList>
+              </FlexGrid>
+              <FlexGrid container type="column" style={{width:'80%', paddingLeft:10}}>
                 <FlexGrid container type='row' style={{backgroundColor:'#f5f5f5', height:70, alignItems:'center'}} >
                   <FlexGrid container type='row' flex justify='flex-start' style={{fontSize:20, paddingLeft:20}}>
                     <IconButton
@@ -232,7 +223,7 @@ class ProjectPanel extends Component {
                     </Button>
                   </FlexGrid>
                 </FlexGrid>
-                <FlexGrid style={{flexBasis:'2%'}} />
+                <FlexGrid style={{flexBasis:'1%'}} />
                 <FlexGrid container style={{paddingLeft:20}}>
                   <Typography variant="body2">
                     <span style={listingStyle}>Date Last Edited: </span>{date}</Typography>
@@ -256,58 +247,60 @@ class ProjectPanel extends Component {
                   <FlexGrid />
                 </FlexGrid>
                 <FlexGrid />
-                <FlexGrid container type='row' justify='flex-end' style={{alignItems:'center', width:'25%', alignSelf:'flex-end'}}>
-                  <Table>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell
-                          {...generateKeyAndId('code')}
-                          padding="checkbox"
-                          style={{
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                            width: '50%',
-                            maxWidth: '50%',
-                            padding: '0 12px',
-                            border: 'none'
-                          }}>
-                          <Button
-                            raised={false}
-                            value="Code"
-                            listButton
-                            aria-label="Code project"
-                            component={Link}
-                            to={{pathname: `/project/${project.id}/code`}}
-                            style={{width:'100%'}}
-                          />
-                        </TableCell>
-                        {!isCoder &&
-                        <TableCell
-                          {...generateKeyAndId('validate')}
-                          padding="checkbox"
-                          style={{
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                            width: '50%',
-                            maxWidth: '50%',
-                            padding: '0 12px',
-                            border: 'none'
-                          }}>
-                          <Button
-                            raised={false}
-                            value="Validate"
-                            listButton
-                            aria-label="Validate project"
-                            component={Link}
-                            to={{pathname: `/project/${project.id}/validate`}}
-                            style={{width:'100%'}}
-                          />
-                        </TableCell>}
-                      </TableRow>
-                    </TableBody>
-                  </Table>
+                <FlexGrid container type='column' style={{alignItems:'flex-end', height:'45%'}} justify='flex-end'>
+                  <FlexGrid container type='row' justify='flex-end' style={{alignItems:'center', width:'25%', alignSelf:'flex-end'}}>
+                    <Table>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell
+                            {...generateKeyAndId('code')}
+                            padding="checkbox"
+                            style={{
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              width: '50%',
+                              maxWidth: '50%',
+                              padding: '0 12px',
+                              border: 'none'
+                            }}>
+                            <Button
+                              raised={false}
+                              value="Code"
+                              listButton
+                              aria-label="Code project"
+                              component={Link}
+                              to={{pathname: `/project/${project.id}/code`}}
+                              style={{width:'100%', height:50}}
+                            />
+                          </TableCell>
+                          {!isCoder &&
+                          <TableCell
+                            {...generateKeyAndId('validate')}
+                            padding="checkbox"
+                            style={{
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              width: '50%',
+                              maxWidth: '50%',
+                              padding: '0 12px',
+                              border: 'none'
+                            }}>
+                            <Button
+                              raised={false}
+                              value="Validate"
+                              listButton
+                              aria-label="Validate project"
+                              component={Link}
+                              to={{pathname: `/project/${project.id}/validate`}}
+                              style={{width:'100%', height:50}}
+                            />
+                          </TableCell>}
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </FlexGrid>
                 </FlexGrid>
               </FlexGrid>
             </FlexGrid>):
