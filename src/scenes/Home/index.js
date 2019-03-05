@@ -260,6 +260,7 @@ export class Home extends Component {
             handleRowsChange={this.props.actions.updateRows}
             handleSortBookmarked={() => this.props.actions.sortBookmarked(!this.props.sortBookmarked)}
             getProjectUsers={this.props.actions.getProjectUsers}
+            resetOpenProject={this.props.actions.resetOpenProject}
           />
         }
         <ExportDialog

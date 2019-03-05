@@ -14,7 +14,7 @@ import TableCell from '@material-ui/core/TableCell'
 import * as actions from 'scenes/Home/actions'
 import moment from 'moment'
 import { commonHelpers } from 'utils'
-// import ClickAwayListener from '@material-ui/core/ClickAwayListener'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 //import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
@@ -63,7 +63,15 @@ class ProjectPanel extends Component {
           email: this.props.project.createdByEmail
         })
       } else {
-        this.props.actions.resetOpenProject()
+        // this.props.actions.resetOpenProject()
+      }
+    }
+
+    handleClickAway = panel => (event,expanded) =>{
+      console.log('i was clicked ', panel)
+      if (panel === undefined){
+
+        this.props.actions.resetOpenProject
       }
     }
 
@@ -114,7 +122,6 @@ class ProjectPanel extends Component {
 
       const expanded = this.props.expanded === project.id
       return (
-      //<div className={classes.root}>*/}
         <ExpansionPanel expanded={expanded} onChange={this.handleChange(project.id)} >
           <ExpansionPanelSummary>
             {expanded?( <FlexGrid container type='row' justify='space-between' style={{width:'100%'}}>
@@ -182,7 +189,7 @@ class ProjectPanel extends Component {
                       size='small'>
                                     Jurisdictions
                       <City style={iconStyle} />
-                    </Button>)}
+                      </Button>)}
                     <Button
                       aria-label="documents in this project"
                       color='white'
@@ -200,7 +207,7 @@ class ProjectPanel extends Component {
                       style={{marginLeft:10}}>
                                     Coding Scheme
                       <FormatListBulleted style={iconStyle} />
-                    </Button>)}
+                      </Button>)}
                     <Button
                       aria-label="Add and edit project protocol"
                       to={`/project/${project.id}/protocol`}
@@ -275,28 +282,28 @@ class ProjectPanel extends Component {
                             />
                           </TableCell>
                           {!isCoder &&
-                          <TableCell
-                            {...generateKeyAndId('validate')}
-                            padding="checkbox"
-                            style={{
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap',
-                              width: '50%',
-                              maxWidth: '50%',
-                              padding: '0 12px',
-                              border: 'none'
-                            }}>
-                            <Button
-                              raised={false}
-                              value="Validate"
-                              listButton
-                              aria-label="Validate project"
-                              component={Link}
-                              to={{pathname: `/project/${project.id}/validate`}}
-                              style={{width:'100%', height:50}}
-                            />
-                          </TableCell>}
+                            <TableCell
+                              {...generateKeyAndId('validate')}
+                              padding="checkbox"
+                              style={{
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                width: '50%',
+                                maxWidth: '50%',
+                                padding: '0 12px',
+                                border: 'none'
+                              }}>
+                              <Button
+                                raised={false}
+                                value="Validate"
+                                listButton
+                                aria-label="Validate project"
+                                component={Link}
+                                to={{pathname: `/project/${project.id}/validate`}}
+                                style={{width:'100%', height:50}}
+                              />
+                            </TableCell>}
                         </TableRow>
                       </TableBody>
                     </Table>
@@ -447,7 +454,7 @@ class ProjectPanel extends Component {
           </ExpansionPanelSummary>
           {/*<ExpansionPanelDetails />*/}
         </ExpansionPanel>
-      // </div>
+      // </ClickAwayListener>
       )
     }
 }
