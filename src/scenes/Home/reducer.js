@@ -3,7 +3,6 @@ import { combineReducers } from 'redux'
 import addEditJurisdictions from './scenes/AddEditJurisdictions/reducer'
 import addEditProject from './scenes/AddEditProject/reducer'
 import { updater, commonHelpers, searchUtils, normalize } from 'utils'
-import { arrayToObject } from 'utils/normalize'
 
 const INITIAL_STATE = {
   projects: {
@@ -316,31 +315,24 @@ const mainReducer = (state, action) => {
         }
       }
     case types.GET_PROJECT_USERS_SUCCESS:
-      console.log(action.payload)
       const projectId = action.payload.projectId
       const newUsers = normalize.arrayToObject(action.payload.newUsers,'id')
       //const iDs = Object.keys(normalize.arrayToObject(action.payload.users))
       let obj = {}
       let projectUsers = []
       // let byProjecObj = {}
-      if (Object.keys(state.projectUsers.byId).length > 0) {
-        obj = {...state.projectUsers.byId, ...newUsers}
+      if (Object.keys(newUsers).length > 0) {
+        if (Object.keys(state.projectUsers.byId).length > 0) {
+          obj = {...state.projectUsers.byId, ...newUsers}
+        } else {
+          obj = newUsers
+        } 
       } else {
-        obj = newUsers
+        obj = state.projectUsers.byId
       }
       action.payload.users.forEach((user)=>{
         projectUsers.push(obj[user.id])
       })
-      // if (Object.keys(state.projectUsers.byProject).length > 0) { //check if object empty
-      //   if (state.projectUsers.byProject[projectId] !== null) { // project already exist, updating
-      //   //    state.projectUsers.byProject[projectId] = iDs
-      //     byProjecObj = user
-      //   } else {
-      //     byProjecObj = {...state.projectUsers.byProject,[projectId]:iDs}
-      //   }
-      // } else {
-      //   byProjecObj = {[projectId]:iDs}
-      // }
       return {
         ...state,
         projectUsers: {
@@ -349,6 +341,14 @@ const mainReducer = (state, action) => {
           allIds: Object.keys(obj),
           curProjectUsers: projectUsers,
           currentProject: projectId
+        }
+      }
+    case types.RESET_OPEN_PROJECT:
+      return {
+        ...state,
+        projectUsers : {
+          ...state.projectUsers,
+          currentProject: null
         }
       }
     case types.GET_PROJECTS_REQUEST:

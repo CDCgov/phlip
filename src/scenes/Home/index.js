@@ -9,7 +9,7 @@ import * as actions from './actions'
 import ExportDialog from './components/ExportDialog'
 import withTracking from 'components/withTracking'
 import SearchBar from 'components/SearchBar'
-import { Button, FlexGrid, Dropdown, DatePicker, IconButton, Alert, CircularLoader, ApiErrorAlert } from 'components'
+import {FlexGrid, Dropdown, ApiErrorAlert } from 'components'
 
 /**
  * Project List ("Home") screen main component. The first component that is rendered when the user logs in. This is parent

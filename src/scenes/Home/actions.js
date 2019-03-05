@@ -3,8 +3,6 @@ import * as types from './actionTypes'
 /* Getting projects */
 export const getProjectsRequest = () => ({ type: types.GET_PROJECTS_REQUEST })
 export const getProjectsFail = payload => ({ type: types.GET_PROJECTS_FAIL, payload: { errorContent: payload, error: true } })
-export const getProjectUsers = (projectId) =>({type: types.GET_PROJECT_USERS_REQUEST, projectId})
-export const getProjectUsersFail = payload => ({ type: types.GET_PROJECT_USERS_FAIL, payload: { errorContent: payload, error: true } })
 
 /* Updating a project */
 export const updateProjectRequest = project => ({ type: types.UPDATE_PROJECT_REQUEST, project })
@@ -32,3 +30,8 @@ export const updateEditedFields = projectId => ({ type: types.UPDATE_EDITED_FIEL
 export const exportDataRequest = (project, exportType) => ({ type: types.EXPORT_DATA_REQUEST, project, exportType })
 export const clearProjectToExport = () => ({ type: types.CLEAR_PROJECT_TO_EXPORT })
 export const dismissApiError = errorName => ({ type: types.DISMISS_API_ERROR, errorName })
+
+/* project users */
+export const getProjectUsers = (projectId,createdBy) =>({type: types.GET_PROJECT_USERS_REQUEST, projectId, createdBy})
+export const getProjectUsersFail = payload => ({ type: types.GET_PROJECT_USERS_FAIL, payload: { errorContent: payload, error: true } })
+export const resetOpenProject = () =>({type:types.RESET_OPEN_PROJECT})
