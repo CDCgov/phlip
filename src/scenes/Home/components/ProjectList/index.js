@@ -6,16 +6,19 @@ import Table from 'components/Table'
 import TablePagination from 'components/TablePagination'
 import FlexGrid from 'components/FlexGrid'
 import ProjectPanel from './components/ProjectPanel'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 
 export const ProjectList = props => {
   const { projectIds, user, page, rowsPerPage, projectCount } = props
-  const { handlePageChange, handleRowsChange, handleExport, getProjectUsers } = props
+  const { handlePageChange, handleRowsChange, handleExport, getProjectUsers, resetOpenProject } = props
 
   return (
       <>
-        <div style={{overflow:'auto'}}>
-          {projectIds.map(id => (<ProjectPanel key={id} id={id} onExport={handleExport} role={user.role} getProjectUsers = {getProjectUsers} />))}
-        </div>
+        <ClickAwayListener onClickAway={resetOpenProject}>
+          <div style={{overflow:'auto'}}>
+            {projectIds.map(id => (<ProjectPanel key={id} id={id} onExport={handleExport} role={user.role} getProjectUsers = {getProjectUsers} />))}
+          </div>
+        </ClickAwayListener>
         <Table>
           <TableFooter>
             <TableRow>
