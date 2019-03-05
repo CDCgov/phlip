@@ -97,7 +97,178 @@ class ProjectPanel extends Component {
       //<div className={classes.root}>*/}
         <ExpansionPanel expanded={expanded} onChange={this.handleChange(project.id)} >
           <ExpansionPanelSummary>
-            {expanded?'':
+            {expanded?( <FlexGrid container type='row' justify='space-between' style={{width:'100%'}}>
+              {this.props.users.length !== 0?(
+                <FlexGrid container type='column' style={{maxWidth: '25%'}}>
+                  <GridList style={{width: 300, height: 304}} cellHeight={cellHeight} cols={avatarCols}>
+                    {this.props.users.map(oneCoder => (
+                      <GridListTile key={oneCoder.id} rows={avatarRows}>
+                        <img
+                          src={oneCoder.avatar}
+                          alt={oneCoder.id}
+                        />
+                        <GridListTileBar
+                          style={{height: 15}}
+                          title={oneCoder.firstName + ' ' + oneCoder.lastName}
+                        />
+                      </GridListTile>
+                    ))}
+                  </GridList>
+                </FlexGrid>
+              ):(<FlexGrid container type='column' style={{maxWidth: '25%'}} />)}
+              <FlexGrid container type="column" style={{ flexBasis: '79%'}}>
+                <FlexGrid container type='row' style={{backgroundColor:'#f5f5f5', height:70, alignItems:'center'}} >
+                  <FlexGrid container type='row' flex justify='flex-start' style={{fontSize:20, paddingLeft:20}}>
+                    <IconButton
+                      color={this.props.bookmarked ? '#fdc43b' : greyIcon}
+                      onClick={() => actions.toggleBookmark(project)}
+                      tooltipText="Bookmark project"
+                      aria-label="Bookmark this project"
+                      id={`bookmark-project-${project.id}`}>
+                      {bookmarked ? 'bookmark' : 'bookmark_border'}
+                    </IconButton>
+                    <FlexGrid padding="checkbox" style={{width:20}} />
+                    <TextLink
+                      aria-label="Edit project details"
+                      to={{
+                        pathname: `/project/edit/${project.id}`,
+                        state: {projectDefined: {...project}, modal: true}
+                      }}>
+                      {project.name}
+                    </TextLink>
+                  </FlexGrid>
+                  <FlexGrid container type='row' flex justify='flex-end' align='center' style={{height:40, paddingRight:10}} >
+                    {!isCoder && (<Button
+                      id={`${project.id}-edit-jurisdictions`}
+                      component={Link}
+                      to={{ pathname: `/project/${project.id}/jurisdictions`, state: { modal: true } }}
+                      disableRipple={true}
+                      aria-label="Add and edit project jurisdictions"
+                      color='white'
+                      textColor='black'
+                      size='small'>
+                                    Jurisdictions
+                      <City style={iconStyle} />
+                    </Button>)}
+                    <Button
+                      aria-label="documents in this project"
+                      color='white'
+                      textColor='black'
+                      style={{marginLeft:10}}>
+                                    Document
+                      <FileDocument style={iconStyle} />
+                    </Button>
+                    {!isCoder && (<Button
+                      aria-label="Add and edit project coding scheme"
+                      to={`/project/${project.id}/coding-scheme`}
+                      component={Link}
+                      color='white'
+                      textColor='black'
+                      style={{marginLeft:10}}>
+                                    Coding Scheme
+                      <FormatListBulleted style={iconStyle} />
+                    </Button>)}
+                    <Button
+                      aria-label="Add and edit project protocol"
+                      to={`/project/${project.id}/protocol`}
+                      component={Link}
+                      color='white'
+                      textColor='black'
+                      style={{marginLeft:10}}>
+                                    Protocols
+                      <ClipboardCheckOutline style={iconStyle} />
+                    </Button>
+                    <Button
+                      aria-label="Export validated questions"
+                      onClick={() => onExport(project)}
+                      id={`export-validated-${project.id}`}
+                      color='white'
+                      textColor='black'
+                      style={{marginLeft:10}}>
+                                    Export
+                      <FileExport style={{ fontSize: 18 }} />
+                    </Button>
+                  </FlexGrid>
+                </FlexGrid>
+                <FlexGrid style={{flexBasis:'2%'}} />
+                <FlexGrid container style={{paddingLeft:20}}>
+                  <Typography variant="body2">
+                    <span style={listingStyle}>Date Last Edited: </span>{date}</Typography>
+                  <Typography variant="body2">
+                    <span style={listingStyle}>Last Edited By: </span>{project.lastEditedBy}
+                  </Typography>
+                  <Typography variant="body2">
+                    <span style={listingStyle}>Coordinator(s): </span><span>{this.props.users.filter((oneCoder)=> {
+                      return oneCoder.role!== 'Coder'
+                    }).map((oneCoder) => {
+                      return oneCoder.firstName+ ' '+oneCoder.lastName
+                    }).join(', ')}</span>
+                  </Typography >
+                  <Typography variant="body2">
+                    <span style={listingStyle}>Coder(s): </span><span>{this.props.users.filter((oneCoder)=> {
+                      return oneCoder.role === 'Coder'
+                    }).map((oneCoder) => {
+                      return oneCoder.firstName+ ' '+oneCoder.lastName
+                    }).join(', ')}</span>
+                  </Typography>
+                  <FlexGrid />
+                </FlexGrid>
+                <FlexGrid />
+                <FlexGrid container type='row' justify='flex-end' style={{alignItems:'center', width:'25%', alignSelf:'flex-end'}}>
+                  <Table>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell
+                          {...generateKeyAndId('code')}
+                          padding="checkbox"
+                          style={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            width: '50%',
+                            maxWidth: '50%',
+                            padding: '0 12px',
+                            border: 'none'
+                          }}>
+                          <Button
+                            raised={false}
+                            value="Code"
+                            listButton
+                            aria-label="Code project"
+                            component={Link}
+                            to={{pathname: `/project/${project.id}/code`}}
+                            style={{width:'100%'}}
+                          />
+                        </TableCell>
+                        {!isCoder &&
+                        <TableCell
+                          {...generateKeyAndId('validate')}
+                          padding="checkbox"
+                          style={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            width: '50%',
+                            maxWidth: '50%',
+                            padding: '0 12px',
+                            border: 'none'
+                          }}>
+                          <Button
+                            raised={false}
+                            value="Validate"
+                            listButton
+                            aria-label="Validate project"
+                            component={Link}
+                            to={{pathname: `/project/${project.id}/validate`}}
+                            style={{width:'100%'}}
+                          />
+                        </TableCell>}
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </FlexGrid>
+              </FlexGrid>
+            </FlexGrid>):
               (<Table
                 style={{
                   borderCollapse: 'separate',
@@ -239,179 +410,7 @@ class ProjectPanel extends Component {
               </Table>)
               }
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails >
-            <FlexGrid container type='row' justify='space-between' style={{width:'100%'}}>
-              {this.props.users.length !== 0?(
-                <FlexGrid container type='column' style={{maxWidth: '25%'}}>
-                  <GridList style={{width: 300, height: 304}} cellHeight={cellHeight} cols={avatarCols}>
-                    {this.props.users.map(oneCoder => (
-                      <GridListTile key={oneCoder.id} rows={avatarRows}>
-                        <img
-                          src={oneCoder.avatar}
-                          alt={oneCoder.id}
-                        />
-                        <GridListTileBar
-                          style={{height: 15}}
-                          title={oneCoder.firstName + ' ' + oneCoder.lastName}
-                        />
-                      </GridListTile>
-                    ))}
-                  </GridList>
-                </FlexGrid>
-              ):(<FlexGrid container type='column' style={{maxWidth: '25%'}} />)}
-              <FlexGrid container type="column" style={{ flexBasis: '79%'}}>
-                <FlexGrid container type='row' style={{backgroundColor:'#f5f5f5', height:70, alignItems:'center'}} >
-                  <FlexGrid container type='row' flex justify='flex-start' style={{fontSize:20, paddingLeft:20}}>
-                    <IconButton
-                      color={this.props.bookmarked ? '#fdc43b' : greyIcon}
-                      onClick={() => actions.toggleBookmark(project)}
-                      tooltipText="Bookmark project"
-                      aria-label="Bookmark this project"
-                      id={`bookmark-project-${project.id}`}>
-                      {bookmarked ? 'bookmark' : 'bookmark_border'}
-                    </IconButton>
-                    <FlexGrid padding="checkbox" style={{width:20}} />
-                    <TextLink
-                      aria-label="Edit project details"
-                      to={{
-                        pathname: `/project/edit/${project.id}`,
-                        state: {projectDefined: {...project}, modal: true}
-                      }}>
-                      {project.name}
-                    </TextLink>
-                  </FlexGrid>
-                  <FlexGrid container type='row' flex justify='flex-end' align='center' style={{height:40, paddingRight:10}} >
-                    {!isCoder && (<Button
-                      id={`${project.id}-edit-jurisdictions`}
-                      component={Link}
-                      to={{ pathname: `/project/${project.id}/jurisdictions`, state: { modal: true } }}
-                      disableRipple={true}
-                      aria-label="Add and edit project jurisdictions"
-                      color='white'
-                      textColor='black'
-                      size='small'>
-                                Jurisdictions
-                      <City style={iconStyle} />
-                      </Button>)}
-                    <Button
-                      aria-label="documents in this project"
-                      color='white'
-                      textColor='black'
-                      style={{marginLeft:10}}>
-                                Document
-                      <FileDocument style={iconStyle} />
-                    </Button>
-                    {!isCoder && (<Button
-                      aria-label="Add and edit project coding scheme"
-                      to={`/project/${project.id}/coding-scheme`}
-                      component={Link}
-                      color='white'
-                      textColor='black'
-                      style={{marginLeft:10}}>
-                                Coding Scheme
-                      <FormatListBulleted style={iconStyle} />
-                      </Button>)}
-                    <Button
-                      aria-label="Add and edit project protocol"
-                      to={`/project/${project.id}/protocol`}
-                      component={Link}
-                      color='white'
-                      textColor='black'
-                      style={{marginLeft:10}}>
-                                Protocols
-                      <ClipboardCheckOutline style={iconStyle} />
-                    </Button>
-                    <Button
-                      aria-label="Export validated questions"
-                      onClick={() => onExport(project)}
-                      id={`export-validated-${project.id}`}
-                      color='white'
-                      textColor='black'
-                      style={{marginLeft:10}}>
-                                Export
-                      <FileExport style={{ fontSize: 18 }} />
-                    </Button>
-                  </FlexGrid>
-                </FlexGrid>
-                <FlexGrid style={{flexBasis:'2%'}} />
-                <FlexGrid container style={{paddingLeft:20}}>
-                  <Typography variant="body2">
-                    <span style={listingStyle}>Date Last Edited: </span>{date}</Typography>
-                  <Typography variant="body2">
-                    <span style={listingStyle}>Last Edited By: </span>{project.lastEditedBy}
-                  </Typography>
-                  <Typography variant="body2">
-                    <span style={listingStyle}>Coordinator(s): </span><span>{this.props.users.filter((oneCoder)=> {
-                      return oneCoder.role!== 'Coder'
-                    }).map((oneCoder) => {
-                      return oneCoder.firstName+ ' '+oneCoder.lastName
-                    }).join(', ')}</span>
-                  </Typography >
-                  <Typography variant="body2">
-                    <span style={listingStyle}>Coder(s): </span><span>{this.props.users.filter((oneCoder)=> {
-                      return oneCoder.role === 'Coder'
-                    }).map((oneCoder) => {
-                      return oneCoder.firstName+ ' '+oneCoder.lastName
-                    }).join(', ')}</span>
-                  </Typography>
-                  <FlexGrid />
-                </FlexGrid>
-                <FlexGrid container type='row' justify='flex-end' style={{alignItems:'center', width:'25%', alignSelf:'flex-end'}}>
-                  <Table>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell
-                          {...generateKeyAndId('code')}
-                          padding="checkbox"
-                          style={{
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                            width: '50%',
-                            maxWidth: '50%',
-                            padding: '0 12px',
-                            border: 'none'
-                          }}>
-                          <Button
-                            raised={false}
-                            value="Code"
-                            listButton
-                            aria-label="Code project"
-                            component={Link}
-                            to={{pathname: `/project/${project.id}/code`}}
-                            style={{width:'100%'}}
-                          />
-                        </TableCell>
-                        {!isCoder &&
-                          <TableCell
-                            {...generateKeyAndId('validate')}
-                            padding="checkbox"
-                            style={{
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap',
-                              width: '50%',
-                              maxWidth: '50%',
-                              padding: '0 12px',
-                              border: 'none'
-                            }}>
-                            <Button
-                              raised={false}
-                              value="Validate"
-                              listButton
-                              aria-label="Validate project"
-                              component={Link}
-                              to={{pathname: `/project/${project.id}/validate`}}
-                              style={{width:'100%'}}
-                            />
-                          </TableCell>}
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </FlexGrid>
-              </FlexGrid>
-            </FlexGrid>
-          </ExpansionPanelDetails>
+          {/*<ExpansionPanelDetails />*/}
         </ExpansionPanel>
       // </div>
       )

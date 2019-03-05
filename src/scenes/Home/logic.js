@@ -73,7 +73,7 @@ export const getProjectUsersLogic = createLogic({
         })
       })
       Promise.all(users).then(() => {
-        console.log('new users in logic ',newUsers)
+        // console.log('new users in logic ',newUsers)
         dispatch({type: types.GET_PROJECT_USERS_SUCCESS,payload:{
           projectId: action.projectId,
           users: usersFromDb,
