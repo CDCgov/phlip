@@ -197,7 +197,7 @@ class ProjectPanel extends Component {
                       color='white'
                       textColor='black'
                       style={{marginLeft:10}}>
-                                    Document
+                                    Documents
                       <FileDocument style={iconStyle} />
                     </Button>
                     {!isCoder && (<Button
@@ -217,7 +217,7 @@ class ProjectPanel extends Component {
                       color='white'
                       textColor='black'
                       style={{marginLeft:10}}>
-                                    Protocols
+                                    Protocol
                       <ClipboardCheckOutline style={iconStyle} />
                     </Button>
                     <Button
