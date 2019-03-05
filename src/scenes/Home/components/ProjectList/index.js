@@ -4,7 +4,6 @@ import TableFooter from '@material-ui/core/TableFooter'
 import TableRow from '@material-ui/core/TableRow'
 import Table from 'components/Table'
 import TablePagination from 'components/TablePagination'
-import FlexGrid from 'components/FlexGrid'
 import ProjectPanel from './components/ProjectPanel'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 
@@ -13,26 +12,36 @@ export const ProjectList = props => {
   const { handlePageChange, handleRowsChange, handleExport, getProjectUsers, resetOpenProject } = props
 
   return (
-      <>
-        <ClickAwayListener onClickAway={resetOpenProject}>
-          <div style={{overflow:'auto'}}>
-            {projectIds.map(id => (<ProjectPanel key={id} id={id} onExport={handleExport} role={user.role} getProjectUsers = {getProjectUsers} />))}
-          </div>
-        </ClickAwayListener>
-        <Table>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                count={projectCount}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={(event, page) => handlePageChange(page)}
-                onChangeRowsPerPage={(event) => handleRowsChange(event.target.value)}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
-</>
+    <>
+      <ClickAwayListener onClickAway={resetOpenProject}>
+        <div style={{ overflow: 'auto', padding: 3 }}>
+          {projectIds.map((id, i) => (
+            <ProjectPanel
+              key={id}
+              index={i}
+              length={projectIds.length}
+              id={id}
+              onExport={handleExport}
+              role={user.role}
+              getProjectUsers={getProjectUsers}
+            />
+          ))}
+        </div>
+      </ClickAwayListener>
+      <Table>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              count={projectCount}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onChangePage={(event, page) => handlePageChange(page)}
+              onChangeRowsPerPage={(event) => handleRowsChange(event.target.value)}
+            />
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </>
   )
 }
 
@@ -54,7 +63,7 @@ ProjectList.propTypes = {
   handleExport: PropTypes.func,
   getProjectUsers: PropTypes.func,
   resetOpenProject: PropTypes.func
-//  users: PropTypes.array
+  //  users: PropTypes.array
 }
 
 export default ProjectList

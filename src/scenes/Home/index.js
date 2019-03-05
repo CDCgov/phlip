@@ -9,12 +9,12 @@ import * as actions from './actions'
 import ExportDialog from './components/ExportDialog'
 import withTracking from 'components/withTracking'
 import SearchBar from 'components/SearchBar'
-import {FlexGrid, Dropdown, ApiErrorAlert } from 'components'
+import { FlexGrid, Dropdown, ApiErrorAlert } from 'components'
 
 /**
- * Project List ("Home") screen main component. The first component that is rendered when the user logs in. This is parent
- * component for all things related to the project list -- adding / editing a project, viewing all projects in the system.
- * This component also has two scenes: AddEditJurisdiction and AddEditProject under scenes directory.
+ * Project List ("Home") screen main component. The first component that is rendered when the user logs in. This is
+ * parent component for all things related to the project list -- adding / editing a project, viewing all projects in
+ * the system. This component also has two scenes: AddEditJurisdiction and AddEditProject under scenes directory.
  */
 export class Home extends Component {
   static propTypes = {
@@ -191,17 +191,21 @@ export class Home extends Component {
     this.clearProjectExport()
   }
 
-  handleSortParmChange = (selectedOption) =>{
+  handleSortParmChange = (selectedOption) => {
     console.log(selectedOption)
-    selectedOption !== 'sortBookmarked'? this.props.actions.sortProjects(selectedOption):this.props.actions.sortBookmarked(!this.props.sortBookmarked)
+    selectedOption !== 'sortBookmarked'
+      ? this.props.actions.sortProjects(selectedOption)
+      : this.props.actions.sortBookmarked(!this.props.sortBookmarked)
   }
+
   render() {
     const options = [
       { value: 'dateLastEdited', label: 'Sort by: Date Last Edited' },
       { value: 'name', label: 'Sort By: Name' },
-      { value: 'lastEditedBy', label: 'Sort By: Last Edited By'},
-      { value: 'sortBookmarked', label: 'Sort By: Bookmarked'}
+      { value: 'lastEditedBy', label: 'Sort By: Last Edited By' },
+      { value: 'sortBookmarked', label: 'Sort By: Bookmarked' }
     ]
+
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">
         <ApiErrorAlert
@@ -233,7 +237,7 @@ export class Home extends Component {
               onChange: this.handleSortParmChange
             }}
             style={{ fontSize: 14 }}
-            formControlStyle={{ minWidth: 180, paddingRight:20 }}
+            formControlStyle={{ minWidth: 180, paddingRight: 20 }}
           />
           <SearchBar
             searchValue={this.searchValue}

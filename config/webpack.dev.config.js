@@ -109,8 +109,6 @@ module.exports = env => {
                 {
                   loader: 'css-loader',
                   options: {
-                    modules: true,
-                    '-autoprefixer': true,
                     importLoaders: true
                   }
                 },

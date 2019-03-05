@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DocumentManagement - DocList - DocListTableHead should render correctly 1`] = `
+<TableRow
+  key="docTableHeaders"
+  style={
+    Object {
+      "width": "100%",
+    }
+  }
+>
+  <TableCell
+    id="file-name"
+    key="file-name"
+    padding="checkbox"
+    scope="col"
+    style={
+      Object {
+        "width": "100%",
+      }
+    }
+  >
+    File Name
+  </TableCell>
+  <TableCell
+    id="uploaded-by"
+    key="uploaded-by"
+    padding="checkbox"
+    scope="col"
+    style={
+      Object {
+        "width": undefined,
+      }
+    }
+  >
+    Uploaded By
+  </TableCell>
+  <TableCell
+    id="uploaded-data"
+    key="uploaded-data"
+    padding="checkbox"
+    scope="col"
+    style={
+      Object {
+        "width": undefined,
+      }
+    }
+  >
+    Uploaded Date
+  </TableCell>
+</TableRow>
+`;
