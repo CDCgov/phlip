@@ -19,9 +19,7 @@ export const addProject = () => {
       await page.waitForSelector(addProjectButton)
       await page.click(addProjectButton)
       await page.waitForNavigation()
-      await page.waitFor(1000)
-
-      await page.waitForSelector('body > div.MuiModal-root-0243.MuiDialog-root-0231.MuiDialog-scrollPaper-0232 > div.MuiPaper-root-0317.MuiPaper-elevation24-0343.MuiPaper-rounded-0318.MuiDialog-paper-0234.MuiDialog-paperScrollPaper-0235.MuiDialog-paperWidthSm-0238 > form', { visible: true })
+      await page.waitForSelector('body > div > div > form', { visible: true })
       const name = await page.$('input[name="name"]')
       await name.click()
       await page.type('input[name="name"]', `Project - ${date}`)
@@ -40,8 +38,6 @@ export const addProject = () => {
       await page.waitForSelector(addProjectButton)
       await page.click(addProjectButton)
       await page.waitForNavigation()
-      await page.waitFor(1000)
-
       await page.waitForSelector('body > div > div > form', { visible: true })
       const name2 = await page.$('input[name="name"]')
       await name2.click()

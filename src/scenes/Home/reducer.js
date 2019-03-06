@@ -4,7 +4,7 @@ import addEditJurisdictions from './scenes/AddEditJurisdictions/reducer'
 import addEditProject from './scenes/AddEditProject/reducer'
 import { updater, commonHelpers, searchUtils, normalize } from 'utils'
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   projects: {
     byId: {},
     allIds: []
@@ -360,17 +360,22 @@ const mainReducer = (state, action) => {
       }
 
     case types.RESET_OPEN_PROJECT:
-      if (action.whereClicked.target.tagName !== 'SPAN'){
-        return {
-          ...state,
-          projectUsers: {
-            ...state.projectUsers,
-            currentProject: null
+      if (action.whereClicked.target !== undefined) {
+        if (action.whereClicked.target.tagName !== 'SPAN') {
+          return {
+            ...state,
+            projectUsers: {
+              ...state.projectUsers,
+              currentProject: null
+            }
           }
+        } else {
+          return state
         }
       } else {
-        return {...state}
+        return state
       }
+
     case types.GET_PROJECTS_REQUEST:
     default:
       return state

@@ -4,6 +4,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
 <Fragment>
   <ClickAwayListener
     mouseEvent="onMouseUp"
+    onClickAway={[Function]}
     touchEvent="onTouchEnd"
   >
     <div

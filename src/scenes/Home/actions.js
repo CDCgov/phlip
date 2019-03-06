@@ -43,8 +43,10 @@ export const getProjectUsers = (projectId, createdBy) => ({
   projectId,
   createdBy
 })
+
 export const getProjectUsersFail = payload => ({
   type: types.GET_PROJECT_USERS_FAIL,
   payload: { errorContent: payload, error: true }
 })
-export const resetOpenProject = (whereClicked) => ({ type: types.RESET_OPEN_PROJECT, whereClicked })
+
+export const resetOpenProject = (whereClicked = { target: {} }) => ({ type: types.RESET_OPEN_PROJECT, whereClicked })

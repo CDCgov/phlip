@@ -62,7 +62,6 @@ let data = null
 // })
 export const docManage = () => {
   describe('doc management', () => {
-    
     test('check upload with excel', async () => {
       console.log('upload with excel started at: ', new Date().toLocaleTimeString())
       await page.goto(`${host}/docs`)

@@ -12,3 +12,4 @@ docs
 .env.prod
 stats.json
 .prettierrc
+*.png

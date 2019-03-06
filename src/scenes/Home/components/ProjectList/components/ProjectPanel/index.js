@@ -14,18 +14,14 @@ import TableCell from '@material-ui/core/TableCell'
 import * as actions from 'scenes/Home/actions'
 import moment from 'moment'
 import { commonHelpers } from 'utils'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-//import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import GridList from '@material-ui/core/GridList'
 import GridListTile from '@material-ui/core/GridListTile'
-import GridListTileBar from '@material-ui/core/GridListTileBar'
 import Typography from '@material-ui/core/Typography'
 import FlexGrid from 'components/FlexGrid'
 import { FileDocument, City, FormatListBulleted, ClipboardCheckOutline, FileExport } from 'mdi-material-ui'
 import { getInitials } from 'utils/normalize'
-import Avatar from 'components/Avatar'
 
 const styles = theme => ({
   root: {
@@ -151,7 +147,7 @@ class ProjectPanel extends Component {
           <ExpansionPanelSummary style={{ padding: 0, margin: 0 }} classes={{ expanded: classes.expanded }}>
             {expanded ? (
               <FlexGrid container type="row" justify="space-between" style={{ width: '100%' }}>
-                <FlexGrid container type="column" style={{ maxWidth: '20%', width: '20%' }}>
+                <FlexGrid container type="column" style={{ maxWidth: '20%' }}>
                   <GridList
                     style={{ width: 300 }}
                     cellHeight={cellHeight}
@@ -167,18 +163,24 @@ class ProjectPanel extends Component {
                               justify="center"
                               align="center"
                               title={`${oneCoder.firstName} ${oneCoder.lastName}`}
-                              style={{ backgroundColor: theme.palette.secondary.main, height: '100%' }}>
+                              style={{ backgroundColor: '#686968', height: '100%' }}>
                               <Typography style={{ fontWeight: 500, fontSize: 45, color: 'white' }}>
                                 {getInitials(oneCoder.firstName, oneCoder.lastName)}
                               </Typography>
                             </FlexGrid>
-                          ) : <img src={oneCoder.avatar} title={`${oneCoder.firstName} ${oneCoder.lastName}`} />
+                          ) : (
+                            <img
+                              alt={`avatar-${oneCoder.lastName}`}
+                              src={oneCoder.avatar}
+                              title={`${oneCoder.firstName} ${oneCoder.lastName}`}
+                            />
+                          )
                         ) : <div style={{ backgroundColor: '#686968', height: '100%' }} />}
                       </GridListTile>
                     ))}
                   </GridList>
                 </FlexGrid>
-                <FlexGrid container type="column" style={{ width: '80%', paddingLeft: 10 }}>
+                <FlexGrid container type="column" style={{ flex: '1 1 auto' }}>
                   <FlexGrid
                     container
                     type="row"
@@ -420,8 +422,8 @@ class ProjectPanel extends Component {
                         padding: '0 12px',
                         border: 'none'
                       }}>
-                      <span style={{ color: 'black' }}>Date Last Edited: </span>
-                      <span> {date}</span>
+                      <span style={{ color: 'black' }}>Date Last Edited:{' '}</span>
+                      <span>{date}</span>
                     </TableCell>
                     <TableCell
                       padding="checkbox"
@@ -435,7 +437,7 @@ class ProjectPanel extends Component {
                         padding: '0 12px',
                         border: 'none'
                       }}>
-                      <span style={{ color: 'black' }}>Last Edited By: </span>
+                      <span style={{ color: 'black' }}>Last Edited By:{' '}</span>
                       {project.lastEditedBy}
                     </TableCell>
                     <TableCell padding="checkbox" style={{ width: '25%', border: 'none' }} />
@@ -493,13 +495,17 @@ class ProjectPanel extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  project: state.scenes.home.main.projects.byId[ownProps.id],
-  role: state.data.user.currentUser.role,
-  bookmarked: state.scenes.home.main.bookmarkList.includes(ownProps.id),
-  users: state.scenes.home.main.projects.byId[ownProps.id].users.all || [],
-  expanded: state.scenes.home.main.projectUsers.currentProject
-})
+const mapStateToProps = (state, ownProps) => {
+  const homeState = state.scenes.home.main
+  const p = homeState.projects.byId[ownProps.id]
+  return {
+    project: p,
+    role: state.data.user.currentUser.role,
+    bookmarked: homeState.bookmarkList.includes(ownProps.id),
+    users: p.users !== undefined ? p.users.all : [],
+    expanded: state.scenes.home.main.projectUsers.currentProject
+  }
+}
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
