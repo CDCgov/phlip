@@ -365,7 +365,7 @@ const mainReducer = (state, action) => {
 
     case types.RESET_OPEN_PROJECT:
       if (action.whereClicked !== undefined) {
-        if (action.whereClicked !== 'SPAN') {
+        if (action.whereClicked.tagName === 'DIV') {
           return {
             ...state,
             projectUsers: {
