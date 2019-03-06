@@ -21,16 +21,17 @@ export const getProjectLogic = createLogic({
   async process({ api, getState }) {
     const projects = await api.getProjects({}, {}, {})
     return {
-      projects: projects.map(project => ({
-        ...project,
-        lastEditedBy: project.lastEditedBy.trim(),
-        projectJurisdictions: commonHelpers.sortListOfObjects(project.projectJurisdictions, 'name', 'asc'),
-        createdById: project.createdById,
-        users: {
-          all: [],
-          lastCheck: null
+      projects: projects.map(project => {
+        const currentProject = getState().scenes.home.main.projects.byId[project.id]
+        const proj = {
+          ...project,
+          lastEditedBy: project.lastEditedBy.trim(),
+          projectJurisdictions: commonHelpers.sortListOfObjects(project.projectJurisdictions, 'name', 'asc'),
+          createdById: project.createdById,
+          users: currentProject === undefined ? { all: [], lastCheck: null } : currentProject.users
         }
-      })),
+        return proj
+      }),
       bookmarkList: [...getState().data.user.currentUser.bookmarks],
       error: false, errorContent: '', searchValue: ''
     }

@@ -221,12 +221,14 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           visible: sortAndSlice(matches, state.page, state.rowsPerPage,state.sortBy,state.sortDirection)
         }
       }
+
     case types.BULK_DELETE_REQUEST:
     //  console.log('bulk delete request activated')
       return {
         ...state,
         bulkOperationInProgress: true
       }
+
     case types.BULK_DELETE_SUCCESS:
       state.documents.checked.forEach(docId => {
         delete state.documents.byId[docId]
@@ -254,6 +256,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         },
         apiErrorOpen: true
       }
+
     case types.BULK_UPDATE_REQUEST:
       return {
         ...state,
@@ -296,6 +299,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         },
         apiErrorOpen: false
       }
+
     case types.SORT_DOCUMENTS:
       const currentSortField = state.sortBy
       const currentSortDirection = state.sortDirection
@@ -320,6 +324,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           visible: sortAndSlice(Object.values(state.documents.byId), state.page, state.rowsPerPage,action.sortBy,sortDirection)
         }
       }
+
     case types.FLUSH_STATE:
       return INITIAL_STATE
 

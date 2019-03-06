@@ -226,6 +226,9 @@ class ProjectPanel extends Component {
                         aria-label="documents in this project"
                         color="white"
                         textColor="black"
+                        component={Link}
+                        disableRipple={true}
+                        to={{ pathname: `/docs`, state: { projectDefined: true, project: this.props.project } }}
                         style={{ marginLeft: 10 }}>
                         Documents
                         <FileDocument style={iconStyle} />
@@ -265,14 +268,14 @@ class ProjectPanel extends Component {
                   <FlexGrid style={{ flexBasis: '1%' }} />
                   <FlexGrid container style={{ paddingLeft: 20 }}>
                     <Typography variant="body2">
-                      <span style={listingStyle}>Date Last Edited: </span>
+                      <span style={listingStyle}>Date Last Edited:{' '}</span>
                       {date}</Typography>
                     <Typography variant="body2">
-                      <span style={listingStyle}>Last Edited By: </span>
+                      <span style={listingStyle}>Last Edited By:{' '}</span>
                       {project.lastEditedBy}
                     </Typography>
                     <Typography variant="body2">
-                      <span style={listingStyle}>Coordinator(s): </span>
+                      <span style={listingStyle}>Coordinator(s):{' '}</span>
                       <span>{this.props.users.filter((oneCoder) => {
                         return oneCoder.role !== 'Coder'
                       }).map((oneCoder) => {
@@ -280,7 +283,7 @@ class ProjectPanel extends Component {
                       }).join(', ')}</span>
                     </Typography>
                     <Typography variant="body2">
-                      <span style={listingStyle}>Coder(s): </span>
+                      <span style={listingStyle}>Coder(s):{' '}</span>
                       <span>{this.props.users.filter((oneCoder) => {
                         return oneCoder.role === 'Coder'
                       }).map((oneCoder) => {

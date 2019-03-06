@@ -193,6 +193,7 @@ export class SearchBox extends Component {
         this.handleSearchFormSubmit()
       }
     }
+
     render() {
       const {
         form: {
@@ -253,6 +254,7 @@ export class SearchBox extends Component {
           padding: 0
         }
       }
+
       return (
         <Manager>
           <Reference>
