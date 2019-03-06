@@ -157,7 +157,7 @@ deploy test azure:
     - cd ~iiu-deploy/esquire-frontend-deploy
     - npm install --production
     - if pm2 list | grep phlip-fe; then pm2 stop phlip-fe; else echo "no phlip-fe process running"; fi
-    - pm2 start scripts/serve --name phlip-fe
+    - pm2 start scripts/serve.js --name phlip-fe
   tags:
     - az-phlip2test-fe
   only:
