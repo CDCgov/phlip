@@ -16,15 +16,17 @@ export const ProjectList = props => {
       <ClickAwayListener onClickAway={event => resetOpenProject(event.target)}>
         <div style={{ overflow: 'auto', padding: 3 }}>
           {projectIds.map((id, i) => (
-            <ProjectPanel
-              key={id}
-              index={i}
-              length={projectIds.length}
-              id={id}
-              onExport={handleExport}
-              role={user.role}
-              getProjectUsers={getProjectUsers}
-            />
+            <ClickAwayListener onClickAway={event => resetOpenProject(event.target)} key={id}>
+              <ProjectPanel
+                key={id}
+                index={i}
+                length={projectIds.length}
+                id={id}
+                onExport={handleExport}
+                role={user.role}
+                getProjectUsers={getProjectUsers}
+              />
+            </ClickAwayListener>
           ))}
         </div>
       </ClickAwayListener>
