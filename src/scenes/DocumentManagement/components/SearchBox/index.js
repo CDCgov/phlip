@@ -134,14 +134,14 @@ export class SearchBox extends Component {
       }
       let p= `["${dBegin}","${dEnd}"]`
       searchTerms.push(`uploadedDate:${p}`)
-    } else if (this.props.form.uploadedDate1 && this.props.form.uploadedDate2 === '') { // user entered only date 1
+    } else if (this.props.form.uploadedDate1 && (this.props.form.uploadedDate2 === '' || this.props.form.uploadedDate2 === undefined)) { // user entered only date 1
       let dBegin = moment.utc(this.props.form.uploadedDate1).local().format('MM/DD/YYYY')
-      let p= `["GE*${dBegin}"]`
+      let p= `["${dBegin}",""]`
       searchTerms.push(`uploadedDate:${p}`)
 
-    } else if (this.props.form.uploadedDate1 === '' && this.props.form.uploadedDate2) { // user only entered date 2
+    } else if ((this.props.form.uploadedDate1 === '' || this.props.form.uploadedDate1 === undefined) && this.props.form.uploadedDate2) { // user only entered date 2
       let dEnd = moment.utc(this.props.form.uploadedDate2).local().format('MM/DD/YYYY')
-      let p= `["LE*${dEnd}"]`
+      let p= `["","${dEnd}"]`
       searchTerms.push(`uploadedDate:${p}`)
     }
 
@@ -193,6 +193,7 @@ export class SearchBox extends Component {
         this.handleSearchFormSubmit()
       }
     }
+
     render() {
       const {
         form: {
@@ -253,6 +254,7 @@ export class SearchBox extends Component {
           padding: 0
         }
       }
+
       return (
         <Manager>
           <Reference>

@@ -557,7 +557,7 @@ describe('Document Management reducer', () => {
     test('should handle if only "from" date entered',() => {
       const action = {
         type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: 'uploadedDate: ["GE*10/10/2010"]',
+        value: 'uploadedDate: ["10/10/2010",""]',
         form: {
           uploadedDate1: '10/10/2010',
           project: {},
@@ -571,7 +571,7 @@ describe('Document Management reducer', () => {
     test('should handle if only to date entered', () => {
       const action = {
         type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: 'uploadedDate: ["LE*10/10/2010"]',
+        value: 'uploadedDate: ["","10/10/2010"]',
         form: {
           uploadedDate2: '10/10/2010',
           project: {},

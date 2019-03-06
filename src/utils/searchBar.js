@@ -12,35 +12,44 @@ const searchForMatches = (arr, searchValue, properties) => {
   const search = searchValue.trim().toLowerCase()
   let dateArray = []
   let date1,date2
-  let parsedDateParts = []
   const offset = new Date().getTimezoneOffset()/60
-
+  let noDateError = true
   try {
     dateArray = JSON.parse(search)
     if (dateArray.length > 1) {
-      date1 = moment(dateArray[0],'MM/DD/YYYY')
-      date2 = moment(dateArray[1],'MM/DD/YYYY')
-      if (date1 > date2) {
-        const tmpdate = date1
-        date1 = date2
-        date2 = tmpdate
+      date1 = moment(dateArray[0],'MM/DD/YYYY',true)
+      date2 = moment(dateArray[1],'MM/DD/YYYY',true)
+      if (date1.isValid() && date2.isValid()) {
+        if (date1 > date2) {
+          const tmpdate = date1
+          date1 = date2
+          date2 = tmpdate
+        }
+        date2 = date2.add(offset, 'hours')
+      } else if (date1.isValid()){
+        date1 = date1.add(offset,'hours')
+      } else if (date2.isValid()) {
+        date2 = date2.add(offset,'hours')
       }
-      date2 = date2.add(offset,'hours')
     } else {
-      parsedDateParts = dateArray[0].split('*')
-      date1 = moment(parsedDateParts[1],'MM/DD/YYYY').add(offset,'hours')
+      // parsedDateParts = dateArray[0].split('*')
+      // date1 = moment(parsedDateParts[1],'MM/DD/YYYY').add(offset,'hours')
+      // do nothing since we do not know what to do
+      noDateError = false
     }
   } catch(e) {
-    // do nothing
+    // console.log(e)
+    noDateError = false
   }
   return arr.filter(x => {
     return properties.some(p => {
-      if (p === 'uploadedDate') {
-        if (dateArray.length > 1) {
+      if (p === 'uploadedDate' && noDateError) {
+        if (date1.isValid() && date2.isValid()) {
           return searchDateBetween(x,p,date1,date2)
-        } else if (dateArray.length === 1) {
-
-          return searchOneDate(x,p,parsedDateParts[0], date1)
+        } else if (date1.isValid()) {
+          return searchOneDate(x,p,'ge', date1)
+        } else if (date2.isValid()) {
+          return searchOneDate(x,p,'le', date2)
         }
       } else {
         return convertValuesToString(x, p).trim().toLowerCase().includes(search)

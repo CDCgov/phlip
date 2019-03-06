@@ -31,6 +31,10 @@ const theme = createMuiTheme({
     },
     greyText: '#757575'
   },
+  card: {
+    topBoxShadow: '0px -1px 5px 0px #f5f5f5',
+    boxShadow: '0px 1px 5px 0px #f5f5f5, 0px 2px 2px 0px #f5f5f5, 0px 3px 1px -2px #f5f5f5, 0px -1px 5px 0px #f5f5f5'
+  },
   scenes: {
     background: '#f5f5f5'
   },

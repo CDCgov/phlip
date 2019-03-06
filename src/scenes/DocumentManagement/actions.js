@@ -1,5 +1,6 @@
 import makeActionCreator from 'utils/makeActionCreator'
 import { makeAutocompleteActionCreators } from 'data/autocomplete/actions'
+import { default as searchActions, types as searchTypes } from './components/SearchBox/actions'
 
 export const types = {
   GET_DOCUMENTS_REQUEST: 'GET_DOCUMENTS_REQUEST',
@@ -18,7 +19,9 @@ export const types = {
   BULK_DELETE_SUCCESS: 'BULK_DELETE_SUCCESS',
   BULK_DELETE_FAIL: 'BULK_DELETE_FAIL',
   CLOSE_ALERT: 'CLOSE_ALERT',
-  SORT_DOCUMENTS : 'SORT_DOCUMENTS'
+  SORT_DOCUMENTS : 'SORT_DOCUMENTS',
+  FORM_VALUE_CHANGE: searchTypes.FORM_VALUE_CHANGE,
+  SEARCH_VALUE_CHANGE: searchTypes.SEARCH_VALUE_CHANGE
 }
 
 export default {
@@ -30,7 +33,9 @@ export default {
   handleBulkUpdate: makeActionCreator(types.BULK_UPDATE_REQUEST, 'updateData','selectedDocs'),
   handleBulkDelete: makeActionCreator(types.BULK_DELETE_REQUEST,'selectedDocs'),
   closeAlert : makeActionCreator(types.CLOSE_ALERT),
-  handleSortRequest:  makeActionCreator(types.SORT_DOCUMENTS, 'sortBy','sortDirection')
+  handleSortRequest:  makeActionCreator(types.SORT_DOCUMENTS, 'sortBy','sortDirection'),
+  handleSearchValueChange: searchActions.updateSearchValue,
+  handleFormValueChange: searchActions.updateFormValue
 }
 
 export const projectAutocomplete = {
