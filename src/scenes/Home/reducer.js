@@ -364,8 +364,8 @@ const mainReducer = (state, action) => {
       }
 
     case types.RESET_OPEN_PROJECT:
-      if (action.whereClicked.target !== undefined) {
-        if (action.whereClicked.target.tagName !== 'SPAN') {
+      if (action.whereClicked !== undefined) {
+        if (action.whereClicked !== 'SPAN') {
           return {
             ...state,
             projectUsers: {
