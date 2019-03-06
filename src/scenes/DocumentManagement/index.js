@@ -12,6 +12,7 @@ import Divider from '@material-ui/core/Divider'
 import ProJurSearch from './components/BulkProJurSearch'
 import { FlexGrid, CircularLoader, ApiErrorAlert, PageLoader } from 'components'
 import actions, { projectAutocomplete, jurisdictionAutocomplete } from './actions'
+import { projectAutocomplete as searchProjectAutocomplete } from './components/SearchBox/actions'
 import ConfirmDocList from './components/ConfirmDocList'
 import { checkIfMultiWord } from 'utils/commonHelpers'
 
@@ -102,16 +103,16 @@ export class DocumentManagement extends Component {
           if (checkIfMultiWord(name)) {
             name = `(${name})`
           }
-
-          this.props.actions.handleSearchValueChange(`project:${name} |`, {
+          this.props.actions.handleSearchValueChange(`project:${name}`, {
             project: this.props.location.state.project,
             jurisdiction: {}
           })
-
           this.props.actions.handleFormValueChange('project', this.props.location.state.project)
+          this.props.actions.searchProjectAutocomplete.onSuggestionSelected(this.props.location.state.project)
         }
       }
     }
+
     if (prevProps.bulkOperationInProgress === true && this.props.bulkOperationInProgress === false) {
       if (this.props.apiErrorOpen) {
         console.log('error detected')
@@ -397,7 +398,8 @@ const mapDispatchToProps = dispatch => ({
   actions: {
     ...bindActionCreators(actions, dispatch),
     projectAutocomplete: bindActionCreators(projectAutocomplete, dispatch),
-    jurisdictionAutocomplete: bindActionCreators(jurisdictionAutocomplete, dispatch)
+    jurisdictionAutocomplete: bindActionCreators(jurisdictionAutocomplete, dispatch),
+    searchProjectAutocomplete: bindActionCreators(searchProjectAutocomplete, dispatch)
   }
 })
 

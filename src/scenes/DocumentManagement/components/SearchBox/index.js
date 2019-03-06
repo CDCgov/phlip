@@ -36,6 +36,10 @@ export class SearchBox extends Component {
     datePicker2Open: false
   }
 
+  componentDidUpdate() {
+
+  }
+
   componentWillUnmount() {
     this.clearForm()
     this.props.actions.clearSearchString()
