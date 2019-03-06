@@ -332,8 +332,12 @@ const mainReducer = (state, action) => {
       } else {
         obj = state.projectUsers.byId
       }
+
       action.payload.users.forEach((user) => {
-        projectUsers.push(obj[user.id])
+        const exists = projectUsers.filter(userObj => userObj.id === user.id)
+        if (exists.length === 0) {
+          projectUsers.push(obj[user.id])
+        }
       })
 
       return {

@@ -16,7 +16,7 @@ const INITIAL_STATE = {
   rowsPerPage: '10',
   page: 0,
   allSelected: false,
-  bulkOperationInProgress:false,
+  bulkOperationInProgress: false,
   apiErrorOpen: false,
   apiErrorInfo: {
     title: '',
@@ -106,7 +106,7 @@ const removeContent = (document, index) => {
   return doc
 }
 
-const sortAndSlice = (arr, page, rowsPerPage,sortBy,sortDirection) => {
+const sortAndSlice = (arr, page, rowsPerPage, sortBy, sortDirection) => {
   if (arr.length === 0) return []
   const sorted = sortListOfObjects(arr, sortBy, sortDirection)
   const ids = sorted.map(m => m._id)
@@ -134,7 +134,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         documents: {
           byId: obj,
           allIds: Object.keys(obj),
-          visible: sortAndSlice(Object.values(obj), 0, state.rowsPerPage,state.sortBy,state.sortDirection),
+          visible: sortAndSlice(Object.values(obj), 0, state.rowsPerPage, state.sortBy, state.sortDirection),
           checked: state.documents.checked
         },
         getDocumentsInProgress: false
@@ -145,7 +145,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(Object.values(state.documents.byId), action.page, state.rowsPerPage,state.sortBy,state.sortDirection)
+          visible: sortAndSlice(Object.values(state.documents.byId), action.page, state.rowsPerPage, state.sortBy, state.sortDirection)
         },
         page: action.page
       }
@@ -162,7 +162,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(Object.values(state.documents.byId), page, rows,state.sortBy,state.sortDirection)
+          visible: sortAndSlice(Object.values(state.documents.byId), page, rows, state.sortBy, state.sortDirection)
         },
         page,
         rowsPerPage: action.rowsPerPage
@@ -206,7 +206,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           ...state.documents,
           byId: obj,
           allIds: Object.keys(obj),
-          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage,state.sortBy,state.sortDirection)
+          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection)
         }
       }
 
@@ -218,12 +218,11 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(matches, state.page, state.rowsPerPage,state.sortBy,state.sortDirection)
+          visible: sortAndSlice(matches, state.page, state.rowsPerPage, state.sortBy, state.sortDirection)
         }
       }
 
     case types.BULK_DELETE_REQUEST:
-    //  console.log('bulk delete request activated')
       return {
         ...state,
         bulkOperationInProgress: true
@@ -240,7 +239,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           ...state.documents,
           byId: obj,
           allIds: Object.keys(obj),
-          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage,state.sortBy,state.sortDirection),
+          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection),
           checked: []
         },
         bulkOperationInProgress: false
@@ -271,12 +270,12 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           ...state.documents,
           byId: obj,
           allIds: Object.keys(obj),
-          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage,state.sortBy,state.sortDirection),
+          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection),
           checked: []
         },
         bulkOperationInProgress: false,
         apiErrorOpen: false,
-        allSelected : false
+        allSelected: false
       }
 
     case types.BULK_UPDATE_FAIL:
@@ -304,7 +303,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       const currentSortField = state.sortBy
       const currentSortDirection = state.sortDirection
       let sortDirection = 'desc'
-      if (action.sortDirection === undefined){
+      if (action.sortDirection === undefined) {
         if (currentSortField !== action.sortBy) {
           // if sort field changed,  set sort direct to asc
           sortDirection = 'asc'
@@ -321,7 +320,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         sortDirection: sortDirection,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(Object.values(state.documents.byId), state.page, state.rowsPerPage,action.sortBy,sortDirection)
+          visible: sortAndSlice(Object.values(state.documents.byId), state.page, state.rowsPerPage, action.sortBy, sortDirection)
         }
       }
 
