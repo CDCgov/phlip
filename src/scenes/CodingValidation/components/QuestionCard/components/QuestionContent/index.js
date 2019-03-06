@@ -71,7 +71,7 @@ export const QuestionContent = props => {
             <Tooltip
               placement='right'
               title={
-                <Typography variant="body2" style={{ color: '#00575D' }}><strong>Coding Directions: </strong>{question.hint}</Typography>
+                <Typography variant="body2" style={{ color: 'black' }}><strong>Coding Directions: </strong>{question.hint}</Typography>
               }>
               <FlexGrid container type='row' justify='center' style={{borderRadius: '50%',width: 25,height:25, background: '#DEDEDE', textAlign:'center', alignItems:'center'}}>
                 <Icon color="#00575D" size="14px">lightbulb_outline</Icon>
