@@ -26,8 +26,8 @@ const INITIAL_STATE = {
   projectUsers: {
     byId: {},
     allIds: [],
-    curProjectUsers:[],
-    currentProject : null
+    curProjectUsers: [],
+    currentProject: null
   }
 }
 
@@ -68,7 +68,8 @@ const sortArray = (arr, state) => {
  * Updates the projects object in state and determines the how to slice the project array
  *
  * @param {Array} updatedProjects
- * @returns {function(updatedArr: Array, page: Number, rowsPerPage: String): {projects: {byId: {}, allIds: Array}, visibleProjects: Array, projectCount: Number, page: Number}}
+ * @returns {function(updatedArr: Array, page: Number, rowsPerPage: String): {projects: {byId: {}, allIds: Array},
+ *   visibleProjects: Array, projectCount: Number, page: Number}}
  */
 const setProjectValues = updatedProjects => (updatedArr, page, rowsPerPage) => {
   const rows = rowsPerPage === 'All' ? updatedArr.length : parseInt(rowsPerPage)
@@ -314,43 +315,59 @@ const mainReducer = (state, action) => {
           text: ''
         }
       }
+
     case types.GET_PROJECT_USERS_SUCCESS:
       const projectId = action.payload.projectId
-      const newUsers = normalize.arrayToObject(action.payload.newUsers,'id')
+      const newUsers = normalize.arrayToObject(action.payload.newUsers, 'id')
       //const iDs = Object.keys(normalize.arrayToObject(action.payload.users))
       let obj = {}
       let projectUsers = []
       // let byProjecObj = {}
       if (Object.keys(newUsers).length > 0) {
         if (Object.keys(state.projectUsers.byId).length > 0) {
-          obj = {...state.projectUsers.byId, ...newUsers}
+          obj = { ...state.projectUsers.byId, ...newUsers }
         } else {
           obj = newUsers
-        } 
+        }
       } else {
         obj = state.projectUsers.byId
       }
-      action.payload.users.forEach((user)=>{
+      action.payload.users.forEach((user) => {
         projectUsers.push(obj[user.id])
       })
+
       return {
         ...state,
+        projects: {
+          ...state.projects,
+          byId: {
+            ...state.projects.byId,
+            [action.payload.projectId]: {
+              ...state.projects.byId[action.payload.projectId],
+              users: {
+                all: projectUsers,
+                lastCheck: new Date()
+              }
+            }
+          }
+        },
         projectUsers: {
           ...state.projectUsers,
           byId: obj,
           allIds: Object.keys(obj),
-          curProjectUsers: projectUsers,
           currentProject: projectId
         }
       }
+
     case types.RESET_OPEN_PROJECT:
       return {
         ...state,
-        projectUsers : {
+        projectUsers: {
           ...state.projectUsers,
           currentProject: null
         }
       }
+
     case types.GET_PROJECTS_REQUEST:
     default:
       return state

@@ -67,7 +67,7 @@ class ProjectPanel extends Component {
         email: this.props.project.createdByEmail
       })
     } else {
-      //this.props.actions.resetOpenProject()
+      this.props.actions.resetOpenProject()
     }
   }
 
@@ -108,7 +108,6 @@ class ProjectPanel extends Component {
         const blankAvatar = { id: Date.now() + i }
         userData.push(blankAvatar)
       }
-
     } else if (users.length >= 2) {
       avatarCols = 2
       avatarRows = 2
@@ -183,7 +182,8 @@ class ProjectPanel extends Component {
                   <FlexGrid
                     container
                     type="row"
-                    style={{ backgroundColor: '#f9f9f9', height: 70, alignItems: 'center' }}>
+                    align="center"
+                    style={{ backgroundColor: '#f9f9f9', height: 70 }}>
                     <FlexGrid container type="row" flex justify="flex-start" style={{ fontSize: 20, paddingLeft: 20 }}>
                       <IconButton
                         color={this.props.bookmarked ? '#fdc43b' : greyIcon}
@@ -208,7 +208,7 @@ class ProjectPanel extends Component {
                       type="row"
                       flex
                       justify="flex-end"
-                      align="center"
+                      align="stretch"
                       style={{ height: 40, paddingRight: 10 }}>
                       {!isCoder && (<Button
                         id={`${project.id}-edit-jurisdictions`}
@@ -265,14 +265,14 @@ class ProjectPanel extends Component {
                   <FlexGrid style={{ flexBasis: '1%' }} />
                   <FlexGrid container style={{ paddingLeft: 20 }}>
                     <Typography variant="body2">
-                      <span style={listingStyle}>Date Last Edited:</span>
+                      <span style={listingStyle}>Date Last Edited: </span>
                       {date}</Typography>
                     <Typography variant="body2">
-                      <span style={listingStyle}>Last Edited By:</span>
+                      <span style={listingStyle}>Last Edited By: </span>
                       {project.lastEditedBy}
                     </Typography>
                     <Typography variant="body2">
-                      <span style={listingStyle}>Coordinator(s):</span>
+                      <span style={listingStyle}>Coordinator(s): </span>
                       <span>{this.props.users.filter((oneCoder) => {
                         return oneCoder.role !== 'Coder'
                       }).map((oneCoder) => {
@@ -280,7 +280,7 @@ class ProjectPanel extends Component {
                       }).join(', ')}</span>
                     </Typography>
                     <Typography variant="body2">
-                      <span style={listingStyle}>Coder(s):</span>
+                      <span style={listingStyle}>Coder(s): </span>
                       <span>{this.props.users.filter((oneCoder) => {
                         return oneCoder.role === 'Coder'
                       }).map((oneCoder) => {
@@ -417,7 +417,7 @@ class ProjectPanel extends Component {
                         padding: '0 12px',
                         border: 'none'
                       }}>
-                      <span style={{ color: 'black' }}>Date Last Edited:</span>
+                      <span style={{ color: 'black' }}>Date Last Edited: </span>
                       <span> {date}</span>
                     </TableCell>
                     <TableCell
@@ -432,7 +432,7 @@ class ProjectPanel extends Component {
                         padding: '0 12px',
                         border: 'none'
                       }}>
-                      <span style={{ color: 'black' }}>Last Edited By:</span>
+                      <span style={{ color: 'black' }}>Last Edited By: </span>
                       {project.lastEditedBy}
                     </TableCell>
                     <TableCell padding="checkbox" style={{ width: '25%', border: 'none' }} />
@@ -494,7 +494,7 @@ const mapStateToProps = (state, ownProps) => ({
   project: state.scenes.home.main.projects.byId[ownProps.id],
   role: state.data.user.currentUser.role,
   bookmarked: state.scenes.home.main.bookmarkList.includes(ownProps.id),
-  users: state.scenes.home.main.projectUsers.curProjectUsers || [],
+  users: state.scenes.home.main.projects.byId[ownProps.id].users.all || [],
   expanded: state.scenes.home.main.projectUsers.currentProject
 })
 
