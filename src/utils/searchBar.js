@@ -10,7 +10,6 @@ import moment from 'moment'
  */
 const searchForMatches = (arr, searchValue, properties) => {
   const search = searchValue.trim().toLowerCase()
-  console.log(searchValue)
   let dateArray = []
   let date1,date2
   const offset = new Date().getTimezoneOffset()/60
@@ -39,7 +38,7 @@ const searchForMatches = (arr, searchValue, properties) => {
       noDateError = false
     }
   } catch(e) {
-    console.log(e)
+    // console.log(e)
     noDateError = false
   }
   return arr.filter(x => {
