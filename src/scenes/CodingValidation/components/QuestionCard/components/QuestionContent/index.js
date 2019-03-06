@@ -66,14 +66,16 @@ export const QuestionContent = props => {
       <FlexGrid padding="20px 20px 10px 20px">
         <FlexGrid align="baseline" container type="row">
           <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
-          <Typography variant="body2" style={{ letterSpacing: 0 }}>{question.text}</Typography>
+          <Typography variant="body2" style={{ letterSpacing: 0 }}>{question.text}&nbsp;</Typography>
           {question.hint && <MuiThemeProvider theme={theme}>
             <Tooltip
               placement='right'
               title={
-                <Typography variant="body2" style={{ color: '#3eafdd' }}><strong>Coding Directions: </strong>{question.hint}</Typography>
+                <Typography variant="body2" style={{ color: '#00575D' }}><strong>Coding Directions: </strong>{question.hint}</Typography>
               }>
-              <Icon color="#3eafdd" size="14px">lightbulb_outline</Icon>
+              <FlexGrid container type='row' justify='center' style={{borderRadius: '50%',width: 25,height:25, background: '#DEDEDE', textAlign:'center', alignItems:'center'}}>
+                <Icon color="#00575D" size="14px">lightbulb_outline</Icon>
+              </FlexGrid>
             </Tooltip>
             </MuiThemeProvider>}
         </FlexGrid>
