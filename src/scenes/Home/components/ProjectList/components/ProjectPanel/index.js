@@ -67,14 +67,14 @@ class ProjectPanel extends Component {
         email: this.props.project.createdByEmail
       })
     } else {
-      this.props.actions.resetOpenProject()
+      //this.props.actions.resetOpenProject()
     }
   }
 
   handleClickAway = panel => (event, expanded) => {
     console.log('i was clicked ', panel)
     if (panel === undefined) {
-      this.props.actions.resetOpenProject
+      this.props.actions.resetOpenProject()
     }
   }
 
