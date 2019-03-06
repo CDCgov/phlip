@@ -28,6 +28,7 @@ export class DocumentList extends Component {
     openedDoc: PropTypes.object,
     answerSelected: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
     annotations: PropTypes.array,
+    annotationsForAnswer: PropTypes.array,
     questionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     saveUserAnswer: PropTypes.func,
     apiErrorInfo: PropTypes.shape({
@@ -226,7 +227,10 @@ const mapStateToProps = (state, ownProps) => {
   const annotatedDocIdsForAnswer = annotationsForAnswer.map(annotation => annotation.docId)
   const notAnnotatedDocIds = pageState.documents.ordered.filter(docId => !annotatedDocIdsForAnswer.includes(docId))
   const annotatedDocIds = pageState.documents.ordered.filter(docId => annotatedDocIdsForAnswer.includes(docId))
-  const annotatedForOpenDoc = annotationsForAnswer.filter(annotation => annotation.docId === pageState.openedDoc._id)
+  const annotatedForOpenDoc = annotationsForAnswer.map((annotation, index) => ({
+    ...annotation,
+    fullListIndex: index
+  })).filter(annotation => annotation.docId === pageState.openedDoc._id)
   const allDocIds = new Set([...annotatedDocIds, ...notAnnotatedDocIds])
   const docArray = Array.from(allDocIds)
 
