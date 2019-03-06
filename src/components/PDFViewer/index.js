@@ -14,13 +14,15 @@ export class PDFViewer extends Component {
     allowSelection: PropTypes.bool,
     annotations: PropTypes.array,
     saveAnnotation: PropTypes.func,
-    removeAnnotation: PropTypes.func
+    removeAnnotation: PropTypes.func,
+    onCheckTextContent: PropTypes.func
   }
 
   static defaultProps = {
     annotations: [],
     document: {},
-    allowSelection: false
+    allowSelection: false,
+    onCheckTextContent: () => {}
   }
 
   constructor(props, context) {
@@ -141,13 +143,16 @@ export class PDFViewer extends Component {
    * @returns {Promise<void>}
    */
   gatherPagePromises = async () => {
-    let pagePromises = []
+    let pagePromises = [], noText = []
     for (let i = 0; i < this.state.pdf.numPages; i++) {
       this[`page${i}ref`] = React.createRef()
-      pagePromises.push(this.getSpecificPage(i))
+      const page = await this.getSpecificPage(i)
+      noText.push(page.textContent.items.length === 0)
+      pagePromises.push(page)
     }
 
     const allPages = await Promise.all(pagePromises)
+    this.props.onCheckTextContent(noText)
     this.setState({
       pages: allPages
     })

@@ -1,109 +1,49 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - ProjectList component should render correctly 1`] = `
-<FlexGrid
-  align="stretch"
-  circular={false}
-  container={true}
-  flex={true}
-  justify="stretch"
-  padding={0}
-  raised={true}
-  style={Object {}}
-  type="column"
->
-  <FlexGrid
-    align="center"
-    circular={false}
-    container={true}
-    flex={false}
-    justify="flex-end"
-    padding={15}
-    raised={false}
-    style={Object {}}
-    type="row"
+<Fragment>
+  <ClickAwayListener
+    mouseEvent="onMouseUp"
+    onClickAway={[Function]}
+    touchEvent="onTouchEnd"
   >
-    <WithTheme(SearchBar)
-      placeholder="Search"
-    />
-  </FlexGrid>
-  <FlexGrid
-    align="stretch"
-    circular={false}
-    container={true}
-    flex={true}
-    justify="stretch"
-    padding={0}
-    raised={false}
-    style={
-      Object {
-        "overflow": "hidden",
-      }
-    }
-    type="column"
-  >
-    <Table
+    <div
       style={
         Object {
-          "borderCollapse": "separate",
-          "display": "block",
           "overflow": "auto",
-          "tableLayout": "auto",
+          "padding": 3,
         }
       }
-      summary="List of projects"
     >
-      <WithStyles(TableHead)
-        style={
-          Object {
-            "width": "100%",
-          }
-        }
-      >
-        <ProjectTableHead
-          direction="asc"
-          onRequestSort={[MockFunction]}
-          onSortBookmarked={[MockFunction]}
-          role="Coordinator"
-          sortBy="name"
+      <Connect(WithTheme(WithStyles(ProjectPanel)))
+        id={1}
+        index={0}
+        key="1"
+        length={2}
+        onExport={[MockFunction]}
+        role="Coordinator"
+      />
+      <Connect(WithTheme(WithStyles(ProjectPanel)))
+        id={2}
+        index={1}
+        key="2"
+        length={2}
+        onExport={[MockFunction]}
+        role="Coordinator"
+      />
+    </div>
+  </ClickAwayListener>
+  <Table>
+    <WithStyles(TableFooter)>
+      <WithStyles(TableRow)>
+        <WithStyles(TablePagination)
+          onChangePage={[Function]}
+          onChangeRowsPerPage={[Function]}
+          page={0}
+          rowsPerPage={10}
         />
-      </WithStyles(TableHead)>
-      <WithStyles(TableBody)>
-        <Connect(WithTheme(ProjectRow))
-          id={1}
-          key="1"
-          onExport={[MockFunction]}
-        />
-        <Connect(WithTheme(ProjectRow))
-          id={2}
-          key="2"
-          onExport={[MockFunction]}
-        />
-      </WithStyles(TableBody)>
-    </Table>
-    <FlexGrid
-      align="stretch"
-      circular={false}
-      container={false}
-      flex={true}
-      justify="stretch"
-      padding={0}
-      raised={false}
-      style={Object {}}
-      type="column"
-    />
-    <Table>
-      <WithStyles(TableFooter)>
-        <WithStyles(TableRow)>
-          <WithStyles(TablePagination)
-            onChangePage={[Function]}
-            onChangeRowsPerPage={[Function]}
-            page={0}
-            rowsPerPage={10}
-          />
-        </WithStyles(TableRow)>
-      </WithStyles(TableFooter)>
-    </Table>
-  </FlexGrid>
-</FlexGrid>
+      </WithStyles(TableRow)>
+    </WithStyles(TableFooter)>
+  </Table>
+</Fragment>
 `;

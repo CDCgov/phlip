@@ -4,7 +4,7 @@ import addEditJurisdictions from './scenes/AddEditJurisdictions/reducer'
 import addEditProject from './scenes/AddEditProject/reducer'
 import { updater, commonHelpers, searchUtils, normalize } from 'utils'
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   projects: {
     byId: {},
     allIds: []
@@ -22,7 +22,13 @@ const INITIAL_STATE = {
   error: false,
   projectCount: 0,
   projectToExport: { text: '' },
-  exportError: ''
+  exportError: '',
+  projectUsers: {
+    byId: {},
+    allIds: [],
+    curProjectUsers: [],
+    currentProject: null
+  }
 }
 
 /**
@@ -62,7 +68,8 @@ const sortArray = (arr, state) => {
  * Updates the projects object in state and determines the how to slice the project array
  *
  * @param {Array} updatedProjects
- * @returns {function(updatedArr: Array, page: Number, rowsPerPage: String): {projects: {byId: {}, allIds: Array}, visibleProjects: Array, projectCount: Number, page: Number}}
+ * @returns {function(updatedArr: Array, page: Number, rowsPerPage: String): {projects: {byId: {}, allIds: Array},
+ *   visibleProjects: Array, projectCount: Number, page: Number}}
  */
 const setProjectValues = updatedProjects => (updatedArr, page, rowsPerPage) => {
   const rows = rowsPerPage === 'All' ? updatedArr.length : parseInt(rowsPerPage)
@@ -307,6 +314,70 @@ const mainReducer = (state, action) => {
         projectToExport: {
           text: ''
         }
+      }
+
+    case types.GET_PROJECT_USERS_SUCCESS:
+      const projectId = action.payload.projectId
+      const newUsers = normalize.arrayToObject(action.payload.newUsers, 'id')
+      //const iDs = Object.keys(normalize.arrayToObject(action.payload.users))
+      let obj = {}
+      let projectUsers = []
+      // let byProjecObj = {}
+      if (Object.keys(newUsers).length > 0) {
+        if (Object.keys(state.projectUsers.byId).length > 0) {
+          obj = { ...state.projectUsers.byId, ...newUsers }
+        } else {
+          obj = newUsers
+        }
+      } else {
+        obj = state.projectUsers.byId
+      }
+
+      action.payload.users.forEach((user) => {
+        const exists = projectUsers.filter(userObj => userObj.id === user.id)
+        if (exists.length === 0) {
+          projectUsers.push(obj[user.id])
+        }
+      })
+
+      return {
+        ...state,
+        projects: {
+          ...state.projects,
+          byId: {
+            ...state.projects.byId,
+            [action.payload.projectId]: {
+              ...state.projects.byId[action.payload.projectId],
+              users: {
+                all: projectUsers,
+                lastCheck: new Date()
+              }
+            }
+          }
+        },
+        projectUsers: {
+          ...state.projectUsers,
+          byId: obj,
+          allIds: Object.keys(obj),
+          currentProject: projectId
+        }
+      }
+
+    case types.RESET_OPEN_PROJECT:
+      if (action.whereClicked !== undefined) {
+        if (action.whereClicked.tagName === 'DIV') {
+          return {
+            ...state,
+            projectUsers: {
+              ...state.projectUsers,
+              currentProject: null
+            }
+          }
+        } else {
+          return state
+        }
+      } else {
+        return state
       }
 
     case types.GET_PROJECTS_REQUEST:

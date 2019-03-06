@@ -16,14 +16,15 @@ const INITIAL_STATE = {
   rowsPerPage: '10',
   page: 0,
   allSelected: false,
-  bulkOperationInProgress:false,
+  bulkOperationInProgress: false,
   apiErrorOpen: false,
   apiErrorInfo: {
     title: '',
     text: ''
   },
   sortBy: 'uploadedDate',
-  sortDirection: 'desc'
+  sortDirection: 'desc',
+  getDocumentsInProgress: false
 }
 
 const mergeName = docObj => ({
@@ -105,7 +106,7 @@ const removeContent = (document, index) => {
   return doc
 }
 
-const sortAndSlice = (arr, page, rowsPerPage,sortBy,sortDirection) => {
+const sortAndSlice = (arr, page, rowsPerPage, sortBy, sortDirection) => {
   if (arr.length === 0) return []
   const sorted = sortListOfObjects(arr, sortBy, sortDirection)
   const ids = sorted.map(m => m._id)
@@ -118,6 +119,12 @@ const sortAndSlice = (arr, page, rowsPerPage,sortBy,sortDirection) => {
 export const docManagementReducer = (state = INITIAL_STATE, action) => {
   let rows = parseInt(state.rowsPerPage)
   switch (action.type) {
+    case types.GET_DOCUMENTS_REQUEST:
+      return {
+        ...state,
+        getDocumentsInProgress: true
+      }
+
     case types.GET_DOCUMENTS_SUCCESS:
       let docs = action.payload.map(mergeName)
       let obj = arrayToObject(docs, '_id')
@@ -127,9 +134,10 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         documents: {
           byId: obj,
           allIds: Object.keys(obj),
-          visible: sortAndSlice(Object.values(obj), 0, state.rowsPerPage,state.sortBy,state.sortDirection),
+          visible: sortAndSlice(Object.values(obj), 0, state.rowsPerPage, state.sortBy, state.sortDirection),
           checked: state.documents.checked
-        }
+        },
+        getDocumentsInProgress: false
       }
 
     case types.ON_PAGE_CHANGE:
@@ -137,7 +145,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(Object.values(state.documents.byId), action.page, state.rowsPerPage,state.sortBy,state.sortDirection)
+          visible: sortAndSlice(Object.values(state.documents.byId), action.page, state.rowsPerPage, state.sortBy, state.sortDirection)
         },
         page: action.page
       }
@@ -154,7 +162,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(Object.values(state.documents.byId), page, rows,state.sortBy,state.sortDirection)
+          visible: sortAndSlice(Object.values(state.documents.byId), page, rows, state.sortBy, state.sortDirection)
         },
         page,
         rowsPerPage: action.rowsPerPage
@@ -198,7 +206,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           ...state.documents,
           byId: obj,
           allIds: Object.keys(obj),
-          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage,state.sortBy,state.sortDirection)
+          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection)
         }
       }
 
@@ -210,15 +218,16 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(matches, state.page, state.rowsPerPage,state.sortBy,state.sortDirection)
+          visible: sortAndSlice(matches, state.page, state.rowsPerPage, state.sortBy, state.sortDirection)
         }
       }
+
     case types.BULK_DELETE_REQUEST:
-    //  console.log('bulk delete request activated')
       return {
         ...state,
         bulkOperationInProgress: true
       }
+
     case types.BULK_DELETE_SUCCESS:
       state.documents.checked.forEach(docId => {
         delete state.documents.byId[docId]
@@ -230,7 +239,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           ...state.documents,
           byId: obj,
           allIds: Object.keys(obj),
-          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage,state.sortBy,state.sortDirection),
+          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection),
           checked: []
         },
         bulkOperationInProgress: false
@@ -246,6 +255,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         },
         apiErrorOpen: true
       }
+
     case types.BULK_UPDATE_REQUEST:
       return {
         ...state,
@@ -260,12 +270,12 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           ...state.documents,
           byId: obj,
           allIds: Object.keys(obj),
-          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage,state.sortBy,state.sortDirection),
+          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection),
           checked: []
         },
         bulkOperationInProgress: false,
         apiErrorOpen: false,
-        allSelected : false
+        allSelected: false
       }
 
     case types.BULK_UPDATE_FAIL:
@@ -288,11 +298,12 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         },
         apiErrorOpen: false
       }
+
     case types.SORT_DOCUMENTS:
       const currentSortField = state.sortBy
       const currentSortDirection = state.sortDirection
       let sortDirection = 'desc'
-      if (action.sortDirection === undefined){
+      if (action.sortDirection === undefined) {
         if (currentSortField !== action.sortBy) {
           // if sort field changed,  set sort direct to asc
           sortDirection = 'asc'
@@ -309,9 +320,10 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         sortDirection: sortDirection,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(Object.values(state.documents.byId), state.page, state.rowsPerPage,action.sortBy,sortDirection)
+          visible: sortAndSlice(Object.values(state.documents.byId), state.page, state.rowsPerPage, action.sortBy, sortDirection)
         }
       }
+
     case types.FLUSH_STATE:
       return INITIAL_STATE
 

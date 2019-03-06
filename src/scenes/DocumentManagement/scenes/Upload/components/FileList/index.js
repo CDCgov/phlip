@@ -152,7 +152,7 @@ export class FileList extends Component {
           ))}
           <div style={{ borderBottom: '1px solid black' }} />
         </Grid>
-        <Grid columnSizing="1fr" autoRowSizing="60px" style={{ flex: 1 }}>
+        <Grid columnSizing="1fr" autoRowSizing="60px" style={{ flex: 1}} id='uploadFileList'>
           {selectedDocs.map((doc, i) => {
             const isDuplicate = duplicateFiles.find(file => file.name === doc.name.value) !== undefined
             const isInvalid = invalidFiles.find(invalidDoc => invalidDoc.doc.name === doc.name.value) !== undefined

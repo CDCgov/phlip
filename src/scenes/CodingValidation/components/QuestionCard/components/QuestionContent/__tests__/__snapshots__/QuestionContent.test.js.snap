@@ -52,7 +52,9 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
           }
         }
         variant="body2"
-      />
+      >
+         
+      </Typography>
     </FlexGrid>
   </FlexGrid>
   <FlexGrid

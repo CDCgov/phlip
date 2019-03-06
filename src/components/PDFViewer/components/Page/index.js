@@ -83,7 +83,7 @@ export class Page extends Component {
    * @param index
    */
   confirmRemoveAnnotation = index => {
-    this.props.confirmRemoveAnnotation(this.props.annotations[index].mainListIndex)
+    this.props.confirmRemoveAnnotation(this.props.annotations[index].fullListIndex)
   }
 
   /**

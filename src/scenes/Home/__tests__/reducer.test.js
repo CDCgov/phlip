@@ -39,7 +39,13 @@ const initial = {
     errorContent: '',
     searchValue: '',
     exportError: '',
-    projectToExport: { text: '' }
+    projectToExport: { text: '' },
+    projectUsers: {
+      byId: {},
+      allIds: [],
+      curProjectUsers: [],
+      currentProject: null
+    }
   },
   addEditProject: { formError: null, goBack: false },
   addEditJurisdictions: {

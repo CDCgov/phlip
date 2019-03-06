@@ -28,6 +28,7 @@ export class DocumentList extends Component {
     openedDoc: PropTypes.object,
     answerSelected: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
     annotations: PropTypes.array,
+    annotationsForAnswer: PropTypes.array,
     questionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     saveUserAnswer: PropTypes.func,
     apiErrorInfo: PropTypes.shape({
@@ -50,6 +51,10 @@ export class DocumentList extends Component {
     super(props, context)
   }
 
+  state = {
+    noTextContent: 2
+  }
+
   componentDidMount() {
     this.props.actions.getApprovedDocumentsRequest(this.props.projectId, this.props.jurisdictionId, this.props.page)
   }
@@ -59,8 +64,8 @@ export class DocumentList extends Component {
   }
 
   /*
-  * Called when user chooses to save an annotation
-  */
+   * Called when user chooses to save an annotation
+   */
   onSaveAnnotation = annotation => {
     this.props.actions.saveAnnotation(annotation, this.props.answerSelected, this.props.questionId)
     this.props.saveUserAnswer()
@@ -87,9 +92,28 @@ export class DocumentList extends Component {
    */
   clearDocSelected = () => {
     this.props.actions.clearDocSelected()
+    this.setState({
+      noTextContent: 2
+    })
+  }
+
+  /**
+   * Handles when a user has selected a document that is not text-selectable
+   */
+  onCheckTextContent = noTextArr => {
+    this.setState({
+      noTextContent: noTextArr.every(noText => noText)
+        ? 0
+        : noTextArr.every(noText => !noText)
+          ? 2
+          : 1
+    })
   }
 
   render() {
+    const bannerBold = { fontWeight: 500, color: theme.palette.secondary.pageHeader }
+    const bannerText = { color: '#434343' }
+
     return (
       <FlexGrid container flex style={{ overflow: 'hidden' }} raised>
         <FlexGrid
@@ -119,14 +143,42 @@ export class DocumentList extends Component {
             </Typography>
           </FlexGrid>}
           {(!this.props.showEmptyDocs && this.props.answerSelected) &&
-          <FlexGrid padding={20} container align="center" style={{ backgroundColor: '#e6f8ff' }}>
-            <Typography>
+          <FlexGrid
+            padding={20}
+            container
+            align="center"
+            style={{ backgroundColor: this.state.noTextContent === 0 ? '#ffcbd3' : '#e6f8ff' }}>
+            <Typography style={{ textAlign: 'center' }}>
               <i>
-                <span style={{ fontWeight: 500, color: theme.palette.secondary.pageHeader }}>Annotation Mode:</span>
-                {' '}
-                <span style={{ color: '#434343' }}>Highlight the desired text and confirm.</span>
+                {this.state.noTextContent > 0 ? (
+                  <>
+                    <span style={bannerBold}>Annotation Mode: </span>
+                    <span style={bannerText}>
+                      {this.props.docSelected
+                        ? 'Highlight the desired text and confirm.'
+                        : 'Select a document to annotate.'}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span style={bannerBold}>NOTE: </span>
+                    <span style={bannerText}>This document does not have text selection. You will not be able to annotate.</span>
+                  </>
+                )}
               </i>
             </Typography>
+            {this.state.noTextContent === 1 &&
+            <Typography style={{ textAlign: 'center', marginTop: 8 }}>
+              <i>
+                {this.state.noTextContent === 1 &&
+                <>
+                  <span style={bannerBold}>NOTE: </span>
+                  <span style={bannerText}>
+                    Some pages of this document do not have text selection. You will not be able to annotate those pages.
+                  </span>
+                </>}
+              </i>
+            </Typography>}
           </FlexGrid>}
           {(this.props.docSelected && !this.props.apiErrorOpen) &&
           <PDFViewer
@@ -135,6 +187,7 @@ export class DocumentList extends Component {
             saveAnnotation={this.onSaveAnnotation}
             annotations={this.props.annotations}
             removeAnnotation={this.onRemoveAnnotation}
+            onCheckTextContent={this.onCheckTextContent}
           />}
           {!this.props.docSelected && this.props.documents.map((doc, i) => {
             return (
@@ -174,7 +227,10 @@ const mapStateToProps = (state, ownProps) => {
   const annotatedDocIdsForAnswer = annotationsForAnswer.map(annotation => annotation.docId)
   const notAnnotatedDocIds = pageState.documents.ordered.filter(docId => !annotatedDocIdsForAnswer.includes(docId))
   const annotatedDocIds = pageState.documents.ordered.filter(docId => annotatedDocIdsForAnswer.includes(docId))
-  const annotatedForOpenDoc = annotationsForAnswer.filter(annotation => annotation.docId === pageState.openedDoc._id)
+  const annotatedForOpenDoc = annotationsForAnswer.map((annotation, index) => ({
+    ...annotation,
+    fullListIndex: index
+  })).filter(annotation => annotation.docId === pageState.openedDoc._id)
   const allDocIds = new Set([...annotatedDocIds, ...notAnnotatedDocIds])
   const docArray = Array.from(allDocIds)
 

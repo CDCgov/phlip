@@ -1,7 +1,3 @@
-variables:
-  SUB_BUILD: $CI_PIPELINE_ID
-  BRANCH: $CI_COMMIT_REF_NAME
-
 stages:
   - lint
   - unit test
@@ -48,6 +44,7 @@ build and deploy on staging:
   before_script:
     - if pm2 list | grep fe; then pm2 stop fe; else echo "no fe process running"; fi
   script:
+    - npm install
     - echo "APP_DOC_MANAGE_API=http://0.0.0.0:3000" > .env
     - echo "APP_API_URL=http://0.0.0.0:8000" >> .env
     - echo "HEADLESS=1" >> .env
@@ -56,24 +53,27 @@ build and deploy on staging:
     - pm2 start scripts/serve.js --name fe
     - cd ../esquire-backend
     - sudo /usr/local/bin/docker-compose down
-    - if sudo docker ps -a | grep esquire-backend_esquire-backend_1; then sudo docker rm esquire-backend_esquire-backend_1; else echo "no BE container"; fi
     - if sudo docker ps -a | grep mssqldev; then sudo docker rm mssqldev; else echo "no sql container"; fi
-    - sudo /usr/local/bin/docker-compose up --build -d
+    - sudo docker volume prune -f
+    - sudo /usr/local/bin/docker-compose up -d
     - cd ../esquire-doc-management
     - sudo /usr/local/bin/docker-compose down
-    - if sudo docker ps -a | grep doc-manage; then sudo docker rm doc-manage; else echo "no doc-manage container"; fi
     - if sudo docker ps -a | grep doc-manage-mongo; then sudo docker rm doc-manage-mongo; else echo "no mongo container"; fi
-    - sudo /usr/local/bin/docker-compose up --build -d
+    - sudo docker volume prune -f
+    - sudo /usr/local/bin/docker-compose up -d
+    - if [ ! -d tmp/ ]; then sudo mkdir tmp/; fi
+    - sudo chmod 777 tmp/
+    - sudo chown gitlab-runner:gitlab-runner tmp/
+    - /home/gitlab-runner/scripts-phlip/add_jurisdictions.sh
   tags:
     - phlip2-dev
   only:
-    - development
+    - staging
   artifacts:
     paths:
       - dist/
+      - node_modules/
     expire_in: 1 hour
-  dependencies:
-    - lint
   environment:
     name: Internal PHLIP2 Dev
     url: http://lvscent7064.lab.local
@@ -85,9 +85,8 @@ run e2e tests staging:
   tags:
     - phlip2-dev
   only:
-    - development
+    - staging
   dependencies:
-    - lint
     - build and deploy on staging
   environment:
     name: Internal PHLIP2 Dev
@@ -151,7 +150,6 @@ build test azure:
   environment:
     name: Azure PHLIP2 Test
     url: https://phlip2test.phiresearchlab.org
-  dependencies: []
 
 deploy test azure:
   stage: deploy
@@ -159,7 +157,7 @@ deploy test azure:
     - cd ~iiu-deploy/esquire-frontend-deploy
     - npm install --production
     - if pm2 list | grep phlip-fe; then pm2 stop phlip-fe; else echo "no phlip-fe process running"; fi
-    - pm2 start scripts/serve.js --name phlip-fe
+    - pm2 start scripts/serve --name phlip-fe
   tags:
     - az-phlip2test-fe
   only:
@@ -167,4 +165,3 @@ deploy test azure:
   environment:
     name: Azure PHLIP2 Test
     url: https://phlip2test.phiresearchlab.org
-  dependencies: []

@@ -18,7 +18,16 @@ describe('Home logic', () => {
 
   const setupStore = initialBookmarks => {
     return createMockStore({
-      initialState: { data: { user: { currentUser: { id: 5, bookmarks: initialBookmarks } } } },
+      initialState: {
+        scenes: {
+          home: {
+            main: {
+              projects: { byId: {} }
+            }
+          }
+        },
+        data: { user: { currentUser: { id: 5, bookmarks: initialBookmarks } } }
+      },
       reducer: mockReducer,
       logic,
       injectedDeps: {
@@ -44,8 +53,29 @@ describe('Home logic', () => {
           type: types.GET_PROJECTS_SUCCESS,
           payload: {
             projects: [
-              { name: 'Project 1', id: 1, lastEditedBy: 'Test User', dateLastEdited: '1/1/2000', projectJurisdictions: [] },
-              { name: 'Project 2', id: 2, lastEditedBy: 'Test User', projectJurisdictions: [] }
+              {
+                createdById: undefined,
+                name: 'Project 1',
+                id: 1,
+                lastEditedBy: 'Test User',
+                dateLastEdited: '1/1/2000',
+                projectJurisdictions: [],
+                users: {
+                  all: [],
+                  lastCheck: null
+                }
+              },
+              {
+                createdById: undefined,
+                name: 'Project 2',
+                id: 2,
+                lastEditedBy: 'Test User',
+                projectJurisdictions: [],
+                users: {
+                  all: [],
+                  lastCheck: null
+                }
+              }
             ],
             bookmarkList: [1],
             error: false,
