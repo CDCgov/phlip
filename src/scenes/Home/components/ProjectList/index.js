@@ -13,7 +13,7 @@ export const ProjectList = props => {
 
   return (
     <>
-      <ClickAwayListener onClickAway={resetOpenProject}>
+      <ClickAwayListener onClickAway={resetOpenProject((event)=>event.target)}>
         <div style={{ overflow: 'auto', padding: 3 }}>
           {projectIds.map((id, i) => (
             <ProjectPanel

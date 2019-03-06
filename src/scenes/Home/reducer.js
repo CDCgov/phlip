@@ -360,14 +360,17 @@ const mainReducer = (state, action) => {
       }
 
     case types.RESET_OPEN_PROJECT:
-      return {
-        ...state,
-        projectUsers: {
-          ...state.projectUsers,
-          currentProject: null
+      if (action.whereClicked.target.tagName !== 'SPAN'){
+        return {
+          ...state,
+          projectUsers: {
+            ...state.projectUsers,
+            currentProject: null
+          }
         }
+      } else {
+        return {...state}
       }
-
     case types.GET_PROJECTS_REQUEST:
     default:
       return state
