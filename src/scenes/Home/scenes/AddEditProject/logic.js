@@ -12,7 +12,8 @@ export const addProjectLogic = createLogic({
       dispatch({
         type: types.ADD_PROJECT_SUCCESS,
         payload: {
-          ...project
+          ...project,
+          users: { lastCheck: null, all: [] }
         }
       })
     } catch (error) {
@@ -37,7 +38,8 @@ export const updateProjectLogic = createLogic({
       dispatch({
         type: types.UPDATE_PROJECT_SUCCESS,
         payload: {
-          ...updatedProject
+          ...updatedProject,
+          users: updatedProject.hasOwnProperty('users') ? updatedProject.users : { lastCheck: null, all: [] }
         }
       })
     } catch (error) {
