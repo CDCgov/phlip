@@ -19,7 +19,18 @@ describe('Home scene - AddEditProject logic', () => {
 
   const setupStore = initialBookmarks => {
     return createMockStore({
-      initialState: { data: { user: { currentUser: { id: 5, bookmarks: initialBookmarks, firstName: 'Test', lastName: 'User' }}}},
+      initialState: {
+        data: {
+          user: {
+            currentUser: {
+              id: 5,
+              bookmarks: initialBookmarks,
+              firstName: 'Test',
+              lastName: 'User'
+            }
+          }
+        }
+      },
       reducer: mockReducer,
       logic: logic,
       injectedDeps: {
@@ -41,8 +52,8 @@ describe('Home scene - AddEditProject logic', () => {
     store.dispatch({ type: types.ADD_PROJECT_REQUEST, project })
     store.whenComplete(() => {
       expect(store.actions).toEqual([
-        { type: types.ADD_PROJECT_REQUEST, project: { ...project, userId: 5} },
-        { type: types.ADD_PROJECT_SUCCESS, payload: { ...project } }
+        { type: types.ADD_PROJECT_REQUEST, project: { ...project, userId: 5 } },
+        { type: types.ADD_PROJECT_SUCCESS, payload: { ...project, users: { all: [], lastCheck: null } } }
       ])
       done()
     })
@@ -53,7 +64,10 @@ describe('Home scene - AddEditProject logic', () => {
     const store = setupStore([])
 
     mock.onPut('/projects/1').reply(200, project)
-    store.dispatch({ type: types.UPDATE_PROJECT_REQUEST, project: { ...project, userId: 5} })
+    store.dispatch({
+      type: types.UPDATE_PROJECT_REQUEST,
+      project: { ...project, userId: 5 }
+    })
     store.whenComplete(() => {
       expect(store.actions[1].type).toEqual('UPDATE_PROJECT_SUCCESS')
       expect(store.actions[1].payload.lastEditedBy).toEqual('Test User')
