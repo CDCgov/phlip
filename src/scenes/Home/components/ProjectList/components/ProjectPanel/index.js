@@ -68,7 +68,7 @@ class ProjectPanel extends Component {
   }
 
   handleClickAway = panel => (event, expanded) => {
-   // console.log('i was clicked ', panel)
+    // console.log('i was clicked ', panel)
     if (panel === undefined) {
       this.props.actions.resetOpenProject()
     }
