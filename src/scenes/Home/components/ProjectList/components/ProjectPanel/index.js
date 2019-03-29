@@ -68,7 +68,7 @@ class ProjectPanel extends Component {
   }
 
   handleClickAway = panel => (event, expanded) => {
-    console.log('i was clicked ', panel)
+   // console.log('i was clicked ', panel)
     if (panel === undefined) {
       this.props.actions.resetOpenProject()
     }
@@ -267,16 +267,16 @@ class ProjectPanel extends Component {
                       </Button>
                     </FlexGrid>
                   </FlexGrid>
-                  <FlexGrid style={{ flexBasis: '1%' }} />
+                  <FlexGrid style={{ flexBasis: '15%' }} />
                   <FlexGrid container style={{ paddingLeft: 20 }}>
-                    <Typography variant="body2">
+                    <Typography variant="body2" style={{paddingBottom:10}}>
                       <span style={listingStyle}>Date Last Edited:{' '}</span>
                       {date}</Typography>
-                    <Typography variant="body2">
+                    <Typography variant="body2" style={{paddingBottom:10}}>
                       <span style={listingStyle}>Last Edited By:{' '}</span>
                       {project.lastEditedBy}
                     </Typography>
-                    <Typography variant="body2">
+                    <Typography variant="body2" style={{paddingBottom:10}}>
                       <span style={listingStyle}>Coordinator(s):{' '}</span>
                       <span>{this.props.users.filter((oneCoder) => {
                         return oneCoder.role !== 'Coder'
@@ -284,13 +284,17 @@ class ProjectPanel extends Component {
                         return oneCoder.firstName + ' ' + oneCoder.lastName
                       }).join(', ')}</span>
                     </Typography>
-                    <Typography variant="body2">
+                    <Typography variant="body2" style={{paddingBottom:10}}>
                       <span style={listingStyle}>Coder(s):{' '}</span>
                       <span>{this.props.users.filter((oneCoder) => {
                         return oneCoder.role === 'Coder'
                       }).map((oneCoder) => {
                         return oneCoder.firstName + ' ' + oneCoder.lastName
                       }).join(', ')}</span>
+                    </Typography>
+                    <Typography variant="body2">
+                      <span style={listingStyle}>Type:{' '}</span>
+                      <span>{(this.props.project.type===1)?'Legal Scan':'Policy Surveillance'}</span>
                     </Typography>
                     <FlexGrid />
                   </FlexGrid>
@@ -365,9 +369,20 @@ class ProjectPanel extends Component {
                 style={{
                   borderCollapse: 'separate',
                   display: 'block',
-                  tableLayout: 'auto',
+                  tableLayout: 'fixed',
                   overflow: 'auto'
+
                 }}>
+                <colgroup>
+                  <col style={{width:'1%'}} />
+                  <col style={{width:'33%'}} />
+                  <col style={{width:'15%'}} />
+                  <col style={{width:'15%'}} />
+                  <col style={{width:'0%'}} />
+                  <col style={{width:'5%'}} />
+                  <col style={{width:'5%'}} />
+                  <col style={{width:'5%'}} />
+                </colgroup>
                 <TableBody>
                   <TableRow
                     style={{
@@ -379,6 +394,7 @@ class ProjectPanel extends Component {
                     }}>
                     <TableCell
                       {...generateKeyAndId('bookmarked')}
+                      padding="checkbox"
                       style={{ paddingLeft: 24, paddingRight: 0, width: '1%', border: 'none' }}>
                       <IconButton
                         color={this.props.bookmarked ? '#fdc43b' : greyIcon}
@@ -391,13 +407,12 @@ class ProjectPanel extends Component {
                     </TableCell>
                     <TableCell
                       {...generateKeyAndId('name')}
-                      padding="checkbox"
+                      // padding="checkbox"
                       style={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        width: '35%',
-                        maxWidth: '35%',
+                        // width: '35%',
                         padding: '0 12px',
                         border: 'none'
                       }}>
@@ -411,14 +426,14 @@ class ProjectPanel extends Component {
                       </TextLink>
                     </TableCell>
                     <TableCell
-                      padding="checkbox"
+                      // padding="checkbox"
                       {...generateKeyAndId('dateLastEdited')}
                       style={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        width: '15%',
-                        maxWidth: '15%',
+                        // width: '15%',
+                        // maxWidth: '15%',
                         padding: '0 12px',
                         border: 'none'
                       }}>
@@ -426,30 +441,36 @@ class ProjectPanel extends Component {
                       <span>{date}</span>
                     </TableCell>
                     <TableCell
-                      padding="checkbox"
+                      // padding="checkbox"
                       {...generateKeyAndId('lastEditedBy')}
                       style={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        width: '15%',
-                        maxWidth: '15%',
+                        // width: '15%',
+                        // maxWidth: '15%',
                         padding: '0 12px',
                         border: 'none'
                       }}>
                       <span style={{ color: 'black' }}>Last Edited By:{' '}</span>
                       {project.lastEditedBy}
                     </TableCell>
-                    <TableCell padding="checkbox" style={{ width: '25%', border: 'none' }} />
+                    <TableCell
+                      // padding="checkbox"
+                      style={{
+                        // width: '25%',
+                        //   maxWidth:'25%',
+                        border: 'none' }}
+                    />
                     <TableCell
                       {...generateKeyAndId('code')}
-                      padding="checkbox"
+                      // padding="checkbox"
                       style={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        width: '5%',
-                        maxWidth: '5%',
+                        // width: '5%',
+                        // maxWidth: '5%',
                         padding: '0 12px',
                         border: 'none'
                       }}>
@@ -465,13 +486,13 @@ class ProjectPanel extends Component {
                     {!isCoder &&
                     <TableCell
                       {...generateKeyAndId('validate')}
-                      padding="checkbox"
+                      // padding="checkbox"
                       style={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        width: '5%',
-                        maxWidth: '5%',
+                        // width: '5%',
+                        // maxWidth: '5%',
                         padding: '0 12px',
                         border: 'none'
                       }}>
