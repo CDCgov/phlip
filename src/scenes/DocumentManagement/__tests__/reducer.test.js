@@ -107,7 +107,8 @@ const initial = {
   },
   sortBy: 'uploadedDate',
   sortDirection: 'desc',
-  getDocumentsInProgress: false
+  getDocumentsInProgress: false,
+  matchedDocs: []
 }
 
 const getState = (other = {}) => ({
