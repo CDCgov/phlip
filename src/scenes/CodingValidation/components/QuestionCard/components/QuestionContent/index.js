@@ -1,18 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import InputBox from 'components/InputBox'
-import RadioGroupValidation from 'components/SelectionControls/RadioGroupValidation'
-import CheckboxGroupValidation from 'components/SelectionControls/CheckboxGroupValidation'
+import SelectionControlQuestion from './components/SelectionControlQuestion'
 import Icon from 'components/Icon'
 import SimpleInput from 'components/SimpleInput'
-import Container, { Row, Column } from 'components/Layout'
+import { Row, Column } from 'components/Layout'
 import * as questionTypes from '../../../../constants'
-import TextFieldQuestions from '../TextFieldQuestions'
+import TextFieldQuestions from './components/TextFieldQuestions'
 import Button from 'components/Button'
 import ValidationTable from '../ValidationTable'
 import { FlexGrid, Typography } from 'components'
 import Tooltip from 'components/Tooltip'
-import { createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles'
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
 
 export const QuestionContent = props => {
   const {
@@ -62,87 +61,97 @@ export const QuestionContent = props => {
   })
 
   return (
-    <Container column flex style={{ flexWrap: 'nowrap', paddingBottom: 15, overflow: 'auto' }}>
+    <FlexGrid container flex style={{ flexWrap: 'nowrap', paddingBottom: 15, overflow: 'auto' }}>
       <FlexGrid padding="20px 20px 10px 20px">
         <FlexGrid align="baseline" container type="row">
           <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
           <Typography variant="body2" style={{ letterSpacing: 0 }}>{question.text}&nbsp;</Typography>
           {question.hint && <MuiThemeProvider theme={theme}>
             <Tooltip
-              placement='right'
+              placement="right"
               title={
-                <Typography variant="body2" style={{ color: 'black' }}><strong>Coding Directions: </strong>{question.hint}</Typography>
+                <Typography variant="body2" style={{ color: 'black' }}>
+                  <strong>Coding Directions:</strong>{question.hint}
+                </Typography>
               }>
-              <FlexGrid container type='row' justify='center' style={{borderRadius: '50%',width: 25,height:25, background: '#DEDEDE', textAlign:'center', alignItems:'center'}}>
+              <FlexGrid
+                container
+                type="row"
+                justify="center"
+                style={{
+                  borderRadius: '50%',
+                  width: 25,
+                  height: 25,
+                  background: '#DEDEDE',
+                  textAlign: 'center',
+                  alignItems: 'center'
+                }}>
                 <Icon color="#00575D" size="14px">lightbulb_outline</Icon>
               </FlexGrid>
             </Tooltip>
-            </MuiThemeProvider>}
+          </MuiThemeProvider>}
         </FlexGrid>
       </FlexGrid>
       <FlexGrid container flex style={{ ...questionAnswerPadding, flexBasis: '60%' }}>
         <FlexGrid container type="row" style={{ ...answerPadding, paddingRight: 0, overflow: 'auto' }}>
-          {(question.questionType === questionTypes.MULTIPLE_CHOICE || question.questionType === questionTypes.BINARY)
-          && <RadioGroupValidation {...selectionFormProps} />}
-          {(question.questionType === questionTypes.CATEGORY || question.questionType === questionTypes.CHECKBOXES)
-          && <CheckboxGroupValidation {...selectionFormProps} />}
+          {question.questionType !== questionTypes.TEXT_FIELD && <SelectionControlQuestion {...selectionFormProps} />}
         </FlexGrid>
 
         {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions === null &&
-          <Column displayFlex style={{ ...answerPadding, paddingRight: 0 }}>
-            <InputBox
-              rows="7"
-              name="text-answer"
-              onChange={onChangeTextAnswer}
-              placeholder="Enter answer"
-              question={question}
-              value={userAnswers.answers[question.possibleAnswers[0].id]}
-              answerId={question.possibleAnswers[0].id}
-              disabled={disableAll}
-              onToggleAnswerForAnno={onToggleAnswerForAnno}
-              enabledAnswerChoice={enabledAnswerChoice}
-              areDocsEmpty={areDocsEmpty}
-            />
-          </Column>}
-
-        {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions !== null &&
-          <TextFieldQuestions
-            style={{ ...answerPadding, paddingRight: 0 }}
-            mergedUserQuestions={mergedUserQuestions}
-            validatorAnswer={userAnswers.answers[question.possibleAnswers[0].id]}
-            validator={userAnswers.validatedBy}
+        <Column displayFlex style={{ ...answerPadding, paddingRight: 0 }}>
+          <InputBox
+            rows="7"
+            name="text-answer"
             onChange={onChangeTextAnswer}
-            userImages={userImages}
+            placeholder="Enter answer"
             question={question}
+            value={userAnswers.answers[question.possibleAnswers[0].id]}
             answerId={question.possibleAnswers[0].id}
             disabled={disableAll}
+            onToggleAnswerForAnno={onToggleAnswerForAnno}
+            enabledAnswerChoice={enabledAnswerChoice}
             areDocsEmpty={areDocsEmpty}
           />
+        </Column>}
+
+        {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions !== null &&
+        <TextFieldQuestions
+          style={{ ...answerPadding, paddingRight: 0 }}
+          mergedUserQuestions={mergedUserQuestions}
+          validatorAnswer={userAnswers.answers[question.possibleAnswers[0].id]}
+          validator={userAnswers.validatedBy}
+          onChange={onChangeTextAnswer}
+          userImages={userImages}
+          question={question}
+          answerId={question.possibleAnswers[0].id}
+          disabled={disableAll}
+          areDocsEmpty={areDocsEmpty}
+        />
         }
         <Row style={{ ...answerPadding, paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
           {question.includeComment &&
-            <Row>
-              <SimpleInput
-                onChange={onChangeTextAnswer(null, 'comment')}
-                name="comment"
-                shrinkLabel={true}
-                style={{ whiteSpace: 'pre-wrap' }}
-                placeholder="Enter comment"
-                value={comment}
-                rowsMax={3}
-                aria-label="Comment"
-                label="Comment"
-                disabled={disableAll}
-              />
-            </Row>}
+          <Row>
+            <SimpleInput
+              onChange={onChangeTextAnswer(null, 'comment')}
+              name="comment"
+              shrinkLabel={true}
+              style={{ whiteSpace: 'pre-wrap' }}
+              placeholder="Enter comment"
+              value={comment}
+              rowsMax={3}
+              aria-label="Comment"
+              label="Comment"
+              disabled={disableAll}
+            />
+          </Row>}
           {question.isCategoryQuestion &&
-            <Row displayFlex style={{ justifyContent: 'flex-start', paddingTop: 20 }}>
-              <Button
-                onClick={onOpenAlert}
-                style={{ backgroundColor: 'white', color: 'black' }}
-                value="Apply to all tabs"
-              />
-            </Row>}
+          <Row displayFlex style={{ justifyContent: 'flex-start', paddingTop: 20 }}>
+            <Button
+              onClick={onOpenAlert}
+              style={{ backgroundColor: 'white', color: 'black' }}
+              value="Apply to all tabs"
+            />
+          </Row>}
         </Row>
       </FlexGrid>
 
@@ -152,7 +161,7 @@ export const QuestionContent = props => {
         questionFlags={question.flags}
         userImages={userImages}
       />}
-    </Container>
+    </FlexGrid>
   )
 }
 

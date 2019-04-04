@@ -5,7 +5,7 @@ import Divider from '@material-ui/core/Divider'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import InputBox from 'components/InputBox'
-import ValidationAvatar from 'components/ValidationAvatar'
+import ValidationAvatar from '../ValidationAvatarList'
 
 export const TextFieldQuestions = props => {
   const {

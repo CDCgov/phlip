@@ -110,6 +110,7 @@ const getCoderInformation = async ({ api, action, questionId, userImages }) => {
   }
 
   for (let coderUser of allCodedQuestions) {
+    console.log(coderUser)
     if (coderUser.codedQuestions.length > 0) {
       codedQuestionObj = { ...mergeInUserCodedQuestions(codedQuestionObj, coderUser.codedQuestions, coderUser.coder) }
     }

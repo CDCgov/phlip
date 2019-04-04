@@ -1,0 +1,197 @@
+import React from 'react'
+import PropTypes from 'prop-types'
+import Checkbox from '@material-ui/core/Checkbox'
+import Radio from '@material-ui/core/Radio'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormGroup from '@material-ui/core/FormGroup'
+import FormLabel from '@material-ui/core/FormLabel'
+import { withStyles } from '@material-ui/core/styles'
+import ValidationAvatarList from '../ValidationAvatarList'
+import { FlexGrid, IconButton, Avatar, SimpleInput } from 'components'
+import { Marker } from 'mdi-material-ui'
+import * as types from 'scenes/CodingValidation/constants'
+import PinciteList from '../PinciteList'
+
+const styles = theme => ({
+  checked: {
+    color: theme.palette.secondary.main
+  }
+})
+
+/**
+ * Checkbox form group for Coding / Validation screens
+ */
+export const SelectionControlQuestion = props => {
+  const {
+    choices, userAnswers, onChange, onChangePincite, pincites,
+    classes, mergedUserQuestions, disableAll, userImages, theme, question,
+    enabledAnswerChoice, onToggleAnswerForAnno, areDocsEmpty
+  } = props
+
+  const Control = [types.CATEGORY, types.CHECKBOXES].includes(question.questionType) ? Checkbox : Radio
+  const isValidation = mergedUserQuestions !== null
+
+  return (
+    <FormControl component="fieldset">
+      <FormLabel component="legend" style={{ display: 'none' }} id="question_text">{question.text}</FormLabel>
+      <FormGroup>
+        {choices.map(choice => {
+          const controlProps = {
+            classes: { checked: classes.checked },
+            inputProps: { id: choice.id, 'aria-describedby': 'question_text' }
+          }
+
+          const answerList = mergedUserQuestions !== null &&
+            mergedUserQuestions.answers.filter(answer => answer.schemeAnswerId === choice.id)
+
+          const isAnswered = userAnswers.answers.hasOwnProperty(choice.id)
+          const validatedBy = isValidation ? userAnswers.validatedBy : {}
+          const list = (isValidation && isAnswered)
+            ? [...answerList, { ...userAnswers.answers[choice.id], isValidatorAnswer: true, ...validatedBy }]
+            : answerList
+
+          return (
+            <FlexGrid
+              container
+              key={choice.id}
+              padding="0 10px 50px 10px"
+              style={{ backgroundColor: enabledAnswerChoice === choice.id ? '#e6f8ff' : 'white' }}>
+              <FormControlLabel
+                checked={isAnswered}
+                aria-checked={isAnswered}
+                onChange={onChange(choice.id)}
+                htmlFor={choice.id}
+                control={<Control {...controlProps} />}
+                disabled={disableAll}
+                label={choice.text}
+                aria-label={choice.text}
+              />
+
+              {isValidation &&
+              <ValidationAvatarList
+                userImages={{ ...userImages, [validatedBy.userId]: { ...validatedBy } }}
+                answerList={list}
+                selectedIndex={99}
+              />}
+
+              {isValidation && pincites &&
+              <PinciteList
+                answerList={answerList}
+                userImages={userImages}
+              />}
+
+              {isAnswered && <SimpleInput
+                key={`${choice.id}-pincite`}
+                placeholder="Enter pincite"
+                value={userAnswers.answers[choice.id].pincite}
+                multiline={false}
+                InputProps={{ inputProps: { 'aria-label': 'Pincite' } }}
+                style={{ paddingLeft: 32, paddingTop: 10, width: '90%' }}
+                onChange={onChangePincite(choice.id, 'pincite')}
+              />}
+
+              {isAnswered && !areDocsEmpty &&
+              <IconButton
+                style={{ alignSelf: 'center', marginLeft: 20 }}
+                onClick={onToggleAnswerForAnno(choice.id)}
+                color={enabledAnswerChoice === choice.id ? 'primary' : '#757575'}
+                iconSize={20}>
+                <Marker style={{ fontSize: 20 }} />
+              </IconButton>}
+            </FlexGrid>
+          )
+        })}
+      </FormGroup>
+    </FormControl>
+  )
+}
+
+SelectionControlQuestion.defaultProps = {
+  pincites: true,
+  userImages: undefined
+}
+
+SelectionControlQuestion.propTypes = {
+  /**
+   * Array of answer choices to display as checkbox inputs
+   */
+  choices: PropTypes.array,
+  /**
+   * The user's answer object for this question
+   */
+  userAnswers: PropTypes.object,
+  /**
+   * Function to call when a user clicks a checkbox input
+   */
+  onChange: PropTypes.func,
+  /**
+   * Function to call when the user changes the pincite text field
+   */
+  onChangePincite: PropTypes.func,
+  /**
+   * Whether or not to show pincite text field
+   */
+  pincites: PropTypes.bool,
+  /**
+   * Object of coded questions (used on validation for displaying who answered each answer choice)
+   */
+  mergedUserQuestions: PropTypes.object,
+  /**
+   * Whether or not to disabled all inputs
+   */
+  disableAll: PropTypes.bool,
+  /**
+   * User images array for getting the avatars (used in validation)
+   */
+  userImages: PropTypes.object,
+  /**
+   * Current question
+   */
+  question: PropTypes.object,
+  /**
+   * @material-ui/core theme object
+   */
+  theme: PropTypes.object,
+  /**
+   * Style classes object from @material-ui/core
+   */
+  classes: PropTypes.object,
+  /**
+   * answer choice id that has been selected for annotating
+   */
+  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * handles when a user enables / disables an answer choice for annotating
+   */
+  onToggleAnswerForAnno: PropTypes.func,
+  /**
+   * Whether or not this project / jurisdiction has documents
+   */
+  areDocsEmpty: PropTypes.bool
+}
+
+export default withStyles(styles, { withTheme: true })(SelectionControlQuestion)
+
+/*mergedUserQuestions.answers.map((answer, index) => (
+ answer.schemeAnswerId === choice.id &&
+ <ValidationAvatar
+ key={`user-answer-${index}`}
+ avatar={userImages[answer.userId] !== undefined ? userImages[answer.userId].avatar : ''}
+ answer={answer}
+ />
+ ))}*/
+/*isAnswered
+ && mergedUserQuestions !== null
+ && <Avatar
+ cardAvatar
+ avatar={userImageObj.avatar}
+ userName={`${userImageObj.firstName} ${userImageObj.lastName}`}
+ key={mergedUserQuestions.answers.length + 1}
+ style={{
+ backgroundColor: 'white',
+ color: theme.palette.secondary.main,
+ borderColor: theme.palette.secondary.main
+ }}
+ initials={getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
+ />}*/

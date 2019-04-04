@@ -5,8 +5,7 @@ import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import { getInitials } from 'utils/normalize'
 import { connect } from 'react-redux'
-import { Card, IconButton, Tabs, Alert, PageLoader } from 'components'
-import { Row, Column } from 'components/Layout'
+import { IconButton, Tabs, Alert, PageLoader, FlexGrid } from 'components'
 import styles from './card-styles.scss'
 import * as questionTypes from '../../constants'
 import FlagPopover from './components/FlagPopover'
@@ -65,14 +64,14 @@ export class QuestionCard extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.unsavedChanges === true) {
+    if (nextProps.unsavedChanges) {
       this.setState({
         isSaving: true
       })
       clearTimeout()
     }
 
-    if (this.props.unsavedChanges === true && nextProps.unsavedChanges === false) {
+    if (this.props.unsavedChanges && !nextProps.unsavedChanges) {
       setTimeout(() => {
         this.setState({
           isSaving: false
@@ -217,7 +216,7 @@ export class QuestionCard extends Component {
     ]
 
     return (
-      <Row displayFlex style={{ flex: 1, width: '50%', minWidth: '10%' }}>
+      <FlexGrid container type="row" flex style={{ width: '50%', minWidth: '10%' }}>
         <Alert actions={alertActions} title={this.state.confirmAlertInfo.title} open={this.state.confirmAlertOpen}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             {this.state.confirmAlertInfo.text}
@@ -228,18 +227,18 @@ export class QuestionCard extends Component {
             Are you sure you want to clear your answer to this question?
           </Typography>
         </Alert>
-        <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
+        <FlexGrid container flex raised style={{ width: '100%' }}>
           {this.props.questionChangeLoader === true
             ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
             : <>
-              <Row displayFlex style={{ alignItems: 'center', height: 55, paddingRight: 15 }}>
-                <Row style={{ width: '100%' }}>
+              <FlexGrid container type="row" align="center" padding="0 15px 0 0" style={{ height: 55, minHeight: 55 }}>
+                <FlexGrid flex style={{ width: '100%' }}>
                   {this.props.hasTouchedQuestion &&
                   <Typography variant="caption" style={{ paddingLeft: 10, textAlign: 'center', color: '#757575' }}>
                     {this.props.saveFailed ? 'Save failed!' : this.state.isSaving ? 'Saving...' : 'All changes saved'}
                   </Typography>}
-                </Row>
-                <Row displayFlex style={{ marginLeft: this.getMargin() }}>
+                </FlexGrid>
+                <FlexGrid container type="row" style={{ marginLeft: this.getMargin() }}>
                   {this.props.question.questionType !== questionTypes.CATEGORY &&
                   <IconButton
                     onClick={this.onClearAnswer}
@@ -256,8 +255,8 @@ export class QuestionCard extends Component {
                     user={this.props.user}
                     disableAll={this.props.disableAll}
                   />}
-                </Row>
-              </Row>
+                </FlexGrid>
+              </FlexGrid>
               <Divider />
               {this.props.categories !== undefined
                 ? (
@@ -277,8 +276,8 @@ export class QuestionCard extends Component {
                 showNextButton={this.props.showNextButton}
               />
             </>}
-        </Column>
-      </Row>
+        </FlexGrid>
+      </FlexGrid>
     )
   }
 }
