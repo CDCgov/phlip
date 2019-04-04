@@ -56,7 +56,7 @@ export const SelectionControlQuestion = props => {
             <FlexGrid
               container
               key={choice.id}
-              padding={isValidation ? '0 10px 50px 10px' : '0 10px 25px 10px'}
+              padding="0 10px 25px 10px"
               style={{ backgroundColor: enabledAnswerChoice === choice.id ? '#e6f8ff' : 'white' }}>
               <FormControlLabel
                 checked={isAnswered}
@@ -69,21 +69,21 @@ export const SelectionControlQuestion = props => {
                 aria-label={choice.text}
               />
 
-              {isValidation &&
-              <ValidationAvatarList
-                userImages={{ ...userImages, [validatedBy.userId]: { ...validatedBy } }}
-                answerList={list}
-                selectedIndex={99}
-              />}
-
-              {isValidation &&
-              <PinciteList
-                answerList={answerList}
-                userImages={userImages}
-                isAnswered={isAnswered}
-                validatorObj={{ ...userAnswers.answers[choice.id], ...validatedBy }}
-                handleChangePincite={onChangePincite}
-              />}
+              {(isValidation && list.length > 0) &&
+              <>
+                <ValidationAvatarList
+                  userImages={userImages}
+                  answerList={list}
+                  selectedIndex={99}
+                />
+                <PinciteList
+                  answerList={answerList}
+                  userImages={userImages}
+                  isAnswered={isAnswered}
+                  validatorObj={{ ...userAnswers.answers[choice.id], ...validatedBy }}
+                  handleChangePincite={onChangePincite}
+                />
+              </>}
 
               {(isAnswered && !isValidation) &&
               <PinciteTextField

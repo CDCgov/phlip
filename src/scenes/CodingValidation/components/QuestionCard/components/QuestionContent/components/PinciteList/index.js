@@ -79,7 +79,10 @@ export class PinciteList extends Component {
     const { answerList, userImages, handleChangePincite, validatorObj, isAnswered } = this.props
     const { expanded, copied } = this.state
 
+    const pincitesExist = (answerList.filter(answer => answer.pincite.length > 0)).length > 0
+
     return (
+      pincitesExist &&
       <FlexGrid container padding="0 10px 0 32px" align="flex-start">
         <Snackbar
           open={copied}

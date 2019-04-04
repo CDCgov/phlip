@@ -20,7 +20,7 @@ export const ValidationAvatarList = props => {
   }
 
   return (
-    <FlexGrid container type="row" padding="10px 10px 8px 32px">
+    <FlexGrid container type="row" padding="5px 10px 8px 32px">
       {answerList.map((answer, i) => {
         const initials = getInitials(answer.firstName, answer.lastName)
         const username = `${answer.firstName} ${answer.lastName}`
