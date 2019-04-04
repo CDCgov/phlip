@@ -83,7 +83,7 @@ export class PinciteList extends Component {
 
     return (
       pincitesExist &&
-      <FlexGrid container padding="0 10px 0 32px" align="flex-start">
+      <FlexGrid container padding="0 10px 0 0" align="flex-start">
         <Snackbar
           open={copied}
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}

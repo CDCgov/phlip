@@ -25,7 +25,7 @@ const styles = theme => ({
  */
 export const SelectionControlQuestion = props => {
   const {
-    choices, userAnswers, onChange, onChangePincite, pincites,
+    choices, userAnswers, onChange, onChangePincite,
     classes, mergedUserQuestions, disableAll, userImages, question,
     enabledAnswerChoice, onToggleAnswerForAnno, areDocsEmpty
   } = props
@@ -57,7 +57,7 @@ export const SelectionControlQuestion = props => {
             <FlexGrid
               container
               key={choice.id}
-              padding="0 10px 20px 0"
+              padding="0 10px 25px 0"
               style={{ backgroundColor: enabledAnswerChoice === choice.id ? '#e6f8ff' : 'white' }}>
               <FormControlLabel
                 checked={isAnswered}
@@ -71,7 +71,7 @@ export const SelectionControlQuestion = props => {
               />
 
               {(isValidation && list.length > 0) &&
-              <>
+              <FlexGrid padding="0 10px 0 32px">
                 <ValidationAvatarList
                   userImages={userImages}
                   answerList={list}
@@ -84,7 +84,7 @@ export const SelectionControlQuestion = props => {
                   validatorObj={{ ...userAnswers.answers[choice.id], ...validatedBy }}
                   handleChangePincite={onChangePincite}
                 />
-              </>}
+              </FlexGrid>}
 
               {(isAnswered && !isValidation) &&
               <PinciteTextField
@@ -134,10 +134,6 @@ SelectionControlQuestion.propTypes = {
   /**
    * Whether or not to show pincite text field
    */
-  pincites: PropTypes.bool,
-  /**
-   * Object of coded questions (used on validation for displaying who answered each answer choice)
-   */
   mergedUserQuestions: PropTypes.object,
   /**
    * Whether or not to disabled all inputs
@@ -170,26 +166,3 @@ SelectionControlQuestion.propTypes = {
 }
 
 export default withStyles(styles)(SelectionControlQuestion)
-
-/*mergedUserQuestions.answers.map((answer, index) => (
- answer.schemeAnswerId === choice.id &&
- <ValidationAvatar
- key={`user-answer-${index}`}
- avatar={userImages[answer.userId] !== undefined ? userImages[answer.userId].avatar : ''}
- answer={answer}
- />
- ))}*/
-/*isAnswered
- && mergedUserQuestions !== null
- && <Avatar
- cardAvatar
- avatar={userImageObj.avatar}
- userName={`${userImageObj.firstName} ${userImageObj.lastName}`}
- key={mergedUserQuestions.answers.length + 1}
- style={{
- backgroundColor: 'white',
- color: theme.palette.secondary.main,
- borderColor: theme.palette.secondary.main
- }}
- initials={getInitials(userAnswers.validatedBy.firstName, userAnswers.validatedBy.lastName)}
- />}*/

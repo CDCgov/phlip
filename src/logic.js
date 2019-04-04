@@ -2,7 +2,7 @@
  * This collects all of the logic through the application into one array that is passed to redux-logic middleware.
  */
 import { createLogic } from 'redux-logic'
-import * as types from 'data/user/actionTypes'
+import { types } from 'data/users/actions'
 import scenesLogic from 'scenes/logic'
 import dataLogic from 'data/logic'
 import { logout } from 'services/authToken'

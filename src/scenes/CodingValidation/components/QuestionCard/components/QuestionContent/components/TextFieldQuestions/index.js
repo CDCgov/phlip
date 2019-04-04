@@ -1,67 +1,186 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { Row, Column } from 'components/Layout'
 import Divider from '@material-ui/core/Divider'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
-import InputBox from 'components/InputBox'
-import ValidationAvatar from '../ValidationAvatarList'
+import { InputBox, FlexGrid, Column, Row, IconButton } from 'components'
+import ValidationAvatarList from '../ValidationAvatarList'
+import Avatar from 'components/Avatar'
+import { getInitials } from 'utils/normalize'
+import TextField from '@material-ui/core/TextField'
+import { Marker } from 'mdi-material-ui'
+import PinciteTextField from '../PinciteTextField'
 
 export const TextFieldQuestions = props => {
   const {
-    mergedUserQuestions, validator, validatorAnswer, areDocsEmpty,
+    mergedUserQuestions, userAnswers, validator, validatorAnswer, areDocsEmpty,
     onChange, answerId, style, userImages, disabled, question
   } = props
 
+  const isValidation = mergedUserQuestions !== null
+  const isAnswered = userAnswers.answers.hasOwnProperty(answerId)
+
+  /*const {
+   value, onChange, name, rows, answerId, classes, validator, theme, question,
+   isValidation, userImages, style, onToggleAnswerForAnno, enabledAnswerChoice, areDocsEmpty, ...otherProps
+   } = props
+
+   const userImageObj = userImages
+   ? userImages[validator.userId] !== undefined
+   ? userImages[validator.userId]
+   : validator
+   : {}*/
+
+  //const textValues = value === undefined ? { textAnswer: '', pincite: '' } : value
+
   return (
-    <>
-      <Column flex displayFlex style={{ overflow: 'auto', paddingLeft: style.paddingLeft }}>
-        {mergedUserQuestions.answers.map((answer, index) =>
-          <Fragment key={answer.id}>
-            <Row displayFlex style={{ alignItems: 'center', paddingTop: 20, paddingBottom: 20, paddingRight: 5 }}>
-              <ValidationAvatar
-                answer={answer}
-                avatar={userImages[answer.userId].avatar !== undefined
-                  ? userImages[answer.userId].avatar
-                  : ''}
-                key={`user-answer-${index}`}
-              />
-              <Paper elevation={0} style={{ marginLeft: 20 }}>
-                <Typography style={{ whiteSpace: 'pre-wrap' }} variant="body2">{answer.textAnswer}</Typography>
-              </Paper>
-            </Row>
-            <Divider />
-          </Fragment>)}
-      </Column>
-      <InputBox
-        rows="4"
-        name="text-answer"
-        onChange={onChange}
-        placeholder="Enter answer"
-        question={question}
-        style={{ paddingLeft: style.paddingLeft }}
-        validator={validator}
-        value={validatorAnswer}
-        userImages={userImages}
-        answerId={answerId}
-        disabled={disabled}
-        isValidation={true}
-        areDocsEmpty={areDocsEmpty}
-      />
-    </>
+    <FlexGrid container align="flex-start">
+      {isValidation && mergedUserQuestions.answers.map((answer, index) =>
+        <Fragment key={answer.id}>
+          <FlexGrid container align="flex-start" padding="20px 5px 0 0">
+            <Typography style={{ whiteSpace: 'pre-wrap' }} variant="body1">{answer.textAnswer}</Typography>
+          </FlexGrid>
+          <ValidationAvatarList
+            answer={answer}
+            answerList={[answer]}
+            userImages={userImages}
+          />
+          <Divider />
+        </Fragment>)}
+      <InputBox onChange={onChange(answerId, 'textAnswer')} value={userAnswers.answers[answerId].textAnswer} />
+      {/*{isAnswered && <PinciteTextField
+        handleChangePincite={onChange(answerId, 'pincite')}
+        schemeAnswerId={answerId}
+        pinciteValue={userAnswers.answers[answerId].pincite}
+      />}*/}
+    </FlexGrid>
   )
+
+  /* <FlexGrid container type="row" style={{ alignItems: 'center', padding: isValidation ? '10px 0 0 0' : '' }}>
+   {isValidation &&
+   <Avatar
+   cardAvatar
+   avatar={userImageObj.avatar}
+   userName={`${userImageObj.firstName} ${userImageObj.lastName}`}
+   style={{
+   marginRight: 15,
+   backgroundColor: 'white',
+   color: theme.palette.secondary.main,
+   borderColor: theme.palette.secondary.main
+   }}
+   initials={getInitials(validator.firstName, validator.lastName)}
+   />}
+   <label style={{ display: 'none' }} id="question_text">{question.text}</label>
+   <TextField
+   value={textValues.textAnswer}
+   onChange={onChange(answerId, 'textAnswer')}
+   multiline
+   type="text"
+   name={name}
+   fullWidth
+   rows={rows}
+   InputProps={{
+   disableUnderline: true,
+   classes: {
+   input: classes.textFieldInput
+   },
+   inputProps: {
+   'aria-describedby': 'question_text'
+   }
+   }}
+   {...otherProps}
+   />
+   </FlexGrid>
+   {textValues.textAnswer && textValues.textAnswer.length > 0 &&
+   <div style={{ paddingTop: 10, paddingBottom: 20 }}>
+   <SimpleInput
+   name="pincite"
+   value={textValues.pincite === null ? '' : textValues.pincite}
+   placeholder="Enter pincite"
+   label="Pincite"
+   InputProps={{ inputProps: { 'aria-label': 'Pincite' } }}
+   onChange={onChange(answerId, 'pincite')}
+   multiline={false}
+   shrinkLabel
+   style={{ flex: 1 }}
+   />
+   </div>}
+   </Column>
+
+   return (
+   <>
+   <FlexGrid container flex padding={style.paddingLeft} style={{ overflow: 'auto' }}>
+   </FlexGrid>
+   <InputBox
+   rows="4"
+   name="text-answer"
+   onChange={onChange}
+   placeholder="Enter answer"
+   question={question}
+   style={{ paddingLeft: style.paddingLeft }}
+   validator={validator}
+   value={validatorAnswer}
+   userImages={userImages}
+   answerId={answerId}
+   disabled={disabled}
+   isValidation={true}
+   areDocsEmpty={areDocsEmpty}
+   />
+   </>
+   )*/
 }
 
 TextFieldQuestions.propTypes = {
-  mergedUserQuestions: PropTypes.object,
-  validator: PropTypes.object,
-  validatorAnswer: PropTypes.string,
+  /**
+   * Value of the input field
+   */
+  value: PropTypes.any,
+  /**
+   * Function to call when the input changes
+   */
   onChange: PropTypes.func,
+  /**
+   * Name of the input
+   */
+  name: PropTypes.string,
+  /**
+   * Number of rows the textarea should be
+   */
+  rows: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  /**
+   * schemeAnswerId of the Coding / Validation question
+   */
   answerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  style: PropTypes.object,
-  userImages: PropTypes.object,
-  disabled: PropTypes.bool,
+  /**
+   * Style classes from @material-ui/core
+   */
+  classes: PropTypes.object,
+  /**
+   * Who is validated this question
+   */
+  validator: PropTypes.object,
+  /**
+   * Theme object from @material-ui/core
+   */
+  theme: PropTypes.object,
+  /**
+   * Coding / Validation question object
+   */
   question: PropTypes.object,
+  /**
+   * Whether or not this is being rendered on Validation scene
+   */
+  isValidation: PropTypes.bool,
+  /**
+   * Collection of user images for ValidationAvatar
+   */
+  userImages: PropTypes.object,
+  /**
+   * Outer container style
+   */
+  style: PropTypes.object,
+  onToggleAnswerForAnno: PropTypes.func,
+  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   areDocsEmpty: PropTypes.bool
 }
 
