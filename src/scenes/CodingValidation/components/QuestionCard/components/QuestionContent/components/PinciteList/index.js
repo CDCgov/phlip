@@ -5,28 +5,62 @@ import Collapse from '@material-ui/core/Collapse'
 import { getInitials } from 'utils/normalize'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Snackbar, FlexGrid, Avatar, Icon } from 'components'
+import PinciteTextField from '../PinciteTextField'
 import Button from '@material-ui/core/Button'
 import theme from 'services/theme'
+
+const PinciteAvatar = ({ answerObj, userImages }) => {
+  const initials = getInitials(answerObj.firstName, answerObj.lastName)
+  const username = `${answerObj.firstName} ${answerObj.lastName}`
+  return (
+    <Avatar
+      cardAvatar
+      avatar={userImages[answerObj.userId].avatar}
+      initials={initials}
+      aria-label={`${username}'s pincite: ${answerObj.pincite}`}
+      userName={username}
+      small
+      style={{ margin: '0 10px 0 0', fontSize: '.5rem', outline: 0 }}
+    />
+  )
+}
+
+PinciteAvatar.propTypes = {
+  answerObj: PropTypes.object,
+  userImages: PropTypes.object
+}
 
 /**
  * List of pincites in the validation screen
  */
 export class PinciteList extends Component {
-  constructor(context, props) {
-    super(context, props)
-
-    this.state = {
-      expanded: false,
-      copied: false
-    }
+  static propTypes = {
+    answerList: PropTypes.array,
+    userImages: PropTypes.object,
+    validatorObj: PropTypes.object,
+    isAnswered: PropTypes.bool,
+    handleChangePincite: PropTypes.func
   }
 
+  state = {
+    expanded: false,
+    copied: false
+  }
+
+  /**
+   * Hides or closes the list of pincites
+   * @public
+   */
   handleToggle = () => {
     this.setState({
       expanded: !this.state.expanded
     })
   }
 
+  /**
+   * Sets a timeout to show the snackbar to let user know pincite has been copied
+   * @public
+   */
   handlePinciteCopy = () => {
     this.setState({ copied: true })
     setTimeout(this.handleCloseSnackbar, 3500)
@@ -42,7 +76,7 @@ export class PinciteList extends Component {
   }
 
   render() {
-    const { answerList, userImages } = this.props
+    const { answerList, userImages, handleChangePincite, validatorObj, isAnswered } = this.props
     const { expanded, copied } = this.state
 
     return (
@@ -70,11 +104,10 @@ export class PinciteList extends Component {
             {expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
           </Icon>
         </FlexGrid>
-        <Collapse in={expanded}>
-          <FlexGrid container>
+        <Collapse in={expanded} style={{ alignSelf: 'stretch' }}>
+          <FlexGrid container align="flex-start">
             {answerList.map((answer, i) => {
               const hasPincite = answer.pincite !== null ? answer.pincite.length > 0 : false
-              const initials = getInitials(answer.firstName, answer.lastName)
               const username = `${answer.firstName} ${answer.lastName}`
               return (
                 <CopyToClipboard
@@ -82,15 +115,7 @@ export class PinciteList extends Component {
                   onCopy={hasPincite && this.handlePinciteCopy}
                   key={`${username}-pincite`}>
                   <FlexGrid container type="row" align="center" style={{ cursor: 'pointer', marginBottom: 3 }}>
-                    <Avatar
-                      cardAvatar
-                      avatar={userImages[answer.userId].avatar}
-                      initials={initials}
-                      aria-label={`${username}'s pincite: ${answer.pincite}`}
-                      userName={username}
-                      small
-                      style={{ margin: '0 10px 0 0', fontSize: '.5rem', outline: 0 }}
-                    />
+                    <PinciteAvatar answerObj={answer} userImages={userImages} />
                     <Typography
                       align="center"
                       style={{
@@ -103,28 +128,21 @@ export class PinciteList extends Component {
                 </CopyToClipboard>
               )
             })}
+            {isAnswered &&
+            <FlexGrid container type="row" style={{ alignSelf: 'stretch' }}>
+              <PinciteAvatar answerObj={validatorObj} userImages={userImages} />
+              <PinciteTextField
+                handleChangePincite={handleChangePincite}
+                pinciteValue={validatorObj.pincite}
+                schemeAnswerId={validatorObj.schemeAnswerId}
+                style={{ padding: 0 }}
+              />
+            </FlexGrid>}
           </FlexGrid>
         </Collapse>
       </FlexGrid>
     )
   }
-}
-
-PinciteList.propTypes = {
-  /**
-   * Answer object for the answer associated with the validation avatar
-   */
-  answer: PropTypes.object,
-
-  /**
-   * base64 string for the image to use in the avatar
-   */
-  avatar: PropTypes.string,
-
-  /**
-   * Classes object from @material-ui/core
-   */
-  classes: PropTypes.object
 }
 
 export default PinciteList

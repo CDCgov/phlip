@@ -8,7 +8,8 @@ import FormGroup from '@material-ui/core/FormGroup'
 import FormLabel from '@material-ui/core/FormLabel'
 import { withStyles } from '@material-ui/core/styles'
 import ValidationAvatarList from '../ValidationAvatarList'
-import { FlexGrid, IconButton, Avatar, SimpleInput } from 'components'
+import PinciteTextField from '../PinciteTextField'
+import { FlexGrid, IconButton } from 'components'
 import { Marker } from 'mdi-material-ui'
 import * as types from 'scenes/CodingValidation/constants'
 import PinciteList from '../PinciteList'
@@ -25,7 +26,7 @@ const styles = theme => ({
 export const SelectionControlQuestion = props => {
   const {
     choices, userAnswers, onChange, onChangePincite, pincites,
-    classes, mergedUserQuestions, disableAll, userImages, theme, question,
+    classes, mergedUserQuestions, disableAll, userImages, question,
     enabledAnswerChoice, onToggleAnswerForAnno, areDocsEmpty
   } = props
 
@@ -55,7 +56,7 @@ export const SelectionControlQuestion = props => {
             <FlexGrid
               container
               key={choice.id}
-              padding="0 10px 50px 10px"
+              padding={isValidation ? '0 10px 50px 10px' : '0 10px 25px 10px'}
               style={{ backgroundColor: enabledAnswerChoice === choice.id ? '#e6f8ff' : 'white' }}>
               <FormControlLabel
                 checked={isAnswered}
@@ -75,20 +76,20 @@ export const SelectionControlQuestion = props => {
                 selectedIndex={99}
               />}
 
-              {isValidation && pincites &&
+              {isValidation &&
               <PinciteList
                 answerList={answerList}
                 userImages={userImages}
+                isAnswered={isAnswered}
+                validatorObj={{ ...userAnswers.answers[choice.id], ...validatedBy }}
+                handleChangePincite={onChangePincite}
               />}
 
-              {isAnswered && <SimpleInput
-                key={`${choice.id}-pincite`}
-                placeholder="Enter pincite"
-                value={userAnswers.answers[choice.id].pincite}
-                multiline={false}
-                InputProps={{ inputProps: { 'aria-label': 'Pincite' } }}
-                style={{ paddingLeft: 32, paddingTop: 10, width: '90%' }}
-                onChange={onChangePincite(choice.id, 'pincite')}
+              {(isAnswered && !isValidation) &&
+              <PinciteTextField
+                schemeAnswerId={choice.id}
+                pinciteValue={userAnswers.answers[choice.id].pincite}
+                handleChangePincite={onChangePincite}
               />}
 
               {isAnswered && !areDocsEmpty &&
@@ -150,10 +151,6 @@ SelectionControlQuestion.propTypes = {
    */
   question: PropTypes.object,
   /**
-   * @material-ui/core theme object
-   */
-  theme: PropTypes.object,
-  /**
    * Style classes object from @material-ui/core
    */
   classes: PropTypes.object,
@@ -171,7 +168,7 @@ SelectionControlQuestion.propTypes = {
   areDocsEmpty: PropTypes.bool
 }
 
-export default withStyles(styles, { withTheme: true })(SelectionControlQuestion)
+export default withStyles(styles)(SelectionControlQuestion)
 
 /*mergedUserQuestions.answers.map((answer, index) => (
  answer.schemeAnswerId === choice.id &&
