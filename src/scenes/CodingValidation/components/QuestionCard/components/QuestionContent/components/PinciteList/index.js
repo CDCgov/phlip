@@ -79,7 +79,7 @@ export class PinciteList extends Component {
     const { answerList, userImages, handleChangePincite, validatorObj, isAnswered } = this.props
     const { expanded, copied } = this.state
 
-    const pincitesExist = (answerList.filter(answer => answer.pincite.length > 0)).length > 0
+    const pincitesExist = (answerList.filter(answer => answer.pincite.length > 0)).length > 0 || isAnswered
 
     return (
       pincitesExist &&
@@ -113,7 +113,7 @@ export class PinciteList extends Component {
               const hasPincite = answer.pincite !== null ? answer.pincite.length > 0 : false
               const username = `${answer.firstName} ${answer.lastName}`
               return (
-                <CopyToClipboard
+                hasPincite && <CopyToClipboard
                   text={answer.pincite}
                   onCopy={hasPincite && this.handlePinciteCopy}
                   key={`${username}-pincite`}>

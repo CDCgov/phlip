@@ -172,7 +172,9 @@ export const getOutlineLogic = createLogic({
         const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(action.projectId, action.jurisdictionId, userId, api.getUserCodedQuestions)
 
         // Initialize the user answers object
-        const userAnswers = initializeUserAnswers([initializeNextQuestion(firstQuestion), ...codedValQuestions], questionsById, userId)
+        const userAnswers = initializeUserAnswers([
+          initializeNextQuestion(firstQuestion), ...codedValQuestions
+        ], questionsById, userId)
 
         payload = {
           ...payload,
@@ -223,7 +225,9 @@ export const getValidationOutlineLogic = createLogic({
         const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(action.projectId, action.jurisdictionId, userId, api.getValidatedQuestions)
 
         // Initialize the user answers object
-        const userAnswers = initializeUserAnswers([initializeNextQuestion(firstQuestion), ...codedValQuestions], questionsById, userId)
+        const userAnswers = initializeUserAnswers([
+          initializeNextQuestion(firstQuestion), ...codedValQuestions
+        ], questionsById, userId)
 
         // Get all the coded questions for this question
         const coderInfo = await getCoderInformation({
@@ -302,12 +306,13 @@ const answerQuestionLogic = createLogic({
   validate({ getState, action, api }, allow, reject) {
     const state = getState().scenes.codingValidation.coding
     const userId = getState().data.user.currentUser.id
-    const apiMethods = action.page === 'validation'
+    const isValidation = state.page === 'validation'
+
+    const apiMethods = isValidation
       ? { create: api.answerValidatedQuestion, update: api.updateValidatedQuestion }
       : { create: api.answerCodedQuestion, update: api.updateCodedQuestion }
 
-    const questionObj = getFinalCodedObject(state, { ...action, userId }, action.page ===
-      'validation', action.selectedCategoryId)
+    const questionObj = getFinalCodedObject(state, { ...action, userId }, isValidation, action.selectedCategoryId)
 
     const answerObject = {
       questionId: action.questionId,
@@ -317,9 +322,8 @@ const answerQuestionLogic = createLogic({
       questionObj
     }
 
-    if (state.unsavedChanges === true) {
-      if (questionObj.isNewCodedQuestion === true && questionObj.hasMadePost === true &&
-        !questionObj.hasOwnProperty('id')) {
+    if (state.unsavedChanges) {
+      if (questionObj.isNewCodedQuestion && questionObj.hasMadePost && !questionObj.hasOwnProperty('id')) {
         reject({ type: types.ADD_REQUEST_TO_QUEUE, payload: answerObject })
       } else {
         allow({ ...action, payload: { ...answerObject, selectedCategoryId: action.selectedCategoryId }, apiMethods })
@@ -337,6 +341,7 @@ const answerQuestionLogic = createLogic({
    */
   async process({ getState, action, api }, dispatch, done) {
     let respCodedQuestion = {}
+    const state = getState().scenes.codingValidation.coding
 
     try {
       if (action.payload.questionObj.hasOwnProperty('id')) {
@@ -350,6 +355,8 @@ const answerQuestionLogic = createLogic({
       } else {
         respCodedQuestion = await action.apiMethods.create(action.payload.questionObj, {}, { ...action.payload })
       }
+
+      console.log(respCodedQuestion)
 
       dispatch({
         type: types.SAVE_USER_ANSWER_SUCCESS,
@@ -367,7 +374,7 @@ const answerQuestionLogic = createLogic({
           questionId: action.payload.questionId,
           id: respCodedQuestion.id
         },
-        page: action.page,
+        page: state.page,
         apiUpdateMethod: action.apiMethods.update
       })
 
@@ -412,7 +419,8 @@ const applyAnswerToAllLogic = createLogic({
    */
   transform({ getState, action, api }, next) {
     const userId = getState().data.user.currentUser.id
-    const apiMethods = action.page === 'validation'
+    const state = getState().scenes.codingValidation.coding
+    const apiMethods = state.page === 'validation'
       ? { create: api.answerValidatedQuestion, update: api.updateValidatedQuestion }
       : { create: api.answerCodedQuestion, update: api.updateCodedQuestion }
 
@@ -440,7 +448,7 @@ const applyAnswerToAllLogic = createLogic({
     try {
       for (let category of allCategoryObjects) {
         let respCodedQuestion = {}
-        const question = getFinalCodedObject(state, action, action.page === 'validation', category.categoryId)
+        const question = getFinalCodedObject(state, action, state.page === 'validation', category.categoryId)
 
         if (category.id !== undefined) {
           respCodedQuestion = await action.apiMethods.update(question, {}, { ...action.answerObject, userId })
@@ -572,7 +580,9 @@ export const getUserCodedQuestionsLogic = createLogic({
     const { updatedScheme, schemeErrors, updatedSchemeQuestion } = await getSchemeQuestionAndUpdate(action.projectId, state, question, api)
 
     // Update the user answers object
-    const userAnswers = initializeUserAnswers([initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions], updatedScheme.byId, userId)
+    const userAnswers = initializeUserAnswers([
+      initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions
+    ], updatedScheme.byId, userId)
 
     payload = {
       question: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion },
@@ -623,10 +633,19 @@ const saveRedFlagLogic = createLogic({
 export const updateValidatorLogic = createLogic({
   type: [types.UPDATE_USER_ANSWER, types.ON_APPLY_ANSWER_TO_ALL],
   transform({ action, getState }, next) {
+    const state = getState().scenes.codingValidation.coding
+    const user = getState().data.user.currentUser
     next({
       ...action,
-      otherProps: { validatedBy: { ...getState().data.user.currentUser } },
-      isValidation: action.page === 'validation'
+      otherProps: {
+        validatedBy: {
+          userId: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          avatar: user.avatar
+        }
+      },
+      isValidation: state.page === 'validation'
     })
   }
 })
@@ -674,7 +693,7 @@ const getQuestionLogic = createLogic({
   async process({ getState, action, api }) {
     let otherErrors = {}
     const state = getState().scenes.codingValidation.coding
-    if (action.page === 'coding') {
+    if (state.page === 'coding') {
       const response = await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getCodedQuestion)
       return response
     } else {
@@ -742,7 +761,9 @@ export const getUserValidatedQuestionsLogic = createLogic({
       }
     }
 
-    const userAnswers = initializeUserAnswers([initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions], updatedScheme.byId, userId)
+    const userAnswers = initializeUserAnswers([
+      initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions
+    ], updatedScheme.byId, userId)
 
     const coderInfo = await getCoderInformation({
       api,

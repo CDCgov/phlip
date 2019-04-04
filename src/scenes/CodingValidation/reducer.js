@@ -49,7 +49,8 @@ export const INITIAL_STATE = {
   saveFailed: false,
   objectExists: false,
   hasTouchedQuestion: false,
-  enabledAnswerChoice: null
+  enabledAnswerChoice: null,
+  page: ''
 }
 
 export const COMBINED_INITIAL_STATE = {
@@ -516,6 +517,12 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         enabledAnswerChoice: action.schemeAnswerId === state.enabledAnswerChoice ? null : action.schemeAnswerId
+      }
+
+    case types.SET_PAGE:
+      return {
+        ...state,
+        page: action.page
       }
 
     case types.ON_CLOSE_SCREEN:

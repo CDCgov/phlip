@@ -142,6 +142,8 @@ export class CodingValidation extends Component {
   }
 
   componentDidMount() {
+    this.props.actions.setPage(this.props.page)
+
     if (this.props.page === 'coding') {
       this.props.actions.getCodingOutlineRequest(this.props.projectId, this.props.jurisdiction.id, this.props.page)
     } else {

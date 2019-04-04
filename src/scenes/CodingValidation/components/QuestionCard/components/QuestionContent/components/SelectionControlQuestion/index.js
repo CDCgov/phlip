@@ -34,13 +34,14 @@ export const SelectionControlQuestion = props => {
   const isValidation = mergedUserQuestions !== null
 
   return (
-    <FormControl component="fieldset">
+    <FormControl component="fieldset" style={{ flex: '1 1 auto' }}>
       <FormLabel component="legend" style={{ display: 'none' }} id="question_text">{question.text}</FormLabel>
       <FormGroup>
         {choices.map(choice => {
           const controlProps = {
             classes: { checked: classes.checked },
-            inputProps: { id: choice.id, 'aria-describedby': 'question_text' }
+            inputProps: { id: choice.id, 'aria-describedby': 'question_text' },
+            style: { height: 'unset' }
           }
 
           const answerList = mergedUserQuestions !== null &&
@@ -56,7 +57,7 @@ export const SelectionControlQuestion = props => {
             <FlexGrid
               container
               key={choice.id}
-              padding="0 10px 25px 10px"
+              padding="0 10px 20px 0"
               style={{ backgroundColor: enabledAnswerChoice === choice.id ? '#e6f8ff' : 'white' }}>
               <FormControlLabel
                 checked={isAnswered}
