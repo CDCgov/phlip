@@ -9,10 +9,10 @@ import FormLabel from '@material-ui/core/FormLabel'
 import { withStyles } from '@material-ui/core/styles'
 import ValidationAvatarList from '../ValidationAvatarList'
 import PinciteTextField from '../PinciteTextField'
-import { FlexGrid, IconButton } from 'components'
-import { Marker } from 'mdi-material-ui'
+import { FlexGrid, Button } from 'components'
 import * as types from 'scenes/CodingValidation/constants'
 import PinciteList from '../PinciteList'
+import theme from 'services/theme'
 
 const styles = theme => ({
   checked: {
@@ -70,21 +70,34 @@ export const SelectionControlQuestion = props => {
                 aria-label={choice.text}
               />
 
-              {(isValidation && list.length > 0) &&
-              <FlexGrid padding="0 10px 0 32px">
-                <ValidationAvatarList
-                  userImages={userImages}
-                  answerList={list}
-                  selectedIndex={99}
-                />
-                <PinciteList
+              <FlexGrid container padding="0 10px 0 32px">
+                <FlexGrid container type="row">
+                  {(list.length > 0 && isValidation) && <ValidationAvatarList
+                    userImages={userImages}
+                    answerList={list}
+                    selectedIndex={99}
+                  />}
+                  {isAnswered && !areDocsEmpty &&
+                  <Button
+                    style={{
+                      alignSelf: 'center',
+                      backgroundColor: enabledAnswerChoice === choice.id ? theme.palette.error.main : 'white',
+                      color: enabledAnswerChoice === choice.id ? 'white' : 'black',
+                      margin: isValidation ? '0 0 0 20px' : '10px 0 0 0'
+                    }}
+                    disableRipple
+                    onClick={onToggleAnswerForAnno(choice.id)}>
+                    {enabledAnswerChoice === choice.id ? 'Done' : 'Annotate'}
+                  </Button>}
+                </FlexGrid>
+                {(list.length > 0 && isValidation) && <PinciteList
                   answerList={answerList}
                   userImages={userImages}
                   isAnswered={isAnswered}
                   validatorObj={{ ...userAnswers.answers[choice.id], ...validatedBy }}
                   handleChangePincite={onChangePincite}
-                />
-              </FlexGrid>}
+                />}
+              </FlexGrid>
 
               {(isAnswered && !isValidation) &&
               <PinciteTextField
@@ -92,15 +105,6 @@ export const SelectionControlQuestion = props => {
                 pinciteValue={userAnswers.answers[choice.id].pincite}
                 handleChangePincite={onChangePincite}
               />}
-
-              {isAnswered && !areDocsEmpty &&
-              <IconButton
-                style={{ alignSelf: 'center', marginLeft: 20 }}
-                onClick={onToggleAnswerForAnno(choice.id)}
-                color={enabledAnswerChoice === choice.id ? 'primary' : '#757575'}
-                iconSize={20}>
-                <Marker style={{ fontSize: 20 }} />
-              </IconButton>}
             </FlexGrid>
           )
         })}
