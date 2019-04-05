@@ -9,7 +9,7 @@ import PinciteTextField from '../PinciteTextField'
 import Button from '@material-ui/core/Button'
 import theme from 'services/theme'
 
-const PinciteAvatar = ({ answerObj, userImages }) => {
+const PinciteAvatar = ({ answerObj, userImages, size }) => {
   const initials = getInitials(answerObj.firstName, answerObj.lastName)
   const username = `${answerObj.firstName} ${answerObj.lastName}`
   return (
@@ -19,15 +19,16 @@ const PinciteAvatar = ({ answerObj, userImages }) => {
       initials={initials}
       aria-label={`${username}'s pincite: ${answerObj.pincite}`}
       userName={username}
-      small
-      style={{ margin: '0 10px 0 0', fontSize: '.5rem', outline: 0 }}
+      small={size === 'small'}
+      style={{ margin: '0 10px 0 0', fontSize: size === 'big' ? '1rem' : '.5rem', outline: 0 }}
     />
   )
 }
 
 PinciteAvatar.propTypes = {
   answerObj: PropTypes.object,
-  userImages: PropTypes.object
+  userImages: PropTypes.object,
+  size: PropTypes.oneOf(['big', 'small'])
 }
 
 /**
@@ -39,7 +40,19 @@ export class PinciteList extends Component {
     userImages: PropTypes.object,
     validatorObj: PropTypes.object,
     isAnswered: PropTypes.bool,
-    handleChangePincite: PropTypes.func
+    handleChangePincite: PropTypes.func,
+    alwaysShow: PropTypes.bool,
+    avatarSize: PropTypes.oneOf(['big', 'small']),
+    textFieldProps: PropTypes.object
+  }
+
+  static defaultProps = {
+    avatarSize: 'big',
+    alwaysShow: false,
+    answerList: [],
+    userImages: {},
+    isAnswered: false,
+    textFieldProps: {}
   }
 
   state = {
@@ -76,7 +89,10 @@ export class PinciteList extends Component {
   }
 
   render() {
-    const { answerList, userImages, handleChangePincite, validatorObj, isAnswered } = this.props
+    const {
+      answerList, userImages, handleChangePincite, validatorObj, isAnswered,
+      alwaysShow, avatarSize, textFieldProps
+    } = this.props
     const { expanded, copied } = this.state
 
     const pincitesExist = (answerList.filter(answer => answer.pincite.length > 0)).length > 0 || isAnswered
@@ -99,6 +115,7 @@ export class PinciteList extends Component {
             </Button>
           }
         />
+        {!alwaysShow &&
         <FlexGrid container type="row" align="center" onClick={this.handleToggle} style={{ cursor: 'pointer' }}>
           <Typography variant="body1" color="secondary">
             {expanded ? 'Hide pincites' : 'Show pincites'}
@@ -106,8 +123,8 @@ export class PinciteList extends Component {
           <Icon color={theme.palette.secondary.main}>
             {expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
           </Icon>
-        </FlexGrid>
-        <Collapse in={expanded} style={{ alignSelf: 'stretch' }}>
+        </FlexGrid>}
+        <Collapse in={alwaysShow ? true : expanded} style={{ alignSelf: 'stretch' }}>
           <FlexGrid container align="flex-start">
             {answerList.map((answer, i) => {
               const hasPincite = answer.pincite !== null ? answer.pincite.length > 0 : false
@@ -118,7 +135,7 @@ export class PinciteList extends Component {
                   onCopy={hasPincite && this.handlePinciteCopy}
                   key={`${username}-pincite`}>
                   <FlexGrid container type="row" align="center" style={{ cursor: 'pointer', marginBottom: 3 }}>
-                    <PinciteAvatar answerObj={answer} userImages={userImages} />
+                    <PinciteAvatar answerObj={answer} userImages={userImages} size={avatarSize} />
                     <Typography
                       align="center"
                       style={{
@@ -133,12 +150,12 @@ export class PinciteList extends Component {
             })}
             {isAnswered &&
             <FlexGrid container type="row" style={{ alignSelf: 'stretch' }}>
-              <PinciteAvatar answerObj={validatorObj} userImages={userImages} />
+              <PinciteAvatar answerObj={validatorObj} userImages={userImages} size={avatarSize} />
               <PinciteTextField
                 handleChangePincite={handleChangePincite}
                 pinciteValue={validatorObj.pincite}
                 schemeAnswerId={validatorObj.schemeAnswerId}
-                style={{ padding: 0 }}
+                style={{ padding: 0, ...textFieldProps }}
               />
             </FlexGrid>}
           </FlexGrid>

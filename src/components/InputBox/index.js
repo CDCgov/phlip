@@ -8,6 +8,7 @@ const styles = theme => ({
     outline: 0,
     backgroundColor: theme.palette.common.white,
     border: '1px solid #ced4da',
+    borderRadius: 3,
     fontSize: 16,
     padding: '10px 12px',
     whiteSpace: 'pre-wrap',

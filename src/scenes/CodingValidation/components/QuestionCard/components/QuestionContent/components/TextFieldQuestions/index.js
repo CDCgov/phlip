@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Divider from '@material-ui/core/Divider'
-import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import { InputBox, FlexGrid, IconButton } from 'components'
 import ValidationAvatarList from '../ValidationAvatarList'
@@ -10,29 +9,18 @@ import { getInitials } from 'utils/normalize'
 import TextField from '@material-ui/core/TextField'
 import { Marker } from 'mdi-material-ui'
 import PinciteTextField from '../PinciteTextField'
+import PinciteList from '../PinciteList'
 
 export const TextFieldQuestions = props => {
   const {
-    mergedUserQuestions, userAnswers, validator, validatorAnswer, areDocsEmpty,
-    onChange, answerId, style, userImages, disabled, question, onToggleAnswerForAnno, enabledAnswerChoice,
-    ...otherProps
+    mergedUserQuestions, userAnswers, areDocsEmpty, onChange, answerId, style, userImages, disabled, question,
+    onToggleAnswerForAnno, enabledAnswerChoice, ...otherProps
   } = props
 
   const isValidation = mergedUserQuestions !== null
   const isAnswered = userAnswers.answers.hasOwnProperty(answerId)
-
-  /*const {
-   value, onChange, name, rows, answerId, classes, validator, theme, question,
-   isValidation, userImages, style, onToggleAnswerForAnno, enabledAnswerChoice, areDocsEmpty, ...otherProps
-   } = props
-
-   const userImageObj = userImages
-   ? userImages[validator.userId] !== undefined
-   ? userImages[validator.userId]
-   : validator
-   : {}*/
-
   const value = !isAnswered ? '' : userAnswers.answers[answerId].textAnswer
+  const validatedBy = isValidation ? userAnswers.validatedBy : {}
 
   return (
     <FlexGrid container align="flex-start">
@@ -41,20 +29,33 @@ export const TextFieldQuestions = props => {
           <FlexGrid container align="flex-start" padding="20px 5px 0 0">
             <Typography style={{ whiteSpace: 'pre-wrap' }} variant="body1">{answer.textAnswer}</Typography>
           </FlexGrid>
-          <ValidationAvatarList
-            answer={answer}
+          <PinciteList
+            avatarSize="big"
+            alwaysShow
             answerList={[answer]}
             userImages={userImages}
           />
           <Divider />
         </Fragment>)}
-      <InputBox onChange={onChange(answerId, 'textAnswer')} value={value} rows={5} />
-      {isAnswered && <PinciteTextField
-        style={{ paddingLeft: 0 }}
-        handleChangePincite={onChange}
-        schemeAnswerId={answerId}
-        pinciteValue={userAnswers.answers[answerId].pincite}
-      />}
+      <FlexGrid padding="20px 0" container style={{ alignSelf: 'stretch' }}>
+        <InputBox
+          onChange={onChange(answerId, 'textAnswer')}
+          value={value}
+          rows="4"
+          placeholder="Enter answer"
+          disabled={disabled}
+          name="text-answer"
+        />
+        <PinciteList
+          avatarSize="big"
+          alwaysShow
+          userImages={userImages}
+          isAnswered={isAnswered}
+          validatorObj={{ ...userAnswers.answers[answerId], ...validatedBy }}
+          handleChangePincite={onChange}
+          textFieldProps={{ padding: 8 }}
+        />
+      </FlexGrid>
     </FlexGrid>
   )
 
