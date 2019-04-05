@@ -63,15 +63,13 @@ export class QuestionCard extends Component {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.unsavedChanges) {
+  componentDidUpdate(prevProps) {
+    if (!prevProps.unsavedChanges && this.props.unsavedChanges) {
       this.setState({
         isSaving: true
       })
       clearTimeout()
-    }
-
-    if (this.props.unsavedChanges && !nextProps.unsavedChanges) {
+    } else if (prevProps.unsavedChanges && !this.props.unsavedChanges) {
       setTimeout(() => {
         this.setState({
           isSaving: false

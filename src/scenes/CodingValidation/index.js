@@ -564,7 +564,7 @@ export class CodingValidation extends Component {
    * @param event
    */
   onJurisdictionChange = event => {
-    if (this.props.unsavedChanges === true) {
+    if (this.props.unsavedChanges) {
       this.setState({
         stillSavingAlertOpen: true,
         changeMethod: {
