@@ -48,9 +48,10 @@ export const TextFieldQuestions = props => {
           />
           <Divider />
         </Fragment>)}
-      <InputBox onChange={onChange(answerId, 'textAnswer')} value={value} />
+      <InputBox onChange={onChange(answerId, 'textAnswer')} value={value} rows={5} />
       {isAnswered && <PinciteTextField
-        handleChangePincite={onChange(answerId, 'pincite')}
+        style={{ paddingLeft: 0 }}
+        handleChangePincite={onChange}
         schemeAnswerId={answerId}
         pinciteValue={userAnswers.answers[answerId].pincite}
       />}

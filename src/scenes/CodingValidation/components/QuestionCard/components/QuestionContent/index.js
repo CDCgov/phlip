@@ -109,13 +109,13 @@ export const QuestionContent = props => {
         </FlexGrid>}
 
         {question.questionType === questionTypes.TEXT_FIELD &&
-        <FlexGrid container style={{ ...answerPadding, paddingRight: 0 }}>
+        <FlexGrid container flex style={{ ...answerPadding, paddingRight: 0, minHeight: 'unset' }}>
           <TextFieldQuestions {...textQuestionProps} />
         </FlexGrid>}
 
-        <FlexGrid flex padding={`0 0 0 ${answerPadding.paddingLeft}`} style={{ minHeight: 'unset' }}>
+        <FlexGrid padding={`0 0 0 ${answerPadding.paddingLeft}`} style={{ minHeight: 'unset' }}>
           {question.includeComment &&
-          <FlexGrid flex>
+          <FlexGrid>
             <SimpleInput
               onChange={onChangeTextAnswer(null, 'comment')}
               name="comment"
