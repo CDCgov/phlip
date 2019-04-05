@@ -138,14 +138,14 @@ export const QuestionContent = props => {
             />
           </FlexGrid>}
         </FlexGrid>
-      </FlexGrid>
 
-      {isValidation && <ValidationTable
-        onOpenAlert={onOpenFlagConfirmAlert}
-        mergedUserQuestions={mergedUserQuestions}
-        questionFlags={question.flags}
-        userImages={userImages}
-      />}
+        {isValidation && <ValidationTable
+          onOpenAlert={onOpenFlagConfirmAlert}
+          mergedUserQuestions={mergedUserQuestions}
+          questionFlags={question.flags}
+          userImages={userImages}
+        />}
+      </FlexGrid>
     </FlexGrid>
   )
 }
