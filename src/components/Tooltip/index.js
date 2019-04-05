@@ -49,6 +49,7 @@ export const Tooltip = ({ text, placement, children, classes, ...otherProps }) =
       title={text}
       enterDelay={700}
       classes={{ ...classes }}
+      disableTouchListener
       {...otherProps}
       PopperProps={{
         modifiers: {

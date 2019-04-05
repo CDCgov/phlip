@@ -14,7 +14,8 @@ import PinciteTextField from '../PinciteTextField'
 export const TextFieldQuestions = props => {
   const {
     mergedUserQuestions, userAnswers, validator, validatorAnswer, areDocsEmpty,
-    onChange, answerId, style, userImages, disabled, question
+    onChange, answerId, style, userImages, disabled, question, onToggleAnswerForAnno, enabledAnswerChoice,
+    ...otherProps
   } = props
 
   const isValidation = mergedUserQuestions !== null
@@ -35,7 +36,7 @@ export const TextFieldQuestions = props => {
 
   return (
     <FlexGrid container align="flex-start">
-      {isValidation && mergedUserQuestions.answers.map((answer, index) =>
+      {isValidation && mergedUserQuestions.answers.map(answer =>
         <Fragment key={answer.id}>
           <FlexGrid container align="flex-start" padding="20px 5px 0 0">
             <Typography style={{ whiteSpace: 'pre-wrap' }} variant="body1">{answer.textAnswer}</Typography>

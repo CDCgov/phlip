@@ -96,7 +96,8 @@ export class QuestionCard extends Component {
       if (question.questionType !== questionTypes.TEXT_FIELD) {
         if (Object.keys(userAnswers.answers).length > 0) {
           if (!userAnswers.answers.hasOwnProperty(id) &&
-            (question.questionType === questionTypes.MULTIPLE_CHOICE || question.questionType === questionTypes.BINARY)) {
+            (question.questionType === questionTypes.MULTIPLE_CHOICE || question.questionType ===
+              questionTypes.BINARY)) {
             open = true
           } else if (userAnswers.answers.hasOwnProperty(id) && question.questionType === questionTypes.CHECKBOXES) {
             open = true
@@ -156,35 +157,52 @@ export class QuestionCard extends Component {
         : 0
   }
 
+  /**
+   * Opens an alert asking user to confirm clearing answer
+   */
   onClearAnswer = () => {
     this.setState({
       clearAnswerAlertOpen: true
     })
   }
 
+  /**
+   * Enables annotation mode
+   * @param id
+   * @returns {Function}
+   */
   onToggleAnswerForAnno = id => () => {
     this.props.onToggleAnswerForAnno(id)
   }
 
   render() {
+    const {
+      onChangeTextAnswer, onOpenFlagConfirmAlert, user, question, onOpenAlert, userAnswers, isValidation,
+      mergedUserQuestions, disableAll, userImages, enabledAnswerChoice, areDocsEmpty, questionChangeLoader,
+      hasTouchedQuestion, categories, saveFailed, onClearAnswer, onSaveFlag, selectedCategory,
+      onChangeCategory, currentIndex, getNextQuestion, getPrevQuestion, totalLength, showNextButton
+    } = this.props
+
     const questionContentProps = {
       onChange: this.onChangeAnswer,
-      onChangeTextAnswer: this.props.onChangeTextAnswer,
-      onOpenFlagConfirmAlert: this.props.onOpenFlagConfirmAlert,
-      currentUserInitials: getInitials(this.props.user.firstName, this.props.user.lastName),
-      user: this.props.user,
-      question: this.props.question,
-      onOpenAlert: this.props.onOpenAlert,
-      userAnswers: { validatedBy: { ...this.props.user }, ...this.props.userAnswers },
-      comment: this.props.userAnswers.comment,
-      isValidation: this.props.isValidation,
-      mergedUserQuestions: this.props.mergedUserQuestions,
-      disableAll: this.props.disableAll,
-      userImages: this.props.userImages,
+      onChangeTextAnswer: onChangeTextAnswer,
+      onOpenFlagConfirmAlert: onOpenFlagConfirmAlert,
+      currentUserInitials: getInitials(user.firstName, user.lastName),
+      user,
+      question,
+      onOpenAlert,
+      userAnswers: { validatedBy: { ...user }, ...userAnswers },
+      comment: userAnswers.comment,
+      isValidation,
+      mergedUserQuestions,
+      disableAll,
+      userImages,
       onToggleAnswerForAnno: this.onToggleAnswerForAnno,
-      enabledAnswerChoice: this.props.enabledAnswerChoice,
-      areDocsEmpty: this.props.areDocsEmpty
+      enabledAnswerChoice,
+      areDocsEmpty
     }
+
+    const { confirmAlertInfo, confirmAlertOpen, clearAnswerAlertOpen, isSaving } = this.state
 
     const alertActions = [
       {
@@ -210,70 +228,70 @@ export class QuestionCard extends Component {
         type: 'button',
         onClick: () => {
           this.onCancel()
-          this.props.onClearAnswer()
+          onClearAnswer()
         }
       }
     ]
 
     return (
       <FlexGrid container type="row" flex style={{ width: '50%', minWidth: '10%' }}>
-        <Alert actions={alertActions} title={this.state.confirmAlertInfo.title} open={this.state.confirmAlertOpen}>
+        <Alert actions={alertActions} title={confirmAlertInfo.title} open={confirmAlertOpen}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            {this.state.confirmAlertInfo.text}
+            {confirmAlertInfo.text}
           </Typography>
         </Alert>
-        <Alert actions={clearAnswerActions} open={this.state.clearAnswerAlertOpen}>
+        <Alert actions={clearAnswerActions} open={clearAnswerAlertOpen}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             Are you sure you want to clear your answer to this question?
           </Typography>
         </Alert>
         <FlexGrid container flex raised style={{ width: '100%' }}>
-          {this.props.questionChangeLoader === true
+          {questionChangeLoader
             ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
             : <>
               <FlexGrid container type="row" align="center" padding="0 15px 0 0" style={{ height: 55, minHeight: 55 }}>
                 <FlexGrid flex style={{ width: '100%' }}>
-                  {this.props.hasTouchedQuestion &&
+                  {hasTouchedQuestion &&
                   <Typography variant="caption" style={{ paddingLeft: 10, textAlign: 'center', color: '#757575' }}>
-                    {this.props.saveFailed ? 'Save failed!' : this.state.isSaving ? 'Saving...' : 'All changes saved'}
+                    {saveFailed ? 'Save failed!' : isSaving ? 'Saving...' : 'All changes saved'}
                   </Typography>}
                 </FlexGrid>
                 <FlexGrid container type="row" style={{ marginLeft: this.getMargin() }}>
-                  {this.props.question.questionType !== questionTypes.CATEGORY &&
+                  {question.questionType !== questionTypes.CATEGORY &&
                   <IconButton
                     onClick={this.onClearAnswer}
                     aria-label="Clear answer"
                     tooltipText="Clear answer"
                     id="clear-answer"
                     style={{ height: 24 }}>
-                    {!this.props.disableAll && <Broom className={styles.icon} aria-labelledby="Clear answer" />}
+                    {!disableAll && <Broom className={styles.icon} aria-labelledby="Clear answer" />}
                   </IconButton>}
-                  {!this.props.isValidation && <FlagPopover
-                    userFlag={this.props.userAnswers.flag}
-                    onSaveFlag={this.props.onSaveFlag}
-                    questionFlags={this.props.question.flags}
-                    user={this.props.user}
-                    disableAll={this.props.disableAll}
+                  {!isValidation && <FlagPopover
+                    userFlag={userAnswers.flag}
+                    onSaveFlag={onSaveFlag}
+                    questionFlags={question.flags}
+                    user={user}
+                    disableAll={disableAll}
                   />}
                 </FlexGrid>
               </FlexGrid>
               <Divider />
-              {this.props.categories !== undefined
+              {categories !== undefined
                 ? (
                   <TabContainer
-                    tabs={this.props.categories}
-                    selected={this.props.selectedCategory}
-                    onChangeCategory={this.props.onChangeCategory}>
+                    tabs={categories}
+                    selected={selectedCategory}
+                    onChangeCategory={onChangeCategory}>
                     <QuestionContent {...questionContentProps} />
                   </TabContainer>
                 ) : <QuestionContent {...questionContentProps} />}
               <Divider />
               <FooterNavigate
-                currentIndex={this.props.currentIndex}
-                getNextQuestion={this.props.getNextQuestion}
-                getPrevQuestion={this.props.getPrevQuestion}
-                totalLength={this.props.totalLength}
-                showNextButton={this.props.showNextButton}
+                currentIndex={currentIndex}
+                getNextQuestion={getNextQuestion}
+                getPrevQuestion={getPrevQuestion}
+                totalLength={totalLength}
+                showNextButton={showNextButton}
               />
             </>}
         </FlexGrid>

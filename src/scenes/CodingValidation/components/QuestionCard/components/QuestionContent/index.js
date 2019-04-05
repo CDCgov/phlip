@@ -102,9 +102,9 @@ export const QuestionContent = props => {
           </MuiThemeProvider>}
         </FlexGrid>
       </FlexGrid>
-      <FlexGrid container flex style={{ ...questionAnswerPadding, flexBasis: '60%' }}>
+      <FlexGrid container flex style={{ ...questionAnswerPadding, overflow: 'auto', minHeight: 'unset' }}>
         {question.questionType !== questionTypes.TEXT_FIELD &&
-        <FlexGrid container type="row" style={{ ...answerPadding, paddingRight: 0, overflow: 'auto' }}>
+        <FlexGrid container type="row" style={{ ...answerPadding, paddingRight: 0 }}>
           <SelectionControlQuestion {...selectionFormProps} />
         </FlexGrid>}
 
@@ -113,7 +113,7 @@ export const QuestionContent = props => {
           <TextFieldQuestions {...textQuestionProps} />
         </FlexGrid>}
 
-        <FlexGrid flex style={{ ...answerPadding, paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
+        <FlexGrid flex padding={`0 0 0 ${answerPadding.paddingLeft}`} style={{ minHeight: 'unset' }}>
           {question.includeComment &&
           <FlexGrid flex>
             <SimpleInput
