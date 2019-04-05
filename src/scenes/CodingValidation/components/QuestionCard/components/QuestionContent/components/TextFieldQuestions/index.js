@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Divider from '@material-ui/core/Divider'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
-import { InputBox, FlexGrid, Column, Row, IconButton } from 'components'
+import { InputBox, FlexGrid, IconButton } from 'components'
 import ValidationAvatarList from '../ValidationAvatarList'
 import Avatar from 'components/Avatar'
 import { getInitials } from 'utils/normalize'
@@ -31,7 +31,7 @@ export const TextFieldQuestions = props => {
    : validator
    : {}*/
 
-  //const textValues = value === undefined ? { textAnswer: '', pincite: '' } : value
+  const value = !isAnswered ? '' : userAnswers.answers[answerId].textAnswer
 
   return (
     <FlexGrid container align="flex-start">
@@ -47,12 +47,12 @@ export const TextFieldQuestions = props => {
           />
           <Divider />
         </Fragment>)}
-      <InputBox onChange={onChange(answerId, 'textAnswer')} value={userAnswers.answers[answerId].textAnswer} />
-      {/*{isAnswered && <PinciteTextField
+      <InputBox onChange={onChange(answerId, 'textAnswer')} value={value} />
+      {isAnswered && <PinciteTextField
         handleChangePincite={onChange(answerId, 'pincite')}
         schemeAnswerId={answerId}
         pinciteValue={userAnswers.answers[answerId].pincite}
-      />}*/}
+      />}
     </FlexGrid>
   )
 

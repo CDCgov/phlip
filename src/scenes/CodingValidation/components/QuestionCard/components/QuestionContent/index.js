@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import InputBox from 'components/InputBox'
 import SelectionControlQuestion from './components/SelectionControlQuestion'
 import Icon from 'components/Icon'
 import SimpleInput from 'components/SimpleInput'
