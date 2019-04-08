@@ -84,6 +84,7 @@ class ProjectPanel extends Component {
 
     //const date = moment.parseZone(project.dateLastEdited).local().format('M/D/YYYY, h:mm A')
     const date = moment.utc(project.dateLastEdited).local().format('M/D/YYYY')
+    const createdDate = moment.utc(project.dateCreated).local().format('M/D/YYYY')
     let userData = []
     let avatarCols = 1
     let avatarRows = 1
@@ -154,7 +155,7 @@ class ProjectPanel extends Component {
                     cols={avatarCols}
                     rows={avatarRows}>
                     {userData.map(oneCoder => (
-                      <GridListTile key={oneCoder.id}>
+                      <GridListTile key={oneCoder.userId}>
                         {oneCoder.avatar !== undefined ? (
                           oneCoder.avatar === '' ? (
                             <FlexGrid
@@ -185,7 +186,7 @@ class ProjectPanel extends Component {
                     container
                     type="row"
                     align="center"
-                    style={{ backgroundColor: '#f9f9f9', height: 70 }}>
+                    style={{ backgroundColor: '#f9f9f9', height: 90 }}>
                     <FlexGrid container type="row" flex justify="flex-start" style={{ fontSize: 20, paddingLeft: 20 }}>
                       <IconButton
                         color={this.props.bookmarked ? '#fdc43b' : greyIcon}
@@ -267,8 +268,15 @@ class ProjectPanel extends Component {
                       </Button>
                     </FlexGrid>
                   </FlexGrid>
-                  <FlexGrid style={{ flexBasis: '15%' }} />
+                  <FlexGrid style={{ flexBasis: '5%' }} />
                   <FlexGrid container style={{ paddingLeft: 20 }}>
+                    <Typography variant="body2" style={{paddingBottom:10}}>
+                      <span style={listingStyle}>Created Date:{' '}</span>
+                      {createdDate}
+                    </Typography>
+                    <Typography variant="body2" style={{paddingBottom:10}}>
+                      <span style={listingStyle}>Created By:{' '}</span>
+                      {project.createdBy}</Typography>
                     <Typography variant="body2" style={{paddingBottom:10}}>
                       <span style={listingStyle}>Date Last Edited:{' '}</span>
                       {date}</Typography>

@@ -318,7 +318,7 @@ const mainReducer = (state, action) => {
 
     case types.GET_PROJECT_USERS_SUCCESS:
       const projectId = action.payload.projectId
-      const newUsers = normalize.arrayToObject(action.payload.newUsers, 'id')
+      const newUsers = normalize.arrayToObject(action.payload.newUsers, 'userId')
       //const iDs = Object.keys(normalize.arrayToObject(action.payload.users))
       let obj = {}
       let projectUsers = []
@@ -334,9 +334,9 @@ const mainReducer = (state, action) => {
       }
 
       action.payload.users.forEach((user) => {
-        const exists = projectUsers.filter(userObj => userObj.id === user.id)
+        const exists = projectUsers.filter(userObj => userObj.userId === user.userId)
         if (exists.length === 0) {
-          projectUsers.push(obj[user.id])
+          projectUsers.push(obj[user.userId])
         }
       })
 
@@ -363,6 +363,14 @@ const mainReducer = (state, action) => {
         }
       }
 
+    case types.UPDATE_CURRENT_PROJECT:
+      return {
+        ...state,
+        projectUsers: {
+          ...state.projectUsers,
+          currentProject: action.projectId
+        }
+      }
     case types.RESET_OPEN_PROJECT:
       if (action.whereClicked !== undefined) {
         if (action.whereClicked.tagName === 'DIV') {
