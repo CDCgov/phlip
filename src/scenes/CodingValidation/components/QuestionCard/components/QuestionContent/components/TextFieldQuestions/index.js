@@ -76,79 +76,6 @@ export const TextFieldQuestions = props => {
       </FlexGrid>
     </FlexGrid>
   )
-
-  /* <FlexGrid container type="row" style={{ alignItems: 'center', padding: isValidation ? '10px 0 0 0' : '' }}>
-   {isValidation &&
-   <Avatar
-   cardAvatar
-   avatar={userImageObj.avatar}
-   userName={`${userImageObj.firstName} ${userImageObj.lastName}`}
-   style={{
-   marginRight: 15,
-   backgroundColor: 'white',
-   color: theme.palette.secondary.main,
-   borderColor: theme.palette.secondary.main
-   }}
-   initials={getInitials(validator.firstName, validator.lastName)}
-   />}
-   <label style={{ display: 'none' }} id="question_text">{question.text}</label>
-   <TextField
-   value={textValues.textAnswer}
-   onChange={onChange(answerId, 'textAnswer')}
-   multiline
-   type="text"
-   name={name}
-   fullWidth
-   rows={rows}
-   InputProps={{
-   disableUnderline: true,
-   classes: {
-   input: classes.textFieldInput
-   },
-   inputProps: {
-   'aria-describedby': 'question_text'
-   }
-   }}
-   {...otherProps}
-   />
-   </FlexGrid>
-   {textValues.textAnswer && textValues.textAnswer.length > 0 &&
-   <div style={{ paddingTop: 10, paddingBottom: 20 }}>
-   <SimpleInput
-   name="pincite"
-   value={textValues.pincite === null ? '' : textValues.pincite}
-   placeholder="Enter pincite"
-   label="Pincite"
-   InputProps={{ inputProps: { 'aria-label': 'Pincite' } }}
-   onChange={onChange(answerId, 'pincite')}
-   multiline={false}
-   shrinkLabel
-   style={{ flex: 1 }}
-   />
-   </div>}
-   </Column>
-
-   return (
-   <>
-   <FlexGrid container flex padding={style.paddingLeft} style={{ overflow: 'auto' }}>
-   </FlexGrid>
-   <InputBox
-   rows="4"
-   name="text-answer"
-   onChange={onChange}
-   placeholder="Enter answer"
-   question={question}
-   style={{ paddingLeft: style.paddingLeft }}
-   validator={validator}
-   value={validatorAnswer}
-   userImages={userImages}
-   answerId={answerId}
-   disabled={disabled}
-   isValidation={true}
-   areDocsEmpty={areDocsEmpty}
-   />
-   </>
-   )*/
 }
 
 TextFieldQuestions.propTypes = {
@@ -202,7 +129,11 @@ TextFieldQuestions.propTypes = {
   style: PropTypes.object,
   onToggleAnswerForAnno: PropTypes.func,
   enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  areDocsEmpty: PropTypes.bool
+  areDocsEmpty: PropTypes.bool,
+  mergedUserQuestions: PropTypes.object,
+  userAnswers: PropTypes.object,
+  disabled: PropTypes.bool
+
 }
 
 export default TextFieldQuestions
