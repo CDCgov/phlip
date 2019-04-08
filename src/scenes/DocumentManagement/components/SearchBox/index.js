@@ -53,6 +53,9 @@ export class SearchBox extends Component {
   }
 
   handleFormValueChange = (property, value) => {
+    if (property.includes('uploadedDate') && value === null) {
+      value = ''
+    }
     this.props.actions.updateFormValue(property, value)
   }
 
@@ -354,6 +357,7 @@ export class SearchBox extends Component {
                             name="uploadedDate1Search"
                             dateFormat="MM/DD/YYYY"
                             onChange={date => this.handleFormValueChange('uploadedDate1', date)}
+                            clearable
                             value={uploadedDate1}
                             style={{ marginTop: 0, alignSelf: 'flex-start', paddingLeft: '0' }}
                             containerProps={{ fullWidth: true }}
@@ -384,6 +388,7 @@ export class SearchBox extends Component {
                             name="uploadedDate2Search"
                             dateFormat="MM/DD/YYYY"
                             onChange={date => this.handleFormValueChange('uploadedDate2', date)}
+                            clearable
                             value={uploadedDate2}
                             style={{ marginTop: 0, alignSelf: 'flex-end', paddingLeft: '30' }}
                             containerProps={{ fullWidth: true }}
