@@ -87,7 +87,7 @@ export const QuestionContent = props => {
             </Tooltip>
           </FlexGrid>}
         </FlexGrid>
-        <FlexGrid container flex padding="50px 10px 10px" style={{ overflow: 'auto', minHeight: 'unset' }}>
+        <FlexGrid container flex padding="25px 0" style={{ overflow: 'auto', minHeight: 'unset' }}>
           {question.questionType !== questionTypes.TEXT_FIELD &&
           <FlexGrid container type="row">
             <SelectionControlQuestion {...selectionFormProps} />

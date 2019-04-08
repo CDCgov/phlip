@@ -1,20 +1,15 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
-import { InputBox, FlexGrid, IconButton } from 'components'
-import ValidationAvatarList from '../ValidationAvatarList'
-import Avatar from 'components/Avatar'
-import { getInitials } from 'utils/normalize'
-import TextField from '@material-ui/core/TextField'
-import { Marker } from 'mdi-material-ui'
+import { InputBox, FlexGrid, Button } from 'components'
 import PinciteTextField from '../PinciteTextField'
 import PinciteList from '../PinciteList'
+import theme from 'services/theme'
 
 export const TextFieldQuestions = props => {
   const {
-    mergedUserQuestions, userAnswers, areDocsEmpty, onChange, answerId, style, userImages, disabled, question,
-    onToggleAnswerForAnno, enabledAnswerChoice, ...otherProps
+    mergedUserQuestions, userAnswers, areDocsEmpty, onChange, answerId, userImages, disabled,
+    onToggleAnswerForAnno, enabledAnswerChoice
   } = props
 
   const isValidation = mergedUserQuestions !== null
@@ -25,7 +20,7 @@ export const TextFieldQuestions = props => {
   return (
     <FlexGrid container align="flex-start">
       {isValidation && mergedUserQuestions.answers.map(answer =>
-        <FlexGrid container padding="0 0 45px" key={answer.id}>
+        <FlexGrid container padding="25px 0 25px" key={answer.id}>
           <FlexGrid container padding="0 0 10px" align="flex-start">
             <Typography style={{ whiteSpace: 'pre-wrap' }} variant="body1">{answer.textAnswer}</Typography>
           </FlexGrid>
@@ -36,7 +31,13 @@ export const TextFieldQuestions = props => {
             userImages={userImages}
           />
         </FlexGrid>)}
-      <FlexGrid container style={{ alignSelf: 'stretch' }}>
+      <FlexGrid
+        container
+        padding="25px 15px"
+        style={{
+          alignSelf: 'stretch',
+          backgroundColor: enabledAnswerChoice === answerId ? '#e6f8ff' : 'white'
+        }}>
         <InputBox
           onChange={onChange(answerId, 'textAnswer')}
           value={value}
@@ -45,6 +46,18 @@ export const TextFieldQuestions = props => {
           disabled={disabled}
           name="text-answer"
         />
+        {isAnswered && !areDocsEmpty &&
+        <Button
+          style={{
+            alignSelf: 'flex-start',
+            backgroundColor: enabledAnswerChoice === answerId ? theme.palette.error.main : 'white',
+            color: enabledAnswerChoice === answerId ? 'white' : 'black',
+            margin: isValidation ? '0 0 0 20px' : '10px 0 0 0'
+          }}
+          disableRipple
+          onClick={onToggleAnswerForAnno(answerId)}>
+          {enabledAnswerChoice === answerId ? 'Done' : 'Annotate'}
+        </Button>}
         {(isAnswered && !isValidation) &&
         <PinciteTextField
           schemeAnswerId={answerId}
