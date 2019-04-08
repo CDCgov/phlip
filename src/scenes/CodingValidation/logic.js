@@ -131,6 +131,7 @@ const getCoderInformation = async ({ api, action, questionId, userImages }) => {
 const outlineLogic = createLogic({
   type: [types.GET_CODING_OUTLINE_REQUEST, types.GET_VALIDATION_OUTLINE_REQUEST],
   transform({ getState, action }, next) {
+    const user = getState().data.user.currentUser
     next({
       ...action,
       payload: {
@@ -147,7 +148,8 @@ const outlineLogic = createLogic({
         showPageLoader: false,
         errors: {}
       },
-      userId: getState().data.user.currentUser.id
+      userId: user.id,
+      currentUser: user
     })
   }
 })
@@ -263,7 +265,7 @@ export const getValidationOutlineLogic = createLogic({
           scheme: { byId: questionsById, tree, order },
           userAnswers,
           mergedUserQuestions: coderInfo.codedQuestionObj,
-          userImages: coders,
+          userImages: { ...coders, [action.userId]: { ...action.currentUser } },
           question: firstQuestion,
           errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors }
         }

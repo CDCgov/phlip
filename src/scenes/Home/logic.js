@@ -55,7 +55,7 @@ export const getProjectUsersLogic = createLogic({
   async process({ api, getState, action }, dispatch, done) {
     // action.sendRequest = true
     try {
-      if (action.sendRequest ) {
+      if (action.sendRequest) {
         const currentProjectUsers = getState().scenes.home.main.projectUsers.allIds
         let usersFromDb = getState().scenes.home.main.projects.byId[action.projectId].projectUsers
         let newUsers = []

@@ -47,7 +47,7 @@ export class PinciteList extends Component {
   }
 
   static defaultProps = {
-    avatarSize: 'big',
+    avatarSize: 'small',
     alwaysShow: false,
     answerList: [],
     userImages: {},

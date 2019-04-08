@@ -371,6 +371,7 @@ const mainReducer = (state, action) => {
           currentProject: action.projectId
         }
       }
+
     case types.RESET_OPEN_PROJECT:
       if (action.whereClicked !== undefined) {
         if (action.whereClicked.tagName === 'DIV') {
