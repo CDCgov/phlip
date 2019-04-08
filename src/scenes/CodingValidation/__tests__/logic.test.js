@@ -60,6 +60,9 @@ describe('CodingValidation logic', () => {
             type: types.GET_CODING_OUTLINE_REQUEST,
             projectId: 1,
             jurisdictionId: 1,
+            currentUser: {
+              id: 1
+            },
             payload: {
               scheme: { order: [], byId: {}, tree: [] },
               outline: {},

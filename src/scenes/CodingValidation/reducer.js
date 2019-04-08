@@ -250,7 +250,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         unsavedChanges: false,
         savedFailed: false,
         hasTouchedQuestion: false,
-        userImages: action.payload.userImages ? action.payload.userImages : null,
         enabledAnswerChoice: null
       }
 
@@ -417,7 +416,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         question: action.payload.question,
         userAnswers: action.payload.userAnswers,
         mergedUserQuestions: action.payload.mergedUserQuestions,
-        userImages: action.payload.userImages,
         categories: undefined,
         isSchemeEmpty: action.payload.isSchemeEmpty,
         areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty,
@@ -506,7 +504,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         mergedUserQuestions: action.payload.mergedUserQuestions,
         getQuestionErrors: errors.length > 0 ? errors : null,
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
-        userImages: action.payload.userImages,
         isLoadingPage: false,
         showPageLoader: false,
         enabledAnswerChoice: null,

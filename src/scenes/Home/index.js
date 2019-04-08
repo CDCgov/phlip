@@ -88,7 +88,7 @@ export class Home extends Component {
     this.setExportRef = element => this.exportRef = element
   }
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     this.props.actions.getProjectsRequest()
   }
 

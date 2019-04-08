@@ -6,7 +6,7 @@ describe('User action creators', () => {
       type: types.LOGOUT_USER,
       sessionExpired: false
     }
-    expect(actions.logoutUser()).toEqual(expectedAction)
+    expect(actions.logoutUser(false)).toEqual(expectedAction)
   })
 
   test('should create an action to flush state', () => {

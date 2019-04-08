@@ -16,8 +16,5 @@ export const types = {
 
 export default {
   logoutUser: makeActionCreator(types.LOGOUT_USER, 'sessionExpired'),
-  closeMenu: makeActionCreator(types.CLOSE_MENU),
-  toggleMenu: makeActionCreator(types.TOGGLE_MENU),
-  flushState: makeActionCreator(types.FLUSH_STATE),
-  addUser: makeActionCreator(types.ADD_USER, 'user')
+  flushState: makeActionCreator(types.FLUSH_STATE)
 }
