@@ -1,34 +1,28 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import SelectionControlQuestion from './components/SelectionControlQuestion'
-import Icon from 'components/Icon'
-import SimpleInput from 'components/SimpleInput'
-import * as questionTypes from '../../../../constants'
+import * as questionTypes from 'scenes/CodingValidation/constants'
 import TextFieldQuestions from './components/TextFieldQuestions'
-import Button from 'components/Button'
 import ValidationTable from '../ValidationTable'
-import { FlexGrid, Typography } from 'components'
-import Tooltip from 'components/Tooltip'
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
+import { FlexGrid, Typography, Tooltip, Button, SimpleInput, Icon } from 'components'
+import { withStyles } from '@material-ui/core/styles'
+
+const styles = () => ({
+  hintTooltip: {
+    fontSize: '2em',
+    color: '#98b3be',
+    backgroundColor: '#f5f5f5',
+    width: 250,
+    maxWidth: 250
+  }
+})
 
 export const QuestionContent = props => {
   const {
     question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
     onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages,
-    onToggleAnswerForAnno, enabledAnswerChoice, areDocsEmpty
+    onToggleAnswerForAnno, enabledAnswerChoice, areDocsEmpty, classes
   } = props
-
-  const questionAnswerPadding = {
-    paddingTop: 0,
-    paddingRight: 25,
-    paddingBottom: 15,
-    paddingLeft: (question.number && (question.number.split('.').length * 3) + 40) || 40
-  }
-
-  const answerPadding = {
-    ...questionAnswerPadding,
-    paddingLeft: 65 - questionAnswerPadding.paddingLeft
-  }
 
   const commonQuestionProps = {
     userImages,
@@ -55,62 +49,52 @@ export const QuestionContent = props => {
     answerId: question.possibleAnswers[0].id
   }
 
-  const theme = createMuiTheme({
-    overrides: {
-      MuiTooltip: {
-        tooltip: {
-          fontSize: '2em',
-          color: '#98b3be',
-          backgroundColor: '#f5f5f5',
-          width: 250,
-          maxWidth: 250
-        }
-      }
-    }
-  })
-
   return (
     <FlexGrid container type="row" padding="20px 20px 10px 20px" flex style={{ flexWrap: 'nowrap', overflow: 'auto' }}>
       <FlexGrid container>
         <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
       </FlexGrid>
       <FlexGrid container flex>
-        <FlexGrid container type="row">
-          <Typography variant="body2" style={{ letterSpacing: 0 }}>{question.text}&nbsp;</Typography>
-          {question.hint && <MuiThemeProvider theme={theme}>
+        <FlexGrid container type="row" align="flex-start">
+          <Typography
+            variant="body2"
+            style={{ letterSpacing: 0, lineHeight: '1.5em' }}>{question.text}&nbsp;</Typography>
+          {question.hint &&
+          <FlexGrid>
             <Tooltip
-              placement="right"
+              placement="top"
+              overrideClasses={{ tooltip: classes.hintTooltip }}
               title={
                 <Typography variant="body2" style={{ color: 'black' }}>
                   <strong>Coding Directions:</strong>
                   {question.hint}
                 </Typography>
               }>
-              <FlexGrid
-                container
-                type="row"
-                justify="center"
+              <Icon
                 style={{
-                  borderRadius: '50%',
                   width: 25,
                   height: 25,
-                  background: '#DEDEDE',
-                  textAlign: 'center',
-                  alignItems: 'center'
+                  color: '#00575D',
+                  fontSize: 14,
+                  backgroundColor: '#DEDEDE',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '50%',
+                  display: 'flex'
                 }}>
-                <Icon color="#00575D" size="14px">lightbulb_outline</Icon>
-              </FlexGrid>
+                lightbulb_outline
+              </Icon>
             </Tooltip>
-          </MuiThemeProvider>}
+          </FlexGrid>}
         </FlexGrid>
-        <FlexGrid container flex padding={10} style={{ overflow: 'auto', minHeight: 'unset' }}>
+        <FlexGrid container flex padding="50px 10px 10px" style={{ overflow: 'auto', minHeight: 'unset' }}>
           {question.questionType !== questionTypes.TEXT_FIELD &&
           <FlexGrid container type="row">
             <SelectionControlQuestion {...selectionFormProps} />
           </FlexGrid>}
 
           {question.questionType === questionTypes.TEXT_FIELD &&
-          <FlexGrid container flex style={{ minHeight: 'unset' }}>
+          <FlexGrid container style={{ minHeight: 'unset' }}>
             <TextFieldQuestions {...textQuestionProps} />
           </FlexGrid>}
 
@@ -173,36 +157,4 @@ QuestionContent.propTypes = {
   areDocsEmpty: PropTypes.bool
 }
 
-/* {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions === null &&
- <FlexGrid container style={{ ...answerPadding, paddingRight: 0 }}>
- <InputBox
- rows="7"
- name="text-answer"
- onChange={onChangeTextAnswer}
- placeholder="Enter answer"
- question={question}
- value={userAnswers.answers[question.possibleAnswers[0].id]}
- answerId={question.possibleAnswers[0].id}
- disabled={disableAll}
- onToggleAnswerForAnno={onToggleAnswerForAnno}
- enabledAnswerChoice={enabledAnswerChoice}
- areDocsEmpty={areDocsEmpty}
- />
- </FlexGrid>}
-
- {question.questionType === questionTypes.TEXT_FIELD &&
- <TextFieldQuestions
- style={{ ...answerPadding, paddingRight: 0 }}
- mergedUserQuestions={mergedUserQuestions}
- validatorAnswer={userAnswers.answers[question.possibleAnswers[0].id]}
- validator={userAnswers.validatedBy}
- onChange={onChangeTextAnswer}
- //onChangePincite={}
- userImages={userImages}
- question={question}
- answerId={question.possibleAnswers[0].id}
- disabled={disableAll}
- areDocsEmpty={areDocsEmpty}
- />}*/
-
-export default QuestionContent
+export default withStyles(styles)(QuestionContent)

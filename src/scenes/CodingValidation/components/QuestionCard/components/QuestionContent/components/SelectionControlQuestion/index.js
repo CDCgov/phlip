@@ -101,6 +101,7 @@ export const SelectionControlQuestion = props => {
 
               {(isAnswered && !isValidation) &&
               <PinciteTextField
+                style={{ paddingLeft: 32, width: '90%' }}
                 schemeAnswerId={choice.id}
                 pinciteValue={userAnswers.answers[choice.id].pincite}
                 handleChangePincite={onChangePincite}

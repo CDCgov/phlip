@@ -42,13 +42,13 @@ const styles = theme => {
 /**
  * Wrapper for @material-ui/core's Tooltip component, displays a small popover with text on hover
  */
-export const Tooltip = ({ text, placement, children, classes, ...otherProps }) => {
+export const Tooltip = ({ text, placement, children, classes, overrideClasses, ...otherProps }) => {
   return (
     <MuiTooltip
       placement={placement}
       title={text}
       enterDelay={700}
-      classes={{ ...classes }}
+      classes={{ ...classes, ...overrideClasses }}
       disableTouchListener
       {...otherProps}
       PopperProps={{
@@ -82,7 +82,11 @@ Tooltip.propTypes = {
   /**
    * Style classes object from @material-ui/core
    */
-  classes: PropTypes.object
+  classes: PropTypes.object,
+  /**
+   * Object to override classes
+   */
+  overrideClasses: PropTypes.object
 }
 
 export default withStyles(styles)(Tooltip)

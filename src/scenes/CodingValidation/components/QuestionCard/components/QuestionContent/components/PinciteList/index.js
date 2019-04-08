@@ -95,7 +95,7 @@ export class PinciteList extends Component {
     } = this.props
     const { expanded, copied } = this.state
 
-    const pincitesExist = (answerList.filter(answer => answer.pincite.length > 0)).length > 0 || isAnswered
+    const pincitesExist = (answerList.filter(answer => answer.pincite ? answer.pincite.length > 0 : false)).length > 0 || isAnswered
 
     return (
       pincitesExist &&

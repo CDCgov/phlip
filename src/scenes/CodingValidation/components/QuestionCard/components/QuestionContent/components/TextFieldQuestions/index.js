@@ -41,12 +41,18 @@ export const TextFieldQuestions = props => {
         <InputBox
           onChange={onChange(answerId, 'textAnswer')}
           value={value}
-          rows="4"
+          rows={7}
           placeholder="Enter answer"
           disabled={disabled}
           name="text-answer"
         />
-        <PinciteList
+        {(isAnswered && !isValidation) &&
+        <PinciteTextField
+          schemeAnswerId={answerId}
+          pinciteValue={userAnswers.answers[answerId].pincite}
+          handleChangePincite={onChange}
+        />}
+        {isValidation && <PinciteList
           avatarSize="big"
           alwaysShow
           userImages={userImages}
@@ -54,7 +60,7 @@ export const TextFieldQuestions = props => {
           validatorObj={{ ...userAnswers.answers[answerId], ...validatedBy }}
           handleChangePincite={onChange}
           textFieldProps={{ padding: 8 }}
-        />
+        />}
       </FlexGrid>
     </FlexGrid>
   )
