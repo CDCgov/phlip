@@ -57,7 +57,7 @@ export const SelectionControlQuestion = props => {
             <FlexGrid
               container
               key={choice.id}
-              padding="0 10px 25px 0"
+              padding="0 10px 45px 0"
               style={{ backgroundColor: enabledAnswerChoice === choice.id ? '#e6f8ff' : 'white' }}>
               <FormControlLabel
                 checked={isAnswered}

@@ -139,6 +139,7 @@ export class PinciteList extends Component {
                     <Typography
                       align="center"
                       style={{
+                        textAlign: 'left',
                         wordBreak: 'break-word',
                         color: theme.palette.greyText
                       }}>
