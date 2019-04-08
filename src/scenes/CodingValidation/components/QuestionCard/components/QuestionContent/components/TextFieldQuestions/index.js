@@ -20,7 +20,7 @@ export const TextFieldQuestions = props => {
   return (
     <FlexGrid container align="flex-start">
       {isValidation && mergedUserQuestions.answers.map(answer =>
-        <FlexGrid container padding="25px 0 25px" key={answer.id}>
+        <FlexGrid container padding="25px 15px" key={answer.id}>
           <FlexGrid container padding="0 0 10px" align="flex-start">
             <Typography style={{ whiteSpace: 'pre-wrap' }} variant="body1">{answer.textAnswer}</Typography>
           </FlexGrid>

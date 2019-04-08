@@ -3,6 +3,7 @@
  */
 import { createLogic } from 'redux-logic'
 import { types } from './actions'
+import { types as userTypes } from 'data/users/actions'
 import {
   checkIfExists,
   getCodedValidatedQuestions,
@@ -39,7 +40,9 @@ const addCoderToAnswers = (existingQuestion, question, coder) => {
 
   return {
     ...existingQuestion,
-    answers: [...existingQuestion.answers, ...question.codedAnswers.map(answer => ({ ...answer, ...coder }))],
+    answers: [
+      ...existingQuestion.answers, ...question.codedAnswers.map(answer => ({ ...answer, userId: coder.userId }))
+    ],
     flagsComments: Object.keys(flagComment).length > 0
       ? [...existingQuestion.flagsComments, flagComment]
       : [...existingQuestion.flagsComments]
@@ -110,7 +113,6 @@ const getCoderInformation = async ({ api, action, questionId, userImages }) => {
   }
 
   for (let coderUser of allCodedQuestions) {
-    console.log(coderUser)
     if (coderUser.codedQuestions.length > 0) {
       codedQuestionObj = { ...mergeInUserCodedQuestions(codedQuestionObj, coderUser.codedQuestions, coderUser.coder) }
     }
@@ -122,6 +124,61 @@ const getCoderInformation = async ({ api, action, questionId, userImages }) => {
   }
 
   return { codedQuestionObj, coderErrors, coders }
+}
+
+/**
+ * Handles determining if getting avatars is needed
+ * @param coders
+ * @param allUserObjs
+ * @param dispatch
+ * @param api
+ * @returns {Promise<any>}
+ */
+const handleUserImages = (coders, allUserObjs, dispatch, api) => {
+  let avatar, errors = ''
+  const now = Date.now()
+  const oneday = 60 * 60 * 24 * 1000
+
+  return new Promise(async (resolve, reject) => {
+    if (coders.length === 0) {
+      resolve({ errors })
+    }
+    for (let i = 0; i < coders.length; i++) {
+      const { userId, ...coder } = coders[i]
+      try {
+        if (allUserObjs.hasOwnProperty(userId)) {
+          // the object already exists
+          if ((now - allUserObjs[userId].lastCheck) > oneday) {
+            avatar = await api.getUserImage({}, {}, { userId })
+            dispatch({
+              type: userTypes.UPDATE_USER,
+              payload: {
+                id: userId,
+                avatar,
+                lastCheck: now
+              }
+            })
+          }
+        } else {
+          avatar = await api.getUserImage({}, {}, { userId })
+          dispatch({
+            type: userTypes.ADD_USER,
+            payload: {
+              id: userId,
+              ...coder,
+              avatar,
+              lastCheck: now
+            }
+          })
+        }
+      } catch (error) {
+        errors = 'Failed to get user images'
+      }
+      if (i === coders.length - 1) {
+        resolve({ errors })
+      }
+    }
+  })
 }
 
 /**
@@ -210,6 +267,7 @@ export const getValidationOutlineLogic = createLogic({
   async process({ action, getState, api }, dispatch, done) {
     let errors = {}, payload = action.payload, userImages = {}, coders = {}
     const userId = action.userId
+    let allUserObjs = getState().data.user.byId
 
     try {
       // Try to get the project coding scheme
@@ -249,15 +307,7 @@ export const getValidationOutlineLogic = createLogic({
           }
         }
 
-        // Get all the avatars I need
-        for (let userId of Object.keys(coders)) {
-          try {
-            const avatar = await api.getUserImage({}, {}, { userId })
-            coders[userId] = { ...coders[userId], avatar }
-          } catch (error) {
-            errors = { ...errors, userImages: 'Failed to get images' }
-          }
-        }
+        const imagesResult = await handleUserImages(Object.values(coders), allUserObjs, dispatch, api)
 
         payload = {
           ...payload,
@@ -265,9 +315,8 @@ export const getValidationOutlineLogic = createLogic({
           scheme: { byId: questionsById, tree, order },
           userAnswers,
           mergedUserQuestions: coderInfo.codedQuestionObj,
-          userImages: { ...coders, [action.userId]: { ...action.currentUser } },
           question: firstQuestion,
-          errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors }
+          errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors, userImages: imagesResult.errors }
         }
       }
 
@@ -686,18 +735,18 @@ const getQuestionLogic = createLogic({
       userId
     })
   },
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.GET_QUESTION_SUCCESS,
-    failType: types.GET_QUESTION_FAIL
-  },
-  latest: true,
-  async process({ getState, action, api }) {
+  async process({ getState, action, api }, dispatch, done) {
     let otherErrors = {}
     const state = getState().scenes.codingValidation.coding
+    const allUserObjs = getState().data.user.byId
+
     if (state.page === 'coding') {
       const response = await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getCodedQuestion)
-      return response
+      dispatch({
+        type: types.GET_QUESTION_SUCCESS,
+        payload: response
+      })
+      done()
     } else {
       const {
         updatedState,
@@ -705,31 +754,28 @@ const getQuestionLogic = createLogic({
         currentIndex,
         errors,
         newImages
-      } = await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getUserValidatedQuestion, state.userImages)
+      } = await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getUserValidatedQuestion, {})
       const { codedQuestionObj, coderErrors, coders } = await getCoderInformation({
         api,
         action,
         questionId: question.id,
-        userImages: { ...state.userImages, ...newImages }
+        userImages: newImages
       })
 
       const newCoderImages = { ...newImages, ...coders }
-      for (let userId of Object.keys(newCoderImages)) {
-        try {
-          const avatar = await api.getUserImage({}, {}, { userId })
-          newCoderImages[userId] = { ...newCoderImages[userId], avatar }
-        } catch (error) {
-          otherErrors = { ...otherErrors, userImages: 'Failed to get images' }
-        }
-      }
+      const imageResult = await handleUserImages(Object.values(newCoderImages), allUserObjs, dispatch, api)
 
-      return {
-        updatedState: { ...updatedState, mergedUserQuestions: { ...state.mergedUserQuestions, ...codedQuestionObj } },
-        question,
-        currentIndex,
-        errors: { ...errors, ...coderErrors, ...otherErrors },
-        userImages: { ...state.userImages, ...newCoderImages }
-      }
+      dispatch({
+        type: types.GET_QUESTION_SUCCESS,
+        payload: {
+          updatedState: { ...updatedState, mergedUserQuestions: { ...state.mergedUserQuestions, ...codedQuestionObj } },
+          question,
+          currentIndex,
+          errors: { ...errors, ...coderErrors, ...otherErrors, userImages: imageResult.errors }
+        }
+      })
+
+      done()
     }
   }
 })
@@ -745,6 +791,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
     const userId = getState().data.user.currentUser.id
     const state = getState().scenes.codingValidation.coding
     const question = action.question, otherUpdates = action.otherUpdates
+    const allUserObjs = getState().data.user.byId
     let errors = {}, payload = {}, coders = {}
 
     // Get validated questions for this jurisdiction
@@ -771,18 +818,11 @@ export const getUserValidatedQuestionsLogic = createLogic({
       api,
       action,
       questionId: updatedSchemeQuestion.id,
-      userImages: { ...state.userImages, ...coders }
+      userImages: coders
     })
 
     coders = { ...coders, ...coderInfo.coders }
-    for (let userId of Object.keys(coders)) {
-      try {
-        const avatar = await api.getUserImage({}, {}, { userId })
-        coders[userId] = { ...coders[userId], avatar }
-      } catch (error) {
-        errors = { ...errors, userImages: 'Failed to get images' }
-      }
-    }
+    const imageResult = await handleUserImages(Object.values(coders), allUserObjs, dispatch, api)
 
     payload = {
       userAnswers,
@@ -790,8 +830,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
       scheme: updatedScheme,
       otherUpdates,
       mergedUserQuestions: coderInfo.codedQuestionObj,
-      errors: { ...errors, ...coderInfo.coderErrors, ...schemeErrors, ...codedValErrors },
-      userImages: { ...state.userImages, ...coders }
+      errors: { ...errors, ...coderInfo.coderErrors, ...schemeErrors, ...codedValErrors, userImages: imageResult.errors }
     }
 
     dispatch({

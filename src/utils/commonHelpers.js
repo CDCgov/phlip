@@ -35,6 +35,11 @@ const generateUniqueProps = id => header => ({
   key: `${id}-${header}`
 })
 
+/**
+ * Checks if a string if multi-word based on spaces
+ * @param str
+ * @returns {boolean}
+ */
 export const checkIfMultiWord = str => {
   return str.split(' ').length > 1
 }

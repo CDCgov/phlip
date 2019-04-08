@@ -49,6 +49,18 @@ export const updateItemAtIndex = (arr, index, updatedItem) => {
   return [...arr]
 }
 
+/**
+ * Update an object
+ * @param oldObject
+ * @param newObject
+ */
+export const updateObject = (oldObject, newObject) => {
+  return {
+    ...oldObject,
+    ...newObject
+  }
+}
+
 export const convertToLocalDateTime = dateTime => {
   return moment.utc(dateTime).local().format('M/D/YYYY, h:mm A')
 }

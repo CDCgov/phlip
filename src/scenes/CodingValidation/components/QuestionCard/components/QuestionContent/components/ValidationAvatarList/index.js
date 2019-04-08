@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { getInitials } from 'utils/normalize'
 import { FlexGrid, Avatar } from 'components'
 import theme from 'services/theme'
 
@@ -22,17 +21,16 @@ export const ValidationAvatarList = props => {
   return (
     <FlexGrid container type="row" padding="5px 0 8px 0">
       {answerList.map((answer, i) => {
-        const initials = getInitials(answer.firstName, answer.lastName)
-        const username = `${answer.firstName} ${answer.lastName}`
+        const user = userImages[answer.userId]
         return (
           <Avatar
             style={{ ...selectedIndex === i ? selectedStyle : answer.isValidatorAnswer ? validatorStyle : {} }}
-            avatar={userImages[answer.userId].avatar}
-            initials={initials}
+            avatar={user.avatar}
+            initials={user.initials}
             key={`user-answer-${i}`}
             cardAvatar
             onClick={handleClickAvatar}
-            userName={username}
+            userName={user.username}
           />
         )
       })}

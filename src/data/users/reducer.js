@@ -1,4 +1,5 @@
 import { types } from './actions'
+import { getInitials, updateObject } from 'utils/normalize'
 
 const INITIAL_STATE = {
   currentUser: {},
@@ -22,7 +23,11 @@ const userReducer = (state = INITIAL_STATE, action) => {
         currentUser: action.payload,
         byId: {
           ...state.byId,
-          [action.payload.id]: { ...action.payload, username: `${action.payload.firstName} ${action.payload.lastName}` }
+          [action.payload.id]: {
+            ...action.payload,
+            username: `${action.payload.firstName} ${action.payload.lastName}`,
+            initials: getInitials(action.payload.firstName, action.payload.lastName)
+          }
         }
       }
 
@@ -53,11 +58,23 @@ const userReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ADD_USER:
+      const user = {
+        ...action.payload,
+        username: `${action.payload.firstName} ${action.payload.lastName}`,
+        initials: getInitials(action.payload.firstName, action.payload.lastName)
+      }
+
+      return {
+        ...state,
+        byId: updateObject(state.byId, { [action.payload.id]: user })
+      }
+
+    case types.UPDATE_USER:
       return {
         ...state,
         byId: {
           ...state.byId,
-          [action.user.id]: { ...action.user, username: `${action.user.firstName} ${action.user.lastName}` }
+          [action.payload.id]: updateObject(state.byId[action.payload.id], action.payload)
         }
       }
 

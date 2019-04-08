@@ -2,23 +2,20 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import Collapse from '@material-ui/core/Collapse'
-import { getInitials } from 'utils/normalize'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Snackbar, FlexGrid, Avatar, Icon } from 'components'
 import PinciteTextField from '../PinciteTextField'
 import Button from '@material-ui/core/Button'
 import theme from 'services/theme'
 
-const PinciteAvatar = ({ answerObj, userImages, size }) => {
-  const initials = getInitials(answerObj.firstName, answerObj.lastName)
-  const username = `${answerObj.firstName} ${answerObj.lastName}`
+const PinciteAvatar = ({ answerObj, user, size }) => {
   return (
     <Avatar
       cardAvatar
-      avatar={userImages[answerObj.userId].avatar}
-      initials={initials}
-      aria-label={`${username}'s pincite: ${answerObj.pincite}`}
-      userName={username}
+      avatar={user.avatar}
+      initials={user.initials}
+      aria-label={`${user.username}'s pincite: ${answerObj.pincite}`}
+      userName={user.username}
       small={size === 'small'}
       style={{ margin: '0 10px 0 0', fontSize: size === 'big' ? '1rem' : '.5rem', outline: 0 }}
     />
@@ -27,7 +24,7 @@ const PinciteAvatar = ({ answerObj, userImages, size }) => {
 
 PinciteAvatar.propTypes = {
   answerObj: PropTypes.object,
-  userImages: PropTypes.object,
+  user: PropTypes.object,
   size: PropTypes.oneOf(['big', 'small'])
 }
 
@@ -95,7 +92,8 @@ export class PinciteList extends Component {
     } = this.props
     const { expanded, copied } = this.state
 
-    const pincitesExist = (answerList.filter(answer => answer.pincite ? answer.pincite.length > 0 : false)).length > 0 || isAnswered
+    const pincitesExist = (answerList.filter(answer => answer.pincite ? answer.pincite.length > 0 : false)).length >
+      0 || isAnswered || alwaysShow
 
     return (
       pincitesExist &&
@@ -127,15 +125,15 @@ export class PinciteList extends Component {
         <Collapse in={alwaysShow ? true : expanded} style={{ alignSelf: 'stretch' }}>
           <FlexGrid container align="flex-start">
             {answerList.map((answer, i) => {
-              const hasPincite = answer.pincite !== null ? answer.pincite.length > 0 : false
-              const username = `${answer.firstName} ${answer.lastName}`
+              const hasPincite = alwaysShow ? true : answer.pincite !== null ? answer.pincite.length > 0 : false
+              const user = userImages[answer.userId]
               return (
                 hasPincite && <CopyToClipboard
                   text={answer.pincite}
                   onCopy={hasPincite && this.handlePinciteCopy}
-                  key={`${username}-pincite`}>
+                  key={`${user.username}-pincite`}>
                   <FlexGrid container type="row" align="center" style={{ cursor: 'pointer', marginBottom: 3 }}>
-                    <PinciteAvatar answerObj={answer} userImages={userImages} size={avatarSize} />
+                    <PinciteAvatar answerObj={answer} user={user} size={avatarSize} />
                     <Typography
                       align="center"
                       style={{
@@ -151,7 +149,7 @@ export class PinciteList extends Component {
             })}
             {isAnswered &&
             <FlexGrid container type="row" style={{ alignSelf: 'stretch' }}>
-              <PinciteAvatar answerObj={validatorObj} userImages={userImages} size={avatarSize} />
+              <PinciteAvatar answerObj={validatorObj} user={userImages[validatorObj.userId]} size={avatarSize} />
               <PinciteTextField
                 handleChangePincite={handleChangePincite}
                 pinciteValue={validatorObj.pincite}
