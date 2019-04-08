@@ -26,7 +26,7 @@ export const TextFieldQuestions = props => {
     <FlexGrid container align="flex-start">
       {isValidation && mergedUserQuestions.answers.map(answer =>
         <Fragment key={answer.id}>
-          <FlexGrid container align="flex-start" padding="20px 5px 0 0">
+          <FlexGrid container align="flex-start">
             <Typography style={{ whiteSpace: 'pre-wrap' }} variant="body1">{answer.textAnswer}</Typography>
           </FlexGrid>
           <PinciteList
@@ -37,7 +37,7 @@ export const TextFieldQuestions = props => {
           />
           <Divider />
         </Fragment>)}
-      <FlexGrid padding="20px 0" container style={{ alignSelf: 'stretch' }}>
+      <FlexGrid container style={{ alignSelf: 'stretch' }}>
         <InputBox
           onChange={onChange(answerId, 'textAnswer')}
           value={value}

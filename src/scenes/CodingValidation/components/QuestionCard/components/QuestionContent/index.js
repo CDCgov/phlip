@@ -70,10 +70,12 @@ export const QuestionContent = props => {
   })
 
   return (
-    <FlexGrid container flex style={{ flexWrap: 'nowrap', paddingBottom: 15, overflow: 'auto' }}>
-      <FlexGrid padding="20px 20px 10px 20px">
-        <FlexGrid align="baseline" container type="row">
-          <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
+    <FlexGrid container type="row" padding="20px 20px 10px 20px" flex style={{ flexWrap: 'nowrap', overflow: 'auto' }}>
+      <FlexGrid container>
+        <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
+      </FlexGrid>
+      <FlexGrid container flex>
+        <FlexGrid container type="row">
           <Typography variant="body2" style={{ letterSpacing: 0 }}>{question.text}&nbsp;</Typography>
           {question.hint && <MuiThemeProvider theme={theme}>
             <Tooltip
@@ -101,50 +103,50 @@ export const QuestionContent = props => {
             </Tooltip>
           </MuiThemeProvider>}
         </FlexGrid>
-      </FlexGrid>
-      <FlexGrid container flex style={{ ...questionAnswerPadding, overflow: 'auto', minHeight: 'unset' }}>
-        {question.questionType !== questionTypes.TEXT_FIELD &&
-        <FlexGrid container type="row" style={{ ...answerPadding, paddingRight: 0 }}>
-          <SelectionControlQuestion {...selectionFormProps} />
-        </FlexGrid>}
-
-        {question.questionType === questionTypes.TEXT_FIELD &&
-        <FlexGrid container flex style={{ ...answerPadding, paddingRight: 0, minHeight: 'unset' }}>
-          <TextFieldQuestions {...textQuestionProps} />
-        </FlexGrid>}
-
-        <FlexGrid padding={`0 0 0 ${answerPadding.paddingLeft}`} style={{ minHeight: 'unset' }}>
-          {question.includeComment &&
-          <FlexGrid>
-            <SimpleInput
-              onChange={onChangeTextAnswer(null, 'comment')}
-              name="comment"
-              shrinkLabel={true}
-              style={{ whiteSpace: 'pre-wrap' }}
-              placeholder="Enter comment"
-              value={comment}
-              rowsMax={3}
-              aria-label="Comment"
-              label="Comment"
-              disabled={disableAll}
-            />
+        <FlexGrid container flex padding={10} style={{ overflow: 'auto', minHeight: 'unset' }}>
+          {question.questionType !== questionTypes.TEXT_FIELD &&
+          <FlexGrid container type="row">
+            <SelectionControlQuestion {...selectionFormProps} />
           </FlexGrid>}
-          {question.isCategoryQuestion &&
-          <FlexGrid container type="row" flex justify="flex-start" padding="20px 0 0">
-            <Button
-              onClick={onOpenAlert}
-              style={{ backgroundColor: 'white', color: 'black' }}
-              value="Apply to all tabs"
-            />
+
+          {question.questionType === questionTypes.TEXT_FIELD &&
+          <FlexGrid container flex style={{ minHeight: 'unset' }}>
+            <TextFieldQuestions {...textQuestionProps} />
           </FlexGrid>}
+
+          <FlexGrid padding="10px 0 0" style={{ minHeight: 'unset' }}>
+            {question.includeComment &&
+            <FlexGrid>
+              <SimpleInput
+                onChange={onChangeTextAnswer(null, 'comment')}
+                name="comment"
+                shrinkLabel={true}
+                style={{ whiteSpace: 'pre-wrap' }}
+                placeholder="Enter comment"
+                value={comment}
+                rowsMax={3}
+                aria-label="Comment"
+                label="Comment"
+                disabled={disableAll}
+              />
+            </FlexGrid>}
+            {question.isCategoryQuestion &&
+            <FlexGrid container type="row" flex justify="flex-start" padding="20px 0 0">
+              <Button
+                onClick={onOpenAlert}
+                style={{ backgroundColor: 'white', color: 'black' }}
+                value="Apply to all tabs"
+              />
+            </FlexGrid>}
+          </FlexGrid>
+
+          {isValidation && <ValidationTable
+            onOpenAlert={onOpenFlagConfirmAlert}
+            mergedUserQuestions={mergedUserQuestions}
+            questionFlags={question.flags}
+            userImages={userImages}
+          />}
         </FlexGrid>
-
-        {isValidation && <ValidationTable
-          onOpenAlert={onOpenFlagConfirmAlert}
-          mergedUserQuestions={mergedUserQuestions}
-          questionFlags={question.flags}
-          userImages={userImages}
-        />}
       </FlexGrid>
     </FlexGrid>
   )
