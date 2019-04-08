@@ -216,7 +216,7 @@ export class Home extends Component {
         <PageHeader
           showButton={this.props.user.role !== 'Coder'}
           pageTitle="Project List"
-          entryScene={true}
+          entryScene
           icon="dvr"
           protocolButton={false}
           projectName=""

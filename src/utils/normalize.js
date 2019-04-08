@@ -61,12 +61,40 @@ export const updateObject = (oldObject, newObject) => {
   }
 }
 
+/**
+ * Converts a date time to local timezone
+ * @param dateTime
+ * @returns {string}
+ */
 export const convertToLocalDateTime = dateTime => {
   return moment.utc(dateTime).local().format('M/D/YYYY, h:mm A')
 }
 
+/**
+ * Converts a date to local timesize
+ * @param date
+ * @returns {string}
+ */
 export const convertToLocalDate = date => {
   return moment(date).format('M/D/YYYY')
 }
 
-export default { mapArray, arrayToObject, getInitials, updateItemAtIndex, convertToLocalDateTime, convertToLocalDate }
+/**
+ * Makes an array of objects be distinct
+ */
+export const makeDistinct = (array, property) => {
+  return Array.from(new Set(array.map(obj => obj[property]))).map(prop => ({
+    [property]: prop,
+    ...array.find(obj => obj[property] === prop)
+  }))
+}
+
+export default {
+  mapArray,
+  arrayToObject,
+  getInitials,
+  updateItemAtIndex,
+  convertToLocalDateTime,
+  convertToLocalDate,
+  makeDistinct
+}

@@ -3,7 +3,6 @@
  */
 import { createLogic } from 'redux-logic'
 import { types } from './actions'
-import { types as userTypes } from 'data/users/actions'
 import {
   checkIfExists,
   getCodedValidatedQuestions,
@@ -18,6 +17,7 @@ import {
   initializeUserAnswers,
   initializeValues
 } from 'utils/codingHelpers'
+import { handleUserImages } from 'utils/commonHelpers'
 import documentListLogic from './components/DocumentList/logic'
 
 /**
@@ -124,61 +124,6 @@ const getCoderInformation = async ({ api, action, questionId, userImages }) => {
   }
 
   return { codedQuestionObj, coderErrors, coders }
-}
-
-/**
- * Handles determining if getting avatars is needed
- * @param coders
- * @param allUserObjs
- * @param dispatch
- * @param api
- * @returns {Promise<any>}
- */
-const handleUserImages = (coders, allUserObjs, dispatch, api) => {
-  let avatar, errors = ''
-  const now = Date.now()
-  const oneday = 60 * 60 * 24 * 1000
-
-  return new Promise(async (resolve, reject) => {
-    if (coders.length === 0) {
-      resolve({ errors })
-    }
-    for (let i = 0; i < coders.length; i++) {
-      const { userId, ...coder } = coders[i]
-      try {
-        if (allUserObjs.hasOwnProperty(userId)) {
-          // the object already exists
-          if ((now - allUserObjs[userId].lastCheck) > oneday) {
-            avatar = await api.getUserImage({}, {}, { userId })
-            dispatch({
-              type: userTypes.UPDATE_USER,
-              payload: {
-                id: userId,
-                avatar,
-                lastCheck: now
-              }
-            })
-          }
-        } else {
-          avatar = await api.getUserImage({}, {}, { userId })
-          dispatch({
-            type: userTypes.ADD_USER,
-            payload: {
-              id: userId,
-              ...coder,
-              avatar,
-              lastCheck: now
-            }
-          })
-        }
-      } catch (error) {
-        errors = 'Failed to get user images'
-      }
-      if (i === coders.length - 1) {
-        resolve({ errors })
-      }
-    }
-  })
 }
 
 /**
