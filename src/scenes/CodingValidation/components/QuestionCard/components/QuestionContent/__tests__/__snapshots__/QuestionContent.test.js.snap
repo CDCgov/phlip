@@ -47,7 +47,11 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
     justify="stretch"
     padding={0}
     raised={false}
-    style={Object {}}
+    style={
+      Object {
+        "overflow": "auto",
+      }
+    }
     type="column"
   >
     <FlexGrid
@@ -85,6 +89,7 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
         Object {
           "minHeight": "unset",
           "overflow": "auto",
+          "width": "100%",
         }
       }
       type="column"

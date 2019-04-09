@@ -54,13 +54,13 @@ export const QuestionContent = props => {
       <FlexGrid container>
         <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
       </FlexGrid>
-      <FlexGrid container flex>
+      <FlexGrid container flex style={{ overflow: 'auto' }}>
         <FlexGrid container type="row" align="flex-start">
           <Typography
             variant="body2"
             style={{ letterSpacing: 0, lineHeight: '1.5em' }}>{question.text}&nbsp;</Typography>
           {question.hint &&
-          <FlexGrid>
+          <FlexGrid style={{ marginRight: 10 }}>
             <Tooltip
               placement="top"
               overrideClasses={{ tooltip: classes.hintTooltip }}
@@ -87,7 +87,7 @@ export const QuestionContent = props => {
             </Tooltip>
           </FlexGrid>}
         </FlexGrid>
-        <FlexGrid container flex padding="25px 0" style={{ overflow: 'auto', minHeight: 'unset' }}>
+        <FlexGrid container flex padding="25px 0" style={{ overflow: 'auto', minHeight: 'unset', width: '100%' }}>
           {question.questionType !== questionTypes.TEXT_FIELD &&
           <FlexGrid container type="row">
             <SelectionControlQuestion {...selectionFormProps} />
