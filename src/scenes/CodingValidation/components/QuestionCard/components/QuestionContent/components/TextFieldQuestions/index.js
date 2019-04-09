@@ -51,8 +51,7 @@ export const TextFieldQuestions = props => {
           style={{
             alignSelf: 'flex-start',
             backgroundColor: enabledAnswerChoice === answerId ? theme.palette.error.main : 'white',
-            color: enabledAnswerChoice === answerId ? 'white' : 'black',
-            margin: isValidation ? '0 0 0 20px' : '10px 0 0 0'
+            color: enabledAnswerChoice === answerId ? 'white' : 'black'
           }}
           disableRipple
           onClick={onToggleAnswerForAnno(answerId)}>
@@ -65,6 +64,7 @@ export const TextFieldQuestions = props => {
           handleChangePincite={onChange}
         />}
         {isValidation && <PinciteList
+          validatorStyles={{ margin: '3px 0' }}
           avatarSize="big"
           alwaysShow
           userImages={userImages}

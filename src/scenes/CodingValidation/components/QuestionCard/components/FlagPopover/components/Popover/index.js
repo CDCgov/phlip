@@ -39,7 +39,7 @@ export const Popover = props => {
           open &&
           <ClickAwayListener onClickAway={open ? onClose : () => {}}>
             <div ref={ref} data-placement={placement} style={{ marginTop: 5, ...style, zIndex: 20 }}>
-              <FlexGrid raised container displayFlex>
+              <FlexGrid raised container>
                 <Row style={{ padding: 16 }}>
                   <Typography variant="body2">{title}</Typography>
                 </Row>

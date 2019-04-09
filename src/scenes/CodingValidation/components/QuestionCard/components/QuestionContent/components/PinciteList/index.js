@@ -40,7 +40,8 @@ export class PinciteList extends Component {
     handleChangePincite: PropTypes.func,
     alwaysShow: PropTypes.bool,
     avatarSize: PropTypes.oneOf(['big', 'small']),
-    textFieldProps: PropTypes.object
+    textFieldProps: PropTypes.object,
+    validatorStyles: PropTypes.object
   }
 
   static defaultProps = {
@@ -49,7 +50,8 @@ export class PinciteList extends Component {
     answerList: [],
     userImages: {},
     isAnswered: false,
-    textFieldProps: {}
+    textFieldProps: {},
+    validatorStyles: {}
   }
 
   state = {
@@ -88,7 +90,7 @@ export class PinciteList extends Component {
   render() {
     const {
       answerList, userImages, handleChangePincite, validatorObj, isAnswered,
-      alwaysShow, avatarSize, textFieldProps
+      alwaysShow, avatarSize, textFieldProps, validatorStyles
     } = this.props
     const { expanded, copied } = this.state
 
@@ -148,7 +150,7 @@ export class PinciteList extends Component {
               )
             })}
             {isAnswered &&
-            <FlexGrid container type="row" style={{ alignSelf: 'stretch' }}>
+            <FlexGrid container type="row" style={{ alignSelf: 'stretch', ...validatorStyles }}>
               <PinciteAvatar answerObj={validatorObj} user={userImages[validatorObj.userId]} size={avatarSize} />
               <PinciteTextField
                 handleChangePincite={handleChangePincite}

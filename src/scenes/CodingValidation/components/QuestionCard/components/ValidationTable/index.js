@@ -73,7 +73,7 @@ export const ValidationTable = props => {
               <FlexGrid container type="row" flex style={{ flexBasis: '70%', overflow: 'hidden' }}>
                 {item.type &&
                 <FlexGrid container type="row" align="center" flex style={{ overflow: ' hidden' }}>
-                  <FlexGrid flex padding="0 8px 0 0">
+                  <FlexGrid padding="0 8px 0 0">
                     <IconButton
                       onClick={() => onOpenAlert(item.id, item.type)}
                       tooltipText="Clear this flag"
