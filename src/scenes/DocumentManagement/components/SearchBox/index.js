@@ -258,13 +258,15 @@ export class SearchBox extends Component {
       letterSpacing: .2,
       fontWeight: 300,
       fontSize: 13,
-      maxWidth: '8%',
-      marginRight: 10
+      // maxWidth: '9%',
+      marginRight: 10,
+      paddingLeft: 5
     }
 
     const inputProps = {
       style: {
-        padding: 0
+        padding: 0,
+        fontSize: 13
       }
     }
 
@@ -348,12 +350,13 @@ export class SearchBox extends Component {
                       <Typography variant="body2" htmlFor="uploaded-within" style={formRowFontStyles}>
                         Uploaded Date
                       </Typography>
-                      <FlexGrid container flex type="row" style={{ width: '100%', flexWrap:'wrap' }} justify="space-between" >
-                        <FlexGrid container flex type="row" justify="space-between" style={{width:'45%'}}>
+                      <FlexGrid container flex type="row" style={{flexBasis: '80%', flexWrap:'wrap' }} justify="space-between" >
+                        <FlexGrid container flex type="row" justify="space-between" style={{width:'35%'}}>
                           <Typography variant="body2" htmlFor="uploadedDate1Search" style={formRowFontStyles2}>
                           From:
                           </Typography>
                           <DatePicker
+                            id="date1"
                             name="uploadedDate1Search"
                             dateFormat="MM/DD/YYYY"
                             onChange={date => this.handleFormValueChange('uploadedDate1', date)}
@@ -380,11 +383,12 @@ export class SearchBox extends Component {
 
                         </FlexGrid>
                         <FlexGrid style={{ width: '1%' }} />
-                        <FlexGrid container flex type="row" justify="space-between" style={{width:'45%'}}>
+                        <FlexGrid container flex type="row" justify="space-between" style={{width:'35%'}}>
                           <Typography variant="body2" htmlFor="uploadedDate2Search" style={formRowFontStyles2}>
                           To:
                           </Typography>
                           <DatePicker
+                            id = "date2"
                             name="uploadedDate2Search"
                             dateFormat="MM/DD/YYYY"
                             onChange={date => this.handleFormValueChange('uploadedDate2', date)}
