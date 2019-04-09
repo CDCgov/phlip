@@ -286,6 +286,7 @@ export const getValidationOutlineLogic = createLogic({
 const answerQuestionLogic = createLogic({
   type: types.SAVE_USER_ANSWER_REQUEST,
   debounce: 350,
+  latest: true,
 
   /**
    * It updates the action creator values and validates
@@ -315,7 +316,8 @@ const answerQuestionLogic = createLogic({
       jurisdictionId: action.jurisdictionId,
       projectId: action.projectId,
       userId,
-      questionObj
+      questionObj,
+      queueId: Date.now()
     }
 
     if (state.unsavedChanges) {
@@ -346,13 +348,15 @@ const answerQuestionLogic = createLogic({
         // Remove any pending requests from the queue because this is the latest one and has an id
         dispatch({
           type: types.REMOVE_REQUEST_FROM_QUEUE,
-          payload: { questionId: action.payload.questionId, categoryId: action.payload.selectedCategoryId }
+          payload: {
+            questionId: action.payload.questionId,
+            categoryId: action.payload.selectedCategoryId,
+            queueId: action.payload.queueId
+          }
         })
       } else {
         respCodedQuestion = await action.apiMethods.create(action.payload.questionObj, {}, { ...action.payload })
       }
-
-      console.log(respCodedQuestion)
 
       dispatch({
         type: types.SAVE_USER_ANSWER_SUCCESS,
@@ -775,7 +779,10 @@ export const getUserValidatedQuestionsLogic = createLogic({
       scheme: updatedScheme,
       otherUpdates,
       mergedUserQuestions: coderInfo.codedQuestionObj,
-      errors: { ...errors, ...coderInfo.coderErrors, ...schemeErrors, ...codedValErrors, userImages: imageResult.errors }
+      errors: {
+        ...errors, ...coderInfo.coderErrors, ...schemeErrors, ...codedValErrors,
+        userImages: imageResult.errors
+      }
     }
 
     dispatch({

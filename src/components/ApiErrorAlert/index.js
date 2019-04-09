@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import Alert from 'components/Alert'
 import Icon from 'components/Icon'
@@ -10,12 +10,12 @@ import EmoticonSad from 'mdi-material-ui/EmoticonSad'
  */
 export const ApiErrorAlert = ({ content, onCloseAlert, open, actions }) => {
   const title = (
-    <Fragment>
+    <>
       <Icon size={30} color="red" style={{ paddingRight: 10 }}>
         <EmoticonSad style={{ height: 30, width: 30 }} />
       </Icon>
       Uh-oh! Something went wrong.
-    </Fragment>
+    </>
   )
 
   return (

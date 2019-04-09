@@ -38,7 +38,7 @@ export const ValidationTable = props => {
 
   return (
     allFlags.length > 0 &&
-    <FlexGrid container padding="25px 0 0" style={{ flexBasis: 'auto', flexWrap: 'nowrap' }}>
+    <FlexGrid container padding="25px 0 0" style={{ flexBasis: 'auto', flexWrap: 'nowrap', margin: '0 10px' }}>
       <FlexGrid flex padding="0 0 10px 0">
         <Typography variant="subheading" style={{ color: '#a7bdc6' }}>Flags and Comments</Typography>
       </FlexGrid>

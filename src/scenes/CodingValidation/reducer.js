@@ -64,10 +64,14 @@ export const COMBINED_INITIAL_STATE = {
  * @param {(String|Number)} questionId
  * @param {(String|Number)} categoryId
  * @param {Array} currentQueue
+ * @param {(String|Number)} queueId
  * @returns {Array}
  */
-const removeRequestsInQueue = (questionId, categoryId, currentQueue) => {
+const removeRequestsInQueue = (questionId, categoryId, currentQueue, queueId) => {
   return currentQueue.filter(message => {
+    message.queueId !== queueId
+  })
+  /*return currentQueue.filter(message => {
     if (message.questionId !== questionId) {
       return true
     } else if (message.questionId === questionId) {
@@ -77,7 +81,7 @@ const removeRequestsInQueue = (questionId, categoryId, currentQueue) => {
         return false
       }
     }
-  })
+  })*/
 }
 
 /**
@@ -136,7 +140,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
             { hasMadePost: true }
           )
           : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: true }),
-        unsavedChanges: true,
+        unsavedChanges: false,
         saveFailed: false
       }
 
@@ -144,7 +148,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       const currentQueue = removeRequestsInQueue(
         action.payload.questionId,
         action.payload.categoryId,
-        [...state.messageQueue]
+        [...state.messageQueue],
+        action.payload.queueId
       )
 
       return {
@@ -158,7 +163,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         messageQueue: removeRequestsInQueue(
           action.payload.questionId,
           action.payload.categoryId,
-          [...state.messageQueue]
+          [...state.messageQueue],
+          action.payload.queueId
         )
       }
 
