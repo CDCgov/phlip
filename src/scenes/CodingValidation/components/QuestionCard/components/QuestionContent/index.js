@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import SelectionControlQuestion from './components/SelectionControlQuestion'
 import * as questionTypes from 'scenes/CodingValidation/constants'
-import TextFieldQuestions from './components/TextFieldQuestions'
+import TextFieldQuestions from './components/TextFieldQuestion'
 import ValidationTable from '../ValidationTable'
 import { FlexGrid, Typography, Tooltip, Button, SimpleInput, Icon } from 'components'
 import { withStyles } from '@material-ui/core/styles'
@@ -28,7 +28,7 @@ export const QuestionContent = props => {
     userImages,
     question,
     userAnswers,
-    disabled: disableAll,
+    disableAll,
     areDocsEmpty,
     choices: question.possibleAnswers,
     mergedUserQuestions,

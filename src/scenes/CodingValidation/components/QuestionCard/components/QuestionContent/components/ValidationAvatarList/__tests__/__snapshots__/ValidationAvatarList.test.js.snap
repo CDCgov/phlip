@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`QuestionCard - QuestionContent - ValidationAvatarList should render correctly 1`] = `
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={true}
+  flex={false}
+  justify="stretch"
+  padding="5px 0 8px 0"
+  raised={false}
+  style={Object {}}
+  type="row"
+/>
+`;
