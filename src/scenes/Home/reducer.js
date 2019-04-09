@@ -126,7 +126,7 @@ const getProjectArrays = state => {
  * @param {Object} action
  * @returns {Object}
  */
-const mainReducer = (state, action) => {
+export const mainReducer = (state, action) => {
   const updateHomeState = updater.updateItemsInState(state, action)
 
   switch (action.type) {
@@ -363,7 +363,7 @@ const mainReducer = (state, action) => {
  * @param {Object} action
  * @returns {Object} - Updated state
  */
-const homeReducer = (state = INITIAL_STATE, action) => {
+export const homeReducer = (state = INITIAL_STATE, action) => {
   return Object.values(types).includes(action.type)
     ? { ...state, ...getProjectArrays({ ...mainReducer(state, action) }) }
     : state

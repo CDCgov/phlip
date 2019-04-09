@@ -38,8 +38,15 @@ describe('Home logic', () => {
 
   test('should get project list and set bookmarkList and dispatch GET_PROJECTS_SUCCESS when done', (done) => {
     mock.onGet('/projects').reply(200, [
-      { name: 'Project 1', id: 1, lastEditedBy: 'Test User   ', dateLastEdited: '1/1/2000', projectJurisdictions: [] },
-      { name: 'Project 2', id: 2, lastEditedBy: ' Test User    ', projectJurisdictions: [] }
+      {
+        name: 'Project 1',
+        id: 1,
+        lastEditedBy: 'Test User   ',
+        dateLastEdited: '1/1/2000',
+        projectJurisdictions: [],
+        projectUsers: []
+      },
+      { name: 'Project 2', id: 2, lastEditedBy: ' Test User    ', projectJurisdictions: [], projectUsers: [] }
     ])
 
     const store = setupStore([1])
@@ -60,10 +67,8 @@ describe('Home logic', () => {
                 lastEditedBy: 'Test User',
                 dateLastEdited: '1/1/2000',
                 projectJurisdictions: [],
-                users: {
-                  all: [],
-                  lastCheck: null
-                }
+                projectUsers: [],
+                lastUsersCheck: null
               },
               {
                 createdById: undefined,
@@ -71,10 +76,8 @@ describe('Home logic', () => {
                 id: 2,
                 lastEditedBy: 'Test User',
                 projectJurisdictions: [],
-                users: {
-                  all: [],
-                  lastCheck: null
-                }
+                projectUsers: [],
+                lastUsersCheck: null
               }
             ],
             bookmarkList: [1],

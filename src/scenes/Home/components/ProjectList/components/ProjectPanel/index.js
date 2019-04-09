@@ -143,7 +143,7 @@ class ProjectPanel extends Component {
                     {userData.map(oneCoder => {
                       const coder = oneCoder.blank ? oneCoder : allUsers[oneCoder.userId]
                       return (
-                        <GridListTile key={coder.id}>
+                        <GridListTile cols={1} key={coder.id}>
                           {coder.avatar !== undefined ? (
                             coder.avatar === '' ? (
                               <FlexGrid
