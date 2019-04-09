@@ -17,6 +17,7 @@ import {
   initializeUserAnswers,
   initializeValues
 } from 'utils/codingHelpers'
+import { handleUserImages } from 'utils/commonHelpers'
 import documentListLogic from './components/DocumentList/logic'
 
 /**
@@ -39,7 +40,9 @@ const addCoderToAnswers = (existingQuestion, question, coder) => {
 
   return {
     ...existingQuestion,
-    answers: [...existingQuestion.answers, ...question.codedAnswers.map(answer => ({ ...answer, ...coder }))],
+    answers: [
+      ...existingQuestion.answers, ...question.codedAnswers.map(answer => ({ ...answer, userId: coder.userId }))
+    ],
     flagsComments: Object.keys(flagComment).length > 0
       ? [...existingQuestion.flagsComments, flagComment]
       : [...existingQuestion.flagsComments]
@@ -130,6 +133,7 @@ const getCoderInformation = async ({ api, action, questionId, userImages }) => {
 const outlineLogic = createLogic({
   type: [types.GET_CODING_OUTLINE_REQUEST, types.GET_VALIDATION_OUTLINE_REQUEST],
   transform({ getState, action }, next) {
+    const user = getState().data.user.currentUser
     next({
       ...action,
       payload: {
@@ -146,7 +150,8 @@ const outlineLogic = createLogic({
         showPageLoader: false,
         errors: {}
       },
-      userId: getState().data.user.currentUser.id
+      userId: user.id,
+      currentUser: user
     })
   }
 })
@@ -171,7 +176,9 @@ export const getOutlineLogic = createLogic({
         const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(action.projectId, action.jurisdictionId, userId, api.getUserCodedQuestions)
 
         // Initialize the user answers object
-        const userAnswers = initializeUserAnswers([initializeNextQuestion(firstQuestion), ...codedValQuestions], questionsById, userId)
+        const userAnswers = initializeUserAnswers([
+          initializeNextQuestion(firstQuestion), ...codedValQuestions
+        ], questionsById, userId)
 
         payload = {
           ...payload,
@@ -205,6 +212,7 @@ export const getValidationOutlineLogic = createLogic({
   async process({ action, getState, api }, dispatch, done) {
     let errors = {}, payload = action.payload, userImages = {}, coders = {}
     const userId = action.userId
+    let allUserObjs = getState().data.user.byId
 
     try {
       // Try to get the project coding scheme
@@ -222,7 +230,9 @@ export const getValidationOutlineLogic = createLogic({
         const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(action.projectId, action.jurisdictionId, userId, api.getValidatedQuestions)
 
         // Initialize the user answers object
-        const userAnswers = initializeUserAnswers([initializeNextQuestion(firstQuestion), ...codedValQuestions], questionsById, userId)
+        const userAnswers = initializeUserAnswers([
+          initializeNextQuestion(firstQuestion), ...codedValQuestions
+        ], questionsById, userId)
 
         // Get all the coded questions for this question
         const coderInfo = await getCoderInformation({
@@ -242,15 +252,7 @@ export const getValidationOutlineLogic = createLogic({
           }
         }
 
-        // Get all the avatars I need
-        for (let userId of Object.keys(coders)) {
-          try {
-            const avatar = await api.getUserImage({}, {}, { userId })
-            coders[userId] = { ...coders[userId], avatar }
-          } catch (error) {
-            errors = { ...errors, userImages: 'Failed to get images' }
-          }
-        }
+        const imagesResult = await handleUserImages(Object.values(coders), allUserObjs, dispatch, api)
 
         payload = {
           ...payload,
@@ -258,9 +260,8 @@ export const getValidationOutlineLogic = createLogic({
           scheme: { byId: questionsById, tree, order },
           userAnswers,
           mergedUserQuestions: coderInfo.codedQuestionObj,
-          userImages: coders,
           question: firstQuestion,
-          errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors }
+          errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors, userImages: imagesResult.errors }
         }
       }
 
@@ -301,12 +302,13 @@ const answerQuestionLogic = createLogic({
   validate({ getState, action, api }, allow, reject) {
     const state = getState().scenes.codingValidation.coding
     const userId = getState().data.user.currentUser.id
-    const apiMethods = action.page === 'validation'
+    const isValidation = state.page === 'validation'
+
+    const apiMethods = isValidation
       ? { create: api.answerValidatedQuestion, update: api.updateValidatedQuestion }
       : { create: api.answerCodedQuestion, update: api.updateCodedQuestion }
 
-    const questionObj = getFinalCodedObject(state, { ...action, userId }, action.page ===
-      'validation', action.selectedCategoryId)
+    const questionObj = getFinalCodedObject(state, { ...action, userId }, isValidation, action.selectedCategoryId)
 
     const answerObject = {
       questionId: action.questionId,
@@ -316,9 +318,8 @@ const answerQuestionLogic = createLogic({
       questionObj
     }
 
-    if (state.unsavedChanges === true) {
-      if (questionObj.isNewCodedQuestion === true && questionObj.hasMadePost === true &&
-        !questionObj.hasOwnProperty('id')) {
+    if (state.unsavedChanges) {
+      if (questionObj.isNewCodedQuestion && questionObj.hasMadePost && !questionObj.hasOwnProperty('id')) {
         reject({ type: types.ADD_REQUEST_TO_QUEUE, payload: answerObject })
       } else {
         allow({ ...action, payload: { ...answerObject, selectedCategoryId: action.selectedCategoryId }, apiMethods })
@@ -336,6 +337,7 @@ const answerQuestionLogic = createLogic({
    */
   async process({ getState, action, api }, dispatch, done) {
     let respCodedQuestion = {}
+    const state = getState().scenes.codingValidation.coding
 
     try {
       if (action.payload.questionObj.hasOwnProperty('id')) {
@@ -349,6 +351,8 @@ const answerQuestionLogic = createLogic({
       } else {
         respCodedQuestion = await action.apiMethods.create(action.payload.questionObj, {}, { ...action.payload })
       }
+
+      console.log(respCodedQuestion)
 
       dispatch({
         type: types.SAVE_USER_ANSWER_SUCCESS,
@@ -366,7 +370,7 @@ const answerQuestionLogic = createLogic({
           questionId: action.payload.questionId,
           id: respCodedQuestion.id
         },
-        page: action.page,
+        page: state.page,
         apiUpdateMethod: action.apiMethods.update
       })
 
@@ -411,7 +415,8 @@ const applyAnswerToAllLogic = createLogic({
    */
   transform({ getState, action, api }, next) {
     const userId = getState().data.user.currentUser.id
-    const apiMethods = action.page === 'validation'
+    const state = getState().scenes.codingValidation.coding
+    const apiMethods = state.page === 'validation'
       ? { create: api.answerValidatedQuestion, update: api.updateValidatedQuestion }
       : { create: api.answerCodedQuestion, update: api.updateCodedQuestion }
 
@@ -439,7 +444,7 @@ const applyAnswerToAllLogic = createLogic({
     try {
       for (let category of allCategoryObjects) {
         let respCodedQuestion = {}
-        const question = getFinalCodedObject(state, action, action.page === 'validation', category.categoryId)
+        const question = getFinalCodedObject(state, action, state.page === 'validation', category.categoryId)
 
         if (category.id !== undefined) {
           respCodedQuestion = await action.apiMethods.update(question, {}, { ...action.answerObject, userId })
@@ -571,7 +576,9 @@ export const getUserCodedQuestionsLogic = createLogic({
     const { updatedScheme, schemeErrors, updatedSchemeQuestion } = await getSchemeQuestionAndUpdate(action.projectId, state, question, api)
 
     // Update the user answers object
-    const userAnswers = initializeUserAnswers([initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions], updatedScheme.byId, userId)
+    const userAnswers = initializeUserAnswers([
+      initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions
+    ], updatedScheme.byId, userId)
 
     payload = {
       question: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion },
@@ -622,10 +629,19 @@ const saveRedFlagLogic = createLogic({
 export const updateValidatorLogic = createLogic({
   type: [types.UPDATE_USER_ANSWER, types.ON_APPLY_ANSWER_TO_ALL],
   transform({ action, getState }, next) {
+    const state = getState().scenes.codingValidation.coding
+    const user = getState().data.user.currentUser
     next({
       ...action,
-      otherProps: { validatedBy: { ...getState().data.user.currentUser } },
-      isValidation: action.page === 'validation'
+      otherProps: {
+        validatedBy: {
+          userId: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          avatar: user.avatar
+        }
+      },
+      isValidation: state.page === 'validation'
     })
   }
 })
@@ -664,18 +680,18 @@ const getQuestionLogic = createLogic({
       userId
     })
   },
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.GET_QUESTION_SUCCESS,
-    failType: types.GET_QUESTION_FAIL
-  },
-  latest: true,
-  async process({ getState, action, api }) {
+  async process({ getState, action, api }, dispatch, done) {
     let otherErrors = {}
     const state = getState().scenes.codingValidation.coding
-    if (action.page === 'coding') {
+    const allUserObjs = getState().data.user.byId
+
+    if (state.page === 'coding') {
       const response = await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getCodedQuestion)
-      return response
+      dispatch({
+        type: types.GET_QUESTION_SUCCESS,
+        payload: response
+      })
+      done()
     } else {
       const {
         updatedState,
@@ -683,31 +699,28 @@ const getQuestionLogic = createLogic({
         currentIndex,
         errors,
         newImages
-      } = await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getUserValidatedQuestion, state.userImages)
+      } = await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getUserValidatedQuestion, {})
       const { codedQuestionObj, coderErrors, coders } = await getCoderInformation({
         api,
         action,
         questionId: question.id,
-        userImages: { ...state.userImages, ...newImages }
+        userImages: newImages
       })
 
       const newCoderImages = { ...newImages, ...coders }
-      for (let userId of Object.keys(newCoderImages)) {
-        try {
-          const avatar = await api.getUserImage({}, {}, { userId })
-          newCoderImages[userId] = { ...newCoderImages[userId], avatar }
-        } catch (error) {
-          otherErrors = { ...otherErrors, userImages: 'Failed to get images' }
-        }
-      }
+      const imageResult = await handleUserImages(Object.values(newCoderImages), allUserObjs, dispatch, api)
 
-      return {
-        updatedState: { ...updatedState, mergedUserQuestions: { ...state.mergedUserQuestions, ...codedQuestionObj } },
-        question,
-        currentIndex,
-        errors: { ...errors, ...coderErrors, ...otherErrors },
-        userImages: { ...state.userImages, ...newCoderImages }
-      }
+      dispatch({
+        type: types.GET_QUESTION_SUCCESS,
+        payload: {
+          updatedState: { ...updatedState, mergedUserQuestions: { ...state.mergedUserQuestions, ...codedQuestionObj } },
+          question,
+          currentIndex,
+          errors: { ...errors, ...coderErrors, ...otherErrors, userImages: imageResult.errors }
+        }
+      })
+
+      done()
     }
   }
 })
@@ -723,6 +736,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
     const userId = getState().data.user.currentUser.id
     const state = getState().scenes.codingValidation.coding
     const question = action.question, otherUpdates = action.otherUpdates
+    const allUserObjs = getState().data.user.byId
     let errors = {}, payload = {}, coders = {}
 
     // Get validated questions for this jurisdiction
@@ -741,24 +755,19 @@ export const getUserValidatedQuestionsLogic = createLogic({
       }
     }
 
-    const userAnswers = initializeUserAnswers([initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions], updatedScheme.byId, userId)
+    const userAnswers = initializeUserAnswers([
+      initializeNextQuestion(updatedSchemeQuestion), ...codedValQuestions
+    ], updatedScheme.byId, userId)
 
     const coderInfo = await getCoderInformation({
       api,
       action,
       questionId: updatedSchemeQuestion.id,
-      userImages: { ...state.userImages, ...coders }
+      userImages: coders
     })
 
     coders = { ...coders, ...coderInfo.coders }
-    for (let userId of Object.keys(coders)) {
-      try {
-        const avatar = await api.getUserImage({}, {}, { userId })
-        coders[userId] = { ...coders[userId], avatar }
-      } catch (error) {
-        errors = { ...errors, userImages: 'Failed to get images' }
-      }
-    }
+    const imageResult = await handleUserImages(Object.values(coders), allUserObjs, dispatch, api)
 
     payload = {
       userAnswers,
@@ -766,8 +775,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
       scheme: updatedScheme,
       otherUpdates,
       mergedUserQuestions: coderInfo.codedQuestionObj,
-      errors: { ...errors, ...coderInfo.coderErrors, ...schemeErrors, ...codedValErrors },
-      userImages: { ...state.userImages, ...coders }
+      errors: { ...errors, ...coderInfo.coderErrors, ...schemeErrors, ...codedValErrors, userImages: imageResult.errors }
     }
 
     dispatch({

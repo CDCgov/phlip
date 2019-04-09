@@ -1,9 +1,15 @@
 import reducer from '../reducer'
-import * as types from '../actionTypes'
+import { types } from '../actions'
 
 const initial = {
-  currentUser: {}
+  currentUser: {},
+  byId: {}
 }
+
+const getState = (other = {}) => ({
+  ...initial,
+  ...other
+})
 
 describe('User reducer', () => {
   test('should return the initial state', () => {
@@ -11,21 +17,30 @@ describe('User reducer', () => {
   })
 
   describe('LOGIN_USER_SUCCESS', () => {
+    const currentState = getState()
+    const state = reducer(currentState, {
+      type: types.LOGIN_USER_SUCCESS,
+      payload: { firstName: 'test', lastName: 'user', id: 1 }
+    })
+
     test('should set currentUser to payload object', () => {
-      expect(reducer(
-        { ...initial },
-        { type: types.LOGIN_USER_SUCCESS, payload: { firstName: 'user' } }
-      )).toEqual({
-        ...initial,
-        currentUser: { firstName: 'user' }
+      expect(state.currentUser).toEqual({
+        firstName: 'test', lastName: 'user', id: 1
+      })
+    })
+
+    test('should add user to state.byId', () => {
+      expect(state.byId[1]).toEqual({
+        firstName: 'test', lastName: 'user', initials: 'tu', username: 'test user', id: 1
       })
     })
   })
 
   describe('FLUSH_STATE', () => {
     test('should set state back to initial state', () => {
+      const currentState = getState({ currentUser: { firstName: 'test' }})
       expect(reducer(
-        { currentUser: { firstName: 'user' } },
+        currentState,
         { type: types.FLUSH_STATE }
       )).toEqual(initial)
     })

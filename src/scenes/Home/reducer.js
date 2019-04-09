@@ -23,12 +23,7 @@ export const INITIAL_STATE = {
   projectCount: 0,
   projectToExport: { text: '' },
   exportError: '',
-  projectUsers: {
-    byId: {},
-    allIds: [],
-    curProjectUsers: [],
-    currentProject: null
-  }
+  selectedProjectId: null
 }
 
 /**
@@ -131,7 +126,7 @@ const getProjectArrays = state => {
  * @param {Object} action
  * @returns {Object}
  */
-const mainReducer = (state, action) => {
+export const mainReducer = (state, action) => {
   const updateHomeState = updater.updateItemsInState(state, action)
 
   switch (action.type) {
@@ -318,27 +313,7 @@ const mainReducer = (state, action) => {
 
     case types.GET_PROJECT_USERS_SUCCESS:
       const projectId = action.payload.projectId
-      const newUsers = normalize.arrayToObject(action.payload.newUsers, 'userId')
-      //const iDs = Object.keys(normalize.arrayToObject(action.payload.users))
-      let obj = {}
-      let projectUsers = []
-      // let byProjecObj = {}
-      if (Object.keys(newUsers).length > 0) {
-        if (Object.keys(state.projectUsers.byId).length > 0) {
-          obj = { ...state.projectUsers.byId, ...newUsers }
-        } else {
-          obj = newUsers
-        }
-      } else {
-        obj = state.projectUsers.byId
-      }
-
-      action.payload.users.forEach((user) => {
-        const exists = projectUsers.filter(userObj => userObj.userId === user.userId)
-        if (exists.length === 0) {
-          projectUsers.push(obj[user.userId])
-        }
-      })
+      project = state.projects.byId[projectId]
 
       return {
         ...state,
@@ -346,40 +321,27 @@ const mainReducer = (state, action) => {
           ...state.projects,
           byId: {
             ...state.projects.byId,
-            [action.payload.projectId]: {
-              ...state.projects.byId[action.payload.projectId],
-              users: {
-                all: projectUsers,
-                lastCheck: new Date()
-              }
+            [projectId]: {
+              ...project,
+              lastUsersCheck: action.payload.newCheck ? Date.now() : project.lastUsersCheck
             }
           }
         },
-        projectUsers: {
-          ...state.projectUsers,
-          byId: obj,
-          allIds: Object.keys(obj),
-          currentProject: projectId
-        }
+        selectedProjectId: projectId
       }
 
     case types.UPDATE_CURRENT_PROJECT:
       return {
         ...state,
-        projectUsers: {
-          ...state.projectUsers,
-          currentProject: action.projectId
-        }
+        selectedProjectId: action.projectId
       }
+
     case types.RESET_OPEN_PROJECT:
       if (action.whereClicked !== undefined) {
         if (action.whereClicked.tagName === 'DIV') {
           return {
             ...state,
-            projectUsers: {
-              ...state.projectUsers,
-              currentProject: null
-            }
+            selectedProjectId: null
           }
         } else {
           return state
@@ -401,7 +363,7 @@ const mainReducer = (state, action) => {
  * @param {Object} action
  * @returns {Object} - Updated state
  */
-const homeReducer = (state = INITIAL_STATE, action) => {
+export const homeReducer = (state = INITIAL_STATE, action) => {
   return Object.values(types).includes(action.type)
     ? { ...state, ...getProjectArrays({ ...mainReducer(state, action) }) }
     : state

@@ -9,7 +9,7 @@ import docManage from './DocumentManagement/reducer'
 import protocol from './Protocol/reducer'
 import docView from './DocumentView/reducer'
 import codingValidation from './CodingValidation/reducer'
-import * as types from 'data/user/actionTypes'
+import { types } from './actions'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 
 const INITIAL_STATE = {

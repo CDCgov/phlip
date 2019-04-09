@@ -31,7 +31,7 @@ exports[`DatePicker component should render correctly 1`] = `
           "readOnly": false,
         },
         "onChange": undefined,
-        "value": "10/11/2017",
+        "value": "11/11/2017",
       }
     }
     autoOk={true}
@@ -62,7 +62,7 @@ exports[`DatePicker component should render correctly 1`] = `
         "marginTop": 16,
       }
     }
-    value={2017-10-11T00:00:00.000Z}
+    value={2017-11-11T05:00:00.000Z}
   />
 </WithStyles(FormControl)>
 `;

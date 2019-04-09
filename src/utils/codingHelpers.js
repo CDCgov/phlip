@@ -758,8 +758,8 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
     initialize = false
   }
 
-  if (initialize === true) {
-    if (combinedQuestion.isCategoryQuestion === true) {
+  if (initialize) {
+    if (combinedQuestion.isCategoryQuestion) {
       for (let question of codedQuestion) {
         if (question.hasOwnProperty('validatedBy')) {
           if (!checkIfExists(question.validatedBy, userImages, 'userId') &&

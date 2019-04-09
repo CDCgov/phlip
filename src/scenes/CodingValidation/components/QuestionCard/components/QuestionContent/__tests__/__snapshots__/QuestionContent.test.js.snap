@@ -1,31 +1,61 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`QuestionCard - QuestionContent should render correctly 1`] = `
-<Container
-  column={true}
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={true}
   flex={true}
-  spacing={0}
+  justify="stretch"
+  padding="20px 20px 10px 20px"
+  raised={false}
   style={
     Object {
       "flexWrap": "nowrap",
       "overflow": "auto",
-      "paddingBottom": 15,
     }
   }
+  type="row"
 >
   <FlexGrid
     align="stretch"
     circular={false}
-    container={false}
+    container={true}
     flex={false}
     justify="stretch"
-    padding="20px 20px 10px 20px"
+    padding={0}
     raised={false}
     style={Object {}}
     type="column"
   >
+    <Typography
+      style={
+        Object {
+          "paddingRight": 10,
+        }
+      }
+      variant="subheading2"
+    >
+      )
+    </Typography>
+  </FlexGrid>
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={true}
+    flex={true}
+    justify="stretch"
+    padding={0}
+    raised={false}
+    style={
+      Object {
+        "overflow": "auto",
+      }
+    }
+    type="column"
+  >
     <FlexGrid
-      align="baseline"
+      align="flex-start"
       circular={false}
       container={true}
       flex={false}
@@ -38,17 +68,8 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
       <Typography
         style={
           Object {
-            "paddingRight": 10,
-          }
-        }
-        variant="subheading2"
-      >
-        )
-      </Typography>
-      <Typography
-        style={
-          Object {
             "letterSpacing": 0,
+            "lineHeight": "1.5em",
           }
         }
         variant="body2"
@@ -56,63 +77,76 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
          
       </Typography>
     </FlexGrid>
-  </FlexGrid>
-  <FlexGrid
-    align="stretch"
-    circular={false}
-    container={true}
-    flex={true}
-    justify="stretch"
-    padding={0}
-    raised={false}
-    style={
-      Object {
-        "flexBasis": "60%",
-        "paddingBottom": 15,
-        "paddingLeft": 40,
-        "paddingRight": 25,
-        "paddingTop": 0,
-      }
-    }
-    type="column"
-  >
     <FlexGrid
       align="stretch"
       circular={false}
       container={true}
-      flex={false}
+      flex={true}
       justify="stretch"
-      padding={0}
+      padding="25px 0"
       raised={false}
       style={
         Object {
+          "minHeight": "unset",
           "overflow": "auto",
-          "paddingBottom": 15,
-          "paddingLeft": 25,
-          "paddingRight": 0,
-          "paddingTop": 0,
+          "width": "100%",
         }
       }
-      type="row"
-    />
-    <Row
-      component={
-        <WithStyles(Grid)
-          item={true}
+      type="column"
+    >
+      <FlexGrid
+        align="stretch"
+        circular={false}
+        container={true}
+        flex={false}
+        justify="stretch"
+        padding={0}
+        raised={false}
+        style={Object {}}
+        type="row"
+      >
+        <WithStyles(SelectionControlQuestion)
+          choices={
+            Array [
+              Object {
+                "id": 1,
+              },
+            ]
+          }
+          mergedUserQuestions={
+            Object {
+              "answers": Array [],
+            }
+          }
+          question={
+            Object {
+              "hint": null,
+              "possibleAnswers": Array [
+                Object {
+                  "id": 1,
+                },
+              ],
+              "questionType": undefined,
+            }
+          }
         />
-      }
-      displayFlex={false}
-      flex={false}
-      reverse={false}
-      style={
-        Object {
-          "paddingBottom": 0,
-          "paddingLeft": 25,
-          "paddingRight": 0,
-          "paddingTop": 0,
+      </FlexGrid>
+      <FlexGrid
+        align="stretch"
+        circular={false}
+        container={false}
+        flex={false}
+        justify="stretch"
+        padding="10px 0 0"
+        raised={false}
+        style={
+          Object {
+            "minHeight": "unset",
+          }
         }
-      }
-    />
+        type="column"
+      />
+    </FlexGrid>
   </FlexGrid>
-</Container>
+</FlexGrid>
 `;

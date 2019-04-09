@@ -26,7 +26,8 @@ const props = {
   getQuestionErrors: null,
   match: { url: '/project/1/code', params: { id: 1 } },
   actions: {
-    getCodingOutlineRequest: jest.fn()
+    getCodingOutlineRequest: jest.fn(),
+    setPage: jest.fn()
   },
   classes: {}
 }

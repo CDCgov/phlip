@@ -5,7 +5,7 @@ import { createLogic } from 'redux-logic'
 import * as types from './actionTypes'
 import addEditProjectLogic from './scenes/AddEditProject/logic'
 import addEditJurisdictions from './scenes/AddEditJurisdictions/logic'
-import { commonHelpers } from 'utils'
+import { commonHelpers, normalize } from 'utils'
 
 /**
  * Sends a request to the API to get all of the projects
@@ -28,7 +28,8 @@ export const getProjectLogic = createLogic({
           lastEditedBy: project.lastEditedBy.trim(),
           projectJurisdictions: commonHelpers.sortListOfObjects(project.projectJurisdictions, 'name', 'asc'),
           createdById: project.createdById,
-          users: currentProject === undefined ? { all: [], lastCheck: null } : currentProject.users
+          lastUsersCheck: currentProject ? currentProject.lastUsersCheck : null,
+          projectUsers: normalize.makeDistinct(project.projectUsers, 'userId')
         }
         return proj
       }),
@@ -44,7 +45,7 @@ export const getProjectLogic = createLogic({
 export const getProjectUsersLogic = createLogic({
   type: types.GET_PROJECT_USERS_REQUEST,
   transform({ getState, action }, next) {
-    const lastCheck = getState().scenes.home.main.projects.byId[action.projectId].users.lastCheck
+    const lastCheck = getState().scenes.home.main.projects.byId[action.projectId].lastUsersCheck
     const now = Date.now()
     const oneday = 60 * 60 * 24 * 1000
     next({
@@ -53,64 +54,26 @@ export const getProjectUsersLogic = createLogic({
     })
   },
   async process({ api, getState, action }, dispatch, done) {
-    // action.sendRequest = true
-    try {
-      if (action.sendRequest ) {
-        const currentProjectUsers = getState().scenes.home.main.projectUsers.allIds
-        let usersFromDb = getState().scenes.home.main.projects.byId[action.projectId].projectUsers
-        let newUsers = []
-        const users = usersFromDb.map(user => {
-          return new Promise(async resolve => {
-            let fullUser = null
-            if (!currentProjectUsers.includes(user.userId)) {
-              try {
-                fullUser = user
-                fullUser.avatar = await api.getUserImage({}, {}, {userId:user.userId})
-                newUsers.push(fullUser)
-              } catch (err) {
-                console.log(err)
-                console.log('failed to get user')
-              }
-            }
-            await Promise.all(newUsers)
-            resolve(user)
-          })
-        })
-        Promise.all(users).then(() => {
-          dispatch({
-            type: types.GET_PROJECT_USERS_SUCCESS,
-            payload: {
-              projectId: action.projectId,
-              users: usersFromDb,
-              newUsers: newUsers
-            }
-          })
-          done()
-        })
+    const pUsers = getState().scenes.home.main.projects.byId[action.projectId].projectUsers
+    const allUserObjs = getState().data.user.byId
 
-        // usersFromDb.forEach(async (user) => {
-        //   if (!currentProjectUsers.includes(user.id)) {
-        //     try {
-        //       const fullUser = await api.getUsers({}, {
-        //         params: {
-        //           email: user.email
-        //         }
-        //       }, {})
-        //       users.push(
-        //         fullUser
-        //       )
-        //     } catch (e) {
-        //       console.log(e)
-        //     }
-        //   }
-        // })
+    try {
+      if (action.sendRequest) {
+        await commonHelpers.handleUserImages(pUsers, allUserObjs, dispatch, api)
+        dispatch({
+          type: types.GET_PROJECT_USERS_SUCCESS,
+          payload: {
+            projectId: action.projectId,
+            newCheck: true
+          }
+        })
+        done()
       } else {
         dispatch({
           type: types.GET_PROJECT_USERS_SUCCESS,
           payload: {
             projectId: action.projectId,
-            users: getState().scenes.home.main.projects.byId[action.projectId].users.all,
-            newUsers: []
+            newCheck: false
           }
         })
         done()

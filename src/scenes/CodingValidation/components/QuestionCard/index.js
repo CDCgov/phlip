@@ -5,8 +5,7 @@ import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import { getInitials } from 'utils/normalize'
 import { connect } from 'react-redux'
-import { Card, IconButton, Tabs, Alert, PageLoader } from 'components'
-import { Row, Column } from 'components/Layout'
+import { IconButton, Tabs, Alert, PageLoader, FlexGrid } from 'components'
 import styles from './card-styles.scss'
 import * as questionTypes from '../../constants'
 import FlagPopover from './components/FlagPopover'
@@ -64,15 +63,13 @@ export class QuestionCard extends Component {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.unsavedChanges === true) {
+  componentDidUpdate(prevProps) {
+    if (!prevProps.unsavedChanges && this.props.unsavedChanges) {
       this.setState({
         isSaving: true
       })
       clearTimeout()
-    }
-
-    if (this.props.unsavedChanges === true && nextProps.unsavedChanges === false) {
+    } else if (prevProps.unsavedChanges && !this.props.unsavedChanges) {
       setTimeout(() => {
         this.setState({
           isSaving: false
@@ -97,7 +94,8 @@ export class QuestionCard extends Component {
       if (question.questionType !== questionTypes.TEXT_FIELD) {
         if (Object.keys(userAnswers.answers).length > 0) {
           if (!userAnswers.answers.hasOwnProperty(id) &&
-            (question.questionType === questionTypes.MULTIPLE_CHOICE || question.questionType === questionTypes.BINARY)) {
+            (question.questionType === questionTypes.MULTIPLE_CHOICE || question.questionType ===
+              questionTypes.BINARY)) {
             open = true
           } else if (userAnswers.answers.hasOwnProperty(id) && question.questionType === questionTypes.CHECKBOXES) {
             open = true
@@ -157,35 +155,52 @@ export class QuestionCard extends Component {
         : 0
   }
 
+  /**
+   * Opens an alert asking user to confirm clearing answer
+   */
   onClearAnswer = () => {
     this.setState({
       clearAnswerAlertOpen: true
     })
   }
 
+  /**
+   * Enables annotation mode
+   * @param id
+   * @returns {Function}
+   */
   onToggleAnswerForAnno = id => () => {
     this.props.onToggleAnswerForAnno(id)
   }
 
   render() {
+    const {
+      onChangeTextAnswer, onOpenFlagConfirmAlert, user, question, onOpenAlert, userAnswers, isValidation,
+      mergedUserQuestions, disableAll, userImages, enabledAnswerChoice, areDocsEmpty, questionChangeLoader,
+      hasTouchedQuestion, categories, saveFailed, onClearAnswer, onSaveFlag, selectedCategory,
+      onChangeCategory, currentIndex, getNextQuestion, getPrevQuestion, totalLength, showNextButton
+    } = this.props
+
     const questionContentProps = {
       onChange: this.onChangeAnswer,
-      onChangeTextAnswer: this.props.onChangeTextAnswer,
-      onOpenFlagConfirmAlert: this.props.onOpenFlagConfirmAlert,
-      currentUserInitials: getInitials(this.props.user.firstName, this.props.user.lastName),
-      user: this.props.user,
-      question: this.props.question,
-      onOpenAlert: this.props.onOpenAlert,
-      userAnswers: { validatedBy: { ...this.props.user }, ...this.props.userAnswers },
-      comment: this.props.userAnswers.comment,
-      isValidation: this.props.isValidation,
-      mergedUserQuestions: this.props.mergedUserQuestions,
-      disableAll: this.props.disableAll,
-      userImages: this.props.userImages,
+      onChangeTextAnswer: onChangeTextAnswer,
+      onOpenFlagConfirmAlert: onOpenFlagConfirmAlert,
+      currentUserInitials: getInitials(user.firstName, user.lastName),
+      user,
+      question,
+      onOpenAlert,
+      userAnswers: { validatedBy: { ...user }, ...userAnswers },
+      comment: userAnswers.comment,
+      isValidation,
+      mergedUserQuestions,
+      disableAll,
+      userImages,
       onToggleAnswerForAnno: this.onToggleAnswerForAnno,
-      enabledAnswerChoice: this.props.enabledAnswerChoice,
-      areDocsEmpty: this.props.areDocsEmpty
+      enabledAnswerChoice,
+      areDocsEmpty
     }
+
+    const { confirmAlertInfo, confirmAlertOpen, clearAnswerAlertOpen, isSaving } = this.state
 
     const alertActions = [
       {
@@ -211,74 +226,74 @@ export class QuestionCard extends Component {
         type: 'button',
         onClick: () => {
           this.onCancel()
-          this.props.onClearAnswer()
+          onClearAnswer()
         }
       }
     ]
 
     return (
-      <Row displayFlex style={{ flex: 1, width: '50%', minWidth: '10%' }}>
-        <Alert actions={alertActions} title={this.state.confirmAlertInfo.title} open={this.state.confirmAlertOpen}>
+      <FlexGrid container type="row" flex style={{ width: '50%', minWidth: '10%' }}>
+        <Alert actions={alertActions} title={confirmAlertInfo.title} open={confirmAlertOpen}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            {this.state.confirmAlertInfo.text}
+            {confirmAlertInfo.text}
           </Typography>
         </Alert>
-        <Alert actions={clearAnswerActions} open={this.state.clearAnswerAlertOpen}>
+        <Alert actions={clearAnswerActions} open={clearAnswerAlertOpen}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             Are you sure you want to clear your answer to this question?
           </Typography>
         </Alert>
-        <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
-          {this.props.questionChangeLoader === true
+        <FlexGrid container flex raised style={{ width: '100%' }}>
+          {questionChangeLoader
             ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
             : <>
-              <Row displayFlex style={{ alignItems: 'center', height: 55, paddingRight: 15 }}>
-                <Row style={{ width: '100%' }}>
-                  {this.props.hasTouchedQuestion &&
+              <FlexGrid container type="row" align="center" padding="0 15px 0 0" style={{ height: 55, minHeight: 55 }}>
+                <FlexGrid flex style={{ width: '100%' }}>
+                  {hasTouchedQuestion &&
                   <Typography variant="caption" style={{ paddingLeft: 10, textAlign: 'center', color: '#757575' }}>
-                    {this.props.saveFailed ? 'Save failed!' : this.state.isSaving ? 'Saving...' : 'All changes saved'}
+                    {saveFailed ? 'Save failed!' : isSaving ? 'Saving...' : 'All changes saved'}
                   </Typography>}
-                </Row>
-                <Row displayFlex style={{ marginLeft: this.getMargin() }}>
-                  {this.props.question.questionType !== questionTypes.CATEGORY &&
+                </FlexGrid>
+                <FlexGrid container type="row" style={{ marginLeft: this.getMargin() }}>
+                  {question.questionType !== questionTypes.CATEGORY &&
                   <IconButton
                     onClick={this.onClearAnswer}
                     aria-label="Clear answer"
                     tooltipText="Clear answer"
                     id="clear-answer"
                     style={{ height: 24 }}>
-                    {!this.props.disableAll && <Broom className={styles.icon} aria-labelledby="Clear answer" />}
+                    {!disableAll && <Broom className={styles.icon} aria-labelledby="Clear answer" />}
                   </IconButton>}
-                  {!this.props.isValidation && <FlagPopover
-                    userFlag={this.props.userAnswers.flag}
-                    onSaveFlag={this.props.onSaveFlag}
-                    questionFlags={this.props.question.flags}
-                    user={this.props.user}
-                    disableAll={this.props.disableAll}
+                  {!isValidation && <FlagPopover
+                    userFlag={userAnswers.flag}
+                    onSaveFlag={onSaveFlag}
+                    questionFlags={question.flags}
+                    user={user}
+                    disableAll={disableAll}
                   />}
-                </Row>
-              </Row>
+                </FlexGrid>
+              </FlexGrid>
               <Divider />
-              {this.props.categories !== undefined
+              {categories !== undefined
                 ? (
                   <TabContainer
-                    tabs={this.props.categories}
-                    selected={this.props.selectedCategory}
-                    onChangeCategory={this.props.onChangeCategory}>
+                    tabs={categories}
+                    selected={selectedCategory}
+                    onChangeCategory={onChangeCategory}>
                     <QuestionContent {...questionContentProps} />
                   </TabContainer>
                 ) : <QuestionContent {...questionContentProps} />}
               <Divider />
               <FooterNavigate
-                currentIndex={this.props.currentIndex}
-                getNextQuestion={this.props.getNextQuestion}
-                getPrevQuestion={this.props.getPrevQuestion}
-                totalLength={this.props.totalLength}
-                showNextButton={this.props.showNextButton}
+                currentIndex={currentIndex}
+                getNextQuestion={getNextQuestion}
+                getPrevQuestion={getPrevQuestion}
+                totalLength={totalLength}
+                showNextButton={showNextButton}
               />
             </>}
-        </Column>
-      </Row>
+        </FlexGrid>
+      </FlexGrid>
     )
   }
 }
@@ -303,7 +318,8 @@ const mapStateToProps = (state, ownProps) => {
         : pageState.mergedUserQuestions[pageState.question.id]
       : null,
     disableAll: pageState.codedQuestionsError !== null || false,
-    userImages: pageState.userImages,
+    //    userImages: pageState.userImages,
+    userImages: state.data.user.byId,
     questionChangeLoader: pageState.questionChangeLoader || false,
     isChangingQuestion: pageState.isChangingQuestion || false,
     unsavedChanges: pageState.unsavedChanges || false,

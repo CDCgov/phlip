@@ -4,12 +4,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { withTheme, withStyles } from '@material-ui/core/styles'
 import TableRow from '@material-ui/core/TableRow'
-import Table from 'components/Table'
 import TableBody from '@material-ui/core/TableBody'
-import Button from 'components/Button'
-import Link from 'components/Link'
-import TextLink from 'components/TextLink'
-import IconButton from 'components/IconButton'
 import TableCell from '@material-ui/core/TableCell'
 import * as actions from 'scenes/Home/actions'
 import moment from 'moment'
@@ -19,9 +14,8 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import GridList from '@material-ui/core/GridList'
 import GridListTile from '@material-ui/core/GridListTile'
 import Typography from '@material-ui/core/Typography'
-import FlexGrid from 'components/FlexGrid'
+import { FlexGrid, IconButton, TextLink, Link, Button, Table } from 'components'
 import { FileDocument, City, FormatListBulleted, ClipboardCheckOutline, FileExport } from 'mdi-material-ui'
-import { getInitials } from 'utils/normalize'
 
 const styles = theme => ({
   root: {
@@ -48,7 +42,7 @@ class ProjectPanel extends Component {
     role: PropTypes.string,
     theme: PropTypes.object,
     classes: PropTypes.object.isRequired,
-    expanded: PropTypes.number,
+    expanded: PropTypes.bool,
     users: PropTypes.array
   }
 
@@ -62,47 +56,41 @@ class ProjectPanel extends Component {
         id: this.props.project.createdById,
         email: this.props.project.createdByEmail
       })
-    } else {
-      //this.props.actions.resetOpenProject()
     }
   }
 
   handleClickAway = panel => (event, expanded) => {
-    // console.log('i was clicked ', panel)
     if (panel === undefined) {
       this.props.actions.resetOpenProject()
     }
   }
 
   render() {
-    const { project, role, bookmarked, actions, onExport, theme, index, length, users, classes } = this.props
+    const {
+      project, role, bookmarked, actions, onExport, theme, index, length, users, classes, allUsers, expanded
+    } = this.props
+
     const isCoder = role === 'Coder'
     const greyIcon = theme.palette.greyText
     const iconStyle = { fontSize: 18, paddingLeft: 5 }
     const listingStyle = { fontSize: 14, fontWeight: 500, color: '#757575' }
     const generateKeyAndId = commonHelpers.generateUniqueProps(project.id)
-
-    //const date = moment.parseZone(project.dateLastEdited).local().format('M/D/YYYY, h:mm A')
     const date = moment.utc(project.dateLastEdited).local().format('M/D/YYYY')
     const createdDate = moment.utc(project.dateCreated).local().format('M/D/YYYY')
-    let userData = []
+    let userData = [...users]
     let avatarCols = 1
     let avatarRows = 1
     let cellHeight = 130
-    userData = [...users]
     if (users.length >= 7) {
       avatarCols = 3
       avatarRows = 3
       cellHeight = 98
-      // for(let i=0;i<9-this.props.users.length;i++){
-      //
-      // }
     } else if (users.length >= 5) {
       avatarCols = 3
       avatarRows = 3
       cellHeight = 100
       for (let i = 0; i < (9 - users.length); i++) {
-        const blankAvatar = { id: Date.now() + i }
+        const blankAvatar = { id: Date.now() + i, blank: true }
         userData.push(blankAvatar)
       }
     } else if (users.length >= 2) {
@@ -110,16 +98,14 @@ class ProjectPanel extends Component {
       avatarRows = 2
       cellHeight = 150
       for (let i = 0; i < (4 - users.length); i++) {
-        const blankAvatar = { id: Date.now() + i }
+        const blankAvatar = { id: Date.now() + i, blank: true }
         userData.push(blankAvatar)
       }
     } else if (users.length === 1) {
       avatarCols = 1
-      //avatarRows = 1
       cellHeight = 300
     }
 
-    const expanded = this.props.expanded === project.id
     const cardStyle = {
       boxShadow: expanded
         ? theme.card.boxShadow
@@ -148,37 +134,40 @@ class ProjectPanel extends Component {
           <ExpansionPanelSummary style={{ padding: 0, margin: 0 }} classes={{ expanded: classes.expanded }}>
             {expanded ? (
               <FlexGrid container type="row" justify="space-between" style={{ width: '100%' }}>
-                <FlexGrid container type="column" style={{ maxWidth: '20%' }}>
+                <FlexGrid container type="column">
                   <GridList
                     style={{ width: 300 }}
                     cellHeight={cellHeight}
                     cols={avatarCols}
                     rows={avatarRows}>
-                    {userData.map(oneCoder => (
-                      <GridListTile key={oneCoder.userId}>
-                        {oneCoder.avatar !== undefined ? (
-                          oneCoder.avatar === '' ? (
-                            <FlexGrid
-                              container
-                              type="row"
-                              justify="center"
-                              align="center"
-                              title={`${oneCoder.firstName} ${oneCoder.lastName}`}
-                              style={{ backgroundColor: '#686968', height: '100%' }}>
-                              <Typography style={{ fontWeight: 500, fontSize: 45, color: 'white' }}>
-                                {getInitials(oneCoder.firstName, oneCoder.lastName)}
-                              </Typography>
-                            </FlexGrid>
-                          ) : (
-                            <img
-                              alt={`avatar-${oneCoder.lastName}`}
-                              src={oneCoder.avatar}
-                              title={`${oneCoder.firstName} ${oneCoder.lastName}`}
-                            />
-                          )
-                        ) : <div style={{ backgroundColor: '#686968', height: '100%' }} />}
-                      </GridListTile>
-                    ))}
+                    {userData.map(oneCoder => {
+                      const coder = oneCoder.blank ? oneCoder : allUsers[oneCoder.userId]
+                      return (
+                        <GridListTile cols={1} key={coder.id}>
+                          {coder.avatar !== undefined ? (
+                            coder.avatar === '' ? (
+                              <FlexGrid
+                                container
+                                type="row"
+                                justify="center"
+                                align="center"
+                                title={coder.username}
+                                style={{ backgroundColor: '#686968', height: '100%' }}>
+                                <Typography style={{ fontWeight: 500, fontSize: 45, color: 'white' }}>
+                                  {coder.initials}
+                                </Typography>
+                              </FlexGrid>
+                            ) : (
+                              <img
+                                alt={`avatar-${coder.lastName}`}
+                                src={coder.avatar}
+                                title={coder.username}
+                              />
+                            )
+                          ) : <div style={{ backgroundColor: '#686968', height: '100%' }} />}
+                        </GridListTile>
+                      )
+                    })}
                   </GridList>
                 </FlexGrid>
                 <FlexGrid container type="column" style={{ flex: '1 1 auto' }}>
@@ -186,8 +175,9 @@ class ProjectPanel extends Component {
                     container
                     type="row"
                     align="center"
+                    padding={20}
                     style={{ backgroundColor: '#f9f9f9', height: 90 }}>
-                    <FlexGrid container type="row" flex justify="flex-start" style={{ fontSize: 20, paddingLeft: 20 }}>
+                    <FlexGrid container type="row" flex justify="flex-start" style={{ fontSize: 20 }}>
                       <IconButton
                         color={this.props.bookmarked ? '#fdc43b' : greyIcon}
                         onClick={() => actions.toggleBookmark(project)}
@@ -270,21 +260,21 @@ class ProjectPanel extends Component {
                   </FlexGrid>
                   <FlexGrid style={{ flexBasis: '5%' }} />
                   <FlexGrid container style={{ paddingLeft: 20 }}>
-                    <Typography variant="body2" style={{paddingBottom:10}}>
+                    <Typography variant="body2" style={{ paddingBottom: 10 }}>
                       <span style={listingStyle}>Created Date:{' '}</span>
                       {createdDate}
                     </Typography>
-                    <Typography variant="body2" style={{paddingBottom:10}}>
+                    <Typography variant="body2" style={{ paddingBottom: 10 }}>
                       <span style={listingStyle}>Created By:{' '}</span>
                       {project.createdBy}</Typography>
-                    <Typography variant="body2" style={{paddingBottom:10}}>
+                    <Typography variant="body2" style={{ paddingBottom: 10 }}>
                       <span style={listingStyle}>Date Last Edited:{' '}</span>
                       {date}</Typography>
-                    <Typography variant="body2" style={{paddingBottom:10}}>
+                    <Typography variant="body2" style={{ paddingBottom: 10 }}>
                       <span style={listingStyle}>Last Edited By:{' '}</span>
                       {project.lastEditedBy}
                     </Typography>
-                    <Typography variant="body2" style={{paddingBottom:10}}>
+                    <Typography variant="body2" style={{ paddingBottom: 10 }}>
                       <span style={listingStyle}>Coordinator(s):{' '}</span>
                       <span>{this.props.users.filter((oneCoder) => {
                         return oneCoder.role !== 'Coder'
@@ -292,7 +282,7 @@ class ProjectPanel extends Component {
                         return oneCoder.firstName + ' ' + oneCoder.lastName
                       }).join(', ')}</span>
                     </Typography>
-                    <Typography variant="body2" style={{paddingBottom:10}}>
+                    <Typography variant="body2" style={{ paddingBottom: 10 }}>
                       <span style={listingStyle}>Coder(s):{' '}</span>
                       <span>{this.props.users.filter((oneCoder) => {
                         return oneCoder.role === 'Coder'
@@ -302,7 +292,7 @@ class ProjectPanel extends Component {
                     </Typography>
                     <Typography variant="body2">
                       <span style={listingStyle}>Type:{' '}</span>
-                      <span>{(this.props.project.type===1)?'Legal Scan':'Policy Surveillance'}</span>
+                      <span>{(this.props.project.type === 1) ? 'Legal Scan' : 'Policy Surveillance'}</span>
                     </Typography>
                     <FlexGrid />
                   </FlexGrid>
@@ -379,17 +369,16 @@ class ProjectPanel extends Component {
                   display: 'block',
                   tableLayout: 'fixed',
                   overflow: 'auto'
-
                 }}>
                 <colgroup>
-                  <col style={{width:'1%'}} />
-                  <col style={{width:'33%'}} />
-                  <col style={{width:'15%'}} />
-                  <col style={{width:'15%'}} />
-                  <col style={{width:'0%'}} />
-                  <col style={{width:'5%'}} />
-                  <col style={{width:'5%'}} />
-                  <col style={{width:'5%'}} />
+                  <col style={{ width: '1%' }} />
+                  <col style={{ width: '33%' }} />
+                  <col style={{ width: '15%' }} />
+                  <col style={{ width: '15%' }} />
+                  <col style={{ width: '0%' }} />
+                  <col style={{ width: '5%' }} />
+                  <col style={{ width: '5%' }} />
+                  <col style={{ width: '5%' }} />
                 </colgroup>
                 <TableBody>
                   <TableRow
@@ -467,8 +456,9 @@ class ProjectPanel extends Component {
                       // padding="checkbox"
                       style={{
                         // width: '25%',
-                        //   maxWidth:'25%',
-                        border: 'none' }}
+                        // maxWidth:'25%',
+                        border: 'none'
+                      }}
                     />
                     <TableCell
                       {...generateKeyAndId('code')}
@@ -531,8 +521,9 @@ const mapStateToProps = (state, ownProps) => {
     project: p,
     role: state.data.user.currentUser.role,
     bookmarked: homeState.bookmarkList.includes(ownProps.id),
-    users: p.users !== undefined ? p.users.all : [],
-    expanded: state.scenes.home.main.projectUsers.currentProject
+    users: p.projectUsers,
+    expanded: ownProps.id === state.scenes.home.main.selectedProjectId,
+    allUsers: state.data.user.byId
   }
 }
 
