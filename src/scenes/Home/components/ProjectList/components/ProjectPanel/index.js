@@ -31,7 +31,11 @@ const styles = theme => ({
     color: theme.palette.text.secondary
   },
   expanded: {
-    margin: '0px !important'
+    margin: '0px !important',
+    width: '100%'
+  },
+  content: {
+    width: '100%'
   }
 })
 
@@ -129,9 +133,11 @@ class ProjectPanel extends Component {
       <FlexGrid style={cardStyle}>
         <ExpansionPanel
           expanded={expanded}
-          style={{ borderRadius: 0, margin: 0 }}
+          style={{ borderRadius: 0, margin: 0, overflow: 'auto' }}
           onChange={this.handleChange(project.id)}>
-          <ExpansionPanelSummary style={{ padding: 0, margin: 0 }} classes={{ expanded: classes.expanded }}>
+          <ExpansionPanelSummary
+            style={{ padding: 0, margin: 0 }}
+            classes={{ expanded: classes.expanded, content: classes.content }}>
             {expanded ? (
               <FlexGrid container type="row" justify="space-between" style={{ width: '100%' }}>
                 <FlexGrid container type="column">
@@ -170,14 +176,20 @@ class ProjectPanel extends Component {
                     })}
                   </GridList>
                 </FlexGrid>
-                <FlexGrid container type="column" style={{ flex: '1 1 auto' }}>
+                <FlexGrid container type="column" flex>
                   <FlexGrid
                     container
                     type="row"
                     align="center"
-                    padding={20}
-                    style={{ backgroundColor: '#f9f9f9', height: 90 }}>
-                    <FlexGrid container type="row" flex justify="flex-start" style={{ fontSize: 20 }}>
+                    padding={30}
+                    style={{ backgroundColor: '#f9f9f9' }}>
+                    <FlexGrid
+                      container
+                      type="row"
+                      flex
+                      align="center"
+                      justify="flex-start"
+                      style={{ fontSize: 20, minWidth: 150 }}>
                       <IconButton
                         color={this.props.bookmarked ? '#fdc43b' : greyIcon}
                         onClick={() => actions.toggleBookmark(project)}
@@ -202,7 +214,7 @@ class ProjectPanel extends Component {
                       flex
                       justify="flex-end"
                       align="stretch"
-                      style={{ height: 40, paddingRight: 10 }}>
+                      style={{ height: 40 }}>
                       {!isCoder && (<Button
                         id={`${project.id}-edit-jurisdictions`}
                         component={Link}
@@ -258,106 +270,70 @@ class ProjectPanel extends Component {
                       </Button>
                     </FlexGrid>
                   </FlexGrid>
-                  <FlexGrid style={{ flexBasis: '5%' }} />
-                  <FlexGrid container style={{ paddingLeft: 20 }}>
-                    <Typography variant="body2" style={{ paddingBottom: 10 }}>
-                      <span style={listingStyle}>Created Date:{' '}</span>
-                      {createdDate}
-                    </Typography>
-                    <Typography variant="body2" style={{ paddingBottom: 10 }}>
-                      <span style={listingStyle}>Created By:{' '}</span>
-                      {project.createdBy}</Typography>
-                    <Typography variant="body2" style={{ paddingBottom: 10 }}>
-                      <span style={listingStyle}>Date Last Edited:{' '}</span>
-                      {date}</Typography>
-                    <Typography variant="body2" style={{ paddingBottom: 10 }}>
-                      <span style={listingStyle}>Last Edited By:{' '}</span>
-                      {project.lastEditedBy}
-                    </Typography>
-                    <Typography variant="body2" style={{ paddingBottom: 10 }}>
-                      <span style={listingStyle}>Coordinator(s):{' '}</span>
-                      <span>{this.props.users.filter((oneCoder) => {
-                        return oneCoder.role !== 'Coder'
-                      }).map((oneCoder) => {
-                        return oneCoder.firstName + ' ' + oneCoder.lastName
-                      }).join(', ')}</span>
-                    </Typography>
-                    <Typography variant="body2" style={{ paddingBottom: 10 }}>
-                      <span style={listingStyle}>Coder(s):{' '}</span>
-                      <span>{this.props.users.filter((oneCoder) => {
-                        return oneCoder.role === 'Coder'
-                      }).map((oneCoder) => {
-                        return oneCoder.firstName + ' ' + oneCoder.lastName
-                      }).join(', ')}</span>
-                    </Typography>
-                    <Typography variant="body2">
-                      <span style={listingStyle}>Type:{' '}</span>
-                      <span>{(this.props.project.type === 1) ? 'Legal Scan' : 'Policy Surveillance'}</span>
-                    </Typography>
-                    <FlexGrid />
-                  </FlexGrid>
-                  <FlexGrid />
-                  <FlexGrid
-                    container
-                    type="column"
-                    style={{ alignItems: 'flex-end', height: '45%', paddingBottom: 20 }}
-                    justify="flex-end">
+                  <FlexGrid container type="row">
+                    <FlexGrid container flex padding={30}>
+                      <Typography variant="body2" style={{ paddingBottom: 10 }}>
+                        <span style={listingStyle}>Created Date:{' '}</span>
+                        {createdDate}
+                      </Typography>
+                      <Typography variant="body2" style={{ paddingBottom: 10 }}>
+                        <span style={listingStyle}>Created By:{' '}</span>
+                        {project.createdBy}</Typography>
+                      <Typography variant="body2" style={{ paddingBottom: 10 }}>
+                        <span style={listingStyle}>Date Last Edited:{' '}</span>
+                        {date}</Typography>
+                      <Typography variant="body2" style={{ paddingBottom: 10 }}>
+                        <span style={listingStyle}>Last Edited By:{' '}</span>
+                        {project.lastEditedBy}
+                      </Typography>
+                      <Typography variant="body2" style={{ paddingBottom: 10 }}>
+                        <span style={listingStyle}>Coordinator(s):{' '}</span>
+                        <span>{this.props.users.filter((oneCoder) => {
+                          return oneCoder.role !== 'Coder'
+                        }).map((oneCoder) => {
+                          return oneCoder.firstName + ' ' + oneCoder.lastName
+                        }).join(', ')}</span>
+                      </Typography>
+                      <Typography variant="body2" style={{ paddingBottom: 10 }}>
+                        <span style={listingStyle}>Coder(s):{' '}</span>
+                        <span>{this.props.users.filter((oneCoder) => {
+                          return oneCoder.role === 'Coder'
+                        }).map((oneCoder) => {
+                          return oneCoder.firstName + ' ' + oneCoder.lastName
+                        }).join(', ')}</span>
+                      </Typography>
+                      <Typography variant="body2">
+                        <span style={listingStyle}>Type:{' '}</span>
+                        <span>{(this.props.project.type === 1) ? 'Legal Scan' : 'Policy Surveillance'}</span>
+                      </Typography>
+                      <FlexGrid />
+                    </FlexGrid>
                     <FlexGrid
                       container
                       type="row"
-                      justify="flex-end"
-                      style={{ alignItems: 'center', width: '25%', alignSelf: 'flex-end' }}>
-                      <Table>
-                        <TableBody>
-                          <TableRow>
-                            <TableCell
-                              {...generateKeyAndId('code')}
-                              padding="checkbox"
-                              style={{
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                width: '50%',
-                                maxWidth: '50%',
-                                padding: '0 12px',
-                                border: 'none'
-                              }}>
-                              <Button
-                                raised={false}
-                                value="Code"
-                                listButton
-                                aria-label="Code project"
-                                component={Link}
-                                to={{ pathname: `/project/${project.id}/code` }}
-                                style={{ width: '100%', height: 50 }}
-                              />
-                            </TableCell>
-                            {!isCoder &&
-                            <TableCell
-                              {...generateKeyAndId('validate')}
-                              padding="checkbox"
-                              style={{
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                width: '50%',
-                                maxWidth: '50%',
-                                padding: '0 12px',
-                                border: 'none'
-                              }}>
-                              <Button
-                                raised={false}
-                                value="Validate"
-                                listButton
-                                aria-label="Validate project"
-                                component={Link}
-                                to={{ pathname: `/project/${project.id}/validate` }}
-                                style={{ width: '100%', height: 50 }}
-                              />
-                            </TableCell>}
-                          </TableRow>
-                        </TableBody>
-                      </Table>
+                      align="flex-end"
+                      flex
+                      padding={30}
+                      justify="flex-end">
+                      <Button
+                        raised={false}
+                        value="Code"
+                        listButton
+                        aria-label="Code project"
+                        component={Link}
+                        to={{ pathname: `/project/${project.id}/code` }}
+                        style={{ width: 150, height: 50, marginRight: 20, borderRadius: 3 }}
+                      />
+                      {!isCoder &&
+                      <Button
+                        raised={false}
+                        value="Validate"
+                        listButton
+                        aria-label="Validate project"
+                        component={Link}
+                        to={{ pathname: `/project/${project.id}/validate` }}
+                        style={{ width: 150, height: 50, borderRadius: 3 }}
+                      />}
                     </FlexGrid>
                   </FlexGrid>
                 </FlexGrid>
@@ -367,8 +343,7 @@ class ProjectPanel extends Component {
                 style={{
                   borderCollapse: 'separate',
                   display: 'block',
-                  tableLayout: 'fixed',
-                  overflow: 'auto'
+                  tableLayout: 'fixed'
                 }}>
                 <colgroup>
                   <col style={{ width: '1%' }} />
@@ -404,12 +379,10 @@ class ProjectPanel extends Component {
                     </TableCell>
                     <TableCell
                       {...generateKeyAndId('name')}
-                      // padding="checkbox"
                       style={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        // width: '35%',
                         padding: '0 12px',
                         border: 'none'
                       }}>
@@ -423,14 +396,11 @@ class ProjectPanel extends Component {
                       </TextLink>
                     </TableCell>
                     <TableCell
-                      // padding="checkbox"
                       {...generateKeyAndId('dateLastEdited')}
                       style={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        // width: '15%',
-                        // maxWidth: '15%',
                         padding: '0 12px',
                         border: 'none'
                       }}>
@@ -438,37 +408,24 @@ class ProjectPanel extends Component {
                       <span>{date}</span>
                     </TableCell>
                     <TableCell
-                      // padding="checkbox"
                       {...generateKeyAndId('lastEditedBy')}
                       style={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        // width: '15%',
-                        // maxWidth: '15%',
                         padding: '0 12px',
                         border: 'none'
                       }}>
                       <span style={{ color: 'black' }}>Last Edited By:{' '}</span>
                       {project.lastEditedBy}
                     </TableCell>
-                    <TableCell
-                      // padding="checkbox"
-                      style={{
-                        // width: '25%',
-                        // maxWidth:'25%',
-                        border: 'none'
-                      }}
-                    />
+                    <TableCell style={{ border: 'none' }} />
                     <TableCell
                       {...generateKeyAndId('code')}
-                      // padding="checkbox"
                       style={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        // width: '5%',
-                        // maxWidth: '5%',
                         padding: '0 12px',
                         border: 'none'
                       }}>
@@ -476,6 +433,7 @@ class ProjectPanel extends Component {
                         raised={false}
                         value="Code"
                         listButton
+                        style={{ borderRadius: 3 }}
                         aria-label="Code project"
                         component={Link}
                         to={{ pathname: `/project/${project.id}/code` }}
@@ -484,13 +442,10 @@ class ProjectPanel extends Component {
                     {!isCoder &&
                     <TableCell
                       {...generateKeyAndId('validate')}
-                      // padding="checkbox"
                       style={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        // width: '5%',
-                        // maxWidth: '5%',
                         padding: '0 12px',
                         border: 'none'
                       }}>
@@ -500,6 +455,7 @@ class ProjectPanel extends Component {
                         listButton
                         aria-label="Validate project"
                         component={Link}
+                        style={{ borderRadius: 3 }}
                         to={{ pathname: `/project/${project.id}/validate` }}
                       />
                     </TableCell>}
