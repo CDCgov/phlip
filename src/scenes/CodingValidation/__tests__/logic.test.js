@@ -14,34 +14,92 @@ import {
   userCodedQuestions
 } from 'utils/testData/coding'
 
+let mock, history = {}
+
+const mockReducer = state => state
+const api = createApiHandler({ history }, projectApiInstance, apiCalls)
+
+const setupStore = (currentState = {}) => {
+  return createMockStore({
+    initialState: {
+      data: { user: { currentUser: { id: 1 } } },
+      scenes: {
+        codingValidation: {
+          coding: currentState
+        }
+      }
+    },
+    reducer: mockReducer,
+    logic,
+    injectedDeps: { api }
+  })
+}
+
 describe('CodingValidation logic', () => {
-  let mock, history = {}
-
-  const mockReducer = state => state
-  const api = createApiHandler({ history }, projectApiInstance, apiCalls)
-
   beforeEach(() => {
     mock = new MockAdapter(projectApiInstance)
   })
 
-  const setupStore = (currentState = {}) => {
-    return createMockStore({
-      initialState: {
-        data: { user: { currentUser: { id: 1 } } },
-        scenes: {
-          codingValidation: {
-            coding: currentState
-          }
-        }
-      },
-      reducer: mockReducer,
-      logic,
-      injectedDeps: { api }
+  describe('SAVE_USER_ANSWER_REQUEST', () => {
+    test('should use coding api if state.page is coding', done => {
+      mock.onAny().reply(config => {
+        return [200, config.url]
+      })
+
+      const store = setupStore({
+        page: 'coding',
+        unsavedChanges: true,
+        scheme: { byId: schemeById },
+        userAnswers: userAnswersCoded,
+        messageQueue: []
+      })
+
+      store.dispatch({
+        type: types.SAVE_USER_ANSWER_REQUEST,
+        projectId: 4,
+        jurisdictionId: 32,
+        selectedCategoryId: null,
+        questionId: 1
+      })
+
+      store.whenComplete(async () => {
+        const t = await store.actions[0].apiMethods.create({}, {}, { ...store.actions[0].payload })
+        expect(t).toEqual('/users/1/projects/4/jurisdictions/32/codedquestions/1')
+        done()
+      })
     })
-  }
+
+    test('should use validation api if state.page is validation', done => {
+      mock.onAny().reply(config => {
+        return [200, config.url]
+      })
+
+      const store = setupStore({
+        page: 'validation',
+        unsavedChanges: true,
+        scheme: { byId: schemeById },
+        userAnswers: userAnswersCoded,
+        messageQueue: []
+      })
+
+      store.dispatch({
+        type: types.SAVE_USER_ANSWER_REQUEST,
+        projectId: 4,
+        jurisdictionId: 32,
+        selectedCategoryId: null,
+        questionId: 1
+      })
+
+      store.whenComplete(async () => {
+        const t = await store.actions[0].apiMethods.create({}, {}, { ...store.actions[0].payload })
+        expect(t).toEqual('/projects/4/jurisdictions/32/validatedquestions/1')
+        done()
+      })
+    })
+  })
 
   describe('GET_CODING_OUTLINE_REQUEST logic', () => {
-    test('should call the api to get the scheme and coded questions', (done) => {
+    test('should call the api to get the scheme and coded questions', done => {
       mock.onGet('/projects/1/scheme').reply(200, {
         schemeQuestions: schemeFromApi,
         outline: schemeOutline

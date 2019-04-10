@@ -126,7 +126,7 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
                   "id": 1,
                 },
               ],
-              "questionType": undefined,
+              "questionType": 4,
             }
           }
         />
@@ -141,6 +141,7 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
         raised={false}
         style={
           Object {
+            "margin": "0 10px",
             "minHeight": "unset",
           }
         }

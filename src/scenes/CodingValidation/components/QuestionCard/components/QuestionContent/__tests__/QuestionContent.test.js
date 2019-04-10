@@ -6,7 +6,7 @@ import * as questionTypes from 'scenes/CodingValidation/constants'
 const props = {
   question: {
     hint: null,
-    questionType: questionTypes.MULTIPLE_CHOICES,
+    questionType: questionTypes.MULTIPLE_CHOICE,
     possibleAnswers: [{ id: 1 }]
   }
 }

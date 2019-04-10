@@ -6,9 +6,9 @@ import PinciteTextField from '../PinciteTextField'
 import PinciteList from '../PinciteList'
 import theme from 'services/theme'
 
-export const TextFieldQuestions = props => {
+export const TextFieldQuestion = props => {
   const {
-    mergedUserQuestions, userAnswers, areDocsEmpty, onChange, answerId, userImages, disabled,
+    mergedUserQuestions, userAnswers, areDocsEmpty, onChange, answerId, userImages, disableAll,
     onToggleAnswerForAnno, enabledAnswerChoice
   } = props
 
@@ -20,7 +20,7 @@ export const TextFieldQuestions = props => {
   return (
     <FlexGrid container align="flex-start">
       {isValidation && mergedUserQuestions.answers.map(answer =>
-        <FlexGrid container padding="25px 15px" key={answer.id}>
+        <FlexGrid container padding="25px 15px" key={answer.id} style={{ margin: '0 10px' }}>
           <FlexGrid container padding="0 0 10px" align="flex-start">
             <Typography style={{ whiteSpace: 'pre-wrap' }} variant="body1">{answer.textAnswer}</Typography>
           </FlexGrid>
@@ -36,14 +36,15 @@ export const TextFieldQuestions = props => {
         padding="25px 15px"
         style={{
           alignSelf: 'stretch',
-          backgroundColor: enabledAnswerChoice === answerId ? '#e6f8ff' : 'white'
+          backgroundColor: enabledAnswerChoice === answerId ? '#e6f8ff' : 'white',
+          margin: '0 10px'
         }}>
         <InputBox
           onChange={onChange(answerId, 'textAnswer')}
           value={value}
           rows={7}
           placeholder="Enter answer"
-          disabled={disabled}
+          disabled={disableAll}
           name="text-answer"
         />
         {isAnswered && !areDocsEmpty &&
@@ -62,6 +63,7 @@ export const TextFieldQuestions = props => {
           schemeAnswerId={answerId}
           pinciteValue={userAnswers.answers[answerId].pincite}
           handleChangePincite={onChange}
+          disabled={disableAll}
         />}
         {isValidation && <PinciteList
           validatorStyles={{ margin: '3px 0' }}
@@ -78,11 +80,7 @@ export const TextFieldQuestions = props => {
   )
 }
 
-TextFieldQuestions.propTypes = {
-  /**
-   * Value of the input field
-   */
-  value: PropTypes.any,
+TextFieldQuestion.propTypes = {
   /**
    * Function to call when the input changes
    */
@@ -100,40 +98,33 @@ TextFieldQuestions.propTypes = {
    */
   answerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   /**
-   * Style classes from @material-ui/core
-   */
-  classes: PropTypes.object,
-  /**
-   * Who is validated this question
-   */
-  validator: PropTypes.object,
-  /**
-   * Theme object from @material-ui/core
-   */
-  theme: PropTypes.object,
-  /**
-   * Coding / Validation question object
-   */
-  question: PropTypes.object,
-  /**
-   * Whether or not this is being rendered on Validation scene
-   */
-  isValidation: PropTypes.bool,
-  /**
    * Collection of user images for ValidationAvatar
    */
   userImages: PropTypes.object,
   /**
-   * Outer container style
+   * Handles enabling the answer for annotation mode
    */
-  style: PropTypes.object,
   onToggleAnswerForAnno: PropTypes.func,
+  /**
+   * ID of the enabled answer choice
+   */
   enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * Whether or not there are documents
+   */
   areDocsEmpty: PropTypes.bool,
+  /**
+   * Coded user answers only used for validation
+   */
   mergedUserQuestions: PropTypes.object,
+  /**
+   * Current user answers
+   */
   userAnswers: PropTypes.object,
-  disabled: PropTypes.bool
-
+  /**
+   * Whether or not to disable the input field
+   */
+  disableAll: PropTypes.bool
 }
 
-export default TextFieldQuestions
+export default TextFieldQuestion

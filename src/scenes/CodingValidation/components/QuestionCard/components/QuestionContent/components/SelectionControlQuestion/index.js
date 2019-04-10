@@ -58,7 +58,7 @@ export const SelectionControlQuestion = props => {
               container
               key={choice.id}
               padding="25px 15px"
-              style={{ backgroundColor: enabledAnswerChoice === choice.id ? '#e6f8ff' : 'white' }}>
+              style={{ backgroundColor: enabledAnswerChoice === choice.id ? '#e6f8ff' : 'white', margin: '0 10px' }}>
               <FormControlLabel
                 checked={isAnswered}
                 aria-checked={isAnswered}
