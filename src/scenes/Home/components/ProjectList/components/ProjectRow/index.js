@@ -21,7 +21,7 @@ export const ProjectRow = ({ project, role, bookmarked, actions, onExport, theme
   //const date = moment.parseZone(project.dateLastEdited).local().format('M/D/YYYY, h:mm A')
   const date = moment.utc(project.dateLastEdited).local().format('M/D/YYYY, h:mm A')
   return (
-    <TableRow key={project.id}>
+    <TableRow key={project.id} hover>
       <TableCell
         {...generateKeyAndId('bookmarked')}
         padding="checkbox"
