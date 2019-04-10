@@ -77,7 +77,7 @@ class ProjectPanel extends Component {
     const isCoder = role === 'Coder'
     const greyIcon = theme.palette.greyText
     const iconStyle = { fontSize: 18, paddingLeft: 5 }
-    const listingStyle = { fontSize: 14, fontWeight: 500, color: '#757575' }
+    const listingStyle = { fontSize: 14, fontWeight: 500, color: '#7b7b7b' }
     const generateKeyAndId = commonHelpers.generateUniqueProps(project.id)
     const date = moment.utc(project.dateLastEdited).local().format('M/D/YYYY')
     const createdDate = moment.utc(project.dateCreated).local().format('M/D/YYYY')
@@ -158,7 +158,7 @@ class ProjectPanel extends Component {
                                 justify="center"
                                 align="center"
                                 title={coder.username}
-                                style={{ backgroundColor: '#686968', height: '100%' }}>
+                                style={{ backgroundColor: '#757575', height: '100%' }}>
                                 <Typography style={{ fontWeight: 500, fontSize: 45, color: 'white' }}>
                                   {coder.initials}
                                 </Typography>
@@ -170,7 +170,7 @@ class ProjectPanel extends Component {
                                 title={coder.username}
                               />
                             )
-                          ) : <div style={{ backgroundColor: '#686968', height: '100%' }} />}
+                          ) : <div style={{ backgroundColor: '#757575', height: '100%' }} />}
                         </GridListTile>
                       )
                     })}
@@ -272,37 +272,35 @@ class ProjectPanel extends Component {
                   </FlexGrid>
                   <FlexGrid container type="row">
                     <FlexGrid container flex padding={30}>
-                      <Typography variant="body2" style={{ paddingBottom: 10 }}>
-                        <span style={listingStyle}>Created Date:{' '}</span>
-                        {createdDate}
+                      <Typography variant="body1" style={{ paddingBottom: 10 }}>
+                        <span style={listingStyle}>Created by:{' '}</span>
+                        {project.createdBy} - <span style={{ fontSize: `0.8rem`, color: '#7b7b7b' }}>{createdDate}</span>
                       </Typography>
-                      <Typography variant="body2" style={{ paddingBottom: 10 }}>
-                        <span style={listingStyle}>Created By:{' '}</span>
-                        {project.createdBy}</Typography>
-                      <Typography variant="body2" style={{ paddingBottom: 10 }}>
-                        <span style={listingStyle}>Date Last Edited:{' '}</span>
-                        {date}</Typography>
-                      <Typography variant="body2" style={{ paddingBottom: 10 }}>
-                        <span style={listingStyle}>Last Edited By:{' '}</span>
-                        {project.lastEditedBy}
+                      <Typography variant="body1" style={{ paddingBottom: 10 }}>
+                        <span style={listingStyle}>Last edited by:{' '}</span>
+                        {project.lastEditedBy} - <span style={{ fontSize: `0.8rem`, color: '#7b7b7b' }}>{date}</span>
                       </Typography>
-                      <Typography variant="body2" style={{ paddingBottom: 10 }}>
+                      <Typography variant="body1" style={{ paddingBottom: 10 }}>
                         <span style={listingStyle}>Coordinator(s):{' '}</span>
-                        <span>{this.props.users.filter((oneCoder) => {
-                          return oneCoder.role !== 'Coder'
-                        }).map((oneCoder) => {
-                          return oneCoder.firstName + ' ' + oneCoder.lastName
-                        }).join(', ')}</span>
+                        <span>
+                          {this.props.users.filter((oneCoder) => {
+                            return oneCoder.role !== 'Coder'
+                          }).map((oneCoder) => {
+                            return oneCoder.firstName + ' ' + oneCoder.lastName
+                          }).join(', ')}
+                        </span>
                       </Typography>
-                      <Typography variant="body2" style={{ paddingBottom: 10 }}>
+                      <Typography variant="body1" style={{ paddingBottom: 10 }}>
                         <span style={listingStyle}>Coder(s):{' '}</span>
-                        <span>{this.props.users.filter((oneCoder) => {
-                          return oneCoder.role === 'Coder'
-                        }).map((oneCoder) => {
-                          return oneCoder.firstName + ' ' + oneCoder.lastName
-                        }).join(', ')}</span>
+                        <span>
+                          {this.props.users.filter((oneCoder) => {
+                            return oneCoder.role === 'Coder'
+                          }).map((oneCoder) => {
+                            return oneCoder.firstName + ' ' + oneCoder.lastName
+                          }).join(', ')}
+                        </span>
                       </Typography>
-                      <Typography variant="body2">
+                      <Typography variant="body1">
                         <span style={listingStyle}>Type:{' '}</span>
                         <span>{(this.props.project.type === 1) ? 'Legal Scan' : 'Policy Surveillance'}</span>
                       </Typography>

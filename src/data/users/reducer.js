@@ -20,13 +20,17 @@ const userReducer = (state = INITIAL_STATE, action) => {
     case types.LOGIN_USER_SUCCESS:
       return {
         ...state,
-        currentUser: action.payload,
+        currentUser: {
+          ...action.payload,
+          avatar: action.payload.avatar === null ? '' : action.payload.avatar
+        },
         byId: {
           ...state.byId,
           [action.payload.id]: {
             ...action.payload,
             username: `${action.payload.firstName} ${action.payload.lastName}`,
-            initials: getInitials(action.payload.firstName, action.payload.lastName)
+            initials: getInitials(action.payload.firstName, action.payload.lastName),
+            avatar: action.payload.avatar === null ? '' : action.payload.avatar
           }
         }
       }
@@ -44,10 +48,10 @@ const userReducer = (state = INITIAL_STATE, action) => {
     case types.REMOVE_CURRENT_USER_AVATAR:
       return {
         ...state,
-        currentUser: { ...state.currentUser, avatar: null },
+        currentUser: { ...state.currentUser, avatar: '' },
         byId: {
           ...state.byId,
-          [state.currentUser.id]: { ...state.byId[state.currentUser.id], avatar: null }
+          [state.currentUser.id]: { ...state.byId[state.currentUser.id], avatar: '' }
         }
       }
 
