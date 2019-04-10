@@ -245,10 +245,10 @@ describe('CodingValidation logic', () => {
         }
 
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions/4')
-        .reply(200, [
-          { schemeQuestionId: 4, categoryId: 10, id: 1000, codedAnswers: [] },
-          { schemeQuestionId: 4, categoryId: 20, id: 2000, codedAnswers: [] }
-        ])
+          .reply(200, [
+            { schemeQuestionId: 4, categoryId: 10, id: 1000, codedAnswers: [] },
+            { schemeQuestionId: 4, categoryId: 20, id: 2000, codedAnswers: [] }
+          ])
 
         mock.onGet('/projects/1/scheme/4').reply(200, updatedCatChildQuestion)
 
