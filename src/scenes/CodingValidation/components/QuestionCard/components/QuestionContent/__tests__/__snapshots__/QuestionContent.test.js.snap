@@ -126,7 +126,7 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
                   "id": 1,
                 },
               ],
-              "questionType": undefined,
+              "questionType": 4,
             }
           }
         />

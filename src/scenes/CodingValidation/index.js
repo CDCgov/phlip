@@ -178,7 +178,7 @@ export class CodingValidation extends Component {
    * @param index
    */
   getNextQuestion = index => {
-    if (this.props.unsavedChanges === true) {
+    if (this.props.unsavedChanges) {
       this.onShowStillSavingAlert(index, this.props.actions.getNextQuestion)
     } else {
       this.props.actions.getNextQuestion(
@@ -197,7 +197,7 @@ export class CodingValidation extends Component {
    * @param index
    */
   getPrevQuestion = index => {
-    if (this.props.unsavedChanges === true) {
+    if (this.props.unsavedChanges) {
       this.onShowStillSavingAlert(index, this.props.actions.getPrevQuestion)
     } else {
       this.props.actions.getPrevQuestion(
@@ -216,7 +216,7 @@ export class CodingValidation extends Component {
    * @param item
    */
   onQuestionSelectedInNav = item => {
-    if (this.props.unsavedChanges === true) {
+    if (this.props.unsavedChanges) {
       this.onShowStillSavingAlert(item, this.props.actions.onQuestionSelectedInNav)
     } else {
       this.props.actions.onQuestionSelectedInNav(
@@ -273,18 +273,20 @@ export class CodingValidation extends Component {
    * @returns {Function}
    */
   onChangeTextAnswer = (id, field) => event => {
+    const { projectId, jurisdiction, question } = this.props
     switch (field) {
       case 'textAnswer':
-        this.props.actions.updateUserAnswer(this.props.projectId, this.props.jurisdiction.id, this.props.question.id, id, event.target.value)
+        this.props.actions.updateUserAnswer(projectId, jurisdiction.id, question.id, id, event.target.value)
         break
 
       case 'comment':
-        this.props.actions.onChangeComment(this.props.projectId, this.props.jurisdiction.id, this.props.question.id, event.target.value)
+        this.props.actions.onChangeComment(projectId, jurisdiction.id, question.id, event.target.value)
         break
 
       case 'pincite':
-        this.props.actions.onChangePincite(this.props.projectId, this.props.jurisdiction.id, this.props.question.id, id, event.target.value)
+        this.props.actions.onChangePincite(projectId, jurisdiction.id, question.id, id, event.target.value)
     }
+
     this.onChangeTouchedStatus()
     this.onSaveCodedQuestion()
   }
@@ -517,9 +519,7 @@ export class CodingValidation extends Component {
             bottomLeft: false,
             topLeft: false
           }}
-          handleComponent={{
-            left: ResizeHandle
-          }}
+          handleComponent={{ left: ResizeHandle }}
           handleStyles={{
             left: {
               left: -19,
@@ -564,30 +564,32 @@ export class CodingValidation extends Component {
    * @param event
    */
   onJurisdictionChange = event => {
-    if (this.props.unsavedChanges) {
+    const { unsavedChanges, page, actions, projectId, jurisdictionList } = this.props
+
+    if (unsavedChanges) {
       this.setState({
         stillSavingAlertOpen: true,
         changeMethod: {
           type: 1,
-          method: this.props.page === 'coding'
-            ? this.props.actions.getUserCodedQuestions
-            : this.props.actions.getUserValidatedQuestionsRequest
+          method: page === 'coding'
+            ? actions.getUserCodedQuestions
+            : actions.getUserValidatedQuestionsRequest
         },
-        changeProps: [this.props.projectId, event.target.value, this.props.page]
+        changeProps: [projectId, event.target.value, page]
       })
     } else {
       this.setState({ selectedJurisdiction: event.target.value })
-      const newIndex = this.props.jurisdictionList.findIndex(jur => jur.id === event.target.value)
-      this.props.actions.onChangeJurisdiction(newIndex)
+      const newIndex = jurisdictionList.findIndex(jur => jur.id === event.target.value)
+      actions.onChangeJurisdiction(newIndex)
 
-      if (this.props.page === 'coding') {
-        this.props.actions.getUserCodedQuestions(this.props.projectId, event.target.value, this.props.page)
+      if (page === 'coding') {
+        actions.getUserCodedQuestions(projectId, event.target.value, page)
       } else {
-        this.props.actions.getUserValidatedQuestionsRequest(this.props.projectId, event.target.value, this.props.page)
+        actions.getUserValidatedQuestionsRequest(projectId, event.target.value, page)
       }
 
       this.onShowQuestionLoader()
-      this.props.actions.getApprovedDocumentsRequest(this.props.projectId, this.props.jurisdictionList[newIndex].jurisdictionId, this.props.page)
+      actions.getApprovedDocumentsRequest(projectId, jurisdictionList[newIndex].jurisdictionId, page)
     }
   }
 
@@ -670,9 +672,17 @@ export class CodingValidation extends Component {
   }
 
   render() {
-    const classes = classNames(this.props.classes.mainContent, {
-      [this.props.classes.openNavShift]: this.state.navOpen && !this.props.showPageLoader,
-      [this.props.classes.pageLoading]: this.props.showPageLoader
+    const {
+      classes, showPageLoader, answerErrorContent, objectExists, getQuestionErrors, actions, page, selectedCategory,
+      projectName, projectId, jurisdictionList, jurisdiction, questionOrder, isSchemeEmpty, schemeError,
+      areJurisdictionsEmpty, saveFlagErrorContent
+    } = this.props
+
+    const { navOpen, applyAllAlertOpen, stillSavingAlertOpen, flagConfirmAlertOpen } = this.state
+
+    const containerClasses = classNames(classes.mainContent, {
+      [classes.openNavShift]: navOpen && !showPageLoader,
+      [classes.pageLoading]: showPageLoader
     })
 
     const containerStyle = {
@@ -685,53 +695,53 @@ export class CodingValidation extends Component {
     }
 
     return (
-      <FlexGrid container type="row" flex className={classes} style={containerStyle}>
-        <Alert open={this.state.applyAllAlertOpen} actions={this.modalActions}>
+      <FlexGrid container type="row" flex className={containerClasses} style={containerStyle}>
+        <Alert open={applyAllAlertOpen} actions={this.modalActions}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             You are applying your answer to ALL categories. Previously answered questions will be changed.
           </Typography>
         </Alert>
-        <Alert open={this.state.stillSavingAlertOpen} actions={this.stillSavingActions}>
+        <Alert open={stillSavingAlertOpen} actions={this.stillSavingActions}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             Your answer to this question is still being saved. If you continue, your changes might not be saved.
           </Typography>
         </Alert>
         <ApiErrorAlert
-          open={this.props.answerErrorContent !== null}
-          content={this.props.answerErrorContent}
-          actions={this.props.objectExists ? [] : this.saveFailedActions}
+          open={answerErrorContent !== null}
+          content={answerErrorContent}
+          actions={objectExists ? [] : this.saveFailedActions}
           onCloseAlert={this.onCloseAlert}
         />
         <ApiErrorAlert
-          open={this.props.getQuestionErrors !== null}
-          content={this.props.getQuestionErrors}
-          onCloseAlert={() => this.props.actions.dismissApiAlert('getQuestionErrors')}
+          open={getQuestionErrors !== null}
+          content={getQuestionErrors}
+          onCloseAlert={() => actions.dismissApiAlert('getQuestionErrors')}
         />
-        {!this.props.showPageLoader &&
+        {!showPageLoader &&
         <Navigator
-          open={this.state.navOpen}
-          page={this.props.page}
-          selectedCategory={this.props.selectedCategory}
+          open={navOpen}
+          page={page}
+          selectedCategory={selectedCategory}
           handleQuestionSelected={this.onQuestionSelectedInNav}
         />}
         <FlexGrid container flex style={{ width: '100%', flexWrap: 'nowrap', overflowX: 'hidden', overflowY: 'auto' }}>
           <Header
-            projectName={this.props.projectName}
-            projectId={this.props.projectId}
-            jurisdictionList={this.props.jurisdictionList}
+            projectName={projectName}
+            projectId={projectId}
+            jurisdictionList={jurisdictionList}
             onJurisdictionChange={this.onJurisdictionChange}
-            pageTitle={capitalizeFirstLetter(this.props.page)}
-            currentJurisdiction={this.props.jurisdiction}
+            pageTitle={capitalizeFirstLetter(page)}
+            currentJurisdiction={jurisdiction}
             onGoBack={this.onGoBack}
-            empty={this.props.jurisdiction.id === null || this.props.questionOrder === null ||
-            this.props.questionOrder.length === 0}
+            empty={jurisdiction.id === null || questionOrder === null ||
+            questionOrder.length === 0}
           />
           <FlexGrid container type="row" flex style={{ backgroundColor: '#f5f5f5' }}>
             <FlexGrid container type="row" flex style={{ overflow: 'auto' }}>
-              {!this.props.showPageLoader &&
+              {!showPageLoader &&
               <FlexGrid>
-                {this.props.isSchemeEmpty !== null &&
-                (this.props.jurisdiction.id !== null && this.props.questionOrder.length !== 0) &&
+                {isSchemeEmpty !== null &&
+                (jurisdiction.id !== null && questionOrder.length !== 0) &&
                 <Tooltip placement="right" text="Toggle Navigator" id="toggle-navigator">
                   <MuiButton style={navButtonStyles} aria-label="Toggle Navigator" onClick={this.onToggleNavigator}>
                     <Icon color="#424242" style={iconStyle}>menu</Icon>
@@ -743,24 +753,24 @@ export class CodingValidation extends Component {
                 type="row"
                 flex
                 style={{ padding: '1px 15px 20px 15px', overflow: 'auto', minHeight: 500 }}>
-                {this.props.schemeError !== null &&
+                {schemeError !== null &&
                 <ApiErrorView error="We couldn't get the coding scheme for this project." />}
-                {this.props.showPageLoader && <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />}
-                {(this.props.areJurisdictionsEmpty || this.props.isSchemeEmpty) && this.onShowGetStartedView()}
-                {(!this.props.showPageLoader && this.props.isSchemeEmpty === false &&
-                  this.props.areJurisdictionsEmpty === false) && this.onShowCodeView()}
+                {showPageLoader && <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />}
+                {(areJurisdictionsEmpty || isSchemeEmpty) && this.onShowGetStartedView()}
+                {(!showPageLoader && isSchemeEmpty === false && areJurisdictionsEmpty === false)
+                && this.onShowCodeView()}
               </FlexGrid>
             </FlexGrid>
           </FlexGrid>
         </FlexGrid>
-        <Alert open={this.state.flagConfirmAlertOpen} actions={this.confirmAlertActions}>
+        <Alert open={flagConfirmAlertOpen} actions={this.confirmAlertActions}>
           <Typography variant="body1">Are you sure you want to clear this flag?</Typography>
         </Alert>
 
         <ApiErrorAlert
-          content={this.props.saveFlagErrorContent}
-          open={this.props.saveFlagErrorContent !== null}
-          onCloseAlert={() => this.props.actions.dismissApiAlert('saveFlagErrorContent')}
+          content={saveFlagErrorContent}
+          open={saveFlagErrorContent !== null}
+          onCloseAlert={() => actions.dismissApiAlert('saveFlagErrorContent')}
         />
       </FlexGrid>
     )
