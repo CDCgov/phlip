@@ -751,7 +751,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
 
     // If there are flags for this question, then we need to add the flag raiser to our coders object
     if (updatedSchemeQuestion.flags.length > 0) {
-      if (!checkIfExists(updatedSchemeQuestion.flags[0].raisedBy, state.userImages, 'userId')) {
+      if (!checkIfExists(updatedSchemeQuestion.flags[0].raisedBy, {}, 'userId')) {
         coders = {
           ...coders,
           [updatedSchemeQuestion.flags[0].raisedBy.userId]: { ...updatedSchemeQuestion.flags[0].raisedBy }
