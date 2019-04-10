@@ -1,7 +1,7 @@
 version: "3.2"
 services:
   dev:
-    container_name: esquire-frontend-dev
+    container_name: esquire-frontend-dev-v1
     build:
       context: .
       dockerfile: Dockerfile
