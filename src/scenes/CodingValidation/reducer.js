@@ -31,8 +31,8 @@ export const INITIAL_STATE = {
   userAnswers: {},
   showNextButton: true,
   mergedUserQuestions: null,
-  isSchemeEmpty: null,
-  areJurisdictionsEmpty: null,
+  isSchemeEmpty: false,
+  areJurisdictionsEmpty: false,
   snapshotUserAnswer: {},
   answerErrorContent: null,
   schemeError: null,
@@ -50,7 +50,8 @@ export const INITIAL_STATE = {
   objectExists: false,
   hasTouchedQuestion: false,
   enabledAnswerChoice: null,
-  page: ''
+  page: '',
+  getRequestInProgress: true
 }
 
 export const COMBINED_INITIAL_STATE = {
@@ -319,14 +320,16 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
-        enabledAnswerChoice: null
+        enabledAnswerChoice: null,
+        getRequestInProgress: false
       }
 
     case types.GET_CODING_OUTLINE_REQUEST:
     case types.GET_VALIDATION_OUTLINE_REQUEST:
       return {
         ...state,
-        isLoadingPage: true
+        isLoadingPage: true,
+        getRequestInProgress: true
       }
 
     case types.GET_CODING_OUTLINE_FAIL:
@@ -335,7 +338,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         ...state,
         schemeError: action.payload,
         isLoadingPage: false,
-        showPageLoader: false
+        showPageLoader: false,
+        getRequestInProgress: false
       }
 
     case types.ON_SAVE_RED_FLAG_SUCCESS:
@@ -430,7 +434,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
-        enabledAnswerChoice: null
+        enabledAnswerChoice: null,
+        getRequestInProgress: false
       }
 
     case types.CLEAR_FLAG_SUCCESS:

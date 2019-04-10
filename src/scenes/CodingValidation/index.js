@@ -90,7 +90,8 @@ export class CodingValidation extends Component {
     history: PropTypes.object,
     hasTouchedQuestion: PropTypes.bool,
     classes: PropTypes.object,
-    objectExists: PropTypes.bool
+    objectExists: PropTypes.bool,
+    getRequestInProgress: PropTypes.bool
   }
 
   constructor(props, context) {
@@ -106,7 +107,9 @@ export class CodingValidation extends Component {
       stillSavingAlertOpen: false,
       changeMethod: null,
       flagConfirmAlertOpen: false,
-      flagToDelete: null
+      flagToDelete: null,
+      startedText: '',
+      showNav: false
     }
 
     this.confirmAlertActions = [
@@ -153,11 +156,13 @@ export class CodingValidation extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.isSchemeEmpty === false && prevProps.isSchemeEmpty === null) {
-      if (this.props.areJurisdictionsEmpty === false) {
-        this.setState({
-          navOpen: false
-        })
+    if (!this.props.getRequestInProgress && prevProps.getRequestInProgress) {
+      if (this.props.areJurisdictionsEmpty || this.props.isSchemeEmpty) {
+        this.onShowGetStartedView()
+      } else {
+        if (this.props.schemeError === null) {
+          this.onShowCodeView()
+        }
       }
     }
   }
@@ -462,22 +467,9 @@ export class CodingValidation extends Component {
         startedText = 'You must add jurisdictions and questions to the project coding scheme before coding.'
       }
     }
-
-    return (
-      <FlexGrid container flex align="center" justify="center" padding={30}>
-        <Typography variant="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
-        <FlexGrid container type="row" style={{ width: '100%', justifyContent: 'space-evenly' }}>
-          {noScheme && this.props.userRole !== 'Coder' &&
-          <TextLink to={{ pathname: `/project/${this.props.projectId}/coding-scheme` }}>
-            <Button value="Create Coding Scheme" color="accent" />
-          </TextLink>}
-          {noJurisdictions && this.props.userRole !== 'Coder' &&
-          <TextLink to={{ pathname: `/project/${this.props.projectId}/jurisdictions` }}>
-            <Button value="Add Jurisdictions" color="accent" />
-          </TextLink>}
-        </FlexGrid>
-      </FlexGrid>
-    )
+    this.setState({
+      startedText
+    })
   }
 
   /**
@@ -485,63 +477,9 @@ export class CodingValidation extends Component {
    * @returns {*}
    */
   onShowCodeView = () => {
-    return (
-      <>
-        <QuestionCard
-          page={this.props.page}
-          onChange={this.onAnswer}
-          onChangeTextAnswer={this.onChangeTextAnswer}
-          onChangeCategory={this.onChangeCategory}
-          onAnswer={this.onAnswer}
-          onClearAnswer={this.onClearAnswer}
-          onOpenAlert={this.onOpenApplyAllAlert}
-          onSaveFlag={this.onSaveFlag}
-          onSave={this.onSaveCodedQuestion}
-          onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
-          onToggleAnswerForAnno={this.onToggleAnswerForAnno}
-          currentIndex={this.props.currentIndex}
-          getNextQuestion={this.getNextQuestion}
-          getPrevQuestion={this.getPrevQuestion}
-          totalLength={this.props.questionOrder.length}
-          showNextButton={this.props.showNextButton}
-        />
-        <FlexGrid style={{ minWidth: 15, maxWidth: 15, width: 15 }} />
-        <Resizable
-          style={{ display: 'flex' }}
-          minWidth="10%"
-          enable={{
-            top: false,
-            right: false,
-            bottom: false,
-            left: true,
-            topRight: false,
-            bottomRight: false,
-            bottomLeft: false,
-            topLeft: false
-          }}
-          handleComponent={{ left: ResizeHandle }}
-          handleStyles={{
-            left: {
-              left: -19,
-              height: 'fit-content',
-              width: 'fit-content',
-              top: '50%'
-            }
-          }}
-          defaultSize={{
-            width: '50%',
-            height: '100%'
-          }}>
-          <DocumentList
-            projectId={this.props.projectId}
-            jurisdictionId={this.props.jurisdiction.jurisdictionId}
-            page={this.props.page}
-            questionId={this.props.question.id}
-            saveUserAnswer={this.onSaveCodedQuestion}
-          />
-        </Resizable>
-      </>
-    )
+    this.setState({
+      navOpen: true, showNav: true
+    })
   }
 
   /**
@@ -675,14 +613,14 @@ export class CodingValidation extends Component {
     const {
       classes, showPageLoader, answerErrorContent, objectExists, getQuestionErrors, actions, page, selectedCategory,
       projectName, projectId, jurisdictionList, jurisdiction, questionOrder, isSchemeEmpty, schemeError,
-      areJurisdictionsEmpty, saveFlagErrorContent
+      areJurisdictionsEmpty, saveFlagErrorContent, getRequestInProgress
     } = this.props
 
-    const { navOpen, applyAllAlertOpen, stillSavingAlertOpen, flagConfirmAlertOpen } = this.state
+    const { navOpen, applyAllAlertOpen, stillSavingAlertOpen, flagConfirmAlertOpen, startedText, showNav } = this.state
 
     const containerClasses = classNames(classes.mainContent, {
       [classes.openNavShift]: navOpen && !showPageLoader,
-      [classes.pageLoading]: showPageLoader
+      [classes.pageLoading]: !navOpen
     })
 
     const containerStyle = {
@@ -717,7 +655,7 @@ export class CodingValidation extends Component {
           content={getQuestionErrors}
           onCloseAlert={() => actions.dismissApiAlert('getQuestionErrors')}
         />
-        {!showPageLoader &&
+        {navOpen &&
         <Navigator
           open={navOpen}
           page={page}
@@ -740,8 +678,7 @@ export class CodingValidation extends Component {
             <FlexGrid container type="row" flex style={{ overflow: 'auto' }}>
               {!showPageLoader &&
               <FlexGrid>
-                {isSchemeEmpty !== null &&
-                (jurisdiction.id !== null && questionOrder.length !== 0) &&
+                {showNav &&
                 <Tooltip placement="right" text="Toggle Navigator" id="toggle-navigator">
                   <MuiButton style={navButtonStyles} aria-label="Toggle Navigator" onClick={this.onToggleNavigator}>
                     <Icon color="#424242" style={iconStyle}>menu</Icon>
@@ -753,12 +690,85 @@ export class CodingValidation extends Component {
                 type="row"
                 flex
                 style={{ padding: '1px 15px 20px 15px', overflow: 'auto', minHeight: 500 }}>
-                {schemeError !== null &&
-                <ApiErrorView error="We couldn't get the coding scheme for this project." />}
-                {showPageLoader && <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />}
-                {(areJurisdictionsEmpty || isSchemeEmpty) && this.onShowGetStartedView()}
-                {(!showPageLoader && isSchemeEmpty === false && areJurisdictionsEmpty === false)
-                && this.onShowCodeView()}
+                {schemeError !== null && <ApiErrorView error="We couldn't get the coding scheme for this project." />}
+                {getRequestInProgress
+                  ? showPageLoader
+                    ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
+                    : <></>
+                  : (isSchemeEmpty || areJurisdictionsEmpty)
+                    ? (
+                      <FlexGrid container flex align="center" justify="center" padding={30}>
+                        <Typography variant="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
+                        <FlexGrid container type="row" style={{ width: '100%', justifyContent: 'space-evenly' }}>
+                          {isSchemeEmpty && this.props.userRole !== 'Coder' &&
+                          <TextLink to={{ pathname: `/project/${this.props.projectId}/coding-scheme` }}>
+                            <Button value="Create Coding Scheme" color="accent" />
+                          </TextLink>}
+                          {areJurisdictionsEmpty && this.props.userRole !== 'Coder' &&
+                          <TextLink to={{ pathname: `/project/${this.props.projectId}/jurisdictions` }}>
+                            <Button value="Add Jurisdictions" color="accent" />
+                          </TextLink>}
+                        </FlexGrid>
+                      </FlexGrid>
+                    )
+                    : (schemeError === null && (
+                      <>
+                        <QuestionCard
+                          page={this.props.page}
+                          onChange={this.onAnswer}
+                          onChangeTextAnswer={this.onChangeTextAnswer}
+                          onChangeCategory={this.onChangeCategory}
+                          onAnswer={this.onAnswer}
+                          onClearAnswer={this.onClearAnswer}
+                          onOpenAlert={this.onOpenApplyAllAlert}
+                          onSaveFlag={this.onSaveFlag}
+                          onSave={this.onSaveCodedQuestion}
+                          onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
+                          onToggleAnswerForAnno={this.onToggleAnswerForAnno}
+                          currentIndex={this.props.currentIndex}
+                          getNextQuestion={this.getNextQuestion}
+                          getPrevQuestion={this.getPrevQuestion}
+                          totalLength={this.props.questionOrder.length}
+                          showNextButton={this.props.showNextButton}
+                        />
+                        <FlexGrid style={{ minWidth: 15, maxWidth: 15, width: 15 }} />
+                        <Resizable
+                          style={{ display: 'flex' }}
+                          minWidth="10%"
+                          enable={{
+                            top: false,
+                            right: false,
+                            bottom: false,
+                            left: true,
+                            topRight: false,
+                            bottomRight: false,
+                            bottomLeft: false,
+                            topLeft: false
+                          }}
+                          handleComponent={{ left: ResizeHandle }}
+                          handleStyles={{
+                            left: {
+                              left: -19,
+                              height: 'fit-content',
+                              width: 'fit-content',
+                              top: '50%'
+                            }
+                          }}
+                          defaultSize={{
+                            width: '50%',
+                            height: '100%'
+                          }}>
+                          <DocumentList
+                            projectId={this.props.projectId}
+                            jurisdictionId={this.props.jurisdiction.jurisdictionId}
+                            page={this.props.page}
+                            questionId={this.props.question.id}
+                            saveUserAnswer={this.onSaveCodedQuestion}
+                          />
+                        </Resizable>
+                      </>
+                    ))
+                }
               </FlexGrid>
             </FlexGrid>
           </FlexGrid>
@@ -810,7 +820,8 @@ const mapStateToProps = (state, ownProps) => {
     selectedCategoryId: pageState.selectedCategoryId || null,
     unsavedChanges: pageState.unsavedChanges || false,
     hasTouchedQuestion: pageState.hasTouchedQuestion || false,
-    objectExists: pageState.objectExists || false
+    objectExists: pageState.objectExists || false,
+    getRequestInProgress: pageState.getRequestInProgress
   }
 }
 
