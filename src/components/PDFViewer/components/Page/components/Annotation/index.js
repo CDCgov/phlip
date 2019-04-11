@@ -54,19 +54,23 @@ export class Annotation extends PureComponent {
 
   render() {
     const {
-      annotation, index, pending,
-      handleConfirmAnnotation, handleCancelAnnotation,
-      handleRemoveAnnotation, handleClickAnnotation, showAvatar, user
+      annotation, index, pending, handleConfirmAnnotation, handleCancelAnnotation, handleRemoveAnnotation,
+      handleClickAnnotation, showAvatar, user
     } = this.props
-
-    console.log(user)
 
     const key = `${pending ? 'pending' : 'saved'}-highlight-area-${index}`
 
     return annotation.rects.map((rect, j) => {
       const { left, top, height, width, bounds } = this.getBounds(rect.pdfPoints)
-
       const iconStyle = { height: 25, width: 25, borderRadius: 0 }
+
+      const avatarLocation = {
+        left: left - 30,
+        top: top - 30,
+        position: 'absolute',
+        width: 36,
+        zIndex: 4
+      }
 
       const iconLocation = {
         left: pending ? bounds[2] - 53 : bounds[2] - 24,
@@ -79,7 +83,21 @@ export class Annotation extends PureComponent {
 
       return (
         <Fragment key={`${key}-${j}`}>
-          <div style={{ left, top, height, width }} onClick={() => pending ? null : handleClickAnnotation(index)} />
+          {(j === 0 && showAvatar) &&
+          <div style={avatarLocation}>
+            <Avatar
+              cardAvatar
+              initials={user.initials}
+              avatar={user.avatar}
+              style={{ width: 30, height: 30 }}
+              userName={user.username}
+            />
+          </div>}
+          <div
+            style={{ left, top, height, width }}
+            className="highlight"
+            onClick={() => pending ? null : handleClickAnnotation(index)}
+          />
           {this.shouldShowActions(j) &&
           <div key={`${key}-${index}-${j}-actions`} className="iconActions" style={iconLocation}>
             <IconButton

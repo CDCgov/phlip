@@ -191,8 +191,8 @@ export class DocumentList extends Component {
           <PDFViewer
             allowSelection={annotationModeEnabled}
             document={openedDoc}
-            saveAnnotation={this.onSaveAnnotation}
             annotations={annotations}
+            saveAnnotation={this.onSaveAnnotation}
             removeAnnotation={this.onRemoveAnnotation}
             onCheckTextContent={this.onCheckTextContent}
             annotationModeEnabled={annotationModeEnabled}
@@ -236,13 +236,15 @@ const mapStateToProps = (state, ownProps) => {
     annotations = pageState.annotations
   }
 
+  const isValidation = state.scenes.codingValidation.coding.page === 'validation'
+
   const annotatedDocIdsForAnswer = annotations.map(annotation => annotation.docId)
   const notAnnotatedDocIds = pageState.documents.ordered.filter(docId => !annotatedDocIdsForAnswer.includes(docId))
   const annotatedDocIds = pageState.documents.ordered.filter(docId => annotatedDocIdsForAnswer.includes(docId))
   const annotatedForOpenDoc = annotations.map((annotation, index) => ({
     ...annotation,
     fullListIndex: index,
-    userId: pageState.annotationModeEnabled ? question.validatedBy.userId : annotation.userId
+    userId: pageState.annotationModeEnabled ? isValidation ? question.validatedBy.userId : annotation.userId : ''
   })).filter(annotation => annotation.docId === pageState.openedDoc._id)
 
   const allDocIds = new Set([...annotatedDocIds, ...notAnnotatedDocIds])
@@ -263,7 +265,7 @@ const mapStateToProps = (state, ownProps) => {
     apiErrorOpen: pageState.apiErrorOpen,
     annotationModeEnabled: pageState.annotationModeEnabled,
     enabledAnswerId: pageState.enabledAnswerId,
-    isValidation: state.scenes.codingValidation.coding.page === 'validation'
+    isValidation
   }
 }
 

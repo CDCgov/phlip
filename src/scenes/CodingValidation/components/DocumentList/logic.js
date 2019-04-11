@@ -74,7 +74,7 @@ const showAllAnnotations = createLogic({
     if (codingState.question.isCategoryQuestion) {
       coderQuestion = codingState.mergedUserQuestions[action.questionId][codingState.selectedCategoryId]
       valQuestion = codingState.userAnswers[action.questionId][codingState.selectedCategoryId]
-    } else {  
+    } else {
       coderQuestion = codingState.mergedUserQuestions[action.questionId]
       valQuestion = codingState.userAnswers[action.questionId]
     }

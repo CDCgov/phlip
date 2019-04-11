@@ -107,7 +107,7 @@
   overflow: hidden;
 }
 
-.annotationLayer > div {
+.annotationLayer > .highlight {
   background-color: #00e0ff;
   opacity: 0.2;
   position: absolute;
