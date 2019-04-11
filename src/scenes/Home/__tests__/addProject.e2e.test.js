@@ -1,7 +1,7 @@
 const admin = { email: 'admin@cdc.gov' }
 const email_selector = '#email'
 const host = 'http://localhost:5200'
-const errorMsg = 'body > div > div > form > div > div > div:nth-child(1) > div > p'
+//const errorMsg = 'body > div > div > form > div > div > div:nth-child(1) > div > p'
 const addProjectButton = '#root > div > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > a'
 
 // find the link, by going over all links on the page

@@ -15,19 +15,19 @@
 const filepath = '/home/gitlab-runner/sample-data-phlip'
 //const filepath = '/Users/kristinmuterspaw/Downloads/demo'
 const jasmineTimeout = 600000
-const admin = {
-  email: 'admin@cdc.gov'
-}
-const email_selector = '#email'
+// const admin = {
+//   email: 'admin@cdc.gov'
+// }
+//const email_selector = '#email'
 //const login_button_selector = '#root > form > button'
-const host = 'http://localhost:5200'
+//const host = 'http://localhost:5200'
 const uploadNewButton = '#uploadNewBtn'
 const uploadGoButton = '#uploadFilesBtn'
 const uploadAlertMessage = '#uploadAlert > div> div:nth-child(1) > div > div > h2 > div'
 const uploadAlertCloseButton = '#uploadAlert > div > div > button'
 const documentManagementBtn = '#root > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)'
-const uploadCloseButton = '#uploadCloseBtn'
-const uploadCloseConfirm = '#uploadCloseContBtn'
+//const uploadCloseButton = '#uploadCloseBtn'
+//const uploadCloseConfirm = '#uploadCloseContBtn'
 const documentTable = '#documentTable'
 const bulkDropdown = '#action > div'
 const bulkDelete = '#menu- > div > ul > li:nth-child(2)'
@@ -46,7 +46,7 @@ const testProject2 = 'Delete'
 const testProject3 = 'firstDoc'
 const testJurisdiction = 'Yauco Municipio, Puerto Rico'
 const testJurisdiction2 = 'Hapeville, Fulton County, Georgia (city)'
-const uploadFileList = '#uploadFileList > div'
+//const uploadFileList = '#uploadFileList > div'
 
 let data = null
 // let fileList = []
@@ -588,24 +588,24 @@ export const docManage = () => {
   })
 }
 
-function getText(linkText) {
-  linkText = linkText.replace(/\r\n|\r/g, '\n')
-  linkText = linkText.replace(/\+/g, ' ')
+// function getText(linkText) {
+//   linkText = linkText.replace(/\r\n|\r/g, '\n')
+//   linkText = linkText.replace(/\+/g, ' ')
+//
+//   // Replace &nbsp; with a space
+//   const nbspPattern = new RegExp(String.fromCharCode(160), 'g')
+//   return linkText.replace(nbspPattern, ' ')
+// }
 
-  // Replace &nbsp; with a space
-  const nbspPattern = new RegExp(String.fromCharCode(160), 'g')
-  return linkText.replace(nbspPattern, ' ')
-}
-
-async function findByLink(page, linkString) {
-  const links = await page.$$('a')
-  for (let i = 0; i < links.length; i++) {
-    let valueHandle = await links[i].getProperty('innerText')
-    let linkText = await valueHandle.jsonValue()
-    const text = getText(linkText)
-    if (linkString === text) {
-      return links[i]
-    }
-  }
-  return null
-}
+// async function findByLink(page, linkString) {
+//   const links = await page.$$('a')
+//   for (let i = 0; i < links.length; i++) {
+//     let valueHandle = await links[i].getProperty('innerText')
+//     let linkText = await valueHandle.jsonValue()
+//     const text = getText(linkText)
+//     if (linkString === text) {
+//       return links[i]
+//     }
+//   }
+//   return null
+// }
