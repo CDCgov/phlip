@@ -1,6 +1,8 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { DocumentList } from '../index'
+import { DocumentList, mapStateToProps } from '../index'
+import { INITIAL_STATE } from '../reducer'
+import { schemeById, userAnswersCoded } from 'utils/testData/coding'
 
 const props = {
   actions: {
@@ -89,5 +91,48 @@ describe('DocumentList', () => {
         expect(text).toEqual('NOTE: Some pages of this document do not have text selection. You will not be able to annotate those pages.')
       })
     })
+  })
+})
+
+const setupState = (other = {}) => {
+  return {
+    scenes: {
+      codingValidation: {
+        coding: {
+          page: 'coding',
+          scheme: { byId: schemeById },
+          userAnswers: userAnswersCoded,
+          question: schemeById[3]
+        },
+        documentList: {
+          ...INITIAL_STATE,
+          enabledAnswerId: 10,
+          annotationModeEnabled: true,
+          documents: {
+            ordered: [{ name: 'doc1', _id: 12344 }],
+            allIds: [12344],
+            byId: {
+              12344: { name: 'doc1', _id: 12344 }
+            }
+          },
+          openedDoc: { _id: '12344' },
+          ...other
+        }
+      }
+    }
+  }
+}
+
+describe('DocumentList - mapStateToProps', () => {
+  test('should use codingState.userAnswers if state.annotationModeEnabled is true', () => {
+    const defaultState = setupState()
+    const props = mapStateToProps(defaultState, { questionId: 3 })
+    expect(props.annotations.length).toEqual(2)
+  })
+
+  test('should use pageState.annotations if state.annotationModeEnabled is false', () => {
+    const defaultState = setupState({ annotationModeEnabled: false, annotations: [{ docId: '12344', text: 'lalal' }] })
+    const props = mapStateToProps(defaultState, { questionId: 3 })
+    expect(props.annotations.length).toEqual(1)
   })
 })

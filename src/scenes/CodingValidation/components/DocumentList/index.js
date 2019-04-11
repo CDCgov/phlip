@@ -224,7 +224,7 @@ export class DocumentList extends Component {
 }
 
 /* istanbul-ignore-next */
-const mapStateToProps = (state, ownProps) => {
+export const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.documentList
   const codingState = state.scenes.codingValidation.coding
   let annotations = [], question = {}

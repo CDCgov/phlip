@@ -261,7 +261,7 @@ export const userCodedQuestions = [
         schemeAnswerId: 10,
         pincite: '',
         textAnswer: null,
-        annotations: []
+        annotations: [{ text: '323123', id: 4, docId: '12344' }, { text: 'hi hi', id: 1, docId: '12344' }]
       },
       {
         schemeAnswerId: 20,
@@ -314,7 +314,12 @@ export const userAnswersCoded = {
     schemeQuestionId: 3,
     comment: '',
     answers: {
-      10: { schemeAnswerId: 10, pincite: '', annotations: [], textAnswer: null },
+      10: {
+        schemeAnswerId: 10,
+        pincite: '',
+        annotations: [{ text: '323123', id: 4, docId: '12344' }, { text: 'hi hi', id: 1, docId: '12344' }],
+        textAnswer: null
+      },
       20: { schemeAnswerId: 20, pincite: '', annotations: [], textAnswer: null }
     },
     flag: {
