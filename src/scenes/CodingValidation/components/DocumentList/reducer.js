@@ -22,10 +22,7 @@ export const INITIAL_STATE = {
   apiErrorInfo: {
     title: '',
     text: ''
-  },
-  useCoderAnnotations: false,
-  showAllAnnotations: false,
-  useValidatorAnnotations: false
+  }
 }
 
 const mergeName = docObj => ({

@@ -26,9 +26,11 @@ export class DocumentList extends Component {
     annotatedDocs: PropTypes.array,
     docSelected: PropTypes.bool,
     openedDoc: PropTypes.object,
-    answerSelected: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
+    enabledAnswerId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     annotations: PropTypes.array,
     annotationsForAnswer: PropTypes.array,
+    annotationModeEnabled: PropTypes.bool,
+    isValidation: PropTypes.bool,
     questionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     saveUserAnswer: PropTypes.func,
     apiErrorInfo: PropTypes.shape({

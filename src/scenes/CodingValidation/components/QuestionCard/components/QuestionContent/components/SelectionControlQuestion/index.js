@@ -31,8 +31,8 @@ export const SelectionControlQuestion = props => {
   const {
     choices, userAnswers, onChange, onChangePincite,
     classes, mergedUserQuestions, disableAll, userImages, question,
-    enabledAnswerId, onToggleAnnotationMode, annotationModeEnabled,
-    enabledUserId, areDocsEmpty
+    enabledAnswerId, onToggleAnnotationMode, annotationModeEnabled, areDocsEmpty
+    //enabledUserId
   } = props
 
   const showAnnoStyles = shouldShowAnnotationStyles(enabledAnswerId, annotationModeEnabled)
@@ -168,11 +168,15 @@ SelectionControlQuestion.propTypes = {
   /**
    * answer choice id that has been selected for annotating
    */
-  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  enabledAnswerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   /**
    * handles when a user enables / disables an answer choice for annotating
    */
-  onToggleAnswerForAnno: PropTypes.func,
+  onToggleAnnotationMode: PropTypes.func,
+  /**
+   * Whether or not annotation mode is enabled
+   */
+  annotationModeEnabled: PropTypes.bool,
   /**
    * Whether or not this project / jurisdiction has documents
    */

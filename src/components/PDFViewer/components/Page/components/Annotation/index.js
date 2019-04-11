@@ -21,7 +21,7 @@ export class Annotation extends PureComponent {
     handleClickAnnotation: PropTypes.func,
     transform: PropTypes.array,
     showAvatar: PropTypes.bool,
-    users: PropTypes.object
+    user: PropTypes.object
   }
 
   constructor(props, context) {
