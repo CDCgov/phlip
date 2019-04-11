@@ -128,7 +128,8 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         docSelected: false,
-        annotationModeEnabled: false
+        annotationModeEnabled: false,
+        enabledAnswerId: ''
       }
 
     case types.FLUSH_STATE:

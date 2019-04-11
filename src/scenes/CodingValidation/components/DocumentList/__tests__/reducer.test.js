@@ -53,6 +53,14 @@ describe('CodingValidation - DocumentList reducer', () => {
     test('should set state.docSelected to false', () => {
       expect(state.docSelected).toEqual(false)
     })
+
+    test('should set state.enabledAnswerId to an empty string', () => {
+      expect(state.enabledAnswerId).toEqual('')
+    })
+
+    test('should set state.annotationModeEnabled to false', () => {
+      expect(state.annotationModeEnabled).toEqual(false)
+    })
   })
 
   describe('GET_APPROVED_DOCUMENTS_SUCCESS', () => {
@@ -193,6 +201,36 @@ describe('CodingValidation - DocumentList reducer', () => {
 
     test('should set state.apiErrorOpen to false', () => {
       expect(state.apiErrorOpen).toEqual(false)
+    })
+  })
+
+  describe('TOGGLE_ANNOTATION_MODE', () => {
+    describe('action.enabled === true', () => {
+      const action = { type: types.TOGGLE_ANNOTATION_MODE, enabled: true, answerId: 4, questionId: 3 }
+      const currentState = getState()
+      const state = reducer(currentState, action)
+
+      test('should set state.enabledAnswerId to action.answerId', () => {
+        expect(state.enabledAnswerId).toEqual(4)
+      })
+
+      test('should set state.annotationModeEnabled to true', () => {
+        expect(state.annotationModeEnabled).toEqual(true)
+      })
+    })
+
+    describe('action.enabled === false', () => {
+      const action = { type: types.TOGGLE_ANNOTATION_MODE, enabled: false, answerId: 4, questionId: 3 }
+      const currentState = getState()
+      const state = reducer(currentState, action)
+
+      test('should clear state.enabledAnswerId', () => {
+        expect(state.enabledAnswerId).toEqual('')
+      })
+
+      test('should set state.annotationModeEnabled to false', () => {
+        expect(state.annotationModeEnabled).toEqual(false)
+      })
     })
   })
 
