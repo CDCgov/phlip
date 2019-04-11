@@ -225,12 +225,13 @@ export class DocumentList extends Component {
 const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.documentList
   const codingState = state.scenes.codingValidation.coding
-  let annotations = []
+  let annotations = [], question = {}
 
   if (pageState.annotationModeEnabled) {
-    annotations = codingState.question.isCategoryQuestion
-      ? codingState.userAnswers[ownProps.questionId][codingState.selectedCategoryId].answers[pageState.enabledAnswerId].annotations
-      : codingState.userAnswers[ownProps.questionId].answers[pageState.enabledAnswerId].annotations
+    question = codingState.question.isCategoryQuestion
+      ? codingState.userAnswers[ownProps.questionId][codingState.selectedCategoryId]
+      : codingState.userAnswers[ownProps.questionId]
+    annotations = question.answers[pageState.enabledAnswerId].annotations
   } else {
     annotations = pageState.annotations
   }
@@ -240,7 +241,8 @@ const mapStateToProps = (state, ownProps) => {
   const annotatedDocIds = pageState.documents.ordered.filter(docId => annotatedDocIdsForAnswer.includes(docId))
   const annotatedForOpenDoc = annotations.map((annotation, index) => ({
     ...annotation,
-    fullListIndex: index
+    fullListIndex: index,
+    userId: pageState.annotationModeEnabled ? question.validatedBy.userId : annotation.userId
   })).filter(annotation => annotation.docId === pageState.openedDoc._id)
 
   const allDocIds = new Set([...annotatedDocIds, ...notAnnotatedDocIds])

@@ -68,20 +68,25 @@ const showCoderAnnotations = createLogic({
 const showAllAnnotations = createLogic({
   type: types.SHOW_ALL_ANNOTATIONS,
   transform({ getState, action }, next) {
-    const codingState= getState().scenes.codingValidation.coding
-    const question = codingState.mergedUserQuestions[action.questionId]
-    const valAnnotations = codingState.question.isCategoryQuestion
-      ? codingState.userAnswers[action.questionId][codingState.selectedCategoryId].answers[action.answerId]
-      : codingState.userAnswers[action.questionId].answers[action.answerId]
+    const codingState = getState().scenes.codingValidation.coding
+    let coderQuestion = {}, valQuestion = {}
 
-    const validator = valAnnotations.map(answer => {
+    if (codingState.question.isCategoryQuestion) {
+      coderQuestion = codingState.mergedUserQuestions[action.questionId][codingState.selectedCategoryId]
+      valQuestion = codingState.userAnswers[action.questionId][codingState.selectedCategoryId]
+    } else {  
+      coderQuestion = codingState.mergedUserQuestions[action.questionId]
+      valQuestion = codingState.userAnswers[action.questionId]
+    }
+
+    const validator = valQuestion.answers[action.answerId].annotations.map(anno => {
       return {
-        ...answer.annotations,
-        userId: answer.validatedBy.userId || getState().scenes.data.user.currentUser.id
+        ...anno,
+        userId: valQuestion.validatedBy.userId || getState().scenes.data.user.currentUser.id
       }
     })
 
-    const coderAnnotations = question.answers.filter(codes => {
+    const coderAnnotations = coderQuestion.answers.filter(codes => {
       return codes.answerId === action.answerId
     })
 
