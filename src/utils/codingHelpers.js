@@ -316,7 +316,7 @@ export const handleUpdateUserAnswers = (state, action) => {
             schemeAnswerId: action.answerId,
             textAnswer: action.answerValue,
             pincite: currentUserAnswers[action.answerId] ? currentUserAnswers[action.answerId].pincite || '' : '',
-            annotations: []
+            annotations: currentUserAnswers[action.answerId] ? currentUserAnswers[action.answerId].annotations : []
           }
         }
       }
