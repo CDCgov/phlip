@@ -7,8 +7,9 @@ const props = {
   name: '',
   answerId: 10,
   userImages: {},
-  onToggleAnswerForAnno: jest.fn(),
-  enabledAnswerChoice: 0,
+  onToggleAnnotationMode: jest.fn(),
+  enabledAnswerId: 0,
+  annotationModeEnabled: false,
   areDocsEmpty: false,
   mergedUserQuestions: null,
   userAnswers: { answers: {} },
@@ -20,8 +21,8 @@ describe('QuestionCard - QuestionContent - TextFieldQuestion', () => {
     expect(shallow(<TextFieldQuestion {...props} />)).toMatchSnapshot()
   })
 
-  test('should call onToggleAnswerForAnno when \'Annotate\' button is clicked', () => {
-    const spy = jest.spyOn(props, 'onToggleAnswerForAnno')
+  test('should call onToggleAnnotationMode when \'Annotate\' button is clicked', () => {
+    const spy = jest.spyOn(props, 'onToggleAnnotationMode')
     const wrapper = shallow(
       <TextFieldQuestion
         {...props}
