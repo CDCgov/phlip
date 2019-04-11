@@ -13,13 +13,19 @@ export const INITIAL_STATE = {
     _id: '',
     content: {}
   },
+  enabledAnswerId: '',
+  enabledUserId: '',
+  annotations: [],
   annotationModeEnabled: false,
   showEmptyDocs: false,
   apiErrorOpen: false,
   apiErrorInfo: {
     title: '',
     text: ''
-  }
+  },
+  useCoderAnnotations: false,
+  showAllAnnotations: false,
+  useValidatorAnnotations: false
 }
 
 const mergeName = docObj => ({
@@ -45,6 +51,16 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
             ? { docSelected: true }
             : { docSelected: false, openedDoc: {} }
           : {}
+      }
+
+    case types.GET_APPROVED_DOCUMENTS_FAIL:
+      return {
+        ...state,
+        apiErrorInfo: {
+          text: 'Failed to get the list of approved documents.',
+          title: 'Request failed'
+        },
+        apiErrorOpen: true
       }
 
     case types.GET_DOC_CONTENTS_REQUEST:
@@ -77,6 +93,28 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         apiErrorOpen: true
       }
 
+    case types.TOGGLE_ANNOTATION_MODE:
+      return action.enabled ? {
+        ...state,
+        annotationModeEnabled: true,
+        enabledAnswerId: action.answerId
+      } : {
+        ...state,
+        annotationModeEnabled: false,
+        enabledAnswerId: ''
+      }
+
+    case types.SHOW_ALL_ANNOTATIONS:
+    case types.SHOW_CODER_ANNOTATIONS:
+    case types.SHOW_VALIDATOR_ANNOTATIONS:
+      return {
+        ...state,
+        annotationModeEnabled: false,
+        annotations: action.annotations,
+        enabledAnswerId: action.answerId,
+        enabledUserId: action.userId
+      }
+
     case types.CLEAR_DOC_SELECTED:
       return {
         ...state,
@@ -89,24 +127,15 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         apiErrorOpen: false
       }
 
-    case types.GET_APPROVED_DOCUMENTS_FAIL:
+    case types.GET_APPROVED_DOCUMENTS_REQUEST:
       return {
         ...state,
-        apiErrorInfo: {
-          text: 'Failed to get the list of approved documents.',
-          title: 'Request failed'
-        },
-        apiErrorOpen: true
+        docSelected: false,
+        annotationModeEnabled: false
       }
 
     case types.FLUSH_STATE:
       return INITIAL_STATE
-
-    case types.GET_APPROVED_DOCUMENTS_REQUEST:
-      return {
-        ...state,
-        docSelected: false
-      }
 
     default:
       return state

@@ -20,7 +20,7 @@ const jasmineTimeout = 600000
 // }
 //const email_selector = '#email'
 //const login_button_selector = '#root > form > button'
-//const host = 'http://localhost:5200'
+const host = 'http://localhost:5200'
 const uploadNewButton = '#uploadNewBtn'
 const uploadGoButton = '#uploadFilesBtn'
 const uploadAlertMessage = '#uploadAlert > div> div:nth-child(1) > div > div > h2 > div'

@@ -42,7 +42,7 @@ export class DocumentList extends Component {
   static defaultProps = {
     actions: {},
     documents: [],
-    annotated: [],
+    annotations: [],
     showEmptyDocs: false,
     apiErrorOpen: false
   }
@@ -67,7 +67,7 @@ export class DocumentList extends Component {
    * Called when user chooses to save an annotation
    */
   onSaveAnnotation = annotation => {
-    this.props.actions.saveAnnotation(annotation, this.props.answerSelected, this.props.questionId)
+    this.props.actions.saveAnnotation(annotation, this.props.enabledAnswerId, this.props.questionId)
     this.props.saveUserAnswer()
   }
 
@@ -76,7 +76,7 @@ export class DocumentList extends Component {
    * @param index
    */
   onRemoveAnnotation = index => {
-    this.props.actions.removeAnnotation(index, this.props.answerSelected, this.props.questionId)
+    this.props.actions.removeAnnotation(index, this.props.enabledAnswerId, this.props.questionId)
     this.props.saveUserAnswer()
   }
 
@@ -114,6 +114,13 @@ export class DocumentList extends Component {
     const bannerBold = { fontWeight: 500, color: theme.palette.secondary.pageHeader }
     const bannerText = { color: '#434343' }
 
+    const {
+      annotationModeEnabled, annotations, docSelected, openedDoc, apiErrorOpen,
+      showEmptyDocs, apiErrorInfo, isValidation, documents, annotatedDocs
+    } = this.props
+
+    const { noTextContent } = this.state
+
     return (
       <FlexGrid container flex style={{ overflow: 'hidden' }} raised>
         <FlexGrid
@@ -126,35 +133,35 @@ export class DocumentList extends Component {
           <Typography
             variant="subheading"
             style={{ fontSize: '1.125rem', letterSpacing: 0, fontWeight: 500, alignItems: 'center', display: 'flex' }}>
-            {this.props.docSelected &&
+            {docSelected &&
             <Icon color="black" style={{ cursor: 'pointer', paddingRight: 5 }} onClick={this.clearDocSelected}>
               arrow_back
             </Icon>}
-            {this.props.docSelected ? this.props.openedDoc.name : 'Assigned Documents'}
+            {docSelected ? openedDoc.name : 'Assigned Documents'}
           </Typography>
         </FlexGrid>
         <Divider />
         <FlexGrid container flex style={{ height: '100%', overflow: 'auto' }}>
-          {this.props.apiErrorOpen && <ApiErrorView error={this.props.apiErrorInfo.text} />}
-          {this.props.showEmptyDocs &&
+          {apiErrorOpen && <ApiErrorView error={apiErrorInfo.text} />}
+          {showEmptyDocs &&
           <FlexGrid container align="center" justify="center" flex>
             <Typography variant="display1" style={{ textAlign: 'center' }}>
               There no approved and/or assigned documents for this project and jurisdiction.
             </Typography>
           </FlexGrid>}
-          {(!this.props.showEmptyDocs && this.props.answerSelected) &&
+          {(!showEmptyDocs && annotationModeEnabled) &&
           <FlexGrid
             padding={20}
             container
             align="center"
-            style={{ backgroundColor: this.state.noTextContent === 0 ? '#ffcbd3' : '#e6f8ff' }}>
+            style={{ backgroundColor: noTextContent === 0 ? '#ffcbd3' : '#e6f8ff' }}>
             <Typography style={{ textAlign: 'center' }}>
               <i>
-                {this.state.noTextContent > 0 ? (
+                {noTextContent > 0 ? (
                   <>
                     <span style={bannerBold}>Annotation Mode: </span>
                     <span style={bannerText}>
-                      {this.props.docSelected
+                      {docSelected
                         ? 'Highlight the desired text and confirm.'
                         : 'Select a document to annotate.'}
                     </span>
@@ -167,10 +174,10 @@ export class DocumentList extends Component {
                 )}
               </i>
             </Typography>
-            {this.state.noTextContent === 1 &&
+            {noTextContent === 1 &&
             <Typography style={{ textAlign: 'center', marginTop: 8 }}>
               <i>
-                {this.state.noTextContent === 1 &&
+                {noTextContent === 1 &&
                 <>
                   <span style={bannerBold}>NOTE: </span>
                   <span style={bannerText}>
@@ -180,16 +187,18 @@ export class DocumentList extends Component {
               </i>
             </Typography>}
           </FlexGrid>}
-          {(this.props.docSelected && !this.props.apiErrorOpen) &&
+          {(docSelected && !apiErrorOpen) &&
           <PDFViewer
-            allowSelection={Boolean(this.props.answerSelected)}
-            document={this.props.openedDoc}
+            allowSelection={annotationModeEnabled}
+            document={openedDoc}
             saveAnnotation={this.onSaveAnnotation}
-            annotations={this.props.annotations}
+            annotations={annotations}
             removeAnnotation={this.onRemoveAnnotation}
             onCheckTextContent={this.onCheckTextContent}
+            annotationModeEnabled={annotationModeEnabled}
+            showAvatars={isValidation}
           />}
-          {!this.props.docSelected && this.props.documents.map((doc, i) => {
+          {!docSelected && documents.map((doc, i) => {
             return (
               <Fragment key={`${doc._id}`}>
                 <FlexGrid container type="row" align="center" padding={10}>
@@ -197,7 +206,7 @@ export class DocumentList extends Component {
                   <Typography style={docNameStyle}>
                     <span onClick={this.getContents(doc._id)}>{doc.name}</span>
                   </Typography>
-                  {this.props.annotatedDocs.includes(doc._id) &&
+                  {annotatedDocs.includes(doc._id) &&
                   <Icon color="error" size={20}>
                     <FormatQuoteClose style={{ fontSize: 20 }} />
                   </Icon>}
@@ -216,21 +225,24 @@ export class DocumentList extends Component {
 const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.documentList
   const codingState = state.scenes.codingValidation.coding
-  const answerSelected = codingState.enabledAnswerChoice || false
+  let annotations = []
 
-  const annotationsForAnswer = answerSelected
-    ? codingState.question.isCategoryQuestion
-      ? codingState.userAnswers[ownProps.questionId][codingState.selectedCategoryId].answers[answerSelected].annotations
-      : codingState.userAnswers[ownProps.questionId].answers[answerSelected].annotations
-    : []
+  if (pageState.annotationModeEnabled) {
+    annotations = codingState.question.isCategoryQuestion
+      ? codingState.userAnswers[ownProps.questionId][codingState.selectedCategoryId].answers[pageState.enabledAnswerId].annotations
+      : codingState.userAnswers[ownProps.questionId].answers[pageState.enabledAnswerId].annotations
+  } else {
+    annotations = pageState.annotations
+  }
 
-  const annotatedDocIdsForAnswer = annotationsForAnswer.map(annotation => annotation.docId)
+  const annotatedDocIdsForAnswer = annotations.map(annotation => annotation.docId)
   const notAnnotatedDocIds = pageState.documents.ordered.filter(docId => !annotatedDocIdsForAnswer.includes(docId))
   const annotatedDocIds = pageState.documents.ordered.filter(docId => annotatedDocIdsForAnswer.includes(docId))
-  const annotatedForOpenDoc = annotationsForAnswer.map((annotation, index) => ({
+  const annotatedForOpenDoc = annotations.map((annotation, index) => ({
     ...annotation,
     fullListIndex: index
   })).filter(annotation => annotation.docId === pageState.openedDoc._id)
+
   const allDocIds = new Set([...annotatedDocIds, ...notAnnotatedDocIds])
   const docArray = Array.from(allDocIds)
 
@@ -247,7 +259,9 @@ const mapStateToProps = (state, ownProps) => {
     showEmptyDocs: pageState.showEmptyDocs,
     apiErrorInfo: pageState.apiErrorInfo,
     apiErrorOpen: pageState.apiErrorOpen,
-    answerSelected
+    annotationModeEnabled: pageState.annotationModeEnabled,
+    enabledAnswerId: pageState.enabledAnswerId,
+    isValidation: state.scenes.codingValidation.coding.page === 'validation'
   }
 }
 

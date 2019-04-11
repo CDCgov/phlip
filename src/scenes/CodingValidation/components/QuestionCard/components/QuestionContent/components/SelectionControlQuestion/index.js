@@ -20,6 +20,10 @@ const styles = theme => ({
   }
 })
 
+const shouldShowAnnotationStyles = (enabledAnswer, annotationMode) => choiceId => {
+  return annotationMode ? (enabledAnswer === choiceId) : false
+}
+
 /**
  * Checkbox form group for Coding / Validation screens
  */
@@ -27,8 +31,11 @@ export const SelectionControlQuestion = props => {
   const {
     choices, userAnswers, onChange, onChangePincite,
     classes, mergedUserQuestions, disableAll, userImages, question,
-    enabledAnswerChoice, onToggleAnswerForAnno, areDocsEmpty
+    enabledAnswerId, onToggleAnnotationMode, annotationModeEnabled,
+    enabledUserId, areDocsEmpty
   } = props
+
+  const showAnnoStyles = shouldShowAnnotationStyles(enabledAnswerId, annotationModeEnabled)
 
   const Control = [types.CATEGORY, types.CHECKBOXES].includes(question.questionType) ? Checkbox : Radio
   const isValidation = mergedUserQuestions !== null
@@ -53,12 +60,14 @@ export const SelectionControlQuestion = props => {
             ? [...answerList, { ...userAnswers.answers[choice.id], isValidatorAnswer: true, ...validatedBy }]
             : answerList
 
+          const showAnno = showAnnoStyles(choice.id)
+
           return (
             <FlexGrid
               container
               key={choice.id}
               padding="25px 15px"
-              style={{ backgroundColor: enabledAnswerChoice === choice.id ? '#e6f8ff' : 'white', margin: '0 10px' }}>
+              style={{ backgroundColor: showAnno ? '#e6f8ff' : 'white', margin: '0 10px' }}>
               <FormControlLabel
                 checked={isAnswered}
                 aria-checked={isAnswered}
@@ -81,13 +90,13 @@ export const SelectionControlQuestion = props => {
                   <Button
                     style={{
                       alignSelf: 'center',
-                      backgroundColor: enabledAnswerChoice === choice.id ? theme.palette.error.main : 'white',
-                      color: enabledAnswerChoice === choice.id ? 'white' : 'black',
+                      backgroundColor: showAnno ? theme.palette.error.main : 'white',
+                      color: showAnno ? 'white' : 'black',
                       margin: isValidation ? '0 0 0 20px' : '10px 0 0 0'
                     }}
                     disableRipple
-                    onClick={onToggleAnswerForAnno(choice.id)}>
-                    {enabledAnswerChoice === choice.id ? 'Done' : 'Annotate'}
+                    onClick={onToggleAnnotationMode(choice.id)}>
+                    {showAnno ? 'Done' : 'Annotate'}
                   </Button>}
                 </FlexGrid>
                 {(list.length > 0 && isValidation) && <PinciteList

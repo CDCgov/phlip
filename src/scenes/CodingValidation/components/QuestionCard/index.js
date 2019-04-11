@@ -45,7 +45,9 @@ export class QuestionCard extends Component {
     unsavedChanges: PropTypes.bool,
     saveFailed: PropTypes.bool,
     hasTouchedQuestion: PropTypes.bool,
-    enabledAnswerChoice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    enabledAnswerId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    enabledUserId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    annotationModeEnabled: PropTypes.bool,
     areDocsEmpty: PropTypes.bool
   }
 
@@ -169,16 +171,17 @@ export class QuestionCard extends Component {
    * @param id
    * @returns {Function}
    */
-  onToggleAnswerForAnno = id => () => {
-    this.props.onToggleAnswerForAnno(id)
+  onToggleAnnotationMode = id => () => {
+    const enabled = this.props.enabledAnswerId !== id
+    this.props.onToggleAnnotationMode(id, enabled)
   }
 
   render() {
     const {
       onChangeTextAnswer, onOpenFlagConfirmAlert, user, question, onOpenAlert, userAnswers, isValidation,
-      mergedUserQuestions, disableAll, userImages, enabledAnswerChoice, areDocsEmpty, questionChangeLoader,
-      hasTouchedQuestion, categories, saveFailed, onClearAnswer, onSaveFlag, selectedCategory,
-      onChangeCategory, currentIndex, getNextQuestion, getPrevQuestion, totalLength, showNextButton
+      mergedUserQuestions, disableAll, userImages, enabledAnswerId, enabledUserId, annotationModeEnabled,
+      areDocsEmpty, questionChangeLoader, hasTouchedQuestion, categories, saveFailed, onClearAnswer, onSaveFlag,
+      selectedCategory, onChangeCategory, currentIndex, getNextQuestion, getPrevQuestion, totalLength, showNextButton
     } = this.props
 
     const questionContentProps = {
@@ -195,8 +198,10 @@ export class QuestionCard extends Component {
       mergedUserQuestions,
       disableAll,
       userImages,
-      onToggleAnswerForAnno: this.onToggleAnswerForAnno,
-      enabledAnswerChoice,
+      onToggleAnnotationMode: this.onToggleAnnotationMode,
+      enabledAnswerId,
+      enabledUserId,
+      annotationModeEnabled,
       areDocsEmpty
     }
 
@@ -300,6 +305,8 @@ export class QuestionCard extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.coding
+  const docState = state.scenes.codingValidation.documentList
+
   return {
     isValidation: ownProps.page === 'validation',
     user: state.data.user.currentUser || {},
@@ -318,15 +325,17 @@ const mapStateToProps = (state, ownProps) => {
         : pageState.mergedUserQuestions[pageState.question.id]
       : null,
     disableAll: pageState.codedQuestionsError !== null || false,
-    //    userImages: pageState.userImages,
-    userImages: state.data.user.byId,
     questionChangeLoader: pageState.questionChangeLoader || false,
     isChangingQuestion: pageState.isChangingQuestion || false,
     unsavedChanges: pageState.unsavedChanges || false,
     saveFailed: pageState.saveFailed || false,
     hasTouchedQuestion: pageState.hasTouchedQuestion || false,
-    enabledAnswerChoice: pageState.enabledAnswerChoice || null,
-    areDocsEmpty: state.scenes.codingValidation.documentList.showEmptyDocs || false
+
+    userImages: state.data.user.byId,
+    enabledAnswerId: docState.enabledAnswerId,
+    enabledUserId: docState.enabledUserId,
+    annotationModeEnabled: docState.annotationModeEnabled,
+    areDocsEmpty: docState.showEmptyDocs
   }
 }
 

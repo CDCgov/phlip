@@ -1,9 +1,14 @@
 import React, { Fragment, PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { IconButton } from 'components'
+import { IconButton, Avatar } from 'components'
 import { Util as dom_utils } from 'pdfjs-dist/lib/shared/util'
+import { connect } from 'react-redux'
 
 export class Annotation extends PureComponent {
+  static defaultProps = {
+    showAvatar: false
+  }
+
   static propTypes = {
     annotation: PropTypes.object,
     index: PropTypes.number,
@@ -14,7 +19,9 @@ export class Annotation extends PureComponent {
     handleCancelAnnotation: PropTypes.func,
     handleRemoveAnnotation: PropTypes.func,
     handleClickAnnotation: PropTypes.func,
-    transform: PropTypes.array
+    transform: PropTypes.array,
+    showAvatar: PropTypes.bool,
+    users: PropTypes.object
   }
 
   constructor(props, context) {
@@ -49,8 +56,10 @@ export class Annotation extends PureComponent {
     const {
       annotation, index, pending,
       handleConfirmAnnotation, handleCancelAnnotation,
-      handleRemoveAnnotation, handleClickAnnotation
+      handleRemoveAnnotation, handleClickAnnotation, showAvatar, user
     } = this.props
+
+    console.log(user)
 
     const key = `${pending ? 'pending' : 'saved'}-highlight-area-${index}`
 
@@ -92,4 +101,11 @@ export class Annotation extends PureComponent {
   }
 }
 
-export default Annotation
+const mapStateToProps = (state, ownProps) => {
+  return {
+    ...ownProps,
+    user: state.data.user.byId[ownProps.annotation.userId]
+  }
+}
+
+export default connect(mapStateToProps)(Annotation)

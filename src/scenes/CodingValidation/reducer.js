@@ -73,16 +73,16 @@ const removeRequestsInQueue = (questionId, categoryId, currentQueue, queueId) =>
     message.queueId !== queueId
   })
   /*return currentQueue.filter(message => {
-    if (message.questionId !== questionId) {
-      return true
-    } else if (message.questionId === questionId) {
-      if (message.hasOwnProperty('categoryId')) {
-        return message.categoryId !== categoryId
-      } else {
-        return false
-      }
-    }
-  })*/
+   if (message.questionId !== questionId) {
+   return true
+   } else if (message.questionId === questionId) {
+   if (message.hasOwnProperty('categoryId')) {
+   return message.categoryId !== categoryId
+   } else {
+   return false
+   }
+   }
+   })*/
 }
 
 /**
@@ -521,11 +521,11 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         ...action.payload.otherUpdates
       }
 
-    case types.ON_TOGGLE_ANSWER_FOR_ANNO:
-      return {
-        ...state,
-        enabledAnswerChoice: action.schemeAnswerId === state.enabledAnswerChoice ? null : action.schemeAnswerId
-      }
+      // case types.TOGGLE_ANNOTATION_MODE:
+      //   return {
+      //     ...state,
+      //     enabledAnswerChoice: action.schemeAnswerId === state.enabledAnswerChoice ? null : action.schemeAnswerId
+      //   }
 
     case types.SET_PAGE:
       return {
