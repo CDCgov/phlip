@@ -49,7 +49,6 @@ export const INITIAL_STATE = {
   saveFailed: false,
   objectExists: false,
   hasTouchedQuestion: false,
-  enabledAnswerChoice: null,
   page: '',
   getRequestInProgress: true
 }
@@ -104,8 +103,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
           ...state.userAnswers,
           ...handleUpdateUserAnswers(state, action)
         },
-        unsavedChanges: true,
-        enabledAnswerChoice: null
+        unsavedChanges: true
       }
 
     case types.CHANGE_TOUCHED_STATUS:
@@ -234,8 +232,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         selectedCategory: action.selection,
-        selectedCategoryId: state.categories[action.selection].id,
-        enabledAnswerChoice: null
+        selectedCategoryId: state.categories[action.selection].id
       }
 
     case types.ON_CHANGE_JURISDICTION:
@@ -256,8 +253,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         isChangingQuestion: false,
         unsavedChanges: false,
         savedFailed: false,
-        hasTouchedQuestion: false,
-        enabledAnswerChoice: null
+        hasTouchedQuestion: false
       }
 
     case types.ON_APPLY_ANSWER_TO_ALL:
@@ -320,7 +316,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
-        enabledAnswerChoice: null,
         getRequestInProgress: false
       }
 
@@ -389,7 +384,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         isLoadingPage: false,
         showPageLoader: false,
         unsavedChanges: false,
-        enabledAnswerChoice: null,
         ...action.payload.otherUpdates
       }
 
@@ -434,7 +428,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
-        enabledAnswerChoice: null,
         getRequestInProgress: false
       }
 
@@ -517,15 +510,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
-        enabledAnswerChoice: null,
         ...action.payload.otherUpdates
       }
-
-      // case types.TOGGLE_ANNOTATION_MODE:
-      //   return {
-      //     ...state,
-      //     enabledAnswerChoice: action.schemeAnswerId === state.enabledAnswerChoice ? null : action.schemeAnswerId
-      //   }
 
     case types.SET_PAGE:
       return {
