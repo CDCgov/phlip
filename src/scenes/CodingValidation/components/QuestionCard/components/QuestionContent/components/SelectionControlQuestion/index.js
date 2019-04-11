@@ -20,7 +20,7 @@ const styles = theme => ({
   }
 })
 
-const shouldShowAnnotationStyles = (enabledAnswer, annotationMode) => choiceId => {
+export const shouldShowAnnotationStyles = (enabledAnswer, annotationMode) => choiceId => {
   return annotationMode ? (enabledAnswer === choiceId) : false
 }
 

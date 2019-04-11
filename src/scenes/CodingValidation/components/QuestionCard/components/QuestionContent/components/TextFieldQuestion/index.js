@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import { InputBox, FlexGrid, Button } from 'components'
+import { shouldShowAnnotationStyles } from '../SelectionControlQuestion'
 import PinciteTextField from '../PinciteTextField'
 import PinciteList from '../PinciteList'
 import theme from 'services/theme'
@@ -9,13 +10,14 @@ import theme from 'services/theme'
 export const TextFieldQuestion = props => {
   const {
     mergedUserQuestions, userAnswers, areDocsEmpty, onChange, answerId, userImages, disableAll,
-    onToggleAnswerForAnno, enabledAnswerChoice
+    onToggleAnnotationMode, enabledAnswerId, annotationModeEnabled
   } = props
 
   const isValidation = mergedUserQuestions !== null
   const isAnswered = userAnswers.answers.hasOwnProperty(answerId)
   const value = !isAnswered ? '' : userAnswers.answers[answerId].textAnswer
   const validatedBy = isValidation ? userAnswers.validatedBy : {}
+  const showAnno = shouldShowAnnotationStyles(enabledAnswerId, annotationModeEnabled)(answerId)
 
   return (
     <FlexGrid container align="flex-start">
@@ -36,7 +38,7 @@ export const TextFieldQuestion = props => {
         padding="25px 15px"
         style={{
           alignSelf: 'stretch',
-          backgroundColor: enabledAnswerChoice === answerId ? '#e6f8ff' : 'white',
+          backgroundColor: showAnno ? '#e6f8ff' : 'white',
           margin: '0 10px'
         }}>
         <InputBox
@@ -51,12 +53,12 @@ export const TextFieldQuestion = props => {
         <Button
           style={{
             alignSelf: 'flex-start',
-            backgroundColor: enabledAnswerChoice === answerId ? theme.palette.error.main : 'white',
-            color: enabledAnswerChoice === answerId ? 'white' : 'black'
+            backgroundColor: showAnno ? theme.palette.error.main : 'white',
+            color: showAnno ? 'white' : 'black'
           }}
           disableRipple
-          onClick={onToggleAnswerForAnno(answerId)}>
-          {enabledAnswerChoice === answerId ? 'Done' : 'Annotate'}
+          onClick={onToggleAnnotationMode(answerId)}>
+          {showAnno === answerId ? 'Done' : 'Annotate'}
         </Button>}
         {(isAnswered && !isValidation) &&
         <PinciteTextField
@@ -104,11 +106,15 @@ TextFieldQuestion.propTypes = {
   /**
    * Handles enabling the answer for annotation mode
    */
-  onToggleAnswerForAnno: PropTypes.func,
+  onToggleAnnotationMode: PropTypes.func,
   /**
    * ID of the enabled answer choice
    */
-  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  enabledAnswerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * Whether or not annotation mode is enabled
+   */
+  annotationModeEnabled: PropTypes.bool,
   /**
    * Whether or not there are documents
    */
