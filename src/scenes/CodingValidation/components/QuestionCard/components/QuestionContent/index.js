@@ -99,7 +99,7 @@ export const QuestionContent = props => {
           </FlexGrid>}
 
           {question.questionType === questionTypes.TEXT_FIELD &&
-          <FlexGrid container style={{ minHeight: 'unset' }}>
+          <FlexGrid container type="row" style={{ minHeight: 'unset' }}>
             <TextFieldQuestions {...textQuestionProps} />
           </FlexGrid>}
 

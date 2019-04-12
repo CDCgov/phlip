@@ -6,12 +6,13 @@ import theme from 'services/theme'
 export const ValidationAvatarList = props => {
   const {
     answerList, userImages, enabledUserId, enabledAnswerId, handleClickAvatar, answerId, isValidatorSelected,
-    showAllAvatar
+    showAllAvatar, layered
   } = props
 
   const avatarStyle = {
     cursor: 'pointer',
-    borderColor: 'white'
+    borderColor: 'white',
+    margin: layered ? '-6px' : 0
   }
 
   const selectedStyle = {
@@ -70,11 +71,13 @@ ValidationAvatarList.propTypes = {
   userImages: PropTypes.object,
   selectedIndex: PropTypes.number,
   handleClickAvatar: PropTypes.func,
-  showAllAvatar: PropTypes.bool
+  showAllAvatar: PropTypes.bool,
+  layered: PropTypes.bool
 }
 
 ValidationAvatarList.defaultProps = {
-  showAllAvatar: true
+  showAllAvatar: true,
+  layered: true
 }
 
 export default ValidationAvatarList

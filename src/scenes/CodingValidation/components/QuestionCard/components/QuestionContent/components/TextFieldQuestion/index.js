@@ -23,10 +23,10 @@ export const TextFieldQuestion = props => {
   const showAnno = shouldShowAnnotationStyles(enabledAnswerId, annotationModeEnabled)(answerId)
 
   return (
-    <FlexGrid container align="flex-start">
+    <FlexGrid container>
       {isValidation && mergedUserQuestions.answers.map(answer =>
         <FlexGrid container padding="25px 15px" key={answer.id} style={{ margin: '0 10px' }}>
-          <FlexGrid container padding="0 0 10px" align="flex-start">
+          <FlexGrid container align="flex-start">
             <Typography style={{ whiteSpace: 'pre-wrap' }} variant="body1">{answer.textAnswer}</Typography>
           </FlexGrid>
           <FlexGrid container type="row" align="center" flex>
@@ -39,7 +39,9 @@ export const TextFieldQuestion = props => {
               enabledUserId={enabledUserId}
               isValidatorSelected={isValidatorSelected}
               answerId={answerId}
+              layered={false}
             />
+            <div style={{ padding: 2.5 }} />
             <PinciteList
               alwaysShow
               showAvatar={false}
@@ -93,7 +95,9 @@ export const TextFieldQuestion = props => {
             isValidatorSelected={isValidatorSelected}
             answerId={answerId}
             showAllAvatar={false}
+            layered={false}
           />
+          <div style={{ paddingLeft: 10 }} />
           <PinciteList
             alwaysShow
             validatorStyles={{ margin: '3px 0' }}
@@ -102,7 +106,7 @@ export const TextFieldQuestion = props => {
             isAnswered={isAnswered}
             validatorObj={{ ...userAnswers.answers[answerId], ...validatedBy }}
             handleChangePincite={onChange}
-            textFieldProps={{ padding: 8 }}
+            textFieldProps={{ padding: 8, flex: '1 1 auto' }}
           />
         </FlexGrid>}
       </FlexGrid>
