@@ -218,15 +218,15 @@ export const getValidationOutlineLogic = createLogic({
       // Try to get the project coding scheme
       const { firstQuestion, tree, order, questionsById, outline, isSchemeEmpty } = await getSchemeAndInitialize(action.projectId, api)
 
-      // If there are flags for this question, then we need to add the flag raiser to our coders object
-      if (firstQuestion.flags.length > 0) {
-        coders = { ...coders, [firstQuestion.flags[0].raisedBy.userId]: { ...firstQuestion.flags[0].raisedBy } }
-      }
-
       // Get user coded questions for currently selected jurisdiction
       if (action.payload.areJurisdictionsEmpty || isSchemeEmpty) {
         payload = { ...payload, isSchemeEmpty }
       } else {
+        // If there are flags for this question, then we need to add the flag raiser to our coders object
+        if (firstQuestion.flags.length > 0) {
+          coders = { ...coders, [firstQuestion.flags[0].raisedBy.userId]: { ...firstQuestion.flags[0].raisedBy } }
+        }
+
         const { codedValQuestions, codedValErrors } = await getCodedValidatedQuestions(action.projectId, action.jurisdictionId, userId, api.getValidatedQuestions)
 
         // Initialize the user answers object

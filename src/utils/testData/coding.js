@@ -7,6 +7,7 @@ export const schemeFromApi = [
     parentId: 0,
     positionInParent: 0,
     isCategoryQuestion: false,
+    flags: [],
     possibleAnswers: [{ id: 123, text: 'answer 1' }, { id: 234, text: 'answer 2' }]
   },
   {
@@ -17,6 +18,7 @@ export const schemeFromApi = [
     parentId: 0,
     isCategoryQuestion: false,
     positionInParent: 1,
+    flags: [],
     possibleAnswers: [{ id: 9, text: 'check 1' }, { id: 8, text: 'check 2' }, { id: 7, text: 'check 3' }]
   }, {
     text: 'cat question',
@@ -26,6 +28,7 @@ export const schemeFromApi = [
     hint: '',
     positionInParent: 2,
     isCategoryQuestion: false,
+    flags: [],
     possibleAnswers: [
       { id: 5, text: 'category 1', order: 1 },
       { id: 10, text: 'category 2', order: 2 },
@@ -40,6 +43,7 @@ export const schemeFromApi = [
     hint: '',
     positionInParent: 0,
     isCategoryQuestion: true,
+    flags: [],
     possibleAnswers: [
       { id: 432, text: 'answer 1', order: 1 },
       { id: 2124, text: 'answer 2', order: 2 }
@@ -52,6 +56,7 @@ export const schemeFromApi = [
     parentId: 0,
     hint: '',
     isCategoryQuestion: false,
+    flags: [],
     positionInParent: 3,
     possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
   }
@@ -59,71 +64,29 @@ export const schemeFromApi = [
 
 export const schemeById = {
   1: {
-    text: 'fa la la la',
-    hint: '',
-    questionType: 1,
-    id: 1,
-    parentId: 0,
+    ...schemeFromApi[0],
     indent: 0,
-    isCategoryQuestion: false,
     number: '1',
-    positionInParent: 0,
-    possibleAnswers: [{ id: 123, text: 'answer 1' }, { id: 234, text: 'answer 2' }]
   },
   2: {
-    text: 'la la la',
-    hint: '',
-    questionType: 3,
-    id: 2,
+    ...schemeFromApi[1],
     indent: 0,
     number: '2',
-    parentId: 0,
-    isCategoryQuestion: false,
-    positionInParent: 1,
-    possibleAnswers: [{ id: 9, text: 'check 1' }, { id: 8, text: 'check 2' }, { id: 7, text: 'check 3' }]
   },
   3: {
-    text: 'cat question',
-    questionType: 2,
-    id: 3,
-    parentId: 0,
-    hint: '',
+    ...schemeFromApi[2],
     indent: 0,
     number: '3',
-    isCategoryQuestion: false,
-    positionInParent: 2,
-    possibleAnswers: [
-      { id: 5, text: 'category 1', order: 1 },
-      { id: 10, text: 'category 2', order: 2 },
-      { id: 20, text: 'category 3', order: 3 }
-    ]
   },
   4: {
-    text: 'cat question child',
-    questionType: 3,
-    id: 4,
-    parentId: 3,
-    hint: '',
-    positionInParent: 0,
-    isCategoryQuestion: true,
+    ...schemeFromApi[3],
     indent: 1,
     number: '3.1',
-    possibleAnswers: [
-      { id: 432, text: 'answer 1', order: 1 },
-      { id: 2124, text: 'answer 2', order: 2 }
-    ]
   },
   5: {
-    text: 'next sibling',
-    questionType: 3,
-    id: 5,
-    parentId: 0,
-    positionInParent: 3,
-    isCategoryQuestion: false,
-    hint: '',
+    ...schemeFromApi[4],
     indent: 0,
-    number: '4',
-    possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+    number: '4'
   }
 }
 
@@ -131,73 +94,18 @@ export const schemeOrder = [1, 2, 3, 4, 5]
 
 export const schemeTree = [
   {
-    text: 'fa la la la',
-    questionType: 1,
-    id: 1,
-    parentId: 0,
-    positionInParent: 0,
-    isCategoryQuestion: false,
-    indent: 0,
-    number: '1',
-    hint: '',
-    possibleAnswers: [{ id: 123, text: 'answer 1' }, { id: 234, text: 'answer 2' }]
+    ...schemeById[1]
   },
   {
-    text: 'la la la',
-    questionType: 3,
-    id: 2,
-    parentId: 0,
-    positionInParent: 1,
-    indent: 0,
-    number: '2',
-    hint: '',
-    isCategoryQuestion: false,
-    possibleAnswers: [{ id: 9, text: 'check 1' }, { id: 8, text: 'check 2' }, { id: 7, text: 'check 3' }]
+    ...schemeById[2],
   },
   {
-    text: 'cat question',
-    questionType: 2,
-    id: 3,
-    parentId: 0,
-    positionInParent: 2,
-    hint: '',
-    number: '3',
+    ...schemeById[3],
     expanded: true,
-    indent: 0,
-    isCategoryQuestion: false,
-    possibleAnswers: [
-      { id: 5, text: 'category 1', order: 1 },
-      { id: 10, text: 'category 2', order: 2 },
-      { id: 20, text: 'category 3', order: 3 }
-    ],
-    children: [
-      {
-        text: 'cat question child',
-        questionType: 3,
-        id: 4,
-        indent: 1,
-        number: '3.1',
-        hint: '',
-        parentId: 3,
-        positionInParent: 0,
-        isCategoryQuestion: true,
-        possibleAnswers: [
-          { id: 432, text: 'answer 1', order: 1 }, { id: 2124, text: 'answer 2', order: 2 }
-        ]
-      }
-    ]
+    children: [{ ...schemeById[4] }]
   },
   {
-    text: 'next sibling',
-    questionType: 3,
-    id: 5,
-    parentId: 0,
-    positionInParent: 3,
-    isCategoryQuestion: false,
-    hint: '',
-    indent: 0,
-    number: '4',
-    possibleAnswers: [{ id: 4, text: 'cat 2', order: 1 }, { id: 5, text: 'cat 1', order: 2 }]
+    ...schemeById[5]
   }
 ]
 
@@ -345,6 +253,88 @@ export const userAnswersCoded = {
       categoryId: 10,
       hasMadePost: false,
       id: 42
+    }
+  }
+}
+
+export const userValidatedQuestions = [
+  {
+    ...userCodedQuestions[0],
+    validatedBy: { userId: 2, firstName: 'test', lastName: 'user' },
+    id: 101,
+  },
+  {
+    ...userCodedQuestions[1],
+    id: 201,
+    validatedBy: { userId: 1, firstName: 'test', lastName: 'user2' }
+  },
+  {
+    ...userCodedQuestions[2],
+    id: 301,
+    validatedBy: { userId: 1, firstName: 'test', lastName: 'user2' }
+  }
+]
+
+export const userAnswersValidation = {
+  1: {
+    answers: {
+      123: {
+        id: 10010,
+        schemeAnswerId: 123,
+        pincite: 'dsfdfdsf',
+        annotations: [],
+        textAnswer: null
+      }
+    },
+    schemeQuestionId: 1,
+    comment: '',
+    flag: {
+      notes: '',
+      raisedBy: {},
+      type: 0
+    },
+    hasMadePost: false,
+    id: 101,
+    validatedBy: userValidatedQuestions[0].validatedBy,
+    isNewCodedQuestion: false
+  },
+  3: {
+    schemeQuestionId: 3,
+    comment: '',
+    answers: {
+      10: {
+        schemeAnswerId: 10,
+        pincite: '',
+        annotations: [{ text: '323123', id: 4, docId: '12344' }, { text: 'hi hi', id: 1, docId: '12344' }],
+        textAnswer: null
+      },
+      20: { schemeAnswerId: 20, pincite: '', annotations: [], textAnswer: null }
+    },
+    flag: {
+      notes: '',
+      raisedBy: {},
+      type: 0
+    },
+    hasMadePost: false,
+    id: 201,
+    validatedBy: userValidatedQuestions[1].validatedBy,
+    isNewCodedQuestion: false
+  },
+  4: {
+    10: {
+      answers: { 432: { schemeAnswerId: 432, pincite: '', annotations: [], textAnswer: null } },
+      comment: '',
+      schemeQuestionId: 4,
+      flag: {
+        notes: '',
+        raisedBy: {},
+        type: 0
+      },
+      isNewCodedQuestion: false,
+      categoryId: 10,
+      hasMadePost: false,
+      id: 301,
+      validatedBy: userValidatedQuestions[2].validatedBy,
     }
   }
 }
