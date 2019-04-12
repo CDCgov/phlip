@@ -246,7 +246,11 @@ export const mapStateToProps = (state, ownProps) => {
   const annotatedForOpenDoc = annotations.map((annotation, index) => ({
     ...annotation,
     fullListIndex: index,
-    userId: pageState.annotationModeEnabled ? isValidation ? question.validatedBy.userId : annotation.userId : ''
+    userId: pageState.annotationModeEnabled
+      ? isValidation
+        ? question.validatedBy.userId
+        : annotation.userId
+      : annotation.userId
   })).filter(annotation => annotation.docId === pageState.openedDoc._id)
 
   const allDocIds = new Set([...annotatedDocIds, ...notAnnotatedDocIds])

@@ -208,7 +208,6 @@ export class QuestionCard extends Component {
       userImages,
       onToggleAnnotationMode: this.onToggleAnnotationMode,
       onToggleCoderAnnotations: this.onToggleCoderAnnotations,
-      onToggleAllAnnotations: this.onToggleAllAnnotations,
       isValidatorSelected,
       enabledAnswerId,
       enabledUserId,

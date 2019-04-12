@@ -102,7 +102,6 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         enabledAnswerId: ''
       }
 
-    case types.TOGGLE_VALIDATOR_ANNOTATIONS:
     case types.TOGGLE_CODER_ANNOTATIONS:
       if (
         action.answerId === state.enabledAnswerId

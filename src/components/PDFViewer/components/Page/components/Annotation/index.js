@@ -58,6 +58,8 @@ export class Annotation extends PureComponent {
       handleClickAnnotation, showAvatar, user
     } = this.props
 
+    console.log(annotation)
+
     const key = `${pending ? 'pending' : 'saved'}-highlight-area-${index}`
 
     return annotation.rects.map((rect, j) => {

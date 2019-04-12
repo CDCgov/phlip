@@ -49,8 +49,13 @@ const showCoderAnnotations = createLogic({
         }
       }) : []
 
-    const coderAnnotations = coderQuestion.answers.filter(codes => {
-      return codes.answerId === action.answerId && (action.userId === 'All' ? true : codes.userId === action.userId)
+    let coderAnnotations = []
+    coderQuestion.answers.forEach(answer => {
+      if (answer.schemeAnswerId === action.answerId && (action.userId === 'All' ? true : answer.userId === action.userId)) {
+        answer.annotations.forEach(anno => {
+          coderAnnotations.push({ ...anno, userId: answer.userId })
+        })
+      }
     })
 
     next({

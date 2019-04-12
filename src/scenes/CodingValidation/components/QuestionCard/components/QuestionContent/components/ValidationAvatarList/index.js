@@ -45,7 +45,7 @@ export const ValidationAvatarList = props => {
             initials={user.initials}
             key={`user-answer-${i}`}
             cardAvatar
-            onClick={handleClickAvatar(answer.schemeAnswerId, answer.userId, answer.isValidatorAnswer)}
+            onClick={handleClickAvatar(answer.schemeAnswerId, answer.userId, answer.isValidatorAnswer === true)}
             userName={user.username}
           />
         )
@@ -56,7 +56,7 @@ export const ValidationAvatarList = props => {
         initials="ALL"
         key="user-avatar-all-selected"
         cardAvatar
-        onClick={handleClickAvatar(answerId, 'All')}
+        onClick={handleClickAvatar(answerId, 'All', false)}
         userName="All"
       />
     </FlexGrid>
