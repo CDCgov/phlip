@@ -14,7 +14,7 @@ import {
   userCodedQuestions
 } from 'utils/testData/coding'
 
-let mock, history = {}
+let history = {}
 
 const mockReducer = state => state
 const api = createApiHandler({ history }, projectApiInstance, apiCalls)
@@ -36,11 +36,12 @@ const setupStore = (currentState = {}) => {
 }
 
 describe('CodingValidation logic', () => {
-  beforeEach(() => {
-    mock = new MockAdapter(projectApiInstance)
-  })
-
   describe('SAVE_USER_ANSWER_REQUEST', () => {
+    let mock = {}
+    beforeEach(() => {
+      mock = new MockAdapter(projectApiInstance)
+    })
+
     test('should use coding api if state.page is coding', done => {
       mock.onAny().reply(config => {
         return [200, config.url]
@@ -101,8 +102,10 @@ describe('CodingValidation logic', () => {
   describe('GET_CODING_OUTLINE logic', () => {
     describe('when a coding scheme exists and calls are successful', () => {
       const store = setupStore()
+      let mock = {}
 
       beforeEach(() => {
+        mock = new MockAdapter(projectApiInstance)
         mock.onGet('/projects/1/scheme').reply(200, {
           schemeQuestions: schemeFromApi,
           outline: schemeOutline
@@ -160,8 +163,10 @@ describe('CodingValidation logic', () => {
 
     describe('when the scheme is empty', () => {
       const store = setupStore()
+      let mock = {}
 
       beforeEach(() => {
+        mock = new MockAdapter(projectApiInstance)
         mock.onGet('/projects/1/scheme').reply(200, {
           schemeQuestions: [],
           outline: {}
@@ -188,8 +193,10 @@ describe('CodingValidation logic', () => {
 
     describe('when jurisdictions are empty and scheme is not', () => {
       const store = setupStore()
+      let mock = {}
 
       beforeEach(() => {
+        mock = new MockAdapter(projectApiInstance)
         mock.onGet('/projects/1/scheme').reply(200, {
           schemeQuestions: schemeFromApi,
           outline: schemeOutline
@@ -214,15 +221,22 @@ describe('CodingValidation logic', () => {
       })
     })
 
-    describe('when api requests fail', () => {
+    describe('when api scheme api request fails', () => {
       const store = setupStore()
+      let mock = {}
+
       beforeEach(() => {
+        mock = new MockAdapter(projectApiInstance)
         mock.onGet('/projects/1/scheme').reply(500)
 
         const codedQuestions = userCodedQuestions
 
-        mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions').reply(500, codedQuestions)
+        mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions').reply(200, codedQuestions)
         store.dispatch({ type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1 })
+      })
+
+      afterEach(() => {
+        mock.reset()
       })
 
       test('should dispatch GET_CODING_OUTLINE_FAIL', done => {
@@ -236,6 +250,38 @@ describe('CodingValidation logic', () => {
         store.whenComplete(() => {
           expect(store.actions[1].payload).toEqual('Failed to get outline.')
           expect(store.actions[1].error).toEqual(true)
+          done()
+        })
+      })
+    })
+
+    describe('when coded questions api request fails', () => {
+      const store = setupStore()
+      let mock = {}
+
+      beforeEach(() => {
+        mock = new MockAdapter(projectApiInstance)
+        mock.onGet('/projects/1/scheme').reply(200, {
+          schemeQuestions: schemeFromApi,
+          outline: schemeOutline
+        })
+
+        const codedQuestions = userCodedQuestions
+
+        mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions').reply(500)
+        store.dispatch({ type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1 })
+      })
+
+      test('should dispatch GET_CODING_OUTLINE_SUCCESS', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].type).toEqual(types.GET_CODING_OUTLINE_SUCCESS)
+          done()
+        })
+      })
+
+      test('should set payload.error.coderValQuestions to error string', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].payload.errors.codedValQuestions).toEqual('We couldn\'t get your answered questions for this project and jurisdiction, so you won\'t be able to answer questions.')
           done()
         })
       })
@@ -256,6 +302,12 @@ describe('CodingValidation logic', () => {
     }
 
     describe('should GET_NEXT_QUESTION based on action and state information', () => {
+      let mock = {}
+
+      beforeEach(() => {
+        mock = new MockAdapter(projectApiInstance)
+      })
+
       test('should handle regular questions', done => {
         const questionInfo = {
           text: 'la la la updated',

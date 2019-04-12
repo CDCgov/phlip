@@ -182,7 +182,7 @@ export const getOutlineLogic = createLogic({
 
         payload = {
           ...payload,
-          outline: outline,
+          outline,
           scheme: { byId: questionsById, tree, order },
           userAnswers,
           question: firstQuestion,

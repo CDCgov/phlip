@@ -290,13 +290,4 @@ describe('CodingValidation scene actions creators', () => {
 
     expect(actions.clearRedFlag(2,2,2)).toEqual(expectedAction)
   })
-
-  test('should create an action to toggle answer for annotations', () => {
-    const expectedAction = {
-      type: types.ON_TOGGLE_ANSWER_FOR_ANNO,
-      schemeAnswerId: 23
-    }
-
-    expect(actions.onToggleAnswerForAnno(23)).toEqual(expectedAction)
-  })
 })
