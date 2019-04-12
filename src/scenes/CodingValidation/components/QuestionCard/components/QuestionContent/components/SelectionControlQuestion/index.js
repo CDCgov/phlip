@@ -31,8 +31,8 @@ export const SelectionControlQuestion = props => {
   const {
     choices, userAnswers, onChange, onChangePincite,
     classes, mergedUserQuestions, disableAll, userImages, question,
-    enabledAnswerId, onToggleAnnotationMode, annotationModeEnabled, areDocsEmpty
-    //enabledUserId
+    enabledAnswerId, onToggleAnnotationMode, annotationModeEnabled, areDocsEmpty,
+    onToggleCoderAnnotations, isValidatorSelected, enabledUserId
   } = props
 
   const showAnnoStyles = shouldShowAnnotationStyles(enabledAnswerId, annotationModeEnabled)
@@ -84,7 +84,11 @@ export const SelectionControlQuestion = props => {
                   {(list.length > 0 && isValidation) && <ValidationAvatarList
                     userImages={userImages}
                     answerList={list}
-                    selectedIndex={99}
+                    handleClickAvatar={onToggleCoderAnnotations}
+                    enabledAnswerId={enabledAnswerId}
+                    enabledUserId={enabledUserId}
+                    isValidatorSelected={isValidatorSelected}
+                    answerId={choice.id}
                   />}
                   {isAnswered && !areDocsEmpty &&
                   <Button

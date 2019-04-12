@@ -17,6 +17,7 @@ export const INITIAL_STATE = {
   enabledUserId: '',
   annotations: [],
   annotationModeEnabled: false,
+  isValidatorSelected: false,
   showEmptyDocs: false,
   apiErrorOpen: false,
   apiErrorInfo: {
@@ -101,15 +102,30 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         enabledAnswerId: ''
       }
 
-    case types.SHOW_ALL_ANNOTATIONS:
-    case types.SHOW_CODER_ANNOTATIONS:
-    case types.SHOW_VALIDATOR_ANNOTATIONS:
-      return {
-        ...state,
-        annotationModeEnabled: false,
-        annotations: action.annotations,
-        enabledAnswerId: action.answerId,
-        enabledUserId: action.userId
+    case types.TOGGLE_VALIDATOR_ANNOTATIONS:
+    case types.TOGGLE_CODER_ANNOTATIONS:
+      if (
+        action.answerId === state.enabledAnswerId
+        && action.userId === state.enabledUserId
+        && state.isValidatorSelected === action.isValidatorSelected
+      ) {
+        return {
+          ...state,
+          annotations: [],
+          enabledAnswerId: '',
+          enabledUserId: '',
+          annotationModeEnabled: false,
+          isValidatorSelected: action.isValidatorSelected
+        }
+      } else {
+        return {
+          ...state,
+          annotations: action.annotations,
+          enabledAnswerId: action.answerId,
+          enabledUserId: action.userId,
+          annotationModeEnabled: false,
+          isValidatorSelected: action.isValidatorSelected
+        }
       }
 
     case types.CLEAR_DOC_SELECTED:

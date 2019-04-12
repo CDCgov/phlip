@@ -431,16 +431,6 @@ export class CodingValidation extends Component {
 
   /**
    * @public
-   * @param answerId
-   * @param enabled
-   */
-  onToggleAnnotationMode = (answerId, enabled) => {
-    this.props.actions.toggleAnnotationMode(this.props.question.id, answerId, enabled)
-    this.onSaveCodedQuestion()
-  }
-
-  /**
-   * @public
    * @returns {*}
    */
   onShowGetStartedView = () => {
@@ -725,7 +715,6 @@ export class CodingValidation extends Component {
                           onSaveFlag={this.onSaveFlag}
                           onSave={this.onSaveCodedQuestion}
                           onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
-                          onToggleAnnotationMode={this.onToggleAnnotationMode}
                           currentIndex={this.props.currentIndex}
                           getNextQuestion={this.getNextQuestion}
                           getPrevQuestion={this.getPrevQuestion}

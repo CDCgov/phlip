@@ -21,7 +21,8 @@ export const QuestionContent = props => {
   const {
     question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
     onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages,
-    onToggleAnnotationMode, enabledAnswerId, enabledUserId, annotationModeEnabled, areDocsEmpty, classes
+    onToggleAnnotationMode, enabledAnswerId, enabledUserId, annotationModeEnabled, areDocsEmpty, classes,
+    onToggleCoderAnnotations, isValidatorSelected
   } = props
 
   const commonQuestionProps = {
@@ -35,7 +36,9 @@ export const QuestionContent = props => {
     onToggleAnnotationMode,
     enabledAnswerId,
     enabledUserId,
-    annotationModeEnabled
+    annotationModeEnabled,
+    onToggleCoderAnnotations,
+    isValidatorSelected
   }
 
   const selectionFormProps = {

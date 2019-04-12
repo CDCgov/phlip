@@ -24,49 +24,11 @@ const getApprovedDocumentsLogic = createLogic({
 })
 
 /**
- * Retrieves all annotations for a question / answer for validator or coder
- * @type {Logic<object, undefined, undefined, {}, undefined, string[]>}
- */
-const enableAnnotationMode = createLogic({
-  type: [types.SHOW_VALIDATOR_ANNOTATIONS],
-  transform({ getState, action }, next) {
-    const codingState = getState().scenes.codingValidation.coding
-    const annotations = codingState.question.isCategoryQuestion
-      ? codingState.userAnswers[action.questionId][codingState.selectedCategoryId].answers[action.answerId].annotations
-      : codingState.userAnswers[action.questionId].answers[action.answerId].annotations
-
-    next({
-      ...action,
-      annotations
-    })
-  }
-})
-
-/**
  * A user's avatar was selected in validation screen to show their annotations for question / answer
  * @type {Logic<object, undefined, undefined, {}, undefined, string>}
  */
 const showCoderAnnotations = createLogic({
-  type: types.SHOW_CODER_ANNOTATIONS,
-  transform({ getState, action }, next) {
-    const question = getState().scenes.codingValidation.coding.mergedUserQuestions[action.questionId]
-    const annotations = question.filter(codes => {
-      return codes.answerId === action.answerId && codes.userId === action.userId
-    })
-
-    next({
-      ...action,
-      annotations
-    })
-  }
-})
-
-/**
- * The 'All' avatar was selected in validation screen to show all annotations for question / answer
- * @type {Logic<object, undefined, undefined, {}, undefined, string>}
- */
-const showAllAnnotations = createLogic({
-  type: types.SHOW_ALL_ANNOTATIONS,
+  type: types.TOGGLE_CODER_ANNOTATIONS,
   transform({ getState, action }, next) {
     const codingState = getState().scenes.codingValidation.coding
     let coderQuestion = {}, valQuestion = {}
@@ -79,27 +41,67 @@ const showAllAnnotations = createLogic({
       valQuestion = codingState.userAnswers[action.questionId]
     }
 
-    const validator = valQuestion.answers[action.answerId].annotations.map(anno => {
-      return {
-        ...anno,
-        userId: valQuestion.validatedBy.userId || getState().scenes.data.user.currentUser.id
-      }
-    })
+    const validator = valQuestion.answers.hasOwnProperty(action.answerId) ?
+      valQuestion.answers[action.answerId].annotations.map(anno => {
+        return {
+          ...anno,
+          userId: valQuestion.validatedBy.userId || getState().scenes.data.user.currentUser.id
+        }
+      }) : []
 
     const coderAnnotations = coderQuestion.answers.filter(codes => {
-      return codes.answerId === action.answerId
+      return codes.answerId === action.answerId && (action.userId === 'All' ? true : codes.userId === action.userId)
     })
 
     next({
       ...action,
-      annotations: [...coderAnnotations, ...validator]
+      annotations: action.userId === 'All'
+        ? [...coderAnnotations, ...validator]
+        : action.isValidatorSelected
+          ? validator
+          : coderAnnotations
     })
   }
 })
 
+/**
+ * The 'All' avatar was selected in validation screen to show all annotations for question / answer
+ * @type {Logic<object, undefined, undefined, {}, undefined, string>}
+ */
+// const showAllAnnotations = createLogic({
+//   type: types.TOGGLE_ALL_ANNOTATIONS,
+//   transform({ getState, action }, next) {
+//     const codingState = getState().scenes.codingValidation.coding
+//     let coderQuestion = {}, valQuestion = {}
+//
+//     if (codingState.question.isCategoryQuestion) {
+//       coderQuestion = codingState.mergedUserQuestions[action.questionId][codingState.selectedCategoryId]
+//       valQuestion = codingState.userAnswers[action.questionId][codingState.selectedCategoryId]
+//     } else {
+//       coderQuestion = codingState.mergedUserQuestions[action.questionId]
+//       valQuestion = codingState.userAnswers[action.questionId]
+//     }
+//
+//     const validator = valQuestion.answers[action.answerId].annotations.map(anno => {
+//       return {
+//         ...anno,
+//         userId: valQuestion.validatedBy.userId || getState().scenes.data.user.currentUser.id
+//       }
+//     })
+//
+//     const coderAnnotations = coderQuestion.answers.filter(codes => {
+//       return codes.answerId === action.answerId
+//     })
+//
+//     next({
+//       ...action,
+//       annotations: [...coderAnnotations, ...validator]
+//     })
+//   }
+// })
+
 export default [
-  enableAnnotationMode,
   showCoderAnnotations,
-  getApprovedDocumentsLogic,
-  showAllAnnotations
+  getApprovedDocumentsLogic
+  //showAllAnnotations
 ]
