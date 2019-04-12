@@ -9,9 +9,11 @@ module.exports = {
     '<rootDir>/config/tests/sessionStorageMock.js',
     'jest-canvas-mock'
   ],
+  collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.{js,jsx}'
   ],
+  coverageDirectory: '<rootDir>/coverage',
   coverageReporters: [
     'cobertura',
     'html',

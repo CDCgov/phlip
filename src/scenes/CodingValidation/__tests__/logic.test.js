@@ -98,68 +98,146 @@ describe('CodingValidation logic', () => {
     })
   })
 
-  describe('GET_CODING_OUTLINE_REQUEST logic', () => {
-    test('should call the api to get the scheme and coded questions', done => {
-      mock.onGet('/projects/1/scheme').reply(200, {
-        schemeQuestions: schemeFromApi,
-        outline: schemeOutline
+  describe('GET_CODING_OUTLINE logic', () => {
+    describe('when a coding scheme exists and calls are successful', () => {
+      const store = setupStore()
+
+      beforeEach(() => {
+        mock.onGet('/projects/1/scheme').reply(200, {
+          schemeQuestions: schemeFromApi,
+          outline: schemeOutline
+        })
+
+        const codedQuestions = userCodedQuestions
+
+        mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions').reply(200, codedQuestions)
+        store.dispatch({ type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1 })
       })
 
-      const userAnswers = userAnswersCoded
-      const codedQuestions = userCodedQuestions
+      test('should dispatch GET_CODING_OUTLINE_SUCCESS', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].type).toEqual(types.GET_CODING_OUTLINE_SUCCESS)
+          done()
+        })
+      })
 
-      mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions').reply(200, codedQuestions)
+      test('should initialize scheme.byId', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].payload.scheme.byId).toEqual(schemeById)
+          done()
+        })
+      })
+
+      test('should set scheme outline', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].payload.outline).toEqual(schemeOutline)
+          done()
+        })
+      })
+
+      test('should initialize scheme order', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].payload.scheme.order).toEqual(schemeOrder)
+          done()
+        })
+      })
+
+      test('should call the api to get coded questions', done => {
+        const userAnswers = userAnswersCoded
+        store.whenComplete(() => {
+          expect(store.actions[1].payload.userAnswers).toEqual(userAnswers)
+          done()
+        })
+      })
+
+      test('should initialize scheme.tree', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].payload.scheme.tree).toEqual(schemeTree)
+          done()
+        })
+      })
+    })
+
+    describe('when the scheme is empty', () => {
       const store = setupStore()
-      store.dispatch({ type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1 })
 
-      store.whenComplete(() => {
-        expect(store.actions).toEqual([
-          {
-            type: types.GET_CODING_OUTLINE_REQUEST,
-            projectId: 1,
-            jurisdictionId: 1,
-            currentUser: {
-              id: 1
-            },
-            payload: {
-              scheme: { order: [], byId: {}, tree: [] },
-              outline: {},
-              question: {},
-              userAnswers: {},
-              mergedUserQuestions: {},
-              categories: undefined,
-              areJurisdictionsEmpty: false,
-              isSchemeEmpty: false,
-              schemeError: null,
-              isLoadingPage: false,
-              showPageLoader: false,
-              errors: {}
-            },
-            userId: 1
-          },
-          {
-            type: types.GET_CODING_OUTLINE_SUCCESS,
-            payload: {
-              outline: schemeOutline,
-              userAnswers,
-              question: schemeById[1],
-              isSchemeEmpty: false,
-              areJurisdictionsEmpty: false,
-              isLoadingPage: false,
-              categories: undefined,
-              showPageLoader: false,
-              mergedUserQuestions: {},
-              schemeError: null,
-              scheme: {
-                byId: schemeById,
-                order: schemeOrder,
-                tree: schemeTree
-              },
-              errors: {}
-            }
-          }
-        ])
-        done()
+      beforeEach(() => {
+        mock.onGet('/projects/1/scheme').reply(200, {
+          schemeQuestions: [],
+          outline: {}
+        })
+
+        mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions').reply(200, [])
+        store.dispatch({ type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1 })
+      })
+
+      test('should dispatch GET_CODING_OUTLINE_SUCCESS', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].type).toEqual(types.GET_CODING_OUTLINE_SUCCESS)
+          done()
+        })
+      })
+
+      test('should return the scheme is empty if the scheme from the api is empty', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].payload.isSchemeEmpty).toEqual(true)
+          done()
+        })
+      })
+    })
+
+    describe('when jurisdictions are empty and scheme is not', () => {
+      const store = setupStore()
+
+      beforeEach(() => {
+        mock.onGet('/projects/1/scheme').reply(200, {
+          schemeQuestions: schemeFromApi,
+          outline: schemeOutline
+        })
+
+        mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions').reply(200, userCodedQuestions)
+        store.dispatch({ type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: null })
+      })
+
+      test('should dispatch GET_CODING_OUTLINE_SUCCESS', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].type).toEqual(types.GET_CODING_OUTLINE_SUCCESS)
+          done()
+        })
+      })
+
+      test('should return without initializing userAnswers', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].payload.userAnswers).toEqual({})
+          done()
+        })
+      })
+    })
+
+    describe('when api requests fail', () => {
+      const store = setupStore()
+      beforeEach(() => {
+        mock.onGet('/projects/1/scheme').reply(500)
+
+        const codedQuestions = userCodedQuestions
+
+        mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions').reply(500, codedQuestions)
+        store.dispatch({ type: types.GET_CODING_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1 })
+      })
+
+      test('should dispatch GET_CODING_OUTLINE_FAIL', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].type).toEqual(types.GET_CODING_OUTLINE_FAIL)
+          done()
+        })
+      })
+
+      test('should return an error string', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].payload).toEqual('Failed to get outline.')
+          expect(store.actions[1].error).toEqual(true)
+          done()
+        })
       })
     })
   })
@@ -245,10 +323,10 @@ describe('CodingValidation logic', () => {
         }
 
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions/4')
-          .reply(200, [
-            { schemeQuestionId: 4, categoryId: 10, id: 1000, codedAnswers: [] },
-            { schemeQuestionId: 4, categoryId: 20, id: 2000, codedAnswers: [] }
-          ])
+        .reply(200, [
+          { schemeQuestionId: 4, categoryId: 10, id: 1000, codedAnswers: [] },
+          { schemeQuestionId: 4, categoryId: 20, id: 2000, codedAnswers: [] }
+        ])
 
         mock.onGet('/projects/1/scheme/4').reply(200, updatedCatChildQuestion)
 
