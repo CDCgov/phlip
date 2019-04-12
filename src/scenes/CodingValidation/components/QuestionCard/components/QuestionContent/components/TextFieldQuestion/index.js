@@ -6,11 +6,14 @@ import { shouldShowAnnotationStyles } from '../SelectionControlQuestion'
 import PinciteTextField from '../PinciteTextField'
 import PinciteList from '../PinciteList'
 import theme from 'services/theme'
+import ValidationAvatarList
+  from 'scenes/CodingValidation/components/QuestionCard/components/QuestionContent/components/ValidationAvatarList'
 
 export const TextFieldQuestion = props => {
   const {
     mergedUserQuestions, userAnswers, areDocsEmpty, onChange, answerId, userImages, disableAll,
-    onToggleAnnotationMode, enabledAnswerId, annotationModeEnabled
+    onToggleAnnotationMode, enabledAnswerId, annotationModeEnabled, isValidatorSelected, enabledUserId,
+    onToggleCoderAnnotations
   } = props
 
   const isValidation = mergedUserQuestions !== null
@@ -26,12 +29,24 @@ export const TextFieldQuestion = props => {
           <FlexGrid container padding="0 0 10px" align="flex-start">
             <Typography style={{ whiteSpace: 'pre-wrap' }} variant="body1">{answer.textAnswer}</Typography>
           </FlexGrid>
-          <PinciteList
-            avatarSize="big"
-            alwaysShow
-            answerList={[answer]}
-            userImages={userImages}
-          />
+          <FlexGrid container type="row" align="center" flex>
+            <ValidationAvatarList
+              showAllAvatar={false}
+              userImages={userImages}
+              answerList={[answer]}
+              handleClickAvatar={onToggleCoderAnnotations}
+              enabledAnswerId={enabledAnswerId}
+              enabledUserId={enabledUserId}
+              isValidatorSelected={isValidatorSelected}
+              answerId={answerId}
+            />
+            <PinciteList
+              alwaysShow
+              showAvatar={false}
+              answerList={[answer]}
+              userImages={userImages}
+            />
+          </FlexGrid>
         </FlexGrid>)}
       <FlexGrid
         container
@@ -67,16 +82,29 @@ export const TextFieldQuestion = props => {
           handleChangePincite={onChange}
           disabled={disableAll}
         />}
-        {isValidation && <PinciteList
-          validatorStyles={{ margin: '3px 0' }}
-          avatarSize="big"
-          alwaysShow
-          userImages={userImages}
-          isAnswered={isAnswered}
-          validatorObj={{ ...userAnswers.answers[answerId], ...validatedBy }}
-          handleChangePincite={onChange}
-          textFieldProps={{ padding: 8 }}
-        />}
+        {isValidation &&
+        <FlexGrid container type="row" align="center" flex>
+          <ValidationAvatarList
+            userImages={userImages}
+            answerList={[{ ...userAnswers.answers[answerId], isValidatorAnswer: true, ...validatedBy }]}
+            handleClickAvatar={onToggleCoderAnnotations}
+            enabledAnswerId={enabledAnswerId}
+            enabledUserId={enabledUserId}
+            isValidatorSelected={isValidatorSelected}
+            answerId={answerId}
+            showAllAvatar={false}
+          />
+          <PinciteList
+            alwaysShow
+            validatorStyles={{ margin: '3px 0' }}
+            showAvatar={false}
+            userImages={userImages}
+            isAnswered={isAnswered}
+            validatorObj={{ ...userAnswers.answers[answerId], ...validatedBy }}
+            handleChangePincite={onChange}
+            textFieldProps={{ padding: 8 }}
+          />
+        </FlexGrid>}
       </FlexGrid>
     </FlexGrid>
   )

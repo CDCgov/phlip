@@ -4,8 +4,10 @@ import { FlexGrid, Avatar } from 'components'
 import theme from 'services/theme'
 
 export const ValidationAvatarList = props => {
-  const { answerList, userImages, enabledUserId, enabledAnswerId, handleClickAvatar, answerId, isValidatorSelected } = props
-  console.log(props)
+  const {
+    answerList, userImages, enabledUserId, enabledAnswerId, handleClickAvatar, answerId, isValidatorSelected,
+    showAllAvatar
+  } = props
 
   const avatarStyle = {
     cursor: 'pointer',
@@ -50,7 +52,7 @@ export const ValidationAvatarList = props => {
           />
         )
       })}
-      <Avatar
+      {showAllAvatar && <Avatar
         style={(enabledUserId === 'All' && answerId === enabledAnswerId) ? selectedStyle : avatarStyle}
         avatar=""
         initials="ALL"
@@ -58,7 +60,7 @@ export const ValidationAvatarList = props => {
         cardAvatar
         onClick={handleClickAvatar(answerId, 'All', false)}
         userName="All"
-      />
+      />}
     </FlexGrid>
   )
 }
@@ -67,7 +69,12 @@ ValidationAvatarList.propTypes = {
   answerList: PropTypes.array,
   userImages: PropTypes.object,
   selectedIndex: PropTypes.number,
-  handleClickAvatar: PropTypes.func
+  handleClickAvatar: PropTypes.func,
+  showAllAvatar: PropTypes.bool
+}
+
+ValidationAvatarList.defaultProps = {
+  showAllAvatar: true
 }
 
 export default ValidationAvatarList
