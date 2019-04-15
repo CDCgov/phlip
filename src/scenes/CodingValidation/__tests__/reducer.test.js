@@ -1,6 +1,13 @@
 import { types } from '../actions'
 import { INITIAL_STATE, COMBINED_INITIAL_STATE, default as codingValidationReducer, codingReducer } from '../reducer'
-import { schemeById, userAnswersCoded, schemeOutline, schemeUserAnswersEmpty, schemeOrder, schemeTree } from 'utils/testData/coding'
+import {
+  schemeById,
+  userAnswersCoded,
+  schemeOutline,
+  schemeUserAnswersEmpty,
+  schemeOrder,
+  schemeTree
+} from 'utils/testData/coding'
 
 const initial = INITIAL_STATE
 
@@ -118,6 +125,142 @@ describe('CodingValidation reducer', () => {
       const state = reducer(currentState, action)
       expect(state.hasTouchedQuestion).toEqual(false)
     })
+  })
+
+  describe('SAVE_USER_ANSWER_SUCCESS', () => {
+    test('should set state.unsavedChanges to true if there are messages in the queue', () => {
+      const action = {
+        type: types.SAVE_USER_ANSWER_SUCCESS,
+        payload: {
+          id: 10,
+          questionId: 1,
+          answerId: 23
+        }
+      }
+
+      const currentState = getState({
+        question: schemeById[1],
+        userAnswers: {
+          ...userAnswersCoded
+        },
+        scheme: {
+          byId: schemeById,
+          tree: []
+        },
+        messageQueue: ['lalala']
+      })
+
+      const state = reducer(currentState, action)
+      expect(state.unsavedChanges).toEqual(true)
+    })
+
+    test('should set state.unsavedChanges to false if there are no messages in the queue', () => {
+      const action = {
+        type: types.SAVE_USER_ANSWER_SUCCESS,
+        payload: {
+          id: 10,
+          questionId: 1,
+          answerId: 23
+        }
+      }
+
+      const currentState = getState({
+        question: schemeById[1],
+        userAnswers: {
+          ...userAnswersCoded
+        },
+        scheme: {
+          byId: schemeById,
+          tree: []
+        },
+        messageQueue: []
+      })
+
+      const state = reducer(currentState, action)
+      expect(state.unsavedChanges).toEqual(false)
+    })
+
+    describe('for regular, non-category questions', () => {
+      const action = {
+        type: types.SAVE_USER_ANSWER_SUCCESS,
+        payload: {
+          id: 10,
+          questionId: 1,
+          answerId: 23
+        }
+      }
+
+      const currentState = getState({
+        question: schemeById[1],
+        scheme: {
+          byId: schemeById,
+          tree: []
+        },
+        userAnswers: {
+          ...userAnswersCoded
+        }
+      })
+
+      const state = reducer(currentState, action)
+
+      test('should set the id from action.payload.id in userAnswers[questionId]', () => {
+        expect(state.userAnswers[1].id).toEqual(10)
+      })
+
+      test('should set state.saveFailed to false', () => {
+        expect(state.saveFailed).toEqual(false)
+      })
+
+      test('should set state.answerErrorContent to null', () => {
+        expect(state.answerErrorContent).toEqual(null)
+      })
+    })
+
+    describe('for category questions', () => {
+      const action = {
+        type: types.SAVE_USER_ANSWER_SUCCESS,
+        payload: {
+          id: 22,
+          questionId: 4,
+          answerId: 432,
+          selectedCategoryId: 10
+        }
+      }
+
+      const currentState = getState({
+        question: schemeById[4],
+        scheme: {
+          byId: schemeById,
+          tree: []
+        },
+        userAnswers: {
+          ...userAnswersCoded
+        },
+        selectedCategoryId: 10
+      })
+
+      const state = reducer(currentState, action)
+
+      test('should set the id from action.payload.id in userAnswers[questionId][selectedCategoryId]', () => {
+        expect(state.userAnswers[4][10].id).toEqual(22)
+      })
+
+      test('should set state.saveFailed to false', () => {
+        expect(state.saveFailed).toEqual(false)
+      })
+
+      test('should set state.answerErrorContent to null', () => {
+        expect(state.answerErrorContent).toEqual(null)
+      })
+    })
+  })
+
+  xdescribe('SAVE_USER_ANSWER_REQUEST', () => {
+
+  })
+
+  xdescribe('ADD_REQUEST_TO_QUEUE', () => {
+
   })
 
   describe('ON_CHANGE_COMMENT', () => {
@@ -342,7 +485,7 @@ describe('CodingValidation reducer', () => {
             ...userAnswersCoded[1].answers,
             123: {
               ...userAnswersCoded[1].answers[123],
-              annotations: [{ text: 'text annotation', rects:[] }]
+              annotations: [{ text: 'text annotation', rects: [] }]
             }
           }
         }
@@ -377,7 +520,7 @@ describe('CodingValidation reducer', () => {
             answers: {
               432: {
                 ...currentState.coding.userAnswers[4][10].answers[432],
-                annotations: [{ text: 'text annotation', rects:[] }]
+                annotations: [{ text: 'text annotation', rects: [] }]
               }
             }
           }
@@ -404,7 +547,7 @@ describe('CodingValidation reducer', () => {
             answers: {
               123: {
                 ...userAnswersCoded[1].answers[123],
-                annotations: [{ text: 'text annotation', rects:[] }, { text: 'text annotation 2', rects: [] }]
+                annotations: [{ text: 'text annotation', rects: [] }, { text: 'text annotation 2', rects: [] }]
               }
             }
           }
@@ -420,7 +563,7 @@ describe('CodingValidation reducer', () => {
             ...userAnswersCoded[1].answers,
             123: {
               ...userAnswersCoded[1].answers[123],
-              annotations: [{ text: 'text annotation', rects:[] }]
+              annotations: [{ text: 'text annotation', rects: [] }]
             }
           }
         }
@@ -446,7 +589,7 @@ describe('CodingValidation reducer', () => {
               answers: {
                 432: {
                   ...userAnswersCoded[4][10].answers[432],
-                  annotations: [{ text: 'text annotation', rects:[] }]
+                  annotations: [{ text: 'text annotation', rects: [] }]
                 }
               }
             }
