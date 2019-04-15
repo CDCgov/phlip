@@ -37,19 +37,19 @@ describe('CodingValidation reducer', () => {
         questionId: 1
       }
 
-      const currentState = getState({
-        question: { ...schemeById[1] },
-        outline: { ...schemeOutline },
-        scheme: {
-          byId: { ...schemeById },
-          order: [...schemeOrder],
-          tree: schemeTree
-        },
-        userAnswers: schemeUserAnswersEmpty
-      })
-
       test('should update state.userAnswers[1]', () => {
+        const currentState = getState({
+          question: schemeById[1],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          userAnswers: schemeUserAnswersEmpty
+        })
         const state = reducer(currentState, action)
+
         expect(state.userAnswers).toEqual({
           ...currentState.coding.userAnswers,
           1: {
@@ -60,24 +60,23 @@ describe('CodingValidation reducer', () => {
         })
       })
 
-      test('should update state.scheme.tree[0]', () => {
+      test('should update state.scheme.tree[0].isAnswered to true', () => {
+        const currentState = getState({
+          question: schemeById[1],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          userAnswers: schemeUserAnswersEmpty
+        })
         const state = reducer(currentState, action)
         expect(state.scheme.tree[0]).toEqual({ ...currentState.coding.scheme.tree[0], isAnswered: true })
       })
     })
 
     describe('checkbox / category choice type questions', () => {
-      const currentState = getState({
-        question: { ...schemeById[2] },
-        outline: { ...schemeOutline },
-        scheme: {
-          byId: { ...schemeById },
-          order: [...schemeOrder],
-          tree: [...schemeTree]
-        },
-        userAnswers: { ...schemeUserAnswersEmpty }
-      })
-
       const action = {
         type: types.UPDATE_USER_ANSWER,
         answerId: 90,
@@ -85,6 +84,17 @@ describe('CodingValidation reducer', () => {
       }
 
       test('should update state.userAnswers[2]', () => {
+        const currentState = getState({
+          question: schemeById[2],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          userAnswers: schemeUserAnswersEmpty
+        })
+
         const state = reducer(currentState, action)
         expect(state.userAnswers).toEqual({
           ...currentState.coding.userAnswers,
@@ -98,7 +108,18 @@ describe('CodingValidation reducer', () => {
         })
       })
 
-      test('should update state.scheme.tree[1]', () => {
+      test('should update state.scheme.tree[1].isAnswered to true', () => {
+        const currentState = getState({
+          question: schemeById[2],
+          outline: schemeOutline,
+          scheme: {
+            byId: schemeById,
+            order: schemeOrder,
+            tree: schemeTree
+          },
+          userAnswers: schemeUserAnswersEmpty
+        })
+
         const state = reducer(currentState, action)
         expect(state.scheme.tree[1]).toEqual({ ...currentState.coding.scheme.tree[1], isAnswered: true })
       })
@@ -323,8 +344,55 @@ describe('CodingValidation reducer', () => {
     })
   })
 
-  xdescribe('ADD_REQUEST_TO_QUEUE', () => {
+  describe('ADD_REQUEST_TO_QUEUE', () => {
+    const action = {
+      type: types.ADD_REQUEST_TO_QUEUE,
+      payload: {
+        questionId: 10,
+        categoryId: 10,
+        questionObj: {
+          id: 4
+        }
+      }
+    }
 
+    const currentState = getState({
+      messageQueue: [{ id: 1 }]
+    })
+
+    const state = reducer(currentState, action)
+    test('should add action.payload to the end of state.messageQueue', () => {
+      expect(state.messageQueue).toEqual([{ id: 1 }, { questionObj: { id: 4 }, questionId: 10, categoryId: 10 }])
+    })
+
+    test('should set state.unsavedChanges to true', () => {
+      expect(state.unsavedChanges).toEqual(true)
+    })
+  })
+
+  describe('REMOVE_REQUEST_FROM_QUEUE', () => {
+    const action = {
+      type: types.REMOVE_REQUEST_FROM_QUEUE,
+      payload: {
+        questionId: 10,
+        categoryId: 10,
+        questionObj: {
+          id: 4
+        },
+        queueId: 12345
+      }
+    }
+
+    const currentState = getState({
+      messageQueue: [{ id: 1, queueId: 1234 }, { id: 10, queueId: 12345 }]
+    })
+
+    const state = reducer(currentState, action)
+
+    test('should remove messages from state.messageQueue with queueId === action.payload.queueId', () => {
+      expect(state.messageQueue.length).toEqual(1)
+      expect(state.messageQueue).toEqual([{ id: 1, queueId: 1234 }])
+    })
   })
 
   describe('ON_CHANGE_COMMENT', () => {
