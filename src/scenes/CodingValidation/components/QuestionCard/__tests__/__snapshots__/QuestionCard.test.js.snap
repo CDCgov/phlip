@@ -184,6 +184,7 @@ exports[`QuestionCard component should render correctly 1`] = `
         mergedUserQuestions={Object {}}
         onChange={[Function]}
         onToggleAnnotationMode={[Function]}
+        onToggleCoderAnnotations={[Function]}
         question={
           Object {
             "answers": Array [],

@@ -58,8 +58,6 @@ export class Annotation extends PureComponent {
       handleClickAnnotation, showAvatar, user
     } = this.props
 
-    console.log(annotation)
-
     const key = `${pending ? 'pending' : 'saved'}-highlight-area-${index}`
 
     return annotation.rects.map((rect, j) => {
@@ -121,6 +119,7 @@ export class Annotation extends PureComponent {
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => {
   return {
     ...ownProps,
