@@ -71,17 +71,6 @@ const removeRequestsInQueue = (questionId, categoryId, currentQueue, queueId) =>
   return currentQueue.filter(message => {
     message.queueId !== queueId
   })
-  /*return currentQueue.filter(message => {
-   if (message.questionId !== questionId) {
-   return true
-   } else if (message.questionId === questionId) {
-   if (message.hasOwnProperty('categoryId')) {
-   return message.categoryId !== categoryId
-   } else {
-   return false
-   }
-   }
-   })*/
 }
 
 /**
@@ -124,8 +113,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
           )
           : updateCodedQuestion(state, action.payload.questionId, { id: action.payload.id }),
         answerErrorContent: null,
-        unsavedChanges: false,
-        saveFailed: false
+        saveFailed: false,
+        unsavedChanges: state.messageQueue.length > 0
       }
 
     case types.SAVE_USER_ANSWER_REQUEST:
@@ -139,7 +128,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
             { hasMadePost: true }
           )
           : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: true }),
-        unsavedChanges: false,
         saveFailed: false
       }
 
@@ -153,18 +141,21 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
 
       return {
         ...state,
-        messageQueue: [...currentQueue, action.payload]
+        messageQueue: [...currentQueue, action.payload],
+        unsavedChanges: true
       }
 
     case types.REMOVE_REQUEST_FROM_QUEUE:
+      const queue = removeRequestsInQueue(
+        action.payload.questionId,
+        action.payload.categoryId,
+        [...state.messageQueue],
+        action.payload.queueId
+      )
+
       return {
         ...state,
-        messageQueue: removeRequestsInQueue(
-          action.payload.questionId,
-          action.payload.categoryId,
-          [...state.messageQueue],
-          action.payload.queueId
-        )
+        messageQueue: queue
       }
 
     case types.SAVE_USER_ANSWER_FAIL:

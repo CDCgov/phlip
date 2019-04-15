@@ -2,7 +2,10 @@ import { createMockStore } from 'redux-logic-test'
 import MockAdapter from 'axios-mock-adapter'
 import logic from '../logic'
 import { types } from '../actions'
+import { INITIAL_STATE } from 'data/users/reducer'
 import createApiHandler, { projectApiInstance } from 'services/api'
+import { INITIAL_STATE as initialCoding } from '../reducer'
+import { default as reducer } from 'reducer'
 import apiCalls from 'services/api/calls'
 import {
   schemeFromApi,
@@ -13,12 +16,13 @@ import {
   userAnswersCoded,
   userCodedQuestions,
   userValidatedQuestions,
-  userAnswersValidation
+  userAnswersValidation,
+  schemeUserAnswersEmpty
 } from 'utils/testData/coding'
 
 let history = {}, mock = {}
 
-const mockReducer = state => state
+const mockReducer = reducer
 const api = createApiHandler({ history }, projectApiInstance, apiCalls)
 
 const setupStore = (currentState = {}) => {
@@ -26,6 +30,7 @@ const setupStore = (currentState = {}) => {
     initialState: {
       data: {
         user: {
+          ...INITIAL_STATE,
           currentUser: { id: 1 },
           byId: {
             1: { id: 1 }
@@ -34,7 +39,25 @@ const setupStore = (currentState = {}) => {
       },
       scenes: {
         codingValidation: {
-          coding: currentState
+          coding: {
+            ...initialCoding,
+            ...currentState
+          }
+        },
+        home: {
+          main: {
+            searchValue: '',
+            projects: {
+              byId: {
+                4: {
+                  id: 4,
+                  name: 'p4',
+                  lastEditedBy: '',
+                  dateLastEdited: new Date(10, 10, 2010)
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -49,60 +72,158 @@ describe('CodingValidation logic', () => {
     mock = new MockAdapter(projectApiInstance)
   })
 
-  xdescribe('SAVE_USER_ANSWER_REQUEST', () => {
-    test('should use coding api if state.page is coding', done => {
-      mock.onAny().reply(config => {
-        return [200, config.url]
+  describe('SAVE_USER_ANSWER_REQUEST', () => {
+    describe('when there are unsaved changes in state', () => {
+      test('should add request to queue if a POST request is in progress for question', done => {
+        const store = setupStore({
+          unsavedChanges: true,
+          scheme: { byId: schemeById, tree: [], outline: {} },
+          userAnswers: {
+            ...schemeUserAnswersEmpty,
+            1: {
+              answers: { ...userAnswersCoded[1] },
+              flag: { type: 0 },
+              isNewCodedQuestion: true,
+              hasMadePost: true
+            }
+          },
+          messageQueue: []
+        })
+
+        mock.onPut('/users/1/projects/4/jurisdictions/32/codedquestions/1').reply(config => {
+          return userCodedQuestions[1]
+        })
+
+        store.dispatch({
+          type: types.SAVE_USER_ANSWER_REQUEST,
+          projectId: 4,
+          jurisdictionId: 32,
+          selectedCategoryId: null,
+          questionId: 1
+        })
+
+        store.whenComplete(() => {
+          expect(store.actions[0].type).toEqual(types.ADD_REQUEST_TO_QUEUE)
+          done()
+        })
       })
 
-      const store = setupStore({
-        page: 'coding',
-        unsavedChanges: true,
-        scheme: { byId: schemeById },
-        userAnswers: userAnswersCoded,
-        messageQueue: []
-      })
+      test('should allow the request if there is not a POST request in progress', done => {
+        const store = setupStore({
+          unsavedChanges: true,
+          scheme: { byId: schemeById, tree: [], outline: {} },
+          userAnswers: userAnswersCoded,
+          messageQueue: []
+        })
 
-      store.dispatch({
-        type: types.SAVE_USER_ANSWER_REQUEST,
-        projectId: 4,
-        jurisdictionId: 32,
-        selectedCategoryId: null,
-        questionId: 1
-      })
+        mock.onPut('/users/1/projects/4/jurisdictions/32/codedquestions/1').reply(config => {
+          return userCodedQuestions[1]
+        })
 
-      store.whenComplete(async () => {
-        const t = await store.actions[0].apiMethods.create({}, {}, { ...store.actions[0].payload })
-        expect(t).toEqual('/users/1/projects/4/jurisdictions/32/codedquestions/1')
-        done()
+        store.dispatch({
+          type: types.SAVE_USER_ANSWER_REQUEST,
+          projectId: 4,
+          jurisdictionId: 32,
+          selectedCategoryId: null,
+          questionId: 1
+        })
+
+        store.whenComplete(() => {
+          expect(store.actions[0].type).toEqual(types.SAVE_USER_ANSWER_REQUEST)
+          done()
+        })
       })
     })
 
-    test('should use validation api if state.page is validation', done => {
-      mock.onAny().reply(config => {
-        return [200, config.url]
-      })
+    describe('when there are not unsaved changes in state', () => {
+      test('should reject the action', done => {
+        const store = setupStore({
+          unsavedChanges: false,
+          scheme: { byId: schemeById, tree: [], outline: {} },
+          userAnswers: {
+            ...schemeUserAnswersEmpty,
+            1: {
+              answers: { ...userAnswersCoded[1] },
+              flag: { type: 0 },
+              isNewCodedQuestion: true,
+              hasMadePost: true
+            }
+          },
+          messageQueue: []
+        })
 
+        store.dispatch({
+          type: types.SAVE_USER_ANSWER_REQUEST,
+          projectId: 4,
+          jurisdictionId: 32,
+          selectedCategoryId: null,
+          questionId: 1
+        })
+
+        store.whenComplete(() => {
+          expect(store.actions.length).toEqual(0)
+          done()
+        })
+      })
+    })
+
+    describe('when state.page === coding', () => {
       const store = setupStore({
-        page: 'validation',
+        page: 'coding',
         unsavedChanges: true,
-        scheme: { byId: schemeById },
+        scheme: { byId: schemeById, tree: [], outline: {} },
         userAnswers: userAnswersCoded,
         messageQueue: []
       })
 
-      store.dispatch({
-        type: types.SAVE_USER_ANSWER_REQUEST,
-        projectId: 4,
-        jurisdictionId: 32,
-        selectedCategoryId: null,
-        questionId: 1
+      test('should use coding api', done => {
+        mock.onAny().reply(config => {
+          return [200, config.url]
+        })
+
+        store.dispatch({
+          type: types.SAVE_USER_ANSWER_REQUEST,
+          projectId: 4,
+          jurisdictionId: 32,
+          selectedCategoryId: null,
+          questionId: 1
+        })
+
+        store.whenComplete(async () => {
+          const t = await store.actions[0].apiMethods.create({}, {}, { ...store.actions[0].payload })
+          expect(t).toEqual('/users/1/projects/4/jurisdictions/32/codedquestions/1')
+          done()
+        })
+      })
+    })
+
+    describe('when state.page === validation', () => {
+      const store = setupStore({
+        page: 'validation',
+        unsavedChanges: true,
+        scheme: { byId: schemeById, tree: [], outline: [] },
+        userAnswers: userAnswersCoded,
+        messageQueue: []
       })
 
-      store.whenComplete(async () => {
-        const t = await store.actions[0].apiMethods.create({}, {}, { ...store.actions[0].payload })
-        expect(t).toEqual('/projects/4/jurisdictions/32/validatedquestions/1')
-        done()
+      test('should use validation api', done => {
+        mock.onAny().reply(config => {
+          return [200, config.url]
+        })
+
+        store.dispatch({
+          type: types.SAVE_USER_ANSWER_REQUEST,
+          projectId: 4,
+          jurisdictionId: 32,
+          selectedCategoryId: null,
+          questionId: 1
+        })
+
+        store.whenComplete(async () => {
+          const t = await store.actions[0].apiMethods.create({}, {}, { ...store.actions[0].payload })
+          expect(t).toEqual('/projects/4/jurisdictions/32/validatedquestions/1')
+          done()
+        })
       })
     })
   })
@@ -457,6 +578,38 @@ describe('CodingValidation logic', () => {
         store.whenComplete(() => {
           expect(store.actions[1].payload.errors.codedValQuestions)
           .toEqual('We couldn\'t get your answered questions for this project and jurisdiction, so you won\'t be able to answer questions.')
+          done()
+        })
+      })
+    })
+
+    describe('when flags exist in the first question', () => {
+      const store = setupStore()
+
+      beforeEach(() => {
+        const questions = schemeFromApi
+        questions[0] = {
+          ...schemeFromApi[0],
+          flags: [{ raisedBy: { userId: 3, firstName: 'test', lastName: 'user3' } }]
+        }
+
+        mock.onGet('/projects/1/scheme').reply(200, {
+          schemeQuestions: schemeFromApi,
+          outline: schemeOutline
+        })
+
+        mock.onGet('/projects/1/jurisdictions/1/codedquestions/1').reply(200, [])
+        mock.onGet('/users/1/avatar').reply(200, '')
+        mock.onGet('/users/2/avatar').reply(200, '')
+        mock.onGet('/users/3/avatar').reply(200, '')
+        mock.onGet('/projects/1/jurisdictions/1/validationquestions').reply(500)
+        store.dispatch({ type: types.GET_VALIDATION_OUTLINE_REQUEST, projectId: 1, jurisdictionId: 1 })
+      })
+
+      test('should add the flag raiser to users state', done => {
+        store.whenComplete(() => {
+          const usersState = store.getState().data.user
+          expect(usersState.byId.hasOwnProperty('3')).toEqual(true)
           done()
         })
       })

@@ -321,6 +321,8 @@ const answerQuestionLogic = createLogic({
     }
 
     if (state.unsavedChanges) {
+      // The question hasn't been answered at all before, but a request has been made. move request to queue to
+      // wait for a response.
       if (questionObj.isNewCodedQuestion && questionObj.hasMadePost && !questionObj.hasOwnProperty('id')) {
         reject({ type: types.ADD_REQUEST_TO_QUEUE, payload: answerObject })
       } else {
@@ -342,6 +344,7 @@ const answerQuestionLogic = createLogic({
     const state = getState().scenes.codingValidation.coding
 
     try {
+      // check if we need to send a post or a put request
       if (action.payload.questionObj.hasOwnProperty('id')) {
         respCodedQuestion = await action.apiMethods.update(action.payload.questionObj, {}, { ...action.payload })
 

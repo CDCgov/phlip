@@ -149,8 +149,7 @@ export const schemeUserAnswersEmpty = {
   1: {
     answers: {},
     schemeQuestionId: 1,
-    comment: '',
-    flag: { type: 0 }
+    comment: ''
   },
   2: {
     answers: {},
