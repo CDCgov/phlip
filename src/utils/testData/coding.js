@@ -66,22 +66,46 @@ export const schemeById = {
   1: {
     ...schemeFromApi[0],
     indent: 0,
-    number: '1',
+    number: '1'
   },
   2: {
     ...schemeFromApi[1],
     indent: 0,
-    number: '2',
+    number: '2'
   },
   3: {
     ...schemeFromApi[2],
     indent: 0,
-    number: '3',
+    number: '3'
   },
   4: {
     ...schemeFromApi[3],
     indent: 1,
     number: '3.1',
+    children: [
+      {
+        indent: 2,
+        isAnswered: true,
+        isCategory: true,
+        order: 2,
+        positionInParent: 1,
+        schemeAnswerId: 10,
+        schemeQuestionId: 4,
+        text: 'category 2'
+      },
+      {
+        indent: 2,
+        isAnswered: false,
+        isCategory: true,
+        order: 3,
+        positionInParent: 2,
+        schemeAnswerId: 20,
+        schemeQuestionId: 4,
+        text: 'category 3'
+      }
+    ],
+    completedProgress: 50,
+    isAnswered: false
   },
   5: {
     ...schemeFromApi[4],
@@ -94,18 +118,22 @@ export const schemeOrder = [1, 2, 3, 4, 5]
 
 export const schemeTree = [
   {
-    ...schemeById[1]
+    ...schemeById[1],
+    isAnswered: true
   },
   {
     ...schemeById[2],
+    isAnswered: false
   },
   {
     ...schemeById[3],
     expanded: true,
-    children: [{ ...schemeById[4] }]
+    children: [{ ...schemeById[4], isAnswered: false }],
+    isAnswered: true
   },
   {
-    ...schemeById[5]
+    ...schemeById[5],
+    isAnswered: false
   }
 ]
 
@@ -121,7 +149,8 @@ export const schemeUserAnswersEmpty = {
   1: {
     answers: {},
     schemeQuestionId: 1,
-    comment: ''
+    comment: '',
+    flag: { type: 0 }
   },
   2: {
     answers: {},
@@ -261,7 +290,7 @@ export const userValidatedQuestions = [
   {
     ...userCodedQuestions[0],
     validatedBy: { userId: 2, firstName: 'test', lastName: 'user' },
-    id: 101,
+    id: 101
   },
   {
     ...userCodedQuestions[1],
@@ -334,7 +363,7 @@ export const userAnswersValidation = {
       categoryId: 10,
       hasMadePost: false,
       id: 301,
-      validatedBy: userValidatedQuestions[2].validatedBy,
+      validatedBy: userValidatedQuestions[2].validatedBy
     }
   }
 }

@@ -23,7 +23,7 @@ export const TextFieldQuestion = props => {
   const showAnno = shouldShowAnnotationStyles(enabledAnswerId, annotationModeEnabled)(answerId)
 
   return (
-    <FlexGrid container>
+    <FlexGrid container flex>
       {isValidation && mergedUserQuestions.answers.map(answer =>
         <FlexGrid container padding="25px 15px" key={answer.id} style={{ margin: '0 10px' }}>
           <FlexGrid container align="flex-start">

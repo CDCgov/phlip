@@ -5,7 +5,7 @@ exports[`QuestionCard - QuestionContent - TextFieldQuestion should render correc
   align="stretch"
   circular={false}
   container={true}
-  flex={false}
+  flex={true}
   justify="stretch"
   padding={0}
   raised={false}
