@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { IconButton, Avatar, ExpansionTextPanel, FlexGrid } from 'components'
-import { getInitials } from 'utils/normalize'
 import Typography from '@material-ui/core/Typography'
 
 const flagColors = {
@@ -44,6 +43,7 @@ export const ValidationTable = props => {
       </FlexGrid>
       <FlexGrid container flex padding={12} style={{ backgroundColor: '#f1f7f8' }}>
         {allFlags.map((item, i) => {
+          const user = userImages[item.raisedBy.userId]
           return Object.keys(item).length > 0 &&
             <FlexGrid
               container
@@ -64,11 +64,11 @@ export const ValidationTable = props => {
                 <Avatar
                   cardAvatar
                   style={{ marginRight: 10 }}
-                  initials={getInitials(item.raisedBy.firstName, item.raisedBy.lastName)}
-                  userName={`${item.raisedBy.firstName} ${item.raisedBy.lastName}`}
-                  avatar={userImages[item.raisedBy.userId].avatar}
+                  initials={user.initials}
+                  userName={user.username}
+                  avatar={user.avatar}
                 />
-                <Typography variant="caption">{`${item.raisedBy.firstName} ${item.raisedBy.lastName}`}</Typography>
+                <Typography variant="caption">{user.username}</Typography>
               </FlexGrid>
               <FlexGrid container type="row" flex style={{ flexBasis: '70%', overflow: 'hidden' }}>
                 {item.type &&
@@ -106,6 +106,7 @@ export const ValidationTable = props => {
                     <span>&nbsp;</span>
                   </Typography>
                   <ExpansionTextPanel
+                    style={{ zIndex: 1 }}
                     textProps={{ type: 'caption' }}
                     text={item.comment}
                     dropdownIconProps={{
