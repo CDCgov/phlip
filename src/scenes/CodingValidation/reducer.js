@@ -61,15 +61,13 @@ export const COMBINED_INITIAL_STATE = {
 /**
  * Removes any pending requests that are for the questionId and/or categoryId + questionId in the update question queue
  *
- * @param {(String|Number)} questionId
- * @param {(String|Number)} categoryId
  * @param {Array} currentQueue
  * @param {(String|Number)} queueId
  * @returns {Array}
  */
-const removeRequestsInQueue = (questionId, categoryId, currentQueue, queueId) => {
+const removeRequestsInQueue = (currentQueue, queueId) => {
   return currentQueue.filter(message => {
-    message.queueId !== queueId
+    return message.queueId !== queueId
   })
 }
 
@@ -132,23 +130,14 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ADD_REQUEST_TO_QUEUE:
-      const currentQueue = removeRequestsInQueue(
-        action.payload.questionId,
-        action.payload.categoryId,
-        [...state.messageQueue],
-        action.payload.queueId
-      )
-
       return {
         ...state,
-        messageQueue: [...currentQueue, action.payload],
+        messageQueue: [...state.messageQueue, action.payload],
         unsavedChanges: true
       }
 
     case types.REMOVE_REQUEST_FROM_QUEUE:
       const queue = removeRequestsInQueue(
-        action.payload.questionId,
-        action.payload.categoryId,
         [...state.messageQueue],
         action.payload.queueId
       )

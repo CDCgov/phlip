@@ -8,7 +8,7 @@ export const schemeFromApi = [
     positionInParent: 0,
     isCategoryQuestion: false,
     flags: [],
-    possibleAnswers: [{ id: 123, text: 'answer 1' }, { id: 234, text: 'answer 2' }]
+    possibleAnswers: [{ id: 123, text: 'answer 1', order: 1 }, { id: 234, text: 'answer 2', order: 2 }]
   },
   {
     text: 'la la la',
@@ -19,7 +19,9 @@ export const schemeFromApi = [
     isCategoryQuestion: false,
     positionInParent: 1,
     flags: [],
-    possibleAnswers: [{ id: 9, text: 'check 1' }, { id: 8, text: 'check 2' }, { id: 7, text: 'check 3' }]
+    possibleAnswers: [
+      { id: 9, text: 'check 1', order: 1 }, { id: 8, text: 'check 2', order: 2 }, { id: 7, text: 'check 3', order: 3 }
+    ]
   }, {
     text: 'cat question',
     questionType: 2,
@@ -81,31 +83,7 @@ export const schemeById = {
   4: {
     ...schemeFromApi[3],
     indent: 1,
-    number: '3.1',
-    children: [
-      {
-        indent: 2,
-        isAnswered: true,
-        isCategory: true,
-        order: 2,
-        positionInParent: 1,
-        schemeAnswerId: 10,
-        schemeQuestionId: 4,
-        text: 'category 2'
-      },
-      {
-        indent: 2,
-        isAnswered: false,
-        isCategory: true,
-        order: 3,
-        positionInParent: 2,
-        schemeAnswerId: 20,
-        schemeQuestionId: 4,
-        text: 'category 3'
-      }
-    ],
-    completedProgress: 50,
-    isAnswered: false
+    number: '3.1'
   },
   5: {
     ...schemeFromApi[4],
@@ -117,24 +95,50 @@ export const schemeById = {
 export const schemeOrder = [1, 2, 3, 4, 5]
 
 export const schemeTree = [
-  {
-    ...schemeById[1],
-    isAnswered: true
-  },
-  {
-    ...schemeById[2],
-    isAnswered: false
-  },
+  { ...schemeById[1] },
+  { ...schemeById[2] },
   {
     ...schemeById[3],
     expanded: true,
-    children: [{ ...schemeById[4], isAnswered: false }],
-    isAnswered: true
+    children: [{ ...schemeById[4] }]
   },
+  { ...schemeById[5] }
+]
+
+export const schemeTreeAfterInitialization = [
+  { ...schemeById[1] },
+  { ...schemeById[2] },
   {
-    ...schemeById[5],
-    isAnswered: false
-  }
+    ...schemeById[3],
+    expanded: true,
+    children: [
+      {
+        ...schemeById[4], children: [
+          {
+            indent: 2,
+            isAnswered: true,
+            isCategory: true,
+            order: 2,
+            positionInParent: 1,
+            schemeAnswerId: 10,
+            schemeQuestionId: 4,
+            text: 'category 2'
+          },
+          {
+            indent: 2,
+            isAnswered: false,
+            isCategory: true,
+            order: 3,
+            positionInParent: 2,
+            schemeAnswerId: 20,
+            schemeQuestionId: 4,
+            text: 'category 3'
+          }
+        ]
+      }
+    ]
+  },
+  { ...schemeById[5] }
 ]
 
 export const schemeOutline = {

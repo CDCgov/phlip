@@ -22,7 +22,7 @@ import {
 
 let history = {}, mock = {}
 
-const mockReducer = reducer
+const mockReducer = state => state
 const api = createApiHandler({ history }, projectApiInstance, apiCalls)
 
 const setupStore = (currentState = {}, reducerFn = mockReducer) => {
@@ -708,7 +708,7 @@ describe('CodingValidation logic', () => {
     })
 
     describe('when flags exist in the first question', () => {
-      const store = setupStore()
+      const store = setupStore({}, reducer)
 
       beforeEach(() => {
         const questions = schemeFromApi
