@@ -22,7 +22,8 @@ export class Annotation extends PureComponent {
     annotationModeEnabled: PropTypes.bool,
     transform: PropTypes.array,
     showAvatar: PropTypes.bool,
-    user: PropTypes.object
+    user: PropTypes.object,
+    closeToOthers: PropTypes.bool
   }
 
   constructor(props, context) {
@@ -69,11 +70,10 @@ export class Annotation extends PureComponent {
   render() {
     const {
       annotation, index, pending, handleConfirmAnnotation, handleCancelAnnotation, handleRemoveAnnotation,
-      handleClickAnnotation, showAvatar, user, annotationModeEnabled
+      handleClickAnnotation, showAvatar, user, annotationModeEnabled, closeToOthers
     } = this.props
 
     const key = `${pending ? 'pending' : 'saved'}-highlight-area-${index}`
-    const color = this.getColor(user.id, user.username)
 
     return annotation.rects.map((rect, j) => {
       const { left, top, height, width, bounds } = this.getBounds(rect.pdfPoints)
@@ -87,11 +87,11 @@ export class Annotation extends PureComponent {
         left,
         top,
         height,
-        backgroundColor: user ? color : '#00e0ff'
+        backgroundColor: user ? this.getColor(user.id, user.username) : '#00e0ff'
       }
 
       const avatarLocation = {
-        left: left - 30,
+        left: left - (closeToOthers ? 60 : 28),
         top: top - 30,
         position: 'absolute',
         width: 36,
