@@ -16,7 +16,8 @@ export class PDFViewer extends Component {
     saveAnnotation: PropTypes.func,
     removeAnnotation: PropTypes.func,
     onCheckTextContent: PropTypes.func,
-    showAvatars: PropTypes.bool
+    showAvatars: PropTypes.bool,
+    annotationModeEnabled: PropTypes.bool
   }
 
   static defaultProps = {
@@ -363,7 +364,7 @@ export class PDFViewer extends Component {
 
   render() {
     const { pages, pendingAnnotations, deleteAnnotationIndexes, alertConfirmOpen } = this.state
-    const { annotations, allowSelection, showAvatars } = this.props
+    const { annotations, allowSelection, showAvatars, annotationModeEnabled } = this.props
 
     const alertActions = [
       { onClick: this.onCancelRemove, value: 'Cancel', type: 'button' },
@@ -396,6 +397,7 @@ export class PDFViewer extends Component {
               showConfirmDelete={this.confirmDelete}
               showDeleteIcon={this.showDeleteIcon}
               hideDeleteIcon={this.hideDeleteIcon}
+              annotationModeEnabled={annotationModeEnabled}
               confirmRemoveAnnotation={this.confirmRemoveAnnotation}
               showAvatars={showAvatars}
               deleteAnnotationIndex={(Object.keys(deleteAnnotationIndexes).length > 0 &&

@@ -35,7 +35,8 @@ export class Page extends Component {
     hideDeleteIcon: PropTypes.func,
     deleteAnnotationIndex: PropTypes.number,
     confirmRemoveAnnotation: PropTypes.func,
-    showAvatars: PropTypes.bool
+    showAvatars: PropTypes.bool,
+    annotationModeEnabled: PropTypes.bool
   }
 
   constructor(props, context) {
@@ -177,7 +178,10 @@ export class Page extends Component {
   }
 
   render() {
-    const { annotations, pendingAnnotations, pageRef, id, textContent, deleteAnnotationIndex, showAvatars } = this.props
+    const {
+      annotations, pendingAnnotations, pageRef, id, textContent, deleteAnnotationIndex, showAvatars,
+      annotationModeEnabled
+    } = this.props
     const { readyToRenderText, canvasStyleSpecs, renderContext } = this.state
 
     const dims = {
@@ -215,6 +219,7 @@ export class Page extends Component {
                 isClicked={deleteAnnotationIndex === i}
                 transform={renderContext.viewport.transform}
                 showAvatar={showAvatars}
+                annotationModeEnabled={annotationModeEnabled}
               />
             )
           })}

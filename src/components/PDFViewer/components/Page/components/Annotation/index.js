@@ -19,6 +19,7 @@ export class Annotation extends PureComponent {
     handleCancelAnnotation: PropTypes.func,
     handleRemoveAnnotation: PropTypes.func,
     handleClickAnnotation: PropTypes.func,
+    annotationModeEnabled: PropTypes.bool,
     transform: PropTypes.array,
     showAvatar: PropTypes.bool,
     user: PropTypes.object
@@ -29,11 +30,13 @@ export class Annotation extends PureComponent {
   }
 
   shouldShowActions = rectIndex => {
-    const { annotation, pageNumber, pending, isClicked } = this.props
-    return ((rectIndex === annotation.rects.length - 1) && annotation.endPage === pageNumber)
-      ? pending
-        ? true
-        : isClicked
+    const { annotation, pageNumber, pending, isClicked, annotationModeEnabled } = this.props
+    return annotationModeEnabled
+      ? ((rectIndex === annotation.rects.length - 1) && annotation.endPage === pageNumber)
+        ? pending
+          ? true
+          : isClicked
+        : false
       : false
   }
 
@@ -55,7 +58,7 @@ export class Annotation extends PureComponent {
   render() {
     const {
       annotation, index, pending, handleConfirmAnnotation, handleCancelAnnotation, handleRemoveAnnotation,
-      handleClickAnnotation, showAvatar, user
+      handleClickAnnotation, showAvatar, user, annotationModeEnabled
     } = this.props
 
     const key = `${pending ? 'pending' : 'saved'}-highlight-area-${index}`
