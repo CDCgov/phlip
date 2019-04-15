@@ -184,7 +184,19 @@ SelectionControlQuestion.propTypes = {
   /**
    * Whether or not this project / jurisdiction has documents
    */
-  areDocsEmpty: PropTypes.bool
+  areDocsEmpty: PropTypes.bool,
+  /**
+   * The id of the user selected for showing annotations
+   */
+  enabledUserId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * whether or not the user selected is the validator
+   */
+  isValidatorSelected: PropTypes.bool,
+  /**
+   * Function to handle the toggle of showing a user's annotations
+   */
+  onToggleCoderAnnotations: PropTypes.func
 }
 
 export default withStyles(styles)(SelectionControlQuestion)

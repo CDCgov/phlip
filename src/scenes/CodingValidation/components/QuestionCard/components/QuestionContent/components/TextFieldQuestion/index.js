@@ -162,7 +162,19 @@ TextFieldQuestion.propTypes = {
   /**
    * Whether or not to disable the input field
    */
-  disableAll: PropTypes.bool
+  disableAll: PropTypes.bool,
+  /**
+   * The id of the user selected for showing annotations
+   */
+  enabledUserId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * whether or not the user selected is the validator
+   */
+  isValidatorSelected: PropTypes.bool,
+  /**
+   * Function to handle the toggle of showing a user's annotations
+   */
+  onToggleCoderAnnotations: PropTypes.func
 }
 
 export default TextFieldQuestion

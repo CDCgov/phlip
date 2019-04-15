@@ -72,7 +72,11 @@ ValidationAvatarList.propTypes = {
   selectedIndex: PropTypes.number,
   handleClickAvatar: PropTypes.func,
   showAllAvatar: PropTypes.bool,
-  layered: PropTypes.bool
+  layered: PropTypes.bool,
+  enabledUserId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  enabledAnswerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  answerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  isValidatorSelected: PropTypes.bool
 }
 
 ValidationAvatarList.defaultProps = {
