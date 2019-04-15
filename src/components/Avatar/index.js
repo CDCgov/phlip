@@ -25,7 +25,7 @@ export const Avatar = ({ big, small, avatar, initials, style, cardAvatar, userNa
   }
 
   const cardAvatarStyles = {
-    marginRight: '-6px',
+    marginRight: '-4px',
     border: 'solid 3px white',
     boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.19)',
     backgroundColor: theme.palette.secondary.main,

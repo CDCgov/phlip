@@ -5,14 +5,14 @@ import theme from 'services/theme'
 
 export const ValidationAvatarList = props => {
   const {
-    answerList, userImages, enabledUserId, enabledAnswerId, handleClickAvatar, answerId, isValidatorSelected,
-    showAllAvatar, layered
+    answerList, userImages, enabledUserId, enabledAnswerId, handleClickAvatar,
+    answerId, isValidatorSelected, showAllAvatar, layered
   } = props
 
   const avatarStyle = {
     cursor: 'pointer',
     borderColor: 'white',
-    margin: layered ? '-6px' : 0
+    marginLeft: layered ? '-2px' : 0
   }
 
   const selectedStyle = {
