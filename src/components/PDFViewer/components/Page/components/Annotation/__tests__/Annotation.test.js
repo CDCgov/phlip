@@ -34,6 +34,11 @@ describe('PDFViewer - Page - Annotation components', () => {
   })
 
   describe('removing annotations', () => {
+    test('should not show x icon if annotationModeEnabled is false', () => {
+      const wrapper = mount(<Annotation {...props} isClicked={true} annotationModeEnabled={false} />)
+      expect(wrapper.find('.iconActions')).toHaveLength(0)
+    })
+
     test('should call handleClickAnnotation if an the first rect of an annotation is clicked', () => {
       const spy = jest.spyOn(props, 'handleClickAnnotation')
       const wrapper = mount(<Annotation {...props} isClicked={true} />)

@@ -29,6 +29,17 @@ export class Annotation extends PureComponent {
     super(props, context)
   }
 
+  getColor = (userId, name) => {
+    const str = `${name}:${userId}`
+    let hash = 0
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash)
+    }
+
+    const c = (hash & 0x00FFFFFF).toString(16).toUpperCase()
+    return `#${'00000'.substring(0, 6 - c.length) + c}`
+  }
+
   shouldShowActions = rectIndex => {
     const { annotation, pageNumber, pending, isClicked, annotationModeEnabled } = this.props
     return annotationModeEnabled
@@ -62,10 +73,22 @@ export class Annotation extends PureComponent {
     } = this.props
 
     const key = `${pending ? 'pending' : 'saved'}-highlight-area-${index}`
+    const color = this.getColor(user.id, user.username)
 
     return annotation.rects.map((rect, j) => {
       const { left, top, height, width, bounds } = this.getBounds(rect.pdfPoints)
       const iconStyle = { height: 25, width: 25, borderRadius: 0 }
+      const highlightStyle = {
+        opacity: 0.2,
+        position: 'absolute',
+        zIndex: 3,
+        cursor: annotationModeEnabled ? 'pointer' : 'default',
+        width,
+        left,
+        top,
+        height,
+        backgroundColor: user ? color : '#00e0ff'
+      }
 
       const avatarLocation = {
         left: left - 30,
@@ -87,7 +110,7 @@ export class Annotation extends PureComponent {
       return (
         <Fragment key={`${key}-${j}`}>
           {(j === 0 && showAvatar) &&
-          <div style={avatarLocation}>
+          <div style={avatarLocation} className="annotation-avatar">
             <Avatar
               cardAvatar
               initials={user.initials}
@@ -96,11 +119,7 @@ export class Annotation extends PureComponent {
               userName={user.username}
             />
           </div>}
-          <div
-            style={{ left, top, height, width }}
-            className="highlight"
-            onClick={() => pending ? null : handleClickAnnotation(index)}
-          />
+          <div style={highlightStyle} onClick={() => pending ? null : handleClickAnnotation(index)} />
           {this.shouldShowActions(j) &&
           <div key={`${key}-${index}-${j}-actions`} className="iconActions" style={iconLocation}>
             <IconButton
