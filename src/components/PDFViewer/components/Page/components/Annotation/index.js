@@ -23,7 +23,7 @@ export class Annotation extends PureComponent {
     transform: PropTypes.array,
     showAvatar: PropTypes.bool,
     user: PropTypes.object,
-    closeToOthers: PropTypes.bool
+    closeToOthers: PropTypes.number
   }
 
   constructor(props, context) {
@@ -89,9 +89,9 @@ export class Annotation extends PureComponent {
         height,
         backgroundColor: user ? this.getColor(user.id, user.username) : '#00e0ff'
       }
-
+      
       const avatarLocation = {
-        left: left - (closeToOthers ? 60 : 28),
+        left: left - (closeToOthers * 30),
         top: top - 30,
         position: 'absolute',
         width: 36,
