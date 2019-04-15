@@ -255,8 +255,72 @@ describe('CodingValidation reducer', () => {
     })
   })
 
-  xdescribe('SAVE_USER_ANSWER_REQUEST', () => {
+  describe('SAVE_USER_ANSWER_REQUEST', () => {
+    describe('for regular, non-category questions', () => {
+      const action = {
+        type: types.SAVE_USER_ANSWER_REQUEST,
+        payload: {
+          id: 10,
+          questionId: 1,
+          answerId: 23
+        }
+      }
 
+      const currentState = getState({
+        question: schemeById[1],
+        scheme: {
+          byId: schemeById,
+          tree: []
+        },
+        userAnswers: {
+          ...userAnswersCoded
+        }
+      })
+
+      const state = reducer(currentState, action)
+
+      test('should hasMadePost to true for userAnswers[questionId]', () => {
+        expect(state.userAnswers[1].hasMadePost).toEqual(true)
+      })
+
+      test('should set state.saveFailed to false', () => {
+        expect(state.saveFailed).toEqual(false)
+      })
+    })
+
+    describe('for category questions', () => {
+      const action = {
+        type: types.SAVE_USER_ANSWER_REQUEST,
+        payload: {
+          id: 22,
+          questionId: 4,
+          answerId: 432,
+          selectedCategoryId: 10
+        }
+      }
+
+      const currentState = getState({
+        question: schemeById[4],
+        scheme: {
+          byId: schemeById,
+          tree: []
+        },
+        userAnswers: {
+          ...userAnswersCoded
+        },
+        selectedCategoryId: 10
+      })
+
+      const state = reducer(currentState, action)
+
+      test('should set hasMadePost to true for userAnswers[questionId][selectedCategoryId]', () => {
+        expect(state.userAnswers[4][10].hasMadePost).toEqual(true)
+      })
+
+      test('should set state.saveFailed to false', () => {
+        expect(state.saveFailed).toEqual(false)
+      })
+    })
   })
 
   xdescribe('ADD_REQUEST_TO_QUEUE', () => {
