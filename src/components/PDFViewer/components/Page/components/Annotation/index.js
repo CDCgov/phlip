@@ -89,7 +89,7 @@ export class Annotation extends PureComponent {
         height,
         backgroundColor: user ? this.getColor(user.id, user.username) : '#00e0ff'
       }
-      
+
       const avatarLocation = {
         left: left - (closeToOthers * 30),
         top: top - 30,
