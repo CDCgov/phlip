@@ -1,5 +1,5 @@
 import { types } from '../actions'
-import { INITIAL_STATE, COMBINED_INITIAL_STATE, default as codingValidationReducer } from '../reducer'
+import { INITIAL_STATE, COMBINED_INITIAL_STATE, default as codingValidationReducer, codingReducer } from '../reducer'
 import { schemeById, userAnswersCoded, schemeOutline, schemeUserAnswersEmpty, schemeOrder, schemeTree } from 'utils/testData/coding'
 
 const initial = INITIAL_STATE
@@ -95,6 +95,28 @@ describe('CodingValidation reducer', () => {
         const state = reducer(currentState, action)
         expect(state.scheme.tree[1]).toEqual({ ...currentState.coding.scheme.tree[1], isAnswered: true })
       })
+    })
+  })
+
+  describe('CHANGE_TOUCHED_STATUS', () => {
+    test('should set state.hasTouchedQuestion to true if state.hasTouchedQuestion is false', () => {
+      const action = {
+        type: types.CHANGE_TOUCHED_STATUS
+      }
+
+      const currentState = getState({ hasTouchedQuestion: false })
+      const state = reducer(currentState, action)
+      expect(state.hasTouchedQuestion).toEqual(true)
+    })
+
+    test('should set state.hasTouchedQuestion to false if state.hasTouchedQuestion is true', () => {
+      const action = {
+        type: types.CHANGE_TOUCHED_STATUS
+      }
+
+      const currentState = getState({ hasTouchedQuestion: true })
+      const state = reducer(currentState, action)
+      expect(state.hasTouchedQuestion).toEqual(false)
     })
   })
 

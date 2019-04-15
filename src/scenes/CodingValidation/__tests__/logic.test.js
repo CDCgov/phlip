@@ -25,7 +25,7 @@ let history = {}, mock = {}
 const mockReducer = reducer
 const api = createApiHandler({ history }, projectApiInstance, apiCalls)
 
-const setupStore = (currentState = {}) => {
+const setupStore = (currentState = {}, reducerFn = mockReducer) => {
   return createMockStore({
     initialState: {
       data: {
@@ -61,7 +61,7 @@ const setupStore = (currentState = {}) => {
         }
       }
     },
-    reducer: mockReducer,
+    reducer: reducerFn,
     logic,
     injectedDeps: { api }
   })
@@ -72,7 +72,7 @@ describe('CodingValidation logic', () => {
     mock = new MockAdapter(projectApiInstance)
   })
 
-  describe('SAVE_USER_ANSWER_REQUEST', () => {
+  describe('SAVE_USER_ANSWER_REQUEST logic', () => {
     describe('when there are unsaved changes in state', () => {
       test('should add request to queue if a POST request is in progress for question', done => {
         const store = setupStore({
@@ -734,6 +734,148 @@ describe('CodingValidation logic', () => {
         store.whenComplete(() => {
           const usersState = store.getState().data.user
           expect(usersState.byId.hasOwnProperty('3')).toEqual(true)
+          done()
+        })
+      })
+    })
+  })
+
+  describe('ON_APPLY_ANSWER_TO_ALL logic', () => {
+    describe('when state.page === coding', () => {
+      let answer, update
+
+      beforeAll(() => {
+        answer = api.answerCodedQuestion
+        update = api.updateCodedQuestion
+        api.answerCodedQuestion = jest.fn(() => 'create coded question')
+        api.updateCodedQuestion = jest.fn(() => 'update coded question')
+      })
+
+      afterAll(() => {
+        api.answerCodedQuestion = answer
+        api.updateCodedQuestion = update
+      })
+
+      const store = setupStore({
+        scheme: { byId: schemeById, tree: [] },
+        outline: schemeOutline,
+        page: 'coding',
+        userAnswers: userAnswersCoded,
+        selectedCategoryId: 10
+      }, state => state)
+
+      test('should use coding api methods', done => {
+        mock.onAny().reply(config => {
+          return [200, config.url]
+        })
+
+        store.dispatch({ type: types.ON_APPLY_ANSWER_TO_ALL, projectId: 4, jurisdictionId: 1, questionId: 4 })
+
+        store.whenComplete(() => {
+          expect(store.actions[0].apiMethods.create()).toEqual('create coded question')
+          expect(store.actions[0].apiMethods.update()).toEqual('update coded question')
+          done()
+        })
+      })
+    })
+
+    describe('when state.page === validation', () => {
+      let answer, update
+
+      beforeAll(() => {
+        answer = api.answerValidatedQuestion
+        update = api.updateValidatedQuestion
+        api.answerValidatedQuestion = jest.fn(() => 'create validated question')
+        api.updateValidatedQuestion = jest.fn(() => 'update validated question')
+      })
+
+      afterAll(() => {
+        api.answerValidatedQuestion = answer
+        api.updateValidatedQuestion = update
+      })
+
+      const store = setupStore({
+        scheme: { byId: schemeById, tree: [] },
+        outline: schemeOutline,
+        page: 'validation',
+        userAnswers: userAnswersCoded,
+        selectedCategoryId: 10
+      }, state => state)
+
+      test('should use coding api methods', done => {
+        mock.onAny().reply(config => {
+          return [200, config.url]
+        })
+
+        store.dispatch({ type: types.ON_APPLY_ANSWER_TO_ALL, projectId: 4, jurisdictionId: 1, questionId: 4 })
+
+        store.whenComplete(() => {
+          expect(store.actions[0].apiMethods.create()).toEqual('create validated question')
+          expect(store.actions[0].apiMethods.update()).toEqual('update validated question')
+          done()
+        })
+      })
+    })
+
+    describe('when api calls are successful', () => {
+      const store = setupStore({
+        scheme: { byId: schemeById, tree: [] },
+        outline: schemeOutline,
+        page: 'coding',
+        userAnswers: userAnswersCoded,
+        selectedCategoryId: 10
+      }, state => state)
+
+      beforeEach(() => {
+        mock.onPut('/users/1/projects/4/jurisdictions/1/codedquestions/4').reply(200, userAnswersCoded[4])
+        mock.onPost('/users/1/projects/4/jurisdictions/1/codedquestions/4').reply(200, userAnswersCoded[4])
+        store.dispatch({ type: types.ON_APPLY_ANSWER_TO_ALL, projectId: 4, jurisdictionId: 1, questionId: 4 })
+      })
+
+      test('should dispatch SAVE_USER_ANSWER_SUCCESS', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].type).toEqual(types.SAVE_USER_ANSWER_SUCCESS)
+          done()
+        })
+      })
+
+      test('should set payload to response from api', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].payload).toEqual({
+            ...userAnswersCoded[4],
+            questionId: 4,
+            selectedCategoryId: 10
+          })
+          done()
+        })
+      })
+    })
+
+    describe('when api calls fail', () => {
+      const store = setupStore({
+        scheme: { byId: schemeById, tree: [] },
+        outline: schemeOutline,
+        page: 'coding',
+        userAnswers: userAnswersCoded,
+        selectedCategoryId: 10
+      }, state => state)
+
+      beforeEach(() => {
+        mock.onPut('/users/1/projects/4/jurisdictions/1/codedquestions/4').reply(500)
+        mock.onPost('/users/1/projects/4/jurisdictions/1/codedquestions/4').reply(500)
+        store.dispatch({ type: types.ON_APPLY_ANSWER_TO_ALL, projectId: 4, jurisdictionId: 1, questionId: 4 })
+      })
+
+      test('should dispatch SAVE_USER_ANSWER_FAIL', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].type).toEqual(types.SAVE_USER_ANSWER_FAIL)
+          done()
+        })
+      })
+
+      test('should set payload.error to Could not update answer', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].payload.error).toEqual('Could not update answer')
           done()
         })
       })
