@@ -133,6 +133,54 @@ describe('CodingValidation logic', () => {
           done()
         })
       })
+
+      test('should dispatch SAVE_USER_ANSWER_SUCCESS when requests are successful', done => {
+        const store = setupStore({
+          unsavedChanges: true,
+          scheme: { byId: schemeById, tree: [], outline: {} },
+          userAnswers: userAnswersCoded,
+          messageQueue: []
+        })
+
+        mock.onPut('/users/1/projects/4/jurisdictions/32/codedquestions/1').reply(200, userCodedQuestions[1])
+
+        store.dispatch({
+          type: types.SAVE_USER_ANSWER_REQUEST,
+          projectId: 4,
+          jurisdictionId: 32,
+          selectedCategoryId: null,
+          questionId: 1
+        })
+
+        store.whenComplete(() => {
+          expect(store.actions[2].type).toEqual(types.SAVE_USER_ANSWER_SUCCESS)
+          done()
+        })
+      })
+
+      test('should dispatch REMOVE_REQUEST_FROM_QUEUE if question is not a new coded question', done => {
+        const store = setupStore({
+          unsavedChanges: true,
+          scheme: { byId: schemeById, tree: [], outline: {} },
+          userAnswers: userAnswersCoded,
+          messageQueue: []
+        })
+
+        mock.onPut('/users/1/projects/4/jurisdictions/32/codedquestions/1').reply(200, userCodedQuestions[1])
+
+        store.dispatch({
+          type: types.SAVE_USER_ANSWER_REQUEST,
+          projectId: 4,
+          jurisdictionId: 32,
+          selectedCategoryId: null,
+          questionId: 1
+        })
+
+        store.whenComplete(() => {
+          expect(store.actions[1].type).toEqual(types.REMOVE_REQUEST_FROM_QUEUE)
+          done()
+        })
+      })
     })
 
     describe('when there are not unsaved changes in state', () => {
