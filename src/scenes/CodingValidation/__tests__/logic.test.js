@@ -168,17 +168,27 @@ describe('CodingValidation logic', () => {
     })
 
     describe('when state.page === coding', () => {
-      const store = setupStore({
-        page: 'coding',
-        unsavedChanges: true,
-        scheme: { byId: schemeById, tree: [], outline: {} },
-        userAnswers: userAnswersCoded,
-        messageQueue: []
-      })
-
-      test('should use coding api', done => {
+      test('should use coding create api if question is a new coded question', done => {
         mock.onAny().reply(config => {
           return [200, config.url]
+        })
+
+        const spy = jest.spyOn(api, 'answerCodedQuestion')
+
+        const store = setupStore({
+          page: 'coding',
+          unsavedChanges: true,
+          scheme: { byId: schemeById, tree: [], outline: {} },
+          userAnswers: {
+            ...schemeUserAnswersEmpty,
+            1: {
+              answers: { ...userAnswersCoded[1] },
+              flag: { type: 0 },
+              isNewCodedQuestion: true,
+              hasMadePost: false
+            }
+          },
+          messageQueue: []
         })
 
         store.dispatch({
@@ -189,26 +199,64 @@ describe('CodingValidation logic', () => {
           questionId: 1
         })
 
-        store.whenComplete(async () => {
-          const t = await store.actions[0].apiMethods.create({}, {}, { ...store.actions[0].payload })
-          expect(t).toEqual('/users/1/projects/4/jurisdictions/32/codedquestions/1')
+        store.whenComplete(() => {
+          expect(spy).toHaveBeenCalled()
+          done()
+        })
+      })
+
+      test('should use validation update api if question is not a new coded question', done => {
+        mock.onAny().reply(config => {
+          return [200, config.url]
+        })
+
+        const spy = jest.spyOn(api, 'updateCodedQuestion')
+
+        const store = setupStore({
+          page: 'coding',
+          unsavedChanges: true,
+          scheme: { byId: schemeById, tree: [], outline: [] },
+          userAnswers: userAnswersCoded,
+          messageQueue: []
+        })
+
+        store.dispatch({
+          type: types.SAVE_USER_ANSWER_REQUEST,
+          projectId: 4,
+          jurisdictionId: 32,
+          selectedCategoryId: null,
+          questionId: 1
+        })
+
+        store.whenComplete(() => {
+          expect(spy).toHaveBeenCalled()
           done()
         })
       })
     })
 
     describe('when state.page === validation', () => {
-      const store = setupStore({
-        page: 'validation',
-        unsavedChanges: true,
-        scheme: { byId: schemeById, tree: [], outline: [] },
-        userAnswers: userAnswersCoded,
-        messageQueue: []
-      })
-
-      test('should use validation api', done => {
+      test('should use validation create api if question is a new coded question', done => {
         mock.onAny().reply(config => {
           return [200, config.url]
+        })
+
+        const spy = jest.spyOn(api, 'answerValidatedQuestion')
+
+        const store = setupStore({
+          page: 'validation',
+          unsavedChanges: true,
+          scheme: { byId: schemeById, tree: [], outline: {} },
+          userAnswers: {
+            ...schemeUserAnswersEmpty,
+            1: {
+              answers: { ...userAnswersCoded[1] },
+              flag: { type: 0 },
+              isNewCodedQuestion: true,
+              hasMadePost: false
+            }
+          },
+          messageQueue: []
         })
 
         store.dispatch({
@@ -219,9 +267,37 @@ describe('CodingValidation logic', () => {
           questionId: 1
         })
 
-        store.whenComplete(async () => {
-          const t = await store.actions[0].apiMethods.create({}, {}, { ...store.actions[0].payload })
-          expect(t).toEqual('/projects/4/jurisdictions/32/validatedquestions/1')
+        store.whenComplete(() => {
+          expect(spy).toHaveBeenCalled()
+          done()
+        })
+      })
+
+      test('should use validation update api if question is not a new coded question', done => {
+        mock.onAny().reply(config => {
+          return [200, config.url]
+        })
+
+        const spy = jest.spyOn(api, 'updateValidatedQuestion')
+
+        const store = setupStore({
+          page: 'validation',
+          unsavedChanges: true,
+          scheme: { byId: schemeById, tree: [], outline: [] },
+          userAnswers: userAnswersCoded,
+          messageQueue: []
+        })
+
+        store.dispatch({
+          type: types.SAVE_USER_ANSWER_REQUEST,
+          projectId: 4,
+          jurisdictionId: 32,
+          selectedCategoryId: null,
+          questionId: 1
+        })
+
+        store.whenComplete(() => {
+          expect(spy).toHaveBeenCalled()
           done()
         })
       })
