@@ -487,7 +487,7 @@ describe('CodingValidation logic', () => {
       test('should set payload.error.coderValQuestions to error string', done => {
         store.whenComplete(() => {
           expect(store.actions[1].payload.errors.codedValQuestions)
-          .toEqual('We couldn\'t get your answered questions for this project and jurisdiction, so you won\'t be able to answer questions.')
+            .toEqual('We couldn\'t get your answered questions for this project and jurisdiction, so you won\'t be able to answer questions.')
           done()
         })
       })
@@ -669,7 +669,7 @@ describe('CodingValidation logic', () => {
       test('should set payload.error.coderValQuestions to error string', done => {
         store.whenComplete(() => {
           expect(store.actions[1].payload.errors.codedValQuestions)
-          .toEqual('We couldn\'t get your answered questions for this project and jurisdiction, so you won\'t be able to answer questions.')
+            .toEqual('We couldn\'t get your answered questions for this project and jurisdiction, so you won\'t be able to answer questions.')
           done()
         })
       })
@@ -931,10 +931,10 @@ describe('CodingValidation logic', () => {
         }
 
         mock.onGet('/users/1/projects/1/jurisdictions/1/codedquestions/4')
-        .reply(200, [
-          { schemeQuestionId: 4, categoryId: 10, id: 1000, codedAnswers: [] },
-          { schemeQuestionId: 4, categoryId: 20, id: 2000, codedAnswers: [] }
-        ])
+          .reply(200, [
+            { schemeQuestionId: 4, categoryId: 10, id: 1000, codedAnswers: [] },
+            { schemeQuestionId: 4, categoryId: 20, id: 2000, codedAnswers: [] }
+          ])
 
         mock.onGet('/projects/1/scheme/4').reply(200, updatedCatChildQuestion)
 
