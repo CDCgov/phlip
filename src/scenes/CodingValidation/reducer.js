@@ -244,7 +244,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         questionChangeLoader: false,
         isChangingQuestion: false,
         unsavedChanges: false,
-        savedFailed: false,
+        saveFailed: false,
         hasTouchedQuestion: false
       }
 
