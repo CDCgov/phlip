@@ -371,6 +371,43 @@ export const userAnswersValidation = {
   }
 }
 
+export const mergedUserQuestions = {
+  1: {
+    answers: [
+      {
+        id: 98,
+        userId: 4,
+        annotations: [],
+        textAnswer: null,
+        schemeAnswerId: 123,
+        pincite: 'my pincite la'
+      },
+      {
+        id: 97,
+        userId: 5,
+        annotations: [],
+        textAnswer: null,
+        schemeAnswerId: 123,
+        pincite: 'my pincite lala'
+      }
+    ],
+    flagsComments: []
+  },
+  3: {
+    answers: [
+      {
+        id: 99,
+        userId: 4,
+        annotations: [],
+        textAnswer: null,
+        schemeAnswerId: 10,
+        pincite: 'my pincite'
+      }
+    ],
+    flagsComments: []
+  }
+}
+
 export const docListPayload = [
   {
     name: 'document 1',
