@@ -382,7 +382,7 @@ describe('CodingValidation reducer', () => {
 
     test('should add action.payload to the end of state.messageQueue', () => {
       expect(state.messageQueue[1])
-      .toEqual({ questionObj: { id: 4 }, timeQueued: 1555419224, queueId: '1-2-3' })
+        .toEqual({ questionObj: { id: 4 }, timeQueued: 1555419224, queueId: '1-2-3' })
     })
 
     test('should set state.unsavedChanges to true', () => {
@@ -414,7 +414,7 @@ describe('CodingValidation reducer', () => {
     test('should remove messages from state.messageQueue with queueId === action.payload.queueId and timeQueued < action.payload.timeQueued', () => {
       expect(state.messageQueue.length).toEqual(1)
       expect(state.messageQueue)
-      .toEqual([{ questionObj: { id: 1 }, queueId: 1234, timeQueued: 1555419224 }])
+        .toEqual([{ questionObj: { id: 1 }, queueId: 1234, timeQueued: 1555419224 }])
     })
   })
 
@@ -535,7 +535,7 @@ describe('CodingValidation reducer', () => {
 
     test('should set state.answerErrorContent to "Something about this question has changed since you loaded the page. We couldn\'t save your answer."', () => {
       expect(state.answerErrorContent)
-      .toEqual('Something about this question has changed since you loaded the page. We couldn\'t save your answer.')
+        .toEqual('Something about this question has changed since you loaded the page. We couldn\'t save your answer.')
     })
 
     test('should set state.saveFailed to true', () => {
