@@ -86,10 +86,10 @@ export class QuestionCard extends Component {
     if (question.questionType === questionTypes.CATEGORY) {
       if (userAnswers.answers.hasOwnProperty(id)) {
         open = true
-        text = 'Unselecting a category will remove any answers associated to this category. Do you wish to continue?'
+        text = 'Deselecting a category will remove any answers associated with this category. Do you want to continue?'
       }
     } else {
-      text = 'Changing your answer will remove any pincites and annotations for the currently selected answer. Do you want to continue?'
+      text = 'Changing your answer will remove any pincites and annotations associated with this answer. Do you want to continue?'
 
       if (question.questionType !== questionTypes.TEXT_FIELD) {
         if (Object.keys(userAnswers.answers).length > 0) {
@@ -206,7 +206,8 @@ export class QuestionCard extends Component {
       {
         value: 'Cancel',
         type: 'button',
-        onClick: this.onCancel
+        onClick: this.onCancel,
+        preferred: true
       },
       {
         value: 'Continue',
@@ -219,10 +220,11 @@ export class QuestionCard extends Component {
       {
         value: 'Cancel',
         type: 'button',
-        onClick: this.onCancel
+        onClick: this.onCancel,
+        preferred: true
       },
       {
-        value: 'Clear answer',
+        value: 'Continue',
         type: 'button',
         onClick: () => {
           this.onCancel()

@@ -294,7 +294,7 @@ export class JurisdictionForm extends Component {
 
   render() {
     const formActions = [
-      { value: 'Cancel', onClick: this.onCloseForm, type: 'button', otherProps: { 'aria-label': 'Close form' } },
+      { value: 'Cancel', onClick: this.onCloseForm, type: 'button', otherProps: { 'aria-label': 'Close form' }, preferred: true },
       {
         value: this.state.edit
           ? this.getButtonText('Save')

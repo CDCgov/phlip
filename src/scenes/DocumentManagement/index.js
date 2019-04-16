@@ -260,7 +260,7 @@ export class DocumentManagement extends Component {
 
   render() {
     const cancelButton = {
-      value: 'Cancel', type: 'button', otherProps: { 'aria-label': 'Close modal' }, onClick: this.onCloseModal
+      value: 'Cancel', type: 'button', otherProps: { 'aria-label': 'Close modal' },preferred:true, onClick: this.onCloseModal
     }
 
     const modalAction = [

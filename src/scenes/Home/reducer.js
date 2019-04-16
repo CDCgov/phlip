@@ -184,7 +184,7 @@ export const mainReducer = (state, action) => {
 
     case types.GET_PROJECTS_FAIL:
       return {
-        ...state, errorContent: 'We failed to get the list of projects. Please try again later.', error: true
+        ...state, errorContent: 'We couldn\'t retrieve the project list. Please try again later.', error: true
       }
 
     case types.FLUSH_STATE:
@@ -294,7 +294,7 @@ export const mainReducer = (state, action) => {
     case types.EXPORT_DATA_FAIL:
       return {
         ...state,
-        exportError: 'We couldn\'t export this project.'
+        exportError: 'We couldn\'t export the project.'
       }
 
     case types.DISMISS_API_ERROR:

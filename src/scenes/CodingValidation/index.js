@@ -113,7 +113,7 @@ export class CodingValidation extends Component {
     }
 
     this.confirmAlertActions = [
-      { value: 'Cancel', type: 'button', onClick: this.onCloseFlagConfigAlert },
+      { value: 'Cancel', type: 'button', onClick: this.onCloseFlagConfigAlert, preferred:true },
       { value: 'Yes', type: 'button', onClick: this.onClearFlag }
     ]
 
@@ -121,7 +121,8 @@ export class CodingValidation extends Component {
       {
         value: 'Cancel',
         type: 'button',
-        onClick: this.onCloseApplyAllAlert
+        onClick: this.onCloseApplyAllAlert,
+        preferred: true
       },
       {
         value: 'Continue',
@@ -636,12 +637,12 @@ export class CodingValidation extends Component {
       <FlexGrid container type="row" flex className={containerClasses} style={containerStyle}>
         <Alert open={applyAllAlertOpen} actions={this.modalActions}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            You are applying your answer to ALL categories. Previously answered questions will be changed.
+              Your answer will apply to ALL categories. Previous answers will be overwritten.
           </Typography>
         </Alert>
         <Alert open={stillSavingAlertOpen} actions={this.stillSavingActions}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            Your answer to this question is still being saved. If you continue, your changes might not be saved.
+            We haven't finished saving your answer. If you continue, your changes might not be saved.
           </Typography>
         </Alert>
         <ApiErrorAlert

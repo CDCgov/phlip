@@ -91,7 +91,8 @@ export class CodingScheme extends Component {
       {
         value: 'Cancel',
         type: 'button',
-        onClick: this.onCloseDeleteQuestionAlert
+        onClick: this.onCloseDeleteQuestionAlert,
+        preferred : true
       },
       {
         value: 'Delete',
@@ -286,7 +287,8 @@ export class CodingScheme extends Component {
       {
         value: 'Check in',
         type: 'button',
-        onClick: this.onContinueGoBack
+        onClick: this.onContinueGoBack,
+        preferred: true
       }
     ]
 
@@ -294,7 +296,7 @@ export class CodingScheme extends Component {
       <FlexGrid container flex padding="12px 20px 20px 20px">
         <Alert open={this.state.goBackAlertOpen} actions={alertActions}>
           <Typography variant="body1">
-            You have checked out the coding scheme. No one else can edit until you check in.
+            You have checked out the coding scheme. No one else can make edits until you check it in.
           </Typography>
         </Alert>
         <Alert open={this.state.deleteQuestionAlertOpen} actions={this.deleteAlertActions}>
@@ -317,8 +319,7 @@ export class CodingScheme extends Component {
             </>
           }>
           <Typography variant="body1">
-            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} has checked out the coding scheme. You
-            will not be able to make changes until they have checked in.
+            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} checked out the coding scheme. You are unable to make changes.
           </Typography>
         </Alert>
         <PageHeader

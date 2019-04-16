@@ -29,7 +29,7 @@ const mainReducer = (state = INITIAL_STATE, action) => {
     case types.DOWNLOAD_PDF_FAIL:
       return {
         ...state,
-        pdfError: 'We failed to download the help guide.'
+        pdfError: 'We couldn\'t download the help guide.'
       }
 
     case types.DOWNLOAD_PDF_SUCCESS:

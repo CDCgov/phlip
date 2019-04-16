@@ -19,7 +19,7 @@ export const addProjectLogic = createLogic({
     } catch (error) {
       dispatch({
         type: types.ADD_PROJECT_FAIL,
-        payload: 'We couldn\'t add this project. Please try again later.',
+        payload: 'We couldn\'t add the project. Please try again later.',
         error: true
       })
     }
@@ -45,7 +45,7 @@ export const updateProjectLogic = createLogic({
     } catch (error) {
       dispatch({
         type: types.UPDATE_PROJECT_FAIL,
-        payload: 'We couldn\'t update this project. Please try again later.',
+        payload: 'We couldn\'t update the project. Please try again later.',
         error: true
       })
     }

@@ -40,7 +40,7 @@ export const addJurisdictionLogic = createLogic({
     } catch (error) {
       dispatch({
         type: types.ADD_PROJECT_JURISDICTION_FAIL,
-        payload: 'We couldn\'t add the jurisdiction to project. Please try again later.',
+        payload: 'We couldn\'t add the jurisdiction. Please try again later.',
         error: true
       })
     }
@@ -75,7 +75,7 @@ export const updateJurisdictionLogic = createLogic({
     } catch (error) {
       dispatch({
         type: types.UPDATE_PROJECT_JURISDICTION_FAIL,
-        payload: 'We couldn\'t update this jurisdiction. Please try again later.',
+        payload: 'We couldn\'t update the jurisdiction. Please try again later.',
         error: true
       })
     }
@@ -107,7 +107,7 @@ export const addPresetJurisdictionLogic = createLogic({
     } catch (error) {
       dispatch({
         type: types.ADD_PRESET_JURISDICTION_FAIL,
-        payload: 'We couldn\'t add the preset jurisdiction list. Please try again later.',
+        payload: 'We couldn\'t add the list of jurisdictions. Please try again later.',
         error: true
       })
     }
@@ -164,7 +164,7 @@ export const deleteJurisdictionLogic = createLogic({
     } catch (e) {
       dispatch({
         type: types.DELETE_JURISDICTION_FAIL,
-        payload: 'We couldn\'t delete the jurisdiction from this project.'
+        payload: 'We couldn\'t delete the jurisdiction.  Please try again later.'
       })
     }
     done()

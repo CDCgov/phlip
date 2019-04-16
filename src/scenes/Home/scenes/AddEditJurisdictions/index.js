@@ -191,7 +191,8 @@ export class AddEditJurisdictions extends Component {
       {
         value: 'Cancel',
         type: 'button',
-        onClick: this.cancelDelete
+        onClick: this.cancelDelete,
+        preferred: true
       },
       {
         value: 'Continue',
@@ -222,8 +223,7 @@ export class AddEditJurisdictions extends Component {
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
           <Alert actions={alertActions} open={this.state.confirmDeleteAlertOpen}>
             <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-              Are you sure you want to delete the jurisdiction, {this.state.jurisdictionToDelete.name}, from the
-              project? All coded questions related to this jurisdiction will be deleted.
+              Are you sure you want to delete {this.state.jurisdictionToDelete.name}? All coded questions related to this jurisdiction will be deleted.
             </Typography>
           </Alert>
           <ApiErrorAlert

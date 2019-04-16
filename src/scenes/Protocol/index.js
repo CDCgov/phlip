@@ -138,6 +138,7 @@ export class Protocol extends Component {
    * @public
    */
   onClose = () => {
+    console.log('close was selected')
     this.setState({
       open: false,
       alertText: ''
@@ -158,6 +159,7 @@ export class Protocol extends Component {
    * @public
    */
   onContinue = () => {
+    console.log('save was selected')
     this.onSaveProtocol()
     this.props.history.goBack()
   }
@@ -171,7 +173,7 @@ export class Protocol extends Component {
     if (this.props.lockedByCurrentUser || this.state.editMode) {
       this.setState({
         open: true,
-        alertText: 'Your unsaved changes will be lost.'
+        alertText: 'You will lose unsaved changes. Do you want to continue?'
       })
     } else {
       this.props.history.goBack()
@@ -183,7 +185,8 @@ export class Protocol extends Component {
       {
         value: 'Cancel',
         type: 'button',
-        onClick: this.onClose
+        onClick: this.onClose,
+        preferred: true
       },
       {
         value: 'Save',
@@ -208,8 +211,8 @@ export class Protocol extends Component {
             </>
           }>
           <Typography variant="body1">
-            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} is currently editing the protocol.
-            You will not be able to edit until they are done editing and have saved their changes.
+            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} is editing the protocol.
+              You are unable to edit until they save their changes.
           </Typography>
         </Alert>
         <PageHeader

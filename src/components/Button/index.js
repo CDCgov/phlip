@@ -6,97 +6,112 @@ import { withTheme } from '@material-ui/core/styles'
 /**
  * Basic button based on @material-ui/core
  */
-export const Button = props => {
-  const { value, color, onClick, raised, theme, textColor, listButton, style, children, ...otherProps } = props
 
-  const buttonColor = color === 'accent' ? 'secondary' : 'default'
+export class Button extends React.Component {
+  static propTypes = {
+    /**
+         * Content of the button
+         */
+    value: PropTypes.any,
 
-  const styles = {
-    color: (raised || listButton)
-      ? textColor
-        ? textColor
-        : 'white'
-      : color || '',
-    fontWeight: 400,
-    backgroundColor: raised
-      ? theme.palette[color]
-        ? theme.palette[color].main
-        : color
-      : listButton
-        ? theme.palette.primary.light
-        : '',
-    ...style
+    /**
+         * Color of the button
+         */
+    color: PropTypes.string,
+
+    /**
+         * Handles when the button is clicked
+         */
+    onClick: PropTypes.func,
+
+    /**
+         * Whether or not the button is a raised button
+         */
+    raised: PropTypes.bool,
+
+    /**
+         * Project theme provided by @material-ui/core
+         */
+    theme: PropTypes.object,
+
+    /**
+         * Is the button displayed in a list? List buttons have a particular style
+         */
+    listButton: PropTypes.bool,
+
+    /**
+         * Is the button disabled
+         */
+    disabled: PropTypes.bool,
+    /**
+         *  reference to the button element
+         */
+    refer : PropTypes.bool
   }
 
-  const variant = raised ? 'raised' : 'text'
+    static defaultProps = {
+      raised: true,
+      color: 'primary',
+      listButton: false,
+      disabled: false
+    }
 
-  if (value) {
-    return (
-      <MuiButton
-        variant={variant}
-        color={buttonColor}
-        onClick={onClick}
-        style={styles}
-        {...otherProps}>
-        {value}
-      </MuiButton>
-    )
-  } else {
-    return (
-      <MuiButton
-        variant={variant}
-        color={buttonColor}
-        onClick={onClick}
-        style={styles}
-        {...otherProps}>
-        {children}
-      </MuiButton>
-    )
-  }
-}
+    constructor (props) {
+      super(props)
+    }
 
-Button.propTypes = {
-  /**
-   * Content of the button
-   */
-  value: PropTypes.any,
+    onFocus= () => {
+      this.setState({
+        focused: true
+      })
+    }
 
-  /**
-   * Color of the button
-   */
-  color: PropTypes.string,
+    render() {
+      const { value, color, onClick,raised, theme, textColor, listButton, style, children, ...otherProps } = this.props
+      const buttonColor = color === 'accent' ? 'secondary' : 'default'
+      const variant = raised ? 'raised' : 'text'
+      const styles = {
+        color: (raised || listButton)
+          ? textColor
+            ? textColor
+            : 'white'
+          : color || '',
+        fontWeight: 400,
+        backgroundColor: raised
+          ? theme.palette[color]
+            ? theme.palette[color].main
+            : color
+          : listButton
+            ? theme.palette.primary.light
+            : '',
+        ...style
+      }
 
-  /**
-   * Handles when the button is clicked
-   */
-  onClick: PropTypes.func,
-
-  /**
-   * Whether or not the button is a raised button
-   */
-  raised: PropTypes.bool,
-
-  /**
-   * Project theme provided by @material-ui/core
-   */
-  theme: PropTypes.object,
-
-  /**
-   * Is the button displayed in a list? List buttons have a particular style
-   */
-  listButton: PropTypes.bool,
-
-  /**
-   * Is the button disabled
-   */
-  disabled: PropTypes.bool
-}
-
-Button.defaultProps = {
-  raised: true,
-  color: 'primary',
-  listButton: false,
-  disabled: false
+      if (value) {
+        return (
+          <MuiButton
+            variant={variant}
+            color={buttonColor}
+            onClick={onClick}
+            style={styles}
+            onFocus = {this.onFocus}
+            {...otherProps}>
+            {value}
+          </MuiButton>
+        )
+      } else {
+        return (
+          <MuiButton
+            variant={variant}
+            color={buttonColor}
+            onClick={onClick}
+            style={styles}
+            {...otherProps}>
+            {children}
+          </MuiButton>
+        )
+      }
+    }
 }
 
 export default withTheme()(Button)
