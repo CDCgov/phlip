@@ -11,6 +11,8 @@ import * as questionTypes from '../../constants'
 import FlagPopover from './components/FlagPopover'
 import FooterNavigate from './components/FooterNavigate'
 import QuestionContent from './components/QuestionContent'
+import { bindActionCreators } from 'redux'
+import actions from 'scenes/CodingValidation/actions'
 
 const TabContainer = props => {
   return (
@@ -45,8 +47,11 @@ export class QuestionCard extends Component {
     unsavedChanges: PropTypes.bool,
     saveFailed: PropTypes.bool,
     hasTouchedQuestion: PropTypes.bool,
-    enabledAnswerChoice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    areDocsEmpty: PropTypes.bool
+    enabledAnswerId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    enabledUserId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    annotationModeEnabled: PropTypes.bool,
+    areDocsEmpty: PropTypes.bool,
+    actions: PropTypes.object
   }
 
   constructor(props, context) {
@@ -169,16 +174,27 @@ export class QuestionCard extends Component {
    * @param id
    * @returns {Function}
    */
-  onToggleAnswerForAnno = id => () => {
-    this.props.onToggleAnswerForAnno(id)
+  onToggleAnnotationMode = id => () => {
+    const { annotationModeEnabled, enabledAnswerId, question, actions } = this.props
+
+    const enabled = annotationModeEnabled
+      ? enabledAnswerId !== id
+      : true
+
+    actions.toggleAnnotationMode(question.id, id, enabled)
+  }
+
+  onToggleCoderAnnotations = (id, userId, isValidatorSelected) => () => {
+    this.props.actions.toggleCoderAnnotations(this.props.question.id, id, userId, isValidatorSelected)
   }
 
   render() {
     const {
       onChangeTextAnswer, onOpenFlagConfirmAlert, user, question, onOpenAlert, userAnswers, isValidation,
-      mergedUserQuestions, disableAll, userImages, enabledAnswerChoice, areDocsEmpty, questionChangeLoader,
-      hasTouchedQuestion, categories, saveFailed, onClearAnswer, onSaveFlag, selectedCategory,
-      onChangeCategory, currentIndex, getNextQuestion, getPrevQuestion, totalLength, showNextButton
+      mergedUserQuestions, disableAll, userImages, enabledAnswerId, enabledUserId, annotationModeEnabled,
+      areDocsEmpty, questionChangeLoader, hasTouchedQuestion, categories, saveFailed, onClearAnswer, onSaveFlag,
+      selectedCategory, onChangeCategory, currentIndex, getNextQuestion, getPrevQuestion, totalLength, showNextButton,
+      isValidatorSelected
     } = this.props
 
     const questionContentProps = {
@@ -195,8 +211,12 @@ export class QuestionCard extends Component {
       mergedUserQuestions,
       disableAll,
       userImages,
-      onToggleAnswerForAnno: this.onToggleAnswerForAnno,
-      enabledAnswerChoice,
+      onToggleAnnotationMode: this.onToggleAnnotationMode,
+      onToggleCoderAnnotations: this.onToggleCoderAnnotations,
+      isValidatorSelected,
+      enabledAnswerId,
+      enabledUserId,
+      annotationModeEnabled,
       areDocsEmpty
     }
 
@@ -302,6 +322,8 @@ export class QuestionCard extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.coding
+  const docState = state.scenes.codingValidation.documentList
+
   return {
     isValidation: ownProps.page === 'validation',
     user: state.data.user.currentUser || {},
@@ -320,17 +342,22 @@ const mapStateToProps = (state, ownProps) => {
         : pageState.mergedUserQuestions[pageState.question.id]
       : null,
     disableAll: pageState.codedQuestionsError !== null || false,
-    //    userImages: pageState.userImages,
-    userImages: state.data.user.byId,
     questionChangeLoader: pageState.questionChangeLoader || false,
     isChangingQuestion: pageState.isChangingQuestion || false,
     unsavedChanges: pageState.unsavedChanges || false,
     saveFailed: pageState.saveFailed || false,
     hasTouchedQuestion: pageState.hasTouchedQuestion || false,
-    enabledAnswerChoice: pageState.enabledAnswerChoice || null,
-    areDocsEmpty: state.scenes.codingValidation.documentList.showEmptyDocs || false
+
+    userImages: state.data.user.byId,
+    enabledAnswerId: docState.enabledAnswerId,
+    enabledUserId: docState.enabledUserId,
+    annotationModeEnabled: docState.annotationModeEnabled,
+    isValidatorSelected: docState.isValidatorSelected,
+    areDocsEmpty: docState.showEmptyDocs
   }
 }
 
-export default connect(mapStateToProps)(QuestionCard)
+const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
+
+export default connect(mapStateToProps, mapDispatchToProps)(QuestionCard)
 

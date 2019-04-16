@@ -2,10 +2,10 @@
 
 exports[`QuestionCard - QuestionContent - TextFieldQuestion should render correctly 1`] = `
 <FlexGrid
-  align="flex-start"
+  align="stretch"
   circular={false}
   container={true}
-  flex={false}
+  flex={true}
   justify="stretch"
   padding={0}
   raised={false}

@@ -21,7 +21,8 @@ export const QuestionContent = props => {
   const {
     question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
     onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages,
-    onToggleAnswerForAnno, enabledAnswerChoice, areDocsEmpty, classes
+    onToggleAnnotationMode, enabledAnswerId, enabledUserId, annotationModeEnabled, areDocsEmpty, classes,
+    onToggleCoderAnnotations, isValidatorSelected
   } = props
 
   const commonQuestionProps = {
@@ -32,8 +33,12 @@ export const QuestionContent = props => {
     areDocsEmpty,
     choices: question.possibleAnswers,
     mergedUserQuestions,
-    onToggleAnswerForAnno,
-    enabledAnswerChoice
+    onToggleAnnotationMode,
+    enabledAnswerId,
+    enabledUserId,
+    annotationModeEnabled,
+    onToggleCoderAnnotations,
+    isValidatorSelected
   }
 
   const selectionFormProps = {
@@ -94,7 +99,7 @@ export const QuestionContent = props => {
           </FlexGrid>}
 
           {question.questionType === questionTypes.TEXT_FIELD &&
-          <FlexGrid container style={{ minHeight: 'unset' }}>
+          <FlexGrid container type="row" style={{ minHeight: 'unset' }}>
             <TextFieldQuestions {...textQuestionProps} />
           </FlexGrid>}
 
@@ -152,8 +157,10 @@ QuestionContent.propTypes = {
   onOpenAlert: PropTypes.func,
   onOpenFlagConfirmAlert: PropTypes.func,
   userImages: PropTypes.object,
-  onToggleAnswerForAnno: PropTypes.func,
-  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onToggleAnnotationMode: PropTypes.func,
+  enabledAnswerId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  enabledUserId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  annotationModeEnabled: PropTypes.bool,
   areDocsEmpty: PropTypes.bool
 }
 

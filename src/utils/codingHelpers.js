@@ -367,7 +367,6 @@ export const handleUpdateUserAnswers = (state, action) => {
             ? { validatedBy: action.otherProps.validatedBy }
             : {}
         }
-
     }
   }
 }

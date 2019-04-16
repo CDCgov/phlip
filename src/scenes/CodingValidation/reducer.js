@@ -49,7 +49,6 @@ export const INITIAL_STATE = {
   saveFailed: false,
   objectExists: false,
   hasTouchedQuestion: false,
-  enabledAnswerChoice: null,
   page: '',
   getRequestInProgress: true
 }
@@ -62,27 +61,17 @@ export const COMBINED_INITIAL_STATE = {
 /**
  * Removes any pending requests that are for the questionId and/or categoryId + questionId in the update question queue
  *
- * @param {(String|Number)} questionId
- * @param {(String|Number)} categoryId
  * @param {Array} currentQueue
  * @param {(String|Number)} queueId
+ * @param {Date} timeQueued
  * @returns {Array}
  */
-const removeRequestsInQueue = (questionId, categoryId, currentQueue, queueId) => {
+const removeRequestsInQueue = (currentQueue, queueId, timeQueued) => {
   return currentQueue.filter(message => {
-    message.queueId !== queueId
+    return message.queueId !== queueId
+      ? true
+      : message.timeQueued > timeQueued
   })
-  /*return currentQueue.filter(message => {
-    if (message.questionId !== questionId) {
-      return true
-    } else if (message.questionId === questionId) {
-      if (message.hasOwnProperty('categoryId')) {
-        return message.categoryId !== categoryId
-      } else {
-        return false
-      }
-    }
-  })*/
 }
 
 /**
@@ -104,8 +93,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
           ...state.userAnswers,
           ...handleUpdateUserAnswers(state, action)
         },
-        unsavedChanges: true,
-        enabledAnswerChoice: null
+        unsavedChanges: true
       }
 
     case types.CHANGE_TOUCHED_STATUS:
@@ -126,8 +114,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
           )
           : updateCodedQuestion(state, action.payload.questionId, { id: action.payload.id }),
         answerErrorContent: null,
-        unsavedChanges: false,
-        saveFailed: false
+        saveFailed: false,
+        unsavedChanges: state.messageQueue.length > 0
       }
 
     case types.SAVE_USER_ANSWER_REQUEST:
@@ -141,32 +129,35 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
             { hasMadePost: true }
           )
           : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: true }),
-        unsavedChanges: false,
-        saveFailed: false
+        saveFailed: false,
+        unsavedChanges: true
       }
 
     case types.ADD_REQUEST_TO_QUEUE:
-      const currentQueue = removeRequestsInQueue(
-        action.payload.questionId,
-        action.payload.categoryId,
+      const cleanQueue = removeRequestsInQueue([...state.messageQueue], action.payload.queueId, action.payload.timeQueued)
+
+      return {
+        ...state,
+        messageQueue: [...cleanQueue, action.payload],
+        unsavedChanges: true
+      }
+
+    case types.REMOVE_REQUEST_FROM_QUEUE:
+      const queue = removeRequestsInQueue(
         [...state.messageQueue],
-        action.payload.queueId
+        action.payload.queueId,
+        action.payload.timeQueued
       )
 
       return {
         ...state,
-        messageQueue: [...currentQueue, action.payload]
+        messageQueue: queue
       }
 
-    case types.REMOVE_REQUEST_FROM_QUEUE:
+    case types.SEND_QUEUE_REQUESTS:
       return {
         ...state,
-        messageQueue: removeRequestsInQueue(
-          action.payload.questionId,
-          action.payload.categoryId,
-          [...state.messageQueue],
-          action.payload.queueId
-        )
+        unsavedChanges: true
       }
 
     case types.SAVE_USER_ANSWER_FAIL:
@@ -234,8 +225,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         selectedCategory: action.selection,
-        selectedCategoryId: state.categories[action.selection].id,
-        enabledAnswerChoice: null
+        selectedCategoryId: state.categories[action.selection].id
       }
 
     case types.ON_CHANGE_JURISDICTION:
@@ -255,9 +245,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         questionChangeLoader: false,
         isChangingQuestion: false,
         unsavedChanges: false,
-        savedFailed: false,
-        hasTouchedQuestion: false,
-        enabledAnswerChoice: null
+        saveFailed: false,
+        hasTouchedQuestion: false
       }
 
     case types.ON_APPLY_ANSWER_TO_ALL:
@@ -320,7 +309,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
-        enabledAnswerChoice: null,
         getRequestInProgress: false
       }
 
@@ -389,7 +377,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         isLoadingPage: false,
         showPageLoader: false,
         unsavedChanges: false,
-        enabledAnswerChoice: null,
         ...action.payload.otherUpdates
       }
 
@@ -434,7 +421,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
-        enabledAnswerChoice: null,
         getRequestInProgress: false
       }
 
@@ -517,14 +503,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
-        enabledAnswerChoice: null,
         ...action.payload.otherUpdates
-      }
-
-    case types.ON_TOGGLE_ANSWER_FOR_ANNO:
-      return {
-        ...state,
-        enabledAnswerChoice: action.schemeAnswerId === state.enabledAnswerChoice ? null : action.schemeAnswerId
       }
 
     case types.SET_PAGE:

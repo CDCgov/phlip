@@ -2,41 +2,59 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import { InputBox, FlexGrid, Button } from 'components'
+import { shouldShowAnnotationStyles } from '../SelectionControlQuestion'
 import PinciteTextField from '../PinciteTextField'
 import PinciteList from '../PinciteList'
 import theme from 'services/theme'
+import ValidationAvatarList from '../ValidationAvatarList'
 
 export const TextFieldQuestion = props => {
   const {
     mergedUserQuestions, userAnswers, areDocsEmpty, onChange, answerId, userImages, disableAll,
-    onToggleAnswerForAnno, enabledAnswerChoice
+    onToggleAnnotationMode, enabledAnswerId, annotationModeEnabled, isValidatorSelected, enabledUserId,
+    onToggleCoderAnnotations
   } = props
 
   const isValidation = mergedUserQuestions !== null
   const isAnswered = userAnswers.answers.hasOwnProperty(answerId)
   const value = !isAnswered ? '' : userAnswers.answers[answerId].textAnswer
   const validatedBy = isValidation ? userAnswers.validatedBy : {}
+  const showAnno = shouldShowAnnotationStyles(enabledAnswerId, annotationModeEnabled)(answerId)
 
   return (
-    <FlexGrid container align="flex-start">
+    <FlexGrid container flex>
       {isValidation && mergedUserQuestions.answers.map(answer =>
         <FlexGrid container padding="25px 15px" key={answer.id} style={{ margin: '0 10px' }}>
-          <FlexGrid container padding="0 0 10px" align="flex-start">
+          <FlexGrid container align="flex-start">
             <Typography style={{ whiteSpace: 'pre-wrap' }} variant="body1">{answer.textAnswer}</Typography>
           </FlexGrid>
-          <PinciteList
-            avatarSize="big"
-            alwaysShow
-            answerList={[answer]}
-            userImages={userImages}
-          />
+          <FlexGrid container type="row" align="center" flex>
+            <ValidationAvatarList
+              showAllAvatar={false}
+              userImages={userImages}
+              answerList={[answer]}
+              handleClickAvatar={onToggleCoderAnnotations}
+              enabledAnswerId={enabledAnswerId}
+              enabledUserId={enabledUserId}
+              isValidatorSelected={isValidatorSelected}
+              answerId={answerId}
+              layered={false}
+            />
+            <div style={{ padding: 2.5 }} />
+            <PinciteList
+              alwaysShow
+              showAvatar={false}
+              answerList={[answer]}
+              userImages={userImages}
+            />
+          </FlexGrid>
         </FlexGrid>)}
       <FlexGrid
         container
         padding="25px 15px"
         style={{
           alignSelf: 'stretch',
-          backgroundColor: enabledAnswerChoice === answerId ? '#e6f8ff' : 'white',
+          backgroundColor: showAnno ? '#e6f8ff' : 'white',
           margin: '0 10px'
         }}>
         <InputBox
@@ -51,12 +69,12 @@ export const TextFieldQuestion = props => {
         <Button
           style={{
             alignSelf: 'flex-start',
-            backgroundColor: enabledAnswerChoice === answerId ? theme.palette.error.main : 'white',
-            color: enabledAnswerChoice === answerId ? 'white' : 'black'
+            backgroundColor: showAnno ? theme.palette.error.main : 'white',
+            color: showAnno ? 'white' : 'black'
           }}
           disableRipple
-          onClick={onToggleAnswerForAnno(answerId)}>
-          {enabledAnswerChoice === answerId ? 'Done' : 'Annotate'}
+          onClick={onToggleAnnotationMode(answerId)}>
+          {showAnno === answerId ? 'Done' : 'Annotate'}
         </Button>}
         {(isAnswered && !isValidation) &&
         <PinciteTextField
@@ -65,16 +83,31 @@ export const TextFieldQuestion = props => {
           handleChangePincite={onChange}
           disabled={disableAll}
         />}
-        {isValidation && <PinciteList
-          validatorStyles={{ margin: '3px 0' }}
-          avatarSize="big"
-          alwaysShow
-          userImages={userImages}
-          isAnswered={isAnswered}
-          validatorObj={{ ...userAnswers.answers[answerId], ...validatedBy }}
-          handleChangePincite={onChange}
-          textFieldProps={{ padding: 8 }}
-        />}
+        {(isValidation && isAnswered) &&
+        <FlexGrid container type="row" align="center" flex>
+          <ValidationAvatarList
+            userImages={userImages}
+            answerList={[{ ...userAnswers.answers[answerId], isValidatorAnswer: true, ...validatedBy }]}
+            handleClickAvatar={onToggleCoderAnnotations}
+            enabledAnswerId={enabledAnswerId}
+            enabledUserId={enabledUserId}
+            isValidatorSelected={isValidatorSelected}
+            answerId={answerId}
+            showAllAvatar={false}
+            layered={false}
+          />
+          <div style={{ paddingLeft: 10 }} />
+          <PinciteList
+            alwaysShow
+            validatorStyles={{ margin: '3px 0' }}
+            showAvatar={false}
+            userImages={userImages}
+            isAnswered={isAnswered}
+            validatorObj={{ ...userAnswers.answers[answerId], ...validatedBy }}
+            handleChangePincite={onChange}
+            textFieldProps={{ padding: 8, flex: '1 1 auto' }}
+          />
+        </FlexGrid>}
       </FlexGrid>
     </FlexGrid>
   )
@@ -104,11 +137,15 @@ TextFieldQuestion.propTypes = {
   /**
    * Handles enabling the answer for annotation mode
    */
-  onToggleAnswerForAnno: PropTypes.func,
+  onToggleAnnotationMode: PropTypes.func,
   /**
    * ID of the enabled answer choice
    */
-  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  enabledAnswerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * Whether or not annotation mode is enabled
+   */
+  annotationModeEnabled: PropTypes.bool,
   /**
    * Whether or not there are documents
    */
@@ -124,7 +161,19 @@ TextFieldQuestion.propTypes = {
   /**
    * Whether or not to disable the input field
    */
-  disableAll: PropTypes.bool
+  disableAll: PropTypes.bool,
+  /**
+   * The id of the user selected for showing annotations
+   */
+  enabledUserId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /**
+   * whether or not the user selected is the validator
+   */
+  isValidatorSelected: PropTypes.bool,
+  /**
+   * Function to handle the toggle of showing a user's annotations
+   */
+  onToggleCoderAnnotations: PropTypes.func
 }
 
 export default TextFieldQuestion

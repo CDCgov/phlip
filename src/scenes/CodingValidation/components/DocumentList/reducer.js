@@ -13,7 +13,11 @@ export const INITIAL_STATE = {
     _id: '',
     content: {}
   },
+  enabledAnswerId: '',
+  enabledUserId: '',
+  annotations: [],
   annotationModeEnabled: false,
+  isValidatorSelected: false,
   showEmptyDocs: false,
   apiErrorOpen: false,
   apiErrorInfo: {
@@ -47,6 +51,16 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           : {}
       }
 
+    case types.GET_APPROVED_DOCUMENTS_FAIL:
+      return {
+        ...state,
+        apiErrorInfo: {
+          text: 'Failed to get the list of approved documents.',
+          title: 'Request failed'
+        },
+        apiErrorOpen: true
+      }
+
     case types.GET_DOC_CONTENTS_REQUEST:
       return {
         ...state,
@@ -77,6 +91,45 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         apiErrorOpen: true
       }
 
+    case types.TOGGLE_ANNOTATION_MODE:
+      return action.enabled ? {
+        ...state,
+        annotationModeEnabled: true,
+        enabledAnswerId: action.answerId,
+        enabledUserId: ''
+      } : {
+        ...state,
+        annotationModeEnabled: false,
+        enabledAnswerId: '',
+        enabledUserId: '',
+        annotations: []
+      }
+
+    case types.TOGGLE_CODER_ANNOTATIONS:
+      if (
+        action.answerId === state.enabledAnswerId
+        && action.userId === state.enabledUserId
+        && state.isValidatorSelected === action.isValidatorSelected
+      ) {
+        return {
+          ...state,
+          annotations: [],
+          enabledAnswerId: '',
+          enabledUserId: '',
+          annotationModeEnabled: false,
+          isValidatorSelected: action.isValidatorSelected
+        }
+      } else {
+        return {
+          ...state,
+          annotations: action.annotations,
+          enabledAnswerId: action.answerId,
+          enabledUserId: action.userId,
+          annotationModeEnabled: false,
+          isValidatorSelected: action.isValidatorSelected
+        }
+      }
+
     case types.CLEAR_DOC_SELECTED:
       return {
         ...state,
@@ -89,24 +142,16 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         apiErrorOpen: false
       }
 
-    case types.GET_APPROVED_DOCUMENTS_FAIL:
+    case types.GET_APPROVED_DOCUMENTS_REQUEST:
       return {
         ...state,
-        apiErrorInfo: {
-          text: 'Failed to get the list of approved documents.',
-          title: 'Request failed'
-        },
-        apiErrorOpen: true
+        docSelected: false,
+        annotationModeEnabled: false,
+        enabledAnswerId: ''
       }
 
     case types.FLUSH_STATE:
       return INITIAL_STATE
-
-    case types.GET_APPROVED_DOCUMENTS_REQUEST:
-      return {
-        ...state,
-        docSelected: false
-      }
 
     default:
       return state

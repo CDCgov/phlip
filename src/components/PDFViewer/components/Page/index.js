@@ -14,7 +14,8 @@ export class Page extends Component {
     textContent: {
       items: []
     },
-    deleteAnnotationIndex: null
+    deleteAnnotationIndex: null,
+    showAvatars: false
   }
 
   static propTypes = {
@@ -33,7 +34,9 @@ export class Page extends Component {
     showDeleteIcon: PropTypes.func,
     hideDeleteIcon: PropTypes.func,
     deleteAnnotationIndex: PropTypes.number,
-    confirmRemoveAnnotation: PropTypes.func
+    confirmRemoveAnnotation: PropTypes.func,
+    showAvatars: PropTypes.bool,
+    annotationModeEnabled: PropTypes.bool
   }
 
   constructor(props, context) {
@@ -175,7 +178,11 @@ export class Page extends Component {
   }
 
   render() {
-    const { annotations, pendingAnnotations, pageRef, id, textContent, deleteAnnotationIndex } = this.props
+    const {
+      annotations, pendingAnnotations, pageRef, id, textContent, deleteAnnotationIndex,
+      showAvatars, annotationModeEnabled
+    } = this.props
+
     const { readyToRenderText, canvasStyleSpecs, renderContext } = this.state
 
     const dims = {
@@ -201,6 +208,15 @@ export class Page extends Component {
         </div>
         <div className="annotationLayer" data-page-number={id} id={`page-${id}-annotations`} style={dims}>
           {readyToRenderText && annotations.map((annotation, i) => {
+            const closeAnnos = annotations.filter((anno, j) => {
+              if (j > i) return false
+              if (i === j) return false
+
+              const diffX = Math.abs(anno.rects[0].pdfPoints.x - annotation.rects[0].pdfPoints.x)
+              const diffY = Math.abs(anno.rects[0].pdfPoints.y - annotation.rects[0].pdfPoints.y)
+              return (diffX <= 10 && diffY <= 10)
+            })
+            
             return (
               <Annotation
                 key={`highlight-area-${i}`}
@@ -210,8 +226,11 @@ export class Page extends Component {
                 handleClickAnnotation={this.onClickAnnotation}
                 handleRemoveAnnotation={this.confirmRemoveAnnotation}
                 pending={false}
+                closeToOthers={closeAnnos.length + 1}
                 isClicked={deleteAnnotationIndex === i}
                 transform={renderContext.viewport.transform}
+                showAvatar={showAvatars}
+                annotationModeEnabled={annotationModeEnabled}
               />
             )
           })}
@@ -226,6 +245,7 @@ export class Page extends Component {
                 handleConfirmAnnotation={this.onConfirmAnnotation}
                 transform={renderContext.viewport.transform}
                 pending
+                annotationModeEnabled={annotationModeEnabled}
               />
             )
           })}

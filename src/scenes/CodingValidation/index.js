@@ -432,15 +432,6 @@ export class CodingValidation extends Component {
 
   /**
    * @public
-   * @param id
-   */
-  onToggleAnswerForAnno = id => {
-    this.props.actions.onToggleAnswerForAnno(id)
-    this.onSaveCodedQuestion()
-  }
-
-  /**
-   * @public
    * @returns {*}
    */
   onShowGetStartedView = () => {
@@ -725,7 +716,6 @@ export class CodingValidation extends Component {
                           onSaveFlag={this.onSaveFlag}
                           onSave={this.onSaveCodedQuestion}
                           onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
-                          onToggleAnswerForAnno={this.onToggleAnswerForAnno}
                           currentIndex={this.props.currentIndex}
                           getNextQuestion={this.getNextQuestion}
                           getPrevQuestion={this.getPrevQuestion}

@@ -41,7 +41,8 @@ export class PinciteList extends Component {
     alwaysShow: PropTypes.bool,
     avatarSize: PropTypes.oneOf(['big', 'small']),
     textFieldProps: PropTypes.object,
-    validatorStyles: PropTypes.object
+    validatorStyles: PropTypes.object,
+    showAvatar: PropTypes.bool
   }
 
   static defaultProps = {
@@ -51,7 +52,8 @@ export class PinciteList extends Component {
     userImages: {},
     isAnswered: false,
     textFieldProps: {},
-    validatorStyles: {}
+    validatorStyles: {},
+    showAvatar: true
   }
 
   state = {
@@ -90,7 +92,7 @@ export class PinciteList extends Component {
   render() {
     const {
       answerList, userImages, handleChangePincite, validatorObj, isAnswered,
-      alwaysShow, avatarSize, textFieldProps, validatorStyles
+      alwaysShow, avatarSize, textFieldProps, validatorStyles, showAvatar
     } = this.props
     const { expanded, copied } = this.state
 
@@ -99,7 +101,7 @@ export class PinciteList extends Component {
 
     return (
       pincitesExist &&
-      <FlexGrid container padding="0 10px 0 0" align="flex-start">
+      <FlexGrid container padding="0 10px 0 0" align="flex-start" flex>
         <Snackbar
           open={copied}
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
@@ -135,7 +137,7 @@ export class PinciteList extends Component {
                   onCopy={hasPincite && this.handlePinciteCopy}
                   key={`${user.username}-pincite`}>
                   <FlexGrid container type="row" align="center" style={{ cursor: 'pointer', marginBottom: 3 }}>
-                    <PinciteAvatar answerObj={answer} user={user} size={avatarSize} />
+                    {showAvatar && <PinciteAvatar answerObj={answer} user={user} size={avatarSize} />}
                     <Typography
                       align="center"
                       style={{
@@ -151,7 +153,8 @@ export class PinciteList extends Component {
             })}
             {isAnswered &&
             <FlexGrid container type="row" style={{ alignSelf: 'stretch', ...validatorStyles }}>
-              <PinciteAvatar answerObj={validatorObj} user={userImages[validatorObj.userId]} size={avatarSize} />
+              {showAvatar &&
+              <PinciteAvatar answerObj={validatorObj} user={userImages[validatorObj.userId]} size={avatarSize} />}
               <PinciteTextField
                 handleChangePincite={handleChangePincite}
                 pinciteValue={validatorObj.pincite}

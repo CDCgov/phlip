@@ -84,7 +84,7 @@ export class ExpansionTextPanel extends Component {
               return (
                 this.state.open === true &&
                 <ClickAwayListener onClickAway={this.onClosePopper}>
-                  <div ref={ref} data-placement={placement} style={style}>
+                  <div ref={ref} data-placement={placement} style={{ ...style, zIndex: 1 }}>
                     <Paper
                       elevation={8}
                       style={{

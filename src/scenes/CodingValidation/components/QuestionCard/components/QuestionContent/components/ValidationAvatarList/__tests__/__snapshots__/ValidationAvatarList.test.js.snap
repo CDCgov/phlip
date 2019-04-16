@@ -11,5 +11,22 @@ exports[`QuestionCard - QuestionContent - ValidationAvatarList should render cor
   raised={false}
   style={Object {}}
   type="row"
-/>
+>
+  <Avatar
+    avatar=""
+    big={false}
+    cardAvatar={true}
+    initials="ALL"
+    key="user-avatar-all-selected"
+    style={
+      Object {
+        "borderColor": "white",
+        "cursor": "pointer",
+        "marginLeft": "-2px",
+      }
+    }
+    theme={Object {}}
+    userName="All"
+  />
+</FlexGrid>
 `;

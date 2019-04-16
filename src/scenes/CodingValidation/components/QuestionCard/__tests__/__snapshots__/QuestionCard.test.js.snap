@@ -180,11 +180,11 @@ exports[`QuestionCard component should render correctly 1`] = `
         areDocsEmpty={false}
         currentUserInitials="tu"
         disableAll={false}
-        enabledAnswerChoice={null}
         isValidation={false}
         mergedUserQuestions={Object {}}
         onChange={[Function]}
-        onToggleAnswerForAnno={[Function]}
+        onToggleAnnotationMode={[Function]}
+        onToggleCoderAnnotations={[Function]}
         question={
           Object {
             "answers": Array [],

@@ -202,7 +202,6 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
             onOpenFlagConfirmAlert={[Function]}
             onSave={[Function]}
             onSaveFlag={[Function]}
-            onToggleAnswerForAnno={[Function]}
             page="coding"
             showNextButton={false}
             totalLength={1}

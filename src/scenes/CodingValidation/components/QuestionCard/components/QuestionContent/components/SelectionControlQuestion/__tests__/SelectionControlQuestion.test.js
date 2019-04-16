@@ -12,8 +12,9 @@ const props = {
   userImages: {},
   question: {},
   classes: {},
-  enabledAnswerChoice: 3,
-  onToggleAnswerForAnno: jest.fn(),
+  enabledAnswerId: 3,
+  onToggleAnnotationMode: jest.fn(),
+  annotationModeEnabled: false,
   areDocsEmpty: false
 }
 
@@ -22,8 +23,8 @@ describe('QuestionCard - QuestionContent - SelectionControlQuestion', () => {
     expect(shallow(<SelectionControlQuestion {...props} />)).toMatchSnapshot()
   })
 
-  test('should call onToggleAnswerForAnno when \'Annotate\' button is clicked', () => {
-    const spy = jest.spyOn(props, 'onToggleAnswerForAnno')
+  test('should call onToggleAnnotationMode when \'Annotate\' button is clicked', () => {
+    const spy = jest.spyOn(props, 'onToggleAnnotationMode')
     const wrapper = shallow(
       <SelectionControlQuestion
         {...props}

@@ -107,12 +107,7 @@
   overflow: hidden;
 }
 
-.annotationLayer > div {
-  background-color: #00e0ff;
-  opacity: 0.2;
-  position: absolute;
-  z-index: 3;
-  cursor: pointer;
+.annotationLayer > .highlight {
 }
 
 .annotationLayer .iconActions {

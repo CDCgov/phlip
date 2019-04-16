@@ -50,4 +50,15 @@ describe('CodingValidation - DocumentList action creators', () => {
 
     expect(actions.removeAnnotation(4, 4, 3)).toEqual(expectedAction)
   })
+
+  test('should create an action to toggle annotation mode', () => {
+    const expectedAction = {
+      type: types.TOGGLE_ANNOTATION_MODE,
+      questionId: 3,
+      answerId: 4,
+      enabled: true
+    }
+
+    expect(actions.toggleAnnotationMode(3, 4, true)).toEqual(expectedAction)
+  })
 })
