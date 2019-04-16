@@ -129,7 +129,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
             { hasMadePost: true }
           )
           : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: true }),
-        saveFailed: false
+        saveFailed: false,
+        unsavedChanges: true
       }
 
     case types.ADD_REQUEST_TO_QUEUE:

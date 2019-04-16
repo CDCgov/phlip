@@ -6,8 +6,7 @@ import { shouldShowAnnotationStyles } from '../SelectionControlQuestion'
 import PinciteTextField from '../PinciteTextField'
 import PinciteList from '../PinciteList'
 import theme from 'services/theme'
-import ValidationAvatarList
-  from 'scenes/CodingValidation/components/QuestionCard/components/QuestionContent/components/ValidationAvatarList'
+import ValidationAvatarList from '../ValidationAvatarList'
 
 export const TextFieldQuestion = props => {
   const {
@@ -84,7 +83,7 @@ export const TextFieldQuestion = props => {
           handleChangePincite={onChange}
           disabled={disableAll}
         />}
-        {isValidation &&
+        {(isValidation && isAnswered) &&
         <FlexGrid container type="row" align="center" flex>
           <ValidationAvatarList
             userImages={userImages}
