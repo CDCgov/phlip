@@ -391,7 +391,7 @@ export const mergedUserQuestions = {
         pincite: 'my pincite lala'
       }
     ],
-    flagsComments: []
+    flagsComments: [{ id: 4, type: 2, notes: 'flag notes here', comment: '', raisedBy: { userId: 3 } }]
   },
   3: {
     answers: [
@@ -404,7 +404,16 @@ export const mergedUserQuestions = {
         pincite: 'my pincite'
       }
     ],
-    flagsComments: []
+    flagsComments: [{ id: 5, type: 2, notes: 'flag notes', comment: 'this is my comment', raisedBy: { userId: 3 } }]
+  },
+  4: {
+    10: {
+      answers: [],
+      flagsComments: [
+        { id: 1, type: 3, notes: 'flag notes', comment: '', raisedBy: { userId: 2 } },
+        { id: 2, type: 2, notes: 'flag notes', comment: '', raisedBy: { userId: 3 } }
+      ]
+    }
   }
 }
 
