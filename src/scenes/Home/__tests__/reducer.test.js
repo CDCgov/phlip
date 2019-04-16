@@ -283,7 +283,7 @@ describe('Home reducer', () => {
   describe('GET_PROJECTS_FAIL', () => {
     const state = reducer(getState({}), { type: types.GET_PROJECTS_FAIL })
     test('should set state.errorContent', () => {
-      expect(state.errorContent).toEqual('We failed to get the list of projects. Please try again later.')
+      expect(state.errorContent).toEqual('We couldn\'t retrieve the project list. Please try again later.')
     })
 
     test('should set state.error to true', () => {
