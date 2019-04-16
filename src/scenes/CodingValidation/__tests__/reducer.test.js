@@ -348,8 +348,8 @@ describe('CodingValidation reducer', () => {
     const action = {
       type: types.ADD_REQUEST_TO_QUEUE,
       payload: {
-        questionId: 10,
-        categoryId: 10,
+        queueId: '1-2-3',
+        timeQueued: 1555419224,
         questionObj: {
           id: 4
         }
@@ -357,12 +357,27 @@ describe('CodingValidation reducer', () => {
     }
 
     const currentState = getState({
-      messageQueue: [{ id: 1 }]
+      messageQueue: [
+        { questionObj: { id: 10 }, timeQueued: 1555419016, queueId: '1-2-4' },
+        { questionObj: { id: 3 }, timeQueued: 1555332616, queueId: '1-2-3' }
+      ]
     })
 
     const state = reducer(currentState, action)
+    test('should remove old queued messages from state.messageQueue', () => {
+      const index = state.messageQueue.findIndex(message => message.questionObj.id === 3)
+      expect(index).toEqual(-1)
+    })
+
+    test('should not remove messages with a different queueId', () => {
+      expect(state.messageQueue[0]).toEqual({
+        questionObj: { id: 10 }, timeQueued: 1555419016, queueId: '1-2-4'
+      })
+    })
+
     test('should add action.payload to the end of state.messageQueue', () => {
-      expect(state.messageQueue).toEqual([{ id: 1 }, { questionObj: { id: 4 }, questionId: 10, categoryId: 10 }])
+      expect(state.messageQueue[1])
+      .toEqual({ questionObj: { id: 4 }, timeQueued: 1555419224, queueId: '1-2-3' })
     })
 
     test('should set state.unsavedChanges to true', () => {
@@ -374,24 +389,27 @@ describe('CodingValidation reducer', () => {
     const action = {
       type: types.REMOVE_REQUEST_FROM_QUEUE,
       payload: {
-        questionId: 10,
-        categoryId: 10,
         questionObj: {
           id: 4
         },
+        timeQueued: 1555419224,
         queueId: 12345
       }
     }
 
     const currentState = getState({
-      messageQueue: [{ id: 1, queueId: 1234 }, { id: 10, queueId: 12345 }]
+      messageQueue: [
+        { questionObj: { id: 1 }, queueId: 1234, timeQueued: 1555419224 },
+        { questionObj: { id: 10 }, queueId: 12345, timeQueued: 1555419016 }
+      ]
     })
 
     const state = reducer(currentState, action)
 
-    test('should remove messages from state.messageQueue with queueId === action.payload.queueId', () => {
+    test('should remove messages from state.messageQueue with queueId === action.payload.queueId and timeQueued < action.payload.timeQueued', () => {
       expect(state.messageQueue.length).toEqual(1)
-      expect(state.messageQueue).toEqual([{ id: 1, queueId: 1234 }])
+      expect(state.messageQueue)
+      .toEqual([{ questionObj: { id: 1 }, queueId: 1234, timeQueued: 1555419224 }])
     })
   })
 

@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
+import * as questionTypes from 'scenes/CodingValidation/constants'
 import theme from 'services/theme'
 import { FlexGrid, Icon, PDFViewer, ApiErrorView } from 'components'
 import { FormatQuoteClose } from 'mdi-material-ui'
@@ -233,7 +234,10 @@ export const mapStateToProps = (state, ownProps) => {
     question = codingState.question.isCategoryQuestion
       ? codingState.userAnswers[ownProps.questionId][codingState.selectedCategoryId]
       : codingState.userAnswers[ownProps.questionId]
-    annotations = question.answers[pageState.enabledAnswerId].annotations
+
+    annotations = question.answers[pageState.enabledAnswerId] === undefined
+      ? []
+      : question.answers[pageState.enabledAnswerId].annotations
   } else {
     annotations = pageState.annotations
   }

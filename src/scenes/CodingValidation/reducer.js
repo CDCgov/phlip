@@ -63,11 +63,14 @@ export const COMBINED_INITIAL_STATE = {
  *
  * @param {Array} currentQueue
  * @param {(String|Number)} queueId
+ * @param {Date} timeQueued
  * @returns {Array}
  */
-const removeRequestsInQueue = (currentQueue, queueId) => {
+const removeRequestsInQueue = (currentQueue, queueId, timeQueued) => {
   return currentQueue.filter(message => {
     return message.queueId !== queueId
+      ? true
+      : message.timeQueued > timeQueued
   })
 }
 
@@ -130,21 +133,30 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ADD_REQUEST_TO_QUEUE:
+      const cleanQueue = removeRequestsInQueue([...state.messageQueue], action.payload.queueId, action.payload.timeQueued)
+
       return {
         ...state,
-        messageQueue: [...state.messageQueue, action.payload],
+        messageQueue: [...cleanQueue, action.payload],
         unsavedChanges: true
       }
 
     case types.REMOVE_REQUEST_FROM_QUEUE:
       const queue = removeRequestsInQueue(
         [...state.messageQueue],
-        action.payload.queueId
+        action.payload.queueId,
+        action.payload.timeQueued
       )
 
       return {
         ...state,
         messageQueue: queue
+      }
+
+    case types.SEND_QUEUE_REQUESTS:
+      return {
+        ...state,
+        unsavedChanges: true
       }
 
     case types.SAVE_USER_ANSWER_FAIL:

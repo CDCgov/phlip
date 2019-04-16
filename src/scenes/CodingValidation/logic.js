@@ -286,7 +286,6 @@ export const getValidationOutlineLogic = createLogic({
 const answerQuestionLogic = createLogic({
   type: types.SAVE_USER_ANSWER_REQUEST,
   debounce: 350,
-  latest: true,
 
   /**
    * It updates the action creator values and validates
@@ -317,19 +316,16 @@ const answerQuestionLogic = createLogic({
       projectId: action.projectId,
       userId,
       questionObj,
-      queueId: Date.now()
+      queueId: `${action.questionId}-${action.jurisdictionId}-${action.projectId}-${action.selectedCategoryId}`,
+      timeQueued: Date.now()
     }
 
-    if (state.unsavedChanges) {
-      // The question hasn't been answered at all before, but a request has been made. move request to queue to
-      // wait for a response.
-      if (questionObj.isNewCodedQuestion && questionObj.hasMadePost && !questionObj.hasOwnProperty('id')) {
-        reject({ type: types.ADD_REQUEST_TO_QUEUE, payload: answerObject })
-      } else {
-        allow({ ...action, payload: { ...answerObject, selectedCategoryId: action.selectedCategoryId }, apiMethods })
-      }
+    // The question hasn't been answered at all before, but a request has been made. move request to queue to
+    // wait for a response.
+    if (questionObj.isNewCodedQuestion && questionObj.hasMadePost && !questionObj.hasOwnProperty('id')) {
+      reject({ type: types.ADD_REQUEST_TO_QUEUE, payload: answerObject })
     } else {
-      reject()
+      allow({ ...action, payload: { ...answerObject, selectedCategoryId: action.selectedCategoryId, apiMethods } })
     }
   },
 
@@ -341,12 +337,17 @@ const answerQuestionLogic = createLogic({
    */
   async process({ getState, action, api }, dispatch, done) {
     let respCodedQuestion = {}
-    const state = getState().scenes.codingValidation.coding
 
     try {
       // check if we need to send a post or a put request
       if (action.payload.questionObj.hasOwnProperty('id')) {
-        respCodedQuestion = await action.apiMethods.update(action.payload.questionObj, {}, { ...action.payload })
+        respCodedQuestion = await action.payload.apiMethods.update(action.payload.questionObj, {}, {
+          questionId: action.payload.questionId,
+          categoryId: action.payload.selectedCategoryId,
+          jurisdictionId: action.payload.jurisdictionId,
+          userId: action.payload.userId,
+          projectId: action.payload.projectId
+        })
 
         // Remove any pending requests from the queue because this is the latest one and has an id
         dispatch({
@@ -354,11 +355,18 @@ const answerQuestionLogic = createLogic({
           payload: {
             questionId: action.payload.questionId,
             categoryId: action.payload.selectedCategoryId,
-            queueId: action.payload.queueId
+            queueId: action.payload.queueId,
+            timeQueued: action.payload.timeQueued
           }
         })
       } else {
-        respCodedQuestion = await action.apiMethods.create(action.payload.questionObj, {}, { ...action.payload })
+        respCodedQuestion = await action.payload.apiMethods.create(action.payload.questionObj, {}, {
+          questionId: action.payload.questionId,
+          categoryId: action.payload.selectedCategoryId,
+          jurisdictionId: action.payload.jurisdictionId,
+          userId: action.payload.userId,
+          projectId: action.payload.projectId
+        })
       }
 
       dispatch({
@@ -377,8 +385,9 @@ const answerQuestionLogic = createLogic({
           questionId: action.payload.questionId,
           id: respCodedQuestion.id
         },
-        page: state.page,
-        apiUpdateMethod: action.apiMethods.update
+        queueId: action.payload.queueId,
+        timeQueued: action.payload.timeQueued,
+        apiUpdateMethod: action.payload.apiMethods.update
       })
 
       dispatch({
@@ -490,19 +499,27 @@ const sendMessageLogic = createLogic({
    */
   validate({ getState, action }, allow, reject) {
     const messageQueue = getState().scenes.codingValidation.coding.messageQueue
-    const messageToSend = messageQueue.find(message => {
-      if (message.hasOwnProperty('categoryId')) {
-        return message.questionId === action.payload.questionId && action.payload.selectedCategoryId ===
-          message.categoryId
-      } else {
-        return message.questionId === action.payload.questionId
-      }
-    })
-    if (messageQueue.length > 0 && messageToSend !== undefined) {
-      allow({ ...action, message: messageToSend })
-    } else {
+    if (messageQueue.length === 0) {
       reject()
+    } else {
+      const index = messageQueue.lastIndexOf(message => message.queueId === action.payload.queueId &&
+        message.timeQueued > action.payload.timeQueued)
+      allow({ ...action, messageToSend: messageQueue[index] })
     }
+
+    // const messageToSend = messageQueue.find(message => {
+    //   if (message.hasOwnProperty('categoryId')) {
+    //     return message.questionId === action.payload.questionId && action.payload.selectedCategoryId ===
+    //       message.categoryId
+    //   } else {
+    //     return message.questionId === action.payload.questionId
+    //   }
+    // })
+    // if (messageQueue.length > 0 && messageToSend !== undefined) {
+    //   allow({ ...action, message: messageToSend })
+    // } else {
+    //   reject()
+    // }
   },
   /**
    * Actually sends the requests in the queue and then removest the request from the queue.
@@ -525,7 +542,12 @@ const sendMessageLogic = createLogic({
 
       dispatch({
         type: types.REMOVE_REQUEST_FROM_QUEUE,
-        payload: { questionId: action.payload.questionId, categoryId: action.payload.selectedCategoryId }
+        payload: {
+          questionId: action.payload.questionId,
+          categoryId: action.payload.selectedCategoryId,
+          queueId: action.payload.queueId,
+          timeQueue: action.payload.timeQueued
+        }
       })
     } catch (e) {
       dispatch({

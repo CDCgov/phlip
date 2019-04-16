@@ -183,38 +183,6 @@ describe('CodingValidation logic', () => {
       })
     })
 
-    describe('when there are not unsaved changes in state', () => {
-      test('should reject the action', done => {
-        const store = setupStore({
-          unsavedChanges: false,
-          scheme: { byId: schemeById, tree: [], outline: {} },
-          userAnswers: {
-            ...schemeUserAnswersEmpty,
-            1: {
-              answers: { ...userAnswersCoded[1] },
-              flag: { type: 0 },
-              isNewCodedQuestion: true,
-              hasMadePost: true
-            }
-          },
-          messageQueue: []
-        })
-
-        store.dispatch({
-          type: types.SAVE_USER_ANSWER_REQUEST,
-          projectId: 4,
-          jurisdictionId: 32,
-          selectedCategoryId: null,
-          questionId: 1
-        })
-
-        store.whenComplete(() => {
-          expect(store.actions.length).toEqual(0)
-          done()
-        })
-      })
-    })
-
     describe('when state.page === coding', () => {
       test('should use coding create api if question is a new coded question', done => {
         mock.onAny().reply(config => {
