@@ -391,7 +391,7 @@ export const mergedUserQuestions = {
         pincite: 'my pincite lala'
       }
     ],
-    flagsComments: [{ id: 4, type: 2, notes: 'flag notes here', comment: '', raisedBy: { userId: 3 } }]
+    flagsComments: [{ id: 4, type: 2, notes: 'flag notes here', raisedBy: { userId: 3 } }]
   },
   3: {
     answers: [
