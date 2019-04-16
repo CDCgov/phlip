@@ -40,7 +40,7 @@ export const TextFieldQuestion = props => {
               answerId={answerId}
               layered={false}
             />
-            <div style={{ padding: 2.5 }} />
+            <div style={{ paddingLeft: 15 }} />
             <PinciteList
               alwaysShow
               showAvatar={false}
