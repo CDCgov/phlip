@@ -95,11 +95,14 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       return action.enabled ? {
         ...state,
         annotationModeEnabled: true,
-        enabledAnswerId: action.answerId
+        enabledAnswerId: action.answerId,
+        enabledUserId: ''
       } : {
         ...state,
         annotationModeEnabled: false,
-        enabledAnswerId: ''
+        enabledAnswerId: '',
+        enabledUserId: '',
+        annotations: []
       }
 
     case types.TOGGLE_CODER_ANNOTATIONS:

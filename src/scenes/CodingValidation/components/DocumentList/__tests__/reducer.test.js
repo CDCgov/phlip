@@ -217,6 +217,10 @@ describe('CodingValidation - DocumentList reducer', () => {
       test('should set state.annotationModeEnabled to true', () => {
         expect(state.annotationModeEnabled).toEqual(true)
       })
+
+      test('should set state.enabledUserId to an empty string', () => {
+        expect(state.enabledUserId).toEqual('')
+      })
     })
 
     describe('action.enabled === false', () => {
@@ -230,6 +234,74 @@ describe('CodingValidation - DocumentList reducer', () => {
 
       test('should set state.annotationModeEnabled to false', () => {
         expect(state.annotationModeEnabled).toEqual(false)
+      })
+
+      test('should set state.annotations to an empty array', () => {
+        expect(state.annotations).toEqual([])
+      })
+
+      test('should set state.enabledUserId to an empty string', () => {
+        expect(state.enabledUserId).toEqual('')
+      })
+    })
+  })
+
+  describe('TOGGLE_CODER_ANNOTATIONS', () => {
+    describe('when toggling on annotations', () => {
+      const action = {
+        type: types.TOGGLE_CODER_ANNOTATIONS,
+        answerId: 4,
+        userId: 1,
+        isValidatorSelected: true,
+        annotations: ['lalalala']
+      }
+
+      const currentState = getState()
+      const state = reducer(currentState, action)
+
+      test('should set state.enabledAnswerId to action.answerId', () => {
+        expect(state.enabledAnswerId).toEqual(4)
+      })
+
+      test('should set state.isValidatorSelected to action.isValidatorSelected', () => {
+        expect(state.isValidatorSelected).toEqual(true)
+      })
+
+      test('should set state.enabledUserId to action.enabledUserId', () => {
+        expect(state.enabledUserId).toEqual(1)
+      })
+
+      test('should set state.annotations to action.annotations', () => {
+        expect(state.annotations).toEqual(['lalalala'])
+      })
+    })
+
+    describe('when toggling off annotations', () => {
+      const action = {
+        type: types.TOGGLE_CODER_ANNOTATIONS,
+        answerId: 4,
+        userId: 1,
+        isValidatorSelected: true,
+        annotations: ['lalalala']
+      }
+
+      const currentState = getState({ enabledAnswerId: 4, enabledUserId: 1, isValidatorSelected: true })
+      const state = reducer(currentState, action)
+
+      test('should clear state.enabledAnswerId', () => {
+        expect(state.enabledAnswerId).toEqual('')
+      })
+
+      test('should set state.annotationModeEnabled to false', () => {
+        expect(state.annotationModeEnabled).toEqual(false)
+      })
+
+      test('should set state.annotations to an empty array', () => {
+        expect(state.annotations).toEqual([])
+      })
+
+      test('should set state.enabledUserId to an empty string', () => {
+        expect(state.enabledUserId).toEqual('')
       })
     })
   })

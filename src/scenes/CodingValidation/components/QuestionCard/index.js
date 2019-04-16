@@ -175,8 +175,13 @@ export class QuestionCard extends Component {
    * @returns {Function}
    */
   onToggleAnnotationMode = id => () => {
-    const enabled = this.props.enabledAnswerId !== id
-    this.props.actions.toggleAnnotationMode(this.props.question.id, id, enabled)
+    const { annotationModeEnabled, enabledAnswerId, question, actions } = this.props
+
+    const enabled = annotationModeEnabled
+      ? enabledAnswerId !== id
+      : true
+
+    actions.toggleAnnotationMode(question.id, id, enabled)
   }
 
   onToggleCoderAnnotations = (id, userId, isValidatorSelected) => () => {
