@@ -259,8 +259,8 @@ export class SearchBox extends Component {
       fontWeight: 300,
       fontSize: 13,
       // maxWidth: '9%',
-      marginRight: 10,
-      paddingLeft: 5
+      marginRight: 10
+      // paddingLeft: 5
     }
 
     const inputProps = {
@@ -350,7 +350,7 @@ export class SearchBox extends Component {
                       <Typography variant="body2" htmlFor="uploaded-within" style={formRowFontStyles}>
                         Uploaded Date
                       </Typography>
-                      <FlexGrid container flex type="row" style={{flexBasis: '80%', flexWrap:'wrap' }} justify="space-between" >
+                      <FlexGrid container flex type="row" style={{flexBasis: '100%', flexWrap:'wrap' }} justify="space-between" >
                         <FlexGrid container flex type="row" justify="space-between" style={{width:'35%'}}>
                           <Typography variant="body2" htmlFor="uploadedDate1Search" style={formRowFontStyles2}>
                           From:
