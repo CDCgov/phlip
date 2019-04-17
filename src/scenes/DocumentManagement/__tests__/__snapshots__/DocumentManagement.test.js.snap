@@ -110,6 +110,7 @@ exports[`Document Management scene should render correctly 1`] = `
               "otherProps": Object {
                 "aria-label": "Close modal",
               },
+              "preferred": true,
               "type": "button",
               "value": "Cancel",
             },

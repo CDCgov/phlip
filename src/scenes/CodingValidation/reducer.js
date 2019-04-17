@@ -31,8 +31,8 @@ export const INITIAL_STATE = {
   userAnswers: {},
   showNextButton: true,
   mergedUserQuestions: null,
-  isSchemeEmpty: null,
-  areJurisdictionsEmpty: null,
+  isSchemeEmpty: false,
+  areJurisdictionsEmpty: false,
   snapshotUserAnswer: {},
   answerErrorContent: null,
   schemeError: null,
@@ -49,7 +49,8 @@ export const INITIAL_STATE = {
   saveFailed: false,
   objectExists: false,
   hasTouchedQuestion: false,
-  enabledAnswerChoice: null
+  page: '',
+  getRequestInProgress: true
 }
 
 export const COMBINED_INITIAL_STATE = {
@@ -60,22 +61,16 @@ export const COMBINED_INITIAL_STATE = {
 /**
  * Removes any pending requests that are for the questionId and/or categoryId + questionId in the update question queue
  *
- * @param {(String|Number)} questionId
- * @param {(String|Number)} categoryId
  * @param {Array} currentQueue
+ * @param {(String|Number)} queueId
+ * @param {Date} timeQueued
  * @returns {Array}
  */
-const removeRequestsInQueue = (questionId, categoryId, currentQueue) => {
+const removeRequestsInQueue = (currentQueue, queueId, timeQueued) => {
   return currentQueue.filter(message => {
-    if (message.questionId !== questionId) {
-      return true
-    } else if (message.questionId === questionId) {
-      if (message.hasOwnProperty('categoryId')) {
-        return message.categoryId !== categoryId
-      } else {
-        return false
-      }
-    }
+    return message.queueId !== queueId
+      ? true
+      : message.timeQueued > timeQueued
   })
 }
 
@@ -98,8 +93,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
           ...state.userAnswers,
           ...handleUpdateUserAnswers(state, action)
         },
-        unsavedChanges: true,
-        enabledAnswerChoice: null
+        unsavedChanges: true
       }
 
     case types.CHANGE_TOUCHED_STATUS:
@@ -120,8 +114,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
           )
           : updateCodedQuestion(state, action.payload.questionId, { id: action.payload.id }),
         answerErrorContent: null,
-        unsavedChanges: false,
-        saveFailed: false
+        saveFailed: false,
+        unsavedChanges: state.messageQueue.length > 0
       }
 
     case types.SAVE_USER_ANSWER_REQUEST:
@@ -135,30 +129,35 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
             { hasMadePost: true }
           )
           : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: true }),
-        unsavedChanges: true,
-        saveFailed: false
+        saveFailed: false,
+        unsavedChanges: true
       }
 
     case types.ADD_REQUEST_TO_QUEUE:
-      const currentQueue = removeRequestsInQueue(
-        action.payload.questionId,
-        action.payload.categoryId,
-        [...state.messageQueue]
+      const cleanQueue = removeRequestsInQueue([...state.messageQueue], action.payload.queueId, action.payload.timeQueued)
+
+      return {
+        ...state,
+        messageQueue: [...cleanQueue, action.payload],
+        unsavedChanges: true
+      }
+
+    case types.REMOVE_REQUEST_FROM_QUEUE:
+      const queue = removeRequestsInQueue(
+        [...state.messageQueue],
+        action.payload.queueId,
+        action.payload.timeQueued
       )
 
       return {
         ...state,
-        messageQueue: [...currentQueue, action.payload]
+        messageQueue: queue
       }
 
-    case types.REMOVE_REQUEST_FROM_QUEUE:
+    case types.SEND_QUEUE_REQUESTS:
       return {
         ...state,
-        messageQueue: removeRequestsInQueue(
-          action.payload.questionId,
-          action.payload.categoryId,
-          [...state.messageQueue]
-        )
+        unsavedChanges: true
       }
 
     case types.SAVE_USER_ANSWER_FAIL:
@@ -226,8 +225,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         selectedCategory: action.selection,
-        selectedCategoryId: state.categories[action.selection].id,
-        enabledAnswerChoice: null
+        selectedCategoryId: state.categories[action.selection].id
       }
 
     case types.ON_CHANGE_JURISDICTION:
@@ -247,10 +245,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         questionChangeLoader: false,
         isChangingQuestion: false,
         unsavedChanges: false,
-        savedFailed: false,
-        hasTouchedQuestion: false,
-        userImages: action.payload.userImages ? action.payload.userImages : null,
-        enabledAnswerChoice: null
+        saveFailed: false,
+        hasTouchedQuestion: false
       }
 
     case types.ON_APPLY_ANSWER_TO_ALL:
@@ -313,14 +309,15 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
-        enabledAnswerChoice: null
+        getRequestInProgress: false
       }
 
     case types.GET_CODING_OUTLINE_REQUEST:
     case types.GET_VALIDATION_OUTLINE_REQUEST:
       return {
         ...state,
-        isLoadingPage: true
+        isLoadingPage: true,
+        getRequestInProgress: true
       }
 
     case types.GET_CODING_OUTLINE_FAIL:
@@ -329,7 +326,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         ...state,
         schemeError: action.payload,
         isLoadingPage: false,
-        showPageLoader: false
+        showPageLoader: false,
+        getRequestInProgress: false
       }
 
     case types.ON_SAVE_RED_FLAG_SUCCESS:
@@ -379,7 +377,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         isLoadingPage: false,
         showPageLoader: false,
         unsavedChanges: false,
-        enabledAnswerChoice: null,
         ...action.payload.otherUpdates
       }
 
@@ -416,7 +413,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         question: action.payload.question,
         userAnswers: action.payload.userAnswers,
         mergedUserQuestions: action.payload.mergedUserQuestions,
-        userImages: action.payload.userImages,
         categories: undefined,
         isSchemeEmpty: action.payload.isSchemeEmpty,
         areJurisdictionsEmpty: action.payload.areJurisdictionsEmpty,
@@ -425,7 +421,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
-        enabledAnswerChoice: null
+        getRequestInProgress: false
       }
 
     case types.CLEAR_FLAG_SUCCESS:
@@ -505,17 +501,15 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         mergedUserQuestions: action.payload.mergedUserQuestions,
         getQuestionErrors: errors.length > 0 ? errors : null,
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
-        userImages: action.payload.userImages,
         isLoadingPage: false,
         showPageLoader: false,
-        enabledAnswerChoice: null,
         ...action.payload.otherUpdates
       }
 
-    case types.ON_TOGGLE_ANSWER_FOR_ANNO:
+    case types.SET_PAGE:
       return {
         ...state,
-        enabledAnswerChoice: action.schemeAnswerId === state.enabledAnswerChoice ? null : action.schemeAnswerId
+        page: action.page
       }
 
     case types.ON_CLOSE_SCREEN:

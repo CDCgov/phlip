@@ -1,28 +1,28 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`QuestionCard component should render correctly 1`] = `
-<Row
-  component={
-    <WithStyles(Grid)
-      item={true}
-    />
-  }
-  displayFlex={true}
-  flex={false}
-  reverse={false}
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={true}
+  flex={true}
+  justify="stretch"
+  padding={0}
+  raised={false}
   style={
     Object {
-      "flex": 1,
       "minWidth": "10%",
       "width": "50%",
     }
   }
+  type="row"
 >
   <Alert
     actions={
       Array [
         Object {
           "onClick": [Function],
+          "preferred": true,
           "type": "button",
           "value": "Cancel",
         },
@@ -50,13 +50,14 @@ exports[`QuestionCard component should render correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
+          "preferred": true,
           "type": "button",
           "value": "Cancel",
         },
         Object {
           "onClick": [Function],
           "type": "button",
-          "value": "Clear answer",
+          "value": "Continue",
         },
       ]
     }
@@ -74,62 +75,66 @@ exports[`QuestionCard component should render correctly 1`] = `
       Are you sure you want to clear your answer to this question?
     </WithStyles(Typography)>
   </Alert>
-  <Column
-    component={<Card />}
-    displayFlex={true}
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={true}
     flex={true}
+    justify="stretch"
+    padding={0}
+    raised={true}
     style={
       Object {
         "width": "100%",
       }
     }
+    type="column"
   >
-    <Row
-      component={
-        <WithStyles(Grid)
-          item={true}
-        />
-      }
-      displayFlex={true}
+    <FlexGrid
+      align="center"
+      circular={false}
+      container={true}
       flex={false}
-      reverse={false}
+      justify="stretch"
+      padding="0 15px 0 0"
+      raised={false}
       style={
         Object {
-          "alignItems": "center",
           "height": 55,
-          "paddingRight": 15,
+          "minHeight": 55,
         }
       }
+      type="row"
     >
-      <Row
-        component={
-          <WithStyles(Grid)
-            item={true}
-          />
-        }
-        displayFlex={false}
-        flex={false}
-        reverse={false}
+      <FlexGrid
+        align="stretch"
+        circular={false}
+        container={false}
+        flex={true}
+        justify="stretch"
+        padding={0}
+        raised={false}
         style={
           Object {
             "width": "100%",
           }
         }
+        type="column"
       />
-      <Row
-        component={
-          <WithStyles(Grid)
-            item={true}
-          />
-        }
-        displayFlex={true}
+      <FlexGrid
+        align="stretch"
+        circular={false}
+        container={true}
         flex={false}
-        reverse={false}
+        justify="stretch"
+        padding={0}
+        raised={false}
         style={
           Object {
             "marginLeft": -70,
           }
         }
+        type="row"
       >
         <IconButton
           aria-label="Clear answer"
@@ -166,22 +171,22 @@ exports[`QuestionCard component should render correctly 1`] = `
             }
           }
         />
-      </Row>
-    </Row>
+      </FlexGrid>
+    </FlexGrid>
     <WithStyles(Divider) />
     <TabContainer
       selected={null}
       tabs={Array []}
     >
-      <QuestionContent
+      <WithStyles(QuestionContent)
         areDocsEmpty={false}
         currentUserInitials="tu"
         disableAll={false}
-        enabledAnswerChoice={null}
         isValidation={false}
         mergedUserQuestions={Object {}}
         onChange={[Function]}
-        onToggleAnswerForAnno={[Function]}
+        onToggleAnnotationMode={[Function]}
+        onToggleCoderAnnotations={[Function]}
         question={
           Object {
             "answers": Array [],
@@ -210,6 +215,6 @@ exports[`QuestionCard component should render correctly 1`] = `
     </TabContainer>
     <WithStyles(Divider) />
     <WithTheme(FooterNavigate) />
-  </Column>
-</Row>
+  </FlexGrid>
+</FlexGrid>
 `;

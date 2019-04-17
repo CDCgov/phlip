@@ -1,12 +1,13 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { QuestionContent } from '../index'
-import * as questionTypes from '../../../../../constants'
+import * as questionTypes from 'scenes/CodingValidation/constants'
 
 const props = {
   question: {
     hint: null,
-    questionType: questionTypes.MULTIPLE_CHOICES
+    questionType: questionTypes.MULTIPLE_CHOICE,
+    possibleAnswers: [{ id: 1 }]
   }
 }
 

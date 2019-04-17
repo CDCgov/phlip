@@ -172,7 +172,7 @@ export class DocumentMeta extends Component {
       alertOpen: true,
       alertInfo: {
         title: `Delete ${type}`,
-        text: `Are you sure you want to delete ${type}: ${list[index].name} from this document?`
+        text: `Do you want to delete ${type}: ${list[index].name} from this document?`
       }
     })
   }
@@ -184,7 +184,7 @@ export class DocumentMeta extends Component {
       alertOpen: true,
       alertInfo: {
         title: `Delete ${type}`,
-        text: `Are you sure you want to delete ${type}: ${this.props.document.name}?`
+        text: `Do you want to delete ${type}: ${this.props.document.name}?`
       }
     })
   }
@@ -279,7 +279,7 @@ export class DocumentMeta extends Component {
     ]
 
     const cancelButton = {
-      value: 'Cancel', type: 'button', otherProps: { 'aria-label': 'Close modal' }, onClick: this.onCloseModal
+      value: 'Cancel', type: 'button', otherProps: { 'aria-label': 'Close modal' }, onClick: this.onCloseModal, preferred: true
     }
 
     const modalAction = [
@@ -296,7 +296,8 @@ export class DocumentMeta extends Component {
       {
         value: 'Cancel',
         type: 'button',
-        onClick: this.onCancelDelete
+        onClick: this.onCancelDelete,
+        preferred: true
       },
       {
         value: 'Delete',

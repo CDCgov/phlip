@@ -1,127 +1,111 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import InputBox from 'components/InputBox'
-import RadioGroupValidation from 'components/SelectionControls/RadioGroupValidation'
-import CheckboxGroupValidation from 'components/SelectionControls/CheckboxGroupValidation'
-import Icon from 'components/Icon'
-import SimpleInput from 'components/SimpleInput'
-import Container, { Row, Column } from 'components/Layout'
-import * as questionTypes from '../../../../constants'
-import TextFieldQuestions from '../TextFieldQuestions'
-import Button from 'components/Button'
+import SelectionControlQuestion from './components/SelectionControlQuestion'
+import * as questionTypes from 'scenes/CodingValidation/constants'
+import TextFieldQuestions from './components/TextFieldQuestion'
 import ValidationTable from '../ValidationTable'
-import { FlexGrid, Typography } from 'components'
-import Tooltip from 'components/Tooltip'
-import { createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles'
+import { FlexGrid, Typography, Tooltip, Button, SimpleInput, Icon } from 'components'
+import { withStyles } from '@material-ui/core/styles'
+
+const styles = () => ({
+  hintTooltip: {
+    fontSize: '2em',
+    color: '#98b3be',
+    backgroundColor: '#f5f5f5',
+    width: 250,
+    maxWidth: 250
+  }
+})
 
 export const QuestionContent = props => {
   const {
     question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
     onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages,
-    onToggleAnswerForAnno, enabledAnswerChoice, areDocsEmpty
+    onToggleAnnotationMode, enabledAnswerId, enabledUserId, annotationModeEnabled, areDocsEmpty, classes,
+    onToggleCoderAnnotations, isValidatorSelected
   } = props
 
-  const questionAnswerPadding = {
-    paddingTop: 0,
-    paddingRight: 25,
-    paddingBottom: 15,
-    paddingLeft: (question.number && (question.number.split('.').length * 3) + 40) || 40
-  }
-
-  const answerPadding = {
-    ...questionAnswerPadding,
-    paddingLeft: 65 - questionAnswerPadding.paddingLeft
+  const commonQuestionProps = {
+    userImages,
+    question,
+    userAnswers,
+    disableAll,
+    areDocsEmpty,
+    choices: question.possibleAnswers,
+    mergedUserQuestions,
+    onToggleAnnotationMode,
+    enabledAnswerId,
+    enabledUserId,
+    annotationModeEnabled,
+    onToggleCoderAnnotations,
+    isValidatorSelected
   }
 
   const selectionFormProps = {
     choices: question.possibleAnswers,
-    userImages,
-    question,
     onChange,
-    userAnswers,
     onChangePincite: onChangeTextAnswer,
-    mergedUserQuestions,
-    disableAll,
-    onToggleAnswerForAnno,
-    enabledAnswerChoice,
-    areDocsEmpty
+    ...commonQuestionProps
   }
 
-  const theme = createMuiTheme({
-    overrides: {
-      MuiTooltip: {
-        tooltip: {
-          fontSize: '2em',
-          color: '#98b3be',
-          backgroundColor: '#f5f5f5',
-          width: 250,
-          maxWidth: 250
-        }
-      }
-    }
-  })
+  const textQuestionProps = {
+    ...commonQuestionProps,
+    onChange: onChangeTextAnswer,
+    answerId: question.possibleAnswers[0].id
+  }
 
   return (
-    <Container column flex style={{ flexWrap: 'nowrap', paddingBottom: 15, overflow: 'auto' }}>
-      <FlexGrid padding="20px 20px 10px 20px">
-        <FlexGrid align="baseline" container type="row">
-          <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
-          <Typography variant="body2" style={{ letterSpacing: 0 }}>{question.text}&nbsp;</Typography>
-          {question.hint && <MuiThemeProvider theme={theme}>
-            <Tooltip
-              placement='right'
-              title={
-                <Typography variant="body2" style={{ color: 'black' }}><strong>Coding Directions: </strong>{question.hint}</Typography>
-              }>
-              <FlexGrid container type='row' justify='center' style={{borderRadius: '50%',width: 25,height:25, background: '#DEDEDE', textAlign:'center', alignItems:'center'}}>
-                <Icon color="#00575D" size="14px">lightbulb_outline</Icon>
-              </FlexGrid>
-            </Tooltip>
-            </MuiThemeProvider>}
-        </FlexGrid>
+    <FlexGrid container type="row" padding="20px 20px 10px 20px" flex style={{ flexWrap: 'nowrap', overflow: 'auto' }}>
+      <FlexGrid container>
+        <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
       </FlexGrid>
-      <FlexGrid container flex style={{ ...questionAnswerPadding, flexBasis: '60%' }}>
-        <FlexGrid container type="row" style={{ ...answerPadding, paddingRight: 0, overflow: 'auto' }}>
-          {(question.questionType === questionTypes.MULTIPLE_CHOICE || question.questionType === questionTypes.BINARY)
-          && <RadioGroupValidation {...selectionFormProps} />}
-          {(question.questionType === questionTypes.CATEGORY || question.questionType === questionTypes.CHECKBOXES)
-          && <CheckboxGroupValidation {...selectionFormProps} />}
+      <FlexGrid container flex style={{ overflow: 'auto' }}>
+        <FlexGrid container type="row" align="flex-start">
+          <Typography
+            variant="body2"
+            style={{ letterSpacing: 0, lineHeight: '1.5em' }}>{question.text}&nbsp;</Typography>
+          {question.hint &&
+          <FlexGrid style={{ marginRight: 10 }}>
+            <Tooltip
+              placement="top"
+              overrideClasses={{ tooltip: classes.hintTooltip }}
+              title={
+                <Typography variant="body2" style={{ color: 'black' }}>
+                  <strong>Coding Directions:</strong>
+                  {question.hint}
+                </Typography>
+              }>
+              <Icon
+                style={{
+                  width: 25,
+                  height: 25,
+                  color: '#00575D',
+                  fontSize: 14,
+                  backgroundColor: '#DEDEDE',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '50%',
+                  display: 'flex'
+                }}>
+                lightbulb_outline
+              </Icon>
+            </Tooltip>
+          </FlexGrid>}
         </FlexGrid>
+        <FlexGrid container flex padding="25px 0" style={{ overflow: 'auto', minHeight: 'unset', width: '100%' }}>
+          {question.questionType !== questionTypes.TEXT_FIELD &&
+          <FlexGrid container type="row">
+            <SelectionControlQuestion {...selectionFormProps} />
+          </FlexGrid>}
 
-        {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions === null &&
-          <Column displayFlex style={{ ...answerPadding, paddingRight: 0 }}>
-            <InputBox
-              rows="7"
-              name="text-answer"
-              onChange={onChangeTextAnswer}
-              placeholder="Enter answer"
-              question={question}
-              value={userAnswers.answers[question.possibleAnswers[0].id]}
-              answerId={question.possibleAnswers[0].id}
-              disabled={disableAll}
-              onToggleAnswerForAnno={onToggleAnswerForAnno}
-              enabledAnswerChoice={enabledAnswerChoice}
-              areDocsEmpty={areDocsEmpty}
-            />
-          </Column>}
+          {question.questionType === questionTypes.TEXT_FIELD &&
+          <FlexGrid container type="row" style={{ minHeight: 'unset' }}>
+            <TextFieldQuestions {...textQuestionProps} />
+          </FlexGrid>}
 
-        {question.questionType === questionTypes.TEXT_FIELD && mergedUserQuestions !== null &&
-          <TextFieldQuestions
-            style={{ ...answerPadding, paddingRight: 0 }}
-            mergedUserQuestions={mergedUserQuestions}
-            validatorAnswer={userAnswers.answers[question.possibleAnswers[0].id]}
-            validator={userAnswers.validatedBy}
-            onChange={onChangeTextAnswer}
-            userImages={userImages}
-            question={question}
-            answerId={question.possibleAnswers[0].id}
-            disabled={disableAll}
-            areDocsEmpty={areDocsEmpty}
-          />
-        }
-        <Row style={{ ...answerPadding, paddingRight: 0, paddingTop: 0, paddingBottom: 0 }}>
-          {question.includeComment &&
-            <Row>
+          <FlexGrid padding="10px 0 0" style={{ minHeight: 'unset', margin: '0 10px' }}>
+            {question.includeComment &&
+            <FlexGrid>
               <SimpleInput
                 onChange={onChangeTextAnswer(null, 'comment')}
                 name="comment"
@@ -134,25 +118,26 @@ export const QuestionContent = props => {
                 label="Comment"
                 disabled={disableAll}
               />
-            </Row>}
-          {question.isCategoryQuestion &&
-            <Row displayFlex style={{ justifyContent: 'flex-start', paddingTop: 20 }}>
+            </FlexGrid>}
+            {question.isCategoryQuestion &&
+            <FlexGrid container type="row" flex justify="flex-start" padding="20px 0 0">
               <Button
                 onClick={onOpenAlert}
                 style={{ backgroundColor: 'white', color: 'black' }}
                 value="Apply to all tabs"
               />
-            </Row>}
-        </Row>
-      </FlexGrid>
+            </FlexGrid>}
+          </FlexGrid>
 
-      {isValidation && <ValidationTable
-        onOpenAlert={onOpenFlagConfirmAlert}
-        mergedUserQuestions={mergedUserQuestions}
-        questionFlags={question.flags}
-        userImages={userImages}
-      />}
-    </Container>
+          {isValidation && <ValidationTable
+            onOpenAlert={onOpenFlagConfirmAlert}
+            mergedUserQuestions={mergedUserQuestions}
+            questionFlags={question.flags}
+            userImages={userImages}
+          />}
+        </FlexGrid>
+      </FlexGrid>
+    </FlexGrid>
   )
 }
 
@@ -172,9 +157,11 @@ QuestionContent.propTypes = {
   onOpenAlert: PropTypes.func,
   onOpenFlagConfirmAlert: PropTypes.func,
   userImages: PropTypes.object,
-  onToggleAnswerForAnno: PropTypes.func,
-  enabledAnswerChoice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onToggleAnnotationMode: PropTypes.func,
+  enabledAnswerId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  enabledUserId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  annotationModeEnabled: PropTypes.bool,
   areDocsEmpty: PropTypes.bool
 }
 
-export default QuestionContent
+export default withStyles(styles)(QuestionContent)

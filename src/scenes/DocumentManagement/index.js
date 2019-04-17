@@ -260,7 +260,7 @@ export class DocumentManagement extends Component {
 
   render() {
     const cancelButton = {
-      value: 'Cancel', type: 'button', otherProps: { 'aria-label': 'Close modal' }, onClick: this.onCloseModal
+      value: 'Cancel', type: 'button', otherProps: { 'aria-label': 'Close modal' },preferred:true, onClick: this.onCloseModal
     }
 
     const modalAction = [
@@ -376,7 +376,7 @@ const mapStateToProps = state => {
     documents: docManage.main.documents.visible,
     checkedDocs: docManage.main.documents.checked,
     checkedCount: docManage.main.documents.checked.length,
-    docCount: docManage.main.documents.allIds.length,
+    docCount: docManage.main.matchedDocs.length !==0?docManage.main.matchedDocs.length:docManage.main.documents.allIds.length,
     page: docManage.main.page,
     rowsPerPage: docManage.main.rowsPerPage,
     allSelected: docManage.main.allSelected,

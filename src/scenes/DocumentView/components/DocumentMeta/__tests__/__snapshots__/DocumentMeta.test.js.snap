@@ -14,6 +14,7 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
+          "preferred": true,
           "type": "button",
           "value": "Cancel",
         },
@@ -668,6 +669,7 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
               "otherProps": Object {
                 "aria-label": "Close modal",
               },
+              "preferred": true,
               "type": "button",
               "value": "Cancel",
             },

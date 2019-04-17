@@ -59,12 +59,13 @@ export const withFormAlert = (WrappedComponent) => {
       if (shouldOpenAlert) {
         this.setState({
           open: true,
-          text: 'Your unsaved changes will be lost.',
+          text: 'You will lose unsaved changes. Do you want to continue?',
           actions: [
             {
               value: 'Cancel',
               type: 'button',
-              onClick: this.onClose
+              onClick: this.onClose,
+              preferred: true
             },
             {
               value: 'Continue',

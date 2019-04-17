@@ -9,7 +9,7 @@ import docManage from './DocumentManagement/reducer'
 import protocol from './Protocol/reducer'
 import docView from './DocumentView/reducer'
 import codingValidation from './CodingValidation/reducer'
-import * as types from 'data/user/actionTypes'
+import { types } from './actions'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 
 const INITIAL_STATE = {
@@ -29,7 +29,7 @@ const mainReducer = (state = INITIAL_STATE, action) => {
     case types.DOWNLOAD_PDF_FAIL:
       return {
         ...state,
-        pdfError: 'We failed to download the help guide.'
+        pdfError: 'We couldn\'t download the help guide.'
       }
 
     case types.DOWNLOAD_PDF_SUCCESS:

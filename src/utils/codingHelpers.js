@@ -316,7 +316,7 @@ export const handleUpdateUserAnswers = (state, action) => {
             schemeAnswerId: action.answerId,
             textAnswer: action.answerValue,
             pincite: currentUserAnswers[action.answerId] ? currentUserAnswers[action.answerId].pincite || '' : '',
-            annotations: []
+            annotations: currentUserAnswers[action.answerId] ? currentUserAnswers[action.answerId].annotations : []
           }
         }
       }
@@ -367,7 +367,6 @@ export const handleUpdateUserAnswers = (state, action) => {
             ? { validatedBy: action.otherProps.validatedBy }
             : {}
         }
-
     }
   }
 }
@@ -758,8 +757,8 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
     initialize = false
   }
 
-  if (initialize === true) {
-    if (combinedQuestion.isCategoryQuestion === true) {
+  if (initialize) {
+    if (combinedQuestion.isCategoryQuestion) {
       for (let question of codedQuestion) {
         if (question.hasOwnProperty('validatedBy')) {
           if (!checkIfExists(question.validatedBy, userImages, 'userId') &&

@@ -2,8 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import navStyles from './nav-styles.scss'
-import Icon from 'components/Icon'
-import Progress from 'components/Progress'
+import { Icon, Progress } from 'components'
 
 export const QuestionRow = ({ item, children, treeLength, onQuestionSelected }) => {
   let scaffold = []

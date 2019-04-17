@@ -15,14 +15,17 @@ export class PDFViewer extends Component {
     annotations: PropTypes.array,
     saveAnnotation: PropTypes.func,
     removeAnnotation: PropTypes.func,
-    onCheckTextContent: PropTypes.func
+    onCheckTextContent: PropTypes.func,
+    showAvatars: PropTypes.bool,
+    annotationModeEnabled: PropTypes.bool
   }
 
   static defaultProps = {
     annotations: [],
     document: {},
     allowSelection: false,
-    onCheckTextContent: () => {}
+    onCheckTextContent: () => {},
+    showAvatars: false
   }
 
   constructor(props, context) {
@@ -361,10 +364,10 @@ export class PDFViewer extends Component {
 
   render() {
     const { pages, pendingAnnotations, deleteAnnotationIndexes, alertConfirmOpen } = this.state
-    const { annotations, allowSelection } = this.props
+    const { annotations, allowSelection, showAvatars, annotationModeEnabled } = this.props
 
     const alertActions = [
-      { onClick: this.onCancelRemove, value: 'Cancel', type: 'button' },
+      { onClick: this.onCancelRemove, value: 'Cancel', type: 'button', preferred: true },
       { onClick: this.onRemoveAnnotation, value: 'Delete', type: 'button' }
     ]
 
@@ -394,7 +397,9 @@ export class PDFViewer extends Component {
               showConfirmDelete={this.confirmDelete}
               showDeleteIcon={this.showDeleteIcon}
               hideDeleteIcon={this.hideDeleteIcon}
+              annotationModeEnabled={annotationModeEnabled}
               confirmRemoveAnnotation={this.confirmRemoveAnnotation}
+              showAvatars={showAvatars}
               deleteAnnotationIndex={(Object.keys(deleteAnnotationIndexes).length > 0 &&
                 deleteAnnotationIndexes.hasOwnProperty(i))
                 ? deleteAnnotationIndexes[i]
@@ -404,7 +409,7 @@ export class PDFViewer extends Component {
           )
         })}
         <Alert actions={alertActions} open={alertConfirmOpen} title="Confirm deletion">
-          Are you sure you want to delete this annotation?
+          Do you want to delete this annotation?
         </Alert>
         {pages.length === 0 &&
         <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">

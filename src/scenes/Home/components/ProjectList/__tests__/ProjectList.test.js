@@ -18,7 +18,7 @@ const props = {
   sortBy: 'name',
   direction: 'asc',
   page: 0,
-  rowsPerPage: 10,
+  rowsPerPage: '10',
   count: 2,
   handleToggleBookmark: jest.fn(),
   handlePageChange: jest.fn(),

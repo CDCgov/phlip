@@ -68,7 +68,7 @@ const lockSchemeLogic = createLogic({
       dispatch({
         type: types.LOCK_SCHEME_FAIL,
         error: true,
-        payload: 'We couldn\'t lock the project coding scheme.'
+        payload: 'We couldn\'t lock the coding scheme.  Please try again later'
       })
     }
     done()

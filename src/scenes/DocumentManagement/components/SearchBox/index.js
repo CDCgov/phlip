@@ -53,6 +53,9 @@ export class SearchBox extends Component {
   }
 
   handleFormValueChange = (property, value) => {
+    if (property.includes('uploadedDate') && value === null) {
+      value = ''
+    }
     this.props.actions.updateFormValue(property, value)
   }
 
@@ -255,13 +258,15 @@ export class SearchBox extends Component {
       letterSpacing: .2,
       fontWeight: 300,
       fontSize: 13,
-      maxWidth: '8%',
+      // maxWidth: '9%',
       marginRight: 10
+      // paddingLeft: 5
     }
 
     const inputProps = {
       style: {
-        padding: 0
+        padding: 0,
+        fontSize: 13
       }
     }
 
@@ -345,60 +350,69 @@ export class SearchBox extends Component {
                       <Typography variant="body2" htmlFor="uploaded-within" style={formRowFontStyles}>
                         Uploaded Date
                       </Typography>
-                      <FlexGrid container flex type="row" style={{ width: '100%' }} justify="space-between">
-                        <Typography variant="body2" htmlFor="uploadedDate1Search" style={formRowFontStyles2}>
+                      <FlexGrid container flex type="row" style={{flexBasis: '100%', flexWrap:'wrap' }} justify="space-between" >
+                        <FlexGrid container flex type="row" justify="space-between" style={{width:'35%'}}>
+                          <Typography variant="body2" htmlFor="uploadedDate1Search" style={formRowFontStyles2}>
                           From:
-                        </Typography>
-                        <DatePicker
-                          name="uploadedDate1Search"
-                          dateFormat="MM/DD/YYYY"
-                          onChange={date => this.handleFormValueChange('uploadedDate1', date)}
-                          value={uploadedDate1}
-                          style={{ marginTop: 0, alignSelf: 'flex-start', paddingLeft: '0' }}
-                          containerProps={{ fullWidth: true }}
-                          fullWidth
-                          inputProps={inputProps}
-                          onOpen={this.handleOpenDatePicker1}
-                          onClose={this.handleCloseDatePicker1}
-                          InputAdornmentProps={{
-                            disableTypography: true,
-                            style: {
-                              height: 19,
-                              width: 19,
-                              margin: 0,
-                              marginRight: 15,
-                              alignItems: 'flex-end',
-                              marginBottom: -8
-                            }
-                          }}
-                        />
-                        <FlexGrid style={{ width: 50 }} />
-                        <Typography variant="body2" htmlFor="uploadedDate2Search" style={formRowFontStyles2}>
+                          </Typography>
+                          <DatePicker
+                            id="date1"
+                            name="uploadedDate1Search"
+                            dateFormat="MM/DD/YYYY"
+                            onChange={date => this.handleFormValueChange('uploadedDate1', date)}
+                            clearable
+                            value={uploadedDate1}
+                            style={{ marginTop: 0, alignSelf: 'flex-start', paddingLeft: '0' }}
+                            containerProps={{ fullWidth: true }}
+                            fullWidth
+                            inputProps={inputProps}
+                            onOpen={this.handleOpenDatePicker1}
+                            onClose={this.handleCloseDatePicker1}
+                            InputAdornmentProps={{
+                              disableTypography: true,
+                              style: {
+                                height: 19,
+                                width: 19,
+                                margin: 0,
+                                marginRight: 15,
+                                alignItems: 'flex-end',
+                                marginBottom: -8
+                              }
+                            }}
+                          />
+
+                        </FlexGrid>
+                        <FlexGrid style={{ width: '1%' }} />
+                        <FlexGrid container flex type="row" justify="space-between" style={{width:'35%'}}>
+                          <Typography variant="body2" htmlFor="uploadedDate2Search" style={formRowFontStyles2}>
                           To:
-                        </Typography>
-                        <DatePicker
-                          name="uploadedDate2Search"
-                          dateFormat="MM/DD/YYYY"
-                          onChange={date => this.handleFormValueChange('uploadedDate2', date)}
-                          value={uploadedDate2}
-                          style={{ marginTop: 0, alignSelf: 'flex-end', paddingLeft: '30' }}
-                          containerProps={{ fullWidth: true }}
-                          inputProps={inputProps}
-                          fullWidth={true}
-                          onOpen={this.handleOpenDatePicker2}
-                          onClose={this.handleCloseDatePicker2}
-                          InputAdornmentProps={{
-                            disableTypography: true,
-                            style: {
-                              height: 19,
-                              width: 19,
-                              margin: 0,
-                              marginRight: 15,
-                              alignItems: 'flex-end',
-                              marginBottom: -8
-                            }
-                          }}
-                        />
+                          </Typography>
+                          <DatePicker
+                            id = "date2"
+                            name="uploadedDate2Search"
+                            dateFormat="MM/DD/YYYY"
+                            onChange={date => this.handleFormValueChange('uploadedDate2', date)}
+                            clearable
+                            value={uploadedDate2}
+                            style={{ marginTop: 0, alignSelf: 'flex-end', paddingLeft: '30' }}
+                            containerProps={{ fullWidth: true }}
+                            inputProps={inputProps}
+                            fullWidth={true}
+                            onOpen={this.handleOpenDatePicker2}
+                            onClose={this.handleCloseDatePicker2}
+                            InputAdornmentProps={{
+                              disableTypography: true,
+                              style: {
+                                height: 19,
+                                width: 19,
+                                margin: 0,
+                                marginRight: 15,
+                                alignItems: 'flex-end',
+                                marginBottom: -8
+                              }
+                            }}
+                          />
+                        </FlexGrid>
                       </FlexGrid>
                     </FlexGrid>
                     <FlexGrid container type="row" style={formRowStyles}>

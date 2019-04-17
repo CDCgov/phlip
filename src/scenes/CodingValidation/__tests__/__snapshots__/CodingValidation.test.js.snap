@@ -4,7 +4,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
 <FlexGrid
   align="stretch"
   circular={false}
-  className=""
+  className="undefined"
   container={true}
   flex={true}
   justify="stretch"
@@ -27,6 +27,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
+          "preferred": true,
           "type": "button",
           "value": "Cancel",
         },
@@ -48,7 +49,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       }
       variant="body1"
     >
-      You are applying your answer to ALL categories. Previously answered questions will be changed.
+      Your answer will apply to ALL categories. Previous answers will be overwritten.
     </WithStyles(Typography)>
   </Alert>
   <Alert
@@ -56,6 +57,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
+          "preferred": true,
           "type": "button",
           "value": "Cancel",
         },
@@ -77,7 +79,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       }
       variant="body1"
     >
-      Your answer to this question is still being saved. If you continue, your changes might not be saved.
+      We haven't finished saving your answer. If you continue, your changes might not be saved.
     </WithStyles(Typography)>
   </Alert>
   <ApiErrorAlert
@@ -99,12 +101,6 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
     content={null}
     onCloseAlert={[Function]}
     open={false}
-  />
-  <Connect(WithStyles(Navigator))
-    handleQuestionSelected={[Function]}
-    open={false}
-    page="coding"
-    selectedCategory={null}
   />
   <FlexGrid
     align="stretch"
@@ -177,43 +173,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
           raised={false}
           style={Object {}}
           type="column"
-        >
-          <WithStyles(Tooltip)
-            id="toggle-navigator"
-            placement="right"
-            text="Toggle Navigator"
-          >
-            <WithStyles(Button)
-              aria-label="Toggle Navigator"
-              onClick={[Function]}
-              style={
-                Object {
-                  "backgroundColor": "#bdbdbd",
-                  "borderRadius": "0 5px 5px 0",
-                  "boxShadow": "0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)",
-                  "color": "#424242",
-                  "height": 90,
-                  "minHeight": "unset",
-                  "minWidth": "unset",
-                  "padding": 0,
-                  "top": "35%",
-                  "width": 20,
-                }
-              }
-            >
-              <WithTheme(Icon)
-                color="#424242"
-                style={
-                  Object {
-                    "transform": "rotate(90deg)",
-                  }
-                }
-              >
-                menu
-              </WithTheme(Icon)>
-            </WithStyles(Button)>
-          </WithStyles(Tooltip)>
-        </FlexGrid>
+        />
         <FlexGrid
           align="stretch"
           circular={false}
@@ -244,7 +204,6 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
             onOpenFlagConfirmAlert={[Function]}
             onSave={[Function]}
             onSaveFlag={[Function]}
-            onToggleAnswerForAnno={[Function]}
             page="coding"
             showNextButton={false}
             totalLength={1}
@@ -337,6 +296,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
+          "preferred": true,
           "type": "button",
           "value": "Cancel",
         },

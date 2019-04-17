@@ -54,7 +54,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
           onChangePage={[Function]}
           onChangeRowsPerPage={[Function]}
           page={0}
-          rowsPerPage={10}
+          rowsPerPage="10"
         />
       </WithStyles(TableRow)>
     </WithStyles(TableFooter)>

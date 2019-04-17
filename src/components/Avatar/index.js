@@ -1,32 +1,35 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { default as MuiAvatar } from '@material-ui/core/Avatar'
-import { withTheme } from '@material-ui/core/styles'
+import theme from 'services/theme'
 
 /**
  * @component
  * Shows an circular avatar with initials or img
  */
-export const Avatar = ({ big, avatar, initials, style, theme, cardAvatar, userName, ...otherProps }) => {
-  const styles = {
-    color: 'white',
-    backgroundColor: theme.palette.secondary.main,
-    width: big ? '45px' : '30px',
-    height: big ? '45px' : '30px',
-    fontSize: '1rem',
-    borderColor: theme.palette.secondary.main,
+export const Avatar = ({ big, small, avatar, initials, style, cardAvatar, userName, ...otherProps }) => {
+  const dim = big ? '45px' : small ? '20px' : cardAvatar ? '38px' : '30px'
+
+  const common = {
+    width: dim,
+    height: dim,
+    fontSize: small ? '.75rem' : '1rem',
     ...style
   }
 
+  const styles = {
+    color: 'white',
+    backgroundColor: theme.palette.secondary.main,
+    borderColor: theme.palette.secondary.main,
+    ...common
+  }
+
   const cardAvatarStyles = {
-    marginRight: '-6px',
+    marginRight: '-4px',
     border: 'solid 3px white',
     boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.19)',
-    width: '38px',
-    height: '38px',
     backgroundColor: theme.palette.secondary.main,
-    fontSize: '1rem',
-    ...style
+    ...common
   }
 
   return avatar
@@ -36,7 +39,7 @@ export const Avatar = ({ big, avatar, initials, style, theme, cardAvatar, userNa
       {...otherProps}
       src={avatar}
     />
-    : <MuiAvatar style={cardAvatar ? cardAvatarStyles : styles} {...otherProps}>{initials ? initials : ''}</MuiAvatar>
+    : <MuiAvatar style={cardAvatar ? cardAvatarStyles : styles} {...otherProps}>{initials}</MuiAvatar>
 }
 
 Avatar.propTypes = {
@@ -53,7 +56,7 @@ Avatar.propTypes = {
   /**
    * Initials of user, if avatar img src is undefined
    */
-  initials: PropTypes.string,
+  initials: PropTypes.any,
 
   /**
    * Can override any default style
@@ -85,4 +88,4 @@ Avatar.defaultProps = {
   userName: ''
 }
 
-export default withTheme()(Avatar)
+export default Avatar

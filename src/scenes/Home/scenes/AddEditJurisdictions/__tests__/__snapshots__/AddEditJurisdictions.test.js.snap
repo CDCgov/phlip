@@ -102,6 +102,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
         Array [
           Object {
             "onClick": [Function],
+            "preferred": true,
             "type": "button",
             "value": "Cancel",
           },
@@ -123,8 +124,8 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
         }
         variant="body1"
       >
-        Are you sure you want to delete the jurisdiction, 
-        , from the project? All coded questions related to this jurisdiction will be deleted.
+        Are you sure you want to delete 
+        ? All coded questions related to this jurisdiction will be deleted.
       </WithStyles(Typography)>
     </Alert>
     <ApiErrorAlert

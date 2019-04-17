@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`QuestionCard - QuestionContent - TextFieldQuestion should render correctly 1`] = `
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={true}
+  flex={true}
+  justify="stretch"
+  padding={0}
+  raised={false}
+  style={Object {}}
+  type="column"
+>
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={true}
+    flex={false}
+    justify="stretch"
+    padding="25px 15px"
+    raised={false}
+    style={
+      Object {
+        "alignSelf": "stretch",
+        "backgroundColor": "white",
+        "margin": "0 10px",
+      }
+    }
+    type="column"
+  >
+    <WithStyles(InputBox)
+      disabled={false}
+      name="text-answer"
+      placeholder="Enter answer"
+      rows={7}
+      value=""
+    />
+  </FlexGrid>
+</FlexGrid>
+`;

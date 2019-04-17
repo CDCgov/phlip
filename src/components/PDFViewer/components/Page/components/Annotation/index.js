@@ -1,9 +1,14 @@
 import React, { Fragment, PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { IconButton } from 'components'
+import { IconButton, Avatar } from 'components'
 import { Util as dom_utils } from 'pdfjs-dist/lib/shared/util'
+import { connect } from 'react-redux'
 
 export class Annotation extends PureComponent {
+  static defaultProps = {
+    showAvatar: false
+  }
+
   static propTypes = {
     annotation: PropTypes.object,
     index: PropTypes.number,
@@ -14,19 +19,36 @@ export class Annotation extends PureComponent {
     handleCancelAnnotation: PropTypes.func,
     handleRemoveAnnotation: PropTypes.func,
     handleClickAnnotation: PropTypes.func,
-    transform: PropTypes.array
+    annotationModeEnabled: PropTypes.bool,
+    transform: PropTypes.array,
+    showAvatar: PropTypes.bool,
+    user: PropTypes.object,
+    closeToOthers: PropTypes.number
   }
 
   constructor(props, context) {
     super(props, context)
   }
 
+  getColor = (userId, name) => {
+    const str = `${name}:${userId}`
+    let hash = 0
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash)
+    }
+
+    const c = (hash & 0x00FFFFFF).toString(16).toUpperCase()
+    return `#${'00000'.substring(0, 6 - c.length) + c}`
+  }
+
   shouldShowActions = rectIndex => {
-    const { annotation, pageNumber, pending, isClicked } = this.props
-    return ((rectIndex === annotation.rects.length - 1) && annotation.endPage === pageNumber)
-      ? pending
-        ? true
-        : isClicked
+    const { annotation, pageNumber, pending, isClicked, annotationModeEnabled } = this.props
+    return annotationModeEnabled
+      ? ((rectIndex === annotation.rects.length - 1) && annotation.endPage === pageNumber)
+        ? pending
+          ? true
+          : isClicked
+        : false
       : false
   }
 
@@ -47,17 +69,34 @@ export class Annotation extends PureComponent {
 
   render() {
     const {
-      annotation, index, pending,
-      handleConfirmAnnotation, handleCancelAnnotation,
-      handleRemoveAnnotation, handleClickAnnotation
+      annotation, index, pending, handleConfirmAnnotation, handleCancelAnnotation, handleRemoveAnnotation,
+      handleClickAnnotation, showAvatar, user, annotationModeEnabled, closeToOthers
     } = this.props
 
     const key = `${pending ? 'pending' : 'saved'}-highlight-area-${index}`
 
     return annotation.rects.map((rect, j) => {
       const { left, top, height, width, bounds } = this.getBounds(rect.pdfPoints)
-
       const iconStyle = { height: 25, width: 25, borderRadius: 0 }
+      const highlightStyle = {
+        opacity: 0.2,
+        position: 'absolute',
+        zIndex: 3,
+        cursor: annotationModeEnabled ? 'pointer' : 'default',
+        width,
+        left,
+        top,
+        height,
+        backgroundColor: user ? this.getColor(user.id, user.username) : '#00e0ff'
+      }
+
+      const avatarLocation = {
+        left: (left - 10) - (closeToOthers * 20),
+        top: top - 18,
+        position: 'absolute',
+        width: 20,
+        zIndex: 4
+      }
 
       const iconLocation = {
         left: pending ? bounds[2] - 53 : bounds[2] - 24,
@@ -70,7 +109,17 @@ export class Annotation extends PureComponent {
 
       return (
         <Fragment key={`${key}-${j}`}>
-          <div style={{ left, top, height, width }} onClick={() => pending ? null : handleClickAnnotation(index)} />
+          {(j === 0 && showAvatar) &&
+          <div style={avatarLocation} className="annotation-avatar">
+            <Avatar
+              initials={user.initials}
+              avatar={user.avatar}
+              small
+              style={{ backgroundColor: '#e9e9e9', color: 'black' }}
+              userName={user.username}
+            />
+          </div>}
+          <div style={highlightStyle} onClick={() => pending ? null : handleClickAnnotation(index)} />
           {this.shouldShowActions(j) &&
           <div key={`${key}-${index}-${j}-actions`} className="iconActions" style={iconLocation}>
             <IconButton
@@ -92,4 +141,12 @@ export class Annotation extends PureComponent {
   }
 }
 
-export default Annotation
+/* istanbul ignore next */
+const mapStateToProps = (state, ownProps) => {
+  return {
+    ...ownProps,
+    user: state.data.user.byId[ownProps.annotation.userId]
+  }
+}
+
+export default connect(mapStateToProps)(Annotation)

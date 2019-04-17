@@ -1,7 +1,7 @@
 import { persistReducer } from 'redux-persist'
 import { combineReducers } from 'redux'
 import storage from 'redux-persist/lib/storage/session'
-import user from './user/reducer'
+import user from './users/reducer'
 import projects from './projects/reducer'
 import jurisdictions from './jurisdictions/reducer'
 

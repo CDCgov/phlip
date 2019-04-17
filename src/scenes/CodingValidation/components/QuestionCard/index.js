@@ -5,13 +5,14 @@ import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import { getInitials } from 'utils/normalize'
 import { connect } from 'react-redux'
-import { Card, IconButton, Tabs, Alert, PageLoader } from 'components'
-import { Row, Column } from 'components/Layout'
+import { IconButton, Tabs, Alert, PageLoader, FlexGrid } from 'components'
 import styles from './card-styles.scss'
 import * as questionTypes from '../../constants'
 import FlagPopover from './components/FlagPopover'
 import FooterNavigate from './components/FooterNavigate'
 import QuestionContent from './components/QuestionContent'
+import { bindActionCreators } from 'redux'
+import actions from 'scenes/CodingValidation/actions'
 
 const TabContainer = props => {
   return (
@@ -46,8 +47,11 @@ export class QuestionCard extends Component {
     unsavedChanges: PropTypes.bool,
     saveFailed: PropTypes.bool,
     hasTouchedQuestion: PropTypes.bool,
-    enabledAnswerChoice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    areDocsEmpty: PropTypes.bool
+    enabledAnswerId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    enabledUserId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    annotationModeEnabled: PropTypes.bool,
+    areDocsEmpty: PropTypes.bool,
+    actions: PropTypes.object
   }
 
   constructor(props, context) {
@@ -64,15 +68,13 @@ export class QuestionCard extends Component {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.unsavedChanges === true) {
+  componentDidUpdate(prevProps) {
+    if (!prevProps.unsavedChanges && this.props.unsavedChanges) {
       this.setState({
         isSaving: true
       })
       clearTimeout()
-    }
-
-    if (this.props.unsavedChanges === true && nextProps.unsavedChanges === false) {
+    } else if (prevProps.unsavedChanges && !this.props.unsavedChanges) {
       setTimeout(() => {
         this.setState({
           isSaving: false
@@ -89,15 +91,16 @@ export class QuestionCard extends Component {
     if (question.questionType === questionTypes.CATEGORY) {
       if (userAnswers.answers.hasOwnProperty(id)) {
         open = true
-        text = 'Unselecting a category will remove any answers associated to this category. Do you wish to continue?'
+        text = 'Deselecting a category will remove any answers associated with this category. Do you want to continue?'
       }
     } else {
-      text = 'Changing your answer will remove any pincites and annotations for the currently selected answer. Do you want to continue?'
+      text = 'Changing your answer will remove any pincites and annotations associated with this answer. Do you want to continue?'
 
       if (question.questionType !== questionTypes.TEXT_FIELD) {
         if (Object.keys(userAnswers.answers).length > 0) {
           if (!userAnswers.answers.hasOwnProperty(id) &&
-            (question.questionType === questionTypes.MULTIPLE_CHOICE || question.questionType === questionTypes.BINARY)) {
+            (question.questionType === questionTypes.MULTIPLE_CHOICE || question.questionType ===
+              questionTypes.BINARY)) {
             open = true
           } else if (userAnswers.answers.hasOwnProperty(id) && question.questionType === questionTypes.CHECKBOXES) {
             open = true
@@ -157,41 +160,74 @@ export class QuestionCard extends Component {
         : 0
   }
 
+  /**
+   * Opens an alert asking user to confirm clearing answer
+   */
   onClearAnswer = () => {
     this.setState({
       clearAnswerAlertOpen: true
     })
   }
 
-  onToggleAnswerForAnno = id => () => {
-    this.props.onToggleAnswerForAnno(id)
+  /**
+   * Enables annotation mode
+   * @param id
+   * @returns {Function}
+   */
+  onToggleAnnotationMode = id => () => {
+    const { annotationModeEnabled, enabledAnswerId, question, actions } = this.props
+
+    const enabled = annotationModeEnabled
+      ? enabledAnswerId !== id
+      : true
+
+    actions.toggleAnnotationMode(question.id, id, enabled)
+  }
+
+  onToggleCoderAnnotations = (id, userId, isValidatorSelected) => () => {
+    this.props.actions.toggleCoderAnnotations(this.props.question.id, id, userId, isValidatorSelected)
   }
 
   render() {
+    const {
+      onChangeTextAnswer, onOpenFlagConfirmAlert, user, question, onOpenAlert, userAnswers, isValidation,
+      mergedUserQuestions, disableAll, userImages, enabledAnswerId, enabledUserId, annotationModeEnabled,
+      areDocsEmpty, questionChangeLoader, hasTouchedQuestion, categories, saveFailed, onClearAnswer, onSaveFlag,
+      selectedCategory, onChangeCategory, currentIndex, getNextQuestion, getPrevQuestion, totalLength, showNextButton,
+      isValidatorSelected
+    } = this.props
+
     const questionContentProps = {
       onChange: this.onChangeAnswer,
-      onChangeTextAnswer: this.props.onChangeTextAnswer,
-      onOpenFlagConfirmAlert: this.props.onOpenFlagConfirmAlert,
-      currentUserInitials: getInitials(this.props.user.firstName, this.props.user.lastName),
-      user: this.props.user,
-      question: this.props.question,
-      onOpenAlert: this.props.onOpenAlert,
-      userAnswers: { validatedBy: { ...this.props.user }, ...this.props.userAnswers },
-      comment: this.props.userAnswers.comment,
-      isValidation: this.props.isValidation,
-      mergedUserQuestions: this.props.mergedUserQuestions,
-      disableAll: this.props.disableAll,
-      userImages: this.props.userImages,
-      onToggleAnswerForAnno: this.onToggleAnswerForAnno,
-      enabledAnswerChoice: this.props.enabledAnswerChoice,
-      areDocsEmpty: this.props.areDocsEmpty
+      onChangeTextAnswer: onChangeTextAnswer,
+      onOpenFlagConfirmAlert: onOpenFlagConfirmAlert,
+      currentUserInitials: getInitials(user.firstName, user.lastName),
+      user,
+      question,
+      onOpenAlert,
+      userAnswers: { validatedBy: { ...user }, ...userAnswers },
+      comment: userAnswers.comment,
+      isValidation,
+      mergedUserQuestions,
+      disableAll,
+      userImages,
+      onToggleAnnotationMode: this.onToggleAnnotationMode,
+      onToggleCoderAnnotations: this.onToggleCoderAnnotations,
+      isValidatorSelected,
+      enabledAnswerId,
+      enabledUserId,
+      annotationModeEnabled,
+      areDocsEmpty
     }
+
+    const { confirmAlertInfo, confirmAlertOpen, clearAnswerAlertOpen, isSaving } = this.state
 
     const alertActions = [
       {
         value: 'Cancel',
         type: 'button',
-        onClick: this.onCancel
+        onClick: this.onCancel,
+        preferred: true
       },
       {
         value: 'Continue',
@@ -204,87 +240,90 @@ export class QuestionCard extends Component {
       {
         value: 'Cancel',
         type: 'button',
-        onClick: this.onCancel
+        onClick: this.onCancel,
+        preferred: true
       },
       {
-        value: 'Clear answer',
+        value: 'Continue',
         type: 'button',
         onClick: () => {
           this.onCancel()
-          this.props.onClearAnswer()
+          onClearAnswer()
         }
       }
     ]
 
     return (
-      <Row displayFlex style={{ flex: 1, width: '50%', minWidth: '10%' }}>
-        <Alert actions={alertActions} title={this.state.confirmAlertInfo.title} open={this.state.confirmAlertOpen}>
+      <FlexGrid container type="row" flex style={{ width: '50%', minWidth: '10%' }}>
+        <Alert actions={alertActions} title={confirmAlertInfo.title} open={confirmAlertOpen}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            {this.state.confirmAlertInfo.text}
+            {confirmAlertInfo.text}
           </Typography>
         </Alert>
-        <Alert actions={clearAnswerActions} open={this.state.clearAnswerAlertOpen}>
+        <Alert actions={clearAnswerActions} open={clearAnswerAlertOpen}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             Are you sure you want to clear your answer to this question?
           </Typography>
         </Alert>
-        <Column component={<Card />} displayFlex flex style={{ width: '100%' }}>
-          {this.props.questionChangeLoader === true
+        <FlexGrid container flex raised style={{ width: '100%' }}>
+          {questionChangeLoader
             ? <PageLoader circularLoaderProps={{ color: 'primary', size: 50 }} />
             : <>
-              <Row displayFlex style={{ alignItems: 'center', height: 55, paddingRight: 15 }}>
-                <Row style={{ width: '100%' }}>
-                  {this.props.hasTouchedQuestion &&
+              <FlexGrid container type="row" align="center" padding="0 15px 0 0" style={{ height: 55, minHeight: 55 }}>
+                <FlexGrid flex style={{ width: '100%' }}>
+                  {hasTouchedQuestion &&
                   <Typography variant="caption" style={{ paddingLeft: 10, textAlign: 'center', color: '#757575' }}>
-                    {this.props.saveFailed ? 'Save failed!' : this.state.isSaving ? 'Saving...' : 'All changes saved'}
+                    {saveFailed ? 'Save failed!' : isSaving ? 'Saving...' : 'All changes saved'}
                   </Typography>}
-                </Row>
-                <Row displayFlex style={{ marginLeft: this.getMargin() }}>
-                  {this.props.question.questionType !== questionTypes.CATEGORY &&
+                </FlexGrid>
+                <FlexGrid container type="row" style={{ marginLeft: this.getMargin() }}>
+                  {question.questionType !== questionTypes.CATEGORY &&
                   <IconButton
                     onClick={this.onClearAnswer}
                     aria-label="Clear answer"
                     tooltipText="Clear answer"
                     id="clear-answer"
                     style={{ height: 24 }}>
-                    {!this.props.disableAll && <Broom className={styles.icon} aria-labelledby="Clear answer" />}
+                    {!disableAll && <Broom className={styles.icon} aria-labelledby="Clear answer" />}
                   </IconButton>}
-                  {!this.props.isValidation && <FlagPopover
-                    userFlag={this.props.userAnswers.flag}
-                    onSaveFlag={this.props.onSaveFlag}
-                    questionFlags={this.props.question.flags}
-                    user={this.props.user}
-                    disableAll={this.props.disableAll}
+                  {!isValidation && <FlagPopover
+                    userFlag={userAnswers.flag}
+                    onSaveFlag={onSaveFlag}
+                    questionFlags={question.flags}
+                    user={user}
+                    disableAll={disableAll}
                   />}
-                </Row>
-              </Row>
+                </FlexGrid>
+              </FlexGrid>
               <Divider />
-              {this.props.categories !== undefined
+              {categories !== undefined
                 ? (
                   <TabContainer
-                    tabs={this.props.categories}
-                    selected={this.props.selectedCategory}
-                    onChangeCategory={this.props.onChangeCategory}>
+                    tabs={categories}
+                    selected={selectedCategory}
+                    onChangeCategory={onChangeCategory}>
                     <QuestionContent {...questionContentProps} />
                   </TabContainer>
                 ) : <QuestionContent {...questionContentProps} />}
               <Divider />
               <FooterNavigate
-                currentIndex={this.props.currentIndex}
-                getNextQuestion={this.props.getNextQuestion}
-                getPrevQuestion={this.props.getPrevQuestion}
-                totalLength={this.props.totalLength}
-                showNextButton={this.props.showNextButton}
+                currentIndex={currentIndex}
+                getNextQuestion={getNextQuestion}
+                getPrevQuestion={getPrevQuestion}
+                totalLength={totalLength}
+                showNextButton={showNextButton}
               />
             </>}
-        </Column>
-      </Row>
+        </FlexGrid>
+      </FlexGrid>
     )
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.coding
+  const docState = state.scenes.codingValidation.documentList
+
   return {
     isValidation: ownProps.page === 'validation',
     user: state.data.user.currentUser || {},
@@ -303,16 +342,22 @@ const mapStateToProps = (state, ownProps) => {
         : pageState.mergedUserQuestions[pageState.question.id]
       : null,
     disableAll: pageState.codedQuestionsError !== null || false,
-    userImages: pageState.userImages,
     questionChangeLoader: pageState.questionChangeLoader || false,
     isChangingQuestion: pageState.isChangingQuestion || false,
     unsavedChanges: pageState.unsavedChanges || false,
     saveFailed: pageState.saveFailed || false,
     hasTouchedQuestion: pageState.hasTouchedQuestion || false,
-    enabledAnswerChoice: pageState.enabledAnswerChoice || null,
-    areDocsEmpty: state.scenes.codingValidation.documentList.showEmptyDocs || false
+
+    userImages: state.data.user.byId,
+    enabledAnswerId: docState.enabledAnswerId,
+    enabledUserId: docState.enabledUserId,
+    annotationModeEnabled: docState.annotationModeEnabled,
+    isValidatorSelected: docState.isValidatorSelected,
+    areDocsEmpty: docState.showEmptyDocs
   }
 }
 
-export default connect(mapStateToProps)(QuestionCard)
+const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
+
+export default connect(mapStateToProps, mapDispatchToProps)(QuestionCard)
 

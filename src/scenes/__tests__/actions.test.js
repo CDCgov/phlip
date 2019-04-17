@@ -1,7 +1,6 @@
-import * as actions from '../actions'
-import * as types from '../actionTypes'
+import actions, { types } from '../actions'
 
-describe('User action creators', () => {
+describe('Base scene action creators', () => {
   test('should create an action to toggle menu', () => {
     const expectedAction = {
       type: types.TOGGLE_MENU
@@ -14,14 +13,6 @@ describe('User action creators', () => {
       type: types.CLOSE_MENU
     }
     expect(actions.closeMenu()).toEqual(expectedAction)
-  })
-
-  test('should create an action to logout user', () => {
-    const expectedAction = {
-      type: types.LOGOUT_USER,
-      sessionExpired: false
-    }
-    expect(actions.logoutUser()).toEqual(expectedAction)
   })
 
   test('should create an action to flush state', () => {
