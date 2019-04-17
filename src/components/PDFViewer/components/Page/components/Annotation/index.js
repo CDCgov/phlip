@@ -91,10 +91,10 @@ export class Annotation extends PureComponent {
       }
 
       const avatarLocation = {
-        left: left - (closeToOthers * 30),
-        top: top - 30,
+        left: (left - 10) - (closeToOthers * 20),
+        top: top - 18,
         position: 'absolute',
-        width: 36,
+        width: 20,
         zIndex: 4
       }
 
@@ -112,10 +112,10 @@ export class Annotation extends PureComponent {
           {(j === 0 && showAvatar) &&
           <div style={avatarLocation} className="annotation-avatar">
             <Avatar
-              cardAvatar
               initials={user.initials}
               avatar={user.avatar}
-              style={{ width: 30, height: 30 }}
+              small
+              style={{ backgroundColor: '#e9e9e9', color: 'black' }}
               userName={user.username}
             />
           </div>}

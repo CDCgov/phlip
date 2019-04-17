@@ -16,7 +16,12 @@ const PinciteAvatar = ({ answerObj, user, size }) => {
       aria-label={`${user.username}'s pincite: ${answerObj.pincite}`}
       userName={user.username}
       small={size === 'small'}
-      style={{ margin: '0 10px 0 0', fontSize: size === 'big' ? '1rem' : '.5rem', outline: 0 }}
+      style={{
+        margin: '0 10px 0 0',
+        outline: 0,
+        backgroundColor: '#e9e9e9',
+        color: 'black'
+      }}
     />
   )
 }

@@ -226,7 +226,7 @@ export class Page extends Component {
                 handleClickAnnotation={this.onClickAnnotation}
                 handleRemoveAnnotation={this.confirmRemoveAnnotation}
                 pending={false}
-                closeToOthers={closeAnnos.length + 1}
+                closeToOthers={closeAnnos.length}
                 isClicked={deleteAnnotationIndex === i}
                 transform={renderContext.viewport.transform}
                 showAvatar={showAvatars}

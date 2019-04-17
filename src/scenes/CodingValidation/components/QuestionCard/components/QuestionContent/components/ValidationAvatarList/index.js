@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FlexGrid, Avatar, Icon } from 'components'
+import { FlexGrid, Avatar, Icon, Tooltip } from 'components'
 import theme from 'services/theme'
 
 export const ValidationAvatarList = props => {
@@ -45,36 +45,42 @@ export const ValidationAvatarList = props => {
         }
 
         return (
-          answer.isValidatorAnswer
-            ? (
-              <FlexGrid key={`validator-avatar-${i}`} container align="flex-end" style={{ position: 'relative' }}>
-                <Avatar {...avatarProps} />
-                <Avatar
-                  style={{
-                    position: 'absolute',
-                    width: 12,
-                    height: 12,
-                    backgroundColor: '#80d134',
-                    border: '2px solid white',
-                    top: 18,
-                    left: 20
-                  }}
-                  cardAvatar={true}
-                  initials={<Icon size="12px" color="white" style={{ fontWeight: 800 }}>check</Icon>}
-                />
-              </FlexGrid>
-            )
-            : <Avatar key={`user-answer-${i}`} {...avatarProps} />
+          <Tooltip text={user.username} key={`user-answer-${answer.schemeAnswerId}-${i}`}>
+            {answer.isValidatorAnswer
+              ? (
+                <FlexGrid container align="flex-end" style={{ position: 'relative' }}>
+                  <Avatar {...avatarProps} />
+                  <Avatar
+                    style={{
+                      position: 'absolute',
+                      width: 12,
+                      height: 12,
+                      backgroundColor: '#80d134',
+                      border: '2px solid white',
+                      top: 18,
+                      left: 20
+                    }}
+                    cardAvatar={true}
+                    initials={<Icon size="12px" color="white" style={{ fontWeight: 800 }}>check</Icon>}
+                  />
+                </FlexGrid>
+              )
+              : <Avatar {...avatarProps} />
+            }
+          </Tooltip>
         )
       })}
-      {showAllAvatar && <Avatar
-        style={(enabledUserId === 'All' && answerId === enabledAnswerId) ? selectedStyle : avatarStyle}
-        avatar=""
-        initials="All"
-        key="user-avatar-all-selected"
-        onClick={handleClickAvatar(answerId, 'All', false)}
-        userName="All"
-      />}
+      {showAllAvatar &&
+      <Tooltip text="Show all annotations">
+        <Avatar
+          style={(enabledUserId === 'All' && answerId === enabledAnswerId) ? selectedStyle : avatarStyle}
+          avatar=""
+          initials="All"
+          key="user-avatar-all-selected"
+          onClick={handleClickAvatar(answerId, 'All', false)}
+          userName="All"
+        />
+      </Tooltip>}
     </FlexGrid>
   )
 }
