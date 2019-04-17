@@ -56,7 +56,7 @@ Avatar.propTypes = {
   /**
    * Initials of user, if avatar img src is undefined
    */
-  initials: PropTypes.string,
+  initials: PropTypes.any,
 
   /**
    * Can override any default style

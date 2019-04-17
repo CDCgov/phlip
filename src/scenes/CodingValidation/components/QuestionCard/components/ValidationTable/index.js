@@ -62,7 +62,6 @@ export const ValidationTable = props => {
                 padding="0 12px 0 0"
                 style={{ flexBasis: '30%', flexGrow: 1 }}>
                 <Avatar
-                  cardAvatar
                   style={{ marginRight: 10 }}
                   initials={user.initials}
                   userName={user.username}

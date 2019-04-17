@@ -80,7 +80,7 @@ export const SelectionControlQuestion = props => {
               />
 
               <FlexGrid container padding="0 0 0 32px">
-                <FlexGrid container type="row" padding="8px 10px 8px 0">
+                <FlexGrid container type="row" padding="5px 10px 5px 0">
                   {(list.length > 0 && isValidation) && <ValidationAvatarList
                     userImages={userImages}
                     answerList={list}

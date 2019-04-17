@@ -11,7 +11,6 @@ import theme from 'services/theme'
 const PinciteAvatar = ({ answerObj, user, size }) => {
   return (
     <Avatar
-      cardAvatar
       avatar={user.avatar}
       initials={user.initials}
       aria-label={`${user.username}'s pincite: ${answerObj.pincite}`}
@@ -136,7 +135,7 @@ export class PinciteList extends Component {
                   text={answer.pincite}
                   onCopy={hasPincite && this.handlePinciteCopy}
                   key={`${user.username}-pincite`}>
-                  <FlexGrid container type="row" align="center" style={{ cursor: 'pointer', marginBottom: 3 }}>
+                  <FlexGrid container type="row" align="center" style={{ cursor: 'pointer', marginBottom: 6 }}>
                     {showAvatar && <PinciteAvatar answerObj={answer} user={user} size={avatarSize} />}
                     <Typography
                       align="center"
@@ -152,7 +151,7 @@ export class PinciteList extends Component {
               )
             })}
             {isAnswered &&
-            <FlexGrid container type="row" style={{ alignSelf: 'stretch', ...validatorStyles }}>
+            <FlexGrid container type="row" align="center" style={{ alignSelf: 'stretch', ...validatorStyles }}>
               {showAvatar &&
               <PinciteAvatar answerObj={validatorObj} user={userImages[validatorObj.userId]} size={avatarSize} />}
               <PinciteTextField
