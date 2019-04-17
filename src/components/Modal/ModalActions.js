@@ -59,13 +59,16 @@ export class ModalActions extends React.Component {
     render() {
       const { actions, raised, classes, ...otherProps } = this.props
       const chkPreferredChoice = (action,i) =>{
-        // if (action.value === undefined) {
-        //   return false
-        // } else {
-        //   return (typeof (action.value) === 'string' && action.value.includes('Cancel'))
-        // }
-        //return (i===0)
-        return action.preferred
+
+        if (action.value === undefined) {
+          return false
+        } else {
+          if (typeof (action.value) === 'string' && actions.length === 1) {
+            return true
+          } else
+            return action.preferred
+
+        }
       }
       return (
         <DialogActions classes={{ root: classes.root }} {...otherProps} >
@@ -80,7 +83,7 @@ export class ModalActions extends React.Component {
               disabled={action.disabled || false}
               onClick={action.onClick}
               buttonRef= {chkPreferredChoice(action,i)?(elem => (this.preferredChoice = elem)):null}
-              style = {chkPreferredChoice(action,i)?{backgroundColor:'lightCyan'}:''}
+              style = {chkPreferredChoice(action,i)?{backgroundColor:'rgba(4, 132, 132, 0.08)'}:''}
               {...action.otherProps}
             />
           ))}
