@@ -89,6 +89,10 @@ class ProjectPanel extends Component {
       avatarCols = 3
       avatarRows = 3
       cellHeight = 98
+      for (let i = 0; i < (9 - users.length); i++) {
+        const blankAvatar = { id: Date.now() + i, blank: true }
+        userData.push(blankAvatar)
+      }
     } else if (users.length >= 5) {
       avatarCols = 3
       avatarRows = 3
@@ -148,6 +152,7 @@ class ProjectPanel extends Component {
                     rows={avatarRows}>
                     {userData.map(oneCoder => {
                       const coder = oneCoder.blank ? oneCoder : allUsers[oneCoder.userId]
+                      console.log(oneCoder)
                       return (
                         <GridListTile cols={1} key={coder.id}>
                           {coder.avatar !== undefined ? (
@@ -158,7 +163,7 @@ class ProjectPanel extends Component {
                                 justify="center"
                                 align="center"
                                 title={coder.username}
-                                style={{ backgroundColor: '#757575', height: '100%' }}>
+                                style={{ backgroundColor: theme.palette.secondary.main, height: '100%' }}>
                                 <Typography style={{ fontWeight: 500, fontSize: 45, color: 'white' }}>
                                   {coder.initials}
                                 </Typography>
@@ -170,7 +175,7 @@ class ProjectPanel extends Component {
                                 title={coder.username}
                               />
                             )
-                          ) : <div style={{ backgroundColor: '#757575', height: '100%' }} />}
+                          ) : <div style={{ backgroundColor: '#f9f9f9', height: '100%' }} />}
                         </GridListTile>
                       )
                     })}
