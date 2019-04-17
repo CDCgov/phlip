@@ -1,4 +1,5 @@
 import { types } from './actions'
+import { types as codingTypes } from 'scenes/CodingValidation/actions'
 import { arrayToObject } from 'utils/normalize'
 import { sortListOfObjects } from 'utils/commonHelpers'
 
@@ -147,7 +148,18 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         ...state,
         docSelected: false,
         annotationModeEnabled: false,
-        enabledAnswerId: ''
+        enabledAnswerId: '',
+        enabledUserId: '',
+        annotations: []
+      }
+
+    case codingTypes.GET_QUESTION_SUCCESS:
+      return {
+        ...state,
+        enabledAnswerId: '',
+        enabledUserId: '',
+        annotations: [],
+        isValidatorSelected: false
       }
 
     case types.FLUSH_STATE:

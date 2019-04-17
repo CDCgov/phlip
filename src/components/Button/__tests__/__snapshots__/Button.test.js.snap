@@ -5,6 +5,7 @@ exports[`Button component should render correctly 1`] = `
   color="default"
   disabled={false}
   onClick={[Function]}
+  onFocus={[Function]}
   style={
     Object {
       "backgroundColor": "#3d316a",

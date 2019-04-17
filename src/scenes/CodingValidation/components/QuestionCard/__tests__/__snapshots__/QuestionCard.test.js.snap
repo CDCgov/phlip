@@ -22,6 +22,7 @@ exports[`QuestionCard component should render correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
+          "preferred": true,
           "type": "button",
           "value": "Cancel",
         },
@@ -49,13 +50,14 @@ exports[`QuestionCard component should render correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
+          "preferred": true,
           "type": "button",
           "value": "Cancel",
         },
         Object {
           "onClick": [Function],
           "type": "button",
-          "value": "Clear answer",
+          "value": "Continue",
         },
       ]
     }

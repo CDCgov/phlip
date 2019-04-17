@@ -17,6 +17,7 @@ exports[`Protocol scene should render correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
+          "preferred": true,
           "type": "button",
           "value": "Cancel",
         },
@@ -66,7 +67,7 @@ exports[`Protocol scene should render correctly 1`] = `
       variant="body1"
     >
       undefined undefined 
-       is currently editing the protocol. You will not be able to edit until they are done editing and have saved their changes.
+       is editing the protocol. You are unable to edit until they save their changes.
     </WithStyles(Typography)>
   </Alert>
   <withRouter(WithTheme(PageHeader))

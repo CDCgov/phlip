@@ -142,6 +142,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
           "otherProps": Object {
             "aria-label": "Close form",
           },
+          "preferred": true,
           "type": "button",
           "value": "Cancel",
         },
