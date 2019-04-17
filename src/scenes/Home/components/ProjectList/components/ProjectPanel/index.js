@@ -152,7 +152,6 @@ class ProjectPanel extends Component {
                     rows={avatarRows}>
                     {userData.map(oneCoder => {
                       const coder = oneCoder.blank ? oneCoder : allUsers[oneCoder.userId]
-                      console.log(oneCoder)
                       return (
                         <GridListTile cols={1} key={coder.id}>
                           {coder.avatar !== undefined ? (
