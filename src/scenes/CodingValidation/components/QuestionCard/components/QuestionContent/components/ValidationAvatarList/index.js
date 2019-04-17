@@ -11,26 +11,25 @@ export const ValidationAvatarList = props => {
 
   const avatarStyle = {
     cursor: 'pointer',
-    borderColor: 'white',
-    marginLeft: layered ? '-2px' : 0
+    marginLeft: 0,
+    backgroundColor: '#e9e9e9',
+    color: 'black',
+    marginRight: 5,
+    border: '2px solid white',
+    borderColor: 'white'
   }
 
   const selectedStyle = {
     ...avatarStyle,
-    borderColor: theme.palette.secondary.main,
-    backgroundColor: 'white',
-    color: theme.palette.secondary.main
-  }
-
-  const validatorStyle = {
-    ...avatarStyle,
-    backgroundColor: 'white',
-    color: theme.palette.error.main,
     borderColor: theme.palette.error.main
   }
 
+  const validatorStyle = {
+    ...avatarStyle
+  }
+
   return (
-    <FlexGrid container type="row" padding="5px 0 8px 0">
+    <FlexGrid container type="row">
       {answerList.map((answer, i) => {
         const user = userImages[answer.userId]
         const userAndAnswerMatch = enabledUserId === answer.userId && enabledAnswerId === answer.schemeAnswerId
@@ -47,7 +46,6 @@ export const ValidationAvatarList = props => {
             avatar={user.avatar}
             initials={user.initials}
             key={`user-answer-${i}`}
-            cardAvatar
             onClick={handleClickAvatar(answer.schemeAnswerId, answer.userId, answer.isValidatorAnswer === true)}
             userName={user.username}
           />
@@ -56,9 +54,8 @@ export const ValidationAvatarList = props => {
       {showAllAvatar && <Avatar
         style={(enabledUserId === 'All' && answerId === enabledAnswerId) ? selectedStyle : avatarStyle}
         avatar=""
-        initials="ALL"
+        initials="All"
         key="user-avatar-all-selected"
-        cardAvatar
         onClick={handleClickAvatar(answerId, 'All', false)}
         userName="All"
       />}

@@ -79,8 +79,8 @@ export const SelectionControlQuestion = props => {
                 aria-label={choice.text}
               />
 
-              <FlexGrid container padding="0 10px 0 32px">
-                <FlexGrid container type="row">
+              <FlexGrid container padding="0 0 0 32px">
+                <FlexGrid container type="row" padding="8px 10px 8px 0">
                   {(list.length > 0 && isValidation) && <ValidationAvatarList
                     userImages={userImages}
                     answerList={list}

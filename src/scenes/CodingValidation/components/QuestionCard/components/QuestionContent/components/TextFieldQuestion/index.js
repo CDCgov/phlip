@@ -28,7 +28,7 @@ export const TextFieldQuestion = props => {
           <FlexGrid container align="flex-start">
             <Typography style={{ whiteSpace: 'pre-wrap' }} variant="body1">{answer.textAnswer}</Typography>
           </FlexGrid>
-          <FlexGrid container type="row" align="center" flex>
+          <FlexGrid container type="row" align="center" flex padding="8px 0">
             <ValidationAvatarList
               showAllAvatar={false}
               userImages={userImages}
@@ -40,7 +40,6 @@ export const TextFieldQuestion = props => {
               answerId={answerId}
               layered={false}
             />
-            <div style={{ paddingLeft: 15 }} />
             <PinciteList
               alwaysShow
               showAvatar={false}
@@ -96,7 +95,7 @@ export const TextFieldQuestion = props => {
             showAllAvatar={false}
             layered={false}
           />
-          <div style={{ paddingLeft: 10 }} />
+          <div style={{ paddingLeft: 5 }} />
           <PinciteList
             alwaysShow
             validatorStyles={{ margin: '3px 0' }}
@@ -105,7 +104,7 @@ export const TextFieldQuestion = props => {
             isAnswered={isAnswered}
             validatorObj={{ ...userAnswers.answers[answerId], ...validatedBy }}
             handleChangePincite={onChange}
-            textFieldProps={{ padding: 8, flex: '1 1 auto' }}
+            textFieldProps={{ padding: '0 8px', flex: '1 1 auto' }}
           />
         </FlexGrid>}
       </FlexGrid>
