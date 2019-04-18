@@ -22,8 +22,7 @@ export const INITIAL_STATE = {
   error: false,
   projectCount: 0,
   projectToExport: { text: '' },
-  exportError: '',
-  selectedProjectId: null
+  exportError: ''
 }
 
 /**
@@ -326,28 +325,7 @@ export const mainReducer = (state, action) => {
               lastUsersCheck: action.payload.newCheck ? Date.now() : project.lastUsersCheck
             }
           }
-        },
-        selectedProjectId: projectId
-      }
-
-    case types.UPDATE_CURRENT_PROJECT:
-      return {
-        ...state,
-        selectedProjectId: action.projectId
-      }
-
-    case types.RESET_OPEN_PROJECT:
-      if (action.whereClicked !== undefined) {
-        if (action.whereClicked.tagName === 'DIV') {
-          return {
-            ...state,
-            selectedProjectId: null
-          }
-        } else {
-          return state
         }
-      } else {
-        return state
       }
 
     case types.GET_PROJECTS_REQUEST:
