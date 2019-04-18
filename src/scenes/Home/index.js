@@ -192,7 +192,7 @@ export class Home extends Component {
   }
 
   handleSortParmChange = (selectedOption) => {
-    console.log(selectedOption)
+    // console.log(selectedOption)
     selectedOption !== 'sortBookmarked'
       ? this.props.actions.sortProjects(selectedOption)
       : this.props.actions.sortBookmarked(!this.props.sortBookmarked)
@@ -233,7 +233,7 @@ export class Home extends Component {
             id="projectSort"
             options={options}
             input={{
-              value: 'dateLastEdited',
+              value: this.props.sortBy ||'dateLastEdited',
               onChange: this.handleSortParmChange
             }}
             style={{ fontSize: 14 }}
