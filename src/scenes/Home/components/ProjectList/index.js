@@ -33,7 +33,7 @@ export class ProjectList extends Component {
 
   checkExpand = target => {
     const stopOpenEls = ['A', 'BUTTON', 'button', 'a']
-    const regex = /([Bb]utton)/g
+    const regex = /([Bb]utton)|(icons?)/g
     return !stopOpenEls.includes(target.tagName) && target.className.search(regex) === -1
   }
 
