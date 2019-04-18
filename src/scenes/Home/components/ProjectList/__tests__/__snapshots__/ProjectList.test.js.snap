@@ -15,36 +15,26 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
         }
       }
     >
-      <ClickAwayListener
+      <Connect(WithTheme(ProjectPanel))
+        expanded={false}
+        handleExpandProject={[Function]}
+        id={1}
+        index={0}
         key="1"
-        mouseEvent="onMouseUp"
-        onClickAway={[Function]}
-        touchEvent="onTouchEnd"
-      >
-        <Connect(WithTheme(WithStyles(ProjectPanel)))
-          id={1}
-          index={0}
-          key="1"
-          length={2}
-          onExport={[MockFunction]}
-          role="Coordinator"
-        />
-      </ClickAwayListener>
-      <ClickAwayListener
+        length={2}
+        onExport={[MockFunction]}
+        role="Coordinator"
+      />
+      <Connect(WithTheme(ProjectPanel))
+        expanded={false}
+        handleExpandProject={[Function]}
+        id={2}
+        index={1}
         key="2"
-        mouseEvent="onMouseUp"
-        onClickAway={[Function]}
-        touchEvent="onTouchEnd"
-      >
-        <Connect(WithTheme(WithStyles(ProjectPanel)))
-          id={2}
-          index={1}
-          key="2"
-          length={2}
-          onExport={[MockFunction]}
-          role="Coordinator"
-        />
-      </ClickAwayListener>
+        length={2}
+        onExport={[MockFunction]}
+        role="Coordinator"
+      />
     </div>
   </ClickAwayListener>
   <Table>

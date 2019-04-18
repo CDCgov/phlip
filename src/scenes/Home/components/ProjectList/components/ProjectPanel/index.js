@@ -12,7 +12,7 @@ import Collapse from '@material-ui/core/Collapse'
 import { FlexGrid, IconButton, TextLink, Link, Button } from 'components'
 import { FileDocument, City, FormatListBulleted, ClipboardCheckOutline, FileExport } from 'mdi-material-ui'
 
-class ProjectPanel extends Component {
+export class ProjectPanel extends Component {
   static propTypes = {
     project: PropTypes.object,
     actions: PropTypes.object,
@@ -95,7 +95,8 @@ class ProjectPanel extends Component {
       transitionDuration: '150ms',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      width: '100%'
     }
 
     const expandedStyles = {
@@ -179,10 +180,15 @@ class ProjectPanel extends Component {
               />
             </FlexGrid>
           </FlexGrid>}
-          <Collapse in={expanded} style={{ width: '100%', ...collapseStyles }}>
-            <FlexGrid container type="row" justify="space-between" style={{ width: '100%' }}>
+          <Collapse in={expanded} style={collapseStyles}>
+            <FlexGrid container type="row" style={{ width: '100%', overflow: 'auto' }}>
               <FlexGrid container type="column">
-                <GridList style={{ width: 300 }} cellHeight={cellHeight} cols={avatarCols} rows={avatarRows}>
+                <GridList
+                  style={{ width: 300, height: '100%', margin: 0 }}
+                  cellHeight={cellHeight}
+                  spacing={2}
+                  cols={avatarCols}
+                  rows={avatarRows}>
                   {userData.map(oneCoder => {
                     const coder = oneCoder.blank
                       ? oneCoder
@@ -200,7 +206,7 @@ class ProjectPanel extends Component {
                               align="center"
                               title={coder.username}
                               style={{ backgroundColor: theme.palette.secondary.main, height: '100%' }}>
-                              <Typography style={{ fontWeight: 500, fontSize: 45, color: 'white' }}>
+                              <Typography style={{ fontWeight: 300, fontSize: 30, color: 'white' }}>
                                 {coder.initials}
                               </Typography>
                             </FlexGrid>
@@ -383,6 +389,6 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
+const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme()(ProjectPanel))

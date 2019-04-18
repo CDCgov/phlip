@@ -582,15 +582,6 @@ describe('Home reducer', () => {
       })
       expect(state.projects.byId[1].lastUsersCheck).toEqual(null)
     })
-
-    test('should set state.selectedProjectId to action.payload.projectId', () => {
-      const currentState = getStateWithProjects()
-      const state = reducer(currentState, {
-        type: types.GET_PROJECT_USERS_SUCCESS,
-        payload: { projectId: 4, newCheck: true }
-      })
-      expect(state.selectedProjectId).toEqual(4)
-    })
   })
 
   describe('FLUSH_STATE', () => {
