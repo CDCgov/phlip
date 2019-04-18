@@ -80,8 +80,6 @@ describe('Home scene', () => {
   })
 })
 
-
-import React from 'react'
 // import { shallow } from 'enzyme'
 // import { ProjectTableHead } from '../index'
 //
