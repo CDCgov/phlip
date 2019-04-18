@@ -237,14 +237,15 @@ export class ProjectPanel extends Component {
                       {bookmarked ? 'bookmark' : 'bookmark_border'}
                     </IconButton>
                     <FlexGrid padding="checkbox" style={{ width: 20 }} />
-                    <TextLink
+                    {!isCoder?(<TextLink
                       aria-label="Edit project details"
-                      to={{
+                      to={!isCoder?{
                         pathname: `/project/edit/${project.id}`,
-                        state: { projectDefined: { ...project }, modal: true }
-                      }}>
+                        state: { projectDefined: { ...project }, modal: true, directEditMode:true }
+                      }:''}>
                       {project.name}
-                    </TextLink>
+                    </TextLink>):(<Typography variant='title'>{project.name}</Typography>)}
+
                   </FlexGrid>
                   <FlexGrid
                     container

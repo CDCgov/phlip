@@ -79,9 +79,10 @@ export class AddEditProject extends Component {
 
   constructor(props, context) {
     super(props, context)
+    console.log(this.props.location.state)
     this.projectDefined = this.props.match.url === '/project/add' ? null : this.props.location.state.projectDefined
     this.state = {
-      edit: !this.projectDefined,
+      edit: this.props.location.state.directEditMode ||!this.projectDefined,
       submitting: false
     }
   }
@@ -106,11 +107,15 @@ export class AddEditProject extends Component {
    */
   onCancel = () => {
     this.props.formActions.reset('projectForm')
-    return this.state.edit
-      ? this.projectDefined
-        ? this.setState({ edit: !this.state.edit })
+    if (this.props.location.state.directEditMode ) {
+      this.props.history.goBack()
+    } else {
+      return this.state.edit
+        ? this.projectDefined
+          ? this.setState({edit: !this.state.edit})
+          : this.props.history.goBack()
         : this.props.history.goBack()
-      : this.props.history.goBack()
+    }
   }
 
   /**
