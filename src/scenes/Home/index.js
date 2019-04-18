@@ -9,7 +9,7 @@ import * as actions from './actions'
 import ExportDialog from './components/ExportDialog'
 import withTracking from 'components/withTracking'
 import SearchBar from 'components/SearchBar'
-import { FlexGrid, Dropdown, ApiErrorAlert } from 'components'
+import { FlexGrid, Dropdown, ApiErrorAlert, Icon } from 'components'
 
 /**
  * Project List ("Home") screen main component. The first component that is rendered when the user logs in. This is
@@ -199,22 +199,33 @@ export class Home extends Component {
   }
 
   render() {
-    const options = [
-      { value: 'dateLastEdited', label: 'Sort by: Date Last Edited' },
-      { value: 'name', label: 'Sort By: Name' },
-      { value: 'lastEditedBy', label: 'Sort By: Last Edited By' },
-      { value: 'sortBookmarked', label: 'Sort By: Bookmarked' }
-    ]
+    const {
+      exportError, user, sortBy, actions, page, visibleProjects, projectCount, rowsPerPage, direction, sortBookmarked,
+      searchValue, error
+    } = this.props
+
+    const options = Array.from([
+      { value: 'dateLastEdited', label: 'Date Last Edited' },
+      { value: 'name', label: 'Name' },
+      { value: 'lastEditedBy', label: 'Last Edited By' },
+      { value: 'sortBookmarked', label: 'Bookmarked' }
+    ], (option, i) => ({
+      ...option,
+      label: sortBy === option.value
+        ? (
+          <>
+            <span style={{ paddingRight: 5 }}>{option.label}</span>
+            <Icon size={20} color="black">{direction === 'asc' ? 'arrow_upward' : 'arrow_downward'}</Icon>
+          </>
+        )
+        : option.label
+    }))
 
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">
-        <ApiErrorAlert
-          content={this.props.exportError}
-          open={this.props.exportError !== ''}
-          onCloseAlert={this.onCloseExportError}
-        />
+        <ApiErrorAlert content={exportError} open={exportError !== ''} onCloseAlert={this.onCloseExportError} />
         <PageHeader
-          showButton={this.props.user.role !== 'Coder'}
+          showButton={user.role !== 'Coder'}
           pageTitle="Project List"
           entryScene
           icon="dvr"
@@ -226,45 +237,52 @@ export class Home extends Component {
             path: '/project/add',
             state: { projectDefined: null, modal: true },
             props: { 'aria-label': 'Create New Project' },
-            show: this.props.user.role !== 'Coder'
+            show: user.role !== 'Coder'
           }}>
           <Dropdown
             name="projectSort"
             id="projectSort"
             options={options}
             input={{
-              value: this.props.sortBy ||'dateLastEdited',
+              value: sortBy || 'dateLastEdited',
               onChange: this.handleSortParmChange
+            }}
+            renderValue={value => {
+              const option = options.find(option => option.value === value)
+              return (
+                <FlexGrid container type="row" align="center">
+                  <span>Sort by:&nbsp;</span>{option.label}
+                </FlexGrid>
+              )
             }}
             style={{ fontSize: 14 }}
             formControlStyle={{ minWidth: 180, paddingRight: 20 }}
           />
           <SearchBar
             searchValue={this.searchValue}
-            handleSearchValueChange={event => this.props.actions.updateSearchValue(event.target.value)}
+            handleSearchValueChange={event => actions.updateSearchValue(event.target.value)}
             placeholder="Search"
           />
         </PageHeader>
 
-        {this.props.error
+        {error
           ? this.renderErrorMessage()
           : <ProjectList
-            user={this.props.user}
-            projectIds={this.props.visibleProjects}
-            projectCount={this.props.projectCount}
-            page={this.props.page}
-            rowsPerPage={this.props.rowsPerPage}
-            sortBy={this.props.sortBy}
-            direction={this.props.direction}
-            sortBookmarked={this.props.sortBookmarked}
-            searchValue={this.props.searchValue}
+            user={user}
+            projectIds={visibleProjects}
+            projectCount={projectCount}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            sortBy={sortBy}
+            direction={direction}
+            sortBookmarked={sortBookmarked}
+            searchValue={searchValue}
             handleExport={this.onToggleExportDialog}
-            handleRequestSort={this.props.actions.sortProjects}
-            handlePageChange={this.props.actions.updatePage}
-            handleRowsChange={this.props.actions.updateRows}
-            handleSortBookmarked={() => this.props.actions.sortBookmarked(!this.props.sortBookmarked)}
-            getProjectUsers={this.props.actions.getProjectUsers}
-            resetOpenProject={this.props.actions.resetOpenProject}
+            handleRequestSort={actions.sortProjects}
+            handlePageChange={actions.updatePage}
+            handleRowsChange={actions.updateRows}
+            handleSortBookmarked={() => actions.sortBookmarked(!sortBookmarked)}
+            getProjectUsers={actions.getProjectUsers}
           />
         }
         <ExportDialog
