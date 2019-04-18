@@ -81,7 +81,8 @@ export class Home extends Component {
     super(props, context)
     this.state = {
       exportDialogOpen: false,
-      projectToExport: null
+      projectToExport: null,
+      sortSelection:null
     }
 
     this.exportRef = null
@@ -192,7 +193,7 @@ export class Home extends Component {
   }
 
   handleSortParmChange = (selectedOption) => {
-    // console.log(selectedOption)
+    this.setState({sortSelection: selectedOption})
     selectedOption !== 'sortBookmarked'
       ? this.props.actions.sortProjects(selectedOption)
       : this.props.actions.sortBookmarked(!this.props.sortBookmarked)
@@ -233,7 +234,7 @@ export class Home extends Component {
             id="projectSort"
             options={options}
             input={{
-              value: this.props.sortBy ||'dateLastEdited',
+              value: this.state.sortSelection||'dateLastEdited',
               onChange: this.handleSortParmChange
             }}
             style={{ fontSize: 14 }}
