@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import TableFooter from '@material-ui/core/TableFooter'
 import TableRow from '@material-ui/core/TableRow'
-import Table from 'components/Table'
-import TablePagination from 'components/TablePagination'
+import { FlexGrid, Table, TablePagination } from 'components'
 import ProjectPanel from './components/ProjectPanel'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 
@@ -65,9 +64,9 @@ export class ProjectList extends Component {
     const { expanded } = this.state
 
     return (
-      <>
+      <FlexGrid style={{ overflow: 'auto' }}>
         <ClickAwayListener onClickAway={this.handleClickAway}>
-          <div style={{ overflow: 'auto', padding: 3 }}>
+          <div style={{ padding: 3 }}>
             {projectIds.map((id, i) => (
               <ProjectPanel
                 key={id}
@@ -96,7 +95,7 @@ export class ProjectList extends Component {
             </TableRow>
           </TableFooter>
         </Table>
-      </>
+      </FlexGrid>
     )
   }
 }

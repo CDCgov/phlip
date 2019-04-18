@@ -15,7 +15,7 @@ export const HeaderTabs = props => {
 
   const activeStyle = {
     ...allStyle,
-    borderBottom: `4px solid ${theme.palette.secondary.main}`,
+    borderBottom: `4px solid ${theme.palette.error.main}`,
     color: theme.palette.secondary.main
   }
 

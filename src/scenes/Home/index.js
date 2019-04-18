@@ -222,7 +222,7 @@ export class Home extends Component {
           projectName=""
           otherButton={{
             isLink: true,
-            text: '+ Create New Project',
+            text: 'Create New Project',
             path: '/project/add',
             state: { projectDefined: null, modal: true },
             props: { 'aria-label': 'Create New Project' },

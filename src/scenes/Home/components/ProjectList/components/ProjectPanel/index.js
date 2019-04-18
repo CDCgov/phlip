@@ -116,6 +116,13 @@ export class ProjectPanel extends Component {
         : 0
     }
 
+    const panelButtonProps = {
+      style: { marginLeft: 10 },
+      color: 'white',
+      textColor: 'black',
+      disableRipple: true
+    }
+
     return (
       <FlexGrid style={containerStyles} onClick={this.handleChange}>
         <FlexGrid container justify="center" style={rowStyles} flex>
@@ -246,53 +253,33 @@ export class ProjectPanel extends Component {
                       {project.name}
                     </TextLink>
                   </FlexGrid>
-                  <FlexGrid
-                    container
-                    type="row"
-                    flex
-                    justify="flex-end"
-                    align="stretch"
-                    style={{ height: 40 }}>
+                  <FlexGrid container type="row" flex justify="flex-end" align="stretch" style={{ height: 40 }}>
                     {!isCoder && (<Button
                       id={`${project.id}-edit-jurisdictions`}
-                      component={Link}
                       to={{ pathname: `/project/${project.id}/jurisdictions`, state: { modal: true } }}
-                      disableRipple={true}
                       aria-label="Add and edit project jurisdictions"
-                      color="white"
-                      textColor="black"
-                      size="small">
+                      {...panelButtonProps}>
                       Jurisdictions
                       <City style={iconStyle} />
                     </Button>)}
                     <Button
-                      aria-label="documents in this project"
-                      color="white"
-                      textColor="black"
-                      component={Link}
-                      disableRipple={true}
-                      to={{ pathname: `/docs`, state: { projectDefined: true, project } }}
-                      style={{ marginLeft: 10 }}>
+                      aria-label="Documents in this project"
+                      {...panelButtonProps}
+                      to={{ pathname: `/docs`, state: { projectDefined: true, project } }}>
                       Documents
                       <FileDocument style={iconStyle} />
                     </Button>
                     {!isCoder && (<Button
                       aria-label="Add and edit project coding scheme"
                       to={`/project/${project.id}/coding-scheme`}
-                      component={Link}
-                      color="white"
-                      textColor="black"
-                      style={{ marginLeft: 10 }}>
+                      {...panelButtonProps}>
                       Coding Scheme
                       <FormatListBulleted style={iconStyle} />
                     </Button>)}
                     <Button
                       aria-label="Add and edit project protocol"
                       to={`/project/${project.id}/protocol`}
-                      component={Link}
-                      color="white"
-                      textColor="black"
-                      style={{ marginLeft: 10 }}>
+                      {...panelButtonProps}>
                       Protocol
                       <ClipboardCheckOutline style={iconStyle} />
                     </Button>
@@ -300,11 +287,9 @@ export class ProjectPanel extends Component {
                       aria-label="Export validated questions"
                       onClick={() => onExport(project)}
                       id={`export-validated-${project.id}`}
-                      color="white"
-                      textColor="black"
-                      style={{ marginLeft: 10 }}>
+                      {...panelButtonProps}>
                       Export
-                      <FileExport style={{ fontSize: 18 }} />
+                      <FileExport style={iconStyle} />
                     </Button>
                   </FlexGrid>
                 </FlexGrid>
