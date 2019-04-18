@@ -24,15 +24,16 @@ class ProjectPanel extends Component {
     bookmarked: PropTypes.bool,
     onExport: PropTypes.func,
     length: PropTypes.number,
-    index: PropTypes.number
+    index: PropTypes.number,
+    handleExpandProject: PropTypes.func
   }
 
-  handleChange = () => {
+  handleChange = event => {
     this.props.actions.getProjectUsers(this.props.project.id, {
       id: this.props.project.createdById,
       email: this.props.project.createdByEmail
     })
-    this.props.handleExpandProject(this.props.project.id)
+    this.props.handleExpandProject(this.props.project.id, event)
   }
 
   determineGridSize = () => {

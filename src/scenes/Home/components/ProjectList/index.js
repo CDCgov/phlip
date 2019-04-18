@@ -31,17 +31,32 @@ export class ProjectList extends Component {
     expanded: 0
   }
 
-  handleExpandProject = id => {
+  checkExpand = target => {
+    const stopOpenEls = ['A', 'BUTTON', 'button', 'a']
+    const regex = /([Bb]utton)/g
+    return !stopOpenEls.includes(target.tagName) && target.className.search(regex) === -1
+  }
+
+  handleExpandProject = (id, event) => {
+    const expand = this.checkExpand(event.target)
+
     this.setState({
-      expanded: this.state.expanded === id ? 0 : id
+      expanded: this.state.expanded === id
+        ? expand
+          ? 0
+          : id
+        : expand
+          ? id
+          : 0
     })
   }
 
   handleClickAway = event => {
-    event.stopPropagation()
-    this.setState({
-      expanded: 0
-    })
+    if (event.target.tagName === 'DIV') {
+      this.setState({
+        expanded: 0
+      })
+    }
   }
 
   render() {
