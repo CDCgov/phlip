@@ -59,8 +59,11 @@ export class ProjectList extends Component {
   }
 
   render() {
-    const { projectIds, user, page, rowsPerPage, projectCount } = this.props
-    const { handlePageChange, handleRowsChange, handleExport, getProjectUsers } = this.props
+    const {
+      projectIds, user, page, rowsPerPage, projectCount, handlePageChange, handleRowsChange, handleExport,
+      getProjectUsers
+    } = this.props
+
     const { expanded } = this.state
 
     return (
