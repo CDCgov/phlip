@@ -95,7 +95,8 @@ export class Upload extends Component {
       value: 'Close',
       type: 'button',
       otherProps: { 'aria-label': 'Close' },
-      onClick: this.closeAlert
+      onClick: this.closeAlert,
+      preferred: true
     }
 
     this.state = {
