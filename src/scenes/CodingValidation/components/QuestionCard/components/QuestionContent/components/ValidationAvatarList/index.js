@@ -14,14 +14,13 @@ export const ValidationAvatarList = props => {
     marginLeft: 0,
     backgroundColor: '#e9e9e9',
     color: 'black',
-    marginRight: 5,
-    border: '3px solid white',
-    borderColor: 'white'
+    fontSize: '.8rem'
   }
 
   const selectedStyle = {
     ...avatarStyle,
-    borderColor: theme.palette.error.main
+    border: `2px solid ${theme.palette.error.main}`,
+    boxSizing: 'border-box'
   }
 
   return (
@@ -41,7 +40,6 @@ export const ValidationAvatarList = props => {
           initials: user.initials,
           onClick: handleClickAvatar(answer.schemeAnswerId, answer.userId, answer.isValidatorAnswer === true),
           userName: user.username
-          //cardAvatar: isSelected
         }
 
         return (
@@ -57,8 +55,8 @@ export const ValidationAvatarList = props => {
                       height: 12,
                       backgroundColor: '#80d134',
                       border: '2px solid white',
-                      top: 18,
-                      left: 20
+                      top: 16,
+                      left: 16
                     }}
                     cardAvatar={true}
                     initials={<Icon size="12px" color="white" style={{ fontWeight: 800 }}>check</Icon>}
@@ -75,7 +73,7 @@ export const ValidationAvatarList = props => {
         <Avatar
           style={(enabledUserId === 'All' && answerId === enabledAnswerId) ? selectedStyle : avatarStyle}
           avatar=""
-          initials="All"
+          initials="ALL"
           key="user-avatar-all-selected"
           onClick={handleClickAvatar(answerId, 'All', false)}
           userName="All"

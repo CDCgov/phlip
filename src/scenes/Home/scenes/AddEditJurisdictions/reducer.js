@@ -1,4 +1,4 @@
-import * as types from './actionTypes'
+import { types } from './actions'
 import { normalize, searchUtils } from 'utils'
 
 const INITIAL_STATE = {

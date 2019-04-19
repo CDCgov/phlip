@@ -1,5 +1,5 @@
-import * as actions from '../actions'
-import * as types from '../../../actionTypes'
+import { types } from '../../../actions'
+import actions from '../actions'
 
 describe('Home scene - AddEditProject actions creators', () => {
   test('should create an action to add a project', () => {

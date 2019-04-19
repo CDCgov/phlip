@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { withTheme } from '@material-ui/core/styles'
-import * as actions from 'scenes/Home/actions'
+import actions from 'scenes/Home/actions'
 import moment from 'moment'
 import GridList from '@material-ui/core/GridList'
 import GridListTile from '@material-ui/core/GridListTile'
@@ -66,10 +66,12 @@ export class ProjectPanel extends Component {
     return userTiles.concat(blanks)
   }
 
+  onClickExport = () => {
+    this.props.onExport(this.props.project)
+  }
+
   render() {
-    const {
-      project, role, bookmarked, actions, onExport, theme, index, length, users, allUsers, expanded
-    } = this.props
+    const { project, role, bookmarked, actions, theme, index, length, users, allUsers, expanded } = this.props
 
     const isCoder = role === 'Coder'
     const greyIcon = theme.palette.greyText
@@ -116,13 +118,20 @@ export class ProjectPanel extends Component {
         : 0
     }
 
+    const panelButtonProps = {
+      style: { marginLeft: 10 },
+      color: 'white',
+      textColor: 'black',
+      disableRipple: true
+    }
+
     return (
       <FlexGrid style={containerStyles} onClick={this.handleChange}>
         <FlexGrid container justify="center" style={rowStyles} flex>
           {!expanded && <FlexGrid type="row" container flex style={expandedStyles}>
             <FlexGrid container type="row" align="center" padding="0 0 0 24px" style={{ width: '24px' }}>
               <IconButton
-                color={this.props.bookmarked ? '#fdc43b' : greyIcon}
+                color={bookmarked ? '#fdc43b' : greyIcon}
                 onClick={() => actions.toggleBookmark(project)}
                 tooltipText="Bookmark project"
                 aria-label="Bookmark this project"
@@ -169,7 +178,7 @@ export class ProjectPanel extends Component {
                 to={{ pathname: `/project/${project.id}/code` }}
               />
               <span style={{ width: '24px' }} />
-              <Button
+              {!isCoder && <Button
                 raised={false}
                 value="Validate"
                 listButton
@@ -177,7 +186,7 @@ export class ProjectPanel extends Component {
                 component={Link}
                 style={{ borderRadius: 3 }}
                 to={{ pathname: `/project/${project.id}/validate` }}
-              />
+              />}
             </FlexGrid>
           </FlexGrid>}
           <Collapse in={expanded} style={collapseStyles}>
@@ -236,76 +245,57 @@ export class ProjectPanel extends Component {
                       id={`bookmark-project-${project.id}`}>
                       {bookmarked ? 'bookmark' : 'bookmark_border'}
                     </IconButton>
-                    <FlexGrid padding="checkbox" style={{ width: 20 }} />
-                    {!isCoder?(<TextLink
+                    <FlexGrid style={{ width: 20 }} />
+                    {!isCoder ? (<TextLink
                       aria-label="Edit project details"
-                      to={!isCoder?{
+                      to={!isCoder ? {
                         pathname: `/project/edit/${project.id}`,
-                        state: { projectDefined: { ...project }, modal: true, directEditMode:true }
-                      }:''}>
+                        state: { projectDefined: { ...project }, modal: true, directEditMode: true }
+                      } : ''}>
                       {project.name}
-                    </TextLink>):(<Typography variant='title'>{project.name}</Typography>)}
-
+                    </TextLink>) : (<Typography variant="title">{project.name}</Typography>)}
                   </FlexGrid>
-                  <FlexGrid
-                    container
-                    type="row"
-                    flex
-                    justify="flex-end"
-                    align="stretch"
-                    style={{ height: 40 }}>
+                  <FlexGrid container type="row" flex justify="flex-end" align="stretch" style={{ height: 40 }}>
                     {!isCoder && (<Button
                       id={`${project.id}-edit-jurisdictions`}
-                      component={Link}
                       to={{ pathname: `/project/${project.id}/jurisdictions`, state: { modal: true } }}
-                      disableRipple={true}
                       aria-label="Add and edit project jurisdictions"
-                      color="white"
-                      textColor="black"
-                      size="small">
+                      component={Link}
+                      {...panelButtonProps}>
                       Jurisdictions
                       <City style={iconStyle} />
                     </Button>)}
                     <Button
-                      aria-label="documents in this project"
-                      color="white"
-                      textColor="black"
                       component={Link}
-                      disableRipple={true}
+                      aria-label="Documents in this project"
                       to={{ pathname: `/docs`, state: { projectDefined: true, project } }}
-                      style={{ marginLeft: 10 }}>
+                      {...panelButtonProps}>
                       Documents
                       <FileDocument style={iconStyle} />
                     </Button>
                     {!isCoder && (<Button
+                      component={Link}
                       aria-label="Add and edit project coding scheme"
                       to={`/project/${project.id}/coding-scheme`}
-                      component={Link}
-                      color="white"
-                      textColor="black"
-                      style={{ marginLeft: 10 }}>
+                      {...panelButtonProps}>
                       Coding Scheme
                       <FormatListBulleted style={iconStyle} />
                     </Button>)}
                     <Button
+                      component={Link}
                       aria-label="Add and edit project protocol"
                       to={`/project/${project.id}/protocol`}
-                      component={Link}
-                      color="white"
-                      textColor="black"
-                      style={{ marginLeft: 10 }}>
+                      {...panelButtonProps}>
                       Protocol
                       <ClipboardCheckOutline style={iconStyle} />
                     </Button>
                     <Button
                       aria-label="Export validated questions"
-                      onClick={() => onExport(project)}
+                      onClick={this.onClickExport}
                       id={`export-validated-${project.id}`}
-                      color="white"
-                      textColor="black"
-                      style={{ marginLeft: 10 }}>
+                      {...panelButtonProps}>
                       Export
-                      <FileExport style={{ fontSize: 18 }} />
+                      <FileExport style={iconStyle} />
                     </Button>
                   </FlexGrid>
                 </FlexGrid>

@@ -7,7 +7,7 @@ exports[`Avatar component should render correctly 1`] = `
       "backgroundColor": "#048484",
       "borderColor": "#048484",
       "color": "white",
-      "fontSize": "1rem",
+      "fontSize": ".8rem",
       "height": "30px",
       "width": "30px",
     }

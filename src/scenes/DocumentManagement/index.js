@@ -290,7 +290,7 @@ export class DocumentManagement extends Component {
             icon="description"
             otherButton={{
               isLink: true,
-              text: '+ Upload New',
+              text: 'Upload New',
               path: '/docs/upload',
               state: { modal: true },
               props: { 'aria-label': 'Upload New Documents', 'id': 'uploadNewBtn' },

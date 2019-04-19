@@ -80,9 +80,28 @@ class Main extends Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (prevProps.pdfFile === null && this.props.pdfFile !== null) {
       this.openHelpPdf(this.props.pdfFile)
+    }
+
+    const prev = prevProps.location.pathname.split('/')[1]
+    const current = this.props.location.pathname.split('/')[1]
+
+    const tabs = [...this.state.menuTabs]
+
+    if (prev !== current) {
+      if (current === 'docs') {
+        tabs[1].active = true
+        tabs[0].active = false
+      } else {
+        tabs[0].active = true
+        tabs[1].active = false
+      }
+
+      this.setState({
+        menuTabs: tabs
+      })
     }
   }
 
@@ -193,7 +212,8 @@ class Main extends Component {
   }
 
   render() {
-    const { location, role, actions, isLoggedIn, isRefreshing } = this.props
+    const { location, role, actions, isLoggedIn, isRefreshing, user, pdfError } = this.props
+    const { menuTabs, menuOpen } = this.state
 
     // This is for jurisdictions / add/edit project modals. We want the modals to be displayed on top of the home screen,
     // so we check if it's one of those routes and if it is set the location to /home
@@ -207,9 +227,9 @@ class Main extends Component {
       <FlexGrid container type="column" flex style={{ overflow: 'hidden' }}>
         <IdleTimer onIdle={this.logoutUserOnIdle} timeout={900000} />
         <AppHeader
-          user={this.props.user}
-          tabs={this.state.menuTabs}
-          open={this.state.menuOpen}
+          user={user}
+          tabs={menuTabs}
+          open={menuOpen}
           onLogoutUser={this.handleLogoutUser}
           onToggleMenu={this.handleToggleMenu}
           onDownloadPdf={this.handleDownloadPdf}
@@ -232,11 +252,7 @@ class Main extends Component {
           <Route path="/project/:id/jurisdictions" component={AddEditJurisdictions} />
           <Route path="/project/:id/jurisdictions/:jid/edit" component={JurisdictionForm} />
           <Route path="/project/:id/jurisdictions/add" component={JurisdictionForm} />
-          <ApiErrorAlert
-            content={this.props.pdfError}
-            open={this.props.pdfError !== ''}
-            onCloseAlert={this.closeDownloadErrorAlert}
-          />
+          <ApiErrorAlert content={pdfError} open={pdfError !== ''} onCloseAlert={this.closeDownloadErrorAlert} />
           <a style={{ display: 'none' }} ref={this.helpPdfRef} />
         </FlexGrid>
       </FlexGrid>

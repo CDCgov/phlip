@@ -3,26 +3,28 @@ import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import Collapse from '@material-ui/core/Collapse'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { Snackbar, FlexGrid, Avatar, Icon } from 'components'
+import { Snackbar, FlexGrid, Avatar, Icon, Tooltip } from 'components'
 import PinciteTextField from '../PinciteTextField'
 import Button from '@material-ui/core/Button'
 import theme from 'services/theme'
 
 const PinciteAvatar = ({ answerObj, user, size }) => {
   return (
-    <Avatar
-      avatar={user.avatar}
-      initials={user.initials}
-      aria-label={`${user.username}'s pincite: ${answerObj.pincite}`}
-      userName={user.username}
-      small={size === 'small'}
-      style={{
-        margin: '0 10px 0 0',
-        outline: 0,
-        backgroundColor: '#e9e9e9',
-        color: 'black'
-      }}
-    />
+    <Tooltip text={user.username} key={`user-${user.id}-${answerObj.pincite}-${answerObj.schemeAnswerId}`}>
+      <Avatar
+        avatar={user.avatar}
+        initials={user.initials}
+        aria-label={`${user.username}'s pincite: ${answerObj.pincite}`}
+        userName={user.username}
+        small={size === 'small'}
+        style={{
+          margin: '0 10px 0 0',
+          outline: 0,
+          backgroundColor: '#e9e9e9',
+          color: 'black'
+        }}
+      />
+    </Tooltip>
   )
 }
 
@@ -105,7 +107,7 @@ export class PinciteList extends Component {
 
     return (
       pincitesExist &&
-      <FlexGrid container padding="0 10px 0 0" align="flex-start" flex>
+      <FlexGrid container align="flex-start" flex>
         <Snackbar
           open={copied}
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
@@ -122,7 +124,13 @@ export class PinciteList extends Component {
           }
         />
         {!alwaysShow &&
-        <FlexGrid container type="row" align="center" onClick={this.handleToggle} style={{ cursor: 'pointer' }}>
+        <FlexGrid
+          container
+          type="row"
+          align="center"
+          padding="6px 0px 8px 0px"
+          onClick={this.handleToggle}
+          style={{ cursor: 'pointer' }}>
           <Typography variant="body1" color="secondary">
             {expanded ? 'Hide pincites' : 'Show pincites'}
           </Typography>
@@ -140,7 +148,7 @@ export class PinciteList extends Component {
                   text={answer.pincite}
                   onCopy={hasPincite && this.handlePinciteCopy}
                   key={`${user.username}-pincite`}>
-                  <FlexGrid container type="row" align="center" style={{ cursor: 'pointer', marginBottom: 6 }}>
+                  <FlexGrid container type="row" align="flex-start" style={{ cursor: 'pointer', marginBottom: 8 }}>
                     {showAvatar && <PinciteAvatar answerObj={answer} user={user} size={avatarSize} />}
                     <Typography
                       align="center"

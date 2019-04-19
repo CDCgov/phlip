@@ -36,6 +36,7 @@ module.exports = {
     'APP_API_URL': '/api',
     'APP_IS_SAML_ENABLED': '0',
     'APP_DOC_MANAGE_API': '/docsApi',
-    'APP_LOG_REQUESTS': '0'
+    'APP_LOG_REQUESTS': '0',
+    'APP_IS_PRODUCTION': '0'
   }
 }

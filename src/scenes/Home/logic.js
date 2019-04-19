@@ -2,7 +2,7 @@
  * This is all of the redux-logic for the Home ("Project List") scene.
  */
 import { createLogic } from 'redux-logic'
-import * as types from './actionTypes'
+import { types } from './actions'
 import addEditProjectLogic from './scenes/AddEditProject/logic'
 import addEditJurisdictions from './scenes/AddEditJurisdictions/logic'
 import { commonHelpers, normalize } from 'utils'

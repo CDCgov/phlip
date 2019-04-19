@@ -24,32 +24,29 @@ export const TextFieldQuestion = props => {
   return (
     <FlexGrid container flex>
       {isValidation && mergedUserQuestions.answers.map(answer =>
-        <FlexGrid container padding="25px 15px" key={answer.id} style={{ margin: '0 10px' }}>
+        <FlexGrid container padding="0 15px 15px" key={answer.id} style={{ margin: '0 10px' }}>
           <FlexGrid container align="flex-start">
             <Typography style={{ whiteSpace: 'pre-wrap' }} variant="body1">{answer.textAnswer}</Typography>
           </FlexGrid>
-          <FlexGrid container type="row" align="center" flex padding="5px 0">
-            <ValidationAvatarList
-              showAllAvatar={false}
-              userImages={userImages}
-              answerList={[answer]}
-              handleClickAvatar={onToggleCoderAnnotations}
-              enabledAnswerId={enabledAnswerId}
-              enabledUserId={enabledUserId}
-              isValidatorSelected={isValidatorSelected}
-              answerId={answerId}
-            />
-            <PinciteList
-              alwaysShow
-              showAvatar={false}
-              answerList={[answer]}
-              userImages={userImages}
-            />
+          <FlexGrid container type="row" align="flex-start" flex padding="5px 0">
+            <div style={{ marginRight: 5 }}>
+              <ValidationAvatarList
+                showAllAvatar={false}
+                userImages={userImages}
+                answerList={[answer]}
+                handleClickAvatar={onToggleCoderAnnotations}
+                enabledAnswerId={enabledAnswerId}
+                enabledUserId={enabledUserId}
+                isValidatorSelected={isValidatorSelected}
+                answerId={answerId}
+              />
+            </div>
+            <PinciteList alwaysShow showAvatar={false} answerList={[answer]} userImages={userImages} />
           </FlexGrid>
         </FlexGrid>)}
       <FlexGrid
         container
-        padding="25px 15px"
+        padding="0 0 15px"
         style={{
           alignSelf: 'stretch',
           backgroundColor: showAnno ? '#e6f8ff' : 'white',
@@ -72,7 +69,7 @@ export const TextFieldQuestion = props => {
           }}
           disableRipple
           onClick={onToggleAnnotationMode(answerId)}>
-          {showAnno === answerId ? 'Done' : 'Annotate'}
+          {showAnno ? 'Done' : 'Annotate'}
         </Button>}
         {(isAnswered && !isValidation) &&
         <PinciteTextField
@@ -80,9 +77,10 @@ export const TextFieldQuestion = props => {
           pinciteValue={userAnswers.answers[answerId].pincite}
           handleChangePincite={onChange}
           disabled={disableAll}
+          style={{ paddingTop: 5 }}
         />}
         {(isValidation && isAnswered) &&
-        <FlexGrid container type="row" align="center" flex>
+        <FlexGrid container type="row" align="flex-start" flex padding="8px 0 0">
           <ValidationAvatarList
             userImages={userImages}
             answerList={[{ ...userAnswers.answers[answerId], isValidatorAnswer: true, ...validatedBy }]}
@@ -94,7 +92,7 @@ export const TextFieldQuestion = props => {
             showAllAvatar={false}
             layered={false}
           />
-          <div style={{ paddingLeft: 5 }} />
+          <div style={{ width: 5 }} />
           <PinciteList
             alwaysShow
             validatorStyles={{ margin: '3px 0' }}
@@ -103,7 +101,7 @@ export const TextFieldQuestion = props => {
             isAnswered={isAnswered}
             validatorObj={{ ...userAnswers.answers[answerId], ...validatedBy }}
             handleChangePincite={onChange}
-            textFieldProps={{ padding: '0 8px', flex: '1 1 auto' }}
+            textFieldProps={{ padding: '0 8px', flex: '1 1 auto', width: '100%' }}
           />
         </FlexGrid>}
       </FlexGrid>

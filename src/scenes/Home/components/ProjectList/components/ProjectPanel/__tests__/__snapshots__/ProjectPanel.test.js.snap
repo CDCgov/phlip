@@ -372,7 +372,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
                 container={false}
                 flex={false}
                 justify="stretch"
-                padding="checkbox"
+                padding={0}
                 raised={false}
                 style={
                   Object {
@@ -387,6 +387,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
                   Object {
                     "pathname": "/project/edit/2",
                     "state": Object {
+                      "directEditMode": true,
                       "modal": true,
                       "projectDefined": Object {
                         "createdBy": "Admin",
@@ -430,7 +431,11 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
                 component={[Function]}
                 disableRipple={true}
                 id="2-edit-jurisdictions"
-                size="small"
+                style={
+                  Object {
+                    "marginLeft": 10,
+                  }
+                }
                 textColor="black"
                 to={
                   Object {
@@ -452,7 +457,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
                 />
               </WithTheme(Button)>
               <WithTheme(Button)
-                aria-label="documents in this project"
+                aria-label="Documents in this project"
                 color="white"
                 component={[Function]}
                 disableRipple={true}
@@ -499,6 +504,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
                 aria-label="Add and edit project coding scheme"
                 color="white"
                 component={[Function]}
+                disableRipple={true}
                 style={
                   Object {
                     "marginLeft": 10,
@@ -521,6 +527,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
                 aria-label="Add and edit project protocol"
                 color="white"
                 component={[Function]}
+                disableRipple={true}
                 style={
                   Object {
                     "marginLeft": 10,
@@ -542,6 +549,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
               <WithTheme(Button)
                 aria-label="Export validated questions"
                 color="white"
+                disableRipple={true}
                 id="export-validated-2"
                 onClick={[Function]}
                 style={
@@ -556,6 +564,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
                   style={
                     Object {
                       "fontSize": 18,
+                      "paddingLeft": 5,
                     }
                   }
                 />

@@ -20,8 +20,8 @@ import CircularLoader from 'components/CircularLoader'
  * Main / entry component for all things related to adding and editing a project. This component is a modal and is
  * rendered and mounted when the user clicks the 'Add New Project' button or the name of a project in the Project List
  * scene. The Edit or Add view is determined by the location and location.state props variables. If a project is passed
- * along, then it's edit, otherwise it's Add. This component is wrapped by the withFormAlert, withTracking and react-redux's
- * connect HOCs.
+ * along, then it's edit, otherwise it's Add. This component is wrapped by the withFormAlert, withTracking and
+ * react-redux's connect HOCs.
  */
 export class AddEditProject extends Component {
   static propTypes = {
@@ -79,10 +79,9 @@ export class AddEditProject extends Component {
 
   constructor(props, context) {
     super(props, context)
-    console.log(this.props.location.state)
     this.projectDefined = this.props.match.url === '/project/add' ? null : this.props.location.state.projectDefined
     this.state = {
-      edit: this.props.location.state.directEditMode ||!this.projectDefined,
+      edit: this.props.location.state.directEditMode || !this.projectDefined,
       submitting: false
     }
   }
@@ -107,12 +106,12 @@ export class AddEditProject extends Component {
    */
   onCancel = () => {
     this.props.formActions.reset('projectForm')
-    if (this.props.location.state.directEditMode ) {
+    if (this.props.location.state.directEditMode) {
       this.props.history.goBack()
     } else {
       return this.state.edit
         ? this.projectDefined
-          ? this.setState({edit: !this.state.edit})
+          ? this.setState({ edit: !this.state.edit })
           : this.props.history.goBack()
         : this.props.history.goBack()
     }

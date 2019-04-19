@@ -1,80 +1,61 @@
-import * as types from './actionTypes'
+import makeActionCreator from 'utils/makeActionCreator'
+import actions from 'scenes/Home/actions'
 
-export { updateEditedFields } from 'scenes/Home/actions'
+export const types = {
+  ADD_PROJECT_JURISDICTION_REQUEST: 'ADD_PROJECT_JURISDICTION_REQUEST',
+  ADD_PROJECT_JURISDICTION_SUCCESS: 'ADD_PROJECT_JURISDICTION_SUCCESS',
+  ADD_PROJECT_JURISDICTION_FAIL: 'ADD_PROJECT_JURISDICTION_FAIL',
+  UPDATE_PROJECT_JURISDICTION_REQUEST: 'UPDATE_PROJECT_JURISDICTION_REQUEST',
+  UPDATE_PROJECT_JURISDICTION_SUCCESS: 'UPDATE_PROJECT_JURISDICTION_SUCCESS',
+  UPDATE_PROJECT_JURISDICTION_FAIL: 'UPDATE_PROJECT_JURISDICTION_FAIL',
+  GET_PROJECT_JURISDICTIONS_REQUEST: 'GET_PROJECT_JURISDICTIONS_REQUEST',
+  GET_PROJECT_JURISDICTIONS_SUCCESS: 'GET_PROJECT_JURISDICTIONS_SUCCESS',
+  GET_PROJECT_JURISDICTION_FAIL: 'GET_PROJECT_JURISDICTION_FAIL',
+  UPDATE_JURISDICTION_SEARCH_VALUE: 'UPDATE_JURISDICTION_SEARCH_VALUE',
+  SEARCH_JURISDICTION_LIST: 'SEARCH_JURISDICTION_LIST',
+  SET_JURISDICTION_SUGGESTIONS: 'SET_JURISDICTION_SUGGESTIONS',
+  UPDATE_SUGGESTION_VALUE: 'UPDATE_SUGGESTION_VALUE',
+  ON_CLEAR_SUGGESTIONS: 'ON_CLEAR_SUGGESTIONS',
+  CLEAR_JURISDICTIONS: 'CLEAR_JURISDICTIONS',
+  ON_JURISDICTION_SELECTED: 'ON_JURISDICTION_SELECTED',
+  ADD_JURISDICTION_TO_PROJECT: 'ADD_JURISDICTION_TO_PROJECT',
+  UPDATE_JURISDICTION_IN_PROJECT: 'UPDATE_JURISDICTION_IN_PROJECT',
+  RESET_FORM_ERROR: 'RESET_FORM_ERROR',
+  UPDATE_EDITED_FIELDS: 'UPDATE_EDITED_FIELDS',
+  ADD_PRESET_JURISDICTION_REQUEST: 'ADD_PRESET_JURISDICTION_REQUEST',
+  ADD_PRESET_JURISDICTION_SUCCESS: 'ADD_PRESET_JURISDICTION_SUCCESS',
+  ADD_PRESET_JURISDICTION_FAIL: 'ADD_PRESET_JURISDICTION_FAIL',
+  ADD_PRESET_JURISDICTION_TO_PROJECT: 'ADD_PRESET_JURISDICTION_TO_PROJECT',
+  DELETE_JURISDICTION_REQUEST: 'DELETE_JURISDICTION_REQUEST',
+  DELETE_JURISDICTION_SUCCESS: 'DELETE_JURISDICTION_SUCCESS',
+  DELETE_JURISDICTION_FAIL: 'DELETE_JURISDICTION_FAIL',
+  DELETE_JURISDICTION_FROM_PROJECT: 'DELETE_JURISDICTION_FROM_PROJECT',
+  SHOW_JURISDICTION_LOADER: 'SHOW_JURISDICTION_LOADER',
+  INITIALIZE_FORM: 'INITIALIZE_FORM',
+  RESET_FORM_VALUES: 'RESET_FORM_VALUES',
+  SET_FORM_VALUES: 'SET_FORM_VALUES',
+  DISMISS_DELETE_ERROR_ALERT: 'DISMISS_DELETE_ERROR_ALERT'
+}
 
-/** Add jurisdiction */
-export const addJurisdiction = (jurisdiction, projectId) => ({
-  type: types.ADD_PROJECT_JURISDICTION_REQUEST,
-  jurisdiction,
-  projectId
-})
-
-/** Updating a jurisidction */
-export const updateJurisdiction = (jurisdiction, projectId, projectJurisdictionId) => ({
-  type: types.UPDATE_PROJECT_JURISDICTION_REQUEST,
-  jurisdiction,
-  projectId,
-  projectJurisdictionId
-})
-
-/** Adding preset list of jurisdictions */
-export const addPresetJurisdictionRequest = (jurisdiction, projectId) => ({
-  type: types.ADD_PRESET_JURISDICTION_REQUEST,
-  jurisdiction,
-  projectId
-})
-
-/** Getting list of all jurisdictions for project */
-export const getProjectJurisdictions = projectId => ({ type: types.GET_PROJECT_JURISDICTIONS_REQUEST, projectId })
-
-/** Updating visible jurisdictions list based on searchValue from search bar */
-export const updateSearchValue = searchValue => ({ type: types.UPDATE_JURISDICTION_SEARCH_VALUE, searchValue })
-
-/** Autocomplete related actions */
-export const clearJurisdictions = () => ({ type: types.CLEAR_JURISDICTIONS })
-
-/** Searching master jurisdiction list */
-export const searchJurisdictionList = searchString => ({ type: types.SEARCH_JURISDICTION_LIST, searchString })
-
-/** Updating suggestion value */
-export const onSuggestionValueChanged = suggestionValue => ({ type: types.UPDATE_SUGGESTION_VALUE, suggestionValue })
-
-/** Clearing suggested jurisdictions */
-export const onClearSuggestions = () => ({ type: types.ON_CLEAR_SUGGESTIONS })
-
-/** Setting jurisdiction selected in form */
-export const onJurisdictionSelected = jurisdiction => ({ type: types.ON_JURISDICTION_SELECTED, jurisdiction })
-
-/** Adding jurisdiction to project in state.scenes.home */
-export const addJurisdictionToProject = (jurisdiction, projectId) => ({
-  type: types.ADD_JURISDICTION_TO_PROJECT,
-  jurisdiction,
-  projectId
-})
-
-/** Updating jurisdiction in project in state.scenes.home */
-export const updateJurisdictionInProject = (jurisdiction, projectId) => ({
-  type: types.UPDATE_JURISDICTION_IN_PROJECT,
-  jurisdiction,
-  projectId
-})
-
-/** Deleting jurisdiction */
-export const deleteJurisdictionRequest = (jurisdictionId, projectId) => ({
-  type: types.DELETE_JURISDICTION_REQUEST,
-  jurisdictionId,
-  projectId
-})
-
-/** Clearing alerts and errors */
-export const resetFormError = () => ({ type: types.RESET_FORM_ERROR })
-export const dismissDeleteErrorAlert = () => ({ type: types.DISMISS_DELETE_ERROR_ALERT })
-
-/** Show jurisdiction loader */
-export const showJurisdictionLoader = () => ({ type: types.SHOW_JURISDICTION_LOADER })
-
-/** Initializing, updating, reseting form */
-export const initializeFormValues = values => ({ type: types.INITIALIZE_FORM, values })
-export const resetToInitial = () => ({ type: types.RESET_FORM_VALUES })
-export const setFormValues = (prop, value) => ({ type: types.SET_FORM_VALUES, prop, value })
-
+export default {
+  addJurisdiction: makeActionCreator(types.ADD_PROJECT_JURISDICTION_REQUEST, 'jurisdiction', 'projectId'),
+  updateJurisdiction: makeActionCreator(types.UPDATE_PROJECT_JURISDICTION_REQUEST, 'jurisdiction', 'projectId', 'projectJurisdictionId'),
+  addPresetJurisdictionRequest: makeActionCreator(types.ADD_PRESET_JURISDICTION_REQUEST, 'jurisdiction', 'projectId'),
+  getProjectJurisdictions: makeActionCreator(types.GET_PROJECT_JURISDICTIONS_REQUEST, 'projectId'),
+  updateSearchValue: makeActionCreator(types.UPDATE_JURISDICTION_SEARCH_VALUE, 'searchValue'),
+  clearJurisdictions: makeActionCreator(types.CLEAR_JURISDICTIONS),
+  searchJurisdictionList: makeActionCreator(types.SEARCH_JURISDICTION_LIST, 'searchString'),
+  onSuggestionValueChanged: makeActionCreator(types.UPDATE_SUGGESTION_VALUE, 'suggestionValue'),
+  onClearSuggestions: makeActionCreator(types.ON_CLEAR_SUGGESTIONS),
+  onJurisdictionSelected: makeActionCreator(types.ON_JURISDICTION_SELECTED, 'jurisdiction'),
+  addJurisdictionToProject: makeActionCreator(types.ADD_JURISDICTION_TO_PROJECT, 'jurisdiction', 'projectId'),
+  updateJurisdictionInProject: makeActionCreator(types.UPDATE_JURISDICTION_IN_PROJECT, 'jurisdiction', 'projectId'),
+  deleteJurisdictionRequest: makeActionCreator(types.DELETE_JURISDICTION_REQUEST, 'jurisdictionId', 'projectId'),
+  resetFormError: makeActionCreator(types.RESET_FORM_ERROR),
+  dismissDeleteErrorAlert: makeActionCreator(types.DISMISS_DELETE_ERROR_ALERT),
+  showJurisdictionLoader: makeActionCreator(types.SHOW_JURISDICTION_LOADER),
+  initializeFormValues: makeActionCreator(types.INITIALIZE_FORM, 'values'),
+  resetToInitial: makeActionCreator(types.RESET_FORM_VALUES),
+  setFormValues: makeActionCreator(types.SET_FORM_VALUES, 'prop', 'value'),
+  updateEditedFields: actions.updateEditedFields
+}
