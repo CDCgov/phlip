@@ -37,7 +37,7 @@ export const types = {
 export default {
   getProjectsRequest: makeActionCreator(types.GET_PROJECTS_REQUEST),
   getProjectsFail: payload => ({ type: types.GET_PROJECTS_FAIL, payload: { errorContent: payload, error: true } }),
-  updateProjectRequest: makeActionCreator(types.UPDATE_PROJECT_REQUEST, 'payload'),
+  updateProjectRequest: makeActionCreator(types.UPDATE_PROJECT_REQUEST, 'project'),
   updateProjectFail: payload => ({ type: types.UPDATE_PROJECT_FAIL, payload: { errorContent: payload, error: true } }),
   toggleBookmark: makeActionCreator(types.TOGGLE_BOOKMARK, 'project'),
   toggleBookmarkSuccess: makeActionCreator(types.TOGGLE_BOOKMARK_SUCCESS, 'payload'),

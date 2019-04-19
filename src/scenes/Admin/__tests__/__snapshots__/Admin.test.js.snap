@@ -22,7 +22,7 @@ exports[`Admin Scene it should render correctly 1`] = `
         },
         "show": true,
         "state": Object {},
-        "text": "+ Add New User",
+        "text": "Add New User",
       }
     }
     pageTitle="User Management"

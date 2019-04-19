@@ -1,14 +1,12 @@
 import { types } from '../../actions'
+import makeActionCreator from 'utils/makeActionCreator'
 
-/** Adding a project */
-export const addProjectRequest = (project) => ({ type: types.ADD_PROJECT_REQUEST, project })
-export const addProjectSuccess = (payload) => ({ type: types.ADD_PROJECT_SUCCESS, payload })
-export const addProjectFail = (payload) => ({ type: types.ADD_PROJECT_FAIL, errorValue: payload, error: true })
-
-/** Updating a project */
-export const updateProjectRequest = (project) => ({ type: types.UPDATE_PROJECT_REQUEST, project })
-export const updateProjectSuccess = (payload) => ({ type: types.UPDATE_PROJECT_SUCCESS, payload })
-export const updateProjectFail = (payload) => ({ type: types.UPDATE_PROJECT_FAIL, errorValue: payload, error: true })
-
-/** Reset error */
-export const resetFormError = () => ({ type: types.RESET_FORM_ERROR })
+export default {
+  addProjectRequest: makeActionCreator(types.ADD_PROJECT_REQUEST, 'project'),
+  addProjectSuccess: makeActionCreator(types.ADD_PROJECT_SUCCESS, 'payload'),
+  addProjectFail: payload => ({ type: types.ADD_PROJECT_FAIL, errorValue: payload, error: true }),
+  updateProjectRequest: makeActionCreator(types.UPDATE_PROJECT_REQUEST, 'project'),
+  updateProjectSuccess: makeActionCreator(types.UPDATE_PROJECT_SUCCESS, 'payload'),
+  updateProjectFail: payload => ({ type: types.UPDATE_PROJECT_FAIL, errorValue: payload, error: true }),
+  resetFormError: makeActionCreator(types.RESET_FORM_ERROR)
+}

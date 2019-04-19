@@ -35,7 +35,7 @@ exports[`Document Management scene should render correctly 1`] = `
           "state": Object {
             "modal": true,
           },
-          "text": "+ Upload New",
+          "text": "Upload New",
         }
       }
       pageTitle="Document Management"
