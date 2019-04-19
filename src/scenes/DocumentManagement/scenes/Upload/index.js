@@ -107,6 +107,7 @@ export class Upload extends Component {
       validMime : false,
       processingFiles : []
     }
+    this.maxFileCount = 50
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -202,7 +203,7 @@ export class Upload extends Component {
             onClick: this.goBack
           }
         ]
-      }, () => this.props.actions.openAlert('Your unsaved changes will be lost.'))
+      }, () => this.props.actions.openAlert('Your unsaved changes will be lost.','File Upload Alert'))
     } else {
       this.goBack()
     }
@@ -260,27 +261,32 @@ export class Upload extends Component {
      */
 
   addFilesToList = (e) => {
-    let files = []
-    Array.from(Array(e.target.files.length).keys()).map(x => {
-      const i = e.target.files.item(x)
+    if (e.target.files.length + this.props.selectedDocs.length > this.maxFileCount) {
+      //this.showFileCountExceedAlert()
+      this.props.actions.openAlert(`The number of files selected for upload has exceeded the limit of ${this.maxFileCount} files per upload.  Please consider upload files in smaller batches.`,'File Count Alert')
+    } else {
+      let files = []
+      Array.from(Array(e.target.files.length).keys()).map(x => {
+        const i = e.target.files.item(x)
 
-      files.push({
-        name: i.name,
-        lastModifiedDate: i.lastModifiedDate,
-        tags: [],
-        file: i,
-        effectiveDate: '',
-        citation: '',
-        jurisdictions: {searchValue: '', suggestions: [], name: ''}
+        files.push({
+          name: i.name,
+          lastModifiedDate: i.lastModifiedDate,
+          tags: [],
+          file: i,
+          effectiveDate: '',
+          citation: '',
+          jurisdictions: {searchValue: '', suggestions: [], name: ''}
+        })
+
       })
-
-    })
-    this.props.actions.verifyFileContent(files)
-    this.props.infoSheetSelected
-      ? this.props.actions.mergeInfoWithDocs(files)
-      : this.props.actions.addSelectedDocs(files)
+      this.props.actions.verifyFileContent(files)
+      this.props.infoSheetSelected
+        ? this.props.actions.mergeInfoWithDocs(files)
+        : this.props.actions.addSelectedDocs(files)
+    }
   }
-  
+
   /**
    * Creates a formData object to send to api to upload documents
    */
@@ -517,6 +523,9 @@ export class Upload extends Component {
           }
         </ModalContent>
         <Divider />
+        <Typography style={{font:400, fontSize: 12, padding:10}}>
+            File Count: {this.props.selectedDocs.length}
+        </Typography>
         <ModalActions actions={modalActions} />
       </Modal>
     )
