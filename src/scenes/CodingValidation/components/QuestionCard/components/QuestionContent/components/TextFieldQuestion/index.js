@@ -72,7 +72,7 @@ export const TextFieldQuestion = props => {
           }}
           disableRipple
           onClick={onToggleAnnotationMode(answerId)}>
-          {showAnno === answerId ? 'Done' : 'Annotate'}
+          {showAnno ? 'Done' : 'Annotate'}
         </Button>}
         {(isAnswered && !isValidation) &&
         <PinciteTextField
