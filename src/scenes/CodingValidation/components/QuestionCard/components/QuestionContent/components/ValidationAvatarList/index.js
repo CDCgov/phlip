@@ -73,7 +73,7 @@ export const ValidationAvatarList = props => {
         <Avatar
           style={(enabledUserId === 'All' && answerId === enabledAnswerId) ? selectedStyle : avatarStyle}
           avatar=""
-          initials="All"
+          initials="ALL"
           key="user-avatar-all-selected"
           onClick={handleClickAvatar(answerId, 'All', false)}
           userName="All"
