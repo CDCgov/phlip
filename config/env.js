@@ -29,5 +29,9 @@ module.exports = getEnvVariables = nodeEnv => {
     env.APP_IS_SAML_ENABLED = JSON.stringify(0)
   }
 
+  if (!env.APP_IS_PRODUCTION) {
+    env.APP_IS_PRODUCTION = JSON.stringify(0)
+  }
+
   return env
 }
