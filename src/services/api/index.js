@@ -2,18 +2,18 @@ import axios from 'axios'
 import { isLoggedIn, getToken, logout } from 'services/authToken'
 import util from 'util'
 
-/* global APP_IS_SAML_ENABLED, APP_API_URL, APP_DOC_MANAGE_API */
+/* global APP_IS_SAML_ENABLED, APP_API_URL, APP_DOC_MANAGE_API, APP_IS_PRODUCTION */
 
 /**
  * AxiosInstance with baseURL /api
  * @type {AxiosInstance}
  */
 export const projectApiInstance = axios.create({
-  baseURL: APP_IS_SAML_ENABLED === '1' ? APP_API_URL : '/api'
+  baseURL: (APP_IS_SAML_ENABLED === '1' || APP_IS_PRODUCTION === '1') ? APP_API_URL : '/api'
 })
 
 export const docApiInstance = axios.create({
-  baseURL: APP_IS_SAML_ENABLED === '1' ? APP_DOC_MANAGE_API : '/docsApi'
+  baseURL: (APP_IS_SAML_ENABLED === '1' || APP_IS_PRODUCTION === '1') ? APP_DOC_MANAGE_API : '/docsApi'
 })
 
 /**
