@@ -117,7 +117,8 @@ class FileUpload extends Component {
         {
           value: 'Cancel',
           type: 'button',
-          onClick: this.onCancelSelectExcel
+          onClick: this.onCancelSelectExcel,
+          preferred: true
         },
         {
           value: 'Continue',
