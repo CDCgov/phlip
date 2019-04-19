@@ -46,7 +46,7 @@ export const TextFieldQuestion = props => {
         </FlexGrid>)}
       <FlexGrid
         container
-        padding="25px 15px"
+        padding="0 0 15px"
         style={{
           alignSelf: 'stretch',
           backgroundColor: showAnno ? '#e6f8ff' : 'white',
@@ -77,6 +77,7 @@ export const TextFieldQuestion = props => {
           pinciteValue={userAnswers.answers[answerId].pincite}
           handleChangePincite={onChange}
           disabled={disableAll}
+          style={{ paddingTop: 5 }}
         />}
         {(isValidation && isAnswered) &&
         <FlexGrid container type="row" align="flex-start" flex padding="8px 0 0">

@@ -16,11 +16,7 @@ exports[`QuestionCard - QuestionContent - PinciteTextField should render correct
   key="10-pincite"
   multiline={false}
   placeholder="Enter pincite"
-  style={
-    Object {
-      "paddingTop": 10,
-    }
-  }
+  style={Object {}}
   value="this is my pincite"
 />
 `;

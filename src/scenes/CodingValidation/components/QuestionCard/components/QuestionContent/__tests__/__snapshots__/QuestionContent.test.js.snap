@@ -55,7 +55,7 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
     type="column"
   >
     <FlexGrid
-      align="flex-start"
+      align="center"
       circular={false}
       container={true}
       flex={false}

@@ -60,7 +60,7 @@ export const QuestionContent = props => {
         <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
       </FlexGrid>
       <FlexGrid container flex style={{ overflow: 'auto' }}>
-        <FlexGrid container type="row" align="flex-start" padding="0 0 15px">
+        <FlexGrid container type="row" align="center" padding="0 0 15px">
           <Typography
             variant="body2"
             style={{ letterSpacing: 0, lineHeight: '1.5em' }}>{question.text}&nbsp;</Typography>

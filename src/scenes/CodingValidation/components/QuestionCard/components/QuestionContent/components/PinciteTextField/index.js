@@ -12,7 +12,7 @@ export const PinciteTextField = props => {
       value={pinciteValue}
       multiline={false}
       InputProps={{ inputProps: { 'aria-label': 'Pincite', style: { paddingBottom: 2 } } }}
-      style={{ paddingTop: 10, ...style }}
+      style={style}
       disabled={disabled}
       onChange={handleChangePincite(schemeAnswerId, 'pincite')}
     />
