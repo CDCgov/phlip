@@ -178,7 +178,7 @@ export class ProjectPanel extends Component {
                 to={{ pathname: `/project/${project.id}/code` }}
               />
               <span style={{ width: '24px' }} />
-              <Button
+              {!isCoder && <Button
                 raised={false}
                 value="Validate"
                 listButton
@@ -186,7 +186,7 @@ export class ProjectPanel extends Component {
                 component={Link}
                 style={{ borderRadius: 3 }}
                 to={{ pathname: `/project/${project.id}/validate` }}
-              />
+              />}
             </FlexGrid>
           </FlexGrid>}
           <Collapse in={expanded} style={collapseStyles}>
