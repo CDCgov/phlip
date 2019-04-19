@@ -13,7 +13,7 @@ export const Avatar = ({ big, small, avatar, initials, style, cardAvatar, userNa
   const common = {
     width: dim,
     height: dim,
-    fontSize: small ? '.75rem' : '1rem',
+    fontSize: small ? '.5rem' : '.8rem',
     ...style
   }
 
