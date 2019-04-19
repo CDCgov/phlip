@@ -52,7 +52,7 @@ export class Admin extends Component {
           projectName=""
           otherButton={{
             isLink: true,
-            text: '+ Add New User',
+            text: 'Add New User',
             path: '/admin/new/user',
             state: {},
             props: { 'aria-label': 'Add new user' },

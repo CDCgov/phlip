@@ -251,7 +251,7 @@ export class CodingScheme extends Component {
               pathname: `/project/${this.props.projectId}/coding-scheme/add`,
               state: { questionDefined: null, canModify: true }
             }}
-            value="+ Add New Question"
+            value="Add New Question"
             color="accent"
             aria-label="Add new question to coding scheme"
           />
