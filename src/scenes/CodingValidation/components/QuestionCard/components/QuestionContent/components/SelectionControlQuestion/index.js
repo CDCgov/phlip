@@ -66,7 +66,7 @@ export const SelectionControlQuestion = props => {
             <FlexGrid
               container
               key={choice.id}
-              padding="25px 15px"
+              padding="0 15px 15px"
               style={{ backgroundColor: showAnno ? '#e6f8ff' : 'white', margin: '0 10px' }}>
               <FormControlLabel
                 checked={isAnswered}
@@ -89,6 +89,7 @@ export const SelectionControlQuestion = props => {
                     enabledUserId={enabledUserId}
                     isValidatorSelected={isValidatorSelected}
                     answerId={choice.id}
+                    showAllAvatar={list.length > 1}
                   />}
                   {isAnswered && !areDocsEmpty &&
                   <Button
