@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux'
 import CardError from 'components/CardError'
 import PageHeader from 'components/PageHeader'
 import ProjectList from './components/ProjectList'
-import * as actions from './actions'
+import actions from './actions'
 import ExportDialog from './components/ExportDialog'
 import withTracking from 'components/withTracking'
 import SearchBar from 'components/SearchBar'
@@ -81,7 +81,8 @@ export class Home extends Component {
     super(props, context)
     this.state = {
       exportDialogOpen: false,
-      projectToExport: null
+      projectToExport: null,
+      sortSelection: null
     }
 
     this.exportRef = null
@@ -191,8 +192,8 @@ export class Home extends Component {
     this.clearProjectExport()
   }
 
-  handleSortParmChange = (selectedOption) => {
-    // console.log(selectedOption)
+  handleSortParmChange = selectedOption => {
+    this.setState({ sortSelection: selectedOption })
     selectedOption !== 'sortBookmarked'
       ? this.props.actions.sortProjects(selectedOption)
       : this.props.actions.sortBookmarked(!this.props.sortBookmarked)
@@ -244,14 +245,15 @@ export class Home extends Component {
             id="projectSort"
             options={options}
             input={{
-              value: sortBy || 'dateLastEdited',
+              value: this.state.sortSelection || 'dateLastEdited',
               onChange: this.handleSortParmChange
             }}
             renderValue={value => {
               const option = options.find(option => option.value === value)
               return (
                 <FlexGrid container type="row" align="center">
-                  <span>Sort by:&nbsp;</span>{option.label}
+                  <span>Sort by:&nbsp;</span>
+                  {option.label}
                 </FlexGrid>
               )
             }}

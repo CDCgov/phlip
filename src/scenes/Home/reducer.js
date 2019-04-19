@@ -1,4 +1,4 @@
-import * as types from './actionTypes'
+import { types } from './actions'
 import { combineReducers } from 'redux'
 import addEditJurisdictions from './scenes/AddEditJurisdictions/reducer'
 import addEditProject from './scenes/AddEditProject/reducer'

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { withTheme } from '@material-ui/core/styles'
-import * as actions from 'scenes/Home/actions'
+import actions from 'scenes/Home/actions'
 import moment from 'moment'
 import GridList from '@material-ui/core/GridList'
 import GridListTile from '@material-ui/core/GridListTile'
@@ -70,6 +70,8 @@ export class ProjectPanel extends Component {
     const {
       project, role, bookmarked, actions, onExport, theme, index, length, users, allUsers, expanded
     } = this.props
+
+    console.log(actions)
 
     const isCoder = role === 'Coder'
     const greyIcon = theme.palette.greyText
@@ -258,6 +260,7 @@ export class ProjectPanel extends Component {
                       id={`${project.id}-edit-jurisdictions`}
                       to={{ pathname: `/project/${project.id}/jurisdictions`, state: { modal: true } }}
                       aria-label="Add and edit project jurisdictions"
+                      component={Link}
                       {...panelButtonProps}>
                       Jurisdictions
                       <City style={iconStyle} />
@@ -265,11 +268,13 @@ export class ProjectPanel extends Component {
                     <Button
                       aria-label="Documents in this project"
                       {...panelButtonProps}
+                      component={Link}
                       to={{ pathname: `/docs`, state: { projectDefined: true, project } }}>
                       Documents
                       <FileDocument style={iconStyle} />
                     </Button>
                     {!isCoder && (<Button
+                      component={Link}
                       aria-label="Add and edit project coding scheme"
                       to={`/project/${project.id}/coding-scheme`}
                       {...panelButtonProps}>
@@ -277,6 +282,7 @@ export class ProjectPanel extends Component {
                       <FormatListBulleted style={iconStyle} />
                     </Button>)}
                     <Button
+                      component={Link}
                       aria-label="Add and edit project protocol"
                       to={`/project/${project.id}/protocol`}
                       {...panelButtonProps}>

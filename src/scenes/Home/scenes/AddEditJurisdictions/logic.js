@@ -1,5 +1,5 @@
 import { createLogic } from 'redux-logic'
-import * as types from './actionTypes'
+import { types } from './actions'
 
 /**
  * Logic for getting the jursidictions for a project

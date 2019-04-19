@@ -1,4 +1,4 @@
-import * as types from '../../actionTypes'
+import { types } from '../../actions'
 
 /** Adding a project */
 export const addProjectRequest = (project) => ({ type: types.ADD_PROJECT_REQUEST, project })

@@ -1,4 +1,4 @@
-import * as types from '../actionTypes'
+import { types } from '../actions'
 import { homeReducer as reducer, INITIAL_STATE as initial } from '../reducer'
 
 const projects = {
