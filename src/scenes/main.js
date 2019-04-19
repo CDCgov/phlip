@@ -87,11 +87,20 @@ class Main extends Component {
 
     const prev = prevProps.location.pathname.split('/')[1]
     const current = this.props.location.pathname.split('/')[1]
+
+    const tabs = [...this.state.menuTabs]
+
     if (prev !== current) {
+      if (current === 'docs') {
+        tabs[1].active = true
+        tabs[0].active = false
+      } else {
+        tabs[0].active = true
+        tabs[1].active = false
+      }
+
       this.setState({
-        menuTabs: this.state.menuTabs.map(tab => {
-          return { ...tab, active: tab.location === `/${current}` }
-        })
+        menuTabs: tabs
       })
     }
   }
