@@ -66,12 +66,12 @@ export class ProjectPanel extends Component {
     return userTiles.concat(blanks)
   }
 
-  render() {
-    const {
-      project, role, bookmarked, actions, onExport, theme, index, length, users, allUsers, expanded
-    } = this.props
+  onClickExport = () => {
+    this.props.onExport(this.props.project)
+  }
 
-    console.log(actions)
+  render() {
+    const { project, role, bookmarked, actions, theme, index, length, users, allUsers, expanded } = this.props
 
     const isCoder = role === 'Coder'
     const greyIcon = theme.palette.greyText
@@ -131,7 +131,7 @@ export class ProjectPanel extends Component {
           {!expanded && <FlexGrid type="row" container flex style={expandedStyles}>
             <FlexGrid container type="row" align="center" padding="0 0 0 24px" style={{ width: '24px' }}>
               <IconButton
-                color={this.props.bookmarked ? '#fdc43b' : greyIcon}
+                color={bookmarked ? '#fdc43b' : greyIcon}
                 onClick={() => actions.toggleBookmark(project)}
                 tooltipText="Bookmark project"
                 aria-label="Bookmark this project"
@@ -245,7 +245,7 @@ export class ProjectPanel extends Component {
                       id={`bookmark-project-${project.id}`}>
                       {bookmarked ? 'bookmark' : 'bookmark_border'}
                     </IconButton>
-                    <FlexGrid padding="checkbox" style={{ width: 20 }} />
+                    <FlexGrid style={{ width: 20 }} />
                     <TextLink
                       aria-label="Edit project details"
                       to={{
@@ -266,10 +266,10 @@ export class ProjectPanel extends Component {
                       <City style={iconStyle} />
                     </Button>)}
                     <Button
-                      aria-label="Documents in this project"
-                      {...panelButtonProps}
                       component={Link}
-                      to={{ pathname: `/docs`, state: { projectDefined: true, project } }}>
+                      aria-label="Documents in this project"
+                      to={{ pathname: `/docs`, state: { projectDefined: true, project } }}
+                      {...panelButtonProps}>
                       Documents
                       <FileDocument style={iconStyle} />
                     </Button>
@@ -291,7 +291,7 @@ export class ProjectPanel extends Component {
                     </Button>
                     <Button
                       aria-label="Export validated questions"
-                      onClick={() => onExport(project)}
+                      onClick={this.onClickExport}
                       id={`export-validated-${project.id}`}
                       {...panelButtonProps}>
                       Export
