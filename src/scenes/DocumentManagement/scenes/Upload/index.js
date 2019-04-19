@@ -69,6 +69,11 @@ export class Upload extends Component {
     isReduxForm: PropTypes.bool,
 
     /**
+       * max number of files to be upload at one time
+       */
+    maxFileCount: PropTypes.number,
+
+    /**
      * Redux actions
      */
     actions: PropTypes.object,
@@ -107,7 +112,7 @@ export class Upload extends Component {
       validMime : false,
       processingFiles : []
     }
-    this.maxFileCount = 50
+    //this.maxFileCount = 50
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -261,7 +266,7 @@ export class Upload extends Component {
      */
 
   addFilesToList = (e) => {
-    if (e.target.files.length + this.props.selectedDocs.length > this.maxFileCount) {
+    if (e.target.files.length + this.props.selectedDocs.length > this.props.maxFileCount) {
       //this.showFileCountExceedAlert()
       this.props.actions.openAlert(`The number of files selected for upload has exceeded the limit of ${this.maxFileCount} files per upload.  Please consider upload files in smaller batches.`,'File Count Alert')
     } else {
@@ -557,7 +562,8 @@ const mapStateToProps = state => {
     infoSheet: uploadState.list.infoSheet,
     infoSheetSelected: uploadState.list.infoSheetSelected,
     duplicateFiles: uploadState.list.duplicateFiles,
-    invalidFiles : uploadState.list.invalidFiles
+    invalidFiles : uploadState.list.invalidFiles,
+    maxFileCount: uploadState.maxFileCount || 50
   }
 }
 
