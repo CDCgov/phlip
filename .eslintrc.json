@@ -165,6 +165,7 @@
     "APP_API_URL": false,
     "APP_DOC_ANAGE_API": false,
     "APP_LOG_REQUESTS": false,
+    "APP_IS_PRODUCTION": false,
     "page": true,
     "browser": true,
     "context": true,

@@ -387,6 +387,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
                   Object {
                     "pathname": "/project/edit/2",
                     "state": Object {
+                      "directEditMode": true,
                       "modal": true,
                       "projectDefined": Object {
                         "createdBy": "Admin",
