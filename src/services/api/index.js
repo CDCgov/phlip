@@ -13,7 +13,7 @@ export const projectApiInstance = axios.create({
 })
 
 export const docApiInstance = axios.create({
-  baseURL: (APP_IS_SAML_ENABLED === '1' || APP_IS_PRODUCTION === '1') ? APP_DOC_MANAGE_API : '/docsApi'
+  baseURL: '/docsApi'
 })
 
 /**
