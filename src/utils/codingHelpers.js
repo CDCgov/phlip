@@ -358,15 +358,10 @@ export const handleUpdateUserAnswers = (state, action) => {
           [state.selectedCategoryId]: {
             ...state.userAnswers[action.questionId][state.selectedCategoryId],
             answers: { ...currentUserAnswers },
-            ...action.isValidation ? { validatedBy: action.otherProps.validatedBy } : {}
+            ...action.otherUpdates
           }
         }
-        : {
-          answers: { ...currentUserAnswers },
-          ...action.isValidation
-            ? { validatedBy: action.otherProps.validatedBy }
-            : {}
-        }
+        : { answers: { ...currentUserAnswers }, ...action.otherUpdates }
     }
   }
 }
@@ -442,7 +437,8 @@ export const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, get
     ...state.userAnswers,
     [state.question.id]: {
       ...state.userAnswers[state.question.id],
-      [fieldValue]: typeof getFieldValues === 'function' ? getFieldValues(state, action) : getFieldValues
+      [fieldValue]: typeof getFieldValues === 'function' ? getFieldValues(state, action) : getFieldValues,
+      ...action.otherUpdates
     }
   }
 })
@@ -516,7 +512,8 @@ export const handleUpdateUserCategoryChild = (state, action) => (fieldValue, get
       ...state.userAnswers[state.question.id],
       [state.selectedCategoryId]: {
         ...state.userAnswers[state.question.id][state.selectedCategoryId],
-        [fieldValue]: typeof getFieldValues === 'function' ? getFieldValues(state, action) : getFieldValues
+        [fieldValue]: typeof getFieldValues === 'function' ? getFieldValues(state, action) : getFieldValues,
+        ...action.otherUpdates
       }
     }
   }
