@@ -64,6 +64,19 @@ exports[`Document Management - Upload scene should render correctly 1`] = `
     </FlexGrid>
   </ModalContent>
   <WithStyles(Divider) />
+  <Typography
+    style={
+      Object {
+        "font": 400,
+        "fontSize": 12,
+        "padding": 10,
+      }
+    }
+    variant="body1"
+  >
+    File Count: 
+    0
+  </Typography>
   <WithStyles(ModalActions)
     actions={
       Array [
