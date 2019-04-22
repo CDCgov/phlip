@@ -27,7 +27,10 @@ export const types = {
   REJECT_INVALID_FILE_TYPE: 'REJECT_INVALID_FILE_TYPE',
   VERIFY_VALID_FILE_TYPE_REQUEST: 'VERIFY_VALID_FILE_TYPE_REQUEST',
   VERIFY_VALID_FILE_TYPE_SUCCESS: 'VERIFY_VALID_FILE_TYPE_SUCCESS',
-  VERIFY_VALID_FILE_TYPE_FAIL: 'VERIFY_VALID_FILE_TYPE_FAIL'
+  VERIFY_VALID_FILE_TYPE_FAIL: 'VERIFY_VALID_FILE_TYPE_FAIL',
+  REJECT_INVALID_FILE_SIZE: 'REJECT_INVALID_FILE_SIZE',
+  CAPTURE_INVALID_FILE_SIZE: 'CAPTURE_INVALID_FILE_SIZE',
+  CLOSE_INVALID_SIZE_ALERT: 'CLOSE_INVALID_SIZE_ALERT'
 
 }
 
@@ -37,7 +40,7 @@ export default {
   addSelectedDocs: makeActionCreator(types.ADD_SELECTED_DOCS, 'selectedDocs'),
   clearSelectedFiles: makeActionCreator(types.CLEAR_SELECTED_FILES),
   removeDoc: makeActionCreator(types.REMOVE_DOC, 'index'),
-  closeAlert: makeActionCreator(types.CLOSE_ALERT),
+  closeAlert: makeActionCreator(types.CLOSE_ALERT,'alertType'),
   openAlert: makeActionCreator(types.OPEN_ALERT, 'text', 'title'),
   removeDuplicate: makeActionCreator(types.REMOVE_DUPLICATE, 'index', 'fileName'),
   extractInfoRequest: makeActionCreator(types.EXTRACT_INFO_REQUEST, 'infoSheetFormData', 'infoSheet'),
@@ -45,7 +48,9 @@ export default {
   toggleRowEditMode: makeActionCreator(types.TOGGLE_ROW_EDIT_MODE, 'index', 'property'),
   clearRowJurisdictionSuggestions: makeActionCreator(types.CLEAR_ROW_JURISDICTION_SUGGESTIONS, 'index'),
   mergeInfoWithDocs: makeActionCreator(types.MERGE_INFO_WITH_DOCS, 'docs'),
-  verifyFileContent: makeActionCreator(types.VERIFY_VALID_FILE_TYPE_REQUEST,'docs')
+  verifyFileContent: makeActionCreator(types.VERIFY_VALID_FILE_TYPE_REQUEST,'docs'),
+  captureInvalidSize: makeActionCreator(types.CAPTURE_INVALID_FILE_SIZE,'docs'),
+  closeInvalidSizeAlert: makeActionCreator(types.CLOSE_INVALID_SIZE_ALERT)
 
 }
 
