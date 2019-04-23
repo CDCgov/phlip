@@ -22,7 +22,8 @@ export const schemeFromApi = [
     possibleAnswers: [
       { id: 9, text: 'check 1', order: 1 }, { id: 8, text: 'check 2', order: 2 }, { id: 7, text: 'check 3', order: 3 }
     ]
-  }, {
+  },
+  {
     text: 'cat question',
     questionType: 2,
     id: 3,

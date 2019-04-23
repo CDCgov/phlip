@@ -12,8 +12,7 @@ import {
   schemeUserAnswersEmpty,
   schemeOrder,
   schemeTree,
-  mergedUserQuestions,
-  schemeTreeAfterInitialization
+  mergedUserQuestions
 } from 'utils/testData/coding'
 
 const initial = INITIAL_STATE
@@ -56,7 +55,7 @@ describe('CodingValidation reducer', () => {
 
   test('combined reducer should return the combined initial state', () => {
     expect(codingValidationReducer(undefined, {}))
-    .toEqual({ ...COMBINED_INITIAL_STATE, coding: { ...COMBINED_INITIAL_STATE.coding, showNextButton: false } })
+      .toEqual({ ...COMBINED_INITIAL_STATE, coding: { ...COMBINED_INITIAL_STATE.coding, showNextButton: false } })
   })
 
   describe('UPDATE_USER_ANSWER', () => {
@@ -654,7 +653,7 @@ describe('CodingValidation reducer', () => {
     const state = reducer(currentState, action)
     test('should set state.answerErrorContent to "Something about this question has changed since you loaded the page. We couldn\'t save your answer."', () => {
       expect(state.answerErrorContent)
-      .toEqual('Something about this question has changed since you loaded the page. We couldn\'t save your answer.')
+        .toEqual('Something about this question has changed since you loaded the page. We couldn\'t save your answer.')
     })
 
     test('should set state.saveFailed to true', () => {
@@ -1866,7 +1865,7 @@ describe('CodingValidation reducer', () => {
           const currentState = getState({ ...current, question: schemeById[3] })
           const state = reducer(currentState, action)
           expect(state.mergedUserQuestions[3].flagComments)
-          .toEqual([{ comment: 'this is my comment', raisedBy: { userId: 3 } }])
+            .toEqual([{ comment: 'this is my comment', raisedBy: { userId: 3 } }])
         })
       })
 
@@ -1876,7 +1875,7 @@ describe('CodingValidation reducer', () => {
         const state = reducer(currentState, action)
         test('should remove the flag with id: action.payload.flagId from the question in state.mergedUserQuestions', () => {
           expect(state.mergedUserQuestions[4][10].flagsComments)
-          .toEqual([{ id: 1, type: 3, notes: 'flag notes', comment: '', raisedBy: { userId: 2 } }])
+            .toEqual([{ id: 1, type: 3, notes: 'flag notes', comment: '', raisedBy: { userId: 2 } }])
         })
       })
     })
