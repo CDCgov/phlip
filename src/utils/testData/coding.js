@@ -22,7 +22,8 @@ export const schemeFromApi = [
     possibleAnswers: [
       { id: 9, text: 'check 1', order: 1 }, { id: 8, text: 'check 2', order: 2 }, { id: 7, text: 'check 3', order: 3 }
     ]
-  }, {
+  },
+  {
     text: 'cat question',
     questionType: 2,
     id: 3,
@@ -113,7 +114,9 @@ export const schemeTreeAfterInitialization = [
     expanded: true,
     children: [
       {
-        ...schemeById[4], children: [
+        ...schemeById[4],
+        completedProgress: 50,
+        children: [
           {
             indent: 2,
             isAnswered: true,
@@ -225,6 +228,14 @@ export const userCodedQuestions = [
         annotations: []
       }
     ]
+  },
+  {
+    id: 43,
+    schemeQuestionId: 4,
+    flag: null,
+    comment: '',
+    categoryId: 20,
+    codedAnswers: []
   }
 ]
 
@@ -285,6 +296,20 @@ export const userAnswersCoded = {
       categoryId: 10,
       hasMadePost: false,
       id: 42
+    },
+    20: {
+      answers: {},
+      categoryId: 20,
+      isNewCodedQuestion: false,
+      id: 43,
+      hasMadePost: false,
+      comment: '',
+      schemeQuestionId: 4,
+      flag: {
+        notes: '',
+        raisedBy: {},
+        type: 0
+      }
     }
   }
 }
