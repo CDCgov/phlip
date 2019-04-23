@@ -25,7 +25,8 @@ export const INITIAL_STATE = {
   selectedJurisdiction: {},
   noProjectError: false,
   hasVerified: false,
-  invalidFiles : [],
+  invalidTypeFiles : [],
+  invalidSizeFiles : [],
   verifyFilesInProgress: false
 }
 
@@ -116,7 +117,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ADD_SELECTED_DOCS:
-    //  let invalidFiles = [...state.invalidFiles]
+    //  let invalidTypeFiles = [...state.invalidTypeFiles]
       return {
         ...state,
         selectedDocs: [
@@ -160,12 +161,12 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.CLOSE_ALERT:
-      let invalidFiles = [...state.invalidFiles]
+      let invalidFiles = [...state.invalidTypeFiles]
       let cleanedDocs = [...state.selectedDocs].filter((doc) => !invalidFiles.find(badDoc => badDoc.doc.name === doc.name.value))
       return {
         ...state,
         selectedDocs: cleanedDocs,
-        invalidFiles: [],
+        invalidTypeFiles: [],
         alertOpen: false,
         alertText: '',
         alertTitle: ''
@@ -280,7 +281,37 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         uploading: false,
-        invalidFiles: action.invalidFiles,
+        invalidTypeFiles: action.invalidTypeFiles,
+        alertOpen: true,
+        alertText: `One or more of the documents selected for upload do not have a valid allowed file type. These documents will be removed from the file list.`,
+        alertTitle: 'Invalid Files Found',
+        hasVerified: false,
+        verifyFilesInProgress: false
+      }
+
+    case types.CAPTURE_INVALID_FILE_SIZE:
+      return {
+        ...state,
+        invalidSizeFiles: action.docs
+      }
+
+    case types.CLOSE_INVALID_SIZE_ALERT:
+      invalidFiles = [...state.invalidSizeFiles]
+      cleanedDocs = [...state.selectedDocs].filter((doc) => !invalidFiles.find(badDoc => badDoc.name === doc.name.value))
+      return {
+        ...state,
+        selectedDocs: cleanedDocs,
+        invalidSizeFiles: [],
+        alertOpen: false,
+        alertText: '',
+        alertTitle: ''
+      }
+
+    case types.REJECT_INVALID_FILE_SIZE:
+      return {
+        ...state,
+        uploading: false,
+        invalidSizeiles: action.invalidSizeFiles,
         alertOpen: true,
         alertText: `One or more of the documents selected for upload do not have a valid allowed file type. These documents will be removed from the file list.`,
         alertTitle: 'Invalid Files Found',

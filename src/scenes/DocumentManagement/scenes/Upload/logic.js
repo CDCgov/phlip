@@ -275,7 +275,7 @@ const verifyFileContentLogic = createLogic({
           reject({
             type: types.REJECT_INVALID_FILE_TYPE,
             error: 'One or more documents do not have a valid file type',
-            invalidFiles: invalidFiles
+            invalidTypeFiles: invalidFiles
           })
           //     done()
         } else{

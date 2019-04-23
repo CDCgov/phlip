@@ -62,7 +62,14 @@ export class FileList extends Component {
     onClearSuggestions: PropTypes.func,
     handleDocPropertyChange: PropTypes.func,
     duplicateFiles: PropTypes.array,
-    invalidFiles : PropTypes.array
+    /**
+     * Clears the list of jurisdiction suggestions for a row
+     */
+    invalidTypeFiles : PropTypes.array,
+    /**
+     * Clears the list of jurisdiction suggestions for a row
+     */
+    invalidSizeFiles : PropTypes.array
   }
 
   constructor(props, context) {
@@ -139,7 +146,7 @@ export class FileList extends Component {
     const wrapperRowSizing = '1fr'
     const headerStyle = { fontSize: '18px', borderBottom: '1px solid black', padding: '10px 10px' }
     const colStyle = { fontSize: 13, alignSelf: 'center', margin: '0 10px' }
-    const { selectedDocs, duplicateFiles,invalidFiles } = this.props
+    const { selectedDocs, duplicateFiles,invalidTypeFiles,invalidSizeFiles} = this.props
 
     return (
       <Grid rowSizing="55px 1fr" columnSizing="1fr" style={{ overflow: 'auto', flex: 1 }}>
@@ -155,7 +162,8 @@ export class FileList extends Component {
         <Grid columnSizing="1fr" autoRowSizing="60px" style={{ flex: 1}} id='uploadFileList'>
           {selectedDocs.map((doc, i) => {
             const isDuplicate = duplicateFiles.find(file => file.name === doc.name.value) !== undefined
-            const isInvalidType = invalidFiles.find(invalidDoc => invalidDoc.doc.name === doc.name.value) !== undefined
+            const isInvalidType = invalidTypeFiles.find(invalidDoc => invalidDoc.doc.name === doc.name.value) !== undefined
+            const isInvalidSize = invalidSizeFiles.find(file => file.name === doc.name.value) !== undefined
             const pieces = doc.name.value.split('.')
             const extension = pieces[pieces.length - 1]
             const iconName = getIconType(extension)
@@ -171,7 +179,7 @@ export class FileList extends Component {
                 style={{ backgroundColor: bgColor, padding: '8px 0' }}>
                 <div />
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  {(isDuplicate || isInvalidType) &&
+                  {(isDuplicate || isInvalidType || isInvalidSize) &&
                   <Icon size={25} style={{ alignSelf: 'center', marginRight: 5 }} color="#fc515a">error</Icon>}
                   {!isDuplicate && <Icon size={20} style={{ alignSelf: 'center', marginRight: 5 }}>{iconName}</Icon>}
                   <div style={colStyle}>{doc.name.value}</div>
