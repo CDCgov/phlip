@@ -792,7 +792,7 @@ describe('CodingValidation logic', () => {
         scheme: { byId: schemeById, tree: [] },
         outline: schemeOutline,
         page: 'validation',
-        userAnswers: userAnswersCoded,
+        userAnswers: { ...userAnswersCoded },
         selectedCategoryId: 10
       }, state => state)
 
@@ -849,7 +849,7 @@ describe('CodingValidation logic', () => {
         scheme: { byId: schemeById, tree: [] },
         outline: schemeOutline,
         page: 'coding',
-        userAnswers: userAnswersCoded,
+        userAnswers: { ...userAnswersCoded },
         selectedCategoryId: 10
       }, state => state)
 
@@ -918,7 +918,7 @@ describe('CodingValidation logic', () => {
         order: schemeOrder,
         tree: schemeTree
       },
-      userAnswers: userAnswersCoded,
+      userAnswers: { ...userAnswersCoded },
       errors: {}
     }
 

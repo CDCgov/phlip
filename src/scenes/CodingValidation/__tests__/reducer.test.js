@@ -1,5 +1,10 @@
 import { types } from '../actions'
-import { INITIAL_STATE, COMBINED_INITIAL_STATE, default as codingValidationReducer, codingReducer } from '../reducer'
+import {
+  INITIAL_STATE,
+  COMBINED_INITIAL_STATE,
+  default as codingValidationReducer,
+  codingReducer as reducer
+} from '../reducer'
 import {
   schemeById,
   userAnswersCoded,
@@ -7,126 +12,301 @@ import {
   schemeUserAnswersEmpty,
   schemeOrder,
   schemeTree,
-  mergedUserQuestions
+  mergedUserQuestions,
+  schemeTreeAfterInitialization
 } from 'utils/testData/coding'
 
 const initial = INITIAL_STATE
 
-const getState = (other = {}) => ({
-  ...COMBINED_INITIAL_STATE,
-  coding: {
-    ...initial,
-    ...other
-  }
-})
+const getCombinedState = (other = {}) => {
+  return JSON.parse(JSON.stringify({
+    ...COMBINED_INITIAL_STATE,
+    coding: {
+      ...initial,
+      outline: { ...schemeOutline },
+      scheme: {
+        byId: { ...schemeById },
+        tree: [...schemeTree],
+        order: [...schemeOrder]
+      },
+      userAnswers: { ...userAnswersCoded },
+      ...other
+    }
+  }))
+}
 
-const reducer = (state, action) => {
-  const newState = codingValidationReducer(state, action)
-  return newState.coding
+const getState = (other = {}) => {
+  return JSON.parse(JSON.stringify({
+    ...initial,
+    outline: { ...schemeOutline },
+    scheme: {
+      byId: { ...schemeById },
+      tree: [...schemeTree],
+      order: [...schemeOrder]
+    },
+    userAnswers: { ...userAnswersCoded },
+    ...other
+  }))
 }
 
 describe('CodingValidation reducer', () => {
   test('coding reducer should return the initial state', () => {
-    expect(codingReducer(undefined, {})).toEqual(INITIAL_STATE)
+    expect(reducer(undefined, {})).toEqual(INITIAL_STATE)
   })
 
-  test('combined reducer should return the initial state', () => {
-    expect(reducer(undefined, {})).toEqual({ ...COMBINED_INITIAL_STATE.coding, showNextButton: false })
+  test('combined reducer should return the combined initial state', () => {
+    expect(codingValidationReducer(undefined, {}))
+    .toEqual({ ...COMBINED_INITIAL_STATE, coding: { ...COMBINED_INITIAL_STATE.coding, showNextButton: false } })
   })
 
   describe('UPDATE_USER_ANSWER', () => {
-    describe('binary / multiple choice type questions', () => {
-      const action = {
-        type: types.UPDATE_USER_ANSWER,
-        answerId: 123,
-        questionId: 1
-      }
+    describe('for non category question children', () => {
+      describe('binary / multiple choice type questions', () => {
+        const action = {
+          type: types.UPDATE_USER_ANSWER,
+          answerId: 123,
+          questionId: 1
+        }
 
-      test('should update state.userAnswers[1]', () => {
-        const currentState = getState({
-          question: schemeById[1],
-          outline: schemeOutline,
-          scheme: {
-            byId: schemeById,
-            order: schemeOrder,
-            tree: schemeTree
-          },
-          userAnswers: schemeUserAnswersEmpty
+        test('should update state.userAnswers[1]', () => {
+          const currentState = getState({ question: schemeById[1], userAnswers: { ...schemeUserAnswersEmpty } })
+          const state = reducer(currentState, action)
+
+          expect(state.userAnswers).toEqual({
+            ...currentState.userAnswers,
+            1: {
+              answers: { 123: { schemeAnswerId: 123, pincite: '', annotations: [] } },
+              schemeQuestionId: 1,
+              comment: ''
+            }
+          })
         })
-        const state = reducer(currentState, action)
 
-        expect(state.userAnswers).toEqual({
-          ...currentState.coding.userAnswers,
-          1: {
-            answers: { 123: { schemeAnswerId: 123, pincite: '', annotations: [] } },
-            schemeQuestionId: 1,
-            comment: ''
+        test('should copy action.otherUpdates to the question object in state.userAnswers', () => {
+          const action = {
+            type: types.UPDATE_USER_ANSWER,
+            answerId: 123,
+            questionId: 1,
+            otherUpdates: {
+              validatedBy: {
+                userId: 1,
+                firstName: 'Test',
+                lastName: 'User'
+              }
+            }
           }
+
+          const currentState = getState({ question: schemeById[1], userAnswers: { ...schemeUserAnswersEmpty } })
+          const state = reducer(currentState, action)
+
+          expect(state.userAnswers).toEqual({
+            ...currentState.userAnswers,
+            1: {
+              answers: { 123: { schemeAnswerId: 123, pincite: '', annotations: [] } },
+              schemeQuestionId: 1,
+              comment: '',
+              validatedBy: {
+                userId: 1,
+                firstName: 'Test',
+                lastName: 'User'
+              }
+            }
+          })
+        })
+
+        test('should update state.scheme.tree[0].isAnswered to true', () => {
+          const currentState = getCombinedState({ question: schemeById[1], userAnswers: { ...schemeUserAnswersEmpty } })
+          const state = codingValidationReducer(currentState, action)
+
+          expect(state.coding.scheme.tree[0]).toEqual({ ...currentState.coding.scheme.tree[0], isAnswered: true })
         })
       })
 
-      test('should update state.scheme.tree[0].isAnswered to true', () => {
-        const currentState = getState({
-          question: schemeById[1],
-          outline: schemeOutline,
-          scheme: {
-            byId: schemeById,
-            order: schemeOrder,
-            tree: schemeTree
-          },
-          userAnswers: schemeUserAnswersEmpty
+      describe('checkbox / category choice type questions', () => {
+        const action = {
+          type: types.UPDATE_USER_ANSWER,
+          answerId: 90,
+          questionId: 2
+        }
+
+        test('should copy action.otherUpdates to the question object in state.userAnswers', () => {
+          const action = {
+            type: types.UPDATE_USER_ANSWER,
+            answerId: 90,
+            questionId: 2,
+            otherUpdates: {
+              validatedBy: {
+                userId: 1,
+                firstName: 'Test',
+                lastName: 'User'
+              }
+            }
+          }
+
+          const currentState = getState({ question: schemeById[2], userAnswers: { ...schemeUserAnswersEmpty } })
+          const state = reducer(currentState, action)
+
+          expect(state.userAnswers).toEqual({
+            ...currentState.userAnswers,
+            2: {
+              answers: { 90: { schemeAnswerId: 90, pincite: '', annotations: [] } },
+              schemeQuestionId: 2,
+              comment: '',
+              validatedBy: {
+                userId: 1,
+                firstName: 'Test',
+                lastName: 'User'
+              }
+            }
+          })
         })
-        const state = reducer(currentState, action)
-        expect(state.scheme.tree[0]).toEqual({ ...currentState.coding.scheme.tree[0], isAnswered: true })
+
+        test('should update state.userAnswers[2]', () => {
+          const currentState = getState({ question: schemeById[2], userAnswers: { ...schemeUserAnswersEmpty } })
+          const state = reducer(currentState, action)
+
+          expect(state.userAnswers).toEqual({
+            ...currentState.userAnswers,
+            2: {
+              comment: '',
+              schemeQuestionId: 2,
+              answers: {
+                90: { schemeAnswerId: 90, pincite: '', annotations: [] }
+              }
+            }
+          })
+        })
+
+        test('should update state.scheme.tree[1].isAnswered to true', () => {
+          const currentState = getCombinedState({ question: schemeById[2], userAnswers: { ...schemeUserAnswersEmpty } })
+          const state = codingValidationReducer(currentState, action)
+
+          expect(state.coding.scheme.tree[1]).toEqual({ ...currentState.coding.scheme.tree[1], isAnswered: true })
+        })
       })
     })
 
-    describe('checkbox / category choice type questions', () => {
-      const action = {
-        type: types.UPDATE_USER_ANSWER,
-        answerId: 90,
-        questionId: 2
-      }
-
-      test('should update state.userAnswers[2]', () => {
-        const currentState = getState({
-          question: schemeById[2],
-          outline: schemeOutline,
-          scheme: {
-            byId: schemeById,
-            order: schemeOrder,
-            tree: schemeTree
-          },
-          userAnswers: schemeUserAnswersEmpty
-        })
-
-        const state = reducer(currentState, action)
-        expect(state.userAnswers).toEqual({
-          ...currentState.coding.userAnswers,
-          2: {
-            comment: '',
-            schemeQuestionId: 2,
-            answers: {
-              90: { schemeAnswerId: 90, pincite: '', annotations: [] }
-            }
-          }
-        })
+    describe('for category child questions', () => {
+      xdescribe('binary / multiple choice type questions', () => {
       })
 
-      test('should update state.scheme.tree[1].isAnswered to true', () => {
-        const currentState = getState({
-          question: schemeById[2],
-          outline: schemeOutline,
-          scheme: {
-            byId: schemeById,
-            order: schemeOrder,
-            tree: schemeTree
-          },
-          userAnswers: schemeUserAnswersEmpty
+      describe('checkbox / category choice type questions', () => {
+        test('should copy action.otherUpdates to the question object in state.userAnswers', () => {
+          const action = {
+            type: types.UPDATE_USER_ANSWER,
+            answerId: 432,
+            questionId: 4,
+            otherUpdates: {
+              validatedBy: {
+                userId: 1,
+                firstName: 'Test',
+                lastName: 'User'
+              }
+            }
+          }
+
+          const currentState = getState({ question: schemeById[4], selectedCategoryId: 20, selectedCategory: 1 })
+          const state = reducer(currentState, action)
+
+          expect(state.userAnswers[4][20]).toEqual({
+            answers: { 432: { schemeAnswerId: 432, pincite: '', annotations: [] } },
+            schemeQuestionId: 4,
+            comment: '',
+            validatedBy: {
+              userId: 1,
+              firstName: 'Test',
+              lastName: 'User'
+            },
+            categoryId: 20,
+            flag: {
+              notes: '',
+              raisedBy: {},
+              type: 0
+            },
+            hasMadePost: false,
+            isNewCodedQuestion: false,
+            id: 43
+          })
         })
 
-        const state = reducer(currentState, action)
-        expect(state.scheme.tree[1]).toEqual({ ...currentState.coding.scheme.tree[1], isAnswered: true })
+        describe('if action.answerId was already present in state.userAnswers', () => {
+          test('should remove answer from state.userAnswers[4][10] if the answer was already present', () => {
+            const action = {
+              type: types.UPDATE_USER_ANSWER,
+              answerId: 432,
+              questionId: 4
+            }
+
+            const currentState = getState({ question: schemeById[4], selectedCategoryId: 10, selectedCategory: 0 })
+            const state = reducer(currentState, action)
+
+            expect(state.userAnswers).toEqual({
+              ...currentState.userAnswers,
+              4: {
+                10: {
+                  answers: {},
+                  schemeQuestionId: 4,
+                  comment: '',
+                  validatedBy: {
+                    userId: 1,
+                    firstName: 'Test',
+                    lastName: 'User'
+                  },
+                  categoryId: 10,
+                  flag: {
+                    notes: '',
+                    raisedBy: {},
+                    type: 0
+                  },
+                  hasMadePost: false,
+                  id: 42,
+                  isNewCodedQuestion: false
+                },
+                ...currentState.userAnswers[4]
+              }
+            })
+          })
+
+          test('should update state.scheme.tree[2].children[0].isAnswered to false', () => {
+            const action = {
+              type: types.UPDATE_USER_ANSWER,
+              answerId: 432,
+              questionId: 4
+            }
+
+            const currentState = getCombinedState({
+              question: schemeById[4],
+              selectedCategoryId: 10,
+              selectedCategory: 0
+            })
+
+            const state = codingValidationReducer(currentState, action)
+
+            expect(state.coding.scheme.tree[2].children[0].isAnswered).toEqual(false)
+          })
+
+          test('should update state.scheme.tree[2][0].completedProgress to 0', () => {
+            const action = {
+              type: types.UPDATE_USER_ANSWER,
+              answerId: 432,
+              questionId: 4
+            }
+
+            const currentState = getCombinedState({
+              question: schemeById[4],
+              scheme: {
+                byId: { ...schemeById },
+                order: { ...schemeOrder },
+                tree: [...schemeTreeAfterInitialization]
+              },
+              selectedCategoryId: 10,
+              selectedCategory: 0
+            })
+            const state = codingValidationReducer(currentState, action)
+
+            expect(state.coding.scheme.tree[2].children[0].completedProgress).toEqual(0)
+          })
+        })
       })
     })
   })
@@ -221,9 +401,6 @@ describe('CodingValidation reducer', () => {
         scheme: {
           byId: schemeById,
           tree: []
-        },
-        userAnswers: {
-          ...userAnswersCoded
         }
       })
 
@@ -258,9 +435,6 @@ describe('CodingValidation reducer', () => {
         scheme: {
           byId: schemeById,
           tree: []
-        },
-        userAnswers: {
-          ...userAnswersCoded
         },
         selectedCategoryId: 10
       })
@@ -297,9 +471,6 @@ describe('CodingValidation reducer', () => {
         scheme: {
           byId: schemeById,
           tree: []
-        },
-        userAnswers: {
-          ...userAnswersCoded
         }
       })
 
@@ -330,9 +501,6 @@ describe('CodingValidation reducer', () => {
         scheme: {
           byId: schemeById,
           tree: []
-        },
-        userAnswers: {
-          ...userAnswersCoded
         },
         selectedCategoryId: 10
       })
@@ -381,8 +549,7 @@ describe('CodingValidation reducer', () => {
     })
 
     test('should add action.payload to the end of state.messageQueue', () => {
-      expect(state.messageQueue[1])
-        .toEqual({ questionObj: { id: 4 }, timeQueued: 1555419224, queueId: '1-2-3' })
+      expect(state.messageQueue[1]).toEqual({ questionObj: { id: 4 }, timeQueued: 1555419224, queueId: '1-2-3' })
     })
 
     test('should set state.unsavedChanges to true', () => {
@@ -413,8 +580,7 @@ describe('CodingValidation reducer', () => {
 
     test('should remove messages from state.messageQueue with queueId === action.payload.queueId and timeQueued < action.payload.timeQueued', () => {
       expect(state.messageQueue.length).toEqual(1)
-      expect(state.messageQueue)
-        .toEqual([{ questionObj: { id: 1 }, queueId: 1234, timeQueued: 1555419224 }])
+      expect(state.messageQueue).toEqual([{ questionObj: { id: 1 }, queueId: 1234, timeQueued: 1555419224 }])
     })
   })
 
@@ -428,26 +594,11 @@ describe('CodingValidation reducer', () => {
   })
 
   describe('SAVE_USER_ANSWER_FAIL', () => {
-    const action = {
-      type: types.SAVE_USER_ANSWER_FAIL,
-      payload: {
-        questionId: 1
-      }
-    }
-
+    const action = { type: types.SAVE_USER_ANSWER_FAIL, payload: { questionId: 1 } }
     const currentState = getState({
-      question: schemeById[1],
-      scheme: {
-        byId: schemeById,
-        tree: []
-      },
-      userAnswers: {
-        ...userAnswersCoded
-      }
+      question: schemeById[1], scheme: { byId: schemeById, tree: [] }
     })
-
     const state = reducer(currentState, action)
-
     test('should set state.answerErrorContent to "We couldn\'t save your answer for this question."', () => {
       expect(state.answerErrorContent).toEqual('We couldn\'t save your answer for this question.')
     })
@@ -460,46 +611,24 @@ describe('CodingValidation reducer', () => {
       test('should work for regular non-category questions', () => {
         const action = {
           type: types.SAVE_USER_ANSWER_FAIL,
-          payload: {
-            questionId: 1
-          }
+          payload: { questionId: 1 }
         }
 
         const currentState = getState({
-          question: schemeById[1],
-          scheme: {
+          question: schemeById[1], scheme: {
             byId: schemeById,
             tree: []
-          },
-          userAnswers: {
-            ...userAnswersCoded
           }
         })
-
         const state = reducer(currentState, action)
         expect(state.userAnswers[1].hasMadePost).toEqual(false)
       })
 
       test('should work for category questions', () => {
-        const action = {
-          type: types.SAVE_USER_ANSWER_FAIL,
-          payload: {
-            questionId: 4,
-            selectedCategoryId: 10
-          }
-        }
-
+        const action = { type: types.SAVE_USER_ANSWER_FAIL, payload: { questionId: 4, selectedCategoryId: 10 } }
         const currentState = getState({
-          question: schemeById[4],
-          scheme: {
-            byId: schemeById,
-            tree: []
-          },
-          userAnswers: {
-            ...userAnswersCoded
-          }
+          question: schemeById[4], scheme: { byId: schemeById, tree: [] }
         })
-
         const state = reducer(currentState, action)
         expect(state.userAnswers[4][10].hasMadePost).toEqual(false)
       })
@@ -508,13 +637,12 @@ describe('CodingValidation reducer', () => {
 
   describe('OBJECT_EXISTS', () => {
     const action = {
-      type: types.OBJECT_EXISTS,
-      payload: {
-        questionId: 1,
-        object: {
-          id: 201,
-          answers: {
-            21: { schemeAnswerId: 21, pincite: 'yolo' }
+      type: types.OBJECT_EXISTS, payload: {
+        questionId: 1, object: {
+          id: 201, answers: {
+            21: {
+              schemeAnswerId: 21, pincite: 'yolo'
+            }
           }
         }
       }
@@ -525,17 +653,13 @@ describe('CodingValidation reducer', () => {
       scheme: {
         byId: schemeById,
         tree: []
-      },
-      userAnswers: {
-        ...userAnswersCoded
       }
     })
 
     const state = reducer(currentState, action)
-
     test('should set state.answerErrorContent to "Something about this question has changed since you loaded the page. We couldn\'t save your answer."', () => {
       expect(state.answerErrorContent)
-        .toEqual('Something about this question has changed since you loaded the page. We couldn\'t save your answer.')
+      .toEqual('Something about this question has changed since you loaded the page. We couldn\'t save your answer.')
     })
 
     test('should set state.saveFailed to true', () => {
@@ -547,66 +671,49 @@ describe('CodingValidation reducer', () => {
     })
 
     describe('should set userAnswers[action.payload.questionId] to action.payload.object', () => {
-      test('should work for regular non-category questions', () => {
+      test('should work for regular non - category questions', () => {
         const action = {
           type: types.OBJECT_EXISTS,
           payload: {
             questionId: 1,
             object: {
-              id: 201,
-              answers: {
-                21: { schemeAnswerId: 21, pincite: 'yolo' }
-              }
+              id: 201, answers:
+                {
+                  21:
+                    {
+                      schemeAnswerId: 21, pincite:
+                        'yolo'
+                    }
+                }
             }
           }
         }
-
-        const currentState = getState({
-          question: schemeById[1],
-          scheme: {
-            byId: schemeById,
-            tree: []
-          },
-          userAnswers: {
-            ...userAnswersCoded
-          }
-        })
-
+        const currentState = getState({ question: schemeById[1], scheme: { byId: schemeById, tree: [] } })
         const state = reducer(currentState, action)
+
         expect(state.userAnswers[1].id).toEqual(201)
-        expect(state.userAnswers[1].answers).toEqual({
-          21: { schemeAnswerId: 21, pincite: 'yolo' }
-        })
+        expect(state.userAnswers[1].answers).toEqual({ 21: { schemeAnswerId: 21, pincite: 'yolo' } })
         expect(state.userAnswers[1].hasMadePost).toEqual(false)
       })
 
       test('should work for category questions', () => {
         const action = {
-          type: types.OBJECT_EXISTS,
-          payload: {
+          type: types.OBJECT_EXISTS, payload: {
             questionId: 4,
             object: {
               id: 201,
               answers: {
-                21: { schemeAnswerId: 21, pincite: 'yolo' }
+                21: {
+                  schemeAnswerId: 21, pincite: 'yolo'
+                }
               }
             },
             selectedCategoryId: 10
           }
         }
-
-        const currentState = getState({
-          question: schemeById[4],
-          scheme: {
-            byId: schemeById,
-            tree: []
-          },
-          userAnswers: {
-            ...userAnswersCoded
-          }
-        })
-
+        const currentState = getState({ question: schemeById[4], scheme: { byId: schemeById, tree: [] } })
         const state = reducer(currentState, action)
+
         expect(state.userAnswers[4][10].id).toEqual(201)
         expect(state.userAnswers[4][10].answers).toEqual({ 21: { schemeAnswerId: 21, pincite: 'yolo' } })
         expect(state.userAnswers[4][10].hasMadePost).toEqual(false)
@@ -631,19 +738,13 @@ describe('CodingValidation reducer', () => {
             answers: { 1: { schemeAnswerId: 1 } },
             comment: ''
           }
-        },
-        question: { id: 2 }
+        }, question: { id: 2 }
       })
 
       const state = reducer(currentState, action)
-
       expect(state.userAnswers).toEqual({
-        ...currentState.coding.userAnswers,
-        2: {
-          schemeQuestionId: 2,
-          answers: { 1: { schemeAnswerId: 1 } },
-          comment: 'new comment'
-        }
+        ...currentState.userAnswers,
+        2: { schemeQuestionId: 2, answers: { 1: { schemeAnswerId: 1 } }, comment: 'new comment' }
       })
     })
 
@@ -669,12 +770,8 @@ describe('CodingValidation reducer', () => {
         userAnswers: {
           2: {
             schemeQuestionId: 2,
-            3: {
-              answers: { 5: { schemeAnswerId: 5 } }, comment: 'comment for cat 1', flag: {}
-            },
-            2: {
-              answers: {}, comment: 'comment for cat 2', flag: {}
-            }
+            3: { answers: { 5: { schemeAnswerId: 5 } }, comment: 'comment for cat 1', flag: {} },
+            2: { answers: {}, comment: 'comment for cat 2', flag: {} }
           }
         },
         selectedCategory: 0,
@@ -683,17 +780,12 @@ describe('CodingValidation reducer', () => {
       })
 
       const state = reducer(currentState, action)
-
       expect(state.userAnswers).toEqual({
-        ...currentState.coding.userAnswers,
+        ...currentState.userAnswers,
         2: {
           schemeQuestionId: 2,
-          3: {
-            answers: { 5: { schemeAnswerId: 5 } }, comment: 'new comment for cat 1', flag: {}
-          },
-          2: {
-            answers: {}, comment: 'comment for cat 2', flag: {}
-          }
+          3: { answers: { 5: { schemeAnswerId: 5 } }, comment: 'new comment for cat 1', flag: {} },
+          2: { answers: {}, comment: 'comment for cat 2', flag: {} }
         }
       })
     })
@@ -711,43 +803,22 @@ describe('CodingValidation reducer', () => {
       }
 
       const currentState = getState({
-        question: {
-          questionType: 3,
-          id: 2
-        },
+        question: { questionType: 3, id: 2 },
         userAnswers: {
           2: {
             schemeQuestionId: 2,
-            answers: {
-              1: {
-                schemeAnswerId: 1,
-                pincite: ''
-              },
-              4: {
-                schemeAnswerId: 4,
-                pincite: ''
-              }
-            },
+            answers: { 1: { schemeAnswerId: 1, pincite: '' }, 4: { schemeAnswerId: 4, pincite: '' } },
             comment: ''
           }
         }
       })
-      const state = reducer(currentState, action)
 
+      const state = reducer(currentState, action)
       expect(state.userAnswers).toEqual({
-        ...currentState.coding.userAnswers,
+        ...currentState.userAnswers,
         2: {
           schemeQuestionId: 2,
-          answers: {
-            1: {
-              schemeAnswerId: 1,
-              pincite: ''
-            },
-            4: {
-              schemeAnswerId: 4,
-              pincite: 'this is a pincite'
-            }
-          },
+          answers: { 1: { schemeAnswerId: 1, pincite: '' }, 4: { schemeAnswerId: 4, pincite: 'this is a pincite' } },
           comment: ''
         }
       })
@@ -764,26 +835,12 @@ describe('CodingValidation reducer', () => {
       }
 
       const currentState = getState({
-        question: {
-          questionType: 3,
-          isCategoryQuestion: true,
-          id: 2
-        },
+        question: { questionType: 3, isCategoryQuestion: true, id: 2 },
         userAnswers: {
           2: {
             schemeQuestionId: 2,
-            3: {
-              answers: {
-                4: { schemeAnswerId: 4, pincite: 'pincite!' }
-              },
-              comment: ''
-            },
-            2: {
-              answers: {
-                4: { schemeAnswerId: 4, pincite: '' }
-              },
-              comment: ''
-            }
+            3: { answers: { 4: { schemeAnswerId: 4, pincite: 'pincite!' } }, comment: '' },
+            2: { answers: { 4: { schemeAnswerId: 4, pincite: '' } }, comment: '' }
           }
         },
         selectedCategory: 1,
@@ -793,21 +850,11 @@ describe('CodingValidation reducer', () => {
       const state = reducer(currentState, action)
 
       expect(state.userAnswers).toEqual({
-        ...currentState.coding.userAnswers,
+        ...currentState.userAnswers,
         2: {
           schemeQuestionId: 2,
-          3: {
-            answers: {
-              4: { schemeAnswerId: 4, pincite: 'pincite!' }
-            },
-            comment: ''
-          },
-          2: {
-            answers: {
-              4: { schemeAnswerId: 4, pincite: 'this is a pincite' }
-            },
-            comment: ''
-          }
+          3: { answers: { 4: { schemeAnswerId: 4, pincite: 'pincite!' } }, comment: '' },
+          2: { answers: { 4: { schemeAnswerId: 4, pincite: 'this is a pincite' } }, comment: '' }
         }
       })
     })
@@ -825,7 +872,7 @@ describe('CodingValidation reducer', () => {
         }
       }
 
-      const currentState = getState({ question: schemeById[1], userAnswers: userAnswersCoded })
+      const currentState = getState({ question: schemeById[1], userAnswers: { ...userAnswersCoded } })
       const state = reducer(currentState, action)
 
       expect(state.userAnswers).toEqual({
@@ -855,7 +902,6 @@ describe('CodingValidation reducer', () => {
 
       const currentState = getState({
         question: schemeById[4],
-        userAnswers: userAnswersCoded,
         selectedCategory: 0,
         selectedCategoryId: 10,
         categories: [{ id: 10, text: 'cat 1' }, { id: 20, text: 'cat 2' }]
@@ -863,14 +909,14 @@ describe('CodingValidation reducer', () => {
       const state = reducer(currentState, action)
 
       expect(state.userAnswers).toEqual({
-        ...currentState.coding.userAnswers,
+        ...currentState.userAnswers,
         4: {
-          ...currentState.coding.userAnswers[4],
+          ...currentState.userAnswers[4],
           10: {
-            ...currentState.coding.userAnswers[4][10],
+            ...currentState.userAnswers[4][10],
             answers: {
               432: {
-                ...currentState.coding.userAnswers[4][10].answers[432],
+                ...currentState.userAnswers[4][10].answers[432],
                 annotations: [{ text: 'text annotation', rects: [] }]
               }
             }
@@ -953,14 +999,14 @@ describe('CodingValidation reducer', () => {
 
       const state = reducer(currentState, action)
       expect(state.userAnswers).toEqual({
-        ...currentState.coding.userAnswers,
+        ...currentState.userAnswers,
         4: {
-          ...currentState.coding.userAnswers[4],
+          ...currentState.userAnswers[4],
           10: {
-            ...currentState.coding.userAnswers[4][10],
+            ...currentState.userAnswers[4][10],
             answers: {
               432: {
-                ...currentState.coding.userAnswers[4][10].answers[432],
+                ...currentState.userAnswers[4][10].answers[432],
                 annotations: []
               }
             }
@@ -1029,21 +1075,8 @@ describe('CodingValidation reducer', () => {
       errors: {}
     }
 
-    const action = {
-      type: types.GET_QUESTION_SUCCESS,
-      payload
-    }
-
-    const currentState = getState({
-      question: schemeById[1],
-      userAnswers: userAnswersCoded,
-      scheme: {
-        byId: schemeById,
-        tree: schemeTree,
-        order: schemeOrder
-      }
-    })
-
+    const action = { type: types.GET_QUESTION_SUCCESS, payload }
+    const currentState = getState({ question: schemeById[1] })
     const state = reducer(currentState, action)
 
     test('should update state with action.payload.updatedState', () => {
@@ -1051,20 +1084,8 @@ describe('CodingValidation reducer', () => {
     })
 
     describe('when new question is not a category question', () => {
-      const action = {
-        type: types.GET_QUESTION_SUCCESS,
-        payload
-      }
-
-      const currentState = getState({
-        question: schemeById[1],
-        userAnswers: userAnswersCoded,
-        scheme: {
-          byId: schemeById,
-          tree: schemeTree,
-          order: schemeOrder
-        }
-      })
+      const action = { type: types.GET_QUESTION_SUCCESS, payload }
+      const currentState = getState({ question: schemeById[1] })
 
       const state = reducer(currentState, action)
       test('should set state.selectedCategory to 0', () => {
@@ -1110,17 +1131,9 @@ describe('CodingValidation reducer', () => {
         }
       }
 
-      const currentState = getState({
-        question: schemeById[1],
-        userAnswers: userAnswersCoded,
-        scheme: {
-          byId: schemeById,
-          tree: schemeTree,
-          order: schemeOrder
-        }
-      })
-
+      const currentState = getState({ question: schemeById[1] })
       const state = reducer(currentState, action)
+
       test('should set state.categories to the selected answer choices of the parent question', () => {
         expect(state.categories).toEqual([
           { id: 10, text: 'category 2', order: 2 },
@@ -1142,9 +1155,49 @@ describe('CodingValidation reducer', () => {
       })
 
       test('should initialize state.userAnswers with empty answer obj for each category if no existing answers are present', () => {
-        expect(state.userAnswers[4][20]).toEqual({
+        const action = {
+          type: types.GET_QUESTION_SUCCESS,
+          payload: {
+            ...payload,
+            updatedState: {
+              ...payload.updatedState,
+              question: schemeById[4],
+              selectedCategory: 0,
+              userAnswers: {
+                ...userAnswersCoded,
+                3: {
+                  ...userAnswersCoded[3],
+                  answers: {
+                    ...userAnswersCoded[3].answers,
+                    5: { schemeAnswerId: 5, categoryId: 5 }
+                  }
+                }
+              }
+            },
+            question: schemeById[4],
+            currentIndex: 3
+          }
+        }
+
+        const currentState = getState({
+          question: schemeById[1],
+          userAnswers: {
+            ...userAnswersCoded,
+            3: {
+              ...userAnswersCoded[3],
+              answers: {
+                ...userAnswersCoded[3].answers,
+                5: { schemeAnswerId: 5, categoryId: 5 }
+              }
+            }
+          }
+        })
+
+        const state = reducer(currentState, action)
+
+        expect(state.userAnswers[4][5]).toEqual({
           answers: {},
-          categoryId: 20,
+          categoryId: 5,
           schemeQuestionId: 4,
           flag: {
             notes: '',
@@ -1188,16 +1241,7 @@ describe('CodingValidation reducer', () => {
         payload
       }
 
-      const currentState = getState({
-        question: schemeById[1],
-        userAnswers: userAnswersCoded,
-        scheme: {
-          byId: schemeById,
-          tree: schemeTree,
-          order: schemeOrder
-        }
-      })
-
+      const currentState = getState({ question: schemeById[1] })
       const state = reducer(currentState, action)
 
       test('should set state.selectedCategory to 0', () => {
@@ -1249,1245 +1293,12 @@ describe('CodingValidation reducer', () => {
         }
       }
 
-      const currentState = getState({
-        question: schemeById[1],
-        userAnswers: userAnswersCoded,
-        scheme: {
-          byId: schemeById,
-          tree: schemeTree,
-          order: schemeOrder
-        }
-      })
-
-      const state = reducer(currentState, action)
-      test('should set state.getQuestionErrors to error if action.payload.errors.length > 0', () => {
-        expect(state.getQuestionErrors).toEqual('omg this is an error.\n\nomg this is another error.')
-      })
-    })
-  })
-
-  describe('GET_CODING_OUTLINE_SUCCESS', () => {
-    const action = {
-      type: types.GET_CODING_OUTLINE_SUCCESS,
-      payload: {
-        userAnswers: userAnswersCoded,
-        scheme: {
-          byId: schemeById,
-          tree: schemeTree,
-          order: schemeOrder
-        },
-        areJurisdictionsEmpty: false,
-        isSchemeEmpty: false,
-        outline: schemeOutline,
-        question: schemeById[3],
-        errors: {}
-      }
-    }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.userAnswers to action.payload.userAnswers', () => {
-      expect(state.userAnswers).toEqual(userAnswersCoded)
-    })
-
-    test('should set state.question to action.payload.question', () => {
-      expect(state.question).toEqual(schemeById[3])
-    })
-
-    test('should set state.scheme to action.payload.scheme', () => {
-      expect(state.scheme).toEqual({ byId: schemeById, tree: schemeTree, order: schemeOrder })
-    })
-
-    test('should set state.outline to action.payload.outline', () => {
-      expect(state.outline).toEqual(schemeOutline)
-    })
-
-    test('should set state.categories to undefined', () => {
-      expect(state.categories).toEqual(undefined)
-    })
-
-    test('should set state.areJurisdictionsEmpty to action.payload.areJurisdictionsEmpty', () => {
-      expect(state.areJurisdictionsEmpty).toEqual(false)
-    })
-
-    test('should set state.isSchemeEmpty to action.payload.isSchemeEmpty', () => {
-      expect(state.isSchemeEmpty).toEqual(false)
-    })
-
-    test('should set state.schemeError to null', () => {
-      expect(state.schemeError).toEqual(null)
-    })
-
-    test('should set state.isLoadingPage to false', () => {
-      expect(state.isLoadingPage).toEqual(false)
-    })
-
-    test('should set state.getRequestInProgress to false', () => {
-      expect(state.getRequestInProgress).toEqual(false)
-    })
-
-    test('should set state.showPageLoader to false', () => {
-      expect(state.showPageLoader).toEqual(false)
-    })
-
-    test('should set state.getQuestionErrors to null if there are no errors', () => {
-      expect(state.getQuestionErrors).toEqual(null)
-    })
-
-    test('should set state.codedQuestionsError to null if action.payload.error.codedValQuestions does not exist', () => {
-      expect(state.codedQuestionsError).toEqual(null)
-    })
-
-    describe('handling errors', () => {
-      const action = {
-        type: types.GET_CODING_OUTLINE_SUCCESS,
-        payload: {
-          userAnswers: userAnswersCoded,
-          scheme: {
-            byId: schemeById,
-            tree: schemeTree,
-            order: schemeOrder
-          },
-          isSchemeEmpty: false,
-          areJurisdictionsEmpty: false,
-          outline: schemeOutline,
-          question: schemeById[3],
-          errors: {
-            schemeError: 'omg this is an error.',
-            codedValQuestions: 'omg this is another error.'
-          }
-        }
-      }
-
-      const currentState = getState()
+      const currentState = getState({ question: schemeById[1] })
       const state = reducer(currentState, action)
 
       test('should set state.getQuestionErrors to error if action.payload.errors.length > 0', () => {
         expect(state.getQuestionErrors).toEqual('omg this is an error.\n\nomg this is another error.')
       })
-
-      test('should set state.codedQuestionsError to true if action.payload.error.codedValQuestions exists', () => {
-        expect(state.codedQuestionsError).toEqual(true)
-      })
-    })
-  })
-
-  describe('GET_VALIDATION_OUTLINE_SUCCESS', () => {
-    const action = {
-      type: types.GET_VALIDATION_OUTLINE_SUCCESS,
-      payload: {
-        userAnswers: userAnswersCoded,
-        scheme: {
-          byId: schemeById,
-          tree: schemeTree,
-          order: schemeOrder
-        },
-        areJurisdictionsEmpty: false,
-        isSchemeEmpty: false,
-        outline: schemeOutline,
-        question: schemeById[3],
-        errors: {},
-        mergedUserQuestions
-      }
-    }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.userAnswers to action.payload.userAnswers', () => {
-      expect(state.userAnswers).toEqual(userAnswersCoded)
-    })
-
-    test('should set state.question to action.payload.question', () => {
-      expect(state.question).toEqual(schemeById[3])
-    })
-
-    test('should set state.scheme to action.payload.scheme', () => {
-      expect(state.scheme).toEqual({ byId: schemeById, tree: schemeTree, order: schemeOrder })
-    })
-
-    test('should set state.outline to action.payload.outline', () => {
-      expect(state.outline).toEqual(schemeOutline)
-    })
-
-    test('should set state.categories to undefined', () => {
-      expect(state.categories).toEqual(undefined)
-    })
-
-    test('should set state.areJurisdictionsEmpty to action.payload.areJurisdictionsEmpty', () => {
-      expect(state.areJurisdictionsEmpty).toEqual(false)
-    })
-
-    test('should set state.isSchemeEmpty to action.payload.isSchemeEmpty', () => {
-      expect(state.isSchemeEmpty).toEqual(false)
-    })
-
-    test('should set state.schemeError to null', () => {
-      expect(state.schemeError).toEqual(null)
-    })
-
-    test('should set state.isLoadingPage to false', () => {
-      expect(state.isLoadingPage).toEqual(false)
-    })
-
-    test('should set state.getRequestInProgress to false', () => {
-      expect(state.getRequestInProgress).toEqual(false)
-    })
-
-    test('should set state.showPageLoader to false', () => {
-      expect(state.showPageLoader).toEqual(false)
-    })
-
-    test('should set state.getQuestionErrors to null if there are no errors', () => {
-      expect(state.getQuestionErrors).toEqual(null)
-    })
-
-    test('should set state.codedQuestionsError to null if action.payload.error.codedValQuestions does not exist', () => {
-      expect(state.codedQuestionsError).toEqual(null)
-    })
-
-    test('should set state.mergedUserQuestions to action.payload.mergedUserQuestions', () => {
-      expect(state.mergedUserQuestions).toEqual(mergedUserQuestions)
-    })
-
-    describe('handling errors', () => {
-      const action = {
-        type: types.GET_VALIDATION_OUTLINE_SUCCESS,
-        payload: {
-          userAnswers: userAnswersCoded,
-          scheme: {
-            byId: schemeById,
-            tree: schemeTree,
-            order: schemeOrder
-          },
-          isSchemeEmpty: false,
-          areJurisdictionsEmpty: false,
-          mergedUserQuestions,
-          outline: schemeOutline,
-          question: schemeById[3],
-          errors: {
-            schemeError: 'omg this is an error.',
-            codedValQuestions: 'omg this is another error.'
-          }
-        }
-      }
-
-      const currentState = getState()
-      const state = reducer(currentState, action)
-
-      test('should set state.getQuestionErrors to error if action.payload.errors.length > 0', () => {
-        expect(state.getQuestionErrors).toEqual('omg this is an error.\n\nomg this is another error.')
-      })
-
-      test('should set state.codedQuestionsError to true if action.payload.error.codedValQuestions exists', () => {
-        expect(state.codedQuestionsError).toEqual(true)
-      })
-    })
-  })
-
-  describe('GET_CODING_OUTLINE_REQUEST', () => {
-    const action = { type: types.GET_CODING_OUTLINE_REQUEST }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.isLoadingPage to true', () => {
-      expect(state.isLoadingPage).toEqual(true)
-    })
-
-    test('should set state.getRequestInProgress to true', () => {
-      expect(state.getRequestInProgress).toEqual(true)
-    })
-  })
-
-  describe('GET_VALIDATION_OUTLINE_REQUEST', () => {
-    const action = { type: types.GET_VALIDATION_OUTLINE_REQUEST }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.isLoadingPage to true', () => {
-      expect(state.isLoadingPage).toEqual(true)
-    })
-
-    test('should set state.getRequestInProgress to true', () => {
-      expect(state.getRequestInProgress).toEqual(true)
-    })
-  })
-
-  describe('GET_CODING_OUTLINE_FAIL', () => {
-    const action = { type: types.GET_CODING_OUTLINE_FAIL, payload: 'Failed to get scheme' }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.schemeError to action.payload', () => {
-      expect(state.schemeError).toEqual('Failed to get scheme')
-    })
-
-    test('should set state.isLoadingPage to false', () => {
-      expect(state.isLoadingPage).toEqual(false)
-    })
-
-    test('should set state.showPageLoader to false', () => {
-      expect(state.showPageLoader).toEqual(false)
-    })
-
-    test('should set state.getRequestInProgress to false', () => {
-      expect(state.getRequestInProgress).toEqual(false)
-    })
-  })
-
-  describe('GET_VALIDATION_OUTLINE_FAIL', () => {
-    const action = { type: types.GET_VALIDATION_OUTLINE_FAIL, payload: 'Failed to get scheme' }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.schemeError to action.payload', () => {
-      expect(state.schemeError).toEqual('Failed to get scheme')
-    })
-
-    test('should set state.isLoadingPage to false', () => {
-      expect(state.isLoadingPage).toEqual(false)
-    })
-
-    test('should set state.showPageLoader to false', () => {
-      expect(state.showPageLoader).toEqual(false)
-    })
-
-    test('should set state.getRequestInProgress to false', () => {
-      expect(state.getRequestInProgress).toEqual(false)
-    })
-  })
-
-  describe('ON_SAVE_RED_FLAG_SUCCESS', () => {
-    const action = {
-      type: types.ON_SAVE_RED_FLAG_SUCCESS,
-      payload: { type: 1, notes: 'red flag', raisedBy: { userId: 1 } }
-    }
-
-    const currentState = getState({
-      question: schemeById[1],
-      scheme: { byId: schemeById, tree: schemeTree }
-    })
-
-    const state = reducer(currentState, action)
-
-    test('should set state.question.flags[] to be action.payload', () => {
-      expect(state.question.flags).toEqual([{ type: 1, notes: 'red flag', raisedBy: { userId: 1 } }])
-    })
-
-    test('should set state.scheme.byId[state.question.id].flags to be action.payload', () => {
-      expect(state.scheme.byId[1].flags).toEqual([{ type: 1, notes: 'red flag', raisedBy: { userId: 1 } }])
-    })
-
-    test('should set state.unsavedChanges to false', () => {
-      expect(state.unsavedChanges).toEqual(false)
-    })
-  })
-
-  describe('ON_SAVE_RED_FLAG_FAIL', () => {
-    const action = { type: types.ON_SAVE_RED_FLAG_FAIL }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.saveFlagErrorContent to "We couldn\'t save the red flag for this question."', () => {
-      expect(state.saveFlagErrorContent).toEqual('We couldn\'t save the red flag for this question.')
-    })
-
-    test('should set state.saveFailed to true', () => {
-      expect(state.saveFailed).toEqual(true)
-    })
-  })
-
-  describe('ON_SAVE_FLAG', () => {
-    const action = { type: types.ON_SAVE_FLAG, flagInfo: { notes: 'my flag', raisedBy: { userId: 1 }, type: 1 } }
-    const currentState = getState({
-      scheme: { byId: schemeById, tree: schemeTree },
-      userAnswers: userAnswersCoded,
-      question: schemeById[1]
-    })
-    const state = reducer(currentState, action)
-
-    test('should set state.unsavedChanges to true', () => {
-      expect(state.unsavedChanges).toEqual(true)
-    })
-
-    describe('should update state.userAnswers with new flag info', () => {
-      test('should handle non-category questions', () => {
-        const currentState = getState({
-          scheme: { byId: schemeById, tree: schemeTree },
-          userAnswers: userAnswersCoded,
-          question: schemeById[1]
-        })
-        const state = reducer(currentState, action)
-        expect(state.userAnswers[1].flag).toEqual({
-          notes: 'my flag',
-          raisedBy: { userId: 1 },
-          type: 1
-        })
-      })
-
-      test('should handle category questions', () => {
-        const currentState = getState({
-          scheme: { byId: schemeById, tree: schemeTree },
-          userAnswers: userAnswersCoded,
-          question: schemeById[4],
-          selectedCategoryId: 10
-        })
-        const state = reducer(currentState, action)
-        expect(state.userAnswers[4][10].flag).toEqual({
-          notes: 'my flag',
-          raisedBy: { userId: 1 },
-          type: 1
-        })
-      })
-    })
-  })
-
-  describe('GET_USER_CODED_QUESTIONS_SUCCESS', () => {
-    const action = {
-      type: types.GET_USER_CODED_QUESTIONS_SUCCESS,
-      payload: {
-        userAnswers: userAnswersCoded,
-        scheme: {
-          byId: schemeById,
-          tree: schemeTree,
-          order: schemeOrder
-        },
-        question: schemeById[3],
-        errors: {}
-      }
-    }
-
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.userAnswers to action.payload.userAnswers', () => {
-      expect(state.userAnswers).toEqual(userAnswersCoded)
-    })
-
-    test('should set state.question to action.payload.question', () => {
-      expect(state.question).toEqual(schemeById[3])
-    })
-
-    test('should set state.scheme to action.payload.scheme', () => {
-      expect(state.scheme).toEqual({ byId: schemeById, tree: schemeTree, order: schemeOrder })
-    })
-
-    test('should set state.getQuestionErrors to null if there are no errors', () => {
-      expect(state.getQuestionErrors).toEqual(null)
-    })
-
-    test('should set state.codedQuestionsError to null if action.payload.error.codedValQuestions does not exist', () => {
-      expect(state.codedQuestionsError).toEqual(null)
-    })
-
-    test('should set state.isLoadingPage to false', () => {
-      expect(state.isLoadingPage).toEqual(false)
-    })
-
-    test('should set state.showPageLoader to false', () => {
-      expect(state.showPageLoader).toEqual(false)
-    })
-
-    describe('handling errors', () => {
-      const action = {
-        type: types.GET_USER_CODED_QUESTIONS_SUCCESS,
-        payload: {
-          userAnswers: userAnswersCoded,
-          scheme: {
-            byId: schemeById,
-            tree: schemeTree,
-            order: schemeOrder
-          },
-          question: schemeById[3],
-          errors: {
-            schemeError: 'omg this is an error.',
-            codedValQuestions: 'omg this is another error.'
-          }
-        }
-      }
-
-      const currentState = getState()
-      const state = reducer(currentState, action)
-
-      test('should set state.getQuestionErrors to error if action.payload.errors.length > 0', () => {
-        expect(state.getQuestionErrors).toEqual('omg this is an error.\n\nomg this is another error.')
-      })
-
-      test('should set state.codedQuestionsError to true if action.payload.error.codedValQuestions exists', () => {
-        expect(state.codedQuestionsError).toEqual(true)
-      })
-    })
-  })
-
-  describe('GET_USER_CODED_QUESTIONS_REQUEST', () => {
-    const action = { type: types.GET_USER_CODED_QUESTIONS_REQUEST }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.codedQuestionsError to null', () => {
-      expect(state.codedQuestionsError).toEqual(null)
-    })
-
-    test('should set state.isLoadingPage to true', () => {
-      expect(state.isLoadingPage).toEqual(true)
-    })
-  })
-
-  describe('GET_USER_VALIDATED_QUESTIONS_REQUEST', () => {
-    const action = { type: types.GET_USER_VALIDATED_QUESTIONS_REQUEST }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.codedQuestionsError to null', () => {
-      expect(state.codedQuestionsError).toEqual(null)
-    })
-
-    test('should set state.isLoadingPage to true', () => {
-      expect(state.isLoadingPage).toEqual(true)
-    })
-  })
-
-  describe('GET_USER_CODED_QUESTIONS_FAIL', () => {
-    const action = { type: types.GET_USER_CODED_QUESTIONS_FAIL }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.isLoadingPage to false', () => {
-      expect(state.isLoadingPage).toEqual(false)
-    })
-
-    test('should set state.showPageLoader to false', () => {
-      expect(state.showPageLoader).toEqual(false)
-    })
-
-    test('should set state.getQuestionsError to an empty string', () => {
-      expect(state.getQuestionsError).toEqual('')
-    })
-  })
-
-  describe('GET_USER_VALIDATED_QUESTIONS_FAIL', () => {
-    const action = { type: types.GET_USER_VALIDATED_QUESTIONS_FAIL }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.isLoadingPage to false', () => {
-      expect(state.isLoadingPage).toEqual(false)
-    })
-
-    test('should set state.showPageLoader to false', () => {
-      expect(state.showPageLoader).toEqual(false)
-    })
-
-    test('should set state.getQuestionsError to an empty string', () => {
-      expect(state.getQuestionsError).toEqual('')
-    })
-  })
-
-  describe('ON_SAVE_RED_FLAG_REQUEST', () => {
-    const action = { type: types.ON_SAVE_RED_FLAG_REQUEST }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.unsavedChanges to true', () => {
-      expect(state.unsavedChanges).toEqual(true)
-    })
-
-    test('should set state.saveFailed to false', () => {
-      expect(state.saveFailed).toEqual(false)
-    })
-  })
-
-  describe('CLEAR_FLAG_SUCCESS', () => {
-    const current = {
-      question: schemeById[1],
-      scheme: {
-        byId: schemeById,
-        tree: schemeTree,
-        order: schemeOrder
-      },
-      mergedUserQuestions
-    }
-
-    describe('if flag is red', () => {
-      const action = { type: types.CLEAR_FLAG_SUCCESS, payload: { type: 1 } }
-      const currentState = getState(current)
-      const state = reducer(currentState, action)
-
-      test('should set state.question.flags to an empty array', () => {
-        expect(state.question.flags).toEqual([])
-      })
-
-      test('should set state.scheme.byId[state.question.id].flags to an empty array', () => {
-        expect(state.scheme.byId[1].flags).toEqual([])
-      })
-    })
-
-    describe('if flag is green or yellow', () => {
-      describe('if state.question is not a category question', () => {
-        test('should remove the flag with id: action.payload.flagId from the question in state.mergedUserQuestions if there is no comment attached', () => {
-          const action = { type: types.CLEAR_FLAG_SUCCESS, payload: { type: 2, flagId: 4 } }
-          const currentState = getState(current)
-          const state = reducer(currentState, action)
-          expect(state.mergedUserQuestions[1].flagsComments).toEqual([])
-        })
-
-        test('should keep the flagsComments object but without the flag information if a comment is present', () => {
-          const action = { type: types.CLEAR_FLAG_SUCCESS, payload: { type: 2, flagId: 5 } }
-          const currentState = getState({ ...current, question: schemeById[3] })
-          const state = reducer(currentState, action)
-          expect(state.mergedUserQuestions[3].flagComments)
-            .toEqual([{ comment: 'this is my comment', raisedBy: { userId: 3 } }])
-        })
-      })
-
-      describe('if state.question is a category question', () => {
-        const action = { type: types.CLEAR_FLAG_SUCCESS, payload: { type: 2, flagId: 2 } }
-        const currentState = getState({ ...current, question: schemeById[4], selectedCategoryId: 10 })
-        const state = reducer(currentState, action)
-        test('should remove the flag with id: action.payload.flagId from the question in state.mergedUserQuestions', () => {
-          expect(state.mergedUserQuestions[4][10].flagsComments)
-            .toEqual([{ id: 1, type: 3, notes: 'flag notes', comment: '', raisedBy: { userId: 2 } }])
-        })
-      })
-    })
-  })
-
-  describe('APPLY_ANSWER_TO_ALL', () => {
-    const currentState = getState({
-      question: {
-        id: 4
-      },
-      categories: [{ id: 10, text: 'cat 1' }, { id: 20, text: 'cat 2' }],
-      outline: {
-        1: { parentId: 0, positionInParent: 0 },
-        2: { parentId: 0, positionInParent: 1 },
-        3: { parentId: 0, positionInParent: 2 },
-        4: { parentId: 3, positionInParent: 0 }
-      },
-      scheme: {
-        byId: {
-          1: { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0 },
-          2: { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1 },
-          3: {
-            text: 'cat question',
-            questionType: 2,
-            id: 3,
-            parentId: 0,
-            positionInParent: 2,
-            possibleAnswers: [
-              { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
-            ]
-          },
-          4: {
-            text: 'cat question child',
-            questionType: 3,
-            id: 4,
-            parentId: 3,
-            positionInParent: 0,
-            indent: 2,
-            isCategoryQuestion: true,
-            possibleAnswers: [
-              { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
-            ]
-          }
-        },
-        order: [1, 2, 3, 4],
-        tree: [
-          { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: false },
-          { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, isAnswered: false },
-          {
-            text: 'cat question',
-            questionType: 2,
-            id: 3,
-            parentId: 0,
-            positionInParent: 2,
-            isAnswered: true,
-            indent: 1,
-            possibleAnswers: [
-              { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
-            ],
-            children: [
-              {
-                text: 'cat question child',
-                questionType: 3,
-                isCategoryQuestion: true,
-                id: 4,
-                indent: 2,
-                parentId: 3,
-                positionInParent: 0,
-                isAnswered: false,
-                possibleAnswers: [
-                  { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      selectedCategoryId: 10,
-      userAnswers: {
-        1: {
-          answers: {},
-          schemeQuestionId: 1,
-          comment: ''
-        },
-        2: {
-          answers: {},
-          schemeQuestionId: 2,
-          comment: ''
-        },
-        3: {
-          schemeQuestionId: 3,
-          answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
-        },
-        4: {
-          10: { answers: { schemeAnswerId: 42, pincite: '' }, comment: '', categoryId: 10 },
-          20: { answers: {}, comment: '', categoryId: 20 }
-        }
-      }
-    })
-
-    test('should apply answers to all categories', () => {
-      const action = {
-        type: types.ON_APPLY_ANSWER_TO_ALL,
-        jurisdictionId: 1,
-        projectId: 3,
-        questionId: 4
-      }
-
-      const state = reducer(currentState, action)
-
-      expect(state.userAnswers).toEqual({
-        ...currentState.coding.userAnswers,
-        4: {
-          10: {
-            answers: { schemeAnswerId: 42, pincite: '' },
-            comment: '',
-            categoryId: 10,
-            id: undefined
-          },
-          20: {
-            answers: { schemeAnswerId: 42, pincite: '' },
-            comment: '',
-            categoryId: 20,
-            id: undefined
-          }
-        }
-      })
-    })
-  })
-
-  describe('ON_CLEAR_ANSWER', () => {
-    test('should handle regular questions', () => {
-      const action = {
-        type: types.ON_CLEAR_ANSWER,
-        questionId: 2,
-        projectId: 1,
-        jurisdictionId: 1
-      }
-
-      const currentState = getState({
-        question: {
-          questionType: 3,
-          id: 2
-        },
-        userAnswers: {
-          2: {
-            schemeQuestionId: 2,
-            answers: {
-              1: {
-                schemeAnswerId: 1,
-                pincite: ''
-              },
-              4: {
-                schemeAnswerId: 4,
-                pincite: ''
-              }
-            },
-            comment: ''
-          }
-        }
-      })
-      const state = reducer(currentState, action)
-
-      expect(state.userAnswers).toEqual({
-        ...currentState.coding.userAnswers,
-        2: {
-          schemeQuestionId: 2,
-          answers: {},
-          comment: ''
-        }
-      })
-    })
-
-    test('should handle category child questions', () => {
-      const action = {
-        type: types.ON_CLEAR_ANSWER,
-        questionId: 2,
-        projectId: 1,
-        jurisdictionId: 1
-      }
-
-      const currentState = getState({
-        question: {
-          id: 2,
-          questionType: 4,
-          isCategoryQuestion: true
-        },
-        userAnswers: {
-          2: {
-            schemeQuestionId: 2,
-            3: {
-              answers: { 4: { schemeAnswerId: 4, pincite: 'pincite!' } },
-              comment: ''
-            },
-            2: {
-              answers: { 4: { schemeAnswerId: 4, pincite: '' } },
-              comment: ''
-            }
-          }
-        },
-        selectedCategory: 0,
-        selectedCategoryId: 3,
-        categories: [{ id: 3, text: 'cat 1' }, { id: 2, text: 'cat 2' }]
-      })
-      const state = reducer(currentState, action)
-
-      expect(state.userAnswers).toEqual({
-        ...currentState.coding.userAnswers,
-        2: {
-          schemeQuestionId: 2,
-          3: { answers: {}, comment: '' },
-          2: { answers: { 4: { schemeAnswerId: 4, pincite: '' } }, comment: '' }
-        }
-      })
-    })
-
-    test('should update scheme.tree for category questions', () => {
-      const currentState = getState({
-        question: {
-          text: 'cat question',
-          questionType: 2,
-          id: 3,
-          parentId: 0,
-          hint: '',
-          flags: [],
-          expanded: true,
-          positionInParent: 2,
-          isAnswered: true,
-          indent: 1,
-          possibleAnswers: [
-            { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
-          ],
-          children: [
-            {
-              text: 'cat question child',
-              questionType: 3,
-              isCategoryQuestion: true,
-              id: 4,
-              parentId: 3,
-              positionInParent: 0,
-              isAnswered: false,
-              indent: 2,
-              possibleAnswers: [{ id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }],
-              children: [
-                {
-                  schemeAnswerId: 10,
-                  schemeQuestionId: 4,
-                  indent: 3,
-                  isCategory: true,
-                  positionInParent: 0,
-                  text: 'category 2',
-                  isAnswered: false
-                },
-                {
-                  schemeAnswerId: 20,
-                  schemeQuestionId: 4,
-                  indent: 3,
-                  isCategory: true,
-                  positionInParent: 1,
-                  text: 'category 3',
-                  isAnswered: false
-                }
-              ],
-              completedProgress: 0
-            }
-          ]
-        },
-        outline: {
-          1: { parentId: 0, positionInParent: 0 },
-          2: { parentId: 0, positionInParent: 1 },
-          3: { parentId: 0, positionInParent: 2 },
-          4: { parentId: 3, positionInParent: 0 }
-        },
-        scheme: {
-          byId: {
-            1: {
-              text: 'fa la la la',
-              questionType: 1,
-              id: 1,
-              parentId: 0,
-              positionInParent: 0,
-              flags: [],
-              hint: '',
-              possibleAnswers: []
-            },
-            2: {
-              text: 'la la la',
-              questionType: 3,
-              id: 2,
-              parentId: 0,
-              positionInParent: 1,
-              flags: [],
-              hint: '',
-              possibleAnswers: []
-            },
-            3: {
-              text: 'cat question',
-              questionType: 2,
-              id: 3,
-              parentId: 0,
-              positionInParent: 2,
-              flags: [],
-              hint: '',
-              possibleAnswers: [
-                { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
-              ]
-            },
-            4: {
-              text: 'cat question child',
-              questionType: 3,
-              id: 4,
-              parentId: 3,
-              positionInParent: 0,
-              indent: 2,
-              isCategoryQuestion: true,
-              possibleAnswers: [
-                { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
-              ]
-            }
-          },
-          order: [1, 2, 3, 4],
-          tree: [
-            { text: 'fa la la la', questionType: 1, id: 1, parentId: 0, positionInParent: 0, isAnswered: true },
-            { text: 'la la la', questionType: 3, id: 2, parentId: 0, positionInParent: 1, isAnswered: false },
-            {
-              text: 'cat question',
-              questionType: 2,
-              id: 3,
-              parentId: 0,
-              positionInParent: 2,
-              isAnswered: true,
-              indent: 1,
-              possibleAnswers: [
-                { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
-              ],
-              children: [
-                {
-                  text: 'cat question child',
-                  questionType: 3,
-                  isCategoryQuestion: true,
-                  id: 4,
-                  parentId: 3,
-                  positionInParent: 0,
-                  isAnswered: false,
-                  indent: 2,
-                  possibleAnswers: [
-                    { id: 432, text: 'answer 1' }, { id: 2124, text: 'answer 2' }
-                  ],
-                  children: [
-                    {
-                      schemeAnswerId: 10,
-                      schemeQuestionId: 4,
-                      indent: 3,
-                      isCategory: true,
-                      positionInParent: 0,
-                      text: 'category 2',
-                      isAnswered: false
-                    },
-                    {
-                      schemeAnswerId: 20,
-                      schemeQuestionId: 4,
-                      indent: 3,
-                      isCategory: true,
-                      positionInParent: 1,
-                      text: 'category 3',
-                      isAnswered: false
-                    }
-                  ],
-                  completedProgress: 0
-                }
-              ]
-            }
-          ]
-        },
-        userAnswers: {
-          1: {
-            answers: { 123: { schemeAnswerId: 123, pincite: '' } },
-            schemeQuestionId: 1,
-            comment: ''
-          },
-          2: {
-            answers: {},
-            schemeQuestionId: 2,
-            comment: ''
-          },
-          3: {
-            schemeQuestionId: 3,
-            answers: { 10: { schemeAnswerId: 10, pincite: '' }, 20: { schemeAnswerId: 20, pincite: '' } }
-          },
-          4: {
-            schemeQuestionId: 4,
-            10: { answers: {}, comment: '' },
-            20: { answers: {}, comment: '' }
-          }
-        }
-      })
-
-      const action = {
-        type: types.ON_CLEAR_ANSWER,
-        questionId: 3,
-        projectId: 1,
-        jurisdictionId: 1
-      }
-
-      const state = reducer(currentState, action)
-      expect(state).toHaveProperty('scheme.tree', [
-        {
-          text: 'fa la la la',
-          questionType: 1,
-          id: 1,
-          parentId: 0,
-          positionInParent: 0,
-          isAnswered: true,
-          flags: [],
-          hint: '',
-          possibleAnswers: []
-        },
-        {
-          text: 'la la la',
-          questionType: 3,
-          id: 2,
-          parentId: 0,
-          positionInParent: 1,
-          isAnswered: false,
-          flags: [],
-          hint: '',
-          possibleAnswers: []
-        },
-        {
-          text: 'cat question',
-          questionType: 2,
-          id: 3,
-          parentId: 0,
-          positionInParent: 2,
-          isAnswered: false,
-          indent: 1,
-          flags: [], hint: '', expanded: true,
-          possibleAnswers: [
-            { id: 5, text: 'category 1' }, { id: 10, text: 'category 2' }, { id: 20, text: 'category 3' }
-          ],
-          children: []
-        }
-      ])
-    })
-  })
-
-  describe('DISMISS_API_ALERT', () => {
-    const action = { type: types.DISMISS_API_ALERT, errorType: 'getQuestionErrors' }
-    const currentState = getState({ getQuestionErrors: 'blep' })
-    const state = reducer(currentState, action)
-
-    test('should set state[action.errorType] to null', () => {
-      expect(state.getQuestionErrors).toEqual(null)
-    })
-
-    test('should set state.objectExists to false', () => {
-      expect(state.objectExists).toEqual(false)
-    })
-  })
-
-  describe('ON_SHOW_PAGE_LOADER', () => {
-    const action = { type: types.ON_SHOW_PAGE_LOADER }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.showPageLoader to true', () => {
-      expect(state.showPageLoader).toEqual(true)
-    })
-  })
-
-  describe('ON_SHOW_QUESTION_LOADER', () => {
-    const action = { type: types.ON_SHOW_QUESTION_LOADER }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.questionChangeLoader to true', () => {
-      expect(state.questionChangeLoader).toEqual(true)
-    })
-  })
-
-  describe('GET_NEXT_QUESTION', () => {
-    const action = { type: types.GET_NEXT_QUESTION }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.isChangingQuestion to true', () => {
-      expect(state.isChangingQuestion).toEqual(true)
-    })
-  })
-
-  describe('GET_PREV_QUESTION', () => {
-    const action = { type: types.GET_PREV_QUESTION }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.isChangingQuestion to true', () => {
-      expect(state.isChangingQuestion).toEqual(true)
-    })
-  })
-
-  describe('ON_QUESTION_SELECTED_IN_NAV', () => {
-    const action = { type: types.ON_QUESTION_SELECTED_IN_NAV }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.isChangingQuestion to true', () => {
-      expect(state.isChangingQuestion).toEqual(true)
-    })
-  })
-
-  describe('CLEAR_FLAG_FAIL', () => {
-    const action = { type: types.CLEAR_FLAG_FAIL }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.saveFlagErrorContent to "We couldn\'t clear this flag."', () => {
-      expect(state.saveFlagErrorContent).toEqual('We couldn\'t clear this flag.')
-    })
-  })
-
-  describe('GET_USER_VALIDATED_QUESTIONS_SUCCESS', () => {
-    const action = {
-      type: types.GET_USER_VALIDATED_QUESTIONS_SUCCESS,
-      payload: {
-        userAnswers: userAnswersCoded,
-        scheme: {
-          byId: schemeById,
-          tree: schemeTree,
-          order: schemeOrder
-        },
-        question: schemeById[3],
-        errors: {},
-        mergedUserQuestions
-      }
-    }
-
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.userAnswers to action.payload.userAnswers', () => {
-      expect(state.userAnswers).toEqual(userAnswersCoded)
-    })
-
-    test('should set state.question to action.payload.question', () => {
-      expect(state.question).toEqual(schemeById[3])
-    })
-
-    test('should set state.scheme to action.payload.scheme', () => {
-      expect(state.scheme).toEqual({ byId: schemeById, tree: schemeTree, order: schemeOrder })
-    })
-
-    test('should set state.mergedUserQuestions to action.payload.mergedUserQuestions', () => {
-      expect(state.mergedUserQuestions).toEqual(mergedUserQuestions)
-    })
-
-    test('should set state.getQuestionErrors to null if there are no errors', () => {
-      expect(state.getQuestionErrors).toEqual(null)
-    })
-
-    test('should set state.codedQuestionsError to null if action.payload.error.codedValQuestions does not exist', () => {
-      expect(state.codedQuestionsError).toEqual(null)
-    })
-
-    test('should set state.isLoadingPage to false', () => {
-      expect(state.isLoadingPage).toEqual(false)
-    })
-
-    test('should set state.showPageLoader to false', () => {
-      expect(state.showPageLoader).toEqual(false)
-    })
-
-    describe('handling errors', () => {
-      const action = {
-        type: types.GET_USER_VALIDATED_QUESTIONS_SUCCESS,
-        payload: {
-          userAnswers: userAnswersCoded,
-          scheme: {
-            byId: schemeById,
-            tree: schemeTree,
-            order: schemeOrder
-          },
-          question: schemeById[3],
-          errors: {
-            schemeError: 'omg this is an error.',
-            codedValQuestions: 'omg this is another error.'
-          },
-          mergedUserQuestions
-        }
-      }
-
-      const currentState = getState()
-      const state = reducer(currentState, action)
-
-      test('should set state.getQuestionErrors to error if action.payload.errors.length > 0', () => {
-        expect(state.getQuestionErrors).toEqual('omg this is an error.\n\nomg this is another error.')
-      })
-
-      test('should set state.codedQuestionsError to true if action.payload.error.codedValQuestions exists', () => {
-        expect(state.codedQuestionsError).toEqual(true)
-      })
-    })
-  })
-
-  describe('SET_PAGE', () => {
-    test('should set state.page to action.page', () => {
-      const action = {
-        type: types.SET_PAGE,
-        page: 'validation'
-      }
-      const currentState = getState()
-      const state = reducer(currentState, action)
-
-      expect(state.page).toEqual('validation')
-    })
-  })
-
-  describe('ON_CLOSE_SCREEN', () => {
-    test('should return initial state', () => {
-      const action = { type: types.ON_CLOSE_SCREEN }
-      const currentState = getState({ question: schemeById[4], userAnswers: userAnswersCoded })
-      const state = reducer(currentState, action)
-      expect(state).toEqual({ ...INITIAL_STATE, showNextButton: false })
-    })
-  })
-
-  describe('CLEAR_FLAG', () => {
-    test('should return state', () => {
-      const action = { type: types.CLEAR_FLAG }
-      const currentState = getState({ question: schemeById[4], userAnswers: userAnswersCoded })
-      const state = reducer(currentState, action)
-      expect(state.question).toEqual(schemeById[4])
-      expect(state.userAnswers).toEqual(userAnswersCoded)
-    })
-  })
-
-  describe('CLEAR_RED_FLAG', () => {
-    test('should return state', () => {
-      const action = { type: types.CLEAR_RED_FLAG }
-      const currentState = getState({ question: schemeById[4], userAnswers: userAnswersCoded })
-      const state = reducer(currentState, action)
-      expect(state.question).toEqual(schemeById[4])
-      expect(state.userAnswers).toEqual(userAnswersCoded)
     })
   })
 })
