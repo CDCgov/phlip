@@ -292,7 +292,7 @@ export class Upload extends Component {
   addFilesToList = (e) => {
     if (e.target.files.length + this.props.selectedDocs.length > this.props.maxFileCount) {
       //this.showFileCountExceedAlert()
-      this.props.actions.openAlert(`The number of files selected for upload has exceeded the limit of ${this.maxFileCount} files per upload.  Please consider upload files in smaller batches.`,'File Count Alert')
+      this.props.actions.openAlert(`The number of files selected for upload has exceeded the limit of ${this.props.maxFileCount} files per upload.  Please consider uploading files in smaller batches.`,'File Count Alert')
     } else {
       let files = []
       let invalidSizeFiles = []
