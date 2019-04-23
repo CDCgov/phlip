@@ -191,8 +191,6 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
     const selectedCategories = commonHelpers.sortListOfObjects(getSelectedCategories(parentQuestion, state.userAnswers), 'order', 'asc')
     const baseQuestion = base.userAnswers[newQuestion.id]
 
-    console.log(selectedCategories)
-
     const answers = selectedCategories.reduce((answerObj, cat) => {
       return {
         ...answerObj,
