@@ -92,6 +92,7 @@ export class DocumentManagement extends Component {
   }
 
   componentDidMount() {
+    document.title = 'PHLIP - Document List'
     this.props.actions.getDocumentsRequest()
   }
 

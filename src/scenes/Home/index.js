@@ -90,6 +90,7 @@ export class Home extends Component {
   }
 
   componentDidMount() {
+    document.title = 'PHLIP - Project List'
     this.props.actions.getProjectsRequest()
   }
 

@@ -125,6 +125,10 @@ export class Upload extends Component {
     }
   }
 
+  componentDidMount() {
+    document.title = 'PHLIP - Documents Upload'
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.uploading === true && this.props.uploading === false) {
       if (this.props.requestError !== null) {
