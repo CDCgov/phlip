@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { findDOMNode } from 'react-dom'
 import Grid from '@material-ui/core/Grid'
@@ -12,7 +12,7 @@ import Paper from '@material-ui/core/Paper'
 import { Manager, Reference, Popper } from 'react-popper'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 
-export class AvatarMenu extends PureComponent {
+export class AvatarMenu extends Component {
   constructor(props, context) {
     super(props, context)
     this.firstMenuItem = null

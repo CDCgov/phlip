@@ -6,7 +6,7 @@ const props = {
   doc: {
     name: 'doc1',
     uploadedBy: { firstName: 'Test', lastName: 'User' },
-    uploadedDate: new Date('1/1/2000').toLocaleDateString(),
+    uploadedDate: 1556019369,
     projects: ['Project 1', 'Project 2'],
     jurisdictions: ['Ohio (state)', 'Georgia (state)']
   },

@@ -31,7 +31,7 @@ const setupStore = (currentState = {}, reducerFn = mockReducer) => {
       data: {
         user: {
           ...INITIAL_STATE,
-          currentUser: { id: 1 },
+          currentUser: { id: 1, firstName: 'Test', lastName: 'User', avatar: '' },
           byId: {
             1: { id: 1 }
           }
@@ -112,7 +112,7 @@ describe('CodingValidation logic', () => {
         const store = setupStore({
           unsavedChanges: true,
           scheme: { byId: schemeById, tree: [], outline: {} },
-          userAnswers: userAnswersCoded,
+          userAnswers: { ...userAnswersCoded },
           messageQueue: []
         })
 
@@ -138,7 +138,7 @@ describe('CodingValidation logic', () => {
         const store = setupStore({
           unsavedChanges: true,
           scheme: { byId: schemeById, tree: [], outline: {} },
-          userAnswers: userAnswersCoded,
+          userAnswers: { ...userAnswersCoded },
           messageQueue: []
         })
 
@@ -162,7 +162,7 @@ describe('CodingValidation logic', () => {
         const store = setupStore({
           unsavedChanges: true,
           scheme: { byId: schemeById, tree: [], outline: {} },
-          userAnswers: userAnswersCoded,
+          userAnswers: { ...userAnswersCoded },
           messageQueue: []
         })
 
@@ -232,7 +232,7 @@ describe('CodingValidation logic', () => {
           page: 'coding',
           unsavedChanges: true,
           scheme: { byId: schemeById, tree: [], outline: [] },
-          userAnswers: userAnswersCoded,
+          userAnswers: { ...userAnswersCoded },
           messageQueue: []
         })
 
@@ -300,7 +300,7 @@ describe('CodingValidation logic', () => {
           page: 'validation',
           unsavedChanges: true,
           scheme: { byId: schemeById, tree: [], outline: [] },
-          userAnswers: userAnswersCoded,
+          userAnswers: { ...userAnswersCoded },
           messageQueue: []
         })
 
@@ -745,6 +745,32 @@ describe('CodingValidation logic', () => {
           done()
         })
       })
+
+      test('should set action.isValidation to false', done => {
+        mock.onAny().reply(config => {
+          return [200, config.url]
+        })
+
+        store.dispatch({ type: types.ON_APPLY_ANSWER_TO_ALL, projectId: 4, jurisdictionId: 1, questionId: 4 })
+
+        store.whenComplete(() => {
+          expect(store.actions[0].isValidation).toEqual(false)
+          done()
+        })
+      })
+
+      test('should set action.otherUpdates to {}', done => {
+        mock.onAny().reply(config => {
+          return [200, config.url]
+        })
+
+        store.dispatch({ type: types.ON_APPLY_ANSWER_TO_ALL, projectId: 4, jurisdictionId: 1, questionId: 4 })
+
+        store.whenComplete(() => {
+          expect(store.actions[0].otherUpdates).toEqual({})
+          done()
+        })
+      })
     })
 
     describe('when state.page === validation', () => {
@@ -770,7 +796,7 @@ describe('CodingValidation logic', () => {
         selectedCategoryId: 10
       }, state => state)
 
-      test('should use coding api methods', done => {
+      test('should use validation api methods', done => {
         mock.onAny().reply(config => {
           return [200, config.url]
         })
@@ -780,6 +806,39 @@ describe('CodingValidation logic', () => {
         store.whenComplete(() => {
           expect(store.actions[0].apiMethods.create()).toEqual('create validated question')
           expect(store.actions[0].apiMethods.update()).toEqual('update validated question')
+          done()
+        })
+      })
+
+      test('should set action.isValidation to true', done => {
+        mock.onAny().reply(config => {
+          return [200, config.url]
+        })
+
+        store.dispatch({ type: types.ON_APPLY_ANSWER_TO_ALL, projectId: 4, jurisdictionId: 1, questionId: 4 })
+
+        store.whenComplete(() => {
+          expect(store.actions[0].isValidation).toEqual(true)
+          done()
+        })
+      })
+
+      test('should set action.otherUpdates.validatedBy to the current user in state', done => {
+        mock.onAny().reply(config => {
+          return [200, config.url]
+        })
+
+        store.dispatch({ type: types.ON_APPLY_ANSWER_TO_ALL, projectId: 4, jurisdictionId: 1, questionId: 4 })
+
+        store.whenComplete(() => {
+          expect(store.actions[0].otherUpdates).toEqual({
+            validatedBy: {
+              userId: 1,
+              firstName: 'Test',
+              lastName: 'User',
+              avatar: ''
+            }
+          })
           done()
         })
       })
