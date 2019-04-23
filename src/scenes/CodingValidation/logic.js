@@ -658,7 +658,7 @@ const saveRedFlagLogic = createLogic({
 export const updateValidatorLogic = createLogic({
   type: [
     types.UPDATE_USER_ANSWER, types.ON_APPLY_ANSWER_TO_ALL, types.ON_CHANGE_PINCITE, types.ON_SAVE_ANNOTATION,
-    types.ON_CHANGE_COMMENT, types.ON_REMOVE_ANNOTATION, types.CLEAR_RED_FLAG
+    types.ON_CHANGE_COMMENT, types.ON_REMOVE_ANNOTATION
   ],
   transform({ action, getState }, next) {
     const state = getState().scenes.codingValidation.coding
