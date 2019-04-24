@@ -34,7 +34,7 @@ export const ValidationTable = props => {
       ? checkQuestionFlag(questionFlags[0], mergedUserQuestions.flagsComments)
       : [...mergedUserQuestions.flagsComments]
     : [...questionFlags]
-
+  
   return (
     allFlags.length > 0 &&
     <FlexGrid container padding="25px 0 0" style={{ flexBasis: 'auto', flexWrap: 'nowrap', margin: '0 10px' }}>
@@ -43,6 +43,7 @@ export const ValidationTable = props => {
       </FlexGrid>
       <FlexGrid container flex padding={12} style={{ backgroundColor: '#f1f7f8' }}>
         {allFlags.map((item, i) => {
+          const hasCommentAndFlag = item.type && item.comment
           const user = userImages[item.raisedBy.userId]
           return Object.keys(item).length > 0 &&
             <FlexGrid
@@ -51,16 +52,13 @@ export const ValidationTable = props => {
               key={`flags-comments-${i}`}
               align="center"
               padding={8}
-              style={{
-                backgroundColor: 'white',
-                borderBottom: '1px solid lightgrey'
-              }}>
+              style={{ backgroundColor: 'white', borderBottom: '1px solid lightgrey' }}>
               <FlexGrid
                 container
                 type="row"
                 align="center"
                 padding="0 12px 0 0"
-                style={{ flexBasis: '30%', flexGrow: 1 }}>
+                style={{ flexBasis: '25%', flexGrow: 1 }}>
                 <Avatar
                   style={{ marginRight: 10 }}
                   initials={user.initials}
@@ -69,25 +67,26 @@ export const ValidationTable = props => {
                 />
                 <Typography variant="caption">{user.username}</Typography>
               </FlexGrid>
-              <FlexGrid container type="row" flex style={{ flexBasis: '70%', overflow: 'hidden' }}>
+              <FlexGrid container type="row" flex style={{ flexBasis: '75%', overflow: 'hidden' }}>
                 {item.type &&
-                <FlexGrid container type="row" align="center" flex style={{ overflow: ' hidden' }}>
-                  <FlexGrid padding="0 8px 0 0">
+                <FlexGrid container type="row" align="center" flex style={{ overflow: 'hidden', flexBasis: '35%' }}>
+                  <FlexGrid padding="0 5px 0 0">
                     <IconButton
                       onClick={() => onOpenAlert(item.id, item.type)}
                       tooltipText="Clear this flag"
                       id="clear-flag"
+                      iconSize={20}
                       aria-label="Clear this flag"
-                      color={flagColors[item.type]}>{item.type === 3 ? 'report' : 'flag'}
+                      color={flagColors[item.type]}>
+                      {item.type === 3 ? 'report' : 'flag'}
                     </IconButton>
                   </FlexGrid>
                   <FlexGrid container type="row" align="center" flex style={{ overflow: 'hidden' }}>
                     <Typography variant="caption" style={{ fontWeight: 'bold' }}>
-                      Reason for flag -
-                      <span>&nbsp;</span>
+                      Reason for flag -<span>&nbsp;</span>
                     </Typography>
                     <ExpansionTextPanel
-                      textProps={{ type: 'caption' }}
+                      textProps={{ variant: 'caption' }}
                       text={item.notes}
                       dropdownIconProps={{
                         tooltipText: 'Expand notes',
@@ -97,16 +96,21 @@ export const ValidationTable = props => {
                     />
                   </FlexGrid>
                 </FlexGrid>}
-                {item.comment && item.type && <span style={{ paddingLeft: 30 }} />}
+                {hasCommentAndFlag && <span style={{ paddingLeft: 20 }} />}
                 {item.comment &&
-                <FlexGrid container type="row" align="center" flex style={{ overflow: 'hidden' }}>
+                <FlexGrid
+                  container
+                  type="row"
+                  align="center"
+                  justify={hasCommentAndFlag ? 'flex-end' : 'stretch'}
+                  flex
+                  style={{ overflow: 'hidden', flexBasis: '35%' }}>
                   <Typography variant="caption" style={{ fontWeight: 'bold' }}>
-                    Comment -
-                    <span>&nbsp;</span>
+                    Comment -<span>&nbsp;</span>
                   </Typography>
                   <ExpansionTextPanel
                     style={{ zIndex: 1 }}
-                    textProps={{ type: 'caption' }}
+                    textProps={{ variant: 'caption' }}
                     text={item.comment}
                     dropdownIconProps={{
                       tooltipText: 'Expand comment',

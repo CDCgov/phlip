@@ -25,31 +25,27 @@ export class ProjectList extends Component {
     handleExport: PropTypes.func,
     getProjectUsers: PropTypes.func
   }
-
+  
   state = {
     expanded: 0
   }
-
+  
   checkExpand = target => {
     const stopOpenEls = ['A', 'BUTTON', 'button', 'a']
     const regex = /([Bb]utton)|(icons?)/g
     return !stopOpenEls.includes(target.tagName) && target.className.search(regex) === -1
   }
-
+  
   handleExpandProject = (id, event) => {
     const expand = this.checkExpand(event.target)
-
+    
     this.setState({
       expanded: this.state.expanded === id
-        ? expand
-          ? 0
-          : id
-        : expand
-          ? id
-          : 0
+        ? expand ? 0 : id
+        : expand ? id : 0
     })
   }
-
+  
   handleClickAway = event => {
     if (event.target.tagName === 'DIV') {
       this.setState({
@@ -57,15 +53,15 @@ export class ProjectList extends Component {
       })
     }
   }
-
+  
   render() {
     const {
       projectIds, user, page, rowsPerPage, projectCount, handlePageChange, handleRowsChange, handleExport,
       getProjectUsers
     } = this.props
-
+    
     const { expanded } = this.state
-
+    
     return (
       <FlexGrid style={{ overflow: 'auto' }}>
         <ClickAwayListener onClickAway={this.handleClickAway}>
