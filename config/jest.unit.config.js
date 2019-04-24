@@ -27,7 +27,8 @@ module.exports = {
   ],
   moduleNameMapper: {
     '^.+\\.(css|scss)$': '<rootDir>/config/tests/styleMock.js',
-    '\\.worker.js': '<rootDir>/config/tests/workerMock.js'
+    '\\.worker.js': '<rootDir>/config/tests/workerMock.js',
+    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': '<rootDir>/config/tests/fileMock.js'
   },
   snapshotSerializers: [
     'enzyme-to-json/serializer'
