@@ -1,12 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Manager, Popper, Reference } from 'react-popper'
-import FlexGrid from 'components/FlexGrid'
 import Typography from '@material-ui/core/Typography'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import Divider from '@material-ui/core/Divider'
-import IconButton from 'components/IconButton'
-import { Row } from 'components/Layout'
+import { IconButton, FlexGrid } from 'components'
 
 export const Popover = props => {
   const { target, open, title, onOpen, onClose, children } = props
@@ -40,9 +38,9 @@ export const Popover = props => {
           <ClickAwayListener onClickAway={open ? onClose : () => {}}>
             <div ref={ref} data-placement={placement} style={{ marginTop: 5, ...style, zIndex: 20 }}>
               <FlexGrid raised container>
-                <Row style={{ padding: 16 }}>
+                <FlexGrid padding={16} flex>
                   <Typography variant="body2">{title}</Typography>
-                </Row>
+                </FlexGrid>
                 <Divider />
                 {children}
               </FlexGrid>
