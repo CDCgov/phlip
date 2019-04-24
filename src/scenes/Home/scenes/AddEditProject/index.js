@@ -74,7 +74,12 @@ export class AddEditProject extends Component {
      */
     goBack: PropTypes.bool,
 
-    onSubmitError: PropTypes.func
+    onSubmitError: PropTypes.func,
+
+    /**
+     * title of the page
+    */
+    title : PropTypes.string
   }
 
   constructor(props, context) {
@@ -84,6 +89,14 @@ export class AddEditProject extends Component {
       edit: this.props.location.state.directEditMode || !this.projectDefined,
       submitting: false
     }
+  }
+
+  /**
+   * update page title using props after component loaded
+   */
+  componentDidMount(){
+    this.prevTitle = document.title
+    document.title = this.props.title
   }
 
   componentDidUpdate() {
@@ -99,7 +112,12 @@ export class AddEditProject extends Component {
     }
   }
 
+  componentWillUnmount() {
+    document.title = this.prevTitle
+  }
+
   /**
+   *
    * In edit mode, the user clicks the cancel button. Resets to form values to whatever they were before editing.
    *
    * @public

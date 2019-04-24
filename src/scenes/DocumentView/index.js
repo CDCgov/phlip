@@ -18,7 +18,8 @@ export class DocumentView extends Component {
     history: PropTypes.object,
     documentDeleteInProgress: PropTypes.bool,
     documentDeleteError: PropTypes.bool,
-    goBack: PropTypes.object
+    goBack: PropTypes.object,
+    title: PropTypes.string
   }
 
   constructor(props, context) {
@@ -26,6 +27,7 @@ export class DocumentView extends Component {
   }
 
   componentDidMount() {
+    document.title = this.props.title
     this.props.actions.initState(this.props.location.state.document)
     this.props.actions.getDocumentContentsRequest(this.props.location.state.document._id)
   }

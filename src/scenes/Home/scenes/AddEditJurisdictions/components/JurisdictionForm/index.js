@@ -60,7 +60,8 @@ export class JurisdictionForm extends Component {
     formError: PropTypes.string,
     goBack: PropTypes.bool,
     onSubmitError: PropTypes.func,
-    project: PropTypes.object
+    project: PropTypes.object,
+    title: PropTypes.string
   }
 
   constructor(props, context) {
@@ -90,6 +91,9 @@ export class JurisdictionForm extends Component {
     })
   }
 
+  componentDidMount() {
+    document.title = this.props.title
+  }
   componentDidUpdate(prevProps, prevState) {
     if (this.state.submitting === true) {
       if (this.props.formError !== null) {

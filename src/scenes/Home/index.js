@@ -74,7 +74,11 @@ export class Home extends Component {
     /**
      * Any error that has occurred during export
      */
-    exportError: PropTypes.string
+    exportError: PropTypes.string,
+    /**
+     * document title
+     */
+    title: PropTypes.string
   }
 
   constructor(props, context) {
@@ -90,7 +94,7 @@ export class Home extends Component {
   }
 
   componentDidMount() {
-    document.title = 'PHLIP - Project List'
+    document.title = this.props.title
     this.props.actions.getProjectsRequest()
   }
 
