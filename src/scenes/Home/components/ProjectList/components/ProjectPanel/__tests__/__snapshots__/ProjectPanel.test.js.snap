@@ -31,7 +31,6 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
         "backgroundColor": "white",
         "borderRadius": 0,
         "boxShadow": "0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12)",
-        "cursor": "pointer",
         "fontSize": "0.8125rem",
         "position": "relative",
       }
@@ -95,33 +94,9 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
         }
         type="row"
       >
-        <WithTheme(TextLink)
-          aria-label="Edit project details"
-          to={
-            Object {
-              "pathname": "/project/edit/2",
-              "state": Object {
-                "modal": true,
-                "projectDefined": Object {
-                  "createdBy": "Admin",
-                  "createdByEmail": "admin@cdc.gov",
-                  "createdById": 1,
-                  "dateCreated": "2019-04-08T11:43:46.3034169",
-                  "dateLastEdited": "2019-04-18T13:27:51.454041",
-                  "id": 2,
-                  "lastEditedBy": "Aleksandra Zaryanova",
-                  "lastUsersCheck": 1555606985567,
-                  "name": "PROJECT",
-                  "projectJurisdictions": Array [],
-                  "projectUsers": Array [],
-                  "type": 1,
-                },
-              },
-            }
-          }
-        >
+        <span>
           PROJECT
-        </WithTheme(TextLink)>
+        </span>
       </FlexGrid>
       <FlexGrid
         align="center"
@@ -296,17 +271,21 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
           justify="stretch"
           padding={0}
           raised={false}
-          style={Object {}}
+          style={
+            Object {
+              "backgroundColor": "white",
+              "width": 300,
+            }
+          }
           type="column"
         >
           <WithStyles(GridList)
             cellHeight={300}
             cols={1}
             rows={1}
-            spacing={2}
+            spacing={4}
             style={
               Object {
-                "height": "100%",
                 "margin": 0,
                 "width": 300,
               }

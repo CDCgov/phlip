@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography'
 import Collapse from '@material-ui/core/Collapse'
 import { FlexGrid, IconButton, TextLink, Link, Button } from 'components'
 import { FileDocument, City, FormatListBulleted, ClipboardCheckOutline, FileExport } from 'mdi-material-ui'
+import silhouette from './silhouette.png'
 
 export class ProjectPanel extends Component {
   static propTypes = {
@@ -27,7 +28,7 @@ export class ProjectPanel extends Component {
     index: PropTypes.number,
     handleExpandProject: PropTypes.func
   }
-
+  
   handleChange = event => {
     this.props.actions.getProjectUsers(this.props.project.id, {
       id: this.props.project.createdById,
@@ -35,11 +36,11 @@ export class ProjectPanel extends Component {
     })
     this.props.handleExpandProject(this.props.project.id, event)
   }
-
+  
   determineGridSize = () => {
     let size = 0, square = 0, i = 0
     const { users } = this.props
-
+    
     while (size === 0) {
       const sq = i ** 2
       if (users.length <= sq) {
@@ -48,16 +49,16 @@ export class ProjectPanel extends Component {
       }
       i++
     }
-
+    
     return { square, size }
   }
-
+  
   populateUsers = square => {
     const { users, project } = this.props
     if (square === users.length) {
       return [...users]
     }
-
+    
     const userTiles = [...users]
     const blanks = Array.from({ length: square - users.length }, (v, i) => ({
       id: `${project.id}-blank-${i}`,
@@ -65,34 +66,33 @@ export class ProjectPanel extends Component {
     }))
     return userTiles.concat(blanks)
   }
-
+  
   onClickExport = () => {
     this.props.onExport(this.props.project)
   }
-
+  
   render() {
     const { project, role, bookmarked, actions, theme, index, length, users, allUsers, expanded } = this.props
-
+    
     const isCoder = role === 'Coder'
     const greyIcon = theme.palette.greyText
     const iconStyle = { fontSize: 18, paddingLeft: 5 }
     const listingStyle = { fontSize: 14, fontWeight: 500, color: '#7b7b7b' }
     const date = moment.utc(project.dateLastEdited).local().format('M/D/YYYY')
     const createdDate = moment.utc(project.dateCreated).local().format('M/D/YYYY')
-
+    
     const { square, size } = this.determineGridSize()
     const userData = expanded ? this.populateUsers(square) : []
     const avatarCols = size, avatarRows = size, cellHeight = 300 / size
-
+    
     const rowStyles = {
       boxShadow: '0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12)',
       position: 'relative',
       backgroundColor: 'white',
       fontSize: '0.8125rem',
-      borderRadius: expanded ? 2 : 0,
-      cursor: 'pointer'
+      borderRadius: expanded ? 2 : 0
     }
-
+    
     const collapseStyles = {
       transitionDuration: '150ms',
       display: 'flex',
@@ -100,11 +100,11 @@ export class ProjectPanel extends Component {
       justifyContent: 'center',
       width: '100%'
     }
-
+    
     const expandedStyles = {
       minHeight: 60
     }
-
+    
     const containerStyles = {
       paddingBottom: (index === 0 || index < length)
         ? expanded
@@ -117,14 +117,14 @@ export class ProjectPanel extends Component {
           : 0
         : 0
     }
-
+    
     const panelButtonProps = {
       style: { marginLeft: 10 },
       color: 'white',
       textColor: 'black',
       disableRipple: true
     }
-
+    
     return (
       <FlexGrid style={containerStyles} onClick={this.handleChange}>
         <FlexGrid container justify="center" style={rowStyles} flex>
@@ -140,14 +140,7 @@ export class ProjectPanel extends Component {
               </IconButton>
             </FlexGrid>
             <FlexGrid padding="0 12px" container type="row" align="center" style={{ flexBasis: '32%' }}>
-              <TextLink
-                aria-label="Edit project details"
-                to={{
-                  pathname: `/project/edit/${project.id}`,
-                  state: { projectDefined: { ...project }, modal: true }
-                }}>
-                {project.name}
-              </TextLink>
+              <span>{project.name}</span>
             </FlexGrid>
             <FlexGrid container type="row" align="center" flex style={{ flexBasis: '30%' }}>
               <FlexGrid style={{ width: '49%' }}>
@@ -191,11 +184,11 @@ export class ProjectPanel extends Component {
           </FlexGrid>}
           <Collapse in={expanded} style={collapseStyles}>
             <FlexGrid container type="row" style={{ width: '100%', overflow: 'auto' }}>
-              <FlexGrid container type="column">
+              <FlexGrid container type="column" style={{ width: 300, backgroundColor: 'white' }}>
                 <GridList
-                  style={{ width: 300, height: '100%', margin: 0 }}
+                  style={{ width: 300, margin: 0 }}
                   cellHeight={cellHeight}
-                  spacing={2}
+                  spacing={4}
                   cols={avatarCols}
                   rows={avatarRows}>
                   {userData.map(oneCoder => {
@@ -212,10 +205,26 @@ export class ProjectPanel extends Component {
                               container
                               type="row"
                               justify="center"
-                              align="center"
+                              align="flex-end"
                               title={coder.username}
-                              style={{ backgroundColor: theme.palette.secondary.main, height: '100%' }}>
-                              <Typography style={{ fontWeight: 300, fontSize: 30, color: 'white' }}>
+                              style={{ height: '100%', backgroundColor: '#f9f9f9' }}>
+                              <img
+                                src={silhouette}
+                                alt={`${coder.username}'s avatar`}
+                                style={{ width: '100%', height: '100%' }}
+                              />
+                              <Typography
+                                style={{
+                                  fontWeight: 300,
+                                  fontSize: '1.1rem',
+                                  color: 'white',
+                                  backgroundColor: `rgb(${144},${141},${141})`,
+                                  width: '100%',
+                                  textAlign: 'center',
+                                  height: 25,
+                                  paddingLeft: 3,
+                                  position: 'absolute'
+                                }}>
                                 {coder.initials}
                               </Typography>
                             </FlexGrid>
