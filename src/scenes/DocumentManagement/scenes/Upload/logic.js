@@ -4,10 +4,92 @@ import { types as autocompleteTypes } from 'data/autocomplete/actions'
 import { types as projectTypes } from 'data/projects/actions'
 import { types as jurisdictionTypes } from 'data/jurisdictions/actions'
 
+const stateLookup = {
+  'AL': 'Alabama',
+  'AK': 'Alaska',
+  'AZ': 'Arizona',
+  'AR': 'Arkansas',
+  'CA': 'California',
+  'CO': 'Colorado',
+  'CT': 'Connecticut',
+  'DE': 'Delaware',
+  'FL': 'Florida',
+  'GA': 'Georgia',
+  'HI': 'Hawaii',
+  'ID': 'Idaho',
+  'IL': 'Illinois',
+  'IN': 'Indiana',
+  'IA': 'Iowa',
+  'KS': 'Kansas',
+  'KY': 'Kentucky',
+  'LA': 'Louisiana',
+  'ME': 'Maine',
+  'MD': 'Maryland',
+  'MA': 'Massachusetts',
+  'MI': 'Michigan',
+  'MN': 'Minnesota',
+  'MS': 'Mississippi',
+  'MO': 'Missouri',
+  'MT': 'Montana',
+  'NE': 'Nebraska',
+  'NV': 'Nevada',
+  'NH': 'New Hampshire',
+  'NJ': 'New Jersey',
+  'NM': 'New Mexico',
+  'NY': 'New York',
+  'NC': 'North Carolina',
+  'ND': 'North Dakota',
+  'OH': 'Ohio',
+  'OK': 'Oklahoma',
+  'OR': 'Oregon',
+  'PA': 'Pennsylvania',
+  'RI': 'Rhode Island',
+  'SC': 'South Carolina',
+  'SD': 'South Dakota',
+  'TN': 'Tennessee',
+  'TX': 'Texas',
+  'UT': 'Utah',
+  'VT': 'Vermont',
+  'VA': 'Virginia',
+  'WA': 'Washington',
+  'WV': 'West Virginia',
+  'WI': 'Wisconsin',
+  'WY': 'Wyoming'
+}
+
+const DCStrings = ['DC', 'District of Columbia', 'Washington, DC', 'Washington, DC (federal district)']
+
 const valueDefaults = {
   jurisdictions: { searchValue: '', suggestions: [], name: '' },
   citation: '',
   effectiveDate: ''
+}
+
+const reg = input => {
+  return new RegExp(input, 'g')
+}
+
+const determineSearchString = jurisdictionName => {
+  let searchString = jurisdictionName, isState = true
+  
+  if (DCStrings.includes(jurisdictionName)) {
+    searchString = 'Washington, DC (federal district)'
+  } else if (stateLookup[jurisdictionName] !== undefined) {
+    searchString = `${stateLookup[jurisdictionName]} (state)`
+  } else {
+    const jur = Object.values(stateLookup).find(state => {
+      const regex = reg(`(${state})\\s?(\\(state\\))?`)
+      const match = jurisdictionName.search(regex)
+      return match !== -1
+    })
+    if (jur !== undefined) {
+      searchString = `${jur} (state)`
+    } else {
+      isState = false
+    }
+  }
+  
+  return { isState, searchString }
 }
 
 export const mergeInfoWithDocs = (info, docs, api) => {
@@ -26,21 +108,25 @@ export const mergeInfoWithDocs = (info, docs, api) => {
             error: ''
           }
         })
-
+        
         if (docInfo.jurisdictions.name !== null) {
           if (jurLookup.hasOwnProperty(docInfo.jurisdictions.name)) {
             jurs = [jurLookup[docInfo.jurisdictions.name]]
           } else {
-            jurs = await api.searchJurisdictionList({}, {
-              params: {
-                name: docInfo.jurisdictions.name === 'District of Columbia'
-                  ? 'Washington, DC (federal district)'
-                  : docInfo.jurisdictions.name
+            const { searchString, isState } = determineSearchString(docInfo.jurisdictions.name)
+            jurs = await api.searchJurisdictionList({}, { params: { name: searchString } }, {})
+            if (!isState) {
+              d.jurisdictions = {
+                inEditMode: true,
+                error: '',
+                value: { ...valueDefaults['jurisdictions'], searchValue: docInfo.jurisdictions.name },
+                editable: true
               }
-            }, {})
-            jurLookup[docInfo.jurisdictions.name] = jurs[0]
+            } else {
+              jurLookup[docInfo.jurisdictions.name] = jurs[0]
+              d.jurisdictions = { ...d.jurisdictions, value: { ...jurs[0] } }
+            }
           }
-          d.jurisdictions = { ...d.jurisdictions, value: { ...jurs[0] } }
         } else {
           d.jurisdictions = { inEditMode: false, error: '', value: valueDefaults['jurisdictions'], editable: true }
         }
@@ -67,7 +153,7 @@ export const getFileType = (doc) => {
     ]
     let matchedOne = {}
     const filereader = new FileReader()
-    filereader.onload= function (evt) {
+    filereader.onload = function (evt) {
       if (evt.target.readyState === FileReader.DONE) {
         const uint = new Uint8Array(evt.target.result)
         let bytes = []
@@ -78,14 +164,14 @@ export const getFileType = (doc) => {
         matchedOne = validMimeTypes.find(oneType => {
           return oneType.pattern === hex
         })
-        resolve({doc:doc, docHex: hex, docType: matchedOne || undefined})
+        resolve({ doc: doc, docHex: hex, docType: matchedOne || undefined })
       }
     }
-
+    
     const blob = doc.file.slice(0, 4)
     filereader.readAsArrayBuffer(blob)
   })
-
+  
 }
 
 /**
@@ -139,7 +225,7 @@ const uploadRequestLogic = createLogic({
     const selectedProject = state.projectSuggestions.selectedSuggestion
     const selectedJurisdiction = state.jurisdictionSuggestions.selectedSuggestion
     let jurs = {}
-
+    
     if (Object.keys(selectedProject).length === 0) {
       reject({ type: types.REJECT_NO_PROJECT_SELECTED, error: 'You must associate these documents with a project.' })
     } else if (!selectedProject.hasOwnProperty('id')) {
@@ -171,6 +257,7 @@ const uploadRequestLogic = createLogic({
       allow({ ...action, jurisdictions: [selectedJurisdiction] })
     }
   },
+  
   async process({ docApi, action, getState }, dispatch, done) {
     const state = getState().scenes.docManage.upload
     let anyDuplicates = false
@@ -191,7 +278,7 @@ const uploadRequestLogic = createLogic({
         jurList = `${jurList}|${jur.name}`
         dispatch({ type: jurisdictionTypes.ADD_JURISDICTION, payload: jur })
       })
-
+      
       const documents = docs.files.map(doc => {
         const { content, ...otherDocProps } = doc
         return {
@@ -200,7 +287,7 @@ const uploadRequestLogic = createLogic({
           jurisdictionList: jurList
         }
       })
-
+      
       dispatch({ type: projectTypes.ADD_PROJECT, payload: { ...state.projectSuggestions.selectedSuggestion } })
       dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: documents } })
       done()
@@ -257,8 +344,7 @@ const searchJurisdictionListLogic = createLogic({
  */
 const verifyFileContentLogic = createLogic({
   type: types.VERIFY_VALID_FILE_TYPE_REQUEST,
-  async validate({ getState, action},reject,allow,dispatch) {
-    //     const state = getState().scenes.docManage.upload
+  async validate({ getState, action }, reject, allow, dispatch) {
     let promises = []
     let invalidFiles = []
     action.docs.map(doc => {
@@ -266,8 +352,8 @@ const verifyFileContentLogic = createLogic({
     })
     try {
       Promise.all(promises).then((results) => {
-        results.map(result=>{
-          if (result.docType === undefined){
+        results.map(result => {
+          if (result.docType === undefined) {
             invalidFiles.push(result)
           }
         })
@@ -277,22 +363,13 @@ const verifyFileContentLogic = createLogic({
             error: 'One or more documents do not have a valid file type',
             invalidTypeFiles: invalidFiles
           })
-          //     done()
-        } else{
-          allow({
-            type: types.VERIFY_VALID_FILE_TYPE_SUCCESS
-          })
-          //     done()
+        } else {
+          allow({ type: types.VERIFY_VALID_FILE_TYPE_SUCCESS })
         }
       })
-    } catch(e) {
-      console.log(e)
-      dispatch({ type: types.VERIFY_VALID_FILE_TYPE_FAIL})
-
-    } finally {
-      //   done()
+    } catch (e) {
+      dispatch({ type: types.VERIFY_VALID_FILE_TYPE_FAIL })
     }
-
   }
 })
 
