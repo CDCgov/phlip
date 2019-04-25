@@ -25,8 +25,8 @@ export const INITIAL_STATE = {
   selectedJurisdiction: {},
   noProjectError: false,
   hasVerified: false,
-  invalidTypeFiles : [],
-  invalidSizeFiles : [],
+  invalidTypeFiles: [],
+  invalidSizeFiles: [],
   verifyFilesInProgress: false
 }
 
@@ -38,7 +38,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         uploading: true,
         goBack: false
       }
-
+    
     case types.UPLOAD_DOCUMENTS_SUCCESS:
       return {
         ...state,
@@ -47,14 +47,14 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         uploading: false,
         goBack: true
       }
-
+    
     case types.UPLOAD_DOCUMENTS_FAIL:
       return {
         ...state,
         requestError: action.payload.error,
         uploading: false
       }
-
+    
     case types.VERIFY_RETURN_DUPLICATE_FILES:
       return {
         ...state,
@@ -67,7 +67,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         alertTitle: 'Duplicates Found',
         hasVerified: true
       }
-
+    
     case types.EXTRACT_INFO_REQUEST:
       return {
         ...state,
@@ -75,7 +75,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         infoRequestInProgress: true,
         infoSheetSelected: true
       }
-
+    
     case types.EXTRACT_INFO_SUCCESS:
       return {
         ...state,
@@ -83,13 +83,13 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         extractedInfo: action.payload.info,
         selectedDocs: action.payload.merged
       }
-
+    
     case types.MERGE_INFO_WITH_DOCS:
       return {
         ...state,
         selectedDocs: action.payload
       }
-
+    
     // If the user has selected an excel file but has not selected documents to upload
     case types.EXTRACT_INFO_SUCCESS_NO_DOCS:
       return {
@@ -97,7 +97,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         infoRequestInProgress: false,
         extractedInfo: action.payload
       }
-
+    
     case types.UPDATE_DOC_PROPERTY:
       let selectedDoc = { ...state.selectedDocs[action.index] }
       let value = action.value
@@ -106,7 +106,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         value,
         error: ''
       }
-
+      
       return {
         ...state,
         selectedDocs: updateItemAtIndex(
@@ -115,9 +115,9 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
           selectedDoc
         )
       }
-
+    
     case types.ADD_SELECTED_DOCS:
-    //  let invalidTypeFiles = [...state.invalidTypeFiles]
+      //  let invalidTypeFiles = [...state.invalidTypeFiles]
       return {
         ...state,
         selectedDocs: [
@@ -137,20 +137,20 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         ],
         hasVerified: false
       }
-
+    
     case types.REMOVE_DOC:
       let docs = [...state.selectedDocs]
       docs.splice(action.index, 1)
-
+      
       return {
         ...state,
         selectedDocs: docs
       }
-
+    
     case types.TOGGLE_ROW_EDIT_MODE:
       selectedDoc = { ...state.selectedDocs[action.index] }
       selectedDoc[action.property].inEditMode = true
-
+      
       return {
         ...state,
         selectedDocs: updateItemAtIndex(
@@ -159,10 +159,10 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
           selectedDoc
         )
       }
-
+    
     case types.CLOSE_ALERT:
       let invalidFiles = [...state.invalidTypeFiles]
-      let cleanedDocs = [...state.selectedDocs].filter((doc) => !invalidFiles.find(badDoc => badDoc.doc.name === doc.name.value))
+      let cleanedDocs = [...state.selectedDocs].filter(doc => !invalidFiles.find(badDoc => badDoc.doc.name === doc.name.value))
       return {
         ...state,
         selectedDocs: cleanedDocs,
@@ -171,7 +171,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         alertText: '',
         alertTitle: ''
       }
-
+    
     case types.OPEN_ALERT:
       return {
         ...state,
@@ -179,24 +179,24 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         alertText: action.text,
         alertTitle: action.title || ''
       }
-
+    
     case types.REMOVE_DUPLICATE:
       docs = [...state.selectedDocs]
       docs.splice(action.index, 1)
       let duplicates = [...state.duplicateFiles]
       let index = duplicates.findIndex((dup) => dup.name === action.fileName)
       duplicates.splice(index, 1)
-
+      
       return {
         ...state,
         selectedDocs: docs,
         duplicateFiles: duplicates
       }
-
+    
     case types.SEARCH_ROW_SUGGESTIONS_SUCCESS_JURISDICTION:
       selectedDoc = { ...state.selectedDocs[action.payload.index] }
       selectedDoc.jurisdictions.value.suggestions = action.payload.suggestions
-
+      
       return {
         ...state,
         selectedDocs: updateItemAtIndex(
@@ -205,11 +205,11 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
           selectedDoc
         )
       }
-
+    
     case types.CLEAR_ROW_JURISDICTION_SUGGESTIONS:
       selectedDoc = { ...state.selectedDocs[action.index] }
       selectedDoc.jurisdictions.value.suggestions = []
-
+      
       return {
         ...state,
         selectedDocs: updateItemAtIndex(
@@ -218,13 +218,13 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
           selectedDoc
         )
       }
-
+    
     case 'RESET_NO_PROJECT_ERROR':
       return {
         ...state,
         noProjectError: false
       }
-
+    
     case types.REJECT_NO_PROJECT_SELECTED:
       return {
         ...state,
@@ -233,21 +233,18 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         alertText: action.error,
         alertTitle: 'Invalid Project'
       }
-
+    
     case types.RESET_FAILED_UPLOAD_VALIDATION:
       return {
         ...state,
         noProjectError: false
       }
-
+    
     case types.REJECT_EMPTY_JURISDICTIONS:
       return {
         ...state,
-        selectedDocs: state.selectedDocs.map((doc) => {
-          if (
-            doc.jurisdictions.value.name.length === 0 ||
-            !doc.jurisdictions.value.hasOwnProperty('id')
-          ) {
+        selectedDocs: [...state.selectedDocs].map((doc) => {
+          if (doc.jurisdictions.value.name.length === 0 || !doc.jurisdictions.value.hasOwnProperty('id')) {
             return {
               ...doc,
               jurisdictions: {
@@ -264,19 +261,19 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         alertText: action.error,
         alertTitle: 'Invalid Jurisdictions' || ''
       }
-
+    
     case types.VERIFY_VALID_FILE_TYPE_REQUEST:
       return {
         ...state,
         verifyFilesInProgress: true
       }
-
+    
     case types.VERIFY_VALID_FILE_TYPE_FAIL:
       return {
         ...state,
         verifyFilesInProgress: false
       }
-
+    
     case types.REJECT_INVALID_FILE_TYPE:
       return {
         ...state,
@@ -288,16 +285,16 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         hasVerified: false,
         verifyFilesInProgress: false
       }
-
+    
     case types.CAPTURE_INVALID_FILE_SIZE:
       return {
         ...state,
         invalidSizeFiles: action.docs
       }
-
+    
     case types.CLOSE_INVALID_SIZE_ALERT:
       invalidFiles = [...state.invalidSizeFiles]
-      cleanedDocs = [...state.selectedDocs].filter((doc) => !invalidFiles.find(badDoc => badDoc.name === doc.name.value))
+      cleanedDocs = [...state.selectedDocs].filter(doc => !invalidFiles.find(badDoc => badDoc.name === doc.name.value))
       return {
         ...state,
         selectedDocs: cleanedDocs,
@@ -306,7 +303,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         alertText: '',
         alertTitle: ''
       }
-
+    
     case types.REJECT_INVALID_FILE_SIZE:
       return {
         ...state,
@@ -318,7 +315,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         hasVerified: false,
         verifyFilesInProgress: false
       }
-
+    
     case `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION`:
       return {
         ...state,
@@ -334,7 +331,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
           }
         })
       }
-
+    
     case `${autocompleteTypes.UPDATE_SEARCH_VALUE}_JURISDICTION`:
       if (action.value !== '') {
         return state
@@ -353,11 +350,11 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
           })
         }
       }
-
+    
     case types.CLEAR_SELECTED_FILES:
     case 'FLUSH_STATE':
       return INITIAL_STATE
-
+    
     default:
       return state
   }
