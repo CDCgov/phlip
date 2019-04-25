@@ -91,24 +91,28 @@ const bulkUpdateLogic = createLogic({
 
       let existingDocs = getState().scenes.docManage.main.documents.byId
       action.selectedDocs.forEach(function (docToUpdate) {
-        if (action.updateData.updateType === 'projects') {
-          if (existingDocs[docToUpdate].projects.indexOf(action.updateData.updateProJur.id) === -1) {
-            existingDocs[docToUpdate].projects = [
-              ...existingDocs[docToUpdate].projects, action.updateData.updateProJur.id
-            ]
-          }
-          if (existingDocs[docToUpdate].projectList.indexOf(action.updateData.updateProJur.name) === -1) {
-            existingDocs[docToUpdate].projectList = existingDocs[docToUpdate].projectList.concat('|', action.updateData.updateProJur.name)
-          }
+        if (action.updateData.updateType === 'status') {
+          existingDocs[docToUpdate].status = 'Approved'
         } else {
-          if (existingDocs[docToUpdate].jurisdictions.indexOf(action.updateData.updateProJur.id) === -1) {
-            existingDocs[docToUpdate].jurisdictions = [
-              ...existingDocs[docToUpdate].jurisdictions, action.updateData.updateProJur.id
-            ]
-          }
-          if (existingDocs[docToUpdate].jurisdictionList.indexOf(action.updateData.updateProJur.name) === -1) {
-            existingDocs[docToUpdate].jurisdictionList = existingDocs[docToUpdate].jurisdictionList.concat('|', action.updateData.updateProJur.name)
-          }
+          if (action.updateData.updateType === 'projects') {
+            if (existingDocs[docToUpdate].projects.indexOf(action.updateData.updateProJur.id) === -1) {
+              existingDocs[docToUpdate].projects = [
+                ...existingDocs[docToUpdate].projects, action.updateData.updateProJur.id
+              ]
+            }
+            if (existingDocs[docToUpdate].projectList.indexOf(action.updateData.updateProJur.name) === -1) {
+              existingDocs[docToUpdate].projectList = existingDocs[docToUpdate].projectList.concat('|', action.updateData.updateProJur.name)
+            }
+          } else {
+            if (existingDocs[docToUpdate].jurisdictions.indexOf(action.updateData.updateProJur.id) === -1) {
+              existingDocs[docToUpdate].jurisdictions = [
+                ...existingDocs[docToUpdate].jurisdictions, action.updateData.updateProJur.id
+              ]
+            }
+            if (existingDocs[docToUpdate].jurisdictionList.indexOf(action.updateData.updateProJur.name) === -1) {
+              existingDocs[docToUpdate].jurisdictionList = existingDocs[docToUpdate].jurisdictionList.concat('|', action.updateData.updateProJur.name)
+            }
+          } 
         }
       })
       //let updatedDocs = [...Object.values(getState().scenes.docManage.main.documents.byId).filter(doc =>
