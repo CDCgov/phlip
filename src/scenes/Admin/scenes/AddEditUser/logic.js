@@ -52,7 +52,7 @@ export const patchUserImageLogic = createLogic({
   },
   async process({ action, api }) {
     await api.updateUserImage(action.patchOperation, {}, { userId: action.userId })
-    return { avatar: action.patchOperation[0].value, userId: action.userId }
+    return { avatar: action.patchOperation[0].value, userId: action.userId, user: action.user }
   }
 })
 
@@ -82,7 +82,8 @@ export const deleteUserImageLogic = createLogic({
     successType: types.DELETE_USER_IMAGE_SUCCESS
   },
   async process({ action, api }) {
-    return await api.deleteUserImage(action.operation, {}, { userId: action.userId })
+    await api.deleteUserImage(action.operation, {}, { userId: action.userId })
+    return { user: action.user, userId: action.userId, avatar: null }
   }
 })
 

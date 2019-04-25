@@ -64,6 +64,11 @@ export class Protocol extends Component {
      * Any error that should be displayed in an alert
      */
     alertError: PropTypes.string,
+
+    /**
+     * Any error that should be displayed in an alert
+     */
+    title: PropTypes.string,
     /**
      * Redux actions object
      */
@@ -84,6 +89,10 @@ export class Protocol extends Component {
 
   UNSAFE_componentWillMount() {
     this.props.actions.getProtocolRequest(this.props.projectId)
+  }
+
+  componentDidMount(){
+    document.title = this.props.title
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {

@@ -74,7 +74,11 @@ export class Home extends Component {
     /**
      * Any error that has occurred during export
      */
-    exportError: PropTypes.string
+    exportError: PropTypes.string,
+    /**
+     * document title
+     */
+    title: PropTypes.string
   }
 
   constructor(props, context) {
@@ -90,6 +94,7 @@ export class Home extends Component {
   }
 
   componentDidMount() {
+    document.title = this.props.title
     this.props.actions.getProjectsRequest()
   }
 
@@ -194,9 +199,14 @@ export class Home extends Component {
 
   handleSortParmChange = selectedOption => {
     this.setState({ sortSelection: selectedOption })
-    selectedOption !== 'sortBookmarked'
-      ? this.props.actions.sortProjects(selectedOption)
-      : this.props.actions.sortBookmarked(!this.props.sortBookmarked)
+    if (selectedOption !== 'sortBookmarked') {
+      this.props.actions.sortProjects(selectedOption)
+    } else {
+      if (this.props.sortBookmarked) { // sort book previous selected,  undo sort bookmark and reset display to current sort
+        this.setState({sortSelection: this.props.sortBy})
+      }
+      this.props.actions.sortBookmarked(!this.props.sortBookmarked)
+    }
   }
 
   render() {

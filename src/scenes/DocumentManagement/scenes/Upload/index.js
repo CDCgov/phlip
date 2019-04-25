@@ -91,7 +91,8 @@ export class Upload extends Component {
     noProjectError: PropTypes.any,
     infoSheet: PropTypes.object,
     invalidTypeFiles : PropTypes.array,
-    invalidSizeFiles : PropTypes.array
+    invalidSizeFiles : PropTypes.array,
+    title : PropTypes.string
   };
 
   constructor(props, context) {
@@ -123,6 +124,11 @@ export class Upload extends Component {
       onClick: this.closeInvalidSizeAlert,
       preferred: true
     }
+  }
+
+  componentDidMount() {
+    this.prevTitle = document.title
+    document.title = this.props.title || 'PHLIP - Documents Upload'
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -158,6 +164,7 @@ export class Upload extends Component {
   }
 
   componentWillUnmount() {
+    document.title = this.prevTitle
     clearTimeout(this.loadingAlertTimeout)
   }
 
@@ -295,7 +302,6 @@ export class Upload extends Component {
       this.props.actions.openAlert(`The number of files selected for upload has exceeded the limit of ${this.props.maxFileCount} files per upload.  Please consider uploading files in smaller batches.`,'File Count Alert')
     } else {
       let files = []
-      //let invalidSizeFiles = []
       Array.from(Array(e.target.files.length).keys()).map(x => {
         const i = e.target.files.item(x)
         if (i.size > 16000000) {

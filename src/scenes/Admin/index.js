@@ -41,6 +41,7 @@ export class Admin extends Component {
 
   componentDidMount() {
     this.props.actions.getUsersRequest()
+    document.title = 'PHLIP-Admin'
   }
 
   render() {

@@ -68,7 +68,12 @@ export class AddEditJurisdictions extends Component {
     /**
      * Content of error that needs to be shown
      */
-    errorContent: PropTypes.string
+    errorContent: PropTypes.string,
+
+    /**
+     * title of the page
+     */
+    title: PropTypes.string
   }
 
   constructor(props, context) {
@@ -86,6 +91,11 @@ export class AddEditJurisdictions extends Component {
     this.showJurisdictionLoader()
   }
 
+  componentDidMount() {
+    this.prevTitle = document.title
+    document.title = this.props.title
+  }
+
   componentDidUpdate(prevProps) {
     if (this.props.deleteError !== null && prevProps.deleteError === null) {
       this.setState({
@@ -93,9 +103,9 @@ export class AddEditJurisdictions extends Component {
       })
     }
   }
-
   componentWillUnmount() {
     this.props.actions.clearJurisdictions()
+    document.title = this.prevTitle
   }
 
   /**
@@ -166,7 +176,7 @@ export class AddEditJurisdictions extends Component {
   }
 
   /**
-   * Gets the buttosn to show in the modal header
+   * Gets the button to show in the modal header
    * @public
    */
   getButton = () => {
