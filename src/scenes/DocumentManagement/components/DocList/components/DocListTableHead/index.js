@@ -22,7 +22,9 @@ export const DocListTableHead = props => {
     { value: 'bulk', label: 'Bulk Operation', disabled: true },
     { value: 'deleteDoc', label: 'Delete' },
     { value: 'assignProject', label: 'Assign Project' },
-    { value: 'assignJurisdiction', label: 'Assign Jurisdiction' }
+    { value: 'assignJurisdiction', label: 'Assign Jurisdiction' },
+    { value: 'approveDoc', label: 'Approval' }
+
   ]
   const r1Columns = [
     {
