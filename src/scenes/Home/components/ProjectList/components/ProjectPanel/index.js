@@ -231,7 +231,7 @@ export class ProjectPanel extends Component {
                           ) : (
                             <img alt={`avatar-${coder.lastName}`} src={coder.avatar} title={coder.username} />
                           )
-                        ) : <div style={{ backgroundColor: '#f9f9f9', height: '100%' }} />}
+                        ) : <div style={{ backgroundColor: '#f9f9f9', height: cellHeight }} />}
                       </GridListTile>
                     )
                   })}

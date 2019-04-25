@@ -36,7 +36,7 @@ export class AvatarForm extends Component {
     const base64Image = this.state.editFile.file.base64
     let patchOperation = [{ 'op': 'replace', 'path': '/avatar', 'value': base64Image }]
 
-    this.props.actions.addUserPictureRequest(this.state.userId, patchOperation)
+    this.props.actions.addUserPictureRequest(this.state.userId, patchOperation, this.props.selectedUser)
     if (this.state.userId === this.props.currentUser.id) {
       this.props.actions.updateCurrentUserAvatar(this.state.editFile.file.base64)
     }
@@ -45,7 +45,7 @@ export class AvatarForm extends Component {
 
   handleDeleteAvatar = () => {
     const patchRemoveOperation = [{ 'op': 'remove', 'path': '/avatar' }]
-    this.props.actions.deleteUserPictureRequest(this.state.userId, patchRemoveOperation)
+    this.props.actions.deleteUserPictureRequest(this.state.userId, patchRemoveOperation, this.props.selectedUser)
     if (this.state.userId === this.props.currentUser.id) {
       this.props.actions.removeCurrentUserAvatar()
     }
