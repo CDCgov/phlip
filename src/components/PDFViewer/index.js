@@ -51,6 +51,12 @@ export class PDFViewer extends Component {
     if (!prevProps.document.content.data && this.props.document.content.data) {
       this.createPdf(this.props.document)
     }
+  
+    if (prevProps.allowSelection && !this.props.allowSelection) {
+      this.setState({
+        pendingAnnotations: []
+      })
+    }
   }
 
   /**
