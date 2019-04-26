@@ -103,7 +103,7 @@ export const QuestionContent = props => {
             <TextFieldQuestions {...textQuestionProps} />
           </FlexGrid>}
 
-          <FlexGrid padding="10px 0 0" style={{ minHeight: 'unset', margin: '0 10px' }}>
+          <FlexGrid padding="10px 0 0" style={{ minHeight: 'unset', margin: 10 }}>
             {question.includeComment &&
             <FlexGrid>
               <SimpleInput

@@ -8,6 +8,13 @@ import Popover from './components/Popover'
 import styles from '../../card-styles.scss'
 import { TableCell, Table, TableRow, IconButton, Icon, Button, SimpleInput, RadioGroup, FlexGrid } from 'components'
 
+/**
+ * Gets the radio button label display for regular flags
+ * @param color
+ * @param text
+ * @param disabled
+ * @returns {*}
+ */
 const getFlagText = (color, text, disabled) => (
   <FlexGrid container align="center" type="row">
     <Icon color={disabled ? '#bdbdbd' : color} style={{ paddingRight: 5 }}>flag</Icon>
@@ -31,7 +38,9 @@ export class FlagPopover extends Component {
     questionFlags: PropTypes.array,
     onSaveFlag: PropTypes.func,
     user: PropTypes.object,
-    disableAll: PropTypes.bool
+    disableAll: PropTypes.bool,
+    questionId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    categoryId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
   }
   
   constructor(props, context) {
@@ -66,42 +75,43 @@ export class FlagPopover extends Component {
   }
   
   componentDidUpdate(prevProps) {
-    if (prevProps.questionFlags.length !== this.props.questionFlags.length) {
+    const { questionId, questionFlags, user, userFlag, disableAll, categoryId } = this.props
+    
+    // This is question wide red flag. We need to update it when the question changes
+    if (prevProps.questionId !== questionId) {
       this.setState({
-        userRedFlag: checkForRedFlag(this.props.questionFlags, this.props.user)[0] || { notes: '', type: 3 }
+        userRedFlag: checkForRedFlag(questionFlags, user)[0] || { notes: '', type: 3 },
+        inEditMode: questionFlags.length === 0
       })
-    }
-    
-    if ((prevProps.userFlag.notes !== this.props.userFlag.notes) ||
-      (prevProps.userFlag.type !== this.props.userFlag.type)) {
+      
       this.setState({
-        updatedFlag: { ...this.props.userFlag }
+        updatedFlag: { ...userFlag }
       })
-    }
-  }
-  
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('next props', nextProps)
-    
-    this.setState({
-      updatedFlag: { ...nextProps.userFlag },
-      userRedFlag: checkForRedFlag(nextProps.questionFlags, nextProps.user)[0] || { notes: '', type: 3 },
-      inEditMode: nextProps.questionFlags.length === 0
-    })
-    
-    for (let type in this.userFlagColors) {
-      this.userFlagColors[type] = {
-        ...this.userFlagColors[type],
-        text: getFlagText(
-          this.userFlagColors[type].color,
-          this.userFlagColors[type].label,
-          nextProps.questionFlags.length > 0
-        ),
-        disabled: nextProps.questionFlags.length > 0 || this.props.disableAll
+      
+      for (let type in this.userFlagColors) {
+        this.userFlagColors[type] = {
+          ...this.userFlagColors[type],
+          text: getFlagText(
+            this.userFlagColors[type].color,
+            this.userFlagColors[type].label,
+            questionFlags.length > 0
+          ),
+          disabled: questionFlags.length > 0 || disableAll
+        }
       }
     }
+    
+    // Category has changed so we need to update the 'user flag' since that is specific to categories
+    if (prevProps.categoryId !== categoryId) {
+      this.setState({
+        updatedFlag: { ...userFlag }
+      })
+    }
   }
   
+  /**
+   * Opens red flag popover
+   */
   onOpenRedPopover = () => {
     this.setState({
       redFlagOpen: !this.state.redFlagOpen,
@@ -112,6 +122,9 @@ export class FlagPopover extends Component {
     })
   }
   
+  /**
+   * Closes red flag popover
+   */
   onCloseRedPopover = () => {
     this.setState({
       redFlagOpen: false,
@@ -119,6 +132,10 @@ export class FlagPopover extends Component {
     })
   }
   
+  /**
+   * Sets helper text if the type or notes are empty; calls prop method to actually save red flag
+   * @param e
+   */
   onSaveRedPopover = e => {
     e.preventDefault()
     if (this.state.userRedFlag.notes.length === 0) {
@@ -134,12 +151,20 @@ export class FlagPopover extends Component {
     }
   }
   
+  /**
+   * Sets helper text if notes field is empty
+   * @param e
+   */
   checkNotes = e => {
     this.setState({
       helperText: e.target.value === '' ? 'Required' : ''
     })
   }
   
+  /**
+   * Handles update event for red flag notes
+   * @param event
+   */
   onUpdateRedFlagNotes = event => {
     this.setState({
       userRedFlag: {
@@ -149,6 +174,9 @@ export class FlagPopover extends Component {
     })
   }
   
+  /**
+   * Enables edit mode for the red flag form
+   */
   toggleEditMode = () => {
     this.setState({
       inEditMode: !this.state.inEditMode,
@@ -157,27 +185,43 @@ export class FlagPopover extends Component {
     })
   }
   
+  /**
+   * Opens regular flag form
+   */
   onOpenOtherPopover = () => {
     this.setState({
-      redFlagOpen: false, otherFlagOpen: !this.state.otherFlagOpen, helperText: ''
+      redFlagOpen: false,
+      otherFlagOpen: !this.state.otherFlagOpen,
+      helperText: ''
     })
   }
   
+  /**
+   * Closes the regular flag form
+   */
   onCloseOtherPopover = () => {
     this.setState({
-      otherFlagOpen: false, updatedFlag: this.props.userFlag, helperText: '', choiceHelperText: ''
+      otherFlagOpen: false,
+      updatedFlag: this.props.userFlag,
+      helperText: '',
+      choiceHelperText: ''
     })
   }
   
+  /**
+   * Sets helper text if the type or notes are empty; calls prop method to actually save regular flag
+   * @param e
+   */
   onSaveOtherPopover = e => {
+    const { updatedFlag } = this.state
     e.preventDefault()
-    if (this.state.updatedFlag.type === 0 || this.state.updatedFlag.notes === '') {
+    if (updatedFlag.type === 0 || updatedFlag.notes === '') {
       this.setState({
-        helperText: this.state.updatedFlag.notes === '' ? 'Required' : '',
-        choiceHelperText: this.state.updatedFlag.type === 0 ? 'Required' : ''
+        helperText: updatedFlag.notes === '' ? 'Required' : '',
+        choiceHelperText: updatedFlag.type === 0 ? 'Required' : ''
       })
     } else {
-      this.props.onSaveFlag(this.state.updatedFlag)
+      this.props.onSaveFlag(updatedFlag)
       this.setState({
         otherFlagOpen: false,
         helperText: '',
@@ -186,6 +230,11 @@ export class FlagPopover extends Component {
     }
   }
   
+  /**
+   * User has change from one flag type to the other in the regular flag form
+   * @param type
+   * @returns {Function}
+   */
   onChangeFlagType = type => value => {
     this.setState({
       updatedFlag: {
@@ -195,11 +244,14 @@ export class FlagPopover extends Component {
     })
   }
   
+  /**
+   * Updates the notes for the regular flag
+   * @param event
+   */
   onChangeFlagNotes = event => {
-    const currentFlag = { ...this.state.updatedFlag }
     this.setState({
       updatedFlag: {
-        ...currentFlag,
+        ...this.state.updatedFlag,
         notes: event.target.value
       }
     })
@@ -208,9 +260,6 @@ export class FlagPopover extends Component {
   render() {
     const { questionFlags, user, disableAll, userFlag } = this.props
     const { redFlagOpen, inEditMode, helperText, choiceHelperText, userRedFlag, otherFlagOpen, updatedFlag } = this.state
-    
-    console.log(this.props)
-    console.log(questionFlags)
     
     return (
       <FlexGrid container type="row" align="center" flex style={{ width: 'unset', height: 24 }}>
@@ -234,16 +283,16 @@ export class FlagPopover extends Component {
             container
             align="center"
             padding="10px 0 0"
-            style={{ minWidth: 450, minHeight: 200, maxHeight: 500, flexWrap: 'nowrap' }}>
+            style={{ minWidth: 500, width: 500, minHeight: 200, maxHeight: 500, flexWrap: 'nowrap' }}>
             {(questionFlags.length > 0 && !inEditMode) &&
             <div style={{ overflow: 'auto', width: '100%' }}>
-              <Table style={{ width: '90%', maxWidth: 500, margin: '10px 16px' }}>
+              <Table style={{ width: '90%', maxWidth: 500, margin: '10px 16px', tableLayout: 'fixed' }}>
                 <TableHead>
                   <TableRow>
-                    <TableCell padding="checkbox" style={{ maxWidth: 150, width: 150 }}>Raised By</TableCell>
-                    <TableCell padding="checkbox">Notes</TableCell>
+                    <TableCell padding="checkbox" style={{ width: '30%' }}>Raised By</TableCell>
+                    <TableCell padding="checkbox" style={{ width: '60%' }}>Notes</TableCell>
                     {questionFlags[0].raisedBy.userId === user.id &&
-                    <TableCell padding="checkbox" style={{ width: 48, paddingRight: 12 }}>Edit</TableCell>}
+                    <TableCell padding="checkbox" style={{ width: '10%' }}>Edit</TableCell>}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -266,7 +315,8 @@ export class FlagPopover extends Component {
                 </TableBody>
               </Table>
             </div>}
-            {inEditMode && <form onSubmit={this.onSaveRedPopover} style={{ alignSelf: 'stretch', flex: 1, width: 450 }}>
+            {inEditMode &&
+            <form onSubmit={this.onSaveRedPopover} style={{ alignSelf: 'stretch', flex: 1, minWidth: 500, width: 500 }}>
               <FlexGrid padding={16} flex>
                 <SimpleInput
                   value={userRedFlag.notes}

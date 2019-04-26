@@ -155,8 +155,10 @@ exports[`QuestionCard component should render correctly 1`] = `
           />
         </IconButton>
         <FlagPopover
+          categoryId={0}
           disableAll={false}
           questionFlags={Array []}
+          questionId={1}
           user={
             Object {
               "firstName": "test",

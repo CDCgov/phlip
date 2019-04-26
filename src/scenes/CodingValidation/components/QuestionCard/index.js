@@ -194,7 +194,7 @@ export class QuestionCard extends Component {
       mergedUserQuestions, disableAll, userImages, enabledAnswerId, enabledUserId, annotationModeEnabled,
       areDocsEmpty, questionChangeLoader, hasTouchedQuestion, categories, saveFailed, onClearAnswer, onSaveFlag,
       selectedCategory, onChangeCategory, currentIndex, getNextQuestion, getPrevQuestion, totalLength, showNextButton,
-      isValidatorSelected
+      isValidatorSelected, selectedCategoryId
     } = this.props
 
     const questionContentProps = {
@@ -288,8 +288,10 @@ export class QuestionCard extends Component {
                   </IconButton>}
                   {!isValidation && <FlagPopover
                     userFlag={userAnswers.flag}
+                    questionId={question.id}
                     onSaveFlag={onSaveFlag}
                     questionFlags={question.flags}
+                    categoryId={selectedCategoryId}
                     user={user}
                     disableAll={disableAll}
                   />}
@@ -347,7 +349,6 @@ const mapStateToProps = (state, ownProps) => {
     unsavedChanges: pageState.unsavedChanges || false,
     saveFailed: pageState.saveFailed || false,
     hasTouchedQuestion: pageState.hasTouchedQuestion || false,
-
     userImages: state.data.user.byId,
     enabledAnswerId: docState.enabledAnswerId,
     enabledUserId: docState.enabledUserId,
