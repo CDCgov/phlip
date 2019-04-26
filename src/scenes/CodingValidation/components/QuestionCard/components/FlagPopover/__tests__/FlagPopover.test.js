@@ -57,12 +57,28 @@ describe('CodingValidation -- FlagPopover component', () => {
     })
   })
   
-  describe('if there is no red flag, but there is a user flag', () => {
-    test('the form should not be disabled', () => {
-      const wrapper = shallow(<FlagPopover {...props} userFlag={} />)
-      expect(wrapper.find('form').find('SimpleInput').props().disabled).toEqual(false)
-      expect(wrapper.find('form').find('FlexGrid').at(0).childAt(0).props().choices[0].disabled).toEqual(false)
-      expect(wrapper.find('form').find('FlexGrid').at(0).childAt(0).props().choices[1].disabled).toEqual(false)
+  describe('if there is no red flag, but there is a user regular flag', () => {
+    test('the regular form should not be disabled', () => {
+      const wrapper = shallow(<FlagPopover {...props} userFlag={{ type: 1, notes: 'these are notes.' }} />)
+      expect(wrapper.find('form').at(1).find('SimpleInput').props().disabled).toEqual(false)
+      expect(wrapper.find('form').at(1).find('FlexGrid').at(0).childAt(0).props().choices[0].disabled).toEqual(false)
+      expect(wrapper.find('form').at(1).find('FlexGrid').at(0).childAt(0).props().choices[1].disabled).toEqual(false)
+    })
+    
+    test('should populate the form with the user flag from props', () => {
+      const wrapper = shallow(<FlagPopover {...props} userFlag={{ type: 1, notes: 'these are notes.' }} />)
+      expect(wrapper.find('form').at(1).find('SimpleInput').props().value).toEqual('these are notes.')
+      expect(wrapper.find('form').at(1).find('FlexGrid').at(0).childAt(0).props().selected).toEqual(1)
+    })
+    
+    test('the red flag form should not be disabled', () => {
+      const wrapper = shallow(<FlagPopover {...props} userFlag={{ type: 1, notes: 'these are notes.' }} />)
+      expect(wrapper.find('form').at(0).find('SimpleInput').length).toEqual(1)
+    })
+    
+    test('should automatically be in edit mode for red flag form', () => {
+      const wrapper = shallow(<FlagPopover {...props} userFlag={{ type: 1, notes: 'these are notes.' }} />)
+      expect(wrapper.state().inEditMode).toEqual(true)
     })
   })
 })

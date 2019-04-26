@@ -63,6 +63,10 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
               "label": "Assign Jurisdiction",
               "value": "assignJurisdiction",
             },
+            Object {
+              "label": "Approval",
+              "value": "approveDoc",
+            },
           ]
         }
         style={
