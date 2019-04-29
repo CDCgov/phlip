@@ -219,7 +219,7 @@ export class Protocol extends Component {
 
     ]
     if (this.props.currentUser.role === 'Admin') {
-      lockedAlertAction.push({ value: 'Force Check-in', type: 'button', onClick: this.overrideLock})
+      lockedAlertAction.push({ value: 'Release lock', type: 'button', onClick: this.overrideLock})
     }
 
     return (
