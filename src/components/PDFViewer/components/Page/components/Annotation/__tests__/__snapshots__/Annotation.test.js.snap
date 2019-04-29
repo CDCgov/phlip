@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`PDFViewer - Page - Annotation components should render correctly 1`] = `
+exports[`PDFViewer - Page - Annotation component should render correctly 1`] = `
 <Annotation
   annotation={
     Object {
