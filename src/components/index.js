@@ -1,3 +1,4 @@
+/* istanbul ignore next */
 export { default as Alert } from './Alert'
 export { default as ApiErrorAlert } from './ApiErrorAlert'
 export { default as ApiErrorView } from './ApiErrorView'

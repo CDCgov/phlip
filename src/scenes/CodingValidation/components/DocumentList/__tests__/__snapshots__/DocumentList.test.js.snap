@@ -92,6 +92,49 @@ exports[`DocumentList should render DocumentList component correctly 1`] = `
       >
         <span
           onClick={[Function]}
+          style={
+            Object {
+              "paddingRight": 10,
+            }
+          }
+        >
+          doc1
+        </span>
+      </WithStyles(Typography)>
+    </FlexGrid>
+    <WithStyles(Divider) />
+    <FlexGrid
+      align="center"
+      circular={false}
+      container={true}
+      flex={false}
+      justify="stretch"
+      padding={10}
+      raised={false}
+      style={Object {}}
+      type="row"
+    >
+      <WithStyles(Typography)>
+        2
+        .
+      </WithStyles(Typography)>
+      <WithStyles(Typography)
+        style={
+          Object {
+            "color": "#048484",
+            "cursor": "pointer",
+            "paddingLeft": 5,
+            "paddingRight": 5,
+          }
+        }
+      >
+        <span
+          onClick={[Function]}
+          style={
+            Object {
+              "paddingRight": 10,
+            }
+          }
         >
           doc1
         </span>

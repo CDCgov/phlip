@@ -6,15 +6,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from './actions'
 import theme from 'services/theme'
-import { FlexGrid, Icon, PDFViewer, ApiErrorView } from 'components'
+import { FlexGrid, Icon, PDFViewer, ApiErrorView, CircularLoader } from 'components'
 import { FormatQuoteClose } from 'mdi-material-ui'
-
-const docNameStyle = {
-  color: theme.palette.secondary.main,
-  cursor: 'pointer',
-  paddingLeft: 5,
-  paddingRight: 5
-}
 
 export class DocumentList extends Component {
   static propTypes = {
@@ -40,7 +33,7 @@ export class DocumentList extends Component {
     apiErrorOpen: PropTypes.bool,
     showEmptyDocs: PropTypes.bool
   }
-
+  
   static defaultProps = {
     actions: {},
     documents: [],
@@ -48,23 +41,23 @@ export class DocumentList extends Component {
     showEmptyDocs: false,
     apiErrorOpen: false
   }
-
+  
   constructor(props, context) {
     super(props, context)
   }
-
+  
   state = {
     noTextContent: 2
   }
-
+  
   componentDidMount() {
     this.props.actions.getApprovedDocumentsRequest(this.props.projectId, this.props.jurisdictionId, this.props.page)
   }
-
+  
   componentWillUnmount() {
     this.clearDocSelected()
   }
-
+  
   /*
    * Called when user chooses to save an annotation
    */
@@ -72,7 +65,7 @@ export class DocumentList extends Component {
     this.props.actions.saveAnnotation(annotation, this.props.enabledAnswerId, this.props.questionId)
     this.props.saveUserAnswer()
   }
-
+  
   /**
    * Remove annotation
    * @param index
@@ -81,14 +74,14 @@ export class DocumentList extends Component {
     this.props.actions.removeAnnotation(index, this.props.enabledAnswerId, this.props.questionId)
     this.props.saveUserAnswer()
   }
-
+  
   /**
    * Gets the actual document contents when a document is clicked
    */
   getContents = id => () => {
     this.props.actions.getDocumentContentsRequest(id)
   }
-
+  
   /**
    * Clears what document is selected
    */
@@ -98,7 +91,7 @@ export class DocumentList extends Component {
       noTextContent: 2
     })
   }
-
+  
   /**
    * Handles when a user has selected a document that is not text-selectable
    */
@@ -111,18 +104,25 @@ export class DocumentList extends Component {
           : 1
     })
   }
-
+  
   render() {
+    const docNameStyle = {
+      color: theme.palette.secondary.main,
+      cursor: 'pointer',
+      paddingLeft: 5,
+      paddingRight: 5
+    }
+    
     const bannerBold = { fontWeight: 500, color: theme.palette.secondary.pageHeader }
     const bannerText = { color: '#434343' }
-
+    
     const {
       annotationModeEnabled, annotations, docSelected, openedDoc, apiErrorOpen,
       showEmptyDocs, apiErrorInfo, isValidation, documents, annotatedDocs
     } = this.props
-
+    
     const { noTextContent } = this.state
-
+    
     return (
       <FlexGrid container flex style={{ overflow: 'hidden' }} raised>
         <FlexGrid
@@ -146,9 +146,9 @@ export class DocumentList extends Component {
         <FlexGrid container flex style={{ height: '100%', overflow: 'auto' }}>
           {apiErrorOpen && <ApiErrorView error={apiErrorInfo.text} />}
           {showEmptyDocs &&
-          <FlexGrid container align="center" justify="center" flex>
+          <FlexGrid container align="center" justify="center" padding={10} flex>
             <Typography variant="display1" style={{ textAlign: 'center' }}>
-              There no approved and/or assigned documents for this project and jurisdiction.
+              There are no approved and/or assigned documents for this project and jurisdiction.
             </Typography>
           </FlexGrid>}
           {(!showEmptyDocs && annotationModeEnabled) &&
@@ -201,13 +201,22 @@ export class DocumentList extends Component {
             showAvatars={isValidation}
           />}
           {!docSelected && documents.map((doc, i) => {
+            const isRetrieving = (openedDoc._id === doc._id) && !docSelected
             return (
               <Fragment key={`${doc._id}`}>
                 <FlexGrid container type="row" align="center" padding={10}>
                   <Typography>{i + 1}.</Typography>
-                  <Typography style={docNameStyle}>
-                    <span onClick={this.getContents(doc._id)}>{doc.name}</span>
+                  <Typography
+                    style={{
+                      ...docNameStyle,
+                      color: isRetrieving ? '#757575' : theme.palette.secondary.main
+                    }}>
+                    <span style={{ paddingRight: 10 }} onClick={this.getContents(doc._id)}>{doc.name}</span>
                   </Typography>
+                  {isRetrieving &&
+                  <div style={{ height: 17, width: 17 }}>
+                    <CircularLoader color="primary" thickness={5} size={16} />
+                  </div>}
                   {annotatedDocs.includes(doc._id) &&
                   <Icon color="error" size={20}>
                     <FormatQuoteClose style={{ fontSize: 20 }} />
@@ -228,21 +237,21 @@ export const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.documentList
   const codingState = state.scenes.codingValidation.coding
   let annotations = [], question = {}
-
+  
   if (pageState.annotationModeEnabled) {
     question = codingState.question.isCategoryQuestion
       ? codingState.userAnswers[ownProps.questionId][codingState.selectedCategoryId]
       : codingState.userAnswers[ownProps.questionId]
-
+    
     annotations = question.answers[pageState.enabledAnswerId] === undefined
       ? []
       : question.answers[pageState.enabledAnswerId].annotations
   } else {
     annotations = pageState.annotations
   }
-
+  
   const isValidation = state.scenes.codingValidation.coding.page === 'validation'
-
+  
   const annotatedDocIdsForAnswer = annotations.map(annotation => annotation.docId)
   const notAnnotatedDocIds = pageState.documents.ordered.filter(docId => !annotatedDocIdsForAnswer.includes(docId))
   const annotatedDocIds = pageState.documents.ordered.filter(docId => annotatedDocIdsForAnswer.includes(docId))
@@ -255,10 +264,10 @@ export const mapStateToProps = (state, ownProps) => {
         : annotation.userId
       : annotation.userId
   })).filter(annotation => annotation.docId === pageState.openedDoc._id)
-
+  
   const allDocIds = new Set([...annotatedDocIds, ...notAnnotatedDocIds])
   const docArray = Array.from(allDocIds)
-
+  
   return {
     documents: docArray.length === 0
       ? []

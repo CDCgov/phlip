@@ -30,12 +30,22 @@ export class ProjectList extends Component {
     expanded: 0
   }
   
+  /**
+   * Checks whether or not the project should expand based on what was clicked
+   * @param target
+   * @returns {boolean}
+   */
   checkExpand = target => {
     const stopOpenEls = ['A', 'BUTTON', 'button', 'a']
     const regex = /([Bb]utton)|(icons?)/g
     return !stopOpenEls.includes(target.tagName) && target.className.search(regex) === -1
   }
   
+  /**
+   * Sets a project to expanded or closed based on criteria
+   * @param id
+   * @param event
+   */
   handleExpandProject = (id, event) => {
     const expand = this.checkExpand(event.target)
     
@@ -46,6 +56,10 @@ export class ProjectList extends Component {
     })
   }
   
+  /**
+   * Handles closing a project is the user clicks away
+   * @param event
+   */
   handleClickAway = event => {
     if (event.target.tagName === 'DIV') {
       this.setState({

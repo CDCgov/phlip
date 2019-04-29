@@ -5,7 +5,7 @@ export const getProtocolRequest = projectId => ({ type: types.GET_PROTOCOL_REQUE
 
 /** Unlocking and locking the protocol */
 export const lockProtocolRequest = projectId => ({ type: types.LOCK_PROTOCOL_REQUEST, projectId })
-export const unlockProtocolRequest = projectId => ({ type: types.UNLOCK_PROTOCOL_REQUEST, projectId })
+export const unlockProtocolRequest = (projectId,userId) => ({ type: types.UNLOCK_PROTOCOL_REQUEST, projectId,userId })
 
 /** Update protocol in redux state only */
 export const updateProtocol = content => ({ type: types.UPDATE_PROTOCOL, content })

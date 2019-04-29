@@ -106,12 +106,13 @@ export class Annotation extends PureComponent {
         borderRadius: '0 0 5px 5px',
         border: '1px solid #d15d76'
       }
-
+      
       return (
         <Fragment key={`${key}-${j}`}>
           {(j === 0 && showAvatar) &&
           <div style={avatarLocation} className="annotation-avatar">
             <Avatar
+              alt={`${user.username} highlighted ${annotation.text}`}
               initials={user.initials}
               avatar={user.avatar}
               small
