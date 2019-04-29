@@ -10,12 +10,13 @@ const props = {
   submitting: false,
   lockedByCurrentUser: false,
   lockInfo: {},
-  lockedAlert: '',
+  lockedAlert: false,
   hasLock: false,
   alertError: '',
   actions: {
     getProtocolRequest: () => {}
-  }
+  },
+  currentUser : {role:'Admin'}
 }
 
 describe('Protocol scene', () => {
