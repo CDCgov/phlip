@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography'
 import Collapse from '@material-ui/core/Collapse'
 import { FlexGrid, IconButton, TextLink, Link, Button } from 'components'
 import { FileDocument, City, FormatListBulleted, ClipboardCheckOutline, FileExport } from 'mdi-material-ui'
+import ProjectRow from './components/ProjectRow'
 import silhouette from './silhouette.png'
 
 export class ProjectPanel extends Component {
@@ -29,6 +30,10 @@ export class ProjectPanel extends Component {
     handleExpandProject: PropTypes.func
   }
   
+  /**
+   * Handles when a project is clicked to open
+   * @param event
+   */
   handleChange = event => {
     this.props.actions.getProjectUsers(this.props.project.id, {
       id: this.props.project.createdById,
@@ -37,6 +42,10 @@ export class ProjectPanel extends Component {
     this.props.handleExpandProject(this.props.project.id, event)
   }
   
+  /**
+   * Determines the grid size for avatars
+   * @returns {{square: number, size: number}}
+   */
   determineGridSize = () => {
     let size = 0, square = 0, i = 0
     const { users } = this.props
@@ -53,6 +62,11 @@ export class ProjectPanel extends Component {
     return { square, size }
   }
   
+  /**
+   * Gets users for a project and fills in empty slots in the grid
+   * @param square
+   * @returns {...ProjectPanel.props.users[]}
+   */
   populateUsers = square => {
     const { users, project } = this.props
     if (square === users.length) {
@@ -67,12 +81,17 @@ export class ProjectPanel extends Component {
     return userTiles.concat(blanks)
   }
   
+  /**
+   * Handles when a user clicks the export button
+   */
   onClickExport = () => {
     this.props.onExport(this.props.project)
   }
   
   render() {
-    const { project, role, bookmarked, actions, theme, index, length, users, allUsers, expanded } = this.props
+    const {
+      project, role, bookmarked, actions, theme, index, length, users, allUsers, expanded
+    } = this.props
     
     const isCoder = role === 'Coder'
     const greyIcon = theme.palette.greyText
@@ -100,11 +119,7 @@ export class ProjectPanel extends Component {
       justifyContent: 'center',
       width: '100%'
     }
-    
-    const expandedStyles = {
-      minHeight: 60
-    }
-    
+ 
     const containerStyles = {
       paddingBottom: (index === 0 || index < length)
         ? expanded
@@ -128,60 +143,12 @@ export class ProjectPanel extends Component {
     return (
       <FlexGrid style={containerStyles} onClick={this.handleChange}>
         <FlexGrid container justify="center" style={rowStyles} flex>
-          {!expanded && <FlexGrid type="row" container flex style={expandedStyles}>
-            <FlexGrid container type="row" align="center" padding="0 0 0 24px" style={{ width: '24px' }}>
-              <IconButton
-                color={bookmarked ? '#fdc43b' : greyIcon}
-                onClick={() => actions.toggleBookmark(project)}
-                tooltipText="Bookmark project"
-                aria-label="Bookmark this project"
-                id={`bookmark-project-${project.id}`}>
-                {bookmarked ? 'bookmark' : 'bookmark_border'}
-              </IconButton>
-            </FlexGrid>
-            <FlexGrid padding="0 12px" container type="row" align="center" style={{ flexBasis: '32%' }}>
-              <span>{project.name}</span>
-            </FlexGrid>
-            <FlexGrid container type="row" align="center" flex style={{ flexBasis: '30%' }}>
-              <FlexGrid style={{ width: '49%' }}>
-                <span style={{ color: 'black' }}>Date Last Edited:{' '}</span>
-                <span>{date}</span>
-              </FlexGrid>
-              <span style={{ width: '2%' }} />
-              <FlexGrid style={{ width: '49%' }}>
-                <span style={{ color: 'black' }}>Last Edited By:{' '}</span>
-                {project.lastEditedBy}
-              </FlexGrid>
-            </FlexGrid>
-            <FlexGrid
-              flex
-              container
-              padding="0 44px 0 0"
-              type="row"
-              align="center"
-              justify="flex-end"
-              style={{ flexBasis: '30%' }}>
-              <Button
-                raised={false}
-                value="Code"
-                listButton
-                style={{ borderRadius: 3 }}
-                aria-label="Code project"
-                component={Link}
-                to={{ pathname: `/project/${project.id}/code` }}
-              />
-              <span style={{ width: '24px' }} />
-              {!isCoder && <Button
-                raised={false}
-                value="Validate"
-                listButton
-                aria-label="Validate project"
-                component={Link}
-                style={{ borderRadius: 3 }}
-                to={{ pathname: `/project/${project.id}/validate` }}
-              />}
-            </FlexGrid>
-          </FlexGrid>}
+          {!expanded && <ProjectRow
+            isCoder={isCoder}
+            project={project}
+            bookmarked={bookmarked}
+            toggleBookmark={actions.toggleBookmark}
+          />}
           <Collapse in={expanded} style={collapseStyles}>
             <FlexGrid container type="row" style={{ width: '100%', overflow: 'auto' }}>
               <FlexGrid container type="column" style={{ width: 300, backgroundColor: 'white' }}>
@@ -377,6 +344,7 @@ export class ProjectPanel extends Component {
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => {
   const homeState = state.scenes.home.main
   const p = homeState.projects.byId[ownProps.id]
@@ -385,10 +353,12 @@ const mapStateToProps = (state, ownProps) => {
     role: state.data.user.currentUser.role,
     bookmarked: homeState.bookmarkList.includes(ownProps.id),
     users: p.projectUsers,
-    allUsers: state.data.user.byId
+    allUsers: state.data.user.byId,
+    expandingProject: homeState.expandingProject
   }
 }
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTheme()(ProjectPanel))

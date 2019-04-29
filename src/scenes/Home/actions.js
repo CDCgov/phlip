@@ -50,9 +50,5 @@ export default {
   exportDataRequest: makeActionCreator(types.EXPORT_DATA_REQUEST, 'project', 'exportType'),
   clearProjectToExport: makeActionCreator(types.CLEAR_PROJECT_TO_EXPORT),
   dismissApiError: makeActionCreator(types.DISMISS_API_ERROR, 'errorName'),
-  getProjectUsers: makeActionCreator(types.GET_PROJECT_USERS_REQUEST, 'projectId', 'createdBy'),
-  getProjectUsersFail: payload => ({
-    type: types.GET_PROJECT_USERS_FAIL,
-    payload: { errorContent: payload, error: true }
-  })
+  getProjectUsers: makeActionCreator(types.GET_PROJECT_USERS_REQUEST, 'projectId', 'createdBy')
 }
