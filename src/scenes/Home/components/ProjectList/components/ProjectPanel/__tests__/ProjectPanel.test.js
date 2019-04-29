@@ -37,7 +37,7 @@ const props = {
   theme
 }
 
-const setup = otherProps => {
+/*const setup = otherProps => {
   return mount(
     <MemoryRouter>
       <MuiThemeProvider theme={theme}>
@@ -45,7 +45,7 @@ const setup = otherProps => {
       </MuiThemeProvider>
     </MemoryRouter>
   )
-}
+}*/
 
 describe('Home - ProjectList - ProjectPanel scene', () => {
   test('should render correctly', () => {
@@ -83,8 +83,8 @@ describe('Home - ProjectList - ProjectPanel scene', () => {
   })
   
   xtest('should call props.onExport when the Export button is clicked', () => {
-    const spy = jest.spyOn(props, 'onExport')
-    const wrapper = setup({ expanded: true }).find('Icon')
+    //const spy = jest.spyOn(props, 'onExport')
+    //const wrapper = setup({ expanded: true }).find('Icon')
     //wrapper.find('tr').find('td').at(9).find('Tooltip').at(0).find('IconButton').at(0).simulate('click')
     //wrapper.update()
     //expect(spy).toHaveBeenCalled()

@@ -1,6 +1,6 @@
 import React from 'react'
 import { ProjectRow } from '../index'
-import { mount, shallow } from 'enzyme'
+import { shallow } from 'enzyme'
 
 const props = {
   project: {
