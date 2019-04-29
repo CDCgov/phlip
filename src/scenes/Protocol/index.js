@@ -55,7 +55,7 @@ export class Protocol extends Component {
     /**
      * Anything that should be shown inside an alert related to the checking out of the protocol
      */
-    lockedAlert: PropTypes.string,
+    lockedAlert: PropTypes.bool,
     /**
      * Whether or not the protocol is currently checked out
      */
@@ -69,12 +69,18 @@ export class Protocol extends Component {
      * Any error that should be displayed in an alert
      */
     title: PropTypes.string,
+
+    /**
+     * Any error that should be displayed in an alert
+     */
+    lockedAlertAction: PropTypes.array,
     /**
      * Redux actions object
      */
     actions: PropTypes.object,
     saveError: PropTypes.any,
-    history: PropTypes.object
+    history: PropTypes.object,
+    currentUser: PropTypes.object
   }
 
   constructor(props, context) {
@@ -147,7 +153,6 @@ export class Protocol extends Component {
    * @public
    */
   onClose = () => {
-    console.log('close was selected')
     this.setState({
       open: false,
       alertText: ''
@@ -168,7 +173,6 @@ export class Protocol extends Component {
    * @public
    */
   onContinue = () => {
-    console.log('save was selected')
     this.onSaveProtocol()
     this.props.history.goBack()
   }
@@ -189,6 +193,12 @@ export class Protocol extends Component {
     }
   }
 
+  overrideLock = () => {
+    this.props.actions.unlockProtocolRequest(this.props.projectId,this.props.lockInfo.userId) // unlock using the id of the user who locked it
+    this.props.actions.updateEditedFields(this.props.projectId)
+    this.onCloseLockedAlert()
+  }
+
   render() {
     const alertActions = [
       {
@@ -203,6 +213,15 @@ export class Protocol extends Component {
         onClick: this.onContinue
       }
     ]
+
+    let lockedAlertAction = [
+      { value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert, preferred:true }
+
+    ]
+    if (this.props.currentUser.role === 'Admin') {
+      lockedAlertAction.push({ value: 'Force Check-in', type: 'button', onClick: this.overrideLock})
+    }
+
     return (
       <FlexGrid flex container padding="12px 20px 20px 20px">
         <Alert open={this.state.open} actions={alertActions}>
@@ -211,7 +230,7 @@ export class Protocol extends Component {
           </Typography>
         </Alert>
         <Alert
-          actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert }]}
+          actions={lockedAlertAction}
           open={this.props.lockedAlert !== null}
           title={
             <>
@@ -311,7 +330,8 @@ const mapStateToProps = (state, ownProps) => ({
   lockInfo: state.scenes.protocol.lockInfo || {},
   lockedAlert: state.scenes.protocol.lockedAlert || null,
   hasLock: Object.keys(state.scenes.protocol.lockInfo).length > 0 || false,
-  alertError: state.scenes.protocol.alertError || ''
+  alertError: state.scenes.protocol.alertError || '',
+  currentUser : state.data.user.currentUser
 })
 
 /* istanbul ignore next */
