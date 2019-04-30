@@ -6,7 +6,6 @@ import '../../pdf_viewer.css'
 import TextNode from './components/TextNode'
 import Annotation from './components/Annotation'
 import classnames from 'classnames'
-import styles from 'scenes/CodingValidation/components/QuestionCard/card-styles.scss'
 
 export class Page extends Component {
   static defaultProps = {
@@ -38,7 +37,8 @@ export class Page extends Component {
     deleteAnnotationIndex: PropTypes.number,
     confirmRemoveAnnotation: PropTypes.func,
     showAvatars: PropTypes.bool,
-    annotationModeEnabled: PropTypes.bool
+    annotationModeEnabled: PropTypes.bool,
+    handleAnnoModeAlert: PropTypes.func
   }
   
   constructor(props, context) {
@@ -54,12 +54,8 @@ export class Page extends Component {
           height: props.viewerDimensions.height
         }
       },
-      rendering: false,
       renderToRenderText: false,
-      canvasStyleSpecs: {},
-      noText: false,
-      selectionStyle: {},
-      pending: false
+      canvasStyleSpecs: {}
     }
   }
   
@@ -107,9 +103,11 @@ export class Page extends Component {
    * Used to determine if the user has selected text
    */
   onMouseUp = () => {
-    if (this.props.allowSelection && this.props.pendingAnnotations.length === 0) {
-      if (document.getSelection().toString().length > 0 && document.getSelection().rangeCount > 0) {
+    if (document.getSelection().toString().length > 0 && document.getSelection().rangeCount > 0) {
+      if (this.props.allowSelection && this.props.pendingAnnotations.length === 0) {
         this.props.getSelection(this.state.renderContext, this.props.id)
+      } else {
+        this.props.handleAnnoModeAlert()
       }
     }
   }
@@ -174,7 +172,6 @@ export class Page extends Component {
    */
   generateTextElements = () => {
     this.setState({
-      noText: this.props.textContent.items.length === 0,
       readyToRenderText: true
     })
   }

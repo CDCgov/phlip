@@ -10,7 +10,6 @@ import protocol from './Protocol/reducer'
 import docView from './DocumentView/reducer'
 import codingValidation from './CodingValidation/reducer'
 import { types } from './actions'
-import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 
 const INITIAL_STATE = {
   pdfError: '',
@@ -65,12 +64,6 @@ const mainReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
-// Config used for redux-persist
-const config = {
-  storage,
-  stateReconciler: autoMergeLevel2
-}
-
 /**
  * Create the scenes root reducer by combining all of the reducers for each scene into one. It can be accessed at
  * state.scenes. All reducers defined here are accessible by doing state.scenes.reducerName, where reducerName is the
@@ -78,14 +71,10 @@ const config = {
  * sets up redux-persist for home and admin reducers.
  */
 const scenesReducer = combineReducers({
-  main: persistReducer({ ...config, key: 'main', blacklist: ['isRefreshing'] }, mainReducer),
-  home: persistReducer({ ...config, key: 'home', blacklist: ['addEditJurisdictions'] }, home),
-  admin: persistReducer({ ...config, key: 'admin' }, admin),
-  docManage: persistReducer({
-    ...config,
-    key: 'docManage',
-    blacklist: ['upload', 'projectSuggestions', 'jurisdictionSuggestions']
-  }, docManage),
+  main: persistReducer({ storage, key: 'main', blacklist: ['isRefreshing'] }, mainReducer),
+  home: persistReducer({ storage, key: 'home', blacklist: ['addEditJurisdictions'] }, home),
+  admin: persistReducer({ storage, key: 'admin' }, admin),
+  docManage: persistReducer({ storage, key: 'docManage', blacklist: ['upload', 'search'] }, docManage),
   codingValidation,
   codingScheme,
   login,
