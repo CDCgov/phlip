@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import * as actions from './actions'
+import actions from './actions'
 import { default as formActions } from 'redux-form/lib/actions'
 import { withRouter } from 'react-router'
 import { ModalTitle, ModalActions, ModalContent } from 'components/Modal'
@@ -73,9 +73,10 @@ export class AddEditProject extends Component {
      * Whether or not to go back (after successfully saving, it will be true)
      */
     goBack: PropTypes.bool,
-
+    /**
+     * onSubmitError
+     */
     onSubmitError: PropTypes.func,
-
     /**
      * title of the page
     */
