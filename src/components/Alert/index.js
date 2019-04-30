@@ -5,9 +5,9 @@ import Modal, { ModalContent, ModalActions, ModalTitle } from 'components/Modal'
 /**
  * Popup modal alert
  */
-export const Alert = ({ actions, open, title, children, id }) => {
+export const Alert = ({ actions, open, title, children, id, ...otherProps }) => {
   return (
-    <Modal open={open} id={id}>
+    <Modal open={open} id={id} {...otherProps}>
       {title !== null && <ModalTitle style={{ display: 'flex', alignItems: 'center' }} title={title} />}
       <ModalContent style={{ minWidth: 350 }}>
         {children}

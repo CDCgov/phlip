@@ -1,5 +1,5 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 import { PDFViewer } from '../index'
 
 const props = {
@@ -30,31 +30,39 @@ describe('PDFViewer component', () => {
       test('should call props.hideAnnoModeAlert if user checked don\'t show again box', () => {
         const wrapper = shallow(<PDFViewer {...props} />)
         const spy = jest.spyOn(props, 'onHideAnnoModeAlert')
-        wrapper.setState({ annoModeAlert: { open: true, dontShowAgain: true }})
+        wrapper.setState({ annoModeAlert: { open: true, dontShowAgain: true } })
         wrapper.instance().dismissAnnoAlert()
         wrapper.update()
         expect(spy).toHaveBeenCalled()
         spy.mockClear()
       })
-  
+      
       test('should not call props.hideAnnoModeAlert if user did not check don\'t show again box', async () => {
         const wrapper = shallow(<PDFViewer {...props} />)
         const spy = jest.spyOn(props, 'onHideAnnoModeAlert')
-        await wrapper.setState({ annoModeAlert: { open: true, dontShowAgain: false }})
+        await wrapper.setState({ annoModeAlert: { open: true, dontShowAgain: false } })
         wrapper.instance().dismissAnnoAlert()
         expect(spy).not.toHaveBeenCalled()
         spy.mockClear()
       })
-  
-      xtest('should hide anno mode alert when user clicks dismiss button', () => {
+      
+      test('should toggle dont show again when the user clicks the check box in the alert', () => {
         const wrapper = shallow(<PDFViewer {...props} />)
-        wrapper.setState({ annoModeAlert: { open: true, dontShowAgain: false }})
-        wrapper.instance().dismissAnnoAlert()
+        wrapper.setState({ annoModeAlert: { open: true, dontShowAgain: false } })
+        wrapper.find('Alert').find('WithStyles(CheckboxLabel)').prop('input').onChange()
         wrapper.update()
-        console.log(wrapper.find('Alert').at(1).childAt(0).dive().simulate('click'))
+        expect(wrapper.state('annoModeAlert').dontShowAgain).toEqual(true)
+      })
+      
+      test('should hide anno mode alert when user clicks dismiss button', () => {
+        const wrapper = mount(<PDFViewer {...props} />)
+        wrapper.setState({ annoModeAlert: { open: true, dontShowAgain: false } })
+        wrapper.find('Alert').at(1).prop('actions')[0].onClick()
+        wrapper.update()
+        expect(wrapper.find('Alert').at(1).prop('open')).toEqual(false)
       })
     })
-  
+    
     describe('when show anno mode alert is false', () => {
       test('should not display an alert when handleAnnoModeAlert is called', () => {
         const wrapper = shallow(<PDFViewer {...props} showAnnoModeAlert={false} />)
