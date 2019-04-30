@@ -31,7 +31,8 @@ export class DocumentList extends Component {
       title: PropTypes.string
     }),
     apiErrorOpen: PropTypes.bool,
-    showEmptyDocs: PropTypes.bool
+    showEmptyDocs: PropTypes.bool,
+    shouldShowAnnoModeAlert: PropTypes.bool
   }
   
   static defaultProps = {
@@ -105,6 +106,13 @@ export class DocumentList extends Component {
     })
   }
   
+  /**
+   * Toggles whether or not to show the annotation mode not enabeld alert
+   */
+  hideAnnoModeAlert = () => {
+    this.props.actions.hideAnnoModeAlert()
+  }
+  
   render() {
     const docNameStyle = {
       color: theme.palette.secondary.main,
@@ -118,7 +126,7 @@ export class DocumentList extends Component {
     
     const {
       annotationModeEnabled, annotations, docSelected, openedDoc, apiErrorOpen,
-      showEmptyDocs, apiErrorInfo, isValidation, documents, annotatedDocs
+      showEmptyDocs, apiErrorInfo, isValidation, documents, annotatedDocs, shouldShowAnnoModeAlert
     } = this.props
     
     const { noTextContent } = this.state
@@ -199,6 +207,8 @@ export class DocumentList extends Component {
             onCheckTextContent={this.onCheckTextContent}
             annotationModeEnabled={annotationModeEnabled}
             showAvatars={isValidation}
+            showAnnoModeAlert={shouldShowAnnoModeAlert}
+            onHideAnnoModeAlert={this.hideAnnoModeAlert}
           />}
           {!docSelected && documents.map((doc, i) => {
             const isRetrieving = (openedDoc._id === doc._id) && !docSelected
@@ -283,6 +293,7 @@ export const mapStateToProps = (state, ownProps) => {
     apiErrorOpen: pageState.apiErrorOpen,
     annotationModeEnabled: pageState.annotationModeEnabled,
     enabledAnswerId: pageState.enabledAnswerId,
+    shouldShowAnnoModeAlert: pageState.shouldShowAnnoModeAlert,
     isValidation
   }
 }

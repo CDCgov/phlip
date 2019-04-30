@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Page from './components/Page'
 import PDFJS from 'pdfjs-dist/webpack'
-import { FlexGrid, CircularLoader, Alert } from 'components'
+import { FlexGrid, CircularLoader, Alert, CheckboxLabel } from 'components'
 import './pdf_viewer.css'
 import { Util as dom_utils } from 'pdfjs-dist/lib/shared/util'
 
@@ -17,17 +17,20 @@ export class PDFViewer extends Component {
     removeAnnotation: PropTypes.func,
     onCheckTextContent: PropTypes.func,
     showAvatars: PropTypes.bool,
-    annotationModeEnabled: PropTypes.bool
+    annotationModeEnabled: PropTypes.bool,
+    showAnnoModeAlert: PropTypes.bool,
+    onHideAnnoModeAlert: PropTypes.func
   }
-
+  
   static defaultProps = {
     annotations: [],
     document: {},
     allowSelection: false,
     onCheckTextContent: () => {},
-    showAvatars: false
+    showAvatars: false,
+    showAnnoModeAlert: true
   }
-
+  
   constructor(props, context) {
     super(props, context)
     this.viewerRef = React.createRef()
@@ -37,28 +40,32 @@ export class PDFViewer extends Component {
       pendingAnnotations: [],
       deleteAnnotationIndexes: {},
       alertConfirmOpen: false,
-      deleteIndex: null
+      deleteIndex: null,
+      annoModeAlert: {
+        open: false,
+        dontShowAgain: false
+      }
     }
   }
-
+  
   componentDidMount() {
     if (this.props.document.content.data) {
       this.createPdf(this.props.document)
     }
   }
-
+  
   componentDidUpdate(prevProps) {
     if (!prevProps.document.content.data && this.props.document.content.data) {
       this.createPdf(this.props.document)
     }
-  
+    
     if (prevProps.allowSelection && !this.props.allowSelection) {
       this.setState({
         pendingAnnotations: []
       })
     }
   }
-
+  
   /**
    * Gets the PDF document using PDF.js
    * @param docContent
@@ -73,7 +80,7 @@ export class PDFViewer extends Component {
       })
     })
   }
-
+  
   /**
    * User saves pending annotation
    * @param index
@@ -82,14 +89,14 @@ export class PDFViewer extends Component {
     this.props.saveAnnotation(this.state.pendingAnnotations[index])
     this.setState({ pendingAnnotations: [] })
   }
-
+  
   /**
    * User discards pending annotation
    */
   cancelAnnotation = () => {
     this.setState({ pendingAnnotations: [] })
   }
-
+  
   /**
    * Opens an alert, asking the user to confirm deletion of annotation
    * @param index
@@ -100,7 +107,7 @@ export class PDFViewer extends Component {
       deleteIndex: index
     })
   }
-
+  
   /**
    * User confirmed removing annotation
    */
@@ -112,7 +119,7 @@ export class PDFViewer extends Component {
       deleteAnnotationIndexes: {}
     })
   }
-
+  
   /**
    * User decided not to remove annotation
    */
@@ -122,7 +129,7 @@ export class PDFViewer extends Component {
       deleteIndex: null
     })
   }
-
+  
   /**
    * For hiding the 'X' icon delete button for an annotation
    */
@@ -131,7 +138,7 @@ export class PDFViewer extends Component {
       deleteAnnotationIndexes: {}
     })
   }
-
+  
   /**
    * For showing the 'X' icon delete button for an annotation
    * @param startPage
@@ -146,7 +153,7 @@ export class PDFViewer extends Component {
       }
     })
   }
-
+  
   /**
    * Gets page specific attributes
    * @returns {Promise<void>}
@@ -159,14 +166,14 @@ export class PDFViewer extends Component {
       noText.push(page.textContent.items.length === 0)
       pagePromises.push(page)
     }
-
+    
     const allPages = await Promise.all(pagePromises)
     this.props.onCheckTextContent(noText)
     this.setState({
       pages: allPages
     })
   }
-
+  
   /**
    * Gets the actual PDF page
    * @param pageNumber
@@ -182,7 +189,7 @@ export class PDFViewer extends Component {
       })
     })
   }
-
+  
   /**
    * Checks to see if rect1 and rect2 are basically the same
    * @param rect1
@@ -197,7 +204,7 @@ export class PDFViewer extends Component {
       && (Math.abs(rect1.endY - rect2.endY) < 1)
     )
   }
-
+  
   /**
    * Used to get the first text item on a page
    * @param endNode
@@ -215,7 +222,7 @@ export class PDFViewer extends Component {
     }
     return node
   }
-
+  
   /**
    * Used to get the last text item on a page
    * @param startNode
@@ -233,7 +240,7 @@ export class PDFViewer extends Component {
     }
     return node
   }
-
+  
   /**
    * Determines the 'annotation' information for text selection at a specific Document.Range
    * @param rangeNumber
@@ -246,7 +253,7 @@ export class PDFViewer extends Component {
     const pageRect = this[`page${pageNumber}ref`].current.getClientRects()[0]
     const selectionRects = selection.getRangeAt(rangeNumber).getClientRects()
     let rects = []
-
+    
     for (let i = 0; i < selectionRects.length; i++) {
       const r = selectionRects[i]
       const start = dom_utils.applyInverseTransform([
@@ -255,14 +262,14 @@ export class PDFViewer extends Component {
       const end = dom_utils.applyInverseTransform([
         r.right - pageRect.x, r.bottom - pageRect.y
       ], renderContext.viewport.transform)
-
+      
       const points = {
         x: start[0],
         y: start[1],
         endX: end[0],
         endY: end[1]
       }
-
+      
       if (i > 0) {
         const previous = rects[rects.length - 1]
         if (!this.matchRect(previous.pdfPoints, points)) {
@@ -274,7 +281,7 @@ export class PDFViewer extends Component {
     }
     return rects
   }
-
+  
   /**
    * Gets the text selection of the screen. Splits it into various Ranges if it spans multiple pages.
    * @param renderContext
@@ -284,7 +291,7 @@ export class PDFViewer extends Component {
     const selection = window.getSelection()
     const range = selection.getRangeAt(0)
     let ranges = [], startPage = pageNumber, endPage = pageNumber
-
+    
     let fullAnnotation = {
       docId: this.props.document._id,
       rects: [],
@@ -293,32 +300,32 @@ export class PDFViewer extends Component {
       startPage: pageNumber,
       endPage: pageNumber
     }
-
+    
     // the selection spans multiple pages
     if (range.commonAncestorContainer.className === 'pdfViewer') {
       startPage = parseInt(range.startContainer.parentNode.parentNode.getAttribute('data-page-number'))
       endPage = parseInt(range.endContainer.parentNode.parentNode.getAttribute('data-page-number'))
-
+      
       fullAnnotation.startPage = startPage
       fullAnnotation.endPage = endPage
-
+      
       const startRange = document.createRange()
       const lastSib = this.getLastSibling(range.startContainer)
       const lastTextSib = lastSib.childNodes[lastSib.childNodes.length - 1]
       startRange.setStart(range.startContainer, range.startOffset)
       startRange.setEnd(lastTextSib, lastTextSib.length)
-
+      
       const endRange = document.createRange()
       const firstSib = this.getFirstSibling(range.endContainer)
       endRange.setStart(firstSib.childNodes[0], 0)
       endRange.setEnd(range.endContainer, range.endOffset)
-
+      
       ranges.push({ pageNumber: startPage, range: startRange })
       ranges.push({ pageNumber: endPage, range: endRange })
-
+      
       if ((endPage - startPage) > 1) {
         const start = startPage + 1
-
+        
         // create a range for start and end page
         // selection spans more than two pages
         for (let x = start; x < endPage; x++) {
@@ -335,7 +342,7 @@ export class PDFViewer extends Component {
     } else {
       ranges.push({ pageNumber, range })
     }
-
+    
     for (let x = 0; x < ranges.length; x++) {
       selection.removeAllRanges()
       selection.addRange(ranges[x].range)
@@ -343,15 +350,15 @@ export class PDFViewer extends Component {
       fullAnnotation.rects = [...fullAnnotation.rects, ...rects]
       fullAnnotation.length = fullAnnotation.length + rects.length
     }
-
+    
     selection.removeAllRanges()
-
+    
     this.setState({
       ...this.state,
       pendingAnnotations: [fullAnnotation]
     })
   }
-
+  
   /**
    * Filters annotation rects and annotations by pageNumber
    * @param annos
@@ -367,22 +374,69 @@ export class PDFViewer extends Component {
       }))
       .filter(anno => anno.startPage === pageNumber || anno.endPage === pageNumber)
   }
-
+  
+  /**
+   *
+   * @returns {*}
+   */
+  handleAnnoModeAlert = () => {
+    if (this.props.showAnnoModeAlert) {
+      this.setState({
+        annoModeAlert: {
+          open: true,
+          dontShowAgain: false
+        }
+      })
+    }
+  }
+  
+  /**
+   * Hides the 'Annotation Mode Not Enabled' alert, calls a method to store to redux state if don't show again
+   */
+  dismissAnnoAlert = () => {
+    this.setState({
+      annoModeAlert: {
+        ...this.state.annoModeAlert,
+        open: false
+      }
+    })
+    
+    if (this.state.annoModeAlert.dontShowAgain) {
+      this.props.onHideAnnoModeAlert()
+    }
+  }
+  
+  /**
+   *
+   */
+  handleToggleDontShowAgain = () => {
+    this.setState({
+      annoModeAlert: {
+        ...this.state.annoModeAlert,
+        dontShowAgain: !this.state.annoModeAlert.dontShowAgain
+      }
+    })
+  }
+  
   render() {
-    const { pages, pendingAnnotations, deleteAnnotationIndexes, alertConfirmOpen } = this.state
+    const { pages, pendingAnnotations, deleteAnnotationIndexes, alertConfirmOpen, annoModeAlert } = this.state
     const { annotations, allowSelection, showAvatars, annotationModeEnabled } = this.props
-
+    
     const alertActions = [
       { onClick: this.onCancelRemove, value: 'Cancel', type: 'button', preferred: true },
       { onClick: this.onRemoveAnnotation, value: 'Delete', type: 'button' }
     ]
-
+    
+    const annoAlertActions = [
+      { onClick: this.dismissAnnoAlert, value: 'Dismiss', type: 'button', preferred: true }
+    ]
+    
     return (
       <div id="viewContainer" className="pdfViewer" ref={this.viewerRef}>
         {pages.length > 0 && pages.map((page, i) => {
           const annotationsByPage = this.filterAnnosByPage(annotations, i)
           const pendingByPage = this.filterAnnosByPage(pendingAnnotations, i)
-
+          
           return (
             <Page
               id={i}
@@ -404,6 +458,7 @@ export class PDFViewer extends Component {
               showDeleteIcon={this.showDeleteIcon}
               hideDeleteIcon={this.hideDeleteIcon}
               annotationModeEnabled={annotationModeEnabled}
+              handleAnnoModeAlert={this.handleAnnoModeAlert}
               confirmRemoveAnnotation={this.confirmRemoveAnnotation}
               showAvatars={showAvatars}
               deleteAnnotationIndex={(Object.keys(deleteAnnotationIndexes).length > 0 &&
@@ -416,6 +471,15 @@ export class PDFViewer extends Component {
         })}
         <Alert actions={alertActions} open={alertConfirmOpen} title="Confirm deletion">
           Do you want to delete this annotation?
+        </Alert>
+        <Alert actions={annoAlertActions} open={annoModeAlert.open} title="Are you trying to annotate?">
+          If you are trying to annotate, you need to enable annotation mode for a selected answer choice. You can enable
+          annotation mode by clicking the 'Annotate' button next to an answer choice.
+          
+          <CheckboxLabel
+            input={{ value: annoModeAlert.dontShowAgain, onChange: this.handleToggleDontShowAgain }}
+            label="Don't show me this message again."
+          />
         </Alert>
         {pages.length === 0 &&
         <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">

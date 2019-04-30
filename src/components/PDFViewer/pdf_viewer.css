@@ -79,6 +79,18 @@
   background: rgb(0, 0, 255);
 }
 
+.textLayerNoAnno ::-moz-selection {
+  background: #b4d8fd;
+}
+
+.textLayerNoAnno ::selection {
+  background: #b4d8fd;
+}
+
+.textLayerNoAnno {
+  opacity: 0.6;
+}
+
 .textLayer .endOfContent {
   display: block;
   position: absolute;

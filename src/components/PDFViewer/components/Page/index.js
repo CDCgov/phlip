@@ -5,6 +5,7 @@ import { CircularLoader, FlexGrid } from 'components'
 import '../../pdf_viewer.css'
 import TextNode from './components/TextNode'
 import Annotation from './components/Annotation'
+import classnames from 'classnames'
 
 export class Page extends Component {
   static defaultProps = {
@@ -17,7 +18,7 @@ export class Page extends Component {
     deleteAnnotationIndex: null,
     showAvatars: false
   }
-
+  
   static propTypes = {
     annotations: PropTypes.array,
     allowSelection: PropTypes.bool,
@@ -36,15 +37,16 @@ export class Page extends Component {
     deleteAnnotationIndex: PropTypes.number,
     confirmRemoveAnnotation: PropTypes.func,
     showAvatars: PropTypes.bool,
-    annotationModeEnabled: PropTypes.bool
+    annotationModeEnabled: PropTypes.bool,
+    handleAnnoModeAlert: PropTypes.func
   }
-
+  
   constructor(props, context) {
     super(props, context)
-
+    
     this.shouldRerenderPdf = true
     this.canvasRef = React.createRef()
-
+    
     this.state = {
       renderContext: {
         viewport: {
@@ -52,19 +54,15 @@ export class Page extends Component {
           height: props.viewerDimensions.height
         }
       },
-      rendering: false,
       renderToRenderText: false,
-      canvasStyleSpecs: {},
-      noText: false,
-      selectionStyle: {},
-      pending: false
+      canvasStyleSpecs: {}
     }
   }
-
+  
   componentDidMount() {
     this.setCanvasSpecs()
   }
-
+  
   /**
    * User confirmed / saved pending annotation
    * @param index
@@ -72,7 +70,7 @@ export class Page extends Component {
   onConfirmAnnotation = index => {
     this.props.saveAnnotation(this.props.pendingAnnotations[index].mainListIndex)
   }
-
+  
   /**
    * User canceled pending annotation
    * @param index
@@ -80,7 +78,7 @@ export class Page extends Component {
   onCancelAnnotation = index => {
     this.props.cancelAnnotation(this.props.pendingAnnotations[index].mainListIndex)
   }
-
+  
   /**
    * Open an alert asking the user to confirm deleting an annotation
    * @param index
@@ -88,7 +86,7 @@ export class Page extends Component {
   confirmRemoveAnnotation = index => {
     this.props.confirmRemoveAnnotation(this.props.annotations[index].fullListIndex)
   }
-
+  
   /**
    * A user clicked a saved annotation, so need to show the 'delete' icon
    * @param index
@@ -100,18 +98,20 @@ export class Page extends Component {
       this.props.showDeleteIcon(this.props.id, this.props.annotations[index].endPage, index)
     }
   }
-
+  
   /**
    * Used to determine if the user has selected text
    */
   onMouseUp = () => {
-    if (this.props.allowSelection && this.props.pendingAnnotations.length === 0) {
-      if (document.getSelection().toString().length > 0 && document.getSelection().rangeCount > 0) {
+    if (document.getSelection().toString().length > 0 && document.getSelection().rangeCount > 0) {
+      if (this.props.allowSelection && this.props.pendingAnnotations.length === 0) {
         this.props.getSelection(this.state.renderContext, this.props.id)
+      } else {
+        this.props.handleAnnoModeAlert()
       }
     }
   }
-
+  
   /**
    * Renders the PDF page
    */
@@ -121,7 +121,7 @@ export class Page extends Component {
       this.shouldRerenderPdf = false
     }
   }
-
+  
   /**
    * Determines to what scale to render the PDF page based on the size of the screen
    */
@@ -133,7 +133,7 @@ export class Page extends Component {
     }
     const viewport = this.props.page.getViewport(scale)
     const canvasContext = this.canvasRef.current.getContext('2d', { alpha: false })
-
+    
     let outputScale = ui_utils.getOutputScale(canvasContext)
     const pixelsInViewport = viewport.width * viewport.height
     const maxScale = Math.sqrt(16777216 / pixelsInViewport)
@@ -142,23 +142,23 @@ export class Page extends Component {
       outputScale.sy = maxScale
       outputScale.scaled = true
     }
-
+    
     const sfx = ui_utils.approximateFraction(outputScale.sx)
     const sfy = ui_utils.approximateFraction(outputScale.sy)
     let canvas = { style: {} }
-
+    
     canvas.width = ui_utils.roundToDivide(viewport.width * outputScale.sx, sfx[0])
     canvas.height = ui_utils.roundToDivide(viewport.height * outputScale.sy, sfy[0])
     canvas.style.width = ui_utils.roundToDivide(viewport.width, sfx[1]) + 'px'
     canvas.style.height = ui_utils.roundToDivide(viewport.height, sfy[1]) + 'px'
     const transform = outputScale.scaled ? [outputScale.sx, 0, 0, outputScale.sy, 0, 0] : null
-
+    
     const renderContext = {
       canvasContext,
       transform,
       viewport
     }
-
+    
     this.setState({
       renderContext,
       canvasStyleSpecs: {
@@ -166,30 +166,29 @@ export class Page extends Component {
       }
     }, () => this.generateTextElements())
   }
-
+  
   /**
    * Indicates that the app can go ahead and start rendering text lines
    */
   generateTextElements = () => {
     this.setState({
-      noText: this.props.textContent.items.length === 0,
       readyToRenderText: true
     })
   }
-
+  
   render() {
     const {
       annotations, pendingAnnotations, pageRef, id, textContent, deleteAnnotationIndex,
-      showAvatars, annotationModeEnabled
+      showAvatars, annotationModeEnabled, allowSelection
     } = this.props
-
+    
     const { readyToRenderText, canvasStyleSpecs, renderContext } = this.state
-
+    
     const dims = {
       height: Math.ceil(renderContext.viewport.height),
       width: Math.ceil(renderContext.viewport.width)
     }
-
+    
     return (
       <div
         data-page-number={id}
@@ -211,7 +210,7 @@ export class Page extends Component {
             const closeAnnos = annotations.filter((anno, j) => {
               if (j > i) return false
               if (i === j) return false
-
+              
               const diffX = Math.abs(anno.rects[0].pdfPoints.x - annotation.rects[0].pdfPoints.x)
               const diffY = Math.abs(anno.rects[0].pdfPoints.y - annotation.rects[0].pdfPoints.y)
               return (diffX <= 10 && diffY <= 10)
@@ -250,7 +249,13 @@ export class Page extends Component {
             )
           })}
         </div>
-        <div data-page-number={id} className="textLayer" id={`text-layer-page-${id}`} style={dims}>
+        <div
+          data-page-number={id}
+          className={classnames('textLayer', {
+            'textLayerNoAnno': !allowSelection
+          })}
+          id={`text-layer-page-${id}`}
+          style={dims}>
           {readyToRenderText && textContent.items.map((textLine, i) => {
             return (
               <TextNode

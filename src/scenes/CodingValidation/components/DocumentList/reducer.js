@@ -2,6 +2,9 @@ import { types } from './actions'
 import { types as codingTypes } from 'scenes/CodingValidation/actions'
 import { arrayToObject } from 'utils/normalize'
 import { sortListOfObjects } from 'utils/commonHelpers'
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
+import storage from 'redux-persist/lib/storage/session'
+import { persistReducer } from 'redux-persist'
 
 export const INITIAL_STATE = {
   documents: {
@@ -24,7 +27,8 @@ export const INITIAL_STATE = {
   apiErrorInfo: {
     title: '',
     text: ''
-  }
+  },
+  shouldShowAnnoModeAlert: true
 }
 
 const mergeName = docObj => ({
@@ -51,7 +55,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
             : { docSelected: false, openedDoc: {} }
           : {}
       }
-
+    
     case types.GET_APPROVED_DOCUMENTS_FAIL:
       return {
         ...state,
@@ -61,7 +65,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         },
         apiErrorOpen: true
       }
-
+    
     case types.GET_DOC_CONTENTS_REQUEST:
       return {
         ...state,
@@ -70,7 +74,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           name: state.documents.byId[action.id].name
         }
       }
-
+    
     case types.GET_DOC_CONTENTS_SUCCESS:
       return {
         ...state,
@@ -80,7 +84,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           content: action.payload
         }
       }
-
+    
     case types.GET_DOC_CONTENTS_FAIL:
       return {
         ...state,
@@ -91,7 +95,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         },
         apiErrorOpen: true
       }
-
+    
     case types.TOGGLE_ANNOTATION_MODE:
       return action.enabled ? {
         ...state,
@@ -105,7 +109,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         enabledUserId: '',
         annotations: []
       }
-
+    
     case types.TOGGLE_CODER_ANNOTATIONS:
       if (
         action.answerId === state.enabledAnswerId
@@ -130,7 +134,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           isValidatorSelected: action.isValidatorSelected
         }
       }
-
+    
     case types.CLEAR_DOC_SELECTED:
       return {
         ...state,
@@ -142,7 +146,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         },
         apiErrorOpen: false
       }
-
+    
     case types.GET_APPROVED_DOCUMENTS_REQUEST:
       return {
         ...state,
@@ -152,7 +156,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         enabledUserId: '',
         annotations: []
       }
-
+    
     case codingTypes.GET_QUESTION_SUCCESS:
       return {
         ...state,
@@ -161,13 +165,32 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         annotations: [],
         isValidatorSelected: false
       }
-
+    
+    case types.HIDE_ANNO_MODE_ALERT:
+      return {
+        ...state,
+        shouldShowAnnoModeAlert: false
+      }
+    
     case types.FLUSH_STATE:
-      return INITIAL_STATE
-
+      return {
+        ...INITIAL_STATE,
+        shouldShowAnnoModeAlert: action.isLogout ? true : state.shouldShowAnnoModeAlert
+      }
+    
     default:
       return state
   }
 }
 
-export default documentListReducer
+const config = {
+  storage,
+  stateReconciler: autoMergeLevel2
+}
+
+const documentReducer = persistReducer(
+  { ...config, key: 'documentList', whitelist: ['shouldShowAnnoModeAlert'] },
+  documentListReducer
+)
+
+export default documentReducer
