@@ -26,6 +26,31 @@ exports[`PDFViewer component should render correctly 1`] = `
   >
     Do you want to delete this annotation?
   </Alert>
+  <Alert
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "preferred": true,
+          "type": "button",
+          "value": "Dismiss",
+        },
+      ]
+    }
+    open={false}
+    title="Are you trying to annotate?"
+  >
+    If you are trying to annotate, you need to enable annotation mode for a selected answer choice. You can enable annotation mode by clicking the 'Annotate' button next to an answer choice.
+    <WithStyles(CheckboxLabel)
+      input={
+        Object {
+          "onChange": [Function],
+          "value": false,
+        }
+      }
+      label="Don't show me this message again."
+    />
+  </Alert>
   <FlexGrid
     align="center"
     circular={false}

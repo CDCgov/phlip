@@ -11,7 +11,8 @@ const props = {
     saveAnnotation: jest.fn(),
     getDocumentContentsRequest: jest.fn(),
     clearDocSelected: jest.fn(),
-    removeAnnotation: jest.fn()
+    removeAnnotation: jest.fn(),
+    hideAnnoModeAlert: jest.fn()
   },
   jurisdictionId: 1,
   projectId: 1,
@@ -48,6 +49,13 @@ describe('DocumentList', () => {
     const spy = jest.spyOn(props.actions, 'clearDocSelected')
     const wrapper = shallow(<DocumentList {...props} />)
     wrapper.unmount()
+    expect(spy).toHaveBeenCalled()
+  })
+  
+  test('should call redux hideAnnoModeAlert when this.hideAnnoModeAlert is called', () => {
+    const spy = jest.spyOn(props.actions, 'hideAnnoModeAlert')
+    const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
+    wrapper.instance().hideAnnoModeAlert()
     expect(spy).toHaveBeenCalled()
   })
   
