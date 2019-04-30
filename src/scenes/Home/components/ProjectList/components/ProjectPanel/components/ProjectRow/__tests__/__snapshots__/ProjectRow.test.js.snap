@@ -47,7 +47,7 @@ exports[`Home - ProjectList - ProjectPanel - ProjectRow component should render 
     align="center"
     circular={false}
     container={true}
-    flex={false}
+    flex={true}
     justify="stretch"
     padding="0 12px"
     raised={false}
@@ -67,12 +67,12 @@ exports[`Home - ProjectList - ProjectPanel - ProjectRow component should render 
     circular={false}
     container={true}
     flex={true}
-    justify="stretch"
-    padding={0}
+    justify="flex-end"
+    padding="0 24px 0 0"
     raised={false}
     style={
       Object {
-        "flexBasis": "30%",
+        "flexBasis": "10%",
       }
     }
     type="row"
@@ -87,7 +87,7 @@ exports[`Home - ProjectList - ProjectPanel - ProjectRow component should render 
       raised={false}
       style={
         Object {
-          "width": "49%",
+          "width": "45%",
         }
       }
       type="column"
@@ -109,7 +109,7 @@ exports[`Home - ProjectList - ProjectPanel - ProjectRow component should render 
     <span
       style={
         Object {
-          "width": "2%",
+          "width": "8%",
         }
       }
     />
@@ -123,7 +123,7 @@ exports[`Home - ProjectList - ProjectPanel - ProjectRow component should render 
       raised={false}
       style={
         Object {
-          "width": "49%",
+          "width": "45%",
         }
       }
       type="column"
@@ -140,63 +140,6 @@ exports[`Home - ProjectList - ProjectPanel - ProjectRow component should render 
       </span>
       Aleksandra Zaryanova
     </FlexGrid>
-  </FlexGrid>
-  <FlexGrid
-    align="center"
-    circular={false}
-    container={true}
-    flex={true}
-    justify="flex-end"
-    padding="0 44px 0 0"
-    raised={false}
-    style={
-      Object {
-        "flexBasis": "30%",
-      }
-    }
-    type="row"
-  >
-    <WithTheme(Button)
-      aria-label="Code project"
-      component={[Function]}
-      listButton={true}
-      raised={false}
-      style={
-        Object {
-          "borderRadius": 3,
-        }
-      }
-      to={
-        Object {
-          "pathname": "/project/2/code",
-        }
-      }
-      value="Code"
-    />
-    <span
-      style={
-        Object {
-          "width": "24px",
-        }
-      }
-    />
-    <WithTheme(Button)
-      aria-label="Validate project"
-      component={[Function]}
-      listButton={true}
-      raised={false}
-      style={
-        Object {
-          "borderRadius": 3,
-        }
-      }
-      to={
-        Object {
-          "pathname": "/project/2/validate",
-        }
-      }
-      value="Validate"
-    />
   </FlexGrid>
 </FlexGrid>
 `;

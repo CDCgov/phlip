@@ -5,12 +5,12 @@ import moment from 'moment'
 import theme from 'services/theme'
 
 export const ProjectRow = props => {
-  const { project, bookmarked, toggleBookmark } = props
+  const { project, bookmarked, toggleBookmark, handleExpandProject } = props
   const date = moment.utc(project.dateLastEdited).local().format('M/D/YYYY')
   const greyIcon = theme.palette.greyText
   
   return (
-    <FlexGrid type="row" container flex style={{ minHeight: 60 }}>
+    <FlexGrid type="row" container flex style={{ minHeight: 60 }} onClick={handleExpandProject}>
       <FlexGrid container type="row" align="center" padding="0 0 0 24px" style={{ width: '24px' }}>
         <IconButton
           color={bookmarked ? '#fdc43b' : greyIcon}
@@ -78,7 +78,8 @@ ProjectRow.propTypes = {
   project: PropTypes.object,
   bookmarked: PropTypes.bool,
   isCoder: PropTypes.bool,
-  toggleBookmark: PropTypes.func
+  toggleBookmark: PropTypes.func,
+  handleExpandProject: PropTypes.func
 }
 
 export default ProjectRow
