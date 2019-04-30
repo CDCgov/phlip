@@ -109,7 +109,8 @@ export class ProjectPanel extends Component {
       position: 'relative',
       backgroundColor: 'white',
       fontSize: '0.8125rem',
-      borderRadius: expanded ? 2 : 0
+      borderRadius: expanded ? 2 : 0,
+      overflow: 'hidden'
     }
     
     const collapseStyles = {
