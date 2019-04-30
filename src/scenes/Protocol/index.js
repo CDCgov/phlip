@@ -98,7 +98,7 @@ export class Protocol extends Component {
   }
 
   componentDidMount(){
-    document.title = this.props.title
+    document.title = `PHLIP - ${this.props.projectName} - protocol`
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {

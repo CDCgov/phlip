@@ -103,7 +103,7 @@ export class CodingScheme extends Component {
   }
 
   componentDidMount() {
-    document.title = 'PHLIP - Coding Scheme'
+    document.title = `PHLIP - ${this.props.projectName} - Coding Scheme`
     this.props.actions.getSchemeRequest(this.props.projectId)
     setTimeout(() => {
       this.props.actions.setEmptyState()
