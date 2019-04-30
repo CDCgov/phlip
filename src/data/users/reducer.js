@@ -85,7 +85,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
     case types.ADD_USER:
       const user = {
         ...action.payload,
-        ...handleUpdateUser(action.payload, null)
+        ...handleUpdateUser(action.payload, action.payload.avatar)
       }
       
       return {
