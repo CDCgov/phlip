@@ -29,7 +29,7 @@ export class ProjectPanel extends Component {
     index: PropTypes.number,
     handleExpandProject: PropTypes.func
   }
-  
+
   /**
    * Handles when a project is clicked to open
    * @param event
@@ -39,6 +39,11 @@ export class ProjectPanel extends Component {
       id: this.props.project.createdById,
       email: this.props.project.createdByEmail
     })
+    if (!this.props.expanded) {
+      document.title = `PHLIP - ${this.props.project.name}`
+    } else {
+      document.title = `PHLIP - Project List`
+    }
     this.props.handleExpandProject(this.props.project.id, event)
   }
   

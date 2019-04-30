@@ -146,7 +146,7 @@ export class CodingValidation extends Component {
   }
 
   componentDidMount() {
-    document.title = 'PHLIP - Coding Validation'
+    document.title = `PHLIP - ${this.props.projectName} - ${this.isValidation?'Validate':'Code'} `
     this.props.actions.setPage(this.props.page)
 
     if (this.props.page === 'coding') {
