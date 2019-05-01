@@ -47,7 +47,7 @@ export const Tooltip = ({ text, placement, children, classes, overrideClasses, .
     <MuiTooltip
       placement={placement}
       title={text}
-      enterDelay={700}
+      enterDelay={350}
       classes={{ ...classes, ...overrideClasses }}
       disableTouchListener
       {...otherProps}
