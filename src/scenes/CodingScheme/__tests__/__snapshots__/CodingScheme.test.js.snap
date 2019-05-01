@@ -22,6 +22,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
         },
         Object {
           "onClick": [Function],
+          "preferred": true,
           "type": "button",
           "value": "Check in",
         },
@@ -33,7 +34,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
     <WithStyles(Typography)
       variant="body1"
     >
-      You have checked out the coding scheme. No one else can edit until you check in.
+      You have checked out the coding scheme. No one else can make edits until you check it in.
     </WithStyles(Typography)>
   </Alert>
   <Alert
@@ -41,6 +42,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
+          "preferred": true,
           "type": "button",
           "value": "Cancel",
         },
@@ -102,7 +104,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
       variant="body1"
     >
       undefined undefined 
-       has checked out the coding scheme. You will not be able to make changes until they have checked in.
+       checked out the coding scheme. You are unable to make changes.
     </WithStyles(Typography)>
   </Alert>
   <withRouter(WithTheme(PageHeader))
@@ -129,7 +131,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
           "canModify": true,
           "questionDefined": null,
         },
-        "text": "+ Add New Question",
+        "text": "Add New Question",
       }
     }
     pageTitle="Coding Scheme"

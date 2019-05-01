@@ -33,21 +33,83 @@ exports[`Home scene should render correctly 1`] = `
           "modal": true,
           "projectDefined": null,
         },
-        "text": "+ Create New Project",
+        "text": "Create New Project",
       }
     }
     pageTitle="Project List"
     projectName=""
     protocolButton={false}
     showButton={true}
-  />
+  >
+    <WithStyles(Dropdown)
+      formControlStyle={
+        Object {
+          "minWidth": 180,
+          "paddingRight": 20,
+        }
+      }
+      id="projectSort"
+      input={
+        Object {
+          "onChange": [Function],
+          "value": "dateLastEdited",
+        }
+      }
+      name="projectSort"
+      options={
+        Array [
+          Object {
+            "label": <React.Fragment>
+              <span
+                style={
+                  Object {
+                    "paddingRight": 5,
+                  }
+                }
+              >
+                Date Last Edited
+              </span>
+              <WithTheme(Icon)
+                color="black"
+                size={20}
+              >
+                arrow_downward
+              </WithTheme(Icon)>
+            </React.Fragment>,
+            "value": "dateLastEdited",
+          },
+          Object {
+            "label": "Name",
+            "value": "name",
+          },
+          Object {
+            "label": "Last Edited By",
+            "value": "lastEditedBy",
+          },
+          Object {
+            "label": "Bookmarked",
+            "value": "sortBookmarked",
+          },
+        ]
+      }
+      renderValue={[Function]}
+      style={
+        Object {
+          "fontSize": 14,
+        }
+      }
+    />
+    <WithTheme(SearchBar)
+      handleSearchValueChange={[Function]}
+      placeholder="Search"
+    />
+  </withRouter(WithTheme(PageHeader))>
   <ProjectList
     direction="desc"
     handleExport={[Function]}
     handlePageChange={[MockFunction]}
     handleRequestSort={[MockFunction]}
     handleRowsChange={[MockFunction]}
-    handleSearchValueChange={[Function]}
     handleSortBookmarked={[Function]}
     page={0}
     projectIds={Array []}
