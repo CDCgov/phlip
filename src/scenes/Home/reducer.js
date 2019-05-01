@@ -178,7 +178,8 @@ export const mainReducer = (state, action) => {
     case types.SORT_PROJECTS:
       return {
         ...updateHomeState(['sortBy']),
-        direction: state.direction === 'asc' ? 'desc' : 'asc'
+        direction: state.direction === 'asc' ? 'desc' : 'asc',
+        sortBookmarked: false
       }
 
     case types.GET_PROJECTS_FAIL:

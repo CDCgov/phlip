@@ -14,7 +14,7 @@ exports[`DocumentView scene should render correctly 1`] = `
 >
   <withRouter(WithTheme(PageHeader))
     onBackButtonClick={[Function]}
-    pageTitle="Edit Document"
+    pageTitle="View Document"
     projectName=""
     protocolButton={false}
   />

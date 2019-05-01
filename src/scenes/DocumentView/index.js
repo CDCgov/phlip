@@ -46,7 +46,7 @@ export class DocumentView extends Component {
       <FlexGrid container flex padding="12px 20px 20px 20px">
         <PageHeader
           onBackButtonClick={this.onGoBack}
-          pageTitle="Edit Document"
+          pageTitle="View Document"
           protocolButton={false}
           projectName=""
         />
