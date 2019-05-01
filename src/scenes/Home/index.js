@@ -80,24 +80,23 @@ export class Home extends Component {
      */
     title: PropTypes.string
   }
-
+  
   constructor(props, context) {
     super(props, context)
     this.state = {
       exportDialogOpen: false,
-      projectToExport: null,
-      sortSelection: null
+      projectToExport: null
     }
-
+    
     this.exportRef = null
     this.setExportRef = element => this.exportRef = element
   }
-
+  
   componentDidMount() {
     document.title = this.props.title
     this.props.actions.getProjectsRequest()
   }
-
+  
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.projectToExport.text !== this.props.projectToExport.text) {
       if (this.state.projectToExport !== null) {
@@ -105,7 +104,7 @@ export class Home extends Component {
       }
     }
   }
-
+  
   /**
    * Opens the export dialog after the user clicks the 'Export' download button.
    * @public
@@ -117,7 +116,7 @@ export class Home extends Component {
       projectToExport: { ...project }
     })
   }
-
+  
   /**
    * Closes the export dialog
    * @public
@@ -128,7 +127,7 @@ export class Home extends Component {
       exportDialogOpen: false
     })
   }
-
+  
   /**
    * Prepares the export CSV file by creating a Blob and ObjectURL from the text parameter. Downloads the file
    * @public
@@ -143,7 +142,7 @@ export class Home extends Component {
     //window.URL.revokeObjectURL(url)
     this.clearProjectExport()
   }
-
+  
   /**
    * Calls a redux action to send a request to the API to download the export file, with type being the type of export.
    * This is callback for setState after the user chooses an option in the export dialog
@@ -153,7 +152,7 @@ export class Home extends Component {
   getExport = type => {
     this.props.actions.exportDataRequest(this.state.projectToExport, type)
   }
-
+  
   /**
    * Invoked after the user chooses an export type from the export dialog. Closes the export dialog and calls getExport
    * @public
@@ -165,7 +164,7 @@ export class Home extends Component {
       projectToExport: { ...this.state.projectToExport, exportType: type }
     }, () => this.getExport(type))
   }
-
+  
   /**
    * Clears the export project from local state as well as calls an redux action to clear it from the redux state.
    * @public
@@ -176,7 +175,7 @@ export class Home extends Component {
     })
     this.props.actions.clearProjectToExport()
   }
-
+  
   /**
    * Renders a card error based on this.props.errorContent
    * @public
@@ -187,7 +186,7 @@ export class Home extends Component {
       {`Uh-oh! Something went wrong. ${this.props.errorContent}`}
     </CardError>
   )
-
+  
   /**
    * Calls a redux action to close the alert error for any export error that is shown
    * @public
@@ -196,25 +195,30 @@ export class Home extends Component {
     this.props.actions.dismissApiError('exportError')
     this.clearProjectExport()
   }
-
+  
   handleSortParmChange = selectedOption => {
-    this.setState({ sortSelection: selectedOption })
     if (selectedOption !== 'sortBookmarked') {
       this.props.actions.sortProjects(selectedOption)
     } else {
-      if (this.props.sortBookmarked) { // sort book previous selected,  undo sort bookmark and reset display to current sort
-        this.setState({sortSelection: this.props.sortBy})
-      }
       this.props.actions.sortBookmarked(!this.props.sortBookmarked)
     }
   }
-
+  
+  sortLabel = (label, direction) => {
+    return (
+      <>
+        <span style={{ paddingRight: 5 }}>{label}</span>
+        <Icon size={20} color="black">{direction === 'asc' ? 'arrow_upward' : 'arrow_downward'}</Icon>
+      </>
+    )
+  }
+  
   render() {
     const {
       exportError, user, sortBy, actions, page, visibleProjects, projectCount, rowsPerPage, direction, sortBookmarked,
       searchValue, error
     } = this.props
-
+    
     const options = Array.from([
       { value: 'dateLastEdited', label: 'Date Last Edited' },
       { value: 'name', label: 'Name' },
@@ -222,16 +226,13 @@ export class Home extends Component {
       { value: 'sortBookmarked', label: 'Bookmarked' }
     ], (option, i) => ({
       ...option,
-      label: sortBy === option.value
-        ? (
-          <>
-            <span style={{ paddingRight: 5 }}>{option.label}</span>
-            <Icon size={20} color="black">{direction === 'asc' ? 'arrow_upward' : 'arrow_downward'}</Icon>
-          </>
-        )
-        : option.label
+      label: sortBookmarked && option.value === 'sortBookmarked'
+        ? this.sortLabel('Bookmarked', 'desc')
+        : !sortBookmarked && sortBy === option.value
+          ? this.sortLabel(option.label, direction)
+          : option.label
     }))
-
+    
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">
         <ApiErrorAlert content={exportError} open={exportError !== ''} onCloseAlert={this.onCloseExportError} />
@@ -255,7 +256,7 @@ export class Home extends Component {
             id="projectSort"
             options={options}
             input={{
-              value: this.state.sortSelection || 'dateLastEdited',
+              value: sortBookmarked ? 'sortBookmarked' : sortBy,
               onChange: this.handleSortParmChange
             }}
             renderValue={value => {
@@ -276,7 +277,7 @@ export class Home extends Component {
             placeholder="Search"
           />
         </PageHeader>
-
+        
         {error
           ? this.renderErrorMessage()
           : <ProjectList

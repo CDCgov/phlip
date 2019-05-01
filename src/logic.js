@@ -16,10 +16,11 @@ const logoutLogic = createLogic({
   processOptions: {
     dispatchReturn: false
   },
-  process({ action }, dispatch, done) {
+  async process({ action }, dispatch, done) {
     logout()
     dispatch({ type: types.FLUSH_STATE, isLogout: true })
-    persistor.purge()
+    await persistor.flush()
+    await persistor.purge()
     done()
   }
 })

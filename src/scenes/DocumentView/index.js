@@ -24,10 +24,11 @@ export class DocumentView extends Component {
 
   constructor(props, context) {
     super(props, context)
+
   }
 
   componentDidMount() {
-    document.title = this.props.title
+    document.title = `PHLIP - ${this.props.location.state.document.name} - view`
     this.props.actions.initState(this.props.location.state.document)
     this.props.actions.getDocumentContentsRequest(this.props.location.state.document._id)
   }
@@ -45,7 +46,7 @@ export class DocumentView extends Component {
       <FlexGrid container flex padding="12px 20px 20px 20px">
         <PageHeader
           onBackButtonClick={this.onGoBack}
-          pageTitle="Edit Document"
+          pageTitle="View Document"
           protocolButton={false}
           projectName=""
         />

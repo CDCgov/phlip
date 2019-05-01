@@ -78,7 +78,7 @@ export class FlagPopover extends Component {
     const { questionId, questionFlags, user, userFlag, disableAll, categoryId } = this.props
     
     // This is question wide red flag. We need to update it when the question changes
-    if (prevProps.questionId !== questionId) {
+    if (prevProps.questionId !== questionId || prevProps.questionFlags.length !== questionFlags.length) {
       this.setState({
         userRedFlag: checkForRedFlag(questionFlags, user)[0] || { notes: '', type: 3 },
         inEditMode: questionFlags.length === 0

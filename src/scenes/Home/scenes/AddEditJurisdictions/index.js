@@ -93,7 +93,7 @@ export class AddEditJurisdictions extends Component {
 
   componentDidMount() {
     this.prevTitle = document.title
-    document.title = this.props.title
+    document.title = `PHLIP - ${this.props.project.name} - Add/Edit Jurisdiction`
   }
 
   componentDidUpdate(prevProps) {

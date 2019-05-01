@@ -13,15 +13,7 @@ import CheckboxLabel from 'components/CheckboxLabel'
 export const DocListTableRow = props => {
   const { doc, onSelectFile, isChecked, projectList, jurisdictionList } = props
   const date = moment.utc(doc.uploadedDate).local().format('M/D/YYYY')
-  const listStyle = {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    width: 250,
-    maxWidth: 250,
-    padding: '0 12px'
-  }
-  // const iconColor = '#949494'
+  
   return (
     <TableRow>
       <TableCell style={{ paddingLeft: 24, paddingRight: 0, width: '1%' }}>
@@ -31,21 +23,21 @@ export const DocListTableRow = props => {
           style={{ width: 24, height: 24 }}
         />
       </TableCell>
-      <TableCell padding="checkbox" style={listStyle}>
+      <TableCell padding="checkbox">
         <TextLink to={{ pathname: `/docs/${doc._id}/view`, state: { document: { ...doc } } }}>
           {doc.name}
         </TextLink>
       </TableCell>
-      <TableCell padding="checkbox" style={listStyle && { width: 90 }}>
+      <TableCell padding="checkbox">
         {doc.uploadedBy.firstName} {doc.uploadedBy.lastName}
       </TableCell>
-      <TableCell padding="checkbox" style={listStyle && { width: 50 }}>
+      <TableCell padding="checkbox">
         {date}
       </TableCell>
-      <TableCell padding="checkbox" style={listStyle}>
+      <TableCell padding="checkbox">
         {projectList.join(', ')}
       </TableCell>
-      <TableCell padding="checkbox" style={{ ...listStyle, paddingRight: 24 }}>
+      <TableCell padding="checkbox">
         {jurisdictionList.join(', ')}
       </TableCell>
     </TableRow>
@@ -57,17 +49,14 @@ DocListTableRow.propTypes = {
    * Specific document from redux - documents[id]
    */
   doc: PropTypes.object,
-
   /**
    * ID of document used to retrieve specific document from redux
    */
   id: PropTypes.string,
-
   /**
    * Is the document currently selected (the checkbox cell selected)
    */
   isChecked: PropTypes.bool,
-
   /**
    * Handles when a user clicks the checkbox cell for this document
    */
