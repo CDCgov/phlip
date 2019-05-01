@@ -38,7 +38,7 @@ export const createAutocompleteReducer = (searchName, suffix = '') => {
         }
 
       case `${types.CLEAR_ALL}_${searchName}${suffix}`:
-      case 'FLUSH_STATE':
+      case types.FLUSH_STATE:
         return INITIAL_STATE
 
       default:

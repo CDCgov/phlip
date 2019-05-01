@@ -84,4 +84,19 @@ describe('Autocomplete reducer', () => {
       expect(updatedState.suggestions).toEqual([])
     })
   })
+  
+  describe('FLUSH_STATE', () => {
+    test('should return initial state', () => {
+      const action = {
+        type: types.FLUSH_STATE
+      }
+  
+      const currentState = getState({
+        suggestions: [{ name: 'project' }, { name: 'project test' }]
+      })
+  
+      const updatedState = reducer(currentState, action)
+      expect(updatedState).toEqual(INITIAL_STATE)
+    })
+  })
 })
