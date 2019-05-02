@@ -175,6 +175,23 @@ export const mainReducer = (state, action) => {
         }
       }
 
+    case types.DELETE_PROJECT_SUCCESS: // updating redux to match with backend
+      const updatedById = state.projects.byId
+      const updatedAllIds = state.projects.allIds.filter(value => value !== action.project)
+      delete updatedById[action.project]
+      return {
+        ...state,
+        projects: {
+          byId: {
+            ...updatedById
+          },
+          allIds: updatedAllIds
+        }
+      }
+    case types.DELETE_PROJECT_FAIL:
+      return {
+        ...state, errorContent: 'We couldn\'t delete the project. Please try again later.', error: true
+      }
     case types.SORT_PROJECTS:
       return {
         ...updateHomeState(['sortBy']),
@@ -186,7 +203,6 @@ export const mainReducer = (state, action) => {
       return {
         ...state, errorContent: 'We couldn\'t retrieve the project list. Please try again later.', error: true
       }
-
     case types.FLUSH_STATE:
       return { ...INITIAL_STATE, rowsPerPage: state.rowsPerPage }
 
