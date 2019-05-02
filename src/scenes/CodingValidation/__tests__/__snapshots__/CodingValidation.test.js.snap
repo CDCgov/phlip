@@ -241,8 +241,9 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
             handleStyles={
               Object {
                 "left": Object {
+                  "bottom": "50%",
                   "height": "fit-content",
-                  "top": "50%",
+                  "top": "unset",
                   "width": "fit-content",
                 },
               }

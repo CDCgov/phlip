@@ -7,70 +7,68 @@ exports[`QuestionCard - ValidationTable should render correctly 1`] = `
   container={true}
   flex={false}
   justify="stretch"
-  padding="25px 0 0"
+  padding={12}
   raised={false}
   style={
     Object {
+      "backgroundColor": "white",
+      "borderTop": "1px solid rgba(0, 0, 0, 0.12)",
       "flexBasis": "auto",
       "flexWrap": "nowrap",
-      "margin": "0 10px",
     }
   }
   type="column"
 >
   <FlexGrid
-    align="stretch"
+    align="center"
     circular={false}
-    container={false}
-    flex={true}
-    justify="stretch"
-    padding="0 0 10px 0"
+    container={true}
+    flex={false}
+    justify="space-between"
+    onClick={[Function]}
+    padding={0}
     raised={false}
-    style={Object {}}
-    type="column"
+    style={
+      Object {
+        "cursor": "pointer",
+      }
+    }
+    type="row"
   >
     <WithStyles(Typography)
       style={
         Object {
-          "color": "#a7bdc6",
+          "color": "#757575",
         }
       }
       variant="subheading"
     >
       Flags and Comments
     </WithStyles(Typography)>
+    <WithTheme(Icon)
+      color="#757575"
+    >
+      keyboard_arrow_down
+    </WithTheme(Icon)>
   </FlexGrid>
-  <FlexGrid
-    align="stretch"
-    circular={false}
-    container={true}
-    flex={true}
-    justify="stretch"
-    padding={12}
-    raised={false}
+  <WithStyles(Collapse)
+    in={false}
     style={
       Object {
-        "backgroundColor": "#f1f7f8",
+        "marginTop": 0,
       }
     }
-    type="column"
   >
     <FlexGrid
-      align="center"
+      align="stretch"
       circular={false}
       container={true}
-      flex={false}
+      flex={true}
       justify="stretch"
-      key="flags-comments-0"
-      padding={8}
+      padding={0}
       raised={false}
-      style={
-        Object {
-          "backgroundColor": "white",
-          "borderBottom": "1px solid lightgrey",
-        }
-      }
-      type="row"
+      style={Object {}}
+      type="column"
     >
       <FlexGrid
         align="center"
@@ -78,52 +76,72 @@ exports[`QuestionCard - ValidationTable should render correctly 1`] = `
         container={true}
         flex={false}
         justify="stretch"
-        padding="0 12px 0 0"
+        key="flags-comments-0"
+        padding={8}
         raised={false}
         style={
           Object {
-            "flexBasis": "25%",
-            "flexGrow": 1,
+            "borderBottom": "",
           }
         }
         type="row"
       >
-        <Avatar
-          avatar={1}
-          big={false}
-          cardAvatar={false}
-          initials="TU"
+        <FlexGrid
+          align="center"
+          circular={false}
+          container={true}
+          flex={false}
+          justify="stretch"
+          padding="0 12px 0 0"
+          raised={false}
           style={
             Object {
-              "marginRight": 10,
+              "flexBasis": "25%",
+              "flexGrow": 1,
             }
           }
-          theme={Object {}}
-          userName="test user"
-        />
-        <WithStyles(Typography)
-          variant="caption"
+          type="row"
         >
-          test user
-        </WithStyles(Typography)>
-      </FlexGrid>
-      <FlexGrid
-        align="stretch"
-        circular={false}
-        container={true}
-        flex={true}
-        justify="stretch"
-        padding={0}
-        raised={false}
-        style={
-          Object {
-            "flexBasis": "75%",
-            "overflow": "hidden",
+          <Avatar
+            avatar={1}
+            big={false}
+            cardAvatar={false}
+            initials="TU"
+            style={
+              Object {
+                "fontSize": "0.6rem",
+                "height": 25,
+                "marginRight": 10,
+                "width": 25,
+              }
+            }
+            theme={Object {}}
+            userName="test user"
+          />
+          <WithStyles(Typography)
+            variant="caption"
+          >
+            test user
+          </WithStyles(Typography)>
+        </FlexGrid>
+        <FlexGrid
+          align="stretch"
+          circular={false}
+          container={true}
+          flex={true}
+          justify="stretch"
+          padding={0}
+          raised={false}
+          style={
+            Object {
+              "flexBasis": "75%",
+              "overflow": "hidden",
+            }
           }
-        }
-        type="row"
-      />
+          type="row"
+        />
+      </FlexGrid>
     </FlexGrid>
-  </FlexGrid>
+  </WithStyles(Collapse)>
 </FlexGrid>
 `;
