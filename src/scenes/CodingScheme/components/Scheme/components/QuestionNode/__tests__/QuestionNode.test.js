@@ -1,7 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { QuestionNode } from '../index'
-import Icon from 'components/Icon'
 
 const props = {
   listIndex: 0,

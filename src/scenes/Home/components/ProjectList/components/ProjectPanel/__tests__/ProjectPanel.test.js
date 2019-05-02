@@ -1,9 +1,7 @@
 import React from 'react'
-import { mount, shallow } from 'enzyme'
+import { shallow } from 'enzyme'
 import { ProjectPanel } from '../index'
 import theme from 'services/theme'
-import { MemoryRouter } from 'react-router-dom'
-import { MuiThemeProvider } from '@material-ui/core'
 
 const props = {
   actions: {

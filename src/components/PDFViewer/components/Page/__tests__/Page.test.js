@@ -1,5 +1,5 @@
 import React from 'react'
-import { mount, shallow } from 'enzyme'
+import { mount } from 'enzyme'
 import { Page } from '../index'
 import { Provider } from 'react-redux'
 import { createMockStore } from 'redux-logic-test'

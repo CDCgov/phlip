@@ -12,7 +12,6 @@ exports[`QuestionCard component should render correctly 1`] = `
   style={
     Object {
       "minWidth": "10%",
-      "width": "50%",
     }
   }
   type="row"

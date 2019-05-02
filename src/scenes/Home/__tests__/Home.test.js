@@ -5,7 +5,6 @@ import { MuiThemeProvider } from '@material-ui/core/styles'
 import theme from 'services/theme'
 import { Home } from '../index'
 import { ProjectList } from '../components/ProjectList'
-import { PageHeader } from 'components/PageHeader'
 
 const props = {
   actions: {

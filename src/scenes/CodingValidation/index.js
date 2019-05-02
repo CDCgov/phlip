@@ -734,7 +734,6 @@ export class CodingValidation extends Component {
                           totalLength={this.props.questionOrder.length}
                           showNextButton={this.props.showNextButton}
                         />
-                        <FlexGrid style={{ minWidth: 15, maxWidth: 15, width: 15 }} />
                         <Resizable
                           style={{ display: 'flex' }}
                           minWidth="10%"
@@ -751,7 +750,6 @@ export class CodingValidation extends Component {
                           handleComponent={{ left: ResizeHandle }}
                           handleStyles={{
                             left: {
-                              left: -19,
                               height: 'fit-content',
                               width: 'fit-content',
                               top: '50%'
@@ -761,6 +759,7 @@ export class CodingValidation extends Component {
                             width: '50%',
                             height: '100%'
                           }}>
+                          <FlexGrid style={{ minWidth: 15, maxWidth: 15, width: 15 }} />
                           <DocumentList
                             projectId={this.props.projectId}
                             jurisdictionId={this.props.jurisdiction.jurisdictionId}
