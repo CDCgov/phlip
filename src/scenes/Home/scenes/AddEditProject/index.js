@@ -105,7 +105,11 @@ export class AddEditProject extends Component {
    */
   componentDidMount(){
     this.prevTitle = document.title
-    document.title = this.props.title
+    if (this.projectDefined) {
+      document.title = `PHLIP - Project ${this.projectDefined.name} - Edit`
+    } else {
+      document.title = `PHLIP - Add Project`
+    }
   }
 
   componentDidUpdate() {

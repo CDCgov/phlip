@@ -40,9 +40,9 @@ export class ProjectPanel extends Component {
       email: this.props.project.createdByEmail
     })
     if (!this.props.expanded) {
-      document.title = `PHLIP - ${this.props.project.name}`
+      document.title = `PHLIP - Project ${this.props.project.name}`
     } else {
-      document.title = `PHLIP - Project List`
+      document.title = `PHLIP - Home`
     }
     this.props.handleExpandProject(this.props.project.id, event)
   }

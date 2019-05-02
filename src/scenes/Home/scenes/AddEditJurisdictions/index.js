@@ -92,8 +92,7 @@ export class AddEditJurisdictions extends Component {
   }
 
   componentDidMount() {
-    this.prevTitle = document.title
-    document.title = `PHLIP - ${this.props.project.name} - Add/Edit Jurisdiction`
+    document.title = `PHLIP - Project ${this.props.project.name} - Add/Edit Jurisdiction`
   }
 
   componentDidUpdate(prevProps) {
@@ -105,7 +104,7 @@ export class AddEditJurisdictions extends Component {
   }
   componentWillUnmount() {
     this.props.actions.clearJurisdictions()
-    document.title = this.prevTitle
+    document.title = `PHLIP - Project ${this.props.project.name}`
   }
 
   /**
