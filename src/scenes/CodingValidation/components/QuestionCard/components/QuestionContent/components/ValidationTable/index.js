@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { IconButton, Avatar, ExpansionTextPanel, FlexGrid, Icon } from 'components'
+import { IconButton, Avatar, ExpansionTextPanel, FlexGrid, Icon, SimpleInput } from 'components'
 import Typography from '@material-ui/core/Typography'
 import Collapse from '@material-ui/core/Collapse'
-import theme from 'services/theme'
 
 const flagColors = {
   1: '#2E7D32',
@@ -28,6 +27,16 @@ const checkQuestionFlag = (questionFlag, flagsComments) => {
 }
 
 export class ValidationTable extends Component {
+  static propTypes = {
+    userImages: PropTypes.object,
+    questionFlags: PropTypes.array,
+    mergedUserQuestions: PropTypes.object,
+    onOpenAlert: PropTypes.func,
+    onChangeComment: PropTypes.func,
+    hasComment: PropTypes.bool,
+    comment: PropTypes.string
+  }
+  
   state = {
     expanded: false
   }
@@ -39,7 +48,7 @@ export class ValidationTable extends Component {
   }
   
   render() {
-    const { mergedUserQuestions, questionFlags, onOpenAlert, userImages } = this.props
+    const { mergedUserQuestions, questionFlags, onOpenAlert, userImages, onChangeComment, comment, hasComment } = this.props
     const { expanded } = this.state
     
     const hasFlagsComments = mergedUserQuestions.hasOwnProperty('flagsComments')
@@ -72,10 +81,7 @@ export class ValidationTable extends Component {
           </Icon>
         </FlexGrid>
         <Collapse in={expanded} style={{ marginTop: expanded ? 10 : 0 }}>
-          <FlexGrid
-            container
-            //style={{ backgroundColor: '#f1f7f8' }}
-            flex>
+          <FlexGrid container flex>
             {allFlags.map((item, i) => {
               const hasCommentAndFlag = item.type && item.comment
               const user = userImages[item.raisedBy.userId]
@@ -94,7 +100,7 @@ export class ValidationTable extends Component {
                     padding="0 12px 0 0"
                     style={{ flexBasis: '25%', flexGrow: 1 }}>
                     <Avatar
-                      style={{ marginRight: 10 }}
+                      style={{ marginRight: 10, height: 25, width: 25, fontSize: '0.6rem' }}
                       initials={user.initials}
                       userName={user.username}
                       avatar={user.avatar}
@@ -159,18 +165,22 @@ export class ValidationTable extends Component {
                   </FlexGrid>
                 </FlexGrid>
             })}
+            {hasComment && <SimpleInput
+              onChange={onChangeComment}
+              name="comment"
+              shrinkLabel
+              style={{ whiteSpace: 'pre-wrap' }}
+              placeholder="Enter comment"
+              value={comment}
+              rowsMax={3}
+              aria-label="Comment"
+              label="Comment"
+            />}
           </FlexGrid>
         </Collapse>
       </FlexGrid>
     )
   }
-}
-
-ValidationTable.propTypes = {
-  mergedUserQuestions: PropTypes.object,
-  questionFlags: PropTypes.array,
-  onOpenAlert: PropTypes.func,
-  userImages: PropTypes.object
 }
 
 export default ValidationTable

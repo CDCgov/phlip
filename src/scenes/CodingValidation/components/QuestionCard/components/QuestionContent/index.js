@@ -90,7 +90,7 @@ export const QuestionContent = props => {
               {question.questionType === questionTypes.TEXT_FIELD && <TextFieldQuestions {...textQuestionProps} />}
             </FlexGrid>
             {question.isCategoryQuestion &&
-            <FlexGrid container type="row" flex justify="flex-start" padding="25px 0 0 1px">
+            <FlexGrid container type="row" flex justify="flex-start" padding="20px 1px 5px">
               <Button
                 onClick={onOpenAlert}
                 style={{ backgroundColor: 'white', color: 'black' }}
@@ -98,7 +98,7 @@ export const QuestionContent = props => {
               />
             </FlexGrid>}
             {(question.includeComment && !isValidation) &&
-            <FlexGrid padding="25px 0 0 1px">
+            <FlexGrid padding="20px 0 0 1px">
               <SimpleInput
                 onChange={onChangeTextAnswer(null, 'comment')}
                 name="comment"
@@ -121,7 +121,8 @@ export const QuestionContent = props => {
           mergedUserQuestions={mergedUserQuestions}
           questionFlags={question.flags}
           userImages={userImages}
-          includeComment={question.includeComment}
+          comment={question.comment}
+          hasComment={question.includeComment}
           onChangeComment={onChangeTextAnswer(null, 'comment')}
         />}
       </FlexGrid>
