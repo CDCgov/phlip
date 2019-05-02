@@ -78,7 +78,8 @@ ValidationAvatar.defaultProps = {
   isValidator: false,
   onClick: undefined,
   size: 'large',
-  user: {}
+  user: {},
+  style: {}
 }
 
 export default ValidationAvatar
