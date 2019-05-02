@@ -14,7 +14,10 @@ export const ProjectRow = props => {
       <FlexGrid container type="row" align="center" padding="0 0 0 24px" style={{ width: '24px' }}>
         <IconButton
           color={bookmarked ? '#fdc43b' : greyIcon}
-          onClick={() => toggleBookmark(project)}
+          onClick={event => {
+            event.stopPropagation()
+            toggleBookmark(project)
+          }}
           tooltipText="Bookmark project"
           aria-label="Bookmark this project"
           id={`bookmark-project-${project.id}`}>

@@ -1,10 +1,18 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { withRouter, matchPath } from 'react-router'
 import TableFooter from '@material-ui/core/TableFooter'
 import TableRow from '@material-ui/core/TableRow'
 import { FlexGrid, Table, TablePagination } from 'components'
 import ProjectPanel from './components/ProjectPanel'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
+
+const isRouteOk = history => {
+  return history.action !== 'PUSH'
+    ? true
+    : matchPath(history.location.pathname, { path: '/project/edit/:id' }) === null &&
+    matchPath(history.location.pathname, { path: '/project/add' }) === null
+}
 
 export class ProjectList extends Component {
   static propTypes = {
@@ -23,7 +31,9 @@ export class ProjectList extends Component {
     handleSortBookmarked: PropTypes.func,
     handleSearchValueChange: PropTypes.func,
     handleExport: PropTypes.func,
-    getProjectUsers: PropTypes.func
+    getProjectUsers: PropTypes.func,
+    location: PropTypes.object,
+    history: PropTypes.object
   }
   
   state = {
@@ -37,8 +47,11 @@ export class ProjectList extends Component {
    */
   checkExpand = target => {
     const stopOpenEls = ['A', 'BUTTON', 'button', 'a']
-    const regex = /([Bb]utton)|(icons?)/g
-    return !stopOpenEls.includes(target.tagName) && target.className.search(regex) === -1
+    const regex = /([Bb]utton)|(icons?)|([sS]elect)|([iI]nput)/g
+    return !stopOpenEls.includes(target.tagName)
+      && (target.tagName !== 'svg' ? target.className.search(regex) === -1 : true)
+      && target.id !== 'avatar-menu-button'
+      && target.tagName !== 'input'
   }
   
   /**
@@ -47,13 +60,16 @@ export class ProjectList extends Component {
    * @param event
    */
   handleExpandProject = (id, event) => {
-    const expand = this.checkExpand(event.target)
-    
-    this.setState({
-      expanded: this.state.expanded === id
-        ? expand ? 0 : id
-        : expand ? id : 0
-    })
+    if (this.props.location.pathname === '/home' && isRouteOk(this.props.history)) {
+      const expand = this.checkExpand(event.target) &&
+        this.checkExpand(event.target.offsetParent ? event.target.offsetParent : event.target.parentNode)
+      
+      this.setState({
+        expanded: this.state.expanded === id
+          ? expand ? 0 : id
+          : expand ? id : 0
+      })
+    }
   }
   
   /**
@@ -61,9 +77,11 @@ export class ProjectList extends Component {
    * @param event
    */
   handleClickAway = event => {
-    if (event.target.tagName === 'DIV') {
+    if (this.props.location.pathname === '/home' && isRouteOk(this.props.history)) {
+      const expand = this.checkExpand(event.target) &&
+        this.checkExpand(event.target.offsetParent ? event.target.offsetParent : event.target.parentNode)
       this.setState({
-        expanded: 0
+        expanded: expand ? 0 : this.state.expanded
       })
     }
   }
@@ -113,4 +131,4 @@ export class ProjectList extends Component {
   }
 }
 
-export default ProjectList
+export default withRouter(ProjectList)

@@ -104,7 +104,7 @@ exports[`Home scene should render correctly 1`] = `
       placeholder="Search"
     />
   </withRouter(WithTheme(PageHeader))>
-  <ProjectList
+  <withRouter(ProjectList)
     direction="desc"
     handleExport={[Function]}
     handlePageChange={[MockFunction]}
