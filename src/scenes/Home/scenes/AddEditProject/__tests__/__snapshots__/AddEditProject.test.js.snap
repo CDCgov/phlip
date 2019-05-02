@@ -1,101 +1,122 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - AddEditProject scene should render correctly 1`] = `
-<FormModal
-  asyncBlurFields={
-    Array [
-      "name",
-    ]
-  }
-  asyncValidate={[Function]}
-  form="projectForm"
-  handleSubmit={[Function]}
-  height="400px"
-  initialValues={Object {}}
-  open={true}
-  width="600px"
->
-  <ModalTitle
-    closeButton={false}
-    onCloseForm={[Function]}
-    onEditForm={[Function]}
-    title="Create New Project"
-  />
-  <WithStyles(Divider) />
-  <ModalContent>
-    <Container
-      column={true}
-      flex={false}
-      spacing={0}
-      style={
-        Object {
-          "minHeight": 230,
-          "minWidth": 550,
-          "padding": "30px 15px 0 15px",
-        }
-      }
-    >
-      <DetailRow
-        component={[Function]}
-        disabled={false}
-        fullWidth={true}
-        label="Project Name"
-        name="name"
-        placeholder="Enter Project Name"
-        required={true}
-        validate={[Function]}
-      />
-      <DetailRow
-        component={[Function]}
-        defaultValue={1}
-        disabled={false}
-        id="type"
-        label="Type"
-        name="type"
-        options={
-          Array [
-            Object {
-              "label": "Legal Scan",
-              "value": 1,
-            },
-            Object {
-              "label": "Policy Surveillance",
-              "value": 2,
-            },
-          ]
-        }
-        required={true}
-        style={
-          Object {
-            "display": "flex",
-          }
-        }
-      />
-    </Container>
-  </ModalContent>
-  <WithStyles(ModalActions)
+<Fragment>
+  <Alert
     actions={
       Array [
         Object {
           "onClick": [Function],
-          "otherProps": Object {
-            "aria-label": "Cancel edit view",
-          },
+          "preferred": true,
           "type": "button",
           "value": "Cancel",
         },
         Object {
-          "disabled": false,
-          "otherProps": Object {
-            "aria-label": "Save form",
-          },
-          "type": "submit",
-          "value": <React.Fragment>
-            Create
-          </React.Fragment>,
+          "onClick": [Function],
+          "type": "button",
+          "value": "Delete",
         },
       ]
     }
+    open={false}
+    title={null}
   />
-</FormModal>
+  <FormModal
+    asyncBlurFields={
+      Array [
+        "name",
+      ]
+    }
+    asyncValidate={[Function]}
+    form="projectForm"
+    handleSubmit={[Function]}
+    height="400px"
+    initialValues={Object {}}
+    open={true}
+    width="600px"
+  >
+    <ModalTitle
+      closeButton={false}
+      onCloseForm={[Function]}
+      onEditForm={[Function]}
+      title="Create New Project"
+    />
+    <WithStyles(Divider) />
+    <ModalContent>
+      <Container
+        column={true}
+        flex={false}
+        spacing={0}
+        style={
+          Object {
+            "minHeight": 230,
+            "minWidth": 550,
+            "padding": "30px 15px 0 15px",
+          }
+        }
+      >
+        <DetailRow
+          component={[Function]}
+          disabled={false}
+          fullWidth={true}
+          label="Project Name"
+          name="name"
+          placeholder="Enter Project Name"
+          required={true}
+          validate={[Function]}
+        />
+        <DetailRow
+          component={[Function]}
+          defaultValue={1}
+          disabled={false}
+          id="type"
+          label="Type"
+          name="type"
+          options={
+            Array [
+              Object {
+                "label": "Legal Scan",
+                "value": 1,
+              },
+              Object {
+                "label": "Policy Surveillance",
+                "value": 2,
+              },
+            ]
+          }
+          required={true}
+          style={
+            Object {
+              "display": "flex",
+            }
+          }
+        />
+      </Container>
+    </ModalContent>
+    <WithStyles(ModalActions)
+      actions={
+        Array [
+          Object {
+            "onClick": [Function],
+            "otherProps": Object {
+              "aria-label": "Cancel edit view",
+            },
+            "type": "button",
+            "value": "Cancel",
+          },
+          Object {
+            "disabled": false,
+            "otherProps": Object {
+              "aria-label": "Save form",
+            },
+            "type": "submit",
+            "value": <React.Fragment>
+              Create
+            </React.Fragment>,
+          },
+        ]
+      }
+    />
+  </FormModal>
+</Fragment>
 `;
