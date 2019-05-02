@@ -7,6 +7,7 @@ import { Snackbar, FlexGrid, Avatar, Icon, Tooltip } from 'components'
 import PinciteTextField from '../PinciteTextField'
 import Button from '@material-ui/core/Button'
 import theme from 'services/theme'
+import ValidationAvatar from '../ValidationAvatar'
 
 const PinciteAvatar = ({ answerObj, user, size }) => {
   return (
@@ -50,7 +51,7 @@ export class PinciteList extends Component {
     validatorStyles: PropTypes.object,
     showAvatar: PropTypes.bool
   }
-
+  
   static defaultProps = {
     avatarSize: 'small',
     alwaysShow: false,
@@ -61,12 +62,12 @@ export class PinciteList extends Component {
     validatorStyles: {},
     showAvatar: true
   }
-
+  
   state = {
     expanded: false,
     copied: false
   }
-
+  
   /**
    * Hides or closes the list of pincites
    * @public
@@ -76,7 +77,7 @@ export class PinciteList extends Component {
       expanded: !this.state.expanded
     })
   }
-
+  
   /**
    * Sets a timeout to show the snackbar to let user know pincite has been copied
    * @public
@@ -85,7 +86,7 @@ export class PinciteList extends Component {
     this.setState({ copied: true })
     setTimeout(this.handleCloseSnackbar, 3500)
   }
-
+  
   /**
    * Clears pincite copied snackbar
    * @public
@@ -94,17 +95,17 @@ export class PinciteList extends Component {
     this.setState({ copied: false })
     clearTimeout()
   }
-
+  
   render() {
     const {
       answerList, userImages, handleChangePincite, validatorObj, isAnswered,
       alwaysShow, avatarSize, textFieldProps, validatorStyles, showAvatar
     } = this.props
     const { expanded, copied } = this.state
-
+    
     const pincitesExist = (answerList.filter(answer => answer.pincite ? answer.pincite.length > 0 : false)).length >
       0 || isAnswered || alwaysShow
-
+    
     return (
       pincitesExist &&
       <FlexGrid container align="flex-start" flex style={{ marginBottom: 15 }}>
@@ -149,7 +150,8 @@ export class PinciteList extends Component {
                   onCopy={hasPincite && this.handlePinciteCopy}
                   key={`${user.username}-pincite`}>
                   <FlexGrid container type="row" align="flex-start" style={{ cursor: 'pointer', marginBottom: 8 }}>
-                    {showAvatar && <PinciteAvatar answerObj={answer} user={user} size={avatarSize} />}
+                    {showAvatar &&
+                    <ValidationAvatar user={user} size={avatarSize} style={{ marginRight: 10 }} />}
                     <Typography
                       align="center"
                       style={{
@@ -167,7 +169,11 @@ export class PinciteList extends Component {
             {isAnswered &&
             <FlexGrid container type="row" align="center" style={{ alignSelf: 'stretch', ...validatorStyles }}>
               {showAvatar &&
-              <PinciteAvatar answerObj={validatorObj} user={userImages[validatorObj.userId]} size={avatarSize} />}
+              <ValidationAvatar
+                user={userImages[validatorObj.userId]}
+                size={avatarSize}
+                style={{ marginRight: 10, cursor: 'default' }}
+              />}
               <PinciteTextField
                 handleChangePincite={handleChangePincite}
                 pinciteValue={validatorObj.pincite}

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { IconButton, Avatar, ExpansionTextPanel, FlexGrid, Icon, SimpleInput } from 'components'
 import Typography from '@material-ui/core/Typography'
 import Collapse from '@material-ui/core/Collapse'
+import ValidationAvatar from '../ValidationAvatar'
 
 const flagColors = {
   1: '#2E7D32',
@@ -34,7 +35,8 @@ export class ValidationTable extends Component {
     onOpenAlert: PropTypes.func,
     onChangeComment: PropTypes.func,
     hasComment: PropTypes.bool,
-    comment: PropTypes.string
+    comment: PropTypes.string,
+    validator: PropTypes.object
   }
   
   state = {
@@ -48,7 +50,9 @@ export class ValidationTable extends Component {
   }
   
   render() {
-    const { mergedUserQuestions, questionFlags, onOpenAlert, userImages, onChangeComment, comment, hasComment } = this.props
+    const {
+      mergedUserQuestions, questionFlags, onOpenAlert, userImages, onChangeComment, comment, hasComment, validator
+    } = this.props
     const { expanded } = this.state
     
     const hasFlagsComments = mergedUserQuestions.hasOwnProperty('flagsComments')
@@ -92,7 +96,7 @@ export class ValidationTable extends Component {
                   key={`flags-comments-${i}`}
                   align="center"
                   padding={8}
-                  style={{ borderBottom: i === allFlags.length - 1 ? '' : '1px solid lightgrey' }}>
+                  style={{ borderBottom: (i === allFlags.length - 1 && !hasComment) ? '' : '1px solid lightgrey' }}>
                   <FlexGrid
                     container
                     type="row"
@@ -165,17 +169,29 @@ export class ValidationTable extends Component {
                   </FlexGrid>
                 </FlexGrid>
             })}
-            {hasComment && <SimpleInput
-              onChange={onChangeComment}
-              name="comment"
-              shrinkLabel
-              style={{ whiteSpace: 'pre-wrap' }}
-              placeholder="Enter comment"
-              value={comment}
-              rowsMax={3}
-              aria-label="Comment"
-              label="Comment"
-            />}
+            {hasComment &&
+            <FlexGrid
+              container
+              type="row"
+              align="center"
+              padding={8}>
+              <ValidationAvatar
+                style={{ marginRight: 10 }}
+                size="medium"
+                user={validator}
+                isValidator
+              />
+              <SimpleInput
+                onChange={onChangeComment}
+                name="comment"
+                shrinkLabel
+                style={{ whiteSpace: 'pre-wrap' }}
+                placeholder="Enter comment"
+                value={comment}
+                rowsMax={3}
+                aria-label="Comment"
+              />
+            </FlexGrid>}
           </FlexGrid>
         </Collapse>
       </FlexGrid>

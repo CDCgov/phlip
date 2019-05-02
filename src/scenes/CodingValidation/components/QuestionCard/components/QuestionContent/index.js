@@ -21,7 +21,7 @@ export const QuestionContent = props => {
     question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
     onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages,
     onToggleAnnotationMode, enabledAnswerId, enabledUserId, annotationModeEnabled,
-    areDocsEmpty, classes, onToggleCoderAnnotations, isValidatorSelected
+    areDocsEmpty, classes, onToggleCoderAnnotations, isValidatorSelected, user
   } = props
   
   const commonQuestionProps = {
@@ -59,7 +59,7 @@ export const QuestionContent = props => {
         container
         type="row"
         padding={20}
-        style={{ flexWrap: 'nowrap', overflow: 'auto' }}>
+        style={{ flexWrap: 'nowrap', overflow: 'auto', minHeight: '35%' }}>
         <FlexGrid container>
           <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
         </FlexGrid>
@@ -90,7 +90,13 @@ export const QuestionContent = props => {
               {question.questionType === questionTypes.TEXT_FIELD && <TextFieldQuestions {...textQuestionProps} />}
             </FlexGrid>
             {question.isCategoryQuestion &&
-            <FlexGrid container type="row" flex justify="flex-start" padding="20px 1px 5px">
+            <FlexGrid
+              container
+              type="row"
+              flex
+              justify="flex-start"
+              padding="20px 1px 5px"
+              style={{ minHeight: 'unset' }}>
               <Button
                 onClick={onOpenAlert}
                 style={{ backgroundColor: 'white', color: 'black' }}
@@ -121,6 +127,11 @@ export const QuestionContent = props => {
           mergedUserQuestions={mergedUserQuestions}
           questionFlags={question.flags}
           userImages={userImages}
+          validator={{
+            ...userAnswers.validatedBy.userId
+              ? userImages[userAnswers.validatedBy.userId]
+              : userImages[user.id]
+          }}
           comment={question.comment}
           hasComment={question.includeComment}
           onChangeComment={onChangeTextAnswer(null, 'comment')}
