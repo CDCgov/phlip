@@ -60,7 +60,7 @@ export const deleteProjectLogic = createLogic({
   type: types.DELETE_PROJECT_REQUEST,
   async process({ action, api }, dispatch, done) {
     try {
-      const deleteProject = await api.deleteProject({}, {}, { projectId: action.project })
+      await api.deleteProject({}, {}, { projectId: action.project })
       dispatch({
         type: types.DELETE_PROJECT_SUCCESS,
         project: action.project
