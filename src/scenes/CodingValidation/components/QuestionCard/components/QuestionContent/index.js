@@ -54,12 +54,11 @@ export const QuestionContent = props => {
   }
   
   return (
-    <FlexGrid container flex>
+    <FlexGrid container flex justify="space-between">
       <FlexGrid
         container
         type="row"
         padding={20}
-        flex
         style={{ flexWrap: 'nowrap', overflow: 'auto' }}>
         <FlexGrid container>
           <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
@@ -90,6 +89,14 @@ export const QuestionContent = props => {
               <SelectionControlQuestion {...selectionFormProps} />}
               {question.questionType === questionTypes.TEXT_FIELD && <TextFieldQuestions {...textQuestionProps} />}
             </FlexGrid>
+            {question.isCategoryQuestion &&
+            <FlexGrid container type="row" flex justify="flex-start" padding={15}>
+              <Button
+                onClick={onOpenAlert}
+                style={{ backgroundColor: 'white', color: 'black' }}
+                value="Apply to all tabs"
+              />
+            </FlexGrid>}
           </FlexGrid>
         </FlexGrid>
       </FlexGrid>
@@ -107,14 +114,6 @@ export const QuestionContent = props => {
           label="Comment"
           disabled={disableAll}
         />}
-        {question.isCategoryQuestion &&
-        <FlexGrid container type="row" flex justify="flex-start" padding="15px 0 0">
-          <Button
-            onClick={onOpenAlert}
-            style={{ backgroundColor: 'white', color: 'black' }}
-            value="Apply to all tabs"
-          />
-        </FlexGrid>}
     
         {isValidation && <ValidationTable
           onOpenAlert={onOpenFlagConfirmAlert}
