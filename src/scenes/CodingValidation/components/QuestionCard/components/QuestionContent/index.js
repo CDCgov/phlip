@@ -90,31 +90,32 @@ export const QuestionContent = props => {
               {question.questionType === questionTypes.TEXT_FIELD && <TextFieldQuestions {...textQuestionProps} />}
             </FlexGrid>
             {question.isCategoryQuestion &&
-            <FlexGrid container type="row" flex justify="flex-start" padding={15}>
+            <FlexGrid container type="row" flex justify="flex-start" padding="25px 0 0 1px">
               <Button
                 onClick={onOpenAlert}
                 style={{ backgroundColor: 'white', color: 'black' }}
                 value="Apply to all tabs"
               />
             </FlexGrid>}
+            {(question.includeComment && !isValidation) &&
+            <FlexGrid padding="25px 0 0 1px">
+              <SimpleInput
+                onChange={onChangeTextAnswer(null, 'comment')}
+                name="comment"
+                shrinkLabel
+                style={{ whiteSpace: 'pre-wrap' }}
+                placeholder="Enter comment"
+                value={comment}
+                rowsMax={3}
+                aria-label="Comment"
+                label="Comment"
+                disabled={disableAll}
+              />
+            </FlexGrid>}
           </FlexGrid>
         </FlexGrid>
       </FlexGrid>
       <FlexGrid container type="column">
-        {(question.includeComment && !isValidation) &&
-        <SimpleInput
-          onChange={onChangeTextAnswer(null, 'comment')}
-          name="comment"
-          shrinkLabel
-          style={{ whiteSpace: 'pre-wrap' }}
-          placeholder="Enter comment"
-          value={comment}
-          rowsMax={3}
-          aria-label="Comment"
-          label="Comment"
-          disabled={disableAll}
-        />}
-    
         {isValidation && <ValidationTable
           onOpenAlert={onOpenFlagConfirmAlert}
           mergedUserQuestions={mergedUserQuestions}
