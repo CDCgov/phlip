@@ -93,7 +93,7 @@ export const QuestionContent = props => {
           </FlexGrid>
         </FlexGrid>
       </FlexGrid>
-      <FlexGrid container type="column" padding={20}>
+      <FlexGrid container type="column">
         {(question.includeComment && !isValidation) &&
         <SimpleInput
           onChange={onChangeTextAnswer(null, 'comment')}

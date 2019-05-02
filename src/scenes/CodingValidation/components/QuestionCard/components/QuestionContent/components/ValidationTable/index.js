@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { IconButton, Avatar, ExpansionTextPanel, FlexGrid, Icon } from 'components'
 import Typography from '@material-ui/core/Typography'
 import Collapse from '@material-ui/core/Collapse'
+import theme from 'services/theme'
 
 const flagColors = {
   1: '#2E7D32',
@@ -20,9 +21,9 @@ const checkQuestionFlag = (questionFlag, flagsComments) => {
       return item
     }
   })
-
+  
   if (sameUser) return updatedItems
-
+  
   return [...updatedItems, { ...questionFlag }]
 }
 
@@ -39,30 +40,34 @@ export class ValidationTable extends Component {
   
   render() {
     const { mergedUserQuestions, questionFlags, onOpenAlert, userImages } = this.props
-  
+    const { expanded } = this.state
+    
     const hasFlagsComments = mergedUserQuestions.hasOwnProperty('flagsComments')
     const allFlags = hasFlagsComments
       ? questionFlags.length > 0
         ? checkQuestionFlag(questionFlags[0], mergedUserQuestions.flagsComments)
         : [...mergedUserQuestions.flagsComments]
       : [...questionFlags]
-  
+    
     return (
-      <FlexGrid container style={{ flexBasis: 'auto', flexWrap: 'nowrap', margin: '0 10px' }}>
+      <FlexGrid
+        container
+        padding={12}
+        style={{ flexBasis: 'auto', flexWrap: 'nowrap', backgroundColor: '#f1f7f8' }}>
         <FlexGrid
           container
           type="row"
           align="center"
-          padding="5px 0px 8px 0px"
+          justify="space-between"
           onClick={this.handleTogglePanel}
           style={{ cursor: 'pointer' }}>
-          <Typography variant="subheading" style={{ color: '#a7bdc6' }}>Flags and Comments</Typography>
-          <Icon color="#a7bdc6">
-            {this.state.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
+          <Typography variant="subheading" style={{ color: '#757575' }}>Flags and Comments</Typography>
+          <Icon color="#757575">
+            {expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
           </Icon>
         </FlexGrid>
-        <Collapse in={this.state.expanded}>
-          <FlexGrid container flex padding={12} style={{ backgroundColor: '#f1f7f8' }}>
+        <Collapse in={expanded} style={{ backgroundColor: 'white', marginTop: expanded ? 10 : 0 }}>
+          <FlexGrid container flex>
             {allFlags.map((item, i) => {
               const hasCommentAndFlag = item.type && item.comment
               const user = userImages[item.raisedBy.userId]
