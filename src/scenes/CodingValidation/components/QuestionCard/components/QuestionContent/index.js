@@ -20,8 +20,8 @@ export const QuestionContent = props => {
   const {
     question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
     onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages,
-    onToggleAnnotationMode, enabledAnswerId, enabledUserId, annotationModeEnabled, areDocsEmpty, classes,
-    onToggleCoderAnnotations, isValidatorSelected
+    onToggleAnnotationMode, enabledAnswerId, enabledUserId, annotationModeEnabled,
+    areDocsEmpty, classes, onToggleCoderAnnotations, isValidatorSelected
   } = props
 
   const commonQuestionProps = {
@@ -59,7 +59,7 @@ export const QuestionContent = props => {
         <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
       </FlexGrid>
       <FlexGrid container flex style={{ overflow: 'auto' }}>
-        <FlexGrid container type="row" align="center" padding="0 0 15px">
+        <FlexGrid container type="row" align="center" padding="0 0 10px">
           <Typography variant="body2" style={{ letterSpacing: 0 }}>
             {question.text}&nbsp;
           </Typography>
@@ -77,17 +77,11 @@ export const QuestionContent = props => {
             </Tooltip>
           </FlexGrid>}
         </FlexGrid>
-        <FlexGrid container flex style={{ overflow: 'auto', minHeight: 'unset', width: '100%' }}>
-          {question.questionType !== questionTypes.TEXT_FIELD &&
+        <FlexGrid container flex padding="5px 0 0" style={{ overflow: 'auto', minHeight: 'unset', width: '100%' }}>
           <FlexGrid container type="row">
-            <SelectionControlQuestion {...selectionFormProps} />
-          </FlexGrid>}
-
-          {question.questionType === questionTypes.TEXT_FIELD &&
-          <FlexGrid container type="row" style={{ minHeight: 'unset' }}>
-            <TextFieldQuestions {...textQuestionProps} />
-          </FlexGrid>}
-
+            {question.questionType !== questionTypes.TEXT_FIELD && <SelectionControlQuestion {...selectionFormProps} />}
+            {question.questionType === questionTypes.TEXT_FIELD && <TextFieldQuestions {...textQuestionProps} />}
+          </FlexGrid>
           <FlexGrid padding="10px 0 0" style={{ minHeight: 'unset', margin: 10 }}>
             {question.includeComment &&
             <FlexGrid>

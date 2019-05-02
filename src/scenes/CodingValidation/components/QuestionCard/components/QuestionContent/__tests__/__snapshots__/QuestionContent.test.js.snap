@@ -60,7 +60,7 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
       container={true}
       flex={false}
       justify="stretch"
-      padding="0 0 15px"
+      padding="0 0 10px"
       raised={false}
       style={Object {}}
       type="row"
@@ -82,7 +82,7 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
       container={true}
       flex={true}
       justify="stretch"
-      padding={0}
+      padding="5px 0 0"
       raised={false}
       style={
         Object {

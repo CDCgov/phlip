@@ -128,7 +128,7 @@ export class PinciteList extends Component {
           container
           type="row"
           align="center"
-          padding="6px 0px 8px 0px"
+          padding="5px 0px 8px 0px"
           onClick={this.handleToggle}
           style={{ cursor: 'pointer' }}>
           <Typography variant="body1" color="secondary">
@@ -141,7 +141,7 @@ export class PinciteList extends Component {
         <Collapse in={alwaysShow ? true : expanded} style={{ alignSelf: 'stretch' }}>
           <FlexGrid container align="flex-start">
             {answerList.map((answer, i) => {
-              const hasPincite = alwaysShow ? true : answer.pincite !== null ? answer.pincite.length > 0 : false
+              const hasPincite = answer.pincite !== null ? answer.pincite.length > 0 : false
               const user = userImages[answer.userId]
               return (
                 hasPincite && <CopyToClipboard
@@ -157,6 +157,7 @@ export class PinciteList extends Component {
                         wordBreak: 'break-word',
                         color: theme.palette.greyText
                       }}>
+                      {alwaysShow && <span style={{ color: theme.palette.secondary.main }}>Pincite: </span>}
                       {answer.pincite}
                     </Typography>
                   </FlexGrid>

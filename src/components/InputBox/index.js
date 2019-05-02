@@ -13,6 +13,9 @@ const styles = theme => ({
     padding: '10px 12px',
     whiteSpace: 'pre-wrap',
     transition: theme.transitions.create(['border-color', 'box-shadow'])
+  },
+  multiline: {
+    padding: 0
   }
 })
 
@@ -35,7 +38,8 @@ export const InputBox = props => {
       InputProps={{
         disableUnderline: true,
         classes: {
-          input: classes.textFieldInput
+          input: classes.textFieldInput,
+          root: classes.multiline
         },
         inputProps: {
           'aria-describedby': 'question_text'
