@@ -266,7 +266,7 @@ export class QuestionCard extends Component {
     ]
 
     return (
-      <FlexGrid container type="row" flex style={{ minWidth: '10%' }}>
+      <FlexGrid container type="row" flex style={{ minWidth: '10%', flexBasis: '0%' }}>
         <Alert actions={alertActions} title={confirmAlertInfo.title} open={confirmAlertOpen}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             {confirmAlertInfo.text}
