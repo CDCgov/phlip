@@ -53,7 +53,12 @@ export class ValidationTable extends Component {
       <FlexGrid
         container
         padding={12}
-        style={{ flexBasis: 'auto', flexWrap: 'nowrap', backgroundColor: '#f1f7f8' }}>
+        style={{
+          flexBasis: 'auto',
+          flexWrap: 'nowrap',
+          backgroundColor: 'white',
+          borderTop: `1px solid rgba(${0}, ${0}, ${0}, ${0.12})`
+        }}>
         <FlexGrid
           container
           type="row"
@@ -66,8 +71,11 @@ export class ValidationTable extends Component {
             {expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
           </Icon>
         </FlexGrid>
-        <Collapse in={expanded} style={{ backgroundColor: 'white', marginTop: expanded ? 10 : 0 }}>
-          <FlexGrid container flex>
+        <Collapse in={expanded} style={{ marginTop: expanded ? 10 : 0 }}>
+          <FlexGrid
+            container
+            //style={{ backgroundColor: '#f1f7f8' }}
+            flex>
             {allFlags.map((item, i) => {
               const hasCommentAndFlag = item.type && item.comment
               const user = userImages[item.raisedBy.userId]
@@ -78,7 +86,7 @@ export class ValidationTable extends Component {
                   key={`flags-comments-${i}`}
                   align="center"
                   padding={8}
-                  style={{ backgroundColor: 'white', borderBottom: '1px solid lightgrey' }}>
+                  style={{ borderBottom: i === allFlags.length - 1 ? '' : '1px solid lightgrey' }}>
                   <FlexGrid
                     container
                     type="row"
