@@ -752,7 +752,8 @@ export class CodingValidation extends Component {
                             left: {
                               height: 'fit-content',
                               width: 'fit-content',
-                              top: '50%'
+                              bottom: '50%',
+                              top: 'unset'
                             }
                           }}
                           defaultSize={{

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import SelectionControlQuestion from './components/SelectionControlQuestion'
 import * as questionTypes from 'scenes/CodingValidation/constants'
 import TextFieldQuestions from './components/TextFieldQuestion'
-import ValidationTable from '../ValidationTable'
+import ValidationTable from './components/ValidationTable'
 import { FlexGrid, Typography, Tooltip, Button, SimpleInput, Icon } from 'components'
 import { withStyles } from '@material-ui/core/styles'
 
@@ -23,7 +23,7 @@ export const QuestionContent = props => {
     onToggleAnnotationMode, enabledAnswerId, enabledUserId, annotationModeEnabled,
     areDocsEmpty, classes, onToggleCoderAnnotations, isValidatorSelected
   } = props
-
+  
   const commonQuestionProps = {
     userImages,
     question,
@@ -39,82 +39,91 @@ export const QuestionContent = props => {
     onToggleCoderAnnotations,
     isValidatorSelected
   }
-
+  
   const selectionFormProps = {
     choices: question.possibleAnswers,
     onChange,
     onChangePincite: onChangeTextAnswer,
     ...commonQuestionProps
   }
-
+  
   const textQuestionProps = {
     ...commonQuestionProps,
     onChange: onChangeTextAnswer,
     answerId: question.possibleAnswers[0].id
   }
-
+  
   return (
-    <FlexGrid container type="row" padding="20px 20px 10px 20px" flex style={{ flexWrap: 'nowrap', overflow: 'auto' }}>
-      <FlexGrid container>
-        <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
+    <FlexGrid container flex>
+      <FlexGrid
+        container
+        type="row"
+        padding={20}
+        flex
+        style={{ flexWrap: 'nowrap', overflow: 'auto' }}>
+        <FlexGrid container>
+          <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
+        </FlexGrid>
+        <FlexGrid container flex style={{ overflow: 'auto' }}>
+          <FlexGrid container type="row" align="center" padding="0 0 10px">
+            <Typography variant="body2" style={{ letterSpacing: 0 }}>
+              {question.text}&nbsp;
+            </Typography>
+            {question.hint &&
+            <FlexGrid style={{ height: 18, width: 18 }}>
+              <Tooltip
+                placement="top"
+                overrideClasses={{ tooltip: classes.hintTooltip }}
+                title={
+                  <Typography variant="body2" style={{ color: 'black' }}>
+                    <strong>Coding Directions:&nbsp;</strong>
+                    {question.hint}
+                  </Typography>
+                }>
+                <Icon color="#757575" size={18}>notifications</Icon>
+              </Tooltip>
+            </FlexGrid>}
+          </FlexGrid>
+          <FlexGrid container flex padding="5px 0 0" style={{ overflow: 'auto', minHeight: 'unset', width: '100%' }}>
+            <FlexGrid container type="row">
+              {question.questionType !== questionTypes.TEXT_FIELD &&
+              <SelectionControlQuestion {...selectionFormProps} />}
+              {question.questionType === questionTypes.TEXT_FIELD && <TextFieldQuestions {...textQuestionProps} />}
+            </FlexGrid>
+          </FlexGrid>
+        </FlexGrid>
       </FlexGrid>
-      <FlexGrid container flex style={{ overflow: 'auto' }}>
-        <FlexGrid container type="row" align="center" padding="0 0 10px">
-          <Typography variant="body2" style={{ letterSpacing: 0 }}>
-            {question.text}&nbsp;
-          </Typography>
-          {question.hint &&
-          <FlexGrid style={{ height: 18, width: 18 }}>
-            <Tooltip
-              placement="top"
-              overrideClasses={{ tooltip: classes.hintTooltip }}
-              title={
-                <Typography variant="body2" style={{ color: 'black' }}>
-                  <strong>Coding Directions:&nbsp;</strong>{question.hint}
-                </Typography>
-              }>
-              <Icon color="#757575" size={18}>notifications</Icon>
-            </Tooltip>
-          </FlexGrid>}
-        </FlexGrid>
-        <FlexGrid container flex padding="5px 0 0" style={{ overflow: 'auto', minHeight: 'unset', width: '100%' }}>
-          <FlexGrid container type="row">
-            {question.questionType !== questionTypes.TEXT_FIELD && <SelectionControlQuestion {...selectionFormProps} />}
-            {question.questionType === questionTypes.TEXT_FIELD && <TextFieldQuestions {...textQuestionProps} />}
-          </FlexGrid>
-          <FlexGrid padding="10px 0 0" style={{ minHeight: 'unset', margin: 10 }}>
-            {question.includeComment &&
-            <FlexGrid>
-              <SimpleInput
-                onChange={onChangeTextAnswer(null, 'comment')}
-                name="comment"
-                shrinkLabel={true}
-                style={{ whiteSpace: 'pre-wrap' }}
-                placeholder="Enter comment"
-                value={comment}
-                rowsMax={3}
-                aria-label="Comment"
-                label="Comment"
-                disabled={disableAll}
-              />
-            </FlexGrid>}
-            {question.isCategoryQuestion &&
-            <FlexGrid container type="row" flex justify="flex-start" padding="20px 0 0">
-              <Button
-                onClick={onOpenAlert}
-                style={{ backgroundColor: 'white', color: 'black' }}
-                value="Apply to all tabs"
-              />
-            </FlexGrid>}
-          </FlexGrid>
-
-          {isValidation && <ValidationTable
-            onOpenAlert={onOpenFlagConfirmAlert}
-            mergedUserQuestions={mergedUserQuestions}
-            questionFlags={question.flags}
-            userImages={userImages}
-          />}
-        </FlexGrid>
+      <FlexGrid container type="column" padding={20}>
+        {(question.includeComment && !isValidation) &&
+        <SimpleInput
+          onChange={onChangeTextAnswer(null, 'comment')}
+          name="comment"
+          shrinkLabel
+          style={{ whiteSpace: 'pre-wrap' }}
+          placeholder="Enter comment"
+          value={comment}
+          rowsMax={3}
+          aria-label="Comment"
+          label="Comment"
+          disabled={disableAll}
+        />}
+        {question.isCategoryQuestion &&
+        <FlexGrid container type="row" flex justify="flex-start" padding="15px 0 0">
+          <Button
+            onClick={onOpenAlert}
+            style={{ backgroundColor: 'white', color: 'black' }}
+            value="Apply to all tabs"
+          />
+        </FlexGrid>}
+    
+        {isValidation && <ValidationTable
+          onOpenAlert={onOpenFlagConfirmAlert}
+          mergedUserQuestions={mergedUserQuestions}
+          questionFlags={question.flags}
+          userImages={userImages}
+          includeComment={question.includeComment}
+          onChangeComment={onChangeTextAnswer(null, 'comment')}
+        />}
       </FlexGrid>
     </FlexGrid>
   )
