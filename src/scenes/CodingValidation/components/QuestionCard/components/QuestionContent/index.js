@@ -10,7 +10,6 @@ import { withStyles } from '@material-ui/core/styles'
 const styles = () => ({
   hintTooltip: {
     fontSize: '2em',
-    color: '#98b3be',
     backgroundColor: '#f5f5f5',
     width: 250,
     maxWidth: 250
@@ -61,34 +60,20 @@ export const QuestionContent = props => {
       </FlexGrid>
       <FlexGrid container flex style={{ overflow: 'auto' }}>
         <FlexGrid container type="row" align="center" padding="0 0 15px">
-          <Typography
-            variant="body2"
-            style={{ letterSpacing: 0, lineHeight: '1.5em' }}>{question.text}&nbsp;</Typography>
+          <Typography variant="body2" style={{ letterSpacing: 0 }}>
+            {question.text}&nbsp;
+          </Typography>
           {question.hint &&
-          <FlexGrid style={{ marginRight: 10 }}>
+          <FlexGrid style={{ height: 18, width: 18 }}>
             <Tooltip
               placement="top"
               overrideClasses={{ tooltip: classes.hintTooltip }}
               title={
                 <Typography variant="body2" style={{ color: 'black' }}>
-                  <strong>Coding Directions:</strong>
-                  {question.hint}
+                  <strong>Coding Directions:&nbsp;</strong>{question.hint}
                 </Typography>
               }>
-              <Icon
-                style={{
-                  width: 25,
-                  height: 25,
-                  color: '#00575D',
-                  fontSize: 14,
-                  backgroundColor: '#DEDEDE',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '50%',
-                  display: 'flex'
-                }}>
-                lightbulb_outline
-              </Icon>
+              <Icon color="#757575" size={18}>notifications</Icon>
             </Tooltip>
           </FlexGrid>}
         </FlexGrid>
