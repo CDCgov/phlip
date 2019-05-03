@@ -89,23 +89,9 @@ export const QuestionContent = props => {
               <SelectionControlQuestion {...selectionFormProps} />}
               {question.questionType === questionTypes.TEXT_FIELD && <TextFieldQuestions {...textQuestionProps} />}
             </FlexGrid>
-            {question.isCategoryQuestion &&
-            <FlexGrid
-              container
-              type="row"
-              flex
-              justify="flex-start"
-              padding="20px 1px 5px"
-              style={{ minHeight: 'unset' }}>
-              <Button
-                onClick={onOpenAlert}
-                style={{ backgroundColor: 'white', color: 'black' }}
-                value="Apply to all tabs"
-              />
-            </FlexGrid>}
-            {(question.includeComment && !isValidation) &&
-            <FlexGrid padding="20px 0 0 1px">
-              <SimpleInput
+            
+            <FlexGrid container flex align="flex-start" padding="20px 10px 5px 1px" style={{ minHeight: 'unset' }}>
+              {question.includeComment && <SimpleInput
                 onChange={onChangeTextAnswer(null, 'comment')}
                 name="comment"
                 shrinkLabel
@@ -116,8 +102,16 @@ export const QuestionContent = props => {
                 aria-label="Comment"
                 label="Comment"
                 disabled={disableAll}
-              />
-            </FlexGrid>}
+              />}
+              {question.isCategoryQuestion &&
+              <FlexGrid padding="15px 0 0">
+                <Button
+                  onClick={onOpenAlert}
+                  style={{ backgroundColor: 'white', color: 'black' }}
+                  value="Apply to all tabs"
+                />
+              </FlexGrid>}
+            </FlexGrid>
           </FlexGrid>
         </FlexGrid>
       </FlexGrid>
@@ -127,14 +121,6 @@ export const QuestionContent = props => {
           mergedUserQuestions={mergedUserQuestions}
           questionFlags={question.flags}
           userImages={userImages}
-          validator={{
-            ...userAnswers.validatedBy.userId
-              ? userImages[userAnswers.validatedBy.userId]
-              : userImages[user.id]
-          }}
-          comment={question.comment}
-          hasComment={question.includeComment}
-          onChangeComment={onChangeTextAnswer(null, 'comment')}
         />}
       </FlexGrid>
     </FlexGrid>

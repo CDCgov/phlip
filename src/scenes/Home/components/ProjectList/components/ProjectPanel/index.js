@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { withTheme } from '@material-ui/core/styles'
 import actions from 'scenes/Home/actions'
 import moment from 'moment'
 import GridList from '@material-ui/core/GridList'
@@ -13,13 +12,13 @@ import { FlexGrid, IconButton, TextLink, Link, Button } from 'components'
 import { FileDocument, City, FormatListBulleted, ClipboardCheckOutline, FileExport } from 'mdi-material-ui'
 import ProjectRow from './components/ProjectRow'
 import silhouette from './silhouette.png'
+import theme from 'services/theme'
 
 export class ProjectPanel extends Component {
   static propTypes = {
     project: PropTypes.object,
     actions: PropTypes.object,
     role: PropTypes.string,
-    theme: PropTypes.object,
     expanded: PropTypes.bool,
     users: PropTypes.array,
     allUsers: PropTypes.object,
@@ -29,7 +28,7 @@ export class ProjectPanel extends Component {
     index: PropTypes.number,
     handleExpandProject: PropTypes.func
   }
-
+  
   /**
    * Handles when a project is clicked to open
    * @param event
@@ -94,9 +93,7 @@ export class ProjectPanel extends Component {
   }
   
   render() {
-    const {
-      project, role, bookmarked, actions, theme, index, length, users, allUsers, expanded
-    } = this.props
+    const { project, role, bookmarked, actions, index, length, users, allUsers, expanded } = this.props
     
     const isCoder = role === 'Coder'
     const greyIcon = theme.palette.greyText
@@ -106,7 +103,7 @@ export class ProjectPanel extends Component {
     const createdDate = moment.utc(project.dateCreated).local().format('M/D/YYYY')
     
     const { square, size } = this.determineGridSize()
-    const userData = expanded ? this.populateUsers(square) : []
+    const userData = this.populateUsers(square)
     const avatarCols = size, avatarRows = size, cellHeight = 300 / size
     
     const rowStyles = {
@@ -167,14 +164,15 @@ export class ProjectPanel extends Component {
                     spacing={4}
                     cols={avatarCols}
                     rows={avatarRows}>
-                    {userData.map(oneCoder => {
+                    {userData.map((oneCoder, i) => {
                       const coder = oneCoder.blank
                         ? oneCoder
                         : allUsers[oneCoder.userId] !== undefined
                           ? allUsers[oneCoder.userId]
                           : oneCoder
+  
                       return (
-                        <GridListTile cols={1} key={coder.id || coder.userId}>
+                        <GridListTile cols={1} rows={1} key={coder.id || coder.userId}>
                           {coder.avatar !== undefined ? (
                             coder.avatar === '' ? (
                               <FlexGrid
@@ -188,6 +186,7 @@ export class ProjectPanel extends Component {
                                   src={silhouette}
                                   alt={`${coder.username}'s avatar`}
                                   style={{ width: '100%', height: '100%' }}
+                                  ref={this[`imgRef${i}`]}
                                 />
                                 <Typography
                                   style={{
@@ -205,7 +204,12 @@ export class ProjectPanel extends Component {
                                 </Typography>
                               </FlexGrid>
                             ) : (
-                              <img alt={`avatar-${coder.lastName}`} src={coder.avatar} title={coder.username} />
+                              <img
+                                alt={`avatar-${coder.lastName}`}
+                                src={coder.avatar}
+                                title={coder.username}
+                                ref={this[`imgRef${i}`]}
+                              />
                             )
                           ) : <div style={{ backgroundColor: '#f9f9f9', height: cellHeight }} />}
                         </GridListTile>
@@ -378,4 +382,4 @@ const mapStateToProps = (state, ownProps) => {
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTheme()(ProjectPanel))
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectPanel)
