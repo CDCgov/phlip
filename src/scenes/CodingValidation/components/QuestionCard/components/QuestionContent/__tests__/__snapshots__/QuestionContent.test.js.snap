@@ -142,6 +142,21 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
             }
           />
         </FlexGrid>
+        <FlexGrid
+          align="flex-start"
+          circular={false}
+          container={true}
+          flex={true}
+          justify="stretch"
+          padding="20px 10px 5px 1px"
+          raised={false}
+          style={
+            Object {
+              "minHeight": "unset",
+            }
+          }
+          type="column"
+        />
       </FlexGrid>
     </FlexGrid>
   </FlexGrid>

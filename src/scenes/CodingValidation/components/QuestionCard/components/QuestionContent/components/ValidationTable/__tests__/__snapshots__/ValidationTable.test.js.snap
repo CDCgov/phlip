@@ -11,7 +11,7 @@ exports[`QuestionCard - ValidationTable should render correctly 1`] = `
   raised={false}
   style={
     Object {
-      "backgroundColor": "white",
+      "backgroundColor": "#f9f9f9",
       "borderTop": "1px solid rgba(0, 0, 0, 0.12)",
       "flexBasis": "auto",
       "flexWrap": "nowrap",

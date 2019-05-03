@@ -28,7 +28,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
         }
       }
     >
-      <Connect(WithTheme(ProjectPanel))
+      <Connect(ProjectPanel)
         expanded={false}
         handleExpandProject={[Function]}
         id={1}
@@ -38,7 +38,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
         onExport={[MockFunction]}
         role="Coordinator"
       />
-      <Connect(WithTheme(ProjectPanel))
+      <Connect(ProjectPanel)
         expanded={false}
         handleExpandProject={[Function]}
         id={2}
