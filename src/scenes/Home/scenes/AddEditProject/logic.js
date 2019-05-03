@@ -1,5 +1,6 @@
 import { createLogic } from 'redux-logic'
 import { types } from '../../actions'
+import { types as projectTypes } from 'data/projects/actions'
 
 /**
  * Sends a request to add a project
@@ -64,6 +65,11 @@ export const deleteProjectLogic = createLogic({
       dispatch({
         type: types.DELETE_PROJECT_SUCCESS,
         project: action.project
+      })
+      // remove project from the redux store data/projects
+      dispatch({
+        type: projectTypes.REMOVE_PROJECT,
+        projectId: action.project
       })
     } catch (error) {
       dispatch({

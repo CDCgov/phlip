@@ -22,7 +22,17 @@ const projectReducer = (state = INITIAL_STATE, action) => {
           ? [...state.allIds, action.payload.id]
           : [...state.allIds]
       }
-      
+    case types.REMOVE_PROJECT:
+      let updatedById = state.byId
+      const updatedAllIds = state.allIds.filter(value => value !== action.projectId)
+      delete updatedById[action.projectId] // remove the project from project list "byId"
+      return {
+        ...state,
+        byId: {
+          ...updatedById
+        },
+        allIds: updatedAllIds
+      }
     case types.FLUSH_STATE:
       return INITIAL_STATE
 

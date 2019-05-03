@@ -176,9 +176,9 @@ export const mainReducer = (state, action) => {
       }
 
     case types.DELETE_PROJECT_SUCCESS: // updating redux to match with backend
-      const updatedById = state.projects.byId
+      let updatedById = state.projects.byId
       const updatedAllIds = state.projects.allIds.filter(value => value !== action.project)
-      delete updatedById[action.project]
+      delete updatedById[action.project] // remove the project from project list "byId"
       return {
         ...state,
         projects: {
