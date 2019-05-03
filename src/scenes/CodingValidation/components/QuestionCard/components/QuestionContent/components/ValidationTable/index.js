@@ -62,7 +62,7 @@ export class ValidationTable extends Component {
         style={{
           flexBasis: 'auto',
           flexWrap: 'nowrap',
-          backgroundColor: 'white',
+          backgroundColor: '#f9f9f9',
           borderTop: `1px solid rgba(${0}, ${0}, ${0}, ${0.12})`
         }}>
         <FlexGrid
