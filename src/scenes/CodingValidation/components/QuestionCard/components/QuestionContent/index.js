@@ -21,7 +21,7 @@ export const QuestionContent = props => {
     question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
     onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages,
     onToggleAnnotationMode, enabledAnswerId, enabledUserId, annotationModeEnabled,
-    areDocsEmpty, classes, onToggleCoderAnnotations, isValidatorSelected, user
+    areDocsEmpty, classes, onToggleCoderAnnotations, isValidatorSelected
   } = props
   
   const commonQuestionProps = {
