@@ -63,4 +63,35 @@ describe('Home scene - AddEditProject actions creators', () => {
 
     expect(actions.updateProjectFail(payload)).toEqual(expectedAction)
   })
+
+  test('should create an action to delete a project', () => {
+    const deletedProject = { name: 'new name' }
+    const expectedAction = {
+      type: types.DELETE_PROJECT_REQUEST,
+      project: deletedProject
+    }
+
+    expect(actions.deleteProjectRequest(deletedProject)).toEqual(expectedAction)
+  })
+
+  test('should create an action to indicate deleting project was successfully', () => {
+    const payload = { name: 'Project 1' }
+    const expectedAction = {
+      type: types.DELETE_PROJECT_SUCCESS,
+      payload
+    }
+
+    expect(actions.deleteProjectSuccess(payload)).toEqual(expectedAction)
+  })
+
+  test('should create an action to indicate updating a project failed', () => {
+    const payload = 'errorValue'
+    const expectedAction = {
+      type: types.DELETE_PROJECT_FAIL,
+      errorValue: payload,
+      error: true
+    }
+
+    expect(actions.deleteProjectFail(payload)).toEqual(expectedAction)
+  })
 })

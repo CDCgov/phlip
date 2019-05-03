@@ -36,7 +36,7 @@ export const withTracking = (WrappedComponent, pageName = null) => {
       window.siteCatalyst.setLevel2('Office of the Director')
       //* CDC Topic Name *
       window.siteCatalyst.setLevel3('Public Health Law')
-      window.siteCatalyst.setLevel4('Public Health Law Investigation Platform')
+      window.siteCatalyst.setLevel4('Public Health Law Information Portal')
 
       //siteCatalyst.setAzEntry('ENTER RELEVENT A-Z TERM (IF NEEDED)')
       window.s.prop2 = window.location.href

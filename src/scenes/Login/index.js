@@ -56,6 +56,7 @@ export class Login extends Component {
   }
 
   componentDidMount() {
+    document.title = 'PHLIP - Login'
     const match = matchPath(this.props.location.pathname, { path: '/login/verify-user' })
     if (match) {
       const rawToken = this.props.location.search

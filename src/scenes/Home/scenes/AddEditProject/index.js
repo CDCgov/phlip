@@ -15,7 +15,7 @@ import DetailRow from './components/DetailRow'
 import withFormAlert from 'components/withFormAlert'
 import withTracking from 'components/withTracking'
 import CircularLoader from 'components/CircularLoader'
-
+import {Button,Alert } from 'components'
 /**
  * Main / entry component for all things related to adding and editing a project. This component is a modal and is
  * rendered and mounted when the user clicks the 'Add New Project' button or the name of a project in the Project List
@@ -88,7 +88,15 @@ export class AddEditProject extends Component {
     this.projectDefined = this.props.match.url === '/project/add' ? null : this.props.location.state.projectDefined
     this.state = {
       edit: this.props.location.state.directEditMode || !this.projectDefined,
-      submitting: false
+      submitting: false,
+      typeToDelete: '',
+      projectToDelete: {},
+      alertOpen: false,
+      alertInfo: {
+        title: '',
+        text: ''
+      },
+      showModal: false
     }
   }
 
@@ -97,7 +105,11 @@ export class AddEditProject extends Component {
    */
   componentDidMount(){
     this.prevTitle = document.title
-    document.title = this.props.title
+    if (this.projectDefined) {
+      document.title = `PHLIP - Project ${this.projectDefined.name} - Edit`
+    } else {
+      document.title = `PHLIP - Add Project`
+    }
   }
 
   componentDidUpdate() {
@@ -234,6 +246,34 @@ export class AddEditProject extends Component {
     }
   }
 
+  handleShowDeleteConfirm = () => {
+    this.setState({
+      typeToDelete: 'Project',
+      [`projectToDelete`]: this.projectDefined.id,
+      alertOpen: true,
+      alertInfo: {
+        title: `Delete Project`,
+        text: `Do you want to delete project: ${this.projectDefined.name}?`
+      }
+    })
+  }
+
+  handleDeleteConfirm = () => {
+    this.onCancel()
+    this.props.actions.deleteProjectRequest(this.projectDefined.id)
+  }
+
+  onCancelDelete = () => {
+    this.setState({
+      alertOpen: false,
+      alertInfo: {},
+      typeToDelete: ''
+    })
+  }
+  closeAlert = () => {
+    this.props.actions.closeAlert()
+  }
+
   render() {
     const editAction = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Close modal' } },
@@ -266,67 +306,87 @@ export class AddEditProject extends Component {
       //{ value: 3, label: 'Environmental Scan' }
     ]
 
+    const alertActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.onCancelDelete,
+        preferred: true
+      },
+      {
+        value: 'Delete',
+        type: 'button',
+        onClick: this.handleDeleteConfirm
+      }
+    ]
+
     return (
-      <FormModal
-        form="projectForm"
-        handleSubmit={this.handleSubmit}
-        asyncValidate={this.validateProjectName}
-        asyncBlurFields={['name']}
-        onClose={this.props.onCloseModal}
-        initialValues={this.props.location.state.projectDefined || {}}
-        width="600px"
-        height="400px">
-        <ModalTitle
-          title={this.getModalTitle()}
-          closeButton={!!this.projectDefined}
-          onEditForm={this.onEditForm}
-          onCloseForm={this.onCancel}
-        />
-        <Divider />
-        <ModalContent>
-          <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px 0 15px' }}>
-            <DetailRow
-              name="name"
-              component={TextInput}
-              label="Project Name"
-              validate={this.required}
-              placeholder="Enter Project Name"
-              fullWidth
-              required={this.projectDefined ? this.state.edit : true}
-              disabled={!this.state.edit}
-            />
-            <DetailRow
-              name="type"
-              component={Dropdown}
-              label="Type"
-              defaultValue={1}
-              options={options}
-              id="type"
-              required={this.projectDefined ? this.state.edit : true}
-              style={{ display: 'flex' }}
-              disabled={!this.state.edit}
-            />
-            {this.projectDefined &&
-            <DetailRow
-              component={TextInput}
-              disabled={true}
-              label="Created By"
-              name="createdBy"
-            />}
-            {this.projectDefined &&
-            <DetailRow
-              component={TextInput}
-              disabled={true}
-              label="Created Date"
-              name="dateCreated"
-              format={this.formatDate}
-              style={{ paddingBottom: 0 }}
-            />
+      <>
+        <Alert open={this.state.alertOpen} actions={alertActions} title={this.state.alertTitle}>
+          {this.state.alertInfo.text}
+        </Alert>
+        <FormModal
+          form="projectForm"
+          handleSubmit={this.handleSubmit}
+          asyncValidate={this.validateProjectName}
+          asyncBlurFields={['name']}
+          onClose={this.props.onCloseModal}
+          initialValues={this.props.location.state.projectDefined || {}}
+          width="600px"
+          height="400px">
+          <ModalTitle
+            title={this.getModalTitle()}
+            closeButton={!!this.projectDefined}
+            onEditForm={this.onEditForm}
+            onCloseForm={this.onCancel}
+            buttons = {(this.projectDefined && this.props.userRole==='Admin')?<Button color='accent' onClick={() => this.handleShowDeleteConfirm()}>Delete</Button>:undefined}
+          />
+          <Divider />
+          <ModalContent>
+            <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px 0 15px' }}>
+              <DetailRow
+                name="name"
+                component={TextInput}
+                label="Project Name"
+                validate={this.required}
+                placeholder="Enter Project Name"
+                fullWidth
+                required={this.projectDefined ? this.state.edit : true}
+                disabled={!this.state.edit}
+              />
+              <DetailRow
+                name="type"
+                component={Dropdown}
+                label="Type"
+                defaultValue={1}
+                options={options}
+                id="type"
+                required={this.projectDefined ? this.state.edit : true}
+                style={{ display: 'flex' }}
+                disabled={!this.state.edit}
+              />
+              {this.projectDefined &&
+              <DetailRow
+                component={TextInput}
+                disabled={true}
+                label="Created By"
+                name="createdBy"
+              />}
+              {this.projectDefined &&
+              <DetailRow
+                component={TextInput}
+                disabled={true}
+                label="Created Date"
+                name="dateCreated"
+                format={this.formatDate}
+                style={{ paddingBottom: 0 }}
+              />
             }
-          </Container>
-        </ModalContent>
-        <ModalActions actions={actions} />
-      </FormModal>
+            </Container>
+          </ModalContent>
+          <ModalActions actions={actions} />
+        </FormModal>
+      </>
     )
   }
 }

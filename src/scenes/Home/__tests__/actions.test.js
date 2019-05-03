@@ -89,4 +89,26 @@ describe('Home actions creators', () => {
   test('should create an action to update search value', () => {
     expect(actions.updateSearchValue('la')).toEqual({ type: types.UPDATE_SEARCH_VALUE, payload: { searchValue: 'la' } })
   })
+
+  test('should create an action delete project', () => {
+    const project = { name: 'Project 1' }
+    const expectedAction = {
+      type: types.DELETE_PROJECT_REQUEST,
+      project
+    }
+
+    expect(actions.deleteProjectRequest(project)).toEqual(expectedAction)
+  })
+
+  test('should create an action to indicate delete a project failed', () => {
+    const payload = 'errorValue'
+    const expectedAction = {
+      type: types.DELETE_PROJECT_FAIL,
+      payload: {
+        errorContent: payload,
+        error: true
+      }
+    }
+    expect(actions.deleteProjectFail(payload)).toEqual(expectedAction)
+  })
 })

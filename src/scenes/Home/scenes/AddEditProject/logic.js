@@ -54,6 +54,29 @@ export const updateProjectLogic = createLogic({
 })
 
 /**
+ * Sends a request to delete a project
+ */
+export const deleteProjectLogic = createLogic({
+  type: types.DELETE_PROJECT_REQUEST,
+  async process({ action, api }, dispatch, done) {
+    try {
+      await api.deleteProject({}, {}, { projectId: action.project })
+      dispatch({
+        type: types.DELETE_PROJECT_SUCCESS,
+        project: action.project
+      })
+    } catch (error) {
+      dispatch({
+        type: types.DELETE_PROJECT_FAIL,
+        payload: 'We couldn\'t delete the project. Please try again later.',
+        error: true
+      })
+    }
+    done()
+  }
+})
+
+/**
  * Transforms the actions for creating and updating to include the userId of the user currently logged in so the code
  * doesn't have to be repeated in both logic.
  */
@@ -67,8 +90,24 @@ export const updateUserId = createLogic({
   }
 })
 
+// /**
+//  * Transforms the actions for deleting to remove the project's id from associated documents
+//  *
+//  */
+// export const updateDocuments = createLogic({
+//   type: [types.DELETE_DOCUMENT_REQUEST],
+//   transform({ getState, action }, next) {
+//     next({
+//       ...action,
+//       project: { ...action.project}
+//     })
+//   }
+// })
+
 export default [
   updateUserId,
   addProjectLogic,
-  updateProjectLogic
+  updateProjectLogic,
+  deleteProjectLogic
+  // updateDocuments
 ]

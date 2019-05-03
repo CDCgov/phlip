@@ -30,7 +30,9 @@ const getDocLogic = createLogic({
                 console.log('failed to get project')
               }
             }
-            doc.projectList.push(project.name)
+            if (project !== undefined) {
+              doc.projectList.push(project.name)
+            }
           }
 
           await Promise.all(doc.projectList)

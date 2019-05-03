@@ -75,4 +75,19 @@ describe('Home scene - AddEditProject logic', () => {
       done()
     })
   })
+  test('should delete a project and dispatch DELETE_PROJECT_SUCCESS when successful', (done) => {
+    const project = { id: 1, name: 'Delete Project', lastEditedBy: 'Test User' }
+    const store = setupStore([])
+
+    mock.onDelete('/projects/1').reply(200, project)
+    store.dispatch({
+      type: types.DELETE_PROJECT_REQUEST,
+      project:  1
+    })
+    store.whenComplete(() => {
+      expect(store.actions[1].type).toEqual('DELETE_PROJECT_SUCCESS')
+      expect(store.actions[1].project).toEqual(1)
+      done()
+    })
+  })
 })

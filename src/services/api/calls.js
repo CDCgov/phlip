@@ -51,6 +51,11 @@ let apiCalls = [
     path: ({ projectId }) => `/projects/${projectId}`
   },
   {
+    name: 'deleteProject',
+    method: 'delete',
+    path: ({ projectId }) => `/projects/${projectId}`
+  },
+  {
     name: 'getUsers',
     method: 'get',
     path: () => '/users'

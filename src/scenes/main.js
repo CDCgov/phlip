@@ -245,7 +245,7 @@ class Main extends Component {
             <Route path="/admin" render={(props) => <Admin {...props} title='PHLIP - Admin ' />} />
             <Route strict path="/project/:id/coding-scheme" render={(props) => <CodingScheme {...props} title={`${appName} - Coding Scheme`} />} />
             <Route strict path="/project/:id/protocol" render={(props) => <Protocol {...props} title={`${appName} - Protocol`} />} />
-            <Route path="/home" render={(props) => <Home {...props} title={`${appName} - Project List`} />} />
+            <Route path="/home" render={(props) => <Home {...props} title={`${appName} - Home`} />} />
             <Route path="/" exact render={() => <Redirect to={{ pathname: '/home' }} />} />
           </Switch>
           <Route path="/project/edit/:id" render={(props) => <AddEditProject {...props} title={`${appName} - Edit Project`} />} />
