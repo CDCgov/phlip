@@ -56,7 +56,7 @@ export class ValidationTable extends Component {
       : [...questionFlags]
     
     return (
-      <FlexGrid
+      allFlags.length > 0 && <FlexGrid
         container
         padding={12}
         style={{
