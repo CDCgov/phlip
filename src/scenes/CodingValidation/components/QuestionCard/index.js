@@ -90,7 +90,7 @@ export class QuestionCard extends Component {
       this.showDisableAnnoModeAlert()
     } else {
       let text = '', open = false
-  
+      
       if (question.questionType === questionTypes.CATEGORY) {
         if (userAnswers.answers.hasOwnProperty(id)) {
           open = true
@@ -98,7 +98,7 @@ export class QuestionCard extends Component {
         }
       } else {
         text = 'Changing your answer will remove any pincites and annotations associated with this answer. Do you want to continue?'
-    
+        
         if (question.questionType !== questionTypes.TEXT_FIELD) {
           if (Object.keys(userAnswers.answers).length > 0) {
             if (!userAnswers.answers.hasOwnProperty(id) &&
@@ -111,7 +111,7 @@ export class QuestionCard extends Component {
           }
         }
       }
-  
+      
       if (open) {
         this.props.actions.setAlert({
           open: true,
@@ -217,7 +217,11 @@ export class QuestionCard extends Component {
    * Handles toggling on / off showing a coder's annotations
    */
   onToggleCoderAnnotations = (id, userId, isValidatorSelected) => () => {
-    this.props.actions.toggleCoderAnnotations(this.props.question.id, id, userId, isValidatorSelected)
+    if (this.props.annotationModeEnabled) {
+      this.showDisableAnnoModeAlert()
+    } else {
+      this.props.actions.toggleCoderAnnotations(this.props.question.id, id, userId, isValidatorSelected)
+    }
   }
   
   render() {
@@ -261,8 +265,7 @@ export class QuestionCard extends Component {
           type: 'button',
           onClick: () => {
             this.props.actions.setAlert({ open: false })
-          },
-          preferred: true
+          }
         }
       ] : [
         { value: 'Cancel', type: 'button', onClick: this.onCloseAlert, preferred: true },

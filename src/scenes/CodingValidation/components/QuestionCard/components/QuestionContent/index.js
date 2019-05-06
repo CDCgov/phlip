@@ -69,7 +69,7 @@ export const QuestionContent = props => {
               {question.text}&nbsp;
             </Typography>
             {question.hint &&
-            <FlexGrid style={{ height: 18, width: 18 }}>
+            <FlexGrid style={{ height: 18, width: 18, cursor: 'pointer' }}>
               <Tooltip
                 placement="top"
                 overrideClasses={{ tooltip: classes.hintTooltip }}

@@ -602,10 +602,14 @@ export class CodingValidation extends Component {
    * @param type
    */
   onOpenFlagConfirmAlert = (flagId, type) => {
-    this.setState({
-      flagConfirmAlertOpen: true,
-      flagToDelete: { id: flagId, type }
-    })
+    if (this.props.annotationModeEnabled) {
+      this.showDisableAnnoModeAlert()
+    } else {
+      this.setState({
+        flagConfirmAlertOpen: true,
+        flagToDelete: { id: flagId, type }
+      })
+    }
   }
   
   /**
