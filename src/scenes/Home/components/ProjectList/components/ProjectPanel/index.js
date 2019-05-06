@@ -5,10 +5,9 @@ import { bindActionCreators } from 'redux'
 import actions from 'scenes/Home/actions'
 import moment from 'moment'
 import GridList from '@material-ui/core/GridList'
-import GridListTile from '@material-ui/core/GridListTile'
 import Typography from '@material-ui/core/Typography'
 import Collapse from '@material-ui/core/Collapse'
-import { FlexGrid, IconButton, TextLink, Link, Button } from 'components'
+import { FlexGrid, IconButton, TextLink, Link, Button, GridListTile } from 'components'
 import { FileDocument, City, FormatListBulleted, ClipboardCheckOutline, FileExport } from 'mdi-material-ui'
 import ProjectRow from './components/ProjectRow'
 import silhouette from './silhouette.png'
@@ -34,16 +33,17 @@ export class ProjectPanel extends Component {
    * @param event
    */
   handleChange = event => {
+    this.props.handleExpandProject(this.props.project.id, event)
     this.props.actions.getProjectUsers(this.props.project.id, {
       id: this.props.project.createdById,
       email: this.props.project.createdByEmail
     })
+    
     if (!this.props.expanded) {
       document.title = `PHLIP - Project ${this.props.project.name}`
     } else {
       document.title = `PHLIP - Home`
     }
-    this.props.handleExpandProject(this.props.project.id, event)
   }
   
   /**
@@ -103,7 +103,7 @@ export class ProjectPanel extends Component {
     const createdDate = moment.utc(project.dateCreated).local().format('M/D/YYYY')
     
     const { square, size } = this.determineGridSize()
-    const userData = this.populateUsers(square)
+    const userData = expanded ? this.populateUsers(square) : []
     const avatarCols = size, avatarRows = size, cellHeight = 300 / size
     
     const rowStyles = {
@@ -161,7 +161,7 @@ export class ProjectPanel extends Component {
                   <GridList
                     style={{ width: 300, margin: 0 }}
                     cellHeight={cellHeight}
-                    spacing={4}
+                    spacing={2}
                     cols={avatarCols}
                     rows={avatarRows}>
                     {userData.map((oneCoder, i) => {
@@ -172,46 +172,45 @@ export class ProjectPanel extends Component {
                           : oneCoder
   
                       return (
-                        <GridListTile cols={1} rows={1} key={coder.id || coder.userId}>
-                          {coder.avatar !== undefined ? (
-                            coder.avatar === '' ? (
-                              <FlexGrid
-                                container
-                                type="row"
-                                justify="center"
-                                align="flex-end"
-                                title={coder.username}
-                                style={{ height: '100%', backgroundColor: '#f9f9f9' }}>
+                        <GridListTile key={coder.id || coder.userId}>
+                          {!coder.blank ? (
+                            (coder.avatar === '' || coder.avatar === undefined)
+                              ? (
+                                <FlexGrid
+                                  container
+                                  type="row"
+                                  justify="center"
+                                  align="flex-end"
+                                  title={coder.username}
+                                  style={{ backgroundColor: '#f9f9f9' }}>
+                                  <img
+                                    src={silhouette}
+                                    alt={`${coder.username}'s avatar`}
+                                    style={{ width: '100%', height: cellHeight }}
+                                  />
+                                  <Typography
+                                    style={{
+                                      fontWeight: 300,
+                                      fontSize: '1.1rem',
+                                      color: 'white',
+                                      backgroundColor: `rgb(${144},${141},${141})`,
+                                      width: '100%',
+                                      textAlign: 'center',
+                                      height: 25,
+                                      paddingLeft: 3,
+                                      position: 'absolute'
+                                    }}>
+                                    {coder.initials}
+                                  </Typography>
+                                </FlexGrid>
+                              ) : (
                                 <img
-                                  src={silhouette}
-                                  alt={`${coder.username}'s avatar`}
-                                  style={{ width: '100%', height: '100%' }}
-                                  ref={this[`imgRef${i}`]}
+                                  alt={`avatar-${coder.lastName}`}
+                                  src={coder.avatar}
+                                  title={coder.username}
                                 />
-                                <Typography
-                                  style={{
-                                    fontWeight: 300,
-                                    fontSize: '1.1rem',
-                                    color: 'white',
-                                    backgroundColor: `rgb(${144},${141},${141})`,
-                                    width: '100%',
-                                    textAlign: 'center',
-                                    height: 25,
-                                    paddingLeft: 3,
-                                    position: 'absolute'
-                                  }}>
-                                  {coder.initials}
-                                </Typography>
-                              </FlexGrid>
-                            ) : (
-                              <img
-                                alt={`avatar-${coder.lastName}`}
-                                src={coder.avatar}
-                                title={coder.username}
-                                ref={this[`imgRef${i}`]}
-                              />
-                            )
-                          ) : <div style={{ backgroundColor: '#f9f9f9', height: cellHeight }} />}
+                              )
+                          ) : <div style={{ backgroundColor: '#f9f9f9', width: '100%', height: cellHeight }} />}
                         </GridListTile>
                       )
                     })}
