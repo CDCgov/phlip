@@ -12,7 +12,8 @@ import FlagPopover from './components/FlagPopover'
 import FooterNavigate from './components/FooterNavigate'
 import QuestionContent from './components/QuestionContent'
 import { bindActionCreators } from 'redux'
-import actions from 'scenes/CodingValidation/actions'
+import { default as codingActions } from 'scenes/CodingValidation/actions'
+import actions from './actions'
 
 const TabContainer = props => {
   return (
@@ -53,21 +54,16 @@ export class QuestionCard extends Component {
     areDocsEmpty: PropTypes.bool,
     actions: PropTypes.object
   }
-
+  
   constructor(props, context) {
     super(props, context)
     this.state = {
-      isSaving: false,
-      clearAnswerAlertOpen: false,
-      confirmAlertOpen: false,
-      confirmAnswerChange: {},
-      confirmAlertInfo: {
-        text: '',
-        title: ''
-      }
+      isSaving: false
     }
+    
+    this.alertActions = []
   }
-
+  
   componentDidUpdate(prevProps) {
     if (!prevProps.unsavedChanges && this.props.unsavedChanges) {
       this.setState({
@@ -82,74 +78,92 @@ export class QuestionCard extends Component {
       }, 600)
     }
   }
-
-  // Need to check if the user is un-checking a category
+  
+  /**
+   * User is changing or updating answer of some sort
+   * @param id
+   * @returns {Function}
+   */
   onChangeAnswer = id => (event, value) => {
-    const { question, userAnswers } = this.props
-    let text = '', open = false
-
-    if (question.questionType === questionTypes.CATEGORY) {
-      if (userAnswers.answers.hasOwnProperty(id)) {
-        open = true
-        text = 'Deselecting a category will remove any answers associated with this category. Do you want to continue?'
-      }
+    const { question, userAnswers, annotationModeEnabled } = this.props
+    if (annotationModeEnabled) {
+      this.showDisableAnnoModeAlert()
     } else {
-      text = 'Changing your answer will remove any pincites and annotations associated with this answer. Do you want to continue?'
-
-      if (question.questionType !== questionTypes.TEXT_FIELD) {
-        if (Object.keys(userAnswers.answers).length > 0) {
-          if (!userAnswers.answers.hasOwnProperty(id) &&
-            (question.questionType === questionTypes.MULTIPLE_CHOICE || question.questionType ===
-              questionTypes.BINARY)) {
-            open = true
-          } else if (userAnswers.answers.hasOwnProperty(id) && question.questionType === questionTypes.CHECKBOXES) {
-            open = true
+      let text = '', open = false
+  
+      if (question.questionType === questionTypes.CATEGORY) {
+        if (userAnswers.answers.hasOwnProperty(id)) {
+          open = true
+          text = 'Deselecting a category will remove any answers associated with this category. Do you want to continue?'
+        }
+      } else {
+        text = 'Changing your answer will remove any pincites and annotations associated with this answer. Do you want to continue?'
+    
+        if (question.questionType !== questionTypes.TEXT_FIELD) {
+          if (Object.keys(userAnswers.answers).length > 0) {
+            if (!userAnswers.answers.hasOwnProperty(id) &&
+              (question.questionType === questionTypes.MULTIPLE_CHOICE || question.questionType ===
+                questionTypes.BINARY)) {
+              open = true
+            } else if (userAnswers.answers.hasOwnProperty(id) && question.questionType === questionTypes.CHECKBOXES) {
+              open = true
+            }
           }
         }
       }
-    }
-
-    if (open) {
-      this.setState({
-        confirmAlertOpen: true,
-        confirmAnswerChange: { id, event, value },
-        confirmAlertInfo: {
+  
+      if (open) {
+        this.props.actions.setAlert({
+          open: true,
+          type: 'changeAnswer',
+          title: 'Warning',
           text,
-          title: 'Warning'
-        }
-      })
-    } else {
-      this.props.onChange(id)(event, value)
+          data: { id, value }
+        })
+      } else {
+        this.props.onChange(id)(event, value)
+      }
     }
   }
-
-  onCancel = () => {
-    this.setState({
-      confirmAlertOpen: false,
-      confirmAnswerChange: {},
-      clearAnswerAlertOpen: false,
-      confirmAlertInfo: {
-        text: '',
-        title: ''
-      }
+  
+  /**
+   * Shows an alert to confirm clearing answer
+   */
+  onClearAnswer = () => {
+    const { annotationModeEnabled, actions } = this.props
+    
+    if (annotationModeEnabled) {
+      this.showDisableAnnoModeAlert()
+    } else {
+      actions.setAlert({
+        open: true,
+        title: 'Warning',
+        text: 'Are you sure you want to clear your answer?',
+        type: 'clearAnswer'
+      })
+    }
+  }
+  
+  showDisableAnnoModeAlert = () => {
+    this.props.actions.setAlert({
+      open: true,
+      title: 'Close Annotation Mode',
+      text: 'You are currently in annotation mode. To make changes to your answer or to change questions, please exit annotation mode by clicking the \'Done\' button.',
+      type: 'disableAnnoMode'
     })
   }
-
-  onContinue = () => {
-    this.props.onChange(this.state.confirmAnswerChange.id)(
-      this.state.confirmAnswerChange.event,
-      this.state.confirmAnswerChange.value
-    )
-    this.setState({
-      confirmAlertOpen: false,
-      confirmAnswerChange: {},
-      confirmAlertInfo: {
-        text: '',
-        title: ''
-      }
-    })
+  
+  /**
+   * Closes the open alert on the page
+   */
+  onCloseAlert = () => {
+    this.props.actions.closeAlert()
   }
-
+  
+  /**
+   * Determines how much margin for the question answer area
+   * @returns {number}
+   */
   getMargin = () => {
     return !this.props.isValidation
       ? this.props.question.questionType !== questionTypes.CATEGORY
@@ -159,24 +173,31 @@ export class QuestionCard extends Component {
         ? -24
         : 0
   }
-
-  /**
-   * Opens an alert asking user to confirm clearing answer
-   */
-  onClearAnswer = () => {
-    this.setState({
-      clearAnswerAlertOpen: true
-    })
-  }
   
   /**
    * When the user changes the category
    */
   onChangeCategory = (event, selection) => {
-    this.props.onChangeCategory(event, selection)
-    this.props.actions.toggleAnnotationMode(this.props.question.id, this.props.enabledAnswerId, false)
+    const { annotationModeEnabled, question, enabledAnswerId, actions, onChangeCategory } = this.props
+    
+    if (annotationModeEnabled) {
+      this.showDisableAnnoModeAlert()
+    } else {
+      onChangeCategory(event, selection)
+      actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
+    }
   }
-
+  
+  onApplyAll = () => {
+    const { annotationModeEnabled, onOpenAlert } = this.props
+    
+    if (annotationModeEnabled) {
+      this.showDisableAnnoModeAlert()
+    } else {
+      onOpenAlert()
+    }
+  }
+  
   /**
    * Toggles annotation mode
    * @param id
@@ -184,30 +205,30 @@ export class QuestionCard extends Component {
    */
   onToggleAnnotationMode = id => () => {
     const { annotationModeEnabled, enabledAnswerId, question, actions } = this.props
-
+    
     const enabled = annotationModeEnabled
       ? enabledAnswerId !== id
       : true
-
+    
     actions.toggleAnnotationMode(question.id, id, enabled)
   }
-
+  
   /**
    * Handles toggling on / off showing a coder's annotations
    */
   onToggleCoderAnnotations = (id, userId, isValidatorSelected) => () => {
     this.props.actions.toggleCoderAnnotations(this.props.question.id, id, userId, isValidatorSelected)
   }
-
+  
   render() {
     const {
-      onChangeTextAnswer, onOpenFlagConfirmAlert, user, question, onOpenAlert, userAnswers, isValidation,
+      onChangeTextAnswer, onOpenFlagConfirmAlert, user, question, userAnswers, isValidation,
       mergedUserQuestions, disableAll, userImages, enabledAnswerId, enabledUserId, annotationModeEnabled,
       areDocsEmpty, questionChangeLoader, hasTouchedQuestion, categories, saveFailed, onClearAnswer, onSaveFlag,
       selectedCategory, currentIndex, getNextQuestion, getPrevQuestion, totalLength, showNextButton,
-      isValidatorSelected, selectedCategoryId, actions
+      isValidatorSelected, selectedCategoryId, alert, actions
     } = this.props
-
+    
     const questionContentProps = {
       onChange: this.onChangeAnswer,
       onChangeTextAnswer: onChangeTextAnswer,
@@ -215,7 +236,7 @@ export class QuestionCard extends Component {
       currentUserInitials: getInitials(user.firstName, user.lastName),
       user,
       question,
-      onOpenAlert,
+      onApplyAll: this.onApplyAll,
       userAnswers: { validatedBy: { ...user }, ...userAnswers },
       comment: userAnswers.comment,
       isValidation,
@@ -230,51 +251,41 @@ export class QuestionCard extends Component {
       annotationModeEnabled,
       areDocsEmpty
     }
-
-    const { confirmAlertInfo, confirmAlertOpen, clearAnswerAlertOpen, isSaving } = this.state
-
-    const alertActions = [
-      {
-        value: 'Cancel',
-        type: 'button',
-        onClick: this.onCancel,
-        preferred: true
-      },
-      {
-        value: 'Continue',
-        type: 'button',
-        onClick: this.onContinue
-      }
-    ]
-
-    const clearAnswerActions = [
-      {
-        value: 'Cancel',
-        type: 'button',
-        onClick: this.onCancel,
-        preferred: true
-      },
-      {
-        value: 'Continue',
-        type: 'button',
-        onClick: () => {
-          this.onCancel()
-          onClearAnswer()
-          actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
+    
+    const { isSaving } = this.state
+    
+    this.alertActions = alert.type === 'disableAnnoMode'
+      ? [
+        {
+          value: 'Dismiss',
+          type: 'button',
+          onClick: () => {
+            this.props.actions.setAlert({ open: false })
+          },
+          preferred: true
         }
-      }
-    ]
-
+      ] : [
+        { value: 'Cancel', type: 'button', onClick: this.onCloseAlert, preferred: true },
+        {
+          value: 'Continue',
+          type: 'button',
+          onClick: () => {
+            if (alert.type === 'clearAnswer') {
+              onClearAnswer()
+              actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
+            } else {
+              this.props.onChange(alert.data.id)(alert.data.value)
+            }
+            this.props.actions.setAlert({ open: false })
+          }
+        }
+      ]
+    
     return (
       <FlexGrid container type="row" flex style={{ minWidth: '10%', flexBasis: '0%' }}>
-        <Alert actions={alertActions} title={confirmAlertInfo.title} open={confirmAlertOpen}>
+        <Alert actions={this.alertActions} title={alert.title} open={alert.open}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            {confirmAlertInfo.text}
-          </Typography>
-        </Alert>
-        <Alert actions={clearAnswerActions} open={clearAnswerAlertOpen}>
-          <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            Are you sure you want to clear your answer to this question?
+            {alert.text}
           </Typography>
         </Alert>
         <FlexGrid container flex raised style={{ width: '100%' }}>
@@ -337,7 +348,8 @@ export class QuestionCard extends Component {
 const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.coding
   const docState = state.scenes.codingValidation.documentList
-
+  const cardState = pageState.card
+  
   return {
     isValidation: ownProps.page === 'validation',
     user: state.data.user.currentUser || {},
@@ -366,11 +378,18 @@ const mapStateToProps = (state, ownProps) => {
     enabledUserId: docState.enabledUserId,
     annotationModeEnabled: docState.annotationModeEnabled,
     isValidatorSelected: docState.isValidatorSelected,
-    areDocsEmpty: docState.showEmptyDocs
+    areDocsEmpty: docState.showEmptyDocs,
+    showDisableAnnoMode: cardState.showDisableAnnoMode,
+    alert: cardState.alert
   }
 }
 
-const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
+const mapDispatchToProps = dispatch => ({
+  actions: {
+    ...bindActionCreators(actions, dispatch),
+    ...bindActionCreators(codingActions, dispatch)
+  }
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(QuestionCard)
 

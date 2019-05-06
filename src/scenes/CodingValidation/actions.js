@@ -1,5 +1,6 @@
 import makeActionCreator from 'utils/makeActionCreator'
 import { default as docListActions, types as docTypes } from './components/DocumentList/actions'
+import { default as cardActions } from './components/QuestionCard/actions'
 
 export const types = {
   UPDATE_EDITED_FIELDS: 'UPDATE_EDITED_FIELDS',
@@ -97,5 +98,6 @@ export default {
   clearFlag: makeActionCreator(types.CLEAR_FLAG, 'flagId', 'projectId', 'jurisdictionId', 'questionId'),
   clearRedFlag: makeActionCreator(types.CLEAR_RED_FLAG, 'flagId', 'questionId', 'projectId'),
   setPage: makeActionCreator(types.SET_PAGE, 'page'),
-  ...docListActions
+  ...docListActions,
+  ...cardActions
 }

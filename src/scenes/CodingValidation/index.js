@@ -91,7 +91,8 @@ export class CodingValidation extends Component {
     hasTouchedQuestion: PropTypes.bool,
     classes: PropTypes.object,
     objectExists: PropTypes.bool,
-    getRequestInProgress: PropTypes.bool
+    getRequestInProgress: PropTypes.bool,
+    annotationModeEnabled: PropTypes.bool
   }
   
   constructor(props, context) {
@@ -185,7 +186,9 @@ export class CodingValidation extends Component {
    * @param index
    */
   getNextQuestion = index => {
-    if (this.props.unsavedChanges) {
+    if (this.props.annotationModeEnabled) {
+      this.showDisableAnnoModeAlert()
+    } else if (this.props.unsavedChanges) {
       this.onShowStillSavingAlert(index, this.props.actions.getNextQuestion)
     } else {
       this.props.actions.getNextQuestion(
@@ -204,7 +207,9 @@ export class CodingValidation extends Component {
    * @param index
    */
   getPrevQuestion = index => {
-    if (this.props.unsavedChanges) {
+    if (this.props.annotationModeEnabled) {
+      this.showDisableAnnoModeAlert()
+    } else if (this.props.unsavedChanges) {
       this.onShowStillSavingAlert(index, this.props.actions.getPrevQuestion)
     } else {
       this.props.actions.getPrevQuestion(
@@ -223,7 +228,9 @@ export class CodingValidation extends Component {
    * @param item
    */
   onQuestionSelectedInNav = item => {
-    if (this.props.unsavedChanges) {
+    if (this.props.annotationModeEnabled) {
+      this.showDisableAnnoModeAlert()
+    } else if (this.props.unsavedChanges) {
       this.onShowStillSavingAlert(item, this.props.actions.onQuestionSelectedInNav)
     } else {
       this.props.actions.onQuestionSelectedInNav(
@@ -234,6 +241,15 @@ export class CodingValidation extends Component {
       )
       this.onShowQuestionLoader()
     }
+  }
+  
+  showDisableAnnoModeAlert = () => {
+    this.props.actions.setAlert({
+      open: true,
+      title: 'Close Annotation Mode',
+      text: 'You are currently in annotation mode. To make changes to your answer or to change questions or jurisdictions, please exit annotation mode by clicking the \'Done\' button.',
+      type: 'disableAnnoMode'
+    })
   }
   
   /**
@@ -253,16 +269,20 @@ export class CodingValidation extends Component {
    * @returns {Function}
    */
   onAnswer = id => (event, value) => {
-    this.props.actions.updateUserAnswer(
-      this.props.projectId,
-      this.props.jurisdiction.id,
-      this.props.question.id,
-      id,
-      value
-    )
-    
-    this.onChangeTouchedStatus()
-    this.onSaveCodedQuestion()
+    if (this.props.annotationModeEnabled) {
+      this.showDisableAnnoModeAlert()
+    } else {
+      this.props.actions.updateUserAnswer(
+        this.props.projectId,
+        this.props.jurisdiction.id,
+        this.props.question.id,
+        id,
+        value
+      )
+  
+      this.onChangeTouchedStatus()
+      this.onSaveCodedQuestion()
+    }
   }
   
   /**
@@ -286,22 +306,27 @@ export class CodingValidation extends Component {
    * @returns {Function}
    */
   onChangeTextAnswer = (id, field) => event => {
-    const { projectId, jurisdiction, question } = this.props
-    switch (field) {
-      case 'textAnswer':
-        this.props.actions.updateUserAnswer(projectId, jurisdiction.id, question.id, id, event.target.value)
-        break
-      
-      case 'comment':
-        this.props.actions.onChangeComment(projectId, jurisdiction.id, question.id, event.target.value)
-        break
-      
-      case 'pincite':
-        this.props.actions.onChangePincite(projectId, jurisdiction.id, question.id, id, event.target.value)
-    }
+    const { projectId, jurisdiction, question, annotationModeEnabled } = this.props
     
-    this.onChangeTouchedStatus()
-    this.onSaveCodedQuestion()
+    if (annotationModeEnabled && field !== 'pincite') {
+      this.showDisableAnnoModeAlert()
+    } else {
+      switch (field) {
+        case 'textAnswer':
+          this.props.actions.updateUserAnswer(projectId, jurisdiction.id, question.id, id, event.target.value)
+          break
+    
+        case 'comment':
+          this.props.actions.onChangeComment(projectId, jurisdiction.id, question.id, event.target.value)
+          break
+    
+        case 'pincite':
+          this.props.actions.onChangePincite(projectId, jurisdiction.id, question.id, id, event.target.value)
+      }
+  
+      this.onChangeTouchedStatus()
+      this.onSaveCodedQuestion()
+    }
   }
   
   /**
@@ -501,32 +526,36 @@ export class CodingValidation extends Component {
    * @param event
    */
   onJurisdictionChange = event => {
-    const { unsavedChanges, page, actions, projectId, jurisdictionList } = this.props
+    const { unsavedChanges, page, actions, projectId, jurisdictionList, annotationModeEnabled } = this.props
     
-    if (unsavedChanges) {
-      this.setState({
-        stillSavingAlertOpen: true,
-        changeMethod: {
-          type: 1,
-          method: page === 'coding'
-            ? actions.getUserCodedQuestions
-            : actions.getUserValidatedQuestionsRequest
-        },
-        changeProps: [projectId, event.target.value, page]
-      })
+    if (annotationModeEnabled) {
+      this.showDisableAnnoModeAlert()
     } else {
-      this.setState({ selectedJurisdiction: event.target.value })
-      const newIndex = jurisdictionList.findIndex(jur => jur.id === event.target.value)
-      actions.onChangeJurisdiction(newIndex)
-      
-      if (page === 'coding') {
-        actions.getUserCodedQuestions(projectId, event.target.value, page)
+      if (unsavedChanges) {
+        this.setState({
+          stillSavingAlertOpen: true,
+          changeMethod: {
+            type: 1,
+            method: page === 'coding'
+              ? actions.getUserCodedQuestions
+              : actions.getUserValidatedQuestionsRequest
+          },
+          changeProps: [projectId, event.target.value, page]
+        })
       } else {
-        actions.getUserValidatedQuestionsRequest(projectId, event.target.value, page)
+        this.setState({ selectedJurisdiction: event.target.value })
+        const newIndex = jurisdictionList.findIndex(jur => jur.id === event.target.value)
+        actions.onChangeJurisdiction(newIndex)
+    
+        if (page === 'coding') {
+          actions.getUserCodedQuestions(projectId, event.target.value, page)
+        } else {
+          actions.getUserValidatedQuestionsRequest(projectId, event.target.value, page)
+        }
+    
+        this.onShowQuestionLoader()
+        actions.getApprovedDocumentsRequest(projectId, jurisdictionList[newIndex].jurisdictionId, page)
       }
-      
-      this.onShowQuestionLoader()
-      actions.getApprovedDocumentsRequest(projectId, jurisdictionList[newIndex].jurisdictionId, page)
     }
   }
   
@@ -794,6 +823,7 @@ const mapStateToProps = (state, ownProps) => {
   const project = state.scenes.home.main.projects.byId[ownProps.match.params.id]
   const page = ownProps.match.url.split('/')[3] === 'code' ? 'coding' : 'validation'
   const pageState = state.scenes.codingValidation.coding
+  const docState = state.scenes.codingValidation.documentList
   
   return {
     projectName: project.name,
@@ -824,7 +854,8 @@ const mapStateToProps = (state, ownProps) => {
     unsavedChanges: pageState.unsavedChanges || false,
     hasTouchedQuestion: pageState.hasTouchedQuestion || false,
     objectExists: pageState.objectExists || false,
-    getRequestInProgress: pageState.getRequestInProgress
+    getRequestInProgress: pageState.getRequestInProgress,
+    annotationModeEnabled: docState.annotationModeEnabled
   }
 }
 

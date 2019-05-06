@@ -15,6 +15,7 @@ import {
 } from 'utils/codingHelpers'
 
 import documentListReducer, { INITIAL_STATE as docListInitialState } from './components/DocumentList/reducer'
+import cardReducer, { INITIAL_STATE as cardInitialState } from './components/QuestionCard/reducer'
 
 /**
  * Initial state for codingValidation reducer
@@ -54,7 +55,10 @@ export const INITIAL_STATE = {
 }
 
 export const COMBINED_INITIAL_STATE = {
-  coding: INITIAL_STATE,
+  coding: {
+    ...INITIAL_STATE,
+    card: cardInitialState
+  },
   documentList: docListInitialState
 }
 
@@ -549,7 +553,10 @@ const treeAndButton = intermediateState => {
 const codingValidationReducer = (state = COMBINED_INITIAL_STATE, action) => {
   return {
     documentList: documentListReducer(state.documentList, action),
-    coding: treeAndButton(codingReducer(state.coding, action))
+    coding: {
+      ...treeAndButton(codingReducer(state.coding, action)),
+      card: cardReducer(state.coding.card, action)
+    }
   }
 }
 

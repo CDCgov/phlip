@@ -19,7 +19,7 @@ const styles = () => ({
 export const QuestionContent = props => {
   const {
     question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
-    onChange, onChangeTextAnswer, onOpenAlert, onOpenFlagConfirmAlert, userImages,
+    onChange, onChangeTextAnswer, onApplyAll, onOpenFlagConfirmAlert, userImages,
     onToggleAnnotationMode, enabledAnswerId, enabledUserId, annotationModeEnabled,
     areDocsEmpty, classes, onToggleCoderAnnotations, isValidatorSelected
   } = props
@@ -106,7 +106,7 @@ export const QuestionContent = props => {
               {question.isCategoryQuestion &&
               <FlexGrid padding="15px 0 0">
                 <Button
-                  onClick={onOpenAlert}
+                  onClick={onApplyAll}
                   style={{ backgroundColor: 'white', color: 'black' }}
                   value="Apply to all tabs"
                 />
@@ -140,7 +140,7 @@ QuestionContent.propTypes = {
   isValidation: PropTypes.bool,
   disableAll: PropTypes.bool,
   onChangeTextAnswer: PropTypes.func,
-  onOpenAlert: PropTypes.func,
+  onApplyAll: PropTypes.func,
   onOpenFlagConfirmAlert: PropTypes.func,
   userImages: PropTypes.object,
   onToggleAnnotationMode: PropTypes.func,
