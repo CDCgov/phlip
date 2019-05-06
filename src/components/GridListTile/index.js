@@ -21,9 +21,7 @@ export const styles = {
   /* Styles applied to an `img` element child, if needed to ensure it covers the tile. */
   imgFullHeight: {
     height: '100%',
-    transform: 'translateX(-50%)',
-    position: 'relative',
-    left: '50%'
+    position: 'relative'
   },
   /* Styles applied to an `img` element child, if needed to ensure it covers the tile. */
   imgFullWidth: {
@@ -39,7 +37,7 @@ class GridListTile extends React.Component {
     if (typeof window !== 'undefined') {
       this.handleResize = debounce(() => {
         this.fit()
-      }, 166) // Corresponds to 10 frames at 60 Hz.
+      }, 166)
     }
   }
   
@@ -65,16 +63,20 @@ class GridListTile extends React.Component {
     const ratio = imgElement.width / imgElement.height
     const parentRatio = imgElement.parentNode.offsetWidth / imgElement.parentNode.offsetHeight
     const diff = Math.abs(ratio - parentRatio) * 100
+    const transform = Math.floor(diff)
     
     if (ratio > parentRatio) {
       // image is wider than it is tall
       imgElement.classList.remove(...this.props.classes.imgFullWidth.split(' '))
       imgElement.classList.add(...this.props.classes.imgFullHeight.split(' '))
+      imgElement.style.transform = `translateX(-${diff >= 50 ? 50 : transform}%)`
+      imgElement.style.left = `${diff >= 50 ? 50 : transform}%`
     } else {
       // image is taller than it is wide
       imgElement.classList.remove(...this.props.classes.imgFullHeight.split(' '))
       imgElement.classList.add(...this.props.classes.imgFullWidth.split(' '))
-      imgElement.style.transform = `translateY(-${Math.floor(diff)}%)`
+      imgElement.style.transform = `translateY(-${transform}%)`
+      imgElement.style.top = `${transform}%`
     }
     
     imgElement.removeEventListener('load', this.fit)
