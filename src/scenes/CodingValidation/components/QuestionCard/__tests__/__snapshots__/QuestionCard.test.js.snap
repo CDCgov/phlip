@@ -45,36 +45,6 @@ exports[`QuestionCard component should render correctly 1`] = `
       variant="body1"
     />
   </Alert>
-  <Alert
-    actions={
-      Array [
-        Object {
-          "onClick": [Function],
-          "preferred": true,
-          "type": "button",
-          "value": "Cancel",
-        },
-        Object {
-          "onClick": [Function],
-          "type": "button",
-          "value": "Continue",
-        },
-      ]
-    }
-    open={false}
-    title={null}
-  >
-    <WithStyles(Typography)
-      style={
-        Object {
-          "whiteSpace": "pre-wrap",
-        }
-      }
-      variant="body1"
-    >
-      Are you sure you want to clear your answer to this question?
-    </WithStyles(Typography)>
-  </Alert>
   <FlexGrid
     align="stretch"
     circular={false}
@@ -190,6 +160,7 @@ exports[`QuestionCard component should render correctly 1`] = `
         enabledUserId=""
         isValidation={false}
         mergedUserQuestions={Object {}}
+        onApplyAll={[Function]}
         onChange={[Function]}
         onToggleAnnotationMode={[Function]}
         onToggleCoderAnnotations={[Function]}

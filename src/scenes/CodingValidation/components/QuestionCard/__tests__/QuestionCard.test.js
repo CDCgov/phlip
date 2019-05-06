@@ -25,8 +25,43 @@ const props = {
   annotationModeEnabled: false,
   areDocsEmpty: false,
   actions: {
-    toggleAnnotationMode: jest.fn()
+    toggleAnnotationMode: jest.fn(),
+    setAlert: jest.fn(),
+    closeAlert: jest.fn()
+  },
+  alert: {
+    open: false,
+    title: '',
+    text: '',
+    data: {},
+    type: ''
   }
+}
+
+const annoModeAlert = {
+  open: true,
+  title: 'Close Annotation Mode',
+  text: 'You are currently in annotation mode. To make changes to your answer or to change questions, please exit annotation mode by clicking the \'Done\' button.',
+  type: 'disableAnnoMode'
+}
+
+const categoryAlert = {
+  text: 'Deselecting a category will remove any answers associated with this category. Do you want to continue?',
+  title: 'Warning',
+  type: 'changeAnswer',
+  data: { id: 2, value: 3 },
+  open: true
+}
+
+const changeAnswerAlert = {
+  ...categoryAlert,
+  text: 'Changing your answer will remove any pincites and annotations associated with this answer. Do you want to continue?'
+}
+
+const clearAlert = {
+  ...categoryAlert,
+  type: 'clearAnswer',
+  text: 'Are you sure you want to clear your answer?'
 }
 
 describe('QuestionCard component', () => {
@@ -62,7 +97,26 @@ describe('QuestionCard component', () => {
       }
     )
     
-    test('should call actions.toggleAnnotationMode with enabled === true and new answerId if enabled and enabledAnswerId !== parameter', () => {
+    test(
+      'should call actions.toggleAnnotationMode with enabled === true and new answerId if enabled and enabledAnswerId !== parameter',
+      () => {
+        const wrapper = shallow(
+          <QuestionCard
+            {...props}
+            annotationModeEnabled
+            enabledAnswerId={1}
+            userAnswers={{ answers: { 1: { schemeAnswerId: 1 } } }}
+          />
+        )
+        const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
+        wrapper.instance().onToggleAnnotationMode(2)()
+        expect(spy).toHaveBeenCalledWith(1, 2, true)
+      }
+    )
+  })
+  describe('changing answer', () => {
+    test('should call props.actions.setAlert with disable annotation mode info if annotation mode is enabled', () => {
+      const spy = jest.spyOn(props.actions, 'setAlert')
       const wrapper = shallow(
         <QuestionCard
           {...props}
@@ -71,14 +125,27 @@ describe('QuestionCard component', () => {
           userAnswers={{ answers: { 1: { schemeAnswerId: 1 } } }}
         />
       )
-      const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
-      wrapper.instance().onToggleAnnotationMode(2)()
-      expect(spy).toHaveBeenCalledWith(1, 2, true)
+      wrapper.instance().onChangeAnswer(2)({}, {})
+      expect(spy).toHaveBeenCalledWith(annoModeAlert)
     })
-  })
-  
-  describe('changing answer alert', () => {
+    
     describe('unselecting a category choice', () => {
+      test('should call props.setAlert with category question information', () => {
+        const spy = jest.spyOn(props.actions, 'setAlert')
+        const wrapper = shallow(<QuestionCard
+          {...props}
+          question={{ questionType: questionTypes.CATEGORY }}
+          userAnswers={{
+            answers: {
+              1: { schemeAnswerId: 1 },
+              2: { schemeAnswerId: 2 }
+            }
+          }}
+        />)
+        wrapper.instance().onChangeAnswer(2)({}, 3)
+        expect(spy).toHaveBeenCalledWith(categoryAlert)
+      })
+      
       test('should show an alert', () => {
         const wrapper = shallow(<QuestionCard
           {...props}
@@ -89,13 +156,14 @@ describe('QuestionCard component', () => {
               2: { schemeAnswerId: 2 }
             }
           }}
+          alert={categoryAlert}
         />)
-        wrapper.instance().onChangeAnswer(2)({}, {})
-        const alert = wrapper.find('Alert').at(0)
-        expect(alert.props().open).toEqual(true)
+        expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).text()).toEqual(categoryAlert.text)
+        expect(wrapper.find('Alert').at(0).prop('title')).toEqual(categoryAlert.title)
       })
       
-      test('alert should contain category specific text', () => {
+      test('should close the alert when \'Cancel\' button in alert is clicked', () => {
+        const spy = jest.spyOn(props.actions, 'closeAlert')
         const wrapper = shallow(<QuestionCard
           {...props}
           question={{ questionType: questionTypes.CATEGORY }}
@@ -105,102 +173,128 @@ describe('QuestionCard component', () => {
               2: { schemeAnswerId: 2 }
             }
           }}
+          alert={categoryAlert}
         />)
-        wrapper.instance().onChangeAnswer(2)({}, {})
-        const alert = wrapper.find('Alert').at(0).childAt(0).children()
-        expect(alert.text()).toEqual('Deselecting a category will remove any answers associated with this category. Do you want to continue?')
+        wrapper.find('Alert').at(0).prop('actions')[0].onClick()
+        expect(spy).toHaveBeenCalled()
+      })
+      
+      test('should change answer when \'Continue\' button in alert is clicked', () => {
+        const spy = jest.spyOn(props, 'onChange')
+        const wrapper = shallow(<QuestionCard
+          {...props}
+          question={{ questionType: questionTypes.CATEGORY }}
+          userAnswers={{
+            answers: {
+              1: { schemeAnswerId: 1 },
+              2: { schemeAnswerId: 2 }
+            }
+          }}
+          alert={categoryAlert}
+        />)
+        wrapper.find('Alert').at(0).prop('actions')[1].onClick()
+        expect(spy).toHaveBeenCalled()
       })
     })
     
-    test('should show an alert if the user tries to change a binary answer', () => {
-      const wrapper = shallow(<QuestionCard
-        {...props}
-        userAnswers={{
-          answers: {
-            1: { schemeAnswerId: 1 }
-          }
-        }}
-      />)
-      wrapper.instance().onChangeAnswer(2)({}, {})
-      const alert = wrapper.find('Alert').at(0)
-      expect(alert.props().open).toEqual(true)
-    })
-    
-    test('should show an alert if the user tries to change a multiple choice answer', () => {
-      const wrapper = shallow(<QuestionCard
-        {...props}
-        question={{ questionType: questionTypes.MULTIPLE_CHOICE }}
-        userAnswers={{
-          answers: {
-            2: { schemeAnswerId: 2 }
-          }
-        }}
-      />)
+    describe('changing a non-category answer', () => {
+      test('should call props.setAlert with changing answer alert information', () => {
+        const spy = jest.spyOn(props.actions, 'setAlert')
+        const wrapper = shallow(<QuestionCard
+          {...props}
+          userAnswers={{
+            answers: {
+              1: { schemeAnswerId: 1 }
+            }
+          }}
+        />)
+        wrapper.instance().onChangeAnswer(2)({}, 3)
+        expect(spy).toHaveBeenCalledWith(changeAnswerAlert)
+      })
       
-      wrapper.instance().onChangeAnswer(3)({}, {})
-      const alert = wrapper.find('Alert').at(0)
-      expect(alert.props().open).toEqual(true)
-    })
-    
-    test('should show an alert if the user tries to uncheck a selected checkbox answer', () => {
-      const wrapper = shallow(<QuestionCard
-        {...props}
-        question={{ questionType: questionTypes.CHECKBOXES }}
-        userAnswers={{
-          answers: {
-            1: { schemeAnswerId: 1 },
-            2: { schemeAnswerId: 2 }
-          }
-        }}
-      />)
+      test('should show an alert if the user tries to change a binary answer', () => {
+        const wrapper = shallow(<QuestionCard
+          {...props}
+          userAnswers={{
+            answers: {
+              1: { schemeAnswerId: 1 }
+            }
+          }}
+          alert={changeAnswerAlert}
+        />)
+        expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).text()).toEqual(changeAnswerAlert.text)
+        expect(wrapper.find('Alert').at(0).prop('title')).toEqual(changeAnswerAlert.title)
+      })
       
-      wrapper.instance().onChangeAnswer(2)({}, {})
-      const alert = wrapper.find('Alert').at(0)
-      expect(alert.props().open).toEqual(true)
-    })
-    
-    test('should not show an alert if the user has not answered the question', () => {
-      const wrapper = shallow(<QuestionCard
-        {...props}
-        question={{ questionType: questionTypes.MULTIPLE_CHOICE }}
-        userAnswers={{
-          answers: {}
-        }}
-      />)
+      test(
+        'should call props.setAlert with changing answer alert information if the user tries to change a multiple choice answer',
+        () => {
+          const spy = jest.spyOn(props.actions, 'setAlert')
+          const wrapper = shallow(<QuestionCard
+            {...props}
+            question={{ questionType: questionTypes.MULTIPLE_CHOICE }}
+            userAnswers={{
+              answers: {
+                3: { schemeAnswerId: 3 }
+              }
+            }}
+          />)
+          
+          wrapper.instance().onChangeAnswer(2)({}, 3)
+          expect(spy).toHaveBeenCalledWith(changeAnswerAlert)
+        }
+      )
       
-      wrapper.instance().onChangeAnswer(2)({}, {})
-      const alert = wrapper.find('Alert').at(0)
-      expect(alert.props().open).toEqual(false)
-    })
-    
-    test('should not show an alert if the user has not chosen the selected checkbox', () => {
-      const wrapper = shallow(<QuestionCard
-        {...props}
-        question={{ questionType: questionTypes.CHECKBOXES }}
-        userAnswers={{
-          answers: {
-            4: { schemeAnswerId: 4 }
-          }
-        }}
-      />)
+      test(
+        'should call props.setAlert with changing answer alert information if the user tries to uncheck a selected checkbox answer',
+        () => {
+          const spy = jest.spyOn(props.actions, 'setAlert')
+          const wrapper = shallow(<QuestionCard
+            {...props}
+            question={{ questionType: questionTypes.CHECKBOXES }}
+            userAnswers={{
+              answers: {
+                1: { schemeAnswerId: 1 },
+                2: { schemeAnswerId: 2 }
+              }
+            }}
+          />)
+          
+          wrapper.instance().onChangeAnswer(2)({}, 3)
+          expect(spy).toHaveBeenCalledWith(changeAnswerAlert)
+        }
+      )
       
-      wrapper.instance().onChangeAnswer(2)({}, {})
-      const alert = wrapper.find('Alert').at(0)
-      expect(alert.props().open).toEqual(false)
-    })
-    
-    test('should call this.props.onChange if the user has not answered the question', () => {
-      const spy = jest.spyOn(props, 'onChange')
-      const wrapper = shallow(<QuestionCard
-        {...props}
-        question={{ questionType: questionTypes.CHECKBOXES }}
-        userAnswers={{
-          answers: {}
-        }}
-      />)
+      test('should not show an alert if the user has not answered the question', () => {
+        const wrapper = shallow(<QuestionCard
+          {...props}
+          question={{ questionType: questionTypes.MULTIPLE_CHOICE }}
+          userAnswers={{
+            answers: {}
+          }}
+        />)
+        
+        wrapper.instance().onChangeAnswer(2)({}, {})
+        const alert = wrapper.find('Alert').at(0)
+        expect(alert.props().open).toEqual(false)
+      })
       
-      wrapper.instance().onChangeAnswer(2)({}, {})
-      expect(spy).toHaveBeenCalled()
+      test('should not show an alert if the user has not chosen the selected checkbox', () => {
+        const wrapper = shallow(<QuestionCard
+          {...props}
+          question={{ questionType: questionTypes.CHECKBOXES }}
+          userAnswers={{
+            answers: {
+              4: { schemeAnswerId: 4 }
+            }
+          }}
+        />)
+        
+        wrapper.instance().onChangeAnswer(2)({}, {})
+        const alert = wrapper.find('Alert').at(0)
+        expect(alert.props().open).toEqual(false)
+      })
+      
     })
   })
 })
