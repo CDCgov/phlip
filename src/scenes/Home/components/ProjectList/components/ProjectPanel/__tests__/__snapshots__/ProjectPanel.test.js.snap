@@ -103,29 +103,14 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
               cellHeight={300}
               cols={1}
               rows={1}
-              spacing={4}
+              spacing={2}
               style={
                 Object {
                   "margin": 0,
                   "width": 300,
                 }
               }
-            >
-              <WithStyles(GridListTile)
-                cols={1}
-                key="2-blank-0"
-                rows={1}
-              >
-                <div
-                  style={
-                    Object {
-                      "backgroundColor": "#f9f9f9",
-                      "height": 300,
-                    }
-                  }
-                />
-              </WithStyles(GridListTile)>
-            </WithStyles(GridList)>
+            />
           </FlexGrid>
           <FlexGrid
             align="stretch"
@@ -692,7 +677,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly when ex
               cellHeight={300}
               cols={1}
               rows={1}
-              spacing={4}
+              spacing={2}
               style={
                 Object {
                   "margin": 0,
@@ -701,15 +686,14 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly when ex
               }
             >
               <WithStyles(GridListTile)
-                cols={1}
                 key="2-blank-0"
-                rows={1}
               >
                 <div
                   style={
                     Object {
                       "backgroundColor": "#f9f9f9",
                       "height": 300,
+                      "width": "100%",
                     }
                   }
                 />

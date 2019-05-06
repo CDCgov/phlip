@@ -28,9 +28,7 @@ export const styles = {
   /* Styles applied to an `img` element child, if needed to ensure it covers the tile. */
   imgFullWidth: {
     width: '100%',
-    position: 'relative',
-    transform: 'translateY(-50%)',
-    top: '50%'
+    position: 'relative'
   }
 }
 
@@ -64,30 +62,33 @@ class GridListTile extends React.Component {
       return
     }
     
-    if (
-      imgElement.width / imgElement.height >
-      imgElement.parentNode.offsetWidth / imgElement.parentNode.offsetHeight
-    ) {
+    const ratio = imgElement.width / imgElement.height
+    const parentRatio = imgElement.parentNode.offsetWidth / imgElement.parentNode.offsetHeight
+    const diff = Math.abs(ratio - parentRatio) * 100
+    
+    if (ratio > parentRatio) {
+      // image is wider than it is tall
       imgElement.classList.remove(...this.props.classes.imgFullWidth.split(' '))
       imgElement.classList.add(...this.props.classes.imgFullHeight.split(' '))
     } else {
+      // image is taller than it is wide
       imgElement.classList.remove(...this.props.classes.imgFullHeight.split(' '))
       imgElement.classList.add(...this.props.classes.imgFullWidth.split(' '))
+      imgElement.style.transform = `translateY(-${Math.floor(diff)}%)`
     }
     
-    //imgElement.removeEventListener('load', this.fit)
+    imgElement.removeEventListener('load', this.fit)
   }
   
   ensureImageCover() {
-    console.log(this.imgElement)
     if (!this.imgElement) {
       return
     }
     
     if (this.imgElement.complete) {
-      //this.fit()
+      this.fit()
     } else {
-      //this.imgElement.addEventListener('load', this.fit)
+      this.imgElement.addEventListener('load', this.fit)
     }
   }
   

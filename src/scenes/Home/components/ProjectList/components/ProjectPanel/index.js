@@ -4,17 +4,14 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from 'scenes/Home/actions'
 import moment from 'moment'
-//import GridList from '@material-ui/core/GridList'
-//import GridListTile from '@material-ui/core/GridListTile'
+import GridList from '@material-ui/core/GridList'
 import Typography from '@material-ui/core/Typography'
 import Collapse from '@material-ui/core/Collapse'
-import { FlexGrid, IconButton, TextLink, Link, Button } from 'components'
+import { FlexGrid, IconButton, TextLink, Link, Button, GridListTile } from 'components'
 import { FileDocument, City, FormatListBulleted, ClipboardCheckOutline, FileExport } from 'mdi-material-ui'
 import ProjectRow from './components/ProjectRow'
 import silhouette from './silhouette.png'
 import theme from 'services/theme'
-import GridList from 'components/GridList'
-import GridListTile from 'components/GridListTile'
 
 export class ProjectPanel extends Component {
   static propTypes = {
@@ -106,7 +103,7 @@ export class ProjectPanel extends Component {
     const createdDate = moment.utc(project.dateCreated).local().format('M/D/YYYY')
     
     const { square, size } = this.determineGridSize()
-    const userData = this.populateUsers(square)
+    const userData = expanded ? this.populateUsers(square) : []
     const avatarCols = size, avatarRows = size, cellHeight = 300 / size
     
     const rowStyles = {
@@ -185,11 +182,11 @@ export class ProjectPanel extends Component {
                                   justify="center"
                                   align="flex-end"
                                   title={coder.username}
-                                  style={{ height: '100%', backgroundColor: '#f9f9f9' }}>
+                                  style={{ backgroundColor: '#f9f9f9' }}>
                                   <img
                                     src={silhouette}
                                     alt={`${coder.username}'s avatar`}
-                                    style={{ width: '100%', height: '100%' }}
+                                    style={{ width: '100%', height: cellHeight }}
                                   />
                                   <Typography
                                     style={{
@@ -211,10 +208,9 @@ export class ProjectPanel extends Component {
                                   alt={`avatar-${coder.lastName}`}
                                   src={coder.avatar}
                                   title={coder.username}
-                                  style={{ width: '100%' }}
                                 />
                               )
-                          ) : <div style={{ backgroundColor: '#f9f9f9', height: cellHeight }} />}
+                          ) : <div style={{ backgroundColor: '#f9f9f9', width: '100%', height: cellHeight }} />}
                         </GridListTile>
                       )
                     })}
