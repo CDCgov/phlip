@@ -139,7 +139,8 @@ export class QuestionCard extends Component {
         open: true,
         title: 'Warning',
         text: 'Are you sure you want to clear your answer?',
-        type: 'clearAnswer'
+        type: 'clearAnswer',
+        data: {}
       })
     }
   }
@@ -263,9 +264,7 @@ export class QuestionCard extends Component {
         {
           value: 'Dismiss',
           type: 'button',
-          onClick: () => {
-            this.props.actions.setAlert({ open: false })
-          }
+          onClick: this.onCloseAlert
         }
       ] : [
         { value: 'Cancel', type: 'button', onClick: this.onCloseAlert, preferred: true },
@@ -348,6 +347,7 @@ export class QuestionCard extends Component {
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.coding
   const docState = state.scenes.codingValidation.documentList

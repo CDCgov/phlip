@@ -6,7 +6,10 @@ import * as questionTypes from '../../../constants'
 const props = {
   question: { id: 1, answers: [], questionType: questionTypes.BINARY },
   userAnswers: {},
-  onChange: (id) => jest.fn(),
+  onChange: () => jest.fn(),
+  onChangeCategory: () => jest.fn(),
+  onClearAnswer: jest.fn(),
+  onOpenAlert: jest.fn(),
   isValidation: false,
   user: { id: 5, firstName: 'test', lastName: 'user' },
   categories: [],
@@ -27,7 +30,8 @@ const props = {
   actions: {
     toggleAnnotationMode: jest.fn(),
     setAlert: jest.fn(),
-    closeAlert: jest.fn()
+    closeAlert: jest.fn(),
+    toggleCoderAnnotations: jest.fn()
   },
   alert: {
     open: false,
@@ -61,7 +65,8 @@ const changeAnswerAlert = {
 const clearAlert = {
   ...categoryAlert,
   type: 'clearAnswer',
-  text: 'Are you sure you want to clear your answer?'
+  text: 'Are you sure you want to clear your answer?',
+  data: {}
 }
 
 describe('QuestionCard component', () => {
@@ -114,6 +119,7 @@ describe('QuestionCard component', () => {
       }
     )
   })
+  
   describe('changing answer', () => {
     test('should call props.actions.setAlert with disable annotation mode info if annotation mode is enabled', () => {
       const spy = jest.spyOn(props.actions, 'setAlert')
@@ -294,7 +300,160 @@ describe('QuestionCard component', () => {
         const alert = wrapper.find('Alert').at(0)
         expect(alert.props().open).toEqual(false)
       })
-      
+    })
+  })
+  
+  describe('toggling coder annotations', () => {
+    test('should show an alert if currently in annotation mode', () => {
+      const spy = jest.spyOn(props.actions, 'setAlert')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.instance().onToggleCoderAnnotations(2, 2, false)()
+      expect(spy).toHaveBeenCalledWith(annoModeAlert)
+    })
+    
+    test('should call toggleCoderAnnotations if not in annotation mode', () => {
+      const spy = jest.spyOn(props.actions, 'toggleCoderAnnotations')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+      />)
+      wrapper.instance().onToggleCoderAnnotations(2, 2, false)()
+      expect(spy).toHaveBeenCalledWith(1, 2, 2, false)
+    })
+  })
+  
+  describe('changing categories', () => {
+    test('should show an alert if currently in annotation mode', () => {
+      const spy = jest.spyOn(props.actions, 'setAlert')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.instance().onChangeCategory({}, 2)
+      expect(spy).toHaveBeenCalledWith(annoModeAlert)
+    })
+    
+    test('should change categories if not in annotation mode', () => {
+      const spy = jest.spyOn(props, 'onChangeCategory')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+      />)
+      wrapper.instance().onChangeCategory({}, 2)
+      expect(spy).toHaveBeenCalled()
+    })
+  })
+  
+  describe('clearing answer', () => {
+    test('should call props.actions.setAlert with disable annotation mode info if annotation mode is enabled', () => {
+      const spy = jest.spyOn(props.actions, 'setAlert')
+      const wrapper = shallow(
+        <QuestionCard
+          {...props}
+          annotationModeEnabled
+          enabledAnswerId={1}
+          userAnswers={{ answers: { 1: { schemeAnswerId: 1 } } }}
+        />
+      )
+      wrapper.instance().onClearAnswer()
+      expect(spy).toHaveBeenCalledWith(annoModeAlert)
+    })
+    
+    test('should call props.setAlert with clear answer alert information if not in annotation mode', () => {
+      const spy = jest.spyOn(props.actions, 'setAlert')
+      const wrapper = shallow(
+        <QuestionCard
+          {...props}
+          enabledAnswerId={1}
+          userAnswers={{ answers: { 1: { schemeAnswerId: 1 } } }}
+        />
+      )
+      wrapper.instance().onClearAnswer()
+      expect(spy).toHaveBeenCalledWith(clearAlert)
+    })
+  
+    test('should close the alert when \'Cancel\' button in alert is clicked', () => {
+      const spy = jest.spyOn(props.actions, 'closeAlert')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 },
+            2: { schemeAnswerId: 2 }
+          }
+        }}
+        alert={clearAlert}
+      />)
+      wrapper.find('Alert').at(0).prop('actions')[0].onClick()
+      expect(spy).toHaveBeenCalled()
+    })
+  
+    test('should clear answer when \'Continue\' button in alert is clicked', () => {
+      const spy = jest.spyOn(props, 'onClearAnswer')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 },
+            2: { schemeAnswerId: 2 }
+          }
+        }}
+        alert={clearAlert}
+      />)
+      wrapper.find('Alert').at(0).prop('actions')[1].onClick()
+      expect(spy).toHaveBeenCalled()
+    })
+  })
+  
+  describe('applying answer to all categories', () => {
+    test('should show an alert if currently in annotation mode', () => {
+      const spy = jest.spyOn(props.actions, 'setAlert')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+        annotationModeEnabled
+      />)
+      wrapper.instance().onApplyAll()
+      expect(spy).toHaveBeenCalledWith(annoModeAlert)
+    })
+    
+    test('should apply to all categories if not in annotation mode', () => {
+      const spy = jest.spyOn(props, 'onOpenAlert')
+      const wrapper = shallow(<QuestionCard
+        {...props}
+        userAnswers={{
+          answers: {
+            1: { schemeAnswerId: 1 }
+          }
+        }}
+      />)
+      wrapper.instance().onApplyAll()
+      expect(spy).toHaveBeenCalled()
     })
   })
 })
