@@ -19,6 +19,7 @@ import ApiErrorAlert from 'components/ApiErrorAlert'
 import DocumentView from './DocumentView'
 import actions from './actions'
 import CodingValidation from './CodingValidation'
+import AvatarForm from './Admin/scenes/AddEditUser/components/AvatarForm'
 
 /** Paths that aren't accessible by users with 'Coder' role */
 const nonCoderPaths = [
@@ -56,12 +57,12 @@ class Main extends Component {
     user: PropTypes.object,
     pdfError: PropTypes.any
   }
-
+  
   constructor(props, context) {
     super(props, context)
-
+    
     this.helpPdfRef = React.createRef()
-
+    
     this.state = {
       menuOpen: false,
       menuTabs: [
@@ -77,20 +78,21 @@ class Main extends Component {
           location: '/docs',
           icon: 'description'
         }
-      ]
+      ],
+      previousLocation: props.location
     }
   }
-
+  
   componentDidUpdate(prevProps) {
     if (prevProps.pdfFile === null && this.props.pdfFile !== null) {
       this.openHelpPdf(this.props.pdfFile)
     }
-
+    
     const prev = prevProps.location.pathname.split('/')[1]
     const current = this.props.location.pathname.split('/')[1]
-
+    
     const tabs = [...this.state.menuTabs]
-
+    
     if (prev !== current) {
       if (current === 'docs') {
         tabs[1].active = true
@@ -99,34 +101,39 @@ class Main extends Component {
         tabs[0].active = true
         tabs[1].active = false
       }
-
+      
       this.setState({
-        menuTabs: tabs
+        menuTabs: tabs,
+        previousLocation: prevProps.location
       })
     }
   }
-
+  
   /**
    * Checks if the route path is a modal view.
    *
-   * @param pathname
-   * @param role
+   * @param location
    * @returns {Object}
    */
-  checkForModalMatch = (pathname, role) => {
-    let location = pathname
-    if (matchPath(pathname, { path: modalPath }) !== null) {
-      location = '/home'
+  checkForModalMatch = location => {
+    let loc = location.state !== undefined
+      ? location.state.modal
+        ? this.state.previousLocation
+        : location
+      : location
+    
+    if (matchPath(location.pathname, { path: modalPath }) !== null) {
+      loc.pathname = '/home'
     }
-
+    
     nonCoderPaths.forEach(path => {
-      const match = matchPath(pathname, { path })
-      if (match !== null) location = '/home'
+      const match = matchPath(location.pathname, { path })
+      if (match !== null) loc.pathname = '/home'
     })
-
-    return location
+    
+    return loc
   }
-
+  
   /**
    * Handles when the top level menu changes
    * @param index
@@ -141,7 +148,7 @@ class Main extends Component {
       }))
     })
   }
-
+  
   /**
    * Logs out a user
    */
@@ -149,7 +156,7 @@ class Main extends Component {
     this.props.actions.logoutUser()
     this.props.history.push('/login')
   }
-
+  
   /**
    * Handles when the user click 'Help Guide' in the avatar menu
    * @public
@@ -158,7 +165,7 @@ class Main extends Component {
     this.handleToggleMenu()
     this.props.actions.downloadPdfRequest()
   }
-
+  
   /**
    * Creates an object url from the pdfFile and attaches the hidden `<a>` element to it
    * @public
@@ -171,7 +178,7 @@ class Main extends Component {
     this.helpPdfRef.current.click()
     this.props.actions.clearPdfFile()
   }
-
+  
   /**
    * Closes the error alert when the user clicks 'dismiss'
    * @public
@@ -179,7 +186,7 @@ class Main extends Component {
   closeDownloadErrorAlert = () => {
     this.props.actions.resetDownloadError()
   }
-
+  
   /**
    * Opens user menu in header
    */
@@ -188,42 +195,56 @@ class Main extends Component {
       menuOpen: !this.state.menuOpen
     })
   }
-
+  
   /**
    * Navigates to the User Management page (clicked from the user menu)
    */
-  handleOpenAdminPage = () => {
+  handleOpenAdminPage = (files = null) => {
     const tabs = [...this.state.menuTabs]
-
+    
     if (this.state.menuTabs[1].active) {
       tabs[1].active = false
       tabs[0].active = true
     }
-
+    
     this.setState({
       menuOpen: false,
       menuTabs: tabs
     })
-
-    this.props.history.push('/admin')
+    
+    if (this.props.user.role === 'Admin') {
+      this.props.history.push('/admin')
+    } else {
+      this.props.history.push({
+        pathname: `/user/${this.props.user.id}/avatar`,
+        state: {
+          isEdit: this.props.user.avatar,
+          avatar: this.props.user.avatar || files.base64,
+          userId: this.props.user.id,
+          modal: true,
+          ownAvatar: true
+        }
+      })
+    }
   }
-
+  
   logoutUserOnIdle = () => {
     this.props.actions.logoutUser(true)
   }
-
+  
   render() {
-    const { location, role, actions, isLoggedIn, isRefreshing, user, pdfError } = this.props
+    const { location, actions, isLoggedIn, isRefreshing, user, pdfError } = this.props
     const { menuTabs, menuOpen } = this.state
-
-    // This is for jurisdictions / add/edit project modals. We want the modals to be displayed on top of the home screen,
-    // so we check if it's one of those routes and if it is set the location to /home
-    const currentLocation = { ...location, pathname: this.checkForModalMatch(location.pathname, role) }
+    
+    // This is for jurisdictions / add/edit project modals. We want the modals to be displayed on top of the home
+    // screen, so we check if it's one of those routes and if it is set the location to /home
+    const currentLocation = this.checkForModalMatch(location)
     if (!isRefreshing && isLoggedIn) actions.startRefreshJwt()
+    
     const containerType = location.pathname.endsWith('/code') || location.pathname.endsWith('/validate')
       ? 'row'
       : 'column'
-
+    
     return (
       <FlexGrid container type="column" flex style={{ overflow: 'hidden' }}>
         <IdleTimer onIdle={this.logoutUserOnIdle} timeout={900000} />
@@ -239,20 +260,55 @@ class Main extends Component {
         />
         <FlexGrid container type={containerType} flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
           <Switch location={currentLocation}>
-            <Route path="/docs/:id/view" render={(props) => <DocumentView {...props} title= {`${appName} - Document View`} />} />
-            <Route path="/docs" render={(props) => <DocumentManagement {...props} title={`${appName} - Document List`} />} />
-            <Route path="/project/:id/(code|validate)" render={(props) => <CodingValidation {...props} title={`${appName} - Coding Validation`} />} />
-            <Route path="/admin" render={(props) => <Admin {...props} title='PHLIP - Admin ' />} />
-            <Route strict path="/project/:id/coding-scheme" render={(props) => <CodingScheme {...props} title={`${appName} - Coding Scheme`} />} />
-            <Route strict path="/project/:id/protocol" render={(props) => <Protocol {...props} title={`${appName} - Protocol`} />} />
+            <Route
+              path="/docs/:id/view"
+              render={(props) => <DocumentView {...props} title={`${appName} - Document View`} />}
+            />
+            <Route
+              path="/docs"
+              render={(props) => <DocumentManagement {...props} title={`${appName} - Document List`} />}
+            />
+            <Route
+              path="/project/:id/(code|validate)"
+              render={(props) => <CodingValidation {...props} title={`${appName} - Coding Validation`} />}
+            />
+            <Route path="/admin" render={(props) => <Admin {...props} title="PHLIP - Admin " />} />
+            <Route
+              strict
+              path="/project/:id/coding-scheme"
+              render={(props) => <CodingScheme {...props} title={`${appName} - Coding Scheme`} />}
+            />
+            <Route
+              strict
+              path="/project/:id/protocol"
+              render={(props) => <Protocol {...props} title={`${appName} - Protocol`} />}
+            />
             <Route path="/home" render={(props) => <Home {...props} title={`${appName} - Home`} />} />
             <Route path="/" exact render={() => <Redirect to={{ pathname: '/home' }} />} />
           </Switch>
-          <Route path="/project/edit/:id" render={(props) => <AddEditProject {...props} title={`${appName} - Edit Project`} />} />
-          <Route path="/project/add" render={(props) => <AddEditProject {...props} title={`${appName} - Add Project`} />} />
-          <Route path="/project/:id/jurisdictions" render={(props) => <AddEditJurisdictions {...props} title={`${appName} - Project Jurisdictions`} />} />
-          <Route path="/project/:id/jurisdictions/:jid/edit" render={(props) => <JurisdictionForm {...props} title={`${appName} - Edit Jurisdiction`} />} />
-          <Route path="/project/:id/jurisdictions/add" render={(props) => <JurisdictionForm {...props} title={`${appName} - Add Jurisdiction`} />} />
+          <Route
+            path="/project/edit/:id"
+            render={(props) => <AddEditProject {...props} title={`${appName} - Edit Project`} />}
+          />
+          <Route
+            path="/project/add"
+            render={(props) => <AddEditProject {...props} title={`${appName} - Add Project`} />}
+          />
+          
+          <Route path="/user/:id/avatar" component={AvatarForm} />
+          
+          <Route
+            path="/project/:id/jurisdictions"
+            render={(props) => <AddEditJurisdictions {...props} title={`${appName} - Project Jurisdictions`} />}
+          />
+          <Route
+            path="/project/:id/jurisdictions/:jid/edit"
+            render={(props) => <JurisdictionForm {...props} title={`${appName} - Edit Jurisdiction`} />}
+          />
+          <Route
+            path="/project/:id/jurisdictions/add"
+            render={(props) => <JurisdictionForm {...props} title={`${appName} - Add Jurisdiction`} />}
+          />
           <ApiErrorAlert content={pdfError} open={pdfError !== ''} onCloseAlert={this.closeDownloadErrorAlert} />
           <a style={{ display: 'none' }} ref={this.helpPdfRef} />
         </FlexGrid>

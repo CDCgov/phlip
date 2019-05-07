@@ -4,13 +4,12 @@ import { findDOMNode } from 'react-dom'
 import Grid from '@material-ui/core/Grid'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import Icon from 'components/Icon'
-import Avatar from 'components/Avatar'
 import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
 import Paper from '@material-ui/core/Paper'
 import { Manager, Reference, Popper } from 'react-popper'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
+import { Icon, Avatar, ImageFileReader } from 'components'
 
 export class AvatarMenu extends Component {
   constructor(props, context) {
@@ -44,6 +43,22 @@ export class AvatarMenu extends Component {
       role, initials, userName, open, onLogoutUser, onOpenAdminPage, onToggleMenu, onOpenHelpPdf, avatar
     } = this.props
     
+    const AdminItem = () => (
+      <MenuItem
+        onClick={role === 'Admin' ? onOpenAdminPage : avatar ? onOpenAdminPage : null}
+        key="admin-menu"
+        ref={this.setFirstMenuItem}>
+        <ListItemIcon>
+          <Icon color="accent">{role === 'Admin' ? 'person' : 'add_a_photo'}</Icon>
+        </ListItemIcon>
+        <ListItemText
+          style={{ color: '#5f6060' }}
+          disableTypography
+          primary={role === 'Admin' ? 'User Management' : 'Manage Profile Picture'}
+        />
+      </MenuItem>
+    )
+    
     return (
       <ClickAwayListener onClickAway={this.handleClickAway}>
         <Grid item style={{ zIndex: 2 }}>
@@ -71,10 +86,7 @@ export class AvatarMenu extends Component {
                 )
               }}
             </Reference>
-            <Popper
-              placement="bottom-end"
-              eventsEnabled={open}
-              style={{ pointerEvents: open ? 'auto' : 'none' }}>
+            <Popper placement="bottom-end" eventsEnabled={open} style={{ pointerEvents: open ? 'auto' : 'none' }}>
               {({ placement, ref, style }) => {
                 return (
                   open &&
@@ -85,16 +97,9 @@ export class AvatarMenu extends Component {
                         aria-expanded={open}
                         id="avatar-user-menu"
                         aria-labelledby="avatar-menu-button">
-                        <MenuItem onClick={onOpenAdminPage} key="admin-menu" ref={this.setFirstMenuItem}>
-                          <ListItemIcon>
-                            <Icon color="accent">{role === 'Admin' ? 'person' : 'add_a_photo'}</Icon>
-                          </ListItemIcon>
-                          <ListItemText
-                            style={{ color: '#5f6060' }}
-                            disableTypography
-                            primary={role === 'Admin' ? 'User Management' : 'Upload Profile Photo'}
-                          />
-                        </MenuItem>
+                        {avatar
+                          ? <AdminItem />
+                          : <ImageFileReader handleFiles={onOpenAdminPage}><AdminItem /></ImageFileReader>}
                         <MenuItem
                           onClick={onLogoutUser}
                           key="logout-menu"

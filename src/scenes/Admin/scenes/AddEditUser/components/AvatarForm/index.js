@@ -3,10 +3,9 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
-import Avatar from 'components/Avatar'
+import { Avatar } from 'components'
 import Divider from '@material-ui/core/Divider'
 import { withRouter } from 'react-router'
-import Container from 'components/Layout'
 import actions from '../../actions'
 import { default as formActions } from 'redux-form/lib/actions'
 
@@ -18,40 +17,39 @@ export class AvatarForm extends Component {
     actions: PropTypes.object,
     selectedUser: PropTypes.object
   }
-
+  
   constructor(props, context) {
     super(props, context)
-    this.state = {
-      editFile: this.props.location.state,
-      userId: this.props.location.state.userId,
-      isEdit: this.props.location.state.isEdit
-    }
   }
-
+  
   onCloseModal = () => {
     this.props.history.goBack()
   }
-
+  
   handleSubmit = () => {
-    const base64Image = this.state.editFile.file.base64
+    const { location, actions, history, selectedUser, currentUser } = this.props
+    
+    const base64Image = location.state.avatar
     let patchOperation = [{ 'op': 'replace', 'path': '/avatar', 'value': base64Image }]
-
-    this.props.actions.addUserPictureRequest(this.state.userId, patchOperation, this.props.selectedUser)
-    if (this.state.userId === this.props.currentUser.id) {
-      this.props.actions.updateCurrentUserAvatar(this.state.editFile.file.base64)
+    
+    actions.addUserPictureRequest(location.state.userId, patchOperation, selectedUser)
+    if (location.state.userId === currentUser.id) {
+      actions.updateCurrentUserAvatar(location.state.avatar)
     }
-    this.props.history.goBack()
+    history.goBack()
   }
-
+  
   handleDeleteAvatar = () => {
+    const { location, actions, history, selectedUser, currentUser } = this.props
+    
     const patchRemoveOperation = [{ 'op': 'remove', 'path': '/avatar' }]
-    this.props.actions.deleteUserPictureRequest(this.state.userId, patchRemoveOperation, this.props.selectedUser)
-    if (this.state.userId === this.props.currentUser.id) {
-      this.props.actions.removeCurrentUserAvatar()
+    actions.deleteUserPictureRequest(location.state.userId, patchRemoveOperation, selectedUser)
+    if (location.state.userId === currentUser.id) {
+      actions.removeCurrentUserAvatar()
     }
-    this.props.history.goBack()
+    history.goBack()
   }
-
+  
   render() {
     const formActions = [
       {
@@ -67,37 +65,44 @@ export class AvatarForm extends Component {
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
+    
     const formEditActions = [
       { value: 'Cancel', onClick: this.onCloseModal, type: 'button' },
       { value: 'Remove', onClick: this.handleDeleteAvatar, type: 'button' }
     ]
+    
+    const { location, selectedUser } = this.props
+    
     return (
-      <Modal onClose={this.onCloseModal} open={true} maxWidth="xs" height="450px" width="315px">
-        <ModalTitle title={this.state.isEdit ? 'View image' : 'Preview image'} />
+      <Modal onClose={this.onCloseModal} open maxWidth="xs" height="450px" width="315px">
+        <ModalTitle title={location.state.isEdit ? 'View image' : 'Preview image'} />
         <Divider />
-        <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
-          {this.state.isEdit
+        <ModalContent
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: 280,
+            paddingTop: 24,
+            alignItems: 'center'
+          }}>
+          {location.state.isEdit
             ? (
-              <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
-                <Avatar
-                  cardAvatar
-                  style={{ width: '200px', height: '200px' }}
-                  avatar={this.props.location.state.avatar}
-                  userName={`${this.props.selectedUser.firstName} ${this.props.selectedUser.lastName}`}
-                />
-              </Container>
+              <Avatar
+                cardAvatar
+                style={{ width: '200px', height: '200px' }}
+                avatar={location.state.avatar}
+                userName={`${selectedUser.firstName} ${selectedUser.lastName}`}
+              />
             )
             : (
-              <Container flex style={{ padding: '15px 0 0 38px', width: '280px' }}>
-                <Avatar
-                  cardAvatar
-                  style={{ width: '200px', height: '200px' }}
-                  avatar={this.state.editFile.file.base64}
-                />
-              </Container>
+              <Avatar
+                cardAvatar
+                style={{ width: '200px', height: '200px' }}
+                avatar={location.state.avatar}
+              />
             )}
         </ModalContent>
-        <ModalActions actions={this.state.isEdit ? formEditActions : formActions} />
+        <ModalActions actions={location.state.isEdit ? formEditActions : formActions} />
       </Modal>
     )
   }
@@ -105,7 +110,9 @@ export class AvatarForm extends Component {
 
 const mapStateToProps = (state, ownProps) => ({
   currentUser: state.data.user.currentUser || {},
-  selectedUser: state.scenes.admin.main.users.find(user => user.id === ownProps.location.state.userId)
+  selectedUser: ownProps.location.state.ownAvatar
+    ? state.data.user.currentUser
+    : state.scenes.admin.main.users.find(user => user.id === ownProps.location.state.userId)
 })
 
 const mapDispatchToProps = (dispatch) => ({

@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import FlexGrid from 'components/FlexGrid'
-import Logo from 'components/Logo'
+import { FlexGrid, Logo } from 'components'
 import HeaderTabs from './components/HeaderTabs'
 import UserHeader from './components/UserHeader'
 import theme from 'services/theme'
