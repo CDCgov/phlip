@@ -291,6 +291,35 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         apiErrorOpen: true
       }
 
+    case types.CLEAN_PROJECT_LIST_REQUEST:
+      return {
+        ...state,
+        cleanProjectOperationInProgress: true,
+        apiErrorOpen: false
+      }
+    case types.CLEAN_PROJECT_LIST_SUCCESS:
+      obj = action.payload
+      return {
+        ...state,
+        documents: {
+          ...state.documents,
+          byId: obj
+        },
+        cleanProjectOperationInProgress: false,
+        apiErrorOpen: false
+      }
+
+    case types.CLEAN_PROJECT_LIST_FAIL:
+      return {
+        ...state,
+        apiErrorInfo: {
+          title: 'Document Project list clean up error',
+          text: 'Failed to update documents.'
+        },
+        cleanProjectOperationInProgress: false,
+        apiErrorOpen: true
+      }
+
     case types.CLOSE_ALERT:
       return {
         ...state,

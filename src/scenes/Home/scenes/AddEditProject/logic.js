@@ -1,6 +1,6 @@
 import { createLogic } from 'redux-logic'
 import { types } from '../../actions'
-import { types as projectTypes } from 'data/projects/actions'
+import { types as documentTypes} from 'scenes/DocumentManagement/actions'
 
 /**
  * Sends a request to add a project
@@ -34,6 +34,7 @@ export const addProjectLogic = createLogic({
 export const updateProjectLogic = createLogic({
   type: types.UPDATE_PROJECT_REQUEST,
   async process({ action, api }, dispatch, done) {
+    console.log(documentTypes)
     try {
       const updatedProject = await api.updateProject(action.project, {}, { projectId: action.project.id })
       dispatch({
@@ -59,17 +60,18 @@ export const updateProjectLogic = createLogic({
  */
 export const deleteProjectLogic = createLogic({
   type: types.DELETE_PROJECT_REQUEST,
-  async process({ action, api }, dispatch, done) {
+  async process({getState, action, api }, dispatch, done) {
+    const projectMeta = getState().data.projects.byId[action.project]
     try {
       await api.deleteProject({}, {}, { projectId: action.project })
       dispatch({
         type: types.DELETE_PROJECT_SUCCESS,
         project: action.project
       })
-      // remove project from the redux store data/projects
+      // remove project id from all documents' project list and also clean up redux store when completed
       dispatch({
-        type: projectTypes.REMOVE_PROJECT,
-        projectId: action.project
+        type: documentTypes.CLEAN_PROJECT_LIST_REQUEST,
+        projectMeta : projectMeta
       })
     } catch (error) {
       dispatch({

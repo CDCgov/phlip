@@ -23,6 +23,7 @@ const projectReducer = (state = INITIAL_STATE, action) => {
           : [...state.allIds]
       }
     case types.REMOVE_PROJECT:
+      console.log('remove project ',action)
       let updatedById = state.byId
       const updatedAllIds = state.allIds.filter(value => value !== action.projectId)
       delete updatedById[action.projectId] // remove the project from project list "byId"

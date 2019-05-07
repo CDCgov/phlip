@@ -50,7 +50,13 @@ const docManageCalls = [
     name:'bulkUpdateDoc',
     method: 'post',
     path:  () => `/docs/bulkUpdate`
+  },
+  {
+    name:'cleanProject',
+    method: 'put',
+    path:  ({projectId}) => `/docs/cleanProjectList/${projectId}`
   }
+
 ]
 
 export default docManageCalls
