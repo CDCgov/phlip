@@ -101,6 +101,7 @@ exports[`Home scene should render correctly 1`] = `
     />
     <WithTheme(SearchBar)
       handleSearchValueChange={[Function]}
+      id="project-search"
       placeholder="Search"
     />
   </withRouter(WithTheme(PageHeader))>

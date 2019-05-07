@@ -40,6 +40,16 @@ export class ProjectList extends Component {
     expanded: 0
   }
   
+  checkTargetPath = path => {
+    let valid = true
+    path.forEach(node => {
+      if (['projectSort-container', 'menu-projectSort'].includes(node.id)) {
+        valid = false
+      }
+    })
+    return valid
+  }
+  
   /**
    * Checks whether or not the project should expand based on what was clicked
    * @param target
@@ -51,7 +61,7 @@ export class ProjectList extends Component {
     return !stopOpenEls.includes(target.tagName)
       && (target.tagName !== 'svg' ? target.className.search(regex) === -1 : true)
       && target.id !== 'avatar-menu-button'
-      && target.tagName !== 'input'
+      && target.tagName !== 'INPUT'
   }
   
   /**
@@ -78,8 +88,10 @@ export class ProjectList extends Component {
    */
   handleClickAway = event => {
     if (this.props.location.pathname === '/home' && isRouteOk(this.props.history)) {
-      const expand = this.checkExpand(event.target) &&
-        this.checkExpand(event.target.offsetParent ? event.target.offsetParent : event.target.parentNode)
+      const parent = event.target.offsetParent ? event.target.offsetParent : event.target.parentNode
+      const expand = (this.checkExpand(event.target) && this.checkExpand(parent))
+        && this.checkTargetPath(event.path)
+      
       this.setState({
         expanded: expand ? 0 : this.state.expanded
       })

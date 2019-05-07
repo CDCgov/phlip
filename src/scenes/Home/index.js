@@ -273,6 +273,7 @@ export class Home extends Component {
           />
           <SearchBar
             searchValue={this.searchValue}
+            id="project-search"
             handleSearchValueChange={event => actions.updateSearchValue(event.target.value)}
             placeholder="Search"
           />
