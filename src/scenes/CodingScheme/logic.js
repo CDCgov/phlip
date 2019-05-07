@@ -81,7 +81,7 @@ const lockSchemeLogic = createLogic({
 const unlockSchemeLogic = createLogic({
   type: types.UNLOCK_SCHEME_REQUEST,
   async process({ api, action, getState }, dispatch, done) {
-    const userId = getState().data.user.currentUser.id
+    const userId = action.userId === undefined?getState().data.user.currentUser.id:action.userId // if userid not passed use id from state
     try {
       const unlockInfo = await api.unlockCodingScheme({}, {}, { projectId: action.id, userId })
       dispatch({
