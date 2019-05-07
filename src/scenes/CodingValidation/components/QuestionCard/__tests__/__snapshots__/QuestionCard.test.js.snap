@@ -124,25 +124,39 @@ exports[`QuestionCard component should render correctly 1`] = `
             aria-labelledby="Clear answer"
           />
         </IconButton>
-        <FlagPopover
-          categoryId={0}
-          disableAll={false}
-          questionFlags={Array []}
-          questionId={1}
-          user={
-            Object {
-              "firstName": "test",
-              "id": 5,
-              "lastName": "user",
+        <FlexGrid
+          align="stretch"
+          circular={false}
+          container={false}
+          flex={false}
+          justify="stretch"
+          onClick={null}
+          padding={0}
+          raised={false}
+          style={Object {}}
+          type="column"
+        >
+          <FlagPopover
+            annotationModeEnabled={false}
+            categoryId={0}
+            disableAll={false}
+            questionFlags={Array []}
+            questionId={1}
+            user={
+              Object {
+                "firstName": "test",
+                "id": 5,
+                "lastName": "user",
+              }
             }
-          }
-          userFlag={
-            Object {
-              "notes": "",
-              "type": 0,
+            userFlag={
+              Object {
+                "notes": "",
+                "type": 0,
+              }
             }
-          }
-        />
+          />
+        </FlexGrid>
       </FlexGrid>
     </FlexGrid>
     <WithStyles(Divider) />

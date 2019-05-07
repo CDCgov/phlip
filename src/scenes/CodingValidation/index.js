@@ -73,7 +73,6 @@ export class CodingValidation extends Component {
     jurisdiction: PropTypes.object,
     isSchemeEmpty: PropTypes.bool,
     areJurisdictionsEmpty: PropTypes.bool,
-    userRole: PropTypes.string,
     user: PropTypes.object,
     selectedCategory: PropTypes.number,
     schemeError: PropTypes.string,
@@ -147,13 +146,15 @@ export class CodingValidation extends Component {
   }
   
   componentDidMount() {
-    document.title = `PHLIP - ${this.props.projectName} - ${this.isValidation ? 'Validate' : 'Code'} `
-    this.props.actions.setPage(this.props.page)
+    const { projectName, isValidation, page, actions, projectId, jurisdiction } = this.props
     
-    if (this.props.page === 'coding') {
-      this.props.actions.getCodingOutlineRequest(this.props.projectId, this.props.jurisdiction.id, this.props.page)
+    document.title = `PHLIP - ${projectName} - ${isValidation ? 'Validate' : 'Code'} `
+    actions.setPage(page)
+    
+    if (page === 'coding') {
+      actions.getCodingOutlineRequest(projectId, jurisdiction.id)
     } else {
-      this.props.actions.getValidationOutlineRequest(this.props.projectId, this.props.jurisdiction.id, this.props.page)
+      actions.getValidationOutlineRequest(projectId, jurisdiction.id)
     }
     this.onShowPageLoader()
   }
@@ -195,8 +196,7 @@ export class CodingValidation extends Component {
         this.props.questionOrder[index],
         index,
         this.props.projectId,
-        this.props.jurisdiction.id,
-        this.props.page
+        this.props.jurisdiction.id
       )
       this.onShowQuestionLoader()
     }
@@ -216,8 +216,7 @@ export class CodingValidation extends Component {
         this.props.questionOrder[index],
         index,
         this.props.projectId,
-        this.props.jurisdiction.id,
-        this.props.page
+        this.props.jurisdiction.id
       )
       this.onShowQuestionLoader()
     }
@@ -236,8 +235,7 @@ export class CodingValidation extends Component {
       this.props.actions.onQuestionSelectedInNav(
         item,
         this.props.projectId,
-        this.props.jurisdiction.id,
-        this.props.page
+        this.props.jurisdiction.id
       )
       this.onShowQuestionLoader()
     }
@@ -294,8 +292,7 @@ export class CodingValidation extends Component {
       this.props.projectId,
       this.props.jurisdiction.id,
       this.props.question.id,
-      this.props.selectedCategoryId,
-      this.props.page
+      this.props.selectedCategoryId
     )
   }
   
@@ -392,8 +389,7 @@ export class CodingValidation extends Component {
       this.state.changeMethod.method(
         ...this.state.changeProps,
         this.props.projectId,
-        this.props.jurisdiction.id,
-        this.props.page
+        this.props.jurisdiction.id
       )
       this.onShowQuestionLoader()
       // jurisdiction changing
@@ -457,8 +453,7 @@ export class CodingValidation extends Component {
     this.props.actions.applyAnswerToAll(
       this.props.projectId,
       this.props.jurisdiction.id,
-      this.props.question.id,
-      this.props.page
+      this.props.question.id
     )
   }
   
@@ -467,12 +462,12 @@ export class CodingValidation extends Component {
    * @returns {*}
    */
   onShowGetStartedView = () => {
-    const { isSchemeEmpty, areJurisdictionsEmpty } = this.props
+    const { isSchemeEmpty, areJurisdictionsEmpty, user, isValidation } = this.props
     const noScheme = isSchemeEmpty
     const noJurisdictions = areJurisdictionsEmpty
     
     let startedText = ''
-    if (this.props.isValidation) {
+    if (isValidation) {
       if (noScheme && !noJurisdictions) {
         startedText = 'This project doesn\'t have a coding scheme.'
       } else if (!noScheme && noJurisdictions) {
@@ -481,7 +476,7 @@ export class CodingValidation extends Component {
         startedText = 'This project doesn\'t have a coding scheme or jurisdictions.'
       }
     } else {
-      if (this.props.userRole === 'Coder') {
+      if (user.role === 'Coder') {
         startedText = 'The coordinator for this project has not created a coding scheme or added jurisdictions.'
       } else if (noScheme && !noJurisdictions) {
         startedText = 'You must add questions to the project coding scheme before coding.'
@@ -540,7 +535,7 @@ export class CodingValidation extends Component {
               ? actions.getUserCodedQuestions
               : actions.getUserValidatedQuestionsRequest
           },
-          changeProps: [projectId, event.target.value, page]
+          changeProps: [projectId, event.target.value]
         })
       } else {
         this.setState({ selectedJurisdiction: event.target.value })
@@ -548,9 +543,9 @@ export class CodingValidation extends Component {
         actions.onChangeJurisdiction(newIndex)
     
         if (page === 'coding') {
-          actions.getUserCodedQuestions(projectId, event.target.value, page)
+          actions.getUserCodedQuestions(projectId, event.target.value)
         } else {
-          actions.getUserValidatedQuestionsRequest(projectId, event.target.value, page)
+          actions.getUserValidatedQuestionsRequest(projectId, event.target.value)
         }
     
         this.onShowQuestionLoader()
@@ -588,8 +583,7 @@ export class CodingValidation extends Component {
         this.props.projectId,
         this.props.jurisdiction.id,
         this.props.question.id,
-        this.props.selectedCategoryId,
-        this.props.page
+        this.props.selectedCategoryId
       )
     }
     this.onChangeTouchedStatus()
@@ -650,7 +644,7 @@ export class CodingValidation extends Component {
     const {
       classes, showPageLoader, answerErrorContent, objectExists, getQuestionErrors, actions, page, selectedCategory,
       projectName, projectId, jurisdictionList, jurisdiction, questionOrder, isSchemeEmpty, schemeError,
-      areJurisdictionsEmpty, saveFlagErrorContent, getRequestInProgress
+      areJurisdictionsEmpty, saveFlagErrorContent, getRequestInProgress, user, currentIndex, showNextButton, question
     } = this.props
     
     const { navOpen, applyAllAlertOpen, stillSavingAlertOpen, flagConfirmAlertOpen, startedText, showNav } = this.state
@@ -737,12 +731,12 @@ export class CodingValidation extends Component {
                       <FlexGrid container flex align="center" justify="center" padding={30}>
                         <Typography variant="display1" style={{ marginBottom: '20px' }}>{startedText}</Typography>
                         <FlexGrid container type="row" style={{ width: '100%', justifyContent: 'space-evenly' }}>
-                          {isSchemeEmpty && this.props.userRole !== 'Coder' &&
-                          <TextLink to={{ pathname: `/project/${this.props.projectId}/coding-scheme` }}>
+                          {(isSchemeEmpty && user.role !== 'Coder') &&
+                          <TextLink to={{ pathname: `/project/${projectId}/coding-scheme` }}>
                             <Button value="Create Coding Scheme" color="accent" />
                           </TextLink>}
-                          {areJurisdictionsEmpty && this.props.userRole !== 'Coder' &&
-                          <TextLink to={{ pathname: `/project/${this.props.projectId}/jurisdictions` }}>
+                          {(areJurisdictionsEmpty && user.role) !== 'Coder' &&
+                          <TextLink to={{ pathname: `/project/${projectId}/jurisdictions` }}>
                             <Button value="Add Jurisdictions" color="accent" />
                           </TextLink>}
                         </FlexGrid>
@@ -751,7 +745,7 @@ export class CodingValidation extends Component {
                     : (schemeError === null && (
                       <>
                         <QuestionCard
-                          page={this.props.page}
+                          page={page}
                           onChange={this.onAnswer}
                           onChangeTextAnswer={this.onChangeTextAnswer}
                           onChangeCategory={this.onChangeCategory}
@@ -761,11 +755,11 @@ export class CodingValidation extends Component {
                           onSaveFlag={this.onSaveFlag}
                           onSave={this.onSaveCodedQuestion}
                           onOpenFlagConfirmAlert={this.onOpenFlagConfirmAlert}
-                          currentIndex={this.props.currentIndex}
+                          currentIndex={currentIndex}
                           getNextQuestion={this.getNextQuestion}
                           getPrevQuestion={this.getPrevQuestion}
-                          totalLength={this.props.questionOrder.length}
-                          showNextButton={this.props.showNextButton}
+                          totalLength={questionOrder.length}
+                          showNextButton={showNextButton}
                         />
                         <Resizable
                           style={{ display: 'flex' }}
@@ -795,10 +789,10 @@ export class CodingValidation extends Component {
                           }}>
                           <FlexGrid style={{ minWidth: 15, maxWidth: 15, width: 15 }} />
                           <DocumentList
-                            projectId={this.props.projectId}
-                            jurisdictionId={this.props.jurisdiction.jurisdictionId}
-                            page={this.props.page}
-                            questionId={this.props.question.id}
+                            projectId={projectId}
+                            jurisdictionId={jurisdiction.jurisdictionId}
+                            page={page}
+                            questionId={question.id}
                             saveUserAnswer={this.onSaveCodedQuestion}
                           />
                         </Resizable>
@@ -844,7 +838,6 @@ const mapStateToProps = (state, ownProps) => {
       : { id: null },
     isSchemeEmpty: pageState.isSchemeEmpty,
     areJurisdictionsEmpty: pageState.areJurisdictionsEmpty,
-    userRole: state.data.user.currentUser.role,
     user: state.data.user.currentUser,
     selectedCategory: pageState.selectedCategory,
     schemeError: pageState.schemeError || null,

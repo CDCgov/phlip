@@ -155,7 +155,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
 
       return {
         ...state,
-        messageQueue: queue
+        messageQueue: queue,
+        unsavedChanges: queue.length > 0
       }
 
     case types.SEND_QUEUE_REQUESTS:
@@ -321,7 +322,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isLoadingPage: true,
-        getRequestInProgress: true
+        getRequestInProgress: true,
+        schemeError: null
       }
 
     case types.GET_CODING_OUTLINE_FAIL:

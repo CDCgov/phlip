@@ -311,15 +311,19 @@ export class QuestionCard extends Component {
                     style={{ height: 24 }}>
                     {!disableAll && <Broom className={styles.icon} aria-labelledby="Clear answer" />}
                   </IconButton>}
-                  {!isValidation && <FlagPopover
-                    userFlag={userAnswers.flag}
-                    questionId={question.id}
-                    onSaveFlag={onSaveFlag}
-                    questionFlags={question.flags}
-                    categoryId={selectedCategoryId}
-                    user={user}
-                    disableAll={disableAll}
-                  />}
+                  {!isValidation &&
+                  <FlexGrid onClick={annotationModeEnabled ? this.showDisableAnnoModeAlert : null}>
+                    <FlagPopover
+                      userFlag={userAnswers.flag}
+                      questionId={question.id}
+                      onSaveFlag={onSaveFlag}
+                      annotationModeEnabled={annotationModeEnabled}
+                      questionFlags={question.flags}
+                      categoryId={selectedCategoryId}
+                      user={user}
+                      disableAll={disableAll}
+                    />
+                  </FlexGrid>}
                 </FlexGrid>
               </FlexGrid>
               <Divider />

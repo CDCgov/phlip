@@ -714,7 +714,7 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
       }
     }
 
-    if (action.page === 'validation') {
+    if (state.page === 'validation') {
       if (combinedQuestion.flags.length > 0) {
         if (!checkIfExists(newSchemeQuestion.flags[0].raisedBy, userImages, 'userId')) {
           newImages = {
