@@ -13,7 +13,8 @@ const props = {
   questions: [],
   lockInfo: {},
   lockedByCurrentUser: false,
-  hasLock: false
+  hasLock: false,
+  currentUser : {role:'Admin'}
 }
 
 describe('CodingScheme scene', () => {

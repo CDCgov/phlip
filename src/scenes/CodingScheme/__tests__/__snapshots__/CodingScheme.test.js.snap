@@ -77,8 +77,14 @@ exports[`CodingScheme scene should render correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
+          "preferred": true,
           "type": "button",
           "value": "Dismiss",
+        },
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Release lock",
         },
       ]
     }
