@@ -1,7 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - ProjectList component should render correctly 1`] = `
-<Fragment>
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={false}
+  flex={false}
+  justify="stretch"
+  padding={0}
+  raised={false}
+  style={
+    Object {
+      "overflow": "auto",
+    }
+  }
+  type="column"
+>
   <ClickAwayListener
     mouseEvent="onMouseUp"
     onClickAway={[Function]}
@@ -10,41 +24,30 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
     <div
       style={
         Object {
-          "overflow": "auto",
           "padding": 3,
         }
       }
     >
-      <ClickAwayListener
+      <Connect(WithTheme(ProjectPanel))
+        expanded={false}
+        handleExpandProject={[Function]}
+        id={1}
+        index={0}
         key="1"
-        mouseEvent="onMouseUp"
-        onClickAway={[Function]}
-        touchEvent="onTouchEnd"
-      >
-        <Connect(WithTheme(WithStyles(ProjectPanel)))
-          id={1}
-          index={0}
-          key="1"
-          length={2}
-          onExport={[MockFunction]}
-          role="Coordinator"
-        />
-      </ClickAwayListener>
-      <ClickAwayListener
+        length={2}
+        onExport={[MockFunction]}
+        role="Coordinator"
+      />
+      <Connect(WithTheme(ProjectPanel))
+        expanded={false}
+        handleExpandProject={[Function]}
+        id={2}
+        index={1}
         key="2"
-        mouseEvent="onMouseUp"
-        onClickAway={[Function]}
-        touchEvent="onTouchEnd"
-      >
-        <Connect(WithTheme(WithStyles(ProjectPanel)))
-          id={2}
-          index={1}
-          key="2"
-          length={2}
-          onExport={[MockFunction]}
-          role="Coordinator"
-        />
-      </ClickAwayListener>
+        length={2}
+        onExport={[MockFunction]}
+        role="Coordinator"
+      />
     </div>
   </ClickAwayListener>
   <Table>
@@ -59,5 +62,5 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
       </WithStyles(TableRow)>
     </WithStyles(TableFooter)>
   </Table>
-</Fragment>
+</FlexGrid>
 `;

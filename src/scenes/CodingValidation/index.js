@@ -93,10 +93,10 @@ export class CodingValidation extends Component {
     objectExists: PropTypes.bool,
     getRequestInProgress: PropTypes.bool
   }
-
+  
   constructor(props, context) {
     super(props, context)
-
+    
     this.state = {
       selectedJurisdiction: this.props.jurisdiction === null ? null : this.props.jurisdiction.id,
       showViews: false,
@@ -111,12 +111,12 @@ export class CodingValidation extends Component {
       startedText: '',
       showNav: false
     }
-
+    
     this.confirmAlertActions = [
-      { value: 'Cancel', type: 'button', onClick: this.onCloseFlagConfigAlert, preferred:true },
+      { value: 'Cancel', type: 'button', onClick: this.onCloseFlagConfigAlert, preferred: true },
       { value: 'Yes', type: 'button', onClick: this.onClearFlag }
     ]
-
+    
     this.modalActions = [
       {
         value: 'Cancel',
@@ -130,12 +130,12 @@ export class CodingValidation extends Component {
         onClick: this.onApplyToAll
       }
     ]
-
+    
     this.stillSavingActions = [
       { ...this.modalActions[0], onClick: this.onCancelStillSavingAlert },
       { ...this.modalActions[1], onClick: this.onContinueStillSavingAlert }
     ]
-
+    
     this.saveFailedActions = [
       {
         value: 'Try Again',
@@ -144,10 +144,11 @@ export class CodingValidation extends Component {
       }
     ]
   }
-
+  
   componentDidMount() {
+    document.title = `PHLIP - ${this.props.projectName} - ${this.isValidation ? 'Validate' : 'Code'} `
     this.props.actions.setPage(this.props.page)
-
+    
     if (this.props.page === 'coding') {
       this.props.actions.getCodingOutlineRequest(this.props.projectId, this.props.jurisdiction.id, this.props.page)
     } else {
@@ -155,7 +156,7 @@ export class CodingValidation extends Component {
     }
     this.onShowPageLoader()
   }
-
+  
   componentDidUpdate(prevProps) {
     if (!this.props.getRequestInProgress && prevProps.getRequestInProgress) {
       if (this.props.areJurisdictionsEmpty || this.props.isSchemeEmpty) {
@@ -167,18 +168,18 @@ export class CodingValidation extends Component {
       }
     }
   }
-
+  
   componentWillUnmount() {
     this.props.actions.onCloseScreen()
   }
-
+  
   /**
    * @public
    */
   onToggleNavigator = () => {
     this.setState({ navOpen: !this.state.navOpen })
   }
-
+  
   /**
    * @public
    * @param index
@@ -197,7 +198,7 @@ export class CodingValidation extends Component {
       this.onShowQuestionLoader()
     }
   }
-
+  
   /**
    * @public
    * @param index
@@ -216,7 +217,7 @@ export class CodingValidation extends Component {
       this.onShowQuestionLoader()
     }
   }
-
+  
   /**
    * @public
    * @param item
@@ -234,7 +235,7 @@ export class CodingValidation extends Component {
       this.onShowQuestionLoader()
     }
   }
-
+  
   /**
    * @public
    */
@@ -245,19 +246,25 @@ export class CodingValidation extends Component {
       }
     }, 1000)
   }
-
+  
   /**
    * @public
    * @param id
    * @returns {Function}
    */
   onAnswer = id => (event, value) => {
-    this.props.actions.updateUserAnswer(this.props.projectId, this.props.jurisdiction.id, this.props.question.id, id, value)
-
+    this.props.actions.updateUserAnswer(
+      this.props.projectId,
+      this.props.jurisdiction.id,
+      this.props.question.id,
+      id,
+      value
+    )
+    
     this.onChangeTouchedStatus()
     this.onSaveCodedQuestion()
   }
-
+  
   /**
    * This actually dispatches the redux action that calls the api to save the question data
    * @public
@@ -271,7 +278,7 @@ export class CodingValidation extends Component {
       this.props.page
     )
   }
-
+  
   /**
    * @public
    * @param id
@@ -284,31 +291,31 @@ export class CodingValidation extends Component {
       case 'textAnswer':
         this.props.actions.updateUserAnswer(projectId, jurisdiction.id, question.id, id, event.target.value)
         break
-
+      
       case 'comment':
         this.props.actions.onChangeComment(projectId, jurisdiction.id, question.id, event.target.value)
         break
-
+      
       case 'pincite':
         this.props.actions.onChangePincite(projectId, jurisdiction.id, question.id, id, event.target.value)
     }
-
+    
     this.onChangeTouchedStatus()
     this.onSaveCodedQuestion()
   }
-
+  
   /**
    * @public
    * @returns {*}
    */
   onOpenApplyAllAlert = () => this.setState({ applyAllAlertOpen: true })
-
+  
   /**
    * @public
    * @returns {*|{type, args}}
    */
   onCloseAlert = () => this.props.actions.dismissApiAlert('answerErrorContent')
-
+  
   /**
    * @public
    * @param event
@@ -318,7 +325,7 @@ export class CodingValidation extends Component {
     this.onSaveCodedQuestion()
     this.props.actions.onChangeCategory(selection)
   }
-
+  
   /**
    * @public
    */
@@ -326,7 +333,7 @@ export class CodingValidation extends Component {
     this.onSaveCodedQuestion()
     this.onCloseAlert()
   }
-
+  
   /**
    * @public
    * @param question
@@ -339,7 +346,7 @@ export class CodingValidation extends Component {
       changeMethod: { type: 0, method: method }
     })
   }
-
+  
   /**
    * @public
    */
@@ -350,7 +357,7 @@ export class CodingValidation extends Component {
       changeMethod: {}
     })
   }
-
+  
   /**
    * @public
    */
@@ -374,10 +381,10 @@ export class CodingValidation extends Component {
       // clicked the back button
       this.state.changeMethod.method()
     }
-
+    
     this.onCancelStillSavingAlert()
   }
-
+  
   /**
    * @public
    */
@@ -386,7 +393,7 @@ export class CodingValidation extends Component {
     this.onChangeTouchedStatus()
     this.onSaveCodedQuestion()
   }
-
+  
   /**
    * @public
    */
@@ -400,7 +407,7 @@ export class CodingValidation extends Component {
       this.props.history.goBack()
     }
   }
-
+  
   /***
    * @public
    */
@@ -409,13 +416,13 @@ export class CodingValidation extends Component {
       this.props.actions.changeTouchedStatus()
     }
   }
-
+  
   /**
    * @public
    * @returns {*}
    */
   onCloseApplyAllAlert = () => this.setState({ applyAllAlertOpen: false })
-
+  
   /**
    * @public
    */
@@ -429,7 +436,7 @@ export class CodingValidation extends Component {
       this.props.page
     )
   }
-
+  
   /**
    * @public
    * @returns {*}
@@ -438,7 +445,7 @@ export class CodingValidation extends Component {
     const { isSchemeEmpty, areJurisdictionsEmpty } = this.props
     const noScheme = isSchemeEmpty
     const noJurisdictions = areJurisdictionsEmpty
-
+    
     let startedText = ''
     if (this.props.isValidation) {
       if (noScheme && !noJurisdictions) {
@@ -463,7 +470,7 @@ export class CodingValidation extends Component {
       startedText
     })
   }
-
+  
   /**
    * @public
    * @returns {*}
@@ -473,7 +480,7 @@ export class CodingValidation extends Component {
       navOpen: true, showNav: true
     })
   }
-
+  
   /**
    * Waits 1 sec, then displays a circular loader if API is still loading
    * @public
@@ -485,7 +492,7 @@ export class CodingValidation extends Component {
       }
     }, 1000)
   }
-
+  
   /**
    * Invoked when the user changes jurisdictions by selecting a jurisdiction in the dropdown. If there are unsaved
    * changes, a popup is shown alerting the user so, otherwise calls redux actions to change questions and shows the
@@ -495,7 +502,7 @@ export class CodingValidation extends Component {
    */
   onJurisdictionChange = event => {
     const { unsavedChanges, page, actions, projectId, jurisdictionList } = this.props
-
+    
     if (unsavedChanges) {
       this.setState({
         stillSavingAlertOpen: true,
@@ -511,18 +518,18 @@ export class CodingValidation extends Component {
       this.setState({ selectedJurisdiction: event.target.value })
       const newIndex = jurisdictionList.findIndex(jur => jur.id === event.target.value)
       actions.onChangeJurisdiction(newIndex)
-
+      
       if (page === 'coding') {
         actions.getUserCodedQuestions(projectId, event.target.value, page)
       } else {
         actions.getUserValidatedQuestionsRequest(projectId, event.target.value, page)
       }
-
+      
       this.onShowQuestionLoader()
       actions.getApprovedDocumentsRequest(projectId, jurisdictionList[newIndex].jurisdictionId, page)
     }
   }
-
+  
   /**
    * The user has clicked 'save' in either of the flag popover forms
    * @public
@@ -547,7 +554,7 @@ export class CodingValidation extends Component {
         },
         ...flagInfo
       })
-
+      
       this.props.actions.saveUserAnswerRequest(
         this.props.projectId,
         this.props.jurisdiction.id,
@@ -558,7 +565,7 @@ export class CodingValidation extends Component {
     }
     this.onChangeTouchedStatus()
   }
-
+  
   /**
    * Opens an alert to ask the user to confirm deleting a flag from the Flags & Comments validation table
    * @public
@@ -571,7 +578,7 @@ export class CodingValidation extends Component {
       flagToDelete: { id: flagId, type }
     })
   }
-
+  
   /**
    * Called if the user chooses they are sure they want to clear the flag, calls a redux action creator function
    * depending on flag type. Closes delete flag confirm alert
@@ -581,15 +588,20 @@ export class CodingValidation extends Component {
     if (this.state.flagToDelete.type === 3) {
       this.props.actions.clearRedFlag(this.state.flagToDelete.id, this.props.question.id, this.props.projectId)
     } else {
-      this.props.actions.clearFlag(this.state.flagToDelete.id, this.props.projectId, this.props.jurisdiction.id, this.props.question.id)
+      this.props.actions.clearFlag(
+        this.state.flagToDelete.id,
+        this.props.projectId,
+        this.props.jurisdiction.id,
+        this.props.question.id
+      )
     }
-
+    
     this.setState({
       flagConfirmAlertOpen: false,
       flagToDelete: null
     })
   }
-
+  
   /**
    * Closes the delete flag confirm alert after the user decided to they don't want to delete the flag
    * @public
@@ -600,21 +612,21 @@ export class CodingValidation extends Component {
       flagToDelete: null
     })
   }
-
+  
   render() {
     const {
       classes, showPageLoader, answerErrorContent, objectExists, getQuestionErrors, actions, page, selectedCategory,
       projectName, projectId, jurisdictionList, jurisdiction, questionOrder, isSchemeEmpty, schemeError,
       areJurisdictionsEmpty, saveFlagErrorContent, getRequestInProgress
     } = this.props
-
+    
     const { navOpen, applyAllAlertOpen, stillSavingAlertOpen, flagConfirmAlertOpen, startedText, showNav } = this.state
-
+    
     const containerClasses = classNames(classes.mainContent, {
       [classes.openNavShift]: navOpen && !showPageLoader,
       [classes.pageLoading]: !navOpen
     })
-
+    
     const containerStyle = {
       width: '100%',
       height: '100%',
@@ -623,12 +635,12 @@ export class CodingValidation extends Component {
       flexWrap: 'nowrap',
       overflow: 'hidden'
     }
-
+    
     return (
       <FlexGrid container type="row" flex className={containerClasses} style={containerStyle}>
         <Alert open={applyAllAlertOpen} actions={this.modalActions}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-              Your answer will apply to ALL categories. Previous answers will be overwritten.
+            Your answer will apply to ALL categories. Previous answers will be overwritten.
           </Typography>
         </Alert>
         <Alert open={stillSavingAlertOpen} actions={this.stillSavingActions}>
@@ -767,7 +779,7 @@ export class CodingValidation extends Component {
         <Alert open={flagConfirmAlertOpen} actions={this.confirmAlertActions}>
           <Typography variant="body1">Are you sure you want to clear this flag?</Typography>
         </Alert>
-
+        
         <ApiErrorAlert
           content={saveFlagErrorContent}
           open={saveFlagErrorContent !== null}
@@ -782,7 +794,7 @@ const mapStateToProps = (state, ownProps) => {
   const project = state.scenes.home.main.projects.byId[ownProps.match.params.id]
   const page = ownProps.match.url.split('/')[3] === 'code' ? 'coding' : 'validation'
   const pageState = state.scenes.codingValidation.coding
-
+  
   return {
     projectName: project.name,
     page,

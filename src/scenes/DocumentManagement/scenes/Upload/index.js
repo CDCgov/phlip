@@ -69,6 +69,11 @@ export class Upload extends Component {
     isReduxForm: PropTypes.bool,
 
     /**
+       * max number of files to be upload at one time
+       */
+    maxFileCount: PropTypes.number,
+
+    /**
      * Redux actions
      */
     actions: PropTypes.object,
@@ -85,7 +90,9 @@ export class Upload extends Component {
     projectSearchValue: PropTypes.string,
     noProjectError: PropTypes.any,
     infoSheet: PropTypes.object,
-    invalidFiles : PropTypes.array
+    invalidTypeFiles : PropTypes.array,
+    invalidSizeFiles : PropTypes.array,
+    title : PropTypes.string
   };
 
   constructor(props, context) {
@@ -95,7 +102,8 @@ export class Upload extends Component {
       value: 'Close',
       type: 'button',
       otherProps: { 'aria-label': 'Close' },
-      onClick: this.closeAlert
+      onClick: this.closeAlert,
+      preferred: true
     }
 
     this.state = {
@@ -104,8 +112,23 @@ export class Upload extends Component {
       ],
       showLoadingAlert: false,
       validMime : false,
-      processingFiles : []
+      processingFiles : [],
+      invalidSizeFilesAlertOpen : false
     }
+    //this.maxFileCount = 50
+    this.invalidSizeFiles = []
+    this.SizeAlertActions = {
+      value: 'Close',
+      type: 'button',
+      otherProps: { 'aria-label': 'Close' },
+      onClick: this.closeInvalidSizeAlert,
+      preferred: true
+    }
+  }
+
+  componentDidMount() {
+    this.prevTitle = document.title
+    document.title = this.props.title || 'PHLIP - Documents Upload'
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -141,6 +164,7 @@ export class Upload extends Component {
   }
 
   componentWillUnmount() {
+    document.title = this.prevTitle
     clearTimeout(this.loadingAlertTimeout)
   }
 
@@ -185,6 +209,20 @@ export class Upload extends Component {
     })
   };
 
+    /**
+     * Resets the invalid size alert actions and calls redux action to close alert
+     */
+    closeInvalidSizeAlert = () => {
+      this.props.actions.closeInvalidSizeAlert()
+      this.invalidSizeFiles = this.props.invalidSizeFiles
+      this.setState({
+        alertActions: [
+          this.dismissAlertAction
+        ],
+        invalidSizeAlertOpen: false
+      })
+    };
+
   /**
    * Closes main modal, and pushes '/docs' onto browser history
    * @public
@@ -201,7 +239,7 @@ export class Upload extends Component {
             onClick: this.goBack
           }
         ]
-      }, () => this.props.actions.openAlert('Your unsaved changes will be lost.'))
+      }, () => this.props.actions.openAlert('Your unsaved changes will be lost.','File Upload Alert'))
     } else {
       this.goBack()
     }
@@ -259,27 +297,46 @@ export class Upload extends Component {
      */
 
   addFilesToList = (e) => {
-    let files = []
-    Array.from(Array(e.target.files.length).keys()).map(x => {
-      const i = e.target.files.item(x)
+    if (e.target.files.length + this.props.selectedDocs.length > this.props.maxFileCount) {
+      //this.showFileCountExceedAlert()
+      this.props.actions.openAlert(`The number of files selected for upload has exceeded the limit of ${this.props.maxFileCount} files per upload.  Please consider uploading files in smaller batches.`,'File Count Alert')
+    } else {
+      let files = []
+      Array.from(Array(e.target.files.length).keys()).map(x => {
+        const i = e.target.files.item(x)
+        if (i.size > 16000000) {
+          this.invalidSizeFiles.push(
+            {
+              name:i.name,
+              size: i.size
+            }
+          )
+        }
+        files.push({
+          name: i.name,
+          lastModifiedDate: i.lastModifiedDate,
+          tags: [],
+          file: i,
+          effectiveDate: '',
+          citation: '',
+          jurisdictions: {searchValue: '', suggestions: [], name: ''}
+        })
 
-      files.push({
-        name: i.name,
-        lastModifiedDate: i.lastModifiedDate,
-        tags: [],
-        file: i,
-        effectiveDate: '',
-        citation: '',
-        jurisdictions: {searchValue: '', suggestions: [], name: ''}
       })
 
-    })
-    this.props.actions.verifyFileContent(files)
-    this.props.infoSheetSelected
-      ? this.props.actions.mergeInfoWithDocs(files)
-      : this.props.actions.addSelectedDocs(files)
+      this.props.infoSheetSelected
+        ? this.props.actions.mergeInfoWithDocs(files)
+        : this.props.actions.addSelectedDocs(files)
+      this.props.actions.verifyFileContent(files)
+      if (this.invalidSizeFiles.length > 0) { // files with invalid size found
+        this.setState({
+          invalidSizeAlertOpen: true
+        })
+        this.props.actions.captureInvalidSize(this.invalidSizeFiles)
+      }
+    }
   }
-  
+
   /**
    * Creates a formData object to send to api to upload documents
    */
@@ -424,11 +481,11 @@ export class Upload extends Component {
         <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle} id="uploadAlert">
           {this.props.alertText}
         </Alert>}
-        {(this.props.alertOpen && this.props.invalidFiles.length > 0) &&
+        {(this.props.alertOpen && this.props.invalidTypeFiles.length > 0) &&
         <Alert actions={this.state.alertActions} open={this.props.alertOpen} title={this.props.alertTitle}>
           {this.props.alertText }
           <FlexGrid type="row" padding={5} style={{ overflow: 'auto' }}>
-            {this.props.invalidFiles.map((item, index) => {
+            {this.props.invalidTypeFiles.map((item, index) => {
               return (
                 <FlexGrid
                   container
@@ -451,6 +508,36 @@ export class Upload extends Component {
             })}
           </FlexGrid>
         </Alert>}
+        {(this.state.invalidSizeAlertOpen && this.props.invalidSizeFiles.length > 0) &&
+          <Alert actions={[this.SizeAlertActions]} open={this.state.invalidSizeAlertOpen} title='Invalid File Size'>
+            {'One or more of the documents selected for upload has file size that exceeded the allowed size of 16 MB . These documents will be removed from the file list.'}
+            <FlexGrid type="row" padding={5} style={{ overflow: 'auto' }}>
+              {this.props.invalidSizeFiles.map((item, index) => {
+                return (
+                  <FlexGrid
+                    container
+                    type="row"
+                    justify="space-between"
+                    align="center"
+                    key={`doc-${index}`}
+                    style={{
+                      padding: 8,
+                      backgroundColor: index % 2 === 0
+                        ? '#f9f9f9'
+                        : 'white',
+                      minHeight: 24
+                    }}>
+                    <Typography style={{ fontSize: '.9125rem' }}>
+                      {item.name}
+                    </Typography>
+                    <Typography style={{ fontSize: '.9125rem' }}>
+                      {(item.size/(1000*1000)).toFixed(1)} MB
+                    </Typography>
+                  </FlexGrid>
+                )
+              })}
+            </FlexGrid>
+          </Alert>}
         {this.state.showLoadingAlert &&
         <Alert actions={[]} open={this.state.showLoadingAlert}>
           <FlexGrid container align="center">
@@ -511,11 +598,15 @@ export class Upload extends Component {
             toggleRowEditMode={this.handleToggleEditMode}
             onClearSuggestions={this.props.actions.clearRowJurisdictionSuggestions}
             duplicateFiles={this.props.duplicateFiles}
-            invalidFiles={this.props.invalidFiles}
+            invalidTypeFiles={this.props.invalidTypeFiles}
+            invalidSizeFiles = {this.invalidSizeFiles}
           />
           }
         </ModalContent>
         <Divider />
+        <Typography style={{font:400, fontSize: 12, padding:10}}>
+            File Count: {this.props.selectedDocs.length}
+        </Typography>
         <ModalActions actions={modalActions} />
       </Modal>
     )
@@ -547,7 +638,9 @@ const mapStateToProps = state => {
     infoSheet: uploadState.list.infoSheet,
     infoSheetSelected: uploadState.list.infoSheetSelected,
     duplicateFiles: uploadState.list.duplicateFiles,
-    invalidFiles : uploadState.list.invalidFiles
+    invalidTypeFiles : uploadState.list.invalidTypeFiles,
+    maxFileCount: uploadState.maxFileCount || 50,
+    invalidSizeFiles: uploadState.list.invalidSizeFiles
   }
 }
 

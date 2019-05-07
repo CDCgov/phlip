@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 import { DatePicker } from '../index'
 
 const props = {
-  value: new Date(2017, 10, 11),
+  value: 1556166912,
   onChange: () => {},
   name: 'date-picker',
   label: 'Date picker',

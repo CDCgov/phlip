@@ -155,8 +155,10 @@ exports[`QuestionCard component should render correctly 1`] = `
           />
         </IconButton>
         <FlagPopover
+          categoryId={0}
           disableAll={false}
           questionFlags={Array []}
+          questionId={1}
           user={
             Object {
               "firstName": "test",
@@ -175,13 +177,17 @@ exports[`QuestionCard component should render correctly 1`] = `
     </FlexGrid>
     <WithStyles(Divider) />
     <TabContainer
+      onChangeCategory={[Function]}
       selected={null}
       tabs={Array []}
     >
       <WithStyles(QuestionContent)
+        annotationModeEnabled={false}
         areDocsEmpty={false}
         currentUserInitials="tu"
         disableAll={false}
+        enabledAnswerId=""
+        enabledUserId=""
         isValidation={false}
         mergedUserQuestions={Object {}}
         onChange={[Function]}

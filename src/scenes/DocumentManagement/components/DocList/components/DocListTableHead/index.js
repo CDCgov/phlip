@@ -1,29 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import TableRow from 'components/TableRow'
-import TableCell from 'components/TableCell'
-import CheckboxLabel from 'components/CheckboxLabel'
-import {
-  Dropdown
-  // Button
-} from 'components'
+import { Dropdown, Tooltip, TableRow, TableCell, CheckboxLabel } from 'components'
 import TableSortLabel from '@material-ui/core/TableSortLabel'
-import Tooltip from 'components/Tooltip'
 
 /**
  * Table header for the document list
  */
 export const DocListTableHead = props => {
-  const {
-    onSelectAll, allSelected, onActionSelected, sortBy, direction, onRequestSort
-    // onActionApply
-  } = props
+  const { onSelectAll, allSelected, onActionSelected, sortBy, direction, onRequestSort } = props
+  
   const options = [
     { value: 'bulk', label: 'Bulk Operation', disabled: true },
     { value: 'deleteDoc', label: 'Delete' },
     { value: 'assignProject', label: 'Assign Project' },
-    { value: 'assignJurisdiction', label: 'Assign Jurisdiction' }
+    { value: 'assignJurisdiction', label: 'Assign Jurisdiction' },
+    { value: 'approveDoc', label: 'Approval' }
   ]
+  
   const r1Columns = [
     {
       key: 'action',
@@ -36,11 +29,11 @@ export const DocListTableHead = props => {
         SelectDisplayProps={{ style: { paddingBottom: 3 } }}
         style={{ fontSize: 13, color: '#757575', fontWeight: 400 }}
         formControlStyle={{ minWidth: 140 }}
-        // disabled= {!allowDropdown}
       />,
       style: { paddingLeft: 20, paddingRight: 0 }
     }
   ]
+  
   const r2Columns = [
     {
       key: 'select-all',
@@ -94,15 +87,6 @@ export const DocListTableHead = props => {
                 </Tooltip>
               ) : column.label}
             </TableCell>
-            // <TableCell
-            //   scope="col"
-            //   id={column.key}
-            //   padding={column.padding}
-            //   key={column.key}
-            //   style={{ width: column.width, ...column.style }}>
-            //   {column.label}
-            //
-            // </TableCell>
           )
         })}
       </TableRow>

@@ -692,4 +692,35 @@ describe('Document Management - Upload reducer tests', () => {
       expect(updatedState.selectedDocs[1].jurisdictions.editable).toEqual(true)
     })
   })
+  describe('Invalid size tests',() => {
+    test('should set invalid file size array', () => {
+      const action = {
+        type: types.CAPTURE_INVALID_FILE_SIZE,
+        docs: [{name:1,size:160000001}]
+      }
+
+      const currentState = getState({
+        alertOpen: true,
+        alertText: 'alert text',
+        alertTitle: 'title',
+        invalidSizeFiles : []
+      })
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.invalidSizeFiles.length).toBeGreaterThan(0)
+    })
+    test('should reset invalid file size array', () => {
+      const action = {
+        type: types.CLOSE_INVALID_SIZE_ALERT
+      }
+
+      const currentState = getState({
+        alertOpen: true,
+        alertText: 'alert text',
+        alertTitle: 'title',
+        invalidSizeFiles : [{name:1,size:160000001}]
+      })
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.invalidSizeFiles.length).toEqual(0)
+    })
+  })
 })

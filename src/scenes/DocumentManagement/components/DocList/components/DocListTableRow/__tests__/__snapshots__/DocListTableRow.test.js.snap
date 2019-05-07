@@ -33,16 +33,6 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"
-    style={
-      Object {
-        "maxWidth": 250,
-        "overflow": "hidden",
-        "padding": "0 12px",
-        "textOverflow": "ellipsis",
-        "whiteSpace": "nowrap",
-        "width": 250,
-      }
-    }
   >
     <WithTheme(TextLink)
       to={
@@ -63,7 +53,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
                 "firstName": "Test",
                 "lastName": "User",
               },
-              "uploadedDate": "2000-1-1",
+              "uploadedDate": 1556019369,
             },
           },
         }
@@ -74,11 +64,6 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"
-    style={
-      Object {
-        "width": 90,
-      }
-    }
   >
     Test
      
@@ -86,42 +71,16 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"
-    style={
-      Object {
-        "width": 50,
-      }
-    }
   >
-    12/31/1999
+    1/18/1970
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"
-    style={
-      Object {
-        "maxWidth": 250,
-        "overflow": "hidden",
-        "padding": "0 12px",
-        "textOverflow": "ellipsis",
-        "whiteSpace": "nowrap",
-        "width": 250,
-      }
-    }
   >
     P1, P2
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"
-    style={
-      Object {
-        "maxWidth": 250,
-        "overflow": "hidden",
-        "padding": "0 12px",
-        "paddingRight": 24,
-        "textOverflow": "ellipsis",
-        "whiteSpace": "nowrap",
-        "width": 250,
-      }
-    }
   >
     J1, J2
   </WithStyles(TableCell)>

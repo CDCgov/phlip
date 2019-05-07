@@ -41,6 +41,7 @@ export class Admin extends Component {
 
   componentDidMount() {
     this.props.actions.getUsersRequest()
+    document.title = 'PHLIP-Admin'
   }
 
   render() {
@@ -52,7 +53,7 @@ export class Admin extends Component {
           projectName=""
           otherButton={{
             isLink: true,
-            text: '+ Add New User',
+            text: 'Add New User',
             path: '/admin/new/user',
             state: {},
             props: { 'aria-label': 'Add new user' },

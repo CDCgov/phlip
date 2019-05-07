@@ -656,20 +656,24 @@ const saveRedFlagLogic = createLogic({
  Some of the reusable functions need to know whether we're on the validation screen or not, so that's what this is for
  */
 export const updateValidatorLogic = createLogic({
-  type: [types.UPDATE_USER_ANSWER, types.ON_APPLY_ANSWER_TO_ALL],
+  type: [
+    types.UPDATE_USER_ANSWER, types.ON_APPLY_ANSWER_TO_ALL, types.ON_CHANGE_PINCITE, types.ON_SAVE_ANNOTATION,
+    types.ON_CHANGE_COMMENT, types.ON_REMOVE_ANNOTATION
+  ],
   transform({ action, getState }, next) {
     const state = getState().scenes.codingValidation.coding
     const user = getState().data.user.currentUser
     next({
       ...action,
-      otherProps: {
-        validatedBy: {
-          userId: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          avatar: user.avatar
-        }
-      },
+      otherUpdates: state.page === 'validation'
+        ? {
+          validatedBy: {
+            userId: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            avatar: user.avatar
+          }
+        } : {},
       isValidation: state.page === 'validation'
     })
   }
@@ -716,10 +720,7 @@ const getQuestionLogic = createLogic({
 
     if (state.page === 'coding') {
       const response = await getSelectedQuestion(state, action, api, action.userId, action.questionInfo, api.getCodedQuestion)
-      dispatch({
-        type: types.GET_QUESTION_SUCCESS,
-        payload: response
-      })
+      dispatch({ type: types.GET_QUESTION_SUCCESS, payload: response })
       done()
     } else {
       const {

@@ -110,6 +110,7 @@ export class AddEditUser extends Component {
   }
 
   componentDidMount() {
+    document.title = 'PHLIP-Admin-'+this.constructor.displayName
     const id = this.props.match.params.id
 
     if (id && this.props.users.length > 0) {

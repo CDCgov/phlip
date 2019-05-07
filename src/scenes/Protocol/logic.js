@@ -101,7 +101,7 @@ const lockProtocolLogic = createLogic({
 const unlockProtocolLogic = createLogic({
   type: types.UNLOCK_PROTOCOL_REQUEST,
   async process({ api, action, getState }, dispatch, done) {
-    const userId = getState().data.user.currentUser.id
+    const userId = action.userId === undefined?getState().data.user.currentUser.id:action.userId // if userid not passed use id from state
     try {
       const unlockInfo = await api.unlockProtocol({}, {}, { projectId: action.projectId, userId })
       dispatch({

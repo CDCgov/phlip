@@ -29,7 +29,7 @@ exports[`HeaderTabs should render correctly 1`] = `
     raised={false}
     style={
       Object {
-        "borderBottom": "4px solid #048484",
+        "borderBottom": "4px solid #db036e",
         "color": "#048484",
         "cursor": "pointer",
       }

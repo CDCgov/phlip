@@ -1,4 +1,4 @@
-import * as types from '../actionTypes'
+import { types } from '../actions'
 import { homeReducer as reducer, INITIAL_STATE as initial } from '../reducer'
 
 const projects = {
@@ -581,15 +581,6 @@ describe('Home reducer', () => {
         payload: { projectId: 4, newCheck: false }
       })
       expect(state.projects.byId[1].lastUsersCheck).toEqual(null)
-    })
-
-    test('should set state.selectedProjectId to action.payload.projectId', () => {
-      const currentState = getStateWithProjects()
-      const state = reducer(currentState, {
-        type: types.GET_PROJECT_USERS_SUCCESS,
-        payload: { projectId: 4, newCheck: true }
-      })
-      expect(state.selectedProjectId).toEqual(4)
     })
   })
 

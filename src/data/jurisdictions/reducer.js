@@ -1,6 +1,6 @@
 import { types } from './actions'
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   byId: {},
   allIds: []
 }
@@ -21,6 +21,9 @@ const jurisdictionReducer = (state = INITIAL_STATE, action) => {
           ? [...state.allIds, action.payload.id]
           : [...state.allIds]
       }
+      
+    case types.FLUSH_STATE:
+      return INITIAL_STATE
 
     default:
       return state

@@ -1,5 +1,4 @@
-import * as actions from '../actions'
-import * as types from '../actionTypes'
+import actions, { types } from '../actions'
 
 describe('Home scene - AddEditJurisdiction actions creators', () => {
   test('should create an action to add a jurisdiction', () => {

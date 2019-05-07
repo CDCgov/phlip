@@ -38,10 +38,8 @@ export const Dropdown = props => {
   return (
     <FormControl style={{ minWidth: 120, ...formControlStyle }}>
       {label !== '' &&
-      <InputLabel
-        htmlFor={id}
-        shrink={shrinkLabel}
-        required={required}>{label}
+      <InputLabel htmlFor={id} shrink={shrinkLabel} required={required}>
+        {label}
       </InputLabel>}
       <Select
         input={<Input id={id} />}

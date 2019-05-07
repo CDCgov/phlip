@@ -130,4 +130,19 @@ describe('Document management - Upload action creators', () => {
 
     expect(actions.mergeInfoWithDocs([{ name: 'doc 1' }])).toEqual(expectedAction)
   })
+
+  test('should create an action to update the invalid size list', () => {
+    const expectedAction = {
+      type: types.CAPTURE_INVALID_FILE_SIZE,
+      docs: [{ name: 'doc 1' }]
+    }
+    expect(actions.captureInvalidSize([{ name: 'doc 1' }])).toEqual(expectedAction)
+  })
+
+  test('should create an action to remove the invalid size list', () => {
+    const expectedAction = {
+      type: types.CLOSE_INVALID_SIZE_ALERT
+    }
+    expect(actions.closeInvalidSizeAlert()).toEqual(expectedAction)
+  })
 })

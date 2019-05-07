@@ -168,9 +168,17 @@ export class QuestionCard extends Component {
       clearAnswerAlertOpen: true
     })
   }
+  
+  /**
+   * When the user changes the category
+   */
+  onChangeCategory = (event, selection) => {
+    this.props.onChangeCategory(event, selection)
+    this.props.actions.toggleAnnotationMode(this.props.question.id, this.props.enabledAnswerId, false)
+  }
 
   /**
-   * Enables annotation mode
+   * Toggles annotation mode
    * @param id
    * @returns {Function}
    */
@@ -184,6 +192,9 @@ export class QuestionCard extends Component {
     actions.toggleAnnotationMode(question.id, id, enabled)
   }
 
+  /**
+   * Handles toggling on / off showing a coder's annotations
+   */
   onToggleCoderAnnotations = (id, userId, isValidatorSelected) => () => {
     this.props.actions.toggleCoderAnnotations(this.props.question.id, id, userId, isValidatorSelected)
   }
@@ -193,8 +204,8 @@ export class QuestionCard extends Component {
       onChangeTextAnswer, onOpenFlagConfirmAlert, user, question, onOpenAlert, userAnswers, isValidation,
       mergedUserQuestions, disableAll, userImages, enabledAnswerId, enabledUserId, annotationModeEnabled,
       areDocsEmpty, questionChangeLoader, hasTouchedQuestion, categories, saveFailed, onClearAnswer, onSaveFlag,
-      selectedCategory, onChangeCategory, currentIndex, getNextQuestion, getPrevQuestion, totalLength, showNextButton,
-      isValidatorSelected
+      selectedCategory, currentIndex, getNextQuestion, getPrevQuestion, totalLength, showNextButton,
+      isValidatorSelected, selectedCategoryId, actions
     } = this.props
 
     const questionContentProps = {
@@ -249,6 +260,7 @@ export class QuestionCard extends Component {
         onClick: () => {
           this.onCancel()
           onClearAnswer()
+          actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
         }
       }
     ]
@@ -288,8 +300,10 @@ export class QuestionCard extends Component {
                   </IconButton>}
                   {!isValidation && <FlagPopover
                     userFlag={userAnswers.flag}
+                    questionId={question.id}
                     onSaveFlag={onSaveFlag}
                     questionFlags={question.flags}
+                    categoryId={selectedCategoryId}
                     user={user}
                     disableAll={disableAll}
                   />}
@@ -301,7 +315,7 @@ export class QuestionCard extends Component {
                   <TabContainer
                     tabs={categories}
                     selected={selectedCategory}
-                    onChangeCategory={onChangeCategory}>
+                    onChangeCategory={this.onChangeCategory}>
                     <QuestionContent {...questionContentProps} />
                   </TabContainer>
                 ) : <QuestionContent {...questionContentProps} />}
@@ -347,7 +361,6 @@ const mapStateToProps = (state, ownProps) => {
     unsavedChanges: pageState.unsavedChanges || false,
     saveFailed: pageState.saveFailed || false,
     hasTouchedQuestion: pageState.hasTouchedQuestion || false,
-
     userImages: state.data.user.byId,
     enabledAnswerId: docState.enabledAnswerId,
     enabledUserId: docState.enabledUserId,

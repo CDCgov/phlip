@@ -1,4 +1,4 @@
-import * as types from './actionTypes'
+import { types } from './actions'
 import { combineReducers } from 'redux'
 import addEditJurisdictions from './scenes/AddEditJurisdictions/reducer'
 import addEditProject from './scenes/AddEditProject/reducer'
@@ -22,8 +22,7 @@ export const INITIAL_STATE = {
   error: false,
   projectCount: 0,
   projectToExport: { text: '' },
-  exportError: '',
-  selectedProjectId: null
+  exportError: ''
 }
 
 /**
@@ -179,7 +178,8 @@ export const mainReducer = (state, action) => {
     case types.SORT_PROJECTS:
       return {
         ...updateHomeState(['sortBy']),
-        direction: state.direction === 'asc' ? 'desc' : 'asc'
+        direction: state.direction === 'asc' ? 'desc' : 'asc',
+        sortBookmarked: false
       }
 
     case types.GET_PROJECTS_FAIL:
@@ -326,28 +326,7 @@ export const mainReducer = (state, action) => {
               lastUsersCheck: action.payload.newCheck ? Date.now() : project.lastUsersCheck
             }
           }
-        },
-        selectedProjectId: projectId
-      }
-
-    case types.UPDATE_CURRENT_PROJECT:
-      return {
-        ...state,
-        selectedProjectId: action.projectId
-      }
-
-    case types.RESET_OPEN_PROJECT:
-      if (action.whereClicked !== undefined) {
-        if (action.whereClicked.tagName === 'DIV') {
-          return {
-            ...state,
-            selectedProjectId: null
-          }
-        } else {
-          return state
         }
-      } else {
-        return state
       }
 
     case types.GET_PROJECTS_REQUEST:

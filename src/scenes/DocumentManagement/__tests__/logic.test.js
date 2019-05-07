@@ -158,7 +158,7 @@ describe('Document Management logic', () => {
     })
   })
 
-  test('should update selected documents and dispatch BULK_UPDATE_SUCCESS on success', done => {
+  test('should update jurisdiction of selected documents and dispatch BULK_UPDATE_SUCCESS on success', done => {
     mock.onPost('/docs/bulkUpdate').reply(
       200,
       [
@@ -178,11 +178,13 @@ describe('Document Management logic', () => {
       {
         name: 'Doc 1',
         uploadedBy: { firstName: 'test', lastName: 'user' },
-        projects: [1], jurisdictions: [1]
+        projects: [1], jurisdictions: [1],
+        status: 'Draft'
       },
       {
         name: 'Doc 2', uploadedBy: { firstName: 'test', lastName: 'user' },
-        projects: [1], jurisdictions: [1]
+        projects: [1], jurisdictions: [1],
+        status: 'Draft'
       }
     ])
 
@@ -217,6 +219,77 @@ describe('Document Management logic', () => {
             'projectList': 'Project1',
             'projects': [1],
             'uploadedBy': { 'firstName': 'test', 'lastName': 'user' }
+          }
+        }
+      })
+      done()
+    })
+  })
+
+  test('should update status of selected documents and dispatch BULK_UPDATE_SUCCESS on success', done => {
+    mock.onPost('/docs/bulkUpdate').reply(
+      200,
+      [
+        {
+          name: 'Doc 1',
+          uploadedBy: { firstName: 'test', lastName: 'user' },
+          projects: [1], jurisdictions: [1],
+          status: 'Approved'
+        },
+        {
+          name: 'Doc 2', uploadedBy: { firstName: 'test', lastName: 'user' },
+          projects: [1], jurisdictions: [1],
+          status: 'Approved'
+        }
+      ]
+    )
+
+    const store = setupStore([
+      {
+        name: 'Doc 1',
+        uploadedBy: { firstName: 'test', lastName: 'user' },
+        projects: [1], jurisdictions: [1],
+        status: 'Draft'
+      },
+      {
+        name: 'Doc 2', uploadedBy: { firstName: 'test', lastName: 'user' },
+        projects: [1], jurisdictions: [1],
+        status: 'Draft'
+      }
+    ])
+
+    store.dispatch({
+      type: types.BULK_UPDATE_REQUEST,
+      updateData: {
+        updateType: 'status'
+      },
+      selectedDocs: [
+        '1', '2'
+      ]
+    })
+    store.whenComplete(() => {
+      expect(store.actions[1]).toEqual({
+        type: types.BULK_UPDATE_SUCCESS,
+        payload: {
+          '1': {
+            '_id': 1,
+            'jurisdictionList': 'Ohio',
+            'jurisdictions': [1],
+            'name': 'Doc 1',
+            'projectList': 'Project1',
+            'projects': [1],
+            'uploadedBy': { 'firstName': 'test', 'lastName': 'user' },
+            'status' : 'Approved'
+          },
+          '2': {
+            '_id': 2,
+            'jurisdictionList': 'Ohio',
+            'jurisdictions': [1],
+            'name': 'Doc 2',
+            'projectList': 'Project1',
+            'projects': [1],
+            'uploadedBy': { 'firstName': 'test', 'lastName': 'user' },
+            'status' : 'Approved'
           }
         }
       })

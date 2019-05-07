@@ -11,6 +11,7 @@ export const types = {
   ON_REMOVE_ANNOTATION: 'ON_REMOVE_ANNOTATION',
   TOGGLE_CODER_ANNOTATIONS: 'TOGGLE_CODER_ANNOTATIONS',
   TOGGLE_ANNOTATION_MODE: 'TOGGLE_ANNOTATION_MODE',
+  HIDE_ANNO_MODE_ALERT: 'HIDE_ANNO_MODE_ALERT',
   CLEAR_DOC_SELECTED: 'CLEAR_DOC_SELECTED',
   FLUSH_STATE: 'FLUSH_STATE'
 }
@@ -27,5 +28,6 @@ export default {
   saveAnnotation: makeActionCreator(types.ON_SAVE_ANNOTATION, 'annotation', 'answerId', 'questionId'),
   removeAnnotation: makeActionCreator(types.ON_REMOVE_ANNOTATION, 'index', 'answerId', 'questionId'),
   toggleCoderAnnotations: makeActionCreator(types.TOGGLE_CODER_ANNOTATIONS, 'questionId', 'answerId', 'userId', 'isValidatorSelected'),
-  toggleAnnotationMode: makeActionCreator(types.TOGGLE_ANNOTATION_MODE, 'questionId', 'answerId', 'enabled')
+  toggleAnnotationMode: makeActionCreator(types.TOGGLE_ANNOTATION_MODE, 'questionId', 'answerId', 'enabled'),
+  hideAnnoModeAlert: makeActionCreator(types.HIDE_ANNO_MODE_ALERT)
 }

@@ -5,11 +5,11 @@ import { bindActionCreators } from 'redux'
 import CardError from 'components/CardError'
 import PageHeader from 'components/PageHeader'
 import ProjectList from './components/ProjectList'
-import * as actions from './actions'
+import actions from './actions'
 import ExportDialog from './components/ExportDialog'
 import withTracking from 'components/withTracking'
 import SearchBar from 'components/SearchBar'
-import { FlexGrid, Dropdown, ApiErrorAlert } from 'components'
+import { FlexGrid, Dropdown, ApiErrorAlert, Icon } from 'components'
 
 /**
  * Project List ("Home") screen main component. The first component that is rendered when the user logs in. This is
@@ -74,24 +74,29 @@ export class Home extends Component {
     /**
      * Any error that has occurred during export
      */
-    exportError: PropTypes.string
+    exportError: PropTypes.string,
+    /**
+     * document title
+     */
+    title: PropTypes.string
   }
-
+  
   constructor(props, context) {
     super(props, context)
     this.state = {
       exportDialogOpen: false,
       projectToExport: null
     }
-
+    
     this.exportRef = null
     this.setExportRef = element => this.exportRef = element
   }
-
+  
   componentDidMount() {
+    document.title = this.props.title
     this.props.actions.getProjectsRequest()
   }
-
+  
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.projectToExport.text !== this.props.projectToExport.text) {
       if (this.state.projectToExport !== null) {
@@ -99,7 +104,7 @@ export class Home extends Component {
       }
     }
   }
-
+  
   /**
    * Opens the export dialog after the user clicks the 'Export' download button.
    * @public
@@ -111,7 +116,7 @@ export class Home extends Component {
       projectToExport: { ...project }
     })
   }
-
+  
   /**
    * Closes the export dialog
    * @public
@@ -122,7 +127,7 @@ export class Home extends Component {
       exportDialogOpen: false
     })
   }
-
+  
   /**
    * Prepares the export CSV file by creating a Blob and ObjectURL from the text parameter. Downloads the file
    * @public
@@ -137,7 +142,7 @@ export class Home extends Component {
     //window.URL.revokeObjectURL(url)
     this.clearProjectExport()
   }
-
+  
   /**
    * Calls a redux action to send a request to the API to download the export file, with type being the type of export.
    * This is callback for setState after the user chooses an option in the export dialog
@@ -147,7 +152,7 @@ export class Home extends Component {
   getExport = type => {
     this.props.actions.exportDataRequest(this.state.projectToExport, type)
   }
-
+  
   /**
    * Invoked after the user chooses an export type from the export dialog. Closes the export dialog and calls getExport
    * @public
@@ -159,7 +164,7 @@ export class Home extends Component {
       projectToExport: { ...this.state.projectToExport, exportType: type }
     }, () => this.getExport(type))
   }
-
+  
   /**
    * Clears the export project from local state as well as calls an redux action to clear it from the redux state.
    * @public
@@ -170,7 +175,7 @@ export class Home extends Component {
     })
     this.props.actions.clearProjectToExport()
   }
-
+  
   /**
    * Renders a card error based on this.props.errorContent
    * @public
@@ -181,7 +186,7 @@ export class Home extends Component {
       {`Uh-oh! Something went wrong. ${this.props.errorContent}`}
     </CardError>
   )
-
+  
   /**
    * Calls a redux action to close the alert error for any export error that is shown
    * @public
@@ -190,31 +195,49 @@ export class Home extends Component {
     this.props.actions.dismissApiError('exportError')
     this.clearProjectExport()
   }
-
-  handleSortParmChange = (selectedOption) => {
-    console.log(selectedOption)
-    selectedOption !== 'sortBookmarked'
-      ? this.props.actions.sortProjects(selectedOption)
-      : this.props.actions.sortBookmarked(!this.props.sortBookmarked)
+  
+  handleSortParmChange = selectedOption => {
+    if (selectedOption !== 'sortBookmarked') {
+      this.props.actions.sortProjects(selectedOption)
+    } else {
+      this.props.actions.sortBookmarked(!this.props.sortBookmarked)
+    }
   }
-
+  
+  sortLabel = (label, direction) => {
+    return (
+      <>
+        <span style={{ paddingRight: 5 }}>{label}</span>
+        <Icon size={20} color="black">{direction === 'asc' ? 'arrow_upward' : 'arrow_downward'}</Icon>
+      </>
+    )
+  }
+  
   render() {
-    const options = [
-      { value: 'dateLastEdited', label: 'Sort by: Date Last Edited' },
-      { value: 'name', label: 'Sort By: Name' },
-      { value: 'lastEditedBy', label: 'Sort By: Last Edited By' },
-      { value: 'sortBookmarked', label: 'Sort By: Bookmarked' }
-    ]
-
+    const {
+      exportError, user, sortBy, actions, page, visibleProjects, projectCount, rowsPerPage, direction, sortBookmarked,
+      searchValue, error
+    } = this.props
+    
+    const options = Array.from([
+      { value: 'dateLastEdited', label: 'Date Last Edited' },
+      { value: 'name', label: 'Name' },
+      { value: 'lastEditedBy', label: 'Last Edited By' },
+      { value: 'sortBookmarked', label: 'Bookmarked' }
+    ], (option, i) => ({
+      ...option,
+      label: sortBookmarked && option.value === 'sortBookmarked'
+        ? this.sortLabel('Bookmarked', 'desc')
+        : !sortBookmarked && sortBy === option.value
+          ? this.sortLabel(option.label, direction)
+          : option.label
+    }))
+    
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">
-        <ApiErrorAlert
-          content={this.props.exportError}
-          open={this.props.exportError !== ''}
-          onCloseAlert={this.onCloseExportError}
-        />
+        <ApiErrorAlert content={exportError} open={exportError !== ''} onCloseAlert={this.onCloseExportError} />
         <PageHeader
-          showButton={this.props.user.role !== 'Coder'}
+          showButton={user.role !== 'Coder'}
           pageTitle="Project List"
           entryScene
           icon="dvr"
@@ -222,49 +245,57 @@ export class Home extends Component {
           projectName=""
           otherButton={{
             isLink: true,
-            text: '+ Create New Project',
+            text: 'Create New Project',
             path: '/project/add',
             state: { projectDefined: null, modal: true },
             props: { 'aria-label': 'Create New Project' },
-            show: this.props.user.role !== 'Coder'
+            show: user.role !== 'Coder'
           }}>
           <Dropdown
             name="projectSort"
             id="projectSort"
             options={options}
             input={{
-              value: 'dateLastEdited',
+              value: sortBookmarked ? 'sortBookmarked' : sortBy,
               onChange: this.handleSortParmChange
+            }}
+            renderValue={value => {
+              const option = options.find(option => option.value === value)
+              return (
+                <FlexGrid container type="row" align="center">
+                  <span>Sort by:&nbsp;</span>
+                  {option.label}
+                </FlexGrid>
+              )
             }}
             style={{ fontSize: 14 }}
             formControlStyle={{ minWidth: 180, paddingRight: 20 }}
           />
           <SearchBar
             searchValue={this.searchValue}
-            handleSearchValueChange={event => this.props.actions.updateSearchValue(event.target.value)}
+            handleSearchValueChange={event => actions.updateSearchValue(event.target.value)}
             placeholder="Search"
           />
         </PageHeader>
-
-        {this.props.error
+        
+        {error
           ? this.renderErrorMessage()
           : <ProjectList
-            user={this.props.user}
-            projectIds={this.props.visibleProjects}
-            projectCount={this.props.projectCount}
-            page={this.props.page}
-            rowsPerPage={this.props.rowsPerPage}
-            sortBy={this.props.sortBy}
-            direction={this.props.direction}
-            sortBookmarked={this.props.sortBookmarked}
-            searchValue={this.props.searchValue}
+            user={user}
+            projectIds={visibleProjects}
+            projectCount={projectCount}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            sortBy={sortBy}
+            direction={direction}
+            sortBookmarked={sortBookmarked}
+            searchValue={searchValue}
             handleExport={this.onToggleExportDialog}
-            handleRequestSort={this.props.actions.sortProjects}
-            handlePageChange={this.props.actions.updatePage}
-            handleRowsChange={this.props.actions.updateRows}
-            handleSortBookmarked={() => this.props.actions.sortBookmarked(!this.props.sortBookmarked)}
-            getProjectUsers={this.props.actions.getProjectUsers}
-            resetOpenProject={this.props.actions.resetOpenProject}
+            handleRequestSort={actions.sortProjects}
+            handlePageChange={actions.updatePage}
+            handleRowsChange={actions.updateRows}
+            handleSortBookmarked={() => actions.sortBookmarked(!sortBookmarked)}
+            getProjectUsers={actions.getProjectUsers}
           />
         }
         <ExportDialog

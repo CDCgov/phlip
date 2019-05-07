@@ -61,4 +61,12 @@ describe('CodingValidation - DocumentList action creators', () => {
 
     expect(actions.toggleAnnotationMode(3, 4, true)).toEqual(expectedAction)
   })
+  
+  test('should create an action to hide the annotation mode alert', () => {
+    const expectedAction = {
+      type: types.HIDE_ANNO_MODE_ALERT
+    }
+    
+    expect(actions.hideAnnoModeAlert()).toEqual(expectedAction)
+  })
 })

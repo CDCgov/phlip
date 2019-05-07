@@ -58,6 +58,7 @@ export class DocumentManagement extends Component {
     bulkActionExec: PropTypes.func,
     handleBulkDelete: PropTypes.func,
     handleBulkUpdate: PropTypes.func,
+    handleBulkApproval: PropTypes.func,
     apiErrorOpen: PropTypes.bool,
     apiErrorInfo: PropTypes.object,
     /**
@@ -92,6 +93,7 @@ export class DocumentManagement extends Component {
   }
 
   componentDidMount() {
+    document.title = 'PHLIP - Document List'
     this.props.actions.getDocumentsRequest()
   }
 
@@ -142,7 +144,7 @@ export class DocumentManagement extends Component {
       switch (actionType) {
         case 'deleteDoc' :
           this.setState({
-            modalTitle: 'Bulk Delete'
+            modalTitle: 'Bulk Delete', showAddJurisdiction:undefined
           })
           break
         case 'assignProject':
@@ -150,6 +152,11 @@ export class DocumentManagement extends Component {
           break
         case 'assignJurisdiction':
           this.setState({ modalTitle: 'Bulk Assign Jurisdiction', showAddJurisdiction: true })
+          break
+        case 'approveDoc':
+          this.setState({
+            modalTitle: 'Bulk Approval',showAddJurisdiction:undefined
+          })
           break
       }
     }
@@ -163,6 +170,8 @@ export class DocumentManagement extends Component {
         return (this.state.selectedProject !== null) && this.props.checkedCount > 0
       case 'assignJurisdiction':
         return (this.state.selectedJurisdiction !== null) && this.props.checkedCount > 0
+      case 'approveDoc':
+        return this.props.checkedCount > 0
       default:
         return false
     }
@@ -223,12 +232,20 @@ export class DocumentManagement extends Component {
   }
 
   handleBulkConfirm = () => {
+
     if (this.state.bulkActionType === 'deleteDoc') {
       this.props.actions.handleBulkDelete(this.props.checkedDocs)
     } else {
-      let updateData = {
-        updateType: this.state.showAddJurisdiction ? 'jurisdictions' : 'projects',
-        updateProJur: this.state.showAddJurisdiction ? this.state.selectedJurisdiction : this.state.selectedProject
+      let updateData = {}
+      if (this.state.bulkActionType === 'approveDoc') { // update type is status
+        updateData = {
+          updateType: 'status'
+        }
+      } else { // update type is either projects or jurisdictions
+        updateData = {
+          updateType: this.state.showAddJurisdiction ? 'jurisdictions' : 'projects',
+          updateProJur: this.state.showAddJurisdiction ? this.state.selectedJurisdiction : this.state.selectedProject
+        }
       }
       this.props.actions.handleBulkUpdate(updateData, this.props.checkedDocs)
     }
@@ -290,7 +307,7 @@ export class DocumentManagement extends Component {
             icon="description"
             otherButton={{
               isLink: true,
-              text: '+ Upload New',
+              text: 'Upload New',
               path: '/docs/upload',
               state: { modal: true },
               props: { 'aria-label': 'Upload New Documents', 'id': 'uploadNewBtn' },
@@ -337,7 +354,7 @@ export class DocumentManagement extends Component {
                 width: 500,
                 height: 100
               }}>
-              {this.state.modalTitle !== 'Bulk Delete' ? (
+              {this.state.showAddJurisdiction !== undefined ? (
                 <>
                   <ProJurSearch
                     jurisdictionSuggestions={this.props.jurisdictionSuggestions}

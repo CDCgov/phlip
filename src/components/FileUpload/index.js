@@ -87,7 +87,7 @@ class FileUpload extends Component {
   }
 
     /**
-     * Handles when the user cancels out of selecting a new excel fole
+     * Handles when the user cancels out of selecting a new excel file
      */
     onCancelSelectExcel = () => {
       this.setState({
@@ -111,14 +111,14 @@ class FileUpload extends Component {
         containerText,
         allowMultiple,
         allowedFileTypes
-
       } = this.props
 
       const alertActions = [
         {
           value: 'Cancel',
           type: 'button',
-          onClick: this.onCancelSelectExcel
+          onClick: this.onCancelSelectExcel,
+          preferred: true
         },
         {
           value: 'Continue',

@@ -9,15 +9,15 @@ import { UnauthPage, PageNotFound } from 'components/RoutePages'
 /**
  * These are all of the routes that exist in the application, split up by who is allowed to view them
  */
-const coderPaths = ['/home', '/project/:id/protocol', '/project/:id/code', '/project/edit/:id']
+const coderPaths = [
+  '/home', '/project/:id/protocol', '/project/:id/code', '/project/edit/:id', '/docs', '/docs/:id/view'
+]
+
 const coordinatorPaths = [
   ...coderPaths, '/project/add', '/project/:id/jurisdictions', '/project/:id/coding-scheme', '/project/:id/validate'
 ]
 
-const docPaths = [
-  '/docs'
-]
-const adminPaths = [...coderPaths, ...coordinatorPaths, ...docPaths, '/admin']
+const adminPaths = [...coderPaths, ...coordinatorPaths, '/admin']
 
 const paths = {
   Coder: coderPaths,
@@ -63,9 +63,9 @@ const isPath = path => {
 
 /**
  * @component
- * A wrapper around all other routes that handles whether or not the user can view the page. If they are allowed then it
- * renders the component, if not, then renders UnauthPage. If page isn't found, it renders PageNotFound. If the user isn't
- * logged in, renders the Login page.
+ * A wrapper around all other routes that handles whether or not the user can view the page. If they are allowed then
+ * it renders the component, if not, then renders UnauthPage. If page isn't found, it renders PageNotFound. If the user
+ * isn't logged in, renders the Login page.
  */
 export const AuthenticatedRoute = ({ component: Component, user, location, ...rest }) => {
   const loggedIn = isLoggedIn()

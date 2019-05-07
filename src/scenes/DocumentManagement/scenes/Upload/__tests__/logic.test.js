@@ -224,11 +224,11 @@ describe('Document Management - Upload logic', () => {
 
   describe('Upload Excel -- merge info', () => {
     test('should merge info with already selected docs for upload', done => {
-      apiMock.onGet('/jurisdictions', { params: { name: 'Washington' }}).reply(200, [
+      apiMock.onGet('/jurisdictions', { params: { name: 'Washington (state)' }}).reply(200, [
         { name: 'Washington (state)' }
       ])
 
-      apiMock.onGet('/jurisdictions', { params: { name: 'North Carolina' }}).reply(200, [
+      apiMock.onGet('/jurisdictions', { params: { name: 'North Carolina (state)' }}).reply(200, [
         { name: 'North Carolina (state)' }
       ])
 
@@ -236,7 +236,7 @@ describe('Document Management - Upload logic', () => {
         { name: 'Washington, DC (federal district)' }
       ])
 
-      apiMock.onGet('/jurisdictions', { params: { name: 'Ohio' }}).reply(200, [{ name: 'Ohio (state)' }])
+      apiMock.onGet('/jurisdictions', { params: { name: 'Ohio (state)' }}).reply(200, [{ name: 'Ohio (state)' }])
 
       mock.onPost('/docs/upload/extractInfo').reply(200, excelInfoFull)
 
@@ -254,11 +254,11 @@ describe('Document Management - Upload logic', () => {
     })
 
     test('should clear out info when there is already info in state', done => {
-      apiMock.onGet('/jurisdictions', { params: { name: 'Washington' }}).reply(200, [
+      apiMock.onGet('/jurisdictions', { params: { name: 'Washington (state)' }}).reply(200, [
         { name: 'Washington (state)' }
       ])
 
-      apiMock.onGet('/jurisdictions', { params: { name: 'North Carolina' }}).reply(200, [
+      apiMock.onGet('/jurisdictions', { params: { name: 'North Carolina (state)' }}).reply(200, [
         { name: 'North Carolina (state)' }
       ])
 
@@ -266,7 +266,7 @@ describe('Document Management - Upload logic', () => {
         { name: 'Washington, DC (federal district)' }
       ])
 
-      apiMock.onGet('/jurisdictions', { params: { name: 'Ohio' }}).reply(200, [{ name: 'Ohio (state)' }])
+      apiMock.onGet('/jurisdictions', { params: { name: 'Ohio (state)' }}).reply(200, [{ name: 'Ohio (state)' }])
 
       mock.onPost('/docs/upload/extractInfo').reply(200, excelInfoWithMissing)
 

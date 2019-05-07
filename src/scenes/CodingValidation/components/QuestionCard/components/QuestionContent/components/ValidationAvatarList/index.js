@@ -8,22 +8,21 @@ export const ValidationAvatarList = props => {
     answerList, userImages, enabledUserId, enabledAnswerId, handleClickAvatar,
     answerId, isValidatorSelected, showAllAvatar
   } = props
-
+  
   const avatarStyle = {
     cursor: 'pointer',
     marginLeft: 0,
     backgroundColor: '#e9e9e9',
     color: 'black',
-    marginRight: 5,
-    border: '3px solid white',
-    borderColor: 'white'
+    fontSize: '.8rem'
   }
-
+  
   const selectedStyle = {
     ...avatarStyle,
-    borderColor: theme.palette.error.main
+    border: `2px solid ${theme.palette.error.main}`,
+    boxSizing: 'border-box'
   }
-
+  
   return (
     <FlexGrid container type="row" align="center">
       {answerList.map((answer, i) => {
@@ -34,40 +33,41 @@ export const ValidationAvatarList = props => {
         const style = isSelected
           ? selectedStyle
           : avatarStyle
-
+        
         const avatarProps = {
           style,
           avatar: user.avatar,
           initials: user.initials,
           onClick: handleClickAvatar(answer.schemeAnswerId, answer.userId, answer.isValidatorAnswer === true),
           userName: user.username
-          //cardAvatar: isSelected
         }
-
+        
         return (
-          <Tooltip text={user.username} key={`user-answer-${answer.schemeAnswerId}-${i}`}>
-            {answer.isValidatorAnswer
-              ? (
-                <FlexGrid container align="flex-end" style={{ position: 'relative' }}>
-                  <Avatar {...avatarProps} />
-                  <Avatar
-                    style={{
-                      position: 'absolute',
-                      width: 12,
-                      height: 12,
-                      backgroundColor: '#80d134',
-                      border: '2px solid white',
-                      top: 18,
-                      left: 20
-                    }}
-                    cardAvatar={true}
-                    initials={<Icon size="12px" color="white" style={{ fontWeight: 800 }}>check</Icon>}
-                  />
-                </FlexGrid>
-              )
-              : <Avatar {...avatarProps} />
-            }
-          </Tooltip>
+          <div style={{ marginRight: 2 }} key={`user-answer-${answer.schemeAnswerId}-${i}`}>
+            <Tooltip text={user.username}>
+              {answer.isValidatorAnswer
+                ? (
+                  <FlexGrid container align="flex-end" style={{ position: 'relative' }}>
+                    <Avatar {...avatarProps} />
+                    <Avatar
+                      style={{
+                        position: 'absolute',
+                        width: 12,
+                        height: 12,
+                        backgroundColor: '#80d134',
+                        border: '2px solid white',
+                        top: 16,
+                        left: 16
+                      }}
+                      cardAvatar={true}
+                      initials={<Icon size="12px" color="white" style={{ fontWeight: 800 }}>check</Icon>}
+                    />
+                  </FlexGrid>
+                )
+                : <Avatar {...avatarProps} />
+              }
+            </Tooltip>
+          </div>
         )
       })}
       {showAllAvatar &&
@@ -75,7 +75,7 @@ export const ValidationAvatarList = props => {
         <Avatar
           style={(enabledUserId === 'All' && answerId === enabledAnswerId) ? selectedStyle : avatarStyle}
           avatar=""
-          initials="All"
+          initials="ALL"
           key="user-avatar-all-selected"
           onClick={handleClickAvatar(answerId, 'All', false)}
           userName="All"
