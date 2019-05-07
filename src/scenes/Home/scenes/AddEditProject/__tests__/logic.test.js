@@ -9,14 +9,14 @@ const mockReducer = (state, action) => state
 
 describe('Home scene - AddEditProject logic', () => {
   let mock
-
+  
   const history = {}
   const api = createApiHandler({ history }, projectApiInstance, calls)
-
+  
   beforeEach(() => {
     mock = new MockAdapter(projectApiInstance)
   })
-
+  
   const setupStore = initialBookmarks => {
     return createMockStore({
       initialState: {
@@ -28,6 +28,15 @@ describe('Home scene - AddEditProject logic', () => {
               firstName: 'Test',
               lastName: 'User'
             }
+          },
+          projects: {
+            byId: {
+              1: {
+                id: 1,
+                name: 'Delete Project',
+                lastEditedBy: 'Test User'
+              }
+            }
           }
         }
       },
@@ -38,7 +47,7 @@ describe('Home scene - AddEditProject logic', () => {
       }
     })
   }
-
+  
   test('should post a new project and dispatch ADD_PROJECT_SUCCESS when successful', (done) => {
     let project = {
       id: 12345,
@@ -46,7 +55,7 @@ describe('Home scene - AddEditProject logic', () => {
       isCompleted: false,
       lastEditedBy: 'Test User'
     }
-
+    
     mock.onPost('/projects').reply(200, project)
     const store = setupStore()
     store.dispatch({ type: types.ADD_PROJECT_REQUEST, project })
@@ -58,11 +67,11 @@ describe('Home scene - AddEditProject logic', () => {
       done()
     })
   })
-
+  
   test('should put an updated project and dispatch UPDATE_PROJECT_SUCCESS when successful', (done) => {
     const project = { id: 1, name: 'Updated Project', lastEditedBy: 'Test User' }
     const store = setupStore([])
-
+    
     mock.onPut('/projects/1').reply(200, project)
     store.dispatch({
       type: types.UPDATE_PROJECT_REQUEST,
@@ -75,15 +84,17 @@ describe('Home scene - AddEditProject logic', () => {
       done()
     })
   })
+  
   test('should delete a project and dispatch DELETE_PROJECT_SUCCESS when successful', (done) => {
     const project = { id: 1, name: 'Delete Project', lastEditedBy: 'Test User' }
     const store = setupStore([])
-
+    
     mock.onDelete('/projects/1').reply(200, project)
     store.dispatch({
       type: types.DELETE_PROJECT_REQUEST,
-      project:  1
+      project: 1
     })
+    
     store.whenComplete(() => {
       expect(store.actions[1].type).toEqual('DELETE_PROJECT_SUCCESS')
       expect(store.actions[1].project).toEqual(1)

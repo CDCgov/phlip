@@ -40,7 +40,8 @@ export class FlagPopover extends Component {
     user: PropTypes.object,
     disableAll: PropTypes.bool,
     questionId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    categoryId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    categoryId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    annotationModeEnabled: PropTypes.bool
   }
   
   constructor(props, context) {
@@ -113,13 +114,15 @@ export class FlagPopover extends Component {
    * Opens red flag popover
    */
   onOpenRedPopover = () => {
-    this.setState({
-      redFlagOpen: !this.state.redFlagOpen,
-      otherFlagOpen: false,
-      helperText: '',
-      inEditMode: this.props.questionFlags.length === 0,
-      userRedFlag: checkForRedFlag(this.props.questionFlags, this.props.user)[0] || { notes: '', type: 3 }
-    })
+    if (!this.props.annotationModeEnabled) {
+      this.setState({
+        redFlagOpen: !this.state.redFlagOpen,
+        otherFlagOpen: false,
+        helperText: '',
+        inEditMode: this.props.questionFlags.length === 0,
+        userRedFlag: checkForRedFlag(this.props.questionFlags, this.props.user)[0] || { notes: '', type: 3 }
+      })
+    }
   }
   
   /**
@@ -189,11 +192,13 @@ export class FlagPopover extends Component {
    * Opens regular flag form
    */
   onOpenOtherPopover = () => {
-    this.setState({
-      redFlagOpen: false,
-      otherFlagOpen: !this.state.otherFlagOpen,
-      helperText: ''
-    })
+    if (!this.props.annotationModeEnabled) {
+      this.setState({
+        redFlagOpen: false,
+        otherFlagOpen: !this.state.otherFlagOpen,
+        helperText: ''
+      })
+    }
   }
   
   /**
