@@ -30,7 +30,7 @@ export class AvatarForm extends Component {
     const { location, actions, history, selectedUser, currentUser } = this.props
     
     const base64Image = location.state.avatar
-    let patchOperation = [{ 'op': 'replace', 'path': '/avatar', 'value': base64Image }]
+    const patchOperation = [{ 'op': 'replace', 'path': '/avatar', 'value': base64Image }]
     
     actions.addUserPictureRequest(location.state.userId, patchOperation, selectedUser)
     if (location.state.userId === currentUser.id) {
