@@ -18,32 +18,32 @@ export class AvatarMenu extends Component {
     this.firstMenuItem = null
     this.avatarRef = null
   }
-
+  
   setFirstMenuItem = element => {
     this.firstMenuItem = findDOMNode(element)
     if (this.props.role === 'Admin' && this.props.open && this.firstMenuItem !== null) {
       this.firstMenuItem.focus()
     }
   }
-
+  
   onKeyPressMenu = e => {
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault()
       this.props.onToggleMenu()
     }
   }
-
+  
   handleClickAway = () => {
     if (this.props.open) {
       this.props.onToggleMenu()
     }
   }
-
+  
   render() {
     const {
       role, initials, userName, open, onLogoutUser, onOpenAdminPage, onToggleMenu, onOpenHelpPdf, avatar
     } = this.props
-
+    
     return (
       <ClickAwayListener onClickAway={this.handleClickAway}>
         <Grid item style={{ zIndex: 2 }}>
@@ -85,13 +85,16 @@ export class AvatarMenu extends Component {
                         aria-expanded={open}
                         id="avatar-user-menu"
                         aria-labelledby="avatar-menu-button">
-                        {role === 'Admin' &&
                         <MenuItem onClick={onOpenAdminPage} key="admin-menu" ref={this.setFirstMenuItem}>
                           <ListItemIcon>
-                            <Icon color="accent">person</Icon>
+                            <Icon color="accent">{role === 'Admin' ? 'person' : 'add_a_photo'}</Icon>
                           </ListItemIcon>
-                          <ListItemText style={{ color: '#5f6060' }} disableTypography primary="User Management" />
-                        </MenuItem>}
+                          <ListItemText
+                            style={{ color: '#5f6060' }}
+                            disableTypography
+                            primary={role === 'Admin' ? 'User Management' : 'Upload Profile Photo'}
+                          />
+                        </MenuItem>
                         <MenuItem
                           onClick={onLogoutUser}
                           key="logout-menu"
