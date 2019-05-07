@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import EventListener from 'react-event-listener'
@@ -21,16 +21,16 @@ export const styles = {
   /* Styles applied to an `img` element child, if needed to ensure it covers the tile. */
   imgFullHeight: {
     height: '100%',
-    position: 'relative'
+    position: 'absolute'
   },
   /* Styles applied to an `img` element child, if needed to ensure it covers the tile. */
   imgFullWidth: {
     width: '100%',
-    position: 'relative'
+    position: 'absolute'
   }
 }
 
-class GridListTile extends React.Component {
+class GridListTile extends Component {
   constructor() {
     super()
     
@@ -62,17 +62,18 @@ class GridListTile extends React.Component {
     
     const ratio = imgElement.width / imgElement.height
     const parentRatio = imgElement.parentNode.offsetWidth / imgElement.parentNode.offsetHeight
-    const diff = Math.abs(ratio - parentRatio) * 100
-    const transform = Math.floor(diff)
+    const diff = Math.floor(Math.abs(ratio - parentRatio) * 100)
     
     if (ratio > parentRatio) {
-      // image is wider than it is tall
+      // image is wider than it is tall, image is wider than container
+      const transform = diff >= 50 ? 50 : diff / 2
       imgElement.classList.remove(...this.props.classes.imgFullWidth.split(' '))
       imgElement.classList.add(...this.props.classes.imgFullHeight.split(' '))
-      imgElement.style.transform = `translateX(-${diff >= 50 ? 50 : transform}%)`
-      imgElement.style.left = `${diff >= 50 ? 50 : transform}%`
+      imgElement.style.transform = `translateX(-${transform}%)`
+      imgElement.style.left = `${transform}%`
     } else {
-      // image is taller than it is wide
+      // image is taller than it is wide, image is taller than container
+      const transform = diff >= 50 ? 50 : diff / 2
       imgElement.classList.remove(...this.props.classes.imgFullHeight.split(' '))
       imgElement.classList.add(...this.props.classes.imgFullWidth.split(' '))
       imgElement.style.transform = `translateY(-${transform}%)`
