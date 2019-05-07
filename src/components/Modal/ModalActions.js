@@ -61,17 +61,17 @@ export class ModalActions extends React.Component {
   render() {
     const { actions, raised, classes, ...otherProps } = this.props
     const chkPreferredChoice = (action, i) => {
-      
       if (action.value === undefined) {
         return false
       } else {
         if (typeof (action.value) === 'string' && actions.length === 1) {
           return true
-        } else
+        } else {
           return action.preferred
-        
+        }
       }
     }
+    
     return (
       <DialogActions classes={{ root: classes.root }} {...otherProps} >
         {actions.map((action, i) => (

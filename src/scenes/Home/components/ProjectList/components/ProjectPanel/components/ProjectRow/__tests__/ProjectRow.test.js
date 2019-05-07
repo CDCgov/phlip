@@ -57,7 +57,7 @@ describe('Home - ProjectList - ProjectPanel - ProjectRow component', () => {
     test('should call props.toggleBookmark when the bookmark icon is clicked', () => {
       const spy = jest.spyOn(props, 'toggleBookmark')
       let wrapper = setup()
-      wrapper.find('IconButton').at(0).simulate('click')
+      wrapper.find('IconButton').at(0).simulate('click', { stopPropagation: () => undefined })
       wrapper.update()
       expect(spy).toHaveBeenCalled()
     })

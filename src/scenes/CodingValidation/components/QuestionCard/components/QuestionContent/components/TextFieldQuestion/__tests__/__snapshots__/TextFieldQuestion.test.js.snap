@@ -18,24 +18,35 @@ exports[`QuestionCard - QuestionContent - TextFieldQuestion should render correc
     container={true}
     flex={false}
     justify="stretch"
-    padding="0 0 15px"
+    padding="5px 15px 10px"
     raised={false}
     style={
       Object {
-        "alignSelf": "stretch",
         "backgroundColor": "white",
-        "margin": "0 10px",
+        "marginRight": 10,
       }
     }
-    type="column"
+    type="row"
   >
-    <WithStyles(InputBox)
-      disabled={false}
-      name="text-answer"
-      placeholder="Enter answer"
-      rows={7}
-      value=""
-    />
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={true}
+      flex={true}
+      justify="flex-start"
+      padding={0}
+      raised={false}
+      style={Object {}}
+      type="column"
+    >
+      <WithStyles(InputBox)
+        disabled={false}
+        name="text-answer"
+        placeholder="Enter answer"
+        rows={7}
+        value=""
+      />
+    </FlexGrid>
   </FlexGrid>
 </FlexGrid>
 `;

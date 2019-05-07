@@ -183,8 +183,8 @@ export class QuestionNode extends Component {
                     />
                   </Tooltip>)}
                 <Tooltip
-                  text="Edit question"
-                  id={`edit-question-${listIndex}`}
+                  text={canModify ? 'Edit Question' : 'View Question'}
+                  id={`${canModify ? 'edit' : 'view'}-question-${listIndex}`}
                   //aria-label="View and edit question"
                   placement="right">
                   <Button
@@ -194,9 +194,9 @@ export class QuestionNode extends Component {
                       pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`,
                       state: { questionDefined: { ...node }, path, canModify }
                     }}
-                    aria-label="Edit question"
+                    aria-label={canModify ? 'Edit Question' : 'View Question'}
                     style={{ ...actionStyles, marginRight: 10 }}
-                    value={<Icon color="white">mode_edit</Icon>}
+                    value={<Icon color="white">{canModify ? 'mode_edit' : 'visibility'}</Icon>}
                   />
                 </Tooltip>
                 {canModify &&

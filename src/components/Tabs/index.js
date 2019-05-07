@@ -8,10 +8,7 @@ import Tab from '@material-ui/core/Tab'
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    marginTop: theme.spacing.unit * 3,
     backgroundColor: theme.palette.background.paper,
-    paddingLeft: 20,
-    paddingRight: 20,
     overflow: 'auto',
     display: 'flex',
     flexDirection: 'column'

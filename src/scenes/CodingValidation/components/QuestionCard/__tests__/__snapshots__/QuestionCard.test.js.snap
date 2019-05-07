@@ -11,8 +11,8 @@ exports[`QuestionCard component should render correctly 1`] = `
   raised={false}
   style={
     Object {
+      "flexBasis": "0%",
       "minWidth": "10%",
-      "width": "50%",
     }
   }
   type="row"
