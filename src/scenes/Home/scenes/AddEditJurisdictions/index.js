@@ -61,12 +61,7 @@ export class AddEditJurisdictions extends Component {
     /**
      * Content of error that needs to be shown
      */
-    errorContent: PropTypes.string,
-    
-    /**
-     * title of the page
-     */
-    title: PropTypes.string
+    errorContent: PropTypes.string
   }
   
   constructor(props, context) {
@@ -96,6 +91,7 @@ export class AddEditJurisdictions extends Component {
   componentWillUnmount() {
     this.props.actions.clearJurisdictions()
     document.title = `PHLIP - Project ${this.props.project.name}`
+    this.props.history.push('/home')
   }
   
   /**

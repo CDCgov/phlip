@@ -261,7 +261,7 @@ export class CodingScheme extends Component {
             component={Link}
             to={{
               pathname: `/project/${this.props.projectId}/coding-scheme/add`,
-              state: { questionDefined: null, canModify: true }
+              state: { questionDefined: null, canModify: true, modal: true }
             }}
             value="Add New Question"
             color="accent"
@@ -364,7 +364,7 @@ export class CodingScheme extends Component {
             isLink: true,
             text: 'Add New Question',
             path: `/project/${this.props.projectId}/coding-scheme/add`,
-            state: { questionDefined: null, canModify: true },
+            state: { questionDefined: null, canModify: true, modal: true },
             props: {
               'aria-label': 'Add new question to coding scheme'
             },

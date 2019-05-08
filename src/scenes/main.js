@@ -20,16 +20,23 @@ import DocumentView from './DocumentView'
 import actions from './actions'
 import CodingValidation from './CodingValidation'
 import AvatarForm from './Admin/scenes/AddEditUser/components/AvatarForm'
+import Upload from './DocumentManagement/scenes/Upload'
+import AddEditQuestion from './CodingScheme/scenes/AddEditQuestion'
+import AddEditUser from './Admin/scenes/AddEditUser'
 
-/** Paths that aren't accessible by users with 'Coder' role */
-const nonCoderPaths = [
+const modalPaths = [
   '/project/add',
+  '/project/edit/:id',
   '/project/:id/jurisdictions',
   '/project/:id/jurisdictions/add',
-  '/project/:id/jurisdictions/:jid/edit'
+  '/project/:id/jurisdictions/:jid/edit',
+  '/docs/upload',
+  '/project/:projectId/coding-scheme/add',
+  '/project/:projectId/coding-scheme/edit/:id',
+  '/admin/new/user',
+  '/admin/edit/user/:id',
+  '/user/profile'
 ]
-
-const modalPath = '/project/edit/:id'
 
 /**
  * Main scenes component for views that require a login (i.e. everything but the Login view). All of the react-router
@@ -61,6 +68,9 @@ class Main extends Component {
     super(props, context)
     
     this.helpPdfRef = React.createRef()
+    this.previousLocation = props.location
+    console.log(props.location)
+    console.log(props.history)
     
     this.state = {
       menuOpen: false,
@@ -77,8 +87,7 @@ class Main extends Component {
           location: '/docs',
           icon: 'description'
         }
-      ],
-      previousLocation: props.location || { pathname: '/home' }
+      ]
     }
   }
   
@@ -92,6 +101,10 @@ class Main extends Component {
     
     const tabs = [...this.state.menuTabs]
     
+    if (!this.props.location.state || !this.props.location.state.modal) {
+      this.previousLocation = this.props.location
+    }
+    
     if (prev !== current) {
       if (current === 'docs') {
         tabs[1].active = true
@@ -101,13 +114,8 @@ class Main extends Component {
         tabs[1].active = false
       }
       
-      const prevLocation = this.props.history.action !== 'POP' && (!prevProps.location.state || !prevProps.location.state.modal)
-        ? prevProps.location
-        : this.state.previousLocation
-  
       this.setState({
-        menuTabs: tabs,
-        previousLocation: prevLocation
+        menuTabs: tabs
       })
     }
   }
@@ -125,11 +133,7 @@ class Main extends Component {
         : location
       : location
     
-    if (matchPath(location.pathname, { path: modalPath }) !== null) {
-      loc.pathname = '/home'
-    }
-    
-    nonCoderPaths.forEach(path => {
+    modalPaths.forEach(path => {
       const match = matchPath(location.pathname, { path })
       if (match !== null) loc.pathname = '/home'
     })
@@ -241,7 +245,9 @@ class Main extends Component {
     
     // This is for jurisdictions / add/edit project modals. We want the modals to be displayed on top of the home
     // screen, so we check if it's one of those routes and if it is set the location to /home
-    const currentLocation = this.checkForModalMatch(location)
+    const isModal = !!(modalPaths.some(path => matchPath(location.pathname, { path }) !== null) &&
+      (location.state && location.state.modal && location !== this.previousLocation))
+    
     if (!isRefreshing && isLoggedIn) actions.startRefreshJwt()
     
     const containerType = location.pathname.endsWith('/code') || location.pathname.endsWith('/validate')
@@ -262,7 +268,7 @@ class Main extends Component {
           onOpenAdminPage={this.handleOpenAdminPage}
         />
         <FlexGrid container type={containerType} flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
-          <Switch location={currentLocation}>
+          <Switch location={isModal ? this.previousLocation : location}>
             <Route path="/docs/:id/view" component={DocumentView} />
             <Route path="/docs" component={DocumentManagement} />
             <Route path="/project/:id/(code|validate)" component={CodingValidation} />
@@ -277,7 +283,12 @@ class Main extends Component {
           <Route path="/project/:id/jurisdictions" component={AddEditJurisdictions} />
           <Route path="/project/:id/jurisdictions/:jid/edit" component={JurisdictionForm} />
           <Route path="/project/:id/jurisdictions/add" component={JurisdictionForm} />
-          <Route path="/user/:id/avatar" component={AvatarForm} />
+          <Route path="/user/profile" component={AvatarForm} />
+          <Route path="/docs/upload" component={Upload} />
+          <Route path="/project/:projectId/coding-scheme/add" component={AddEditQuestion} />
+          <Route path="/project/:projectId/coding-scheme/:id" component={AddEditQuestion} />
+          <Route path="/admin/new/user" component={AddEditUser} />
+          <Route path="/admin/edit/user/1" component={AddEditUser} />
           <ApiErrorAlert content={pdfError} open={pdfError !== ''} onCloseAlert={this.closeDownloadErrorAlert} />
           <a style={{ display: 'none' }} ref={this.helpPdfRef} />
         </FlexGrid>

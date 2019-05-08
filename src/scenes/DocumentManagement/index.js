@@ -69,7 +69,7 @@ export class DocumentManagement extends Component {
     getDocumentsInProgress: PropTypes.bool,
     location: PropTypes.object
   }
-
+  
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -91,13 +91,13 @@ export class DocumentManagement extends Component {
       bulkActionType: ''
     }
   }
-
+  
   componentDidMount() {
     document.title = 'PHLIP - Document List'
     this.props.actions.getDocumentsRequest()
   }
-
-  componentDidUpdate(prevProps, prevState) {
+  
+  componentDidUpdate(prevProps) {
     if (prevProps.getDocumentsInProgress && !this.props.getDocumentsInProgress) {
       if (this.props.location.state !== undefined) {
         if (this.props.location.state.projectDefined) {
@@ -114,7 +114,7 @@ export class DocumentManagement extends Component {
         }
       }
     }
-
+    
     if (prevProps.bulkOperationInProgress === true && this.props.bulkOperationInProgress === false) {
       if (this.props.apiErrorOpen) {
         console.log('error detected')
@@ -126,7 +126,7 @@ export class DocumentManagement extends Component {
       }
     }
   }
-
+  
   getButtonText = text => {
     return this.props.documentUpdateInProgress
       ? (<>
@@ -135,7 +135,7 @@ export class DocumentManagement extends Component {
       </>)
       : text
   }
-
+  
   handleBulkAction = (actionType) => {
     this.props.actions.jurisdictionAutocomplete.clearAll()
     this.props.actions.projectAutocomplete.clearAll()
@@ -144,7 +144,7 @@ export class DocumentManagement extends Component {
       switch (actionType) {
         case 'deleteDoc' :
           this.setState({
-            modalTitle: 'Bulk Delete', showAddJurisdiction:undefined
+            modalTitle: 'Bulk Delete', showAddJurisdiction: undefined
           })
           break
         case 'assignProject':
@@ -155,13 +155,13 @@ export class DocumentManagement extends Component {
           break
         case 'approveDoc':
           this.setState({
-            modalTitle: 'Bulk Approval',showAddJurisdiction:undefined
+            modalTitle: 'Bulk Approval', showAddJurisdiction: undefined
           })
           break
       }
     }
   }
-
+  
   confirmValidation = (bulkActionType) => {
     switch (bulkActionType) {
       case 'deleteDoc':
@@ -176,7 +176,7 @@ export class DocumentManagement extends Component {
         return false
     }
   }
-
+  
   handleSuggestionSelected = (suggestionType) => (event, { suggestionValue }) => {
     if (suggestionType === 'project') {
       this.setState({
@@ -187,7 +187,7 @@ export class DocumentManagement extends Component {
         selectedJurisdiction: suggestionValue
       })
     }
-
+    
     this.handleClearSuggestions(suggestionType)
   }
   /**
@@ -201,7 +201,7 @@ export class DocumentManagement extends Component {
       ? this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
       : this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
   }
-
+  
   /**
    * When a user has chosen a suggestion from the autocomplete project or jurisdiction list
    */
@@ -215,24 +215,24 @@ export class DocumentManagement extends Component {
         selectedJurisdiction: suggestionValue
       })
     }
-
+    
     this.handleClearSuggestions(suggestionType)
   }
-
+  
   handleSearchValueChange = (suggestionType, value) => {
     suggestionType === 'jurisdiction'
       ? this.props.actions.jurisdictionAutocomplete.updateSearchValue(value)
       : this.props.actions.projectAutocomplete.updateSearchValue(value)
   }
-
+  
   handleClearSuggestions = suggestionType => {
     suggestionType === 'jurisdiction'
       ? this.props.actions.jurisdictionAutocomplete.clearSuggestions()
       : this.props.actions.projectAutocomplete.clearSuggestions()
   }
-
+  
   handleBulkConfirm = () => {
-
+    
     if (this.state.bulkActionType === 'deleteDoc') {
       this.props.actions.handleBulkDelete(this.props.checkedDocs)
     } else {
@@ -250,36 +250,40 @@ export class DocumentManagement extends Component {
       this.props.actions.handleBulkUpdate(updateData, this.props.checkedDocs)
     }
   }
-
+  
   closeAlert = () => {
     this.props.actions.closeAlert()
   }
-
+  
   onCloseModal = () => {
     this.handleCloseProJurModal()
   }
-
+  
   handleCloseProJurModal = () => {
     if (this.state.selectedJurisdiction !== null) {
       this.handleClearSuggestions('jurisdiction')
       this.props.actions.jurisdictionAutocomplete.clearAll()
     }
-
+    
     if (this.state.selectedProject !== null) {
       this.handleClearSuggestions('project')
       this.props.actions.projectAutocomplete.clearAll()
     }
-
+    
     this.setState({
       showModal: false, selectedJurisdiction: null, selectedProject: null, bulkActionType: ''
     })
   }
-
+  
   render() {
     const cancelButton = {
-      value: 'Cancel', type: 'button', otherProps: { 'aria-label': 'Close modal' },preferred:true, onClick: this.onCloseModal
+      value: 'Cancel',
+      type: 'button',
+      otherProps: { 'aria-label': 'Close modal' },
+      preferred: true,
+      onClick: this.onCloseModal
     }
-
+    
     const modalAction = [
       cancelButton, {
         value: this.getButtonText('Confirm'),
@@ -289,7 +293,7 @@ export class DocumentManagement extends Component {
         disabled: this.props.bulkOperationInProgress || !this.confirmValidation(this.state.bulkActionType)
       }
     ]
-
+    
     return (
       <>
         <ApiErrorAlert
@@ -303,7 +307,7 @@ export class DocumentManagement extends Component {
             pageTitle="Document Management"
             protocolButton={false}
             projectName=""
-            entryScene={true}
+            entryScene
             icon="description"
             otherButton={{
               isLink: true,
@@ -393,7 +397,9 @@ const mapStateToProps = state => {
     documents: docManage.main.documents.visible,
     checkedDocs: docManage.main.documents.checked,
     checkedCount: docManage.main.documents.checked.length,
-    docCount: docManage.main.matchedDocs.length !==0?docManage.main.matchedDocs.length:docManage.main.documents.allIds.length,
+    docCount: docManage.main.matchedDocs.length !== 0
+      ? docManage.main.matchedDocs.length
+      : docManage.main.documents.allIds.length,
     page: docManage.main.page,
     rowsPerPage: docManage.main.rowsPerPage,
     allSelected: docManage.main.allSelected,

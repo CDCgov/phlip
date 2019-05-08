@@ -55,7 +55,7 @@ export class Admin extends Component {
             isLink: true,
             text: 'Add New User',
             path: '/admin/new/user',
-            state: {},
+            state: { modal: true },
             props: { 'aria-label': 'Add new user' },
             show: true
           }}

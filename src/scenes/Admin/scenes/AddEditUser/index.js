@@ -192,7 +192,8 @@ export class AddEditUser extends Component {
       pathname: `/admin/edit/user/${this.props.selectedUser.id}/avatar`,
       state: {
         avatar: files.base64,
-        userId: this.props.selectedUser.id
+        userId: this.props.selectedUser.id,
+        modal: true
       }
     })
   }
@@ -284,7 +285,8 @@ export class AddEditUser extends Component {
                         state: {
                           isEdit: true,
                           userId: selectedUser.id,
-                          avatar: selectedUser.avatar
+                          avatar: selectedUser.avatar,
+                          modal: true
                         }
                       }}>
                       <Avatar
