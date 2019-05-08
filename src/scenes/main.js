@@ -30,7 +30,6 @@ const nonCoderPaths = [
 ]
 
 const modalPath = '/project/edit/:id'
-const appName = 'PHLIP'
 
 /**
  * Main scenes component for views that require a login (i.e. everything but the Login view). All of the react-router
@@ -260,55 +259,21 @@ class Main extends Component {
         />
         <FlexGrid container type={containerType} flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
           <Switch location={currentLocation}>
-            <Route
-              path="/docs/:id/view"
-              render={(props) => <DocumentView {...props} title={`${appName} - Document View`} />}
-            />
-            <Route
-              path="/docs"
-              render={(props) => <DocumentManagement {...props} title={`${appName} - Document List`} />}
-            />
-            <Route
-              path="/project/:id/(code|validate)"
-              render={(props) => <CodingValidation {...props} title={`${appName} - Coding Validation`} />}
-            />
-            <Route path="/admin" render={(props) => <Admin {...props} title="PHLIP - Admin " />} />
-            <Route
-              strict
-              path="/project/:id/coding-scheme"
-              render={(props) => <CodingScheme {...props} title={`${appName} - Coding Scheme`} />}
-            />
-            <Route
-              strict
-              path="/project/:id/protocol"
-              render={(props) => <Protocol {...props} title={`${appName} - Protocol`} />}
-            />
-            <Route path="/home" render={(props) => <Home {...props} title={`${appName} - Home`} />} />
+            <Route path="/docs/:id/view" component={DocumentView} />
+            <Route path="/docs" component={DocumentManagement} />
+            <Route path="/project/:id/(code|validate)" component={CodingValidation} />
+            <Route path="/admin" component={Admin} />
+            <Route strict path="/project/:id/coding-scheme" component={CodingScheme} />
+            <Route strict path="/project/:id/protocol" component={Protocol} />
+            <Route path="/home" component={Home} />
             <Route path="/" exact render={() => <Redirect to={{ pathname: '/home' }} />} />
           </Switch>
-          <Route
-            path="/project/edit/:id"
-            render={(props) => <AddEditProject {...props} title={`${appName} - Edit Project`} />}
-          />
-          <Route
-            path="/project/add"
-            render={(props) => <AddEditProject {...props} title={`${appName} - Add Project`} />}
-          />
-          
+          <Route path="/project/edit/:id" component={AddEditProject} />
+          <Route path="/project/add" component={AddEditProject} />
+          <Route path="/project/:id/jurisdictions" component={AddEditJurisdictions} />
+          <Route path="/project/:id/jurisdictions/:jid/edit" component={JurisdictionForm} />
+          <Route path="/project/:id/jurisdictions/add" component={JurisdictionForm} />
           <Route path="/user/:id/avatar" component={AvatarForm} />
-          
-          <Route
-            path="/project/:id/jurisdictions"
-            render={(props) => <AddEditJurisdictions {...props} title={`${appName} - Project Jurisdictions`} />}
-          />
-          <Route
-            path="/project/:id/jurisdictions/:jid/edit"
-            render={(props) => <JurisdictionForm {...props} title={`${appName} - Edit Jurisdiction`} />}
-          />
-          <Route
-            path="/project/:id/jurisdictions/add"
-            render={(props) => <JurisdictionForm {...props} title={`${appName} - Add Jurisdiction`} />}
-          />
           <ApiErrorAlert content={pdfError} open={pdfError !== ''} onCloseAlert={this.closeDownloadErrorAlert} />
           <a style={{ display: 'none' }} ref={this.helpPdfRef} />
         </FlexGrid>

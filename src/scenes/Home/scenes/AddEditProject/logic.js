@@ -34,7 +34,6 @@ export const addProjectLogic = createLogic({
 export const updateProjectLogic = createLogic({
   type: types.UPDATE_PROJECT_REQUEST,
   async process({ action, api }, dispatch, done) {
-    console.log(documentTypes)
     try {
       const updatedProject = await api.updateProject(action.project, {}, { projectId: action.project.id })
       dispatch({

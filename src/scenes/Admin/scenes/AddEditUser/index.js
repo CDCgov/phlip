@@ -105,7 +105,11 @@ export class AddEditUser extends Component {
   }
   
   componentDidMount() {
-    document.title = 'PHLIP - Admin - ' + this.constructor.displayName
+    const baseTitle = `PHLIP - User Management -`
+    document.title = this.props.selectedUser
+      ? `${baseTitle} Edit ${this.props.selectedUser.firstName} ${this.props.selectedUser.lastName}`
+      : `${baseTitle} Add User`
+    
     const id = this.props.match.params.id
     
     if (id && this.props.users.length > 0) {
@@ -125,6 +129,10 @@ export class AddEditUser extends Component {
         submitting: false
       })
     }
+  }
+  
+  componentWillUnmount() {
+    document.title = 'PHLIP - User Management'
   }
   
   /**

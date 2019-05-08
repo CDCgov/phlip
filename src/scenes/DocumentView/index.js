@@ -28,7 +28,7 @@ export class DocumentView extends Component {
   }
 
   componentDidMount() {
-    document.title = `PHLIP - ${this.props.location.state.document.name} - view`
+    document.title = `PHLIP - ${this.props.location.state.document.name} - View`
     this.props.actions.initState(this.props.location.state.document)
     this.props.actions.getDocumentContentsRequest(this.props.location.state.document._id)
   }

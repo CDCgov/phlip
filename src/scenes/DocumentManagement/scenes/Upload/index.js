@@ -128,7 +128,7 @@ export class Upload extends Component {
 
   componentDidMount() {
     this.prevTitle = document.title
-    document.title = this.props.title || 'PHLIP - Documents Upload'
+    document.title = 'PHLIP - Upload Documents'
   }
 
   componentDidUpdate(prevProps, prevState) {

@@ -93,7 +93,7 @@ export class Home extends Component {
   }
   
   componentDidMount() {
-    document.title = this.props.title
+    document.title = 'PHLIP - Home'
     this.props.actions.getProjectsRequest()
   }
   
