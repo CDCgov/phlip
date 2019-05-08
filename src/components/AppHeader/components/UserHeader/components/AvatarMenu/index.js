@@ -15,7 +15,6 @@ export class AvatarMenu extends Component {
   constructor(props, context) {
     super(props, context)
     this.firstMenuItem = null
-    this.avatarRef = null
   }
   
   setFirstMenuItem = element => {
@@ -43,6 +42,8 @@ export class AvatarMenu extends Component {
       role, initials, userName, open, onLogoutUser, onOpenAdminPage, onToggleMenu, onOpenHelpPdf, avatar
     } = this.props
     
+    const textColor = '#5f6060'
+    
     const AdminItem = () => (
       <MenuItem
         onClick={role === 'Admin' ? onOpenAdminPage : avatar ? onOpenAdminPage : null}
@@ -52,7 +53,7 @@ export class AvatarMenu extends Component {
           <Icon color="accent">{role === 'Admin' ? 'person' : 'add_a_photo'}</Icon>
         </ListItemIcon>
         <ListItemText
-          style={{ color: '#5f6060' }}
+          style={{ color: textColor }}
           disableTypography
           primary={role === 'Admin' ? 'User Management' : 'Manage Profile Picture'}
         />
@@ -63,7 +64,7 @@ export class AvatarMenu extends Component {
       <ClickAwayListener onClickAway={this.handleClickAway}>
         <Grid item style={{ zIndex: 2 }}>
           <Manager>
-            <Reference innerRef={node => this.avatarRef = findDOMNode(node)}>
+            <Reference>
               {({ ref }) => {
                 return (
                   <div ref={ref}>
@@ -77,9 +78,8 @@ export class AvatarMenu extends Component {
                       aria-haspopup={true}
                       aria-owns={open ? 'avatar-user-menu' : null}
                       avatar={avatar}
-                      ref={ref}
                       userName={userName}
-                      initials={initials ? initials : ''}
+                      initials={initials || ''}
                       style={{ cursor: 'pointer' }}
                     />
                   </div>
@@ -97,9 +97,11 @@ export class AvatarMenu extends Component {
                         aria-expanded={open}
                         id="avatar-user-menu"
                         aria-labelledby="avatar-menu-button">
-                        {avatar
+                        {role === 'Admin'
                           ? <AdminItem />
-                          : <ImageFileReader handleFiles={onOpenAdminPage}><AdminItem /></ImageFileReader>}
+                          : avatar
+                            ? <AdminItem />
+                            : <ImageFileReader handleFiles={onOpenAdminPage}><AdminItem /></ImageFileReader>}
                         <MenuItem
                           onClick={onLogoutUser}
                           key="logout-menu"
@@ -107,13 +109,13 @@ export class AvatarMenu extends Component {
                           <ListItemIcon>
                             <Icon color="accent">exit_to_app</Icon>
                           </ListItemIcon>
-                          <ListItemText style={{ color: '#5f6060' }} disableTypography primary="Logout" />
+                          <ListItemText style={{ color: textColor }} disableTypography primary="Logout" />
                         </MenuItem>
                         <MenuItem onClick={onOpenHelpPdf} key="help-section-pdf">
                           <ListItemIcon>
                             <Icon color="accent">help</Icon>
                           </ListItemIcon>
-                          <ListItemText style={{ color: '#5f6060' }} disableTypography primary="Help" />
+                          <ListItemText style={{ color: textColor }} disableTypography primary="Help" />
                         </MenuItem>
                       </MenuList>
                     </Paper>
