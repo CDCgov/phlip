@@ -45,7 +45,7 @@ export const DocListTableHead = props => {
     { key: 'uploadedDate', label: 'Uploaded Date', padding: 'checkbox', hasSort: true },
     { key: 'doc-projects', label: 'Projects', padding: 'checkbox' },
     { key: 'doc-jurisdictions', label: 'Jurisdictions', padding: 'checkbox' },
-    { key: 'approved', padding:0}
+    { key: 'approved', label:'Approval', padding:0}
   ]
 
   return (
