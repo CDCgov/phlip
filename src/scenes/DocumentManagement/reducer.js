@@ -175,7 +175,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documents: {
           ...state.documents,
-          checked: state.allSelected ? [] : state.documents.allIds
+          checked: state.allSelected ? [] : state.documents.visible
         },
         allSelected: !state.allSelected
       }
@@ -244,7 +244,9 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection),
           checked: []
         },
-        bulkOperationInProgress: false
+        bulkOperationInProgress: false,
+        matchedDocs: [],
+        allSelected: false
       }
 
     case types.BULK_DELETE_FAIL:
