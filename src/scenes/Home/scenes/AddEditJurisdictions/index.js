@@ -2,21 +2,14 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { withRouter } from 'react-router'
+import { withRouter, Link } from 'react-router-dom'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
-import Button from 'components/Button'
-import Container, { Column } from 'components/Layout'
 import JurisdictionList from './components/JurisdictionList'
 import actions from './actions'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
-import TextLink from 'components/TextLink'
-import ApiErrorView from 'components/ApiErrorView'
 import { withTheme } from '@material-ui/core/styles'
-import PageLoader from 'components/PageLoader'
-import Alert from 'components/Alert'
-import ApiErrorAlert from 'components/ApiErrorAlert'
-import withTracking from 'components/withTracking'
+import { FlexGrid, ApiErrorView, ApiErrorAlert, withTracking, PageLoader, Alert, Button } from 'components'
 
 /**
  * Main / entry component for all things jurisdiction. It is a modal that shows a list of all jurisdictions for the
@@ -86,12 +79,9 @@ export class AddEditJurisdictions extends Component {
     deleteErrorAlertOpen: false
   }
   
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     this.props.actions.getProjectJurisdictions(this.props.project.id)
     this.showJurisdictionLoader()
-  }
-  
-  componentDidMount() {
     document.title = `PHLIP - Project ${this.props.project.name} - Jurisdictions`
   }
   
@@ -183,22 +173,28 @@ export class AddEditJurisdictions extends Component {
     return (
       <>
         <div style={{ marginRight: 10 }}>
-          <TextLink
+          <Button
+            component={Link}
             to={{
               pathname: `/project/${this.props.project.id}/jurisdictions/add`,
               state: { preset: true, modal: true }
-            }}>
-            <Button value="Load Preset" color="accent" aria-label="Load preset" />
-          </TextLink>
+            }}
+            value="Load Preset"
+            color="accent"
+            aria-label="Load preset"
+          />
         </div>
         <div>
-          <TextLink
+          <Button
+            component={Link}
             to={{
               pathname: `/project/${this.props.project.id}/jurisdictions/add`,
               state: { preset: false, modal: true }
-            }}>
-            <Button value="+ Add Jurisdiction" color="accent" aria-label="Add jurisidiction to project" />
-          </TextLink>
+            }}
+            value="Add Jurisdiction"
+            color="accent"
+            aria-label="Add jurisidiction to project"
+          />
         </div>
       </>
     )
@@ -255,8 +251,8 @@ export class AddEditJurisdictions extends Component {
             content={deleteError}
             onCloseAlert={this.dismissDeleteErrorAlert}
           />
-          <Container flex style={{ marginTop: 20 }}>
-            <Column flex displayFlex style={{ overflowX: 'auto' }}>
+          <FlexGrid container flex style={{ marginTop: 20 }}>
+            <FlexGrid container flex style={{ overflowX: 'auto' }}>
               {error === true
                 ? <ApiErrorView error={errorContent} />
                 : showJurisdictionLoader
@@ -267,8 +263,8 @@ export class AddEditJurisdictions extends Component {
                     projectId={project.id}
                     onDelete={this.confirmDelete}
                   />}
-            </Column>
-          </Container>
+            </FlexGrid>
+          </FlexGrid>
         </ModalContent>
         <ModalActions
           actions={[

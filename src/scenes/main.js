@@ -78,7 +78,7 @@ class Main extends Component {
           icon: 'description'
         }
       ],
-      previousLocation: props.location
+      previousLocation: props.location || { pathname: '/home' }
     }
   }
   
@@ -101,9 +101,13 @@ class Main extends Component {
         tabs[1].active = false
       }
       
+      const prevLocation = this.props.history.action !== 'POP' && (!prevProps.location.state || !prevProps.location.state.modal)
+        ? prevProps.location
+        : this.state.previousLocation
+  
       this.setState({
         menuTabs: tabs,
-        previousLocation: prevProps.location
+        previousLocation: prevLocation
       })
     }
   }
@@ -217,7 +221,7 @@ class Main extends Component {
       this.props.history.push({
         pathname: `/user/${this.props.user.id}/avatar`,
         state: {
-          isEdit: this.props.user.avatar,
+          isEdit: Boolean(this.props.user.avatar),
           avatar: this.props.user.avatar || files.base64,
           userId: this.props.user.id,
           modal: true,
