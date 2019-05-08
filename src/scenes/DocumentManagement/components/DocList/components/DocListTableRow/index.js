@@ -6,6 +6,8 @@ import moment from 'moment'
 import { connect } from 'react-redux'
 import TextLink from 'components/TextLink'
 import CheckboxLabel from 'components/CheckboxLabel'
+import { CheckCircleOutline } from 'mdi-material-ui'
+import FlexGrid from 'components/FlexGrid'
 
 /**
  * Represents one row in the document management table
@@ -39,6 +41,11 @@ export const DocListTableRow = props => {
       </TableCell>
       <TableCell padding="checkbox">
         {jurisdictionList.join(', ')}
+      </TableCell>
+      <TableCell style={{padding:0, width:24}}>
+        <FlexGrid container flex type='row' align='center'>
+          {doc.status === 'Approved' && <CheckCircleOutline color='secondary' style={{ width: 24, height: 24}} />}
+        </FlexGrid>
       </TableCell>
     </TableRow>
   )
