@@ -14,7 +14,7 @@ export const DocListTableHead = props => {
     { value: 'deleteDoc', label: 'Delete' },
     { value: 'assignProject', label: 'Assign Project' },
     { value: 'assignJurisdiction', label: 'Assign Jurisdiction' },
-    { value: 'approveDoc', label: 'Approval' }
+    { value: 'approveDoc', label: 'Approve' }
   ]
   
   const r1Columns = [
