@@ -639,7 +639,7 @@ const mapStateToProps = state => {
     infoSheetSelected: uploadState.list.infoSheetSelected,
     duplicateFiles: uploadState.list.duplicateFiles,
     invalidTypeFiles : uploadState.list.invalidTypeFiles,
-    maxFileCount: uploadState.maxFileCount || 50,
+    maxFileCount: uploadState.maxFileCount || 20,
     invalidSizeFiles: uploadState.list.invalidSizeFiles
   }
 }
