@@ -99,7 +99,7 @@ export class AddEditUser extends Component {
     user: PropTypes.object,
     selectedUser: PropTypes.object
   }
-
+  
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -108,16 +108,20 @@ export class AddEditUser extends Component {
       submitting: false
     }
   }
-
+  
   componentDidMount() {
-    document.title = 'PHLIP-Admin-'+this.constructor.displayName
+    const baseTitle = `PHLIP - User Management -`
+    document.title = this.props.selectedUser
+      ? `${baseTitle} Edit ${this.props.selectedUser.firstName} ${this.props.selectedUser.lastName}`
+      : `${baseTitle} Add User`
+    
     const id = this.props.match.params.id
-
+    
     if (id && this.props.users.length > 0) {
       this.props.actions.loadAddEditAvatar(this.props.selectedUser.avatar)
     }
   }
-
+  
   componentDidUpdate() {
     if (this.state.submitting === true && this.props.isDoneSubmitting === true) {
       this.props.actions.resetSubmittingStatus()
@@ -131,7 +135,11 @@ export class AddEditUser extends Component {
       })
     }
   }
-
+  
+  componentWillUnmount() {
+    document.title = 'PHLIP - User Management'
+  }
+  
   /**
    * Function called when the form is submitted. Dispatches redux actions to update or create a user depending on view.
    * Dispatches another action if the user being edited is the current user logged in.
@@ -141,12 +149,12 @@ export class AddEditUser extends Component {
    */
   handleSubmit = values => {
     this.setState({ submitting: true })
-
+    
     let updatedValues = { ...values }
     for (let field of ['firstName', 'lastName']) {
       updatedValues[field] = trimWhitespace(values[field])
     }
-
+    
     if (this.props.match.params.id) {
       this.props.actions.updateUserRequest({ role: 'Coordinator', ...updatedValues, avatar: this.props.avatar })
       if (this.props.currentUser.id === updatedValues.id) {
@@ -156,7 +164,7 @@ export class AddEditUser extends Component {
       this.props.actions.addUserRequest({ role: 'Coordinator', ...updatedValues })
     }
   }
-
+  
   /**
    * Validates that an email in the form is not already used in another account. Throws an error if needed which is
    * caught by redux-form
@@ -176,7 +184,7 @@ export class AddEditUser extends Component {
       }
     })
   }
-
+  
   /**
    * Opens another modal for removing / updating an avatar for the user. Opens the components/AvatarForm
    * component. Takes the first image in the list, compresses it and passes it to the form.
@@ -186,7 +194,7 @@ export class AddEditUser extends Component {
    */
   openAvatarForm = files => {
     const maxSize = 500000
-
+    
     if (files.fileList[0].size > maxSize) {
       this.setState({ open: true })
     } else {
@@ -203,7 +211,7 @@ export class AddEditUser extends Component {
       })
     }
   }
-
+  
   /**
    * Checks to make sure a value is defined, other returns 'Required' for displaying as a form error
    *
@@ -218,7 +226,7 @@ export class AddEditUser extends Component {
       return undefined
     }
   }
-
+  
   getButtonText = text => {
     if (this.state.submitting) {
       return (
@@ -231,7 +239,7 @@ export class AddEditUser extends Component {
       return <>{text}</>
     }
   }
-
+  
   /**
    * Cancels any edits and closes this modal
    * @public
@@ -240,7 +248,7 @@ export class AddEditUser extends Component {
     this.props.actions.onCloseAddEditUser()
     this.props.history.goBack()
   }
-
+  
   /**
    * Closes alert that displays when the user tries to upload an image that is too large
    * @public
@@ -248,7 +256,7 @@ export class AddEditUser extends Component {
   onAlertClose = () => {
     this.setState({ open: false })
   }
-
+  
   render() {
     const alertActions = [
       {
@@ -257,7 +265,7 @@ export class AddEditUser extends Component {
         onClick: this.onAlertClose
       }
     ]
-
+    
     const actions = [
       {
         value: 'Cancel',
@@ -272,13 +280,13 @@ export class AddEditUser extends Component {
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
-
+    
     const roles = [
       { value: 'Admin', label: 'Admin' },
       { value: 'Coordinator', label: 'Coordinator' },
       { value: 'Coder', label: 'Coder' }
     ]
-
+    
     return (
       <>
         <Alert actions={alertActions} open={this.state.open}>
@@ -326,18 +334,17 @@ export class AddEditUser extends Component {
                           />
                         </TextLink>
                       </Tooltip>
+                    ) : (
+                      <ReactFileReader base64={true} fileTypes={['.jpg', 'png']} handleFiles={this.openAvatarForm}>
+                        <IconButton
+                          color={'#757575'}
+                          iconSize={50}
+                          tooltipText="Add a photo"
+                          id="add-user-photo">
+                          add_a_photo
+                        </IconButton>
+                      </ReactFileReader>
                     )
-                      : (
-                        <ReactFileReader base64={true} fileTypes={['.jpg', 'png']} handleFiles={this.openAvatarForm}>
-                          <IconButton
-                            color={'#757575'}
-                            iconSize={50}
-                            tooltipText="Add a photo"
-                            id="add-user-photo">
-                            add_a_photo
-                          </IconButton>
-                        </ReactFileReader>
-                      )
                     }
                   </Column>
                 ) : null

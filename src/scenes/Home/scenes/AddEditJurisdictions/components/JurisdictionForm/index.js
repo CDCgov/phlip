@@ -92,8 +92,14 @@ export class JurisdictionForm extends Component {
   }
 
   componentDidMount() {
-    document.title = this.props.title
+    const baseTitle = `PHLIP - ${this.props.project.name} -`
+    if (this.jurisdictionDefined) {
+      document.title = `${baseTitle} Edit ${this.jurisdictionDefined.name}`
+    } else {
+      document.title = `${baseTitle} Add Jurisdiction`
+    }
   }
+  
   componentDidUpdate(prevProps, prevState) {
     if (this.state.submitting === true) {
       if (this.props.formError !== null) {
@@ -109,6 +115,7 @@ export class JurisdictionForm extends Component {
 
   componentWillUnmount() {
     this.props.actions.onClearSuggestions()
+    document.title = `PHLIP - ${this.props.project.name} - Jurisdictions`
   }
 
   getButtonText = text => {

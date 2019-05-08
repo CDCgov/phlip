@@ -38,12 +38,6 @@ export class ProjectPanel extends Component {
       id: this.props.project.createdById,
       email: this.props.project.createdByEmail
     })
-    
-    if (!this.props.expanded) {
-      document.title = `PHLIP - Project ${this.props.project.name}`
-    } else {
-      document.title = `PHLIP - Home`
-    }
   }
   
   /**
