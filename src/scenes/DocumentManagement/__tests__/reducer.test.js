@@ -316,13 +316,8 @@ describe('Document Management reducer', () => {
       const updatedState = reducer(currentState, action)
 
       expect(updatedState.documents.checked).toEqual([
-        '1',
-        '2',
-        '3',
         '4',
-        '5',
-        '6',
-        '7'
+        '1'
       ])
     })
 
