@@ -5,7 +5,8 @@ import { Admin } from '../index'
 const props = {
   users: [],
   actions: {
-    getUsersRequest: jest.fn()
+    getUsersRequest: jest.fn(),
+    sortUsers: jest.fn()
   },
   sortBy: 'name',
   direction: 'asc',
@@ -21,5 +22,13 @@ describe('Admin Scene', () => {
   test('should render UserList component', () => {
     const wrapper = shallow(<Admin {...props} />)
     expect(wrapper.find('UserList')).toHaveLength(1)
+  })
+  
+  test('should sort list when sort is requested', () => {
+    const spy = jest.spyOn(props.actions, 'sortUsers')
+    const wrapper = shallow(<Admin {...props} />)
+    wrapper.find('UserList').prop('handleRequestSort')()()
+    wrapper.update()
+    expect(spy).toHaveBeenCalled()
   })
 })
