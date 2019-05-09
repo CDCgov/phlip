@@ -57,21 +57,22 @@ class Main extends Component {
     pdfFile: PropTypes.any,
     actions: PropTypes.object,
     location: PropTypes.object,
-    role: PropTypes.string,
     isLoggedIn: PropTypes.bool,
     isRefreshing: PropTypes.bool,
     user: PropTypes.object,
-    pdfError: PropTypes.any
+    pdfError: PropTypes.any,
+    previousLocation: PropTypes.object
   }
   
   constructor(props, context) {
     super(props, context)
     
     this.helpPdfRef = React.createRef()
-    this.previousLocation = props.location
+    this.previousLocation = props.previousLocation !== props.location ? props.previousLocation : props.location
     console.log(props.location)
     console.log(props.history)
     console.log(window)
+    console.log(this.props.previousLocation)
     
     this.state = {
       menuOpen: false,
@@ -104,6 +105,7 @@ class Main extends Component {
     
     if (!this.props.location.state || !this.props.location.state.modal) {
       this.previousLocation = this.props.location
+      this.props.actions.setPreviousLocation(this.props.location)
     }
     
     if (prev !== current) {
@@ -119,27 +121,6 @@ class Main extends Component {
         menuTabs: tabs
       })
     }
-  }
-  
-  /**
-   * Checks if the route path is a modal view.
-   *
-   * @param location
-   * @returns {Object}
-   */
-  checkForModalMatch = location => {
-    let loc = location.state !== undefined
-      ? location.state.modal
-        ? this.state.previousLocation
-        : location
-      : location
-    
-    modalPaths.forEach(path => {
-      const match = matchPath(location.pathname, { path })
-      if (match !== null) loc.pathname = '/home'
-    })
-    
-    return loc
   }
   
   /**
@@ -302,7 +283,8 @@ const mapStateToProps = state => ({
   user: state.data.user.currentUser,
   pdfError: state.scenes.main.pdfError,
   pdfFile: state.scenes.main.pdfFile,
-  isRefreshing: state.scenes.main.isRefreshing
+  isRefreshing: state.scenes.main.isRefreshing,
+  previousLocation: state.scenes.main.previousLocation
 })
 
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })

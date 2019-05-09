@@ -101,7 +101,7 @@ export class AddEditUser extends Component {
   }
   
   componentDidMount() {
-    const { selectedUser, match, users, actions } = this.props
+    const { selectedUser, match, actions } = this.props
     this.previousTitle = document.title
     this.selfUpdate = selectedUser
       ? match.url === '/user/profile'
@@ -116,7 +116,7 @@ export class AddEditUser extends Component {
     
     const id = match.params.id
     
-    if (id && users.length > 0) {
+    if (this.selfUpdate || id) {
       actions.loadAddEditAvatar(selectedUser.avatar)
     }
   }
