@@ -29,11 +29,11 @@ export default {
   updateCurrentUser: makeActionCreator(types.UPDATE_CURRENT_USER, 'payload'),
   updateCurrentUserAvatar: makeActionCreator(types.UPDATE_CURRENT_USER_AVATAR, 'payload'),
   removeCurrentUserAvatar: makeActionCreator(types.REMOVE_CURRENT_USER_AVATAR),
-  addUserPictureRequest: makeActionCreator(types.ADD_USER_IMAGE_REQUEST, 'userId', 'patchOperation', 'user'),
+  addUserPictureRequest: makeActionCreator(types.ADD_USER_IMAGE_REQUEST, 'userId', 'patchOperation', 'user', 'selfUpdate'),
   addUserPictureSuccess: makeActionCreator(types.ADD_USER_IMAGE_SUCCESS, 'user'),
   onCloseAddEditUser: makeActionCreator(types.ON_CLOSE_ADD_EDIT_USER),
   getUserPictureRequest: makeActionCreator(types.GET_USER_IMAGE_REQUEST, 'userId'),
-  deleteUserPictureRequest: makeActionCreator(types.DELETE_USER_IMAGE_REQUEST, 'userId', 'operation', 'user'),
+  deleteUserPictureRequest: makeActionCreator(types.DELETE_USER_IMAGE_REQUEST, 'userId', 'operation', 'user', 'selfUpdate'),
   loadAddEditAvatar: makeActionCreator(types.LOAD_ADD_EDIT_AVATAR, 'avatar'),
   resetFormError: makeActionCreator(types.RESET_USER_FORM_ERROR),
   resetSubmittingStatus: makeActionCreator(types.RESET_SUBMITTING_STATUS)

@@ -7,8 +7,6 @@ import UserList from './components/UserList/index'
 import { FlexGrid, PageHeader, withTracking } from 'components'
 import actions from './actions'
 import { bindActionCreators } from 'redux'
-import AddEditUser from './scenes/AddEditUser'
-import { Route } from 'react-router-dom'
 
 /**
  * Represents the parent User Management component, that displays a list of users in the system. This component is

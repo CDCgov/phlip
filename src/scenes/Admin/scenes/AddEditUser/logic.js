@@ -26,14 +26,22 @@ export const updateUserLogic = createLogic({
   async process({ action, api }, dispatch, done) {
     let updatedUser = {}
     try {
-      updatedUser = action.selfUpdate
-        ? await api.updateSelf(action.user, {}, { userId: action.user.id })
-        : await api.updateUser(action.user, {}, { userId: action.user.id })
-      dispatch({ type: types.UPDATE_USER_SUCCESS, payload: { ...updatedUser, avatar: action.user.avatar }})
+      if (action.selfUpdate) {
+        const patchDocument = [
+          { op: 'replace', path: '/firstName', value: action.user.firstName },
+          { op: 'replace', path: '/lastName', value: action.user.lastName },
+          { op: 'replace', path: '/avatar', value: action.user.avatar }
+        ]
+        updatedUser = await api.updateSelf(patchDocument, {}, { userId: action.user.id })
+        console.log(updatedUser)
+      } else {
+        updatedUser = await api.updateUser(action.user, {}, { userId: action.user.id })
+      }
+      dispatch({ type: types.UPDATE_USER_SUCCESS, payload: { ...updatedUser, avatar: action.user.avatar } })
     } catch (e) {
       if (e.response.status === 304) {
         updatedUser = { ...action.user, avatar: action.user.avatar }
-        dispatch({ type: types.UPDATE_USER_SUCCESS, payload: { ...updatedUser, avatar: action.user.avatar }})
+        dispatch({ type: types.UPDATE_USER_SUCCESS, payload: { ...updatedUser, avatar: action.user.avatar } })
       } else {
         dispatch({ type: types.UPDATE_USER_FAIL })
       }
@@ -53,7 +61,9 @@ export const patchUserImageLogic = createLogic({
     successType: types.ADD_USER_IMAGE_SUCCESS
   },
   async process({ action, api }) {
-    await api.updateUserImage(action.patchOperation, {}, { userId: action.userId })
+    action.selfUpdate
+      ? await api.updateSelf(action.patchOperation, {}, { userId: action.userId })
+      : await api.updateUserImage(action.patchOperation, {}, { userId: action.userId })
     return { avatar: action.patchOperation[0].value, userId: action.userId, user: action.user }
   }
 })
@@ -84,7 +94,9 @@ export const deleteUserImageLogic = createLogic({
     successType: types.DELETE_USER_IMAGE_SUCCESS
   },
   async process({ action, api }) {
-    await api.deleteUserImage(action.operation, {}, { userId: action.userId })
+    action.selfUpdate
+      ? await api.updateSelf(action.operation, {}, { userId: action.userId })
+      : await api.deleteUserImage(action.operation, {}, { userId: action.userId })
     return { user: action.user, userId: action.userId, avatar: null }
   }
 })

@@ -17,7 +17,6 @@ const modalPaths = [
 ]
 
 const isRouteOk = history => {
-  console.log(history)
   return history.action !== 'PUSH'
     ? true
     : modalPaths.every(path => matchPath(history.location.pathname, { path }) === null)
@@ -96,8 +95,6 @@ export class ProjectList extends Component {
    * @param event
    */
   handleClickAway = event => {
-    console.log(event)
-    console.log(this.props.location)
     if (this.props.location.pathname === '/home' && isRouteOk(this.props.history)) {
       const parent = event.target.offsetParent ? event.target.offsetParent : event.target.parentNode
       const expand = (this.checkExpand(event.target) && this.checkExpand(parent))

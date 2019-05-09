@@ -15,7 +15,8 @@ export class AvatarForm extends Component {
     history: PropTypes.object,
     currentUser: PropTypes.object,
     actions: PropTypes.object,
-    selectedUser: PropTypes.object
+    selectedUser: PropTypes.object,
+    selfUpdate: PropTypes.bool
   }
   
   constructor(props, context) {
@@ -27,12 +28,12 @@ export class AvatarForm extends Component {
   }
   
   handleSubmit = () => {
-    const { location, actions, history, selectedUser, currentUser } = this.props
+    const { location, actions, history, selectedUser, currentUser, selfUpdate } = this.props
     
     const base64Image = location.state.avatar
     const patchOperation = [{ 'op': 'replace', 'path': '/avatar', 'value': base64Image }]
     
-    actions.addUserPictureRequest(location.state.userId, patchOperation, selectedUser)
+    actions.addUserPictureRequest(location.state.userId, patchOperation, selectedUser, selfUpdate)
     if (location.state.userId === currentUser.id) {
       actions.updateCurrentUserAvatar(location.state.avatar)
     }
@@ -40,10 +41,10 @@ export class AvatarForm extends Component {
   }
   
   handleDeleteAvatar = () => {
-    const { location, actions, history, selectedUser, currentUser } = this.props
+    const { location, actions, history, selectedUser, currentUser, selfUpdate } = this.props
     
     const patchRemoveOperation = [{ 'op': 'remove', 'path': '/avatar' }]
-    actions.deleteUserPictureRequest(location.state.userId, patchRemoveOperation, selectedUser)
+    actions.deleteUserPictureRequest(location.state.userId, patchRemoveOperation, selectedUser, selfUpdate)
     if (location.state.userId === currentUser.id) {
       actions.removeCurrentUserAvatar()
     }
@@ -108,12 +109,16 @@ export class AvatarForm extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  currentUser: state.data.user.currentUser || {},
-  selectedUser: ownProps.match.url === '/user/profile/avatar'
-    ? state.data.user.currentUser
-    : state.scenes.admin.main.users.find(user => user.id === ownProps.location.state.userId)
-})
+const mapStateToProps = (state, ownProps) => {
+  const selfUpdate = ownProps.match.url === '/user/profile/avatar'
+  return {
+    currentUser: state.data.user.currentUser || {},
+    selectedUser: selfUpdate
+      ? state.data.user.currentUser
+      : state.scenes.admin.main.users.find(user => user.id === ownProps.location.state.userId),
+    selfUpdate
+  }
+}
 
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(actions, dispatch),

@@ -72,7 +72,7 @@ let apiCalls = [
   },
   {
     name: 'updateSelf',
-    method: 'put',
+    method: 'patch',
     path: ({ userId }) => `/users/${userId}/selfUpdate`
   },
   {
