@@ -36,14 +36,14 @@ const props = {
 }
 
 /*const setup = otherProps => {
-  return mount(
-    <MemoryRouter>
-      <MuiThemeProvider theme={theme}>
-        <ProjectPanel {...props} {...otherProps} />
-      </MuiThemeProvider>
-    </MemoryRouter>
-  )
-}*/
+ return mount(
+ <MemoryRouter>
+ <MuiThemeProvider theme={theme}>
+ <ProjectPanel {...props} {...otherProps} />
+ </MuiThemeProvider>
+ </MemoryRouter>
+ )
+ }*/
 
 describe('Home - ProjectList - ProjectPanel scene', () => {
   test('should render correctly', () => {
@@ -54,27 +54,48 @@ describe('Home - ProjectList - ProjectPanel scene', () => {
     expect(shallow(<ProjectPanel {...props} expanded />)).toMatchSnapshot()
   })
   
-  xdescribe('when a coder is logged in', () => {
+  describe('when a coder is logged in', () => {
+    const wrapper = shallow(<ProjectPanel {...props} expanded role="Coder" />)
     describe('when the card is open', () => {
       test('validate button should not be visible', () => {
-      
+        expect(wrapper.find('FlexGrid').at(9).find('FlexGrid').at(3).children().length).toEqual(1)
+        expect(wrapper.find('WithTheme(Button)').everyWhere(n => n.prop('value') !== 'Validate'))
       })
-  
+      
       test('code button should be visible', () => {
-    
+        expect(wrapper.find('FlexGrid').at(9).find('FlexGrid').at(3).childAt(0).prop('value')).toEqual('Code')
       })
       
       test('coding scheme button should not be visible', () => {
+        expect(wrapper.find('WithTheme(Button)').everyWhere(n => n.childAt(0) !== 'Coding Scheme')).toEqual(true)
+      })
       
+      test('jurisdictions button should not be visible', () => {
+        expect(wrapper.find('WithTheme(Button)').everyWhere(n => n.childAt(0) !== 'Jurisdiction')).toEqual(true)
       })
     })
   })
   
-  xtest('should call props.onExport when the Export button is clicked', () => {
-    //const spy = jest.spyOn(props, 'onExport')
-    //const wrapper = setup({ expanded: true }).find('Icon')
-    //wrapper.find('tr').find('td').at(9).find('Tooltip').at(0).find('IconButton').at(0).simulate('click')
-    //wrapper.update()
-    //expect(spy).toHaveBeenCalled()
+  describe('when a coordinator is logged in', () => {
+    const wrapper = shallow(<ProjectPanel {...props} expanded role="Coordinator" />)
+    describe('when the card is open', () => {
+      test('validate button should be visible', () => {
+        expect(wrapper.find('FlexGrid').at(9).find('FlexGrid').at(3).children().length).toEqual(2)
+        expect(wrapper.find('FlexGrid').at(9).find('FlexGrid').at(3).childAt(1).prop('value')).toEqual('Validate')
+      })
+      
+      test('code button should be visible', () => {
+        expect(wrapper.find('FlexGrid').at(9).find('FlexGrid').at(3).childAt(0).prop('value')).toEqual('Code')
+      })
+      
+      test('coding scheme button should be visible', () => {
+        console.log(wrapper.find('WithTheme(Button)').at(0).childAt(0).text())
+        expect(wrapper.find('WithTheme(Button)').someWhere(n => n.childAt(0).text() === 'Coding Scheme')).toEqual(true)
+      })
+      
+      test('jurisdictions button should be visible', () => {
+        expect(wrapper.find('WithTheme(Button)').someWhere(n => n.childAt(0).text() === 'Jurisdictions')).toEqual(true)
+      })
+    })
   })
 })
