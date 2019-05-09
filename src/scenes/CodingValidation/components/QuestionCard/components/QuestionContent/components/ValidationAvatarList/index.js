@@ -47,7 +47,11 @@ export const ValidationAvatarList = props => {
       {showAllAvatar &&
       <Tooltip text="Show all annotations">
         <Avatar
-          style={(enabledUserId === 'All' && answerId === enabledAnswerId) ? selectedStyle : avatarStyle}
+          style={{
+            ...(enabledUserId === 'All' && answerId === enabledAnswerId) ? selectedStyle : {},
+            color: 'white',
+            backgroundColor: theme.palette.primary.dark
+          }}
           avatar=""
           initials="ALL"
           key="user-avatar-all-selected"
@@ -76,3 +80,4 @@ ValidationAvatarList.defaultProps = {
 }
 
 export default ValidationAvatarList
+

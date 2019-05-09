@@ -24,7 +24,7 @@ export class DocumentContents extends Component {
           </Typography>
           <Typography variant="subheading" id="docName">{this.props.document.name}</Typography>
         </FlexGrid>
-        {this.props.document.content.data && <PDFViewer document={this.props.document} />}
+        {this.props.document.content.data && <PDFViewer document={this.props.document} showAnnoModeAlert={false} />}
       </FlexGrid>
     )
   }
