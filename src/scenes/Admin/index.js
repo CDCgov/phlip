@@ -67,8 +67,6 @@ export class Admin extends Component {
           direction={this.props.direction}
           handleRequestSort={property => () => this.props.actions.sortUsers(property)}
         />
-        <Route path="/admin/new/user" component={AddEditUser} />
-        <Route path="/admin/edit/user/:id" component={AddEditUser} />
       </FlexGrid>
     )
   }

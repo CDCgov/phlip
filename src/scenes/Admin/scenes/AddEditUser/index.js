@@ -89,7 +89,9 @@ export class AddEditUser extends Component {
      * Function passed in from withFormAlert HOC
      */
     onSubmitError: PropTypes.func,
-    user: PropTypes.object,
+    /**
+     * User selected for edit
+     */
     selectedUser: PropTypes.object
   }
   
@@ -219,6 +221,11 @@ export class AddEditUser extends Component {
     }
   }
   
+  /**
+   * Gets modal submit but text, shows a spinner if submitting
+   * @param text
+   * @returns {*}
+   */
   getButtonText = text => {
     return (
       <>

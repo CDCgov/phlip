@@ -265,7 +265,7 @@ class Main extends Component {
           <Route path="/project/:projectId/coding-scheme/add" component={AddEditQuestion} />
           <Route path="/project/:projectId/coding-scheme/:id" component={AddEditQuestion} />
           <Route path="/admin/new/user" component={AddEditUser} />
-          <Route path="/admin/edit/user/1" component={AddEditUser} />
+          <Route path="/admin/edit/user/:id" component={AddEditUser} />
           <Route path="/user/profile" component={AddEditUser} />
           <ApiErrorAlert content={pdfError} open={pdfError !== ''} onCloseAlert={this.closeDownloadErrorAlert} />
           <a style={{ display: 'none' }} ref={this.helpPdfRef} />
