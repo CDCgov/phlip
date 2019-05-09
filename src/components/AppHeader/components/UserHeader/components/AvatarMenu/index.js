@@ -9,7 +9,7 @@ import MenuList from '@material-ui/core/MenuList'
 import Paper from '@material-ui/core/Paper'
 import { Manager, Reference, Popper } from 'react-popper'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
-import { Icon, Avatar, ImageFileReader } from 'components'
+import { Icon, Avatar } from 'components'
 
 export class AvatarMenu extends Component {
   constructor(props, context) {
@@ -43,22 +43,6 @@ export class AvatarMenu extends Component {
     } = this.props
     
     const textColor = '#5f6060'
-    
-    const AdminItem = () => (
-      <MenuItem
-        onClick={role === 'Admin' ? onOpenAdminPage : avatar ? onOpenAdminPage : null}
-        key="admin-menu"
-        ref={this.setFirstMenuItem}>
-        <ListItemIcon>
-          <Icon color="accent">{role === 'Admin' ? 'person' : 'add_a_photo'}</Icon>
-        </ListItemIcon>
-        <ListItemText
-          style={{ color: textColor }}
-          disableTypography
-          primary={role === 'Admin' ? 'User Management' : 'Manage Profile Picture'}
-        />
-      </MenuItem>
-    )
     
     return (
       <ClickAwayListener onClickAway={this.handleClickAway}>
@@ -97,11 +81,19 @@ export class AvatarMenu extends Component {
                         aria-expanded={open}
                         id="avatar-user-menu"
                         aria-labelledby="avatar-menu-button">
-                        {role === 'Admin'
-                          ? <AdminItem />
-                          : avatar
-                            ? <AdminItem />
-                            : <ImageFileReader handleFiles={onOpenAdminPage}><AdminItem /></ImageFileReader>}
+                        <MenuItem
+                          onClick={onOpenAdminPage}
+                          key="admin-menu"
+                          ref={this.setFirstMenuItem}>
+                          <ListItemIcon>
+                            <Icon color="accent">person</Icon>
+                          </ListItemIcon>
+                          <ListItemText
+                            style={{ color: textColor }}
+                            disableTypography
+                            primary={role === 'Admin' ? 'User Management' : 'Profile'}
+                          />
+                        </MenuItem>
                         <MenuItem
                           onClick={onLogoutUser}
                           key="logout-menu"

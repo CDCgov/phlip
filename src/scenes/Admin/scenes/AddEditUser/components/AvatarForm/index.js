@@ -110,7 +110,7 @@ export class AvatarForm extends Component {
 
 const mapStateToProps = (state, ownProps) => ({
   currentUser: state.data.user.currentUser || {},
-  selectedUser: ownProps.location.state.ownAvatar
+  selectedUser: ownProps.match.url === '/user/profile/avatar'
     ? state.data.user.currentUser
     : state.scenes.admin.main.users.find(user => user.id === ownProps.location.state.userId)
 })

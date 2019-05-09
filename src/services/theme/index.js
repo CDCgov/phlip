@@ -55,7 +55,8 @@ const theme = createMuiTheme({
     MuiInput: {
       root: {
         '&$disabled': {
-          color: 'black'
+          color: 'black',
+          opacity: .5
         }
       },
       underline: {

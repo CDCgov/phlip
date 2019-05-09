@@ -16,7 +16,8 @@ const coderPaths = [
   '/project/edit/:id',
   '/docs',
   '/docs/:id/view',
-  '/user/:id/avatar'
+  '/user/profile',
+  '/user/profile/avatar'
 ]
 
 const coordinatorPaths = [
@@ -39,7 +40,7 @@ const paths = {
  */
 const isAllowed = (user, path) => {
   if (path === '/') return true
-  const allowedPaths = [...paths[user.role], `/user/${user.id}/avatar`]
+  const allowedPaths = [...paths[user.role], ...user.role !== 'Admin' ? ['/user/profile', '/user/profile/avatar'] : []]
   let allowed = true
   if (allowedPaths.length > 0) {
     allowed = false

@@ -10,8 +10,6 @@ import ExportDialog from './components/ExportDialog'
 import withTracking from 'components/withTracking'
 import SearchBar from 'components/SearchBar'
 import { FlexGrid, Dropdown, ApiErrorAlert, Icon } from 'components'
-import { Route } from 'react-router-dom'
-import AddEditJurisdictions from 'scenes/Home/scenes/AddEditJurisdictions'
 
 /**
  * Project List ("Home") screen main component. The first component that is rendered when the user logs in. This is

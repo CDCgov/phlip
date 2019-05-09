@@ -110,32 +110,17 @@ describe('Header -- AvatarMenu', () => {
       wrapper.update()
       expect(spy).toHaveBeenCalled()
     })
-    
-    test('should render not wrap first item in a FileReader component', () => {
-      const wrapper = setup({ role: 'Admin', open: true })
-      expect(wrapper.find('MenuList').find('ImageFileReader').length).toEqual(0)
-    })
   })
   
   describe('when logged in user is a coder', () => {
-    test('first menu item should say Manage Profile Picture if logged in user is not an admin', () => {
+    test('first menu item should say Profile if logged in user is not an admin', () => {
       const wrapper = setup({ role: 'Coder', open: true })
       expect(wrapper.find('MenuList').find('MenuItem').length).toEqual(3)
       expect(wrapper.find('MenuList').find('MenuItem').at(0).find('ListItemText').text())
-        .toEqual('Manage Profile Picture')
-    })
-    
-    test('first item should be a file reader component if the user doesn\'t have an avatar', () => {
-      const wrapper = setup({ role: 'Coder', open: true })
-      expect(wrapper.find('MenuList').find('ImageFileReader').length).toEqual(1)
-    })
-    
-    test('first item should not be a file reader if the user has an avatar', () => {
-      const wrapper = setup({ role: 'Coder', open: true, avatar })
-      expect(wrapper.find('MenuList').find('ImageFileReader').length).toEqual(0)
+        .toEqual('Profile')
     })
   
-    test('should call to open image preview when first item is clicked if the user has an avatar', () => {
+    test('should call to open profile when first item is clicked', () => {
       const spy = jest.spyOn(props, 'onOpenAdminPage')
       const wrapper = setup({ role: 'Coder', open: true, avatar })
       wrapper.find('MenuList').find('MenuItem').at(0).simulate('click')
@@ -145,24 +130,14 @@ describe('Header -- AvatarMenu', () => {
   })
   
   describe('when logged in user is a coordinator', () => {
-    test('first menu item should say Manage Profile Picture if logged in user is not an admin', () => {
+    test('first menu item should say Profile if logged in user is not an admin', () => {
       const wrapper = setup({ role: 'Coordinator', open: true })
       expect(wrapper.find('MenuList').find('MenuItem').length).toEqual(3)
       expect(wrapper.find('MenuList').find('MenuItem').at(0).find('ListItemText').text())
-        .toEqual('Manage Profile Picture')
-    })
-  
-    test('first item should be a file reader component if the user doesn\'t have an avatar', () => {
-      const wrapper = setup({ role: 'Coordinator', open: true })
-      expect(wrapper.find('MenuList').find('ImageFileReader').length).toEqual(1)
-    })
-  
-    test('first item should not be a file reader if the user has an avatar', () => {
-      const wrapper = setup({ role: 'Coordinator', open: true, avatar })
-      expect(wrapper.find('MenuList').find('ImageFileReader').length).toEqual(0)
+        .toEqual('Profile')
     })
     
-    test('should call to open image preview when first item is clicked if the user has an avatar', () => {
+    test('should call to open profile when first item is clicked', () => {
       const spy = jest.spyOn(props, 'onOpenAdminPage')
       const wrapper = setup({ role: 'Coordinator', open: true, avatar })
       wrapper.find('MenuList').find('MenuItem').at(0).simulate('click')

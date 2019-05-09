@@ -18,15 +18,11 @@ import {
   CheckboxLabel,
   CircularLoader,
   IconButton,
-  ImageFileReader
+  ImageFileReader,
+  FlexGrid
 } from 'components'
-import Container, { Row, Column } from 'components/Layout'
 import { trimWhitespace } from 'utils/formHelpers'
 import AvatarForm from './components/AvatarForm'
-
-const rowStyles = {
-  paddingBottom: 30
-}
 
 /**
  * Main / entry component for all things related to adding and editing a user. This component is a modal and is
@@ -105,20 +101,28 @@ export class AddEditUser extends Component {
   }
   
   componentDidMount() {
+    const { selectedUser, match, users, actions } = this.props
+    this.previousTitle = document.title
+    this.selfUpdate = selectedUser
+      ? match.url === '/user/profile'
+      : false
+    
     const baseTitle = `PHLIP - User Management -`
-    document.title = this.props.selectedUser
-      ? `${baseTitle} Edit ${this.props.selectedUser.firstName} ${this.props.selectedUser.lastName}`
+    document.title = selectedUser
+      ? this.selfUpdate
+        ? `${baseTitle} - Profile`
+        : `${baseTitle} Edit ${selectedUser.firstName} ${selectedUser.lastName}`
       : `${baseTitle} Add User`
     
-    const id = this.props.match.params.id
+    const id = match.params.id
     
-    if (id && this.props.users.length > 0) {
-      this.props.actions.loadAddEditAvatar(this.props.selectedUser.avatar)
+    if (id && users.length > 0) {
+      actions.loadAddEditAvatar(selectedUser.avatar)
     }
   }
   
   componentDidUpdate() {
-    if (this.state.submitting === true && this.props.isDoneSubmitting === true) {
+    if (this.state.submitting && this.props.isDoneSubmitting === true) {
       this.props.actions.resetSubmittingStatus()
       if (this.props.formError !== '') {
         this.props.onSubmitError(this.props.formError)
@@ -132,7 +136,7 @@ export class AddEditUser extends Component {
   }
   
   componentWillUnmount() {
-    document.title = 'PHLIP - User Management'
+    document.title = this.previousTitle
   }
   
   /**
@@ -189,7 +193,7 @@ export class AddEditUser extends Component {
    */
   openAvatarForm = files => {
     this.props.history.push({
-      pathname: `/admin/edit/user/${this.props.selectedUser.id}/avatar`,
+      pathname: this.selfUpdate ? '/user/profile/avatar' : `/admin/edit/user/${this.props.selectedUser.id}/avatar`,
       state: {
         avatar: files.base64,
         userId: this.props.selectedUser.id,
@@ -263,7 +267,7 @@ export class AddEditUser extends Component {
       <>
         <ModalForm
           open
-          title={selectedUser ? 'Edit User' : 'Add New User'}
+          title={selectedUser ? this.selfUpdate ? 'Profile' : 'Edit User' : 'Add New User'}
           actions={actions}
           form="addEditUser"
           handleSubmit={this.handleSubmit}
@@ -273,15 +277,17 @@ export class AddEditUser extends Component {
           onClose={onCloseModal}
           width="600px"
           height="400px">
-          <Container column style={{ minWidth: 550, minHeight: 275, padding: '30px 15px' }}>
-            <Row displayFlex style={{ ...rowStyles, justifyContent: 'space-between' }}>
+          <FlexGrid container padding="30px 15px 0" style={{ minWidth: 500, minHeight: 275 }}>
+            <FlexGrid type="row" container justify="space-between" padding="0 0 30px">
               {selectedUser &&
-              <Column style={{ paddingRight: 30 }}>
+              <FlexGrid padding="0 30px 0 0">
                 {avatar ? (
                   <Tooltip text="Edit photo" placement="top" id="edit-picture">
                     <TextLink
                       to={{
-                        pathname: `/admin/edit/user/${selectedUser.id}/avatar`,
+                        pathname: this.selfUpdate
+                          ? '/user/profile/avatar'
+                          : `/admin/edit/user/${selectedUser.id}/avatar`,
                         state: {
                           isEdit: true,
                           userId: selectedUser.id,
@@ -307,10 +313,9 @@ export class AddEditUser extends Component {
                       add_a_photo
                     </IconButton>
                   </ImageFileReader>
-                )
-                }
-              </Column>}
-              <Column flex style={{ paddingRight: 10 }}>
+                )}
+              </FlexGrid>}
+              <FlexGrid flex padding="0 20px 0 0">
                 <Field
                   name="firstName"
                   component={TextInput}
@@ -321,8 +326,8 @@ export class AddEditUser extends Component {
                   shrinkLabel
                   fullWidth
                 />
-              </Column>
-              <Column flex style={{ paddingLeft: 10 }}>
+              </FlexGrid>
+              <FlexGrid flex>
                 <Field
                   name="lastName"
                   component={TextInput}
@@ -333,9 +338,9 @@ export class AddEditUser extends Component {
                   validate={this.required}
                   fullWidth
                 />
-              </Column>
-            </Row>
-            <Row style={rowStyles}>
+              </FlexGrid>
+            </FlexGrid>
+            <FlexGrid padding="0 0 30px">
               <Field
                 name="email"
                 component={TextInput}
@@ -345,10 +350,11 @@ export class AddEditUser extends Component {
                 placeholder="Enter email"
                 validate={this.required}
                 fullWidth
+                disabled={this.selfUpdate}
               />
-            </Row>
-            <Row displayFlex flex>
-              <Column flex style={{ paddingRight: 10 }}>
+            </FlexGrid>
+            <FlexGrid container type="row" flex>
+              <FlexGrid flex>
                 <Field
                   name="role"
                   component={Dropdown}
@@ -357,14 +363,22 @@ export class AddEditUser extends Component {
                   defaultValue=""
                   id="role"
                   style={{ display: 'flex' }}
+                  disabled={this.selfUpdate}
                 />
-              </Column>
-              <Column flex>
-                <Field name="isActive" component={CheckboxLabel} label="Active" style={{ display: '10px' }} />
-              </Column>
-            </Row>
-          </Container>
+              </FlexGrid>
+              <FlexGrid flex>
+                <Field
+                  name="isActive"
+                  disabled={this.selfUpdate}
+                  component={CheckboxLabel}
+                  label="Active"
+                  style={{ display: '10px' }}
+                />
+              </FlexGrid>
+            </FlexGrid>
+          </FlexGrid>
           <Route path="/admin/edit/user/:id/avatar" component={AvatarForm} />
+          <Route path="/user/profile/avatar" component={AvatarForm} />
         </ModalForm>
       </>
     )
@@ -383,7 +397,9 @@ const mapStateToProps = (state, ownProps) => {
     isDoneSubmitting: state.scenes.admin.addEditUser.isDoneSubmitting || false,
     selectedUser: ownProps.match.params.id
       ? state.scenes.admin.main.users.find(user => user.id === parseInt(ownProps.match.params.id))
-      : null
+      : ownProps.match.url === '/user/profile'
+        ? state.data.user.currentUser
+        : null
   }
 }
 

@@ -19,7 +19,6 @@ import ApiErrorAlert from 'components/ApiErrorAlert'
 import DocumentView from './DocumentView'
 import actions from './actions'
 import CodingValidation from './CodingValidation'
-import AvatarForm from './Admin/scenes/AddEditUser/components/AvatarForm'
 import Upload from './DocumentManagement/scenes/Upload'
 import AddEditQuestion from './CodingScheme/scenes/AddEditQuestion'
 import AddEditUser from './Admin/scenes/AddEditUser'
@@ -35,7 +34,8 @@ const modalPaths = [
   '/project/:projectId/coding-scheme/edit/:id',
   '/admin/new/user',
   '/admin/edit/user/:id',
-  '/user/profile'
+  '/user/profile',
+  '/user/profile/avatar'
 ]
 
 /**
@@ -71,6 +71,7 @@ class Main extends Component {
     this.previousLocation = props.location
     console.log(props.location)
     console.log(props.history)
+    console.log(window)
     
     this.state = {
       menuOpen: false,
@@ -223,13 +224,13 @@ class Main extends Component {
       this.props.history.push('/admin')
     } else {
       this.props.history.push({
-        pathname: `/user/${this.props.user.id}/avatar`,
+        pathname: '/user/profile',
         state: {
           isEdit: Boolean(this.props.user.avatar),
           avatar: this.props.user.avatar || files.base64,
           userId: this.props.user.id,
           modal: true,
-          ownAvatar: true
+          selfUpdate: true
         }
       })
     }
@@ -283,12 +284,12 @@ class Main extends Component {
           <Route path="/project/:id/jurisdictions" component={AddEditJurisdictions} />
           <Route path="/project/:id/jurisdictions/:jid/edit" component={JurisdictionForm} />
           <Route path="/project/:id/jurisdictions/add" component={JurisdictionForm} />
-          <Route path="/user/profile" component={AvatarForm} />
           <Route path="/docs/upload" component={Upload} />
           <Route path="/project/:projectId/coding-scheme/add" component={AddEditQuestion} />
           <Route path="/project/:projectId/coding-scheme/:id" component={AddEditQuestion} />
           <Route path="/admin/new/user" component={AddEditUser} />
           <Route path="/admin/edit/user/1" component={AddEditUser} />
+          <Route path="/user/profile" component={AddEditUser} />
           <ApiErrorAlert content={pdfError} open={pdfError !== ''} onCloseAlert={this.closeDownloadErrorAlert} />
           <a style={{ display: 'none' }} ref={this.helpPdfRef} />
         </FlexGrid>
