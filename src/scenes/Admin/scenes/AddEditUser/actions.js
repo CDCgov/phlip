@@ -25,7 +25,7 @@ export const types = {
 export default {
   addUserRequest: makeActionCreator(types.ADD_USER_REQUEST, 'user'),
   addUserSuccess: makeActionCreator(types.ADD_USER_SUCCESS, 'user'),
-  updateUserRequest: makeActionCreator(types.UPDATE_USER_REQUEST, 'user'),
+  updateUserRequest: makeActionCreator(types.UPDATE_USER_REQUEST, 'user', 'selfUpdate'),
   updateCurrentUser: makeActionCreator(types.UPDATE_CURRENT_USER, 'payload'),
   updateCurrentUserAvatar: makeActionCreator(types.UPDATE_CURRENT_USER_AVATAR, 'payload'),
   removeCurrentUserAvatar: makeActionCreator(types.REMOVE_CURRENT_USER_AVATAR),

@@ -26,7 +26,9 @@ export const updateUserLogic = createLogic({
   async process({ action, api }, dispatch, done) {
     let updatedUser = {}
     try {
-      updatedUser = await api.updateUser(action.user, {}, { userId: action.user.id })
+      updatedUser = action.selfUpdate
+        ? await api.updateSelf(action.user, {}, { userId: action.user.id })
+        : await api.updateUser(action.user, {}, { userId: action.user.id })
       dispatch({ type: types.UPDATE_USER_SUCCESS, payload: { ...updatedUser, avatar: action.user.avatar }})
     } catch (e) {
       if (e.response.status === 304) {

@@ -69,10 +69,6 @@ class Main extends Component {
     
     this.helpPdfRef = React.createRef()
     this.previousLocation = props.previousLocation !== props.location ? props.previousLocation : props.location
-    console.log(props.location)
-    console.log(props.history)
-    console.log(window)
-    console.log(this.props.previousLocation)
     
     this.state = {
       menuOpen: false,

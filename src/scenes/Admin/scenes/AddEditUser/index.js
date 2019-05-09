@@ -154,8 +154,8 @@ export class AddEditUser extends Component {
       updatedValues[field] = trimWhitespace(values[field])
     }
     
-    if (this.props.match.params.id) {
-      this.props.actions.updateUserRequest({ role: 'Coordinator', ...updatedValues, avatar: this.props.avatar })
+    if (this.props.match.params.id || this.selfUpdate) {
+      this.props.actions.updateUserRequest({ ...updatedValues, avatar: this.props.avatar }, this.selfUpdate)
       if (this.props.currentUser.id === updatedValues.id) {
         this.props.actions.updateCurrentUser({ ...this.props.currentUser, ...updatedValues, avatar: this.props.avatar })
       }
@@ -193,7 +193,9 @@ export class AddEditUser extends Component {
    */
   openAvatarForm = files => {
     this.props.history.push({
-      pathname: this.selfUpdate ? '/user/profile/avatar' : `/admin/edit/user/${this.props.selectedUser.id}/avatar`,
+      pathname: this.selfUpdate
+        ? '/user/profile/avatar'
+        : `/admin/edit/user/${this.props.selectedUser.id}/avatar`,
       state: {
         avatar: files.base64,
         userId: this.props.selectedUser.id,
@@ -218,16 +220,12 @@ export class AddEditUser extends Component {
   }
   
   getButtonText = text => {
-    if (this.state.submitting) {
-      return (
-        <>
-          {text}
-          <CircularLoader size={18} style={{ paddingLeft: 10 }} />
-        </>
-      )
-    } else {
-      return <>{text}</>
-    }
+    return (
+      <>
+        {text}
+        {this.state.submitting && <CircularLoader size={18} style={{ paddingLeft: 10 }} />}
+      </>
+    )
   }
   
   /**
@@ -250,7 +248,7 @@ export class AddEditUser extends Component {
       {
         value: this.getButtonText('Save'),
         type: 'submit',
-        disabled: this.state.submitting === true,
+        disabled: this.state.submitting,
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
@@ -261,7 +259,7 @@ export class AddEditUser extends Component {
       { value: 'Coder', label: 'Coder' }
     ]
     
-    const { avatar, selectedUser, onCloseModal } = this.props
+    const { avatar, selectedUser, onCloseModal, currentUser } = this.props
     
     return (
       <>
@@ -377,8 +375,8 @@ export class AddEditUser extends Component {
               </FlexGrid>
             </FlexGrid>
           </FlexGrid>
-          <Route path="/admin/edit/user/:id/avatar" component={AvatarForm} />
-          <Route path="/user/profile/avatar" component={AvatarForm} />
+          {currentUser.role === 'Admin' && <Route path="/admin/edit/user/:id/avatar" component={AvatarForm} />}
+          {currentUser.role !== 'Admin' && <Route path="/user/profile/avatar" component={AvatarForm} />}
         </ModalForm>
       </>
     )
