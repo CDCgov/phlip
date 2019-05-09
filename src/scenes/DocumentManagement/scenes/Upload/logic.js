@@ -112,6 +112,7 @@ export const mergeInfoWithDocs = (info, docs, api) => {
         if (docInfo.jurisdictions.name !== null) {
           if (jurLookup.hasOwnProperty(docInfo.jurisdictions.name)) {
             jurs = [jurLookup[docInfo.jurisdictions.name]]
+            d.jurisdictions = { ...d.jurisdictions, value: { ...jurs[0] } }
           } else {
             const { searchString, isState } = determineSearchString(docInfo.jurisdictions.name)
             jurs = await api.searchJurisdictionList({}, { params: { name: searchString } }, {})
