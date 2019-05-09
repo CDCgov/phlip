@@ -64,7 +64,7 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
               "value": "assignJurisdiction",
             },
             Object {
-              "label": "Approval",
+              "label": "Approve",
               "value": "approveDoc",
             },
           ]
@@ -193,6 +193,14 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
       scope="col"
     >
       Jurisdictions
+    </TableCell>
+    <TableCell
+      id="approved"
+      key="approved"
+      padding="default"
+      scope="col"
+    >
+      Approval
     </TableCell>
   </TableRow>
 </Fragment>

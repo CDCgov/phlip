@@ -84,5 +84,35 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
   >
     J1, J2
   </WithStyles(TableCell)>
+  <WithStyles(TableCell)
+    style={
+      Object {
+        "padding": 0,
+        "width": 34,
+      }
+    }
+  >
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={true}
+      flex={true}
+      justify="center"
+      padding={0}
+      raised={false}
+      style={Object {}}
+      type="row"
+    >
+      <span
+        style={
+          Object {
+            "fontSize": 20,
+          }
+        }
+      >
+        ...
+      </span>
+    </FlexGrid>
+  </WithStyles(TableCell)>
 </WithStyles(TableRow)>
 `;

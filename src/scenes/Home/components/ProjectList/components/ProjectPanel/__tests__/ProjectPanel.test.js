@@ -55,19 +55,9 @@ describe('Home - ProjectList - ProjectPanel scene', () => {
   })
   
   xdescribe('when a coder is logged in', () => {
-    describe('when the card is closed', () => {
-      test('validate button should not be visible', () => {
-    
-      })
-  
-      test('code button should be visible', () => {
-    
-      })
-    })
-    
     describe('when the card is open', () => {
       test('validate button should not be visible', () => {
-    
+      
       })
   
       test('code button should be visible', () => {

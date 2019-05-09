@@ -43,17 +43,21 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
     />
     <WithStyles(Divider) />
     <ModalContent>
-      <Container
-        column={true}
+      <FlexGrid
+        align="stretch"
+        circular={false}
+        container={true}
         flex={false}
-        spacing={0}
+        justify="stretch"
+        padding="30px 15px 0"
+        raised={false}
         style={
           Object {
             "minHeight": 230,
-            "minWidth": 550,
-            "padding": "30px 15px 0 15px",
+            "minWidth": 500,
           }
         }
+        type="column"
       >
         <DetailRow
           component={[Function]}
@@ -91,7 +95,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
             }
           }
         />
-      </Container>
+      </FlexGrid>
     </ModalContent>
     <WithStyles(ModalActions)
       actions={

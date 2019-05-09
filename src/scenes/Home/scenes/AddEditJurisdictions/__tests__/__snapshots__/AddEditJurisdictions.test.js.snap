@@ -27,40 +27,38 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
             }
           }
         >
-          <WithTheme(TextLink)
+          <WithTheme(Button)
+            aria-label="Load preset"
+            color="accent"
+            component={[Function]}
             to={
               Object {
                 "pathname": "/project/undefined/jurisdictions/add",
                 "state": Object {
+                  "modal": true,
                   "preset": true,
                 },
               }
             }
-          >
-            <WithTheme(Button)
-              aria-label="Load preset"
-              color="accent"
-              value="Load Preset"
-            />
-          </WithTheme(TextLink)>
+            value="Load Preset"
+          />
         </div>
         <div>
-          <WithTheme(TextLink)
+          <WithTheme(Button)
+            aria-label="Add jurisidiction to project"
+            color="accent"
+            component={[Function]}
             to={
               Object {
                 "pathname": "/project/undefined/jurisdictions/add",
                 "state": Object {
+                  "modal": true,
                   "preset": false,
                 },
               }
             }
-          >
-            <WithTheme(Button)
-              aria-label="Add jurisidiction to project"
-              color="accent"
-              value="+ Add Jurisdiction"
-            />
-          </WithTheme(TextLink)>
+            value="Add Jurisdiction"
+          />
         </div>
       </React.Fragment>
     }
@@ -133,36 +131,42 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       onCloseAlert={[Function]}
       open={false}
     />
-    <Container
-      column={false}
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={true}
       flex={true}
-      spacing={0}
+      justify="stretch"
+      padding={0}
+      raised={false}
       style={
         Object {
           "marginTop": 20,
         }
       }
+      type="column"
     >
-      <Column
-        component={
-          <WithStyles(Grid)
-            item={true}
-          />
-        }
-        displayFlex={true}
+      <FlexGrid
+        align="stretch"
+        circular={false}
+        container={true}
         flex={true}
+        justify="stretch"
+        padding={0}
+        raised={false}
         style={
           Object {
             "overflowX": "auto",
           }
         }
+        type="column"
       >
         <JurisdictionList
           onDelete={[Function]}
           project={Object {}}
         />
-      </Column>
-    </Container>
+      </FlexGrid>
+    </FlexGrid>
   </ModalContent>
   <WithStyles(ModalActions)
     actions={
