@@ -200,7 +200,7 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
       padding="default"
       scope="col"
     >
-      Approval
+      Approved
     </TableCell>
   </TableRow>
 </Fragment>
