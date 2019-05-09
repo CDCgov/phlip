@@ -14,7 +14,7 @@ export const DocListTableHead = props => {
     { value: 'deleteDoc', label: 'Delete' },
     { value: 'assignProject', label: 'Assign Project' },
     { value: 'assignJurisdiction', label: 'Assign Jurisdiction' },
-    { value: 'approveDoc', label: 'Approval' }
+    { value: 'approveDoc', label: 'Approve' }
   ]
   
   const r1Columns = [
@@ -44,7 +44,8 @@ export const DocListTableHead = props => {
     { key: 'uploadedByName', label: 'Uploaded By', padding: 'checkbox', hasSort: true },
     { key: 'uploadedDate', label: 'Uploaded Date', padding: 'checkbox', hasSort: true },
     { key: 'doc-projects', label: 'Projects', padding: 'checkbox' },
-    { key: 'doc-jurisdictions', label: 'Jurisdictions', padding: 'checkbox' }
+    { key: 'doc-jurisdictions', label: 'Jurisdictions', padding: 'checkbox' },
+    { key: 'approved', label:'Approval', padding:0}
   ]
 
   return (
