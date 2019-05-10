@@ -35,7 +35,7 @@ export class AvatarForm extends Component {
     
     actions.addUserPictureRequest(location.state.userId, patchOperation, selectedUser, selfUpdate)
     if (location.state.userId === currentUser.id) {
-      actions.updateCurrentUserAvatar(location.state.avatar)
+      actions.updateCurrentUser({ ...currentUser, avatar: base64Image })
     }
     history.goBack()
   }
@@ -46,7 +46,7 @@ export class AvatarForm extends Component {
     const patchRemoveOperation = [{ 'op': 'remove', 'path': '/avatar' }]
     actions.deleteUserPictureRequest(location.state.userId, patchRemoveOperation, selectedUser, selfUpdate)
     if (location.state.userId === currentUser.id) {
-      actions.removeCurrentUserAvatar()
+      actions.updateCurrentUser({ ...currentUser, avatar: '' })
     }
     history.goBack()
   }

@@ -6,7 +6,6 @@ import { types } from './actions'
  */
 export const addUserLogic = createLogic({
   type: types.ADD_USER_REQUEST,
-  latest: true,
   processOptions: {
     dispatchReturn: true,
     successType: types.ADD_USER_SUCCESS,

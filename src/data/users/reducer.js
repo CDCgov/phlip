@@ -98,7 +98,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
         ...state,
         byId: {
           ...state.byId,
-          [action.payload.id]: updateObject(state.byId[action.payload.id], action.payload)
+          [action.payload.id]: updateObject(state.byId[action.payload.id], action.payload.avatar)
         }
       }
     

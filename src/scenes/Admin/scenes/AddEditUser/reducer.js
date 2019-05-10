@@ -1,6 +1,6 @@
 import { types } from './actions'
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   avatar: null,
   formError: '',
   isDoneSubmitting: false
