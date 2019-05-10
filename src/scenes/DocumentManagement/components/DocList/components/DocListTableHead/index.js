@@ -10,7 +10,7 @@ export const DocListTableHead = props => {
   const { onSelectAll, allSelected, onActionSelected, sortBy, direction, onRequestSort } = props
   
   const options = [
-    { value: 'bulk', label: 'Bulk Operation', disabled: true },
+    { value: 'bulk', label: 'Actions', disabled: true },
     { value: 'deleteDoc', label: 'Delete' },
     { value: 'assignProject', label: 'Assign Project' },
     { value: 'assignJurisdiction', label: 'Assign Jurisdiction' },

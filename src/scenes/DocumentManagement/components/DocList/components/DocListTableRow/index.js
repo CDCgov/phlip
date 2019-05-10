@@ -44,7 +44,7 @@ export const DocListTableRow = props => {
       </TableCell>
       <TableCell style={{padding:0, width:34}}>
         <FlexGrid container flex type='row' justify='center'>
-          {doc.status === 'Approved'?<Check color='secondary' style={{ width: 24, height: 24}} />:<span style={{fontSize:20}}>...</span>}
+          {doc.status === 'Approved' && <Check color='secondary' style={{ width: 24, height: 24}} />}
         </FlexGrid>
       </TableCell>
     </TableRow>
