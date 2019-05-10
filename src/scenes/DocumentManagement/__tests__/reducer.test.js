@@ -354,6 +354,26 @@ describe('Document Management reducer', () => {
     })
   })
 
+  describe('ON_DELETE_ONE_FILE', () => {
+    test('should remove the action.id from documents.checked if it does exist', () => {
+      const action = { type: types.ON_DELETE_ONE_FILE, id: '5' }
+
+      const currentState = getState()
+      const updatedState = reducer(currentState, action)
+
+      expect(updatedState.documents.checked).toEqual([])
+    })
+
+    test('should remove the id that matches action.id if documents.checked already contains action.id', () => {
+      const action = { type: types.ON_SELECT_ONE_FILE, id: '5' }
+
+      const currentState = getState({ documents: { checked: ['4', '5', '6'] } })
+      const updatedState = reducer(currentState, action)
+
+      expect(updatedState.documents.checked).toEqual(['4', '6'])
+    })
+  })
+
   describe('UPLOAD_DOCUMENTS_SUCCESS', () => {
     test('should add the action.payload.docs to state.documents', () => {
       const action = {

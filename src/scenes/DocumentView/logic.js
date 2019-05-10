@@ -3,6 +3,7 @@ import { types } from './actions'
 import { types as projectTypes } from 'data/projects/actions'
 import { types as jurisdictionTypes } from 'data/jurisdictions/actions'
 import { types as codingTypes } from 'scenes/CodingValidation/components/DocumentList/actions'
+import { types as docManageTypes } from 'scenes/DocumentManagement/actions'
 
 const getDocumentContentsLogic = createLogic({
   type: [types.GET_DOCUMENT_CONTENTS_REQUEST, codingTypes.GET_DOC_CONTENTS_REQUEST],
@@ -81,6 +82,10 @@ const deleteDocLogic = createLogic({
       dispatch({
         type: types.DELETE_DOCUMENT_SUCCESS,
         payload: action.id
+      })
+      dispatch({
+        type: docManageTypes.ON_DELETE_ONE_FILE,
+        id: action.id
       })
       done()
     } catch (err) {

@@ -43,6 +43,15 @@ describe('Document management actions creators', () => {
     expect(actions.handleSelectOneFile('134354324526')).toEqual(expectedAction)
   })
 
+  test('should create an action to unselect one file', () => {
+    const expectedAction = {
+      type: types.ON_DELETE_ONE_FILE,
+      id: '134354324526'
+    }
+
+    expect(actions.handleDeleteOneFile('134354324526')).toEqual(expectedAction)
+  })
+    
   test('should create an action to sort the documents', () => {
     const expectedAction = {
       type: types.SORT_DOCUMENTS,

@@ -27,7 +27,8 @@ export const types = {
   SEARCH_VALUE_CHANGE: searchTypes.SEARCH_VALUE_CHANGE,
   CLEAN_PROJECT_LIST_REQUEST: 'CLEAN_PROJECT_LIST_REQUEST',
   CLEAN_PROJECT_LIST_SUCCESS: 'CLEAN_PROJECT_LIST_SUCCESS',
-  CLEAN_PROJECT_LIST_FAIL: 'CLEAN_PROJECT_LIST_FAIL'
+  CLEAN_PROJECT_LIST_FAIL: 'CLEAN_PROJECT_LIST_FAIL',
+  ON_DELETE_ONE_FILE : 'ON_DELETE_ONE_FILE'
 }
 
 export default {
@@ -42,7 +43,8 @@ export default {
   handleSortRequest: makeActionCreator(types.SORT_DOCUMENTS, 'sortBy', 'sortDirection'),
   handleSearchValueChange: searchActions.updateSearchValue,
   handleFormValueChange: searchActions.updateFormValue,
-  cleanDocProjectList: makeActionCreator(types.CLEAN_PROJECT_LIST_REQUEST,'projectMeta')
+  cleanDocProjectList: makeActionCreator(types.CLEAN_PROJECT_LIST_REQUEST,'projectMeta'),
+  handleDeleteOneFile: makeActionCreator(types.ON_DELETE_ONE_FILE,'id')
 }
 
 export const projectAutocomplete = {

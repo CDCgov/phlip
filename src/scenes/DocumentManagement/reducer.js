@@ -357,6 +357,21 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         }
       }
 
+    case types.ON_DELETE_ONE_FILE:
+      updatedChecked = [...state.documents.checked]
+
+      if (state.documents.checked.includes(action.id)) {
+        const index = state.documents.checked.indexOf(action.id)
+        updatedChecked.splice(index, 1)
+      }
+      return {
+        ...state,
+        documents: {
+          ...state.documents,
+          checked: updatedChecked
+        }
+      }
+
     case types.FLUSH_STATE:
       return INITIAL_STATE
 
