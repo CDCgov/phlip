@@ -135,6 +135,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
         "show": false,
         "state": Object {
           "canModify": true,
+          "modal": true,
           "questionDefined": null,
         },
         "text": "Add New Question",

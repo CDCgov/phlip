@@ -7,11 +7,19 @@ import { FlexGrid, Table, TablePagination } from 'components'
 import ProjectPanel from './components/ProjectPanel'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 
+const modalPaths = [
+  '/project/edit/:id',
+  '/project/add',
+  '/user/:id/avatar',
+  '/project/:id/jurisdictions',
+  '/project/:id/jurisdictions/add',
+  '/project/:id/jurisdictions/:jid/edit'
+]
+
 const isRouteOk = history => {
   return history.action !== 'PUSH'
     ? true
-    : matchPath(history.location.pathname, { path: '/project/edit/:id' }) === null &&
-    matchPath(history.location.pathname, { path: '/project/add' }) === null
+    : modalPaths.every(path => matchPath(history.location.pathname, { path }) === null)
 }
 
 export class ProjectList extends Component {
@@ -43,7 +51,7 @@ export class ProjectList extends Component {
   checkTargetPath = path => {
     let valid = true
     path.forEach(node => {
-      if (['projectSort-container', 'menu-projectSort'].includes(node.id)) {
+      if (['projectSort-container', 'menu-projectSort', 'avatar-user-menu'].includes(node.id)) {
         valid = false
       }
     })

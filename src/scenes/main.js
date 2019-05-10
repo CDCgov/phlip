@@ -19,16 +19,24 @@ import ApiErrorAlert from 'components/ApiErrorAlert'
 import DocumentView from './DocumentView'
 import actions from './actions'
 import CodingValidation from './CodingValidation'
+import Upload from './DocumentManagement/scenes/Upload'
+import AddEditQuestion from './CodingScheme/scenes/AddEditQuestion'
+import AddEditUser from './Admin/scenes/AddEditUser'
 
-/** Paths that aren't accessible by users with 'Coder' role */
-const nonCoderPaths = [
+const modalPaths = [
   '/project/add',
+  '/project/edit/:id',
   '/project/:id/jurisdictions',
   '/project/:id/jurisdictions/add',
-  '/project/:id/jurisdictions/:jid/edit'
+  '/project/:id/jurisdictions/:jid/edit',
+  '/docs/upload',
+  '/project/:projectId/coding-scheme/add',
+  '/project/:projectId/coding-scheme/edit/:id',
+  '/admin/new/user',
+  '/admin/edit/user/:id',
+  '/user/profile',
+  '/user/profile/avatar'
 ]
-
-const modalPath = '/project/edit/:id'
 
 /**
  * Main scenes component for views that require a login (i.e. everything but the Login view). All of the react-router
@@ -43,23 +51,24 @@ const modalPath = '/project/edit/:id'
  * @returns {*}
  * @constructor
  */
-class Main extends Component {
+export class Main extends Component {
   static propTypes = {
     history: PropTypes.object,
     pdfFile: PropTypes.any,
     actions: PropTypes.object,
     location: PropTypes.object,
-    role: PropTypes.string,
     isLoggedIn: PropTypes.bool,
     isRefreshing: PropTypes.bool,
     user: PropTypes.object,
-    pdfError: PropTypes.any
+    pdfError: PropTypes.any,
+    previousLocation: PropTypes.object
   }
   
   constructor(props, context) {
     super(props, context)
     
     this.helpPdfRef = React.createRef()
+    this.previousLocation = props.previousLocation !== props.location ? props.previousLocation : props.location
     
     this.state = {
       menuOpen: false,
@@ -90,6 +99,11 @@ class Main extends Component {
     
     const tabs = [...this.state.menuTabs]
     
+    if (!this.props.location.state || !this.props.location.state.modal) {
+      this.previousLocation = this.props.location
+      this.props.actions.setPreviousLocation(this.props.location)
+    }
+    
     if (prev !== current) {
       if (current === 'docs') {
         tabs[1].active = true
@@ -103,27 +117,6 @@ class Main extends Component {
         menuTabs: tabs
       })
     }
-  }
-  
-  /**
-   * Checks if the route path is a modal view.
-   *
-   * @param pathname
-   * @param role
-   * @returns {Object}
-   */
-  checkForModalMatch = (pathname, role) => {
-    let location = pathname
-    if (matchPath(pathname, { path: modalPath }) !== null) {
-      location = '/home'
-    }
-    
-    nonCoderPaths.forEach(path => {
-      const match = matchPath(pathname, { path })
-      if (match !== null) location = '/home'
-    })
-    
-    return location
   }
   
   /**
@@ -204,7 +197,20 @@ class Main extends Component {
       menuTabs: tabs
     })
     
-    this.props.history.push('/admin')
+    if (this.props.user.role === 'Admin') {
+      this.props.history.push('/admin')
+    } else {
+      this.props.history.push({
+        pathname: '/user/profile',
+        state: {
+          isEdit: Boolean(this.props.user.avatar),
+          avatar: this.props.user.avatar,
+          userId: this.props.user.id,
+          modal: true,
+          selfUpdate: true
+        }
+      })
+    }
   }
   
   logoutUserOnIdle = () => {
@@ -212,13 +218,16 @@ class Main extends Component {
   }
   
   render() {
-    const { location, role, actions, isLoggedIn, isRefreshing, user, pdfError } = this.props
+    const { location, actions, isLoggedIn, isRefreshing, user, pdfError } = this.props
     const { menuTabs, menuOpen } = this.state
     
     // This is for jurisdictions / add/edit project modals. We want the modals to be displayed on top of the home
     // screen, so we check if it's one of those routes and if it is set the location to /home
-    const currentLocation = { ...location, pathname: this.checkForModalMatch(location.pathname, role) }
+    const isModal = !!(modalPaths.some(path => matchPath(location.pathname, { path }) !== null) &&
+      (location.state && location.state.modal && location !== this.previousLocation))
+    
     if (!isRefreshing && isLoggedIn) actions.startRefreshJwt()
+    
     const containerType = location.pathname.endsWith('/code') || location.pathname.endsWith('/validate')
       ? 'row'
       : 'column'
@@ -237,7 +246,7 @@ class Main extends Component {
           onOpenAdminPage={this.handleOpenAdminPage}
         />
         <FlexGrid container type={containerType} flex style={{ backgroundColor: '#f5f5f5', height: '100%' }}>
-          <Switch location={currentLocation}>
+          <Switch location={isModal ? this.previousLocation : location}>
             <Route path="/docs/:id/view" component={DocumentView} />
             <Route path="/docs" component={DocumentManagement} />
             <Route path="/project/:id/(code|validate)" component={CodingValidation} />
@@ -252,6 +261,12 @@ class Main extends Component {
           <Route path="/project/:id/jurisdictions" component={AddEditJurisdictions} />
           <Route path="/project/:id/jurisdictions/:jid/edit" component={JurisdictionForm} />
           <Route path="/project/:id/jurisdictions/add" component={JurisdictionForm} />
+          <Route path="/docs/upload" component={Upload} />
+          <Route path="/project/:projectId/coding-scheme/add" component={AddEditQuestion} />
+          <Route path="/project/:projectId/coding-scheme/:id" component={AddEditQuestion} />
+          <Route path="/admin/new/user" component={AddEditUser} />
+          <Route path="/admin/edit/user/:id" component={AddEditUser} />
+          <Route path="/user/profile" component={AddEditUser} />
           <ApiErrorAlert content={pdfError} open={pdfError !== ''} onCloseAlert={this.closeDownloadErrorAlert} />
           <a style={{ display: 'none' }} ref={this.helpPdfRef} />
         </FlexGrid>
@@ -260,13 +275,16 @@ class Main extends Component {
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = state => ({
   user: state.data.user.currentUser,
   pdfError: state.scenes.main.pdfError,
   pdfFile: state.scenes.main.pdfFile,
-  isRefreshing: state.scenes.main.isRefreshing
+  isRefreshing: state.scenes.main.isRefreshing,
+  previousLocation: state.scenes.main.previousLocation
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main)

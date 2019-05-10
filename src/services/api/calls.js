@@ -71,6 +71,11 @@ let apiCalls = [
     path: ({ userId }) => `/users/${userId}`
   },
   {
+    name: 'updateSelf',
+    method: 'patch',
+    path: ({ userId }) => `/users/${userId}/selfUpdate`
+  },
+  {
     name: 'getUserImage',
     method: 'get',
     path: ({ userId }) => `/users/${userId}/avatar`

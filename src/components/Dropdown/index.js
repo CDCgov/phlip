@@ -9,7 +9,8 @@ import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
   disabled: {
-    color: 'black'
+    color: 'black',
+    opacity: .5
   },
   disabledLabel: {
     color: 'rgba(0,0,0,.42)'

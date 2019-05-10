@@ -18,7 +18,7 @@ export const downloadPdfLogic = createLogic({
     successType: types.DOWNLOAD_PDF_SUCCESS,
     failType: types.DOWNLOAD_PDF_FAIL
   },
-  async process({ action, getState, api }) {
+  async process({ api }) {
     return await api.getHelpPdf({}, { responseType: 'arraybuffer' }, {})
   }
 })
@@ -54,8 +54,6 @@ export default [
   ...loginLogic,
   ...codingSchemeLogic,
   ...codingValidationLogic,
-  //...codingLogic,
-  //...validationLogic,
   ...protocolLogic,
   ...docManageLogic,
   ...docViewLogic

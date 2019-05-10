@@ -311,7 +311,7 @@ export class Upload extends Component {
     formData.append('userFirstName', this.props.user.firstName)
     formData.append('userLastName', this.props.user.lastName)
     
-    this.props.selectedDocs.map((doc, i) => {
+    this.props.selectedDocs.map(doc => {
       const { file, ...otherProps } = doc
       formData.append('files', file.value, doc.name.value)
       md[doc.name.value] = Object.keys(otherProps).reduce((obj, prop) => {
@@ -446,7 +446,7 @@ export class Upload extends Component {
       : [closeButton]
     
     return (
-      <Modal onClose={this.onCloseModal} open={true} maxWidth="lg" hideOverflow>
+      <Modal onClose={this.onCloseModal} open maxWidth="lg" hideOverflow>
         {alertOpen &&
         <Alert actions={alertActions} open={alertOpen} title={alertTitle} id="uploadAlert">
           {alertText}
@@ -480,7 +480,7 @@ export class Upload extends Component {
         </Alert>}
         {(invalidSizeAlertOpen && invalidSizeFiles.length > 0) &&
         <Alert actions={[this.sizeAlertActions]} open={invalidSizeAlertOpen} title="Invalid File Size">
-          {'One or more of the documents selected for upload has file size that exceeded the allowed size of 16 MB . These documents will be removed from the file list.'}
+          {'One or more of the documents selected for upload has file size that exceeded the allowed size of 16 MB. These documents will be removed from the file list.'}
           <FlexGrid type="row" padding={5} style={{ overflow: 'auto' }}>
             {invalidSizeFiles.map((item, index) => {
               return (

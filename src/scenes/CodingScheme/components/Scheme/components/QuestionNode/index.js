@@ -175,7 +175,7 @@ export class QuestionNode extends Component {
                       component={Link}
                       to={{
                         pathname: `/project/${projectId}/coding-scheme/add`,
-                        state: { parentDefined: { ...node }, path, canModify: true }
+                        state: { parentDefined: { ...node }, path, canModify: true, modal: true }
                       }}
                       color="accent"
                       style={{ ...actionStyles, marginRight: 10 }}
@@ -192,7 +192,7 @@ export class QuestionNode extends Component {
                     component={Link}
                     to={{
                       pathname: `/project/${projectId}/coding-scheme/edit/${node.id}`,
-                      state: { questionDefined: { ...node }, path, canModify }
+                      state: { questionDefined: { ...node }, path, canModify, modal: true }
                     }}
                     aria-label={canModify ? 'Edit Question' : 'View Question'}
                     style={{ ...actionStyles, marginRight: 10 }}

@@ -19,6 +19,4 @@ export default {
   getUsersRequest: makeActionCreator(types.GET_USERS_REQUEST),
   getUserSuccess: makeActionCreator(types.GET_USERS_SUCCESS, 'users'),
   sortUsers: makeActionCreator(types.SORT_USERS, 'sortBy')
-  //updateUserPage: makeActionCreator(types.UPDATE_USER_PAGE, 'page'),
-  //updateUserRows: makeActionCreator(types.UPDATE_USER_ROWS, 'rowsPerPage')
 }

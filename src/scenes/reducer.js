@@ -14,7 +14,8 @@ import { types } from './actions'
 const INITIAL_STATE = {
   pdfError: '',
   pdfFile: null,
-  isRefreshing: false
+  isRefreshing: false,
+  previousLocation: {}
 }
 
 const mainReducer = (state = INITIAL_STATE, action) => {
@@ -54,6 +55,12 @@ const mainReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isRefreshing: true
+      }
+      
+    case types.SET_PREVIOUS_LOCATION:
+      return {
+        ...state,
+        previousLocation: action.location
       }
 
     case types.FLUSH_STATE:

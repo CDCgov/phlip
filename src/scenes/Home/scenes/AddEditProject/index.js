@@ -6,16 +6,20 @@ import actions from './actions'
 import { default as formActions } from 'redux-form/lib/actions'
 import { withRouter } from 'react-router'
 import { ModalTitle, ModalActions, ModalContent } from 'components/Modal'
+import {
+  FormModal,
+  TextInput,
+  Dropdown,
+  withFormAlert,
+  withTracking,
+  CircularLoader,
+  Button,
+  Alert,
+  FlexGrid
+} from 'components'
 import Divider from '@material-ui/core/Divider'
-import FormModal from 'components/FormModal'
-import TextInput from 'components/TextInput'
-import Dropdown from 'components/Dropdown'
-import Container from 'components/Layout'
 import DetailRow from './components/DetailRow'
-import withFormAlert from 'components/withFormAlert'
-import withTracking from 'components/withTracking'
-import CircularLoader from 'components/CircularLoader'
-import {Button,Alert } from 'components'
+
 /**
  * Main / entry component for all things related to adding and editing a project. This component is a modal and is
  * rendered and mounted when the user clicks the 'Add New Project' button or the name of a project in the Project List
@@ -79,10 +83,10 @@ export class AddEditProject extends Component {
     onSubmitError: PropTypes.func,
     /**
      * title of the page
-    */
-    title : PropTypes.string
+     */
+    title: PropTypes.string
   }
-
+  
   constructor(props, context) {
     super(props, context)
     this.projectDefined = this.props.match.url === '/project/add' ? null : this.props.location.state.projectDefined
@@ -99,11 +103,11 @@ export class AddEditProject extends Component {
       showModal: false
     }
   }
-
+  
   /**
    * update page title using props after component loaded
    */
-  componentDidMount(){
+  componentDidMount() {
     this.prevTitle = document.title
     if (this.projectDefined) {
       document.title = `PHLIP - Project ${this.projectDefined.name} - Edit`
@@ -111,7 +115,7 @@ export class AddEditProject extends Component {
       document.title = `PHLIP - Add Project`
     }
   }
-
+  
   componentDidUpdate() {
     if (this.state.submitting === true) {
       if (this.props.formError !== null) {
@@ -124,11 +128,11 @@ export class AddEditProject extends Component {
       }
     }
   }
-
+  
   componentWillUnmount() {
     document.title = this.prevTitle
   }
-
+  
   /**
    *
    * In edit mode, the user clicks the cancel button. Resets to form values to whatever they were before editing.
@@ -147,7 +151,7 @@ export class AddEditProject extends Component {
         : this.props.history.goBack()
     }
   }
-
+  
   /**
    * Function called when the form is submitted, dispatches a redux action for updating or adding depending on state.
    *
@@ -158,12 +162,12 @@ export class AddEditProject extends Component {
     this.setState({
       submitting: true
     })
-
+    
     this.projectDefined
       ? this.props.actions.updateProjectRequest({ ...values, name: this.capitalizeFirstLetter(values.name) })
       : this.props.actions.addProjectRequest({ type: 1, ...values, name: this.capitalizeFirstLetter(values.name) })
   }
-
+  
   /**
    * Capitalizes first letter of string
    *
@@ -172,7 +176,7 @@ export class AddEditProject extends Component {
    * @returns {String}
    */
   capitalizeFirstLetter = text => text.trim()[0].toUpperCase() + text.trim().slice(1)
-
+  
   /**
    * Validates the name of the project in add or edit does not conflict with another project
    *
@@ -189,7 +193,7 @@ export class AddEditProject extends Component {
       }
     })
   }
-
+  
   /**
    * Checks to see if a value is defined and if not return 'required' string
    *
@@ -200,7 +204,7 @@ export class AddEditProject extends Component {
   required = value => (
     value ? undefined : 'Required'
   )
-
+  
   /**
    * Sets the form to edit mode
    * @public
@@ -210,7 +214,7 @@ export class AddEditProject extends Component {
       edit: !this.state.edit
     })
   }
-
+  
   /**
    * Determines the modal title depending on whether it's add / edit / view
    *
@@ -222,7 +226,7 @@ export class AddEditProject extends Component {
       ? 'Edit Project'
       : 'Project Details'
     : 'Create New Project'
-
+  
   /**
    * Formats dates in form to locale date string
    *
@@ -232,7 +236,7 @@ export class AddEditProject extends Component {
    * @returns {String}
    */
   formatDate = (value, name) => new Date(value).toLocaleDateString()
-
+  
   getButtonText = text => {
     if (this.state.submitting) {
       return (
@@ -245,7 +249,7 @@ export class AddEditProject extends Component {
       return <>{text}</>
     }
   }
-
+  
   handleShowDeleteConfirm = () => {
     this.setState({
       typeToDelete: 'Project',
@@ -257,12 +261,12 @@ export class AddEditProject extends Component {
       }
     })
   }
-
+  
   handleDeleteConfirm = () => {
     this.onCancel()
     this.props.actions.deleteProjectRequest(this.projectDefined.id)
   }
-
+  
   onCancelDelete = () => {
     this.setState({
       alertOpen: false,
@@ -273,7 +277,7 @@ export class AddEditProject extends Component {
   closeAlert = () => {
     this.props.actions.closeAlert()
   }
-
+  
   render() {
     const editAction = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Close modal' } },
@@ -285,7 +289,7 @@ export class AddEditProject extends Component {
         otherProps: { 'aria-label': 'Edit this project' }
       }
     ]
-
+    
     const actions = this.projectDefined && !this.state.edit
       ? editAction
       : [
@@ -299,13 +303,13 @@ export class AddEditProject extends Component {
           otherProps: { 'aria-label': 'Save form' }
         }
       ]
-
+    
     const options = [
       { value: 1, label: 'Legal Scan' },
       { value: 2, label: 'Policy Surveillance' }
       //{ value: 3, label: 'Environmental Scan' }
     ]
-
+    
     const alertActions = [
       {
         value: 'Cancel',
@@ -319,7 +323,7 @@ export class AddEditProject extends Component {
         onClick: this.handleDeleteConfirm
       }
     ]
-
+    
     return (
       <>
         <Alert open={this.state.alertOpen} actions={alertActions} title={this.state.alertTitle}>
@@ -339,11 +343,15 @@ export class AddEditProject extends Component {
             closeButton={!!this.projectDefined}
             onEditForm={this.onEditForm}
             onCloseForm={this.onCancel}
-            buttons = {(this.projectDefined && this.props.userRole==='Admin')?<Button color='accent' onClick={() => this.handleShowDeleteConfirm()}>Delete</Button>:undefined}
+            buttons={(this.projectDefined && this.props.userRole === 'Admin')
+              ? <Button
+                color="accent"
+                onClick={() => this.handleShowDeleteConfirm()}>Delete</Button>
+              : undefined}
           />
           <Divider />
           <ModalContent>
-            <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px 0 15px' }}>
+            <FlexGrid container padding="30px 15px 0" style={{ minWidth: 500, minHeight: 230 }}>
               <DetailRow
                 name="name"
                 component={TextInput}
@@ -368,21 +376,21 @@ export class AddEditProject extends Component {
               {this.projectDefined &&
               <DetailRow
                 component={TextInput}
-                disabled={true}
+                disabled
                 label="Created By"
                 name="createdBy"
               />}
               {this.projectDefined &&
               <DetailRow
                 component={TextInput}
-                disabled={true}
+                disabled
                 label="Created Date"
                 name="dateCreated"
                 format={this.formatDate}
                 style={{ paddingBottom: 0 }}
               />
-            }
-            </Container>
+              }
+            </FlexGrid>
           </ModalContent>
           <ModalActions actions={actions} />
         </FormModal>
@@ -405,4 +413,7 @@ const mapDispatchToProps = (dispatch) => ({
   formActions: bindActionCreators(formActions, dispatch)
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withFormAlert(withTracking(AddEditProject, 'Project Form'))))
+export default withRouter(connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withFormAlert(withTracking(AddEditProject, 'Project Form'))))

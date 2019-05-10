@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Field } from 'redux-form'
-import { Row } from 'components/Layout'
+import FlexGrid from 'components/FlexGrid'
 
 export const DetailRow = ({ component, type, name, disabled, label, ...otherProps }) => {
   return (
-    <Row style={{ paddingBottom: 25 }}>
+    <FlexGrid padding="0 0 25px">
       <Field
         component={component}
         type={type}
@@ -16,7 +16,7 @@ export const DetailRow = ({ component, type, name, disabled, label, ...otherProp
         disableUnderline={disabled}
         {...otherProps}
       />
-    </Row>
+    </FlexGrid>
   )
 }
 
