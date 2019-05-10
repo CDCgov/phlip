@@ -42,7 +42,12 @@ export const updateUserLogic = createLogic({
         updatedUser = { ...action.user, avatar: action.user.avatar }
         dispatch({ type: types.UPDATE_USER_SUCCESS, payload: { ...updatedUser, avatar: action.user.avatar } })
       } else {
-        dispatch({ type: types.UPDATE_USER_FAIL, payload: 'We failed to update this user.' })
+        dispatch({
+          type: types.UPDATE_USER_FAIL,
+          payload: action.selfUpdate
+            ? 'We failed to update your profile.'
+            : 'We failed to update this user.'
+        })
       }
     }
     done()
@@ -65,7 +70,12 @@ export const patchUserImageLogic = createLogic({
         payload: { avatar: action.patchOperation[0].value, userId: action.userId, user: action.user }
       })
     } catch (err) {
-      dispatch({ type: types.ADD_USER_IMAGE_FAIL, payload: 'We failed to add a photo for this user.' })
+      dispatch({
+        type: types.ADD_USER_IMAGE_FAIL,
+        payload: action.selfUpdate
+          ? 'We failed to add your photo.'
+          : 'We failed to add a photo for this user.'
+      })
     }
     done()
   }
@@ -88,7 +98,12 @@ export const deleteUserImageLogic = createLogic({
         payload: { user: action.user, userId: action.userId, avatar: null }
       })
     } catch (err) {
-      dispatch({ type: types.DELETE_USER_IMAGE_FAIL, payload: 'We failed to remove the photo for this user.' })
+      dispatch({
+        type: types.DELETE_USER_IMAGE_FAIL,
+        payload: action.selfUpdate
+          ? 'We failed to remove your photo.'
+          : 'We failed to remove the photo for this user.'
+      })
     }
     done()
   }

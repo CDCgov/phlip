@@ -149,6 +149,38 @@ describe('Admin - AddEditUser Logic', () => {
         done()
       })
     })
+  
+    test('should return failure with error: "We failed to update this user" if not self update', done => {
+      mock.onPut('/users/1').reply(500, { id: 1, firstName: 'new', lastName: 'user' })
+    
+      const store = setupStore()
+      store.dispatch({
+        type: types.UPDATE_USER_REQUEST,
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        selfUpdate: false
+      })
+    
+      store.whenComplete(() => {
+        expect(store.actions[1].payload).toEqual('We failed to update this user.')
+        done()
+      })
+    })
+  
+    test('should return failure with error: "We failed to update your profile." if self update', done => {
+      mock.onPatch('/users/1').reply(500, { id: 1, firstName: 'new', lastName: 'user' })
+    
+      const store = setupStore()
+      store.dispatch({
+        type: types.UPDATE_USER_REQUEST,
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        selfUpdate: true
+      })
+    
+      store.whenComplete(() => {
+        expect(store.actions[1].payload).toEqual('We failed to update your profile.')
+        done()
+      })
+    })
   })
   
   describe('add a picture to a user', () => {
@@ -231,6 +263,44 @@ describe('Admin - AddEditUser Logic', () => {
         done()
       })
     })
+  
+    test('should return failure with error: "We failed to add a photo for this user" if not self update', done => {
+      mock.onPut('/users/1').reply(500, { id: 1, firstName: 'new', lastName: 'user' })
+    
+      const store = setupStore()
+      store.dispatch({
+        type: types.ADD_USER_IMAGE_REQUEST,
+        avatar: 'blah',
+        patchOperation: [{ 'op': 'replace', 'path': '/avatar', 'value': 'blah' }],
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        selfUpdate: false,
+        userId: 1
+      })
+    
+      store.whenComplete(() => {
+        expect(store.actions[1].payload).toEqual('We failed to add a photo for this user.')
+        done()
+      })
+    })
+  
+    test('should return failure with error: "We failed to add your photo." if self update', done => {
+      mock.onPatch('/users/1').reply(500, { id: 1, firstName: 'new', lastName: 'user' })
+    
+      const store = setupStore()
+      store.dispatch({
+        type: types.ADD_USER_IMAGE_REQUEST,
+        avatar: 'blah',
+        patchOperation: [{ 'op': 'replace', 'path': '/avatar', 'value': 'blah' }],
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        selfUpdate: true,
+        userId: 1
+      })
+    
+      store.whenComplete(() => {
+        expect(store.actions[1].payload).toEqual('We failed to add your photo.')
+        done()
+      })
+    })
   })
   
   describe('removing a picture from a user', () => {
@@ -306,6 +376,42 @@ describe('Admin - AddEditUser Logic', () => {
       
       store.whenComplete(() => {
         expect(store.actions[1].type).toEqual(types.DELETE_USER_IMAGE_FAIL)
+        done()
+      })
+    })
+    
+    test('should return error: "We failed to remove the photo for this user" if not self update', done => {
+      mock.onPut('/users/1').reply(500, { id: 1, firstName: 'new', lastName: 'user' })
+  
+      const store = setupStore()
+      store.dispatch({
+        type: types.DELETE_USER_IMAGE_REQUEST,
+        operation: [{ 'op': 'replace', 'path': '/avatar', 'value': 'blah' }],
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        selfUpdate: false,
+        userId: 1
+      })
+  
+      store.whenComplete(() => {
+        expect(store.actions[1].payload).toEqual('We failed to remove the photo for this user.')
+        done()
+      })
+    })
+  
+    test('should return error: "We failed to remove your photo" if self update', done => {
+      mock.onPatch('/users/1').reply(500, { id: 1, firstName: 'new', lastName: 'user' })
+    
+      const store = setupStore()
+      store.dispatch({
+        type: types.DELETE_USER_IMAGE_REQUEST,
+        operation: [{ 'op': 'replace', 'path': '/avatar', 'value': 'blah' }],
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        selfUpdate: true,
+        userId: 1
+      })
+    
+      store.whenComplete(() => {
+        expect(store.actions[1].payload).toEqual('We failed to remove your photo.')
         done()
       })
     })
