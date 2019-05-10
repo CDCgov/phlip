@@ -158,6 +158,7 @@ exports[`User Management - AddEditUser scene should render correctly 1`] = `
       >
         <Field
           component={[Function]}
+          disabled={false}
           fullWidth={true}
           label="Email"
           name="email"
@@ -192,6 +193,7 @@ exports[`User Management - AddEditUser scene should render correctly 1`] = `
           <Field
             component={[Function]}
             defaultValue=""
+            disabled={false}
             id="role"
             label="Role"
             name="role"
@@ -231,6 +233,7 @@ exports[`User Management - AddEditUser scene should render correctly 1`] = `
         >
           <Field
             component={[Function]}
+            disabled={false}
             label="Active"
             name="isActive"
             style={

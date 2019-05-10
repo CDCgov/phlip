@@ -101,19 +101,18 @@ export class AddEditUser extends Component {
   
   constructor(props, context) {
     super(props, context)
+    this.selfUpdate = props.match.url === '/user/profile'
   }
   
   componentDidMount() {
     const { selectedUser, match, actions } = this.props
     this.previousTitle = document.title
-    this.selfUpdate = selectedUser
-      ? match.url === '/user/profile'
-      : false
+    this.selfUpdate = match.url === '/user/profile'
     
     const baseTitle = `PHLIP - User Management -`
     document.title = selectedUser
       ? this.selfUpdate
-        ? `${baseTitle} - Profile`
+        ? `${baseTitle} Profile`
         : `${baseTitle} Edit ${selectedUser.firstName} ${selectedUser.lastName}`
       : `${baseTitle} Add User`
     
@@ -271,7 +270,11 @@ export class AddEditUser extends Component {
       <>
         <ModalForm
           open
-          title={selectedUser ? this.selfUpdate ? 'Profile' : 'Edit User' : 'Add New User'}
+          title={selectedUser
+            ? this.selfUpdate
+              ? 'Profile'
+              : 'Edit User'
+            : 'Add New User'}
           actions={actions}
           form="addEditUser"
           handleSubmit={this.handleSubmit}
