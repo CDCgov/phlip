@@ -7,7 +7,6 @@ import { Avatar } from 'components'
 import Divider from '@material-ui/core/Divider'
 import { withRouter } from 'react-router'
 import actions from '../../actions'
-import { default as formActions } from 'redux-form/lib/actions'
 
 export class AvatarForm extends Component {
   static propTypes = {
@@ -109,7 +108,7 @@ export class AvatarForm extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+export const mapStateToProps = (state, ownProps) => {
   const selfUpdate = ownProps.match.url === '/user/profile/avatar'
   return {
     currentUser: state.data.user.currentUser || {},
@@ -120,9 +119,9 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(actions, dispatch),
-  formActions: bindActionCreators(formActions, dispatch)
+/* istanbul ignore next */
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(actions, dispatch)
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AvatarForm))

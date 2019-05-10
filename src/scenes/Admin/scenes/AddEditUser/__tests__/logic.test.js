@@ -64,4 +64,251 @@ describe('Admin - AddEditUser Logic', () => {
       })
     })
   })
+  
+  describe('updating a user', () => {
+    test('should call patch operation is the user is updating themselves (action.selfUpdate === true)', done => {
+      const spy = jest.spyOn(api, 'updateSelf')
+      mock.onPatch('/users/1/selfUpdate').reply(200, { id: 1, firstName: 'new', lastName: 'user' })
+      
+      const store = setupStore()
+      store.dispatch({
+        type: types.UPDATE_USER_REQUEST,
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        selfUpdate: true
+      })
+      
+      store.whenComplete(() => {
+        expect(spy).toHaveBeenCalled()
+        done()
+      })
+    })
+    
+    test('should call put is the user is not updating themselves (action.selfUpdate === false)', done => {
+      const spy = jest.spyOn(api, 'updateUser')
+      mock.onPut('/users/1').reply(200, { id: 1, firstName: 'new', lastName: 'user' })
+      
+      const store = setupStore()
+      store.dispatch({
+        type: types.UPDATE_USER_REQUEST,
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        selfUpdate: false
+      })
+      
+      store.whenComplete(() => {
+        expect(spy).toHaveBeenCalled()
+        done()
+      })
+    })
+    
+    test('should dispatch success with response from api and action if update is successful', done => {
+      mock.onPut('/users/1').reply(200, { id: 1, firstName: 'new', lastName: 'user' })
+      
+      const store = setupStore()
+      store.dispatch({
+        type: types.UPDATE_USER_REQUEST,
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        selfUpdate: false
+      })
+      
+      store.whenComplete(() => {
+        expect(store.actions[1].type).toEqual(types.UPDATE_USER_SUCCESS)
+        expect(store.actions[1].payload).toEqual({ id: 1, firstName: 'new', lastName: 'user', avatar: '' })
+        done()
+      })
+    })
+    
+    test('should return success if api response code is 304', done => {
+      mock.onPut('/users/1').reply(304, { id: 1, firstName: 'new', lastName: 'user' })
+      
+      const store = setupStore()
+      store.dispatch({
+        type: types.UPDATE_USER_REQUEST,
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        selfUpdate: false
+      })
+      
+      store.whenComplete(() => {
+        expect(store.actions[1].type).toEqual(types.UPDATE_USER_SUCCESS)
+        expect(store.actions[1].payload).toEqual({ id: 1, firstName: 'new', lastName: 'user', avatar: '' })
+        done()
+      })
+    })
+    
+    test('should return failure with error if api request fails', done => {
+      mock.onPut('/users/1').reply(500, { id: 1, firstName: 'new', lastName: 'user' })
+      
+      const store = setupStore()
+      store.dispatch({
+        type: types.UPDATE_USER_REQUEST,
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        selfUpdate: false
+      })
+      
+      store.whenComplete(() => {
+        expect(store.actions[1].type).toEqual(types.UPDATE_USER_FAIL)
+        done()
+      })
+    })
+  })
+  
+  describe('add a picture to a user', () => {
+    test('should call update user image api if user is admin (action.selfUpdate === false)', done => {
+      const spy = jest.spyOn(api, 'updateUserImage')
+      mock.onPatch('/users/1').reply(200, { id: 1, firstName: 'new', lastName: 'user', avatar: '' })
+      
+      const store = setupStore()
+      store.dispatch({
+        type: types.ADD_USER_IMAGE_REQUEST,
+        avatar: 'bloop',
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        patchOperation: [{ 'op': 'replace', 'path': '/avatar', 'value': 'bloop' }],
+        selfUpdate: false,
+        userId: 1
+      })
+      
+      store.whenComplete(() => {
+        expect(spy).toHaveBeenCalled()
+        done()
+      })
+    })
+    
+    test('should call patch operation is the user is updating themselves (action.selfUpdate === true)', done => {
+      const spy = jest.spyOn(api, 'updateSelf')
+      mock.onPatch('/users/1/selfUpdate').reply(200, { id: 1, firstName: 'new', lastName: 'user', avatar: 'blep' })
+      
+      const store = setupStore()
+      store.dispatch({
+        type: types.ADD_USER_IMAGE_REQUEST,
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        patchOperation: [{ 'op': 'replace', 'path': '/avatar', 'value': 'bloop' }],
+        avatar: 'blep',
+        selfUpdate: true,
+        userId: 1
+      })
+      
+      store.whenComplete(() => {
+        expect(spy).toHaveBeenCalled()
+        done()
+      })
+    })
+    
+    test('should dispatch success with user information if api call is successful', done => {
+      mock.onPatch('/users/1/selfUpdate').reply(200, { id: 1, firstName: 'new', lastName: 'user', avatar: 'blep' })
+      
+      const store = setupStore()
+      store.dispatch({
+        type: types.ADD_USER_IMAGE_REQUEST,
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        patchOperation: [{ 'op': 'replace', 'path': '/avatar', 'value': 'blep' }],
+        avatar: 'blep',
+        selfUpdate: true,
+        userId: 1
+      })
+      
+      store.whenComplete(() => {
+        expect(store.actions[1].type).toEqual(types.ADD_USER_IMAGE_SUCCESS)
+        expect(store.actions[1].payload)
+          .toEqual({ avatar: 'blep', userId: 1, user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 } })
+        done()
+      })
+    })
+    
+    test('should return failure with error if api request fails', done => {
+      mock.onPut('/users/1').reply(500, { id: 1, firstName: 'new', lastName: 'user' })
+      
+      const store = setupStore()
+      store.dispatch({
+        type: types.ADD_USER_IMAGE_REQUEST,
+        avatar: 'blah',
+        patchOperation: [{ 'op': 'replace', 'path': '/avatar', 'value': 'blah' }],
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        selfUpdate: false,
+        userId: 1
+      })
+      
+      store.whenComplete(() => {
+        expect(store.actions[1].type).toEqual(types.ADD_USER_IMAGE_FAIL)
+        done()
+      })
+    })
+  })
+  
+  describe('removing a picture from a user', () => {
+    test('should call delete user image api if user is admin (action.selfUpdate === false)', done => {
+      const spy = jest.spyOn(api, 'deleteUserImage')
+      mock.onPatch('/users/1').reply(200, { id: 1, firstName: 'new', lastName: 'user', avatar: '' })
+      
+      const store = setupStore()
+      store.dispatch({
+        type: types.DELETE_USER_IMAGE_REQUEST,
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        operation: [{ 'op': 'remove', 'path': '/avatar' }],
+        selfUpdate: false,
+        userId: 1
+      })
+      
+      store.whenComplete(() => {
+        expect(spy).toHaveBeenCalled()
+        done()
+      })
+    })
+    
+    test('should call patch operation is the user is remove image from themselves (action.selfUpdate === true)', done => {
+      const spy = jest.spyOn(api, 'updateSelf')
+      mock.onPatch('/users/1/selfUpdate').reply(200, { id: 1, firstName: 'new', lastName: 'user', avatar: 'blep' })
+      
+      const store = setupStore()
+      store.dispatch({
+        type: types.DELETE_USER_IMAGE_REQUEST,
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        operation: [{ 'op': 'remove', 'path': '/avatar' }],
+        selfUpdate: true,
+        userId: 1
+      })
+      
+      store.whenComplete(() => {
+        expect(spy).toHaveBeenCalled()
+        done()
+      })
+    })
+    
+    test('should dispatch success with user information if api call is successful', done => {
+      mock.onPatch('/users/1/selfUpdate').reply(200, { id: 1, firstName: 'new', lastName: 'user', avatar: 'blep' })
+      
+      const store = setupStore()
+      store.dispatch({
+        type: types.DELETE_USER_IMAGE_REQUEST,
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        operation: [{ 'op': 'remove', 'path': '/avatar' }],
+        selfUpdate: true,
+        userId: 1
+      })
+      
+      store.whenComplete(() => {
+        expect(store.actions[1].type).toEqual(types.DELETE_USER_IMAGE_SUCCESS)
+        expect(store.actions[1].payload)
+          .toEqual({ userId: 1, user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 }, avatar: null })
+        done()
+      })
+    })
+    
+    test('should return failure with error if api request fails', done => {
+      mock.onPut('/users/1').reply(500, { id: 1, firstName: 'new', lastName: 'user' })
+      
+      const store = setupStore()
+      store.dispatch({
+        type: types.DELETE_USER_IMAGE_REQUEST,
+        operation: [{ 'op': 'replace', 'path': '/avatar', 'value': 'blah' }],
+        user: { firstName: 'new', lastName: 'user', avatar: '', id: 1 },
+        selfUpdate: false,
+        userId: 1
+      })
+      
+      store.whenComplete(() => {
+        expect(store.actions[1].type).toEqual(types.DELETE_USER_IMAGE_FAIL)
+        done()
+      })
+    })
+  })
+  
 })

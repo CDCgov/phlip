@@ -6,13 +6,14 @@ import { types } from './actions'
  */
 export const addUserLogic = createLogic({
   type: types.ADD_USER_REQUEST,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.ADD_USER_SUCCESS,
-    failType: types.ADD_USER_FAIL
-  },
-  async process({ action, api }) {
-    return await api.addUser(action.user, {}, {})
+  async process({ action, api }, dispatch, done) {
+    try {
+      const user = await api.addUser(action.user, {}, {})
+      dispatch({ type: types.ADD_USER_SUCCESS, payload: user })
+    } catch (err) {
+      dispatch({ type: types.ADD_USER_FAIL, payload: 'We failed to add this user.' })
+    }
+    done()
   }
 })
 
@@ -32,7 +33,6 @@ export const updateUserLogic = createLogic({
           { op: 'replace', path: '/avatar', value: action.user.avatar }
         ]
         updatedUser = await api.updateSelf(patchDocument, {}, { userId: action.user.id })
-        console.log(updatedUser)
       } else {
         updatedUser = await api.updateUser(action.user, {}, { userId: action.user.id })
       }
@@ -42,7 +42,7 @@ export const updateUserLogic = createLogic({
         updatedUser = { ...action.user, avatar: action.user.avatar }
         dispatch({ type: types.UPDATE_USER_SUCCESS, payload: { ...updatedUser, avatar: action.user.avatar } })
       } else {
-        dispatch({ type: types.UPDATE_USER_FAIL })
+        dispatch({ type: types.UPDATE_USER_FAIL, payload: 'We failed to update this user.' })
       }
     }
     done()
@@ -55,30 +55,19 @@ export const updateUserLogic = createLogic({
 export const patchUserImageLogic = createLogic({
   type: types.ADD_USER_IMAGE_REQUEST,
   latest: true,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.ADD_USER_IMAGE_SUCCESS
-  },
-  async process({ action, api }) {
-    action.selfUpdate
-      ? await api.updateSelf(action.patchOperation, {}, { userId: action.userId })
-      : await api.updateUserImage(action.patchOperation, {}, { userId: action.userId })
-    return { avatar: action.patchOperation[0].value, userId: action.userId, user: action.user }
-  }
-})
-
-/**
- * Sends a request to get the avatar for a user with userId = action.userId
- */
-export const getUserImageLogic = createLogic({
-  type: types.GET_USER_IMAGE_REQUEST,
-  latest: true,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.GET_USER_IMAGE_SUCCESS
-  },
-  async process({ action, api }) {
-    return await api.getUserImage({}, {}, { userId: action.userId })
+  async process({ action, api }, dispatch, done) {
+    try {
+      action.selfUpdate
+        ? await api.updateSelf(action.patchOperation, {}, { userId: action.userId })
+        : await api.updateUserImage(action.patchOperation, {}, { userId: action.userId })
+      dispatch({
+        type: types.ADD_USER_IMAGE_SUCCESS,
+        payload: { avatar: action.patchOperation[0].value, userId: action.userId, user: action.user }
+      })
+    } catch (err) {
+      dispatch({ type: types.ADD_USER_IMAGE_FAIL, payload: 'We failed to add a photo for this user.' })
+    }
+    done()
   }
 })
 
@@ -88,21 +77,25 @@ export const getUserImageLogic = createLogic({
 export const deleteUserImageLogic = createLogic({
   type: types.DELETE_USER_IMAGE_REQUEST,
   latest: true,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.DELETE_USER_IMAGE_SUCCESS
-  },
-  async process({ action, api }) {
-    action.selfUpdate
-      ? await api.updateSelf(action.operation, {}, { userId: action.userId })
-      : await api.deleteUserImage(action.operation, {}, { userId: action.userId })
-    return { user: action.user, userId: action.userId, avatar: null }
+  async process({ action, api }, dispatch, done) {
+    try {
+      action.selfUpdate
+        ? await api.updateSelf(action.operation, {}, { userId: action.userId })
+        : await api.deleteUserImage(action.operation, {}, { userId: action.userId })
+      
+      dispatch({
+        type: types.DELETE_USER_IMAGE_SUCCESS,
+        payload: { user: action.user, userId: action.userId, avatar: null }
+      })
+    } catch (err) {
+      dispatch({ type: types.DELETE_USER_IMAGE_FAIL, payload: 'We failed to remove the photo for this user.' })
+    }
+    done()
   }
 })
 
 export default [
   deleteUserImageLogic,
-  getUserImageLogic,
   patchUserImageLogic,
   updateUserLogic,
   addUserLogic

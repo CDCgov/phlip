@@ -82,24 +82,25 @@ export class AddEditUser extends Component {
      */
     formError: PropTypes.string,
     /**
-     * Whether or not a response has been received from the backend
-     */
-    isDoneSubmitting: PropTypes.bool,
-    /**
      * Function passed in from withFormAlert HOC
      */
     onSubmitError: PropTypes.func,
     /**
      * User selected for edit
      */
-    selectedUser: PropTypes.object
+    selectedUser: PropTypes.object,
+    /**
+     * submitting status
+     */
+    submitting: PropTypes.bool,
+    /**
+     * Whether or not to go back
+     */
+    goBack: PropTypes.bool
   }
   
   constructor(props, context) {
     super(props, context)
-    this.state = {
-      submitting: false
-    }
   }
   
   componentDidMount() {
@@ -123,17 +124,16 @@ export class AddEditUser extends Component {
     }
   }
   
-  componentDidUpdate() {
-    if (this.state.submitting && this.props.isDoneSubmitting === true) {
-      this.props.actions.resetSubmittingStatus()
-      if (this.props.formError !== '') {
-        this.props.onSubmitError(this.props.formError)
+  componentDidUpdate(prevProps) {
+    const { submitting, formError, onSubmitError, history, actions, goBack } = this.props
+    
+    if (prevProps.submitting && !submitting) {
+      actions.resetSubmittingStatus()
+      if (formError !== '') {
+        onSubmitError(formError)
       } else {
-        this.props.history.goBack()
+        if (goBack) history.goBack()
       }
-      this.setState({
-        submitting: false
-      })
     }
   }
   
@@ -230,7 +230,7 @@ export class AddEditUser extends Component {
     return (
       <>
         {text}
-        {this.state.submitting && <CircularLoader size={18} style={{ paddingLeft: 10 }} />}
+        {this.props.submitting && <CircularLoader size={18} style={{ paddingLeft: 10 }} />}
       </>
     )
   }
@@ -255,7 +255,7 @@ export class AddEditUser extends Component {
       {
         value: this.getButtonText('Save'),
         type: 'submit',
-        disabled: this.state.submitting,
+        disabled: this.props.submitting,
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
@@ -399,7 +399,8 @@ const mapStateToProps = (state, ownProps) => {
     avatar: state.scenes.admin.addEditUser.avatar || null,
     formName: 'addEditUser',
     formError: state.scenes.admin.addEditUser.formError || '',
-    isDoneSubmitting: state.scenes.admin.addEditUser.isDoneSubmitting || false,
+    submitting: state.scenes.admin.addEditUser.submitting,
+    goBack: state.scenes.admin.addEditUser.goBack,
     selectedUser: ownProps.match.params.id
       ? state.scenes.admin.main.users.find(user => user.id === parseInt(ownProps.match.params.id))
       : ownProps.match.url === '/user/profile'

@@ -35,7 +35,66 @@ describe('Admin - AddEditUser action creators', () => {
         firstName: 'Tester'
       }
     }
-  
+    
     expect(actions.updateCurrentUser({ firstName: 'Tester' })).toEqual(expected)
+  })
+  
+  test('should create an action to add a user picture', () => {
+    const expected = {
+      type: types.ADD_USER_IMAGE_REQUEST,
+      userId: 1,
+      patchOperation: [{ op: 'add', path: '/avatar', value: 'lalala' }],
+      user,
+      selfUpdate: false
+    }
+    
+    expect(actions.addUserPictureRequest(1, [{ op: 'add', path: '/avatar', value: 'lalala' }], user, false))
+      .toEqual(expected)
+  })
+  
+  test('should create to delete a user picture', () => {
+    const expected = {
+      type: types.DELETE_USER_IMAGE_REQUEST,
+      userId: 1,
+      operation: [{ op: 'add', path: '/avatar', value: 'lalala' }],
+      user,
+      selfUpdate: false
+    }
+  
+    expect(actions.deleteUserPictureRequest(1, [{ op: 'add', path: '/avatar', value: 'lalala' }], user, false))
+      .toEqual(expected)
+  })
+  
+  test('should create an action to handle when the modal closes', () => {
+    const expected = {
+      type: types.ON_CLOSE_ADD_EDIT_USER
+    }
+    
+    expect(actions.onCloseAddEditUser()).toEqual(expected)
+  })
+  
+  test('should create an action to load avatar when modal opens', () => {
+    const expected = {
+      type: types.LOAD_ADD_EDIT_AVATAR,
+      avatar: 'this is an avatar'
+    }
+    
+    expect(actions.loadAddEditAvatar('this is an avatar')).toEqual(expected)
+  })
+  
+  test('should create an action to reset form error', () => {
+    const expected = {
+      type: types.RESET_USER_FORM_ERROR
+    }
+    
+    expect(actions.resetFormError()).toEqual(expected)
+  })
+  
+  test('should create an action to reset submitting status', () => {
+    const expected = {
+      type: types.RESET_SUBMITTING_STATUS
+    }
+    
+    expect(actions.resetSubmittingStatus()).toEqual(expected)
   })
 })
