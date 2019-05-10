@@ -327,7 +327,7 @@ export class DocumentMeta extends Component {
           </Typography>
           <Divider />
           <FlexGrid container flex padding={10} style={{ overflow: 'auto' }}>
-            <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
+            <FlexGrid container type="row" align="center" style={{ marginBottom: 15 }}>
               <FileDocument style={iconStyle} />
               <Typography variant="body1" style={metaStyling}>Status:</Typography>
               <Dropdown
@@ -344,7 +344,7 @@ export class DocumentMeta extends Component {
                 formControlStyle={{ minWidth: 180 }}
               />
             </FlexGrid>
-            <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
+            <FlexGrid container type="row" align="center" style={{ marginBottom: 15 }}>
               <FormatSection style={iconStyle} />
               <Typography variant="body1" style={metaStyling}>
                 Citation:
@@ -357,7 +357,7 @@ export class DocumentMeta extends Component {
                 />)
                 : <Typography style={metaStyling}>{this.props.document.citation}</Typography>}
             </FlexGrid>
-            <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
+            <FlexGrid container type="row" align="center" style={{ marginBottom: 15 }}>
               <CalendarRange style={iconStyle} />
               <Typography variant="body1" style={metaStyling}>
                 Effective Date:
@@ -392,19 +392,19 @@ export class DocumentMeta extends Component {
                   </Typography>
                 )}
             </FlexGrid>
-            <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
+            <FlexGrid container type="row" align="center" style={{ marginBottom: 15 }}>
               <Account style={iconStyle} />
               <Typography variant="body1" style={metaStyling}>
                 {this.props.document.uploadedByName}
               </Typography>
             </FlexGrid>
-            <FlexGrid container type="row" align="center" style={{ marginBottom: 20 }}>
+            <FlexGrid container type="row" align="center" style={{ marginBottom:15 }}>
               <FileUpload style={iconStyle} />
               <Typography variant="body1" style={metaStyling}>
                 Upload Date: {convertToLocalDate(this.props.document.uploadedDate)}
               </Typography>
             </FlexGrid>
-            <FlexGrid container type="row" flex align="flex-end" justify="space-between">
+            <FlexGrid container type="row" flex align="flex-end" justify="space-between" style={{ minHeight:30  }}>
               <Button
                 value="Delete Document"
                 raised={false}
@@ -419,7 +419,7 @@ export class DocumentMeta extends Component {
                   : 'Edit'}
                 size="small"
                 color="accent"
-                style={{ padding: '0 15px' }}
+                style={{ padding: '0 15px'}}
                 onClick={this.props.inEditMode ? this.handleUpdate : this.handleEdit}
               />
             </FlexGrid>
