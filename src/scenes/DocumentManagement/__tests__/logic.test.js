@@ -323,7 +323,6 @@ describe('Document Management logic', () => {
         name: 'Project1'
       }
     })
-    console.log('store actions: ', store.actions)
     store.whenComplete(() => {
 
       expect(store.actions[2]).toEqual({

@@ -54,8 +54,6 @@ describe('Document Management - Upload logic', () => {
   }
 
   describe('Upload Documents', () => {
-    console.log(apiMock)
-
     const selectedDocsFormData = [{ name: 'doc 1' }, { name: 'doc 2' }]
     const selectedDocs = [
       { name: 'doc1', jurisdictions: { value: { name: '' } } },

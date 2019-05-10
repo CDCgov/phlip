@@ -1,6 +1,7 @@
 import { createLogic } from 'redux-logic'
 import { types } from '../../actions'
 import { types as documentTypes} from 'scenes/DocumentManagement/actions'
+import { types as projectTypes } from 'data/projects/actions'
 
 /**
  * Sends a request to add a project
@@ -42,6 +43,11 @@ export const updateProjectLogic = createLogic({
           ...updatedProject,
           users: updatedProject.hasOwnProperty('users') ? updatedProject.users : { lastCheck: null, all: [] }
         }
+      })
+      
+      dispatch({
+        type: projectTypes.UPDATE_PROJECT,
+        payload: updatedProject
       })
     } catch (error) {
       dispatch({
