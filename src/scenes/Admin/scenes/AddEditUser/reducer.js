@@ -37,12 +37,6 @@ const addEditUserReducer = (state = INITIAL_STATE, action) => {
         ...state,
         formError: ''
       }
-
-    case types.RESET_SUBMITTING_STATUS:
-      return {
-        ...state,
-        submitting: false
-      }
   
     case types.ADD_USER_IMAGE_SUCCESS:
     case types.DELETE_USER_IMAGE_SUCCESS:

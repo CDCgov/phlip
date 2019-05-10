@@ -14,7 +14,7 @@ exports[`User Management - AddEditUser scene should render correctly 1`] = `
           "value": "Cancel",
         },
         Object {
-          "disabled": false,
+          "disabled": undefined,
           "otherProps": Object {
             "aria-label": "Save form",
           },

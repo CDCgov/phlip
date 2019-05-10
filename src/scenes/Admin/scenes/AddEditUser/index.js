@@ -125,10 +125,9 @@ export class AddEditUser extends Component {
   }
   
   componentDidUpdate(prevProps) {
-    const { submitting, formError, onSubmitError, history, actions, goBack } = this.props
+    const { submitting, formError, onSubmitError, history, goBack } = this.props
     
     if (prevProps.submitting && !submitting) {
-      actions.resetSubmittingStatus()
       if (formError !== '') {
         onSubmitError(formError)
       } else {

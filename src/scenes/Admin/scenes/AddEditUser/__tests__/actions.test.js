@@ -89,12 +89,4 @@ describe('Admin - AddEditUser action creators', () => {
     
     expect(actions.resetFormError()).toEqual(expected)
   })
-  
-  test('should create an action to reset submitting status', () => {
-    const expected = {
-      type: types.RESET_SUBMITTING_STATUS
-    }
-    
-    expect(actions.resetSubmittingStatus()).toEqual(expected)
-  })
 })

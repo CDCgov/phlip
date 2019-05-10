@@ -16,8 +16,7 @@ export const types = {
   DELETE_USER_IMAGE_FAIL: 'DELETE_USER_IMAGE_FAIL',
   ON_CLOSE_ADD_EDIT_USER: 'ON_CLOSE_ADD_EDIT_USER',
   LOAD_ADD_EDIT_AVATAR: 'LOAD_ADD_EDIT_AVATAR',
-  RESET_USER_FORM_ERROR: 'RESET_USER_FORM_ERROR',
-  RESET_SUBMITTING_STATUS: 'RESET_SUBMITTING_STATUS'
+  RESET_USER_FORM_ERROR: 'RESET_USER_FORM_ERROR'
 }
 
 export default {
@@ -28,6 +27,5 @@ export default {
   deleteUserPictureRequest: makeActionCreator(types.DELETE_USER_IMAGE_REQUEST, 'userId', 'operation', 'user', 'selfUpdate'),
   onCloseAddEditUser: makeActionCreator(types.ON_CLOSE_ADD_EDIT_USER),
   loadAddEditAvatar: makeActionCreator(types.LOAD_ADD_EDIT_AVATAR, 'avatar'),
-  resetFormError: makeActionCreator(types.RESET_USER_FORM_ERROR),
-  resetSubmittingStatus: makeActionCreator(types.RESET_SUBMITTING_STATUS)
+  resetFormError: makeActionCreator(types.RESET_USER_FORM_ERROR)
 }
