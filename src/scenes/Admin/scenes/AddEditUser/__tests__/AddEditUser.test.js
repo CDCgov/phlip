@@ -34,14 +34,6 @@ const props = {
   selectedUser: {}
 }
 
-const setup = (otherProps = {}, initialEntries = ['/']) => {
-  return mount(<MemoryRouter initialEntries={initialEntries}>
-    <MuiThemeProvider theme={theme}>
-      <AddEditUser {...props} {...otherProps} />
-    </MuiThemeProvider>
-  </MemoryRouter>)
-}
-
 describe('User Management - AddEditUser scene', () => {
   test('should render correctly', () => {
     expect(shallow(<AddEditUser {...props} />)).toMatchSnapshot()
@@ -207,6 +199,45 @@ describe('User Management - AddEditUser scene', () => {
         />
       )
       wrapper.instance().onCancel()
+      expect(spy).toHaveBeenCalled()
+    })
+  })
+  
+  describe('handling submit', () => {
+    test('should call onSubmitError to show an alert if there was an error during submission', () => {
+      const spy = jest.spyOn(props, 'onSubmitError')
+      const wrapper = shallow(
+        <AddEditUser
+          {...props}
+          match={{ url: '/admin/edit/user/4', params: { id: 4 } }}
+          selectedUser={{ id: 4, firstName: 'Test', lastName: 'User' }}
+          submitting
+        />
+      )
+      wrapper.setProps({
+        submitting: false,
+        formError: 'something went wrong'
+      })
+      wrapper.update()
+      expect(spy).toHaveBeenCalled()
+    })
+  
+    test('should go back in history if there was not an error during submission', () => {
+      const spy = jest.spyOn(props.history, 'goBack')
+      const wrapper = shallow(
+        <AddEditUser
+          {...props}
+          match={{ url: '/admin/edit/user/4', params: { id: 4 } }}
+          selectedUser={{ id: 4, firstName: 'Test', lastName: 'User' }}
+          submitting
+        />
+      )
+      wrapper.setProps({
+        submitting: false,
+        formError: '',
+        goBack: true
+      })
+      wrapper.update()
       expect(spy).toHaveBeenCalled()
     })
   })

@@ -51,7 +51,7 @@ const modalPaths = [
  * @returns {*}
  * @constructor
  */
-class Main extends Component {
+export class Main extends Component {
   static propTypes = {
     history: PropTypes.object,
     pdfFile: PropTypes.any,
@@ -184,7 +184,7 @@ class Main extends Component {
   /**
    * Navigates to the User Management page (clicked from the user menu)
    */
-  handleOpenAdminPage = (files = null) => {
+  handleOpenAdminPage = () => {
     const tabs = [...this.state.menuTabs]
     
     if (this.state.menuTabs[1].active) {
@@ -204,7 +204,7 @@ class Main extends Component {
         pathname: '/user/profile',
         state: {
           isEdit: Boolean(this.props.user.avatar),
-          avatar: this.props.user.avatar || files.base64,
+          avatar: this.props.user.avatar,
           userId: this.props.user.id,
           modal: true,
           selfUpdate: true
@@ -275,6 +275,7 @@ class Main extends Component {
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = state => ({
   user: state.data.user.currentUser,
   pdfError: state.scenes.main.pdfError,
@@ -283,6 +284,7 @@ const mapStateToProps = state => ({
   previousLocation: state.scenes.main.previousLocation
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main)
