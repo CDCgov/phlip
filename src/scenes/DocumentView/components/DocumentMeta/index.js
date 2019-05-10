@@ -404,7 +404,7 @@ export class DocumentMeta extends Component {
                 Upload Date: {convertToLocalDate(this.props.document.uploadedDate)}
               </Typography>
             </FlexGrid>
-            <FlexGrid container type="row" flex align="flex-end" justify="space-between" style={{ minHeight:30  }}>
+            <FlexGrid container type="row" flex align="flex-end" justify="space-between" style={{ minHeight:30 }}>
               <Button
                 value="Delete Document"
                 raised={false}
