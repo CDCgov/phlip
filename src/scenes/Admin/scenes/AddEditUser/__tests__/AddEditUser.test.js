@@ -1,9 +1,6 @@
 import React from 'react'
 import { AddEditUser } from '../index'
-import { shallow, mount } from 'enzyme'
-import { MemoryRouter } from 'react-router-dom'
-import { MuiThemeProvider } from '@material-ui/core'
-import theme from 'services/theme'
+import { shallow } from 'enzyme'
 
 const props = {
   users: [],
