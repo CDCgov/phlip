@@ -48,7 +48,7 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
           Array [
             Object {
               "disabled": true,
-              "label": "Bulk Operation",
+              "label": "Actions",
               "value": "bulk",
             },
             Object {
