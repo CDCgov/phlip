@@ -190,6 +190,7 @@ export class DocumentManagement extends Component {
     
     this.handleClearSuggestions(suggestionType)
   }
+
   /**
    * Get suggestions for some type of autocomplete search
    * @param suggestionType

@@ -236,6 +236,7 @@ export class CodingScheme extends Component {
       this.props.history.goBack()
     }
   }
+
     /**
      *  release the lock when user click on release lock button
      */
