@@ -350,8 +350,8 @@ export class SearchBox extends Component {
                       <Typography variant="body2" htmlFor="uploaded-within" style={formRowFontStyles}>
                         Uploaded Date
                       </Typography>
-                      <FlexGrid container flex type="row" style={{flexBasis: '100%', flexWrap:'wrap' }} justify="space-between" >
-                        <FlexGrid container flex type="row" justify="space-between" style={{width:'35%'}}>
+                      <FlexGrid container flex type="row" style={{ flexBasis: '100%', flexWrap:'wrap' }} justify="space-between" >
+                        <FlexGrid container flex type="row" justify="space-between" style={{ width:'35%' }}>
                           <Typography variant="body2" htmlFor="uploadedDate1Search" style={formRowFontStyles2}>
                           From:
                           </Typography>
@@ -383,7 +383,7 @@ export class SearchBox extends Component {
 
                         </FlexGrid>
                         <FlexGrid style={{ width: '1%' }} />
-                        <FlexGrid container flex type="row" justify="space-between" style={{width:'35%'}}>
+                        <FlexGrid container flex type="row" justify="space-between" style={{ width:'35%' }}>
                           <Typography variant="body2" htmlFor="uploadedDate2Search" style={formRowFontStyles2}>
                           To:
                           </Typography>

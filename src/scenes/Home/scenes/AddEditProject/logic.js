@@ -1,6 +1,6 @@
 import { createLogic } from 'redux-logic'
 import { types } from '../../actions'
-import { types as documentTypes} from 'scenes/DocumentManagement/actions'
+import { types as documentTypes } from 'scenes/DocumentManagement/actions'
 import { types as projectTypes } from 'data/projects/actions'
 
 /**
@@ -65,7 +65,7 @@ export const updateProjectLogic = createLogic({
  */
 export const deleteProjectLogic = createLogic({
   type: types.DELETE_PROJECT_REQUEST,
-  async process({getState, action, api }, dispatch, done) {
+  async process({ getState, action, api }, dispatch, done) {
     const projectMeta = getState().data.projects.byId[action.project]
     try {
       await api.deleteProject({}, {}, { projectId: action.project })

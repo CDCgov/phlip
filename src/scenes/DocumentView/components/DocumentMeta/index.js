@@ -127,7 +127,7 @@ export class DocumentMeta extends Component {
    */
   handleGetSuggestions = (suggestionType, { value: searchString }, index = null) => {
     clearTimeout(this.timeout)
-    this.timeout = setTimeout(()=>{
+    this.timeout = setTimeout(() => {
       suggestionType === 'project'
         ? this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
         : this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
@@ -419,7 +419,7 @@ export class DocumentMeta extends Component {
                   : 'Edit'}
                 size="small"
                 color="accent"
-                style={{ padding: '0 15px'}}
+                style={{ padding: '0 15px' }}
                 onClick={this.props.inEditMode ? this.handleUpdate : this.handleEdit}
               />
             </FlexGrid>

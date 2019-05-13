@@ -696,7 +696,7 @@ describe('Document Management - Upload reducer tests', () => {
     test('should set invalid file size array', () => {
       const action = {
         type: types.CAPTURE_INVALID_FILE_SIZE,
-        docs: [{name:1,size:160000001}]
+        docs: [{ name:1,size:160000001 }]
       }
 
       const currentState = getState({
@@ -717,7 +717,7 @@ describe('Document Management - Upload reducer tests', () => {
         alertOpen: true,
         alertText: 'alert text',
         alertTitle: 'title',
-        invalidSizeFiles : [{name:1,size:160000001}]
+        invalidSizeFiles : [{ name:1,size:160000001 }]
       })
       const updatedState = reducer(currentState, action)
       expect(updatedState.invalidSizeFiles.length).toEqual(0)

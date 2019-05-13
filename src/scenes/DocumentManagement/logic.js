@@ -164,7 +164,7 @@ const cleanDocProjectLogic = createLogic({
           // rebuild the project name list
           let projectNames = cleannedDocs[docKey].projectList.split('|')
           // console.log('project names: ',projectNames)
-          const nameIdx = projectNames.findIndex(el=>el === projectMeta.name)
+          const nameIdx = projectNames.findIndex(el => el === projectMeta.name)
           projectNames.splice(nameIdx,1) // remove the project name from array
           cleannedDocs[docKey].projectList = projectNames.join('|')
         }

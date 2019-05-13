@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Grid from 'components/FlexGrid'
 import Button from 'components/Button'
 import Typography from '@material-ui/core/Typography/Typography'
-import {Alert} from 'components'
+import { Alert } from 'components'
 
 class FileUpload extends Component {
   static propTypes = {

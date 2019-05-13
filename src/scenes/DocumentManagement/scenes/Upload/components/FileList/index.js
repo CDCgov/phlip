@@ -146,7 +146,7 @@ export class FileList extends Component {
     const wrapperRowSizing = '1fr'
     const headerStyle = { fontSize: '18px', borderBottom: '1px solid black', padding: '10px 10px' }
     const colStyle = { fontSize: 13, alignSelf: 'center', margin: '0 10px' }
-    const { selectedDocs, duplicateFiles,invalidTypeFiles,invalidSizeFiles} = this.props
+    const { selectedDocs, duplicateFiles,invalidTypeFiles,invalidSizeFiles } = this.props
 
     return (
       <Grid rowSizing="55px 1fr" columnSizing="1fr" style={{ overflow: 'auto', flex: 1 }}>
@@ -159,7 +159,7 @@ export class FileList extends Component {
           ))}
           <div style={{ borderBottom: '1px solid black' }} />
         </Grid>
-        <Grid columnSizing="1fr" autoRowSizing="60px" style={{ flex: 1}} id='uploadFileList'>
+        <Grid columnSizing="1fr" autoRowSizing="60px" style={{ flex: 1 }} id='uploadFileList'>
           {selectedDocs.map((doc, i) => {
             const isDuplicate = duplicateFiles.find(file => file.name === doc.name.value) !== undefined
             const isInvalidType = invalidTypeFiles.find(invalidDoc => invalidDoc.doc.name === doc.name.value) !== undefined

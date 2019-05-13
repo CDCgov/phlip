@@ -58,7 +58,7 @@ describe('Autocomplete logic', () => {
           },
           {
             type: `${types.SEARCH_FOR_SUGGESTIONS_SUCCESS}_PROJECT`,
-            payload: [{name: 'project 1'},{ name: 'test project' }, { name: 'testing project' }]
+            payload: [{ name: 'project 1' },{ name: 'test project' }, { name: 'testing project' }]
           }
         ])
         done()

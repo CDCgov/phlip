@@ -14,7 +14,7 @@ const props = {
   lockInfo: {},
   lockedByCurrentUser: false,
   hasLock: false,
-  currentUser : {role:'Admin'}
+  currentUser : { role:'Admin' }
 }
 
 describe('CodingScheme scene', () => {

@@ -274,6 +274,7 @@ export class AddEditProject extends Component {
       typeToDelete: ''
     })
   }
+
   closeAlert = () => {
     this.props.actions.closeAlert()
   }
