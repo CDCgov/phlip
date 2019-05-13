@@ -145,7 +145,12 @@
     "no-case-declarations": 0,
     "react/no-deprecated": 1,
     "react/no-find-dom-node": 0,
-    "react/no-unescaped-entities": 0
+    "react/no-unescaped-entities": 0,
+    "arrow-spacing": [2, { "before": true, "after": true }],
+    "template-curly-spacing": [2, "never"],
+    "no-var": 2,
+    "object-curly-spacing": [2, "always"],
+    "lines-between-class-members": [2, "always"]
   },
   "settings": {
     "react": {

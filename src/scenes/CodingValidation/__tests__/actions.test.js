@@ -154,7 +154,7 @@ describe('CodingValidation scene actions creators', () => {
     expect(actions.showQuestionLoader()).toEqual(expectedAction)
   })
 
-  test('should create an action to show page loader', () =>{
+  test('should create an action to show page loader', () => {
     const expectedAction = {
       type: types.ON_SHOW_PAGE_LOADER
     }

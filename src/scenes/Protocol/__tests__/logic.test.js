@@ -31,7 +31,7 @@ describe('Protocol logic', () => {
   const setupStoreLocked = () => {
     return createMockStore({
       initialState: { data: { user: { currentUser: { id: 5 } } },
-        scenes: {protocol : { lockedByCurrentUser: false, lockInfo: {userId: 1, firstName:'Tim', lastName: 'nguyen'}}}},
+        scenes: { protocol : { lockedByCurrentUser: false, lockInfo: { userId: 1, firstName:'Tim', lastName: 'nguyen' } } } },
       reducer: mockReducer,
       logic,
       injectedDeps: {
@@ -46,7 +46,7 @@ describe('Protocol logic', () => {
 
     const store = setupStore()
 
-    store.dispatch({ type: types.GET_PROTOCOL_REQUEST, projectId: 1})
+    store.dispatch({ type: types.GET_PROTOCOL_REQUEST, projectId: 1 })
 
     store.whenComplete(() => {
       expect(store.actions).toEqual([

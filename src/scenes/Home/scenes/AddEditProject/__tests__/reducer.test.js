@@ -27,6 +27,6 @@ describe('Home scene - AddEditProject reducer', () => {
     expect(reducer({}, {
       type: types.DELETE_PROJECT_REQUEST,
       project: project.id
-    })).toEqual({goBack: false})
+    })).toEqual({ goBack: false })
   })
 })

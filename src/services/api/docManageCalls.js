@@ -34,7 +34,7 @@ const docManageCalls = [
   {
     name: 'deleteDoc',
     method: 'delete',
-    path: ({docId}) => `/docs/${docId}`
+    path: ({ docId }) => `/docs/${docId}`
   },
   {
     name: 'getDocumentsByProjectJurisdiction',
@@ -54,7 +54,7 @@ const docManageCalls = [
   {
     name:'cleanProject',
     method: 'put',
-    path:  ({projectId}) => `/docs/cleanProjectList/${projectId}`
+    path:  ({ projectId }) => `/docs/cleanProjectList/${projectId}`
   }
 
 ]

@@ -16,7 +16,7 @@ const props = {
   actions: {
     getProtocolRequest: () => {}
   },
-  currentUser : {role:'Admin'}
+  currentUser : { role:'Admin' }
 }
 
 describe('Protocol scene', () => {

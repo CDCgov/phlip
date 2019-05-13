@@ -31,7 +31,7 @@ export const refreshJwtLogic = createLogic({
     const interval = setInterval(async () => {
       if (isLoggedIn()) {
         const currentToken = getToken()
-        const newToken = await api.checkPivUser({ email: decodeToken(currentToken).Email }, {}, { tokenObj: { token: currentToken }})
+        const newToken = await api.checkPivUser({ email: decodeToken(currentToken).Email }, {}, { tokenObj: { token: currentToken } })
         await login(newToken.token.value)
         console.log('refreshing')
       }

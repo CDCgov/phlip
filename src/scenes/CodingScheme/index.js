@@ -311,7 +311,7 @@ export class CodingScheme extends Component {
 
     ]
     if (this.props.currentUser.role === 'Admin') {
-      lockedAlertAction.push({ value: 'Release lock', type: 'button', onClick: this.overrideLock})
+      lockedAlertAction.push({ value: 'Release lock', type: 'button', onClick: this.overrideLock })
     }
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">

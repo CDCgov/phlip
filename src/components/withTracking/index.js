@@ -54,7 +54,7 @@ export const withTracking = (WrappedComponent, pageName = null) => {
       window.updateVariables(window.s)
 
       /************* DO NOT ALTER ANYTHING BELOW THIS LINE ! **************/
-      var s_code = window.s.t()
+      let s_code = window.s.t()
       if (s_code) {
         window.document.write(s_code)
       }
