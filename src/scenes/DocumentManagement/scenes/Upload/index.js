@@ -4,13 +4,11 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Divider from '@material-ui/core/Divider/Divider'
 import actions, { projectAutocomplete, jurisdictionAutocomplete } from './actions'
-import { Alert, withFormAlert, CircularLoader, Grid } from 'components'
+import { Alert, withFormAlert, CircularLoader, FlexGrid, FileUpload, Typography, Button } from 'components'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
-import FileUpload from 'components/FileUpload'
+import { Download } from 'mdi-material-ui'
 import FileList from './components/FileList'
 import ProJurSearch from './components/ProJurSearch'
-import FlexGrid from 'components/FlexGrid'
-import Typography from 'components/Typography'
 
 /**
  * Upload documents modal component. In this modal the user can upload documents to the document management system
@@ -26,10 +24,6 @@ export class Upload extends Component {
      * Any error that happened during a request, opens an alert with error
      */
     requestError: PropTypes.string,
-    /**
-     * Any files that came back from the verify upload request, meaning they already exist in the db
-     */
-    duplicateFiles: PropTypes.array,
     /**
      * If the uploading request is in progress
      */
@@ -258,7 +252,7 @@ export class Upload extends Component {
    * Adds selected files to redux, sends a request to verify the documents can be uploaded
    * @param e
    */
-  addFilesToList = (e) => {
+  addFilesToList = e => {
     if (e.target.files.length + this.props.selectedDocs.length > this.props.maxFileCount) {
       this.props.actions.openAlert(
         `The number of files selected for upload has exceeded the limit of ${this.props.maxFileCount} files per upload. Please consider uploading files in smaller batches.`,
@@ -269,12 +263,7 @@ export class Upload extends Component {
       Array.from(Array(e.target.files.length).keys()).map(x => {
         const i = e.target.files.item(x)
         if (i.size > 16000000) {
-          this.invalidSizeFiles.push(
-            {
-              name: i.name,
-              size: i.size
-            }
-          )
+          this.invalidSizeFiles.push({ name: i.name, size: i.size })
         }
         files.push({
           name: i.name,
@@ -285,14 +274,14 @@ export class Upload extends Component {
           citation: '',
           jurisdictions: { searchValue: '', suggestions: [], name: '' }
         })
-        
       })
       
       this.props.infoSheetSelected
         ? this.props.actions.mergeInfoWithDocs(files)
         : this.props.actions.addSelectedDocs(files)
+      
       this.props.actions.verifyFileContent(files)
-      if (this.invalidSizeFiles.length > 0) { // files with invalid size found
+      if (this.invalidSizeFiles.length > 0) {
         this.setState({
           invalidSizeAlertOpen: true
         })
@@ -392,13 +381,9 @@ export class Upload extends Component {
   /**
    * Handles when a user wants to remove a document from the file list
    * @param index
-   * @param isDuplicate
    */
-  removeDoc = (index, isDuplicate) => {
+  removeDoc = index => {
     this.props.actions.removeDoc(index)
-    if (isDuplicate) {
-      this.props.actions.removeDuplicate(index)
-    }
   }
   
   /**
@@ -420,7 +405,7 @@ export class Upload extends Component {
     const {
       selectedDocs, uploading, alertOpen, alertTitle, alertText, actions, invalidTypeFiles, invalidSizeFiles,
       projectSearchValue, projectSuggestions, jurisdictionSearchValue, jurisdictionSuggestions, noProjectError,
-      infoSheetSelected, infoSheet, duplicateFiles
+      infoSheetSelected, infoSheet
     } = this.props
     
     const { alertActions, invalidSizeAlertOpen, showLoadingAlert } = this.state
@@ -516,34 +501,43 @@ export class Upload extends Component {
               {uploading ? 'Uploading documents' : 'Processing document'}... This could take a couple minutes...
             </span>
           </FlexGrid>
-        </Alert>
-        }
-        <ModalTitle
-          title="Upload Documents"
-          buttons={
-            selectedDocs.length > 0 &&
-            <ProJurSearch
-              jurisdictionSuggestions={jurisdictionSuggestions}
-              projectSuggestions={projectSuggestions}
-              onClearSuggestions={this.handleClearSuggestions}
-              onGetSuggestions={this.handleGetSuggestions}
-              onSearchValueChange={this.handleSearchValueChange}
-              onSuggestionSelected={this.handleSuggestionSelected}
-              jurisdictionSearchValue={jurisdictionSearchValue}
-              projectSearchValue={projectSearchValue}
-              showProjectError={noProjectError === true}
-              showJurSearch={infoSheetSelected === false}
-            />}
-        />
+        </Alert>}
+        <FlexGrid container type="row" align="center">
+          <FlexGrid flex>
+            <ModalTitle
+              title="Upload Documents"
+              buttons={
+                selectedDocs.length > 0 &&
+                <ProJurSearch
+                  jurisdictionSuggestions={jurisdictionSuggestions}
+                  projectSuggestions={projectSuggestions}
+                  onClearSuggestions={this.handleClearSuggestions}
+                  onGetSuggestions={this.handleGetSuggestions}
+                  onSearchValueChange={this.handleSearchValueChange}
+                  onSuggestionSelected={this.handleSuggestionSelected}
+                  jurisdictionSearchValue={jurisdictionSearchValue}
+                  projectSearchValue={projectSearchValue}
+                  showProjectError={noProjectError === true}
+                  showJurSearch={infoSheetSelected === false}
+                />}
+            />
+          </FlexGrid>
+          <FlexGrid padding="0 24px 0 0">
+            <Button color="white" style={{ color: 'black' }} href="/PHLIP-Upload.xlsx" download>
+              <Download style={{ fontSize: 18, marginRight: 10 }} /> Excel Template
+            </Button>
+          </FlexGrid>
+        </FlexGrid>
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-          <Grid container type="row" align="center" justify="space-between" padding={10}>
+          <FlexGrid container type="row" align="center" justify="space-between" padding={10}>
             <FileUpload
               handleAddFiles={this.addFilesToList}
-              allowedFileTypes=".doc,.docx,.pdf,.rtf,.txt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              allowedFileTypes=".doc,.docx,.pdf,.rtf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               allowMultiple
+              numOfFiles={selectedDocs.length}
             />
-            <Grid padding={10} />
+            <FlexGrid padding={10} />
             <FileUpload
               handleAddFiles={this.addExcelFile}
               infoSheetSelected={infoSheetSelected}
@@ -554,8 +548,9 @@ export class Upload extends Component {
               containerText={infoSheetSelected
                 ? `Selected file: ${infoSheet.name}`
                 : 'or drag and drop here'}
+              numOfFiles={infoSheetSelected ? 1 : 0}
             />
-          </Grid>
+          </FlexGrid>
           {selectedDocs.length > 0 &&
           <FileList
             selectedDocs={selectedDocs}
@@ -565,7 +560,6 @@ export class Upload extends Component {
             jurisdictionSuggestions={jurisdictionSuggestions}
             toggleRowEditMode={this.handleToggleEditMode}
             onClearSuggestions={actions.clearRowJurisdictionSuggestions}
-            duplicateFiles={duplicateFiles}
             invalidTypeFiles={invalidTypeFiles}
             invalidSizeFiles={this.invalidSizeFiles}
           />
@@ -607,7 +601,6 @@ const mapStateToProps = state => {
     infoRequestInProgress: uploadState.list.infoRequestInProgress,
     infoSheet: uploadState.list.infoSheet,
     infoSheetSelected: uploadState.list.infoSheetSelected,
-    duplicateFiles: uploadState.list.duplicateFiles,
     invalidTypeFiles: uploadState.list.invalidTypeFiles,
     maxFileCount: uploadState.maxFileCount || 20,
     invalidSizeFiles: uploadState.list.invalidSizeFiles

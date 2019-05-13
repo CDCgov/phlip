@@ -11,37 +11,30 @@ class FileUpload extends Component {
      * Color of the dashed border for the container
      */
     containerBorderColor: PropTypes.string,
-
     /**
      * Color of the background of the container
      */
     containerBgColor: PropTypes.string,
-
     /**
      * Any additional style to be applied to the container
      */
     containerStyle: PropTypes.object,
-
     /**
      * 'Select files...' button content or text
      */
     buttonText: PropTypes.any,
-
     /**
      * Whether or not to allow multiple
      */
     allowMultiple: PropTypes.bool,
-
     /**
      * Container text
      */
     containerText: PropTypes.any,
-
     /**
      * Allowed file types
      */
     allowedFileTypes: PropTypes.string,
-
     /**
      * Callback for when files are added
      */
@@ -49,7 +42,11 @@ class FileUpload extends Component {
     /**
      *  Flag for excel file previously selected
      */
-    infoSheetSelected : PropTypes.bool
+    infoSheetSelected : PropTypes.bool,
+    /**
+     * Total # of files selected to know when to clear files input
+     */
+    numOfFiles: PropTypes.number
   }
 
   static defaultProps = {
@@ -57,7 +54,8 @@ class FileUpload extends Component {
     containerBgColor: '#f5fafa',
     containerText: 'or drag and drop here',
     buttonText: 'Select Files',
-    allowMultiple: false
+    allowMultiple: false,
+    numOfFiles: 0
   }
 
   constructor(props, context) {
@@ -69,6 +67,12 @@ class FileUpload extends Component {
         title: '',
         text: ''
       }
+    }
+  }
+  
+  componentDidUpdate(prevProps) {
+    if (prevProps.numOfFiles !== 0 && this.props.numOfFiles === 0) {
+      this.inputRef.current.value = null
     }
   }
 
@@ -126,6 +130,7 @@ class FileUpload extends Component {
           onClick: this.onContinueSelectExcel
         }
       ]
+      
       return (
       <>
         <form encType="multipart/form-data" style={{ margin: '20px 0', flex: 1 }}>

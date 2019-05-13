@@ -21,7 +21,7 @@ const fileTypeIcons = {
  */
 const getIconType = extension => {
   let icon = 'library_books'
-
+  
   for (const type in fileTypeIcons) {
     const regex = new RegExp(type, 'g')
     if (extension.match(regex) !== null) {
@@ -40,42 +40,40 @@ export class FileList extends Component {
      * Array of documents the user has selected for upload
      */
     selectedDocs: PropTypes.array,
-
     /**
      * Removes document from selectedDocs array
      */
     handleRemoveDoc: PropTypes.func,
-
     /**
      * Enables editing on a column and row
      */
     toggleRowEditMode: PropTypes.func,
-
     /**
      * Gets the list of jurisdiction suggestions for a row
      */
     onGetSuggestions: PropTypes.func,
-
     /**
      * Clears the list of jurisdiction suggestions for a row
      */
     onClearSuggestions: PropTypes.func,
+    /**
+     * Handles when one of the properties changes
+     */
     handleDocPropertyChange: PropTypes.func,
-    duplicateFiles: PropTypes.array,
     /**
      * Clears the list of jurisdiction suggestions for a row
      */
-    invalidTypeFiles : PropTypes.array,
+    invalidTypeFiles: PropTypes.array,
     /**
      * Clears the list of jurisdiction suggestions for a row
      */
-    invalidSizeFiles : PropTypes.array
+    invalidSizeFiles: PropTypes.array
   }
-
+  
   constructor(props, context) {
     super(props, context)
   }
-
+  
   /**
    * For when a column property has changed in the file list
    * @param index
@@ -85,7 +83,7 @@ export class FileList extends Component {
   onDocPropertyChange = (index, propName, value) => {
     this.props.handleDocPropertyChange(index, propName, value)
   }
-
+  
   /**
    * For getting jurisdiction suggestions
    * @param index
@@ -94,7 +92,7 @@ export class FileList extends Component {
   getSuggestions = index => searchValue => {
     this.props.onGetSuggestions('jurisdiction', searchValue, index)
   }
-
+  
   /**
    * For clearing jurisdiction suggestions
    * @param index
@@ -103,7 +101,7 @@ export class FileList extends Component {
   clearSuggestions = index => () => {
     this.props.onClearSuggestions(index)
   }
-
+  
   /**
    * Toggle edit mode for a row
    * @returns {*}
@@ -111,7 +109,7 @@ export class FileList extends Component {
   toggleEditMode = (index, property) => () => {
     this.props.toggleRowEditMode(index, property)
   }
-
+  
   /**
    * When the search field for autocomplete changes
    * @param index
@@ -125,7 +123,7 @@ export class FileList extends Component {
       searchValue: e.target.value
     })
   }
-
+  
   /**
    * Remove doc
    * @returns {*}
@@ -133,7 +131,7 @@ export class FileList extends Component {
   handleRemoveDoc = index => () => {
     this.props.handleRemoveDoc(index)
   }
-
+  
   render() {
     const columns = [
       'File Name',
@@ -141,13 +139,13 @@ export class FileList extends Component {
       'Citation',
       'Effective Date'
     ]
-
+    
     const columnSizing = `20px minmax(${300}px, 1fr) 210px 210px 230px 45px`
     const wrapperRowSizing = '1fr'
     const headerStyle = { fontSize: '18px', borderBottom: '1px solid black', padding: '10px 10px' }
     const colStyle = { fontSize: 13, alignSelf: 'center', margin: '0 10px' }
-    const { selectedDocs, duplicateFiles,invalidTypeFiles,invalidSizeFiles} = this.props
-
+    const { selectedDocs, invalidTypeFiles, invalidSizeFiles } = this.props
+    
     return (
       <Grid rowSizing="55px 1fr" columnSizing="1fr" style={{ overflow: 'auto', flex: 1 }}>
         <Grid columnSizing={columnSizing} rowSizing={wrapperRowSizing} style={{ padding: '10px 0 0 0' }}>
@@ -159,10 +157,11 @@ export class FileList extends Component {
           ))}
           <div style={{ borderBottom: '1px solid black' }} />
         </Grid>
-        <Grid columnSizing="1fr" autoRowSizing="60px" style={{ flex: 1}} id='uploadFileList'>
+        <Grid columnSizing="1fr" autoRowSizing="60px" style={{ flex: 1 }} id="uploadFileList">
           {selectedDocs.map((doc, i) => {
-            const isDuplicate = duplicateFiles.find(file => file.name === doc.name.value) !== undefined
-            const isInvalidType = invalidTypeFiles.find(invalidDoc => invalidDoc.doc.name === doc.name.value) !== undefined
+            const isDuplicate = doc.isDuplicate
+            const isInvalidType = invalidTypeFiles.find(invalidDoc => invalidDoc.doc.name === doc.name.value) !==
+              undefined
             const isInvalidSize = invalidSizeFiles.find(file => file.name === doc.name.value) !== undefined
             const pieces = doc.name.value.split('.')
             const extension = pieces[pieces.length - 1]
@@ -170,7 +169,7 @@ export class FileList extends Component {
             const bgColor = i % 2 === 0
               ? '#f9f9f9'
               : '#fff'
-
+            
             return (
               <Grid
                 key={`file-list-row-${i}`}
@@ -184,7 +183,7 @@ export class FileList extends Component {
                   {!isDuplicate && <Icon size={20} style={{ alignSelf: 'center', marginRight: 5 }}>{iconName}</Icon>}
                   <div style={colStyle}>{doc.name.value}</div>
                 </div>
-                {doc.jurisdictions.editable === true
+                {doc.jurisdictions.editable
                   ? doc.jurisdictions.inEditMode
                     ? (
                       <div style={{ ...colStyle, position: 'relative' }}>
@@ -214,7 +213,7 @@ export class FileList extends Component {
                     )
                   : <div style={colStyle}>{doc.jurisdictions.value.name}</div>
                 }
-                {doc.citation.editable === true
+                {doc.citation.editable
                   ? doc.citation.inEditMode
                     ? <SimpleInput
                       fullWidth={false}
@@ -230,8 +229,8 @@ export class FileList extends Component {
                     )
                   : <div style={colStyle}>{doc.citation.value}</div>
                 }
-                {doc.effectiveDate.editable === true
-                  ? doc.effectiveDate.inEditMode === true
+                {doc.effectiveDate.editable
+                  ? doc.effectiveDate.inEditMode
                     ? (
                       <div style={colStyle}>
                         <DatePicker

@@ -97,7 +97,7 @@ export class Home extends Component {
     this.props.actions.getProjectsRequest()
   }
   
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (prevProps.projectToExport.text !== this.props.projectToExport.text) {
       if (this.state.projectToExport !== null) {
         this.prepareExport(this.props.projectToExport.text)
@@ -224,7 +224,7 @@ export class Home extends Component {
       { value: 'name', label: 'Name' },
       { value: 'lastEditedBy', label: 'Last Edited By' },
       { value: 'sortBookmarked', label: 'Bookmarked' }
-    ], (option, i) => ({
+    ], option => ({
       ...option,
       label: sortBookmarked && option.value === 'sortBookmarked'
         ? this.sortLabel('Bookmarked', 'desc')

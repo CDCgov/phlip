@@ -1,8 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import FlexGrid from 'components/FlexGrid'
-import Autocomplete from 'components/Autocomplete'
-import Icon from 'components/Icon'
+import { FlexGrid, Autocomplete, Icon } from 'components'
 
 const ProJurSearch = props => {
   const {

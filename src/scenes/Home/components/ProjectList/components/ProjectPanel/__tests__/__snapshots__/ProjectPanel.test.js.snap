@@ -181,7 +181,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
                   }
                   type="column"
                 />
-                <WithTheme(TextLink)
+                <TextLink
                   aria-label="Edit project details"
                   to={
                     Object {
@@ -208,7 +208,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
                   }
                 >
                   PROJECT
-                </WithTheme(TextLink)>
+                </TextLink>
               </FlexGrid>
               <FlexGrid
                 align="stretch"
@@ -769,7 +769,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly when ex
                   }
                   type="column"
                 />
-                <WithTheme(TextLink)
+                <TextLink
                   aria-label="Edit project details"
                   to={
                     Object {
@@ -796,7 +796,7 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly when ex
                   }
                 >
                   PROJECT
-                </WithTheme(TextLink)>
+                </TextLink>
               </FlexGrid>
               <FlexGrid
                 align="stretch"
