@@ -9,7 +9,9 @@ export const INITIAL_STATE = {
   page: 0,
   sortBy: 'lastName',
   direction: 'asc',
-  visibleUsers: []
+  visibleUsers: [],
+  error: false,
+  errorContent: ''
 }
 
 /**
@@ -37,6 +39,8 @@ export const adminReducer = (state = INITIAL_STATE, action) => {
     case types.GET_USERS_SUCCESS:
       return {
         ...state,
+        error: false,
+        errorContent: '',
         ...getAvailableUsers(action.payload, state.sortBy, state.direction, state.page, state.rowsPerPage)
       }
 
@@ -76,6 +80,13 @@ export const adminReducer = (state = INITIAL_STATE, action) => {
         ...state,
         users: updater.updateByProperty({ ...user, avatar: action.payload.avatar }, [...state.users], 'id'),
         visibleUsers: updater.updateByProperty({ ...user, avatar: action.payload.avatar }, [...state.visibleUsers], 'id')
+      }
+      
+    case types.GET_USERS_FAIL:
+      return {
+        ...state,
+        errorContent: 'We couldn\'t retrieve the list of users. Please try again later.',
+        error: true
       }
 
     case types.FLUSH_STATE:

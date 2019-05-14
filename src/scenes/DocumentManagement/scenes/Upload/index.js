@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Divider from '@material-ui/core/Divider/Divider'
+import Typography from '@material-ui/core/Typography'
 import actions, { projectAutocomplete, jurisdictionAutocomplete } from './actions'
-import { Alert, withFormAlert, CircularLoader, FlexGrid, FileUpload, Typography, Button } from 'components'
+import { Alert, withFormAlert, CircularLoader, FlexGrid, FileUpload, Button } from 'components'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import { Download } from 'mdi-material-ui'
 import FileList from './components/FileList'
@@ -33,17 +34,14 @@ export class Upload extends Component {
      */
     verifying: PropTypes.bool,
     /**
-     * Text to be shown in an alert modal
+     * Alert information
      */
-    alertText: PropTypes.string,
-    /**
-     * Whether or not the alert modal should be open
-     */
-    alertOpen: PropTypes.bool,
-    /**
-     * Title of the alert modal
-     */
-    alertTitle: PropTypes.string,
+    alert: PropTypes.shape({
+      open: PropTypes.bool,
+      text: PropTypes.string,
+      title: PropTypes.string,
+      type: PropTypes.oneOf(['basic', 'files'])
+    }),
     /**
      * Whoever is currently logged in
      */
@@ -73,38 +71,16 @@ export class Upload extends Component {
     projectSearchValue: PropTypes.string,
     noProjectError: PropTypes.any,
     infoSheet: PropTypes.object,
-    invalidTypeFiles: PropTypes.array,
-    invalidSizeFiles: PropTypes.array,
+    invalidFiles: PropTypes.array,
     title: PropTypes.string
   }
   
   constructor(props, context) {
     super(props, context)
     
-    this.dismissAlertAction = {
-      value: 'Close',
-      type: 'button',
-      otherProps: { 'aria-label': 'Close' },
-      onClick: this.closeAlert,
-      preferred: true
-    }
-    
     this.state = {
-      alertActions: [
-        this.dismissAlertAction
-      ],
-      showLoadingAlert: false,
-      validMime: false,
-      processingFiles: [],
-      invalidSizeAlertOpen: false
-    }
-    this.invalidSizeFiles = []
-    this.sizeAlertActions = {
-      value: 'Close',
-      type: 'button',
-      otherProps: { 'aria-label': 'Close' },
-      onClick: this.closeInvalidSizeAlert,
-      preferred: true
+      alertActions: [],
+      showLoadingAlert: false
     }
   }
   
@@ -114,16 +90,16 @@ export class Upload extends Component {
   }
   
   componentDidUpdate(prevProps) {
-    if (prevProps.uploading === true && this.props.uploading === false) {
+    if (prevProps.uploading && !this.props.uploading) {
       if (this.props.requestError !== null) {
         this.props.onSubmitError(this.props.requestError)
-      } else if (this.props.goBack === true) {
+      } else if (this.props.goBack) {
         this.goBack()
       }
     }
     
     if (prevProps.infoRequestInProgress !== this.props.infoRequestInProgress) {
-      if (prevProps.infoRequestInProgress === false && this.props.infoRequestInProgress === true) {
+      if (!prevProps.infoRequestInProgress && this.props.infoRequestInProgress) {
         this.loadingAlertTimeout = setTimeout(this.showInfoLoadingAlert, 1000)
       } else {
         this.setState({
@@ -134,7 +110,7 @@ export class Upload extends Component {
     }
     
     if (prevProps.uploading !== this.props.uploading) {
-      if (prevProps.uploading === false && this.props.uploading === true) {
+      if (!prevProps.uploading && this.props.uploading) {
         this.loadingAlertTimeout = setTimeout(this.showUploadLoadingAlert, 1000)
       } else {
         this.setState({
@@ -184,25 +160,7 @@ export class Upload extends Component {
    */
   closeAlert = () => {
     this.props.actions.closeAlert()
-    this.setState({
-      alertActions: [
-        this.dismissAlertAction
-      ]
-    })
-  }
-  
-  /**
-   * Resets the invalid size alert actions and calls redux action to close alert
-   */
-  closeInvalidSizeAlert = () => {
-    this.props.actions.closeInvalidSizeAlert()
-    this.invalidSizeFiles = this.props.invalidSizeFiles
-    this.setState({
-      alertActions: [
-        this.dismissAlertAction
-      ],
-      invalidSizeAlertOpen: false
-    })
+    this.setState({ alertActions: [] })
   }
   
   /**
@@ -213,7 +171,6 @@ export class Upload extends Component {
     if (this.props.selectedDocs.length > 0) {
       this.setState({
         alertActions: [
-          this.dismissAlertAction,
           {
             value: 'Continue',
             type: 'button',
@@ -221,7 +178,7 @@ export class Upload extends Component {
             onClick: this.goBack
           }
         ]
-      }, () => this.props.actions.openAlert('Your unsaved changes will be lost.', 'Warning'))
+      }, () => this.props.actions.openAlert('Your unsaved changes will be lost.', 'Warning', 'basic'))
     } else {
       this.goBack()
     }
@@ -256,15 +213,13 @@ export class Upload extends Component {
     if (e.target.files.length + this.props.selectedDocs.length > this.props.maxFileCount) {
       this.props.actions.openAlert(
         `The number of files selected for upload has exceeded the limit of ${this.props.maxFileCount} files per upload. Please consider uploading files in smaller batches.`,
-        'Maximum Number of Files Exceeded'
+        'Maximum Number of Files Exceeded',
+        'basic'
       )
     } else {
       let files = []
       Array.from(Array(e.target.files.length).keys()).map(x => {
         const i = e.target.files.item(x)
-        if (i.size > 16000000) {
-          this.invalidSizeFiles.push({ name: i.name, size: i.size })
-        }
         files.push({
           name: i.name,
           lastModifiedDate: i.lastModifiedDate,
@@ -280,13 +235,7 @@ export class Upload extends Component {
         ? this.props.actions.mergeInfoWithDocs(files)
         : this.props.actions.addSelectedDocs(files)
       
-      this.props.actions.verifyFileContent(files)
-      if (this.invalidSizeFiles.length > 0) {
-        this.setState({
-          invalidSizeAlertOpen: true
-        })
-        this.props.actions.captureInvalidSize(this.invalidSizeFiles)
-      }
+      this.props.actions.verifyFiles(files)
     }
   }
   
@@ -403,12 +352,13 @@ export class Upload extends Component {
   
   render() {
     const {
-      selectedDocs, uploading, alertOpen, alertTitle, alertText, actions, invalidTypeFiles, invalidSizeFiles,
-      projectSearchValue, projectSuggestions, jurisdictionSearchValue, jurisdictionSuggestions, noProjectError,
+      selectedDocs, uploading, actions, invalidFiles, alert,
+      projectSearchValue, projectSuggestions, jurisdictionSearchValue,
+      jurisdictionSuggestions, noProjectError,
       infoSheetSelected, infoSheet
     } = this.props
     
-    const { alertActions, invalidSizeAlertOpen, showLoadingAlert } = this.state
+    const { alertActions, showLoadingAlert } = this.state
     
     const closeButton = {
       value: 'Close',
@@ -432,42 +382,20 @@ export class Upload extends Component {
     
     return (
       <Modal onClose={this.onCloseModal} open maxWidth="lg" hideOverflow>
-        {alertOpen &&
-        <Alert actions={alertActions} open={alertOpen} title={alertTitle} id="uploadAlert">
-          {alertText}
-        </Alert>}
-        {(alertOpen && invalidTypeFiles.length > 0) &&
-        <Alert actions={alertActions} open={alertOpen} title={alertTitle}>
-          {alertText}
-          <FlexGrid type="row" padding={5} style={{ overflow: 'auto' }}>
-            {invalidTypeFiles.map((item, index) => {
-              return (
-                <FlexGrid
-                  container
-                  type="row"
-                  justify="space-between"
-                  align="center"
-                  key={`doc-${index}`}
-                  style={{
-                    padding: 8,
-                    backgroundColor: index % 2 === 0
-                      ? '#f9f9f9'
-                      : 'white',
-                    minHeight: 24
-                  }}>
-                  <Typography style={{ fontSize: '.9125rem' }}>
-                    {item.doc.name}
-                  </Typography>
-                </FlexGrid>
-              )
-            })}
-          </FlexGrid>
-        </Alert>}
-        {(invalidSizeAlertOpen && invalidSizeFiles.length > 0) &&
-        <Alert actions={[this.sizeAlertActions]} open={invalidSizeAlertOpen} title="Invalid File Size">
-          {'One or more of the documents selected for upload has file size that exceeded the allowed size of 16 MB. These documents will be removed from the file list.'}
-          <FlexGrid type="row" padding={5} style={{ overflow: 'auto' }}>
-            {invalidSizeFiles.map((item, index) => {
+        {alert.open &&
+        <Alert
+          actions={alertActions}
+          onCloseAlert={this.closeAlert}
+          closeButton={{ value: 'Dismiss' }}
+          open={alert.open}
+          title={alert.title}
+          id="uploadAlert">
+          <Typography variant="subheading" style={{ paddingBottom: 20 }}>
+            {alert.text}
+          </Typography>
+          {alert.type !== 'basic' &&
+          <FlexGrid type="row" style={{ overflow: 'auto' }}>
+            {invalidFiles.map((item, index) => {
               return (
                 <FlexGrid
                   container
@@ -485,16 +413,16 @@ export class Upload extends Component {
                   <Typography style={{ fontSize: '.9125rem' }}>
                     {item.name}
                   </Typography>
-                  <Typography style={{ fontSize: '.9125rem' }}>
-                    {(item.size / (1000 * 1000)).toFixed(1)} MB
-                  </Typography>
+                  {item.badSize && <Typography style={{ fontSize: '.9125rem' }}>
+                    {(item.file.size / (1000 * 1000)).toFixed(1)} MB
+                  </Typography>}
                 </FlexGrid>
               )
             })}
-          </FlexGrid>
+          </FlexGrid>}
         </Alert>}
         {showLoadingAlert &&
-        <Alert actions={[]} open={showLoadingAlert}>
+        <Alert open={showLoadingAlert}>
           <FlexGrid container align="center">
             <CircularLoader type="indeterminate" />
             <span style={{ paddingTop: 20 }}>
@@ -560,10 +488,8 @@ export class Upload extends Component {
             jurisdictionSuggestions={jurisdictionSuggestions}
             toggleRowEditMode={this.handleToggleEditMode}
             onClearSuggestions={actions.clearRowJurisdictionSuggestions}
-            invalidTypeFiles={invalidTypeFiles}
-            invalidSizeFiles={this.invalidSizeFiles}
-          />
-          }
+            invalidFiles={invalidFiles}
+          />}
         </ModalContent>
         <Divider />
         <FlexGrid container type="row" align="center" justify="space-between" padding="0 0 0 20px">
@@ -585,9 +511,8 @@ const mapStateToProps = state => {
     requestError: uploadState.list.requestError,
     uploading: uploadState.list.uploading,
     verifying: uploadState.list.verifying,
-    alertText: uploadState.list.alertText,
-    alertOpen: uploadState.list.alertOpen,
-    alertTitle: uploadState.list.alertTitle,
+    alert: uploadState.list.alert,
+    invalidFiles: uploadState.list.invalidFiles,
     goBack: uploadState.list.goBack,
     projectSuggestions: uploadState.projectSuggestions.suggestions,
     jurisdictionSuggestions: uploadState.jurisdictionSuggestions.suggestions,
@@ -601,9 +526,7 @@ const mapStateToProps = state => {
     infoRequestInProgress: uploadState.list.infoRequestInProgress,
     infoSheet: uploadState.list.infoSheet,
     infoSheetSelected: uploadState.list.infoSheetSelected,
-    invalidTypeFiles: uploadState.list.invalidTypeFiles,
-    maxFileCount: uploadState.maxFileCount || 20,
-    invalidSizeFiles: uploadState.list.invalidSizeFiles
+    maxFileCount: uploadState.maxFileCount || 20
   }
 }
 

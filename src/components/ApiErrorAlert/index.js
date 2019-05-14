@@ -8,7 +8,9 @@ import EmoticonSad from 'mdi-material-ui/EmoticonSad'
 /**
  * Popup alert specifically used when there's an API Error to show
  */
-export const ApiErrorAlert = ({ content, onCloseAlert, open, actions }) => {
+export const ApiErrorAlert = props => {
+  const { content, onCloseAlert, open, actions, ...otherProps } = props
+  
   const title = (
     <>
       <Icon size={30} color="red" style={{ paddingRight: 10 }}>
@@ -17,12 +19,15 @@ export const ApiErrorAlert = ({ content, onCloseAlert, open, actions }) => {
       Uh-oh! Something went wrong.
     </>
   )
-
+  
   return (
     <Alert
-      actions={[{ value: 'Dismiss', type: 'button', onClick: onCloseAlert }, ...actions]}
+      actions={[actions]}
+      closeButton={{ title: 'Dismiss', 'aria-label': 'Dismiss alert' }}
+      onCloseAlert={onCloseAlert}
       open={open}
-      title={title}>
+      title={title}
+      {...otherProps}>
       <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
         {content} Please try again later.
       </Typography>
@@ -40,17 +45,14 @@ ApiErrorAlert.propTypes = {
    * The function you want to call when the user closes the alert
    */
   onCloseAlert: PropTypes.func,
-
   /**
    * Content of the alert
    */
   content: PropTypes.any,
-
   /**
    * Whether or not the alert is open (visible)
    */
   open: PropTypes.bool,
-
   /**
    * Array of actions for the alert
    */

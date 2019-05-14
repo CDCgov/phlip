@@ -9,9 +9,6 @@ export const INITIAL_STATE = {
   requestError: null,
   uploading: false,
   goBack: false,
-  alertTitle: '',
-  alertOpen: false,
-  alertText: '',
   infoSheet: {},
   infoRequestInProgress: false,
   infoSheetSelected: false,
@@ -24,9 +21,13 @@ export const INITIAL_STATE = {
   selectedJurisdiction: {},
   noProjectError: false,
   hasVerified: false,
-  invalidTypeFiles: [],
-  invalidSizeFiles: [],
-  verifyFilesInProgress: false
+  invalidFiles: [],
+  alert: {
+    open: false,
+    text: '',
+    title: '',
+    type: 'basic'
+  }
 }
 
 export const uploadReducer = (state = INITIAL_STATE, action) => {
@@ -70,11 +71,14 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         ...state,
         uploading: false,
         selectedDocs: docs,
-        alertOpen: true,
-        alertText: `The file name, project and jurisdiction properties for one or more of the documents selected for
-        upload match a pre-existing document in the system. These documents have been indicated in the file list. You
-        can choose to remove them or click the 'Upload' button again to proceed with saving them.`,
-        alertTitle: 'Duplicates Found',
+        alert: {
+          open: true,
+          text: `The file name, project and jurisdiction properties for one or more of the documents selected for
+                 upload match a pre-existing document in the system. These documents have been indicated in the file list. You
+                 can choose to remove them or click the 'Upload' button again to proceed with saving them.`,
+          title: 'Duplicates Found',
+          type: 'basic'
+        },
         hasVerified: true
       }
     
@@ -176,26 +180,32 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.CLOSE_ALERT:
-      let invalidFiles = [...state.invalidTypeFiles]
+      let invalidFiles = [...state.invalidFiles]
       let cleanedDocs = [...state.selectedDocs].filter(
-        doc => !invalidFiles.find(badDoc => badDoc.doc.name === doc.name.value)
+        doc => !invalidFiles.find(badDoc => badDoc.name === doc.name.value)
       )
       
       return {
         ...state,
         selectedDocs: cleanedDocs,
-        invalidTypeFiles: [],
-        alertOpen: false,
-        alertText: '',
-        alertTitle: ''
+        invalidFiles: [],
+        alert: {
+          open: false,
+          text: '',
+          title: '',
+          type: 'basic'
+        }
       }
     
     case types.OPEN_ALERT:
       return {
         ...state,
-        alertOpen: true,
-        alertText: action.text,
-        alertTitle: action.title || ''
+        alert: {
+          open: true,
+          text: action.text,
+          title: action.title || '',
+          type: action.alertType
+        }
       }
     
     case types.SEARCH_ROW_SUGGESTIONS_SUCCESS_JURISDICTION:
@@ -234,9 +244,12 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         noProjectError: true,
-        alertOpen: true,
-        alertText: action.error,
-        alertTitle: 'Invalid Project'
+        alert: {
+          open: true,
+          text: action.error,
+          title: 'Invalid Project',
+          type: 'basic'
+        }
       }
     
     case types.RESET_FAILED_UPLOAD_VALIDATION:
@@ -262,63 +275,26 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
             return doc
           }
         }),
-        alertOpen: true,
-        alertText: action.error,
-        alertTitle: 'Invalid Jurisdictions' || ''
+        alert: {
+          open: true,
+          text: action.error,
+          title: 'Invalid Jurisdictions',
+          type: 'basic'
+        }
       }
     
-    case types.VERIFY_VALID_FILE_TYPE_REQUEST:
-      return {
-        ...state,
-        verifyFilesInProgress: true
-      }
-    
-    case types.VERIFY_VALID_FILE_TYPE_FAIL:
-      return {
-        ...state,
-        verifyFilesInProgress: false
-      }
-    
-    case types.REJECT_INVALID_FILE_TYPE:
+    case types.INVALID_FILES_FOUND:
       return {
         ...state,
         uploading: false,
-        invalidTypeFiles: action.invalidTypeFiles,
-        alertOpen: true,
-        alertText: `One or more of the documents selected for upload do not have a valid allowed file type. These documents will be removed from the file list.`,
-        alertTitle: 'Invalid Files Found',
-        hasVerified: false,
-        verifyFilesInProgress: false
-      }
-    
-    case types.CAPTURE_INVALID_FILE_SIZE:
-      return {
-        ...state,
-        invalidSizeFiles: action.docs
-      }
-    
-    case types.CLOSE_INVALID_SIZE_ALERT:
-      invalidFiles = [...state.invalidSizeFiles]
-      cleanedDocs = [...state.selectedDocs].filter(doc => !invalidFiles.find(badDoc => badDoc.name === doc.name.value))
-      return {
-        ...state,
-        selectedDocs: cleanedDocs,
-        invalidSizeFiles: [],
-        alertOpen: false,
-        alertText: '',
-        alertTitle: ''
-      }
-    
-    case types.REJECT_INVALID_FILE_SIZE:
-      return {
-        ...state,
-        uploading: false,
-        invalidSizeiles: action.invalidSizeFiles,
-        alertOpen: true,
-        alertText: `One or more of the documents selected for upload do not have a valid allowed file type. These documents will be removed from the file list.`,
-        alertTitle: 'Invalid Files Found',
-        hasVerified: false,
-        verifyFilesInProgress: false
+        invalidFiles: action.invalidFiles,
+        alert: {
+          open: true,
+          text: action.text,
+          title: action.title,
+          type: 'files'
+        },
+        hasVerified: false
       }
     
     case `${autocompleteTypes.ON_SUGGESTION_SELECTED}_JURISDICTION`:
@@ -357,7 +333,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.CLEAR_SELECTED_FILES:
-    case 'FLUSH_STATE':
+    case types.FLUSH_STATE:
       return INITIAL_STATE
     
     default:

@@ -168,7 +168,7 @@ export const mergeInfoWithDocs = (info, docs, api) => {
   })
 }
 
-export const getFileType = (doc) => {
+export const getFileType = doc => {
   return new Promise(async (resolve, reject) => {
     const validMimeTypes = [
       {
@@ -176,13 +176,17 @@ export const getFileType = (doc) => {
         pattern: '25504446'
       },
       {
-        mime: 'rtf',
+        mime: 'doc',
         pattern: '7B5C7274'
+      },
+      {
+        mime: 'docx',
+        pattern: '504B34'
       }
     ]
     let matchedOne = {}
     const filereader = new FileReader()
-    filereader.onload = function (evt) {
+    filereader.onload = evt => {
       if (evt.target.readyState === FileReader.DONE) {
         const uint = new Uint8Array(evt.target.result)
         let bytes = []
@@ -193,7 +197,7 @@ export const getFileType = (doc) => {
         matchedOne = validMimeTypes.find(oneType => {
           return oneType.pattern === hex
         })
-        resolve({ doc: doc, docHex: hex, docType: matchedOne || undefined })
+        resolve({ doc: doc, docHex: hex, docType: matchedOne || undefined, size: doc.file.size })
       }
     }
     
@@ -358,33 +362,48 @@ const searchJurisdictionListLogic = createLogic({
  * Logic for handling file type verification
  */
 const verifyFileContentLogic = createLogic({
-  type: types.VERIFY_VALID_FILE_TYPE_REQUEST,
-  async validate({ getState, action }, reject, allow, dispatch) {
+  type: types.VERIFY_VALID_FILES,
+  async validate({ getState, action }, reject, allow) {
     let promises = []
     let invalidFiles = []
+    let invalidType = false, invalidSize = false
     action.docs.map(doc => {
       promises.push(getFileType(doc))
     })
-    try {
-      Promise.all(promises).then((results) => {
-        results.map(result => {
-          if (result.docType === undefined) {
-            invalidFiles.push(result)
-          }
-        })
-        if (invalidFiles.length > 0) {
-          reject({
-            type: types.REJECT_INVALID_FILE_TYPE,
-            error: 'One or more documents do not have a valid file type',
-            invalidTypeFiles: invalidFiles
-          })
-        } else {
-          allow({ type: types.VERIFY_VALID_FILE_TYPE_SUCCESS })
+    
+    Promise.all(promises).then(results => {
+      results.map(result => {
+        let file = { ...result.doc }
+        if (result.docType === undefined) {
+          file.badType = true
+          invalidType = true
         }
+        if (result.size > 16000000) {
+          file.badSize = true
+          invalidSize = true
+        }
+        if (file.badSize || file.badType) invalidFiles.push(file)
       })
-    } catch (e) {
-      dispatch({ type: types.VERIFY_VALID_FILE_TYPE_FAIL })
-    }
+      
+      if (invalidType || invalidSize) {
+        reject({
+          type: types.INVALID_FILES_FOUND,
+          text: invalidSize
+            ? invalidType
+              ? 'The files listed below do not have a valid file type or they exceed the maximum size of 16 MB. These files will be removed from the list.'
+              : 'The files listed below exceed the maximum allowed size of 16 MB.'
+            : 'The files listed below do not have a valid file type.',
+          invalidFiles,
+          title: invalidSize
+            ? invalidType
+              ? 'Invalid Files Found'
+              : 'Maximum File Size Exceeded'
+            : 'Invalid File Types'
+        })
+      } else {
+        allow({ type: types.ALL_FILES_VALID })
+      }
+    })
   }
 })
 
