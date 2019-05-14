@@ -9,7 +9,6 @@ export const INITIAL_STATE = {
   requestError: null,
   uploading: false,
   goBack: false,
-  duplicateFiles: [],
   alertTitle: '',
   alertOpen: false,
   alertText: '',
@@ -56,10 +55,21 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.VERIFY_RETURN_DUPLICATE_FILES:
+      docs = [...state.selectedDocs]
+      docs = docs.map(doc => {
+        const isDup = action.payload.findIndex(dup => {
+          return dup.name === doc.name.value
+        })
+        return {
+          ...doc,
+          isDuplicate: isDup !== -1
+        }
+      })
+      
       return {
         ...state,
         uploading: false,
-        duplicateFiles: action.payload,
+        selectedDocs: docs,
         alertOpen: true,
         alertText: `The file name, project and jurisdiction properties for one or more of the documents selected for
         upload match a pre-existing document in the system. These documents have been indicated in the file list. You
@@ -87,7 +97,11 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
     case types.MERGE_INFO_WITH_DOCS:
       return {
         ...state,
-        selectedDocs: action.payload
+        selectedDocs: [
+          ...state.selectedDocs,
+          ...action.payload
+        ],
+        hasVerified: false
       }
     
     // If the user has selected an excel file but has not selected documents to upload
@@ -144,7 +158,8 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
       
       return {
         ...state,
-        selectedDocs: docs
+        selectedDocs: docs,
+        hasVerified: state.hasVerified ? docs.length !== 0 : false
       }
     
     case types.TOGGLE_ROW_EDIT_MODE:
@@ -162,7 +177,10 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
     
     case types.CLOSE_ALERT:
       let invalidFiles = [...state.invalidTypeFiles]
-      let cleanedDocs = [...state.selectedDocs].filter(doc => !invalidFiles.find(badDoc => badDoc.doc.name === doc.name.value))
+      let cleanedDocs = [...state.selectedDocs].filter(
+        doc => !invalidFiles.find(badDoc => badDoc.doc.name === doc.name.value)
+      )
+      
       return {
         ...state,
         selectedDocs: cleanedDocs,
@@ -178,19 +196,6 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         alertOpen: true,
         alertText: action.text,
         alertTitle: action.title || ''
-      }
-    
-    case types.REMOVE_DUPLICATE:
-      docs = [...state.selectedDocs]
-      docs.splice(action.index, 1)
-      let duplicates = [...state.duplicateFiles]
-      let index = duplicates.findIndex((dup) => dup.name === action.fileName)
-      duplicates.splice(index, 1)
-      
-      return {
-        ...state,
-        selectedDocs: docs,
-        duplicateFiles: duplicates
       }
     
     case types.SEARCH_ROW_SUGGESTIONS_SUCCESS_JURISDICTION:

@@ -34,7 +34,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
   <WithStyles(TableCell)
     padding="checkbox"
   >
-    <WithTheme(TextLink)
+    <TextLink
       to={
         Object {
           "pathname": "/docs/undefined/view",
@@ -60,7 +60,7 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
       }
     >
       doc1
-    </WithTheme(TextLink)>
+    </TextLink>
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"

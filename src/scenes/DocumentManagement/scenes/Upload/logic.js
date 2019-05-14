@@ -69,6 +69,34 @@ const reg = input => {
   return new RegExp(input, 'g')
 }
 
+const upload = (docApi, action, dispatch, state) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const docs = await docApi.upload(action.selectedDocsFormData)
+      let jurList = ''
+      action.jurisdictions.forEach(jur => {
+        jurList = `${jurList}|${jur.name}`
+        dispatch({ type: jurisdictionTypes.ADD_JURISDICTION, payload: jur })
+      })
+      
+      const documents = docs.files.map(doc => {
+        const { content, ...otherDocProps } = doc
+        return {
+          ...otherDocProps,
+          projectList: `${state.projectSuggestions.selectedSuggestion.name}`,
+          jurisdictionList: jurList
+        }
+      })
+      
+      dispatch({ type: projectTypes.ADD_PROJECT, payload: { ...state.projectSuggestions.selectedSuggestion } })
+      dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: documents } })
+      resolve()
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+
 const determineSearchString = jurisdictionName => {
   let searchString = jurisdictionName, isState = true
   
@@ -270,28 +298,14 @@ const uploadRequestLogic = createLogic({
             type: types.VERIFY_RETURN_DUPLICATE_FILES,
             payload: anyDuplicates
           })
-          done()
+        } else {
+          await upload(docApi, action, dispatch, state)
         }
+        done()
+      } else {
+        await upload(docApi, action, dispatch, state)
+        done()
       }
-      const docs = await docApi.upload(action.selectedDocsFormData)
-      let jurList = ''
-      action.jurisdictions.forEach(jur => {
-        jurList = `${jurList}|${jur.name}`
-        dispatch({ type: jurisdictionTypes.ADD_JURISDICTION, payload: jur })
-      })
-      
-      const documents = docs.files.map(doc => {
-        const { content, ...otherDocProps } = doc
-        return {
-          ...otherDocProps,
-          projectList: `${state.projectSuggestions.selectedSuggestion.name}`,
-          jurisdictionList: jurList
-        }
-      })
-      
-      dispatch({ type: projectTypes.ADD_PROJECT, payload: { ...state.projectSuggestions.selectedSuggestion } })
-      dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: documents } })
-      done()
     } catch (err) {
       dispatch({
         type: types.UPLOAD_DOCUMENTS_FAIL,
