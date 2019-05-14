@@ -14,18 +14,19 @@ export const withFormAlert = (WrappedComponent) => {
         text: '',
         actions: [],
         title: null,
-        isReduxForm: this.props.isReduxForm !== false
+        isReduxForm: this.props.isReduxForm !== false,
+        closeButton: {}
       }
     }
 
     onClose = () => {
-      console.log('here')
       this.setState({
         open: false,
         text: '',
         actions: [],
         title: null,
-        isReduxForm: this.props.isReduxForm !== false
+        isReduxForm: this.props.isReduxForm !== false,
+        closeButton: {}
       })
     }
 
@@ -69,7 +70,8 @@ export const withFormAlert = (WrappedComponent) => {
               onClick: this.onContinue
             }
           ],
-          title: 'Warning'
+          title: 'Warning',
+          closeButton: { value: 'Cancel' }
         })
       } else {
         this.props.history.goBack()
@@ -90,17 +92,18 @@ export const withFormAlert = (WrappedComponent) => {
             <Icon size={30} color="red" style={{ paddingRight: 10 }}>sentiment_very_dissatisfied</Icon>
             Uh-oh! Something went wrong.
           </>
-        )
+        ),
+        closeButton: { value: 'Dismiss' }
       })
     }
 
     render() {
-      const { open, title, actions, text, onCloseAlert } = this.state
+      const { open, title, actions, text, onCloseAlert, closeButton } = this.state
       
       return (
         <>
           <WrappedComponent onCloseModal={this.onCloseModal} onSubmitError={this.onSubmitError} {...this.props} />
-          <Alert open={open} title={title} onCloseAlert={onCloseAlert} actions={actions}>
+          <Alert open={open} title={title} onCloseAlert={onCloseAlert} actions={actions} closeButton={closeButton}>
             <Typography variant="body1">
               {text}
             </Typography>

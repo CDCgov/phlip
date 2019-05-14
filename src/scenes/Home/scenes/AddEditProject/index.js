@@ -122,8 +122,9 @@ export class AddEditProject extends Component {
         this.setState({
           submitting: false
         })
+        console.log(this.props.formError)
         this.props.onSubmitError(this.props.formError)
-      } else if (this.props.goBack === true) {
+      } else if (this.props.goBack) {
         this.props.history.goBack()
       }
     }
@@ -274,7 +275,7 @@ export class AddEditProject extends Component {
       typeToDelete: ''
     })
   }
-
+  
   closeAlert = () => {
     this.props.actions.closeAlert()
   }
@@ -313,12 +314,6 @@ export class AddEditProject extends Component {
     
     const alertActions = [
       {
-        value: 'Cancel',
-        type: 'button',
-        onClick: this.onCancelDelete,
-        preferred: true
-      },
-      {
         value: 'Delete',
         type: 'button',
         onClick: this.handleDeleteConfirm
@@ -327,7 +322,11 @@ export class AddEditProject extends Component {
     
     return (
       <>
-        <Alert open={this.state.alertOpen} actions={alertActions} title={this.state.alertTitle}>
+        <Alert
+          open={this.state.alertOpen}
+          actions={alertActions}
+          onCloseAlert={this.onCancelDelete}
+          title={this.state.alertTitle}>
           {this.state.alertInfo.text}
         </Alert>
         <FormModal

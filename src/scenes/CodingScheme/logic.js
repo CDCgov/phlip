@@ -68,7 +68,7 @@ const lockSchemeLogic = createLogic({
       dispatch({
         type: types.LOCK_SCHEME_FAIL,
         error: true,
-        payload: 'We couldn\'t lock the coding scheme.  Please try again later'
+        payload: 'We couldn\'t lock the coding scheme.'
       })
     }
     done()
@@ -115,7 +115,7 @@ const reorderSchemeLogic = createLogic({
     } catch (error) {
       dispatch({
         type: types.REORDER_SCHEME_FAIL,
-        payload: 'We couldn\'t save the scheme reorder.',
+        payload: 'We couldn\'t save your edits.',
         error: true
       })
     }

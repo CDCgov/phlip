@@ -164,7 +164,7 @@ export const deleteJurisdictionLogic = createLogic({
     } catch (e) {
       dispatch({
         type: types.DELETE_JURISDICTION_FAIL,
-        payload: 'We couldn\'t delete the jurisdiction.  Please try again later.'
+        payload: 'We couldn\'t delete the jurisdiction.'
       })
     }
     done()

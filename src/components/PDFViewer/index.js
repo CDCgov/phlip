@@ -26,7 +26,8 @@ export class PDFViewer extends Component {
     annotations: [],
     document: {},
     allowSelection: false,
-    onCheckTextContent: () => {},
+    onCheckTextContent: () => {
+    },
     showAvatars: false,
     showAnnoModeAlert: true
   }
@@ -427,10 +428,6 @@ export class PDFViewer extends Component {
       { onClick: this.onRemoveAnnotation, value: 'Delete', type: 'button' }
     ]
     
-    const annoAlertActions = [
-      { onClick: this.dismissAnnoAlert, value: 'Dismiss', type: 'button', preferred: true }
-    ]
-    
     return (
       <div id="viewContainer" className="pdfViewer" ref={this.viewerRef}>
         {pages.length > 0 && pages.map((page, i) => {
@@ -469,10 +466,18 @@ export class PDFViewer extends Component {
             />
           )
         })}
-        <Alert actions={alertActions} open={alertConfirmOpen} title="Confirm deletion">
+        <Alert
+          actions={alertActions}
+          open={alertConfirmOpen}
+          onCloseAlert={this.onCancelRemove}
+          title="Confirm deletion">
           Do you want to delete this annotation?
         </Alert>
-        <Alert actions={annoAlertActions} open={annoModeAlert.open} title="Are you trying to annotate?">
+        <Alert
+          open={annoModeAlert.open}
+          onCloseAlert={this.dismissAnnoAlert}
+          title="Are you trying to annotate?"
+          closeButton={{ value: 'Dismiss' }}>
           If you are trying to annotate, you need to enable annotation mode for a selected answer choice. You can enable
           annotation mode by clicking the 'Annotate' button next to an answer choice.
           

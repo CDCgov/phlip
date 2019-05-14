@@ -81,7 +81,7 @@ export class CodingScheme extends Component {
      */
     currentUser: PropTypes.object
   }
-
+  
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -90,22 +90,16 @@ export class CodingScheme extends Component {
       questionIdToDelete: null,
       path: null
     }
-
+    
     this.deleteAlertActions = [
       {
-        value: 'Cancel',
-        type: 'button',
-        onClick: this.onCloseDeleteQuestionAlert,
-        preferred : true
-      },
-      {
-        value: 'Delete',
+        value: 'Continue',
         type: 'button',
         onClick: this.handleDeleteQuestion
       }
     ]
   }
-
+  
   componentDidMount() {
     document.title = `PHLIP - ${this.props.projectName} - Coding Scheme`
     this.props.actions.getSchemeRequest(this.props.projectId)
@@ -113,7 +107,7 @@ export class CodingScheme extends Component {
       this.props.actions.setEmptyState()
     }, 1000)
   }
-
+  
   /**
    * Calls a redux action to close any ApiErrorAlert that is open
    * @public
@@ -121,7 +115,7 @@ export class CodingScheme extends Component {
   onCloseAlert = () => {
     this.props.actions.resetAlertError()
   }
-
+  
   /**
    * Calls a redux action to close any alert that is associated to the locking on the coding scheme
    * @public
@@ -129,7 +123,7 @@ export class CodingScheme extends Component {
   onCloseLockedAlert = () => {
     this.props.actions.closeLockedAlert()
   }
-
+  
   /**
    * Invoked when the user reorders the coding scheme or makes any edits to the scheme. Calls a redux action to update
    * the question tree with the questions parameter
@@ -138,7 +132,7 @@ export class CodingScheme extends Component {
   handleQuestionTreeChange = questions => {
     this.props.actions.updateQuestionTree(questions)
   }
-
+  
   /**
    * Invoked after a question is move, calls a redux action to send API request
    * @public
@@ -146,7 +140,7 @@ export class CodingScheme extends Component {
   handleQuestionNodeMove = () => {
     this.props.actions.reorderSchemeRequest(this.props.projectId)
   }
-
+  
   /**
    * Invoked when the user clicks 'Checkout' button, calls a redux action to send API request to checkout scheme
    * @public
@@ -154,7 +148,7 @@ export class CodingScheme extends Component {
   handleLockCodingScheme = () => {
     this.props.actions.lockCodingSchemeRequest(this.props.projectId)
   }
-
+  
   /**
    * Invoked when the user clicks 'Check In' button, calls a redux action to send API request to check in the scheme
    * @public
@@ -162,7 +156,7 @@ export class CodingScheme extends Component {
   handleUnlockCodingScheme = () => {
     this.props.actions.unlockCodingSchemeRequest(this.props.projectId)
   }
-
+  
   /**
    * Invoked when the user confirms delete of coding scheme question, closes confirm delete alert
    * @public
@@ -171,7 +165,7 @@ export class CodingScheme extends Component {
     this.props.actions.deleteQuestionRequest(this.props.projectId, this.state.questionIdToDelete, this.state.path)
     this.onCloseDeleteQuestionAlert()
   }
-
+  
   /**
    * Opens an alert to ask the user to confirm deleting a coding scheme question
    * @public
@@ -186,7 +180,7 @@ export class CodingScheme extends Component {
       path: path
     })
   }
-
+  
   /**
    * Closes the confirm delete alert
    * @public
@@ -198,7 +192,7 @@ export class CodingScheme extends Component {
       path: null
     })
   }
-
+  
   /**
    * Invoked when the user clicks 'cancel' in the alert displayed when they hit the go back arrow. Closes alert
    * @public
@@ -208,7 +202,7 @@ export class CodingScheme extends Component {
       goBackAlertOpen: false
     })
   }
-
+  
   /**
    * Invoked when the user clicks 'check in' on the alert displayed when they hit go back. Calls redux action to call
    * API to check in coding scheme, clears the redux state and goes back one in browser history
@@ -219,7 +213,7 @@ export class CodingScheme extends Component {
     this.props.actions.clearState()
     this.props.history.goBack()
   }
-
+  
   /**
    * Invoked when the user clicks the 'back arrow' button in the page header. If the coding scheme is checked out by the
    * current user, it opens an alert to tell the user to check in the scheme. Otherwise, it clears redux state and goes
@@ -236,15 +230,17 @@ export class CodingScheme extends Component {
       this.props.history.goBack()
     }
   }
-
-    /**
-     *  release the lock when user click on release lock button
-     */
-    overrideLock = () => {
-      this.props.actions.unlockCodingSchemeRequest(this.props.projectId,this.props.lockInfo.userId) // unlock using the id of the user who locked it
-      this.onCloseLockedAlert()
-    }
-
+  
+  /**
+   *  release the lock when user click on release lock button
+   */
+  overrideLock = () => {
+    this.props.actions.unlockCodingSchemeRequest(this.props.projectId, this.props.lockInfo.userId) // unlock using the
+                                                                                                   // id of the user
+                                                                                                   // who locked it
+    this.onCloseLockedAlert()
+  }
+  
   /**
    * Renders a 'Get started' view. Only called when the coding scheme is empty
    * @public
@@ -285,18 +281,13 @@ export class CodingScheme extends Component {
       </FlexGrid>
     )
   }
-
+  
   render() {
     /**
      * Actions for the 'Go Back' alert modal
      * @type {*[]}
      */
     const alertActions = [
-      {
-        value: 'Cancel',
-        type: 'button',
-        onClick: this.onCloseGoBackAlert
-      },
       {
         value: 'Check in',
         type: 'button',
@@ -305,26 +296,27 @@ export class CodingScheme extends Component {
       }
     ]
     /**
-       *  add a release lock if the user was an admin
-       */
-    let lockedAlertAction = [
-      { value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert, preferred:true }
-
-    ]
+     *  add a release lock if the user was an admin
+     */
+    let lockedAlertAction = []
     if (this.props.currentUser.role === 'Admin') {
       lockedAlertAction.push({ value: 'Release lock', type: 'button', onClick: this.overrideLock })
     }
+    
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">
-        <Alert open={this.state.goBackAlertOpen} actions={alertActions}>
+        <Alert open={this.state.goBackAlertOpen} onCloseAlert={this.onCloseGoBackAlert} actions={alertActions}>
           <Typography variant="body1">
             You have checked out the coding scheme. No one else can make edits until you check it in.
           </Typography>
         </Alert>
-        <Alert open={this.state.deleteQuestionAlertOpen} actions={this.deleteAlertActions}>
+        <Alert
+          open={this.state.deleteQuestionAlertOpen}
+          title="Warning"
+          onCloseAlert={this.onCloseDeleteQuestionAlert}
+          actions={this.deleteAlertActions}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            You are about to delete a question from the coding scheme. This will permanantly delete all related child
-            questions and coded answers.
+            You will permanently delete this question, and all related questions and coded answers from the coding scheme. Do you want to continue?
           </Typography>
         </Alert>
         <ApiErrorAlert
@@ -333,7 +325,9 @@ export class CodingScheme extends Component {
           onCloseAlert={this.onCloseAlert}
         />
         <Alert
+          onCloseAlert={this.onCloseLockedAlert}
           actions={lockedAlertAction}
+          closeButton={{ value: lockedAlertAction.length === 0 ? 'Dismiss' : 'Cancel' }}
           open={this.props.lockedAlert !== null}
           title={
             <><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
@@ -428,7 +422,7 @@ const mapStateToProps = (state, ownProps) => ({
   alertError: state.scenes.codingScheme.alertError || '',
   lockedAlert: state.scenes.codingScheme.lockedAlert || null,
   hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false,
-  currentUser : state.data.user.currentUser
+  currentUser: state.data.user.currentUser
 })
 
 /* istanbul ignore next */

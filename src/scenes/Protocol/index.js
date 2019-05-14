@@ -64,12 +64,10 @@ export class Protocol extends Component {
      * Any error that should be displayed in an alert
      */
     alertError: PropTypes.string,
-
     /**
      * Any error that should be displayed in an alert
      */
     title: PropTypes.string,
-
     /**
      * Any error that should be displayed in an alert
      */
@@ -82,25 +80,25 @@ export class Protocol extends Component {
     history: PropTypes.object,
     currentUser: PropTypes.object
   }
-
+  
   constructor(props, context) {
     super(props, context)
-
+    
     this.state = {
       editMode: false,
       open: false,
       alertText: ''
     }
   }
-
+  
   UNSAFE_componentWillMount() {
     this.props.actions.getProtocolRequest(this.props.projectId)
   }
-
-  componentDidMount(){
+  
+  componentDidMount() {
     document.title = `PHLIP - ${this.props.projectName} - Protocol`
   }
-
+  
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.submitting === true) {
       if (nextProps.saveError !== true) {
@@ -109,18 +107,18 @@ export class Protocol extends Component {
         })
       }
     }
-
+    
     if (this.props.lockedByCurrentUser !== true && nextProps.lockedByCurrentUser === true) {
       this.setState({
         editMode: true
       })
     }
   }
-
+  
   componentWillUnmount() {
     this.props.actions.clearState()
   }
-
+  
   /**
    * Calls a redux action to request to checkout the protocol. Invoked when the user clicks the 'Edit' button
    * @public
@@ -128,7 +126,7 @@ export class Protocol extends Component {
   onEnableEdit = () => {
     this.props.actions.lockProtocolRequest(this.props.projectId)
   }
-
+  
   /**
    * Closes any alert erorr that might be open
    * @public
@@ -136,7 +134,7 @@ export class Protocol extends Component {
   onCloseAlert = () => {
     this.props.actions.resetAlertError()
   }
-
+  
   /**
    * Calls redux actions to save and unlock protocol. Invoked when the user clicks the 'Save' button
    * @public
@@ -146,7 +144,7 @@ export class Protocol extends Component {
     this.props.actions.unlockProtocolRequest(this.props.projectId)
     this.props.actions.updateEditedFields(this.props.projectId)
   }
-
+  
   /**
    * Closes the alert that shows when the user clicks the 'back' arrow while still in edit mode, and then hit 'Cancel'
    * in the alert
@@ -158,7 +156,7 @@ export class Protocol extends Component {
       alertText: ''
     })
   }
-
+  
   /**
    * Closes any alert related to locking / checking out of the protocol
    * @public
@@ -166,7 +164,7 @@ export class Protocol extends Component {
   onCloseLockedAlert = () => {
     this.props.actions.resetLockAlert()
   }
-
+  
   /**
    * Invoked when the user hits 'Save' in the alert that shows when the user clicks the 'back' arrow while still in edit
    * mode. Sends a request to save the protocol, and goes back one in browser history.
@@ -176,7 +174,7 @@ export class Protocol extends Component {
     this.onSaveProtocol()
     this.props.history.goBack()
   }
-
+  
   /**
    * If in edit mode, opens an alert to let the user know they are still in edit mode. Invoked when the user clicks the
    * 'back' arrow while still in edit mode. If not in edit mode, goes back once in browser history.
@@ -192,45 +190,39 @@ export class Protocol extends Component {
       this.props.history.goBack()
     }
   }
-
+  
   overrideLock = () => {
-    this.props.actions.unlockProtocolRequest(this.props.projectId,this.props.lockInfo.userId) // unlock using the id of the user who locked it
+    this.props.actions.unlockProtocolRequest(this.props.projectId, this.props.lockInfo.userId)
     this.props.actions.updateEditedFields(this.props.projectId)
     this.onCloseLockedAlert()
   }
-
+  
   render() {
     const alertActions = [
-      {
-        value: 'Cancel',
-        type: 'button',
-        onClick: this.onClose,
-        preferred: true
-      },
       {
         value: 'Save',
         type: 'button',
         onClick: this.onContinue
       }
     ]
-
-    let lockedAlertAction = [
-      { value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert, preferred:true }
-
-    ]
+    
+    let lockedAlertAction = []
+    
     if (this.props.currentUser.role === 'Admin') {
       lockedAlertAction.push({ value: 'Release lock', type: 'button', onClick: this.overrideLock })
     }
-
+    
     return (
       <FlexGrid flex container padding="12px 20px 20px 20px">
-        <Alert open={this.state.open} actions={alertActions}>
+        <Alert open={this.state.open} onCloseAlert={this.onClose} actions={alertActions}>
           <Typography variant="body1">
             {this.state.alertText}
           </Typography>
         </Alert>
         <Alert
+          onCloseAlert={this.onCloseLockedAlert}
           actions={lockedAlertAction}
+          closeButton={{ value: lockedAlertAction.length === 0 ? 'Dismiss' : 'Cancel' }}
           open={this.props.lockedAlert !== null}
           title={
             <>
@@ -240,7 +232,7 @@ export class Protocol extends Component {
           }>
           <Typography variant="body1">
             {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} is editing the protocol.
-              You are unable to edit until they save their changes.
+            You are unable to edit until they save their changes.
           </Typography>
         </Alert>
         <PageHeader
@@ -259,7 +251,8 @@ export class Protocol extends Component {
           }}
         />
         <Alert
-          actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseAlert }]}
+          closeButton={{ value: 'Dismiss' }}
+          onCloseAlert={this.onCloseAlert}
           open={this.props.alertError !== ''}
           title={
             <>
@@ -331,7 +324,7 @@ const mapStateToProps = (state, ownProps) => ({
   lockedAlert: state.scenes.protocol.lockedAlert || null,
   hasLock: Object.keys(state.scenes.protocol.lockInfo).length > 0 || false,
   alertError: state.scenes.protocol.alertError || '',
-  currentUser : state.data.user.currentUser
+  currentUser: state.data.user.currentUser
 })
 
 /* istanbul ignore next */

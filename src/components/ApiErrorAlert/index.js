@@ -22,8 +22,8 @@ export const ApiErrorAlert = props => {
   
   return (
     <Alert
-      actions={[actions]}
-      closeButton={{ title: 'Dismiss', 'aria-label': 'Dismiss alert' }}
+      actions={[...actions]}
+      closeButton={{ value: 'Dismiss', 'aria-label': 'Dismiss alert' }}
       onCloseAlert={onCloseAlert}
       open={open}
       title={title}

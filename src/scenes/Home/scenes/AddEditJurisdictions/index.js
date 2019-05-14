@@ -199,12 +199,6 @@ export class AddEditJurisdictions extends Component {
   render() {
     const alertActions = [
       {
-        value: 'Cancel',
-        type: 'button',
-        onClick: this.cancelDelete,
-        preferred: true
-      },
-      {
         value: 'Continue',
         type: 'button',
         onClick: this.continueDelete
@@ -237,8 +231,8 @@ export class AddEditJurisdictions extends Component {
         />
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
-          <Alert actions={alertActions} open={confirmDeleteAlertOpen}>
-            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+          <Alert actions={alertActions} onCloseAlert={this.cancelDelete} open={confirmDeleteAlertOpen}>
+            <Typography style={{ whiteSpace: 'pre-wrap' }}>
               Are you sure you want to delete {jurisdictionToDelete.name}? All coded questions related to this jurisdiction will be deleted.
             </Typography>
           </Alert>

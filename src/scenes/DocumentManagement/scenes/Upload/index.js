@@ -390,9 +390,9 @@ export class Upload extends Component {
           open={alert.open}
           title={alert.title}
           id="uploadAlert">
-          <Typography variant="subheading" style={{ paddingBottom: 20 }}>
+          <span style={{ paddingBottom: 20 }}>
             {alert.text}
-          </Typography>
+          </span>
           {alert.type !== 'basic' &&
           <FlexGrid type="row" style={{ overflow: 'auto' }}>
             {invalidFiles.map((item, index) => {
