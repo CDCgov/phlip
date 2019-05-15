@@ -31,7 +31,7 @@ export default {
   addProJur: makeActionCreator(types.ADD_PRO_JUR, 'property', 'value'),
   deleteProJur: makeActionCreator(types.DELETE_PRO_JUR, 'property', 'value'),
   updateDocumentProperty: makeActionCreator(types.UPDATE_DOC_PROPERTY, 'property', 'value'),
-  updateDocRequest: makeActionCreator(types.UPDATE_DOC_REQUEST, 'property', 'value'),
+  updateDocRequest: makeActionCreator(types.UPDATE_DOC_REQUEST, 'property', 'value', 'updateType'),
   openAlert: makeActionCreator(types.OPEN_ALERT, 'text', 'title'),
   closeAlert: makeActionCreator(types.CLOSE_ALERT),
   deleteDocRequest: makeActionCreator(types.DELETE_DOCUMENT_REQUEST, 'id')

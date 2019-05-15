@@ -41,22 +41,17 @@ const updateDocLogic = createLogic({
     md.citation = selectedDoc.citation
     md.jurisdictions = selectedDoc.jurisdictions
     md.projects = selectedDoc.projects
-    
+
     try {
       const updatedDoc = await docApi.updateDoc({ ...md }, {}, { docId: selectedDoc._id })
       
-      if (action.property !== null && action.property === 'jurisdictions') {
-        dispatch({
-          type: jurisdictionTypes.ADD_JURISDICTION,
-          payload: action.value
-        })
-      }
-      
-      if (action.property !== null && action.property === 'projects') {
-        dispatch({
-          type: projectTypes.ADD_PROJECT,
-          payload: action.value
-        })
+      if (['jurisdictions', 'projects'].includes(action.property)) {
+        if (action.updateType === 'add') {
+          dispatch({
+            type: action.property === 'jurisdictions' ? jurisdictionTypes.ADD_JURISDICTION : projectTypes.ADD_PROJECT,
+            payload: action.value
+          })
+        }
       }
       
       dispatch({
@@ -68,7 +63,9 @@ const updateDocLogic = createLogic({
       dispatch({
         type: types.UPDATE_DOC_FAIL,
         error: action.property === 'projects' || action.property === 'jurisdictions'
-          ? `Failed to add the ${action.property.slice(0, -1)} to the document.`
+          ? `Failed to ${action.updateType} the ${action.property.slice(0, -1)} ${action.updateType === 'add'
+            ? 'to'
+            : 'from'} the document.`
           : 'Failed to update the document.'
       })
       done()

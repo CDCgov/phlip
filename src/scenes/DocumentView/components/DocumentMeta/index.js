@@ -9,6 +9,7 @@ import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import actions, { projectAutocomplete, jurisdictionAutocomplete } from '../../actions'
 import ProJurSearch from './components/ProJurSearch'
 import { convertToLocalDate } from 'utils/normalize'
+import { capitalizeFirstLetter } from 'utils/formHelpers'
 import { Button, FlexGrid, Dropdown, DatePicker, IconButton, Alert, CircularLoader, ApiErrorAlert } from 'components'
 
 export class DocumentMeta extends Component {
@@ -168,7 +169,7 @@ export class DocumentMeta extends Component {
       [`${type}ToDelete`]: list[index],
       alertOpen: true,
       alertInfo: {
-        title: `Delete ${type}`,
+        title: `Delete ${capitalizeFirstLetter(type)}`,
         text: `Do you want to delete ${type}: ${list[index].name} from this document?`
       }
     })
@@ -180,8 +181,8 @@ export class DocumentMeta extends Component {
       [`${type}ToDelete`]: id,
       alertOpen: true,
       alertInfo: {
-        title: `Delete ${type}`,
-        text: `Do you want to delete ${type}: ${this.props.document.name}?`
+        title: 'Warning',
+        text: `Deleting a document will delete all associate annotations in every project and jurisdiction. Do you want to continue and delete ${this.props.document.name}?`
       }
     })
   }
@@ -205,12 +206,12 @@ export class DocumentMeta extends Component {
   addProJur = () => {
     if (this.state.selectedJurisdiction !== null) {
       this.props.actions.addProJur('jurisdictions', this.state.selectedJurisdiction)
-      this.props.actions.updateDocRequest('jurisdictions', this.state.selectedJurisdiction)
+      this.props.actions.updateDocRequest('jurisdictions', this.state.selectedJurisdiction, 'add')
     }
     
     if (this.state.selectedProject !== null) {
       this.props.actions.addProJur('projects', this.state.selectedProject)
-      this.props.actions.updateDocRequest('projects', this.state.selectedProject)
+      this.props.actions.updateDocRequest('projects', this.state.selectedProject, 'add')
     }
   }
   
@@ -233,7 +234,11 @@ export class DocumentMeta extends Component {
       this.props.actions.deleteDocRequest(this.props.document._id)
     } else {
       this.props.actions.deleteProJur(`${this.state.typeToDelete}s`, this.state[`${this.state.typeToDelete}ToDelete`])
-      this.props.actions.updateDocRequest(this.props.document._id, null, null)
+      this.props.actions.updateDocRequest(
+        `${this.state.typeToDelete}s`,
+        this.state[`${this.state.typeToDelete}ToDelete`],
+        'delete'
+      )
     }
     this.onCancelDelete()
   }
@@ -277,7 +282,7 @@ export class DocumentMeta extends Component {
     } = this.props
     
     const {
-      alertOpen, alertInfo, alertTitle, hoveringOn, hoverIndex, showModal, showAddJurisdiction
+      alertOpen, alertInfo, hoveringOn, hoverIndex, showModal, showAddJurisdiction
     } = this.state
     
     const options = [
@@ -317,8 +322,10 @@ export class DocumentMeta extends Component {
     return (
       <>
         <ApiErrorAlert open={apiErrorOpen} content={apiErrorInfo.text} onCloseAlert={this.closeAlert} />
-        <Alert open={alertOpen} actions={alertActions} title={alertTitle} onCloseAlert={this.onCancelDelete}>
-          {alertInfo.text}
+        <Alert open={alertOpen} actions={alertActions} title={alertInfo.title} onCloseAlert={this.onCancelDelete}>
+          <Typography variant="body1">
+            {alertInfo.text}
+          </Typography>
         </Alert>
         <FlexGrid raised container style={{ overflow: 'hidden', minWidth: '30%', marginBottom: 25, height: '40%' }}>
           <Typography variant="body2" style={{ padding: 10, color: 'black' }}>
