@@ -21,7 +21,7 @@ const getDocumentContentsLogic = createLogic({
         type: action.type === types.GET_DOCUMENT_CONTENTS_REQUEST
           ? types.GET_DOCUMENT_CONTENTS_FAIL
           : codingTypes.GET_DOC_CONTENTS_FAIL,
-        payload: 'Failed to get doc contents'
+        payload: 'Failed to get the contents of this document.'
       })
     }
     done()
@@ -33,7 +33,7 @@ const updateDocLogic = createLogic({
   async process({ docApi, action, getState }, dispatch, done) {
     let md = {}
     const selectedDoc = getState().scenes.docView.documentForm
-
+    
     md.status = selectedDoc.status
     md.effectiveDate = selectedDoc.effectiveDate !== undefined
       ? selectedDoc.effectiveDate
@@ -41,24 +41,24 @@ const updateDocLogic = createLogic({
     md.citation = selectedDoc.citation
     md.jurisdictions = selectedDoc.jurisdictions
     md.projects = selectedDoc.projects
-
+    
     try {
       const updatedDoc = await docApi.updateDoc({ ...md }, {}, { docId: selectedDoc._id })
-
+      
       if (action.property !== null && action.property === 'jurisdictions') {
         dispatch({
           type: jurisdictionTypes.ADD_JURISDICTION,
           payload: action.value
         })
       }
-
+      
       if (action.property !== null && action.property === 'projects') {
         dispatch({
           type: projectTypes.ADD_PROJECT,
           payload: action.value
         })
       }
-
+      
       dispatch({
         type: types.UPDATE_DOC_SUCCESS,
         payload: updatedDoc._id
@@ -67,7 +67,9 @@ const updateDocLogic = createLogic({
     } catch (err) {
       dispatch({
         type: types.UPDATE_DOC_FAIL,
-        payload: { error: 'Failed to update document, please try again.' }
+        error: action.property === 'projects' || action.property === 'jurisdictions'
+          ? `Failed to add the ${action.property.slice(0, -1)} to the document.`
+          : 'Failed to update the document.'
       })
       done()
     }
@@ -91,7 +93,7 @@ const deleteDocLogic = createLogic({
     } catch (err) {
       dispatch({
         type: types.DELETE_DOCUMENT_FAIL,
-        payload: { error: 'Failed to delete document, please try again.' }
+        payload: { error: 'Failed to delete the document.' }
       })
       done()
     }

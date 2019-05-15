@@ -17,7 +17,8 @@ export const INITIAL_STATE = {
   },
   inEditMode: false,
   documentDeleteInProgress: false,
-  documentDeleteError: false
+  documentDeleteError: false,
+  error: ''
 }
 
 const docViewReducer = (state = INITIAL_STATE, action) => {
@@ -35,6 +36,12 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         documentRequestInProgress: true
+      }
+      
+    case types.GET_DOCUMENT_CONTENTS_FAIL:
+      return {
+        ...state,
+        error: action.payload
       }
 
     case types.EDIT_DOCUMENT:
@@ -126,7 +133,7 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         ...state,
         apiErrorInfo: {
           title: 'Update error',
-          text: 'Failed to update document.'
+          text: action.error
         },
         apiErrorOpen: true,
         documentUpdateInProgress: false
@@ -160,7 +167,7 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         ...state,
         apiErrorInfo: {
           title: 'Document Delete Error',
-          text: 'Failed to delete document.  Please try again.'
+          text: 'Failed to delete the document.'
         },
         apiErrorOpen: true,
         documentDeleteInProgress: false,
