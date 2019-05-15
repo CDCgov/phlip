@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as actions from './actions'
 import Typography from '@material-ui/core/Typography'
-import { FlexGrid, Icon, Alert, PageHeader, withTracking, CardError } from 'components'
+import { FlexGrid, Icon, Alert, PageHeader, withTracking, CardError, ApiErrorAlert } from 'components'
 
 /* eslint-disable no-unused-vars */
 import tinymce from 'tinymce/tinymce'
@@ -87,28 +87,26 @@ export class Protocol extends Component {
     this.state = {
       editMode: false,
       open: false,
-      alertText: ''
+      alertText: '',
+      alertTitle: ''
     }
   }
-  
-  UNSAFE_componentWillMount() {
-    this.props.actions.getProtocolRequest(this.props.projectId)
-  }
-  
+
   componentDidMount() {
+    this.props.actions.getProtocolRequest(this.props.projectId)
     document.title = `PHLIP - ${this.props.projectName} - Protocol`
   }
   
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (this.props.submitting === true) {
-      if (nextProps.saveError !== true) {
+  componentDidUpdate(prevProps) {
+    if (prevProps.submitting && !this.props.submitting) {
+      if (this.props.saveError !== true) {
         this.setState({
           editMode: false
         })
       }
     }
     
-    if (this.props.lockedByCurrentUser !== true && nextProps.lockedByCurrentUser === true) {
+    if (!prevProps.lockedByCurrentUser && this.props.lockedByCurrentUser) {
       this.setState({
         editMode: true
       })
@@ -184,7 +182,8 @@ export class Protocol extends Component {
     if (this.props.lockedByCurrentUser || this.state.editMode) {
       this.setState({
         open: true,
-        alertText: 'You will lose unsaved changes. Do you want to continue?'
+        alertText: 'You have unsaved changes. Do you want to continue?',
+        alertTitle: 'Warning'
       })
     } else {
       this.props.history.goBack()
@@ -200,30 +199,36 @@ export class Protocol extends Component {
   render() {
     const alertActions = [
       {
-        value: 'Save',
+        value: 'Save & Continue',
         type: 'button',
         onClick: this.onContinue
       }
     ]
     
+    const {
+      currentUser, lockedAlert, lockInfo, projectName, projectId, getProtocolError, alertError, actions, protocolContent
+    } = this.props
+    
+    const { open, alertText, alertTitle, editMode } = this.state
+    
     let lockedAlertAction = []
     
-    if (this.props.currentUser.role === 'Admin') {
+    if (currentUser.role === 'Admin') {
       lockedAlertAction.push({ value: 'Release lock', type: 'button', onClick: this.overrideLock })
     }
     
     return (
       <FlexGrid flex container padding="12px 20px 20px 20px">
-        <Alert open={this.state.open} onCloseAlert={this.onClose} actions={alertActions}>
+        <Alert open={open} onCloseAlert={this.onClose} actions={alertActions} title={alertTitle}>
           <Typography variant="body1">
-            {this.state.alertText}
+            {alertText}
           </Typography>
         </Alert>
         <Alert
           onCloseAlert={this.onCloseLockedAlert}
           actions={lockedAlertAction}
           closeButton={{ value: lockedAlertAction.length === 0 ? 'Dismiss' : 'Cancel' }}
-          open={this.props.lockedAlert !== null}
+          open={lockedAlert !== null}
           title={
             <>
               <Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
@@ -231,40 +236,27 @@ export class Protocol extends Component {
             </>
           }>
           <Typography variant="body1">
-            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} is editing the protocol.
+            {`${lockInfo.firstName} ${lockInfo.lastName} `} is editing the protocol.
             You are unable to edit until they save their changes.
           </Typography>
         </Alert>
         <PageHeader
-          projectName={this.props.projectName}
-          projectId={this.props.projectId}
+          projectName={projectName}
+          projectId={projectId}
           pageTitle="Protocol"
           protocolButton={false}
           onBackButtonClick={this.onGoBack}
-          otherButton={this.props.getProtocolError ? {} : {
+          otherButton={getProtocolError ? {} : {
             isLink: false,
-            text: this.state.editMode ? 'Save' : 'Edit',
-            onClick: this.state.editMode ? this.onSaveProtocol : this.onEnableEdit,
+            text: editMode ? 'Save' : 'Edit',
+            onClick: editMode ? this.onSaveProtocol : this.onEnableEdit,
             style: { color: 'black', backgroundColor: 'white' },
-            otherProps: { 'aria-label': this.state.editMode ? 'Edit protocol' : 'Save protocol' },
-            show: this.props.getProtocolError !== true
+            otherProps: { 'aria-label': editMode ? 'Edit protocol' : 'Save protocol' },
+            show: getProtocolError !== true
           }}
         />
-        <Alert
-          closeButton={{ value: 'Dismiss' }}
-          onCloseAlert={this.onCloseAlert}
-          open={this.props.alertError !== ''}
-          title={
-            <>
-              <Icon size={30} color="red" style={{ paddingRight: 10 }}>sentiment_very_dissatisfied</Icon>
-              Uh-oh! Something went wrong.
-            </>
-          }>
-          <Typography variant="body1">
-            {this.props.alertError}
-          </Typography>
-        </Alert>
-        {this.state.editMode
+        <ApiErrorAlert onCloseAlert={this.onCloseAlert} open={alertError !== ''} content={alertError} />
+        {editMode
           ? (
             <FlexGrid raised flex id="tiny">
               <Editor
@@ -292,18 +284,18 @@ export class Protocol extends Component {
                   anchor_bottom: false,
                   anchor_top: false
                 }}
-                onChange={e => this.props.actions.updateProtocol(e.target.getContent())}
-                initialValue={this.props.protocolContent}
+                onChange={e => actions.updateProtocol(e.target.getContent())}
+                initialValue={protocolContent}
               />
             </FlexGrid>
           ) : (
-            this.props.getProtocolError === true
+            getProtocolError === true
               ? <CardError>We failed to get the protocol for this project. Please try again later.</CardError>
               : <FlexGrid
                 raised
                 padding={25}
                 style={{ fontFamily: 'Roboto', overflow: 'auto' }}
-                dangerouslySetInnerHTML={{ __html: this.props.protocolContent }}
+                dangerouslySetInnerHTML={{ __html: protocolContent }}
               />
           )
         }
