@@ -299,7 +299,6 @@ export class DocumentManagement extends Component {
       <>
         <ApiErrorAlert
           open={this.props.apiErrorOpen}
-          title={this.props.apiErrorInfo.title}
           content={this.props.apiErrorInfo.text}
           onCloseAlert={this.closeAlert}
         />
@@ -373,10 +372,7 @@ export class DocumentManagement extends Component {
                     showJurSearch={this.state.showAddJurisdiction === true}
                   />
                   <br />
-                  <ConfirmDocList
-                    // documents={this.props.checkedDocs}
-                    docCount={this.props.checkedCount}
-                  />
+                  <ConfirmDocList docCount={this.props.checkedCount} />
                 </>)
                 : <ConfirmDocList documents={this.props.checkedDocs} docCount={this.props.checkedCount} />
               }

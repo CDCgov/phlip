@@ -6,7 +6,7 @@ import Modal, { ModalContent, ModalActions, ModalTitle } from 'components/Modal'
  * Popup modal alert
  */
 export const Alert = props => {
-  const { actions, open, title, children, id, onCloseAlert, closeButton, ...otherProps } = props
+  const { actions, open, title, children, id, onCloseAlert, closeButton, hideClose, ...otherProps } = props
   const closeAction = {
     onClick: onCloseAlert,
     value: 'Cancel',
@@ -16,13 +16,15 @@ export const Alert = props => {
     ...closeButton
   }
   
+  const allActions = hideClose ? actions : [closeAction, ...actions]
+  
   return (
     <Modal open={open} id={id} {...otherProps}>
       {title !== null && <ModalTitle style={{ display: 'flex', alignItems: 'center' }} title={title} />}
       <ModalContent style={{ minWidth: 350 }}>
         {children}
       </ModalContent>
-      <ModalActions actions={[closeAction, ...actions]} />
+      <ModalActions actions={allActions} />
     </Modal>
   )
 }
@@ -55,14 +57,19 @@ Alert.propTypes = {
   /**
    * Overrides the dismiss button
    */
-  closeButton: PropTypes.object
+  closeButton: PropTypes.object,
+  /**
+   * Can override hiding the close button
+   */
+  hideClose: PropTypes.bool
 }
 
 Alert.defaultProps = {
   open: false,
   title: null,
   actions: [],
-  closeButton: {}
+  closeButton: {},
+  hideClose: false
 }
 
 export default Alert

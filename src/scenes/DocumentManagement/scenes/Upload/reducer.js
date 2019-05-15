@@ -97,6 +97,13 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         extractedInfo: action.payload.info,
         selectedDocs: action.payload.merged
       }
+      
+    case types.EXTRACT_INFO_FAIL:
+      return {
+        ...state,
+        requestError: 'We failed to extract the metadata from Excel sheet. Please try again.',
+        infoRequestInProgress: false
+      }
     
     case types.MERGE_INFO_WITH_DOCS:
       return {

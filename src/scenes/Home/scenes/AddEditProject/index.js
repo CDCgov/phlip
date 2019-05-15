@@ -18,6 +18,7 @@ import {
   FlexGrid
 } from 'components'
 import Divider from '@material-ui/core/Divider'
+import Typography from '@material-ui/core/Typography'
 import DetailRow from './components/DetailRow'
 
 /**
@@ -257,8 +258,8 @@ export class AddEditProject extends Component {
       [`projectToDelete`]: this.projectDefined.id,
       alertOpen: true,
       alertInfo: {
-        title: `Delete Project`,
-        text: `Do you want to delete project: ${this.projectDefined.name}?`
+        title: 'Warning',
+        text: `Deleting a project will delete everything associated to a project, including the coding scheme, protocol, as well as coded and validated questions. Do you want to continue and delete project: ${this.projectDefined.name}?`
       }
     })
   }
@@ -326,8 +327,10 @@ export class AddEditProject extends Component {
           open={this.state.alertOpen}
           actions={alertActions}
           onCloseAlert={this.onCancelDelete}
-          title={this.state.alertTitle}>
-          {this.state.alertInfo.text}
+          title={this.state.alertInfo.title}>
+          <Typography variant="body1">
+            {this.state.alertInfo.text}
+          </Typography>
         </Alert>
         <FormModal
           form="projectForm"

@@ -32,6 +32,7 @@ exports[`QuestionCard component should render correctly 1`] = `
         "value": "Cancel",
       }
     }
+    hideClose={false}
     onCloseAlert={[Function]}
     open={false}
     title=""

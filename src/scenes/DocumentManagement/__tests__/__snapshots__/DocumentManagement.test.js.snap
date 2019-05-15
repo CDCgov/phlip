@@ -7,7 +7,6 @@ exports[`Document Management scene should render correctly 1`] = `
     content=""
     onCloseAlert={[Function]}
     open={false}
-    title=""
   />
   <FlexGrid
     align="stretch"

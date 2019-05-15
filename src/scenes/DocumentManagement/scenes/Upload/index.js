@@ -102,6 +102,9 @@ export class Upload extends Component {
       if (!prevProps.infoRequestInProgress && this.props.infoRequestInProgress) {
         this.loadingAlertTimeout = setTimeout(this.showInfoLoadingAlert, 1000)
       } else {
+        if (this.props.requestError !== null) {
+          this.props.onSubmitError(this.props.requestError)
+        }
         this.setState({
           showLoadingAlert: false
         })
@@ -422,7 +425,7 @@ export class Upload extends Component {
           </FlexGrid>}
         </Alert>}
         {showLoadingAlert &&
-        <Alert open={showLoadingAlert}>
+        <Alert open={showLoadingAlert} hideClose>
           <FlexGrid container align="center">
             <CircularLoader type="indeterminate" />
             <span style={{ paddingTop: 20 }}>

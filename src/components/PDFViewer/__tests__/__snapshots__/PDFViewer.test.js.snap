@@ -16,6 +16,7 @@ exports[`PDFViewer component should render correctly 1`] = `
       ]
     }
     closeButton={Object {}}
+    hideClose={false}
     onCloseAlert={[Function]}
     open={false}
     title="Confirm deletion"
@@ -38,6 +39,7 @@ exports[`PDFViewer component should render correctly 1`] = `
         "value": "Dismiss",
       }
     }
+    hideClose={false}
     onCloseAlert={[Function]}
     open={false}
     title="Are you trying to annotate?"

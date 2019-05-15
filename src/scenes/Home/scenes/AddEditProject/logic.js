@@ -76,7 +76,7 @@ export const deleteProjectLogic = createLogic({
       // remove project id from all documents' project list and also clean up redux store when completed
       dispatch({
         type: documentTypes.CLEAN_PROJECT_LIST_REQUEST,
-        projectMeta : projectMeta
+        projectMeta: projectMeta
       })
     } catch (error) {
       dispatch({
@@ -103,24 +103,9 @@ export const updateUserId = createLogic({
   }
 })
 
-// /**
-//  * Transforms the actions for deleting to remove the project's id from associated documents
-//  *
-//  */
-// export const updateDocuments = createLogic({
-//   type: [types.DELETE_DOCUMENT_REQUEST],
-//   transform({ getState, action }, next) {
-//     next({
-//       ...action,
-//       project: { ...action.project}
-//     })
-//   }
-// })
-
 export default [
   updateUserId,
   addProjectLogic,
   updateProjectLogic,
   deleteProjectLogic
-  // updateDocuments
 ]

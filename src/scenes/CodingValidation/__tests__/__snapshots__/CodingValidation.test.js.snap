@@ -33,6 +33,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       ]
     }
     closeButton={Object {}}
+    hideClose={false}
     onCloseAlert={[Function]}
     open={false}
     title="Warning"
@@ -59,6 +60,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       ]
     }
     closeButton={Object {}}
+    hideClose={false}
     onCloseAlert={[Function]}
     open={false}
     title="Still Saving Changes"
@@ -294,6 +296,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       ]
     }
     closeButton={Object {}}
+    hideClose={false}
     onCloseAlert={[Function]}
     open={false}
     title="Confirm Clear Flag"

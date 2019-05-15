@@ -13,10 +13,15 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
       ]
     }
     closeButton={Object {}}
+    hideClose={false}
     onCloseAlert={[Function]}
     open={false}
-    title={null}
-  />
+    title=""
+  >
+    <WithStyles(Typography)
+      variant="body1"
+    />
+  </Alert>
   <FormModal
     asyncBlurFields={
       Array [

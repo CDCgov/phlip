@@ -24,6 +24,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
       ]
     }
     closeButton={Object {}}
+    hideClose={false}
     onCloseAlert={[Function]}
     open={false}
     title={null}
@@ -45,6 +46,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
       ]
     }
     closeButton={Object {}}
+    hideClose={false}
     onCloseAlert={[Function]}
     open={false}
     title="Warning"
@@ -80,6 +82,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
         "value": "Cancel",
       }
     }
+    hideClose={false}
     onCloseAlert={[Function]}
     open={true}
     title={

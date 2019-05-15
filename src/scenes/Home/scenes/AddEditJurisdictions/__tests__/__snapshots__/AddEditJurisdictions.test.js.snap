@@ -106,6 +106,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
         ]
       }
       closeButton={Object {}}
+      hideClose={false}
       onCloseAlert={[Function]}
       open={false}
       title={null}
