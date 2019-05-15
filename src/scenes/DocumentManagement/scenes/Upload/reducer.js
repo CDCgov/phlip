@@ -74,8 +74,8 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         alert: {
           open: true,
           text: `The file name, project and jurisdiction properties for one or more of the documents selected for
-                 upload match a pre-existing document in the system. These documents have been indicated in the file list. You
-                 can choose to remove them or click the 'Upload' button again to proceed with saving them.`,
+        upload match a pre-existing document in the system. These documents have been indicated in the file list. You
+        can choose to remove them or click the 'Upload' button again to proceed with saving them.`,
           title: 'Duplicates Found',
           type: 'basic'
         },
@@ -232,12 +232,6 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
           action.index,
           selectedDoc
         )
-      }
-    
-    case 'RESET_NO_PROJECT_ERROR':
-      return {
-        ...state,
-        noProjectError: false
       }
     
     case types.REJECT_NO_PROJECT_SELECTED:

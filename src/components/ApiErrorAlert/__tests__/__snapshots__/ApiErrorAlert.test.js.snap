@@ -2,15 +2,14 @@
 
 exports[`ApiErrorAlert component should render correctly 1`] = `
 <Alert
-  actions={
-    Array [
-      Object {
-        "onClick": [Function],
-        "type": "button",
-        "value": "Dismiss",
-      },
-    ]
+  actions={Array []}
+  closeButton={
+    Object {
+      "aria-label": "Dismiss alert",
+      "value": "Dismiss",
+    }
   }
+  onCloseAlert={[Function]}
   open={true}
   title={
     <React.Fragment>

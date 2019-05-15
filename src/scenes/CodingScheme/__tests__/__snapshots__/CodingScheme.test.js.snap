@@ -17,17 +17,14 @@ exports[`CodingScheme scene should render correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
-          "type": "button",
-          "value": "Cancel",
-        },
-        Object {
-          "onClick": [Function],
           "preferred": true,
           "type": "button",
           "value": "Check in",
         },
       ]
     }
+    closeButton={Object {}}
+    onCloseAlert={[Function]}
     open={false}
     title={null}
   >
@@ -42,19 +39,15 @@ exports[`CodingScheme scene should render correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
-          "preferred": true,
           "type": "button",
-          "value": "Cancel",
-        },
-        Object {
-          "onClick": [Function],
-          "type": "button",
-          "value": "Delete",
+          "value": "Continue",
         },
       ]
     }
+    closeButton={Object {}}
+    onCloseAlert={[Function]}
     open={false}
-    title={null}
+    title="Warning"
   >
     <WithStyles(Typography)
       style={
@@ -64,7 +57,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
       }
       variant="body1"
     >
-      You are about to delete a question from the coding scheme. This will permanantly delete all related child questions and coded answers.
+      You will permanently delete this question, and all related questions and coded answers from the coding scheme. Do you want to continue?
     </WithStyles(Typography)>
   </Alert>
   <ApiErrorAlert
@@ -77,17 +70,17 @@ exports[`CodingScheme scene should render correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
-          "preferred": true,
-          "type": "button",
-          "value": "Dismiss",
-        },
-        Object {
-          "onClick": [Function],
           "type": "button",
           "value": "Release lock",
         },
       ]
     }
+    closeButton={
+      Object {
+        "value": "Cancel",
+      }
+    }
+    onCloseAlert={[Function]}
     open={true}
     title={
       <React.Fragment>

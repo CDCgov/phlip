@@ -27,19 +27,15 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
-          "preferred": true,
-          "type": "button",
-          "value": "Cancel",
-        },
-        Object {
-          "onClick": [Function],
           "type": "button",
           "value": "Continue",
         },
       ]
     }
+    closeButton={Object {}}
+    onCloseAlert={[Function]}
     open={false}
-    title={null}
+    title="Warning"
   >
     <WithStyles(Typography)
       style={
@@ -57,19 +53,15 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
-          "preferred": true,
-          "type": "button",
-          "value": "Cancel",
-        },
-        Object {
-          "onClick": [Function],
           "type": "button",
           "value": "Continue",
         },
       ]
     }
+    closeButton={Object {}}
+    onCloseAlert={[Function]}
     open={false}
-    title={null}
+    title="Still Saving Changes"
   >
     <WithStyles(Typography)
       style={
@@ -79,7 +71,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       }
       variant="body1"
     >
-      We haven't finished saving your answer. If you continue, your changes might not be saved.
+      We haven't finished saving your answer. If you continue, changes might not be saved.
     </WithStyles(Typography)>
   </Alert>
   <ApiErrorAlert
@@ -296,24 +288,20 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
-          "preferred": true,
           "type": "button",
-          "value": "Cancel",
-        },
-        Object {
-          "onClick": [Function],
-          "type": "button",
-          "value": "Yes",
+          "value": "Clear Flag",
         },
       ]
     }
+    closeButton={Object {}}
+    onCloseAlert={[Function]}
     open={false}
-    title={null}
+    title="Confirm Clear Flag"
   >
     <WithStyles(Typography)
       variant="body1"
     >
-      Are you sure you want to clear this flag?
+      Do you want to clear this flag?
     </WithStyles(Typography)>
   </Alert>
   <ApiErrorAlert

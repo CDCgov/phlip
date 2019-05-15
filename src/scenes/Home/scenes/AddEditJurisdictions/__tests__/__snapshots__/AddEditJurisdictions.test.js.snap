@@ -100,17 +100,13 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
         Array [
           Object {
             "onClick": [Function],
-            "preferred": true,
-            "type": "button",
-            "value": "Cancel",
-          },
-          Object {
-            "onClick": [Function],
             "type": "button",
             "value": "Continue",
           },
         ]
       }
+      closeButton={Object {}}
+      onCloseAlert={[Function]}
       open={false}
       title={null}
     >
@@ -120,7 +116,6 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
             "whiteSpace": "pre-wrap",
           }
         }
-        variant="body1"
       >
         Are you sure you want to delete 
         ? All coded questions related to this jurisdiction will be deleted.

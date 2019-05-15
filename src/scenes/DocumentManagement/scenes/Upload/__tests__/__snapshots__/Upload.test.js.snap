@@ -133,17 +133,16 @@ exports[`Document Management - Upload scene should render correctly 1`] = `
     style={Object {}}
     type="row"
   >
-    <Typography
+    <WithStyles(Typography)
       style={
         Object {
           "fontSize": "0.875rem",
         }
       }
-      variant="body1"
     >
       File Count: 
       0
-    </Typography>
+    </WithStyles(Typography)>
     <WithStyles(ModalActions)
       actions={
         Array [

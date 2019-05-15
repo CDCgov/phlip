@@ -25,6 +25,7 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
         },
       ]
     }
+    closeButton={Object {}}
     open={false}
     title={null}
   />

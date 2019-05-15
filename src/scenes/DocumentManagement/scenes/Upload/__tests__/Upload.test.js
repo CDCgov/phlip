@@ -9,9 +9,12 @@ const props = {
   user: { firstName: 'test', lastName: 'user' },
   isReduxForm: false,
   actions: {},
-  alertText: '',
-  alertOpen: false,
-  alertTitle: ''
+  alert: {
+    open: false,
+    text: '',
+    type: 'basic',
+    title: ''
+  }
 }
 
 describe('Document Management - Upload scene', () => {
