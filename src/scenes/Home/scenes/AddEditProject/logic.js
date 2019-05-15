@@ -1,5 +1,7 @@
 import { createLogic } from 'redux-logic'
 import { types } from '../../actions'
+import { types as documentTypes } from 'scenes/DocumentManagement/actions'
+import { types as projectTypes } from 'data/projects/actions'
 
 /**
  * Sends a request to add a project
@@ -42,10 +44,44 @@ export const updateProjectLogic = createLogic({
           users: updatedProject.hasOwnProperty('users') ? updatedProject.users : { lastCheck: null, all: [] }
         }
       })
+      
+      dispatch({
+        type: projectTypes.UPDATE_PROJECT,
+        payload: updatedProject
+      })
     } catch (error) {
       dispatch({
         type: types.UPDATE_PROJECT_FAIL,
         payload: 'We couldn\'t update the project. Please try again later.',
+        error: true
+      })
+    }
+    done()
+  }
+})
+
+/**
+ * Sends a request to delete a project
+ */
+export const deleteProjectLogic = createLogic({
+  type: types.DELETE_PROJECT_REQUEST,
+  async process({ getState, action, api }, dispatch, done) {
+    const projectMeta = getState().data.projects.byId[action.project]
+    try {
+      await api.deleteProject({}, {}, { projectId: action.project })
+      dispatch({
+        type: types.DELETE_PROJECT_SUCCESS,
+        project: action.project
+      })
+      // remove project id from all documents' project list and also clean up redux store when completed
+      dispatch({
+        type: documentTypes.CLEAN_PROJECT_LIST_REQUEST,
+        projectMeta : projectMeta
+      })
+    } catch (error) {
+      dispatch({
+        type: types.DELETE_PROJECT_FAIL,
+        payload: 'We couldn\'t delete the project. Please try again later.',
         error: true
       })
     }
@@ -67,8 +103,24 @@ export const updateUserId = createLogic({
   }
 })
 
+// /**
+//  * Transforms the actions for deleting to remove the project's id from associated documents
+//  *
+//  */
+// export const updateDocuments = createLogic({
+//   type: [types.DELETE_DOCUMENT_REQUEST],
+//   transform({ getState, action }, next) {
+//     next({
+//       ...action,
+//       project: { ...action.project}
+//     })
+//   }
+// })
+
 export default [
   updateUserId,
   addProjectLogic,
-  updateProjectLogic
+  updateProjectLogic,
+  deleteProjectLogic
+  // updateDocuments
 ]

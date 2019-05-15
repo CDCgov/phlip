@@ -9,7 +9,8 @@ import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
   disabled: {
-    color: 'black'
+    color: 'black',
+    opacity: .5
   },
   disabledLabel: {
     color: 'rgba(0,0,0,.42)'
@@ -36,7 +37,7 @@ export const Dropdown = props => {
   } = props
 
   return (
-    <FormControl style={{ minWidth: 120, ...formControlStyle }}>
+    <FormControl style={{ minWidth: 120, ...formControlStyle }} id={`${id}-container`}>
       {label !== '' &&
       <InputLabel htmlFor={id} shrink={shrinkLabel} required={required}>
         {label}

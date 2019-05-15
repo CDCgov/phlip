@@ -14,7 +14,7 @@ describe('Coding Scheme actions creators', () => {
 
   test('should create an action to handle question tree change', () => {
     const expectedAction = { type: types.HANDLE_QUESTION_TREE_CHANGE, questions: [{ id: 4 }, { id: 5 }] }
-    expect(actions.updateQuestionTree([{ id: 4}, { id: 5 }])).toEqual(expectedAction)
+    expect(actions.updateQuestionTree([{ id: 4 }, { id: 5 }])).toEqual(expectedAction)
   })
 
   test('should create an action to disable hover', () => {

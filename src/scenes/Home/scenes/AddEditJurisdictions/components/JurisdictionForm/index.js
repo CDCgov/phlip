@@ -23,7 +23,7 @@ const getSuggestionValue = suggestion => suggestion
 const renderSuggestion = (suggestion, { query, isHighlighted }) => {
   const matches = match(suggestion.name, query)
   const parts = parse(suggestion.name, matches)
-
+  
   return (
     <MenuItem selected={isHighlighted} component="div">
       <div>
@@ -63,13 +63,13 @@ export class JurisdictionForm extends Component {
     project: PropTypes.object,
     title: PropTypes.string
   }
-
+  
   constructor(props, context) {
     super(props, context)
     this.jurisdictionDefined = this.props.location.state.jurisdictionDefined !== undefined
       ? props.location.state.jurisdictionDefined
       : null
-
+    
     this.state = {
       edit: this.jurisdictionDefined !== null,
       submitting: false,
@@ -80,21 +80,27 @@ export class JurisdictionForm extends Component {
       }
     }
   }
-
-  UNSAFE_componentWillMount() {
+  
+  componentDidMount() {
     this.props.actions.initializeFormValues({
       endDate: this.jurisdictionDefined ? this.jurisdictionDefined.endDate : new Date(),
       startDate: this.jurisdictionDefined ? this.jurisdictionDefined.startDate : new Date(),
-      name: this.jurisdictionDefined ? this.jurisdictionDefined.name : this.props.location.state.preset === true
-        ? 'US States'
-        : ''
+      name: this.jurisdictionDefined
+        ? this.jurisdictionDefined.name
+        : this.props.location.state.preset
+          ? 'US States'
+          : ''
     })
+    
+    const baseTitle = `PHLIP - ${this.props.project.name} -`
+    if (this.jurisdictionDefined) {
+      document.title = `${baseTitle} Edit ${this.jurisdictionDefined.name}`
+    } else {
+      document.title = `${baseTitle} Add Jurisdiction`
+    }
   }
-
-  componentDidMount() {
-    document.title = this.props.title
-  }
-  componentDidUpdate(prevProps, prevState) {
+  
+  componentDidUpdate() {
     if (this.state.submitting === true) {
       if (this.props.formError !== null) {
         this.setState({
@@ -102,15 +108,16 @@ export class JurisdictionForm extends Component {
         })
         this.props.onSubmitError(this.props.formError)
       } else if (this.props.goBack === true) {
-        this.props.history.push(`/project/${this.props.project.id}/jurisdictions`)
+        this.props.history.push({ pathname: `/project/${this.props.project.id}/jurisdictions`, state: { modal: true } })
       }
     }
   }
-
+  
   componentWillUnmount() {
     this.props.actions.onClearSuggestions()
+    document.title = `PHLIP - ${this.props.project.name} - Jurisdictions`
   }
-
+  
   getButtonText = text => {
     if (this.state.submitting) {
       return (
@@ -123,21 +130,21 @@ export class JurisdictionForm extends Component {
       return <Fragment>{text}</Fragment>
     }
   }
-
+  
   onSubmitPreset = () => {
     const jurisdiction = {
       startDate: moment(this.props.form.values.startDate).toISOString(),
       endDate: moment(this.props.form.values.endDate).toISOString(),
       tag: this.props.form.values.name
     }
-
+    
     this.setState({
       submitting: true
     })
-
+    
     this.props.actions.addPresetJurisdictionRequest(jurisdiction, this.props.project.id)
   }
-
+  
   onSubmitForm = () => {
     const hasErrors = Object.values(this.state.errors).filter(error => error.length > 0).length > 0
     if (!hasErrors) {
@@ -147,11 +154,11 @@ export class JurisdictionForm extends Component {
         endDate: moment(this.props.form.values.endDate).toISOString(),
         jurisdictionId: this.props.jurisdiction.id
       }
-
+      
       this.setState({
         submitting: true
       })
-
+      
       if (this.state.edit) {
         this.props.actions.updateJurisdiction(jurisdiction, this.props.project.id, this.jurisdictionDefined.id)
       } else {
@@ -159,7 +166,7 @@ export class JurisdictionForm extends Component {
       }
     }
   }
-
+  
   validateJurisdiction = () => {
     const jurisdictionName = this.props.form.values.name
     if (!this.state.edit) {
@@ -189,21 +196,21 @@ export class JurisdictionForm extends Component {
       }
     }
   }
-
+  
   onJurisdictionsFetchRequest = ({ value }) => {
     this.props.actions.searchJurisdictionList(value)
   }
-
+  
   onCloseForm = () => {
     this.props.actions.onClearSuggestions()
     this.props.actions.onSuggestionValueChanged('')
     this.props.history.goBack()
   }
-
+  
   onJurisdictionSelected = (event, { suggestionValue }) => {
     this.props.actions.onJurisdictionSelected(suggestionValue)
   }
-
+  
   onSuggestionChange = event => {
     this.props.actions.onSuggestionValueChanged(event.target.value)
     this.setState({
@@ -213,18 +220,18 @@ export class JurisdictionForm extends Component {
       }
     })
   }
-
+  
   onClearSuggestions = () => {
     this.props.actions.onClearSuggestions()
   }
-
+  
   onChangeNameField = value => {
     this.props.actions.setFormValues('name', value)
   }
-
+  
   validateMinDate = (value, endDate) => {
     let dateErrors = ''
-
+    
     if (value === undefined || value === '' || value === null) {
       dateErrors = 'Required'
     } else if (new Date(value).getFullYear() < '1850') {
@@ -234,13 +241,13 @@ export class JurisdictionForm extends Component {
     } else if (new Date(value) > new Date(endDate)) {
       dateErrors = 'Start date must but earlier than end date'
     }
-
+    
     return dateErrors
   }
-
+  
   validateMaxDate = (value, startDate) => {
     let dateErrors = ''
-
+    
     if (value === undefined || value === '' || value === null) {
       dateErrors = 'Required'
     } else if (new Date(value).getFullYear() > '2050') {
@@ -250,10 +257,10 @@ export class JurisdictionForm extends Component {
     } else if (new Date(startDate) > new Date(value)) {
       dateErrors = 'End date must be later than start date'
     }
-
+    
     return dateErrors
   }
-
+  
   onInputChange = (dateField, event) => {
     this.props.actions.setFormValues(dateField, event.target.value)
     if (moment(event.target.value).format() === 'Invalid date' && event.target.value !== '') {
@@ -264,7 +271,7 @@ export class JurisdictionForm extends Component {
       this.onChangeDate(dateField, event.target.value)
     }
   }
-
+  
   onChangeDate = (dateField, event) => {
     let endDateErrors, startDateErrors
     if (moment(event).format() === 'Invalid date') {
@@ -286,7 +293,7 @@ export class JurisdictionForm extends Component {
         startDateErrors = this.validateMinDate(this.props.form.values.startDate, event)
       }
     }
-
+    
     this.setState({
       errors: {
         name: this.state.errors.name,
@@ -295,10 +302,16 @@ export class JurisdictionForm extends Component {
       }
     })
   }
-
+  
   render() {
     const formActions = [
-      { value: 'Cancel', onClick: this.onCloseForm, type: 'button', otherProps: { 'aria-label': 'Close form' }, preferred: true },
+      {
+        value: 'Cancel',
+        onClick: this.onCloseForm,
+        type: 'button',
+        otherProps: { 'aria-label': 'Close form' },
+        preferred: true
+      },
       {
         value: this.state.edit
           ? this.getButtonText('Save')
@@ -308,11 +321,11 @@ export class JurisdictionForm extends Component {
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
-
+    
     const options = [
       { value: 'US States', label: 'US States' }
     ]
-
+    
     const nameInputField = this.props.location.state.preset === true
       ? <Dropdown
         name="name"
@@ -350,7 +363,7 @@ export class JurisdictionForm extends Component {
         renderSuggestion={renderSuggestion}
         getSuggestionValue={getSuggestionValue}
       />
-
+    
     return (
       <Modal
         open={true}
@@ -418,7 +431,7 @@ const mapStateToProps = (state, ownProps) => ({
   suggestionValue: state.scenes.home.addEditJurisdictions.suggestionValue || '',
   jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || {},
   jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') ||
-  [],
+    [],
   formError: state.scenes.home.addEditJurisdictions.formError || null,
   goBack: state.scenes.home.addEditJurisdictions.goBack || false,
   form: state.scenes.home.addEditJurisdictions.form || {},

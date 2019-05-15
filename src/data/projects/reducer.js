@@ -10,6 +10,7 @@ const projectReducer = (state = INITIAL_STATE, action) => {
   switch(action.type) {
     case types.GET_PROJECT_SUCCESS:
     case types.ADD_PROJECT:
+    case types.UPDATE_PROJECT:
       return {
         ...state,
         byId: {
@@ -21,6 +22,18 @@ const projectReducer = (state = INITIAL_STATE, action) => {
         allIds: state.allIds.indexOf(action.payload.id) === -1
           ? [...state.allIds, action.payload.id]
           : [...state.allIds]
+      }
+      
+    case types.REMOVE_PROJECT:
+      let updatedById = { ...state.byId }
+      const updatedAllIds = state.allIds.filter(value => value !== action.projectId)
+      delete updatedById[action.projectId]
+      return {
+        ...state,
+        byId: {
+          ...updatedById
+        },
+        allIds: updatedAllIds
       }
       
     case types.FLUSH_STATE:

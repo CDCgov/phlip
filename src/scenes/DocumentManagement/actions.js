@@ -24,7 +24,11 @@ export const types = {
   CLOSE_ALERT: 'CLOSE_ALERT',
   SORT_DOCUMENTS: 'SORT_DOCUMENTS',
   FORM_VALUE_CHANGE: searchTypes.FORM_VALUE_CHANGE,
-  SEARCH_VALUE_CHANGE: searchTypes.SEARCH_VALUE_CHANGE
+  SEARCH_VALUE_CHANGE: searchTypes.SEARCH_VALUE_CHANGE,
+  CLEAN_PROJECT_LIST_REQUEST: 'CLEAN_PROJECT_LIST_REQUEST',
+  CLEAN_PROJECT_LIST_SUCCESS: 'CLEAN_PROJECT_LIST_SUCCESS',
+  CLEAN_PROJECT_LIST_FAIL: 'CLEAN_PROJECT_LIST_FAIL',
+  ON_DELETE_ONE_FILE : 'ON_DELETE_ONE_FILE'
 }
 
 export default {
@@ -38,7 +42,9 @@ export default {
   closeAlert: makeActionCreator(types.CLOSE_ALERT),
   handleSortRequest: makeActionCreator(types.SORT_DOCUMENTS, 'sortBy', 'sortDirection'),
   handleSearchValueChange: searchActions.updateSearchValue,
-  handleFormValueChange: searchActions.updateFormValue
+  handleFormValueChange: searchActions.updateFormValue,
+  cleanDocProjectList: makeActionCreator(types.CLEAN_PROJECT_LIST_REQUEST,'projectMeta'),
+  handleDeleteOneFile: makeActionCreator(types.ON_DELETE_ONE_FILE,'id')
 }
 
 export const projectAutocomplete = {

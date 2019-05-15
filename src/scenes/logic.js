@@ -18,7 +18,7 @@ export const downloadPdfLogic = createLogic({
     successType: types.DOWNLOAD_PDF_SUCCESS,
     failType: types.DOWNLOAD_PDF_FAIL
   },
-  async process({ action, getState, api }) {
+  async process({ api }) {
     return await api.getHelpPdf({}, { responseType: 'arraybuffer' }, {})
   }
 })
@@ -31,7 +31,7 @@ export const refreshJwtLogic = createLogic({
     const interval = setInterval(async () => {
       if (isLoggedIn()) {
         const currentToken = getToken()
-        const newToken = await api.checkPivUser({ email: decodeToken(currentToken).Email }, {}, { tokenObj: { token: currentToken }})
+        const newToken = await api.checkPivUser({ email: decodeToken(currentToken).Email }, {}, { tokenObj: { token: currentToken } })
         await login(newToken.token.value)
         console.log('refreshing')
       }
@@ -54,8 +54,6 @@ export default [
   ...loginLogic,
   ...codingSchemeLogic,
   ...codingValidationLogic,
-  //...codingLogic,
-  //...validationLogic,
   ...protocolLogic,
   ...docManageLogic,
   ...docViewLogic

@@ -98,7 +98,7 @@ export class Protocol extends Component {
   }
 
   componentDidMount(){
-    document.title = `PHLIP - ${this.props.projectName} - protocol`
+    document.title = `PHLIP - ${this.props.projectName} - Protocol`
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -219,7 +219,7 @@ export class Protocol extends Component {
 
     ]
     if (this.props.currentUser.role === 'Admin') {
-      lockedAlertAction.push({ value: 'Release lock', type: 'button', onClick: this.overrideLock})
+      lockedAlertAction.push({ value: 'Release lock', type: 'button', onClick: this.overrideLock })
     }
 
     return (

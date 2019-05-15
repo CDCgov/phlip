@@ -208,23 +208,6 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
             showNextButton={false}
             totalLength={1}
           />
-          <FlexGrid
-            align="stretch"
-            circular={false}
-            container={false}
-            flex={false}
-            justify="stretch"
-            padding={0}
-            raised={false}
-            style={
-              Object {
-                "maxWidth": 15,
-                "minWidth": 15,
-                "width": 15,
-              }
-            }
-            type="column"
-          />
           <Resizable
             defaultSize={
               Object {
@@ -258,9 +241,9 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
             handleStyles={
               Object {
                 "left": Object {
+                  "bottom": "50%",
                   "height": "fit-content",
-                  "left": -19,
-                  "top": "50%",
+                  "top": "unset",
                   "width": "fit-content",
                 },
               }
@@ -280,6 +263,23 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
               }
             }
           >
+            <FlexGrid
+              align="stretch"
+              circular={false}
+              container={false}
+              flex={false}
+              justify="stretch"
+              padding={0}
+              raised={false}
+              style={
+                Object {
+                  "maxWidth": 15,
+                  "minWidth": 15,
+                  "width": 15,
+                }
+              }
+              type="column"
+            />
             <Connect(DocumentList)
               page="coding"
               projectId={1}

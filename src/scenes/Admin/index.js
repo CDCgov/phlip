@@ -7,8 +7,6 @@ import UserList from './components/UserList/index'
 import { FlexGrid, PageHeader, withTracking } from 'components'
 import actions from './actions'
 import { bindActionCreators } from 'redux'
-import AddEditUser from './scenes/AddEditUser'
-import { Route } from 'react-router-dom'
 
 /**
  * Represents the parent User Management component, that displays a list of users in the system. This component is
@@ -41,7 +39,7 @@ export class Admin extends Component {
 
   componentDidMount() {
     this.props.actions.getUsersRequest()
-    document.title = 'PHLIP-Admin'
+    document.title = 'PHLIP - User Management'
   }
 
   render() {
@@ -55,7 +53,7 @@ export class Admin extends Component {
             isLink: true,
             text: 'Add New User',
             path: '/admin/new/user',
-            state: {},
+            state: { modal: true },
             props: { 'aria-label': 'Add new user' },
             show: true
           }}
@@ -67,8 +65,6 @@ export class Admin extends Component {
           direction={this.props.direction}
           handleRequestSort={property => () => this.props.actions.sortUsers(property)}
         />
-        <Route path="/admin/new/user" component={AddEditUser} />
-        <Route path="/admin/edit/user/:id" component={AddEditUser} />
       </FlexGrid>
     )
   }

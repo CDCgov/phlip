@@ -22,8 +22,7 @@ export const JurisdictionRow = ({ jurisdiction, id, onDelete, projectId }) => {
         <TextLink
           to={{
             pathname: `/project/${projectId}/jurisdictions/${jurisdiction.id}/edit`,
-            modal: true,
-            state: { jurisdictionDefined: { ...jurisdiction } }
+            state: { jurisdictionDefined: { ...jurisdiction }, modal: true }
           }}>
           <IconButton color="accent">mode_edit</IconButton>
         </TextLink>

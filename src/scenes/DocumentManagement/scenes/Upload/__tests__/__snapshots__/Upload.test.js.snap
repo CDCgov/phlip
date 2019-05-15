@@ -7,10 +7,66 @@ exports[`Document Management - Upload scene should render correctly 1`] = `
   onClose={[Function]}
   open={true}
 >
-  <ModalTitle
-    buttons={false}
-    title="Upload Documents"
-  />
+  <FlexGrid
+    align="center"
+    circular={false}
+    container={true}
+    flex={false}
+    justify="stretch"
+    padding={0}
+    raised={false}
+    style={Object {}}
+    type="row"
+  >
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={false}
+      flex={true}
+      justify="stretch"
+      padding={0}
+      raised={false}
+      style={Object {}}
+      type="column"
+    >
+      <ModalTitle
+        buttons={false}
+        title="Upload Documents"
+      />
+    </FlexGrid>
+    <FlexGrid
+      align="stretch"
+      circular={false}
+      container={false}
+      flex={false}
+      justify="stretch"
+      padding="0 24px 0 0"
+      raised={false}
+      style={Object {}}
+      type="column"
+    >
+      <WithTheme(Button)
+        color="white"
+        download={true}
+        href="/PHLIP-Upload-Template.xlsx"
+        style={
+          Object {
+            "color": "black",
+          }
+        }
+      >
+        <Icon
+          style={
+            Object {
+              "fontSize": 18,
+              "marginRight": 10,
+            }
+          }
+        />
+         Excel Template
+      </WithTheme(Button)>
+    </FlexGrid>
+  </FlexGrid>
   <WithStyles(Divider) />
   <ModalContent
     style={
@@ -34,12 +90,13 @@ exports[`Document Management - Upload scene should render correctly 1`] = `
     >
       <FileUpload
         allowMultiple={true}
-        allowedFileTypes=".doc,.docx,.pdf,.rtf,.txt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        allowedFileTypes=".doc,.docx,.pdf,.rtf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         buttonText="Select Files"
         containerBgColor="#f5fafa"
         containerBorderColor="#99D0E9"
         containerText="or drag and drop here"
         handleAddFiles={[Function]}
+        numOfFiles={0}
       />
       <FlexGrid
         align="stretch"
@@ -60,37 +117,48 @@ exports[`Document Management - Upload scene should render correctly 1`] = `
         containerBorderColor="#c2e3b6"
         containerText="or drag and drop here"
         handleAddFiles={[Function]}
+        numOfFiles={0}
       />
     </FlexGrid>
   </ModalContent>
   <WithStyles(Divider) />
-  <Typography
-    style={
-      Object {
-        "font": 400,
-        "fontSize": 12,
-        "padding": 10,
-      }
-    }
-    variant="body1"
+  <FlexGrid
+    align="center"
+    circular={false}
+    container={true}
+    flex={false}
+    justify="space-between"
+    padding="0 0 0 20px"
+    raised={false}
+    style={Object {}}
+    type="row"
   >
-    File Count: 
-    0
-  </Typography>
-  <WithStyles(ModalActions)
-    actions={
-      Array [
+    <Typography
+      style={
         Object {
-          "onClick": [Function],
-          "otherProps": Object {
-            "aria-label": "Close modal",
-            "id": "uploadCloseBtn",
+          "fontSize": "0.875rem",
+        }
+      }
+      variant="body1"
+    >
+      File Count: 
+      0
+    </Typography>
+    <WithStyles(ModalActions)
+      actions={
+        Array [
+          Object {
+            "onClick": [Function],
+            "otherProps": Object {
+              "aria-label": "Close modal",
+              "id": "uploadCloseBtn",
+            },
+            "type": "button",
+            "value": "Close",
           },
-          "type": "button",
-          "value": "Close",
-        },
-      ]
-    }
-  />
+        ]
+      }
+    />
+  </FlexGrid>
 </WithStyles(Modal)>
 `;

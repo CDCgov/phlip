@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Grid from 'components/FlexGrid'
 import Button from 'components/Button'
 import Typography from '@material-ui/core/Typography/Typography'
-import {Alert} from 'components'
+import { Alert } from 'components'
 
 class FileUpload extends Component {
   static propTypes = {
@@ -11,37 +11,30 @@ class FileUpload extends Component {
      * Color of the dashed border for the container
      */
     containerBorderColor: PropTypes.string,
-
     /**
      * Color of the background of the container
      */
     containerBgColor: PropTypes.string,
-
     /**
      * Any additional style to be applied to the container
      */
     containerStyle: PropTypes.object,
-
     /**
      * 'Select files...' button content or text
      */
     buttonText: PropTypes.any,
-
     /**
      * Whether or not to allow multiple
      */
     allowMultiple: PropTypes.bool,
-
     /**
      * Container text
      */
     containerText: PropTypes.any,
-
     /**
      * Allowed file types
      */
     allowedFileTypes: PropTypes.string,
-
     /**
      * Callback for when files are added
      */
@@ -49,17 +42,22 @@ class FileUpload extends Component {
     /**
      *  Flag for excel file previously selected
      */
-    infoSheetSelected : PropTypes.bool
+    infoSheetSelected: PropTypes.bool,
+    /**
+     * Total # of files selected to know when to clear files input
+     */
+    numOfFiles: PropTypes.number
   }
-
+  
   static defaultProps = {
     containerBorderColor: '#99D0E9',
     containerBgColor: '#f5fafa',
     containerText: 'or drag and drop here',
     buttonText: 'Select Files',
-    allowMultiple: false
+    allowMultiple: false,
+    numOfFiles: 0
   }
-
+  
   constructor(props, context) {
     super(props, context)
     this.inputRef = React.createRef()
@@ -71,7 +69,13 @@ class FileUpload extends Component {
       }
     }
   }
-
+  
+  componentDidUpdate(prevProps) {
+    if (prevProps.numOfFiles !== 0 && this.props.numOfFiles === 0) {
+      this.inputRef.current.value = null
+    }
+  }
+  
   handleInitiateFileSelector = () => {
     if (this.props.infoSheetSelected) {
       this.setState({
@@ -85,48 +89,49 @@ class FileUpload extends Component {
       this.inputRef.current.click()
     }
   }
-
-    /**
-     * Handles when the user cancels out of selecting a new excel file
-     */
-    onCancelSelectExcel = () => {
-      this.setState({
-        alertOpen: false,
-        alertInfo: {}
-      })
-    }
-
-    onContinueSelectExcel = () => {
-      this.onCancelSelectExcel()
-      this.inputRef.current.click()
-    }
-
-    render() {
-      const {
-        handleAddFiles,
-        buttonText,
-        containerBgColor,
-        containerBorderColor,
-        containerStyle,
-        containerText,
-        allowMultiple,
-        allowedFileTypes
-      } = this.props
-
-      const alertActions = [
-        {
-          value: 'Cancel',
-          type: 'button',
-          onClick: this.onCancelSelectExcel,
-          preferred: true
-        },
-        {
-          value: 'Continue',
-          type: 'button',
-          onClick: this.onContinueSelectExcel
-        }
-      ]
-      return (
+  
+  /**
+   * Handles when the user cancels out of selecting a new excel file
+   */
+  onCancelSelectExcel = () => {
+    this.setState({
+      alertOpen: false,
+      alertInfo: {}
+    })
+  }
+  
+  onContinueSelectExcel = () => {
+    this.onCancelSelectExcel()
+    this.inputRef.current.click()
+  }
+  
+  render() {
+    const {
+      handleAddFiles,
+      buttonText,
+      containerBgColor,
+      containerBorderColor,
+      containerStyle,
+      containerText,
+      allowMultiple,
+      allowedFileTypes
+    } = this.props
+    
+    const alertActions = [
+      {
+        value: 'Cancel',
+        type: 'button',
+        onClick: this.onCancelSelectExcel,
+        preferred: true
+      },
+      {
+        value: 'Continue',
+        type: 'button',
+        onClick: this.onContinueSelectExcel
+      }
+    ]
+    
+    return (
       <>
         <form encType="multipart/form-data" style={{ margin: '20px 0', flex: 1 }}>
           <Grid
@@ -170,8 +175,8 @@ class FileUpload extends Component {
           {this.state.alertInfo.text}
         </Alert>
         </>
-      )
-    }
+    )
+  }
 }
 
 export default FileUpload

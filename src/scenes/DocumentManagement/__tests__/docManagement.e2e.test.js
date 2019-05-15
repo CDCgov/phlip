@@ -88,7 +88,7 @@ export const docManage = () => {
       console.log('upload initated at:'+ new Date().toLocaleTimeString())
       await page.waitFor(60000)
       console.log('upload should be completed at:' + new Date().toLocaleTimeString())
-      await page.screenshot({path:'exceluploadinfo.png'})
+      await page.screenshot({ path:'exceluploadinfo.png' })
       // add a valid project before upload
       await page.waitForSelector('#project-name')
       await page.click('#project-name')
@@ -128,7 +128,7 @@ export const docManage = () => {
         // await page.click(uploadCloseButton)
         // await page.waitForSelector(uploadCloseConfirm)
         // await page.click(uploadCloseConfirm)
-        await page.screenshot({path:'exceluploadsuccess.png'})
+        await page.screenshot({ path:'exceluploadsuccess.png' })
       } catch (e) {
         console.log(e)
         throw new Error('test failed')
@@ -164,7 +164,7 @@ export const docManage = () => {
       await page.waitFor(1000)
       // verify upload success
       // check if file uploaded
-      await page.screenshot({path:'uploaded confirmation.png'})
+      await page.screenshot({ path:'uploaded confirmation.png' })
       console.log('check upload success')
       await page.waitForSelector('#search-bar')
       await page.click('#search-bar')
@@ -214,7 +214,7 @@ export const docManage = () => {
       await page.waitFor(1000)
       await page.waitForSelector(uploadAlertMessage)
       await page.waitFor(1000)
-      await page.screenshot({path:'duplicate confirm screen.png'})
+      await page.screenshot({ path:'duplicate confirm screen.png' })
       try {
         let dupMessageText = await page.$eval(uploadAlertMessage, el => el.textContent)
         console.log('actual message: ' + dupMessageText)
@@ -246,7 +246,7 @@ export const docManage = () => {
       await page.click(uploadGoButton)
       await page.waitForSelector(uploadAlertMessage)
       await page.waitFor(1000)
-      await page.screenshot({path:'invalid project confirm screen.png'})
+      await page.screenshot({ path:'invalid project confirm screen.png' })
       try {
         let missingProjectMsgText = await page.$eval(uploadAlertMessage, el => el.textContent)
         console.log('actual message: ' + missingProjectMsgText)
@@ -282,7 +282,7 @@ export const docManage = () => {
       await page.click(uploadGoButton)
       await page.waitForSelector(uploadAlertMessage)
       await page.waitFor(1000)
-      await page.screenshot({path:'invalid jurisdiction confirm screen.png'})
+      await page.screenshot({ path:'invalid jurisdiction confirm screen.png' })
       try {
         let missingJurisMsgText = await page.$eval(uploadAlertMessage, el => el.textContent)
         console.log('actual message: ' + missingJurisMsgText)
@@ -319,7 +319,7 @@ export const docManage = () => {
       console.log(data)
       expect(data.txtData.join('|')).toEqual(expect.stringContaining('minnesota'))
       expect(data.rowCount >= 1).toBeTruthy()
-      await page.screenshot({path:'search result.png'})
+      await page.screenshot({ path:'search result.png' })
       await page.waitForSelector('#search-bar')
       await page.click('#search-bar')
       //  await page.keyboard.type(string.fromCharCode())
@@ -374,7 +374,7 @@ export const docManage = () => {
       // click on document management button
       await page.waitForSelector(documentManagementBtn)
       await page.click(documentManagementBtn)
-      await page.screenshot({path:'current docs.png'})
+      await page.screenshot({ path:'current docs.png' })
       //upload 3 documents for testing
       //click on upload new
       await page.waitForSelector(uploadNewButton)

@@ -1,27 +1,20 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { withRouter } from 'react-router'
+import { withRouter, Link } from 'react-router-dom'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
-import Button from 'components/Button'
-import Container, { Column } from 'components/Layout'
 import JurisdictionList from './components/JurisdictionList'
 import actions from './actions'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
-import TextLink from 'components/TextLink'
-import ApiErrorView from 'components/ApiErrorView'
 import { withTheme } from '@material-ui/core/styles'
-import PageLoader from 'components/PageLoader'
-import Alert from 'components/Alert'
-import ApiErrorAlert from 'components/ApiErrorAlert'
-import withTracking from 'components/withTracking'
+import { FlexGrid, ApiErrorView, ApiErrorAlert, withTracking, PageLoader, Alert, Button } from 'components'
 
 /**
  * Main / entry component for all things jurisdiction. It is a modal that shows a list of all jurisdictions for the
- * project of which this was invoked. This component is mounted when the user clicks the 'Edit' under the 'Jurisdictions'
- * table header on the project list page.
+ * project of which this was invoked. This component is mounted when the user clicks the 'Edit' under the
+ * 'Jurisdictions' table header on the project list page.
  */
 export class AddEditJurisdictions extends Component {
   static propTypes = {
@@ -68,34 +61,25 @@ export class AddEditJurisdictions extends Component {
     /**
      * Content of error that needs to be shown
      */
-    errorContent: PropTypes.string,
-
-    /**
-     * title of the page
-     */
-    title: PropTypes.string
+    errorContent: PropTypes.string
   }
-
+  
   constructor(props, context) {
     super(props, context)
   }
-
+  
   state = {
     confirmDeleteAlertOpen: false,
     jurisdictionToDelete: {},
     deleteErrorAlertOpen: false
   }
-
-  UNSAFE_componentWillMount() {
+  
+  componentDidMount() {
     this.props.actions.getProjectJurisdictions(this.props.project.id)
     this.showJurisdictionLoader()
+    document.title = `PHLIP - Project ${this.props.project.name} - Jurisdictions`
   }
-
-  componentDidMount() {
-    this.prevTitle = document.title
-    document.title = `PHLIP - ${this.props.project.name} - Add/Edit Jurisdiction`
-  }
-
+  
   componentDidUpdate(prevProps) {
     if (this.props.deleteError !== null && prevProps.deleteError === null) {
       this.setState({
@@ -103,11 +87,13 @@ export class AddEditJurisdictions extends Component {
       })
     }
   }
+  
   componentWillUnmount() {
     this.props.actions.clearJurisdictions()
-    document.title = this.prevTitle
+    document.title = `PHLIP - Project ${this.props.project.name}`
+    this.props.history.push('/home')
   }
-
+  
   /**
    * Closes main modal, and pushes '/home' onto browser history
    * @public
@@ -115,7 +101,7 @@ export class AddEditJurisdictions extends Component {
   onCloseModal = () => {
     this.props.history.push('/home')
   }
-
+  
   /**
    * Sets a timeout and if the app is still loading the jurisdictions after 1 second, then it dispatches a redux action
    * to show the loading spinner
@@ -128,7 +114,7 @@ export class AddEditJurisdictions extends Component {
       }
     }, 1000)
   }
-
+  
   /**
    * Opens an alert to ask the user to confirm deleting a jurisdiction
    *
@@ -142,7 +128,7 @@ export class AddEditJurisdictions extends Component {
       jurisdictionToDelete: { id, name }
     })
   }
-
+  
   /**
    * User confirms delete, dispatches a redux action to delete the jurisdiction, closes the alert modal
    * @public
@@ -151,7 +137,7 @@ export class AddEditJurisdictions extends Component {
     this.props.actions.deleteJurisdictionRequest(this.state.jurisdictionToDelete.id, this.props.project.id)
     this.cancelDelete()
   }
-
+  
   /**
    * User cancels delete, closes the alert modal
    * @public
@@ -162,7 +148,7 @@ export class AddEditJurisdictions extends Component {
       jurisdictionToDelete: {}
     })
   }
-
+  
   /**
    * Closes the error alert shown when an error occurs during delete, dispatches an action to clear error content
    * @public
@@ -171,31 +157,45 @@ export class AddEditJurisdictions extends Component {
     this.setState({
       deleteErrorAlertOpen: false
     })
-
+    
     this.props.actions.dismissDeleteErrorAlert()
   }
-
+  
   /**
    * Gets the button to show in the modal header
    * @public
    */
   getButton = () => {
     return (
-      <Fragment>
+      <>
         <div style={{ marginRight: 10 }}>
-          <TextLink to={{ pathname: `/project/${this.props.project.id}/jurisdictions/add`, state: { preset: true } }}>
-            <Button value="Load Preset" color="accent" aria-label="Load preset" />
-          </TextLink>
+          <Button
+            component={Link}
+            to={{
+              pathname: `/project/${this.props.project.id}/jurisdictions/add`,
+              state: { preset: true, modal: true }
+            }}
+            value="Load Preset"
+            color="accent"
+            aria-label="Load preset"
+          />
         </div>
         <div>
-          <TextLink to={{ pathname: `/project/${this.props.project.id}/jurisdictions/add`, state: { preset: false } }}>
-            <Button value="+ Add Jurisdiction" color="accent" aria-label="Add jurisidiction to project" />
-          </TextLink>
+          <Button
+            component={Link}
+            to={{
+              pathname: `/project/${this.props.project.id}/jurisdictions/add`,
+              state: { preset: false, modal: true }
+            }}
+            value="Add Jurisdiction"
+            color="accent"
+            aria-label="Add jurisidiction to project"
+          />
         </div>
-      </Fragment>
+      </>
     )
   }
-
+  
   render() {
     const alertActions = [
       {
@@ -210,51 +210,57 @@ export class AddEditJurisdictions extends Component {
         onClick: this.continueDelete
       }
     ]
-
+    
+    const {
+      theme, project, error, searchValue, actions, deleteError, errorContent, showJurisdictionLoader, visibleJurisdictions
+    } = this.props
+    
+    const { confirmDeleteAlertOpen, jurisdictionToDelete, deleteErrorAlertOpen } = this.state
+    
     return (
-      <Modal onClose={this.onCloseModal} open={true} maxWidth="md" hideOverflow>
+      <Modal onClose={this.onCloseModal} open maxWidth="md" hideOverflow>
         <ModalTitle
           title={
             <Typography variant="title">
               <span style={{ paddingRight: 10 }}>Jurisdictions</span>
-              <span style={{ color: this.props.theme.palette.secondary.main }}>{this.props.project.name}</span>
+              <span style={{ color: theme.palette.secondary.main }}>{project.name}</span>
             </Typography>
           }
-          buttons={this.props.error === true ? [] : this.getButton()}
+          buttons={error === true ? [] : this.getButton()}
           search
           SearchBarProps={{
-            searchValue: this.props.searchValue,
-            handleSearchValueChange: (event) => this.props.actions.updateSearchValue(event.target.value),
+            searchValue,
+            handleSearchValueChange: event => actions.updateSearchValue(event.target.value),
             placeholder: 'Search',
             style: { paddingRight: 10 }
           }}
         />
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
-          <Alert actions={alertActions} open={this.state.confirmDeleteAlertOpen}>
+          <Alert actions={alertActions} open={confirmDeleteAlertOpen}>
             <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-              Are you sure you want to delete {this.state.jurisdictionToDelete.name}? All coded questions related to this jurisdiction will be deleted.
+              Are you sure you want to delete {jurisdictionToDelete.name}? All coded questions related to this jurisdiction will be deleted.
             </Typography>
           </Alert>
           <ApiErrorAlert
-            open={this.state.deleteErrorAlertOpen}
-            content={this.props.deleteError}
+            open={deleteErrorAlertOpen}
+            content={deleteError}
             onCloseAlert={this.dismissDeleteErrorAlert}
           />
-          <Container flex style={{ marginTop: 20 }}>
-            <Column flex displayFlex style={{ overflowX: 'auto' }}>
-              {this.props.error === true
-                ? <ApiErrorView error={this.props.errorContent} />
-                : this.props.showJurisdictionLoader
+          <FlexGrid container flex style={{ marginTop: 20 }}>
+            <FlexGrid container flex style={{ overflowX: 'auto' }}>
+              {error === true
+                ? <ApiErrorView error={errorContent} />
+                : showJurisdictionLoader
                   ? <PageLoader />
                   : <JurisdictionList
-                    project={this.props.project}
-                    jurisdictions={this.props.visibleJurisdictions}
-                    projectId={this.props.project.id}
+                    project={project}
+                    jurisdictions={visibleJurisdictions}
+                    projectId={project.id}
                     onDelete={this.confirmDelete}
                   />}
-            </Column>
-          </Container>
+            </FlexGrid>
+          </FlexGrid>
         </ModalContent>
         <ModalActions
           actions={[
@@ -285,4 +291,7 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(actions, dispatch)
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withTheme()(withTracking(AddEditJurisdictions, 'Jurisdictions'))))
+export default withRouter(connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withTheme()(withTracking(AddEditJurisdictions, 'Jurisdictions'))))

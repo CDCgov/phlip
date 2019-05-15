@@ -10,7 +10,7 @@ export const DocListTableHead = props => {
   const { onSelectAll, allSelected, onActionSelected, sortBy, direction, onRequestSort } = props
   
   const options = [
-    { value: 'bulk', label: 'Bulk Operation', disabled: true },
+    { value: 'bulk', label: 'Actions', disabled: true },
     { value: 'deleteDoc', label: 'Delete' },
     { value: 'assignProject', label: 'Assign Project' },
     { value: 'assignJurisdiction', label: 'Assign Jurisdiction' },
@@ -45,9 +45,9 @@ export const DocListTableHead = props => {
     { key: 'uploadedDate', label: 'Uploaded Date', padding: 'checkbox', hasSort: true },
     { key: 'doc-projects', label: 'Projects', padding: 'checkbox' },
     { key: 'doc-jurisdictions', label: 'Jurisdictions', padding: 'checkbox' },
-    { key: 'approved', label:'Approved', padding:0}
+    { key: 'approved', label: 'Approved', padding: 0 }
   ]
-
+  
   return (
     <>
       <TableRow key="bulkAction" style={{ width: '100%' }}>
@@ -100,17 +100,14 @@ DocListTableHead.propTypes = {
    * Handles when the user clicks the checkbox table header
    */
   onSelectAll: PropTypes.func,
-
   /**
    * Whether or not all files are currently selected
    */
   allSelected: PropTypes.bool,
-
   /**
    * Handles when the user select an action from the dropdown
    */
   onActionSelected: PropTypes.func,
-
   /**
    * Handles when the user click on apply button
    */

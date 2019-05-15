@@ -21,7 +21,7 @@ module.exports = {
     'html',
     'lcov'
   ],
-  testRegex: '\/__tests__\/.+[^e2e]\.test\.js$',
+  testRegex: '\/__tests__\/\\w+(?!.+e2e)(.+)\\.test\\.js$',
   modulePaths: [
     '<rootDir>/src/'
   ],

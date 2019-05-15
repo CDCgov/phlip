@@ -14,6 +14,7 @@ exports[`PDFViewer - Page component should render correctly 1`] = `
   }
   pendingAnnotations={Array []}
   saveAnnotation={[MockFunction]}
+  showAvatars={false}
   textContent={
     Object {
       "items": Array [],
@@ -71,7 +72,7 @@ exports[`PDFViewer - Page component should render correctly 1`] = `
       }
     />
     <div
-      className="textLayer"
+      className="textLayer textLayerNoAnno"
       data-page-number={0}
       id="text-layer-page-0"
       style={

@@ -7,11 +7,10 @@ describe('CodingValidation scene actions creators', () => {
       id: 1,
       newIndex: 2,
       projectId: 1,
-      jurisdictionId: 1,
-      page: 'coding'
+      jurisdictionId: 1
     }
 
-    expect(actions.getNextQuestion(1, 2, 1, 1, 'coding')).toEqual(expectedAction)
+    expect(actions.getNextQuestion(1, 2, 1, 1)).toEqual(expectedAction)
   })
 
   test('should create an action to get previous question', () => {
@@ -20,11 +19,10 @@ describe('CodingValidation scene actions creators', () => {
       id: 1,
       newIndex: 2,
       projectId: 1,
-      jurisdictionId: 1,
-      page: 'coding'
+      jurisdictionId: 1
     }
 
-    expect(actions.getPrevQuestion(1, 2, 1, 1, 'coding')).toEqual(expectedAction)
+    expect(actions.getPrevQuestion(1, 2, 1, 1)).toEqual(expectedAction)
   })
 
   test('should create an action to get question in nav', () => {
@@ -32,11 +30,10 @@ describe('CodingValidation scene actions creators', () => {
       type: types.ON_QUESTION_SELECTED_IN_NAV,
       question: {},
       projectId: 1,
-      jurisdictionId: 1,
-      page: 'coding'
+      jurisdictionId: 1
     }
 
-    expect(actions.onQuestionSelectedInNav({}, 1, 1, 'coding')).toEqual(expectedAction)
+    expect(actions.onQuestionSelectedInNav({}, 1, 1)).toEqual(expectedAction)
   })
 
   test('should create an action to apply answer to all', () => {
@@ -44,11 +41,10 @@ describe('CodingValidation scene actions creators', () => {
       type: types.ON_APPLY_ANSWER_TO_ALL,
       projectId: 1,
       jurisdictionId: 1,
-      questionId: 1,
-      page: 'coding'
+      questionId: 1
     }
 
-    expect(actions.applyAnswerToAll(1, 1, 1, 'coding')).toEqual(expectedAction)
+    expect(actions.applyAnswerToAll(1, 1, 1)).toEqual(expectedAction)
   })
 
   test('should create an action to update the answer data', () => {
@@ -158,7 +154,7 @@ describe('CodingValidation scene actions creators', () => {
     expect(actions.showQuestionLoader()).toEqual(expectedAction)
   })
 
-  test('should create an action to show page loader', () =>{
+  test('should create an action to show page loader', () => {
     const expectedAction = {
       type: types.ON_SHOW_PAGE_LOADER
     }
@@ -179,11 +175,10 @@ describe('CodingValidation scene actions creators', () => {
   test('should create an action to add request to queue', () => {
     const expectedAction = {
       type: types.ADD_REQUEST_TO_QUEUE,
-      payload: {},
-      page: 'coding'
+      payload: {}
     }
 
-    expect(actions.addRequestToQueue({}, 'coding')).toEqual(expectedAction)
+    expect(actions.addRequestToQueue({})).toEqual(expectedAction)
   })
 
   test('should create an action to change touched status', () => {
@@ -217,11 +212,10 @@ describe('CodingValidation scene actions creators', () => {
     const expectedAction = {
       type: types.GET_USER_CODED_QUESTIONS_REQUEST,
       projectId: 1,
-      jurisdictionId: 23,
-      page: 'coding'
+      jurisdictionId: 23
     }
 
-    expect(actions.getUserCodedQuestions(1, 23, 'coding')).toEqual(expectedAction)
+    expect(actions.getUserCodedQuestions(1, 23)).toEqual(expectedAction)
   })
 
   test('should create an action to handle to save flag info', () => {
@@ -261,11 +255,10 @@ describe('CodingValidation scene actions creators', () => {
     const expectedAction = {
       type: types.GET_USER_VALIDATED_QUESTIONS_REQUEST,
       projectId: 2,
-      jurisdictionId: 42,
-      page: 'validation'
+      jurisdictionId: 42
     }
 
-    expect(actions.getUserValidatedQuestionsRequest(2, 42, 'validation')).toEqual(expectedAction)
+    expect(actions.getUserValidatedQuestionsRequest(2, 42)).toEqual(expectedAction)
   })
 
   test('should create an action to clear flag', () => {

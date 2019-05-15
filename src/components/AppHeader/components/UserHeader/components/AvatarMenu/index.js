@@ -4,51 +4,51 @@ import { findDOMNode } from 'react-dom'
 import Grid from '@material-ui/core/Grid'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import Icon from 'components/Icon'
-import Avatar from 'components/Avatar'
 import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
 import Paper from '@material-ui/core/Paper'
 import { Manager, Reference, Popper } from 'react-popper'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
+import { Icon, Avatar } from 'components'
 
 export class AvatarMenu extends Component {
   constructor(props, context) {
     super(props, context)
     this.firstMenuItem = null
-    this.avatarRef = null
   }
-
+  
   setFirstMenuItem = element => {
     this.firstMenuItem = findDOMNode(element)
     if (this.props.role === 'Admin' && this.props.open && this.firstMenuItem !== null) {
       this.firstMenuItem.focus()
     }
   }
-
+  
   onKeyPressMenu = e => {
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault()
       this.props.onToggleMenu()
     }
   }
-
+  
   handleClickAway = () => {
     if (this.props.open) {
       this.props.onToggleMenu()
     }
   }
-
+  
   render() {
     const {
       role, initials, userName, open, onLogoutUser, onOpenAdminPage, onToggleMenu, onOpenHelpPdf, avatar
     } = this.props
-
+    
+    const textColor = '#5f6060'
+    
     return (
       <ClickAwayListener onClickAway={this.handleClickAway}>
         <Grid item style={{ zIndex: 2 }}>
           <Manager>
-            <Reference innerRef={node => this.avatarRef = findDOMNode(node)}>
+            <Reference>
               {({ ref }) => {
                 return (
                   <div ref={ref}>
@@ -62,19 +62,15 @@ export class AvatarMenu extends Component {
                       aria-haspopup={true}
                       aria-owns={open ? 'avatar-user-menu' : null}
                       avatar={avatar}
-                      ref={ref}
                       userName={userName}
-                      initials={initials ? initials : ''}
+                      initials={initials || ''}
                       style={{ cursor: 'pointer' }}
                     />
                   </div>
                 )
               }}
             </Reference>
-            <Popper
-              placement="bottom-end"
-              eventsEnabled={open}
-              style={{ pointerEvents: open ? 'auto' : 'none' }}>
+            <Popper placement="bottom-end" eventsEnabled={open} style={{ pointerEvents: open ? 'auto' : 'none' }}>
               {({ placement, ref, style }) => {
                 return (
                   open &&
@@ -85,13 +81,19 @@ export class AvatarMenu extends Component {
                         aria-expanded={open}
                         id="avatar-user-menu"
                         aria-labelledby="avatar-menu-button">
-                        {role === 'Admin' &&
-                        <MenuItem onClick={onOpenAdminPage} key="admin-menu" ref={this.setFirstMenuItem}>
+                        <MenuItem
+                          onClick={onOpenAdminPage}
+                          key="admin-menu"
+                          ref={this.setFirstMenuItem}>
                           <ListItemIcon>
                             <Icon color="accent">person</Icon>
                           </ListItemIcon>
-                          <ListItemText style={{ color: '#5f6060' }} disableTypography primary="User Management" />
-                        </MenuItem>}
+                          <ListItemText
+                            style={{ color: textColor }}
+                            disableTypography
+                            primary={role === 'Admin' ? 'User Management' : 'Profile'}
+                          />
+                        </MenuItem>
                         <MenuItem
                           onClick={onLogoutUser}
                           key="logout-menu"
@@ -99,13 +101,13 @@ export class AvatarMenu extends Component {
                           <ListItemIcon>
                             <Icon color="accent">exit_to_app</Icon>
                           </ListItemIcon>
-                          <ListItemText style={{ color: '#5f6060' }} disableTypography primary="Logout" />
+                          <ListItemText style={{ color: textColor }} disableTypography primary="Logout" />
                         </MenuItem>
                         <MenuItem onClick={onOpenHelpPdf} key="help-section-pdf">
                           <ListItemIcon>
                             <Icon color="accent">help</Icon>
                           </ListItemIcon>
-                          <ListItemText style={{ color: '#5f6060' }} disableTypography primary="Help" />
+                          <ListItemText style={{ color: textColor }} disableTypography primary="Help" />
                         </MenuItem>
                       </MenuList>
                     </Paper>

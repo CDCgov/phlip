@@ -66,7 +66,7 @@ describe('Admin reducer', () => {
   })
 
   describe('UPDATE_USER_SUCCESS', () => {
-    const updatedUser = { id: 1, firstName: 'Michael', lastName: 'Scarn'}
+    const updatedUser = { id: 1, firstName: 'Michael', lastName: 'Scarn' }
 
     const action = {
       type: types.UPDATE_USER_SUCCESS,

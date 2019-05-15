@@ -15,9 +15,7 @@ exports[`Header -- AvatarMenu should render correctly 1`] = `
     }
   >
     <Manager>
-      <Reference
-        innerRef={[Function]}
-      >
+      <Reference>
         <Component />
       </Reference>
       <Popper

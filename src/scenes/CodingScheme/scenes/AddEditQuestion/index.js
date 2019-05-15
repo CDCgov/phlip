@@ -83,8 +83,6 @@ export class AddEditQuestion extends Component {
 
   constructor(props, context) {
     super(props, context)
-    console.log(this.props.location)
-
     this.questionDefined = this.props.match.url === `/project/${this.props.projectId}/coding-scheme/add`
       ? null
       : this.props.location.state.questionDefined
@@ -123,6 +121,13 @@ export class AddEditQuestion extends Component {
       isCategoryQuestion: false
     }
   }
+  
+  componentDidMount() {
+    this.prevTitle = document.title
+    document.title = this.questionDefined
+      ? `${document.title} - Edit Question`
+      : `${document.title} - Add Question`
+  }
 
   componentDidUpdate() {
     if (this.state.submitting) {
@@ -135,6 +140,10 @@ export class AddEditQuestion extends Component {
         this.props.history.goBack()
       }
     }
+  }
+  
+  componentWillUnmount() {
+    document.title = this.prevTitle
   }
 
   getButtonText = text => {

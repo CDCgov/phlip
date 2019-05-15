@@ -42,26 +42,6 @@ const userReducer = (state = INITIAL_STATE, action) => {
         }
       }
     
-    case types.UPDATE_CURRENT_USER_AVATAR:
-      return {
-        ...state,
-        currentUser: { ...state.currentUser, avatar: action.payload },
-        byId: {
-          ...state.byId,
-          [state.currentUser.id]: { ...state.byId[state.currentUser.id], avatar: action.payload }
-        }
-      }
-    
-    case types.REMOVE_CURRENT_USER_AVATAR:
-      return {
-        ...state,
-        currentUser: { ...state.currentUser, avatar: '' },
-        byId: {
-          ...state.byId,
-          [state.currentUser.id]: { ...state.byId[state.currentUser.id], avatar: '' }
-        }
-      }
-    
     case types.ADD_USER_IMAGE_SUCCESS:
     case types.DELETE_USER_IMAGE_SUCCESS:
       return {
@@ -98,7 +78,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
         ...state,
         byId: {
           ...state.byId,
-          [action.payload.id]: updateObject(state.byId[action.payload.id], action.payload)
+          [action.payload.id]: updateObject(state.byId[action.payload.id], action.payload.avatar)
         }
       }
     

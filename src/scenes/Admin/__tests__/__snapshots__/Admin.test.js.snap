@@ -21,7 +21,9 @@ exports[`Admin Scene it should render correctly 1`] = `
           "aria-label": "Add new user",
         },
         "show": true,
-        "state": Object {},
+        "state": Object {
+          "modal": true,
+        },
         "text": "Add New User",
       }
     }
@@ -35,14 +37,6 @@ exports[`Admin Scene it should render correctly 1`] = `
     handleRequestSort={[Function]}
     sortBy="name"
     users={Array []}
-  />
-  <Route
-    component={[Function]}
-    path="/admin/new/user"
-  />
-  <Route
-    component={[Function]}
-    path="/admin/edit/user/:id"
   />
 </FlexGrid>
 `;

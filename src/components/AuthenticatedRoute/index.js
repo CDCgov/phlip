@@ -10,7 +10,14 @@ import { UnauthPage, PageNotFound } from 'components/RoutePages'
  * These are all of the routes that exist in the application, split up by who is allowed to view them
  */
 const coderPaths = [
-  '/home', '/project/:id/protocol', '/project/:id/code', '/project/edit/:id', '/docs', '/docs/:id/view'
+  '/home',
+  '/project/:id/protocol',
+  '/project/:id/code',
+  '/project/edit/:id',
+  '/docs',
+  '/docs/:id/view',
+  '/user/profile',
+  '/user/profile/avatar'
 ]
 
 const coordinatorPaths = [
@@ -33,7 +40,7 @@ const paths = {
  */
 const isAllowed = (user, path) => {
   if (path === '/') return true
-  const allowedPaths = paths[user.role]
+  const allowedPaths = [...paths[user.role], ...user.role !== 'Admin' ? ['/user/profile', '/user/profile/avatar'] : []]
   let allowed = true
   if (allowedPaths.length > 0) {
     allowed = false
@@ -91,12 +98,10 @@ AuthenticatedRoute.propTypes = {
    * The component to route to and render if the user is allowed
    */
   component: PropTypes.any.isRequired,
-
   /**
    * User currently logged
    */
   user: PropTypes.object,
-
   /**
    * Location object from React-Router
    */

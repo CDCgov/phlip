@@ -6,16 +6,11 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
   circular={false}
   container={true}
   flex={true}
-  justify="stretch"
-  padding="20px 20px 10px 20px"
+  justify="space-between"
+  padding={0}
   raised={false}
-  style={
-    Object {
-      "flexWrap": "nowrap",
-      "overflow": "auto",
-    }
-  }
-  type="row"
+  style={Object {}}
+  type="column"
 >
   <FlexGrid
     align="stretch"
@@ -23,58 +18,37 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
     container={true}
     flex={false}
     justify="stretch"
-    padding={0}
-    raised={false}
-    style={Object {}}
-    type="column"
-  >
-    <Typography
-      style={
-        Object {
-          "paddingRight": 10,
-        }
-      }
-      variant="subheading2"
-    >
-      )
-    </Typography>
-  </FlexGrid>
-  <FlexGrid
-    align="stretch"
-    circular={false}
-    container={true}
-    flex={true}
-    justify="stretch"
-    padding={0}
+    padding={20}
     raised={false}
     style={
       Object {
+        "flexWrap": "nowrap",
+        "minHeight": "35%",
         "overflow": "auto",
       }
     }
-    type="column"
+    type="row"
   >
     <FlexGrid
-      align="center"
+      align="stretch"
       circular={false}
       container={true}
       flex={false}
       justify="stretch"
-      padding="0 0 15px"
+      padding={0}
       raised={false}
       style={Object {}}
-      type="row"
+      type="column"
     >
       <Typography
         style={
           Object {
-            "letterSpacing": 0,
-            "lineHeight": "1.5em",
+            "paddingRight": 10,
           }
         }
-        variant="body2"
+        variant="subheading2"
       >
-         
+        )
       </Typography>
     </FlexGrid>
     <FlexGrid
@@ -87,67 +61,115 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
       raised={false}
       style={
         Object {
-          "minHeight": "unset",
           "overflow": "auto",
-          "width": "100%",
         }
       }
       type="column"
     >
       <FlexGrid
-        align="stretch"
+        align="center"
         circular={false}
         container={true}
         flex={false}
         justify="stretch"
-        padding={0}
+        padding="0 0 10px"
         raised={false}
         style={Object {}}
         type="row"
       >
-        <WithStyles(SelectionControlQuestion)
-          choices={
-            Array [
-              Object {
-                "id": 1,
-              },
-            ]
-          }
-          mergedUserQuestions={
+        <Typography
+          style={
             Object {
-              "answers": Array [],
+              "letterSpacing": 0,
             }
           }
-          question={
-            Object {
-              "hint": null,
-              "possibleAnswers": Array [
-                Object {
-                  "id": 1,
-                },
-              ],
-              "questionType": 4,
-            }
-          }
-        />
+          variant="body2"
+        >
+           
+        </Typography>
       </FlexGrid>
       <FlexGrid
         align="stretch"
         circular={false}
-        container={false}
-        flex={false}
+        container={true}
+        flex={true}
         justify="stretch"
-        padding="10px 0 0"
+        padding="5px 0 0"
         raised={false}
         style={
           Object {
-            "margin": 10,
             "minHeight": "unset",
+            "overflow": "auto",
+            "width": "100%",
           }
         }
         type="column"
-      />
+      >
+        <FlexGrid
+          align="stretch"
+          circular={false}
+          container={true}
+          flex={false}
+          justify="stretch"
+          padding={0}
+          raised={false}
+          style={Object {}}
+          type="row"
+        >
+          <WithStyles(SelectionControlQuestion)
+            choices={
+              Array [
+                Object {
+                  "id": 1,
+                },
+              ]
+            }
+            mergedUserQuestions={
+              Object {
+                "answers": Array [],
+              }
+            }
+            question={
+              Object {
+                "hint": null,
+                "possibleAnswers": Array [
+                  Object {
+                    "id": 1,
+                  },
+                ],
+                "questionType": 4,
+              }
+            }
+          />
+        </FlexGrid>
+        <FlexGrid
+          align="flex-start"
+          circular={false}
+          container={true}
+          flex={true}
+          justify="stretch"
+          padding="20px 10px 5px 1px"
+          raised={false}
+          style={
+            Object {
+              "minHeight": "unset",
+            }
+          }
+          type="column"
+        />
+      </FlexGrid>
     </FlexGrid>
   </FlexGrid>
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={true}
+    flex={false}
+    justify="stretch"
+    padding={0}
+    raised={false}
+    style={Object {}}
+    type="column"
+  />
 </FlexGrid>
 `;

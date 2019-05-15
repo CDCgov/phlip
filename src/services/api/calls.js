@@ -51,6 +51,11 @@ let apiCalls = [
     path: ({ projectId }) => `/projects/${projectId}`
   },
   {
+    name: 'deleteProject',
+    method: 'delete',
+    path: ({ projectId }) => `/projects/${projectId}`
+  },
+  {
     name: 'getUsers',
     method: 'get',
     path: () => '/users'
@@ -64,6 +69,11 @@ let apiCalls = [
     name: 'updateUser',
     method: 'put',
     path: ({ userId }) => `/users/${userId}`
+  },
+  {
+    name: 'updateSelf',
+    method: 'patch',
+    path: ({ userId }) => `/users/${userId}/selfUpdate`
   },
   {
     name: 'getUserImage',

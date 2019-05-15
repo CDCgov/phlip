@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FlexGrid, Avatar, Icon, Tooltip } from 'components'
+import { FlexGrid, Avatar, Tooltip } from 'components'
 import theme from 'services/theme'
+import ValidationAvatar from '../ValidationAvatar'
 
 export const ValidationAvatarList = props => {
   const {
@@ -30,50 +31,27 @@ export const ValidationAvatarList = props => {
         const userAndAnswerMatch = enabledUserId === answer.userId && enabledAnswerId === answer.schemeAnswerId
         const isSelected = (userAndAnswerMatch &&
           ((!isValidatorSelected && !answer.isValidatorAnswer) || (isValidatorSelected && answer.isValidatorAnswer)))
-        const style = isSelected
-          ? selectedStyle
-          : avatarStyle
-        
-        const avatarProps = {
-          style,
-          avatar: user.avatar,
-          initials: user.initials,
-          onClick: handleClickAvatar(answer.schemeAnswerId, answer.userId, answer.isValidatorAnswer === true),
-          userName: user.username
-        }
         
         return (
           <div style={{ marginRight: 2 }} key={`user-answer-${answer.schemeAnswerId}-${i}`}>
-            <Tooltip text={user.username}>
-              {answer.isValidatorAnswer
-                ? (
-                  <FlexGrid container align="flex-end" style={{ position: 'relative' }}>
-                    <Avatar {...avatarProps} />
-                    <Avatar
-                      style={{
-                        position: 'absolute',
-                        width: 12,
-                        height: 12,
-                        backgroundColor: '#80d134',
-                        border: '2px solid white',
-                        top: 16,
-                        left: 16
-                      }}
-                      cardAvatar={true}
-                      initials={<Icon size="12px" color="white" style={{ fontWeight: 800 }}>check</Icon>}
-                    />
-                  </FlexGrid>
-                )
-                : <Avatar {...avatarProps} />
-              }
-            </Tooltip>
+            <ValidationAvatar
+              onClick={handleClickAvatar(answer.schemeAnswerId, answer.userId, answer.isValidatorAnswer)}
+              user={user}
+              enabled={isSelected}
+              isValidator={answer.isValidatorAnswer}
+              key={`user-${user.id}-${answer.pincite}-${answer.schemeAnswerId}`}
+            />
           </div>
         )
       })}
       {showAllAvatar &&
       <Tooltip text="Show all annotations">
         <Avatar
-          style={(enabledUserId === 'All' && answerId === enabledAnswerId) ? selectedStyle : avatarStyle}
+          style={{
+            ...(enabledUserId === 'All' && answerId === enabledAnswerId) ? selectedStyle : {},
+            color: 'white',
+            backgroundColor: theme.palette.primary.main
+          }}
           avatar=""
           initials="ALL"
           key="user-avatar-all-selected"
@@ -102,3 +80,4 @@ ValidationAvatarList.defaultProps = {
 }
 
 export default ValidationAvatarList
+

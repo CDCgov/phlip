@@ -34,7 +34,7 @@ const docManageCalls = [
   {
     name: 'deleteDoc',
     method: 'delete',
-    path: ({docId}) => `/docs/${docId}`
+    path: ({ docId }) => `/docs/${docId}`
   },
   {
     name: 'getDocumentsByProjectJurisdiction',
@@ -50,7 +50,13 @@ const docManageCalls = [
     name:'bulkUpdateDoc',
     method: 'post',
     path:  () => `/docs/bulkUpdate`
+  },
+  {
+    name:'cleanProject',
+    method: 'put',
+    path:  ({ projectId }) => `/docs/cleanProjectList/${projectId}`
   }
+
 ]
 
 export default docManageCalls

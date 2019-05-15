@@ -66,8 +66,8 @@ export const SelectionControlQuestion = props => {
             <FlexGrid
               container
               key={choice.id}
-              padding="0 15px 15px"
-              style={{ backgroundColor: showAnno ? '#e6f8ff' : 'white', margin: '0 10px' }}>
+              padding="5px 15px 10px"
+              style={{ backgroundColor: showAnno ? '#e6f8ff' : 'white', marginRight: 10 }}>
               <FormControlLabel
                 checked={isAnswered}
                 aria-checked={isAnswered}
@@ -97,7 +97,11 @@ export const SelectionControlQuestion = props => {
                       alignSelf: 'center',
                       backgroundColor: showAnno ? theme.palette.error.main : 'white',
                       color: showAnno ? 'white' : 'black',
-                      margin: isValidation ? '0 0 0 20px' : '10px 0 0 0'
+                      margin: isValidation ? '0 0 0 20px' : '10px 0 0 0',
+                      height: 32,
+                      maxHeight: 32,
+                      minHeight: 'unset',
+                      lineHeight: 'unset'
                     }}
                     disableRipple
                     onClick={onToggleAnnotationMode(choice.id)}>

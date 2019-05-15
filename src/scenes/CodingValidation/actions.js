@@ -1,5 +1,6 @@
 import makeActionCreator from 'utils/makeActionCreator'
 import { default as docListActions, types as docTypes } from './components/DocumentList/actions'
+import { default as cardActions } from './components/QuestionCard/actions'
 
 export const types = {
   UPDATE_EDITED_FIELDS: 'UPDATE_EDITED_FIELDS',
@@ -68,10 +69,10 @@ export const types = {
 }
 
 export default {
-  getNextQuestion: makeActionCreator(types.GET_NEXT_QUESTION, 'id', 'newIndex', 'projectId', 'jurisdictionId', 'page'),
-  getPrevQuestion: makeActionCreator(types.GET_PREV_QUESTION, 'id', 'newIndex', 'projectId', 'jurisdictionId', 'page'),
-  onQuestionSelectedInNav: makeActionCreator(types.ON_QUESTION_SELECTED_IN_NAV, 'question', 'projectId', 'jurisdictionId', 'page'),
-  applyAnswerToAll: makeActionCreator(types.ON_APPLY_ANSWER_TO_ALL, 'projectId', 'jurisdictionId', 'questionId', 'page'),
+  getNextQuestion: makeActionCreator(types.GET_NEXT_QUESTION, 'id', 'newIndex', 'projectId', 'jurisdictionId'),
+  getPrevQuestion: makeActionCreator(types.GET_PREV_QUESTION, 'id', 'newIndex', 'projectId', 'jurisdictionId'),
+  onQuestionSelectedInNav: makeActionCreator(types.ON_QUESTION_SELECTED_IN_NAV, 'question', 'projectId', 'jurisdictionId'),
+  applyAnswerToAll: makeActionCreator(types.ON_APPLY_ANSWER_TO_ALL, 'projectId', 'jurisdictionId', 'questionId'),
   updateUserAnswer: makeActionCreator(types.UPDATE_USER_ANSWER, 'projectId', 'jurisdictionId', 'questionId', 'answerId', 'answerValue'),
   onChangeComment: makeActionCreator(types.ON_CHANGE_COMMENT, 'projectId', 'jurisdictionId', 'questionId', 'comment'),
   onChangePincite: makeActionCreator(types.ON_CHANGE_PINCITE, 'projectId', 'jurisdictionId', 'questionId', 'answerId', 'pincite'),
@@ -84,18 +85,19 @@ export default {
   onChangeJurisdiction: makeActionCreator(types.ON_CHANGE_JURISDICTION, 'index'),
   showQuestionLoader: makeActionCreator(types.ON_SHOW_QUESTION_LOADER),
   showPageLoader: makeActionCreator(types.ON_SHOW_PAGE_LOADER),
-  saveUserAnswerRequest: makeActionCreator(types.SAVE_USER_ANSWER_REQUEST, 'projectId', 'jurisdictionId', 'questionId', 'selectedCategoryId', 'page'),
-  addRequestToQueue: makeActionCreator(types.ADD_REQUEST_TO_QUEUE, 'payload', 'page'),
+  saveUserAnswerRequest: makeActionCreator(types.SAVE_USER_ANSWER_REQUEST, 'projectId', 'jurisdictionId', 'questionId', 'selectedCategoryId'),
+  addRequestToQueue: makeActionCreator(types.ADD_REQUEST_TO_QUEUE, 'payload'),
   changeTouchedStatus: makeActionCreator(types.CHANGE_TOUCHED_STATUS),
   getQuestionRequest: makeActionCreator(types.GET_QUESTION_REQUEST, 'questionId', 'projectId'),
-  getCodingOutlineRequest: makeActionCreator(types.GET_CODING_OUTLINE_REQUEST, 'projectId', 'jurisdictionId', 'reducerName'),
-  getUserCodedQuestions: makeActionCreator(types.GET_USER_CODED_QUESTIONS_REQUEST, 'projectId', 'jurisdictionId', 'page'),
+  getCodingOutlineRequest: makeActionCreator(types.GET_CODING_OUTLINE_REQUEST, 'projectId', 'jurisdictionId'),
+  getUserCodedQuestions: makeActionCreator(types.GET_USER_CODED_QUESTIONS_REQUEST, 'projectId', 'jurisdictionId'),
   onSaveFlag: makeActionCreator(types.ON_SAVE_FLAG, 'projectId', 'jurisdictionId', 'questionId', 'flagInfo'),
   onSaveRedFlag: makeActionCreator(types.ON_SAVE_RED_FLAG_REQUEST, 'projectId', 'questionId', 'flagInfo'),
   getValidationOutlineRequest: makeActionCreator(types.GET_VALIDATION_OUTLINE_REQUEST, 'projectId', 'jurisdictionId'),
-  getUserValidatedQuestionsRequest: makeActionCreator(types.GET_USER_VALIDATED_QUESTIONS_REQUEST, 'projectId', 'jurisdictionId', 'page'),
+  getUserValidatedQuestionsRequest: makeActionCreator(types.GET_USER_VALIDATED_QUESTIONS_REQUEST, 'projectId', 'jurisdictionId'),
   clearFlag: makeActionCreator(types.CLEAR_FLAG, 'flagId', 'projectId', 'jurisdictionId', 'questionId'),
   clearRedFlag: makeActionCreator(types.CLEAR_RED_FLAG, 'flagId', 'questionId', 'projectId'),
   setPage: makeActionCreator(types.SET_PAGE, 'page'),
-  ...docListActions
+  ...docListActions,
+  ...cardActions
 }

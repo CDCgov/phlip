@@ -42,20 +42,20 @@ describe('Document Management logic', () => {
                   1: {
                     name: 'Doc 1',
                     uploadedBy: { firstName: 'test', lastName: 'user' },
-                    projects: [1],
+                    projects: [2,1],
                     jurisdictions: [1],
                     _id: 1,
                     jurisdictionList: 'Ohio',
-                    projectList: 'Project1'
+                    projectList: 'Project2|Project1'
                   },
                   2: {
                     name: 'Doc 2',
                     uploadedBy: { firstName: 'test', lastName: 'user' },
-                    projects: [1],
+                    projects: [1,2],
                     jurisdictions: [1],
                     _id: 2,
                     jurisdictionList: 'Ohio',
-                    projectList: 'Project1'
+                    projectList: 'Project1|Project2'
                   }
                 }
               }
@@ -207,8 +207,8 @@ describe('Document Management logic', () => {
             'jurisdictionList': 'Ohio',
             'jurisdictions': [1],
             'name': 'Doc 1',
-            'projectList': 'Project1',
-            'projects': [1],
+            'projectList': 'Project2|Project1',
+            'projects': [2,1],
             'uploadedBy': { 'firstName': 'test', 'lastName': 'user' }
           },
           '2': {
@@ -216,8 +216,8 @@ describe('Document Management logic', () => {
             'jurisdictionList': 'Ohio',
             'jurisdictions': [1],
             'name': 'Doc 2',
-            'projectList': 'Project1',
-            'projects': [1],
+            'projectList': 'Project1|Project2',
+            'projects': [1,2],
             'uploadedBy': { 'firstName': 'test', 'lastName': 'user' }
           }
         }
@@ -276,8 +276,8 @@ describe('Document Management logic', () => {
             'jurisdictionList': 'Ohio',
             'jurisdictions': [1],
             'name': 'Doc 1',
-            'projectList': 'Project1',
-            'projects': [1],
+            'projectList': 'Project2|Project1',
+            'projects': [2,1],
             'uploadedBy': { 'firstName': 'test', 'lastName': 'user' },
             'status' : 'Approved'
           },
@@ -286,8 +286,8 @@ describe('Document Management logic', () => {
             'jurisdictionList': 'Ohio',
             'jurisdictions': [1],
             'name': 'Doc 2',
-            'projectList': 'Project1',
-            'projects': [1],
+            'projectList': 'Project1|Project2',
+            'projects': [1,2],
             'uploadedBy': { 'firstName': 'test', 'lastName': 'user' },
             'status' : 'Approved'
           }
@@ -297,4 +297,58 @@ describe('Document Management logic', () => {
     })
   })
 
+  test('should remove project id if exist from documents and dispatch CLEAN_PROJECT_SUCCESS on success', done => {
+    mock.onPut('/docs/cleanProjectList/1').reply(200,{ n: 2, ok: 1 })
+
+    const store = setupStore([
+      {
+        name: 'Doc 4',
+        uploadedBy: { firstName: 'test', lastName: 'user' },
+        projects: [2,1], jurisdictions: [1],
+        projectList: 'Project2|Project1',
+        status: 'Draft'
+      },
+      {
+        name: 'Doc 2', uploadedBy: { firstName: 'test', lastName: 'user' },
+        projects: [1,2], jurisdictions: [1],
+        projectList: 'Project1|Project2',
+        status: 'Draft'
+      }
+    ])
+
+    store.dispatch({
+      type: types.CLEAN_PROJECT_LIST_REQUEST,
+      projectMeta: {
+        id: 1,
+        name: 'Project1'
+      }
+    })
+    store.whenComplete(() => {
+
+      expect(store.actions[2]).toEqual({
+        type: types.CLEAN_PROJECT_LIST_SUCCESS,
+        payload: {
+          '1': {
+            '_id': 1,
+            'jurisdictionList': 'Ohio',
+            'jurisdictions': [1],
+            'name': 'Doc 1',
+            'projectList': 'Project2',
+            'projects': [2],
+            'uploadedBy': { 'firstName': 'test', 'lastName': 'user' }
+          },
+          '2': {
+            '_id': 2,
+            'jurisdictionList': 'Ohio',
+            'jurisdictions': [1],
+            'name': 'Doc 2',
+            'projectList': 'Project2',
+            'projects': [2],
+            'uploadedBy': { 'firstName': 'test', 'lastName': 'user' }
+          }
+        }
+      })
+      done()
+    })
+  })
 })

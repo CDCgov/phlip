@@ -5,7 +5,7 @@ export const getSchemeRequest = id => ({ type: types.GET_SCHEME_REQUEST, id })
 
 /** Locking / unlocking scheme */
 export const lockCodingSchemeRequest = id => ({ type: types.LOCK_SCHEME_REQUEST, id })
-export const unlockCodingSchemeRequest = id => ({ type: types.UNLOCK_SCHEME_REQUEST, id })
+export const unlockCodingSchemeRequest = (id,userId) => ({ type: types.UNLOCK_SCHEME_REQUEST, id,userId })
 
 /** Updating tree and nodes in only redux state (not calling API) */
 export const updateQuestionTree = questions => ({ type: types.HANDLE_QUESTION_TREE_CHANGE, questions })

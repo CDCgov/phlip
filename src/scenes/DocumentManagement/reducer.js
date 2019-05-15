@@ -175,7 +175,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documents: {
           ...state.documents,
-          checked: state.allSelected ? [] : state.documents.allIds
+          checked: state.allSelected ? [] : state.documents.visible
         },
         allSelected: !state.allSelected
       }
@@ -244,7 +244,9 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection),
           checked: []
         },
-        bulkOperationInProgress: false
+        bulkOperationInProgress: false,
+        matchedDocs: [],
+        allSelected: false
       }
 
     case types.BULK_DELETE_FAIL:
@@ -291,6 +293,35 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         apiErrorOpen: true
       }
 
+    case types.CLEAN_PROJECT_LIST_REQUEST:
+      return {
+        ...state,
+        cleanProjectOperationInProgress: true,
+        apiErrorOpen: false
+      }
+    case types.CLEAN_PROJECT_LIST_SUCCESS:
+      obj = action.payload
+      return {
+        ...state,
+        documents: {
+          ...state.documents,
+          byId: obj
+        },
+        cleanProjectOperationInProgress: false,
+        apiErrorOpen: false
+      }
+
+    case types.CLEAN_PROJECT_LIST_FAIL:
+      return {
+        ...state,
+        apiErrorInfo: {
+          title: 'Document Project list clean up error',
+          text: 'Failed to update documents.'
+        },
+        cleanProjectOperationInProgress: false,
+        apiErrorOpen: true
+      }
+
     case types.CLOSE_ALERT:
       return {
         ...state,
@@ -323,6 +354,21 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         documents: {
           ...state.documents,
           visible: sortAndSlice(Object.values(updatedArr), state.page, state.rowsPerPage, action.sortBy, sortDirection)
+        }
+      }
+
+    case types.ON_DELETE_ONE_FILE:
+      updatedChecked = [...state.documents.checked]
+
+      if (state.documents.checked.includes(action.id)) {
+        const index = state.documents.checked.indexOf(action.id)
+        updatedChecked.splice(index, 1)
+      }
+      return {
+        ...state,
+        documents: {
+          ...state.documents,
+          checked: updatedChecked
         }
       }
 

@@ -67,7 +67,7 @@ export class CodingScheme extends Component {
     /**
      * Displays an alert notifying the user the coding scheme is currently locked
      */
-    lockedAlert: PropTypes.string,
+    lockedAlert: PropTypes.bool,
     /**
      * Whether or not the coding scheme is currently locked
      */
@@ -75,7 +75,11 @@ export class CodingScheme extends Component {
     /**
      * Routing history
      */
-    history: PropTypes.object
+    history: PropTypes.object,
+    /**
+     *  current logged in user
+     */
+    currentUser: PropTypes.object
   }
 
   constructor(props, context) {
@@ -233,6 +237,14 @@ export class CodingScheme extends Component {
     }
   }
 
+    /**
+     *  release the lock when user click on release lock button
+     */
+    overrideLock = () => {
+      this.props.actions.unlockCodingSchemeRequest(this.props.projectId,this.props.lockInfo.userId) // unlock using the id of the user who locked it
+      this.onCloseLockedAlert()
+    }
+
   /**
    * Renders a 'Get started' view. Only called when the coding scheme is empty
    * @public
@@ -250,7 +262,7 @@ export class CodingScheme extends Component {
             component={Link}
             to={{
               pathname: `/project/${this.props.projectId}/coding-scheme/add`,
-              state: { questionDefined: null, canModify: true }
+              state: { questionDefined: null, canModify: true, modal: true }
             }}
             value="Add New Question"
             color="accent"
@@ -292,7 +304,16 @@ export class CodingScheme extends Component {
         preferred: true
       }
     ]
+    /**
+       *  add a release lock if the user was an admin
+       */
+    let lockedAlertAction = [
+      { value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert, preferred:true }
 
+    ]
+    if (this.props.currentUser.role === 'Admin') {
+      lockedAlertAction.push({ value: 'Release lock', type: 'button', onClick: this.overrideLock })
+    }
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">
         <Alert open={this.state.goBackAlertOpen} actions={alertActions}>
@@ -312,7 +333,7 @@ export class CodingScheme extends Component {
           onCloseAlert={this.onCloseAlert}
         />
         <Alert
-          actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert }]}
+          actions={lockedAlertAction}
           open={this.props.lockedAlert !== null}
           title={
             <><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
@@ -344,7 +365,7 @@ export class CodingScheme extends Component {
             isLink: true,
             text: 'Add New Question',
             path: `/project/${this.props.projectId}/coding-scheme/add`,
-            state: { questionDefined: null, canModify: true },
+            state: { questionDefined: null, canModify: true, modal: true },
             props: {
               'aria-label': 'Add new question to coding scheme'
             },
@@ -406,7 +427,8 @@ const mapStateToProps = (state, ownProps) => ({
   lockInfo: state.scenes.codingScheme.lockInfo || {},
   alertError: state.scenes.codingScheme.alertError || '',
   lockedAlert: state.scenes.codingScheme.lockedAlert || null,
-  hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false
+  hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false,
+  currentUser : state.data.user.currentUser
 })
 
 /* istanbul ignore next */
