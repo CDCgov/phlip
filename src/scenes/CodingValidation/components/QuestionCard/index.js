@@ -138,7 +138,7 @@ export class QuestionCard extends Component {
       actions.setAlert({
         open: true,
         title: 'Warning',
-        text: 'Are you sure you want to clear your answer?',
+        text: 'Clearing your answer will remove the selected answer choice, pincites and annotations associated with this answer. Do you want to continue?',
         type: 'clearAnswer',
         data: {}
       })
@@ -259,15 +259,9 @@ export class QuestionCard extends Component {
     
     const { isSaving } = this.state
     
+    const closeButton = { value: alert.type === 'disableAnnoMode' ? 'Dismiss' : 'Cancel' }
     this.alertActions = alert.type === 'disableAnnoMode'
-      ? [
-        {
-          value: 'Dismiss',
-          type: 'button',
-          onClick: this.onCloseAlert
-        }
-      ] : [
-        { value: 'Cancel', type: 'button', onClick: this.onCloseAlert, preferred: true },
+      ? [] : [
         {
           value: 'Continue',
           type: 'button',
@@ -285,7 +279,12 @@ export class QuestionCard extends Component {
     
     return (
       <FlexGrid container type="row" flex style={{ minWidth: '10%', flexBasis: '0%' }}>
-        <Alert actions={this.alertActions} title={alert.title} open={alert.open}>
+        <Alert
+          actions={this.alertActions}
+          title={alert.title}
+          onCloseAlert={this.onCloseAlert}
+          closeButton={closeButton}
+          open={alert.open}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             {alert.text}
           </Typography>

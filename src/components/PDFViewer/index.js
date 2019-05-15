@@ -5,6 +5,7 @@ import PDFJS from 'pdfjs-dist/webpack'
 import { FlexGrid, CircularLoader, Alert, CheckboxLabel } from 'components'
 import './pdf_viewer.css'
 import { Util as dom_utils } from 'pdfjs-dist/lib/shared/util'
+import Typography from '@material-ui/core/Typography'
 
 PDFJS.GlobalWorkerOptions.workerSrc = '/pdf.worker.bundle.js'
 
@@ -424,7 +425,6 @@ export class PDFViewer extends Component {
     const { annotations, allowSelection, showAvatars, annotationModeEnabled } = this.props
     
     const alertActions = [
-      { onClick: this.onCancelRemove, value: 'Cancel', type: 'button', preferred: true },
       { onClick: this.onRemoveAnnotation, value: 'Delete', type: 'button' }
     ]
     
@@ -471,15 +471,19 @@ export class PDFViewer extends Component {
           open={alertConfirmOpen}
           onCloseAlert={this.onCancelRemove}
           title="Confirm deletion">
-          Do you want to delete this annotation?
+          <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+            Do you want to delete this annotation?
+          </Typography>
         </Alert>
         <Alert
           open={annoModeAlert.open}
           onCloseAlert={this.dismissAnnoAlert}
           title="Are you trying to annotate?"
           closeButton={{ value: 'Dismiss' }}>
-          If you are trying to annotate, you need to enable annotation mode for a selected answer choice. You can enable
-          annotation mode by clicking the 'Annotate' button next to an answer choice.
+          <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+            If you are trying to annotate, you need to enable annotation mode for a selected answer choice. You can enable
+            annotation mode by clicking the 'Annotate' button next to an answer choice.
+          </Typography>
           
           <CheckboxLabel
             input={{ value: annoModeAlert.dontShowAgain, onChange: this.handleToggleDontShowAgain }}
