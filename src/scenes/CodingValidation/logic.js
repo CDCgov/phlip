@@ -277,7 +277,7 @@ export const getValidationOutlineLogic = createLogic({
           userAnswers,
           mergedUserQuestions: coderInfo.codedQuestionObj,
           question: firstQuestion,
-          errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors, userImages: imagesResult.errors }
+          errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors, ...imagesResult.error }
         }
       }
       
@@ -800,7 +800,7 @@ const getQuestionLogic = createLogic({
           updatedState: { ...updatedState, mergedUserQuestions: { ...state.mergedUserQuestions, ...codedQuestionObj } },
           question,
           currentIndex,
-          errors: { ...errors, ...coderErrors, ...otherErrors, userImages: imageResult.errors }
+          errors: { ...errors, ...coderErrors, ...otherErrors, ...imageResult.errors }
         }
       })
       
@@ -870,8 +870,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
       otherUpdates,
       mergedUserQuestions: coderInfo.codedQuestionObj,
       errors: {
-        ...errors, ...coderInfo.coderErrors, ...schemeErrors, ...codedValErrors,
-        userImages: imageResult.errors
+        ...errors, ...coderInfo.coderErrors, ...schemeErrors, ...codedValErrors, ...imageResult.errors
       }
     }
     
