@@ -390,9 +390,9 @@ const verifyFileContentLogic = createLogic({
           type: types.INVALID_FILES_FOUND,
           text: invalidSize
             ? invalidType
-              ? 'The files listed below do not have a valid file type or they exceed the maximum size of 16 MB. These files will be removed from the list.'
-              : 'The files listed below exceed the maximum allowed size of 16 MB.'
-            : 'The files listed below do not have a valid file type.',
+              ? 'The files listed below do not have a valid file type and / or they exceed the maximum size for a file. The valid files types are .pdf, .doc, .docx and .rtf. The maximum size for a file is 16 MB. These files will be removed from the list.'
+              : 'The files listed below exceed the maximum allowed size of 16 MB. These files will be removed from the list.'
+            : 'The files listed below do not have a valid file type. The valid file types are .pdf, .doc, .docx and .rtf. These files will be removed from the list.',
           invalidFiles,
           title: invalidSize
             ? invalidType

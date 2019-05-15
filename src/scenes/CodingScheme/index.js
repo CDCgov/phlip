@@ -236,8 +236,8 @@ export class CodingScheme extends Component {
    */
   overrideLock = () => {
     this.props.actions.unlockCodingSchemeRequest(this.props.projectId, this.props.lockInfo.userId) // unlock using the
-                                                                                                   // id of the user
-                                                                                                   // who locked it
+    // id of the user
+    // who locked it
     this.onCloseLockedAlert()
   }
   
