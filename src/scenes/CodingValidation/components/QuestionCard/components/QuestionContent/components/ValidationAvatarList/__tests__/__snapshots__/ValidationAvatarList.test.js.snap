@@ -23,7 +23,7 @@ exports[`QuestionCard - QuestionContent - ValidationAvatarList should render cor
       key="user-avatar-all-selected"
       style={
         Object {
-          "backgroundColor": "#100b3f",
+          "backgroundColor": "#3d316a",
           "color": "white",
         }
       }

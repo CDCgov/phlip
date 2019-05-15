@@ -50,7 +50,7 @@ export const ValidationAvatarList = props => {
           style={{
             ...(enabledUserId === 'All' && answerId === enabledAnswerId) ? selectedStyle : {},
             color: 'white',
-            backgroundColor: theme.palette.primary.dark
+            backgroundColor: theme.palette.primary.main
           }}
           avatar=""
           initials="ALL"
