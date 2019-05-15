@@ -18,7 +18,7 @@ exports[`Protocol scene should render correctly 1`] = `
         Object {
           "onClick": [Function],
           "type": "button",
-          "value": "Save & Continue",
+          "value": "Save",
         },
       ]
     }

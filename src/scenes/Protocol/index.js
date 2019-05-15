@@ -182,7 +182,7 @@ export class Protocol extends Component {
     if (this.props.lockedByCurrentUser || this.state.editMode) {
       this.setState({
         open: true,
-        alertText: 'You have unsaved changes. Do you want to continue?',
+        alertText: 'You will lose unsaved changes. Do you want to continue?',
         alertTitle: 'Warning'
       })
     } else {
@@ -199,7 +199,7 @@ export class Protocol extends Component {
   render() {
     const alertActions = [
       {
-        value: 'Save & Continue',
+        value: 'Save',
         type: 'button',
         onClick: this.onContinue
       }
