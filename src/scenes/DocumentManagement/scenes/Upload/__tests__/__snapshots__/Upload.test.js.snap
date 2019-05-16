@@ -90,7 +90,7 @@ exports[`Document Management - Upload scene should render correctly 1`] = `
     >
       <FileUpload
         allowMultiple={true}
-        allowedFileTypes=".doc,.docx,.pdf,.rtf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        allowedFileTypes=".doc,.docx,.pdf,.rtf,.odt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         buttonText="Select Files"
         containerBgColor="#f5fafa"
         containerBorderColor="#99D0E9"
@@ -111,7 +111,7 @@ exports[`Document Management - Upload scene should render correctly 1`] = `
       />
       <FileUpload
         allowMultiple={false}
-        allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,application/vnd.ms-excel"
+        allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
         buttonText="Select excel file"
         containerBgColor="#f4f9ef"
         containerBorderColor="#c2e3b6"

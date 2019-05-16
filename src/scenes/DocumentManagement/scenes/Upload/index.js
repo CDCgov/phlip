@@ -464,7 +464,7 @@ export class Upload extends Component {
           <FlexGrid container type="row" align="center" justify="space-between" padding={10}>
             <FileUpload
               handleAddFiles={this.addFilesToList}
-              allowedFileTypes=".doc,.docx,.pdf,.rtf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              allowedFileTypes=".doc,.docx,.pdf,.rtf,.odt,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               allowMultiple
               numOfFiles={selectedDocs.length}
             />
@@ -475,7 +475,7 @@ export class Upload extends Component {
               buttonText="Select excel file"
               containerBgColor="#f4f9ef"
               containerBorderColor="#c2e3b6"
-              allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,application/vnd.ms-excel"
+              allowedFileTypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
               containerText={infoSheetSelected
                 ? `Selected file: ${infoSheet.name}`
                 : 'or drag and drop here'}

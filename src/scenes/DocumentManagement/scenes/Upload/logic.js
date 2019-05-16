@@ -57,6 +57,14 @@ const stateLookup = {
   'WY': 'Wyoming'
 }
 
+const allowedTypes = [
+  'pdf',
+  'rtf',
+  'odt',
+  'doc',
+  'docx'
+]
+
 const DCStrings = ['DC', 'District of Columbia', 'Washington, DC', 'Washington, DC (federal district)']
 
 const valueDefaults = {
@@ -65,10 +73,23 @@ const valueDefaults = {
   effectiveDate: ''
 }
 
+/**
+ * Used to create a regular expression from a template literal
+ * @param input
+ * @returns {RegExp}
+ */
 const reg = input => {
   return new RegExp(input, 'g')
 }
 
+/**
+ * Uploads files
+ * @param docApi
+ * @param action
+ * @param dispatch
+ * @param state
+ * @returns {Promise<any>}
+ */
 const upload = (docApi, action, dispatch, state) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -97,7 +118,12 @@ const upload = (docApi, action, dispatch, state) => {
   })
 }
 
-const determineSearchString = jurisdictionName => {
+/**
+ * Determines the jurisdiction search string to use
+ * @param jurisdictionName
+ * @returns {{searchString: (*|string), isState: boolean}}
+ */
+export const determineSearchString = jurisdictionName => {
   let searchString = jurisdictionName, isState = true
   
   if (DCStrings.includes(jurisdictionName)) {
@@ -120,13 +146,38 @@ const determineSearchString = jurisdictionName => {
   return { isState, searchString }
 }
 
+/**
+ * Removes the extension, if it exists from string
+ * @param string
+ * @returns {*}
+ */
+export const removeExtension = string => {
+  const pieces = [...string.split('.')]
+  let name = string
+  if (pieces.length > 0) {
+    if (allowedTypes.includes(pieces[pieces.length - 1])) {
+      pieces.pop()
+      name = pieces.join('.')
+    }
+  }
+  return name
+}
+
+/**
+ * Merges Excel upload sheet with documents selected
+ * @param info
+ * @param docs
+ * @param api
+ * @returns {Promise<any>}
+ */
 export const mergeInfoWithDocs = (info, docs, api) => {
   return new Promise(async (resolve, reject) => {
     let merged = [], jurLookup = {}
     for (const doc of docs) {
-      if (info.hasOwnProperty(doc.name.value)) {
+      const nameWithoutExt = removeExtension(doc.name.value)
+      if (info.hasOwnProperty(nameWithoutExt)) {
         let d = { ...doc }, jurs = []
-        const docInfo = info[doc.name.value]
+        const docInfo = info[nameWithoutExt]
         Object.keys(valueDefaults).map(key => {
           d[key] = {
             ...d[key],
@@ -138,12 +189,11 @@ export const mergeInfoWithDocs = (info, docs, api) => {
         })
         
         if (docInfo.jurisdictions.name !== null) {
-          if (jurLookup.hasOwnProperty(docInfo.jurisdictions.name)) {
-            jurs = [jurLookup[docInfo.jurisdictions.name]]
+          const { searchString, isState } = determineSearchString(docInfo.jurisdictions.name)
+          if (jurLookup.hasOwnProperty(searchString)) {
+            jurs = [jurLookup[searchString]]
             d.jurisdictions = { ...d.jurisdictions, value: { ...jurs[0] } }
           } else {
-            const { searchString, isState } = determineSearchString(docInfo.jurisdictions.name)
-            jurs = await api.searchJurisdictionList({}, { params: { name: searchString } }, {})
             if (!isState) {
               d.jurisdictions = {
                 inEditMode: true,
@@ -152,7 +202,8 @@ export const mergeInfoWithDocs = (info, docs, api) => {
                 editable: true
               }
             } else {
-              jurLookup[docInfo.jurisdictions.name] = jurs[0]
+              jurs = await api.searchJurisdictionList({}, { params: { name: searchString } }, {})
+              jurLookup[searchString] = jurs[0]
               d.jurisdictions = { ...d.jurisdictions, value: { ...jurs[0] } }
             }
           }
@@ -168,19 +219,24 @@ export const mergeInfoWithDocs = (info, docs, api) => {
   })
 }
 
+/**
+ * Determines the file type of a document selected for upload
+ * @param doc
+ * @returns {Promise<any>}
+ */
 export const getFileType = doc => {
   return new Promise(async (resolve, reject) => {
     const validMimeTypes = [
       {
-        mime: 'pdf',
+        mime: ['pdf'],
         pattern: '25504446'
       },
       {
-        mime: 'doc',
+        mime: ['doc', '.rtf'],
         pattern: '7B5C7274'
       },
       {
-        mime: 'docx',
+        mime: ['docx', '.odt'],
         pattern: '504B34'
       }
     ]
@@ -197,7 +253,12 @@ export const getFileType = doc => {
         matchedOne = validMimeTypes.find(oneType => {
           return oneType.pattern === hex
         })
-        resolve({ doc: doc, docHex: hex, docType: matchedOne || undefined, size: doc.file.size })
+        resolve({
+          doc: { ...doc, docHex: hex, docType: matchedOne || undefined },
+          docHex: hex,
+          docType: matchedOne || undefined,
+          size: doc.file.size
+        })
       }
     }
     
