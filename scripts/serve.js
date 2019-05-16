@@ -31,12 +31,51 @@ const APP_DOC_MANAGE_API = process.env.APP_DOC_MANAGE_API || '/docsApi'
 
 app.use(compression())
 
+app.use(helmet())
+app.use(helmet.hsts({
+  // Must be at least 1 year to be approved
+  maxAge: 31536000,
+  // Must be enabled to be approved
+  includeSubDomains: true,
+  preload: true
+}))
+
+let connectSrc = APP_API_URL
+if (connectSrc.endsWith('/api')) {
+  connectSrc = connectSrc.slice(0, connectSrc.length - 4)
+}
+
+let docConnectSrc = APP_DOC_MANAGE_API
+if (docConnectSrc.endsWith('/api')) {
+  docConnectSrc = docConnectSrc.slice(0, docConnectSrc.length - 4)
+}
+
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ['\'self\'', 'https:'],
+    styleSrc: ['\'self\'', 'code.jquery.com', '\'unsafe-inline\'', 'fonts.googleapis.com'],
+    scriptSrc: [
+      '\'self\'', 'code.jquery.com', '\'unsafe-inline\'', 'www.cdc.gov', 'cdc.gov',
+      '\'unsafe-eval\'', 'www.google-analytics.com', 'search.usa.gov'
+    ],
+    objectSrc: ['\'self\''],
+    connectSrc: ['\'self\'', 'www.cdc.gov', 'cdc.gov', connectSrc, docConnectSrc],
+    imgSrc: ['\'self\'', 'data:', 'www.google-analytics.com', 'stats.search.usa.gov', 'cdc.112.2o7.net'],
+    fontSrc: ['\'self\'', 'fonts.google.com', 'fonts.gstatic.com']
+  },
+  setAllHeaders: true
+}))
+app.use(helmet.noCache())
+
 // Proxy all requests to /api to the backend API URL
 app.use('/api', proxy({ target: APP_API_URL }))
 app.use('/docsApi', proxy({
   target: APP_DOC_MANAGE_API,
   pathRewrite: { '^/docsApi': '/api' }
 }))
+app.use(bodyParser.json())
+app.use(bodyParser.json({ type: 'application/json' }))
+app.use(bodyParser.urlencoded({ extended: true }))
 
 // Send all requests to the react code
 app.use(express.static('./dist/'))
@@ -45,23 +84,23 @@ app.use('*', express.static('./dist/index.html'))
 
 if (IS_SAML_ENABLED) {
   app.use(session({ secret: process.env.SESSION_SECRET || 'pleasedontusethisasasecret' }))
-  app.use(bodyParser.json())
-  app.use(bodyParser.json({ type: 'application/json' }))
-  app.use(bodyParser.urlencoded({ extended: true }))
   require('./passport')(passport)
-
+  
   app.use(passport.initialize())
   app.use(passport.session())
-
+  
   // Test direct GET call to backend
-  app.get('/auth/sams-login',
+  app.get(
+    '/auth/sams-login',
     passport.authenticate('saml', { failureRedirect: '/login', failureFlash: true }),
     (req, res) => {
       res.redirect('/')
-    })
-
+    }
+  )
+  
   // SAML login callback URL. Redirects the frontend to /login/verify-user
-  app.post('/login/callback',
+  app.post(
+    '/login/callback',
     passport.authenticate('saml', { failureRedirect: '/login', failureFlash: true }),
     (req, res) => {
       const token = jwt.sign({
@@ -73,12 +112,17 @@ if (IS_SAML_ENABLED) {
         iss: 'iiu.phiresearchlab.org',
         aud: 'iiu.phiresearchlab.Bearer'
       }, process.env.JWT_SECRET)
-
+      
       res.redirect(`/login/verify-user?token=${token}`)
-    })
+    }
+  )
 }
 
+app.use(express.static('./dist/'))
+
 if (IS_HTTPS) {
+  const httpsHost = APP_HOST
+  
   const httpOptions = {
     key: fs.readFileSync(process.env.KEY_PATH),
     cert: fs.readFileSync(process.env.CERT_PATH),
@@ -87,45 +131,6 @@ if (IS_HTTPS) {
     rejectUnauthorized: false,
     secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_TLSv1
   }
-
-  let connectSrc = APP_API_URL
-  if (connectSrc.endsWith('/api')) {
-    connectSrc = connectSrc.slice(0, connectSrc.length - 4)
-  }
-
-  let docConnectSrc = APP_DOC_MANAGE_API
-  if (docConnectSrc.endsWith('/api')) {
-    docConnectSrc = docConnectSrc.slice(0, docConnectSrc.length - 4)
-  }
-
-  const httpsHost = APP_HOST
-  app.use(helmet())
-  app.use(helmet.hsts({
-    // Must be at least 1 year to be approved
-    maxAge: 31536000,
-
-    // Must be enabled to be approved
-    includeSubDomains: true,
-    preload: true
-  }))
-  app.use(helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ['\'self\'', 'https:'],
-      styleSrc: ['\'self\'', 'code.jquery.com', '\'unsafe-inline\'', 'fonts.googleapis.com'],
-      scriptSrc: [
-        '\'self\'', 'code.jquery.com', '\'unsafe-inline\'', 'www.cdc.gov', 'cdc.gov',
-        '\'unsafe-eval\'', 'www.google-analytics.com', 'search.usa.gov'
-      ],
-      objectSrc: ['\'self\''],
-      connectSrc: ['\'self\'', 'www.cdc.gov', 'cdc.gov', connectSrc, docConnectSrc],
-      imgSrc: ['\'self\'', 'data:', 'www.google-analytics.com', 'stats.search.usa.gov', 'cdc.112.2o7.net'],
-      fontSrc: ['\'self\'', 'fonts.google.com', 'fonts.gstatic.com']
-    },
-    setAllHeaders: true
-  }))
-  app.use(helmet.noCache())
-  app.use(express.static('./dist/'))
-
   // Start and HTTPS server
   https.createServer(httpOptions, app).listen(HTTPS_APP_PORT, httpsHost, err => {
     if (err) {
@@ -133,7 +138,7 @@ if (IS_HTTPS) {
     }
     console.log(chalk.cyan(`Starting the produciton server on ${APP_HOST}:${HTTPS_APP_PORT}...`))
   })
-
+  
   // Start an HTTP server and redirect all requests to HTTPS
   http.createServer(function (req, res) {
     res.writeHead(301, { 'Location': 'https://' + req.headers['host'] + req.url })
