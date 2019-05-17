@@ -69,13 +69,7 @@ app.use(helmet.noCache())
 
 // Proxy all requests to /api to the backend API URL
 app.use('/api', proxy({ target: APP_API_URL }))
-app.use('/docsApi', proxy({
-  target: APP_DOC_MANAGE_API,
-  pathRewrite: { '^/docsApi': '/api' }
-}))
-app.use(bodyParser.json())
-app.use(bodyParser.json({ type: 'application/json' }))
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use('/docsApi', proxy({ target: APP_DOC_MANAGE_API, pathRewrite: { '^/docsApi': '/api' } }))
 
 // Send all requests to the react code
 app.use(express.static('./dist/'))
@@ -83,7 +77,9 @@ app.use('/', express.static('./dist/index.html'))
 app.use('*', express.static('./dist/index.html'))
 
 if (IS_SAML_ENABLED) {
-  app.use(session({ secret: process.env.SESSION_SECRET || 'pleasedontusethisasasecret' }))
+  app.use(bodyParser.json())
+  app.use(bodyParser.json({ type: 'application/json' }))
+  app.use(bodyParser.urlencoded({ extended: true }))
   require('./passport')(passport)
   
   app.use(passport.initialize())
@@ -118,11 +114,8 @@ if (IS_SAML_ENABLED) {
   )
 }
 
-app.use(express.static('./dist/'))
-
 if (IS_HTTPS) {
   const httpsHost = APP_HOST
-  
   const httpOptions = {
     key: fs.readFileSync(process.env.KEY_PATH),
     cert: fs.readFileSync(process.env.CERT_PATH),
@@ -149,6 +142,6 @@ if (IS_HTTPS) {
     if (err) {
       console.log(err)
     }
-    console.log(chalk.cyan(`Starting the produciton server on ${APP_HOST}:${APP_PORT}...`))
+    console.log(chalk.cyan(`Starting the production server on ${APP_HOST}:${APP_PORT}...`))
   })
 }
