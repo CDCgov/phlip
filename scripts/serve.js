@@ -27,6 +27,32 @@ const IS_HTTPS = process.env.APP_IS_HTTPS === '1' || false
 const IS_SAML_ENABLED = process.env.APP_IS_SAML_ENABLED === '1' || false
 const APP_API_URL = process.env.APP_API_URL || '/api'
 const APP_DOC_MANAGE_API = process.env.APP_DOC_MANAGE_API || '/docsApi'
+let httpsOptions = {}
+
+if (IS_HTTPS) {
+  httpsOptions = {
+    key: fs.readFileSync(process.env.KEY_PATH),
+    cert: fs.readFileSync(process.env.CERT_PATH),
+    ca: fs.readFileSync(process.env.CERT_AUTH_PATH),
+    requestCert: true,
+    rejectUnauthorized: false,
+    secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_TLSv1
+  }
+  
+  /**
+   * Add additional certs to trust (like cdc certs)
+   * @type {string[]}
+   */
+  const trustedCa = [
+    '/etc/pki/tls/certs/ca-bundle.crt',
+    process.env.NODE_EXTRA_CA_CERTS
+  ]
+  
+  https.globalAgent.options.ca = []
+  for (const ca of trustedCa) {
+    https.globalAgent.options.ca.push(fs.readFileSync(ca))
+  }
+}
 
 app.use(compression())
 app.use(helmet())
@@ -66,7 +92,11 @@ app.use(helmet.contentSecurityPolicy({
 app.use(helmet.noCache())
 
 // Proxy all requests to /api to the backend API URL
-app.use('/api', proxy({ target: APP_API_URL }))
+
+app.use('/api', proxy({
+  target: APP_API_URL,
+  ...IS_HTTPS ? { ssl: httpsOptions, changeOrigin: true, secure: true, agent: https.globalAgent } : {}
+}))
 app.use('/docsApi', proxy({ target: APP_DOC_MANAGE_API, pathRewrite: { '^/docsApi': '/api' } }))
 
 if (IS_SAML_ENABLED) {
@@ -117,10 +147,11 @@ if (IS_HTTPS) {
     key: fs.readFileSync(process.env.KEY_PATH),
     cert: fs.readFileSync(process.env.CERT_PATH),
     ca: fs.readFileSync(process.env.CERT_AUTH_PATH),
-    requestCert: false,
+    requestCert: true,
     rejectUnauthorized: false,
     secureOptions: constants.SSL_OP_NO_SSLv3 | constants.SSL_OP_NO_SSLv2 | constants.SSL_OP_NO_TLSv1
   }
+  
   // Start and HTTPS server
   https.createServer(httpOptions, app).listen(HTTPS_APP_PORT, httpsHost, err => {
     if (err) {
