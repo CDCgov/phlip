@@ -75,9 +75,14 @@ const updateDocLogic = createLogic({
 
 const deleteDocLogic = createLogic({
   type: types.DELETE_DOCUMENT_REQUEST,
-  async process({ docApi, action, getState }, dispatch, done) {
+  async process({ docApi, action, getState, api }, dispatch, done) {
     try {
       await docApi.deleteDoc({}, {}, { 'docId': action.id })
+      try {
+        api.cleanAnnotations({}, {}, { 'docId': action.id })
+      } catch (err) {
+        console.log(`failed to remove annotations for doc: ${action.id}`)
+      }
       dispatch({
         type: types.DELETE_DOCUMENT_SUCCESS,
         payload: action.id

@@ -139,10 +139,17 @@ const bulkUpdateLogic = createLogic({
 })
 const bulkDeleteLogic = createLogic({
   type: types.BULK_DELETE_REQUEST,
-  async process({ getState, docApi, action }, dispatch, done) {
+  async process({ getState, docApi, action, api }, dispatch, done) {
     // const checkedDocs = getState().scenes.docManage.main.documents.checked
     try {
       const deleteResult = await docApi.bulkDeleteDoc({ 'docIds': action.selectedDocs })
+      action.selectedDocs.map(doc => {
+        try {
+          api.cleanAnnotations({}, {}, { docId: doc })
+        } catch (err) {
+          console.log(`failed to remove annotations for doc: ${doc}`)
+        }
+      })
       dispatch({ type: types.BULK_DELETE_SUCCESS, payload: deleteResult })
       done()
     } catch (e) {
