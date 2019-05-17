@@ -69,11 +69,6 @@ app.use(helmet.noCache())
 app.use('/api', proxy({ target: APP_API_URL }))
 app.use('/docsApi', proxy({ target: APP_DOC_MANAGE_API, pathRewrite: { '^/docsApi': '/api' } }))
 
-// Send all requests to the react code
-app.use(express.static('./dist/'))
-app.use('/', express.static('./dist/index.html'))
-app.use('*', express.static('./dist/index.html'))
-
 if (IS_SAML_ENABLED) {
   app.use(bodyParser.json())
   app.use(bodyParser.json({ type: 'application/json' }))
@@ -112,8 +107,11 @@ if (IS_SAML_ENABLED) {
   )
 }
 
+app.use(express.static('./dist/'))
+app.use('/', express.static('./dist/index.html'))
+app.use('*', express.static('./dist/index.html'))
+
 if (IS_HTTPS) {
-  console.log(IS_HTTPS)
   const httpsHost = APP_HOST
   const httpOptions = {
     key: fs.readFileSync(process.env.KEY_PATH),
