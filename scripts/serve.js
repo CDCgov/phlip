@@ -2,7 +2,6 @@
  * Starts the node.js and express server for production mode
  */
 const express = require('express')
-const session = require('express-session')
 const chalk = require('chalk')
 const proxy = require('http-proxy-middleware')
 const app = express()
@@ -25,12 +24,11 @@ const APP_HOST = process.env.APP_HOST || '0.0.0.0'
 const APP_PORT = process.env.APP_PORT || 5200
 const HTTPS_APP_PORT = process.env.HTTPS_APP_PORT || 443
 const IS_HTTPS = process.env.APP_IS_HTTPS === '1' || false
-const IS_SAML_ENABLED = process.env.APP_IS_SAML_ENABLED || false
+const IS_SAML_ENABLED = process.env.APP_IS_SAML_ENABLED === '1' || false
 const APP_API_URL = process.env.APP_API_URL || '/api'
 const APP_DOC_MANAGE_API = process.env.APP_DOC_MANAGE_API || '/docsApi'
 
 app.use(compression())
-
 app.use(helmet())
 app.use(helmet.hsts({
   // Must be at least 1 year to be approved
@@ -115,6 +113,7 @@ if (IS_SAML_ENABLED) {
 }
 
 if (IS_HTTPS) {
+  console.log(IS_HTTPS)
   const httpsHost = APP_HOST
   const httpOptions = {
     key: fs.readFileSync(process.env.KEY_PATH),
@@ -129,7 +128,7 @@ if (IS_HTTPS) {
     if (err) {
       return console.log(err)
     }
-    console.log(chalk.cyan(`Starting the produciton server on ${APP_HOST}:${HTTPS_APP_PORT}...`))
+    console.log(chalk.cyan(`Starting the production server on ${APP_HOST}:${HTTPS_APP_PORT}...`))
   })
   
   // Start an HTTP server and redirect all requests to HTTPS
