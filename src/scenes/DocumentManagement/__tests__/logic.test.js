@@ -137,7 +137,7 @@ describe('Document Management logic', () => {
 
   test('should delete selected documents and dispatch BULK_DELETE_SUCCESS on success', done => {
     mock.onPost('/docs/bulkDelete').reply(200, { n: 2, ok: 1 })
-
+    apiMock.onDelete('/cleanup/1/annotations').reply(200, {})
     const store = setupStore([
       {
         name: 'Doc 1',
@@ -150,7 +150,7 @@ describe('Document Management logic', () => {
       }
     ])
 
-    store.dispatch({ type: types.BULK_DELETE_REQUEST })
+    store.dispatch({ type: types.BULK_DELETE_REQUEST, selectedDocs:['1','2'] })
 
     store.whenComplete(() => {
       expect(store.actions[1]).toEqual({ type: types.BULK_DELETE_SUCCESS, payload: { n: 2, ok: 1 } })
