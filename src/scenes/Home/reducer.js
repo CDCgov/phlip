@@ -6,12 +6,10 @@ import { updater, commonHelpers, searchUtils, normalize } from 'utils'
 
 export const INITIAL_STATE = {
   projects: {
-    byId: {},
-    allIds: []
+    visible: [],
+    matches: []
   },
-  matches: [],
   bookmarkList: [],
-  visibleProjects: [],
   searchValue: '',
   rowsPerPage: '10',
   page: 0,
@@ -132,49 +130,9 @@ export const mainReducer = (state, action) => {
     case types.GET_PROJECTS_SUCCESS:
       return {
         ...updateHomeState(['error', 'errorContent', 'bookmarkList', 'searchValue']),
-        projects: {
-          byId: normalize.arrayToObject(action.payload.projects),
-          allIds: normalize.mapArray(action.payload.projects)
-        }
+        projects: action.payload.projects
       }
-
-    case types.TOGGLE_BOOKMARK_SUCCESS:
-      return updateHomeState(['bookmarkList'])
-
-    case types.SORT_BOOKMARKED:
-      return updateHomeState(['sortBookmarked'])
-
-    case types.UPDATE_ROWS:
-      return updateHomeState(['rowsPerPage'])
-
-    case types.UPDATE_PAGE:
-      return updateHomeState(['page'])
-
-    case types.UPDATE_SEARCH_VALUE:
-      return updateHomeState(['searchValue'])
-
-    case types.UPDATE_PROJECT_SUCCESS:
-      return {
-        ...state,
-        projects: {
-          byId: {
-            ...state.projects.byId,
-            [action.payload.id]: action.payload
-          },
-          allIds: state.projects.allIds
-        }
-      }
-
-    case types.ADD_PROJECT_SUCCESS:
-      return {
-        ...INITIAL_STATE,
-        bookmarkList: state.bookmarkList,
-        projects: {
-          byId: { [action.payload.id]: action.payload, ...state.projects.byId },
-          allIds: [action.payload.id, ...state.projects.allIds]
-        }
-      }
-
+  
     case types.DELETE_PROJECT_SUCCESS: // updating redux to match with backend
       let updatedById = state.projects.byId
       const updatedAllIds = state.projects.allIds.filter(value => value !== action.project)
@@ -188,39 +146,29 @@ export const mainReducer = (state, action) => {
           allIds: updatedAllIds
         }
       }
+      
+    case types.TOGGLE_BOOKMARK_SUCCESS:
+      return updateHomeState(['bookmarkList'])
+      
+    case types.SORT_PROJECTS:
+    case types.SORT_BOOKMARKED:
+    case types.UPDATE_ROWS:
+    case types.UPDATE_PAGE:
+    case types.UPDATE_SEARCH_VALUE:
+    case types.UPDATE_VISIBLE_PROJECTS:
+      return {
+        ...state,
+        ...action.payload
+      }
+      
     case types.DELETE_PROJECT_FAIL:
       return {
         ...state, errorContent: 'We couldn\'t delete the project. Please try again later.', error: true
-      }
-    case types.SORT_PROJECTS:
-      return {
-        ...updateHomeState(['sortBy']),
-        direction: state.direction === 'asc' ? 'desc' : 'asc',
-        sortBookmarked: false
       }
 
     case types.GET_PROJECTS_FAIL:
       return {
         ...state, errorContent: 'We couldn\'t retrieve the project list. Please try again later.', error: true
-      }
-    case types.FLUSH_STATE:
-      return { ...INITIAL_STATE, rowsPerPage: state.rowsPerPage }
-
-    case types.UPDATE_EDITED_FIELDS:
-      let project = state.projects.byId[action.projectId]
-      return {
-        ...state,
-        projects: {
-          byId: {
-            ...state.projects.byId,
-            [project.id]: {
-              ...project,
-              lastEditedBy: action.user,
-              dateLastEdited: new Date().toISOString()
-            }
-          },
-          allIds: state.projects.allIds
-        }
       }
 
     case types.ADD_JURISDICTION_TO_PROJECT:
@@ -326,24 +274,9 @@ export const mainReducer = (state, action) => {
           text: ''
         }
       }
-
-    case types.GET_PROJECT_USERS_SUCCESS:
-      const projectId = action.payload.projectId
-      project = state.projects.byId[projectId]
-
-      return {
-        ...state,
-        projects: {
-          ...state.projects,
-          byId: {
-            ...state.projects.byId,
-            [projectId]: {
-              ...project,
-              lastUsersCheck: action.payload.newCheck ? Date.now() : project.lastUsersCheck
-            }
-          }
-        }
-      }
+  
+    case types.FLUSH_STATE:
+      return { ...INITIAL_STATE, rowsPerPage: state.rowsPerPage }
 
     case types.GET_PROJECTS_REQUEST:
     default:
@@ -360,7 +293,7 @@ export const mainReducer = (state, action) => {
  */
 export const homeReducer = (state = INITIAL_STATE, action) => {
   return Object.values(types).includes(action.type)
-    ? { ...state, ...getProjectArrays({ ...mainReducer(state, action) }) }
+    ? { ...state, ...mainReducer(state, action) }
     : state
 }
 

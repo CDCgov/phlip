@@ -9,8 +9,8 @@ const getDocLogic = createLogic({
   async process({ getState, docApi, api }, dispatch, done) {
     try {
       let documents = await docApi.getDocs()
-      let projects = getState().data.projects.byId
-      let jurisdictions = getState().data.jurisdictions.byId
+      let projects = { ...getState().data.projects.byId }
+      let jurisdictions = { ...getState().data.jurisdictions.byId }
       
       const docs = documents.map(doc => {
         return new Promise(async resolve => {
@@ -176,7 +176,6 @@ const cleanDocProjectLogic = createLogic({
           cleannedDocs[docKey].projects.splice(index, 1) // remove the projectId from array
           // rebuild the project name list
           let projectNames = cleannedDocs[docKey].projectList.split('|')
-          // console.log('project names: ',projectNames)
           const nameIdx = projectNames.findIndex(el => el === projectMeta.name)
           projectNames.splice(nameIdx, 1) // remove the project name from array
           cleannedDocs[docKey].projectList = projectNames.join('|')

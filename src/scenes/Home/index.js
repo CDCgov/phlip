@@ -313,7 +313,7 @@ export class Home extends Component {
 /* istanbul ignore next */
 const mapStateToProps = state => ({
   user: state.data.user.currentUser,
-  visibleProjects: state.scenes.home.main.visibleProjects,
+  visibleProjects: state.scenes.home.main.projects.visible,
   page: state.scenes.home.main.page,
   rowsPerPage: state.scenes.home.main.rowsPerPage,
   sortBy: state.scenes.home.main.sortBy,

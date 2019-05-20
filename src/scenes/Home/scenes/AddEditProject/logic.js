@@ -11,13 +11,9 @@ export const addProjectLogic = createLogic({
   async process({ action, api }, dispatch, done) {
     try {
       const project = await api.addProject(action.project, {}, {})
-      dispatch({
-        type: types.ADD_PROJECT_SUCCESS,
-        payload: {
-          ...project,
-          users: { lastCheck: null, all: [] }
-        }
-      })
+      dispatch({ type: types.ADD_PROJECT_SUCCESS })
+      dispatch({ type: projectTypes.ADD_PROJECT, payload: { ...project, lastUsersCheck: null } })
+      dispatch({ type: types.UPDATE_VISIBLE_PROJECTS, payload: {} })
     } catch (error) {
       dispatch({
         type: types.ADD_PROJECT_FAIL,
@@ -37,18 +33,9 @@ export const updateProjectLogic = createLogic({
   async process({ action, api }, dispatch, done) {
     try {
       const updatedProject = await api.updateProject(action.project, {}, { projectId: action.project.id })
-      dispatch({
-        type: types.UPDATE_PROJECT_SUCCESS,
-        payload: {
-          ...updatedProject,
-          users: updatedProject.hasOwnProperty('users') ? updatedProject.users : { lastCheck: null, all: [] }
-        }
-      })
-      
-      dispatch({
-        type: projectTypes.UPDATE_PROJECT,
-        payload: updatedProject
-      })
+      dispatch({ type: types.UPDATE_PROJECT_SUCCESS })
+      dispatch({ type: projectTypes.UPDATE_PROJECT, payload: updatedProject })
+      dispatch({ type: types.UPDATE_VISIBLE_PROJECTS, payload: {} })
     } catch (error) {
       dispatch({
         type: types.UPDATE_PROJECT_FAIL,

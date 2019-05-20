@@ -34,11 +34,12 @@ export const types = {
   EXPORT_DATA_SUCCESS: 'EXPORT_DATA_SUCCESS',
   EXPORT_DATA_FAIL: 'EXPORT_DATA_FAIL',
   CLEAR_PROJECT_TO_EXPORT: 'CLEAR_PROJECT_TO_EXPORT',
-  DISMISS_API_ERROR: 'DISMISS_API_ERROR'
+  DISMISS_API_ERROR: 'DISMISS_API_ERROR',
+  UPDATE_VISIBLE_PROJECTS: 'UPDATE_VISIBLE_PROJECTS'
 }
 
 export default {
-  getProjectsRequest: makeActionCreator(types.GET_PROJECTS_REQUEST),
+  getProjectsRequest: () => ({ type: types.GET_PROJECTS_REQUEST, payload: {} }),
   getProjectsFail: payload => ({ type: types.GET_PROJECTS_FAIL, payload: { errorContent: payload, error: true } }),
   updateProjectRequest: makeActionCreator(types.UPDATE_PROJECT_REQUEST, 'project'),
   updateProjectFail: payload => ({ type: types.UPDATE_PROJECT_FAIL, payload: { errorContent: payload, error: true } }),
