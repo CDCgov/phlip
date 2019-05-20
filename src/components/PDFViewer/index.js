@@ -296,6 +296,7 @@ export class PDFViewer extends Component {
     
     let fullAnnotation = {
       docId: this.props.document._id,
+      docName: this.props.document.name,
       rects: [],
       text: document.getSelection().toString(),
       length: 0,
