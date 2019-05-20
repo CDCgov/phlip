@@ -9,7 +9,7 @@ import util from 'util'
  * @type {AxiosInstance}
  */
 export const projectApiInstance = axios.create({
-  baseURL: (APP_IS_SAML_ENABLED === '1' || APP_IS_PRODUCTION === '1') ? APP_API_URL : '/api'
+  baseURL: '/api'
 })
 
 export const docApiInstance = axios.create({
