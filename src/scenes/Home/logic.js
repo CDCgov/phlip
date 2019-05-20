@@ -5,6 +5,7 @@ import { createLogic } from 'redux-logic'
 import { types } from './actions'
 import addEditProjectLogic from './scenes/AddEditProject/logic'
 import addEditJurisdictions from './scenes/AddEditJurisdictions/logic'
+import { types as projectTypes } from 'data/projects/actions'
 import { commonHelpers, normalize } from 'utils'
 
 /**
@@ -13,15 +14,10 @@ import { commonHelpers, normalize } from 'utils'
 export const getProjectLogic = createLogic({
   type: types.GET_PROJECTS_REQUEST,
   latest: true,
-  processOptions: {
-    dispatchReturn: true,
-    successType: types.GET_PROJECTS_SUCCESS,
-    failType: types.GET_PROJECTS_FAIL
-  },
-  async process({ api, getState }) {
-    const projects = await api.getProjects({}, {}, {})
-    return {
-      projects: projects.map(project => {
+  async process({ api, getState }, dispatch, done) {
+    try {
+      let projects = await api.getProjects({}, {}, {})
+      projects = projects.map(project => {
         const currentProject = getState().scenes.home.main.projects.byId[project.id]
         const proj = {
           ...project,
@@ -31,11 +27,29 @@ export const getProjectLogic = createLogic({
           lastUsersCheck: currentProject ? currentProject.lastUsersCheck : null,
           projectUsers: normalize.makeDistinct(project.projectUsers, 'userId')
         }
+        dispatch({
+          type: getState().data.projects.byId.hasOwnProperty(project.id)
+            ? projectTypes.UPDATE_PROJECT
+            : projectTypes.ADD_PROJECT,
+          payload: proj
+        })
         return proj
-      }),
-      bookmarkList: [...getState().data.user.currentUser.bookmarks],
-      error: false, errorContent: '', searchValue: ''
+      })
+      
+      dispatch({
+        type: types.GET_PROJECTS_SUCCESS,
+        payload: {
+          projects,
+          error: false,
+          errorContent: '',
+          searchValue: '',
+          bookmarkList: [...getState().data.user.currentUser.bookmarks]
+        }
+      })
+    } catch (err) {
+      dispatch({ type: types.GET_PROJECTS_FAIL })
     }
+    done()
   }
 })
 
@@ -56,7 +70,7 @@ export const getProjectUsersLogic = createLogic({
   async process({ api, getState, action }, dispatch, done) {
     const pUsers = getState().scenes.home.main.projects.byId[action.projectId].projectUsers
     const allUserObjs = getState().data.user.byId
-
+    
     try {
       if (action.sendRequest) {
         await commonHelpers.handleUserImages(pUsers, allUserObjs, dispatch, api)
@@ -98,25 +112,25 @@ export const toggleBookmarkLogic = createLogic({
     const currentUser = getState().data.user.currentUser
     let add = true
     let bookmarkList = [...currentUser.bookmarks]
-
+    
     if (bookmarkList.includes(action.project.id)) {
       bookmarkList.splice(bookmarkList.indexOf(action.project.id), 1)
       add = false
     } else {
       bookmarkList.push(action.project.id)
     }
-
+    
     const apiObj = {
       userId: currentUser.id,
       projectId: action.project.id
     }
-
+    
     if (add) {
       await api.addUserBookmark({}, {}, apiObj)
     } else {
       await api.removeUserBookmark({}, {}, apiObj)
     }
-
+    
     return { bookmarkList, user: { ...currentUser, bookmarks: bookmarkList } }
   }
 })
@@ -147,7 +161,7 @@ export const exportDataLogic = createLogic({
     successType: types.EXPORT_DATA_SUCCESS,
     failType: types.EXPORT_DATA_FAIL
   },
-  async process({ action, getState, api }) {
+  async process({ action, api }) {
     return await api.exportData({}, { params: { type: action.exportType } }, { projectId: action.project.id })
   }
 })
