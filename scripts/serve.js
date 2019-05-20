@@ -83,7 +83,7 @@ app.use(helmet.contentSecurityPolicy({
       '\'unsafe-eval\'', 'www.google-analytics.com', 'search.usa.gov'
     ],
     objectSrc: ['\'self\''],
-    connectSrc: ['\'self\'', 'www.cdc.gov', 'cdc.gov', connectSrc, docConnectSrc, 'www.google-analytics.com'],
+    connectSrc: ['\'self\'', 'www.cdc.gov', 'cdc.gov', connectSrc, 'www.google-analytics.com'],
     imgSrc: ['\'self\'', 'data:', 'www.google-analytics.com', 'stats.search.usa.gov', 'cdc.112.2o7.net'],
     fontSrc: ['\'self\'', 'fonts.google.com', 'fonts.gstatic.com']
   },
