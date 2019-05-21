@@ -115,19 +115,6 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
-// /**
-//  * Wrapper for the main reducer, after every action, the setProjectArrays function
-//  *
-//  * @param {Object} state
-//  * @param {Object} action
-//  * @returns {Object} - Updated state
-//  */
-// export const homeReducer = (state = INITIAL_STATE, action) => {
-//   return Object.values(types).includes(action.type)
-//     ? mainReducer(state, action)
-//     : state
-// }
-
 /**
  * Combines the reducers from ./scenes/AddEditProject and ./scenes/AddEditJurisdiction
  */
