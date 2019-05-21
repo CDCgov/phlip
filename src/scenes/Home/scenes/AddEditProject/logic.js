@@ -60,6 +60,9 @@ export const deleteProjectLogic = createLogic({
         type: types.DELETE_PROJECT_SUCCESS,
         project: action.project
       })
+  
+      dispatch({ type: projectTypes.REMOVE_PROJECT, projectId: action.project, payload: {} })
+      
       // remove project id from all documents' project list and also clean up redux store when completed
       dispatch({
         type: documentTypes.CLEAN_PROJECT_LIST_REQUEST,

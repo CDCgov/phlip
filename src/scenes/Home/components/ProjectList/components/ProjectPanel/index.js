@@ -361,7 +361,6 @@ export class ProjectPanel extends Component {
 /* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => {
   const homeState = state.scenes.home.main
-  //const p = homeState.projects.byId[ownProps.id]
   const p = state.data.projects.byId[ownProps.id]
   return {
     project: p,

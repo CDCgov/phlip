@@ -181,11 +181,9 @@ const cleanDocProjectLogic = createLogic({
           cleannedDocs[docKey].projectList = projectNames.join('|')
         }
       })
-      dispatch({ type: projectTypes.REMOVE_PROJECT, projectId: projectMeta.id })
       dispatch({ type: types.CLEAN_PROJECT_LIST_SUCCESS, payload: cleannedDocs })
       done()
     } catch (e) {
-      console.log('error: ', e)
       dispatch({ type: types.CLEAN_PROJECT_LIST_FAIL, payload: 'Failed to remove projectId from documents' })
     }
     done()

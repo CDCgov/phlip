@@ -7,6 +7,7 @@ import addEditProjectLogic from './scenes/AddEditProject/logic'
 import addEditJurisdictions from './scenes/AddEditJurisdictions/logic'
 import { types as projectTypes } from 'data/projects/actions'
 import { commonHelpers, normalize, searchUtils } from 'utils'
+import { arrayToObject, mapArray } from 'utils/normalize'
 
 /**
  * Sorts the list of projects by bookmarked. Bookmarked projects are sorted first, and then non-bookmark projects are
@@ -116,6 +117,24 @@ const getProjectArrays = (projects, projectState) => {
   }
 }
 
+const getUpdatedState = (action, homeState) => {
+  const isSort = action.type === types.SORT_PROJECTS
+  
+  return {
+    page: action.payload.page !== undefined ? action.payload.page : homeState.page,
+    rowsPerPage: action.payload.rowsPerPage || homeState.rowsPerPage,
+    searchValue: action.payload.searchValue !== undefined ? action.payload.searchValue : homeState.searchValue,
+    sortBy: action.payload.sortBy || homeState.sortBy,
+    direction: isSort ? homeState.direction === 'asc' ? 'desc' : 'asc' : homeState.direction,
+    sortBookmarked: action.payload.sortBookmarked !== undefined
+      ? action.payload.sortBookmarked
+      : isSort
+        ? false
+        : homeState.sortBookmarked,
+    bookmarkList: action.payload.bookmarkList || homeState.bookmarkList
+  }
+}
+
 /**
  * Handles updating visible projects in the home screen
  * @type {Logic<object, undefined, undefined, {}, undefined, *[]>}
@@ -131,29 +150,32 @@ export const updateVisibleProjects = createLogic({
     types.UPDATE_VISIBLE_PROJECTS
   ],
   transform({ getState, action }, next) {
-    const homeState = getState().scenes.home.main
     const projects = Object.values(getState().data.projects.byId)
-    const isSort = action.type === types.SORT_PROJECTS
-    
-    const update = {
-      page: action.payload.page !== undefined ? action.payload.page : homeState.page,
-      rowsPerPage: action.payload.rowsPerPage || homeState.rowsPerPage,
-      searchValue: action.payload.searchValue !== undefined ? action.payload.searchValue : homeState.searchValue,
-      sortBy: action.payload.sortBy || homeState.sortBy,
-      direction: isSort ? homeState.direction === 'asc' ? 'desc' : 'asc' : homeState.direction,
-      sortBookmarked: action.payload.sortBookmarked !== undefined
-        ? action.payload.sortBookmarked
-        : isSort
-          ? false
-          : homeState.sortBookmarked,
-      bookmarkList: action.payload.bookmarkList || homeState.bookmarkList
-    }
-    
+    const update = getUpdatedState(action, getState().scenes.home.main)
     const projectArrays = getProjectArrays(projects, update)
     
     next({
       ...action,
       payload: action.type === types.GET_PROJECTS_REQUEST ? update : projectArrays
+    })
+  }
+})
+
+/**
+ * Updates the list of projects for home after one has been removed
+ * @type {Logic<object, undefined, undefined, {}, undefined, string>}
+ */
+export const removeProjectLogic = createLogic({
+  type: types.REMOVE_PROJECT,
+  transform({ getState, action }, next) {
+    const projectState = getState().data.projects
+    const update = getUpdatedState(action, getState().scenes.home.main)
+    const { [action.projectId]: deleteProject, ...updatedById } = projectState.byId
+    const projectArrays = getProjectArrays(Object.values(updatedById), update)
+  
+    next({
+      ...action,
+      payload: projectArrays
     })
   }
 })
@@ -177,19 +199,17 @@ export const getProjectLogic = createLogic({
           lastUsersCheck: currentProject ? currentProject.lastUsersCheck : null,
           projectUsers: normalize.makeDistinct(project.projectUsers, 'userId')
         }
-        
-        dispatch({
-          type: getState().data.projects.byId.hasOwnProperty(project.id)
-            ? projectTypes.UPDATE_PROJECT
-            : projectTypes.ADD_PROJECT,
-          payload: proj
-        })
         return proj
       })
       
+      dispatch({ type: types.GET_PROJECTS_SUCCESS })
       dispatch({
-        type: types.GET_PROJECTS_SUCCESS,
+        type: projectTypes.SET_PROJECTS,
         payload: {
+          data: {
+            allIds: mapArray(projects, 'id'),
+            byId: arrayToObject(projects, 'id')
+          },
           ...getProjectArrays(projects, action.payload),
           error: false,
           errorContent: '',
@@ -197,6 +217,7 @@ export const getProjectLogic = createLogic({
           bookmarkList: [...getState().data.user.currentUser.bookmarks]
         }
       })
+      
     } catch (err) {
       dispatch({ type: types.GET_PROJECTS_FAIL })
     }
@@ -312,6 +333,7 @@ export const exportDataLogic = createLogic({
 
 export default [
   updateVisibleProjects,
+  removeProjectLogic,
   getProjectLogic,
   getProjectUsersLogic,
   toggleBookmarkLogic,

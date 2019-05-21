@@ -123,7 +123,6 @@ export class AddEditProject extends Component {
         this.setState({
           submitting: false
         })
-        console.log(this.props.formError)
         this.props.onSubmitError(this.props.formError)
       } else if (this.props.goBack) {
         this.props.history.push('/home')
@@ -402,7 +401,7 @@ export class AddEditProject extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   projects: Object.values(state.data.projects.byId) || [],
   form: state.form.projectForm || {},
   formName: 'projectForm',

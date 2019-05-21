@@ -272,7 +272,7 @@ export class AddEditJurisdictions extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  project: state.scenes.home.main.projects.byId[ownProps.match.params.id],
+  project: state.data.projects.byId[ownProps.match.params.id],
   visibleJurisdictions: state.scenes.home.addEditJurisdictions.visibleJurisdictions || [],
   error: state.scenes.home.addEditJurisdictions.error || false,
   errorContent: state.scenes.home.addEditJurisdictions.errorContent || '',
