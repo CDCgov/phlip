@@ -15,6 +15,7 @@ import { withTheme } from '@material-ui/core/styles'
 import Logo from 'components/Logo'
 import DevLoginForm from './components/DevLoginForm'
 import ProdLoginForm from './components/ProdLoginForm'
+import moment from 'moment'
 
 /**
  * Login screen component. Renders the login form.
@@ -48,7 +49,8 @@ export class Login extends Component {
     /**
      * Currently logged in user, if any
      */
-    currentUser: PropTypes.object
+    currentUser: PropTypes.object,
+    appVersion : PropTypes.string
   }
 
   constructor(props, context) {
@@ -100,7 +102,7 @@ export class Login extends Component {
       flexDirection: 'column'
     }
     const LoginView = APP_IS_SAML_ENABLED === '1' ? ProdLoginForm : DevLoginForm
-
+    const appVersion = APP_PIPELINE + ' -- Updated on: ' + moment.unix(APP_BUILT_TIMESTAMP).format('YYYY/MM/DD : HH:mm:ss ')
     return (
       <Container column flex alignItems="center" justify="center" style={{ backgroundColor: '#f5f5f5' }}>
         <Paper style={formStyles}>
@@ -130,6 +132,9 @@ export class Login extends Component {
             style={{ height: 55 }}
             alt="Center for Disease Control and Health and Human Services Logo"
           />
+          <Typography variant="caption" style={{ color: 'black' }}>
+              Front-end Built Version: {appVersion}
+          </Typography>
         </Row>
       </Container>
     )
