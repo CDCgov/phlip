@@ -4,35 +4,50 @@ export const projects = {
     name: 'Project 1',
     dateLastEdited: new Date(2017, 0, 31),
     lastEditedBy: 'Kristin Muterspaw',
-    lastUsersCheck: null
+    lastUsersCheck: null,
+    projectUsers: [],
+    projectJurisdictions: [],
+    createdById: 1
   },
   2: {
     id: 2,
     name: 'Project 2',
     dateLastEdited: new Date(2017, 2, 31),
     lastEditedBy: 'Michael Ta',
-    lastUsersCheck: null
+    lastUsersCheck: null,
+    projectUsers: [],
+    projectJurisdictions: [],
+    createdById: 2
   },
   3: {
     id: 3,
     name: 'Project 3',
     dateLastEdited: new Date(2017, 1, 28),
     lastEditedBy: 'Sanjith David',
-    lastUsersCheck: null
+    lastUsersCheck: null,
+    projectUsers: [],
+    projectJurisdictions: [],
+    createdById: 4
   },
   4: {
     id: 4,
     name: 'Project 4',
     dateLastEdited: new Date(2017, 5, 30),
     lastEditedBy: 'Greg Ledbetter',
-    lastUsersCheck: null
+    lastUsersCheck: null,
+    projectUsers: [],
+    projectJurisdictions: [],
+    createdById: 4
   },
   5: {
     id: 5,
     name: 'Project 5',
     dateLastEdited: new Date(2017, 9, 31),
     lastEditedBy: 'Jason James',
-    lastUsersCheck: null
+    lastUsersCheck: null,
+    projectUsers: [],
+    projectJurisdictions: [],
+    createdById: 2
   }
 }
 
@@ -42,24 +57,51 @@ export const projectsPayload = [
     name: 'Project 1',
     dateLastEdited: new Date(2017, 0, 31),
     lastEditedBy: 'Kristin Muterspaw',
-    lastUsersCheck: null
+    lastUsersCheck: null,
+    projectUsers: [],
+    projectJurisdictions: [],
+    createdById: 1
   },
-  { id: 2, name: 'Project 2', dateLastEdited: new Date(2017, 2, 31), lastEditedBy: 'Michael Ta', lastUsersCheck: null },
+  {
+    id: 2,
+    name: 'Project 2',
+    dateLastEdited: new Date(2017, 2, 31),
+    lastEditedBy: 'Michael Ta',
+    lastUsersCheck: null,
+    projectUsers: [],
+    projectJurisdictions: [],
+    createdById: 2
+  },
   {
     id: 3,
     name: 'Project 3',
     dateLastEdited: new Date(2017, 1, 28),
     lastEditedBy: 'Sanjith David',
-    lastUsersCheck: null
+    lastUsersCheck: null,
+    projectUsers: [],
+    projectJurisdictions: [],
+    createdById: 4
   },
   {
     id: 4,
     name: 'Project 4',
     dateLastEdited: new Date(2017, 5, 30),
     lastEditedBy: 'Greg Ledbetter',
-    lastUsersCheck: null
+    lastUsersCheck: null,
+    projectUsers: [],
+    projectJurisdictions: [],
+    createdById: 4
   },
-  { id: 5, name: 'Project 5', dateLastEdited: new Date(2017, 9, 31), lastEditedBy: 'Jason James', lastUsersCheck: null }
+  {
+    id: 5,
+    name: 'Project 5',
+    dateLastEdited: new Date(2017, 9, 31),
+    lastEditedBy: 'Jason James',
+    lastUsersCheck: null,
+    projectUsers: [],
+    projectJurisdictions: [],
+    createdById: 2
+  }
 ]
 
 export const defaultSorted = [5, 4, 2, 3, 1]

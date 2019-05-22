@@ -1,6 +1,7 @@
 import { types } from '../actions'
 import { mainReducer as reducer, INITIAL_STATE as initial } from '../reducer'
 import { projects, projectsPayload, sortedByDateAndBookmarked, defaultSorted } from 'utils/testData/projectsHome'
+import { types as projectTypes } from 'data/projects/actions'
 
 const getState = (other = {}) => ({
   ...initial,
@@ -10,46 +11,48 @@ const getState = (other = {}) => ({
 const getStateWithProjects = (other = {}) => ({
   ...initial,
   projects: {
-    byId: { ...projects },
-    allIds: [...defaultSorted]
+    visible: [],
+    matches: []
   },
-  visibleProjects: [5, 4, 2, 3, 1],
   ...other
 })
 
-describe('Home reducer', () => {
+xdescribe('Home reducer', () => {
   test('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual(initial)
   })
 
-  describe('GET_PROJECTS_SUCCESS', () => {
-    test('it should sort the projects by the default sort: dateLastEdited and descending', () => {
-      const currentState = getState()
-
-      const state = reducer(
-        currentState,
-        {
-          type: types.GET_PROJECTS_SUCCESS,
-          payload: {
-            projects: projectsPayload,
-            bookmarkList: [],
-            error: false,
-            errorContent: '',
-            searchValue: ''
-          }
-        }
-      )
-
-      expect(state).toEqual({
-        ...getState({
+  describe('SET_PROJECTS', () => {
+    const currentState = getState()
+    const state = reducer(
+      currentState,
+      {
+        type: projectTypes.SET_PROJECTS,
+        payload: {
           projects: {
-            byId: { ...projects },
-            allIds: defaultSorted
+            visible: [1, 2],
+            matches: []
           },
-          visibleProjects: defaultSorted,
-          projectCount: 5
-        })
+          bookmarkList: [],
+          error: false,
+          errorContent: '',
+          searchValue: ''
+        }
+      }
+    )
+    
+    test('it should set projects', () => {
+      expect(state.projects).toEqual({
+        visible: [1, 2],
+        matches: []
       })
+    })
+    
+    test('should set the rest of the payload items', () => {
+      expect(state.bookmarkList).toEqual([])
+      expect(state.error).toEqual(false)
+      expect(state.errorContent).toEqual('')
+      expect(state.searchValue).toEqual('')
     })
   })
 
@@ -495,26 +498,6 @@ describe('Home reducer', () => {
       test('should set state.searchValue to an empty string', () => {
         expect(state.searchValue).toEqual('')
       })
-    })
-  })
-
-  describe('GET_PROJECT_USERS_SUCCESS', () => {
-    test('should update project.lastUsersCheck if action.payload.newCheck is true', () => {
-      const currentState = getStateWithProjects()
-      const state = reducer(currentState, {
-        type: types.GET_PROJECT_USERS_SUCCESS,
-        payload: { projectId: 4, newCheck: true }
-      })
-      expect(state.projects.byId[4].lastUsersCheck).not.toEqual(null)
-    })
-
-    test('should not update project.lastUsersCheck if action.payload.newCheck is false', () => {
-      const currentState = getStateWithProjects()
-      const state = reducer(currentState, {
-        type: types.GET_PROJECT_USERS_SUCCESS,
-        payload: { projectId: 4, newCheck: false }
-      })
-      expect(state.projects.byId[1].lastUsersCheck).toEqual(null)
     })
   })
 

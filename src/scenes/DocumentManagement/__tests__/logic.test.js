@@ -5,7 +5,7 @@ import { types } from '../actions'
 import createApiHandler, { docApiInstance, projectApiInstance } from 'services/api'
 import calls from 'services/api/docManageCalls'
 import apiCalls from 'services/api/calls'
-import { mockDocuments, orderedByNameDesc, orderedByNameAsc, orderedByDate } from 'utils/testData/documents'
+import { mockDocuments } from 'utils/testData/documents'
 
 describe('Document Management logic', () => {
   let mock, apiMock

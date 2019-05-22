@@ -4,7 +4,8 @@ import logic from '../logic'
 import { types } from '../actions'
 import createApiHandler, { projectApiInstance } from 'services/api'
 import calls from 'services/api/calls'
-import { mainReducer as reducer, INITIAL_STATE } from '../reducer'
+import { INITIAL_STATE } from '../reducer'
+import { types as projectTypes } from 'data/projects/actions'
 import { projects, projectsPayload, sortedByDateAndBookmarked, defaultSorted } from 'utils/testData/projectsHome'
 
 describe('Home logic', () => {
@@ -227,25 +228,39 @@ describe('Home logic', () => {
     })
   })
   
-  describe('Getting projects', () => {
-    test('should get project list and set bookmarkList and dispatch GET_PROJECTS_SUCCESS when done', done => {
-      mock.onGet('/projects').reply(200, [
-        {
-          name: 'Project 1',
-          id: 1,
-          lastEditedBy: 'Test User   ',
-          dateLastEdited: '1/1/2000',
-          projectJurisdictions: [],
-          projectUsers: []
-        },
-        { name: 'Project 2', id: 2, lastEditedBy: ' Test User    ', projectJurisdictions: [], projectUsers: [] }
-      ])
-      
-      const store = setupStore([1])
+  describe('Getting Projects', () => {
+    let store
+    beforeEach(() => {
+      mock.onGet('/projects').reply(200, projectsPayload)
+      store = setupStore([1], true)
       store.dispatch({ type: types.GET_PROJECTS_REQUEST, payload: {} })
-      
+    })
+    
+    test('should get project list and set bookmarkList and dispatch GET_PROJECTS_SUCCESS when done', done => {
       store.whenComplete(() => {
         expect(store.actions[1]).toEqual({ type: types.GET_PROJECTS_SUCCESS })
+        done()
+      })
+    })
+    
+    test('should dispatch set projects to set globally and home state', done => {
+      store.whenComplete(() => {
+        expect(store.actions[2].type).toEqual(projectTypes.SET_PROJECTS)
+        expect(store.actions[2].payload.data).toEqual({
+          byId: projects,
+          allIds: [1, 2, 3, 4, 5]
+        })
+        done()
+      })
+    })
+    
+    test('should sort by dateLastEdited and descending', done => {
+      store.whenComplete(() => {
+        expect(store.actions[2].type).toEqual(projectTypes.SET_PROJECTS)
+        expect(store.actions[2].payload.projects).toEqual({
+          visible: defaultSorted,
+          matches: []
+        })
         done()
       })
     })
