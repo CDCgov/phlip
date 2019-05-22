@@ -818,7 +818,7 @@ export class CodingValidation extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const project = state.scenes.home.main.projects.byId[ownProps.match.params.id]
+  const project = state.data.projects.byId[ownProps.match.params.id]
   const page = ownProps.match.url.split('/')[3] === 'code' ? 'coding' : 'validation'
   const pageState = state.scenes.codingValidation.coding
   const docState = state.scenes.codingValidation.documentList
