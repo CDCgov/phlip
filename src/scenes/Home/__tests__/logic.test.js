@@ -4,7 +4,7 @@ import logic from '../logic'
 import { types } from '../actions'
 import createApiHandler, { projectApiInstance } from 'services/api'
 import calls from 'services/api/calls'
-import { INITIAL_STATE } from '../reducer'
+import { INITIAL_STATE, mainReducer as reducer } from '../reducer'
 import { types as projectTypes } from 'data/projects/actions'
 import { projects, projectsPayload, sortedByDateAndBookmarked, defaultSorted } from 'utils/testData/projectsHome'
 
@@ -221,6 +221,229 @@ describe('Home logic', () => {
         test('should set state.direction to desc', done => {
           store.whenComplete(() => {
             expect(store.actions[0].payload.direction).toEqual('desc')
+            done()
+          })
+        })
+      })
+    })
+    
+    describe('UPDATE_ROWS', () => {
+      let store
+      beforeEach(() => {
+        store = setupStore({}, true, { direction: 'desc' })
+        const action = { type: types.UPDATE_ROWS, payload: { rowsPerPage: 3 } }
+        store.dispatch(action)
+      })
+      
+      test('should set update rowsPerPage in state', done => {
+        store.whenComplete(() => {
+          expect(store.actions[0].payload.rowsPerPage).toEqual(3)
+          done()
+        })
+      })
+      
+      test('should update visible projects to only show first page', done => {
+        store.whenComplete(() => {
+          expect(store.actions[0].payload.projects.visible).toEqual([5, 4, 2])
+          done()
+        })
+      })
+    })
+    
+    describe('UPDATE_PAGE', () => {
+      let store
+      beforeEach(() => {
+        store = setupStore({}, true, { direction: 'desc', rowsPerPage: 2 })
+        const action = { type: types.UPDATE_PAGE, payload: { page: 1 } }
+        store.dispatch(action)
+      })
+      
+      test('should set update page in state', done => {
+        store.whenComplete(() => {
+          expect(store.actions[0].payload.page).toEqual(1)
+          done()
+        })
+      })
+      
+      test('should update visible projects to page requested', done => {
+        store.whenComplete(() => {
+          expect(store.actions[0].payload.projects.visible).toEqual([2, 3])
+          done()
+        })
+      })
+    })
+    
+    describe('SORT_BOOKMARKED', () => {
+      describe('sorting by bookmarks with bookmarked projects', () => {
+        let store
+        beforeEach(() => {
+          store = setupStore({}, true, { bookmarkList: [1, 3, 4] })
+          const action = { type: types.SORT_BOOKMARKED, payload: { sortBookmarked: true } }
+          store.dispatch(action)
+        })
+        
+        test('should move bookmarked projects to the top and sort those depending on the sort label selected', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.projects.visible).toEqual([...sortedByDateAndBookmarked])
+            done()
+          })
+        })
+        
+        test('should set sortBookmarked to true', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.sortBookmarked).toEqual(true)
+            done()
+          })
+        })
+      })
+      
+      describe('sorting by bookmarks without bookmarked projects', () => {
+        let store
+        beforeEach(() => {
+          store = setupStore({}, true, { bookmarkList: [] })
+          const action = { type: types.SORT_BOOKMARKED, payload: { sortBookmarked: true } }
+          store.dispatch(action)
+        })
+        
+        test('should not change the order of the projects if no projects are bookmarked', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.projects.visible).toEqual(defaultSorted)
+            done()
+          })
+        })
+      })
+      
+      describe('unsorting by bookmarks', () => {
+        let store
+        beforeEach(() => {
+          store = setupStore(
+            {},
+            true,
+            { bookmarkList: [1, 3, 4], sortBookmarked: true, projects: { visible: [...sortedByDateAndBookmarked] } }
+          )
+          const action = { type: types.UPDATE_PAGE, payload: { sortBookmarked: false } }
+          store.dispatch(action)
+        })
+        
+        test(
+          'should move bookmarked projects back to their original order by sort label if sorting by bookmarked is disabled',
+          done => {
+            store.whenComplete(() => {
+              expect(store.actions[0].payload.projects.visible).toEqual(defaultSorted)
+              done()
+            })
+          }
+        )
+        
+        test('should set state.sortBookmarked to false', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.sortBookmarked).toEqual(false)
+            done()
+          })
+        })
+      })
+    })
+    
+    describe('UPDATE_SEARCH_VALUE', () => {
+      describe('found matches', () => {
+        let store
+        beforeEach(() => {
+          store = setupStore({}, true)
+          const action = { type: types.UPDATE_SEARCH_VALUE, payload: { searchValue: 'Led' } }
+          store.dispatch(action)
+        })
+        
+        test('should update visible projects if there are matches for the search value', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.projects.visible).toEqual([4])
+            done()
+          })
+        })
+    
+        test('should update matches to an array of matching project ids', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.projects.matches).toEqual([4])
+            done()
+          })
+        })
+    
+        test('should update projectCount to number of total matches', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.projectCount).toEqual(1)
+            done()
+          })
+        })
+    
+        test('should update searchValue to action.payload.searchValue', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.searchValue).toEqual('Led')
+            done()
+          })
+        })
+      })
+  
+      describe('no matches found', () => {
+        let store
+        beforeEach(() => {
+          store = setupStore({}, true)
+          const action = { type: types.UPDATE_SEARCH_VALUE, payload: { searchValue: 'cxx' } }
+          store.dispatch(action)
+        })
+        
+        test('should update visible projects to be an empty array', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.projects.visible).toEqual([])
+            done()
+          })
+        })
+    
+        test('should update matches to an empty array', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.projects.matches).toEqual([])
+            done()
+          })
+        })
+    
+        test('should update projectCount to 0', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.projectCount).toEqual(0)
+            done()
+          })
+        })
+    
+        test('should set searchValue to action.payload.searchValue', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.searchValue).toEqual('cxx')
+            done()
+          })
+        })
+      })
+  
+      describe('clearing search field', () => {
+        let store
+        beforeEach(() => {
+          store = setupStore({}, true, { projects: { visible: [4], matches: [4] }, searchValue: 'Led', projectCount: 1 })
+          const action = { type: types.UPDATE_SEARCH_VALUE, payload: { searchValue: '' } }
+          store.dispatch(action)
+        })
+    
+        test('should set the projects back to previous state', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.projects.visible).toEqual(defaultSorted)
+            done()
+          })
+        })
+    
+        test('should set state.projectCount to total number of projects', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.projectCount).toEqual(5)
+            done()
+          })
+        })
+    
+        test('should set state.searchValue to an empty string', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.searchValue).toEqual('')
             done()
           })
         })
