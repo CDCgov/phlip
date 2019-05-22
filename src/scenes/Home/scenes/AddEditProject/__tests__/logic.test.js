@@ -82,6 +82,21 @@ describe('Home scene - AddEditProject logic', () => {
         done()
       })
     })
+  
+    test('should dispatch failure when adding a project fails', done => {
+      const store = setupStore([])
+    
+      mock.onPost('/projects').reply(500)
+      store.dispatch({
+        type: types.ADD_PROJECT_REQUEST,
+        project: 1
+      })
+    
+      store.whenComplete(() => {
+        expect(store.actions[1].type).toEqual(types.ADD_PROJECT_FAIL)
+        done()
+      })
+    })
   })
   
   describe('Updating a project', () => {
@@ -90,13 +105,13 @@ describe('Home scene - AddEditProject logic', () => {
     let store
     beforeEach(() => {
       mock.onPut('/projects/1').reply(200, project)
-      store = setupStore([])
+      store = setupStore()
       store.dispatch({ type: types.UPDATE_PROJECT_REQUEST, project: { ...project, userId: 5 } })
     })
     
     test('should put an updated project and dispatch UPDATE_PROJECT_SUCCESS when successful', done => {
       store.whenComplete(() => {
-        expect(store.actions[1].type).toEqual('UPDATE_PROJECT_SUCCESS')
+        expect(store.actions[1].type).toEqual(types.UPDATE_PROJECT_SUCCESS)
         done()
       })
     })
@@ -116,6 +131,21 @@ describe('Home scene - AddEditProject logic', () => {
         done()
       })
     })
+  
+    test('should dispatch failure when updating a project fails', done => {
+      const store = setupStore()
+    
+      mock.onPut('/projects/1').reply(500)
+      store.dispatch({
+        type: types.UPDATE_PROJECT_REQUEST,
+        project: 1
+      })
+    
+      store.whenComplete(() => {
+        expect(store.actions[1].type).toEqual(types.UPDATE_PROJECT_FAIL)
+        done()
+      })
+    })
   })
   
   describe('Deleting a project', () => {
@@ -130,8 +160,40 @@ describe('Home scene - AddEditProject logic', () => {
       })
       
       store.whenComplete(() => {
-        expect(store.actions[1].type).toEqual('DELETE_PROJECT_SUCCESS')
+        expect(store.actions[1].type).toEqual(types.DELETE_PROJECT_SUCCESS)
         expect(store.actions[1].project).toEqual(1)
+        done()
+      })
+    })
+    
+    test('should remove the project from global list', done => {
+      const project = { id: 1, name: 'Delete Project', lastEditedBy: 'Test User' }
+      const store = setupStore([])
+  
+      mock.onDelete('/projects/1').reply(200, project)
+      store.dispatch({
+        type: types.DELETE_PROJECT_REQUEST,
+        project: 1
+      })
+  
+      store.whenComplete(() => {
+        expect(store.actions[2].type).toEqual(types.REMOVE_PROJECT)
+        expect(store.actions[2].projectId).toEqual(1)
+        done()
+      })
+    })
+    
+    test('should dispatch failure when deleting a project fails', done => {
+      const store = setupStore([])
+  
+      mock.onDelete('/projects/1').reply(500)
+      store.dispatch({
+        type: types.DELETE_PROJECT_REQUEST,
+        project: 1
+      })
+  
+      store.whenComplete(() => {
+        expect(store.actions[1].type).toEqual(types.DELETE_PROJECT_FAIL)
         done()
       })
     })
