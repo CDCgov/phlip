@@ -2,7 +2,6 @@ import upload, { COMBINED_INITIAL_STATE as UPLOAD_INITIAL_STATE } from './scenes
 import { types } from './actions'
 import { arrayToObject } from 'utils/normalize'
 import { sliceTable, sortListOfObjects } from 'utils/commonHelpers'
-import { searchUtils } from 'utils'
 import searchReducer, { COMBINED_INITIAL_STATE as SEARCH_INITIAL_STATE } from './components/SearchBox/reducer'
 import { types as searchTypes } from './components/SearchBox/actions'
 
@@ -32,75 +31,6 @@ const mergeName = docObj => ({
   ...docObj,
   uploadedByName: `${docObj.uploadedBy.firstName} ${docObj.uploadedBy.lastName}`
 })
-
-const resetFilter = (docs, stringSearch, projectFilter, jurisdictionFilter) => {
-  let matches = docs
-  let pieces = []
-  
-  const searchFields = {
-    name: 'name',
-    uploadedBy: 'uploadedByName',
-    uploadedDate: 'uploadedDate',
-    project: 'projectList',
-    jurisdiction: 'jurisdictionList'
-  }
-  
-  const regEnd = /\)$/
-  const regBegin = /^\(/
-  
-  const searchParams = stringSearch.split(' | ')
-  searchParams.forEach(searchTerm => {
-    const searchTermPieces = searchTerm.split(':')
-    if (searchTermPieces.length > 1) {
-      let searchValue = searchTermPieces[1].trim()
-      if (Object.keys(searchFields).includes(searchTermPieces[0])) {
-        const searchProperty = searchFields[searchTermPieces[0]]
-        if (searchProperty === 'projectList' && projectFilter) {
-          matches = matches.filter(doc => doc.projects.includes(projectFilter))
-        } else if (searchProperty === 'jurisdictionList' && jurisdictionFilter) {
-          matches = matches.filter(doc => doc.jurisdictions.includes(jurisdictionFilter))
-        } else {
-          // Checking if the search string if multi-worded
-          if (regBegin.test(searchValue)) {
-            if (regEnd.test(searchValue)) {
-              searchValue = searchValue.replace(regBegin, '')
-              searchValue = searchValue.replace(regEnd, '')
-            } else {
-              pieces = searchValue.split(' ')
-              if (pieces.length > 1) {
-                let foundEnd = false
-                for (let i = 1; i < pieces.length; i++) {
-                  if (foundEnd) break
-                  if (pieces[i].endsWith(')')) {
-                    pieces[0] = pieces[0].replace(regBegin, '')
-                    pieces[i] = pieces[i].replace(regEnd, '')
-                    const searchStringParams = pieces.splice(0, i + 1)
-                    searchValue = searchStringParams.join(' ')
-                    foundEnd = true
-                  }
-                }
-              }
-            }
-          } else {
-            if (searchValue.trim().split(' ').length > 1) {
-              pieces = searchValue.split(' ')
-              searchValue = pieces[0]
-              pieces = pieces.splice(1, 2)
-            }
-          }
-          pieces.forEach(piece => matches = searchUtils.searchForMatches(matches, piece, Object.values(searchFields)))
-          matches = searchUtils.searchForMatches(matches, searchValue, [searchProperty])
-        }
-      } else {
-        matches = searchUtils.searchForMatches(matches, searchTerm, Object.values(searchFields))
-      }
-    } else {
-      matches = searchUtils.searchForMatches(matches, searchTerm, Object.values(searchFields))
-    }
-  })
-  
-  return matches
-}
 
 const removeContent = (document, index) => {
   const { content, ...doc } = document
@@ -220,15 +150,13 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
     
     case searchTypes.SEARCH_VALUE_CHANGE:
-      docs = [...Object.values(state.documents.byId)]
-      let matches = resetFilter(docs, action.value, action.form.project.id, action.form.jurisdiction.id)
       return {
         ...state,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(matches, state.page, state.rowsPerPage, state.sortBy, state.sortDirection)
+          visible: sortAndSlice(action.payload, state.page, state.rowsPerPage, state.sortBy, state.sortDirection)
         },
-        matchedDocs: matches
+        matchedDocs: action.payload
       }
     
     case types.BULK_DELETE_REQUEST:
@@ -238,10 +166,11 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.BULK_DELETE_SUCCESS:
+      docs = { ...state.documents.byId }
       state.documents.checked.forEach(docId => {
-        delete state.documents.byId[docId]
+        delete docs[docId]
       })
-      obj = state.documents.byId
+      obj = docs
       return {
         ...state,
         documents: {
