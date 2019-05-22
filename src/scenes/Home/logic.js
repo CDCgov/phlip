@@ -81,7 +81,7 @@ const getProjectArrays = (projects, projectState) => {
   
   if (rowsPerPage === 'All') curPage = 0
   
-  if (projects.length === 0) return projectState
+  if (projects.length === 0) return { projects: { visible: [], matches: [] }, projectCount: 0, ...projectState }
   
   if (searchValue !== undefined && searchValue.length > 0) {
     if (matches.length === 0) {

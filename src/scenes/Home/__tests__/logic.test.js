@@ -228,24 +228,49 @@ describe('Home logic', () => {
     })
     
     describe('UPDATE_ROWS', () => {
-      let store
-      beforeEach(() => {
-        store = setupStore({}, true, { direction: 'desc' })
-        const action = { type: types.UPDATE_ROWS, payload: { rowsPerPage: 3 } }
-        store.dispatch(action)
-      })
-      
-      test('should set update rowsPerPage in state', done => {
-        store.whenComplete(() => {
-          expect(store.actions[0].payload.rowsPerPage).toEqual(3)
-          done()
+      describe('numerical rows per page', () => {
+        let store
+        beforeEach(() => {
+          store = setupStore({}, true, { direction: 'desc' })
+          const action = { type: types.UPDATE_ROWS, payload: { rowsPerPage: 3 } }
+          store.dispatch(action)
+        })
+  
+        test('should set update rowsPerPage in state', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.rowsPerPage).toEqual(3)
+            done()
+          })
+        })
+  
+        test('should update visible projects to only show first page', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.projects.visible).toEqual([5, 4, 2])
+            done()
+          })
         })
       })
       
-      test('should update visible projects to only show first page', done => {
-        store.whenComplete(() => {
-          expect(store.actions[0].payload.projects.visible).toEqual([5, 4, 2])
-          done()
+      describe('rows per page === "all"', () => {
+        let store
+        beforeEach(() => {
+          store = setupStore({}, true, { direction: 'desc' })
+          const action = { type: types.UPDATE_ROWS, payload: { rowsPerPage: 'All' } }
+          store.dispatch(action)
+        })
+  
+        test('should set update page to be 0', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.page).toEqual(0)
+            done()
+          })
+        })
+  
+        test('should update visible projects to show all projects', done => {
+          store.whenComplete(() => {
+            expect(store.actions[0].payload.projects.visible).toEqual([5, 4, 2, 3, 1])
+            done()
+          })
         })
       })
     })
@@ -449,42 +474,78 @@ describe('Home logic', () => {
         })
       })
     })
+    
+    describe('UPDATE_VISIBLE_PROJECTS', () => {
+      let store
+      beforeEach(() => {
+        store = setupStore({}, false)
+        const action = { type: types.UPDATE_VISIBLE_PROJECTS, payload: {} }
+        store.dispatch(action)
+      })
+      
+      test('should return state if there are no projects', done => {
+        store.whenComplete(() => {
+          expect(store.actions[0].payload.projects.visible).toEqual([])
+          expect(store.actions[0].payload.projects.matches).toEqual([])
+          expect(store.actions[0].payload.projectCount).toEqual(0)
+          done()
+        })
+      })
+    })
   })
   
   describe('Getting Projects', () => {
-    let store
-    beforeEach(() => {
-      mock.onGet('/projects').reply(200, projectsPayload)
-      store = setupStore([1], true)
-      store.dispatch({ type: types.GET_PROJECTS_REQUEST, payload: {} })
-    })
-    
-    test('should get project list and set bookmarkList and dispatch GET_PROJECTS_SUCCESS when done', done => {
-      store.whenComplete(() => {
-        expect(store.actions[1]).toEqual({ type: types.GET_PROJECTS_SUCCESS })
-        done()
+    describe('when getting projects is successful', () => {
+      let store
+      beforeEach(() => {
+        mock.onGet('/projects').reply(200, projectsPayload)
+        store = setupStore([1], true)
+        store.dispatch({ type: types.GET_PROJECTS_REQUEST, payload: {} })
+      })
+  
+      test('should get project list and set bookmarkList and dispatch GET_PROJECTS_SUCCESS when done', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1]).toEqual({ type: types.GET_PROJECTS_SUCCESS })
+          done()
+        })
+      })
+  
+      test('should dispatch set projects to set globally and home state', done => {
+        store.whenComplete(() => {
+          expect(store.actions[2].type).toEqual(projectTypes.SET_PROJECTS)
+          expect(store.actions[2].payload.data).toEqual({
+            byId: projects,
+            allIds: [1, 2, 3, 4, 5]
+          })
+          done()
+        })
+      })
+  
+      test('should sort by dateLastEdited and descending', done => {
+        store.whenComplete(() => {
+          expect(store.actions[2].type).toEqual(projectTypes.SET_PROJECTS)
+          expect(store.actions[2].payload.projects).toEqual({
+            visible: defaultSorted,
+            matches: []
+          })
+          done()
+        })
       })
     })
     
-    test('should dispatch set projects to set globally and home state', done => {
-      store.whenComplete(() => {
-        expect(store.actions[2].type).toEqual(projectTypes.SET_PROJECTS)
-        expect(store.actions[2].payload.data).toEqual({
-          byId: projects,
-          allIds: [1, 2, 3, 4, 5]
-        })
-        done()
+    describe('when getting projects is not successful', () => {
+      let store
+      beforeEach(() => {
+        mock.onGet('/projects').reply(500)
+        store = setupStore([1], true)
+        store.dispatch({ type: types.GET_PROJECTS_REQUEST, payload: {} })
       })
-    })
-    
-    test('should sort by dateLastEdited and descending', done => {
-      store.whenComplete(() => {
-        expect(store.actions[2].type).toEqual(projectTypes.SET_PROJECTS)
-        expect(store.actions[2].payload.projects).toEqual({
-          visible: defaultSorted,
-          matches: []
+      
+      test('should dispatch get projects fail', done => {
+        store.whenComplete(() => {
+          expect(store.actions[1].type).toEqual(types.GET_PROJECTS_FAIL)
+          done()
         })
-        done()
       })
     })
   })
@@ -536,6 +597,23 @@ describe('Home logic', () => {
       store.dispatch({ type: types.TOGGLE_BOOKMARK, project })
       store.whenComplete(() => {
         expect(store.actions[1].payload.bookmarkList).toEqual([])
+        done()
+      })
+    })
+  })
+  
+  describe('Removing a project', () => {
+    test('should update action to have update project arrays after removing project', done => {
+      const store = setupStore()
+      
+      store.dispatch({
+        type: types.REMOVE_PROJECT,
+        payload: {},
+        projectId: 4
+      })
+      
+      store.whenComplete(() => {
+        expect(store.actions[0].payload.projects.visible).toEqual([5, 2, 3, 1])
         done()
       })
     })

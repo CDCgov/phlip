@@ -86,7 +86,7 @@ describe('Home scene - AddEditProject logic', () => {
   
   describe('Updating a project', () => {
     const project = { id: 1, name: 'Updated Project', lastEditedBy: 'Test User' }
-  
+    
     let store
     beforeEach(() => {
       mock.onPut('/projects/1').reply(200, project)

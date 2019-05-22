@@ -6,7 +6,10 @@ export const projects = {
     lastEditedBy: 'Kristin Muterspaw',
     lastUsersCheck: null,
     projectUsers: [],
-    projectJurisdictions: [],
+    projectJurisdictions: [
+      { name: 'Georgia (state)', jurisdictionId: 3 },
+      { name: 'Ohio (state)', jurisdictionId: 42 }
+    ],
     createdById: 1
   },
   2: {
@@ -16,7 +19,7 @@ export const projects = {
     lastEditedBy: 'Michael Ta',
     lastUsersCheck: null,
     projectUsers: [],
-    projectJurisdictions: [],
+    projectJurisdictions: [{ name: 'Ohio (state)', jurisdictionId: 42 }],
     createdById: 2
   },
   3: {
@@ -36,7 +39,7 @@ export const projects = {
     lastEditedBy: 'Greg Ledbetter',
     lastUsersCheck: null,
     projectUsers: [],
-    projectJurisdictions: [],
+    projectJurisdictions: [{ name: 'Oregon (state)', jurisdictionId: 7 }],
     createdById: 4
   },
   5: {
@@ -59,7 +62,10 @@ export const projectsPayload = [
     lastEditedBy: 'Kristin Muterspaw',
     lastUsersCheck: null,
     projectUsers: [],
-    projectJurisdictions: [],
+    projectJurisdictions: [
+      { name: 'Georgia (state)', jurisdictionId: 3 },
+      { name: 'Ohio (state)', jurisdictionId: 42 }
+    ],
     createdById: 1
   },
   {
@@ -69,7 +75,7 @@ export const projectsPayload = [
     lastEditedBy: 'Michael Ta',
     lastUsersCheck: null,
     projectUsers: [],
-    projectJurisdictions: [],
+    projectJurisdictions: [{ name: 'Ohio (state)', jurisdictionId: 42 }],
     createdById: 2
   },
   {
@@ -89,7 +95,7 @@ export const projectsPayload = [
     lastEditedBy: 'Greg Ledbetter',
     lastUsersCheck: null,
     projectUsers: [],
-    projectJurisdictions: [],
+    projectJurisdictions: [{ name: 'Oregon (state)', jurisdictionId: 7 }],
     createdById: 4
   },
   {
