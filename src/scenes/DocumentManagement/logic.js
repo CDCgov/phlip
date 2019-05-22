@@ -51,10 +51,11 @@ const resetFilter = (docs, stringSearch, projectFilter, jurisdictionFilter, juri
       // checking if the search value is multi-word beginning with a (
       if (regBegin.test(searchValue)) {
         if (regEnd.test(searchValue)) {
-          // the beginning and end of the string are in the same index
+          // the whole search string is in the parentheses (i.e. not followed by any other string)
           searchValue = searchValue.replace(regBegin, '')
           searchValue = searchValue.replace(regEnd, '')
         } else {
+          // there is no ending parenthesis or it is followed by additional search strings
           pieces = searchValue.split(' ')
           if (pieces.length > 1) {
             let foundEnd = false
@@ -162,6 +163,7 @@ const getDocLogic = createLogic({
               projects[projectId] = project
               dispatch({ type: projectTypes.ADD_PROJECT, payload: project })
             } catch (err) {
+              /* istanbul ignore next */
               console.log('Failed to get project')
             }
           }
@@ -174,6 +176,7 @@ const getDocLogic = createLogic({
               jurisdictions[jurisdictionId] = jurisdiction
               dispatch({ type: jurisdictionTypes.ADD_JURISDICTION, payload: jurisdiction })
             } catch (err) {
+              /* istanbul ignore next */
               console.log('Failed to get jurisdiction')
             }
           }
@@ -223,7 +226,6 @@ const bulkUpdateLogic = createLogic({
       dispatch({ type: types.BULK_UPDATE_SUCCESS, payload: existingDocs })
       done()
     } catch (err) {
-      console.log(err)
       dispatch({
         type: types.BULK_UPDATE_FAIL,
         payload: { error: 'Failed to update documents, please try again.' }

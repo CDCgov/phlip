@@ -234,7 +234,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         cleanProjectOperationInProgress: true,
         apiErrorOpen: false
       }
-      
+    
     case types.CLEAN_PROJECT_LIST_SUCCESS:
       obj = action.payload
       return {

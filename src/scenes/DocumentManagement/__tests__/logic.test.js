@@ -7,6 +7,20 @@ import calls from 'services/api/docManageCalls'
 import apiCalls from 'services/api/calls'
 import { mockDocuments } from 'utils/testData/documents'
 
+const projects = {
+  12: { name: 'Project 1', id: 12 },
+  5: { name: 'Overwatch', id: 5 },
+  44: { name: 'Zero Dawn', id: 44 },
+  11: { name: 'Test Project', id: 11 }
+}
+
+const jurisdictions = {
+  1: { name: 'Ohio', id: 1 },
+  2: { name: 'Georgia (state)', id: 2 },
+  33: { name: 'Florida', id: 33 },
+  200: { name: 'Puerto Rico', id: 200 }
+}
+
 describe('Document Management logic', () => {
   let mock, apiMock
   
@@ -25,21 +39,10 @@ describe('Document Management logic', () => {
       initialState: {
         data: {
           jurisdictions: {
-            byId: {
-              1: { name: 'Ohio', id: 1 },
-              2: { name: 'Georgia (state)', id: 2 },
-              33: { name: 'Florida', id: 33 },
-              200: { name: 'Puerto Rico', id: 200 }
-            }
+            byId: jurisdictions
           },
           projects: {
-            byId: {
-              12: { name: 'Project 1', id: 12 },
-              5: { name: 'Overwatch', id: 5 },
-              44: { name: 'Zero Dawn', id: 44 },
-              1: { name: 'project 1', id: 1 },
-              11: { name: 'Test Project', id: 11 }
-            }
+            byId: projects
           },
           ...data
         },
@@ -60,6 +63,7 @@ describe('Document Management logic', () => {
       }
     })
   }
+  
   const byId = mockDocuments.byId
   
   describe('SEARCH VALUE CHANGE', () => {
@@ -231,6 +235,42 @@ describe('Document Management logic', () => {
       })
     })
     
+    test('should handle if searching by project without selecting from list', done => {
+      const action = {
+        type: types.SEARCH_VALUE_CHANGE,
+        value: 'project: overwatch',
+        form: {
+          project: {},
+          jurisdiction: {}
+        }
+      }
+      
+      const store = setupStore()
+      store.dispatch(action)
+      store.whenComplete(() => {
+        expect(store.actions[0].payload).toEqual([byId[4], byId[5]])
+        done()
+      })
+    })
+    
+    test('should handle if a mutli-worded search string is followed by a single string', done => {
+      const action = {
+        type: types.SEARCH_VALUE_CHANGE,
+        value: 'name:(document about) bugs bloop blep',
+        form: {
+          project: {},
+          jurisdiction: {}
+        }
+      }
+      
+      const store = setupStore()
+      store.dispatch(action)
+      store.whenComplete(() => {
+        expect(store.actions[0].payload).toEqual([])
+        done()
+      })
+    })
+    
     test('should handle if only "from" date entered', done => {
       const action = {
         type: types.SEARCH_VALUE_CHANGE,
@@ -265,7 +305,6 @@ describe('Document Management logic', () => {
       const store = setupStore()
       store.dispatch(action)
       store.whenComplete(() => {
-        //expect(store.actions[0].payload).toEqual(['7', '2', '5', '3'])
         expect(store.actions[0].payload).toEqual([byId[2], byId[3], byId[5], byId[7]])
         done()
       })
@@ -313,60 +352,78 @@ describe('Document Management logic', () => {
   })
   
   describe('GET DOCUMENTS', () => {
-    test('should get document list and dispatch GET_DOCUMENTS_SUCCESS on success', done => {
-      mock.onGet('/docs').reply(200, [
-        { name: 'Doc 1', uploadedBy: { firstName: 'test', lastName: 'user' }, projects: [1], jurisdictions: [1] },
-        { name: 'Doc 2', uploadedBy: { firstName: 'test', lastName: 'user' }, projects: [1], jurisdictions: [1] }
-      ])
+    describe('getting documents successfully', () => {
+      test('should get document list and dispatch GET_DOCUMENTS_SUCCESS on success', done => {
+        mock.onGet('/docs').reply(200, Object.values(mockDocuments.byId))
+        const store = setupStore()
+        store.dispatch({ type: types.GET_DOCUMENTS_REQUEST })
+        store.whenComplete(() => {
+          expect(store.actions[1].type).toEqual(types.GET_DOCUMENTS_SUCCESS)
+          done()
+        })
+      })
       
-      apiMock.onGet('/projects/1').reply(200, { name: 'Test Project', id: 1 })
-      
-      apiMock.onGet('/jurisdictions/1').reply(200, { id: 1, name: 'Ohio' })
-      
-      const store = setupStore()
-      store.dispatch({ type: types.GET_DOCUMENTS_REQUEST })
-      store.whenComplete(() => {
-        expect(store.actions).toEqual([
-          { type: types.GET_DOCUMENTS_REQUEST },
-          {
-            type: types.GET_DOCUMENTS_SUCCESS,
-            payload: [
-              {
-                name: 'Doc 1',
-                uploadedBy: { firstName: 'test', lastName: 'user' },
-                uploadedByName: 'test user',
-                projects: [1],
-                jurisdictions: [1]
-              },
-              {
-                name: 'Doc 2',
-                uploadedBy: { firstName: 'test', lastName: 'user' },
-                uploadedByName: 'test user',
-                projects: [1],
-                jurisdictions: [1]
-              }
-            ]
+      test('should call an api to get jurisdictions only if the jurisdiction does not exist in state', done => {
+        const jurSpy = jest.spyOn(api, 'getJurisdiction')
+        mock.onGet('/docs').reply(200, Object.values(mockDocuments.byId))
+        apiMock.onGet('/projects/1').reply(200, { name: 'Test Project', id: 1 })
+        apiMock.onGet('/jurisdictions/1').reply(200, { id: 1, name: 'Ohio' })
+        apiMock.onGet('/jurisdictions/2').reply(200, { id: 2, name: 'Georgia (state)' })
+        const store = setupStore({
+          jurisdictions: {
+            byId: {
+              33: { name: 'Florida', id: 33 },
+              200: { name: 'Puerto Rico', id: 200 }
+            }
           }
-        ])
-        done()
+        }, {})
+        
+        store.dispatch({ type: types.GET_DOCUMENTS_REQUEST })
+        store.whenComplete(() => {
+          expect(jurSpy).toHaveBeenCalledTimes(2)
+          done()
+        })
+      })
+  
+      test('should call an api to get projects only if the project does not exist in state', done => {
+        const proSpy = jest.spyOn(api, 'getProject')
+        mock.onGet('/docs').reply(200, Object.values(mockDocuments.byId))
+        apiMock.onGet('/projects/44').reply(200, { name: 'Zero Dawn', id: 44 })
+        apiMock.onGet('/projects/11').reply(200, { name: 'Test Project', id: 11 })
+        const store = setupStore({
+          projects: {
+            byId: {
+              12: { name: 'Project 1', id: 12 },
+              5: { name: 'Overwatch', id: 5 }
+            }
+          }
+        }, {})
+    
+        store.dispatch({ type: types.GET_DOCUMENTS_REQUEST })
+        store.whenComplete(() => {
+          expect(proSpy).toHaveBeenCalledTimes(2)
+          done()
+        })
       })
     })
     
-    test('should get document list and dispatch GET_DOCUMENTS_FAIL on failure', done => {
-      mock.onGet('/docs').reply(500)
-      
-      const store = setupStore()
-      store.dispatch({ type: types.GET_DOCUMENTS_REQUEST })
-      
-      store.whenComplete(() => {
-        expect(store.actions).toEqual([
-          { type: types.GET_DOCUMENTS_REQUEST },
-          {
-            type: types.GET_DOCUMENTS_FAIL,
-            payload: 'Failed to get documents'
-          }
-        ])
-        done()
+    describe('failing to get documents', () => {
+      test('should try to get document list and dispatch GET_DOCUMENTS_FAIL', done => {
+        mock.onGet('/docs').reply(500)
+        
+        const store = setupStore()
+        store.dispatch({ type: types.GET_DOCUMENTS_REQUEST })
+        
+        store.whenComplete(() => {
+          expect(store.actions).toEqual([
+            { type: types.GET_DOCUMENTS_REQUEST },
+            {
+              type: types.GET_DOCUMENTS_FAIL,
+              payload: 'Failed to get documents'
+            }
+          ])
+          done()
+        })
       })
     })
   })

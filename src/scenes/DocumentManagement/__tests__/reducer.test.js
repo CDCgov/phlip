@@ -1,6 +1,7 @@
 import { types } from '../actions'
 import { docManagementReducer as reducer } from '../reducer'
 import { mockDocuments, orderedByNameDesc, orderedByNameAsc, orderedByDate } from 'utils/testData/documents'
+const byId = mockDocuments.byId
 
 const initial = {
   documents: {
@@ -338,7 +339,16 @@ describe('Document Management reducer', () => {
   })
 
   describe('SEARCH_VALUE_CHANGE', () => {
-  
+    test('should update visible documents based on user preferences (rows, page, etc.)', () => {
+      const action = {
+        type: types.SEARCH_VALUE_CHANGE,
+        payload: [byId[2], byId[3], byId[5], byId[7]]
+      }
+      
+      const currentState = getState({ documents: mockDocuments })
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.documents.visible).toEqual(['7', '2', '5', '3'])
+    })
   })
 
   describe('FLUSH_STATE', () => {
