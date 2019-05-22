@@ -3,7 +3,6 @@ import { types } from './actions'
 import { arrayToObject } from 'utils/normalize'
 import { sliceTable, sortListOfObjects } from 'utils/commonHelpers'
 import searchReducer, { COMBINED_INITIAL_STATE as SEARCH_INITIAL_STATE } from './components/SearchBox/reducer'
-import { types as searchTypes } from './components/SearchBox/actions'
 
 const INITIAL_STATE = {
   documents: {
@@ -149,7 +148,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         }
       }
     
-    case searchTypes.SEARCH_VALUE_CHANGE:
+    case types.SEARCH_VALUE_CHANGE:
       return {
         ...state,
         documents: {

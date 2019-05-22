@@ -42,7 +42,7 @@ const resetFilter = (docs, stringSearch, projectFilter, jurisdictionFilter, juri
   // Handle each field // the search is done with AND and not OR when there are multiple fields set
   searchParams.forEach(searchTerm => {
     const colonIndex = searchTerm.indexOf(':')
-
+    
     // there was a key:value field set and not just one string
     if (colonIndex !== -1 && searchFields.hasOwnProperty(searchTerm.substring(0, colonIndex).trim())) {
       let searchKey = searchTerm.substring(0, colonIndex).trim()
@@ -71,8 +71,8 @@ const resetFilter = (docs, stringSearch, projectFilter, jurisdictionFilter, juri
           }
         }
       } else {
-        // the search term doesn't have parentheses but is multi-worded, use the first word as the search value to search
-        // against the search property and then use the remaining words as individual pieces
+        // the search term doesn't have parentheses but is multi-worded, use the first word as the search value to
+        // search against the search property and then use the remaining words as individual pieces
         if (searchValue.trim().split(' ').length > 1) {
           pieces = searchValue.split(' ')
           searchValue = pieces[0]
@@ -154,53 +154,32 @@ const getDocLogic = createLogic({
       let projects = { ...getState().data.projects.byId }
       let jurisdictions = { ...getState().data.jurisdictions.byId }
       
-      const docs = documents.map(doc => {
-        return new Promise(async resolve => {
-          doc.projectList = []
-          doc.jurisdictionList = []
-          
-          for (let i = 0; i < doc.projects.length; i++) {
-            const projectId = doc.projects[i]
-            let project = projects[projectId]
-            if (!projects[projectId]) {
-              try {
-                project = await api.getProject({}, {}, { projectId: projectId })
-                projects[projectId] = project
-                dispatch({ type: projectTypes.ADD_PROJECT, payload: project })
-              } catch (err) {
-                console.log('failed to get project')
-              }
-            }
-            if (project !== undefined) {
-              doc.projectList.push(project.name)
+      for (let doc of documents) {
+        for (let projectId of doc.projects) {
+          if (!projects.hasOwnProperty(projectId)) {
+            try {
+              const project = await api.getProject({}, {}, { projectId: projectId })
+              projects[projectId] = project
+              dispatch({ type: projectTypes.ADD_PROJECT, payload: project })
+            } catch (err) {
+              console.log('Failed to get project')
             }
           }
-          
-          await Promise.all(doc.projectList)
-          
-          for (let i = 0; i < doc.jurisdictions.length; i++) {
-            const jurisdictionId = doc.jurisdictions[i]
-            let jurisdiction = jurisdictions[jurisdictionId]
-            if (!jurisdictions[jurisdictionId]) {
-              try {
-                jurisdiction = await api.getJurisdiction({}, {}, { jurisdictionId: jurisdictionId })
-                jurisdictions[jurisdictionId] = jurisdiction
-                dispatch({ type: jurisdictionTypes.ADD_JURISDICTION, payload: jurisdiction })
-              } catch (err) {
-                console.log('failed to get jurisdiction')
-              }
+        }
+        
+        for (let jurisdictionId of doc.jurisdictions) {
+          if (!jurisdictions.hasOwnProperty(jurisdictionId)) {
+            try {
+              const jurisdiction = await api.getJurisdiction({}, {}, { jurisdictionId: jurisdictionId })
+              jurisdictions[jurisdictionId] = jurisdiction
+              dispatch({ type: jurisdictionTypes.ADD_JURISDICTION, payload: jurisdiction })
+            } catch (err) {
+              console.log('Failed to get jurisdiction')
             }
-            doc.jurisdictionList.push(jurisdiction.name)
           }
-          
-          await Promise.all(doc.jurisdictionList)
-          resolve(doc)
-        })
-      })
-      
-      Promise.all(docs).then(() => {
-        done()
-      })
+        }
+      }
+      done()
     } catch (e) {
       dispatch({ type: types.GET_DOCUMENTS_FAIL, payload: 'Failed to get documents' })
       done()
@@ -294,11 +273,6 @@ const cleanDocProjectLogic = createLogic({
         const index = cleannedDocs[docKey].projects.findIndex(el => el === projectMeta.id)
         if (index !== -1) { // found matching projectId
           cleannedDocs[docKey].projects.splice(index, 1) // remove the projectId from array
-          // rebuild the project name list
-          let projectNames = cleannedDocs[docKey].projectList.split('|')
-          const nameIdx = projectNames.findIndex(el => el === projectMeta.name)
-          projectNames.splice(nameIdx, 1) // remove the project name from array
-          cleannedDocs[docKey].projectList = projectNames.join('|')
         }
       })
       dispatch({ type: types.CLEAN_PROJECT_LIST_SUCCESS, payload: cleannedDocs })
