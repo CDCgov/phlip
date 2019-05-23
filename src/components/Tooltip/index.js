@@ -63,7 +63,8 @@ export const Tooltip = ({ text, placement, children, classes, overrideClasses, .
 }
 
 Tooltip.defaultProps = {
-  placement: 'top'
+  placement: 'top',
+  text: ''
 }
 
 Tooltip.propTypes = {

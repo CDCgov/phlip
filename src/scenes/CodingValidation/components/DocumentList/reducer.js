@@ -21,7 +21,7 @@ export const INITIAL_STATE = {
   enabledUserId: '',
   annotations: [],
   annotationModeEnabled: false,
-  isValidatorSelected: false,
+  isUserAnswerSelected: false,
   showEmptyDocs: false,
   apiErrorOpen: false,
   apiErrorInfo: {
@@ -114,7 +114,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       if (
         action.answerId === state.enabledAnswerId
         && action.userId === state.enabledUserId
-        && state.isValidatorSelected === action.isValidatorSelected
+        && state.isUserAnswerSelected === action.isUserAnswerSelected
       ) {
         return {
           ...state,
@@ -122,7 +122,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           enabledAnswerId: '',
           enabledUserId: '',
           annotationModeEnabled: false,
-          isValidatorSelected: action.isValidatorSelected
+          isUserAnswerSelected: action.isUserAnswerSelected
         }
       } else {
         return {
@@ -131,7 +131,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           enabledAnswerId: action.answerId,
           enabledUserId: action.userId,
           annotationModeEnabled: false,
-          isValidatorSelected: action.isValidatorSelected
+          isUserAnswerSelected: action.isUserAnswerSelected
         }
       }
     
@@ -163,7 +163,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         enabledAnswerId: '',
         enabledUserId: '',
         annotations: [],
-        isValidatorSelected: false
+        isUserAnswerSelected: false
       }
     
     case types.HIDE_ANNO_MODE_ALERT:

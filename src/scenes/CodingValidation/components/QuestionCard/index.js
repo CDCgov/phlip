@@ -217,11 +217,11 @@ export class QuestionCard extends Component {
   /**
    * Handles toggling on / off showing a coder's annotations
    */
-  onToggleCoderAnnotations = (id, userId, isValidatorSelected) => () => {
+  onToggleCoderAnnotations = (id, userId, isUserAnswerSelected) => () => {
     if (this.props.annotationModeEnabled) {
       this.showDisableAnnoModeAlert()
     } else {
-      this.props.actions.toggleCoderAnnotations(this.props.question.id, id, userId, isValidatorSelected)
+      this.props.actions.toggleCoderAnnotations(this.props.question.id, id, userId, isUserAnswerSelected)
     }
   }
   
@@ -231,7 +231,7 @@ export class QuestionCard extends Component {
       mergedUserQuestions, disableAll, userImages, enabledAnswerId, enabledUserId, annotationModeEnabled,
       areDocsEmpty, questionChangeLoader, hasTouchedQuestion, categories, saveFailed, onClearAnswer, onSaveFlag,
       selectedCategory, currentIndex, getNextQuestion, getPrevQuestion, totalLength, showNextButton,
-      isValidatorSelected, selectedCategoryId, alert, actions
+      isUserAnswerSelected, selectedCategoryId, alert, actions
     } = this.props
     
     const questionContentProps = {
@@ -250,7 +250,7 @@ export class QuestionCard extends Component {
       userImages,
       onToggleAnnotationMode: this.onToggleAnnotationMode,
       onToggleCoderAnnotations: this.onToggleCoderAnnotations,
-      isValidatorSelected,
+      isUserAnswerSelected,
       enabledAnswerId,
       enabledUserId,
       annotationModeEnabled,
@@ -383,7 +383,7 @@ const mapStateToProps = (state, ownProps) => {
     enabledAnswerId: docState.enabledAnswerId,
     enabledUserId: docState.enabledUserId,
     annotationModeEnabled: docState.annotationModeEnabled,
-    isValidatorSelected: docState.isValidatorSelected,
+    isUserAnswerSelected: docState.isUserAnswerSelected,
     areDocsEmpty: docState.showEmptyDocs,
     showDisableAnnoMode: cardState.showDisableAnnoMode,
     alert: cardState.alert

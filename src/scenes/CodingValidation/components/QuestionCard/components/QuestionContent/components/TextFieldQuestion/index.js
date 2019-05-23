@@ -6,13 +6,13 @@ import { shouldShowAnnotationStyles } from '../SelectionControlQuestion'
 import PinciteTextField from '../PinciteTextField'
 import PinciteList from '../PinciteList'
 import theme from 'services/theme'
-import ValidationAvatarList from '../ValidationAvatarList'
+import AvatarList from '../AvatarList'
 
 export const TextFieldQuestion = props => {
   const {
     mergedUserQuestions, userAnswers, areDocsEmpty, onChange, answerId, userImages, disableAll,
-    onToggleAnnotationMode, enabledAnswerId, annotationModeEnabled, isValidatorSelected, enabledUserId,
-    onToggleCoderAnnotations
+    onToggleAnnotationMode, enabledAnswerId, annotationModeEnabled, isUserAnswerSelected, enabledUserId,
+    onToggleCoderAnnotations, user
   } = props
   
   const isValidation = mergedUserQuestions !== null
@@ -26,14 +26,14 @@ export const TextFieldQuestion = props => {
       {isValidation && mergedUserQuestions.answers.map(answer =>
         <FlexGrid container type="row" padding="0 15px 15px" key={answer.id}>
           <FlexGrid container type="row" align="flex-start" padding="0 25px 0 0">
-            <ValidationAvatarList
+            <AvatarList
               showAllAvatar={false}
               userImages={userImages}
               answerList={[answer]}
               handleClickAvatar={onToggleCoderAnnotations}
               enabledAnswerId={enabledAnswerId}
               enabledUserId={enabledUserId}
-              isValidatorSelected={isValidatorSelected}
+              isUserAnswerSelected={isUserAnswerSelected}
               answerId={answerId}
             />
           </FlexGrid>
@@ -51,19 +51,27 @@ export const TextFieldQuestion = props => {
         type="row"
         padding="5px 15px 10px"
         style={{ backgroundColor: showAnno ? '#e6f8ff' : 'white', marginRight: 10 }}>
-        {(isValidation && isAnswered) &&
+        {isAnswered &&
         <FlexGrid
           container
           type="row"
           align="flex-start"
           padding="0 25px 0 0">
-          <ValidationAvatarList
+          <AvatarList
             userImages={userImages}
-            answerList={[{ ...userAnswers.answers[answerId], isValidatorAnswer: true, ...validatedBy }]}
+            answerList={[
+              {
+                ...userAnswers.answers[answerId],
+                isUserAnswer: true,
+                isValidatorAnswer: isValidation,
+                userId: user.id,
+                ...validatedBy
+              }
+            ]}
             handleClickAvatar={onToggleCoderAnnotations}
             enabledAnswerId={enabledAnswerId}
             enabledUserId={enabledUserId}
-            isValidatorSelected={isValidatorSelected}
+            isUserAnswerSelected={isUserAnswerSelected}
             answerId={answerId}
             showAllAvatar={false}
             layered={false}
@@ -104,32 +112,6 @@ export const TextFieldQuestion = props => {
           />}
         </FlexGrid>
       </FlexGrid>
-      {/*  {(isValidation && isAnswered) &&*/}
-      {/*  <FlexGrid container type="row" align="flex-start" flex padding="8px 0 0">*/}
-      {/*    <ValidationAvatarList*/}
-      {/*      userImages={userImages}*/}
-      {/*      answerList={[{ ...userAnswers.answers[answerId], isValidatorAnswer: true, ...validatedBy }]}*/}
-      {/*      handleClickAvatar={onToggleCoderAnnotations}*/}
-      {/*      enabledAnswerId={enabledAnswerId}*/}
-      {/*      enabledUserId={enabledUserId}*/}
-      {/*      isValidatorSelected={isValidatorSelected}*/}
-      {/*      answerId={answerId}*/}
-      {/*      showAllAvatar={false}*/}
-      {/*      layered={false}*/}
-      {/*    />*/}
-      {/*    <div style={{ width: 5 }} />*/}
-      {/*    <PinciteList*/}
-      {/*      alwaysShow*/}
-      {/*      validatorStyles={{ margin: '3px 0' }}*/}
-      {/*      showAvatar={false}*/}
-      {/*      userImages={userImages}*/}
-      {/*      isAnswered={isAnswered}*/}
-      {/*      validatorObj={{ ...userAnswers.answers[answerId], ...validatedBy }}*/}
-      {/*      handleChangePincite={onChange}*/}
-      {/*      textFieldProps={{ padding: '0 8px', flex: '1 1 auto', width: '100%' }}*/}
-      {/*    />*/}
-      {/*  </FlexGrid>}*/}
-      {/*</FlexGrid>*/}
     </FlexGrid>
   )
 }
@@ -190,11 +172,15 @@ TextFieldQuestion.propTypes = {
   /**
    * whether or not the user selected is the validator
    */
-  isValidatorSelected: PropTypes.bool,
+  isUserAnswerSelected: PropTypes.bool,
   /**
    * Function to handle the toggle of showing a user's annotations
    */
-  onToggleCoderAnnotations: PropTypes.func
+  onToggleCoderAnnotations: PropTypes.func,
+  /**
+   * Current logged in user
+   */
+  user: PropTypes.object
 }
 
 export default TextFieldQuestion

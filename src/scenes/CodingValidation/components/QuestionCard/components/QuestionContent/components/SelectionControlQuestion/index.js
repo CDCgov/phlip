@@ -7,7 +7,7 @@ import FormControl from '@material-ui/core/FormControl'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormLabel from '@material-ui/core/FormLabel'
 import { withStyles } from '@material-ui/core/styles'
-import ValidationAvatarList from '../ValidationAvatarList'
+import AvatarList from '../AvatarList'
 import PinciteTextField from '../PinciteTextField'
 import { FlexGrid, Button } from 'components'
 import * as types from 'scenes/CodingValidation/constants'
@@ -29,17 +29,17 @@ export const shouldShowAnnotationStyles = (enabledAnswer, annotationMode) => cho
  */
 export const SelectionControlQuestion = props => {
   const {
-    choices, userAnswers, onChange, onChangePincite,
+    choices, userAnswers, onChange, onChangePincite, user,
     classes, mergedUserQuestions, disableAll, userImages, question,
     enabledAnswerId, onToggleAnnotationMode, annotationModeEnabled, areDocsEmpty,
-    onToggleCoderAnnotations, isValidatorSelected, enabledUserId
+    onToggleCoderAnnotations, isUserAnswerSelected, enabledUserId
   } = props
-
+  
   const showAnnoStyles = shouldShowAnnotationStyles(enabledAnswerId, annotationModeEnabled)
-
+  
   const Control = [types.CATEGORY, types.CHECKBOXES].includes(question.questionType) ? Checkbox : Radio
   const isValidation = mergedUserQuestions !== null
-
+  
   return (
     <FormControl component="fieldset" style={{ flex: '1 1 auto' }}>
       <FormLabel component="legend" style={{ display: 'none' }} id="question_text">{question.text}</FormLabel>
@@ -50,18 +50,28 @@ export const SelectionControlQuestion = props => {
             inputProps: { id: choice.id, 'aria-describedby': 'question_text' },
             style: { height: 'unset' }
           }
-
-          const answerList = mergedUserQuestions !== null &&
-            mergedUserQuestions.answers.filter(answer => answer.schemeAnswerId === choice.id)
-
+          
+          const answerList = mergedUserQuestions !== null
+            ? mergedUserQuestions.answers.filter(answer => answer.schemeAnswerId === choice.id)
+            : []
+          
           const isAnswered = userAnswers.answers.hasOwnProperty(choice.id)
           const validatedBy = isValidation ? userAnswers.validatedBy : {}
-          const list = (isValidation && isAnswered)
-            ? [...answerList, { ...userAnswers.answers[choice.id], isValidatorAnswer: true, ...validatedBy }]
+          const list = isAnswered
+            ? [
+              ...answerList,
+              {
+                ...userAnswers.answers[choice.id],
+                isUserAnswer: true,
+                isValidatorAnswer: isValidation,
+                userId: user.id,
+                ...validatedBy
+              }
+            ]
             : answerList
-
+          
           const showAnno = showAnnoStyles(choice.id)
-
+          
           return (
             <FlexGrid
               container
@@ -78,18 +88,18 @@ export const SelectionControlQuestion = props => {
                 label={choice.text}
                 aria-label={choice.text}
               />
-
+              
               <FlexGrid container padding="0 0 0 32px">
                 <FlexGrid container type="row" padding="5px 10px 5px 0">
-                  {(list.length > 0 && isValidation) && <ValidationAvatarList
+                  {list.length > 0 && <AvatarList
                     userImages={userImages}
                     answerList={list}
                     handleClickAvatar={onToggleCoderAnnotations}
                     enabledAnswerId={enabledAnswerId}
                     enabledUserId={enabledUserId}
-                    isValidatorSelected={isValidatorSelected}
+                    isUserAnswerSelected={isUserAnswerSelected}
                     answerId={choice.id}
-                    showAllAvatar={list.length > 1}
+                    showAllAvatar={list.length > 1 && isValidation}
                   />}
                   {isAnswered && !areDocsEmpty &&
                   <Button
@@ -97,7 +107,7 @@ export const SelectionControlQuestion = props => {
                       alignSelf: 'center',
                       backgroundColor: showAnno ? theme.palette.error.main : 'white',
                       color: showAnno ? 'white' : 'black',
-                      margin: isValidation ? '0 0 0 20px' : '10px 0 0 0',
+                      margin: '0 0 0 20px',
                       height: 32,
                       maxHeight: 32,
                       minHeight: 'unset',
@@ -116,10 +126,10 @@ export const SelectionControlQuestion = props => {
                   handleChangePincite={onChangePincite}
                 />}
               </FlexGrid>
-
+              
               {(isAnswered && !isValidation) &&
               <PinciteTextField
-                style={{ paddingLeft: 32, paddingTop: 5, width: '90%' }}
+                style={{ paddingLeft: 32, paddingTop: 5, marginBottom: 15, width: '90%' }}
                 schemeAnswerId={choice.id}
                 pinciteValue={userAnswers.answers[choice.id].pincite}
                 handleChangePincite={onChangePincite}
@@ -197,7 +207,11 @@ SelectionControlQuestion.propTypes = {
   /**
    * whether or not the user selected is the validator
    */
-  isValidatorSelected: PropTypes.bool,
+  isUserAnswerSelected: PropTypes.bool,
+  /**
+   * Current logged in user
+   */
+  user: PropTypes.object,
   /**
    * Function to handle the toggle of showing a user's annotations
    */
