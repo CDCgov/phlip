@@ -1,4 +1,4 @@
-import * as types from './actionTypes'
+import { types } from './actions'
 
 const INITIAL_STATE = {
   content: '',

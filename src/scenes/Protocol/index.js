@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import * as actions from './actions'
+import actions from './actions'
 import Typography from '@material-ui/core/Typography'
 import { FlexGrid, Icon, Alert, PageHeader, withTracking, CardError, ApiErrorAlert } from 'components'
 
@@ -164,12 +164,12 @@ export class Protocol extends Component {
   }
   
   /**
-   * Invoked when the user hits 'Save' in the alert that shows when the user clicks the 'back' arrow while still in edit
-   * mode. Sends a request to save the protocol, and goes back one in browser history.
+   * Invoked when the user hits 'Continue' in the alert that shows when the user clicks the 'back' arrow while still in edit
+   * mode. Sends a request to unlock the protocol, and goes back one in browser history.
    * @public
    */
   onContinue = () => {
-    this.onSaveProtocol()
+    this.props.actions.unlockProtocolRequest(this.props.projectId)
     this.props.history.goBack()
   }
   
@@ -199,7 +199,7 @@ export class Protocol extends Component {
   render() {
     const alertActions = [
       {
-        value: 'Save',
+        value: 'Continue',
         type: 'button',
         onClick: this.onContinue
       }
