@@ -136,7 +136,7 @@ export class DocumentManagement extends Component {
       : text
   }
   
-  handleBulkAction = (actionType) => {
+  handleBulkAction = actionType => {
     this.props.actions.jurisdictionAutocomplete.clearAll()
     this.props.actions.projectAutocomplete.clearAll()
     if (actionType !== 'bulk') {
@@ -162,7 +162,7 @@ export class DocumentManagement extends Component {
     }
   }
   
-  confirmValidation = (bulkActionType) => {
+  confirmValidation = bulkActionType => {
     switch (bulkActionType) {
       case 'deleteDoc':
         return this.props.checkedCount > 0
@@ -177,7 +177,7 @@ export class DocumentManagement extends Component {
     }
   }
   
-  handleSuggestionSelected = (suggestionType) => (event, { suggestionValue }) => {
+  handleSuggestionSelected = suggestionType => (event, { suggestionValue }) => {
     if (suggestionType === 'project') {
       this.setState({
         selectedProject: suggestionValue
@@ -206,7 +206,7 @@ export class DocumentManagement extends Component {
   /**
    * When a user has chosen a suggestion from the autocomplete project or jurisdiction list
    */
-  handleSuggestionSelected = (suggestionType) => (event, { suggestionValue }) => {
+  handleSuggestionSelected = suggestionType => (event, { suggestionValue }) => {
     if (suggestionType === 'project') {
       this.setState({
         selectedProject: suggestionValue
@@ -407,8 +407,8 @@ const mapStateToProps = state => {
     apiErrorInfo: docManage.main.apiErrorInfo,
     apiErrorOpen: docManage.main.apiErrorOpen || false,
     bulkOperationInProgress: docManage.main.bulkOperationInProgress || false,
-    sortBy: state.scenes.docManage.main.sortBy,
-    sortDirection: state.scenes.docManage.main.sortDirection,
+    sortBy: docManage.main.sortBy,
+    sortDirection: docManage.main.sortDirection,
     getDocumentsInProgress: docManage.main.getDocumentsInProgress || false
   }
 }

@@ -133,7 +133,7 @@ export class ProjectList extends Component {
             ))}
           </div>
         </ClickAwayListener>
-        <Table>
+        {projectCount > 0 && <Table>
           <TableFooter>
             <TableRow>
               <TablePagination
@@ -145,7 +145,7 @@ export class ProjectList extends Component {
               />
             </TableRow>
           </TableFooter>
-        </Table>
+        </Table>}
       </FlexGrid>
     )
   }

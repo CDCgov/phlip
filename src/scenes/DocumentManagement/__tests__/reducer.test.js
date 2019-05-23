@@ -1,94 +1,8 @@
 import { types } from '../actions'
 import { docManagementReducer as reducer } from '../reducer'
-import { types as searchTypes } from '../components/SearchBox/actions'
+import { mockDocuments, orderedByNameDesc, orderedByNameAsc, orderedByDate } from 'utils/testData/documents'
+const byId = mockDocuments.byId
 
-const mockDocuments = {
-  byId: {
-    1: {
-      name: 'the elder scrolls: skyrim',
-      _id: '1',
-      uploadedBy: { firstName: 'test', lastName: 'user' },
-      uploadedByName: 'test user',
-      jurisdictions: [1],
-      projects: [12],
-      projectList: 'Project 1',
-      jurisdictionList: 'Ohio',
-      uploadedDate: new Date('12/20/2018')
-    },
-    2: {
-      name: 'gardenscapes',
-      _id: '2',
-      uploadedBy: { firstName: 'test', lastName: 'user' },
-      uploadedByName: 'test user',
-      jurisdictions: [1, 33],
-      projects: [12, 11],
-      projectList: 'project 1|test project',
-      jurisdictionList: 'ohio|florida',
-      uploadedDate: new Date('10/10/2005')
-    },
-    3: {
-      name: 'words with friends',
-      _id: '3',
-      uploadedBy: { firstName: 'test', lastName: 'user' },
-      uploadedByName: 'test user',
-      jurisdictions: [2, 33],
-      projects: [12, 44],
-      projectList: 'Project 1|zero dawn',
-      jurisdictionList: 'georiga|florida',
-      uploadedDate: new Date('02/10/1993')
-    },
-    4: {
-      name: 'legal text document',
-      _id: '4',
-      uploadedBy: { firstName: 'test', lastName: 'user' },
-      uploadedByName: 'test user',
-      jurisdictions: [],
-      projects: [44, 5],
-      projectList: 'zero dawn|overwatch',
-      jurisdictionList: '',
-      uploadedDate: new Date('01/7/2019')
-    },
-    5: {
-      name: 'document about brooklyn nine nine',
-      _id: '5',
-      uploadedBy: { firstName: 'test', lastName: 'user' },
-      uploadedByName: 'test user',
-      jurisdictions: [33, 200, 1],
-      projects: [12, 5],
-      projectList: 'Project 1|overwatch',
-      jurisdictionList: 'florida|puerto rico|ohio',
-      uploadedDate: new Date('06/07/1994')
-    },
-    6: {
-      name: 'document about overwatch',
-      _id: '6',
-      uploadedBy: { firstName: 'test', lastName: 'user' },
-      uploadedByName: 'test user',
-      jurisdictions: [1],
-      projects: [],
-      projectList: '',
-      jurisdictionList: 'Ohio',
-      uploadedDate: new Date('02/14/2015')
-    },
-    7: {
-      name: 'document about bugs',
-      _id: '7',
-      uploadedBy: { firstName: 'test', lastName: 'user' },
-      uploadedByName: 'test user',
-      jurisdictions: [2],
-      projects: [],
-      projectList: '',
-      jurisdictionList: 'georgia',
-      uploadedDate: new Date('10/10/2010')
-    }
-  },
-  allIds: ['1', '2', '3', '4', '5', '6', '7'],
-  visible: ['4', '1']
-}
-
-const orderedByDate = ['4', '1', '6', '7', '2', '5', '3']
-const orderedByNameAsc = ['5', '7', '6', '2', '4', '1', '3']
-const orderedByNameDesc = ['3', '1', '4', '2', '6', '7', '5']
 const initial = {
   documents: {
     byId: {},
@@ -131,6 +45,7 @@ describe('Document Management reducer', () => {
       expect(updatedState.getDocumentsInProgress).toBeTruthy()
     })
   })
+  
   describe('GET_DOCUMENTS_SUCCESS', () => {
     test('should normalize action.payload into the documents object in state', () => {
       const action = {
@@ -424,209 +339,15 @@ describe('Document Management reducer', () => {
   })
 
   describe('SEARCH_VALUE_CHANGE', () => {
-    test('should handle a basic search string and set state.documents.visible to only matching document ids', () => {
+    test('should update visible documents based on user preferences (rows, page, etc.)', () => {
       const action = {
-        type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: 'ohio',
-        form: {
-          project: {},
-          jurisdiction: {}
-        }
+        type: types.SEARCH_VALUE_CHANGE,
+        payload: [byId[2], byId[3], byId[5], byId[7]]
       }
-
-      const currentState = getState({ documents: mockDocuments })
-      const updatedState = reducer(currentState, action)
-
-      expect(updatedState.documents.visible).toEqual(['1', '6', '2', '5'])
-    })
-
-    test('should handle a multi-worded string without named filter', () => {
-      const action = {
-        type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: 'document: about',
-        form: {
-          project: {},
-          jurisdiction: {}
-        }
-      }
-
-      const currentState = getState({ documents: mockDocuments })
-      const updatedState = reducer(currentState, action)
-
-      expect(updatedState.documents.visible).toEqual([])
-    })
-
-    test('should handle multiple words inside parentheses in a named filter', () => {
-      const action = {
-        type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: 'name:(document about bugs)',
-        form: {
-          project: {},
-          jurisdiction: {}
-        }
-      }
-
-      const currentState = getState({ documents: mockDocuments })
-      const updatedState = reducer(currentState, action)
-
-      expect(updatedState.documents.visible).toEqual(['7'])
-    })
-
-    test('should handle a search string with one named filters', () => {
-      const action = {
-        type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: 'name:(document about)',
-        form: {
-          project: {},
-          jurisdiction: {}
-        }
-      }
-
-      const currentState = getState({ documents: mockDocuments })
-      const updatedState = reducer(currentState, action)
-
-      expect(updatedState.documents.visible).toEqual(['6', '7', '5'])
-    })
-
-    test('should handle a search string with multiple named filters', () => {
-      const date = '10/10/2010'
-
-      const action = {
-        type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: `name: (document about) | uploadedDate:["${date}","${date}"]`,
-        form: {
-          project: {},
-          jurisdiction: {}
-        }
-      }
-
-      const currentState = getState({ documents: mockDocuments })
-      const updatedState = reducer(currentState, action)
-
-      expect(updatedState.documents.visible).toEqual(['7'])
-    })
-
-    test('should handle if named filter only has one parentheses', () => {
-      const action = {
-        type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: 'name:(document about',
-        form: {
-          project: {},
-          jurisdiction: {}
-        }
-      }
-
-      const currentState = getState({ documents: mockDocuments })
-      const updatedState = reducer(currentState, action)
-
-      expect(updatedState.documents.visible).toEqual([])
-    })
-
-    test('should handle if one named filter followed by free text', () => {
-      const action = {
-        type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: 'jurisdiction: florida project',
-        form: {
-          project: {},
-          jurisdiction: {}
-        }
-      }
-
-      const currentState = getState({ documents: mockDocuments })
-      const updatedState = reducer(currentState, action)
-      expect(updatedState.documents.visible).toEqual(['2', '5', '3'])
-    })
-
-    test('should handle if jurisdiction filter is defined', () => {
-      const action = {
-        type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: 'jurisdiction: georgia',
-        form: {
-          project: {},
-          jurisdiction: {
-            id: 2
-          }
-        }
-      }
-
-      const currentState = getState({ documents: mockDocuments })
-      const updatedState = reducer(currentState, action)
-      expect(updatedState.documents.visible).toEqual(['7', '3'])
-    })
-
-    test('should handle if project filter is defined', () => {
-      const action = {
-        type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: 'project: overwatch',
-        form: {
-          project: {
-            id: 5
-          },
-          jurisdiction: {}
-        }
-      }
-
-      const currentState = getState({ documents: mockDocuments })
-      const updatedState = reducer(currentState, action)
-      expect(updatedState.documents.visible).toEqual(['4', '5'])
-    })
-    test('should handle if only "from" date entered', () => {
-      const action = {
-        type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: 'uploadedDate: ["10/10/2010",""]',
-        form: {
-          uploadedDate1: '10/10/2010',
-          project: {},
-          jurisdiction: {}
-        }
-      }
-      const currentState = getState({ documents: mockDocuments })
-      const updatedState = reducer(currentState, action)
-      expect(updatedState.documents.visible).toEqual(['4', '1', '6', '7'])
-    })
-    test('should handle if only to date entered', () => {
-      const action = {
-        type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: 'uploadedDate: ["","10/10/2010"]',
-        form: {
-          uploadedDate2: '10/10/2010',
-          project: {},
-          jurisdiction: {}
-        }
-      }
+      
       const currentState = getState({ documents: mockDocuments })
       const updatedState = reducer(currentState, action)
       expect(updatedState.documents.visible).toEqual(['7', '2', '5', '3'])
-    })
-    test('should handle if both date entered', () => {
-      const action = {
-        type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: 'uploadedDate: ["10/10/2010","10/10/2010"]',
-        form: {
-          uploadedDate1: '10/10/2010',
-          uploadedDate2: '10/10/2010',
-          project: {},
-          jurisdiction: {}
-        }
-      }
-      const currentState = getState({ documents: mockDocuments })
-      const updatedState = reducer(currentState, action)
-      expect(updatedState.documents.visible).toEqual(['7'])
-    })
-    test('should handle if "from" date greater than "to" date entered', () => {
-      const action = {
-        type: searchTypes.SEARCH_VALUE_CHANGE,
-        value: 'uploadedDate: ["10/10/2015","10/10/2010"]',
-        form: {
-          uploadedDate1: '10/10/2015',
-          uploadedDate2: '10/10/2010',
-          project: {},
-          jurisdiction: {}
-        }
-      }
-      const currentState = getState({ documents: mockDocuments })
-      const updatedState = reducer(currentState, action)
-      expect(updatedState.documents.visible).toEqual(['6', '7'])
     })
   })
 

@@ -89,7 +89,6 @@ describe('Home - ProjectList - ProjectPanel scene', () => {
       })
       
       test('coding scheme button should be visible', () => {
-        console.log(wrapper.find('WithTheme(Button)').at(0).childAt(0).text())
         expect(wrapper.find('WithTheme(Button)').someWhere(n => n.childAt(0).text() === 'Coding Scheme')).toEqual(true)
       })
       

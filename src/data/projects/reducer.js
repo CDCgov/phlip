@@ -7,7 +7,13 @@ export const INITIAL_STATE = {
 }
 
 const projectReducer = (state = INITIAL_STATE, action) => {
-  switch(action.type) {
+  switch (action.type) {
+    case types.SET_PROJECTS:
+      return {
+        byId: action.payload.data.byId,
+        allIds: action.payload.data.allIds
+      }
+    
     case types.GET_PROJECT_SUCCESS:
     case types.ADD_PROJECT:
     case types.UPDATE_PROJECT:
@@ -16,6 +22,7 @@ const projectReducer = (state = INITIAL_STATE, action) => {
         byId: {
           ...state.byId,
           [action.payload.id]: {
+            ...state.byId[action.payload.id],
             ...action.payload
           }
         },
@@ -23,22 +30,34 @@ const projectReducer = (state = INITIAL_STATE, action) => {
           ? [...state.allIds, action.payload.id]
           : [...state.allIds]
       }
-      
-    case types.REMOVE_PROJECT:
-      let updatedById = { ...state.byId }
-      const updatedAllIds = state.allIds.filter(value => value !== action.projectId)
-      delete updatedById[action.projectId]
+    
+    case types.UPDATE_EDITED_FIELDS:
+      let project = state.byId[action.projectId]
       return {
         ...state,
         byId: {
-          ...updatedById
+          ...state.byId,
+          [project.id]: {
+            ...project,
+            lastEditedBy: action.user,
+            dateLastEdited: new Date().toISOString()
+          }
         },
+        allIds: state.allIds
+      }
+    
+    case types.REMOVE_PROJECT:
+      const { [action.projectId]: deleteProject, ...updatedById } = state.byId
+      const updatedAllIds = state.allIds.filter(value => value !== action.projectId)
+      return {
+        ...state,
+        byId: updatedById,
         allIds: updatedAllIds
       }
-      
+    
     case types.FLUSH_STATE:
       return INITIAL_STATE
-
+    
     default:
       return state
   }

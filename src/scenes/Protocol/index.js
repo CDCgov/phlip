@@ -306,7 +306,7 @@ export class Protocol extends Component {
 
 /* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => ({
-  projectName: state.scenes.home.main.projects.byId[ownProps.match.params.id].name,
+  projectName: state.data.projects.byId[ownProps.match.params.id].name,
   projectId: ownProps.match.params.id,
   protocolContent: state.scenes.protocol.content || '',
   getProtocolError: state.scenes.protocol.getProtocolError || null,

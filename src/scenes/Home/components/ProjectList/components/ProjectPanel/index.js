@@ -118,7 +118,7 @@ export class ProjectPanel extends Component {
     }
     
     const containerStyles = {
-      paddingBottom: (index === 0 || index < length - 1)
+      paddingBottom: ((index === 0 && length > 1) || index < length - 1)
         ? expanded
           ? 30
           : 0
@@ -158,7 +158,7 @@ export class ProjectPanel extends Component {
                     spacing={2}
                     cols={avatarCols}
                     rows={avatarRows}>
-                    {userData.map((oneCoder, i) => {
+                    {userData.map(oneCoder => {
                       const coder = oneCoder.blank
                         ? oneCoder
                         : allUsers[oneCoder.userId] !== undefined
@@ -361,14 +361,13 @@ export class ProjectPanel extends Component {
 /* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => {
   const homeState = state.scenes.home.main
-  const p = homeState.projects.byId[ownProps.id]
+  const p = state.data.projects.byId[ownProps.id]
   return {
     project: p,
     role: state.data.user.currentUser.role,
     bookmarked: homeState.bookmarkList.includes(ownProps.id),
     users: p.projectUsers,
-    allUsers: state.data.user.byId,
-    expandingProject: homeState.expandingProject
+    allUsers: state.data.user.byId
   }
 }
 
