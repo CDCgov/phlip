@@ -16,6 +16,7 @@ exports[`QuestionCard - QuestionContent - AvatarList should render correctly 1`]
     text="Show all annotations"
   >
     <Avatar
+      alt=""
       avatar=""
       big={false}
       cardAvatar={false}

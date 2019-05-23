@@ -20,6 +20,7 @@ exports[`CodingValidation - QuestionCard - QuestionContent - CodingValidationAva
     type="column"
   >
     <Avatar
+      alt=""
       avatar=""
       big={false}
       cardAvatar={false}

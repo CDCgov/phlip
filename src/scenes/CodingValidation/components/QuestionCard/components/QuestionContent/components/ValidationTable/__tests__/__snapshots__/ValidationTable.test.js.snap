@@ -103,6 +103,7 @@ exports[`QuestionCard - ValidationTable should render correctly 1`] = `
           type="row"
         >
           <Avatar
+            alt=""
             avatar={1}
             big={false}
             cardAvatar={false}
