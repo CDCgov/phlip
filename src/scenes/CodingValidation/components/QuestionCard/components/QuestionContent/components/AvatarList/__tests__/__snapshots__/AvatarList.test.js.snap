@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`QuestionCard - QuestionContent - ValidationAvatarList should render correctly 1`] = `
+exports[`QuestionCard - QuestionContent - AvatarList should render correctly 1`] = `
 <FlexGrid
   align="center"
   circular={false}

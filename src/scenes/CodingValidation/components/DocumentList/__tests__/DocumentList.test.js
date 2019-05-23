@@ -242,6 +242,13 @@ describe('DocumentList', () => {
 
 const setupState = (other = {}) => {
   return {
+    data: {
+      user: {
+        currentUser: {
+          id: 5
+        }
+      }
+    },
     scenes: {
       codingValidation: {
         coding: {

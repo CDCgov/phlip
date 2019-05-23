@@ -13,7 +13,8 @@ const props = {
   areDocsEmpty: false,
   mergedUserQuestions: null,
   userAnswers: { answers: {} },
-  disableAll: false
+  disableAll: false,
+  user: { id: 5 }
 }
 
 describe('QuestionCard - QuestionContent - TextFieldQuestion', () => {

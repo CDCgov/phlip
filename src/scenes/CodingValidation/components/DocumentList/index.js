@@ -126,7 +126,7 @@ export class DocumentList extends Component {
     
     const {
       annotationModeEnabled, annotations, docSelected, openedDoc, apiErrorOpen,
-      showEmptyDocs, apiErrorInfo, isValidation, documents, annotatedDocs, shouldShowAnnoModeAlert
+      showEmptyDocs, apiErrorInfo, documents, annotatedDocs, shouldShowAnnoModeAlert
     } = this.props
     
     const { noTextContent } = this.state
