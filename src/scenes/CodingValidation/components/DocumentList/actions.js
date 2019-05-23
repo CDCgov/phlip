@@ -27,7 +27,7 @@ export default {
   getDocumentContentsRequest: makeActionCreator(types.GET_DOC_CONTENTS_REQUEST, 'id'),
   saveAnnotation: makeActionCreator(types.ON_SAVE_ANNOTATION, 'annotation', 'answerId', 'questionId'),
   removeAnnotation: makeActionCreator(types.ON_REMOVE_ANNOTATION, 'index', 'answerId', 'questionId'),
-  toggleCoderAnnotations: makeActionCreator(types.TOGGLE_CODER_ANNOTATIONS, 'questionId', 'answerId', 'userId', 'isValidatorSelected'),
+  toggleCoderAnnotations: makeActionCreator(types.TOGGLE_CODER_ANNOTATIONS, 'questionId', 'answerId', 'userId', 'isUserAnswerSelected'),
   toggleAnnotationMode: makeActionCreator(types.TOGGLE_ANNOTATION_MODE, 'questionId', 'answerId', 'enabled'),
   hideAnnoModeAlert: makeActionCreator(types.HIDE_ANNO_MODE_ALERT)
 }

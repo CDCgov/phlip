@@ -409,7 +409,7 @@ export class CodingScheme extends Component {
 
 /* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => ({
-  projectName: state.scenes.home.main.projects.byId[ownProps.match.params.id].name,
+  projectName: state.data.projects.byId[ownProps.match.params.id].name,
   projectId: ownProps.match.params.id,
   questions: state.scenes.codingScheme.questions || [],
   empty: state.scenes.codingScheme.empty || false,

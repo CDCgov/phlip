@@ -72,7 +72,7 @@ export class Annotation extends PureComponent {
       annotation, index, pending, handleConfirmAnnotation, handleCancelAnnotation, handleRemoveAnnotation,
       handleClickAnnotation, showAvatar, user, annotationModeEnabled, closeToOthers
     } = this.props
-
+    
     const key = `${pending ? 'pending' : 'saved'}-highlight-area-${index}`
 
     return annotation.rects.map((rect, j) => {

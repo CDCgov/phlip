@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { default as MuiAvatar } from '@material-ui/core/Avatar'
+import transparent from './transparent.png'
 
 /**
  * @component
  * Shows an circular avatar with initials or img
  */
-export const Avatar = ({ big, small, avatar, initials, style, cardAvatar, userName, ...otherProps }) => {
+export const Avatar = ({ big, small, avatar, initials, style, cardAvatar, userName, alt, ...otherProps }) => {
   const dim = big ? '45px' : small ? '20px' : cardAvatar ? '38px' : '30px'
   
   const common = {
@@ -30,10 +31,16 @@ export const Avatar = ({ big, small, avatar, initials, style, cardAvatar, userNa
   }
   
   const avStyles = cardAvatar ? cardAvatarStyles : styles
+  const altText = alt !== '' ? alt : `${userName}'s avatar`
   
   return avatar
-    ? <MuiAvatar style={avStyles} alt={`${userName} avatar`} {...otherProps} src={avatar} />
-    : <MuiAvatar style={avStyles} {...otherProps}>{initials}</MuiAvatar>
+    ? <MuiAvatar style={avStyles} alt={altText} {...otherProps} src={avatar} />
+    : (
+      <MuiAvatar style={avStyles} {...otherProps}>
+        <img src={transparent} alt={alt} style={{ display: 'none' }} />
+        {initials}
+      </MuiAvatar>
+    )
   
 }
 
@@ -65,7 +72,11 @@ Avatar.propTypes = {
   /**
    * The first and last name of the user for which the avatar was created (needed for aria-label attribute)
    */
-  userName: PropTypes.string
+  userName: PropTypes.string,
+  /**
+   * alt text for image
+   */
+  alt: PropTypes.string
 }
 
 Avatar.defaultProps = {
@@ -74,7 +85,8 @@ Avatar.defaultProps = {
   initials: '',
   style: {},
   theme: {},
-  userName: ''
+  userName: '',
+  alt: ''
 }
 
 export default Avatar

@@ -7,7 +7,7 @@ import { Snackbar, FlexGrid, Avatar, Icon, Tooltip } from 'components'
 import PinciteTextField from '../PinciteTextField'
 import Button from '@material-ui/core/Button'
 import theme from 'services/theme'
-import ValidationAvatar from '../ValidationAvatar'
+import ValidationAvatar from '../CodingValidationAvatar'
 
 const PinciteAvatar = ({ answerObj, user, size }) => {
   return (

@@ -2,12 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { FlexGrid, Avatar, Tooltip } from 'components'
 import theme from 'services/theme'
-import ValidationAvatar from '../ValidationAvatar'
+import CodingValidationAvatar from '../CodingValidationAvatar'
 
-export const ValidationAvatarList = props => {
+export const AvatarList = props => {
   const {
     answerList, userImages, enabledUserId, enabledAnswerId, handleClickAvatar,
-    answerId, isValidatorSelected, showAllAvatar
+    answerId, isUserAnswerSelected, showAllAvatar
   } = props
   
   const avatarStyle = {
@@ -30,12 +30,12 @@ export const ValidationAvatarList = props => {
         const user = userImages[answer.userId]
         const userAndAnswerMatch = enabledUserId === answer.userId && enabledAnswerId === answer.schemeAnswerId
         const isSelected = (userAndAnswerMatch &&
-          ((!isValidatorSelected && !answer.isValidatorAnswer) || (isValidatorSelected && answer.isValidatorAnswer)))
+          ((!isUserAnswerSelected && !answer.isUserAnswer) || (isUserAnswerSelected && answer.isUserAnswer)))
         
         return (
           <div style={{ marginRight: 2 }} key={`user-answer-${answer.schemeAnswerId}-${i}`}>
-            <ValidationAvatar
-              onClick={handleClickAvatar(answer.schemeAnswerId, answer.userId, answer.isValidatorAnswer)}
+            <CodingValidationAvatar
+              onClick={handleClickAvatar(answer.schemeAnswerId, answer.userId, answer.isUserAnswer)}
               user={user}
               enabled={isSelected}
               isValidator={answer.isValidatorAnswer}
@@ -44,6 +44,7 @@ export const ValidationAvatarList = props => {
           </div>
         )
       })}
+      
       {showAllAvatar &&
       <Tooltip text="Show all annotations">
         <Avatar
@@ -63,7 +64,7 @@ export const ValidationAvatarList = props => {
   )
 }
 
-ValidationAvatarList.propTypes = {
+AvatarList.propTypes = {
   answerList: PropTypes.array,
   userImages: PropTypes.object,
   selectedIndex: PropTypes.number,
@@ -72,12 +73,12 @@ ValidationAvatarList.propTypes = {
   enabledUserId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   enabledAnswerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   answerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  isValidatorSelected: PropTypes.bool
+  isUserAnswerSelected: PropTypes.bool
 }
 
-ValidationAvatarList.defaultProps = {
+AvatarList.defaultProps = {
   showAllAvatar: true
 }
 
-export default ValidationAvatarList
+export default AvatarList
 

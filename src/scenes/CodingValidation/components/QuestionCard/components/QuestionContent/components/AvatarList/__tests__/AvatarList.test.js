@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { ValidationAvatarList } from '../index'
+import { AvatarList } from '../index'
 
 const props = {
   answerList: [],
@@ -9,8 +9,8 @@ const props = {
   handleClickAvatar: jest.fn()
 }
 
-describe('QuestionCard - QuestionContent - ValidationAvatarList', () => {
+describe('QuestionCard - QuestionContent - AvatarList', () => {
   test('should render correctly', () => {
-    expect(shallow(<ValidationAvatarList {...props} />)).toMatchSnapshot()
+    expect(shallow(<AvatarList {...props} />)).toMatchSnapshot()
   })
 })

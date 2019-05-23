@@ -3,9 +3,10 @@ import actions, { types } from '../actions'
 describe('Home actions creators', () => {
   test('should create an action to get projects', () => {
     const expectedAction = {
-      type: types.GET_PROJECTS_REQUEST
+      type: types.GET_PROJECTS_REQUEST,
+      payload: {}
     }
-    expect(actions.getProjectsRequest()).toEqual(expectedAction)
+    expect(actions.getProjectsRequest({})).toEqual(expectedAction)
   })
 
   test('should create an action to indicate getting projects failed', () => {

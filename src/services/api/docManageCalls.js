@@ -42,21 +42,20 @@ const docManageCalls = [
     path: ({ projectId, jurisdictionId }) => `/docs/projects/${projectId}/jurisdictions/${jurisdictionId}`
   },
   {
-    name:'bulkDeleteDoc',
+    name: 'bulkDeleteDoc',
     method: 'post',
-    path:  () => `/docs/bulkDelete`
+    path: () => `/docs/bulkDelete`
   },
   {
-    name:'bulkUpdateDoc',
+    name: 'bulkUpdateDoc',
     method: 'post',
-    path:  () => `/docs/bulkUpdate`
+    path: () => `/docs/bulkUpdate`
   },
   {
-    name:'cleanProject',
+    name: 'cleanProject',
     method: 'put',
-    path:  ({ projectId }) => `/docs/cleanProjectList/${projectId}`
+    path: ({ projectId }) => `/docs/cleanProjectList/${projectId}`
   }
-
 ]
 
 export default docManageCalls

@@ -15,7 +15,8 @@ const props = {
   enabledAnswerId: 3,
   onToggleAnnotationMode: jest.fn(),
   annotationModeEnabled: false,
-  areDocsEmpty: false
+  areDocsEmpty: false,
+  user: { id: 5 }
 }
 
 describe('QuestionCard - QuestionContent - SelectionControlQuestion', () => {

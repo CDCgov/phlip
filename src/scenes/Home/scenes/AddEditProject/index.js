@@ -123,10 +123,9 @@ export class AddEditProject extends Component {
         this.setState({
           submitting: false
         })
-        console.log(this.props.formError)
         this.props.onSubmitError(this.props.formError)
       } else if (this.props.goBack) {
-        this.props.history.goBack()
+        this.props.history.push('/home')
       }
     }
   }
@@ -144,13 +143,13 @@ export class AddEditProject extends Component {
   onCancel = () => {
     this.props.formActions.reset('projectForm')
     if (this.props.location.state.directEditMode) {
-      this.props.history.goBack()
+      this.props.history.push('/home')
     } else {
       return this.state.edit
         ? this.projectDefined
           ? this.setState({ edit: !this.state.edit })
-          : this.props.history.goBack()
-        : this.props.history.goBack()
+          : this.props.history.push('/home')
+        : this.props.history.push('/home')
     }
   }
   
@@ -402,8 +401,9 @@ export class AddEditProject extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  projects: Object.values(state.scenes.home.main.projects.byId) || [],
+/* istanbul ignore next */
+const mapStateToProps = state => ({
+  projects: Object.values(state.data.projects.byId) || [],
   form: state.form.projectForm || {},
   formName: 'projectForm',
   userRole: state.data.user.currentUser.role || '',
@@ -411,6 +411,7 @@ const mapStateToProps = (state) => ({
   goBack: state.scenes.home.addEditProject.goBack || false
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(actions, dispatch),
   formActions: bindActionCreators(formActions, dispatch)

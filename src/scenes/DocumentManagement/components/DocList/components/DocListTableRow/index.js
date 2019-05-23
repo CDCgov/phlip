@@ -25,7 +25,7 @@ export const DocListTableRow = props => {
           style={{ width: 24, height: 24 }}
         />
       </TableCell>
-      <TableCell padding="checkbox">
+      <TableCell padding="checkbox" style={{ minWidth: 100, maxWidth: 500 }}>
         <TextLink to={{ pathname: `/docs/${doc._id}/view`, state: { document: { ...doc } } }}>
           {doc.name}
         </TextLink>
@@ -36,10 +36,10 @@ export const DocListTableRow = props => {
       <TableCell padding="checkbox">
         {date}
       </TableCell>
-      <TableCell padding="checkbox">
+      <TableCell padding="checkbox" style={{ minWidth: 50, maxWidth: 500 }}>
         {projectList.join(', ')}
       </TableCell>
-      <TableCell padding="checkbox">
+      <TableCell padding="checkbox" style={{ maxWidth: 500, minWidth: 50 }}>
         {jurisdictionList.join(', ')}
       </TableCell>
       <TableCell style={{ padding:0, width:34 }}>

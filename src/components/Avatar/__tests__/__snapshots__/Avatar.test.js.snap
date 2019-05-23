@@ -21,6 +21,15 @@ exports[`Avatar component should render correctly 1`] = `
     }
   }
 >
+  <img
+    alt=""
+    src="test-file-stub"
+    style={
+      Object {
+        "display": "none",
+      }
+    }
+  />
   AU
 </WithStyles(Avatar)>
 `;

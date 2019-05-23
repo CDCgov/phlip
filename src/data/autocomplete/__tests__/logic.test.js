@@ -32,7 +32,7 @@ describe('Autocomplete logic', () => {
   }
 
   describe('Search Project List Logic', () => {
-    test('should send a request to get projects and only return projects matching action.searchString', (done) => {
+    test('should send a request to get projects and only return projects matching action.searchString', done => {
       apiMock
         .onGet('/projects/search')
         .reply(200, [
@@ -67,7 +67,7 @@ describe('Autocomplete logic', () => {
   })
 
   describe('Search Jurisdiction List Logic', () => {
-    test('should send a request to search jurisdictions and dispatch SEARCH_JURISDICTION_LIST_SUCCESS when successful', (done) => {
+    test('should send a request to search jurisdictions and dispatch SEARCH_JURISDICTION_LIST_SUCCESS when successful', done => {
       apiMock
         .onGet('/jurisdictions', { params: { name: 'Al' } })
         .reply(200, [{ id: 1, name: 'Alaska' }, { id: 2, name: 'Alabama' }])
