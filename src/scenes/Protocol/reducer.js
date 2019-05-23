@@ -1,6 +1,6 @@
 import { types } from './actions'
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   content: '',
   getProtocolError: null,
   submitting: false,
@@ -66,21 +66,18 @@ const protocolReducer = (state = INITIAL_STATE, action) => {
         ...state,
         lockedAlert: null
       }
-
-    case types.CLEAR_STATE:
-      return INITIAL_STATE
+  
+    case types.SAVE_PROTOCOL_REQUEST:
+      return {
+        ...state,
+        submitting: true
+      }
 
     case types.SAVE_PROTOCOL_SUCCESS:
       return {
         ...state,
         alertError: '',
         submitting: false
-      }
-
-    case types.SAVE_PROTOCOL_REQUEST:
-      return {
-        ...state,
-        submitting: true
       }
 
     case types.LOCK_PROTOCOL_SUCCESS:
@@ -101,6 +98,9 @@ const protocolReducer = (state = INITIAL_STATE, action) => {
         lockInfo: {},
         lockedByCurrentUser: false
       }
+  
+    case types.CLEAR_STATE:
+      return INITIAL_STATE
 
     case types.LOCK_PROTOCOL_REQUEST:
     case types.UNLOCK_PROTOCOL_REQUEST:
