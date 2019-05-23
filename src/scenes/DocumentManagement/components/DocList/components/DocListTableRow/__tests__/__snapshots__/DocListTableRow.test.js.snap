@@ -33,6 +33,12 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"
+    style={
+      Object {
+        "maxWidth": 500,
+        "minWidth": 100,
+      }
+    }
   >
     <TextLink
       to={
@@ -76,11 +82,23 @@ exports[`DocumentManagement - DocList - DocListTableRow should render correctly 
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"
+    style={
+      Object {
+        "maxWidth": 500,
+        "minWidth": 50,
+      }
+    }
   >
     P1, P2
   </WithStyles(TableCell)>
   <WithStyles(TableCell)
     padding="checkbox"
+    style={
+      Object {
+        "maxWidth": 500,
+        "minWidth": 50,
+      }
+    }
   >
     J1, J2
   </WithStyles(TableCell)>

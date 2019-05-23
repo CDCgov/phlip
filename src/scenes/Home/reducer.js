@@ -37,7 +37,7 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case projectTypes.SET_PROJECTS:
       return {
-        ...updateHomeState(['error', 'errorContent', 'bookmarkList', 'searchValue']),
+        ...updateHomeState(['error', 'errorContent', 'bookmarkList', 'searchValue', 'projectCount']),
         projects: action.payload.projects
       }
       

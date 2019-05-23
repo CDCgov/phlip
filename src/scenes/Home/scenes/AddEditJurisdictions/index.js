@@ -271,6 +271,7 @@ export class AddEditJurisdictions extends Component {
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => ({
   project: state.data.projects.byId[ownProps.match.params.id],
   visibleJurisdictions: state.scenes.home.addEditJurisdictions.visibleJurisdictions || [],
@@ -281,6 +282,7 @@ const mapStateToProps = (state, ownProps) => ({
   deleteError: state.scenes.home.addEditJurisdictions.deleteError || null
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(actions, dispatch)
 })

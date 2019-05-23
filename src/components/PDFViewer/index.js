@@ -382,7 +382,7 @@ export class PDFViewer extends Component {
    * @returns {*}
    */
   handleAnnoModeAlert = () => {
-    if (this.props.showAnnoModeAlert) {
+    if (this.props.showAnnoModeAlert && !this.props.annotationModeEnabled) {
       this.setState({
         annoModeAlert: {
           open: true,

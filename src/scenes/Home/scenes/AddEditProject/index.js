@@ -401,6 +401,7 @@ export class AddEditProject extends Component {
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = state => ({
   projects: Object.values(state.data.projects.byId) || [],
   form: state.form.projectForm || {},
@@ -410,6 +411,7 @@ const mapStateToProps = state => ({
   goBack: state.scenes.home.addEditProject.goBack || false
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(actions, dispatch),
   formActions: bindActionCreators(formActions, dispatch)

@@ -118,7 +118,7 @@ export class ProjectPanel extends Component {
     }
     
     const containerStyles = {
-      paddingBottom: (index === 0 || index < length - 1)
+      paddingBottom: ((index === 0 && length > 1) || index < length - 1)
         ? expanded
           ? 30
           : 0

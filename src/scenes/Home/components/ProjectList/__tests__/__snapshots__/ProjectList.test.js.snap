@@ -50,17 +50,5 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
       />
     </div>
   </ClickAwayListener>
-  <Table>
-    <WithStyles(TableFooter)>
-      <WithStyles(TableRow)>
-        <WithStyles(TablePagination)
-          onChangePage={[Function]}
-          onChangeRowsPerPage={[Function]}
-          page={0}
-          rowsPerPage="10"
-        />
-      </WithStyles(TableRow)>
-    </WithStyles(TableFooter)>
-  </Table>
 </FlexGrid>
 `;

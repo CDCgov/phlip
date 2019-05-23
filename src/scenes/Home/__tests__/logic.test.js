@@ -4,7 +4,7 @@ import logic from '../logic'
 import { types } from '../actions'
 import createApiHandler, { projectApiInstance } from 'services/api'
 import calls from 'services/api/calls'
-import { INITIAL_STATE, mainReducer as reducer } from '../reducer'
+import { INITIAL_STATE } from '../reducer'
 import { types as projectTypes } from 'data/projects/actions'
 import { projects, projectsPayload, sortedByDateAndBookmarked, defaultSorted } from 'utils/testData/projectsHome'
 
