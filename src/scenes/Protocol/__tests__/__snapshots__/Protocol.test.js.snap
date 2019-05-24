@@ -18,7 +18,7 @@ exports[`Protocol scene should render correctly 1`] = `
         Object {
           "onClick": [Function],
           "type": "button",
-          "value": "Save",
+          "value": "Continue",
         },
       ]
     }
@@ -33,23 +33,15 @@ exports[`Protocol scene should render correctly 1`] = `
     />
   </Alert>
   <Alert
-    actions={
-      Array [
-        Object {
-          "onClick": [Function],
-          "type": "button",
-          "value": "Release lock",
-        },
-      ]
-    }
+    actions={Array []}
     closeButton={
       Object {
-        "value": "Cancel",
+        "value": "Dismiss",
       }
     }
     hideClose={false}
     onCloseAlert={[Function]}
-    open={true}
+    open={false}
     title={
       <React.Fragment>
         <WithTheme(Icon)

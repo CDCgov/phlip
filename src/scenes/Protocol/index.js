@@ -67,17 +67,22 @@ export class Protocol extends Component {
     /**
      * Any error that should be displayed in an alert
      */
-    title: PropTypes.string,
-    /**
-     * Any error that should be displayed in an alert
-     */
     lockedAlertAction: PropTypes.array,
     /**
      * Redux actions object
      */
     actions: PropTypes.object,
+    /**
+     * If populated, an error that happened while saving the protocol
+     */
     saveError: PropTypes.any,
+    /**
+     * Browser history
+     */
     history: PropTypes.object,
+    /**
+     * Current user logged in
+     */
     currentUser: PropTypes.object
   }
   
@@ -99,7 +104,7 @@ export class Protocol extends Component {
   
   componentDidUpdate(prevProps) {
     if (prevProps.submitting && !this.props.submitting) {
-      if (this.props.saveError !== true) {
+      if (this.props.alertError === '') {
         this.setState({
           editMode: false
         })
@@ -190,10 +195,21 @@ export class Protocol extends Component {
     }
   }
   
+  /**
+   * Overrides a currently checked out protocol
+   */
   overrideLock = () => {
     this.props.actions.unlockProtocolRequest(this.props.projectId, this.props.lockInfo.userId)
     this.props.actions.updateEditedFields(this.props.projectId)
     this.onCloseLockedAlert()
+  }
+  
+  /**
+   * Updates the protocol content
+   * @returns {*}
+   */
+  updateProtocol = e => {
+    this.props.actions.updateProtocol(e.target.getContent())
   }
   
   render() {
@@ -284,7 +300,7 @@ export class Protocol extends Component {
                   anchor_bottom: false,
                   anchor_top: false
                 }}
-                onChange={e => actions.updateProtocol(e.target.getContent())}
+                onChange={this.updateProtocol}
                 initialValue={protocolContent}
               />
             </FlexGrid>
