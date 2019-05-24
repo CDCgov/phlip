@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import * as actions from './actions'
+import actions from './actions'
 import Typography from '@material-ui/core/Typography'
 import { FlexGrid, Icon, Alert, PageHeader, withTracking, CardError, ApiErrorAlert } from 'components'
 
@@ -67,17 +67,22 @@ export class Protocol extends Component {
     /**
      * Any error that should be displayed in an alert
      */
-    title: PropTypes.string,
-    /**
-     * Any error that should be displayed in an alert
-     */
     lockedAlertAction: PropTypes.array,
     /**
      * Redux actions object
      */
     actions: PropTypes.object,
+    /**
+     * If populated, an error that happened while saving the protocol
+     */
     saveError: PropTypes.any,
+    /**
+     * Browser history
+     */
     history: PropTypes.object,
+    /**
+     * Current user logged in
+     */
     currentUser: PropTypes.object
   }
   
@@ -99,7 +104,7 @@ export class Protocol extends Component {
   
   componentDidUpdate(prevProps) {
     if (prevProps.submitting && !this.props.submitting) {
-      if (this.props.saveError !== true) {
+      if (this.props.alertError === '') {
         this.setState({
           editMode: false
         })
@@ -164,12 +169,12 @@ export class Protocol extends Component {
   }
   
   /**
-   * Invoked when the user hits 'Save' in the alert that shows when the user clicks the 'back' arrow while still in edit
-   * mode. Sends a request to save the protocol, and goes back one in browser history.
+   * Invoked when the user hits 'Continue' in the alert that shows when the user clicks the 'back' arrow while still in edit
+   * mode. Sends a request to unlock the protocol, and goes back one in browser history.
    * @public
    */
   onContinue = () => {
-    this.onSaveProtocol()
+    this.props.actions.unlockProtocolRequest(this.props.projectId)
     this.props.history.goBack()
   }
   
@@ -190,16 +195,27 @@ export class Protocol extends Component {
     }
   }
   
+  /**
+   * Overrides a currently checked out protocol
+   */
   overrideLock = () => {
     this.props.actions.unlockProtocolRequest(this.props.projectId, this.props.lockInfo.userId)
     this.props.actions.updateEditedFields(this.props.projectId)
     this.onCloseLockedAlert()
   }
   
+  /**
+   * Updates the protocol content
+   * @returns {*}
+   */
+  updateProtocol = e => {
+    this.props.actions.updateProtocol(e.target.getContent())
+  }
+  
   render() {
     const alertActions = [
       {
-        value: 'Save',
+        value: 'Continue',
         type: 'button',
         onClick: this.onContinue
       }
@@ -284,7 +300,7 @@ export class Protocol extends Component {
                   anchor_bottom: false,
                   anchor_top: false
                 }}
-                onChange={e => actions.updateProtocol(e.target.getContent())}
+                onChange={this.updateProtocol}
                 initialValue={protocolContent}
               />
             </FlexGrid>
