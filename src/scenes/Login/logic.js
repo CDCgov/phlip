@@ -98,7 +98,6 @@ export const getBackendInfoLogic = createLogic({
   async process({ action, api }, dispatch, done) {
     try {
       const backendInfoData = await api.getBackendData({}, {}, {})
-      console.log('i was called: ', backendInfoData)
       dispatch({
         type: types.GET_BACKEND_INFO_SUCCESS, payload: backendInfoData
       })
