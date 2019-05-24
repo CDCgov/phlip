@@ -3,7 +3,8 @@ import * as types from './actionTypes'
 const INITIAL_STATE = {
   session: !!sessionStorage.esquire_token,
   pivError: null,
-  formMessage: null
+  formMessage: null,
+  backendInfo: null
 }
 
 /**
@@ -46,8 +47,14 @@ const loginReducer = (state = INITIAL_STATE, action) => {
         formMessage: state.formMessage
       }
 
+    case types.GET_BACKEND_INFO_SUCCESS:
+      return {
+        ...state,
+        backendInfo: action.payload
+      }
     case types.LOGIN_USER_REQUEST:
     case types.CHECK_PIV_USER_REQUEST:
+    case types.GET_BACKEND_INFO_REQUEST:
     default:
       return state
   }
