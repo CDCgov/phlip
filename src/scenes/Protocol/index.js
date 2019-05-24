@@ -222,7 +222,7 @@ export class Protocol extends Component {
     ]
     
     const {
-      currentUser, lockedAlert, lockInfo, projectName, projectId, getProtocolError, alertError, actions, protocolContent
+      currentUser, lockedAlert, lockInfo, projectName, projectId, getProtocolError, alertError, protocolContent
     } = this.props
     
     const { open, alertText, alertTitle, editMode } = this.state
@@ -230,7 +230,7 @@ export class Protocol extends Component {
     let lockedAlertAction = []
     
     if (currentUser.role === 'Admin') {
-      lockedAlertAction.push({ value: 'Release lock', type: 'button', onClick: this.overrideLock })
+      lockedAlertAction.push({ value: 'Unlock', type: 'button', onClick: this.overrideLock })
     }
     
     return (
@@ -254,6 +254,7 @@ export class Protocol extends Component {
           <Typography variant="body1">
             {`${lockInfo.firstName} ${lockInfo.lastName} `} is editing the protocol.
             You are unable to edit until they save their changes.
+            {currentUser.role === 'Admin' && ' Select \'Unlock\' to terminate their editing session or try again later.'}
           </Typography>
         </Alert>
         <PageHeader
@@ -306,7 +307,7 @@ export class Protocol extends Component {
             </FlexGrid>
           ) : (
             getProtocolError === true
-              ? <CardError>We failed to get the protocol for this project. Please try again later.</CardError>
+              ? <CardError>We couldn't retrieve the protocol for this project. Please try again later.</CardError>
               : <FlexGrid
                 raised
                 padding={25}

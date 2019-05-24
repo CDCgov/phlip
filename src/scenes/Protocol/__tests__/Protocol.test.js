@@ -246,7 +246,7 @@ describe('Protocol scene', () => {
         />
       )
       expect(wrapper.find('Alert').at(1).prop('actions').length).toEqual(1)
-      expect(wrapper.find('Alert').at(1).prop('actions')[0].value).toEqual('Release lock')
+      expect(wrapper.find('Alert').at(1).prop('actions')[0].value).toEqual('Unlock')
     })
     
     test('should release the lock on the protocol when the release lock button is clicked', () => {
