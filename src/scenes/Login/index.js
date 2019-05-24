@@ -59,17 +59,14 @@ export class Login extends Component {
 
   constructor(props, context) {
     super(props, context)
-    this.state = {
-      backendInfo: this.props.backendInfo
-    }
   }
 
   UNSAFE_componentWillMount() {
-    this.props.actions.getBackendInfoRequest()
-    console.log(this.props.backendInfo.pipelineId)
+
   }
 
   componentDidMount() {
+    this.props.actions.getBackendInfoRequest()
     document.title = 'PHLIP - Login'
     const match = matchPath(this.props.location.pathname, { path: '/login/verify-user' })
     if (match) {
@@ -149,10 +146,10 @@ export class Login extends Component {
               Front-end Built Version: {appVersion}
           </Typography>
           <Typography variant="caption" style={{ color: 'black' }}>
-              Back-end: Built Version: {this.state.backendInfo.pipelineId.trim()} - Updated: {this.state.backendInfo.builtTime}
+              Back-end: Built Version: {this.props.backendInfo.pipelineId.trim() || ''} - Updated: {this.props.backendInfo.builtTime ||''}
           </Typography>
           <Typography variant="caption" style={{ color: 'black' }}>
-              Backend Database: {this.state.backendInfo.databaseName}
+              Backend Database: {this.props.backendInfo.databaseName || ''}
           </Typography>
         </Row>
       </Container>
@@ -164,7 +161,7 @@ const mapStateToProps = state => ({
   user: state.data.user.currentUser || undefined,
   session: state.scenes.login.session || false,
   formMessage: state.scenes.login.formMessage || null,
-  backendInfo : state.scenes.main.backendInfo || null
+  backendInfo : state.scenes.login.backendInfo || { pipelineId:'',builtTime:'', databaseName:'' }
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators({ ...actions, ...userActions }, dispatch) })
