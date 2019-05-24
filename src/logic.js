@@ -16,14 +16,27 @@ const logoutLogic = createLogic({
   processOptions: {
     dispatchReturn: false
   },
-  async process({ action }, dispatch, done) {
+  async process({ action, api }, dispatch, done) {
     logout()
+    if (APP_IS_SAML_ENABLED === '1') {
+      samsLogout(api)
+    }
+
     dispatch({ type: types.FLUSH_STATE, isLogout: true })
     await persistor.flush()
     await persistor.purge()
     done()
   }
 })
+
+const samsLogout = async (api) => {
+  try {
+    let logoutResult = await api.samsLogout({}, {}, {})
+    return logoutResult
+  } catch (err) {
+    return err
+  }
+}
 
 export default [
   ...dataLogic,

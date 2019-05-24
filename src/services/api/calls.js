@@ -269,6 +269,11 @@ let apiCalls = [
     name:'getBackendData',
     method: 'get',
     path: () => '/appInfo'
+  },
+  {
+    name: 'samsLogout',
+    method: 'get',
+    path: () => APP_SAML_LOGOUT_URL
   }
 
 ]
