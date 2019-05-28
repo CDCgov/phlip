@@ -10,17 +10,17 @@ export const basicLoginLogic = createLogic({
   type: types.LOGIN_USER_REQUEST,
   async process({ action, api }, dispatch, done) {
     let user = {}, bookmarks = [], error = ''
-
+    
     try {
       user = await api.login(action.credentials, {}, {})
       await login(user.token.value)
-
+      
       try {
         bookmarks = await getBookmarks(api, user.id)
       } catch (e) {
         error = 'could not get bookmarks'
       }
-
+      
       dispatch({
         type: types.LOGIN_USER_SUCCESS,
         payload: {
@@ -40,24 +40,28 @@ export const basicLoginLogic = createLogic({
 })
 
 /**
- * Logic for PIV card authentication. This logic is invoked after the user is returned from the SAMS login page. A request
- * is sent to the backend to check the status of the user then log them in. Gets the bookmarks for the user if login is
- * successful
+ * Logic for PIV card authentication. This logic is invoked after the user is returned from the SAMS login page. A
+ * request is sent to the backend to check the status of the user then log them in. Gets the bookmarks for the user if
+ * login is successful
  */
 export const checkPivUserLogic = createLogic({
   type: types.CHECK_PIV_USER_REQUEST,
   async process({ action, api }, dispatch, done) {
     let user = {}, bookmarks = [], error = ''
     try {
-      user = await api.checkPivUser({ email: action.tokenObj.decodedToken.userEmail }, {}, { tokenObj: action.tokenObj })
+      user = await api.checkPivUser(
+        { email: action.tokenObj.decodedToken.userEmail },
+        {},
+        { tokenObj: action.tokenObj }
+      )
       await login(user.token.value)
-
+      
       try {
         bookmarks = await getBookmarks(api, user.id)
       } catch (e) {
         error = 'could not get bookmarks'
       }
-
+      
       dispatch({
         type: types.CHECK_PIV_USER_SUCCESS,
         payload: {
@@ -89,7 +93,7 @@ const getBookmarks = async (api, userId) => {
     arr.push(project.projectId)
     return arr
   }, [])
-
+  
   return bookmarks
 }
 
@@ -98,13 +102,12 @@ export const getBackendInfoLogic = createLogic({
   async process({ action, api }, dispatch, done) {
     try {
       const backendInfoData = await api.getBackendData({}, {}, {})
-      console.log('i was called: ', backendInfoData)
       dispatch({
         type: types.GET_BACKEND_INFO_SUCCESS, payload: backendInfoData
       })
       done()
     } catch (err) {
-      console.log('err: ',err)
+      console.log('err: ', err)
       dispatch({ type: types.GET_BACKEND_INFO_FAIL })
     }
     done()
@@ -114,10 +117,10 @@ export const getBackendInfoLogic = createLogic({
 let loginLogic = [checkPivUserLogic]
 
 /**
- * If the environment is not prduction, then basicLoginLogic is used
+ * If the environment is not production, then basicLoginLogic is used
  */
-if (!process.env.API_HOST) {
+if (APP_IS_SAML_ENABLED !== '1') {
   loginLogic = [...loginLogic, basicLoginLogic]
 }
 
-export default [...loginLogic,getBackendInfoLogic]
+export default [...loginLogic, getBackendInfoLogic]

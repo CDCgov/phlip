@@ -52,19 +52,18 @@ export class Login extends Component {
     currentUser: PropTypes.object,
     /**
      *  current version info
-    */
-    appVersion : PropTypes.string,
+     */
+    appVersion: PropTypes.string,
+    /**
+     * Information about the backend app versioning
+     */
     backendInfo: PropTypes.object
   }
-
+  
   constructor(props, context) {
     super(props, context)
   }
-
-  UNSAFE_componentWillMount() {
-
-  }
-
+  
   componentDidMount() {
     this.props.actions.getBackendInfoRequest()
     document.title = 'PHLIP - Login'
@@ -75,20 +74,20 @@ export class Login extends Component {
       const tokenObject = { decodedToken: decodeToken(parsedToken), token: parsedToken }
       this.props.actions.checkPivUserRequest(tokenObject)
     }
-
+    
     if (this.props.location.state !== undefined) {
       if (this.props.location.state.sessionExpired === true) {
         this.props.actions.logoutUser(true)
       }
     }
   }
-
-  componentDidUpdate() {
-    if (this.props.session) {
+  
+  componentDidUpdate(prevProps) {
+    if (!prevProps.session && this.props.session) {
       this.props.history.push('/home')
     }
   }
-
+  
   /**
    * Calls a redux action to send an API request to authenticate the user. Invoked when the user clicks the 'submit'
    * button on the form
@@ -98,21 +97,22 @@ export class Login extends Component {
   handleSubmit = values => {
     this.props.actions.loginUserRequest(values)
   }
-
+  
   render() {
     const headerStyles = {
       backgroundColor: this.props.theme.palette.primary.main,
       height: 145
     }
-
+    
     const formStyles = {
       width: 350,
       display: 'flex',
       flexDirection: 'column'
     }
-
+    
     const LoginView = APP_IS_SAML_ENABLED === '1' ? ProdLoginForm : DevLoginForm
     const appVersion = APP_PIPELINE + ' - Updated: ' + moment.unix(APP_BUILT_TIMESTAMP).format('MM/DD/YYYY  HH:mm:ss ')
+    
     return (
       <Container column flex alignItems="center" justify="center" style={{ backgroundColor: '#f5f5f5' }}>
         <Paper style={formStyles}>
@@ -122,11 +122,14 @@ export class Login extends Component {
           {LoginView && <LoginView onSubmit={this.handleSubmit} pivError={this.props.formMessage} />}
         </Paper>
         <Row style={{ textAlign: 'center', width: 600, paddingTop: 30, paddingBottom: 10 }}>
-          <Typography variant="caption" style={{ color: 'black' }}>You are accessing an information system that may contain
+          <Typography
+            variant="caption"
+            style={{ color: 'black' }}>You are accessing an information system that may contain
             U.S. Government data. System usage may
             be monitored, recorded, and subject to audit. Unauthorized use of the system is prohibited and may be
             subject to criminal and civil penalties. Use of the system indicates consent to monitoring and recording.
-            Administrative personnel remotely accessing the Azure environment: <br /><br />
+            Administrative personnel remotely accessing the Azure environment: <br />
+            <br />
           </Typography>
           <Typography variant="caption" style={{ color: 'black' }}>
             (1) shall maintain their remote computer in a secure manner, in accordance with organizational security
@@ -136,20 +139,21 @@ export class Login extends Component {
             responsibilities; and <br />
             (3) shall not knowingly store, transfer into, or process in the Azure environment data exceeding a FIPS 199
             Low security categorization
-          </Typography><br />
+          </Typography>
+          <br />
           <img
             src="/cdc-hhs-logo.png"
             style={{ height: 55 }}
             alt="Center for Disease Control and Health and Human Services Logo"
           />
           <Typography variant="caption" style={{ color: 'black' }}>
-              Front-end Built Version: {appVersion}
+            Front-end Build Version: {appVersion}
           </Typography>
           <Typography variant="caption" style={{ color: 'black' }}>
-              Back-end: Built Version: {this.props.backendInfo.pipelineId.trim() || ''} - Updated: {this.props.backendInfo.builtTime ||''}
+            Back-end: Build Version: {this.props.backendInfo.pipelineId.trim() || ''} - Updated: {this.props.backendInfo.builtTime || ''}
           </Typography>
           <Typography variant="caption" style={{ color: 'black' }}>
-              Backend Database: {this.props.backendInfo.databaseName || ''}
+            Backend Database: {this.props.backendInfo.databaseName || ''}
           </Typography>
         </Row>
       </Container>
@@ -157,13 +161,15 @@ export class Login extends Component {
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = state => ({
   user: state.data.user.currentUser || undefined,
-  session: state.scenes.login.session || false,
-  formMessage: state.scenes.login.formMessage || null,
-  backendInfo : state.scenes.login.backendInfo || { pipelineId:'',builtTime:'', databaseName:'' }
+  session: state.scenes.login.session,
+  formMessage: state.scenes.login.formMessage,
+  backendInfo: state.scenes.login.backendInfo
 })
 
-const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators({ ...actions, ...userActions }, dispatch) })
+/* istanbul ignore next */
+const mapDispatchToProps = dispatch => ({ actions: bindActionCreators({ ...actions, ...userActions }, dispatch) })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withTheme()(withTracking(Login, 'Login'))))

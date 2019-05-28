@@ -4,7 +4,11 @@ const INITIAL_STATE = {
   session: !!sessionStorage.esquire_token,
   pivError: null,
   formMessage: null,
-  backendInfo: null
+  backendInfo: {
+    pipelineId: '',
+    builtTime: '',
+    databaseName: ''
+  }
 }
 
 /**
@@ -23,14 +27,14 @@ const loginReducer = (state = INITIAL_STATE, action) => {
         session: !!sessionStorage.esquire_token,
         formMessage: null
       }
-
+    
     case types.LOGIN_USER_FAIL:
     case types.CHECK_PIV_USER_FAIL:
       return {
         ...state,
         formMessage: action.payload
       }
-
+    
     case types.LOGOUT_USER:
       if (action.sessionExpired === true) {
         return {
@@ -40,13 +44,13 @@ const loginReducer = (state = INITIAL_STATE, action) => {
       } else {
         return state
       }
-
+    
     case types.FLUSH_STATE:
       return {
         ...INITIAL_STATE,
         formMessage: state.formMessage
       }
-
+    
     case types.GET_BACKEND_INFO_SUCCESS:
       return {
         ...state,

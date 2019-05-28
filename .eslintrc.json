@@ -177,7 +177,6 @@
     "jestPuppeteer": true,
     "APP_PIPELINE": false,
     "APP_BUILT_TIMESTAMP": false
-
   },
   "env": {
     "jest": true,
