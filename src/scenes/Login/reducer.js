@@ -39,16 +39,21 @@ const loginReducer = (state = INITIAL_STATE, action) => {
       if (action.sessionExpired === true) {
         return {
           ...state,
+          session: false,
           formMessage: 'Your session expired. Please login again.'
         }
       } else {
-        return state
+        return {
+          ...state,
+          session: false
+        }
       }
     
     case types.FLUSH_STATE:
       return {
         ...INITIAL_STATE,
-        formMessage: state.formMessage
+        formMessage: state.formMessage,
+        session: false
       }
     
     case types.GET_BACKEND_INFO_SUCCESS:
@@ -56,6 +61,7 @@ const loginReducer = (state = INITIAL_STATE, action) => {
         ...state,
         backendInfo: action.payload
       }
+      
     case types.LOGIN_USER_REQUEST:
     case types.CHECK_PIV_USER_REQUEST:
     case types.GET_BACKEND_INFO_REQUEST:
