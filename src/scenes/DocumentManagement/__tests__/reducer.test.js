@@ -1,29 +1,7 @@
 import { types } from '../actions'
-import { docManagementReducer as reducer } from '../reducer'
+import { docManagementReducer as reducer, INITIAL_STATE as initial } from '../reducer'
 import { mockDocuments, orderedByNameDesc, orderedByNameAsc, orderedByDate } from 'utils/testData/documents'
 const byId = mockDocuments.byId
-
-const initial = {
-  documents: {
-    byId: {},
-    allIds: [],
-    visible: [],
-    checked: []
-  },
-  rowsPerPage: '10',
-  page: 0,
-  allSelected: false,
-  bulkOperationInProgress: false,
-  apiErrorOpen: false,
-  apiErrorInfo: {
-    title: '',
-    text: ''
-  },
-  sortBy: 'uploadedDate',
-  sortDirection: 'desc',
-  getDocumentsInProgress: false,
-  matchedDocs: []
-}
 
 const getState = (other = {}) => ({
   ...initial,
@@ -102,7 +80,7 @@ describe('Document Management reducer', () => {
       expect(updatedState.documents.visible).toEqual(['12345'])
     })
 
-    test('should keep documents.checked property', () => {
+    test('should clear checked documents', () => {
       const action = {
         type: types.GET_DOCUMENTS_SUCCESS,
         payload: [
@@ -123,7 +101,7 @@ describe('Document Management reducer', () => {
 
       const currentState = getState({ documents: { checked: ['09876'] } })
       const updatedState = reducer(currentState, action)
-      expect(updatedState.documents.checked).toEqual(['09876'])
+      expect(updatedState.documents.checked).toEqual([])
     })
 
     test('should handle if state.rowsPerPage === All', () => {
@@ -151,6 +129,15 @@ describe('Document Management reducer', () => {
 
       const updatedState = reducer(currentState, action)
       expect(updatedState.documents.visible.length).toEqual(2)
+    })
+  })
+  
+  describe('GET_DOCUMENTS_FAIL', () => {
+    test('should set pageError', () => {
+      const action = { type: types.GET_DOCUMENTS_FAIL }
+      const currentState = getState()
+      const state = reducer(currentState, action)
+      expect(state.pageError).toEqual('We couldn\'t retrieve the list of documents.')
     })
   })
 

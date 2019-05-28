@@ -54,18 +54,8 @@ exports[`Document Management scene should render correctly 1`] = `
       style={Object {}}
       type="column"
     >
-      <DocList
-        allSelected={false}
-        allowDropdown={false}
-        docCount={0}
-        documents={Array []}
-        onBulkAction={[Function]}
-        onChangePage={[MockFunction]}
-        onChangeRows={[MockFunction]}
-        onSelectAllFiles={[MockFunction]}
-        onSelectOneFile={[MockFunction]}
-        page={0}
-        rowsPerPage="10"
+      <ApiErrorView
+        error=""
       />
     </FlexGrid>
     <WithStyles(Modal)
@@ -121,7 +111,9 @@ exports[`Document Management scene should render correctly 1`] = `
                 "id": "bulkConfirmBtn",
               },
               "type": "button",
-              "value": "Confirm",
+              "value": <React.Fragment>
+                Confirm
+              </React.Fragment>,
             },
           ]
         }

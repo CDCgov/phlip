@@ -184,7 +184,7 @@ const getDocLogic = createLogic({
       }
       done()
     } catch (e) {
-      dispatch({ type: types.GET_DOCUMENTS_FAIL, payload: 'Failed to get documents' })
+      dispatch({ type: types.GET_DOCUMENTS_FAIL, payload: 'We couldn\'t retrieve the documents.' })
       done()
     }
   }
@@ -228,7 +228,7 @@ const bulkUpdateLogic = createLogic({
     } catch (err) {
       dispatch({
         type: types.BULK_UPDATE_FAIL,
-        payload: { error: 'Failed to update documents, please try again.' }
+        payload: { error: 'We couldn\'t update the selected documents.' }
       })
       done()
     }
@@ -254,7 +254,7 @@ const bulkDeleteLogic = createLogic({
       dispatch({ type: types.BULK_DELETE_SUCCESS, payload: deleteResult })
       done()
     } catch (e) {
-      dispatch({ type: types.BULK_DELETE_FAIL, payload: 'Failed to delete documents' })
+      dispatch({ type: types.BULK_DELETE_FAIL, payload: { error: 'We couldn\'t delete the selected documents.' } })
     }
     done()
   }
@@ -280,7 +280,7 @@ const cleanDocProjectLogic = createLogic({
       dispatch({ type: types.CLEAN_PROJECT_LIST_SUCCESS, payload: cleannedDocs })
       done()
     } catch (e) {
-      dispatch({ type: types.CLEAN_PROJECT_LIST_FAIL, payload: 'Failed to remove projectId from documents' })
+      dispatch({ type: types.CLEAN_PROJECT_LIST_FAIL, payload: 'We couldn\'t update the documents.' })
     }
     done()
   }

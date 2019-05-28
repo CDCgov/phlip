@@ -4,7 +4,7 @@ import { arrayToObject } from 'utils/normalize'
 import { sliceTable, sortListOfObjects } from 'utils/commonHelpers'
 import searchReducer, { COMBINED_INITIAL_STATE as SEARCH_INITIAL_STATE } from './components/SearchBox/reducer'
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   documents: {
     byId: {},
     allIds: [],
@@ -23,7 +23,8 @@ const INITIAL_STATE = {
   sortBy: 'uploadedDate',
   sortDirection: 'desc',
   getDocumentsInProgress: false,
-  matchedDocs: []
+  matchedDocs: [],
+  pageError: ''
 }
 
 const mergeName = docObj => ({
@@ -64,10 +65,18 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           byId: obj,
           allIds: Object.keys(obj),
           visible: sortAndSlice(Object.values(obj), 0, state.rowsPerPage, state.sortBy, state.sortDirection),
-          checked: state.documents.checked
+          checked: []
         },
         getDocumentsInProgress: false,
-        matchedDocs: []
+        matchedDocs: [],
+        pageError: ''
+      }
+      
+    case types.GET_DOCUMENTS_FAIL:
+      return {
+        ...state,
+        getDocumentsInProgress: false,
+        pageError: 'We couldn\'t retrieve the list of documents.'
       }
     
     case types.ON_PAGE_CHANGE:
@@ -184,17 +193,6 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         allSelected: false
       }
     
-    case types.BULK_DELETE_FAIL:
-      return {
-        ...state,
-        bulkOperationInProgress: false,
-        apiErrorInfo: {
-          title: 'Bulk delete error',
-          text: 'Failed to delete documents.'
-        },
-        apiErrorOpen: true
-      }
-    
     case types.BULK_UPDATE_REQUEST:
       return {
         ...state,
@@ -217,13 +215,16 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         allSelected: false
       }
     
+    case types.BULK_DELETE_FAIL:
+    case types.CLEAN_PROJECT_LIST_FAIL:
     case types.BULK_UPDATE_FAIL:
       return {
         ...state,
         bulkOperationInProgress: false,
+        cleanProjectOperationInProgress: false,
         apiErrorInfo: {
-          title: 'Bulk update error',
-          text: 'Failed to update documents.'
+          title: '',
+          text: action.payload.error
         },
         apiErrorOpen: true
       }
@@ -245,17 +246,6 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         },
         cleanProjectOperationInProgress: false,
         apiErrorOpen: false
-      }
-    
-    case types.CLEAN_PROJECT_LIST_FAIL:
-      return {
-        ...state,
-        apiErrorInfo: {
-          title: 'Document Update',
-          text: 'Failed to update documents.'
-        },
-        cleanProjectOperationInProgress: false,
-        apiErrorOpen: true
       }
     
     case types.CLOSE_ALERT:

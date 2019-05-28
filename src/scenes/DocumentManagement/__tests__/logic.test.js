@@ -419,7 +419,7 @@ describe('Document Management logic', () => {
             { type: types.GET_DOCUMENTS_REQUEST },
             {
               type: types.GET_DOCUMENTS_FAIL,
-              payload: 'Failed to get documents'
+              payload: 'We couldn\'t retrieve the documents.'
             }
           ])
           done()
