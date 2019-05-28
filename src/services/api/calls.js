@@ -269,11 +269,6 @@ let apiCalls = [
     name:'getBackendData',
     method: 'get',
     path: () => '/appInfo'
-  },
-  {
-    name: 'samsLogout',
-    method: 'get',
-    path: () => '/logout'
   }
 
 ]

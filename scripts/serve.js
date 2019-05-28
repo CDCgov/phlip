@@ -136,15 +136,16 @@ if (IS_SAML_ENABLED) {
     }
   )
 
-  app.get('/logout', function(req, res) {
-    if (!req.user) res.redirect('/login')
-    console.log('initiating logout', req.log, req.user)
-    return passport._strategy('saml').logout(req, function(err, uri) {
-      return res.redirect(uri)
-    })
-  })
-
 }
+
+app.get('/auth/logout', function(req, res) {
+  console.log('sams logout called')
+  if (!req.email) res.redirect('/')
+  console.log('initiating logout', req.log, req.user)
+  return passport._strategy('saml').logout(req, function(err, uri) {
+    return res.redirect(uri)
+  })
+})
 
 app.use(express.static('./dist/'))
 app.use('/', express.static('./dist/index.html'))
