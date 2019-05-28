@@ -60,13 +60,13 @@ export class DocumentMeta extends Component {
   
   componentDidUpdate(prevProps) {
     if (prevProps.documentDeleteInProgress && !this.props.documentDeleteInProgress) {
-      if (this.props.documentDeleteError === false) {
+      if (!this.props.documentDeleteError) {
         this.props.goBack()
       }
     }
     
     if (prevProps.documentUpdateInProgress && !this.props.documentUpdateInProgress) {
-      if (this.props.apiErrorOpen === false) {
+      if (!this.props.apiErrorOpen) {
         this.handleCloseProJurModal()
       }
     }
@@ -182,7 +182,7 @@ export class DocumentMeta extends Component {
       alertOpen: true,
       alertInfo: {
         title: 'Warning',
-        text: `Deleting a document will delete all associate annotations in every project and jurisdiction. Do you want to continue and delete ${this.props.document.name}?`
+        text: `Do you want to delete ${this.props.document.name}? Deleting a document will remove all associated annotations for every project and jurisdiction.`
       }
     })
   }
@@ -467,13 +467,9 @@ export class DocumentMeta extends Component {
                       : 'white',
                     minHeight: 24
                   }}>
-                  <Typography style={{ fontSize: '.8125rem' }}>
-                    {item.name}
-                  </Typography>
+                  <Typography style={{ fontSize: '.8125rem' }}>{item.name}</Typography>
                   {(hoveringOn === 'project' && hoverIndex === index) &&
-                  <IconButton
-                    color="#757575"
-                    onClick={() => this.handleShowDeleteConfirm('project', index)}>
+                  <IconButton color="#757575" onClick={() => this.handleShowDeleteConfirm('project', index)}>
                     delete
                   </IconButton>}
                 </FlexGrid>
@@ -512,13 +508,9 @@ export class DocumentMeta extends Component {
                     : 'white',
                   minHeight: 24
                 }}>
-                <Typography style={{ fontSize: '.8125rem' }}>
-                  {item.name}
-                </Typography>
+                <Typography style={{ fontSize: '.8125rem' }}>{item.name}</Typography>
                 {(hoveringOn === 'jurisdiction' && hoverIndex === index) &&
-                <IconButton
-                  color="#757575"
-                  onClick={() => this.handleShowDeleteConfirm('jurisdiction', index)}>
+                <IconButton color="#757575" onClick={() => this.handleShowDeleteConfirm('jurisdiction', index)}>
                   delete
                 </IconButton>}
               </FlexGrid>))}
@@ -549,7 +541,7 @@ export class DocumentMeta extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
   const document = state.scenes.docView.inEditMode
     ? state.scenes.docView.documentForm
     : state.scenes.docView.document || { jurisdictions: [], projects: [], status: 1, effectiveDate: '' }
@@ -577,6 +569,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({
   actions: {
     ...bindActionCreators(actions, dispatch),
