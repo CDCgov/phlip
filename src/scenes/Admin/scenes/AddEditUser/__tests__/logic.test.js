@@ -150,7 +150,7 @@ describe('Admin - AddEditUser Logic', () => {
       })
     })
   
-    test('should return failure with error: "We failed to update this user" if not self update', done => {
+    test('should return failure with error: "We couldn\'t update this user" if not self update', done => {
       mock.onPut('/users/1').reply(500, { id: 1, firstName: 'new', lastName: 'user' })
     
       const store = setupStore()
@@ -161,12 +161,12 @@ describe('Admin - AddEditUser Logic', () => {
       })
     
       store.whenComplete(() => {
-        expect(store.actions[1].payload).toEqual('We failed to update this user. Please try again later.')
+        expect(store.actions[1].payload).toEqual('We couldn\'t update this user. Please try again later.')
         done()
       })
     })
   
-    test('should return failure with error: "We failed to update your profile. Please try again later." if self update', done => {
+    test('should return failure with error: "We couldn\'t update your profile. Please try again later." if self update', done => {
       mock.onPatch('/users/1').reply(500, { id: 1, firstName: 'new', lastName: 'user' })
     
       const store = setupStore()
@@ -177,7 +177,7 @@ describe('Admin - AddEditUser Logic', () => {
       })
     
       store.whenComplete(() => {
-        expect(store.actions[1].payload).toEqual('We failed to update your profile. Please try again later.')
+        expect(store.actions[1].payload).toEqual('We couldn\'t update your profile. Please try again later.')
         done()
       })
     })
@@ -264,7 +264,7 @@ describe('Admin - AddEditUser Logic', () => {
       })
     })
   
-    test('should return failure with error: "We failed to add a photo for this user" if not self update', done => {
+    test('should return failure with error: "We couldn\'t add a photo for this user" if not self update', done => {
       mock.onPut('/users/1').reply(500, { id: 1, firstName: 'new', lastName: 'user' })
     
       const store = setupStore()
@@ -278,12 +278,12 @@ describe('Admin - AddEditUser Logic', () => {
       })
     
       store.whenComplete(() => {
-        expect(store.actions[1].payload).toEqual('We failed to add a photo for this user. Please try again later.')
+        expect(store.actions[1].payload).toEqual('We couldn\'t add a photo for this user. Please try again later.')
         done()
       })
     })
   
-    test('should return failure with error: "We failed to add your photo." if self update', done => {
+    test('should return failure with error: "We couldn\'t add your photo." if self update', done => {
       mock.onPatch('/users/1').reply(500, { id: 1, firstName: 'new', lastName: 'user' })
     
       const store = setupStore()
@@ -297,7 +297,7 @@ describe('Admin - AddEditUser Logic', () => {
       })
     
       store.whenComplete(() => {
-        expect(store.actions[1].payload).toEqual('We failed to add your photo. Please try again later.')
+        expect(store.actions[1].payload).toEqual('We couldn\'t add your photo. Please try again later.')
         done()
       })
     })
@@ -380,7 +380,7 @@ describe('Admin - AddEditUser Logic', () => {
       })
     })
     
-    test('should return error: "We failed to remove the photo for this user" if not self update', done => {
+    test('should return error: "We couldn\'t remove the photo for this user" if not self update', done => {
       mock.onPut('/users/1').reply(500, { id: 1, firstName: 'new', lastName: 'user' })
   
       const store = setupStore()
@@ -393,12 +393,12 @@ describe('Admin - AddEditUser Logic', () => {
       })
   
       store.whenComplete(() => {
-        expect(store.actions[1].payload).toEqual('We failed to remove the photo for this user. Please try again later.')
+        expect(store.actions[1].payload).toEqual('We couldn\'t remove the photo for this user. Please try again later.')
         done()
       })
     })
   
-    test('should return error: "We failed to remove your photo" if self update', done => {
+    test('should return error: "We couldn\'t remove your photo" if self update', done => {
       mock.onPatch('/users/1').reply(500, { id: 1, firstName: 'new', lastName: 'user' })
     
       const store = setupStore()
@@ -411,7 +411,7 @@ describe('Admin - AddEditUser Logic', () => {
       })
     
       store.whenComplete(() => {
-        expect(store.actions[1].payload).toEqual('We failed to remove your photo. Please try again later.')
+        expect(store.actions[1].payload).toEqual('We couldn\'t remove your photo. Please try again later.')
         done()
       })
     })
