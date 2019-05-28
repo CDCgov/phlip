@@ -135,6 +135,15 @@ if (IS_SAML_ENABLED) {
       res.redirect(`/login/verify-user?token=${token}`)
     }
   )
+
+  app.get('/logout', function(req, res) {
+    if (!req.user) res.redirect('/login')
+    console.log('initiating logout', req.log, req.user)
+    return passport._strategy('saml').logout(req, function(err, uri) {
+      return res.redirect(uri)
+    })
+  })
+
 }
 
 app.use(express.static('./dist/'))

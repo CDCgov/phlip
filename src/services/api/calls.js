@@ -273,7 +273,7 @@ let apiCalls = [
   {
     name: 'samsLogout',
     method: 'get',
-    path: () => APP_SAML_LOGOUT_URL
+    path: () => '/logout'
   }
 
 ]
