@@ -109,7 +109,7 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
       hideClose={false}
       onCloseAlert={[Function]}
       open={false}
-      title={null}
+      title="Warning"
     >
       <WithStyles(Typography)
         style={
@@ -117,9 +117,10 @@ exports[`Home scene - AddEditJurisdictions scene should render correctly 1`] = `
             "whiteSpace": "pre-wrap",
           }
         }
+        variant="body1"
       >
         Are you sure you want to delete 
-        ? All coded questions related to this jurisdiction will be deleted.
+        ? All coded and validated questions related to this jurisdiction will be deleted.
       </WithStyles(Typography)>
     </Alert>
     <ApiErrorAlert

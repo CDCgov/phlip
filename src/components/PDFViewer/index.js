@@ -482,8 +482,7 @@ export class PDFViewer extends Component {
           title="Are you trying to annotate?"
           closeButton={{ value: 'Dismiss' }}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            If you are trying to annotate, you need to enable annotation mode for a selected answer choice. You can enable
-            annotation mode by clicking the 'Annotate' button next to an answer choice.
+            You need to enable annotation mode to annotate for a selected answer. Click the 'Annotate' button next to an answer choice to enable annotation mode.
           </Typography>
           
           <CheckboxLabel

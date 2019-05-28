@@ -55,7 +55,7 @@ exports[`Protocol scene should render correctly 1`] = `
         >
           lock
         </WithTheme(Icon)>
-        The Protocol is unavailable to edit.
+        The Protocol is checked out.
       </React.Fragment>
     }
   >

@@ -482,7 +482,7 @@ describe('CodingValidation logic', () => {
         store.whenComplete(() => {
           expect(store.actions[1].payload.errors.codedValQuestions)
             .toEqual(
-              'We couldn\'t get your answered questions for this project and jurisdiction, so you won\'t be able to answer questions.'
+              'We couldn\'t get your answered questions for this project and jurisdiction, so you are not able to answer questions.'
             )
           done()
         })
@@ -686,7 +686,7 @@ describe('CodingValidation logic', () => {
         store.whenComplete(() => {
           expect(store.actions[1].payload.errors.codedValQuestions)
             .toEqual(
-              'We couldn\'t get your answered questions for this project and jurisdiction, so you won\'t be able to answer questions.'
+              'We couldn\'t get your answered questions for this project and jurisdiction, so you are not able to answer questions.'
             )
           done()
         })

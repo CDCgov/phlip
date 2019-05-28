@@ -237,7 +237,7 @@ export class CodingValidation extends Component {
     this.props.actions.setAlert({
       open: true,
       title: 'Close Annotation Mode',
-      text: 'You are currently in annotation mode. To make changes to your answer or to change questions or jurisdictions, please exit annotation mode by clicking the \'Done\' button.',
+      text: 'To make changes to your answer or to change questions or jurisdictions, please exit annotation mode by clicking the \'Done\' button.',
       type: 'disableAnnoMode'
     })
   }
@@ -465,17 +465,17 @@ export class CodingValidation extends Component {
       } else if (!noScheme && noJurisdictions) {
         startedText = 'This project doesn\'t have jurisdictions.'
       } else {
-        startedText = 'This project doesn\'t have a coding scheme or jurisdictions.'
+        startedText = 'This project does not have a coding scheme or jurisdictions.'
       }
     } else {
       if (user.role === 'Coder') {
         startedText = 'The coordinator for this project has not created a coding scheme or added jurisdictions.'
       } else if (noScheme && !noJurisdictions) {
-        startedText = 'You must add questions to the project coding scheme before coding.'
+        startedText = 'You must add questions to the coding scheme before coding.'
       } else if (!noScheme && noJurisdictions) {
         startedText = 'You must add jurisdictions to the project before coding.'
       } else {
-        startedText = 'You must add jurisdictions and questions to the project coding scheme before coding.'
+        startedText = 'You must add jurisdictions and questions to the coding scheme before coding.'
       }
     }
     this.setState({

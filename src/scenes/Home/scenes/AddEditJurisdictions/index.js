@@ -231,9 +231,9 @@ export class AddEditJurisdictions extends Component {
         />
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
-          <Alert actions={alertActions} onCloseAlert={this.cancelDelete} open={confirmDeleteAlertOpen}>
-            <Typography style={{ whiteSpace: 'pre-wrap' }}>
-              Are you sure you want to delete {jurisdictionToDelete.name}? All coded questions related to this jurisdiction will be deleted.
+          <Alert actions={alertActions} onCloseAlert={this.cancelDelete} title="Warning" open={confirmDeleteAlertOpen}>
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+              Are you sure you want to delete {jurisdictionToDelete.name}? All coded and validated questions related to this jurisdiction will be deleted.
             </Typography>
           </Alert>
           <ApiErrorAlert

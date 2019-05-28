@@ -94,10 +94,10 @@ export class QuestionCard extends Component {
       if (question.questionType === questionTypes.CATEGORY) {
         if (userAnswers.answers.hasOwnProperty(id)) {
           open = true
-          text = 'Deselecting a category will remove any answers associated with this category. Do you want to continue?'
+          text = 'Deselecting a category will remove answers, pincites and annotations associated with this category. Do you want to continue?'
         }
       } else {
-        text = 'Changing your answer will remove any pincites and annotations associated with this answer. Do you want to continue?'
+        text = 'Changing your answer will remove the pincites and annotations associated with this answer. Do you want to continue?'
         
         if (question.questionType !== questionTypes.TEXT_FIELD) {
           if (Object.keys(userAnswers.answers).length > 0) {
@@ -149,7 +149,7 @@ export class QuestionCard extends Component {
     this.props.actions.setAlert({
       open: true,
       title: 'Close Annotation Mode',
-      text: 'You are currently in annotation mode. To make changes to your answer or to change questions, please exit annotation mode by clicking the \'Done\' button.',
+      text: 'To make changes to your answer or to change questions, please exit annotation mode by clicking the \'Done\' button.',
       type: 'disableAnnoMode'
     })
   }

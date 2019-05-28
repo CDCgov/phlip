@@ -1617,8 +1617,8 @@ describe('CodingValidation reducer', () => {
     const currentState = getState()
     const state = reducer(currentState, action)
 
-    test('should set state.saveFlagErrorContent to "We couldn\'t save the red flag for this question."', () => {
-      expect(state.saveFlagErrorContent).toEqual('We couldn\'t save the red flag for this question.')
+    test('should set state.saveFlagErrorContent to "We couldn\'t save the flag for this question."', () => {
+      expect(state.saveFlagErrorContent).toEqual('We couldn\'t save the flag for this question.')
     })
 
     test('should set state.saveFailed to true', () => {

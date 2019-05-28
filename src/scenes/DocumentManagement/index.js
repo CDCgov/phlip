@@ -144,18 +144,18 @@ export class DocumentManagement extends Component {
       switch (actionType) {
         case 'deleteDoc' :
           this.setState({
-            modalTitle: 'Bulk Delete', showAddJurisdiction: undefined
+            modalTitle: 'Delete', showAddJurisdiction: undefined
           })
           break
         case 'assignProject':
-          this.setState({ modalTitle: 'Bulk Assign Project', showAddJurisdiction: false })
+          this.setState({ modalTitle: 'Assign Project', showAddJurisdiction: false })
           break
         case 'assignJurisdiction':
-          this.setState({ modalTitle: 'Bulk Assign Jurisdiction', showAddJurisdiction: true })
+          this.setState({ modalTitle: 'Assign Jurisdiction', showAddJurisdiction: true })
           break
         case 'approveDoc':
           this.setState({
-            modalTitle: 'Bulk Approval', showAddJurisdiction: undefined
+            modalTitle: 'Approve', showAddJurisdiction: undefined
           })
           break
       }
