@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { withTheme } from '@material-ui/core/styles'
 import UserList from './components/UserList/index'
 import { FlexGrid, PageHeader, withTracking, CardError } from 'components'
 import actions from './actions'
@@ -93,4 +92,4 @@ const mapStateToProps = (state) => ({
 /* istanbul ignore next */
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(withTracking(Admin, 'User Management')))
+export default connect(mapStateToProps, mapDispatchToProps)(withTracking(Admin, 'User Management'))
