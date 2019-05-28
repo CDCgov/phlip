@@ -75,7 +75,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
           open: true,
           text: `The file name, project and jurisdiction properties for one or more of the documents selected for
         upload match a pre-existing document in the system. These documents have been indicated in the file list. You
-        can choose to remove them or click the 'Upload' button again to proceed with saving them.`,
+        can choose to remove the files or click the 'Upload' button again to proceed with saving them.`,
           title: 'Duplicates Found',
           type: 'basic'
         },
@@ -101,7 +101,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
     case types.EXTRACT_INFO_FAIL:
       return {
         ...state,
-        requestError: 'We failed to extract the metadata from Excel sheet. Please try again.',
+        requestError: 'We couldn\'t extract the metadata from Excel sheet. Please try again later.',
         infoRequestInProgress: false
       }
     

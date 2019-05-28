@@ -374,7 +374,7 @@ const uploadRequestLogic = createLogic({
     } catch (err) {
       dispatch({
         type: types.UPLOAD_DOCUMENTS_FAIL,
-        payload: { error: 'Failed to upload documents, please try again.' }
+        payload: { error: 'We couldn\'t upload the documents. Please try again later.' }
       })
       done()
     }
@@ -451,9 +451,9 @@ const verifyFileContentLogic = createLogic({
           type: types.INVALID_FILES_FOUND,
           text: invalidSize
             ? invalidType
-              ? 'The files listed below do not have a valid file type and / or they exceed the maximum size for a file. The valid files types are .pdf, .doc, .docx and .rtf. The maximum size for a file is 16 MB. These files will be removed from the list.'
+              ? 'The files listed below do not have a valid file type and / or exceed the maximum file size. These files will be removed from the list. Valid files types are .pdf, .doc, .docx, .odt and .rtf. Maximum file size is 16 MB.'
               : 'The files listed below exceed the maximum allowed size of 16 MB. These files will be removed from the list.'
-            : 'The files listed below do not have a valid file type. The valid file types are .pdf, .doc, .docx and .rtf. These files will be removed from the list.',
+            : 'The files listed below do not have a valid file type. These files will be removed from the list. Valid file types are .pdf, .doc, .docx, .odt and .rtf.',
           invalidFiles,
           title: invalidSize
             ? invalidType

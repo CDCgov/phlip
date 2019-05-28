@@ -114,7 +114,7 @@ describe('Document Management - Upload reducer tests', () => {
       expect(updatedState.alert.text)
         .toEqual(`The file name, project and jurisdiction properties for one or more of the documents selected for
         upload match a pre-existing document in the system. These documents have been indicated in the file list. You
-        can choose to remove them or click the 'Upload' button again to proceed with saving them.`)
+        can choose to remove the files or click the 'Upload' button again to proceed with saving them.`)
       expect(updatedState.alert.title).toEqual('Duplicates Found')
     })
   })

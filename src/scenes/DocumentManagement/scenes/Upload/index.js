@@ -80,7 +80,8 @@ export class Upload extends Component {
     
     this.state = {
       alertActions: [],
-      showLoadingAlert: false
+      showLoadingAlert: false,
+      closeButton: {}
     }
   }
   
@@ -163,7 +164,7 @@ export class Upload extends Component {
    */
   closeAlert = () => {
     this.props.actions.closeAlert()
-    this.setState({ alertActions: [] })
+    this.setState({ alertActions: [], closeButton: {} })
   }
   
   /**
@@ -180,8 +181,9 @@ export class Upload extends Component {
             otherProps: { 'aria-label': 'Continue', 'id': 'uploadCloseContBtn' },
             onClick: this.goBack
           }
-        ]
-      }, () => this.props.actions.openAlert('Your unsaved changes will be lost.', 'Warning', 'basic'))
+        ],
+        closeButton: { value: 'Cancel' }
+      }, () => this.props.actions.openAlert('Your unsaved changes will be lost. Do you want to continue?', 'Warning', 'basic'))
     } else {
       this.goBack()
     }
@@ -215,7 +217,7 @@ export class Upload extends Component {
   addFilesToList = e => {
     if (e.target.files.length + this.props.selectedDocs.length > this.props.maxFileCount) {
       this.props.actions.openAlert(
-        `The number of files selected for upload has exceeded the limit of ${this.props.maxFileCount} files per upload. Please consider uploading files in smaller batches.`,
+        `The number of files selected for upload has exceeds the limit of ${this.props.maxFileCount} files per upload. Please consider uploading files in smaller batches.`,
         'Maximum Number of Files Exceeded',
         'basic'
       )
@@ -343,14 +345,11 @@ export class Upload extends Component {
    * @param text
    */
   getButtonText = text => {
-    return this.props.uploading
-      ? (
-        <>
-          <span style={{ marginRight: 5 }}>{text}</span>
-          <CircularLoader thickness={5} style={{ height: 15, width: 15 }} />
-        </>
-      )
-      : <>{text}</>
+    return (
+      <>
+        {text}{this.props.uploading && <CircularLoader thickness={5} style={{ height: 15, width: 15, marginLeft: 5 }} />}
+      </>
+    )
   }
   
   render() {
@@ -361,9 +360,9 @@ export class Upload extends Component {
       infoSheetSelected, infoSheet
     } = this.props
     
-    const { alertActions, showLoadingAlert } = this.state
+    const { alertActions, showLoadingAlert, closeButton } = this.state
     
-    const closeButton = {
+    const modalCloseButton = {
       value: 'Close',
       type: 'button',
       otherProps: { 'aria-label': 'Close modal', 'id': 'uploadCloseBtn' },
@@ -372,7 +371,7 @@ export class Upload extends Component {
     
     const modalActions = selectedDocs.length > 0
       ? [
-        closeButton,
+        modalCloseButton,
         {
           value: this.getButtonText('Upload'),
           type: 'button',
@@ -381,7 +380,7 @@ export class Upload extends Component {
           disabled: uploading
         }
       ]
-      : [closeButton]
+      : [modalCloseButton]
     
     return (
       <Modal onClose={this.onCloseModal} open maxWidth="lg" hideOverflow>
@@ -389,13 +388,11 @@ export class Upload extends Component {
         <Alert
           actions={alertActions}
           onCloseAlert={this.closeAlert}
-          closeButton={{ value: 'Dismiss' }}
+          closeButton={{ value: 'Dismiss', ...closeButton }}
           open={alert.open}
           title={alert.title}
           id="uploadAlert">
-          <Typography variant="body1">
-            {alert.text}
-          </Typography>
+          <Typography variant="body1">{alert.text}</Typography>
           {alert.type !== 'basic' &&
           <FlexGrid type="row" style={{ overflow: 'auto', paddingTop: 20 }}>
             {invalidFiles.map((item, index) => {
@@ -429,7 +426,7 @@ export class Upload extends Component {
           <FlexGrid container align="center">
             <CircularLoader type="indeterminate" />
             <span style={{ paddingTop: 20 }}>
-              {uploading ? 'Uploading documents' : 'Processing document'}... This could take a couple minutes...
+              {uploading ? 'Uploading documents' : 'Processing document'}... This could take a couple of minutes...
             </span>
           </FlexGrid>
         </Alert>}

@@ -160,7 +160,7 @@ class FileUpload extends Component {
           onCloseAlert={this.onCancelSelectExcel}
           title="Warning">
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            Selecting a new Excel file will overwrite existing information. Do you want to continue?
+            Selecting a new Excel file will erase existing information. Do you want to continue?
           </Typography>
         </Alert>
         </>

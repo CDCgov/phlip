@@ -225,7 +225,7 @@ describe('Document Management - Upload logic', () => {
           },
           {
             type: types.UPLOAD_DOCUMENTS_FAIL,
-            payload: { error: 'Failed to upload documents, please try again.' }
+            payload: { error: 'We couldn\'t upload the documents. Please try again later.' }
           }
         ])
         done()
