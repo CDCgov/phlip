@@ -15,6 +15,7 @@ import { withTheme } from '@material-ui/core/styles'
 import Logo from 'components/Logo'
 import DevLoginForm from './components/DevLoginForm'
 import ProdLoginForm from './components/ProdLoginForm'
+import moment from 'moment'
 
 /**
  * Login screen component. Renders the login form.
@@ -48,14 +49,24 @@ export class Login extends Component {
     /**
      * Currently logged in user, if any
      */
-    currentUser: PropTypes.object
+    currentUser: PropTypes.object,
+    /**
+     *  current version info
+    */
+    appVersion : PropTypes.string,
+    backendInfo: PropTypes.object
   }
 
   constructor(props, context) {
     super(props, context)
   }
 
+  UNSAFE_componentWillMount() {
+
+  }
+
   componentDidMount() {
+    this.props.actions.getBackendInfoRequest()
     document.title = 'PHLIP - Login'
     const match = matchPath(this.props.location.pathname, { path: '/login/verify-user' })
     if (match) {
@@ -99,8 +110,9 @@ export class Login extends Component {
       display: 'flex',
       flexDirection: 'column'
     }
-    const LoginView = APP_IS_SAML_ENABLED === '1' ? ProdLoginForm : DevLoginForm
 
+    const LoginView = APP_IS_SAML_ENABLED === '1' ? ProdLoginForm : DevLoginForm
+    const appVersion = APP_PIPELINE + ' - Updated: ' + moment.unix(APP_BUILT_TIMESTAMP).format('MM/DD/YYYY  HH:mm:ss ')
     return (
       <Container column flex alignItems="center" justify="center" style={{ backgroundColor: '#f5f5f5' }}>
         <Paper style={formStyles}>
@@ -130,6 +142,15 @@ export class Login extends Component {
             style={{ height: 55 }}
             alt="Center for Disease Control and Health and Human Services Logo"
           />
+          <Typography variant="caption" style={{ color: 'black' }}>
+              Front-end Built Version: {appVersion}
+          </Typography>
+          <Typography variant="caption" style={{ color: 'black' }}>
+              Back-end: Built Version: {this.props.backendInfo.pipelineId.trim() || ''} - Updated: {this.props.backendInfo.builtTime ||''}
+          </Typography>
+          <Typography variant="caption" style={{ color: 'black' }}>
+              Backend Database: {this.props.backendInfo.databaseName || ''}
+          </Typography>
         </Row>
       </Container>
     )
@@ -139,7 +160,8 @@ export class Login extends Component {
 const mapStateToProps = state => ({
   user: state.data.user.currentUser || undefined,
   session: state.scenes.login.session || false,
-  formMessage: state.scenes.login.formMessage || null
+  formMessage: state.scenes.login.formMessage || null,
+  backendInfo : state.scenes.login.backendInfo || { pipelineId:'',builtTime:'', databaseName:'' }
 })
 
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators({ ...actions, ...userActions }, dispatch) })

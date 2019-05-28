@@ -264,6 +264,11 @@ let apiCalls = [
     name: 'cleanAnnotations',
     method: 'delete',
     path: ({ docId }) => `/cleanup/${docId}/annotations`
+  },
+  {
+    name:'getBackendData',
+    method: 'get',
+    path: () => '/appInfo'
   }
 
 ]

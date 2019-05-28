@@ -8,3 +8,6 @@ export const loginUserSuccess = payload => ({ type: types.LOGIN_USER_SUCCESS, pa
 
 /** Request to log in user with PIV auth */
 export const checkPivUserRequest = tokenObj => ({ type: types.CHECK_PIV_USER_REQUEST, tokenObj })
+
+export const getBackendInfoRequest = () => ({ type: types.GET_BACKEND_INFO_REQUEST })
+export const getBackendInfoSuccess = () => ({ type: types.GET_BACKEND_INFO_SUCCESS })

@@ -93,6 +93,24 @@ const getBookmarks = async (api, userId) => {
   return bookmarks
 }
 
+export const getBackendInfoLogic = createLogic({
+  type: types.GET_BACKEND_INFO_REQUEST,
+  async process({ action, api }, dispatch, done) {
+    try {
+      const backendInfoData = await api.getBackendData({}, {}, {})
+      console.log('i was called: ', backendInfoData)
+      dispatch({
+        type: types.GET_BACKEND_INFO_SUCCESS, payload: backendInfoData
+      })
+      done()
+    } catch (err) {
+      console.log('err: ',err)
+      dispatch({ type: types.GET_BACKEND_INFO_FAIL })
+    }
+    done()
+  }
+})
+
 let loginLogic = [checkPivUserLogic]
 
 /**
@@ -102,4 +120,4 @@ if (!process.env.API_HOST) {
   loginLogic = [...loginLogic, basicLoginLogic]
 }
 
-export default loginLogic
+export default [...loginLogic,getBackendInfoLogic]
