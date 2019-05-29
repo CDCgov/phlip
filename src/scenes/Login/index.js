@@ -111,7 +111,8 @@ export class Login extends Component {
     }
     
     const LoginView = APP_IS_SAML_ENABLED === '1' ? ProdLoginForm : DevLoginForm
-    const appVersion = APP_PIPELINE + ' - (' + moment.unix(APP_BUILT_TIMESTAMP).format('MM/DD/YYYY  HH:mm:ss ')+')'
+    const appVersion = `${APP_PIPELINE} (${moment.unix(APP_BUILT_TIMESTAMP).format('MM/DD/YYYY  HH:mm:ss')})`
+    const beVersion = `${this.props.backendInfo.pipelineId.trim() || ''} - (${this.props.backendInfo.builtTime || ''})`
     
     return (
       <Container column flex alignItems="center" justify="center" style={{ backgroundColor: '#f5f5f5' }}>
@@ -146,15 +147,17 @@ export class Login extends Component {
             style={{ height: 55 }}
             alt="Center for Disease Control and Health and Human Services Logo"
           />
-          <Typography variant="caption" style={{ color: 'black' }}>
-            FE Built: {appVersion}
-          </Typography>
-          <Typography variant="caption" style={{ color: 'black' }}>
-            BE Built: {this.props.backendInfo.pipelineId.trim() || ''} - ({this.props.backendInfo.builtTime || ''})
-          </Typography>
-          <Typography variant="caption" style={{ color: 'black' }}>
-            {this.props.backendInfo.databaseName || ''}
-          </Typography>
+          <div style={{ paddingTop: 10 }}>
+            <Typography variant="caption" style={{ color: 'black' }}>
+              FE Build: {appVersion}
+            </Typography>
+            <Typography variant="caption" style={{ color: 'black' }}>
+              BE Build: {beVersion}
+            </Typography>
+            {/*<Typography variant="caption" style={{ color: 'black' }}>
+             {this.props.backendInfo.databaseName || ''}
+             </Typography>*/}
+          </div>
         </Row>
       </Container>
     )
