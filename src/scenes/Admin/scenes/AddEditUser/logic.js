@@ -11,7 +11,7 @@ export const addUserLogic = createLogic({
       const user = await api.addUser(action.user, {}, {})
       dispatch({ type: types.ADD_USER_SUCCESS, payload: user })
     } catch (err) {
-      dispatch({ type: types.ADD_USER_FAIL, payload: 'We failed to add this user.' })
+      dispatch({ type: types.ADD_USER_FAIL, payload: 'We couldn\'t add this user. Please try again later.' })
     }
     done()
   }
@@ -45,8 +45,8 @@ export const updateUserLogic = createLogic({
         dispatch({
           type: types.UPDATE_USER_FAIL,
           payload: action.selfUpdate
-            ? 'We failed to update your profile.'
-            : 'We failed to update this user.'
+            ? 'We couldn\'t update your profile. Please try again later.'
+            : 'We couldn\'t update this user. Please try again later.'
         })
       }
     }
@@ -73,8 +73,8 @@ export const patchUserImageLogic = createLogic({
       dispatch({
         type: types.ADD_USER_IMAGE_FAIL,
         payload: action.selfUpdate
-          ? 'We failed to add your photo.'
-          : 'We failed to add a photo for this user.'
+          ? 'We couldn\'t add your photo. Please try again later.'
+          : 'We couldn\'t add a photo for this user. Please try again later.'
       })
     }
     done()
@@ -101,8 +101,8 @@ export const deleteUserImageLogic = createLogic({
       dispatch({
         type: types.DELETE_USER_IMAGE_FAIL,
         payload: action.selfUpdate
-          ? 'We failed to remove your photo.'
-          : 'We failed to remove the photo for this user.'
+          ? 'We couldn\'t remove your photo. Please try again later.'
+          : 'We couldn\'t remove the photo for this user. Please try again later.'
       })
     }
     done()

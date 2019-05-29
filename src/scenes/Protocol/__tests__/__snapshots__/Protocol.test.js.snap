@@ -17,41 +17,31 @@ exports[`Protocol scene should render correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
-          "preferred": true,
           "type": "button",
-          "value": "Cancel",
-        },
-        Object {
-          "onClick": [Function],
-          "type": "button",
-          "value": "Save",
+          "value": "Continue",
         },
       ]
     }
+    closeButton={Object {}}
+    hideClose={false}
+    onCloseAlert={[Function]}
     open={false}
-    title={null}
+    title=""
   >
     <WithStyles(Typography)
       variant="body1"
     />
   </Alert>
   <Alert
-    actions={
-      Array [
-        Object {
-          "onClick": [Function],
-          "preferred": true,
-          "type": "button",
-          "value": "Dismiss",
-        },
-        Object {
-          "onClick": [Function],
-          "type": "button",
-          "value": "Release lock",
-        },
-      ]
+    actions={Array []}
+    closeButton={
+      Object {
+        "value": "Dismiss",
+      }
     }
-    open={true}
+    hideClose={false}
+    onCloseAlert={[Function]}
+    open={false}
     title={
       <React.Fragment>
         <WithTheme(Icon)
@@ -65,7 +55,7 @@ exports[`Protocol scene should render correctly 1`] = `
         >
           lock
         </WithTheme(Icon)>
-        The Protocol is unavailable to edit.
+        The Protocol is checked out.
       </React.Fragment>
     }
   >
@@ -98,38 +88,12 @@ exports[`Protocol scene should render correctly 1`] = `
     projectName="Test Project"
     protocolButton={false}
   />
-  <Alert
-    actions={
-      Array [
-        Object {
-          "onClick": [Function],
-          "type": "button",
-          "value": "Dismiss",
-        },
-      ]
-    }
+  <ApiErrorAlert
+    actions={Array []}
+    content=""
+    onCloseAlert={[Function]}
     open={false}
-    title={
-      <React.Fragment>
-        <WithTheme(Icon)
-          color="red"
-          size={30}
-          style={
-            Object {
-              "paddingRight": 10,
-            }
-          }
-        >
-          sentiment_very_dissatisfied
-        </WithTheme(Icon)>
-        Uh-oh! Something went wrong.
-      </React.Fragment>
-    }
-  >
-    <WithStyles(Typography)
-      variant="body1"
-    />
-  </Alert>
+  />
   <FlexGrid
     align="stretch"
     circular={false}

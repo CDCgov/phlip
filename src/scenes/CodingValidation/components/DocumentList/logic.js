@@ -31,39 +31,48 @@ const showCoderAnnotations = createLogic({
   type: types.TOGGLE_CODER_ANNOTATIONS,
   transform({ getState, action }, next) {
     const codingState = getState().scenes.codingValidation.coding
-    let coderQuestion = {}, valQuestion = {}
-
+    const isValidation = codingState.page === 'validation'
+    const user = getState().data.user.currentUser
+    let coderQuestion = {}, userQuestion = {}
+    
     if (codingState.question.isCategoryQuestion) {
-      coderQuestion = codingState.mergedUserQuestions[action.questionId][codingState.selectedCategoryId]
-      valQuestion = codingState.userAnswers[action.questionId][codingState.selectedCategoryId]
+      coderQuestion = isValidation
+        ? codingState.mergedUserQuestions[action.questionId][codingState.selectedCategoryId]
+        : {}
+      userQuestion = codingState.userAnswers[action.questionId][codingState.selectedCategoryId]
     } else {
-      coderQuestion = codingState.mergedUserQuestions[action.questionId]
-      valQuestion = codingState.userAnswers[action.questionId]
+      coderQuestion = isValidation
+        ? codingState.mergedUserQuestions[action.questionId]
+        : {}
+      userQuestion = codingState.userAnswers[action.questionId]
     }
-
-    const validator = valQuestion.answers.hasOwnProperty(action.answerId) ?
-      valQuestion.answers[action.answerId].annotations.map(anno => {
+    
+    const userAnnos = userQuestion.answers.hasOwnProperty(action.answerId) ?
+      userQuestion.answers[action.answerId].annotations.map(anno => {
         return {
           ...anno,
-          userId: valQuestion.validatedBy.userId || getState().scenes.data.user.currentUser.id
+          userId: isValidation ? (userQuestion.validatedBy.userId || user.id) : user.id
         }
       }) : []
-
+    
     let coderAnnotations = []
-    coderQuestion.answers.forEach(answer => {
-      if (answer.schemeAnswerId === action.answerId && (action.userId === 'All' ? true : answer.userId === action.userId)) {
-        answer.annotations.forEach(anno => {
-          coderAnnotations.push({ ...anno, userId: answer.userId })
-        })
-      }
-    })
-
+    if (codingState.page === 'validation') {
+      coderQuestion.answers.forEach(answer => {
+        if (answer.schemeAnswerId === action.answerId &&
+          (action.userId === 'All' ? true : answer.userId === action.userId)) {
+          answer.annotations.forEach(anno => {
+            coderAnnotations.push({ ...anno, userId: answer.userId })
+          })
+        }
+      })
+    }
+    
     next({
       ...action,
       annotations: action.userId === 'All'
-        ? [...coderAnnotations, ...validator]
-        : action.isValidatorSelected
-          ? validator
+        ? [...coderAnnotations, ...userAnnos]
+        : action.isUserAnswerSelected
+          ? userAnnos
           : coderAnnotations
     })
   }

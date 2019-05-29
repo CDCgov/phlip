@@ -45,12 +45,12 @@ const props = {
 const annoModeAlert = {
   open: true,
   title: 'Close Annotation Mode',
-  text: 'You are currently in annotation mode. To make changes to your answer or to change questions, please exit annotation mode by clicking the \'Done\' button.',
+  text: 'To make changes to your answer or to change questions, please exit annotation mode by clicking the \'Done\' button.',
   type: 'disableAnnoMode'
 }
 
 const categoryAlert = {
-  text: 'Deselecting a category will remove any answers associated with this category. Do you want to continue?',
+  text: 'Deselecting a category will remove answers, pincites and annotations associated with this category. Do you want to continue?',
   title: 'Warning',
   type: 'changeAnswer',
   data: { id: 2, value: 3 },
@@ -59,13 +59,13 @@ const categoryAlert = {
 
 const changeAnswerAlert = {
   ...categoryAlert,
-  text: 'Changing your answer will remove any pincites and annotations associated with this answer. Do you want to continue?'
+  text: 'Changing your answer will remove the pincites and annotations associated with this answer. Do you want to continue?'
 }
 
 const clearAlert = {
   ...categoryAlert,
   type: 'clearAnswer',
-  text: 'Are you sure you want to clear your answer?',
+  text: 'Clearing your answer will remove the selected answer choice, pincites and annotations associated with this answer. Do you want to continue?',
   data: {}
 }
 
@@ -181,7 +181,7 @@ describe('QuestionCard component', () => {
           }}
           alert={categoryAlert}
         />)
-        wrapper.find('Alert').at(0).prop('actions')[0].onClick()
+        wrapper.find('Alert').at(0).prop('onCloseAlert')()
         expect(spy).toHaveBeenCalled()
       })
       
@@ -198,7 +198,7 @@ describe('QuestionCard component', () => {
           }}
           alert={categoryAlert}
         />)
-        wrapper.find('Alert').at(0).prop('actions')[1].onClick()
+        wrapper.find('Alert').at(0).prop('actions')[0].onClick()
         expect(spy).toHaveBeenCalled()
       })
     })
@@ -405,7 +405,7 @@ describe('QuestionCard component', () => {
         }}
         alert={clearAlert}
       />)
-      wrapper.find('Alert').at(0).prop('actions')[0].onClick()
+      wrapper.find('Alert').at(0).prop('onCloseAlert')()
       expect(spy).toHaveBeenCalled()
     })
   
@@ -421,7 +421,7 @@ describe('QuestionCard component', () => {
         }}
         alert={clearAlert}
       />)
-      wrapper.find('Alert').at(0).prop('actions')[1].onClick()
+      wrapper.find('Alert').at(0).prop('actions')[0].onClick()
       expect(spy).toHaveBeenCalled()
     })
   })

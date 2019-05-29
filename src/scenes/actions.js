@@ -12,7 +12,10 @@ export const types = {
   CLEAR_PDF_FILE: 'CLEAR_PDF_FILE',
   REFRESH_JWT: 'REFRESH_JWT',
   CANCEL_REFRESH_JWT: 'CANCEL_REFRESH_JWT',
-  SET_PREVIOUS_LOCATION: 'SET_PREVIOUS_LOCATION'
+  SET_PREVIOUS_LOCATION: 'SET_PREVIOUS_LOCATION',
+  GET_BACKEND_INFO_REQUEST : 'GET_BACKEND_INFO_REQUEST',
+  GET_BACKEND_INFO_FAIL : 'GET_BACKEND_INFO_FAIL',
+  GET_BACKEND_INFO_SUCCESS : 'GET_BACKEND_INFO_SUCCESS'
 }
 
 export default {
@@ -25,5 +28,6 @@ export default {
   clearPdfFile: makeActionCreator(types.CLEAR_PDF_FILE),
   startRefreshJwt: makeActionCreator(types.REFRESH_JWT),
   cancelRefreshToken: makeActionCreator(types.CANCEL_REFRESH_JWT),
-  setPreviousLocation: makeActionCreator(types.SET_PREVIOUS_LOCATION, 'location')
+  setPreviousLocation: makeActionCreator(types.SET_PREVIOUS_LOCATION, 'location'),
+  getBackendInfo: makeActionCreator(types.GET_BACKEND_INFO_REQUEST)
 }

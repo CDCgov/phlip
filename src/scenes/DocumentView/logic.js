@@ -21,7 +21,7 @@ const getDocumentContentsLogic = createLogic({
         type: action.type === types.GET_DOCUMENT_CONTENTS_REQUEST
           ? types.GET_DOCUMENT_CONTENTS_FAIL
           : codingTypes.GET_DOC_CONTENTS_FAIL,
-        payload: 'Failed to get doc contents'
+        payload: 'We couldn\'t retrieve the contents for this document.'
       })
     }
     done()
@@ -33,7 +33,7 @@ const updateDocLogic = createLogic({
   async process({ docApi, action, getState }, dispatch, done) {
     let md = {}
     const selectedDoc = getState().scenes.docView.documentForm
-
+    
     md.status = selectedDoc.status
     md.effectiveDate = selectedDoc.effectiveDate !== undefined
       ? selectedDoc.effectiveDate
@@ -44,21 +44,16 @@ const updateDocLogic = createLogic({
 
     try {
       const updatedDoc = await docApi.updateDoc({ ...md }, {}, { docId: selectedDoc._id })
-
-      if (action.property !== null && action.property === 'jurisdictions') {
-        dispatch({
-          type: jurisdictionTypes.ADD_JURISDICTION,
-          payload: action.value
-        })
+      
+      if (['jurisdictions', 'projects'].includes(action.property)) {
+        if (action.updateType === 'add') {
+          dispatch({
+            type: action.property === 'jurisdictions' ? jurisdictionTypes.ADD_JURISDICTION : projectTypes.ADD_PROJECT,
+            payload: action.value
+          })
+        }
       }
-
-      if (action.property !== null && action.property === 'projects') {
-        dispatch({
-          type: projectTypes.ADD_PROJECT,
-          payload: action.value
-        })
-      }
-
+      
       dispatch({
         type: types.UPDATE_DOC_SUCCESS,
         payload: updatedDoc._id
@@ -67,7 +62,11 @@ const updateDocLogic = createLogic({
     } catch (err) {
       dispatch({
         type: types.UPDATE_DOC_FAIL,
-        payload: { error: 'Failed to update document, please try again.' }
+        error: action.property === 'projects' || action.property === 'jurisdictions'
+          ? `We couldn\'t ${action.updateType} the ${action.property.slice(0, -1)} ${action.updateType === 'add'
+            ? 'to'
+            : 'from'} the document.`
+          : 'We couldn\'t update the document.'
       })
       done()
     }
@@ -76,9 +75,14 @@ const updateDocLogic = createLogic({
 
 const deleteDocLogic = createLogic({
   type: types.DELETE_DOCUMENT_REQUEST,
-  async process({ docApi, action, getState }, dispatch, done) {
+  async process({ docApi, action, getState, api }, dispatch, done) {
     try {
       await docApi.deleteDoc({}, {}, { 'docId': action.id })
+      try {
+        api.cleanAnnotations({}, {}, { 'docId': action.id })
+      } catch (err) {
+        console.log(`failed to remove annotations for doc: ${action.id}`)
+      }
       dispatch({
         type: types.DELETE_DOCUMENT_SUCCESS,
         payload: action.id
@@ -91,7 +95,7 @@ const deleteDocLogic = createLogic({
     } catch (err) {
       dispatch({
         type: types.DELETE_DOCUMENT_FAIL,
-        payload: { error: 'Failed to delete document, please try again.' }
+        payload: { error: 'We couldn\'t delete the document.' }
       })
       done()
     }

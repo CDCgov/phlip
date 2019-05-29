@@ -2,7 +2,6 @@
  * Setting up passport.js to use SAML stragety
  */
 const SamlStrategy = require('passport-saml').Strategy
-const fs = require('fs')
 const dotenv = require('dotenv')
 const paths = require('../config/paths')
 
@@ -12,11 +11,11 @@ module.exports = function (passport, config) {
   passport.serializeUser(function (user, done) {
     done(null, user)
   })
-
+  
   passport.deserializeUser(function (user, done) {
     done(null, user)
   })
-
+  
   const saml_strategy = new SamlStrategy(
     {
       callbackUrl: process.env.SAML_CALLBACK_URL,
@@ -27,14 +26,17 @@ module.exports = function (passport, config) {
       disableRequestedAuthnContext: true
     },
     (profile, done) => {
-      return done(null,
+      return done(
+        null,
         {
           id: profile.useraccountid,
           email: profile.email,
           firstName: profile.firstname,
           lastName: profile.lastname
-        })
-    })
-
+        }
+      )
+    }
+  )
+  
   passport.use(saml_strategy)
 }

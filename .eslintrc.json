@@ -174,7 +174,9 @@
     "page": true,
     "browser": true,
     "context": true,
-    "jestPuppeteer": true
+    "jestPuppeteer": true,
+    "APP_PIPELINE": false,
+    "APP_BUILT_TIMESTAMP": false
   },
   "env": {
     "jest": true,

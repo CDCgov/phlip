@@ -55,5 +55,8 @@ exports[`DocumentView - DocumentContents should render correctly 1`] = `
       Test file
     </WithStyles(Typography)>
   </FlexGrid>
+  <ApiErrorView
+    error=""
+  />
 </FlexGrid>
 `;

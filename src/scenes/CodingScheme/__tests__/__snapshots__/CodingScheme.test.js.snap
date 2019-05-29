@@ -17,24 +17,22 @@ exports[`CodingScheme scene should render correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
-          "type": "button",
-          "value": "Cancel",
-        },
-        Object {
-          "onClick": [Function],
           "preferred": true,
           "type": "button",
           "value": "Check in",
         },
       ]
     }
+    closeButton={Object {}}
+    hideClose={false}
+    onCloseAlert={[Function]}
     open={false}
-    title={null}
+    title="You have checked out the coding scheme."
   >
     <WithStyles(Typography)
       variant="body1"
     >
-      You have checked out the coding scheme. No one else can make edits until you check it in.
+      No one else can make edits until you check it in.
     </WithStyles(Typography)>
   </Alert>
   <Alert
@@ -42,19 +40,16 @@ exports[`CodingScheme scene should render correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
-          "preferred": true,
           "type": "button",
-          "value": "Cancel",
-        },
-        Object {
-          "onClick": [Function],
-          "type": "button",
-          "value": "Delete",
+          "value": "Continue",
         },
       ]
     }
+    closeButton={Object {}}
+    hideClose={false}
+    onCloseAlert={[Function]}
     open={false}
-    title={null}
+    title="Warning"
   >
     <WithStyles(Typography)
       style={
@@ -64,7 +59,7 @@ exports[`CodingScheme scene should render correctly 1`] = `
       }
       variant="body1"
     >
-      You are about to delete a question from the coding scheme. This will permanantly delete all related child questions and coded answers.
+      You will permanently delete this question, and all related questions and coded answers from the coding scheme. Do you want to continue?
     </WithStyles(Typography)>
   </Alert>
   <ApiErrorAlert
@@ -77,17 +72,18 @@ exports[`CodingScheme scene should render correctly 1`] = `
       Array [
         Object {
           "onClick": [Function],
-          "preferred": true,
           "type": "button",
-          "value": "Dismiss",
-        },
-        Object {
-          "onClick": [Function],
-          "type": "button",
-          "value": "Release lock",
+          "value": "Unlock",
         },
       ]
     }
+    closeButton={
+      Object {
+        "value": "Cancel",
+      }
+    }
+    hideClose={false}
+    onCloseAlert={[Function]}
     open={true}
     title={
       <React.Fragment>
@@ -110,7 +106,8 @@ exports[`CodingScheme scene should render correctly 1`] = `
       variant="body1"
     >
       undefined undefined 
-       checked out the coding scheme. You are unable to make changes.
+       is editing the coding scheme. You are unable to edit until they save their changes.
+       Select 'Unlock' to terminate their editing session.
     </WithStyles(Typography)>
   </Alert>
   <withRouter(WithTheme(PageHeader))

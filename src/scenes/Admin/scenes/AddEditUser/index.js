@@ -267,127 +267,125 @@ export class AddEditUser extends Component {
     const { avatar, selectedUser, onCloseModal, currentUser } = this.props
     
     return (
-      <>
-        <ModalForm
-          open
-          title={selectedUser
-            ? this.selfUpdate
-              ? 'Profile'
-              : 'Edit User'
-            : 'Add New User'}
-          actions={actions}
-          form="addEditUser"
-          handleSubmit={this.handleSubmit}
-          asyncValidate={this.validateEmail}
-          initialValues={selectedUser || { isActive: true }}
-          asyncBlurFields={['email']}
-          onClose={onCloseModal}
-          width="600px"
-          height="400px">
-          <FlexGrid container padding="30px 15px 0" style={{ minWidth: 500, minHeight: 275 }}>
-            <FlexGrid type="row" container justify="space-between" padding="0 0 30px">
-              {selectedUser &&
-              <FlexGrid padding="0 30px 0 0">
-                {avatar ? (
-                  <Tooltip text="Edit photo" placement="top" id="edit-picture">
-                    <TextLink
-                      to={{
-                        pathname: this.selfUpdate
-                          ? '/user/profile/avatar'
-                          : `/admin/edit/user/${selectedUser.id}/avatar`,
-                        state: {
-                          isEdit: true,
-                          userId: selectedUser.id,
-                          avatar: selectedUser.avatar,
-                          modal: true
-                        }
-                      }}>
-                      <Avatar
-                        cardAvatar
-                        style={{ width: '65px', height: '65px' }}
-                        userName={`${selectedUser.firstName} ${selectedUser.lastName}`}
-                        avatar={avatar}
-                      />
-                    </TextLink>
-                  </Tooltip>
-                ) : (
-                  <ImageFileReader handleFiles={this.openAvatarForm}>
-                    <IconButton
-                      color="#757575"
-                      iconSize={50}
-                      tooltipText="Add a photo"
-                      id="add-user-photo">
-                      add_a_photo
-                    </IconButton>
-                  </ImageFileReader>
-                )}
-              </FlexGrid>}
-              <FlexGrid flex padding="0 20px 0 0">
-                <Field
-                  name="firstName"
-                  component={TextInput}
-                  label="First Name"
-                  placeholder="Enter first name"
-                  validate={this.required}
-                  required
-                  shrinkLabel
-                  fullWidth
-                />
-              </FlexGrid>
-              <FlexGrid flex>
-                <Field
-                  name="lastName"
-                  component={TextInput}
-                  label="Last Name"
-                  required
-                  shrinkLabel
-                  placeholder="Enter last name"
-                  validate={this.required}
-                  fullWidth
-                />
-              </FlexGrid>
-            </FlexGrid>
-            <FlexGrid padding="0 0 30px">
+      <ModalForm
+        open
+        title={selectedUser
+          ? this.selfUpdate
+            ? 'Profile'
+            : 'Edit User'
+          : 'Add New User'}
+        actions={actions}
+        form="addEditUser"
+        handleSubmit={this.handleSubmit}
+        asyncValidate={this.validateEmail}
+        initialValues={selectedUser || { isActive: true }}
+        asyncBlurFields={['email']}
+        onClose={onCloseModal}
+        width="600px"
+        height="400px">
+        <FlexGrid container padding="30px 15px 0" style={{ minWidth: 500, minHeight: 275 }}>
+          <FlexGrid type="row" container justify="space-between" padding="0 0 30px">
+            {selectedUser &&
+            <FlexGrid padding="0 30px 0 0">
+              {avatar ? (
+                <Tooltip text="Edit photo" placement="top" id="edit-picture">
+                  <TextLink
+                    to={{
+                      pathname: this.selfUpdate
+                        ? '/user/profile/avatar'
+                        : `/admin/edit/user/${selectedUser.id}/avatar`,
+                      state: {
+                        isEdit: true,
+                        userId: selectedUser.id,
+                        avatar: selectedUser.avatar,
+                        modal: true
+                      }
+                    }}>
+                    <Avatar
+                      cardAvatar
+                      style={{ width: '65px', height: '65px' }}
+                      userName={`${selectedUser.firstName} ${selectedUser.lastName}`}
+                      avatar={avatar}
+                    />
+                  </TextLink>
+                </Tooltip>
+              ) : (
+                <ImageFileReader handleFiles={this.openAvatarForm}>
+                  <IconButton
+                    color="#757575"
+                    iconSize={50}
+                    tooltipText="Add a photo"
+                    id="add-user-photo">
+                    add_a_photo
+                  </IconButton>
+                </ImageFileReader>
+              )}
+            </FlexGrid>}
+            <FlexGrid flex padding="0 20px 0 0">
               <Field
-                name="email"
+                name="firstName"
                 component={TextInput}
-                label="Email"
-                shrinkLabel
+                label="First Name"
+                placeholder="Enter first name"
+                validate={this.required}
                 required
-                placeholder="Enter email"
+                shrinkLabel
+                fullWidth
+              />
+            </FlexGrid>
+            <FlexGrid flex>
+              <Field
+                name="lastName"
+                component={TextInput}
+                label="Last Name"
+                required
+                shrinkLabel
+                placeholder="Enter last name"
                 validate={this.required}
                 fullWidth
+              />
+            </FlexGrid>
+          </FlexGrid>
+          <FlexGrid padding="0 0 30px">
+            <Field
+              name="email"
+              component={TextInput}
+              label="Email"
+              shrinkLabel
+              required
+              placeholder="Enter email"
+              validate={this.required}
+              fullWidth
+              disabled={this.selfUpdate}
+            />
+          </FlexGrid>
+          <FlexGrid container type="row" flex>
+            <FlexGrid flex>
+              <Field
+                name="role"
+                component={Dropdown}
+                label="Role"
+                options={roles}
+                defaultValue=""
+                id="role"
+                style={{ display: 'flex' }}
                 disabled={this.selfUpdate}
               />
             </FlexGrid>
-            <FlexGrid container type="row" flex>
-              <FlexGrid flex>
-                <Field
-                  name="role"
-                  component={Dropdown}
-                  label="Role"
-                  options={roles}
-                  defaultValue=""
-                  id="role"
-                  style={{ display: 'flex' }}
-                  disabled={this.selfUpdate}
-                />
-              </FlexGrid>
-              <FlexGrid flex>
-                <Field
-                  name="isActive"
-                  disabled={this.selfUpdate}
-                  component={CheckboxLabel}
-                  label="Active"
-                  style={{ display: '10px' }}
-                />
-              </FlexGrid>
+            <FlexGrid flex>
+              <Field
+                name="isActive"
+                disabled={this.selfUpdate}
+                component={CheckboxLabel}
+                label="Active"
+                style={{ display: '10px' }}
+              />
             </FlexGrid>
           </FlexGrid>
-          {currentUser.role === 'Admin' && <Route path="/admin/edit/user/:id/avatar" component={AvatarForm} />}
-          {currentUser.role !== 'Admin' && <Route path="/user/profile/avatar" component={AvatarForm} />}
-        </ModalForm>
-      </>
+        </FlexGrid>
+        {currentUser.role === 'Admin' && <Route path="/admin/edit/user/:id/avatar" component={AvatarForm} />}
+        {currentUser.role !== 'Admin' && <Route path="/user/profile/avatar" component={AvatarForm} />}
+      </ModalForm>
     )
   }
 }

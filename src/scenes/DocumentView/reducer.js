@@ -17,7 +17,8 @@ export const INITIAL_STATE = {
   },
   inEditMode: false,
   documentDeleteInProgress: false,
-  documentDeleteError: false
+  documentDeleteError: false,
+  error: ''
 }
 
 const docViewReducer = (state = INITIAL_STATE, action) => {
@@ -30,13 +31,19 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
           content: {}
         }
       }
-
+    
     case types.GET_DOCUMENT_CONTENTS_REQUEST:
       return {
         ...state,
         documentRequestInProgress: true
       }
-
+    
+    case types.GET_DOCUMENT_CONTENTS_FAIL:
+      return {
+        ...state,
+        error: action.payload
+      }
+    
     case types.EDIT_DOCUMENT:
       return {
         ...state,
@@ -45,14 +52,14 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         },
         inEditMode: true
       }
-
+    
     case types.CLOSE_EDIT:
       return {
         ...state,
         documentForm: {},
         inEditMode: false
       }
-
+    
     case types.GET_DOCUMENT_CONTENTS_SUCCESS:
       return {
         ...state,
@@ -62,7 +69,7 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         },
         documentRequestInProgress: false
       }
-
+    
     case types.ADD_PRO_JUR:
       let selectedDoc = { ...state.document }
       const foundIdx = selectedDoc[action.property].findIndex(el => el === action.value.id)
@@ -71,35 +78,37 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
           ...selectedDoc[action.property], action.value.id
         ]
       }
-
+      
       return {
         ...state,
         documentForm: selectedDoc
       }
-
+    
     case types.DELETE_PRO_JUR:
-      selectedDoc = { ...state.document }
-      const index = selectedDoc[action.property].findIndex(el => el === action.value.id)
-      selectedDoc[action.property].splice(index, 1)
+      let doc = { ...state.document }
+      const index = doc[action.property].findIndex(el => el === action.value.id)
+      const arr = doc[action.property]
+      doc[action.property] = [...arr.slice(0, index), ...arr.slice(index + 1)]
+      
       return {
         ...state,
-        documentForm: selectedDoc
+        documentForm: doc
       }
-
+    
     case types.UPDATE_DOC_PROPERTY:
       selectedDoc = { ...state.documentForm }
       selectedDoc[action.property] = action.value
       return {
         ...state,
-        documentForm: selectedDoc
+        documentForm: { ...selectedDoc }
       }
-
+    
     case types.UPDATE_DOC_REQUEST:
       return {
         ...state,
         documentUpdateInProgress: true
       }
-
+    
     case types.UPDATE_DOC_SUCCESS:
       return {
         ...state,
@@ -108,7 +117,7 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         documentForm: {},
         inEditMode: false
       }
-
+    
     case types.CLEAR_DOCUMENT:
       return {
         ...state,
@@ -120,18 +129,19 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         documentForm: {},
         inEditMode: false
       }
-
+    
     case types.UPDATE_DOC_FAIL:
       return {
         ...state,
         apiErrorInfo: {
           title: 'Update error',
-          text: 'Failed to update document.'
+          text: action.error
         },
         apiErrorOpen: true,
-        documentUpdateInProgress: false
+        documentUpdateInProgress: false,
+        document: state.document
       }
-
+    
     case types.CLOSE_ALERT:
       return {
         ...state,
@@ -141,32 +151,32 @@ const docViewReducer = (state = INITIAL_STATE, action) => {
         },
         apiErrorOpen: false
       }
-
+    
     case types.DELETE_DOCUMENT_REQUEST :
       return {
         ...state,
         documentDeleteInProgress: true
       }
-
+    
     case types.DELETE_DOCUMENT_SUCCESS :
       return {
         ...state,
         documentDeleteInProgress: false,
         documentDeleteError: false
       }
-
+    
     case types.DELETE_DOCUMENT_FAIL :
       return {
         ...state,
         apiErrorInfo: {
           title: 'Document Delete Error',
-          text: 'Failed to delete document.  Please try again.'
+          text: 'Failed to delete the document.'
         },
         apiErrorOpen: true,
         documentDeleteInProgress: false,
         documentDeleteError: true
       }
-
+    
     default:
       return state
   }

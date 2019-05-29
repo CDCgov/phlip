@@ -94,10 +94,10 @@ export class QuestionCard extends Component {
       if (question.questionType === questionTypes.CATEGORY) {
         if (userAnswers.answers.hasOwnProperty(id)) {
           open = true
-          text = 'Deselecting a category will remove any answers associated with this category. Do you want to continue?'
+          text = 'Deselecting a category will remove answers, pincites and annotations associated with this category. Do you want to continue?'
         }
       } else {
-        text = 'Changing your answer will remove any pincites and annotations associated with this answer. Do you want to continue?'
+        text = 'Changing your answer will remove the pincites and annotations associated with this answer. Do you want to continue?'
         
         if (question.questionType !== questionTypes.TEXT_FIELD) {
           if (Object.keys(userAnswers.answers).length > 0) {
@@ -138,7 +138,7 @@ export class QuestionCard extends Component {
       actions.setAlert({
         open: true,
         title: 'Warning',
-        text: 'Are you sure you want to clear your answer?',
+        text: 'Clearing your answer will remove the selected answer choice, pincites and annotations associated with this answer. Do you want to continue?',
         type: 'clearAnswer',
         data: {}
       })
@@ -149,7 +149,7 @@ export class QuestionCard extends Component {
     this.props.actions.setAlert({
       open: true,
       title: 'Close Annotation Mode',
-      text: 'You are currently in annotation mode. To make changes to your answer or to change questions, please exit annotation mode by clicking the \'Done\' button.',
+      text: 'To make changes to your answer or to change questions, please exit annotation mode by clicking the \'Done\' button.',
       type: 'disableAnnoMode'
     })
   }
@@ -217,11 +217,11 @@ export class QuestionCard extends Component {
   /**
    * Handles toggling on / off showing a coder's annotations
    */
-  onToggleCoderAnnotations = (id, userId, isValidatorSelected) => () => {
+  onToggleCoderAnnotations = (id, userId, isUserAnswerSelected) => () => {
     if (this.props.annotationModeEnabled) {
       this.showDisableAnnoModeAlert()
     } else {
-      this.props.actions.toggleCoderAnnotations(this.props.question.id, id, userId, isValidatorSelected)
+      this.props.actions.toggleCoderAnnotations(this.props.question.id, id, userId, isUserAnswerSelected)
     }
   }
   
@@ -231,7 +231,7 @@ export class QuestionCard extends Component {
       mergedUserQuestions, disableAll, userImages, enabledAnswerId, enabledUserId, annotationModeEnabled,
       areDocsEmpty, questionChangeLoader, hasTouchedQuestion, categories, saveFailed, onClearAnswer, onSaveFlag,
       selectedCategory, currentIndex, getNextQuestion, getPrevQuestion, totalLength, showNextButton,
-      isValidatorSelected, selectedCategoryId, alert, actions
+      isUserAnswerSelected, selectedCategoryId, alert, actions
     } = this.props
     
     const questionContentProps = {
@@ -250,7 +250,7 @@ export class QuestionCard extends Component {
       userImages,
       onToggleAnnotationMode: this.onToggleAnnotationMode,
       onToggleCoderAnnotations: this.onToggleCoderAnnotations,
-      isValidatorSelected,
+      isUserAnswerSelected,
       enabledAnswerId,
       enabledUserId,
       annotationModeEnabled,
@@ -259,15 +259,9 @@ export class QuestionCard extends Component {
     
     const { isSaving } = this.state
     
+    const closeButton = { value: alert.type === 'disableAnnoMode' ? 'Dismiss' : 'Cancel' }
     this.alertActions = alert.type === 'disableAnnoMode'
-      ? [
-        {
-          value: 'Dismiss',
-          type: 'button',
-          onClick: this.onCloseAlert
-        }
-      ] : [
-        { value: 'Cancel', type: 'button', onClick: this.onCloseAlert, preferred: true },
+      ? [] : [
         {
           value: 'Continue',
           type: 'button',
@@ -285,7 +279,12 @@ export class QuestionCard extends Component {
     
     return (
       <FlexGrid container type="row" flex style={{ minWidth: '10%', flexBasis: '0%' }}>
-        <Alert actions={this.alertActions} title={alert.title} open={alert.open}>
+        <Alert
+          actions={this.alertActions}
+          title={alert.title}
+          onCloseAlert={this.onCloseAlert}
+          closeButton={closeButton}
+          open={alert.open}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             {alert.text}
           </Typography>
@@ -384,7 +383,7 @@ const mapStateToProps = (state, ownProps) => {
     enabledAnswerId: docState.enabledAnswerId,
     enabledUserId: docState.enabledUserId,
     annotationModeEnabled: docState.annotationModeEnabled,
-    isValidatorSelected: docState.isValidatorSelected,
+    isUserAnswerSelected: docState.isUserAnswerSelected,
     areDocsEmpty: docState.showEmptyDocs,
     showDisableAnnoMode: cardState.showDisableAnnoMode,
     alert: cardState.alert

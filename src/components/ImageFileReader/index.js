@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ReactFileReader from 'react-file-reader'
-import { Alert } from 'components/index'
+import { Alert } from 'components'
 import Typography from '@material-ui/core/Typography'
 import compressImage from 'browser-compress-image'
 
@@ -33,22 +33,14 @@ export class ImageFileReader extends Component {
   }
   
   render() {
-    const alertActions = [
-      {
-        value: 'Close',
-        type: 'button',
-        onClick: this.onAlertClose
-      }
-    ]
-    
     const { base64, fileTypes, children } = this.props
     const { open } = this.state
     
     return (
       <>
-        <Alert actions={alertActions} open={open}>
+        <Alert onCloseAlert={this.onAlertClose} open={open} closeButton={{ value: 'Dismiss' }} title="Image Too Large">
           <Typography variant="body1">
-          Maximum image file size is 500KB. Please try another image.
+            Maximum image file size is 500KB. Please try another image.
           </Typography>
         </Alert>
         <ReactFileReader base64={base64} fileTypes={fileTypes} handleFiles={this.handleFiles}>

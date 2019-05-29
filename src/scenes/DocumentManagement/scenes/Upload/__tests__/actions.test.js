@@ -33,7 +33,6 @@ describe('Document management - Upload action creators', () => {
       type: types.ADD_SELECTED_DOCS,
       selectedDocs: [{ name: 'doc1' }, { name: 'doc2' }]
     }
-
     expect(actions.addSelectedDocs([{ name: 'doc1' }, { name: 'doc2' }])).toEqual(expectedAction)
   })
 
@@ -41,7 +40,6 @@ describe('Document management - Upload action creators', () => {
     const expectedAction = {
       type: types.CLEAR_SELECTED_FILES
     }
-
     expect(actions.clearSelectedFiles()).toEqual(expectedAction)
   })
 
@@ -50,7 +48,6 @@ describe('Document management - Upload action creators', () => {
       type: types.REMOVE_DOC,
       index: 1
     }
-
     expect(actions.removeDoc(1)).toEqual(expectedAction)
   })
 
@@ -58,7 +55,6 @@ describe('Document management - Upload action creators', () => {
     const expectedAction = {
       type: types.CLOSE_ALERT
     }
-
     expect(actions.closeAlert()).toEqual(expectedAction)
   })
 
@@ -68,7 +64,6 @@ describe('Document management - Upload action creators', () => {
       text: 'alert text',
       title: 'alert title'
     }
-
     expect(actions.openAlert('alert text', 'alert title')).toEqual(expectedAction)
   })
 
@@ -129,20 +124,5 @@ describe('Document management - Upload action creators', () => {
     }
 
     expect(actions.mergeInfoWithDocs([{ name: 'doc 1' }])).toEqual(expectedAction)
-  })
-
-  test('should create an action to update the invalid size list', () => {
-    const expectedAction = {
-      type: types.CAPTURE_INVALID_FILE_SIZE,
-      docs: [{ name: 'doc 1' }]
-    }
-    expect(actions.captureInvalidSize([{ name: 'doc 1' }])).toEqual(expectedAction)
-  })
-
-  test('should create an action to remove the invalid size list', () => {
-    const expectedAction = {
-      type: types.CLOSE_INVALID_SIZE_ALERT
-    }
-    expect(actions.closeInvalidSizeAlert()).toEqual(expectedAction)
   })
 })

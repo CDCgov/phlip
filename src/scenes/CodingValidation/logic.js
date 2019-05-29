@@ -105,7 +105,7 @@ const getCoderInformation = async ({ api, action, questionId, userImages }) => {
       questionId: questionId
     })
   } catch (e) {
-    coderErrors = { allCodedQuestions: 'Failed to get all the user coded answers for this question.' }
+    coderErrors = { allCodedQuestions: 'We couldn\'t retrieve all the coded answers for this question.' }
   }
   
   if (allCodedQuestions.length === 0) {
@@ -277,7 +277,7 @@ export const getValidationOutlineLogic = createLogic({
           userAnswers,
           mergedUserQuestions: coderInfo.codedQuestionObj,
           question: firstQuestion,
-          errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors, userImages: imagesResult.errors }
+          errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors, ...imagesResult.error }
         }
       }
       
@@ -529,20 +529,6 @@ const sendMessageLogic = createLogic({
       })
       allow({ ...action, messageToSend: messageQueue[index] })
     }
-    
-    // const messageToSend = messageQueue.find(message => {
-    //   if (message.hasOwnProperty('categoryId')) {
-    //     return message.questionId === action.payload.questionId && action.payload.selectedCategoryId ===
-    //       message.categoryId
-    //   } else {
-    //     return message.questionId === action.payload.questionId
-    //   }
-    // })
-    // if (messageQueue.length > 0 && messageToSend !== undefined) {
-    //   allow({ ...action, message: messageToSend })
-    // } else {
-    //   reject()
-    // }
   },
   /**
    * Actually sends the requests in the queue and then removest the request from the queue.
@@ -800,7 +786,7 @@ const getQuestionLogic = createLogic({
           updatedState: { ...updatedState, mergedUserQuestions: { ...state.mergedUserQuestions, ...codedQuestionObj } },
           question,
           currentIndex,
-          errors: { ...errors, ...coderErrors, ...otherErrors, userImages: imageResult.errors }
+          errors: { ...errors, ...coderErrors, ...otherErrors, ...imageResult.errors }
         }
       })
       
@@ -870,8 +856,7 @@ export const getUserValidatedQuestionsLogic = createLogic({
       otherUpdates,
       mergedUserQuestions: coderInfo.codedQuestionObj,
       errors: {
-        ...errors, ...coderInfo.coderErrors, ...schemeErrors, ...codedValErrors,
-        userImages: imageResult.errors
+        ...errors, ...coderInfo.coderErrors, ...schemeErrors, ...codedValErrors, ...imageResult.errors
       }
     }
     

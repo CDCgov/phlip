@@ -24,14 +24,10 @@ export const types = {
   CLEAR_ROW_JURISDICTION_SUGGESTIONS: 'CLEAR_ROW_JURISDICTION_SUGGESTIONS',
   EXTRACT_INFO_SUCCESS_NO_DOCS: 'EXTRACT_INFO_SUCCESS_NO_DOCS',
   MERGE_INFO_WITH_DOCS: 'MERGE_INFO_WITH_DOCS',
-  REJECT_INVALID_FILE_TYPE: 'REJECT_INVALID_FILE_TYPE',
-  VERIFY_VALID_FILE_TYPE_REQUEST: 'VERIFY_VALID_FILE_TYPE_REQUEST',
-  VERIFY_VALID_FILE_TYPE_SUCCESS: 'VERIFY_VALID_FILE_TYPE_SUCCESS',
-  VERIFY_VALID_FILE_TYPE_FAIL: 'VERIFY_VALID_FILE_TYPE_FAIL',
-  REJECT_INVALID_FILE_SIZE: 'REJECT_INVALID_FILE_SIZE',
-  CAPTURE_INVALID_FILE_SIZE: 'CAPTURE_INVALID_FILE_SIZE',
-  CLOSE_INVALID_SIZE_ALERT: 'CLOSE_INVALID_SIZE_ALERT'
-
+  VERIFY_VALID_FILES: 'VERIFY_VALID_FILES',
+  ALL_FILES_VALID: 'ALL_FILES_VALID',
+  INVALID_FILES_FOUND: 'INVALID_FILES_FOUND',
+  FLUSH_STATE: 'FLUSH_STATE'
 }
 
 export default {
@@ -41,17 +37,14 @@ export default {
   clearSelectedFiles: makeActionCreator(types.CLEAR_SELECTED_FILES),
   removeDoc: makeActionCreator(types.REMOVE_DOC, 'index'),
   closeAlert: makeActionCreator(types.CLOSE_ALERT,'alertType'),
-  openAlert: makeActionCreator(types.OPEN_ALERT, 'text', 'title'),
+  openAlert: makeActionCreator(types.OPEN_ALERT, 'text', 'title', 'alertType'),
   removeDuplicate: makeActionCreator(types.REMOVE_DUPLICATE, 'index', 'fileName'),
   extractInfoRequest: makeActionCreator(types.EXTRACT_INFO_REQUEST, 'infoSheetFormData', 'infoSheet'),
   resetFailedUploadValidation: makeActionCreator(types.RESET_FAILED_UPLOAD_VALIDATION),
   toggleRowEditMode: makeActionCreator(types.TOGGLE_ROW_EDIT_MODE, 'index', 'property'),
   clearRowJurisdictionSuggestions: makeActionCreator(types.CLEAR_ROW_JURISDICTION_SUGGESTIONS, 'index'),
   mergeInfoWithDocs: makeActionCreator(types.MERGE_INFO_WITH_DOCS, 'docs'),
-  verifyFileContent: makeActionCreator(types.VERIFY_VALID_FILE_TYPE_REQUEST,'docs'),
-  captureInvalidSize: makeActionCreator(types.CAPTURE_INVALID_FILE_SIZE,'docs'),
-  closeInvalidSizeAlert: makeActionCreator(types.CLOSE_INVALID_SIZE_ALERT)
-
+  verifyFiles: makeActionCreator(types.VERIFY_VALID_FILES,'docs')
 }
 
 export const projectAutocomplete = {

@@ -28,6 +28,13 @@ exports[`Alert component should render correctly 1`] = `
     actions={
       Array [
         Object {
+          "aria-label": "Close alert",
+          "onClick": undefined,
+          "preferred": true,
+          "type": "button",
+          "value": "Cancel",
+        },
+        Object {
           "onClick": [Function],
           "type": "button",
           "value": "Cancel",

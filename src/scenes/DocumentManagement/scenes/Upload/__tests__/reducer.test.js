@@ -110,12 +110,12 @@ describe('Document Management - Upload reducer tests', () => {
     })
     
     test('should set the proper alert state properties', () => {
-      expect(updatedState.alertOpen).toEqual(true)
-      expect(updatedState.alertText)
+      expect(updatedState.alert.open).toEqual(true)
+      expect(updatedState.alert.text)
         .toEqual(`The file name, project and jurisdiction properties for one or more of the documents selected for
         upload match a pre-existing document in the system. These documents have been indicated in the file list. You
-        can choose to remove them or click the 'Upload' button again to proceed with saving them.`)
-      expect(updatedState.alertTitle).toEqual('Duplicates Found')
+        can choose to remove the files or click the 'Upload' button again to proceed with saving them.`)
+      expect(updatedState.alert.title).toEqual('Duplicates Found')
     })
   })
   
@@ -392,14 +392,18 @@ describe('Document Management - Upload reducer tests', () => {
       }
       
       const currentState = getState({
-        alertOpen: true,
-        alertText: 'alert text',
-        alertTitle: 'title'
+        alert: {
+          open: true,
+          text: 'alert text',
+          title: 'alert title',
+          type: 'blerp'
+        }
       })
       const updatedState = reducer(currentState, action)
-      expect(updatedState.alertOpen).toEqual(false)
-      expect(updatedState.alertTitle).toEqual('')
-      expect(updatedState.alertText).toEqual('')
+      expect(updatedState.alert.open).toEqual(false)
+      expect(updatedState.alert.title).toEqual('')
+      expect(updatedState.alert.text).toEqual('')
+      expect(updatedState.alert.type).toEqual('basic')
     })
   })
   
@@ -407,22 +411,27 @@ describe('Document Management - Upload reducer tests', () => {
     const action = {
       type: types.OPEN_ALERT,
       title: 'alert title',
-      text: 'alert text'
+      text: 'alert text',
+      alertType: 'invalidFiles'
     }
     
     const currentState = getState()
     const updatedState = reducer(currentState, action)
     
-    test('should set state.alertOpen to true', () => {
-      expect(updatedState.alertOpen).toEqual(true)
+    test('should set state.alert.open to true', () => {
+      expect(updatedState.alert.open).toEqual(true)
     })
     
-    test('should set state.alertTitle to action.title', () => {
-      expect(updatedState.alertTitle).toEqual('alert title')
+    test('should set state.alert.title to action.title', () => {
+      expect(updatedState.alert.title).toEqual('alert title')
     })
     
-    test('should set state.alertText to action.text', () => {
-      expect(updatedState.alertText).toEqual('alert text')
+    test('should set state.alert.text to action.text', () => {
+      expect(updatedState.alert.text).toEqual('alert text')
+    })
+    
+    test('should set state.alert.type to action.alertType', () => {
+      expect(updatedState.alert.type).toEqual('invalidFiles')
     })
   })
   
@@ -505,9 +514,10 @@ describe('Document Management - Upload reducer tests', () => {
     })
     
     test('should set appropriate state alert properties', () => {
-      expect(updatedState.alertOpen).toEqual(true)
-      expect(updatedState.alertText).toEqual('no project error')
-      expect(updatedState.alertTitle).toEqual('Invalid Project')
+      expect(updatedState.alert.open).toEqual(true)
+      expect(updatedState.alert.text).toEqual('no project error')
+      expect(updatedState.alert.title).toEqual('Invalid Project')
+      expect(updatedState.alert.type).toEqual('basic')
     })
   })
   
@@ -560,9 +570,10 @@ describe('Document Management - Upload reducer tests', () => {
     })
     
     test('should set appropriate state alert properties', () => {
-      expect(updatedState.alertOpen).toEqual(true)
-      expect(updatedState.alertText).toEqual('invalid jurisdictions error')
-      expect(updatedState.alertTitle).toEqual('Invalid Jurisdictions')
+      expect(updatedState.alert.open).toEqual(true)
+      expect(updatedState.alert.text).toEqual('invalid jurisdictions error')
+      expect(updatedState.alert.title).toEqual('Invalid Jurisdictions')
+      expect(updatedState.alert.type).toEqual('basic')
     })
   })
   
@@ -693,36 +704,5 @@ describe('Document Management - Upload reducer tests', () => {
         expect(updatedState.selectedDocs[1].jurisdictions.editable).toEqual(true)
       }
     )
-  })
-  describe('Invalid size tests', () => {
-    test('should set invalid file size array', () => {
-      const action = {
-        type: types.CAPTURE_INVALID_FILE_SIZE,
-        docs: [{ name: 1, size: 160000001 }]
-      }
-      
-      const currentState = getState({
-        alertOpen: true,
-        alertText: 'alert text',
-        alertTitle: 'title',
-        invalidSizeFiles: []
-      })
-      const updatedState = reducer(currentState, action)
-      expect(updatedState.invalidSizeFiles.length).toBeGreaterThan(0)
-    })
-    test('should reset invalid file size array', () => {
-      const action = {
-        type: types.CLOSE_INVALID_SIZE_ALERT
-      }
-      
-      const currentState = getState({
-        alertOpen: true,
-        alertText: 'alert text',
-        alertTitle: 'title',
-        invalidSizeFiles: [{ name: 1, size: 160000001 }]
-      })
-      const updatedState = reducer(currentState, action)
-      expect(updatedState.invalidSizeFiles.length).toEqual(0)
-    })
   })
 })

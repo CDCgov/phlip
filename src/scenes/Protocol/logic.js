@@ -2,7 +2,7 @@
  * All protocol related logic is defined here
  */
 import { createLogic } from 'redux-logic'
-import * as types from './actionTypes'
+import { types } from './actions'
 
 /**
  * Logic for getting the protocol from the API. Also gets the lock information, if any, about the protocol.
@@ -14,7 +14,7 @@ const getProtocolLogic = createLogic({
     try {
       const protocol = await api.getProtocol({}, {}, { projectId: action.projectId })
       let lockInfo = {}, error = {}
-
+      
       try {
         lockInfo = await api.getProtocolLockInfo({}, {}, { projectId: action.projectId })
         if (lockInfo === '') {
@@ -23,7 +23,7 @@ const getProtocolLogic = createLogic({
       } catch (e) {
         error.lockInfo = 'We couldn\'t determine if the protocol is checked out at this time.'
       }
-
+      
       dispatch({
         type: types.GET_PROTOCOL_SUCCESS,
         payload: {
@@ -101,7 +101,8 @@ const lockProtocolLogic = createLogic({
 const unlockProtocolLogic = createLogic({
   type: types.UNLOCK_PROTOCOL_REQUEST,
   async process({ api, action, getState }, dispatch, done) {
-    const userId = action.userId === undefined?getState().data.user.currentUser.id:action.userId // if userid not passed use id from state
+    // if userId is not passed use current user ID from state
+    const userId = action.userId === undefined ? getState().data.user.currentUser.id : action.userId
     try {
       const unlockInfo = await api.unlockProtocol({}, {}, { projectId: action.projectId, userId })
       dispatch({
@@ -112,7 +113,7 @@ const unlockProtocolLogic = createLogic({
       dispatch({
         type: types.UNLOCK_PROTOCOL_FAIL,
         error: true,
-        payload: 'We couldn\'t release the lock for the protocol.'
+        payload: 'We couldn\'t unlock the protocol.'
       })
     }
     done()

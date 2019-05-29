@@ -41,7 +41,7 @@ const getSchemeLogic = createLogic({
       dispatch({
         type: types.GET_SCHEME_FAIL,
         error: true,
-        payload: 'We couldn\'t get the project coding scheme.'
+        payload: 'We couldn\'t retrieve the coding scheme for this project.'
       })
     }
     done()
@@ -68,7 +68,7 @@ const lockSchemeLogic = createLogic({
       dispatch({
         type: types.LOCK_SCHEME_FAIL,
         error: true,
-        payload: 'We couldn\'t lock the coding scheme.  Please try again later'
+        payload: 'We couldn\'t lock the coding scheme.'
       })
     }
     done()
@@ -92,7 +92,7 @@ const unlockSchemeLogic = createLogic({
       dispatch({
         type: types.UNLOCK_SCHEME_FAIL,
         error: true,
-        payload: 'We couldn\'t release the lock for the project coding scheme.'
+        payload: 'We couldn\'t unlock the coding scheme.'
       })
     }
     done()
@@ -115,7 +115,7 @@ const reorderSchemeLogic = createLogic({
     } catch (error) {
       dispatch({
         type: types.REORDER_SCHEME_FAIL,
-        payload: 'We couldn\'t save the scheme reorder.',
+        payload: 'We couldn\'t save your edits.',
         error: true
       })
     }
@@ -155,7 +155,7 @@ const deleteQuestionLogic = createLogic({
       dispatch({
         type: types.DELETE_QUESTION_FAIL,
         error: true,
-        payload: 'We could\'t delete the question.'
+        payload: 'We couldn\'t delete the question.'
       })
     }
     done()

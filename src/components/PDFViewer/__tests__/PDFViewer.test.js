@@ -57,7 +57,7 @@ describe('PDFViewer component', () => {
       test('should hide anno mode alert when user clicks dismiss button', () => {
         const wrapper = mount(<PDFViewer {...props} />)
         wrapper.setState({ annoModeAlert: { open: true, dontShowAgain: false } })
-        wrapper.find('Alert').at(1).prop('actions')[0].onClick()
+        wrapper.find('Alert').at(1).prop('onCloseAlert')()
         wrapper.update()
         expect(wrapper.find('Alert').at(1).prop('open')).toEqual(false)
       })

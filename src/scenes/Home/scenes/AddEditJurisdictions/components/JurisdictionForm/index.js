@@ -426,7 +426,7 @@ export class JurisdictionForm extends Component {
 
 /* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => ({
-  project: state.scenes.home.main.projects.byId[ownProps.match.params.id],
+  project: state.data.projects.byId[ownProps.match.params.id],
   suggestions: state.scenes.home.addEditJurisdictions.suggestions || [],
   suggestionValue: state.scenes.home.addEditJurisdictions.suggestionValue || '',
   jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || {},

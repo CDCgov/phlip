@@ -18,6 +18,7 @@ import {
   FlexGrid
 } from 'components'
 import Divider from '@material-ui/core/Divider'
+import Typography from '@material-ui/core/Typography'
 import DetailRow from './components/DetailRow'
 
 /**
@@ -123,8 +124,8 @@ export class AddEditProject extends Component {
           submitting: false
         })
         this.props.onSubmitError(this.props.formError)
-      } else if (this.props.goBack === true) {
-        this.props.history.goBack()
+      } else if (this.props.goBack) {
+        this.props.history.push('/home')
       }
     }
   }
@@ -142,13 +143,13 @@ export class AddEditProject extends Component {
   onCancel = () => {
     this.props.formActions.reset('projectForm')
     if (this.props.location.state.directEditMode) {
-      this.props.history.goBack()
+      this.props.history.push('/home')
     } else {
       return this.state.edit
         ? this.projectDefined
           ? this.setState({ edit: !this.state.edit })
-          : this.props.history.goBack()
-        : this.props.history.goBack()
+          : this.props.history.push('/home')
+        : this.props.history.push('/home')
     }
   }
   
@@ -256,8 +257,8 @@ export class AddEditProject extends Component {
       [`projectToDelete`]: this.projectDefined.id,
       alertOpen: true,
       alertInfo: {
-        title: `Delete Project`,
-        text: `Do you want to delete project: ${this.projectDefined.name}?`
+        title: 'Warning',
+        text: `Are you sure you want to delete ${this.projectDefined.name}? The project's coding scheme, protocol, as well as coded and validated questions will be deleted.`
       }
     })
   }
@@ -274,7 +275,7 @@ export class AddEditProject extends Component {
       typeToDelete: ''
     })
   }
-
+  
   closeAlert = () => {
     this.props.actions.closeAlert()
   }
@@ -313,12 +314,6 @@ export class AddEditProject extends Component {
     
     const alertActions = [
       {
-        value: 'Cancel',
-        type: 'button',
-        onClick: this.onCancelDelete,
-        preferred: true
-      },
-      {
         value: 'Delete',
         type: 'button',
         onClick: this.handleDeleteConfirm
@@ -327,8 +322,14 @@ export class AddEditProject extends Component {
     
     return (
       <>
-        <Alert open={this.state.alertOpen} actions={alertActions} title={this.state.alertTitle}>
-          {this.state.alertInfo.text}
+        <Alert
+          open={this.state.alertOpen}
+          actions={alertActions}
+          onCloseAlert={this.onCancelDelete}
+          title={this.state.alertInfo.title}>
+          <Typography variant="body1">
+            {this.state.alertInfo.text}
+          </Typography>
         </Alert>
         <FormModal
           form="projectForm"
@@ -400,8 +401,9 @@ export class AddEditProject extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  projects: Object.values(state.scenes.home.main.projects.byId) || [],
+/* istanbul ignore next */
+const mapStateToProps = state => ({
+  projects: Object.values(state.data.projects.byId) || [],
   form: state.form.projectForm || {},
   formName: 'projectForm',
   userRole: state.data.user.currentUser.role || '',
@@ -409,6 +411,7 @@ const mapStateToProps = (state) => ({
   goBack: state.scenes.home.addEditProject.goBack || false
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(actions, dispatch),
   formActions: bindActionCreators(formActions, dispatch)

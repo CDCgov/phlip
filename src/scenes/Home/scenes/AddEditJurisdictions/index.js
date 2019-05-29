@@ -199,12 +199,6 @@ export class AddEditJurisdictions extends Component {
   render() {
     const alertActions = [
       {
-        value: 'Cancel',
-        type: 'button',
-        onClick: this.cancelDelete,
-        preferred: true
-      },
-      {
         value: 'Continue',
         type: 'button',
         onClick: this.continueDelete
@@ -237,9 +231,9 @@ export class AddEditJurisdictions extends Component {
         />
         <Divider />
         <ModalContent style={{ display: 'flex', flexDirection: 'column' }}>
-          <Alert actions={alertActions} open={confirmDeleteAlertOpen}>
+          <Alert actions={alertActions} onCloseAlert={this.cancelDelete} title="Warning" open={confirmDeleteAlertOpen}>
             <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-              Are you sure you want to delete {jurisdictionToDelete.name}? All coded questions related to this jurisdiction will be deleted.
+              Are you sure you want to delete {jurisdictionToDelete.name}? All coded and validated questions related to this jurisdiction will be deleted.
             </Typography>
           </Alert>
           <ApiErrorAlert
@@ -277,8 +271,9 @@ export class AddEditJurisdictions extends Component {
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => ({
-  project: state.scenes.home.main.projects.byId[ownProps.match.params.id],
+  project: state.data.projects.byId[ownProps.match.params.id],
   visibleJurisdictions: state.scenes.home.addEditJurisdictions.visibleJurisdictions || [],
   error: state.scenes.home.addEditJurisdictions.error || false,
   errorContent: state.scenes.home.addEditJurisdictions.errorContent || '',
@@ -287,6 +282,7 @@ const mapStateToProps = (state, ownProps) => ({
   deleteError: state.scenes.home.addEditJurisdictions.deleteError || null
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(actions, dispatch)
 })

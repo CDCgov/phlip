@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Grid from 'components/FlexGrid'
-import Button from 'components/Button'
-import Typography from '@material-ui/core/Typography/Typography'
-import { Alert } from 'components'
+import Typography from '@material-ui/core/Typography'
+import { Alert, FlexGrid, Button } from 'components'
 
 class FileUpload extends Component {
   static propTypes = {
@@ -62,11 +60,7 @@ class FileUpload extends Component {
     super(props, context)
     this.inputRef = React.createRef()
     this.state = {
-      alertOpen: false,
-      alertInfo: {
-        title: '',
-        text: ''
-      }
+      alertOpen: false
     }
   }
   
@@ -79,11 +73,7 @@ class FileUpload extends Component {
   handleInitiateFileSelector = () => {
     if (this.props.infoSheetSelected) {
       this.setState({
-        alertOpen: true,
-        alertInfo: {
-          title: `Excel Information Overwrite`,
-          text: `Warning: Selecting a new Excel file will overwrite existing information. Are you sure you want to continue?`
-        }
+        alertOpen: true
       })
     } else {
       this.inputRef.current.click()
@@ -95,8 +85,7 @@ class FileUpload extends Component {
    */
   onCancelSelectExcel = () => {
     this.setState({
-      alertOpen: false,
-      alertInfo: {}
+      alertOpen: false
     })
   }
   
@@ -119,12 +108,6 @@ class FileUpload extends Component {
     
     const alertActions = [
       {
-        value: 'Cancel',
-        type: 'button',
-        onClick: this.onCancelSelectExcel,
-        preferred: true
-      },
-      {
         value: 'Continue',
         type: 'button',
         onClick: this.onContinueSelectExcel
@@ -134,7 +117,7 @@ class FileUpload extends Component {
     return (
       <>
         <form encType="multipart/form-data" style={{ margin: '20px 0', flex: 1 }}>
-          <Grid
+          <FlexGrid
             container
             type="row"
             align="center"
@@ -154,7 +137,7 @@ class FileUpload extends Component {
               onClick={this.handleInitiateFileSelector}
               value={buttonText}
             />
-            <Grid flex container type="row" style={{ position: 'relative', height: '100%' }}>
+            <FlexGrid flex container type="row" style={{ position: 'relative', height: '100%' }}>
               <input
                 ref={this.inputRef}
                 multiple={allowMultiple}
@@ -168,11 +151,17 @@ class FileUpload extends Component {
                 style={{ color: '#646465', marginLeft: 10, alignSelf: 'center' }}>
                 {containerText}
               </Typography>
-            </Grid>
-          </Grid>
+            </FlexGrid>
+          </FlexGrid>
         </form>
-        <Alert open={this.state.alertOpen} actions={alertActions} title={this.state.alertTitle}>
-          {this.state.alertInfo.text}
+        <Alert
+          open={this.state.alertOpen}
+          actions={alertActions}
+          onCloseAlert={this.onCancelSelectExcel}
+          title="Warning">
+          <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+            Selecting a new Excel file will erase existing information. Do you want to continue?
+          </Typography>
         </Alert>
         </>
     )

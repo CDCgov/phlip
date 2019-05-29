@@ -7,17 +7,10 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
     content=""
     onCloseAlert={[Function]}
     open={false}
-    title=""
   />
   <Alert
     actions={
       Array [
-        Object {
-          "onClick": [Function],
-          "preferred": true,
-          "type": "button",
-          "value": "Cancel",
-        },
         Object {
           "onClick": [Function],
           "type": "button",
@@ -25,9 +18,16 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
         },
       ]
     }
+    closeButton={Object {}}
+    hideClose={false}
+    onCloseAlert={[Function]}
     open={false}
-    title={null}
-  />
+    title=""
+  >
+    <WithStyles(Typography)
+      variant="body1"
+    />
+  </Alert>
   <FlexGrid
     align="stretch"
     circular={false}

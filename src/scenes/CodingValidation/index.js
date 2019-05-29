@@ -113,17 +113,10 @@ export class CodingValidation extends Component {
     }
     
     this.confirmAlertActions = [
-      { value: 'Cancel', type: 'button', onClick: this.onCloseFlagConfigAlert, preferred: true },
-      { value: 'Yes', type: 'button', onClick: this.onClearFlag }
+      { value: 'Clear Flag', type: 'button', onClick: this.onClearFlag }
     ]
     
     this.modalActions = [
-      {
-        value: 'Cancel',
-        type: 'button',
-        onClick: this.onCloseApplyAllAlert,
-        preferred: true
-      },
       {
         value: 'Continue',
         type: 'button',
@@ -132,8 +125,7 @@ export class CodingValidation extends Component {
     ]
     
     this.stillSavingActions = [
-      { ...this.modalActions[0], onClick: this.onCancelStillSavingAlert },
-      { ...this.modalActions[1], onClick: this.onContinueStillSavingAlert }
+      { ...this.modalActions[0], onClick: this.onContinueStillSavingAlert }
     ]
     
     this.saveFailedActions = [
@@ -245,7 +237,7 @@ export class CodingValidation extends Component {
     this.props.actions.setAlert({
       open: true,
       title: 'Close Annotation Mode',
-      text: 'You are currently in annotation mode. To make changes to your answer or to change questions or jurisdictions, please exit annotation mode by clicking the \'Done\' button.',
+      text: 'To make changes to your answer or to change questions or jurisdictions, please exit annotation mode by clicking the \'Done\' button.',
       type: 'disableAnnoMode'
     })
   }
@@ -277,7 +269,7 @@ export class CodingValidation extends Component {
         id,
         value
       )
-  
+      
       this.onChangeTouchedStatus()
       this.onSaveCodedQuestion()
     }
@@ -312,15 +304,15 @@ export class CodingValidation extends Component {
         case 'textAnswer':
           this.props.actions.updateUserAnswer(projectId, jurisdiction.id, question.id, id, event.target.value)
           break
-    
+        
         case 'comment':
           this.props.actions.onChangeComment(projectId, jurisdiction.id, question.id, event.target.value)
           break
-    
+        
         case 'pincite':
           this.props.actions.onChangePincite(projectId, jurisdiction.id, question.id, id, event.target.value)
       }
-  
+      
       this.onChangeTouchedStatus()
       this.onSaveCodedQuestion()
     }
@@ -473,17 +465,17 @@ export class CodingValidation extends Component {
       } else if (!noScheme && noJurisdictions) {
         startedText = 'This project doesn\'t have jurisdictions.'
       } else {
-        startedText = 'This project doesn\'t have a coding scheme or jurisdictions.'
+        startedText = 'This project does not have a coding scheme or jurisdictions.'
       }
     } else {
       if (user.role === 'Coder') {
         startedText = 'The coordinator for this project has not created a coding scheme or added jurisdictions.'
       } else if (noScheme && !noJurisdictions) {
-        startedText = 'You must add questions to the project coding scheme before coding.'
+        startedText = 'You must add questions to the coding scheme before coding.'
       } else if (!noScheme && noJurisdictions) {
         startedText = 'You must add jurisdictions to the project before coding.'
       } else {
-        startedText = 'You must add jurisdictions and questions to the project coding scheme before coding.'
+        startedText = 'You must add jurisdictions and questions to the coding scheme before coding.'
       }
     }
     this.setState({
@@ -541,13 +533,13 @@ export class CodingValidation extends Component {
         this.setState({ selectedJurisdiction: event.target.value })
         const newIndex = jurisdictionList.findIndex(jur => jur.id === event.target.value)
         actions.onChangeJurisdiction(newIndex)
-    
+        
         if (page === 'coding') {
           actions.getUserCodedQuestions(projectId, event.target.value)
         } else {
           actions.getUserValidatedQuestionsRequest(projectId, event.target.value)
         }
-    
+        
         this.onShowQuestionLoader()
         actions.getApprovedDocumentsRequest(projectId, jurisdictionList[newIndex].jurisdictionId, page)
       }
@@ -665,14 +657,18 @@ export class CodingValidation extends Component {
     
     return (
       <FlexGrid container type="row" flex className={containerClasses} style={containerStyle}>
-        <Alert open={applyAllAlertOpen} actions={this.modalActions}>
+        <Alert open={applyAllAlertOpen} actions={this.modalActions} title="Warning" onCloseAlert={this.onCloseApplyAllAlert}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
             Your answer will apply to ALL categories. Previous answers will be overwritten.
           </Typography>
         </Alert>
-        <Alert open={stillSavingAlertOpen} actions={this.stillSavingActions}>
+        <Alert
+          open={stillSavingAlertOpen}
+          onCloseAlert={this.onCancelStillSavingAlert}
+          title="Still Saving Changes"
+          actions={this.stillSavingActions}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            We haven't finished saving your answer. If you continue, your changes might not be saved.
+            We haven't finished saving your answer. If you continue, changes might not be saved.
           </Typography>
         </Alert>
         <ApiErrorAlert
@@ -803,8 +799,12 @@ export class CodingValidation extends Component {
             </FlexGrid>
           </FlexGrid>
         </FlexGrid>
-        <Alert open={flagConfirmAlertOpen} actions={this.confirmAlertActions}>
-          <Typography variant="body1">Are you sure you want to clear this flag?</Typography>
+        <Alert
+          open={flagConfirmAlertOpen}
+          onCloseAlert={this.onCloseFlagConfigAlert}
+          actions={this.confirmAlertActions}
+          title="Confirm Clear Flag">
+          <Typography variant="body1">Do you want to clear this flag?</Typography>
         </Alert>
         
         <ApiErrorAlert
@@ -818,7 +818,7 @@ export class CodingValidation extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const project = state.scenes.home.main.projects.byId[ownProps.match.params.id]
+  const project = state.data.projects.byId[ownProps.match.params.id]
   const page = ownProps.match.url.split('/')[3] === 'code' ? 'coding' : 'validation'
   const pageState = state.scenes.codingValidation.coding
   const docState = state.scenes.codingValidation.documentList

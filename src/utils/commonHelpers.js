@@ -55,7 +55,7 @@ export const checkIfMultiWord = str => {
  * @returns {Promise<any>}
  */
 export const handleUserImages = (users, allUserObjs, dispatch, api) => {
-  let avatar, errors = ''
+  let avatar, errors = {}
   const now = Date.now()
   const oneday = 60 * 60 * 24 * 1000
 
@@ -65,24 +65,27 @@ export const handleUserImages = (users, allUserObjs, dispatch, api) => {
     }
     for (let i = 0; i < users.length; i++) {
       const { userId, ...coder } = users[i]
+      let needsCheck = true, update = false
       try {
         if (allUserObjs.hasOwnProperty(userId)) {
-          // the object already exists
           if ((now - allUserObjs[userId].lastCheck) > oneday) {
-            avatar = await api.getUserImage({}, {}, { userId })
-            dispatch({
-              type: userTypes.UPDATE_USER,
-              payload: {
-                id: userId,
-                avatar,
-                lastCheck: now
-              }
-            })
+            needsCheck = true
+            update = true
+          } else {
+            needsCheck = false
           }
-        } else {
-          avatar = await api.getUserImage({}, {}, { userId })
+        }
+        
+        if (needsCheck) {
+          try {
+            avatar = await api.getUserImage({}, {}, { userId })
+          } catch (err) {
+            errors = { userImages: 'failed to get some user images.' }
+            avatar = ''
+          }
+          
           dispatch({
-            type: userTypes.ADD_USER,
+            type: update ? userTypes.UPDATE_USER : userTypes.ADD_USER,
             payload: {
               id: userId,
               ...coder,
@@ -92,7 +95,7 @@ export const handleUserImages = (users, allUserObjs, dispatch, api) => {
           })
         }
       } catch (error) {
-        errors = 'Failed to get user images'
+        errors = { userImages: 'Failed to get user images' }
       }
       if (i === users.length - 1) {
         resolve({ errors })

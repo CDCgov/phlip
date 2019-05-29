@@ -360,7 +360,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
     case types.ON_SAVE_RED_FLAG_FAIL:
       return {
         ...state,
-        saveFlagErrorContent: 'We couldn\'t save the red flag for this question.',
+        saveFlagErrorContent: 'We couldn\'t save the flag for this question.',
         saveFailed: true
       }
 

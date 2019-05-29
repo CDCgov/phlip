@@ -38,7 +38,7 @@ export const DocListTableHead = props => {
     {
       key: 'select-all',
       label: <CheckboxLabel input={{ value: allSelected, onChange: onSelectAll }} />,
-      style: { paddingLeft: 24, paddingRight: 0, width: '1%' }
+      style: { paddingLeft: 24, paddingRight: 0 }
     },
     { key: 'name', label: 'Document Name', padding: 'checkbox', hasSort: true },
     { key: 'uploadedByName', label: 'Uploaded By', padding: 'checkbox', hasSort: true },

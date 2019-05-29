@@ -126,7 +126,7 @@ export class DocumentList extends Component {
     
     const {
       annotationModeEnabled, annotations, docSelected, openedDoc, apiErrorOpen,
-      showEmptyDocs, apiErrorInfo, isValidation, documents, annotatedDocs, shouldShowAnnoModeAlert
+      showEmptyDocs, apiErrorInfo, documents, annotatedDocs, shouldShowAnnoModeAlert
     } = this.props
     
     const { noTextContent } = this.state
@@ -156,7 +156,7 @@ export class DocumentList extends Component {
           {showEmptyDocs &&
           <FlexGrid container align="center" justify="center" padding={10} flex>
             <Typography variant="display1" style={{ textAlign: 'center' }}>
-              There are no approved and/or assigned documents for this project and jurisdiction.
+              There are no approved or assigned documents for this project and jurisdiction.
             </Typography>
           </FlexGrid>}
           {(!showEmptyDocs && annotationModeEnabled) &&
@@ -179,7 +179,7 @@ export class DocumentList extends Component {
                 ) : (
                   <>
                     <span style={bannerBold}>NOTE: </span>
-                    <span style={bannerText}>This document does not have text selection. You will not be able to annotate.</span>
+                    <span style={bannerText}>You are unable to annotate this document. Text selection is not allowed.</span>
                   </>
                 )}
               </i>
@@ -206,7 +206,7 @@ export class DocumentList extends Component {
             removeAnnotation={this.onRemoveAnnotation}
             onCheckTextContent={this.onCheckTextContent}
             annotationModeEnabled={annotationModeEnabled}
-            showAvatars={isValidation}
+            showAvatars
             showAnnoModeAlert={shouldShowAnnoModeAlert}
             onHideAnnoModeAlert={this.hideAnnoModeAlert}
           />}
@@ -246,6 +246,7 @@ export class DocumentList extends Component {
 export const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.documentList
   const codingState = state.scenes.codingValidation.coding
+  const currentUser = state.data.user.currentUser
   let annotations = [], question = {}
   
   if (pageState.annotationModeEnabled) {
@@ -271,7 +272,7 @@ export const mapStateToProps = (state, ownProps) => {
     userId: pageState.annotationModeEnabled
       ? isValidation
         ? question.validatedBy.userId
-        : annotation.userId
+        : currentUser.id
       : annotation.userId
   })).filter(annotation => annotation.docId === pageState.openedDoc._id)
   

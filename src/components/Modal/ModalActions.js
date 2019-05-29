@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import DialogActions from '@material-ui/core/DialogActions'
 import Button from 'components/Button'
@@ -17,7 +17,7 @@ const styles = {
  * Wrapper for @material-ui/core's DialogActions component. These actions will be displayed as buttons at the bottom of
  * the modal
  */
-export class ModalActions extends React.Component {
+export class ModalActions extends Component {
   static propTypes = {
     /**
      * Should the action buttons be raised

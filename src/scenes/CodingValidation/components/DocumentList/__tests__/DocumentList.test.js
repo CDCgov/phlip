@@ -91,7 +91,7 @@ describe('DocumentList', () => {
       () => {
         const wrapper = shallow(<DocumentList {...props} showEmptyDocs documents={[]} />)
         expect(wrapper.find('FlexGrid').at(3).childAt(0).childAt(0).text())
-          .toEqual('There are no approved and/or assigned documents for this project and jurisdiction.')
+          .toEqual('There are no approved or assigned documents for this project and jurisdiction.')
       }
     )
   })
@@ -204,12 +204,12 @@ describe('DocumentList', () => {
     )
     
     test(
-      'text should be "NOTE: This document does not have text selection. You will not be able to annotate." when a document with no text selection is open',
+      'text should be "NOTE: You are unable to annotate this document. Text selection is not allowed." when a document with no text selection is open',
       () => {
         const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} docSelected annotationModeEnabled />)
         wrapper.setState({ noTextContent: 0 })
         const text = wrapper.childAt(2).childAt(0).childAt(0).childAt(0).text()
-        expect(text).toEqual('NOTE: This document does not have text selection. You will not be able to annotate.')
+        expect(text).toEqual('NOTE: You are unable to annotate this document. Text selection is not allowed.')
       }
     )
     
@@ -242,6 +242,13 @@ describe('DocumentList', () => {
 
 const setupState = (other = {}) => {
   return {
+    data: {
+      user: {
+        currentUser: {
+          id: 5
+        }
+      }
+    },
     scenes: {
       codingValidation: {
         coding: {

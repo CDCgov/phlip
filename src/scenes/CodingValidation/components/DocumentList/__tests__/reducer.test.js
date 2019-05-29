@@ -252,7 +252,7 @@ describe('CodingValidation - DocumentList reducer', () => {
         type: types.TOGGLE_CODER_ANNOTATIONS,
         answerId: 4,
         userId: 1,
-        isValidatorSelected: true,
+        isUserAnswerSelected: true,
         annotations: ['lalalala']
       }
       
@@ -263,8 +263,8 @@ describe('CodingValidation - DocumentList reducer', () => {
         expect(state.enabledAnswerId).toEqual(4)
       })
       
-      test('should set state.isValidatorSelected to action.isValidatorSelected', () => {
-        expect(state.isValidatorSelected).toEqual(true)
+      test('should set whether the current user or validator answer is selected ', () => {
+        expect(state.isUserAnswerSelected).toEqual(true)
       })
       
       test('should set state.enabledUserId to action.enabledUserId', () => {
@@ -281,11 +281,11 @@ describe('CodingValidation - DocumentList reducer', () => {
         type: types.TOGGLE_CODER_ANNOTATIONS,
         answerId: 4,
         userId: 1,
-        isValidatorSelected: true,
+        isUserAnswerSelected: true,
         annotations: ['lalalala']
       }
       
-      const currentState = getState({ enabledAnswerId: 4, enabledUserId: 1, isValidatorSelected: true })
+      const currentState = getState({ enabledAnswerId: 4, enabledUserId: 1, isUserAnswerSelected: true })
       const state = reducer(currentState, action)
       
       test('should clear state.enabledAnswerId', () => {
@@ -334,7 +334,7 @@ describe('CodingValidation - DocumentList reducer', () => {
       const state = reducer(currentState, action)
       expect(state.shouldShowAnnoModeAlert).toEqual(false)
     })
-  
+    
     test('should overwrite state.shouldShowAnnoModeAlert if action.isLogout is true', () => {
       const action = { type: types.FLUSH_STATE, isLogout: true }
       const currentState = getState({

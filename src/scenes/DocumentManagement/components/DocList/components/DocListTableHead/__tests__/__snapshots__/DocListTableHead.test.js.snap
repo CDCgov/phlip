@@ -96,7 +96,6 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
         Object {
           "paddingLeft": 24,
           "paddingRight": 0,
-          "width": "1%",
         }
       }
     >

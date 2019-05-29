@@ -31,7 +31,6 @@ exports[`Admin Scene it should render correctly 1`] = `
     projectName=""
     protocolButton={false}
   />
-  <WithStyles(Divider) />
   <UserList
     direction="asc"
     handleRequestSort={[Function]}

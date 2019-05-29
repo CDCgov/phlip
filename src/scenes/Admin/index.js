@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { withTheme } from '@material-ui/core/styles'
-import Divider from '@material-ui/core/Divider'
 import UserList from './components/UserList/index'
-import { FlexGrid, PageHeader, withTracking } from 'components'
+import { FlexGrid, PageHeader, withTracking, CardError } from 'components'
 import actions from './actions'
 import { bindActionCreators } from 'redux'
 
@@ -30,7 +28,15 @@ export class Admin extends Component {
     /**
      * Redux actions for this component
      */
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    /**
+     * error content
+     */
+    errorContent: PropTypes.string,
+    /**
+     * Whether or not there's a page error
+     */
+    error: PropTypes.bool
   }
 
   constructor(props, context) {
@@ -43,6 +49,8 @@ export class Admin extends Component {
   }
 
   render() {
+    const { error, errorContent, actions, sortBy, users, direction } = this.props
+    
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">
         <PageHeader
@@ -58,13 +66,15 @@ export class Admin extends Component {
             show: true
           }}
         />
-        <Divider />
-        <UserList
-          users={this.props.users}
-          sortBy={this.props.sortBy}
-          direction={this.props.direction}
-          handleRequestSort={property => () => this.props.actions.sortUsers(property)}
-        />
+        {error && <CardError>
+          {`Uh-oh! Something went wrong. ${errorContent}`}
+        </CardError>}
+        {!error && <UserList
+          users={users}
+          sortBy={sortBy}
+          direction={direction}
+          handleRequestSort={property => () => actions.sortUsers(property)}
+        />}
       </FlexGrid>
     )
   }
@@ -74,10 +84,12 @@ export class Admin extends Component {
 const mapStateToProps = (state) => ({
   users: state.scenes.admin.main.users,
   sortBy: state.scenes.admin.main.sortBy,
-  direction: state.scenes.admin.main.direction
+  direction: state.scenes.admin.main.direction,
+  error: state.scenes.admin.main.error,
+  errorContent: state.scenes.admin.main.errorContent
 })
 
 /* istanbul ignore next */
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(withTracking(Admin, 'User Management')))
+export default connect(mapStateToProps, mapDispatchToProps)(withTracking(Admin, 'User Management'))

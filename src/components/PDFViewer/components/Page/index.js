@@ -103,11 +103,15 @@ export class Page extends Component {
    * Used to determine if the user has selected text
    */
   onMouseUp = () => {
+    const {
+      allowSelection, pendingAnnotations, id, handleAnnoModeAlert, getSelection, deleteAnnotationIndex
+    } = this.props
+    
     if (document.getSelection().toString().length > 0 && document.getSelection().rangeCount > 0) {
-      if (this.props.allowSelection && this.props.pendingAnnotations.length === 0) {
-        this.props.getSelection(this.state.renderContext, this.props.id)
+      if (allowSelection && pendingAnnotations.length === 0 && deleteAnnotationIndex === null) {
+        getSelection(this.state.renderContext, id)
       } else {
-        this.props.handleAnnoModeAlert()
+        handleAnnoModeAlert()
       }
     }
   }

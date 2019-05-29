@@ -259,7 +259,18 @@ let apiCalls = [
     name: 'getHelpPdf',
     method: 'get',
     path: () => '/exports/helpfile'
+  },
+  {
+    name: 'cleanAnnotations',
+    method: 'delete',
+    path: ({ docId }) => `/cleanup/${docId}/annotations`
+  },
+  {
+    name:'getBackendData',
+    method: 'get',
+    path: () => '/appInfo'
   }
+
 ]
 
 // If development, then include the basic auth api call

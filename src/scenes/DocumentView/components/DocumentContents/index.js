@@ -4,11 +4,13 @@ import { connect } from 'react-redux'
 import FlexGrid from 'components/FlexGrid'
 import PDFViewer from 'components/PDFViewer'
 import Typography from '@material-ui/core/Typography'
+import { ApiErrorView } from 'components'
 
 export class DocumentContents extends Component {
   static propTypes = {
     document: PropTypes.object,
-    id : PropTypes.string
+    id : PropTypes.string,
+    error: PropTypes.string
   }
 
   constructor(props, context) {
@@ -16,15 +18,18 @@ export class DocumentContents extends Component {
   }
 
   render() {
+    const { document, error, id } = this.props
+    
     return (
-      <FlexGrid raised container flex style={{ overflow: 'hidden', flexBasis: '70%', padding: 20, minWidth: '65%' }} id={this.props.id}>
+      <FlexGrid raised container flex style={{ overflow: 'hidden', flexBasis: '70%', padding: 20, minWidth: '65%' }} id={id}>
         <FlexGrid container style={{ display: 'inline-flex', position: 'relative', marginBottom: 10 }}>
           <Typography variant="caption" style={{ fontSize: '.65rem', color: '#9e9e9e', marginBottom: 2 }}>
             Document Name
           </Typography>
-          <Typography variant="subheading" id="docName">{this.props.document.name}</Typography>
+          <Typography variant="subheading" id="docName">{document.name}</Typography>
         </FlexGrid>
-        {this.props.document.content.data && <PDFViewer document={this.props.document} showAnnoModeAlert={false} />}
+        {error !== '' && <ApiErrorView error={error} />}
+        {document.content.data && <PDFViewer document={document} showAnnoModeAlert={false} />}
       </FlexGrid>
     )
   }
@@ -32,7 +37,8 @@ export class DocumentContents extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    document: state.scenes.docView.document || {}
+    document: state.scenes.docView.document || {},
+    error: state.scenes.docView.error || ''
   }
 }
 

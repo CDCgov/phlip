@@ -97,6 +97,8 @@ build dev azure:
   script:
     - npm install
     - cat ~iiu-deploy/config/.env.fe >> .env
+    - echo "APP_PIPELINE= $CI_PIPELINE_ID " >> .env
+    - echo "APP_BUILT_TIMESTAMP = $(date +%s)" >> .env
     - npm run build
     - cp -r ./dist ~iiu-deploy/esquire-frontend-deploy/
     - cp -r ./scripts ~iiu-deploy/esquire-frontend-deploy/
@@ -135,6 +137,8 @@ build test azure:
   script:
     - npm install
     - cat ~iiu-deploy/config/.env.fe >> .env
+    - echo "APP_PIPELINE= $CI_PIPELINE_ID " >> .env
+    - echo "APP_BUILT_TIMESTAMP = $(date +%s)" >> .env
     - npm run build
     - cp -r ./dist ~iiu-deploy/esquire-frontend-deploy/
     - cp -r ./scripts ~iiu-deploy/esquire-frontend-deploy/

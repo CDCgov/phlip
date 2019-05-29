@@ -21,7 +21,7 @@ const sizeObj = {
   }
 }
 
-export const ValidationAvatar = ({ user, size, isValidator, enabled, onClick, style }) => {
+export const CodingValidationAvatar = ({ user, size, isValidator, enabled, onClick, style }) => {
   const selectedStyle = {
     border: `2px solid ${theme.palette.error.main}`,
     boxSizing: 'border-box'
@@ -64,7 +64,7 @@ export const ValidationAvatar = ({ user, size, isValidator, enabled, onClick, st
   )
 }
 
-ValidationAvatar.propTypes = {
+CodingValidationAvatar.propTypes = {
   user: PropTypes.object,
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   isValidator: PropTypes.bool,
@@ -73,7 +73,7 @@ ValidationAvatar.propTypes = {
   style: PropTypes.object
 }
 
-ValidationAvatar.defaultProps = {
+CodingValidationAvatar.defaultProps = {
   enabled: false,
   isValidator: false,
   onClick: undefined,
@@ -82,4 +82,4 @@ ValidationAvatar.defaultProps = {
   style: {}
 }
 
-export default ValidationAvatar
+export default CodingValidationAvatar

@@ -15,7 +15,8 @@ const INITIAL_STATE = {
   pdfError: '',
   pdfFile: null,
   isRefreshing: false,
-  previousLocation: {}
+  previousLocation: {},
+  backendInfo : null
 }
 
 const mainReducer = (state = INITIAL_STATE, action) => {
@@ -61,6 +62,17 @@ const mainReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         previousLocation: action.location
+      }
+
+    case types.GET_BACKEND_INFO_SUCCESS:
+      return {
+        ...state,
+        backendInfo: action.payload
+      }
+    case types.GET_BACKEND_INFO_FAIL:
+      return {
+        ...state,
+        backendInfo: null
       }
 
     case types.FLUSH_STATE:

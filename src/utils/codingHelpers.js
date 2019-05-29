@@ -727,7 +727,7 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
   } catch (error) {
     // Couldn't get the updated scheme question so use the old one
     errors = {
-      newSchemeQuestion: 'We couldn\'t retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
+      newSchemeQuestion: 'We couldn\'t retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since you started coding are not available.'
     }
   }
 
@@ -749,7 +749,7 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
   } catch (error) {
     errors = {
       ...errors,
-      updatedCodedQuestion: 'We couldn\'t retrieve your updated answers. You still have access to the previous answers, but any changes that have been made since the time you started coding are not available.'
+      updatedCodedQuestion: 'We couldn\'t retrieve your updated answers. You still have access to the previous answers, but any changes that have been made since you started coding are not available.'
     }
     initialize = false
   }
@@ -865,7 +865,7 @@ export const getCodedValidatedQuestions = async (projectId, jurisdictionId, user
     return {
       codedValQuestions: [],
       codedValErrors: {
-        codedValQuestions: 'We couldn\'t get your answered questions for this project and jurisdiction, so you won\'t be able to answer questions.'
+        codedValQuestions: 'We couldn\'t get your answered questions for this project and jurisdiction, so you are not able to answer questions.'
       }
     }
   }
@@ -891,7 +891,7 @@ export const getSchemeQuestionAndUpdate = async (projectId, state, question, api
   } catch (error) {
     updatedSchemeQuestion = { ...question }
     schemeErrors = {
-      updatedSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
+      updatedSchemeQuestion: 'We couldn\'t retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since you started coding are not available.'
     }
   }
 
