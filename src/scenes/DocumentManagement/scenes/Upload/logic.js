@@ -401,6 +401,25 @@ const searchProjectListLogic = createLogic({
 })
 
 /**
+ * Logic for setting initial project list
+ */
+const getInitialProjectListLogic = createLogic({
+  type: autocompleteTypes.GET_INITIAL_PROJECT_SUGGESTION_REQUEST,
+  validate({ getState, action }, allow, reject) {
+    const selectedProject = getState().scenes.docManage.upload.projectSuggestions.selectedSuggestion
+    if (Object.keys(selectedProject).length === 0) {
+      allow(action)
+    } else {
+      if (selectedProject.name !== action.searchString) {
+        allow(action)
+      } else {
+        reject()
+      }
+    }
+  }
+})
+
+/**
  * Logic for handling searching of the jurisdiction list
  */
 const searchJurisdictionListLogic = createLogic({
@@ -474,5 +493,6 @@ export default [
   searchProjectListLogic,
   searchJurisdictionListLogic,
   mergeInfoWithDocsLogic,
-  verifyFileContentLogic
+  verifyFileContentLogic,
+  getInitialProjectListLogic
 ]
