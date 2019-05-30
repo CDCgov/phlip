@@ -49,8 +49,10 @@ describe('Document Management logic', () => {
         scenes: {
           docManage: {
             main: {
-              documents: JSON.parse(JSON.stringify(mockDocuments)),
-              ...docManage
+              list: {
+                documents: JSON.parse(JSON.stringify(mockDocuments)),
+                ...docManage
+              }
             }
           }
         }

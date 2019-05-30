@@ -121,7 +121,7 @@ const searchBoxLogic = createLogic({
   transform({ getState, action }, next) {
     const projects = Object.values(getState().data.projects.byId)
     const jurisdictions = Object.values(getState().data.jurisdictions.byId)
-    const docs = [...Object.values(getState().scenes.docManage.main.documents.byId)]
+    const docs = [...Object.values(getState().scenes.docManage.main.list.documents.byId)]
     const matches = resetFilter(
       docs,
       action.value,
@@ -208,7 +208,7 @@ const bulkUpdateLogic = createLogic({
         })
       }
       
-      let existingDocs = getState().scenes.docManage.main.documents.byId
+      let existingDocs = getState().scenes.docManage.main.list.documents.byId
       action.selectedDocs.forEach(docToUpdate => {
         if (action.updateData.updateType === 'status') {
           existingDocs[docToUpdate].status = 'Approved'
@@ -270,7 +270,7 @@ const cleanDocProjectLogic = createLogic({
     let projectMeta = action.projectMeta
     try {
       await docApi.cleanProject({}, {}, { 'projectId': projectMeta.id })
-      let cleannedDocs = getState().scenes.docManage.main.documents.byId
+      let cleannedDocs = getState().scenes.docManage.main.list.documents.byId
       Object.keys(cleannedDocs).map(docKey => {
         const index = cleannedDocs[docKey].projects.findIndex(el => el === projectMeta.id)
         if (index !== -1) { // found matching projectId
