@@ -151,7 +151,7 @@ export class DocumentList extends Component {
           </Typography>
         </FlexGrid>
         <Divider />
-        <FlexGrid container flex style={{ height: '100%', overflow: 'auto' }}>
+        <FlexGrid container flex style={{ height: '100%', overflow: 'auto', position: 'relative' }}>
           {apiErrorOpen && <ApiErrorView error={apiErrorInfo.text} />}
           {showEmptyDocs &&
           <FlexGrid container align="center" justify="center" padding={10} flex>
