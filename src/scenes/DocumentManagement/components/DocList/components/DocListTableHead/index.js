@@ -11,10 +11,10 @@ export const DocListTableHead = props => {
   
   const options = [
     { value: 'bulk', label: 'Actions', disabled: true },
-    { value: 'deleteDoc', label: 'Delete' },
-    { value: 'assignProject', label: 'Assign Project' },
-    { value: 'assignJurisdiction', label: 'Assign Jurisdiction' },
-    { value: 'approveDoc', label: 'Approve' }
+    { value: 'delete', label: 'Delete' },
+    { value: 'project', label: 'Assign Project' },
+    { value: 'jurisdiction', label: 'Assign Jurisdiction' },
+    { value: 'approve', label: 'Approve' }
   ]
   
   const r1Columns = [
@@ -100,17 +100,14 @@ DocListTableHead.propTypes = {
    * Handles when the user clicks the checkbox table header
    */
   onSelectAll: PropTypes.func,
-
   /**
    * Whether or not all files are currently selected
    */
   allSelected: PropTypes.bool,
-
   /**
    * Handles when the user select an action from the dropdown
    */
   onActionSelected: PropTypes.func,
-
   /**
    * Handles when the user click on apply button
    */

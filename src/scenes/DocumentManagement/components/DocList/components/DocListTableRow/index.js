@@ -81,7 +81,7 @@ DocListTableRow.propTypes = {
 // istanbul ignore next
 const mapStateToProps = (state, ownProps) => {
   // istanbul ignore next
-  const doc = state.scenes.docManage.main.documents.byId[ownProps.id]
+  const doc = state.scenes.docManage.main.list.documents.byId[ownProps.id]
   return {
     doc,
     projectList: doc.projects.map(proj => {
@@ -90,7 +90,7 @@ const mapStateToProps = (state, ownProps) => {
     jurisdictionList: doc.jurisdictions.map(jur => {
       return state.data.jurisdictions.byId[jur] === undefined ? '' : state.data.jurisdictions.byId[jur].name
     }),
-    isChecked: state.scenes.docManage.main.documents.checked.includes(ownProps.id)
+    isChecked: state.scenes.docManage.main.list.documents.checked.includes(ownProps.id)
   }
 }
 

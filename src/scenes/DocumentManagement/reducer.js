@@ -1,8 +1,10 @@
+import { combineReducers } from 'redux'
 import upload, { COMBINED_INITIAL_STATE as UPLOAD_INITIAL_STATE } from './scenes/Upload/reducer'
 import { types } from './actions'
 import { arrayToObject } from 'utils/normalize'
 import { sliceTable, sortListOfObjects } from 'utils/commonHelpers'
 import searchReducer, { COMBINED_INITIAL_STATE as SEARCH_INITIAL_STATE } from './components/SearchBox/reducer'
+import { createAutocompleteReducer, INITIAL_STATE as AUTO_INITIAL_STATE } from 'data/autocomplete/reducer'
 
 export const INITIAL_STATE = {
   documents: {
@@ -306,16 +308,28 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
+const MAIN_COMBINED_STATE = {
+  list: INITIAL_STATE,
+  projectSuggestions: AUTO_INITIAL_STATE,
+  jurisdictionSuggestions: AUTO_INITIAL_STATE
+}
+
 const COMBINED_INITIAL_STATE = {
   upload: UPLOAD_INITIAL_STATE,
-  main: INITIAL_STATE,
+  main: MAIN_COMBINED_STATE,
   search: SEARCH_INITIAL_STATE
 }
+
+const docManage = combineReducers({
+  list: docManagementReducer,
+  projectSuggestions: createAutocompleteReducer('PROJECT', '_BULK'),
+  jurisdictionSuggestions: createAutocompleteReducer('JURISDICTION', '_BULK')
+})
 
 const docManageReducer = (state = COMBINED_INITIAL_STATE, action) => {
   return {
     upload: upload(state.upload, action),
-    main: docManagementReducer(state.main, action),
+    main: docManage(state.main, action),
     search: searchReducer(state.search, action)
   }
 }
