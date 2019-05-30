@@ -53,19 +53,19 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
             },
             Object {
               "label": "Delete",
-              "value": "deleteDoc",
+              "value": "delete",
             },
             Object {
               "label": "Assign Project",
-              "value": "assignProject",
+              "value": "project",
             },
             Object {
               "label": "Assign Jurisdiction",
-              "value": "assignJurisdiction",
+              "value": "jurisdiction",
             },
             Object {
               "label": "Approve",
-              "value": "approveDoc",
+              "value": "approve",
             },
           ]
         }

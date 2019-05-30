@@ -48,9 +48,9 @@ export default {
 }
 
 export const projectAutocomplete = {
-  ...makeAutocompleteActionCreators('PROJECT', '')
+  ...makeAutocompleteActionCreators('PROJECT', '_BULK')
 }
 
 export const jurisdictionAutocomplete = {
-  ...makeAutocompleteActionCreators('JURISDICTION', '')
+  ...makeAutocompleteActionCreators('JURISDICTION', '_BULK')
 }
