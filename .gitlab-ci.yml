@@ -16,7 +16,6 @@ lint:
   only:
     - development
     - test
-    - projectsearch
   artifacts:
     paths:
       - node_modules/
