@@ -33,6 +33,7 @@ test:
   only:
     - development
     - test
+    - projectsearch
   dependencies:
     - lint
   environment:
@@ -111,6 +112,7 @@ build dev azure:
   allow_failure: false
   only:
     - development
+    - project search
   environment:
     name: Azure PHLIP2 Dev
     url: https://phlip2dev.phiresearchlab.org
