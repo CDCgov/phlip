@@ -25,7 +25,8 @@ export class PDFViewer extends Component {
     changeAnnotationIndex: PropTypes.func,
     currentAnnotationIndex: PropTypes.number,
     scrollTop: PropTypes.bool,
-    resetScrollTop: PropTypes.func
+    resetScrollTop: PropTypes.func,
+    isView: PropTypes.bool
   }
   
   static defaultProps = {
@@ -35,7 +36,10 @@ export class PDFViewer extends Component {
     showAvatars: false,
     showAnnoModeAlert: true,
     currentAnnotationIndex: 0,
-    scrollTop: false
+    scrollTop: false,
+    isView: false,
+    onCheckTextContent: () => {},
+    resetScrollTop: () => {}
   }
   
   constructor(props, context) {
@@ -76,9 +80,11 @@ export class PDFViewer extends Component {
       })
     }
     
-    if ((!prevProps.scrollTop && this.props.scrollTop) ||
-      (prevState.initialRender && !this.state.initialRender && !this.props.annotationModeEnabled)) {
-      this.scrollTop()
+    if (!this.props.isView) {
+      if ((!prevProps.scrollTop && this.props.scrollTop) ||
+        (prevState.initialRender && !this.state.initialRender && !this.props.annotationModeEnabled)) {
+        this.scrollTop()
+      }
     }
   }
   

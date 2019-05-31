@@ -16,7 +16,8 @@ export class Page extends Component {
       items: []
     },
     deleteAnnotationIndex: null,
-    showAvatars: false
+    showAvatars: false,
+    onFinishRendering: () => {}
   }
   
   static propTypes = {
@@ -38,7 +39,8 @@ export class Page extends Component {
     confirmRemoveAnnotation: PropTypes.func,
     showAvatars: PropTypes.bool,
     annotationModeEnabled: PropTypes.bool,
-    handleAnnoModeAlert: PropTypes.func
+    handleAnnoModeAlert: PropTypes.func,
+    onFinishRendering: PropTypes.func
   }
   
   constructor(props, context) {
