@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux'
 
 export const AnnotationFinder = props => {
-  const { count, current, users, handleNext, handlePrevious } = props
+  const { count, current, users, handleScrollAnnotation } = props
   
   const containerStyles = {
     backgroundColor: 'black',
@@ -13,7 +13,7 @@ export const AnnotationFinder = props => {
     alignSelf: 'flex-end',
     height: 40,
     position: 'absolute',
-    zIndex: 1,
+    zIndex: 200,
     background: '#0000008a',
     right: 20,
     top: 10
@@ -45,13 +45,13 @@ export const AnnotationFinder = props => {
       <FlexGrid style={{ borderLeft: '2px solid white', height: '50%' }} />
       <FlexGrid style={{ marginLeft: 8 }}>
         <IconButton
-          onClick={handlePrevious}
+          onClick={() => handleScrollAnnotation(current - 1)}
           disabled={current === 0}
           color={current === 0 ? disabledColor : 'white'}>
           keyboard_arrow_up
         </IconButton>
         <IconButton
-          onClick={handleNext}
+          onClick={() => handleScrollAnnotation(current + 1)}
           disabled={current === count - 1}
           color={current === count - 1 ? disabledColor : 'white'}>
           keyboard_arrow_down
@@ -65,10 +65,16 @@ AnnotationFinder.propTypes = {
   count: PropTypes.number,
   current: PropTypes.number,
   users: PropTypes.array,
-  handleNext: PropTypes.func,
-  handlePrevious: PropTypes.func
+  handleScrollAnnotation: PropTypes.func
 }
 
+AnnotationFinder.defaultProps = {
+  users: [],
+  current: 0,
+  count: 0
+}
+
+/** istanbul ignore next */
 const mapStateToProps = (state, ownProps) => {
   return {
     users: ownProps.userIds.map(id => {

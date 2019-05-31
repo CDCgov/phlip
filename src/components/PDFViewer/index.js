@@ -21,17 +21,18 @@ export class PDFViewer extends Component {
     showAvatars: PropTypes.bool,
     annotationModeEnabled: PropTypes.bool,
     showAnnoModeAlert: PropTypes.bool,
-    onHideAnnoModeAlert: PropTypes.func
+    onHideAnnoModeAlert: PropTypes.func,
+    changeAnnotationIndex: PropTypes.func,
+    currentAnnotationIndex: PropTypes.number
   }
   
   static defaultProps = {
     annotations: [],
     document: {},
     allowSelection: false,
-    onCheckTextContent: () => {
-    },
     showAvatars: false,
-    showAnnoModeAlert: true
+    showAnnoModeAlert: true,
+    currentAnnotationIndex: 0
   }
   
   constructor(props, context) {
@@ -47,8 +48,7 @@ export class PDFViewer extends Component {
       annoModeAlert: {
         open: false,
         dontShowAgain: false
-      },
-      currentAnnotationIndex: 0
+      }
     }
   }
   
@@ -412,7 +412,7 @@ export class PDFViewer extends Component {
   }
   
   /**
-   *
+   * Sets not showing annotation mode alert for the remainder of the app session
    */
   handleToggleDontShowAgain = () => {
     this.setState({
@@ -423,30 +423,20 @@ export class PDFViewer extends Component {
     })
   }
   
-  /**
-   * Handle go to previous annotation
-   */
-  handleGoToPreviousAnnotation = () => {
-    this.setState({
-      currentAnnotationIndex: this.state.currentAnnotationIndex - 1
-    })
-  }
-  
-  /**
-   * Handle go to next annotations
-   */
-  handleGoToNextAnnotation = () => {
-    this.setState({
-      currentAnnotationIndex: this.state.currentAnnotationIndex + 1
-    })
+  handleScrollAnnotation = position => {
+    const el = document.getElementById(`annotation-${position}-0`)
+    const container = document.getElementById('viewContainer')
+    const pageEl = el.offsetParent.offsetParent
+    this.props.changeAnnotationIndex(position)
+    container.scrollTo({ top: pageEl.offsetTop + el.offsetTop - 30, behavior: 'smooth' })
   }
   
   render() {
     const {
-      pages, pendingAnnotations, deleteAnnotationIndexes, alertConfirmOpen, annoModeAlert, currentAnnotationIndex
+      pages, pendingAnnotations, deleteAnnotationIndexes, alertConfirmOpen, annoModeAlert
     } = this.state
     
-    const { annotations, allowSelection, showAvatars, annotationModeEnabled } = this.props
+    const { annotations, allowSelection, showAvatars, annotationModeEnabled, currentAnnotationIndex } = this.props
     
     const alertActions = [
       { onClick: this.onRemoveAnnotation, value: 'Delete', type: 'button' }
@@ -461,14 +451,13 @@ export class PDFViewer extends Component {
           userIds={users}
           count={annotations.length}
           current={currentAnnotationIndex}
-          handleNext={this.handleGoToNextAnnotation}
-          handlePrevious={this.handleGoToPreviousAnnotation}
+          handleScrollAnnotation={this.handleScrollAnnotation}
         />}
-        <div id="viewContainer" className="pdfViewer" ref={this.viewerRef}>
+        <div id="viewContainer" className="pdfViewer" style={{ position: 'relative' }} ref={this.viewerRef}>
           {pages.length > 0 && pages.map((page, i) => {
             const annotationsByPage = this.filterAnnosByPage(annotations, i)
             const pendingByPage = this.filterAnnosByPage(pendingAnnotations, i)
-            
+  
             return (
               <Page
                 id={i}

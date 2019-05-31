@@ -24,10 +24,12 @@ export const INITIAL_STATE = {
   isUserAnswerSelected: false,
   showEmptyDocs: false,
   apiErrorOpen: false,
-  apiErrorInfo: {
+  apiError: {
     title: '',
-    text: ''
+    text: '',
+    open: false
   },
+  currentAnnotationIndex: 0,
   shouldShowAnnoModeAlert: true
 }
 
@@ -59,11 +61,11 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
     case types.GET_APPROVED_DOCUMENTS_FAIL:
       return {
         ...state,
-        apiErrorInfo: {
+        apiError: {
           text: 'Failed to get the list of approved documents.',
-          title: 'Request failed'
-        },
-        apiErrorOpen: true
+          title: 'Request failed',
+          open: true
+        }
       }
     
     case types.GET_DOC_CONTENTS_REQUEST:
@@ -89,11 +91,11 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         docSelected: true,
-        apiErrorInfo: {
+        apiError: {
           title: '',
-          text: 'Failed to retrieve document contents.'
-        },
-        apiErrorOpen: true
+          text: 'Failed to retrieve document contents.',
+          open: true
+        }
       }
     
     case types.TOGGLE_ANNOTATION_MODE:
@@ -101,13 +103,15 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         ...state,
         annotationModeEnabled: true,
         enabledAnswerId: action.answerId,
-        enabledUserId: ''
+        enabledUserId: '',
+        currentAnnotationIndex: 0
       } : {
         ...state,
         annotationModeEnabled: false,
         enabledAnswerId: '',
         enabledUserId: '',
-        annotations: []
+        annotations: [],
+        currentAnnotationIndex: 0
       }
     
     case types.TOGGLE_CODER_ANNOTATIONS:
@@ -121,6 +125,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           annotations: [],
           enabledAnswerId: '',
           enabledUserId: '',
+          currentAnnotationIndex: 0,
           annotationModeEnabled: false,
           isUserAnswerSelected: action.isUserAnswerSelected
         }
@@ -131,6 +136,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           enabledAnswerId: action.answerId,
           enabledUserId: action.userId,
           annotationModeEnabled: false,
+          currentAnnotationIndex: 0,
           isUserAnswerSelected: action.isUserAnswerSelected
         }
       }
@@ -139,12 +145,13 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         docSelected: false,
+        currentAnnotationIndex: 0,
         openedDoc: {},
-        apiErrorInfo: {
+        apiError: {
           title: '',
-          text: ''
-        },
-        apiErrorOpen: false
+          text: '',
+          open: false
+        }
       }
     
     case types.GET_APPROVED_DOCUMENTS_REQUEST:
@@ -176,6 +183,12 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       return {
         ...INITIAL_STATE,
         shouldShowAnnoModeAlert: action.isLogout ? true : state.shouldShowAnnoModeAlert
+      }
+      
+    case types.CHANGE_ANNOTATION_INDEX:
+      return {
+        ...state,
+        currentAnnotationIndex: action.index
       }
     
     default:

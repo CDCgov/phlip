@@ -62,13 +62,13 @@ export class Page extends Component {
   componentDidMount() {
     this.setCanvasSpecs()
   }
-  
+
   /**
    * User confirmed / saved pending annotation
    * @param index
    */
   onConfirmAnnotation = index => {
-    this.props.saveAnnotation(this.props.pendingAnnotations[index].mainListIndex)
+    this.props.saveAnnotation(index)
   }
   
   /**
@@ -76,7 +76,7 @@ export class Page extends Component {
    * @param index
    */
   onCancelAnnotation = index => {
-    this.props.cancelAnnotation(this.props.pendingAnnotations[index].mainListIndex)
+    this.props.cancelAnnotation(index)
   }
   
   /**
@@ -238,6 +238,8 @@ export class Page extends Component {
             )
           })}
           {renderContext.canvasContext && pendingAnnotations.map((annotation, i) => {
+            console.log(pendingAnnotations)
+            console.log(i)
             return (
               <Annotation
                 key={`pending-highlight-area-${i}`}
@@ -255,9 +257,7 @@ export class Page extends Component {
         </div>
         <div
           data-page-number={id}
-          className={classnames('textLayer', {
-            'textLayerNoAnno': !allowSelection
-          })}
+          className={classnames('textLayer', { 'textLayerNoAnno': !allowSelection })}
           id={`text-layer-page-${id}`}
           style={dims}>
           {readyToRenderText && textContent.items.map((textLine, i) => {

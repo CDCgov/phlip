@@ -105,13 +105,13 @@ describe('CodingValidation - DocumentList reducer', () => {
     const currentState = getState()
     const state = reducer(currentState, action)
     
-    test('should set state.apiErrorInfo object', () => {
-      expect(state.apiErrorInfo.text).toEqual('Failed to get the list of approved documents.')
-      expect(state.apiErrorInfo.title).toEqual('Request failed')
+    test('should set error information object', () => {
+      expect(state.apiError.text).toEqual('Failed to get the list of approved documents.')
+      expect(state.apiError.title).toEqual('Request failed')
     })
     
-    test('should set state.apiErrorOpen to true', () => {
-      expect(state.apiErrorOpen).toEqual(true)
+    test('should display error', () => {
+      expect(state.apiError.open).toEqual(true)
     })
   })
   
@@ -166,13 +166,13 @@ describe('CodingValidation - DocumentList reducer', () => {
       expect(state.docSelected).toEqual(true)
     })
     
-    test('should set state.apiErrorInfo', () => {
-      expect(state.apiErrorInfo.title).toEqual('')
-      expect(state.apiErrorInfo.text).toEqual('Failed to retrieve document contents.')
+    test('should set error information', () => {
+      expect(state.apiError.title).toEqual('')
+      expect(state.apiError.text).toEqual('Failed to retrieve document contents.')
     })
     
-    test('should set state.apiErrorOpen to true', () => {
-      expect(state.apiErrorOpen).toEqual(true)
+    test('should display error', () => {
+      expect(state.apiError.open).toEqual(true)
     })
   })
   
@@ -194,20 +194,20 @@ describe('CodingValidation - DocumentList reducer', () => {
       expect(state.docSelected).toEqual(false)
     })
     
-    test('should clear state.apiErrorInfo', () => {
-      expect(state.apiErrorInfo.text).toEqual('')
-      expect(state.apiErrorInfo.title).toEqual('')
+    test('should clear error information', () => {
+      expect(state.apiError.text).toEqual('')
+      expect(state.apiError.title).toEqual('')
     })
     
-    test('should set state.apiErrorOpen to false', () => {
-      expect(state.apiErrorOpen).toEqual(false)
+    test('should set hide error', () => {
+      expect(state.apiError.open).toEqual(false)
     })
   })
   
   describe('TOGGLE_ANNOTATION_MODE', () => {
     describe('action.enabled === true', () => {
       const action = { type: types.TOGGLE_ANNOTATION_MODE, enabled: true, answerId: 4, questionId: 3 }
-      const currentState = getState()
+      const currentState = getState({ currentAnnotationIndex: 10 })
       const state = reducer(currentState, action)
       
       test('should set state.enabledAnswerId to action.answerId', () => {
@@ -221,11 +221,15 @@ describe('CodingValidation - DocumentList reducer', () => {
       test('should set state.enabledUserId to an empty string', () => {
         expect(state.enabledUserId).toEqual('')
       })
+  
+      test('should reset current annotation index to 0', () => {
+        expect(state.currentAnnotationIndex).toEqual(0)
+      })
     })
     
     describe('action.enabled === false', () => {
       const action = { type: types.TOGGLE_ANNOTATION_MODE, enabled: false, answerId: 4, questionId: 3 }
-      const currentState = getState()
+      const currentState = getState({ currentAnnotationIndex: 10 })
       const state = reducer(currentState, action)
       
       test('should clear state.enabledAnswerId', () => {
@@ -242,6 +246,10 @@ describe('CodingValidation - DocumentList reducer', () => {
       
       test('should set state.enabledUserId to an empty string', () => {
         expect(state.enabledUserId).toEqual('')
+      })
+  
+      test('should reset current annotation index to 0', () => {
+        expect(state.currentAnnotationIndex).toEqual(0)
       })
     })
   })
@@ -274,6 +282,10 @@ describe('CodingValidation - DocumentList reducer', () => {
       test('should set state.annotations to action.annotations', () => {
         expect(state.annotations).toEqual(['lalalala'])
       })
+  
+      test('should reset current annotation index to 0', () => {
+        expect(state.currentAnnotationIndex).toEqual(0)
+      })
     })
     
     describe('when toggling off annotations', () => {
@@ -303,6 +315,10 @@ describe('CodingValidation - DocumentList reducer', () => {
       test('should set state.enabledUserId to an empty string', () => {
         expect(state.enabledUserId).toEqual('')
       })
+      
+      test('should reset current annotation index to 0', () => {
+        expect(state.currentAnnotationIndex).toEqual(0)
+      })
     })
   })
   
@@ -313,6 +329,16 @@ describe('CodingValidation - DocumentList reducer', () => {
     
     test('should set state.shouldShowAnnoModeAlert to false', () => {
       expect(state.shouldShowAnnoModeAlert).toEqual(false)
+    })
+  })
+  
+  describe('CHANGE_ANNOTATION_INDEX', () => {
+    const action = { type: types.CHANGE_ANNOTATION_INDEX, index: 10 }
+    const currentState = getState()
+    const state = reducer(currentState, action)
+    
+    test('should change current annotation index to number passed', () => {
+      expect(state.currentAnnotationIndex).toEqual(10)
     })
   })
   

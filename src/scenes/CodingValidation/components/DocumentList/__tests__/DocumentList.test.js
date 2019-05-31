@@ -152,17 +152,16 @@ describe('DocumentList', () => {
   })
   
   describe('showing errors', () => {
-    test('should show ApiErrorView component if props.apiErrorOpen is true', () => {
-      const wrapper = shallow(<DocumentList {...props} apiErrorOpen apiErrorInfo={{ text: '' }} />)
+    test('should show ApiErrorView component if there is an error', () => {
+      const wrapper = shallow(<DocumentList {...props} apiError={{ text: '', open: true }} />)
       expect(wrapper.find('ApiErrorView').length).toEqual(1)
     })
     
-    test('should contain props.apiErrorInfo.text content in ApiErrorView', () => {
+    test('should contain props.apiError.text content in ApiErrorView', () => {
       const wrapper = shallow(
         <DocumentList
           {...props}
-          apiErrorOpen
-          apiErrorInfo={{ text: 'Failed to get documents.' }}
+          apiError={{ text: 'Failed to get documents.', open: true }}
           documents={[]}
         />
       )

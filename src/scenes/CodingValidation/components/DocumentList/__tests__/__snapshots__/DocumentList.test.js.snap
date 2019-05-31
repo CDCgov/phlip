@@ -61,6 +61,7 @@ exports[`DocumentList should render DocumentList component correctly 1`] = `
       Object {
         "height": "100%",
         "overflow": "auto",
+        "position": "relative",
       }
     }
     type="column"

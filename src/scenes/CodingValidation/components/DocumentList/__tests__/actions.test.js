@@ -69,4 +69,13 @@ describe('CodingValidation - DocumentList action creators', () => {
     
     expect(actions.hideAnnoModeAlert()).toEqual(expectedAction)
   })
+  
+  test('should create an action to change current annotation index', () => {
+    const expectedAction = {
+      type: types.CHANGE_ANNOTATION_INDEX,
+      index: 42
+    }
+    
+    expect(actions.changeAnnotationIndex(42)).toEqual(expectedAction)
+  })
 })
