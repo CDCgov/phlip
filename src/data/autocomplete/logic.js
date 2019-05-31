@@ -28,7 +28,6 @@ const getJurisdictionSuggestionsLogic = createLogic({
 const getProjectSuggestionsLogic = createLogic({
   type: `${types.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
   async process({ api, action }, dispatch, done) {
-    console.log('action ',action)
     try {
       let projects = await api.searchProjectList({}, {
         params: {
@@ -55,7 +54,6 @@ const getProjectsByUserLogic = createLogic({
           count: action.count
         }
       }, {})
-      console.log('by user logic ', projects,' - ', action)
       dispatch({ type: `${types.SEARCH_FOR_SUGGESTIONS_SUCCESS}_PROJECT`, payload: projects })
     } catch (err) {
       dispatch({ type: `${types.SEARCH_FOR_SUGGESTIONS_FAIL}_PROJECT` })
