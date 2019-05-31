@@ -23,7 +23,9 @@ export class PDFViewer extends Component {
     showAnnoModeAlert: PropTypes.bool,
     onHideAnnoModeAlert: PropTypes.func,
     changeAnnotationIndex: PropTypes.func,
-    currentAnnotationIndex: PropTypes.number
+    currentAnnotationIndex: PropTypes.number,
+    scrollTop: PropTypes.bool,
+    resetScrollTop: PropTypes.func
   }
   
   static defaultProps = {
@@ -32,7 +34,8 @@ export class PDFViewer extends Component {
     allowSelection: false,
     showAvatars: false,
     showAnnoModeAlert: true,
-    currentAnnotationIndex: 0
+    currentAnnotationIndex: 0,
+    scrollTop: false
   }
   
   constructor(props, context) {
@@ -48,13 +51,17 @@ export class PDFViewer extends Component {
       annoModeAlert: {
         open: false,
         dontShowAgain: false
-      }
+      },
+      initialRender: false
     }
   }
   
   componentDidMount() {
     if (this.props.document.content.data) {
       this.createPdf(this.props.document)
+      this.setState({
+        initialRender: true
+      })
     }
   }
   
@@ -67,6 +74,10 @@ export class PDFViewer extends Component {
       this.setState({
         pendingAnnotations: []
       })
+    }
+    
+    if (!prevProps.scrollTop && this.props.scrollTop) {
+      this.scrollTop()
     }
   }
   
@@ -423,12 +434,63 @@ export class PDFViewer extends Component {
     })
   }
   
+  /**
+   * Handles scrolling to top of on initial render
+   * @param pageNum
+   */
+  onFinishRendering = pageNum => {
+    if (this.state.initialRender) {
+      if (pageNum === this.state.pages.length - 1) {
+        this.setState({
+          initialRender: false
+        }, () => {
+          setTimeout(() => {
+            this.scrollTop()
+            clearTimeout()
+          }, 1000)
+        })
+      }
+    }
+  }
+  
+  /*
+   * checks to see if annotation layer has rendered
+   */
+  checkIfRendered = position => {
+    return document.getElementById(`annotation-${position}-0`)
+  }
+  
+  /**
+   * Scrolls to a specific annotations
+   * @param position
+   */
   handleScrollAnnotation = position => {
-    const el = document.getElementById(`annotation-${position}-0`)
+    let el = this.checkIfRendered(position)
+    
+    while (!el) {
+      el = this.checkIfRendered(position)
+      setTimeout(() => {
+      }, 1000)
+    }
+    
+    clearTimeout()
     const container = document.getElementById('viewContainer')
     const pageEl = el.offsetParent.offsetParent
     this.props.changeAnnotationIndex(position)
     container.scrollTo({ top: pageEl.offsetTop + el.offsetTop - 30, behavior: 'smooth' })
+  }
+  
+  /**
+   * Scrolls the document to the top of the page. Used when the user toggles a different coder for annotations
+   */
+  scrollTop = () => {
+    if (this.props.annotations.length === 0) {
+      const container = document.getElementById('viewContainer')
+      container.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      this.handleScrollAnnotation(0)
+    }
+    this.props.resetScrollTop()
   }
   
   render() {
@@ -482,6 +544,7 @@ export class PDFViewer extends Component {
                 handleAnnoModeAlert={this.handleAnnoModeAlert}
                 confirmRemoveAnnotation={this.confirmRemoveAnnotation}
                 showAvatars={showAvatars}
+                onFinishRendering={this.onFinishRendering}
                 deleteAnnotationIndex={(Object.keys(deleteAnnotationIndexes).length > 0 &&
                   deleteAnnotationIndexes.hasOwnProperty(i))
                   ? deleteAnnotationIndexes[i]

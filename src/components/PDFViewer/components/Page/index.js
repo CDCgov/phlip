@@ -183,7 +183,7 @@ export class Page extends Component {
   render() {
     const {
       annotations, pendingAnnotations, pageRef, id, textContent, deleteAnnotationIndex,
-      showAvatars, annotationModeEnabled, allowSelection
+      showAvatars, annotationModeEnabled, allowSelection, onFinishRendering
     } = this.props
     
     const { readyToRenderText, canvasStyleSpecs, renderContext } = this.state
@@ -220,6 +220,8 @@ export class Page extends Component {
               return (diffX <= 10 && diffY <= 10)
             })
             
+            if (i === annotations.length - 1) onFinishRendering(id)
+            
             return (
               <Annotation
                 key={`highlight-area-${i}`}
@@ -238,8 +240,6 @@ export class Page extends Component {
             )
           })}
           {renderContext.canvasContext && pendingAnnotations.map((annotation, i) => {
-            console.log(pendingAnnotations)
-            console.log(i)
             return (
               <Annotation
                 key={`pending-highlight-area-${i}`}

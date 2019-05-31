@@ -12,6 +12,7 @@ export const types = {
   TOGGLE_CODER_ANNOTATIONS: 'TOGGLE_CODER_ANNOTATIONS',
   TOGGLE_ANNOTATION_MODE: 'TOGGLE_ANNOTATION_MODE',
   CHANGE_ANNOTATION_INDEX: 'CHANGE_ANNOTATION_INDEX',
+  RESET_SCROLL_TOP: 'RESET_SCROLL_TOP',
   HIDE_ANNO_MODE_ALERT: 'HIDE_ANNO_MODE_ALERT',
   CLEAR_DOC_SELECTED: 'CLEAR_DOC_SELECTED',
   FLUSH_STATE: 'FLUSH_STATE'
@@ -31,5 +32,6 @@ export default {
   toggleCoderAnnotations: makeActionCreator(types.TOGGLE_CODER_ANNOTATIONS, 'questionId', 'answerId', 'userId', 'isUserAnswerSelected'),
   toggleAnnotationMode: makeActionCreator(types.TOGGLE_ANNOTATION_MODE, 'questionId', 'answerId', 'enabled'),
   hideAnnoModeAlert: makeActionCreator(types.HIDE_ANNO_MODE_ALERT),
-  changeAnnotationIndex: makeActionCreator(types.CHANGE_ANNOTATION_INDEX, 'index')
+  changeAnnotationIndex: makeActionCreator(types.CHANGE_ANNOTATION_INDEX, 'index'),
+  resetScrollTop: makeActionCreator(types.RESET_SCROLL_TOP)
 }

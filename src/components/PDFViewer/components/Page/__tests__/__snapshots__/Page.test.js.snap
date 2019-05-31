@@ -7,6 +7,7 @@ exports[`PDFViewer - Page component should render correctly 1`] = `
   cancelAnnotation={[MockFunction]}
   deleteAnnotationIndex={null}
   id={0}
+  onFinishRendering={[MockFunction]}
   page={
     Object {
       "getViewport": [Function],

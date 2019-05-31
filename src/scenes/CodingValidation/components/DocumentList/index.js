@@ -33,7 +33,8 @@ export class DocumentList extends Component {
     }),
     currentAnnotationIndex: PropTypes.number,
     showEmptyDocs: PropTypes.bool,
-    shouldShowAnnoModeAlert: PropTypes.bool
+    shouldShowAnnoModeAlert: PropTypes.bool,
+    scrollTop: PropTypes.bool
   }
   
   static defaultProps = {
@@ -46,7 +47,8 @@ export class DocumentList extends Component {
       title: '',
       open: false
     },
-    currentAnnotationIndex: 0
+    currentAnnotationIndex: 0,
+    scrollTop: false
   }
   
   constructor(props, context) {
@@ -126,6 +128,13 @@ export class DocumentList extends Component {
     this.props.actions.changeAnnotationIndex(index)
   }
   
+  /**
+   * Sets scroll top to false after changing it to true
+   */
+  resetScrollTop = () => {
+    this.props.actions.resetScrollTop()
+  }
+  
   render() {
     const docNameStyle = {
       color: theme.palette.secondary.main,
@@ -138,7 +147,7 @@ export class DocumentList extends Component {
     const bannerText = { color: '#434343' }
     
     const {
-      annotationModeEnabled, annotations, docSelected, openedDoc, currentAnnotationIndex,
+      annotationModeEnabled, annotations, docSelected, openedDoc, currentAnnotationIndex, scrollTop,
       showEmptyDocs, apiError, documents, annotatedDocs, shouldShowAnnoModeAlert
     } = this.props
     
@@ -224,6 +233,8 @@ export class DocumentList extends Component {
             changeAnnotationIndex={this.changeAnnotationIndex}
             showAnnoModeAlert={shouldShowAnnoModeAlert}
             onHideAnnoModeAlert={this.hideAnnoModeAlert}
+            scrollTop={scrollTop}
+            resetScrollTop={this.resetScrollTop}
           />}
           {!docSelected && documents.map((doc, i) => {
             const isRetrieving = (openedDoc._id === doc._id) && !docSelected
@@ -318,6 +329,7 @@ export const mapStateToProps = (state, ownProps) => {
     enabledAnswerId: pageState.enabledAnswerId,
     shouldShowAnnoModeAlert: pageState.shouldShowAnnoModeAlert,
     currentAnnotationIndex: pageState.currentAnnotationIndex,
+    scrollTop: pageState.scrollTop,
     isValidation
   }
 }

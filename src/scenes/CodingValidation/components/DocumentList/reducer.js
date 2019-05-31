@@ -30,7 +30,8 @@ export const INITIAL_STATE = {
     open: false
   },
   currentAnnotationIndex: 0,
-  shouldShowAnnoModeAlert: true
+  shouldShowAnnoModeAlert: true,
+  scrollTop: false
 }
 
 const mergeName = docObj => ({
@@ -50,6 +51,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           allIds: Object.keys(obj),
           ordered: sortListOfObjects(Object.values(obj), 'uploadedDate', 'desc').map(obj => obj._id)
         },
+        scrollTop: false,
         showEmptyDocs: action.payload.length === 0,
         ...state.openedDoc._id !== ''
           ? Object.keys(obj).includes(state.openedDoc._id)
@@ -74,7 +76,8 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         openedDoc: {
           _id: action.id,
           name: state.documents.byId[action.id].name
-        }
+        },
+        scrollTop: false
       }
     
     case types.GET_DOC_CONTENTS_SUCCESS:
@@ -111,7 +114,8 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         enabledAnswerId: '',
         enabledUserId: '',
         annotations: [],
-        currentAnnotationIndex: 0
+        currentAnnotationIndex: 0,
+        scrollTop: false
       }
     
     case types.TOGGLE_CODER_ANNOTATIONS:
@@ -127,7 +131,8 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           enabledUserId: '',
           currentAnnotationIndex: 0,
           annotationModeEnabled: false,
-          isUserAnswerSelected: action.isUserAnswerSelected
+          isUserAnswerSelected: action.isUserAnswerSelected,
+          scrollTop: false
         }
       } else {
         return {
@@ -137,7 +142,8 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           enabledUserId: action.userId,
           annotationModeEnabled: false,
           currentAnnotationIndex: 0,
-          isUserAnswerSelected: action.isUserAnswerSelected
+          isUserAnswerSelected: action.isUserAnswerSelected,
+          scrollTop: true
         }
       }
     
@@ -189,6 +195,12 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         currentAnnotationIndex: action.index
+      }
+      
+    case types.RESET_SCROLL_TOP:
+      return {
+        ...state,
+        scrollTop: false
       }
     
     default:
