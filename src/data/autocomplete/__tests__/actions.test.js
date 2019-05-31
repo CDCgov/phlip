@@ -48,4 +48,12 @@ describe('Autocomplete action creators', () => {
 
     expect(actions.clearAll()).toEqual(expectedAction)
   })
+
+  test('should create an action to get the initial project list', () => {
+    const expectedAction = {
+      type: types.GET_INITIAL_PROJECT_SUGGESTION_REQUEST
+    }
+
+    expect(actions.getProjectsByUserRequest()).toEqual(expectedAction)
+  })
 })
