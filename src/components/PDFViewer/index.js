@@ -134,6 +134,9 @@ export class PDFViewer extends Component {
       deleteIndex: null,
       deleteAnnotationIndexes: {}
     })
+    if (this.props.currentAnnotationIndex === this.props.annotations.length - 1) {
+      this.handleScrollAnnotation(this.props.currentAnnotationIndex - 1)
+    }
   }
   
   /**
