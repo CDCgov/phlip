@@ -43,7 +43,27 @@ const getProjectSuggestionsLogic = createLogic({
   }
 })
 
+const getProjectsByUserLogic = createLogic({
+  type: types.GET_INITIAL_PROJECT_SUGGESTION_REQUEST,
+  async process({ api, action }, dispatch, done) {
+    try {
+      // let projects = await api.getProjects({}, {
+      let projects = await api.searchProjectListByUser({}, {
+        params: {
+          userId: action.userId,
+          count: action.count
+        }
+      }, {})
+      dispatch({ type: `${types.SEARCH_FOR_SUGGESTIONS_SUCCESS}_PROJECT`, payload: projects })
+    } catch (err) {
+      dispatch({ type: `${types.SEARCH_FOR_SUGGESTIONS_FAIL}_PROJECT` })
+    }
+    done()
+  }
+})
+
 export default [
   getJurisdictionSuggestionsLogic,
-  getProjectSuggestionsLogic
+  getProjectSuggestionsLogic,
+  getProjectsByUserLogic
 ]
