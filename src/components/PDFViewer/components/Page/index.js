@@ -193,6 +193,8 @@ export class Page extends Component {
       width: Math.ceil(renderContext.viewport.width)
     }
     
+    if (readyToRenderText && annotations.length === 0) onFinishRendering(id)
+    
     return (
       <div
         data-page-number={id}

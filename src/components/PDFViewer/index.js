@@ -65,7 +65,7 @@ export class PDFViewer extends Component {
     }
   }
   
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (!prevProps.document.content.data && this.props.document.content.data) {
       this.createPdf(this.props.document)
     }
@@ -76,7 +76,7 @@ export class PDFViewer extends Component {
       })
     }
     
-    if (!prevProps.scrollTop && this.props.scrollTop) {
+    if ((!prevProps.scrollTop && this.props.scrollTop) || (prevState.initialRender && !this.state.initialRender)) {
       this.scrollTop()
     }
   }
@@ -441,14 +441,12 @@ export class PDFViewer extends Component {
   onFinishRendering = pageNum => {
     if (this.state.initialRender) {
       if (pageNum === this.state.pages.length - 1) {
-        this.setState({
-          initialRender: false
-        }, () => {
-          setTimeout(() => {
-            this.scrollTop()
-            clearTimeout()
-          }, 1000)
-        })
+        setTimeout(() => {
+          this.setState({
+            initialRender: false
+          })
+          clearTimeout()
+        }, 1000)
       }
     }
   }
