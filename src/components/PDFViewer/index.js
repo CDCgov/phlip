@@ -76,7 +76,8 @@ export class PDFViewer extends Component {
       })
     }
     
-    if ((!prevProps.scrollTop && this.props.scrollTop) || (prevState.initialRender && !this.state.initialRender)) {
+    if ((!prevProps.scrollTop && this.props.scrollTop) ||
+      (prevState.initialRender && !this.state.initialRender && !this.props.annotationModeEnabled)) {
       this.scrollTop()
     }
   }
