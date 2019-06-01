@@ -91,7 +91,6 @@ const renderSuggestionsContainer = ({ containerProps, children }) => {
  */
 const getSuggestionValue = suggestion => suggestion
 
-
 /**
  * Default function for rendering suggestions
  * @param suggestion
