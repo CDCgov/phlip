@@ -576,9 +576,9 @@ export class PDFViewer extends Component {
             title="Are you trying to annotate?"
             closeButton={{ value: 'Dismiss' }}>
             <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-              You need to enable annotation mode to annotate for a selected answer. Click the 'Annotate' button next to an answer choice to enable annotation mode.
+              Click the 'Annotate' button next to an answer choice to annotate.
             </Typography>
-            
+            <Typography style={{ paddingBottom: 20 }} />
             <CheckboxLabel
               input={{ value: annoModeAlert.dontShowAgain, onChange: this.handleToggleDontShowAgain }}
               label="Don't show me this message again."
