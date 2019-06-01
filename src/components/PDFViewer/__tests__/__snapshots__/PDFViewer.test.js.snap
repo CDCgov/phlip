@@ -58,8 +58,15 @@ exports[`PDFViewer component should render correctly 1`] = `
         }
         variant="body1"
       >
-        You need to enable annotation mode to annotate for a selected answer. Click the 'Annotate' button next to an answer choice to enable annotation mode.
+        Click the 'Annotate' button next to an answer choice to annotate.
       </WithStyles(Typography)>
+      <WithStyles(Typography)
+        style={
+          Object {
+            "paddingBottom": 20,
+          }
+        }
+      />
       <WithStyles(CheckboxLabel)
         input={
           Object {
