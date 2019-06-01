@@ -26,13 +26,15 @@ export class DocumentList extends Component {
     isValidation: PropTypes.bool,
     questionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     saveUserAnswer: PropTypes.func,
-    apiErrorInfo: PropTypes.shape({
+    apiError: PropTypes.shape({
       text: PropTypes.string,
-      title: PropTypes.string
+      title: PropTypes.string,
+      open: PropTypes.bool
     }),
-    apiErrorOpen: PropTypes.bool,
+    currentAnnotationIndex: PropTypes.number,
     showEmptyDocs: PropTypes.bool,
-    shouldShowAnnoModeAlert: PropTypes.bool
+    shouldShowAnnoModeAlert: PropTypes.bool,
+    scrollTop: PropTypes.bool
   }
   
   static defaultProps = {
@@ -40,7 +42,13 @@ export class DocumentList extends Component {
     documents: [],
     annotations: [],
     showEmptyDocs: false,
-    apiErrorOpen: false
+    apiError: {
+      text: '',
+      title: '',
+      open: false
+    },
+    currentAnnotationIndex: 0,
+    scrollTop: false
   }
   
   constructor(props, context) {
@@ -113,6 +121,20 @@ export class DocumentList extends Component {
     this.props.actions.hideAnnoModeAlert()
   }
   
+  /**
+   * Handles changing current annotation index in annotation finder
+   */
+  changeAnnotationIndex = index => {
+    this.props.actions.changeAnnotationIndex(index)
+  }
+  
+  /**
+   * Sets scroll top to false after changing it to true
+   */
+  resetScrollTop = () => {
+    this.props.actions.resetScrollTop()
+  }
+  
   render() {
     const docNameStyle = {
       color: theme.palette.secondary.main,
@@ -125,8 +147,8 @@ export class DocumentList extends Component {
     const bannerText = { color: '#434343' }
     
     const {
-      annotationModeEnabled, annotations, docSelected, openedDoc, apiErrorOpen,
-      showEmptyDocs, apiErrorInfo, documents, annotatedDocs, shouldShowAnnoModeAlert
+      annotationModeEnabled, annotations, docSelected, openedDoc, currentAnnotationIndex, scrollTop,
+      showEmptyDocs, apiError, documents, annotatedDocs, shouldShowAnnoModeAlert
     } = this.props
     
     const { noTextContent } = this.state
@@ -151,8 +173,8 @@ export class DocumentList extends Component {
           </Typography>
         </FlexGrid>
         <Divider />
-        <FlexGrid container flex style={{ height: '100%', overflow: 'auto' }}>
-          {apiErrorOpen && <ApiErrorView error={apiErrorInfo.text} />}
+        <FlexGrid container flex style={{ height: '100%', overflow: 'auto', position: 'relative' }}>
+          {apiError.open && <ApiErrorView error={apiError.text} />}
           {showEmptyDocs &&
           <FlexGrid container align="center" justify="center" padding={10} flex>
             <Typography variant="display1" style={{ textAlign: 'center' }}>
@@ -197,7 +219,7 @@ export class DocumentList extends Component {
               </i>
             </Typography>}
           </FlexGrid>}
-          {(docSelected && !apiErrorOpen) &&
+          {(docSelected && !apiError.open) &&
           <PDFViewer
             allowSelection={annotationModeEnabled}
             document={openedDoc}
@@ -207,8 +229,12 @@ export class DocumentList extends Component {
             onCheckTextContent={this.onCheckTextContent}
             annotationModeEnabled={annotationModeEnabled}
             showAvatars
+            currentAnnotationIndex={currentAnnotationIndex}
+            changeAnnotationIndex={this.changeAnnotationIndex}
             showAnnoModeAlert={shouldShowAnnoModeAlert}
             onHideAnnoModeAlert={this.hideAnnoModeAlert}
+            scrollTop={scrollTop}
+            resetScrollTop={this.resetScrollTop}
           />}
           {!docSelected && documents.map((doc, i) => {
             const isRetrieving = (openedDoc._id === doc._id) && !docSelected
@@ -262,10 +288,10 @@ export const mapStateToProps = (state, ownProps) => {
   }
   
   const isValidation = state.scenes.codingValidation.coding.page === 'validation'
-  
   const annotatedDocIdsForAnswer = annotations.map(annotation => annotation.docId)
   const notAnnotatedDocIds = pageState.documents.ordered.filter(docId => !annotatedDocIdsForAnswer.includes(docId))
   const annotatedDocIds = pageState.documents.ordered.filter(docId => annotatedDocIdsForAnswer.includes(docId))
+  
   const annotatedForOpenDoc = annotations.map((annotation, index) => ({
     ...annotation,
     fullListIndex: index,
@@ -275,6 +301,14 @@ export const mapStateToProps = (state, ownProps) => {
         : currentUser.id
       : annotation.userId
   })).filter(annotation => annotation.docId === pageState.openedDoc._id)
+  
+  const annos = annotatedForOpenDoc.slice()
+  const sortedByPageAndPosition = annos.sort((a, b) => {
+    const diff = a.startPage - b.startPage
+    return diff === 0
+      ? b.rects[0].pdfPoints.y - a.rects[0].pdfPoints.y
+      : diff
+  }).map((anno, i) => ({ ...anno, sortPosition: i }))
   
   const allDocIds = new Set([...annotatedDocIds, ...notAnnotatedDocIds])
   const docArray = Array.from(allDocIds)
@@ -286,15 +320,16 @@ export const mapStateToProps = (state, ownProps) => {
         ? []
         : docArray.map(id => pageState.documents.byId[id]),
     annotatedDocs: annotatedDocIds,
-    annotations: annotatedForOpenDoc,
+    annotations: sortedByPageAndPosition,
     openedDoc: pageState.openedDoc || {},
     docSelected: pageState.docSelected || false,
     showEmptyDocs: pageState.showEmptyDocs,
-    apiErrorInfo: pageState.apiErrorInfo,
-    apiErrorOpen: pageState.apiErrorOpen,
+    apiError: pageState.apiError,
     annotationModeEnabled: pageState.annotationModeEnabled,
     enabledAnswerId: pageState.enabledAnswerId,
     shouldShowAnnoModeAlert: pageState.shouldShowAnnoModeAlert,
+    currentAnnotationIndex: pageState.currentAnnotationIndex,
+    scrollTop: pageState.scrollTop,
     isValidation
   }
 }

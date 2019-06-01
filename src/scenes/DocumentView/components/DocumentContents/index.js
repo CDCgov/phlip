@@ -29,7 +29,7 @@ export class DocumentContents extends Component {
           <Typography variant="subheading" id="docName">{document.name}</Typography>
         </FlexGrid>
         {error !== '' && <ApiErrorView error={error} />}
-        {document.content.data && <PDFViewer document={document} showAnnoModeAlert={false} />}
+        {document.content.data && <PDFViewer document={document} showAnnoModeAlert={false} isView />}
       </FlexGrid>
     )
   }

@@ -9,7 +9,7 @@ exports[`DocumentManagement - BulkModal should render correctly 1`] = `
   open={true}
 >
   <ModalTitle
-    title="Approve"
+    title="Approve Documents"
   />
   <WithStyles(Divider) />
   <ModalContent
@@ -46,11 +46,33 @@ exports[`DocumentManagement - BulkModal should render correctly 1`] = `
         type="column"
       >
         <WithStyles(Typography)
-          align="center"
           variant="body1"
         >
-          Number of Documents Selected: 
+          Do you want to approve other users' documents?
+        </WithStyles(Typography)>
+        <WithStyles(Typography)
+          style={
+            Object {
+              "padding": 10,
+            }
+          }
+        />
+        <WithStyles(Typography)
+          variant="body1"
+        >
+          Number of documents selected: 
           1
+        </WithStyles(Typography)>
+        <WithStyles(Typography)
+          style={
+            Object {
+              "paddingTop": 20,
+            }
+          }
+          variant="h"
+        >
+          Users: 
+          Tim Nguyen
         </WithStyles(Typography)>
       </FlexGrid>
     </FlexGrid>

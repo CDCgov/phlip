@@ -14,6 +14,7 @@ const props = {
   textContent: { items: [] },
   saveAnnotation: jest.fn(),
   cancelAnnotation: jest.fn(),
+  onFinishRendering: jest.fn(),
   allowSelection: false,
   id: 0,
   viewerDimensions: {

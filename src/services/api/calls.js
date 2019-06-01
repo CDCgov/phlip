@@ -41,6 +41,11 @@ let apiCalls = [
     path: () => '/projects/search'
   },
   {
+    name: 'searchProjectListByUser',
+    method: 'get',
+    path: () => '/projects/searchRecent'
+  },
+  {
     name: 'addProject',
     method: 'post',
     path: () => '/projects'

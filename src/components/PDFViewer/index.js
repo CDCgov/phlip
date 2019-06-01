@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Page from './components/Page'
+import AnnotationFinder from './components/AnnotationFinder'
 import PDFJS from 'pdfjs-dist/webpack'
 import { FlexGrid, CircularLoader, Alert, CheckboxLabel } from 'components'
 import './pdf_viewer.css'
@@ -20,17 +21,25 @@ export class PDFViewer extends Component {
     showAvatars: PropTypes.bool,
     annotationModeEnabled: PropTypes.bool,
     showAnnoModeAlert: PropTypes.bool,
-    onHideAnnoModeAlert: PropTypes.func
+    onHideAnnoModeAlert: PropTypes.func,
+    changeAnnotationIndex: PropTypes.func,
+    currentAnnotationIndex: PropTypes.number,
+    scrollTop: PropTypes.bool,
+    resetScrollTop: PropTypes.func,
+    isView: PropTypes.bool
   }
   
   static defaultProps = {
     annotations: [],
     document: {},
     allowSelection: false,
-    onCheckTextContent: () => {
-    },
     showAvatars: false,
-    showAnnoModeAlert: true
+    showAnnoModeAlert: true,
+    currentAnnotationIndex: 0,
+    scrollTop: false,
+    isView: false,
+    onCheckTextContent: () => {},
+    resetScrollTop: () => {}
   }
   
   constructor(props, context) {
@@ -46,17 +55,21 @@ export class PDFViewer extends Component {
       annoModeAlert: {
         open: false,
         dontShowAgain: false
-      }
+      },
+      initialRender: false
     }
   }
   
   componentDidMount() {
     if (this.props.document.content.data) {
       this.createPdf(this.props.document)
+      this.setState({
+        initialRender: true
+      })
     }
   }
   
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (!prevProps.document.content.data && this.props.document.content.data) {
       this.createPdf(this.props.document)
     }
@@ -65,6 +78,13 @@ export class PDFViewer extends Component {
       this.setState({
         pendingAnnotations: []
       })
+    }
+    
+    if (!this.props.isView) {
+      if ((!prevProps.scrollTop && this.props.scrollTop) ||
+        (prevState.initialRender && !this.state.initialRender && !this.props.annotationModeEnabled)) {
+        this.scrollTop()
+      }
     }
   }
   
@@ -120,6 +140,9 @@ export class PDFViewer extends Component {
       deleteIndex: null,
       deleteAnnotationIndexes: {}
     })
+    if (this.props.currentAnnotationIndex === this.props.annotations.length - 1) {
+      this.handleScrollAnnotation(this.props.currentAnnotationIndex - 1)
+    }
   }
   
   /**
@@ -410,7 +433,7 @@ export class PDFViewer extends Component {
   }
   
   /**
-   *
+   * Sets not showing annotation mode alert for the remainder of the app session
    */
   handleToggleDontShowAgain = () => {
     this.setState({
@@ -421,80 +444,152 @@ export class PDFViewer extends Component {
     })
   }
   
+  /**
+   * Handles scrolling to top of on initial render
+   * @param pageNum
+   */
+  onFinishRendering = pageNum => {
+    if (this.state.initialRender) {
+      if (pageNum === this.state.pages.length - 1) {
+        setTimeout(() => {
+          this.setState({
+            initialRender: false
+          })
+          clearTimeout()
+        }, 1000)
+      }
+    }
+  }
+  
+  /*
+   * checks to see if annotation layer has rendered
+   */
+  checkIfRendered = position => {
+    return document.getElementById(`annotation-${position}-0`)
+  }
+  
+  /**
+   * Scrolls to a specific annotations
+   * @param position
+   */
+  handleScrollAnnotation = position => {
+    let el = this.checkIfRendered(position)
+    
+    while (!el) {
+      el = this.checkIfRendered(position)
+      setTimeout(() => {
+      }, 1000)
+    }
+    
+    clearTimeout()
+    const container = document.getElementById('viewContainer')
+    const pageEl = el.offsetParent.offsetParent
+    this.props.changeAnnotationIndex(position)
+    container.scrollTo({ top: pageEl.offsetTop + el.offsetTop - 30, behavior: 'smooth' })
+  }
+  
+  /**
+   * Scrolls the document to the top of the page. Used when the user toggles a different coder for annotations
+   */
+  scrollTop = () => {
+    if (this.props.annotations.length === 0) {
+      const container = document.getElementById('viewContainer')
+      container.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      this.handleScrollAnnotation(0)
+    }
+    this.props.resetScrollTop()
+  }
+  
   render() {
-    const { pages, pendingAnnotations, deleteAnnotationIndexes, alertConfirmOpen, annoModeAlert } = this.state
-    const { annotations, allowSelection, showAvatars, annotationModeEnabled } = this.props
+    const {
+      pages, pendingAnnotations, deleteAnnotationIndexes, alertConfirmOpen, annoModeAlert
+    } = this.state
+    
+    const { annotations, allowSelection, showAvatars, annotationModeEnabled, currentAnnotationIndex } = this.props
     
     const alertActions = [
       { onClick: this.onRemoveAnnotation, value: 'Delete', type: 'button' }
     ]
     
+    const users = annotations.length > 0 ? Array.from(new Set(annotations.map(annotation => annotation.userId))) : []
+    
     return (
-      <div id="viewContainer" className="pdfViewer" ref={this.viewerRef}>
-        {pages.length > 0 && pages.map((page, i) => {
-          const annotationsByPage = this.filterAnnosByPage(annotations, i)
-          const pendingByPage = this.filterAnnosByPage(pendingAnnotations, i)
-          
-          return (
-            <Page
-              id={i}
-              page={page.page}
-              textContent={page.textContent}
-              viewerDimensions={{
-                width: this.viewerRef.current.clientWidth,
-                height: this.viewerRef.current.clientHeight
-              }}
-              key={`page-${i}`}
-              allowSelection={allowSelection}
-              ref={this[`page${i}ref`]}
-              annotations={annotationsByPage}
-              pendingAnnotations={pendingByPage}
-              saveAnnotation={this.saveAnnotation}
-              cancelAnnotation={this.cancelAnnotation}
-              getSelection={this.getSelection}
-              showConfirmDelete={this.confirmDelete}
-              showDeleteIcon={this.showDeleteIcon}
-              hideDeleteIcon={this.hideDeleteIcon}
-              annotationModeEnabled={annotationModeEnabled}
-              handleAnnoModeAlert={this.handleAnnoModeAlert}
-              confirmRemoveAnnotation={this.confirmRemoveAnnotation}
-              showAvatars={showAvatars}
-              deleteAnnotationIndex={(Object.keys(deleteAnnotationIndexes).length > 0 &&
-                deleteAnnotationIndexes.hasOwnProperty(i))
-                ? deleteAnnotationIndexes[i]
-                : null
-              }
+      <>
+        {(pages.length > 0 && annotations.length > 0) &&
+        <AnnotationFinder
+          userIds={users}
+          count={annotations.length}
+          current={currentAnnotationIndex}
+          handleScrollAnnotation={this.handleScrollAnnotation}
+        />}
+        <div id="viewContainer" className="pdfViewer" style={{ position: 'relative' }} ref={this.viewerRef}>
+          {pages.length > 0 && pages.map((page, i) => {
+            const annotationsByPage = this.filterAnnosByPage(annotations, i)
+            const pendingByPage = this.filterAnnosByPage(pendingAnnotations, i)
+  
+            return (
+              <Page
+                id={i}
+                page={page.page}
+                textContent={page.textContent}
+                viewerDimensions={{
+                  width: this.viewerRef.current.clientWidth,
+                  height: this.viewerRef.current.clientHeight
+                }}
+                key={`page-${i}`}
+                allowSelection={allowSelection}
+                ref={this[`page${i}ref`]}
+                annotations={annotationsByPage}
+                pendingAnnotations={pendingByPage}
+                saveAnnotation={this.saveAnnotation}
+                cancelAnnotation={this.cancelAnnotation}
+                getSelection={this.getSelection}
+                showConfirmDelete={this.confirmDelete}
+                showDeleteIcon={this.showDeleteIcon}
+                hideDeleteIcon={this.hideDeleteIcon}
+                annotationModeEnabled={annotationModeEnabled}
+                handleAnnoModeAlert={this.handleAnnoModeAlert}
+                confirmRemoveAnnotation={this.confirmRemoveAnnotation}
+                showAvatars={showAvatars}
+                onFinishRendering={this.onFinishRendering}
+                deleteAnnotationIndex={(Object.keys(deleteAnnotationIndexes).length > 0 &&
+                  deleteAnnotationIndexes.hasOwnProperty(i))
+                  ? deleteAnnotationIndexes[i]
+                  : null
+                }
+              />
+            )
+          })}
+          <Alert
+            actions={alertActions}
+            open={alertConfirmOpen}
+            onCloseAlert={this.onCancelRemove}
+            title="Confirm deletion">
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+              Do you want to delete this annotation?
+            </Typography>
+          </Alert>
+          <Alert
+            open={annoModeAlert.open}
+            onCloseAlert={this.dismissAnnoAlert}
+            title="Are you trying to annotate?"
+            closeButton={{ value: 'Dismiss' }}>
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
+              You need to enable annotation mode to annotate for a selected answer. Click the 'Annotate' button next to an answer choice to enable annotation mode.
+            </Typography>
+            
+            <CheckboxLabel
+              input={{ value: annoModeAlert.dontShowAgain, onChange: this.handleToggleDontShowAgain }}
+              label="Don't show me this message again."
             />
-          )
-        })}
-        <Alert
-          actions={alertActions}
-          open={alertConfirmOpen}
-          onCloseAlert={this.onCancelRemove}
-          title="Confirm deletion">
-          <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            Do you want to delete this annotation?
-          </Typography>
-        </Alert>
-        <Alert
-          open={annoModeAlert.open}
-          onCloseAlert={this.dismissAnnoAlert}
-          title="Are you trying to annotate?"
-          closeButton={{ value: 'Dismiss' }}>
-          <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            Click the 'Annotate' button next to an answer choice to annotate.
-          </Typography>
-          <Typography style={{ paddingBottom:20 }} />
-          <CheckboxLabel
-            input={{ value: annoModeAlert.dontShowAgain, onChange: this.handleToggleDontShowAgain }}
-            label="Don't show me this message again."
-          />
-        </Alert>
-        {pages.length === 0 &&
-        <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
-          <CircularLoader />
-        </FlexGrid>}
-      </div>
+          </Alert>
+          {pages.length === 0 &&
+          <FlexGrid container flex style={{ height: '100%' }} align="center" justify="center">
+            <CircularLoader />
+          </FlexGrid>}
+        </div>
+      </>
     )
   }
 }
