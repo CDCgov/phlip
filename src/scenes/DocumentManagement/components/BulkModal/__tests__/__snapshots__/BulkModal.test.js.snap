@@ -69,7 +69,7 @@ exports[`DocumentManagement - BulkModal should render correctly 1`] = `
               "paddingTop": 20,
             }
           }
-          variant="h"
+          variant="body2"
         >
           Users: 
           Tim Nguyen
