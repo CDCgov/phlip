@@ -110,12 +110,19 @@ export const BulkModal = props => {
           </FlexGrid>}
           <FlexGrid>
             {ownerList.length > 0 &&
-                <>
-                  <Typography variant="body1">{genMessage(bulkType)}</Typography>
-                  <Typography style={{ padding:10 }} />
+            <>
+              <Typography variant="body1">{genMessage(bulkType)}</Typography>
+              <Typography style={{ padding:10 }} />
+              <Typography variant="body1">Number of documents selected: {docCount}</Typography><Typography variant="body2" style={{ paddingTop:20 }}>Users: {ownerList.join(', ')}</Typography>
              </> }
-            <Typography variant="body1">Number of documents selected: {docCount}</Typography>
-            {ownerList.length > 0 && <Typography variant="body2" style={{ paddingTop:20 }}>Users: {ownerList.join(', ')}</Typography>}
+            {bulkType === 'delete' &&
+            <>
+              { ownerList.length === 0 && <Typography variant="body1">Do you want to delete {docCount} document{docCount>1?'s':''}? </Typography>}
+              <Typography style={{ paddingTop:20 }} >
+                  Warning: Deleting a document will remove all associated annotations for every project and jurisdiction.
+              </Typography>
+              </>
+            }
           </FlexGrid>
         </FlexGrid>
       </ModalContent>
