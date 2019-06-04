@@ -56,7 +56,7 @@ export const QuestionContent = props => {
   }
   
   return (
-    <FlexGrid container flex justify="space-between">
+    <FlexGrid container flex justify="space-between" style={{ overflow: 'auto' }}>
       <FlexGrid
         container
         type="row"
