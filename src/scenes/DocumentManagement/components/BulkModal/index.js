@@ -119,7 +119,7 @@ export const BulkModal = props => {
             <>
               { ownerList.length === 0 && <Typography variant="body1">Do you want to delete {docCount} document{docCount>1?'s':''}? </Typography>}
               <Typography style={{ paddingTop:20 }} >
-                  Warning: Deleting a document will remove all associated annotations for every project and jurisdiction.
+                <span style={{ fontSize:18, fontWeight:500 }}>Warning:</span> Deleting a document will remove all associated annotations for every project and jurisdiction.
               </Typography>
               </>
             }
