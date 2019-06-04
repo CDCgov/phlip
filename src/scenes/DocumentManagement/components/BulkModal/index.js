@@ -113,8 +113,12 @@ export const BulkModal = props => {
             <>
               <Typography variant="body1">{genMessage(bulkType)}</Typography>
               <Typography style={{ padding:10 }} />
-              <Typography variant="body1">Number of documents selected: {docCount}</Typography><Typography variant="body2" style={{ paddingTop:20 }}>Users: {ownerList.join(', ')}</Typography>
+              <Typography variant="body1">Number of documents selected: {docCount}</Typography>
+              <Typography variant="body2" style={{ paddingTop:20 }}>Users: {ownerList.join(', ')}</Typography>
              </> }
+            { ownerList.length === 0 && bulkType !== 'delete' &&
+              <Typography variant="body1">Number of documents selected: {docCount}</Typography>
+            }
             {bulkType === 'delete' &&
             <>
               { ownerList.length === 0 && <Typography variant="body1">Do you want to delete {docCount} document{docCount>1?'s':''}? </Typography>}
