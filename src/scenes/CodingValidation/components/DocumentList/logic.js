@@ -1,6 +1,21 @@
 import { createLogic } from 'redux-logic'
 import { types } from './actions'
 
+/*
+* Adds the document citation string to the action
+ */
+const addCitationLogic = createLogic({
+  type: [types.ON_SAVE_ANNOTATION],
+  transform({ action, getState }, next) {
+    const state = getState().scenes.codingValidation.documentList
+    const doc = state.documents.byId[action.annotation.docId]
+    next({
+      ...action,
+      citation: doc.citation || ''
+    })
+  }
+})
+
 /**
  * Get a list of documents for this project / jurisdiction
  * @type {Logic<object, undefined, undefined, {action?: *, docApi?: *}, undefined, string[]>}
@@ -80,5 +95,6 @@ const showCoderAnnotations = createLogic({
 
 export default [
   showCoderAnnotations,
-  getApprovedDocumentsLogic
+  getApprovedDocumentsLogic,
+  addCitationLogic
 ]
