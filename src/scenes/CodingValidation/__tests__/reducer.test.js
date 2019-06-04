@@ -863,7 +863,8 @@ describe('CodingValidation reducer', () => {
         annotation: {
           text: 'text annotation',
           rects: []
-        }
+        },
+        citation: '123-123'
       }
 
       const currentState = getState({ question: schemeById[1], userAnswers: { ...userAnswersCoded } })
@@ -877,6 +878,7 @@ describe('CodingValidation reducer', () => {
             ...userAnswersCoded[1].answers,
             123: {
               ...userAnswersCoded[1].answers[123],
+              pincite: `${userAnswersCoded[1].answers[123].pincite}; 123-123`,
               annotations: [{ text: 'text annotation', rects: [] }]
             }
           }
@@ -891,7 +893,8 @@ describe('CodingValidation reducer', () => {
         answerId: 432,
         annotation: {
           text: 'text annotation', rects: []
-        }
+        },
+        citation: '123-123'
       }
 
       const currentState = getState({
@@ -911,6 +914,7 @@ describe('CodingValidation reducer', () => {
             answers: {
               432: {
                 ...currentState.userAnswers[4][10].answers[432],
+                pincite: '123-123',
                 annotations: [{ text: 'text annotation', rects: [] }]
               }
             }

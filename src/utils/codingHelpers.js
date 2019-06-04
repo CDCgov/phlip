@@ -383,6 +383,7 @@ export const handleUpdateAnnotations = (state, action) => {
   
   const parsedAnnotations = currentUserAnswers[action.answerId].annotations
   const updatedAnnotations = [...parsedAnnotations, action.annotation]
+  const currentPincite = currentUserAnswers[action.answerId].pincite
   
   return {
     ...currentUserAnswers,
@@ -390,8 +391,8 @@ export const handleUpdateAnnotations = (state, action) => {
       ...currentUserAnswers[action.answerId],
       annotations: updatedAnnotations,
       pincite: action.citation !== ''
-        ? `${currentUserAnswers[action.answerId].pincite}; ${action.citation}`
-        : currentUserAnswers[action.answerId].pincite
+        ? `${currentPincite}${currentPincite.length > 0 ? '; ' : ''}${action.citation}`
+        : currentPincite
     }
   }
 }
