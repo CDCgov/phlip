@@ -15,7 +15,7 @@ export const DocList = props => {
     onSelectAllFiles, onSelectOneFile, rowsPerPage, page, sortBy, sortDirection,
     onChangePage, onChangeRows, documents, docCount, allSelected, onBulkAction, handleSortRequest
   } = props
-
+  
   return (
     <FlexGrid container flex style={{ overflow: 'hidden' }}>
       <Table
@@ -52,7 +52,9 @@ export const DocList = props => {
               count={docCount}
               rowsPerPage={rowsPerPage}
               page={page}
-              onChangePage={(event, page) => onChangePage(page)}
+              onChangePage={(event, page) => {
+                if (event !== null) onChangePage(page)
+              }}
               onChangeRowsPerPage={(event) => onChangeRows(event.target.value)}
             />
           </TableRow>

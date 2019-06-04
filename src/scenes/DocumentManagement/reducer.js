@@ -71,7 +71,8 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         },
         getDocumentsInProgress: false,
         matchedDocs: [],
-        pageError: ''
+        pageError: '',
+        page: 0
       }
       
     case types.GET_DOCUMENTS_FAIL:
@@ -100,13 +101,13 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
     
     case types.ON_ROWS_CHANGE:
       updatedArr = Object.values(state.matchedDocs.length !== 0 ? state.matchedDocs : state.documents.byId)
+      let page = state.page
       if (action.rowsPerPage === 'All') {
         rows = updatedArr.length
         page = 0
       } else {
         rows = parseInt(action.rowsPerPage)
       }
-      let page = state.page
       return {
         ...state,
         documents: {
@@ -164,8 +165,9 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(action.payload, state.page, state.rowsPerPage, state.sortBy, state.sortDirection)
+          visible: sortAndSlice(action.payload, 0, state.rowsPerPage, state.sortBy, state.sortDirection)
         },
+        page: 0,
         matchedDocs: action.payload
       }
     
