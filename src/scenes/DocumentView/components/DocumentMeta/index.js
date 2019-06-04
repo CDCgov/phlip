@@ -54,7 +54,8 @@ export class DocumentMeta extends Component {
       alertInfo: {
         title: '',
         text: ''
-      }
+      },
+      alertType: ''
     }
   }
   
@@ -171,7 +172,8 @@ export class DocumentMeta extends Component {
       alertInfo: {
         title: `Delete ${capitalizeFirstLetter(type)}`,
         text: `Do you want to delete ${type}: ${list[index].name} from this document?`
-      }
+      },
+      alertType: 'delete'
     })
   }
   
@@ -204,14 +206,36 @@ export class DocumentMeta extends Component {
   }
   
   addProJur = () => {
-    if (this.state.selectedJurisdiction !== null) {
-      this.props.actions.addProJur('jurisdictions', this.state.selectedJurisdiction)
-      this.props.actions.updateDocRequest('jurisdictions', this.state.selectedJurisdiction, 'add')
-    }
-    
-    if (this.state.selectedProject !== null) {
-      this.props.actions.addProJur('projects', this.state.selectedProject)
-      this.props.actions.updateDocRequest('projects', this.state.selectedProject, 'add')
+    if (this.state.showAddJurisdiction) {
+      if (this.state.selectedJurisdiction !== null) {
+        this.props.actions.addProJur('jurisdictions', this.state.selectedJurisdiction)
+        this.props.actions.updateDocRequest('jurisdictions', this.state.selectedJurisdiction, 'add')
+      } else {
+        // should show an error message here
+        this.setState({
+          alertOpen: true,
+          alertInfo: {
+            title: 'Invalid Jurisdiction',
+            text: `You must select a jurisdiction from the drop-down list`
+          },
+          alertType: 'projur'
+        })
+      }
+    } else {
+      if (this.state.selectedProject !== null) {
+        this.props.actions.addProJur('projects', this.state.selectedProject)
+        this.props.actions.updateDocRequest('projects', this.state.selectedProject, 'add')
+      } else {
+        // should show error message here
+        this.setState({
+          alertOpen: true,
+          alertInfo: {
+            title: 'Invalid Project',
+            text: `You must select a project from the drop-down list`
+          },
+          alertType: 'projur'
+        })
+      }
     }
   }
   
@@ -225,7 +249,19 @@ export class DocumentMeta extends Component {
       alertOpen: false,
       alertInfo: {},
       typeToDelete: '',
-      [`${typeToDelete}ToDelete`]: {}
+      [`${typeToDelete}ToDelete`]: {},
+      alertType: ''
+    })
+  }
+
+  /**
+     * Handles when the user cancels out of deleting a jurisdiction or project
+     */
+  onCancelUpdateProJur = () => {
+    this.setState({
+      alertOpen: false,
+      alertInfo: {},
+      alertType: ''
     })
   }
   
@@ -282,7 +318,7 @@ export class DocumentMeta extends Component {
     } = this.props
     
     const {
-      alertOpen, alertInfo, hoveringOn, hoverIndex, showModal, showAddJurisdiction
+      alertOpen, alertInfo, hoveringOn, hoverIndex, showModal, showAddJurisdiction, alertType
     } = this.state
     
     const options = [
@@ -314,6 +350,14 @@ export class DocumentMeta extends Component {
         onClick: this.onContinueDelete
       }
     ]
+
+    const projurActions = [
+      {
+        value: 'Dismiss',
+        type: 'button',
+        onClick: this.onCancelUpdateProJur
+      }
+    ]
     
     const metaStyling = { fontSize: '.8125rem', padding: '0 5px' }
     const iconStyle = { color: '#757575', fontSize: 18 }
@@ -322,7 +366,12 @@ export class DocumentMeta extends Component {
     return (
       <>
         <ApiErrorAlert open={apiErrorOpen} content={apiErrorInfo.text} onCloseAlert={this.closeAlert} />
-        <Alert open={alertOpen} actions={alertActions} title={alertInfo.title} onCloseAlert={this.onCancelDelete}>
+        <Alert open={alertOpen && alertType === 'delete'} actions={alertActions} title={alertInfo.title} onCloseAlert={this.onCancelDelete}>
+          <Typography variant="body1">
+            {alertInfo.text}
+          </Typography>
+        </Alert>
+        <Alert open={alertOpen && alertType === 'projur'} hideClose actions={projurActions} title={alertInfo.title} onCloseAlert={this.onCancelUpdateProJur}>
           <Typography variant="body1">
             {alertInfo.text}
           </Typography>
