@@ -342,7 +342,7 @@ const uploadRequestLogic = createLogic({
         reject({
           type: types.REJECT_EMPTY_JURISDICTIONS,
           error: noJurs.length > 0
-            ? 'One or more documents are missing a valid jurisdiction.'
+            ? 'You must select a jurisdiction from the drop-down list.'
             : 'You must select a jurisdiction from the autocomplete list for each document.',
           invalidDocs: noJurs.length > 0 ? noJurs : noJurIds
         })

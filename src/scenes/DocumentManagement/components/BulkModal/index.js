@@ -9,8 +9,8 @@ import Divider from '@material-ui/core/Divider'
 import { CircularLoader } from 'components'
 
 const typeToTitle = {
-  'delete': 'Delete',
-  'approve': 'Approve',
+  'delete': 'Delete Documents',
+  'approve': 'Approve Documents',
   'project': 'Assign Project',
   'jurisdiction': 'Assign Jurisdiction'
 }
@@ -40,7 +40,8 @@ export const BulkModal = props => {
     onCloseModal,
     open,
     buttonInfo,
-    onConfirmAction
+    onConfirmAction,
+    ownerList
   } = props
   
   const cancelButton = {
@@ -61,7 +62,14 @@ export const BulkModal = props => {
       disabled: buttonInfo.disabled
     }
   ]
-  
+
+  const genMessage = (bulkType) => {
+    if (['project', 'jurisdiction'].includes(bulkType)) {
+      return `Do you want to assign this ${bulkType} to other users' documents?`
+    } else {
+      return `Do you want to ${bulkType} other users' documents?`
+    }
+  }
   return (
     <Modal onClose={onCloseModal} open={open} maxWidth="md" hideOverflow={false} id="bulkConfirmBox">
       <ModalTitle title={typeToTitle[bulkType]} />
@@ -101,7 +109,24 @@ export const BulkModal = props => {
             />
           </FlexGrid>}
           <FlexGrid>
-            <Typography variant="body1" align="center">Number of Documents Selected: {docCount}</Typography>
+            {ownerList.length > 0 &&
+            <>
+              <Typography variant="body1">{genMessage(bulkType)}</Typography>
+              <Typography style={{ padding:10 }} />
+              <Typography variant="body1">Number of documents selected: {docCount}</Typography>
+              <Typography variant="body2" style={{ paddingTop:20 }}>Users: {ownerList.join(', ')}</Typography>
+             </> }
+            { ownerList.length === 0 && bulkType !== 'delete' &&
+              <Typography variant="body1">Number of documents selected: {docCount}</Typography>
+            }
+            {bulkType === 'delete' &&
+            <>
+              { ownerList.length === 0 && <Typography variant="body1">Do you want to delete {docCount} document{docCount>1?'s':''}? </Typography>}
+              <Typography style={{ paddingTop:20 }} >
+                <span style={{ fontSize:18, fontWeight:500 }}>Warning:</span> Deleting a document will remove all associated annotations for every project and jurisdiction.
+              </Typography>
+              </>
+            }
           </FlexGrid>
         </FlexGrid>
       </ModalContent>
@@ -123,7 +148,8 @@ BulkModal.propTypes = {
   docCount: PropTypes.number,
   onCloseModal: PropTypes.func,
   onConfirmAction: PropTypes.func,
-  buttonInfo: PropTypes.object
+  buttonInfo: PropTypes.object,
+  ownerList: PropTypes.array
 }
 
 export default BulkModal

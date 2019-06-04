@@ -44,6 +44,7 @@ const ProJurSearch = props => {
             error: showProjectError
           }}
           handleSuggestionSelected={onSuggestionSelected('project')}
+          suggestionType='project'
         />
       </FlexGrid>
       {showJurSearch &&

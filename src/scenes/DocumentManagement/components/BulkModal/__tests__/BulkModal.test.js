@@ -14,7 +14,8 @@ const props = {
   onCloseModal: jest.fn(),
   open: true,
   buttonInfo: { inProgress: false, diabled: false },
-  onConfirmAction: jest.fn()
+  onConfirmAction: jest.fn(),
+  ownerList: ['Tim Nguyen']
 }
 
 describe('DocumentManagement - BulkModal', () => {

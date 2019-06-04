@@ -279,12 +279,12 @@ export class DocumentManagement extends Component {
     
     return info
   }
-  
+
   render() {
     const {
       apiErrorOpen, apiErrorInfo, getDocumentsInProgress, pageError, documents, docCount,
       actions, allSelected, page, rowsPerPage, checkedCount, sortBy, sortDirection, jurisdictionSearchValue,
-      jurisdictionSuggestions, projectSearchValue, projectSuggestions
+      jurisdictionSuggestions, projectSearchValue, projectSuggestions, checkedDocsOwner
     } = this.props
     
     const { bulkActionType, showModal } = this.state
@@ -343,6 +343,7 @@ export class DocumentManagement extends Component {
           onGetSuggestions={this.handleGetSuggestions}
           onSearchValueChange={this.handleSearchValueChange}
           docCount={checkedCount}
+          ownerList = {checkedDocsOwner}
           onSuggestionSelected={this.handleSuggestionSelected}
           onConfirmAction={this.handleBulkConfirm}
           buttonInfo={this.getButtonInfo()}
@@ -357,7 +358,16 @@ export class DocumentManagement extends Component {
 /* istanbul ignore next */
 const mapStateToProps = state => {
   const docManage = state.scenes.docManage.main
+  const currentUser = state.data.user.currentUser
+  let checkedDocsOwners = []
+  const curuserName = (currentUser.firstName.trim() + ' ' + currentUser.lastName.trim() ).trim()
+  docManage.list.documents.checked.map(docId => {
+    let uploadedBy = (docManage.list.documents.byId[docId].uploadedBy.firstName.trim() + ' '+ docManage.list.documents.byId[docId].uploadedBy.lastName.trim()).trim()
+    if (checkedDocsOwners.indexOf(uploadedBy) === -1 && (uploadedBy !== curuserName))
+      checkedDocsOwners.push(uploadedBy)
+  })
   return {
+    checkedDocsOwner: checkedDocsOwners,
     documents: docManage.list.documents.visible,
     checkedDocs: docManage.list.documents.checked,
     checkedCount: docManage.list.documents.checked.length,

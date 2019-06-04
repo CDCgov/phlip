@@ -113,7 +113,7 @@ describe('Document Management - Upload logic', () => {
           expect(store.actions).toEqual([
             {
               type: types.REJECT_EMPTY_JURISDICTIONS,
-              error: 'One or more documents are missing a valid jurisdiction.',
+              error: 'You must select a jurisdiction from the drop-down list.',
               invalidDocs: [
                 { name: 'doc1', jurisdictions: { value: { name: '' } } },
                 { name: 'doc2', jurisdictions: { value: { name: '' } } }
