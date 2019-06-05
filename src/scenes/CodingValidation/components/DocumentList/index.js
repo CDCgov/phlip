@@ -34,7 +34,8 @@ export class DocumentList extends Component {
     currentAnnotationIndex: PropTypes.number,
     showEmptyDocs: PropTypes.bool,
     shouldShowAnnoModeAlert: PropTypes.bool,
-    scrollTop: PropTypes.bool
+    scrollTop: PropTypes.bool,
+    gettingDocs: PropTypes.bool
   }
   
   static defaultProps = {
@@ -48,7 +49,8 @@ export class DocumentList extends Component {
       open: false
     },
     currentAnnotationIndex: 0,
-    scrollTop: false
+    scrollTop: false,
+    gettingDocs: false
   }
   
   constructor(props, context) {
@@ -148,7 +150,7 @@ export class DocumentList extends Component {
     
     const {
       annotationModeEnabled, annotations, docSelected, openedDoc, currentAnnotationIndex, scrollTop,
-      showEmptyDocs, apiError, documents, annotatedDocs, shouldShowAnnoModeAlert
+      showEmptyDocs, apiError, documents, annotatedDocs, shouldShowAnnoModeAlert, gettingDocs
     } = this.props
     
     const { noTextContent } = this.state
@@ -175,10 +177,13 @@ export class DocumentList extends Component {
         <Divider />
         <FlexGrid container flex style={{ height: '100%', overflow: 'auto', position: 'relative' }}>
           {apiError.open && <ApiErrorView error={apiError.text} />}
-          {showEmptyDocs &&
-          <FlexGrid container align="center" justify="center" padding={10} flex>
+          {(showEmptyDocs || gettingDocs) && <FlexGrid container align="center" justify="center" padding={10} flex>
             <Typography variant="display1" style={{ textAlign: 'center' }}>
-              There are no approved or assigned documents for this project and jurisdiction.
+              {showEmptyDocs
+                ? 'There are no approved or assigned documents for this project and jurisdiction.'
+                : 'Loading...'}
+              {gettingDocs &&
+              <span style={{ marginLeft: 10 }}><CircularLoader color="primary" thickness={5} size={28} /></span>}
             </Typography>
           </FlexGrid>}
           {(!showEmptyDocs && annotationModeEnabled) &&
@@ -330,7 +335,8 @@ export const mapStateToProps = (state, ownProps) => {
     shouldShowAnnoModeAlert: pageState.shouldShowAnnoModeAlert,
     currentAnnotationIndex: pageState.currentAnnotationIndex,
     scrollTop: pageState.scrollTop,
-    isValidation
+    isValidation,
+    gettingDocs: pageState.gettingDocs
   }
 }
 

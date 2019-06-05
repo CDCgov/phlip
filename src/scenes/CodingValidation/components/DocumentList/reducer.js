@@ -31,7 +31,8 @@ export const INITIAL_STATE = {
   },
   currentAnnotationIndex: 0,
   shouldShowAnnoModeAlert: true,
-  scrollTop: false
+  scrollTop: false,
+  gettingDocs: false
 }
 
 const mergeName = docObj => ({
@@ -57,7 +58,8 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           ? Object.keys(obj).includes(state.openedDoc._id)
             ? { docSelected: true }
             : { docSelected: false, openedDoc: {} }
-          : {}
+          : {},
+        gettingDocs: false
       }
     
     case types.GET_APPROVED_DOCUMENTS_FAIL:
@@ -67,7 +69,8 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           text: 'Failed to get the list of approved documents.',
           title: 'Request failed',
           open: true
-        }
+        },
+        gettingDocs: false
       }
     
     case types.GET_DOC_CONTENTS_REQUEST:
@@ -165,9 +168,20 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         ...state,
         docSelected: false,
         annotationModeEnabled: false,
+        showEmptyDocs: false,
         enabledAnswerId: '',
         enabledUserId: '',
-        annotations: []
+        annotations: [],
+        documents: {
+          byId: {},
+          allIds: [],
+          ordered: []
+        },
+        openedDoc: {
+          _id: '',
+          content: {}
+        },
+        gettingDocs: true
       }
     
     case codingTypes.GET_QUESTION_SUCCESS:
@@ -190,13 +204,13 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         ...INITIAL_STATE,
         shouldShowAnnoModeAlert: action.isLogout ? true : state.shouldShowAnnoModeAlert
       }
-      
+    
     case types.CHANGE_ANNOTATION_INDEX:
       return {
         ...state,
         currentAnnotationIndex: action.index
       }
-      
+    
     case types.RESET_SCROLL_TOP:
       return {
         ...state,

@@ -153,7 +153,7 @@ export class DocumentManagement extends Component {
       this.setState({ showModal: true, bulkActionType: actionType })
     }
   }
-
+  
   /**
    * Get suggestions for some type of autocomplete search
    * @param suggestionType
@@ -236,7 +236,7 @@ export class DocumentManagement extends Component {
       this.handleClearSuggestions('jurisdiction')
       this.props.actions.jurisdictionAutocomplete.clearAll()
     }
-  
+    
     if (this.state.bulkActionType === 'project') {
       this.handleClearSuggestions('project')
       this.props.actions.projectAutocomplete.clearAll()
@@ -279,7 +279,7 @@ export class DocumentManagement extends Component {
     
     return info
   }
-
+  
   render() {
     const {
       apiErrorOpen, apiErrorInfo, getDocumentsInProgress, pageError, documents, docCount,
@@ -343,7 +343,7 @@ export class DocumentManagement extends Component {
           onGetSuggestions={this.handleGetSuggestions}
           onSearchValueChange={this.handleSearchValueChange}
           docCount={checkedCount}
-          ownerList = {checkedDocsOwner}
+          ownerList={checkedDocsOwner}
           onSuggestionSelected={this.handleSuggestionSelected}
           onConfirmAction={this.handleBulkConfirm}
           buttonInfo={this.getButtonInfo()}
@@ -360,12 +360,14 @@ const mapStateToProps = state => {
   const docManage = state.scenes.docManage.main
   const currentUser = state.data.user.currentUser
   let checkedDocsOwners = []
-  const curuserName = (currentUser.firstName.trim() + ' ' + currentUser.lastName.trim() ).trim()
+  const curuserName = (currentUser.firstName.trim() + ' ' + currentUser.lastName.trim()).trim()
   docManage.list.documents.checked.map(docId => {
-    let uploadedBy = (docManage.list.documents.byId[docId].uploadedBy.firstName.trim() + ' '+ docManage.list.documents.byId[docId].uploadedBy.lastName.trim()).trim()
+    let uploadedBy = (docManage.list.documents.byId[docId].uploadedBy.firstName.trim() + ' ' +
+      docManage.list.documents.byId[docId].uploadedBy.lastName.trim()).trim()
     if (checkedDocsOwners.indexOf(uploadedBy) === -1 && (uploadedBy !== curuserName))
       checkedDocsOwners.push(uploadedBy)
   })
+  
   return {
     checkedDocsOwner: checkedDocsOwners,
     documents: docManage.list.documents.visible,
