@@ -95,14 +95,16 @@ export class ProjectList extends Component {
    * @param event
    */
   handleClickAway = event => {
-    if (this.props.location.pathname === '/home' && isRouteOk(this.props.history)) {
-      const parent = event.target.offsetParent ? event.target.offsetParent : event.target.parentNode
-      const expand = (this.checkExpand(event.target) && this.checkExpand(parent))
-        && this.checkTargetPath(event.path)
-      
-      this.setState({
-        expanded: expand ? 0 : this.state.expanded
-      })
+    if (event.offsetX <= event.target.clientWidth && event.offsetY <= event.target.clientHeight) {
+      if (this.props.location.pathname === '/home' && isRouteOk(this.props.history)) {
+        const parent = event.target.offsetParent ? event.target.offsetParent : event.target.parentNode
+        const expand = (this.checkExpand(event.target) && this.checkExpand(parent))
+          && this.checkTargetPath(event.path)
+    
+        this.setState({
+          expanded: expand ? 0 : this.state.expanded
+        })
+      }
     }
   }
   
