@@ -373,9 +373,7 @@ const mapStateToProps = state => {
     documents: docManage.list.documents.visible,
     checkedDocs: docManage.list.documents.checked,
     checkedCount: docManage.list.documents.checked.length,
-    docCount: docManage.list.matchedDocs.length !== 0
-      ? docManage.list.matchedDocs.length
-      : docManage.list.documents.allIds.length,
+    docCount: docManage.list.count,
     page: docManage.list.page,
     rowsPerPage: docManage.list.rowsPerPage,
     allSelected: docManage.list.allSelected,

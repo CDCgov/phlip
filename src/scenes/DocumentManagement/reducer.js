@@ -11,7 +11,8 @@ export const INITIAL_STATE = {
     byId: {},
     allIds: [],
     visible: [],
-    checked: []
+    checked: [],
+    matches: []
   },
   rowsPerPage: '10',
   page: 0,
@@ -25,8 +26,8 @@ export const INITIAL_STATE = {
   sortBy: 'uploadedDate',
   sortDirection: 'desc',
   getDocumentsInProgress: false,
-  matchedDocs: [],
-  pageError: ''
+  pageError: '',
+  count: 0
 }
 
 const mergeName = docObj => ({
@@ -67,12 +68,13 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           byId: obj,
           allIds: Object.keys(obj),
           visible: sortAndSlice(Object.values(obj), 0, state.rowsPerPage, state.sortBy, state.sortDirection),
-          checked: []
+          checked: [],
+          matches: []
         },
         getDocumentsInProgress: false,
-        matchedDocs: [],
         pageError: '',
-        page: 0
+        page: 0,
+        count: Object.keys(obj).length
       }
       
     case types.GET_DOCUMENTS_FAIL:
@@ -83,13 +85,12 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.ON_PAGE_CHANGE:
-      let updatedArr = state.matchedDocs.length !== 0 ? state.matchedDocs : state.documents.byId
       return {
         ...state,
         documents: {
           ...state.documents,
           visible: sortAndSlice(
-            Object.values(updatedArr),
+            action.payload,
             action.page,
             state.rowsPerPage,
             state.sortBy,
@@ -100,10 +101,9 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.ON_ROWS_CHANGE:
-      updatedArr = Object.values(state.matchedDocs.length !== 0 ? state.matchedDocs : state.documents.byId)
       let page = state.page
       if (action.rowsPerPage === 'All') {
-        rows = updatedArr.length
+        rows = action.payload.length
         page = 0
       } else {
         rows = parseInt(action.rowsPerPage)
@@ -112,7 +112,7 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         ...state,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(updatedArr, page, rows, state.sortBy, state.sortDirection)
+          visible: sortAndSlice(action.payload, page, rows, state.sortBy, state.sortDirection)
         },
         page,
         rowsPerPage: action.rowsPerPage
@@ -157,18 +157,22 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           byId: obj,
           allIds: Object.keys(obj),
           visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection)
-        }
+        },
+        count: Object.keys(obj).length
       }
     
     case types.SEARCH_VALUE_CHANGE:
+      const sorted = sortAndSlice(action.payload, 0, state.rowsPerPage, state.sortBy, state.sortDirection)
+      
       return {
         ...state,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(action.payload, 0, state.rowsPerPage, state.sortBy, state.sortDirection)
+          visible: sorted,
+          matches: action.payload
         },
         page: 0,
-        matchedDocs: action.payload
+        count: action.payload.length
       }
     
     case types.BULK_DELETE_REQUEST:
@@ -190,10 +194,11 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           byId: obj,
           allIds: Object.keys(obj),
           visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection),
-          checked: []
+          checked: [],
+          matches: []
         },
+        count: Object.keys(obj).length,
         bulkOperationInProgress: false,
-        matchedDocs: [],
         allSelected: false
       }
     
@@ -276,14 +281,14 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       } else {
         sortDirection = action.sortDirection
       }
-      updatedArr = state.matchedDocs.length !== 0 ? state.matchedDocs : state.documents.byId
+      
       return {
         ...state,
         sortBy: action.sortBy,
         sortDirection: sortDirection,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(Object.values(updatedArr), state.page, state.rowsPerPage, action.sortBy, sortDirection)
+          visible: sortAndSlice(action.payload, state.page, state.rowsPerPage, action.sortBy, sortDirection)
         }
       }
     

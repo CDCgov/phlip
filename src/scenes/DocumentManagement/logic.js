@@ -113,11 +113,26 @@ const resetFilter = (docs, stringSearch, projectFilter, jurisdictionFilter, juri
 }
 
 /**
+ * Handles determining which documents to use
+ */
+const pageRowChageLogic = createLogic({
+  type: [types.ON_PAGE_CHANGE, types.ON_ROWS_CHANGE, types.SORT_DOCUMENTS],
+  transform({ getState, action }, next) {
+    const isSearch = getState().scenes.docManage.search.form.searchValue !== ''
+    const matches = getState().scenes.docManage.main.list.documents.matches
+    next({
+      ...action,
+      payload: isSearch ? matches : Object.values(getState().scenes.docManage.main.list.documents.byId)
+    })
+  }
+})
+
+/**
  * Determines matching docs
  * @type {Logic<object, undefined, undefined, {}, undefined, string>}
  */
 const searchBoxLogic = createLogic({
-  type: types.SEARCH_VALUE_CHANGE,
+  type: [types.SEARCH_VALUE_CHANGE],
   transform({ getState, action }, next) {
     const projects = Object.values(getState().data.projects.byId)
     const jurisdictions = Object.values(getState().data.jurisdictions.byId)
@@ -288,6 +303,7 @@ const cleanDocProjectLogic = createLogic({
 
 export default [
   getDocLogic,
+  pageRowChageLogic,
   searchBoxLogic,
   bulkUpdateLogic,
   bulkDeleteLogic,

@@ -143,7 +143,7 @@ describe('Document Management reducer', () => {
 
   describe('ON_PAGE_CHANGE', () => {
     test('should update page property in state', () => {
-      const action = { type: types.ON_PAGE_CHANGE, page: 1 }
+      const action = { type: types.ON_PAGE_CHANGE, page: 1, payload: Object.values(mockDocuments.byId) }
 
       const currentState = getState()
       const updatedState = reducer(currentState, action)
@@ -152,7 +152,7 @@ describe('Document Management reducer', () => {
     })
 
     test('should update documents.visible to show selected page of documents', () => {
-      const action = { type: types.ON_PAGE_CHANGE, page: 1 }
+      const action = { type: types.ON_PAGE_CHANGE, page: 1, payload: Object.values(mockDocuments.byId) }
 
       const currentState = getState({
         documents: mockDocuments,
@@ -166,7 +166,7 @@ describe('Document Management reducer', () => {
 
   describe('ON_ROWS_CHANGE', () => {
     test('should update rowsPerPage property in state', () => {
-      const action = { type: types.ON_ROWS_CHANGE, rowsPerPage: '4' }
+      const action = { type: types.ON_ROWS_CHANGE, rowsPerPage: '4', payload: Object.values(mockDocuments.byId) }
 
       const currentState = getState()
       const updatedState = reducer(currentState, action)
@@ -175,7 +175,7 @@ describe('Document Management reducer', () => {
     })
 
     test('should update documents.visible to show new # of rows per page', () => {
-      const action = { type: types.ON_ROWS_CHANGE, rowsPerPage: '5' }
+      const action = { type: types.ON_ROWS_CHANGE, rowsPerPage: '5', payload: Object.values(mockDocuments.byId) }
 
       const currentState = getState({ documents: mockDocuments })
       const updatedState = reducer(currentState, action)
@@ -183,7 +183,7 @@ describe('Document Management reducer', () => {
     })
 
     test('should handle All rowsPerPage option', () => {
-      const action = { type: types.ON_ROWS_CHANGE, rowsPerPage: 'All' }
+      const action = { type: types.ON_ROWS_CHANGE, rowsPerPage: 'All', payload: Object.values(mockDocuments.byId) }
 
       const currentState = getState({ documents: mockDocuments })
       const updatedState = reducer(currentState, action)
@@ -354,16 +354,18 @@ describe('Document Management reducer', () => {
   describe('SORT_DOCUMENTS', () => {
     test('should sort documents by name ascending', () => {
       const action = {
-        type: types.SORT_DOCUMENTS, sortBy: 'name', sortDirection: 'asc'
+        type: types.SORT_DOCUMENTS, sortBy: 'name', sortDirection: 'asc', payload: Object.values(mockDocuments.byId)
       }
       const currentState = getState({ documents: mockDocuments })
       const updatedState = reducer(currentState, action)
       expect(updatedState.documents.visible).toEqual(orderedByNameAsc)
     })
+    
     test('should sort documents by name descending', () => {
       const action = {
-        type: types.SORT_DOCUMENTS, sortBy: 'name', sortDirection: 'desc'
+        type: types.SORT_DOCUMENTS, sortBy: 'name', sortDirection: 'desc', payload: Object.values(mockDocuments.byId)
       }
+      
       const currentState = getState({ documents: mockDocuments })
       const updatedState = reducer(currentState, action)
       expect(updatedState.documents.visible).toEqual(orderedByNameDesc)

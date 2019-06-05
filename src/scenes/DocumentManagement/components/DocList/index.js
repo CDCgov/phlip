@@ -1,14 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import FlexGrid from 'components/FlexGrid'
-import Table from 'components/Table'
+import { FlexGrid, Table, TablePagination } from 'components'
 import TableBody from '@material-ui/core/TableBody'
 import TableHead from '@material-ui/core/TableHead'
 import TableFooter from '@material-ui/core/TableFooter'
 import TableRow from '@material-ui/core/TableRow'
 import DocListTableHead from './components/DocListTableHead'
 import DocListTableRow from './components/DocListTableRow'
-import TablePagination from 'components/TablePagination'
 
 export const DocList = props => {
   const {
@@ -55,7 +53,7 @@ export const DocList = props => {
               onChangePage={(event, page) => {
                 if (event !== null) onChangePage(page)
               }}
-              onChangeRowsPerPage={(event) => onChangeRows(event.target.value)}
+              onChangeRowsPerPage={event => onChangeRows(event.target.value)}
             />
           </TableRow>
         </TableFooter>
