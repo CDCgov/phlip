@@ -98,6 +98,12 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         selectedDocs: action.payload.merged
       }
       
+    case types.SET_INFO_REQUEST_IN_PROGRESS:
+      return {
+        ...state,
+        infoRequestInProgress: true
+      }
+      
     case types.EXTRACT_INFO_FAIL:
       return {
         ...state,
@@ -112,7 +118,8 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
           ...state.selectedDocs,
           ...action.payload
         ],
-        hasVerified: false
+        hasVerified: false,
+        infoRequestInProgress: false
       }
     
     // If the user has selected an excel file but has not selected documents to upload
@@ -142,7 +149,6 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.ADD_SELECTED_DOCS:
-      //  let invalidTypeFiles = [...state.invalidTypeFiles]
       return {
         ...state,
         selectedDocs: [

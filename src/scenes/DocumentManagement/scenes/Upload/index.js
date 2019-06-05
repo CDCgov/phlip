@@ -236,9 +236,12 @@ export class Upload extends Component {
         })
       })
       
-      this.props.infoSheetSelected
-        ? this.props.actions.mergeInfoWithDocs(files)
-        : this.props.actions.addSelectedDocs(files)
+      if (this.props.infoSheetSelected) {
+        this.props.actions.setInfoRequestProgress()
+        this.props.actions.mergeInfoWithDocs(files)
+      } else {
+        this.props.actions.addSelectedDocs(files)
+      }
       
       this.props.actions.verifyFiles(files)
     }
