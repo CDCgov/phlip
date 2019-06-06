@@ -100,7 +100,6 @@ export const QuestionContent = props => {
                 style={{ whiteSpace: 'pre-wrap' }}
                 placeholder="Enter comment"
                 value={comment}
-                rowsMax={3}
                 aria-label="Comment"
                 label="Comment"
                 disabled={disableAll}
