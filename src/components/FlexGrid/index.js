@@ -38,7 +38,9 @@ const alignJustifyTypes = [
   'stretch',
   'safe',
   'unsafe',
-  'space-between'
+  'space-between',
+  'space-around',
+  'space-evenly'
 ]
 
 FlexGrid.defaultProps = {
