@@ -4,6 +4,7 @@
 const SamlStrategy = require('passport-saml').Strategy
 const dotenv = require('dotenv')
 const paths = require('../config/paths')
+const fs = require('fs')
 
 dotenv.config({ path: paths.appDotEnv })
 
@@ -23,7 +24,8 @@ module.exports = function (passport, config) {
       issuer: process.env.SAML_ISSUER,
       logoutUrl: process.env.SAML_LOGOUT_URL,
       identifierFormat: process.env.SAML_IDENTIFIER_FORMAT,
-      disableRequestedAuthnContext: true
+      disableRequestedAuthnContext: true,
+      cert: fs.readFileSync(process.env.SAML_CERT_PATH,'utf-8').toString()
     },
     (profile, done) => {
       return done(
