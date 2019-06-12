@@ -9,12 +9,13 @@ exports[`QuestionCard - QuestionContent - PinciteTextField should render correct
         "style": Object {
           "paddingBottom": 2,
         },
+        "wrap": "soft",
       },
     }
   }
   disabled={false}
   key="10-pincite"
-  multiline={false}
+  multiline={true}
   placeholder="Enter pincite"
   style={Object {}}
   value="this is my pincite"

@@ -236,9 +236,12 @@ export class Upload extends Component {
         })
       })
       
-      this.props.infoSheetSelected
-        ? this.props.actions.mergeInfoWithDocs(files)
-        : this.props.actions.addSelectedDocs(files)
+      if (this.props.infoSheetSelected) {
+        this.props.actions.setInfoRequestProgress()
+        this.props.actions.mergeInfoWithDocs(files)
+      } else {
+        this.props.actions.addSelectedDocs(files)
+      }
       
       this.props.actions.verifyFiles(files)
     }
@@ -295,7 +298,8 @@ export class Upload extends Component {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
       if (suggestionType === 'project') {
-        this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
+        searchString === ''?this.props.actions.projectAutocomplete.getProjectsByUserRequest(this.props.user.id,30):
+          this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
       } else {
         this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
       }

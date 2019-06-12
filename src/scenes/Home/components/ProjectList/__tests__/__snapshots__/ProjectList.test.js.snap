@@ -7,6 +7,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
   container={false}
   flex={false}
   justify="stretch"
+  onMouseDown={[Function]}
   padding={0}
   raised={false}
   style={

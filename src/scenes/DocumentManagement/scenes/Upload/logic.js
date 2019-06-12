@@ -342,7 +342,7 @@ const uploadRequestLogic = createLogic({
         reject({
           type: types.REJECT_EMPTY_JURISDICTIONS,
           error: noJurs.length > 0
-            ? 'One or more documents are missing a valid jurisdiction.'
+            ? 'You must select a jurisdiction from the drop-down list.'
             : 'You must select a jurisdiction from the autocomplete list for each document.',
           invalidDocs: noJurs.length > 0 ? noJurs : noJurIds
         })
@@ -386,6 +386,25 @@ const uploadRequestLogic = createLogic({
  */
 const searchProjectListLogic = createLogic({
   type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
+  validate({ getState, action }, allow, reject) {
+    const selectedProject = getState().scenes.docManage.upload.projectSuggestions.selectedSuggestion
+    if (Object.keys(selectedProject).length === 0) {
+      allow(action)
+    } else {
+      if (selectedProject.name !== action.searchString) {
+        allow(action)
+      } else {
+        reject()
+      }
+    }
+  }
+})
+
+/**
+ * Logic for setting initial project list
+ */
+const getInitialProjectListLogic = createLogic({
+  type: autocompleteTypes.GET_INITIAL_PROJECT_SUGGESTION_REQUEST,
   validate({ getState, action }, allow, reject) {
     const selectedProject = getState().scenes.docManage.upload.projectSuggestions.selectedSuggestion
     if (Object.keys(selectedProject).length === 0) {
@@ -474,5 +493,6 @@ export default [
   searchProjectListLogic,
   searchJurisdictionListLogic,
   mergeInfoWithDocsLogic,
-  verifyFileContentLogic
+  verifyFileContentLogic,
+  getInitialProjectListLogic
 ]

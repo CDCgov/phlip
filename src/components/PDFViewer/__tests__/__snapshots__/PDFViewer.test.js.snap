@@ -1,89 +1,103 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`PDFViewer component should render correctly 1`] = `
-<div
-  className="pdfViewer"
-  id="viewContainer"
->
-  <Alert
-    actions={
-      Array [
-        Object {
-          "onClick": [Function],
-          "type": "button",
-          "value": "Delete",
-        },
-      ]
-    }
-    closeButton={Object {}}
-    hideClose={false}
-    onCloseAlert={[Function]}
-    open={false}
-    title="Confirm deletion"
-  >
-    <WithStyles(Typography)
-      style={
-        Object {
-          "whiteSpace": "pre-wrap",
-        }
-      }
-      variant="body1"
-    >
-      Do you want to delete this annotation?
-    </WithStyles(Typography)>
-  </Alert>
-  <Alert
-    actions={Array []}
-    closeButton={
-      Object {
-        "value": "Dismiss",
-      }
-    }
-    hideClose={false}
-    onCloseAlert={[Function]}
-    open={false}
-    title="Are you trying to annotate?"
-  >
-    <WithStyles(Typography)
-      style={
-        Object {
-          "whiteSpace": "pre-wrap",
-        }
-      }
-      variant="body1"
-    >
-      You need to enable annotation mode to annotate for a selected answer. Click the 'Annotate' button next to an answer choice to enable annotation mode.
-    </WithStyles(Typography)>
-    <WithStyles(CheckboxLabel)
-      input={
-        Object {
-          "onChange": [Function],
-          "value": false,
-        }
-      }
-      label="Don't show me this message again."
-    />
-  </Alert>
-  <FlexGrid
-    align="center"
-    circular={false}
-    container={true}
-    flex={true}
-    justify="center"
-    padding={0}
-    raised={false}
+<Fragment>
+  <div
+    className="pdfViewer"
+    id="viewContainer"
     style={
       Object {
-        "height": "100%",
+        "position": "relative",
       }
     }
-    type="column"
   >
-    <CircularLoader
-      color="primary"
-      thickness={5}
-      type="indeterminate"
-    />
-  </FlexGrid>
-</div>
+    <Alert
+      actions={
+        Array [
+          Object {
+            "onClick": [Function],
+            "type": "button",
+            "value": "Delete",
+          },
+        ]
+      }
+      closeButton={Object {}}
+      hideClose={false}
+      onCloseAlert={[Function]}
+      open={false}
+      title="Confirm deletion"
+    >
+      <WithStyles(Typography)
+        style={
+          Object {
+            "whiteSpace": "pre-wrap",
+          }
+        }
+        variant="body1"
+      >
+        Do you want to delete this annotation?
+      </WithStyles(Typography)>
+    </Alert>
+    <Alert
+      actions={Array []}
+      closeButton={
+        Object {
+          "value": "Dismiss",
+        }
+      }
+      hideClose={false}
+      onCloseAlert={[Function]}
+      open={false}
+      title="Are you trying to annotate?"
+    >
+      <WithStyles(Typography)
+        style={
+          Object {
+            "whiteSpace": "pre-wrap",
+          }
+        }
+        variant="body1"
+      >
+        Click the 'Annotate' button next to an answer choice to annotate.
+      </WithStyles(Typography)>
+      <WithStyles(Typography)
+        style={
+          Object {
+            "paddingBottom": 20,
+          }
+        }
+      />
+      <WithStyles(CheckboxLabel)
+        input={
+          Object {
+            "onChange": [Function],
+            "value": false,
+          }
+        }
+        label="Don't show me this message again."
+      />
+    </Alert>
+    <FlexGrid
+      align="center"
+      circular={false}
+      container={true}
+      flex={true}
+      justify="center"
+      padding={0}
+      raised={false}
+      style={
+        Object {
+          "height": "100%",
+        }
+      }
+      type="column"
+    >
+      <CircularLoader
+        color="primary"
+        thickness={5}
+        type="indeterminate"
+      />
+    </FlexGrid>
+  </div>
+</Fragment>
 `;

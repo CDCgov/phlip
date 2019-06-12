@@ -56,7 +56,7 @@ export const QuestionContent = props => {
   }
   
   return (
-    <FlexGrid container flex justify="space-between">
+    <FlexGrid container flex justify="space-between" style={{ overflow: 'auto' }}>
       <FlexGrid
         container
         type="row"
@@ -100,7 +100,6 @@ export const QuestionContent = props => {
                 style={{ whiteSpace: 'pre-wrap' }}
                 placeholder="Enter comment"
                 value={comment}
-                rowsMax={3}
                 aria-label="Comment"
                 label="Comment"
                 disabled={disableAll}

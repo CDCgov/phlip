@@ -113,15 +113,30 @@ const resetFilter = (docs, stringSearch, projectFilter, jurisdictionFilter, juri
 }
 
 /**
+ * Handles determining which documents to use
+ */
+const pageRowChageLogic = createLogic({
+  type: [types.ON_PAGE_CHANGE, types.ON_ROWS_CHANGE, types.SORT_DOCUMENTS],
+  transform({ getState, action }, next) {
+    const isSearch = getState().scenes.docManage.search.form.searchValue !== ''
+    const matches = getState().scenes.docManage.main.list.documents.matches
+    next({
+      ...action,
+      payload: isSearch ? matches : Object.values(getState().scenes.docManage.main.list.documents.byId)
+    })
+  }
+})
+
+/**
  * Determines matching docs
  * @type {Logic<object, undefined, undefined, {}, undefined, string>}
  */
 const searchBoxLogic = createLogic({
-  type: types.SEARCH_VALUE_CHANGE,
+  type: [types.SEARCH_VALUE_CHANGE],
   transform({ getState, action }, next) {
     const projects = Object.values(getState().data.projects.byId)
     const jurisdictions = Object.values(getState().data.jurisdictions.byId)
-    const docs = [...Object.values(getState().scenes.docManage.main.documents.byId)]
+    const docs = [...Object.values(getState().scenes.docManage.main.list.documents.byId)]
     const matches = resetFilter(
       docs,
       action.value,
@@ -208,7 +223,7 @@ const bulkUpdateLogic = createLogic({
         })
       }
       
-      let existingDocs = getState().scenes.docManage.main.documents.byId
+      let existingDocs = getState().scenes.docManage.main.list.documents.byId
       action.selectedDocs.forEach(docToUpdate => {
         if (action.updateData.updateType === 'status') {
           existingDocs[docToUpdate].status = 'Approved'
@@ -270,7 +285,7 @@ const cleanDocProjectLogic = createLogic({
     let projectMeta = action.projectMeta
     try {
       await docApi.cleanProject({}, {}, { 'projectId': projectMeta.id })
-      let cleannedDocs = getState().scenes.docManage.main.documents.byId
+      let cleannedDocs = getState().scenes.docManage.main.list.documents.byId
       Object.keys(cleannedDocs).map(docKey => {
         const index = cleannedDocs[docKey].projects.findIndex(el => el === projectMeta.id)
         if (index !== -1) { // found matching projectId
@@ -288,6 +303,7 @@ const cleanDocProjectLogic = createLogic({
 
 export default [
   getDocLogic,
+  pageRowChageLogic,
   searchBoxLogic,
   bulkUpdateLogic,
   bulkDeleteLogic,

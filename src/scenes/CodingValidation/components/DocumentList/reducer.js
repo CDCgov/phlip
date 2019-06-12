@@ -24,11 +24,15 @@ export const INITIAL_STATE = {
   isUserAnswerSelected: false,
   showEmptyDocs: false,
   apiErrorOpen: false,
-  apiErrorInfo: {
+  apiError: {
     title: '',
-    text: ''
+    text: '',
+    open: false
   },
-  shouldShowAnnoModeAlert: true
+  currentAnnotationIndex: 0,
+  shouldShowAnnoModeAlert: true,
+  scrollTop: false,
+  gettingDocs: false
 }
 
 const mergeName = docObj => ({
@@ -48,22 +52,25 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           allIds: Object.keys(obj),
           ordered: sortListOfObjects(Object.values(obj), 'uploadedDate', 'desc').map(obj => obj._id)
         },
+        scrollTop: false,
         showEmptyDocs: action.payload.length === 0,
         ...state.openedDoc._id !== ''
           ? Object.keys(obj).includes(state.openedDoc._id)
             ? { docSelected: true }
             : { docSelected: false, openedDoc: {} }
-          : {}
+          : {},
+        gettingDocs: false
       }
     
     case types.GET_APPROVED_DOCUMENTS_FAIL:
       return {
         ...state,
-        apiErrorInfo: {
+        apiError: {
           text: 'Failed to get the list of approved documents.',
-          title: 'Request failed'
+          title: 'Request failed',
+          open: true
         },
-        apiErrorOpen: true
+        gettingDocs: false
       }
     
     case types.GET_DOC_CONTENTS_REQUEST:
@@ -72,7 +79,8 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         openedDoc: {
           _id: action.id,
           name: state.documents.byId[action.id].name
-        }
+        },
+        scrollTop: false
       }
     
     case types.GET_DOC_CONTENTS_SUCCESS:
@@ -89,11 +97,11 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         docSelected: true,
-        apiErrorInfo: {
+        apiError: {
           title: '',
-          text: 'Failed to retrieve document contents.'
-        },
-        apiErrorOpen: true
+          text: 'Failed to retrieve document contents.',
+          open: true
+        }
       }
     
     case types.TOGGLE_ANNOTATION_MODE:
@@ -101,13 +109,16 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         ...state,
         annotationModeEnabled: true,
         enabledAnswerId: action.answerId,
-        enabledUserId: ''
+        enabledUserId: '',
+        currentAnnotationIndex: 0
       } : {
         ...state,
         annotationModeEnabled: false,
         enabledAnswerId: '',
         enabledUserId: '',
-        annotations: []
+        annotations: [],
+        currentAnnotationIndex: 0,
+        scrollTop: false
       }
     
     case types.TOGGLE_CODER_ANNOTATIONS:
@@ -121,8 +132,10 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           annotations: [],
           enabledAnswerId: '',
           enabledUserId: '',
+          currentAnnotationIndex: 0,
           annotationModeEnabled: false,
-          isUserAnswerSelected: action.isUserAnswerSelected
+          isUserAnswerSelected: action.isUserAnswerSelected,
+          scrollTop: false
         }
       } else {
         return {
@@ -131,7 +144,9 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           enabledAnswerId: action.answerId,
           enabledUserId: action.userId,
           annotationModeEnabled: false,
-          isUserAnswerSelected: action.isUserAnswerSelected
+          currentAnnotationIndex: 0,
+          isUserAnswerSelected: action.isUserAnswerSelected,
+          scrollTop: true
         }
       }
     
@@ -139,12 +154,13 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         docSelected: false,
+        currentAnnotationIndex: 0,
         openedDoc: {},
-        apiErrorInfo: {
+        apiError: {
           title: '',
-          text: ''
-        },
-        apiErrorOpen: false
+          text: '',
+          open: false
+        }
       }
     
     case types.GET_APPROVED_DOCUMENTS_REQUEST:
@@ -152,9 +168,20 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         ...state,
         docSelected: false,
         annotationModeEnabled: false,
+        showEmptyDocs: false,
         enabledAnswerId: '',
         enabledUserId: '',
-        annotations: []
+        annotations: [],
+        documents: {
+          byId: {},
+          allIds: [],
+          ordered: []
+        },
+        openedDoc: {
+          _id: '',
+          content: {}
+        },
+        gettingDocs: true
       }
     
     case codingTypes.GET_QUESTION_SUCCESS:
@@ -176,6 +203,18 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       return {
         ...INITIAL_STATE,
         shouldShowAnnoModeAlert: action.isLogout ? true : state.shouldShowAnnoModeAlert
+      }
+    
+    case types.CHANGE_ANNOTATION_INDEX:
+      return {
+        ...state,
+        currentAnnotationIndex: action.index
+      }
+    
+    case types.RESET_SCROLL_TOP:
+      return {
+        ...state,
+        scrollTop: false
       }
     
     default:

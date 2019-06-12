@@ -317,7 +317,7 @@ export class JurisdictionForm extends Component {
           ? this.getButtonText('Save')
           : this.getButtonText('Add'),
         onClick: this.props.location.state.preset === true ? this.onSubmitPreset : this.onSubmitForm,
-        disabled: this.state.submitting === true,
+        disabled: this.state.submitting === true || this.props.form.values.name === '',
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
@@ -357,7 +357,8 @@ export class JurisdictionForm extends Component {
         inputProps={{
           value: this.props.form.values.name,
           onChange: this.onSuggestionChange,
-          id: 'jurisdiction-name'
+          id: 'jurisdiction-name',
+          onBlur: this.validateJurisdiction
         }}
         handleSuggestionSelected={this.onJurisdictionSelected}
         renderSuggestion={renderSuggestion}

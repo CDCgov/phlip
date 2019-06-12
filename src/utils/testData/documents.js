@@ -7,7 +7,8 @@ export const mockDocuments = {
       uploadedByName: 'test user',
       jurisdictions: [1],
       projects: [12],
-      uploadedDate: '2018-12-20T05:00:00.000Z'
+      uploadedDate: '2018-12-20T05:00:00.000Z',
+      citation: '123-123'
     },
     2: {
       name: 'gardenscapes',
@@ -16,7 +17,8 @@ export const mockDocuments = {
       uploadedByName: 'test user',
       jurisdictions: [1, 33],
       projects: [12, 11],
-      uploadedDate: '2005-10-10T04:00:00.000Z'
+      uploadedDate: '2005-10-10T04:00:00.000Z',
+      citation: undefined
     },
     3: {
       name: 'words with friends',
@@ -25,7 +27,8 @@ export const mockDocuments = {
       uploadedByName: 'test user',
       jurisdictions: [2, 33],
       projects: [12, 44],
-      uploadedDate: '1993-02-10T05:00:00.000Z'
+      uploadedDate: '1993-02-10T05:00:00.000Z',
+      citation: '44-231'
     },
     4: {
       name: 'legal text document',
@@ -34,7 +37,8 @@ export const mockDocuments = {
       uploadedByName: 'test user',
       jurisdictions: [],
       projects: [5],
-      uploadedDate: '2019-01-07T05:00:00.000Z'
+      uploadedDate: '2019-01-07T05:00:00.000Z',
+      citation: ''
     },
     5: {
       name: 'document about brooklyn nine nine',
@@ -43,7 +47,8 @@ export const mockDocuments = {
       uploadedByName: 'test user',
       jurisdictions: [33, 200, 1],
       projects: [12, 5],
-      uploadedDate: '1994-06-07T04:00:00.000Z'
+      uploadedDate: '1994-06-07T04:00:00.000Z',
+      citation: 'bnn-124'
     },
     6: {
       name: 'document about overwatch',
@@ -52,7 +57,8 @@ export const mockDocuments = {
       uploadedByName: 'test user',
       jurisdictions: [1],
       projects: [],
-      uploadedDate: '2015-02-14T05:00:00.000Z'
+      uploadedDate: '2015-02-14T05:00:00.000Z',
+      citation: '123-ow'
     },
     7: {
       name: 'document about bugs',
@@ -61,7 +67,8 @@ export const mockDocuments = {
       uploadedByName: 'test user',
       jurisdictions: [2],
       projects: [],
-      uploadedDate: '2010-10-10T04:00:00.000Z'
+      uploadedDate: '2010-10-10T04:00:00.000Z',
+      citation: 'bugs-1234'
     }
   },
   allIds: ['1', '2', '3', '4', '5', '6', '7'],

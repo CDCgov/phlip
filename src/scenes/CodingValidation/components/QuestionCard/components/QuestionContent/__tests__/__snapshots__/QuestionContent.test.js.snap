@@ -9,7 +9,11 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
   justify="space-between"
   padding={0}
   raised={false}
-  style={Object {}}
+  style={
+    Object {
+      "overflow": "auto",
+    }
+  }
   type="column"
 >
   <FlexGrid

@@ -58,6 +58,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
             inputProps={
               Object {
                 "id": "jurisdiction-name",
+                "onBlur": [Function],
                 "onChange": [Function],
                 "value": "",
               }
@@ -147,7 +148,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
           "value": "Cancel",
         },
         Object {
-          "disabled": false,
+          "disabled": true,
           "onClick": [Function],
           "otherProps": Object {
             "aria-label": "Save form",

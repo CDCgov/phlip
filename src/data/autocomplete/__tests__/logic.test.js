@@ -66,6 +66,41 @@ describe('Autocomplete logic', () => {
     })
   })
 
+  describe('get initial Project List Logic', () => {
+    test('should send a request to get list of projects sorted by createdby id', done => {
+      apiMock
+        .onGet('/projects/searchRecent')
+        .reply(200, [
+          { name: 'project 1' },
+          { name: 'test project' },
+          { name: 'testing project' }
+        ])
+
+      const store = setupStore()
+
+      store.dispatch({
+        type: types.GET_INITIAL_PROJECT_SUGGESTION_REQUEST,
+        userId: 1,
+        count: 30
+      })
+
+      store.whenComplete(() => {
+        expect(store.actions).toEqual([
+          {
+            type: types.GET_INITIAL_PROJECT_SUGGESTION_REQUEST,
+            userId: 1,
+            count: 30
+          },
+          {
+            type: `${types.SEARCH_FOR_SUGGESTIONS_SUCCESS}_PROJECT`,
+            payload: [{ name: 'project 1' },{ name: 'test project' }, { name: 'testing project' }]
+          }
+        ])
+        done()
+      })
+    })
+  })
+
   describe('Search Jurisdiction List Logic', () => {
     test('should send a request to search jurisdictions and dispatch SEARCH_JURISDICTION_LIST_SUCCESS when successful', done => {
       apiMock

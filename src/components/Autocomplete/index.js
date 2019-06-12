@@ -92,13 +92,6 @@ const renderSuggestionsContainer = ({ containerProps, children }) => {
 const getSuggestionValue = suggestion => suggestion
 
 /**
- * Determines if the suggestions should be rendered. Only renders if the input length >= 3
- * @param value
- * @returns {boolean}
- */
-const shouldRenderSuggestions = value => value !== undefined ? value.trim().length >= 3 : true
-
-/**
  * Default function for rendering suggestions
  * @param suggestion
  * @param query
@@ -144,9 +137,23 @@ export const Autocomplete = props => {
     renderSuggestion,
     getSuggestionValue,
     showSearchIcon,
-    theme
+    theme,
+    suggestionType
   } = props
 
+  /**
+     * Determines if the suggestions should be rendered. Only renders if the input length >= 3
+     * @param value
+     * @returns {boolean}
+     */
+
+  const shouldRenderSuggestions = (value) => {
+    if (suggestionType !== 'project') {
+      return value !== undefined ? value.trim().length >= 3 : true
+    } else {
+      return true
+    }
+  }
   return (
     <Autosuggest
       theme={{
@@ -248,7 +255,11 @@ Autocomplete.propTypes = {
   /**
    * App theme
    */
-  theme: PropTypes.object
+  theme: PropTypes.object,
+  /**
+   *  suggestion type
+  */
+  suggestionType: PropTypes.string
 }
 
 Autocomplete.defaultProps = {

@@ -1,15 +1,18 @@
+import { combineReducers } from 'redux'
 import upload, { COMBINED_INITIAL_STATE as UPLOAD_INITIAL_STATE } from './scenes/Upload/reducer'
 import { types } from './actions'
 import { arrayToObject } from 'utils/normalize'
 import { sliceTable, sortListOfObjects } from 'utils/commonHelpers'
 import searchReducer, { COMBINED_INITIAL_STATE as SEARCH_INITIAL_STATE } from './components/SearchBox/reducer'
+import { createAutocompleteReducer, INITIAL_STATE as AUTO_INITIAL_STATE } from 'data/autocomplete/reducer'
 
 export const INITIAL_STATE = {
   documents: {
     byId: {},
     allIds: [],
     visible: [],
-    checked: []
+    checked: [],
+    matches: []
   },
   rowsPerPage: '10',
   page: 0,
@@ -23,8 +26,8 @@ export const INITIAL_STATE = {
   sortBy: 'uploadedDate',
   sortDirection: 'desc',
   getDocumentsInProgress: false,
-  matchedDocs: [],
-  pageError: ''
+  pageError: '',
+  count: 0
 }
 
 const mergeName = docObj => ({
@@ -65,11 +68,13 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           byId: obj,
           allIds: Object.keys(obj),
           visible: sortAndSlice(Object.values(obj), 0, state.rowsPerPage, state.sortBy, state.sortDirection),
-          checked: []
+          checked: [],
+          matches: []
         },
         getDocumentsInProgress: false,
-        matchedDocs: [],
-        pageError: ''
+        pageError: '',
+        page: 0,
+        count: Object.keys(obj).length
       }
       
     case types.GET_DOCUMENTS_FAIL:
@@ -80,13 +85,12 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.ON_PAGE_CHANGE:
-      let updatedArr = state.matchedDocs.length !== 0 ? state.matchedDocs : state.documents.byId
       return {
         ...state,
         documents: {
           ...state.documents,
           visible: sortAndSlice(
-            Object.values(updatedArr),
+            action.payload,
             action.page,
             state.rowsPerPage,
             state.sortBy,
@@ -97,19 +101,18 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.ON_ROWS_CHANGE:
-      updatedArr = Object.values(state.matchedDocs.length !== 0 ? state.matchedDocs : state.documents.byId)
+      let page = state.page
       if (action.rowsPerPage === 'All') {
-        rows = updatedArr.length
+        rows = action.payload.length
         page = 0
       } else {
         rows = parseInt(action.rowsPerPage)
       }
-      let page = state.page
       return {
         ...state,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(updatedArr, page, rows, state.sortBy, state.sortDirection)
+          visible: sortAndSlice(action.payload, page, rows, state.sortBy, state.sortDirection)
         },
         page,
         rowsPerPage: action.rowsPerPage
@@ -154,17 +157,22 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           byId: obj,
           allIds: Object.keys(obj),
           visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection)
-        }
+        },
+        count: Object.keys(obj).length
       }
     
     case types.SEARCH_VALUE_CHANGE:
+      const sorted = sortAndSlice(action.payload, 0, state.rowsPerPage, state.sortBy, state.sortDirection)
+      
       return {
         ...state,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(action.payload, state.page, state.rowsPerPage, state.sortBy, state.sortDirection)
+          visible: sorted,
+          matches: action.payload
         },
-        matchedDocs: action.payload
+        page: 0,
+        count: action.payload.length
       }
     
     case types.BULK_DELETE_REQUEST:
@@ -186,10 +194,11 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
           byId: obj,
           allIds: Object.keys(obj),
           visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection),
-          checked: []
+          checked: [],
+          matches: []
         },
+        count: Object.keys(obj).length,
         bulkOperationInProgress: false,
-        matchedDocs: [],
         allSelected: false
       }
     
@@ -272,14 +281,14 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
       } else {
         sortDirection = action.sortDirection
       }
-      updatedArr = state.matchedDocs.length !== 0 ? state.matchedDocs : state.documents.byId
+      
       return {
         ...state,
         sortBy: action.sortBy,
         sortDirection: sortDirection,
         documents: {
           ...state.documents,
-          visible: sortAndSlice(Object.values(updatedArr), state.page, state.rowsPerPage, action.sortBy, sortDirection)
+          visible: sortAndSlice(action.payload, state.page, state.rowsPerPage, action.sortBy, sortDirection)
         }
       }
     
@@ -306,16 +315,28 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
+const MAIN_COMBINED_STATE = {
+  list: INITIAL_STATE,
+  projectSuggestions: AUTO_INITIAL_STATE,
+  jurisdictionSuggestions: AUTO_INITIAL_STATE
+}
+
 const COMBINED_INITIAL_STATE = {
   upload: UPLOAD_INITIAL_STATE,
-  main: INITIAL_STATE,
+  main: MAIN_COMBINED_STATE,
   search: SEARCH_INITIAL_STATE
 }
+
+const docManage = combineReducers({
+  list: docManagementReducer,
+  projectSuggestions: createAutocompleteReducer('PROJECT', '_BULK'),
+  jurisdictionSuggestions: createAutocompleteReducer('JURISDICTION', '_BULK')
+})
 
 const docManageReducer = (state = COMBINED_INITIAL_STATE, action) => {
   return {
     upload: upload(state.upload, action),
-    main: docManagementReducer(state.main, action),
+    main: docManage(state.main, action),
     search: searchReducer(state.search, action)
   }
 }

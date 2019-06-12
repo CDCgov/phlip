@@ -5,6 +5,7 @@ import { types } from '../actions'
 import createApiHandler, { docApiInstance } from 'services/api'
 import calls from 'services/api/docManageCalls'
 import { docListPayload } from 'utils/testData/coding'
+import { mockDocuments } from 'utils/testData/documents'
 
 describe('CodingValidation - DocumentList logic', () => {
   let mock
@@ -19,7 +20,17 @@ describe('CodingValidation - DocumentList logic', () => {
 
   const setupStore = () => {
     return createMockStore({
-      initialState: {},
+      initialState: {
+        scenes: {
+          codingValidation: {
+            documentList: {
+              documents: {
+                byId: mockDocuments.byId
+              }
+            }
+          }
+        }
+      },
       reducer: mockReducer,
       logic,
       injectedDeps: {
@@ -58,6 +69,28 @@ describe('CodingValidation - DocumentList logic', () => {
         { type: types.GET_APPROVED_DOCUMENTS_FAIL }
       ])
       done()
+    })
+  })
+  
+  describe('Saving annotation', () => {
+    test('should add the document citation if it exists to the action', done => {
+      const store = setupStore()
+      store.dispatch({ type: types.ON_SAVE_ANNOTATION, annotation: { docId: 1 } })
+      
+      store.whenComplete(() => {
+        expect(store.actions[0].citation).toEqual('123-123')
+        done()
+      })
+    })
+    
+    test('should set the citation as an empty string if it does not exists', done => {
+      const store = setupStore()
+      store.dispatch({ type: types.ON_SAVE_ANNOTATION, annotation: { docId: 2 } })
+  
+      store.whenComplete(() => {
+        expect(store.actions[0].citation).toEqual('')
+        done()
+      })
     })
   })
 })

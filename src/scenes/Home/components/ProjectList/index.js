@@ -45,9 +45,18 @@ export class ProjectList extends Component {
   }
   
   state = {
-    expanded: 0
+    expanded: 0,
+    mouse: {
+      x: 0,
+      y: 0
+    }
   }
   
+  /**
+   * Checks the target node for a click away event
+   * @param path
+   * @returns {boolean}
+   */
   checkTargetPath = path => {
     let valid = true
     path.forEach(node => {
@@ -85,7 +94,11 @@ export class ProjectList extends Component {
       this.setState({
         expanded: this.state.expanded === id
           ? expand ? 0 : id
-          : expand ? id : 0
+          : expand ? id : 0,
+        mouse: {
+          x: 0,
+          y: 0
+        }
       })
     }
   }
@@ -95,15 +108,48 @@ export class ProjectList extends Component {
    * @param event
    */
   handleClickAway = event => {
-    if (this.props.location.pathname === '/home' && isRouteOk(this.props.history)) {
-      const parent = event.target.offsetParent ? event.target.offsetParent : event.target.parentNode
-      const expand = (this.checkExpand(event.target) && this.checkExpand(parent))
-        && this.checkTargetPath(event.path)
-      
-      this.setState({
-        expanded: expand ? 0 : this.state.expanded
-      })
+    let expanded = this.state.expanded
+    let check = true
+    
+    if (this.state.mouse.x !== 0 || this.state.mouse.y !== 0) {
+      if (event.clientX !== this.state.mouse.x && event.clientY !== this.state.mouse.y) {
+        check = false
+      }
     }
+    
+    if (check) {
+      if (event.offsetX <= event.target.clientWidth && event.offsetY <= event.target.clientHeight) {
+        if (this.props.location.pathname === '/home' && isRouteOk(this.props.history)) {
+          const parent = event.target.offsetParent ? event.target.offsetParent : event.target.parentNode
+          const expand = (this.checkExpand(event.target) && this.checkExpand(parent))
+            && this.checkTargetPath(event.path)
+          
+          expanded = expand ? 0 : this.state.expanded
+        }
+      }
+    }
+    
+    this.setState({
+      expanded,
+      mouse: {
+        x: 0,
+        y: 0
+      }
+    })
+  }
+  
+  /**
+   * Sets the coordinates of the mouse when clicking down to check the position when mouse up for whether the project
+   * needs to be closed or hided
+   * @param e
+   */
+  onMouseDown = e => {
+    this.setState({
+      mouse: {
+        x: e.clientX,
+        y: e.clientY
+      }
+    })
   }
   
   render() {
@@ -115,7 +161,7 @@ export class ProjectList extends Component {
     const { expanded } = this.state
     
     return (
-      <FlexGrid style={{ overflow: 'auto' }}>
+      <FlexGrid style={{ overflow: 'auto' }} onMouseDown={this.onMouseDown}>
         <ClickAwayListener onClickAway={this.handleClickAway}>
           <div style={{ padding: 3 }}>
             {projectIds.map((id, i) => (

@@ -16,6 +16,7 @@ export const types = {
   EXTRACT_INFO_REQUEST: 'EXTRACT_INFO_REQUEST',
   EXTRACT_INFO_SUCCESS: 'EXTRACT_INFO_SUCCESS',
   EXTRACT_INFO_FAIL: 'EXTRACT_INFO_FAIL',
+  SET_INFO_REQUEST_IN_PROGRESS: 'SET_INFO_REQUEST_IN_PROGRESS',
   REJECT_NO_PROJECT_SELECTED: 'REJECT_NO_PROJECT_SELECTED',
   RESET_FAILED_UPLOAD_VALIDATION: 'RESET_FAILED_UPLOAD_VALIDATION',
   REJECT_EMPTY_JURISDICTIONS: 'REJECT_EMPTY_JURISDICTIONS',
@@ -44,7 +45,8 @@ export default {
   toggleRowEditMode: makeActionCreator(types.TOGGLE_ROW_EDIT_MODE, 'index', 'property'),
   clearRowJurisdictionSuggestions: makeActionCreator(types.CLEAR_ROW_JURISDICTION_SUGGESTIONS, 'index'),
   mergeInfoWithDocs: makeActionCreator(types.MERGE_INFO_WITH_DOCS, 'docs'),
-  verifyFiles: makeActionCreator(types.VERIFY_VALID_FILES,'docs')
+  verifyFiles: makeActionCreator(types.VERIFY_VALID_FILES,'docs'),
+  setInfoRequestProgress: makeActionCreator(types.SET_INFO_REQUEST_IN_PROGRESS)
 }
 
 export const projectAutocomplete = {

@@ -11,10 +11,10 @@ export const DocListTableHead = props => {
   
   const options = [
     { value: 'bulk', label: 'Actions', disabled: true },
-    { value: 'deleteDoc', label: 'Delete' },
-    { value: 'assignProject', label: 'Assign Project' },
-    { value: 'assignJurisdiction', label: 'Assign Jurisdiction' },
-    { value: 'approveDoc', label: 'Approve' }
+    { value: 'delete', label: 'Delete' },
+    { value: 'project', label: 'Assign Project' },
+    { value: 'jurisdiction', label: 'Assign Jurisdiction' },
+    { value: 'approve', label: 'Approve' }
   ]
   
   const r1Columns = [

@@ -185,6 +185,19 @@ describe('Document Management - Upload reducer tests', () => {
     })
   })
   
+  describe('SET_INFO_REQUEST_IN_PROGRESS', () => {
+    const action = {
+      type: types.SET_INFO_REQUEST_IN_PROGRESS
+    }
+    
+    const currentState = getState()
+    const state = reducer(currentState, action)
+    
+    test('should set that an info request in progress', () => {
+      expect(state.infoRequestInProgress).toEqual(true)
+    })
+  })
+  
   describe('MERGE_INFO_WITH_DOCS', () => {
     const action = {
       type: types.MERGE_INFO_WITH_DOCS,
@@ -195,7 +208,8 @@ describe('Document Management - Upload reducer tests', () => {
     }
     
     const currentState = getState({
-      selectedDocs: [{ name: 'filename3' }, { name: 'filename4' }]
+      selectedDocs: [{ name: 'filename3' }, { name: 'filename4' }],
+      infoRequestInProgress: true
     })
     
     const updatedState = reducer(currentState, action)
@@ -209,6 +223,10 @@ describe('Document Management - Upload reducer tests', () => {
           { name: 'filename2', citation: '1' }
         ]
       )
+    })
+    
+    test('should set that there is no longer an info request in progress', () => {
+      expect(updatedState.infoRequestInProgress).toEqual(false)
     })
   })
   
