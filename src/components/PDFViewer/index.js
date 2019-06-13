@@ -26,7 +26,10 @@ export class PDFViewer extends Component {
     currentAnnotationIndex: PropTypes.number,
     scrollTop: PropTypes.bool,
     resetScrollTop: PropTypes.func,
-    isView: PropTypes.bool
+    isView: PropTypes.bool,
+    isValidation: PropTypes.bool,
+    annotationUsers: PropTypes.array,
+    toggleCoderAnnotations: PropTypes.func
   }
   
   static defaultProps = {
@@ -38,8 +41,10 @@ export class PDFViewer extends Component {
     currentAnnotationIndex: 0,
     scrollTop: false,
     isView: false,
-    onCheckTextContent: () => {},
-    resetScrollTop: () => {}
+    onCheckTextContent: () => {
+    },
+    resetScrollTop: () => {
+    }
   }
   
   constructor(props, context) {
@@ -76,7 +81,9 @@ export class PDFViewer extends Component {
     
     if (prevProps.allowSelection && !this.props.allowSelection) {
       this.setState({
-        pendingAnnotations: []
+        pendingAnnotations: [],
+        deleteAnnotationIndexes: {},
+        deleteIndex: null
       })
     }
     
@@ -501,27 +508,33 @@ export class PDFViewer extends Component {
     this.props.resetScrollTop()
   }
   
+  onClickAvatar = (userId, isValidator) => () => {
+    this.props.toggleCoderAnnotations(userId, isValidator)
+  }
+  
   render() {
     const {
       pages, pendingAnnotations, deleteAnnotationIndexes, alertConfirmOpen, annoModeAlert
     } = this.state
     
-    const { annotations, allowSelection, showAvatars, annotationModeEnabled, currentAnnotationIndex } = this.props
+    const {
+      annotations, allowSelection, showAvatars, annotationModeEnabled, currentAnnotationIndex, annotationUsers,
+      isValidation
+    } = this.props
     
     const alertActions = [
       { onClick: this.onRemoveAnnotation, value: 'Delete', type: 'button' }
     ]
     
-    const users = annotations.length > 0 ? Array.from(new Set(annotations.map(annotation => annotation.userId))) : []
-    
     return (
       <>
         {(pages.length > 0 && annotations.length > 0) &&
         <AnnotationFinder
-          userIds={users}
+          users={annotationUsers}
           count={annotations.length}
           current={currentAnnotationIndex}
           handleScrollAnnotation={this.handleScrollAnnotation}
+          handleClickAvatar={(isValidation && !annotationModeEnabled) ? this.onClickAvatar : null}
         />}
         <div id="viewContainer" className="pdfViewer" style={{ position: 'relative' }} ref={this.viewerRef}>
           {pages.length > 0 && pages.map((page, i) => {

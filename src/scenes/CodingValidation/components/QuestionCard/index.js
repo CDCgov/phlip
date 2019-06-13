@@ -58,7 +58,8 @@ export class QuestionCard extends Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      isSaving: false
+      isSaving: false,
+      hoveredAnswerChoice: 0
     }
     
     this.alertActions = []
@@ -77,6 +78,18 @@ export class QuestionCard extends Component {
         })
       }, 600)
     }
+  }
+  
+  onMouseOutAnswerChoice = () => {
+    this.setState({
+      hoveredAnswerChoice: 0
+    })
+  }
+  
+  onMouseInAnswerChoice = answerId => {
+    this.setState({
+      hoveredAnswerChoice: answerId
+    })
   }
   
   /**
@@ -225,6 +238,18 @@ export class QuestionCard extends Component {
     }
   }
   
+  /**
+   * Toggles showing annotations for an answer choice
+   * @param answerId
+   */
+  onToggleViewAnnotations = answerId => () => {
+    if (this.props.annotationModeEnabled) {
+      this.showDisableAnnoModeAlert()
+    } else {
+      this.props.actions.toggleViewAnnotations(this.props.question.id, answerId)
+    }
+  }
+  
   render() {
     const {
       onChangeTextAnswer, onOpenFlagConfirmAlert, user, question, userAnswers, isValidation,
@@ -250,11 +275,15 @@ export class QuestionCard extends Component {
       userImages,
       onToggleAnnotationMode: this.onToggleAnnotationMode,
       onToggleCoderAnnotations: this.onToggleCoderAnnotations,
+      onToggleViewAnnotations: this.onToggleViewAnnotations,
       isUserAnswerSelected,
       enabledAnswerId,
       enabledUserId,
       annotationModeEnabled,
-      areDocsEmpty
+      areDocsEmpty,
+      onMouseInAnswerChoice: this.onMouseInAnswerChoice,
+      onMouseOutAnswerChoice: this.onMouseOutAnswerChoice,
+      hoveredAnswerChoice: this.state.hoveredAnswerChoice
     }
     
     const { isSaving } = this.state

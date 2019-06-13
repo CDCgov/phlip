@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FlexGrid, Avatar, IconButton } from 'components'
+import { FlexGrid, IconButton } from 'components'
 import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux'
+import CodingValidationAvatar
+  from 'scenes/CodingValidation/components/QuestionCard/components/QuestionContent/components/CodingValidationAvatar'
 
 export const AnnotationFinder = props => {
-  const { count, current, users, handleScrollAnnotation } = props
+  const { count, current, users, handleScrollAnnotation, handleClickAvatar } = props
   
   const containerStyles = {
     backgroundColor: 'black',
@@ -24,14 +26,14 @@ export const AnnotationFinder = props => {
   return (
     <FlexGrid raised container type="row" align="center" justify="flex-end" padding="0 8px" style={containerStyles}>
       <FlexGrid container type="row" align="center" padding="0 10px 0 0" flex>
-        {users.map(user => {
+        {users.map((user, i) => {
           return (
-            <FlexGrid style={{ marginLeft: 5 }} key={`${user.id}-anno-avatar`}>
-              <Avatar
-                small
-                src={user.avatar}
-                initials={user.initials}
-                userName={user.username}
+            <FlexGrid style={{ marginLeft: 5 }} key={`${user.id}-anno-avatar-${i}`}>
+              <CodingValidationAvatar
+                user={user}
+                isValidator={user.isValidator}
+                onClick={handleClickAvatar ? handleClickAvatar(user.userId, user.isValidator) : null}
+                enabled={user.enabled}
               />
             </FlexGrid>
           )
@@ -65,7 +67,8 @@ AnnotationFinder.propTypes = {
   count: PropTypes.number,
   current: PropTypes.number,
   users: PropTypes.array,
-  handleScrollAnnotation: PropTypes.func
+  handleScrollAnnotation: PropTypes.func,
+  handleClickAvatar: PropTypes.func
 }
 
 AnnotationFinder.defaultProps = {
@@ -77,9 +80,10 @@ AnnotationFinder.defaultProps = {
 /** istanbul ignore next */
 const mapStateToProps = (state, ownProps) => {
   return {
-    users: ownProps.userIds.map(id => {
+    users: ownProps.users.map(user => {
       return {
-        ...state.data.user.byId[id]
+        ...user,
+        ...state.data.user.byId[user.userId]
       }
     })
   }

@@ -35,7 +35,8 @@ export class DocumentList extends Component {
     showEmptyDocs: PropTypes.bool,
     shouldShowAnnoModeAlert: PropTypes.bool,
     scrollTop: PropTypes.bool,
-    gettingDocs: PropTypes.bool
+    gettingDocs: PropTypes.bool,
+    annotationUsers: PropTypes.array
   }
   
   static defaultProps = {
@@ -137,6 +138,10 @@ export class DocumentList extends Component {
     this.props.actions.resetScrollTop()
   }
   
+  onToggleCoderAnnotations = (userId, isValidator) => {
+    this.props.actions.toggleCoderAnnotations(userId, isValidator)
+  }
+  
   render() {
     const docNameStyle = {
       color: theme.palette.secondary.main,
@@ -150,7 +155,8 @@ export class DocumentList extends Component {
     
     const {
       annotationModeEnabled, annotations, docSelected, openedDoc, currentAnnotationIndex, scrollTop,
-      showEmptyDocs, apiError, documents, annotatedDocs, shouldShowAnnoModeAlert, gettingDocs
+      showEmptyDocs, apiError, documents, annotatedDocs, shouldShowAnnoModeAlert, gettingDocs, annotationUsers,
+      isValidation
     } = this.props
     
     const { noTextContent } = this.state
@@ -234,12 +240,16 @@ export class DocumentList extends Component {
             onCheckTextContent={this.onCheckTextContent}
             annotationModeEnabled={annotationModeEnabled}
             showAvatars
+            isValidation={isValidation}
             currentAnnotationIndex={currentAnnotationIndex}
             changeAnnotationIndex={this.changeAnnotationIndex}
             showAnnoModeAlert={shouldShowAnnoModeAlert}
             onHideAnnoModeAlert={this.hideAnnoModeAlert}
             scrollTop={scrollTop}
+            toggleCoderAnnotations={this.onToggleCoderAnnotations}
+            annotationUsers={annotationUsers}
             resetScrollTop={this.resetScrollTop}
+            isView={false}
           />}
           {!docSelected && documents.map((doc, i) => {
             const isRetrieving = (openedDoc._id === doc._id) && !docSelected
@@ -274,40 +284,21 @@ export class DocumentList extends Component {
 }
 
 /* istanbul-ignore-next */
-export const mapStateToProps = (state, ownProps) => {
+export const mapStateToProps = state => {
   const pageState = state.scenes.codingValidation.documentList
-  const codingState = state.scenes.codingValidation.coding
-  const currentUser = state.data.user.currentUser
-  let annotations = [], question = {}
-  
-  if (pageState.annotationModeEnabled) {
-    question = codingState.question.isCategoryQuestion
-      ? codingState.userAnswers[ownProps.questionId][codingState.selectedCategoryId]
-      : codingState.userAnswers[ownProps.questionId]
-    
-    annotations = question.answers[pageState.enabledAnswerId] === undefined
-      ? []
-      : question.answers[pageState.enabledAnswerId].annotations
-  } else {
-    annotations = pageState.annotations
-  }
-  
+  const annotations = pageState.annotations.filtered
+  const users = pageState.annotationUsers.filtered
   const isValidation = state.scenes.codingValidation.coding.page === 'validation'
+  
+  /** Get docs ids and sort by annotated first */
   const annotatedDocIdsForAnswer = annotations.map(annotation => annotation.docId)
   const notAnnotatedDocIds = pageState.documents.ordered.filter(docId => !annotatedDocIdsForAnswer.includes(docId))
   const annotatedDocIds = pageState.documents.ordered.filter(docId => annotatedDocIdsForAnswer.includes(docId))
+  const annos = annotations.slice()
   
-  const annotatedForOpenDoc = annotations.map((annotation, index) => ({
-    ...annotation,
-    fullListIndex: index,
-    userId: pageState.annotationModeEnabled
-      ? isValidation
-        ? question.validatedBy.userId
-        : currentUser.id
-      : annotation.userId
-  })).filter(annotation => annotation.docId === pageState.openedDoc._id)
-  
-  const annos = annotatedForOpenDoc.slice()
+  /**
+   * The annotations need to be sorted in the order they are on the pdf page for jump to
+   */
   const sortedByPageAndPosition = annos.sort((a, b) => {
     const diff = a.startPage - b.startPage
     return diff === 0
@@ -336,7 +327,9 @@ export const mapStateToProps = (state, ownProps) => {
     currentAnnotationIndex: pageState.currentAnnotationIndex,
     scrollTop: pageState.scrollTop,
     isValidation,
-    gettingDocs: pageState.gettingDocs
+    gettingDocs: pageState.gettingDocs,
+    annotationUsers: users,
+    enabledUserId: pageState.enabledUserId
   }
 }
 

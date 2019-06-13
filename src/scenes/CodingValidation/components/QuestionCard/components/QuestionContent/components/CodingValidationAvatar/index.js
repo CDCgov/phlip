@@ -39,9 +39,9 @@ export const CodingValidationAvatar = ({ user, size, isValidator, enabled, onCli
             outline: 0,
             backgroundColor: '#e9e9e9',
             color: 'black',
-            cursor: 'pointer',
+            cursor: onClick ? 'pointer' : 'default',
             ...sizeObj[size],
-            ... enabled ? selectedStyle : {},
+            ...enabled ? selectedStyle : {},
             ...style
           }}
           onClick={onClick}

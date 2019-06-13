@@ -489,7 +489,8 @@ export class CodingValidation extends Component {
    */
   onShowCodeView = () => {
     this.setState({
-      navOpen: true, showNav: true
+      //navOpen: true,
+      showNav: true
     })
   }
   
