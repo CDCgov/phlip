@@ -47,6 +47,7 @@ export const INITIAL_STATE = {
     text: '',
     open: false
   },
+  shouldShowAnnoModeAlert: true,
   currentAnnotationIndex: 0,
   scrollTop: false,
   gettingDocs: false
@@ -303,10 +304,17 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         },
         isUserAnswerSelected: false
       }
-      
+  
+    case types.HIDE_ANNO_MODE_ALERT:
+      return {
+        ...state,
+        shouldShowAnnoModeAlert: false
+      }
+  
     case types.FLUSH_STATE:
       return {
-        ...INITIAL_STATE
+        ...INITIAL_STATE,
+        shouldShowAnnoModeAlert: action.isLogout ? true : state.shouldShowAnnoModeAlert
       }
     
     case types.CHANGE_ANNOTATION_INDEX:
@@ -332,7 +340,7 @@ const config = {
 }
 
 const documentReducer = persistReducer(
-  { ...config, key: 'documentList' },
+  { ...config, key: 'documentList', whitelist: ['shouldShowAnnoModeAlert'] },
   documentListReducer
 )
 
