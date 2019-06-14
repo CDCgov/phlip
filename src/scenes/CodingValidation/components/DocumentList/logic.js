@@ -169,7 +169,7 @@ const toggleAnnoModeLogic = createLogic({
 })
 
 const onModifyAnnotations = createLogic({
-  type: [types.ON_SAVE_ANNOTATION, types.ON_REMOVE_ANNOTATION],
+  type: types.ON_REMOVE_ANNOTATION,
   process({ getState, action }, dispatch, done) {
     const codingState = getState().scenes.codingValidation.coding
     const isValidation = codingState.page === 'validation'
@@ -193,7 +193,7 @@ const onModifyAnnotations = createLogic({
 export default [
   toggleViewAnnotations,
   toggleAnnoModeLogic,
-  onModifyAnnotations,
+  //onModifyAnnotations,
   getApprovedDocumentsLogic,
   addCitationLogic
 ]

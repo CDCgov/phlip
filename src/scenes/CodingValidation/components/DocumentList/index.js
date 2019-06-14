@@ -74,8 +74,11 @@ export class DocumentList extends Component {
    * Called when user chooses to save an annotation
    */
   onSaveAnnotation = annotation => {
-    this.props.actions.saveAnnotation(annotation, this.props.enabledAnswerId, this.props.questionId)
-    this.props.saveUserAnswer()
+    const { actions, saveUserAnswer, enabledAnswerId, questionId } = this.props
+  
+    actions.saveAnnotation(annotation, enabledAnswerId, questionId)
+    saveUserAnswer()
+    actions.toggleAnnotationMode(questionId, enabledAnswerId, false)
   }
   
   /**
@@ -83,8 +86,11 @@ export class DocumentList extends Component {
    * @param index
    */
   onRemoveAnnotation = index => {
-    this.props.actions.removeAnnotation(index, this.props.enabledAnswerId, this.props.questionId)
-    this.props.saveUserAnswer()
+    const { actions, saveUserAnswer, enabledAnswerId, questionId } = this.props
+    
+    actions.removeAnnotation(index, enabledAnswerId, questionId)
+    saveUserAnswer()
+    actions.toggleAnnotationMode(questionId, enabledAnswerId, false)
   }
   
   /**

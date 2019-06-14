@@ -56,7 +56,7 @@ export const SelectionControlQuestion = props => {
         {choices.map(choice => {
           const controlProps = {
             classes: {
-              checked: classes.checked, root: classes.root
+              checked: classes.checked
             },
             style: { height: 'unset' },
             inputProps: { id: choice.id, 'aria-describedby': 'question_text' }
