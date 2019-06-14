@@ -33,7 +33,6 @@ export class DocumentList extends Component {
     }),
     currentAnnotationIndex: PropTypes.number,
     showEmptyDocs: PropTypes.bool,
-    shouldShowAnnoModeAlert: PropTypes.bool,
     scrollTop: PropTypes.bool,
     gettingDocs: PropTypes.bool,
     annotationUsers: PropTypes.array
@@ -124,13 +123,6 @@ export class DocumentList extends Component {
   }
   
   /**
-   * Toggles whether or not to show the annotation mode not enabeld alert
-   */
-  hideAnnoModeAlert = () => {
-    this.props.actions.hideAnnoModeAlert()
-  }
-  
-  /**
    * Handles changing current annotation index in annotation finder
    */
   changeAnnotationIndex = index => {
@@ -161,8 +153,7 @@ export class DocumentList extends Component {
     
     const {
       annotationModeEnabled, annotations, docSelected, openedDoc, currentAnnotationIndex, scrollTop,
-      showEmptyDocs, apiError, documents, annotatedDocs, shouldShowAnnoModeAlert, gettingDocs, annotationUsers,
-      isValidation
+      showEmptyDocs, apiError, documents, annotatedDocs, gettingDocs, annotationUsers, isValidation
     } = this.props
     
     const { noTextContent } = this.state
@@ -249,7 +240,6 @@ export class DocumentList extends Component {
             isValidation={isValidation}
             currentAnnotationIndex={currentAnnotationIndex}
             changeAnnotationIndex={this.changeAnnotationIndex}
-            showAnnoModeAlert={shouldShowAnnoModeAlert}
             onHideAnnoModeAlert={this.hideAnnoModeAlert}
             scrollTop={scrollTop}
             toggleCoderAnnotations={this.onToggleCoderAnnotations}
@@ -329,7 +319,6 @@ export const mapStateToProps = state => {
     apiError: pageState.apiError,
     annotationModeEnabled: pageState.annotationModeEnabled,
     enabledAnswerId: pageState.enabledAnswerId,
-    shouldShowAnnoModeAlert: pageState.shouldShowAnnoModeAlert,
     currentAnnotationIndex: pageState.currentAnnotationIndex,
     scrollTop: pageState.scrollTop,
     isValidation,

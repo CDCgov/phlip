@@ -21,8 +21,8 @@ export const QuestionContent = props => {
     question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
     onChange, onChangeTextAnswer, onApplyAll, onOpenFlagConfirmAlert, userImages,
     onToggleAnnotationMode, enabledAnswerId, enabledUserId, annotationModeEnabled,
-    areDocsEmpty, classes, onToggleCoderAnnotations, isUserAnswerSelected, user,
-    onToggleViewAnnotations, onMouseInAnswerChoice, onMouseOutAnswerChoice, hoveredAnswerChoice
+    areDocsEmpty, classes, isUserAnswerSelected, user, onToggleViewAnnotations, onMouseInAnswerChoice,
+    onMouseOutAnswerChoice, hoveredAnswerChoice
   } = props
   
   const commonQuestionProps = {
@@ -37,7 +37,6 @@ export const QuestionContent = props => {
     enabledAnswerId,
     enabledUserId,
     annotationModeEnabled,
-    onToggleCoderAnnotations,
     onToggleViewAnnotations,
     isUserAnswerSelected,
     isValidation,

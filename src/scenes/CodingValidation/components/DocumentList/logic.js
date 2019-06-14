@@ -148,10 +148,11 @@ const toggleViewAnnotations = createLogic({
 const toggleAnnoModeLogic = createLogic({
   type: types.TOGGLE_ANNOTATION_MODE,
   transform({ getState, action }, next) {
+    let annotations = [], users = []
+    
     const codingState = getState().scenes.codingValidation.coding
     const isValidation = codingState.page === 'validation'
     const user = getState().data.user.currentUser
-    let annotations = [], users = []
     
     if (action.enabled) {
       const { userQuestion } = getQuestions(action.questionId, getState(), isValidation)
@@ -168,32 +169,9 @@ const toggleAnnoModeLogic = createLogic({
   }
 })
 
-const onModifyAnnotations = createLogic({
-  type: types.ON_REMOVE_ANNOTATION,
-  process({ getState, action }, dispatch, done) {
-    const codingState = getState().scenes.codingValidation.coding
-    const isValidation = codingState.page === 'validation'
-    const user = getState().data.user.currentUser
-    let annotations = [], users = []
-    
-    const { userQuestion } = getQuestions(action.questionId, getState(), isValidation)
-    const userAnnotations = getUserAnnotations(userQuestion, action.answerId, getState(), isValidation, user)
-    annotations = [...userAnnotations.annotations]
-    users = [...userAnnotations.users]
-    
-    dispatch({
-      type: types.UPDATE_ANNOTATIONS,
-      annotations,
-      users
-    })
-    done()
-  }
-})
-
 export default [
   toggleViewAnnotations,
   toggleAnnoModeLogic,
-  //onModifyAnnotations,
   getApprovedDocumentsLogic,
   addCitationLogic
 ]
