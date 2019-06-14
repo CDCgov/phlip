@@ -22,7 +22,7 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
     container={true}
     flex={false}
     justify="stretch"
-    padding={20}
+    padding={0}
     raised={false}
     style={
       Object {
@@ -39,7 +39,7 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
       container={true}
       flex={false}
       justify="stretch"
-      padding={0}
+      padding="20px 0 0 20px"
       raised={false}
       style={Object {}}
       type="column"
@@ -61,7 +61,7 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
       container={true}
       flex={true}
       justify="stretch"
-      padding={0}
+      padding="20px 0"
       raised={false}
       style={
         Object {
@@ -76,7 +76,7 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
         container={true}
         flex={false}
         justify="stretch"
-        padding="0 0 10px"
+        padding={0}
         raised={false}
         style={Object {}}
         type="row"
@@ -102,50 +102,37 @@ exports[`QuestionCard - QuestionContent should render correctly 1`] = `
         raised={false}
         style={
           Object {
-            "minHeight": "unset",
             "overflow": "auto",
             "width": "100%",
           }
         }
         type="column"
       >
-        <FlexGrid
-          align="stretch"
-          circular={false}
-          container={true}
-          flex={false}
-          justify="stretch"
-          padding={0}
-          raised={false}
-          style={Object {}}
-          type="row"
-        >
-          <WithStyles(SelectionControlQuestion)
-            choices={
-              Array [
+        <WithStyles(SelectionControlQuestion)
+          choices={
+            Array [
+              Object {
+                "id": 1,
+              },
+            ]
+          }
+          mergedUserQuestions={
+            Object {
+              "answers": Array [],
+            }
+          }
+          question={
+            Object {
+              "hint": null,
+              "possibleAnswers": Array [
                 Object {
                   "id": 1,
                 },
-              ]
+              ],
+              "questionType": 4,
             }
-            mergedUserQuestions={
-              Object {
-                "answers": Array [],
-              }
-            }
-            question={
-              Object {
-                "hint": null,
-                "possibleAnswers": Array [
-                  Object {
-                    "id": 1,
-                  },
-                ],
-                "questionType": 4,
-              }
-            }
-          />
-        </FlexGrid>
+          }
+        />
         <FlexGrid
           align="flex-start"
           circular={false}

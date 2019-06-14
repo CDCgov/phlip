@@ -173,6 +173,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
     case types.TOGGLE_CODER_ANNOTATIONS:
       const toggleOff = (action.userId === state.enabledUserId) &&
         (action.isUserAnswerSelected === state.isUserAnswerSelected)
+       
       const isUserAnswerSelected = action.isUserAnswerSelected
         ? !toggleOff
         : false
@@ -305,7 +306,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       
     case types.FLUSH_STATE:
       return {
-        ...INITIAL_STATE,
+        ...INITIAL_STATE
       }
     
     case types.CHANGE_ANNOTATION_INDEX:

@@ -29,7 +29,7 @@ exports[`CodingValidation - QuestionCard - QuestionContent - CodingValidationAva
         Object {
           "backgroundColor": "#e9e9e9",
           "color": "black",
-          "cursor": "pointer",
+          "cursor": "default",
           "fontSize": "0.8rem",
           "height": 30,
           "margin": 0,

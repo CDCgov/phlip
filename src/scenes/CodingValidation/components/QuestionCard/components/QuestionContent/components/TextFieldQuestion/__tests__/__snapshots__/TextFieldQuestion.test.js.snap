@@ -9,16 +9,23 @@ exports[`QuestionCard - QuestionContent - TextFieldQuestion should render correc
   justify="stretch"
   padding={0}
   raised={false}
-  style={Object {}}
-  type="column"
+  style={
+    Object {
+      "minHeight": "unset",
+      "paddingTop": 0,
+    }
+  }
+  type="row"
 >
   <FlexGrid
-    align="stretch"
+    align="flex-start"
     circular={false}
     container={true}
-    flex={false}
+    flex={true}
     justify="stretch"
-    padding="5px 15px 10px"
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    padding="15px 10px 15px 5px"
     raised={false}
     style={
       Object {

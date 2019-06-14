@@ -99,12 +99,11 @@ export class QuestionCard extends Component {
    */
   onChangeAnswer = id => (event, value) => {
     const { question, userAnswers, annotationModeEnabled, enabledAnswerId, actions } = this.props
-    
+    let text = '', open = false
+  
     if (annotationModeEnabled) {
       actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
     }
-    
-    let text = '', open = false
     
     if (question.questionType === questionTypes.CATEGORY) {
       if (userAnswers.answers.hasOwnProperty(id)) {
@@ -125,18 +124,18 @@ export class QuestionCard extends Component {
           }
         }
       }
-      
-      if (open) {
-        this.props.actions.setAlert({
-          open: true,
-          type: 'changeAnswer',
-          title: 'Warning',
-          text,
-          data: { id, value }
-        })
-      } else {
-        this.props.onChange(id)(event, value)
-      }
+    }
+  
+    if (open) {
+      this.props.actions.setAlert({
+        open: true,
+        type: 'changeAnswer',
+        title: 'Warning',
+        text,
+        data: { id, value }
+      })
+    } else {
+      this.props.onChange(id)(event, value)
     }
   }
   
@@ -208,8 +207,6 @@ export class QuestionCard extends Component {
    */
   onToggleAnnotationMode = id => () => {
     const { annotationModeEnabled, enabledAnswerId, question, actions } = this.props
-    
-    console.log(this.props)
     
     const enabled = annotationModeEnabled
       ? enabledAnswerId !== id

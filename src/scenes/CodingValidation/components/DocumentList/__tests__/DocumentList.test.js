@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { DocumentList, mapStateToProps } from '../index'
+import { DocumentList } from '../index'
 import { INITIAL_STATE } from '../reducer'
 import { schemeById, userAnswersCoded } from 'utils/testData/coding'
 import { CircularLoader } from 'components'
@@ -12,7 +12,8 @@ const props = {
     getDocumentContentsRequest: jest.fn(),
     clearDocSelected: jest.fn(),
     removeAnnotation: jest.fn(),
-    hideAnnoModeAlert: jest.fn()
+    toggleCoderAnnotations: jest.fn(),
+    toggleAnnotationMode: jest.fn()
   },
   jurisdictionId: 1,
   projectId: 1,
@@ -27,7 +28,10 @@ const props = {
   docSelected: false,
   openedDoc: {},
   saveUserAnswer: jest.fn(),
-  annotationModeEnabled: false
+  annotationModeEnabled: false,
+  annotations: [],
+  annotationUsers: [],
+  isValidation: false
 }
 
 describe('DocumentList', () => {
@@ -52,13 +56,6 @@ describe('DocumentList', () => {
     expect(spy).toHaveBeenCalled()
   })
   
-  test('should call redux hideAnnoModeAlert when this.hideAnnoModeAlert is called', () => {
-    const spy = jest.spyOn(props.actions, 'hideAnnoModeAlert')
-    const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
-    wrapper.instance().hideAnnoModeAlert()
-    expect(spy).toHaveBeenCalled()
-  })
-  
   describe('this.onSaveAnnotation', () => {
     test('should call this.props.actions.saveAnnotation', () => {
       const spy = jest.spyOn(props.actions, 'saveAnnotation')
@@ -72,6 +69,36 @@ describe('DocumentList', () => {
       const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
       wrapper.instance().onSaveAnnotation({ text: 'test annotation' })
       expect(spy).toHaveBeenCalled()
+    })
+    
+    test('should disable annotation mode', () => {
+      const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
+      const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
+      wrapper.instance().onSaveAnnotation({ text: 'test annotation' })
+      expect(spy).toHaveBeenCalledWith(3, '', false)
+    })
+  })
+  
+  describe('removing an annotation', () => {
+    test('should remove the annotation', () => {
+      const spy = jest.spyOn(props.actions, 'removeAnnotation')
+      const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
+      wrapper.instance().onRemoveAnnotation(5)
+      expect(spy).toHaveBeenCalledWith(5, 4, 3)
+    })
+    
+    test('should save the user\'s answer', () => {
+      const spy = jest.spyOn(props, 'saveUserAnswer')
+      const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
+      wrapper.instance().onRemoveAnnotation(5)
+      expect(spy).toHaveBeenCalled()
+    })
+  
+    test('should disable annotation mode', () => {
+      const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
+      const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
+      wrapper.instance().onRemoveAnnotation(5)
+      expect(spy).toHaveBeenCalledWith(3, '', false)
     })
   })
   
@@ -274,17 +301,3 @@ const setupState = (other = {}) => {
     }
   }
 }
-
-describe('DocumentList - mapStateToProps', () => {
-  test('should use codingState.userAnswers if state.annotationModeEnabled is true', () => {
-    const defaultState = setupState()
-    const props = mapStateToProps(defaultState, { questionId: 3 })
-    expect(props.annotations.length).toEqual(2)
-  })
-  
-  test('should use pageState.annotations if state.annotationModeEnabled is false', () => {
-    const defaultState = setupState({ annotationModeEnabled: false, annotations: [{ docId: '12344', text: 'lalal' }] })
-    const props = mapStateToProps(defaultState, { questionId: 3 })
-    expect(props.annotations.length).toEqual(1)
-  })
-})
