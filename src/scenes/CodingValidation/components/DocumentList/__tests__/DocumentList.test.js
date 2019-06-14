@@ -75,7 +75,8 @@ describe('DocumentList', () => {
       const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
       const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
       wrapper.instance().onSaveAnnotation({ text: 'test annotation' })
-      expect(spy).toHaveBeenCalledWith(3, '', false)
+      expect(spy).toHaveBeenCalledWith(3, 4, false)
+      spy.mockReset()
     })
   })
   
@@ -98,7 +99,8 @@ describe('DocumentList', () => {
       const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
       const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
       wrapper.instance().onRemoveAnnotation(5)
-      expect(spy).toHaveBeenCalledWith(3, '', false)
+      expect(spy).toHaveBeenCalledWith(3, 4, false)
+      spy.mockReset()
     })
   })
   

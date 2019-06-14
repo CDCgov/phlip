@@ -245,7 +245,19 @@ SelectionControlQuestion.propTypes = {
   /**
    * Showing annotations
    */
-  onToggleViewAnnotations: PropTypes.func
+  onToggleViewAnnotations: PropTypes.func,
+  /**
+   * When the mouse enters the answer choice area
+   */
+  onMouseInAnswerChoice: PropTypes.func,
+  /**
+   * When the mouse leaves the answer choice area
+   */
+  onMouseOutAnswerChoice: PropTypes.func,
+  /**
+   * Which answer choice is currently being hovered on
+   */
+  hoveredAnswerChoice: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 }
 
 export default withStyles(styles)(SelectionControlQuestion)

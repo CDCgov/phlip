@@ -210,7 +210,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       let usersForDoc = []
       annotationsForDoc.forEach(anno => {
         if (!usersForDoc.find(user => user.userId === anno.userId && user.isValidator === anno.isValidatorAnswer)) {
-          usersForDoc.push({ userId: anno.userId, isValidator: anno.isValidatorAnswer })
+          usersForDoc.push({ userId: anno.userId, isValidator: anno.isValidatorAnswer, enabled: false })
         }
       })
       

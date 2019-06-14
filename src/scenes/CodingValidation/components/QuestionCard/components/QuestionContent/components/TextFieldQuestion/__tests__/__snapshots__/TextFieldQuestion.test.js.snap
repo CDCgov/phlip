@@ -51,7 +51,31 @@ exports[`QuestionCard - QuestionContent - TextFieldQuestion should render correc
         name="text-answer"
         placeholder="Enter answer"
         rows={7}
-        value=""
+      />
+      <PinciteTextField
+        disabled={false}
+        handleChangePincite={
+          [MockFunction] {
+            "calls": Array [
+              Array [
+                10,
+                "textAnswer",
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+            ],
+          }
+        }
+        schemeAnswerId={10}
+        style={
+          Object {
+            "marginTop": 10,
+          }
+        }
       />
     </FlexGrid>
   </FlexGrid>

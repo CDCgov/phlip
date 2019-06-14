@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { FlexGrid, IconButton } from 'components'
-import { Glasses, Pencil, Marker, EyeOutline, Eye, Magnify, GreasePencil } from 'mdi-material-ui'
+import { Eye, GreasePencil } from 'mdi-material-ui'
 import theme from 'services/theme'
 
 const AnnotationControls = props => {
@@ -72,7 +72,9 @@ AnnotationControls.propTypes = {
   onToggleAnnotationMode: PropTypes.func,
   answerId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   viewEnabled: PropTypes.bool,
-  annoModeEnabled: PropTypes.bool
+  annoModeEnabled: PropTypes.bool,
+  viewButtonDisabled: PropTypes.bool,
+  annoModeButtonDisabled: PropTypes.bool
 }
 
 AnnotationControls.defaultProps = {
