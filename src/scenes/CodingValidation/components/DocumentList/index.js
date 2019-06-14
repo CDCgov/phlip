@@ -68,7 +68,7 @@ export class DocumentList extends Component {
   }
   
   componentDidUpdate(prevProps) {
-    if (!prevProps.scrollTop && this.props.scrollTop) {
+    if (!prevProps.scrollTop && this.props.scrollTop && this.props.docSelected) {
       if (!this.props.annotationModeEnabled) {
         this.scrollTop()
       }
@@ -207,7 +207,7 @@ export class DocumentList extends Component {
   /*
    * Toggles a coder's annotations for view
    */
-  onToggleCoderAnnotations = (userId, isValidator) => {
+  onToggleCoderAnnotations = (userId, isValidator) => () => {
     this.props.actions.toggleCoderAnnotations(userId, isValidator)
   }
   

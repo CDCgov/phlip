@@ -61,17 +61,20 @@ export class PDFViewer extends Component {
         open: false,
         dontShowAgain: false
       },
-      initialRender: true
+      initialRender: false
     }
   }
   
   componentDidMount() {
     if (this.props.document.content.data) {
       this.createPdf(this.props.document)
+      this.setState({
+        initialRender: true
+      })
     }
   }
   
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (!prevProps.document.content.data && this.props.document.content.data) {
       this.createPdf(this.props.document)
     }
