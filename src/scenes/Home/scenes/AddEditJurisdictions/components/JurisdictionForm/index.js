@@ -302,7 +302,17 @@ export class JurisdictionForm extends Component {
       }
     })
   }
-  
+  /**
+   * Check if the mouse click event valid for this component.  if not valid, ignore event
+   * @param e
+   */
+
+  onMouseDown = e => {
+    if (['react-autowhatever-1','jurisdiction-form'].includes(e.target.id)){
+      e.preventDefault()
+    }
+  }
+
   render() {
     const formActions = [
       {
@@ -368,7 +378,8 @@ export class JurisdictionForm extends Component {
     return (
       <Modal
         open={true}
-        onClose={this.props.onCloseModal}>
+        onClose={this.props.onCloseModal}
+        onMouseDown={this.onMouseDown}>
         <ModalTitle
           title={this.state.edit
             ? 'Edit Jurisdiction' : this.props.location.state.preset === true
@@ -377,10 +388,10 @@ export class JurisdictionForm extends Component {
           onCloseForm={this.onCloseForm}
         />
         <Divider />
-        <ModalContent>
+        <ModalContent id='jurisdiction-form'>
           <form>
-            <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
-              <Row style={{ paddingBottom: 20 }}>
+            <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }} >
+              <Row style={{ paddingBottom: 20 }} >
                 {nameInputField}
               </Row>
               <Container style={{ marginTop: 30 }}>
