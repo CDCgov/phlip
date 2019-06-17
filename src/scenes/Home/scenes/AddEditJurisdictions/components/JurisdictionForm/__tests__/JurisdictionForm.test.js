@@ -21,6 +21,9 @@ const props = {
       }
     }
   },
+  project: {
+    name: 'test project'
+  },
   match: {},
   history: {},
   onCloseModal: () => {}

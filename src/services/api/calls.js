@@ -26,6 +26,26 @@ let apiCalls = [
     path: () => '/projects'
   },
   {
+    name: 'getProject',
+    method: 'get',
+    path: ({ projectId }) => `/projects/${projectId}`
+  },
+  {
+    name: 'getProjectUsers',
+    method: 'get',
+    path: ({ projectId }) => `/projects/${projectId}/users`
+  },
+  {
+    name: 'searchProjectList',
+    method: 'get',
+    path: () => '/projects/search'
+  },
+  {
+    name: 'searchProjectListByUser',
+    method: 'get',
+    path: () => '/projects/searchRecent'
+  },
+  {
     name: 'addProject',
     method: 'post',
     path: () => '/projects'
@@ -33,6 +53,11 @@ let apiCalls = [
   {
     name: 'updateProject',
     method: 'put',
+    path: ({ projectId }) => `/projects/${projectId}`
+  },
+  {
+    name: 'deleteProject',
+    method: 'delete',
     path: ({ projectId }) => `/projects/${projectId}`
   },
   {
@@ -51,6 +76,11 @@ let apiCalls = [
     path: ({ userId }) => `/users/${userId}`
   },
   {
+    name: 'updateSelf',
+    method: 'patch',
+    path: ({ userId }) => `/users/${userId}/selfUpdate`
+  },
+  {
     name: 'getUserImage',
     method: 'get',
     path: ({ userId }) => `/users/${userId}/avatar`
@@ -64,6 +94,11 @@ let apiCalls = [
     name: 'deleteUserImage',
     method: 'patch',
     path: ({ userId }) => `/users/${userId}`
+  },
+  {
+    name: 'getJurisdiction',
+    method: 'get',
+    path: ({ jurisdictionId }) => `/jurisdictions/${jurisdictionId}`
   },
   {
     name: 'searchJurisdictionList',
@@ -229,12 +264,23 @@ let apiCalls = [
     name: 'getHelpPdf',
     method: 'get',
     path: () => '/exports/helpfile'
+  },
+  {
+    name: 'cleanAnnotations',
+    method: 'delete',
+    path: ({ docId }) => `/cleanup/${docId}/annotations`
+  },
+  {
+    name:'getBackendData',
+    method: 'get',
+    path: () => '/appInfo'
   }
+
 ]
 
 // If development, then include the basic auth api call
-if (!process.env.API_HOST) {
-  apiCalls = [...apiCalls,   {
+if (APP_IS_SAML_ENABLED !== '1') {
+  apiCalls = [...apiCalls, {
     name: 'login',
     method: 'post',
     path: () => '/users/authenticate'

@@ -10,8 +10,7 @@ const updateByProperty = (updatedItem, objectArray, prop) => {
   return objectArray.map(item =>
     (item[prop] === updatedItem[prop])
       ? updatedItem
-      : item
-  )
+      : item)
 }
 
 /**

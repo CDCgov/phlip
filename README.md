@@ -1,4 +1,4 @@
-# Esquire Frontend
+# Public Health Law Information Portal Frontend
 Frontend for the Public Health Law Office project.
 
 ## Getting started

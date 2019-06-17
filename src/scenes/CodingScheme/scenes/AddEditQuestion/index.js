@@ -7,7 +7,6 @@ import { default as formActions } from 'redux-form/lib/actions'
 import FormModal from 'components/FormModal'
 import TextInput from 'components/TextInput'
 import DropDown from 'components/Dropdown'
-import { withRouter } from 'react-router'
 import * as actions from './actions'
 import { ModalTitle, ModalActions, ModalContent } from 'components/Modal'
 import { Field, FieldArray } from 'redux-form'
@@ -75,12 +74,15 @@ export class AddEditQuestion extends Component {
     /**
      * Whether or not the protocol is checked out by the current user logged in
      */
-    lockedByCurrentUser: PropTypes.bool
+    lockedByCurrentUser: PropTypes.bool,
+
+    onSubmitError: PropTypes.func,
+
+    goBack: PropTypes.bool
   }
 
   constructor(props, context) {
     super(props, context)
-
     this.questionDefined = this.props.match.url === `/project/${this.props.projectId}/coding-scheme/add`
       ? null
       : this.props.location.state.questionDefined
@@ -112,26 +114,37 @@ export class AddEditQuestion extends Component {
       includeComment: false,
       isCategoryQuestion: false
     }
+
     this.textFieldForm = {
       questionType: questionTypes.TEXT_FIELD,
       includeComment: false,
       isCategoryQuestion: false
     }
   }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.state.submitting === true) {
-      if (nextProps.formError !== null) {
-        this.props.onSubmitError(nextProps.formError)
-      } else {
-        this.props.history.goBack()
-      }
-      this.setState({
-        submitting: false
-      })
-    }
+  
+  componentDidMount() {
+    this.prevTitle = document.title
+    document.title = this.questionDefined
+      ? `${document.title} - Edit Question`
+      : `${document.title} - Add Question`
   }
 
+  componentDidUpdate() {
+    if (this.state.submitting) {
+      if (this.props.formError !== null) {
+        this.setState({
+          submitting: false
+        })
+        this.props.onSubmitError(this.props.formError)
+      } else if (this.props.goBack) {
+        this.props.history.goBack()
+      }
+    }
+  }
+  
+  componentWillUnmount() {
+    document.title = this.prevTitle
+  }
 
   getButtonText = text => {
     if (this.state.submitting) {
@@ -145,7 +158,7 @@ export class AddEditQuestion extends Component {
       return <Fragment>{text}</Fragment>
     }
   }
-  
+
   /**
    * Function called when the form is submitted, dispatches a redux action for updating or adding depending on state and
    * whether or not the request if for a child question. Trims whitespace from all of the question form fields.
@@ -177,8 +190,8 @@ export class AddEditQuestion extends Component {
     this.questionDefined
       ? this.props.actions.updateQuestionRequest(updatedValues, this.props.projectId, this.questionDefined.id, this.props.location.state.path)
       : this.parentDefined
-      ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.parentDefined, this.props.location.state.path)
-      : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)
+        ? this.props.actions.addChildQuestionRequest(updatedValues, this.props.projectId, this.parentDefined.id, this.parentDefined, this.props.location.state.path)
+        : this.props.actions.addQuestionRequest(updatedValues, this.props.projectId, 0)
 
   }
 
@@ -193,11 +206,11 @@ export class AddEditQuestion extends Component {
   }
 
   /**
-   * Handles updating the form fields when the user changes the question type in the form. Dispatches a redux-form action
-   * to change form fields and values. Values are kept for questionText and questionHint. If the type of question is
-   * changed another other than TextField or Binary, then the possibleAnswers text is kept. If the question type is
-   * changed to Binary then the possibleAnswers are changed to True and False. If the question type is changed to TextField,
-   * the possibleAnswers are removed.
+   * Handles updating the form fields when the user changes the question type in the form. Dispatches a redux-form
+   * action to change form fields and values. Values are kept for questionText and questionHint. If the type of
+   * question is changed another other than TextField or Binary, then the possibleAnswers text is kept. If the question
+   * type is changed to Binary then the possibleAnswers are changed to True and False. If the question type is changed
+   * to TextField, the possibleAnswers are removed.
    *
    * @public
    * @param {Object} event
@@ -336,7 +349,8 @@ export class AddEditQuestion extends Component {
                 name="possibleAnswers"
                 answerType={this.props.form.values
                   ? this.props.form.values.questionType
-                  : questionTypes.MULTIPLE_CHOICE}
+                  : questionTypes.MULTIPLE_CHOICE
+                }
                 isEdit={!!this.state.edit}
                 component={AnswerList}
                 canModify={this.state.canModify}
@@ -345,8 +359,9 @@ export class AddEditQuestion extends Component {
                 <Row
                   flex
                   style={{
-                    paddingLeft: this.props.form.values ? (this.props.form.values.questionType !==
-                      questionTypes.TEXT_FIELD && '47px') : '47px'
+                    paddingLeft: this.props.form.values
+                      ? (this.props.form.values.questionType !== questionTypes.TEXT_FIELD && '47px')
+                      : '47px'
                   }}>
                   <Field
                     name="includeComment"
@@ -361,25 +376,28 @@ export class AddEditQuestion extends Component {
           <ModalActions
             actions={actions}
             style={{ paddingTop: 15, paddingBottom: 15, margin: 0 }}
-          ></ModalActions>
+          />
         </Container>
       </FormModal>
     )
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => ({
   form: state.form.questionForm || {},
   projectId: ownProps.match.params.projectId,
   formName: 'questionForm',
   formError: state.scenes.codingScheme.formError || null,
   lockedByCurrentUser: state.scenes.codingScheme.lockedByCurrentUser || false,
-  hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false
+  hasLock: Object.keys(state.scenes.codingScheme.lockInfo).length > 0 || false,
+  goBack: state.scenes.codingScheme.goBack
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(actions, dispatch),
   formActions: bindActionCreators(formActions, dispatch)
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withFormAlert(AddEditQuestion)))
+export default connect(mapStateToProps, mapDispatchToProps)(withFormAlert(AddEditQuestion))

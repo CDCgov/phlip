@@ -1,20 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { TableSortLabel } from 'material-ui/Table'
-import TableRow from 'components/TableRow'
-import TableCell from 'components/TableCell'
+import TableSortLabel from '@material-ui/core/TableSortLabel'
+import TableRow from '@material-ui/core/TableRow'
+import TableCell from '@material-ui/core/TableCell'
 
 const columns = [
   { key: 'avatar', label: '', style: { width: '1%' } },
-  { key: 'lastName', label: 'Name', style: { maxWidth: 10 }, hasSort: true },
-  { key: 'email', label: 'Email', style: { maxWidth: 10 }, hasSort: false },
-  { key: 'role', label: 'Role', style: { maxWidth: 10 }, hasSort: true },
-  { key: 'edit', label: '', style: { maxWidth: 10 }, hasSort: false }
+  { key: 'lastName', label: 'Name', hasSort: true },
+  { key: 'email', label: 'Email', hasSort: false },
+  { key: 'role', label: 'Role', hasSort: true },
+  { key: 'edit', label: '', hasSort: false }
 ]
 
 const UserTableHead = ({ onRequestSort, sortBy, direction }) => {
   return (
-    <TableRow key="headers">
+    <TableRow key="headers" style={{ width: '100%' }}>
       {columns.map(c => (
         <TableCell key={c.key} id={c.key} style={{ ...c.style }} scope="col" padding="default">
           {c.hasSort ? (

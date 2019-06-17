@@ -1,112 +1,55 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - ProjectList component should render correctly 1`] = `
-<Container
-  column={true}
-  flex={true}
-  spacing={0}
->
-  <Column
-    component={<Card />}
-    displayFlex={true}
-    flex={true}
-    style={
-      Object {
-        "overflow": "auto",
-      }
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={false}
+  flex={false}
+  justify="stretch"
+  onMouseDown={[Function]}
+  padding={0}
+  raised={false}
+  style={
+    Object {
+      "overflow": "auto",
     }
+  }
+  type="column"
+>
+  <ClickAwayListener
+    mouseEvent="onMouseUp"
+    onClickAway={[Function]}
+    touchEvent="onTouchEnd"
   >
-    <Row
-      component={
-        <withStyles(GridWrapper)
-          item={true}
-        />
-      }
-      displayFlex={false}
-      flex={false}
-      reverse={false}
-      style={
-        Object {
-          "alignSelf": "flex-end",
-          "padding": 20,
-        }
-      }
-    >
-      <withTheme(SearchBar)
-        placeholder="Search"
-      />
-    </Row>
     <div
       style={
         Object {
-          "display": "flex",
-          "flex": 1,
-          "flexDirection": "column",
-          "minHeight": 0,
+          "padding": 3,
         }
       }
     >
-      <Table
-        style={
-          Object {
-            "borderCollapse": "separate",
-            "display": "block",
-            "overflow": "unset",
-            "tableLayout": "auto",
-          }
-        }
-        summary="List of projects"
-      >
-        <withStyles(TableHead)
-          style={
-            Object {
-              "width": "100%",
-            }
-          }
-        >
-          <ProjectTableHead
-            direction="asc"
-            onRequestSort={[Function]}
-            onSortBookmarked={[Function]}
-            role="Coordinator"
-            sortBy="name"
-          />
-        </withStyles(TableHead)>
-        <withStyles(TableBody)>
-          <Connect(withTheme(ProjectRow))
-            id={1}
-            key="1"
-            onExport={[Function]}
-          />
-          <Connect(withTheme(ProjectRow))
-            id={2}
-            key="2"
-            onExport={[Function]}
-          />
-        </withStyles(TableBody)>
-      </Table>
-      <div
-        style={
-          Object {
-            "display": "flex",
-            "flex": 1,
-            "paddingBottom": "50px",
-          }
-        }
+      <Connect(ProjectPanel)
+        expanded={false}
+        handleExpandProject={[Function]}
+        id={1}
+        index={0}
+        key="1"
+        length={2}
+        onExport={[MockFunction]}
+        role="Coordinator"
       />
-      <Table>
-        <withStyles(TableFooter)>
-          <withStyles(TableRow)>
-            <withStyles(TablePagination)
-              onChangePage={[Function]}
-              onChangeRowsPerPage={[Function]}
-              page={0}
-              rowsPerPage={10}
-            />
-          </withStyles(TableRow)>
-        </withStyles(TableFooter)>
-      </Table>
+      <Connect(ProjectPanel)
+        expanded={false}
+        handleExpandProject={[Function]}
+        id={2}
+        index={1}
+        key="2"
+        length={2}
+        onExport={[MockFunction]}
+        role="Coordinator"
+      />
     </div>
-  </Column>
-</Container>
+  </ClickAwayListener>
+</FlexGrid>
 `;

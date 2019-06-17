@@ -1,18 +1,35 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Avatar component should render correctly 1`] = `
-<withStyles(Avatar)
+<WithStyles(Avatar)
   style={
     Object {
-      "backgroundColor": "#38a48e",
-      "borderColor": "#38a48e",
-      "color": "white",
-      "fontSize": "1rem",
+      "backgroundColor": "#e9e9e9",
+      "color": "black",
+      "fontSize": ".8rem",
       "height": "30px",
       "width": "30px",
     }
   }
+  theme={
+    Object {
+      "palette": Object {
+        "secondary": Object {
+          "main": "#38a48e",
+        },
+      },
+    }
+  }
 >
+  <img
+    alt=""
+    src="test-file-stub"
+    style={
+      Object {
+        "display": "none",
+      }
+    }
+  />
   AU
-</withStyles(Avatar)>
+</WithStyles(Avatar)>
 `;

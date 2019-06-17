@@ -1,22 +1,21 @@
-import * as actions from '../actions'
-import * as types from '../actionTypes'
+import actions, { types } from '../actions'
 
 describe('Home scene - AddEditJurisdiction actions creators', () => {
   test('should create an action to add a jurisdiction', () => {
     const expectedAction = {
       type: types.ADD_PROJECT_JURISDICTION_REQUEST,
       projectId: 1,
-      jurisdiction: {id: 1, name: 'Atlanta' }
+      jurisdiction: { id: 1, name: 'Atlanta' }
     }
 
-    expect(actions.addJurisdiction({id: 1, name: 'Atlanta'}, 1)).toEqual(expectedAction)
+    expect(actions.addJurisdiction({ id: 1, name: 'Atlanta' }, 1)).toEqual(expectedAction)
   })
 
   test('should create an action to update a jurisdiction', () => {
     const expectedAction = {
       type: types.UPDATE_PROJECT_JURISDICTION_REQUEST,
       projectId: 1,
-      jurisdiction: {id: 1, name: 'Atlanta' }
+      jurisdiction: { id: 1, name: 'Atlanta' }
     }
 
     expect(actions.updateJurisdiction({ id: 1, name: 'Atlanta' }, 1)).toEqual(expectedAction)
@@ -25,7 +24,7 @@ describe('Home scene - AddEditJurisdiction actions creators', () => {
   test('should create an action to get project jurisdictions', () => {
     const expectedAction = {
       type: types.GET_PROJECT_JURISDICTIONS_REQUEST,
-      projectId: 1,
+      projectId: 1
     }
 
     expect(actions.getProjectJurisdictions(1)).toEqual(expectedAction)

@@ -1,15 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene should render correctly 1`] = `
-<Container
-  column={true}
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={true}
   flex={true}
-  spacing={0}
-  style={
-    Object {
-      "paddingBottom": "25px",
-    }
-  }
+  justify="stretch"
+  padding="12px 20px 20px 20px"
+  raised={false}
+  style={Object {}}
+  type="column"
 >
   <ApiErrorAlert
     actions={Array []}
@@ -17,7 +18,9 @@ exports[`Home scene should render correctly 1`] = `
     onCloseAlert={[Function]}
     open={false}
   />
-  <withRouter(withTheme(PageHeader))
+  <withRouter(WithTheme(PageHeader))
+    entryScene={true}
+    icon="dvr"
     otherButton={
       Object {
         "isLink": true,
@@ -30,22 +33,84 @@ exports[`Home scene should render correctly 1`] = `
           "modal": true,
           "projectDefined": null,
         },
-        "text": "+ Create New Project",
+        "text": "Create New Project",
       }
     }
     pageTitle="Project List"
     projectName=""
     protocolButton={false}
     showButton={true}
-  />
-  <withStyles(Divider) />
-  <ProjectList
+  >
+    <WithStyles(Dropdown)
+      formControlStyle={
+        Object {
+          "minWidth": 180,
+          "paddingRight": 20,
+        }
+      }
+      id="projectSort"
+      input={
+        Object {
+          "onChange": [Function],
+          "value": "dateLastEdited",
+        }
+      }
+      name="projectSort"
+      options={
+        Array [
+          Object {
+            "label": <React.Fragment>
+              <span
+                style={
+                  Object {
+                    "paddingRight": 5,
+                  }
+                }
+              >
+                Date Last Edited
+              </span>
+              <WithTheme(Icon)
+                color="black"
+                size={20}
+              >
+                arrow_downward
+              </WithTheme(Icon)>
+            </React.Fragment>,
+            "value": "dateLastEdited",
+          },
+          Object {
+            "label": "Name",
+            "value": "name",
+          },
+          Object {
+            "label": "Last Edited By",
+            "value": "lastEditedBy",
+          },
+          Object {
+            "label": "Bookmarked",
+            "value": "sortBookmarked",
+          },
+        ]
+      }
+      renderValue={[Function]}
+      style={
+        Object {
+          "fontSize": 14,
+        }
+      }
+    />
+    <WithTheme(SearchBar)
+      handleSearchValueChange={[Function]}
+      id="project-search"
+      placeholder="Search"
+    />
+  </withRouter(WithTheme(PageHeader))>
+  <withRouter(ProjectList)
     direction="desc"
     handleExport={[Function]}
-    handlePageChange={[Function]}
-    handleRequestSort={[Function]}
-    handleRowsChange={[Function]}
-    handleSearchValueChange={[Function]}
+    handlePageChange={[MockFunction]}
+    handleRequestSort={[MockFunction]}
+    handleRowsChange={[MockFunction]}
     handleSortBookmarked={[Function]}
     page={0}
     projectIds={Array []}
@@ -76,5 +141,5 @@ exports[`Home scene should render correctly 1`] = `
       }
     }
   />
-</Container>
+</FlexGrid>
 `;

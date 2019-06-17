@@ -1,5 +1,5 @@
 import React from 'react'
-import { shallow, mount } from 'enzyme'
+import { shallow } from 'enzyme'
 import { CodingScheme } from '../index'
 
 const props = {
@@ -13,7 +13,8 @@ const props = {
   questions: [],
   lockInfo: {},
   lockedByCurrentUser: false,
-  hasLock: false
+  hasLock: false,
+  currentUser : { role:'Admin' }
 }
 
 describe('CodingScheme scene', () => {

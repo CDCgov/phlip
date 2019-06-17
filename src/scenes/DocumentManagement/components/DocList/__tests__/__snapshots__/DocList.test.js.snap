@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DocumentManagement - DocList should render correctly 1`] = `
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={true}
+  flex={true}
+  justify="stretch"
+  padding={0}
+  raised={false}
+  style={
+    Object {
+      "overflow": "hidden",
+    }
+  }
+  type="column"
+>
+  <Table
+    style={
+      Object {
+        "borderCollapse": "separate",
+        "display": "block",
+        "overflow": "auto",
+        "tableLayout": "auto",
+      }
+    }
+    summary="List of documents"
+  >
+    <WithStyles(TableHead)
+      style={
+        Object {
+          "width": "100%",
+        }
+      }
+    >
+      <DocListTableHead
+        allSelected={false}
+        onActionSelected={[Function]}
+        onSelectAll={[Function]}
+      />
+    </WithStyles(TableHead)>
+    <WithStyles(TableBody)
+      id="documentTable"
+    >
+      <Connect(DocListTableRow)
+        id={
+          Object {
+            "_id": "1",
+            "name": "Doc",
+          }
+        }
+        key="doc-[object Object]"
+        onSelectFile={[Function]}
+      />
+    </WithStyles(TableBody)>
+  </Table>
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={false}
+    flex={true}
+    justify="stretch"
+    padding={0}
+    raised={false}
+    style={Object {}}
+    type="column"
+  />
+  <Table>
+    <WithStyles(TableFooter)>
+      <WithStyles(TableRow)>
+        <WithStyles(TablePagination)
+          count={1}
+          onChangePage={[Function]}
+          onChangeRowsPerPage={[Function]}
+          page={0}
+          rowsPerPage="10"
+        />
+      </WithStyles(TableRow)>
+    </WithStyles(TableFooter)>
+  </Table>
+</FlexGrid>
+`;

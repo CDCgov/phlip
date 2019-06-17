@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import withStyles from 'material-ui/styles/withStyles'
-import IconButton from 'material-ui/IconButton'
-import Input from 'material-ui/Input'
-import { MenuItem } from 'material-ui/Menu'
-import Select from 'material-ui/Select'
-import { TableCell } from 'material-ui/Table'
-import Toolbar from 'material-ui/Toolbar'
-import Typography from 'material-ui/Typography'
-import KeyboardArrowLeft from 'material-ui/internal/svg-icons/KeyboardArrowLeft'
-import KeyboardArrowRight from 'material-ui/internal/svg-icons/KeyboardArrowRight'
+import withStyles from '@material-ui/core/styles/withStyles'
+import IconButton from '@material-ui/core/IconButton'
+import Input from '@material-ui/core/Input'
+import MenuItem from '@material-ui/core/MenuItem'
+import Select from '@material-ui/core/Select'
+import TableCell from '@material-ui/core/TableCell'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import KeyboardArrowLeft from '@material-ui/core/internal/svg-icons/KeyboardArrowLeft'
+import KeyboardArrowRight from '@material-ui/core/internal/svg-icons/KeyboardArrowRight'
 
 export const styles = theme => ({
   root: {
@@ -52,16 +52,16 @@ export const styles = theme => ({
     position: 'absolute',
     right: 0,
     color: theme.palette.text.secondary,
-    'pointer-events': 'none',
+    'pointer-events': 'none'
   }
 })
 
 /**
- * Custom TablePagination component based on Material-UI's component, render back and forth icon buttons for changing
+ * Custom TablePagination component based on @material-ui/core's component, render back and forth icon buttons for changing
  * pages, and dropdown to select # of rows per page
  */
 class TablePagination extends Component {
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { count, onChangePage, rowsPerPage } = nextProps
     const newLastPage = Math.max(0, Math.ceil(count / rowsPerPage) - 1)
     if (this.props.page > newLastPage) {
@@ -103,12 +103,12 @@ class TablePagination extends Component {
       count,
       labelDisplayedRows,
       labelRowsPerPage,
-      onChangePage,
       onChangeRowsPerPage,
       page,
       rowsPerPage,
       rowsPerPageOptions,
       theme,
+      onChangePage,
       ...other
     } = this.props
 
@@ -131,7 +131,7 @@ class TablePagination extends Component {
         <Toolbar className={classes.toolbar}>
           <div className={classes.spacer} />
           {numberOptions > 2 && (
-            <Typography type="caption" className={classes.caption}>
+            <Typography variant="caption" className={classes.caption}>
               {labelRowsPerPage}
             </Typography>
           )}
@@ -159,7 +159,7 @@ class TablePagination extends Component {
               </MenuItem>
             </Select>
           )}
-          <Typography type="caption" className={classes.caption}>
+          <Typography variant="caption" className={classes.caption}>
             {labelDisplayedRows({
               from: count === 0 ? 0 : page * selected + 1,
               to: Math.min(count, (page + 1) * selected),
@@ -186,7 +186,7 @@ class TablePagination extends Component {
 
 TablePagination.propTypes = {
   /**
-   * Style classes object from material-ui
+   * Style classes object from @material-ui/core
    */
   classes: PropTypes.object.isRequired,
   /**
@@ -226,7 +226,7 @@ TablePagination.propTypes = {
    */
   rowsPerPageOptions: PropTypes.object,
   /**
-   * Theme object from material-ui
+   * Theme object from @material-ui/core
    */
   theme: PropTypes.object.isRequired
 }

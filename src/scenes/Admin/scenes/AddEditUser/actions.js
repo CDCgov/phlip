@@ -1,31 +1,31 @@
-import * as types from './actionTypes'
+import makeActionCreator from 'utils/makeActionCreator'
 
-/** Adding User */
-export const addUserRequest = user => ({ type: types.ADD_USER_REQUEST, user })
-export const addUserSuccess = user => ({ type: types.ADD_USER_SUCCESS, user })
+export const types = {
+  ADD_USER_REQUEST: 'ADD_USER_REQUEST',
+  ADD_USER_SUCCESS: 'ADD_USER_SUCCESS',
+  ADD_USER_FAIL: 'ADD_USER_FAIL',
+  UPDATE_USER_REQUEST: 'UPDATE_USER_REQUEST',
+  UPDATE_USER_SUCCESS: 'UPDATE_USER_SUCCESS',
+  UPDATE_USER_FAIL: 'UPDATE_USER_FAIL',
+  UPDATE_CURRENT_USER: 'UPDATE_CURRENT_USER',
+  ADD_USER_IMAGE_REQUEST: 'ADD_USER_IMAGE_REQUEST',
+  ADD_USER_IMAGE_SUCCESS: 'ADD_USER_IMAGE_SUCCESS',
+  ADD_USER_IMAGE_FAIL: 'ADD_USER_IMAGE_FAIL',
+  DELETE_USER_IMAGE_REQUEST: 'DELETE_USER_IMAGE_REQUEST',
+  DELETE_USER_IMAGE_SUCCESS: 'DELETE_USER_IMAGE_SUCCESS',
+  DELETE_USER_IMAGE_FAIL: 'DELETE_USER_IMAGE_FAIL',
+  ON_CLOSE_ADD_EDIT_USER: 'ON_CLOSE_ADD_EDIT_USER',
+  LOAD_ADD_EDIT_AVATAR: 'LOAD_ADD_EDIT_AVATAR',
+  RESET_USER_FORM_ERROR: 'RESET_USER_FORM_ERROR'
+}
 
-/** Updating User */
-export const updateUserRequest = user => ({ type: types.UPDATE_USER_REQUEST, user })
-export const updateCurrentUser = payload => ({ type: types.UPDATE_CURRENT_USER, payload })
-
-/** Updating avatar */
-export const updateCurrentUserAvatar = payload => ({ type: types.UPDATE_CURRENT_USER_AVATAR, payload })
-export const removeCurrentUserAvatar = () => ({ type: types.REMOVE_CURRENT_USER_AVATAR })
-
-/** Adding avatar */
-export const addUserPictureRequest = (userId, patchOperation) => ({ type: types.ADD_USER_IMAGE_REQUEST, userId, patchOperation })
-export const addUserPictureSuccess = user => ({ type: types.ADD_USER_IMAGE_SUCCESS, user })
-
-/** Closing modal */
-export const onCloseAddEditUser = () => ({ type: types.ON_CLOSE_ADD_EDIT_USER })
-
-/** Getting and deleting avatar */
-export const getUserPictureRequest = userId => ({ type: types.GET_USER_IMAGE_REQUEST, userId })
-export const deleteUserPictureRequest = (userId, operation) => ({ type: types.DELETE_USER_IMAGE_REQUEST, userId, operation })
-
-/** Loading addEditAvatar modal */
-export const loadAddEditAvatar = avatar => ({ type: types.LOAD_ADD_EDIT_AVATAR, avatar })
-
-/** Reseting errors and submit status */
-export const resetFormError = () => ({ type: types.RESET_USER_FORM_ERROR })
-export const resetSubmittingStatus = () => ({ type: types.RESET_SUBMITTING_STATUS })
+export default {
+  addUserRequest: makeActionCreator(types.ADD_USER_REQUEST, 'user'),
+  updateUserRequest: makeActionCreator(types.UPDATE_USER_REQUEST, 'user', 'selfUpdate'),
+  updateCurrentUser: makeActionCreator(types.UPDATE_CURRENT_USER, 'payload'),
+  addUserPictureRequest: makeActionCreator(types.ADD_USER_IMAGE_REQUEST, 'userId', 'patchOperation', 'user', 'selfUpdate'),
+  deleteUserPictureRequest: makeActionCreator(types.DELETE_USER_IMAGE_REQUEST, 'userId', 'operation', 'user', 'selfUpdate'),
+  onCloseAddEditUser: makeActionCreator(types.ON_CLOSE_ADD_EDIT_USER),
+  loadAddEditAvatar: makeActionCreator(types.LOAD_ADD_EDIT_AVATAR, 'avatar'),
+  resetFormError: makeActionCreator(types.RESET_USER_FORM_ERROR)
+}

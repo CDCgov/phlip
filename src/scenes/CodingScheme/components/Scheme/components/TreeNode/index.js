@@ -16,10 +16,9 @@ export const TreeNode = props => {
     draggedNode,
     canDrop,
     treeIndex,
-    getPrevRow,
-    node,
-    path,
     treeId,
+    getPrevRow,
+    rowDirection,
     ...otherProps
   } = props
 
@@ -41,14 +40,12 @@ export const TreeNode = props => {
       lineClass = `${styles.lineHalfVerticalTop} ${styles.lineHalfHorizontalRight}`
     }
 
-    scaffold.push(
-      <div
-        key={`pre_${1 + i}`}
-        tabIndex={-1}
-        style={{width: scaffoldBlockPxWidth}}
-        className={`${styles.lineBlock} ${lineClass}`}>
-      </div>
-    )
+    scaffold.push(<div
+      key={`pre_${1 + i}`}
+      tabIndex={-1}
+      style={{ width: scaffoldBlockPxWidth }}
+      className={`${styles.lineBlock} ${lineClass}`}
+    />)
 
     if (treeIndex !== listIndex && i === swapDepth) {
       let highlightLineClass = ''
@@ -60,14 +57,12 @@ export const TreeNode = props => {
         highlightLineClass = styles.highlightLineVertical
       }
 
-      scaffold.push(
-        <div
-          key={`highlight_${1 + i}`}
-          style={{ width: scaffoldBlockPxWidth, left: scaffoldBlockPxWidth * i }}
-          className={`${styles.absoluteLineBlock} ${highlightLineClass}`}
-          tabIndex={-1}
-        />
-      )
+      scaffold.push(<div
+        key={`highlight_${1 + i}`}
+        style={{ width: scaffoldBlockPxWidth, left: scaffoldBlockPxWidth * i }}
+        className={`${styles.absoluteLineBlock} ${highlightLineClass}`}
+        tabIndex={-1}
+      />)
     }
   })
 
@@ -84,8 +79,7 @@ export const TreeNode = props => {
           swapFrom,
           swapLength,
           swapDepth
-        })
-      )}
+        }))}
     </div>
   )
 }

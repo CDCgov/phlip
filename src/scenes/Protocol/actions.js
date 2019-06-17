@@ -1,22 +1,33 @@
-import * as types from './actionTypes'
+import makeActionCreator from 'utils/makeActionCreator'
 
-/** Dispatch when component is mounted, gets the protocol for the project */
-export const getProtocolRequest = projectId => ({ type: types.GET_PROTOCOL_REQUEST, projectId })
+export const types = {
+  UPDATE_PROTOCOL: 'UPDATE_PROTOCOL',
+  SAVE_PROTOCOL_REQUEST: 'SAVE_PROTOCOL_REQUEST',
+  SAVE_PROTOCOL_SUCCESS: 'SAVE_PROTOCOL_SUCCESS',
+  SAVE_PROTOCOL_FAIL: 'SAVE_PROTOCOL_FAIL',
+  GET_PROTOCOL_REQUEST: 'GET_PROTOCOL_REQUEST',
+  GET_PROTOCOL_SUCCESS: 'GET_PROTOCOL_SUCCESS',
+  GET_PROTOCOL_FAIL: 'GET_PROTOCOL_FAIL',
+  LOCK_PROTOCOL_REQUEST: 'LOCK_PROTOCOL_REQUEST',
+  LOCK_PROTOCOL_SUCCESS: 'LOCK_PROTOCOL_SUCCESS',
+  LOCK_PROTOCOL_FAIL: 'LOCK_PROTOCOL_FAIL',
+  UNLOCK_PROTOCOL_REQUEST: 'UNLOCK_PROTOCOL_REQUEST',
+  UNLOCK_PROTOCOL_SUCCESS: 'UNLOCK_PROTOCOL_SUCCESS',
+  UNLOCK_PROTOCOL_FAIL: 'UNLOCK_PROTOCOL_FAIL',
+  UPDATE_EDITED_FIELDS: 'UPDATE_EDITED_FIELDS',
+  RESET_LOCK_ALERT_PROTOCOL: 'RESET_LOCK_ALERT_PROTOCOL',
+  RESET_ALERT_ERROR: 'RESET_ALERT_ERROR',
+  CLEAR_STATE: 'CLEAR_STATE'
+}
 
-/** Unlocking and locking the protocol */
-export const lockProtocolRequest = projectId => ({ type: types.LOCK_PROTOCOL_REQUEST, projectId })
-export const unlockProtocolRequest = projectId => ({ type: types.UNLOCK_PROTOCOL_REQUEST, projectId })
-
-/** Update protocol in redux state only */
-export const updateProtocol = content => ({ type: types.UPDATE_PROTOCOL, content })
-
-/** Requesting to save protocol content to DB */
-export const saveProtocolRequest = (protocol, projectId) => ({ type: types.SAVE_PROTOCOL_REQUEST, protocol, projectId })
-
-/** Updating project lastEditedBy and dateLastEdited fields */
-export const updateEditedFields = projectId => ({ type: types.UPDATE_EDITED_FIELDS, projectId })
-
-/** Clearing state and reseting errors */
-export const clearState = () => ({ type: types.CLEAR_STATE })
-export const resetAlertError = () => ({ type: types.RESET_ALERT_ERROR })
-export const resetLockAlert = () => ({ type: types.RESET_LOCK_ALERT_PROTOCOL })
+export default {
+  getProtocolRequest: makeActionCreator(types.GET_PROTOCOL_REQUEST, 'projectId'),
+  lockProtocolRequest: makeActionCreator(types.LOCK_PROTOCOL_REQUEST, 'projectId'),
+  unlockProtocolRequest: makeActionCreator(types.UNLOCK_PROTOCOL_REQUEST, 'projectId', 'userId'),
+  updateProtocol: makeActionCreator(types.UPDATE_PROTOCOL, 'content'),
+  saveProtocolRequest: makeActionCreator(types.SAVE_PROTOCOL_REQUEST, 'protocol', 'projectId'),
+  updateEditedFields: makeActionCreator(types.UPDATE_EDITED_FIELDS, 'projectId'),
+  clearState: makeActionCreator(types.CLEAR_STATE),
+  resetAlertError: makeActionCreator(types.RESET_ALERT_ERROR),
+  resetLockAlert: makeActionCreator(types.RESET_LOCK_ALERT_PROTOCOL)
+}

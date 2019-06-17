@@ -11,7 +11,7 @@ const props = {
     checked: {
       color: '#38a48e'
     }
-  },
+  }
 }
 
 describe('CheckboxLabel component', () => {

@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Grid from 'material-ui/Grid'
+import Grid from '@material-ui/core/Grid'
 
 /**
- * CSS Flexbox row wrapper for material-ui's Grid component
+ * CSS Flexbox row wrapper for @material-ui/core's Grid component
  */
 export const Row = ({ flex, displayFlex, children, reverse, component, style, ...otherProps }) => {
   const styles = {
@@ -14,6 +14,7 @@ export const Row = ({ flex, displayFlex, children, reverse, component, style, ..
     flexWrap: 'nowrap',
     ...style
   }
+
   return (
     React.cloneElement(
       component,

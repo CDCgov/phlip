@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Grid from 'material-ui/Grid'
+import Grid from '@material-ui/core/Grid'
 
 /**
- * CSS flexbox Column based on material-ui's Grid component
+ * CSS flexbox Column based on @material-ui/core's Grid component
  */
 const Column = ({ flex, displayFlex, children, component, style, ...otherProps }) => {
   const styles = {

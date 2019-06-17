@@ -1,36 +1,42 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import Typography from 'material-ui/Typography'
-import Button from 'components/Button/index'
+import Typography from '@material-ui/core/Typography'
 import { reduxForm, Field } from 'redux-form'
 import validate from './validate'
-import Divider from 'material-ui/Divider'
-import TextInput from 'components/TextInput/index'
-import Container, { Column, Row } from 'components/Layout/index'
+import Divider from '@material-ui/core/Divider'
+import { FlexGrid, TextInput, Button } from 'components'
 
-let DevLoginForm = ({ theme, handleSubmit, pristine, reset, error, submitting, pivError }) => (
-  <Fragment>
-    <form onSubmit={handleSubmit}>
-      <Column displayFlex style={{ justifyContent: 'space-around', alignItems: 'center' }}>
-        <Row style={{ width: 280, padding: 16 }}>
-          <Field name="email" label="Email" component={TextInput} />
-        </Row>
-      </Column>
-      <Row displayFlex style={{ justifyContent: 'center', alignItems: 'center' }}>
-        {error && <Typography color="error" align="center">{error}</Typography>}
-        {pivError && <Typography color="error" align="center">{pivError}</Typography>}
-      </Row>
-      <Row displayFlex flex style={{ justifyContent: 'center', padding: 16 }}>
-        <Button type="submit" color="accent" value="Login" disabled={pristine || submitting} />
-      </Row>
-      <Divider />
-    </form>
-  </Fragment>
+let DevLoginForm = ({ handleSubmit, pristine, error, submitting, pivError }) => (
+  <form onSubmit={handleSubmit}>
+    <FlexGrid container justify="space-around" align="center">
+      <FlexGrid padding={16} style={{ width: 280, boxSizing: 'border-box' }}>
+        <Field name="email" label="Email" component={TextInput} />
+      </FlexGrid>
+    </FlexGrid>
+    <FlexGrid container type="row" justify="center" align="center">
+      {error && <Typography color="error" align="center">{error}</Typography>}
+      {pivError && <Typography color="error" align="center">{pivError}</Typography>}
+    </FlexGrid>
+    <FlexGrid container type="row" flex justify="center" padding={16}>
+      <Button type="submit" color="accent" value="Login" disabled={pristine || submitting} />
+    </FlexGrid>
+    <Divider />
+  </form>
 )
 
 DevLoginForm = reduxForm({
   form: 'login',
   validate
 })(DevLoginForm)
+
+DevLoginForm.propTypes = {
+  theme: PropTypes.object,
+  handleSubmit: PropTypes.func,
+  pristine: PropTypes.bool,
+  reset: PropTypes.any,
+  error: PropTypes.string,
+  submitting: PropTypes.bool,
+  pivError: PropTypes.string
+}
 
 export default DevLoginForm

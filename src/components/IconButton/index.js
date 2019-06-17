@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { default as MuiIconButton } from 'material-ui/IconButton'
+import { default as MuiIconButton } from '@material-ui/core/IconButton'
 import Icon from 'components/Icon'
 import Tooltip from 'components/Tooltip'
 
@@ -12,11 +12,16 @@ export const IconButton = ({ color, onClick, iconSize, style, iconStyle, tooltip
   const styles = {
     width: iconSize,
     height: iconSize,
-    ...style,
+    ...style
   }
 
   const Button = (
-    <MuiIconButton onClick={onClick} disableRipple style={styles} {...otherProps} disabled={disabled}>
+    <MuiIconButton
+      onClick={onClick}
+      disableRipple
+      style={styles}
+      {...otherProps}
+      disabled={disabled}>
       <Icon color={color} size={iconSize} style={{ ...iconStyle }}>
         {children}
       </Icon>
@@ -24,7 +29,7 @@ export const IconButton = ({ color, onClick, iconSize, style, iconStyle, tooltip
   )
 
   return (tooltipText.length > 0 && !disabled)
-    ? <Tooltip id={id} text={tooltipText} placement={placement} style={{ height: iconSize}}>{Button}</Tooltip>
+    ? <Tooltip id={id} text={tooltipText} placement={placement}>{Button}</Tooltip>
     : Button
 }
 

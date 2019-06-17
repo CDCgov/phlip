@@ -1,7 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Table from 'components/Table'
-import { TableBody, TableHead, TableRow, TableCell } from 'material-ui/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import TableCell from '@material-ui/core/TableCell'
 import JurisdictionRow from './components/JurisdictionRow'
 
 export const JurisdictionList = ({ jurisdictions, projectId, project, onDelete }) => (
@@ -19,13 +22,16 @@ export const JurisdictionList = ({ jurisdictions, projectId, project, onDelete }
       {jurisdictions.map(id => (
         <JurisdictionRow projectId={projectId} id={id} onDelete={onDelete} key={`jurisdictions-${id}`} />
       ))}
-      </TableBody>
+    </TableBody>
   </Table>
 )
 
 JurisdictionList.propTypes = {
   jurisdictions: PropTypes.array,
-  onOpenForm: PropTypes.func
+  onOpenForm: PropTypes.func,
+  projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  project: PropTypes.object,
+  onDelete: PropTypes.func
 }
 
 export default JurisdictionList

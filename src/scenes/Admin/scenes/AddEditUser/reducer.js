@@ -1,9 +1,10 @@
-import * as types from './actionTypes'
+import { types } from './actions'
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   avatar: null,
   formError: '',
-  isDoneSubmitting: false
+  submitting: false,
+  goBack: false
 }
 
 /**
@@ -15,19 +16,6 @@ const INITIAL_STATE = {
  */
 const addEditUserReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-
-    case types.GET_USER_IMAGE_SUCCESS:
-      return {
-        ...state,
-        avatar: action.payload
-      }
-
-    case types.ADD_USER_IMAGE_SUCCESS:
-      return {
-        ...state,
-        avatar: action.payload.avatar
-      }
-
     case types.LOAD_ADD_EDIT_AVATAR:
       return {
         ...state,
@@ -35,17 +23,13 @@ const addEditUserReducer = (state = INITIAL_STATE, action) => {
       }
 
     case types.ADD_USER_FAIL:
-      return {
-        ...state,
-        formError: 'We failed to add this user.',
-        isDoneSubmitting: true
-      }
-
+    case types.ADD_USER_IMAGE_FAIL:
+    case types.DELETE_USER_IMAGE_FAIL:
     case types.UPDATE_USER_FAIL:
       return {
         ...state,
-        formError: 'We failed to updated this user.',
-        isDoneSubmitting: true
+        formError: action.payload,
+        submitting: false
       }
 
     case types.RESET_USER_FORM_ERROR:
@@ -53,32 +37,34 @@ const addEditUserReducer = (state = INITIAL_STATE, action) => {
         ...state,
         formError: ''
       }
-
-    case types.RESET_SUBMITTING_STATUS:
+  
+    case types.ADD_USER_IMAGE_SUCCESS:
+    case types.DELETE_USER_IMAGE_SUCCESS:
       return {
         ...state,
-        isDoneSubmitting: false
+        submitting: false,
+        avatar: action.payload.avatar
       }
 
     case types.UPDATE_USER_SUCCESS:
     case types.ADD_USER_SUCCESS:
       return {
-        ...state,
-        isDoneSubmitting: true
+        ...INITIAL_STATE,
+        submitting: false,
+        goBack: true
       }
-
-
-    case types.DELETE_USER_IMAGE_SUCCESS:
-    case types.ON_CLOSE_ADD_EDIT_USER:
-    case types.ADD_USER_IMAGE_REQUEST:
-      return INITIAL_STATE
-
+      
     case types.ADD_USER_REQUEST:
     case types.UPDATE_USER_REQUEST:
+    case types.ADD_USER_IMAGE_REQUEST:
+    case types.DELETE_USER_IMAGE_REQUEST:
       return {
         ...state,
-        isDoneSubmitting: false
+        submitting: true
       }
+      
+    case types.ON_CLOSE_ADD_EDIT_USER:
+      return INITIAL_STATE
 
     default:
       return state

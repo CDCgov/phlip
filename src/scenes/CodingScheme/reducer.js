@@ -4,14 +4,14 @@ import {
   getTreeFromFlatData,
   walk,
   map,
-  addNodeUnderParent,
+  addNodeUnderParent
 } from 'react-sortable-tree'
 import { commonHelpers } from 'utils'
 
 /**
  * Initial state for coding scheme reducer
  */
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   questions: [],
   outline: {},
   allowHover: true,
@@ -23,7 +23,8 @@ const INITIAL_STATE = {
   previousOutline: {},
   lockedByCurrentUser: false,
   lockInfo: {},
-  lockedAlert: null
+  lockedAlert: null,
+  goBack: false
 }
 
 /**
@@ -109,7 +110,7 @@ const sortQuestions = questions => {
  * @param {Number} treeIndex
  * @returns {Number}
  */
-export const getNodeKey = ({ node, treeIndex }) => {
+export const getNodeKey = ({ treeIndex }) => {
   return treeIndex
 }
 
@@ -124,7 +125,7 @@ const setHovering = (node, hovering) => {
   node.hovering = hovering
 
   if (node.children) {
-    node.children = node.children.map((child, i) => {
+    node.children = node.children.map((child) => {
       return setHovering(child, false)
     })
   }
@@ -157,11 +158,9 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
       sortPossibleAnswers(action.payload.scheme.schemeQuestions)
       return {
         ...state,
-        questions: sortQuestions(
-          getTreeFromFlatData({
-            flatData: getQuestionsFromOutline(action.payload.scheme.outline, action.payload.scheme.schemeQuestions)
-          })
-        ),
+        questions: sortQuestions(getTreeFromFlatData({
+          flatData: getQuestionsFromOutline(action.payload.scheme.outline, action.payload.scheme.schemeQuestions)
+        })),
         flatQuestions: action.payload.scheme.schemeQuestions,
         outline: action.payload.scheme.outline,
         empty: action.payload.scheme.schemeQuestions <= 0,
@@ -213,6 +212,7 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
 
     case types.LOCK_SCHEME_FAIL:
     case types.UNLOCK_SCHEME_FAIL:
+    case types.DELETE_QUESTION_FAIL:
       return {
         ...state,
         alertError: action.payload
@@ -223,7 +223,8 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
     case types.UPDATE_QUESTION_FAIL:
       return {
         ...state,
-        formError: action.payload
+        formError: action.payload,
+        goBack: false
       }
 
     case types.SET_EMPTY_STATE:
@@ -279,7 +280,8 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         outline: questionsToOutline([...state.questions, action.payload]),
         empty: false,
         flatQuestions: [...state.flatQuestions, action.payload],
-        error: null
+        error: null,
+        goBack: true
       }
 
     case types.ADD_CHILD_QUESTION_SUCCESS:
@@ -296,7 +298,8 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         questions: newTree.treeData,
         outline: questionsToOutline(newTree.treeData),
         empty: false,
-        flatQuestions: [...state.flatQuestions, action.payload]
+        flatQuestions: [...state.flatQuestions, action.payload],
+        goBack: true
       }
 
     case types.UPDATE_QUESTION_SUCCESS:
@@ -311,10 +314,11 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
         ...state,
         questions: updatedTree,
         outline: questionsToOutline(updatedTree),
-        empty: false
+        empty: false,
+        goBack: true
       }
 
-    case types.DELETE_QUESITON_SUCCESS:
+    case types.DELETE_QUESTION_SUCCESS:
       return {
         ...state,
         questions: action.payload.updatedQuestions,
@@ -327,7 +331,8 @@ const codingSchemeReducer = (state = INITIAL_STATE, action) => {
     case types.UPDATE_QUESTION_REQUEST:
       return {
         ...state,
-        formError: null
+        formError: null,
+        goBack: false
       }
 
     case types.LOCK_SCHEME_SUCCESS:

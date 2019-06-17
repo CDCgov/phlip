@@ -17,7 +17,8 @@ const UserTableBody = ({ users }) => {
               cardAvatar
               avatar={user.avatar}
               userName={`${user.firstName} ${user.lastName}`}
-              initials={normalize.getInitials(user.firstName, user.lastName)} />
+              initials={normalize.getInitials(user.firstName, user.lastName)}
+            />
           </TableCell>
           <TableCell {...generateKeyAndId('name')} header="name" padding="default">
             <span>{user.firstName} {user.lastName}</span>

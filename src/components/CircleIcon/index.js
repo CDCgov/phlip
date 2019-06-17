@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Icon from 'components/Icon'
-import { withTheme } from 'material-ui/styles'
+import { withTheme } from '@material-ui/core/styles'
 
 /**
  * Renders an icon onto a circle div
@@ -54,7 +54,7 @@ CircleIcon.propTypes = {
   children: PropTypes.any,
 
   /**
-   * Material-ui theme object
+   * @material-ui/core theme object
    */
   theme: PropTypes.object
 }

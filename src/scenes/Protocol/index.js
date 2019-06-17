@@ -1,29 +1,21 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Container, { Row } from 'components/Layout'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import Card from 'components/Card'
-import * as actions from './actions'
-import PageHeader from 'components/PageHeader'
-import Alert from 'components/Alert'
-import Icon from 'components/Icon'
-import CardError from 'components/CardError'
-import Typography from 'material-ui/Typography'
-import withTracking from 'components/withTracking'
+import actions from './actions'
+import Typography from '@material-ui/core/Typography'
+import { FlexGrid, Icon, Alert, PageHeader, withTracking, CardError, ApiErrorAlert } from 'components'
 
+/* eslint-disable no-unused-vars */
 import tinymce from 'tinymce/tinymce'
 import 'tinymce/themes/modern/theme'
 import 'tinymce/plugins/paste'
 import 'tinymce/plugins/link'
 import 'tinymce/plugins/image'
-//import 'tinymce/plugins/anchor'
-//import 'tinymce/plugins/pagebreak'
 import 'tinymce/plugins/lists'
 import 'tinymce/plugins/advlist'
 import 'tinymce/plugins/table'
 import 'tinymce/plugins/paste'
-
 import { Editor } from '@tinymce/tinymce-react'
 
 /**
@@ -63,7 +55,7 @@ export class Protocol extends Component {
     /**
      * Anything that should be shown inside an alert related to the checking out of the protocol
      */
-    lockedAlert: PropTypes.string,
+    lockedAlert: PropTypes.bool,
     /**
      * Whether or not the protocol is currently checked out
      */
@@ -73,53 +65,63 @@ export class Protocol extends Component {
      */
     alertError: PropTypes.string,
     /**
+     * Any error that should be displayed in an alert
+     */
+    lockedAlertAction: PropTypes.array,
+    /**
      * Redux actions object
      */
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    /**
+     * If populated, an error that happened while saving the protocol
+     */
+    saveError: PropTypes.any,
+    /**
+     * Browser history
+     */
+    history: PropTypes.object,
+    /**
+     * Current user logged in
+     */
+    currentUser: PropTypes.object
   }
-
+  
   constructor(props, context) {
     super(props, context)
-
+    
     this.state = {
       editMode: false,
       open: false,
-      alertText: ''
+      alertText: '',
+      alertTitle: ''
     }
   }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.submitting === true) {
-      if (nextProps.saveError !== true) {
+  
+  componentDidMount() {
+    this.props.actions.getProtocolRequest(this.props.projectId)
+    document.title = `PHLIP - ${this.props.projectName} - Protocol`
+  }
+  
+  componentDidUpdate(prevProps) {
+    if (prevProps.submitting && !this.props.submitting) {
+      if (this.props.alertError === '') {
         this.setState({
           editMode: false
         })
       }
     }
-
-    if (this.props.lockedByCurrentInfo !== true && nextProps.lockedByCurrentUser === true) {
+    
+    if (!prevProps.lockedByCurrentUser && this.props.lockedByCurrentUser) {
       this.setState({
         editMode: true
       })
     }
   }
-
-  componentWillMount() {
-    this.props.actions.getProtocolRequest(this.props.projectId)
-  }
-
+  
   componentWillUnmount() {
     this.props.actions.clearState()
   }
-
-  componentDidMount() {
-    require.context(
-      '!file-loader?name=[path][name].[ext]&context=node_modules/tinymce!tinymce/skins',
-      true,
-      /.*/
-    )
-  }
-
+  
   /**
    * Calls a redux action to request to checkout the protocol. Invoked when the user clicks the 'Edit' button
    * @public
@@ -127,7 +129,7 @@ export class Protocol extends Component {
   onEnableEdit = () => {
     this.props.actions.lockProtocolRequest(this.props.projectId)
   }
-
+  
   /**
    * Closes any alert erorr that might be open
    * @public
@@ -135,7 +137,7 @@ export class Protocol extends Component {
   onCloseAlert = () => {
     this.props.actions.resetAlertError()
   }
-
+  
   /**
    * Calls redux actions to save and unlock protocol. Invoked when the user clicks the 'Save' button
    * @public
@@ -145,7 +147,7 @@ export class Protocol extends Component {
     this.props.actions.unlockProtocolRequest(this.props.projectId)
     this.props.actions.updateEditedFields(this.props.projectId)
   }
-
+  
   /**
    * Closes the alert that shows when the user clicks the 'back' arrow while still in edit mode, and then hit 'Cancel'
    * in the alert
@@ -157,7 +159,7 @@ export class Protocol extends Component {
       alertText: ''
     })
   }
-
+  
   /**
    * Closes any alert related to locking / checking out of the protocol
    * @public
@@ -165,131 +167,166 @@ export class Protocol extends Component {
   onCloseLockedAlert = () => {
     this.props.actions.resetLockAlert()
   }
-
+  
   /**
-   * Invoked when the user hits 'Save' in the alert that shows when the user clicks the 'back' arrow while still in edit
-   * mode. Sends a request to save the protocol, and goes back one in browser history.
+   * Invoked when the user hits 'Continue' in the alert that shows when the user clicks the 'back' arrow while still in
+   * edit mode. Sends a request to unlock the protocol, and goes back one in browser history.
    * @public
    */
   onContinue = () => {
-    this.onSaveProtocol()
+    this.props.actions.unlockProtocolRequest(this.props.projectId)
     this.props.history.goBack()
   }
-
+  
   /**
-   * If in edit mode, opens an alert to let the user know they are still in edit mode. Invoked when the user clicks the 'back' arrow while
-   * still in edit mode. If not in edit mode, goes back once in browser history.
+   * If in edit mode, opens an alert to let the user know they are still in edit mode. Invoked when the user clicks the
+   * 'back' arrow while still in edit mode. If not in edit mode, goes back once in browser history.
    * @public
    */
   onGoBack = () => {
     if (this.props.lockedByCurrentUser || this.state.editMode) {
       this.setState({
         open: true,
-        alertText: 'Your unsaved changes will be lost.'
+        alertText: 'You will lose unsaved changes. Do you want to continue?',
+        alertTitle: 'Warning'
       })
     } else {
-     this.props.history.goBack()
+      this.props.history.goBack()
     }
   }
-
+  
+  /**
+   * Overrides a currently checked out protocol
+   */
+  overrideLock = () => {
+    this.props.actions.unlockProtocolRequest(this.props.projectId, this.props.lockInfo.userId)
+    this.props.actions.updateEditedFields(this.props.projectId)
+    this.onCloseLockedAlert()
+  }
+  
+  /**
+   * Updates the protocol content
+   * @returns {*}
+   */
+  updateProtocol = e => {
+    this.props.actions.updateProtocol(e.target.getContent())
+  }
+  
   render() {
     const alertActions = [
       {
-        value: 'Cancel',
-        type: 'button',
-        onClick: this.onClose
-      },
-      {
-        value: 'Save',
+        value: 'Continue',
         type: 'button',
         onClick: this.onContinue
       }
     ]
+    
+    const {
+      currentUser, lockedAlert, lockInfo, projectName, projectId, getProtocolError, alertError, protocolContent
+    } = this.props
+    
+    const { open, alertText, alertTitle, editMode } = this.state
+    
+    let lockedAlertAction = []
+    
+    if (currentUser.role === 'Admin') {
+      lockedAlertAction.push({ value: 'Unlock', type: 'button', onClick: this.overrideLock })
+    }
+    
     return (
-      <Container flex column style={{ paddingBottom: 20, flexWrap: 'nowrap' }}>
-        <Alert open={this.state.open} actions={alertActions}>
+      <FlexGrid flex container padding="12px 20px 20px 20px">
+        <Alert open={open} onCloseAlert={this.onClose} actions={alertActions} title={alertTitle}>
           <Typography variant="body1">
-            {this.state.alertText}
+            {alertText}
           </Typography>
         </Alert>
         <Alert
-          actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseLockedAlert }]}
-          open={this.props.lockedAlert !== null}
-          title={<Fragment><Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
-            The Protocol is unavailable to edit.</Fragment>}>
+          onCloseAlert={this.onCloseLockedAlert}
+          actions={lockedAlertAction}
+          closeButton={{ value: lockedAlertAction.length === 0 ? 'Dismiss' : 'Cancel' }}
+          open={lockedAlert !== null}
+          title={
+            <>
+              <Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
+              The Protocol is checked out.
+            </>
+          }>
           <Typography variant="body1">
-            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} is currently editing the protocol.
-            You will not be able to edit until they are done editing and have saved their changes.
+            {`${lockInfo.firstName} ${lockInfo.lastName} `} is editing the protocol.
+            You are unable to edit until they save their changes.
+            {currentUser.role === 'Admin' &&
+            ' Select \'Unlock\' to terminate their editing session or try again later.'}
           </Typography>
         </Alert>
         <PageHeader
-          projectName={this.props.projectName}
-          projectId={this.props.projectId}
+          projectName={projectName}
+          projectId={projectId}
           pageTitle="Protocol"
           protocolButton={false}
           onBackButtonClick={this.onGoBack}
-          otherButton={this.props.getProtocolError ? {} : {
+          otherButton={getProtocolError ? {} : {
             isLink: false,
-            text: this.state.editMode ? 'Save' : 'Edit',
-            onClick: this.state.editMode ? this.onSaveProtocol : this.onEnableEdit,
+            text: editMode ? 'Save' : 'Edit',
+            onClick: editMode ? this.onSaveProtocol : this.onEnableEdit,
             style: { color: 'black', backgroundColor: 'white' },
-            otherProps: { 'aria-label': this.state.editMode ? 'Edit protocol' : 'Save protocol' },
-            show: this.props.getProtocolError !== true
+            otherProps: { 'aria-label': editMode ? 'Edit protocol' : 'Save protocol' },
+            show: getProtocolError !== true
           }}
         />
-        <Alert
-          actions={[{ value: 'Dismiss', type: 'button', onClick: this.onCloseAlert }]}
-          open={this.props.alertError !== ''}
-          title={<Fragment><Icon size={30} color="red" style={{ paddingRight: 10 }}>sentiment_very_dissatisfied</Icon>
-            Uh-oh! Something went wrong.</Fragment>}>
-          <Typography variant="body1">
-            {this.props.alertError}
-          </Typography>
-        </Alert>
-        {this.state.editMode
-          ? <Card id="tiny">
-            <Editor
-              init={{
-                statusbar: false,
-                plugins: ['paste', 'link', 'image', 'lists', 'advlist', 'table', 'paste'],
-                toolbar: 'undo redo | \
+        <ApiErrorAlert onCloseAlert={this.onCloseAlert} open={alertError !== ''} content={alertError} />
+        {editMode
+          ? (
+            <FlexGrid raised flex id="tiny">
+              <Editor
+                init={{
+                  statusbar: false,
+                  plugins: ['paste', 'link', 'image', 'lists', 'advlist', 'table', 'paste'],
+                  toolbar: 'undo redo | \
                           styleselect | \
                           bold italic strikethrough underline | \
                           table | \
                           alignleft alignright aligncenter alignjustify | \
                           numlist bullist | \
                           link image',
-                theme: 'modern',
-                skin_url: '/skins/custom',
-                branding: false,
-                resize: false,
-                menubar: false,
-                content_style: '* {font-family: Roboto }',
-                advlist_bullet_styles: 'default,circle,square,disc',
-                link_title: false,
-                target_list: false,
-                link_assume_external_targets: true,
-                default_link_target: '_blank',
-                anchor_bottom: false,
-                anchor_top: false
-              }}
-              onChange={e => this.props.actions.updateProtocol(e.target.getContent())}
-              initialValue={this.props.protocolContent}
-            />
-          </Card>
-          : this.props.getProtocolError === true
-            ? <CardError>We failed to get the protocol for this project. Please try again later.</CardError>
-            : <Card
-              style={{ padding: 25, fontFamily: 'Roboto', overflow: 'auto' }}
-              dangerouslySetInnerHTML={{ __html: this.props.protocolContent }} />
+                  theme: 'modern',
+                  skin_url: '/skins/custom',
+                  branding: false,
+                  resize: false,
+                  menubar: false,
+                  content_style: '* {font-family: Roboto }',
+                  advlist_bullet_styles: 'default,circle,square,disc',
+                  link_title: false,
+                  target_list: false,
+                  link_assume_external_targets: true,
+                  default_link_target: '_blank',
+                  anchor_bottom: false,
+                  anchor_top: false
+                }}
+                onChange={this.updateProtocol}
+                initialValue={protocolContent}
+              />
+            </FlexGrid>
+          ) : (
+            getProtocolError === true
+              ? (<CardError>
+                Uh-oh! Something went wrong. We couldn't retrieve the protocol for this project. Please try again later.
+              </CardError>)
+              : <FlexGrid
+                raised
+                padding={25}
+                style={{ fontFamily: 'Roboto', overflow: 'auto' }}
+                dangerouslySetInnerHTML={{ __html: protocolContent }}
+              />
+          )
         }
-      </Container>
+      </FlexGrid>
     )
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => ({
-  projectName: state.scenes.home.main.projects.byId[ownProps.match.params.id].name,
+  projectName: state.data.projects.byId[ownProps.match.params.id].name,
   projectId: ownProps.match.params.id,
   protocolContent: state.scenes.protocol.content || '',
   getProtocolError: state.scenes.protocol.getProtocolError || null,
@@ -298,9 +335,11 @@ const mapStateToProps = (state, ownProps) => ({
   lockInfo: state.scenes.protocol.lockInfo || {},
   lockedAlert: state.scenes.protocol.lockedAlert || null,
   hasLock: Object.keys(state.scenes.protocol.lockInfo).length > 0 || false,
-  alertError: state.scenes.protocol.alertError || ''
+  alertError: state.scenes.protocol.alertError || '',
+  currentUser: state.data.user.currentUser
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTracking(Protocol, 'Protocol'))

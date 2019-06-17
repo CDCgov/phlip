@@ -1,15 +1,17 @@
-import * as types from './actionTypes'
+import { types } from './actions'
 import { combineReducers } from 'redux'
 import addEditUserReducer from './scenes/AddEditUser/reducer'
 import { commonHelpers, updater } from 'utils'
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   users: [],
   rowsPerPage: 10,
   page: 0,
   sortBy: 'lastName',
   direction: 'asc',
-  visibleUsers: []
+  visibleUsers: [],
+  error: false,
+  errorContent: ''
 }
 
 /**
@@ -32,14 +34,14 @@ const getAvailableUsers = (users, sortBy, direction) => {
  * @param {Object} action
  * @returns {{users: Array, rowsPerPage: number, page: number, sortBy: string, direction: string, visibleUsers: Array}}
  */
-const adminReducer = (state = INITIAL_STATE, action) => {
+export const adminReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.GET_USERS_SUCCESS:
       return {
         ...state,
-        ...getAvailableUsers(
-          action.payload, state.sortBy, state.direction, state.page, state.rowsPerPage
-        )
+        error: false,
+        errorContent: '',
+        ...getAvailableUsers(action.payload, state.sortBy, state.direction, state.page, state.rowsPerPage)
       }
 
     case types.ADD_USER_SUCCESS:
@@ -69,9 +71,7 @@ const adminReducer = (state = INITIAL_STATE, action) => {
         ...state,
         sortBy: action.sortBy,
         direction: direction,
-        ...getAvailableUsers(
-          state.users, action.sortBy, direction, state.page, state.rowsPerPage
-        )
+        ...getAvailableUsers(state.users, action.sortBy, direction, state.page, state.rowsPerPage)
       }
 
     case types.ADD_USER_IMAGE_SUCCESS:
@@ -81,22 +81,15 @@ const adminReducer = (state = INITIAL_STATE, action) => {
         users: updater.updateByProperty({ ...user, avatar: action.payload.avatar }, [...state.users], 'id'),
         visibleUsers: updater.updateByProperty({ ...user, avatar: action.payload.avatar }, [...state.visibleUsers], 'id')
       }
-
-    case types.UPDATE_USER_ROWS:
+      
+    case types.GET_USERS_FAIL:
       return {
         ...state,
-        rowsPerPage: action.rowsPerPage,
-        visibleUsers: commonHelpers.sliceTable(state.users, state.page, action.rowsPerPage)
+        errorContent: 'We couldn\'t retrieve the list of users. Please try again later.',
+        error: true
       }
 
-    case types.UPDATE_USER_PAGE:
-      return {
-        ...state,
-        page: action.page,
-        visibleUsers: commonHelpers.sliceTable(state.users, action.page, state.rowsPerPage)
-      }
-
-    case 'FLUSH_STATE':
+    case types.FLUSH_STATE:
       return INITIAL_STATE
 
     case types.GET_USERS_REQUEST:

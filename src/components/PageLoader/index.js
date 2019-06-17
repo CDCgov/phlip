@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import Container from 'components/Layout'
 import CircularLoader from 'components/CircularLoader'
 
@@ -10,7 +10,7 @@ import CircularLoader from 'components/CircularLoader'
 export const PageLoader = ({ circularLoaderType, circularLoaderProps, message, messageText }) => {
   return (
     <Container flex alignItems="center" style={{ justifyContent: 'center' }}>
-      {message && <Typography type="display2">{messageText}</Typography>}
+      {message && <Typography variant="display2">{messageText}</Typography>}
       <CircularLoader type={circularLoaderType} {...circularLoaderProps} />
     </Container>
   )
@@ -28,7 +28,7 @@ PageLoader.defaultProps = {
 
 PageLoader.propTypes = {
   /**
-   * Type of loader, based on Material-UI's CircularProgress component
+   * Type of loader, based on @material-ui/core's CircularProgress component
    */
   circularLoaderType: PropTypes.string,
   /**

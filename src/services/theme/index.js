@@ -1,5 +1,5 @@
-import { createMuiTheme } from 'material-ui/styles'
-import { pink, deepPurple, teal } from 'material-ui/colors'
+import { createMuiTheme } from '@material-ui/core/styles'
+import { pink, deepPurple, teal } from '@material-ui/core/colors'
 
 const mainColor = '#048484'
 
@@ -15,6 +15,7 @@ const theme = createMuiTheme({
     secondary: {
       ...teal,
       main: mainColor,
+      text: '#00a5a6',
       light: '#4fb4b4',
       dark: '#005757',
       pageHeader: '#005757',
@@ -30,22 +31,43 @@ const theme = createMuiTheme({
     },
     greyText: '#757575'
   },
+  card: {
+    topBoxShadow: '0px -1px 5px 0px #f5f5f5',
+    boxShadow: '0px 1px 5px 0px #f5f5f5, 0px 2px 2px 0px #f5f5f5, 0px 3px 1px -2px #f5f5f5, 0px -1px 5px 0px #f5f5f5'
+  },
   scenes: {
     background: '#f5f5f5'
   },
+  shape: {
+    borderRadius: 2
+  },
   overrides: {
     MuiFormLabel: {
-      focused: {
-        color: mainColor
-      },
-      disabled: {
-        color: 'rgba(0, 0, 0, 0.54)'
+      root: {
+        '&$focused': {
+          color: mainColor
+        },
+        '&$disabled': {
+          color: 'rgba(0,0,0,.54)'
+        }
       }
     },
     MuiInput: {
-      inkbar: {
+      root: {
+        '&$disabled': {
+          color: 'black',
+          opacity: .5
+        }
+      },
+      underline: {
+        '&:before': {
+          borderBottom: `1px solid #d9d9d9!important`
+        },
         '&:after': {
-          backgroundColor: mainColor
+          borderBottom: `2px solid ${mainColor}`
+        },
+        '&:hover:not($disabled):not($focused):not($error):before': {
+          borderBottom: `2px solid ${mainColor}`
         }
       }
     },

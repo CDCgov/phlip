@@ -1,16 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render correctly 1`] = `
-<withStyles(Modal)
+<WithStyles(Modal)
   onClose={[Function]}
+  onMouseDown={[Function]}
   open={true}
 >
   <ModalTitle
     onCloseForm={[Function]}
     title="Edit Jurisdiction"
   />
-  <withStyles(Divider) />
-  <ModalContent>
+  <WithStyles(Divider) />
+  <ModalContent
+    id="jurisdiction-form"
+  >
     <form>
       <Container
         column={true}
@@ -26,7 +29,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
       >
         <Row
           component={
-            <withStyles(GridWrapper)
+            <WithStyles(Grid)
               item={true}
             />
           }
@@ -39,7 +42,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
             }
           }
         >
-          <withStyles(Autocomplete)
+          <WithStyles(Autocomplete)
             InputProps={
               Object {
                 "disabled": true,
@@ -58,6 +61,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
             inputProps={
               Object {
                 "id": "jurisdiction-name",
+                "onBlur": [Function],
                 "onChange": [Function],
                 "value": "",
               }
@@ -79,7 +83,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
         >
           <Column
             component={
-              <withStyles(GridWrapper)
+              <WithStyles(Grid)
                 item={true}
               />
             }
@@ -101,7 +105,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
           </Column>
           <Column
             component={
-              <withStyles(GridWrapper)
+              <WithStyles(Grid)
                 item={true}
               />
             }
@@ -134,7 +138,7 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
     }
     type="submit"
   />
-  <withStyles(ModalActions)
+  <WithStyles(ModalActions)
     actions={
       Array [
         Object {
@@ -142,21 +146,22 @@ exports[`Home scene - AddEditJurisdictions - JurisdictionForm should render corr
           "otherProps": Object {
             "aria-label": "Close form",
           },
+          "preferred": true,
           "type": "button",
           "value": "Cancel",
         },
         Object {
-          "disabled": false,
+          "disabled": true,
           "onClick": [Function],
           "otherProps": Object {
             "aria-label": "Save form",
           },
-          "value": <UNDEFINED>
+          "value": <React.Fragment>
             Save
-          </UNDEFINED>,
+          </React.Fragment>,
         },
       ]
     }
   />
-</withStyles(Modal)>
+</WithStyles(Modal)>
 `;

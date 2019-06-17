@@ -1,12 +1,12 @@
 /**
  * This collects all of the logic through the application into one array that is passed to redux-logic middleware.
  */
-
 import { createLogic } from 'redux-logic'
-import * as types from 'data/user/actionTypes'
+import { types } from 'data/users/actions'
 import scenesLogic from 'scenes/logic'
+import dataLogic from 'data/logic'
 import { logout } from 'services/authToken'
-import dataLogic from 'data/user/logic'
+import { persistor } from 'services/store'
 
 /**
  * Logic for when the user logs out. Flushes the state calls logout from authToken service
@@ -16,15 +16,17 @@ const logoutLogic = createLogic({
   processOptions: {
     dispatchReturn: false
   },
-  process({ api }, dispatch, done) {
+  async process({ action }, dispatch, done) {
     logout()
-    dispatch({ type: types.FLUSH_STATE })
+    dispatch({ type: types.FLUSH_STATE, isLogout: true })
+    await persistor.flush()
+    await persistor.purge()
     done()
   }
 })
 
 export default [
-  ...scenesLogic,
   ...dataLogic,
+  ...scenesLogic,
   logoutLogic
 ]

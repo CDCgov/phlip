@@ -1,16 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { withTheme } from 'material-ui/styles'
-import Divider from 'material-ui/Divider'
 import UserList from './components/UserList/index'
-import PageHeader from 'components/PageHeader'
-import * as actions from './actions'
+import { FlexGrid, PageHeader, withTracking, CardError } from 'components'
+import actions from './actions'
 import { bindActionCreators } from 'redux'
-import AddEditUser from './scenes/AddEditUser'
-import { Route } from 'react-router-dom'
-import Container from 'components/Layout'
-import withTracking from 'components/withTracking'
 
 /**
  * Represents the parent User Management component, that displays a list of users in the system. This component is
@@ -34,52 +28,68 @@ export class Admin extends Component {
     /**
      * Redux actions for this component
      */
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    /**
+     * error content
+     */
+    errorContent: PropTypes.string,
+    /**
+     * Whether or not there's a page error
+     */
+    error: PropTypes.bool
   }
 
   constructor(props, context) {
     super(props, context)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.actions.getUsersRequest()
+    document.title = 'PHLIP - User Management'
   }
 
   render() {
+    const { error, errorContent, actions, sortBy, users, direction } = this.props
+    
     return (
-      <Container column flex style={{ paddingBottom: 25 }}>
+      <FlexGrid container flex padding="12px 20px 20px 20px">
         <PageHeader
           pageTitle="User Management"
           protocolButton={false}
           projectName=""
           otherButton={{
             isLink: true,
-            text: '+ Add New User',
+            text: 'Add New User',
             path: '/admin/new/user',
-            state: {},
+            state: { modal: true },
             props: { 'aria-label': 'Add new user' },
             show: true
-          }} />
-        <Divider />
-        <UserList
-          users={this.props.users}
-          sortBy={this.props.sortBy}
-          direction={this.props.direction}
-          handleRequestSort={property => event => this.props.actions.sortUsers(property)}
+          }}
         />
-        <Route path="/admin/new/user" component={AddEditUser} />
-        <Route path="/admin/edit/user/:id" component={AddEditUser} />
-      </Container>
+        {error && <CardError>
+          {`Uh-oh! Something went wrong. ${errorContent}`}
+        </CardError>}
+        {!error && <UserList
+          users={users}
+          sortBy={sortBy}
+          direction={direction}
+          handleRequestSort={property => () => actions.sortUsers(property)}
+        />}
+      </FlexGrid>
     )
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = (state) => ({
   users: state.scenes.admin.main.users,
   sortBy: state.scenes.admin.main.sortBy,
-  direction: state.scenes.admin.main.direction
+  direction: state.scenes.admin.main.direction,
+  error: state.scenes.admin.main.error,
+  errorContent: state.scenes.admin.main.errorContent
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = (dispatch) => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(withTracking(Admin, 'User Management')))
+export default connect(mapStateToProps, mapDispatchToProps)(withTracking(Admin, 'User Management'))

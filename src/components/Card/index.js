@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Paper from 'material-ui/Paper'
+import Paper from '@material-ui/core/Paper'
 
 const baseStyle = { flex: '1' }
 
 /**
- * Card based on material-ui's Card (raised paper)
+ * Card based on @material-ui/core's Card (raised paper)
  */
 export const Card = ({ children, style, ...otherProps }) => {
   return (

@@ -1,4 +1,4 @@
-import * as types from '../../actionTypes'
+import { types } from '../../actions'
 
 const INITIAL_STATE = {
   formError: null,
@@ -16,12 +16,14 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
   switch(action.type) {
     case types.ADD_PROJECT_FAIL:
     case types.UPDATE_PROJECT_FAIL:
+    case types.DELETE_PROJECT_FAIL:
       return {
         ...state,
         formError: action.payload,
         goBack: false
       }
 
+    case types.DELETE_PROJECT_SUCCESS:
     case types.UPDATE_PROJECT_SUCCESS:
     case types.ADD_PROJECT_SUCCESS:
       return {
@@ -38,6 +40,7 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
 
     case types.ADD_PROJECT_REQUEST:
     case types.UPDATE_PROJECT_REQUEST:
+    case types.DELETE_PROJECT_REQUEST:
       return {
         ...state,
         goBack: false

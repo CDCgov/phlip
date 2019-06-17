@@ -1,5 +1,8 @@
 import React from 'react'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
+import { Ghost } from 'mdi-material-ui'
+import Container from 'components/Layout'
+import styles from './no-page.scss'
 
 /**
  * Page displayed when a user tries to access a page they are not authorized to.
@@ -9,7 +12,7 @@ export const UnauthPage = () => (
     <div className={styles.ghost}>
       <Ghost style={{ width: 200, height: 200 }} />
     </div>
-    <Typography type="display3" align="center">
+    <Typography variant="display3" align="center">
       Please contact your administrator to view this page.
     </Typography>
   </Container>

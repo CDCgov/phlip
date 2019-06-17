@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import Divider from 'material-ui/Divider'
-import { MenuItem } from 'material-ui/Menu'
+import Divider from '@material-ui/core/Divider'
+import MenuItem from '@material-ui/core/MenuItem'
 import { withRouter } from 'react-router'
 import parse from 'autosuggest-highlight/parse'
 import match from 'autosuggest-highlight/match'
@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import Container, { Row, Column } from 'components/Layout'
-import * as actions from '../../actions'
+import actions from '../../actions'
 import DatePicker from 'components/DatePicker'
 import Autocomplete from 'components/Autocomplete'
 import withFormAlert from 'components/withFormAlert'
@@ -23,7 +23,7 @@ const getSuggestionValue = suggestion => suggestion
 const renderSuggestion = (suggestion, { query, isHighlighted }) => {
   const matches = match(suggestion.name, query)
   const parts = parse(suggestion.name, matches)
-
+  
   return (
     <MenuItem selected={isHighlighted} component="div">
       <div>
@@ -58,15 +58,18 @@ export class JurisdictionForm extends Component {
     history: PropTypes.object,
     onCloseModal: PropTypes.func,
     formError: PropTypes.string,
-    goBack: PropTypes.bool
+    goBack: PropTypes.bool,
+    onSubmitError: PropTypes.func,
+    project: PropTypes.object,
+    title: PropTypes.string
   }
-
+  
   constructor(props, context) {
     super(props, context)
     this.jurisdictionDefined = this.props.location.state.jurisdictionDefined !== undefined
       ? props.location.state.jurisdictionDefined
       : null
-
+    
     this.state = {
       edit: this.jurisdictionDefined !== null,
       submitting: false,
@@ -77,34 +80,44 @@ export class JurisdictionForm extends Component {
       }
     }
   }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.state.submitting === true) {
-      if (nextProps.formError !== null) {
-        this.setState({
-          submitting: false
-        })
-        this.props.onSubmitError(nextProps.formError)
-      } else if (nextProps.goBack === true) {
-        this.props.history.push(`/project/${this.props.project.id}/jurisdictions`)
-      }
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.actions.onClearSuggestions()
-  }
-
-  componentWillMount() {
+  
+  componentDidMount() {
     this.props.actions.initializeFormValues({
       endDate: this.jurisdictionDefined ? this.jurisdictionDefined.endDate : new Date(),
       startDate: this.jurisdictionDefined ? this.jurisdictionDefined.startDate : new Date(),
-      name: this.jurisdictionDefined ? this.jurisdictionDefined.name : this.props.location.state.preset === true
-        ? 'US States'
-        : ''
+      name: this.jurisdictionDefined
+        ? this.jurisdictionDefined.name
+        : this.props.location.state.preset
+          ? 'US States'
+          : ''
     })
+    
+    const baseTitle = `PHLIP - ${this.props.project.name} -`
+    if (this.jurisdictionDefined) {
+      document.title = `${baseTitle} Edit ${this.jurisdictionDefined.name}`
+    } else {
+      document.title = `${baseTitle} Add Jurisdiction`
+    }
   }
-
+  
+  componentDidUpdate() {
+    if (this.state.submitting === true) {
+      if (this.props.formError !== null) {
+        this.setState({
+          submitting: false
+        })
+        this.props.onSubmitError(this.props.formError)
+      } else if (this.props.goBack === true) {
+        this.props.history.push({ pathname: `/project/${this.props.project.id}/jurisdictions`, state: { modal: true } })
+      }
+    }
+  }
+  
+  componentWillUnmount() {
+    this.props.actions.onClearSuggestions()
+    document.title = `PHLIP - ${this.props.project.name} - Jurisdictions`
+  }
+  
   getButtonText = text => {
     if (this.state.submitting) {
       return (
@@ -117,21 +130,21 @@ export class JurisdictionForm extends Component {
       return <Fragment>{text}</Fragment>
     }
   }
-
+  
   onSubmitPreset = () => {
     const jurisdiction = {
       startDate: moment(this.props.form.values.startDate).toISOString(),
       endDate: moment(this.props.form.values.endDate).toISOString(),
       tag: this.props.form.values.name
     }
-
+    
     this.setState({
       submitting: true
     })
-
+    
     this.props.actions.addPresetJurisdictionRequest(jurisdiction, this.props.project.id)
   }
-
+  
   onSubmitForm = () => {
     const hasErrors = Object.values(this.state.errors).filter(error => error.length > 0).length > 0
     if (!hasErrors) {
@@ -141,11 +154,11 @@ export class JurisdictionForm extends Component {
         endDate: moment(this.props.form.values.endDate).toISOString(),
         jurisdictionId: this.props.jurisdiction.id
       }
-
+      
       this.setState({
         submitting: true
       })
-
+      
       if (this.state.edit) {
         this.props.actions.updateJurisdiction(jurisdiction, this.props.project.id, this.jurisdictionDefined.id)
       } else {
@@ -153,7 +166,7 @@ export class JurisdictionForm extends Component {
       }
     }
   }
-
+  
   validateJurisdiction = () => {
     const jurisdictionName = this.props.form.values.name
     if (!this.state.edit) {
@@ -183,21 +196,21 @@ export class JurisdictionForm extends Component {
       }
     }
   }
-
+  
   onJurisdictionsFetchRequest = ({ value }) => {
     this.props.actions.searchJurisdictionList(value)
   }
-
+  
   onCloseForm = () => {
     this.props.actions.onClearSuggestions()
     this.props.actions.onSuggestionValueChanged('')
     this.props.history.goBack()
   }
-
+  
   onJurisdictionSelected = (event, { suggestionValue }) => {
     this.props.actions.onJurisdictionSelected(suggestionValue)
   }
-
+  
   onSuggestionChange = event => {
     this.props.actions.onSuggestionValueChanged(event.target.value)
     this.setState({
@@ -207,18 +220,18 @@ export class JurisdictionForm extends Component {
       }
     })
   }
-
+  
   onClearSuggestions = () => {
     this.props.actions.onClearSuggestions()
   }
-
+  
   onChangeNameField = value => {
     this.props.actions.setFormValues('name', value)
   }
-
+  
   validateMinDate = (value, endDate) => {
     let dateErrors = ''
-
+    
     if (value === undefined || value === '' || value === null) {
       dateErrors = 'Required'
     } else if (new Date(value).getFullYear() < '1850') {
@@ -228,13 +241,13 @@ export class JurisdictionForm extends Component {
     } else if (new Date(value) > new Date(endDate)) {
       dateErrors = 'Start date must but earlier than end date'
     }
-
+    
     return dateErrors
   }
-
+  
   validateMaxDate = (value, startDate) => {
     let dateErrors = ''
-
+    
     if (value === undefined || value === '' || value === null) {
       dateErrors = 'Required'
     } else if (new Date(value).getFullYear() > '2050') {
@@ -244,10 +257,10 @@ export class JurisdictionForm extends Component {
     } else if (new Date(startDate) > new Date(value)) {
       dateErrors = 'End date must be later than start date'
     }
-
+    
     return dateErrors
   }
-
+  
   onInputChange = (dateField, event) => {
     this.props.actions.setFormValues(dateField, event.target.value)
     if (moment(event.target.value).format() === 'Invalid date' && event.target.value !== '') {
@@ -258,7 +271,7 @@ export class JurisdictionForm extends Component {
       this.onChangeDate(dateField, event.target.value)
     }
   }
-
+  
   onChangeDate = (dateField, event) => {
     let endDateErrors, startDateErrors
     if (moment(event).format() === 'Invalid date') {
@@ -280,7 +293,7 @@ export class JurisdictionForm extends Component {
         startDateErrors = this.validateMinDate(this.props.form.values.startDate, event)
       }
     }
-
+    
     this.setState({
       errors: {
         name: this.state.errors.name,
@@ -289,24 +302,40 @@ export class JurisdictionForm extends Component {
       }
     })
   }
+  /**
+   * Check if the mouse click event valid for this component.  if not valid, ignore event
+   * @param e
+   */
+
+  onMouseDown = e => {
+    if (['react-autowhatever-1','jurisdiction-form'].includes(e.target.id)){
+      e.preventDefault()
+    }
+  }
 
   render() {
     const formActions = [
-      { value: 'Cancel', onClick: this.onCloseForm, type: 'button', otherProps: { 'aria-label': 'Close form' } },
+      {
+        value: 'Cancel',
+        onClick: this.onCloseForm,
+        type: 'button',
+        otherProps: { 'aria-label': 'Close form' },
+        preferred: true
+      },
       {
         value: this.state.edit
           ? this.getButtonText('Save')
           : this.getButtonText('Add'),
         onClick: this.props.location.state.preset === true ? this.onSubmitPreset : this.onSubmitForm,
-        disabled: this.state.submitting === true,
+        disabled: this.state.submitting === true || this.props.form.values.name === '',
         otherProps: { 'aria-label': 'Save form' }
       }
     ]
-
+    
     const options = [
       { value: 'US States', label: 'US States' }
     ]
-
+    
     const nameInputField = this.props.location.state.preset === true
       ? <Dropdown
         name="name"
@@ -338,17 +367,19 @@ export class JurisdictionForm extends Component {
         inputProps={{
           value: this.props.form.values.name,
           onChange: this.onSuggestionChange,
-          id: 'jurisdiction-name'
+          id: 'jurisdiction-name',
+          onBlur: this.validateJurisdiction
         }}
         handleSuggestionSelected={this.onJurisdictionSelected}
         renderSuggestion={renderSuggestion}
         getSuggestionValue={getSuggestionValue}
       />
-
+    
     return (
       <Modal
         open={true}
-        onClose={this.props.onCloseModal}>
+        onClose={this.props.onCloseModal}
+        onMouseDown={this.onMouseDown}>
         <ModalTitle
           title={this.state.edit
             ? 'Edit Jurisdiction' : this.props.location.state.preset === true
@@ -357,10 +388,10 @@ export class JurisdictionForm extends Component {
           onCloseForm={this.onCloseForm}
         />
         <Divider />
-        <ModalContent>
+        <ModalContent id='jurisdiction-form'>
           <form>
-            <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }}>
-              <Row style={{ paddingBottom: 20 }}>
+            <Container column style={{ minWidth: 550, minHeight: 230, padding: '30px 15px' }} >
+              <Row style={{ paddingBottom: 20 }} >
                 {nameInputField}
               </Row>
               <Container style={{ marginTop: 30 }}>
@@ -398,26 +429,28 @@ export class JurisdictionForm extends Component {
             </Container>
           </form>
         </ModalContent>
-        <button style={{ display: 'none' }} type="submit" onClick={event => event.preventDefault()}></button>
-        <ModalActions actions={formActions}></ModalActions>
+        <button style={{ display: 'none' }} type="submit" onClick={event => event.preventDefault()} />
+        <ModalActions actions={formActions} />
       </Modal>
     )
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => ({
-  project: state.scenes.home.main.projects.byId[ownProps.match.params.id],
+  project: state.data.projects.byId[ownProps.match.params.id],
   suggestions: state.scenes.home.addEditJurisdictions.suggestions || [],
   suggestionValue: state.scenes.home.addEditJurisdictions.suggestionValue || '',
   jurisdiction: state.scenes.home.addEditJurisdictions.jurisdiction || {},
   jurisdictions: normalize.mapArray(Object.values(state.scenes.home.addEditJurisdictions.jurisdictions.byId), 'name') ||
-  [],
+    [],
   formError: state.scenes.home.addEditJurisdictions.formError || null,
   goBack: state.scenes.home.addEditJurisdictions.goBack || false,
   form: state.scenes.home.addEditJurisdictions.form || {},
   isReduxForm: false
 })
 
+/* istanbul ignore next */
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(actions, dispatch)
 })

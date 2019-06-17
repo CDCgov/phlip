@@ -1,5 +1,4 @@
-import * as actions from '../actions'
-import * as types from '../actionTypes'
+import actions, { types } from '../actions'
 
 describe('Protocol action creators', () => {
   test('should create an action to get protocol', () => {

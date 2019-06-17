@@ -5,7 +5,9 @@ const chalk = require('chalk')
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
 const paths = require('../config/paths')
-const env = require('../config/env')('development')
+const dotenv = require('dotenv').config()
+const NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV : 'development'
+const env = require('../config/env')(NODE_ENV)
 
 // Webpack-dev-server configuration options
 const config = {
@@ -18,18 +20,21 @@ const config = {
   overlay: false,
   historyApiFallback: true,
   proxy: {
-    '/api': JSON.parse(env.APP_API_URL)
+    '/api': process.env.APP_API_URL,
+    '/docsApi': {
+      target: process.env.APP_DOC_MANAGE_API,
+      pathRewrite: { '^/docsApi': '/api' }
+    }
   }
 }
 
 // Webpack configuration
-const webpackConfig = require('../config/webpack.dev.config')(env)
+const webpackDevConfig = require('../config/webpack.dev.config')(env)
+const APP_HOST = process.env.APP_HOST || '0.0.0.0'
+const APP_PORT = process.env.APP_PORT || 5200
 
-const APP_HOST = JSON.parse(env.APP_HOST) || '0.0.0.0'
-const APP_PORT = JSON.parse(env.APP_PORT) || 5200
-
-WebpackDevServer.addDevServerEntrypoints(webpackConfig, config)
-const compiler = webpack(webpackConfig)
+WebpackDevServer.addDevServerEntrypoints(webpackDevConfig, config)
+const compiler = webpack(webpackDevConfig)
 
 // Since we're using the Node API, we have to set devServer options here
 const devServer = new WebpackDevServer(compiler, config)

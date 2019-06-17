@@ -1,3 +1,5 @@
+import { types as userTypes } from 'data/users/actions'
+
 /**
  * Slices a table (data) for pagination
  *
@@ -35,4 +37,71 @@ const generateUniqueProps = id => header => ({
   key: `${id}-${header}`
 })
 
-export default { sliceTable, sortListOfObjects, generateUniqueProps }
+/**
+ * Checks if a string if multi-word based on spaces
+ * @param str
+ * @returns {boolean}
+ */
+export const checkIfMultiWord = str => {
+  return str.split(' ').length > 1
+}
+
+/**
+ * Handles determining if getting avatars is needed
+ * @param users
+ * @param allUserObjs
+ * @param dispatch
+ * @param api
+ * @returns {Promise<any>}
+ */
+export const handleUserImages = (users, allUserObjs, dispatch, api) => {
+  let avatar, errors = {}
+  const now = Date.now()
+  const oneday = 60 * 60 * 24 * 1000
+
+  return new Promise(async (resolve, reject) => {
+    if (users.length === 0) {
+      resolve({ errors })
+    }
+    for (let i = 0; i < users.length; i++) {
+      const { userId, ...coder } = users[i]
+      let needsCheck = true, update = false
+      try {
+        if (allUserObjs.hasOwnProperty(userId)) {
+          if ((now - allUserObjs[userId].lastCheck) > oneday) {
+            needsCheck = true
+            update = true
+          } else {
+            needsCheck = false
+          }
+        }
+        
+        if (needsCheck) {
+          try {
+            avatar = await api.getUserImage({}, {}, { userId })
+          } catch (err) {
+            errors = { userImages: 'failed to get some user images.' }
+            avatar = ''
+          }
+          
+          dispatch({
+            type: update ? userTypes.UPDATE_USER : userTypes.ADD_USER,
+            payload: {
+              id: userId,
+              ...coder,
+              avatar,
+              lastCheck: now
+            }
+          })
+        }
+      } catch (error) {
+        errors = { userImages: 'Failed to get user images' }
+      }
+      if (i === users.length - 1) {
+        resolve({ errors })
+      }
+    }
+  })
+}
+
+export default { sliceTable, sortListOfObjects, generateUniqueProps, checkIfMultiWord, handleUserImages }

@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DatePicker component should render correctly 1`] = `
-<withStyles(FormControl)
+<WithStyles(FormControl)
   disabled={false}
   error={false}
 >
-  <DatePickerWrapper
+  <ForwardRef
     InputLabelProps={
       Object {
         "error": false,
@@ -15,16 +15,31 @@ exports[`DatePicker component should render correctly 1`] = `
     }
     InputProps={
       Object {
+        "inputProps": Object {
+          "mask": Array [
+            /\\\\d/,
+            /\\\\d/,
+            "/",
+            /\\\\d/,
+            /\\\\d/,
+            "/",
+            /\\\\d/,
+            /\\\\d/,
+            /\\\\d/,
+            /\\\\d/,
+          ],
+          "readOnly": false,
+        },
         "onChange": undefined,
-        "value": "10/11/2017",
+        "value": "01/18/1970",
       }
     }
-    autoOk={false}
+    autoOk={true}
     format="MM/DD/YYYY"
     keyboard={true}
-    keyboardIcon={<Unknown />}
+    keyboardIcon={<Icon />}
     label="Date picker"
-    leftArrowIcon={<Unknown />}
+    leftArrowIcon={<Icon />}
     mask={
       Array [
         /\\\\d/,
@@ -41,36 +56,13 @@ exports[`DatePicker component should render correctly 1`] = `
     }
     name="date-picker"
     onChange={[Function]}
-    returnMoment={true}
-    rightArrowIcon={<Unknown />}
+    rightArrowIcon={<Icon />}
     style={
       Object {
         "marginTop": 16,
       }
     }
-    utils={
-      Object {
-        "formatNumber": [Function],
-        "getCalendarHeaderText": [Function],
-        "getDatePickerHeaderText": [Function],
-        "getDateTimePickerHeaderText": [Function],
-        "getDayText": [Function],
-        "getHourText": [Function],
-        "getMeridiemText": [Function],
-        "getMinuteText": [Function],
-        "getMonthNumber": [Function],
-        "getNextMonth": [Function],
-        "getPreviousMonth": [Function],
-        "getStartOfMonth": [Function],
-        "getWeekArray": [Function],
-        "getWeekdays": [Function],
-        "getYear": [Function],
-        "getYearText": [Function],
-        "setYear": [Function],
-      }
-    }
-    value="10/11/2017"
+    value={1556166912}
   />
-  <withStyles(FormHelperText) />
-</withStyles(FormControl)>
+</WithStyles(FormControl)>
 `;

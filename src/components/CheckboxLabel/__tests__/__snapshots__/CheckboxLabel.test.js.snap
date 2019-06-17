@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CheckboxLabel component should render correctly 1`] = `
-<withStyles(FormControlLabel)
+<WithStyles(FormControlLabel)
   control={
-    <withStyles(Checkbox)
+    <WithStyles(Checkbox)
       checked={false}
       classes={
         Object {
@@ -13,7 +13,6 @@ exports[`CheckboxLabel component should render correctly 1`] = `
         }
       }
       disabled={false}
-      onChange={undefined}
     />
   }
   label="Checkbox here"

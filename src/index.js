@@ -1,7 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from 'App'
-import { AppContainer } from 'react-hot-loader'
+import { configureStore } from 'services/store'
+import { Provider } from 'react-redux'
+
+const { store } = configureStore()
 
 /**
  * Check if the browser is IE
@@ -13,15 +16,12 @@ const isIE = () => {
   return (msie > 0 || trident > 0)
 }
 
-/**
- * Renders the component on 'root' element. Main entry point for react.
- */
-const render = Component => {
+const renderApp = Component => {
   ReactDOM.render(
-    <AppContainer>
+    <Provider store={store}>
       <Component />
-    </AppContainer>
-  , document.getElementById('root'))
+    </Provider>, document.getElementById('root')
+  )
 }
 
 /**
@@ -30,11 +30,5 @@ const render = Component => {
 if (isIE()) {
   window.alert('This application will not work in Internet Explorer. Please use Google Chrome.')
 } else {
-  render(App)
-  if (module.hot) {
-    module.hot.accept('./App', () => {
-      const App = import('./App').default
-      render(App)
-    })
-  }
+  renderApp(App)
 }

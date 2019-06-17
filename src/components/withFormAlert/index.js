@@ -1,7 +1,7 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import hoistNonReactStatic from 'hoist-non-react-statics'
 import Alert from 'components/Alert'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import Icon from 'components/Icon'
 
 export const withFormAlert = (WrappedComponent) => {
@@ -14,7 +14,8 @@ export const withFormAlert = (WrappedComponent) => {
         text: '',
         actions: [],
         title: null,
-        isReduxForm: this.props.isReduxForm !== false
+        isReduxForm: this.props.isReduxForm !== false,
+        closeButton: {}
       }
     }
 
@@ -24,7 +25,8 @@ export const withFormAlert = (WrappedComponent) => {
         text: '',
         actions: [],
         title: null,
-        isReduxForm: this.props.isReduxForm !== false
+        isReduxForm: this.props.isReduxForm !== false,
+        closeButton: {}
       })
     }
 
@@ -59,20 +61,17 @@ export const withFormAlert = (WrappedComponent) => {
       if (shouldOpenAlert) {
         this.setState({
           open: true,
-          text: 'Your unsaved changes will be lost.',
+          text: 'You will lose unsaved changes. Do you want to continue?',
+          onCloseAlert: this.onClose,
           actions: [
-            {
-              value: 'Cancel',
-              type: 'button',
-              onClick: this.onClose
-            },
             {
               value: 'Continue',
               type: 'button',
               onClick: this.onContinue
             }
           ],
-          title: null
+          title: 'Warning',
+          closeButton: { value: 'Cancel' }
         })
       } else {
         this.props.history.goBack()
@@ -87,29 +86,29 @@ export const withFormAlert = (WrappedComponent) => {
       this.setState({
         open: true,
         text: error,
-        actions: [
-          {
-            value: 'Dismiss',
-            type: 'button',
-            onClick: this.onDismissFormError
-          }
-        ],
-        title: <Fragment>
-          <Icon size={30} color="red" style={{ paddingRight: 10 }}>sentiment_very_dissatisfied</Icon>Uh-oh! Something
-          went wrong.</Fragment>
+        onCloseAlert: this.onDismissFormError,
+        title: (
+          <>
+            <Icon size={30} color="red" style={{ paddingRight: 10 }}>sentiment_very_dissatisfied</Icon>
+            Uh-oh! Something went wrong.
+          </>
+        ),
+        closeButton: { value: 'Dismiss' }
       })
     }
 
     render() {
+      const { open, title, actions, text, onCloseAlert, closeButton } = this.state
+      
       return (
-        <Fragment>
+        <>
           <WrappedComponent onCloseModal={this.onCloseModal} onSubmitError={this.onSubmitError} {...this.props} />
-          <Alert open={this.state.open} title={this.state.title} actions={this.state.actions}>
+          <Alert open={open} title={title} onCloseAlert={onCloseAlert} actions={actions} closeButton={closeButton}>
             <Typography variant="body1">
-              {this.state.text}
+              {text}
             </Typography>
           </Alert>
-        </Fragment>
+        </>
       )
     }
   }

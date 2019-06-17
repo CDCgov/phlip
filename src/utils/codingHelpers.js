@@ -1,5 +1,5 @@
 import { normalize, commonHelpers } from 'utils'
-import * as questionTypes from 'components/CodingValidation/constants'
+import * as questionTypes from 'scenes/CodingValidation/constants'
 import { getTreeFromFlatData } from 'react-sortable-tree'
 import { getQuestionNumbers, sortQuestions } from 'utils/treeHelpers'
 
@@ -32,10 +32,10 @@ import { getQuestionNumbers, sortQuestions } from 'utils/treeHelpers'
  */
 
 /**
- * Initializes the UserAnswerObject for each property from UserQuestionObject in the way that is needed by the application.
- * This newly initialized question is what will be in state: `{ userAnswers: { schemeQuestionId: [UserAnswerObject] } }`.
- * The parameter question is what comes back for a codedQuestion in the database. This will convert the codedAnswers
- * array to an object where keys are the schemeAnswerIds in for each codedAnswer.
+ * Initializes the UserAnswerObject for each property from UserQuestionObject in the way that is needed by the
+ * application. This newly initialized question is what will be in state: `{ userAnswers: { schemeQuestionId:
+ * [UserAnswerObject] } }`. The parameter question is what comes back for a codedQuestion in the database. This will
+ * convert the codedAnswers array to an object where keys are the schemeAnswerIds in for each codedAnswer.
  *
  * @param {UserCodedQuestion} question
  * @returns {UserAnswerObject}
@@ -74,7 +74,13 @@ export const initializeUserAnswers = (userCodedQuestions, codingSchemeQuestions,
       [question.schemeQuestionId]: question.categoryId && question.categoryId !== 0
         ? {
           ...codedQuestionObj[question.schemeQuestionId],
-          [question.categoryId]: { ...initializeValues(question, codingSchemeQuestions[question.schemeQuestionId], userId) }
+          [question.categoryId]: {
+            ...initializeValues(
+              question,
+              codingSchemeQuestions[question.schemeQuestionId],
+              userId
+            )
+          }
         }
         : { ...initializeValues(question, codingSchemeQuestions[question.schemeQuestionId], userId) }
     })
@@ -149,8 +155,8 @@ export const initializeRegularQuestion = id => ({
 
 /**
  * Handles updating state.userAnswers, state.selectedCategoryId, state.categories, and state.selectedCategory with
- * correct information and structure. Each time a question is navigated to, it goes through this function. If the question
- * already exists in state.userAnswers, that object is used.
+ * correct information and structure. Each time a question is navigated to, it goes through this function. If the
+ * question already exists in state.userAnswers, that object is used.
  * @param {Object} newQuestion
  * @param {Number} newIndex
  * @param {Object} state
@@ -174,9 +180,9 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
           ...state.userAnswers,
           [newQuestion.id]: initializeRegularQuestion(newQuestion.id)
         }
-
+    
   }
-
+  
   if (newQuestion.parentId === 0) {
     return {
       ...base,
@@ -185,12 +191,16 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
       selectedCategoryId: null
     }
   }
-
+  
   if (newQuestion.isCategoryQuestion) {
     const parentQuestion = state.scheme.byId[newQuestion.parentId]
-    const selectedCategories = commonHelpers.sortListOfObjects(getSelectedCategories(parentQuestion, state.userAnswers), 'order', 'asc')
+    const selectedCategories = commonHelpers.sortListOfObjects(
+      getSelectedCategories(parentQuestion, state.userAnswers),
+      'order',
+      'asc'
+    )
     const baseQuestion = base.userAnswers[newQuestion.id]
-
+    
     const answers = selectedCategories.reduce((answerObj, cat) => {
       return {
         ...answerObj,
@@ -201,7 +211,7 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
         }
       }
     }, {})
-
+    
     return {
       ...base,
       question: { ...base.question },
@@ -222,19 +232,22 @@ export const handleCheckCategories = (newQuestion, newIndex, state) => {
 
 /**
  * Determines what the next question will be. Check to make sure newQuestion is correct. If the newQuestion is a
- * category child, but the user hasn't selected any categories, then find the next parent question in the coding scheme.
+ * category child, but the user hasn't selected any categories, then find the next parent question in the coding
+ * scheme.
  * Category children whose parent hasn't been answered are not shown.
  *
  * @param {Object} state - Redux state
  * @param {Object} action - return value from redux action creator
- * @returns {{ index: Number, question: Object, categories: Array, selectedCategoryId: Number, selectedCategory: Number}}
+ * @returns {{ index: Number, question: Object, categories: Array, selectedCategoryId: Number, selectedCategory:
+ *   Number}}
  */
 export const getNextQuestion = (state, action) => {
   let newQuestion = state.scheme.byId[action.id]
   let newIndex = action.newIndex
-  let categories = state.categories, selectedCategoryId = state.selectedCategoryId,
+  let categories = state.categories,
+    selectedCategoryId = state.selectedCategoryId,
     selectedCategory = state.selectedCategory
-
+  
   if (newQuestion.isCategoryQuestion) {
     if (!checkIfAnswered(state.scheme.byId[newQuestion.parentId], state.userAnswers)) {
       const p = findNextParentSibling(state.scheme, state.question, state.currentIndex)
@@ -268,7 +281,7 @@ export const getPreviousQuestion = (state, action) => {
   let newIndex = action.newIndex
   let categories = state.categories, selectedCategoryId = state.selectedCategoryId,
     selectedCategory = state.selectedCategory
-
+  
   if (newQuestion.isCategoryQuestion) {
     if (!checkIfAnswered(state.scheme.byId[newQuestion.parentId], state.userAnswers)) {
       newQuestion = state.scheme.byId[newQuestion.parentId]
@@ -295,15 +308,15 @@ export const handleUpdateUserAnswers = (state, action) => {
   let currentUserAnswers = state.question.isCategoryQuestion
     ? state.userAnswers[action.questionId][state.selectedCategoryId].answers
     : state.userAnswers[action.questionId].answers
-
+  
   let otherAnswerUpdates = { ...state.userAnswers }
-
+  
   switch (state.question.questionType) {
     case questionTypes.BINARY:
     case questionTypes.MULTIPLE_CHOICE:
-      currentUserAnswers = { [action.answerId]: { schemeAnswerId: action.answerId, pincite: '' } }
+      currentUserAnswers = { [action.answerId]: { schemeAnswerId: action.answerId, pincite: '', annotations: [] } }
       break
-
+    
     case questionTypes.TEXT_FIELD:
       if (action.answerValue === '') currentUserAnswers = {}
       else {
@@ -312,12 +325,13 @@ export const handleUpdateUserAnswers = (state, action) => {
             ...currentUserAnswers[action.answerId],
             schemeAnswerId: action.answerId,
             textAnswer: action.answerValue,
-            pincite: currentUserAnswers[action.answerId] ? currentUserAnswers[action.answerId].pincite || '' : ''
+            pincite: currentUserAnswers[action.answerId] ? currentUserAnswers[action.answerId].pincite || '' : '',
+            annotations: currentUserAnswers[action.answerId] ? currentUserAnswers[action.answerId].annotations : []
           }
         }
       }
       break
-
+    
     case questionTypes.CATEGORY:
       // If they uncheck a category, then delete all other answers that have been associated with that category
       if (checkIfExists(action, currentUserAnswers, 'answerId')) {
@@ -332,19 +346,19 @@ export const handleUpdateUserAnswers = (state, action) => {
       } else {
         currentUserAnswers = {
           ...currentUserAnswers,
-          [action.answerId]: { schemeAnswerId: action.answerId, pincite: '' }
+          [action.answerId]: { schemeAnswerId: action.answerId, pincite: '', annotations: [] }
         }
       }
       break
-
+    
     case questionTypes.CHECKBOXES:
       if (currentUserAnswers.hasOwnProperty(action.answerId)) delete currentUserAnswers[action.answerId]
       else currentUserAnswers = {
         ...currentUserAnswers,
-        [action.answerId]: { schemeAnswerId: action.answerId, pincite: '' }
+        [action.answerId]: { schemeAnswerId: action.answerId, pincite: '', annotations: [] }
       }
   }
-
+  
   return {
     ...otherAnswerUpdates,
     [action.questionId]: {
@@ -354,15 +368,48 @@ export const handleUpdateUserAnswers = (state, action) => {
           [state.selectedCategoryId]: {
             ...state.userAnswers[action.questionId][state.selectedCategoryId],
             answers: { ...currentUserAnswers },
-            ...action.isValidation ? { validatedBy: action.otherProps.validatedBy } : {}
+            ...action.otherUpdates
           }
         }
-        : {
-          answers: { ...currentUserAnswers }, ...action.isValidation
-            ? { validatedBy: action.otherProps.validatedBy }
-            : {}
-        }
+        : { answers: { ...currentUserAnswers }, ...action.otherUpdates }
+    }
+  }
+}
 
+export const handleUpdateAnnotations = (state, action) => {
+  const currentUserAnswers = state.question.isCategoryQuestion
+    ? state.userAnswers[action.questionId][state.selectedCategoryId].answers
+    : state.userAnswers[action.questionId].answers
+  
+  const parsedAnnotations = currentUserAnswers[action.answerId].annotations
+  const updatedAnnotations = [...parsedAnnotations, action.annotation]
+  const currentPincite = currentUserAnswers[action.answerId].pincite
+  
+  return {
+    ...currentUserAnswers,
+    [action.answerId]: {
+      ...currentUserAnswers[action.answerId],
+      annotations: updatedAnnotations,
+      pincite: action.citation !== ''
+        ? `${currentPincite}${currentPincite.length > 0 ? '; ' : ''}${action.citation}`
+        : currentPincite
+    }
+  }
+}
+
+export const handleRemoveAnnotation = (state, action) => {
+  const currentUserAnswers = state.question.isCategoryQuestion
+    ? state.userAnswers[action.questionId][state.selectedCategoryId].answers
+    : state.userAnswers[action.questionId].answers
+  
+  const annotations = [...currentUserAnswers[action.answerId].annotations]
+  annotations.splice(action.index, 1)
+  
+  return {
+    ...currentUserAnswers,
+    [action.answerId]: {
+      ...currentUserAnswers[action.answerId],
+      annotations
     }
   }
 }
@@ -377,7 +424,7 @@ export const handleUserPinciteQuestion = (state, action) => {
   let currentUserAnswers = state.question.isCategoryQuestion
     ? state.userAnswers[action.questionId][state.selectedCategoryId].answers
     : state.userAnswers[action.questionId].answers
-
+  
   switch (state.question.questionType) {
     case questionTypes.BINARY:
     case questionTypes.MULTIPLE_CHOICE:
@@ -396,14 +443,16 @@ export const handleUserPinciteQuestion = (state, action) => {
  * Handles any updates for 'fieldValue' in state.userAnswers that are for regular questions
  * @param {Object} state
  * @param {Object} action
- * @returns {function(fieldValue: String, getFieldValue:*): { userAnswers: {} } } - UserAnswers with updated field value for state.question.id
+ * @returns {function(fieldValue: String, getFieldValue:*): { userAnswers: {} } } - UserAnswers with updated field
+ *   value for state.question.id
  */
 export const handleUpdateUserCodedQuestion = (state, action) => (fieldValue, getFieldValues) => ({
   userAnswers: {
     ...state.userAnswers,
     [state.question.id]: {
       ...state.userAnswers[state.question.id],
-      [fieldValue]: typeof getFieldValues === 'function' ? getFieldValues(state, action) : getFieldValues
+      [fieldValue]: typeof getFieldValues === 'function' ? getFieldValues(state, action) : getFieldValues,
+      ...action.otherUpdates
     }
   }
 })
@@ -436,7 +485,7 @@ export const updateCodedQuestion = (state, questionId, updatedQuestion) => ({
  */
 export const updateCategoryCodedQuestion = (state, questionId, categoryId, updatedQuestion) => {
   let update = { [categoryId]: { ...updatedQuestion } }
-
+  
   if (state.userAnswers.hasOwnProperty(questionId)) {
     if (state.userAnswers[questionId].hasOwnProperty(categoryId)) {
       update = {
@@ -447,7 +496,7 @@ export const updateCategoryCodedQuestion = (state, questionId, categoryId, updat
       }
     }
   }
-
+  
   return {
     userAnswers: {
       ...state.userAnswers,
@@ -460,13 +509,15 @@ export const updateCategoryCodedQuestion = (state, questionId, categoryId, updat
 }
 
 /**
- * Handles any updates for 'fieldValue' in state.userAnswers that are for category child questions. If getFieldValues is
- * a function, then it calls the function to get the value to set, otherwise just sets the value to whatever getFieldValues
- * is.
+ * Handles any updates for 'fieldValue' in state.userAnswers that are for category child questions. If getFieldValues
+ * is
+ * a function, then it calls the function to get the value to set, otherwise just sets the value to whatever
+ * getFieldValues is.
  *
  * @param {Object} state
  * @param {Object} action
- * @returns {function(fieldValue: String, getFieldValue:*): {userAnswers: {}}} - UserAnswers with updated field value for state.question.id
+ * @returns {function(fieldValue: String, getFieldValue:*): {userAnswers: {}}} - UserAnswers with updated field value
+ *   for state.question.id
  */
 export const handleUpdateUserCategoryChild = (state, action) => (fieldValue, getFieldValues) => ({
   userAnswers: {
@@ -475,7 +526,8 @@ export const handleUpdateUserCategoryChild = (state, action) => (fieldValue, get
       ...state.userAnswers[state.question.id],
       [state.selectedCategoryId]: {
         ...state.userAnswers[state.question.id][state.selectedCategoryId],
-        [fieldValue]: typeof getFieldValues === 'function' ? getFieldValues(state, action) : getFieldValues
+        [fieldValue]: typeof getFieldValues === 'function' ? getFieldValues(state, action) : getFieldValues,
+        ...action.otherUpdates
       }
     }
   }
@@ -498,12 +550,13 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
       item.possibleAnswers = scheme[item.id].possibleAnswers
       item.flags = scheme[item.id].flags
     }
-
+    
     item.isAnswered = item.isCategoryQuestion ? false : checkIfAnswered(item, codedQuestions)
     if (item.children) {
       item.children = item.questionType === questionTypes.CATEGORY
         ? item.isAnswered
-          ? initializeNavigator(commonHelpers.sortListOfObjects(Object.values(scheme)
+          ? initializeNavigator(
+            commonHelpers.sortListOfObjects(Object.values(scheme)
               .filter(question => question.parentId === item.id), 'positionInParent', 'asc'),
             { ...scheme },
             codedQuestions,
@@ -511,10 +564,10 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
           ) : []
         : initializeNavigator(item.children, { ...scheme }, codedQuestions, currentQuestion)
     }
-
+    
     if (item.isCategoryQuestion) {
       let countAnswered = 0
-
+      
       /*
        item: category question children
        */
@@ -523,12 +576,12 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
           const isAnswered =
             checkIfExists(item, codedQuestions) &&
             checkIfAnswered(category, codedQuestions[item.id], 'schemeAnswerId')
-
+          
           countAnswered = isAnswered ? countAnswered += 1 : countAnswered
-
+          
           const schemeAnswer = scheme[item.parentId].possibleAnswers.find(answer => answer.id ===
             category.schemeAnswerId)
-
+          
           return {
             schemeAnswerId: category.schemeAnswerId,
             text: schemeAnswer.text,
@@ -543,20 +596,20 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
       } else {
         item.children = []
       }
-
+      
       item.children = commonHelpers.sortListOfObjects([...item.children], 'order', 'asc')
-
+      
       if (item.children.length > 0) {
         item.completedProgress = (countAnswered / item.children.length) * 100
       } else {
         if (checkIfExists(item, 'completedProgress')) delete item.completedProgress
       }
     }
-
+    
     if ((item.id === currentQuestion.id || currentQuestion.parentId === item.id) && item.children) {
       item.expanded = true
     }
-
+    
     return item
   })
 }
@@ -567,11 +620,12 @@ export const initializeNavigator = (tree, scheme, codedQuestions, currentQuestio
  *
  * @param {Object} state
  * @param {Object} action
- * @returns {Object} {{ question: Object, index: Number, categories: ?Array, selectedCategoryId: Number, selectedCategory: Number }}
+ * @returns {Object} {{ question: Object, index: Number, categories: ?Array, selectedCategoryId: Number,
+ *   selectedCategory: Number }}
  */
 export const getQuestionSelectedInNav = (state, action) => {
   let q = {}, categories = undefined, selectedCategory = 0, selectedCategoryId = null
-
+  
   if (action.question.isCategory || action.question.isCategoryQuestion) {
     q = action.question.isCategory
       ? state.scheme.byId[action.question.schemeQuestionId]
@@ -594,13 +648,13 @@ export const getQuestionSelectedInNav = (state, action) => {
 
 /**
  * Delete any 'ids' in answer objects in userAnswers because it fails on the backend with them
- *
- * @param {Object} Answer
+ * @param {Object} answer
  * @returns {Object} - Answer object without the property 'id'
  */
-const deleteAnswerIds = (answer) => {
+const deleteAnswerIds = answer => {
   let ans = { ...answer }
   if (ans.id) delete ans.id
+  
   return ans
 }
 
@@ -618,18 +672,18 @@ export const getFinalCodedObject = (state, action, isValidation, selectedCategor
   const { flag, ...questionObject } = state.scheme.byId[action.questionId].isCategoryQuestion
     ? state.userAnswers[action.questionId][selectedCategoryId]
     : state.userAnswers[action.questionId]
-
+  
   if (flag.type !== 0) {
     flagObj = flag
   }
-
+  
   const { answers, schemeQuestionId, ...answerObject } = {
     ...questionObject,
     codedAnswers: Object.values(questionObject.answers).map(deleteAnswerIds),
     flag: flagObj,
     ...isValidation ? { validatedBy: action.userId } : {}
   }
-
+  
   return answerObject
 }
 
@@ -657,7 +711,7 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
     combinedQuestion = { ...state.scheme.byId[questionInfo.question.id] },
     updatedScheme = { ...state.scheme }, codedQuestion = {}, updatedState = { ...state }, initialize = true,
     newImages = {}
-
+  
   // Get the scheme question from the db in case it has changed
   try {
     newSchemeQuestion = await api.getSchemeQuestion({}, {}, {
@@ -673,8 +727,8 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
         [combinedQuestion.id]: { ...state.scheme.byId[combinedQuestion.id], ...combinedQuestion }
       }
     }
-
-    if (action.page === 'validation') {
+    
+    if (state.page === 'validation') {
       if (combinedQuestion.flags.length > 0) {
         if (!checkIfExists(newSchemeQuestion.flags[0].raisedBy, userImages, 'userId')) {
           newImages = {
@@ -687,10 +741,10 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
   } catch (error) {
     // Couldn't get the updated scheme question so use the old one
     errors = {
-      newSchemeQuestion: 'We couldn\'t retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
+      newSchemeQuestion: 'We couldn\'t retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since you started coding are not available.'
     }
   }
-
+  
   try {
     codedQuestion = await apiGetMethod({}, {}, {
       userId: userId,
@@ -698,7 +752,7 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
       questionId: questionInfo.question.id,
       jurisdictionId: action.jurisdictionId
     })
-
+    
     if (Array.isArray(codedQuestion) && codedQuestion.length > 0) {
       initialize = codedQuestion.length > 0
     } else if (typeof codedQuestion === 'object') {
@@ -709,13 +763,13 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
   } catch (error) {
     errors = {
       ...errors,
-      updatedCodedQuestion: 'We couldn\'t retrieve your updated answers. You still have access to the previous answers, but any changes that have been made since the time you started coding are not available.'
+      updatedCodedQuestion: 'We couldn\'t retrieve your updated answers. You still have access to the previous answers, but any changes that have been made since you started coding are not available.'
     }
     initialize = false
   }
-
-  if (initialize === true) {
-    if (combinedQuestion.isCategoryQuestion === true) {
+  
+  if (initialize) {
+    if (combinedQuestion.isCategoryQuestion) {
       for (let question of codedQuestion) {
         if (question.hasOwnProperty('validatedBy')) {
           if (!checkIfExists(question.validatedBy, userImages, 'userId') &&
@@ -728,7 +782,12 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
             ? ''
             : question.codedAnswers[0].textAnswer
         }
-        const updatedAnswers = updateCategoryCodedQuestion(updatedState, combinedQuestion.id, question.categoryId, initializeValues(question))
+        const updatedAnswers = updateCategoryCodedQuestion(
+          updatedState,
+          combinedQuestion.id,
+          question.categoryId,
+          initializeValues(question)
+        )
         updatedState = {
           ...updatedState,
           ...updatedAnswers
@@ -751,7 +810,7 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
       }
     }
   }
-
+  
   updatedState = {
     ...updatedState,
     scheme: updatedScheme,
@@ -759,7 +818,7 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
     selectedCategoryId: questionInfo.selectedCategoryId,
     categories: questionInfo.categories
   }
-
+  
   return {
     question: combinedQuestion,
     currentIndex: questionInfo.index,
@@ -782,31 +841,32 @@ export const getSchemeAndInitialize = async (projectId, api) => {
   let scheme = {}, payload = { firstQuestion: {}, tree: [], order: [], questionsById: {} }
   try {
     scheme = await api.getScheme({}, {}, { projectId })
-
+    
     if (scheme.schemeQuestions.length === 0) {
       return { isSchemeEmpty: true, ...payload }
     }
-
+    
     // Create one array with the outline information in the question information
     const merge = scheme.schemeQuestions.reduce((arr, q) => {
       return [...arr, { ...q, ...scheme.outline[q.id] }]
     }, [])
-
+    
     // Create a sorted question tree with sorted children with question numbering and order
     const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
     const questionsById = normalize.arrayToObject(questionsWithNumbers)
     const firstQuestion = questionsWithNumbers[0]
     commonHelpers.sortListOfObjects(firstQuestion.possibleAnswers, 'order', 'asc')
-
+    
     return { order, tree, questionsById, firstQuestion, outline: scheme.outline, isSchemeEmpty: false }
-
+    
   } catch (error) {
     throw { error: 'Failed to get coding scheme.' }
   }
 }
 
 /**
- * Gets either the Validation question or Coded questions for a project / user depending on the page in which it is called
+ * Gets either the Validation question or Coded questions for a project / user depending on the page in which it is
+ * called
  * (Coding or Validation)
  *
  * @param {(String|Number)} projectId
@@ -824,7 +884,7 @@ export const getCodedValidatedQuestions = async (projectId, jurisdictionId, user
     return {
       codedValQuestions: [],
       codedValErrors: {
-        codedValQuestions: 'We couldn\'t get your answered questions for this project and jurisdiction, so you won\'t be able to answer questions.'
+        codedValQuestions: 'We couldn\'t get your answered questions for this project and jurisdiction, so you are not able to answer questions.'
       }
     }
   }
@@ -838,23 +898,24 @@ export const getCodedValidatedQuestions = async (projectId, jurisdictionId, user
  * @param {Object} state
  * @param {Object} question
  * @param {Object} api
- * @returns {Object} {{ updatedScheme: { byId: Object, tree: Array, order: Array }, schemeErrors: Object, updatedSchemeQuestion: Object }}
+ * @returns {Object} {{ updatedScheme: { byId: Object, tree: Array, order: Array }, schemeErrors: Object,
+ *   updatedSchemeQuestion: Object }}
  */
 export const getSchemeQuestionAndUpdate = async (projectId, state, question, api) => {
   let updatedSchemeQuestion = {}, schemeErrors = {}
-
+  
   // Get scheme question in case there are changes
   try {
     updatedSchemeQuestion = await api.getSchemeQuestion({}, {}, { questionId: question.id, projectId })
   } catch (error) {
     updatedSchemeQuestion = { ...question }
     schemeErrors = {
-      updatedSchemeQuestion: 'We couldn\'t get retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since the time you started coding are not available.'
+      updatedSchemeQuestion: 'We couldn\'t retrieve this scheme question. You still have access to the previous scheme question content, but any updates that have been made since you started coding are not available.'
     }
   }
-
+  
   commonHelpers.sortListOfObjects(updatedSchemeQuestion.possibleAnswers, 'order', 'asc')
-
+  
   // Update scheme with new scheme question
   const updatedScheme = {
     ...state.scheme,
@@ -863,7 +924,7 @@ export const getSchemeQuestionAndUpdate = async (projectId, state, question, api
       [updatedSchemeQuestion.id]: { ...state.scheme.byId[updatedSchemeQuestion.id], ...updatedSchemeQuestion }
     }
   }
-
+  
   return { updatedScheme, schemeErrors, updatedSchemeQuestion }
 }
 
@@ -901,4 +962,16 @@ export const checkIfAnswered = (item, userAnswers, id = 'id') => {
  */
 export const checkIfExists = (item, obj, id = 'id') => {
   return obj.hasOwnProperty(item[id])
+}
+
+export default {
+  checkIfAnswered,
+  checkIfExists,
+  generateError,
+  getSchemeQuestionAndUpdate,
+  getCodedValidatedQuestions,
+  getFinalCodedObject,
+  getNextQuestion,
+  getPreviousQuestion,
+  getQuestionNumbers
 }

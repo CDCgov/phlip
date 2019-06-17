@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 export const Logo = props => {
   const { height, width } = props
   return (
-   <img src="/phlip-logo.png" style={{ height, width }} alt="Public Health Law Investigation Platform"/>
+    <img src="/phlip-logo.png" style={{ height, width }} alt="Public Health Law Information Portal" />
   )
 }
 

@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import TextField from 'material-ui/TextField'
+import TextField from '@material-ui/core/TextField'
 
 /**
- * Simple wrapper for material-ui's TextField component
+ * Simple wrapper for @material-ui/core's TextField component
  */
 export const SimpleInput = props => {
   const {
@@ -67,7 +67,7 @@ SimpleInput.propTypes = {
    */
   label: PropTypes.string,
   /**
-   * Props to pass to material-ui Input component
+   * Props to pass to @material-ui/core Input component
    */
   InputProps: PropTypes.object
 }

@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Select from 'material-ui/Select'
-import Input, { InputLabel } from 'material-ui/Input'
-import { FormControl, FormHelperText } from 'material-ui/Form'
-import { MenuItem } from 'material-ui/Menu'
-import { withStyles } from 'material-ui/styles'
-import Checkbox from 'material-ui/Checkbox'
+import Select from '@material-ui/core/Select'
+import Input from '@material-ui/core/Input'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormHelperText from '@material-ui/core/FormHelperText'
+import MenuItem from '@material-ui/core/MenuItem'
+import { withStyles } from '@material-ui/core/styles'
+import Checkbox from '@material-ui/core/Checkbox'
 
 const styles = theme => ({
   disabled: {
@@ -26,7 +28,7 @@ const styles = theme => ({
 const MultiSelectDropdown = props => {
   const {
     input, selected, label, id,
-    classes, disabled, options, defaultValue, required,
+    classes, disabled, options, required,
     meta: { touched, error, active, warning }, ...otherProps } = props
 
   const menuItems = options.map(option => (
@@ -44,19 +46,26 @@ const MultiSelectDropdown = props => {
         value={input.value || []}
         classes={{ disabled: classes.disabled, icon: disabled ? classes.disabledIcon : classes.icon }}
         disabled={disabled}
-        children={menuItems}
         input={<Input id={id} />}
         onBlur={() => input.onBlur()}
         renderValue={selection => selection.join(', ')}
-        {...otherProps}
-      />
+        {...otherProps}>{menuItems}
+      </Select>
       {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
     </FormControl>
   )
 }
 
 MultiSelectDropdown.propTypes = {
-
+  input: PropTypes.object,
+  selected: PropTypes.any,
+  label: PropTypes.string,
+  id: PropTypes.string,
+  meta: PropTypes.object,
+  classes: PropTypes.object,
+  disabled: PropTypes.bool,
+  options: PropTypes.object,
+  required: PropTypes.bool
 }
 
 MultiSelectDropdown.defaultProps = {}

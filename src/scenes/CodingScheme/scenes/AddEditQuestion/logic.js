@@ -65,7 +65,7 @@ const updatePositionInParentLogic = createLogic({
  */
 const updateIsCategoryQuestionLogic = createLogic({
   type: types.ADD_CHILD_QUESTION_REQUEST,
-  transform({ getState, action }, next) {
+  transform({ action }, next) {
     next({
       ...action,
       question: {
@@ -109,7 +109,7 @@ const updateQuestionLogic = createLogic({
       dispatch({
         type: types.UPDATE_QUESTION_FAIL,
         error: true,
-        payload: 'We couldn\'t update this question. Please try again later.'
+        payload: 'We couldn\'t update the question. Please try again later.'
       })
     }
     done()

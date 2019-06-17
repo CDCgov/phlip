@@ -1,5 +1,7 @@
 import { createLogic } from 'redux-logic'
-import * as types from './actionTypes'
+import { types } from './actions'
+import { types as projectTypes } from 'data/projects/actions'
+import { commonHelpers, updater } from 'utils'
 
 /**
  * Logic for getting the jursidictions for a project
@@ -17,22 +19,32 @@ export const getJurisdictionsLogic = createLogic({
 })
 
 /**
- * Sends a request to add a jurisdiction to the project, adds the jurisdiction to state.scenes.home reducer for the project
- * and updates the edited fields for that project as well, upon success
+ * Sends a request to add a jurisdiction to the project, adds the jurisdiction to state.scenes.home reducer for the
+ * project and updates the edited fields for that project as well, upon success
  */
 export const addJurisdictionLogic = createLogic({
   type: types.ADD_PROJECT_JURISDICTION_REQUEST,
-  async process({ action, api }, dispatch, done) {
+  async process({ action, api, getState }, dispatch, done) {
+    const project = getState().data.projects.byId[action.projectId]
     try {
       const jurisdiction = await api.addJurisdictionToProject(action.jurisdiction, {}, { projectId: action.projectId })
       dispatch({
         type: types.ADD_PROJECT_JURISDICTION_SUCCESS,
         payload: { ...jurisdiction }
       })
+      
       dispatch({
-        type: types.ADD_JURISDICTION_TO_PROJECT,
-        payload: { jurisdiction: { ...jurisdiction }, projectId: action.projectId }
+        type: projectTypes.UPDATE_PROJECT,
+        payload: {
+          ...project,
+          projectJurisdictions: commonHelpers.sortListOfObjects(
+            [...project.projectJurisdictions, jurisdiction],
+            'name',
+            'asc'
+          )
+        }
       })
+      
       dispatch({
         type: types.UPDATE_EDITED_FIELDS,
         projectId: action.projectId
@@ -40,7 +52,7 @@ export const addJurisdictionLogic = createLogic({
     } catch (error) {
       dispatch({
         type: types.ADD_PROJECT_JURISDICTION_FAIL,
-        payload: 'We couldn\'t add the jurisdiction to project. Please try again later.',
+        payload: 'We couldn\'t add the jurisdiction. Please try again later.',
         error: true
       })
     }
@@ -54,20 +66,27 @@ export const addJurisdictionLogic = createLogic({
  */
 export const updateJurisdictionLogic = createLogic({
   type: types.UPDATE_PROJECT_JURISDICTION_REQUEST,
-  async process({ action, api }, dispatch, done) {
+  async process({ action, api, getState }, dispatch, done) {
     try {
+      const project = getState().data.projects.byId[action.projectId]
       const updatedJurisdiction = await api.updateJurisdictionInProject(action.jurisdiction, {}, {
         projectId: action.projectId,
         jurisdictionId: action.projectJurisdictionId
       })
+      
       dispatch({
         type: types.UPDATE_PROJECT_JURISDICTION_SUCCESS,
         payload: { ...updatedJurisdiction }
       })
+  
       dispatch({
-        type: types.UPDATE_JURISDICTION_IN_PROJECT,
-        payload: { jurisdiction: { ...updatedJurisdiction }, projectId: action.projectId }
+        type: projectTypes.UPDATE_PROJECT,
+        payload: {
+          ...project,
+          projectJurisdictions: updater.updateByProperty(updatedJurisdiction, project.projectJurisdictions, 'id')
+        }
       })
+      
       dispatch({
         type: types.UPDATE_EDITED_FIELDS,
         projectId: action.projectId
@@ -75,7 +94,7 @@ export const updateJurisdictionLogic = createLogic({
     } catch (error) {
       dispatch({
         type: types.UPDATE_PROJECT_JURISDICTION_FAIL,
-        payload: 'We couldn\'t update this jurisdiction. Please try again later.',
+        payload: 'We couldn\'t update the jurisdiction. Please try again later.',
         error: true
       })
     }
@@ -89,17 +108,31 @@ export const updateJurisdictionLogic = createLogic({
  */
 export const addPresetJurisdictionLogic = createLogic({
   type: types.ADD_PRESET_JURISDICTION_REQUEST,
-  async process({ action, api }, dispatch, done) {
+  async process({ action, api, getState }, dispatch, done) {
+    const project = getState().data.projects.byId[action.projectId]
     try {
-      const presetJurisdictions = await api.addPresetJurisdictionList(action.jurisdiction, {}, { projectId: action.projectId })
+      const presetJurisdictions = await api.addPresetJurisdictionList(
+        action.jurisdiction,
+        {},
+        { projectId: action.projectId }
+      )
       dispatch({
         type: types.ADD_PRESET_JURISDICTION_SUCCESS,
         payload: [...presetJurisdictions]
       })
+  
       dispatch({
-        type: types.ADD_PRESET_JURISDICTION_TO_PROJECT,
-        payload: { jurisdictions: [...presetJurisdictions], projectId: action.projectId }
+        type: projectTypes.UPDATE_PROJECT,
+        payload: {
+          ...project,
+          projectJurisdictions: commonHelpers.sortListOfObjects(
+            [...project.projectJurisdictions, ...presetJurisdictions],
+            'name',
+            'asc'
+          )
+        }
       })
+      
       dispatch({
         type: types.UPDATE_EDITED_FIELDS,
         projectId: action.projectId
@@ -107,7 +140,7 @@ export const addPresetJurisdictionLogic = createLogic({
     } catch (error) {
       dispatch({
         type: types.ADD_PRESET_JURISDICTION_FAIL,
-        payload: 'We couldn\'t add the preset jurisdiction list. Please try again later.',
+        payload: 'We couldn\'t add the list of jurisdictions. Please try again later.',
         error: true
       })
     }
@@ -142,14 +175,20 @@ export const deleteJurisdictionLogic = createLogic({
   type: types.DELETE_JURISDICTION_REQUEST,
   async process({ getState, action, api }, dispatch, done) {
     try {
+      const project = getState().data.projects.byId[action.projectId]
+      
       await api.deleteProjectJurisdiction({}, {}, {
         projectId: action.projectId,
         jurisdictionId: action.jurisdictionId
       })
+      
       dispatch({
         type: types.DELETE_JURISDICTION_SUCCESS,
         jurisdictionId: action.jurisdictionId
       })
+  
+      const currentJurisdictions = [...project.projectJurisdictions]
+      
       dispatch({
         type: types.DELETE_JURISDICTION_FROM_PROJECT,
         payload: {
@@ -157,6 +196,15 @@ export const deleteJurisdictionLogic = createLogic({
           projectId: action.projectId
         }
       })
+  
+      dispatch({
+        type: projectTypes.UPDATE_PROJECT,
+        payload: {
+          ...project,
+          projectJurisdictions: currentJurisdictions.filter(value => value.id !== action.jurisdictionId)
+        }
+      })
+      
       dispatch({
         type: types.UPDATE_EDITED_FIELDS,
         projectId: action.projectId
@@ -164,7 +212,7 @@ export const deleteJurisdictionLogic = createLogic({
     } catch (e) {
       dispatch({
         type: types.DELETE_JURISDICTION_FAIL,
-        payload: 'We couldn\'t delete the jurisdiction from this project. Please try again later.'
+        payload: 'We couldn\'t delete the jurisdiction.'
       })
     }
     done()
@@ -177,7 +225,8 @@ export const deleteJurisdictionLogic = createLogic({
  */
 export const updateFieldsLogic = createLogic({
   type: [
-    types.ADD_PROJECT_JURISDICTION_REQUEST, types.UPDATE_PROJECT_JURISDICTION_REQUEST,
+    types.ADD_PROJECT_JURISDICTION_REQUEST,
+    types.UPDATE_PROJECT_JURISDICTION_REQUEST,
     types.ADD_PRESET_JURISDICTION_REQUEST
   ],
   transform({ action, getState }, next) {

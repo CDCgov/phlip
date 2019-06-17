@@ -1,18 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
-import List, { ListItem, ListItemText, ListItemIcon } from 'material-ui/List'
-import Divider from 'material-ui/Divider'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import Divider from '@material-ui/core/Divider'
 import Icon from 'components/Icon'
 
 export const ExportDialog = ({ onClose, onChooseExport, open }) => {
   const actions = [
-    { value: 'Cancel', onClick: onClose, type: 'button', otherProps: { 'aria-label': 'Close modal' } },
+    { value: 'Cancel', onClick: onClose, type: 'button', otherProps: { 'aria-label': 'Close modal' } }
   ]
 
   return (
     <Modal open={open} onClose={onClose}>
-      <ModalTitle title="Choose export type"/>
+      <ModalTitle title="Choose export type" />
       <Divider />
       <ModalContent style={{ minWidth: 400, padding: 0 }}>
         <List>

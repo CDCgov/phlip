@@ -1,9 +1,6 @@
 import React from 'react'
-import { shallow, mount } from 'enzyme'
+import { shallow } from 'enzyme'
 import { ProjectList } from '../index'
-import { MemoryRouter } from 'react-router-dom'
-import { MuiThemeProvider } from 'material-ui/styles'
-import theme from 'services/theme'
 
 const props = {
   projectIds: [
@@ -21,7 +18,7 @@ const props = {
   sortBy: 'name',
   direction: 'asc',
   page: 0,
-  rowsPerPage: 10,
+  rowsPerPage: '10',
   count: 2,
   handleToggleBookmark: jest.fn(),
   handlePageChange: jest.fn(),

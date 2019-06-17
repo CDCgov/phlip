@@ -5,14 +5,82 @@ import home from './Home/reducer'
 import admin from './Admin/reducer'
 import login from './Login/reducer'
 import codingScheme from './CodingScheme/reducer'
-import coding, { codingHandlers } from './Coding/reducer'
-import validation, { validationHandlers } from './Validation/reducer'
+import docManage from './DocumentManagement/reducer'
 import protocol from './Protocol/reducer'
-import { createCodingValidationReducer } from 'components/CodingValidation/reducer'
+import docView from './DocumentView/reducer'
+import codingValidation from './CodingValidation/reducer'
+import { types } from './actions'
 
-// Config used for redux-persist
-const config = {
-  storage
+const INITIAL_STATE = {
+  pdfError: '',
+  pdfFile: null,
+  isRefreshing: false,
+  previousLocation: {},
+  backendInfo : null
+}
+
+const mainReducer = (state = INITIAL_STATE, action) => {
+  switch (action.type) {
+    case types.DOWNLOAD_PDF_REQUEST:
+      return {
+        ...state,
+        pdfFile: null
+      }
+
+    case types.DOWNLOAD_PDF_FAIL:
+      return {
+        ...state,
+        pdfError: 'We couldn\'t download the help guide.'
+      }
+
+    case types.DOWNLOAD_PDF_SUCCESS:
+      return {
+        ...state,
+        pdfError: '',
+        pdfFile: new Blob([action.payload], { type: 'application/pdf' })
+      }
+
+    case types.CLEAR_PDF_FILE:
+      return {
+        ...state,
+        pdfFile: null
+      }
+
+    case types.RESET_DOWNLOAD_PDF_ERROR:
+      return {
+        ...state,
+        pdfError: ''
+      }
+
+    case types.REFRESH_JWT:
+      return {
+        ...state,
+        isRefreshing: true
+      }
+      
+    case types.SET_PREVIOUS_LOCATION:
+      return {
+        ...state,
+        previousLocation: action.location
+      }
+
+    case types.GET_BACKEND_INFO_SUCCESS:
+      return {
+        ...state,
+        backendInfo: action.payload
+      }
+    case types.GET_BACKEND_INFO_FAIL:
+      return {
+        ...state,
+        backendInfo: null
+      }
+
+    case types.FLUSH_STATE:
+      return INITIAL_STATE
+
+    default:
+      return state
+  }
 }
 
 /**
@@ -22,13 +90,15 @@ const config = {
  * sets up redux-persist for home and admin reducers.
  */
 const scenesReducer = combineReducers({
-  home: persistReducer({ ...config, key: 'home', blacklist: ['addEditJurisdictions'] }, home),
-  admin: persistReducer({ ...config, key: 'admin' }, admin),
+  main: persistReducer({ storage, key: 'main', blacklist: ['isRefreshing'] }, mainReducer),
+  home: persistReducer({ storage, key: 'home', blacklist: ['addEditJurisdictions'] }, home),
+  admin: persistReducer({ storage, key: 'admin' }, admin),
+  docManage: persistReducer({ storage, key: 'docManage', blacklist: ['upload', 'search'] }, docManage),
+  codingValidation,
   codingScheme,
   login,
-  coding: createCodingValidationReducer(coding, codingHandlers, 'CODING' ),
-  validation: createCodingValidationReducer(validation, validationHandlers, 'VALIDATION'),
-  protocol
+  protocol,
+  docView
 })
 
 export default scenesReducer

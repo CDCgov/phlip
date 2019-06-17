@@ -1,34 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CodingScheme scene should render correctly 1`] = `
-<Container
-  column={true}
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={true}
   flex={true}
-  spacing={0}
+  justify="stretch"
+  padding="12px 20px 20px 20px"
+  raised={false}
+  style={Object {}}
+  type="column"
 >
   <Alert
     actions={
       Array [
         Object {
           "onClick": [Function],
-          "type": "button",
-          "value": "Cancel",
-        },
-        Object {
-          "onClick": [Function],
+          "preferred": true,
           "type": "button",
           "value": "Check in",
         },
       ]
     }
+    closeButton={Object {}}
+    hideClose={false}
+    onCloseAlert={[Function]}
     open={false}
-    title={null}
+    title="You have checked out the coding scheme."
   >
-    <withStyles(Typography)
+    <WithStyles(Typography)
       variant="body1"
     >
-      You have checked out the coding scheme. No one else can edit until you check in.
-    </withStyles(Typography)>
+      No one else can make edits until you check it in.
+    </WithStyles(Typography)>
   </Alert>
   <Alert
     actions={
@@ -36,19 +41,17 @@ exports[`CodingScheme scene should render correctly 1`] = `
         Object {
           "onClick": [Function],
           "type": "button",
-          "value": "Cancel",
-        },
-        Object {
-          "onClick": [Function],
-          "type": "button",
-          "value": "Delete",
+          "value": "Continue",
         },
       ]
     }
+    closeButton={Object {}}
+    hideClose={false}
+    onCloseAlert={[Function]}
     open={false}
-    title={null}
+    title="Warning"
   >
-    <withStyles(Typography)
+    <WithStyles(Typography)
       style={
         Object {
           "whiteSpace": "pre-wrap",
@@ -56,8 +59,8 @@ exports[`CodingScheme scene should render correctly 1`] = `
       }
       variant="body1"
     >
-      You are about to delete a question from the coding scheme. This will permanantly delete all related child questions and coded answers.
-    </withStyles(Typography)>
+      You will permanently delete this question, and all related questions and coded answers from the coding scheme. Do you want to continue?
+    </WithStyles(Typography)>
   </Alert>
   <ApiErrorAlert
     actions={Array []}
@@ -70,14 +73,21 @@ exports[`CodingScheme scene should render correctly 1`] = `
         Object {
           "onClick": [Function],
           "type": "button",
-          "value": "Dismiss",
+          "value": "Unlock",
         },
       ]
     }
+    closeButton={
+      Object {
+        "value": "Cancel",
+      }
+    }
+    hideClose={false}
+    onCloseAlert={[Function]}
     open={true}
     title={
-      <UNDEFINED>
-        <withTheme(Icon)
+      <React.Fragment>
+        <WithTheme(Icon)
           color="primary"
           size={30}
           style={
@@ -87,19 +97,20 @@ exports[`CodingScheme scene should render correctly 1`] = `
           }
         >
           lock
-        </withTheme(Icon)>
+        </WithTheme(Icon)>
         The Coding Scheme is checked out.
-      </UNDEFINED>
+      </React.Fragment>
     }
   >
-    <withStyles(Typography)
+    <WithStyles(Typography)
       variant="body1"
     >
       undefined undefined 
-       has checked out the coding scheme. You will not be able to make changes until they have checked in.
-    </withStyles(Typography)>
+       is editing the coding scheme. You are unable to edit until they save their changes.
+       Select 'Unlock' to terminate their editing session.
+    </WithStyles(Typography)>
   </Alert>
-  <withRouter(withTheme(PageHeader))
+  <withRouter(WithTheme(PageHeader))
     checkoutButton={
       Object {
         "isLink": false,
@@ -121,18 +132,23 @@ exports[`CodingScheme scene should render correctly 1`] = `
         "show": false,
         "state": Object {
           "canModify": true,
+          "modal": true,
           "questionDefined": null,
         },
-        "text": "+ Add New Question",
+        "text": "Add New Question",
       }
     }
     pageTitle="Coding Scheme"
     protocolButton={true}
   />
-  <Container
-    column={false}
+  <FlexGrid
+    align="stretch"
+    circular={false}
+    container={true}
     flex={true}
-    spacing={0}
+    justify="stretch"
+    padding={0}
+    raised={false}
     style={
       Object {
         "backgroundColor": "#f5f5f5",
@@ -140,11 +156,12 @@ exports[`CodingScheme scene should render correctly 1`] = `
         "paddingTop": 25,
       }
     }
+    type="row"
   >
     <ApiErrorView
       error=""
     />
-  </Container>
+  </FlexGrid>
   <Route
     component={[Function]}
     path="/project/:projectId/coding-scheme/add"
@@ -153,5 +170,5 @@ exports[`CodingScheme scene should render correctly 1`] = `
     component={[Function]}
     path="/project/:projectId/coding-scheme/edit/:id"
   />
-</Container>
+</FlexGrid>
 `;

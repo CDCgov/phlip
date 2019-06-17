@@ -1,17 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CircularProgress } from 'material-ui/Progress'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 /**
- * Spinning loader, based on material-ui's CircularProgress
+ * Spinning loader, based on @material-ui/core's CircularProgress
  */
-export const CircularLoader = ({ type, color, ...otherProps }) => {
-  return <CircularProgress type={type} color={color} {...otherProps} />
+export const CircularLoader = ({ type, color, thickness, ...otherProps }) => {
+  return <CircularProgress type={type} color={color} thickness={thickness} {...otherProps} />
 }
 
 CircularLoader.defaultProps = {
   type: 'indeterminate',
-  color: 'primary'
+  color: 'primary',
+  thickness: 5
 }
 
 CircularLoader.propTypes = {
@@ -23,7 +24,12 @@ CircularLoader.propTypes = {
   /**
    * Color of the spinning loader ring
    */
-  color: PropTypes.string
+  color: PropTypes.string,
+
+  /**
+   * Thickness of spinner
+   */
+  thickness: PropTypes.number
 }
 
 export default CircularLoader
