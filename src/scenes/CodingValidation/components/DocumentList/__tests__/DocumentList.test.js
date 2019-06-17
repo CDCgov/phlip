@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import { DocumentList, mapStateToProps } from '../index'
+import { DocumentList } from '../index'
 import { INITIAL_STATE } from '../reducer'
 import { schemeById, userAnswersCoded } from 'utils/testData/coding'
 import { CircularLoader } from 'components'
@@ -12,7 +12,8 @@ const props = {
     getDocumentContentsRequest: jest.fn(),
     clearDocSelected: jest.fn(),
     removeAnnotation: jest.fn(),
-    hideAnnoModeAlert: jest.fn()
+    toggleCoderAnnotations: jest.fn(),
+    toggleAnnotationMode: jest.fn()
   },
   jurisdictionId: 1,
   projectId: 1,
@@ -27,7 +28,10 @@ const props = {
   docSelected: false,
   openedDoc: {},
   saveUserAnswer: jest.fn(),
-  annotationModeEnabled: false
+  annotationModeEnabled: false,
+  annotations: [],
+  annotationUsers: [],
+  isValidation: false
 }
 
 describe('DocumentList', () => {
@@ -52,13 +56,6 @@ describe('DocumentList', () => {
     expect(spy).toHaveBeenCalled()
   })
   
-  test('should call redux hideAnnoModeAlert when this.hideAnnoModeAlert is called', () => {
-    const spy = jest.spyOn(props.actions, 'hideAnnoModeAlert')
-    const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
-    wrapper.instance().hideAnnoModeAlert()
-    expect(spy).toHaveBeenCalled()
-  })
-  
   describe('this.onSaveAnnotation', () => {
     test('should call this.props.actions.saveAnnotation', () => {
       const spy = jest.spyOn(props.actions, 'saveAnnotation')
@@ -66,12 +63,44 @@ describe('DocumentList', () => {
       wrapper.instance().onSaveAnnotation({ text: 'test annotation' })
       expect(spy).toHaveBeenCalledWith({ text: 'test annotation' }, 4, 3)
     })
-  
+    
     test('should call this.props.saveUserAnswer', () => {
       const spy = jest.spyOn(props, 'saveUserAnswer')
       const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
       wrapper.instance().onSaveAnnotation({ text: 'test annotation' })
       expect(spy).toHaveBeenCalled()
+    })
+    
+    test('should disable annotation mode', () => {
+      const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
+      const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
+      wrapper.instance().onSaveAnnotation({ text: 'test annotation' })
+      expect(spy).toHaveBeenCalledWith(3, 4, false)
+      spy.mockReset()
+    })
+  })
+  
+  describe('removing an annotation', () => {
+    test('should remove the annotation', () => {
+      const spy = jest.spyOn(props.actions, 'removeAnnotation')
+      const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
+      wrapper.instance().onRemoveAnnotation(5)
+      expect(spy).toHaveBeenCalledWith(5, 4, 3)
+    })
+    
+    test('should save the user\'s answer', () => {
+      const spy = jest.spyOn(props, 'saveUserAnswer')
+      const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
+      wrapper.instance().onRemoveAnnotation(5)
+      expect(spy).toHaveBeenCalled()
+    })
+    
+    test('should disable annotation mode', () => {
+      const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
+      const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
+      wrapper.instance().onRemoveAnnotation(5)
+      expect(spy).toHaveBeenCalledWith(3, 4, false)
+      spy.mockReset()
     })
   })
   
@@ -79,7 +108,7 @@ describe('DocumentList', () => {
     test('should call props.getContents', () => {
       const spy = jest.spyOn(props.actions, 'getDocumentContentsRequest')
       const wrapper = shallow(<DocumentList {...props} />)
-      wrapper.find('FlexGrid').at(3).find('span').simulate('click')
+      wrapper.find('FlexGrid').at(3).childAt(0).find('span').simulate('click')
       wrapper.update()
       expect(spy).toHaveBeenCalledWith(12344)
     })
@@ -90,7 +119,7 @@ describe('DocumentList', () => {
       'should show a view with text "There are no approved and/or assigned documents for this project and jurisdiction."',
       () => {
         const wrapper = shallow(<DocumentList {...props} showEmptyDocs documents={[]} />)
-        expect(wrapper.find('FlexGrid').at(3).childAt(0).childAt(0).text())
+        expect(wrapper.find('FlexGrid').at(3).childAt(0).childAt(0).childAt(0).text())
           .toEqual('There are no approved or assigned documents for this project and jurisdiction.')
       }
     )
@@ -103,7 +132,7 @@ describe('DocumentList', () => {
       wrapper.instance().onRemoveAnnotation(1)
       expect(spy).toHaveBeenCalledWith(1, 4, 3)
     })
-  
+    
     test('should call this.props.saveUserAnswer', () => {
       const spy = jest.spyOn(props, 'saveUserAnswer')
       const wrapper = shallow(<DocumentList {...props} enabledAnswerId={4} />)
@@ -172,17 +201,18 @@ describe('DocumentList', () => {
   describe('when a document has been selected but content is not available', () => {
     test('should change document name text color to #757575 for matching document', () => {
       const wrapper = shallow(<DocumentList {...props} openedDoc={{ _id: 12344, name: 'doc1' }} />)
-      expect(wrapper.find('FlexGrid').at(3).childAt(1).prop('style').color).toEqual('#757575')
+      expect(wrapper.find('FlexGrid').at(3).childAt(0).childAt(1).prop('style').color).toEqual('#757575')
     })
     
     test('should not change document name text color for not matching documents', () => {
       const wrapper = shallow(<DocumentList {...props} openedDoc={{ _id: 12344, name: 'doc1' }} />)
-      expect(wrapper.find('FlexGrid').at(4).childAt(1).prop('style').color).toEqual('#048484')
+      expect(wrapper.find('FlexGrid').at(3).childAt(2).childAt(1).prop('style').color).toEqual('#048484')
     })
     
     test('should add a spinner next to the selected document name', () => {
       const wrapper = shallow(<DocumentList {...props} openedDoc={{ _id: 12344, name: 'doc1' }} />)
-      expect(wrapper.find('FlexGrid').at(3).childAt(2).childAt(0).matchesElement(<CircularLoader />)).toEqual(true)
+      expect(wrapper.find('FlexGrid').at(3).childAt(0).childAt(2).childAt(0).matchesElement(<CircularLoader />))
+        .toEqual(true)
     })
   })
   
@@ -239,52 +269,38 @@ describe('DocumentList', () => {
   })
 })
 
-const setupState = (other = {}) => {
-  return {
-    data: {
-      user: {
-        currentUser: {
-          id: 5
-        }
-      }
-    },
-    scenes: {
-      codingValidation: {
-        coding: {
-          page: 'coding',
-          scheme: { byId: schemeById },
-          userAnswers: userAnswersCoded,
-          question: schemeById[3]
-        },
-        documentList: {
-          ...INITIAL_STATE,
-          enabledAnswerId: 10,
-          annotationModeEnabled: true,
-          documents: {
-            ordered: [{ name: 'doc1', _id: 12344 }],
-            allIds: [12344],
-            byId: {
-              12344: { name: 'doc1', _id: 12344 }
-            }
-          },
-          openedDoc: { _id: '12344' },
-          ...other
-        }
-      }
-    }
-  }
-}
-
-describe('DocumentList - mapStateToProps', () => {
-  test('should use codingState.userAnswers if state.annotationModeEnabled is true', () => {
-    const defaultState = setupState()
-    const props = mapStateToProps(defaultState, { questionId: 3 })
-    expect(props.annotations.length).toEqual(2)
-  })
-  
-  test('should use pageState.annotations if state.annotationModeEnabled is false', () => {
-    const defaultState = setupState({ annotationModeEnabled: false, annotations: [{ docId: '12344', text: 'lalal' }] })
-    const props = mapStateToProps(defaultState, { questionId: 3 })
-    expect(props.annotations.length).toEqual(1)
-  })
-})
+// const setupState = (other = {}) => {
+//   return {
+//     data: {
+//       user: {
+//         currentUser: {
+//           id: 5
+//         }
+//       }
+//     },
+//     scenes: {
+//       codingValidation: {
+//         coding: {
+//           page: 'coding',
+//           scheme: { byId: schemeById },
+//           userAnswers: userAnswersCoded,
+//           question: schemeById[3]
+//         },
+//         documentList: {
+//           ...INITIAL_STATE,
+//           enabledAnswerId: 10,
+//           annotationModeEnabled: true,
+//           documents: {
+//             ordered: [{ name: 'doc1', _id: 12344 }],
+//             allIds: [12344],
+//             byId: {
+//               12344: { name: 'doc1', _id: 12344 }
+//             }
+//           },
+//           openedDoc: { _id: '12344' },
+//           ...other
+//         }
+//       }
+//     }
+//   }
+// }

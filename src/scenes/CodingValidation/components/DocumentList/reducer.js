@@ -6,6 +6,18 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import storage from 'redux-persist/lib/storage/session'
 import { persistReducer } from 'redux-persist'
 
+const filterAnnotations = (annotations, userId, isValidatorSelected) => {
+  return annotations.filter(anno => {
+    return anno.userId === userId && anno.isValidatorAnswer === isValidatorSelected
+  })
+}
+
+const annotationsForDocument = (annotations, docId) => {
+  return annotations.filter(anno => {
+    return anno.docId === docId
+  })
+}
+
 export const INITIAL_STATE = {
   documents: {
     byId: {},
@@ -19,18 +31,24 @@ export const INITIAL_STATE = {
   },
   enabledAnswerId: '',
   enabledUserId: '',
-  annotations: [],
+  annotations: {
+    all: [],
+    filtered: []
+  },
+  annotationUsers: {
+    all: [],
+    filtered: []
+  },
   annotationModeEnabled: false,
   isUserAnswerSelected: false,
   showEmptyDocs: false,
-  apiErrorOpen: false,
   apiError: {
     title: '',
     text: '',
     open: false
   },
-  currentAnnotationIndex: 0,
   shouldShowAnnoModeAlert: true,
+  currentAnnotationIndex: 0,
   scrollTop: false,
   gettingDocs: false
 }
@@ -84,13 +102,30 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.GET_DOC_CONTENTS_SUCCESS:
+      const annosForDoc = annotationsForDocument(state.annotations.all, state.openedDoc._id)
+      let users = []
+      annosForDoc.forEach(anno => {
+        if (!users.find(user => user.userId === anno.userId && user.isValidator === anno.isValidatorAnswer)) {
+          users.push({ userId: anno.userId, isValidator: anno.isValidatorAnswer })
+        }
+      })
+      
       return {
         ...state,
         docSelected: true,
         openedDoc: {
           ...state.openedDoc,
           content: action.payload
-        }
+        },
+        annotations: {
+          ...state.annotations,
+          filtered: annosForDoc
+        },
+        annotationUsers: {
+          ...state.annotationUsers,
+          filtered: users
+        },
+        scrollTop: false
       }
     
     case types.GET_DOC_CONTENTS_FAIL:
@@ -104,50 +139,104 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         }
       }
     
+    case types.UPDATE_ANNOTATIONS:
+      return {
+        ...state,
+        annotations: {
+          all: action.annotations,
+          filtered: annotationsForDocument(action.annotations, state.openedDoc._id)
+        },
+        annotationUsers: {
+          all: action.users,
+          filtered: action.users
+        }
+      }
+    
     case types.TOGGLE_ANNOTATION_MODE:
-      return action.enabled ? {
+      return {
         ...state,
-        annotationModeEnabled: true,
-        enabledAnswerId: action.answerId,
+        annotationModeEnabled: action.enabled,
+        enabledAnswerId: action.enabled ? action.answerId : '',
         enabledUserId: '',
-        currentAnnotationIndex: 0
-      } : {
-        ...state,
-        annotationModeEnabled: false,
-        enabledAnswerId: '',
-        enabledUserId: '',
-        annotations: [],
         currentAnnotationIndex: 0,
-        scrollTop: false
+        annotations: {
+          all: action.annotations,
+          filtered: state.docSelected
+            ? annotationsForDocument(action.annotations, state.openedDoc._id)
+            : action.annotations
+        },
+        annotationUsers: {
+          all: action.users,
+          filtered: action.users
+        }
       }
     
     case types.TOGGLE_CODER_ANNOTATIONS:
-      if (
-        action.answerId === state.enabledAnswerId
-        && action.userId === state.enabledUserId
-        && state.isUserAnswerSelected === action.isUserAnswerSelected
-      ) {
-        return {
-          ...state,
-          annotations: [],
-          enabledAnswerId: '',
-          enabledUserId: '',
-          currentAnnotationIndex: 0,
-          annotationModeEnabled: false,
-          isUserAnswerSelected: action.isUserAnswerSelected,
-          scrollTop: false
+      const filtered = action.userId === 'All'
+        ? state.annotations.all
+        : filterAnnotations(
+          state.annotations.all,
+          action.userId,
+          action.isUserAnswerSelected
+        )
+      
+      return {
+        ...state,
+        enabledUserId: action.userId,
+        scrollTop: true,
+        isUserAnswerSelected: action.isUserAnswerSelected,
+        annotations: {
+          all: state.annotations.all,
+          filtered: action.userId === 'All'
+            ? annotationsForDocument(state.annotations.all, state.openedDoc._id)
+            : annotationsForDocument(filtered, state.openedDoc._id)
+        },
+        annotationUsers: {
+          all: state.annotationUsers.all,
+          filtered: state.annotationUsers.filtered.map(user => {
+            return {
+              ...user,
+              enabled: action.userId === 'All'
+                ? false
+                : (user.userId === action.userId && user.isValidator === action.isUserAnswerSelected)
+            }
+          })
         }
-      } else {
-        return {
-          ...state,
-          annotations: action.annotations,
-          enabledAnswerId: action.answerId,
-          enabledUserId: action.userId,
-          annotationModeEnabled: false,
-          currentAnnotationIndex: 0,
-          isUserAnswerSelected: action.isUserAnswerSelected,
-          scrollTop: true
+      }
+    
+    case types.TOGGLE_VIEW_ANNOTATIONS:
+      const turnOff = action.answerId === state.enabledAnswerId
+      const annotationsForDoc = annotationsForDocument(action.annotations, state.openedDoc._id)
+      let usersForDoc = []
+      annotationsForDoc.forEach(anno => {
+        if (!usersForDoc.find(user => user.userId === anno.userId && user.isValidator === anno.isValidatorAnswer)) {
+          usersForDoc.push({ userId: anno.userId, isValidator: anno.isValidatorAnswer, enabled: false })
         }
+      })
+      
+      return {
+        ...state,
+        annotationModeEnabled: false,
+        enabledAnswerId: turnOff ? '' : action.answerId,
+        enabledUserId: turnOff ? '' : 'All',
+        annotations: {
+          all: turnOff ? [] : action.annotations,
+          filtered: turnOff
+            ? []
+            : state.docSelected
+              ? annotationsForDoc
+              : action.annotations
+        },
+        annotationUsers: {
+          all: turnOff ? [] : action.users,
+          filtered: turnOff
+            ? []
+            : state.docSelected
+              ? usersForDoc
+              : action.users
+        },
+        currentAnnotationIndex: 0,
+        scrollTop: !turnOff
       }
     
     case types.CLEAR_DOC_SELECTED:
@@ -160,7 +249,21 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           title: '',
           text: '',
           open: false
+        },
+        annotations: {
+          ...state.annotations,
+          filtered: state.annotations.all
+        },
+        annotationUsers: {
+          ...state.annotationUsers,
+          filtered: state.annotationUsers.all
         }
+      }
+    
+    case types.HIDE_ANNO_MODE_ALERT:
+      return {
+        ...state,
+        shouldShowAnnoModeAlert: false
       }
     
     case types.GET_APPROVED_DOCUMENTS_REQUEST:
@@ -171,7 +274,14 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         showEmptyDocs: false,
         enabledAnswerId: '',
         enabledUserId: '',
-        annotations: [],
+        annotations: {
+          all: [],
+          filtered: []
+        },
+        annotationUsers: {
+          all: [],
+          filtered: []
+        },
         documents: {
           byId: {},
           allIds: [],
@@ -189,14 +299,15 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         ...state,
         enabledAnswerId: '',
         enabledUserId: '',
-        annotations: [],
+        annotations: {
+          all: [],
+          filtered: []
+        },
+        annotationUsers: {
+          all: [],
+          filtered: []
+        },
         isUserAnswerSelected: false
-      }
-    
-    case types.HIDE_ANNO_MODE_ALERT:
-      return {
-        ...state,
-        shouldShowAnnoModeAlert: false
       }
     
     case types.FLUSH_STATE:

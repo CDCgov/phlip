@@ -62,12 +62,15 @@ describe('CodingValidation - DocumentList action creators', () => {
     expect(actions.toggleAnnotationMode(3, 4, true)).toEqual(expectedAction)
   })
   
-  test('should create an action to hide the annotation mode alert', () => {
+  test('should create an action toggle view mode for annotations', () => {
     const expectedAction = {
-      type: types.HIDE_ANNO_MODE_ALERT
+      type: types.TOGGLE_VIEW_ANNOTATIONS,
+      questionId: 3,
+      answerId: 4,
+      users: []
     }
-    
-    expect(actions.hideAnnoModeAlert()).toEqual(expectedAction)
+  
+    expect(actions.toggleViewAnnotations(3, 4, [])).toEqual(expectedAction)
   })
   
   test('should create an action to change current annotation index', () => {

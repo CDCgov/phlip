@@ -310,6 +310,17 @@ export class DocumentMeta extends Component {
         </>)
       : text
   }
+
+  /**
+   * Check if the mouse click event valid for this component
+   * @param e
+   */
+
+  onMouseDown = e => {
+    if (e.target.id === 'react-autowhatever-1'){
+      e.preventDefault()
+    }
+  }
   
   render() {
     const {
@@ -579,6 +590,7 @@ export class DocumentMeta extends Component {
                 projectSearchValue={projectSearchValue}
                 showProjectError={noProjectError === true}
                 showJurSearch={showAddJurisdiction === true}
+                onMouseDown={this.onMouseDown}
               />
             </ModalContent>
             <Divider />

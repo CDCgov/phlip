@@ -29,6 +29,25 @@ const documentPayload = [
   }
 ]
 
+const annotations = [
+  { userId: 4, docId: '1234', isValidatorAnswer: false },
+  { userId: 3, docId: '1234', isValidatorAnswer: false },
+  { userId: 5, docId: '1234', isValidatorAnswer: true },
+  { userId: 1, docId: '5678', isValidatorAnswer: false },
+  { userId: 2, docId: '5678', isValidatorAnswer: false },
+  { userId: 5, docId: '9101', isValidatorAnswer: true },
+  { userId: 4, docId: '9101', isValidatorAnswer: false },
+  { userId: 1, docId: '9101', isValidatorAnswer: false }
+]
+
+const users = [
+  { userId: 1, isValidator: false, enabled: false },
+  { userId: 2, isValidator: false, enabled: false },
+  { userId: 3, isValidator: false, enabled: false },
+  { userId: 4, isValidator: false, enabled: false },
+  { userId: 5, isValidator: true, enabled: false }
+]
+
 const documents = {
   byId: {
     1234: { ...documentPayload[0], uploadedByName: 'test user' },
@@ -205,13 +224,28 @@ describe('CodingValidation - DocumentList reducer', () => {
   })
   
   describe('TOGGLE_ANNOTATION_MODE', () => {
-    describe('action.enabled === true', () => {
-      const action = { type: types.TOGGLE_ANNOTATION_MODE, enabled: true, answerId: 4, questionId: 3 }
+    describe('toggling on annotation mode', () => {
+      const action = {
+        type: types.TOGGLE_ANNOTATION_MODE,
+        enabled: true,
+        answerId: 4,
+        questionId: 3,
+        annotations,
+        users
+      }
       const currentState = getState({ currentAnnotationIndex: 10 })
       const state = reducer(currentState, action)
       
       test('should set state.enabledAnswerId to action.answerId', () => {
         expect(state.enabledAnswerId).toEqual(4)
+      })
+      
+      test('should set annotations', () => {
+        expect(state.annotations.all).toEqual(annotations)
+      })
+      
+      test('should set annotation users', () => {
+        expect(state.annotationUsers.all).toEqual(users)
       })
       
       test('should set state.annotationModeEnabled to true', () => {
@@ -221,14 +255,21 @@ describe('CodingValidation - DocumentList reducer', () => {
       test('should set state.enabledUserId to an empty string', () => {
         expect(state.enabledUserId).toEqual('')
       })
-  
+      
       test('should reset current annotation index to 0', () => {
         expect(state.currentAnnotationIndex).toEqual(0)
       })
     })
     
-    describe('action.enabled === false', () => {
-      const action = { type: types.TOGGLE_ANNOTATION_MODE, enabled: false, answerId: 4, questionId: 3 }
+    describe('toggling off annotation mode', () => {
+      const action = {
+        type: types.TOGGLE_ANNOTATION_MODE,
+        enabled: false,
+        answerId: 4,
+        questionId: 3,
+        annotations: [],
+        users: []
+      }
       const currentState = getState({ currentAnnotationIndex: 10 })
       const state = reducer(currentState, action)
       
@@ -241,13 +282,14 @@ describe('CodingValidation - DocumentList reducer', () => {
       })
       
       test('should set state.annotations to an empty array', () => {
-        expect(state.annotations).toEqual([])
+        expect(state.annotations.all).toEqual([])
+        expect(state.annotations.filtered).toEqual([])
       })
       
       test('should set state.enabledUserId to an empty string', () => {
         expect(state.enabledUserId).toEqual('')
       })
-  
+      
       test('should reset current annotation index to 0', () => {
         expect(state.currentAnnotationIndex).toEqual(0)
       })
@@ -260,56 +302,153 @@ describe('CodingValidation - DocumentList reducer', () => {
         type: types.TOGGLE_CODER_ANNOTATIONS,
         answerId: 4,
         userId: 1,
-        isUserAnswerSelected: true,
-        annotations: ['lalalala']
+        isUserAnswerSelected: false
       }
       
-      const currentState = getState()
+      const currentState = getState({
+        enabledAnswerId: 4,
+        annotations: {
+          all: annotations,
+          filtered: annotations
+        },
+        annotationUsers: {
+          all: users,
+          filtered: users
+        },
+        openedDoc: {
+          _id: '9101'
+        }
+      })
       const state = reducer(currentState, action)
       
-      test('should set state.enabledAnswerId to action.answerId', () => {
-        expect(state.enabledAnswerId).toEqual(4)
-      })
-      
       test('should set whether the current user or validator answer is selected ', () => {
-        expect(state.isUserAnswerSelected).toEqual(true)
+        expect(state.isUserAnswerSelected).toEqual(false)
       })
       
       test('should set state.enabledUserId to action.enabledUserId', () => {
         expect(state.enabledUserId).toEqual(1)
       })
       
-      test('should set state.annotations to action.annotations', () => {
-        expect(state.annotations).toEqual(['lalalala'])
+      test('should filter annotations for selected user', () => {
+        expect(state.annotations.filtered).toEqual([
+          { userId: 1, docId: '9101', isValidatorAnswer: false }
+        ])
       })
-  
+      
       test('should reset current annotation index to 0', () => {
         expect(state.currentAnnotationIndex).toEqual(0)
       })
     })
     
-    describe('when toggling off annotations', () => {
+    describe('when toggle \'all\' annotations', () => {
       const action = {
         type: types.TOGGLE_CODER_ANNOTATIONS,
         answerId: 4,
-        userId: 1,
-        isUserAnswerSelected: true,
-        annotations: ['lalalala']
+        userId: 'All',
+        isUserAnswerSelected: false
       }
       
-      const currentState = getState({ enabledAnswerId: 4, enabledUserId: 1, isUserAnswerSelected: true })
+      const currentState = getState({
+        enabledAnswerId: 4,
+        enabledUserId: 1,
+        isUserAnswerSelected: false,
+        openedDoc: {
+          _id: '5678',
+          content: {}
+        },
+        annotations: {
+          all: annotations,
+          filtered: [{ docId: '5678', userId: 1 }]
+        },
+        annotationUsers: {
+          all: users,
+          filtered: [
+            { userId: 1, isValidator: false, enabled: true },
+            { userId: 2, isValidator: false, enabled: false }
+          ]
+        }
+      })
+      
+      const state = reducer(currentState, action)
+      
+      test('should scroll to top', () => {
+        expect(state.scrollTop).toEqual(true)
+      })
+      
+      test('should set user id to all', () => {
+        expect(state.enabledUserId).toEqual('All')
+      })
+      
+      test('should set filtered annotations to all for opened document', () => {
+        expect(state.annotations.filtered).toEqual([
+          { userId: 1, docId: '5678', isValidatorAnswer: false },
+          { userId: 2, docId: '5678', isValidatorAnswer: false }
+        ])
+      })
+      
+      test('should set disable all avatars for users for opened document', () => {
+        expect(state.annotationUsers.filtered).toEqual([
+          { userId: 1, isValidator: false, enabled: false },
+          { userId: 2, isValidator: false, enabled: false }
+        ])
+      })
+      
+      test('should reset current annotation index to 0', () => {
+        expect(state.currentAnnotationIndex).toEqual(0)
+      })
+    })
+  })
+  
+  describe('TOGGLE_VIEW_ANNOTATIONS', () => {
+    describe('when turning off view', () => {
+      const action = {
+        type: types.TOGGLE_VIEW_ANNOTATIONS,
+        answerId: 4,
+        userId: 1,
+        annotations: [],
+        users: []
+      }
+      
+      const currentState = getState({
+        enabledAnswerId: 4,
+        enabledUserId: 1,
+        isUserAnswerSelected: true,
+        openedDoc: {
+          _id: '1234',
+          content: {}
+        },
+        annotations: {
+          all: annotations,
+          filtered: [{ docId: '5678', userId: 1 }]
+        },
+        annotationUsers: {
+          all: users,
+          filtered: [{ userId: 1, isValidator: false }]
+        }
+      })
+      
       const state = reducer(currentState, action)
       
       test('should clear state.enabledAnswerId', () => {
         expect(state.enabledAnswerId).toEqual('')
       })
       
+      test('should clear selected user id', () => {
+        expect(state.enabledUserId).toEqual('')
+      })
+      
       test('should set state.annotationModeEnabled to false', () => {
         expect(state.annotationModeEnabled).toEqual(false)
       })
       
-      test('should set state.annotations to an empty array', () => {
-        expect(state.annotations).toEqual([])
+      test('should clear annotations', () => {
+        expect(state.annotations.all).toEqual([])
+        expect(state.annotations.filtered).toEqual([])
+      })
+      
+      test('should clear annotation users', () => {
+        expect(state.annotationUsers.all).toEqual([])
+        expect(state.annotationUsers.filtered).toEqual([])
       })
       
       test('should set state.enabledUserId to an empty string', () => {
@@ -319,16 +458,6 @@ describe('CodingValidation - DocumentList reducer', () => {
       test('should reset current annotation index to 0', () => {
         expect(state.currentAnnotationIndex).toEqual(0)
       })
-    })
-  })
-  
-  describe('HIDE_ANNO_MODE_ALERT', () => {
-    const action = { type: types.HIDE_ANNO_MODE_ALERT }
-    const currentState = getState()
-    const state = reducer(currentState, action)
-    
-    test('should set state.shouldShowAnnoModeAlert to false', () => {
-      expect(state.shouldShowAnnoModeAlert).toEqual(false)
     })
   })
   
@@ -348,28 +477,6 @@ describe('CodingValidation - DocumentList reducer', () => {
       const currentState = getState({ documents, openedDoc: { _id: '1234', name: 'document 1' } })
       const state = reducer(currentState, action)
       expect(state).toEqual(INITIAL_STATE)
-    })
-    
-    test('should not overwrite state.shouldShowAnnoModeAlert if action.isLogout is false or does not exist', () => {
-      const action = { type: types.FLUSH_STATE }
-      const currentState = getState({
-        documents,
-        openedDoc: { _id: '1234', name: 'document 1' },
-        shouldShowAnnoModeAlert: false
-      })
-      const state = reducer(currentState, action)
-      expect(state.shouldShowAnnoModeAlert).toEqual(false)
-    })
-    
-    test('should overwrite state.shouldShowAnnoModeAlert if action.isLogout is true', () => {
-      const action = { type: types.FLUSH_STATE, isLogout: true }
-      const currentState = getState({
-        documents,
-        openedDoc: { _id: '1234', name: 'document 1' },
-        shouldShowAnnoModeAlert: false
-      })
-      const state = reducer(currentState, action)
-      expect(state.shouldShowAnnoModeAlert).toEqual(true)
     })
   })
 })

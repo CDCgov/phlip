@@ -355,6 +355,16 @@ export class Upload extends Component {
       </>
     )
   }
+  /**
+   * Check if the mouse click event valid for this component.  if not valid, ignore event
+   * @param e
+   */
+
+  onMouseDown = e => {
+    if (['react-autowhatever-1','jurisdiction-form'].includes(e.target.id)){
+      e.preventDefault()
+    }
+  }
   
   render() {
     const {
@@ -451,6 +461,7 @@ export class Upload extends Component {
                   projectSearchValue={projectSearchValue}
                   showProjectError={noProjectError === true}
                   showJurSearch={infoSheetSelected === false}
+                  onMouseDown={this.onMouseDown}
                 />}
             />
           </FlexGrid>

@@ -662,6 +662,7 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
           }
           onClearSuggestions={[Function]}
           onGetSuggestions={[Function]}
+          onMouseDown={[Function]}
           onSearchValueChange={[Function]}
           onSuggestionSelected={[Function]}
           projectSuggestions={
