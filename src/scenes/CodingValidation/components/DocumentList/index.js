@@ -37,7 +37,8 @@ export class DocumentList extends Component {
     showEmptyDocs: PropTypes.bool,
     scrollTop: PropTypes.bool,
     gettingDocs: PropTypes.bool,
-    annotationUsers: PropTypes.array
+    annotationUsers: PropTypes.array,
+    enabledUserId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
   }
   
   static defaultProps = {
@@ -226,7 +227,7 @@ export class DocumentList extends Component {
     const {
       annotationModeEnabled, annotations, docSelected, openedDoc, currentAnnotationIndex,
       showEmptyDocs, apiError, documents, annotatedDocs, gettingDocs, annotationUsers, isValidation,
-      shouldShowAnnoModeAlert
+      shouldShowAnnoModeAlert, enabledUserId
     } = this.props
     
     const { noTextContent } = this.state
@@ -266,6 +267,7 @@ export class DocumentList extends Component {
             users={annotationUsers}
             count={annotations.length}
             current={currentAnnotationIndex}
+            allEnabled={enabledUserId === 'All'}
             handleScrollAnnotation={this.handleScrollAnnotation}
             handleClickAvatar={(isValidation && !annotationModeEnabled) ? this.onToggleCoderAnnotations : null}
           />}

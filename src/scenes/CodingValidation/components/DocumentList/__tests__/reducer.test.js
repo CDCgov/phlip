@@ -340,11 +340,11 @@ describe('CodingValidation - DocumentList reducer', () => {
       })
     })
     
-    describe('when toggling off annotations', () => {
+    describe('when toggle \'all\' annotations', () => {
       const action = {
         type: types.TOGGLE_CODER_ANNOTATIONS,
         answerId: 4,
-        userId: 1,
+        userId: 'All',
         isUserAnswerSelected: false
       }
       
@@ -371,12 +371,12 @@ describe('CodingValidation - DocumentList reducer', () => {
       
       const state = reducer(currentState, action)
       
-      test('should scroll not scroll to top', () => {
-        expect(state.scrollTop).toEqual(false)
+      test('should scroll to top', () => {
+        expect(state.scrollTop).toEqual(true)
       })
       
-      test('should clear selected user id', () => {
-        expect(state.enabledUserId).toEqual('')
+      test('should set user id to all', () => {
+        expect(state.enabledUserId).toEqual('All')
       })
       
       test('should set filtered annotations to all for opened document', () => {

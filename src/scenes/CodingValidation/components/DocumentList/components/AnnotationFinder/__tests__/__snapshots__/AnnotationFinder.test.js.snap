@@ -11,14 +11,10 @@ exports[`PDFViewer - AnnotationFinder should render correctly 1`] = `
   raised={true}
   style={
     Object {
-      "alignSelf": "flex-end",
       "background": "#0000008a",
       "backgroundColor": "black",
-      "height": 40,
-      "position": "absolute",
-      "right": 20,
-      "top": 10,
-      "width": "40%",
+      "height": 37,
+      "minWidth": "40%",
       "zIndex": 200,
     }
   }
@@ -34,7 +30,26 @@ exports[`PDFViewer - AnnotationFinder should render correctly 1`] = `
     raised={false}
     style={Object {}}
     type="row"
-  />
+  >
+    <CodingValidationAvatar
+      enabled={true}
+      isValidator={false}
+      onClick={null}
+      size="medium"
+      style={
+        Object {
+          "backgroundColor": "#3d316a",
+          "color": "white",
+        }
+      }
+      user={
+        Object {
+          "initials": "ALL",
+          "username": "All annotations",
+        }
+      }
+    />
+  </FlexGrid>
   <FlexGrid
     align="stretch"
     circular={false}

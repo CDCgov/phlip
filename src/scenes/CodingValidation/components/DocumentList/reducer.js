@@ -172,23 +172,22 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.TOGGLE_CODER_ANNOTATIONS:
-      const toggleOff = (action.userId === state.enabledUserId) &&
-        (action.isUserAnswerSelected === state.isUserAnswerSelected)
-       
-      const isUserAnswerSelected = action.isUserAnswerSelected
-        ? !toggleOff
-        : false
-      
-      const filtered = filterAnnotations(state.annotations.all, action.userId, action.isUserAnswerSelected)
+      const filtered = action.userId === 'All'
+        ? state.annotations.all
+        : filterAnnotations(
+          state.annotations.all,
+          action.userId,
+          action.isUserAnswerSelected
+        )
       
       return {
         ...state,
-        enabledUserId: toggleOff ? '' : action.userId,
-        scrollTop: !toggleOff,
-        isUserAnswerSelected,
+        enabledUserId: action.userId,
+        scrollTop: true,
+        isUserAnswerSelected: action.isUserAnswerSelected,
         annotations: {
           all: state.annotations.all,
-          filtered: toggleOff
+          filtered: action.userId === 'All'
             ? annotationsForDocument(state.annotations.all, state.openedDoc._id)
             : annotationsForDocument(filtered, state.openedDoc._id)
         },
@@ -197,9 +196,9 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           filtered: state.annotationUsers.filtered.map(user => {
             return {
               ...user,
-              enabled: toggleOff
+              enabled: action.userId === 'All'
                 ? false
-                : (user.userId === action.userId && user.isValidator === isUserAnswerSelected)
+                : (user.userId === action.userId && user.isValidator === action.isUserAnswerSelected)
             }
           })
         }
@@ -260,13 +259,13 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           filtered: state.annotationUsers.all
         }
       }
-  
+    
     case types.HIDE_ANNO_MODE_ALERT:
       return {
         ...state,
         shouldShowAnnoModeAlert: false
       }
-  
+    
     case types.GET_APPROVED_DOCUMENTS_REQUEST:
       return {
         ...state,
@@ -310,7 +309,7 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
         },
         isUserAnswerSelected: false
       }
-  
+    
     case types.FLUSH_STATE:
       return {
         ...INITIAL_STATE,
