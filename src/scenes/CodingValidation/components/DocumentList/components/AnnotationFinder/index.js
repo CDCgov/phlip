@@ -1,22 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FlexGrid, Avatar, IconButton } from 'components'
+import { FlexGrid, IconButton } from 'components'
 import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux'
+import CodingValidationAvatar from '../../../QuestionCard/components/QuestionContent/components/CodingValidationAvatar'
+import theme from 'services/theme'
 
 export const AnnotationFinder = props => {
-  const { count, current, users, handleScrollAnnotation } = props
+  const { count, current, users, handleScrollAnnotation, handleClickAvatar, allEnabled } = props
   
   const containerStyles = {
     backgroundColor: 'black',
-    width: '40%',
-    alignSelf: 'flex-end',
-    height: 40,
-    position: 'absolute',
+    minWidth: '40%',
     zIndex: 200,
-    background: '#0000008a',
-    right: 20,
-    top: 10
+    height: 37,
+    background: '#0000008a'
   }
   
   const disabledColor = `rgba(0, 0, 0, 0.54)`
@@ -24,18 +22,37 @@ export const AnnotationFinder = props => {
   return (
     <FlexGrid raised container type="row" align="center" justify="flex-end" padding="0 8px" style={containerStyles}>
       <FlexGrid container type="row" align="center" padding="0 10px 0 0" flex>
-        {users.map(user => {
+        {users.map((user, i) => {
           return (
-            <FlexGrid style={{ marginLeft: 5 }} key={`${user.id}-anno-avatar`}>
-              <Avatar
-                small
-                src={user.avatar}
-                initials={user.initials}
-                userName={user.username}
+            <FlexGrid style={{ marginRight: 5 }} key={`${user.id}-anno-avatar-${i}`}>
+              <CodingValidationAvatar
+                user={user}
+                size="medium"
+                isValidator={user.isValidator}
+                onClick={handleClickAvatar && !user.enabled
+                  ? handleClickAvatar(user.userId, user.isValidator)
+                  : null}
+                enabled={
+                  handleClickAvatar
+                    ? users.length > 1
+                      ? user.enabled
+                      : true
+                    : false
+                }
               />
             </FlexGrid>
           )
         })}
+        {users.length > 1 && <CodingValidationAvatar
+          style={{ backgroundColor: theme.palette.primary.main, color: 'white' }}
+          user={{ initials: 'ALL', username: 'All annotations' }}
+          enabled={allEnabled}
+          onClick={!allEnabled
+            ? handleClickAvatar('All', false)
+            : null}
+          isValidator={false}
+          size="medium"
+        />}
       </FlexGrid>
       <FlexGrid style={{ marginRight: 15 }}>
         <Typography style={{ color: 'white' }}>
@@ -65,21 +82,25 @@ AnnotationFinder.propTypes = {
   count: PropTypes.number,
   current: PropTypes.number,
   users: PropTypes.array,
-  handleScrollAnnotation: PropTypes.func
+  handleScrollAnnotation: PropTypes.func,
+  handleClickAvatar: PropTypes.func,
+  allEnabled: PropTypes.bool
 }
 
 AnnotationFinder.defaultProps = {
   users: [],
   current: 0,
-  count: 0
+  count: 0,
+  allEnabled: true
 }
 
 /** istanbul ignore next */
 const mapStateToProps = (state, ownProps) => {
   return {
-    users: ownProps.userIds.map(id => {
+    users: ownProps.users.map(user => {
       return {
-        ...state.data.user.byId[id]
+        ...user,
+        ...state.data.user.byId[user.userId]
       }
     })
   }

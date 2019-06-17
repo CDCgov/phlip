@@ -138,7 +138,6 @@ exports[`QuestionCard component should render correctly 1`] = `
           type="column"
         >
           <FlagPopover
-            annotationModeEnabled={false}
             categoryId={0}
             disableAll={false}
             questionFlags={Array []}
@@ -173,12 +172,15 @@ exports[`QuestionCard component should render correctly 1`] = `
         disableAll={false}
         enabledAnswerId=""
         enabledUserId=""
+        hoveredAnswerChoice={0}
         isValidation={false}
         mergedUserQuestions={Object {}}
         onApplyAll={[Function]}
         onChange={[Function]}
+        onMouseInAnswerChoice={[Function]}
+        onMouseOutAnswerChoice={[Function]}
         onToggleAnnotationMode={[Function]}
-        onToggleCoderAnnotations={[Function]}
+        onToggleViewAnnotations={[Function]}
         question={
           Object {
             "answers": Array [],

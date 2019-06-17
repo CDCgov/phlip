@@ -8,6 +8,7 @@ import actions from './actions'
 import theme from 'services/theme'
 import { FlexGrid, Icon, PDFViewer, ApiErrorView, CircularLoader } from 'components'
 import { FormatQuoteClose } from 'mdi-material-ui'
+import AnnotationFinder from './components/AnnotationFinder'
 
 export class DocumentList extends Component {
   static propTypes = {
@@ -31,11 +32,13 @@ export class DocumentList extends Component {
       title: PropTypes.string,
       open: PropTypes.bool
     }),
+    shouldShowAnnoModeAlert: PropTypes.bool,
     currentAnnotationIndex: PropTypes.number,
     showEmptyDocs: PropTypes.bool,
-    shouldShowAnnoModeAlert: PropTypes.bool,
     scrollTop: PropTypes.bool,
-    gettingDocs: PropTypes.bool
+    gettingDocs: PropTypes.bool,
+    annotationUsers: PropTypes.array,
+    enabledUserId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
   }
   
   static defaultProps = {
@@ -65,6 +68,14 @@ export class DocumentList extends Component {
     this.props.actions.getApprovedDocumentsRequest(this.props.projectId, this.props.jurisdictionId, this.props.page)
   }
   
+  componentDidUpdate(prevProps) {
+    if (!prevProps.scrollTop && this.props.scrollTop && this.props.docSelected) {
+      if (!this.props.annotationModeEnabled) {
+        this.scrollTop()
+      }
+    }
+  }
+  
   componentWillUnmount() {
     this.clearDocSelected()
   }
@@ -73,8 +84,11 @@ export class DocumentList extends Component {
    * Called when user chooses to save an annotation
    */
   onSaveAnnotation = annotation => {
-    this.props.actions.saveAnnotation(annotation, this.props.enabledAnswerId, this.props.questionId)
-    this.props.saveUserAnswer()
+    const { actions, saveUserAnswer, enabledAnswerId, questionId } = this.props
+    
+    actions.saveAnnotation(annotation, enabledAnswerId, questionId)
+    saveUserAnswer()
+    actions.toggleAnnotationMode(questionId, enabledAnswerId, false)
   }
   
   /**
@@ -82,8 +96,20 @@ export class DocumentList extends Component {
    * @param index
    */
   onRemoveAnnotation = index => {
-    this.props.actions.removeAnnotation(index, this.props.enabledAnswerId, this.props.questionId)
-    this.props.saveUserAnswer()
+    const { actions, saveUserAnswer, enabledAnswerId, questionId } = this.props
+    
+    actions.removeAnnotation(index, enabledAnswerId, questionId)
+    saveUserAnswer()
+    actions.toggleAnnotationMode(questionId, enabledAnswerId, false)
+  }
+  
+  /**
+   * Scrolls to top of document
+   */
+  onFinishedRendering = () => {
+    if (!this.props.annotationModeEnabled) {
+      this.scrollTop()
+    }
   }
   
   /**
@@ -137,6 +163,53 @@ export class DocumentList extends Component {
     this.props.actions.resetScrollTop()
   }
   
+  /*
+   * checks to see if annotation layer has rendered
+   */
+  checkIfRendered = position => {
+    return document.getElementById(`annotation-${position}-0`)
+  }
+  
+  /**
+   * Scrolls to a specific annotations
+   * @param position
+   */
+  handleScrollAnnotation = position => {
+    let el = this.checkIfRendered(position)
+    
+    while (!el) {
+      el = this.checkIfRendered(position)
+      setTimeout(() => {
+      }, 1000)
+    }
+    
+    clearTimeout()
+    const container = document.getElementById('viewContainer')
+    const pageEl = el.offsetParent.offsetParent
+    this.props.actions.changeAnnotationIndex(position)
+    container.scrollTo({ top: pageEl.offsetTop + el.offsetTop - 30, behavior: 'smooth' })
+  }
+  
+  /**
+   * Scrolls the document to the top of the page. Used when the user toggles a different coder for annotations
+   */
+  scrollTop = () => {
+    if (this.props.annotations.length === 0) {
+      const container = document.getElementById('viewContainer')
+      container.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      this.handleScrollAnnotation(0)
+    }
+    this.resetScrollTop()
+  }
+  
+  /*
+   * Toggles a coder's annotations for view
+   */
+  onToggleCoderAnnotations = (userId, isValidator) => () => {
+    this.props.actions.toggleCoderAnnotations(userId, isValidator)
+  }
+  
   render() {
     const docNameStyle = {
       color: theme.palette.secondary.main,
@@ -149,8 +222,9 @@ export class DocumentList extends Component {
     const bannerText = { color: '#434343' }
     
     const {
-      annotationModeEnabled, annotations, docSelected, openedDoc, currentAnnotationIndex, scrollTop,
-      showEmptyDocs, apiError, documents, annotatedDocs, shouldShowAnnoModeAlert, gettingDocs
+      annotationModeEnabled, annotations, docSelected, openedDoc, currentAnnotationIndex,
+      showEmptyDocs, apiError, documents, annotatedDocs, gettingDocs, annotationUsers, isValidation,
+      shouldShowAnnoModeAlert, enabledUserId
     } = this.props
     
     const { noTextContent } = this.state
@@ -164,15 +238,36 @@ export class DocumentList extends Component {
           padding="0 15px"
           justify="space-between"
           style={{ height: 55, minHeight: 55, maxHeight: 55 }}>
-          <Typography
-            variant="subheading"
-            style={{ fontSize: '1.125rem', letterSpacing: 0, fontWeight: 500, alignItems: 'center', display: 'flex' }}>
+          <FlexGrid
+            container
+            type="row"
+            align="center"
+            flex
+            style={{ whiteSpace: 'nowrap', overflow: 'hidden', marginRight: 20 }}>
             {docSelected &&
             <Icon color="black" style={{ cursor: 'pointer', paddingRight: 5 }} onClick={this.clearDocSelected}>
               arrow_back
             </Icon>}
-            {docSelected ? openedDoc.name : 'Assigned Documents'}
-          </Typography>
+            <Typography
+              variant="subheading"
+              style={{
+                fontSize: '1.125rem',
+                letterSpacing: 0,
+                fontWeight: 500,
+                textOverflow: 'ellipsis',
+                overflow: 'hidden'
+              }}>
+              {docSelected ? openedDoc.name : 'Assigned Documents'}
+            </Typography>
+          </FlexGrid>
+          {(docSelected && annotations.length > 0) && <AnnotationFinder
+            users={annotationUsers}
+            count={annotations.length}
+            current={currentAnnotationIndex}
+            allEnabled={enabledUserId === 'All'}
+            handleScrollAnnotation={this.handleScrollAnnotation}
+            handleClickAvatar={(isValidation && !annotationModeEnabled) ? this.onToggleCoderAnnotations : null}
+          />}
         </FlexGrid>
         <Divider />
         <FlexGrid container flex style={{ height: '100%', overflow: 'auto', position: 'relative' }}>
@@ -232,14 +327,12 @@ export class DocumentList extends Component {
             saveAnnotation={this.onSaveAnnotation}
             removeAnnotation={this.onRemoveAnnotation}
             onCheckTextContent={this.onCheckTextContent}
-            annotationModeEnabled={annotationModeEnabled}
-            showAvatars
-            currentAnnotationIndex={currentAnnotationIndex}
-            changeAnnotationIndex={this.changeAnnotationIndex}
-            showAnnoModeAlert={shouldShowAnnoModeAlert}
             onHideAnnoModeAlert={this.hideAnnoModeAlert}
-            scrollTop={scrollTop}
-            resetScrollTop={this.resetScrollTop}
+            annotationModeEnabled={annotationModeEnabled}
+            onFinishRendering={this.onFinishedRendering}
+            showAnnoModeAlert={shouldShowAnnoModeAlert}
+            showAvatars
+            isView={false}
           />}
           {!docSelected && documents.map((doc, i) => {
             const isRetrieving = (openedDoc._id === doc._id) && !docSelected
@@ -274,40 +367,21 @@ export class DocumentList extends Component {
 }
 
 /* istanbul-ignore-next */
-export const mapStateToProps = (state, ownProps) => {
+export const mapStateToProps = state => {
   const pageState = state.scenes.codingValidation.documentList
-  const codingState = state.scenes.codingValidation.coding
-  const currentUser = state.data.user.currentUser
-  let annotations = [], question = {}
-  
-  if (pageState.annotationModeEnabled) {
-    question = codingState.question.isCategoryQuestion
-      ? codingState.userAnswers[ownProps.questionId][codingState.selectedCategoryId]
-      : codingState.userAnswers[ownProps.questionId]
-    
-    annotations = question.answers[pageState.enabledAnswerId] === undefined
-      ? []
-      : question.answers[pageState.enabledAnswerId].annotations
-  } else {
-    annotations = pageState.annotations
-  }
-  
+  const annotations = pageState.annotations.filtered
+  const users = pageState.annotationUsers.filtered
   const isValidation = state.scenes.codingValidation.coding.page === 'validation'
+  
+  /** Get docs ids and sort by annotated first */
   const annotatedDocIdsForAnswer = annotations.map(annotation => annotation.docId)
   const notAnnotatedDocIds = pageState.documents.ordered.filter(docId => !annotatedDocIdsForAnswer.includes(docId))
   const annotatedDocIds = pageState.documents.ordered.filter(docId => annotatedDocIdsForAnswer.includes(docId))
+  const annos = annotations.slice()
   
-  const annotatedForOpenDoc = annotations.map((annotation, index) => ({
-    ...annotation,
-    fullListIndex: index,
-    userId: pageState.annotationModeEnabled
-      ? isValidation
-        ? question.validatedBy.userId
-        : currentUser.id
-      : annotation.userId
-  })).filter(annotation => annotation.docId === pageState.openedDoc._id)
-  
-  const annos = annotatedForOpenDoc.slice()
+  /**
+   * The annotations need to be sorted in the order they are on the pdf page for jump to
+   */
   const sortedByPageAndPosition = annos.sort((a, b) => {
     const diff = a.startPage - b.startPage
     return diff === 0
@@ -336,7 +410,9 @@ export const mapStateToProps = (state, ownProps) => {
     currentAnnotationIndex: pageState.currentAnnotationIndex,
     scrollTop: pageState.scrollTop,
     isValidation,
-    gettingDocs: pageState.gettingDocs
+    gettingDocs: pageState.gettingDocs,
+    annotationUsers: users,
+    enabledUserId: pageState.enabledUserId
   }
 }
 

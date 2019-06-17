@@ -11,14 +11,10 @@ exports[`PDFViewer - AnnotationFinder should render correctly 1`] = `
   raised={true}
   style={
     Object {
-      "alignSelf": "flex-end",
       "background": "#0000008a",
       "backgroundColor": "black",
-      "height": 40,
-      "position": "absolute",
-      "right": 20,
-      "top": 10,
-      "width": "40%",
+      "height": 37,
+      "minWidth": "40%",
       "zIndex": 200,
     }
   }

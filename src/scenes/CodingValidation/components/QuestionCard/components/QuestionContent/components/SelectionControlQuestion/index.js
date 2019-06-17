@@ -7,12 +7,13 @@ import FormControl from '@material-ui/core/FormControl'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormLabel from '@material-ui/core/FormLabel'
 import { withStyles } from '@material-ui/core/styles'
-import AvatarList from '../AvatarList'
 import PinciteTextField from '../PinciteTextField'
-import { FlexGrid, Button } from 'components'
+import { FlexGrid } from 'components'
 import * as types from 'scenes/CodingValidation/constants'
 import PinciteList from '../PinciteList'
-import theme from 'services/theme'
+import AnnotationControls from '../AnnotationControls'
+import CodingValidationAvatar from '../CodingValidationAvatar'
+import { CheckboxBlankOutline, CheckboxMarked, RadioboxBlank, RadioboxMarked } from 'mdi-material-ui'
 
 const styles = theme => ({
   checked: {
@@ -24,20 +25,28 @@ export const shouldShowAnnotationStyles = (enabledAnswer, annotationMode) => cho
   return annotationMode ? (enabledAnswer === choiceId) : false
 }
 
+export const checkForAnnotations = (coderQuestions, hasAnnotations) => {
+  let total = 0
+  coderQuestions.forEach(q => {
+    total += q.annotations.length
+  })
+  
+  return hasAnnotations || total > 0
+}
+
 /**
  * Checkbox form group for Coding / Validation screens
  */
 export const SelectionControlQuestion = props => {
   const {
-    choices, userAnswers, onChange, onChangePincite, user,
-    classes, mergedUserQuestions, disableAll, userImages, question,
-    enabledAnswerId, onToggleAnnotationMode, annotationModeEnabled, areDocsEmpty,
-    onToggleCoderAnnotations, isUserAnswerSelected, enabledUserId
+    choices, userAnswers, onChange, onChangePincite, user, classes, mergedUserQuestions, disableAll, userImages,
+    question, enabledAnswerId, onToggleAnnotationMode, annotationModeEnabled, areDocsEmpty, onToggleViewAnnotations,
+    onMouseInAnswerChoice, onMouseOutAnswerChoice, hoveredAnswerChoice
   } = props
   
   const showAnnoStyles = shouldShowAnnotationStyles(enabledAnswerId, annotationModeEnabled)
-  
-  const Control = [types.CATEGORY, types.CHECKBOXES].includes(question.questionType) ? Checkbox : Radio
+  const isCheckbox = [types.CATEGORY, types.CHECKBOXES].includes(question.questionType)
+  const Control = isCheckbox ? Checkbox : Radio
   const isValidation = mergedUserQuestions !== null
   
   return (
@@ -46,9 +55,11 @@ export const SelectionControlQuestion = props => {
       <FormGroup>
         {choices.map(choice => {
           const controlProps = {
-            classes: { checked: classes.checked },
-            inputProps: { id: choice.id, 'aria-describedby': 'question_text' },
-            style: { height: 'unset' }
+            classes: {
+              checked: classes.checked
+            },
+            style: { height: 'unset' },
+            inputProps: { id: choice.id, 'aria-describedby': 'question_text' }
           }
           
           const answerList = mergedUserQuestions !== null
@@ -62,7 +73,6 @@ export const SelectionControlQuestion = props => {
               ...answerList,
               {
                 ...userAnswers.answers[choice.id],
-                isUserAnswer: true,
                 isValidatorAnswer: isValidation,
                 userId: user.id,
                 ...validatedBy
@@ -70,70 +80,105 @@ export const SelectionControlQuestion = props => {
             ]
             : answerList
           
-          const showAnno = showAnnoStyles(choice.id)
+          const CheckedIcon = isCheckbox ? CheckboxMarked : RadioboxMarked
+          const BlankIcon = isCheckbox ? CheckboxBlankOutline : RadioboxBlank
+          const showAnnoMode = showAnnoStyles(choice.id)
+          const viewModeEnabled = !annotationModeEnabled && enabledAnswerId === choice.id
+          const userHasAnnotations = userAnswers.answers[choice.id]
+            ? userAnswers.answers[choice.id].annotations.length > 0
+            : false
           
           return (
             <FlexGrid
               container
+              type="row"
               key={choice.id}
-              padding="5px 15px 10px"
-              style={{ backgroundColor: showAnno ? '#e6f8ff' : 'white', marginRight: 10 }}>
-              <FormControlLabel
-                checked={isAnswered}
-                aria-checked={isAnswered}
-                onChange={onChange(choice.id)}
-                htmlFor={choice.id}
-                control={<Control {...controlProps} />}
-                disabled={disableAll}
-                label={choice.text}
-                aria-label={choice.text}
-              />
-              
-              <FlexGrid container padding="0 0 0 32px">
-                <FlexGrid container type="row" padding="5px 10px 5px 0">
-                  {list.length > 0 && <AvatarList
+              padding={isValidation ? '15px 10px 0 5px' : '15px 10px 15px 5px'}
+              onMouseEnter={() => onMouseInAnswerChoice(choice.id)}
+              onMouseLeave={() => onMouseOutAnswerChoice(choice.id)}
+              align="flex-start"
+              style={{
+                backgroundColor: (showAnnoMode || viewModeEnabled)
+                  ? '#e6f8ff'
+                  : hoveredAnswerChoice === choice.id
+                    ? '#f5f5f5'
+                    : 'white'
+              }}>
+              <FlexGrid container flex>
+                <FormControlLabel
+                  checked={isAnswered}
+                  aria-checked={isAnswered}
+                  onChange={onChange(choice.id)}
+                  htmlFor={choice.id}
+                  control={
+                    <Control
+                      {...controlProps}
+                      icon={<BlankIcon style={{ fontSize: 20 }} />}
+                      checkedIcon={<CheckedIcon style={{ fontSize: 20 }} />}
+                    />
+                  }
+                  disabled={disableAll}
+                  label={choice.text}
+                  aria-label={choice.text}
+                  style={{ marginRight: 0 }}
+                />
+                
+                <FlexGrid container padding="0 0 0 32px">
+                  {(list.length > 0 && isValidation) &&
+                  <FlexGrid container type="row" align="center" padding="5px 10px 5px 0">
+                    {list.map((answer, i) => {
+                      const user = userImages[answer.userId]
+                      return (
+                        <div style={{ marginRight: 2 }} key={`user-answer-${answer.schemeAnswerId}-${i}`}>
+                          <CodingValidationAvatar
+                            user={user}
+                            enabled={false}
+                            isValidator={answer.isValidatorAnswer}
+                            key={`user-${user.id}-${answer.pincite}-${answer.schemeAnswerId}`}
+                          />
+                        </div>
+                      )
+                    })}
+                  </FlexGrid>}
+                  
+                  {(list.length > 0 && isValidation) &&
+                  <PinciteList
+                    answerList={answerList}
                     userImages={userImages}
-                    answerList={list}
-                    handleClickAvatar={onToggleCoderAnnotations}
-                    enabledAnswerId={enabledAnswerId}
-                    enabledUserId={enabledUserId}
-                    isUserAnswerSelected={isUserAnswerSelected}
-                    answerId={choice.id}
-                    showAllAvatar={list.length > 1 && isValidation}
+                    isAnswered={isAnswered}
+                    validatorObj={{ ...userAnswers.answers[choice.id], ...validatedBy }}
+                    handleChangePincite={onChangePincite}
                   />}
-                  {isAnswered && !areDocsEmpty &&
-                  <Button
-                    style={{
-                      alignSelf: 'center',
-                      backgroundColor: showAnno ? theme.palette.error.main : 'white',
-                      color: showAnno ? 'white' : 'black',
-                      margin: '0 0 0 20px',
-                      height: 32,
-                      maxHeight: 32,
-                      minHeight: 'unset',
-                      lineHeight: 'unset'
-                    }}
-                    disableRipple
-                    onClick={onToggleAnnotationMode(choice.id)}>
-                    {showAnno ? 'Done' : 'Annotate'}
-                  </Button>}
                 </FlexGrid>
-                {(list.length > 0 && isValidation) && <PinciteList
-                  answerList={answerList}
-                  userImages={userImages}
-                  isAnswered={isAnswered}
-                  validatorObj={{ ...userAnswers.answers[choice.id], ...validatedBy }}
+                
+                {(isAnswered && !isValidation) &&
+                <PinciteTextField
+                  style={{ paddingLeft: 32, paddingBottom: 5, marginTop: 10, width: 'unset', flex: '1 1 0%' }}
+                  schemeAnswerId={choice.id}
+                  pinciteValue={userAnswers.answers[choice.id].pincite}
                   handleChangePincite={onChangePincite}
                 />}
               </FlexGrid>
-              
-              {(isAnswered && !isValidation) &&
-              <PinciteTextField
-                style={{ paddingLeft: 32, paddingTop: 5, marginBottom: 15, width: '90%' }}
-                schemeAnswerId={choice.id}
-                pinciteValue={userAnswers.answers[choice.id].pincite}
-                handleChangePincite={onChangePincite}
-              />}
+              <FlexGrid
+                container
+                padding="0 5px"
+                align="center"
+                justify="center"
+                style={{ minWidth: 40, marginLeft: 10 }}>
+                {(!areDocsEmpty && (hoveredAnswerChoice === choice.id || showAnnoMode || viewModeEnabled)) &&
+                <AnnotationControls
+                  onToggleViewAnnotations={onToggleViewAnnotations}
+                  onToggleAnnotationMode={onToggleAnnotationMode}
+                  annoModeButtonDisabled={!isAnswered}
+                  viewButtonDisabled={isValidation
+                    ? !checkForAnnotations(answerList, userHasAnnotations)
+                    : !userHasAnnotations
+                  }
+                  answerId={choice.id}
+                  viewEnabled={viewModeEnabled}
+                  annoModeEnabled={showAnnoMode}
+                />}
+              </FlexGrid>
             </FlexGrid>
           )
         })}
@@ -201,21 +246,25 @@ SelectionControlQuestion.propTypes = {
    */
   areDocsEmpty: PropTypes.bool,
   /**
-   * The id of the user selected for showing annotations
-   */
-  enabledUserId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  /**
-   * whether or not the user selected is the validator
-   */
-  isUserAnswerSelected: PropTypes.bool,
-  /**
    * Current logged in user
    */
   user: PropTypes.object,
   /**
-   * Function to handle the toggle of showing a user's annotations
+   * Showing annotations
    */
-  onToggleCoderAnnotations: PropTypes.func
+  onToggleViewAnnotations: PropTypes.func,
+  /**
+   * When the mouse enters the answer choice area
+   */
+  onMouseInAnswerChoice: PropTypes.func,
+  /**
+   * When the mouse leaves the answer choice area
+   */
+  onMouseOutAnswerChoice: PropTypes.func,
+  /**
+   * Which answer choice is currently being hovered on
+   */
+  hoveredAnswerChoice: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 }
 
 export default withStyles(styles)(SelectionControlQuestion)
