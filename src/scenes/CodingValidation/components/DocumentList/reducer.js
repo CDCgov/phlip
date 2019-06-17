@@ -49,6 +49,7 @@ export const INITIAL_STATE = {
   },
   shouldShowAnnoModeAlert: true,
   currentAnnotationIndex: 0,
+  shouldShowAnnoModeAlert: true,
   scrollTop: false,
   gettingDocs: false
 }
@@ -260,7 +261,13 @@ const documentListReducer = (state = INITIAL_STATE, action) => {
           filtered: state.annotationUsers.all
         }
       }
-    
+  
+    case types.HIDE_ANNO_MODE_ALERT:
+      return {
+        ...state,
+        shouldShowAnnoModeAlert: false
+      }
+  
     case types.GET_APPROVED_DOCUMENTS_REQUEST:
       return {
         ...state,

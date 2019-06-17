@@ -84,23 +84,30 @@ export const TextFieldQuestion = props => {
             pinciteValue={userAnswers.answers[answerId].pincite}
             handleChangePincite={onChange}
             disabled={disableAll}
-            style={{ marginTop: 10 }}
+            style={{ marginTop: 10, paddingBottom: 5 }}
           />}
         </FlexGrid>
-        {(!areDocsEmpty && (hoveredAnswerChoice === answerId || showAnnoMode || viewModeEnabled)) &&
-        <AnnotationControls
-          onToggleViewAnnotations={onToggleViewAnnotations}
-          onToggleAnnotationMode={onToggleAnnotationMode}
-          answerId={answerId}
-          showAnnoModeButton={isAnswered}
-          viewEnabled={viewModeEnabled}
-          annoModeEnabled={showAnnoMode}
-          annoModeButtonDisabled={!isAnswered}
-          viewButtonDisabled={isValidation
-            ? !checkForAnnotations(mergedUserQuestions.answers, userHasAnnotations)
-            : !userHasAnnotations
-          }
-        />}
+        <FlexGrid
+          container
+          padding="0 5px"
+          align="center"
+          justify="center"
+          style={{ minWidth: 40, marginLeft: 10 }}>
+          {(!areDocsEmpty && (hoveredAnswerChoice === answerId || showAnnoMode || viewModeEnabled)) &&
+          <AnnotationControls
+            onToggleViewAnnotations={onToggleViewAnnotations}
+            onToggleAnnotationMode={onToggleAnnotationMode}
+            answerId={answerId}
+            showAnnoModeButton={isAnswered}
+            viewEnabled={viewModeEnabled}
+            annoModeEnabled={showAnnoMode}
+            annoModeButtonDisabled={!isAnswered}
+            viewButtonDisabled={isValidation
+              ? !checkForAnnotations(mergedUserQuestions.answers, userHasAnnotations)
+              : !userHasAnnotations
+            }
+          />}
+        </FlexGrid>
       </FlexGrid>
     </FlexGrid>
   )
