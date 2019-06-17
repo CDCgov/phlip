@@ -32,12 +32,18 @@ export const AnnotationFinder = props => {
                 onClick={handleClickAvatar && !user.enabled
                   ? handleClickAvatar(user.userId, user.isValidator)
                   : null}
-                enabled={user.enabled}
+                enabled={
+                  handleClickAvatar
+                    ? users.length > 1
+                      ? user.enabled
+                      : true
+                    : false
+                }
               />
             </FlexGrid>
           )
         })}
-        {handleClickAvatar !== null && <CodingValidationAvatar
+        {users.length > 1 && <CodingValidationAvatar
           style={{ backgroundColor: theme.palette.primary.main, color: 'white' }}
           user={{ initials: 'ALL', username: 'All annotations' }}
           enabled={allEnabled}

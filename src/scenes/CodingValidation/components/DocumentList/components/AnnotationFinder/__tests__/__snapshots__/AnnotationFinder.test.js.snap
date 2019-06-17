@@ -30,26 +30,7 @@ exports[`PDFViewer - AnnotationFinder should render correctly 1`] = `
     raised={false}
     style={Object {}}
     type="row"
-  >
-    <CodingValidationAvatar
-      enabled={true}
-      isValidator={false}
-      onClick={null}
-      size="medium"
-      style={
-        Object {
-          "backgroundColor": "#3d316a",
-          "color": "white",
-        }
-      }
-      user={
-        Object {
-          "initials": "ALL",
-          "username": "All annotations",
-        }
-      }
-    />
-  </FlexGrid>
+  />
   <FlexGrid
     align="stretch"
     circular={false}
