@@ -11,14 +11,10 @@ export const AnnotationFinder = props => {
   
   const containerStyles = {
     backgroundColor: 'black',
-    width: '40%',
-    alignSelf: 'flex-end',
-    height: 40,
-    position: 'absolute',
+    minWidth: '40%',
     zIndex: 200,
-    background: '#0000008a',
-    right: 20,
-    top: 10
+    height: 37,
+    background: '#0000008a'
   }
   
   const disabledColor = `rgba(0, 0, 0, 0.54)`
@@ -31,6 +27,7 @@ export const AnnotationFinder = props => {
             <FlexGrid style={{ marginLeft: 5 }} key={`${user.id}-anno-avatar-${i}`}>
               <CodingValidationAvatar
                 user={user}
+                size="medium"
                 isValidator={user.isValidator}
                 onClick={handleClickAvatar ? handleClickAvatar(user.userId, user.isValidator) : null}
                 enabled={user.enabled}

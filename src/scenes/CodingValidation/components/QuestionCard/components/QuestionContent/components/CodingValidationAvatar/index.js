@@ -10,13 +10,31 @@ const sizeObj = {
     fontSize: '0.5rem'
   },
   'medium': {
-    height: 25,
-    width: 25,
+    height: 27,
+    width: 27,
     fontSize: '0.6rem'
   },
   'large': {
     height: 30,
     width: 30,
+    fontSize: '0.8rem'
+  }
+}
+
+const validatorCheck = {
+  'small': {
+    height: 8,
+    width: 8,
+    fontSize: '0.5rem'
+  },
+  'medium': {
+    height: 9,
+    width: 9,
+    fontSize: '0.6rem'
+  },
+  'large': {
+    height: 12,
+    width: 12,
     fontSize: '0.8rem'
   }
 }
@@ -49,15 +67,17 @@ export const CodingValidationAvatar = ({ user, size, isValidator, enabled, onCli
         {isValidator && <Avatar
           style={{
             position: 'absolute',
-            width: 12,
-            height: 12,
+            ...validatorCheck[size],
             backgroundColor: '#80d134',
             border: '2px solid white',
             top: 16,
             left: 16
           }}
-          cardAvatar={true}
-          initials={<Icon size="12px" color="white" style={{ fontWeight: 800 }}>check</Icon>}
+          cardAvatar
+          initials={<Icon
+            size={`${validatorCheck[size].height}px`}
+            color="white"
+            style={{ fontWeight: 800 }}>check</Icon>}
         />}
       </FlexGrid>
     </Tooltip>

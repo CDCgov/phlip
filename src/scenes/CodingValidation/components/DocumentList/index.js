@@ -74,7 +74,7 @@ export class DocumentList extends Component {
       }
     }
   }
-
+  
   componentWillUnmount() {
     this.clearDocSelected()
   }
@@ -84,7 +84,7 @@ export class DocumentList extends Component {
    */
   onSaveAnnotation = annotation => {
     const { actions, saveUserAnswer, enabledAnswerId, questionId } = this.props
-  
+    
     actions.saveAnnotation(annotation, enabledAnswerId, questionId)
     saveUserAnswer()
     actions.toggleAnnotationMode(questionId, enabledAnswerId, false)
@@ -181,7 +181,8 @@ export class DocumentList extends Component {
     
     while (!el) {
       el = this.checkIfRendered(position)
-      setTimeout(() => {}, 1000)
+      setTimeout(() => {
+      }, 1000)
     }
     
     clearTimeout()
@@ -239,15 +240,28 @@ export class DocumentList extends Component {
           padding="0 15px"
           justify="space-between"
           style={{ height: 55, minHeight: 55, maxHeight: 55 }}>
-          <Typography
-            variant="subheading"
-            style={{ fontSize: '1.125rem', letterSpacing: 0, fontWeight: 500, alignItems: 'center', display: 'flex' }}>
+          <FlexGrid
+            container
+            type="row"
+            align="center"
+            flex
+            style={{ whiteSpace: 'nowrap', overflow: 'hidden', marginRight: 20 }}>
             {docSelected &&
             <Icon color="black" style={{ cursor: 'pointer', paddingRight: 5 }} onClick={this.clearDocSelected}>
               arrow_back
             </Icon>}
-            {docSelected ? openedDoc.name : 'Assigned Documents'}
-          </Typography>
+            <Typography
+              variant="subheading"
+              style={{
+                fontSize: '1.125rem',
+                letterSpacing: 0,
+                fontWeight: 500,
+                textOverflow: 'ellipsis',
+                overflow: 'hidden'
+              }}>
+              {docSelected ? openedDoc.name : 'Assigned Documents'}
+            </Typography>
+          </FlexGrid>
           {(docSelected && annotations.length > 0) && <AnnotationFinder
             users={annotationUsers}
             count={annotations.length}
