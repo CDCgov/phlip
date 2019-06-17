@@ -35,7 +35,6 @@ export class DocumentList extends Component {
     shouldShowAnnoModeAlert: PropTypes.bool,
     currentAnnotationIndex: PropTypes.number,
     showEmptyDocs: PropTypes.bool,
-    shouldShowAnnoModeAlert: PropTypes.bool,
     scrollTop: PropTypes.bool,
     gettingDocs: PropTypes.bool,
     annotationUsers: PropTypes.array
