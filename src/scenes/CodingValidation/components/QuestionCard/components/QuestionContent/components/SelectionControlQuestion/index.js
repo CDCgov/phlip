@@ -153,25 +153,32 @@ export const SelectionControlQuestion = props => {
                 
                 {(isAnswered && !isValidation) &&
                 <PinciteTextField
-                  style={{ paddingLeft: 32, marginTop: 10, width: 'unset', flex: '1 1 0%' }}
+                  style={{ paddingLeft: 32, paddingBottom: 5, marginTop: 10, width: 'unset', flex: '1 1 0%' }}
                   schemeAnswerId={choice.id}
                   pinciteValue={userAnswers.answers[choice.id].pincite}
                   handleChangePincite={onChangePincite}
                 />}
               </FlexGrid>
-              {(!areDocsEmpty && (hoveredAnswerChoice === choice.id || showAnnoMode || viewModeEnabled)) &&
-              <AnnotationControls
-                onToggleViewAnnotations={onToggleViewAnnotations}
-                onToggleAnnotationMode={onToggleAnnotationMode}
-                annoModeButtonDisabled={!isAnswered}
-                viewButtonDisabled={isValidation
-                  ? !checkForAnnotations(answerList, userHasAnnotations)
-                  : !userHasAnnotations
-                }
-                answerId={choice.id}
-                viewEnabled={viewModeEnabled}
-                annoModeEnabled={showAnnoMode}
-              />}
+              <FlexGrid
+                container
+                padding="0 5px"
+                align="center"
+                justify="center"
+                style={{ minWidth: 40, marginLeft: 10 }}>
+                {(!areDocsEmpty && (hoveredAnswerChoice === choice.id || showAnnoMode || viewModeEnabled)) &&
+                <AnnotationControls
+                  onToggleViewAnnotations={onToggleViewAnnotations}
+                  onToggleAnnotationMode={onToggleAnnotationMode}
+                  annoModeButtonDisabled={!isAnswered}
+                  viewButtonDisabled={isValidation
+                    ? !checkForAnnotations(answerList, userHasAnnotations)
+                    : !userHasAnnotations
+                  }
+                  answerId={choice.id}
+                  viewEnabled={viewModeEnabled}
+                  annoModeEnabled={showAnnoMode}
+                />}
+              </FlexGrid>
             </FlexGrid>
           )
         })}

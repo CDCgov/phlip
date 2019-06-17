@@ -4,24 +4,18 @@ import { FlexGrid, IconButton } from 'components'
 import { Eye, GreasePencil } from 'mdi-material-ui'
 import theme from 'services/theme'
 
-const AnnotationControls = props => {
+export const AnnotationControls = props => {
   const {
     onToggleViewAnnotations, onToggleAnnotationMode, answerId, viewEnabled, annoModeEnabled, viewButtonDisabled,
     annoModeButtonDisabled
   } = props
   const iconColor = 'white'
   const selectedColor = theme.palette.error.main
+  const disabledColor = '#bfbfbf'
+  const buttonColor = '#757575'
   
   return (
-    <FlexGrid
-      container
-      style={{
-        borderRadius: '10%',
-        marginLeft: 10,
-        padding: '0 5px 5px 5px'
-      }}
-      align="center"
-      justify="center">
+    <>
       <FlexGrid
         raised={!viewButtonDisabled}
         align="center"
@@ -29,7 +23,7 @@ const AnnotationControls = props => {
         type="row"
         justify="center"
         style={{
-          backgroundColor: viewEnabled ? selectedColor : viewButtonDisabled ? '#bfbfbf' : '#757575',
+          backgroundColor: viewEnabled ? selectedColor : viewButtonDisabled ? disabledColor : buttonColor,
           width: 30,
           height: 30,
           borderRadius: 2
@@ -49,7 +43,7 @@ const AnnotationControls = props => {
         type="row"
         justify="center"
         style={{
-          backgroundColor: annoModeEnabled ? selectedColor : annoModeButtonDisabled ? '#bfbfbf' : '#757575',
+          backgroundColor: annoModeEnabled ? selectedColor : annoModeButtonDisabled ? disabledColor : buttonColor,
           width: 30,
           height: 30,
           marginTop: 5,
@@ -63,7 +57,7 @@ const AnnotationControls = props => {
           <GreasePencil style={{ color: iconColor, fontSize: 18 }} />
         </IconButton>
       </FlexGrid>
-    </FlexGrid>
+    </>
   )
 }
 

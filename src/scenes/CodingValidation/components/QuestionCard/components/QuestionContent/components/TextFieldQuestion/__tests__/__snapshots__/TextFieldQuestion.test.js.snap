@@ -74,10 +74,27 @@ exports[`QuestionCard - QuestionContent - TextFieldQuestion should render correc
         style={
           Object {
             "marginTop": 10,
+            "paddingBottom": 5,
           }
         }
       />
     </FlexGrid>
+    <FlexGrid
+      align="center"
+      circular={false}
+      container={true}
+      flex={false}
+      justify="center"
+      padding="0 5px"
+      raised={false}
+      style={
+        Object {
+          "marginLeft": 10,
+          "minWidth": 40,
+        }
+      }
+      type="column"
+    />
   </FlexGrid>
 </FlexGrid>
 `;
