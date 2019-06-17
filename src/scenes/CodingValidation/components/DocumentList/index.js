@@ -96,14 +96,11 @@ export class DocumentList extends Component {
    * @param index
    */
   onRemoveAnnotation = index => {
-    const { actions, saveUserAnswer, enabledAnswerId, questionId, annotations, currentAnnotationIndex } = this.props
+    const { actions, saveUserAnswer, enabledAnswerId, questionId } = this.props
     
     actions.removeAnnotation(index, enabledAnswerId, questionId)
     saveUserAnswer()
     actions.toggleAnnotationMode(questionId, enabledAnswerId, false)
-    if (currentAnnotationIndex === annotations.length - 1) {
-      this.handleScrollAnnotation(currentAnnotationIndex - 1)
-    }
   }
   
   /**
