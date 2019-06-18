@@ -366,7 +366,7 @@ const mapStateToProps = (state, ownProps) => {
   const pageState = state.scenes.codingValidation.coding
   const docState = state.scenes.codingValidation.documentList
   const cardState = pageState.card
-  
+
   return {
     isValidation: ownProps.page === 'validation',
     user: state.data.user.currentUser || {},

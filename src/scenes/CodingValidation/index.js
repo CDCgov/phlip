@@ -91,7 +91,8 @@ export class CodingValidation extends Component {
     classes: PropTypes.object,
     objectExists: PropTypes.bool,
     getRequestInProgress: PropTypes.bool,
-    annotationModeEnabled: PropTypes.bool
+    annotationModeEnabled: PropTypes.bool,
+    location: PropTypes.object
   }
   
   constructor(props, context) {
@@ -138,28 +139,41 @@ export class CodingValidation extends Component {
   }
   
   componentDidMount() {
-    const { projectName, isValidation, page, actions, projectId, jurisdiction } = this.props
+    const { projectName, isValidation, page, actions, projectId, jurisdiction, match } = this.props
+    let q = null, jur = jurisdiction.id
+    
+    if (match.params.jid) {
+      jur = match.params.jid
+      q = match.params.qid
+    }
     
     document.title = `PHLIP - ${projectName} - ${isValidation ? 'Validate' : 'Code'} `
     actions.setPage(page)
     
     if (page === 'coding') {
-      actions.getCodingOutlineRequest(projectId, jurisdiction.id)
+      actions.getCodingOutlineRequest(projectId, jur, q)
     } else {
-      actions.getValidationOutlineRequest(projectId, jurisdiction.id)
+      actions.getValidationOutlineRequest(projectId, jur, q)
     }
     this.onShowPageLoader()
   }
   
   componentDidUpdate(prevProps) {
-    if (!this.props.getRequestInProgress && prevProps.getRequestInProgress) {
-      if (this.props.areJurisdictionsEmpty || this.props.isSchemeEmpty) {
+    const { getRequestInProgress, areJurisdictionsEmpty, isSchemeEmpty, schemeError, question, jurisdiction } = this.props
+    
+    if (!getRequestInProgress && prevProps.getRequestInProgress) {
+      if (areJurisdictionsEmpty || isSchemeEmpty) {
         this.onShowGetStartedView()
       } else {
-        if (this.props.schemeError === null) {
+        if (schemeError === null) {
           this.onShowCodeView()
+          this.changeRoutes()
         }
       }
+    }
+    
+    if (prevProps.question.id !== question.id || prevProps.jurisdiction.id !== jurisdiction.id) {
+      this.changeRoutes()
     }
   }
   
@@ -172,6 +186,13 @@ export class CodingValidation extends Component {
    */
   onToggleNavigator = () => {
     this.setState({ navOpen: !this.state.navOpen })
+  }
+  
+  changeRoutes = () => {
+    const { history, question, jurisdiction, match } = this.props
+    history.push({
+      pathname: `/project/${match.params.id}/${match.params.view}/${jurisdiction.id}/${question.id}`
+    })
   }
   
   /**

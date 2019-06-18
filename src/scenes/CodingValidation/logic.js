@@ -167,9 +167,10 @@ export const getOutlineLogic = createLogic({
     
     // Try to get the project coding scheme
     try {
-      const { firstQuestion, tree, order, outline, questionsById, isSchemeEmpty } = await getSchemeAndInitialize(
+      const { firstQuestion, tree, order, outline, questionsById, isSchemeEmpty, questionIndex } = await getSchemeAndInitialize(
         action.projectId,
-        api
+        api,
+        action.questionId
       )
       
       // Get user coded questions for currently selected jurisdiction
@@ -194,7 +195,8 @@ export const getOutlineLogic = createLogic({
           scheme: { byId: questionsById, tree, order },
           userAnswers,
           question: firstQuestion,
-          errors: { ...codedValErrors }
+          errors: { ...codedValErrors },
+          currentIndex: questionIndex
         }
       }
       dispatch({

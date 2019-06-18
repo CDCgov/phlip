@@ -314,7 +314,8 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
-        getRequestInProgress: false
+        getRequestInProgress: false,
+        currentIndex: action.payload.currentIndex
       }
 
     case types.GET_CODING_OUTLINE_REQUEST:
