@@ -92,7 +92,8 @@ export class CodingValidation extends Component {
     objectExists: PropTypes.bool,
     getRequestInProgress: PropTypes.bool,
     annotationModeEnabled: PropTypes.bool,
-    location: PropTypes.object
+    location: PropTypes.object,
+    match: PropTypes.object
   }
   
   constructor(props, context) {

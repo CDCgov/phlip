@@ -226,9 +226,10 @@ export const getValidationOutlineLogic = createLogic({
     
     try {
       // Try to get the project coding scheme
-      const { firstQuestion, tree, order, questionsById, outline, isSchemeEmpty } = await getSchemeAndInitialize(
+      const { firstQuestion, tree, order, questionsById, outline, isSchemeEmpty, questionIndex } = await getSchemeAndInitialize(
         action.projectId,
-        api
+        api,
+        action.questionId
       )
       
       // Get user coded questions for currently selected jurisdiction
@@ -279,6 +280,7 @@ export const getValidationOutlineLogic = createLogic({
           userAnswers,
           mergedUserQuestions: coderInfo.codedQuestionObj,
           question: firstQuestion,
+          currentIndex: questionIndex,
           errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors, ...imagesResult.error }
         }
       }
