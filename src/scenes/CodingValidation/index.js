@@ -174,8 +174,10 @@ export class CodingValidation extends Component {
       }
     }
     
-    if (prevProps.question.id !== question.id || prevState.jurisdiction.id !== jurisdiction.id) {
-      this.changeRoutes()
+    if (!areJurisdictionsEmpty && !isSchemeEmpty) {
+      if (prevProps.question.id !== question.id || prevState.jurisdiction.id !== jurisdiction.id) {
+        this.changeRoutes()
+      }
     }
   }
   
