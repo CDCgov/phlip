@@ -24,7 +24,6 @@ export const INITIAL_STATE = {
   question: {},
   scheme: null,
   outline: {},
-  jurisdictionIndex: 0,
   currentIndex: 0,
   categories: undefined,
   selectedCategory: 0,
@@ -240,7 +239,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
     case types.ON_CHANGE_JURISDICTION:
       return {
         ...state,
-        jurisdictionIndex: action.index,
         hasTouchedQuestion: false,
         questionChangeLoader: false
       }
@@ -402,7 +400,9 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         codedQuestionsError: null,
-        isLoadingPage: true
+        isLoadingPage: true,
+        hasTouchedQuestion: false,
+        questionChangeLoader: false
       }
     
     case types.GET_USER_CODED_QUESTIONS_FAIL:

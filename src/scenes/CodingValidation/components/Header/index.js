@@ -1,17 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
-import { withTheme } from '@material-ui/core/styles'
+import theme from 'services/theme'
 import { ClipboardCheckOutline } from 'mdi-material-ui'
 import styles from './header-styles.scss'
 import JurisdictionSelect from 'components/JurisdictionSelect'
 import { Button, IconButton, Link, Icon, FlexGrid, Typography } from 'components'
 
 export const Header = props => {
-  const {
-    projectName, empty, projectId, jurisdictionList, onJurisdictionChange,
-    currentJurisdiction, onGoBack, pageTitle, theme
-  } = props
+  const { empty, onJurisdictionChange, currentJurisdiction, onGoBack, pageTitle, project } = props
 
   return (
     <FlexGrid
@@ -27,12 +24,12 @@ export const Header = props => {
           {pageTitle}
         </Typography>
         <Typography variant="title" style={{ fontWeight: 500 }}>
-          <span style={{ color: theme.palette.secondary.pageHeader }}>{projectName}</span>
+          <span style={{ color: theme.palette.secondary.pageHeader }}>{project.name}</span>
         </Typography>
         {!empty && <>
           <span className={styles.header} />
           <JurisdictionSelect
-            options={jurisdictionList}
+            options={project.projectJurisdictions}
             value={currentJurisdiction.id}
             onChange={onJurisdictionChange}
           />
@@ -52,7 +49,7 @@ export const Header = props => {
         <Button
           style={{ backgroundColor: 'white', color: 'black' }}
           component={Link}
-          to={`/project/${projectId}/protocol`}
+          to={`/project/${project.id}/protocol`}
           aria-label="View and edit protocol">
           <span style={{ paddingRight: 5 }}>Protocol</span>
           <Icon color="black"><ClipboardCheckOutline /></Icon>
@@ -65,15 +62,12 @@ export const Header = props => {
 Header.defaultProps = {}
 
 Header.propTypes = {
-  projectName: PropTypes.string,
-  projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  jurisdictionList: PropTypes.arrayOf(PropTypes.object),
+  project: PropTypes.object,
   empty: PropTypes.bool,
   onJurisdictionChange: PropTypes.func,
   currentJurisdiction: PropTypes.object,
   onGoBack: PropTypes.func,
-  pageTitle: PropTypes.string,
-  theme: PropTypes.object
+  pageTitle: PropTypes.string
 }
 
-export default withRouter(withTheme()(Header))
+export default withRouter(Header)
