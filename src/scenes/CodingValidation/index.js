@@ -87,7 +87,6 @@ export class CodingValidation extends Component {
     classes: PropTypes.object,
     objectExists: PropTypes.bool,
     getRequestInProgress: PropTypes.bool,
-    annotationModeEnabled: PropTypes.bool,
     match: PropTypes.object
   }
   
@@ -99,11 +98,9 @@ export class CodingValidation extends Component {
         ? props.match.params.jid
           ? props.project.projectJurisdictions.find(j => parseInt(props.match.params.jid) === parseInt(j.id))
           : props.project.projectJurisdictions[0]
-        :null,
-      showViews: false,
+        : null,
       navOpen: false,
       applyAllAlertOpen: false,
-      showSchemeError: false,
       changeProps: [],
       stillSavingAlertOpen: false,
       changeMethod: null,
@@ -174,7 +171,7 @@ export class CodingValidation extends Component {
         }
       }
     }
- 
+    
     if (prevProps.question.id !== question.id || prevState.jurisdiction.id !== jurisdiction.id) {
       this.changeRoutes()
     }
@@ -191,11 +188,14 @@ export class CodingValidation extends Component {
     this.setState({ navOpen: !this.state.navOpen })
   }
   
+  /**
+   * Handle changing the browser routes for when the user changes questions or jurisdictions
+   */
   changeRoutes = () => {
     const { history, question, match } = this.props
     const { jurisdiction } = this.state
     
-    history.push({
+    history.replace({
       pathname: `/project/${match.params.id}/${match.params.view}/${jurisdiction.id}/${question.id}`
     })
   }
@@ -205,12 +205,10 @@ export class CodingValidation extends Component {
    * @param index
    */
   getNextQuestion = index => {
-    const { annotationModeEnabled, actions, question, questionOrder, unsavedChanges, project } = this.props
+    const { actions, question, questionOrder, unsavedChanges, project } = this.props
     const { jurisdiction } = this.state
     
-    if (annotationModeEnabled) {
-      actions.toggleAnnotationMode(question.id, '', false)
-    }
+    actions.toggleAnnotationMode(question.id, '', false)
     
     if (unsavedChanges) {
       this.onShowStillSavingAlert(index, actions.getNextQuestion)
@@ -225,12 +223,10 @@ export class CodingValidation extends Component {
    * @param index
    */
   getPrevQuestion = index => {
-    const { annotationModeEnabled, actions, question, project, questionOrder, unsavedChanges } = this.props
+    const { actions, question, project, questionOrder, unsavedChanges } = this.props
     const { jurisdiction } = this.state
-  
-    if (annotationModeEnabled) {
-      actions.toggleAnnotationMode(question.id, '', false)
-    }
+    
+    actions.toggleAnnotationMode(question.id, '', false)
     
     if (unsavedChanges) {
       this.onShowStillSavingAlert(index, actions.getPrevQuestion)
@@ -245,12 +241,10 @@ export class CodingValidation extends Component {
    * @param item
    */
   onQuestionSelectedInNav = item => {
-    const { annotationModeEnabled, actions, question, project, unsavedChanges } = this.props
+    const { actions, question, project, unsavedChanges } = this.props
     const { jurisdiction } = this.state
-  
-    if (annotationModeEnabled) {
-      actions.toggleAnnotationMode(question.id, '', false)
-    }
+    
+    actions.toggleAnnotationMode(question.id, '', false)
     
     if (unsavedChanges) {
       this.onShowStillSavingAlert(item, actions.onQuestionSelectedInNav)
@@ -277,12 +271,10 @@ export class CodingValidation extends Component {
    * @returns {Function}
    */
   onAnswer = id => (event, value) => {
-    const { annotationModeEnabled, actions, question, project } = this.props
+    const { actions, question, project } = this.props
     const { jurisdiction } = this.state
-  
-    if (annotationModeEnabled) {
-      actions.toggleAnnotationMode(question.id, '', false)
-    }
+    
+    actions.toggleAnnotationMode(question.id, '', false)
     
     actions.updateUserAnswer(project.id, jurisdiction.id, question.id, id, value)
     this.onChangeTouchedStatus()
@@ -296,7 +288,7 @@ export class CodingValidation extends Component {
   onSaveCodedQuestion = () => {
     const { project, question, selectedCategoryId, actions } = this.props
     const { jurisdiction } = this.state
-  
+    
     actions.saveUserAnswerRequest(project.id, jurisdiction.id, question.id, selectedCategoryId)
   }
   
@@ -307,12 +299,10 @@ export class CodingValidation extends Component {
    * @returns {Function}
    */
   onChangeTextAnswer = (id, field) => event => {
-    const { project, question, actions, annotationModeEnabled } = this.props
+    const { project, question, actions } = this.props
     const { jurisdiction } = this.state
-  
-    if (annotationModeEnabled) {
-      actions.toggleAnnotationMode(question.id, '', false)
-    }
+    
+    actions.toggleAnnotationMode(question.id, '', false)
     
     switch (field) {
       case 'textAnswer':
@@ -416,7 +406,7 @@ export class CodingValidation extends Component {
   onClearAnswer = () => {
     const { project, question, actions } = this.props
     const { jurisdiction } = this.state
-  
+    
     actions.onClearAnswer(project.id, jurisdiction.id, question.id)
     this.onChangeTouchedStatus()
     this.onSaveCodedQuestion()
@@ -461,7 +451,7 @@ export class CodingValidation extends Component {
   onApplyToAll = () => {
     const { actions, project, question } = this.props
     const { jurisdiction } = this.state
-  
+    
     this.onCloseApplyAllAlert()
     this.onChangeTouchedStatus()
     actions.applyAnswerToAll(project.id, jurisdiction.id, question.id)
@@ -532,11 +522,9 @@ export class CodingValidation extends Component {
    * @param event
    */
   onJurisdictionChange = event => {
-    const { unsavedChanges, page, actions, project, annotationModeEnabled, question } = this.props
+    const { unsavedChanges, page, actions, project, question } = this.props
     
-    if (annotationModeEnabled) {
-      actions.toggleAnnotationMode(question.id, '', false)
-    }
+    actions.toggleAnnotationMode(question.id, '', false)
     
     if (unsavedChanges) {
       this.setState({
@@ -574,7 +562,7 @@ export class CodingValidation extends Component {
   onSaveFlag = flagInfo => {
     const { actions, project, question, user, selectedCategoryId } = this.props
     const { jurisdiction } = this.state
-  
+    
     const flag = {
       raisedBy: {
         userId: user.id,
@@ -601,11 +589,9 @@ export class CodingValidation extends Component {
    * @param type
    */
   onOpenFlagConfirmAlert = (flagId, type) => {
-    const { annotationModeEnabled, question, actions } = this.props
+    const { question, actions } = this.props
     
-    if (annotationModeEnabled) {
-      actions.toggleAnnotationMode(question.id, '', false)
-    }
+    actions.toggleAnnotationMode(question.id, '', false)
     
     this.setState({
       flagConfirmAlertOpen: true,
@@ -792,7 +778,8 @@ export class CodingValidation extends Component {
                               height: 'fit-content',
                               width: 'fit-content',
                               bottom: '50%',
-                              top: 'unset'
+                              top: 'unset',
+                              left: -4
                             }
                           }}
                           defaultSize={{
@@ -837,8 +824,7 @@ const mapStateToProps = (state, ownProps) => {
   const project = state.data.projects.byId[ownProps.match.params.id]
   const page = ownProps.match.url.split('/')[3] === 'code' ? 'coding' : 'validation'
   const pageState = state.scenes.codingValidation.coding
-  const docState = state.scenes.codingValidation.documentList
-
+  
   return {
     project,
     page,
@@ -864,8 +850,7 @@ const mapStateToProps = (state, ownProps) => {
     unsavedChanges: pageState.unsavedChanges || false,
     hasTouchedQuestion: pageState.hasTouchedQuestion || false,
     objectExists: pageState.objectExists || false,
-    getRequestInProgress: pageState.getRequestInProgress,
-    annotationModeEnabled: docState.annotationModeEnabled
+    getRequestInProgress: pageState.getRequestInProgress
   }
 }
 
