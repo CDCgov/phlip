@@ -132,6 +132,13 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
             Object {
               "id": 11,
             },
+            Object {
+              "id": 10,
+            },
+            Object {
+              "id": 20,
+              "name": "florida",
+            },
           ],
         }
       }

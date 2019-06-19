@@ -32,6 +32,7 @@ const navButtonStyles = {
 
 const iconStyle = { transform: 'rotate(90deg)' }
 
+/* istanbul ignore next */
 const styles = theme => ({
   mainContent: {
     height: '100vh',
@@ -56,6 +57,7 @@ const styles = theme => ({
   }
 })
 
+/* istanbul ignore next */
 const ResizeHandle = () => <Icon>more_vert</Icon>
 
 export class CodingValidation extends Component {
@@ -98,7 +100,7 @@ export class CodingValidation extends Component {
         ? props.match.params.jid
           ? props.project.projectJurisdictions.find(j => parseInt(props.match.params.jid) === parseInt(j.id))
           : props.project.projectJurisdictions[0]
-        : null,
+        : { id: null },
       navOpen: false,
       applyAllAlertOpen: false,
       changeProps: [],
@@ -820,6 +822,7 @@ export class CodingValidation extends Component {
   }
 }
 
+/* istanbul ignore next */
 const mapStateToProps = (state, ownProps) => {
   const project = state.data.projects.byId[ownProps.match.params.id]
   const page = ownProps.match.url.split('/')[3] === 'code' ? 'coding' : 'validation'
@@ -854,5 +857,6 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withTracking(CodingValidation)))
