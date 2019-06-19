@@ -236,13 +236,6 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         selectedCategoryId: state.categories[action.selection].id
       }
     
-    case types.ON_CHANGE_JURISDICTION:
-      return {
-        ...state,
-        hasTouchedQuestion: false,
-        questionChangeLoader: false
-      }
-    
     case types.GET_QUESTION_SUCCESS:
       errors = generateError(action.payload.errors)
       return {

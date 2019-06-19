@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CodingValidation scene --- Header component should render correctly 1`] = `
+exports[`CodingValidation scene -- Header component should render correctly 1`] = `
 <FlexGrid
   align="center"
   circular={false}
@@ -62,7 +62,7 @@ exports[`CodingValidation scene --- Header component should render correctly 1`]
           }
         }
       >
-        Test Project
+        Project Test
       </span>
     </Typography>
     <span />
@@ -146,7 +146,7 @@ exports[`CodingValidation scene --- Header component should render correctly 1`]
           "color": "black",
         }
       }
-      to="/project/1/protocol"
+      to="/project/4/protocol"
     >
       <span
         style={

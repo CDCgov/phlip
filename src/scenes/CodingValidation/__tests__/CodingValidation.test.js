@@ -3,17 +3,13 @@ import { shallow } from 'enzyme'
 import { CodingValidation } from '../index'
 
 const props = {
-  projectName: 'Project Test',
+  project: { id: 1, name: 'Project Test', projectJurisdictions: [{ id: 11 }] },
   page: 'coding',
   isValidation: false,
-  projectId: 1,
   question: { id: 1, text: 'question!' },
   currentIndex: 0,
   questionOrder: [1],
   showNextButton: false,
-  jurisdictionsList: [{ id: 11 }],
-  jurisdictionId: 11,
-  jurisdiction: { id: 11 },
   isSchemeEmpty: false,
   areJurisdictionsEmpty: false,
   userRole: 'Admin',

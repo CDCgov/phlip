@@ -5,7 +5,6 @@ import { default as cardActions } from './components/QuestionCard/actions'
 export const types = {
   UPDATE_EDITED_FIELDS: 'UPDATE_EDITED_FIELDS',
   ON_CLOSE_SCREEN: 'ON_CLOSE_SCREEN',
-  ON_CHANGE_JURISDICTION: 'ON_CHANGE_JURISDICTION',
   ON_SHOW_PAGE_LOADER: 'ON_SHOW_PAGE_LOADER',
   ON_SHOW_QUESTION_LOADER: 'ON_SHOW_QUESTION_LOADER',
   CLEAR_ANSWER_ERROR: 'CLEAR_ANSWER_ERROR',
@@ -82,7 +81,6 @@ export default {
   clearAnswerError: makeActionCreator(types.CLEAR_ANSWER_ERROR),
   dismissApiAlert: makeActionCreator(types.DISMISS_API_ALERT, 'errorType'),
   onClearAnswer: makeActionCreator(types.ON_CLEAR_ANSWER, 'projectId', 'jurisdictionId', 'questionId'),
-  onChangeJurisdiction: makeActionCreator(types.ON_CHANGE_JURISDICTION, 'index'),
   showQuestionLoader: makeActionCreator(types.ON_SHOW_QUESTION_LOADER),
   showPageLoader: makeActionCreator(types.ON_SHOW_PAGE_LOADER),
   saveUserAnswerRequest: makeActionCreator(types.SAVE_USER_ANSWER_REQUEST, 'projectId', 'jurisdictionId', 'questionId', 'selectedCategoryId'),

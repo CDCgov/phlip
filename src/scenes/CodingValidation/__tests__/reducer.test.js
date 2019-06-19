@@ -1035,28 +1035,6 @@ describe('CodingValidation reducer', () => {
     })
   })
 
-  describe('ON_CHANGE_JURISDICTION', () => {
-    const action = {
-      type: types.ON_CHANGE_JURISDICTION,
-      index: 22
-    }
-
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.jurisdictionIndex to action.index', () => {
-      expect(state.jurisdictionIndex).toEqual(22)
-    })
-
-    test('should set state.hasTouchedQuestion to false', () => {
-      expect(state.hasTouchedQuestion).toEqual(false)
-    })
-
-    test('should set state.questionChangeLoader to false', () => {
-      expect(state.questionChangeLoader).toEqual(false)
-    })
-  })
-
   describe('GET_QUESTION_SUCCESS', () => {
     const payload = {
       updatedState: {
