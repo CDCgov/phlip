@@ -527,6 +527,7 @@ export class CodingValidation extends Component {
    */
   onJurisdictionChange = event => {
     const { unsavedChanges, page, actions, project, question } = this.props
+    const { jurisdiction } = this.state
     
     actions.toggleAnnotationMode(question.id, '', false)
     
@@ -543,18 +544,22 @@ export class CodingValidation extends Component {
       })
     } else {
       const newIndex = project.projectJurisdictions.findIndex(jur => jur.id === event.target.value)
-      this.setState({
-        jurisdiction: project.projectJurisdictions[newIndex]
-      })
+      const newJur = project.projectJurisdictions[newIndex]
       
-      if (page === 'coding') {
-        actions.getUserCodedQuestions(project.id, event.target.value)
-      } else {
-        actions.getUserValidatedQuestionsRequest(project.id, event.target.value)
+      if (jurisdiction.id !== newJur.id) {
+        this.setState({
+          jurisdiction: newJur
+        })
+  
+        if (page === 'coding') {
+          actions.getUserCodedQuestions(project.id, event.target.value)
+        } else {
+          actions.getUserValidatedQuestionsRequest(project.id, event.target.value)
+        }
+  
+        this.onShowQuestionLoader()
+        actions.getApprovedDocumentsRequest(project.id, newJur.jurisdictionId, page)
       }
-      
-      this.onShowQuestionLoader()
-      actions.getApprovedDocumentsRequest(project.id, project.projectJurisdictions[newIndex].jurisdictionId, page)
     }
   }
   
