@@ -69,6 +69,7 @@ const mainReducer = (state = INITIAL_STATE, action) => {
         ...state,
         backendInfo: action.payload
       }
+      
     case types.GET_BACKEND_INFO_FAIL:
       return {
         ...state,

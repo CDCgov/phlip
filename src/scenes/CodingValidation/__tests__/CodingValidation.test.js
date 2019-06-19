@@ -161,6 +161,7 @@ describe('CodingValidation', () => {
       const wrapper = shallow(<CodingValidation {...props} />)
       wrapper.setProps({ question: { id: 32 } })
       expect(spy).toHaveBeenCalledWith({ pathname: '/project/1/code/11/32' })
+      spy.mockReset()
     })
     
     test('should change routes if component is updated and has a new jurisdiction', () => {
@@ -168,6 +169,7 @@ describe('CodingValidation', () => {
       const wrapper = shallow(<CodingValidation {...props} />)
       wrapper.setState({ jurisdiction: { id: 20 } })
       expect(spy).toHaveBeenCalledWith({ pathname: '/project/1/code/20/1' })
+      spy.mockReset()
     })
     
     test('should change routes after load and scheme isn\'t empty', () => {
@@ -175,6 +177,13 @@ describe('CodingValidation', () => {
       const wrapper = shallow(<CodingValidation {...props} getRequestInProgress />)
       wrapper.setProps({ getRequestInProgress: false })
       expect(spy).toHaveBeenCalledWith({ pathname: '/project/1/code/11/1' })
+      spy.mockReset()
+    })
+    
+    test('should not change the route if scheme or jurisdictions are empty', () => {
+      const spy = jest.spyOn(props.history, 'replace')
+      shallow(<CodingValidation {...props} isSchemeEmpty areJurisdictionsEmpty />)
+      expect(spy).not.toHaveBeenCalled()
     })
   })  
 })
