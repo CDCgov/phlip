@@ -114,7 +114,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
     }
     type="column"
   >
-    <withRouter(WithTheme(Header))
+    <withRouter(Header)
       currentJurisdiction={
         Object {
           "id": 11,
@@ -124,8 +124,24 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
       onGoBack={[Function]}
       onJurisdictionChange={[Function]}
       pageTitle="Coding"
-      projectId={1}
-      projectName="Project Test"
+      project={
+        Object {
+          "id": 1,
+          "name": "Project Test",
+          "projectJurisdictions": Array [
+            Object {
+              "id": 11,
+            },
+            Object {
+              "id": 10,
+            },
+            Object {
+              "id": 20,
+              "name": "florida",
+            },
+          ],
+        }
+      }
     />
     <FlexGrid
       align="stretch"
@@ -237,6 +253,7 @@ exports[`CodingValidation should render Coding component correctly 1`] = `
                 "left": Object {
                   "bottom": "50%",
                   "height": "fit-content",
+                  "left": -4,
                   "top": "unset",
                   "width": "fit-content",
                 },

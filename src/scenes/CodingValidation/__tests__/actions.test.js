@@ -137,15 +137,6 @@ describe('CodingValidation scene actions creators', () => {
     expect(actions.onClearAnswer(1, 1, 1)).toEqual(expectedAction)
   })
 
-  test('should create an action to change jurisdictions', () => {
-    const expectedAction = {
-      type: types.ON_CHANGE_JURISDICTION,
-      index: 2
-    }
-
-    expect(actions.onChangeJurisdiction(2)).toEqual(expectedAction)
-  })
-
   test('should create an action to show question loader', () => {
     const expectedAction = {
       type: types.ON_SHOW_QUESTION_LOADER

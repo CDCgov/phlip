@@ -249,7 +249,8 @@ export class Main extends Component {
           <Switch location={isModal ? this.previousLocation : location}>
             <Route path="/docs/:id/view" component={DocumentView} />
             <Route path="/docs" component={DocumentManagement} />
-            <Route path="/project/:id/(code|validate)" component={CodingValidation} />
+            <Route path="/project/:id/:view(code|validate)/:jid/:qid" component={CodingValidation} />
+            <Route path="/project/:id/:view(code|validate)" component={CodingValidation} />
             <Route path="/admin" component={Admin} />
             <Route strict path="/project/:id/coding-scheme" component={CodingScheme} />
             <Route strict path="/project/:id/protocol" component={Protocol} />
