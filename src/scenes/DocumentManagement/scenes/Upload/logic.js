@@ -269,6 +269,57 @@ export const getFileType = doc => {
 }
 
 /**
+ * check for duplicated documents that selected for upload
+ * @param selectedDocs
+ * @returns {Promise<any>}
+ */
+export const checkDocsDup = (uploadDocs,getState) => {
+  const masterDocs = getState().scenes.docManage.main.list.documents.byId
+  let matchedDocs = []
+  let matchedName = []
+  let nameList = uploadDocs.map(doc => {
+    return doc.name
+  })
+  //console.log('name list: ', nameList)
+  //let startTime = Date.now()
+  // uploadDocs.map(doc => {
+  //   for (let el of Object.keys(masterDocs)) {
+  //
+  //     if ((masterDocs[el].name === doc.name) &&
+  //         (masterDocs[el].jurisdictions.indexOf(doc.jurisdictions[0]) !== -1) &&
+  //         (masterDocs[el].projects.indexOf(doc.projects[0]) !== -1)) {
+  //       matchedDocs.push(masterDocs[el])
+  //       break
+  //     }
+  //   }
+  // })
+  // console.log(startTime)
+  // console.log(Date.now())
+  // console.log('mili seconds elapsed = ', Date.now()-startTime)
+  //let startTime = Date.now()
+  for (let el of Object.keys(masterDocs)) {
+    let nameMatchIdx = nameList.indexOf(masterDocs[el].name)
+    if (nameMatchIdx !== -1) { // matched one of the doc's name
+      matchedName.push(el)
+    }
+  }
+  uploadDocs.map(doc => {
+    for (let el of matchedName) {
+      if (
+        (masterDocs[el].jurisdictions.indexOf(doc.jurisdictions[0]) !== -1) &&
+            (masterDocs[el].projects.indexOf(doc.projects[0]) !== -1)) {
+        matchedDocs.push(masterDocs[el])
+      }
+    }
+  })
+  // let endTime = Date.now()
+  // console.log(startTime)
+  // console.log(endTime)
+  // console.log('second loop mili seconds elapsed = ', (endTime-startTime))
+  return matchedDocs
+}
+
+/**
  * Handles extracting info from an excel spreadsheet and merging if with docs already selected
  */
 const extractInfoLogic = createLogic({
@@ -354,10 +405,11 @@ const uploadRequestLogic = createLogic({
   
   async process({ docApi, action, getState }, dispatch, done) {
     const state = getState().scenes.docManage.upload
-    let anyDuplicates = false
+    let anyDuplicates = []
     try {
       if (getState().scenes.docManage.upload.list.hasVerified === false) {
-        anyDuplicates = await docApi.verifyUpload(action.selectedDocs)
+        //anyDuplicates = await docApi.verifyUpload(action.selectedDocs)
+        anyDuplicates = checkDocsDup(action.selectedDocs,getState)
         if (anyDuplicates.length > 0) {
           dispatch({
             type: types.VERIFY_RETURN_DUPLICATE_FILES,
