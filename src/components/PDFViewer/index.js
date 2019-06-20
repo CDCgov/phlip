@@ -44,7 +44,8 @@ export class PDFViewer extends Component {
     onCheckTextContent: () => {
     },
     resetScrollTop: () => {
-    }
+    },
+    onFinishRendering: () => {}
   }
   
   constructor(props, context) {

@@ -63,6 +63,7 @@ export class QuestionCard extends Component {
     }
     
     this.alertActions = []
+    this.unsavedChangesTimeout = null
   }
   
   componentDidUpdate(prevProps) {
@@ -70,14 +71,18 @@ export class QuestionCard extends Component {
       this.setState({
         isSaving: true
       })
-      clearTimeout()
+      clearTimeout(this.unsavedChangesTimeout)
     } else if (prevProps.unsavedChanges && !this.props.unsavedChanges) {
-      setTimeout(() => {
+      this.unsavedChangesTimeout = setTimeout(() => {
         this.setState({
           isSaving: false
         })
       }, 600)
     }
+  }
+  
+  componentWillUnmount() {
+    clearTimeout(this.unsavedChangesTimeout)
   }
   
   onMouseOutAnswerChoice = () => {
