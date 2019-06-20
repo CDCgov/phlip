@@ -274,29 +274,13 @@ export const getFileType = doc => {
  * @returns {Promise<any>}
  */
 export const checkDocsDup = (uploadDocs,getState) => {
-  const masterDocs = getState().scenes.docManage.main.list.documents.byId
+  const masterDocs = getState().scenes.docManage.main.list.documents.byId // get master list of docs
   let matchedDocs = []
   let matchedName = []
+  // extract list of name for first round check and also reduce the number of rows for sub sequence tests
   let nameList = uploadDocs.map(doc => {
     return doc.name
   })
-  //console.log('name list: ', nameList)
-  //let startTime = Date.now()
-  // uploadDocs.map(doc => {
-  //   for (let el of Object.keys(masterDocs)) {
-  //
-  //     if ((masterDocs[el].name === doc.name) &&
-  //         (masterDocs[el].jurisdictions.indexOf(doc.jurisdictions[0]) !== -1) &&
-  //         (masterDocs[el].projects.indexOf(doc.projects[0]) !== -1)) {
-  //       matchedDocs.push(masterDocs[el])
-  //       break
-  //     }
-  //   }
-  // })
-  // console.log(startTime)
-  // console.log(Date.now())
-  // console.log('mili seconds elapsed = ', Date.now()-startTime)
-  //let startTime = Date.now()
   for (let el of Object.keys(masterDocs)) {
     let nameMatchIdx = nameList.indexOf(masterDocs[el].name)
     if (nameMatchIdx !== -1) { // matched one of the doc's name
@@ -312,10 +296,6 @@ export const checkDocsDup = (uploadDocs,getState) => {
       }
     }
   })
-  // let endTime = Date.now()
-  // console.log(startTime)
-  // console.log(endTime)
-  // console.log('second loop mili seconds elapsed = ', (endTime-startTime))
   return matchedDocs
 }
 
