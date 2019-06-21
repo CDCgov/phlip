@@ -5,11 +5,12 @@ import { bindActionCreators } from 'redux'
 import Divider from '@material-ui/core/Divider/Divider'
 import Typography from '@material-ui/core/Typography'
 import actions, { projectAutocomplete, jurisdictionAutocomplete } from './actions'
-import { Alert, withFormAlert, CircularLoader, FlexGrid, FileUpload, Button } from 'components'
+import { Alert, withFormAlert, CircularLoader, FlexGrid, FileUpload, Button, Progress } from 'components'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import { Download } from 'mdi-material-ui'
 import FileList from './components/FileList'
 import ProJurSearch from './components/ProJurSearch'
+import LinearProgress from '@material-ui/core/LinearProgress'
 
 /**
  * Upload documents modal component. In this modal the user can upload documents to the document management system
@@ -173,17 +174,24 @@ export class Upload extends Component {
    */
   onCloseModal = () => {
     if (this.props.selectedDocs.length > 0) {
-      this.setState({
-        alertActions: [
-          {
-            value: 'Continue',
-            type: 'button',
-            otherProps: { 'aria-label': 'Continue', 'id': 'uploadCloseContBtn' },
-            onClick: this.goBack
-          }
-        ],
-        closeButton: { value: 'Cancel' }
-      }, () => this.props.actions.openAlert('Your unsaved changes will be lost. Do you want to continue?', 'Warning', 'basic'))
+      this.setState(
+        {
+          alertActions: [
+            {
+              value: 'Continue',
+              type: 'button',
+              otherProps: { 'aria-label': 'Continue', 'id': 'uploadCloseContBtn' },
+              onClick: this.goBack
+            }
+          ],
+          closeButton: { value: 'Cancel' }
+        },
+        () => this.props.actions.openAlert(
+          'Your unsaved changes will be lost. Do you want to continue?',
+          'Warning',
+          'basic'
+        )
+      )
     } else {
       this.goBack()
     }
@@ -251,31 +259,25 @@ export class Upload extends Component {
    * Creates a formData object to send to api to upload documents
    */
   onUploadFiles = () => {
-    let fd = { files: [] }, md = {}, sd = []
-    const formData = new FormData()
-    formData.append('userId', this.props.user.id)
-    formData.append('userFirstName', this.props.user.firstName)
-    formData.append('userLastName', this.props.user.lastName)
+    let md = {}, sd = []
     
     this.props.selectedDocs.map(doc => {
-      const { file, ...otherProps } = doc
-      formData.append('files', file.value, doc.name.value)
-      md[doc.name.value] = Object.keys(otherProps).reduce((obj, prop) => {
+      md[doc.name.value] = Object.keys(doc).reduce((obj, prop) => {
         return {
           ...obj,
-          [prop]: otherProps[prop].value
+          [prop]: doc[prop].value
         }
       }, {})
+      
       md[doc.name.value].jurisdictions = this.props.selectedJurisdiction.id
         ? [this.props.selectedJurisdiction.id]
-        : [otherProps.jurisdictions.value.id]
+        : [doc.jurisdictions.value.id]
+      
       md[doc.name.value].projects = [this.props.selectedProject.id]
-      fd.files = [...fd.files, file]
       sd = [...sd, md[doc.name.value]]
     })
     
-    formData.append('metadata', JSON.stringify(md))
-    this.props.actions.uploadDocumentsRequest(formData, sd)
+    this.props.actions.uploadDocumentsStart(sd)
   }
   
   /**
@@ -298,8 +300,9 @@ export class Upload extends Component {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
       if (suggestionType === 'project') {
-        searchString === ''?this.props.actions.projectAutocomplete.getProjectsByUserRequest(this.props.user.id,30):
-          this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
+        searchString === ''
+          ? this.props.actions.projectAutocomplete.getProjectsByUserRequest(this.props.user.id, 30)
+          : this.props.actions.projectAutocomplete.searchForSuggestionsRequest(searchString, '')
       } else {
         this.props.actions.jurisdictionAutocomplete.searchForSuggestionsRequest(searchString, '', index)
       }
@@ -351,7 +354,8 @@ export class Upload extends Component {
   getButtonText = text => {
     return (
       <>
-        {text}{this.props.uploading && <CircularLoader thickness={5} style={{ height: 15, width: 15, marginLeft: 5 }} />}
+        {text}
+        {this.props.uploading && <CircularLoader thickness={5} style={{ height: 15, width: 15, marginLeft: 5 }} />}
       </>
     )
   }
@@ -359,19 +363,17 @@ export class Upload extends Component {
    * Check if the mouse click event valid for this component.  if not valid, ignore event
    * @param e
    */
-
+  
   onMouseDown = e => {
-    if (['react-autowhatever-1','jurisdiction-form'].includes(e.target.id)){
+    if (['react-autowhatever-1', 'jurisdiction-form'].includes(e.target.id)) {
       e.preventDefault()
     }
   }
   
   render() {
     const {
-      selectedDocs, uploading, actions, invalidFiles, alert,
-      projectSearchValue, projectSuggestions, jurisdictionSearchValue,
-      jurisdictionSuggestions, noProjectError,
-      infoSheetSelected, infoSheet
+      selectedDocs, uploading, actions, invalidFiles, alert, projectSearchValue, projectSuggestions, infoSheet,
+      jurisdictionSearchValue, jurisdictionSuggestions, noProjectError, infoSheetSelected, uploadProgress
     } = this.props
     
     const { alertActions, showLoadingAlert, closeButton } = this.state
@@ -435,13 +437,23 @@ export class Upload extends Component {
             })}
           </FlexGrid>}
         </Alert>}
+        
         {showLoadingAlert &&
         <Alert open={showLoadingAlert} hideClose>
           <FlexGrid container align="center">
-            <CircularLoader type="indeterminate" />
-            <span style={{ paddingTop: 20 }}>
+            <span style={{ paddingBottom: 10 }}>
               {uploading ? 'Uploading documents' : 'Processing document'}... This could take a couple of minutes...
             </span>
+            {uploading && <span style={{ paddingBottom: 30 }}>
+              {`Processing document ${uploadProgress.index + 1} out of ${uploadProgress.total}.`}
+            </span>}
+            {!uploading && <CircularLoader type="indeterminate" />}
+            {uploading && <LinearProgress
+              variant="buffer"
+              valueBuffer={((uploadProgress.index + 1) / uploadProgress.total) * 100}
+              value={(uploadProgress.index / uploadProgress.total) * 100}
+              style={{ width: '100%', borderRadius: 6 }}
+            />}
           </FlexGrid>
         </Alert>}
         <FlexGrid container type="row" align="center">
@@ -541,7 +553,8 @@ const mapStateToProps = state => {
     infoRequestInProgress: uploadState.list.infoRequestInProgress,
     infoSheet: uploadState.list.infoSheet,
     infoSheetSelected: uploadState.list.infoSheetSelected,
-    maxFileCount: uploadState.maxFileCount || 20
+    maxFileCount: uploadState.maxFileCount || 20,
+    uploadProgress: uploadState.list.uploadProgress
   }
 }
 

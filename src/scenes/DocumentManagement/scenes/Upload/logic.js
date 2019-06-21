@@ -88,33 +88,33 @@ const reg = input => {
  * @param action
  * @param dispatch
  * @param state
+ * @param user
  * @returns {Promise<any>}
  */
-const upload = (docApi, action, dispatch, state) => {
+const upload = (docApi, action, dispatch, state, user) => {
+  let failed = []
   return new Promise(async (resolve, reject) => {
-    try {
-      const docs = await docApi.upload(action.selectedDocsFormData)
-      let jurList = ''
-      action.jurisdictions.forEach(jur => {
-        jurList = `${jurList}|${jur.name}`
-        dispatch({ type: jurisdictionTypes.ADD_JURISDICTION, payload: jur })
-      })
+    for (const [index, doc] of action.selectedDocs.entries()) {
+      const { file, ...otherProps } = doc
+      const formData = new FormData()
+      formData.append('userId', user.id)
+      formData.append('userFirstName', user.firstName)
+      formData.append('userLastName', user.lastName)
+      formData.append('files', file, doc.name)
+      formData.append('metadata', JSON.stringify({ [doc.name]: otherProps }))
       
-      const documents = docs.files.map(doc => {
-        const { content, ...otherDocProps } = doc
-        return {
-          ...otherDocProps,
-          projectList: `${state.projectSuggestions.selectedSuggestion.name}`,
-          jurisdictionList: jurList
-        }
-      })
+      let docProps = {}
       
-      dispatch({ type: projectTypes.ADD_PROJECT, payload: { ...state.projectSuggestions.selectedSuggestion } })
-      dispatch({ type: types.UPLOAD_DOCUMENTS_SUCCESS, payload: { docs: documents } })
-      resolve()
-    } catch (err) {
-      reject(err)
+      try {
+        const uploadedDoc = await docApi.upload(formData)
+        const { content, ...otherDocProps } = uploadedDoc.files[0]
+        docProps = otherDocProps
+      } catch (err) {
+        failed.push({ ...doc, failed: true })
+      }
+      dispatch({ type: types.UPLOAD_ONE_DOC_COMPLETE, payload: { doc: docProps, index } })
     }
+    resolve({ failed })
   })
 }
 
@@ -335,7 +335,7 @@ const mergeInfoWithDocsLogic = createLogic({
  * Logic for handling when the user clicks 'upload' in the modal. Verifies that there are no errors on upload
  */
 const uploadRequestLogic = createLogic({
-  type: types.UPLOAD_DOCUMENTS_REQUEST,
+  type: types.UPLOAD_DOCUMENTS_START,
   validate({ getState, action }, allow, reject) {
     const state = getState().scenes.docManage.upload
     const selectedProject = state.projectSuggestions.selectedSuggestion
@@ -376,30 +376,29 @@ const uploadRequestLogic = createLogic({
   
   async process({ docApi, action, getState }, dispatch, done) {
     const state = getState().scenes.docManage.upload
-    let anyDuplicates = []
-    try {
-      if (getState().scenes.docManage.upload.list.hasVerified === false) {
-        //anyDuplicates = await docApi.verifyUpload(action.selectedDocs)
-        anyDuplicates = checkDocsDup(action.selectedDocs,getState)
-        if (anyDuplicates.length > 0) {
-          dispatch({
-            type: types.VERIFY_RETURN_DUPLICATE_FILES,
-            payload: anyDuplicates
-          })
-        } else {
-          await upload(docApi, action, dispatch, state)
-        }
-        done()
-      } else {
-        await upload(docApi, action, dispatch, state)
-        done()
-      }
-    } catch (err) {
+    const user = getState().data.user.currentUser
+    const anyDuplicates = checkDocsDup(action.selectedDocs, getState().scenes.docManage.main.list.documents.byId)
+    if (!state.list.hasVerified && anyDuplicates.length > 0) {
       dispatch({
-        type: types.UPLOAD_DOCUMENTS_FAIL,
-        payload: { error: 'We couldn\'t upload the documents. Please try again later.' }
+        type: types.VERIFY_RETURN_DUPLICATE_FILES,
+        payload: anyDuplicates
       })
       done()
+    } else {
+      const { failed } = await upload(docApi, action, dispatch, state, user)
+      
+      action.jurisdictions.forEach(jur => dispatch({ type: jurisdictionTypes.ADD_JURISDICTION, payload: jur }))
+      dispatch({ type: projectTypes.ADD_PROJECT, payload: { ...state.projectSuggestions.selectedSuggestion } })
+      if (failed.length > 0) {
+        dispatch({
+          type: types.UPLOAD_DOCUMENTS_FINISH_WITH_FAILS,
+          payload: { error: 'We couldn\'t upload the documents. Please try again later.', failed }
+        })
+        done()
+      } else {
+        dispatch({ type: types.UPLOAD_DOCUMENTS_FINISH_SUCCESS })
+        done()
+      }
     }
   }
 })

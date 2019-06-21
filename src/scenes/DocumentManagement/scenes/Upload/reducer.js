@@ -5,6 +5,10 @@ import { createAutocompleteReducer, INITIAL_STATE as AUTO_INITIAL_STATE } from '
 import { types as autocompleteTypes } from 'data/autocomplete/actions'
 
 export const INITIAL_STATE = {
+  uploadProgress: {
+    index: 0,
+    total: 0
+  },
   selectedDocs: [],
   requestError: null,
   uploading: false,
@@ -32,35 +36,52 @@ export const INITIAL_STATE = {
 
 export const uploadReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case types.UPLOAD_DOCUMENTS_REQUEST:
+    case types.UPLOAD_DOCUMENTS_START:
       return {
         ...state,
         uploading: true,
-        goBack: false
+        goBack: false,
+        uploadProgress: {
+          index: 0,
+          total: action.selectedDocs.length
+        }
+      }
+  
+    case types.UPLOAD_ONE_DOC_COMPLETE:
+      return {
+        ...state,
+        uploadProgress: {
+          ...state.uploadProgress,
+          index: state.uploadProgress.index + 1
+        }
       }
     
-    case types.UPLOAD_DOCUMENTS_SUCCESS:
+    case types.UPLOAD_DOCUMENTS_FINISH_SUCCESS:
       return {
         ...state,
         ...INITIAL_STATE,
         selectedDocs: [],
-        uploading: false,
-        goBack: true
+        uploadProgress: {
+          ...state.uploadProgress,
+          index: state.uploadProgress.total - 1
+        }
       }
     
-    case types.UPLOAD_DOCUMENTS_FAIL:
+    case types.UPLOAD_DOCUMENTS_FINISH_WITH_FAILS:
       return {
         ...state,
+        selectedDocs: action.payload.failed,
         requestError: action.payload.error,
-        uploading: false
+        uploadProgress: {
+          ...state.uploadProgress,
+          index: state.uploadProgress.total - 1
+        }
       }
     
     case types.VERIFY_RETURN_DUPLICATE_FILES:
       docs = [...state.selectedDocs]
       docs = docs.map(doc => {
-        const isDup = action.payload.findIndex(dup => {
-          return dup.name === doc.name.value
-        })
+        const isDup = action.payload.findIndex(dup => dup.name === doc.name.value)
         return {
           ...doc,
           isDuplicate: isDup !== -1
@@ -97,13 +118,13 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         extractedInfo: action.payload.info,
         selectedDocs: action.payload.merged
       }
-      
+    
     case types.SET_INFO_REQUEST_IN_PROGRESS:
       return {
         ...state,
         infoRequestInProgress: true
       }
-      
+    
     case types.EXTRACT_INFO_FAIL:
       return {
         ...state,

@@ -2,9 +2,10 @@ import makeActionCreator from 'utils/makeActionCreator'
 import { makeAutocompleteActionCreators } from 'data/autocomplete/actions'
 
 export const types = {
-  UPLOAD_DOCUMENTS_REQUEST: 'UPLOAD_DOCUMENTS_REQUEST',
-  UPLOAD_DOCUMENTS_SUCCESS: 'UPLOAD_DOCUMENTS_SUCCESS',
-  UPLOAD_DOCUMENTS_FAIL: 'UPLOAD_DOCUMENTS_FAIL',
+  UPLOAD_DOCUMENTS_START: 'UPLOAD_DOCUMENTS_START',
+  UPLOAD_ONE_DOC_COMPLETE: 'UPLOAD_ONE_DOC_COMPLETE',
+  UPLOAD_DOCUMENTS_FINISH_WITH_FAILS: 'UPLOAD_DOCUMENTS_FINISH_WITH_FAILS',
+  UPLOAD_DOCUMENTS_FINISH_SUCCESS: 'UPLOAD_DOCUMENTS_FINISH_SUCCESS',
   VERIFY_RETURN_DUPLICATE_FILES: 'VERIFY_RETURN_DUPLICATE_FILES',
   ADD_SELECTED_DOCS: 'ADD_SELECTED_DOCS',
   UPDATE_DOC_PROPERTY: 'UPDATE_DOC_PROPERTY',
@@ -32,7 +33,7 @@ export const types = {
 }
 
 export default {
-  uploadDocumentsRequest: makeActionCreator(types.UPLOAD_DOCUMENTS_REQUEST, 'selectedDocsFormData', 'selectedDocs'),
+  uploadDocumentsStart: makeActionCreator(types.UPLOAD_DOCUMENTS_START, 'selectedDocs'),
   updateDocumentProperty: makeActionCreator(types.UPDATE_DOC_PROPERTY, 'index', 'property', 'value'),
   addSelectedDocs: makeActionCreator(types.ADD_SELECTED_DOCS, 'selectedDocs'),
   clearSelectedFiles: makeActionCreator(types.CLEAR_SELECTED_FILES),
