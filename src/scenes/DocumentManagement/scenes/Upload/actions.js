@@ -6,6 +6,7 @@ export const types = {
   UPLOAD_ONE_DOC_COMPLETE: 'UPLOAD_ONE_DOC_COMPLETE',
   UPLOAD_DOCUMENTS_FINISH_WITH_FAILS: 'UPLOAD_DOCUMENTS_FINISH_WITH_FAILS',
   UPLOAD_DOCUMENTS_FINISH_SUCCESS: 'UPLOAD_DOCUMENTS_FINISH_SUCCESS',
+  ACKNOWLEDGE_UPLOAD_FAILURES: 'ACKNOWLEDGE_UPLOAD_FAILURES',
   VERIFY_RETURN_DUPLICATE_FILES: 'VERIFY_RETURN_DUPLICATE_FILES',
   ADD_SELECTED_DOCS: 'ADD_SELECTED_DOCS',
   UPDATE_DOC_PROPERTY: 'UPDATE_DOC_PROPERTY',
@@ -34,6 +35,7 @@ export const types = {
 
 export default {
   uploadDocumentsStart: makeActionCreator(types.UPLOAD_DOCUMENTS_START, 'selectedDocs'),
+  acknowledgeUploadFailures: makeActionCreator(types.ACKNOWLEDGE_UPLOAD_FAILURES),
   updateDocumentProperty: makeActionCreator(types.UPDATE_DOC_PROPERTY, 'index', 'property', 'value'),
   addSelectedDocs: makeActionCreator(types.ADD_SELECTED_DOCS, 'selectedDocs'),
   clearSelectedFiles: makeActionCreator(types.CLEAR_SELECTED_FILES),

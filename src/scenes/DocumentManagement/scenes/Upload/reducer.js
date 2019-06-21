@@ -7,7 +7,8 @@ import { types as autocompleteTypes } from 'data/autocomplete/actions'
 export const INITIAL_STATE = {
   uploadProgress: {
     index: 0,
-    total: 0
+    total: 0,
+    failures: false
   },
   selectedDocs: [],
   requestError: null,
@@ -46,7 +47,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
           total: action.selectedDocs.length
         }
       }
-  
+    
     case types.UPLOAD_ONE_DOC_COMPLETE:
       return {
         ...state,
@@ -59,11 +60,10 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
     case types.UPLOAD_DOCUMENTS_FINISH_SUCCESS:
       return {
         ...state,
-        ...INITIAL_STATE,
         selectedDocs: [],
         uploadProgress: {
           ...state.uploadProgress,
-          index: state.uploadProgress.total - 1
+          failures: false
         }
       }
     
@@ -74,7 +74,18 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         requestError: action.payload.error,
         uploadProgress: {
           ...state.uploadProgress,
-          index: state.uploadProgress.total - 1
+          failures: true
+        }
+      }
+      
+    case types.ACKNOWLEDGE_UPLOAD_FAILURES:
+      return {
+        ...state,
+        requestError: null,
+        uploadProgress: {
+          index: 0,
+          failures: false,
+          total: 0
         }
       }
     

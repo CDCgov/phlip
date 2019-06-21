@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux'
 import Divider from '@material-ui/core/Divider/Divider'
 import Typography from '@material-ui/core/Typography'
 import actions, { projectAutocomplete, jurisdictionAutocomplete } from './actions'
-import { Alert, withFormAlert, CircularLoader, FlexGrid, FileUpload, Button, Progress } from 'components'
+import { Alert, withFormAlert, CircularLoader, FlexGrid, FileUpload, Button } from 'components'
 import Modal, { ModalTitle, ModalContent, ModalActions } from 'components/Modal'
 import { Download } from 'mdi-material-ui'
 import FileList from './components/FileList'
@@ -73,7 +73,8 @@ export class Upload extends Component {
     noProjectError: PropTypes.any,
     infoSheet: PropTypes.object,
     invalidFiles: PropTypes.array,
-    title: PropTypes.string
+    title: PropTypes.string,
+    uploadProgress: PropTypes.object
   }
   
   constructor(props, context) {
@@ -81,7 +82,6 @@ export class Upload extends Component {
     
     this.state = {
       alertActions: [],
-      showLoadingAlert: false,
       closeButton: {}
     }
   }
@@ -92,72 +92,15 @@ export class Upload extends Component {
   }
   
   componentDidUpdate(prevProps) {
-    if (prevProps.uploading && !this.props.uploading) {
+    if (prevProps.infoRequestInProgress && !this.props.infoRequestInProgress) {
       if (this.props.requestError !== null) {
         this.props.onSubmitError(this.props.requestError)
-      } else if (this.props.goBack) {
-        this.goBack()
-      }
-    }
-    
-    if (prevProps.infoRequestInProgress !== this.props.infoRequestInProgress) {
-      if (!prevProps.infoRequestInProgress && this.props.infoRequestInProgress) {
-        this.loadingAlertTimeout = setTimeout(this.showInfoLoadingAlert, 1000)
-      } else {
-        if (this.props.requestError !== null) {
-          this.props.onSubmitError(this.props.requestError)
-        }
-        this.setState({
-          showLoadingAlert: false
-        })
-        clearTimeout(this.loadingAlertTimeout)
-      }
-    }
-    
-    if (prevProps.uploading !== this.props.uploading) {
-      if (!prevProps.uploading && this.props.uploading) {
-        this.loadingAlertTimeout = setTimeout(this.showUploadLoadingAlert, 1000)
-      } else {
-        this.setState({
-          showLoadingAlert: false
-        })
-        clearTimeout(this.loadingAlertTimeout)
       }
     }
   }
   
   componentWillUnmount() {
     document.title = this.prevTitle
-    clearTimeout(this.loadingAlertTimeout)
-  }
-  
-  /**
-   * Determines whether or not the 'processing' alert should be shown
-   */
-  showInfoLoadingAlert = () => {
-    if (!this.props.infoRequestInProgress) {
-      clearTimeout(this.loadingAlertTimeout)
-      this.setState({
-        showLoadingAlert: false
-      })
-    } else {
-      this.setState({
-        showLoadingAlert: true
-      })
-    }
-  }
-  
-  showUploadLoadingAlert = () => {
-    if (!this.props.uploading) {
-      clearTimeout(this.loadingAlertTimeout)
-      this.setState({
-        showLoadingAlert: false
-      })
-    } else {
-      this.setState({
-        showLoadingAlert: true
-      })
-    }
   }
   
   /**
@@ -370,13 +313,25 @@ export class Upload extends Component {
     }
   }
   
+  closeUploadingAlert = () => {
+    const { uploadProgress, actions } = this.props
+    
+    if (uploadProgress.failures) {
+      actions.acknowledgeUploadFailures()
+    } else {
+      this.goBack()
+    }
+  }
+  
   render() {
     const {
       selectedDocs, uploading, actions, invalidFiles, alert, projectSearchValue, projectSuggestions, infoSheet,
-      jurisdictionSearchValue, jurisdictionSuggestions, noProjectError, infoSheetSelected, uploadProgress
+      jurisdictionSearchValue, jurisdictionSuggestions, noProjectError, infoSheetSelected, uploadProgress,
+      infoRequestInProgress
     } = this.props
     
-    const { alertActions, showLoadingAlert, closeButton } = this.state
+    const processingPercentage = (uploadProgress.index / uploadProgress.total) * 100
+    const { alertActions, closeButton } = this.state
     
     const modalCloseButton = {
       value: 'Close',
@@ -438,20 +393,28 @@ export class Upload extends Component {
           </FlexGrid>}
         </Alert>}
         
-        {showLoadingAlert &&
-        <Alert open={showLoadingAlert} hideClose>
+        {(uploading || infoRequestInProgress) &&
+        <Alert
+          open={(uploading || infoRequestInProgress)}
+          hideClose={processingPercentage < 100}
+          onCloseAlert={this.closeUploadingAlert}
+          closeButton={{ value: 'Dismiss' }}>
           <FlexGrid container align="center">
-            <span style={{ paddingBottom: 10 }}>
-              {uploading ? 'Uploading documents' : 'Processing document'}... This could take a couple of minutes...
-            </span>
+            {!uploading && <span style={{ paddingBottom: 10 }}>
+              {'Processing document... This could take a couple of minutes...'}
+            </span>}
             {uploading && <span style={{ paddingBottom: 30 }}>
-              {`Processing document ${uploadProgress.index + 1} out of ${uploadProgress.total}.`}
+              {processingPercentage === 100
+                ? !uploadProgress.failures
+                  ? 'All documents successfully uploaded!'
+                  : 'Some of the documents failed to upload. They are still present in the list if you want to retry.'
+                : `Uploading document ${uploadProgress.index + 1} out of ${uploadProgress.total}.`
+              }
             </span>}
             {!uploading && <CircularLoader type="indeterminate" />}
             {uploading && <LinearProgress
-              variant="buffer"
-              valueBuffer={((uploadProgress.index + 1) / uploadProgress.total) * 100}
-              value={(uploadProgress.index / uploadProgress.total) * 100}
+              variant="determinate"
+              value={processingPercentage}
               style={{ width: '100%', borderRadius: 6 }}
             />}
           </FlexGrid>
