@@ -258,7 +258,7 @@ export class AddEditProject extends Component {
       alertOpen: true,
       alertInfo: {
         title: 'Warning',
-        text: `Deleting a project will delete everything associated to a project, including the coding scheme, protocol, as well as coded and validated questions. Do you want to continue and delete project: ${this.projectDefined.name}?`
+        text: `Are you sure you want to delete ${this.projectDefined.name}? The project's coding scheme, protocol, as well as coded and validated questions will be deleted.`
       }
     })
   }

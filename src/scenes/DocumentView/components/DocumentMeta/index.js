@@ -54,19 +54,20 @@ export class DocumentMeta extends Component {
       alertInfo: {
         title: '',
         text: ''
-      }
+      },
+      alertType: ''
     }
   }
   
   componentDidUpdate(prevProps) {
     if (prevProps.documentDeleteInProgress && !this.props.documentDeleteInProgress) {
-      if (this.props.documentDeleteError === false) {
+      if (!this.props.documentDeleteError) {
         this.props.goBack()
       }
     }
     
     if (prevProps.documentUpdateInProgress && !this.props.documentUpdateInProgress) {
-      if (this.props.apiErrorOpen === false) {
+      if (!this.props.apiErrorOpen) {
         this.handleCloseProJurModal()
       }
     }
@@ -171,7 +172,8 @@ export class DocumentMeta extends Component {
       alertInfo: {
         title: `Delete ${capitalizeFirstLetter(type)}`,
         text: `Do you want to delete ${type}: ${list[index].name} from this document?`
-      }
+      },
+      alertType: 'delete'
     })
   }
   
@@ -182,7 +184,7 @@ export class DocumentMeta extends Component {
       alertOpen: true,
       alertInfo: {
         title: 'Warning',
-        text: `Deleting a document will delete all associate annotations in every project and jurisdiction. Do you want to continue and delete ${this.props.document.name}?`
+        text: `Do you want to delete ${this.props.document.name}? Deleting a document will remove all associated annotations for every project and jurisdiction.`
       }
     })
   }
@@ -204,14 +206,36 @@ export class DocumentMeta extends Component {
   }
   
   addProJur = () => {
-    if (this.state.selectedJurisdiction !== null) {
-      this.props.actions.addProJur('jurisdictions', this.state.selectedJurisdiction)
-      this.props.actions.updateDocRequest('jurisdictions', this.state.selectedJurisdiction, 'add')
-    }
-    
-    if (this.state.selectedProject !== null) {
-      this.props.actions.addProJur('projects', this.state.selectedProject)
-      this.props.actions.updateDocRequest('projects', this.state.selectedProject, 'add')
+    if (this.state.showAddJurisdiction) {
+      if (this.state.selectedJurisdiction !== null) {
+        this.props.actions.addProJur('jurisdictions', this.state.selectedJurisdiction)
+        this.props.actions.updateDocRequest('jurisdictions', this.state.selectedJurisdiction, 'add')
+      } else {
+        // should show an error message here
+        this.setState({
+          alertOpen: true,
+          alertInfo: {
+            title: 'Invalid Jurisdiction',
+            text: `You must select a jurisdiction from the drop-down list`
+          },
+          alertType: 'projur'
+        })
+      }
+    } else {
+      if (this.state.selectedProject !== null) {
+        this.props.actions.addProJur('projects', this.state.selectedProject)
+        this.props.actions.updateDocRequest('projects', this.state.selectedProject, 'add')
+      } else {
+        // should show error message here
+        this.setState({
+          alertOpen: true,
+          alertInfo: {
+            title: 'Invalid Project',
+            text: `You must select a project from the drop-down list`
+          },
+          alertType: 'projur'
+        })
+      }
     }
   }
   
@@ -225,7 +249,19 @@ export class DocumentMeta extends Component {
       alertOpen: false,
       alertInfo: {},
       typeToDelete: '',
-      [`${typeToDelete}ToDelete`]: {}
+      [`${typeToDelete}ToDelete`]: {},
+      alertType: ''
+    })
+  }
+
+  /**
+     * Handles when the user cancels out of deleting a jurisdiction or project
+     */
+  onCancelUpdateProJur = () => {
+    this.setState({
+      alertOpen: false,
+      alertInfo: {},
+      alertType: ''
     })
   }
   
@@ -274,6 +310,17 @@ export class DocumentMeta extends Component {
         </>)
       : text
   }
+
+  /**
+   * Check if the mouse click event valid for this component
+   * @param e
+   */
+
+  onMouseDown = e => {
+    if (e.target.id === 'react-autowhatever-1'){
+      e.preventDefault()
+    }
+  }
   
   render() {
     const {
@@ -282,7 +329,7 @@ export class DocumentMeta extends Component {
     } = this.props
     
     const {
-      alertOpen, alertInfo, hoveringOn, hoverIndex, showModal, showAddJurisdiction
+      alertOpen, alertInfo, hoveringOn, hoverIndex, showModal, showAddJurisdiction, alertType
     } = this.state
     
     const options = [
@@ -314,6 +361,14 @@ export class DocumentMeta extends Component {
         onClick: this.onContinueDelete
       }
     ]
+
+    const projurActions = [
+      {
+        value: 'Dismiss',
+        type: 'button',
+        onClick: this.onCancelUpdateProJur
+      }
+    ]
     
     const metaStyling = { fontSize: '.8125rem', padding: '0 5px' }
     const iconStyle = { color: '#757575', fontSize: 18 }
@@ -322,7 +377,12 @@ export class DocumentMeta extends Component {
     return (
       <>
         <ApiErrorAlert open={apiErrorOpen} content={apiErrorInfo.text} onCloseAlert={this.closeAlert} />
-        <Alert open={alertOpen} actions={alertActions} title={alertInfo.title} onCloseAlert={this.onCancelDelete}>
+        <Alert open={alertOpen && alertType === 'delete'} actions={alertActions} title={alertInfo.title} onCloseAlert={this.onCancelDelete}>
+          <Typography variant="body1">
+            {alertInfo.text}
+          </Typography>
+        </Alert>
+        <Alert open={alertOpen && alertType === 'projur'} hideClose actions={projurActions} title={alertInfo.title} onCloseAlert={this.onCancelUpdateProJur}>
           <Typography variant="body1">
             {alertInfo.text}
           </Typography>
@@ -467,13 +527,9 @@ export class DocumentMeta extends Component {
                       : 'white',
                     minHeight: 24
                   }}>
-                  <Typography style={{ fontSize: '.8125rem' }}>
-                    {item.name}
-                  </Typography>
+                  <Typography style={{ fontSize: '.8125rem' }}>{item.name}</Typography>
                   {(hoveringOn === 'project' && hoverIndex === index) &&
-                  <IconButton
-                    color="#757575"
-                    onClick={() => this.handleShowDeleteConfirm('project', index)}>
+                  <IconButton color="#757575" onClick={() => this.handleShowDeleteConfirm('project', index)}>
                     delete
                   </IconButton>}
                 </FlexGrid>
@@ -512,13 +568,9 @@ export class DocumentMeta extends Component {
                     : 'white',
                   minHeight: 24
                 }}>
-                <Typography style={{ fontSize: '.8125rem' }}>
-                  {item.name}
-                </Typography>
+                <Typography style={{ fontSize: '.8125rem' }}>{item.name}</Typography>
                 {(hoveringOn === 'jurisdiction' && hoverIndex === index) &&
-                <IconButton
-                  color="#757575"
-                  onClick={() => this.handleShowDeleteConfirm('jurisdiction', index)}>
+                <IconButton color="#757575" onClick={() => this.handleShowDeleteConfirm('jurisdiction', index)}>
                   delete
                 </IconButton>}
               </FlexGrid>))}
@@ -538,6 +590,7 @@ export class DocumentMeta extends Component {
                 projectSearchValue={projectSearchValue}
                 showProjectError={noProjectError === true}
                 showJurSearch={showAddJurisdiction === true}
+                onMouseDown={this.onMouseDown}
               />
             </ModalContent>
             <Divider />
@@ -549,7 +602,7 @@ export class DocumentMeta extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
   const document = state.scenes.docView.inEditMode
     ? state.scenes.docView.documentForm
     : state.scenes.docView.document || { jurisdictions: [], projects: [], status: 1, effectiveDate: '' }
@@ -577,6 +630,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
+/* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({
   actions: {
     ...bindActionCreators(actions, dispatch),

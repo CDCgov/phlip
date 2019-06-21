@@ -31,7 +31,7 @@ const props = {
     toggleAnnotationMode: jest.fn(),
     setAlert: jest.fn(),
     closeAlert: jest.fn(),
-    toggleCoderAnnotations: jest.fn()
+    toggleViewAnnotations: jest.fn()
   },
   alert: {
     open: false,
@@ -42,15 +42,8 @@ const props = {
   }
 }
 
-const annoModeAlert = {
-  open: true,
-  title: 'Close Annotation Mode',
-  text: 'You are currently in annotation mode. To make changes to your answer or to change questions, please exit annotation mode by clicking the \'Done\' button.',
-  type: 'disableAnnoMode'
-}
-
 const categoryAlert = {
-  text: 'Deselecting a category will remove any answers associated with this category. Do you want to continue?',
+  text: 'Deselecting a category will remove answers, pincites and annotations associated with this category. Do you want to continue?',
   title: 'Warning',
   type: 'changeAnswer',
   data: { id: 2, value: 3 },
@@ -59,7 +52,7 @@ const categoryAlert = {
 
 const changeAnswerAlert = {
   ...categoryAlert,
-  text: 'Changing your answer will remove any pincites and annotations associated with this answer. Do you want to continue?'
+  text: 'Changing your answer will remove the pincites and annotations associated with this answer. Do you want to continue?'
 }
 
 const clearAlert = {
@@ -82,6 +75,7 @@ describe('QuestionCard component', () => {
         const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
         wrapper.instance().onToggleAnnotationMode(1)()
         expect(spy).toHaveBeenCalledWith(1, 1, true)
+        spy.mockReset()
       }
     )
     
@@ -99,6 +93,7 @@ describe('QuestionCard component', () => {
         const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
         wrapper.instance().onToggleAnnotationMode(1)()
         expect(spy).toHaveBeenCalledWith(1, 1, false)
+        spy.mockReset()
       }
     )
     
@@ -116,13 +111,14 @@ describe('QuestionCard component', () => {
         const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
         wrapper.instance().onToggleAnnotationMode(2)()
         expect(spy).toHaveBeenCalledWith(1, 2, true)
+        spy.mockReset()
       }
     )
   })
   
   describe('changing answer', () => {
-    test('should call props.actions.setAlert with disable annotation mode info if annotation mode is enabled', () => {
-      const spy = jest.spyOn(props.actions, 'setAlert')
+    test('should call disable annotation mode if annotation mode is enabled', () => {
+      const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
       const wrapper = shallow(
         <QuestionCard
           {...props}
@@ -132,7 +128,8 @@ describe('QuestionCard component', () => {
         />
       )
       wrapper.instance().onChangeAnswer(2)({}, {})
-      expect(spy).toHaveBeenCalledWith(annoModeAlert)
+      expect(spy).toHaveBeenCalledWith(1, 1, false)
+      spy.mockReset()
     })
     
     describe('unselecting a category choice', () => {
@@ -303,9 +300,9 @@ describe('QuestionCard component', () => {
     })
   })
   
-  describe('toggling coder annotations', () => {
-    test('should show an alert if currently in annotation mode', () => {
-      const spy = jest.spyOn(props.actions, 'setAlert')
+  describe('toggling view annotations', () => {
+    test('should disable annotation mode if annotation mode is enabled', () => {
+      const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
       const wrapper = shallow(<QuestionCard
         {...props}
         userAnswers={{
@@ -314,13 +311,15 @@ describe('QuestionCard component', () => {
           }
         }}
         annotationModeEnabled
+        enabledAnswerId={1}
       />)
-      wrapper.instance().onToggleCoderAnnotations(2, 2, false)()
-      expect(spy).toHaveBeenCalledWith(annoModeAlert)
+      wrapper.instance().onToggleViewAnnotations(2)()
+      expect(spy).toHaveBeenCalledWith(1, 1, false)
+      spy.mockReset()
     })
     
-    test('should call toggleCoderAnnotations if not in annotation mode', () => {
-      const spy = jest.spyOn(props.actions, 'toggleCoderAnnotations')
+    test('should call toggleViewAnnotatoins', () => {
+      const spy = jest.spyOn(props.actions, 'toggleViewAnnotations')
       const wrapper = shallow(<QuestionCard
         {...props}
         userAnswers={{
@@ -329,14 +328,14 @@ describe('QuestionCard component', () => {
           }
         }}
       />)
-      wrapper.instance().onToggleCoderAnnotations(2, 2, false)()
-      expect(spy).toHaveBeenCalledWith(1, 2, 2, false)
+      wrapper.instance().onToggleViewAnnotations(1)()
+      expect(spy).toHaveBeenCalledWith(1, 1)
     })
   })
   
   describe('changing categories', () => {
-    test('should show an alert if currently in annotation mode', () => {
-      const spy = jest.spyOn(props.actions, 'setAlert')
+    test('should disable annotation mode if annotation mode is enabled', () => {
+      const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
       const wrapper = shallow(<QuestionCard
         {...props}
         userAnswers={{
@@ -347,10 +346,11 @@ describe('QuestionCard component', () => {
         annotationModeEnabled
       />)
       wrapper.instance().onChangeCategory({}, 2)
-      expect(spy).toHaveBeenCalledWith(annoModeAlert)
+      expect(spy).toHaveBeenCalledWith(1, '', false)
+      spy.mockReset()
     })
     
-    test('should change categories if not in annotation mode', () => {
+    test('should change categories', () => {
       const spy = jest.spyOn(props, 'onChangeCategory')
       const wrapper = shallow(<QuestionCard
         {...props}
@@ -366,8 +366,8 @@ describe('QuestionCard component', () => {
   })
   
   describe('clearing answer', () => {
-    test('should call props.actions.setAlert with disable annotation mode info if annotation mode is enabled', () => {
-      const spy = jest.spyOn(props.actions, 'setAlert')
+    test('should disable annotation mode if annotation mode is enabled', () => {
+      const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
       const wrapper = shallow(
         <QuestionCard
           {...props}
@@ -377,10 +377,11 @@ describe('QuestionCard component', () => {
         />
       )
       wrapper.instance().onClearAnswer()
-      expect(spy).toHaveBeenCalledWith(annoModeAlert)
+      expect(spy).toHaveBeenCalledWith(1, 1, false)
+      spy.mockReset()
     })
     
-    test('should call props.setAlert with clear answer alert information if not in annotation mode', () => {
+    test('should call props.setAlert with clear answer alert information', () => {
       const spy = jest.spyOn(props.actions, 'setAlert')
       const wrapper = shallow(
         <QuestionCard
@@ -427,8 +428,8 @@ describe('QuestionCard component', () => {
   })
   
   describe('applying answer to all categories', () => {
-    test('should show an alert if currently in annotation mode', () => {
-      const spy = jest.spyOn(props.actions, 'setAlert')
+    test('should disable annotation mode if currently in annotation mode', () => {
+      const spy = jest.spyOn(props.actions, 'toggleAnnotationMode')
       const wrapper = shallow(<QuestionCard
         {...props}
         userAnswers={{
@@ -439,10 +440,11 @@ describe('QuestionCard component', () => {
         annotationModeEnabled
       />)
       wrapper.instance().onApplyAll()
-      expect(spy).toHaveBeenCalledWith(annoModeAlert)
+      expect(spy).toHaveBeenCalledWith(1, '', false)
+      spy.mockReset()
     })
     
-    test('should apply to all categories if not in annotation mode', () => {
+    test('should apply to all categories', () => {
       const spy = jest.spyOn(props, 'onOpenAlert')
       const wrapper = shallow(<QuestionCard
         {...props}

@@ -105,7 +105,7 @@ const getCoderInformation = async ({ api, action, questionId, userImages }) => {
       questionId: questionId
     })
   } catch (e) {
-    coderErrors = { allCodedQuestions: 'Failed to get all the user coded answers for this question.' }
+    coderErrors = { allCodedQuestions: 'We couldn\'t retrieve all the coded answers for this question.' }
   }
   
   if (allCodedQuestions.length === 0) {
@@ -167,9 +167,10 @@ export const getOutlineLogic = createLogic({
     
     // Try to get the project coding scheme
     try {
-      const { firstQuestion, tree, order, outline, questionsById, isSchemeEmpty } = await getSchemeAndInitialize(
+      const { firstQuestion, tree, order, outline, questionsById, isSchemeEmpty, questionIndex } = await getSchemeAndInitialize(
         action.projectId,
-        api
+        api,
+        action.questionId
       )
       
       // Get user coded questions for currently selected jurisdiction
@@ -194,7 +195,8 @@ export const getOutlineLogic = createLogic({
           scheme: { byId: questionsById, tree, order },
           userAnswers,
           question: firstQuestion,
-          errors: { ...codedValErrors }
+          errors: { ...codedValErrors },
+          currentIndex: questionIndex
         }
       }
       dispatch({
@@ -224,9 +226,10 @@ export const getValidationOutlineLogic = createLogic({
     
     try {
       // Try to get the project coding scheme
-      const { firstQuestion, tree, order, questionsById, outline, isSchemeEmpty } = await getSchemeAndInitialize(
+      const { firstQuestion, tree, order, questionsById, outline, isSchemeEmpty, questionIndex } = await getSchemeAndInitialize(
         action.projectId,
-        api
+        api,
+        action.questionId
       )
       
       // Get user coded questions for currently selected jurisdiction
@@ -277,6 +280,7 @@ export const getValidationOutlineLogic = createLogic({
           userAnswers,
           mergedUserQuestions: coderInfo.codedQuestionObj,
           question: firstQuestion,
+          currentIndex: questionIndex,
           errors: { ...errors, ...codedValErrors, ...coderInfo.coderErrors, ...imagesResult.error }
         }
       }
@@ -529,20 +533,6 @@ const sendMessageLogic = createLogic({
       })
       allow({ ...action, messageToSend: messageQueue[index] })
     }
-    
-    // const messageToSend = messageQueue.find(message => {
-    //   if (message.hasOwnProperty('categoryId')) {
-    //     return message.questionId === action.payload.questionId && action.payload.selectedCategoryId ===
-    //       message.categoryId
-    //   } else {
-    //     return message.questionId === action.payload.questionId
-    //   }
-    // })
-    // if (messageQueue.length > 0 && messageToSend !== undefined) {
-    //   allow({ ...action, message: messageToSend })
-    // } else {
-    //   reject()
-    // }
   },
   /**
    * Actually sends the requests in the queue and then removest the request from the queue.

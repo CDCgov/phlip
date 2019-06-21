@@ -96,7 +96,7 @@ export class Protocol extends Component {
       alertTitle: ''
     }
   }
-
+  
   componentDidMount() {
     this.props.actions.getProtocolRequest(this.props.projectId)
     document.title = `PHLIP - ${this.props.projectName} - Protocol`
@@ -169,8 +169,8 @@ export class Protocol extends Component {
   }
   
   /**
-   * Invoked when the user hits 'Continue' in the alert that shows when the user clicks the 'back' arrow while still in edit
-   * mode. Sends a request to unlock the protocol, and goes back one in browser history.
+   * Invoked when the user hits 'Continue' in the alert that shows when the user clicks the 'back' arrow while still in
+   * edit mode. Sends a request to unlock the protocol, and goes back one in browser history.
    * @public
    */
   onContinue = () => {
@@ -222,7 +222,7 @@ export class Protocol extends Component {
     ]
     
     const {
-      currentUser, lockedAlert, lockInfo, projectName, projectId, getProtocolError, alertError, actions, protocolContent
+      currentUser, lockedAlert, lockInfo, projectName, projectId, getProtocolError, alertError, protocolContent
     } = this.props
     
     const { open, alertText, alertTitle, editMode } = this.state
@@ -230,7 +230,7 @@ export class Protocol extends Component {
     let lockedAlertAction = []
     
     if (currentUser.role === 'Admin') {
-      lockedAlertAction.push({ value: 'Release lock', type: 'button', onClick: this.overrideLock })
+      lockedAlertAction.push({ value: 'Unlock', type: 'button', onClick: this.overrideLock })
     }
     
     return (
@@ -248,12 +248,14 @@ export class Protocol extends Component {
           title={
             <>
               <Icon size={30} color="primary" style={{ paddingRight: 10 }}>lock</Icon>
-              The Protocol is unavailable to edit.
+              The Protocol is checked out.
             </>
           }>
           <Typography variant="body1">
             {`${lockInfo.firstName} ${lockInfo.lastName} `} is editing the protocol.
             You are unable to edit until they save their changes.
+            {currentUser.role === 'Admin' &&
+            ' Select \'Unlock\' to terminate their editing session or try again later.'}
           </Typography>
         </Alert>
         <PageHeader
@@ -306,7 +308,9 @@ export class Protocol extends Component {
             </FlexGrid>
           ) : (
             getProtocolError === true
-              ? <CardError>We failed to get the protocol for this project. Please try again later.</CardError>
+              ? (<CardError>
+                Uh-oh! Something went wrong. We couldn't retrieve the protocol for this project. Please try again later.
+              </CardError>)
               : <FlexGrid
                 raised
                 padding={25}

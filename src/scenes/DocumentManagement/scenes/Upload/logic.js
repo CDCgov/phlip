@@ -269,6 +269,37 @@ export const getFileType = doc => {
 }
 
 /**
+ * check for duplicated documents that selected for upload
+ * @param selectedDocs
+ * @returns {Promise<any>}
+ */
+export const checkDocsDup = (uploadDocs,getState) => {
+  const masterDocs = getState().scenes.docManage.main.list.documents.byId // get master list of docs
+  let matchedDocs = []
+  let matchedName = []
+  // extract list of name for first round check and also reduce the number of rows for sub sequence tests
+  let nameList = uploadDocs.map(doc => {
+    return doc.name
+  })
+  for (let el of Object.keys(masterDocs)) {
+    let nameMatchIdx = nameList.indexOf(masterDocs[el].name)
+    if (nameMatchIdx !== -1) { // matched one of the doc's name
+      matchedName.push(el)
+    }
+  }
+  uploadDocs.map(doc => {
+    for (let el of matchedName) {
+      if (
+        (masterDocs[el].jurisdictions.indexOf(doc.jurisdictions[0]) !== -1) &&
+            (masterDocs[el].projects.indexOf(doc.projects[0]) !== -1)) {
+        matchedDocs.push(masterDocs[el])
+      }
+    }
+  })
+  return matchedDocs
+}
+
+/**
  * Handles extracting info from an excel spreadsheet and merging if with docs already selected
  */
 const extractInfoLogic = createLogic({
@@ -342,7 +373,7 @@ const uploadRequestLogic = createLogic({
         reject({
           type: types.REJECT_EMPTY_JURISDICTIONS,
           error: noJurs.length > 0
-            ? 'One or more documents are missing a valid jurisdiction.'
+            ? 'You must select a jurisdiction from the drop-down list.'
             : 'You must select a jurisdiction from the autocomplete list for each document.',
           invalidDocs: noJurs.length > 0 ? noJurs : noJurIds
         })
@@ -354,10 +385,11 @@ const uploadRequestLogic = createLogic({
   
   async process({ docApi, action, getState }, dispatch, done) {
     const state = getState().scenes.docManage.upload
-    let anyDuplicates = false
+    let anyDuplicates = []
     try {
       if (getState().scenes.docManage.upload.list.hasVerified === false) {
-        anyDuplicates = await docApi.verifyUpload(action.selectedDocs)
+        //anyDuplicates = await docApi.verifyUpload(action.selectedDocs)
+        anyDuplicates = checkDocsDup(action.selectedDocs,getState)
         if (anyDuplicates.length > 0) {
           dispatch({
             type: types.VERIFY_RETURN_DUPLICATE_FILES,
@@ -374,7 +406,7 @@ const uploadRequestLogic = createLogic({
     } catch (err) {
       dispatch({
         type: types.UPLOAD_DOCUMENTS_FAIL,
-        payload: { error: 'Failed to upload documents, please try again.' }
+        payload: { error: 'We couldn\'t upload the documents. Please try again later.' }
       })
       done()
     }
@@ -386,6 +418,25 @@ const uploadRequestLogic = createLogic({
  */
 const searchProjectListLogic = createLogic({
   type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
+  validate({ getState, action }, allow, reject) {
+    const selectedProject = getState().scenes.docManage.upload.projectSuggestions.selectedSuggestion
+    if (Object.keys(selectedProject).length === 0) {
+      allow(action)
+    } else {
+      if (selectedProject.name !== action.searchString) {
+        allow(action)
+      } else {
+        reject()
+      }
+    }
+  }
+})
+
+/**
+ * Logic for setting initial project list
+ */
+const getInitialProjectListLogic = createLogic({
+  type: autocompleteTypes.GET_INITIAL_PROJECT_SUGGESTION_REQUEST,
   validate({ getState, action }, allow, reject) {
     const selectedProject = getState().scenes.docManage.upload.projectSuggestions.selectedSuggestion
     if (Object.keys(selectedProject).length === 0) {
@@ -451,9 +502,9 @@ const verifyFileContentLogic = createLogic({
           type: types.INVALID_FILES_FOUND,
           text: invalidSize
             ? invalidType
-              ? 'The files listed below do not have a valid file type and / or they exceed the maximum size for a file. The valid files types are .pdf, .doc, .docx and .rtf. The maximum size for a file is 16 MB. These files will be removed from the list.'
+              ? 'The files listed below do not have a valid file type and / or exceed the maximum file size. These files will be removed from the list. Valid files types are .pdf, .doc, .docx, .odt and .rtf. Maximum file size is 16 MB.'
               : 'The files listed below exceed the maximum allowed size of 16 MB. These files will be removed from the list.'
-            : 'The files listed below do not have a valid file type. The valid file types are .pdf, .doc, .docx and .rtf. These files will be removed from the list.',
+            : 'The files listed below do not have a valid file type. These files will be removed from the list. Valid file types are .pdf, .doc, .docx, .odt and .rtf.',
           invalidFiles,
           title: invalidSize
             ? invalidType
@@ -474,5 +525,6 @@ export default [
   searchProjectListLogic,
   searchJurisdictionListLogic,
   mergeInfoWithDocsLogic,
-  verifyFileContentLogic
+  verifyFileContentLogic,
+  getInitialProjectListLogic
 ]

@@ -24,7 +24,6 @@ export const INITIAL_STATE = {
   question: {},
   scheme: null,
   outline: {},
-  jurisdictionIndex: 0,
   currentIndex: 0,
   categories: undefined,
   selectedCategory: 0,
@@ -88,7 +87,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
   const questionUpdater = state.question.isCategoryQuestion
     ? handleUpdateUserCategoryChild(state, action)
     : handleUpdateUserCodedQuestion(state, action)
-
+  
   switch (action.type) {
     case types.UPDATE_USER_ANSWER:
       return {
@@ -99,13 +98,13 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         },
         unsavedChanges: true
       }
-
+    
     case types.CHANGE_TOUCHED_STATUS:
       return {
         ...state,
         hasTouchedQuestion: !state.hasTouchedQuestion
       }
-
+    
     case types.SAVE_USER_ANSWER_SUCCESS:
       return {
         ...state,
@@ -121,7 +120,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         saveFailed: false,
         unsavedChanges: state.messageQueue.length > 0
       }
-
+    
     case types.SAVE_USER_ANSWER_REQUEST:
       return {
         ...state,
@@ -136,35 +135,39 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         saveFailed: false,
         unsavedChanges: true
       }
-
+    
     case types.ADD_REQUEST_TO_QUEUE:
-      const cleanQueue = removeRequestsInQueue([...state.messageQueue], action.payload.queueId, action.payload.timeQueued)
-
+      const cleanQueue = removeRequestsInQueue(
+        [...state.messageQueue],
+        action.payload.queueId,
+        action.payload.timeQueued
+      )
+      
       return {
         ...state,
         messageQueue: [...cleanQueue, action.payload],
         unsavedChanges: true
       }
-
+    
     case types.REMOVE_REQUEST_FROM_QUEUE:
       const queue = removeRequestsInQueue(
         [...state.messageQueue],
         action.payload.queueId,
         action.payload.timeQueued
       )
-
+      
       return {
         ...state,
         messageQueue: queue,
         unsavedChanges: queue.length > 0
       }
-
+    
     case types.SEND_QUEUE_REQUESTS:
       return {
         ...state,
         unsavedChanges: true
       }
-
+    
     case types.SAVE_USER_ANSWER_FAIL:
       return {
         ...state,
@@ -179,7 +182,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
           )
           : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: false })
       }
-
+    
     case types.OBJECT_EXISTS:
       return {
         ...state,
@@ -195,14 +198,14 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
           )
           : updateCodedQuestion(state, action.payload.questionId, { hasMadePost: false, ...action.payload.object })
       }
-
+    
     case types.ON_CHANGE_PINCITE:
       return {
         ...state,
         ...questionUpdater('answers', handleUserPinciteQuestion),
         unsavedChanges: true
       }
-
+    
     case types.ON_SAVE_ANNOTATION:
       return {
         ...state,
@@ -210,7 +213,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         unsavedChanges: true,
         hasTouchedQuestion: true
       }
-
+    
     case types.ON_REMOVE_ANNOTATION:
       return {
         ...state,
@@ -218,29 +221,21 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         unsavedChanges: true,
         hasTouchedQuestion: true
       }
-
+    
     case types.ON_CHANGE_COMMENT:
       return {
         ...state,
         ...questionUpdater('comment', action.comment),
         unsavedChanges: true
       }
-
+    
     case types.ON_CHANGE_CATEGORY:
       return {
         ...state,
         selectedCategory: action.selection,
         selectedCategoryId: state.categories[action.selection].id
       }
-
-    case types.ON_CHANGE_JURISDICTION:
-      return {
-        ...state,
-        jurisdictionIndex: action.index,
-        hasTouchedQuestion: false,
-        questionChangeLoader: false
-      }
-
+    
     case types.GET_QUESTION_SUCCESS:
       errors = generateError(action.payload.errors)
       return {
@@ -253,7 +248,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         saveFailed: false,
         hasTouchedQuestion: false
       }
-
+    
     case types.ON_APPLY_ANSWER_TO_ALL:
       const catQuestion = state.userAnswers[state.question.id][state.selectedCategoryId]
       return {
@@ -273,23 +268,23 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         },
         unsavedChanges: true
       }
-
+    
     case types.ON_CLEAR_ANSWER:
       return {
         ...state,
         ...questionUpdater('answers', {}),
         unsavedChanges: true
       }
-
+    
     case types.DISMISS_API_ALERT:
       return { ...state, [action.errorType]: null, objectExists: false }
-
+    
     case types.ON_SHOW_PAGE_LOADER:
       return { ...state, showPageLoader: true }
-
+    
     case types.ON_SHOW_QUESTION_LOADER:
       return { ...state, questionChangeLoader: true }
-
+    
     case types.GET_NEXT_QUESTION:
     case types.GET_PREV_QUESTION:
     case types.ON_QUESTION_SELECTED_IN_NAV:
@@ -297,10 +292,10 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         ...state,
         isChangingQuestion: true
       }
-
+    
     case types.GET_CODING_OUTLINE_SUCCESS:
       let error = generateError(action.payload.errors)
-      return {
+      const updatedState = {
         ...state,
         outline: action.payload.outline,
         scheme: action.payload.scheme,
@@ -314,9 +309,16 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
-        getRequestInProgress: false
+        getRequestInProgress: false,
+        currentIndex: action.payload.currentIndex
       }
-
+      
+      return {
+        ...state,
+        ...updatedState,
+        ...handleCheckCategories(action.payload.question, action.payload.currentIndex, updatedState)
+      }
+    
     case types.GET_CODING_OUTLINE_REQUEST:
     case types.GET_VALIDATION_OUTLINE_REQUEST:
       return {
@@ -325,7 +327,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         getRequestInProgress: true,
         schemeError: null
       }
-
+    
     case types.GET_CODING_OUTLINE_FAIL:
     case types.GET_VALIDATION_OUTLINE_FAIL:
       return {
@@ -335,7 +337,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         showPageLoader: false,
         getRequestInProgress: false
       }
-
+    
     case types.ON_SAVE_RED_FLAG_SUCCESS:
       const curQuestion = { ...state.scheme.byId[state.question.id] }
       return {
@@ -356,21 +358,21 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         },
         unsavedChanges: false
       }
-
+    
     case types.ON_SAVE_RED_FLAG_FAIL:
       return {
         ...state,
-        saveFlagErrorContent: 'We couldn\'t save the red flag for this question.',
+        saveFlagErrorContent: 'We couldn\'t save the flag for this question.',
         saveFailed: true
       }
-
+    
     case types.ON_SAVE_FLAG:
       return {
         ...state,
         ...questionUpdater('flag', action.flagInfo),
         unsavedChanges: true
       }
-
+    
     case types.GET_USER_CODED_QUESTIONS_SUCCESS:
       let errors = generateError(action.payload.errors)
       return {
@@ -385,15 +387,17 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         unsavedChanges: false,
         ...action.payload.otherUpdates
       }
-
+    
     case types.GET_USER_CODED_QUESTIONS_REQUEST:
     case types.GET_USER_VALIDATED_QUESTIONS_REQUEST:
       return {
         ...state,
         codedQuestionsError: null,
-        isLoadingPage: true
+        isLoadingPage: true,
+        hasTouchedQuestion: false,
+        questionChangeLoader: false
       }
-
+    
     case types.GET_USER_CODED_QUESTIONS_FAIL:
     case types.GET_USER_VALIDATED_QUESTIONS_FAIL:
       return {
@@ -402,17 +406,17 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         isLoadingPage: false,
         showPageLoader: false
       }
-
+    
     case types.ON_SAVE_RED_FLAG_REQUEST:
       return {
         ...state,
         unsavedChanges: true,
         saveFailed: false
       }
-
+    
     case types.GET_VALIDATION_OUTLINE_SUCCESS:
       error = generateError(action.payload.errors)
-      return {
+      const upState = {
         ...state,
         outline: action.payload.outline,
         scheme: action.payload.scheme,
@@ -427,9 +431,15 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         codedQuestionsError: action.payload.errors.hasOwnProperty('codedValQuestions') ? true : null,
         isLoadingPage: false,
         showPageLoader: false,
-        getRequestInProgress: false
+        getRequestInProgress: false,
+        currentIndex: action.payload.currentIndex
       }
-
+      
+      return {
+        ...upState,
+        ...handleCheckCategories(action.payload.question, action.payload.currentIndex, upState)
+      }
+    
     case types.CLEAR_FLAG_SUCCESS:
       if (action.payload.type === 1) {
         return {
@@ -448,18 +458,18 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         }
       } else {
         let flagIndex = null
-
+        
         const flagComments = state.question.isCategoryQuestion
           ? state.mergedUserQuestions[state.question.id][state.selectedCategoryId].flagsComments
           : state.mergedUserQuestions[state.question.id].flagsComments
-
+        
         const { id, type, notes, raisedAt, ...flag } = flagComments.find((item, i) => {
           if (item.id === action.payload.flagId) {
             flagIndex = i
           }
           return item.id === action.payload.flagId
         })
-
+        
         if (Object.keys(flag).length === 1) {
           flagComments.splice(flagIndex, 1)
         } else {
@@ -469,7 +479,7 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
             flagComments.splice(flagIndex, 1, flag)
           }
         }
-
+        
         return {
           ...state,
           mergedUserQuestions: {
@@ -490,13 +500,13 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
           }
         }
       }
-
+    
     case types.CLEAR_FLAG_FAIL:
       return {
         ...state,
         saveFlagErrorContent: 'We couldn\'t clear this flag.'
       }
-
+    
     case types.GET_USER_VALIDATED_QUESTIONS_SUCCESS:
       errors = generateError(action.payload.errors)
       return {
@@ -511,16 +521,16 @@ export const codingReducer = (state = INITIAL_STATE, action) => {
         showPageLoader: false,
         ...action.payload.otherUpdates
       }
-
+    
     case types.SET_PAGE:
       return {
         ...state,
         page: action.page
       }
-
+    
     case types.ON_CLOSE_SCREEN:
       return INITIAL_STATE
-
+    
     case types.CLEAR_RED_FLAG:
     case types.CLEAR_FLAG:
     default:

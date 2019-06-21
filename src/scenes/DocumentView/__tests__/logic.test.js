@@ -63,7 +63,7 @@ describe('DocumentView logic', () => {
           { type: types.GET_DOCUMENT_CONTENTS_REQUEST, id: '1212' },
           {
             type: types.GET_DOCUMENT_CONTENTS_FAIL,
-            payload: 'Failed to get the contents of this document.'
+            payload: 'We couldn\'t retrieve the contents for this document.'
           }
         ])
         done()
@@ -139,7 +139,7 @@ describe('DocumentView logic', () => {
           { type: types.DELETE_DOCUMENT_REQUEST, id: 5 },
           {
             type: types.DELETE_DOCUMENT_FAIL,
-            payload: { error: 'Failed to delete the document.' }
+            payload: { error: 'We couldn\'t delete the document.' }
           }
         ])
         done()

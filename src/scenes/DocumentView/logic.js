@@ -21,7 +21,7 @@ const getDocumentContentsLogic = createLogic({
         type: action.type === types.GET_DOCUMENT_CONTENTS_REQUEST
           ? types.GET_DOCUMENT_CONTENTS_FAIL
           : codingTypes.GET_DOC_CONTENTS_FAIL,
-        payload: 'Failed to get the contents of this document.'
+        payload: 'We couldn\'t retrieve the contents for this document.'
       })
     }
     done()
@@ -63,10 +63,10 @@ const updateDocLogic = createLogic({
       dispatch({
         type: types.UPDATE_DOC_FAIL,
         error: action.property === 'projects' || action.property === 'jurisdictions'
-          ? `Failed to ${action.updateType} the ${action.property.slice(0, -1)} ${action.updateType === 'add'
+          ? `We couldn\'t ${action.updateType} the ${action.property.slice(0, -1)} ${action.updateType === 'add'
             ? 'to'
             : 'from'} the document.`
-          : 'Failed to update the document.'
+          : 'We couldn\'t update the document.'
       })
       done()
     }
@@ -95,7 +95,7 @@ const deleteDocLogic = createLogic({
     } catch (err) {
       dispatch({
         type: types.DELETE_DOCUMENT_FAIL,
-        payload: { error: 'Failed to delete the document.' }
+        payload: { error: 'We couldn\'t delete the document.' }
       })
       done()
     }

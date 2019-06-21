@@ -1,10 +1,14 @@
-import * as types from './actionTypes'
+import { types } from './actions'
 
 const INITIAL_STATE = {
   session: !!sessionStorage.esquire_token,
   pivError: null,
   formMessage: null,
-  backendInfo: null
+  backendInfo: {
+    pipelineId: '',
+    builtTime: '',
+    databaseName: ''
+  }
 }
 
 /**
@@ -23,35 +27,41 @@ const loginReducer = (state = INITIAL_STATE, action) => {
         session: !!sessionStorage.esquire_token,
         formMessage: null
       }
-
+    
     case types.LOGIN_USER_FAIL:
     case types.CHECK_PIV_USER_FAIL:
       return {
         ...state,
         formMessage: action.payload
       }
-
+    
     case types.LOGOUT_USER:
       if (action.sessionExpired === true) {
         return {
           ...state,
+          session: false,
           formMessage: 'Your session expired. Please login again.'
         }
       } else {
-        return state
+        return {
+          ...state,
+          session: false
+        }
       }
-
+    
     case types.FLUSH_STATE:
       return {
         ...INITIAL_STATE,
-        formMessage: state.formMessage
+        formMessage: state.formMessage,
+        session: false
       }
-
+    
     case types.GET_BACKEND_INFO_SUCCESS:
       return {
         ...state,
         backendInfo: action.payload
       }
+      
     case types.LOGIN_USER_REQUEST:
     case types.CHECK_PIV_USER_REQUEST:
     case types.GET_BACKEND_INFO_REQUEST:

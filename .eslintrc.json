@@ -176,9 +176,7 @@
     "context": true,
     "jestPuppeteer": true,
     "APP_PIPELINE": false,
-    "APP_BUILT_TIMESTAMP": false,
-    "APP_SAML_LOGOUT_URL": false
-
+    "APP_BUILT_TIMESTAMP": false
   },
   "env": {
     "jest": true,

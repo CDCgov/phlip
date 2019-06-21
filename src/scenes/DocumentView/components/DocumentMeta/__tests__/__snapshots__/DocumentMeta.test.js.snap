@@ -28,6 +28,26 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
       variant="body1"
     />
   </Alert>
+  <Alert
+    actions={
+      Array [
+        Object {
+          "onClick": [Function],
+          "type": "button",
+          "value": "Dismiss",
+        },
+      ]
+    }
+    closeButton={Object {}}
+    hideClose={true}
+    onCloseAlert={[Function]}
+    open={false}
+    title=""
+  >
+    <WithStyles(Typography)
+      variant="body1"
+    />
+  </Alert>
   <FlexGrid
     align="stretch"
     circular={false}
@@ -642,6 +662,7 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
           }
           onClearSuggestions={[Function]}
           onGetSuggestions={[Function]}
+          onMouseDown={[Function]}
           onSearchValueChange={[Function]}
           onSuggestionSelected={[Function]}
           projectSuggestions={

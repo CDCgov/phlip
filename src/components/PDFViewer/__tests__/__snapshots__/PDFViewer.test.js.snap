@@ -4,6 +4,11 @@ exports[`PDFViewer component should render correctly 1`] = `
 <div
   className="pdfViewer"
   id="viewContainer"
+  style={
+    Object {
+      "position": "relative",
+    }
+  }
 >
   <Alert
     actions={
@@ -52,8 +57,15 @@ exports[`PDFViewer component should render correctly 1`] = `
       }
       variant="body1"
     >
-      If you are trying to annotate, you need to enable annotation mode for a selected answer choice. You can enable annotation mode by clicking the 'Annotate' button next to an answer choice.
+      Hover over an answer choice and click the 'Pencil' icon button to annotate.
     </WithStyles(Typography)>
+    <WithStyles(Typography)
+      style={
+        Object {
+          "paddingBottom": 20,
+        }
+      }
+    />
     <WithStyles(CheckboxLabel)
       input={
         Object {

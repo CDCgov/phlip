@@ -49,8 +49,10 @@ describe('Document Management logic', () => {
         scenes: {
           docManage: {
             main: {
-              documents: JSON.parse(JSON.stringify(mockDocuments)),
-              ...docManage
+              list: {
+                documents: JSON.parse(JSON.stringify(mockDocuments)),
+                ...docManage
+              }
             }
           }
         }
@@ -419,7 +421,7 @@ describe('Document Management logic', () => {
             { type: types.GET_DOCUMENTS_REQUEST },
             {
               type: types.GET_DOCUMENTS_FAIL,
-              payload: 'Failed to get documents'
+              payload: 'We couldn\'t retrieve the documents.'
             }
           ])
           done()

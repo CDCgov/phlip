@@ -125,4 +125,12 @@ describe('Document management - Upload action creators', () => {
 
     expect(actions.mergeInfoWithDocs([{ name: 'doc 1' }])).toEqual(expectedAction)
   })
+  
+  test('should create an action to set extracting info progress', () => {
+    const expectedAction = {
+      type: types.SET_INFO_REQUEST_IN_PROGRESS
+    }
+    
+    expect(actions.setInfoRequestProgress()).toEqual(expectedAction)
+  })
 })

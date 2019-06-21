@@ -1,136 +1,81 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Document Management scene should render correctly 1`] = `
-<Fragment>
+<FlexGrid
+  align="stretch"
+  circular={false}
+  container={true}
+  flex={true}
+  justify="stretch"
+  padding="12px 20px 20px 20px"
+  raised={false}
+  style={Object {}}
+  type="column"
+>
   <ApiErrorAlert
     actions={Array []}
     content=""
     onCloseAlert={[Function]}
     open={false}
   />
+  <withRouter(WithTheme(PageHeader))
+    entryScene={true}
+    icon="description"
+    otherButton={
+      Object {
+        "isLink": true,
+        "path": "/docs/upload",
+        "props": Object {
+          "aria-label": "Upload New Documents",
+          "id": "uploadNewBtn",
+        },
+        "show": true,
+        "state": Object {
+          "modal": true,
+        },
+        "text": "Upload New",
+      }
+    }
+    pageTitle="Document Management"
+    projectName=""
+    protocolButton={false}
+  >
+    <Connect(SearchBox) />
+  </withRouter(WithTheme(PageHeader))>
   <FlexGrid
     align="stretch"
     circular={false}
     container={true}
     flex={true}
     justify="stretch"
-    padding="12px 20px 20px 20px"
-    raised={false}
+    padding={0}
+    raised={true}
     style={Object {}}
     type="column"
   >
-    <withRouter(WithTheme(PageHeader))
-      entryScene={true}
-      icon="description"
-      otherButton={
-        Object {
-          "isLink": true,
-          "path": "/docs/upload",
-          "props": Object {
-            "aria-label": "Upload New Documents",
-            "id": "uploadNewBtn",
-          },
-          "show": true,
-          "state": Object {
-            "modal": true,
-          },
-          "text": "Upload New",
-        }
-      }
-      pageTitle="Document Management"
-      projectName=""
-      protocolButton={false}
-    >
-      <Connect(SearchBox) />
-    </withRouter(WithTheme(PageHeader))>
-    <FlexGrid
-      align="stretch"
-      circular={false}
-      container={true}
-      flex={true}
-      justify="stretch"
-      padding={0}
-      raised={true}
-      style={Object {}}
-      type="column"
-    >
-      <DocList
-        allSelected={false}
-        allowDropdown={false}
-        docCount={0}
-        documents={Array []}
-        onBulkAction={[Function]}
-        onChangePage={[MockFunction]}
-        onChangeRows={[MockFunction]}
-        onSelectAllFiles={[MockFunction]}
-        onSelectOneFile={[MockFunction]}
-        page={0}
-        rowsPerPage="10"
-      />
-    </FlexGrid>
-    <WithStyles(Modal)
-      hideOverflow={false}
-      id="bulkConfirmBox"
-      maxWidth="md"
-      onClose={[Function]}
-      open={false}
-    >
-      <ModalTitle
-        title=""
-      />
-      <WithStyles(Divider) />
-      <ModalContent
-        style={
-          Object {
-            "display": "flex",
-            "flexDirection": "column",
-            "height": 100,
-            "paddingTop": 24,
-            "width": 500,
-          }
-        }
-      >
-        <ProJurSearch
-          onClearSuggestions={[Function]}
-          onGetSuggestions={[Function]}
-          onSearchValueChange={[Function]}
-          onSuggestionSelected={[Function]}
-          showJurSearch={false}
-        />
-        <br />
-        <ConfirmDocList />
-      </ModalContent>
-      <WithStyles(Divider) />
-      <WithStyles(ModalActions)
-        actions={
-          Array [
-            Object {
-              "onClick": [Function],
-              "otherProps": Object {
-                "aria-label": "Close modal",
-              },
-              "preferred": true,
-              "type": "button",
-              "value": "Cancel",
-            },
-            Object {
-              "disabled": true,
-              "onClick": [Function],
-              "otherProps": Object {
-                "aria-label": "Confirm",
-                "id": "bulkConfirmBtn",
-              },
-              "type": "button",
-              "value": "Confirm",
-            },
-          ]
-        }
-      />
-    </WithStyles(Modal)>
-    <Route
-      component={[Function]}
-      path="/docs/upload"
+    <ApiErrorView
+      error=""
     />
   </FlexGrid>
-</Fragment>
+  <BulkModal
+    bulkType=""
+    buttonInfo={
+      Object {
+        "disabled": false,
+        "inProgress": undefined,
+      }
+    }
+    onClearSuggestions={[Function]}
+    onCloseModal={[Function]}
+    onConfirmAction={[Function]}
+    onGetSuggestions={[Function]}
+    onSearchValueChange={[Function]}
+    onSuggestionSelected={[Function]}
+    open={false}
+  />
+  <Route
+    component={[Function]}
+    path="/docs/upload"
+  />
+</FlexGrid>
 `;

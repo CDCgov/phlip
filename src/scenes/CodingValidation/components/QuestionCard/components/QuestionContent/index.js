@@ -21,7 +21,8 @@ export const QuestionContent = props => {
     question, comment, userAnswers, mergedUserQuestions, isValidation, disableAll,
     onChange, onChangeTextAnswer, onApplyAll, onOpenFlagConfirmAlert, userImages,
     onToggleAnnotationMode, enabledAnswerId, enabledUserId, annotationModeEnabled,
-    areDocsEmpty, classes, onToggleCoderAnnotations, isUserAnswerSelected, user
+    areDocsEmpty, classes, isUserAnswerSelected, user, onToggleViewAnnotations, onMouseInAnswerChoice,
+    onMouseOutAnswerChoice, hoveredAnswerChoice
   } = props
   
   const commonQuestionProps = {
@@ -36,9 +37,12 @@ export const QuestionContent = props => {
     enabledAnswerId,
     enabledUserId,
     annotationModeEnabled,
-    onToggleCoderAnnotations,
+    onToggleViewAnnotations,
     isUserAnswerSelected,
     isValidation,
+    onMouseInAnswerChoice,
+    onMouseOutAnswerChoice,
+    hoveredAnswerChoice,
     user
   }
   
@@ -56,17 +60,16 @@ export const QuestionContent = props => {
   }
   
   return (
-    <FlexGrid container flex justify="space-between">
+    <FlexGrid container flex justify="space-between" style={{ overflow: 'auto' }}>
       <FlexGrid
         container
         type="row"
-        padding={20}
         style={{ flexWrap: 'nowrap', overflow: 'auto', minHeight: '35%' }}>
-        <FlexGrid container>
+        <FlexGrid container padding="20px 0 0 20px">
           <Typography variant="subheading2" style={{ paddingRight: 10 }}>{question.number})</Typography>
         </FlexGrid>
-        <FlexGrid container flex style={{ overflow: 'auto' }}>
-          <FlexGrid container type="row" align="center" padding="0 0 10px">
+        <FlexGrid container flex padding="20px 0" style={{ overflow: 'auto' }}>
+          <FlexGrid container type="row" align="center">
             <Typography variant="body2" style={{ letterSpacing: 0 }}>
               {question.text}&nbsp;
             </Typography>
@@ -85,12 +88,9 @@ export const QuestionContent = props => {
               </Tooltip>
             </FlexGrid>}
           </FlexGrid>
-          <FlexGrid container flex padding="5px 0 0" style={{ overflow: 'auto', minHeight: 'unset', width: '100%' }}>
-            <FlexGrid container type="row">
-              {question.questionType !== questionTypes.TEXT_FIELD &&
-              <SelectionControlQuestion {...selectionFormProps} />}
-              {question.questionType === questionTypes.TEXT_FIELD && <TextFieldQuestions {...textQuestionProps} />}
-            </FlexGrid>
+          <FlexGrid container flex padding="5px 0 0" style={{ overflow: 'auto', width: '100%' }}>
+            {question.questionType !== questionTypes.TEXT_FIELD && <SelectionControlQuestion {...selectionFormProps} />}
+            {question.questionType === questionTypes.TEXT_FIELD && <TextFieldQuestions {...textQuestionProps} />}
             
             <FlexGrid container flex align="flex-start" padding="20px 10px 5px 1px" style={{ minHeight: 'unset' }}>
               {question.includeComment && <SimpleInput
@@ -100,7 +100,6 @@ export const QuestionContent = props => {
                 style={{ whiteSpace: 'pre-wrap' }}
                 placeholder="Enter comment"
                 value={comment}
-                rowsMax={3}
                 aria-label="Comment"
                 label="Comment"
                 disabled={disableAll}

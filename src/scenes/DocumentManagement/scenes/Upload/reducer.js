@@ -75,7 +75,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
           open: true,
           text: `The file name, project and jurisdiction properties for one or more of the documents selected for
         upload match a pre-existing document in the system. These documents have been indicated in the file list. You
-        can choose to remove them or click the 'Upload' button again to proceed with saving them.`,
+        can choose to remove the files or click the 'Upload' button again to proceed with saving them.`,
           title: 'Duplicates Found',
           type: 'basic'
         },
@@ -98,10 +98,16 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         selectedDocs: action.payload.merged
       }
       
+    case types.SET_INFO_REQUEST_IN_PROGRESS:
+      return {
+        ...state,
+        infoRequestInProgress: true
+      }
+      
     case types.EXTRACT_INFO_FAIL:
       return {
         ...state,
-        requestError: 'We failed to extract the metadata from Excel sheet. Please try again.',
+        requestError: 'We couldn\'t extract the metadata from Excel sheet. Please try again later.',
         infoRequestInProgress: false
       }
     
@@ -112,7 +118,8 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
           ...state.selectedDocs,
           ...action.payload
         ],
-        hasVerified: false
+        hasVerified: false,
+        infoRequestInProgress: false
       }
     
     // If the user has selected an excel file but has not selected documents to upload
@@ -142,7 +149,6 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.ADD_SELECTED_DOCS:
-      //  let invalidTypeFiles = [...state.invalidTypeFiles]
       return {
         ...state,
         selectedDocs: [

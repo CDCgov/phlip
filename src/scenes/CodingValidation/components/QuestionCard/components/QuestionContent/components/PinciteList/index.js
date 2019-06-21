@@ -157,6 +157,7 @@ export class PinciteList extends Component {
                       style={{
                         textAlign: 'left',
                         wordBreak: 'break-word',
+                        whiteSpace: 'pre',
                         color: theme.palette.greyText
                       }}>
                       {alwaysShow && <span style={{ color: theme.palette.secondary.main }}>Pincite: </span>}

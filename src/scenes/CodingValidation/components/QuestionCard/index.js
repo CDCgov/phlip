@@ -58,10 +58,12 @@ export class QuestionCard extends Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      isSaving: false
+      isSaving: false,
+      hoveredAnswerChoice: 0
     }
     
     this.alertActions = []
+    this.unsavedChangesTimeout = null
   }
   
   componentDidUpdate(prevProps) {
@@ -69,14 +71,30 @@ export class QuestionCard extends Component {
       this.setState({
         isSaving: true
       })
-      clearTimeout()
+      clearTimeout(this.unsavedChangesTimeout)
     } else if (prevProps.unsavedChanges && !this.props.unsavedChanges) {
-      setTimeout(() => {
+      this.unsavedChangesTimeout = setTimeout(() => {
         this.setState({
           isSaving: false
         })
       }, 600)
     }
+  }
+  
+  componentWillUnmount() {
+    clearTimeout(this.unsavedChangesTimeout)
+  }
+  
+  onMouseOutAnswerChoice = () => {
+    this.setState({
+      hoveredAnswerChoice: 0
+    })
+  }
+  
+  onMouseInAnswerChoice = answerId => {
+    this.setState({
+      hoveredAnswerChoice: answerId
+    })
   }
   
   /**
@@ -85,44 +103,44 @@ export class QuestionCard extends Component {
    * @returns {Function}
    */
   onChangeAnswer = id => (event, value) => {
-    const { question, userAnswers, annotationModeEnabled } = this.props
+    const { question, userAnswers, annotationModeEnabled, enabledAnswerId, actions } = this.props
+    let text = '', open = false
+  
     if (annotationModeEnabled) {
-      this.showDisableAnnoModeAlert()
+      actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
+    }
+    
+    if (question.questionType === questionTypes.CATEGORY) {
+      if (userAnswers.answers.hasOwnProperty(id)) {
+        open = true
+        text = 'Deselecting a category will remove answers, pincites and annotations associated with this category. Do you want to continue?'
+      }
     } else {
-      let text = '', open = false
+      text = 'Changing your answer will remove the pincites and annotations associated with this answer. Do you want to continue?'
       
-      if (question.questionType === questionTypes.CATEGORY) {
-        if (userAnswers.answers.hasOwnProperty(id)) {
-          open = true
-          text = 'Deselecting a category will remove any answers associated with this category. Do you want to continue?'
-        }
-      } else {
-        text = 'Changing your answer will remove any pincites and annotations associated with this answer. Do you want to continue?'
-        
-        if (question.questionType !== questionTypes.TEXT_FIELD) {
-          if (Object.keys(userAnswers.answers).length > 0) {
-            if (!userAnswers.answers.hasOwnProperty(id) &&
-              (question.questionType === questionTypes.MULTIPLE_CHOICE || question.questionType ===
-                questionTypes.BINARY)) {
-              open = true
-            } else if (userAnswers.answers.hasOwnProperty(id) && question.questionType === questionTypes.CHECKBOXES) {
-              open = true
-            }
+      if (question.questionType !== questionTypes.TEXT_FIELD) {
+        if (Object.keys(userAnswers.answers).length > 0) {
+          if (!userAnswers.answers.hasOwnProperty(id) &&
+            (question.questionType === questionTypes.MULTIPLE_CHOICE || question.questionType ===
+              questionTypes.BINARY)) {
+            open = true
+          } else if (userAnswers.answers.hasOwnProperty(id) && question.questionType === questionTypes.CHECKBOXES) {
+            open = true
           }
         }
       }
-      
-      if (open) {
-        this.props.actions.setAlert({
-          open: true,
-          type: 'changeAnswer',
-          title: 'Warning',
-          text,
-          data: { id, value }
-        })
-      } else {
-        this.props.onChange(id)(event, value)
-      }
+    }
+  
+    if (open) {
+      this.props.actions.setAlert({
+        open: true,
+        type: 'changeAnswer',
+        title: 'Warning',
+        text,
+        data: { id, value }
+      })
+    } else {
+      this.props.onChange(id)(event, value)
     }
   }
   
@@ -130,27 +148,18 @@ export class QuestionCard extends Component {
    * Shows an alert to confirm clearing answer
    */
   onClearAnswer = () => {
-    const { annotationModeEnabled, actions } = this.props
+    const { annotationModeEnabled, actions, question, enabledAnswerId } = this.props
     
     if (annotationModeEnabled) {
-      this.showDisableAnnoModeAlert()
-    } else {
-      actions.setAlert({
-        open: true,
-        title: 'Warning',
-        text: 'Clearing your answer will remove the selected answer choice, pincites and annotations associated with this answer. Do you want to continue?',
-        type: 'clearAnswer',
-        data: {}
-      })
+      actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
     }
-  }
-  
-  showDisableAnnoModeAlert = () => {
-    this.props.actions.setAlert({
+    
+    actions.setAlert({
       open: true,
-      title: 'Close Annotation Mode',
-      text: 'You are currently in annotation mode. To make changes to your answer or to change questions, please exit annotation mode by clicking the \'Done\' button.',
-      type: 'disableAnnoMode'
+      title: 'Warning',
+      text: 'Clearing your answer will remove the selected answer choice, pincites and annotations associated with this answer. Do you want to continue?',
+      type: 'clearAnswer',
+      data: {}
     })
   }
   
@@ -182,21 +191,18 @@ export class QuestionCard extends Component {
     const { annotationModeEnabled, question, enabledAnswerId, actions, onChangeCategory } = this.props
     
     if (annotationModeEnabled) {
-      this.showDisableAnnoModeAlert()
-    } else {
-      onChangeCategory(event, selection)
       actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
     }
+    onChangeCategory(event, selection)
   }
   
   onApplyAll = () => {
-    const { annotationModeEnabled, onOpenAlert } = this.props
+    const { annotationModeEnabled, onOpenAlert, actions, question, enabledAnswerId } = this.props
     
     if (annotationModeEnabled) {
-      this.showDisableAnnoModeAlert()
-    } else {
-      onOpenAlert()
+      actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
     }
+    onOpenAlert()
   }
   
   /**
@@ -215,14 +221,22 @@ export class QuestionCard extends Component {
   }
   
   /**
-   * Handles toggling on / off showing a coder's annotations
+   * Toggles showing annotations for an answer choice
+   * @param answerId
    */
-  onToggleCoderAnnotations = (id, userId, isUserAnswerSelected) => () => {
-    if (this.props.annotationModeEnabled) {
-      this.showDisableAnnoModeAlert()
-    } else {
-      this.props.actions.toggleCoderAnnotations(this.props.question.id, id, userId, isUserAnswerSelected)
+  onToggleViewAnnotations = answerId => () => {
+    const { question, actions, enabledAnswerId, annotationModeEnabled } = this.props
+    
+    if (annotationModeEnabled) {
+      actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
     }
+    
+    actions.toggleViewAnnotations(question.id, answerId)
+  }
+  
+  disableAnnotationMode = () => {
+    const { question, actions, enabledAnswerId } = this.props
+    actions.toggleAnnotationMode(question.id, enabledAnswerId, false)
   }
   
   render() {
@@ -249,12 +263,15 @@ export class QuestionCard extends Component {
       disableAll,
       userImages,
       onToggleAnnotationMode: this.onToggleAnnotationMode,
-      onToggleCoderAnnotations: this.onToggleCoderAnnotations,
+      onToggleViewAnnotations: this.onToggleViewAnnotations,
       isUserAnswerSelected,
       enabledAnswerId,
       enabledUserId,
       annotationModeEnabled,
-      areDocsEmpty
+      areDocsEmpty,
+      onMouseInAnswerChoice: this.onMouseInAnswerChoice,
+      onMouseOutAnswerChoice: this.onMouseOutAnswerChoice,
+      hoveredAnswerChoice: this.state.hoveredAnswerChoice
     }
     
     const { isSaving } = this.state
@@ -311,12 +328,11 @@ export class QuestionCard extends Component {
                     {!disableAll && <Broom className={styles.icon} aria-labelledby="Clear answer" />}
                   </IconButton>}
                   {!isValidation &&
-                  <FlexGrid onClick={annotationModeEnabled ? this.showDisableAnnoModeAlert : null}>
+                  <FlexGrid onClick={annotationModeEnabled ? this.disableAnnotationMode : null}>
                     <FlagPopover
                       userFlag={userAnswers.flag}
                       questionId={question.id}
                       onSaveFlag={onSaveFlag}
-                      annotationModeEnabled={annotationModeEnabled}
                       questionFlags={question.flags}
                       categoryId={selectedCategoryId}
                       user={user}
@@ -385,7 +401,6 @@ const mapStateToProps = (state, ownProps) => {
     annotationModeEnabled: docState.annotationModeEnabled,
     isUserAnswerSelected: docState.isUserAnswerSelected,
     areDocsEmpty: docState.showEmptyDocs,
-    showDisableAnnoMode: cardState.showDisableAnnoMode,
     alert: cardState.alert
   }
 }

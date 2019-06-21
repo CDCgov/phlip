@@ -15,13 +15,14 @@ const ProJurSearch = props => {
     onSearchValueChange,
     onSuggestionSelected,
     showProjectError,
-    showJurSearch
+    showJurSearch,
+    onMouseDown
   } = props
 
   return (
-    <FlexGrid container type="row" align="center">
+    <FlexGrid container type="row" align="center" onMouseDown={onMouseDown}>
       {!showJurSearch &&
-      <FlexGrid container flex type="row" align="flex-end">
+      <FlexGrid container flex type="row" align="flex-end" >
         <Icon style={{ paddingRight: 8, paddingBottom: 5 }}>dvr</Icon>
         <Autocomplete
           suggestions={projectSuggestions}
@@ -48,7 +49,7 @@ const ProJurSearch = props => {
         />
       </FlexGrid>}
       {showJurSearch &&
-      <FlexGrid container flex type="row" align="flex-end">
+      <FlexGrid container flex type="row" align="flex-end" >
         <Icon style={{ paddingRight: 8, paddingBottom: 5 }}>account_balance</Icon>
         <Autocomplete
           suggestions={jurisdictionSuggestions}
@@ -88,7 +89,8 @@ ProJurSearch.propTypes = {
   onProjectSelected: PropTypes.func,
   showProjectError: PropTypes.bool,
   onSuggestionSelected: PropTypes.func,
-  showJurSearch: PropTypes.bool
+  showJurSearch: PropTypes.bool,
+  onMouseDown: PropTypes.func
 }
 
 export default ProJurSearch

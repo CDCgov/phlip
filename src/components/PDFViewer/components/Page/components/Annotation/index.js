@@ -29,7 +29,13 @@ export class Annotation extends PureComponent {
   constructor(props, context) {
     super(props, context)
   }
-
+  
+  /**
+   * Generates a unique color based on a string
+   * @param userId
+   * @param name
+   * @returns {string}
+   */
   getColor = (userId, name) => {
     const str = `${name}:${userId}`
     let hash = 0
@@ -40,7 +46,12 @@ export class Annotation extends PureComponent {
     const c = (hash & 0x00FFFFFF).toString(16).toUpperCase()
     return `#${'00000'.substring(0, 6 - c.length) + c}`
   }
-
+  
+  /**
+   * Checks if it's the last node in the annotation
+   * @param rectIndex
+   * @returns {boolean}
+   */
   shouldShowActions = rectIndex => {
     const { annotation, pageNumber, pending, isClicked, annotationModeEnabled } = this.props
     return annotationModeEnabled
@@ -52,6 +63,9 @@ export class Annotation extends PureComponent {
       : false
   }
 
+  /*
+  * Transforms pdf points to work for the size and scale of the document
+   */
   getBounds = points => {
     const highlight = points
     const startPoint = dom_utils.applyTransform([highlight.x, highlight.y], this.props.transform)
@@ -120,7 +134,13 @@ export class Annotation extends PureComponent {
               userName={user.username}
             />
           </div>}
-          <div style={highlightStyle} onClick={() => pending ? null : handleClickAnnotation(index)} />
+          <div
+            {...{
+              style: highlightStyle,
+              ...(!pending && { id: `annotation-${annotation.sortPosition}-${j}` }),
+              onClick: () => pending ? null : handleClickAnnotation(index)
+            }}
+          />
           {this.shouldShowActions(j) &&
           <div key={`${key}-${index}-${j}-actions`} className="iconActions" style={iconLocation}>
             <IconButton

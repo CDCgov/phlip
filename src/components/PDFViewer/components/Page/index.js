@@ -16,7 +16,8 @@ export class Page extends Component {
       items: []
     },
     deleteAnnotationIndex: null,
-    showAvatars: false
+    showAvatars: false,
+    onFinishRendering: () => {}
   }
   
   static propTypes = {
@@ -38,7 +39,8 @@ export class Page extends Component {
     confirmRemoveAnnotation: PropTypes.func,
     showAvatars: PropTypes.bool,
     annotationModeEnabled: PropTypes.bool,
-    handleAnnoModeAlert: PropTypes.func
+    handleAnnoModeAlert: PropTypes.func,
+    onFinishRendering: PropTypes.func
   }
   
   constructor(props, context) {
@@ -62,13 +64,13 @@ export class Page extends Component {
   componentDidMount() {
     this.setCanvasSpecs()
   }
-  
+
   /**
    * User confirmed / saved pending annotation
    * @param index
    */
   onConfirmAnnotation = index => {
-    this.props.saveAnnotation(this.props.pendingAnnotations[index].mainListIndex)
+    this.props.saveAnnotation(index)
   }
   
   /**
@@ -76,7 +78,7 @@ export class Page extends Component {
    * @param index
    */
   onCancelAnnotation = index => {
-    this.props.cancelAnnotation(this.props.pendingAnnotations[index].mainListIndex)
+    this.props.cancelAnnotation(index)
   }
   
   /**
@@ -183,7 +185,7 @@ export class Page extends Component {
   render() {
     const {
       annotations, pendingAnnotations, pageRef, id, textContent, deleteAnnotationIndex,
-      showAvatars, annotationModeEnabled, allowSelection
+      showAvatars, annotationModeEnabled, allowSelection, onFinishRendering
     } = this.props
     
     const { readyToRenderText, canvasStyleSpecs, renderContext } = this.state
@@ -192,6 +194,8 @@ export class Page extends Component {
       height: Math.ceil(renderContext.viewport.height),
       width: Math.ceil(renderContext.viewport.width)
     }
+    
+    if (readyToRenderText && annotations.length === 0) onFinishRendering(id)
     
     return (
       <div
@@ -219,6 +223,8 @@ export class Page extends Component {
               const diffY = Math.abs(anno.rects[0].pdfPoints.y - annotation.rects[0].pdfPoints.y)
               return (diffX <= 10 && diffY <= 10)
             })
+            
+            if (i === annotations.length - 1) onFinishRendering(id)
             
             return (
               <Annotation
@@ -255,9 +261,7 @@ export class Page extends Component {
         </div>
         <div
           data-page-number={id}
-          className={classnames('textLayer', {
-            'textLayerNoAnno': !allowSelection
-          })}
+          className={classnames('textLayer', { 'textLayerNoAnno': !allowSelection })}
           id={`text-layer-page-${id}`}
           style={dims}>
           {readyToRenderText && textContent.items.map((textLine, i) => {

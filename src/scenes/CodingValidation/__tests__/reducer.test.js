@@ -863,7 +863,8 @@ describe('CodingValidation reducer', () => {
         annotation: {
           text: 'text annotation',
           rects: []
-        }
+        },
+        citation: '123-123'
       }
 
       const currentState = getState({ question: schemeById[1], userAnswers: { ...userAnswersCoded } })
@@ -877,6 +878,7 @@ describe('CodingValidation reducer', () => {
             ...userAnswersCoded[1].answers,
             123: {
               ...userAnswersCoded[1].answers[123],
+              pincite: `${userAnswersCoded[1].answers[123].pincite}; 123-123`,
               annotations: [{ text: 'text annotation', rects: [] }]
             }
           }
@@ -891,7 +893,8 @@ describe('CodingValidation reducer', () => {
         answerId: 432,
         annotation: {
           text: 'text annotation', rects: []
-        }
+        },
+        citation: '123-123'
       }
 
       const currentState = getState({
@@ -911,6 +914,7 @@ describe('CodingValidation reducer', () => {
             answers: {
               432: {
                 ...currentState.userAnswers[4][10].answers[432],
+                pincite: '123-123',
                 annotations: [{ text: 'text annotation', rects: [] }]
               }
             }
@@ -1028,28 +1032,6 @@ describe('CodingValidation reducer', () => {
 
     test('should set state.selectedCategoryId to state.categories[action.selection].id', () => {
       expect(state.selectedCategoryId).toEqual(10)
-    })
-  })
-
-  describe('ON_CHANGE_JURISDICTION', () => {
-    const action = {
-      type: types.ON_CHANGE_JURISDICTION,
-      index: 22
-    }
-
-    const currentState = getState()
-    const state = reducer(currentState, action)
-
-    test('should set state.jurisdictionIndex to action.index', () => {
-      expect(state.jurisdictionIndex).toEqual(22)
-    })
-
-    test('should set state.hasTouchedQuestion to false', () => {
-      expect(state.hasTouchedQuestion).toEqual(false)
-    })
-
-    test('should set state.questionChangeLoader to false', () => {
-      expect(state.questionChangeLoader).toEqual(false)
     })
   })
 
@@ -1617,8 +1599,8 @@ describe('CodingValidation reducer', () => {
     const currentState = getState()
     const state = reducer(currentState, action)
 
-    test('should set state.saveFlagErrorContent to "We couldn\'t save the red flag for this question."', () => {
-      expect(state.saveFlagErrorContent).toEqual('We couldn\'t save the red flag for this question.')
+    test('should set state.saveFlagErrorContent to "We couldn\'t save the flag for this question."', () => {
+      expect(state.saveFlagErrorContent).toEqual('We couldn\'t save the flag for this question.')
     })
 
     test('should set state.saveFailed to true', () => {

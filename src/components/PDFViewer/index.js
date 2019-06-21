@@ -20,17 +20,32 @@ export class PDFViewer extends Component {
     showAvatars: PropTypes.bool,
     annotationModeEnabled: PropTypes.bool,
     showAnnoModeAlert: PropTypes.bool,
-    onHideAnnoModeAlert: PropTypes.func
+    onHideAnnoModeAlert: PropTypes.func,
+    changeAnnotationIndex: PropTypes.func,
+    currentAnnotationIndex: PropTypes.number,
+    scrollTop: PropTypes.bool,
+    resetScrollTop: PropTypes.func,
+    isView: PropTypes.bool,
+    isValidation: PropTypes.bool,
+    annotationUsers: PropTypes.array,
+    toggleCoderAnnotations: PropTypes.func,
+    onFinishRendering: PropTypes.func
   }
   
   static defaultProps = {
     annotations: [],
     document: {},
     allowSelection: false,
+    showAvatars: false,
+    showAnnoModeAlert: true,
+    currentAnnotationIndex: 0,
+    scrollTop: false,
+    isView: false,
     onCheckTextContent: () => {
     },
-    showAvatars: false,
-    showAnnoModeAlert: true
+    resetScrollTop: () => {
+    },
+    onFinishRendering: () => {}
   }
   
   constructor(props, context) {
@@ -46,13 +61,17 @@ export class PDFViewer extends Component {
       annoModeAlert: {
         open: false,
         dontShowAgain: false
-      }
+      },
+      initialRender: false
     }
   }
   
   componentDidMount() {
     if (this.props.document.content.data) {
       this.createPdf(this.props.document)
+      this.setState({
+        initialRender: true
+      })
     }
   }
   
@@ -63,7 +82,9 @@ export class PDFViewer extends Component {
     
     if (prevProps.allowSelection && !this.props.allowSelection) {
       this.setState({
-        pendingAnnotations: []
+        pendingAnnotations: [],
+        deleteAnnotationIndexes: {},
+        deleteIndex: null
       })
     }
   }
@@ -410,7 +431,7 @@ export class PDFViewer extends Component {
   }
   
   /**
-   *
+   * Sets not showing annotation mode alert for the remainder of the app session
    */
   handleToggleDontShowAgain = () => {
     this.setState({
@@ -419,6 +440,24 @@ export class PDFViewer extends Component {
         dontShowAgain: !this.state.annoModeAlert.dontShowAgain
       }
     })
+  }
+  
+  /**
+   * Handles scrolling to top of on initial render
+   * @param pageNum
+   */
+  onFinishRendering = pageNum => {
+    if (this.state.initialRender) {
+      if (pageNum === this.state.pages.length - 1) {
+        setTimeout(() => {
+          this.setState({
+            initialRender: false
+          })
+          this.props.onFinishRendering()
+          clearTimeout()
+        }, 1000)
+      }
+    }
   }
   
   render() {
@@ -430,7 +469,7 @@ export class PDFViewer extends Component {
     ]
     
     return (
-      <div id="viewContainer" className="pdfViewer" ref={this.viewerRef}>
+      <div id="viewContainer" className="pdfViewer" style={{ position: 'relative' }} ref={this.viewerRef}>
         {pages.length > 0 && pages.map((page, i) => {
           const annotationsByPage = this.filterAnnosByPage(annotations, i)
           const pendingByPage = this.filterAnnosByPage(pendingAnnotations, i)
@@ -459,6 +498,7 @@ export class PDFViewer extends Component {
               handleAnnoModeAlert={this.handleAnnoModeAlert}
               confirmRemoveAnnotation={this.confirmRemoveAnnotation}
               showAvatars={showAvatars}
+              onFinishRendering={this.onFinishRendering}
               deleteAnnotationIndex={(Object.keys(deleteAnnotationIndexes).length > 0 &&
                 deleteAnnotationIndexes.hasOwnProperty(i))
                 ? deleteAnnotationIndexes[i]
@@ -482,10 +522,9 @@ export class PDFViewer extends Component {
           title="Are you trying to annotate?"
           closeButton={{ value: 'Dismiss' }}>
           <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-            If you are trying to annotate, you need to enable annotation mode for a selected answer choice. You can enable
-            annotation mode by clicking the 'Annotate' button next to an answer choice.
+            Hover over an answer choice and click the 'Pencil' icon button to annotate.
           </Typography>
-          
+          <Typography style={{ paddingBottom: 20 }} />
           <CheckboxLabel
             input={{ value: annoModeAlert.dontShowAgain, onChange: this.handleToggleDontShowAgain }}
             label="Don't show me this message again."

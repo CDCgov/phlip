@@ -300,14 +300,18 @@ export class CodingScheme extends Component {
      */
     let lockedAlertAction = []
     if (this.props.currentUser.role === 'Admin') {
-      lockedAlertAction.push({ value: 'Release lock', type: 'button', onClick: this.overrideLock })
+      lockedAlertAction.push({ value: 'Unlock', type: 'button', onClick: this.overrideLock })
     }
     
     return (
       <FlexGrid container flex padding="12px 20px 20px 20px">
-        <Alert open={this.state.goBackAlertOpen} onCloseAlert={this.onCloseGoBackAlert} actions={alertActions}>
+        <Alert
+          open={this.state.goBackAlertOpen}
+          onCloseAlert={this.onCloseGoBackAlert}
+          title="You have checked out the coding scheme."
+          actions={alertActions}>
           <Typography variant="body1">
-            You have checked out the coding scheme. No one else can make edits until you check it in.
+            No one else can make edits until you check it in.
           </Typography>
         </Alert>
         <Alert
@@ -335,7 +339,8 @@ export class CodingScheme extends Component {
             </>
           }>
           <Typography variant="body1">
-            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} checked out the coding scheme. You are unable to make changes.
+            {`${this.props.lockInfo.firstName} ${this.props.lockInfo.lastName} `} is editing the coding scheme. You are unable to edit until they save their changes.
+            {this.props.currentUser.role === 'Admin' && ' Select \'Unlock\' to terminate their editing session.'}
           </Typography>
         </Alert>
         <PageHeader

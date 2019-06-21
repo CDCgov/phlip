@@ -1,46 +1,49 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
-import { InputBox, FlexGrid, Button } from 'components'
-import { shouldShowAnnotationStyles } from '../SelectionControlQuestion'
+import { InputBox, FlexGrid } from 'components'
+import { shouldShowAnnotationStyles, checkForAnnotations } from '../SelectionControlQuestion'
+import AnnotationControls from '../AnnotationControls'
 import PinciteTextField from '../PinciteTextField'
 import PinciteList from '../PinciteList'
-import theme from 'services/theme'
-import AvatarList from '../AvatarList'
+import CodingValidationAvatar from '../CodingValidationAvatar'
 
 export const TextFieldQuestion = props => {
   const {
     mergedUserQuestions, userAnswers, areDocsEmpty, onChange, answerId, userImages, disableAll,
-    onToggleAnnotationMode, enabledAnswerId, annotationModeEnabled, isUserAnswerSelected, enabledUserId,
-    onToggleCoderAnnotations, user
+    onToggleAnnotationMode, enabledAnswerId, annotationModeEnabled, user, onToggleViewAnnotations,
+    onMouseInAnswerChoice, onMouseOutAnswerChoice, hoveredAnswerChoice
   } = props
   
   const isValidation = mergedUserQuestions !== null
   const isAnswered = userAnswers.answers.hasOwnProperty(answerId)
   const value = !isAnswered ? '' : userAnswers.answers[answerId].textAnswer
-  const validatedBy = isValidation ? userAnswers.validatedBy : {}
-  const showAnno = shouldShowAnnotationStyles(enabledAnswerId, annotationModeEnabled)(answerId)
+  const showAnnoMode = shouldShowAnnotationStyles(enabledAnswerId, annotationModeEnabled)(answerId)
+  const viewModeEnabled = !annotationModeEnabled && enabledAnswerId === answerId
+  const userId = isValidation
+    ? userAnswers.validatedBy.userId
+      ? userAnswers.validatedBy.userId
+      : user.id
+    : user.id
+  
+  const userHasAnnotations = !isAnswered ? false : userAnswers.answers[answerId].annotations.length > 0
   
   return (
-    <FlexGrid container flex>
+    <FlexGrid
+      container
+      flex
+      type={isValidation ? 'column' : 'row'}
+      style={{ minHeight: 'unset', paddingTop: isValidation ? 15 : 0 }}>
       {isValidation && mergedUserQuestions.answers.map(answer =>
-        <FlexGrid container type="row" padding="0 15px 15px" key={answer.id}>
-          <FlexGrid container type="row" align="flex-start" padding="0 25px 0 0">
-            <AvatarList
-              showAllAvatar={false}
-              userImages={userImages}
-              answerList={[answer]}
-              handleClickAvatar={onToggleCoderAnnotations}
-              enabledAnswerId={enabledAnswerId}
-              enabledUserId={enabledUserId}
-              isUserAnswerSelected={isUserAnswerSelected}
-              answerId={answerId}
-            />
+        <FlexGrid container type="row" padding="0 10px 15px 5px" key={answer.id}>
+          <FlexGrid container type="row" align="flex-start" padding="0 20px 0 0">
+            <CodingValidationAvatar user={userImages[answer.userId]} enabled={false} />
           </FlexGrid>
           <FlexGrid container justify="flex-start">
             <Typography
-              style={{ whiteSpace: 'pre-wrap', paddingBottom: 15 }}
-              variant="body1">{answer.textAnswer}</Typography>
+              style={{ whiteSpace: 'pre-wrap', paddingBottom: 10 }}
+              variant="body1">{answer.textAnswer}
+            </Typography>
             <FlexGrid container type="row" align="center">
               <PinciteList alwaysShow showAvatar={false} answerList={[answer]} userImages={userImages} />
             </FlexGrid>
@@ -49,33 +52,22 @@ export const TextFieldQuestion = props => {
       <FlexGrid
         container
         type="row"
-        padding="5px 15px 10px"
-        style={{ backgroundColor: showAnno ? '#e6f8ff' : 'white', marginRight: 10 }}>
-        {isAnswered &&
-        <FlexGrid
-          container
-          type="row"
-          align="flex-start"
-          padding="0 25px 0 0">
-          <AvatarList
-            userImages={userImages}
-            answerList={[
-              {
-                ...userAnswers.answers[answerId],
-                isUserAnswer: true,
-                isValidatorAnswer: isValidation,
-                userId: user.id,
-                ...validatedBy
-              }
-            ]}
-            handleClickAvatar={onToggleCoderAnnotations}
-            enabledAnswerId={enabledAnswerId}
-            enabledUserId={enabledUserId}
-            isUserAnswerSelected={isUserAnswerSelected}
-            answerId={answerId}
-            showAllAvatar={false}
-            layered={false}
-          />
+        flex
+        align="flex-start"
+        padding="15px 10px 15px 5px"
+        onMouseEnter={() => onMouseInAnswerChoice(answerId)}
+        onMouseLeave={() => onMouseOutAnswerChoice(answerId)}
+        style={{
+          backgroundColor: (showAnnoMode || viewModeEnabled)
+            ? '#e6f8ff'
+            : hoveredAnswerChoice === answerId
+              ? '#f5f5f5'
+              : 'white',
+          marginRight: 10
+        }}>
+        {(isAnswered && isValidation) &&
+        <FlexGrid container type="row" align="flex-start" padding="0 20px 0 0">
+          <CodingValidationAvatar enabled={false} isValidator user={userImages[userId]} />
         </FlexGrid>}
         <FlexGrid container justify="flex-start" flex>
           <InputBox
@@ -86,29 +78,34 @@ export const TextFieldQuestion = props => {
             disabled={disableAll}
             name="text-answer"
           />
-          {isAnswered && !areDocsEmpty &&
-          <Button
-            style={{
-              alignSelf: 'flex-start',
-              backgroundColor: showAnno ? theme.palette.error.main : 'white',
-              color: showAnno ? 'white' : 'black',
-              margin: '20px 0 10px',
-              height: 32,
-              maxHeight: 32,
-              minHeight: 'unset',
-              lineHeight: 'unset'
-            }}
-            disableRipple
-            onClick={onToggleAnnotationMode(answerId)}>
-            {showAnno ? 'Done' : 'Annotate'}
-          </Button>}
           {isAnswered &&
           <PinciteTextField
             schemeAnswerId={answerId}
             pinciteValue={userAnswers.answers[answerId].pincite}
             handleChangePincite={onChange}
             disabled={disableAll}
-            style={{ paddingTop: 5 }}
+            style={{ marginTop: 10, paddingBottom: 5 }}
+          />}
+        </FlexGrid>
+        <FlexGrid
+          container
+          padding="0 5px"
+          align="center"
+          justify="center"
+          style={{ minWidth: 40, marginLeft: 10 }}>
+          {(!areDocsEmpty && (hoveredAnswerChoice === answerId || showAnnoMode || viewModeEnabled)) &&
+          <AnnotationControls
+            onToggleViewAnnotations={onToggleViewAnnotations}
+            onToggleAnnotationMode={onToggleAnnotationMode}
+            answerId={answerId}
+            showAnnoModeButton={isAnswered}
+            viewEnabled={viewModeEnabled}
+            annoModeEnabled={showAnnoMode}
+            annoModeButtonDisabled={!isAnswered}
+            viewButtonDisabled={isValidation
+              ? !checkForAnnotations(mergedUserQuestions.answers, userHasAnnotations)
+              : !userHasAnnotations
+            }
           />}
         </FlexGrid>
       </FlexGrid>
@@ -166,21 +163,25 @@ TextFieldQuestion.propTypes = {
    */
   disableAll: PropTypes.bool,
   /**
-   * The id of the user selected for showing annotations
-   */
-  enabledUserId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  /**
-   * whether or not the user selected is the validator
-   */
-  isUserAnswerSelected: PropTypes.bool,
-  /**
-   * Function to handle the toggle of showing a user's annotations
-   */
-  onToggleCoderAnnotations: PropTypes.func,
-  /**
    * Current logged in user
    */
-  user: PropTypes.object
+  user: PropTypes.object,
+  /**
+   * Toggle view annotations
+   */
+  onToggleViewAnnotations: PropTypes.func,
+  /**
+   * When the mouse enters the answer choice area
+   */
+  onMouseInAnswerChoice: PropTypes.func,
+  /**
+   * When the mouse leaves the answer choice area
+   */
+  onMouseOutAnswerChoice: PropTypes.func,
+  /**
+   * Which answer choice is currently being hovered on
+   */
+  hoveredAnswerChoice: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 }
 
 export default TextFieldQuestion
