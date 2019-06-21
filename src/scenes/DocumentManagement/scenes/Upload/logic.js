@@ -270,32 +270,23 @@ export const getFileType = doc => {
 
 /**
  * check for duplicated documents that selected for upload
- * @param selectedDocs
+ * @param uploadDocs
+ * @param documents
  * @returns {Promise<any>}
  */
-export const checkDocsDup = (uploadDocs,getState) => {
-  const masterDocs = getState().scenes.docManage.main.list.documents.byId // get master list of docs
+export const checkDocsDup = (uploadDocs, documents) => {
   let matchedDocs = []
-  let matchedName = []
-  // extract list of name for first round check and also reduce the number of rows for sub sequence tests
-  let nameList = uploadDocs.map(doc => {
-    return doc.name
-  })
-  for (let el of Object.keys(masterDocs)) {
-    let nameMatchIdx = nameList.indexOf(masterDocs[el].name)
-    if (nameMatchIdx !== -1) { // matched one of the doc's name
-      matchedName.push(el)
-    }
-  }
-  uploadDocs.map(doc => {
-    for (let el of matchedName) {
-      if (
-        (masterDocs[el].jurisdictions.indexOf(doc.jurisdictions[0]) !== -1) &&
-            (masterDocs[el].projects.indexOf(doc.projects[0]) !== -1)) {
-        matchedDocs.push(masterDocs[el])
+  
+  for (const doc of Object.values(documents)) {
+    const matchedName = uploadDocs.find(upDoc => upDoc.name === doc.name)
+    if (matchedName !== undefined) {
+      if (doc.jurisdictions.indexOf(matchedName.jurisdictions[0]) !== -1 &&
+        doc.projects.indexOf(matchedName.projects[0]) !== -1) {
+        matchedDocs.push(matchedName)
       }
     }
-  })
+  }
+  
   return matchedDocs
 }
 
