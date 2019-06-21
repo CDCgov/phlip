@@ -103,16 +103,17 @@ const upload = (docApi, action, dispatch, state, user) => {
       formData.append('files', file, doc.name)
       formData.append('metadata', JSON.stringify({ [doc.name]: otherProps }))
       
-      let docProps = {}
+      let docProps = {}, uploadFail = false
       
       try {
         const uploadedDoc = await docApi.upload(formData)
         const { content, ...otherDocProps } = uploadedDoc.files[0]
-        docProps = otherDocProps
+        docProps = { ...otherDocProps, uploadedByName: `${user.firstName} ${user.lastName}` }
       } catch (err) {
-        failed.push({ ...doc, failed: true })
+        failed.push(doc.name)
+        uploadFail = true
       }
-      dispatch({ type: types.UPLOAD_ONE_DOC_COMPLETE, payload: { doc: docProps, index } })
+      dispatch({ type: types.UPLOAD_ONE_DOC_COMPLETE, payload: { doc: docProps, index, failed: uploadFail } })
     }
     resolve({ failed })
   })
