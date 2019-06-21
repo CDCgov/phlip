@@ -408,7 +408,7 @@ export class Upload extends Component {
                 ? !uploadProgress.failures
                   ? 'All documents successfully uploaded!'
                   : 'Some of the documents failed to upload. They are still present in the list if you want to retry.'
-                : `Uploading document ${uploadProgress.index + 1} out of ${uploadProgress.total}.`
+                : `Uploading document ${uploadProgress.index + 1} out of ${uploadProgress.total}`
               }
             </span>}
             {!uploading && <CircularLoader type="indeterminate" />}

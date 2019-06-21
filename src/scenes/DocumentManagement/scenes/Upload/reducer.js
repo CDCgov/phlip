@@ -53,7 +53,8 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         ...state,
         uploadProgress: {
           ...state.uploadProgress,
-          index: state.uploadProgress.index + 1
+          index: state.uploadProgress.index + 1,
+          failed: action.payload.failed
         }
       }
     
@@ -68,9 +69,12 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
       }
     
     case types.UPLOAD_DOCUMENTS_FINISH_WITH_FAILS:
+      docs = [...state.selectedDocs]
+      const d = docs.filter(doc => action.payload.failed.includes(doc.name.value))
+      
       return {
         ...state,
-        selectedDocs: action.payload.failed,
+        selectedDocs: [...d],
         requestError: action.payload.error,
         uploadProgress: {
           ...state.uploadProgress,
@@ -82,6 +86,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         requestError: null,
+        uploading: false,
         uploadProgress: {
           index: 0,
           failures: false,
