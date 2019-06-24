@@ -352,22 +352,21 @@ const uploadRequestLogic = createLogic({
       })
     } else if (Object.keys(selectedJurisdiction).length === 0) {
       const noJurs = state.list.selectedDocs.filter(doc => {
-        if (!jurs.hasOwnProperty(doc.jurisdictions.value.id)) {
+        
+        if (doc.jurisdictions.value.hasOwnProperty('id') && !jurs.hasOwnProperty(doc.jurisdictions.value.id)) {
           jurs[doc.jurisdictions.value.id] = doc.jurisdictions.value
         }
-        return doc.jurisdictions.value.name.length === 0
+        
+        return !doc.jurisdictions.value.hasOwnProperty('id') || !doc.jurisdictions.value.id
       })
-      const noJurIds = state.list.selectedDocs.filter(doc => !doc.jurisdictions.value.hasOwnProperty('id') ||
-        !doc.jurisdictions.value.id)
-      if (noJurs.length === 0 && noJurIds.length === 0) {
+      
+      if (noJurs.length === 0) {
         allow({ ...action, jurisdictions: Object.values(jurs) })
       } else {
         reject({
           type: types.REJECT_EMPTY_JURISDICTIONS,
-          error: noJurs.length > 0
-            ? 'You must select a jurisdiction from the drop-down list.'
-            : 'You must select a jurisdiction from the autocomplete list for each document.',
-          invalidDocs: noJurs.length > 0 ? noJurs : noJurIds
+          error: 'You must select a jurisdiction from the drop-down list at the top to apply to all files or select a jurisdiction from the drop-down list for each file.',
+          invalidDocs: noJurs
         })
       }
     } else {

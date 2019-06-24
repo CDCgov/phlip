@@ -1,6 +1,7 @@
 import { INITIAL_STATE, uploadReducer as reducer } from '../reducer'
 import { types } from '../actions'
 import { types as autocompleteTypes } from 'data/autocomplete/actions'
+import { selectedDocs } from 'utils/testData/upload'
 
 const initial = INITIAL_STATE
 
@@ -248,6 +249,22 @@ describe('Document Management - Upload reducer tests', () => {
     })
   })
   
+  describe('EXTRACT_INFO_FAIL', () => {
+    const action = { type: types.EXTRACT_INFO_FAIL }
+    const currentState = getState({
+      infoRequestInProgress: true
+    })
+    const state = reducer(currentState, action)
+    
+    test('should show an error to the user', () => {
+      expect(state.requestError).toEqual('We couldn\'t extract the metadata from Excel sheet. Please try again later.')
+    })
+    
+    test('should indicate the request has finished', () => {
+      expect(state.infoRequestInProgress).toEqual(false)
+    })
+  })
+  
   describe('MERGE_INFO_WITH_DOCS', () => {
     const action = {
       type: types.MERGE_INFO_WITH_DOCS,
@@ -429,6 +446,26 @@ describe('Document Management - Upload reducer tests', () => {
         { name: 'doc4' }
       ])
     })
+    
+    test('should set if the documents have been verified', () => {
+      const action = {
+        type: types.REMOVE_DOC,
+        index: 2
+      }
+      
+      const currentState = getState({
+        selectedDocs: [
+          { name: 'doc1' },
+          { name: 'doc2' },
+          { name: 'doc3' },
+          { name: 'doc4' }
+        ],
+        hasVerified: true
+      })
+      
+      const state = reducer(currentState, action)
+      expect(state.hasVerified).toEqual(true)
+    })
   })
   
   describe('TOGGLE_ROW_EDIT_MODE', () => {
@@ -454,24 +491,38 @@ describe('Document Management - Upload reducer tests', () => {
   })
   
   describe('CLOSE_ALERT', () => {
+    const action = {
+      type: types.CLOSE_ALERT
+    }
+  
+    const currentState = getState({
+      alert: {
+        open: true,
+        text: 'alert text',
+        title: 'alert title',
+        type: 'blerp'
+      },
+      selectedDocs,
+      invalidFiles: [
+        { name: 'Children and Minors Motor Vehicles Communication.pdf' },
+        { name: 'North Carolina Register, Aug. 2018.pdf' }
+      ]
+    })
+  
+    const updatedState = reducer(currentState, action)
+    
     test('should reset state.alertOpen, state.alertText and state.alertTitle', () => {
-      const action = {
-        type: types.CLOSE_ALERT
-      }
-      
-      const currentState = getState({
-        alert: {
-          open: true,
-          text: 'alert text',
-          title: 'alert title',
-          type: 'blerp'
-        }
-      })
-      const updatedState = reducer(currentState, action)
       expect(updatedState.alert.open).toEqual(false)
       expect(updatedState.alert.title).toEqual('')
       expect(updatedState.alert.text).toEqual('')
       expect(updatedState.alert.type).toEqual('basic')
+    })
+    
+    test('should clear out invalid documents from the list', () => {
+      expect(updatedState.selectedDocs).toEqual([
+        selectedDocs[2],
+        selectedDocs[3]
+      ])
     })
   })
   
@@ -484,22 +535,30 @@ describe('Document Management - Upload reducer tests', () => {
     }
     
     const currentState = getState()
-    const updatedState = reducer(currentState, action)
     
     test('should set state.alert.open to true', () => {
+      const updatedState = reducer(currentState, action)
       expect(updatedState.alert.open).toEqual(true)
     })
     
     test('should set state.alert.title to action.title', () => {
+      const updatedState = reducer(currentState, action)
       expect(updatedState.alert.title).toEqual('alert title')
     })
     
     test('should set state.alert.text to action.text', () => {
+      const updatedState = reducer(currentState, action)
       expect(updatedState.alert.text).toEqual('alert text')
     })
     
     test('should set state.alert.type to action.alertType', () => {
+      const updatedState = reducer(currentState, action)
       expect(updatedState.alert.type).toEqual('invalidFiles')
+    })
+    
+    test('should set title to empty if none in action', () => {
+      const updatedState = reducer(currentState, { ...action, title: undefined })
+      expect(updatedState.alert.title).toEqual('')
     })
   })
   
@@ -645,6 +704,42 @@ describe('Document Management - Upload reducer tests', () => {
     })
   })
   
+  describe('INVALID_FILES_FOUND', () => {
+    const action = {
+      type: types.INVALID_FILES_FOUND,
+      invalidFiles: [{ name: 'inv' }, { name: 'belp' }],
+      title: 'Invalid Files Found',
+      text: 'invalid files found'
+    }
+    
+    const currentState = getState({
+      uploading: true,
+      hasVerified: true
+    })
+    const state = reducer(currentState, action)
+    
+    test('should set that files haven\'t been verified', () => {
+      expect(state.hasVerified).toEqual(false)
+    })
+    
+    test('should set uploading has stopped', () => {
+      expect(state.uploading).toEqual(false)
+    })
+    
+    test('should set invalid files', () => {
+      expect(state.invalidFiles).toEqual([{ name: 'inv' }, { name: 'belp' }])
+    })
+    
+    test('should open alert', () => {
+      expect(state.alert).toEqual({
+        open: true,
+        title: 'Invalid Files Found',
+        text: 'invalid files found',
+        type: 'files'
+      })
+    })
+  })
+  
   describe('CLEAR_SELECTED_FILES', () => {
     const action = {
       type: types.CLEAR_SELECTED_FILES
@@ -772,5 +867,22 @@ describe('Document Management - Upload reducer tests', () => {
         expect(updatedState.selectedDocs[1].jurisdictions.editable).toEqual(true)
       }
     )
+    
+    test('should just return current jurisdictions if the search value isn\'t empty', () => {
+      const action = {
+        type: `${autocompleteTypes.UPDATE_SEARCH_VALUE}_JURISDICTION`,
+        value: 'blep'
+      }
+      
+      const currentState = getState({
+        selectedDocs: [
+          { name: 'doc 1', jurisdictions: { value: { name: 'Ohio (state)', id: 123 } } },
+          { name: 'doc 2', jurisdictions: { value: { name: 'Ohio (state)', id: 123 } } }
+        ]
+      })
+      
+      const updatedState = reducer(currentState, action)
+      expect(updatedState).toEqual(currentState)
+    })
   })
 })

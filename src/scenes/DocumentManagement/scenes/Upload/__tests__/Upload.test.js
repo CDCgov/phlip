@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 import { Upload } from '../index'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import { CircularLoader } from 'components'
-import { selectedDocs } from 'utils/testData/upload'
+import { selectedDocs, arrOfDocsTransport } from 'utils/testData/upload'
 
 const props = {
   selectedDocs: [],
@@ -260,41 +260,10 @@ describe('Document Management - Upload scene', () => {
       />
     )
     
-    const arrOfDocs = [
-      {
-        name: 'Children and Minors Motor Vehicles Communication.pdf',
-        citation: '',
-        effectiveDate: '',
-        jurisdictions: [1],
-        projects: [4]
-      },
-      {
-        name: 'North Carolina Register, Aug. 2018.pdf',
-        citation: '',
-        effectiveDate: '',
-        jurisdictions: [2],
-        projects: [4]
-      },
-      {
-        name: 'OAC 3701-52-04 eff. 5-3-07.pdf',
-        citation: '',
-        effectiveDate: '',
-        jurisdictions: [3],
-        projects: [4]
-      },
-      {
-        name: 'Ohio - combined PDF.pdf',
-        citation: '',
-        effectiveDate: '',
-        jurisdictions: [4],
-        projects: [4]
-      }
-    ]
-    
     test('should create an array of all documents correctly formed', () => {
       const spy = jest.spyOn(props.actions, 'uploadDocumentsStart')
       wrapper.find('WithStyles(ModalActions)').prop('actions')[1].onClick()
-      expect(spy).toHaveBeenCalledWith(arrOfDocs)
+      expect(spy).toHaveBeenCalledWith(arrOfDocsTransport)
     })
     
     test('should send a request to upload documents', () => {
@@ -310,7 +279,7 @@ describe('Document Management - Upload scene', () => {
       })
       
       wrapper.find('WithStyles(ModalActions)').prop('actions')[1].onClick()
-      const globalJur = arrOfDocs.map(doc => ({
+      const globalJur = arrOfDocsTransport.map(doc => ({
         ...doc,
         jurisdictions: [20]
       }))

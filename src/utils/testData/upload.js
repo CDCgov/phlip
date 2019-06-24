@@ -148,6 +148,37 @@ export const selectedDocs = [
   }
 ]
 
+export const arrOfDocsTransport = [
+  {
+    name: 'Children and Minors Motor Vehicles Communication.pdf',
+    citation: '',
+    effectiveDate: '',
+    jurisdictions: [1],
+    projects: [4]
+  },
+  {
+    name: 'North Carolina Register, Aug. 2018.pdf',
+    citation: '',
+    effectiveDate: '',
+    jurisdictions: [2],
+    projects: [4]
+  },
+  {
+    name: 'OAC 3701-52-04 eff. 5-3-07.pdf',
+    citation: '',
+    effectiveDate: '',
+    jurisdictions: [3],
+    projects: [4]
+  },
+  {
+    name: 'Ohio - combined PDF.pdf',
+    citation: '',
+    effectiveDate: '',
+    jurisdictions: [4],
+    projects: [4]
+  }
+]
+
 export const selectedWithDup = [
   ...selectedDocs,
   {
