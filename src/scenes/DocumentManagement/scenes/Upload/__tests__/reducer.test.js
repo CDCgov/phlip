@@ -104,6 +104,40 @@ describe('Document Management - Upload reducer tests', () => {
     })
   })
   
+  describe('ACKNOWLEDGE_UPLOAD_FAILURES', () => {
+    const action = {
+      type: types.ACKNOWLEDGE_UPLOAD_FAILURES
+    }
+    
+    const currentState = getState({
+      uploading: true,
+      uploadProgress: {
+        index: 7,
+        total: 7,
+        failures: true
+      },
+      requestError: 'blep'
+    })
+    
+    const state = reducer(currentState, action)
+    
+    test('should reset the request error', () => {
+      expect(state.requestError).toEqual(null)
+    })
+    
+    test('should reset uploading', () => {
+      expect(state.uploading).toEqual(false)
+    })
+    
+    test('should reset upload progress', () => {
+      expect(state.uploadProgress).toEqual({
+        index: 0,
+        failures: false,
+        total: 0
+      })
+    })
+  })
+  
   describe('VERIFY_RETURN_DUPLICATE_FILES', () => {
     const action = {
       type: types.VERIFY_RETURN_DUPLICATE_FILES,

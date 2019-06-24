@@ -31,10 +31,6 @@ export class Upload extends Component {
      */
     uploading: PropTypes.bool,
     /**
-     * If the verifying request is in progress
-     */
-    verifying: PropTypes.bool,
-    /**
      * Alert information
      */
     alert: PropTypes.shape({
@@ -59,21 +55,65 @@ export class Upload extends Component {
      * Redux actions
      */
     actions: PropTypes.object,
+    /**
+     * From withFormAlert HOC
+     */
     onSubmitError: PropTypes.func,
+    /**
+     * Whether or not to close the modal and go back
+     */
     goBack: PropTypes.bool,
+    /**
+     * Whether or not extracting info in progress
+     */
     infoRequestInProgress: PropTypes.bool,
+    /**
+     * Browser history
+     */
     history: PropTypes.object,
+    /**
+     * Whether or not an excel sheet has been selected
+     */
     infoSheetSelected: PropTypes.bool,
+    /**
+     * Selected global jurisdiction if any
+     */
     selectedJurisdiction: PropTypes.object,
+    /**
+     * Selected global project if any
+     */
     selectedProject: PropTypes.object,
+    /**
+     * List of autocomplete jurisdiction suggestions
+     */
     jurisdictionSuggestions: PropTypes.array,
+    /**
+     * List of autocomplete project suggestions
+     */
     projectSuggestions: PropTypes.array,
+    /**
+     * Search value for jurisdiction autocomplete
+     */
     jurisdictionSearchValue: PropTypes.string,
+    /**
+     * Search value for project autocomplete
+     */
     projectSearchValue: PropTypes.string,
+    /**
+     * Null or true if the no project error should be shown
+     */
     noProjectError: PropTypes.any,
+    /**
+     * Actual excel file data if any
+     */
     infoSheet: PropTypes.object,
+    /**
+     * List of invalid files the user tried to upload
+     */
     invalidFiles: PropTypes.array,
-    title: PropTypes.string,
+    /**
+     * Progress for uploading
+     */
     uploadProgress: PropTypes.object
   }
   
@@ -92,9 +132,11 @@ export class Upload extends Component {
   }
   
   componentDidUpdate(prevProps) {
-    if (prevProps.infoRequestInProgress && !this.props.infoRequestInProgress) {
-      if (this.props.requestError !== null) {
-        this.props.onSubmitError(this.props.requestError)
+    const { infoRequestInProgress, requestError, onSubmitError } = this.props
+    
+    if (prevProps.infoRequestInProgress && !infoRequestInProgress) {
+      if (requestError !== null) {
+        onSubmitError(requestError)
       }
     }
   }
@@ -116,7 +158,9 @@ export class Upload extends Component {
    * @public
    */
   onCloseModal = () => {
-    if (this.props.selectedDocs.length > 0) {
+    const { selectedDocs, actions } = this.props
+    
+    if (selectedDocs.length > 0) {
       this.setState(
         {
           alertActions: [
@@ -129,7 +173,7 @@ export class Upload extends Component {
           ],
           closeButton: { value: 'Cancel' }
         },
-        () => this.props.actions.openAlert(
+        () => actions.openAlert(
           'Your unsaved changes will be lost. Do you want to continue?',
           'Warning',
           'basic'
@@ -166,9 +210,11 @@ export class Upload extends Component {
    * @param e
    */
   addFilesToList = e => {
-    if (e.target.files.length + this.props.selectedDocs.length > this.props.maxFileCount) {
-      this.props.actions.openAlert(
-        `The number of files selected for upload has exceeds the limit of ${this.props.maxFileCount} files per upload. Please consider uploading files in smaller batches.`,
+    const { selectedDocs, maxFileCount, actions, infoSheetSelected } = this.props
+    
+    if (e.target.files.length + selectedDocs.length > maxFileCount) {
+      actions.openAlert(
+        `The number of files selected for upload has exceeds the limit of ${maxFileCount} files per upload. Please consider uploading files in smaller batches.`,
         'Maximum Number of Files Exceeded',
         'basic'
       )
@@ -187,24 +233,25 @@ export class Upload extends Component {
         })
       })
       
-      if (this.props.infoSheetSelected) {
-        this.props.actions.setInfoRequestProgress()
-        this.props.actions.mergeInfoWithDocs(files)
+      if (infoSheetSelected) {
+        actions.setInfoRequestProgress()
+        actions.mergeInfoWithDocs(files)
       } else {
-        this.props.actions.addSelectedDocs(files)
+        actions.addSelectedDocs(files)
       }
       
-      this.props.actions.verifyFiles(files)
+      actions.verifyFiles(files)
     }
   }
   
   /**
-   * Creates a formData object to send to api to upload documents
+   * Creates an object with all of the files to send to redux
    */
   onUploadFiles = () => {
+    const { selectedDocs, selectedJurisdiction, selectedProject, actions } = this.props
     let md = {}, sd = []
     
-    this.props.selectedDocs.map(doc => {
+    selectedDocs.map(doc => {
       md[doc.name.value] = Object.keys(doc).reduce((obj, prop) => {
         return {
           ...obj,
@@ -212,15 +259,15 @@ export class Upload extends Component {
         }
       }, {})
       
-      md[doc.name.value].jurisdictions = this.props.selectedJurisdiction.id
-        ? [this.props.selectedJurisdiction.id]
+      md[doc.name.value].jurisdictions = selectedJurisdiction.id
+        ? [selectedJurisdiction.id]
         : [doc.jurisdictions.value.id]
       
-      md[doc.name.value].projects = [this.props.selectedProject.id]
+      md[doc.name.value].projects = [selectedProject.id]
       sd = [...sd, md[doc.name.value]]
     })
     
-    this.props.actions.uploadDocumentsStart(sd)
+    actions.uploadDocumentsStart(sd)
   }
   
   /**
@@ -261,12 +308,21 @@ export class Upload extends Component {
       : this.props.actions.jurisdictionAutocomplete.onSuggestionSelected(suggestionValue)
   }
   
+  /**
+   * Handles search value changes for autocomplete projects and jurisdictions
+   * @param suggestionType
+   * @param value
+   */
   handleSearchValueChange = (suggestionType, value) => {
     suggestionType === 'jurisdiction'
       ? this.props.actions.jurisdictionAutocomplete.updateSearchValue(value)
       : this.props.actions.projectAutocomplete.updateSearchValue(value)
   }
   
+  /**
+   * Clears autocomplete suggestions for jurisdictions or projects
+   * @param suggestionType
+   */
   handleClearSuggestions = suggestionType => {
     suggestionType === 'jurisdiction'
       ? this.props.actions.jurisdictionAutocomplete.clearSuggestions()
@@ -302,17 +358,20 @@ export class Upload extends Component {
       </>
     )
   }
+  
   /**
    * Check if the mouse click event valid for this component.  if not valid, ignore event
    * @param e
    */
-  
   onMouseDown = e => {
     if (['react-autowhatever-1', 'jurisdiction-form'].includes(e.target.id)) {
       e.preventDefault()
     }
   }
   
+  /**
+   * Handles closing the upload progress alert
+   */
   closeUploadingAlert = () => {
     const { uploadProgress, actions } = this.props
     
