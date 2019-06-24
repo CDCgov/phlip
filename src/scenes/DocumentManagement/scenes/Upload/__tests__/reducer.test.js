@@ -14,14 +14,10 @@ describe('Document Management - Upload reducer tests', () => {
     expect(reducer(undefined, {})).toEqual(initial)
   })
   
-  describe('UPLOAD_DOCUMENTS_REQUEST', () => {
-    const fd = new FormData()
-    fd.append('files', [{ name: 'Doc 1' }, { name: 'Doc 2' }])
-    
+  describe('UPLOAD_DOCUMENTS_START', () => {
     const action = {
-      type: types.UPLOAD_DOCUMENTS_REQUEST,
-      selectedDocs: [{ name: 'Doc 1' }, { name: 'Doc 2' }],
-      selectedDocsFormData: fd
+      type: types.UPLOAD_DOCUMENTS_START,
+      selectedDocs: [{ name: 'Doc 1' }, { name: 'Doc 2' }]
     }
     
     const currentState = getState()
@@ -34,11 +30,35 @@ describe('Document Management - Upload reducer tests', () => {
     test('should set state.goBack to false', () => {
       expect(updatedState.goBack).toEqual(false)
     })
+    
+    test('should clear out uploading percentage', () => {
+      expect(updatedState.uploadProgress.index).toEqual(0)
+    })
+    
+    test('should set total documents length to length of documents', () => {
+      expect(updatedState.uploadProgress.total).toEqual(2)
+    })
+    
+    test('should reset failures', () => {
+      expect(updatedState.uploadProgress.failures).toEqual(false)
+    })
   })
   
-  describe('UPLOAD_DOCUMENTS_SUCCESS', () => {
+  describe('UPLOAD_ONE_DOC_COMPLETE', () => {
+    test('should increase current index by 1', () => {
+      const action = {
+        type: types.UPLOAD_ONE_DOC_COMPLETE
+      }
+      
+      const currentState = getState({ uploadProgress: { index: 3 } })
+      const updatedState = reducer(currentState, action)
+      expect(updatedState.uploadProgress.index).toEqual(4)
+    })
+  })
+  
+  describe('UPLOAD_DOCUMENTS_FINISH_SUCCESS', () => {
     const action = {
-      type: types.UPLOAD_DOCUMENTS_SUCCESS
+      type: types.UPLOAD_DOCUMENTS_FINISH_SUCCESS
     }
     
     const currentState = getState({
@@ -51,40 +71,36 @@ describe('Document Management - Upload reducer tests', () => {
       expect(updatedState.selectedDocs).toEqual([])
     })
     
-    test('should set state.uploading to false', () => {
-      expect(updatedState.uploading).toEqual(false)
-    })
-    
-    test('should set state.goBack to true', () => {
-      expect(updatedState.goBack).toEqual(true)
+    test('should set that there were no upload failures', () => {
+      expect(updatedState.uploadProgress.failures).toEqual(false)
     })
   })
   
-  describe('UPLOAD_DOCUMENTS_FAIL', () => {
+  describe('UPLOAD_DOCUMENTS_FINISH_WITH_FAILS', () => {
     const action = {
-      type: types.UPLOAD_DOCUMENTS_FAIL,
-      payload: { error: 'This is an error' }
+      type: types.UPLOAD_DOCUMENTS_FINISH_WITH_FAILS,
+      payload: { error: 'This is an error', failed: ['Doc1', 'Doc3'] }
     }
     
     const currentState = getState({
-      selectedDocs: [{ name: 'Doc1' }, { name: 'Doc2' }]
+      selectedDocs: [{ name: { value: 'Doc1' } }, { name: { value: 'Doc2' } }, { name: { value: 'Doc3' } }]
     })
     
     const updatedState = reducer(currentState, action)
     
-    test('should NOT empty state.selectedDocs', () => {
+    test('should set selected docs to only the failed documents', () => {
       expect(updatedState.selectedDocs).toEqual([
-        { name: 'Doc1' },
-        { name: 'Doc2' }
+        { name: { value: 'Doc1' } },
+        { name: { value: 'Doc3' } }
       ])
-    })
-    
-    test('should set state.uploading to false', () => {
-      expect(updatedState.uploading).toEqual(false)
     })
     
     test('should set state.requestError to the error in action.payload', () => {
       expect(updatedState.requestError).toEqual('This is an error')
+    })
+    
+    test('should set that there were failures', () => {
+      expect(updatedState.uploadProgress.failures).toEqual(true)
     })
   })
   

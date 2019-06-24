@@ -44,7 +44,8 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         goBack: false,
         uploadProgress: {
           index: 0,
-          total: action.selectedDocs.length
+          total: action.selectedDocs.length,
+          failures: false
         }
       }
     
@@ -53,8 +54,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         ...state,
         uploadProgress: {
           ...state.uploadProgress,
-          index: state.uploadProgress.index + 1,
-          failed: action.payload.failed
+          index: state.uploadProgress.index + 1
         }
       }
     

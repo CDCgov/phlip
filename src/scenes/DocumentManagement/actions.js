@@ -4,6 +4,7 @@ import {
   default as searchActions,
   types as searchTypes
 } from './components/SearchBox/actions'
+import { types as uploadTypes } from './scenes/Upload/actions'
 
 export const types = {
   GET_DOCUMENTS_REQUEST: 'GET_DOCUMENTS_REQUEST',
@@ -27,7 +28,9 @@ export const types = {
   CLEAN_PROJECT_LIST_REQUEST: 'CLEAN_PROJECT_LIST_REQUEST',
   CLEAN_PROJECT_LIST_SUCCESS: 'CLEAN_PROJECT_LIST_SUCCESS',
   CLEAN_PROJECT_LIST_FAIL: 'CLEAN_PROJECT_LIST_FAIL',
-  ON_DELETE_ONE_FILE: 'ON_DELETE_ONE_FILE'
+  ON_DELETE_ONE_FILE: 'ON_DELETE_ONE_FILE',
+  ...searchTypes,
+  ...uploadTypes
 }
 
 export default {

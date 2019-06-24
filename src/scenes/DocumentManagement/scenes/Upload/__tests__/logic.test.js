@@ -19,6 +19,7 @@ import createApiHandler, {
 } from 'services/api'
 import calls from 'services/api/docManageCalls'
 import apiCalls from 'services/api/calls'
+import { INITIAL_STATE as mainListState } from '../../../reducer'
 import { INITIAL_STATE } from '../reducer'
 import { INITIAL_STATE as AUTO_INITIAL_STATE } from 'data/autocomplete/reducer'
 
@@ -38,8 +39,18 @@ describe('Document Management - Upload logic', () => {
   const setupStore = (current = {}, projAuto = {}, jurAuto = {}) => {
     return createMockStore({
       initialState: {
+        data: {
+          user: {
+            currentUser: {
+              firstName: 'Test',
+              lastName: 'User',
+              id: 43
+            }
+          }
+        },
         scenes: {
           docManage: {
+            main: { list: { ...mainListState } },
             upload: {
               list: { ...INITIAL_STATE, ...current },
               projectSuggestions: {
@@ -64,19 +75,9 @@ describe('Document Management - Upload logic', () => {
   }
   
   describe('Upload Documents', () => {
-    const selectedDocsFormData = [{ name: 'doc 1' }, { name: 'doc 2' }]
-    const selectedDocs = [
-      { name: 'doc1', jurisdictions: { value: { name: '' } } },
-      { name: 'doc2', jurisdictions: { value: { name: '' } } }
-    ]
-    
     test('should reject action with type REJECT_NO_PROJECT_SELECTED when no project is selected', done => {
       const store = setupStore()
-      store.dispatch({
-        type: types.UPLOAD_DOCUMENTS_REQUEST,
-        selectedDocsFormData,
-        selectedDocs
-      })
+      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs })
       
       store.whenComplete(() => {
         expect(store.actions).toEqual([
@@ -103,12 +104,7 @@ describe('Document Management - Upload logic', () => {
           { selectedSuggestion: { name: 'project', id: 4 } }
         )
         
-        store.dispatch({
-          type: types.UPLOAD_DOCUMENTS_REQUEST,
-          selectedDocsFormData,
-          selectedDocs
-        })
-        
+        store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs })
         store.whenComplete(() => {
           expect(store.actions).toEqual([
             {
@@ -125,109 +121,88 @@ describe('Document Management - Upload logic', () => {
       }
     )
     
-    test('should send a request to upload documents and dispatch UPLOAD_DOCUMENT_SUCCESS on success', done => {
-      mock.onPost('/docs/upload').reply(200, {
-        files: [
-          { name: 'doc1', _id: '1', uploadedBy: { firstName: 'test', lastName: 'user' } },
-          { name: 'doc2', _id: '2', uploadedBy: { firstName: 'test', lastName: 'user' } }
-        ]
-      })
-      
+    test('should upload documents one at a time', done => {
+      const spy = jest.spyOn(docApi, 'upload')
+      mock.onPost('/docs/upload').reply(200, { files: [{ content: '', bleh: 'bleh' }] })
+  
+      const docsWithFiles = selectedDocs.map(doc => ({ ...doc, file: new Blob() }))
       const store = setupStore(
-        {
-          hasVerified: true,
-          selectedDocs: [
-            {
-              name: 'doc1',
-              jurisdictions: { value: { name: 'jur 1', id: 2 } }
-            },
-            { name: 'doc2', jurisdictions: { value: { name: 'jur 2', id: 3 } } }
-          ]
-        },
+        { hasVerified: true, selectedDocs },
         { selectedSuggestion: { name: 'project', id: 4 } },
         { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } }
       )
       
-      store.dispatch({
-        type: types.UPLOAD_DOCUMENTS_REQUEST,
-        selectedDocsFormData,
-        selectedDocs
-      })
+      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs: docsWithFiles })
       
       store.whenComplete(() => {
-        expect(store.actions).toEqual([
-          {
-            type: types.UPLOAD_DOCUMENTS_REQUEST,
-            selectedDocs,
-            jurisdictions: [{ id: 10, name: 'jurisdiction 10' }],
-            selectedDocsFormData
-          },
-          {
-            type: 'ADD_JURISDICTION',
-            payload: {
-              id: 10,
-              name: 'jurisdiction 10'
-            }
-          },
-          {
-            type: 'ADD_PROJECT',
-            payload: {
-              id: 4,
-              name: 'project'
-            }
-          },
-          {
-            type: types.UPLOAD_DOCUMENTS_SUCCESS,
-            payload: {
-              docs: [
-                {
-                  name: 'doc1',
-                  _id: '1',
-                  uploadedBy: { firstName: 'test', lastName: 'user' },
-                  projectList: 'project',
-                  jurisdictionList: '|jurisdiction 10'
-                },
-                {
-                  name: 'doc2',
-                  _id: '2',
-                  uploadedBy: { firstName: 'test', lastName: 'user' },
-                  projectList: 'project',
-                  jurisdictionList: '|jurisdiction 10'
-                }
-              ]
-            }
-          }
-        ])
+        expect(spy).toHaveBeenCalledTimes(4)
         done()
       })
     })
     
-    test('should send a request to upload docs and dispatch UPLOAD_DOCUMENT_FAIL on failure', done => {
-      mock.onPost('/docs/upload').reply(500)
-      
+    test('should dispatch no failures if all uploads succeed', done => {
+      mock.onPost('/docs/upload').reply(200, { files: [{ content: '', bleh: 'bleh' }] })
+  
+      const docsWithFiles = selectedDocs.map(doc => ({ ...doc, file: new Blob() }))
       const store = setupStore(
-        {},
+        { hasVerified: true, selectedDocs },
+        { selectedSuggestion: { name: 'project', id: 4 } },
+        { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } }
+      )
+  
+      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs: docsWithFiles })
+  
+      store.whenComplete(() => {
+        const actions = store.actions
+        expect(actions[actions.length - 1].type).toEqual(types.UPLOAD_DOCUMENTS_FINISH_SUCCESS)
+        done()
+      })
+    })
+    
+    test('should send a request to upload docs and handle failed uploads', done => {
+      mock
+        .onPost('/docs/upload').replyOnce(200, { files: [{ content: '', bleh: 'bleh' }] })
+        .onPost('/docs/upload').replyOnce(200, { files: [{ content: '', bleh: 'bleh' }] })
+        .onPost('/docs/upload').replyOnce(500)
+        .onPost('/docs/upload').replyOnce(200, { files: [{ content: '', bleh: 'bleh' }] })
+  
+      const docsWithFiles = selectedDocs.map(doc => ({ ...doc, file: new Blob() }))
+      const store = setupStore(
+        { hasVerified: true, selectedDocs },
         { selectedSuggestion: { name: 'project', id: 4 } },
         { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } }
       )
       
-      store.dispatch({
-        type: types.UPLOAD_DOCUMENTS_REQUEST,
-        selectedDocs: [{ name: 'dup 1' }]
-      })
+      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs: docsWithFiles })
       
       store.whenComplete(() => {
-        expect(store.actions).toEqual([
-          {
-            type: types.UPLOAD_DOCUMENTS_REQUEST,
-            jurisdictions: [{ id: 10, name: 'jurisdiction 10' }],
-            selectedDocs: [{ name: 'dup 1' }]
-          },
-          {
-            type: types.UPLOAD_DOCUMENTS_FAIL,
-            payload: { error: 'We couldn\'t upload the documents. Please try again later.' }
-          }
-        ])
+        expect(store.actions[3].payload.failed).toEqual(true)
+        expect(store.actions[1].payload.failed).toEqual(false)
+        expect(store.actions[2].payload.failed).toEqual(false)
+        expect(store.actions[4].payload.failed).toEqual(false)
+        done()
+      })
+    })
+    
+    test('should inform the user of upload failures', done => {
+      mock
+        .onPost('/docs/upload').replyOnce(200, { files: [{ content: '', bleh: 'bleh' }] })
+        .onPost('/docs/upload').replyOnce(200, { files: [{ content: '', bleh: 'bleh' }] })
+        .onPost('/docs/upload').replyOnce(500)
+        .onPost('/docs/upload').replyOnce(200, { files: [{ content: '', bleh: 'bleh' }] })
+  
+      const docsWithFiles = selectedDocs.map(doc => ({ ...doc, file: new Blob() }))
+      const store = setupStore(
+        { hasVerified: true, selectedDocs },
+        { selectedSuggestion: { name: 'project', id: 4 } },
+        { selectedSuggestion: { name: 'jurisdiction 10', id: 10 } }
+      )
+  
+      store.dispatch({ type: types.UPLOAD_DOCUMENTS_START, selectedDocs: docsWithFiles })
+  
+      store.whenComplete(() => {
+        const actions = store.actions
+        expect(actions[actions.length - 1].type).toEqual(types.UPLOAD_DOCUMENTS_FINISH_WITH_FAILS)
         done()
       })
     })

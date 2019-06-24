@@ -14,7 +14,13 @@ const props = {
     text: '',
     type: 'basic',
     title: ''
-  }
+  },
+  uploadProgress: {
+    index: 0,
+    total: 0,
+    failures: false
+  },
+  infoRequestInProgress: false
 }
 
 describe('Document Management - Upload scene', () => {
