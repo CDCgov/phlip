@@ -41,19 +41,46 @@ describe('Document Management - Upload reducer tests', () => {
     })
     
     test('should reset failures', () => {
-      expect(updatedState.uploadProgress.failures).toEqual(false)
+      expect(updatedState.uploadProgress.failures).toEqual(0)
+    })
+    
+    test('should reset percentage upload to 0', () => {
+      expect(updatedState.uploadProgress.percentage).toEqual(0)
     })
   })
   
   describe('UPLOAD_ONE_DOC_COMPLETE', () => {
     test('should increase current index by 1', () => {
       const action = {
-        type: types.UPLOAD_ONE_DOC_COMPLETE
+        type: types.UPLOAD_ONE_DOC_COMPLETE,
+        payload: { failed: false }
       }
       
       const currentState = getState({ uploadProgress: { index: 3 } })
-      const updatedState = reducer(currentState, action)
-      expect(updatedState.uploadProgress.index).toEqual(4)
+      const state = reducer(currentState, action)
+      expect(state.uploadProgress.index).toEqual(4)
+    })
+    
+    test('should update percentage with new percentage', () => {
+      const action = {
+        type: types.UPLOAD_ONE_DOC_COMPLETE,
+        payload: { failed: true }
+      }
+  
+      const currentState = getState({ uploadProgress: { index: 4, total: 10, percentage: 40, failures: 1 } })
+      const state = reducer(currentState, action)
+      expect(state.uploadProgress.percentage).toEqual(50)
+    })
+    
+    test('should update failure count if the document failed to upload', () => {
+      const action = {
+        type: types.UPLOAD_ONE_DOC_COMPLETE,
+        payload: { failed: true }
+      }
+      
+      const currentState = getState({ uploadProgress: { index: 4, total: 10, percentage: 40, failures: 1 } })
+      const state = reducer(currentState, action)
+      expect(state.uploadProgress.failures).toEqual(2)
     })
   })
   
@@ -66,14 +93,14 @@ describe('Document Management - Upload reducer tests', () => {
       selectedDocs: [{ name: 'Doc1' }, { name: 'Doc2' }]
     })
     
-    const updatedState = reducer(currentState, action)
+    const state = reducer(currentState, action)
     
     test('should empty state.selectedDocs', () => {
-      expect(updatedState.selectedDocs).toEqual([])
+      expect(state.selectedDocs).toEqual([])
     })
     
-    test('should set that there were no upload failures', () => {
-      expect(updatedState.uploadProgress.failures).toEqual(false)
+    test('should set percentage complete to 100', () => {
+      expect(state.uploadProgress.percentage).toEqual(100)
     })
   })
   
@@ -87,21 +114,21 @@ describe('Document Management - Upload reducer tests', () => {
       selectedDocs: [{ name: { value: 'Doc1' } }, { name: { value: 'Doc2' } }, { name: { value: 'Doc3' } }]
     })
     
-    const updatedState = reducer(currentState, action)
+    const state = reducer(currentState, action)
     
     test('should set selected docs to only the failed documents', () => {
-      expect(updatedState.selectedDocs).toEqual([
-        { name: { value: 'Doc1' } },
-        { name: { value: 'Doc3' } }
+      expect(state.selectedDocs).toEqual([
+        { name: { value: 'Doc1' }, hasError: true },
+        { name: { value: 'Doc3' }, hasError: true }
       ])
     })
     
     test('should set state.requestError to the error in action.payload', () => {
-      expect(updatedState.requestError).toEqual('This is an error')
+      expect(state.requestError).toEqual('This is an error')
     })
     
-    test('should set that there were failures', () => {
-      expect(updatedState.uploadProgress.failures).toEqual(true)
+    test('should set upload percentage to 100', () => {
+      expect(state.uploadProgress.percentage).toEqual(100)
     })
   })
   
@@ -133,8 +160,9 @@ describe('Document Management - Upload reducer tests', () => {
     test('should reset upload progress', () => {
       expect(state.uploadProgress).toEqual({
         index: 0,
-        failures: false,
-        total: 0
+        failures: 0,
+        total: 0,
+        percentage: 0
       })
     })
   })

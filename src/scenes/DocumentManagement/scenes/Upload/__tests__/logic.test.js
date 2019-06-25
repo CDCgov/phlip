@@ -23,11 +23,12 @@ import apiCalls from 'services/api/calls'
 import { INITIAL_STATE as mainListState } from '../../../reducer'
 import { INITIAL_STATE } from '../reducer'
 import { INITIAL_STATE as AUTO_INITIAL_STATE } from 'data/autocomplete/reducer'
+import { types as autocompleteTypes } from 'data/autocomplete/actions'
 
 describe('Document Management - Upload logic', () => {
   let mock, apiMock
   
-  const mockReducer = (state, action) => state
+  const mockReducer = state => state
   const history = {}
   const docApi = createApiHandler({ history }, docApiInstance, calls)
   const api = createApiHandler({ history }, projectApiInstance, apiCalls)
@@ -359,6 +360,36 @@ describe('Document Management - Upload logic', () => {
     })
     
     describe('EXTRACT_INFO', () => {
+      test('should specify that there are no selected docs when dispatching success', done => {
+        apiMock.onGet('/jurisdictions', { params: { name: 'Washington (state)' } }).reply(200, [
+          { name: 'Washington (state)' }
+        ])
+        
+        apiMock.onGet('/jurisdictions', { params: { name: 'North Carolina (state)' } }).reply(200, [
+          { name: 'North Carolina (state)' }
+        ])
+        
+        apiMock.onGet('/jurisdictions', { params: { name: 'Washington, DC (federal district)' } }).reply(200, [
+          { name: 'Washington, DC (federal district)' }
+        ])
+        
+        apiMock.onGet('/jurisdictions', { params: { name: 'Ohio (state)' } }).reply(200, [{ name: 'Ohio (state)' }])
+        
+        mock.onPost('/docs/upload/extractInfo').reply(200, excelInfoFull)
+        
+        const store = setupStore({ selectedDocs: [] })
+        
+        store.dispatch({
+          type: types.EXTRACT_INFO_REQUEST,
+          infoSheetFormData: excelInfoFull
+        })
+        
+        store.whenComplete(() => {
+          expect(store.actions[1].type).toEqual(types.EXTRACT_INFO_SUCCESS_NO_DOCS)
+          done()
+        })
+      })
+      
       test('should merge info with already selected docs for upload', done => {
         apiMock.onGet('/jurisdictions', { params: { name: 'Washington (state)' } }).reply(200, [
           { name: 'Washington (state)' }
@@ -419,6 +450,111 @@ describe('Document Management - Upload logic', () => {
         })
       })
       
+      test('should set an error if there is an error extracting info', done => {
+        mock.onPost('/docs/upload/extractInfo').reply(500)
+        
+        const store = setupStore({ selectedDocs, extractedInfo: excelInfoFull })
+        
+        store.dispatch({
+          type: types.EXTRACT_INFO_REQUEST,
+          infoSheetFormData: excelInfoWithMissing
+        })
+        
+        store.whenComplete(() => {
+          expect(store.actions[1].type).toEqual(types.EXTRACT_INFO_FAIL)
+          done()
+        })
+      })
+    })
+  })
+  
+  describe('Autocomplete searches', () => {
+    describe('Search for Project suggestions', () => {
+      test('should allow the search if there is no project selected', done => {
+        const store = setupStore({}, { selectedSuggestion: {} })
+        
+        store.dispatch({ type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT` })
+        store.whenComplete(() => {
+          expect(store.actions).toEqual([
+            { type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT` }
+          ])
+          done()
+        })
+      })
+      
+      test('should allow the action if the selected project\'s name is different than new search', done => {
+        const store = setupStore({}, { selectedSuggestion: { name: 'Overwatch' } })
+        
+        store.dispatch({
+          type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
+          searchString: 'Zero Dawn'
+        })
+        
+        store.whenComplete(() => {
+          expect(store.actions).toEqual([
+            { type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`, searchString: 'Zero Dawn' }
+          ])
+          done()
+        })
+      })
+      
+      test('should not allow the action if the selected project\'s name is the same as the new search', done => {
+        const store = setupStore({}, { selectedSuggestion: { name: 'Overwatch' } })
+        
+        store.dispatch({
+          type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_PROJECT`,
+          searchString: 'Overwatch'
+        })
+        
+        store.whenComplete(() => {
+          expect(store.actions).toEqual([])
+          done()
+        })
+      })
+    })
+    
+    describe('Search for Jurisdiction suggestions', () => {
+      test('should allow the search if there is no jurisdiction selected', done => {
+        const store = setupStore({}, {}, { selectedSuggestion: {} })
+    
+        store.dispatch({ type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION` })
+        store.whenComplete(() => {
+          expect(store.actions).toEqual([
+            { type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION` }
+          ])
+          done()
+        })
+      })
+  
+      test('should allow the action if the selected jurisdictions\'s name is different than new search', done => {
+        const store = setupStore({}, {}, { selectedSuggestion: { name: 'Ohio' } })
+    
+        store.dispatch({
+          type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`,
+          searchString: 'Florida'
+        })
+    
+        store.whenComplete(() => {
+          expect(store.actions).toEqual([
+            { type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`, searchString: 'Florida' }
+          ])
+          done()
+        })
+      })
+  
+      test('should not allow the action if the selected jurisdictions\'s name is the same as the new search', done => {
+        const store = setupStore({}, {}, { selectedSuggestion: { name: 'Ohio' } })
+    
+        store.dispatch({
+          type: `${autocompleteTypes.SEARCH_FOR_SUGGESTIONS_REQUEST}_JURISDICTION`,
+          searchString: 'Ohio'
+        })
+    
+        store.whenComplete(() => {
+          expect(store.actions).toEqual([])
+          done()
+        })
+      })
     })
   })
 })

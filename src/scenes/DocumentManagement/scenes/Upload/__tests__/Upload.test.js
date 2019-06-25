@@ -42,7 +42,8 @@ const props = {
   uploadProgress: {
     index: 0,
     total: 0,
-    failures: false
+    failures: 0,
+    percentage: 0
   },
   maxFileCount: 20,
   infoRequestInProgress: false,
@@ -290,29 +291,90 @@ describe('Document Management - Upload scene', () => {
   
   describe('Upload progress alert', () => {
     test('should show a progress alert with status when uploading', () => {
-      const wrapper = shallow(<Upload {...props} uploading uploadProgress={{ index: 0, total: 3, failures: false }} />)
-      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).text()).toEqual('Uploading document 1 out of 3')
-      expect(wrapper.find('Alert').at(0).childAt(0).childAt(1).matchesElement(<LinearProgress />)).toEqual(true)
+      const wrapper = shallow(
+        <Upload
+          {...props}
+          uploading
+          uploadProgress={{ index: 0, total: 10, failures: 0, percentage: 0 }}
+        />
+      )
+      
+      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(0).childAt(0).text())
+        .toEqual('Uploading document: 1')
+      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(3).matchesElement(<LinearProgress />))
+        .toEqual(true)
     })
     
-    test('should inform user when all documents have uploaded', () => {
-      const wrapper = shallow(<Upload {...props} uploading uploadProgress={{ index: 3, total: 3, failures: false }} />)
-      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).text()).toEqual('All documents successfully uploaded!')
+    test('should show total number of documents', () => {
+      const wrapper = shallow(
+        <Upload
+          {...props}
+          uploading
+          uploadProgress={{ index: 0, total: 10, failures: 0, percentage: 0 }}
+        />
+      )
+      
+      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(1).childAt(0).text())
+        .toEqual('Total document count: 10')
+    })
+    
+    test('should keep an error count of errored documents', () => {
+      const wrapper = shallow(
+        <Upload
+          {...props}
+          uploading
+          uploadProgress={{ index: 2, total: 10, failures: 2, percentage: 20 }}
+        />
+      )
+      
+      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(2).childAt(0).text()).toEqual('Errors: 2')
+    })
+    
+    test('should inform user when all documents have uploaded successfully', () => {
+      const wrapper = shallow(
+        <Upload
+          {...props}
+          uploading
+          uploadProgress={{ index: 3, total: 3, failures: 0, percentage: 100 }}
+        />
+      )
+  
+      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(0).childAt(0).text())
+        .toEqual('All documents successfully uploaded!')
     })
     
     test('should inform the user of any failures', () => {
-      const wrapper = shallow(<Upload {...props} uploading uploadProgress={{ index: 3, total: 3, failures: true }} />)
-      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).text())
-        .toEqual('Some of the documents failed to upload. They are still present in the list if you want to retry.')
+      const wrapper = shallow(
+        <Upload
+          {...props}
+          uploading
+          uploadProgress={{ index: 3, total: 3, failures: 1, percentage: 100 }}
+        />
+      )
+  
+      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(0).childAt(0).text())
+        .toEqual('Some of the documents failed to upload. They are still present in the list if you wish to retry.')
     })
     
     test('should hide the alert close button if not done uploading', () => {
-      const wrapper = shallow(<Upload {...props} uploading uploadProgress={{ index: 2, total: 3, failures: false }} />)
+      const wrapper = shallow(
+        <Upload
+          {...props}
+          uploading
+          uploadProgress={{ index: 0, total: 3, failures: 1, percentage: 40 }}
+        />
+      )
       expect(wrapper.find('Alert').at(0).prop('hideClose')).toEqual(true)
     })
     
     test('should display the alert close button when finished uploading', () => {
-      const wrapper = shallow(<Upload {...props} uploading uploadProgress={{ index: 3, total: 3, failures: false }} />)
+      const wrapper = shallow(
+        <Upload
+          {...props}
+          uploading
+          uploadProgress={{ index: 3, total: 3, failures: 0, percentage: 100 }}
+        />
+      )
       expect(wrapper.find('Alert').at(0).prop('hideClose')).toEqual(false)
     })
     
@@ -334,9 +396,9 @@ describe('Document Management - Upload scene', () => {
   describe('Selecting Excel file', () => {
     test('should send a request to extract info from file', () => {
       const file1 = new File(['file 1'], 'file1.csv', { type: 'text/plain' })
-  
+      
       const files = [file1]
-  
+      
       const fileList = {
         target: {
           files: {
@@ -356,9 +418,9 @@ describe('Document Management - Upload scene', () => {
   describe('Extracting Excel metadata', () => {
     test('should show an progress spinner alert', () => {
       const wrapper = shallow(<Upload {...props} infoRequestInProgress />)
-      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).text())
+      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(0).childAt(0).text())
         .toEqual('Processing document... This could take a couple of minutes...')
-      expect(wrapper.find('Alert').at(0).childAt(0).childAt(1).matchesElement(<CircularLoader />)).toEqual(true)
+      expect(wrapper.find('Alert').at(0).childAt(0).childAt(0).childAt(1).matchesElement(<CircularLoader />)).toEqual(true)
     })
     
     test('handle if there\'s an error while submitting', () => {

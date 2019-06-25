@@ -375,7 +375,7 @@ export class Upload extends Component {
   closeUploadingAlert = () => {
     const { uploadProgress, actions } = this.props
     
-    if (uploadProgress.failures) {
+    if (uploadProgress.failures > 0) {
       actions.acknowledgeUploadFailures()
     } else {
       this.goBack()
@@ -389,7 +389,6 @@ export class Upload extends Component {
       infoRequestInProgress
     } = this.props
     
-    const processingPercentage = (uploadProgress.index / uploadProgress.total) * 100
     const { alertActions, closeButton } = this.state
     
     const modalCloseButton = {
@@ -455,27 +454,48 @@ export class Upload extends Component {
         {(uploading || infoRequestInProgress) &&
         <Alert
           open={(uploading || infoRequestInProgress)}
-          hideClose={processingPercentage < 100}
+          hideClose={uploadProgress.percentage < 100}
           onCloseAlert={this.closeUploadingAlert}
+          title={infoRequestInProgress
+            ? 'Processing...'
+            : uploadProgress.percentage === 100 ? uploadProgress.failures > 0
+              ? 'Error'
+              : 'Success' : 'Uploading...'}
           closeButton={{ value: 'Dismiss' }}>
-          <FlexGrid container align="center">
-            {!uploading && <span style={{ paddingBottom: 10 }}>
-              {'Processing document... This could take a couple of minutes...'}
-            </span>}
-            {uploading && <span style={{ paddingBottom: 30 }}>
-              {processingPercentage === 100
-                ? !uploadProgress.failures
-                  ? 'All documents successfully uploaded!'
-                  : 'Some of the documents failed to upload. They are still present in the list if you want to retry.'
-                : `Uploading document ${uploadProgress.index + 1} out of ${uploadProgress.total}`
-              }
-            </span>}
-            {!uploading && <CircularLoader type="indeterminate" />}
-            {uploading && <LinearProgress
-              variant="determinate"
-              value={processingPercentage}
-              style={{ width: '100%', borderRadius: 6 }}
-            />}
+          <FlexGrid container style={{ width: 550 }}>
+            {!uploading && <FlexGrid container align="center">
+              <Typography variant="body1" style={{ paddingBottom: 30 }}>
+                {'Processing document... This could take a couple of minutes...'}
+              </Typography>
+              <CircularLoader type="indeterminate" />
+            </FlexGrid>}
+            {uploading && <FlexGrid container style={{ paddingBottom: 30 }}>
+              <Typography
+                variant="body1"
+                style={{
+                  paddingBottom: uploadProgress.percentage === 100 && uploadProgress.failures > 0
+                    ? 15
+                    : 3
+                }}>
+                {uploadProgress.percentage === 100
+                  ? uploadProgress.failures === 0
+                    ? 'All documents successfully uploaded!'
+                    : 'Some of the documents failed to upload. They are still present in the list if you wish to retry.'
+                  : `Uploading document: ${uploadProgress.index + 1}`
+                }
+              </Typography>
+              <Typography
+                variant="body1"
+                style={{ paddingBottom: 3 }}>{`Total document count: ${uploadProgress.total}`}</Typography>
+              <Typography variant="body1" style={{ paddingBottom: 30 }}>
+                {uploadProgress.failures > 0 && `Errors: ${uploadProgress.failures}`}
+              </Typography>
+              <LinearProgress
+                variant="determinate"
+                value={uploadProgress.percentage}
+                style={{ width: '100%', borderRadius: 6, height: 8 }}
+              />
+            </FlexGrid>}
           </FlexGrid>
         </Alert>}
         <FlexGrid container type="row" align="center">

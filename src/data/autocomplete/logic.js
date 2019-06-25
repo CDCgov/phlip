@@ -47,7 +47,6 @@ const getProjectsByUserLogic = createLogic({
   type: types.GET_INITIAL_PROJECT_SUGGESTION_REQUEST,
   async process({ api, action }, dispatch, done) {
     try {
-      // let projects = await api.getProjects({}, {
       let projects = await api.searchProjectListByUser({}, {
         params: {
           userId: action.userId,

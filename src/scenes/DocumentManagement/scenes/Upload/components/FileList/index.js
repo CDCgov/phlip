@@ -1,12 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Grid from 'components/Grid'
-import SimpleInput from 'components/SimpleInput'
-import DatePicker from 'components/DatePicker'
-import Icon from 'components/Icon'
-import IconButton from 'components/IconButton'
-import Autocomplete from 'components/Autocomplete'
 import { convertToLocalDate } from 'utils/normalize'
+import { Autocomplete, IconButton, Icon, DatePicker, SimpleInput, Tooltip } from 'components'
+import Grid from 'components/Grid'
 
 const fileTypeIcons = {
   'pdf': 'picture_as_pdf',
@@ -155,7 +151,7 @@ export class FileList extends Component {
         </Grid>
         <Grid columnSizing="1fr" autoRowSizing="60px" style={{ flex: 1 }} id="uploadFileList">
           {selectedDocs.map((doc, i) => {
-            const isDuplicate = doc.isDuplicate
+            const isDuplicate = doc.isDuplicate || doc.hasError
             const isInvalid = invalidFiles.find(file => file.name === doc.name.value) !== undefined
             const pieces = doc.name.value.split('.')
             const extension = pieces[pieces.length - 1]
@@ -173,7 +169,14 @@ export class FileList extends Component {
                 <div />
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   {(isDuplicate || isInvalid) &&
-                  <Icon size={25} style={{ alignSelf: 'center', marginRight: 5 }} color="#fc515a">error</Icon>}
+                  <Tooltip
+                    text={doc.isDuplicate
+                      ? 'Duplicate document'
+                      : doc.hasError
+                        ? 'File upload failed'
+                        : 'Invalid File'}>
+                    <Icon size={25} style={{ alignSelf: 'center', marginRight: 5 }} color="#fc515a">error</Icon>
+                  </Tooltip>}
                   {!isDuplicate && <Icon size={20} style={{ alignSelf: 'center', marginRight: 5 }}>{iconName}</Icon>}
                   <div style={colStyle}>{doc.name.value}</div>
                 </div>

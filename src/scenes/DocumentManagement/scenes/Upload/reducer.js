@@ -8,7 +8,8 @@ export const INITIAL_STATE = {
   uploadProgress: {
     index: 0,
     total: 0,
-    failures: false
+    failures: 0,
+    percentage: 0
   },
   selectedDocs: [],
   requestError: null,
@@ -45,16 +46,21 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         uploadProgress: {
           index: 0,
           total: action.selectedDocs.length,
-          failures: false
+          percentage: 0,
+          failures: 0
         }
       }
     
     case types.UPLOAD_ONE_DOC_COMPLETE:
+      const newIndex = state.uploadProgress.index + 1
+      
       return {
         ...state,
         uploadProgress: {
           ...state.uploadProgress,
-          index: state.uploadProgress.index + 1
+          index: newIndex,
+          percentage: (newIndex / state.uploadProgress.total) * 100,
+          failures: action.payload.failed ? state.uploadProgress.failures + 1 : state.uploadProgress.failures
         }
       }
     
@@ -64,7 +70,7 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         selectedDocs: [],
         uploadProgress: {
           ...state.uploadProgress,
-          failures: false
+          percentage: 100
         }
       }
     
@@ -74,11 +80,11 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
       
       return {
         ...state,
-        selectedDocs: [...d],
+        selectedDocs: [...d].map(doc => ({ ...doc, hasError: true })),
         requestError: action.payload.error,
         uploadProgress: {
           ...state.uploadProgress,
-          failures: true
+          percentage: 100
         }
       }
       
@@ -89,7 +95,8 @@ export const uploadReducer = (state = INITIAL_STATE, action) => {
         uploading: false,
         uploadProgress: {
           index: 0,
-          failures: false,
+          failures: 0,
+          percentage: 0,
           total: 0
         }
       }
