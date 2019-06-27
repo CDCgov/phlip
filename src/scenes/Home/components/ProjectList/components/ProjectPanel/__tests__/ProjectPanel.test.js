@@ -27,6 +27,7 @@ const props = {
     type: 1
   },
   handleExpandProject: jest.fn(),
+  handleEditProject: jest.fn(),
   bookmarked: false,
   expanded: false,
   allUsers: {},
@@ -34,16 +35,6 @@ const props = {
   users: [],
   theme
 }
-
-/*const setup = otherProps => {
- return mount(
- <MemoryRouter>
- <MuiThemeProvider theme={theme}>
- <ProjectPanel {...props} {...otherProps} />
- </MuiThemeProvider>
- </MemoryRouter>
- )
- }*/
 
 describe('Home - ProjectList - ProjectPanel scene', () => {
   test('should render correctly', () => {

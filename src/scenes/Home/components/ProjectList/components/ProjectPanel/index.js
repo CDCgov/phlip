@@ -7,7 +7,7 @@ import moment from 'moment'
 import GridList from '@material-ui/core/GridList'
 import Typography from '@material-ui/core/Typography'
 import Collapse from '@material-ui/core/Collapse'
-import { FlexGrid, IconButton, TextLink, Link, Button, GridListTile } from 'components'
+import { FlexGrid, IconButton, Link, Button, GridListTile } from 'components'
 import { FileDocument, City, FormatListBulleted, ClipboardCheckOutline, FileExport } from 'mdi-material-ui'
 import ProjectRow from './components/ProjectRow'
 import silhouette from './silhouette.png'
@@ -25,7 +25,8 @@ export class ProjectPanel extends Component {
     onExport: PropTypes.func,
     length: PropTypes.number,
     index: PropTypes.number,
-    handleExpandProject: PropTypes.func
+    handleExpandProject: PropTypes.func,
+    handleEditProject: PropTypes.func
   }
   
   /**
@@ -87,7 +88,7 @@ export class ProjectPanel extends Component {
   }
   
   render() {
-    const { project, role, bookmarked, actions, index, length, users, allUsers, expanded } = this.props
+    const { project, role, bookmarked, actions, index, length, users, allUsers, expanded, handleEditProject } = this.props
     
     const isCoder = role === 'Coder'
     const greyIcon = theme.palette.greyText
@@ -234,14 +235,16 @@ export class ProjectPanel extends Component {
                         {bookmarked ? 'bookmark' : 'bookmark_border'}
                       </IconButton>
                       <FlexGrid style={{ width: 20 }} />
-                      {!isCoder ? (<TextLink
-                        aria-label="Edit project details"
-                        to={!isCoder ? {
-                          pathname: `/project/edit/${project.id}`,
-                          state: { projectDefined: { ...project }, modal: true, directEditMode: true }
-                        } : ''}>
-                        {project.name}
-                      </TextLink>) : (<Typography variant="title">{project.name}</Typography>)}
+                      <Typography variant="title" style={{ marginRight: 5 }}>{project.name}</Typography>
+                      {!isCoder && <IconButton
+                        color="secondary"
+                        iconSize={20}
+                        id={`edit-project-${project.id}`}
+                        tooltipText="Edit Project Details"
+                        aria-label={`Edit Project ${project.name}`}
+                        onClick={handleEditProject(project)}>
+                        edit
+                      </IconButton>}
                     </FlexGrid>
                     <FlexGrid container type="row" flex justify="flex-end" align="stretch" style={{ height: 40 }}>
                       {!isCoder && (<Button

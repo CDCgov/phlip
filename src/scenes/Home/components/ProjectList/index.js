@@ -165,6 +165,17 @@ export class ProjectList extends Component {
     })
   }
   
+  /**
+   * Changes route to edit modal for project
+   * @param project
+   */
+  handleEditProject = project => () => {
+    this.props.history.push({
+      pathname: `/project/edit/${project.id}`,
+      state: { projectDefined: { ...project }, modal: true }
+    })
+  }
+  
   render() {
     const {
       projectIds, user, page, rowsPerPage, projectCount, handlePageChange, handleRowsChange, handleExport,
@@ -183,6 +194,7 @@ export class ProjectList extends Component {
                 id={id}
                 onExport={handleExport}
                 role={user.role}
+                handleEditProject={this.handleEditProject}
                 getProjectUsers={getProjectUsers}
                 handleExpandProject={this.handleExpandProject}
                 expanded={openProject === id}

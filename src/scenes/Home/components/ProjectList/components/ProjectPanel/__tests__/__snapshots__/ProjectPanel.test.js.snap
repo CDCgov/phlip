@@ -181,34 +181,26 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
                   }
                   type="column"
                 />
-                <TextLink
-                  aria-label="Edit project details"
-                  to={
+                <WithStyles(Typography)
+                  style={
                     Object {
-                      "pathname": "/project/edit/2",
-                      "state": Object {
-                        "directEditMode": true,
-                        "modal": true,
-                        "projectDefined": Object {
-                          "createdBy": "Admin",
-                          "createdByEmail": "admin@cdc.gov",
-                          "createdById": 1,
-                          "dateCreated": "2019-04-08T11:43:46.3034169",
-                          "dateLastEdited": "2019-04-18T13:27:51.454041",
-                          "id": 2,
-                          "lastEditedBy": "Aleksandra Zaryanova",
-                          "lastUsersCheck": 1555606985567,
-                          "name": "PROJECT",
-                          "projectJurisdictions": Array [],
-                          "projectUsers": Array [],
-                          "type": 1,
-                        },
-                      },
+                      "marginRight": 5,
                     }
                   }
+                  variant="title"
                 >
                   PROJECT
-                </TextLink>
+                </WithStyles(Typography)>
+                <IconButton
+                  aria-label="Edit Project PROJECT"
+                  color="secondary"
+                  disabled={false}
+                  iconSize={20}
+                  id="edit-project-2"
+                  tooltipText="Edit Project Details"
+                >
+                  edit
+                </IconButton>
               </FlexGrid>
               <FlexGrid
                 align="stretch"
@@ -769,34 +761,26 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly when ex
                   }
                   type="column"
                 />
-                <TextLink
-                  aria-label="Edit project details"
-                  to={
+                <WithStyles(Typography)
+                  style={
                     Object {
-                      "pathname": "/project/edit/2",
-                      "state": Object {
-                        "directEditMode": true,
-                        "modal": true,
-                        "projectDefined": Object {
-                          "createdBy": "Admin",
-                          "createdByEmail": "admin@cdc.gov",
-                          "createdById": 1,
-                          "dateCreated": "2019-04-08T11:43:46.3034169",
-                          "dateLastEdited": "2019-04-18T13:27:51.454041",
-                          "id": 2,
-                          "lastEditedBy": "Aleksandra Zaryanova",
-                          "lastUsersCheck": 1555606985567,
-                          "name": "PROJECT",
-                          "projectJurisdictions": Array [],
-                          "projectUsers": Array [],
-                          "type": 1,
-                        },
-                      },
+                      "marginRight": 5,
                     }
                   }
+                  variant="title"
                 >
                   PROJECT
-                </TextLink>
+                </WithStyles(Typography)>
+                <IconButton
+                  aria-label="Edit Project PROJECT"
+                  color="secondary"
+                  disabled={false}
+                  iconSize={20}
+                  id="edit-project-2"
+                  tooltipText="Edit Project Details"
+                >
+                  edit
+                </IconButton>
               </FlexGrid>
               <FlexGrid
                 align="stretch"

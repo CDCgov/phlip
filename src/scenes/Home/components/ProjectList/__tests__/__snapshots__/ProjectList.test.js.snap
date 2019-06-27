@@ -31,6 +31,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
     >
       <Connect(ProjectPanel)
         expanded={false}
+        handleEditProject={[Function]}
         handleExpandProject={[Function]}
         id={1}
         index={0}
@@ -41,6 +42,7 @@ exports[`Home scene - ProjectList component should render correctly 1`] = `
       />
       <Connect(ProjectPanel)
         expanded={false}
+        handleEditProject={[Function]}
         handleExpandProject={[Function]}
         id={2}
         index={1}
