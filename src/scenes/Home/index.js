@@ -76,9 +76,9 @@ export class Home extends Component {
      */
     exportError: PropTypes.string,
     /**
-     * document title
+     * Current open project
      */
-    title: PropTypes.string
+    openProject: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
   }
   
   constructor(props, context) {
@@ -216,7 +216,7 @@ export class Home extends Component {
   render() {
     const {
       exportError, user, sortBy, actions, page, visibleProjects, projectCount, rowsPerPage, direction, sortBookmarked,
-      searchValue, error
+      searchValue, error, openProject
     } = this.props
     
     const options = Array.from([
@@ -296,7 +296,9 @@ export class Home extends Component {
             handlePageChange={actions.updatePage}
             handleRowsChange={actions.updateRows}
             handleSortBookmarked={() => actions.sortBookmarked(!sortBookmarked)}
+            handleToggleProject={actions.toggleProject}
             getProjectUsers={actions.getProjectUsers}
+            openProject={openProject}
           />
         }
         <ExportDialog
@@ -324,7 +326,8 @@ const mapStateToProps = state => ({
   errorContent: state.scenes.home.main.errorContent,
   projectCount: state.scenes.home.main.projectCount || 0,
   projectToExport: state.scenes.home.main.projectToExport || { text: '' },
-  exportError: state.scenes.home.main.exportError || ''
+  exportError: state.scenes.home.main.exportError || '',
+  openProject: state.scenes.home.main.openProject || 0
 })
 
 /* istanbul ignore next */

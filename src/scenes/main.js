@@ -77,13 +77,15 @@ export class Main extends Component {
           label: 'Project List',
           active: !props.history.location.pathname.startsWith('/docs'),
           location: '/home',
-          icon: 'dvr'
+          icon: 'dvr',
+          id: 'project-list'
         },
         {
           label: 'Document Management',
           active: props.history.location.pathname.startsWith('/docs'),
           location: '/docs',
-          icon: 'description'
+          icon: 'description',
+          id: 'doc-manage'
         }
       ]
     }

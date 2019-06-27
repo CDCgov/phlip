@@ -36,7 +36,8 @@ export const types = {
   CLEAR_PROJECT_TO_EXPORT: 'CLEAR_PROJECT_TO_EXPORT',
   DISMISS_API_ERROR: 'DISMISS_API_ERROR',
   UPDATE_VISIBLE_PROJECTS: 'UPDATE_VISIBLE_PROJECTS',
-  REMOVE_PROJECT: 'REMOVE_PROJECT'
+  REMOVE_PROJECT: 'REMOVE_PROJECT',
+  TOGGLE_PROJECT: 'TOGGLE_PROJECT'
 }
 
 export default {
@@ -57,5 +58,6 @@ export default {
   exportDataRequest: makeActionCreator(types.EXPORT_DATA_REQUEST, 'project', 'exportType'),
   clearProjectToExport: makeActionCreator(types.CLEAR_PROJECT_TO_EXPORT),
   dismissApiError: makeActionCreator(types.DISMISS_API_ERROR, 'errorName'),
-  getProjectUsers: makeActionCreator(types.GET_PROJECT_USERS_REQUEST, 'projectId', 'createdBy')
+  getProjectUsers: makeActionCreator(types.GET_PROJECT_USERS_REQUEST, 'projectId', 'createdBy'),
+  toggleProject: makeActionCreator(types.TOGGLE_PROJECT, 'projectId')
 }
