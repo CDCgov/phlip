@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Typography from '@material-ui/core/Typography'
-import { withStyles } from '@material-ui/core/styles'
 import Header from './components/Header'
 import QuestionCard from './components/QuestionCard'
 import Navigator from './components/Navigator'
@@ -12,38 +11,12 @@ import actions from './actions'
 import {
   TextLink, Icon, Button, Alert, ApiErrorView, ApiErrorAlert, PageLoader, withTracking, FlexGrid
 } from 'components'
-import classNames from 'classnames'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
 import Resizable from 're-resizable'
 
 /* istanbul ignore next */
-const styles = theme => ({
-  mainContent: {
-    height: '100vh',
-    width: '100%',
-    flex: '1 !important',
-    overflow: 'auto',
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    marginLeft: -250
-  },
-  openNavShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginLeft: 0
-  },
-  pageLoading: {
-    marginLeft: 0
-  }
-})
-
-/* istanbul ignore next */
 const ResizeHandle = () => (
-  <Icon style={{ width: 15, minWidth: 15, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+  <Icon style={{ width: 17, minWidth: 17, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
     more_vert
   </Icon>
 )
@@ -630,19 +603,14 @@ export class CodingValidation extends Component {
   
   render() {
     const {
-      classes, showPageLoader, answerErrorContent, objectExists, getQuestionErrors, actions, page, selectedCategory,
+      showPageLoader, answerErrorContent, objectExists, getQuestionErrors, actions, page, selectedCategory,
       questionOrder, isSchemeEmpty, schemeError, areJurisdictionsEmpty, saveFlagErrorContent,
       getRequestInProgress, user, currentIndex, showNextButton, question, project
     } = this.props
     
     const {
-      navOpen, applyAllAlertOpen, stillSavingAlertOpen, flagConfirmAlertOpen, startedText, showNav, jurisdiction
+      applyAllAlertOpen, stillSavingAlertOpen, flagConfirmAlertOpen, startedText, showNav, jurisdiction
     } = this.state
-    
-    const containerClasses = classNames(classes.mainContent, {
-      [classes.openNavShift]: navOpen && !showPageLoader,
-      [classes.pageLoading]: !navOpen
-    })
     
     const containerStyle = {
       width: '100%',
@@ -758,7 +726,7 @@ export class CodingValidation extends Component {
                             left: {
                               height: 'fit-content',
                               width: 'fit-content',
-                              bottom: '52%',
+                              bottom: '51.25%',
                               top: 'unset',
                               left: 0
                             }
@@ -767,7 +735,7 @@ export class CodingValidation extends Component {
                             width: '50%',
                             height: '100%'
                           }}>
-                          <FlexGrid style={{ minWidth: 15, maxWidth: 15, width: 15 }} />
+                          <FlexGrid style={{ minWidth: 17, maxWidth: 17, width: 17 }} />
                           <DocumentList
                             projectId={project.id}
                             jurisdictionId={jurisdiction.jurisdictionId}
@@ -838,4 +806,4 @@ const mapStateToProps = (state, ownProps) => {
 
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withTracking(CodingValidation)))
+export default connect(mapStateToProps, mapDispatchToProps)(withTracking(CodingValidation))
