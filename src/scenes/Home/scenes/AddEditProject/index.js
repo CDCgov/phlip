@@ -83,16 +83,16 @@ export class AddEditProject extends Component {
      */
     onSubmitError: PropTypes.func,
     /**
-     * title of the page
+     * Submitting status
      */
-    title: PropTypes.string
+    submitting: PropTypes.bool
   }
   
   constructor(props, context) {
     super(props, context)
     this.projectDefined = this.props.match.url === '/project/add' ? null : this.props.location.state.projectDefined
     this.state = {
-      edit: this.props.location.state.directEditMode || !this.projectDefined,
+      edit: this.projectDefined,
       submitting: false,
       typeToDelete: '',
       projectToDelete: {},
@@ -110,22 +110,21 @@ export class AddEditProject extends Component {
    */
   componentDidMount() {
     this.prevTitle = document.title
-    if (this.projectDefined) {
+    if (this.state.edit) {
       document.title = `PHLIP - Project ${this.projectDefined.name} - Edit`
     } else {
       document.title = `PHLIP - Add Project`
     }
   }
   
-  componentDidUpdate() {
-    if (this.state.submitting === true) {
-      if (this.props.formError !== null) {
-        this.setState({
-          submitting: false
-        })
-        this.props.onSubmitError(this.props.formError)
-      } else if (this.props.goBack) {
-        this.props.history.push('/home')
+  componentDidUpdate(prevProps) {
+    const { formError, onSubmitError, history, goBack, submitting } = this.props
+    
+    if (prevProps.submitting && !submitting) {
+      if (formError !== null) {
+        onSubmitError(formError)
+      } else if (goBack) {
+        history.push('/home')
       }
     }
   }
@@ -135,22 +134,13 @@ export class AddEditProject extends Component {
   }
   
   /**
-   *
    * In edit mode, the user clicks the cancel button. Resets to form values to whatever they were before editing.
-   *
    * @public
    */
   onCancel = () => {
-    this.props.formActions.reset('projectForm')
-    if (this.props.location.state.directEditMode) {
-      this.props.history.push('/home')
-    } else {
-      return this.state.edit
-        ? this.projectDefined
-          ? this.setState({ edit: !this.state.edit })
-          : this.props.history.push('/home')
-        : this.props.history.push('/home')
-    }
+    const { formActions, history } = this.props
+    formActions.reset('projectForm')
+    history.push('/home')
   }
   
   /**
@@ -160,13 +150,12 @@ export class AddEditProject extends Component {
    * @param {Object} values
    */
   handleSubmit = values => {
-    this.setState({
-      submitting: true
-    })
+    const { actions } = this.props
     
+    this.setState({ submitting: true })
     this.projectDefined
-      ? this.props.actions.updateProjectRequest({ ...values, name: this.capitalizeFirstLetter(values.name) })
-      : this.props.actions.addProjectRequest({ type: 1, ...values, name: this.capitalizeFirstLetter(values.name) })
+      ? actions.updateProjectRequest({ ...values, name: this.capitalizeFirstLetter(values.name) })
+      : actions.addProjectRequest({ type: 1, ...values, name: this.capitalizeFirstLetter(values.name) })
   }
   
   /**
@@ -185,8 +174,10 @@ export class AddEditProject extends Component {
    * @param {Object} values
    */
   validateProjectName = values => {
+    const { projects } = this.props
+    
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
-    const names = this.props.projects.map(project => project.name.toLowerCase())
+    const names = projects.map(project => project.name.toLowerCase())
     return sleep(1).then(() => {
       if (names.includes(values.name.toLowerCase()) &&
         !(this.projectDefined && this.projectDefined.name === values.name)) {
@@ -202,19 +193,7 @@ export class AddEditProject extends Component {
    * @param {*} value
    * @returns {String}
    */
-  required = value => (
-    value ? undefined : 'Required'
-  )
-  
-  /**
-   * Sets the form to edit mode
-   * @public
-   */
-  onEditForm = () => {
-    this.setState({
-      edit: !this.state.edit
-    })
-  }
+  required = value => value ? undefined : 'Required'
   
   /**
    * Determines the modal title depending on whether it's add / edit / view
@@ -223,34 +202,26 @@ export class AddEditProject extends Component {
    * @returns {String}
    */
   getModalTitle = () => this.projectDefined
-    ? this.state.edit
-      ? 'Edit Project'
-      : 'Project Details'
+    ? 'Edit Project'
     : 'Create New Project'
   
   /**
-   * Formats dates in form to locale date string
-   *
-   * @public
-   * @param {*} value
-   * @param {String} name
-   * @returns {String}
+   * Gets button text adds a spinner if a saving is happening
+   * @param text
+   * @returns {*}
    */
-  formatDate = (value, name) => new Date(value).toLocaleDateString()
-  
   getButtonText = text => {
-    if (this.state.submitting) {
-      return (
-        <>
-          {text}
-          <CircularLoader size={18} style={{ paddingLeft: 10 }} />
-        </>
-      )
-    } else {
-      return <>{text}</>
-    }
+    return (
+      <>
+        {text}
+        {this.props.submitting && <CircularLoader size={15} style={{ marginLeft: 10 }} />}
+      </>
+    )
   }
   
+  /**
+   * Shows a modal asking user to confirm deletion of project
+   */
   handleShowDeleteConfirm = () => {
     this.setState({
       typeToDelete: 'Project',
@@ -263,11 +234,17 @@ export class AddEditProject extends Component {
     })
   }
   
+  /*
+   * Handles when the user confirms deletion of project
+   */
   handleDeleteConfirm = () => {
     this.onCancel()
     this.props.actions.deleteProjectRequest(this.projectDefined.id)
   }
   
+  /**
+   * Handles when the user confirms cancels deletion of project
+   */
   onCancelDelete = () => {
     this.setState({
       alertOpen: false,
@@ -276,40 +253,32 @@ export class AddEditProject extends Component {
     })
   }
   
+  /**
+   * Closes an alert on the page
+   */
   closeAlert = () => {
     this.props.actions.closeAlert()
   }
   
   render() {
-    const editAction = [
-      { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Close modal' } },
+    const { alertOpen, alertInfo } = this.state
+    const { userRole, location, onCloseModal, submitting } = this.props
+    
+    const actions = [
+      { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Cancel edit view' } },
       {
-        value: 'Edit',
-        onClick: this.onEditForm,
-        disabled: this.props.userRole === 'Coder',
-        type: 'button',
-        otherProps: { 'aria-label': 'Edit this project' }
+        value: this.projectDefined
+          ? this.getButtonText('Save')
+          : this.getButtonText('Create'),
+        type: 'submit',
+        disabled: submitting,
+        otherProps: { 'aria-label': 'Save form' }
       }
     ]
-    
-    const actions = this.projectDefined && !this.state.edit
-      ? editAction
-      : [
-        { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Cancel edit view' } },
-        {
-          value: this.projectDefined
-            ? this.getButtonText('Save')
-            : this.getButtonText('Create'),
-          type: 'submit',
-          disabled: this.state.submitting === true,
-          otherProps: { 'aria-label': 'Save form' }
-        }
-      ]
     
     const options = [
       { value: 1, label: 'Legal Scan' },
       { value: 2, label: 'Policy Surveillance' }
-      //{ value: 3, label: 'Environmental Scan' }
     ]
     
     const alertActions = [
@@ -322,33 +291,24 @@ export class AddEditProject extends Component {
     
     return (
       <>
-        <Alert
-          open={this.state.alertOpen}
-          actions={alertActions}
-          onCloseAlert={this.onCancelDelete}
-          title={this.state.alertInfo.title}>
-          <Typography variant="body1">
-            {this.state.alertInfo.text}
-          </Typography>
+        <Alert open={alertOpen} actions={alertActions} onCloseAlert={this.onCancelDelete} title={alertInfo.title}>
+          <Typography variant="body1">{alertInfo.text}</Typography>
         </Alert>
         <FormModal
           form="projectForm"
           handleSubmit={this.handleSubmit}
           asyncValidate={this.validateProjectName}
           asyncBlurFields={['name']}
-          onClose={this.props.onCloseModal}
-          initialValues={this.props.location.state.projectDefined || {}}
+          onClose={onCloseModal}
+          initialValues={location.state.projectDefined || {}}
           width="600px"
           height="400px">
           <ModalTitle
             title={this.getModalTitle()}
             closeButton={!!this.projectDefined}
-            onEditForm={this.onEditForm}
             onCloseForm={this.onCancel}
-            buttons={(this.projectDefined && this.props.userRole === 'Admin')
-              ? <Button
-                color="accent"
-                onClick={() => this.handleShowDeleteConfirm()}>Delete</Button>
+            buttons={(this.projectDefined && userRole === 'Admin')
+              ? <Button color="error" onClick={this.handleShowDeleteConfirm}>Delete</Button>
               : undefined}
           />
           <Divider />
@@ -361,8 +321,7 @@ export class AddEditProject extends Component {
                 validate={this.required}
                 placeholder="Enter Project Name"
                 fullWidth
-                required={this.projectDefined ? this.state.edit : true}
-                disabled={!this.state.edit}
+                required={true}
               />
               <DetailRow
                 name="type"
@@ -371,27 +330,9 @@ export class AddEditProject extends Component {
                 defaultValue={1}
                 options={options}
                 id="type"
-                required={this.projectDefined ? this.state.edit : true}
+                required={true}
                 style={{ display: 'flex' }}
-                disabled={!this.state.edit}
               />
-              {this.projectDefined &&
-              <DetailRow
-                component={TextInput}
-                disabled
-                label="Created By"
-                name="createdBy"
-              />}
-              {this.projectDefined &&
-              <DetailRow
-                component={TextInput}
-                disabled
-                label="Created Date"
-                name="dateCreated"
-                format={this.formatDate}
-                style={{ paddingBottom: 0 }}
-              />
-              }
             </FlexGrid>
           </ModalContent>
           <ModalActions actions={actions} />
@@ -406,13 +347,14 @@ const mapStateToProps = state => ({
   projects: Object.values(state.data.projects.byId) || [],
   form: state.form.projectForm || {},
   formName: 'projectForm',
-  userRole: state.data.user.currentUser.role || '',
-  formError: state.scenes.home.addEditProject.formError || null,
-  goBack: state.scenes.home.addEditProject.goBack || false
+  userRole: state.data.user.currentUser.role,
+  formError: state.scenes.home.addEditProject.formError,
+  goBack: state.scenes.home.addEditProject.goBack,
+  submitting: state.scenes.home.addEditProject.submitting
 })
 
 /* istanbul ignore next */
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(actions, dispatch),
   formActions: bindActionCreators(formActions, dispatch)
 })

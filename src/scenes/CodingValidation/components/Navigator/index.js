@@ -142,8 +142,8 @@ export class Navigator extends Component {
   }
   
   /*
-   Rows are considered at the root level. so if a root item has children, to get the full height of the row, you have
-   to get the number of all children and multiply it by the row height, 40 px
+   * Rows are considered at the root level. so if a root item has children, to get the full height of the row, you have
+   * to get the number of all children and multiply it by the row height, 40 px
    */
   getExpandedItemCount = item => {
     let count = 1

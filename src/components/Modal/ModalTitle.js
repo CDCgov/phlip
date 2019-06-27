@@ -20,8 +20,7 @@ export const ModalTitle = ({ title, search, buttons, SearchBarProps, style }) =>
           {buttons &&
           <FlexGrid container type="row" align="center">
             {buttons}
-          </FlexGrid>
-          }
+          </FlexGrid>}
         </FlexGrid>
       </FlexGrid>
     </FlexGrid>

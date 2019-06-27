@@ -35,57 +35,46 @@ FormModal.propTypes = {
    * Function to call when the user submits the form
    */
   handleSubmit: PropTypes.func.isRequired,
-
   /**
    * Form name
    */
   form: PropTypes.string.isRequired,
-
   /**
    * Function to call when the modal is closed
    */
   onClose: PropTypes.func,
-
   /**
    * Whether or not the modal is open
    */
   open: PropTypes.bool,
-
   /**
    * Width of the form. Will be used in determining the size of the modal
    */
   width: PropTypes.string,
-
   /**
    * Height of the form. Will be used in determining the size of the modal
    */
   height: PropTypes.string,
-
   /**
    * Contents of the form
    */
   children: PropTypes.any,
-
   /**
    * Function to call asynchronously validate the form (used by redux-form)
    */
   asyncValidate: PropTypes.any,
-
   /**
    * Fields to handle asynchrounously on blur (used by redux-form)
    */
   asyncBlurFields: PropTypes.arrayOf(PropTypes.string),
-
   /**
    * Initial form values (used by redux-form)
    */
   initialValues: PropTypes.object,
-
   /**
    * Function to call to validate form (used by redux-form)
    */
   validate: PropTypes.func,
-
   /**
    * Maximum width of modal
    */

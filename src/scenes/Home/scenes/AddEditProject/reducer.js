@@ -2,7 +2,8 @@ import { types } from '../../actions'
 
 const INITIAL_STATE = {
   formError: null,
-  goBack: false
+  goBack: false,
+  submitting: false
 }
 
 /**
@@ -20,7 +21,8 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         formError: action.payload,
-        goBack: false
+        goBack: false,
+        submitting: false
       }
 
     case types.DELETE_PROJECT_SUCCESS:
@@ -29,7 +31,8 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         formError: null,
-        goBack: true
+        goBack: true,
+        submitting: false
       }
 
     case types.RESET_FORM_ERROR:
@@ -43,6 +46,7 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
     case types.DELETE_PROJECT_REQUEST:
       return {
         ...state,
+        submitting: true,
         goBack: false
       }
 
