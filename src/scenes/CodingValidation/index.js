@@ -4,33 +4,17 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
-import { default as MuiButton } from '@material-ui/core/Button'
 import Header from './components/Header'
 import QuestionCard from './components/QuestionCard'
 import Navigator from './components/Navigator'
 import DocumentList from './components/DocumentList'
 import actions from './actions'
 import {
-  TextLink, Icon, Button, Alert, Tooltip, ApiErrorView, ApiErrorAlert, PageLoader, withTracking, FlexGrid
+  TextLink, Icon, Button, Alert, ApiErrorView, ApiErrorAlert, PageLoader, withTracking, FlexGrid
 } from 'components'
 import classNames from 'classnames'
 import { capitalizeFirstLetter } from 'utils/formHelpers'
 import Resizable from 're-resizable'
-
-const navButtonStyles = {
-  height: 90,
-  width: 20,
-  minWidth: 'unset',
-  minHeight: 'unset',
-  backgroundColor: '#bdbdbd',
-  padding: 0,
-  top: '35%',
-  borderRadius: '0 5px 5px 0',
-  boxShadow: '0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12)',
-  color: '#424242'
-}
-
-const iconStyle = { transform: 'rotate(90deg)' }
 
 /* istanbul ignore next */
 const styles = theme => ({
@@ -58,7 +42,11 @@ const styles = theme => ({
 })
 
 /* istanbul ignore next */
-const ResizeHandle = () => <Icon>more_vert</Icon>
+const ResizeHandle = () => (
+  <Icon style={{ width: 15, minWidth: 15, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    more_vert
+  </Icon>
+)
 
 export class CodingValidation extends Component {
   static propTypes = {
@@ -550,13 +538,13 @@ export class CodingValidation extends Component {
         this.setState({
           jurisdiction: newJur
         })
-  
+        
         if (page === 'coding') {
           actions.getUserCodedQuestions(project.id, event.target.value)
         } else {
           actions.getUserValidatedQuestionsRequest(project.id, event.target.value)
         }
-  
+        
         this.onShowQuestionLoader()
         actions.getApprovedDocumentsRequest(project.id, newJur.jurisdictionId, page)
       }
@@ -659,14 +647,13 @@ export class CodingValidation extends Component {
     const containerStyle = {
       width: '100%',
       height: '100%',
-      position: 'relative',
       display: 'flex',
       flexWrap: 'nowrap',
       overflow: 'hidden'
     }
     
     return (
-      <FlexGrid container type="row" flex className={containerClasses} style={containerStyle}>
+      <FlexGrid container type="row" flex style={containerStyle}>
         <Alert
           open={applyAllAlertOpen}
           actions={this.modalActions}
@@ -696,13 +683,7 @@ export class CodingValidation extends Component {
           content={getQuestionErrors}
           onCloseAlert={() => actions.dismissApiAlert('getQuestionErrors')}
         />
-        {navOpen &&
-        <Navigator
-          open={navOpen}
-          page={page}
-          selectedCategory={selectedCategory}
-          handleQuestionSelected={this.onQuestionSelectedInNav}
-        />}
+        {showNav && <Navigator selectedCategory={selectedCategory} handleQuestionSelected={this.onQuestionSelectedInNav} />}
         <FlexGrid container flex style={{ width: '100%', flexWrap: 'nowrap', overflowX: 'hidden', overflowY: 'auto' }}>
           <Header
             project={project}
@@ -714,20 +695,11 @@ export class CodingValidation extends Component {
           />
           <FlexGrid container type="row" flex style={{ backgroundColor: '#f5f5f5' }}>
             <FlexGrid container type="row" flex style={{ overflow: 'auto' }}>
-              {!showPageLoader &&
-              <FlexGrid>
-                {showNav &&
-                <Tooltip placement="right" text="Toggle Navigator" id="toggle-navigator">
-                  <MuiButton style={navButtonStyles} aria-label="Toggle Navigator" onClick={this.onToggleNavigator}>
-                    <Icon color="#424242" style={iconStyle}>menu</Icon>
-                  </MuiButton>
-                </Tooltip>}
-              </FlexGrid>}
               <FlexGrid
                 container
                 type="row"
                 flex
-                style={{ padding: '1px 15px 20px 15px', overflow: 'auto', minHeight: 500 }}>
+                style={{ padding: '1px 15px 20px 3px', overflow: 'auto', minHeight: 500 }}>
                 {schemeError !== null && <ApiErrorView error="We couldn't get the coding scheme for this project." />}
                 {getRequestInProgress
                   ? showPageLoader
@@ -788,7 +760,7 @@ export class CodingValidation extends Component {
                               width: 'fit-content',
                               bottom: '50%',
                               top: 'unset',
-                              left: -4
+                              left: 0
                             }
                           }}
                           defaultSize={{
