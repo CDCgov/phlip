@@ -20,10 +20,10 @@ const ResizeHandle = () => (
  */
 export class Navigator extends Component {
   static propTypes = {
-    scheme: PropTypes.object,
     currentQuestion: PropTypes.object,
     handleQuestionSelected: PropTypes.func,
-    selectedCategory: PropTypes.number
+    selectedCategory: PropTypes.number,
+    tree: PropTypes.array
   }
   
   constructor(props, context) {
