@@ -19,10 +19,10 @@ const logoutLogic = createLogic({
   },
   async process({ action, api }, dispatch, done) {
     logout()
-    // if (APP_IS_SAML_ENABLED === '1') {
-    samsLogout(api)
-    //location.href='/auth/logout'
-    // }
+    if (APP_IS_SAML_ENABLED === '1') {
+      console.log(persistor)
+      samsLogout(api)
+    }
 
     dispatch({ type: types.FLUSH_STATE, isLogout: true })
     await persistor.flush()
@@ -32,19 +32,39 @@ const logoutLogic = createLogic({
 })
 
 const samsLogout = async (api) => {
-  try {
-    axios.get(`/auth/logout`)
-      .then(res => {
-        const result = res.data
-        console.log(result)
-        return result
-      })
-    //let logoutResult = await api.samsLogout({}, {}, {})
-    //return logoutResult
 
+  const user = getCookie('user').trim()
+  let parsedUser = JSON.parse(user.substring(1,user.length-1))
+  try {
+    axios.get('/logout', {
+      params: {
+        nameID: parsedUser.nameID,
+        nameIDFormat: parsedUser.nameIDFormat,
+        sessionIndex: parsedUser.sessionIndex
+      }
+    })
+      .then(res => {
+        const logoutURL = res.data
+        location.href=logoutURL
+      })
   } catch (err) {
     return err
   }
+}
+
+const getCookie = (cname) => {
+  let name = cname + '='
+  let ca = document.cookie.split(';')
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i]
+    while (c.charAt(0) === ' ') {
+      c = c.substring(1)
+    }
+    if (c.indexOf(name) === 0) {
+      return c.substring(name.length, c.length)
+    }
+  }
+  return ''
 }
 
 export default [

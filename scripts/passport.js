@@ -23,6 +23,7 @@ module.exports = function (passport, config) {
       entryPoint: process.env.SAML_ENTRY_POINT_URL,
       issuer: process.env.SAML_ISSUER,
       logoutUrl: process.env.APP_SAML_LOGOUT_URL,
+      logoutCallbackUrl: process.env.APP_SAML_LOGOUT_CALLBACK_URL,
       identifierFormat: process.env.SAML_IDENTIFIER_FORMAT,
       disableRequestedAuthnContext: true,
       cert: fs.readFileSync(process.env.SAML_CERT_PATH,'utf-8').toString()
@@ -34,7 +35,11 @@ module.exports = function (passport, config) {
           id: profile.useraccountid,
           email: profile.email,
           firstName: profile.firstname,
-          lastName: profile.lastname
+          lastName: profile.lastname,
+          nameID: profile.nameID,
+          nameIDFormat: profile.nameIDFormat,
+          sessionIndex: profile.sessionIndex,
+          ...profile
         }
       )
     }
