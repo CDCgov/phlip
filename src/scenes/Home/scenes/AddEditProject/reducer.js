@@ -3,7 +3,10 @@ import { types } from './actions'
 export const INITIAL_STATE = {
   formError: null,
   goBack: false,
-  submitting: false
+  submitting: false,
+  newUsers: [],
+  userSuggestions: [],
+  userSearchValue: ''
 }
 
 /**
@@ -35,12 +38,6 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
         submitting: false
       }
 
-    case types.RESET_FORM_ERROR:
-      return {
-        ...state,
-        formError: null
-      }
-
     case types.ADD_PROJECT_REQUEST:
     case types.UPDATE_PROJECT_REQUEST:
     case types.DELETE_PROJECT_REQUEST:
@@ -49,7 +46,41 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
         submitting: true,
         goBack: false
       }
-
+      
+    case types.ON_USER_SUGGESTION_SELECTED:
+      return {
+        ...state,
+        newUsers: [
+          ...state.newUsers,
+          action.user
+        ],
+        userSearchValue: ''
+      }
+      
+    case types.UPDATE_USER_SUGGESTION_VALUE:
+      return {
+        ...state,
+        userSearchValue: action.suggestionValue
+      }
+      
+    case types.SET_USER_SUGGESTIONS:
+      return {
+        ...state,
+        userSuggestions: action.payload
+      }
+      
+    case types.ON_CLEAR_USER_SUGGESTIONS:
+      return {
+        ...state,
+        userSuggestions: []
+      }
+  
+    case types.RESET_FORM_ERROR:
+      return {
+        ...state,
+        formError: null
+      }
+      
     default:
       return state
   }

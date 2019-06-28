@@ -93,9 +93,30 @@ export const updateUserId = createLogic({
   }
 })
 
+/**
+ * Handles searching the user list for adding useres
+ */
+export const searchUserList = createLogic({
+  type: types.SEARCH_USER_LIST,
+  latest: true,
+  async process({ action, api }, dispatch, done) {
+    const response = await api.searchUserList({}, {
+      params: {
+        name: action.searchString
+      }
+    }, {})
+    const users = response.map(user => ({
+      ...user,
+      name: `${user.firstName} ${user.lastName}`
+    }))
+    dispatch({ type: types.SET_USER_SUGGESTIONS, payload: users })
+  }
+})
+
 export default [
   updateUserId,
   addProjectLogic,
   updateProjectLogic,
-  deleteProjectLogic
+  deleteProjectLogic,
+  searchUserList
 ]

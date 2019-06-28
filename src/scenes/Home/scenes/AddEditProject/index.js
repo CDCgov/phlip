@@ -23,6 +23,46 @@ import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import InputLabel from '@material-ui/core/InputLabel'
 import DetailRow from './components/DetailRow'
+import MenuItem from '@material-ui/core/MenuItem'
+import parse from 'autosuggest-highlight/parse'
+import match from 'autosuggest-highlight/match'
+
+/**
+ * For the autocomplete search field
+ * @param suggestion
+ * @returns {*}
+ */
+const getSuggestionValue = suggestion => suggestion
+
+/**
+ * Renders the user suggestion
+ * @param suggestion
+ * @param query
+ * @param isHighlighted
+ * @returns {*}
+ */
+const renderSuggestion = (suggestion, { query, isHighlighted }) => {
+  const matches = match(suggestion.name, query)
+  const parts = parse(suggestion.name, matches)
+  
+  return (
+    <MenuItem selected={isHighlighted} component="div">
+      <div>
+        {parts.map((part, index) => {
+          return part.highlight ? (
+            <span key={String(index)} style={{ fontWeight: 300 }}>
+              {part.text}
+            </span>
+          ) : (
+            <strong key={String(index)} style={{ fontWeight: 500 }}>
+              {part.text}
+            </strong>
+          )
+        })}
+      </div>
+    </MenuItem>
+  )
+}
 
 /**
  * Main / entry component for all things related to adding and editing a project. This component is a modal and is
@@ -297,7 +337,7 @@ export class AddEditProject extends Component {
   
   render() {
     const { alertOpen, alertInfo } = this.state
-    const { userRole, location, onCloseModal, submitting, userSuggestions, userSearchValue } = this.props
+    const { userRole, location, onCloseModal, submitting, userSuggestions, userSearchValue, newUsers } = this.props
     
     const actions = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Cancel edit view' } },
@@ -323,6 +363,8 @@ export class AddEditProject extends Component {
         onClick: this.handleDeleteConfirm
       }
     ]
+    
+    const users = this.projectDefined ? [...this.projectDefined.projectUsers, ...newUsers] : [...newUsers]
     
     return (
       <>
@@ -370,8 +412,8 @@ export class AddEditProject extends Component {
                 style={{ display: 'flex' }}
               />
               <FlexGrid container padding="0 0 25px">
-                <InputLabel shrink>Project Users</InputLabel>
-                {this.projectDefined.projectUsers.map((user, i) => {
+                <InputLabel>Project Users</InputLabel>
+                {users.map((user, i) => {
                   return <Typography key={`project-user-${i}`}>{user.firstName}{' '}{user.lastName}</Typography>
                 })}
               </FlexGrid>
@@ -387,7 +429,7 @@ export class AddEditProject extends Component {
                   }}
                   inputProps={{
                     value: userSearchValue,
-                    onChange: this.onSuggestionChange,
+                    onChange: this.onUserSuggestionChange,
                     id: 'add-user-name'
                   }}
                   handleSuggestionSelected={this.onUserSelected}
@@ -412,7 +454,8 @@ const mapStateToProps = state => ({
   goBack: state.scenes.home.addEditProject.goBack,
   submitting: state.scenes.home.addEditProject.submitting,
   userSearchValue: state.scenes.home.addEditProject.userSearchValue || '',
-  userSuggestions: state.scenes.home.addEditProject.userSuggestions || []
+  userSuggestions: state.scenes.home.addEditProject.userSuggestions || [],
+  newUsers: state.scenes.home.addEditProject.newUsers || []
 })
 
 /* istanbul ignore next */

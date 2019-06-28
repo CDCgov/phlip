@@ -13,7 +13,8 @@ export const types = {
   SEARCH_USER_LIST: 'SEARCH_USER_LIST',
   UPDATE_USER_SUGGESTION_VALUE: 'UPDATE_USER_SUGGESTION_VALUE',
   ON_CLEAR_USER_SUGGESTIONS: 'ON_CLEAR_USER_SUGGESTIONS',
-  ON_USER_SUGGESTION_SELECTED: 'ON_USER_SUGGESTION_SELECTED'
+  ON_USER_SUGGESTION_SELECTED: 'ON_USER_SUGGESTION_SELECTED',
+  SET_USER_SUGGESTIONS: 'SET_USER_SUGGESTIONS'
 }
 
 export default {
@@ -27,7 +28,7 @@ export default {
   deleteProjectSuccess: makeActionCreator(types.DELETE_PROJECT_SUCCESS, 'payload'),
   deleteProjectFail: payload => ({ type: types.DELETE_PROJECT_FAIL, errorValue: payload, error: true }),
   resetFormError: makeActionCreator(types.RESET_FORM_ERROR),
-  searchUserList: makeActionCreator(types.SEARCH_USER_LIST, 'value'),
+  searchUserList: makeActionCreator(types.SEARCH_USER_LIST, 'searchString'),
   onSuggestionValueChanged: makeActionCreator(types.UPDATE_USER_SUGGESTION_VALUE, 'suggestionValue'),
   onClearSuggestions: makeActionCreator(types.ON_CLEAR_USER_SUGGESTIONS),
   onUserSelected: makeActionCreator(types.ON_USER_SUGGESTION_SELECTED, 'user')
