@@ -6,9 +6,9 @@ import { reduxForm } from 'redux-form'
  * Basic form wrapper to be used with redux-form
  * @component
  */
-export let Form = ({ children, handleSubmit, form, role, ariaLabelledBy, ...otherProps }) => {
+export let Form = ({ children, handleSubmit, form, role, ariaLabelledBy, style }) => {
   return (
-    <form onSubmit={handleSubmit} role={role} aria-labelledby={ariaLabelledBy} {...otherProps}>
+    <form onSubmit={handleSubmit} role={role} aria-labelledby={ariaLabelledBy} style={style}>
       {children}
     </form>
   )
@@ -34,7 +34,11 @@ Form.propTypes = {
   /**
    * aria-labelled-by
    */
-  ariaLabelledBy: PropTypes.any
+  ariaLabelledBy: PropTypes.any,
+  /**
+   * Styles for form
+   */
+  style: PropTypes.object
 }
 
 Form = reduxForm({

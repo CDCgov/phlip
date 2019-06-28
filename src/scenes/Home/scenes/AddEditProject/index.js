@@ -369,27 +369,30 @@ export class AddEditProject extends Component {
                 required={true}
                 style={{ display: 'flex' }}
               />
-              <FlexGrid container>
-                <InputLabel shrink>Users</InputLabel>
+              <FlexGrid container padding="0 0 25px">
+                <InputLabel shrink>Project Users</InputLabel>
                 {this.projectDefined.projectUsers.map((user, i) => {
-                  return <Typography key={`project-user-${i}`}>{user.name}</Typography>
+                  return <Typography key={`project-user-${i}`}>{user.firstName}{' '}{user.lastName}</Typography>
                 })}
               </FlexGrid>
-              <Autocomplete
-                name="name"
-                suggestions={userSuggestions}
-                handleGetSuggestions={this.onUsersFetchRequest}
-                handleClearSuggestions={this.onClearUserSuggestions}
-                InputProps={{
-                  placeholder: 'Search for user by name'
-                }}
-                inputProps={{
-                  value: userSearchValue,
-                  onChange: this.onSuggestionChange,
-                  id: 'add-user-name'
-                }}
-                handleSuggestionSelected={this.onUserSelected}
-              />
+              <FlexGrid container>
+                <InputLabel shrink>Add New User</InputLabel>
+                <Autocomplete
+                  name="name"
+                  suggestions={userSuggestions}
+                  handleGetSuggestions={this.onUsersFetchRequest}
+                  handleClearSuggestions={this.onClearUserSuggestions}
+                  InputProps={{
+                    placeholder: 'Search for user by name'
+                  }}
+                  inputProps={{
+                    value: userSearchValue,
+                    onChange: this.onSuggestionChange,
+                    id: 'add-user-name'
+                  }}
+                  handleSuggestionSelected={this.onUserSelected}
+                />
+              </FlexGrid>
             </FlexGrid>
           </ModalContent>
           <ModalActions actions={actions} />
