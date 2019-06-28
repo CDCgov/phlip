@@ -10,11 +10,11 @@ export const FormModal = props => {
   const {
     handleSubmit, form, onClose, open, width, height,
     children, asyncValidate, asyncBlurFields,
-    initialValues, validate, maxWidth
+    initialValues, validate, maxWidth, style, formStyle
   } = props
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth={maxWidth}>
+    <Dialog open={open} onClose={onClose} maxWidth={maxWidth} PaperProps={{ style }}>
       <Form
         ariaLabelledBy="modal-title"
         onSubmit={handleSubmit}
@@ -23,7 +23,7 @@ export const FormModal = props => {
         asyncBlurFields={asyncBlurFields}
         validate={validate}
         initialValues={initialValues}
-        style={{ width, height }}>
+        style={{ width, height, ...formStyle }}>
         {children}
       </Form>
     </Dialog>
@@ -78,7 +78,15 @@ FormModal.propTypes = {
   /**
    * Maximum width of modal
    */
-  maxWidth: PropTypes.string
+  maxWidth: PropTypes.oneOf(['sm', 'md', 'lg', false]),
+  /*
+   * Style to apply to container
+   */
+  style: PropTypes.object,
+  /*
+   * Styles to apply to form element
+   */
+  formStyle: PropTypes.object
 }
 
 FormModal.defaultProps = {

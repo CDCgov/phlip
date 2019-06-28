@@ -1,5 +1,5 @@
 import { createLogic } from 'redux-logic'
-import { types } from '../../actions'
+import { types } from './actions'
 import { types as documentTypes } from 'scenes/DocumentManagement/actions'
 import { types as projectTypes } from 'data/projects/actions'
 

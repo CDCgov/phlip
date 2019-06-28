@@ -15,10 +15,13 @@ import {
   CircularLoader,
   Button,
   Alert,
-  FlexGrid
+  FlexGrid,
+  Autocomplete,
+  IconButton
 } from 'components'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
+import InputLabel from '@material-ui/core/InputLabel'
 import DetailRow from './components/DetailRow'
 
 /**
@@ -260,9 +263,41 @@ export class AddEditProject extends Component {
     this.props.actions.closeAlert()
   }
   
+  /**
+   * Search user list for adding a user
+   * @param value
+   */
+  onUsersFetchRequest = ({ value }) => {
+    this.props.actions.searchUserList(value)
+  }
+  
+  /**
+   * When a user was selected
+   * @param event
+   * @param suggestionValue
+   */
+  onUserSelected = (event, { suggestionValue }) => {
+    this.props.actions.onUserSelected(suggestionValue)
+  }
+  
+  /**
+   * User changed their search value
+   * @param event
+   */
+  onUserSuggestionChange = event => {
+    this.props.actions.onSuggestionValueChanged(event.target.value)
+  }
+  
+  /**
+   * Clears suggestion list
+   */
+  onClearUserSuggestions = () => {
+    this.props.actions.onClearSuggestions()
+  }
+  
   render() {
     const { alertOpen, alertInfo } = this.state
-    const { userRole, location, onCloseModal, submitting } = this.props
+    const { userRole, location, onCloseModal, submitting, userSuggestions, userSearchValue } = this.props
     
     const actions = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Cancel edit view' } },
@@ -300,9 +335,10 @@ export class AddEditProject extends Component {
           asyncValidate={this.validateProjectName}
           asyncBlurFields={['name']}
           onClose={onCloseModal}
-          initialValues={location.state.projectDefined || {}}
-          width="600px"
-          height="400px">
+          maxWidth="lg"
+          style={{ height: '80%', width: '80%' }}
+          formStyle={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+          initialValues={location.state.projectDefined || {}}>
           <ModalTitle
             title={this.getModalTitle()}
             closeButton={!!this.projectDefined}
@@ -333,6 +369,27 @@ export class AddEditProject extends Component {
                 required={true}
                 style={{ display: 'flex' }}
               />
+              <FlexGrid container>
+                <InputLabel shrink>Users</InputLabel>
+                {this.projectDefined.projectUsers.map((user, i) => {
+                  return <Typography key={`project-user-${i}`}>{user.name}</Typography>
+                })}
+              </FlexGrid>
+              <Autocomplete
+                name="name"
+                suggestions={userSuggestions}
+                handleGetSuggestions={this.onUsersFetchRequest}
+                handleClearSuggestions={this.onClearUserSuggestions}
+                InputProps={{
+                  placeholder: 'Search for user by name'
+                }}
+                inputProps={{
+                  value: userSearchValue,
+                  onChange: this.onSuggestionChange,
+                  id: 'add-user-name'
+                }}
+                handleSuggestionSelected={this.onUserSelected}
+              />
             </FlexGrid>
           </ModalContent>
           <ModalActions actions={actions} />
@@ -350,7 +407,9 @@ const mapStateToProps = state => ({
   userRole: state.data.user.currentUser.role,
   formError: state.scenes.home.addEditProject.formError,
   goBack: state.scenes.home.addEditProject.goBack,
-  submitting: state.scenes.home.addEditProject.submitting
+  submitting: state.scenes.home.addEditProject.submitting,
+  userSearchValue: state.scenes.home.addEditProject.userSearchValue || '',
+  userSuggestions: state.scenes.home.addEditProject.userSuggestions || []
 })
 
 /* istanbul ignore next */

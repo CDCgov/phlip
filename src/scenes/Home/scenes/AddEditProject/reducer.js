@@ -1,4 +1,4 @@
-import { types } from '../../actions'
+import { types } from './actions'
 
 export const INITIAL_STATE = {
   formError: null,
