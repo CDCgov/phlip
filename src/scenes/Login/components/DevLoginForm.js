@@ -10,7 +10,7 @@ let DevLoginForm = ({ handleSubmit, pristine, error, submitting, pivError }) => 
   <form onSubmit={handleSubmit}>
     <FlexGrid container justify="space-around" align="center">
       <FlexGrid padding={16} style={{ width: 280, boxSizing: 'border-box' }}>
-        <Field name="email" label="Email" component={TextInput} />
+        <Field name="email" label="Email" component={TextInput} smallLabel={false} />
       </FlexGrid>
     </FlexGrid>
     <FlexGrid container type="row" justify="center" align="center">

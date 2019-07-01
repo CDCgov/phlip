@@ -33,11 +33,15 @@ const styles = theme => ({
 export const Dropdown = props => {
   const {
     input, label, id, defaultValue, classes, shrinkLabel, formControlStyle,
-    disabled, options, required, displayEmpty, ...otherProps
+    disabled, options, required, displayEmpty, fullWidth, ...otherProps
   } = props
   
   return (
-    <FlexGrid container align="flex-start" style={{ minWidth: 120, ...formControlStyle }} id={`${id}-container`}>
+    <FlexGrid
+      container
+      align={fullWidth ? 'stretch' : 'flex-start'}
+      style={{ minWidth: 120, ...formControlStyle }}
+      id={`${id}-container`}>
       {label && <InputLabel htmlFor={id} shrink={shrinkLabel} required={required}>{label}</InputLabel>}
       <Select
         input={<Input id={id} />}
@@ -98,7 +102,11 @@ Dropdown.propTypes = {
   /**
    * Is the input dropdown required
    */
-  required: PropTypes.bool
+  required: PropTypes.bool,
+  /**
+   * Whether or not to make it full width
+   */
+  fullWidth: PropTypes.bool
 }
 
 Dropdown.defaultProps = {
@@ -107,7 +115,8 @@ Dropdown.defaultProps = {
   options: [],
   meta: { touched: false, error: undefined },
   label: '',
-  displayEmpty: false
+  displayEmpty: false,
+  fullWidth: false
 }
 
 export default withStyles(styles)(Dropdown)
