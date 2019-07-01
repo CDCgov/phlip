@@ -55,7 +55,9 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
       
       return {
         ...state,
-        users: updated
+        users: updated,
+        userSearchValue: '',
+        userSuggestions: []
       }
       
     case types.ON_USER_SUGGESTION_SELECTED:

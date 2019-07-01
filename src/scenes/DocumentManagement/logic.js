@@ -160,7 +160,12 @@ const getDocLogic = createLogic({
   type: types.GET_DOCUMENTS_REQUEST,
   async process({ getState, docApi, api }, dispatch, done) {
     try {
-      let documents = await docApi.getDocs()
+      const user = getState().data.user.currentUser
+      const allIds = getState().data.projects.allIds
+      let listParam = allIds.length === 0 ? 'projects[]=' : ''
+      allIds.forEach((id, i) => listParam = `${listParam}projects[]=${id}${i === allIds.length - 1 ? '' : '&'}`)
+      
+      let documents = await docApi.getDocs({}, {}, user.role !== 'Admin' ? listParam : '')
       documents = documents.map(document => ({
         ...document,
         uploadedByName: `${document.uploadedBy.firstName} ${document.uploadedBy.lastName}`

@@ -13,7 +13,7 @@ const docManageCalls = [
   {
     name: 'getDocs',
     method: 'get',
-    path: () => '/docs'
+    path: (projectList = '') => projectList !== '' ? `/docs?${projectList}` : '/docs'
   },
   {
     name: 'extractInfo',
