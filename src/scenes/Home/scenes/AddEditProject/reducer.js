@@ -62,8 +62,8 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         users: [
-          ...state.users,
-          { ...action.user, userId: action.user.id }
+          { ...action.user, userId: action.user.id },
+          ...state.users
         ],
         userSearchValue: ''
       }

@@ -117,9 +117,36 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
           style={Object {}}
           type="column"
         >
-          <WithStyles(InputLabel)>
-            Project Users
-          </WithStyles(InputLabel)>
+          <FlexGrid
+            align="center"
+            circular={false}
+            container={true}
+            flex={false}
+            justify="stretch"
+            padding={0}
+            raised={false}
+            style={Object {}}
+            type="row"
+          >
+            <WithStyles(InputLabel)
+              style={
+                Object {
+                  "marginRight": 5,
+                }
+              }
+            >
+              Project Users
+            </WithStyles(InputLabel)>
+            <IconButton
+              color="primary"
+              disabled={false}
+              iconSize={18}
+              onClick={[Function]}
+              tooltipText=""
+            >
+              person_add
+            </IconButton>
+          </FlexGrid>
           <FlexGrid
             align="stretch"
             circular={false}
@@ -130,41 +157,6 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
             raised={false}
             style={Object {}}
             type="column"
-          />
-        </FlexGrid>
-        <FlexGrid
-          align="stretch"
-          circular={false}
-          container={true}
-          flex={false}
-          justify="stretch"
-          padding={0}
-          raised={false}
-          style={Object {}}
-          type="column"
-        >
-          <WithStyles(InputLabel)
-            shrink={true}
-          >
-            Add New User
-          </WithStyles(InputLabel)>
-          <WithStyles(Autocomplete)
-            InputProps={
-              Object {
-                "placeholder": "Search for user by name",
-              }
-            }
-            handleClearSuggestions={[Function]}
-            handleGetSuggestions={[Function]}
-            handleSuggestionSelected={[Function]}
-            inputProps={
-              Object {
-                "id": "add-user-name",
-                "onChange": [Function],
-                "value": undefined,
-              }
-            }
-            name="name"
           />
         </FlexGrid>
       </FlexGrid>

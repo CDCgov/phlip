@@ -111,14 +111,13 @@ export class AddEditProject extends Component {
     super(props, context)
     this.projectDefined = this.props.match.url === '/project/add' ? null : this.props.location.state.projectDefined
     this.state = {
-      submitting: false,
       alertOpen: false,
       alertInfo: {
         title: '',
         text: ''
       },
-      hoveredUser: null,
-      showModal: false
+      addUserEnabled: false,
+      hoveredUser: null
     }
   }
   
@@ -170,7 +169,6 @@ export class AddEditProject extends Component {
   handleSubmit = values => {
     const { actions } = this.props
     
-    this.setState({ submitting: true })
     this.projectDefined
       ? actions.updateProjectRequest({ ...values, name: this.capitalizeFirstLetter(values.name) })
       : actions.addProjectRequest({ type: 1, ...values, name: this.capitalizeFirstLetter(values.name) })
@@ -290,6 +288,9 @@ export class AddEditProject extends Component {
    */
   onUserSelected = (event, { suggestionValue }) => {
     this.props.actions.onUserSelected(suggestionValue)
+    this.setState({
+      addUserEnabled: false
+    })
   }
   
   /**
@@ -346,8 +347,18 @@ export class AddEditProject extends Component {
     }
   }
   
+  /**
+   * Enables the add user field
+   * @returns {*}
+   */
+  onEnabledAddUser = () => {
+    this.setState({
+      addUserEnabled: true
+    })
+  }
+  
   render() {
-    const { alertOpen, alertInfo, hoveredUser } = this.state
+    const { alertOpen, alertInfo, hoveredUser, addUserEnabled } = this.state
     const { currentUser, location, submitting, userSuggestions, userSearchValue, users } = this.props
     
     const actions = [
@@ -421,7 +432,25 @@ export class AddEditProject extends Component {
                 style={{ display: 'flex' }}
               />
               <FlexGrid container padding="0 0 25px">
-                <InputLabel>Project Users</InputLabel>
+                <FlexGrid container type="row" align="center">
+                  <InputLabel style={{ marginRight: 5 }}>Project Users</InputLabel>
+                  <IconButton iconSize={18} color="primary" onClick={this.onEnabledAddUser}>person_add</IconButton>
+                </FlexGrid>
+                {addUserEnabled && <Autocomplete
+                  name="name"
+                  suggestions={userSuggestions}
+                  handleGetSuggestions={this.onUsersFetchRequest}
+                  handleClearSuggestions={this.onClearUserSuggestions}
+                  InputProps={{
+                    placeholder: 'Search for user by name'
+                  }}
+                  inputProps={{
+                    value: userSearchValue,
+                    onChange: this.onUserSuggestionChange,
+                    id: 'add-user-name'
+                  }}
+                  handleSuggestionSelected={this.onUserSelected}
+                />}
                 <FlexGrid container>
                   {users.length > 0 && users.map((user, i) => {
                     const isCreator = this.projectDefined
@@ -461,24 +490,23 @@ export class AddEditProject extends Component {
                   })}
                 </FlexGrid>
               </FlexGrid>
-              <FlexGrid container>
-                <InputLabel shrink>Add New User</InputLabel>
-                <Autocomplete
-                  name="name"
-                  suggestions={userSuggestions}
-                  handleGetSuggestions={this.onUsersFetchRequest}
-                  handleClearSuggestions={this.onClearUserSuggestions}
-                  InputProps={{
-                    placeholder: 'Search for user by name'
-                  }}
-                  inputProps={{
-                    value: userSearchValue,
-                    onChange: this.onUserSuggestionChange,
-                    id: 'add-user-name'
-                  }}
-                  handleSuggestionSelected={this.onUserSelected}
-                />
-              </FlexGrid>
+              {/*<FlexGrid container>*/}
+              {/*  <Autocomplete*/}
+              {/*    name="name"*/}
+              {/*    suggestions={userSuggestions}*/}
+              {/*    handleGetSuggestions={this.onUsersFetchRequest}*/}
+              {/*    handleClearSuggestions={this.onClearUserSuggestions}*/}
+              {/*    InputProps={{*/}
+              {/*      placeholder: 'Search for user by name'*/}
+              {/*    }}*/}
+              {/*    inputProps={{*/}
+              {/*      value: userSearchValue,*/}
+              {/*      onChange: this.onUserSuggestionChange,*/}
+              {/*      id: 'add-user-name'*/}
+              {/*    }}*/}
+              {/*    handleSuggestionSelected={this.onUserSelected}*/}
+              {/*  />*/}
+              {/*</FlexGrid>*/}
             </FlexGrid>
           </ModalContent>
           <ModalActions actions={actions} />
