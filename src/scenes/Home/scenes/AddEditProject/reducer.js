@@ -86,7 +86,7 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
     case types.SET_USER_SUGGESTIONS:
       return {
         ...state,
-        userSuggestions: action.payload
+        userSuggestions: action.payload.filter(user => state.users.findIndex(pUser => pUser.userId === user.id) === -1)
       }
       
     case types.ON_CLEAR_USER_SUGGESTIONS:
