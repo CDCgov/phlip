@@ -24,7 +24,6 @@ export const TextInput = props => {
     <Container {...containerProps}>
       {label && <InputLabel
         htmlFor={input.name}
-        shrink={false}
         error={hasError}
         disabled={disabled}
         required={required}>

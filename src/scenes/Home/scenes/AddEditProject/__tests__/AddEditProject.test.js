@@ -17,6 +17,9 @@ const props = {
     state: {
       projectDefined: null
     }
+  },
+  currentUser: {
+    userId: 32
   }
 }
 

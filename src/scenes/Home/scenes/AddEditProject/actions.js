@@ -35,5 +35,5 @@ export default {
   onClearSuggestions: makeActionCreator(types.ON_CLEAR_USER_SUGGESTIONS),
   onUserSelected: makeActionCreator(types.ON_USER_SUGGESTION_SELECTED, 'user'),
   removeUserFromList: makeActionCreator(types.REMOVE_USER_FROM_LIST, 'index'),
-  setCurrentUsers: makeActionCreator(types.SET_CURRENT_USERS, 'users')
+  setCurrentUsers: makeActionCreator(types.SET_CURRENT_USERS, 'users', 'creatorId')
 }

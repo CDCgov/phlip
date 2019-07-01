@@ -60,7 +60,7 @@ export const deleteProjectLogic = createLogic({
         type: types.DELETE_PROJECT_SUCCESS,
         project: action.project
       })
-  
+      
       dispatch({ type: projectTypes.REMOVE_PROJECT, projectId: action.project, payload: {} })
       
       // remove project id from all documents' project list and also clean up redux store when completed
@@ -86,9 +86,11 @@ export const deleteProjectLogic = createLogic({
 export const updateUserId = createLogic({
   type: [types.ADD_PROJECT_REQUEST, types.UPDATE_PROJECT_REQUEST],
   transform({ getState, action }, next) {
+    const users = getState().scenes.home.addEditProject.users.map(user => user.userId)
+    console.log(users)
     next({
       ...action,
-      project: { ...action.project, userId: getState().data.user.currentUser.id }
+      project: { ...action.project, userId: getState().data.user.currentUser.id, projectUsers: users }
     })
   }
 })

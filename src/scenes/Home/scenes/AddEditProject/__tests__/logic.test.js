@@ -33,6 +33,13 @@ describe('Home scene - AddEditProject logic', () => {
           projects: {
             byId: projects
           }
+        },
+        scenes: {
+          home: {
+            addEditProject: {
+              users: [{ userId: 4 }, { userId: 1 }]
+            }
+          }
         }
       },
       reducer: mockReducer,

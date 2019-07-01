@@ -100,7 +100,11 @@ export class AddEditProject extends Component {
     /**
      * New users
      */
-    users: PropTypes.array
+    users: PropTypes.array,
+    /**
+     * Passed in from withFormAlert HOC
+     */
+    openConfirmAlert: PropTypes.func
   }
   
   constructor(props, context) {
@@ -119,12 +123,15 @@ export class AddEditProject extends Component {
   }
   
   componentDidMount() {
+    const { actions, currentUser } = this.props
     this.prevTitle = document.title
-    this.props.actions.setCurrentUsers(this.projectDefined ? this.projectDefined.projectUsers : [])
+    
     if (this.projectDefined) {
       document.title = `PHLIP - Project ${this.projectDefined.name} - Edit`
+      actions.setCurrentUsers(this.projectDefined.projectUsers, this.projectDefined.createdById)
     } else {
       document.title = `PHLIP - Add Project`
+      actions.setCurrentUsers([currentUser], currentUser.userId)
     }
   }
   
@@ -320,12 +327,31 @@ export class AddEditProject extends Component {
     })
   }
   
+  /**
+   * Checks whether there have been updates to the users list; if not delegates it to the form alert
+   */
+  onCloseModal = () => {
+    const { users, onCloseModal, openConfirmAlert } = this.props
+    
+    if (this.projectDefined) {
+      if (users.length !== this.projectDefined.projectUsers.length) {
+        openConfirmAlert()
+      } else {
+        onCloseModal()
+      }
+    } else if (users.length > 1) {
+      openConfirmAlert()
+    } else {
+      onCloseModal()
+    }
+  }
+  
   render() {
     const { alertOpen, alertInfo, hoveredUser } = this.state
-    const { currentUser, location, onCloseModal, submitting, userSuggestions, userSearchValue, users } = this.props
+    const { currentUser, location, submitting, userSuggestions, userSearchValue, users } = this.props
     
     const actions = [
-      { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Cancel edit view' } },
+      { value: 'Cancel', onClick: this.onCloseModal, type: 'button', otherProps: { 'aria-label': 'Cancel edit view' } },
       {
         value: this.projectDefined
           ? this.getButtonText('Save')
@@ -359,15 +385,13 @@ export class AddEditProject extends Component {
           handleSubmit={this.handleSubmit}
           asyncValidate={this.validateProjectName}
           asyncBlurFields={['name']}
-          onClose={onCloseModal}
+          onClose={this.onCloseModal}
           maxWidth="lg"
           style={{ height: '90%', width: '80%' }}
           formStyle={{ height: '100%', display: 'flex', flexDirection: 'column' }}
           initialValues={location.state.projectDefined || {}}>
           <ModalTitle
             title={this.getModalTitle()}
-            closeButton={!!this.projectDefined}
-            onCloseForm={this.onCancel}
             buttons={(this.projectDefined && currentUser.role === 'Admin')
               ? <Button color="error" onClick={this.handleShowDeleteConfirm}>Delete</Button>
               : undefined}
@@ -399,8 +423,10 @@ export class AddEditProject extends Component {
               <FlexGrid container padding="0 0 25px">
                 <InputLabel>Project Users</InputLabel>
                 <FlexGrid container>
-                  {users.map((user, i) => {
-                    const isCreator = user.userId === this.projectDefined.createdById
+                  {users.length > 0 && users.map((user, i) => {
+                    const isCreator = this.projectDefined
+                      ? user.userId === this.projectDefined.createdById
+                      : user.userId === currentUser.userId
                     const userName = `${user.firstName} ${user.lastName}`
                     const hovered = i === hoveredUser
   
@@ -427,7 +453,7 @@ export class AddEditProject extends Component {
                           onClick={this.removeUser(i)}
                           color="error"
                           iconSize={16}
-                          tooltipText={`Remove ${userName} from project`}>
+                          tooltipText={`Remove ${userName}`}>
                           delete
                         </IconButton>}
                       </FlexGrid>
@@ -467,7 +493,7 @@ const mapStateToProps = state => ({
   projects: Object.values(state.data.projects.byId) || [],
   form: state.form.projectForm || {},
   formName: 'projectForm',
-  currentUser: state.data.user.currentUser,
+  currentUser: { ...state.data.user.currentUser, userId: state.data.user.currentUser.id },
   formError: state.scenes.home.addEditProject.formError,
   goBack: state.scenes.home.addEditProject.goBack,
   submitting: state.scenes.home.addEditProject.submitting,

@@ -40,6 +40,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
     handleSubmit={[Function]}
     initialValues={Object {}}
     maxWidth="lg"
+    onClose={[Function]}
     open={true}
     style={
       Object {
@@ -49,8 +50,6 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
     }
   >
     <ModalTitle
-      closeButton={false}
-      onCloseForm={[Function]}
       title="Create New Project"
     />
     <WithStyles(Divider) />
@@ -124,16 +123,12 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
           <FlexGrid
             align="stretch"
             circular={false}
-            container={false}
+            container={true}
             flex={false}
             justify="stretch"
-            padding="6px 0px"
+            padding={0}
             raised={false}
-            style={
-              Object {
-                "borderBottom": "",
-              }
-            }
+            style={Object {}}
             type="column"
           />
         </FlexGrid>

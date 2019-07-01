@@ -48,9 +48,14 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
       }
       
     case types.SET_CURRENT_USERS:
+      const creatorIndex = action.users.findIndex(user => user.userId === action.creatorId)
+      const users = action.users.slice()
+      users.splice(creatorIndex, 1)
+      const updated = [...users, action.users[creatorIndex]]
+      
       return {
         ...state,
-        users: action.users
+        users: updated
       }
       
     case types.ON_USER_SUGGESTION_SELECTED:
@@ -58,7 +63,7 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
         ...state,
         users: [
           ...state.users,
-          action.user
+          { ...action.user, userId: action.user.id }
         ],
         userSearchValue: ''
       }
