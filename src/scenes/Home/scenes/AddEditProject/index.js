@@ -500,23 +500,6 @@ export class AddEditProject extends Component {
                   })}
                 </FlexGrid>
               </FlexGrid>
-              {/*<FlexGrid container>*/}
-              {/*  <Autocomplete*/}
-              {/*    name="name"*/}
-              {/*    suggestions={userSuggestions}*/}
-              {/*    handleGetSuggestions={this.onUsersFetchRequest}*/}
-              {/*    handleClearSuggestions={this.onClearUserSuggestions}*/}
-              {/*    InputProps={{*/}
-              {/*      placeholder: 'Search for user by name'*/}
-              {/*    }}*/}
-              {/*    inputProps={{*/}
-              {/*      value: userSearchValue,*/}
-              {/*      onChange: this.onUserSuggestionChange,*/}
-              {/*      id: 'add-user-name'*/}
-              {/*    }}*/}
-              {/*    handleSuggestionSelected={this.onUserSelected}*/}
-              {/*  />*/}
-              {/*</FlexGrid>*/}
             </FlexGrid>
           </ModalContent>
           <ModalActions actions={actions} />
