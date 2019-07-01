@@ -12,7 +12,7 @@ import FlexGrid from 'components/FlexGrid'
 export const TextInput = props => {
   const {
     label, type, input, disabled, multiline, shrinkLabel, required,
-    meta: { active, touched, error, warning },
+    meta: { active, touched, error, warning }, smallLabel,
     ...custom
   } = props
   
@@ -25,6 +25,7 @@ export const TextInput = props => {
       {label && <InputLabel
         htmlFor={input.name}
         error={hasError}
+        shrink={smallLabel}
         disabled={disabled}
         required={required}>
         {label}
@@ -79,11 +80,16 @@ TextInput.propTypes = {
   /**
    * Style classes from @material-ui/core
    */
-  classes: PropTypes.object
+  classes: PropTypes.object,
+  /**
+   * Whether or not to make the text of the input label small
+   */
+  smallLabel: PropTypes.bool
 }
 
 TextInput.defaultProps = {
-  meta: {}
+  meta: {},
+  smallLabel: false
 }
 
 export default TextInput

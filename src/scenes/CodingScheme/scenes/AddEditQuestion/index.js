@@ -314,6 +314,7 @@ export class AddEditQuestion extends Component {
                     label="Question"
                     shrinkLabel
                     multiline
+                    smallLabel
                     required
                     disabled={!this.state.canModify}
                     placeholder="Enter question"
@@ -339,6 +340,7 @@ export class AddEditQuestion extends Component {
                     name="hint"
                     component={TextInput}
                     shrinkLabel
+                    smallLabel
                     label="Coding directions"
                     disabled={!this.state.canModify}
                     placeholder="Enter any special directions or considerations to display when coding this question"
