@@ -23,46 +23,6 @@ import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import InputLabel from '@material-ui/core/InputLabel'
 import DetailRow from './components/DetailRow'
-import MenuItem from '@material-ui/core/MenuItem'
-import parse from 'autosuggest-highlight/parse'
-import match from 'autosuggest-highlight/match'
-
-/**
- * For the autocomplete search field
- * @param suggestion
- * @returns {*}
- */
-const getSuggestionValue = suggestion => suggestion
-
-/**
- * Renders the user suggestion
- * @param suggestion
- * @param query
- * @param isHighlighted
- * @returns {*}
- */
-const renderSuggestion = (suggestion, { query, isHighlighted }) => {
-  const matches = match(suggestion.name, query)
-  const parts = parse(suggestion.name, matches)
-  
-  return (
-    <MenuItem selected={isHighlighted} component="div">
-      <div>
-        {parts.map((part, index) => {
-          return part.highlight ? (
-            <span key={String(index)} style={{ fontWeight: 300 }}>
-              {part.text}
-            </span>
-          ) : (
-            <strong key={String(index)} style={{ fontWeight: 500 }}>
-              {part.text}
-            </strong>
-          )
-        })}
-      </div>
-    </MenuItem>
-  )
-}
 
 /**
  * Main / entry component for all things related to adding and editing a project. This component is a modal and is
@@ -128,17 +88,26 @@ export class AddEditProject extends Component {
     /**
      * Submitting status
      */
-    submitting: PropTypes.bool
+    submitting: PropTypes.bool,
+    /**
+     * User search suggestions
+     */
+    userSuggestions: PropTypes.array,
+    /**
+     * User search value
+     */
+    userSearchValue: PropTypes.string,
+    /**
+     * New users
+     */
+    users: PropTypes.array
   }
   
   constructor(props, context) {
     super(props, context)
     this.projectDefined = this.props.match.url === '/project/add' ? null : this.props.location.state.projectDefined
     this.state = {
-      edit: this.projectDefined,
       submitting: false,
-      typeToDelete: '',
-      projectToDelete: {},
       alertOpen: false,
       alertInfo: {
         title: '',
@@ -148,12 +117,10 @@ export class AddEditProject extends Component {
     }
   }
   
-  /**
-   * update page title using props after component loaded
-   */
   componentDidMount() {
     this.prevTitle = document.title
-    if (this.state.edit) {
+    this.props.actions.setCurrentUsers(this.projectDefined ? this.projectDefined.projectUsers : [])
+    if (this.projectDefined) {
       document.title = `PHLIP - Project ${this.projectDefined.name} - Edit`
     } else {
       document.title = `PHLIP - Add Project`
@@ -267,8 +234,6 @@ export class AddEditProject extends Component {
    */
   handleShowDeleteConfirm = () => {
     this.setState({
-      typeToDelete: 'Project',
-      [`projectToDelete`]: this.projectDefined.id,
       alertOpen: true,
       alertInfo: {
         title: 'Warning',
@@ -291,8 +256,7 @@ export class AddEditProject extends Component {
   onCancelDelete = () => {
     this.setState({
       alertOpen: false,
-      alertInfo: {},
-      typeToDelete: ''
+      alertInfo: {}
     })
   }
   
@@ -337,7 +301,7 @@ export class AddEditProject extends Component {
   
   render() {
     const { alertOpen, alertInfo } = this.state
-    const { userRole, location, onCloseModal, submitting, userSuggestions, userSearchValue, newUsers } = this.props
+    const { userRole, location, onCloseModal, submitting, userSuggestions, userSearchValue, users } = this.props
     
     const actions = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Cancel edit view' } },
@@ -364,8 +328,6 @@ export class AddEditProject extends Component {
       }
     ]
     
-    const users = this.projectDefined ? [...this.projectDefined.projectUsers, ...newUsers] : [...newUsers]
-    
     return (
       <>
         <Alert open={alertOpen} actions={alertActions} onCloseAlert={this.onCancelDelete} title={alertInfo.title}>
@@ -378,7 +340,7 @@ export class AddEditProject extends Component {
           asyncBlurFields={['name']}
           onClose={onCloseModal}
           maxWidth="lg"
-          style={{ height: '80%', width: '80%' }}
+          style={{ height: '90%', width: '80%' }}
           formStyle={{ height: '100%', display: 'flex', flexDirection: 'column' }}
           initialValues={location.state.projectDefined || {}}>
           <ModalTitle
@@ -399,7 +361,8 @@ export class AddEditProject extends Component {
                 validate={this.required}
                 placeholder="Enter Project Name"
                 fullWidth
-                required={true}
+                required
+                shrinkLabel={true}
               />
               <DetailRow
                 name="type"
@@ -408,14 +371,17 @@ export class AddEditProject extends Component {
                 defaultValue={1}
                 options={options}
                 id="type"
-                required={true}
+                shrinkLabel={false}
+                required
                 style={{ display: 'flex' }}
               />
               <FlexGrid container padding="0 0 25px">
                 <InputLabel>Project Users</InputLabel>
-                {users.map((user, i) => {
-                  return <Typography key={`project-user-${i}`}>{user.firstName}{' '}{user.lastName}</Typography>
-                })}
+                <FlexGrid padding="6px 0px" style={{ borderBottom: users.length > 1 ? '1px solid #c5c5c5' : '' }}>
+                  {users.map((user, i) => (
+                    <Typography key={`project-user-${i}`}>{user.firstName}{' '}{user.lastName}</Typography>
+                  ))}
+                </FlexGrid>
               </FlexGrid>
               <FlexGrid container>
                 <InputLabel shrink>Add New User</InputLabel>
@@ -455,7 +421,7 @@ const mapStateToProps = state => ({
   submitting: state.scenes.home.addEditProject.submitting,
   userSearchValue: state.scenes.home.addEditProject.userSearchValue || '',
   userSuggestions: state.scenes.home.addEditProject.userSuggestions || [],
-  newUsers: state.scenes.home.addEditProject.newUsers || []
+  users: state.scenes.home.addEditProject.users || []
 })
 
 /* istanbul ignore next */

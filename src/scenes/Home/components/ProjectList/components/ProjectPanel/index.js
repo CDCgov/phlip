@@ -225,7 +225,7 @@ export class ProjectPanel extends Component {
                       flex
                       align="center"
                       justify="flex-start"
-                      style={{ fontSize: 20, minWidth: 150 }}>
+                      style={{ minWidth: 150, marginRight: 15 }}>
                       <IconButton
                         color={bookmarked ? '#fdc43b' : greyIcon}
                         onClick={() => actions.toggleBookmark(project)}
@@ -234,11 +234,13 @@ export class ProjectPanel extends Component {
                         id={`bookmark-project-${project.id}`}>
                         {bookmarked ? 'bookmark' : 'bookmark_border'}
                       </IconButton>
-                      <FlexGrid style={{ width: 20 }} />
-                      <Typography variant="title" style={{ marginRight: 5 }}>{project.name}</Typography>
+                      <FlexGrid style={{ width: 15 }} />
+                      <Typography variant="title" style={{ margin: '0 8px', whiteSpace: 'nowrap' }}>
+                        {project.name}
+                      </Typography>
                       {!isCoder && <IconButton
                         color="secondary"
-                        iconSize={20}
+                        iconSize={22}
                         id={`edit-project-${project.id}`}
                         tooltipText="Edit Project Details"
                         aria-label={`Edit Project ${project.name}`}

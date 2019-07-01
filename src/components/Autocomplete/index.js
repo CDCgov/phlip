@@ -142,11 +142,10 @@ export const Autocomplete = props => {
   } = props
 
   /**
-     * Determines if the suggestions should be rendered. Only renders if the input length >= 3
-     * @param value
-     * @returns {boolean}
-     */
-
+   * Determines if the suggestions should be rendered. Only renders if the input length >= 3
+   * @param value
+   * @returns {boolean}
+   */
   const shouldRenderSuggestions = (value) => {
     if (suggestionType !== 'project') {
       return value !== undefined ? value.trim().length >= 3 : true
@@ -154,6 +153,7 @@ export const Autocomplete = props => {
       return true
     }
   }
+  
   return (
     <Autosuggest
       theme={{
@@ -196,62 +196,50 @@ Autocomplete.propTypes = {
    * List of suggestions to render
    */
   suggestions: PropTypes.array,
-
   /**
    * Suggestion value (what the user has typed in)
    */
   suggestionValue: PropTypes.string,
-
   /**
    * List of classes from @material-ui/core theme provider
    */
   classes: PropTypes.object,
-
   /**
    * Any props you to want to pass to the TextField component
    */
   InputProps: PropTypes.object,
-
   /**
    * Props to send to the actual input or InputProps component
    */
   inputProps: PropTypes.object,
-
   /**
    * Handles retrieving suggestions
    */
   handleGetSuggestions: PropTypes.func,
-
   /**
    * Handles clearing the suggestions array
    */
   handleClearSuggestions: PropTypes.func,
-
   /**
    * Handles when the user changes their input (suggestion value)
    */
   handleSuggestionValueChange: PropTypes.func,
-
   /**
    * Handles when a user clicks on a suggestion
    */
   handleSuggestionSelected: PropTypes.func,
-
   /**
    * Render each suggestion in the list
    */
   renderSuggestion: PropTypes.func,
-
   /**
    * Returns the suggestion value
    */
   getSuggestionValue: PropTypes.func,
-
   /**
    * Show search icon
    */
   showSearchIcon: PropTypes.bool,
-
   /**
    * App theme
    */

@@ -4,7 +4,7 @@ export const INITIAL_STATE = {
   formError: null,
   goBack: false,
   submitting: false,
-  newUsers: [],
+  users: [],
   userSuggestions: [],
   userSearchValue: ''
 }
@@ -47,11 +47,17 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
         goBack: false
       }
       
+    case types.SET_CURRENT_USERS:
+      return {
+        ...state,
+        users: action.users
+      }
+      
     case types.ON_USER_SUGGESTION_SELECTED:
       return {
         ...state,
-        newUsers: [
-          ...state.newUsers,
+        users: [
+          ...state.users,
           action.user
         ],
         userSearchValue: ''

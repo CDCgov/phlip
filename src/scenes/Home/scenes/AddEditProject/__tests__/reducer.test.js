@@ -1,4 +1,4 @@
-import { types } from '../../../actions'
+import { types } from '../actions'
 import reducer, { INITIAL_STATE } from '../reducer'
 
 const getState = (other = {}) => ({

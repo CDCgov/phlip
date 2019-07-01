@@ -110,6 +110,7 @@ export const searchUserList = createLogic({
       name: `${user.firstName} ${user.lastName}`
     }))
     dispatch({ type: types.SET_USER_SUGGESTIONS, payload: users })
+    done()
   }
 })
 

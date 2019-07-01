@@ -6,6 +6,7 @@ import InputLabel from '@material-ui/core/InputLabel'
 import FormControl from '@material-ui/core/FormControl'
 import MenuItem from '@material-ui/core/MenuItem'
 import { withStyles } from '@material-ui/core/styles'
+import FlexGrid from 'components/FlexGrid'
 
 const styles = theme => ({
   disabled: {
@@ -35,13 +36,10 @@ export const Dropdown = props => {
     input, label, id, defaultValue, classes, shrinkLabel, formControlStyle,
     disabled, options, required, displayEmpty, ...otherProps
   } = props
-
+  
   return (
-    <FormControl style={{ minWidth: 120, ...formControlStyle }} id={`${id}-container`}>
-      {label !== '' &&
-      <InputLabel htmlFor={id} shrink={shrinkLabel} required={required}>
-        {label}
-      </InputLabel>}
+    <FlexGrid container align="flex-start" style={{ minWidth: 120, ...formControlStyle }} id={`${id}-container`}>
+      {label && <InputLabel htmlFor={id} shrink={shrinkLabel} required={required}>{label}</InputLabel>}
       <Select
         input={<Input id={id} />}
         value={input.value ? input.value : defaultValue}
@@ -53,11 +51,11 @@ export const Dropdown = props => {
         displayEmpty={displayEmpty}
         disabled={disabled}
         {...otherProps}>
-        {options.map((option, index) => {
-          return <MenuItem key={`menu-item-${index}`} value={option.value}>{option.label}</MenuItem>
-        })}
+        {options.map((option, index) => (
+          <MenuItem key={`menu-item-${index}`} value={option.value}>{option.label}</MenuItem>
+        ))}
       </Select>
-    </FormControl>
+    </FlexGrid>
   )
 }
 
@@ -66,47 +64,38 @@ Dropdown.propTypes = {
    * Input object, has property 'value' and 'onChange'
    */
   input: PropTypes.object,
-
   /**
    * Input label for dropdown
    */
   label: PropTypes.string,
-
   /**
    * ID of dropdown input
    */
   id: PropTypes.any,
-
   /**
    * Default value for the dropdown
    */
   defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-
   /**
    * Style classes object from @material-ui/core
    */
   classes: PropTypes.object,
-
   /**
    * Whether or not to shrink the input label
    */
   shrinkLabel: PropTypes.bool,
-
   /**
    * Whether or not the dropdown input is disabled
    */
   disabled: PropTypes.bool,
-
   /**
    * @ignore
    */
   meta: PropTypes.object,
-
   /**
    * List of options for the dropdown
    */
   options: PropTypes.arrayOf(PropTypes.object),
-
   /**
    * Is the input dropdown required
    */

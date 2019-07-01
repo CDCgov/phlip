@@ -1,7 +1,7 @@
 import { createMockStore } from 'redux-logic-test'
 import MockAdapter from 'axios-mock-adapter'
 import logic from '../logic'
-import { types } from '../../../actions'
+import { types } from '../actions'
 import createApiHandler, { projectApiInstance } from 'services/api'
 import calls from 'services/api/calls'
 import { projects } from 'utils/testData/projectsHome'

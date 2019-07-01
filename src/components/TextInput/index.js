@@ -2,8 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Input from '@material-ui/core/Input'
 import InputLabel from '@material-ui/core/InputLabel'
-import FormControl from '@material-ui/core/FormControl'
 import FormHelperText from '@material-ui/core/FormHelperText'
+import FormControl from '@material-ui/core/FormControl'
+import FlexGrid from 'components/FlexGrid'
 
 /**
  * Text field input with form control wrapper, set up for use in redux-form
@@ -14,23 +15,32 @@ export const TextInput = props => {
     meta: { active, touched, error, warning },
     ...custom
   } = props
-
+  
+  const hasError = Boolean(touched && error && !active || warning)
+  const Container = shrinkLabel ? FlexGrid : FormControl
+  const containerProps = shrinkLabel ? { container: true } : { disabled, error: hasError, fullWidth: true }
+  
   return (
-    <FormControl
-      error={Boolean(touched && error && !active || warning)}
-      fullWidth
-      disabled={disabled}>
-      <InputLabel htmlFor={input.name} shrink={shrinkLabel} required={required}>{label}</InputLabel>
+    <Container {...containerProps}>
+      {label && <InputLabel
+        htmlFor={input.name}
+        shrink={false}
+        error={hasError}
+        disabled={disabled}
+        required={required}>
+        {label}
+      </InputLabel>}
       <Input
         {...input}
         {...custom}
         type={type}
         id={input.name}
+        disabled={disabled}
         multiline={multiline}
         inputProps={{ 'aria-label': label }}
       />
-      {touched && error && !active && <FormHelperText>{error}</FormHelperText>}
-    </FormControl>
+      {hasError && <FormHelperText error={hasError}>{error}</FormHelperText>}
+    </Container>
   )
 }
 

@@ -4,9 +4,11 @@ import { AddEditProject } from '../index'
 
 const props = {
   actions: {
-    addProjectRequest: jest.fn()
+    addProjectRequest: jest.fn(),
+    setCurrentUsers: jest.fn()
   },
   form: {},
+  users: [],
   projects: [],
   match: {
     url: '/project/add'
