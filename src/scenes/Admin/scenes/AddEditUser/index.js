@@ -280,9 +280,7 @@ export class AddEditUser extends Component {
         asyncValidate={this.validateEmail}
         initialValues={selectedUser || { isActive: true }}
         asyncBlurFields={['email']}
-        onClose={onCloseModal}
-        width="600px"
-        height="400px">
+        onClose={onCloseModal}>
         <FlexGrid container padding="30px 15px 0" style={{ minWidth: 500, minHeight: 275 }}>
           <FlexGrid type="row" container justify="space-between" padding="0 0 30px">
             {selectedUser &&
@@ -329,6 +327,7 @@ export class AddEditUser extends Component {
                 placeholder="Enter first name"
                 validate={this.required}
                 required
+                smallLabel
                 shrinkLabel
                 fullWidth
               />
@@ -339,6 +338,7 @@ export class AddEditUser extends Component {
                 component={TextInput}
                 label="Last Name"
                 required
+                smallLabel
                 shrinkLabel
                 placeholder="Enter last name"
                 validate={this.required}
@@ -353,6 +353,7 @@ export class AddEditUser extends Component {
               label="Email"
               shrinkLabel
               required
+              smallLabel
               placeholder="Enter email"
               validate={this.required}
               fullWidth
@@ -366,7 +367,8 @@ export class AddEditUser extends Component {
                 component={Dropdown}
                 label="Role"
                 options={roles}
-                defaultValue=""
+                defaultValue="Coordinator"
+                required
                 id="role"
                 style={{ display: 'flex' }}
                 disabled={this.selfUpdate}

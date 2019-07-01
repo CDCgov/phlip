@@ -68,6 +68,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
               placeholder="Enter question"
               required={true}
               shrinkLabel={true}
+              smallLabel={true}
             />
           </Column>
           <Column
@@ -141,6 +142,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
               name="hint"
               placeholder="Enter any special directions or considerations to display when coding this question"
               shrinkLabel={true}
+              smallLabel={true}
             />
           </Row>
         </Container>
