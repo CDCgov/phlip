@@ -193,7 +193,11 @@ export class AddEditProject extends Component {
     const { projects } = this.props
     
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
-    const names = projects.map(project => project.name.toLowerCase())
+    const projectsWoCurrent = this.projectDefined
+      ? projects.filter(project => project.id !== this.projectDefined.id)
+      : projects
+    
+    const names = projectsWoCurrent.map(project => project.name.toLowerCase())
     return sleep(1).then(() => {
       if (names.includes(values.name.toLowerCase()) &&
         !(this.projectDefined && this.projectDefined.name === values.name)) {
