@@ -49,12 +49,11 @@ describe('Home - ProjectList - ProjectPanel scene', () => {
     const wrapper = shallow(<ProjectPanel {...props} expanded role="Coder" />)
     describe('when the card is open', () => {
       test('validate button should not be visible', () => {
-        expect(wrapper.find('FlexGrid').at(9).find('FlexGrid').at(3).children().length).toEqual(1)
-        expect(wrapper.find('WithTheme(Button)').everyWhere(n => n.prop('value') !== 'Validate'))
+        expect(wrapper.find('WithTheme(Button)').findWhere(n => n.prop('value') === 'Validate').length).toEqual(0)
       })
       
       test('code button should be visible', () => {
-        expect(wrapper.find('FlexGrid').at(9).find('FlexGrid').at(3).childAt(0).prop('value')).toEqual('Code')
+        expect(wrapper.find('WithTheme(Button)').findWhere(n => n.prop('value') === 'Code').length).toEqual(1)
       })
       
       test('coding scheme button should not be visible', () => {
@@ -71,12 +70,11 @@ describe('Home - ProjectList - ProjectPanel scene', () => {
     const wrapper = shallow(<ProjectPanel {...props} expanded role="Coordinator" />)
     describe('when the card is open', () => {
       test('validate button should be visible', () => {
-        expect(wrapper.find('FlexGrid').at(9).find('FlexGrid').at(3).children().length).toEqual(2)
-        expect(wrapper.find('FlexGrid').at(9).find('FlexGrid').at(3).childAt(1).prop('value')).toEqual('Validate')
+        expect(wrapper.find('WithTheme(Button)').findWhere(n => n.prop('value') === 'Validate').length).toEqual(1)
       })
       
       test('code button should be visible', () => {
-        expect(wrapper.find('FlexGrid').at(9).find('FlexGrid').at(3).childAt(0).prop('value')).toEqual('Code')
+        expect(wrapper.find('WithTheme(Button)').findWhere(n => n.prop('value') === 'Code').length).toEqual(1)
       })
       
       test('coding scheme button should be visible', () => {
