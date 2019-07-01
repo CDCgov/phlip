@@ -155,6 +155,109 @@ describe('Home scene - AddEditProject reducer', () => {
     })
   })
   
+  describe('SET_CURRENT_USERS', () => {
+    const action = {
+      type: types.SET_CURRENT_USERS,
+      users: [{ userId: 42 }, { userId: 4 }, { userId: 10 }],
+      creatorId: 4
+    }
+    
+    const currentState = getState()
+    const state = reducer(currentState, action)
+    
+    test('should put creator user at end of list', () => {
+      expect(state.users).toEqual([{ userId: 42 }, { userId: 10 }, { userId: 4 }])
+    })
+  })
+  
+  describe('ON_USER_SUGGESTION_SELECTED', () => {
+    const action = {
+      type: types.ON_USER_SUGGESTION_SELECTED,
+      user: { id: 22 }
+    }
+    
+    const currentState = getState({ users: [{ userId: 42 }, { userId: 10 }, { userId: 4 }] })
+    const state = reducer(currentState, action)
+    
+    test('should add user to top of list', () => {
+      expect(state.users[0]).toEqual({ userId: 22, id: 22 })
+    })
+    
+    test('should set userId', () => {
+      expect(state.users[0].hasOwnProperty('userId')).toEqual(true)
+      expect(state.users[0].userId).toEqual(22)
+    })
+    
+    test('should not overwrite existing users', () => {
+      expect(state.users.length).toEqual(4)
+    })
+    
+    test('should clear search string', () => {
+      expect(state.userSearchValue).toEqual('')
+    })
+  })
+  
+  describe('REMOVE_USER_FROM_LIST', () => {
+    const action = {
+      type: types.REMOVE_USER_FROM_LIST,
+      index: 2
+    }
+    
+    const currentState = getState({ users: [{ userId: 42 }, { userId: 10 }, { userId: 4 }] })
+    const state = reducer(currentState, action)
+    
+    test('should remove the user from the list', () => {
+      expect(state.users.find(user => user.userId === 4)).toEqual(undefined)
+    })
+    
+    test('should not remove any other users', () => {
+      expect(state.users.length).toEqual(2)
+    })
+  })
+  
+  describe('UPDATE_USER_SUGGESTION_VALUE', () => {
+    const action = {
+      type: types.UPDATE_USER_SUGGESTION_VALUE,
+      suggestionValue: 'krist'
+    }
+  
+    const currentState = getState({ userSearchValue: 'search' })
+    const state = reducer(currentState, action)
+    
+    test('should update value', () => {
+      expect(state.userSearchValue).toEqual('krist')
+    })
+  })
+  
+  describe('SET_USER_SUGGESTIONS', () => {
+    const action = {
+      type: types.SET_USER_SUGGESTIONS,
+      payload: [{ id: 10 }, { id: 22 }, { id: 43 }]
+    }
+    
+    test('should set suggestions', () => {
+      const currentState = getState()
+      const state = reducer(currentState, action)
+      expect(state.userSuggestions).toEqual([{ id: 10 }, { id: 22 }, { id: 43 }])
+    })
+    
+    test('should filter out existing users', () => {
+      const currentState = getState({ users: [{ userId: 43 }, { userId: 22 }] })
+      const state = reducer(currentState, action)
+      expect(state.userSuggestions).toEqual([{ id: 10 }])
+    })
+  })
+  
+  describe('ON_CLEAR_USER_SUGGESTIONS', () => {
+    const action = { type: types.ON_CLEAR_USER_SUGGESTIONS }
+    const currentState = getState({ userSuggestions: [{ userId: 43 }, { userId: 22 }] })
+    const state = reducer(currentState, action)
+    
+    test('should remove all user suggestions', () => {
+      expect(state.userSuggestions).toEqual([])
+    })
+  })
+  
   describe('RESET_FORM_ERROR', () => {
     test('should reset form error', () => {
       const currentState = getState({ formError: 'blep' })

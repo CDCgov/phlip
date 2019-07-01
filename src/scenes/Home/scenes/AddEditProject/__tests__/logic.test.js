@@ -89,16 +89,16 @@ describe('Home scene - AddEditProject logic', () => {
         done()
       })
     })
-  
+    
     test('should dispatch failure when adding a project fails', done => {
       const store = setupStore([])
-    
+      
       mock.onPost('/projects').reply(500)
       store.dispatch({
         type: types.ADD_PROJECT_REQUEST,
         project: 1
       })
-    
+      
       store.whenComplete(() => {
         expect(store.actions[1].type).toEqual(types.ADD_PROJECT_FAIL)
         done()
@@ -138,16 +138,16 @@ describe('Home scene - AddEditProject logic', () => {
         done()
       })
     })
-  
+    
     test('should dispatch failure when updating a project fails', done => {
       const store = setupStore()
-    
+      
       mock.onPut('/projects/1').reply(500)
       store.dispatch({
         type: types.UPDATE_PROJECT_REQUEST,
         project: 1
       })
-    
+      
       store.whenComplete(() => {
         expect(store.actions[1].type).toEqual(types.UPDATE_PROJECT_FAIL)
         done()
@@ -176,13 +176,13 @@ describe('Home scene - AddEditProject logic', () => {
     test('should remove the project from global list', done => {
       const project = { id: 1, name: 'Delete Project', lastEditedBy: 'Test User' }
       const store = setupStore([])
-  
+      
       mock.onDelete('/projects/1').reply(200, project)
       store.dispatch({
         type: types.DELETE_PROJECT_REQUEST,
         project: 1
       })
-  
+      
       store.whenComplete(() => {
         expect(store.actions[2].type).toEqual(types.REMOVE_PROJECT)
         expect(store.actions[2].projectId).toEqual(1)
@@ -192,15 +192,61 @@ describe('Home scene - AddEditProject logic', () => {
     
     test('should dispatch failure when deleting a project fails', done => {
       const store = setupStore([])
-  
+      
       mock.onDelete('/projects/1').reply(500)
       store.dispatch({
         type: types.DELETE_PROJECT_REQUEST,
         project: 1
       })
-  
+      
       store.whenComplete(() => {
         expect(store.actions[1].type).toEqual(types.DELETE_PROJECT_FAIL)
+        done()
+      })
+    })
+  })
+  
+  describe('Searching for users', () => {
+    let store, spy
+    
+    beforeEach(() => {
+      store = setupStore([])
+      spy = jest.spyOn(api, 'searchUserList')
+      
+      mock.onGet('/users').reply(
+        200,
+        [
+          { firstName: 'Test', lastName: 'User', id: 11 },
+          { firstName: 'Coord', lastName: 'User', id: 10 }
+        ]
+      )
+      
+      store.dispatch({
+        type: types.SEARCH_USER_LIST,
+        searchString: 'user'
+      })
+    })
+    
+    test('should search for users', done => {
+      store.whenComplete(() => {
+        expect(spy).toHaveBeenCalled()
+        done()
+      })
+    })
+    
+    test('should set name as first and last name of response', done => {
+      store.whenComplete(() => {
+        expect(store.actions[1].payload).toEqual([
+          { firstName: 'Test', lastName: 'User', id: 11, name: 'Test User' },
+          { firstName: 'Coord', lastName: 'User', id: 10, name: 'Coord User' }
+        ])
+        done()
+      })
+    })
+    
+    test('should set suggestions', done => {
+      store.whenComplete(() => {
+        expect(store.actions[1].type).toEqual(types.SET_USER_SUGGESTIONS)
         done()
       })
     })

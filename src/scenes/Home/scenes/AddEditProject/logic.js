@@ -87,7 +87,6 @@ export const updateUserId = createLogic({
   type: [types.ADD_PROJECT_REQUEST, types.UPDATE_PROJECT_REQUEST],
   transform({ getState, action }, next) {
     const users = getState().scenes.home.addEditProject.users.map(user => user.userId)
-    console.log(users)
     next({
       ...action,
       project: { ...action.project, userId: getState().data.user.currentUser.id, projectUsers: users }
