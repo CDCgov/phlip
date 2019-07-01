@@ -63,6 +63,15 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
         userSearchValue: ''
       }
       
+    case types.REMOVE_USER_FROM_LIST:
+      const updatedUsers = state.users.slice()
+      updatedUsers.splice(action.index, 1)
+      
+      return {
+        ...state,
+        users: updatedUsers
+      }
+      
     case types.UPDATE_USER_SUGGESTION_VALUE:
       return {
         ...state,

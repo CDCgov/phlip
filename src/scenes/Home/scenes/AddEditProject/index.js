@@ -70,9 +70,9 @@ export class AddEditProject extends Component {
      */
     onCloseModal: PropTypes.func,
     /**
-     * The role of the current user
+     * The current user logged in
      */
-    userRole: PropTypes.string,
+    currentUser: PropTypes.object,
     /**
      * Form error if any that occurred when manipulating the form
      */
@@ -113,6 +113,7 @@ export class AddEditProject extends Component {
         title: '',
         text: ''
       },
+      hoveredUser: null,
       showModal: false
     }
   }
@@ -299,9 +300,29 @@ export class AddEditProject extends Component {
     this.props.actions.onClearSuggestions()
   }
   
+  /**
+   * Removes a user from the list
+   * @returns {*}
+   */
+  removeUser = index => () => {
+    this.props.actions.removeUserFromList(index)
+  }
+  
+  /**
+   * Changes background color when user hovers over a user in the list
+   * @param index
+   */
+  onHoverUser = index => () => {
+    const { hoveredUser } = this.state
+    
+    this.setState({
+      hoveredUser: hoveredUser === index ? null : index
+    })
+  }
+  
   render() {
-    const { alertOpen, alertInfo } = this.state
-    const { userRole, location, onCloseModal, submitting, userSuggestions, userSearchValue, users } = this.props
+    const { alertOpen, alertInfo, hoveredUser } = this.state
+    const { currentUser, location, onCloseModal, submitting, userSuggestions, userSearchValue, users } = this.props
     
     const actions = [
       { value: 'Cancel', onClick: this.onCancel, type: 'button', otherProps: { 'aria-label': 'Cancel edit view' } },
@@ -347,7 +368,7 @@ export class AddEditProject extends Component {
             title={this.getModalTitle()}
             closeButton={!!this.projectDefined}
             onCloseForm={this.onCancel}
-            buttons={(this.projectDefined && userRole === 'Admin')
+            buttons={(this.projectDefined && currentUser.role === 'Admin')
               ? <Button color="error" onClick={this.handleShowDeleteConfirm}>Delete</Button>
               : undefined}
           />
@@ -377,10 +398,41 @@ export class AddEditProject extends Component {
               />
               <FlexGrid container padding="0 0 25px">
                 <InputLabel>Project Users</InputLabel>
-                <FlexGrid padding="6px 0px" style={{ borderBottom: users.length > 1 ? '1px solid #c5c5c5' : '' }}>
-                  {users.map((user, i) => (
-                    <Typography key={`project-user-${i}`}>{user.firstName}{' '}{user.lastName}</Typography>
-                  ))}
+                <FlexGrid container>
+                  {users.map((user, i) => {
+                    const isCreator = user.userId === this.projectDefined.createdById
+                    const userName = `${user.firstName} ${user.lastName}`
+                    const hovered = i === hoveredUser
+  
+                    return (
+                      <FlexGrid
+                        key={`project-user-${i}`}
+                        container
+                        type="row"
+                        padding="6px 0px"
+                        align="center"
+                        onMouseEnter={this.onHoverUser(i)}
+                        onMouseLeave={this.onHoverUser(i)}
+                        style={{
+                          borderBottom: (users.length > 1 && i !== users.length - 1)
+                            ? `1px solid rgba(197, 197, 197, 0.42)`
+                            : '',
+                          backgroundColor: hovered ? '#f1f1f1' : 'white'
+                        }}>
+                        <Typography>{userName}</Typography>
+                        <Typography variant="caption" style={{ margin: '0 10px' }}>
+                          ({isCreator ? 'Creator' : user.role})
+                        </Typography>
+                        {(!isCreator && currentUser.id !== user.userId) && hovered && <IconButton
+                          onClick={this.removeUser(i)}
+                          color="error"
+                          iconSize={16}
+                          tooltipText={`Remove ${userName} from project`}>
+                          delete
+                        </IconButton>}
+                      </FlexGrid>
+                    )
+                  })}
                 </FlexGrid>
               </FlexGrid>
               <FlexGrid container>
@@ -415,7 +467,7 @@ const mapStateToProps = state => ({
   projects: Object.values(state.data.projects.byId) || [],
   form: state.form.projectForm || {},
   formName: 'projectForm',
-  userRole: state.data.user.currentUser.role,
+  currentUser: state.data.user.currentUser,
   formError: state.scenes.home.addEditProject.formError,
   goBack: state.scenes.home.addEditProject.goBack,
   submitting: state.scenes.home.addEditProject.submitting,
