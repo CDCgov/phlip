@@ -142,7 +142,7 @@ exports[`Home scene - AddEditProject scene should render correctly 1`] = `
               disabled={false}
               iconSize={18}
               onClick={[Function]}
-              tooltipText=""
+              tooltipText="Add User"
             >
               person_add
             </IconButton>

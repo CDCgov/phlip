@@ -438,7 +438,13 @@ export class AddEditProject extends Component {
               <FlexGrid container padding="0 0 25px">
                 <FlexGrid container type="row" align="center">
                   <InputLabel style={{ marginRight: 5 }}>Project Users</InputLabel>
-                  <IconButton iconSize={18} color="primary" onClick={this.onEnabledAddUser}>person_add</IconButton>
+                  <IconButton
+                    iconSize={18}
+                    color="primary"
+                    onClick={this.onEnabledAddUser}
+                    tooltipText="Add User">
+                    person_add
+                  </IconButton>
                 </FlexGrid>
                 {addUserEnabled && <Autocomplete
                   name="name"

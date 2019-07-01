@@ -166,21 +166,6 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly 1`] = `
                 >
                   bookmark_border
                 </IconButton>
-                <FlexGrid
-                  align="stretch"
-                  circular={false}
-                  container={false}
-                  flex={false}
-                  justify="stretch"
-                  padding={0}
-                  raised={false}
-                  style={
-                    Object {
-                      "width": 15,
-                    }
-                  }
-                  type="column"
-                />
                 <WithStyles(Typography)
                   style={
                     Object {
@@ -747,21 +732,6 @@ exports[`Home - ProjectList - ProjectPanel scene should render correctly when ex
                 >
                   bookmark_border
                 </IconButton>
-                <FlexGrid
-                  align="stretch"
-                  circular={false}
-                  container={false}
-                  flex={false}
-                  justify="stretch"
-                  padding={0}
-                  raised={false}
-                  style={
-                    Object {
-                      "width": 15,
-                    }
-                  }
-                  type="column"
-                />
                 <WithStyles(Typography)
                   style={
                     Object {

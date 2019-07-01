@@ -234,7 +234,6 @@ export class ProjectPanel extends Component {
                         id={`bookmark-project-${project.id}`}>
                         {bookmarked ? 'bookmark' : 'bookmark_border'}
                       </IconButton>
-                      <FlexGrid style={{ width: 15 }} />
                       <Typography variant="title" style={{ margin: '0 8px', whiteSpace: 'nowrap' }}>
                         {project.name}
                       </Typography>
