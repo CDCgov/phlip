@@ -84,6 +84,7 @@ exports[`CodingScheme scene - AddEditQuestion Component should render correctly 
               component={[Function]}
               defaultValue={4}
               disabled={true}
+              fullWidth={true}
               label="Answer Type"
               name="questionType"
               onChange={[Function]}

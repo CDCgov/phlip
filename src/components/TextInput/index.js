@@ -23,11 +23,13 @@ export const TextInput = props => {
   return (
     <Container {...containerProps}>
       {label && <InputLabel
-        htmlFor={input.name}
-        error={hasError}
-        shrink={smallLabel}
-        disabled={disabled}
-        required={required}>
+        {...{
+          htmlFor: input.name,
+          error: hasError,
+          ...(shrinkLabel && { shrink: smallLabel }),
+          disabled,
+          required
+        }}>
         {label}
       </InputLabel>}
       <Input

@@ -324,6 +324,7 @@ export class AddEditQuestion extends Component {
                   <Field
                     name="questionType"
                     component={DropDown}
+                    fullWidth
                     label="Answer Type"
                     required
                     options={this.parentDefined && (this.parentDefined.questionType === questionTypes.CATEGORY)
