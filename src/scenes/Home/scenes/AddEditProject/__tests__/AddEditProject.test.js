@@ -20,6 +20,9 @@ const props = {
   },
   currentUser: {
     userId: 32
+  },
+  project: {
+    status: 1
   }
 }
 
