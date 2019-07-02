@@ -7,7 +7,7 @@ import moment from 'moment'
 import GridList from '@material-ui/core/GridList'
 import Typography from '@material-ui/core/Typography'
 import Collapse from '@material-ui/core/Collapse'
-import { FlexGrid, IconButton, Link, Button, GridListTile } from 'components'
+import { FlexGrid, IconButton, Link, Button, GridListTile, Icon } from 'components'
 import { FileDocument, City, FormatListBulleted, ClipboardCheckOutline, FileExport } from 'mdi-material-ui'
 import ProjectRow from './components/ProjectRow'
 import silhouette from './silhouette.png'
@@ -138,10 +138,12 @@ export class ProjectPanel extends Component {
       disableRipple: true
     }
     
+    const isLocked = project.status === 2
+    
     return (
       <>
         {containerStyles.paddingTop === 30 && <div style={{ height: 30 }} onClick={this.handleChange} />}
-        <FlexGrid>
+        <FlexGrid style={{ backgroundColor: isLocked ? `rgb(249, 249, 249)` : 'white' }}>
           <FlexGrid container justify="center" style={rowStyles} flex>
             {!expanded && <ProjectRow
               isCoder={isCoder}
@@ -237,7 +239,17 @@ export class ProjectPanel extends Component {
                       <Typography variant="title" style={{ margin: '0 8px', whiteSpace: 'nowrap' }}>
                         {project.name}
                       </Typography>
-                      {!isCoder && <IconButton
+                      {isLocked && isCoder && <Icon>lock</Icon>}
+                      {isLocked && !isCoder && <IconButton
+                        color="secondary"
+                        iconSize={22}
+                        id={`unlock-project-${project.id}`}
+                        tooltipText="Unlock Project"
+                        aria-label={`Unlock Project ${project.name}`}
+                        onClick={handleEditProject(project)}>
+                        lock
+                      </IconButton>}
+                      {!isCoder && !isLocked && <IconButton
                         color="secondary"
                         iconSize={22}
                         id={`edit-project-${project.id}`}
