@@ -48,7 +48,7 @@ const updateDocLogic = createLogic({
           updatedDoc = await docApi.addToDocArray(
             {},
             {},
-            { docId: selectedDoc._id, updateType: action.property, newId: action.value.id }
+            { docId: selectedDoc._id, updateType: action.property, newId: parseInt(action.value.id) }
           )
   
           dispatch({
@@ -59,7 +59,7 @@ const updateDocLogic = createLogic({
           updatedDoc = await docApi.removeFromDocArray(
             {},
             {},
-            { docId: selectedDoc._id, updateType: action.property, removeId: action.value.id }
+            { docId: selectedDoc._id, updateType: action.property, removeId: parseInt(action.value.id) }
           )
         }
       } else {
