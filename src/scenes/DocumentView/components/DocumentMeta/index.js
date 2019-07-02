@@ -15,15 +15,12 @@ export class DocumentMeta extends Component {
   static propTypes = {
     actions: PropTypes.object,
     document: PropTypes.object,
-    uploading: PropTypes.bool,
-    updating: PropTypes.bool,
     projectList: PropTypes.array,
     jurisdictionList: PropTypes.array,
     projectSuggestions: PropTypes.array,
     jurisdictionSuggestions: PropTypes.array,
     projectSearchValue: PropTypes.string,
     jurisdictionSearchValue: PropTypes.string,
-    noProjectError: PropTypes.any,
     inEditMode: PropTypes.bool,
     documentUpdateInProgress: PropTypes.bool,
     documentDeleteInProgress: PropTypes.bool,
@@ -186,7 +183,8 @@ export class DocumentMeta extends Component {
       alertInfo: {
         title: 'Warning',
         text: `Do you want to delete ${this.props.document.name}? Deleting a document will remove all associated annotations for every project and jurisdiction.`
-      }
+      },
+      alertType: 'delete'
     })
   }
   
@@ -289,17 +287,10 @@ export class DocumentMeta extends Component {
    * @param index
    */
   onToggleHover = (card, index) => () => {
-    if (this.state.hoveringOn) {
-      this.setState({
-        hoveringOn: '',
-        hoverIndex: null
-      })
-    } else {
-      this.setState({
-        hoveringOn: card,
-        hoverIndex: index
-      })
-    }
+    this.setState({
+      hoveringOn: card,
+      hoverIndex: index
+    })
   }
   
   /**
@@ -345,7 +336,7 @@ export class DocumentMeta extends Component {
   render() {
     const {
       apiErrorInfo, apiErrorOpen, inEditMode, document, projectList, jurisdictionList,
-      noProjectError, projectSearchValue, jurisdictionSearchValue, projectSuggestions, jurisdictionSuggestions
+      projectSearchValue, jurisdictionSearchValue, projectSuggestions, jurisdictionSuggestions
     } = this.props
     
     const { alertOpen, alertInfo, hoveringOn, hoverIndex, showModal, alertType, searchType } = this.state
@@ -596,7 +587,6 @@ export class DocumentMeta extends Component {
             onGetSuggestions={this.handleGetSuggestions}
             onSearchValueChange={this.handleSearchValueChange}
             onSuggestionSelected={this.handleSuggestionSelected}
-            showProjectError={noProjectError === true}
             onMouseDown={this.onMouseDown}
             searchType={searchType}
             open={showModal}

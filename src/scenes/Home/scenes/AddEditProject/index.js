@@ -474,7 +474,7 @@ export class AddEditProject extends Component {
                         key={`project-user-${i}`}
                         container
                         type="row"
-                        padding="6px 0px"
+                        padding="6px 6px 6px 0"
                         align="center"
                         onMouseEnter={this.onHoverUser(i)}
                         onMouseLeave={this.onHoverUser(i)}
@@ -484,13 +484,17 @@ export class AddEditProject extends Component {
                             : '',
                           backgroundColor: hovered ? '#f1f1f1' : 'white'
                         }}>
-                        <Typography>{userName}</Typography>
-                        <Typography variant="caption" style={{ margin: '0 10px' }}>
-                          ({isCreator ? 'Creator' : user.role})
-                        </Typography>
-                        {(!isCreator && currentUser.id !== user.userId) && hovered && <IconButton
+                        <FlexGrid container type="row" align="center" flex>
+                          <Typography>{userName}</Typography>
+                          <Typography variant="caption" style={{ margin: '0 10px' }}>
+                            ({isCreator ? 'Creator' : user.role})
+                          </Typography>
+                        </FlexGrid>
+                        {(!isCreator && currentUser.id !== user.userId)
+                        && hovered
+                        && <IconButton
                           onClick={this.removeUser(i)}
-                          color="error"
+                          color="#757575"
                           iconSize={16}
                           tooltipText={`Remove ${userName}`}>
                           delete

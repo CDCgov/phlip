@@ -636,7 +636,6 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
       onSuggestionSelected={[Function]}
       open={false}
       searchType=""
-      showProjectError={false}
       suggestions={
         Array [
           Object {
