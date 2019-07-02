@@ -7,15 +7,16 @@ import TableSortLabel from '@material-ui/core/TableSortLabel'
  * Table header for the document list
  */
 export const DocListTableHead = props => {
-  const { onSelectAll, allSelected, onActionSelected, sortBy, direction, onRequestSort } = props
+  const { onSelectAll, allSelected, onActionSelected, sortBy, direction, onRequestSort, userRole } = props
   
-  const options = [
+  let options = [
     { value: 'bulk', label: 'Actions', disabled: true },
-    { value: 'delete', label: 'Delete' },
     { value: 'project', label: 'Assign Project' },
     { value: 'jurisdiction', label: 'Assign Jurisdiction' },
     { value: 'approve', label: 'Approve' }
   ]
+  
+  options = userRole === 'Admin' ? [...options, { value: 'delete', label: 'Delete' }] : options
   
   const r1Columns = [
     {
@@ -26,9 +27,8 @@ export const DocListTableHead = props => {
           value: 'bulk',
           onChange: onActionSelected
         }}
-        SelectDisplayProps={{ style: { paddingBottom: 3 } }}
+        SelectDisplayProps={{ style: { paddingBottom: 3, minWidth: 140 } }}
         style={{ fontSize: 13, color: '#757575', fontWeight: 400 }}
-        formControlStyle={{ minWidth: 140 }}
       />,
       style: { paddingLeft: 20, paddingRight: 0 }
     }
@@ -45,9 +45,9 @@ export const DocListTableHead = props => {
     { key: 'uploadedDate', label: 'Uploaded Date', padding: 'checkbox', hasSort: true },
     { key: 'doc-projects', label: 'Projects', padding: 'checkbox' },
     { key: 'doc-jurisdictions', label: 'Jurisdictions', padding: 'checkbox' },
-    { key: 'approved', label:'Approved', padding:0 }
+    { key: 'approved', label: 'Approved', padding: 0 }
   ]
-
+  
   return (
     <>
       <TableRow key="bulkAction" style={{ width: '100%' }}>
@@ -123,7 +123,11 @@ DocListTableHead.propTypes = {
   /**
    * Specify sort direction
    */
-  onRequestSort: PropTypes.func
+  onRequestSort: PropTypes.func,
+  /**
+   * Current user role
+   */
+  userRole: PropTypes.oneOf(['Admin', 'Coordinator', 'Coder'])
 }
 
 DocListTableHead.defaultProps = {

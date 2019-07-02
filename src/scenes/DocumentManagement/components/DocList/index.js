@@ -10,7 +10,7 @@ import DocListTableRow from './components/DocListTableRow'
 
 export const DocList = props => {
   const {
-    onSelectAllFiles, onSelectOneFile, rowsPerPage, page, sortBy, sortDirection,
+    onSelectAllFiles, onSelectOneFile, rowsPerPage, page, sortBy, sortDirection, userRole,
     onChangePage, onChangeRows, documents, docCount, allSelected, onBulkAction, handleSortRequest
   } = props
   
@@ -31,6 +31,7 @@ export const DocList = props => {
             onActionSelected={(actionType) => onBulkAction(actionType)}
             onRequestSort={handleSortRequest}
             sortBy={sortBy}
+            userRole={userRole}
             direction={sortDirection}
           />
         </TableHead>
@@ -114,7 +115,11 @@ DocList.propTypes = {
   /**
    * Current direction the table is being sorted
    */
-  sortDirection: PropTypes.string
+  sortDirection: PropTypes.string,
+  /**
+   * Current user role
+   */
+  userRole: PropTypes.oneOf(['Admin', 'Coordinator', 'Coder'])
 }
 
 export default DocList

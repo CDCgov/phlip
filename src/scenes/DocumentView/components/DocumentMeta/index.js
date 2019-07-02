@@ -28,7 +28,11 @@ export class DocumentMeta extends Component {
     goBack: PropTypes.func,
     apiErrorOpen: PropTypes.bool,
     apiErrorInfo: PropTypes.shape({ title: PropTypes.string, text: PropTypes.string }),
-    id: PropTypes.string
+    id: PropTypes.string,
+    /**
+     * Current user role
+     */
+    userRole: PropTypes.oneOf(['Admin', 'Coordinator', 'Coder'])
   }
   
   constructor(props, context) {
@@ -335,7 +339,7 @@ export class DocumentMeta extends Component {
   
   render() {
     const {
-      apiErrorInfo, apiErrorOpen, inEditMode, document, projectList, jurisdictionList,
+      apiErrorInfo, apiErrorOpen, inEditMode, document, projectList, jurisdictionList, userRole,
       projectSearchValue, jurisdictionSearchValue, projectSuggestions, jurisdictionSuggestions
     } = this.props
     
@@ -477,15 +481,21 @@ export class DocumentMeta extends Component {
                 Upload Date: {convertToLocalDate(document.uploadedDate)}
               </Typography>
             </FlexGrid>
-            <FlexGrid container type="row" flex align="flex-end" justify="space-between" style={{ minHeight: 30 }}>
-              <Button
+            <FlexGrid
+              container
+              type="row"
+              flex
+              align="flex-end"
+              justify={userRole === 'Admin' ? 'space-between' : 'flex-end'}
+              style={{ minHeight: 30 }}>
+              {userRole === 'Admin' && <Button
                 value="Delete Document"
                 raised={false}
                 color="accent"
                 style={{ paddingLeft: 0, textTransform: 'none', backgroundColor: 'transparent' }}
                 aria-label="Delete the current document"
                 onClick={() => this.handleShowDocDeleteConfirm('document', document._id)}
-              />
+              />}
               <Button
                 value={inEditMode
                   ? 'Update'
@@ -630,7 +640,8 @@ const mapStateToProps = state => {
     inEditMode: docState.meta.inEditMode,
     apiErrorInfo: docState.meta.apiErrorInfo,
     apiErrorOpen: docState.meta.apiErrorOpen || false,
-    documentUpdateInProgress: docState.meta.documentUpdateInProgress || false
+    documentUpdateInProgress: docState.meta.documentUpdateInProgress || false,
+    userRole: state.data.user.currentUser.role
   }
 }
 

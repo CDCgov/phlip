@@ -324,7 +324,7 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
         circular={false}
         container={true}
         flex={true}
-        justify="space-between"
+        justify="flex-end"
         padding={0}
         raised={false}
         style={
@@ -334,20 +334,6 @@ exports[`DocumentView - DocumentMeta should render correctly 1`] = `
         }
         type="row"
       >
-        <WithTheme(Button)
-          aria-label="Delete the current document"
-          color="accent"
-          onClick={[Function]}
-          raised={false}
-          style={
-            Object {
-              "backgroundColor": "transparent",
-              "paddingLeft": 0,
-              "textTransform": "none",
-            }
-          }
-          value="Delete Document"
-        />
         <WithTheme(Button)
           color="accent"
           onClick={[Function]}

@@ -101,7 +101,11 @@ export class DocumentManagement extends Component {
     /**
      * Whether there is an error we need to show as a page error
      */
-    pageError: PropTypes.string
+    pageError: PropTypes.string,
+    /**
+     * Current user role
+     */
+    userRole: PropTypes.oneOf(['Admin', 'Coordinator', 'Coder'])
   }
   
   constructor(props, context) {
@@ -284,7 +288,7 @@ export class DocumentManagement extends Component {
     const {
       apiErrorOpen, apiErrorInfo, getDocumentsInProgress, pageError, documents, docCount,
       actions, allSelected, page, rowsPerPage, checkedCount, sortBy, sortDirection, jurisdictionSearchValue,
-      jurisdictionSuggestions, projectSearchValue, projectSuggestions, checkedDocsOwner
+      jurisdictionSuggestions, projectSearchValue, projectSuggestions, checkedDocsOwner, userRole
     } = this.props
     
     const { bulkActionType, showModal } = this.state
@@ -326,6 +330,7 @@ export class DocumentManagement extends Component {
               allSelected={allSelected}
               page={page}
               rowsPerPage={rowsPerPage}
+              userRole={userRole}
               onBulkAction={this.handleBulkAction}
               allowDropdown={checkedCount > 0}
               sortBy={sortBy}
@@ -389,7 +394,8 @@ const mapStateToProps = state => {
     projectSearchValue: docManage.projectSuggestions.searchValue,
     jurisdictionSuggestions: docManage.jurisdictionSuggestions.suggestions,
     jurisdictionSearchValue: docManage.jurisdictionSuggestions.searchValue,
-    selectedJurisdiction: docManage.jurisdictionSuggestions.selectedSuggestion
+    selectedJurisdiction: docManage.jurisdictionSuggestions.selectedSuggestion,
+    userRole: state.data.user.currentUser.role
   }
 }
 

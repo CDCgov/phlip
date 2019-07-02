@@ -29,13 +29,9 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
         SelectDisplayProps={
           Object {
             "style": Object {
+              "minWidth": 140,
               "paddingBottom": 3,
             },
-          }
-        }
-        formControlStyle={
-          Object {
-            "minWidth": 140,
           }
         }
         input={
@@ -50,10 +46,6 @@ exports[`DocumentManagement - DocList - DocListTableHead should render correctly
               "disabled": true,
               "label": "Actions",
               "value": "bulk",
-            },
-            Object {
-              "label": "Delete",
-              "value": "delete",
             },
             Object {
               "label": "Assign Project",
