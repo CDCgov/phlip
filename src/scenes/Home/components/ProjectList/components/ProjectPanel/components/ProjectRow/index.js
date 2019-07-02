@@ -45,34 +45,6 @@ export const ProjectRow = props => {
           {project.lastEditedBy}
         </FlexGrid>
       </FlexGrid>
-      {/*<FlexGrid*/}
-      {/*  flex*/}
-      {/*  container*/}
-      {/*  padding="0 44px 0 0"*/}
-      {/*  type="row"*/}
-      {/*  align="center"*/}
-      {/*  justify="flex-end"*/}
-      {/*  style={{ flexBasis: '30%' }}>*/}
-      {/*  <Button*/}
-      {/*    raised={false}*/}
-      {/*    value="Code"*/}
-      {/*    listButton*/}
-      {/*    style={{ borderRadius: 3 }}*/}
-      {/*    aria-label="Code project"*/}
-      {/*    component={Link}*/}
-      {/*    to={{ pathname: `/project/${project.id}/code` }}*/}
-      {/*  />*/}
-      {/*  <span style={{ width: '24px' }} />*/}
-      {/*  {!isCoder && <Button*/}
-      {/*    raised={false}*/}
-      {/*    value="Validate"*/}
-      {/*    listButton*/}
-      {/*    aria-label="Validate project"*/}
-      {/*    component={Link}*/}
-      {/*    style={{ borderRadius: 3 }}*/}
-      {/*    to={{ pathname: `/project/${project.id}/validate` }}*/}
-      {/*  />}*/}
-      {/*</FlexGrid>*/}
     </FlexGrid>
   )
 }

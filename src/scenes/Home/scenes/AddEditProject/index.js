@@ -104,7 +104,11 @@ export class AddEditProject extends Component {
     /**
      * Passed in from withFormAlert HOC
      */
-    openConfirmAlert: PropTypes.func
+    openConfirmAlert: PropTypes.func,
+    /**
+     * Whether or not a request for toggling lock is in progress
+     */
+    togglingLock: PropTypes.bool
   }
   
   constructor(props, context) {
@@ -127,17 +131,17 @@ export class AddEditProject extends Component {
     
     if (this.projectDefined) {
       document.title = `PHLIP - Project ${this.projectDefined.name} - Edit`
-      actions.setCurrentUsers(this.projectDefined.projectUsers, this.projectDefined.createdById)
+      actions.initProject(this.projectDefined)
     } else {
       document.title = `PHLIP - Add Project`
-      actions.setCurrentUsers([currentUser], currentUser.userId)
+      actions.initProject({ projectUsers: [currentUser], createdById: currentUser.userId })
     }
   }
   
   componentDidUpdate(prevProps) {
-    const { formError, onSubmitError, history, goBack, submitting } = this.props
+    const { formError, onSubmitError, history, goBack, submitting, togglingLock } = this.props
     
-    if (prevProps.submitting && !submitting) {
+    if ((prevProps.submitting && !submitting) || (prevProps.togglingLock && !togglingLock)) {
       if (formError !== null) {
         onSubmitError(formError)
       } else if (goBack) {
@@ -214,16 +218,6 @@ export class AddEditProject extends Component {
    * @returns {String}
    */
   required = value => value ? undefined : 'Required'
-  
-  /**
-   * Determines the modal title depending on whether it's add / edit / view
-   *
-   * @public
-   * @returns {String}
-   */
-  getModalTitle = () => this.projectDefined
-    ? 'Edit Project'
-    : 'Create New Project'
   
   /**
    * Gets button text adds a spinner if a saving is happening
@@ -361,6 +355,27 @@ export class AddEditProject extends Component {
     })
   }
   
+  /**
+   * Handles locking / unlocking a project
+   */
+  handleToggleLock = () => {
+    const { actions } = this.props
+    
+    if (this.projectDefined.status === 2) {
+      actions.unlockProjectRequest(this.projectDefined, 1)
+      this.projectDefined = {
+        ...this.projectDefined,
+        status: 1
+      }
+    } else {
+      actions.lockProjectRequest(this.projectDefined, 2)
+      this.projectDefined = {
+        ...this.projectDefined,
+        status: 2
+      }
+    }
+  }
+  
   render() {
     const { alertOpen, alertInfo, hoveredUser, addUserEnabled } = this.state
     const { currentUser, location, submitting, userSuggestions, userSearchValue, users } = this.props
@@ -390,6 +405,22 @@ export class AddEditProject extends Component {
       }
     ]
     
+    let modalButtons = undefined
+    const LockButton = <Button color="#757575" onClick={this.handleToggleLock}>Lock</Button>
+    
+    if (this.projectDefined) {
+      if (currentUser.role === 'Admin') {
+        modalButtons = (
+          <>
+            <span style={{ marginRight: 10 }}>{LockButton}</span>
+            <Button color="error" onClick={this.handleShowDeleteConfirm}>Delete</Button>
+          </>
+        )
+      } else {
+        modalButtons = LockButton
+      }
+    }
+    
     return (
       <>
         <Alert open={alertOpen} actions={alertActions} onCloseAlert={this.onCancelDelete} title={alertInfo.title}>
@@ -405,12 +436,7 @@ export class AddEditProject extends Component {
           style={{ height: '90%', width: '80%' }}
           formStyle={{ height: '100%', display: 'flex', flexDirection: 'column' }}
           initialValues={location.state.projectDefined || {}}>
-          <ModalTitle
-            title={this.getModalTitle()}
-            buttons={(this.projectDefined && currentUser.role === 'Admin')
-              ? <Button color="error" onClick={this.handleShowDeleteConfirm}>Delete</Button>
-              : undefined}
-          />
+          <ModalTitle title={this.projectDefined ? 'Edit Project' : 'Create New Project'} buttons={modalButtons} />
           <Divider />
           <ModalContent>
             <FlexGrid container padding="30px 15px 0" style={{ minWidth: 500, minHeight: 230 }}>
@@ -514,18 +540,24 @@ export class AddEditProject extends Component {
 }
 
 /* istanbul ignore next */
-const mapStateToProps = state => ({
-  projects: Object.values(state.data.projects.byId) || [],
-  form: state.form.projectForm || {},
-  formName: 'projectForm',
-  currentUser: { ...state.data.user.currentUser, userId: state.data.user.currentUser.id },
-  formError: state.scenes.home.addEditProject.formError,
-  goBack: state.scenes.home.addEditProject.goBack,
-  submitting: state.scenes.home.addEditProject.submitting,
-  userSearchValue: state.scenes.home.addEditProject.userSearchValue || '',
-  userSuggestions: state.scenes.home.addEditProject.userSuggestions || [],
-  users: state.scenes.home.addEditProject.users || []
-})
+const mapStateToProps = state => {
+  const addEditState = state.scenes.home.addEditProject
+  
+  return {
+    projects: Object.values(state.data.projects.byId) || [],
+    project: addEditState.project || {},
+    form: state.form.projectForm || {},
+    formName: 'projectForm',
+    currentUser: { ...state.data.user.currentUser, userId: state.data.user.currentUser.id },
+    formError: addEditState.formError,
+    goBack: addEditState.goBack,
+    submitting: addEditState.submitting,
+    userSearchValue: addEditState.userSearchValue,
+    userSuggestions: addEditState.userSuggestions,
+    users: addEditState.project.users,
+    togglingLock: addEditState.togglingLock
+  }
+}
 
 /* istanbul ignore next */
 const mapDispatchToProps = dispatch => ({
