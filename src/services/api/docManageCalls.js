@@ -34,7 +34,7 @@ const docManageCalls = [
   {
     name: 'removeFromDocArray',
     method: 'delete',
-    path: ({ docId, updateType, removalId }) => `/docs/${docId}/${updateType}/${removalId}`
+    path: ({ docId, updateType, removeId }) => `/docs/${docId}/${updateType}/${removeId}`
   },
   {
     name: 'updateDoc',

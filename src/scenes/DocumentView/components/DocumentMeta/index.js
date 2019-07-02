@@ -220,8 +220,8 @@ export class DocumentMeta extends Component {
     const { searchType } = this.state
     
     const selected = searchType === 'project' ? selectedProject : selectedJurisdiction
-    const error = selected === null
- 
+    const error = !selected
+    
     if (error) {
       this.setState({
         alertOpen: true,
@@ -232,8 +232,8 @@ export class DocumentMeta extends Component {
         alertType: 'projur'
       })
     } else {
-      actions.addProJur(`${searchType}s`, selected)
-      actions.updateDocRequest(`${searchType}s`, selected)
+      actions.addProJur(`${searchType}s`, selected, 'add')
+      actions.updateDocRequest(`${searchType}s`, selected, 'add')
     }
   }
   

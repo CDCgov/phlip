@@ -37,27 +37,39 @@ const getDocumentContentsLogic = createLogic({
 const updateDocLogic = createLogic({
   type: types.UPDATE_DOC_REQUEST,
   async process({ docApi, action, getState }, dispatch, done) {
-    let md = {}
     const selectedDoc = getState().scenes.docView.meta.documentForm
+    let updatedDoc = {}
     
-    md.status = selectedDoc.status
-    md.effectiveDate = selectedDoc.effectiveDate !== undefined
-      ? selectedDoc.effectiveDate
-      : ''
-    md.citation = selectedDoc.citation
-    md.jurisdictions = selectedDoc.jurisdictions
-    md.projects = selectedDoc.projects
-
+    console.log(action)
+    
     try {
-      const updatedDoc = await docApi.updateDoc({ ...md }, {}, { docId: selectedDoc._id })
-      
       if (['jurisdictions', 'projects'].includes(action.property)) {
         if (action.updateType === 'add') {
+          updatedDoc = await docApi.addToDocArray(
+            {},
+            {},
+            { docId: selectedDoc._id, updateType: action.property, newId: action.value.id }
+          )
+  
           dispatch({
             type: action.property === 'jurisdictions' ? jurisdictionTypes.ADD_JURISDICTION : projectTypes.ADD_PROJECT,
             payload: action.value
           })
+        } else {
+          updatedDoc = await docApi.removeFromDocArray(
+            {},
+            {},
+            { docId: selectedDoc._id, updateType: action.property, removeId: action.value.id }
+          )
         }
+      } else {
+        updatedDoc = await docApi.updateDoc({
+          status: selectedDoc.status,
+          effectiveDate: selectedDoc.effectiveDate !== undefined
+            ? selectedDoc.effectiveDate
+            : '',
+          citation: selectedDoc.citation
+        }, {}, { docId: selectedDoc._id })
       }
       
       dispatch({
