@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import upload, { COMBINED_INITIAL_STATE as UPLOAD_INITIAL_STATE } from './scenes/Upload/reducer'
+import { types as uploadTypes } from './scenes/Upload/actions'
 import { types } from './actions'
 import { arrayToObject } from 'utils/normalize'
 import { sliceTable, sortListOfObjects } from 'utils/commonHelpers'
@@ -34,11 +35,6 @@ const mergeName = docObj => ({
   ...docObj,
   uploadedByName: `${docObj.uploadedBy.firstName} ${docObj.uploadedBy.lastName}`
 })
-
-const removeContent = (document, index) => {
-  const { content, ...doc } = document
-  return doc
-}
 
 const sortAndSlice = (arr, page, rowsPerPage, sortBy, sortDirection) => {
   if (arr.length === 0) return []
@@ -146,19 +142,22 @@ export const docManagementReducer = (state = INITIAL_STATE, action) => {
         }
       }
     
-    case types.UPLOAD_DOCUMENTS_SUCCESS:
-      docs = action.payload.docs.map(mergeName).map(removeContent)
-      obj = { ...state.documents.byId, ...arrayToObject(docs, '_id') }
-      
-      return {
-        ...state,
-        documents: {
-          ...state.documents,
-          byId: obj,
-          allIds: Object.keys(obj),
-          visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection)
-        },
-        count: Object.keys(obj).length
+    case uploadTypes.UPLOAD_ONE_DOC_COMPLETE:
+      if (!action.payload.failed) {
+        obj = { ...state.documents.byId, [action.payload.doc._id]: action.payload.doc }
+  
+        return {
+          ...state,
+          documents: {
+            ...state.documents,
+            byId: obj,
+            allIds: Object.keys(obj),
+            visible: sortAndSlice(Object.values(obj), state.page, state.rowsPerPage, state.sortBy, state.sortDirection)
+          },
+          count: Object.keys(obj).length
+        }
+      } else {
+        return state
       }
     
     case types.SEARCH_VALUE_CHANGE:

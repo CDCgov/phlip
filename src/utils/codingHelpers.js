@@ -837,7 +837,7 @@ export const getSelectedQuestion = async (state, action, api, userId, questionIn
  *   firstQuestion: Object, tree: Array, order: Array, questionsById: Object, outline: Object, isSchemeEmpty: Boolean
  * }}
  */
-export const getSchemeAndInitialize = async (projectId, api) => {
+export const getSchemeAndInitialize = async (projectId, api, questionId = null) => {
   let scheme = {}, payload = { firstQuestion: {}, tree: [], order: [], questionsById: {} }
   try {
     scheme = await api.getScheme({}, {}, { projectId })
@@ -854,10 +854,13 @@ export const getSchemeAndInitialize = async (projectId, api) => {
     // Create a sorted question tree with sorted children with question numbering and order
     const { questionsWithNumbers, order, tree } = getQuestionNumbers(sortQuestions(getTreeFromFlatData({ flatData: merge })))
     const questionsById = normalize.arrayToObject(questionsWithNumbers)
-    const firstQuestion = questionsWithNumbers[0]
+    const questionIndex = questionId === null
+      ? 0
+      : questionsWithNumbers.findIndex(question => parseInt(question.id) === parseInt(questionId))
+    const firstQuestion = questionsWithNumbers[questionIndex]
     commonHelpers.sortListOfObjects(firstQuestion.possibleAnswers, 'order', 'asc')
     
-    return { order, tree, questionsById, firstQuestion, outline: scheme.outline, isSchemeEmpty: false }
+    return { order, tree, questionsById, firstQuestion, outline: scheme.outline, isSchemeEmpty: false, questionIndex }
     
   } catch (error) {
     throw { error: 'Failed to get coding scheme.' }

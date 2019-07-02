@@ -1,8 +1,8 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import { DocumentList } from '../index'
-import { INITIAL_STATE } from '../reducer'
-import { schemeById, userAnswersCoded } from 'utils/testData/coding'
+// import { INITIAL_STATE } from '../reducer'
+// import { schemeById, userAnswersCoded } from 'utils/testData/coding'
 import { CircularLoader } from 'components'
 
 const props = {

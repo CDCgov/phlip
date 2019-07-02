@@ -38,6 +38,7 @@
   cursor: text;
   -webkit-transform-origin: 0 0;
   transform-origin: 0 0;
+  height: 200px !important;
 }
 
 .textLayer > p {
