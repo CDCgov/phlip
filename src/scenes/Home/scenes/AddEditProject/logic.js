@@ -65,15 +65,15 @@ export const toggleLockProjectLogic = createLogic({
       )
       
       dispatch({
-        type: action.status === 1 ? types.UNLOCK_PROJECT_SUCCESS : types.LOCK_PROJECT_SUCCESS,
+        type: action.status === '1' ? types.UNLOCK_PROJECT_SUCCESS : types.LOCK_PROJECT_SUCCESS,
         status: action.status
       })
       dispatch({ type: projectTypes.UPDATE_PROJECT, payload: updatedProject })
       dispatch({ type: types.UPDATE_VISIBLE_PROJECTS, payload: {} })
     } catch (error) {
       dispatch({
-        type: action.status === 1 ? types.UNLOCK_PROJECT_FAIL : types.LOCK_PROJECT_FAIL,
-        payload: `We couldn\'t ${action.status === 1 ? 'unlock' : 'lock'} the project. Please try again later.`,
+        type: action.status === '1' ? types.UNLOCK_PROJECT_FAIL : types.LOCK_PROJECT_FAIL,
+        payload: `We couldn\'t ${action.status === '1' ? 'unlock' : 'lock'} the project. Please try again later.`,
         error: true
       })
     }
@@ -118,7 +118,12 @@ export const deleteProjectLogic = createLogic({
  * doesn't have to be repeated in both logic.
  */
 export const updateUserId = createLogic({
-  type: [types.ADD_PROJECT_REQUEST, types.UPDATE_PROJECT_REQUEST],
+  type: [
+    types.ADD_PROJECT_REQUEST,
+    types.UPDATE_PROJECT_REQUEST,
+    types.LOCK_PROJECT_REQUEST,
+    types.UNLOCK_PROJECT_REQUEST
+  ],
   transform({ getState, action }, next) {
     const users = getState().scenes.home.addEditProject.project.users.map(user => user.userId)
     next({

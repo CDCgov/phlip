@@ -365,24 +365,16 @@ export class AddEditProject extends Component {
   handleToggleLock = () => {
     const { actions, project } = this.props
     
-    if (this.projectDefined.status === 2) {
-      actions.unlockProjectRequest(project, 1)
-      this.projectDefined = {
-        ...this.projectDefined,
-        status: 1
-      }
+    if (project.status === '2') {
+      actions.unlockProjectRequest(project, '1')
     } else {
-      actions.lockProjectRequest(project, 2)
-      this.projectDefined = {
-        ...this.projectDefined,
-        status: 2
-      }
+      actions.lockProjectRequest(project, '2')
     }
   }
   
   render() {
     const { alertOpen, alertInfo, hoveredUser, addUserEnabled } = this.state
-    const { currentUser, location, submitting, userSuggestions, userSearchValue, users } = this.props
+    const { currentUser, location, submitting, userSuggestions, userSearchValue, users, project } = this.props
     
     const actions = [
       { value: 'Cancel', onClick: this.onCloseModal, type: 'button', otherProps: { 'aria-label': 'Cancel edit view' } },
@@ -450,9 +442,10 @@ export class AddEditProject extends Component {
                 label="Project Name"
                 validate={this.required}
                 placeholder="Enter Project Name"
+                disabled={project.status === '2'}
                 fullWidth
                 required
-                shrinkLabel={true}
+                shrinkLabel
               />
               <DetailRow
                 name="type"
@@ -461,6 +454,7 @@ export class AddEditProject extends Component {
                 defaultValue={1}
                 options={options}
                 id="type"
+                disabled={project.status === '2'}
                 shrinkLabel={false}
                 required
                 style={{ display: 'flex' }}

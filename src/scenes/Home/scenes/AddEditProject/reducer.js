@@ -82,7 +82,8 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
         project: {
           ...state.project,
           status: action.status
-        }
+        },
+        goBack: false
       }
     
     case types.LOCK_PROJECT_FAIL:
@@ -90,7 +91,8 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         togglingLock: false,
-        formError: action.payload
+        formError: action.payload,
+        goBack: false
       }
     
     case types.ON_USER_SUGGESTION_SELECTED:
