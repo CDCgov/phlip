@@ -1,4 +1,4 @@
-import reducer, { INITIAL_STATE } from '../reducer'
+import { docViewReducer as reducer, INITIAL_STATE } from '../reducer'
 import { types } from '../actions'
 
 const initial = INITIAL_STATE

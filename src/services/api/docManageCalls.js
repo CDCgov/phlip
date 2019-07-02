@@ -27,6 +27,16 @@ const docManageCalls = [
     path: ({ docId }) => `/docs/${docId}/contents`
   },
   {
+    name: 'addToDocArray',
+    method: 'post',
+    path: ({ docId, updateType, newId }) => `/docs/${docId}/${updateType}/${newId}`
+  },
+  {
+    name: 'removeFromDocArray',
+    method: 'delete',
+    path: ({ docId, updateType, removalId }) => `/docs/${docId}/${updateType}/${removalId}`
+  },
+  {
     name: 'updateDoc',
     method: 'put',
     path: ({ docId }) => `/docs/${docId}`

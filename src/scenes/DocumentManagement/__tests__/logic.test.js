@@ -39,10 +39,17 @@ describe('Document Management logic', () => {
       initialState: {
         data: {
           jurisdictions: {
-            byId: jurisdictions
+            byId: jurisdictions,
+            allIds: [1, 2, 33, 200]
           },
           projects: {
-            byId: projects
+            byId: projects,
+            allIds: [12, 5, 44, 11]
+          },
+          user: {
+            currentUser: {
+              role: 'Admin'
+            }
           },
           ...data
         },
@@ -376,7 +383,8 @@ describe('Document Management logic', () => {
             byId: {
               33: { name: 'Florida', id: 33 },
               200: { name: 'Puerto Rico', id: 200 }
-            }
+            },
+            allIds: [33, 200]
           }
         }, {})
         
@@ -397,7 +405,8 @@ describe('Document Management logic', () => {
             byId: {
               12: { name: 'Project 1', id: 12 },
               5: { name: 'Overwatch', id: 5 }
-            }
+            },
+            allIds: [12, 5]
           }
         }, {})
     

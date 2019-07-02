@@ -1,96 +1,115 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import FlexGrid from 'components/FlexGrid'
-import Autocomplete from 'components/Autocomplete'
-import Icon from 'components/Icon'
+import { Icon, FlexGrid, Autocomplete, ModalTitle, ModalContent, ModalActions, CircularLoader } from 'components'
+import Modal from 'components/Modal'
+import Divider from '@material-ui/core/Divider'
+import { capitalizeFirstLetter } from 'utils/formHelpers'
 
+/*
+ * gets button modal text
+ */
+const getButtonText = (text, inProgress) => {
+  return (
+    <>
+      {text}
+      {inProgress && <CircularLoader thickness={5} style={{ height: 15, width: 15, marginRight: 5 }} />}
+    </>
+  )
+}
+
+/**
+ * The contents of the project jurisdiction autocomplete search modal
+ * @param props
+ * @returns {*}
+ * @constructor
+ */
 const ProJurSearch = props => {
   const {
-    projectSuggestions,
-    jurisdictionSuggestions,
-    projectSearchValue,
-    jurisdictionSearchValue,
+    suggestions,
+    searchValue,
     onClearSuggestions,
     onGetSuggestions,
     onSearchValueChange,
     onSuggestionSelected,
-    showProjectError,
-    showJurSearch,
-    onMouseDown
+    searchType,
+    onMouseDown,
+    open,
+    onCloseModal,
+    buttonInfo,
+    onConfirmAction
   } = props
-
+  
+  const cancelButton = {
+    value: 'Cancel',
+    type: 'button',
+    otherProps: { 'aria-label': 'Close modal' },
+    preferred: true,
+    onClick: onCloseModal
+  }
+  
+  const actions = [
+    cancelButton,
+    {
+      value: getButtonText('Update', buttonInfo.inProgress),
+      type: 'button',
+      otherProps: { 'aria-label': 'Update', 'id': 'updateConfirmBtn' },
+      onClick: onConfirmAction,
+      disabled: buttonInfo.disabled
+    }
+  ]
+  
   return (
-    <FlexGrid container type="row" align="center" onMouseDown={onMouseDown}>
-      {!showJurSearch &&
-      <FlexGrid container flex type="row" align="flex-end" >
-        <Icon style={{ paddingRight: 8, paddingBottom: 5 }}>dvr</Icon>
-        <Autocomplete
-          suggestions={projectSuggestions}
-          handleGetSuggestions={val => onGetSuggestions('project', val)}
-          handleClearSuggestions={() => onClearSuggestions('project')}
-          inputProps={{
-            value: projectSearchValue,
-            onChange: (e, { newValue }) => {
-              if (e.target.value === undefined) {
-                onSearchValueChange('project', newValue.name)
-              } else {
-                onSearchValueChange('project', e.target.value)
-              }
-            },
-            id: 'project-name'
-          }}
-          style={{ width: '100%' }}
-          InputProps={{
-            placeholder: 'Search projects',
-            fullWidth: true,
-            error: showProjectError
-          }}
-          handleSuggestionSelected={onSuggestionSelected('project')}
-        />
-      </FlexGrid>}
-      {showJurSearch &&
-      <FlexGrid container flex type="row" align="flex-end" >
-        <Icon style={{ paddingRight: 8, paddingBottom: 5 }}>account_balance</Icon>
-        <Autocomplete
-          suggestions={jurisdictionSuggestions}
-          handleGetSuggestions={val => onGetSuggestions('jurisdiction', val)}
-          handleClearSuggestions={() => onClearSuggestions('jurisdiction')}
-          inputProps={{
-            value: jurisdictionSearchValue,
-            onChange: (e, { newValue }) => {
-              if (e.target.value === undefined) {
-                onSearchValueChange('jurisdiction', newValue.name)
-              } else {
-                onSearchValueChange('jurisdiction', e.target.value)
-              }
-            },
-            id: 'jurisdiction-name'
-          }}
-          handleSuggestionSelected={onSuggestionSelected('jurisdiction')}
-          InputProps={{
-            placeholder: 'Search jurisdictions',
-            fullWidth: true
-          }}
-        />
-      </FlexGrid>}
-    </FlexGrid>
+    <Modal onClose={onCloseModal} open={open} maxWidth="md" hideOverflow={false}>
+      <ModalTitle title={`Assign ${searchType ? capitalizeFirstLetter(searchType) : ''}`} />
+      <Divider />
+      <ModalContent style={{ display: 'flex', flexDirection: 'column', paddingTop: 24, width: 500, height: 275 }}>
+        <FlexGrid container type="row" align="center" onMouseDown={onMouseDown}>
+          <FlexGrid container type="row" align="center" padding="0 0 20px" flex>
+            <Icon style={{ paddingRight: 8 }}>
+              {searchType === 'jurisdiction' ? 'account_balance' : 'dvr'}
+            </Icon>
+            <Autocomplete
+              suggestions={suggestions}
+              handleGetSuggestions={val => onGetSuggestions(searchType, val)}
+              handleClearSuggestions={() => onClearSuggestions(searchType)}
+              inputProps={{
+                value: searchValue,
+                onChange: (e, { newValue }) => {
+                  e.target.value === undefined
+                    ? onSearchValueChange(searchType, newValue.name)
+                    : onSearchValueChange(searchType, e.target.value)
+                },
+                id: `${searchType}-name`
+              }}
+              handleSuggestionSelected={onSuggestionSelected(searchType)}
+              InputProps={{
+                placeholder: `Search ${searchType}s`,
+                fullWidth: true
+              }}
+            />
+          </FlexGrid>
+        </FlexGrid>
+      </ModalContent>
+      <Divider />
+      <ModalActions actions={actions} />
+    </Modal>
   )
 }
 
 ProJurSearch.propTypes = {
-  projectSuggestions: PropTypes.array,
-  jurisdictionSuggestions: PropTypes.array,
-  projectSearchValue: PropTypes.string,
-  jurisdictionSearchValue: PropTypes.string,
+  showProjectError: PropTypes.bool,
+  onMouseDown: PropTypes.func,
+  suggestions: PropTypes.array,
+  searchValue: PropTypes.string,
   onClearSuggestions: PropTypes.func,
   onGetSuggestions: PropTypes.func,
   onSearchValueChange: PropTypes.func,
-  onJurisdictionSelected: PropTypes.func,
-  onProjectSelected: PropTypes.func,
-  showProjectError: PropTypes.bool,
   onSuggestionSelected: PropTypes.func,
-  showJurSearch: PropTypes.bool,
-  onMouseDown: PropTypes.func
+  searchType: PropTypes.oneOf(['project', 'jurisdiction', '']),
+  open: PropTypes.bool,
+  onCloseModal: PropTypes.func,
+  buttonInfo: PropTypes.object,
+  onConfirmAction: PropTypes.func
 }
 
 export default ProJurSearch

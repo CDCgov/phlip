@@ -62,7 +62,7 @@ export const BulkModal = props => {
       disabled: buttonInfo.disabled
     }
   ]
-
+  
   const genMessage = (bulkType) => {
     if (['project', 'jurisdiction'].includes(bulkType)) {
       return `Do you want to assign this ${bulkType} to other users' documents?`
@@ -70,6 +70,7 @@ export const BulkModal = props => {
       return `Do you want to ${bulkType} other users' documents?`
     }
   }
+  
   return (
     <Modal onClose={onCloseModal} open={open} maxWidth="md" hideOverflow={false} id="bulkConfirmBox">
       <ModalTitle title={typeToTitle[bulkType]} />
@@ -112,21 +113,23 @@ export const BulkModal = props => {
             {ownerList.length > 0 &&
             <>
               <Typography variant="body1">{genMessage(bulkType)}</Typography>
-              <Typography style={{ padding:10 }} />
+              <Typography style={{ padding: 10 }} />
               <Typography variant="body1">Number of documents selected: {docCount}</Typography>
-              <Typography variant="body2" style={{ paddingTop:20 }}>Users: {ownerList.join(', ')}</Typography>
-             </> }
-            { ownerList.length === 0 && bulkType !== 'delete' &&
-              <Typography variant="body1">Number of documents selected: {docCount}</Typography>
+              <Typography variant="body2" style={{ paddingTop: 20 }}>Users: {ownerList.join(', ')}</Typography>
+            </>}
+            {ownerList.length === 0 && bulkType !== 'delete' &&
+            <Typography variant="body1">Number of documents selected: {docCount}</Typography>
             }
             {bulkType === 'delete' &&
             <>
-              { ownerList.length === 0 && <Typography variant="body1">Do you want to delete {docCount} document{docCount>1?'s':''}? </Typography>}
-              <Typography style={{ paddingTop:20 }} >
-                <span style={{ fontSize:18, fontWeight:500 }}>Warning:</span> Deleting a document will remove all associated annotations for every project and jurisdiction.
+              {ownerList.length === 0 &&
+              <Typography variant="body1">
+                Do you want to delete {docCount} document{docCount > 1 ? 's' : ''}?
+              </Typography>}
+              <Typography style={{ paddingTop: 20 }}>
+                <span style={{ fontSize: 18, fontWeight: 500 }}>Warning:</span> Deleting a document will remove all associated annotations for every project and jurisdiction.
               </Typography>
-              </>
-            }
+            </>}
           </FlexGrid>
         </FlexGrid>
       </ModalContent>
