@@ -5,7 +5,7 @@ import { AddEditProject } from '../index'
 const props = {
   actions: {
     addProjectRequest: jest.fn(),
-    setCurrentUsers: jest.fn()
+    initProject: jest.fn()
   },
   form: {},
   users: [],

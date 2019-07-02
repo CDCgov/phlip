@@ -13,9 +13,9 @@ export const addProjectLogic = createLogic({
     try {
       const project = await api.addProject(action.project, {}, {})
       dispatch({ type: types.ADD_PROJECT_SUCCESS })
-      await handleUserImages(project.projectUsers, getState().data.user.byId, dispatch, api)
       dispatch({ type: projectTypes.ADD_PROJECT, payload: { ...project, lastUsersCheck: null } })
       dispatch({ type: types.UPDATE_VISIBLE_PROJECTS, payload: {} })
+      await handleUserImages(project.projectUsers, getState().data.user.byId, dispatch, api)
     } catch (error) {
       dispatch({
         type: types.ADD_PROJECT_FAIL,

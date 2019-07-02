@@ -11,6 +11,34 @@ describe('Home scene - AddEditProject reducer', () => {
     expect(reducer(undefined, {})).toEqual(INITIAL_STATE)
   })
   
+  describe('INIT_PROJECT', () => {
+    const currentState = getState()
+    const action = {
+      type: types.INIT_PROJECT,
+      project: {
+        createdById: 4,
+        projectUsers: [{ userId: 42 }, { userId: 4 }, { userId: 10 }]
+      }
+    }
+    const state = reducer(currentState, action)
+    
+    test('should set project', () => {
+      expect(state.project).toEqual(expect.objectContaining({
+        createdById: 4,
+        projectUsers: [{ userId: 42 }, { userId: 4 }, { userId: 10 }]
+      }))
+    })
+    
+    test('should put creator user at end of list', () => {
+      expect(state.project.users).toEqual([{ userId: 42 }, { userId: 10 }, { userId: 4 }])
+    })
+    
+    test('should clear user autocomplete values', () => {
+      expect(state.userSuggestions).toEqual([])
+      expect(state.userSearchValue).toEqual('')
+    })
+  })
+  
   describe('ADD_PROJECT_REQUEST', () => {
     const project = { id: 1, name: 'New Project' }
     const currentState = getState()
@@ -155,18 +183,95 @@ describe('Home scene - AddEditProject reducer', () => {
     })
   })
   
-  describe('SET_CURRENT_USERS', () => {
-    const action = {
-      type: types.SET_CURRENT_USERS,
-      users: [{ userId: 42 }, { userId: 4 }, { userId: 10 }],
-      creatorId: 4
-    }
-    
+  describe('LOCK_PROJECT_REQUEST', () => {
+    const action = { type: types.LOCK_PROJECT_REQUEST }
     const currentState = getState()
     const state = reducer(currentState, action)
     
-    test('should put creator user at end of list', () => {
-      expect(state.users).toEqual([{ userId: 42 }, { userId: 10 }, { userId: 4 }])
+    test('should set that a lock request is in progress', () => {
+      expect(state.togglingLock).toEqual(true)
+    })
+  })
+  
+  describe('UNLOCK_PROJECT_REQUEST', () => {
+    const action = { type: types.UNLOCK_PROJECT_REQUEST }
+    const currentState = getState()
+    const state = reducer(currentState, action)
+    
+    test('should set that a lock request is in progress', () => {
+      expect(state.togglingLock).toEqual(true)
+    })
+  })
+  
+  describe('LOCK_PROJECT_SUCCESS', () => {
+    const action = { type: types.LOCK_PROJECT_SUCCESS, status: 2 }
+    const currentState = getState({
+      togglingLock: true, project: { status: 1 }
+    })
+    const state = reducer(currentState, action)
+    
+    test('should reset form error', () => {
+      expect(state.formError).toEqual(null)
+    })
+    
+    test('should set that a lock request has finished', () => {
+      expect(state.togglingLock).toEqual(false)
+    })
+    
+    test('should set new project status', () => {
+      expect(state.project.status).toEqual(2)
+    })
+  })
+  
+  describe('UNLOCK_PROJECT_SUCCESS', () => {
+    const action = { type: types.UNLOCK_PROJECT_SUCCESS, status: 1 }
+    const currentState = getState({
+      togglingLock: true, project: { status: 2 }
+    })
+    const state = reducer(currentState, action)
+    
+    test('should reset form error', () => {
+      expect(state.formError).toEqual(null)
+    })
+    
+    test('should set that a lock request has finished', () => {
+      expect(state.togglingLock).toEqual(false)
+    })
+    
+    test('should set new project status', () => {
+      expect(state.project.status).toEqual(1)
+    })
+  })
+  
+  describe('LOCK_PROJECT_FAIL', () => {
+    const action = { type: types.LOCK_PROJECT_FAIL, payload: 'Failed to lock' }
+    const currentState = getState({
+      togglingLock: true, project: { status: 1 }
+    })
+    const state = reducer(currentState, action)
+    
+    test('should set form error', () => {
+      expect(state.formError).toEqual('Failed to lock')
+    })
+    
+    test('should set that a lock request has finished', () => {
+      expect(state.togglingLock).toEqual(false)
+    })
+  })
+  
+  describe('UNLOCK_PROJECT_FAIL', () => {
+    const action = { type: types.UNLOCK_PROJECT_FAIL, payload: 'Failed to unlock' }
+    const currentState = getState({
+      togglingLock: true, project: { status: 2 }
+    })
+    const state = reducer(currentState, action)
+    
+    test('should set form error', () => {
+      expect(state.formError).toEqual('Failed to unlock')
+    })
+    
+    test('should set that a lock request has finished', () => {
+      expect(state.togglingLock).toEqual(false)
     })
   })
   
@@ -176,20 +281,24 @@ describe('Home scene - AddEditProject reducer', () => {
       user: { id: 22 }
     }
     
-    const currentState = getState({ users: [{ userId: 42 }, { userId: 10 }, { userId: 4 }] })
+    const currentState = getState({
+      project: {
+        users: [{ userId: 42 }, { userId: 10 }, { userId: 4 }]
+      }
+    })
     const state = reducer(currentState, action)
     
     test('should add user to top of list', () => {
-      expect(state.users[0]).toEqual({ userId: 22, id: 22 })
+      expect(state.project.users[0]).toEqual({ userId: 22, id: 22 })
     })
     
     test('should set userId', () => {
-      expect(state.users[0].hasOwnProperty('userId')).toEqual(true)
-      expect(state.users[0].userId).toEqual(22)
+      expect(state.project.users[0].hasOwnProperty('userId')).toEqual(true)
+      expect(state.project.users[0].userId).toEqual(22)
     })
     
     test('should not overwrite existing users', () => {
-      expect(state.users.length).toEqual(4)
+      expect(state.project.users.length).toEqual(4)
     })
     
     test('should clear search string', () => {
@@ -203,15 +312,19 @@ describe('Home scene - AddEditProject reducer', () => {
       index: 2
     }
     
-    const currentState = getState({ users: [{ userId: 42 }, { userId: 10 }, { userId: 4 }] })
+    const currentState = getState({
+      project: {
+        users: [{ userId: 42 }, { userId: 10 }, { userId: 4 }]
+      }
+    })
     const state = reducer(currentState, action)
     
     test('should remove the user from the list', () => {
-      expect(state.users.find(user => user.userId === 4)).toEqual(undefined)
+      expect(state.project.users.find(user => user.userId === 4)).toEqual(undefined)
     })
     
     test('should not remove any other users', () => {
-      expect(state.users.length).toEqual(2)
+      expect(state.project.users.length).toEqual(2)
     })
   })
   
@@ -220,7 +333,7 @@ describe('Home scene - AddEditProject reducer', () => {
       type: types.UPDATE_USER_SUGGESTION_VALUE,
       suggestionValue: 'krist'
     }
-  
+    
     const currentState = getState({ userSearchValue: 'search' })
     const state = reducer(currentState, action)
     
@@ -242,7 +355,7 @@ describe('Home scene - AddEditProject reducer', () => {
     })
     
     test('should filter out existing users', () => {
-      const currentState = getState({ users: [{ userId: 43 }, { userId: 22 }] })
+      const currentState = getState({ project: { users: [{ userId: 43 }, { userId: 22 }] } })
       const state = reducer(currentState, action)
       expect(state.userSuggestions).toEqual([{ id: 10 }])
     })

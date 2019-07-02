@@ -36,15 +36,14 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
         userSearchValue: '',
         userSuggestions: []
       }
-    
-    case types.ADD_PROJECT_FAIL:
-    case types.UPDATE_PROJECT_FAIL:
-    case types.DELETE_PROJECT_FAIL:
+  
+    case types.ADD_PROJECT_REQUEST:
+    case types.UPDATE_PROJECT_REQUEST:
+    case types.DELETE_PROJECT_REQUEST:
       return {
         ...state,
-        formError: action.payload,
-        goBack: false,
-        submitting: false
+        submitting: true,
+        goBack: false
       }
     
     case types.DELETE_PROJECT_SUCCESS:
@@ -56,32 +55,24 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
         goBack: true,
         submitting: false
       }
-    
-    case types.ADD_PROJECT_REQUEST:
-    case types.UPDATE_PROJECT_REQUEST:
-    case types.DELETE_PROJECT_REQUEST:
+  
+    case types.ADD_PROJECT_FAIL:
+    case types.UPDATE_PROJECT_FAIL:
+    case types.DELETE_PROJECT_FAIL:
       return {
         ...state,
-        submitting: true,
-        goBack: false
+        formError: action.payload,
+        goBack: false,
+        submitting: false
       }
     
     case types.LOCK_PROJECT_REQUEST:
     case types.UNLOCK_PROJECT_REQUEST:
       return {
         ...state,
-        togglingLock: true,
-        formError: null
+        togglingLock: true
       }
-    
-    case types.LOCK_PROJECT_FAIL:
-    case types.UNLOCK_PROJECT_FAIL:
-      return {
-        ...state,
-        togglingLock: false,
-        formError: action.payload
-      }
-    
+  
     case types.LOCK_PROJECT_SUCCESS:
     case types.UNLOCK_PROJECT_SUCCESS:
       return {
@@ -94,17 +85,12 @@ const addEditProjectReducer = (state = INITIAL_STATE, action) => {
         }
       }
     
-    case types.SET_CURRENT_USERS:
-      // const creatorIndex = action.users.findIndex(user => user.userId === action.creatorId)
-      // const users = action.users.slice()
-      // users.splice(creatorIndex, 1)
-      // const updated = [...users, action.users[creatorIndex]]
-      
+    case types.LOCK_PROJECT_FAIL:
+    case types.UNLOCK_PROJECT_FAIL:
       return {
         ...state,
-        users: updated,
-        userSearchValue: '',
-        userSuggestions: []
+        togglingLock: false,
+        formError: action.payload
       }
     
     case types.ON_USER_SUGGESTION_SELECTED:

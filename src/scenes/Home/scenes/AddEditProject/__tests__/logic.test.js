@@ -28,6 +28,14 @@ describe('Home scene - AddEditProject logic', () => {
               bookmarks: initialBookmarks,
               firstName: 'Test',
               lastName: 'User'
+            },
+            byId: {
+              5: {
+                id: 5,
+                bookmarks: initialBookmarks,
+                firstName: 'Test',
+                lastName: 'User'
+              }
             }
           },
           projects: {
@@ -37,7 +45,9 @@ describe('Home scene - AddEditProject logic', () => {
         scenes: {
           home: {
             addEditProject: {
-              users: [{ userId: 4 }, { userId: 1 }]
+              project: {
+                users: [{ userId: 4 }, { userId: 1 }]
+              }
             }
           }
         }
@@ -55,12 +65,16 @@ describe('Home scene - AddEditProject logic', () => {
       id: 12345,
       name: 'New Project',
       isCompleted: false,
-      lastEditedBy: 'Test User'
+      lastEditedBy: 'Test User',
+      projectUsers: [{ userId: 4 }, { userId: 1 }, { userId: 5 }]
     }
     
     let store
     beforeEach(() => {
       mock.onPost('/projects').reply(200, project)
+      mock.onGet('/users/4/avatar').reply(200, {})
+      mock.onGet('/users/1/avatar').reply(200, {})
+      mock.onGet('/users/5/avatar').reply(200, {})
       store = setupStore()
       store.dispatch({ type: types.ADD_PROJECT_REQUEST, project })
     })
@@ -107,11 +121,19 @@ describe('Home scene - AddEditProject logic', () => {
   })
   
   describe('Updating a project', () => {
-    const project = { id: 1, name: 'Updated Project', lastEditedBy: 'Test User' }
+    const project = {
+      id: 1,
+      name: 'Updated Project',
+      lastEditedBy: 'Test User',
+      projectUsers: [{ userId: 4 }, { userId: 1 }, { userId: 5 }]
+    }
     
     let store
     beforeEach(() => {
       mock.onPut('/projects/1').reply(200, project)
+      mock.onGet('/users/4/avatar').reply(200, {})
+      mock.onGet('/users/1/avatar').reply(200, {})
+      mock.onGet('/users/5/avatar').reply(200, {})
       store = setupStore()
       store.dispatch({ type: types.UPDATE_PROJECT_REQUEST, project: { ...project, userId: 5 } })
     })
