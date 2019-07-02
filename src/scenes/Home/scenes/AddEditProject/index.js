@@ -108,7 +108,11 @@ export class AddEditProject extends Component {
     /**
      * Whether or not a request for toggling lock is in progress
      */
-    togglingLock: PropTypes.bool
+    togglingLock: PropTypes.bool,
+    /**
+     * Project being edited
+     */
+    project: PropTypes.object
   }
   
   constructor(props, context) {
@@ -359,16 +363,16 @@ export class AddEditProject extends Component {
    * Handles locking / unlocking a project
    */
   handleToggleLock = () => {
-    const { actions } = this.props
+    const { actions, project } = this.props
     
     if (this.projectDefined.status === 2) {
-      actions.unlockProjectRequest(this.projectDefined, 1)
+      actions.unlockProjectRequest(project, 1)
       this.projectDefined = {
         ...this.projectDefined,
         status: 1
       }
     } else {
-      actions.lockProjectRequest(this.projectDefined, 2)
+      actions.lockProjectRequest(project, 2)
       this.projectDefined = {
         ...this.projectDefined,
         status: 2
